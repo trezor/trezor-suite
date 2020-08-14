@@ -10,6 +10,7 @@ const Wrapper = styled.div`
     align-items: center;
     padding-top: 20px;
     margin-top: 60px;
+    margin-bottom: 40px;
     border-top: 1px solid ${colors.NEUE_STROKE_GREY};
 `;
 

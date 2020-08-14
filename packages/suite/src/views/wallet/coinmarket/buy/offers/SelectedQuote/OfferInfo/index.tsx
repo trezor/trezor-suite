@@ -10,6 +10,10 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        flex: 1;
+    }
 `;
 
 const Info = styled.div`
@@ -20,6 +24,12 @@ const Info = styled.div`
     min-height: 200px;
     border: 1px solid ${colors.NEUE_STROKE_GREY};
     border-radius: 4px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        flex: 1;
+        margin: 20px 0 10px 0;
+        width: 100%;
+    }
 `;
 
 const Header = styled.div`

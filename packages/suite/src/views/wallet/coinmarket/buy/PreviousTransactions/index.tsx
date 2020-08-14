@@ -26,7 +26,7 @@ const PreviousTransactions = () => {
             </Header>
             <Content>
                 {previousTransactions.map(transaction => (
-                    <Transaction transaction={transaction.trade} />
+                    <Transaction key={transaction.trade.quoteId} transaction={transaction.trade} />
                 ))}
             </Content>
         </Wrapper>

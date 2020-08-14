@@ -7,7 +7,7 @@ import { Network } from '@wallet-types';
 // 3. implement validation function in @suite-utils/router:getAppWithParams
 // 4. add params types to RouteParamsTypes (below)
 
-const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
+const walletParams = ['symbol', 'accountIndex', 'accountType', 'coinmarketTransactionId'] as const;
 const modalAppParams = ['cancelable'] as const;
 
 export const BOTTOM_MENU_ITEMS = [

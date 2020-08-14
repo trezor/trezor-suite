@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BuyTrade } from 'invity-api';
-import { Card } from '@trezor/components';
+import { Card, variables } from '@trezor/components';
 import VerifyAddress from './VerifyAddress';
 import OfferInfo from './OfferInfo';
 // import PaymentFailed from './PaymentFailed';
@@ -12,11 +12,14 @@ import OfferInfo from './OfferInfo';
 const Wrapper = styled.div`
     display: flex;
     margin-top: 20px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        flex-direction: column;
+    }
 `;
 
 const StyledCard = styled(Card)`
     flex: 1;
-    justify-content: flex-start;
     padding: 0;
 `;
 
@@ -25,6 +28,7 @@ interface Props {
 }
 
 const SelectedOffer = ({ selectedQuote }: Props) => {
+    // const router = useSelector(state => state.router);
     if (!selectedQuote) {
         return null;
     }

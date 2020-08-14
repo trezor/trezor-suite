@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import * as routerActions from '@suite-actions/routerActions';
 import { colors, variables } from '@trezor/components';
 import { useSelector, useActions } from '@suite/hooks/suite';
-import { MENU_ITEMS } from '@wallet-config/coinmarket';
+import { Translation } from '@suite-components';
 
 const { FONT_WEIGHT, FONT_SIZE } = variables;
 
@@ -42,6 +42,12 @@ const StyledNavLink = styled.div<{ active?: boolean }>`
 const Text = styled.div``;
 
 const Navigation = () => {
+    const items = [
+        { route: 'wallet-coinmarket-buy', title: <Translation id="TR_NAV_BUY" /> },
+        { route: 'wallet-coinmarket-exchange', title: <Translation id="TR_NAV_EXCHANGE" /> },
+        { route: 'wallet-coinmarket-spend', title: <Translation id="TR_NAV_SPEND" /> },
+    ] as const;
+
     const routeName = useSelector(state => state.router.route?.name);
     const { goto } = useActions({
         goto: routerActions.goto,
@@ -49,7 +55,7 @@ const Navigation = () => {
 
     return (
         <Wrapper>
-            {MENU_ITEMS.map(item => {
+            {items.map(item => {
                 const { route, title } = item;
                 const active = routeName === route;
                 return (

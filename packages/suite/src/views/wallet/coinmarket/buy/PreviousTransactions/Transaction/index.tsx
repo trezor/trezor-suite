@@ -44,7 +44,12 @@ const Row = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
+const RowSecond = styled(Row)`
+    padding-top: 8px;
+`;
+
 const StatusRow = styled.div`
+    padding-top: 8px;
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
@@ -102,9 +107,9 @@ const Transaction = ({ transaction }: Props) => {
                 <Row>
                     <ProviderInfo exchange={exchange} />
                 </Row>
-                <Row>
+                <RowSecond>
                     <PaymentType method={paymentMethod} />
-                </Row>
+                </RowSecond>
             </Column>
             <BuyColumn>Buy Again</BuyColumn>
         </Wrapper>
