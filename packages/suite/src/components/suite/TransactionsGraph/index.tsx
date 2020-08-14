@@ -108,7 +108,9 @@ const TransactionsGraph = React.memo((props: Props) => {
 
     // calculate fake data for full interval (eg. 1 year) even for ticks/timestamps without txs
     const extendedDataForInterval =
-        props.variant === 'one-asset' ? calcFakeGraphDataForTimestamps(xTicks, data) : null;
+        props.variant === 'one-asset'
+            ? calcFakeGraphDataForTimestamps(xTicks, data, props.account.formattedBalance)
+            : calcFakeGraphDataForTimestamps(xTicks, data);
 
     return (
         <Wrapper>
@@ -127,21 +129,10 @@ const TransactionsGraph = React.memo((props: Props) => {
             )}
             <Description>
                 {isLoading && <Loader size={24} />}
-                {!isLoading && data && data.length === 0 && (
-                    <NoTransactionsMessageWrapper>
-                        <DescriptionHeading>
-                            <Translation id="TR_NO_TRANSACTIONS_TO_SHOW" />
-                        </DescriptionHeading>
-                        <Translation
-                            id="TR_NO_TRANSACTIONS_TO_SHOW_SUB"
-                            values={{ newLine: <br /> }}
-                        />
-                    </NoTransactionsMessageWrapper>
-                )}
-                {!isLoading && data && data.length > 0 && (
+                {!isLoading && data && (
                     <CustomResponsiveContainer height="100%" width="100%">
                         <ComposedChart
-                            data={data}
+                            data={extendedDataForInterval}
                             barGap={0}
                             // stackOffset="sign"
                             margin={{
@@ -170,31 +161,15 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 ticks={xTicks}
                                 tickLine={false}
                             />
-                            {/* <XAxis
-                                xAxisId="secondary"
-                                dataKey="time"
-                                type="number"
-                                domain={[
-                                    xTicks[0] - xAxisPadding,
-                                    xTicks[xTicks.length - 1] + xAxisPadding,
-                                ]}
-                                // width={10}
-                                stroke={colors.NEUE_BG_GRAY}
-                                interval={
-                                    isMobileLayout || props.selectedRange.label === 'all'
-                                        ? 'preserveStartEnd'
-                                        : 0
-                                }
-                                tick={<CustomXAxisTick selectedRange={selectedRange} />}
-                                ticks={xTicks}
-                                tickLine={false}
-                                hide
-                            /> */}
+
                             <YAxis
                                 type="number"
                                 orientation="right"
                                 scale="linear"
-                                domain={calcYDomain(props.maxValue)}
+                                domain={calcYDomain(
+                                    props.maxValue,
+                                    props.account?.formattedBalance,
+                                )}
                                 stroke={colors.NEUE_BG_GRAY}
                                 tick={
                                     props.variant === 'one-asset' ? (
@@ -234,17 +209,11 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 }
                             />
 
-                            {/* <ReferenceLine y={0} stroke={colors.BLACK80} /> */}
                             {props.variant === 'one-asset' && (
                                 <Line
                                     type="linear"
                                     dataKey={(data: any) => Number(props.balanceValueFn(data))}
                                     stroke={colors.NEUE_TYPE_ORANGE}
-                                    data={
-                                        selectedRange.label === 'all'
-                                            ? data
-                                            : extendedDataForInterval ?? undefined
-                                    }
                                     dot={false}
                                     activeDot={false}
                                 />
@@ -293,7 +262,6 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 // filter="url(#shadow)"
                                 barSize={selectedRange.label === 'all' ? 8 : 16}
                                 shape={<CustomBar variant="received" />}
-                                // xAxisId="primary"
                             />
                             <Bar
                                 dataKey={(data: any) => Number(props.sentValueFn(data) ?? 0)}
@@ -302,7 +270,6 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 // filter="url(#shadow)"
                                 barSize={selectedRange.label === 'all' ? 8 : 16}
                                 shape={<CustomBar variant="sent" />}
-                                // xAxisId="primary"
                             />
                         </ComposedChart>
                     </CustomResponsiveContainer>
