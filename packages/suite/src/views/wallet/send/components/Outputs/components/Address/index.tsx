@@ -44,7 +44,7 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
         composeTransaction,
         register,
         outputs,
-        getValues,
+        getDefaultValue,
         errors,
         setValue,
     } = useSendFormContext();
@@ -53,9 +53,7 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
     const inputName = `outputs[${outputId}].address`;
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const addressError = outputError ? outputError.address : undefined;
-    // addressValue is a "defaultValue" from draft (`outputs` fields) OR regular "onChange" during lifecycle (`getValues` fields)
-    // it needs to be done like that, because of `useFieldArray` architecture which requires defaultValue for registered inputs
-    const addressValue = outputs[outputId].address || getValues(inputName) || '';
+    const addressValue = getDefaultValue(inputName, outputs[outputId].address || '');
 
     return (
         <Input

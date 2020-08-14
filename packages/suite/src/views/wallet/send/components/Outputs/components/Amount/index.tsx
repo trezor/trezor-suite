@@ -73,41 +73,30 @@ export default ({ outputId }: { outputId: number }) => {
         destinationAddressEmpty,
         register,
         outputs,
-        getValues,
-        clearErrors,
+        getDefaultValue,
         errors,
         setValue,
+        setMax,
         calculateFiat,
         composeTransaction,
     } = useSendFormContext();
 
-    const values = getValues();
     const inputName = `outputs[${outputId}].amount`;
-    const isSetMaxActive = values.setMaxOutputId === outputId;
+    const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
     const { symbol, availableBalance, networkType } = account;
     const formattedAvailableBalance = token
         ? token.balance || '0'
         : formatNetworkAmount(availableBalance, symbol);
 
-    // find related fiat error
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
-    const fiatError = outputError ? outputError.fiat : undefined;
-    // find local error
-    const amountError = outputError ? outputError.amount : undefined;
-    // display error only if there is no related fiatError and local error is 'TR_AMOUNT_IS_NOT_SET' (empty field)
-    const error =
-        fiatError && amountError && amountError.message === 'TR_AMOUNT_IS_NOT_SET'
-            ? undefined
-            : amountError;
+    const error = outputError ? outputError.amount : undefined;
 
     const reserve =
         account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
     const tokenBalance = token ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
     const decimals = token ? token.decimals : network.decimals;
 
-    // amountValue is a "defaultValue" from draft (`outputs` fields) OR regular "onChange" during lifecycle (`getValues` fields)
-    // it needs to be done like that, because of `useFieldArray` architecture which requires defaultValue for registered inputs
-    const amountValue = outputs[outputId].amount || getValues(inputName) || '';
+    const amountValue = getDefaultValue(inputName, outputs[outputId].amount || '');
 
     return (
         <Wrapper>
@@ -120,16 +109,7 @@ export default ({ outputId }: { outputId: number }) => {
                         <Button
                             icon={isSetMaxActive ? 'CHECK' : 'SEND'}
                             onClick={() => {
-                                // reset errors
-                                if (amountError || fiatError) {
-                                    clearErrors([inputName, `outputs[${outputId}].fiat`]);
-                                }
-                                // reset field values
-                                if (!isSetMaxActive) {
-                                    setValue(inputName, '');
-                                    setValue(`outputs[${outputId}].fiat`, '');
-                                }
-                                setValue('setMaxOutputId', isSetMaxActive ? undefined : outputId);
+                                setMax(outputId, isSetMaxActive);
                                 composeTransaction(inputName);
                             }}
                             variant="tertiary"
@@ -196,7 +176,8 @@ export default ({ outputId }: { outputId: number }) => {
                                 return 'TR_AMOUNT_IS_TOO_LOW';
                             }
 
-                            if (amountBig.eq(0) && !getValues('ethereumDataHex')) {
+                            // allow 0 amount ONLY for ethereum transaction with data
+                            if (amountBig.eq(0) && !getDefaultValue('ethereumDataHex')) {
                                 return 'TR_AMOUNT_IS_TOO_LOW';
                             }
 

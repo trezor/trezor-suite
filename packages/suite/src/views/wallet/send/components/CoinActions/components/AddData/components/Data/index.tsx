@@ -23,7 +23,14 @@ interface Props {
 }
 
 export default ({ close }: Props) => {
-    const { register, errors, getValues, setValue, composeTransaction } = useSendFormContext();
+    const {
+        register,
+        errors,
+        getValues,
+        setValue,
+        setAmount,
+        composeTransaction,
+    } = useSendFormContext();
 
     const inputAsciiName = 'ethereumDataAscii';
     const inputHexName = 'ethereumDataHex';
@@ -43,7 +50,7 @@ export default ({ close }: Props) => {
                 data-test={inputAsciiName}
                 defaultValue={asciiValue}
                 innerRef={register({
-                    required: 'TR_AMOUNT_IS_NOT_SET',
+                    required: 'TR_DATA_IS_NOT_SET',
                 })}
                 onChange={event => {
                     setValue(
@@ -52,10 +59,10 @@ export default ({ close }: Props) => {
                         { shouldValidate: true },
                     );
                     if (!amount) {
-                        setValue('outputs[0].amount', '0');
+                        setAmount(0, '0');
                     }
                     if ((event.target.value === '' || asciiError) && amount === '0') {
-                        setValue('outputs[0].amount', '');
+                        setAmount(0, '');
                     }
                     composeTransaction(inputAsciiName, !!asciiError);
                 }}
@@ -76,11 +83,11 @@ export default ({ close }: Props) => {
                 data-test={inputHexName}
                 defaultValue={hexValue}
                 innerRef={register({
-                    required: 'TR_AMOUNT_IS_NOT_SET',
+                    required: 'TR_DATA_IS_NOT_SET',
                     validate: (value: string) => {
-                        if (value.length % 2 !== 0) return 'TODO_1';
-                        if (value.length > 80 * 2) return 'TODO_2';
-                        if (!/^[\da-f]+$/.test(value)) return 'TODO_3';
+                        if (value.length % 2 !== 0) return 'TR_DATA_IS_NOT_VALID_HEX';
+                        if (value.length > 80 * 2) return 'TR_DATA_HEX_TOO_BIG';
+                        if (!/^[\da-f]+$/.test(value)) return 'TR_DATA_IS_NOT_VALID_HEX';
                     },
                 })}
                 onChange={event => {

@@ -35,7 +35,7 @@ export default ({ outputId }: { outputId: number }) => {
     const {
         register,
         outputs,
-        getValues,
+        getDefaultValue,
         setValue,
         errors,
         composeTransaction,
@@ -45,8 +45,8 @@ export default ({ outputId }: { outputId: number }) => {
     const inputAsciiName = `outputs[${outputId}].dataAscii`;
     const inputHexName = `outputs[${outputId}].dataHex`;
 
-    const asciiValue = outputs[outputId].dataAscii || getValues(inputAsciiName) || '';
-    const hexValue = outputs[outputId].dataHex || getValues(inputHexName) || '';
+    const asciiValue = getDefaultValue(inputAsciiName, outputs[outputId].dataAscii || '');
+    const hexValue = getDefaultValue(inputHexName, outputs[outputId].dataHex || '');
 
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const asciiError = outputError ? outputError.dataAscii : undefined;

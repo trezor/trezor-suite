@@ -2,13 +2,19 @@ import { useCallback } from 'react';
 import { UseFormMethods } from 'react-hook-form';
 import { FeeLevel } from 'trezor-connect';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
-import { FormState, SendContextProps } from '@wallet-types/sendForm';
+import { FormState, SendContextProps, SendContextState } from '@wallet-types/sendForm';
 
 type Props = UseFormMethods<FormState> & {
     fiatRates: SendContextProps['fiatRates'];
 };
 
-export const useSendFormFields = ({ control, getValues, setValue, fiatRates }: Props) => {
+export const useSendFormFields = ({
+    control,
+    getValues,
+    setValue,
+    clearErrors,
+    fiatRates,
+}: Props) => {
     const calculateFiat = useCallback(
         (outputIndex: number, amount?: string) => {
             const values = getValues();
@@ -19,7 +25,7 @@ export const useSendFormFields = ({ control, getValues, setValue, fiatRates }: P
             if (!amount) {
                 // reset fiat value (Amount field has error)
                 if (fiat.length > 0) {
-                    setValue(inputName, '', { shouldValidate: true });
+                    setValue(inputName, '');
                 }
                 return;
             }
@@ -41,12 +47,24 @@ export const useSendFormFields = ({ control, getValues, setValue, fiatRates }: P
     const setAmount = useCallback(
         (outputIndex: number, amount: string) => {
             setValue(`outputs[${outputIndex}].amount`, amount, {
-                shouldValidate: true,
+                shouldValidate: amount.length > 0,
                 shouldDirty: true,
             });
             calculateFiat(outputIndex, amount);
         },
         [calculateFiat, setValue],
+    );
+
+    const setMax = useCallback(
+        (outputIndex: number, active: boolean) => {
+            clearErrors([`outputs[${outputIndex}].amount`, `outputs[${outputIndex}].fiat`]);
+            if (!active) {
+                setValue(`outputs[${outputIndex}].amount`, '');
+                setValue(`outputs[${outputIndex}].fiat`, '');
+            }
+            setValue('setMaxOutputId', active ? undefined : outputIndex);
+        },
+        [clearErrors, setValue],
     );
 
     const changeFeeLevel = useCallback(
@@ -76,6 +94,25 @@ export const useSendFormFields = ({ control, getValues, setValue, fiatRates }: P
         [control, setValue],
     );
 
+    // `output[x].fieldName` should be a regular `formState` value from `getValues()` method
+    // however `useFieldArray` doesn't provide it BEFORE input is registered (it will be undefined on first render)
+    // use fallbackValue from useFieldArray.fields if so, because `useFieldArray` architecture requires `defaultValue` to be provided for registered inputs
+    const getDefaultValue: SendContextState['getDefaultValue'] = <K extends string, T = undefined>(
+        fieldName: K,
+        fallbackValue?: T,
+    ) => {
+        if (fallbackValue) {
+            const stateValue = getValues<K, T>(fieldName);
+            if (stateValue !== undefined) return stateValue;
+            return fallbackValue;
+        }
+        return getValues<K, T>(fieldName);
+    };
+
+    // const calculateDataFee = useCallback((fieldName: string) => {
+
+    // }, []);
+
     // // save initial selected fee to reducer
     // useEffect(() => {
     //     setLastUsedFeeLevel(initialSelectedFee.label, symbol);
@@ -86,5 +123,7 @@ export const useSendFormFields = ({ control, getValues, setValue, fiatRates }: P
         setAmount,
         changeFeeLevel,
         resetDefaultValue,
+        setMax,
+        getDefaultValue,
     };
 };

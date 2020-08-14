@@ -89,11 +89,11 @@ export default () => {
         feeInfo,
         changeFeeLevel,
         account: { symbol, networkType },
-        getValues,
+        getDefaultValue,
         composedLevels,
     } = useSendFormContext();
 
-    const selectedLabel = getValues('selectedFee') || 'normal';
+    const selectedLabel = getDefaultValue('selectedFee') || 'normal';
     const selectedLevel = feeInfo.levels.find(level => level.label === selectedLabel)!;
     const transactionInfo = composedLevels ? composedLevels[selectedLabel] : undefined;
     const isCustomLevel = selectedLabel === 'custom';

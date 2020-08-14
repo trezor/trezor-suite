@@ -66,25 +66,38 @@ export type SendContextProps = {
     feeInfo: FeeInfo;
     localCurrencyOption: { value: string; label: string };
     destinationAddressEmpty: boolean;
-    token: null | TokenInfo;
+    token?: TokenInfo;
     feeOutdated: boolean;
     isLoading: boolean;
     composedLevels?: PrecomposedLevels;
 };
 
+interface GetDefaultValue {
+    <K extends keyof FormState, T = undefined>(
+        fieldName: K,
+        fallback?: T,
+    ): K extends keyof FormState ? FormState[K] : unknown;
+    <K, T>(fieldName: K, fallback: T): K extends keyof FormState ? FormState[K] : T;
+}
+
 export type SendContextState = UseFormMethods<FormState> &
     SendContextProps & {
         // additional fields
         outputs: Partial<Output & { id: string }>[]; // useFieldArray fields
-        addOutput: () => void; // useFieldArray append
-        removeOutput: (index: number) => void; // useFieldArray remove
         updateContext: (value: Partial<SendContextProps>) => void;
         resetContext: () => void;
         composeTransaction: (field: string, fieldHasError?: boolean) => void;
         signTransaction: () => void;
+        // useSendFormFields utils:
         calculateFiat: (outputIndex: number, amount?: string) => void;
+        setAmount: (outputIndex: number, amount: string) => void;
         changeFeeLevel: (currentLevel: FeeLevel, newLevel: FeeLevel['label']) => void;
+        resetDefaultValue: (field: string) => void;
+        setMax: (index: number, active: boolean) => void;
+        getDefaultValue: GetDefaultValue;
+        // useSendFormOutputs utils:
+        addOutput: () => void; // useFieldArray append
+        removeOutput: (index: number) => void; // useFieldArray remove
         addOpReturn: () => void;
         removeOpReturn: (index: number) => void;
-        resetDefaultValue: (field: string) => void;
     };

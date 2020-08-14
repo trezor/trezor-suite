@@ -42,7 +42,9 @@ export default () => {
                         if (feeBig.isNaN()) {
                             return 'TR_CUSTOM_FEE_IS_NOT_NUMBER';
                         }
-
+                        if (!feeBig.isInteger()) {
+                            return 'TR_CUSTOM_FEE_IS_NOT_INTEGER';
+                        }
                         if (feeBig.isGreaterThan(maxFee) || feeBig.isLessThan(minFee)) {
                             return 'TR_CUSTOM_FEE_NOT_IN_RANGE';
                         }

@@ -25,29 +25,20 @@ export default ({ outputId }: { outputId: number }) => {
         register,
         errors,
         outputs,
-        getValues,
+        getDefaultValue,
         control,
         setValue,
         composeTransaction,
     } = useSendFormContext();
 
     const inputName = `outputs[${outputId}].fiat`;
+    const currencyInputName = `outputs[${outputId}].currency`;
     const amountInputName = `outputs[${outputId}].amount`;
+    const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
 
-    // find related amount error
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
-    const amountError = outputError ? outputError.amount : undefined;
-    // find local error
-    const fiatError = outputError ? outputError.fiat : undefined;
-    // display error only if there is no related amountError and local error is 'TR_AMOUNT_IS_NOT_SET' (empty field)
-    const error =
-        amountError && fiatError && fiatError.message === 'TR_AMOUNT_IS_NOT_SET'
-            ? undefined
-            : fiatError;
-
-    // fiatValue is a "defaultValue" from draft (`outputs` fields) OR regular "onChange" during lifecycle (`getValues` fields)
-    // it needs to be done like that, because of `useFieldArray` architecture which requires defaultValue for registered inputs
-    const fiatValue = outputs[outputId].fiat || getValues(inputName) || '';
+    const error = outputError ? outputError.fiat : undefined;
+    const fiatValue = getDefaultValue(inputName, outputs[outputId].fiat);
     const decimals = token ? token.decimals : network.decimals;
 
     return (
@@ -57,24 +48,24 @@ export default ({ outputId }: { outputId: number }) => {
                 monospace
                 bottomText={error && error.message}
                 onChange={event => {
-                    const values = getValues();
-                    if (values.setMaxOutputId === outputId) {
+                    if (isSetMaxActive) {
                         setValue('setMaxOutputId', undefined);
                     }
                     if (error) {
                         // reset Amount field in case of invalid Fiat value
-                        if (values.outputs[outputId].amount.length > 0) {
-                            setValue(amountInputName, '', {
-                                shouldValidate: true,
-                            });
+                        if (getDefaultValue(amountInputName, '').length > 0) {
+                            setValue(amountInputName, '');
                             composeTransaction(amountInputName, true);
                         }
                         return;
                     }
                     // calculate new Amount, Fiat input times currency rate
-                    const selectedCurrency = values.outputs[outputId].currency;
+                    const selectedCurrency = getDefaultValue(
+                        currencyInputName,
+                        outputs[outputId].currency,
+                    );
                     const amount =
-                        fiatRates && fiatRates.current
+                        fiatRates && fiatRates.current && selectedCurrency
                             ? fromFiatCurrency(
                                   event.target.value,
                                   selectedCurrency.value,
@@ -91,19 +82,15 @@ export default ({ outputId }: { outputId: number }) => {
                     }
                 }}
                 name={inputName}
+                data-test={inputName}
                 defaultValue={fiatValue}
                 innerRef={register({
+                    required: 'TR_AMOUNT_IS_NOT_SET',
                     validate: (value: string) => {
-                        if (!value || value.length === 0) {
-                            return 'TR_AMOUNT_IS_NOT_SET';
-                        }
-
                         const amountBig = new BigNumber(value);
-
                         if (amountBig.isNaN()) {
                             return 'TR_AMOUNT_IS_NOT_NUMBER';
                         }
-
                         if (amountBig.lt(0)) {
                             return 'TR_AMOUNT_IS_TOO_LOW';
                         }
@@ -112,7 +99,8 @@ export default ({ outputId }: { outputId: number }) => {
                 innerAddon={
                     <Controller
                         control={control}
-                        name={`outputs[${outputId}].currency`}
+                        name={currencyInputName}
+                        data-test={currencyInputName}
                         defaultValue={localCurrencyOption}
                         render={({ onChange, value }) => {
                             return (
@@ -130,7 +118,7 @@ export default ({ outputId }: { outputId: number }) => {
                                         // calculate Amount value
                                         const rate = getFiatRate(fiatRates, selected.value);
                                         const amountValue = new BigNumber(
-                                            getValues(amountInputName),
+                                            getDefaultValue(amountInputName, ''),
                                         );
                                         if (rate && amountValue && !amountValue.isNaN()) {
                                             const fiatValueBigNumber = amountValue.multipliedBy(
