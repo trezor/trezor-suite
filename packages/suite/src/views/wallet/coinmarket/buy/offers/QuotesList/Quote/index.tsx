@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, Button, variables } from '@trezor/components';
+import { colors, Button, variables, Icon } from '@trezor/components';
 import { PaymentType, ProviderInfo } from '@wallet-components';
 import { QuestionTooltip } from '@suite-components';
 import { BuyTrade } from 'invity-api';
@@ -91,11 +91,22 @@ const Footer = styled.div`
 `;
 
 const ErrorFooter = styled.div`
+    display: flex;
     margin: 0 30px;
     padding: 10px 0;
     border-top: 1px solid ${colors.NEUE_STROKE_GREY};
     color: ${colors.RED_ERROR};
 `;
+
+const StyledIcon = styled(Icon)`
+    padding-top: 8px;
+`;
+
+const IconWrapper = styled.div`
+    padding-right: 3px;
+`;
+
+const ErrorText = styled.div``;
 
 interface Props {
     className?: string;
@@ -142,7 +153,15 @@ const Quote = ({ className, selectQuote, quote }: Props) => {
                     <Value>All fee included</Value>
                 </Column>
             </Details>
-            {quote.error && <ErrorFooter>{quote.error}</ErrorFooter>}
+            {quote.error && (
+                <ErrorFooter>
+                    <IconWrapper>
+                        <StyledIcon icon="CROSS" size={12} color={colors.RED_ERROR} />
+                    </IconWrapper>
+                    <ErrorText>{quote.error}</ErrorText>
+                </ErrorFooter>
+            )}
+
             {quote.infoNote && !quote.error && <Footer>{quote.infoNote}</Footer>}
         </Wrapper>
     );
