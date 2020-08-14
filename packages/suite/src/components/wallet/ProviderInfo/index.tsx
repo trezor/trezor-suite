@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
+import { join } from 'path';
+import invityApi from '@suite/services/invityAPI';
 
 const Wrapper = styled.div`
     display: flex;
@@ -34,7 +36,7 @@ export default ({ exchange }: Props) => {
                 <>
                     <Icon
                         width="16px"
-                        src={`https://exchange.invity.io/images/exchange/${provider.logo}`}
+                        src={join(invityApi.server, 'images/exchange', provider.logo)}
                     />
                     <Text>{provider.companyName}</Text>
                 </>
