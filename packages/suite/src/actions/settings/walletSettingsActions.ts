@@ -3,6 +3,7 @@ import { WALLET_SETTINGS } from './constants';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { Dispatch, GetState } from '@suite-types';
 import { Network, ExternalNetwork } from '@wallet-types';
+import { BlockbookUrl } from '@wallet-types/blockbook';
 
 export type WalletSettingsActions =
     | { type: typeof WALLET_SETTINGS.CHANGE_NETWORKS; payload: Network['symbol'][] }
@@ -16,7 +17,9 @@ export type WalletSettingsActions =
           type: typeof WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL;
           symbol: Network['symbol'];
           feeLevel?: FeeLevel;
-      };
+      }
+    | { type: typeof WALLET_SETTINGS.ADD_BLOCKBOOK_URL; payload: BlockbookUrl }
+    | { type: typeof WALLET_SETTINGS.REMOVE_BLOCKBOOK_URL; payload: BlockbookUrl };
 
 export const setLocalCurrency = (localCurrency: string) => ({
     type: WALLET_SETTINGS.SET_LOCAL_CURRENCY,
@@ -74,3 +77,13 @@ export const getLastUsedFeeLevel = () => (_: Dispatch, getState: GetState) => {
     if (selectedAccount.status !== 'loaded') return;
     return settings.lastUsedFeeLevel[selectedAccount.account.symbol];
 };
+
+export const addBlockbookUrl = (payload: BlockbookUrl) => ({
+    type: WALLET_SETTINGS.ADD_BLOCKBOOK_URL,
+    payload,
+});
+
+export const removeBlockbookUrl = (payload: BlockbookUrl) => ({
+    type: WALLET_SETTINGS.REMOVE_BLOCKBOOK_URL,
+    payload,
+});

@@ -132,6 +132,18 @@ export const reconnect = (coin: Network['symbol']) => async (_dispatch: Dispatch
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     await dispatch(preloadFeeInfo());
 
+    // Load custom blockbook backend
+    const { blockbookUrls } = getState().wallet.settings;
+    await blockbookUrls.forEach(async ({ coin }) => {
+        await TrezorConnect.blockchainSetCustomBackend({
+            coin,
+            blockchainLink: {
+                type: 'blockbook',
+                url: blockbookUrls.filter(b => b.coin === coin).map(b => b.url),
+            },
+        });
+    });
+
     const { accounts } = getState().wallet;
     if (accounts.length <= 0) {
         // continue suite initialization

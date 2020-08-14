@@ -6,7 +6,8 @@ import { NETWORKS } from '@wallet-config';
 import { UnavailableCapability } from 'trezor-connect';
 import { Network } from '@wallet-types';
 import { Section, ActionColumn, Row } from '@suite-components/Settings';
-import { useDevice } from '@suite-hooks';
+import { useDevice, useActions } from '@suite-hooks';
+import * as modalActions from '@suite-actions/modalActions';
 import Coin from '../Coin';
 
 const Wrapper = styled.div`
@@ -126,6 +127,9 @@ const CoinsGroup = ({
     unavailableCapabilities,
     ...props
 }: Props) => {
+    const { openModal } = useActions({
+        openModal: modalActions.openModal,
+    });
     const { isLocked } = useDevice();
     const isDeviceLocked = isLocked();
     return (
@@ -169,8 +173,14 @@ const CoinsGroup = ({
                     <CoinRow key={network.symbol}>
                         <Coin symbol={network.symbol} name={network.name} />
                         <ActionColumn>
-                            {/* hidden with display 'none' until implemented */}
-                            <AdvancedSettings style={{ display: 'none' }}>
+                            <AdvancedSettings
+                                onClick={() =>
+                                    openModal({
+                                        type: 'advanced-coin-settings',
+                                        coin: network.symbol,
+                                    })
+                                }
+                            >
                                 <SettingsIconWrapper>
                                     <Icon icon="SETTINGS" size={16} color={colors.BLACK25} />
                                 </SettingsIconWrapper>
