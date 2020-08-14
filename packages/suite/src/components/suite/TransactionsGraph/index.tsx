@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
 import { colors, variables, Loader, Icon } from '@trezor/components';
 import {
     GraphRange,
@@ -47,19 +46,6 @@ const Description = styled.div`
     text-align: center;
     color: ${colors.BLACK50};
     flex: 1;
-`;
-
-const NoTransactionsMessageWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-`;
-const DescriptionHeading = styled.div`
-    text-align: center;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    margin-bottom: 8px;
 `;
 
 const RefreshIcon = styled(Icon)`
