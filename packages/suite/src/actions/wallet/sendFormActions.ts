@@ -284,3 +284,7 @@ export const pushTransaction = () => async (dispatch: Dispatch, getState: GetSta
     // resolve sign process
     return sentTx.success;
 };
+
+export const dispose = () => async () => {
+    // TODO: reset reducer
+};

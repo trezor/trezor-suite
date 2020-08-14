@@ -1,4 +1,7 @@
 // @ts-ignore for now
+
+// TODO: use validation from connect and remove this file
+
 import addressValidator from 'multicoin-address-validator';
 import { Account } from '@wallet-types';
 
@@ -36,11 +39,11 @@ export const isAddressValid = (address: string, symbol: Account['symbol']) => {
         case 'btg':
         case 'dash':
         case 'xrp':
+        case 'dgb':
         case 'doge':
         case 'ltc':
         case 'nmc':
         case 'vtc':
-        case 'dgb':
         case 'zec':
         case 'eth':
         case 'etc':

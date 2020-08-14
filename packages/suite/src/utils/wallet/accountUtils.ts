@@ -310,6 +310,12 @@ export const enhanceTransaction = (
     };
 };
 
+/**
+ * Clear invalid tokens and formats amounts
+ *
+ * @param {Account['tokens']} tokens
+ * @returns {Account['tokens']}
+ */
 export const enhanceTokens = (tokens: Account['tokens']) => {
     if (!tokens) return [];
     return tokens
