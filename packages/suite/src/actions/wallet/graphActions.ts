@@ -1,7 +1,5 @@
 import TrezorConnect from 'trezor-connect';
 import { getUnixTime, subWeeks, isWithinInterval, fromUnixTime } from 'date-fns';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { resetTime } from '@suite-utils/date';
 import { Dispatch, GetState } from '@suite-types';
 import {
     ACCOUNT_GRAPH_SUCCESS,
@@ -10,12 +8,15 @@ import {
     AGGREGATED_GRAPH_SUCCESS,
     ACCOUNT_GRAPH_START,
     SET_SELECTED_RANGE,
+    SET_SELECTED_VIEW,
 } from './constants/graphConstants';
 import { Account } from '@wallet-types';
-import { GraphRange } from '@wallet-types/fiatRates';
-import { accountGraphDataFilterFn, deviceGraphDataFilterFn } from '@suite/utils/wallet/graphUtils';
-import { GraphData } from '@wallet-reducers/graphReducer';
-import BigNumber from 'bignumber.js';
+import { GraphRange, GraphView, GraphData } from '@wallet-types/graph';
+import {
+    accountGraphDataFilterFn,
+    deviceGraphDataFilterFn,
+    enhanceBlockchainAccountHistory,
+} from '@wallet-utils/graphUtils';
 
 export type GraphActions =
     | {
@@ -39,11 +40,20 @@ export type GraphActions =
     | {
           type: typeof SET_SELECTED_RANGE;
           payload: GraphRange;
+      }
+    | {
+          type: typeof SET_SELECTED_VIEW;
+          payload: GraphView;
       };
 
 export const setSelectedRange = (range: GraphRange) => ({
     type: SET_SELECTED_RANGE,
     payload: range,
+});
+
+export const setSelectedView = (view: GraphView) => ({
+    type: SET_SELECTED_VIEW,
+    payload: view,
 });
 
 /**
@@ -71,7 +81,7 @@ export const fetchAccountGraphData = (
                 descriptor: account.descriptor,
                 symbol: account.symbol,
             },
-            data: null,
+            data: [],
             isLoading: true,
             error: false,
         },
@@ -85,7 +95,6 @@ export const fetchAccountGraphData = (
         };
     }
 
-    // const setDayToFirstOfMonth = groupBy >= secondsInMonth;
     const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
         coin: account.symbol,
         descriptor: account.descriptor,
@@ -94,21 +103,8 @@ export const fetchAccountGraphData = (
     });
 
     if (response?.success) {
-        const enhancedResponse = response.payload.map(h => {
-            const normalizedReceived = h.sentToSelf
-                ? new BigNumber(h.received).minus(h.sentToSelf || 0).toFixed()
-                : h.received;
-            const normalizedSent = h.sentToSelf
-                ? new BigNumber(h.sent).minus(h.sentToSelf || 0).toFixed()
-                : h.sent;
+        const enhancedResponse = enhanceBlockchainAccountHistory(response.payload, account.symbol);
 
-            return {
-                ...h,
-                received: formatNetworkAmount(normalizedReceived, account.symbol),
-                sent: formatNetworkAmount(normalizedSent, account.symbol),
-                time: resetTime(h.time),
-            };
-        });
         dispatch({
             type: ACCOUNT_GRAPH_SUCCESS,
             payload: {
@@ -122,22 +118,21 @@ export const fetchAccountGraphData = (
                 error: false,
             },
         });
-        return enhancedResponse;
-    }
-    dispatch({
-        type: ACCOUNT_GRAPH_FAIL,
-        payload: {
-            account: {
-                deviceState: account.deviceState,
-                descriptor: account.descriptor,
-                symbol: account.symbol,
+    } else {
+        dispatch({
+            type: ACCOUNT_GRAPH_FAIL,
+            payload: {
+                account: {
+                    deviceState: account.deviceState,
+                    descriptor: account.descriptor,
+                    symbol: account.symbol,
+                },
+                data: [],
+                isLoading: false,
+                error: true,
             },
-            data: null,
-            isLoading: false,
-            error: true,
-        },
-    });
-    return null;
+        });
+    }
 };
 
 export const updateGraphData = (
@@ -161,9 +156,6 @@ export const updateGraphData = (
         }
     }
 
-    // const startDate =
-    //     selectedRange.label === 'all' ? null : subWeeks(new Date(), selectedRange.weeks!);
-    // const endDate = selectedRange.label === 'all' ? null : new Date();
     dispatch({
         type: AGGREGATED_GRAPH_START,
     });

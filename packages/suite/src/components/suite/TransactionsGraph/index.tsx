@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { colors, variables, Loader, Icon } from '@trezor/components';
-import { Account } from '@wallet-types';
 import {
     GraphRange,
     AggregatedAccountHistory,
     AggregatedDashboardHistory,
-} from '@wallet-types/fiatRates';
-import { BarChart, Tooltip, Bar, ReferenceLine, YAxis, XAxis } from 'recharts';
+} from '@wallet-types/graph';
+import { ComposedChart, Tooltip, Bar, YAxis, XAxis, Line, CartesianGrid } from 'recharts';
+import { useLayoutSize } from '@suite-hooks';
+import { calcYDomain, calcXDomain, calcFakeGraphDataForTimestamps } from '@wallet-utils/graphUtils';
+import { Account } from '@wallet-types';
+
 import RangeSelector from './components/RangeSelector';
 import CustomResponsiveContainer from './components/CustomResponsiveContainer';
 import CustomXAxisTick from './components/CustomXAxisTick';
@@ -23,6 +26,12 @@ const Wrapper = styled.div`
     width: 100%;
     font-size: ${variables.FONT_SIZE.TINY};
     white-space: nowrap;
+
+    /* little hack to remove first and last horizontal line from cartesian grid (lines that wrap the area of the chart) */
+    .recharts-wrapper .recharts-cartesian-grid-horizontal line:first-child,
+    .recharts-wrapper .recharts-cartesian-grid-horizontal line:last-child {
+        stroke-opacity: 0;
+    }
 `;
 
 const Toolbar = styled.div`
@@ -61,61 +70,61 @@ interface CommonProps {
     isLoading?: boolean;
     selectedRange: GraphRange;
     xTicks: number[];
-    maxValue?: number;
     localCurrency: string;
-    onSelectedRange: (range: GraphRange) => void;
+    maxValue?: number;
+    hideToolbar?: boolean;
     onRefresh?: () => void;
 }
 export interface CryptoGraphProps extends CommonProps {
     variant: 'one-asset';
     account: Account;
-    data: AggregatedAccountHistory[] | null;
+    data: AggregatedAccountHistory[];
     receivedValueFn: (data: AggregatedAccountHistory) => string | undefined;
     sentValueFn: (data: AggregatedAccountHistory) => string | undefined;
+    balanceValueFn: (data: AggregatedAccountHistory) => string | undefined;
 }
 
 export interface FiatGraphProps extends CommonProps {
     variant: 'all-assets';
-    data: AggregatedDashboardHistory[] | null;
+    data: AggregatedDashboardHistory[];
     receivedValueFn: (data: AggregatedDashboardHistory) => string | undefined;
     sentValueFn: (data: AggregatedDashboardHistory) => string | undefined;
+    balanceValueFn: (data: AggregatedDashboardHistory) => string | undefined;
     account?: never;
 }
 
 export type Props = CryptoGraphProps | FiatGraphProps;
 
 const TransactionsGraph = React.memo((props: Props) => {
-    const { data, isLoading, selectedRange, xTicks } = props;
-
+    const { isLoading, data, selectedRange, xTicks } = props;
     const [maxYTickWidth, setMaxYTickWidth] = useState(20);
+    const { isMobileLayout } = useLayoutSize();
 
     const setWidth = (n: number) => {
         setMaxYTickWidth(prevValue => (prevValue > n ? prevValue : n));
     };
 
-    const xAxisPadding =
-        selectedRange.label === 'year' || selectedRange.label === 'all'
-            ? 3600 * 24 * 14
-            : 3600 * 12; // 14 days for year/all range, 12 hours otherwise
-
     const rightMargin = Math.max(0, maxYTickWidth - 50) + 10; // 50 is the default spacing
+
+    // calculate fake data for full interval (eg. 1 year) even for ticks/timestamps without txs
+    const extendedDataForInterval =
+        props.variant === 'one-asset' ? calcFakeGraphDataForTimestamps(xTicks, data) : null;
 
     return (
         <Wrapper>
-            <Toolbar>
-                <RangeSelector
-                    selectedRange={selectedRange}
-                    onSelectedRange={props.onSelectedRange}
-                />
-                {props.onRefresh && (
-                    <RefreshIcon
-                        size={14}
-                        icon="REFRESH"
-                        hoverColor={colors.BLACK0}
-                        onClick={() => (props.onRefresh ? props.onRefresh() : undefined)}
-                    />
-                )}
-            </Toolbar>
+            {!props.hideToolbar && (
+                <Toolbar>
+                    <RangeSelector />
+                    {props.onRefresh && (
+                        <RefreshIcon
+                            size={14}
+                            icon="REFRESH"
+                            hoverColor={colors.BLACK0}
+                            onClick={() => (props.onRefresh ? props.onRefresh() : undefined)}
+                        />
+                    )}
+                </Toolbar>
+            )}
             <Description>
                 {isLoading && <Loader size={24} />}
                 {!isLoading && data && data.length === 0 && (
@@ -130,18 +139,39 @@ const TransactionsGraph = React.memo((props: Props) => {
                     </NoTransactionsMessageWrapper>
                 )}
                 {!isLoading && data && data.length > 0 && (
-                    <CustomResponsiveContainer height="100%" width="99%">
-                        <BarChart
+                    <CustomResponsiveContainer height="100%" width="100%">
+                        <ComposedChart
                             data={data}
-                            stackOffset="sign"
+                            barGap={0}
+                            // stackOffset="sign"
                             margin={{
                                 top: 10,
                                 bottom: 30,
                                 right: rightMargin,
-                                left: 10,
+                                left: 20,
                             }}
                         >
+                            <CartesianGrid vertical={false} stroke={colors.NEUE_BG_GRAY} />
+
                             <XAxis
+                                // xAxisId="primary"
+                                dataKey="time"
+                                type="number"
+                                domain={calcXDomain(xTicks, data, selectedRange)}
+                                // width={10}
+                                stroke={colors.NEUE_BG_GRAY}
+                                interval={
+                                    isMobileLayout ||
+                                    (props.selectedRange.label === 'all' && xTicks.length > 24)
+                                        ? 'preserveStartEnd'
+                                        : 0
+                                }
+                                tick={<CustomXAxisTick selectedRange={selectedRange} />}
+                                ticks={xTicks}
+                                tickLine={false}
+                            />
+                            {/* <XAxis
+                                xAxisId="secondary"
                                 dataKey="time"
                                 type="number"
                                 domain={[
@@ -149,21 +179,23 @@ const TransactionsGraph = React.memo((props: Props) => {
                                     xTicks[xTicks.length - 1] + xAxisPadding,
                                 ]}
                                 // width={10}
-                                stroke={colors.BLACK80}
-                                interval={0}
+                                stroke={colors.NEUE_BG_GRAY}
+                                interval={
+                                    isMobileLayout || props.selectedRange.label === 'all'
+                                        ? 'preserveStartEnd'
+                                        : 0
+                                }
                                 tick={<CustomXAxisTick selectedRange={selectedRange} />}
                                 ticks={xTicks}
-                            />
+                                tickLine={false}
+                                hide
+                            /> */}
                             <YAxis
                                 type="number"
                                 orientation="right"
                                 scale="linear"
-                                domain={
-                                    props.maxValue
-                                        ? [props.maxValue * -1.2, props.maxValue * 1.2]
-                                        : undefined
-                                }
-                                stroke={colors.BLACK80}
+                                domain={calcYDomain(props.maxValue)}
+                                stroke={colors.NEUE_BG_GRAY}
                                 tick={
                                     props.variant === 'one-asset' ? (
                                         <CustomYAxisTick
@@ -179,6 +211,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 }
                             />
                             <Tooltip
+                                cursor={{ stroke: '#2b2c4f', strokeWidth: 1 }}
                                 content={
                                     props.variant === 'one-asset' ? (
                                         <CustomTooltipAccount
@@ -187,6 +220,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                             localCurrency={props.localCurrency}
                                             sentValueFn={props.sentValueFn}
                                             receivedValueFn={props.receivedValueFn}
+                                            balanceValueFn={props.balanceValueFn}
                                         />
                                     ) : (
                                         <CustomTooltipDashboard
@@ -194,26 +228,82 @@ const TransactionsGraph = React.memo((props: Props) => {
                                             localCurrency={props.localCurrency}
                                             sentValueFn={props.sentValueFn}
                                             receivedValueFn={props.receivedValueFn}
+                                            // balanceValueFn={props.balanceValueFn}
                                         />
                                     )
                                 }
                             />
-                            <ReferenceLine y={0} stroke={colors.BLACK80} />
+
+                            {/* <ReferenceLine y={0} stroke={colors.BLACK80} /> */}
+                            {props.variant === 'one-asset' && (
+                                <Line
+                                    type="linear"
+                                    dataKey={(data: any) => Number(props.balanceValueFn(data))}
+                                    stroke={colors.NEUE_TYPE_ORANGE}
+                                    data={
+                                        selectedRange.label === 'all'
+                                            ? data
+                                            : extendedDataForInterval ?? undefined
+                                    }
+                                    dot={false}
+                                />
+                            )}
+                            <defs>
+                                <linearGradient
+                                    id="greenGradient"
+                                    x1="0"
+                                    y1="0"
+                                    x2="0"
+                                    y2="100%"
+                                    spreadMethod="reflect"
+                                >
+                                    <stop offset="0" stopColor={colors.NEUE_BG_GREEN} />
+                                    <stop offset="1" stopColor="#4cbc26" />
+                                </linearGradient>
+                            </defs>
+                            <defs>
+                                <linearGradient
+                                    id="redGradient"
+                                    x1="0"
+                                    y1="0"
+                                    x2="0"
+                                    y2="100%"
+                                    spreadMethod="reflect"
+                                >
+                                    <stop offset="0" stopColor="#d15b5b" />
+                                    <stop offset="1" stopColor="#e75f5f" />
+                                </linearGradient>
+                            </defs>
+
+                            {/* shadow position is incorrect if there are too many bars, forcing them to be smaller than specified barSize */}
+                            {/* <defs>
+                                <filter id="shadow" x="-20%" y="-20%" width="200%" height="200%">
+                                    <feDropShadow
+                                        stdDeviation="5"
+                                        floodColor="rgba(0, 0, 0, 0.1)"
+                                    />
+                                </filter>
+                            </defs> */}
+
                             <Bar
-                                dataKey={(data: any) => -1 * Number(props.sentValueFn(data))}
-                                stackId="stack"
-                                fill={colors.RED_ERROR}
-                                barSize={selectedRange.label === 'all' ? 4 : 8}
-                                shape={<CustomBar variant="sent" />}
-                            />
-                            <Bar
-                                dataKey={(data: any) => Number(props.receivedValueFn(data))}
-                                stackId="stack"
-                                fill={colors.GREEN}
-                                barSize={selectedRange.label === 'all' ? 4 : 8}
+                                dataKey={(data: any) => Number(props.receivedValueFn(data) ?? 0)}
+                                // stackId="stack"
+                                fill="url(#greenGradient)"
+                                // filter="url(#shadow)"
+                                barSize={selectedRange.label === 'all' ? 8 : 16}
                                 shape={<CustomBar variant="received" />}
+                                // xAxisId="primary"
                             />
-                        </BarChart>
+                            <Bar
+                                dataKey={(data: any) => Number(props.sentValueFn(data) ?? 0)}
+                                // stackId="stack"
+                                fill="url(#redGradient)"
+                                // filter="url(#shadow)"
+                                barSize={selectedRange.label === 'all' ? 8 : 16}
+                                shape={<CustomBar variant="sent" />}
+                                // xAxisId="primary"
+                            />
+                        </ComposedChart>
                     </CustomResponsiveContainer>
                 )}
             </Description>

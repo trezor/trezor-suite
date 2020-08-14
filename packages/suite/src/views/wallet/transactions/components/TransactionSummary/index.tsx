@@ -1,61 +1,39 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { colors, variables, Button } from '@trezor/components';
-import { Card, TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
-import messages from '@suite/support/messages';
-import InfoCard from './components/InfoCard';
-import BigNumber from 'bignumber.js';
-import { getUnixTime } from 'date-fns';
+import { getUnixTime, subWeeks } from 'date-fns';
+import { colors, variables, Button, Card } from '@trezor/components';
+import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
 import { calcTicks, calcTicksFromData } from '@suite-utils/date';
-import {
-    aggregateBalanceHistory,
-    sumFiatValueMap,
-    getMaxValueFromData,
-} from '@wallet-utils/graphUtils';
-import { GraphRange } from '@wallet-types/fiatRates';
+import { aggregateBalanceHistory, getMaxValueFromData } from '@wallet-utils/graphUtils';
+import { GraphData } from '@wallet-types/graph';
+import RangeSelector from '@suite-components/TransactionsGraph/components/RangeSelector';
 import { Props } from './Container';
-import { CARD_PADDING_SIZE } from '@suite-constants/layout';
-import { GraphData } from '@suite/reducers/wallet/graphReducer';
+import TransactionSummaryDropdown from './components/TransactionSummaryDropdown';
+import SummaryCards from './components/SummaryCards';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
 `;
 
-const ContentWrapper = styled(Card)`
+const ContentWrapper = styled.div`
+    display: flex;
     width: 100%;
-    margin-bottom: 20px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
-        flex-direction: column;
-    }
-`;
-
-const GraphWrapper = styled(HiddenPlaceholder)`
-    display: flex;
-    flex: 5 1 auto;
-    padding: ${CARD_PADDING_SIZE};
-    height: 240px;
-`;
-
-const InfoCardsWrapper = styled.div`
-    display: flex;
-    height: 240px;
     flex-direction: column;
-    flex: 0 1 auto;
-    border-left: 1px solid ${colors.BLACK92};
+`;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
-        border-left: none;
-    }
+const GraphWrapper = styled(Card)`
+    flex-direction: row;
+    display: flex;
+    padding: 14px 16px;
+    height: 320px;
 `;
 
 const Actions = styled.div`
     display: flex;
-    padding: 0px 16px;
-    margin-bottom: 8px;
-    opacity: 0.8;
+    margin-bottom: 20px;
     justify-content: space-between;
+    align-items: center;
 `;
 
 const ErrorMessage = styled.div`
@@ -71,16 +49,23 @@ const ErrorMessage = styled.div`
     text-align: center;
 `;
 
+const Divider = styled.div`
+    width: 100%;
+    height: 1px;
+    background: ${colors.NEUE_STROKE_GREY};
+    margin: 24px 0px;
+`;
+
 const TransactionSummary = (props: Props) => {
-    const { account, graph, getGraphDataForInterval, updateGraphData, setSelectedRange } = props;
+    const { account, graph, getGraphDataForInterval, updateGraphData } = props;
+
     const { selectedRange } = graph;
 
     const onRefresh = () => {
         updateGraphData([account]);
     };
 
-    const onSelectedRange = (range: GraphRange) => {
-        setSelectedRange(range);
+    const onSelectedRange = () => {
         updateGraphData([account], { newAccountsOnly: true });
     };
 
@@ -94,17 +79,6 @@ const TransactionSummary = (props: Props) => {
     const isLoading = intervalGraphData[0]?.isLoading ?? false;
 
     // aggregate values from shown graph data
-    const numOfTransactions = data.reduce((acc, d) => (acc += d.txs), 0);
-    const totalSentAmount = data.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0));
-    const totalReceivedAmount = data.reduce((acc, d) => acc.plus(d.received), new BigNumber(0));
-    const totalSentFiatMap: { [k: string]: string | undefined } = data.reduce(
-        (acc, d) => sumFiatValueMap(acc, d.sentFiat),
-        {},
-    );
-    const totalReceivedFiatMap: { [k: string]: string | undefined } = data.reduce(
-        (acc, d) => sumFiatValueMap(acc, d.receivedFiat),
-        {},
-    );
     const maxValue = getMaxValueFromData(
         data,
         'account',
@@ -117,34 +91,43 @@ const TransactionSummary = (props: Props) => {
             ? calcTicksFromData(data).map(getUnixTime)
             : calcTicks(selectedRange.weeks).map(getUnixTime);
 
+    // Interval shown in InfoCard below the graph
+    // For 'all' range pick first and last datapoint's timestamps
+    // For other intervals do same date calculation as in calcTicks func
+    const dataInterval: [number, number] =
+        selectedRange.label === 'all'
+            ? [
+                  intervalGraphData[0]?.data[0]?.time,
+                  intervalGraphData[0]?.data[intervalGraphData[0].data.length - 1]?.time,
+              ]
+            : [getUnixTime(subWeeks(new Date(), selectedRange.weeks)), getUnixTime(new Date())];
+
     return (
         <Wrapper>
             <Actions>
-                <Button
-                    variant="tertiary"
-                    icon={isGraphHidden ? 'ARROW_DOWN' : 'ARROW_UP'}
-                    onClick={() => {
-                        setIsGraphHidden(!isGraphHidden);
-                    }}
-                >
-                    {isGraphHidden ? 'Show graph' : 'Hide graph'}
-                </Button>
-                {/* TODO: export transactions to a file */}
+                <RangeSelector onSelectedRange={onSelectedRange} />
+                <TransactionSummaryDropdown
+                    isGraphHidden={isGraphHidden}
+                    setIsGraphHidden={setIsGraphHidden}
+                    onRefresh={onRefresh}
+                />
             </Actions>
             {!isGraphHidden && (
-                <ContentWrapper noPadding>
-                    {error && (
-                        <ErrorMessage>
-                            <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
-                            <Button onClick={onRefresh} icon="REFRESH" variant="tertiary">
-                                <Translation id="TR_RETRY" />
-                            </Button>
-                        </ErrorMessage>
-                    )}
-                    {!error && (
-                        <>
-                            <GraphWrapper intensity={5}>
+                <ContentWrapper>
+                    {error ? (
+                        <GraphWrapper>
+                            <ErrorMessage>
+                                <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
+                                <Button onClick={onRefresh} icon="REFRESH" variant="tertiary">
+                                    <Translation id="TR_RETRY" />
+                                </Button>
+                            </ErrorMessage>
+                        </GraphWrapper>
+                    ) : (
+                        <HiddenPlaceholder intensity={7}>
+                            <GraphWrapper>
                                 <TransactionsGraph
+                                    hideToolbar
                                     variant="one-asset"
                                     xTicks={xTicks}
                                     account={account}
@@ -154,51 +137,25 @@ const TransactionSummary = (props: Props) => {
                                     localCurrency={props.localCurrency}
                                     onRefresh={onRefresh}
                                     selectedRange={selectedRange}
-                                    onSelectedRange={onSelectedRange}
                                     receivedValueFn={data => data.received}
                                     sentValueFn={data => data.sent}
+                                    balanceValueFn={data => data.balance}
                                 />
                             </GraphWrapper>
-                            <InfoCardsWrapper>
-                                <>
-                                    <InfoCard
-                                        title={<Translation {...messages.TR_INCOMING} />}
-                                        value={totalReceivedAmount?.toFixed()}
-                                        fiatValue={totalReceivedFiatMap[props.localCurrency]}
-                                        localCurrency={props.localCurrency}
-                                        symbol={account.symbol}
-                                        isLoading={isLoading}
-                                        isNumeric
-                                    />
-                                    <InfoCard
-                                        title={<Translation {...messages.TR_OUTGOING} />}
-                                        value={totalSentAmount?.negated().toFixed()}
-                                        fiatValue={totalSentFiatMap[props.localCurrency]}
-                                        localCurrency={props.localCurrency}
-                                        symbol={account.symbol}
-                                        isLoading={isLoading}
-                                        isNumeric
-                                    />
-                                    <InfoCard
-                                        title={
-                                            <Translation {...messages.TR_NUMBER_OF_TRANSACTIONS} />
-                                        }
-                                        isLoading={isLoading}
-                                        value={
-                                            <HiddenPlaceholder>
-                                                <Translation
-                                                    {...messages.TR_N_TRANSACTIONS}
-                                                    values={{ value: numOfTransactions }}
-                                                />
-                                            </HiddenPlaceholder>
-                                        }
-                                    />
-                                </>
-                            </InfoCardsWrapper>
-                        </>
+                        </HiddenPlaceholder>
                     )}
+
+                    <SummaryCards
+                        selectedRange={selectedRange}
+                        dataInterval={dataInterval}
+                        data={data}
+                        localCurrency={props.localCurrency}
+                        symbol={account.symbol}
+                        isLoading={isLoading}
+                    />
                 </ContentWrapper>
             )}
+            <Divider />
         </Wrapper>
     );
 };

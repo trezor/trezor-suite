@@ -1,17 +1,16 @@
 import {
     formatDistance,
-    isBefore,
     subWeeks,
     fromUnixTime,
     getUnixTime,
     startOfDay,
     startOfMonth,
-    subDays,
-    subMonths,
     differenceInCalendarMonths,
+    eachQuarterOfInterval,
+    eachMonthOfInterval,
+    eachDayOfInterval,
 } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
-import { GraphTicksInterval } from '@wallet-types/fiatRates';
 
 export const formatDuration = (seconds: number) =>
     formatDistance(0, seconds * 1000, { includeSeconds: true });
@@ -31,57 +30,20 @@ export const getDateWithTimeZone = (date: number, timeZone?: string) => {
     }
 };
 
-export const getTicksBetweenTimestamps = (
-    from: Date,
-    to: Date,
-    interval: '3-months' | 'month' | 'day' | '2-day',
-) => {
-    const ticks = [];
-    const fromDate = from;
-    let toDate = to;
-
-    if (isBefore(toDate, fromDate)) {
-        return [];
-    }
-
-    toDate = startOfDay(toDate);
-    while (isBefore(fromDate, toDate)) {
-        ticks.push(toDate);
-        if (interval === '3-months') {
-            toDate = startOfMonth(toDate);
-            toDate = subMonths(toDate, 3);
-        }
-        if (interval === 'month') {
-            // set date to 1 in case of monthly timestamps
-            toDate = startOfMonth(toDate);
-            toDate = subMonths(toDate, 1);
-        }
-        if (interval === 'day') {
-            toDate = subDays(toDate, 1);
-        }
-        if (interval === '2-day') {
-            toDate = subDays(toDate, 2);
-        }
-    }
-    return ticks.reverse();
-};
-
-export const calcTicks = (weeks: number, options?: { skipDays?: boolean }) => {
+export const calcTicks = (weeks: number) => {
     const startDate = subWeeks(new Date(), weeks);
     const endDate = new Date();
-    let interval: GraphTicksInterval = 'month';
+    let timestamps = [];
 
-    if (weeks < 52) {
-        interval = 'day';
-    }
-    if (weeks === 4) {
-        interval = options?.skipDays ? '2-day' : 'day';
-    }
-    if (weeks === 1) {
-        interval = 'day';
+    if (weeks === 1 || weeks === 4) {
+        timestamps = eachDayOfInterval({ start: startDate, end: endDate });
+    } else if (weeks < 52) {
+        timestamps = eachMonthOfInterval({ start: startDate, end: endDate });
+    } else {
+        timestamps = eachMonthOfInterval({ start: startDate, end: endDate });
     }
 
-    return getTicksBetweenTimestamps(startDate, endDate, interval);
+    return timestamps;
 };
 
 export const calcTicksFromData = (data: { time: number }[]) => {
@@ -96,10 +58,33 @@ export const calcTicksFromData = (data: { time: number }[]) => {
     const startUnix = fromUnixTime(startDate);
     const endUnix = fromUnixTime(endDate);
 
-    // less than 6 months between first and last timestamps => we can fit monthly ticks just fine
-    const interval = differenceInCalendarMonths(endUnix, startUnix) <= 6 ? 'month' : '3-months';
-    return getTicksBetweenTimestamps(startUnix, endUnix, interval);
+    // TODO: input data are processed by aggregateBalanceHistory which aggregates the data to monthly bins, so we can't get sub month interval here
+    // let interval = '3-months';
+    // const daysDiff = differenceInCalendarDays(endUnix, startUnix);
+    // if (daysDiff <= 14) {
+    //     interval = 'day';
+    // } else if (daysDiff <= 30) {
+    //     interval = '2-day';
+    // } else if (daysDiff <= 365 * 2) {
+    //     // less than 24 months between first and last timestamps => we can fit monthly ticks just fine
+    //     interval = 'month';
+    // }
+
+    // less than 16 months between first and last timestamps => we can fit monthly ticks just fine
+    const interval = differenceInCalendarMonths(endUnix, startUnix) <= 16 ? 'month' : '3-months';
+
+    if (interval === 'month') {
+        // 1 month interval
+        const timestamps = eachMonthOfInterval({ start: startUnix, end: endUnix });
+        return timestamps;
+    }
+
+    // 3 months interval
+    const timestamps = eachQuarterOfInterval({ start: startUnix, end: endUnix });
+
+    return timestamps;
 };
+
 /**
  * Returns array of timestamps between `from` and `to` split by `interval`
  *

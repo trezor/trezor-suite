@@ -45,6 +45,7 @@ const DeviceStatus = styled.span<{ color: string }>`
 const DeviceActions = styled.div`
     display: flex;
     align-items: center;
+    margin-left: 20px;
 `;
 
 const Col = styled.div<{ grow?: number }>`
@@ -70,6 +71,7 @@ const WalletsTooltips = styled.div`
 const WalletsCount = styled(ColHeader)`
     flex: 1;
     justify-content: flex-start;
+    whitespace: no-wrap;
 `;
 
 const InstancesWrapper = styled.div`

@@ -4,6 +4,7 @@ import { Network } from '@wallet-types';
 import { CoinLogo, Icon, variables, colors } from '@trezor/components';
 import { FiatValue, Ticker, Translation } from '@suite-components';
 import { CoinBalance } from '@wallet-components';
+import { isTestnet } from '@wallet-utils/accountUtils';
 
 const LogoWrapper = styled.div`
     padding-right: 12px;
@@ -51,7 +52,7 @@ const CoinNameWrapper = styled(Col)`
     text-overflow: ellipsis;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        grid-column: 1 / 3;
+        grid-column: 1 / 4;
         border-bottom: none;
     }
 `;
@@ -131,7 +132,7 @@ const Asset = React.memo(({ network, failed, cryptoValue, isLastRow }: Props) =>
                 </FailedCol>
             )}
             <ExchangeRateWrapper isLastRow={isLastRow}>
-                <Ticker symbol={symbol} />
+                {!isTestnet(symbol) && <Ticker symbol={symbol} />}
             </ExchangeRateWrapper>
         </>
     );

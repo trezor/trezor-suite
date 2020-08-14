@@ -16,6 +16,8 @@ export default {
     ],
     currencies: [
         'usd',
+        'eur',
+        'gbp',
         'aed',
         'ars',
         'aud',
@@ -29,8 +31,6 @@ export default {
         'cny',
         'czk',
         'dkk',
-        'eur',
-        'gbp',
         'hkd',
         'huf',
         'idr',

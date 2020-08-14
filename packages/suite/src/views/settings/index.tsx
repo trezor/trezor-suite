@@ -10,7 +10,7 @@ import {
     TextColumn,
 } from '@suite-components/Settings';
 import { FIAT, LANGUAGES } from '@suite-config';
-import { useAnalytics, useDevice } from '@suite-hooks';
+import { useAnalytics } from '@suite-hooks';
 import { Button, Tooltip } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
@@ -41,7 +41,6 @@ const Settings = ({
     clearStores,
     goto,
 }: Props) => {
-    const { isLocked } = useDevice();
     const analytics = useAnalytics();
 
     return (
@@ -52,6 +51,7 @@ const Settings = ({
                     <ActionColumn>
                         <ActionSelect
                             variant="small"
+                            noTopLabel
                             value={{
                                 value: language,
                                 label: LANGUAGES.find(l => l.code === language)!.name,
@@ -78,6 +78,7 @@ const Settings = ({
                     <TextColumn title={<Translation id="TR_PRIMARY_FIAT" />} />
                     <ActionColumn>
                         <ActionSelect
+                            noTopLabel
                             variant="small"
                             onChange={(option: { value: string; label: string }) => {
                                 setLocalCurrency(option.value);
@@ -90,7 +91,6 @@ const Settings = ({
                             }}
                             value={buildCurrencyOption(localCurrency)}
                             options={FIAT.currencies.map(c => buildCurrencyOption(c))}
-                            isDisabled={isLocked()}
                             data-test="@settings/fiat-select"
                         />
                     </ActionColumn>

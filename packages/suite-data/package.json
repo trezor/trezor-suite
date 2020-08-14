@@ -1,6 +1,6 @@
 {
     "name": "@trezor/suite-data",
-    "version": "20.7.1-beta",
+    "version": "20.8.1-beta",
     "author": "Trezor <info@trezor.io>",
     "keywords": [
         "Trezor",
@@ -23,6 +23,6 @@
         "ts-node": "^8.10.2",
         "webpack": "4.43.0",
         "webpack-cli": "3.3.12",
-        "worker-loader": "2.0.0"
+        "worker-loader": "3.0.1"
     }
 }

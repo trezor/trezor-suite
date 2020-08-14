@@ -4,9 +4,9 @@ import { SendContext } from '@suite/hooks/wallet/useSendContext';
 import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
 import { SuiteState } from '@suite-reducers/suiteReducer';
 import { State as AnalyticsState } from '@suite-reducers/analyticsReducer';
-import { GraphData } from '@wallet-reducers/graphReducer';
 import { AcquiredDevice } from '@suite-types';
 import { Account, Discovery, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
+import { GraphData } from '@wallet-types/graph';
 import { migrate } from './migrations';
 
 const VERSION = 14;

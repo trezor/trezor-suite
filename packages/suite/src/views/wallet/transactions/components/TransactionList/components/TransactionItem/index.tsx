@@ -1,319 +1,221 @@
+/* eslint-disable react/no-array-index-key */
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FormattedDate } from 'react-intl';
-import { AnimatePresence, motion } from 'framer-motion';
-import {
-    Translation,
-    HiddenPlaceholder,
-    FiatValue,
-    Badge,
-    AddressLabeling,
-} from '@suite-components';
-import { variables, colors, Button, Link } from '@trezor/components';
+import { AnimatePresence } from 'framer-motion';
+import { Translation, HiddenPlaceholder } from '@suite-components';
+import { variables, colors, Button } from '@trezor/components';
 import { isTestnet } from '@wallet-utils/accountUtils';
-import { ArrayElement } from '@suite/types/utils';
-
-import { getDateWithTimeZone } from '@suite-utils/date';
 import TransactionTypeIcon from './components/TransactionTypeIcon';
-import { Props } from './Container';
+import TransactionHeading from './components/TransactionHeading';
+import { isTxUnknown } from '@wallet-utils/transactionUtils';
+import { Target, TokenTransfer, FeeRow } from './components/Target';
+import TransactionTimestamp from './components/TransactionTimestamp';
+import { WalletAccountTransaction } from '@wallet-types';
 
-const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
-    padding: 8px 0px; /* row padding */
-    display: block;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-`;
-
-const ColDate = styled(Link)`
-    font-variant-numeric: tabular-nums;
-    grid-column: date;
-    color: ${colors.BLACK50};
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.REGULAR};
-`;
-
-const ColType = styled.div`
-    grid-column: type;
-    padding: 0px 7px 0 12px;
-`;
-
-const Addr = styled(motion.div)`
-    grid-column: target;
-    color: ${colors.BLACK0};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    overflow: hidden;
-    white-space: nowrap;
-    padding-left: 5px;
-    text-overflow: ellipsis;
-    font-variant-numeric: tabular-nums slashed-zero;
-    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        grid-column: target / fiat;
-    }
-`;
-
-const Balance = styled(motion.div)<{ partial?: boolean; secondary?: boolean }>`
-    grid-column: amount;
-    font-size: ${props => (props.secondary ? variables.FONT_SIZE.TINY : variables.FONT_SIZE.SMALL)};
-    color: ${props => (props.partial || props.secondary ? colors.BLACK50 : colors.BLACK0)};
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    text-transform: uppercase;
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-
-    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        text-align: left;
-    }
-`;
-
-const ColFiat = styled(motion.div)`
-    grid-column: fiat;
-    padding-left: 16px;
+const Wrapper = styled.div`
     display: flex;
-    justify-content: flex-end;
+    flex-direction: row;
+    padding: 12px 0px;
+
+    & + & {
+        border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+    }
+`;
+
+const TxTypeIconWrapper = styled.div`
+    display: flex;
+    margin-right: 24px;
+    margin-top: 8px;
+    flex: 0;
+`;
+
+const Content = styled.div`
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    flex-direction: column;
+    font-variant-numeric: tabular-nums;
+`;
+
+const Description = styled(HiddenPlaceholder)`
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    line-height: 1.5;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+    white-space: nowrap;
+`;
+
+const NextRow = styled.div`
+    display: flex;
+    flex: 1;
+    align-items: flex-start;
+`;
+
+const TargetsWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
 `;
 
 const ExpandButton = styled(Button)`
-    padding: 8px 0px;
-    grid-column: target;
     justify-content: start;
-    && {
-        color: ${colors.BLACK0};
-        font-weight: ${variables.FONT_WEIGHT.REGULAR};
-    }
-    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        grid-column: target;
-    }
+    align-self: flex-start;
+`;
+
+const StyledFeeRow = styled(FeeRow)`
+    margin-top: 20px;
 `;
 
 const DEFAULT_LIMIT = 3;
 
-const ANIMATION = {
-    variants: {
-        initial: {
-            overflow: 'hidden',
-            height: 0,
-        },
-        visible: {
-            height: 'auto',
-        },
-    },
-    initial: 'initial',
-    animate: 'visible',
-    exit: 'initial',
-    transition: { duration: 0.24, ease: 'easeInOut' },
-};
+interface Props {
+    transaction: WalletAccountTransaction;
+    isPending: boolean;
+}
 
-export default React.memo((props: Props) => {
+const TransactionItem = React.memo((props: Props) => {
     const { transaction } = props;
-    const { symbol, type, blockTime, blockHeight, targets, tokens } = transaction;
+    const { type, targets, tokens } = transaction;
     const [limit, setLimit] = useState(0);
     const isTokenTransaction = tokens.length > 0;
+    const isUnknown = isTxUnknown(transaction);
     const isExpandable = isTokenTransaction
         ? tokens.length - DEFAULT_LIMIT > 0
         : targets.length - DEFAULT_LIMIT > 0;
     const toExpand = isTokenTransaction
         ? tokens.length - DEFAULT_LIMIT - limit
         : targets.length - DEFAULT_LIMIT - limit;
-    const useFiatValues = !isTestnet(symbol);
-    // blockbook cannot parse some txs
-    // eg. tx with eth smart contract that creates a new token has no valid target
-    const isUnknown =
-        (!isTokenTransaction && !targets.find(t => t.addresses)) || type === 'unknown';
-    const operation =
-        (type === 'sent' || type === 'self' ? '-' : null) || (type === 'recv' ? '+' : null);
-    let key = 0;
+    const useFiatValues = !isTestnet(transaction.symbol);
+    const hasSingleTargetOrTransfer =
+        !isUnknown &&
+        ((!isTokenTransaction && targets.length === 1) ||
+            (isTokenTransaction && tokens.length === 1));
+    const showFeeRow =
+        !isUnknown && isTokenTransaction && type !== 'recv' && transaction.fee !== '0';
 
-    const buildTargetRow = (
-        target: ArrayElement<Props['transaction']['targets']>,
-        useAnimation = false,
-    ) => {
-        const isLocalTarget = (type === 'sent' || type === 'self') && target.isAccountTarget;
-        const addr = isLocalTarget ? (
-            <Translation id="TR_SENT_TO_SELF" />
-        ) : (
-            target.addresses?.map((a, i) =>
-                type === 'sent' ? (
-                    <AddressLabeling key={`${key}${i}`} address={a} />
-                ) : (
-                    <span>{a}</span>
-                ),
-            )
-        );
-
-        const hasAmount =
-            !isLocalTarget && typeof target.amount === 'string' && target.amount !== '0';
-        const targetAmount =
-            (hasAmount ? target.amount : null) ||
-            (target === targets[0] &&
-            typeof transaction.amount === 'string' &&
-            transaction.amount !== '0'
-                ? transaction.amount
-                : null);
-        const animation = useAnimation ? ANIMATION : {};
-        key++;
-
-        return (
-            <React.Fragment key={key}>
-                <Addr {...animation}>
-                    <StyledHiddenPlaceholder>{addr}</StyledHiddenPlaceholder>
-                </Addr>
-                {targetAmount && (
-                    <Balance {...animation}>
-                        <StyledHiddenPlaceholder>
-                            {operation}
-                            {targetAmount} {symbol}
-                        </StyledHiddenPlaceholder>
-                    </Balance>
-                )}
-                {useFiatValues && targetAmount && (
-                    <ColFiat {...animation}>
-                        <StyledHiddenPlaceholder>
-                            <FiatValue
-                                amount={targetAmount}
-                                symbol={symbol}
-                                source={transaction.rates}
-                                badge={{ color: 'blue', size: 'small' }}
-                                useCustomSource
-                            />
-                        </StyledHiddenPlaceholder>
-                    </ColFiat>
-                )}
-            </React.Fragment>
-        );
-    };
-
-    const buildTokenRow = (
-        transfer: ArrayElement<Props['transaction']['tokens']>,
-        useAnimation = false,
-    ) => {
-        let addr: JSX.Element | string | typeof undefined = transfer.to;
-        if (type === 'self') addr = <Translation id="TR_SENT_TO_SELF" />;
-        if (type === 'sent') addr = <AddressLabeling address={transfer.to} />;
-        const animation = useAnimation ? ANIMATION : {};
-        key++;
-        return (
-            <React.Fragment key={key}>
-                <Addr {...animation}>
-                    <StyledHiddenPlaceholder>{addr}</StyledHiddenPlaceholder>
-                </Addr>
-                <Balance {...animation}>
-                    <StyledHiddenPlaceholder>
-                        {operation}
-                        {transfer.amount} {transfer.symbol}
-                    </StyledHiddenPlaceholder>
-                </Balance>
-                {/* TODO: token fiat rates missing? */}
-                {/* {useFiatValues && (
-                    <ColFiat {...animation}>
-                        <StyledHiddenPlaceholder>
-                            <FiatValue amount={transfer.amount} symbol={transfer.symbol}>
-                                {({ value }) => value && <Badge isSmall>{value}</Badge>}
-                            </FiatValue>
-                        </StyledHiddenPlaceholder>
-                    </ColFiat>
-                )} */}
-            </React.Fragment>
-        );
-    };
-
+    // we are using slightly different layout for 1 targets txs to better match the design
+    // the only difference is that crypto amount is in the same row as tx heading/description
+    // fiat amount is in the second row along with address
+    // multiple targets txs still use more simple layout
     return (
-        <>
-            <ColDate
-                onClick={() => {
-                    props.openModal({
-                        type: 'transaction-detail',
-                        tx: transaction,
-                    });
-                }}
-            >
-                {blockHeight !== 0 && blockTime && blockTime > 0 && (
-                    <FormattedDate
-                        value={getDateWithTimeZone(blockTime * 1000)}
-                        hour="numeric"
-                        minute="numeric"
+        <Wrapper>
+            <TxTypeIconWrapper>
+                <TransactionTypeIcon type={transaction.type} isPending={props.isPending} />
+            </TxTypeIconWrapper>
+
+            <Content>
+                <Description>
+                    <TransactionHeading
+                        transaction={transaction}
+                        isPending={props.isPending}
+                        useSingleRowLayout={hasSingleTargetOrTransfer}
                     />
-                )}
-            </ColDate>
-            <ColType>
-                <TransactionTypeIcon type={transaction.type} />
-            </ColType>
+                </Description>
+                <NextRow>
+                    <TransactionTimestamp transaction={transaction} />
+                    <TargetsWrapper>
+                        {!isUnknown && !isTokenTransaction && (
+                            <>
+                                {targets.slice(0, DEFAULT_LIMIT).map((t, i) => (
+                                    <Target
+                                        key={i}
+                                        target={t}
+                                        transaction={transaction}
+                                        singleRowLayout={hasSingleTargetOrTransfer}
+                                        isFirst={i === 0}
+                                        isLast={
+                                            targets.length > DEFAULT_LIMIT
+                                                ? i === DEFAULT_LIMIT - 1
+                                                : i === targets.length - 1
+                                        }
+                                    />
+                                ))}
+                                <AnimatePresence initial={false}>
+                                    {limit > 0 &&
+                                        targets
+                                            .slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit)
+                                            .map((t, i) => (
+                                                <Target
+                                                    key={i}
+                                                    target={t}
+                                                    transaction={transaction}
+                                                    useAnimation
+                                                    isLast={
+                                                        targets.length > limit + DEFAULT_LIMIT
+                                                            ? i === limit - 1
+                                                            : i ===
+                                                              targets.length - DEFAULT_LIMIT - 1
+                                                    }
+                                                />
+                                            ))}
+                                </AnimatePresence>
+                            </>
+                        )}
 
-            {isUnknown && (
-                <Addr>
-                    <Translation id="TR_UNKNOWN_TRANSACTION" />
-                </Addr>
-            )}
+                        {!isUnknown && isTokenTransaction && (
+                            <>
+                                {tokens.slice(0, DEFAULT_LIMIT).map((t, i) => (
+                                    <TokenTransfer
+                                        key={i}
+                                        transfer={t}
+                                        transaction={transaction}
+                                        singleRowLayout={hasSingleTargetOrTransfer}
+                                        isFirst={i === 0}
+                                        isLast={i === tokens.length - 1}
+                                    />
+                                ))}
+                                <AnimatePresence initial={false}>
+                                    {limit > 0 &&
+                                        tokens
+                                            .slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit)
+                                            .map((t, i) => (
+                                                <TokenTransfer
+                                                    key={i}
+                                                    transfer={t}
+                                                    transaction={transaction}
+                                                    useAnimation
+                                                    isLast={i === tokens.length - 1}
+                                                />
+                                            ))}
+                                </AnimatePresence>
+                            </>
+                        )}
 
-            {!isUnknown && !isTokenTransaction && (
-                <>
-                    {targets.slice(0, DEFAULT_LIMIT).map(t => buildTargetRow(t))}
-                    <AnimatePresence initial={false}>
-                        {limit > 0 &&
-                            targets
-                                .slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit)
-                                .map(t => buildTargetRow(t, true))}
-                    </AnimatePresence>
-                </>
-            )}
+                        {showFeeRow && (
+                            <StyledFeeRow
+                                transaction={transaction}
+                                useFiatValues={useFiatValues}
+                                isFirst
+                                isLast
+                            />
+                        )}
 
-            {!isUnknown && isTokenTransaction && (
-                <>
-                    {tokens.slice(0, DEFAULT_LIMIT).map(t => buildTokenRow(t))}
-                    <AnimatePresence initial={false}>
-                        {limit > 0 &&
-                            tokens
-                                .slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit)
-                                .map(t => buildTokenRow(t, true))}
-                    </AnimatePresence>
-                </>
-            )}
-
-            {isExpandable && (
-                <ExpandButton
-                    variant="tertiary"
-                    icon={toExpand > 0 ? 'ARROW_DOWN' : 'ARROW_UP'}
-                    alignIcon="right"
-                    onClick={e => {
-                        setLimit(toExpand > 0 ? limit + 20 : 0);
-                        e.preventDefault();
-                        e.stopPropagation();
-                    }}
-                >
-                    <Translation
-                        id={toExpand > 0 ? 'TR_SHOW_MORE_ADDRESSES' : 'TR_SHOW_LESS'}
-                        values={{ count: toExpand }}
-                    />
-                </ExpandButton>
-            )}
-
-            {!isUnknown && isTokenTransaction && type !== 'recv' && transaction.fee !== '0' && (
-                <>
-                    <Addr>
-                        <Translation id="TR_FEE" />
-                    </Addr>
-                    <Balance>
-                        <StyledHiddenPlaceholder>
-                            -{transaction.fee} {symbol}
-                        </StyledHiddenPlaceholder>
-                    </Balance>
-                    {useFiatValues && (
-                        <ColFiat>
-                            <StyledHiddenPlaceholder>
-                                <FiatValue
-                                    amount={transaction.fee}
-                                    symbol={symbol}
-                                    source={transaction.rates}
-                                    useCustomSource
-                                >
-                                    {({ value }) => value && <Badge isSmall>{value}</Badge>}
-                                </FiatValue>
-                            </StyledHiddenPlaceholder>
-                        </ColFiat>
-                    )}
-                </>
-            )}
-        </>
+                        {isExpandable && (
+                            <ExpandButton
+                                variant="tertiary"
+                                icon={toExpand > 0 ? 'ARROW_DOWN' : 'ARROW_UP'}
+                                alignIcon="right"
+                                onClick={e => {
+                                    setLimit(toExpand > 0 ? limit + 20 : 0);
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                }}
+                            >
+                                <Translation
+                                    id={toExpand > 0 ? 'TR_SHOW_MORE_ADDRESSES' : 'TR_SHOW_LESS'}
+                                    values={{ count: toExpand }}
+                                />
+                            </ExpandButton>
+                        )}
+                    </TargetsWrapper>
+                </NextRow>
+            </Content>
+        </Wrapper>
     );
 });
+
+export default TransactionItem;

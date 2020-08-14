@@ -1464,21 +1464,109 @@
             "oneofs": {}
         },
         {
-            "name": "CardanoGetAddress",
+            "name": "CardanoBlockchainPointerType",
             "fields": [
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "block_index",
+                    "id": 1
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "tx_index",
+                    "id": 2
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "certificate_index",
+                    "id": 3
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "CardanoAddressParametersType",
+            "fields": [
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "CardanoAddressType",
+                    "name": "address_type",
+                    "id": 1
+                },
                 {
                     "rule": "repeated",
                     "options": {},
                     "type": "uint32",
                     "name": "address_n",
-                    "id": 1
+                    "id": 2
                 },
+                {
+                    "rule": "repeated",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "address_n_staking",
+                    "id": 3
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "staking_key_hash",
+                    "id": 4
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "CardanoBlockchainPointerType",
+                    "name": "certificate_pointer",
+                    "id": 5
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "CardanoGetAddress",
+            "fields": [
                 {
                     "rule": "optional",
                     "options": {},
                     "type": "bool",
                     "name": "show_display",
                     "id": 2
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "protocol_magic",
+                    "id": 3
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "network_id",
+                    "id": 4
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "CardanoAddressParametersType",
+                    "name": "address_parameters",
+                    "id": 5
                 }
             ],
             "enums": [],
@@ -1569,15 +1657,50 @@
                     "rule": "optional",
                     "options": {},
                     "type": "uint32",
-                    "name": "transactions_count",
-                    "id": 3
+                    "name": "protocol_magic",
+                    "id": 5
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint64",
+                    "name": "fee",
+                    "id": 6
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint64",
+                    "name": "ttl",
+                    "id": 7
                 },
                 {
                     "rule": "optional",
                     "options": {},
                     "type": "uint32",
-                    "name": "protocol_magic",
-                    "id": 5
+                    "name": "network_id",
+                    "id": 8
+                },
+                {
+                    "rule": "repeated",
+                    "options": {},
+                    "type": "CardanoTxCertificateType",
+                    "name": "certificates",
+                    "id": 9
+                },
+                {
+                    "rule": "repeated",
+                    "options": {},
+                    "type": "CardanoTxWithdrawalType",
+                    "name": "withdrawals",
+                    "id": 10
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "metadata",
+                    "id": 11
                 }
             ],
             "enums": [],
@@ -1605,13 +1728,6 @@
                             "type": "uint32",
                             "name": "prev_index",
                             "id": 3
-                        },
-                        {
-                            "rule": "optional",
-                            "options": {},
-                            "type": "uint32",
-                            "name": "type",
-                            "id": 4
                         }
                     ],
                     "enums": [],
@@ -1630,18 +1746,71 @@
                             "id": 1
                         },
                         {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "uint64",
+                            "name": "amount",
+                            "id": 3
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "CardanoAddressParametersType",
+                            "name": "address_parameters",
+                            "id": 4
+                        }
+                    ],
+                    "enums": [],
+                    "messages": [],
+                    "options": {},
+                    "oneofs": {}
+                },
+                {
+                    "name": "CardanoTxCertificateType",
+                    "fields": [
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "CardanoCertificateType",
+                            "name": "type",
+                            "id": 1
+                        },
+                        {
                             "rule": "repeated",
                             "options": {},
                             "type": "uint32",
-                            "name": "address_n",
+                            "name": "path",
                             "id": 2
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "bytes",
+                            "name": "pool",
+                            "id": 3
+                        }
+                    ],
+                    "enums": [],
+                    "messages": [],
+                    "options": {},
+                    "oneofs": {}
+                },
+                {
+                    "name": "CardanoTxWithdrawalType",
+                    "fields": [
+                        {
+                            "rule": "repeated",
+                            "options": {},
+                            "type": "uint32",
+                            "name": "path",
+                            "id": 1
                         },
                         {
                             "rule": "optional",
                             "options": {},
                             "type": "uint64",
                             "name": "amount",
-                            "id": 3
+                            "id": 2
                         }
                     ],
                     "enums": [],
@@ -1650,52 +1819,6 @@
                     "oneofs": {}
                 }
             ],
-            "options": {},
-            "oneofs": {}
-        },
-        {
-            "name": "CardanoTxRequest",
-            "fields": [
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "uint32",
-                    "name": "tx_index",
-                    "id": 1
-                },
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "bytes",
-                    "name": "tx_hash",
-                    "id": 2
-                },
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "bytes",
-                    "name": "tx_body",
-                    "id": 3
-                }
-            ],
-            "enums": [],
-            "messages": [],
-            "options": {},
-            "oneofs": {}
-        },
-        {
-            "name": "CardanoTxAck",
-            "fields": [
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "bytes",
-                    "name": "transaction",
-                    "id": 1
-                }
-            ],
-            "enums": [],
-            "messages": [],
             "options": {},
             "oneofs": {}
         },
@@ -1713,7 +1836,7 @@
                     "rule": "optional",
                     "options": {},
                     "type": "bytes",
-                    "name": "tx_body",
+                    "name": "serialized_tx",
                     "id": 2
                 }
             ],
@@ -2631,10 +2754,6 @@
                         {
                             "name": "MONO",
                             "id": 2
-                        },
-                        {
-                            "name": "MONO_BOLD",
-                            "id": 3
                         },
                         {
                             "name": "BR",
@@ -5005,9 +5124,31 @@
                     "type": "bool",
                     "name": "passphrase_always_on_device",
                     "id": 8
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "SafetyCheckLevel",
+                    "name": "safety_checks",
+                    "id": 9
                 }
             ],
-            "enums": [],
+            "enums": [
+                {
+                    "name": "SafetyCheckLevel",
+                    "values": [
+                        {
+                            "name": "Strict",
+                            "id": 0
+                        },
+                        {
+                            "name": "Prompt",
+                            "id": 1
+                        }
+                    ],
+                    "options": {}
+                }
+            ],
             "messages": [],
             "options": {},
             "oneofs": {}
@@ -9443,6 +9584,74 @@
             "options": {}
         },
         {
+            "name": "CardanoAddressType",
+            "values": [
+                {
+                    "name": "BASE",
+                    "id": 0
+                },
+                {
+                    "name": "BASE_SCRIPT_KEY",
+                    "id": 1
+                },
+                {
+                    "name": "BASE_KEY_SCRIPT",
+                    "id": 2
+                },
+                {
+                    "name": "BASE_SCRIPT_SCRIPT",
+                    "id": 3
+                },
+                {
+                    "name": "POINTER",
+                    "id": 4
+                },
+                {
+                    "name": "POINTER_SCRIPT",
+                    "id": 5
+                },
+                {
+                    "name": "ENTERPRISE",
+                    "id": 6
+                },
+                {
+                    "name": "ENTERPRISE_SCRIPT",
+                    "id": 7
+                },
+                {
+                    "name": "BYRON",
+                    "id": 8
+                },
+                {
+                    "name": "REWARD",
+                    "id": 14
+                },
+                {
+                    "name": "REWARD_SCRIPT",
+                    "id": 15
+                }
+            ],
+            "options": {}
+        },
+        {
+            "name": "CardanoCertificateType",
+            "values": [
+                {
+                    "name": "STAKE_REGISTRATION",
+                    "id": 0
+                },
+                {
+                    "name": "STAKE_DEREGISTRATION",
+                    "id": 1
+                },
+                {
+                    "name": "STAKE_DELEGATION",
+                    "id": 2
+                }
+            ],
+            "options": {}
+        },
+        {
             "name": "BackupType",
             "values": [
                 {
@@ -9972,10 +10181,6 @@
                     "id": 303
                 },
                 {
-                    "name": "MessageType_CardanoTxRequest",
-                    "id": 304
-                },
-                {
                     "name": "MessageType_CardanoGetPublicKey",
                     "id": 305
                 },
@@ -9990,10 +10195,6 @@
                 {
                     "name": "MessageType_CardanoAddress",
                     "id": 308
-                },
-                {
-                    "name": "MessageType_CardanoTxAck",
-                    "id": 309
                 },
                 {
                     "name": "MessageType_CardanoSignedTx",

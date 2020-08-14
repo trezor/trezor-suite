@@ -2,26 +2,28 @@ import React from 'react';
 
 interface CustomBarProps {
     variant: 'sent' | 'received';
+    filter?: string;
     [key: string]: any;
 }
 
 const CustomBar = (props: CustomBarProps) => {
-    const { fill, x, y, width, height, payload, variant } = props;
+    const { fill, filter, x, y, width, height } = props;
     let forcedHeightChange = false;
     let minHeight = height;
-    if (
-        (variant === 'sent' && Math.abs(height) < 1 && payload.sent !== '0') ||
-        (variant === 'received' && Math.abs(height) < 1 && payload.received !== '0')
-    ) {
+    if (Math.abs(height) < 1 && props.value !== 0) {
         // make sure small amounts are visible by forcing minHeight of 2 if abs(amount) < 1
-        minHeight = variant === 'sent' ? -2 : 2;
+        // minHeight = variant === 'sent' ? -2 : 2; // useful if we want to show sent bars below the y = 0
+        minHeight = 2;
         forcedHeightChange = true;
     }
 
     const diffPosY = forcedHeightChange ? Math.abs(minHeight) - Math.abs(height) : 0;
+
+    // TODO: https://medium.com/@dennismphil/one-side-rounded-rectangle-using-svg-fb31cf318d90
     return (
         <rect
             fill={fill}
+            filter={filter}
             x={x}
             y={minHeight < 0 ? y + diffPosY + minHeight : y - diffPosY}
             rx={2}

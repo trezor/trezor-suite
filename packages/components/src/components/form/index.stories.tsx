@@ -68,22 +68,12 @@ storiesOf('Form', module).add(
                     <Input
                         value="0x3Ebf31732F5A987b4f130Eb359B0975EBcbd68c8"
                         dataTest="input-block-monospace-button"
-                        button={{
-                            text: 'Scan',
-                            icon: 'QR',
-                            onClick: () => {},
-                        }}
                     />
                     <SubHeading>Partially hidden</SubHeading>
                     <Input
                         value="0x3Ebf31732F5A987b4f130Eb359B0975EBcbd68c8"
                         dataTest="input-block-monospace-hidden"
                         isPartiallyHidden
-                        button={{
-                            text: 'Show full address',
-                            icon: 'TREZOR',
-                            onClick: () => {},
-                        }}
                     />
                     <SubHeading>With label &amp; bottom text</SubHeading>
                     <Input value="Input label" dataTest="input-label" bottomText="bottom text" />

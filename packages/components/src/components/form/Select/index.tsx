@@ -50,7 +50,7 @@ const selectStyle = (
         ...base,
         display: !withDropdownIndicator || isDisabled ? 'none' : 'flex',
         alignItems: 'center',
-        color: colors.BLACK50,
+        color: colors.NEUE_TYPE_LIGHT_GREY,
         path: '',
         '&:hover': {
             color: colors.BLACK0,
@@ -65,19 +65,19 @@ const selectStyle = (
     menuList: (base: Record<string, any>) => ({
         ...base,
         padding: 0,
-        boxShadow: 'none',
+        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.2)',
         background: colors.WHITE,
-        border: `1px solid ${colors.BLACK80}`,
-        borderRadius: '3px',
+        // border: `1px solid ${colors.BLACK80}`,
+        borderRadius: '4px',
     }),
     option: (base: Record<string, any>, { isFocused }: { isFocused: boolean }) => ({
         ...base,
-        color: colors.BLACK0,
-        background: isFocused ? colors.BLACK96 : colors.WHITE,
+        color: colors.NEUE_TYPE_DARK_GREY,
+        background: isFocused ? colors.NEUE_BG_GRAY : colors.WHITE,
         borderRadius: 0,
         '&:hover': {
             cursor: 'pointer',
-            background: colors.BLACK96,
+            // background: colors.NEUE_BG_GRAY,
         },
     }),
 });
@@ -99,6 +99,7 @@ interface Props extends Omit<SelectProps, 'components'> {
     label?: React.ReactNode;
     wrapperProps?: Record<string, any>;
     variant?: InputVariant;
+    noTopLabel?: boolean;
 }
 
 const Select = ({
@@ -110,6 +111,7 @@ const Select = ({
     label,
     width,
     variant = 'large',
+    noTopLabel = false,
     ...props
 }: Props) => {
     // customize control to pass data-test attribute
@@ -140,7 +142,7 @@ const Select = ({
 
     return (
         <Wrapper className={className} width={width} {...wrapperProps}>
-            <Label>{label}</Label>
+            {!noTopLabel && <Label>{label}</Label>}
             <ReactSelect
                 styles={selectStyle(isSearchable, withDropdownIndicator, variant, isClean)}
                 isSearchable={isSearchable}

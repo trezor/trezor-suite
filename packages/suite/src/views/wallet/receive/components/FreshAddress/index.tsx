@@ -1,8 +1,7 @@
 import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
-import Card from '@suite-components/Card';
-import { Button, Input, variables } from '@trezor/components';
+import { Button, Input, variables, Card } from '@trezor/components';
 import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
 import { parseBIP44Path } from '@wallet-utils/accountUtils';
@@ -11,10 +10,19 @@ import { AccountAddress } from 'trezor-connect';
 
 const StyledCard = styled(Card)`
     width: 100%;
+    flex-direction: row;
     margin-bottom: 40px;
-    padding: 32px 40px 36px 20px;
+    align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
+
+    @media all and (max-width: 860px) {
+        button {
+            width: 100%;
+            margin-left: auto;
+            margin-top: 12px;
+        }
+    }
 `;
 
 const AddressContainer = styled.div`
@@ -22,7 +30,9 @@ const AddressContainer = styled.div`
 `;
 
 const AddressPath = styled.div`
-    padding: 0px 16px 10px 0px;
+    display: flex;
+    align-items: center;
+    padding: 5px 16px 0 0px;
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
@@ -50,7 +60,6 @@ const FreshAddress = ({
     locked,
     intl,
 }: Props & WrappedComponentProps) => {
-    const { symbol } = account;
     const isBitcoin = account.networkType === 'bitcoin';
     const unused = account.addresses
         ? account.addresses.unused
@@ -85,7 +94,7 @@ const FreshAddress = ({
             : undefined;
 
     return (
-        <StyledCard title={<Translation id="RECEIVE_TITLE" values={{ symbol }} />}>
+        <StyledCard>
             {addressPath && <AddressPath>{addressPath}</AddressPath>}
             <AddressContainer>
                 <StyledInput

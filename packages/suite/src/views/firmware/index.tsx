@@ -56,6 +56,7 @@ const StyledButton = styled(Button)`
 
 const ChangesSummary = styled.div`
     width: 100%;
+    text-align: left;
     background-color: ${colors.BLACK96};
     border: 1px solid ${colors.BLACK80};
     padding: 20px;
@@ -76,6 +77,7 @@ const FromVersionToVersion = styled.div`
     display: flex;
     justify-content: center;
     font-size: ${FONT_SIZE.NORMAL};
+    font-variant-numeric: tabular-nums;
 `;
 
 const FromVersion = styled.div`
@@ -126,6 +128,20 @@ const StyledH2 = styled(H2)`
     ::first-letter {
         text-transform: capitalize;
     }
+`;
+
+const ChangelogGroup = styled.div`
+    margin-bottom: 20px;
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    font-size: ${FONT_SIZE.SMALL};
+`;
+
+const ChangelogHeading = styled.div`
+    font-weight: ${FONT_WEIGHT.MEDIUM};
+`;
+
+const ChangelogPre = styled.pre`
+    white-space: pre-wrap;
 `;
 
 const CloseButton = (props: ButtonProps) => (
@@ -391,10 +407,12 @@ const Firmware = ({
                                 {device.firmwareRelease.changelog?.length > 0 && (
                                     <ChangesSummary>
                                         {device.firmwareRelease.changelog.map((c: any) => (
-                                            <div key={c.url}>
-                                                <P>{c.version.join('.')}</P>
-                                                <P size="small">{c.changelog}</P>
-                                            </div>
+                                            <ChangelogGroup key={c.url}>
+                                                <ChangelogHeading>
+                                                    {c.version.join('.')}
+                                                </ChangelogHeading>
+                                                <ChangelogPre>{c.changelog}</ChangelogPre>
+                                            </ChangelogGroup>
                                         ))}
                                     </ChangesSummary>
                                 )}

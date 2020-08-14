@@ -1,11 +1,11 @@
-import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
-import { Translation } from '@suite-components/Translation';
-import { MAX_PASSPHRASE_LENGTH } from '@suite-constants/passphrase';
+import React, { useState, createRef, useLayoutEffect } from 'react';
 import { useKeyPress } from '@suite-utils/dom';
-import { countBytesInString } from '@suite-utils/string';
-import { Button, Checkbox, colors, Input, variables } from '@trezor/components';
-import React, { createRef, useLayoutEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
+import { Button, colors, variables, Input, Checkbox, Icon } from '@trezor/components';
+import { Translation } from '@suite-components/Translation';
+import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
+import { MAX_PASSPHRASE_LENGTH } from '@suite-constants/passphrase';
+import { countBytesInString } from '@suite-utils/string';
 
 const WalletTitle = styled.div`
     font-size: ${variables.FONT_SIZE.NORMAL};
@@ -74,6 +74,10 @@ const ActionButton = styled(Button)`
     & + & {
         margin-top: 8px;
     }
+`;
+
+const StyledIcon = styled(Icon)`
+    cursor: pointer;
 `;
 
 const RetryButton = styled(Button)`
@@ -188,14 +192,17 @@ const PassphraseTypeCard = (props: Props) => {
                             }
                             state={isTooLong ? 'error' : undefined}
                             variant="small"
-                            button={{
-                                iconSize: 18,
-                                iconColor: colors.BLACK70,
-                                iconColorHover: colors.BLACK70,
-                                icon: showPassword ? 'HIDE' : 'SHOW',
-                                onClick: () => setShowPassword(!showPassword),
-                            }}
+                            noTopLabel
                             noError
+                            innerAddon={
+                                <StyledIcon
+                                    size={18}
+                                    color={colors.BLACK70}
+                                    hoverColor={colors.BLACK70}
+                                    icon={showPassword ? 'HIDE' : 'SHOW'}
+                                    onClick={() => setShowPassword(!showPassword)}
+                                />
+                            }
                         />
                         {!isTooLong && <PasswordStrengthIndicator password={value} />}
                     </InputWrapper>

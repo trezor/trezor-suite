@@ -1,6 +1,19 @@
 # Changelog
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). [YY.MM.MICRO]
 
+## [20.8.1-beta]
+
+### Added
+- Historical balance in account graph
+
+### Changed
+- Design: improved Dashboard, Modal for switching wallets and list of transactions
+- Update trezor-connect
+
+### Fixed
+- Synchronizing state of multiple remembered devices to local storage
+- Desktop build now correctly offers latest firmware version
+- Firmware changelog formatting
 
 ## [20.7.1-beta]
 
@@ -8,7 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Send: Compatibility with Zcash Heartwood upgrade
 
 ### Changed
-- Update trezor-connect, electron dependencies
+- Update trezor-connect and electron dependencies
 - Change Blockbook backends for BTC, BTH, ETH and LTC from the beta back to stable
 - Bump minimal supported chrome/firefox version
 - Design: General layout and navigation overhaul
