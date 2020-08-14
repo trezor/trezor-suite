@@ -67,11 +67,14 @@ export default ({ close }: Props) => {
         register,
         getDefaultValue,
         setValue,
+        toggleOption,
         errors,
         composeTransaction,
     } = useSendFormContext();
 
-    const bitcoinRBF = getDefaultValue('bitcoinRBF');
+    const options = getDefaultValue('options', []);
+    const rbfEnabled = options.includes('bitcoinRBF');
+    const broadcastEnabled = options.includes('broadcast');
     const inputName = 'bitcoinLockTime';
     const inputValue = getDefaultValue(inputName) || '';
     const error = errors[inputName];
@@ -100,7 +103,10 @@ export default ({ close }: Props) => {
                     },
                 })}
                 onChange={() => {
-                    if (!error && bitcoinRBF) setValue('bitcoinRBF', false);
+                    if (!error) {
+                        if (rbfEnabled) toggleOption('bitcoinRBF');
+                        if (broadcastEnabled) toggleOption('broadcast');
+                    }
                     composeTransaction(inputName, !!error);
                 }}
                 label={
@@ -128,12 +134,12 @@ export default ({ close }: Props) => {
                 </Center>
                 <Right>
                     <Switch
-                        checked={bitcoinRBF}
-                        onChange={checked => {
+                        checked={rbfEnabled}
+                        onChange={() => {
                             if (inputValue.length > 0) {
                                 setValue(inputName, '');
                             }
-                            setValue('bitcoinRBF', checked);
+                            toggleOption('bitcoinRBF');
                             composeTransaction(inputName, false);
                         }}
                     />

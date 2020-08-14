@@ -37,6 +37,14 @@ export type EthTransactionData = {
     nonce: string;
 };
 
+export type FormOptions =
+    | 'broadcast'
+    | 'bitcoinRBF'
+    | 'bitcoinLockTime'
+    | 'ethereumData'
+    | 'ethereumNonce' // TODO
+    | 'rippleDestinationTag';
+
 export type FormState = {
     outputs: Output[];
     // output arrays, each element is corresponding with single Output item
@@ -45,9 +53,9 @@ export type FormState = {
     feePerUnit: string; // bitcoin/ethereum/ripple custom fee field (satB/gasPrice/drops)
     feeLimit: string; // ethereum only (gasLimit)
     // advanced form inputs
-    bitcoinRBF: boolean;
+    options: FormOptions[];
     bitcoinLockTime?: string; // bitcoin RBF/schedule
-    ethereumNonce?: string; // ethereum RBF
+    ethereumNonce?: string; // TODO: ethereum RBF
     ethereumDataAscii?: string;
     ethereumDataHex?: string;
     rippleDestinationTag?: string;
@@ -95,6 +103,7 @@ export type SendContextState = UseFormMethods<FormState> &
         resetDefaultValue: (field: string) => void;
         setMax: (index: number, active: boolean) => void;
         getDefaultValue: GetDefaultValue;
+        toggleOption: (option: FormOptions) => void;
         // useSendFormOutputs utils:
         addOutput: () => void; // useFieldArray append
         removeOutput: (index: number) => void; // useFieldArray remove

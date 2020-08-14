@@ -6,10 +6,10 @@ import { WalletLayout } from '@wallet-components';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { useSendForm, SendContext } from '@wallet-hooks/useSendForm';
 
-import Outputs from './components/Outputs';
 import Header from './components/Header';
+import Outputs from './components/Outputs';
+import Options from './components/Options';
 import Fees from './components/Fees';
-import CoinActions from './components/CoinActions';
 import TotalSent from './components/TotalSent';
 import ReviewButton from './components/ReviewButton';
 import { Props } from './Container';
@@ -46,7 +46,6 @@ const Send = ({ device, fees, selectedAccount, online, fiat, localCurrency }: Pr
         feeInfo,
         localCurrencyOption,
         destinationAddressEmpty: false,
-        token: null,
         feeOutdated: false,
         isLoading: false,
     });
@@ -56,7 +55,7 @@ const Send = ({ device, fees, selectedAccount, online, fiat, localCurrency }: Pr
             <SendContext.Provider value={sendState}>
                 <StyledCard customHeader={<Header />}>
                     <Outputs />
-                    <CoinActions />
+                    <Options />
                 </StyledCard>
                 <Fees />
                 <TotalSent />

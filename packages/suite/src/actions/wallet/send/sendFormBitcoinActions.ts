@@ -177,7 +177,7 @@ export const signTransaction = (
         signEnhancement = ZEC_SIGN_ENHANCEMENT;
     }
 
-    if (formValues.bitcoinRBF) {
+    if (formValues.options.includes('bitcoinRBF')) {
         // RBF is set, add sequence to inputs
         sequence = BTC_RBF_SEQUENCE;
     } else if (formValues.bitcoinLockTime) {

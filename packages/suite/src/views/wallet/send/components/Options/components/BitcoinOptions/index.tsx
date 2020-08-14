@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { OnOffSwitcher } from '@wallet-components';
@@ -41,33 +41,27 @@ export default () => {
     const {
         addOutput,
         getDefaultValue,
-        setValue,
+        toggleOption,
         composeTransaction,
         resetDefaultValue,
     } = useSendFormContext();
 
-    const bitcoinRBF = getDefaultValue('bitcoinRBF');
-    const locktimeValue = getDefaultValue('bitcoinLockTime') || '';
-    const hasLocktime = locktimeValue.length > 0;
-
-    const [broadcastActive, setBroadcastActive] = useState<boolean>(true);
-    const [locktimeActive, setLocktimeActive] = useState<boolean>(hasLocktime);
-
-    const locktimeOpened = hasLocktime || locktimeActive;
-    React.useEffect(() => {
-        // bitcoinLockTime could be loaded later from draft, open additional form
-        if (hasLocktime) setLocktimeActive(true);
-    }, [hasLocktime]);
+    const options = getDefaultValue('options', []);
+    const locktimeEnabled = options.includes('bitcoinLockTime');
+    const rbfEnabled = options.includes('bitcoinRBF');
+    const broadcastEnabled = options.includes('broadcast');
 
     return (
         <Wrapper>
             <Top>
-                {locktimeOpened && (
+                {locktimeEnabled && (
                     <Locktime
                         close={() => {
                             resetDefaultValue('bitcoinLockTime');
                             // close additional form
-                            setLocktimeActive(false);
+                            if (!rbfEnabled) toggleOption('bitcoinRBF');
+                            if (!broadcastEnabled) toggleOption('broadcast');
+                            toggleOption('bitcoinLockTime');
                             composeTransaction('outputs[0].amount', false);
                         }}
                     />
@@ -75,40 +69,42 @@ export default () => {
             </Top>
             <Row>
                 <Left>
-                    {!locktimeOpened && (
+                    {!locktimeEnabled && (
                         <StyledButton
                             variant="tertiary"
                             icon="CALENDAR"
                             onClick={() => {
                                 // open additional form
-                                setLocktimeActive(true);
+                                toggleOption('bitcoinLockTime');
+                                composeTransaction('outputs[0].amount', false);
                             }}
                         >
                             <Translation id="TR_ADD_LOCKTIME" />
                         </StyledButton>
                     )}
-                    {!locktimeOpened && (
+                    {!locktimeEnabled && (
                         <StyledButton
                             variant="tertiary"
                             icon="RBF"
                             onClick={() => {
-                                setValue('bitcoinRBF', !bitcoinRBF);
+                                toggleOption('bitcoinRBF');
                                 composeTransaction('outputs[0].amount', false);
                             }}
                         >
                             <Translation id="TR_RBF" />
-                            <OnOffSwitcher isOn={bitcoinRBF} />
+                            <OnOffSwitcher isOn={rbfEnabled} />
                         </StyledButton>
                     )}
                     <StyledButton
                         variant="tertiary"
                         icon="RBF"
                         onClick={() => {
-                            setBroadcastActive(!broadcastActive);
+                            toggleOption('broadcast');
+                            composeTransaction('outputs[0].amount', false);
                         }}
                     >
                         <Translation id="TR_BROADCAST" />
-                        <OnOffSwitcher isOn={broadcastActive} />
+                        <OnOffSwitcher isOn={broadcastEnabled} />
                     </StyledButton>
                 </Left>
                 <Right>

@@ -2,7 +2,7 @@ import { createContext, useContext, useCallback, useState, useEffect, useRef } f
 import { useForm, useFieldArray } from 'react-hook-form';
 import { useActions } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
-import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';
+import { DEFAULT_PAYMENT, DEFAULT_OPTIONS, DEFAULT_VALUES } from '@wallet-constants/sendForm';
 import { FormState, SendContextProps, SendContextState, Output } from '@wallet-types/sendForm';
 import { useSendFormOutputs } from './useSendFormOutputs';
 import { useSendFormFields } from './useSendFormFields';
@@ -14,6 +14,7 @@ SendContext.displayName = 'SendContext';
 const getDefaultValues = (currency: Output['currency']) => {
     return {
         ...DEFAULT_VALUES,
+        options: [...DEFAULT_OPTIONS],
         outputs: [{ ...DEFAULT_PAYMENT, currency }],
     };
 };
@@ -66,7 +67,7 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
     useEffect(() => {
         register({ name: 'setMaxOutputId', type: 'custom' });
         register({ name: 'selectedFee', type: 'custom' });
-        register({ name: 'bitcoinRBF', type: 'custom' });
+        register({ name: 'options', type: 'custom' });
     }, [register]);
 
     // update custom values

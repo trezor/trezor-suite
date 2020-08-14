@@ -3,9 +3,9 @@ import { useSendFormContext } from '@wallet-hooks';
 import React from 'react';
 import styled from 'styled-components';
 
-import AddData from './components/AddData';
-import AddDestinationTag from './components/AddDestinationTag';
-import BitcoinActions from './components/BitcoinActions';
+import BitcoinOptions from './components/BitcoinOptions';
+import EthereumOptions from './components/EthereumOptions';
+import RippleOptions from './components/RippleOptions';
 
 const Wrapper = styled.div`
     display: flex;
@@ -32,9 +32,9 @@ export default () => {
         <Wrapper>
             <Line />
             <Content>
-                {networkType === 'ripple' && <AddDestinationTag />}
-                {networkType === 'ethereum' && <AddData />}
-                {networkType === 'bitcoin' && <BitcoinActions />}
+                {networkType === 'bitcoin' && <BitcoinOptions />}
+                {networkType === 'ethereum' && <EthereumOptions />}
+                {networkType === 'ripple' && <RippleOptions />}
             </Content>
         </Wrapper>
     );

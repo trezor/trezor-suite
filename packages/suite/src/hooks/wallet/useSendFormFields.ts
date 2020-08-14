@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { UseFormMethods } from 'react-hook-form';
 import { FeeLevel } from 'trezor-connect';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
-import { FormState, SendContextProps, SendContextState } from '@wallet-types/sendForm';
+import { FormState, FormOptions, SendContextProps, SendContextState } from '@wallet-types/sendForm';
 
 type Props = UseFormMethods<FormState> & {
     fiatRates: SendContextProps['fiatRates'];
@@ -109,6 +109,19 @@ export const useSendFormFields = ({
         return getValues<K, T>(fieldName);
     };
 
+    const toggleOption = (option: FormOptions) => {
+        const enabledOptions = getValues('options') || [];
+        const isEnabled = enabledOptions.includes(option);
+        if (isEnabled) {
+            setValue(
+                'options',
+                enabledOptions.filter(o => o !== option),
+            );
+        } else {
+            setValue('options', [...enabledOptions, option]);
+        }
+    };
+
     // const calculateDataFee = useCallback((fieldName: string) => {
 
     // }, []);
@@ -125,5 +138,6 @@ export const useSendFormFields = ({
         resetDefaultValue,
         setMax,
         getDefaultValue,
+        toggleOption,
     };
 };

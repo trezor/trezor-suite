@@ -6,6 +6,13 @@ import { InputError } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 
+const Wrapper = styled.div`
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+`;
+
 const Label = styled.div`
     display: flex;
     align-items: center;
@@ -13,6 +20,12 @@ const Label = styled.div`
 
 const Text = styled.div`
     margin-right: 3px;
+`;
+
+const Space = styled.div`
+    display: flex;
+    justify-content: center;
+    min-width: 65px;
 `;
 
 const StyledIcon = styled(Icon)`
@@ -43,7 +56,7 @@ export default ({ close }: Props) => {
     const hexError = errors.ethereumDataHex;
 
     return (
-        <>
+        <Wrapper>
             <Textarea
                 state={getInputState(asciiError, asciiValue)}
                 monospace
@@ -77,6 +90,7 @@ export default ({ close }: Props) => {
                     </Label>
                 }
             />
+            <Space> = </Space>
             <Textarea
                 state={getInputState(hexError, hexValue)}
                 monospace
@@ -118,6 +132,6 @@ export default ({ close }: Props) => {
                     />
                 }
             />
-        </>
+        </Wrapper>
     );
 };
