@@ -246,6 +246,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                             : extendedDataForInterval ?? undefined
                                     }
                                     dot={false}
+                                    activeDot={false}
                                 />
                             )}
                             <defs>
