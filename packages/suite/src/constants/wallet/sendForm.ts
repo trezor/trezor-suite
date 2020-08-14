@@ -5,8 +5,8 @@ export const BTC_LOCKTIME_VALUE = 500000000; // if locktime is greater than this
 export const BTC_RBF_SEQUENCE = 0xffffffff - 2;
 export const XRP_FLAG = 0x80000000;
 export const U_INT_32 = 0xffffffff;
-export const ETH_DEFAULT_GAS_PRICE = '21000';
-export const ETH_DEFAULT_GAS_LIMIT = '1';
+export const ETH_DEFAULT_GAS_PRICE = '1';
+export const ETH_DEFAULT_GAS_LIMIT = '21000';
 
 // todo: remove after zcash heartwood fork;
 export const ZEC_SIGN_ENHANCEMENT_LEGACY = {

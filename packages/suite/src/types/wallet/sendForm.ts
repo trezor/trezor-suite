@@ -1,6 +1,10 @@
 import { UseFormMethods } from 'react-hook-form';
 import { Account, Network, CoinFiatRates } from '@wallet-types';
-import { FeeLevel, TokenInfo, PrecomposedTransaction } from 'trezor-connect';
+import {
+    FeeLevel,
+    TokenInfo,
+    PrecomposedTransaction as PrecomposedTransactionBase,
+} from 'trezor-connect';
 import { TrezorDevice } from '@suite-types';
 
 export type CurrencyOption = { value: string; label: string };
@@ -12,7 +16,7 @@ export type Output = {
     fiat: string;
     currency: CurrencyOption;
     label?: string;
-    setMax: boolean;
+    token?: string;
     dataHex: string; // bitcoin opreturn/ethereum data
     dataAscii: string; // bitcoin opreturn/ethereum data
 };
@@ -61,8 +65,31 @@ export type FormState = {
     rippleDestinationTag?: string;
 };
 
-// export type PrecomposedLevels = {[key: FeeLevel['label']]: PrecomposedTransaction };
-export type PrecomposedLevels = { [key: string]: PrecomposedTransaction & { feeLimit?: string } };
+export type PrecomposedTransactionError = Extract<PrecomposedTransactionBase, { type: 'error' }> & {
+    error: string; // TODO: type TR_
+};
+
+export type PrecomposedTransactionNonFinal = Extract<
+    PrecomposedTransactionBase,
+    { type: 'nonfinal' }
+> & {
+    max: string | undefined;
+    feeLimit?: string;
+    token?: TokenInfo;
+};
+
+export type PrecomposedTransactionFinal = Extract<PrecomposedTransactionBase, { type: 'final' }> & {
+    max: string | undefined;
+    feeLimit?: string;
+    token?: TokenInfo;
+};
+
+export type PrecomposedTransaction =
+    | PrecomposedTransactionError
+    | PrecomposedTransactionNonFinal
+    | PrecomposedTransactionFinal;
+
+export type PrecomposedLevels = { [key: string]: PrecomposedTransaction };
 
 export type SendContextProps = {
     account: Account; // from reducer
@@ -74,7 +101,6 @@ export type SendContextProps = {
     feeInfo: FeeInfo;
     localCurrencyOption: { value: string; label: string };
     destinationAddressEmpty: boolean;
-    token?: TokenInfo;
     feeOutdated: boolean;
     isLoading: boolean;
     composedLevels?: PrecomposedLevels;

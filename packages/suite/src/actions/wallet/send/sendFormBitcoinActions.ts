@@ -1,7 +1,13 @@
-import TrezorConnect, { FeeLevel, PrecomposedTransaction, SignTransaction } from 'trezor-connect';
+import TrezorConnect, { FeeLevel, SignTransaction } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
-import { FormState, SendContextProps, PrecomposedLevels } from '@wallet-types/sendForm';
-import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
+import {
+    FormState,
+    SendContextProps,
+    PrecomposedLevels,
+    PrecomposedTransaction,
+    PrecomposedTransactionFinal,
+} from '@wallet-types/sendForm';
+import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { requestPushTransaction } from '@wallet-actions/sendFormActions'; // move to common?
 import { SEND } from '@wallet-actions/constants';
@@ -95,7 +101,7 @@ export const composeTransaction = (
 
     response.payload.forEach((tx, index) => {
         const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
-        wrappedResponse[feeLabel] = tx;
+        wrappedResponse[feeLabel] = tx as PrecomposedTransaction;
     });
 
     const hasAtLeastOneValid = response.payload.find(r => r.type !== 'error');
@@ -107,38 +113,45 @@ export const composeTransaction = (
         let maxFee = new BigNumber(predefinedLevels[predefinedLevels.length - 1].feePerUnit).minus(
             1,
         );
-        const customLevels: any[] = [];
+        const customLevels: FeeLevel[] = [];
         while (maxFee.gte(minFee)) {
-            customLevels.push({ feePerUnit: maxFee.toString(), label: 'custom' });
+            customLevels.push({ feePerUnit: maxFee.toString(), label: 'custom', blocks: -1 });
             maxFee = maxFee.minus(1);
         }
 
         console.warn('CUSTOM LEVELS!', customLevels, wrappedResponse);
 
-        if (!customLevels.length) return wrappedResponse;
-
-        const customLevelsResponse = await TrezorConnect.composeTransaction({
-            ...params,
-            account: params.account, // needs to be present in order to correct resolve type of trezor-connect params overload
-            feeLevels: customLevels,
-        });
+        const customLevelsResponse =
+            customLevels.length > 0
+                ? await TrezorConnect.composeTransaction({
+                      ...params,
+                      account: params.account, // needs to be present in order to correct resolve type of trezor-connect params overload
+                      feeLevels: customLevels,
+                  })
+                : ({ success: false } as const);
 
         console.warn('CUSTOM LEVELS RESPONSE', customLevelsResponse);
 
         if (customLevelsResponse.success) {
             const customValid = customLevelsResponse.payload.findIndex(r => r.type !== 'error');
             if (customValid >= 0) {
-                wrappedResponse.custom = customLevelsResponse.payload[customValid];
+                wrappedResponse.custom = customLevelsResponse.payload[
+                    customValid
+                ] as PrecomposedTransaction;
             }
         }
     }
     // make sure that feePerByte is an integer (trezor-connect may return float)
+    // format max
     Object.keys(wrappedResponse).forEach(key => {
         const tx = wrappedResponse[key];
         if (tx.type !== 'error') {
             tx.feePerByte = new BigNumber(tx.feePerByte)
                 .integerValue(BigNumber.ROUND_FLOOR)
                 .toString();
+            if (tx.max) {
+                tx.max = formatNetworkAmount(tx.max, account.symbol);
+            }
         }
     });
 
@@ -147,7 +160,7 @@ export const composeTransaction = (
 
 export const signTransaction = (
     formValues: FormState,
-    transactionInfo: PrecomposedTransaction,
+    transactionInfo: PrecomposedTransactionFinal,
 ) => async (dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount } = getState().wallet;
     const { device } = getState().suite;

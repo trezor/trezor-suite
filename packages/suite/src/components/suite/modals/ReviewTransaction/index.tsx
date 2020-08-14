@@ -66,6 +66,7 @@ export default ({ selectedAccount, send, decision }: Props) => {
                 type: 'regular',
                 label: o.address,
                 value: o.amount,
+                token: precomposedTx.token,
             });
         } else if (o.script_type === 'PAYTOOPRETURN') {
             outputs.push({

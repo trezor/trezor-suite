@@ -6,7 +6,7 @@ import { Input, Icon, Button, variables, Tooltip, colors } from '@trezor/compone
 import { FiatValue, Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { getInputState } from '@wallet-utils/sendFormUtils';
+import { getInputState, findToken } from '@wallet-utils/sendFormUtils';
 import { useSendFormContext } from '@wallet-hooks';
 
 import TokenSelect from './components/TokenSelect';
@@ -68,7 +68,6 @@ const Right = styled.div`
 export default ({ outputId }: { outputId: number }) => {
     const {
         account,
-        token,
         network,
         localCurrencyOption,
         destinationAddressEmpty,
@@ -83,21 +82,23 @@ export default ({ outputId }: { outputId: number }) => {
     } = useSendFormContext();
 
     const inputName = `outputs[${outputId}].amount`;
+    const tokenInputName = `outputs[${outputId}].token`;
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
     const { symbol, availableBalance, networkType } = account;
-    const formattedAvailableBalance = token
-        ? token.balance || '0'
-        : formatNetworkAmount(availableBalance, symbol);
-
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const error = outputError ? outputError.amount : undefined;
 
+    const amountValue = getDefaultValue(inputName, outputs[outputId].amount || '');
+    const tokenValue = getDefaultValue(tokenInputName, outputs[outputId].token);
+    const token = findToken(account.tokens, tokenValue);
+
+    const formattedAvailableBalance = token
+        ? token.balance || '0'
+        : formatNetworkAmount(availableBalance, symbol);
     const reserve =
         account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
     const tokenBalance = token ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
     const decimals = token ? token.decimals : network.decimals;
-
-    const amountValue = getDefaultValue(inputName, outputs[outputId].amount || '');
 
     return (
         <Wrapper>

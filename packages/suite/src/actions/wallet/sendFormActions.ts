@@ -1,4 +1,4 @@
-import TrezorConnect, { FeeLevel, PrecomposedTransaction } from 'trezor-connect';
+import TrezorConnect, { FeeLevel } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -11,7 +11,7 @@ import { findValidOutputs } from '@wallet-utils/sendFormUtils';
 
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
-import { FormState, SendContextProps } from '@wallet-types/sendForm';
+import { FormState, SendContextProps, PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 import * as sendFormBitcoinActions from './send/sendFormBitcoinActions';
 import * as sendFormEthereumActions from './send/sendFormEthereumActions';
 import * as sendFormRippleActions from './send/sendFormRippleActions';
@@ -35,7 +35,7 @@ export type SendFormActions =
           type: typeof SEND.REQUEST_SIGN_TRANSACTION;
           payload?: {
               formValues: FormState;
-              transactionInfo: Extract<PrecomposedTransaction, { type: 'final' }>;
+              transactionInfo: PrecomposedTransactionFinal;
           };
       }
     | {
@@ -219,7 +219,7 @@ export const requestPushTransaction = (payload: any) => (dispatch: Dispatch) => 
     return dispatch(modalActions.openDeferredModal({ type: 'review-transaction' }));
 };
 
-export const signTransaction = (values: FormState, composedTx: PrecomposedTransaction) => (
+export const signTransaction = (values: FormState, composedTx: PrecomposedTransactionFinal) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -256,8 +256,8 @@ export const pushTransaction = () => async (dispatch: Dispatch, getState: GetSta
     const { device } = getState().suite;
     if (!signedTx || !precomposedTx || !account) return false;
 
-    // const sentTx = await TrezorConnect.pushTransaction(signedTx);
-    const sentTx = { success: true, payload: { txid: 'ABC ' } };
+    const sentTx = await TrezorConnect.pushTransaction(signedTx);
+    // const sentTx = { success: true, payload: { txid: 'ABC ' } };
 
     // close modal regardless result
     dispatch(cancelSignTx());

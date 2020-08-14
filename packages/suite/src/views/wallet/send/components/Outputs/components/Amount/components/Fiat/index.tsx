@@ -7,7 +7,12 @@ import { Controller } from 'react-hook-form';
 import { useSendFormContext } from '@wallet-hooks';
 import { FIAT } from '@suite-config';
 import { fromFiatCurrency } from '@wallet-utils/fiatConverterUtils';
-import { getInputState, getFiatRate, buildCurrencyOption } from '@wallet-utils/sendFormUtils';
+import {
+    getInputState,
+    getFiatRate,
+    buildCurrencyOption,
+    findToken,
+} from '@wallet-utils/sendFormUtils';
 import { CurrencyOption } from '@wallet-types/sendForm';
 
 const Wrapper = styled.div`
@@ -19,9 +24,9 @@ const Wrapper = styled.div`
 
 export default ({ outputId }: { outputId: number }) => {
     const {
+        account,
         network,
         fiatRates,
-        token,
         localCurrencyOption,
         register,
         errors,
@@ -35,11 +40,14 @@ export default ({ outputId }: { outputId: number }) => {
     const inputName = `outputs[${outputId}].fiat`;
     const currencyInputName = `outputs[${outputId}].currency`;
     const amountInputName = `outputs[${outputId}].amount`;
+    const tokenInputName = `outputs[${outputId}].token`;
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
 
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const error = outputError ? outputError.fiat : undefined;
     const fiatValue = getDefaultValue(inputName, outputs[outputId].fiat || '');
+    const tokenValue = getDefaultValue(tokenInputName, outputs[outputId].token);
+    const token = findToken(account.tokens, tokenValue);
     const decimals = token ? token.decimals : network.decimals;
 
     return (

@@ -1,10 +1,16 @@
-import TrezorConnect, { FeeLevel, RipplePayment, PrecomposedTransaction } from 'trezor-connect';
+import TrezorConnect, { ComposeOutput, FeeLevel, RipplePayment } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 
 import { calculateTotal, calculateMax } from '@wallet-utils/sendFormUtils';
-import { FormState, SendContextProps, PrecomposedLevels } from '@wallet-types/sendForm';
+import {
+    FormState,
+    SendContextProps,
+    PrecomposedLevels,
+    PrecomposedTransaction,
+    PrecomposedTransactionFinal,
+} from '@wallet-types/sendForm';
 
-import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
+import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
 
 import { XRP_FLAG } from '@wallet-constants/sendForm';
 import { SEND } from '@wallet-actions/constants';
@@ -13,18 +19,24 @@ import { Dispatch, GetState } from '@suite-types';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { requestPushTransaction } from '@wallet-actions/sendFormActions'; // move to common?
 
-const calc = (availableBalance: string, output: any, feeLevel: FeeLevel, token?: any) => {
+type XrpOutput = Exclude<ComposeOutput, { type: 'opreturn' } | { address_n: number[] }>;
+
+const calculate = (
+    availableBalance: string,
+    output: XrpOutput,
+    feeLevel: FeeLevel,
+): PrecomposedTransaction => {
     const feeInSatoshi = feeLevel.feePerUnit;
 
-    const isSendMax = output.type === 'send-max' || output.type === 'send-max-noaddress';
-    const composedType = !output.type || output.type === 'send-max' ? 'final' : 'nonfinal';
-
+    let amount;
     let max;
     let totalSpent;
-    if (isSendMax) {
+    if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
         max = new BigNumber(calculateMax(availableBalance, feeInSatoshi));
-        totalSpent = new BigNumber(calculateTotal(max.toString(), feeInSatoshi));
+        amount = max.toString();
+        totalSpent = new BigNumber(calculateTotal(amount, feeInSatoshi));
     } else {
+        amount = output.amount;
         totalSpent = new BigNumber(calculateTotal(output.amount, feeInSatoshi));
     }
 
@@ -32,36 +44,38 @@ const calc = (availableBalance: string, output: any, feeLevel: FeeLevel, token?:
     // const totalSpentBig = new BigNumber(calculateTotal('0', feeInSatoshi));
 
     if (totalSpent.isGreaterThan(availableBalance)) {
-        const error = token ? 'NOT-ENOUGH-CURRENCY-FEE' : 'NOT-ENOUGH-FUNDS';
+        const error = 'NOT-ENOUGH-FUNDS';
         return { type: 'error', error } as const;
     }
 
     const payloadData = {
+        type: 'nonfinal',
         totalSpent: totalSpent.toString(),
+        max: max ? max.toString() : undefined,
         fee: feeInSatoshi,
         feePerByte: feeLevel.feePerUnit,
-        feeLimit: feeLevel.feeLimit,
-        max: max ? max.toString() : undefined,
-    };
+        bytes: 0, // TODO: calculate
+    } as const;
 
-    const txOutputs =
-        composedType === 'final'
-            ? [
-                  {
-                      address: output.address,
-                      amount: max ? max.toString() : output.amount,
-                  },
-              ]
-            : [];
-
-    return {
-        type: composedType,
-        ...payloadData,
-        transaction: {
-            inputs: [], // just for compatibility with BTC
-            outputs: txOutputs,
-        },
-    };
+    if (output.type === 'send-max' || output.type === 'external') {
+        return {
+            ...payloadData,
+            type: 'final',
+            // compatibility with BTC PrecomposedTransaction from trezor-connect
+            transaction: {
+                inputs: [],
+                outputs: [
+                    {
+                        address: output.address,
+                        amount,
+                        // eslint-disable-next-line @typescript-eslint/camelcase
+                        script_type: 'PAYTOADDRESS',
+                    },
+                ],
+            },
+        };
+    }
+    return payloadData;
 };
 
 export const composeTransaction = (
@@ -72,34 +86,31 @@ export const composeTransaction = (
     const { availableBalance } = account;
     const { address, amount } = formValues.outputs[0];
     const amountInSatoshi = networkAmountToSatoshi(amount, account.symbol).toString();
-    // const max = formValues.token
-    //     ? new BigNumber(formValues.token.balance!)
-    //     : new BigNumber(calculateMax(account.availableBalance, feeInSatoshi));
-
     const isMaxActive = typeof formValues.setMaxOutputId === 'number';
-    const outputs = [];
 
+    let output: XrpOutput;
     if (isMaxActive) {
         if (address) {
-            outputs.push({
-                address,
+            output = {
                 type: 'send-max',
-            });
+                address,
+            };
         } else {
-            outputs.push({
+            output = {
                 type: 'send-max-noaddress',
-            });
+            };
         }
     } else if (address) {
-        outputs.push({
+        output = {
+            type: 'external',
             address,
             amount: amountInSatoshi,
-        });
+        };
     } else {
-        outputs.push({
+        output = {
             type: 'noaddress',
             amount: amountInSatoshi,
-        });
+        };
     }
 
     const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
@@ -112,15 +123,12 @@ export const composeTransaction = (
             blocks: -1,
         });
     }
-    console.warn('KOMPOSE ITIR', outputs, predefinedLevels);
     const wrappedResponse: PrecomposedLevels = {};
-    const response = predefinedLevels.map(level => calc(availableBalance, outputs[0], level));
+    const response = predefinedLevels.map(level => calculate(availableBalance, output, level));
     response.forEach((tx, index) => {
         const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
         wrappedResponse[feeLabel] = tx;
     });
-
-    console.warn('KOMPOSE ITIR2', response, predefinedLevels);
 
     const hasAtLeastOneValid = response.find(r => r.type !== 'error');
     if (!hasAtLeastOneValid && !wrappedResponse.custom) {
@@ -129,22 +137,16 @@ export const composeTransaction = (
         let maxFee = new BigNumber(predefinedLevels[predefinedLevels.length - 1].feePerUnit).minus(
             1,
         );
-        const customLevels: any[] = [];
+        const customLevels: FeeLevel[] = [];
         while (maxFee.gte(minFee)) {
-            customLevels.push({
-                feePerUnit: maxFee.toString(),
-                feeLimit: predefinedLevels[0].feeLimit,
-                label: 'custom',
-            });
+            customLevels.push({ feePerUnit: maxFee.toString(), label: 'custom', blocks: -1 });
             maxFee = maxFee.minus(1);
         }
 
         console.warn('CUSTOM LEVELS!', customLevels, wrappedResponse);
 
-        if (!customLevels.length) return wrappedResponse;
-
         const customLevelsResponse = customLevels.map(level =>
-            calc(availableBalance, outputs[0], level),
+            calculate(availableBalance, output, level),
         );
 
         console.warn('CUSTOM LEVELS RESPONSE', customLevelsResponse);
@@ -155,12 +157,20 @@ export const composeTransaction = (
         }
     }
 
+    // format max
+    Object.keys(wrappedResponse).forEach(key => {
+        const tx = wrappedResponse[key];
+        if (tx.type !== 'error' && tx.max) {
+            tx.max = formatNetworkAmount(tx.max, account.symbol);
+        }
+    });
+
     return wrappedResponse;
 };
 
 export const signTransaction = (
     formValues: FormState,
-    transactionInfo: PrecomposedTransaction,
+    transactionInfo: PrecomposedTransactionFinal,
 ) => async (dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount } = getState().wallet;
     const { device } = getState().suite;

@@ -1,116 +1,135 @@
-import TrezorConnect, { FeeLevel, PrecomposedTransaction, TokenInfo } from 'trezor-connect';
+import TrezorConnect, { ComposeOutput, FeeLevel, TokenInfo } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
-import { toWei, fromWei } from 'web3-utils';
+import { toWei } from 'web3-utils';
 import {
     calculateTotal,
     calculateMax,
     calculateEthFee,
     serializeEthereumTx,
     prepareEthereumTransaction,
+    findToken,
 } from '@wallet-utils/sendFormUtils';
-import { FormState, SendContextProps, PrecomposedLevels } from '@wallet-types/sendForm';
 import {
-    networkAmountToSatoshi,
-    formatNetworkAmount,
-    getAccountKey,
-} from '@wallet-utils/accountUtils';
+    FormState,
+    SendContextProps,
+    PrecomposedLevels,
+    PrecomposedTransaction,
+    PrecomposedTransactionFinal,
+} from '@wallet-types/sendForm';
+import { amountToSatoshi, formatAmount } from '@wallet-utils/accountUtils';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { requestPushTransaction } from '@wallet-actions/sendFormActions'; // move to common?
 import { SEND } from '@wallet-actions/constants';
+import { ETH_DEFAULT_GAS_LIMIT, ERC20_GAS_LIMIT } from '@wallet-constants/sendForm';
 import { Dispatch, GetState } from '@suite-types';
 
-const calc = (availableBalance: string, output: any, feeLevel: FeeLevel, token?: TokenInfo) => {
+type EthOutput = Exclude<ComposeOutput, { type: 'opreturn' } | { address_n: number[] }>;
+
+const calculate = (
+    availableBalance: string,
+    output: EthOutput,
+    feeLevel: FeeLevel,
+    token?: TokenInfo,
+): PrecomposedTransaction => {
     const feeInSatoshi = calculateEthFee(
         toWei(feeLevel.feePerUnit, 'gwei'),
         feeLevel.feeLimit || '0',
     );
 
-    const isSendMax = output.type === 'send-max' || output.type === 'send-max-noaddress';
-    const composedType = !output.type || output.type === 'send-max' ? 'final' : 'nonfinal';
-
+    let amount;
     let max;
-    let totalSpent;
-    if (isSendMax) {
-        max = token
+    let totalSpent; // total ETH spent (amount + fee)
+    if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
+        const maxBig = token
             ? new BigNumber(token.balance!)
             : new BigNumber(calculateMax(availableBalance, feeInSatoshi));
+        max = maxBig.toString();
+        amount = max;
         totalSpent = new BigNumber(calculateTotal(token ? '0' : max.toString(), feeInSatoshi));
     } else {
+        amount = output.amount;
         totalSpent = new BigNumber(calculateTotal(token ? '0' : output.amount, feeInSatoshi));
     }
-
-    // const totalSpentBig = new BigNumber(calculateTotal(token ? '0' : amount, feeInSatoshi));
-    // const totalSpentBig = new BigNumber(calculateTotal('0', feeInSatoshi));
 
     if (totalSpent.isGreaterThan(availableBalance)) {
         const error = token ? 'NOT-ENOUGH-CURRENCY-FEE' : 'NOT-ENOUGH-FUNDS';
         return { type: 'error', error } as const;
     }
 
+    if (token && new BigNumber(amount).gt(amountToSatoshi(token.balance!, token.decimals))) {
+        return { type: 'error', error: 'NOT-ENOUGH-FUNDS' } as const;
+    }
+
     const payloadData = {
+        type: 'nonfinal',
         totalSpent: totalSpent.toString(),
+        max: max ? max.toString() : undefined,
         fee: feeInSatoshi,
         feePerByte: feeLevel.feePerUnit,
         feeLimit: feeLevel.feeLimit,
-        max: max ? max.toString() : undefined,
-    };
+        token,
+        bytes: 0, // TODO: calculate
+    } as const;
 
-    const txOutputs =
-        composedType === 'final'
-            ? [
-                  {
-                      address: output.address,
-                      amount: max ? max.toString() : output.amount,
-                  },
-              ]
-            : [];
-
-    return {
-        type: composedType,
-        ...payloadData,
-        transaction: {
-            inputs: [], // just for compatibility with BTC
-            outputs: txOutputs,
-        },
-    };
+    if (output.type === 'send-max' || output.type === 'external') {
+        return {
+            ...payloadData,
+            type: 'final',
+            // compatibility with BTC PrecomposedTransaction from trezor-connect
+            transaction: {
+                inputs: [],
+                outputs: [
+                    {
+                        address: output.address,
+                        amount,
+                        // eslint-disable-next-line @typescript-eslint/camelcase
+                        script_type: 'PAYTOADDRESS',
+                    },
+                ],
+            },
+        };
+    }
+    return payloadData;
 };
 
 export const composeTransaction = (
     formValues: FormState,
     formState: SendContextProps,
 ) => async () => {
-    const { account, feeInfo, token } = formState;
+    const { account, network, feeInfo } = formState;
     const { availableBalance } = account;
-    const { address, amount } = formValues.outputs[0];
-    const amountInSatoshi = networkAmountToSatoshi(amount, account.symbol).toString();
-
+    const { address, amount, token } = formValues.outputs[0];
+    const tokenInfo = findToken(account.tokens, token);
+    const decimals = tokenInfo ? tokenInfo.decimals : network.decimals;
+    const amountInSatoshi = amountToSatoshi(amount, decimals);
     const isMaxActive = typeof formValues.setMaxOutputId === 'number';
-    const outputs = [];
 
+    let output: EthOutput;
     if (isMaxActive) {
         if (address) {
-            outputs.push({
-                address,
+            output = {
                 type: 'send-max',
-            });
+                address,
+            };
         } else {
-            outputs.push({
+            output = {
                 type: 'send-max-noaddress',
-            });
+            };
         }
     } else if (address) {
-        outputs.push({
+        output = {
+            type: 'external',
             address,
             amount: amountInSatoshi,
-        });
+        };
     } else {
-        outputs.push({
+        output = {
             type: 'noaddress',
             amount: amountInSatoshi,
-        });
+        };
     }
 
-    let dataFeeLimit: string | undefined;
+    let customFeeLimit: string | undefined;
 
     if (typeof formValues.ethereumDataHex === 'string' && formValues.ethereumDataHex.length > 0) {
         const response = await TrezorConnect.blockchainEstimateFee({
@@ -126,12 +145,15 @@ export const composeTransaction = (
         });
 
         if (response.success) {
-            dataFeeLimit = response.payload.levels[0].feeLimit;
+            customFeeLimit = response.payload.levels[0].feeLimit;
         }
+    }
+    if (tokenInfo) {
+        customFeeLimit = ERC20_GAS_LIMIT;
     }
 
     const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
-    // in case when selectedFee is set to 'custom' construct this FeeLevel from values
+    // in case when selectedFee is set to 'custom' construct this FeeLevel from form values
     if (formValues.selectedFee === 'custom') {
         predefinedLevels.push({
             label: 'custom',
@@ -141,13 +163,13 @@ export const composeTransaction = (
         });
     }
 
-    // update predefined levels feeLimit (gas limit from data size)
-    if (dataFeeLimit) {
-        predefinedLevels.forEach(l => (l.feeLimit = dataFeeLimit));
+    // update predefined levels with customFeeLimit (gasLimit from data size ot erc20 transfer)
+    if (customFeeLimit) {
+        predefinedLevels.forEach(l => (l.feeLimit = customFeeLimit));
     }
     const wrappedResponse: PrecomposedLevels = {};
     const response = predefinedLevels.map(level =>
-        calc(availableBalance, outputs[0], level, token),
+        calculate(availableBalance, output, level, tokenInfo),
     );
     response.forEach((tx, index) => {
         const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
@@ -157,26 +179,22 @@ export const composeTransaction = (
     const hasAtLeastOneValid = response.find(r => r.type !== 'error');
     if (!hasAtLeastOneValid && !wrappedResponse.custom) {
         const { minFee } = feeInfo;
-        console.warn('LEVELS', predefinedLevels);
         let maxFee = new BigNumber(predefinedLevels[predefinedLevels.length - 1].feePerUnit).minus(
             1,
         );
-        const customLevels: any[] = [];
+        const customLevels: FeeLevel[] = [];
         while (maxFee.gte(minFee)) {
             customLevels.push({
                 feePerUnit: maxFee.toString(),
                 feeLimit: predefinedLevels[0].feeLimit,
                 label: 'custom',
+                blocks: -1,
             });
             maxFee = maxFee.minus(1);
         }
 
-        console.warn('CUSTOM LEVELS!', customLevels, wrappedResponse);
-
-        if (!customLevels.length) return wrappedResponse;
-
         const customLevelsResponse = customLevels.map(level =>
-            calc(availableBalance, outputs[0], level, token),
+            calculate(availableBalance, output, level, tokenInfo),
         );
 
         console.warn('CUSTOM LEVELS RESPONSE', customLevelsResponse);
@@ -187,12 +205,20 @@ export const composeTransaction = (
         }
     }
 
+    // format max
+    Object.keys(wrappedResponse).forEach(key => {
+        const tx = wrappedResponse[key];
+        if (tx.type !== 'error' && tx.max && !tx.token) {
+            tx.max = formatAmount(tx.max, decimals);
+        }
+    });
+
     return wrappedResponse;
 };
 
 export const signTransaction = (
     formValues: FormState,
-    transactionInfo: PrecomposedTransaction,
+    transactionInfo: PrecomposedTransactionFinal,
 ) => async (dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount } = getState().wallet;
     const { device } = getState().suite;
@@ -216,13 +242,12 @@ export const signTransaction = (
     });
 
     const transaction = prepareEthereumTransaction({
-        token: undefined,
-        // token: token || undefined,
+        token: transactionInfo.token,
         chainId: network.chainId,
         to: formValues.outputs[0].address,
         amount: formValues.outputs[0].amount,
         data: formValues.ethereumDataHex,
-        gasLimit: transactionInfo.feeLimit,
+        gasLimit: transactionInfo.feeLimit || ETH_DEFAULT_GAS_LIMIT,
         gasPrice: transactionInfo.feePerByte,
         nonce: account.misc.nonce,
     });

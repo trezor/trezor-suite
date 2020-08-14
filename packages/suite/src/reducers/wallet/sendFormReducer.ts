@@ -1,8 +1,8 @@
 import produce from 'immer';
 import { SEND } from '@wallet-actions/constants';
 import { Action } from '@suite-types';
-import { FormState } from '@wallet-types/sendForm';
-import { FeeLevel, PrecomposedTransaction } from 'trezor-connect';
+import { FormState, PrecomposedTransactionFinal } from '@wallet-types/sendForm';
+import { FeeLevel } from 'trezor-connect';
 
 interface SendState {
     drafts: {
@@ -10,7 +10,7 @@ interface SendState {
             formState: FormState;
         };
     };
-    precomposedTx?: Extract<PrecomposedTransaction, { type: 'final' }>;
+    precomposedTx?: PrecomposedTransactionFinal;
     precomposedForm?: FormState;
     signedTx?: { tx: string; coin: string }; // payload for TrezorConnect.pushTransaction
     lastUsedFeeLevel: {

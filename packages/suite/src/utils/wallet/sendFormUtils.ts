@@ -238,3 +238,34 @@ export const findValidOutputs = (values: FormState) => {
                     output.dataHex.length > 0)),
     );
 };
+
+export const buildTokenOptions = (account: Account) => {
+    interface Option {
+        label: string;
+        value: string;
+    }
+
+    const result: Option[] = [
+        {
+            value: account.symbol,
+            label: account.symbol.toUpperCase(),
+        },
+    ];
+
+    if (account.tokens) {
+        account.tokens.forEach(token => {
+            const tokenName = token.symbol || 'N/A';
+            result.push({
+                value: token.address,
+                label: tokenName.toUpperCase(),
+            });
+        });
+    }
+
+    return result;
+};
+
+export const findToken = (tokens: Account['tokens'], address?: string) => {
+    if (!address || !tokens) return;
+    return tokens.find(t => t.address === address);
+};

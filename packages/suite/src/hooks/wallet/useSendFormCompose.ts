@@ -5,7 +5,6 @@ import { FormState, SendContextProps, SendContextState } from '@wallet-types/sen
 import { useActions, useDebounce } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { findComposeErrors } from '@wallet-utils/sendFormUtils';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 
 type Props = UseFormMethods<FormState> & {
     state: SendContextProps;
@@ -131,8 +130,9 @@ export const useSendFormCompose = ({
                 setValue('selectedFee', nearest);
                 if (nearest === 'custom') {
                     // @ts-ignore: type = error already filtered above
-                    setValue('feePerUnit', composed.feePerByte);
-                    setValue('feeLimit', composed.feeLimit);
+                    const { feePerByte, feeLimit } = composed;
+                    setValue('feePerUnit', feePerByte);
+                    setValue('feeLimit', feeLimit);
                 }
                 setDraftSaveRequest(true);
             }
@@ -164,10 +164,9 @@ export const useSendFormCompose = ({
             setValue('ethereumDataFeeLimit', composed.feeLimit);
         }
 
-        // set calculated "max" value to `Amount` input
+        // set calculated and formatted "max" value to `Amount` input
         if (typeof setMaxOutputId === 'number') {
-            const amount = formatNetworkAmount(composed.max, state.account.symbol);
-            setAmount(setMaxOutputId, amount);
+            setAmount(setMaxOutputId, composed.max);
             setDraftSaveRequest(true);
         }
     }, [

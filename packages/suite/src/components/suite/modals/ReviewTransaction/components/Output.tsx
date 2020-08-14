@@ -2,8 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors, variables, Box, Icon } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount, formatAmount } from '@wallet-utils/accountUtils';
 import { Network } from '@wallet-types';
+import { TokenInfo } from 'trezor-connect';
 
 const StyledRow = styled(Box)`
     justify-content: space-between;
@@ -73,11 +74,13 @@ export type OutputProps =
           type: 'regular';
           label: string;
           value: string;
+          token?: TokenInfo;
       }
     | {
           type: 'opreturn' | 'data' | 'locktime' | 'fee' | 'destination-tag';
           label?: undefined;
           value: string;
+          token?: undefined;
       };
 
 export type Props = OutputProps & {
@@ -87,8 +90,7 @@ export type Props = OutputProps & {
 
 export { Left, Right, Coin, Symbol, Fiat };
 
-export default ({ type, state, label, value, symbol }: Props) => {
-    const hasAmount = type === 'regular' || type === 'fee';
+export default ({ type, state, label, value, symbol, token }: Props) => {
     let outputLabel: React.ReactNode = label;
     if (type === 'opreturn') {
         outputLabel = <Translation id="TR_OP_RETURN" />;
@@ -106,6 +108,16 @@ export default ({ type, state, label, value, symbol }: Props) => {
         outputLabel = <Translation id="TR_XRP_DESTINATION_TAG" />;
     }
 
+    let outputValue = value;
+    let outputSymbol;
+    if (token) {
+        outputValue = formatAmount(value, token.decimals);
+        outputSymbol = token.symbol;
+    } else if (type === 'regular' || type === 'fee') {
+        outputValue = formatNetworkAmount(value, symbol);
+        outputSymbol = symbol;
+    }
+
     return (
         <StyledRow>
             <Left>
@@ -117,14 +129,13 @@ export default ({ type, state, label, value, symbol }: Props) => {
             </Left>
             <Right>
                 <Coin>
-                    {hasAmount ? formatNetworkAmount(value, symbol) : value}
-                    {hasAmount && <Symbol>{symbol}</Symbol>}
+                    {outputValue}
+                    {outputSymbol && <Symbol>{outputSymbol}</Symbol>}
                 </Coin>
                 <Fiat>
-                    {hasAmount && (
+                    {outputSymbol && !token && (
                         <FiatValue
-                            // @ts-ignore
-                            amount={formatNetworkAmount(value, symbol)}
+                            amount={formatNetworkAmount(outputValue, symbol)}
                             symbol={symbol}
                         />
                     )}
