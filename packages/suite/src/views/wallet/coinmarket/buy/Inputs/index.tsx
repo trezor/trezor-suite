@@ -4,7 +4,7 @@ import { useSelector } from '@suite-hooks';
 import { CleanSelect, CoinLogo, Icon, Input, variables } from '@trezor/components';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 import { AmountLimits, buildOption } from '@wallet-utils/coinmarket/buyUtils';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import { useFormContext, Controller } from 'react-hook-form';
 import styled from 'styled-components';
@@ -55,6 +55,8 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
     const cryptoInput = 'cryptoInput';
     const currencySelect = 'currencySelect';
 
+    const [activeInput, setActiveInput] = useState<'fiatInput' | 'cryptoInput'>(fiatInput);
+
     useEffect(() => {
         trigger([fiatInput]);
     }, [amountLimits, trigger]);
@@ -78,26 +80,31 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
                     defaultValue="10000"
                     innerRef={register({
                         validate: value => {
-                            if (!value) {
-                                return 'TR_ERROR_EMPTY';
-                            }
-
-                            if (!validator.isNumeric(value)) {
-                                return 'TR_ERROR_NOT_NUMBER';
-                            }
-
-                            if (amountLimits) {
-                                const amount = Number(value);
-                                if (amountLimits.minFiat && amount < amountLimits.minFiat) {
-                                    return `Minimum is ${amountLimits.minFiat} ${amountLimits.currency}`;
+                            if (activeInput === fiatInput) {
+                                if (!value) {
+                                    return 'TR_ERROR_EMPTY';
                                 }
-                                if (amountLimits.maxFiat && amount > amountLimits.maxFiat) {
-                                    return `Maximum is ${amountLimits.maxFiat} ${amountLimits.currency}`;
+
+                                if (!validator.isNumeric(value)) {
+                                    return 'TR_ERROR_NOT_NUMBER';
+                                }
+
+                                if (amountLimits) {
+                                    const amount = Number(value);
+                                    if (amountLimits.minFiat && amount < amountLimits.minFiat) {
+                                        return `Minimum is ${amountLimits.minFiat} ${amountLimits.currency}`;
+                                    }
+                                    if (amountLimits.maxFiat && amount > amountLimits.maxFiat) {
+                                        return `Maximum is ${amountLimits.maxFiat} ${amountLimits.currency}`;
+                                    }
                                 }
                             }
                         },
                     })}
-                    onChange={() => setValue(cryptoInput, '')}
+                    onChange={() => {
+                        setValue(cryptoInput, '');
+                        setActiveInput(fiatInput);
+                    }}
                     state={errors[fiatInput] ? 'error' : undefined}
                     name={fiatInput}
                     bottomText={errors[fiatInput] && errors[fiatInput].message}
@@ -132,14 +139,19 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
             </Middle>
             <Right>
                 <Input
-                    onChange={() => setValue(fiatInput, '')}
+                    onChange={() => {
+                        setValue(fiatInput, '');
+                        setActiveInput(cryptoInput);
+                    }}
                     state={errors[cryptoInput] ? 'error' : undefined}
                     name={cryptoInput}
                     noTopLabel
                     innerRef={register({
                         validate: value => {
-                            if (!value) {
-                                return 'TR_ERROR_EMPTY';
+                            if (activeInput === cryptoInput) {
+                                if (!value) {
+                                    return 'TR_ERROR_EMPTY';
+                                }
                             }
                         },
                     })}
