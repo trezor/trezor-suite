@@ -87,6 +87,20 @@ const InputAddon = styled.div<{ align: 'left' | 'right' }>`
     display: flex;
     min-height: 32px;
     justify-content: space-between;
+    align-items: center;
+    z-index: 2;
+
+    ${props =>
+        props.align === 'left' &&
+        css`
+            right: 10px;
+        `}
+
+    ${props =>
+        props.align === 'right' &&
+        css`
+            left: 10px;
+        `}
 `;
 
 const BottomText = styled.div<Props>`
@@ -163,6 +177,7 @@ const Input = ({
     addonAlign = 'left',
     noError = false,
     noTopLabel = false,
+    textIndent = 0,
     ...rest
 }: Props) => {
     const [isHovered, setIsHovered] = React.useState(false);
