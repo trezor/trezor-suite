@@ -12,6 +12,7 @@ const mapStateToProps = (state: AppState) => ({
     language: state.suite.settings.language,
     localCurrency: state.wallet.settings.localCurrency,
     metadata: state.metadata,
+    device: state.suite.device,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
@@ -22,9 +23,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
             fetchLocale: languageActions.fetchLocale,
             goto: routerActions.goto,
             initMetadata: metadataActions.init,
-            // enableMetadata: metadataActions.enableMetadata,
             disableMetadata: metadataActions.disableMetadata,
-            initProvider: metadataActions.initProvider,
             disconnectProvider: metadataActions.disconnectProvider,
         },
         dispatch,

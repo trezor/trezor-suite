@@ -1,17 +1,11 @@
 /* eslint no-throw-literal: 0 */
 
-import { Deferred, createDeferred } from '@suite-utils/deferred';
-import { urlHashParams } from '@suite-utils/metadata';
+import { getOauthToken, getOauthReceiverUrl } from '@suite-utils/metadata';
 import { getRandomId } from '@suite-utils/random';
-import { getPrefixedURL } from '@suite-utils/router';
 
 const CLIENT_ID = '842348096891-efhc485636d5t09klvrve0pi4njhq3l8.apps.googleusercontent.com';
 const SCOPES = 'https://www.googleapis.com/auth/drive.appdata';
 
-const WINDOW_TITLE = 'Google auth popup';
-const WINDOW_WIDTH = 600;
-const WINDOW_HEIGHT = 720;
-const WINDOW_PROPS = `width=${WINDOW_WIDTH},height=${WINDOW_HEIGHT},dialog=yes,dependent=yes,scrollbars=yes,location=yes`;
 const BOUNDARY = '-------314159265358979323846';
 
 // todos:
@@ -88,23 +82,17 @@ type GetTokenInfoResponse = {
  */
 class Client {
     token?: string;
-    // status: number;
     nameIdMap: Record<string, string>;
     listPromise?: Promise<ListResponse>;
 
     constructor(token?: string) {
         this.token = token;
-        // this.status = 0;
         this.nameIdMap = {};
     }
 
     async authorize() {
-        const dfd: Deferred<string> = createDeferred();
         // eslint-disable-next-line
-        const redirect_uri =
-            `${window.location.origin}${getPrefixedURL('/static/oauth/oauth_receiver.html')}`;
-        // eslint-disable-next-line
-        console.log('redirect_uri', redirect_uri);
+        const redirect_uri = getOauthReceiverUrl();
         const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
         url.search = new URLSearchParams({
             // eslint-disable-next-line
@@ -120,49 +108,7 @@ class Client {
             redirect_uri,
         }).toString();
 
-        const onMessage = (e: MessageEvent) => {
-            // filter non oauth messages
-            if (
-                ![
-                    'https://track-suite.herokuapp.com',
-                    'https://wallet.trezor.io',
-                    window.location.origin,
-                ].includes(e.origin)
-            ) {
-                return;
-            }
-            // console.warn('OnMessage', e, e.data);
-
-            if (typeof e.data !== 'string') return;
-
-            console.log(e);
-            const params = urlHashParams(e.data);
-            const token = params.access_token;
-            console.warn('token', token);
-            if (token) {
-                this.token = token;
-                console.warn('resolve');
-                dfd.resolve(token);
-            } else {
-                dfd.reject(new Error('Cancelled'));
-            }
-        };
-
-        // @ts-ignore
-        const { ipcRenderer } = global;
-        if (ipcRenderer) {
-            const onIpcMessage = (_sender: any, message: any) => {
-                onMessage({ ...message, origin: 'herokuapp.com' });
-                ipcRenderer.off('oauth', onIpcMessage);
-            };
-            ipcRenderer.on('oauth', onIpcMessage);
-        } else {
-            window.addEventListener('message', onMessage);
-        }
-
-        window.open(url.toString(), WINDOW_TITLE, WINDOW_PROPS);
-
-        return dfd.promise;
+        return getOauthToken(String(url));
     }
 
     /**
@@ -206,6 +152,18 @@ class Client {
         json.files.forEach(file => {
             this.nameIdMap[file.name] = file.id;
         });
+
+        // hmm this is a rare case that probably can't be solved in elegant way. User may somehow (manually, or some race condition)
+        // create multiple files with same name (file.mtdt, file.mtdt). They can both exist in google drive simultaneously and
+        // drive has no problem with it as they have different id. What makes this case even more confusing is that list requests
+        // returns array of files in randomized order. So user is seeing and is saving his data in one session to file.mtdt(id: A) but
+        // then to file.mtdt(id: B) in another session.
+        if (Object.keys(this.nameIdMap).length < json.files.length) {
+            console.warn(
+                'There are multiple files with the same name in google drive. This may happen as a result of race condition bug in application and we should fix it :]',
+            );
+        }
+
         return json;
     }
 
@@ -274,6 +232,7 @@ class Client {
         if (this.nameIdMap[name]) {
             return this.nameIdMap[name];
         }
+        // request to list files might have already been dispatched and exist as unresolved promise, so wait for it here in that case
         if (this.listPromise) {
             await this.listPromise;
             return this.nameIdMap[name];
@@ -325,7 +284,6 @@ class Client {
         }
 
         const response = await fetch(url, fetchOptions);
-        console.warn('response', response);
         if (response.status === 200) return response;
         switch (response.status) {
             case 401:

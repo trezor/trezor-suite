@@ -171,7 +171,7 @@ export const fetchMetadata = (deviceState: string) => async (
     getState: GetState,
 ) => {
     // todo: remove log. now useful to detect excessive fetching
-    // console.warn('fetchMetadata');
+    console.warn('fetchMetadata');
     const provider = await getProvider(getState().metadata.provider);
     if (!provider) return;
 
@@ -223,6 +223,7 @@ export const fetchMetadata = (deviceState: string) => async (
     );
 
     const accountPromises = accounts.map(async account => {
+        console.warn('hasAccounts with');
         const buffer = await provider.getFileContent(account.metadata.fileName);
         // in if brach, we found associated metadata file for given account, decrypt it
         // and save its metadata into reducer;
@@ -369,6 +370,7 @@ export const addDeviceMetadata = (
             );
             provider.setFileContent(device.metadata.fileName, encrypted);
         } else {
+            // todo: remove
             dispatch(notificationActions.addToast({ type: 'metadata-saved-locally' }));
         }
     } catch (error) {
@@ -441,8 +443,8 @@ export const addAccountMetadata = (
 
             await provider.setFileContent(account.metadata.fileName, encrypted);
         } else {
+            // todo: remove
             dispatch(notificationActions.addToast({ type: 'metadata-saved-locally' }));
-            // todo: probably toast that data was saved locally only
         }
     } catch (error) {
         dispatch(handleProviderError(error));
@@ -618,9 +620,11 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
             await dispatch(initProvider());
         }
 
+        // at this point, provider might still be undefined.
         provider = await getProvider(getState().metadata.provider);
-        console.log('addMetadata provider', provider);
-        // at this point, provider might still be undefined. It means that metadata will be saved only locally.
+        if (!provider) {
+            return;
+        }
 
         // // save reference to original value. we need to compare old and new value to determine
         // // if we need to save new value. If it hasn't changed we don't need to save it.
@@ -685,7 +689,10 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
     }
 
     // 2. set device metadata key (master key). Sometimes, if state is not present
-    if (device.metadata.status !== 'enabled' && force) {
+    if (
+        device.metadata.status === 'disabled' ||
+        (device.metadata.status === 'cancelled' && force)
+    ) {
         needsUpdate = true;
         await dispatch(setDeviceMetadataKey(force));
     }

@@ -36,15 +36,14 @@ const VersionLink = styled.a``;
 const Settings = ({
     language,
     metadata,
+    device,
     setLocalCurrency,
     localCurrency,
     fetchLocale,
     clearStores,
     goto,
     initMetadata,
-    initProvider,
     disconnectProvider,
-    // enableMetadata,
     disableMetadata,
 }: Props) => {
     const analytics = useAnalytics();
@@ -136,7 +135,7 @@ const Settings = ({
                         </ActionColumn>
                     </SectionItem>
                 )}
-                {metadata.enabled && !metadata.provider && (
+                {metadata.enabled && !metadata.provider && device?.state && (
                     <SectionItem>
                         <TextColumn
                             title="Labeling not persistent"
@@ -145,7 +144,7 @@ const Settings = ({
                         <ActionColumn>
                             <ActionButton
                                 variant="secondary"
-                                onClick={() => initProvider()}
+                                onClick={() => initMetadata(true)}
                                 data-test="@settings/metadata/connect-provider-button"
                             >
                                 Connect

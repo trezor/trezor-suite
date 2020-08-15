@@ -1,58 +1,6 @@
 import { Dropbox } from 'dropbox';
-import { METADATA } from '@suite-actions/constants';
-import { Deferred, createDeferred } from '@suite-utils/deferred';
 import { AbstractMetadataProvider } from '@suite-types/metadata';
-import { urlHashParams } from '@suite-utils/metadata';
-
-const WINDOW_TITLE = 'DropboxAuthPopup';
-const WINDOW_WIDTH = 600;
-const WINDOW_HEIGHT = 720;
-const WINDOW_PROPS = `width=${WINDOW_WIDTH},height=${WINDOW_HEIGHT},dialog=yes,dependent=yes,scrollbars=yes,location=yes`;
-
-export const getOauthToken = (url: string) => {
-    console.log('getOauthToken orig');
-    const dfd: Deferred<string> = createDeferred();
-    // const props = WINDOW_PROPS + this._getRelativePosition();
-    const props = WINDOW_PROPS;
-
-    const onMessage = (e: MessageEvent) => {
-        // filter non oauth messages
-        if (!['https://track-suite.herokuapp.com', window.location.origin].includes(e.origin)) {
-            return;
-        }
-
-        if (typeof e.data !== 'string') return;
-
-        const params = urlHashParams(e.data);
-
-        const token = params.access_token;
-        const { state } = params;
-
-        console.warn('TOKEN', token, state);
-
-        if (token) {
-            dfd.resolve(token);
-        } else {
-            dfd.reject(new Error('Cancelled'));
-        }
-    };
-
-    // @ts-ignore
-    const { ipcRenderer } = global;
-    if (ipcRenderer) {
-        const onIpcMessage = (_sender: any, message: any) => {
-            onMessage({ ...message, origin: 'herokuapp.com' });
-            ipcRenderer.off('oauth', onIpcMessage);
-        };
-        ipcRenderer.on('oauth', onIpcMessage);
-    } else {
-        window.addEventListener('message', onMessage);
-    }
-
-    window.open(url, WINDOW_TITLE, props);
-
-    return dfd.promise;
-};
+import { getOauthToken, getOauthReceiverUrl } from '@suite-utils/metadata';
 
 class DropboxProvider implements AbstractMetadataProvider {
     client: Dropbox;
@@ -70,7 +18,7 @@ class DropboxProvider implements AbstractMetadataProvider {
 
     async connect() {
         // const hasToken = this.client.getAccessToken();
-        const url = this.client.getAuthenticationUrl(METADATA.OAUTH_FILE, 'TODO:RandomToken');
+        const url = this.client.getAuthenticationUrl(getOauthReceiverUrl(), 'TODO:RandomToken');
 
         try {
             const token = await getOauthToken(url);

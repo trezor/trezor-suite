@@ -17,3 +17,8 @@ export const ENABLE_LABELING_KEY = 'Enable labeling?';
 export const ENABLE_LABELING_VALUE =
     'fedcba98765432100123456789abcdeffedcba98765432100123456789abcdef';
 export const FETCH_INTERVAL = 1000 * 60 * 3; // 3 minutes?
+
+export const AUTH_WINDOW_TITLE = 'AuthPopup';
+export const AUTH_WINDOW_WIDTH = 600;
+export const AUTH_WINDOW_HEIGHT = 720;
+export const AUTH_WINDOW_PROPS = `width=${AUTH_WINDOW_WIDTH},height=${AUTH_WINDOW_HEIGHT},dialog=yes,dependent=yes,scrollbars=yes,location=yes`;
