@@ -340,7 +340,7 @@ export const addDeviceMetadata = (
             provider.setFileContent(device.metadata.fileName, encrypted);
         } else {
             // todo: remove
-            dispatch(notificationActions.addToast({ type: 'metadata-saved-locally' }));
+            // dispatch(notificationActions.addToast({ type: 'metadata-saved-locally' }));
         }
     } catch (error) {
         dispatch(handleProviderError(error));
@@ -412,7 +412,7 @@ export const addAccountMetadata = (
             await provider.setFileContent(account.metadata.fileName, encrypted);
         } else {
             // todo: remove
-            dispatch(notificationActions.addToast({ type: 'metadata-saved-locally' }));
+            // dispatch(notificationActions.addToast({ type: 'metadata-saved-locally' }));
         }
     } catch (error) {
         dispatch(handleProviderError(error));

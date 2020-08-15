@@ -7,6 +7,7 @@ export interface State {
     [key: string]: string;
 }
 
+// todo: this is probably deprecated
 export const initialState: State = {
     tb1q2ewuctpf5y3jfr34pnp9pv9tfw0hswnk7rlcws: 'My labeled address',
     bc1qp89escs0slwnl0zls5pjgeg9fwu63kgepsrzql: 'Matej 1',

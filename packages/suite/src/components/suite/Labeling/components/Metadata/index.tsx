@@ -127,7 +127,6 @@ const EditContainer = (props: {
 
     return (
         <div style={{ display: 'flex' }}>
-            {/* @ts-ignore */}
             <div
                 style={{ minWidth: '40px', paddingLeft: '2px' }}
                 contentEditable
@@ -213,8 +212,6 @@ const AddMetadataLabel = (props: Props) => {
             ...props.payload,
             value: value || undefined,
         });
-
-        // setEditing(false);
     };
 
     let dropdownItems: DropdownMenuItem[] = [
