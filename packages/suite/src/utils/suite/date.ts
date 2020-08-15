@@ -9,8 +9,6 @@ import {
     eachQuarterOfInterval,
     eachMonthOfInterval,
     eachDayOfInterval,
-    isBefore,
-    addQuarters,
 } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 
@@ -82,13 +80,8 @@ export const calcTicksFromData = (data: { time: number }[]) => {
     }
 
     // 3 months interval
-    // add another quarter if last txs occured in month after last returned month from func below
     const timestamps = eachQuarterOfInterval({ start: startUnix, end: endUnix });
-    const lastTimestamp = timestamps[timestamps.length - 1];
 
-    if (timestamps.length > 0 && isBefore(lastTimestamp, endUnix)) {
-        timestamps.push(addQuarters(lastTimestamp, 1));
-    }
     return timestamps;
 };
 

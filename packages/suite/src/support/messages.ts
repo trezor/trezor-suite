@@ -2117,10 +2117,6 @@ const definedMessages = defineMessages({
         id: 'TR_SEND_FEE_TOOLTIP',
         defaultMessage: 'TR_SEND_FEE_TOOLTIP',
     },
-    TR_SEND_AMOUNT_TOOLTIP: {
-        id: 'TR_SEND_AMOUNT_TOOLTIP',
-        defaultMessage: 'TR_SEND_AMOUNT_TOOLTIP',
-    },
     TR_PIN_MISMATCH_HEADING: {
         id: 'TR_PIN_MISMATCH_HEADING',
         defaultMessage: 'Pin mismatch',
@@ -3440,7 +3436,7 @@ const definedMessages = defineMessages({
     },
     TR_LANDING_MACOS: {
         id: 'TR_LANDING_MACOS',
-        defaultMessage: 'Mac OS',
+        defaultMessage: 'macOS',
     },
     TR_LANDING_DOWNLOAD: {
         id: 'TR_LANDING_DOWNLOAD',

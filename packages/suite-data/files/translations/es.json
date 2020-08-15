@@ -770,7 +770,7 @@
 	"TR_LANDING_CHOOSE_VALUE": "– Click to choose –",
 	"TR_LANDING_WINDOWS": "Windows",
 	"TR_LANDING_LINUX": "Linux",
-	"TR_LANDING_MACOS": "Mac OS",
+	"TR_LANDING_MACOS": "macOS",
 	"TR_LANDING_DOWNLOAD": "Download",
 	"TR_LANDING_CONTINUE": "Continue in browser",
 	"TR_SEND_SEND_MAX": "Send max",
@@ -792,5 +792,6 @@
 	"TR_BALANCE": "Balance",
 	"TR_MY_PORTFOLIO": "My Portfolio",
 	"TR_ALL_TRANSACTIONS": "All Transactions",
-	"TR_TOKENS": "Tokens"
+	"TR_TOKENS": "Tokens",
+	"TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY": "Wait for discovery process to complete before adding a new account."
 }

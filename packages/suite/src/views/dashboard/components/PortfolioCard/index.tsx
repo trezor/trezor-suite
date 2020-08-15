@@ -23,6 +23,7 @@ const StyledCard = styled(Card)`
 const Body = styled.div`
     display: flex;
     align-items: center;
+    padding: 0px 20px;
     flex: 1;
 `;
 
@@ -105,7 +106,7 @@ const PortfolioCard = React.memo(() => {
             //     ) : undefined
             // }
         >
-            <StyledCard>
+            <StyledCard noPadding>
                 <Header
                     portfolioValue={portfolioValue}
                     localCurrency={localCurrency}

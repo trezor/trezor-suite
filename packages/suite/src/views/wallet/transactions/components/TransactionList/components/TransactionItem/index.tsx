@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
-import { Translation } from '@suite-components';
+import { Translation, HiddenPlaceholder } from '@suite-components';
 import { variables, colors, Button } from '@trezor/components';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import { AccountMetadata } from '@suite-types/metadata';
@@ -38,7 +38,7 @@ const Content = styled.div`
     font-variant-numeric: tabular-nums;
 `;
 
-const Description = styled.span`
+const Description = styled(HiddenPlaceholder)`
     color: ${colors.NEUE_TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};

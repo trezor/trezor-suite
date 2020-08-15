@@ -191,7 +191,7 @@
 	"TR_ETH_DATA_NOT_HEX": "Data is not hex",
 	"TR_ETH_GAS_LIMIT_NOT_NUMBER": "Gas limit is not a number",
 	"TR_ETH_GAS_PRICE_NOT_NUMBER": "Gas price is not a number",
-	"TR_EXCHANGE_RATE": "Exchange rate",
+	"TR_EXCHANGE_RATE": "Price",
 	"TR_FAILED_BACKUP": "Backup failed. Please wipe your device and start over with the setup process.",
 	"TR_BACKUP_SUCCESSFUL": "Backup successful",
 	"TR_FEE": "Fee",
@@ -518,7 +518,7 @@
 	"LABELING_ACCOUNT_WITH_TYPE": "Account #{index} ({type})",
 	"TR_DISCREET_TOOLTIP": "Hides all balances",
 	"TX_CONFIRMATIONS_EXPLAIN": "Number of confirmations by the network through the mining process",
-	"TR_LAST_UPDATE": "Last update: {value}",
+	"TR_LAST_UPDATE": "Price: Updated {value}",
 	"TR_UPDATE_AVAILABLE": "Update available",
 	"TR_UP_TO_DATE": "Up to date",
 	"TR_LIVE": "Live",
@@ -770,7 +770,7 @@
 	"TR_LANDING_CHOOSE_VALUE": "– Click to choose –",
 	"TR_LANDING_WINDOWS": "Windows",
 	"TR_LANDING_LINUX": "Linux",
-	"TR_LANDING_MACOS": "Mac OS",
+	"TR_LANDING_MACOS": "macOS",
 	"TR_LANDING_DOWNLOAD": "Download",
 	"TR_LANDING_CONTINUE": "or continue in browser",
 	"TR_SEND_SEND_MAX": "Send max",
@@ -792,5 +792,6 @@
 	"TR_BALANCE": "Balance",
 	"TR_MY_PORTFOLIO": "My Portfolio",
 	"TR_ALL_TRANSACTIONS": "All Transactions",
-	"TR_TOKENS": "Tokens"
+	"TR_TOKENS": "Tokens",
+	"TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY": "Accounts are still loading. Please wait before adding a new one."
 }
