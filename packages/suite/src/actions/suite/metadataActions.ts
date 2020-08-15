@@ -110,7 +110,7 @@ export const disconnectProvider = () => async (dispatch: Dispatch, getState: Get
     try {
         const provider = await getProvider(getState().metadata.provider);
         if (provider) {
-            provider.disconnect();
+            await provider.disconnect();
             providerInstance = undefined;
         }
     } catch (error) {
@@ -125,7 +125,6 @@ export const disconnectProvider = () => async (dispatch: Dispatch, getState: Get
 };
 
 const handleProviderError = (error: Error) => (dispatch: Dispatch, getState: GetState) => {
-    console.log('error', error);
     const { metadata } = getState();
     if (!error) {
         return dispatch(
@@ -170,8 +169,6 @@ export const fetchMetadata = (deviceState: string) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    // todo: remove log. now useful to detect excessive fetching
-    console.warn('fetchMetadata');
     let provider: undefined | AbstractMetadataProvider;
     try {
         provider = await getProvider(getState().metadata.provider);
@@ -249,7 +246,6 @@ export const fetchMetadata = (deviceState: string) => async (
     return Promise.all(promises).then(
         result => result,
         error => {
-            console.warn('error', error);
             dispatch(handleProviderError(error));
         },
     );
@@ -287,8 +283,6 @@ const syncMetadataKeys = () => (dispatch: Dispatch, getState: GetState) => {
 };
 
 export const connectProvider = (type: MetadataProviderType) => async (dispatch: Dispatch) => {
-    console.warn('connectProvider', type);
-
     try {
         const provider = await getProvider({ type });
         if (!provider) return;
@@ -297,7 +291,6 @@ export const connectProvider = (type: MetadataProviderType) => async (dispatch: 
 
         if (connected) {
             const credentials = await provider.getCredentials();
-            console.warn('credentials', credentials);
             if (!credentials) {
                 return;
             }
@@ -311,7 +304,6 @@ export const connectProvider = (type: MetadataProviderType) => async (dispatch: 
             return true;
         }
     } catch (error) {
-        console.log('connectProvider, error', error);
         dispatch(handleProviderError(error));
     }
 };
@@ -511,52 +503,8 @@ export const setDeviceMetadataKey = (force = false) => async (
     }
 };
 
-/**
- * addMetadata method is intended to be called from component. Option to call it should
- * appear only if metadata is enabled globally. This method shall then take care of everything
- * needed to save metadata into a long-term storage.
- */
-export const addMetadata = (payload: MetadataAddPayload) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    // console.warn('add metadata', payload);
+export const addMetadata = (payload: MetadataAddPayload) => async (dispatch: Dispatch) => {
     try {
-        // make sure metadata is enabled globally
-        const { metadata } = getState();
-        const { device } = getState().suite;
-        let provider = await getProvider(getState().metadata.provider);
-
-        if (!device?.state) return;
-
-        // metadata is not enabled, it means that suite does not try to generate keys and download and decrypt files, but user activates
-        // metadata when trying to add it.
-        if (!metadata.enabled) {
-            dispatch(enableMetadata());
-        }
-
-        if (device?.metadata?.status !== 'enabled') {
-            // prompt again to get metadata master key
-            await dispatch(setDeviceMetadataKey(true));
-        }
-
-        // user might have cancelled metadata on device
-        if (getState().suite.device?.metadata.status !== 'enabled') {
-            return;
-        }
-        // if not, init provider log-in flow but do not wait for it to finish as we may  already do
-        // some more synchronous tasks without waiting.
-        if (!provider) {
-            // init provider calls opens modal from which connect provider is called
-            await dispatch(initProvider());
-        }
-
-        // at this point, provider might still be undefined.
-        provider = await getProvider(getState().metadata.provider);
-        if (!provider) {
-            return;
-        }
-
         if (payload.type === 'walletLabel') {
             dispatch(addDeviceMetadata({ ...payload }));
         } else {
@@ -576,7 +524,6 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
  * tries to add new label.
  */
 export const init = (force = false) => async (dispatch: Dispatch, getState: GetState) => {
-    console.log('init');
     const { device } = getState().suite;
     if (!device?.state) {
         return false;

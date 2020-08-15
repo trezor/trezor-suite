@@ -14,11 +14,9 @@ class GoogleProvider implements AbstractMetadataProvider {
     async connect() {
         try {
             await this.client.authorize();
-            console.warn('connected');
             this.connected = true;
             return true;
         } catch (error) {
-            console.warn('connect error', error);
             return false;
         }
     }
@@ -44,7 +42,6 @@ class GoogleProvider implements AbstractMetadataProvider {
             },
             id,
         );
-        console.warn('response getFileContent', response);
         return Buffer.from(response, 'hex');
     }
 

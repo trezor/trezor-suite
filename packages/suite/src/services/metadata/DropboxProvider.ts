@@ -18,8 +18,6 @@ class DropboxProvider implements AbstractMetadataProvider {
     }
 
     async connect() {
-        // const hasToken = this.client.getAccessToken();
-        console.log('getOauthReceiverUrl()', getOauthReceiverUrl());
         const url = this.client.getAuthenticationUrl(getOauthReceiverUrl(), 'TODO:RandomToken');
 
         try {
@@ -50,7 +48,6 @@ class DropboxProvider implements AbstractMetadataProvider {
             const exists = await this.client.filesSearch({
                 path: '',
                 query: `${file}.mtdt`,
-                // mode: 'filename',
             });
             if (exists && exists.matches.length > 0) {
                 const file = await this.client.filesDownload({
@@ -67,7 +64,6 @@ class DropboxProvider implements AbstractMetadataProvider {
     }
 
     async setFileContent(file: string, content: Buffer) {
-        console.log(content.toString('hex'));
         try {
             const blob = new Blob([content], { type: 'text/plain;charset=UTF-8' });
             await this.client.filesUpload({

@@ -90,7 +90,6 @@ class Client {
     }
 
     async authorize() {
-        console.log('getOauthReceiverUrl()', getOauthReceiverUrl());
         // eslint-disable-next-line
         const redirect_uri = getOauthReceiverUrl();
         const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
@@ -124,7 +123,6 @@ class Client {
     }
 
     async getTokenInfo(): Promise<GetTokenInfoResponse> {
-        console.log('getTokeninfo');
         const response = await this.call(
             `https://www.googleapis.com/drive/v3/about?fields=user&access_token=${this.token}`,
             // `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${this.token}`,
@@ -132,7 +130,6 @@ class Client {
             {},
         );
         const json = await response.json();
-        console.log(json);
         return json;
     }
 
@@ -149,7 +146,6 @@ class Client {
         );
 
         const json: ListResponse = await response.json();
-        console.warn('json', json);
 
         this.nameIdMap = {};
         json.files.forEach(file => {
@@ -160,7 +156,7 @@ class Client {
         // create multiple files with same name (file.mtdt, file.mtdt). They can both exist in google drive simultaneously and
         // drive has no problem with it as they have different id. What makes this case even more confusing is that list requests
         // returns array of files in randomized order. So user is seeing and is saving his data in one session to file.mtdt(id: A) but
-        // then to file.mtdt(id: B) in another session.
+        // then to file.mtdt(id: B) in another session. So this warn should help as debug if this mysterious bug appears some day...
         if (Object.keys(this.nameIdMap).length < json.files.length) {
             console.warn(
                 'There are multiple files with the same name in google drive. This may happen as a result of race condition bug in application and we should fix it :]',
@@ -232,7 +228,6 @@ class Client {
      * to avoid this, google class holds map of name-ids and performs list request only if it could not find required name in the map.
      */
     async getIdByName(name: string, forceReload = false) {
-        console.log('getIdByName', forceReload);
         if (!forceReload && this.nameIdMap[name]) {
             return this.nameIdMap[name];
         }
@@ -297,7 +292,6 @@ class Client {
                 this.token = '';
                 throw { response, status: response.status, error: 'authorization error' };
             default:
-                console.error(response);
                 throw {
                     response,
                     status: response.status,

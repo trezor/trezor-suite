@@ -19,7 +19,8 @@ export const getOauthReceiverUrl = () => {
 };
 
 export const getMetadataOauthToken = (url: string) => {
-    console.log('getMetadataOauthToken orig');
+    const originalParams = urlHashParams(url);
+
     const dfd: Deferred<string> = createDeferred();
 
     const props = METADATA.AUTH_WINDOW_PROPS;
@@ -41,10 +42,11 @@ export const getMetadataOauthToken = (url: string) => {
 
         const params = urlHashParams(e.data);
 
-        const token = params.access_token;
-        const { state } = params;
+        if (params.state !== originalParams.state) {
+            return;
+        }
 
-        console.warn('TOKEN', token, state);
+        const token = params.access_token;
 
         if (token) {
             dfd.resolve(token);
