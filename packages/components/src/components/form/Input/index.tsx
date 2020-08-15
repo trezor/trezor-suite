@@ -15,10 +15,13 @@ const Wrapper = styled.div<WrappedProps>`
 `;
 
 const StyledInput = styled.input<Props>`
-    text-indent: ${props => props.textIndent}px;
+    /* text-indent: ${props => props.textIndent}px; */
     font-family: ${variables.FONT_FAMILY.TTHOVES};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    padding: 1px 16px 0 16px; /* 2px from top = input height should be 36px and 48px  */
+    padding: 1px 16px 0 ${props =>
+        props.textIndent
+            ? `${props.textIndent + 16}px`
+            : '16px'}; /* 2px from top = input height should be 36px and 48px  */
     font-size: ${variables.FONT_SIZE.SMALL};
     border-radius: 4px;
     border: solid 2px
