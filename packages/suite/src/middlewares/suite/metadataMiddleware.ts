@@ -10,9 +10,6 @@ const metadata = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
         action.payload = api.dispatch(metadataActions.setAccountMetadataKey(action.payload));
     }
 
-    // if (action.type === DISCOVERY.UPDATE && action.payloada.) {
-
-    // }
     // pass action
     next(action);
 

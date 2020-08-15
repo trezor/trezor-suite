@@ -114,7 +114,6 @@ export const disconnectProvider = () => async (dispatch: Dispatch, getState: Get
             providerInstance = undefined;
         }
     } catch (error) {
-        console.log('error disconnectprovider');
         // not sure if toast here or not? might make sense to error silently here...
     }
     // flush reducer
@@ -211,19 +210,6 @@ export const fetchMetadata = (deviceState: string) => async (
                 },
             });
         }
-        // todo: probably not needed, we don't expect data to be stored locally
-        //  else if (device.metadata.walletLabel) {
-        //     // here we know that there is no file saved in cloud but user has added metadata locally
-        //     // so we save it to cloud to make it persistent.
-        //     const encrypted = await metadataUtils.encrypt(
-        //         {
-        //             version: '1.0.0',
-        //             walletLabel: device.metadata.walletLabel,
-        //         },
-        //         device.metadata.aesKey,
-        //     );
-        //     provider.setFileContent(device.metadata.fileName, encrypted);
-        // }
     })();
 
     const accounts = getState().wallet.accounts.filter(
@@ -256,25 +242,6 @@ export const fetchMetadata = (deviceState: string) => async (
                 },
             });
         }
-        // probably not needed, we don't expect data to be stored locally
-        // else if (
-        //     // in else branch, if we find that some account has metadata, it means that it is not synced to cloud.
-        //     Object.values(account.metadata.addressLabels).length ||
-        //     Object.values(account.metadata.outputLabels).length ||
-        //     account.metadata.accountLabel
-        // ) {
-        //     const encrypted = await metadataUtils.encrypt(
-        //         {
-        //             version: '1.0.0',
-        //             accountLabel: account.metadata.accountLabel,
-        //             outputLabels: account.metadata.outputLabels,
-        //             addressLabels: account.metadata.addressLabels,
-        //         },
-        //         account.metadata.aesKey,
-        //     );
-
-        //     await provider.setFileContent(account.metadata.fileName, encrypted);
-        // }
     });
 
     const promises = [deviceFileContentP, ...accountPromises];
@@ -332,7 +299,6 @@ export const connectProvider = (type: MetadataProviderType) => async (dispatch: 
             const credentials = await provider.getCredentials();
             console.warn('credentials', credentials);
             if (!credentials) {
-                // dispatch(handleProviderError({ status: 401 }));
                 return;
             }
             // TODO: toast errors
@@ -397,7 +363,6 @@ export const addAccountMetadata = (
     try {
         // clone Account.metadata
         const metadata = JSON.parse(JSON.stringify(account.metadata));
-        // const ts = new Date().getTime();
         if (payload.type === 'outputLabel') {
             if (typeof payload.value !== 'string' || payload.value.length === 0) {
                 if (!metadata.outputLabels[payload.txid]) return;
@@ -480,7 +445,6 @@ export const addAccountMetadata = (
 /**
  * Generate device master-key
  * */
-
 export const setDeviceMetadataKey = (force = false) => async (
     dispatch: Dispatch,
     getState: GetState,
@@ -548,46 +512,6 @@ export const setDeviceMetadataKey = (force = false) => async (
 };
 
 /**
- * When opening modal, pre fill value with value from reducer (after it got updated by fetchMetadata)
- * This way user will not overwrite possibly existing metadata
- */
-// const syncMetadataPayload = (payload: MetadataAddPayload) => (
-//     _dispatch: Dispatch,
-//     getState: GetState,
-// ) => {
-//     // check if there is value to pre fill into user input
-
-//     if (payload.type === 'walletLabel') {
-//         const { device } = getState().suite;
-//         if (
-//             device?.features &&
-//             device?.metadata.status === 'enabled' &&
-//             device?.metadata.walletLabel
-//         ) {
-//             payload.value = device.metadata.walletLabel;
-//         }
-//     } else {
-//         const account = getState().wallet.accounts.find(acc => acc.key === payload.accountKey);
-//         if (payload.type === 'accountLabel' && account?.metadata.accountLabel) {
-//             payload.value = account?.metadata.accountLabel;
-//         }
-//         if (
-//             payload.type === 'addressLabel' &&
-//             account?.metadata.addressLabels[payload.defaultValue]
-//         ) {
-//             payload.value = account?.metadata.addressLabels[payload.defaultValue];
-//         }
-//         if (
-//             payload.type === 'outputLabel' &&
-//             account?.metadata.outputLabels[payload.txid][payload.outputIndex]
-//         ) {
-//             payload.value = account?.metadata.outputLabels[payload.txid][payload.outputIndex];
-//         }
-//     }
-//     return payload;
-// };
-
-/**
  * addMetadata method is intended to be called from component. Option to call it should
  * appear only if metadata is enabled globally. This method shall then take care of everything
  * needed to save metadata into a long-term storage.
@@ -602,10 +526,6 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
         const { metadata } = getState();
         const { device } = getState().suite;
         let provider = await getProvider(getState().metadata.provider);
-
-        // needs update indicates that metadata is probably out-of-sync with cloud
-        // const needsUpdate =
-        //     device?.metadata?.status !== 'enabled' || !metadata.enabled || !provider;
 
         if (!device?.state) return;
 
@@ -636,28 +556,6 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
         if (!provider) {
             return;
         }
-
-        // // save reference to original value. we need to compare old and new value to determine
-        // // if we need to save new value. If it hasn't changed we don't need to save it.
-        // let originalValue = payload.value;
-
-        // if (needsUpdate && provider) {
-        //     // after metadata is loaded, pre fill corresponding metadata value into payload
-        //     payload = dispatch(syncMetadataPayload(payload));
-
-        //     originalValue = payload.value;
-        // }
-        // const decision = createDeferred<string | undefined>();
-
-        // // value did not change, no need to sync with cloud, stop here
-        // if (value === originalValue) {
-        //     return;
-        // }
-        // if (payload.type === 'walletLabel') {
-        //     dispatch(addDeviceMetadata({ ...payload, value }));
-        // } else {
-        //     dispatch(addAccountMetadata({ ...payload, value }));
-        // }
 
         if (payload.type === 'walletLabel') {
             dispatch(addDeviceMetadata({ ...payload }));
@@ -704,6 +602,7 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
     }
 
     dispatch(syncMetadataKeys());
+
     // 3. connect to provider
     if (getState().suite.device?.metadata.status === 'enabled' && !getState().metadata.provider) {
         needsUpdate = true;

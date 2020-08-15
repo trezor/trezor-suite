@@ -305,11 +305,9 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         discovery.status === DISCOVERY.STATUS.IDLE ||
         discovery.status > DISCOVERY.STATUS.STOPPING
     ) {
+        // if metadata is enabled in settings, but metadata master key does not exist for this device
         // always try to generate device metadata master key first
         if (metadata.enabled && device.metadata.status !== 'enabled') {
-            console.warn(
-                'init metadata from discovery actions (only if globally enabled and not cancelled on device)',
-            );
             await dispatch(metadataActions.init());
         }
 

@@ -34,7 +34,6 @@ describe('Metadata', () => {
             cy.getTestElement('@metadata/walletLabel/standard-wallet/add-label-button').click({force: true });
             cy.passThroughInitMetadata();
 
-            // todo: hmm focus lock troubles?
             cy.getTestElement('@metadata/walletLabel/standard-wallet/add-label-button').click({force: true });
 
             cy.getTestElement('@metadata/input').type('label for standard wallet{enter}');
@@ -47,7 +46,13 @@ describe('Metadata', () => {
             cy.task('pressYes');
             cy.getTestElement('@passphrase/input').type('abc');
             cy.getTestElement('@passphrase/hidden/submit-button').click();
+            
+            cy.log('discovering new passphrase -> new deviceState -> we need new metadata master key');
+            cy.getConfirmActionOnDeviceModal();
+            cy.task('pressYes');
+
             cy.getTestElement('@passphrase/input').type('abc');
+
             cy.getTestElement('@passphrase/confirm-checkbox').click();
             cy.getTestElement('@passphrase/hidden/submit-button').click();
 
@@ -55,10 +60,6 @@ describe('Metadata', () => {
             cy.getTestElement('@menu/switch-device').click({ force: true });
             cy.getTestElement('@metadata/walletLabel/standard-wallet').should('contain', 'wallet for drugs');
 
-            cy.log('we need new master key');
-            cy.getTestElement('@metadata/walletLabel/hidden-wallet-1/add-label-button').click({force: true });
-            cy.getConfirmActionOnDeviceModal();
-            cy.task('pressYes');
             // focus lock? :(
             cy.getTestElement('@metadata/walletLabel/hidden-wallet-1/add-label-button').click({force: true });
             cy.getTestElement('@metadata/input').type('wallet not for drugs{enter}');

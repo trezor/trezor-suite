@@ -23,7 +23,6 @@ class File {
     }
 }
 
-
 /**
  * Mock implementation of google drive service intended to be used in e2e tests.
  */
@@ -62,7 +61,7 @@ class GoogleMock {
             }
         }
 
-        app.use((req, res, next) => {
+        app.use((_req, res, next) => {
             if (!this.user) {
                 res.status(401);
                 res.send();
