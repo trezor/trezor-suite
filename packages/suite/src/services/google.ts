@@ -1,6 +1,6 @@
 /* eslint no-throw-literal: 0 */
 
-import { getOauthToken, getOauthReceiverUrl } from '@suite-utils/metadata';
+import { getMetadataOauthToken, getOauthReceiverUrl } from '@suite-utils/oauth';
 import { getRandomId } from '@suite-utils/random';
 
 const CLIENT_ID = '842348096891-efhc485636d5t09klvrve0pi4njhq3l8.apps.googleusercontent.com';
@@ -91,6 +91,7 @@ class Client {
     }
 
     async authorize() {
+        console.log('getOauthReceiverUrl()', getOauthReceiverUrl());
         // eslint-disable-next-line
         const redirect_uri = getOauthReceiverUrl();
         const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
@@ -108,7 +109,8 @@ class Client {
             redirect_uri,
         }).toString();
 
-        return getOauthToken(String(url));
+        const token = await getMetadataOauthToken(String(url));
+        this.token = token;
     }
 
     /**
@@ -123,6 +125,7 @@ class Client {
     }
 
     async getTokenInfo(): Promise<GetTokenInfoResponse> {
+        console.log('getTokeninfo');
         const response = await this.call(
             `https://www.googleapis.com/drive/v3/about?fields=user&access_token=${this.token}`,
             // `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${this.token}`,
@@ -130,6 +133,7 @@ class Client {
             {},
         );
         const json = await response.json();
+        console.log(json);
         return json;
     }
 
@@ -192,9 +196,9 @@ class Client {
                 method: 'POST',
                 headers: {
                     'Content-Type':
-                        typeof params.body === 'string'
-                            ? `multipart/related; boundary="${BOUNDARY}"`
-                            : 'application/json',
+                        // typeof params.body === 'string'
+                        `multipart/related; boundary="${BOUNDARY}"`,
+                    // : 'application/json',
                 },
             },
             params,

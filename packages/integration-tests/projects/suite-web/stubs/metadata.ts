@@ -6,7 +6,8 @@ export const stubFetch = (uri: string, options: Parameters<typeof fetch>[1]) => 
     return fetch(uri, options);
 }
 
-// process of getting oauth token involves widow.open and waits for post message from it. Cypress can't touch other windows/tabs it so what we do here is that we replace implementation
+// process of getting oauth token involves widow.open and waits for post message from it.
+// Cypress can't touch other windows/tabs it so what we do here is that we replace implementation
 // of window.open to invoke only postMessage with data that satisfy application flow
 export const stubOpen = (win: Window) => {
     // @ts-ignore

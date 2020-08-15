@@ -114,6 +114,7 @@ export const disconnectProvider = () => async (dispatch: Dispatch, getState: Get
             providerInstance = undefined;
         }
     } catch (error) {
+        console.log('error disconnectprovider');
         // not sure if toast here or not? might make sense to error silently here...
     }
     // flush reducer
@@ -172,7 +173,12 @@ export const fetchMetadata = (deviceState: string) => async (
 ) => {
     // todo: remove log. now useful to detect excessive fetching
     console.warn('fetchMetadata');
-    const provider = await getProvider(getState().metadata.provider);
+    let provider: undefined | AbstractMetadataProvider;
+    try {
+        provider = await getProvider(getState().metadata.provider);
+    } catch (error) {
+        dispatch(handleProviderError(error));
+    }
     if (!provider) return;
 
     // TODO: watch internet connection
@@ -223,7 +229,7 @@ export const fetchMetadata = (deviceState: string) => async (
     );
 
     const accountPromises = accounts.map(async account => {
-        console.warn('hasAccounts with');
+        if (!provider) return; // ts
         const buffer = await provider.getFileContent(account.metadata.fileName);
         // in if brach, we found associated metadata file for given account, decrypt it
         // and save its metadata into reducer;
@@ -311,12 +317,10 @@ const syncMetadataKeys = () => (dispatch: Dispatch, getState: GetState) => {
     });
 };
 
-export const connectProvider = (type: MetadataProviderType) => async (
-    dispatch: Dispatch,
-    // _getState: GetState,
-) => {
+export const connectProvider = (type: MetadataProviderType) => async (dispatch: Dispatch) => {
+    console.warn('connectProvider', type);
+
     try {
-        // console.warn('connectProvider', type);
         const provider = await getProvider({ type });
         if (!provider) return;
 
@@ -324,8 +328,12 @@ export const connectProvider = (type: MetadataProviderType) => async (
 
         if (connected) {
             const credentials = await provider.getCredentials();
-            if (!credentials) return; // TODO: toast errors
-
+            console.warn('credentials', credentials);
+            if (!credentials) {
+                // dispatch(handleProviderError({ status: 401 }));
+                return;
+            }
+            // TODO: toast errors
             // set metadata reducer
             dispatch({
                 type: METADATA.SET_PROVIDER,
@@ -335,6 +343,7 @@ export const connectProvider = (type: MetadataProviderType) => async (
             return true;
         }
     } catch (error) {
+        console.log('connectProvider, error', error);
         dispatch(handleProviderError(error));
     }
 };
@@ -677,6 +686,7 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
  * tries to add new label.
  */
 export const init = (force = false) => async (dispatch: Dispatch, getState: GetState) => {
+    console.log('init');
     const { device } = getState().suite;
     if (!device?.state) {
         return false;
@@ -702,12 +712,10 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
     }
 
     dispatch(syncMetadataKeys());
-
     // 3. connect to provider
     if (getState().suite.device?.metadata.status === 'enabled' && !getState().metadata.provider) {
         needsUpdate = true;
         const providerResult = await dispatch(initProvider());
-        console.warn('providerResult', providerResult);
         if (!providerResult) return;
     }
 
@@ -715,6 +723,5 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
         await dispatch(fetchMetadata(device?.state));
     }
 
-    // todo: token might have expired?
     return true;
 };

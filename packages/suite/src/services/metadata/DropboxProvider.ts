@@ -1,6 +1,6 @@
 import { Dropbox } from 'dropbox';
 import { AbstractMetadataProvider } from '@suite-types/metadata';
-import { getOauthToken, getOauthReceiverUrl } from '@suite-utils/metadata';
+import { getMetadataOauthToken, getOauthReceiverUrl } from '@suite-utils/oauth';
 
 class DropboxProvider implements AbstractMetadataProvider {
     client: Dropbox;
@@ -18,10 +18,11 @@ class DropboxProvider implements AbstractMetadataProvider {
 
     async connect() {
         // const hasToken = this.client.getAccessToken();
+        console.log('getOauthReceiverUrl()', getOauthReceiverUrl());
         const url = this.client.getAuthenticationUrl(getOauthReceiverUrl(), 'TODO:RandomToken');
 
         try {
-            const token = await getOauthToken(url);
+            const token = await getMetadataOauthToken(url);
 
             this.client.setAccessToken(token);
             this.connected = true;
