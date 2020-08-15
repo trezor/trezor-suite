@@ -1,6 +1,7 @@
 import { Dropbox } from 'dropbox';
 import { AbstractMetadataProvider } from '@suite-types/metadata';
 import { getMetadataOauthToken, getOauthReceiverUrl } from '@suite-utils/oauth';
+import { METADATA } from '@suite-actions/constants';
 
 class DropboxProvider implements AbstractMetadataProvider {
     client: Dropbox;
@@ -9,7 +10,7 @@ class DropboxProvider implements AbstractMetadataProvider {
     type: 'dropbox';
 
     constructor(token?: string) {
-        this.client = new Dropbox({ clientId: 'g5f5vaogrxvvrnv', fetch });
+        this.client = new Dropbox({ clientId: METADATA.DROPBOX_CLIENT_ID, fetch });
         if (token) {
             this.client.setAccessToken(token);
         }

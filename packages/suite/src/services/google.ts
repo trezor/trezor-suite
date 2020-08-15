@@ -2,10 +2,9 @@
 
 import { getMetadataOauthToken, getOauthReceiverUrl } from '@suite-utils/oauth';
 import { getRandomId } from '@suite-utils/random';
+import { METADATA } from '@suite-actions/constants';
 
-const CLIENT_ID = '842348096891-efhc485636d5t09klvrve0pi4njhq3l8.apps.googleusercontent.com';
 const SCOPES = 'https://www.googleapis.com/auth/drive.appdata';
-
 const BOUNDARY = '-------314159265358979323846';
 
 // todos:
@@ -97,7 +96,7 @@ class Client {
         const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
         url.search = new URLSearchParams({
             // eslint-disable-next-line
-            client_id: CLIENT_ID,
+            client_id: METADATA.GOOGLE_CLIENT_ID,
             scope: SCOPES,
             // eslint-disable-next-line
             include_granted_scopes: 'true',

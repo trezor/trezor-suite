@@ -23,3 +23,8 @@ export const AUTH_WINDOW_TITLE = 'AuthPopup';
 export const AUTH_WINDOW_WIDTH = 600;
 export const AUTH_WINDOW_HEIGHT = 720;
 export const AUTH_WINDOW_PROPS = `width=${AUTH_WINDOW_WIDTH},height=${AUTH_WINDOW_HEIGHT},dialog=yes,dependent=yes,scrollbars=yes,location=yes`;
+
+// todo: provide real client ids; these are for testing;
+export const GOOGLE_CLIENT_ID =
+    '842348096891-efhc485636d5t09klvrve0pi4njhq3l8.apps.googleusercontent.com';
+export const DROPBOX_CLIENT_ID = 'g5f5vaogrxvvrnv';
