@@ -88,7 +88,6 @@ const InputAddon = styled.div<{ align: 'left' | 'right' }>`
     min-height: 32px;
     justify-content: space-between;
     align-items: center;
-    z-index: 2;
 
     ${props =>
         props.align === 'left' &&
