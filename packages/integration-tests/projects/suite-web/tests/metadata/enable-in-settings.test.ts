@@ -24,6 +24,7 @@ describe('Metadata', () => {
             cy.stub(win, 'fetch', stubFetch)
         }});
 
+
         cy.passThroughInitialRun();
 
         cy.log('Wait for discovery to finish. There is "add label" button, but no actual metadata appeared')

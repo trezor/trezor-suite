@@ -1,3 +1,4 @@
+
 // redirect any request to googleapis to custom google mock server running on localhost
 export const stubFetch = (uri: string, options: Parameters<typeof fetch>[1]) => {
     if (uri.includes('https://www.googleapis.com')) {
@@ -11,5 +12,7 @@ export const stubFetch = (uri: string, options: Parameters<typeof fetch>[1]) => 
 // of window.open to invoke only postMessage with data that satisfy application flow
 export const stubOpen = (win: Window) => {
     // @ts-ignore
-    return () => win.postMessage('#access_token=chicken-cho-cha&token_type=bearer&state=foo-bar');
+    win.Math.random = () => 0.4; // to make tests deterministic, this value ensures state YYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+    // @ts-ignore
+    return () => win.postMessage('#access_token=chicken-cho-cha&token_type=bearer&state=YYYYYYYYYYYYYYYYYYYYYYYYYYYYYY');
 }
