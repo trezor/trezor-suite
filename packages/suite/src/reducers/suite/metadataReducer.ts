@@ -23,7 +23,6 @@ export default (state = initialState, action: Action): MetadataState => {
             case METADATA.SET_PROVIDER:
                 draft.provider = action.payload;
                 break;
-
             // no default
         }
     });

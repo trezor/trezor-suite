@@ -76,11 +76,14 @@ const EditContainer = (props: {
     const divRef = useRef<HTMLDivElement>(null);
     const submit = useCallback(
         value => {
-            props.onSubmit(value);
+            if (value && value !== props.originalValue) {
+                props.onSubmit(value);
+            }
 
             if (divRef && divRef.current) {
                 divRef.current.blur();
             }
+            props.onBlur();
         },
         [props, divRef],
     );
@@ -175,12 +178,18 @@ const AddMetadataLabel = (props: Props) => {
     const [loading, setLoading] = useState(false);
 
     const metadata = useSelector(state => state.metadata);
+    const deviceState = useSelector(state => state.suite.device?.state);
     const deviceMetadata = useSelector(state => state.suite.device?.metadata);
+    // I see that I may use getDiscovery or getDiscoveryForDevice actions but is that correct? In component, I should subscribe
+    // to store, not call an action on its occasional re-render which may reflect real state in the and but...
+    const discovery = useSelector(state => state.wallet.discovery);
 
     const { addMetadata, initMetadata } = useActions({
         addMetadata: metadataActions.addMetadata,
         initMetadata: metadataActions.init,
     });
+
+    const discoveryFinished = discovery.find(d => d.deviceState === deviceState)?.status === 4;
 
     useEffect(() => {
         if (
@@ -205,7 +214,7 @@ const AddMetadataLabel = (props: Props) => {
             value: value || undefined,
         });
 
-        setEditing(false);
+        // setEditing(false);
     };
 
     let dropdownItems: DropdownMenuItem[] = [
@@ -262,7 +271,9 @@ const AddMetadataLabel = (props: Props) => {
                 <AddLabelButton
                     data-test={`${dataTestBase}/add-label-button`}
                     variant="tertiary"
-                    icon="LABEL"
+                    icon={discoveryFinished ? 'LABEL' : undefined}
+                    isLoading={!discoveryFinished}
+                    isDisabled={!discoveryFinished}
                     onClick={e => {
                         e.stopPropagation();
                         setEditing(true);

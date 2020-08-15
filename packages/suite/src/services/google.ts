@@ -232,13 +232,15 @@ class Client {
      * so in theory, you would need 2 calls to get single file: first get list of files from which you would filter file id and then get call.
      * to avoid this, google class holds map of name-ids and performs list request only if it could not find required name in the map.
      */
-    async getIdByName(name: string) {
-        if (this.nameIdMap[name]) {
+    async getIdByName(name: string, forceReload = false) {
+        console.log('getIdByName', forceReload);
+        if (!forceReload && this.nameIdMap[name]) {
             return this.nameIdMap[name];
         }
         // request to list files might have already been dispatched and exist as unresolved promise, so wait for it here in that case
         if (this.listPromise) {
             await this.listPromise;
+            this.listPromise = undefined; // unset
             return this.nameIdMap[name];
         }
         // refresh nameIdMap
@@ -248,6 +250,7 @@ class Client {
 
         this.listPromise = promise;
         await this.listPromise;
+        this.listPromise = undefined; // unset
 
         return this.nameIdMap[name];
     }

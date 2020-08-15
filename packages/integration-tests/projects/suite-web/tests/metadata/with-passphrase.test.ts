@@ -3,14 +3,13 @@
 import { stubFetch, stubOpen } from '../../stubs/metadata';
 
 // todo think about it
-describe.skip('Metadata', () => {
+describe('Metadata', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
     });
     after(() => {
         cy.task('stopGoogle');
     });
-
 
     it(`
         When passphrase is enabled, 

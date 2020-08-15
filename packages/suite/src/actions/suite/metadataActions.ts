@@ -210,18 +210,20 @@ export const fetchMetadata = (deviceState: string) => async (
                     walletLabel: json.walletLabel,
                 },
             });
-        } else if (device.metadata.walletLabel) {
-            // here we know that there is no file saved in cloud but user has added metadata locally
-            // so we save it to cloud to make it persistent.
-            const encrypted = await metadataUtils.encrypt(
-                {
-                    version: '1.0.0',
-                    walletLabel: device.metadata.walletLabel,
-                },
-                device.metadata.aesKey,
-            );
-            provider.setFileContent(device.metadata.fileName, encrypted);
         }
+        // todo: probably not needed, we don't expect data to be stored locally
+        //  else if (device.metadata.walletLabel) {
+        //     // here we know that there is no file saved in cloud but user has added metadata locally
+        //     // so we save it to cloud to make it persistent.
+        //     const encrypted = await metadataUtils.encrypt(
+        //         {
+        //             version: '1.0.0',
+        //             walletLabel: device.metadata.walletLabel,
+        //         },
+        //         device.metadata.aesKey,
+        //     );
+        //     provider.setFileContent(device.metadata.fileName, encrypted);
+        // }
     })();
 
     const accounts = getState().wallet.accounts.filter(
@@ -253,32 +255,32 @@ export const fetchMetadata = (deviceState: string) => async (
                     },
                 },
             });
-        } else if (
-            // in else branch, if we find that some account has metadata, it means that it is not synced to cloud.
-            Object.values(account.metadata.addressLabels).length ||
-            Object.values(account.metadata.outputLabels).length ||
-            account.metadata.accountLabel
-        ) {
-            const encrypted = await metadataUtils.encrypt(
-                {
-                    version: '1.0.0',
-                    accountLabel: account.metadata.accountLabel,
-                    outputLabels: account.metadata.outputLabels,
-                    addressLabels: account.metadata.addressLabels,
-                },
-                account.metadata.aesKey,
-            );
-
-            await provider.setFileContent(account.metadata.fileName, encrypted);
         }
+        // probably not needed, we don't expect data to be stored locally
+        // else if (
+        //     // in else branch, if we find that some account has metadata, it means that it is not synced to cloud.
+        //     Object.values(account.metadata.addressLabels).length ||
+        //     Object.values(account.metadata.outputLabels).length ||
+        //     account.metadata.accountLabel
+        // ) {
+        //     const encrypted = await metadataUtils.encrypt(
+        //         {
+        //             version: '1.0.0',
+        //             accountLabel: account.metadata.accountLabel,
+        //             outputLabels: account.metadata.outputLabels,
+        //             addressLabels: account.metadata.addressLabels,
+        //         },
+        //         account.metadata.aesKey,
+        //     );
+
+        //     await provider.setFileContent(account.metadata.fileName, encrypted);
+        // }
     });
 
     const promises = [deviceFileContentP, ...accountPromises];
 
     return Promise.all(promises).then(
-        result => {
-            return result;
-        },
+        result => result,
         error => {
             console.warn('error', error);
             dispatch(handleProviderError(error));
@@ -647,16 +649,6 @@ export const addMetadata = (payload: MetadataAddPayload) => async (
         // }
         // const decision = createDeferred<string | undefined>();
 
-        // dispatch(
-        //     modalActions.openModal({
-        //         type: 'metadata-add',
-        //         payload,
-        //         decision,
-        //     }),
-        // );
-
-        // const value = await decision.promise;
-        // console.log('value in action', originalValue, value);
         // // value did not change, no need to sync with cloud, stop here
         // if (value === originalValue) {
         //     return;

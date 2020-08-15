@@ -49,7 +49,9 @@ class GoogleProvider implements AbstractMetadataProvider {
     }
 
     async setFileContent(file: string, content: Buffer) {
-        const id = await this.client.getIdByName(`${file}.mtdt`);
+        // search for file by name with forceReload=true parameter to make sure that we do not save
+        // two files with the same name but different ids
+        const id = await this.client.getIdByName(`${file}.mtdt`, true);
         if (id) {
             await this.client.update(
                 {
