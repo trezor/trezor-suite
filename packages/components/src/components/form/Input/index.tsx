@@ -156,6 +156,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 const Input = ({
+    value,
     type = 'text',
     innerRef,
     state,
@@ -212,7 +213,7 @@ const Input = ({
                 {((innerAddon && addonAlign === 'right') || clearButton) && (
                     <InputAddon align="right">
                         {addonAlign === 'right' && innerAddon}
-                        {clearButton && rest.value && rest.value.length > 0 && (
+                        {clearButton && value && value.length > 0 && (
                             <Icon
                                 icon="CANCEL"
                                 size={12}
@@ -226,6 +227,7 @@ const Input = ({
 
                 {isPartiallyHidden && <Overlay />}
                 <StyledInput
+                    value={value}
                     textIndent={textIndent}
                     type={type}
                     autoComplete={autoComplete}
