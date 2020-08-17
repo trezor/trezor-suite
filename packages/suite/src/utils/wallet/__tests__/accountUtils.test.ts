@@ -271,6 +271,15 @@ describe('account utils', () => {
         });
 
         expect(accountUtils.accountSearchFn(btcAcc, 'btc')).toBe(true);
+        expect(accountUtils.accountSearchFn(btcAcc, '', 'btc')).toBe(true);
+        expect(
+            accountUtils.accountSearchFn(
+                btcAcc,
+                'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+                'btc',
+            ),
+        ).toBe(true);
+        expect(accountUtils.accountSearchFn(btcAcc, '', 'ltc')).toBe(false);
         expect(accountUtils.accountSearchFn(btcAcc, 'bitcoin')).toBe(true);
         expect(accountUtils.accountSearchFn(btcAcc, 'legacy')).toBe(true);
         expect(accountUtils.accountSearchFn(btcAcc, 'bitco')).toBe(true);
