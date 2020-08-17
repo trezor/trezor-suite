@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useContext } from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { H2, variables, colors, Icon } from '@trezor/components';
@@ -11,6 +11,7 @@ import { Account } from '@wallet-types';
 import AccountSearchBox from './components/AccountSearchBox';
 import AccountGroup from './components/AccountGroup';
 import AccountItem from './components/AccountItem/Container';
+import { CoinFilterContext } from '@suite-hooks/useAccountSearch';
 
 const Wrapper = styled.div<{ isMobileLayout?: boolean }>`
     display: flex;
@@ -150,7 +151,8 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
     const { isMobileLayout } = useLayoutSize();
     const [isExpanded, setIsExpanded] = useState(false);
     const [animatedIcon, setAnimatedIcon] = useState(false);
-    const [searchToken, setSearchFilter] = useState<string | undefined>(undefined);
+    const [searchString, setSearchString] = useState('');
+    const { coinFilter } = useContext(CoinFilterContext);
     const enabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
 
     const selectedItemRef = useCallback((_item: HTMLDivElement | null) => {
@@ -182,7 +184,10 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
     const failed = getFailedAccounts(discovery);
 
     const list = sortByCoin(accounts.filter(a => a.deviceState === device.state).concat(failed));
-    const filteredAccounts = searchToken ? list.filter(a => accountSearchFn(a, searchToken)) : list;
+    const filteredAccounts =
+        searchString || coinFilter
+            ? list.filter(a => accountSearchFn(a, searchString, coinFilter))
+            : list;
     // always show first "normal" account even if they are empty
     const normalAccounts = filteredAccounts.filter(
         a => a.accountType === 'normal' && (a.index === 0 || !a.empty || a.visible),
@@ -202,7 +207,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
                 key={type}
                 type={type}
                 hasBalance={!!groupHasBalance}
-                keepOpened={isOpened(type) || (!!searchToken && searchToken !== '')}
+                keepOpened={isOpened(type) || (!!searchString && searchString.length > 0)}
             >
                 {accounts.map(account => {
                     const selected = !!isSelected(account);
@@ -259,9 +264,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
                                 <AccountSearchBox
                                     isMobile
                                     networks={enabledNetworks}
-                                    onChange={(value: string) =>
-                                        setSearchFilter(value.toLowerCase())
-                                    }
+                                    onChange={(value: string) => setSearchString(value)}
                                 />
                                 <AddAccountButtonWrapper>
                                     <AddAccountButton device={device} noButtonLabel />
@@ -289,7 +292,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
                     </Row>
                     <AccountSearchBox
                         networks={enabledNetworks}
-                        onChange={(value: string) => setSearchFilter(value.toLowerCase())}
+                        onChange={(value: string) => setSearchString(value)}
                     />
                 </MenuHeader>
 

@@ -452,20 +452,17 @@ export const getAccountIdentifier = (account: Account) => {
     };
 };
 
-export const accountSearchFn = (account: Account, rawSearchString: string) => {
+export const accountSearchFn = (
+    account: Account,
+    rawSearchString: string,
+    coinFilter?: Account['symbol'],
+) => {
+    // if coin filter is active and account symbol doesn't match return false and don't continue the search
+    const coinFilterMatch = coinFilter ? account.symbol === coinFilter : true;
+    if (!coinFilterMatch) return false;
+
     const searchString = rawSearchString.trim().toLowerCase();
-    // search tag support
-    // symbol:value will return only accounts where account.symbol === value
-    const validKeys = ['symbol'];
-    const searchTokens = searchString.split(':');
-    const [key = undefined, value = undefined] = searchTokens.length === 2 ? searchTokens : [];
-    if (key && validKeys.includes(key)) {
-        switch (key) {
-            case 'symbol':
-                return account.symbol === value;
-            // no default
-        }
-    }
+    if (searchString.length === 0) return true; // no search string
 
     // helper func for searching in account's addresses
     const matchAddressFn = (u: NonNullable<Account['addresses']>['used'][number]) =>

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled, { css } from 'styled-components';
 import { colors, Icon, Input, CoinLogo } from '@trezor/components';
+import { CoinFilterContext } from '@suite-hooks/useAccountSearch';
 import { Account } from '@wallet-types';
 
 const Wrapper = styled.div`
@@ -58,8 +59,8 @@ interface Props {
 }
 
 const AccountSearchBox = (props: Props) => {
-    const [value, setValue] = useState<string | undefined>(undefined);
-    const [coinFilter, setCoinFilter] = useState<string | undefined>(undefined);
+    const [value, setValue] = useState('');
+    const { coinFilter, setCoinFilter } = useContext(CoinFilterContext);
 
     const onChange = (value: string) => {
         setValue(value);
@@ -77,9 +78,9 @@ const AccountSearchBox = (props: Props) => {
                 value={value}
                 onChange={e => {
                     onChange(e.target.value);
-                    if (coinFilter) {
-                        setCoinFilter(undefined);
-                    }
+                    // if (coinFilter) {
+                    //     setCoinFilter(undefined);
+                    // }
                 }}
                 innerAddon={
                     <SearchIconWrapper>
@@ -89,7 +90,7 @@ const AccountSearchBox = (props: Props) => {
                 addonAlign="left"
                 textIndent={[16, 12]}
                 variant="small"
-                placeholder="Filter accounts"
+                placeholder="Search"
                 noTopLabel
                 noError
                 clearButton
@@ -97,7 +98,7 @@ const AccountSearchBox = (props: Props) => {
             />
             <CoinsFilter>
                 {props.networks.map(n => (
-                    <OuterCircle isMobile={props.isMobile} isSelected={coinFilter === n}>
+                    <OuterCircle key={n} isMobile={props.isMobile} isSelected={coinFilter === n}>
                         <StyledCoinLogo
                             symbol={n}
                             size={props.isMobile ? 24 : 16}
@@ -106,9 +107,8 @@ const AccountSearchBox = (props: Props) => {
                             onClick={() => {
                                 const alreadySelected = coinFilter === n;
                                 if (alreadySelected) {
-                                    onClear();
+                                    setCoinFilter(undefined);
                                 } else {
-                                    onChange(`symbol:${n}`);
                                     setCoinFilter(n);
                                 }
                             }}
