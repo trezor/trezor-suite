@@ -23,7 +23,7 @@ const OuterCircle = styled.div<{ isSelected?: boolean; isMobile?: boolean }>`
     padding: 3px;
     background: white;
     border-radius: 50%;
-    border: 1px solid ${props => (props.isSelected ? colors.NEUE_BG_GREEN : 'transparent')};
+    border: 2px solid ${props => (props.isSelected ? colors.NEUE_BG_GREEN : 'transparent')};
     transition: all 0.3;
 
     margin-bottom: 8px;
