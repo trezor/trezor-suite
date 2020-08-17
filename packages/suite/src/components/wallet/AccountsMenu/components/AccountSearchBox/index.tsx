@@ -66,6 +66,11 @@ const AccountSearchBox = (props: Props) => {
         props.onChange(value);
     };
 
+    const onClear = () => {
+        onChange('');
+        setCoinFilter(undefined);
+    };
+
     return (
         <Wrapper>
             <StyledInput
@@ -82,11 +87,13 @@ const AccountSearchBox = (props: Props) => {
                     </SearchIconWrapper>
                 }
                 addonAlign="left"
-                textIndent={16}
+                textIndent={[16, 12]}
                 variant="small"
                 placeholder="Filter accounts"
                 noTopLabel
                 noError
+                clearButton
+                onClear={onClear}
             />
             <CoinsFilter>
                 {props.networks.map(n => (
@@ -99,8 +106,7 @@ const AccountSearchBox = (props: Props) => {
                             onClick={() => {
                                 const alreadySelected = coinFilter === n;
                                 if (alreadySelected) {
-                                    onChange('');
-                                    setCoinFilter(undefined);
+                                    onClear();
                                 } else {
                                     onChange(`symbol:${n}`);
                                     setCoinFilter(n);
