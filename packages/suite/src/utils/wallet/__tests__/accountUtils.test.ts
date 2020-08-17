@@ -271,7 +271,6 @@ describe('account utils', () => {
         });
 
         expect(accountUtils.accountSearchFn(btcAcc, 'btc')).toBe(true);
-        expect(accountUtils.accountSearchFn(btcAcc, 'symbol:btc')).toBe(true);
         expect(accountUtils.accountSearchFn(btcAcc, 'bitcoin')).toBe(true);
         expect(accountUtils.accountSearchFn(btcAcc, 'legacy')).toBe(true);
         expect(accountUtils.accountSearchFn(btcAcc, 'bitco')).toBe(true);
