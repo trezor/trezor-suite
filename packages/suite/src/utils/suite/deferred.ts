@@ -5,6 +5,9 @@ export interface Deferred<Response, Data = undefined> {
     reject: (e: Error) => void;
 }
 
+// unwrap promise response from Deferred
+export type DeferredResponse<D> = D extends Deferred<infer R, any> ? R : never;
+
 export const createDeferred = <Response = void, Data = undefined>(
     data?: Data,
 ): Deferred<Response, Data> => {
