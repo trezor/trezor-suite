@@ -1,4 +1,4 @@
-import { app, session, BrowserWindow, ipcMain, shell, Menu } from 'electron';
+import { app, session, BrowserWindow, ipcMain, shell, Menu, remote } from 'electron';
 import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 import * as path from 'path';
@@ -179,9 +179,9 @@ ipcMain.on('message', (event, message) => {
     event.sender.send('message', message);
 });
 
-ipcMain.on('start-bridge', async () => {
+ipcMain.on('start-bridge', async (_event, devMode?: boolean) => {
     try {
-        await runBridgeProcess();
+        await runBridgeProcess(devMode);
     } catch (error) {
         // TODO: return error message to suite?
     }
