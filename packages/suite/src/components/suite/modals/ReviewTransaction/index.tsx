@@ -10,6 +10,7 @@ import * as notificationActions from '@suite-actions/notificationActions';
 
 import { Props } from './Container';
 import Output, { OutputProps, Left, Right, Coin, Fiat, Symbol } from './components/Output';
+import Detail from './components/Detail';
 
 const Bottom = styled.div`
     display: flex;
@@ -123,7 +124,7 @@ export default ({ selectedAccount, send, decision }: Props) => {
                 <ConfirmOnDevice
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                     steps={outputs.length}
-                    activeStep={buttonRequests.length}
+                    activeStep={signedTx ? outputs.length + 1 : buttonRequests.length}
                     trezorModel={device.features?.major_version === 1 ? 1 : 2}
                     successText={<Translation id="TR_CONFIRMED_TX" />}
                     onCancel={cancelSignTx}
@@ -197,6 +198,7 @@ export default ({ selectedAccount, send, decision }: Props) => {
                     // eslint-disable-next-line react/no-array-index-key
                     return <Output key={index} {...output} state={state} symbol={symbol} />;
                 })}
+                <Detail tx={precomposedTx} txHash={signedTx ? signedTx.tx : undefined} />
             </Content>
         </Modal>
     );
