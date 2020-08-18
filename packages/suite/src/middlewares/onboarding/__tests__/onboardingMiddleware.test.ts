@@ -81,7 +81,7 @@ describe('onboardingMiddleware', () => {
         it('payload=onboarding (into onboarding)', async () => {
             const store = initStore(
                 getInitialState({
-                    loaded: true,
+                    loaded: false,
                     url: '/',
                     pathname: '/',
                     hash: undefined,
