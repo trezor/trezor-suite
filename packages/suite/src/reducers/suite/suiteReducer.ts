@@ -7,6 +7,7 @@ import { LANGUAGES } from '@suite-config';
 
 export interface DebugModeOptions {
     translationMode: boolean;
+    bridgeDevMode: boolean;
 }
 
 interface Flags {
@@ -56,6 +57,7 @@ const initialState: SuiteState = {
         language: 'en',
         debug: {
             translationMode: false,
+            bridgeDevMode: false,
         },
     },
 };
