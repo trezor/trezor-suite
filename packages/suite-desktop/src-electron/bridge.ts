@@ -93,7 +93,7 @@ const execute = (command: string) => {
 
 export const isBridgeRunning = async () => {
     const processes = await psList();
-    // TODO: ps-list version 7.2.0 started to include full path (at least in a dev env) to a name which is even truncated at 15 chars thus find fails
+    // TODO: ps-list version 7.2.0 started to include full path (at least in a dev env) in process.name, the name is even truncated to 15 chars thus find below fails
     const bridgeProcess = processes.find(ps => ps.name.includes(TREZOR_PROCESS_NAME));
     return bridgeProcess;
 };
@@ -103,15 +103,6 @@ export const runBridgeProcess = async (devMode?: boolean) => {
     if (bridgeProcess) {
         process.kill(bridgeProcess.pid);
     }
-    // if (bridgeProcess) {
-    //     if (devMode !== undefined) {
-    //         // toggling dev mode, kill bridges
-    //         process.kill(bridgeProcess.pid);
-    //     } else {
-    //         // bridge is already installed and running, nothing to do
-    //         return { status: STATUS.OK };
-    //     }
-    // }
 
     const lib = getBridgeLibByOs();
     const args = devMode ? ['-e', '21324'] : [];
