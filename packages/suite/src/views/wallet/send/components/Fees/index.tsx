@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { FeeLevel } from 'trezor-connect';
 import { SelectBar, colors, variables } from '@trezor/components';
 import { Card, Translation, FiatValue } from '@suite-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -106,7 +107,9 @@ export default () => {
                         label={<Translation id="TR_FEE" />}
                         selectedOption={selectedLabel}
                         options={buildFeeOptions(feeInfo.levels)}
-                        onChange={value => changeFeeLevel(selectedLevel, value)}
+                        onChange={
+                            value => changeFeeLevel(selectedLevel, value as FeeLevel['label']) // TODO: SelectBar component should infer option type
+                        }
                     />
                     <FeeInfo>
                         {networkType === 'bitcoin' && !isCustomLevel && (
