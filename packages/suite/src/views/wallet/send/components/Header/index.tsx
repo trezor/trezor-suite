@@ -29,34 +29,47 @@ const HeaderRight = styled.div`
 export default () => {
     const {
         account: { networkType },
-        getValues,
+        getDefaultValue,
         addOpReturn,
     } = useSendFormContext();
 
-    // getValues() and getValues('txType') returns different results - TODO: investigate
-    const opreturnOutput = getValues('outputs')?.find(o => o.type === 'opreturn');
-    const hasDropdown = networkType === 'bitcoin' && !opreturnOutput;
+    const opreturnOutput = getDefaultValue('outputs', []).find(o => o.type === 'opreturn');
+    const options = [
+        {
+            key: 'opreturn',
+            callback: addOpReturn,
+            label: 'Add OP Return',
+            isDisabled: !!opreturnOutput,
+            isHidden: networkType !== 'bitcoin',
+        },
+        {
+            key: 'import',
+            callback: () => {},
+            label: 'Import',
+            isDisabled: true,
+        },
+        {
+            key: 'raw',
+            callback: () => {},
+            label: 'Send RAW',
+            isDisabled: true,
+        },
+    ];
+
     return (
         <Wrapper>
             <HeaderLeft />
             <HeaderRight>
                 <Clear />
-                {hasDropdown && (
-                    <Dropdown
-                        alignMenu="right"
-                        items={[
-                            {
-                                options: [
-                                    {
-                                        callback: addOpReturn,
-                                        label: 'Add OP Return',
-                                        isHidden: false,
-                                    },
-                                ],
-                            },
-                        ]}
-                    />
-                )}
+                <Dropdown
+                    alignMenu="right"
+                    items={[
+                        {
+                            key: 'header',
+                            options,
+                        },
+                    ]}
+                />
             </HeaderRight>
         </Wrapper>
     );
