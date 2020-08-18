@@ -42,7 +42,9 @@ export const getApp = (url: string) => {
 const validateWalletParams = (url: string) => {
     const [, hash] = stripPrefixedURL(url).split('#');
     if (!hash) return;
-    const [symbol, index, type] = hash.split('/').filter(p => p.length > 0);
+    const [symbol, index, type, coinmarketTransactionId] = hash
+        .split('/')
+        .filter(p => p.length > 0);
     if (!symbol || !index) return;
     const network = NETWORKS.find(
         n => n.symbol === symbol && (n.accountType || 'normal') === (type || 'normal'),
@@ -50,11 +52,24 @@ const validateWalletParams = (url: string) => {
     if (!network) return;
     const accountIndex = parseInt(index, 10);
     if (Number.isNaN(accountIndex)) return;
+
     return {
         symbol: network.symbol,
         accountIndex,
         accountType: network.accountType || 'normal',
+        coinmarketTransactionId,
     };
+};
+
+export const getRedirectParams = (query: string): any => {
+    const result = {};
+    query.split('&').forEach(part => {
+        const item = part.split('=');
+        // @ts-ignore
+        result[item[0]] = decodeURIComponent(item[1]);
+    });
+
+    return result;
 };
 
 const validateModalAppParams = (url: string) => {
@@ -70,7 +85,14 @@ const validateModalAppParams = (url: string) => {
 // Used in routerReducer
 export const getAppWithParams = (url: string): RouterAppWithParams => {
     const route = findRoute(url);
-    if (!route) return { app: 'unknown', route: undefined, params: undefined };
+
+    if (!route)
+        return {
+            app: 'unknown',
+            route: undefined,
+            params: undefined,
+        };
+
     if (route.app === 'wallet') {
         return {
             app: route.app,
@@ -78,6 +100,7 @@ export const getAppWithParams = (url: string): RouterAppWithParams => {
             route,
         };
     }
+
     if (route.params) {
         return {
             app: route.app,
@@ -85,7 +108,12 @@ export const getAppWithParams = (url: string): RouterAppWithParams => {
             route,
         } as RouterAppWithParams;
     }
-    return { app: route.app, route, params: undefined } as RouterAppWithParams;
+
+    return {
+        app: route.app,
+        route,
+        params: undefined,
+    } as RouterAppWithParams;
 };
 
 export type WalletParams = NonNullable<ReturnType<typeof validateWalletParams>>;

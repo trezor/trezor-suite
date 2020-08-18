@@ -206,6 +206,7 @@ export type Route = ArrayElement<ConstWithOptionalFields<typeof routes, RouteKey
 type RouteParamsTypes = {
     symbol: Network['symbol'];
     accountIndex: number;
+    coinmarketTransactionId: string;
     accountType: NonNullable<Network['accountType']>;
     cancelable: boolean;
 };
