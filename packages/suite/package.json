@@ -56,7 +56,7 @@
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.3.0",
         "styled-components": "^5.1.1",
-        "trezor-connect": "8.1.11-extended",
+        "trezor-connect": "8.1.12-extended",
         "validator": "^13.0.0",
         "web3-utils": "^1.2.6",
         "zxcvbn": "^4.4.2"
