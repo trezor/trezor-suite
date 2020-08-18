@@ -2085,9 +2085,15 @@ const definedMessages = defineMessages({
         id: 'TR_GAS_PRICE',
         defaultMessage: 'Gas price',
     },
-    TR_SEND_REVIEW_TRANSACTION: {
-        id: 'TR_SEND_REVIEW_TRANSACTION',
-        defaultMessage: 'Review Transaction',
+    TR_SEND_TRANSACTION: {
+        id: 'TR_SEND_TRANSACTION',
+        description: 'Sign and send',
+        defaultMessage: 'Send Transaction',
+    },
+    TR_SIGN_TRANSACTION: {
+        id: 'TR_SIGN_TRANSACTION',
+        description: 'Sign without sending',
+        defaultMessage: 'Sign Transaction',
     },
     TR_TO: {
         id: 'TR_TO',

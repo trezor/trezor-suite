@@ -31,9 +31,17 @@ const Row = styled.div`
 
 export default () => {
     const { device, isLocked } = useDevice();
-    const { online, isLoading, signTransaction, getValues, composedLevels } = useSendFormContext();
+    const {
+        online,
+        isLoading,
+        signTransaction,
+        getValues,
+        getDefaultValue,
+        composedLevels,
+    } = useSendFormContext();
 
     const values = getValues();
+    const broadcastEnabled = getDefaultValue('options', []).includes('broadcast');
     const composedTx = composedLevels ? composedLevels[values.selectedFee || 'normal'] : undefined;
     const isDisabled =
         !composedTx ||
@@ -50,7 +58,11 @@ export default () => {
                     isLoading={isLoading}
                     onClick={signTransaction}
                 >
-                    <Translation id="TR_SEND_REVIEW_TRANSACTION" />
+                    {broadcastEnabled ? (
+                        <Translation id="TR_SEND_TRANSACTION" />
+                    ) : (
+                        <Translation id="TR_SIGN_TRANSACTION" />
+                    )}
                 </ButtonReview>
             </Row>
         </Wrapper>

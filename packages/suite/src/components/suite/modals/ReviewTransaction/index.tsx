@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { createRef } from 'react';
 import styled from 'styled-components';
 import { colors, Modal, ConfirmOnDevice, Button } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { useDevice, useActions } from '@suite-hooks';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { copyToClipboard, download } from '@suite-utils/dom';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
+import * as notificationActions from '@suite-actions/notificationActions';
 
 import { Props } from './Container';
 import Output, { OutputProps, Left, Right, Coin, Fiat, Symbol } from './components/Output';
@@ -27,6 +29,12 @@ const Content = styled.div`
     padding: 20px 20px 0 20px;
 `;
 
+const Buttons = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+`;
+
 const StyledButton = styled(Button)`
     display: flex;
     align-self: center;
@@ -46,10 +54,12 @@ const getState = (index: number, buttonRequests: number) => {
 };
 
 export default ({ selectedAccount, send, decision }: Props) => {
+    const htmlElement = createRef<HTMLDivElement>();
     const { device } = useDevice();
-    const { cancelSignTx, pushTransaction } = useActions({
+    const { cancelSignTx, pushTransaction, addNotification } = useActions({
         cancelSignTx: sendFormActions.cancelSignTx,
         pushTransaction: sendFormActions.pushTransaction,
+        addNotification: notificationActions.addToast,
     });
 
     const { precomposedTx, precomposedForm, signedTx } = send;
@@ -57,7 +67,7 @@ export default ({ selectedAccount, send, decision }: Props) => {
         return null;
 
     const { symbol, networkType } = selectedAccount.account;
-    // const outputSymbol = token ? token.symbol!.toUpperCase() : symbol.toUpperCase();
+    const broadcastEnabled = precomposedForm.options.includes('broadcast');
 
     const outputs: OutputProps[] = [];
     precomposedTx.transaction.outputs.forEach(o => {
@@ -141,15 +151,42 @@ export default ({ selectedAccount, send, decision }: Props) => {
                             </Fiat>
                         </Right>
                     </BottomContent>
-                    <StyledButton
-                        isDisabled={!signedTx}
-                        onClick={async () => {
-                            const result = await pushTransaction();
-                            if (decision) decision.resolve(result);
-                        }}
-                    >
-                        <Translation id="TR_SEND" />
-                    </StyledButton>
+                    {broadcastEnabled && (
+                        <StyledButton
+                            isDisabled={!signedTx}
+                            onClick={async () => {
+                                const result = await pushTransaction();
+                                if (decision) decision.resolve(result);
+                            }}
+                        >
+                            <Translation id="TR_SEND" />
+                        </StyledButton>
+                    )}
+                    {!broadcastEnabled && (
+                        <Buttons ref={htmlElement}>
+                            <StyledButton
+                                isDisabled={!signedTx}
+                                onClick={async () => {
+                                    const result = copyToClipboard(
+                                        signedTx!.tx,
+                                        htmlElement.current,
+                                    );
+                                    if (typeof result !== 'string') {
+                                        addNotification({ type: 'copy-to-clipboard' });
+                                    }
+                                }}
+                            >
+                                <Translation id="TR_COPY_TO_CLIPBOARD" />
+                            </StyledButton>
+                            <StyledButton
+                                variant="secondary"
+                                isDisabled={!signedTx}
+                                onClick={() => download(signedTx!.tx, 'signed-transaction.txt')}
+                            >
+                                <Translation id="TR_DOWNLOAD" />
+                            </StyledButton>
+                        </Buttons>
+                    )}
                 </Bottom>
             }
         >
