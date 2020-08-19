@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { WalletAction, Account } from '@wallet-types';
-import { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
+import { BuyTrade, BuyTradeQuoteRequest, ExchangeTrade } from 'invity-api';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import { COINMARKET_BUY } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
@@ -9,7 +9,7 @@ import { Action as SuiteAction } from '@suite-types';
 interface Trade {
     tradeType: 'buy' | 'exchange';
     date: string;
-    data: BuyTrade;
+    data: BuyTrade | ExchangeTrade;
     account: {
         deviceState: Account['deviceState'];
         symbol: Account['symbol'];

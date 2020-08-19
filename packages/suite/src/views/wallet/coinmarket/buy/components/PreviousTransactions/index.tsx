@@ -26,7 +26,10 @@ const PreviousTransactions = () => {
             </Header>
             <Content>
                 {previousTransactions.map(transaction => (
-                    <Transaction key={transaction.data.paymentId} transaction={transaction.data} />
+                    <Transaction
+                        key={transaction.account.deviceState}
+                        transaction={transaction.data}
+                    />
                 ))}
             </Content>
         </Wrapper>

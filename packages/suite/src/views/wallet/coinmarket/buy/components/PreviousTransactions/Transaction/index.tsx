@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, variables, Icon, CoinLogo } from '@trezor/components';
-import { BuyTrade } from 'invity-api';
+import { BuyTrade, ExchangeTrade } from 'invity-api';
 import { PaymentType, ProviderInfo } from '@wallet-components';
 import { useSelector } from '@suite-hooks';
 
@@ -66,7 +66,7 @@ const Arrow = styled.div`
 `;
 
 interface Props {
-    transaction: BuyTrade;
+    transaction: BuyTrade | ExchangeTrade;
 }
 
 const Transaction = ({ transaction }: Props) => {
