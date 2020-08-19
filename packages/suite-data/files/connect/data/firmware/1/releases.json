@@ -1,6 +1,19 @@
 [
 	{
 		"required": false,
+		"version": [1, 9, 2],
+		"bootloader_version": [1, 8, 0],
+		"min_bridge_version": [2, 0, 25],
+		"min_firmware_version": [1, 6, 2],
+		"min_bootloader_version": [1, 5, 0],
+		"url": "data/firmware/1/trezor-1.9.2.bin",
+		"url_bitcoinonly": "data/firmware/1/trezor-1.9.2-bitcoinonly.bin",
+		"fingerprint": "45b83acd1330ddfd5567edbae5ff8028df1c48a493f01d47cc5499ee0be9b991",
+		"fingerprint_bitcoinonly": "2762c0ff78c96e23d1d348330e0a3cdf45d83c8fc8c2d48853b7cb602ddc19bb",
+		"changelog": "* Reintroduces the ability to spend pre-Overwinter (2018) funds on Zcash-like coins.\n* Adds support for multiple change outputs in outgoing transactions.\n* Adds a security check to prevent potential issues with paths used in altcoin transactions."
+	},
+	{
+		"required": false,
 		"version": [1, 9, 1],
 		"bootloader_version": [1, 8, 0],
 		"min_bridge_version": [2, 0, 25],

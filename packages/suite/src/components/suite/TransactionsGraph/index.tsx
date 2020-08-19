@@ -9,7 +9,7 @@ import {
 } from '@wallet-types/graph';
 import { ComposedChart, Tooltip, Bar, YAxis, XAxis, Line, CartesianGrid } from 'recharts';
 import { useLayoutSize } from '@suite-hooks';
-import { calcYDomain, calcFakeGraphDataForTimestamps } from '@wallet-utils/graphUtils';
+import { calcYDomain, calcXDomain, calcFakeGraphDataForTimestamps } from '@wallet-utils/graphUtils';
 import { Account } from '@wallet-types';
 
 import RangeSelector from './components/RangeSelector';
@@ -104,11 +104,6 @@ const TransactionsGraph = React.memo((props: Props) => {
         setMaxYTickWidth(prevValue => (prevValue > n ? prevValue : n));
     };
 
-    const xAxisPadding =
-        selectedRange.label === 'year' || selectedRange.label === 'all'
-            ? 3600 * 24 * 14
-            : 3600 * 12; // 14 days for year/all range, 12 hours otherwise
-
     const rightMargin = Math.max(0, maxYTickWidth - 50) + 10; // 50 is the default spacing
 
     // calculate fake data for full interval (eg. 1 year) even for ticks/timestamps without txs
@@ -147,6 +142,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                     <CustomResponsiveContainer height="100%" width="100%">
                         <ComposedChart
                             data={data}
+                            barGap={0}
                             // stackOffset="sign"
                             margin={{
                                 top: 10,
@@ -161,10 +157,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 // xAxisId="primary"
                                 dataKey="time"
                                 type="number"
-                                domain={[
-                                    xTicks[0] - xAxisPadding,
-                                    xTicks[xTicks.length - 1] + xAxisPadding,
-                                ]}
+                                domain={calcXDomain(xTicks, data, selectedRange)}
                                 // width={10}
                                 stroke={colors.NEUE_BG_GRAY}
                                 interval={
@@ -282,18 +275,30 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 </linearGradient>
                             </defs>
 
+                            {/* shadow position is incorrect if there are too many bars, forcing them to be smaller than specified barSize */}
+                            {/* <defs>
+                                <filter id="shadow" x="-20%" y="-20%" width="200%" height="200%">
+                                    <feDropShadow
+                                        stdDeviation="5"
+                                        floodColor="rgba(0, 0, 0, 0.1)"
+                                    />
+                                </filter>
+                            </defs> */}
+
                             <Bar
-                                dataKey={(data: any) => Number(props.receivedValueFn(data))}
+                                dataKey={(data: any) => Number(props.receivedValueFn(data) ?? 0)}
                                 // stackId="stack"
                                 fill="url(#greenGradient)"
+                                // filter="url(#shadow)"
                                 barSize={selectedRange.label === 'all' ? 8 : 16}
                                 shape={<CustomBar variant="received" />}
                                 // xAxisId="primary"
                             />
                             <Bar
-                                dataKey={(data: any) => Number(props.sentValueFn(data))}
+                                dataKey={(data: any) => Number(props.sentValueFn(data) ?? 0)}
                                 // stackId="stack"
                                 fill="url(#redGradient)"
+                                // filter="url(#shadow)"
                                 barSize={selectedRange.label === 'all' ? 8 : 16}
                                 shape={<CustomBar variant="sent" />}
                                 // xAxisId="primary"

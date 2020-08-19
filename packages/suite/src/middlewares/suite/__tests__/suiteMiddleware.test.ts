@@ -62,6 +62,7 @@ describe('suite middleware', () => {
         it('dispatch if prevApp !== nextApp', () => {
             const store = initStore(
                 getInitialState({
+                    loaded: false,
                     url: '/',
                     pathname: '/',
                     hash: undefined,
@@ -83,6 +84,7 @@ describe('suite middleware', () => {
         it('do not dispatch if prevApp === nextApp', () => {
             const store = initStore(
                 getInitialState({
+                    loaded: true,
                     url: '/onboarding',
                     pathname: '/',
                     hash: undefined,

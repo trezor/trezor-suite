@@ -11,3 +11,8 @@ it('countBytesInString', () => {
     expect(stringUtils.countBytesInString('😀')).toBe(4);
     expect(stringUtils.countBytesInString('+ěčřěžšýžřšý')).toBe(23);
 });
+
+it('getNumberFromPxString', () => {
+    expect(stringUtils.getNumberFromPxString('1px')).toBe(1);
+    expect(stringUtils.getNumberFromPxString('1')).toBe(1);
+});

@@ -1,4 +1,4 @@
-import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
+import { FiatValue, Translation } from '@suite-components';
 import { Input, variables, Button } from '@trezor/components';
 import { VALIDATION_ERRORS } from '@wallet-constants/sendForm';
 import { Output, CustomFee } from '@wallet-types/sendForm';
@@ -32,16 +32,11 @@ const Label = styled.div`
 `;
 
 const Left = styled.div`
-    position: relative; /* for TokenBalance positioning */
     display: flex;
     flex: 1;
 `;
 
-const TokenBalance = styled.div`
-    position: absolute;
-    top: 0;
-    right: 0;
-`;
+const TokenBalance = styled.div``;
 
 const Right = styled.div`
     display: flex;
@@ -125,7 +120,6 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
                             <Text>
                                 <Translation id="TR_AMOUNT" />
                             </Text>
-                            <QuestionTooltip messageId="TR_SEND_AMOUNT_TOOLTIP" />
                         </Label>
                     }
                     labelAddon={
@@ -139,6 +133,18 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
                             <Translation id="TR_SEND_SEND_MAX" />
                         </Button>
                     }
+                    labelRight={
+                        tokenBalance ? (
+                            <Label>
+                                <TokenBalance>
+                                    <Translation
+                                        id="TR_TOKEN_BALANCE"
+                                        values={{ balance: tokenBalance }}
+                                    />
+                                </TokenBalance>
+                            </Label>
+                        ) : undefined
+                    }
                     value={value || ''}
                     onChange={e => sendFormActions.handleAmountChange(id, e.target.value)}
                     bottomText={getMessage(
@@ -150,11 +156,6 @@ export default ({ sendFormActions, output, selectedAccount, send }: Props) => {
                         customFee.error,
                     )}
                 />
-                {tokenBalance && (
-                    <TokenBalance>
-                        <Translation id="TR_TOKEN_BALANCE" values={{ balance: tokenBalance }} />
-                    </TokenBalance>
-                )}
                 <CurrencySelect
                     key="currency-select"
                     symbol={symbol}

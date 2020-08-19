@@ -233,6 +233,36 @@ export const calcYDomain = (maxValue?: number) => {
     return [0, 10] as [number, number];
 };
 
+export const calcXDomain = (
+    ticks: number[],
+    data: { time: number }[],
+    range: GraphRange,
+): [number, number] => {
+    const start = ticks[0];
+    const lastTick = ticks[ticks.length - 1];
+    const lastData = data[data.length - 1];
+    // if the last data point is after last tick/label use datapoint's timestamp to mark the end of the interval
+    const end = lastData && lastTick < lastData.time ? lastData.time : lastTick;
+
+    let xPadding;
+    switch (range.label) {
+        case 'all':
+            xPadding = 3600 * 24 * 30; // 30 days
+            break;
+        case 'year':
+            xPadding = 3600 * 24 * 14; // 14 days
+            break;
+        case 'month':
+            xPadding = 3600 * 24; // 1 day
+            break;
+        default:
+            xPadding = 3600 * 12; // 12 hours
+            break;
+    }
+
+    return [start - xPadding, end + xPadding];
+};
+
 export const getFormattedLabel = (rangeLabel: GraphRange['label']) => {
     switch (rangeLabel) {
         case 'all':
@@ -269,14 +299,12 @@ export const calcFakeGraphDataForTimestamps = (
     const firstDataPoint = data[0];
     const lastDataPoint = data[data.length - 1];
 
-    // calc fake data points for each label even if there are no real txs for given timestamp (label)
-    timestamps.forEach(ts => {
-        if (firstDataPoint && lastDataPoint) {
-            const existing = data.find(d => d.time === ts);
-            if (existing) {
-                balanceData.push(existing);
-            } else if (ts < firstDataPoint.time) {
-                const closestData = firstDataPoint;
+    const firstTimestamp = timestamps[0];
+    const lastTimestamp = timestamps[timestamps.length - 1];
+
+    if (firstDataPoint && lastDataPoint && firstTimestamp && lastTimestamp) {
+        timestamps.forEach(ts => {
+            if (ts < firstDataPoint.time) {
                 balanceData.push({
                     time: ts,
                     sent: '0',
@@ -284,20 +312,21 @@ export const calcFakeGraphDataForTimestamps = (
                     sentFiat: {},
                     receivedFiat: {},
                     balanceFiat: {},
-                    // calculating fake data for dashboard graph doesn't make sense, as we would have to reflect different fiat rates in given time
-                    // balanceFiat: sumFiatValueMap(
-                    //     subFiatValueMap(closestData.balanceFiat, closestData.receivedFiat),
-                    //     closestData.sentFiat,
-                    // ),
                     txs: 0,
-                    balance: closestData.balance
-                        ? new BigNumber(closestData.balance)
-                              .plus(closestData.sent ?? 0)
-                              .minus(closestData.received ?? 0)
+                    balance: firstDataPoint.balance
+                        ? new BigNumber(firstDataPoint.balance)
+                              .plus(firstDataPoint.sent ?? 0)
+                              .minus(firstDataPoint.received ?? 0)
                               .toFixed()
                         : undefined,
                 });
-            } else if (ts > lastDataPoint.time) {
+            }
+        });
+
+        balanceData.push(...data);
+
+        timestamps.forEach(ts => {
+            if (ts > lastDataPoint.time) {
                 balanceData.push({
                     time: ts,
                     sent: '0',
@@ -308,22 +337,12 @@ export const calcFakeGraphDataForTimestamps = (
                     txs: 0,
                     balance: lastDataPoint.balance,
                 });
-            } else {
-                const toPush = data.filter(d => d.time <= ts && !balanceData.includes(d));
-                balanceData.push(...toPush);
             }
-        }
-    });
-
-    // TODO: sometimes the last datapoint[s] are outside of calculated closed range (eg one year range ends on current day 00:00, instead of 23:59)
-    // workaround
-    data.forEach(d => {
-        if (!balanceData.includes(d)) {
-            balanceData.push(d);
-        }
-    });
+        });
+    }
 
     const sortedData = balanceData.sort((a, b) => Number(a.time) - Number(b.time));
+
     return sortedData;
 };
 

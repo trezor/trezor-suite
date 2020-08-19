@@ -2117,10 +2117,6 @@ const definedMessages = defineMessages({
         id: 'TR_SEND_FEE_TOOLTIP',
         defaultMessage: 'TR_SEND_FEE_TOOLTIP',
     },
-    TR_SEND_AMOUNT_TOOLTIP: {
-        id: 'TR_SEND_AMOUNT_TOOLTIP',
-        defaultMessage: 'TR_SEND_AMOUNT_TOOLTIP',
-    },
     TR_PIN_MISMATCH_HEADING: {
         id: 'TR_PIN_MISMATCH_HEADING',
         defaultMessage: 'Pin mismatch',
@@ -3455,7 +3451,7 @@ const definedMessages = defineMessages({
     },
     TR_LANDING_MACOS: {
         id: 'TR_LANDING_MACOS',
-        defaultMessage: 'Mac OS',
+        defaultMessage: 'macOS',
     },
     TR_LANDING_DOWNLOAD: {
         id: 'TR_LANDING_DOWNLOAD',
@@ -3562,6 +3558,10 @@ const definedMessages = defineMessages({
     TR_TOKENS: {
         id: 'TR_TOKENS',
         defaultMessage: 'Tokens',
+    },
+    TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY: {
+        id: 'TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY',
+        defaultMessage: 'Wait for discovery process to complete before adding a new account.',
     },
 } as const);
 

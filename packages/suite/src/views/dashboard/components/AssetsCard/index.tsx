@@ -2,15 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { NETWORKS } from '@wallet-config';
-import { DISCOVERY } from '@wallet-actions/constants';
 import { Section } from '@dashboard-components';
 import Asset from './components/Asset';
 import { Account } from '@wallet-types';
-import { Button, colors, variables, Loader, Icon } from '@trezor/components';
-import { Card, Translation } from '@suite-components';
-import { useDiscovery, useActions, useDevice } from '@suite-hooks';
+import { colors, variables, Loader, Icon } from '@trezor/components';
+import { Card, Translation, AddAccountButton } from '@suite-components';
+import { useDiscovery, useDevice } from '@suite-hooks';
 import { useAccounts } from '@wallet-hooks';
-import * as modalActions from '@suite-actions/modalActions';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -49,7 +47,7 @@ const Grid = styled.div`
     grid-template-columns: 2fr 2fr 1fr;
 `;
 
-const NewAccountButton = styled(Button)`
+const StyledAddAccountButton = styled(AddAccountButton)`
     margin-left: 20px;
 `;
 
@@ -57,18 +55,6 @@ const AssetsCard = () => {
     const { discovery, getDiscoveryStatus } = useDiscovery();
     const { device } = useDevice();
     const { accounts } = useAccounts(discovery);
-    const { openModal } = useActions({
-        openModal: modalActions.openModal,
-    });
-
-    // TODO: used at multiple places, extract to more general hook or something (along with func for opening add-account modal)
-    const discoveryIsRunning = discovery ? discovery.status <= DISCOVERY.STATUS.STOPPING : false;
-    const isAddingAccountDisabled =
-        discoveryIsRunning ||
-        !device ||
-        !device.connected ||
-        device.authConfirm ||
-        device.authFailed;
 
     const assets: { [key: string]: Account[] } = {};
     accounts.forEach(a => {
@@ -89,22 +75,7 @@ const AssetsCard = () => {
             heading={
                 <>
                     <Translation id="TR_MY_ASSETS" />
-                    <NewAccountButton
-                        variant="tertiary"
-                        icon="PLUS"
-                        isDisabled={isAddingAccountDisabled}
-                        onClick={
-                            device
-                                ? () =>
-                                      openModal({
-                                          type: 'add-account',
-                                          device,
-                                      })
-                                : undefined
-                        }
-                    >
-                        <Translation id="TR_ADD_ACCOUNT" />
-                    </NewAccountButton>
+                    <StyledAddAccountButton device={device} />
                 </>
             }
         >
