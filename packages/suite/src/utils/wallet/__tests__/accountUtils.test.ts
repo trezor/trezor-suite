@@ -260,4 +260,36 @@ describe('account utils', () => {
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
         });
     });
+
+    it('accountSearchFn', () => {
+        const btcAcc = global.JestMocks.getWalletAccount({
+            deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
+            descriptor:
+                'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+            symbol: 'btc',
+            accountType: 'legacy',
+        });
+
+        expect(accountUtils.accountSearchFn(btcAcc, 'btc')).toBe(true);
+        expect(accountUtils.accountSearchFn(btcAcc, '', 'btc')).toBe(true);
+        expect(
+            accountUtils.accountSearchFn(
+                btcAcc,
+                'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+                'btc',
+            ),
+        ).toBe(true);
+        expect(accountUtils.accountSearchFn(btcAcc, '', 'ltc')).toBe(false);
+        expect(accountUtils.accountSearchFn(btcAcc, 'bitcoin')).toBe(true);
+        expect(accountUtils.accountSearchFn(btcAcc, 'legacy')).toBe(true);
+        expect(accountUtils.accountSearchFn(btcAcc, 'bitco')).toBe(true);
+        expect(accountUtils.accountSearchFn(btcAcc, 'ltc')).toBe(false);
+        expect(accountUtils.accountSearchFn(btcAcc, 'litecoin')).toBe(false);
+        expect(
+            accountUtils.accountSearchFn(
+                btcAcc,
+                'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+            ),
+        ).toBe(true);
+    });
 });
