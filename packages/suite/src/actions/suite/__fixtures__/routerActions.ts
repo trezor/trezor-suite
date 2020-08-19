@@ -8,6 +8,7 @@ export const init = [
             hash: undefined,
             params: undefined,
             pathname: '/',
+            loaded: true,
             url: '/',
             route: findRouteByName('suite-index'),
         },
@@ -16,6 +17,7 @@ export const init = [
         description: `not called`,
         state: {
             router: {
+                loaded: false,
                 url: '/',
                 pathname: '/',
                 hash: undefined,
