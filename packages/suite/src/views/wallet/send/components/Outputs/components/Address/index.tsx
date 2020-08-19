@@ -76,9 +76,9 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
                                     />
                                 </>
                             )}{' '}
-                            <Translation id="TR_RECIPIENT_ADDRESS" />
+                            <Translation id="RECIPIENT_ADDRESS" />
                         </Text>
-                        <QuestionTooltip messageId="TR_RECIPIENT_ADDRESS_TOOLTIP" />
+                        <QuestionTooltip messageId="RECIPIENT_ADDRESS_TOOLTIP" />
                     </Left>
                 </Label>
             }
@@ -103,7 +103,7 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
                         }
                     }}
                 >
-                    <Translation id="TR_SCAN" />
+                    <Translation id="RECIPIENT_SCAN" />
                 </Button>
             }
             labelRight={
@@ -141,13 +141,13 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
             data-test={inputName}
             defaultValue={addressValue}
             innerRef={register({
-                required: 'TR_ADDRESS_IS_NOT_SET',
+                required: 'RECIPIENT_IS_NOT_SET',
                 validate: (value: string) => {
                     if (!isAddressValid(value, symbol)) {
-                        return 'TR_ADDRESS_IS_NOT_VALID';
+                        return 'RECIPIENT_IS_NOT_VALID';
                     }
                     if (networkType === 'ripple' && value === descriptor) {
-                        return 'TR_XRP_CANNOT_SEND_TO_MYSELF';
+                        return 'RECIPIENT_CANNOT_SEND_TO_MYSELF';
                     }
                 },
             })}

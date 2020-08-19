@@ -103,7 +103,7 @@ export const FeeRow = ({
     return (
         <BaseTargetLayout
             {...baseLayoutProps}
-            addressLabel={<Translation id="TR_FEE" />}
+            addressLabel={<Translation id="FEE" />}
             amount={
                 <StyledHiddenPlaceholder>
                     <Sign value="neg" />

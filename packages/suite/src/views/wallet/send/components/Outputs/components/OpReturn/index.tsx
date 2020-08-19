@@ -62,7 +62,7 @@ export default ({ outputId }: { outputId: number }) => {
                 data-test={inputAsciiName}
                 defaultValue={asciiValue}
                 innerRef={register({
-                    required: 'TR_AMOUNT_IS_NOT_SET',
+                    required: 'DATA_NOT_SET',
                 })}
                 onChange={event => {
                     setValue(
@@ -77,7 +77,7 @@ export default ({ outputId }: { outputId: number }) => {
                     <Label>
                         <Icon size={16} icon="ASTERISK" />
                         <Text>
-                            <Translation id="TR_OP_RETURN" />
+                            <Translation id="OP_RETURN" />
                         </Text>
                     </Label>
                 }
@@ -90,11 +90,11 @@ export default ({ outputId }: { outputId: number }) => {
                 data-test={inputHexName}
                 defaultValue={hexValue}
                 innerRef={register({
-                    required: 'TR_AMOUNT_IS_NOT_SET',
+                    required: 'DATA_NOT_SET',
                     validate: (value: string) => {
-                        if (value.length % 2 !== 0) return 'TODO_1';
-                        if (value.length > 80 * 2) return 'TODO_2';
-                        if (!/^[\da-f]+$/.test(value)) return 'TODO_3';
+                        if (value.length % 2 !== 0) return 'DATA_NOT_VALID_HEX';
+                        if (value.length > 80 * 2) return 'DATA_NOT_VALID_HEX';
+                        if (!/^[\da-f]+$/.test(value)) return 'DATA_NOT_VALID_HEX';
                     },
                 })}
                 onChange={event => {

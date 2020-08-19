@@ -59,9 +59,9 @@ export default () => {
                     onClick={signTransaction}
                 >
                     {broadcastEnabled ? (
-                        <Translation id="TR_SEND_TRANSACTION" />
+                        <Translation id="SEND_TRANSACTION" />
                     ) : (
-                        <Translation id="TR_SIGN_TRANSACTION" />
+                        <Translation id="SIGN_TRANSACTION" />
                     )}
                 </ButtonReview>
             </Row>

@@ -41,14 +41,14 @@ export default ({ close }: Props) => {
             data-test={inputName}
             defaultValue={inputValue}
             innerRef={register({
-                required: 'TR_DESTINATION_TAG_IS_NOT_SET',
+                required: 'DESTINATION_TAG_NOT_SET',
                 validate: (value: string) => {
                     const amountBig = new BigNumber(value);
                     if (amountBig.isNaN()) {
-                        return 'TR_LOCKTIME_IS_NOT_NUMBER';
+                        return 'DESTINATION_TAG_IS_NOT_NUMBER';
                     }
                     if (!amountBig.isInteger() || amountBig.lt(0) || amountBig.gt(U_INT_32)) {
-                        return 'TR_DESTINATION_TAG_IS_NOT_VALID';
+                        return 'DESTINATION_TAG_IS_NOT_VALID';
                     }
                 },
             })}
@@ -58,9 +58,9 @@ export default ({ close }: Props) => {
             label={
                 <Label>
                     <Text>
-                        <Translation id="TR_XRP_DESTINATION_TAG" />
+                        <Translation id="DESTINATION_TAG" />
                     </Text>
-                    <QuestionTooltip messageId="TR_XRP_DESTINATION_TAG_EXPLAINED" />
+                    <QuestionTooltip messageId="DESTINATION_TAG_EXPLAINED" />
                 </Label>
             }
             labelRight={<StyledIcon size={20} icon="CROSS" onClick={close} />}

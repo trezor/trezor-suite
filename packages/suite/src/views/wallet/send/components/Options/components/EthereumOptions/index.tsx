@@ -59,7 +59,7 @@ export default () => {
                             composeTransaction('outputs[0].amount', false);
                         }}
                     >
-                        <Translation id="TR_ETH_ADD_DATA" />
+                        <Translation id="DATA_ETH_ADD" />
                     </StyledButton>
                 )}
                 <StyledButton
@@ -70,7 +70,7 @@ export default () => {
                         composeTransaction('outputs[0].amount', false);
                     }}
                 >
-                    <Translation id="TR_BROADCAST" />
+                    <Translation id="BROADCAST" />
                     <OnOffSwitcher isOn={broadcastEnabled} />
                 </StyledButton>
             </Left>

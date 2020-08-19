@@ -57,7 +57,7 @@ export default () => {
                             composeTransaction('outputs[0].amount', false);
                         }}
                     >
-                        <Translation id="TR_XRP_DESTINATION_TAG" />
+                        <Translation id="DESTINATION_TAG" />
                     </StyledButton>
                 )}
 
@@ -69,7 +69,7 @@ export default () => {
                         composeTransaction('outputs[0].amount', false);
                     }}
                 >
-                    <Translation id="TR_BROADCAST" />
+                    <Translation id="BROADCAST" />
                     <OnOffSwitcher isOn={broadcastEnabled} />
                 </StyledButton>
             </Left>

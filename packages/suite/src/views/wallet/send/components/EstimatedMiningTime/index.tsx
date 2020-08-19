@@ -24,7 +24,7 @@ interface Props {
 const EstimatedMiningTime = ({ seconds }: Props) => {
     return (
         <Wrapper>
-            <Translation id="TR_ESTIMATED_TIME" />
+            <Translation id="ESTIMATED_TIME" />
             <Duration>{formatDuration(seconds)}</Duration>
         </Wrapper>
     );

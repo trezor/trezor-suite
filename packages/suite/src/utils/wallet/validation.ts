@@ -51,3 +51,10 @@ export const isAddressValid = (address: string, symbol: Account['symbol']) => {
         // no default
     }
 };
+
+export const isDecimalsValid = (value: string, decimals: number) => {
+    const DECIMALS_RE = new RegExp(
+        `^(0|0\\.([0-9]{0,${decimals}})?|[1-9][0-9]*\\.?([0-9]{0,${decimals}})?)$`,
+    );
+    return DECIMALS_RE.test(value);
+};

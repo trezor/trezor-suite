@@ -123,19 +123,19 @@ export default ({ type, state, label, value, symbol, token }: Props) => {
     let outputLabel: React.ReactNode = label;
 
     if (type === 'opreturn') {
-        outputLabel = <Translation id="TR_OP_RETURN" />;
+        outputLabel = <Translation id="OP_RETURN" />;
     }
     if (type === 'data') {
-        outputLabel = <Translation id="TR_ETH_ADD_DATA" />;
+        outputLabel = <Translation id="DATA_ETH" />;
     }
     if (type === 'locktime') {
-        outputLabel = <Translation id="TR_SCHEDULE_SEND" />; // TODO: blocks or date
+        outputLabel = <Translation id="LOCKTIME" />; // TODO: blocks or date
     }
     if (type === 'fee') {
-        outputLabel = <Translation id="TR_FEE" />;
+        outputLabel = <Translation id="FEE" />;
     }
     if (type === 'destination-tag') {
-        outputLabel = <Translation id="TR_XRP_DESTINATION_TAG" />;
+        outputLabel = <Translation id="DESTINATION_TAG" />;
     }
 
     let outputValue = value;

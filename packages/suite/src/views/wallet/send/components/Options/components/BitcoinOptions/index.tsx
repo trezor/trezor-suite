@@ -79,7 +79,7 @@ export default () => {
                                 composeTransaction('outputs[0].amount', false);
                             }}
                         >
-                            <Translation id="TR_ADD_LOCKTIME" />
+                            <Translation id="LOCKTIME_ADD" />
                         </StyledButton>
                     )}
                     {!locktimeEnabled && (
@@ -91,7 +91,7 @@ export default () => {
                                 composeTransaction('outputs[0].amount', false);
                             }}
                         >
-                            <Translation id="TR_RBF" />
+                            <Translation id="RBF" />
                             <OnOffSwitcher isOn={rbfEnabled} />
                         </StyledButton>
                     )}
@@ -103,7 +103,7 @@ export default () => {
                             composeTransaction('outputs[0].amount', false);
                         }}
                     >
-                        <Translation id="TR_BROADCAST" />
+                        <Translation id="BROADCAST" />
                         <OnOffSwitcher isOn={broadcastEnabled} />
                     </StyledButton>
                 </Left>
@@ -114,7 +114,7 @@ export default () => {
                         data-test="add-output"
                         onClick={addOutput}
                     >
-                        <Translation id="TR_ANOTHER_RECIPIENT" />
+                        <Translation id="RECIPIENT_ADD" />
                     </Button>
                 </Right>
             </Row>

@@ -5,7 +5,7 @@ import {
     TokenInfo,
     PrecomposedTransaction as PrecomposedTransactionBase,
 } from 'trezor-connect';
-import { TrezorDevice } from '@suite-types';
+import { TrezorDevice, ExtendedMessageDescriptor } from '@suite-types';
 
 export type CurrencyOption = { value: string; label: string };
 
@@ -114,8 +114,15 @@ interface GetDefaultValue {
     <K, T>(fieldName: K, fallback: T): K extends keyof FormState ? FormState[K] : T;
 }
 
-export type SendContextState = UseFormMethods<FormState> &
+export interface TypedValidationRules {
+    required?: ExtendedMessageDescriptor['id'] | JSX.Element | undefined;
+    validate?: (data: string) => ExtendedMessageDescriptor['id'] | JSX.Element | undefined;
+}
+
+export type SendContextState = Omit<UseFormMethods<FormState>, 'register'> &
     SendContextProps & {
+        // strongly typed UseFormMethods.register
+        register: (rules?: TypedValidationRules) => (ref: any) => void; // TODO: ReturnType of UseFormMethods['register'] union
         // additional fields
         outputs: Partial<Output & { id: string }>[]; // useFieldArray fields
         updateContext: (value: Partial<SendContextProps>) => void;

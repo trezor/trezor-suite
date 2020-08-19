@@ -142,9 +142,12 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
         }
     }, [getValues, composedLevels, signTransaction, resetContext]);
 
+    const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
+
     return {
         ...state,
         ...useFormMethods,
+        register: typedRegister,
         outputs: outputsFieldArray.fields,
         composedLevels,
         updateContext,

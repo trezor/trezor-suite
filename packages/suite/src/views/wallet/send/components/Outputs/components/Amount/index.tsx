@@ -1,12 +1,12 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
-import validator from 'validator';
 import styled from 'styled-components';
 import { Input, Icon, Button, variables, Tooltip, colors } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getInputState, findToken } from '@wallet-utils/sendFormUtils';
+import { isDecimalsValid } from '@wallet-utils/validation';
 import { useSendFormContext } from '@wallet-hooks';
 
 import TokenSelect from './components/TokenSelect';
@@ -116,20 +116,20 @@ export default ({ outputId }: { outputId: number }) => {
                             }}
                             variant="tertiary"
                         >
-                            <Translation id="TR_SEND_SEND_MAX" />
+                            <Translation id="AMOUNT_SEND_MAX" />
                         </Button>
                     }
                     label={
                         <Label>
                             <Text>
-                                <Translation id="TR_AMOUNT" />
+                                <Translation id="AMOUNT" />
                             </Text>
                             {networkType === 'ripple' && (
                                 <Tooltip
                                     placement="top"
                                     content={
                                         <Translation
-                                            id="TR_XRP_AMOUNT_RESERVE_EXPLANATION"
+                                            id="AMOUNT_RESERVE_EXPLANATION"
                                             values={{ reserve: `${reserve} XRP` }}
                                         />
                                     }
@@ -144,7 +144,7 @@ export default ({ outputId }: { outputId: number }) => {
                             <Label>
                                 <TokenBalance>
                                     <Translation
-                                        id="TR_TOKEN_BALANCE"
+                                        id="TOKEN_BALANCE"
                                         values={{ balance: tokenBalance }}
                                     />
                                 </TokenBalance>
@@ -166,25 +166,25 @@ export default ({ outputId }: { outputId: number }) => {
                     data-test={inputName}
                     defaultValue={amountValue}
                     innerRef={register({
-                        required: 'TR_AMOUNT_IS_NOT_SET',
+                        required: 'AMOUNT_IS_NOT_SET',
                         validate: (value: string) => {
                             const amountBig = new BigNumber(value);
 
                             if (amountBig.isNaN()) {
-                                return 'TR_AMOUNT_IS_NOT_NUMBER';
+                                return 'AMOUNT_IS_NOT_NUMBER';
                             }
 
                             if (amountBig.lt(0)) {
-                                return 'TR_AMOUNT_IS_TOO_LOW';
+                                return 'AMOUNT_IS_TOO_LOW';
                             }
 
                             // allow 0 amount ONLY for ethereum transaction with data
                             if (amountBig.eq(0) && !getDefaultValue('ethereumDataHex')) {
-                                return 'TR_AMOUNT_IS_TOO_LOW';
+                                return 'AMOUNT_IS_TOO_LOW';
                             }
 
                             if (amountBig.isGreaterThan(formattedAvailableBalance)) {
-                                return 'TR_AMOUNT_IS_NOT_ENOUGH';
+                                return 'AMOUNT_IS_NOT_ENOUGH';
                             }
 
                             if (
@@ -193,25 +193,23 @@ export default ({ outputId }: { outputId: number }) => {
                                 reserve &&
                                 amountBig.isLessThan(reserve)
                             ) {
-                                return 'TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE';
+                                return (
+                                    <Translation
+                                        key="AMOUNT_IS_LESS_THAN_RESERVE"
+                                        id="AMOUNT_IS_LESS_THAN_RESERVE"
+                                        values={{ reserve }}
+                                    />
+                                );
                             }
 
-                            // TODO:
-                            if (
-                                networkType === 'ethereum' &&
-                                error &&
-                                error.type === 'notEnoughCurrencyFee'
-                            ) {
-                                return 'NOT_ENOUGH_CURRENCY_FEE';
-                            }
-
-                            if (
-                                !validator.isDecimal(value, {
-                                    // eslint-disable-next-line @typescript-eslint/camelcase
-                                    decimal_digits: `0,${decimals}`,
-                                })
-                            ) {
-                                return 'TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS';
+                            if (!isDecimalsValid(value, decimals)) {
+                                return (
+                                    <Translation
+                                        key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                                        id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                                        values={{ decimals }}
+                                    />
+                                );
                             }
                         },
                     })}

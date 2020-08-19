@@ -93,14 +93,14 @@ export default ({ outputId }: { outputId: number }) => {
                 data-test={inputName}
                 defaultValue={fiatValue}
                 innerRef={register({
-                    required: 'TR_AMOUNT_IS_NOT_SET',
+                    required: 'AMOUNT_IS_NOT_SET',
                     validate: (value: string) => {
                         const amountBig = new BigNumber(value);
                         if (amountBig.isNaN()) {
-                            return 'TR_AMOUNT_IS_NOT_NUMBER';
+                            return 'AMOUNT_IS_NOT_NUMBER';
                         }
                         if (amountBig.lt(0)) {
-                            return 'TR_AMOUNT_IS_TOO_LOW';
+                            return 'AMOUNT_IS_TOO_LOW';
                         }
                     },
                 })}

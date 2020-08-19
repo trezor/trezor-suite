@@ -88,17 +88,17 @@ export default ({ close }: Props) => {
                 data-test={inputName}
                 defaultValue={inputValue}
                 innerRef={register({
-                    required: 'TR_LOCKTIME_IS_NOT_SET',
+                    required: 'LOCKTIME_IS_NOT_SET',
                     validate: (value: string) => {
                         const amountBig = new BigNumber(value);
                         if (amountBig.isNaN()) {
-                            return 'TR_LOCKTIME_IS_NOT_NUMBER';
+                            return 'LOCKTIME_IS_NOT_NUMBER';
                         }
                         if (amountBig.lte(0)) {
-                            return 'TR_LOCKTIME_IS_TOO_LOW';
+                            return 'LOCKTIME_IS_TOO_LOW';
                         }
                         if (!amountBig.isInteger()) {
-                            return 'TR_LOCKTIME_IS_NOT_INTEGER';
+                            return 'LOCKTIME_IS_NOT_INTEGER';
                         }
                     },
                 })}
@@ -113,7 +113,7 @@ export default ({ close }: Props) => {
                     <Label>
                         <Icon size={16} icon="CALENDAR" />
                         <Text>
-                            <Translation id="TR_SCHEDULE_SEND" />
+                            <Translation id="LOCKTIME_SCHEDULE_SEND" />
                         </Text>
                     </Label>
                 }
@@ -126,10 +126,10 @@ export default ({ close }: Props) => {
                 </Left>
                 <Center>
                     <Title>
-                        <Translation id="TR_RBF_OFF_TITLE" />
+                        <Translation id="RBF_OFF_TITLE" />
                     </Title>
                     <Description>
-                        <Translation id="TR_RBF_OFF_DESCRIPTION" />
+                        <Translation id="RBF_OFF_DESCRIPTION" />
                     </Description>
                 </Center>
                 <Right>

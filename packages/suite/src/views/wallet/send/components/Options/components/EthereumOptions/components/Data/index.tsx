@@ -64,7 +64,7 @@ export default ({ close }: Props) => {
                 data-test={inputAsciiName}
                 defaultValue={asciiValue}
                 innerRef={register({
-                    required: 'TR_DATA_IS_NOT_SET',
+                    required: 'DATA_NOT_SET',
                 })}
                 onChange={event => {
                     setValue(
@@ -84,9 +84,9 @@ export default ({ close }: Props) => {
                 label={
                     <Label>
                         <Text>
-                            <Translation id="TR_SEND_DATA" />
+                            <Translation id="DATA_ETH" />
                         </Text>
-                        <QuestionTooltip messageId="TR_SEND_DATA_TOOLTIP" />
+                        <QuestionTooltip messageId="DATA_ETH_TOOLTIP" />
                     </Label>
                 }
             />
@@ -98,11 +98,11 @@ export default ({ close }: Props) => {
                 data-test={inputHexName}
                 defaultValue={hexValue}
                 innerRef={register({
-                    required: 'TR_DATA_IS_NOT_SET',
+                    required: 'DATA_NOT_SET',
                     validate: (value: string) => {
-                        if (value.length % 2 !== 0) return 'TR_DATA_IS_NOT_VALID_HEX';
-                        if (value.length > 80 * 2) return 'TR_DATA_HEX_TOO_BIG';
-                        if (!/^[\da-f]+$/.test(value)) return 'TR_DATA_IS_NOT_VALID_HEX';
+                        if (value.length % 2 !== 0) return 'DATA_NOT_VALID_HEX';
+                        if (!/^[\da-f]+$/.test(value)) return 'DATA_NOT_VALID_HEX';
+                        if (value.length > 80 * 2) return 'DATA_HEX_TOO_BIG';
                     },
                 })}
                 onChange={event => {

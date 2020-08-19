@@ -74,10 +74,10 @@ export default () => {
         <StyledCard>
             <Left>
                 <Label>
-                    <Translation id="TR_TOTAL_SENT" />
+                    <Translation id="TOTAL_SENT" />
                 </Label>
                 <SecondaryLabel>
-                    <Translation id="TR_INCLUDING_FEE" />
+                    <Translation id="INCLUDING_FEE" />
                 </SecondaryLabel>
             </Left>
             {transactionInfo && transactionInfo.type !== 'error' && (

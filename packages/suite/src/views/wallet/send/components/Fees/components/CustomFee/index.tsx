@@ -2,6 +2,7 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import { Input, variables, colors } from '@trezor/components';
+import { Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { getInputState, getFeeUnits } from '@wallet-utils/sendFormUtils';
@@ -48,17 +49,23 @@ export default () => {
                 name={inputName}
                 data-test={inputName}
                 innerRef={register({
-                    required: 'TR_CUSTOM_FEE_IS_NOT_SET',
+                    required: 'CUSTOM_FEE_IS_NOT_SET',
                     validate: (value: string) => {
                         const feeBig = new BigNumber(value);
                         if (feeBig.isNaN()) {
-                            return 'TR_CUSTOM_FEE_IS_NOT_NUMBER';
+                            return 'CUSTOM_FEE_IS_NOT_NUMBER';
                         }
                         if (!feeBig.isInteger()) {
-                            return 'TR_CUSTOM_FEE_IS_NOT_INTEGER';
+                            return 'CUSTOM_FEE_IS_NOT_INTEGER';
                         }
                         if (feeBig.isGreaterThan(maxFee) || feeBig.isLessThan(minFee)) {
-                            return 'TR_CUSTOM_FEE_NOT_IN_RANGE';
+                            return (
+                                <Translation
+                                    key="CUSTOM_FEE_NOT_IN_RANGE"
+                                    id="CUSTOM_FEE_NOT_IN_RANGE"
+                                    values={{ minFee, maxFee }}
+                                />
+                            );
                         }
                     },
                 })}
@@ -82,15 +89,11 @@ export default () => {
                         composeTransaction('feeLimit', !!error);
                     }}
                     innerRef={register({
-                        required: 'TR_CUSTOM_FEE_IS_NOT_SET',
+                        required: 'CUSTOM_FEE_IS_NOT_SET',
                         validate: (value: string) => {
                             const feeBig = new BigNumber(value);
                             if (feeBig.isNaN()) {
-                                return 'TR_CUSTOM_FEE_IS_NOT_NUMBER';
-                            }
-
-                            if (feeBig.isGreaterThan(maxFee) || feeBig.isLessThan(minFee)) {
-                                return 'TR_CUSTOM_FEE_NOT_IN_RANGE';
+                                return 'CUSTOM_FEE_IS_NOT_NUMBER';
                             }
                         },
                     })}

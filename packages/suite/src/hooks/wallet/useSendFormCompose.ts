@@ -145,14 +145,14 @@ export const useSendFormCompose = ({
                 // setError to the field which created `composeRequest`
                 setError(composeField, {
                     type: 'compose',
-                    message: 'TR_AMOUNT_IS_NOT_ENOUGH',
+                    message: 'AMOUNT_IS_NOT_ENOUGH',
                 });
             } else {
                 // setError to the all `Amount` fields, composeField not specified (load draft case)
                 values.outputs.forEach((_, i) => {
                     setError(`outputs[${i}].amount`, {
                         type: 'compose',
-                        message: 'TR_AMOUNT_IS_NOT_ENOUGH',
+                        message: 'AMOUNT_IS_NOT_ENOUGH',
                     });
                 });
             }

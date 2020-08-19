@@ -135,7 +135,7 @@ export default ({ selectedAccount, send, decision }: Props) => {
                     <BottomContent>
                         <Left>
                             <Translation
-                                id="TR_TOTAL_SYMBOL"
+                                id="TOTAL_SYMBOL"
                                 values={{ symbol: symbol.toUpperCase() }}
                             />
                         </Left>
@@ -160,7 +160,7 @@ export default ({ selectedAccount, send, decision }: Props) => {
                                 if (decision) decision.resolve(result);
                             }}
                         >
-                            <Translation id="TR_SEND" />
+                            <Translation id="SEND_TRANSACTION" />
                         </StyledButton>
                     )}
                     {!broadcastEnabled && (
@@ -177,14 +177,14 @@ export default ({ selectedAccount, send, decision }: Props) => {
                                     }
                                 }}
                             >
-                                <Translation id="TR_COPY_TO_CLIPBOARD" />
+                                <Translation id="COPY_TRANSACTION_TO_CLIPBOARD" />
                             </StyledButton>
                             <StyledButton
                                 variant="secondary"
                                 isDisabled={!signedTx}
                                 onClick={() => download(signedTx!.tx, 'signed-transaction.txt')}
                             >
-                                <Translation id="TR_DOWNLOAD" />
+                                <Translation id="DOWNLOAD_TRANSACTION" />
                             </StyledButton>
                         </Buttons>
                     )}

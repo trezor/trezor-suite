@@ -104,7 +104,7 @@ export default () => {
             <Top>
                 <Left>
                     <SelectBar
-                        label={<Translation id="TR_FEE" />}
+                        label={<Translation id="FEE" />}
                         selectedOption={selectedLabel}
                         options={buildFeeOptions(feeInfo.levels)}
                         onChange={

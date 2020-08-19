@@ -210,7 +210,7 @@ export const composeDebouncedTransaction = [
             connectCalledTimes: 0,
             composedLevels: undefined,
             errors: {
-                outputs: [{ amount: { message: 'TR_AMOUNT_IS_NOT_NUMBER' } }],
+                outputs: [{ amount: { message: 'AMOUNT_IS_NOT_NUMBER' } }],
             },
         },
     },
