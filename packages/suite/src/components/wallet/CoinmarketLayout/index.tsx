@@ -5,6 +5,8 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import Navigation from './components/Navigation';
+import PreviousTransactions from './components/PreviousTransactions';
+import Footer from './components/Footer';
 
 const Content = styled.div`
     padding: 25px;
@@ -14,10 +16,9 @@ const BottomContent = styled.div``;
 
 interface Props {
     children: ReactNode;
-    bottom?: ReactNode;
 }
 
-const CoinmarketLayout = ({ children, bottom }: Props) => {
+const CoinmarketLayout = ({ children }: Props) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     return (
@@ -26,7 +27,10 @@ const CoinmarketLayout = ({ children, bottom }: Props) => {
                 <Navigation />
                 <Content>{children}</Content>
             </Card>
-            {bottom && <BottomContent>{bottom}</BottomContent>}
+            <BottomContent>
+                <PreviousTransactions />
+                <Footer />
+            </BottomContent>
         </WalletLayout>
     );
 };

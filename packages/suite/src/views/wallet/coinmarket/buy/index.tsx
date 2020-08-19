@@ -56,14 +56,7 @@ const CoinmarketBuy = () => {
 
     return (
         <FormProvider {...methods}>
-            <CoinmarketLayout
-                bottom={
-                    <>
-                        <PreviousTransactions />
-                        <CoinmarketFooter />
-                    </>
-                }
-            >
+            <CoinmarketLayout>
                 <Wrapper>
                     {isLoading && <Loading>loading</Loading>}
                     {!isLoading && noProviders && <NoProviders>No providers</NoProviders>}
