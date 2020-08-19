@@ -17,7 +17,7 @@ const Header = styled.div`
 `;
 
 const PreviousTransactions = () => {
-    const previousTransactions = useSelector(state => state.wallet.coinmarket.buy.trades);
+    const previousTransactions = useSelector(state => state.wallet.coinmarket.trades);
 
     return (
         <Wrapper>
@@ -26,7 +26,7 @@ const PreviousTransactions = () => {
             </Header>
             <Content>
                 {previousTransactions.map(transaction => (
-                    <Transaction key={transaction.trade.quoteId} transaction={transaction.trade} />
+                    <Transaction key={transaction.data.paymentId} transaction={transaction.data} />
                 ))}
             </Content>
         </Wrapper>

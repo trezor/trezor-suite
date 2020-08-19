@@ -7,10 +7,10 @@ import { State as AnalyticsState } from '@suite-reducers/analyticsReducer';
 import { AcquiredDevice } from '@suite-types';
 import { Account, Discovery, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
 import { GraphData } from '@wallet-types/graph';
-import { BuyTradeResponse } from 'invity-api';
+import { BuyTrade, ExchangeTrade } from 'invity-api';
 import { migrate } from './migrations';
 
-const VERSION = 15;
+const VERSION = 16;
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -78,9 +78,19 @@ export interface SuiteDBSchema extends DBSchema {
             deviceState: string;
         };
     };
-    coinmarketBuyTrades: {
+    coinmarketTrades: {
         key: string;
-        value: BuyTradeResponse;
+        value: {
+            date: string;
+            tradeType: 'buy' | 'exchange';
+            data: BuyTrade | ExchangeTrade;
+            account: {
+                symbol: Account['symbol'];
+                accountIndex: Account['index'];
+                accountType: Account['accountType'];
+                deviceState: Account['deviceState'];
+            };
+        };
     };
 }
 
@@ -92,7 +102,7 @@ export type SuiteStorageUpdateMessage = StorageUpdateMessage<SuiteDBSchema>;
  */
 const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersion, transaction) => {
     let shouldInitDB = oldVersion === 0;
-    if (oldVersion > 0 && oldVersion < 15) {
+    if (oldVersion > 0 && oldVersion < 16) {
         // just delete whole db as migrations from version older than 13 (internal releases) are not implemented
         try {
             await SuiteDB.removeStores(db);
@@ -151,7 +161,7 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
 
         graphStore.createIndex('deviceState', 'account.deviceState');
 
-        db.createObjectStore('coinmarketBuyTrades', { keyPath: 'trade.quoteId' });
+        db.createObjectStore('coinmarketTrades', { keyPath: 'account.deviceState' });
     } else {
         // migrate functions
         migrate(db, oldVersion, newVersion, transaction);

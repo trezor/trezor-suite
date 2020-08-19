@@ -1,10 +1,22 @@
 import produce from 'immer';
-import { WalletAction } from '@wallet-types';
-import { BuyTrade, BuyTradeQuoteRequest, BuyTradeResponse } from 'invity-api';
+import { WalletAction, Account } from '@wallet-types';
+import { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import { COINMARKET_BUY } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
 import { Action as SuiteAction } from '@suite-types';
+
+interface Trade {
+    tradeType: 'buy' | 'exchange';
+    date: string;
+    data: BuyTrade;
+    account: {
+        deviceState: Account['deviceState'];
+        symbol: Account['symbol'];
+        accountType: Account['accountType'];
+        accountIndex: Account['index'];
+    };
+}
 
 interface Buy {
     buyInfo?: BuyInfo;
@@ -13,11 +25,11 @@ interface Buy {
     quotes: BuyTrade[];
     alternativeQuotes?: BuyTrade[];
     addressVerified: boolean;
-    trades: BuyTradeResponse[];
 }
 
 interface State {
     buy: Buy;
+    trades: Trade[];
 }
 
 const initialState = {
@@ -28,8 +40,8 @@ const initialState = {
         quotes: [],
         alternativeQuotes: undefined,
         addressVerified: false,
-        trades: [],
     },
+    trades: [],
 };
 
 export default (state: State = initialState, action: WalletAction | SuiteAction): State => {
@@ -50,9 +62,6 @@ export default (state: State = initialState, action: WalletAction | SuiteAction)
                 break;
             case COINMARKET_BUY.VERIFY_ADDRESS:
                 draft.buy.addressVerified = action.addressVerified;
-                break;
-            case COINMARKET_BUY.SAVE_TRADE:
-                draft.buy.trades.push(action.buyTradeResponse);
                 break;
             case STORAGE.LOADED:
                 return action.payload.wallet.coinmarket;

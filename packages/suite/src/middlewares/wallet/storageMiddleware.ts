@@ -132,7 +132,16 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         }
 
         case COINMARKET_BUY.SAVE_TRADE:
-            storageActions.saveBuyTrade(action.buyTradeResponse);
+            storageActions.saveBuyTrade(
+                action.data,
+                {
+                    deviceState: action.account.deviceState,
+                    symbol: action.account.symbol,
+                    accountType: action.account.accountType,
+                    accountIndex: action.account.accountIndex,
+                },
+                action.date,
+            );
             break;
 
         default:

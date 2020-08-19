@@ -185,7 +185,7 @@ const VerifyAddress = ({ selectedQuote }: Props) => {
                                 // TODO - show error, trade failed, typically timeout
                                 console.log('response error', response.trade.error);
                             } else {
-                                await saveTrade(response);
+                                await saveTrade(response.trade, account, new Date().toISOString());
                                 // eslint-disable-next-line no-lonely-if
                                 if (response.tradeForm) {
                                     submitRequestForm(response.tradeForm);

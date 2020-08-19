@@ -1,13 +1,8 @@
 import TrezorConnect, { UI, ButtonRequestMessage } from 'trezor-connect';
 import * as modalActions from '@suite-actions/modalActions';
+import { Account } from '@wallet-types';
 import * as notificationActions from '@suite-actions/notificationActions';
-import {
-    BuyListResponse,
-    BuyProviderInfo,
-    BuyTradeQuoteRequest,
-    BuyTrade,
-    BuyTradeResponse,
-} from 'invity-api';
+import { BuyListResponse, BuyProviderInfo, BuyTradeQuoteRequest, BuyTrade } from 'invity-api';
 import invityAPI from '@suite/services/invityAPI';
 import { COINMARKET_BUY } from './constants';
 import { Dispatch, GetState } from '@suite-types';
@@ -32,7 +27,15 @@ export type CoinmarketBuyActions =
       }
     | {
           type: typeof COINMARKET_BUY.SAVE_TRADE;
-          buyTradeResponse: BuyTradeResponse;
+          date: string;
+          tradeType: 'buy';
+          data: BuyTrade;
+          account: {
+              symbol: Account['symbol'];
+              accountIndex: Account['index'];
+              accountType: Account['accountType'];
+              deviceState: Account['deviceState'];
+          };
       };
 
 export async function loadBuyInfo(): Promise<BuyInfo> {
@@ -74,10 +77,20 @@ export const saveBuyInfo = (buyInfo: BuyInfo) => async (dispatch: Dispatch) => {
     });
 };
 
-export const saveTrade = (buyTradeResponse: BuyTradeResponse) => async (dispatch: Dispatch) => {
+export const saveTrade = (buyTrade: BuyTrade, account: Account, date: string) => async (
+    dispatch: Dispatch,
+) => {
     dispatch({
         type: COINMARKET_BUY.SAVE_TRADE,
-        buyTradeResponse,
+        tradeType: 'buy',
+        date,
+        data: buyTrade,
+        account: {
+            deviceState: account.deviceState,
+            symbol: account.symbol,
+            accountType: account.accountType,
+            accountIndex: account.index,
+        },
     });
 };
 

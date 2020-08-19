@@ -11,7 +11,7 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
 import { deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
 import { getAnalyticsRandomId } from '@suite-utils/random';
-import { BuyTradeResponse } from 'invity-api';
+import { BuyTrade } from 'invity-api';
 import { setSentryUser } from '@suite-utils/sentry';
 
 export type StorageActions =
@@ -65,8 +65,25 @@ export const saveAccounts = async (accounts: Account[]) => {
     return db.addItems('accounts', accounts, true);
 };
 
-export const saveBuyTrade = async (buyTradeResponse: BuyTradeResponse) => {
-    return db.addItem('coinmarketBuyTrades', buyTradeResponse);
+interface AccountPart {
+    deviceState: Account['deviceState'];
+    symbol: Account['symbol'];
+    accountType: Account['accountType'];
+    accountIndex: Account['index'];
+}
+
+export const saveBuyTrade = async (buyTrade: BuyTrade, account: AccountPart, date: string) => {
+    return db.addItem('coinmarketTrades', {
+        tradeType: 'buy',
+        date,
+        data: buyTrade,
+        account: {
+            deviceState: account.deviceState,
+            symbol: account.symbol,
+            accountType: account.accountType,
+            accountIndex: account.accountIndex,
+        },
+    });
 };
 
 export const saveDiscovery = async (discoveries: Discovery[]) => {
@@ -218,7 +235,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
         const discovery = await db.getItemsExtended('discovery');
         const walletSettings = await db.getItemByPK('walletSettings', 'wallet');
         const fiatRates = await db.getItemsExtended('fiatRates');
-        const coinmarketBuyTrades = await db.getItemsExtended('coinmarketBuyTrades');
+        const coinmarketTrades = await db.getItemsExtended('coinmarketTrades');
         const walletGraphData = await db.getItemsExtended('graph');
         const analytics = await db.getItemByPK('analytics', 'suite');
         const txs = await db.getItemsExtended('txs', 'order');
@@ -273,11 +290,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                         data: walletGraphData || [],
                     },
                     coinmarket: {
-                        ...initialState.wallet.coinmarket,
-                        buy: {
-                            ...initialState.wallet.coinmarket.buy,
-                            trades: coinmarketBuyTrades,
-                        },
+                        trades: coinmarketTrades,
                     },
                 },
                 analytics: analytics?.instanceId
