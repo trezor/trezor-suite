@@ -5,7 +5,6 @@ import { join } from 'path';
 import { spawn, exec } from 'child_process';
 
 const TREZOR_PROCESS_NAME = 'trezord';
-const STATUS = { OK: 'ok', ERROR: 'error' };
 
 const error = (msg: string | Error) => {
     throw new Error(`cannot run bridge library - ${msg}`);
