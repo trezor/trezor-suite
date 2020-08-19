@@ -4,8 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { variables, colors, Button, Box } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
+import { ANIMATION } from '@suite-config';
 
-const TargetWrapper = styled(motion.div)`
+const ExpandWrapper = styled(motion.div)`
     overflow: hidden;
     padding-top: 12px;
 `;
@@ -52,30 +53,13 @@ const Pre = styled.pre`
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
-// TODO: move this to some common file
-const ANIMATION = {
-    variants: {
-        initial: {
-            overflow: 'hidden',
-            height: 0,
-        },
-        visible: {
-            height: 'auto',
-        },
-    },
-    initial: 'initial',
-    animate: 'visible',
-    exit: 'initial',
-    transition: { duration: 0.24, ease: 'easeInOut' },
-};
-
 type Props = {
     tx: PrecomposedTransactionFinal;
     txHash?: string;
 };
 
 export default ({ tx, txHash }: Props) => {
-    const [opened, setOpened] = useState(false);
+    const [isExpanded, setExpanded] = useState(false);
 
     const { transaction } = tx;
     if (transaction.inputs.length === 0) return null; // BTC-only, TODO: eth/ripple
@@ -88,19 +72,19 @@ export default ({ tx, txHash }: Props) => {
         <div>
             <ExpandButton
                 variant="tertiary"
-                icon={!opened ? 'ARROW_DOWN' : 'ARROW_UP'}
+                icon={!isExpanded ? 'ARROW_DOWN' : 'ARROW_UP'}
                 alignIcon="right"
                 onClick={e => {
                     e.preventDefault();
                     e.stopPropagation();
-                    setOpened(!opened);
+                    setExpanded(!isExpanded);
                 }}
             >
                 <Translation id="TR_TRANSACTION_DETAILS" />
             </ExpandButton>
             <AnimatePresence initial={false}>
-                {opened && (
-                    <TargetWrapper {...ANIMATION}>
+                {isExpanded && (
+                    <ExpandWrapper {...ANIMATION.EXPAND}>
                         <StyledBox>
                             <Top>
                                 <Fee>
@@ -121,7 +105,7 @@ export default ({ tx, txHash }: Props) => {
                                 </>
                             )}
                         </StyledBox>
-                    </TargetWrapper>
+                    </ExpandWrapper>
                 )}
             </AnimatePresence>
         </div>

@@ -1,20 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { colors, variables, Box, Icon } from '@trezor/components';
+import { motion, AnimatePresence } from 'framer-motion';
+import { colors, variables, Box, Icon, Button } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { formatNetworkAmount, formatAmount } from '@wallet-utils/accountUtils';
 import { Network } from '@wallet-types';
 import { TokenInfo } from 'trezor-connect';
+import { ANIMATION } from '@suite-config';
+
+const ROW_PADDING = '16px 14px';
 
 const StyledRow = styled(Box)`
+    flex-flow: row wrap;
     justify-content: space-between;
+    padding: 0; /* padding needs to be set in child elements Left/Right/ExpandWrapper (because of expand border) */
     margin-bottom: 20px;
     &:last-child {
         margin-bottom: 0px;
     }
 `;
 
+const ExpandWrapper = styled(motion.div)`
+    padding: ${ROW_PADDING};
+    overflow: hidden;
+    width: 100%;
+    border-top: solid 1px ${colors.NEUE_STROKE_GREY};
+`;
+
+const ExpandButton = styled(Button)`
+    justify-content: start;
+    align-self: flex-start;
+    background: transparent;
+`;
+
+const Pre = styled.pre`
+    text-align: left;
+    word-break: break-all;
+    white-space: pre-wrap;
+    font-size: ${variables.FONT_SIZE.TINY};
+`;
+
 const Left = styled.div`
+    padding: ${ROW_PADDING};
     display: flex;
     align-items: center;
 `;
@@ -42,6 +69,7 @@ const Address = styled.div`
 `;
 
 const Right = styled.div`
+    padding: ${ROW_PADDING};
     display: flex;
     align-items: center;
 `;
@@ -91,7 +119,9 @@ export type Props = OutputProps & {
 export { Left, Right, Coin, Symbol, Fiat };
 
 export default ({ type, state, label, value, symbol, token }: Props) => {
+    const [isExpanded, setExpanded] = useState(false);
     let outputLabel: React.ReactNode = label;
+
     if (type === 'opreturn') {
         outputLabel = <Translation id="TR_OP_RETURN" />;
     }
@@ -118,6 +148,8 @@ export default ({ type, state, label, value, symbol, token }: Props) => {
         outputSymbol = symbol;
     }
 
+    const hasExpansion = (type === 'opreturn' || type === 'data') && outputValue.length >= 10;
+
     return (
         <StyledRow>
             <Left>
@@ -129,8 +161,16 @@ export default ({ type, state, label, value, symbol, token }: Props) => {
             </Left>
             <Right>
                 <Coin>
-                    {outputValue}
+                    {hasExpansion ? `${outputValue.substring(0, 10)}...` : outputValue}
                     {outputSymbol && <Symbol>{outputSymbol}</Symbol>}
+                    {hasExpansion && (
+                        <ExpandButton
+                            variant="tertiary"
+                            icon={!isExpanded ? 'ARROW_DOWN' : 'ARROW_UP'}
+                            alignIcon="right"
+                            onClick={() => setExpanded(!isExpanded)}
+                        />
+                    )}
                 </Coin>
                 <Fiat>
                     {outputSymbol && !token && (
@@ -141,6 +181,13 @@ export default ({ type, state, label, value, symbol, token }: Props) => {
                     )}
                 </Fiat>
             </Right>
+            <AnimatePresence initial={false}>
+                {isExpanded && (
+                    <ExpandWrapper {...ANIMATION.EXPAND}>
+                        <Pre>{outputValue}</Pre>
+                    </ExpandWrapper>
+                )}
+            </AnimatePresence>
         </StyledRow>
     );
 };
