@@ -290,7 +290,7 @@ export const setMax = (outputIdIn?: number) => async (dispatch: Dispatch, getSta
     const { token } = send.networkTypeEthereum;
     const formattedAmount =
         composedTransaction && composedTransaction.type !== 'error' && !token
-            ? formatNetworkAmount(composedTransaction.max, account.symbol)
+            ? formatNetworkAmount(composedTransaction.max!, account.symbol)
             : undefined;
 
     dispatch({
