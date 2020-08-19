@@ -2,7 +2,7 @@ import { useSelector, useActions } from '@suite-hooks';
 import { variables } from '@trezor/components';
 import { CoinmarketFooter, CoinmarketLayout, WalletLayout } from '@wallet-components';
 import { useBuyInfo } from '@wallet-hooks/useCoinmarket';
-import PreviousTransactions from './PreviousTransactions';
+import PreviousTransactions from './components/PreviousTransactions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { AmountLimits } from '@wallet-utils/coinmarket/buyUtils';
 import React, { useState } from 'react';

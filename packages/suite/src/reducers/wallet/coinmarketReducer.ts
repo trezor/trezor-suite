@@ -8,6 +8,7 @@ import { Action as SuiteAction } from '@suite-types';
 
 interface Buy {
     buyInfo?: BuyInfo;
+    transactionId?: string;
     quotesRequest?: BuyTradeQuoteRequest;
     quotes: BuyTrade[];
     alternativeQuotes?: BuyTrade[];
@@ -22,6 +23,7 @@ interface State {
 const initialState = {
     buy: {
         buyInfo: undefined,
+        transactionId: undefined,
         quotesRequest: undefined,
         quotes: [],
         alternativeQuotes: undefined,
@@ -38,6 +40,9 @@ export default (state: State = initialState, action: WalletAction | SuiteAction)
                 break;
             case COINMARKET_BUY.SAVE_QUOTE_REQUEST:
                 draft.buy.quotesRequest = action.request;
+                break;
+            case COINMARKET_BUY.SAVE_TRANSACTION_ID:
+                draft.buy.transactionId = action.transactionId;
                 break;
             case COINMARKET_BUY.SAVE_QUOTES:
                 draft.buy.quotes = action.quotes;

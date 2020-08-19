@@ -2,12 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { BuyTrade } from 'invity-api';
 import { Card, variables } from '@trezor/components';
-import VerifyAddress from './VerifyAddress';
-import OfferInfo from './OfferInfo';
-// import PaymentFailed from './PaymentFailed';
-// import PaymentProcessing from './PaymentProcessing';
-// import WaitingForPayment from './WaitingForPayment';
-// import PaymentSuccessful from './PaymentSuccessful';
+import VerifyAddress from '../../components/VerifyAddress';
+import OfferInfo from '../../components/OfferInfo';
 
 const Wrapper = styled.div`
     display: flex;
@@ -28,25 +24,14 @@ interface Props {
 }
 
 const SelectedOffer = ({ selectedQuote }: Props) => {
-    // const router = useSelector(state => state.router);
     if (!selectedQuote) {
         return null;
     }
 
-    const activeView = 'verifyAddress';
-
     return (
         <Wrapper>
             <StyledCard>
-                {activeView === 'verifyAddress' && <VerifyAddress selectedQuote={selectedQuote} />}
-                {/* {activeView === 'waitingForPayment' && (
-                    <WaitingForPayment transactionId="dbd35574-aa74-49ba-b318-e3c16dbee1d7" />
-                )}
-                {activeView === 'paymentFailed' && (
-                    <PaymentFailed transactionId="dbd35574-aa74-49ba-b318-e3c16dbee1d7" />
-                )}
-                {activeView === 'paymentProcessing' && <PaymentProcessing />}
-                {activeView === 'paymentsuccessful' && <PaymentSuccessful />} */}
+                <VerifyAddress selectedQuote={selectedQuote} />
             </StyledCard>
             <OfferInfo selectedQuote={selectedQuote} />
         </Wrapper>

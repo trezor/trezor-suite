@@ -86,9 +86,10 @@ const StyledTransactionId = styled(TransactionId)`
 
 interface Props {
     selectedQuote: BuyTrade;
+    transactionId?: string;
 }
 
-const OfferInfo = ({ selectedQuote }: Props) => {
+const OfferInfo = ({ selectedQuote, transactionId }: Props) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     if (selectedAccount.status !== 'loaded' || !selectedQuote) {
         return null;
@@ -137,7 +138,7 @@ const OfferInfo = ({ selectedQuote }: Props) => {
                     </RightColumn>
                 </Row>
             </Info>
-            <StyledTransactionId transactionId="dbd35574-aa74-49ba-b318-e3c16dbee1d7" />
+            {transactionId && <StyledTransactionId transactionId={transactionId} />}
         </Wrapper>
     );
 };

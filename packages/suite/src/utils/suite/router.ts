@@ -42,13 +42,12 @@ export const getApp = (url: string) => {
 const validateWalletParams = (url: string) => {
     const [, hash] = stripPrefixedURL(url).split('#');
     if (!hash) return;
-    const [symbol, index, type, coinmarketTransactionId] = hash
-        .split('/')
-        .filter(p => p.length > 0);
+    const [symbol, index, type] = hash.split('/').filter(p => p.length > 0);
     if (!symbol || !index) return;
     const network = NETWORKS.find(
         n => n.symbol === symbol && (n.accountType || 'normal') === (type || 'normal'),
     );
+
     if (!network) return;
     const accountIndex = parseInt(index, 10);
     if (Number.isNaN(accountIndex)) return;
@@ -57,7 +56,6 @@ const validateWalletParams = (url: string) => {
         symbol: network.symbol,
         accountIndex,
         accountType: network.accountType || 'normal',
-        coinmarketTransactionId,
     };
 };
 

@@ -104,9 +104,9 @@ export function createQuoteLink(request: BuyTradeQuoteRequest): string {
     return `${window.location.href}${hash}`;
 }
 
-export function createTxLink(trade: BuyTrade): string {
-    // TODO - only preliminary - we do not have the return page fixed yet
-    return `${window.location.href}/${trade.paymentId}`;
+export function createTxLink(trade: BuyTrade, account: Account): string {
+    // todo
+    return `localhost:3000/redirect#?route=buy&symbol=${account.symbol}&accountType=${account.accountType}&accountIndex=${account.index}&transactionId=${trade.paymentId}`;
 }
 
 function addHiddenFieldToForm(form: any, fieldName: string, fieldValue: any) {

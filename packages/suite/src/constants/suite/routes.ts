@@ -7,7 +7,7 @@ import { Network } from '@wallet-types';
 // 3. implement validation function in @suite-utils/router:getAppWithParams
 // 4. add params types to RouteParamsTypes (below)
 
-const walletParams = ['symbol', 'accountIndex', 'accountType', 'coinmarketTransactionId'] as const;
+const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
 const modalAppParams = ['cancelable'] as const;
 
 export const BOTTOM_MENU_ITEMS = [
@@ -178,6 +178,12 @@ const routes = [
         params: walletParams,
     },
     {
+        name: 'wallet-coinmarket-buy-detail',
+        pattern: '/accounts/coinmarket/buy/detail',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
         name: 'wallet-details',
         pattern: '/accounts/details',
         app: 'wallet',
@@ -206,7 +212,6 @@ export type Route = ArrayElement<ConstWithOptionalFields<typeof routes, RouteKey
 type RouteParamsTypes = {
     symbol: Network['symbol'];
     accountIndex: number;
-    coinmarketTransactionId: string;
     accountType: NonNullable<Network['accountType']>;
     cancelable: boolean;
 };

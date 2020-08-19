@@ -4,6 +4,7 @@ import { Account } from '@wallet-types';
 import { getRedirectParams } from '@suite-utils/router';
 import { useSelector, useActions } from '@suite/hooks/suite';
 import * as routerActions from '@suite-actions/routerActions';
+import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 
 const Wrapper = styled.div`
     display: flex;
@@ -18,29 +19,34 @@ interface BuyParams {
     symbol: Account['symbol'];
     accountType: Account['accountType'];
     accountIndex: Account['index'];
-    coinmarketTransactionId: string;
+    transactionId: string;
 }
 
 const Redirect = () => {
     const { goto } = useActions({ goto: routerActions.goto });
+    const { saveTransactionId } = useActions({
+        saveTransactionId: coinmarketBuyActions.saveTransactionId,
+    });
     const router = useSelector(state => state.router);
     const cleanQuery = router.url.replace('/redirect#?', '');
     const params: BuyParams = getRedirectParams(cleanQuery);
+
+    // http://localhost:3000/redirect#?route=buy&symbol=btc&accountType=normal&accountIndex=0&transactionId=f4375676-60df-42c7-b4f5-13437b014fbc
 
     if (
         params.route === 'buy' &&
         params.accountType &&
         params.accountIndex &&
-        params.coinmarketTransactionId &&
+        params.transactionId &&
         params.symbol
     ) {
-        const { accountIndex, coinmarketTransactionId, accountType, symbol } = params;
+        const { accountIndex, transactionId, accountType, symbol } = params;
 
-        goto('wallet-coinmarket-buy-offers', {
+        saveTransactionId(transactionId);
+        goto('wallet-coinmarket-buy-detail', {
             symbol,
             accountType,
             accountIndex,
-            coinmarketTransactionId,
         });
     } else {
         return <Wrapper>Something is wrong - cannot redirect</Wrapper>;
