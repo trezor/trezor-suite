@@ -88,7 +88,7 @@ export default ({ tx, txHash }: Props) => {
         <div>
             <ExpandButton
                 variant="tertiary"
-                icon={opened > 0 ? 'ARROW_DOWN' : 'ARROW_UP'}
+                icon={!opened ? 'ARROW_DOWN' : 'ARROW_UP'}
                 alignIcon="right"
                 onClick={e => {
                     e.preventDefault();
@@ -96,10 +96,7 @@ export default ({ tx, txHash }: Props) => {
                     setOpened(!opened);
                 }}
             >
-                <Translation
-                    id={opened ? 'TR_SHOW_MORE_ADDRESSES' : 'TR_SHOW_LESS'}
-                    values={{ count: 1 }}
-                />
+                <Translation id="TR_TRANSACTION_DETAILS" />
             </ExpandButton>
             <AnimatePresence initial={false}>
                 {opened && (
