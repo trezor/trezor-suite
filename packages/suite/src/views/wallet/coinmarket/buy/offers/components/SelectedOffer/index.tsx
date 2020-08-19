@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { BuyTrade } from 'invity-api';
 import { Card, variables } from '@trezor/components';
-import VerifyAddress from '../../components/VerifyAddress';
-import OfferInfo from '../../components/OfferInfo';
+import VerifyAddress from '../../../components/VerifyAddress';
+import OfferInfo from '../../../components/OfferInfo';
 
 const Wrapper = styled.div`
     display: flex;

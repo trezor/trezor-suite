@@ -4,13 +4,14 @@ import { LayoutContext } from '@suite-components';
 import { CoinmarketTopPanel, CoinmarketFooter } from '@wallet-components';
 import { variables, colors } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
-import QuotesList from './QuotesList';
-import SelectedQuote from './SelectedQuote';
 import { useSelector, useActions } from '@suite/hooks/suite';
 import { BuyTrade } from 'invity-api';
 import * as modalActions from '@suite-actions/modalActions';
 import invityAPI from '@suite/services/invityAPI';
 import { createQuoteLink, submitRequestForm } from '@suite/utils/wallet/coinmarket/buyUtils';
+
+import List from './components/List';
+import SelectedOffer from './components/SelectedOffer';
 
 const Wrapper = styled.div`
     padding: 16px 32px 32px 32px;
@@ -111,7 +112,7 @@ const Offers = () => {
         <Wrapper>
             {!selectedQuote && (
                 <>
-                    <QuotesList selectQuote={selectQuote} quotes={quotes} />
+                    <List selectQuote={selectQuote} quotes={quotes} />
                     {alternativeQuotes && alternativeQuotes.length > 0 && (
                         <>
                             <Divider>
@@ -122,7 +123,7 @@ const Offers = () => {
                                 </DividerMiddle>
                                 <DividerRight />
                             </Divider>
-                            <QuotesList
+                            <List
                                 selectQuote={selectQuote}
                                 quotes={alternativeQuotes}
                                 isAlternative
@@ -131,7 +132,7 @@ const Offers = () => {
                     )}
                 </>
             )}
-            {selectedQuote && <SelectedQuote selectedQuote={selectedQuote} />}
+            {selectedQuote && <SelectedOffer selectedQuote={selectedQuote} />}
             <CoinmarketFooter />
         </Wrapper>
     );
