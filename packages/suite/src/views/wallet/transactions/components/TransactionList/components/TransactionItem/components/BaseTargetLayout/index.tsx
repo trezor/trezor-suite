@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
 import { HiddenPlaceholder } from '@suite-components';
 import { variables, colors } from '@trezor/components';
+import { ANIMATION } from '@suite-config';
 
 const CryptoAmount = styled.span`
     color: ${colors.NEUE_TYPE_DARK_GREY};
@@ -86,22 +87,6 @@ const TimelineLine = styled.div<{ show: boolean; top?: boolean }>`
               `}
 `;
 
-const ANIMATION = {
-    variants: {
-        initial: {
-            overflow: 'hidden',
-            height: 0,
-        },
-        visible: {
-            height: 'auto',
-        },
-    },
-    initial: 'initial',
-    animate: 'visible',
-    exit: 'initial',
-    transition: { duration: 0.24, ease: 'easeInOut' },
-};
-
 interface BaseTargetLayoutProps {
     addressLabel: React.ReactNode;
     amount?: React.ReactNode;
@@ -123,7 +108,7 @@ const BaseTargetLayout = ({
     isLast,
     ...rest
 }: BaseTargetLayoutProps) => {
-    const animation = useAnimation ? ANIMATION : {};
+    const animation = useAnimation ? ANIMATION.EXPAND : {};
     return (
         <TargetWrapper {...animation} {...rest}>
             <TimelineDotWrapper>

@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { colors, variables, Icon, DeviceImage } from '@trezor/components';
 import { Translation } from '@suite-components';
 import * as deviceUtils from '@suite-utils/device';
+import { ANIMATION } from '@suite-config';
 
 import WalletInstance from '../WalletInstance/Container';
 import { Props } from './Container';
@@ -112,22 +113,6 @@ const ColEjectHeader = styled(ColHeader)`
     margin: 0px 24px;
 `;
 
-const ANIMATION = {
-    variants: {
-        initial: {
-            overflow: 'hidden',
-            height: 0,
-        },
-        visible: {
-            height: 'auto',
-        },
-    },
-    initial: 'initial',
-    animate: 'visible',
-    exit: 'initial',
-    transition: { duration: 0.15, ease: 'easeInOut' },
-};
-
 const DeviceItem = (props: Props & WrappedComponentProps) => {
     const [isExpanded, setIsExpanded] = useState(true);
     const [animateArrow, setAnimateArrow] = useState(false);
@@ -227,7 +212,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
             </Device>
             <AnimatePresence initial={false}>
                 {!isUnknown && isExpanded && (
-                    <motion.div {...ANIMATION}>
+                    <motion.div {...ANIMATION.EXPAND}>
                         <WalletsWrapper enabled>
                             <WalletsTooltips>
                                 <WalletsCount>
