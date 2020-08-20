@@ -38,6 +38,12 @@
             "entitlements.mac.inherit.plist",
             "package.json"
         ],
+        "protocols": {
+            "name": "trezor-suite-protocol",
+            "schemes": [
+                "trezor-suite"
+            ]
+        },
         "dmg": {
             "contents": [
                 {

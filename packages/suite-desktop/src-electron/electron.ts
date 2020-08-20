@@ -1,4 +1,4 @@
-import { app, session, BrowserWindow, ipcMain, shell, Menu } from 'electron';
+import { app, session, BrowserWindow, ipcMain, shell, Menu, ipcRenderer } from 'electron';
 import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 import * as path from 'path';
@@ -52,6 +52,17 @@ const init = async () => {
         // do nothing
     }
 
+    const registerSuiteProtocolSchema = () => {
+        const SUITE_PROTOCOL_SCHEMA = 'trezor-suite';
+
+        app.removeAsDefaultProtocolClient(SUITE_PROTOCOL_SCHEMA);
+        app.setAsDefaultProtocolClient(SUITE_PROTOCOL_SCHEMA);
+    };
+
+    app.on('open-url', (_event, data) => {
+        mainWindow.webContents.send('coinmarket-redirect', data);
+    });
+
     if (isDev) {
         await prepareNext(path.resolve(__dirname, '../'));
     }
@@ -99,6 +110,8 @@ const init = async () => {
         // prevent updating window title
         evt.preventDefault();
     });
+
+    registerSuiteProtocolSchema();
 
     if (!isDev) {
         const filter = {

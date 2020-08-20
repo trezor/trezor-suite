@@ -1,7 +1,6 @@
 import AccountsMenu from './AccountsMenu';
 import CoinmarketLayout from './CoinmarketLayout';
 import CoinmarketTopPanel from './CoinmarketTopPanel';
-import CoinmarketFooter from './CoinmarketFooter';
 import DiscoveryProgress from './DiscoveryProgress';
 import Title from './Title';
 import WalletLayout from './WalletLayout';
@@ -18,7 +17,6 @@ export {
     CoinBalance,
     CoinmarketLayout,
     CoinmarketTopPanel,
-    CoinmarketFooter,
     ProvidedByInvity,
     PaymentType,
     ProviderInfo,
