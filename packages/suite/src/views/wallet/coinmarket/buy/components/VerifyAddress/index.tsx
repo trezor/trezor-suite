@@ -174,9 +174,10 @@ const VerifyAddress = ({ selectedQuote }: Props) => {
                     <Button
                         onClick={async () => {
                             const quote = { ...selectedQuote, receiveAddress: address };
+                            console.log('RETURN URL', createTxLink(selectedQuote));
                             const response = await invityAPI.doBuyTrade({
                                 trade: quote,
-                                returnUrl: createTxLink(selectedQuote, account),
+                                returnUrl: createTxLink(selectedQuote),
                             });
                             if (!response || !response.trade || !response.trade.paymentId) {
                                 // TODO - show error, something really bad happened
