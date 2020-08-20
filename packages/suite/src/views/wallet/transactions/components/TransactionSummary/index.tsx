@@ -84,6 +84,7 @@ const TransactionSummary = (props: Props) => {
         'account',
         d => d.sent,
         d => d.received,
+        d => d.balance,
     );
 
     const xTicks =

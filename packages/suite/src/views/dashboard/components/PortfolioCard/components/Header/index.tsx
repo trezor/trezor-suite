@@ -12,7 +12,7 @@ const Wrapper = styled.div`
     flex-direction: row;
     flex-wrap: wrap;
     padding: 20px;
-    border-bottom: solid 2px ${colors.BLACK96};
+    border-bottom: solid 1px ${colors.NEUE_STROKE_GREY};
 `;
 
 const ValueWrapper = styled.div`

@@ -81,7 +81,13 @@ const DashboardGraph = React.memo((props: Props) => {
         [localCurrency],
     );
 
-    const maxValue = getMaxValueFromData(data, 'dashboard', sentValueFn, receivedValueFn);
+    const maxValue = getMaxValueFromData(
+        data,
+        'dashboard',
+        sentValueFn,
+        receivedValueFn,
+        balanceValueFn,
+    );
 
     useEffect(() => {
         if (!isLoading) {
