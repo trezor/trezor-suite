@@ -4,7 +4,12 @@ import ReactSelect, { Props as SelectProps } from 'react-select';
 import { colors, variables } from '../../../config';
 import { InputVariant } from '../../../support/types';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+    .react-select__single-value {
+        position: static;
+        transform: none;
+    }
+`;
 
 const getDropdownVisibility = (isDisabled: boolean, isFocused: boolean, isHovered: boolean) => {
     if (isDisabled) {
@@ -44,12 +49,14 @@ const selectStyle = (isSearchable: boolean, isHovered: boolean, minWidth = '50px
     valueContainer: (base: Record<string, any>) => ({
         ...base,
         border: 0,
+        padding: '0px',
         paddingRight: 3,
         marginTop: 1,
         fontWeight: variables.FONT_WEIGHT.MEDIUM,
         color: colors.NEUE_TYPE_LIGHT_GREY,
         minWidth,
         display: 'flex',
+        'flex-wrap': 'nowrap',
         justifyContent: 'flex-end',
     }),
     indicatorSeparator: (base: Record<string, any>) => {
@@ -71,6 +78,7 @@ const selectStyle = (isSearchable: boolean, isHovered: boolean, minWidth = '50px
     },
     menu: (base: Record<string, any>) => ({
         ...base,
+        minWidth: '85px',
         color: colors.NEUE_TYPE_LIGHT_GREY,
         background: 'white',
         boxShadow: '0 4px 10px 0 rgba(0, 0, 0, 0.15)',
@@ -118,6 +126,7 @@ const SelectInput = ({
         <Wrapper onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
             <ReactSelect
                 styles={selectStyle(isSearchable, isHovered, minWidth)}
+                classNamePrefix="react-select"
                 isSearchable={isSearchable}
                 isDisabled={optionsLength <= 1}
                 options={options}
