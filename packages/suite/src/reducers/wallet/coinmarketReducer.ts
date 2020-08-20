@@ -6,17 +6,19 @@ import { COINMARKET_BUY } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
 import { Action as SuiteAction } from '@suite-types';
 
-interface Trade {
-    tradeType: 'buy' | 'exchange';
+type CommonTrade = {
     date: string;
-    data: BuyTrade | ExchangeTrade;
     account: {
         deviceState: Account['deviceState'];
         symbol: Account['symbol'];
         accountType: Account['accountType'];
         accountIndex: Account['index'];
     };
-}
+};
+
+type Trade =
+    | (CommonTrade & { tradeType: 'buy'; data: BuyTrade })
+    | (CommonTrade & { tradeType: 'exchange'; data: ExchangeTrade });
 
 interface Buy {
     buyInfo?: BuyInfo;

@@ -1,4 +1,4 @@
-import { WalletLayout } from '@wallet-components';
+import { WalletLayout, CoinmarketFooter } from '@wallet-components';
 import { Card } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
 import React, { ReactNode } from 'react';
@@ -6,7 +6,6 @@ import styled from 'styled-components';
 
 import Navigation from './components/Navigation';
 import PreviousTransactions from './components/PreviousTransactions';
-import Footer from './components/Footer';
 
 const Content = styled.div`
     padding: 25px;
@@ -29,7 +28,7 @@ const CoinmarketLayout = ({ children }: Props) => {
             </Card>
             <BottomContent>
                 <PreviousTransactions />
-                <Footer />
+                <CoinmarketFooter />
             </BottomContent>
         </WalletLayout>
     );
