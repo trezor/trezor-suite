@@ -38,18 +38,13 @@ const AddressPath = styled.div`
 
 const StyledInput = styled(Input)`
     height: 36px;
-    min-width: 200px;
-`;
-
-const ButtonContainer = styled.div`
-    padding-top: 32px;
     font-variant-numeric: tabular-nums slashed-zero;
 `;
 
 const StyledButton = styled(Button)`
-    min-width: 180px;
-    width: 100%;
-    margin-left: 12px;
+    min-width: 220px;
+    margin-left: 20px;
+    margin-top: 5px;
 `;
 
 const FreshAddress = ({
@@ -70,7 +65,6 @@ const FreshAddress = ({
                   transfers: account.history.total,
               },
           ];
-
     const unrevealed = unused.filter(a => !addresses.find(r => r.path === a.path));
     const addressLabel = isBitcoin ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS';
     // NOTE: unrevealed[0] can be undefined (limit exceeded)
