@@ -9,6 +9,7 @@ import * as modalActions from '@suite-actions/modalActions';
 interface Props extends ButtonProps {
     device: TrezorDevice | undefined;
     noButtonLabel?: boolean;
+    closeMenu?: () => void;
 }
 
 const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunning: boolean) => {
@@ -21,7 +22,7 @@ const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunn
     return message;
 };
 
-const AddAccountButton = ({ device, isDisabled, noButtonLabel, ...rest }: Props) => {
+const AddAccountButton = ({ device, isDisabled, noButtonLabel, closeMenu, ...rest }: Props) => {
     const { discovery } = useDiscovery();
     const { openModal } = useActions({
         openModal: modalActions.openModal,
@@ -42,11 +43,13 @@ const AddAccountButton = ({ device, isDisabled, noButtonLabel, ...rest }: Props)
         <Button
             onClick={
                 device
-                    ? () =>
+                    ? () => {
                           openModal({
                               type: 'add-account',
                               device,
-                          })
+                          });
+                          if (closeMenu) closeMenu();
+                      }
                     : undefined
             }
             icon="PLUS"
