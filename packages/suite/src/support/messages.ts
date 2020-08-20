@@ -3422,7 +3422,7 @@ const definedMessages = defineMessages({
     },
     TR_LANDING_MACOS: {
         id: 'TR_LANDING_MACOS',
-        defaultMessage: 'Mac OS',
+        defaultMessage: 'macOS',
     },
     TR_LANDING_DOWNLOAD: {
         id: 'TR_LANDING_DOWNLOAD',

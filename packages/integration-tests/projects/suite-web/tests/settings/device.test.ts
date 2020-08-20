@@ -13,6 +13,11 @@ describe('Device settings', () => {
         cy.task('startEmu', { wipe: true, version: '2.1.4' });
         cy.task('setupEmu');
 
+        // this test needs to be first otherwise close-button could be covered by Toast notification
+        cy.log('open firmware modal and close it again');
+        cy.getTestElement('@settings/device/update-button').click();
+        cy.getTestElement('@firmware/close-button').click();
+
         cy.log('change label');
         cy.getTestElement('@settings/device/label-input')
             .should('have.value', 'My Trevor')
@@ -47,10 +52,6 @@ describe('Device settings', () => {
             .getConfirmActionOnDeviceModal();
         cy.task('sendDecision');
         cy.getConfirmActionOnDeviceModal().should('not.exist');
-
-        cy.log('open firmware modal and close it again');
-        cy.getTestElement('@settings/device/update-button').click();
-        cy.getTestElement('@firmware/close-button').click();
     });
 
     it('backup in settings', () => {
@@ -99,5 +100,4 @@ describe('Device settings', () => {
     // TODO: upload custom image
     // TODO: t1 - pin success
     // TODO: t1 - pin caching immediately after it is set
-
 });
