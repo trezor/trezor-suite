@@ -147,14 +147,6 @@ const DashboardGraph = React.memo((props: Props) => {
                     />
                 )}
             </GraphWrapper>
-            {failedAccounts && failedAccounts.length > 0 && (
-                <SmallErrorMessage>
-                    <Translation
-                        id="TR_COULD_NOT_RETRIEVE_DATA_FOR"
-                        values={{ accountsCount: failedAccounts.length }}
-                    />
-                </SmallErrorMessage>
-            )}
         </Wrapper>
     );
 });
