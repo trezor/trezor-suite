@@ -106,10 +106,10 @@ export function createQuoteLink(request: BuyTradeQuoteRequest): string {
 
 export function createTxLink(trade: BuyTrade): string {
     if (process.env.SUITE_TYPE === 'desktop') {
-        return `trezor-suite://redirect?route=buy&transactionId=${trade.paymentId}`;
+        return `trezor-suite://redirect#buy/${trade.paymentId}`;
     }
 
-    return `${window.location.origin}/redirect#?route=buy&transactionId=${trade.paymentId}`;
+    return `${window.location.origin}/redirect#buy/${trade.paymentId}`;
 }
 
 function addHiddenFieldToForm(form: any, fieldName: string, fieldValue: any) {

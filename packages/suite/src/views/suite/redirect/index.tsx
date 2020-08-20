@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { getRedirectParams } from '@suite-utils/router';
 import { useSelector, useActions } from '@suite/hooks/suite';
 import * as routerActions from '@suite-actions/routerActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
@@ -25,17 +24,16 @@ const Redirect = () => {
     });
     const trades = useSelector(state => state.wallet.coinmarket.trades);
     const router = useSelector(state => state.router);
-    const cleanQuery = router.url.replace('/redirect#?', '');
-    const params: BuyParams = getRedirectParams(cleanQuery);
+    const cleanQuery = router.url.replace('/redirect#', '');
+    const params = cleanQuery.split('/');
 
-    // http://localhost:3000/redirect#?route=buy&transactionId=663cb981-d399-4a12-9911-5a304d1f24f7
-
-    if (params.route === 'buy') {
+    // http://localhost:3000/redirect#?data=buy/=663cb981-d399-4a12-9911-5a304d1f24f7
+    if (params[0] === 'buy') {
         const trade = trades.find(
-            trade => trade.tradeType === 'buy' && trade.data.paymentId === params.transactionId,
+            trade => trade.tradeType === 'buy' && trade.data.paymentId === params[1],
         );
         if (trade && trade.tradeType === 'buy') {
-            saveTransactionId(params.transactionId);
+            saveTransactionId(params[1]);
             goto('wallet-coinmarket-buy-detail', {
                 symbol: trade.account.symbol,
                 accountType: trade.account.accountType,

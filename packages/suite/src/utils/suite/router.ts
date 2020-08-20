@@ -59,17 +59,6 @@ const validateWalletParams = (url: string) => {
     };
 };
 
-export const getRedirectParams = (query: string): any => {
-    const result = {};
-    query.split('&').forEach(part => {
-        const item = part.split('=');
-        // @ts-ignore
-        result[item[0]] = decodeURIComponent(item[1]);
-    });
-
-    return result;
-};
-
 const validateModalAppParams = (url: string) => {
     const [, hash] = stripPrefixedURL(url).split('#');
     if (!hash) return;
