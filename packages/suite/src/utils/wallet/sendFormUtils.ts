@@ -1,13 +1,14 @@
-import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
-import { Network, Account } from '@wallet-types';
-import { amountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import BigNumber from 'bignumber.js';
+import { FieldError, UseFormMethods } from 'react-hook-form';
+import { EthereumTransaction, FeeLevel } from 'trezor-connect';
 import Common from 'ethereumjs-common';
 import { Transaction, TxData } from 'ethereumjs-tx';
-import { FieldError, UseFormMethods } from 'react-hook-form';
-import { FormState, FeeInfo, EthTransactionData } from '@wallet-types/sendForm';
-import { EthereumTransaction, FeeLevel } from 'trezor-connect';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
+
+import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
+import { amountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { Network, Account } from '@wallet-types';
+import { FormState, FeeInfo, EthTransactionData, SendContextProps } from '@wallet-types/sendForm';
 
 export const calculateTotal = (amount: string, fee: string): string => {
     try {
@@ -166,12 +167,9 @@ export const getInputState = (error?: FieldError, value?: string) => {
     }
 };
 
-export const getFiatRate = (fiatRates: SendContext['fiatRates'], currency: string) => {
-    if (fiatRates) {
-        return fiatRates.current?.rates[currency] || null;
-    }
-
-    return null;
+export const getFiatRate = (fiatRates: SendContextProps['fiatRates'], currency: string) => {
+    if (!fiatRates || !fiatRates.current) return;
+    return fiatRates.current.rates[currency];
 };
 
 export const buildCurrencyOption = (currency: string) => {

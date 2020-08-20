@@ -34,7 +34,10 @@ describe('sendForm utils', () => {
     });
 
     it('getInputState', () => {
-        expect(getInputState({ address: 'error address' })).toEqual('error');
+        expect(getInputState(undefined, undefined)).toEqual(undefined);
+        expect(getInputState(undefined, '')).toEqual(undefined);
+        expect(getInputState(undefined, 'A')).toEqual('success');
+        expect(getInputState({ type: 'validation' }, '')).toEqual('error');
     });
 
     it('calculateTotal', () => {
