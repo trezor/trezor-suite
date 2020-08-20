@@ -125,6 +125,11 @@ const Dropdown = ({
     const MenuComponent = components?.DropdownMenu ?? Menu;
     const MenuItemComponent = components?.DropdownMenuItem ?? MenuItem;
 
+    const visibleItems = items.filter(group => ({
+        ...group,
+        options: group.options.filter(item => !item.isHidden),
+    }));
+
     useOnClickOutside([menuRef, toggleRef], event => {
         if (toggled) {
             setToggled(false);
@@ -183,30 +188,28 @@ const Dropdown = ({
             {toggleComponent}
             {toggled && (
                 <MenuComponent ref={menuRef} alignMenu={alignMenu} offset={offset}>
-                    {items.map((group, i) => (
+                    {visibleItems.map((group, i) => (
                         <React.Fragment key={group.key}>
                             {group.label && <Group>{group.label}</Group>}
-                            {group.options.map(item =>
-                                !item.isHidden ? (
-                                    <MenuItemComponent
-                                        onClick={() => onMenuItemClick(item)}
-                                        data-test={item['data-test']}
-                                        key={item.key}
-                                        item={item}
-                                    >
-                                        {item.icon && (
-                                            <IconWrapper>
-                                                <Icon
-                                                    icon={item.icon}
-                                                    size={16}
-                                                    color={colors.NEUE_TYPE_DARK_GREY}
-                                                />
-                                            </IconWrapper>
-                                        )}
-                                        {item.label}
-                                    </MenuItemComponent>
-                                ) : null
-                            )}
+                            {group.options.map(item => (
+                                <MenuItemComponent
+                                    onClick={() => onMenuItemClick(item)}
+                                    data-test={item['data-test']}
+                                    key={item.key}
+                                    item={item}
+                                >
+                                    {item.icon && (
+                                        <IconWrapper>
+                                            <Icon
+                                                icon={item.icon}
+                                                size={16}
+                                                color={colors.NEUE_TYPE_DARK_GREY}
+                                            />
+                                        </IconWrapper>
+                                    )}
+                                    {item.label}
+                                </MenuItemComponent>
+                            ))}
                         </React.Fragment>
                     ))}
                 </MenuComponent>
