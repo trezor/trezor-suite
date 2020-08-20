@@ -53,12 +53,7 @@ window.onload = function() {
     var result = parser.getResult();
     
     var isMobile = result.device.type === 'mobile';
-    // var supportedBrowser = supportedBrowsers.find(function(browser) { return browser.name === result.browser.name });
-    var supportedBrowser = {
-        name: "Firefox",
-        version: 68,
-        mobile: false, // no webusb support
-    };
+    var supportedBrowser = supportedBrowsers.find(function(browser) { return browser.name === result.browser.name });
     var updateRequired = supportedBrowser ? supportedBrowser.version > parseInt(result.browser.major) : false;
     var setBody = function(content) {
         document.body.innerHTML = '';
