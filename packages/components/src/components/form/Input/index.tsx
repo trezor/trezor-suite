@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { colors, variables } from '../../../config';
 import { InputState, InputVariant, InputButton } from '../../../support/types';
+import { Icon } from '../../../index';
 import { getStateColor } from '../../../utils';
 
 interface WrappedProps {
@@ -15,10 +16,13 @@ const Wrapper = styled.div<WrappedProps>`
 `;
 
 const StyledInput = styled.input<Props>`
-    text-indent: ${props => props.textIndent}px;
+    /* text-indent: ${props => props.textIndent}px; */
     font-family: ${variables.FONT_FAMILY.TTHOVES};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    padding: 1px 16px 0 16px; /* 2px from top = input height should be 36px and 48px  */
+    /*  this is a bit messy, but basically we want to add textIndent to left/right paddings */
+    padding: 1px ${props =>
+        props.textIndent ? `${props.textIndent[1] + 16}px` : '16px'} 0 ${props =>
+    props.textIndent ? `${props.textIndent[0] + 16}px` : '16px'};
     font-size: ${variables.FONT_SIZE.SMALL};
     border-radius: 4px;
     border: solid 2px
@@ -122,6 +126,7 @@ const Overlay = styled.div<Props>`
 `;
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
+    value?: string;
     innerRef?: React.Ref<HTMLInputElement>;
     variant?: InputVariant;
     button?: InputButton;
@@ -147,10 +152,13 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     noError?: boolean;
     noTopLabel?: boolean;
     labelAddonIsVisible?: boolean;
-    textIndent?: number;
+    textIndent?: [number, number]; // [left, right]
+    clearButton?: boolean;
+    onClear?: () => void;
 }
 
 const Input = ({
+    value,
     type = 'text',
     innerRef,
     state,
@@ -173,10 +181,12 @@ const Input = ({
     isLoading,
     dataTest,
     isPartiallyHidden,
-    addonAlign = 'left',
+    clearButton,
+    onClear,
+    addonAlign = 'right',
     noError = false,
     noTopLabel = false,
-    textIndent = 0,
+    textIndent = [0, 0],
     ...rest
 }: Props) => {
     const [isHovered, setIsHovered] = React.useState(false);
@@ -200,9 +210,27 @@ const Input = ({
                 </Label>
             )}
             <InputWrapper>
-                <InputAddon align={addonAlign}>{innerAddon}</InputAddon>
+                {innerAddon && addonAlign === 'left' && (
+                    <InputAddon align="left">{innerAddon}</InputAddon>
+                )}
+                {((innerAddon && addonAlign === 'right') || clearButton) && (
+                    <InputAddon align="right">
+                        {addonAlign === 'right' && innerAddon}
+                        {clearButton && value && value.length > 0 && (
+                            <Icon
+                                icon="CANCEL"
+                                size={12}
+                                onClick={onClear}
+                                color={colors.NEUE_TYPE_DARK_GREY}
+                                usePointerCursor
+                            />
+                        )}
+                    </InputAddon>
+                )}
+
                 {isPartiallyHidden && <Overlay />}
                 <StyledInput
+                    value={value}
                     textIndent={textIndent}
                     type={type}
                     autoComplete={autoComplete}

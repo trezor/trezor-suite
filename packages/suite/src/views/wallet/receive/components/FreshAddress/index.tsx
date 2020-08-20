@@ -105,16 +105,13 @@ const FreshAddress = ({
                     value={addressValue}
                 />
             </AddressContainer>
-            <ButtonContainer>
-                <StyledButton
-                    data-test="@wallet/receive/reveal-address-button"
-                    onClick={() => showAddress(firstFreshAddress.path, firstFreshAddress.address)}
-                    isDisabled={disabled || locked || !firstFreshAddress}
-                    isLoading={!disabled && locked}
-                >
-                    <Translation id="RECEIVE_ADDRESS_REVEAL" />
-                </StyledButton>
-            </ButtonContainer>
+            <StyledButton
+                data-test="@wallet/receive/reveal-address-button"
+                onClick={() => showAddress(firstFreshAddress.path, firstFreshAddress.address)}
+                isDisabled={disabled || locked || !firstFreshAddress}
+            >
+                <Translation id="RECEIVE_ADDRESS_REVEAL" />
+            </StyledButton>
         </StyledCard>
     );
 };
