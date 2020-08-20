@@ -1,3 +1,29 @@
+export const BTC_ACCOUNT = {
+    symbol: 'btc',
+    networkType: 'bitcoin',
+    descriptor: 'xpub',
+    deviceState: 'deviceState',
+    addresses: { change: [], used: [], unused: [] },
+    availableBalance: '100000000000',
+    utxo: [],
+};
+
+export const ETH_ACCOUNT = {
+    symbol: 'eth',
+    networkType: 'ethereum',
+    descriptor: '0xdB09b793984B862C430b64B9ed53AcF867cC041F',
+    deviceState: 'deviceState',
+    availableBalance: '100000000000',
+};
+
+export const XRP_ACCOUNT = {
+    symbol: 'xrp',
+    networkType: 'ripple',
+    descriptor: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY',
+    deviceState: 'deviceState',
+    availableBalance: '100000000000',
+};
+
 export const DEFAULT_STORE = {
     suite: { device: {}, settings: { debug: {} } },
     labeling: {}, // will not be used in the future

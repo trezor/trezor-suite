@@ -6,7 +6,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { act, render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { SendContext, useSendForm, usePropsHook } from '../useSendForm';
+import { SendContext, useSendForm } from '../useSendForm';
 import * as fixtures from '../__fixtures__/useSendForm';
 import sendFormReducer from '@wallet-reducers/sendFormReducer';
 
@@ -14,7 +14,7 @@ import Outputs from '@wallet-views/send/components/Outputs';
 import Header from '@wallet-views/send/components/Header';
 // import OpReturn from '@wallet-views/send/components/OpReturn';
 import Fees from '@wallet-views/send/components/Fees';
-import CoinActions from '@wallet-views/send/components/CoinActions';
+import Options from '@wallet-views/send/components/Options';
 import TotalSent from '@wallet-views/send/components/TotalSent';
 import ReviewButton from '@wallet-views/send/components/ReviewButton';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
@@ -152,7 +152,6 @@ const Index = connect((state: State) => ({
     localCurrency: state.wallet.settings.localCurrency,
     fees: state.wallet.fees,
     device: state.suite.device,
-    locks: state.suite.locks, // todo: use lock hooks
     online: state.suite.online,
 }))((props: any) => {
     // console.warn('----RENDER INDEX!!!!');
@@ -170,7 +169,7 @@ const Index = connect((state: State) => ({
     //     console.warn('+++++STORE DID CHANGE', typeof props);
     // }, [props]);
 
-    const { device, fees, selectedAccount, locks, online, fiat, localCurrency } = props;
+    const { device, fees, selectedAccount, online, fiat, localCurrency } = props;
     const { account, network } = selectedAccount;
     const { symbol, networkType } = account;
     const coinFees = fees[symbol];
@@ -187,7 +186,6 @@ const Index = connect((state: State) => ({
         coinFees,
         online,
         fiatRates,
-        locks,
         feeInfo,
         initialSelectedFee,
         localCurrencyOption,
@@ -207,12 +205,9 @@ const Index = connect((state: State) => ({
     return (
         <SendContext.Provider value={sendFormContext}>
             {sendFormContext.isLoading && <div>Loading</div>}
-            <Header setOpReturnActive={() => false} />
+            <Header />
             <Outputs />
-            <CoinActions />
-            {/* {networkType === 'bitcoin' && opReturnActive && (
-                <OpReturn setIsActive={setOpReturnActive} />
-            )} */}
+            <Options />
             <Fees />
             <TotalSent />
             <ReviewButton />
