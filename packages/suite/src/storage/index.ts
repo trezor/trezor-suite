@@ -31,7 +31,7 @@ export interface SuiteDBSchema extends DBSchema {
         key: string;
         value: {
             data: Record<string, any>;
-            outputs: SendContext['outputs'];
+            outputs: any; // TODO
         };
         indexes: {
             deviceState: string;
