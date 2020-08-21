@@ -37,12 +37,6 @@ const ErrorMessage = styled.div`
     text-align: center;
 `;
 
-const SmallErrorMessage = styled.div`
-    display: flex;
-    color: ${colors.BLACK50};
-    font-size: ${variables.FONT_SIZE.TINY};
-`;
-
 const DashboardGraph = React.memo((props: Props) => {
     const {
         accounts,
