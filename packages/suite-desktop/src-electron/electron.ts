@@ -179,9 +179,9 @@ ipcMain.on('message', (event, message) => {
     event.sender.send('message', message);
 });
 
-ipcMain.on('start-bridge', async () => {
+ipcMain.on('start-bridge', async (_event, devMode?: boolean) => {
     try {
-        await runBridgeProcess();
+        await runBridgeProcess(devMode);
     } catch (error) {
         // TODO: return error message to suite?
     }

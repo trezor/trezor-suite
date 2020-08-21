@@ -33,7 +33,7 @@ export type SuiteActions =
           locale: typeof LANGUAGES[number]['code'];
           messages: { [key: string]: string };
       }
-    | { type: typeof SUITE.SET_DEBUG_MODE; payload: DebugModeOptions }
+    | { type: typeof SUITE.SET_DEBUG_MODE; payload: Partial<DebugModeOptions> }
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | { type: typeof SUITE.LOCK_DEVICE; payload: boolean }
@@ -89,7 +89,7 @@ export const onSuiteReady = (): Action => ({
  * @param {boolean} payload
  * @returns {Action}
  */
-export const setDebugMode = (payload: DebugModeOptions): Action => ({
+export const setDebugMode = (payload: Partial<DebugModeOptions>): Action => ({
     type: SUITE.SET_DEBUG_MODE,
     payload,
 });
