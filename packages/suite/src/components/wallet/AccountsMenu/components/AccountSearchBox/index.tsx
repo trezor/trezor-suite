@@ -27,7 +27,7 @@ const OuterCircle = styled.div<{ isSelected?: boolean; isMobile?: boolean }>`
     transition: all 0.3;
 
     margin-bottom: 8px;
-    margin-right: ${props => (props.isMobile ? '12px' : '6px')};
+    margin-right: ${props => (props.isMobile ? '12px' : '4px')};
 `;
 
 const StyledInput = styled(Input)`
