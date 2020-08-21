@@ -53,12 +53,8 @@ window.onload = function() {
     var result = parser.getResult();
     
     var isMobile = result.device.type === 'mobile';
-    var isSupported = supportedBrowsers.filter(function(browser) {
-        return browser.name === result.browser.name;
-    })[0];
-    var updateRequired = supportedBrowsers.filter(function(browser) {
-        return isSupported && browser.version > parseInt(result.browser.major);
-    })[0];
+    var supportedBrowser = supportedBrowsers.find(function(browser) { return browser.name === result.browser.name });
+    var updateRequired = supportedBrowser ? supportedBrowser.version > parseInt(result.browser.major) : false;
     var setBody = function(content) {
         document.body.innerHTML = '';
         document.body.insertAdjacentHTML('afterbegin', content);
@@ -67,19 +63,19 @@ window.onload = function() {
     if (result.os.name === 'iOS') {
         // Any iOS device: no WebUSB support (suggest to download iOS app?)
         setBody(noWebUSB);
-    } else if (isMobile && (!isSupported || (isSupported && !isSupported.mobile))) {
+    } else if (isMobile && (!supportedBrowser || (supportedBrowser && !supportedBrowser.mobile))) {
         // Unsupported mobile browser: get Chrome for Android
         setBody(getChromeAndroid);
-    } else if (isSupported && updateRequired) {
-        if (isSupported.name === 'Chrome' || isSupported.name === 'Chromium') {
+    } else if (updateRequired) {
+        if (supportedBrowser.name === 'Chrome' || supportedBrowser.name === 'Chromium') {
             // Outdated browser: update Chrome
             setBody(updateChrome);
         }
-        if (isSupported.name === 'Firefox') {
+        if (supportedBrowser.name === 'Firefox') {
             // Outdated browser: update Firefox
             setBody(updateFirefox);
         }
-    } else if (!isSupported) {
+    } else if (!supportedBrowser) {
         // Unsupported browser
         setBody(unsupportedBrowser);
     }
