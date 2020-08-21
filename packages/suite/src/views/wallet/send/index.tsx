@@ -1,9 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { Card } from '@suite-components';
 import { WalletLayout } from '@wallet-components';
-import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { useSendForm, SendContext } from '@wallet-hooks/useSendForm';
 
 import Header from './components/Header';
@@ -12,7 +12,8 @@ import Options from './components/Options';
 import Fees from './components/Fees';
 import TotalSent from './components/TotalSent';
 import ReviewButton from './components/ReviewButton';
-import { Props } from './Container';
+import { AppState } from '@suite-types';
+import { SendFormProps } from '@wallet-types/sendForm';
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -21,38 +22,26 @@ const StyledCard = styled(Card)`
     padding: 0;
 `;
 
-const Send = ({ device, fees, selectedAccount, online, fiat, localCurrency }: Props) => {
-    if (!device || selectedAccount.status !== 'loaded') {
+const mapStateToProps = (state: AppState) => ({
+    selectedAccount: state.wallet.selectedAccount,
+    fiat: state.wallet.fiat,
+    localCurrency: state.wallet.settings.localCurrency,
+    fees: state.wallet.fees,
+    online: state.suite.online,
+});
+
+const Send = (props: SendFormProps) => {
+    const { selectedAccount } = props;
+    if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Send" account={selectedAccount} />;
     }
 
-    const { account, network } = selectedAccount;
-    const { symbol, networkType } = account;
-    const coinFees = fees[symbol];
-    const levels = getFeeLevels(networkType, coinFees);
-    const feeInfo = { ...coinFees, levels };
-    const fiatRates = fiat.coins.find(item => item.symbol === symbol);
-    const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
-
     // It's OK to call this hook conditionally
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const sendState = useSendForm({
-        device,
-        account,
-        network,
-        coinFees,
-        online,
-        fiatRates,
-        feeInfo,
-        localCurrencyOption,
-        destinationAddressEmpty: false,
-        feeOutdated: false,
-        isLoading: false,
-    });
-
+    const sendContextValues = useSendForm({ ...props, selectedAccount });
     return (
         <WalletLayout title="Send" account={selectedAccount}>
-            <SendContext.Provider value={sendState}>
+            <SendContext.Provider value={sendContextValues}>
                 <StyledCard customHeader={<Header />}>
                     <Outputs />
                     <Options />
@@ -65,4 +54,4 @@ const Send = ({ device, fees, selectedAccount, online, fiat, localCurrency }: Pr
     );
 };
 
-export default Send;
+export default connect(mapStateToProps)(Send);

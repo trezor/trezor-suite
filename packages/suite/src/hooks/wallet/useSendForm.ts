@@ -3,12 +3,19 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { useActions } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { DEFAULT_PAYMENT, DEFAULT_OPTIONS, DEFAULT_VALUES } from '@wallet-constants/sendForm';
-import { FormState, SendContextProps, SendContextState, Output } from '@wallet-types/sendForm';
+import {
+    UseSendFormProps,
+    UseSendFormState,
+    FormState,
+    SendContextValues,
+    Output,
+} from '@wallet-types/sendForm';
+import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { useSendFormOutputs } from './useSendFormOutputs';
 import { useSendFormFields } from './useSendFormFields';
 import { useSendFormCompose } from './useSendFormCompose';
 
-export const SendContext = createContext<SendContextState | null>(null);
+export const SendContext = createContext<SendContextValues | null>(null);
 SendContext.displayName = 'SendContext';
 
 const getDefaultValues = (currency: Output['currency']) => {
@@ -19,11 +26,37 @@ const getDefaultValues = (currency: Output['currency']) => {
     };
 };
 
+// convert UseSendFormProps to UseSendFormState
+const getStateFromProps = (props: UseSendFormProps) => {
+    const { account, network } = props.selectedAccount;
+    const { symbol, networkType } = account;
+    const coinFees = props.fees[symbol];
+    const levels = getFeeLevels(networkType, coinFees);
+    const feeInfo = { ...coinFees, levels };
+    const fiatRates = props.fiat.coins.find(item => item.symbol === symbol);
+    const localCurrencyOption = {
+        value: props.localCurrency,
+        label: props.localCurrency.toUpperCase(),
+    };
+    return {
+        account,
+        network,
+        coinFees,
+        feeInfo,
+        feeOutdated: false,
+        fiatRates,
+        localCurrencyOption,
+        destinationAddressEmpty: false,
+        isLoading: false,
+        online: props.online,
+    };
+};
+
 // Mounted in top level index: @wallet-views/send
 // returned ContextState is a object provided as SendContext values with custom callbacks for updating/resetting state
-export const useSendForm = (props: SendContextProps): SendContextState => {
+export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // public variables, exported to SendFormContext
-    const [state, setState] = useState(props);
+    const [state, setState] = useState<UseSendFormState>(getStateFromProps(props));
 
     // private variables, used inside sendForm hook
     const draft = useRef<FormState | undefined>(undefined);
@@ -72,7 +105,7 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
 
     // update custom values
     const updateContext = useCallback(
-        (value: Partial<SendContextProps>) => {
+        (value: Partial<UseSendFormState>) => {
             setState({
                 ...state,
                 ...value,
@@ -111,7 +144,7 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
     const resetContext = useCallback(() => {
         setComposedLevels(undefined);
         removeDraft();
-        setState(props); // resetting state will trigger "load draft" hook which will reset FormState
+        setState(getStateFromProps(props)); // resetting state will trigger "load draft" hook which will reset FormState
     }, [props, removeDraft, setComposedLevels]);
 
     // handle draft change
@@ -160,7 +193,7 @@ export const useSendForm = (props: SendContextProps): SendContextState => {
 };
 
 // Used across send form components
-// Provide combined context of `react-hook-form` with custom values as SendContextState
+// Provide combined context of `react-hook-form` with custom values as SendContextValues
 export const useSendFormContext = () => {
     const ctx = useContext(SendContext);
     if (ctx === null) throw Error('useSendFormContext used without Context');
