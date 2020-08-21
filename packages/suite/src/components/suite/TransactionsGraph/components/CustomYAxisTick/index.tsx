@@ -42,6 +42,8 @@ const CustomYAxisTick = (props: CustomProps) => {
                     <FormattedNumber
                         currency={props.localCurrency}
                         value={payload.value}
+                        // minimumFractionDigits={bValue.lt(1) ? 2 : 0}
+                        // maximumFractionDigits={bValue.lt(1) ? 2 : 0}
                         minimumFractionDigits={0}
                         maximumFractionDigits={0}
                     />

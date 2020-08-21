@@ -10,7 +10,7 @@ import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 // https://github.com/zeit/next.js/issues/4768
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import GraphWorker from 'worker-loader?filename=static/[hash].worker.js!../../../../../../workers/graph.worker';
-import { getMaxValueFromData } from '@suite/utils/wallet/graphUtils';
+import { getMinMaxValueFromData } from '@suite/utils/wallet/graphUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -81,12 +81,12 @@ const DashboardGraph = React.memo((props: Props) => {
         [localCurrency],
     );
 
-    const maxValue = getMaxValueFromData(
+    const minMaxValues = getMinMaxValueFromData(
         data,
         'dashboard',
         sentValueFn,
         receivedValueFn,
-        balanceValueFn,
+        () => '0',
     );
 
     useEffect(() => {
@@ -138,7 +138,7 @@ const DashboardGraph = React.memo((props: Props) => {
                         isLoading={isLoading || isProcessing}
                         localCurrency={props.localCurrency}
                         xTicks={xTicks}
-                        maxValue={maxValue}
+                        minMaxValues={minMaxValues}
                         data={data}
                         selectedRange={selectedRange}
                         receivedValueFn={receivedValueFn}
