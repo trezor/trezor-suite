@@ -5,7 +5,9 @@ import {
     TokenInfo,
     PrecomposedTransaction as PrecomposedTransactionBase,
 } from 'trezor-connect';
-import { TrezorDevice, ExtendedMessageDescriptor } from '@suite-types';
+import { AppState, ExtendedMessageDescriptor } from '@suite-types';
+
+// react-hook-form state
 
 export type CurrencyOption = { value: string; label: string };
 
@@ -19,26 +21,6 @@ export type Output = {
     token?: string;
     dataHex: string; // bitcoin opreturn/ethereum data
     dataAscii: string; // bitcoin opreturn/ethereum data
-};
-
-export interface FeeInfo {
-    blockHeight: number; // when fee info was updated; 0 = never
-    blockTime: number; // how often block is mined
-    minFee: number;
-    maxFee: number;
-    feeLimit?: number; // eth gas limit
-    levels: FeeLevel[]; // fee levels are predefined in trezor-connect > trezor-firmware/common
-}
-
-export type EthTransactionData = {
-    token?: TokenInfo;
-    chainId: Network['chainId'];
-    to: string;
-    amount: string;
-    data?: string;
-    gasLimit: string;
-    gasPrice: string;
-    nonce: string;
 };
 
 export type FormOptions =
@@ -63,6 +45,26 @@ export type FormState = {
     ethereumDataAscii?: string;
     ethereumDataHex?: string;
     rippleDestinationTag?: string;
+};
+
+export interface FeeInfo {
+    blockHeight: number; // when fee info was updated; 0 = never
+    blockTime: number; // how often block is mined
+    minFee: number;
+    maxFee: number;
+    feeLimit?: number; // eth gas limit
+    levels: FeeLevel[]; // fee levels are predefined in trezor-connect > trezor-firmware/common
+}
+
+export type EthTransactionData = {
+    token?: TokenInfo;
+    chainId: Network['chainId'];
+    to: string;
+    amount: string;
+    data?: string;
+    gasLimit: string;
+    gasPrice: string;
+    nonce: string;
 };
 
 export type PrecomposedTransactionError = Extract<PrecomposedTransactionBase, { type: 'error' }> & {
@@ -91,21 +93,35 @@ export type PrecomposedTransaction =
 
 export type PrecomposedLevels = { [key: string]: PrecomposedTransaction };
 
-export type SendContextProps = {
-    account: Account; // from reducer
-    coinFees: FeeInfo; // from reducer
-    network: Network; // from reducer
-    device: TrezorDevice; // from reducer (needed?)
-    online: boolean; // from reducer (needed?)
-    fiatRates: CoinFiatRates | undefined; // from reducer
+// Props of @wallet-views/send/index
+export interface SendFormProps {
+    selectedAccount: AppState['wallet']['selectedAccount'];
+    fiat: AppState['wallet']['fiat'];
+    localCurrency: AppState['wallet']['settings']['localCurrency'];
+    fees: AppState['wallet']['fees'];
+    online: boolean;
+}
+// Props of @wallet-hooks/useSendForm (selectedAccount should be loaded)
+export interface UseSendFormProps extends SendFormProps {
+    selectedAccount: Extract<SendFormProps['selectedAccount'], { status: 'loaded' }>;
+}
+
+// local state of @wallet-hooks/useSendForm
+export type UseSendFormState = {
+    account: Account;
+    network: Network;
+    coinFees: FeeInfo;
     feeInfo: FeeInfo;
-    localCurrencyOption: { value: string; label: string };
-    destinationAddressEmpty: boolean;
     feeOutdated: boolean;
+    fiatRates: CoinFiatRates | undefined;
+    localCurrencyOption: CurrencyOption;
+    destinationAddressEmpty: boolean; // TODO: REMOVE, check this in ripple "composeTransaction"
     isLoading: boolean;
     composedLevels?: PrecomposedLevels;
+    online: boolean;
 };
 
+// strongly typed UseFormMethods.getValues with fallback value
 interface GetDefaultValue {
     <K extends keyof FormState, T = undefined>(
         fieldName: K,
@@ -114,18 +130,19 @@ interface GetDefaultValue {
     <K, T>(fieldName: K, fallback: T): K extends keyof FormState ? FormState[K] : T;
 }
 
+// strongly typed UseFormMethods.register
 export interface TypedValidationRules {
     required?: ExtendedMessageDescriptor['id'] | JSX.Element | undefined;
     validate?: (data: string) => ExtendedMessageDescriptor['id'] | JSX.Element | undefined;
 }
 
-export type SendContextState = Omit<UseFormMethods<FormState>, 'register'> &
-    SendContextProps & {
+export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
+    UseSendFormState & {
         // strongly typed UseFormMethods.register
         register: (rules?: TypedValidationRules) => (ref: any) => void; // TODO: ReturnType of UseFormMethods['register'] union
         // additional fields
         outputs: Partial<Output & { id: string }>[]; // useFieldArray fields
-        updateContext: (value: Partial<SendContextProps>) => void;
+        updateContext: (value: Partial<UseSendFormState>) => void;
         resetContext: () => void;
         composeTransaction: (field: string, fieldHasError?: boolean) => void;
         signTransaction: () => void;

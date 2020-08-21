@@ -2,10 +2,15 @@ import { useCallback } from 'react';
 import { UseFormMethods } from 'react-hook-form';
 import { FeeLevel } from 'trezor-connect';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
-import { FormState, FormOptions, SendContextProps, SendContextState } from '@wallet-types/sendForm';
+import {
+    FormState,
+    FormOptions,
+    UseSendFormState,
+    SendContextValues,
+} from '@wallet-types/sendForm';
 
 type Props = UseFormMethods<FormState> & {
-    fiatRates: SendContextProps['fiatRates'];
+    fiatRates: UseSendFormState['fiatRates'];
 };
 
 export const useSendFormFields = ({
@@ -97,7 +102,7 @@ export const useSendFormFields = ({
     // `output[x].fieldName` should be a regular `formState` value from `getValues()` method
     // however `useFieldArray` doesn't provide it BEFORE input is registered (it will be undefined on first render)
     // use fallbackValue from useFieldArray.fields if so, because `useFieldArray` architecture requires `defaultValue` to be provided for registered inputs
-    const getDefaultValue: SendContextState['getDefaultValue'] = <K extends string, T = undefined>(
+    const getDefaultValue: SendContextValues['getDefaultValue'] = <K extends string, T = undefined>(
         fieldName: K,
         fallbackValue?: T,
     ) => {

@@ -10,7 +10,7 @@ import { findValidOutputs } from '@wallet-utils/sendFormUtils';
 
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
-import { FormState, SendContextProps, PrecomposedTransactionFinal } from '@wallet-types/sendForm';
+import { FormState, UseSendFormState, PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 import * as sendFormBitcoinActions from './send/sendFormBitcoinActions';
 import * as sendFormEthereumActions from './send/sendFormEthereumActions';
 import * as sendFormRippleActions from './send/sendFormRippleActions';
@@ -98,7 +98,7 @@ export const removeDraft = () => (dispatch: Dispatch, getState: GetState) => {
     }
 };
 
-export const composeTransaction = (formValues: FormState, formState: SendContextProps) => async (
+export const composeTransaction = (formValues: FormState, formState: UseSendFormState) => async (
     dispatch: Dispatch,
 ) => {
     const validOutputs = findValidOutputs(formValues);

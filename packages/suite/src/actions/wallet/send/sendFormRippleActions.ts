@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 import { calculateTotal, calculateMax } from '@wallet-utils/sendFormUtils';
 import {
     FormState,
-    SendContextProps,
+    UseSendFormState,
     PrecomposedLevels,
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
@@ -80,7 +80,7 @@ const calculate = (
 
 export const composeTransaction = (
     formValues: FormState,
-    formState: SendContextProps,
+    formState: UseSendFormState,
 ) => async () => {
     const { account, feeInfo } = formState;
     const { availableBalance } = account;

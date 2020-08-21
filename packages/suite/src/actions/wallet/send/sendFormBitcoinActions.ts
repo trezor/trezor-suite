@@ -2,7 +2,7 @@ import TrezorConnect, { FeeLevel, SignTransaction } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import {
     FormState,
-    SendContextProps,
+    UseSendFormState,
     PrecomposedLevels,
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
@@ -20,7 +20,7 @@ import { Dispatch, GetState } from '@suite-types';
 
 export const composeTransaction = (
     formValues: FormState,
-    formState: SendContextProps,
+    formState: UseSendFormState,
 ) => async () => {
     const { outputs } = formValues;
     const { account, feeInfo } = formState;

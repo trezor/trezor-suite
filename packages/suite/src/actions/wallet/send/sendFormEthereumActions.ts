@@ -11,7 +11,7 @@ import {
 } from '@wallet-utils/sendFormUtils';
 import {
     FormState,
-    SendContextProps,
+    UseSendFormState,
     PrecomposedLevels,
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
@@ -94,7 +94,7 @@ const calculate = (
 
 export const composeTransaction = (
     formValues: FormState,
-    formState: SendContextProps,
+    formState: UseSendFormState,
 ) => async () => {
     const { account, network, feeInfo } = formState;
     const { availableBalance } = account;

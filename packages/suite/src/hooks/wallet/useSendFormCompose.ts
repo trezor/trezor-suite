@@ -1,14 +1,14 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { UseFormMethods } from 'react-hook-form';
 import { FeeLevel } from 'trezor-connect';
-import { FormState, SendContextProps, SendContextState } from '@wallet-types/sendForm';
+import { FormState, UseSendFormState, SendContextValues } from '@wallet-types/sendForm';
 import { useActions, useDebounce } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { findComposeErrors } from '@wallet-utils/sendFormUtils';
 
 type Props = UseFormMethods<FormState> & {
-    state: SendContextProps;
-    updateContext: SendContextState['updateContext'];
+    state: UseSendFormState;
+    updateContext: SendContextValues['updateContext'];
     setAmount: any;
 };
 
@@ -23,7 +23,7 @@ export const useSendFormCompose = ({
     updateContext,
     setAmount,
 }: Props) => {
-    const [composedLevels, setComposedLevels] = useState<SendContextState['composedLevels']>(
+    const [composedLevels, setComposedLevels] = useState<SendContextValues['composedLevels']>(
         undefined,
     );
     const selectedFeeRef = useRef<FeeLevel['label'] | undefined>(undefined);

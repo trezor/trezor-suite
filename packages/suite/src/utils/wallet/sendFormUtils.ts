@@ -7,8 +7,8 @@ import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
 import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
 import { amountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { Network, Account } from '@wallet-types';
-import { FormState, FeeInfo, EthTransactionData, SendContextProps } from '@wallet-types/sendForm';
+import { Network, Account, CoinFiatRates } from '@wallet-types';
+import { FormState, FeeInfo, EthTransactionData } from '@wallet-types/sendForm';
 
 export const calculateTotal = (amount: string, fee: string): string => {
     try {
@@ -167,7 +167,7 @@ export const getInputState = (error?: FieldError, value?: string) => {
     }
 };
 
-export const getFiatRate = (fiatRates: SendContextProps['fiatRates'], currency: string) => {
+export const getFiatRate = (fiatRates: CoinFiatRates | undefined, currency: string) => {
     if (!fiatRates || !fiatRates.current) return;
     return fiatRates.current.rates[currency];
 };
