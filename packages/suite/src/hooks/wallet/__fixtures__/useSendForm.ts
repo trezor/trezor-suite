@@ -1,52 +1,62 @@
+import { DEFAULT_PAYMENT, DEFAULT_OPTIONS, DEFAULT_VALUES } from '@wallet-constants/sendForm';
+
 export const BTC_ACCOUNT = {
-    symbol: 'btc',
-    networkType: 'bitcoin',
-    descriptor: 'xpub',
-    deviceState: 'deviceState',
-    addresses: { change: [], used: [], unused: [] },
-    availableBalance: '100000000000',
-    utxo: [],
+    status: 'loaded',
+    account: {
+        symbol: 'btc',
+        networkType: 'bitcoin',
+        descriptor: 'xpub',
+        deviceState: 'deviceState',
+        addresses: { change: [], used: [], unused: [] },
+        availableBalance: '100000000000',
+        utxo: [],
+    },
+    network: { networkType: 'bitcoin', symbol: 'btc', decimals: 8 },
 };
 
 export const ETH_ACCOUNT = {
-    symbol: 'eth',
-    networkType: 'ethereum',
-    descriptor: '0xdB09b793984B862C430b64B9ed53AcF867cC041F',
-    deviceState: 'deviceState',
-    availableBalance: '100000000000',
+    status: 'loaded',
+    account: {
+        symbol: 'eth',
+        networkType: 'ethereum',
+        descriptor: '0xdB09b793984B862C430b64B9ed53AcF867cC041F',
+        deviceState: 'deviceState',
+        availableBalance: '100000000000',
+    },
+    network: { networkType: 'ethereum', symbol: 'eth', decimals: 16 },
 };
 
 export const XRP_ACCOUNT = {
-    symbol: 'xrp',
-    networkType: 'ripple',
-    descriptor: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY',
-    deviceState: 'deviceState',
-    availableBalance: '100000000000',
+    status: 'loaded',
+    account: {
+        symbol: 'xrp',
+        networkType: 'ripple',
+        descriptor: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY',
+        deviceState: 'deviceState',
+        availableBalance: '100000000000',
+    },
+    network: { networkType: 'ripple', symbol: 'xrp', decimals: 6 },
 };
 
 export const DEFAULT_STORE = {
     suite: { device: {}, settings: { debug: {} } },
     labeling: {}, // will not be used in the future
     wallet: {
-        accounts: [],
-        selectedAccount: {
-            status: 'loaded',
-            account: {
-                symbol: 'btc',
-                networkType: 'bitcoin',
-                descriptor: 'xpub',
-                deviceState: 'deviceState',
-                addresses: { change: [], used: [], unused: [] },
-                availableBalance: '100000000000',
-                utxo: [],
-            },
-            network: { networkType: 'bitcoin', symbol: 'btc', decimals: 8 },
-        },
+        accounts: [], // used by auto-labeling
+        selectedAccount: BTC_ACCOUNT,
         settings: {
             localCurrency: 'usd',
             debug: {},
         },
-        fees: { btc: { levels: [] } },
+        fees: {
+            btc: {
+                minFee: 1,
+                maxFee: 100,
+                blockHeight: 1,
+                blockTime: 1,
+                levels: [{ label: 'normal', feePerUnit: '4', blocks: 1 }],
+            },
+        },
         fiat: {
             coins: [
                 {
@@ -59,13 +69,14 @@ export const DEFAULT_STORE = {
                 },
             ],
         },
-        send: {
-            precomposedTx: undefined,
-            lastUsedFeeLevel: undefined,
-            drafts: {},
-        },
     },
-    devices: [],
+    devices: [], // to remove?
+};
+
+const DEFAULT_DRAFT = {
+    ...DEFAULT_VALUES,
+    options: [...DEFAULT_OPTIONS],
+    outputs: [{ ...DEFAULT_PAYMENT }],
 };
 
 export const addingOutputs = [
@@ -97,21 +108,26 @@ export const addingOutputs = [
     },
     {
         description: 'Add/Remove/Reset outputs with draft and set-max in second output',
-        state: {
-            drafts: {
-                'xpub-btc-deviceState': {
-                    formState: {
-                        outputs: [
-                            {
-                                address: 'A',
-                                amount: '1',
-                            },
-                            {
-                                address: 'B',
-                                amount: '2',
-                            },
-                        ],
-                        setMaxOutputId: 1,
+        store: {
+            send: {
+                drafts: {
+                    'xpub-btc-deviceState': {
+                        formState: {
+                            ...DEFAULT_DRAFT,
+                            outputs: [
+                                {
+                                    ...DEFAULT_PAYMENT,
+                                    address: 'A',
+                                    amount: '1',
+                                },
+                                {
+                                    ...DEFAULT_PAYMENT,
+                                    address: 'B',
+                                    amount: '2',
+                                },
+                            ],
+                            setMaxOutputId: 1,
+                        },
                     },
                 },
             },
@@ -145,21 +161,26 @@ export const addingOutputs = [
     },
     {
         description: 'Add/Remove/Reset outputs with draft and set-max in first output',
-        state: {
-            drafts: {
-                'xpub-btc-deviceState': {
-                    formState: {
-                        outputs: [
-                            {
-                                address: 'A',
-                                amount: '1',
-                            },
-                            {
-                                address: 'B',
-                                amount: '2',
-                            },
-                        ],
-                        setMaxOutputId: 0,
+        store: {
+            send: {
+                drafts: {
+                    'xpub-btc-deviceState': {
+                        formState: {
+                            ...DEFAULT_DRAFT,
+                            outputs: [
+                                {
+                                    ...DEFAULT_PAYMENT,
+                                    address: 'A',
+                                    amount: '1',
+                                },
+                                {
+                                    ...DEFAULT_PAYMENT,
+                                    address: 'B',
+                                    amount: '2',
+                                },
+                            ],
+                            setMaxOutputId: 0,
+                        },
                     },
                 },
             },
@@ -214,7 +235,7 @@ export const composeDebouncedTransaction = [
             connectCalledTimes: 0,
             composedLevels: undefined,
             errors: {
-                outputs: [{ address: { message: 'TR_ADDRESS_IS_NOT_SET' } }],
+                outputs: [{ address: { message: 'RECIPIENT_IS_NOT_SET' } }],
             },
         },
     },
@@ -225,7 +246,7 @@ export const composeDebouncedTransaction = [
             connectCalledTimes: 0,
             composedLevels: undefined,
             errors: {
-                outputs: [{ address: { message: 'TR_ADDRESS_IS_NOT_VALID' } }],
+                outputs: [{ address: { message: 'RECIPIENT_IS_NOT_VALID' } }],
             },
         },
     },
@@ -317,19 +338,22 @@ export const setMax = [
     {
         description:
             'setMax: compose from draft (one input), Amount not affected, but Fiat gets recalculated',
-        state: {
-            drafts: {
-                'xpub-btc-deviceState': {
-                    formState: {
-                        outputs: [
-                            {
-                                type: 'payment',
-                                address: '',
-                                amount: '1',
-                                fiat: '2.00',
-                            },
-                        ],
-                        setMaxOutputId: 0,
+        store: {
+            send: {
+                drafts: {
+                    'xpub-btc-deviceState': {
+                        formState: {
+                            ...DEFAULT_DRAFT,
+                            outputs: [
+                                {
+                                    ...DEFAULT_PAYMENT,
+                                    address: '',
+                                    amount: '1',
+                                    fiat: '2.00',
+                                },
+                            ],
+                            setMaxOutputId: 0,
+                        },
                     },
                 },
             },
@@ -361,19 +385,22 @@ export const setMax = [
     {
         description:
             'setMax: compose from draft with error on default level, switching to custom level',
-        state: {
-            drafts: {
-                'xpub-btc-deviceState': {
-                    formState: {
-                        outputs: [
-                            {
-                                type: 'payment',
-                                address: 'A',
-                                amount: '1',
-                                fiat: '2.00',
-                            },
-                        ],
-                        setMaxOutputId: 0,
+        store: {
+            send: {
+                drafts: {
+                    'xpub-btc-deviceState': {
+                        formState: {
+                            ...DEFAULT_DRAFT,
+                            outputs: [
+                                {
+                                    ...DEFAULT_PAYMENT,
+                                    address: 'A',
+                                    amount: '1',
+                                    fiat: '2.00',
+                                },
+                            ],
+                            setMaxOutputId: 0,
+                        },
                     },
                 },
             },
@@ -409,5 +436,47 @@ export const setMax = [
                 outputs: [{ amount: '0.1', fiat: '0.10' }],
             },
         },
+    },
+];
+
+export const amountChange = [
+    {
+        description: 'Amount to Fiat calculation',
+        // input amount
+        // input amount with error
+        // change currency
+    },
+    {
+        description: 'Amount with error',
+        // input amount
+        // input amount with error
+        // change currency
+    },
+    {
+        description: 'Amount to Fiat calculation then Amount with error',
+        // input amount
+        // input amount with error
+        // change currency
+    },
+    {
+        description: 'Fiat to Amount calculation',
+        // input fiat
+        // input fiat with error
+        // change currency
+    },
+    {
+        description: 'Fiat with error',
+        // input fiat
+        // input fiat with error
+        // change currency
+    },
+    {
+        description: 'Fiat to Amount calculation then Fiat with error',
+        // input fiat
+        // input fiat with error
+        // change currency
+    },
+    {
+        description: 'Eth transaction with data (default amount set to 0)',
     },
 ];
