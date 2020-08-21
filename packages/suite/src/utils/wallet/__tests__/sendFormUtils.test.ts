@@ -9,6 +9,11 @@ import {
     calculateMax,
     findComposeErrors,
     findValidOutputs,
+    calculateEthFee,
+    getFiatRate,
+    buildCurrencyOption,
+    buildFeeOptions,
+    buildTokenOptions,
 } from '../sendFormUtils';
 
 describe('sendForm utils', () => {
@@ -80,29 +85,93 @@ describe('sendForm utils', () => {
     });
 
     it('findValidOutputs', () => {
-        // @ts-ignore: params
+        // @ts-ignore: invalid params
         expect(findValidOutputs(null)).toEqual([]);
-        // @ts-ignore: params
+        // @ts-ignore: invalid params
         expect(findValidOutputs(true)).toEqual([]);
-        // @ts-ignore: params
+        // @ts-ignore: invalid params
         expect(findValidOutputs(1)).toEqual([]);
-        // @ts-ignore: params
+        // @ts-ignore: invalid params
         expect(findValidOutputs('A')).toEqual([]);
 
-        // @ts-ignore: params
         expect(findValidOutputs({ outputs: [] })).toEqual([]);
 
-        // @ts-ignore: params
-        expect(findValidOutputs({ outputs: [null, {}, { amount: '' }, { amount: '1' }] })).toEqual([
-            { amount: '1' },
-        ]);
+        let outputs: any[] = [
+            null,
+            {},
+            { type: 'payment', amount: '' },
+            { type: 'payment', amount: '1' },
+        ];
+        // @ts-ignore: partial outputs
+        expect(findValidOutputs({ outputs })).toEqual([{ type: 'payment', amount: '1' }]);
 
+        outputs = [
+            { type: 'payment', amount: '' },
+            { type: 'payment', amount: '1' },
+            { type: 'payment', amount: '', fiat: '1' },
+            { type: 'opreturn', dataHex: '' },
+            { type: 'opreturn', dataHex: 'deadbeef' },
+        ];
         expect(
             findValidOutputs({
                 setMaxOutputId: 2,
-                // @ts-ignore: params
-                outputs: [{ amount: '' }, { amount: '1' }, { amount: '', fiat: '1' }],
+                // @ts-ignore: partial outputs
+                outputs,
             }),
-        ).toEqual([{ amount: '1' }, { amount: '', fiat: '1' }]);
+        ).toEqual([
+            { type: 'payment', amount: '1' },
+            { type: 'payment', amount: '', fiat: '1' },
+            { type: 'opreturn', dataHex: 'deadbeef' },
+        ]);
+    });
+
+    it('calculateEthFee', () => {
+        expect(calculateEthFee()).toEqual('0');
+        expect(calculateEthFee('', '')).toEqual('0');
+        expect(calculateEthFee('1', '')).toEqual('0');
+        expect(calculateEthFee('0', '1')).toEqual('0');
+        // @ts-ignore invalid params
+        expect(calculateEthFee({}, {})).toEqual('0');
+        // @ts-ignore invalid params
+        expect(calculateEthFee(() => {}, {})).toEqual('0');
+        // @ts-ignore invalid params
+        expect(calculateEthFee(null, true)).toEqual('0');
+        expect(calculateEthFee('1', '2')).toEqual('2');
+    });
+
+    it('getFiatRate', () => {
+        expect(getFiatRate(undefined, 'usd')).toBe(undefined);
+        // @ts-ignore invalid params
+        expect(getFiatRate({}, 'usd')).toBe(undefined);
+        // @ts-ignore invalid params
+        expect(getFiatRate({ current: {} }, 'usd')).toBe(undefined);
+        // @ts-ignore invalid params
+        expect(getFiatRate({ current: { rates: {} } }, 'usd')).toBe(undefined);
+        // @ts-ignore invalid params
+        expect(getFiatRate({ current: { rates: { usd: 1 } } }, 'usd')).toBe(1);
+    });
+
+    it('build options', () => {
+        // @ts-ignore invalid params
+        expect(buildTokenOptions({ symbol: 'btc' })).toEqual([{ value: undefined, label: 'BTC' }]);
+        expect(
+            buildTokenOptions({
+                symbol: 'eth',
+                // @ts-ignore invalid params
+                tokens: [{ address: '0x1' }, { symbol: 'Symbol', address: '0x2' }],
+            }),
+        ).toEqual([
+            { value: undefined, label: 'ETH' },
+            { value: '0x1', label: 'N/A' },
+            { value: '0x2', label: 'SYMBOL' },
+        ]);
+
+        expect(buildFeeOptions([])).toEqual([]);
+        // @ts-ignore invalid params
+        expect(buildFeeOptions([{ label: 'normal' }])).toEqual([
+            { label: 'normal', value: 'normal' },
+        ]);
+
+        expect(buildCurrencyOption('usd')).toEqual({ value: 'usd', label: 'USD' });
     });
 });

@@ -26,6 +26,8 @@ module.exports = {
         '^@(.+)-types': '<rootDir>/src/types/$1/index',
         '^@(.+)-middlewares/(.+)': '<rootDir>/src/middlewares/$1/$2',
         '^@(.+)-middlewares': '<rootDir>/src/middlewares/$1/index',
+        '^@(dashboard|suite|wallet)-hooks/(.+)': '<rootDir>/src/hooks/$1/$2',
+        '^@(dashboard|suite|wallet)-hooks': '<rootDir>/src/hooks/$1/index',
     },
     moduleFileExtensions: ['js', 'ts', 'tsx'],
     coverageDirectory: './coverage',
@@ -35,10 +37,17 @@ module.exports = {
         '<rootDir>/src/utils/**',
         '<rootDir>/src/actions/**',
         '<rootDir>/src/middlewares/**',
-        '!**/constants/**',
+        '<rootDir>/src/hooks/suite/useDebounce.ts',
+        '<rootDir>/src/hooks/wallet/useSendForm.ts',
+        '<rootDir>/src/hooks/wallet/useSendFormCompose.ts',
+        '<rootDir>/src/hooks/wallet/useSendFormFields.ts',
+        '<rootDir>/src/hooks/wallet/useSendFormOutputs.ts',
+        // '<rootDir>/src/views/wallet/send/**',
         '!**/constants/**',
         '!**/__tests__/**',
+        '!**/__fixtures__/**',
         '!<rootDir>/src/actions/wallet/sendFormActions.ts', // TODO write tests
+        '!<rootDir>/src/actions/wallet/send/**', // TODO write tests
     ],
     coverageThreshold: {
         global: {

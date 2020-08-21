@@ -54,10 +54,10 @@ typescript:
     script:
         - lerna run type-check
 
-# unit tests:
-#     stage: lint, types, unit tests
-#     script:
-#         - lerna run --stream test:unit -- --passWithNoTests
+unit tests:
+    stage: lint, types, unit tests
+    script:
+        - lerna run --stream test:unit -- --passWithNoTests
 
 include:
     - ci/environment.yml

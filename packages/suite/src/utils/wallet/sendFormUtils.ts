@@ -59,14 +59,15 @@ export const sanitizeHex = ($hex: string): string => {
 /*
     Calculate fee from gas price and gas limit
  */
-export const calculateEthFee = (gasPrice: string | null, gasLimit: string | null): string => {
+export const calculateEthFee = (gasPrice?: string, gasLimit?: string): string => {
     if (!gasPrice || !gasLimit) {
         return '0';
     }
     try {
-        return new BigNumber(gasPrice).times(gasLimit).toFixed();
+        const result = new BigNumber(gasPrice).times(gasLimit);
+        if (result.isNaN()) throw new Error('NaN');
+        return result.toFixed();
     } catch (error) {
-        // TODO: empty input throws this error.
         return '0';
     }
 };
@@ -168,7 +169,7 @@ export const getInputState = (error?: FieldError, value?: string) => {
 };
 
 export const getFiatRate = (fiatRates: CoinFiatRates | undefined, currency: string) => {
-    if (!fiatRates || !fiatRates.current) return;
+    if (!fiatRates || !fiatRates.current || !fiatRates.current.rates) return;
     return fiatRates.current.rates[currency];
 };
 
@@ -222,7 +223,7 @@ export const findComposeErrors = (errors: UseFormMethods['errors'], prefix?: str
     return composeErrors;
 };
 
-export const findValidOutputs = (values: FormState) => {
+export const findValidOutputs = (values: Partial<FormState>) => {
     if (!values || !Array.isArray(values.outputs)) return [];
     return values.outputs.filter(
         (output, index) =>
