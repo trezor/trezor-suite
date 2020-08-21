@@ -36,8 +36,8 @@
         "type-check": "tsc --project tsconfig.json"
     },
     "devDependencies": {
-        "@babel/register": "^7.10.3",
-        "@babel/runtime": "^7.10.3",
+        "@babel/register": "^7.10.4",
+        "@babel/runtime": "^7.10.4",
         "babel-eslint": "^10.1.0",
         "babel-loader": "^8.1.0",
         "bignumber.js": "^9.0.0",
