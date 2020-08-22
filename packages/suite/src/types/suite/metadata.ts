@@ -76,6 +76,10 @@ export type DeviceMetadata =
 export interface MetadataState {
     enabled: boolean; // global for all devices
     provider?: MetadataProviderCredentials;
+    // is there active inline input? only one may be active at time so we save this
+    // information in reducer to make it easily accessible in UI.
+    // field shall hold default value for which user may add metadata (address, txId, etc...);
+    editing?: string;
 }
 
 /**

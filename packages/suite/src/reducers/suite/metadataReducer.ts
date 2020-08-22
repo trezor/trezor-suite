@@ -23,6 +23,9 @@ export default (state = initialState, action: Action): MetadataState => {
             case METADATA.SET_PROVIDER:
                 draft.provider = action.payload;
                 break;
+            case METADATA.SET_EDITING:
+                draft.editing = action.payload;
+                break;
             // no default
         }
     });

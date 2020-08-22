@@ -19,6 +19,7 @@ import GoogleProvider from '@suite/services/metadata/GoogleProvider';
 export type MetadataActions =
     | { type: typeof METADATA.ENABLE }
     | { type: typeof METADATA.DISABLE }
+    | { type: typeof METADATA.SET_EDITING; payload: string | undefined }
     | {
           type: typeof METADATA.SET_MASTER_KEY;
           payload: { deviceState: string; metadata: DeviceMetadata };
@@ -562,4 +563,11 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
     }
 
     return true;
+};
+
+export const setEditing = (payload: string | undefined) => (dispatch: Dispatch) => {
+    dispatch({
+        type: METADATA.SET_EDITING,
+        payload,
+    });
 };

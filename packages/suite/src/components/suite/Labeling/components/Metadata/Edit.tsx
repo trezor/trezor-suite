@@ -38,6 +38,7 @@ const MetadataEdit = (props: {
     const divRef = useRef<HTMLDivElement>(null);
     const submit = useCallback(
         value => {
+            console.log('submit with value', value);
             if (value && value !== props.originalValue) {
                 props.onSubmit(value);
             }
@@ -51,7 +52,7 @@ const MetadataEdit = (props: {
     );
 
     useEffect(() => {
-        // todo: if enabling labeling for the first time, focus is lost. I don't know how  to fix this. Otherwise it works;
+        // Set value of content editable element; set caret to correct position;
         if (divRef && divRef.current) {
             divRef.current.textContent = props.originalValue || null;
             divRef.current.focus();
@@ -92,6 +93,18 @@ const MetadataEdit = (props: {
             <div
                 style={{ minWidth: '40px', paddingLeft: '2px' }}
                 contentEditable
+                // onBlur={() => {
+                //     console.log('conteneditable on blur');
+                //     // move onBlur event to a later point in the event loop. This is required
+                //     // to process onBlur after potential onSubmit which may not be called (if
+                //     // user clicks cancel, or clicks on another add label button) or may be called
+                //     // if user presses enter or clicks on submit button
+                //     // normal flow of operation without this would be blur first and only after
+                //     // that carry out submit which would not have any data to save
+                //     setTimeout(() => {
+                //         props.onBlur();
+                //     }, 0)
+                // }}
                 ref={divRef}
                 data-test="@metadata/input"
             />
@@ -101,6 +114,7 @@ const MetadataEdit = (props: {
                 data-test="@metadata/submit"
                 icon="CHECK"
                 onClick={() => {
+                    console.log('onclick icon');
                     submit(
                         divRef && divRef.current ? divRef.current.textContent : props.originalValue,
                     );

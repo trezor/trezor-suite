@@ -63,7 +63,6 @@ interface Props {
  * Component displaying "Add label button"
  */
 const MetadataButton = (props: Props) => {
-    const [editing, setEditing] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const metadata = useSelector(state => state.metadata);
@@ -73,29 +72,34 @@ const MetadataButton = (props: Props) => {
     // to store, not call an action on its occasional re-render which may reflect real state in the and but...
     const discovery = useSelector(state => state.wallet.discovery);
 
-    const { addMetadata, initMetadata } = useActions({
+    const { addMetadata, initMetadata, setEditing } = useActions({
         addMetadata: metadataActions.addMetadata,
         initMetadata: metadataActions.init,
+        setEditing: metadataActions.setEditing,
     });
 
     const discoveryFinished = discovery.find(d => d.deviceState === deviceState)?.status === 4;
 
     useEffect(() => {
         if (
-            editing &&
+            // is user editing this component?
+            metadata.editing === props.payload.defaultValue &&
             !loading &&
             (!metadata.enabled || deviceMetadata?.status !== 'enabled' || !metadata.provider)
         ) {
             /** when clicking on inline input edit, ensure that everything needed is already ready */
             const init = async () => {
                 setLoading(true);
+                setEditing(props.payload.defaultValue);
                 const result = await initMetadata(true);
-                if (!result) setEditing(false);
+                if (!result) {
+                    setEditing(undefined);
+                }
                 setLoading(false);
             };
             init();
         }
-    }, [metadata, deviceMetadata, editing, loading, initMetadata]);
+    }, [metadata, deviceMetadata, loading, initMetadata, setEditing, props.payload.defaultValue]);
 
     const onSubmit = (value: string | undefined | null) => {
         addMetadata({
@@ -106,7 +110,7 @@ const MetadataButton = (props: Props) => {
 
     let dropdownItems: DropdownMenuItem[] = [
         {
-            callback: () => setEditing(true),
+            callback: () => setEditing(props.payload.defaultValue),
             label: 'Edit label',
             'data-test': '@metadata/edit-button',
             key: 'edit-label',
@@ -125,15 +129,24 @@ const MetadataButton = (props: Props) => {
 
     const dataTestBase = `@metadata/${props.payload.type}/${props.payload.defaultValue}`;
 
+    // todo: quite a lot rendering here, maybe optimize
+    // console.log('render');
+
     if (loading) return <span>loading...</span>;
 
-    if (editing && !loading && metadata.enabled && deviceMetadata?.status === 'enabled') {
+    if (
+        metadata.editing === props.payload.defaultValue &&
+        !loading &&
+        metadata.enabled &&
+        deviceMetadata?.status === 'enabled'
+    ) {
         return (
             <MetadataEdit
                 originalValue={props.payload.value}
                 onSubmit={onSubmit}
                 onBlur={() => {
-                    setEditing(false);
+                    console.log('props.onBlur from parent');
+                    setEditing(undefined);
                 }}
             />
         );
@@ -163,7 +176,10 @@ const MetadataButton = (props: Props) => {
                     isDisabled={!discoveryFinished}
                     onClick={e => {
                         e.stopPropagation();
-                        setEditing(true);
+                        // by clicking on add label button, metadata.editing field is set
+                        // to default value of whatever may be labeled (address, etc..)
+                        // this way we ensure that only one field may be active at time
+                        setEditing(props.payload.defaultValue);
                     }}
                 >
                     {discoveryFinished ? 'Add label' : 'Loading...'}
