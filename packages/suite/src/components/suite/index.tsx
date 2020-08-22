@@ -26,7 +26,7 @@ import AppNavigationPanel from './AppNavigationPanel';
 import AppNavigation from './AppNavigation';
 import Ticker from './Ticker';
 import { Translation } from './Translation';
-import { AccountLabeling, AddressLabeling, WalletLabeling, AddMetadataLabel } from './Labeling';
+import { AccountLabeling, AddressLabeling, WalletLabeling, MetadataButton } from './Labeling';
 import FormattedCryptoAmount from './FormattedCryptoAmount';
 import Sign from './Sign';
 import AddAccountButton from './AddAccountButton';
@@ -58,7 +58,7 @@ export {
     AccountLabeling,
     AddressLabeling,
     WalletLabeling,
-    AddMetadataLabel,
+    MetadataButton,
     Image,
     QuestionTooltip,
     TransactionsGraph,

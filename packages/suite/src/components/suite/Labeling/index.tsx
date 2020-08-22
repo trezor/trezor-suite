@@ -1,6 +1,6 @@
 import AccountLabeling from './components/Account/Container';
 import AddressLabeling from './components/Address/Container';
 import WalletLabeling from './components/Wallet';
-import AddMetadataLabel from './components/Metadata';
+import { MetadataButton } from './components/Metadata';
 
-export { AccountLabeling, AddressLabeling, WalletLabeling, AddMetadataLabel };
+export { AccountLabeling, AddressLabeling, WalletLabeling, MetadataButton };

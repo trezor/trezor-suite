@@ -8,7 +8,7 @@ import {
     AccountLabeling,
     AppNavigationPanel,
     FormattedCryptoAmount,
-    AddMetadataLabel,
+    MetadataButton,
 } from '@suite-components';
 import { useSelector, useActions } from '@suite-hooks';
 import { isTestnet } from '@wallet-utils/accountUtils';
@@ -55,7 +55,7 @@ const AccountTopPanel = () => {
     return (
         <AppNavigationPanel
             title={
-                <AddMetadataLabel
+                <MetadataButton
                     defaultVisibleValue={<AccountLabeling account={account} />}
                     payload={{
                         type: 'accountLabel',
