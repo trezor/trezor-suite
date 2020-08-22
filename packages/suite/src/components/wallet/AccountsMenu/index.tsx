@@ -1,15 +1,17 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useContext } from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { H2, variables, colors, Icon } from '@trezor/components';
 import { Translation, AddAccountButton } from '@suite-components';
-import { useDiscovery, useLayoutSize } from '@suite-hooks';
-import { sortByCoin, getFailedAccounts } from '@wallet-utils/accountUtils';
+import { useDiscovery, useLayoutSize, useSelector } from '@suite-hooks';
+import { sortByCoin, getFailedAccounts, accountSearchFn } from '@wallet-utils/accountUtils';
 import { AppState } from '@suite-types';
 import { Account } from '@wallet-types';
 
+import AccountSearchBox from './components/AccountSearchBox';
 import AccountGroup from './components/AccountGroup';
 import AccountItem from './components/AccountItem/Container';
+import { CoinFilterContext } from '@suite-hooks/useAccountSearch';
 
 const Wrapper = styled.div<{ isMobileLayout?: boolean }>`
     display: flex;
@@ -29,8 +31,8 @@ const Wrapper = styled.div<{ isMobileLayout?: boolean }>`
 
 const MenuHeader = styled.div<{ isMobileLayout?: boolean }>`
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    /* justify-content: center; */
     background: ${colors.NEUE_BG_WHITE};
     border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
 
@@ -43,18 +45,31 @@ const MenuHeader = styled.div<{ isMobileLayout?: boolean }>`
     ${props =>
         !props.isMobileLayout &&
         css`
-            padding: 20px 8px 16px 8px;
+            padding: 20px 16px 8px 16px;
             margin-bottom: 8px;
         `}
 `;
 
+const Row = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
+
+const AddAccountButtonWrapper = styled.div`
+    display: flex;
+    margin-left: 16px;
+    align-items: flex-start;
+    margin-top: 16px;
+`;
+
 const Search = styled.div`
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    justify-content: space-between;
     padding: 8px 0px;
+
     background: ${colors.NEUE_BG_WHITE};
-    /* border-bottom: 1px solid ${colors.NEUE_STROKE_GREY}; */
+    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    margin-bottom: 8px;
 `;
 
 const Heading = styled(H2)<{ isMobileLayout?: boolean }>`
@@ -136,6 +151,9 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
     const { isMobileLayout } = useLayoutSize();
     const [isExpanded, setIsExpanded] = useState(false);
     const [animatedIcon, setAnimatedIcon] = useState(false);
+    const [searchString, setSearchString] = useState('');
+    const { coinFilter } = useContext(CoinFilterContext);
+    const enabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
 
     const selectedItemRef = useCallback((_item: HTMLDivElement | null) => {
         // TODO: scroll to selected item
@@ -166,12 +184,21 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
     const failed = getFailedAccounts(discovery);
 
     const list = sortByCoin(accounts.filter(a => a.deviceState === device.state).concat(failed));
+    const filteredAccounts =
+        searchString || coinFilter
+            ? list.filter(a => accountSearchFn(a, searchString, coinFilter))
+            : list;
     // always show first "normal" account even if they are empty
-    const normalAccounts = list.filter(
+    const normalAccounts = filteredAccounts.filter(
         a => a.accountType === 'normal' && (a.index === 0 || !a.empty || a.visible),
     );
-    const segwitAccounts = list.filter(a => a.accountType === 'segwit' && (!a.empty || a.visible));
-    const legacyAccounts = list.filter(a => a.accountType === 'legacy' && (!a.empty || a.visible));
+    const segwitAccounts = filteredAccounts.filter(
+        a => a.accountType === 'segwit' && (!a.empty || a.visible),
+    );
+    const legacyAccounts = filteredAccounts.filter(
+        a => a.accountType === 'legacy' && (!a.empty || a.visible),
+    );
+    // const uniqueNetworks = [...new Set(filteredAccounts.map(item => item.symbol))];
 
     const buildGroup = (type: Account['accountType'], accounts: Account[]) => {
         const groupHasBalance = accounts.find(a => a.availableBalance !== '0');
@@ -180,7 +207,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
                 key={type}
                 type={type}
                 hasBalance={!!groupHasBalance}
-                keepOpened={isOpened(type)}
+                keepOpened={isOpened(type) || (!!searchString && searchString.length > 0)}
             >
                 {accounts.map(account => {
                     const selected = !!isSelected(account);
@@ -212,27 +239,40 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
                             }
                         }}
                     >
-                        <Heading noMargin isMobileLayout={isMobileLayout}>
-                            <Translation id="TR_MY_ACCOUNTS" />
-                        </Heading>
-                        <ExpandIcon
-                            canAnimate={animatedIcon}
-                            isActive={isExpanded}
-                            size={20}
-                            color={colors.BLACK50}
-                            onClick={() => {
-                                setIsExpanded(!isExpanded);
-                                setAnimatedIcon(true);
-                            }}
-                            icon="ARROW_DOWN"
-                        />
+                        <Row>
+                            <Heading noMargin isMobileLayout={isMobileLayout}>
+                                <Translation id="TR_MY_ACCOUNTS" />
+                            </Heading>
+                            <ExpandIcon
+                                canAnimate={animatedIcon}
+                                isActive={isExpanded}
+                                size={20}
+                                color={colors.BLACK50}
+                                onClick={() => {
+                                    setIsExpanded(!isExpanded);
+                                    setAnimatedIcon(true);
+                                }}
+                                icon="ARROW_DOWN"
+                            />
+                        </Row>
                     </MenuHeader>
                 </Wrapper>
                 {isExpanded && (
                     <MenuItemsWrapper>
                         <ExpandedMobileWrapper>
                             <Search>
-                                <AddAccountButton device={device} noButtonLabel />
+                                <AccountSearchBox
+                                    isMobile
+                                    networks={enabledNetworks}
+                                    onChange={(value: string) => setSearchString(value)}
+                                />
+                                <AddAccountButtonWrapper>
+                                    <AddAccountButton
+                                        device={device}
+                                        closeMenu={() => setIsExpanded(false)}
+                                        noButtonLabel
+                                    />
+                                </AddAccountButtonWrapper>
                             </Search>
                             {buildGroup('normal', normalAccounts)}
                             {buildGroup('segwit', segwitAccounts)}
@@ -248,10 +288,16 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
         <Wrapper>
             <Scroll>
                 <MenuHeader>
-                    <Heading noMargin>
-                        <Translation id="TR_MY_ACCOUNTS" />
-                    </Heading>
-                    <AddAccountButton device={device} noButtonLabel />
+                    <Row>
+                        <Heading noMargin>
+                            <Translation id="TR_MY_ACCOUNTS" />
+                        </Heading>
+                        <AddAccountButton device={device} noButtonLabel />
+                    </Row>
+                    <AccountSearchBox
+                        networks={enabledNetworks}
+                        onChange={(value: string) => setSearchString(value)}
+                    />
                 </MenuHeader>
 
                 {buildGroup('normal', normalAccounts)}

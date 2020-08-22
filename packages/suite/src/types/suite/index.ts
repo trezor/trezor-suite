@@ -59,7 +59,11 @@ export type Action =
     | SettingsActions;
 
 // export type Dispatch = ReduxDispatch<Action>;
-export type Dispatch = ThunkDispatch<AppState, any, Action>;
+// export type Dispatch = ThunkDispatch<AppState, any, Action>;
+// fixed return type from `dispatch(A)` in actions
+export interface Dispatch extends ThunkDispatch<AppState, any, Action> {
+    <Action>(action: Action): Action extends (...args: any) => infer R ? R : Action;
+}
 export type GetState = () => AppState;
 
 export interface ExtendedDevice {

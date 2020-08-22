@@ -26777,10 +26777,10 @@ tree-kill@^1.1.0, tree-kill@^1.2.1, tree-kill@^1.2.2:
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
   integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
 
-trezor-connect@8.1.11-extended:
-  version "8.1.11-extended"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.11-extended.tgz#c11f93e2e0754a13d496edaec3a925e4f5714476"
-  integrity sha512-1sPqflOwmDXscR9kv2jGBZJ3dWhwuGq4J4rHWmjY3qVNe86LK+kiRV7JCu4SaAGg4xpGvyojfw5NQAf46na21A==
+trezor-connect@8.1.12-extended:
+  version "8.1.12-extended"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.12-extended.tgz#75060e5262a7adabadb1a0d108aaf898f3238572"
+  integrity sha512-/kWsZ1WETw/mUFYatW6tKTTQ+ai0OAcC+WOYUZu3vODXbRzXGIF0ahplek+R+Krzv6RoMOwgAclnyU7iYOX0DA==
   dependencies:
     "@babel/runtime" "^7.11.0"
     "@trezor/blockchain-link" "^1.0.13"

@@ -8,6 +8,7 @@ export { useAnalytics } from './useAnalytics';
 export { useActions } from './useActions';
 export { useLayoutSize } from './useLayoutSize';
 export { useGraph } from './useGraph';
+export { useAccountSearch } from './useAccountSearch';
 
 /**
  * Properly typed useSelector hook, use this one instead of directly importing it from react-redux.

@@ -89,6 +89,7 @@ export const getMaxValueFromData = <TType extends TypeName>(
     _type: TType,
     extractSentValue: (sourceData: ObjectType<TType>) => string | undefined,
     extractReceivedValue: (sourceData: ObjectType<TType>) => string | undefined,
+    extractBalanceValue: (sourceData: ObjectType<TType>) => string | undefined,
 ) => {
     let maxSent =
         data && data.length > 0 ? new BigNumber(extractSentValue(data[0]) || 0) : new BigNumber(0);
@@ -96,18 +97,26 @@ export const getMaxValueFromData = <TType extends TypeName>(
         data && data.length > 0
             ? new BigNumber(extractReceivedValue(data[0]) || 0)
             : new BigNumber(0);
+    let maxBalance =
+        data && data.length > 0
+            ? new BigNumber(extractBalanceValue(data[0]) || 0)
+            : new BigNumber(0);
 
     data.forEach(d => {
         const newSentValue = new BigNumber(extractSentValue(d) || 0);
         const newReceivedValue = new BigNumber(extractReceivedValue(d) || 0);
+        const newBalanceValue = new BigNumber(extractBalanceValue(d) || 0);
         if (newSentValue.gt(maxSent)) {
             maxSent = newSentValue;
         }
         if (newReceivedValue.gt(maxReceived)) {
             maxReceived = newReceivedValue;
         }
+        if (newBalanceValue.gt(maxBalance)) {
+            maxBalance = newBalanceValue;
+        }
     });
-    const maxValue = Math.max(maxSent.toNumber(), maxReceived.toNumber());
+    const maxValue = Math.max(maxSent.toNumber(), maxReceived.toNumber(), maxBalance.toNumber());
     return maxValue;
 };
 
@@ -218,19 +227,28 @@ export const deviceGraphDataFilterFn = (d: GraphData, deviceState: string | unde
     return d.account.deviceState === deviceState;
 };
 
-export const calcYDomain = (maxValue?: number) => {
+export const calcYDomain = (
+    maxValue?: number,
+    lastBalance?: string,
+): [number, number] | undefined => {
     if (maxValue === undefined) {
         return undefined;
     }
     if (maxValue > 0) {
-        return [0, maxValue * 1.2] as [number, number];
+        return [0, maxValue * 1.2];
     }
 
-    // got maxValue === 0
+    // no txs, but there could be non zero balance we still need to show
+    const lastBalanceBn = lastBalance ? new BigNumber(lastBalance) : null;
+    if (lastBalanceBn && lastBalanceBn.gt(0)) {
+        return [0, lastBalanceBn.toNumber() * 1.2];
+    }
+
+    // got maxValue === 0, zero balance
     // We basically don't handle the value of tokens txs.
     // They'll create dataPoints for the graph, but the sent/received amounts are always 0
     // This make sure we show nice fake y axis in cases in which there are only tokens txs
-    return [0, 10] as [number, number];
+    return [0, 1];
 };
 
 export const calcXDomain = (
@@ -294,6 +312,7 @@ export const getFormattedLabelLong = (rangeLabel: GraphRange['label']) => {
 export const calcFakeGraphDataForTimestamps = (
     timestamps: number[],
     data: CommonAggregatedHistory[],
+    currentBalance?: string,
 ) => {
     const balanceData: CommonAggregatedHistory[] = [];
     const firstDataPoint = data[0];
@@ -302,7 +321,24 @@ export const calcFakeGraphDataForTimestamps = (
     const firstTimestamp = timestamps[0];
     const lastTimestamp = timestamps[timestamps.length - 1];
 
+    if (data.length === 0) {
+        timestamps.forEach(ts => {
+            balanceData.push({
+                time: ts,
+                sent: '0',
+                received: '0',
+                sentFiat: {},
+                receivedFiat: {},
+                balanceFiat: {},
+                txs: 0,
+                balance: currentBalance,
+            });
+        });
+        return balanceData;
+    }
+
     if (firstDataPoint && lastDataPoint && firstTimestamp && lastTimestamp) {
+        // fake points before first tx
         timestamps.forEach(ts => {
             if (ts < firstDataPoint.time) {
                 balanceData.push({
@@ -323,8 +359,31 @@ export const calcFakeGraphDataForTimestamps = (
             }
         });
 
+        // real data points with txs
         balanceData.push(...data);
 
+        // points for days with no transactions that are between first and last tx
+        timestamps.forEach(ts => {
+            if (
+                ts > firstDataPoint.time &&
+                ts < lastDataPoint.time &&
+                !data.find(d => d.time === ts)
+            ) {
+                const closest = data.findIndex(d => d.time >= ts);
+                balanceData.push({
+                    time: ts,
+                    sent: '0',
+                    received: '0',
+                    sentFiat: {},
+                    receivedFiat: {},
+                    balanceFiat: {},
+                    txs: 0,
+                    balance: data[closest - 1]?.balance ?? '0',
+                });
+            }
+        });
+
+        // fake points after last tx
         timestamps.forEach(ts => {
             if (ts > lastDataPoint.time) {
                 balanceData.push({

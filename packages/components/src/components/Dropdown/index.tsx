@@ -125,7 +125,7 @@ const Dropdown = ({
     const MenuComponent = components?.DropdownMenu ?? Menu;
     const MenuItemComponent = components?.DropdownMenuItem ?? MenuItem;
 
-    const visibleItems = items.filter(group => ({
+    const visibleItems = items.map(group => ({
         ...group,
         options: group.options.filter(item => !item.isHidden),
     }));

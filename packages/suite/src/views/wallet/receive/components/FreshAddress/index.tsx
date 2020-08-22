@@ -104,7 +104,6 @@ const FreshAddress = ({
                 data-test="@wallet/receive/reveal-address-button"
                 onClick={() => showAddress(firstFreshAddress.path, firstFreshAddress.address)}
                 isDisabled={disabled || locked || !firstFreshAddress}
-                isLoading={!disabled && locked}
             >
                 <Translation id="RECEIVE_ADDRESS_REVEAL" />
             </StyledButton>

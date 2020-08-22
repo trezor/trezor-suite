@@ -188,7 +188,7 @@ const Preloader = (props: Props) => {
     // display Loader wrapped in modal above requested route to keep "modal" flow continuity (see ApplicationStateModal)
     // otherwise display Loader as full page view
 
-    if (router.app === 'unknown' && (!loaded || !transport)) {
+    if (!router.loaded || !loaded || !transport) {
         return <InitialLoading />;
     }
 
