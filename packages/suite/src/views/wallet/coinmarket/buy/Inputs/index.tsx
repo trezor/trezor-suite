@@ -63,7 +63,15 @@ interface Props {
 }
 
 const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
-    const { register, errors, trigger, control, setValue, clearErrors } = useFormContext();
+    const {
+        register,
+        errors,
+        trigger,
+        control,
+        setValue,
+        clearErrors,
+        formState,
+    } = useFormContext();
     const fiatInput = 'fiatInput';
     const cryptoInput = 'cryptoInput';
     const currencySelect = 'currencySelect';
@@ -90,12 +98,15 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
             <Left>
                 <Input
                     noTopLabel
-                    defaultValue="10000"
+                    defaultValue=""
                     innerRef={register({
                         validate: value => {
                             if (activeInput === fiatInput) {
                                 if (!value) {
-                                    return 'TR_ERROR_EMPTY';
+                                    if (formState.isSubmitting) {
+                                        return 'TR_ERROR_EMPTY';
+                                    }
+                                    return;
                                 }
 
                                 if (!validator.isNumeric(value)) {
@@ -114,10 +125,11 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
                             }
                         },
                     })}
-                    onChange={() => {
-                        clearErrors(cryptoInput);
-                        setValue(cryptoInput, '');
+                    onFocus={() => {
                         setActiveInput(fiatInput);
+                        setValue(cryptoInput, '');
+                        clearErrors(cryptoInput);
+                        trigger([cryptoInput]);
                     }}
                     state={errors[fiatInput] ? 'error' : undefined}
                     name={fiatInput}
@@ -153,10 +165,11 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
             </Middle>
             <Right>
                 <Input
-                    onChange={() => {
-                        clearErrors(fiatInput);
-                        setValue(fiatInput, '');
+                    onFocus={() => {
                         setActiveInput(cryptoInput);
+                        setValue(fiatInput, '');
+                        clearErrors(fiatInput);
+                        trigger([cryptoInput]);
                     }}
                     state={errors[cryptoInput] ? 'error' : undefined}
                     name={cryptoInput}
@@ -165,11 +178,24 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
                         validate: value => {
                             if (activeInput === cryptoInput) {
                                 if (!value) {
-                                    return 'TR_ERROR_EMPTY';
+                                    if (formState.isSubmitting) {
+                                        return 'TR_ERROR_EMPTY';
+                                    }
+                                    return;
                                 }
 
                                 if (!validator.isNumeric(value)) {
                                     return 'TR_ERROR_NOT_NUMBER';
+                                }
+
+                                if (amountLimits) {
+                                    const amount = Number(value);
+                                    if (amountLimits.minCrypto && amount < amountLimits.minCrypto) {
+                                        return `Minimum is ${amountLimits.minCrypto} ${amountLimits.currency}`;
+                                    }
+                                    if (amountLimits.maxCrypto && amount > amountLimits.maxCrypto) {
+                                        return `Maximum is ${amountLimits.maxCrypto} ${amountLimits.currency}`;
+                                    }
                                 }
                             }
                         },

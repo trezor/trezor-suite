@@ -1,12 +1,16 @@
+import React, { useState } from 'react';
 import { useSelector, useActions } from '@suite-hooks';
 import { variables } from '@trezor/components';
 import { CoinmarketLayout, WalletLayout } from '@wallet-components';
 import { useBuyInfo } from '@wallet-hooks/useCoinmarket';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
-import { AmountLimits } from '@wallet-utils/coinmarket/buyUtils';
-import React, { useState } from 'react';
+import { AmountLimits, getAmountLimits, processQuotes } from '@wallet-utils/coinmarket/buyUtils';
 import { useForm, FormProvider } from 'react-hook-form';
 import styled from 'styled-components';
+import * as routerActions from '@suite-actions/routerActions';
+
+import invityAPI from '@suite/services/invityAPI';
+import { BuyTradeQuoteRequest } from 'invity-api';
 
 import Inputs from './Inputs';
 import Footer from './Footer';
@@ -41,6 +45,13 @@ const CoinmarketBuy = () => {
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
+    const { saveQuoteRequest, saveQuotes } = useActions({
+        saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
+        saveQuotes: coinmarketBuyActions.saveQuotes,
+    });
+
+    const { goto } = useActions({ goto: routerActions.goto });
+
     if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Coinmarket" account={selectedAccount} />;
     }
@@ -53,6 +64,37 @@ const CoinmarketBuy = () => {
         buyInfo.buyInfo?.providers.length === 0 ||
         !buyInfo.supportedCryptoCurrencies.has(account.symbol);
 
+    const onSubmit = async () => {
+        const formValues = methods.getValues();
+        const request: BuyTradeQuoteRequest = {
+            // TODO - handle crypto amount entry
+            wantCrypto: false,
+            fiatCurrency: formValues.currencySelect.value.toUpperCase(),
+            receiveCurrency: account.symbol.toUpperCase(),
+            country: formValues.countrySelect.value,
+            fiatStringAmount: formValues.fiatInput,
+        };
+        await saveQuoteRequest(request);
+        const allQuotes = await invityAPI.getBuyQuotes(request);
+        const [quotes, alternativeQuotes] = processQuotes(allQuotes);
+        if (!quotes || quotes.length === 0) {
+            // todo handle no quotes
+        } else {
+            const limits = getAmountLimits(request, quotes);
+
+            if (limits) {
+                setAmountLimits(limits);
+            } else {
+                await saveQuotes(quotes, alternativeQuotes);
+                goto('wallet-coinmarket-buy-offers', {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                });
+            }
+        }
+    };
+
     return (
         <FormProvider {...methods}>
             <CoinmarketLayout>
@@ -61,12 +103,14 @@ const CoinmarketBuy = () => {
                     {!isLoading && noProviders && <NoProviders>No providers</NoProviders>}
                     {!isLoading && !noProviders && (
                         <Content>
-                            <Inputs
-                                amountLimits={amountLimits}
-                                setAmountLimits={setAmountLimits}
-                                buyInfo={buyInfo}
-                            />
-                            <Footer buyInfo={buyInfo} setAmountLimits={setAmountLimits} />
+                            <form onSubmit={methods.handleSubmit(onSubmit)}>
+                                <Inputs
+                                    amountLimits={amountLimits}
+                                    setAmountLimits={setAmountLimits}
+                                    buyInfo={buyInfo}
+                                />
+                                <Footer buyInfo={buyInfo} setAmountLimits={setAmountLimits} />
+                            </form>
                         </Content>
                     )}
                 </Wrapper>

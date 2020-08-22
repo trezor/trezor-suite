@@ -1,12 +1,8 @@
-import * as routerActions from '@suite-actions/routerActions';
-import { useActions, useSelector } from '@suite-hooks';
-import invityAPI from '@suite/services/invityAPI';
-import { Button, CleanSelect, colors, variables } from '@trezor/components';
-import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
-import regional from '@wallet-constants/coinmarket/regional';
-import { AmountLimits, getAmountLimits, processQuotes } from '@wallet-utils/coinmarket/buyUtils';
-import { BuyTradeQuoteRequest } from 'invity-api';
 import React from 'react';
+import { useSelector } from '@suite-hooks';
+import { Button, CleanSelect, colors, variables } from '@trezor/components';
+import regional from '@wallet-constants/coinmarket/regional';
+import { AmountLimits } from '@wallet-utils/coinmarket/buyUtils';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import { Controller, useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
@@ -50,26 +46,22 @@ interface Props {
 }
 
 const Footer = ({ buyInfo, setAmountLimits }: Props) => {
-    const { getValues, control } = useFormContext();
+    const { control, formState, watch } = useFormContext();
     const countrySelect = 'countrySelect';
-    const { saveQuoteRequest, saveQuotes } = useActions({
-        saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
-        saveQuotes: coinmarketBuyActions.saveQuotes,
-    });
-
-    const { goto } = useActions({ goto: routerActions.goto });
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     if (selectedAccount.status !== 'loaded') {
         return null;
     }
 
-    const { account } = selectedAccount;
     const country = buyInfo.buyInfo?.country || regional.unknownCountry;
     const defaultCountry = {
         label: regional.countriesMap.get(country),
         value: country,
     };
+
+    const hasValues =
+        (watch('fiatInput') || watch('cryptoInput')) && !!watch('currencySelect').value;
 
     return (
         <Wrapper>
@@ -100,37 +92,9 @@ const Footer = ({ buyInfo, setAmountLimits }: Props) => {
             </Left>
             <Right>
                 <StyledButton
-                    onClick={async () => {
-                        const formValues = getValues();
-                        const request: BuyTradeQuoteRequest = {
-                            // TODO - handle crypto amount entry
-                            wantCrypto: false,
-                            fiatCurrency: formValues.currencySelect.value.toUpperCase(),
-                            receiveCurrency: account.symbol.toUpperCase(),
-                            country: formValues.countrySelect.value,
-                            fiatStringAmount: formValues.fiatInput,
-                        };
-                        await saveQuoteRequest(request);
-                        const allQuotes = await invityAPI.getBuyQuotes(request);
-                        const [quotes, alternativeQuotes] = processQuotes(allQuotes);
-                        if (!quotes || quotes.length === 0) {
-                            // todo handle no quotes
-                        } else {
-                            const limits = getAmountLimits(request, quotes);
-
-                            if (limits) {
-                                setAmountLimits(limits);
-                            } else {
-                                await saveQuotes(quotes, alternativeQuotes);
-
-                                goto('wallet-coinmarket-buy-offers', {
-                                    symbol: account.symbol,
-                                    accountIndex: account.index,
-                                    accountType: account.accountType,
-                                });
-                            }
-                        }
-                    }}
+                    isDisabled={!(formState.isValid && hasValues) || formState.isSubmitting}
+                    isLoading={formState.isSubmitting}
+                    type="submit"
                 >
                     Show offers
                 </StyledButton>
