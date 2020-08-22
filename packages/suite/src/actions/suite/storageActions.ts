@@ -181,7 +181,7 @@ export const saveAnalytics = () => (_dispatch: Dispatch, getState: GetState) => 
 
 export const saveMetadataProvider = () => (_dispatch: Dispatch, getState: GetState) => {
     const { metadata } = getState();
-    db.addItem('metadata', metadata, 'state');
+    db.addItem('metadata', { provider: metadata.provider, enabled: metadata.enabled }, 'state');
 };
 
 export const clearStores = () => async (dispatch: Dispatch, getState: GetState) => {

@@ -58,4 +58,6 @@ export const migrate = async (
         ]);
         graphStore.createIndex('deviceState', 'account.deviceState');
     }
+
+    if (oldVersion < 15) db.createObjectStore('metadata');
 };
