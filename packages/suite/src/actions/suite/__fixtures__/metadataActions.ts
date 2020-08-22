@@ -478,6 +478,10 @@ const initMetadata = [
                 type: METADATA.ENABLE,
             },
             {
+                type: METADATA.SET_INITIATING,
+                payload: true,
+            },
+            {
                 payload: {
                     deviceState: 'device-state',
                     metadata: {
@@ -501,6 +505,10 @@ const initMetadata = [
             },
             {
                 type: '@metadata/set-provider',
+            },
+            {
+                type: METADATA.SET_INITIATING,
+                payload: false,
             },
         ],
     },

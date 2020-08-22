@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Button, Dropdown } from '@trezor/components';
 import styled from 'styled-components';
 import { useActions, useSelector } from '@suite-hooks';
@@ -63,7 +63,7 @@ interface Props {
  * Component displaying "Add label button"
  */
 const MetadataButton = (props: Props) => {
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
 
     const metadata = useSelector(state => state.metadata);
     const deviceState = useSelector(state => state.suite.device?.state);
@@ -84,22 +84,22 @@ const MetadataButton = (props: Props) => {
         if (
             // is user editing this component?
             metadata.editing === props.payload.defaultValue &&
-            !loading &&
+            !metadata.initiating &&
             (!metadata.enabled || deviceMetadata?.status !== 'enabled' || !metadata.provider)
         ) {
             /** when clicking on inline input edit, ensure that everything needed is already ready */
             const init = async () => {
-                setLoading(true);
-                setEditing(props.payload.defaultValue);
+                // setLoading(true);
+                // setEditing(props.payload.defaultValue);
                 const result = await initMetadata(true);
                 if (!result) {
                     setEditing(undefined);
                 }
-                setLoading(false);
+                // setLoading(false);
             };
             init();
         }
-    }, [metadata, deviceMetadata, loading, initMetadata, setEditing, props.payload.defaultValue]);
+    }, [metadata, deviceMetadata, initMetadata, setEditing, props.payload.defaultValue]);
 
     const onSubmit = (value: string | undefined | null) => {
         addMetadata({
@@ -132,11 +132,11 @@ const MetadataButton = (props: Props) => {
     // todo: quite a lot rendering here, maybe optimize
     // console.log('render');
 
-    if (loading) return <span>loading...</span>;
+    if (metadata.initiating) return <span>loading...</span>;
 
     if (
         metadata.editing === props.payload.defaultValue &&
-        !loading &&
+        !metadata.initiating &&
         metadata.enabled &&
         deviceMetadata?.status === 'enabled'
     ) {

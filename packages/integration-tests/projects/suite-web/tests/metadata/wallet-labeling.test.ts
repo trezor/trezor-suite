@@ -34,8 +34,6 @@ describe('Metadata', () => {
             cy.getTestElement('@metadata/walletLabel/standard-wallet/add-label-button').click({force: true });
             cy.passThroughInitMetadata();
 
-            cy.getTestElement('@metadata/walletLabel/standard-wallet/add-label-button').click({force: true });
-
             cy.getTestElement('@metadata/input').type('label for standard wallet{enter}');
             cy.getTestElement('@metadata/walletLabel/standard-wallet').click();
             cy.getTestElement('@metadata/edit-button').click();

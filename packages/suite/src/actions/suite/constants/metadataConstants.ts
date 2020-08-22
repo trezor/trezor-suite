@@ -9,6 +9,7 @@ export const WALLET_ADD = '@metadata/wallet-loaded';
 export const ACCOUNT_LOADED = '@metadata/account-loaded';
 export const ACCOUNT_ADD = '@metadata/account-add';
 export const SET_EDITING = '@metadata/set-editing';
+export const SET_INITIATING = '@metadata/set-initiating';
 
 export const METADATA_VERSION = '3.0.0';
 export const OAUTH_FILE = 'https://track-suite.herokuapp.com/oauth/'; // deprecated, probably not used

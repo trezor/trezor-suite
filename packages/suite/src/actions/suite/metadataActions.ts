@@ -20,6 +20,7 @@ export type MetadataActions =
     | { type: typeof METADATA.ENABLE }
     | { type: typeof METADATA.DISABLE }
     | { type: typeof METADATA.SET_EDITING; payload: string | undefined }
+    | { type: typeof METADATA.SET_INITIATING; payload: boolean }
     | {
           type: typeof METADATA.SET_MASTER_KEY;
           payload: { deviceState: string; metadata: DeviceMetadata };
@@ -529,8 +530,8 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
     if (!device?.state) {
         return false;
     }
+    // let needsUpdate = false;
 
-    let needsUpdate = false;
     // 1. set metadata enabled globally
     if (!getState().metadata.enabled) {
         dispatch(enableMetadata());
@@ -541,11 +542,16 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
         device.metadata.status === 'disabled' ||
         (device.metadata.status === 'cancelled' && force)
     ) {
-        needsUpdate = true;
+        // needsUpdate = true;
+        dispatch({ type: METADATA.SET_INITIATING, payload: true });
+
         await dispatch(setDeviceMetadataKey(force));
     }
 
+    // did user confirm labeling on device?
     if (getState().suite.device?.metadata.status !== 'enabled') {
+        dispatch({ type: METADATA.SET_INITIATING, payload: false });
+
         return false;
     }
 
@@ -553,13 +559,21 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
 
     // 3. connect to provider
     if (getState().suite.device?.metadata.status === 'enabled' && !getState().metadata.provider) {
-        needsUpdate = true;
+        // needsUpdate = true;
+        if (!getState().metadata.initiating) {
+            dispatch({ type: METADATA.SET_INITIATING, payload: true });
+        }
+
         const providerResult = await dispatch(initProvider());
-        if (!providerResult) return;
+        if (!providerResult) {
+            dispatch({ type: METADATA.SET_INITIATING, payload: false });
+            return;
+        }
     }
 
-    if (needsUpdate) {
+    if (getState().metadata.initiating) {
         await dispatch(fetchMetadata(device?.state));
+        dispatch({ type: METADATA.SET_INITIATING, payload: false });
     }
 
     return true;
