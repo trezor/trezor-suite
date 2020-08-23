@@ -1,4 +1,4 @@
-/* eslint-disable global-require */
+1/* eslint-disable global-require */
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import accountsReducer from '@wallet-reducers/accountsReducer';
@@ -66,6 +66,9 @@ export const getInitialState = (state?: InitialState) => {
                 },
                 initAction,
             ),
+            settings: {
+                blockbookUrls: [],
+            },
         },
         notifications: notificationsReducer([], initAction),
         devices: [{ state: 'deviceState' }], // device is needed for notification/event
