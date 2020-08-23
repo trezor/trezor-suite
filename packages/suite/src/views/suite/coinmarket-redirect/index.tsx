@@ -19,7 +19,7 @@ const CoinmarketRedirect = () => {
     });
     const trades = useSelector(state => state.wallet.coinmarket.trades);
     const router = useSelector(state => state.router);
-    const cleanQuery = router.url.replace('/redirect#', '');
+    const cleanQuery = router.url.replace('/coinmarket-redirect#', '');
     const params = cleanQuery.split('/');
 
     // http://localhost:3000/coinmarket-redirect#buy/663cb981-d399-4a12-9911-5a304d1f24f7
