@@ -1,6 +1,8 @@
+// "Internal labeling components"
 import AccountLabeling from './components/Account/Container';
 import AddressLabeling from './components/Address/Container';
 import WalletLabeling from './components/Wallet';
-import { MetadataButton } from './components/Metadata';
+// "User defined labeling"
+import MetadataLabeling from './components/Metadata';
 
-export { AccountLabeling, AddressLabeling, WalletLabeling, MetadataButton };
+export { AccountLabeling, AddressLabeling, WalletLabeling, MetadataLabeling };
