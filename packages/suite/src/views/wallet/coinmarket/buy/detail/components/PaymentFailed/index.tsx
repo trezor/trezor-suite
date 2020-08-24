@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Button, variables, colors } from '@trezor/components';
-import TransactionId from '../TransactionId';
+import TransactionId from '../../../components/TransactionId';
 
 const Wrapper = styled.div`
     display: flex;

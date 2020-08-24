@@ -12,8 +12,8 @@ import * as routerActions from '@suite-actions/routerActions';
 import invityAPI from '@suite/services/invityAPI';
 import { BuyTradeQuoteRequest } from 'invity-api';
 
-import Inputs from './Inputs';
-import Footer from './Footer';
+import Inputs from './components/Inputs';
+import Footer from './components/Footer';
 
 const Wrapper = styled.div``;
 

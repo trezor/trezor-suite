@@ -1,7 +1,6 @@
 import React, { useMemo, useContext } from 'react';
 import styled from 'styled-components';
 import { LayoutContext } from '@suite-components';
-import { useSWR } from 'react-swr';
 import { CoinmarketTopPanel } from '@wallet-components';
 import { variables } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
