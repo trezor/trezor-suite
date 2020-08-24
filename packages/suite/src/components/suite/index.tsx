@@ -1,6 +1,7 @@
 import Backdrop from './Backdrop';
 import DeviceIcon from './images/DeviceIcon';
-import Image from './images/Image';
+import ConnectDeviceImage from './images/ConnectDeviceImage';
+import Image, { Props as ImageProps } from './images/Image';
 import CheckItem from './CheckItem';
 import ExternalLink from './ExternalLink';
 import Preloader from './Preloader';
@@ -59,6 +60,7 @@ export {
     AddressLabeling,
     WalletLabeling,
     Image,
+    ConnectDeviceImage,
     QuestionTooltip,
     TransactionsGraph,
     AppNavigationPanel,
@@ -68,3 +70,5 @@ export {
     Sign,
     AddAccountButton,
 };
+
+export type { ImageProps };
