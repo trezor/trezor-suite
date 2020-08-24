@@ -66,10 +66,6 @@ class DropboxProvider implements AbstractMetadataProvider {
         return this.connected;
     }
 
-    isLoading() {
-        return false;
-    }
-
     async getCredentials() {
         const account = await this.client.usersGetCurrentAccount();
         return {

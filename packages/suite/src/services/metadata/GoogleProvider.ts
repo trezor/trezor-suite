@@ -84,10 +84,6 @@ class GoogleProvider implements AbstractMetadataProvider {
         } as const;
     }
 
-    isLoading() {
-        return false;
-    }
-
     isConnected() {
         return this.connected;
     }
