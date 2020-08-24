@@ -4,11 +4,10 @@ import { SUITE, STORAGE } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { Action, TrezorDevice, Lock } from '@suite-types';
 import { LANGUAGES } from '@suite-config';
-import invityAPI from '@suite/services/invityAPI';
 
 export interface DebugModeOptions {
     translationMode: boolean;
-    invityAPIUrl?: string;
+    invityAPIUrl: string;
     showDebugMenu: boolean;
     bridgeDevMode: boolean;
 }
