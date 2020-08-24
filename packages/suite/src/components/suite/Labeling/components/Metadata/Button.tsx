@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Button, Dropdown } from '@trezor/components';
 import styled from 'styled-components';
 import { useActions, useDiscovery, useSelector } from '@suite-hooks';
@@ -77,23 +77,19 @@ const MetadataButton = (props: Props) => {
         setEditing: metadataActions.setEditing,
     });
 
-    useEffect(() => {
+    const activateEdit = () => {
+        /** when clicking on inline input edit, ensure that everything needed is already ready */
         if (
-            // is user editing this component?
-            metadata.editing === props.payload.defaultValue &&
+            // isn't initiation in progress?
             !metadata.initiating &&
+            // is there something that needs to be initiated?
             (!metadata.enabled || deviceMetadata?.status !== 'enabled' || !metadata.provider)
         ) {
-            /** when clicking on inline input edit, ensure that everything needed is already ready */
-            const initMetadata = async () => {
-                const result = await init(true);
-                if (!result) {
-                    setEditing(undefined);
-                }
-            };
-            initMetadata();
+            // provide force=true argument (user wants to enable metadata)
+            init(true);
         }
-    }, [metadata, deviceMetadata, init, setEditing, props.payload.defaultValue]);
+        setEditing(props.payload.defaultValue);
+    };
 
     const onSubmit = (value: string | undefined | null) => {
         addMetadata({
@@ -169,7 +165,7 @@ const MetadataButton = (props: Props) => {
                         // by clicking on add label button, metadata.editing field is set
                         // to default value of whatever may be labeled (address, etc..)
                         // this way we ensure that only one field may be active at time
-                        setEditing(props.payload.defaultValue);
+                        activateEdit();
                     }}
                 >
                     {!isDiscoveryRunning ? 'Add label' : 'Loading...'}

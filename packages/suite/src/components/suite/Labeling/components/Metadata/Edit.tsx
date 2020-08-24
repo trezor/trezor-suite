@@ -101,7 +101,8 @@ const MetadataEdit = (props: {
                 size={16}
                 data-test="@metadata/submit"
                 icon="CHECK"
-                onClick={() => {
+                onClick={e => {
+                    e.stopPropagation();
                     submit(
                         divRef && divRef.current ? divRef.current.textContent : props.originalValue,
                     );
@@ -113,7 +114,8 @@ const MetadataEdit = (props: {
                 size={16}
                 data-test="@metadata/cancel"
                 icon="CROSS"
-                onClick={() => {
+                onClick={e => {
+                    e.stopPropagation();
                     submit(props.originalValue);
                 }}
                 color={colors.NEUE_BG_LIGHT_GREY}
