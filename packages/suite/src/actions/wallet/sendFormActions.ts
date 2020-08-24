@@ -1,4 +1,4 @@
-import TrezorConnect, { FeeLevel } from 'trezor-connect';
+import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -24,11 +24,6 @@ export type SendFormActions =
     | {
           type: typeof SEND.REMOVE_DRAFT;
           key: string;
-      }
-    | {
-          type: typeof SEND.SET_LAST_USED_FEE_LEVEL;
-          symbol: Account['symbol'];
-          feeLevelLabel: FeeLevel['label'];
       }
     | {
           type: typeof SEND.REQUEST_SIGN_TRANSACTION;
@@ -59,17 +54,6 @@ export const saveDraft = (formState: FormState) => async (
         type: SEND.STORE_DRAFT,
         key,
         formState,
-    });
-};
-
-export const setLastUsedFeeLevel = (
-    feeLevelLabel: FeeLevel['label'],
-    symbol: Account['symbol'],
-) => (dispatch: Dispatch) => {
-    dispatch({
-        type: SEND.SET_LAST_USED_FEE_LEVEL,
-        symbol,
-        feeLevelLabel,
     });
 };
 
@@ -136,72 +120,6 @@ export const checkRippleEmptyAddress = async (descriptor: string, coin: string) 
     }
     return false;
 };
-
-/*
-export const updateFeeLevelWithData = (
-    data: SendContext['defaultValues']['ethereumData'],
-    setSelectedFee: SendContext['setSelectedFee'],
-    initialSelectedFee: SendContext['initialSelectedFee'],
-    token: SendContext['token'],
-    setTransactionInfo: SendContext['setTransactionInfo'],
-    outputs: SendContext['outputs'],
-    fiatRates: SendContext['fiatRates'],
-    setValue: ReturnType<typeof useForm>['setValue'],
-    clearError: ReturnType<typeof useForm>['clearError'],
-    setError: ReturnType<typeof useForm>['setError'],
-    getValues: ReturnType<typeof useForm>['getValues'],
-) => async (_dispatch: Dispatch, getState: GetState) => {
-    const { selectedAccount } = getState().wallet;
-    if (selectedAccount.status !== 'loaded') return null;
-    const { account } = selectedAccount;
-    const address = getValues('address[0]');
-    const response = await TrezorConnect.blockchainEstimateFee({
-        coin: account.symbol,
-        request: {
-            blocks: [2],
-            specific: {
-                from: account.descriptor,
-                to: address || account.descriptor,
-                data,
-            },
-        },
-    });
-
-    if (!response.success) return null;
-
-    const level = response.payload.levels[0];
-    const gasLimit = level.feeLimit || initialSelectedFee.feeLimit;
-    const gasPrice = fromWei(level.feePerUnit, 'gwei');
-    const newFeeLevel: SendContext['selectedFee'] = {
-        label: 'normal',
-        feePerUnit: gasPrice,
-        feeLimit: gasLimit,
-        blocks: -1,
-    };
-
-    setValue('ethereumGasPrice', gasPrice);
-    setValue('ethereumGasLimit', gasLimit);
-    setSelectedFee(newFeeLevel);
-
-    const isMaxActive = getValues('setMax[0]') === 'active';
-
-    if (isMaxActive) {
-        await updateMax(
-            0,
-            account,
-            setValue,
-            getValues,
-            clearError,
-            setError,
-            newFeeLevel,
-            outputs,
-            token,
-            fiatRates,
-            setTransactionInfo,
-        );
-    }
-};
-*/
 
 // returned and called automatically after from signTransaction process (called from useSendForm hook)
 // Opens a modal with deferred decision

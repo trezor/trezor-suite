@@ -3,14 +3,10 @@ import { STORAGE } from '@suite-actions/constants';
 import { SEND } from '@wallet-actions/constants';
 import { Action } from '@suite-types';
 import { FormState, PrecomposedTransactionFinal } from '@wallet-types/sendForm';
-import { FeeLevel } from 'trezor-connect';
 
 interface SendState {
     drafts: {
         [key: string]: FormState; // Key: account key
-    };
-    lastUsedFeeLevel: {
-        [key: string]: FeeLevel['label']; // Key: coin symbol
     };
     precomposedTx?: PrecomposedTransactionFinal;
     precomposedForm?: FormState;
@@ -21,7 +17,6 @@ export const initialState: SendState = {
     drafts: {},
     precomposedTx: undefined,
     signedTx: undefined,
-    lastUsedFeeLevel: {},
 };
 
 export default (state: SendState = initialState, action: Action): SendState => {
@@ -34,9 +29,6 @@ export default (state: SendState = initialState, action: Action): SendState => {
                 break;
             case SEND.REMOVE_DRAFT:
                 delete draft.drafts[action.key];
-                break;
-            case SEND.SET_LAST_USED_FEE_LEVEL:
-                draft.lastUsedFeeLevel[action.symbol] = action.feeLevelLabel;
                 break;
             case SEND.REQUEST_SIGN_TRANSACTION:
                 if (action.payload) {
