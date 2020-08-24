@@ -22,7 +22,7 @@ export type MetadataActions =
     | { type: typeof METADATA.SET_EDITING; payload: string | undefined }
     | { type: typeof METADATA.SET_INITIATING; payload: boolean }
     | {
-          type: typeof METADATA.SET_MASTER_KEY;
+          type: typeof METADATA.SET_DEVICE_METADATA;
           payload: { deviceState: string; metadata: DeviceMetadata };
       }
     | {
@@ -89,7 +89,19 @@ export const disposeMetadata = () => (dispatch: Dispatch, getState: GetState) =>
             },
         });
     });
-    // todo: dispose deviceMetadata
+    getState().devices.forEach(device => {
+        if (device.state) {
+            dispatch({
+                type: METADATA.SET_DEVICE_METADATA,
+                payload: {
+                    deviceState: device.state,
+                    metadata: {
+                        status: 'disabled',
+                    },
+                },
+            });
+        }
+    });
 };
 
 export const disableMetadata = () => (dispatch: Dispatch) => {
@@ -469,7 +481,7 @@ export const setDeviceMetadataKey = () => async (dispatch: Dispatch, getState: G
         const aesKey = metadataUtils.deriveAesKey(metaKey);
 
         dispatch({
-            type: METADATA.SET_MASTER_KEY,
+            type: METADATA.SET_DEVICE_METADATA,
             payload: {
                 deviceState: device.state,
                 metadata: {
@@ -482,7 +494,7 @@ export const setDeviceMetadataKey = () => async (dispatch: Dispatch, getState: G
         });
     } else {
         dispatch({
-            type: METADATA.SET_MASTER_KEY,
+            type: METADATA.SET_DEVICE_METADATA,
             payload: {
                 deviceState: device.state,
                 metadata: {

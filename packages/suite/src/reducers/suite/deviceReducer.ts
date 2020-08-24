@@ -420,7 +420,7 @@ export default (state: State = initialState, action: Action): State => {
             case SUITE.ADD_BUTTON_REQUEST:
                 addButtonRequest(draft, action.device, action.payload);
                 break;
-            case METADATA.SET_MASTER_KEY:
+            case METADATA.SET_DEVICE_METADATA:
                 setMetadata(draft, action.payload.deviceState, action.payload.metadata);
                 break;
             case METADATA.WALLET_LOADED:

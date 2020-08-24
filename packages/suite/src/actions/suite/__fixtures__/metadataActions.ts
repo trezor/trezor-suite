@@ -14,13 +14,13 @@ const setDeviceMetadataKey = [
             device: { state: undefined },
         },
     },
-    {
-        description: `Device metadata cancelled`,
-        initialState: {
-            metadata: { enabled: true },
-            device: { state: 'device-state', metadata: { status: 'cancelled' } },
-        },
-    },
+    // {
+    //     description: `Device metadata cancelled`,
+    //     initialState: {
+    //         metadata: { enabled: true },
+    //         device: { state: 'device-state', metadata: { status: 'cancelled' } },
+    //     },
+    // },
     {
         description: `Device metadata already enabled`,
         initialState: {
@@ -39,7 +39,7 @@ const setDeviceMetadataKey = [
         },
         result: [
             {
-                type: METADATA.SET_MASTER_KEY,
+                type: METADATA.SET_DEVICE_METADATA,
                 payload: {
                     metadata: {
                         status: 'cancelled',
@@ -77,7 +77,7 @@ const setDeviceMetadataKey = [
         },
         result: [
             {
-                type: METADATA.SET_MASTER_KEY,
+                type: METADATA.SET_DEVICE_METADATA,
                 payload: {
                     deviceState: 'device-state',
                     metadata: {
@@ -441,6 +441,9 @@ export const disableMetadata = [
         description: 'disable metadata',
         initialState: {
             metadata: { enabled: true },
+            device: {
+                state: undefined,
+            },
         },
         result: [
             {
@@ -492,7 +495,7 @@ const initMetadata = [
                         status: 'enabled',
                     },
                 },
-                type: '@metadata/set-master-key',
+                type: '@metadata/set-device-metadata',
             },
             {
                 type: '@suite/update-selected-device',
