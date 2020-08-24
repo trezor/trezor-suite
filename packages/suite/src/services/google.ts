@@ -190,10 +190,7 @@ class Client {
             {
                 method: 'POST',
                 headers: {
-                    'Content-Type':
-                        // typeof params.body === 'string'
-                        `multipart/related; boundary="${BOUNDARY}"`,
-                    // : 'application/json',
+                    'Content-Type': `multipart/related; boundary="${BOUNDARY}"`,
                 },
             },
             params,

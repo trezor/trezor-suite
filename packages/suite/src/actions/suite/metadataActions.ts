@@ -543,7 +543,6 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
         device.metadata.status === 'disabled' ||
         (device.metadata.status === 'cancelled' && force)
     ) {
-        console.log('00');
         dispatch({ type: METADATA.SET_INITIATING, payload: true });
         await dispatch(setDeviceMetadataKey());
     }
@@ -562,13 +561,11 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
     // 3. connect to provider
     if (getState().suite.device?.metadata.status === 'enabled' && !getState().metadata.provider) {
         if (!getState().metadata.initiating) {
-            console.log('11');
             dispatch({ type: METADATA.SET_INITIATING, payload: true });
         }
 
         const providerResult = await dispatch(initProvider());
         if (!providerResult) {
-            console.log('ff 11');
             dispatch({ type: METADATA.SET_INITIATING, payload: false });
             dispatch({ type: METADATA.SET_EDITING, payload: undefined });
             return false;

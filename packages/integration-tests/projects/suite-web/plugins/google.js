@@ -73,7 +73,7 @@ class GoogleMock {
             console.log('[mockGoogleDrive]: post');
 
             handleSave(req.body);
-            res.send();
+            res.send({});
         });
 
 
@@ -81,7 +81,7 @@ class GoogleMock {
             console.log('[mockGoogleDrive]: patch', req.params.id);
 
             handleSave(req.body, req.params.id);
-            res.send();
+            res.send({});
         })
 
         app.get('/drive/v3/files/:id', express.json(), (req, res) => {
