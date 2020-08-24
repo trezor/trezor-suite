@@ -46,6 +46,7 @@ export const DEFAULT_STORE = {
         selectedAccount: BTC_ACCOUNT,
         settings: {
             localCurrency: 'usd',
+            lastUsedFeeLevel: {},
             debug: {},
         },
         fees: {
