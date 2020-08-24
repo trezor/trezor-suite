@@ -93,18 +93,6 @@ const MetadataEdit = (props: {
             <div
                 style={{ minWidth: '40px', paddingLeft: '2px' }}
                 contentEditable
-                // onBlur={() => {
-                //     console.log('conteneditable on blur');
-                //     // move onBlur event to a later point in the event loop. This is required
-                //     // to process onBlur after potential onSubmit which may not be called (if
-                //     // user clicks cancel, or clicks on another add label button) or may be called
-                //     // if user presses enter or clicks on submit button
-                //     // normal flow of operation without this would be blur first and only after
-                //     // that carry out submit which would not have any data to save
-                //     setTimeout(() => {
-                //         props.onBlur();
-                //     }, 0)
-                // }}
                 ref={divRef}
                 data-test="@metadata/input"
             />
@@ -114,7 +102,6 @@ const MetadataEdit = (props: {
                 data-test="@metadata/submit"
                 icon="CHECK"
                 onClick={() => {
-                    console.log('onclick icon');
                     submit(
                         divRef && divRef.current ? divRef.current.textContent : props.originalValue,
                     );

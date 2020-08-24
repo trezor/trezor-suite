@@ -145,7 +145,6 @@ const MetadataButton = (props: Props) => {
                 originalValue={props.payload.value}
                 onSubmit={onSubmit}
                 onBlur={() => {
-                    console.log('props.onBlur from parent');
                     setEditing(undefined);
                 }}
             />

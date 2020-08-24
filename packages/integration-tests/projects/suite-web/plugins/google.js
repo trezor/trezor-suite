@@ -46,7 +46,6 @@ class GoogleMock {
             ).replace(/\r?\n|\r/g, '');
             
             const json = JSON.parse(jsonStr);
-            console.log('this.files', this.files[0].id, typeof this.files[0].id);
             if (id) {
                 const index = this.files.findIndex(f => f.id == id);
                 if (index === -1) throw new Error('no such file exists');

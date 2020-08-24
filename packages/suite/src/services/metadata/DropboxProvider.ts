@@ -27,7 +27,6 @@ class DropboxProvider implements AbstractMetadataProvider {
             this.connected = true;
             return true;
         } catch (error) {
-            console.warn('connect error', error);
             // return false;
             throw error;
         }
@@ -58,7 +57,6 @@ class DropboxProvider implements AbstractMetadataProvider {
                 return buffer;
             }
         } catch (error) {
-            console.warn('getFileContent error', error.status);
             throw error;
         }
     }
@@ -73,7 +71,6 @@ class DropboxProvider implements AbstractMetadataProvider {
                 mode: 'overwrite',
             });
         } catch (error) {
-            console.warn('setFileContent error', error);
             throw error;
         }
     }

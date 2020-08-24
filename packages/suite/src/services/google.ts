@@ -159,7 +159,7 @@ class Client {
         // then to file.mtdt(id: B) in another session. So this warn should help as debug if this mysterious bug appears some day...
         if (Object.keys(this.nameIdMap).length < json.files.length) {
             console.warn(
-                'There are multiple files with the same name in google drive. This may happen as a result of race condition bug in application and we should fix it :]',
+                'There are multiple files with the same name in google drive. This may happen as a result of race condition bug in application.',
             );
         }
 
