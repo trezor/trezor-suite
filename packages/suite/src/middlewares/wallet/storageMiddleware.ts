@@ -135,7 +135,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             storageActions.saveBuyTrade(
                 action.data,
                 {
-                    deviceState: action.account.deviceState,
                     symbol: action.account.symbol,
                     accountType: action.account.accountType,
                     accountIndex: action.account.accountIndex,

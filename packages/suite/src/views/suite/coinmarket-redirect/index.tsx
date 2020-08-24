@@ -24,9 +24,7 @@ const CoinmarketRedirect = () => {
 
     // http://localhost:3000/coinmarket-redirect#buy/663cb981-d399-4a12-9911-5a304d1f24f7
     if (params[0] === 'buy') {
-        const trade = trades.find(
-            trade => trade.tradeType === 'buy' && trade.data.paymentId === params[1],
-        );
+        const trade = trades.find(trade => trade.tradeType === 'buy' && trade.key === params[1]);
         if (trade && trade.tradeType === 'buy') {
             saveTransactionId(params[1]);
             goto('wallet-coinmarket-buy-detail', {

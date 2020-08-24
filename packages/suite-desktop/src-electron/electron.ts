@@ -1,4 +1,4 @@
-import { app, session, BrowserWindow, ipcMain, shell, Menu, ipcRenderer } from 'electron';
+import { app, session, BrowserWindow, ipcMain, shell, Menu } from 'electron';
 import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 import * as path from 'path';

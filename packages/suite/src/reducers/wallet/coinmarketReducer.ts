@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { WalletAction, Account } from '@wallet-types';
-import { BuyTrade, BuyTradeQuoteRequest, ExchangeTrade } from 'invity-api';
+import { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import { COINMARKET_BUY } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
@@ -16,9 +16,8 @@ type CommonTrade = {
     };
 };
 
-type Trade =
-    | (CommonTrade & { tradeType: 'buy'; data: BuyTrade })
-    | (CommonTrade & { tradeType: 'exchange'; data: ExchangeTrade });
+type Trade = CommonTrade & { tradeType: 'buy'; data: BuyTrade };
+// | (CommonTrade & { tradeType: 'exchange'; data: ExchangeTrade });
 
 interface Buy {
     buyInfo?: BuyInfo;

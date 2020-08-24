@@ -7,7 +7,7 @@ import { State as AnalyticsState } from '@suite-reducers/analyticsReducer';
 import { AcquiredDevice } from '@suite-types';
 import { Account, Discovery, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
 import { GraphData } from '@wallet-types/graph';
-import { BuyTrade, ExchangeTrade } from 'invity-api';
+import { BuyTrade } from 'invity-api';
 import { migrate } from './migrations';
 
 const VERSION = 16;
@@ -81,14 +81,14 @@ export interface SuiteDBSchema extends DBSchema {
     coinmarketTrades: {
         key: string;
         value: {
+            key?: string;
             date: string;
-            tradeType: 'buy' | 'exchange';
-            data: BuyTrade | ExchangeTrade;
+            tradeType: 'buy';
+            data: BuyTrade;
             account: {
                 symbol: Account['symbol'];
                 accountIndex: Account['index'];
                 accountType: Account['accountType'];
-                deviceState: Account['deviceState'];
             };
         };
     };
@@ -161,7 +161,7 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
 
         graphStore.createIndex('deviceState', 'account.deviceState');
 
-        db.createObjectStore('coinmarketTrades', { keyPath: 'account.deviceState' });
+        db.createObjectStore('coinmarketTrades', { keyPath: 'key' });
     } else {
         // migrate functions
         migrate(db, oldVersion, newVersion, transaction);

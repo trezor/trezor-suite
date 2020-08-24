@@ -2,13 +2,7 @@ import TrezorConnect, { UI, ButtonRequestMessage } from 'trezor-connect';
 import * as modalActions from '@suite-actions/modalActions';
 import { Account } from '@wallet-types';
 import * as notificationActions from '@suite-actions/notificationActions';
-import {
-    BuyListResponse,
-    BuyProviderInfo,
-    BuyTradeQuoteRequest,
-    BuyTrade,
-    ExchangeTrade,
-} from 'invity-api';
+import { BuyListResponse, BuyProviderInfo, BuyTradeQuoteRequest, BuyTrade } from 'invity-api';
 import invityAPI from '@suite/services/invityAPI';
 import { COINMARKET_BUY } from './constants';
 import { Dispatch, GetState } from '@suite-types';
@@ -34,8 +28,9 @@ export type CoinmarketBuyActions =
     | {
           type: typeof COINMARKET_BUY.SAVE_TRADE;
           date: string;
-          tradeType: 'buy' | 'exchange';
-          data: BuyTrade | ExchangeTrade;
+          key?: string;
+          tradeType: 'buy';
+          data: BuyTrade;
           account: {
               symbol: Account['symbol'];
               accountIndex: Account['index'];
@@ -89,6 +84,7 @@ export const saveTrade = (buyTrade: BuyTrade, account: Account, date: string) =>
     dispatch({
         type: COINMARKET_BUY.SAVE_TRADE,
         tradeType: 'buy',
+        key: buyTrade.paymentId,
         date,
         data: buyTrade,
         account: {
