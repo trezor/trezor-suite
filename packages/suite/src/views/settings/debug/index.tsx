@@ -1,6 +1,7 @@
 import { SettingsLayout } from '@settings-components';
 import { ActionColumn, Row, Section, TextColumn } from '@suite-components/Settings';
-import { Switch } from '@trezor/components';
+import { Switch, Select } from '@trezor/components';
+import InvityAPI from '@suite/services/invityAPI';
 import React from 'react';
 
 import { Props } from './Container';
@@ -22,6 +23,29 @@ const DebugSettings = (props: Props) => {
                                     translationMode: !props.debug.translationMode,
                                 });
                             }}
+                        />
+                    </ActionColumn>
+                </Row>
+            </Section>
+            <Section title="Invity">
+                <Row>
+                    <TextColumn title="API server" />
+                    <ActionColumn>
+                        <Select
+                            options={[
+                                {
+                                    label: InvityAPI.localhostAPIServer,
+                                    value: InvityAPI.localhostAPIServer,
+                                },
+                                {
+                                    label: InvityAPI.stagingAPIServer,
+                                    value: InvityAPI.stagingAPIServer,
+                                },
+                                {
+                                    label: InvityAPI.productionAPIServer,
+                                    value: InvityAPI.productionAPIServer,
+                                },
+                            ]}
                         />
                     </ActionColumn>
                 </Row>
