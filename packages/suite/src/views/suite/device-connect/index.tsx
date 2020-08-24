@@ -6,12 +6,13 @@ import { Link, P, H2, Button, Modal } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { Translation, WebusbButton, Image } from '@suite-components';
 import HelpBuyIcons from '@suite-components/ProgressBar/components/HelpBuyIcons';
+import * as notificationActions from '@suite-actions/notificationActions';
 import { setDebugMode } from '@suite-actions/suiteActions';
-
 import { Dispatch, AppState } from '@suite-types';
 import { isWebUSB } from '@suite-utils/transport';
 import { getLinuxPackage } from '@suite-utils/bridge';
 import { isAndroid } from '@suite-utils/env';
+import { useActions } from '@suite-hooks';
 
 const Title = styled.div`
     margin-top: 60px;
@@ -52,6 +53,9 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const Index = (props: Props) => {
+    const { addToast } = useActions({
+        addToast: notificationActions.addToast,
+    });
     const [clickCounter, setClickCounter] = useState(0);
     const showWebUsb = isWebUSB(props.transport);
     const showUdev = getLinuxPackage();
@@ -73,14 +77,15 @@ const Index = (props: Props) => {
                         ? () => {
                               setClickCounter(prev => prev + 1);
                               if (clickCounter === 4) {
+                                  const toggledValue = !props.debug.bridgeDevMode;
                                   props.setDebugMode({
-                                      bridgeDevMode: !props.debug.bridgeDevMode,
+                                      bridgeDevMode: toggledValue,
                                   });
                                   setClickCounter(0);
-                                  console.warn(
-                                      `Restarting Trezor Bridge. Dev mode:${!props.debug
-                                          .bridgeDevMode}`,
-                                  );
+                                  addToast({
+                                      type: 'bridge-dev-restart',
+                                      devMode: toggledValue,
+                                  });
                               }
                           }
                         : undefined

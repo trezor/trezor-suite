@@ -232,6 +232,15 @@ export default (notification: NotificationEntry, View: React.ComponentType<ViewP
                 message: messages.TR_STORAGE_CLEARED,
             });
 
+        case 'bridge-dev-restart':
+            return simple(View, {
+                notification,
+                icon: 'INFO',
+                message: notification.devMode
+                    ? messages.TR_BRIDGE_DEV_MODE_START
+                    : messages.TR_BRIDGE_DEV_MODE_STOP,
+            });
+
         // Events:
         case DEVICE.CONNECT:
             return withAction(View, {

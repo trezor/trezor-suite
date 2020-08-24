@@ -16,6 +16,7 @@ const StyledImage = styled(Image)`
 const PairDeviceStep = (props: Props) => {
     const { device, transport } = props;
 
+    const [clickCounter, setClickCounter] = useState(0);
     const [imageLoaded, setImageLoaded] = useState(false);
 
     const isInBlWithFwPresent = () => {
@@ -129,6 +130,20 @@ const PairDeviceStep = (props: Props) => {
                                     image="CONNECT_DEVICE"
                                     onLoad={() => setImageLoaded(true)}
                                     onError={() => setImageLoaded(true)}
+                                    onClick={() => {
+                                        setClickCounter(prev => prev + 1);
+                                        if (clickCounter === 4) {
+                                            const toggledValue = !props.debug.bridgeDevMode;
+                                            props.setDebugMode({
+                                                bridgeDevMode: toggledValue,
+                                            });
+                                            setClickCounter(0);
+                                            props.addToast({
+                                                type: 'bridge-dev-restart',
+                                                devMode: toggledValue,
+                                            });
+                                        }
+                                    }}
                                 />
                                 {isWebUSB(transport) && (
                                     <>
