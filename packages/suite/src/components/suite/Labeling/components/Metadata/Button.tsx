@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { Button, Dropdown } from '@trezor/components';
 import styled from 'styled-components';
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions, useDiscovery, useSelector } from '@suite-hooks';
 import * as metadataActions from '@suite-actions/metadataActions';
-import { MetadataAddPayload } from '@suite-types/metadata';
+import { MetadataAddPayload, DeviceMetadata } from '@suite-types/metadata';
 
 import MetadataEdit from './Edit';
 
@@ -64,19 +64,18 @@ interface Props {
  */
 const MetadataButton = (props: Props) => {
     const metadata = useSelector(state => state.metadata);
-    const deviceState = useSelector(state => state.suite.device?.state);
-    const deviceMetadata = useSelector(state => state.suite.device?.metadata);
-    // I see that I may use getDiscovery or getDiscoveryForDevice actions but is that correct? In component, I should subscribe
-    // to store, not call an action on its occasional re-render which may reflect real state in the and but...
-    const discovery = useSelector(state => state.wallet.discovery);
+    const { isDiscoveryRunning, device } = useDiscovery();
+
+    let deviceMetadata: DeviceMetadata | undefined;
+    if (device) {
+        deviceMetadata = device.metadata;
+    }
 
     const { addMetadata, init, setEditing } = useActions({
         addMetadata: metadataActions.addMetadata,
         init: metadataActions.init,
         setEditing: metadataActions.setEditing,
     });
-
-    const discoveryFinished = discovery.find(d => d.deviceState === deviceState)?.status === 4;
 
     useEffect(() => {
         if (
@@ -124,9 +123,6 @@ const MetadataButton = (props: Props) => {
 
     const dataTestBase = `@metadata/${props.payload.type}/${props.payload.defaultValue}`;
 
-    // todo: quite a lot rendering here, maybe optimize
-    // console.log('render');
-
     if (metadata.initiating) return <span>loading...</span>;
 
     if (
@@ -165,9 +161,9 @@ const MetadataButton = (props: Props) => {
                 <AddLabelButton
                     data-test={`${dataTestBase}/add-label-button`}
                     variant="tertiary"
-                    icon={discoveryFinished ? 'LABEL' : undefined}
-                    isLoading={!discoveryFinished}
-                    isDisabled={!discoveryFinished}
+                    icon={!isDiscoveryRunning ? 'LABEL' : undefined}
+                    isLoading={isDiscoveryRunning}
+                    isDisabled={isDiscoveryRunning}
                     onClick={e => {
                         e.stopPropagation();
                         // by clicking on add label button, metadata.editing field is set
@@ -176,7 +172,7 @@ const MetadataButton = (props: Props) => {
                         setEditing(props.payload.defaultValue);
                     }}
                 >
-                    {discoveryFinished ? 'Add label' : 'Loading...'}
+                    {!isDiscoveryRunning ? 'Add label' : 'Loading...'}
                 </AddLabelButton>
             )}
         </LabelContainer>
