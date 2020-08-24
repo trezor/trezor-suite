@@ -1,4 +1,4 @@
-1/* eslint-disable global-require */
+/* eslint-disable global-require */
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import accountsReducer from '@wallet-reducers/accountsReducer';
