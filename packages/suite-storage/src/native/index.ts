@@ -174,7 +174,7 @@ class CommonDB<TDBStructure> {
         return (Promise.resolve() as unknown) as Promise<StoreValue<TDBStructure, TStoreName>[]>;
     };
 
-    getItemsWithKeys = async <TStoreName extends StoreNames<TDBStructure>>(store: TStoreName) => {
+    getItemsWithKeys = async <TStoreName extends StoreNames<TDBStructure>>(_store: TStoreName) => {
         return (Promise.resolve() as unknown) as Promise<
             {
                 key: unknown extends IndexNames<TDBStructure, TStoreName>

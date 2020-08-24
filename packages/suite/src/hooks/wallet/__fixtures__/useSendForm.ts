@@ -112,22 +112,20 @@ export const addingOutputs = [
             send: {
                 drafts: {
                     'xpub-btc-deviceState': {
-                        formState: {
-                            ...DEFAULT_DRAFT,
-                            outputs: [
-                                {
-                                    ...DEFAULT_PAYMENT,
-                                    address: 'A',
-                                    amount: '1',
-                                },
-                                {
-                                    ...DEFAULT_PAYMENT,
-                                    address: 'B',
-                                    amount: '2',
-                                },
-                            ],
-                            setMaxOutputId: 1,
-                        },
+                        ...DEFAULT_DRAFT,
+                        outputs: [
+                            {
+                                ...DEFAULT_PAYMENT,
+                                address: 'A',
+                                amount: '1',
+                            },
+                            {
+                                ...DEFAULT_PAYMENT,
+                                address: 'B',
+                                amount: '2',
+                            },
+                        ],
+                        setMaxOutputId: 1,
                     },
                 },
             },
@@ -165,22 +163,20 @@ export const addingOutputs = [
             send: {
                 drafts: {
                     'xpub-btc-deviceState': {
-                        formState: {
-                            ...DEFAULT_DRAFT,
-                            outputs: [
-                                {
-                                    ...DEFAULT_PAYMENT,
-                                    address: 'A',
-                                    amount: '1',
-                                },
-                                {
-                                    ...DEFAULT_PAYMENT,
-                                    address: 'B',
-                                    amount: '2',
-                                },
-                            ],
-                            setMaxOutputId: 0,
-                        },
+                        ...DEFAULT_DRAFT,
+                        outputs: [
+                            {
+                                ...DEFAULT_PAYMENT,
+                                address: 'A',
+                                amount: '1',
+                            },
+                            {
+                                ...DEFAULT_PAYMENT,
+                                address: 'B',
+                                amount: '2',
+                            },
+                        ],
+                        setMaxOutputId: 0,
                     },
                 },
             },
@@ -342,18 +338,16 @@ export const setMax = [
             send: {
                 drafts: {
                     'xpub-btc-deviceState': {
-                        formState: {
-                            ...DEFAULT_DRAFT,
-                            outputs: [
-                                {
-                                    ...DEFAULT_PAYMENT,
-                                    address: '',
-                                    amount: '1',
-                                    fiat: '2.00',
-                                },
-                            ],
-                            setMaxOutputId: 0,
-                        },
+                        ...DEFAULT_DRAFT,
+                        outputs: [
+                            {
+                                ...DEFAULT_PAYMENT,
+                                address: '',
+                                amount: '1',
+                                fiat: '2.00',
+                            },
+                        ],
+                        setMaxOutputId: 0,
                     },
                 },
             },
@@ -389,18 +383,16 @@ export const setMax = [
             send: {
                 drafts: {
                     'xpub-btc-deviceState': {
-                        formState: {
-                            ...DEFAULT_DRAFT,
-                            outputs: [
-                                {
-                                    ...DEFAULT_PAYMENT,
-                                    address: 'A',
-                                    amount: '1',
-                                    fiat: '2.00',
-                                },
-                            ],
-                            setMaxOutputId: 0,
-                        },
+                        ...DEFAULT_DRAFT,
+                        outputs: [
+                            {
+                                ...DEFAULT_PAYMENT,
+                                address: 'A',
+                                amount: '1',
+                                fiat: '2.00',
+                            },
+                        ],
+                        setMaxOutputId: 0,
                     },
                 },
             },
