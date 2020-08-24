@@ -1,4 +1,5 @@
 import produce from 'immer';
+import { STORAGE } from '@suite-actions/constants';
 import { SEND } from '@wallet-actions/constants';
 import { Action } from '@suite-types';
 import { FormState, PrecomposedTransactionFinal } from '@wallet-types/sendForm';
@@ -6,16 +7,14 @@ import { FeeLevel } from 'trezor-connect';
 
 interface SendState {
     drafts: {
-        [key: string]: {
-            formState: FormState;
-        };
+        [key: string]: FormState; // Key: account key
+    };
+    lastUsedFeeLevel: {
+        [key: string]: FeeLevel['label']; // Key: coin symbol
     };
     precomposedTx?: PrecomposedTransactionFinal;
     precomposedForm?: FormState;
     signedTx?: { tx: string; coin: string }; // payload for TrezorConnect.pushTransaction
-    lastUsedFeeLevel: {
-        [key: string]: FeeLevel['label'];
-    };
 }
 
 export const initialState: SendState = {
@@ -25,13 +24,13 @@ export const initialState: SendState = {
     lastUsedFeeLevel: {},
 };
 
-export default (state: SendState = initialState, action: Action) => {
+export default (state: SendState = initialState, action: Action): SendState => {
     return produce(state, draft => {
         switch (action.type) {
+            case STORAGE.LOADED:
+                return action.payload.wallet.send;
             case SEND.STORE_DRAFT:
-                draft.drafts[action.key] = {
-                    formState: action.formState,
-                };
+                draft.drafts[action.key] = action.formState;
                 break;
             case SEND.REMOVE_DRAFT:
                 delete draft.drafts[action.key];

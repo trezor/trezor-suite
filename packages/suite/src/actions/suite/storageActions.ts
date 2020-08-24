@@ -4,13 +4,13 @@ import { STORAGE } from './constants';
 import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
 import { GraphData } from '@wallet-types/graph';
-import { Output } from '@wallet-types/sendForm';
 import { getAccountKey } from '@wallet-utils/accountUtils';
 import { Discovery } from '@wallet-reducers/discoveryReducer';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
 import { deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
+import { FormState } from '@wallet-types/sendForm';
 import { getAnalyticsRandomId } from '@suite-utils/random';
 import { setSentryUser } from '@suite-utils/sentry';
 
@@ -19,23 +19,31 @@ export type StorageActions =
     | { type: typeof STORAGE.LOADED; payload: AppState }
     | { type: typeof STORAGE.ERROR; error: any };
 
-export const saveSendForm = async (
-    saveSendFormState: {
-        data: Record<string, any>;
-        outputs: Output[];
-    },
-    accountKey: string,
-) => {
-    return db.addItem('sendForm', saveSendFormState, accountKey);
+// send form drafts start
+
+export const saveDraft = (formState: FormState, accountKey: string) => {
+    return db.addItem('sendFormDrafts', formState, accountKey);
 };
 
-export const loadSendForm = (accountKey: string) => {
-    return db.getItemByPK('sendForm', accountKey);
+export const removeDraft = (accountKey: string) => {
+    return db.removeItemByPK('sendFormDrafts', accountKey);
 };
 
-export const removeSendForm = async (accountKey: string) => {
-    return db.removeItemByPK('sendForm', accountKey);
+export const saveAccountDraft = (account: Account) => async (_: Dispatch, getState: GetState) => {
+    const { drafts } = getState().wallet.send;
+    const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
+    const draft = drafts[accountKey];
+    if (draft) {
+        return db.addItem('sendFormDrafts', draft, accountKey);
+    }
 };
+
+export const removeAccountDraft = (account: Account) => {
+    const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
+    return db.removeItemByPK('sendFormDrafts', accountKey);
+};
+
+// send form drafts end
 
 export const saveDevice = async (device: TrezorDevice) => {
     if (!device || !device.features || !device.state) return;
@@ -54,15 +62,19 @@ export const removeAccountTransactions = async (account: Account) => {
     ]);
 };
 
-export const forgetDevice = (device: TrezorDevice) => async () => {
+export const forgetDevice = (device: TrezorDevice) => async (_: Dispatch, getState: GetState) => {
     if (!device.state) return;
+    const accounts = getState().wallet.accounts.filter(a => a.deviceState === device.state);
+    const accountPromises = accounts.reduce((promises, account) => {
+        return promises.concat([removeAccountDraft(account)]);
+    }, [] as Promise<any>[]);
     const promises = await Promise.all([
         db.removeItemByPK('devices', device.state),
         db.removeItemByIndex('accounts', 'deviceState', device.state),
         db.removeItemByPK('discovery', device.state),
         db.removeItemByIndex('txs', 'deviceState', device.state),
-        db.removeItemByIndex('sendForm', 'deviceState', device.state),
         db.removeItemByIndex('graph', 'deviceState', device.state),
+        ...accountPromises,
     ]);
     return promises;
 };
@@ -120,9 +132,13 @@ export const rememberDevice = (device: TrezorDevice, remember: boolean) => async
     const discovery = wallet.discovery
         .filter(d => d.deviceState === device.state)
         .map(serializeDiscovery);
-    const txsPromises = accounts.map(acc => {
-        return dispatch(saveAccountTransactions(acc));
-    });
+
+    const accountPromises = accounts.reduce((promises, account) => {
+        return promises.concat([
+            dispatch(saveAccountTransactions(account)),
+            dispatch(saveAccountDraft(account)),
+        ]);
+    }, [] as Promise<any>[]);
 
     try {
         await Promise.all([
@@ -130,7 +146,7 @@ export const rememberDevice = (device: TrezorDevice, remember: boolean) => async
             saveAccounts(accounts),
             saveGraph(graphData),
             saveDiscovery(discovery),
-            ...txsPromises,
+            ...accountPromises,
         ] as Promise<void | string | undefined>[]);
     } catch (error) {
         console.error('Remember device:', error);
@@ -222,6 +238,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
         const fiatRates = await db.getItemsExtended('fiatRates');
         const walletGraphData = await db.getItemsExtended('graph');
         const analytics = await db.getItemByPK('analytics', 'suite');
+
         const txs = await db.getItemsExtended('txs', 'order');
         const mappedTxs: AppState['wallet']['transactions']['transactions'] = {};
         txs.forEach(item => {
@@ -237,6 +254,12 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
         if (analytics?.instanceId) {
             setSentryUser(analytics.instanceId);
         }
+
+        const sendForm = await db.getItemsWithKeys('sendFormDrafts');
+        const drafts: AppState['wallet']['send']['drafts'] = {};
+        sendForm.forEach(item => {
+            drafts[item.key] = item.value;
+        });
 
         dispatch({
             type: STORAGE.LOADED,
@@ -271,6 +294,10 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                     graph: {
                         ...initialState.wallet.graph,
                         data: walletGraphData || [],
+                    },
+                    send: {
+                        ...initialState.wallet.send,
+                        drafts,
                     },
                 },
                 analytics: analytics?.instanceId

@@ -3,12 +3,14 @@ import { DBSchema } from 'idb';
 import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
 import { SuiteState } from '@suite-reducers/suiteReducer';
 import { State as AnalyticsState } from '@suite-reducers/analyticsReducer';
+import { FormState } from '@wallet-types/sendForm';
 import { AcquiredDevice } from '@suite-types';
 import { Account, Discovery, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
 import { GraphData } from '@wallet-types/graph';
 import { migrate } from './migrations';
 
-const VERSION = 14;
+// version 15: modified sendReducer
+const VERSION = 15;
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -27,15 +29,9 @@ export interface SuiteDBSchema extends DBSchema {
             blockTime: number; // TODO: blockTime can be undefined
         };
     };
-    sendForm: {
-        key: string;
-        value: {
-            data: Record<string, any>;
-            outputs: any; // TODO
-        };
-        indexes: {
-            deviceState: string;
-        };
+    sendFormDrafts: {
+        key: string; // accountKey
+        value: FormState;
     };
     suiteSettings: {
         key: string;
@@ -129,8 +125,7 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
         db.createObjectStore('discovery', { keyPath: 'deviceState' });
 
         // object store for send form
-        const sendFormStore = db.createObjectStore('sendForm');
-        sendFormStore.createIndex('deviceState', 'deviceState', { unique: false });
+        db.createObjectStore('sendFormDrafts');
 
         db.createObjectStore('fiatRates', { keyPath: 'symbol' });
         db.createObjectStore('analytics');

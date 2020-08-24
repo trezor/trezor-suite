@@ -83,16 +83,15 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // load draft from reducer
     // TODO: load "remembered" fee level
     useEffect(() => {
-        const stored = getDraft();
-        const formState = stored ? stored.formState : {};
+        const storedState = getDraft();
         const values = {
             ...getDefaultValues(localCurrencyOption),
-            ...formState,
+            ...storedState,
         };
         reset(values);
 
-        if (stored) {
-            draft.current = stored.formState;
+        if (storedState) {
+            draft.current = storedState;
         }
     }, [localCurrencyOption, getDraft, getValues, reset]);
 
