@@ -24,6 +24,7 @@ export default () => {
         errors,
         register,
         getDefaultValue,
+        changeCustomFeeLevel,
         composeTransaction,
     } = useSendFormContext();
     const { maxFee, minFee } = feeInfo;
@@ -44,6 +45,7 @@ export default () => {
                 state={getInputState(feePerUnitError, feePerUnitValue)}
                 innerAddon={<Units>{getFeeUnits(network.networkType)}</Units>}
                 onChange={() => {
+                    changeCustomFeeLevel(!!feePerUnitError);
                     composeTransaction('feePerUnit', !!feePerUnitError);
                 }}
                 name={inputName}
@@ -86,7 +88,8 @@ export default () => {
                     state={getInputState(feePerUnitError)}
                     innerAddon={<Units>GWEI</Units>}
                     onChange={() => {
-                        composeTransaction('feeLimit', !!error);
+                        changeCustomFeeLevel(!!feeLimitError);
+                        composeTransaction('feeLimit', !!feeLimitError);
                     }}
                     innerRef={register({
                         required: 'CUSTOM_FEE_IS_NOT_SET',

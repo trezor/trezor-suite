@@ -2,6 +2,7 @@ import { createContext, useContext, useCallback, useState, useEffect, useRef } f
 import { useForm, useFieldArray } from 'react-hook-form';
 import { useActions } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { DEFAULT_PAYMENT, DEFAULT_OPTIONS, DEFAULT_VALUES } from '@wallet-constants/sendForm';
 import {
     UseSendFormProps,
@@ -60,10 +61,11 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
     // private variables, used inside sendForm hook
     const draft = useRef<FormState | undefined>(undefined);
-    const { getDraft, saveDraft, removeDraft, signTransaction } = useActions({
+    const { getDraft, saveDraft, removeDraft, getLastUsedFeeLevel, signTransaction } = useActions({
         getDraft: sendFormActions.getDraft,
         saveDraft: sendFormActions.saveDraft,
         removeDraft: sendFormActions.removeDraft,
+        getLastUsedFeeLevel: walletSettingsActions.getLastUsedFeeLevel,
         signTransaction: sendFormActions.signTransaction,
     });
 
@@ -84,16 +86,26 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // TODO: load "remembered" fee level
     useEffect(() => {
         const storedState = getDraft();
+        const lastUsedFee = getLastUsedFeeLevel();
+        const feeEnhancement: Partial<FormState> = {};
+        if (!storedState && lastUsedFee) {
+            feeEnhancement.selectedFee = lastUsedFee.label;
+            if (lastUsedFee.label === 'custom') {
+                feeEnhancement.feePerUnit = lastUsedFee.feePerUnit;
+                feeEnhancement.feeLimit = lastUsedFee.feeLimit;
+            }
+        }
         const values = {
             ...getDefaultValues(localCurrencyOption),
             ...storedState,
+            ...feeEnhancement,
         };
         reset(values);
 
         if (storedState) {
             draft.current = storedState;
         }
-    }, [localCurrencyOption, getDraft, getValues, reset]);
+    }, [localCurrencyOption, getDraft, getLastUsedFeeLevel, getValues, reset]);
 
     // register custom form fields (without HTMLElement)
     useEffect(() => {

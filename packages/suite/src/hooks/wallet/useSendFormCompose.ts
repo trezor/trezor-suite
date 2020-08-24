@@ -32,6 +32,7 @@ export const useSendFormCompose = ({
     const [draftSaveRequest, setDraftSaveRequest] = useState(false);
 
     const { debounce } = useDebounce();
+    const { symbol } = state.account;
 
     const { composeTransaction } = useActions({
         composeTransaction: sendFormActions.composeTransaction,
@@ -175,7 +176,7 @@ export const useSendFormCompose = ({
         getValues,
         setValue,
         setError,
-        state.account.symbol,
+        symbol,
         setAmount, // TODO: check if this could be changed by props.fiatRate change?
     ]);
 
@@ -189,9 +190,8 @@ export const useSendFormCompose = ({
                 ...composedLevels,
                 custom: prevLevel,
             });
-        } else {
-            setDraftSaveRequest(true);
         }
+        setDraftSaveRequest(true);
         selectedFeeRef.current = selectedFee;
     }, [composedLevels, selectedFee, setValue]);
 

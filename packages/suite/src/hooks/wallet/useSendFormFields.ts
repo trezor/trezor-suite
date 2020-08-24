@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 import { UseFormMethods } from 'react-hook-form';
 import { FeeLevel } from 'trezor-connect';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import { useActions } from '@suite-hooks';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import {
     FormState,
@@ -20,6 +22,9 @@ export const useSendFormFields = ({
     clearErrors,
     fiatRates,
 }: Props) => {
+    const { setLastUsedFeeLevel } = useActions({
+        setLastUsedFeeLevel: walletSettingsActions.setLastUsedFeeLevel,
+    });
     const calculateFiat = useCallback(
         (outputIndex: number, amount?: string) => {
             const values = getValues();
@@ -73,17 +78,30 @@ export const useSendFormFields = ({
     );
 
     const changeFeeLevel = useCallback(
-        (currentLevel: FeeLevel, newLevel: FeeLevel['label']) => {
-            setValue('selectedFee', newLevel);
-            const isCustom = newLevel === 'custom';
+        (currentLevel: FeeLevel, newLevel: FeeLevel) => {
+            setValue('selectedFee', newLevel.label);
+            const isCustom = newLevel.label === 'custom';
             // catch first change to custom
             if (isCustom) {
                 setValue('feePerUnit', currentLevel.feePerUnit);
                 setValue('feeLimit', currentLevel.feeLimit);
+                setLastUsedFeeLevel({
+                    ...newLevel,
+                    feePerUnit: currentLevel.feePerUnit,
+                    feeLimit: currentLevel.feeLimit,
+                });
+            } else {
+                setLastUsedFeeLevel(newLevel);
             }
         },
-        [setValue],
+        [setValue, setLastUsedFeeLevel],
     );
+
+    const changeCustomFeeLevel = (hasError: boolean) => {
+        if (hasError) return;
+        const { feePerUnit, feeLimit } = getValues();
+        setLastUsedFeeLevel({ label: 'custom', feePerUnit, feeLimit, blocks: -1 });
+    };
 
     const resetDefaultValue = useCallback(
         (fieldName: string) => {
@@ -140,6 +158,7 @@ export const useSendFormFields = ({
         calculateFiat,
         setAmount,
         changeFeeLevel,
+        changeCustomFeeLevel,
         resetDefaultValue,
         setMax,
         getDefaultValue,

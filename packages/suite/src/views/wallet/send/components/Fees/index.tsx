@@ -107,8 +107,11 @@ export default () => {
                         label={<Translation id="FEE" />}
                         selectedOption={selectedLabel}
                         options={buildFeeOptions(feeInfo.levels)}
-                        onChange={
-                            value => changeFeeLevel(selectedLevel, value as FeeLevel['label']) // TODO: SelectBar component should infer option type
+                        onChange={value =>
+                            changeFeeLevel(
+                                selectedLevel,
+                                feeInfo.levels.find(level => level.label === value)!,
+                            )
                         }
                     />
                     <FeeInfo>
