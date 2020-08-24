@@ -140,11 +140,12 @@ export const disconnectProvider = () => async (dispatch: Dispatch, getState: Get
 
 const handleProviderError = (error: Error) => (dispatch: Dispatch, getState: GetState) => {
     const { metadata } = getState();
+    const unexpectedError = 'labeling action failed with unexpected error';
     if (!error) {
         return dispatch(
             notificationActions.addToast({
                 type: 'error',
-                error: 'action failed with unknown error',
+                error: unexpectedError,
             }),
         );
     }
@@ -156,7 +157,7 @@ const handleProviderError = (error: Error) => (dispatch: Dispatch, getState: Get
                 dispatch(
                     notificationActions.addToast({
                         type: 'error',
-                        error: `Failed to sync data with cloud provider (${
+                        error: `Failed to sync labeling data with cloud provider (${
                             metadata!.provider!.type
                         }). User was logged out.`,
                     }),
@@ -174,7 +175,7 @@ const handleProviderError = (error: Error) => (dispatch: Dispatch, getState: Get
             dispatch(disconnectProvider());
             break;
         default:
-            dispatch(notificationActions.addToast({ type: 'error', error: 'action failed' }));
+            dispatch(notificationActions.addToast({ type: 'error', error: unexpectedError }));
             break;
     }
 };
