@@ -1,10 +1,15 @@
 import { SettingsLayout } from '@settings-components';
 import { ActionColumn, Row, Section, TextColumn } from '@suite-components/Settings';
 import { Switch, Select } from '@trezor/components';
+import styled from 'styled-components';
 import InvityAPI from '@suite/services/invityAPI';
 import React from 'react';
 
 import { Props } from './Container';
+
+const StyledActionColumn = styled(ActionColumn)`
+    max-width: 300px;
+`;
 
 const DebugSettings = (props: Props) => {
     return (
@@ -17,7 +22,7 @@ const DebugSettings = (props: Props) => {
                     />
                     <ActionColumn>
                         <Switch
-                            checked={props.debug.translationMode}
+                            checked={props.debug.translationMode || false}
                             onChange={() => {
                                 props.setDebugMode({
                                     translationMode: !props.debug.translationMode,
@@ -29,9 +34,21 @@ const DebugSettings = (props: Props) => {
             </Section>
             <Section title="Invity">
                 <Row>
-                    <TextColumn title="API server" />
-                    <ActionColumn>
+                    <TextColumn
+                        title="API server"
+                        description="Set the server url for buy and exchange features"
+                    />
+                    <StyledActionColumn>
                         <Select
+                            onChange={(item: { value: string; label: string }) =>
+                                props.setDebugMode({
+                                    invityAPIUrl: item.value,
+                                })
+                            }
+                            value={{
+                                label: props.debug.invityAPIUrl,
+                                value: props.debug.invityAPIUrl,
+                            }}
                             options={[
                                 {
                                     label: InvityAPI.localhostAPIServer,
@@ -47,7 +64,7 @@ const DebugSettings = (props: Props) => {
                                 },
                             ]}
                         />
-                    </ActionColumn>
+                    </StyledActionColumn>
                 </Row>
             </Section>
         </SettingsLayout>

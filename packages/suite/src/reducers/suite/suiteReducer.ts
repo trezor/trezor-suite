@@ -4,9 +4,11 @@ import { SUITE, STORAGE } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { Action, TrezorDevice, Lock } from '@suite-types';
 import { LANGUAGES } from '@suite-config';
+import invityAPI from '@suite/services/invityAPI';
 
 export interface DebugModeOptions {
-    translationMode: boolean;
+    translationMode?: boolean;
+    invityAPIUrl?: string;
 }
 
 interface Flags {
@@ -55,6 +57,7 @@ const initialState: SuiteState = {
     settings: {
         language: 'en',
         debug: {
+            invityAPIUrl: invityAPI.productionAPIServer,
             translationMode: false,
         },
     },
