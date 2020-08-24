@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Dropdown } from '@trezor/components';
 import { Translation, ExternalLink, AppNavigationPanel, AppNavigation } from '@suite-components';
-import { useActions } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
+import * as suiteActions from '@suite-actions/suiteActions';
+import * as routerActions from '@suite-actions/routerActions';
 import { SUPPORT_URL } from '@suite-constants/urls';
 
 const StyledLink = styled(ExternalLink)`
@@ -12,12 +14,33 @@ const StyledLink = styled(ExternalLink)`
 `;
 
 const SettingsMenu = () => {
-    const { openModal } = useActions({
+    const { setDebugMode, openModal, goto } = useActions({
         openModal: modalActions.openModal,
+        goto: routerActions.goto,
+        setDebugMode: suiteActions.setDebugMode,
     });
+
+    // show debug menu item after 5 clicks on "Settings" heading
+    const [clickCounter, setClickCounter] = useState(0);
+    const showDebugMenu = useSelector(state => state.suite.settings.debug.showDebugMenu);
+
+    console.log('showDebugMenu', showDebugMenu);
     return (
         <AppNavigationPanel
-            title="Settings"
+            title={
+                <span
+                    aria-hidden="true"
+                    onClick={() => {
+                        setClickCounter(prev => prev + 1);
+                        if (clickCounter === 4) {
+                            setClickCounter(0);
+                            setDebugMode({ showDebugMenu: !showDebugMenu });
+                        }
+                    }}
+                >
+                    <Translation id="TR_SETTINGS" />
+                </span>
+            }
             navigation={
                 <AppNavigation
                     items={[
@@ -67,6 +90,15 @@ const SettingsMenu = () => {
                                     'data-test': '@settings/menu/log',
                                     callback: () => {
                                         openModal({ type: 'log' });
+                                    },
+                                },
+                                {
+                                    key: 'debug',
+                                    label: 'Debug Settings',
+                                    'data-test': '@settings/menu/debug',
+                                    isHidden: !showDebugMenu,
+                                    callback: () => {
+                                        goto('settings-debug');
                                     },
                                 },
                             ],

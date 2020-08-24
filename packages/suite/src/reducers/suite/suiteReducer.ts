@@ -7,8 +7,10 @@ import { LANGUAGES } from '@suite-config';
 import invityAPI from '@suite/services/invityAPI';
 
 export interface DebugModeOptions {
-    translationMode?: boolean;
-    invityAPIUrl?: string;
+    translationMode: boolean;
+    invityAPIUrl: string;
+    showDebugMenu: boolean;
+    bridgeDevMode: boolean;
 }
 
 interface Flags {
@@ -58,7 +60,9 @@ const initialState: SuiteState = {
         language: 'en',
         debug: {
             invityAPIUrl: invityAPI.productionAPIServer,
+            showDebugMenu: false,
             translationMode: false,
+            bridgeDevMode: false,
         },
     },
 };

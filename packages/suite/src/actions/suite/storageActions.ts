@@ -268,6 +268,11 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                     settings: {
                         ...initialState.suite.settings,
                         ...suite?.settings,
+                        debug: {
+                            ...initialState.suite.settings.debug,
+                            ...suite?.settings.debug,
+                            bridgeDevMode: false, // don't sync bridgeDevMode for now
+                        },
                     },
                 },
                 devices,

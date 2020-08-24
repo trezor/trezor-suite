@@ -3454,15 +3454,6 @@ const definedMessages = defineMessages({
         id: 'TR_ONLY_2_MORE_STEPS',
         defaultMessage: 'Only 2 more steps that take only few more minutes.',
     },
-    TR_NO_TRANSACTIONS_TO_SHOW: {
-        id: 'TR_NO_TRANSACTIONS_TO_SHOW',
-        defaultMessage: 'No transactions to show',
-    },
-    TR_NO_TRANSACTIONS_TO_SHOW_SUB: {
-        id: 'TR_NO_TRANSACTIONS_TO_SHOW_SUB',
-        defaultMessage:
-            'Try a different date range.{newLine}Still nothing? Go ahead and send a transaction.',
-    },
     TR_RECEIVED: {
         id: 'TR_RECEIVED',
         defaultMessage: 'Received',

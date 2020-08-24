@@ -5,7 +5,6 @@ import { join } from 'path';
 import { spawn, exec } from 'child_process';
 
 const TREZOR_PROCESS_NAME = 'trezord';
-const STATUS = { OK: 'ok', ERROR: 'error' };
 
 const error = (msg: string | Error) => {
     throw new Error(`cannot run bridge library - ${msg}`);
@@ -70,8 +69,8 @@ const getBridgeLibByOs = () => {
     }
 };
 
-const spawnProcess = (command: string) => {
-    const spawnedProcess = spawn(command, [], {
+const spawnProcess = (command: string, args: string[] = []) => {
+    const spawnedProcess = spawn(command, args, {
         detached: true,
         // stdio: [process.stdin, process.stdout, process.stderr], // do not pipe stdio. pipe needs to be flushed from time to time
         stdio: ['ignore', 'ignore', 'ignore'],
@@ -93,21 +92,21 @@ const execute = (command: string) => {
 
 export const isBridgeRunning = async () => {
     const processes = await psList();
-    const isRunning = processes.find(ps => ps.name.includes(TREZOR_PROCESS_NAME));
-    return isRunning;
+    // TODO: ps-list version 7.2.0 started to include full path (at least in a dev env) in process.name, the name is even truncated to 15 chars thus find below fails
+    const bridgeProcess = processes.find(ps => ps.name.includes(TREZOR_PROCESS_NAME));
+    return bridgeProcess;
 };
 
-export const runBridgeProcess = async () => {
-    const isBridgeAlreadyRunning = await isBridgeRunning();
-
-    // bridge is already installed and running, nothing to do
-    if (isBridgeAlreadyRunning) {
-        return { status: STATUS.OK };
+export const runBridgeProcess = async (devMode?: boolean) => {
+    const bridgeProcess = await isBridgeRunning();
+    if (bridgeProcess) {
+        process.kill(bridgeProcess.pid);
     }
 
     const lib = getBridgeLibByOs();
+    const args = devMode ? ['-e', '21324'] : [];
     if (lib) {
-        spawnProcess(lib);
+        spawnProcess(lib, args);
     }
 };
 
