@@ -112,6 +112,7 @@ interface Props {
     className?: string;
     selectQuote: (quote: BuyTrade) => void;
     quote: BuyTrade;
+    wantCrypto: boolean;
 }
 
 const StyledQuestionTooltip = styled(QuestionTooltip)`
@@ -120,17 +121,26 @@ const StyledQuestionTooltip = styled(QuestionTooltip)`
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
 
-const Quote = ({ className, selectQuote, quote }: Props) => {
+const Quote = ({ className, selectQuote, quote, wantCrypto }: Props) => {
     const hasTag = false; // TODO - tags are in quote.tags, will need some algorithm to evaluate them and show only one
-    const { receiveStringAmount, receiveCurrency, paymentMethod, exchange } = quote;
+    const { paymentMethod, exchange, error } = quote;
 
     return (
         <Wrapper className={className}>
             <TagRow>{hasTag && <Tag>best offer</Tag>}</TagRow>
             <Main>
-                <Left>{quote.error ? 'N/A' : `${receiveStringAmount} ${receiveCurrency}`}</Left>
+                {error && <Left>N/A</Left>}
+                {!error && (
+                    <Left>
+                        {wantCrypto
+                            ? `${quote.fiatStringAmount} ${quote.fiatCurrency}`
+                            : `${quote.receiveStringAmount} ${quote.receiveCurrency}`}
+                    </Left>
+                )}
                 <Right>
-                    <StyledButton onClick={() => selectQuote(quote)}>Get this Offer</StyledButton>
+                    <StyledButton isDisabled={!!quote.error} onClick={() => selectQuote(quote)}>
+                        Get this Offer
+                    </StyledButton>
                 </Right>
             </Main>
             <Details>
@@ -153,16 +163,16 @@ const Quote = ({ className, selectQuote, quote }: Props) => {
                     <Value>All fee included</Value>
                 </Column>
             </Details>
-            {quote.error && (
+            {error && (
                 <ErrorFooter>
                     <IconWrapper>
                         <StyledIcon icon="CROSS" size={12} color={colors.RED_ERROR} />
                     </IconWrapper>
-                    <ErrorText>{quote.error}</ErrorText>
+                    <ErrorText>{error}</ErrorText>
                 </ErrorFooter>
             )}
 
-            {quote.infoNote && !quote.error && <Footer>{quote.infoNote}</Footer>}
+            {quote.infoNote && !error && <Footer>{quote.infoNote}</Footer>}
         </Wrapper>
     );
 };

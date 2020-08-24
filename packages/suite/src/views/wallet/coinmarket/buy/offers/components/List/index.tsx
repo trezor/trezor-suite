@@ -42,6 +42,10 @@ const Crypto = styled(Text)`
     padding-left: 10px;
 `;
 
+const Receive = styled(Text)`
+    padding-right: 10px;
+`;
+
 const StyledCoinLogo = styled(CoinLogo)``;
 
 interface Props {
@@ -57,7 +61,7 @@ const Offers = ({ selectQuote, quotes, isAlternative }: Props) => {
 
     if (selectedAccount.status !== 'loaded') return null;
     const { account } = selectedAccount;
-    const { fiatStringAmount, fiatCurrency } = quotesRequest;
+    const { fiatStringAmount, fiatCurrency, cryptoStringAmount, wantCrypto } = quotesRequest;
 
     return (
         <Wrapper>
@@ -66,22 +70,28 @@ const Offers = ({ selectQuote, quotes, isAlternative }: Props) => {
                     <>
                         <SummaryRow>
                             <Text>
-                                {quotes[0].fiatStringAmount} {quotes[0].fiatCurrency}
+                                {wantCrypto ? '' : `${quotes[0].fiatStringAmount} `}
+                                {quotes[0].fiatCurrency}
                             </Text>
                             <StyledIcon icon="ARROW_RIGHT" />
+                            {wantCrypto && <Receive>{quotes[0].receiveStringAmount}</Receive>}
                             <StyledCoinLogo size={21} symbol={account.symbol} />
                             <Crypto>{account.symbol}</Crypto>
                         </SummaryRow>
-                        <OrigAmount>
-                            ≈ {fiatStringAmount} {fiatCurrency}
-                        </OrigAmount>
+                        {!wantCrypto && (
+                            <OrigAmount>
+                                ≈ {fiatStringAmount} {fiatCurrency}
+                            </OrigAmount>
+                        )}
                     </>
                 ) : (
                     <SummaryRow>
                         <Text>
-                            {fiatStringAmount} {fiatCurrency}{' '}
+                            {wantCrypto ? '' : `${fiatStringAmount} `}
+                            {fiatCurrency}
                         </Text>
                         <StyledIcon icon="ARROW_RIGHT" />
+                        {wantCrypto && <Receive>{cryptoStringAmount}</Receive>}
                         <StyledCoinLogo size={21} symbol={account.symbol} />
                         <Crypto>{account.symbol}</Crypto>
                     </SummaryRow>
@@ -90,6 +100,7 @@ const Offers = ({ selectQuote, quotes, isAlternative }: Props) => {
             <Quotes>
                 {quotes.map(quote => (
                     <StyledQuote
+                        wantCrypto={wantCrypto}
                         key={`${quote.exchange}-${quote.paymentMethod}-${quote.receiveCurrency}`}
                         quote={quote}
                         selectQuote={selectQuote}

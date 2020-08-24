@@ -66,13 +66,16 @@ const CoinmarketBuy = () => {
 
     const onSubmit = async () => {
         const formValues = methods.getValues();
+        const fiatStringAmount = formValues.fiatInput;
+        const cryptoStringAmount = formValues.cryptoInput;
+        const wantCrypto = !fiatStringAmount;
         const request: BuyTradeQuoteRequest = {
-            // TODO - handle crypto amount entry
-            wantCrypto: false,
+            wantCrypto,
             fiatCurrency: formValues.currencySelect.value.toUpperCase(),
             receiveCurrency: account.symbol.toUpperCase(),
             country: formValues.countrySelect.value,
-            fiatStringAmount: formValues.fiatInput,
+            fiatStringAmount,
+            cryptoStringAmount,
         };
         await saveQuoteRequest(request);
         const allQuotes = await invityAPI.getBuyQuotes(request);
