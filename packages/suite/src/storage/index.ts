@@ -11,6 +11,14 @@ import { GraphData } from '@wallet-types/graph';
 import { migrate } from './migrations';
 
 const VERSION = 15;
+/**
+ * Changelog
+ *
+ * 15
+ * - added metadata object store
+ * - added device.metadata
+ * - added account.metadata
+ */
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;

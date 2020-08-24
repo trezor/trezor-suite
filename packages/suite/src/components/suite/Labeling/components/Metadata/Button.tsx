@@ -63,8 +63,6 @@ interface Props {
  * Component displaying "Add label button"
  */
 const MetadataButton = (props: Props) => {
-    // const [loading, setLoading] = useState(false);
-
     const metadata = useSelector(state => state.metadata);
     const deviceState = useSelector(state => state.suite.device?.state);
     const deviceMetadata = useSelector(state => state.suite.device?.metadata);
@@ -72,9 +70,9 @@ const MetadataButton = (props: Props) => {
     // to store, not call an action on its occasional re-render which may reflect real state in the and but...
     const discovery = useSelector(state => state.wallet.discovery);
 
-    const { addMetadata, initMetadata, setEditing } = useActions({
+    const { addMetadata, init, setEditing } = useActions({
         addMetadata: metadataActions.addMetadata,
-        initMetadata: metadataActions.init,
+        init: metadataActions.init,
         setEditing: metadataActions.setEditing,
     });
 
@@ -88,18 +86,15 @@ const MetadataButton = (props: Props) => {
             (!metadata.enabled || deviceMetadata?.status !== 'enabled' || !metadata.provider)
         ) {
             /** when clicking on inline input edit, ensure that everything needed is already ready */
-            const init = async () => {
-                // setLoading(true);
-                // setEditing(props.payload.defaultValue);
-                const result = await initMetadata(true);
+            const initMetadata = async () => {
+                const result = await init(true);
                 if (!result) {
                     setEditing(undefined);
                 }
-                // setLoading(false);
             };
-            init();
+            initMetadata();
         }
-    }, [metadata, deviceMetadata, initMetadata, setEditing, props.payload.defaultValue]);
+    }, [metadata, deviceMetadata, init, setEditing, props.payload.defaultValue]);
 
     const onSubmit = (value: string | undefined | null) => {
         addMetadata({
