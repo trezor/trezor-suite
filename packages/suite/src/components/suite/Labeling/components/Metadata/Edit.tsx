@@ -68,8 +68,6 @@ const MetadataEdit = (props: {
         };
     }, [submit, props.originalValue]);
 
-    console.log('render');
-
     return (
         <div style={{ display: 'flex' }}>
             <div

@@ -5,7 +5,6 @@ import modal from './modalReducer';
 import log from './logReducer';
 import notifications from './notificationReducer';
 import resize from './resizeReducer';
-import labeling from './labelingReducer';
 import analytics from './analyticsReducer';
 import metadata from './metadataReducer';
 
@@ -17,7 +16,6 @@ export default {
     log,
     notifications,
     resize,
-    labeling,
     analytics,
     metadata,
 };

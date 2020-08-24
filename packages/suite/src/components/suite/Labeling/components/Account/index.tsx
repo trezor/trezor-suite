@@ -12,15 +12,12 @@ const TabularNums = styled.span`
 `;
 
 export default (props: Props) => {
-    const { device, labeling } = props;
+    const { device } = props;
     const accounts = !Array.isArray(props.account) ? [props.account] : props.account;
     if (accounts.length < 1) return null;
 
-    const key = `account:${accounts[0].descriptor}`;
     let accountLabel: JSX.Element;
-    if (labeling[key]) {
-        accountLabel = <span>{labeling[key]}</span>;
-    } else if (accounts[0].accountType !== 'normal') {
+    if (accounts[0].accountType !== 'normal') {
         accountLabel = (
             <Translation
                 id="LABELING_ACCOUNT_WITH_TYPE"

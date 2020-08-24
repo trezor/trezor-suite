@@ -10,10 +10,6 @@ interface Props {
 
 export default (props: Props) => {
     const { device } = props;
-    // let walletLabel: ExtendedMessageDescriptor | string;
-    // if (device.metadata.status === 'enabled' && device.metadata.walletLabel) {
-    //     walletLabel = device.metadata.walletLabel;
-    // } else {
     const walletLabel = device.useEmptyPassphrase
         ? messages.TR_NO_PASSPHRASE_WALLET
         : {
@@ -22,7 +18,6 @@ export default (props: Props) => {
                   id: device.instance,
               },
           };
-    // }
 
     const label =
         typeof walletLabel === 'string' ? <>{walletLabel}</> : <Translation {...walletLabel} />;
