@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector, useActions } from '@suite-hooks';
 import { variables } from '@trezor/components';
+import { Translation } from '@suite-components';
 import { CoinmarketLayout, WalletLayout } from '@wallet-components';
 import { useBuyInfo } from '@wallet-hooks/useCoinmarket';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
@@ -102,8 +103,16 @@ const CoinmarketBuy = () => {
         <FormProvider {...methods}>
             <CoinmarketLayout>
                 <Wrapper>
-                    {isLoading && <Loading>loading</Loading>}
-                    {!isLoading && noProviders && <NoProviders>No providers</NoProviders>}
+                    {isLoading && (
+                        <Loading>
+                            <Translation id="TR_BUY_LOADING" />
+                        </Loading>
+                    )}
+                    {!isLoading && noProviders && (
+                        <NoProviders>
+                            <Translation id="TR_BUY_NO_PROVIDERS" />
+                        </NoProviders>
+                    )}
                     {!isLoading && !noProviders && (
                         <Content>
                             <form onSubmit={methods.handleSubmit(onSubmit)}>

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { BuyTrade } from 'invity-api';
 import { colors, variables, CoinLogo } from '@trezor/components';
 import { PaymentType, ProviderInfo } from '@wallet-components';
+import { Translation } from '@suite-components';
 import { useSelector } from '@suite-hooks';
 import TransactionId from '../TransactionId';
 
@@ -112,7 +113,9 @@ const OfferInfo = ({ selectedQuote, transactionId }: Props) => {
                     <AccountText>{`Account #${account.index + 1}`}</AccountText>
                 </Header>
                 <Row>
-                    <LeftColumn>spend</LeftColumn>
+                    <LeftColumn>
+                        <Translation id="TR_BUY_SPEND" />
+                    </LeftColumn>
                     <RightColumn>
                         <Dark>
                             {fiatStringAmount} {fiatCurrency}
@@ -120,19 +123,25 @@ const OfferInfo = ({ selectedQuote, transactionId }: Props) => {
                     </RightColumn>
                 </Row>
                 <RowWithBorder>
-                    <LeftColumn>buy</LeftColumn>
+                    <LeftColumn>
+                        <Translation id="TR_BUY_BUY" />
+                    </LeftColumn>
                     <RightColumn>
                         <Dark>{`${receiveStringAmount} ${receiveCurrency}`}</Dark>
                     </RightColumn>
                 </RowWithBorder>
                 <Row>
-                    <LeftColumn>provider</LeftColumn>
+                    <LeftColumn>
+                        <Translation id="TR_BUY_PROVIDER" />
+                    </LeftColumn>
                     <RightColumn>
                         <ProviderInfo exchange={exchange} />
                     </RightColumn>
                 </Row>
                 <Row>
-                    <LeftColumn>paid by</LeftColumn>
+                    <LeftColumn>
+                        <Translation id="TR_BUY_PAID_BY" />
+                    </LeftColumn>
                     <RightColumn>
                         <PaymentType method={paymentMethod} />
                     </RightColumn>

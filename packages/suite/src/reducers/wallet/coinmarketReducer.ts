@@ -8,6 +8,7 @@ import { Action as SuiteAction } from '@suite-types';
 
 type CommonTrade = {
     date: string;
+    key?: string;
     account: {
         deviceState: Account['deviceState'];
         symbol: Account['symbol'];

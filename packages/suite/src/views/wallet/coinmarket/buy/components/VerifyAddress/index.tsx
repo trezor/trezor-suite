@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { getAccountInfo, submitRequestForm, createTxLink } from '@wallet-utils/coinmarket/buyUtils';
-import { FiatValue, QuestionTooltip } from '@suite-components';
+import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { useActions, useSelector } from '@suite-hooks';
 import { Input, Button, colors, variables, CoinLogo, DeviceImage } from '@trezor/components';
@@ -127,7 +127,9 @@ const VerifyAddress = ({ selectedQuote }: Props) => {
         <Wrapper>
             <CardContent>
                 <CustomLabel>
-                    <LabelText>Receiving Account</LabelText>
+                    <LabelText>
+                        <Translation id="TR_BUY_RECEIVING_ACCOUNT" />
+                    </LabelText>
                     <StyledQuestionTooltip messageId="TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP" />
                 </CustomLabel>
                 <FakeInput>
@@ -147,7 +149,7 @@ const VerifyAddress = ({ selectedQuote }: Props) => {
                 <Input
                     label={
                         <Label>
-                            Receive Address
+                            <Translation id="TR_BUY_RECEIVING_ADDRESS" />
                             <StyledQuestionTooltip messageId="TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP" />
                         </Label>
                     }
@@ -162,13 +164,15 @@ const VerifyAddress = ({ selectedQuote }: Props) => {
                                 trezorModel={selectedDevice.features?.major_version === 1 ? 1 : 2}
                             />
                         )}
-                        Confirmed on trezor
+                        <Translation id="TR_BUY_CONFIRMED_ON_TREZOR" />
                     </Confirmed>
                 )}
             </CardContent>
             <ButtonWrapper>
                 {!addressVerified && (
-                    <Button onClick={() => verifyAddress(path, address)}>Confirm On Trezor</Button>
+                    <Button onClick={() => verifyAddress(path, address)}>
+                        <Translation id="TR_BUY_CONFIRM_ON_TREZOR" />
+                    </Button>
                 )}
                 {addressVerified && (
                     <Button
@@ -193,7 +197,7 @@ const VerifyAddress = ({ selectedQuote }: Props) => {
                             }
                         }}
                     >
-                        Go to payment
+                        <Translation id="TR_BUY_GO_TO_PAYMENT" />
                     </Button>
                 )}
             </ButtonWrapper>

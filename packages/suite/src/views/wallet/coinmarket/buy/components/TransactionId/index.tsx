@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables, colors } from '@trezor/components';
+import { Translation } from '@suite-components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -25,7 +26,9 @@ interface Props {
 const TransactionId = ({ transactionId, className }: Props) => {
     return (
         <Wrapper className={className}>
-            <Label>trans. id:</Label>
+            <Label>
+                <Translation id="TR_BUY_TRANS_ID" />
+            </Label>
             <Value>{transactionId}</Value>
         </Wrapper>
     );

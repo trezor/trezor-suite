@@ -172,6 +172,54 @@ const definedMessages = defineMessages({
         defaultMessage: 'Check on your Trezor now',
         id: 'TR_ADDRESS_MODAL_CHECK_ON_TREZOR',
     },
+    TR_BUY_NO_PROVIDERS: {
+        defaultMessage: 'No providers',
+        id: 'TR_BUY_NO_PROVIDERS',
+    },
+    TR_BUY_LOADING: {
+        defaultMessage: 'Loading',
+        id: 'TR_BUY_LOADING',
+    },
+    TR_BUY_SPEND: {
+        defaultMessage: 'spend',
+        id: 'TR_BUY_SPEND',
+    },
+    TR_BUY_BUY: {
+        defaultMessage: 'buy',
+        id: 'TR_BUY_BUY',
+    },
+    TR_BUY_PAID_BY: {
+        defaultMessage: 'paid by',
+        id: 'TR_BUY_PAID_BY',
+    },
+    TR_BUY_PROVIDER: {
+        defaultMessage: 'provider',
+        id: 'TR_BUY_PROVIDER',
+    },
+    TR_BUY_TRANS_ID: {
+        defaultMessage: 'trans. id:',
+        id: 'TR_BUY_TRANS_ID',
+    },
+    TR_BUY_RECEIVING_ADDRESS: {
+        defaultMessage: 'Receive Address',
+        id: 'TR_BUY_RECEIVING_ADDRESS',
+    },
+    TR_BUY_CONFIRMED_ON_TREZOR: {
+        defaultMessage: 'Confirmed on trezor',
+        id: 'TR_BUY_CONFIRMED_ON_TREZOR',
+    },
+    TR_BUY_CONFIRM_ON_TREZOR: {
+        defaultMessage: 'Confirm On Trezor',
+        id: 'TR_BUY_CONFIRM_ON_TREZOR',
+    },
+    TR_BUY_GO_TO_PAYMENT: {
+        defaultMessage: 'Go to payment',
+        id: 'TR_BUY_GO_TO_PAYMENT',
+    },
+    TR_BUY_RECEIVING_ACCOUNT: {
+        defaultMessage: ' Receiving Account',
+        id: 'TR_BUY_RECEIVING_ACCOUNT',
+    },
     TR_ADDRESS_MODAL_CHECK_ON_TREZOR_DESC: {
         defaultMessage:
             'For even more security you can check the receive address on your Trezor to make sure nobody hacked your Wallet.',
