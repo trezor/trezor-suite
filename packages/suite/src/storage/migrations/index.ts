@@ -58,4 +58,11 @@ export const migrate = async (
         ]);
         graphStore.createIndex('deviceState', 'account.deviceState');
     }
+
+    if (oldVersion < 15) {
+        // object store for send form
+        // @ts-ignore sendForm doesn't exists anymore
+        db.deleteObjectStore('sendForm');
+        db.createObjectStore('sendFormDrafts');
+    }
 };

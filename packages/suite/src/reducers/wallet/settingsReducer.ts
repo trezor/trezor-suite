@@ -47,7 +47,6 @@ export default (state: State = initialState, action: Action): State => {
                 break;
 
             case WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL:
-                if (!draft.lastUsedFeeLevel) draft.lastUsedFeeLevel = {}; // compatibility with indexedDB version < 15
                 draft.lastUsedFeeLevel[action.symbol] = action.feeLevel;
                 break;
             // no default

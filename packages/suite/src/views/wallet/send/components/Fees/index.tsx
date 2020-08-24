@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FeeLevel } from 'trezor-connect';
 import { SelectBar, colors, variables } from '@trezor/components';
 import { Card, Translation, FiatValue } from '@suite-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';

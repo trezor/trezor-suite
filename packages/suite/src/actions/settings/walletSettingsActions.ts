@@ -72,5 +72,5 @@ export const setLastUsedFeeLevel = (feeLevel: FeeLevel) => (
 export const getLastUsedFeeLevel = () => (_: Dispatch, getState: GetState) => {
     const { selectedAccount, settings } = getState().wallet;
     if (selectedAccount.status !== 'loaded') return;
-    return settings.lastUsedFeeLevel && settings.lastUsedFeeLevel[selectedAccount.account.symbol];
+    return settings.lastUsedFeeLevel[selectedAccount.account.symbol];
 };
