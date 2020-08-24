@@ -2,10 +2,10 @@ import { SettingsLayout } from '@settings-components';
 import { ActionColumn, Row, Section, TextColumn } from '@suite-components/Settings';
 import { Switch, Select } from '@trezor/components';
 import styled from 'styled-components';
-import InvityAPI from '@suite/services/invityAPI';
 import React from 'react';
 
 import { Props } from './Container';
+import invityAPI from '@suite/services/invityAPI';
 
 const StyledActionColumn = styled(ActionColumn)`
     max-width: 300px;
@@ -56,27 +56,28 @@ const DebugSettings = (props: Props) => {
                     />
                     <StyledActionColumn>
                         <Select
-                            onChange={(item: { value: string; label: string }) =>
+                            onChange={(item: { value: string; label: string }) => {
                                 props.setDebugMode({
                                     invityAPIUrl: item.value,
-                                })
-                            }
+                                });
+                                invityAPI.setInvityAPIServer(item.value);
+                            }}
                             value={{
                                 label: props.debug.invityAPIUrl,
                                 value: props.debug.invityAPIUrl,
                             }}
                             options={[
                                 {
-                                    label: InvityAPI.localhostAPIServer,
-                                    value: InvityAPI.localhostAPIServer,
+                                    label: invityAPI.localhostAPIServer,
+                                    value: invityAPI.localhostAPIServer,
                                 },
                                 {
-                                    label: InvityAPI.stagingAPIServer,
-                                    value: InvityAPI.stagingAPIServer,
+                                    label: invityAPI.stagingAPIServer,
+                                    value: invityAPI.stagingAPIServer,
                                 },
                                 {
-                                    label: InvityAPI.productionAPIServer,
-                                    value: InvityAPI.productionAPIServer,
+                                    label: invityAPI.productionAPIServer,
+                                    value: invityAPI.productionAPIServer,
                                 },
                             ]}
                         />

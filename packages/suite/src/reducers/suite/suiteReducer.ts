@@ -8,7 +8,7 @@ import invityAPI from '@suite/services/invityAPI';
 
 export interface DebugModeOptions {
     translationMode: boolean;
-    invityAPIUrl: string;
+    invityAPIUrl?: string;
     showDebugMenu: boolean;
     bridgeDevMode: boolean;
 }
@@ -59,7 +59,7 @@ const initialState: SuiteState = {
     settings: {
         language: 'en',
         debug: {
-            invityAPIUrl: invityAPI.productionAPIServer,
+            invityAPIUrl: undefined,
             showDebugMenu: false,
             translationMode: false,
             bridgeDevMode: false,

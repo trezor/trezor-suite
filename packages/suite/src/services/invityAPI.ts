@@ -58,17 +58,7 @@ class InvityAPI {
     private static apiKey: string;
 
     constructor() {
-        let defaultServer;
-        if (isDev()) {
-            defaultServer = this.stagingAPIServer;
-        } else {
-            defaultServer = this.productionAPIServer;
-        }
-        this.server = defaultServer;
-        // override for now the production api server
-        if (!this.server) {
-            this.server = defaultServer;
-        }
+        this.server = this.productionAPIServer;
     }
 
     private getInvityAPIKey() {
