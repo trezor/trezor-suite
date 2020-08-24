@@ -35,7 +35,7 @@ class InvityAPI {
     stagingAPIServer = 'https://staging-exchange.invity.io';
     localhostAPIServer = 'http://localhost:3330';
 
-    server: string = this.productionAPIServer;
+    server: string = this.stagingAPIServer;
 
     // info service
     private DETECT_COUNTRY_INFO = '/api/info/country';
