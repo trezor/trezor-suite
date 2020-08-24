@@ -63,8 +63,8 @@ const DebugSettings = (props: Props) => {
                                 invityAPI.setInvityAPIServer(item.value);
                             }}
                             value={{
-                                label: props.debug.invityAPIUrl,
-                                value: props.debug.invityAPIUrl,
+                                label: invityAPI.server,
+                                value: invityAPI.server,
                             }}
                             options={[
                                 {
