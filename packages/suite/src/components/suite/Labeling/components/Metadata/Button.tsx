@@ -8,42 +8,54 @@ import { MetadataAddPayload } from '@suite-types/metadata';
 import MetadataEdit from './Edit';
 
 const LabelDefaultValue = styled.div`
-    min-width: 0;
-    max-width: 0;
-    transition: all 1s;
+    width: 0;
+    /* max-width: 0; */
+    /* transition: all 1s; */
     text-overflow: ellipsis;
 
     &::before {
-        content: ':';
+        content: ': ';
     }
 `;
 
 const AddLabelButton = styled(Button)`
     visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.4s;
+    /* opacity: 0; */
+    width: 0;
+    /* transition: all 0.4s; */
 `;
 
-const LabelValue = styled.div``;
+const LabelValue = styled.div`
+    overflow: hidden;
+    text-overflow: ellipsis;
+`;
 
 const Label = styled.div`
     cursor: pointer;
     display: flex;
     overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const LabelContainer = styled.div`
     display: flex;
     white-space: nowrap;
+    align-items: center;
     &:hover {
         ${AddLabelButton} {
             visibility: visible;
-            opacity: 1;
+            /* opacity: 1; */
+            width: auto;
         }
         ${LabelDefaultValue} {
-            max-width: 440px;
+            width: auto;
         }
     }
+`;
+
+const StyledDropdown = styled(Dropdown)`
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 interface DropdownMenuItem {
@@ -154,14 +166,19 @@ const MetadataButton = (props: Props) => {
     return (
         <LabelContainer>
             {props.payload.value ? (
-                <Dropdown alignMenu="left" items={[{ options: dropdownItems, key: 'dropdown' }]}>
+                <StyledDropdown
+                    alignMenu="left"
+                    absolutePosition
+                    appendTo={document.body}
+                    items={[{ options: dropdownItems, key: 'dropdown' }]}
+                >
                     <Label data-test={dataTestBase}>
                         <LabelValue>{props.payload.value}</LabelValue>
                         {props.defaultVisibleValue && (
                             <LabelDefaultValue>{props.defaultVisibleValue}</LabelDefaultValue>
                         )}
                     </Label>
-                </Dropdown>
+                </StyledDropdown>
             ) : (
                 props.defaultVisibleValue
             )}

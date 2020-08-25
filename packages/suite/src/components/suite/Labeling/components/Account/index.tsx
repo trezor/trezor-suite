@@ -9,6 +9,8 @@ import WalletLabel from '../Wallet';
 
 const TabularNums = styled.span`
     font-variant-numeric: tabular-nums;
+    text-overflow: ellipsis;
+    overflow: hidden;
 `;
 
 export default (props: Props) => {

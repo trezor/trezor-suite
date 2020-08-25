@@ -33,8 +33,7 @@ const TxTypeIconWrapper = styled.div`
 const Content = styled.div`
     display: flex;
     flex: 1;
-    // todo: commenting out next-line fixes metadata dropdown, but breaks transactions list on small screens
-    // overflow: hidden;
+    overflow: hidden;
     flex-direction: column;
     font-variant-numeric: tabular-nums;
 `;
@@ -60,7 +59,7 @@ const TargetsWrapper = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
-    // overflow: hidden;
+    overflow: hidden;
 `;
 
 const ExpandButton = styled(Button)`

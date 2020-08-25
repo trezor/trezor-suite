@@ -22,12 +22,17 @@ const moveCaretToEndOfContentEditable = (contentEditableElement: HTMLElement) =>
     }
 };
 
-const SubmitIcon = styled(Icon)`
-    background-color: ${colors.BLACK17};
-    color: ${colors.NEUE_BG_LIGHT_GREY};
-    padding: 0 2px;
-    margin: 0 2px;
+const IconWrapper = styled.div<{ bgColor: string }>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* width: 24px;
+    height: 24px; */
+    /* padding: 4px; */
+    background-color: ${props => props.bgColor};
     border-radius: 4px;
+    margin: 0 3px;
+    padding: 2px;
 `;
 
 const MetadataEdit = (props: {
@@ -89,35 +94,41 @@ const MetadataEdit = (props: {
     }, [submit, props.originalValue]);
 
     return (
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
             <div
-                style={{ minWidth: '40px', paddingLeft: '2px' }}
+                style={{ minWidth: '40px', paddingLeft: '2px', overflow: 'hidden' }}
                 contentEditable
                 ref={divRef}
                 data-test="@metadata/input"
             />
-            <SubmitIcon
-                style={{ cursor: 'pointer' }}
-                size={16}
-                data-test="@metadata/submit"
-                icon="CHECK"
-                onClick={() => {
-                    submit(
-                        divRef && divRef.current ? divRef.current.textContent : props.originalValue,
-                    );
-                }}
-                color={colors.NEUE_BG_LIGHT_GREEN}
-            />
-            <SubmitIcon
-                style={{ cursor: 'pointer' }}
-                size={16}
-                data-test="@metadata/cancel"
-                icon="CROSS"
-                onClick={() => {
-                    submit(props.originalValue);
-                }}
-                color={colors.NEUE_BG_LIGHT_GREY}
-            />
+            <IconWrapper bgColor={colors.NEUE_BG_LIGHT_GREEN}>
+                <Icon
+                    usePointerCursor
+                    size={14}
+                    data-test="@metadata/submit"
+                    icon="CHECK"
+                    onClick={() => {
+                        submit(
+                            divRef && divRef.current
+                                ? divRef.current.textContent
+                                : props.originalValue,
+                        );
+                    }}
+                    color={colors.NEUE_TYPE_GREEN}
+                />
+            </IconWrapper>
+            <IconWrapper bgColor={colors.NEUE_BG_GRAY}>
+                <Icon
+                    usePointerCursor
+                    size={14}
+                    data-test="@metadata/cancel"
+                    icon="CROSS"
+                    onClick={() => {
+                        submit(props.originalValue);
+                    }}
+                    color={colors.NEUE_TYPE_DARK_GREY}
+                />
+            </IconWrapper>
         </div>
     );
 };

@@ -22,7 +22,7 @@ const FiatAmount = styled.span`
 
 const TargetWrapper = styled(motion.div)`
     display: flex;
-    position: relative;
+    /* position: relative; */
     flex: 1;
     justify-content: space-between;
 
@@ -35,13 +35,14 @@ const TargetAmountsWrapper = styled.div<{ paddingBottom?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    align-self: center;
     padding-bottom: ${props => (props.paddingBottom ? '20px' : '0px')};
 `;
 
 const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     /* padding: 8px 0px; row padding */
     display: block;
-    // overflow: hidden;
+    overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 `;
@@ -52,10 +53,11 @@ const TargetAddress = styled(motion.div)`
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    // overflow: hidden;
+    overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     font-variant-numeric: tabular-nums slashed-zero;
+    margin-right: 4px;
 `;
 
 const TimelineDotWrapper = styled.div`
