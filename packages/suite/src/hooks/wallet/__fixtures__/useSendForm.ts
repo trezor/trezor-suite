@@ -318,7 +318,7 @@ export const composeDebouncedTransaction = [
                 },
             }, // delay in trezor-connect response, greater than typing delay
         ],
-        typing: { element: 'outputs[0].amount', value: '111', delay: 301 }, // delay greater than composeDebounced timeout
+        typing: { element: 'outputs[0].amount', value: '111', delay: 310 }, // delay greater than composeDebounced timeout
         results: {
             connectCalledTimes: 3,
             composedLevels: {
