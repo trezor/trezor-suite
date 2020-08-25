@@ -1,5 +1,6 @@
 import { FIAT } from '@suite-config';
 import { useSelector } from '@suite-hooks';
+import { Account } from '@wallet-types';
 import { CleanSelect, Icon, Input, variables } from '@trezor/components';
 import { AmountLimits, buildOption } from '@wallet-utils/coinmarket/buyUtils';
 import React, { useEffect, useState } from 'react';
@@ -51,6 +52,19 @@ interface Props {
     buyInfo: BuyInfo;
     setAmountLimits: (amountLimits: AmountLimits | undefined) => void;
 }
+
+const getCryptoOptions = (networkType: Account['networkType']) => {
+    const supportedTokens = ['usdt20', 'dai', 'gusd', 'ong'];
+    const options: { value: string; label: string }[] = [];
+
+    if (networkType === 'ethereum') {
+        supportedTokens.forEach(token =>
+            options.push({ label: token.toUpperCase(), value: token }),
+        );
+    }
+
+    return options;
+};
 
 const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
     const {
@@ -204,8 +218,10 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
                                             label: account.symbol.toUpperCase(),
                                         }}
                                         isClearable={false}
-                                        options={[]}
-                                        minWidth="45px"
+                                        options={getCryptoOptions(account.networkType)}
+                                        isDropdownVisible={account.networkType === 'ethereum'}
+                                        isDisabled={account.networkType !== 'ethereum'}
+                                        minWidth="55px"
                                     />
                                 );
                             }}
