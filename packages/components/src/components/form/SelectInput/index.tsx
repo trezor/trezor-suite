@@ -46,19 +46,20 @@ const selectStyle = (isSearchable: boolean, isHovered: boolean, minWidth = '50px
             border: 0,
         };
     },
-    valueContainer: (base: Record<string, any>) => ({
-        ...base,
-        border: 0,
-        padding: '0px',
-        paddingRight: 3,
-        marginTop: 1,
-        fontWeight: variables.FONT_WEIGHT.MEDIUM,
-        color: colors.NEUE_TYPE_LIGHT_GREY,
-        minWidth,
-        display: 'flex',
-        'flex-wrap': 'nowrap',
-        justifyContent: 'flex-end',
-    }),
+    valueContainer: (base: Record<string, any>) =>
+        ({
+            ...base,
+            border: 0,
+            padding: '0px',
+            paddingRight: 3,
+            marginTop: 1,
+            fontWeight: variables.FONT_WEIGHT.MEDIUM,
+            color: colors.NEUE_TYPE_LIGHT_GREY,
+            minWidth,
+            display: 'flex',
+            flexWrap: 'nowrap',
+            justifyContent: 'flex-end',
+        } as const),
     indicatorSeparator: (base: Record<string, any>) => {
         return {
             display: 'none',
