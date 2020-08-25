@@ -115,7 +115,6 @@ export type UseSendFormState = {
     feeOutdated: boolean;
     fiatRates: CoinFiatRates | undefined;
     localCurrencyOption: CurrencyOption;
-    destinationAddressEmpty: boolean; // TODO: REMOVE, check this in ripple "composeTransaction"
     isLoading: boolean;
     composedLevels?: PrecomposedLevels;
     online: boolean;

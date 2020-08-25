@@ -47,7 +47,6 @@ const getStateFromProps = (props: UseSendFormProps) => {
         feeOutdated: false,
         fiatRates,
         localCurrencyOption,
-        destinationAddressEmpty: false,
         isLoading: false,
         online: props.online,
     };

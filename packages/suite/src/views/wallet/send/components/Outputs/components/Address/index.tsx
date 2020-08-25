@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Input, colors, variables, Icon, Button } from '@trezor/components';
 import { AddressLabeling, QuestionTooltip, Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
-import { checkRippleEmptyAddress, scanQrRequest } from '@wallet-actions/sendFormActions';
+import { scanQrRequest } from '@wallet-actions/sendFormActions';
 import { useActions } from '@suite-hooks';
 import { useSendFormContext } from '@wallet-hooks';
 import { isAddressValid } from '@wallet-utils/validation';
@@ -39,7 +39,6 @@ const StyledIcon = styled(Icon)`
 export default ({ outputId, outputsCount }: { outputId: number; outputsCount: number }) => {
     const {
         account,
-        updateContext,
         removeOutput,
         composeTransaction,
         register,
@@ -121,13 +120,6 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
                 ) : undefined
             }
             onChange={async () => {
-                if (!addressError && networkType === 'ripple') {
-                    const destinationAddressEmpty = await checkRippleEmptyAddress(
-                        addressValue,
-                        symbol,
-                    );
-                    updateContext({ destinationAddressEmpty });
-                }
                 composeTransaction(`outputs[${outputId}].amount`, !!addressError);
             }}
             bottomText={

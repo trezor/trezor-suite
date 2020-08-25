@@ -70,7 +70,6 @@ export default ({ outputId }: { outputId: number }) => {
         account,
         network,
         localCurrencyOption,
-        destinationAddressEmpty,
         register,
         outputs,
         getDefaultValue,
@@ -84,7 +83,7 @@ export default ({ outputId }: { outputId: number }) => {
     const inputName = `outputs[${outputId}].amount`;
     const tokenInputName = `outputs[${outputId}].token`;
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
-    const { symbol, availableBalance, networkType } = account;
+    const { symbol, networkType } = account;
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const error = outputError ? outputError.amount : undefined;
 
@@ -94,9 +93,11 @@ export default ({ outputId }: { outputId: number }) => {
 
     const formattedAvailableBalance = token
         ? token.balance || '0'
-        : formatNetworkAmount(availableBalance, symbol);
+        : formatNetworkAmount(account.availableBalance, symbol);
     const reserve =
-        account.networkType === 'ripple' ? formatNetworkAmount(account.misc.reserve, symbol) : null;
+        account.networkType === 'ripple'
+            ? formatNetworkAmount(account.misc.reserve, symbol)
+            : undefined;
     const tokenBalance = token ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
     const decimals = token ? token.decimals : network.decimals;
 
@@ -183,23 +184,20 @@ export default ({ outputId }: { outputId: number }) => {
                                 return 'AMOUNT_IS_TOO_LOW';
                             }
 
-                            if (amountBig.isGreaterThan(formattedAvailableBalance)) {
+                            if (amountBig.gt(formattedAvailableBalance)) {
+                                if (
+                                    reserve &&
+                                    amountBig.lt(formatNetworkAmount(account.balance, symbol))
+                                ) {
+                                    return (
+                                        <Translation
+                                            key="AMOUNT_IS_LESS_THAN_RESERVE"
+                                            id="AMOUNT_IS_LESS_THAN_RESERVE"
+                                            values={{ reserve }}
+                                        />
+                                    );
+                                }
                                 return 'AMOUNT_IS_NOT_ENOUGH';
-                            }
-
-                            if (
-                                networkType === 'ripple' &&
-                                destinationAddressEmpty &&
-                                reserve &&
-                                amountBig.isLessThan(reserve)
-                            ) {
-                                return (
-                                    <Translation
-                                        key="AMOUNT_IS_LESS_THAN_RESERVE"
-                                        id="AMOUNT_IS_LESS_THAN_RESERVE"
-                                        values={{ reserve }}
-                                    />
-                                );
                             }
 
                             if (!isDecimalsValid(value, decimals)) {

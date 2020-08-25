@@ -3414,8 +3414,12 @@ const definedMessages = defineMessages({
         defaultMessage: 'Amount is too low',
         id: 'AMOUNT_IS_TOO_LOW',
     },
+    AMOUNT_IS_MORE_THAN_RESERVE: {
+        defaultMessage: 'Amount is above the required unspendable reserve ({reserve} XRP)',
+        id: 'AMOUNT_IS_MORE_THAN_RESERVE',
+    },
     AMOUNT_IS_LESS_THAN_RESERVE: {
-        defaultMessage: 'Not enough XRP above the required unspendable reserve ({reserve} XRP)',
+        defaultMessage: 'Recipient account requires minimum reserve {reserve} XRP to activate',
         id: 'AMOUNT_IS_LESS_THAN_RESERVE',
     },
     AMOUNT_RESERVE_EXPLANATION: {

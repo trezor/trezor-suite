@@ -60,16 +60,14 @@ export const useSendFormCompose = ({
             return composeTransaction(values, state);
         };
 
-        try {
-            const result = await debounce(composeInner);
+        const result = await debounce(composeInner);
+        if (result !== 'ignore') {
             if (result) {
                 // set new composed transactions
                 setComposedLevels(result);
             }
             // result undefined: (FormState got errors or sendFormActions got errors)
             updateContext({ isLoading: false });
-        } catch (error) {
-            // error should be thrown ONLY when response from trezor-connect shouldn't be processes (see composeDebounced hook)
         }
     }, [state, updateContext, debounce, errors, getValues, composeTransaction]);
 
@@ -142,18 +140,31 @@ export const useSendFormCompose = ({
 
         // composed transaction has error
         if (!composed || composed.type === 'error') {
+            const { error } = composed;
+            const expectedError = [
+                'AMOUNT_IS_NOT_ENOUGH',
+                'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+                'AMOUNT_IS_LESS_THAN_RESERVE',
+            ].includes(error);
+
+            if (!expectedError) {
+                // TODO: toast!
+                console.warn('Compose unexpected error', error);
+                return;
+            }
+
             if (composeField) {
                 // setError to the field which created `composeRequest`
                 setError(composeField, {
                     type: 'compose',
-                    message: 'AMOUNT_IS_NOT_ENOUGH',
+                    message: error,
                 });
             } else {
                 // setError to the all `Amount` fields, composeField not specified (load draft case)
                 values.outputs.forEach((_, i) => {
                     setError(`outputs[${i}].amount`, {
                         type: 'compose',
-                        message: 'AMOUNT_IS_NOT_ENOUGH',
+                        message: error,
                     });
                 });
             }

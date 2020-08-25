@@ -44,7 +44,7 @@ const calculate = (
     // const totalSpentBig = new BigNumber(calculateTotal('0', feeInSatoshi));
 
     if (totalSpent.isGreaterThan(availableBalance)) {
-        const error = 'NOT-ENOUGH-FUNDS';
+        const error = 'AMOUNT_IS_NOT_ENOUGH';
         return { type: 'error', error } as const;
     }
 
@@ -124,6 +124,27 @@ export const composeTransaction = (
         });
     }
     const wrappedResponse: PrecomposedLevels = {};
+
+    if (address) {
+        const accountResponse = await TrezorConnect.getAccountInfo({
+            descriptor: address,
+            coin: account.symbol,
+        });
+
+        if (accountResponse.success && accountResponse.payload.empty) {
+            const reserve = new BigNumber(accountResponse.payload.misc!.reserve!);
+            if (reserve.gt(amountInSatoshi)) {
+                predefinedLevels.forEach(level => {
+                    wrappedResponse[level.label] = {
+                        type: 'error',
+                        error: 'AMOUNT_IS_LESS_THAN_RESERVE',
+                    };
+                });
+                return wrappedResponse;
+            }
+        }
+    }
+
     const response = predefinedLevels.map(level => calculate(availableBalance, output, level));
     response.forEach((tx, index) => {
         const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
@@ -133,7 +154,6 @@ export const composeTransaction = (
     const hasAtLeastOneValid = response.find(r => r.type !== 'error');
     if (!hasAtLeastOneValid && !wrappedResponse.custom) {
         const { minFee } = feeInfo;
-        console.warn('LEVELS', predefinedLevels);
         let maxFee = new BigNumber(predefinedLevels[predefinedLevels.length - 1].feePerUnit).minus(
             1,
         );
@@ -143,13 +163,9 @@ export const composeTransaction = (
             maxFee = maxFee.minus(1);
         }
 
-        console.warn('CUSTOM LEVELS!', customLevels, wrappedResponse);
-
         const customLevelsResponse = customLevels.map(level =>
             calculate(availableBalance, output, level),
         );
-
-        console.warn('CUSTOM LEVELS RESPONSE', customLevelsResponse);
 
         const customValid = customLevelsResponse.findIndex(r => r.type !== 'error');
         if (customValid >= 0) {

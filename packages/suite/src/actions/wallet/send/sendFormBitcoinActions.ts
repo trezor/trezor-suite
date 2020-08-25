@@ -109,7 +109,6 @@ export const composeTransaction = (
     // there is no valid tx in predefinedLevels and there is no custom level
     if (!hasAtLeastOneValid && !wrappedResponse.custom) {
         const { minFee } = feeInfo;
-        console.warn('LEVELS', predefinedLevels);
         let maxFee = new BigNumber(predefinedLevels[predefinedLevels.length - 1].feePerUnit).minus(
             1,
         );
@@ -119,8 +118,6 @@ export const composeTransaction = (
             maxFee = maxFee.minus(1);
         }
 
-        console.warn('CUSTOM LEVELS!', customLevels, wrappedResponse);
-
         const customLevelsResponse =
             customLevels.length > 0
                 ? await TrezorConnect.composeTransaction({
@@ -129,8 +126,6 @@ export const composeTransaction = (
                       feeLevels: customLevels,
                   })
                 : ({ success: false } as const);
-
-        console.warn('CUSTOM LEVELS RESPONSE', customLevelsResponse);
 
         if (customLevelsResponse.success) {
             const customValid = customLevelsResponse.payload.findIndex(r => r.type !== 'error');
@@ -143,6 +138,7 @@ export const composeTransaction = (
     }
     // make sure that feePerByte is an integer (trezor-connect may return float)
     // format max (trezor-connect sends it as satoshi)
+    // format error message to Translation id
     Object.keys(wrappedResponse).forEach(key => {
         const tx = wrappedResponse[key];
         if (tx.type !== 'error') {
@@ -152,6 +148,8 @@ export const composeTransaction = (
             if (typeof tx.max === 'string') {
                 tx.max = formatNetworkAmount(tx.max, account.symbol);
             }
+        } else if (tx.error === 'NOT-ENOUGH-FUNDS') {
+            tx.error = 'AMOUNT_IS_NOT_ENOUGH';
         }
     });
 

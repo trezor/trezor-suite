@@ -13,7 +13,7 @@ export const useDebounce = () => {
         async <F extends (...args: any) => Promise<any>>(
             fn: F,
             useTimeout = true,
-        ): Promise<ReturnType<F>> => {
+        ): Promise<ReturnType<F> | 'ignore'> => {
             // clear previous timeout
             if (timeout.current >= 0) clearTimeout(timeout.current);
             // set new timeout
@@ -37,7 +37,7 @@ export const useDebounce = () => {
             pending.resolve(true); // try to unlock, it could be already resolved tho (see: dfd.resolve above)
             const shouldBeProcessed = await pending.promise; // catch potential rejection
             dfd.current = null; // reset dfd
-            if (!shouldBeProcessed) throw new Error('ignored');
+            if (!shouldBeProcessed) return 'ignore';
             return result;
         },
         [timeout, dfd],

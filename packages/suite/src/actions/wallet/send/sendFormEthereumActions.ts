@@ -52,12 +52,12 @@ const calculate = (
     }
 
     if (totalSpent.isGreaterThan(availableBalance)) {
-        const error = token ? 'NOT-ENOUGH-CURRENCY-FEE' : 'NOT-ENOUGH-FUNDS';
+        const error = token ? 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' : 'AMOUNT_IS_NOT_ENOUGH';
         return { type: 'error', error } as const;
     }
 
     if (token && new BigNumber(amount).gt(amountToSatoshi(token.balance!, token.decimals))) {
-        return { type: 'error', error: 'NOT-ENOUGH-FUNDS' } as const;
+        return { type: 'error', error: 'AMOUNT_IS_NOT_ENOUGH' } as const;
     }
 
     const payloadData = {
@@ -196,8 +196,6 @@ export const composeTransaction = (
         const customLevelsResponse = customLevels.map(level =>
             calculate(availableBalance, output, level, tokenInfo),
         );
-
-        console.warn('CUSTOM LEVELS RESPONSE', customLevelsResponse);
 
         const customValid = customLevelsResponse.findIndex(r => r.type !== 'error');
         if (customValid >= 0) {
