@@ -208,6 +208,14 @@ const definedMessages = defineMessages({
         defaultMessage: 'Confirmed on trezor',
         id: 'TR_BUY_CONFIRMED_ON_TREZOR',
     },
+    TR_BUY_OFFERS_FOR: {
+        defaultMessage: 'Offers for:',
+        id: 'TR_BUY_OFFERS_FOR',
+    },
+    TR_BUY_SHOW_OFFERS: {
+        defaultMessage: 'Show offers',
+        id: 'TR_BUY_SHOW_OFFERS',
+    },
     TR_BUY_CONFIRM_ON_TREZOR: {
         defaultMessage: 'Confirm On Trezor',
         id: 'TR_BUY_CONFIRM_ON_TREZOR',

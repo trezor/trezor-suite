@@ -53,14 +53,21 @@ interface Props {
     setAmountLimits: (amountLimits: AmountLimits | undefined) => void;
 }
 
-const getCryptoOptions = (networkType: Account['networkType']) => {
+const getCryptoOptions = (account: Account) => {
     const supportedTokens = ['usdt20', 'dai', 'gusd', 'ong'];
-    const options: { value: string; label: string }[] = [];
+    const uppercaseSymbol = account.symbol.toUpperCase();
+    const options: { value: string; label: string }[] = [
+        { value: uppercaseSymbol, label: uppercaseSymbol },
+    ];
 
-    if (networkType === 'ethereum') {
-        supportedTokens.forEach(token =>
-            options.push({ label: token.toUpperCase(), value: token }),
-        );
+    if (account.networkType === 'ethereum') {
+        supportedTokens.forEach(token => {
+            const uppercaseToken = token.toUpperCase();
+            options.push({
+                label: uppercaseToken,
+                value: uppercaseToken,
+            });
+        });
     }
 
     return options;
@@ -93,6 +100,7 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
     }
 
     const { account } = selectedAccount;
+    const uppercaseSymbol = account.symbol.toUpperCase();
     const defaultCurrencyInfo = buyInfo.buyInfo?.suggestedFiatCurrency;
     const defaultCurrency = defaultCurrencyInfo
         ? buildOption(defaultCurrencyInfo)
@@ -210,18 +218,22 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
                         <Controller
                             control={control}
                             name={cryptoSelect}
-                            render={() => {
+                            defaultValue={{
+                                value: uppercaseSymbol,
+                                label: uppercaseSymbol,
+                            }}
+                            render={({ onChange, value }) => {
                                 return (
                                     <CleanSelect
-                                        value={{
-                                            value: account.symbol,
-                                            label: account.symbol.toUpperCase(),
+                                        onChange={(selected: any) => {
+                                            onChange(selected);
                                         }}
+                                        value={value}
                                         isClearable={false}
-                                        options={getCryptoOptions(account.networkType)}
+                                        options={getCryptoOptions(account)}
                                         isDropdownVisible={account.networkType === 'ethereum'}
                                         isDisabled={account.networkType !== 'ethereum'}
-                                        minWidth="55px"
+                                        minWidth="70px"
                                     />
                                 );
                             }}

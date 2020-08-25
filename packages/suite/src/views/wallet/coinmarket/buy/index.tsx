@@ -73,7 +73,7 @@ const CoinmarketBuy = () => {
         const request: BuyTradeQuoteRequest = {
             wantCrypto,
             fiatCurrency: formValues.currencySelect.value.toUpperCase(),
-            receiveCurrency: account.symbol.toUpperCase(),
+            receiveCurrency: formValues.cryptoSelect.value,
             country: formValues.countrySelect.value,
             fiatStringAmount,
             cryptoStringAmount,
@@ -81,21 +81,17 @@ const CoinmarketBuy = () => {
         await saveQuoteRequest(request);
         const allQuotes = await invityAPI.getBuyQuotes(request);
         const [quotes, alternativeQuotes] = processQuotes(allQuotes);
-        if (!quotes || quotes.length === 0) {
-            // todo handle no quotes
-        } else {
-            const limits = getAmountLimits(request, quotes);
+        const limits = getAmountLimits(request, quotes);
 
-            if (limits) {
-                setAmountLimits(limits);
-            } else {
-                await saveQuotes(quotes, alternativeQuotes);
-                goto('wallet-coinmarket-buy-offers', {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                });
-            }
+        if (limits) {
+            setAmountLimits(limits);
+        } else {
+            await saveQuotes(quotes, alternativeQuotes);
+            goto('wallet-coinmarket-buy-offers', {
+                symbol: account.symbol,
+                accountIndex: account.index,
+                accountType: account.accountType,
+            });
         }
     };
 

@@ -3,6 +3,7 @@ import { useSelector } from '@suite-hooks';
 import { Button, CleanSelect, colors, variables } from '@trezor/components';
 import regional from '@wallet-constants/coinmarket/regional';
 import { AmountLimits } from '@wallet-utils/coinmarket/buyUtils';
+import { Translation } from '@suite-components';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import { Controller, useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
@@ -66,7 +67,9 @@ const Footer = ({ buyInfo, setAmountLimits }: Props) => {
     return (
         <Wrapper>
             <Left>
-                <Label>Offers for:</Label>
+                <Label>
+                    <Translation id="TR_BUY_OFFERS_FOR" />
+                </Label>
                 <Controller
                     control={control}
                     defaultValue={defaultCountry}
@@ -96,7 +99,7 @@ const Footer = ({ buyInfo, setAmountLimits }: Props) => {
                     isLoading={formState.isSubmitting}
                     type="submit"
                 >
-                    Show offers
+                    <Translation id="TR_BUY_SHOW_OFFERS" />
                 </StyledButton>
             </Right>
         </Wrapper>

@@ -93,3 +93,5 @@ export type InjectedModalApplicationProps = {
     closeModalApp: (preserveParams?: boolean) => void;
     getBackgroundRoute: () => Route$ | typeof undefined;
 };
+
+export type SelectOption = { value: string; label: string };

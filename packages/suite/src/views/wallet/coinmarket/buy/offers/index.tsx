@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { LayoutContext } from '@suite-components';
 import { CoinmarketTopPanel, CoinmarketFooter } from '@wallet-components';
 import { variables, colors } from '@trezor/components';
-import * as routerActions from '@suite-actions/routerActions';
 import { useSelector, useActions } from '@suite/hooks/suite';
 import { BuyTrade } from 'invity-api';
 import * as modalActions from '@suite-actions/modalActions';
@@ -57,6 +56,15 @@ const DividerMiddle = styled.div`
     text-align: center;
 `;
 
+const NoQuotes = styled.div`
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    min-height: 550px;
+    align-items: center;
+    flex: 1;
+`;
+
 const Offers = () => {
     const { setLayout } = useContext(LayoutContext);
 
@@ -68,12 +76,9 @@ const Offers = () => {
     const quotesRequest = useSelector(state => state.wallet.coinmarket.buy.quotesRequest);
     const quotes = useSelector(state => state.wallet.coinmarket.buy.quotes);
     const alternativeQuotes = useSelector(state => state.wallet.coinmarket.buy.alternativeQuotes);
-    const { goto } = useActions({ goto: routerActions.goto });
     const { openModal } = useActions({ openModal: modalActions.openModal });
 
-    if (!quotesRequest) {
-        return null;
-    }
+    if (!quotesRequest) return null;
 
     const selectQuote = (quote: BuyTrade) => {
         openModal({
@@ -104,13 +109,13 @@ const Offers = () => {
         });
     };
 
-    if (quotes.length === 0) {
-        goto('wallet-coinmarket-buy');
-    }
-
     return (
         <Wrapper>
-            {!selectedQuote && (
+            {quotes?.length === 0 && alternativeQuotes?.length === 0 && (
+                <NoQuotes>No quotes here</NoQuotes>
+            )}
+
+            {!selectedQuote && quotes.length > 0 && (
                 <>
                     <List selectQuote={selectQuote} quotes={quotes} />
                     {alternativeQuotes && alternativeQuotes.length > 0 && (
