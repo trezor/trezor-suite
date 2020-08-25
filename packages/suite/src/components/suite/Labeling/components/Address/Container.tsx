@@ -4,7 +4,6 @@ import Component from './index';
 
 const mapStateToProps = (state: AppState) => ({
     accounts: state.wallet.accounts,
-    labeling: state.labeling,
 });
 
 export type Props = ReturnType<typeof mapStateToProps> & {

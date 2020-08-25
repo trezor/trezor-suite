@@ -69,7 +69,6 @@ const FreshAddress = ({
     const addressLabel = isBitcoin ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS';
     // NOTE: unrevealed[0] can be undefined (limit exceeded)
     const firstFreshAddress = isBitcoin ? unrevealed[0] : unused[0];
-    // const { addressLabels } = account.metadata;
 
     const getAddressValue = (address?: AccountAddress) => {
         if (!address) {
@@ -107,19 +106,6 @@ const FreshAddress = ({
             >
                 <Translation id="RECEIVE_ADDRESS_REVEAL" />
             </StyledButton>
-            {/* <Button
-                variant="tertiary"
-                icon="LABEL"
-                onClick={() =>
-                    changeMetadata(
-                        firstFreshAddress.address,
-                        addressLabels[firstFreshAddress.address],
-                    )
-                }
-            /> */}
-            {/* {addressLabels[firstFreshAddress.address] && (
-                <span>({addressLabels[firstFreshAddress.address]})</span>
-            )} */}
         </StyledCard>
     );
 };

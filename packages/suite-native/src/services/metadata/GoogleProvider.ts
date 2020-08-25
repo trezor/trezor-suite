@@ -27,9 +27,6 @@ class GoogleProvider implements AbstractMetadataProvider {
     isConnected() {
         return true;
     }
-    isLoading() {
-        return true;
-    }
 }
 
 export default GoogleProvider;

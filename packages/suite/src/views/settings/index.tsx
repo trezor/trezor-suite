@@ -106,7 +106,7 @@ const Settings = ({
                 <SectionItem>
                     <TextColumn
                         title="Labeling enabled"
-                        description="Labeling is pretty cool feature which allows you to label your wallets, accounts and transactions."
+                        description="Labeling feature allows you to label your wallets, accounts and transactions. Your labels are made persistent by syncing with cloud provider (Google or Dropbox)."
                     />
                     <ActionColumn>
                         <Switch

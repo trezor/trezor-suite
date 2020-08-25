@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { HiddenPlaceholder, FiatValue, Translation, MetadataButton } from '@suite-components';
+import { HiddenPlaceholder, FiatValue, Translation, MetadataLabeling } from '@suite-components';
 import { ArrayElement } from '@suite/types/utils';
 import { getTxOperation, getTargetAmount } from '@wallet-utils/transactionUtils';
 import { isTestnet } from '@wallet-utils/accountUtils';
@@ -75,7 +75,7 @@ export const Target = ({
         <BaseTargetLayout
             {...baseLayoutProps}
             addressLabel={
-                <MetadataButton
+                <MetadataLabeling
                     defaultVisibleValue={
                         <TargetAddressLabel target={target} type={transaction.type} />
                     }

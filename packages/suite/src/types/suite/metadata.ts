@@ -47,7 +47,6 @@ export interface AbstractMetadataProvider {
     getFileContent: (file: string) => Promise<ArrayBuffer | Buffer | void>;
     setFileContent: (file: string, content: any) => Promise<any>;
     isConnected: () => boolean;
-    isLoading: () => boolean;
     getCredentials: () => Promise<MetadataProviderCredentials | void>;
     type: 'google' | 'dropbox' | 'userData';
 }

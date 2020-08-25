@@ -22,7 +22,7 @@ export type MetadataActions =
     | { type: typeof METADATA.SET_EDITING; payload: string | undefined }
     | { type: typeof METADATA.SET_INITIATING; payload: boolean }
     | {
-          type: typeof METADATA.SET_MASTER_KEY;
+          type: typeof METADATA.SET_DEVICE_METADATA;
           payload: { deviceState: string; metadata: DeviceMetadata };
       }
     | {
@@ -89,7 +89,19 @@ export const disposeMetadata = () => (dispatch: Dispatch, getState: GetState) =>
             },
         });
     });
-    // todo: dispose deviceMetadata
+    getState().devices.forEach(device => {
+        if (device.state) {
+            dispatch({
+                type: METADATA.SET_DEVICE_METADATA,
+                payload: {
+                    deviceState: device.state,
+                    metadata: {
+                        status: 'disabled',
+                    },
+                },
+            });
+        }
+    });
 };
 
 export const disableMetadata = () => (dispatch: Dispatch) => {
@@ -128,11 +140,12 @@ export const disconnectProvider = () => async (dispatch: Dispatch, getState: Get
 
 const handleProviderError = (error: Error) => (dispatch: Dispatch, getState: GetState) => {
     const { metadata } = getState();
+    const unexpectedError = 'labeling action failed with unexpected error';
     if (!error) {
         return dispatch(
             notificationActions.addToast({
                 type: 'error',
-                error: 'action failed with unknown error',
+                error: unexpectedError,
             }),
         );
     }
@@ -144,7 +157,7 @@ const handleProviderError = (error: Error) => (dispatch: Dispatch, getState: Get
                 dispatch(
                     notificationActions.addToast({
                         type: 'error',
-                        error: `Failed to sync data with cloud provider (${
+                        error: `Failed to sync labeling data with cloud provider (${
                             metadata!.provider!.type
                         }). User was logged out.`,
                     }),
@@ -162,7 +175,7 @@ const handleProviderError = (error: Error) => (dispatch: Dispatch, getState: Get
             dispatch(disconnectProvider());
             break;
         default:
-            dispatch(notificationActions.addToast({ type: 'error', error: 'action failed' }));
+            dispatch(notificationActions.addToast({ type: 'error', error: unexpectedError }));
             break;
     }
 };
@@ -282,6 +295,7 @@ const syncMetadataKeys = () => (dispatch: Dispatch, getState: GetState) => {
             payload: accountWithMetadata,
         });
     });
+    // todo: hm and what about devices??
 };
 
 export const connectProvider = (type: MetadataProviderType) => async (dispatch: Dispatch) => {
@@ -340,9 +354,6 @@ export const addDeviceMetadata = (
                 device.metadata.aesKey,
             );
             provider.setFileContent(device.metadata.fileName, encrypted);
-        } else {
-            // todo: remove
-            // dispatch(notificationActions.addToast({ type: 'metadata-saved-locally' }));
         }
     } catch (error) {
         dispatch(handleProviderError(error));
@@ -412,9 +423,6 @@ export const addAccountMetadata = (
             );
 
             await provider.setFileContent(account.metadata.fileName, encrypted);
-        } else {
-            // todo: remove
-            // dispatch(notificationActions.addToast({ type: 'metadata-saved-locally' }));
         }
     } catch (error) {
         dispatch(handleProviderError(error));
@@ -439,16 +447,10 @@ export const addAccountMetadata = (
 /**
  * Generate device master-key
  * */
-export const setDeviceMetadataKey = (force = false) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
+export const setDeviceMetadataKey = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!getState().metadata.enabled) return;
     const { device } = getState().suite;
     if (!device || !device.state) return;
-
-    // user was already asked for master key (Enable labeling) but refused
-    if (!force && device.metadata.status === 'cancelled') return;
 
     // mater key already exists
     if (device.metadata.status === 'enabled') return;
@@ -481,7 +483,7 @@ export const setDeviceMetadataKey = (force = false) => async (
         const aesKey = metadataUtils.deriveAesKey(metaKey);
 
         dispatch({
-            type: METADATA.SET_MASTER_KEY,
+            type: METADATA.SET_DEVICE_METADATA,
             payload: {
                 deviceState: device.state,
                 metadata: {
@@ -494,7 +496,7 @@ export const setDeviceMetadataKey = (force = false) => async (
         });
     } else {
         dispatch({
-            type: METADATA.SET_MASTER_KEY,
+            type: METADATA.SET_DEVICE_METADATA,
             payload: {
                 deviceState: device.state,
                 metadata: {
@@ -508,9 +510,9 @@ export const setDeviceMetadataKey = (force = false) => async (
 export const addMetadata = (payload: MetadataAddPayload) => async (dispatch: Dispatch) => {
     try {
         if (payload.type === 'walletLabel') {
-            dispatch(addDeviceMetadata({ ...payload }));
+            dispatch(addDeviceMetadata(payload));
         } else {
-            dispatch(addAccountMetadata({ ...payload }));
+            dispatch(addAccountMetadata(payload));
         }
     } catch (error) {
         dispatch(handleProviderError(error));
@@ -530,7 +532,6 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
     if (!device?.state) {
         return false;
     }
-    // let needsUpdate = false;
 
     // 1. set metadata enabled globally
     if (!getState().metadata.enabled) {
@@ -542,24 +543,23 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
         device.metadata.status === 'disabled' ||
         (device.metadata.status === 'cancelled' && force)
     ) {
-        // needsUpdate = true;
         dispatch({ type: METADATA.SET_INITIATING, payload: true });
-
-        await dispatch(setDeviceMetadataKey(force));
+        await dispatch(setDeviceMetadataKey());
     }
 
     // did user confirm labeling on device?
     if (getState().suite.device?.metadata.status !== 'enabled') {
+        // if no, end here
         dispatch({ type: METADATA.SET_INITIATING, payload: false });
+        dispatch({ type: METADATA.SET_EDITING, payload: undefined });
 
         return false;
     }
-
+    // if yes, add metadata keys to accounts
     dispatch(syncMetadataKeys());
 
     // 3. connect to provider
     if (getState().suite.device?.metadata.status === 'enabled' && !getState().metadata.provider) {
-        // needsUpdate = true;
         if (!getState().metadata.initiating) {
             dispatch({ type: METADATA.SET_INITIATING, payload: true });
         }
@@ -567,7 +567,8 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
         const providerResult = await dispatch(initProvider());
         if (!providerResult) {
             dispatch({ type: METADATA.SET_INITIATING, payload: false });
-            return;
+            dispatch({ type: METADATA.SET_EDITING, payload: undefined });
+            return false;
         }
     }
 

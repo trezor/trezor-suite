@@ -2,6 +2,7 @@
 
 import { stubFetch, stubOpen } from '../../stubs/metadata';
 
+// what is tested here is probably covered in another metadata tests.
 describe('Metadata', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
@@ -47,6 +48,6 @@ describe('Metadata', () => {
         cy.getTestElement('@suite/menu/settings-index').click();
         cy.getTestElement('@settings/metadata-switch').click({ force: true });
         cy.getTestElement('@suite/menu/wallet-index').click();
-        cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
+        cy.getTestElement('@account-menu/btc/normal/0/label').should('not.contain', 'label');
     });
 });

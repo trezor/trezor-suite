@@ -4,7 +4,6 @@ import { Account } from '@wallet-types';
 import Component from './index';
 
 const mapStateToProps = (state: AppState) => ({
-    labeling: state.labeling,
     device: state.suite.device,
     devices: state.devices,
 });

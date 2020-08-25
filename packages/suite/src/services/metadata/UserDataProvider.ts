@@ -24,9 +24,6 @@ class UserDataProvider implements AbstractMetadataProvider {
     isConnected() {
         return true;
     }
-    isLoading() {
-        return true;
-    }
 }
 
 export default UserDataProvider;

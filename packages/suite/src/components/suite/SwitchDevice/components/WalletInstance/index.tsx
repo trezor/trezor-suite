@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Switch, Box, Icon, colors, variables } from '@trezor/components';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Props } from './Container';
-import { FormattedNumber, WalletLabeling, Translation, MetadataButton } from '@suite-components';
+import { FormattedNumber, WalletLabeling, Translation, MetadataLabeling } from '@suite-components';
 import { useAnalytics } from '@suite-hooks';
 
 const Wrapper = styled(Box)`
@@ -101,7 +101,7 @@ const WalletInstance = ({
                             <LockIcon icon="LOCK" color={colors.NEUE_TYPE_DARK_GREY} size={12} />
                         )}
                         {instance.state ? (
-                            <MetadataButton
+                            <MetadataLabeling
                                 defaultVisibleValue={<WalletLabeling device={instance} />}
                                 payload={{
                                     type: 'walletLabel',

@@ -7,7 +7,7 @@ import {
     HiddenPlaceholder,
     FiatValue,
     Badge,
-    MetadataButton,
+    MetadataLabeling,
 } from '@suite-components';
 import { parseBIP44Path, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { copyToClipboard } from '@suite-utils/dom';
@@ -168,7 +168,7 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
                 data-test={`@wallet/receive/used-address/${index}`}
                 revealed={isRevealed}
             >
-                <MetadataButton
+                <MetadataLabeling
                     payload={{
                         ...metadataPayload,
                     }}

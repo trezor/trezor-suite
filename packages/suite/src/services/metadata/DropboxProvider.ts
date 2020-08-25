@@ -20,16 +20,11 @@ class DropboxProvider implements AbstractMetadataProvider {
     async connect() {
         const url = this.client.getAuthenticationUrl(getOauthReceiverUrl(), 'TODO:RandomToken');
 
-        try {
-            const token = await getMetadataOauthToken(url);
+        const token = await getMetadataOauthToken(url);
 
-            this.client.setAccessToken(token);
-            this.connected = true;
-            return true;
-        } catch (error) {
-            // return false;
-            throw error;
-        }
+        this.client.setAccessToken(token);
+        this.connected = true;
+        return true;
     }
 
     async disconnect() {
@@ -43,44 +38,32 @@ class DropboxProvider implements AbstractMetadataProvider {
     }
 
     async getFileContent(file: string) {
-        try {
-            const exists = await this.client.filesSearch({
-                path: '',
-                query: `${file}.mtdt`,
+        const exists = await this.client.filesSearch({
+            path: '',
+            query: `${file}.mtdt`,
+        });
+        if (exists && exists.matches.length > 0) {
+            const file = await this.client.filesDownload({
+                path: exists.matches[0].metadata.path_lower!,
             });
-            if (exists && exists.matches.length > 0) {
-                const file = await this.client.filesDownload({
-                    path: exists.matches[0].metadata.path_lower!,
-                });
-                // @ts-ignore: fileBlob not defined?
-                const buffer = await file.fileBlob.arrayBuffer();
-                return buffer;
-            }
-        } catch (error) {
-            throw error;
+            // @ts-ignore: fileBlob not defined?
+            const buffer = await file.fileBlob.arrayBuffer();
+            return buffer;
         }
     }
 
     async setFileContent(file: string, content: Buffer) {
-        try {
-            const blob = new Blob([content], { type: 'text/plain;charset=UTF-8' });
-            await this.client.filesUpload({
-                path: `/Apps/TREZOR/${file}.mtdt`,
-                contents: blob,
-                // @ts-ignore "overwrite" !== string?
-                mode: 'overwrite',
-            });
-        } catch (error) {
-            throw error;
-        }
+        const blob = new Blob([content], { type: 'text/plain;charset=UTF-8' });
+        return this.client.filesUpload({
+            path: `/Apps/TREZOR/${file}.mtdt`,
+            contents: blob,
+            // @ts-ignore "overwrite" !== string?
+            mode: 'overwrite',
+        });
     }
 
     isConnected() {
         return this.connected;
-    }
-
-    isLoading() {
-        return false;
     }
 
     async getCredentials() {
