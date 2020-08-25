@@ -8,39 +8,6 @@ import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import { Controller, useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 
-const Wrapper = styled.div`
-    display: flex;
-    align-items: center;
-    padding-top: 50px;
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
-`;
-
-const Left = styled.div`
-    display: flex;
-    flex: 1;
-`;
-
-const Right = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: flex-end;
-`;
-
-const Label = styled.div`
-    display: flex;
-    align-items: center;
-    padding-right: 5px;
-    white-space: nowrap;
-    padding-top: 1px;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-`;
-
-const StyledButton = styled(Button)`
-    min-width: 200px;
-    margin-left: 20px;
-`;
-
 interface Props {
     buyInfo: BuyInfo;
     setAmountLimits: (amountLimits: AmountLimits | undefined) => void;
@@ -105,5 +72,38 @@ const Footer = ({ buyInfo, setAmountLimits }: Props) => {
         </Wrapper>
     );
 };
+
+const Wrapper = styled.div`
+    display: flex;
+    align-items: center;
+    padding-top: 50px;
+    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+`;
+
+const Left = styled.div`
+    display: flex;
+    flex: 1;
+`;
+
+const Right = styled.div`
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+`;
+
+const Label = styled.div`
+    display: flex;
+    align-items: center;
+    padding-right: 5px;
+    white-space: nowrap;
+    padding-top: 1px;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+`;
+
+const StyledButton = styled(Button)`
+    min-width: 200px;
+    margin-left: 20px;
+`;
 
 export default Footer;

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors, Button, variables, Icon } from '@trezor/components';
 import { PaymentType, ProviderInfo } from '@wallet-components';
-import { QuestionTooltip } from '@suite-components';
+import { QuestionTooltip, Translation } from '@suite-components';
 import { BuyTrade } from 'invity-api';
 
 const Wrapper = styled.div`
@@ -139,28 +139,35 @@ const Quote = ({ className, selectQuote, quote, wantCrypto }: Props) => {
                 )}
                 <Right>
                     <StyledButton isDisabled={!!quote.error} onClick={() => selectQuote(quote)}>
-                        Get this Offer
+                        <Translation id="TR_BUY_GET_THIS_OFFER" />
                     </StyledButton>
                 </Right>
             </Main>
             <Details>
                 <Column>
-                    <Heading>Provider</Heading>
+                    <Heading>
+                        <Translation id="TR_BUY_PROVIDER" />
+                    </Heading>
                     <Value>
                         <ProviderInfo exchange={exchange} />
                     </Value>
                 </Column>
                 <Column>
-                    <Heading>Paid by</Heading>
+                    <Heading>
+                        <Translation id="TR_BUY_PAID_BY" />
+                    </Heading>
                     <Value>
                         <PaymentType method={paymentMethod} />
                     </Value>
                 </Column>
                 <Column>
                     <Heading>
-                        Fees <StyledQuestionTooltip messageId="TR_OFFER_FEE_INFO" />
+                        <Translation id="TR_BUY_FEES" />{' '}
+                        <StyledQuestionTooltip messageId="TR_OFFER_FEE_INFO" />
                     </Heading>
-                    <Value>All fee included</Value>
+                    <Value>
+                        <Translation id="TR_BUY_ALL_FEES_INCLUDED" />
+                    </Value>
                 </Column>
             </Details>
             {error && (

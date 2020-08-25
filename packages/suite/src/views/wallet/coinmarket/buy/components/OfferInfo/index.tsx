@@ -7,6 +7,73 @@ import { Translation } from '@suite-components';
 import { useSelector } from '@suite-hooks';
 import TransactionId from '../TransactionId';
 
+interface Props {
+    selectedQuote: BuyTrade;
+    transactionId?: string;
+}
+
+const OfferInfo = ({ selectedQuote, transactionId }: Props) => {
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    if (selectedAccount.status !== 'loaded' || !selectedQuote) {
+        return null;
+    }
+    const { account } = selectedAccount;
+    const {
+        receiveStringAmount,
+        receiveCurrency,
+        exchange,
+        paymentMethod,
+        fiatCurrency,
+        fiatStringAmount,
+    } = selectedQuote;
+
+    return (
+        <Wrapper>
+            <Info>
+                <Header>
+                    <CoinLogo symbol={account.symbol} size={16} />
+                    <AccountText>{`Account #${account.index + 1}`}</AccountText>
+                </Header>
+                <Row>
+                    <LeftColumn>
+                        <Translation id="TR_BUY_SPEND" />
+                    </LeftColumn>
+                    <RightColumn>
+                        <Dark>
+                            {fiatStringAmount} {fiatCurrency}
+                        </Dark>
+                    </RightColumn>
+                </Row>
+                <RowWithBorder>
+                    <LeftColumn>
+                        <Translation id="TR_BUY_BUY" />
+                    </LeftColumn>
+                    <RightColumn>
+                        <Dark>{`${receiveStringAmount} ${receiveCurrency}`}</Dark>
+                    </RightColumn>
+                </RowWithBorder>
+                <Row>
+                    <LeftColumn>
+                        <Translation id="TR_BUY_PROVIDER" />
+                    </LeftColumn>
+                    <RightColumn>
+                        <ProviderInfo exchange={exchange} />
+                    </RightColumn>
+                </Row>
+                <Row>
+                    <LeftColumn>
+                        <Translation id="TR_BUY_PAID_BY" />
+                    </LeftColumn>
+                    <RightColumn>
+                        <PaymentType method={paymentMethod} />
+                    </RightColumn>
+                </Row>
+            </Info>
+            {transactionId && <StyledTransactionId transactionId={transactionId} />}
+        </Wrapper>
+    );
+};
+
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -84,72 +151,5 @@ const RowWithBorder = styled(Row)`
 const StyledTransactionId = styled(TransactionId)`
     margin: 0 0 10px 30px;
 `;
-
-interface Props {
-    selectedQuote: BuyTrade;
-    transactionId?: string;
-}
-
-const OfferInfo = ({ selectedQuote, transactionId }: Props) => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    if (selectedAccount.status !== 'loaded' || !selectedQuote) {
-        return null;
-    }
-    const { account } = selectedAccount;
-    const {
-        receiveStringAmount,
-        receiveCurrency,
-        exchange,
-        paymentMethod,
-        fiatCurrency,
-        fiatStringAmount,
-    } = selectedQuote;
-
-    return (
-        <Wrapper>
-            <Info>
-                <Header>
-                    <CoinLogo symbol={account.symbol} size={16} />
-                    <AccountText>{`Account #${account.index + 1}`}</AccountText>
-                </Header>
-                <Row>
-                    <LeftColumn>
-                        <Translation id="TR_BUY_SPEND" />
-                    </LeftColumn>
-                    <RightColumn>
-                        <Dark>
-                            {fiatStringAmount} {fiatCurrency}
-                        </Dark>
-                    </RightColumn>
-                </Row>
-                <RowWithBorder>
-                    <LeftColumn>
-                        <Translation id="TR_BUY_BUY" />
-                    </LeftColumn>
-                    <RightColumn>
-                        <Dark>{`${receiveStringAmount} ${receiveCurrency}`}</Dark>
-                    </RightColumn>
-                </RowWithBorder>
-                <Row>
-                    <LeftColumn>
-                        <Translation id="TR_BUY_PROVIDER" />
-                    </LeftColumn>
-                    <RightColumn>
-                        <ProviderInfo exchange={exchange} />
-                    </RightColumn>
-                </Row>
-                <Row>
-                    <LeftColumn>
-                        <Translation id="TR_BUY_PAID_BY" />
-                    </LeftColumn>
-                    <RightColumn>
-                        <PaymentType method={paymentMethod} />
-                    </RightColumn>
-                </Row>
-            </Info>
-            {transactionId && <StyledTransactionId transactionId={transactionId} />}
-        </Wrapper>
-    );
-};
 
 export default OfferInfo;

@@ -9,35 +9,10 @@ import { AmountLimits, getAmountLimits, processQuotes } from '@wallet-utils/coin
 import { useForm, FormProvider } from 'react-hook-form';
 import styled from 'styled-components';
 import * as routerActions from '@suite-actions/routerActions';
-
 import invityAPI from '@suite/services/invityAPI';
 import { BuyTradeQuoteRequest } from 'invity-api';
-
 import Inputs from './components/Inputs';
 import Footer from './components/Footer';
-
-const Wrapper = styled.div``;
-
-const Content = styled.div`
-    display: flex;
-    flex-direction: column;
-    padding: 0 25px;
-    flex: 1;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding: 0;
-    }
-`;
-
-const Loading = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.BIG};
-`;
-
-const NoProviders = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.BIG};
-`;
 
 const CoinmarketBuy = () => {
     const methods = useForm({ mode: 'onChange' });
@@ -126,5 +101,28 @@ const CoinmarketBuy = () => {
         </FormProvider>
     );
 };
+
+const Wrapper = styled.div``;
+
+const Content = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding: 0 25px;
+    flex: 1;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        padding: 0;
+    }
+`;
+
+const Loading = styled.div`
+    display: flex;
+    font-size: ${variables.FONT_SIZE.BIG};
+`;
+
+const NoProviders = styled.div`
+    display: flex;
+    font-size: ${variables.FONT_SIZE.BIG};
+`;
 
 export default CoinmarketBuy;

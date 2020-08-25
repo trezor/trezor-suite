@@ -9,44 +9,6 @@ import { useFormContext, Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import validator from 'validator';
 
-const Wrapper = styled.div`
-    display: flex;
-    flex: 1;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        flex-direction: column;
-    }
-`;
-
-const Left = styled.div`
-    display: flex;
-    flex: 1;
-`;
-
-const Right = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: flex-end;
-`;
-
-const Middle = styled.div`
-    display: flex;
-    min-width: 65px;
-    height: 48px;
-    align-items: center;
-    justify-content: center;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding-bottom: 27px;
-    }
-`;
-
-const StyledIcon = styled(Icon)`
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        transform: rotate(90deg);
-    }
-`;
-
 interface Props {
     amountLimits?: AmountLimits;
     buyInfo: BuyInfo;
@@ -244,5 +206,43 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
         </Wrapper>
     );
 };
+
+const Wrapper = styled.div`
+    display: flex;
+    flex: 1;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        flex-direction: column;
+    }
+`;
+
+const Left = styled.div`
+    display: flex;
+    flex: 1;
+`;
+
+const Right = styled.div`
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+`;
+
+const Middle = styled.div`
+    display: flex;
+    min-width: 65px;
+    height: 48px;
+    align-items: center;
+    justify-content: center;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        padding-bottom: 27px;
+    }
+`;
+
+const StyledIcon = styled(Icon)`
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        transform: rotate(90deg);
+    }
+`;
 
 export default Inputs;

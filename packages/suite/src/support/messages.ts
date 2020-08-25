@@ -176,6 +176,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'No providers',
         id: 'TR_BUY_NO_PROVIDERS',
     },
+    TR_BUY_GET_THIS_OFFER: {
+        id: 'TR_BUY_GET_THIS_OFFER',
+        defaultMessage: 'Get this Offer',
+    },
     TR_BUY_LOADING: {
         defaultMessage: 'Loading',
         id: 'TR_BUY_LOADING',
@@ -188,9 +192,17 @@ const definedMessages = defineMessages({
         defaultMessage: 'buy',
         id: 'TR_BUY_BUY',
     },
+    TR_BUY_FEES: {
+        defaultMessage: 'Fees',
+        id: 'TR_BUY_FEES',
+    },
     TR_BUY_PAID_BY: {
         defaultMessage: 'paid by',
         id: 'TR_BUY_PAID_BY',
+    },
+    TR_BUY_ALL_FEES_INCLUDED: {
+        defaultMessage: 'All fees included',
+        id: 'TR_BUY_ALL_FEES_INCLUDED',
     },
     TR_BUY_PROVIDER: {
         defaultMessage: 'provider',
