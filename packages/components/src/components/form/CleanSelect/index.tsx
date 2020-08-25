@@ -18,7 +18,7 @@ const getDropdownVisibility = (isDisabled: boolean, isFocused: boolean, isHovere
     return 'none';
 };
 
-const selectStyle = (isSearchable: boolean, isHovered: boolean, minWidth = '50px') => ({
+const selectStyle = (isDropdownVisible: boolean, isHovered: boolean, minWidth = '50px') => ({
     singleValue: (base: Record<string, any>) => ({
         ...base,
         color: colors.NEUE_TYPE_LIGHT_GREY,
@@ -66,7 +66,9 @@ const selectStyle = (isSearchable: boolean, isHovered: boolean, minWidth = '50px
             padding: 0,
             margin: 0,
             border: '0',
-            display: getDropdownVisibility(isDisabled, isFocused, isHovered),
+            display: isDropdownVisible
+                ? 'flex'
+                : getDropdownVisibility(isDisabled, isFocused, isHovered),
         };
     },
     menu: (base: Record<string, any>) => ({
@@ -92,8 +94,8 @@ const selectStyle = (isSearchable: boolean, isHovered: boolean, minWidth = '50px
 });
 
 interface Props extends Omit<SelectProps, 'components'> {
-    withDropdownIndicator?: boolean;
     isClean?: boolean;
+    isSearchable?: boolean;
     label?: React.ReactNode;
     wrapperProps?: Record<string, any>;
     variant?: InputVariant;
@@ -102,9 +104,9 @@ interface Props extends Omit<SelectProps, 'components'> {
 }
 
 const CleanSelect = ({
-    isSearchable = true,
-    withDropdownIndicator = true,
+    isDropdownVisible = true,
     className,
+    isSearchable,
     isHoveredByDefault = false,
     wrapperProps,
     isClean = false,
@@ -119,7 +121,7 @@ const CleanSelect = ({
     return (
         <Wrapper onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
             <ReactSelect
-                styles={selectStyle(isSearchable, isHovered, minWidth)}
+                styles={selectStyle(isDropdownVisible, isHovered, minWidth)}
                 isSearchable={isSearchable}
                 isDisabled={optionsLength <= 1}
                 options={options}

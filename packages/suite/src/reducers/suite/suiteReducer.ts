@@ -7,7 +7,7 @@ import { LANGUAGES } from '@suite-config';
 
 export interface DebugModeOptions {
     translationMode: boolean;
-    invityAPIUrl: string;
+    invityAPIUrl?: string;
     showDebugMenu: boolean;
     bridgeDevMode: boolean;
 }

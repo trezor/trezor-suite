@@ -1,8 +1,6 @@
-import { Translation } from '@suite-components';
 import { FIAT } from '@suite-config';
 import { useSelector } from '@suite-hooks';
-import { CleanSelect, CoinLogo, Icon, Input, variables } from '@trezor/components';
-import { getTitleForNetwork } from '@wallet-utils/accountUtils';
+import { CleanSelect, Icon, Input, variables } from '@trezor/components';
 import { AmountLimits, buildOption } from '@wallet-utils/coinmarket/buyUtils';
 import React, { useEffect, useState } from 'react';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
@@ -42,18 +40,10 @@ const Middle = styled.div`
     }
 `;
 
-const StyledCoinLogo = styled(CoinLogo)`
-    margin-right: 5px;
-`;
-
 const StyledIcon = styled(Icon)`
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         transform: rotate(90deg);
     }
-`;
-
-const AddonText = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 interface Props {
@@ -75,6 +65,7 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
     const fiatInput = 'fiatInput';
     const cryptoInput = 'cryptoInput';
     const currencySelect = 'currencySelect';
+    const cryptoSelect = 'cryptoSelect';
 
     const [activeInput, setActiveInput] = useState<'fiatInput' | 'cryptoInput'>(fiatInput);
 
@@ -202,12 +193,23 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
                     })}
                     bottomText={errors[cryptoInput] && errors[cryptoInput].message}
                     innerAddon={
-                        <>
-                            <StyledCoinLogo size={18} symbol={account.symbol} />
-                            <AddonText>
-                                <Translation {...getTitleForNetwork(account.symbol)} />
-                            </AddonText>
-                        </>
+                        <Controller
+                            control={control}
+                            name={cryptoSelect}
+                            render={() => {
+                                return (
+                                    <CleanSelect
+                                        value={{
+                                            value: account.symbol,
+                                            label: account.symbol.toUpperCase(),
+                                        }}
+                                        isClearable={false}
+                                        options={[]}
+                                        minWidth="45px"
+                                    />
+                                );
+                            }}
+                        />
                     }
                 />
             </Right>
