@@ -25,17 +25,13 @@ import { isDev } from '@suite/utils/suite/build';
 const BitcoinTestnetTicker = 'TEST';
 const EthereumTestnetRopstenTicker = 'tROP';
 
-export interface StringMap {
-    [key: string]: string;
-}
-
 class InvityAPI {
     unknownCountry = 'unknown';
     productionAPIServer = 'https://exchange.invity.io';
     stagingAPIServer = 'https://staging-exchange.invity.io';
     localhostAPIServer = 'http://localhost:3330';
 
-    server = this.stagingAPIServer;
+    server = this.productionAPIServer;
 
     // info service
     private DETECT_COUNTRY_INFO = '/api/info/country';
