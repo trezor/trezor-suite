@@ -188,7 +188,7 @@ const Settings = ({
                                 removeDatabase();
                                 if (window.desktopApi) {
                                     // relaunch desktop app
-                                    window.desktopApi.send('restart-app');
+                                    window.desktopApi.send('app/restart');
                                 } else {
                                     // redirect to / and reload the web
                                     await goto('suite-index');

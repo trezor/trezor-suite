@@ -10,11 +10,6 @@ export const allowedExternalUrls = [
     'https://blog.trezor.io',
     // External Services
     'https://github.com/trezor/',
-    // External wallets
-    'https://nemplatform.com/wallets', // NEM
-    'https://trezor.io/stellar', // Stellar
-    'https://adalite.io/app', // Ada
-    'https://wallet.simplestaking.com/tezos/wallet/start', // Tezos
     'https://satoshilabs.typeform.com',
 ];
 

@@ -129,22 +129,6 @@ const setAccountMetadataKey = [
         result: { key: 'account-key' },
     },
     {
-        description: `Device with invalid master key`,
-        initialState: {
-            device: { metadata: { status: 'enabled', key: { unexpected: 'key-format' } } },
-        },
-        account: { key: 'account-key', metadata: { key: 'A', fileName: '' } },
-        result: { key: 'account-key', metadata: { key: 'A', fileName: '' } },
-    },
-    {
-        description: `Account with invalid key`,
-        initialState: {
-            device: { metadata: { status: 'enabled', key: 'A' } },
-        },
-        account: { key: 'account-key', metadata: { key: undefined } },
-        result: { key: 'account-key', metadata: { key: undefined } },
-    },
-    {
         description: `Account m/49'/0'/0'`,
         initialState: {
             device: {
@@ -236,7 +220,7 @@ const addAccountMetadata = [
     {
         description: `add outputLabel`,
         initialState: {
-            metadata: { provider: { type: 'drobox', key: 'A' } },
+            metadata: { provider: { type: 'dropbox', key: 'A' } },
             device: {
                 metadata: { status: 'enabled', key: 'B' },
             },
@@ -490,42 +474,33 @@ const initMetadata = [
         },
         params: true,
         result: [
+            { type: '@metadata/enable' },
+            { type: '@metadata/set-initiating', payload: true },
             {
-                type: METADATA.ENABLE,
-            },
-            {
-                type: METADATA.SET_INITIATING,
-                payload: true,
-            },
-            {
-                payload: {
-                    deviceState: 'device-state',
-                    metadata: {
-                        aesKey: 'bc37a9a8c6cfa6ab2f75b384df2745895d75f2c572a195ccff59ae9958aaf0e8',
-                        fileName:
-                            'c734ff5106c4910aa3444f3672cc2c82d8cb4595f0527be672d8b100ed82908f',
-                        key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
-                        status: 'enabled',
-                    },
-                },
                 type: '@metadata/set-device-metadata',
+                payload: { deviceState: 'device-state' },
             },
             {
                 type: '@suite/update-selected-device',
+                payload: { state: 'device-state' },
             },
             {
                 type: '@modal/open-user-context',
-                payload: {
-                    type: 'metadata-provider',
-                },
+                payload: { type: 'metadata-provider' },
             },
             {
                 type: '@metadata/set-provider',
+                payload: { type: 'dropbox', token: 'token', user: 'power-user' },
             },
             {
-                type: METADATA.SET_INITIATING,
-                payload: false,
+                type: '@metadata/wallet-loaded',
+                payload: { deviceState: 'device-state', walletLabel: '' },
             },
+            {
+                type: '@suite/update-selected-device',
+                payload: { state: 'device-state' },
+            },
+            { type: '@metadata/set-initiating', payload: false },
         ],
     },
 ];

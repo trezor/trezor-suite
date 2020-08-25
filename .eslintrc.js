@@ -92,5 +92,7 @@ module.exports = {
         '@typescript-eslint/no-empty-function': 'off',
         'no-useless-constructor': 'off',
         '@typescript-eslint/no-useless-constructor': 'error',
+        // valid case of class method overloads in typescript
+        'no-dupe-class-members': 'off'
     },
 };
