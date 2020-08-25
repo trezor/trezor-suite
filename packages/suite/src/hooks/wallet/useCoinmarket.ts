@@ -3,6 +3,7 @@ import { AppState } from '@suite-types';
 import { useState, useEffect } from 'react';
 import { BuyInfo, loadBuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import invityAPI from '@suite/services/invityAPI';
+import { ExchangeInfo, loadExchangeInfo } from '@suite/actions/wallet/coinmarketExchangeActions';
 
 export const useExchange = () => {
     const router = useSelector<AppState, AppState['router']>(state => state.router);
@@ -45,4 +46,27 @@ export function useBuyInfo() {
     }, [selectedAccount]);
 
     return { buyInfo };
+}
+
+export function useExchangeInfo() {
+    const [exchangeInfo, setExchangeInfo] = useState<ExchangeInfo>({
+        providerInfos: {},
+        buyTickers: new Set<string>(),
+        sellTickers: new Set<string>(),
+    });
+
+    const selectedAccount = useSelector<AppState, AppState['wallet']['selectedAccount']>(
+        state => state.wallet.selectedAccount,
+    );
+
+    useEffect(() => {
+        if (selectedAccount.status === 'loaded') {
+            invityAPI.createInvityAPIKey(selectedAccount.account?.descriptor);
+            loadExchangeInfo().then(i => {
+                setExchangeInfo(i);
+            });
+        }
+    }, [selectedAccount]);
+
+    return { exchangeInfo };
 }

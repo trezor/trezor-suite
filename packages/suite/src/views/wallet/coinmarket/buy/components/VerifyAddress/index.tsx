@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { getAccountInfo, submitRequestForm, createTxLink } from '@wallet-utils/coinmarket/buyUtils';
 import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
+import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { useActions, useSelector } from '@suite-hooks';
 import { Input, Button, colors, variables, CoinLogo, DeviceImage } from '@trezor/components';
@@ -16,7 +17,7 @@ const VerifyAddress = ({ selectedQuote }: Props) => {
     const selectedDevice = useSelector(state => state.suite.device);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const addressVerified = useSelector(state => state.wallet.coinmarket.buy.addressVerified);
-    const { verifyAddress } = useActions({ verifyAddress: coinmarketBuyActions.verifyAddress });
+    const { verifyAddress } = useActions({ verifyAddress: coinmarketCommonActions.verifyAddress });
     const { saveTrade } = useActions({ saveTrade: coinmarketBuyActions.saveTrade });
     if (selectedAccount.status !== 'loaded') return null;
     const { account } = selectedAccount;

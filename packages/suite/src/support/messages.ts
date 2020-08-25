@@ -172,6 +172,14 @@ const definedMessages = defineMessages({
         defaultMessage: 'Check on your Trezor now',
         id: 'TR_ADDRESS_MODAL_CHECK_ON_TREZOR',
     },
+    TR_EXCHANGE_LOADING: {
+        defaultMessage: 'Loading',
+        id: 'TR_EXCHANGE_LOADING',
+    },
+    TR_EXCHANGE_NO_PROVIDERS: {
+        defaultMessage: 'No providers',
+        id: 'TR_EXCHANGE_NO_PROVIDERS',
+    },
     TR_BUY_NO_PROVIDERS: {
         defaultMessage: 'No providers',
         id: 'TR_BUY_NO_PROVIDERS',

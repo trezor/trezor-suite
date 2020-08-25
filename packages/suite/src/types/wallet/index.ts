@@ -30,6 +30,7 @@ import { Icon as Icon$ } from './iconTypes';
 import { NetworkToken as NetworkToken$, Token as Token$ } from './tokenTypes';
 import { WalletParams as WalletParams$ } from '@suite-utils/router';
 import { ArrayElement } from '../utils';
+import { CoinmarketExchangeActions } from '@suite/actions/wallet/coinmarketExchangeActions';
 
 export type Network = ArrayElement<typeof NETWORKS>;
 export type ExternalNetwork = ArrayElement<typeof EXTERNAL_NETWORKS>;
@@ -73,4 +74,5 @@ export type WalletAction =
     | DiscoveryActions
     | AccountActions
     | SelectedAccountActions
+    | CoinmarketExchangeActions
     | CoinmarketBuyActions;

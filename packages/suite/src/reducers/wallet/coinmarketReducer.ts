@@ -1,8 +1,14 @@
 import produce from 'immer';
 import { WalletAction, Account } from '@wallet-types';
-import { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
+import {
+    BuyTrade,
+    BuyTradeQuoteRequest,
+    ExchangeTradeQuoteRequest,
+    ExchangeTrade,
+} from 'invity-api';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
-import { COINMARKET_BUY } from '@wallet-actions/constants';
+import { ExchangeInfo } from '@suite/actions/wallet/coinmarketExchangeActions';
+import { COINMARKET_BUY, COINMARKET_EXCHANGE } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
 import { Action as SuiteAction } from '@suite-types';
 
@@ -17,8 +23,9 @@ type CommonTrade = {
     };
 };
 
-type Trade = CommonTrade & { tradeType: 'buy'; data: BuyTrade };
-// | (CommonTrade & { tradeType: 'exchange'; data: ExchangeTrade });
+type Trade =
+    | (CommonTrade & { tradeType: 'buy'; data: BuyTrade })
+    | (CommonTrade & { tradeType: 'exchange'; data: ExchangeTrade });
 
 interface Buy {
     buyInfo?: BuyInfo;
@@ -29,8 +36,18 @@ interface Buy {
     addressVerified: boolean;
 }
 
+interface Exchange {
+    exchangeInfo?: ExchangeInfo;
+    transactionId?: string;
+    quotesRequest?: ExchangeTradeQuoteRequest;
+    fixedQuotes: ExchangeTrade[];
+    floatQuotes: ExchangeTrade[];
+    addressVerified: boolean;
+}
+
 interface State {
     buy: Buy;
+    exchange: Exchange;
     trades: Trade[];
 }
 
@@ -41,6 +58,14 @@ const initialState = {
         quotesRequest: undefined,
         quotes: [],
         alternativeQuotes: undefined,
+        addressVerified: false,
+    },
+    exchange: {
+        exchangeInfo: undefined,
+        transactionId: undefined,
+        quotesRequest: undefined,
+        fixedQuotes: [],
+        floatQuotes: [],
         addressVerified: false,
     },
     trades: [],
@@ -65,6 +90,24 @@ export default (state: State = initialState, action: WalletAction | SuiteAction)
             case COINMARKET_BUY.VERIFY_ADDRESS:
                 draft.buy.addressVerified = action.addressVerified;
                 break;
+
+            case COINMARKET_EXCHANGE.SAVE_EXCHANGE_INFO:
+                draft.exchange.exchangeInfo = action.exchangeInfo;
+                break;
+            case COINMARKET_EXCHANGE.SAVE_QUOTE_REQUEST:
+                draft.exchange.quotesRequest = action.request;
+                break;
+            case COINMARKET_EXCHANGE.SAVE_TRANSACTION_ID:
+                draft.exchange.transactionId = action.transactionId;
+                break;
+            case COINMARKET_EXCHANGE.SAVE_QUOTES:
+                draft.exchange.fixedQuotes = action.fixedQuotes;
+                draft.exchange.floatQuotes = action.floatQuotes;
+                break;
+            case COINMARKET_EXCHANGE.VERIFY_ADDRESS:
+                draft.exchange.addressVerified = action.addressVerified;
+                break;
+
             case STORAGE.LOADED:
                 return action.payload.wallet.coinmarket;
             // no default
