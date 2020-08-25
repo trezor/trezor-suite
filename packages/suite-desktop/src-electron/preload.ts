@@ -1,6 +1,18 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
-const validChannels = ['restart-app', 'start-bridge', 'oauth-receiver', 'oauth'];
+// todo: would be great to have these channels strongly typed. for example this is nice reading: https://blog.logrocket.com/electron-ipc-response-request-architecture-with-typescript/
+
+const validChannels = [
+    'app/restart',
+    'bridge/start',
+
+    'oauth/request-oauth-code',
+    'oauth/code',
+    'server/request-address',
+    'server/address',
+
+    'app/focus',
+];
 
 contextBridge.exposeInMainWorld('desktopApi', {
     send: (channel: string, data?: any) => {
@@ -11,14 +23,14 @@ contextBridge.exposeInMainWorld('desktopApi', {
     },
     on: (channel: string, func: Function) => {
         if (validChannels.includes(channel)) {
-            // @ts-ignore: event value not used on purpose
-            ipcRenderer.on(channel, (event, ...args) => func(...args));
+            // event value not used on purpose
+            ipcRenderer.on(channel, (_event, ...args) => func(...args));
         }
     },
     off: (channel: string, func: Function) => {
         if (validChannels.includes(channel)) {
-            // @ts-ignore: event value not used on purpose
-            ipcRenderer.off(channel, (event, ...args) => func(...args));
+            // event value not used on purpose
+            ipcRenderer.off(channel, (_event, ...args) => func(...args));
         }
     },
 });

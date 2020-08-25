@@ -16,11 +16,16 @@ class UserDataProvider implements AbstractMetadataProvider {
         return true;
     }
 
+    // @ts-ignore not implemeneted yet
     async getCredentials() {}
 
+    // @ts-ignore not implemeneted yet
     async getFileContent() {}
+
+    // @ts-ignore not implemeneted yet
     async setFileContent() {}
 
+    // @ts-ignore
     isConnected() {
         return true;
     }

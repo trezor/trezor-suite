@@ -17,7 +17,8 @@
         "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
         "publish": "yarn clean && yarn build:desktop && electron-builder --publish always --mac --linux --win",
         "lint": "eslint '**/*{.ts,.tsx}'",
-        "type-check": "tsc --project tsconfig.json"
+        "type-check": "tsc --project tsconfig.json",
+        "test:unit": "jest"
     },
     "build": {
         "appId": "io.trezor.TrezorSuite",

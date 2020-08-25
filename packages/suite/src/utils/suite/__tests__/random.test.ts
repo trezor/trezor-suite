@@ -1,4 +1,4 @@
-import { getRandomId } from '../random';
+import { getRandomId, getCodeChallenge } from '../random';
 
 describe('random', () => {
     describe('getRandomId', () => {
@@ -17,6 +17,12 @@ describe('random', () => {
             Object.values(ids).forEach(id => {
                 expect(id).toEqual(1);
             });
+        });
+    });
+
+    describe('getCodeChallenge', () => {
+        it('should match regexp [0-9a-zA-Z-._~], {43,128}', () => {
+            expect(getCodeChallenge()).toMatch(/[0-9a-zA-Z\-._~]{128}/);
         });
     });
 });

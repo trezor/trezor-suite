@@ -26,6 +26,9 @@ export const AUTH_WINDOW_WIDTH = 600;
 export const AUTH_WINDOW_HEIGHT = 720;
 export const AUTH_WINDOW_PROPS = `width=${AUTH_WINDOW_WIDTH},height=${AUTH_WINDOW_HEIGHT},dialog=yes,dependent=yes,scrollbars=yes,location=yes`;
 
+// todo: still thinking about this google token. this one is for iOS (which is recommended token type to be used in electron). It works
+// for both electron and web. But we also may have web token which works only for web. Web has restriction on redirect urls, iOs does not.
+// we use PKCE for both. Is there any additional security in using token for web? Hmmm...
 export const GOOGLE_CLIENT_ID =
-    '705190185912-nejegm4dbdecdaiumncbaa4ulrfnpk82.apps.googleusercontent.com';
+    '705190185912-q1usa46qtt21mbtldki8juhn78a0v0ma.apps.googleusercontent.com';
 export const DROPBOX_CLIENT_ID = 'wg0yz2pbgjyhoda';

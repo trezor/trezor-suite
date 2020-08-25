@@ -41,14 +41,82 @@ export type MetadataProviderCredentials = {
     token: string;
 };
 
-export interface AbstractMetadataProvider {
-    connect: () => Promise<boolean>;
-    disconnect: () => Promise<boolean>;
-    getFileContent: (file: string) => Promise<ArrayBuffer | Buffer | void>;
-    setFileContent: (file: string, content: any) => Promise<any>;
-    isConnected: () => boolean;
-    getCredentials: () => Promise<MetadataProviderCredentials | void>;
-    type: 'google' | 'dropbox' | 'userData';
+/**
+ * What caused the error. Use this to handle error in metadataActions
+ */
+enum ProviderErrorReason {
+    NOT_FOUND_ERROR,
+    // authentication, typically expired token
+    AUTH_ERROR,
+    // possibly programmer errors, should not happen
+    BAD_INPUT_ERROR, // some wrong parameter sent to API
+    RATE_LIMIT_ERROR, // self-explanatory
+    ACCESS_ERROR, // trying to access resource without permission
+    // provider is dead, 5xx errors
+    PROVIDER_ERROR,
+    // common error if none of the above
+    OTHER_ERROR,
+}
+
+/**
+ * When then error occurred.
+ */
+export enum ProviderErrorAction {
+    SAVE = 'Failed to save labeling data',
+    LOAD = 'Failed to load labeling data',
+    CONNECT = 'Failed to connect to labeling provider',
+    DECRYPT = 'Failed to decrypt files',
+    ENCRYPT = 'Failed to encrypt files',
+}
+
+export type Success<Payload> = { success: true; payload: Payload };
+export type Error = {
+    success: false;
+    code: keyof typeof ProviderErrorReason;
+    error: string;
+};
+export type Result<T> = Promise<Success<T> | Error>;
+
+export abstract class AbstractMetadataProvider {
+    constructor(public type: 'google' | 'dropbox' | 'userData' | 'sdCard') {}
+    abstract connect(): Promise<boolean>;
+    abstract disconnect(): Promise<boolean>;
+    /**
+     * Try to get valid access token from refresh token. If operation is successful, provider
+     * is connected.
+     */
+    abstract isConnected(): Promise<boolean>;
+    abstract getCredentials(): Result<MetadataProviderCredentials>;
+    /**
+     * For given filename download metadata file from provider
+     */
+    abstract getFileContent(file: string): Result<Buffer | undefined>;
+    /**
+     * Upload metadata content in cloud provider for given filename and content
+     */
+    abstract setFileContent(file: string, content: any): Result<void>;
+
+    ok(): Success<void>;
+    ok<T>(payload: T): Success<T>;
+    ok(payload?: any) {
+        const success = true as const;
+        if (payload) {
+            return {
+                success,
+                payload,
+            };
+        }
+        return { success } as const;
+    }
+
+    error(code: keyof typeof ProviderErrorReason, reason: string) {
+        const success = false as const;
+        return {
+            success,
+            code,
+            error: reason,
+        } as const;
+    }
 }
 
 export interface AccountMetadata {
@@ -80,15 +148,4 @@ export interface MetadataState {
     // field shall hold default value for which user may add metadata (address, txId, etc...);
     editing?: string;
     initiating?: boolean;
-}
-
-/**
- * Error returned by metadata providers from async calls.
- * - DropboxProvider implements dropbox library which returns errors in this shape
- * - GoogleProvider has own implementation of REST endpoints and accommodates to this shape
- */
-export interface MetadataProviderError {
-    error: string;
-    status: number;
-    response: Response;
 }

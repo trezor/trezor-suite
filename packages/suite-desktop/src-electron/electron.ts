@@ -8,8 +8,9 @@ import * as config from './config';
 import * as store from './store';
 import { runBridgeProcess } from './bridge';
 import { buildMainMenu } from './menu';
-import { openOauthPopup } from './oauth';
-// import * as metadata from './metadata';
+import { HttpReceiver } from './http-receiver';
+
+const httpReceiver = new HttpReceiver();
 
 let mainWindow: BrowserWindow;
 const APP_NAME = 'Trezor Suite';
@@ -48,9 +49,6 @@ const registerShortcuts = (window: BrowserWindow) => {
 };
 
 const init = async () => {
-    // todo: this is here to force bundler to bundler src-electron/metadata.ts
-    // todo: but it is not finished yet. Also it may be better to add it to tsconfig.include
-    // metadata.init();
     try {
         // TODO: not necessary since suite will send a request to start bridge via IPC
         // but right now removing it causes showing the download bridge modal for a sec
@@ -97,10 +95,8 @@ const init = async () => {
     const handleExternalLink = (event: Event, url: string) => {
         if (config.oauthUrls.some(u => url.startsWith(u))) {
             event.preventDefault();
-            openOauthPopup(url);
-            return;
+            return shell.openExternal(url);
         }
-
         // TODO? url.startsWith('http:') || url.startsWith('https:');
         if (url !== mainWindow.webContents.getURL()) {
             event.preventDefault();
@@ -159,6 +155,8 @@ const init = async () => {
     }
 
     mainWindow.loadURL(src);
+
+    httpReceiver.start();
 };
 
 app.name = APP_NAME; // overrides @trezor/suite-desktop app name in menu
@@ -178,7 +176,7 @@ app.on('before-quit', () => {
         // store window bounds
         store.setWinBounds(mainWindow);
 
-        // TODO: be aware that although it kills the bridge process, another one will start because of start-bridge msgs from ipc
+        // TODO: be aware that although it kills the bridge process, another one will start because of bridge/start msgs from ipc
         // (BridgeStatus component sends the request every time it loses transport.type)
         // killBridgeProcess();
     }
@@ -191,6 +189,7 @@ app.on('will-quit', () => {
     } catch (error) {
         // do nothing
     }
+    httpReceiver.stop();
 });
 
 app.on('activate', () => {
@@ -209,12 +208,7 @@ app.on('browser-window-focus', (_event, win) => {
     }
 });
 
-// listen the channel `message` and resend the received message to the renderer process
-ipcMain.on('message', (event, message) => {
-    event.sender.send('message', message);
-});
-
-ipcMain.on('start-bridge', async (_event, devMode?: boolean) => {
+ipcMain.on('bridge/start', async (_event, devMode?: boolean) => {
     try {
         await runBridgeProcess(devMode);
     } catch (error) {
@@ -222,11 +216,21 @@ ipcMain.on('start-bridge', async (_event, devMode?: boolean) => {
     }
 });
 
-ipcMain.on('restart-app', () => {
+ipcMain.on('app/restart', () => {
     app.relaunch();
     app.exit();
 });
 
-ipcMain.on('oauth-receiver', (_event, message) => {
-    mainWindow.webContents.send('oauth', { data: message });
+// wait for httpReceiver to start accepting connections then register event handlers
+httpReceiver.on('server/listening', () => {
+    // when httpReceiver accepted oauth code
+    httpReceiver.on('oauth/code', code => {
+        mainWindow.webContents.send('oauth/code', code);
+        app.focus();
+    });
+
+    // when httpReceiver was asked to provide current address for given pathname
+    ipcMain.on('server/request-address', (_event, pathname) => {
+        mainWindow.webContents.send('server/address', httpReceiver.getRouteAddress(pathname));
+    });
 });

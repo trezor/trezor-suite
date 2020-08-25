@@ -2,6 +2,6 @@ export const getOauthReceiverUrl = () => {
     return 'todo';
 };
 
-export const getMetadataOauthToken = () => {
+export const getOauthCode = (_url: string) => {
     return 'todo';
 };

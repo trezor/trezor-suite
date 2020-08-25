@@ -2,12 +2,10 @@
   <head></head>
   <body>
     <script>
-      if (window.desktopApi) {
-        window.desktopApi.send('oauth-receiver', window.location.hash);
-      }
+      var message = window.location.search;
+      
       if (window.opener) {
-        window.opener.postMessage(window.location.hash, window.location.origin);
-
+        window.opener.postMessage(message, window.location.origin);
       }  
       window.close();
     </script>

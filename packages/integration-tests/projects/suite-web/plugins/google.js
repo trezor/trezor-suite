@@ -80,6 +80,18 @@ class GoogleMock {
             res.send();
         });
 
+        // oauth2 authorization code flow presumes exchanging 'code' for token through post request to /token endpoint
+        app.post('/token', (req, res) => {
+            console.log('[mockGoogleDrive]: token');
+            res.send({
+                access_token: 'foo-token',
+                expires_in: 3599,
+                refresh_token: 'moo-token',
+                scope: 'https://www.googleapis.com/auth/drive.appdata',
+                token_type: 'Bearer',
+            });
+        });
+
         app.patch('/upload/drive/v3/files/:id', express.text({ type: '*/*' }), (req, res) => {
             console.log('[mockGoogleDrive]: patch', req.params.id);
 

@@ -1,11 +1,8 @@
 import { AbstractMetadataProvider } from '@suite-types/metadata';
 
-class DropboxProvider implements AbstractMetadataProvider {
-    type: 'dropbox';
-
+class DropboxProvider extends AbstractMetadataProvider {
     constructor(_token?: string) {
-        console.warn('native-DropboxProvider');
-        this.type = 'dropbox';
+        super('dropbox');
     }
 
     async connect() {
@@ -16,13 +13,32 @@ class DropboxProvider implements AbstractMetadataProvider {
         return true;
     }
 
-    async getCredentials() {}
+    // @ts-ignore
+    async getCredentials(): any {
+        const type = 'dropbox' as const;
+        return this.ok({
+            type,
+            token: 'token',
+            user: 'foo',
+        });
+    }
 
-    async getFileContent() {}
-    async setFileContent() {}
+    // @ts-ignore
+    async getFileContent(_file: string) {
+        return this.ok(new ArrayBuffer(0));
+    }
 
-    isConnected() {
+    // @ts-ignore
+    async setFileContent(_file: string, _content: Buffer): any {
+        return this.ok();
+    }
+
+    async isConnected() {
         return true;
+    }
+
+    handleProviderError() {
+        return this.error('OTHER_ERROR', 'FOOO BAR');
     }
 }
 
