@@ -28,12 +28,12 @@ const HeaderRight = styled.div`
 
 export default () => {
     const {
+        outputs,
         account: { networkType },
-        getDefaultValue,
         addOpReturn,
     } = useSendFormContext();
 
-    const opreturnOutput = getDefaultValue('outputs', []).find(o => o.type === 'opreturn');
+    const opreturnOutput = (outputs || []).find(o => o.type === 'opreturn');
     const options = [
         {
             key: 'opreturn',
