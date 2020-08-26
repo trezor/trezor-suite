@@ -23,7 +23,7 @@ type CommonTrade = {
     };
 };
 
-type Trade =
+export type Trade =
     | (CommonTrade & { tradeType: 'buy'; data: BuyTrade })
     | (CommonTrade & { tradeType: 'exchange'; data: ExchangeTrade });
 

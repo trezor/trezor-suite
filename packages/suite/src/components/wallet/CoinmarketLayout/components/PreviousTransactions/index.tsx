@@ -25,12 +25,8 @@ const PreviousTransactions = () => {
                 <H2>Previous transactions • {previousTransactions.length}</H2>
             </Header>
             <Content>
-                {previousTransactions.map(transaction => (
-                    <Transaction
-                        key={transaction.key}
-                        transaction={transaction.data}
-                        date={transaction.date}
-                    />
+                {previousTransactions.map(trade => (
+                    <Transaction trade={trade} />
                 ))}
             </Content>
         </Wrapper>

@@ -1,26 +1,27 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, variables, Icon, CoinLogo } from '@trezor/components';
-import { BuyTrade } from 'invity-api';
 import { PaymentType, ProviderInfo } from '@wallet-components';
 import { useSelector } from '@suite-hooks';
+import { Trade } from '@wallet-reducers/coinmarketReducer';
 import { formatDistance } from 'date-fns';
 
 interface Props {
-    date: string;
-    transaction: BuyTrade;
+    trade: Trade;
 }
 
-const Transaction = ({ transaction, date }: Props) => {
+const Transaction = ({ trade }: Props) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     if (selectedAccount.status !== 'loaded') {
         return null;
     }
 
+    if (trade.tradeType !== 'buy') return null;
+
     const {
         account: { symbol },
     } = selectedAccount;
-
+    const { date, data } = trade;
     const {
         fiatStringAmount,
         fiatCurrency,
@@ -28,7 +29,7 @@ const Transaction = ({ transaction, date }: Props) => {
         exchange,
         paymentMethod,
         receiveCurrency,
-    } = transaction;
+    } = data;
 
     return (
         <Wrapper>
