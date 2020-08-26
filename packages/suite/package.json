@@ -17,7 +17,7 @@
         "test-health": "jest -c jest.config.health.js"
     },
     "dependencies": {
-        "react-hook-form": "6.5.2",
+        "react-hook-form": "6.5.3",
         "@formatjs/intl-pluralrules": "^1.5.3",
         "@formatjs/intl-relativetimeformat": "^4.5.10",
         "@trezor/components": "^1.0.0",
