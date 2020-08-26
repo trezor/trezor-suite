@@ -91,7 +91,10 @@ export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
         <Wrapper ref={wrapperRef}>
             {hasHeader && (
                 <HeaderWrapper>
-                    <Header onClick={!props.keepOpened ? onClick : undefined}>
+                    <Header
+                        onClick={!props.keepOpened ? onClick : undefined}
+                        data-test={`@account-menu/${props.type}`}
+                    >
                         <Translation
                             id={
                                 props.type === 'legacy'
