@@ -157,11 +157,8 @@ const Dropdown = ({
         let x = c[0];
         const y = c[1];
         if (menuRef.current) {
-            console.log('menuRef', menuRef.current.clientHeight);
             const rect = menuRef.current.getBoundingClientRect();
-            console.log('rect', rect);
             x += rect.width;
-            // y += rect.height;
         }
         setCoords([x, y]);
     };
