@@ -8,7 +8,7 @@ import * as store from './store';
 import { runBridgeProcess } from './bridge';
 import { buildMainMenu } from './menu';
 import { openOauthPopup } from './oauth';
-import * as metadata from './metadata';
+// import * as metadata from './metadata';
 
 let mainWindow: BrowserWindow;
 const APP_NAME = 'Trezor Beta Wallet';
@@ -46,7 +46,9 @@ const registerShortcuts = (window: BrowserWindow) => {
 };
 
 const init = async () => {
-    metadata.init();
+    // todo: this is here to force bundler to bundler src-electron/metadata.ts
+    // todo: but it is not finished yet. Also it may be better to add it to tsconfig.include
+    // metadata.init();
     try {
         // TODO: not necessary since suite will send a request to start bridge via IPC
         // but right now removing it causes showing the download bridge modal for a sec
