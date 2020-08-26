@@ -98,12 +98,7 @@ suite-web e2e chrome stage=stable/metadata:
         - *e2e_script_common
         - export CYPRESS_SNAPSHOT=1
         - export BROWSER=chrome
-        - yarn concurrently --success first --kill-others
-          "cd ./docker/trezor-user-env/controller && python3 ./main.py"
-          "node ./packages/integration-tests/projects/suite-web/run_tests.js
-          --project ./packages/integration-tests/projects/suite-web
-          --stage='$TEST_GROUP'
-          "
+        - 'eval $TEST_CMD'
     artifacts:
         <<: *e2e_artifacts
     dependencies: []
@@ -116,12 +111,7 @@ suite-web e2e chrome stage=stable/device-management:
         - *e2e_script_common
         - export CYPRESS_SNAPSHOT=1
         - export BROWSER=chrome
-        - yarn concurrently --success first --kill-others
-          "cd ./docker/trezor-user-env/controller && python3 ./main.py"
-          "node ./packages/integration-tests/projects/suite-web/run_tests.js
-          --project ./packages/integration-tests/projects/suite-web
-          --stage='$TEST_GROUP'
-          "
+        - 'eval $TEST_CMD'
     artifacts:
         <<: *e2e_artifacts
     dependencies: []
@@ -131,36 +121,31 @@ suite-web e2e chrome stage=stable/device-management:
 # code only when there is some runtime error
 suite-web e2e chrome stage=beta:
     stage: integration testing
+    variables:
+        TEST_GROUP: "@beta"
     script:
         - *e2e_script_common
         - export CYPRESS_SNAPSHOT=1
         - export BROWSER=/usr/bin/google-chrome-beta
-        - yarn concurrently --success first --kill-others
-          "cd ./docker/trezor-user-env/controller && python3 ./main.py"
-          "node ./packages/integration-tests/projects/suite-web/run_tests.js
-          --project ./packages/integration-tests/projects/suite-web
-          --stage='@beta'
-          "
+        - 'eval $TEST_CMD'
     artifacts:
         <<: *e2e_artifacts
     dependencies: []
 
+# on scheduled job every night, run all stable tests against latest chrome-beta. This is meant to be
+# kind of an early-warning system.
 suite-web e2e chrome-beta stage=stable:
     stage: integration testing
+    variables:
+        TEST_GROUP: "@stable"
     only:
         - schedules
     allow_failure: false
     script:
         - *e2e_script_common
-        # update chrome-beta channel to the latest
-        - apt-get update && apt-get upgrade -y
+        - apt-get update && apt-get upgrade -y # update chrome-beta channel to the latest
         - export BROWSER=/usr/bin/google-chrome-beta
-        - yarn concurrently --success first --kill-others
-          "cd ./docker/trezor-user-env/controller && python3 ./main.py"
-          "node ./packages/integration-tests/projects/suite-web/run_tests.js
-          --project ./packages/integration-tests/projects/suite-web
-          --stage='@stable'
-          "
+        - 'eval $TEST_CMD'
     artifacts:
         <<: *e2e_artifacts
     dependencies: []
