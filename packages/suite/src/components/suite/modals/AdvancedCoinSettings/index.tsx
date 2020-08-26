@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import TrezorConnect, { CoinInfo } from 'trezor-connect';
-import { Modal } from '@trezor/components';
+import { Modal, Loader } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { NETWORKS } from '@wallet-config';
 import { Props } from './Container';
@@ -16,6 +16,11 @@ const Section = styled.div`
     flex-direction: column;
     margin-top: 24px;
     /* margin-bottom: 32px; */
+`;
+
+const LoaderWrapper = styled.div`
+    display: flex;
+    justify-content: center;
 `;
 
 const AdvancedCoinSettings = ({
@@ -42,11 +47,6 @@ const AdvancedCoinSettings = ({
         return null;
     }
 
-    // TODO: Display loader while coin info is loading
-    if (coinInfo === undefined) {
-        return null;
-    }
-
     return (
         <Modal
             cancelable
@@ -58,8 +58,14 @@ const AdvancedCoinSettings = ({
                 />
             }
         >
+            {!coinInfo && (
+                <LoaderWrapper>
+                    <Loader size={32} />
+                </LoaderWrapper>
+            )}
+
             {/* <AccountUnits /> */}
-            {isBlockbook && (
+            {coinInfo && isBlockbook && (
                 <Section>
                     <CustomBlockbookUrls
                         coin={coin}
@@ -70,6 +76,7 @@ const AdvancedCoinSettings = ({
                     />
                 </Section>
             )}
+
             {/* <CustomExplorerUrl /> */}
         </Modal>
     );
