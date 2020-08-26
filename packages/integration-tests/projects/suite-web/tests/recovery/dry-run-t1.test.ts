@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
 // @beta
-// @retry=2
 
 describe('Recovery - dry run', () => {
     beforeEach(() => {

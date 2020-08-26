@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-// @stable
+// @stable/device-management
 // @retry=2
 
 describe('Onboarding - create wallet', () => {

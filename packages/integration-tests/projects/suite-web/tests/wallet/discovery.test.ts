@@ -1,6 +1,6 @@
 import { NETWORKS } from '@wallet-config';
 
-describe('Discovery', () => {
+describe.skip('Discovery', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
         cy.task('stopEmu');

@@ -1,3 +1,6 @@
+variables:
+  TEST_CMD: 'yarn concurrently --success first --kill-others "cd ./docker/trezor-user-env/controller && python3 ./main.py" "node ./packages/integration-tests/projects/suite-web/run_tests.js --project ./packages/integration-tests/projects/suite-web --stage=$TEST_GROUP"'
+
 .auto_run_branches: &auto_run_branches
     refs:
         - develop
@@ -74,18 +77,15 @@
 #     tags:
 #         - deploy
 
-suite-web e2e chrome stage=stable:
+suite-web e2e chrome stage=stable/suite:
     stage: integration testing
+    variables:
+        TEST_GROUP: "@stable/suite"
     script:
         - *e2e_script_common
         - export CYPRESS_SNAPSHOT=1
         - export BROWSER=chrome
-        - yarn concurrently --success first --kill-others
-          "cd ./docker/trezor-user-env/controller && python3 ./main.py"
-          "node ./packages/integration-tests/projects/suite-web/run_tests.js
-          --project ./packages/integration-tests/projects/suite-web
-          --stage='@stable/'
-          "
+        - 'eval $TEST_CMD'
     artifacts:
         <<: *e2e_artifacts
     dependencies: []
@@ -108,8 +108,10 @@ suite-web e2e chrome stage=stable/metadata:
         <<: *e2e_artifacts
     dependencies: []
 
-suite-web e2e chrome stage=stable:
+suite-web e2e chrome stage=stable/device-management:
     stage: integration testing
+    variables:
+        TEST_GROUP: "@stable/device-management"
     script:
         - *e2e_script_common
         - export CYPRESS_SNAPSHOT=1
@@ -118,7 +120,7 @@ suite-web e2e chrome stage=stable:
           "cd ./docker/trezor-user-env/controller && python3 ./main.py"
           "node ./packages/integration-tests/projects/suite-web/run_tests.js
           --project ./packages/integration-tests/projects/suite-web
-          --stage='@stable'
+          --stage='$TEST_GROUP'
           "
     artifacts:
         <<: *e2e_artifacts
