@@ -240,12 +240,12 @@ export const findValidOutputs = (values: Partial<FormState>) => {
 export const buildTokenOptions = (account: Account) => {
     interface Option {
         label: string;
-        value?: string;
+        value: string | null;
     }
 
     const result: Option[] = [
         {
-            value: undefined,
+            value: null,
             label: account.symbol.toUpperCase(),
         },
     ];
@@ -263,7 +263,7 @@ export const buildTokenOptions = (account: Account) => {
     return result;
 };
 
-export const findToken = (tokens: Account['tokens'], address?: string) => {
+export const findToken = (tokens: Account['tokens'], address?: string | null) => {
     if (!address || !tokens) return;
     return tokens.find(t => t.address === address);
 };

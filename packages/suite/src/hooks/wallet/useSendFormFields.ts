@@ -124,7 +124,7 @@ export const useSendFormFields = ({
         fieldName: K,
         fallbackValue?: T,
     ) => {
-        if (fallbackValue) {
+        if (fallbackValue !== undefined) {
             const stateValue = getValues<K, T>(fieldName);
             if (stateValue !== undefined) return stateValue;
             return fallbackValue;

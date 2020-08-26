@@ -6,6 +6,7 @@ import { buildTokenOptions } from '@wallet-utils/sendFormUtils';
 
 export default ({ outputId }: { outputId: number }) => {
     const {
+        outputs,
         account,
         clearErrors,
         control,
@@ -17,7 +18,7 @@ export default ({ outputId }: { outputId: number }) => {
 
     const tokenInputName = `outputs[${outputId}].token`;
     const amountInputName = `outputs[${outputId}].amount`;
-    const tokenValue = getDefaultValue<string, string | undefined>(tokenInputName, undefined);
+    const tokenValue = getDefaultValue(tokenInputName, outputs[outputId].token);
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
     const dataEnabled = getDefaultValue('options', []).includes('ethereumData');
     const options = buildTokenOptions(account);
@@ -27,6 +28,7 @@ export default ({ outputId }: { outputId: number }) => {
             control={control}
             name={tokenInputName}
             data-test={tokenInputName}
+            defaultValue={tokenValue}
             render={({ onChange }) => {
                 return (
                     <SelectInput

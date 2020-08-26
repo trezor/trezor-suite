@@ -32,6 +32,7 @@ export const DEFAULT_PAYMENT = {
     amount: '',
     fiat: '',
     currency: { value: 'usd', label: 'USD' },
+    token: null,
 } as const;
 
 export const DEFAULT_OPRETURN = {

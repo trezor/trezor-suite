@@ -27,7 +27,6 @@ export default ({ outputId }: { outputId: number }) => {
         account,
         network,
         fiatRates,
-        localCurrencyOption,
         register,
         errors,
         outputs,
@@ -47,6 +46,7 @@ export default ({ outputId }: { outputId: number }) => {
     const error = outputError ? outputError.fiat : undefined;
     const fiatValue = getDefaultValue(inputName, outputs[outputId].fiat || '');
     const tokenValue = getDefaultValue(tokenInputName, outputs[outputId].token);
+    const currencyValue = getDefaultValue(tokenInputName, outputs[outputId].currency);
     const token = findToken(account.tokens, tokenValue);
     const decimals = token ? token.decimals : network.decimals;
 
@@ -68,15 +68,11 @@ export default ({ outputId }: { outputId: number }) => {
                         return;
                     }
                     // calculate new Amount, Fiat input times currency rate
-                    const selectedCurrency = getDefaultValue(
-                        currencyInputName,
-                        outputs[outputId].currency,
-                    );
                     const amount =
-                        fiatRates && fiatRates.current && selectedCurrency
+                        fiatRates && fiatRates.current && currencyValue
                             ? fromFiatCurrency(
                                   event.target.value,
-                                  selectedCurrency.value,
+                                  currencyValue.value,
                                   fiatRates.current.rates,
                                   decimals,
                               )
@@ -110,11 +106,11 @@ export default ({ outputId }: { outputId: number }) => {
                         control={control}
                         name={currencyInputName}
                         data-test={currencyInputName}
-                        defaultValue={localCurrencyOption}
+                        defaultValue={currencyValue}
                         render={({ onChange, value }) => {
                             return (
                                 <SelectInput
-                                    options={FIAT.currencies.map((currency: string) =>
+                                    options={FIAT.currencies.map(currency =>
                                         buildCurrencyOption(currency),
                                     )}
                                     isSearchable

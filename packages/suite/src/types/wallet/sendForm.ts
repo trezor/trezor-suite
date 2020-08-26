@@ -1,4 +1,5 @@
-import { UseFormMethods } from 'react-hook-form';
+import { ReactElement } from 'react';
+import { UseFormMethods, FieldError } from 'react-hook-form';
 import { Account, Network, CoinFiatRates } from '@wallet-types';
 import {
     FeeLevel,
@@ -18,7 +19,7 @@ export type Output = {
     fiat: string;
     currency: CurrencyOption;
     label?: string;
-    token?: string;
+    token: string | null;
     dataHex: string; // bitcoin opreturn/ethereum data
     dataAscii: string; // bitcoin opreturn/ethereum data
 };
@@ -68,7 +69,7 @@ export type EthTransactionData = {
 };
 
 export type PrecomposedTransactionError = Extract<PrecomposedTransactionBase, { type: 'error' }> & {
-    error: string; // TODO: type TR_
+    error: string | ExtendedMessageDescriptor;
 };
 
 export type PrecomposedTransactionNonFinal = Extract<
@@ -134,6 +135,19 @@ export interface TypedValidationRules {
     required?: ExtendedMessageDescriptor['id'] | JSX.Element | undefined;
     validate?: (data: string) => ExtendedMessageDescriptor['id'] | JSX.Element | undefined;
 }
+
+// react-hook-form FieldError is not properly typed, even if it accepts string | ReactElement it claims that the message is only a string
+// we need to overload it with expected types which could be:
+// - Translation.id (string, set from field validation methods)
+// - Translation component (ReactElement, set from field validation methods)
+// - ExtendedMessageDescriptor object (set from useSendFormCompose::setError)
+
+export type TypedFieldError =
+    | FieldError
+    | {
+          type: string;
+          message?: ExtendedMessageDescriptor['id'] | ExtendedMessageDescriptor | ReactElement;
+      };
 
 export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
     UseSendFormState & {
