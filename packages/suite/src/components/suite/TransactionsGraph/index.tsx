@@ -144,12 +144,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 domain={calcXDomain(xTicks, data, selectedRange)}
                                 // width={10}
                                 stroke={colors.NEUE_BG_GRAY}
-                                interval={
-                                    isMobileLayout ||
-                                    (props.selectedRange.label === 'all' && xTicks.length > 24)
-                                        ? 'preserveStartEnd'
-                                        : 0
-                                }
+                                interval="preserveStartEnd"
                                 tick={<CustomXAxisTick selectedRange={selectedRange} />}
                                 ticks={xTicks}
                                 tickLine={false}
