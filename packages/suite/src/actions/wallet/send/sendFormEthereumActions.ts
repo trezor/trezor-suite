@@ -53,11 +53,16 @@ const calculate = (
 
     if (totalSpent.isGreaterThan(availableBalance)) {
         const error = token ? 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' : 'AMOUNT_IS_NOT_ENOUGH';
-        return { type: 'error', error } as const;
+        // errorMessage declared later
+        return { type: 'error', error, errorMessage: { id: error } } as const;
     }
 
     if (token && new BigNumber(amount).gt(amountToSatoshi(token.balance!, token.decimals))) {
-        return { type: 'error', error: 'AMOUNT_IS_NOT_ENOUGH' } as const;
+        return {
+            type: 'error',
+            error: 'AMOUNT_IS_NOT_ENOUGH',
+            errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' },
+        } as const;
     }
 
     const payloadData = {
@@ -204,10 +209,17 @@ export const composeTransaction = (
     }
 
     // format max
+    // update errorMessage values
     Object.keys(wrappedResponse).forEach(key => {
         const tx = wrappedResponse[key];
         if (tx.type !== 'error' && tx.max && !tx.token) {
             tx.max = formatAmount(tx.max, decimals);
+        }
+        if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
+            tx.errorMessage = {
+                id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+                values: { symbol: network.symbol.toUpperCase() },
+            };
         }
     });
 

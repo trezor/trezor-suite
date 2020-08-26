@@ -153,7 +153,7 @@ describe('sendForm utils', () => {
 
     it('build options', () => {
         // @ts-ignore invalid params
-        expect(buildTokenOptions({ symbol: 'btc' })).toEqual([{ value: undefined, label: 'BTC' }]);
+        expect(buildTokenOptions({ symbol: 'btc' })).toEqual([{ value: null, label: 'BTC' }]);
         expect(
             buildTokenOptions({
                 symbol: 'eth',
@@ -161,7 +161,7 @@ describe('sendForm utils', () => {
                 tokens: [{ address: '0x1' }, { symbol: 'Symbol', address: '0x2' }],
             }),
         ).toEqual([
-            { value: undefined, label: 'ETH' },
+            { value: null, label: 'ETH' },
             { value: '0x1', label: 'N/A' },
             { value: '0x2', label: 'SYMBOL' },
         ]);

@@ -140,15 +140,11 @@ export const useSendFormCompose = ({
 
         // composed transaction has error
         if (!composed || composed.type === 'error') {
-            const { error } = composed;
-            const expectedError = [
-                'AMOUNT_IS_NOT_ENOUGH',
-                'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                'AMOUNT_IS_LESS_THAN_RESERVE',
-            ].includes(error);
-
-            if (!expectedError) {
-                // TODO: toast!
+            const { error, errorMessage } = composed;
+            if (!errorMessage) {
+                // composed tx doesn't have a errorMessage (Translation props)
+                // this error is unexpected
+                // TODO: show toast
                 console.warn('Compose unexpected error', error);
                 return;
             }
@@ -157,14 +153,14 @@ export const useSendFormCompose = ({
                 // setError to the field which created `composeRequest`
                 setError(composeField, {
                     type: 'compose',
-                    message: error,
+                    message: errorMessage as any, // setError types is broken? according to ts it accepts only strings, but object or react component could be used as well...
                 });
-            } else {
+            } else if (values.outputs) {
                 // setError to the all `Amount` fields, composeField not specified (load draft case)
                 values.outputs.forEach((_, i) => {
                     setError(`outputs[${i}].amount`, {
                         type: 'compose',
-                        message: error,
+                        message: errorMessage as any,
                     });
                 });
             }

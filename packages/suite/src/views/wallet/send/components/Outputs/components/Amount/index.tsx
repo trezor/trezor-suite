@@ -191,8 +191,8 @@ export default ({ outputId }: { outputId: number }) => {
                                 ) {
                                     return (
                                         <Translation
-                                            key="AMOUNT_IS_LESS_THAN_RESERVE"
-                                            id="AMOUNT_IS_LESS_THAN_RESERVE"
+                                            key="AMOUNT_IS_MORE_THAN_RESERVE"
+                                            id="AMOUNT_IS_MORE_THAN_RESERVE"
                                             values={{ reserve }}
                                         />
                                     );

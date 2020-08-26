@@ -25,6 +25,7 @@ const calculate = (
     availableBalance: string,
     output: XrpOutput,
     feeLevel: FeeLevel,
+    requiredAmount?: BigNumber,
 ): PrecomposedTransaction => {
     const feeInSatoshi = feeLevel.feePerUnit;
 
@@ -40,12 +41,20 @@ const calculate = (
         totalSpent = new BigNumber(calculateTotal(output.amount, feeInSatoshi));
     }
 
-    // const totalSpentBig = new BigNumber(calculateTotal(token ? '0' : amount, feeInSatoshi));
-    // const totalSpentBig = new BigNumber(calculateTotal('0', feeInSatoshi));
-
     if (totalSpent.isGreaterThan(availableBalance)) {
-        const error = 'AMOUNT_IS_NOT_ENOUGH';
-        return { type: 'error', error } as const;
+        return {
+            type: 'error',
+            error: 'AMOUNT_IS_NOT_ENOUGH',
+            errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' },
+        } as const;
+    }
+
+    if (requiredAmount && requiredAmount.gt(amount)) {
+        return {
+            type: 'error',
+            error: 'AMOUNT_IS_LESS_THAN_RESERVE',
+            // errorMessage declared later
+        } as const;
     }
 
     const payloadData = {
@@ -125,27 +134,20 @@ export const composeTransaction = (
     }
     const wrappedResponse: PrecomposedLevels = {};
 
+    let requiredAmount: BigNumber | undefined;
     if (address) {
         const accountResponse = await TrezorConnect.getAccountInfo({
             descriptor: address,
             coin: account.symbol,
         });
-
         if (accountResponse.success && accountResponse.payload.empty) {
-            const reserve = new BigNumber(accountResponse.payload.misc!.reserve!);
-            if (reserve.gt(amountInSatoshi)) {
-                predefinedLevels.forEach(level => {
-                    wrappedResponse[level.label] = {
-                        type: 'error',
-                        error: 'AMOUNT_IS_LESS_THAN_RESERVE',
-                    };
-                });
-                return wrappedResponse;
-            }
+            requiredAmount = new BigNumber(accountResponse.payload.misc!.reserve!);
         }
     }
 
-    const response = predefinedLevels.map(level => calculate(availableBalance, output, level));
+    const response = predefinedLevels.map(level =>
+        calculate(availableBalance, output, level, requiredAmount),
+    );
     response.forEach((tx, index) => {
         const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
         wrappedResponse[feeLabel] = tx;
@@ -164,7 +166,7 @@ export const composeTransaction = (
         }
 
         const customLevelsResponse = customLevels.map(level =>
-            calculate(availableBalance, output, level),
+            calculate(availableBalance, output, level, requiredAmount),
         );
 
         const customValid = customLevelsResponse.findIndex(r => r.type !== 'error');
@@ -178,6 +180,14 @@ export const composeTransaction = (
         const tx = wrappedResponse[key];
         if (tx.type !== 'error' && tx.max) {
             tx.max = formatNetworkAmount(tx.max, account.symbol);
+        }
+        if (tx.type === 'error' && tx.error === 'AMOUNT_IS_LESS_THAN_RESERVE' && requiredAmount) {
+            tx.errorMessage = {
+                id: 'AMOUNT_IS_LESS_THAN_RESERVE',
+                values: {
+                    reserve: formatNetworkAmount(requiredAmount.toString(), account.symbol),
+                },
+            };
         }
     });
 

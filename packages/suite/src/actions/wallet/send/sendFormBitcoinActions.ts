@@ -138,7 +138,7 @@ export const composeTransaction = (
     }
     // make sure that feePerByte is an integer (trezor-connect may return float)
     // format max (trezor-connect sends it as satoshi)
-    // format error message to Translation id
+    // format errorMessage
     Object.keys(wrappedResponse).forEach(key => {
         const tx = wrappedResponse[key];
         if (tx.type !== 'error') {
@@ -149,7 +149,7 @@ export const composeTransaction = (
                 tx.max = formatNetworkAmount(tx.max, account.symbol);
             }
         } else if (tx.error === 'NOT-ENOUGH-FUNDS') {
-            tx.error = 'AMOUNT_IS_NOT_ENOUGH';
+            tx.errorMessage = { id: 'AMOUNT_IS_NOT_ENOUGH' };
         }
     });
 

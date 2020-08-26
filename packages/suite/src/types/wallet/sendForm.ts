@@ -69,7 +69,7 @@ export type EthTransactionData = {
 };
 
 export type PrecomposedTransactionError = Extract<PrecomposedTransactionBase, { type: 'error' }> & {
-    error: string | ExtendedMessageDescriptor;
+    errorMessage?: ExtendedMessageDescriptor;
 };
 
 export type PrecomposedTransactionNonFinal = Extract<
