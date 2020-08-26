@@ -3679,10 +3679,6 @@ const definedMessages = defineMessages({
         id: 'SETTINGS_ADV_COIN_MODAL_TITLE',
         defaultMessage: '{name} ({coin}) advanced settings',
     },
-    SETTINGS_ADV_COIN_MODAL_DESCRIPTION: {
-        id: 'SETTINGS_ADV_COIN_MODAL_DESCRIPTION',
-        defaultMessage: 'Expert-only settings that can possibly break some functionality.',
-    },
     SETTINGS_ADV_COIN_BLOCKBOOK_TITLE: {
         id: 'SETTINGS_ADV_COIN_BLOCKBOOK_TITLE',
         defaultMessage: 'Blockbook URL',
@@ -3691,6 +3687,18 @@ const definedMessages = defineMessages({
         id: 'SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION',
         defaultMessage:
             'Coins settings also defines the Discovery process when Trezor is connected, Each time you connect not remembered device.{newLine}Default: {urls}',
+    },
+    TR_ADD_NEW_BLOCKBOOK_BACKEND: {
+        id: 'TR_ADD_NEW_BLOCKBOOK_BACKEND',
+        defaultMessage: 'Add new',
+    },
+    TR_CUSTOM_BACKEND_INVALID_URL: {
+        id: 'TR_CUSTOM_BACKEND_INVALID_URL',
+        defaultMessage: 'Invalid URL',
+    },
+    TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED: {
+        id: 'TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED',
+        defaultMessage: 'The backend is already added',
     },
 } as const);
 

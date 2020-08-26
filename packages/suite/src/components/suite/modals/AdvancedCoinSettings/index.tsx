@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import TrezorConnect, { CoinInfo } from 'trezor-connect';
 import { Modal } from '@trezor/components';
-import { Section } from '@suite-components/Settings';
 import { Translation } from '@suite-components/Translation';
 import { NETWORKS } from '@wallet-config';
 import { Props } from './Container';
 
 // Sub components
 import CustomBlockbookUrls from './components/CustomBlockbookUrls';
-import CustomExplorerUrl from './components/CustomExplorerUrl';
-import AccountUnits from './components/AccountUnits';
+import styled from 'styled-components';
+// import CustomExplorerUrl from './components/CustomExplorerUrl';
+// import AccountUnits from './components/AccountUnits';
+
+const Section = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-top: 24px;
+    /* margin-bottom: 32px; */
+`;
 
 const AdvancedCoinSettings = ({
     coin,
@@ -50,11 +57,10 @@ const AdvancedCoinSettings = ({
                     values={{ name: network.name, coin: coin.toUpperCase() }}
                 />
             }
-            description={<Translation id="SETTINGS_ADV_COIN_MODAL_DESCRIPTION" />}
         >
-            <Section>
-                <AccountUnits />
-                {isBlockbook && (
+            {/* <AccountUnits /> */}
+            {isBlockbook && (
+                <Section>
                     <CustomBlockbookUrls
                         coin={coin}
                         coinInfo={coinInfo}
@@ -62,9 +68,9 @@ const AdvancedCoinSettings = ({
                         addBlockbookUrl={addBlockbookUrl}
                         removeBlockbookUrl={removeBlockbookUrl}
                     />
-                )}
-                <CustomExplorerUrl />
-            </Section>
+                </Section>
+            )}
+            {/* <CustomExplorerUrl /> */}
         </Modal>
     );
 };

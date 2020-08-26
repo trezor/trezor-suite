@@ -1,19 +1,48 @@
 import React, { useState, useRef } from 'react';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
+import styled from 'styled-components';
 import { CoinInfo } from 'trezor-connect';
-import { Input, Button } from '@trezor/components';
+import { Input, Button, colors, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
-import { ActionColumn, SectionItem, TextColumn } from '@suite-components/Settings';
 import { Network } from '@suite/types/wallet';
 import { BlockbookUrl } from '@wallet-types/blockbook';
 import { isUrl } from '@suite-utils/validators';
+import messages from '@suite/support/messages';
 
-type Props = {
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+`;
+
+const AddButton = styled(Button)`
+    align-self: flex-start;
+    margin-top: 12px;
+`;
+
+const Heading = styled.span`
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-weight: 500;
+    line-height: 1.5;
+    margin-bottom: 6px;
+`;
+
+const Description = styled.span`
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: 500;
+    line-height: 1.57;
+    margin-bottom: 14px;
+`;
+
+interface Props extends WrappedComponentProps {
     coin: Network['symbol'];
     coinInfo: CoinInfo;
     blockbookUrls: BlockbookUrl[];
     addBlockbookUrl: (params: BlockbookUrl) => void;
     removeBlockbookUrl: (params: BlockbookUrl) => void;
-};
+}
 
 const CustomBlockbookUrls = ({
     coin,
@@ -21,6 +50,7 @@ const CustomBlockbookUrls = ({
     blockbookUrls,
     addBlockbookUrl,
     removeBlockbookUrl,
+    ...props
 }: Props) => {
     const [addErrorMessage, setAddErrorMessage] = useState<string | null>(null);
     const addRef = useRef<HTMLInputElement>(null);
@@ -31,14 +61,17 @@ const CustomBlockbookUrls = ({
 
             // URL is not valid
             if (!isUrl(url)) {
-                setAddErrorMessage('Invalid URL.'); // TODO: Translate message
+                setAddErrorMessage(
+                    props.intl.formatMessage(messages.TR_CUSTOM_BACKEND_INVALID_URL),
+                );
                 return;
             }
 
             // URL already exists
             if (blockbookUrls.find(b => b.coin === coin && b.url === url)) {
-                // TODO: Display error
-                setAddErrorMessage('Backend already added for this coin.');
+                setAddErrorMessage(
+                    props.intl.formatMessage(messages.TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED),
+                );
                 return;
             }
 
@@ -55,60 +88,50 @@ const CustomBlockbookUrls = ({
     };
 
     return (
-        <>
-            <SectionItem>
-                <TextColumn
-                    title={<Translation id="SETTINGS_ADV_COIN_BLOCKBOOK_TITLE" />}
-                    description={
-                        <Translation
-                            id="SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION"
-                            values={{
-                                newLine: <br />,
-                                urls: coinInfo.blockchainLink
-                                    ? coinInfo.blockchainLink.url.join(', ')
-                                    : '',
-                            }}
+        <Wrapper>
+            <Heading>
+                <Translation id="SETTINGS_ADV_COIN_BLOCKBOOK_TITLE" />
+            </Heading>
+            <Description>
+                <Translation
+                    id="SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION"
+                    values={{
+                        newLine: <br />,
+                        urls: coinInfo.blockchainLink ? coinInfo.blockchainLink.url.join(', ') : '',
+                    }}
+                />
+            </Description>
+
+            {blockbookUrls.map(b => (
+                <Input
+                    key={b.url}
+                    value={b.url}
+                    noTopLabel
+                    isDisabled
+                    innerAddon={
+                        <Button
+                            variant="tertiary"
+                            icon="CROSS"
+                            onClick={() => removeBlockbookUrl(b)}
                         />
                     }
                 />
-            </SectionItem>
-            {blockbookUrls.map(b => (
-                <SectionItem key={b.url}>
-                    <ActionColumn>
-                        <Input
-                            value={b.url}
-                            noTopLabel
-                            isDisabled
-                            innerAddon={
-                                <Button
-                                    variant="tertiary"
-                                    icon="CROSS"
-                                    onClick={() => removeBlockbookUrl(b)}
-                                />
-                            }
-                        />
-                    </ActionColumn>
-                </SectionItem>
             ))}
-            <SectionItem>
-                <ActionColumn>
-                    <Input
-                        placeholder={`https://${coin}1.trezor.io/`}
-                        innerRef={addRef}
-                        noTopLabel
-                        type="text"
-                        state={addErrorMessage ? 'error' : undefined}
-                        bottomText={addErrorMessage}
-                        innerAddon={
-                            <Button variant="tertiary" icon="PLUS" onClick={addUrl}>
-                                Add new
-                            </Button>
-                        }
-                    />
-                </ActionColumn>
-            </SectionItem>
-        </>
+
+            <Input
+                placeholder={`https://${coin}1.trezor.io/`}
+                innerRef={addRef}
+                noTopLabel
+                type="text"
+                state={addErrorMessage ? 'error' : undefined}
+                bottomText={addErrorMessage}
+            />
+
+            <AddButton variant="tertiary" icon="PLUS" onClick={addUrl}>
+                <Translation id="TR_ADD_NEW_BLOCKBOOK_BACKEND" />
+            </AddButton>
+        </Wrapper>
     );
 };
 
-export default CustomBlockbookUrls;
+export default injectIntl(CustomBlockbookUrls);
