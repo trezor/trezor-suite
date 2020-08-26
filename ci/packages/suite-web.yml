@@ -4,6 +4,20 @@
         - releases
         - schedules
 
+.e2e_artifacts: &e2e_artifacts
+    expire_in: 7 days
+    when: always
+    paths:
+        - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
+        - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
+        - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
+
+.e2e_script_common: &e2e_script_common
+    - npx cypress install
+    - export CYPRESS_ASSET_PREFIX=/wallet
+    - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
+    - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
+
 suite-web build:
     stage: build
     script:
@@ -63,11 +77,8 @@ suite-web deploy dev:
 suite-web e2e chrome stage=stable:
     stage: integration testing
     script:
-        - npx cypress install
+        - *e2e_script_common
         - export CYPRESS_SNAPSHOT=1
-        - export CYPRESS_ASSET_PREFIX=/wallet
-        - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
-        - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=chrome
         - yarn concurrently --success first --kill-others
           "cd ./docker/trezor-user-env/controller && python3 ./main.py"
@@ -76,12 +87,7 @@ suite-web e2e chrome stage=stable:
           --stage='@stable'
           "
     artifacts:
-        expire_in: 7 days
-        when: always
-        paths:
-            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
-            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
-            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
+        <<: *e2e_artifacts
     dependencies: []
 
 # this job is intended to collect statistics on tests in beta stage (=tests that are possibly unstable)
@@ -90,11 +96,8 @@ suite-web e2e chrome stage=stable:
 suite-web e2e chrome stage=beta:
     stage: integration testing
     script:
-        - npx cypress install
+        - *e2e_script_common
         - export CYPRESS_SNAPSHOT=1
-        - export CYPRESS_ASSET_PREFIX=/wallet
-        - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
-        - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=/usr/bin/google-chrome-beta
         - yarn concurrently --success first --kill-others
           "cd ./docker/trezor-user-env/controller && python3 ./main.py"
@@ -103,12 +106,7 @@ suite-web e2e chrome stage=beta:
           --stage='@beta'
           "
     artifacts:
-        expire_in: 7 days
-        when: always
-        paths:
-            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
-            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
-            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
+        <<: *e2e_artifacts
     dependencies: []
 
 suite-web e2e chrome-beta stage=stable:
@@ -117,13 +115,9 @@ suite-web e2e chrome-beta stage=stable:
         - schedules
     allow_failure: false
     script:
+        - *e2e_script_common
         # update chrome-beta channel to the latest
         - apt-get update && apt-get upgrade -y
-        - npx cypress install
-        - export CYPRESS_SNAPSHOT=1
-        - export CYPRESS_ASSET_PREFIX=/wallet
-        - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
-        - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
         - export BROWSER=/usr/bin/google-chrome-beta
         - yarn concurrently --success first --kill-others
           "cd ./docker/trezor-user-env/controller && python3 ./main.py"
@@ -132,12 +126,7 @@ suite-web e2e chrome-beta stage=stable:
           --stage='@stable'
           "
     artifacts:
-        expire_in: 7 days
-        when: always
-        paths:
-            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
-            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
-            - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
+        <<: *e2e_artifacts
     dependencies: []
 
 suite-web deploy staging:
@@ -155,4 +144,5 @@ suite-web deploy staging:
         - ./scripts/s3sync.sh stage beta
     tags:
         - deploy
+
 # todo: add smoke test job on stage / beta (need basic auth)
