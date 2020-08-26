@@ -3,9 +3,7 @@ import SuiteDB from '@trezor/suite-storage';
 import { STORAGE } from './constants';
 import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
-import { GraphData } from '@
-
-wallet-types/graph';
+import { GraphData } from '@wallet-types/graph';
 import { getAccountKey } from '@wallet-utils/accountUtils';
 import { Discovery } from '@wallet-reducers/discoveryReducer';
 import * as notificationActions from '@suite-actions/notificationActions';
