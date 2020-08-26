@@ -93,6 +93,8 @@ const CustomBlockbookUrls = ({
         }
     };
 
+    const urls = blockbookUrls.filter(b => b.coin === coin);
+
     return (
         <Wrapper>
             <Heading>
@@ -112,7 +114,7 @@ const CustomBlockbookUrls = ({
                 />
             </DefaultValues>
 
-            {blockbookUrls.map(b => (
+            {urls.map(b => (
                 <Input
                     key={b.url}
                     value={b.url}
