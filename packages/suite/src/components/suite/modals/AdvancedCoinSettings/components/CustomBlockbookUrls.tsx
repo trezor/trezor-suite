@@ -119,7 +119,7 @@ const CustomBlockbookUrls = ({
             ))}
 
             <Input
-                placeholder={`https://${coin}1.trezor.io/`}
+                placeholder={`e.g. https://${coin}1.trezor.io/`}
                 innerRef={addRef}
                 noTopLabel
                 type="text"
