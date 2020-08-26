@@ -1,9 +1,10 @@
 import produce from 'immer';
 import { AccountInfo } from 'trezor-connect';
 import { ACCOUNT } from '@wallet-actions/constants';
-import { STORAGE } from '@suite-actions/constants';
+import { STORAGE, METADATA } from '@suite-actions/constants';
 import { WalletAction, Network } from '@wallet-types';
 import { Action as SuiteAction } from '@suite-types';
+import { AccountMetadata } from '@suite-types/metadata';
 
 type AccountNetworkSpecific =
     | {
@@ -27,6 +28,7 @@ type AccountNetworkSpecific =
 
 export type Account = {
     deviceState: string;
+    key: string;
     index: number;
     path: string;
     descriptor: string;
@@ -43,6 +45,7 @@ export type Account = {
     addresses: AccountInfo['addresses'];
     utxo: AccountInfo['utxo'];
     history: AccountInfo['history'];
+    metadata: AccountMetadata;
 } & AccountNetworkSpecific;
 
 const initialState: Account[] = [];
@@ -103,6 +106,12 @@ const update = (draft: Account[], account: Account) => {
     }
 };
 
+const setMetadata = (draft: Account[], account: Account) => {
+    const index = draft.findIndex(a => a.key === account.key);
+    if (!draft[index]) return;
+    draft[index].metadata = account.metadata;
+};
+
 export default (state: Account[] = initialState, action: WalletAction | SuiteAction): Account[] => {
     return produce(state, draft => {
         switch (action.type) {
@@ -119,6 +128,12 @@ export default (state: Account[] = initialState, action: WalletAction | SuiteAct
                 break;
             case ACCOUNT.REMOVE:
                 remove(draft, action.payload);
+                break;
+            case METADATA.ACCOUNT_LOADED:
+            case METADATA.ACCOUNT_ADD:
+                setMetadata(draft, action.payload);
+                break;
+
             // no default
         }
     });

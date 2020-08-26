@@ -267,7 +267,11 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
                                     onChange={(value: string) => setSearchString(value)}
                                 />
                                 <AddAccountButtonWrapper>
-                                    <AddAccountButton device={device} noButtonLabel />
+                                    <AddAccountButton
+                                        device={device}
+                                        closeMenu={() => setIsExpanded(false)}
+                                        noButtonLabel
+                                    />
                                 </AddAccountButtonWrapper>
                             </Search>
                             {buildGroup('normal', normalAccounts)}

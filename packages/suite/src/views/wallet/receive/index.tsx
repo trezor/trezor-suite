@@ -22,6 +22,7 @@ const Receive = ({ selectedAccount, receive, device, showAddress, addToast }: Pr
                 addresses={receive}
                 showAddress={showAddress}
                 addToast={addToast}
+                accountKey={account.key}
                 disabled={disabled}
                 locked={isDeviceLocked}
             />
@@ -30,6 +31,7 @@ const Receive = ({ selectedAccount, receive, device, showAddress, addToast }: Pr
                 addresses={receive}
                 showAddress={showAddress}
                 addToast={addToast}
+                accountKey={account.key}
                 disabled={disabled}
                 locked={isDeviceLocked}
             />

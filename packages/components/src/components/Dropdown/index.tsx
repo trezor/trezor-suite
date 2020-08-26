@@ -3,9 +3,10 @@ import styled, { css } from 'styled-components';
 import { colors, variables } from '../../config';
 import { useOnClickOutside } from '../../utils/hooks';
 import { Icon, IconProps } from '../Icon';
+import ReactDOM from 'react-dom';
 
-const Wrapper = styled.div`
-    position: relative;
+const Wrapper = styled.div<{ absolutePosition: boolean }>`
+    position: ${props => (props.absolutePosition ? 'static' : 'relative')};
 `;
 
 const Menu = styled.ul<MenuProps>`
@@ -16,7 +17,14 @@ const Menu = styled.ul<MenuProps>`
     flex: 1;
     min-width: 140px;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-    z-index: 1;
+    z-index: 10001;
+
+    ${props =>
+        props.coords &&
+        css`
+            top: ${props.coords[1]}px;
+            left: ${props.coords[0]}px;
+        `}
 
     list-style-type: none;
     margin-top: ${props => (props.offset !== undefined ? `${props.offset}px` : '10px')};
@@ -25,12 +33,14 @@ const Menu = styled.ul<MenuProps>`
 
     ${props =>
         props.alignMenu === 'left' &&
+        !props.coords &&
         css`
             left: 0px;
         `};
 
     ${props =>
         props.alignMenu === 'right' &&
+        !props.coords &&
         css`
             right: 0px;
         `};
@@ -95,11 +105,13 @@ interface MenuItemProps {
 }
 interface MenuProps {
     alignMenu?: 'left' | 'right';
+    coords?: Coords;
     offset?: number;
 }
 
 interface Props extends MenuProps, React.ButtonHTMLAttributes<HTMLDivElement> {
     children?: React.ReactElement<any>;
+    absolutePosition?: boolean;
     items: GroupedMenuItems[];
     components?: {
         DropdownMenuItem?: React.ComponentType<MenuItemProps>;
@@ -107,7 +119,10 @@ interface Props extends MenuProps, React.ButtonHTMLAttributes<HTMLDivElement> {
     };
     offset?: number;
     isDisabled?: boolean;
+    appendTo?: HTMLElement;
 }
+
+type Coords = [number, number] | undefined;
 
 const Dropdown = ({
     children,
@@ -115,11 +130,14 @@ const Dropdown = ({
     items,
     components,
     isDisabled,
+    absolutePosition,
     alignMenu = 'left',
     offset = 10,
+    appendTo,
     ...rest
 }: Props) => {
     const [toggled, setToggled] = useState(false);
+    const [coords, setCoords] = useState<Coords>(undefined);
     const menuRef = useRef<HTMLUListElement>(null);
     const toggleRef = useRef<any>(null);
     const MenuComponent = components?.DropdownMenu ?? Menu;
@@ -129,6 +147,21 @@ const Dropdown = ({
         ...group,
         options: group.options.filter(item => !item.isHidden),
     }));
+
+    const setAdjustedCoords = (c: Coords) => {
+        if (!c) {
+            setCoords(c);
+            return;
+        }
+
+        let x = c[0];
+        const y = c[1];
+        if (menuRef.current) {
+            const rect = menuRef.current.getBoundingClientRect();
+            x += rect.width;
+        }
+        setCoords([x, y]);
+    };
 
     useOnClickOutside([menuRef, toggleRef], event => {
         if (toggled) {
@@ -159,9 +192,11 @@ const Dropdown = ({
             isDisabled,
             onClick: !isDisabled
                 ? (e: any) => {
+                      e.stopPropagation();
                       e.preventDefault();
                       if (children.props.onClick) children.props.onClick(e);
                       setToggled(!toggled);
+                      setAdjustedCoords([e.clientX, e.clientY]);
                   }
                 : undefined,
         })
@@ -173,8 +208,9 @@ const Dropdown = ({
             color={!isDisabled ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY}
             onClick={
                 !isDisabled
-                    ? () => {
+                    ? e => {
                           setToggled(!toggled);
+                          setAdjustedCoords([e.clientX, e.clientY]);
                       }
                     : undefined
             }
@@ -183,37 +219,49 @@ const Dropdown = ({
         />
     );
 
-    return (
-        <Wrapper className={className}>
-            {toggleComponent}
-            {toggled && (
-                <MenuComponent ref={menuRef} alignMenu={alignMenu} offset={offset}>
-                    {visibleItems.map((group, i) => (
-                        <React.Fragment key={group.key}>
-                            {group.label && <Group>{group.label}</Group>}
-                            {group.options.map(item => (
-                                <MenuItemComponent
-                                    onClick={() => onMenuItemClick(item)}
-                                    data-test={item['data-test']}
-                                    key={item.key}
-                                    item={item}
-                                >
-                                    {item.icon && (
-                                        <IconWrapper>
-                                            <Icon
-                                                icon={item.icon}
-                                                size={16}
-                                                color={colors.NEUE_TYPE_DARK_GREY}
-                                            />
-                                        </IconWrapper>
-                                    )}
-                                    {item.label}
-                                </MenuItemComponent>
-                            ))}
-                        </React.Fragment>
+    const menu = (
+        <MenuComponent
+            ref={menuRef}
+            alignMenu={alignMenu}
+            offset={offset}
+            coords={absolutePosition ? coords : undefined}
+        >
+            {visibleItems.map((group, i) => (
+                <React.Fragment key={group.key}>
+                    {group.label && <Group>{group.label}</Group>}
+                    {group.options.map(item => (
+                        <MenuItemComponent
+                            onClick={e => {
+                                e.stopPropagation();
+                                onMenuItemClick(item);
+                            }}
+                            data-test={item['data-test']}
+                            key={item.key}
+                            item={item}
+                        >
+                            {item.icon && (
+                                <IconWrapper>
+                                    <Icon
+                                        icon={item.icon}
+                                        size={16}
+                                        color={colors.NEUE_TYPE_DARK_GREY}
+                                    />
+                                </IconWrapper>
+                            )}
+                            {item.label}
+                        </MenuItemComponent>
                     ))}
-                </MenuComponent>
-            )}
+                </React.Fragment>
+            ))}
+        </MenuComponent>
+    );
+
+    const portalMenu = absolutePosition && appendTo ? ReactDOM.createPortal(menu, appendTo) : menu;
+
+    return (
+        <Wrapper className={className} absolutePosition={!!absolutePosition}>
+            {toggleComponent}
+            {toggled && portalMenu}
         </Wrapper>
     );
 };

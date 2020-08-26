@@ -4,9 +4,8 @@ import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Link, P, H2, Button, Modal } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
-import { Translation, WebusbButton, Image } from '@suite-components';
+import { Translation, WebusbButton, ConnectDeviceImage } from '@suite-components';
 import HelpBuyIcons from '@suite-components/ProgressBar/components/HelpBuyIcons';
-
 import { Dispatch, AppState } from '@suite-types';
 import { isWebUSB } from '@suite-utils/transport';
 import { getLinuxPackage } from '@suite-utils/bridge';
@@ -36,6 +35,7 @@ const StyledLink = styled(Link)``;
 
 const mapStateToProps = (state: AppState) => ({
     transport: state.suite.transport,
+    debug: state.suite.settings.debug,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
@@ -62,8 +62,7 @@ const Index = (props: Props) => {
                     <Translation id="TR_CONNECT_TREZOR" />
                 </H2>
             </Title>
-            <Image
-                image="CONNECT_DEVICE"
+            <ConnectDeviceImage
                 onLoad={() => setImageLoaded(true)}
                 onError={() => setImageLoaded(true)}
             />

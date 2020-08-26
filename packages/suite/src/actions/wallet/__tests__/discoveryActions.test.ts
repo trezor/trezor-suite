@@ -140,6 +140,7 @@ jest.mock('trezor-connect', () => {
         default: {
             blockchainSetCustomBackend: () => {},
             getFeatures: () => {},
+            cipherKeyValue: () => {},
             off: () => {
                 progressCallback = () => {};
             },
@@ -165,6 +166,7 @@ export const getInitialState = () => ({
         device: SUITE_DEVICE,
     },
     devices: [SUITE_DEVICE],
+    metadata: { enabled: false }, // don't use labeling in unit:tests
     wallet: {
         discovery: discoveryReducer(undefined, { type: 'foo' } as any),
         accounts: accountsReducer(undefined, { type: 'foo' } as any),
@@ -450,12 +452,18 @@ describe('Discovery Actions', () => {
         require('trezor-connect').setTestFixtures(f);
 
         const store = initStore();
-        store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
-        store.dispatch(discoveryActions.start()).then(() => {
-            const action = store.getActions().pop();
-            done(expect(action.type).toEqual(DISCOVERY.REMOVE));
+        store.subscribe(() => {
+            const actions = store.getActions();
+            const a = actions[actions.length - 1];
+            if (a.type === DISCOVERY.UPDATE && a.payload.status === 1) {
+                // catch bundle update called from 'start()' and remove discovery before TrezorConnect response
+                store.dispatch(discoveryActions.remove('device-state'));
+            }
         });
-        store.dispatch(discoveryActions.remove('device-state'));
+        store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
+        await store.dispatch(discoveryActions.start());
+        const action = store.getActions().pop();
+        done(expect(action.type).toEqual(DISCOVERY.REMOVE));
     });
 
     it(`TrezorConnect responded with success but discovery is not running`, async done => {
@@ -466,17 +474,23 @@ describe('Discovery Actions', () => {
         require('trezor-connect').setTestFixtures(f);
 
         const store = initStore();
-        store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
-        store.dispatch(discoveryActions.start()).then(() => {
-            const action = store.getActions().pop();
-            done(expect(action.type).toEqual(NOTIFICATION.TOAST));
+        store.subscribe(() => {
+            const actions = store.getActions();
+            const a = actions[actions.length - 1];
+            if (a.type === DISCOVERY.UPDATE && a.payload.status === 1) {
+                // catch bundle update called from 'start()' and stop discovery before TrezorConnect response
+                store.dispatch(
+                    discoveryActions.update({
+                        deviceState: 'device-state',
+                        status: DISCOVERY.STATUS.STOPPED,
+                    }),
+                );
+            }
         });
-        store.dispatch(
-            discoveryActions.update({
-                deviceState: 'device-state',
-                status: DISCOVERY.STATUS.STOPPED,
-            }),
-        );
+        store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
+        await store.dispatch(discoveryActions.start());
+        const action = store.getActions().pop();
+        done(expect(action.type).toEqual(NOTIFICATION.TOAST));
     });
 
     it('Discovery completed but device is not connected anymore', async () => {

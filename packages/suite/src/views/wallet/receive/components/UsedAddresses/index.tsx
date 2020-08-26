@@ -1,12 +1,20 @@
 import React, { useState, createRef } from 'react';
 import styled, { css } from 'styled-components';
 import { colors, variables, Button, Icon } from '@trezor/components';
-import { Card, Translation, HiddenPlaceholder, FiatValue, Badge } from '@suite-components';
+import {
+    Card,
+    Translation,
+    HiddenPlaceholder,
+    FiatValue,
+    Badge,
+    MetadataLabeling,
+} from '@suite-components';
 import { parseBIP44Path, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { copyToClipboard } from '@suite-utils/dom';
 import { ChildProps as Props } from '../../Container';
 import { AccountAddress } from 'trezor-connect';
 import { Network, ReceiveInfo } from '@wallet-types';
+import { MetadataAddPayload } from '@suite-types/metadata';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
 const StyledCard = styled(Card)`
@@ -125,25 +133,58 @@ interface ItemProps {
     addr: AccountAddress;
     symbol: Network['symbol'];
     revealed?: ReceiveInfo;
-    onClick: (_ev: any) => void;
-    onCopy: (_ev: any) => void;
+    metadataPayload: MetadataAddPayload;
+    onClick: () => void;
+    onCopy: () => void;
 }
 
-const Item = ({ addr, symbol, onClick, onCopy, revealed, index }: ItemProps) => {
+const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index }: ItemProps) => {
     const amount = formatNetworkAmount(addr.received || '0', symbol, true);
     const [amountF] = amount.split(' ');
     const fresh = addr.transfers < 1;
     const isRevealed = !!revealed;
     const address = revealed ? addr.address : `${addr.address.substring(0, 15)}…`;
+
+    const dropdownOptions = [
+        {
+            callback: () => onClick(),
+            label: 'Confirm on device',
+            key: 'confirm-on-device',
+            'data-test': '@metadata/confirm-on-device-button',
+        },
+    ];
+    if (isRevealed) {
+        dropdownOptions.push({
+            callback: onCopy,
+            label: 'Copy address',
+            key: 'copy-address',
+            'data-test': '@metadata/copy-address-button',
+        });
+    }
     return (
         <>
             <GridItem revealed={isRevealed}>/{parseBIP44Path(addr.path)!.addrIndex}</GridItem>
             <GridItemAddress
                 data-test={`@wallet/receive/used-address/${index}`}
                 revealed={isRevealed}
-                onClick={onClick}
             >
-                {address}
+                <MetadataLabeling
+                    payload={{
+                        ...metadataPayload,
+                    }}
+                    // if metadata is present, confirm on device option will become available in dropdown
+                    defaultVisibleValue={
+                        // eslint-disable-next-line
+                        <span
+                            style={{ cursor: 'pointer' }}
+                            onClick={!metadataPayload.value ? onClick : () => {}}
+                        >
+                            {address}
+                        </span>
+                    }
+                    dropdownOptions={dropdownOptions}
+                />
+                {/* {address} */}
                 {revealed && !revealed.isVerified && (
                     <Icon
                         size={14}
@@ -171,9 +212,6 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, index }: ItemProps) => 
                 {fresh && <Translation id="RECEIVE_TABLE_NOT_USED" />}
             </GridItem>
             <GridItem>
-                {/* <IconButton variant="tertiary">
-                    <Icon size={16} icon="LABEL" />
-                </IconButton> */}
                 <IconButton variant="tertiary" isDisabled={!revealed} onClick={onCopy}>
                     <Icon size={16} icon="COPY" />
                 </IconButton>
@@ -182,10 +220,18 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, index }: ItemProps) => 
     );
 };
 
-const UsedAddresses = ({ account, addresses, showAddress, addToast, locked }: Props) => {
+const UsedAddresses = ({
+    account,
+    addresses,
+    showAddress,
+    addToast,
+    locked,
+    accountKey,
+}: Props) => {
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
     if (account.networkType !== 'bitcoin' || !account.addresses) return null;
     const { used, unused } = account.addresses;
+    const { addressLabels } = account.metadata;
     // find revealed addresses in `unused` list
     const revealed = addresses.reduce((result, addr) => {
         const x = unused.find(u => u.path === addr.path);
@@ -228,6 +274,12 @@ const UsedAddresses = ({ account, addresses, showAddress, addToast, locked }: Pr
                         key={addr.path}
                         addr={addr}
                         symbol={account.symbol}
+                        metadataPayload={{
+                            type: 'addressLabel',
+                            accountKey,
+                            defaultValue: addr.address,
+                            value: addressLabels[addr.address],
+                        }}
                         revealed={addresses.find(f => f.address === addr.address)}
                         onClick={() => (!locked ? showAddress(addr.path, addr.address) : undefined)}
                         onCopy={() => copyAddress(addr.address)}

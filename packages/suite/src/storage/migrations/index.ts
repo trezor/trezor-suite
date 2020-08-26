@@ -5,7 +5,7 @@ export const migrate = async (
     db: Parameters<OnUpgradeFunc<SuiteDBSchema>>['0'],
     oldVersion: Parameters<OnUpgradeFunc<SuiteDBSchema>>['1'],
     newVersion: Parameters<OnUpgradeFunc<SuiteDBSchema>>['2'],
-    _transaction: Parameters<OnUpgradeFunc<SuiteDBSchema>>['3'],
+    transaction: Parameters<OnUpgradeFunc<SuiteDBSchema>>['3'],
 ) => {
     console.log(`Migrating database from version ${oldVersion} to ${newVersion}`);
 
@@ -60,6 +60,45 @@ export const migrate = async (
     }
 
     if (oldVersion < 15) {
+        db.createObjectStore('metadata');
+
+        const accountsStore = transaction.objectStore('accounts');
+        accountsStore
+            .openCursor()
+            .then(function addMetadataKeys(cursor): Promise<void> | undefined {
+                if (!cursor) {
+                    return;
+                }
+                const account = cursor.value;
+
+                account.metadata = {
+                    key: '',
+                    fileName: '',
+                    aesKey: '',
+                    outputLabels: {},
+                    addressLabels: {},
+                };
+                account.key = `${account.descriptor}-${account.symbol}-${account.deviceState}`;
+                cursor.update(account);
+
+                return cursor.continue().then(addMetadataKeys);
+            });
+
+        const devicesStore = transaction.objectStore('devices');
+        devicesStore.openCursor().then(function addMetadataKeys(cursor): Promise<void> | undefined {
+            if (!cursor) {
+                return;
+            }
+            const device = cursor.value;
+
+            device.metadata = {
+                status: 'disabled',
+            };
+            cursor.update(device);
+
+            return cursor.continue().then(addMetadataKeys);
+        });
+      
         // object store for send form
         // @ts-ignore sendForm doesn't exists anymore
         db.deleteObjectStore('sendForm');

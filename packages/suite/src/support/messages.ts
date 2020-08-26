@@ -3212,15 +3212,6 @@ const definedMessages = defineMessages({
         id: 'TR_ONLY_2_MORE_STEPS',
         defaultMessage: 'Only 2 more steps that take only few more minutes.',
     },
-    TR_NO_TRANSACTIONS_TO_SHOW: {
-        id: 'TR_NO_TRANSACTIONS_TO_SHOW',
-        defaultMessage: 'No transactions to show',
-    },
-    TR_NO_TRANSACTIONS_TO_SHOW_SUB: {
-        id: 'TR_NO_TRANSACTIONS_TO_SHOW_SUB',
-        defaultMessage:
-            'Try a different date range.{newLine}Still nothing? Go ahead and send a transaction.',
-    },
     TR_RECEIVED: {
         id: 'TR_RECEIVED',
         defaultMessage: 'Received',
@@ -3348,6 +3339,14 @@ const definedMessages = defineMessages({
     TR_TOKENS: {
         id: 'TR_TOKENS',
         defaultMessage: 'Tokens',
+    },
+    TR_BRIDGE_DEV_MODE_START: {
+        id: 'TR_BRIDGE_DEV_MODE_START',
+        defaultMessage: 'Starting Trezor Bridge on port 21324',
+    },
+    TR_BRIDGE_DEV_MODE_STOP: {
+        id: 'TR_BRIDGE_DEV_MODE_STOP',
+        defaultMessage: 'Starting Trezor Bridge on default port',
     },
     TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY: {
         id: 'TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY',

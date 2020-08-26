@@ -25,6 +25,22 @@ const DebugSettings = (props: Props) => {
                         />
                     </ActionColumn>
                 </Row>
+                <Row>
+                    <TextColumn
+                        title="Trezor Bridge dev mode (desktop)"
+                        description="Starts Trezor Bridge on port 21324"
+                    />
+                    <ActionColumn>
+                        <Switch
+                            checked={props.debug.bridgeDevMode}
+                            onChange={() => {
+                                props.setDebugMode({
+                                    bridgeDevMode: !props.debug.bridgeDevMode,
+                                });
+                            }}
+                        />
+                    </ActionColumn>
+                </Row>
             </Section>
         </SettingsLayout>
     );

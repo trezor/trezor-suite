@@ -66,6 +66,10 @@ export type UserContextPayload =
       }
     | {
           type: 'disconnect-device';
+      }
+    | {
+          type: 'metadata-provider';
+          decision: Deferred<boolean>;
       };
 
 export type ModalActions =

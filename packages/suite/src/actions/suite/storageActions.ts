@@ -3,7 +3,9 @@ import SuiteDB from '@trezor/suite-storage';
 import { STORAGE } from './constants';
 import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
-import { GraphData } from '@wallet-types/graph';
+import { GraphData } from '@
+
+wallet-types/graph';
 import { getAccountKey } from '@wallet-utils/accountUtils';
 import { Discovery } from '@wallet-reducers/discoveryReducer';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -202,6 +204,11 @@ export const saveAnalytics = () => (_dispatch: Dispatch, getState: GetState) => 
     );
 };
 
+export const saveMetadataProvider = () => (_dispatch: Dispatch, getState: GetState) => {
+    const { metadata } = getState();
+    db.addItem('metadata', { provider: metadata.provider, enabled: metadata.enabled }, 'state');
+};
+
 export const clearStores = () => async (dispatch: Dispatch, getState: GetState) => {
     const rememberedDevices = getState().devices.filter(d => d.remember);
     // forget all remembered devices
@@ -238,7 +245,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
         const fiatRates = await db.getItemsExtended('fiatRates');
         const walletGraphData = await db.getItemsExtended('graph');
         const analytics = await db.getItemByPK('analytics', 'suite');
-
+        const metadata = await db.getItemByPK('metadata', 'state');
         const txs = await db.getItemsExtended('txs', 'order');
         const mappedTxs: AppState['wallet']['transactions']['transactions'] = {};
         txs.forEach(item => {
@@ -275,6 +282,11 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                     settings: {
                         ...initialState.suite.settings,
                         ...suite?.settings,
+                        debug: {
+                            ...initialState.suite.settings.debug,
+                            ...suite?.settings.debug,
+                            bridgeDevMode: false, // don't sync bridgeDevMode for now
+                        },
                     },
                 },
                 devices,
@@ -303,6 +315,10 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                 analytics: analytics?.instanceId
                     ? { ...analytics, sessionId: getAnalyticsRandomId() }
                     : initialState.analytics,
+                metadata: {
+                    ...initialState.metadata,
+                    ...metadata,
+                },
             },
         });
     }

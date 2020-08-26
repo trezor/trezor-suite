@@ -8,5 +8,6 @@
     "videosFolder": "./videos",
     "video": true,
     "trashAssetsBeforeRuns": true,
-    "chromeWebSecurity": false
+    "chromeWebSecurity": false,
+    "experimentalFetchPolyfill": true
 }

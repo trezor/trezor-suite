@@ -3,7 +3,7 @@ import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import * as deviceUtils from '@suite-utils/device';
 import { addToast } from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
-import { SUITE } from './constants';
+import { SUITE, METADATA } from './constants';
 import { LANGUAGES } from '@suite-config';
 import { Action, Dispatch, GetState, TrezorDevice, AppState } from '@suite-types';
 import { DebugModeOptions } from '@suite-reducers/suiteReducer';
@@ -33,7 +33,7 @@ export type SuiteActions =
           locale: typeof LANGUAGES[number]['code'];
           messages: { [key: string]: string };
       }
-    | { type: typeof SUITE.SET_DEBUG_MODE; payload: DebugModeOptions }
+    | { type: typeof SUITE.SET_DEBUG_MODE; payload: Partial<DebugModeOptions> }
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | { type: typeof SUITE.LOCK_DEVICE; payload: boolean }
@@ -89,7 +89,7 @@ export const onSuiteReady = (): Action => ({
  * @param {boolean} payload
  * @returns {Action}
  */
-export const setDebugMode = (payload: DebugModeOptions): Action => ({
+export const setDebugMode = (payload: Partial<DebugModeOptions>): Action => ({
     type: SUITE.SET_DEBUG_MODE,
     payload,
 });
@@ -273,6 +273,9 @@ const actions = [
     SUITE.UPDATE_PASSPHRASE_MODE,
     SUITE.ADD_BUTTON_REQUEST,
     SUITE.FORGET_DEVICE,
+    METADATA.SET_DEVICE_METADATA,
+    METADATA.WALLET_LOADED,
+    METADATA.WALLET_ADD,
     ...Object.values(DEVICE).filter(v => typeof v === 'string'),
 ];
 

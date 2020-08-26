@@ -67,9 +67,12 @@ def message_received(client, server, message):
                 cmd["needs_backup"]
             )
             response = {"success": True}
-        elif cmdType == "emulator-decision":
-            emulator.decision()
+        elif cmdType == "emulator-press-yes":
+            emulator.press_yes()
             response = {"success": True}
+        elif cmdType == "emulator-press-no":
+            emulator.press_no()
+            response = {"success": True}            
         elif cmdType == "emulator-input":
             emulator.input(cmd['value'])
             response = {"success": True}
