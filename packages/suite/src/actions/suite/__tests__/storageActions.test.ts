@@ -65,12 +65,14 @@ const acc1 = getWalletAccount({
     deviceState: dev1.state,
     symbol: 'btc',
     descriptor: 'desc1',
+    key: `desc1-btc-${dev1.state}`,
     networkType: 'bitcoin',
 });
 const acc2 = getWalletAccount({
     deviceState: dev2.state,
     symbol: 'btc',
     descriptor: 'desc2',
+    key: `desc2-btc-${dev2.state}`,
     networkType: 'bitcoin',
 });
 
@@ -411,6 +413,7 @@ describe('Storage actions', () => {
             deviceState: dev1.state,
             symbol: 'ltc',
             descriptor: 'desc2',
+            key: `desc2-ltc-${dev1.state}`,
             networkType: 'bitcoin',
         });
 
