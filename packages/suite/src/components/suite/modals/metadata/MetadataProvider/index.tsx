@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Modal, Button } from '@trezor/components';
-// import { Translation } from '@suite-components';
+import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { Deferred } from '@suite-utils/deferred';
@@ -49,8 +49,8 @@ const MetadataProvider = (props: Props) => {
             cancelable
             onCancel={onCancel}
             size="tiny"
-            heading="Cloud sync"
-            description="Do you want to sync your labeling with selected data provider?"
+            heading={<Translation id="METADATA_MODAL_HEADING" />}
+            description={<Translation id="METADATA_MODAL_DESCRIPTION" />}
             data-test="@modal/metadata-provider"
         >
             <Buttons>
@@ -59,7 +59,7 @@ const MetadataProvider = (props: Props) => {
                     isLoading={isLoading === 'dropbox'}
                     isDisabled={!!isLoading}
                 >
-                    Dropbox
+                    <Translation id="TR_DROPBOX" />
                 </StyledButton>
                 <StyledButton
                     onClick={() => connect('google')}
@@ -67,7 +67,7 @@ const MetadataProvider = (props: Props) => {
                     isDisabled={!!isLoading}
                     data-test="@modal/metadata-provider/google-button"
                 >
-                    Google drive
+                    <Translation id="TR_GOOGLE_DRIVE" />
                 </StyledButton>
 
                 {/* <StyledButton

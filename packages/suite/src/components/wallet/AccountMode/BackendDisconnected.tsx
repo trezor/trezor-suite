@@ -68,7 +68,7 @@ const Disconnected = ({ selectedAccount, reconnect, blockchain }: Props) => {
                 onClick={click}
                 isLoading={progress || isResolving}
             >
-                <Translation id="TR_BACKEND_CONNECT" />
+                <Translation id="TR_CONNECT" />
             </Button>
         </NotificationCard>
     );
