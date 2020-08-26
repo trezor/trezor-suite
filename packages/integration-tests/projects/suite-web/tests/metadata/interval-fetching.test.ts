@@ -3,7 +3,7 @@
 import * as METADATA from '../../../../../suite/src/actions/suite/constants/metadataConstants';
 import { stubFetch, stubOpen } from '../../stubs/metadata';
 
-describe('Metadata', () => {
+describe.skip('Metadata', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
     });
