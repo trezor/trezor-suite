@@ -3686,7 +3686,12 @@ const definedMessages = defineMessages({
     SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION: {
         id: 'SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION',
         defaultMessage:
-            'Coins settings also defines the Discovery process when Trezor is connected, Each time you connect not remembered device.{newLine}Default: {urls}',
+            'Coins settings also defines the Discovery process when Trezor is connected, Each time you connect not remembered device.',
+    },
+    TR_DEFAULT_VALUE: {
+        id: 'TR_DEFAULT_VALUE',
+        defaultMessage: 'Default: {value}',
+        description: 'Used to show default settings value',
     },
     TR_ADD_NEW_BLOCKBOOK_BACKEND: {
         id: 'TR_ADD_NEW_BLOCKBOOK_BACKEND',

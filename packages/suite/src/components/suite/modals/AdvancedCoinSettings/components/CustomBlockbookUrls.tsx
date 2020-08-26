@@ -33,6 +33,12 @@ const Description = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: 500;
     line-height: 1.57;
+    /* margin-bottom: 14px; */
+`;
+
+const DefaultValues = styled(Description)`
+    font-weight: 500;
+    /* margin-top: 4px; */
     margin-bottom: 14px;
 `;
 
@@ -93,14 +99,18 @@ const CustomBlockbookUrls = ({
                 <Translation id="SETTINGS_ADV_COIN_BLOCKBOOK_TITLE" />
             </Heading>
             <Description>
+                <Translation id="SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION" />
+            </Description>
+            <DefaultValues>
                 <Translation
-                    id="SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION"
+                    id="TR_DEFAULT_VALUE"
                     values={{
-                        newLine: <br />,
-                        urls: coinInfo.blockchainLink ? coinInfo.blockchainLink.url.join(', ') : '',
+                        value: coinInfo.blockchainLink
+                            ? coinInfo.blockchainLink.url.join(', ')
+                            : '',
                     }}
                 />
-            </Description>
+            </DefaultValues>
 
             {blockbookUrls.map(b => (
                 <Input
