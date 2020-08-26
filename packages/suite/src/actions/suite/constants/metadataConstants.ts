@@ -31,5 +31,5 @@ export const GOOGLE_CLIENT_ID =
     '842348096891-efhc485636d5t09klvrve0pi4njhq3l8.apps.googleusercontent.com';
 // google client id from trezor-password-manager 296429812941-co5alkvv0tan1ptun23ilefh96gb1heb.apps.googleusercontent.com
 export const DROPBOX_CLIENT_ID = 'g5f5vaogrxvvrnv';
-// dropbox client id from mytrezor wg0yz2pbgjyhoda
+// export const DROPBOX_CLIENT_ID = 'wg0yz2pbgjyhoda'; // from mytrzor
 // dropbox client id from trezor-password-manager s340kh3l0vla1nv

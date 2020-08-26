@@ -60,7 +60,7 @@
 	"TR_AUTH_CONFIRM_FAILED_DESC": "Invalid password confirmation. Wallet will stay in watch-only mode.",
 	"TR_AUTHENTICATING_DEVICE": "Authenticating device...",
 	"TR_BACK": "Back",
-	"TR_BACKEND_CONNECT": "Connect",
+	"TR_CONNECT": "Connect",
 	"TR_BACKEND_DISCONNECTED": "Backend is disconnected",
 	"TR_BACKEND_RECONNECTING": ". Reconnecting in {time} sec...",
 	"TR_BACKGROUND_GALLERY": "Homescreen background gallery",
