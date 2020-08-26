@@ -37,12 +37,6 @@ const ErrorMessage = styled.div`
     text-align: center;
 `;
 
-const SmallErrorMessage = styled.div`
-    display: flex;
-    color: ${colors.BLACK50};
-    font-size: ${variables.FONT_SIZE.TINY};
-`;
-
 const DashboardGraph = React.memo((props: Props) => {
     const {
         accounts,
@@ -147,14 +141,6 @@ const DashboardGraph = React.memo((props: Props) => {
                     />
                 )}
             </GraphWrapper>
-            {failedAccounts && failedAccounts.length > 0 && (
-                <SmallErrorMessage>
-                    <Translation
-                        id="TR_COULD_NOT_RETRIEVE_DATA_FOR"
-                        values={{ accountsCount: failedAccounts.length }}
-                    />
-                </SmallErrorMessage>
-            )}
         </Wrapper>
     );
 });

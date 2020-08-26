@@ -6,7 +6,9 @@ import { Action, TrezorDevice, Lock } from '@suite-types';
 import { LANGUAGES } from '@suite-config';
 
 export interface DebugModeOptions {
+    showDebugMenu: boolean;
     translationMode: boolean;
+    bridgeDevMode: boolean;
 }
 
 interface Flags {
@@ -55,7 +57,9 @@ const initialState: SuiteState = {
     settings: {
         language: 'en',
         debug: {
+            showDebugMenu: false,
             translationMode: false,
+            bridgeDevMode: false,
         },
     },
 };

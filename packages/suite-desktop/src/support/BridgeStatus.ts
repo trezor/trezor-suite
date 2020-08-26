@@ -4,11 +4,10 @@ import { AppState } from '@suite-types';
 
 const mapStateToProps = (state: AppState) => ({
     transport: state.suite.transport,
+    bridgeDevMode: state.suite.settings.debug.bridgeDevMode,
 });
 
-interface Props {
-    transport: AppState['suite']['transport'];
-}
+type Props = ReturnType<typeof mapStateToProps>;
 
 /**
  * BridgeStatus handler for suite-desktop app
@@ -16,7 +15,7 @@ interface Props {
  * @param {Props} { transport }
  * @returns null
  */
-const BridgeStatus = ({ transport }: Props) => {
+const BridgeStatus = ({ transport, bridgeDevMode }: Props) => {
     useEffect(() => {
         if (!transport) return;
         // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
@@ -25,6 +24,15 @@ const BridgeStatus = ({ transport }: Props) => {
             ipcRenderer.send('start-bridge');
         }
     }, [transport]);
+
+    useEffect(() => {
+        // run on toggling bridge dev mode
+        // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
+        const { ipcRenderer } = global;
+        if (ipcRenderer) {
+            ipcRenderer.send('start-bridge', bridgeDevMode);
+        }
+    }, [bridgeDevMode]);
 
     return null;
 };
