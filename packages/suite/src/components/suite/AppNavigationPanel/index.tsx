@@ -33,6 +33,7 @@ const Title = styled(H1)`
     font-size: ${variables.NEUE_FONT_SIZE.H1};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     white-space: nowrap;
+    overflow: hidden;
 `;
 
 const Row = styled.div`
@@ -45,6 +46,7 @@ const Row = styled.div`
 const TitleRow = styled(Row)`
     margin-bottom: 6px;
     align-items: normal;
+    overflow: hidden;
 `;
 
 interface Props {

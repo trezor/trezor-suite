@@ -5,22 +5,21 @@ import * as deviceUtils from '@suite-utils/device';
 import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
 import { Props } from './Container';
-import WalletLabel from '../Wallet/Container';
+import WalletLabel from '../Wallet';
 
 const TabularNums = styled.span`
     font-variant-numeric: tabular-nums;
+    text-overflow: ellipsis;
+    overflow: hidden;
 `;
 
 export default (props: Props) => {
-    const { device, labeling } = props;
+    const { device } = props;
     const accounts = !Array.isArray(props.account) ? [props.account] : props.account;
     if (accounts.length < 1) return null;
 
-    const key = `account:${accounts[0].descriptor}`;
     let accountLabel: JSX.Element;
-    if (labeling[key]) {
-        accountLabel = <span>{labeling[key]}</span>;
-    } else if (accounts[0].accountType !== 'normal') {
+    if (accounts[0].accountType !== 'normal') {
         accountLabel = (
             <Translation
                 id="LABELING_ACCOUNT_WITH_TYPE"

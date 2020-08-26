@@ -2,6 +2,7 @@ import TrezorConnect, { UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
 import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
 import { Account, WalletAccountTransaction } from '@wallet-types';
+import { Deferred } from '@suite-utils/deferred';
 
 export type UserContextPayload =
     | {
@@ -64,6 +65,10 @@ export type UserContextPayload =
       }
     | {
           type: 'disconnect-device';
+      }
+    | {
+          type: 'metadata-provider';
+          decision: Deferred<boolean>;
       };
 
 export type ModalActions =

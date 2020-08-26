@@ -27,6 +27,7 @@ export const create = (
         index: discoveryItem.index,
         path: discoveryItem.path,
         descriptor: accountInfo.descriptor,
+        key: `${accountInfo.descriptor}-${discoveryItem.coin}-${deviceState}`,
         accountType: discoveryItem.accountType,
         symbol: discoveryItem.coin,
         empty: accountInfo.empty,
@@ -46,11 +47,17 @@ export const create = (
         addresses: accountInfo.addresses,
         utxo: accountInfo.utxo,
         history: accountInfo.history,
+        metadata: {
+            key: accountInfo.legacyXpub || accountInfo.descriptor,
+            fileName: '',
+            aesKey: '',
+            outputLabels: {},
+            addressLabels: {},
+        },
         ...accountUtils.getAccountSpecific(accountInfo, discoveryItem.networkType),
     },
 });
 
-// TODO: imo we could extract payload object to separate function and use it in create, update methods
 export const update = (account: Account, accountInfo: AccountInfo): AccountActions => ({
     type: ACCOUNT.UPDATE,
     payload: {

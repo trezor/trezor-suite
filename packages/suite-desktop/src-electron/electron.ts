@@ -7,6 +7,8 @@ import * as electronLocalshortcut from 'electron-localshortcut';
 import * as store from './store';
 import { runBridgeProcess } from './bridge';
 import { buildMainMenu } from './menu';
+import { openOauthPopup } from './oauth';
+// import * as metadata from './metadata';
 
 let mainWindow: BrowserWindow;
 const APP_NAME = 'Trezor Beta Wallet';
@@ -44,6 +46,9 @@ const registerShortcuts = (window: BrowserWindow) => {
 };
 
 const init = async () => {
+    // todo: this is here to force bundler to bundler src-electron/metadata.ts
+    // todo: but it is not finished yet. Also it may be better to add it to tsconfig.include
+    // metadata.init();
     try {
         // TODO: not necessary since suite will send a request to start bridge via IPC
         // but right now removing it causes showing the download bridge modal for a sec
@@ -85,6 +90,16 @@ const init = async () => {
 
     // open external links in default browser
     const handleExternalLink = (event: Event, url: string) => {
+        const oauthUrls = [
+            'https://accounts.google.com',
+            'https://www.dropbox.com/oauth2/authorize',
+        ];
+        if (oauthUrls.some(url => url.startsWith(url))) {
+            event.preventDefault();
+            openOauthPopup(url);
+            return;
+        }
+
         // TODO? url.startsWith('http:') || url.startsWith('https:');
         if (url !== mainWindow.webContents.getURL()) {
             event.preventDefault();
@@ -190,4 +205,8 @@ ipcMain.on('start-bridge', async (_event, devMode?: boolean) => {
 ipcMain.on('restart-app', () => {
     app.relaunch();
     app.exit();
+});
+
+ipcMain.on('oauth-receiver', (_event, message) => {
+    mainWindow.webContents.send('oauth', { data: message });
 });

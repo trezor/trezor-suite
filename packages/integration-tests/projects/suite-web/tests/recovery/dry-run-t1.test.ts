@@ -25,7 +25,7 @@ describe('Recovery - dry run', () => {
 
         cy.getTestElement('@recover/select-count/24').click();
         cy.getTestElement('@recover/select-type/advanced').click();
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.getTestElement('@recovery/word-input-advanced/1');
 
         // todo: elaborate more

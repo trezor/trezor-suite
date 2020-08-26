@@ -18,6 +18,8 @@ import { ModalActions } from '@suite-actions/modalActions';
 import { LogActions } from '@suite-actions/logActions';
 import { NotificationActions } from '@suite-actions/notificationActions';
 import { AnalyticsActions } from '@suite-actions/analyticsActions';
+import { MetadataActions } from '@suite-actions/metadataActions';
+import { DeviceMetadata } from '@suite-types/metadata';
 import { OnboardingActions } from '@onboarding-types';
 import { SettingsActions } from '@settings-types';
 import { FirmwareActions } from '@firmware-types';
@@ -48,6 +50,7 @@ export type Action =
     | ModalActions
     | NotificationActions
     | AnalyticsActions
+    | MetadataActions
     | WalletAction
     | OnboardingActions
     | FirmwareActions
@@ -74,6 +77,7 @@ export interface ExtendedDevice {
     instance?: number;
     ts: number;
     buttonRequests: string[];
+    metadata: DeviceMetadata;
 }
 
 export type AcquiredDevice = KnownDevice & ExtendedDevice;

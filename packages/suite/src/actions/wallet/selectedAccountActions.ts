@@ -1,4 +1,4 @@
-import { ROUTER, SUITE } from '@suite-actions/constants';
+import { ROUTER, SUITE, METADATA } from '@suite-actions/constants';
 import { ACCOUNT, DISCOVERY, BLOCKCHAIN } from '@wallet-actions/constants';
 import { NETWORKS } from '@wallet-config';
 
@@ -198,6 +198,8 @@ const actions = [
     ROUTER.LOCATION_CHANGE,
     SUITE.SELECT_DEVICE,
     SUITE.UPDATE_SELECTED_DEVICE,
+    METADATA.ACCOUNT_LOADED,
+    METADATA.ACCOUNT_ADD,
     ...Object.values(ACCOUNT).filter(
         v =>
             typeof v === 'string' && v !== ACCOUNT.UPDATE_SELECTED_ACCOUNT && v !== ACCOUNT.DISPOSE,
@@ -222,7 +224,7 @@ export const getStateForAction = (action: Action) => (dispatch: Dispatch, getSta
 
     // find differences
     const stateChanged = comparisonUtils.isChanged(state.wallet.selectedAccount, newState, {
-        account: ['descriptor', 'availableBalance', 'misc', 'tokens'],
+        account: ['descriptor', 'availableBalance', 'misc', 'tokens', 'metadata'],
         discovery: [
             'status',
             'index',

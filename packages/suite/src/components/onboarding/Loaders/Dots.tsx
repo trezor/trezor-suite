@@ -25,7 +25,7 @@ const Dots = ({ maxCount = 3, speed = 1000 }: Props) => {
                 setCount(0);
             }
         }, speed);
-        return () => clearTimeout(timer);
+        return () => clearInterval(timer);
     }, [maxCount, speed, count]);
 
     return (

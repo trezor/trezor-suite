@@ -27,7 +27,7 @@ import AppNavigationPanel from './AppNavigationPanel';
 import AppNavigation from './AppNavigation';
 import Ticker from './Ticker';
 import { Translation } from './Translation';
-import { AccountLabeling, AddressLabeling, WalletLabeling } from './Labeling';
+import { AccountLabeling, AddressLabeling, WalletLabeling, MetadataLabeling } from './Labeling';
 import FormattedCryptoAmount from './FormattedCryptoAmount';
 import Sign from './Sign';
 import AddAccountButton from './AddAccountButton';
@@ -59,6 +59,7 @@ export {
     AccountLabeling,
     AddressLabeling,
     WalletLabeling,
+    MetadataLabeling,
     Image,
     ConnectDeviceImage,
     QuestionTooltip,

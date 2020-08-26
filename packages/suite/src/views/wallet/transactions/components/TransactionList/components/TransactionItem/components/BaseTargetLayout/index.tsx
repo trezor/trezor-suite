@@ -22,9 +22,9 @@ const FiatAmount = styled.span`
 
 const TargetWrapper = styled(motion.div)`
     display: flex;
+    /* position: relative; */
     flex: 1;
     justify-content: space-between;
-    /* align-items: flex-start; */
 
     & + & {
         /* padding-top: 20px; */
@@ -35,6 +35,7 @@ const TargetAmountsWrapper = styled.div<{ paddingBottom?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    align-self: center;
     padding-bottom: ${props => (props.paddingBottom ? '20px' : '0px')};
 `;
 
@@ -56,6 +57,7 @@ const TargetAddress = styled(motion.div)`
     white-space: nowrap;
     text-overflow: ellipsis;
     font-variant-numeric: tabular-nums slashed-zero;
+    margin-right: 4px;
 `;
 
 const TimelineDotWrapper = styled.div`

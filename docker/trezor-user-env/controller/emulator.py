@@ -83,6 +83,7 @@ def start(version, wipe):
             os.remove(PROFILE)
     
         command = path + "/trezor-emu-core-v" + version + " -O0 -X heapsize=20M -m main"
+        # todo: since 2.3.2 no -m main will be needed;
     else:
         PROFILE = os.path.join(os.path.dirname(__file__), 'emulator.img')
         if wipe and os.path.exists(PROFILE):
@@ -149,12 +150,18 @@ def reset_device():
     reset(client, skip_backup=True, pin_protection=False)
     client.close()
 
-
-def decision():
+def press_yes():
     client = DebugLink(get_device().find_debug())
     client.open()
     time.sleep(SLEEP)
     client.press_yes()
+    client.close()
+
+def press_no():
+    client = DebugLink(get_device().find_debug())
+    client.open()
+    time.sleep(SLEEP)
+    client.press_no()
     client.close()
 
 # enter recovery word or pin
