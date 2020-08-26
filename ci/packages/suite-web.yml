@@ -1,3 +1,9 @@
+.auto_run_branches: &auto_run_branches
+    refs:
+        - develop
+        - releases
+        - schedules
+
 suite-web build:
     stage: build
     script:
@@ -9,6 +15,21 @@ suite-web build:
 
 suite-web build-staging:
     stage: build
+    only:
+        <<: *auto_run_branches
+    script:
+        - assetPrefix=/wallet yarn workspace @trezor/suite-web build
+    artifacts:
+        expire_in: 7 days
+        paths:
+            - packages/suite-web/scripts/s3sync.sh
+            - packages/suite-web/build
+
+suite-web build-staging manual:
+    stage: build
+    when: manual
+    except:
+        <<: *auto_run_branches
     script:
         - assetPrefix=/wallet yarn workspace @trezor/suite-web build
     artifacts:
