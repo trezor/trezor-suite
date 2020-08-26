@@ -33,6 +33,7 @@ export default ({ outputId }: { outputId: number }) => {
         getDefaultValue,
         control,
         setValue,
+        localCurrencyOption,
         composeTransaction,
     } = useSendFormContext();
 
@@ -46,7 +47,8 @@ export default ({ outputId }: { outputId: number }) => {
     const error = outputError ? outputError.fiat : undefined;
     const fiatValue = getDefaultValue(inputName, outputs[outputId].fiat || '');
     const tokenValue = getDefaultValue(tokenInputName, outputs[outputId].token);
-    const currencyValue = getDefaultValue(tokenInputName, outputs[outputId].currency);
+    const currencyValue =
+        getDefaultValue(tokenInputName, outputs[outputId].currency) || localCurrencyOption;
     const token = findToken(account.tokens, tokenValue);
     const decimals = token ? token.decimals : network.decimals;
 
