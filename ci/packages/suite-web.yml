@@ -18,61 +18,95 @@
     - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
     - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
 
-suite-web build:
-    stage: build
-    script:
-        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/wallet yarn workspace @trezor/suite-web build
-    artifacts:
-        expire_in: 7 days
-        paths:
-            - packages/suite-web/build
+# suite-web build:
+#     stage: build
+#     script:
+#         - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/wallet yarn workspace @trezor/suite-web build
+#     artifacts:
+#         expire_in: 7 days
+#         paths:
+#             - packages/suite-web/build
 
-suite-web build-staging:
-    stage: build
-    only:
-        <<: *auto_run_branches
-    script:
-        - assetPrefix=/wallet yarn workspace @trezor/suite-web build
-    artifacts:
-        expire_in: 7 days
-        paths:
-            - packages/suite-web/scripts/s3sync.sh
-            - packages/suite-web/build
+# suite-web build-staging:
+#     stage: build
+#     only:
+#         <<: *auto_run_branches
+#     script:
+#         - assetPrefix=/wallet yarn workspace @trezor/suite-web build
+#     artifacts:
+#         expire_in: 7 days
+#         paths:
+#             - packages/suite-web/scripts/s3sync.sh
+#             - packages/suite-web/build
 
-suite-web build-staging manual:
-    stage: build
-    when: manual
-    except:
-        <<: *auto_run_branches
-    script:
-        - assetPrefix=/wallet yarn workspace @trezor/suite-web build
-    artifacts:
-        expire_in: 7 days
-        paths:
-            - packages/suite-web/scripts/s3sync.sh
-            - packages/suite-web/build
+# suite-web build-staging manual:
+#     stage: build
+#     when: manual
+#     except:
+#         <<: *auto_run_branches
+#     script:
+#         - assetPrefix=/wallet yarn workspace @trezor/suite-web build
+#     artifacts:
+#         expire_in: 7 days
+#         paths:
+#             - packages/suite-web/scripts/s3sync.sh
+#             - packages/suite-web/build
 
-suite-web deploy dev:
-    stage: deploy to dev servers
+# suite-web deploy dev:
+#     stage: deploy to dev servers
+#     variables:
+#         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}/wallet
+#     dependencies:
+#         - suite-web build
+#         - landing-page build
+#     environment:
+#         name: ${CI_BUILD_REF_NAME}
+#         url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+#     before_script: []
+#     script:
+#         - cd packages/suite-web
+#         - echo "Deploy to dev servers"
+#         - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
+#         - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
+#         - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
+#         - cd ../landing-page
+#         - rsync -abviuzP -va build/ "${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}/"
+#     tags:
+#         - deploy
+
+suite-web e2e chrome stage=stable:
+    stage: integration testing
+    script:
+        - *e2e_script_common
+        - export CYPRESS_SNAPSHOT=1
+        - export BROWSER=chrome
+        - yarn concurrently --success first --kill-others
+          "cd ./docker/trezor-user-env/controller && python3 ./main.py"
+          "node ./packages/integration-tests/projects/suite-web/run_tests.js
+          --project ./packages/integration-tests/projects/suite-web
+          --stage='@stable/'
+          "
+    artifacts:
+        <<: *e2e_artifacts
+    dependencies: []
+
+suite-web e2e chrome stage=stable/metadata:
+    stage: integration testing
     variables:
-        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}/wallet
-    dependencies:
-        - suite-web build
-        - landing-page build
-    environment:
-        name: ${CI_BUILD_REF_NAME}
-        url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
-    before_script: []
+        TEST_GROUP: "@stable/metadata"
     script:
-        - cd packages/suite-web
-        - echo "Deploy to dev servers"
-        - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
-        - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
-        - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
-        - cd ../landing-page
-        - rsync -abviuzP -va build/ "${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}/"
-    tags:
-        - deploy
+        - *e2e_script_common
+        - export CYPRESS_SNAPSHOT=1
+        - export BROWSER=chrome
+        - yarn concurrently --success first --kill-others
+          "cd ./docker/trezor-user-env/controller && python3 ./main.py"
+          "node ./packages/integration-tests/projects/suite-web/run_tests.js
+          --project ./packages/integration-tests/projects/suite-web
+          --stage='$TEST_GROUP'
+          "
+    artifacts:
+        <<: *e2e_artifacts
+    dependencies: []
 
 suite-web e2e chrome stage=stable:
     stage: integration testing
@@ -129,20 +163,20 @@ suite-web e2e chrome-beta stage=stable:
         <<: *e2e_artifacts
     dependencies: []
 
-suite-web deploy staging:
-    stage: deploy to staging
-    dependencies:
-        - suite-web build-staging
-    environment:
-        name: ${CI_BUILD_REF_NAME}-staging
-        url: ${STAGING_SERVER_URL}
-    before_script: []
-    when: manual
-    script:
-        - source ${STAGING_DEPLOY_KEYFILE}
-        - cd packages/suite-web
-        - ./scripts/s3sync.sh stage beta
-    tags:
-        - deploy
+# suite-web deploy staging:
+#     stage: deploy to staging
+#     dependencies:
+#         - suite-web build-staging
+#     environment:
+#         name: ${CI_BUILD_REF_NAME}-staging
+#         url: ${STAGING_SERVER_URL}
+#     before_script: []
+#     when: manual
+#     script:
+#         - source ${STAGING_DEPLOY_KEYFILE}
+#         - cd packages/suite-web
+#         - ./scripts/s3sync.sh stage beta
+#     tags:
+#         - deploy
 
 # todo: add smoke test job on stage / beta (need basic auth)

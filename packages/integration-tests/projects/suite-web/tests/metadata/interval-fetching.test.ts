@@ -1,4 +1,4 @@
-// @stable
+// @stable/metadata
 
 import * as METADATA from '../../../../../suite/src/actions/suite/constants/metadataConstants';
 import { stubFetch, stubOpen } from '../../stubs/metadata';
