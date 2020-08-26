@@ -196,6 +196,14 @@ const definedMessages = defineMessages({
         defaultMessage: 'spend',
         id: 'TR_BUY_SPEND',
     },
+    TR_BUY_PROVIDED_BY_INVITY: {
+        defaultMessage: 'Provided by Invity',
+        id: 'TR_BUY_PROVIDED_BY_INVITY',
+    },
+    TR_BUY_LEARN_MORE: {
+        defaultMessage: 'Learn more',
+        id: 'TR_BUY_LEARN_MORE',
+    },
     TR_BUY_BUY: {
         defaultMessage: 'buy',
         id: 'TR_BUY_BUY',

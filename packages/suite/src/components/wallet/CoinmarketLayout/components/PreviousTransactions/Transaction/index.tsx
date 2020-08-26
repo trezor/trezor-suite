@@ -4,6 +4,61 @@ import { colors, variables, Icon, CoinLogo } from '@trezor/components';
 import { BuyTrade } from 'invity-api';
 import { PaymentType, ProviderInfo } from '@wallet-components';
 import { useSelector } from '@suite-hooks';
+import { formatDistance } from 'date-fns';
+
+interface Props {
+    date: string;
+    transaction: BuyTrade;
+}
+
+const Transaction = ({ transaction, date }: Props) => {
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    if (selectedAccount.status !== 'loaded') {
+        return null;
+    }
+
+    const {
+        account: { symbol },
+    } = selectedAccount;
+
+    const {
+        fiatStringAmount,
+        fiatCurrency,
+        status,
+        exchange,
+        paymentMethod,
+        receiveCurrency,
+    } = transaction;
+
+    return (
+        <Wrapper>
+            <Column>
+                <Row>
+                    <Amount>
+                        {fiatStringAmount} {fiatCurrency}
+                    </Amount>
+                    <Arrow>
+                        <Icon size={13} icon="ARROW_RIGHT" />
+                    </Arrow>
+                    {/* TODO FIX THIS LOGO */}
+                    <StyledCoinLogo size={13} symbol={symbol} /> {receiveCurrency}
+                </Row>
+                <StatusRow>
+                    {formatDistance(new Date(date), new Date())} ago • {status}
+                </StatusRow>
+            </Column>
+            <Column>
+                <Row>
+                    <ProviderInfo exchange={exchange} />
+                </Row>
+                <RowSecond>
+                    <PaymentType method={paymentMethod} />
+                </RowSecond>
+            </Column>
+            <BuyColumn>Buy Again</BuyColumn>
+        </Wrapper>
+    );
+};
 
 const Wrapper = styled.div`
     display: flex;
@@ -50,7 +105,9 @@ const RowSecond = styled(Row)`
 
 const StatusRow = styled.div`
     padding-top: 8px;
-    font-size: ${variables.FONT_SIZE.SMALL};
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-size: ${variables.FONT_SIZE.TINY};
 `;
 
 const Amount = styled.div``;
@@ -64,56 +121,5 @@ const StyledCoinLogo = styled(CoinLogo)`
 const Arrow = styled.div`
     padding: 0 11px;
 `;
-
-interface Props {
-    transaction: BuyTrade;
-}
-
-const Transaction = ({ transaction }: Props) => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    if (selectedAccount.status !== 'loaded') {
-        return null;
-    }
-
-    const {
-        account: { symbol },
-    } = selectedAccount;
-
-    const {
-        fiatStringAmount,
-        fiatCurrency,
-        status,
-        exchange,
-        paymentMethod,
-        receiveCurrency,
-    } = transaction;
-
-    return (
-        <Wrapper>
-            <Column>
-                <Row>
-                    <Amount>
-                        {fiatStringAmount} {fiatCurrency}
-                    </Amount>
-                    <Arrow>
-                        <Icon size={13} icon="ARROW_RIGHT" />
-                    </Arrow>
-                    {/* TODO FIX THIS LOGO */}
-                    <StyledCoinLogo size={13} symbol={symbol} /> {receiveCurrency}
-                </Row>
-                <StatusRow>{status}</StatusRow>
-            </Column>
-            <Column>
-                <Row>
-                    <ProviderInfo exchange={exchange} />
-                </Row>
-                <RowSecond>
-                    <PaymentType method={paymentMethod} />
-                </RowSecond>
-            </Column>
-            <BuyColumn>Buy Again</BuyColumn>
-        </Wrapper>
-    );
-};
 
 export default Transaction;

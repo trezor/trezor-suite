@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Translation } from '@suite-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { colors, variables } from '@trezor/components';
 
@@ -23,7 +24,7 @@ const Link = styled.a`
 
 export default () => (
     <Wrapper>
-        Provided by
+        <Translation id="TR_BUY_PROVIDED_BY_INVITY" />
         <Link href="https://invity.io/" target="_blank">
             <Image src={resolveStaticPath('/images/svg/invity-logo.svg')} />
         </Link>
