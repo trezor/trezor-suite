@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { colors, variables } from '../../../config';
-import { InputState, InputVariant, InputButton } from '../../../support/types';
+import { InputState, InputVariant } from '../../../support/types';
 import { Icon } from '../../../index';
 import { getStateColor } from '../../../utils';
 
@@ -127,7 +127,6 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     value?: string;
     innerRef?: React.Ref<HTMLInputElement>;
     variant?: InputVariant;
-    button?: InputButton;
     label?: React.ReactElement | string;
     labelAddon?: React.ReactElement;
     labelRight?: React.ReactElement;
@@ -162,7 +161,6 @@ const Input = ({
     state,
     variant = 'large',
     width,
-    button,
     label,
     labelAddon,
     labelRight,

@@ -126,8 +126,8 @@ const ConfirmOnDevice = ({
                 )}
                 {typeof steps === 'number' && activeStep && activeStep <= steps && (
                     <Steps>
-                        {[...Array(steps)].map((_x, i) => (
-                            <Step isActive={isStepActive(i, activeStep)} />
+                        {[...Array(steps)].map((s, i) => (
+                            <Step key={s} isActive={isStepActive(i, activeStep)} />
                         ))}
                     </Steps>
                 )}
