@@ -1,11 +1,16 @@
-import React, { useMemo, useContext, useState } from 'react';
+import React, { useMemo, useContext } from 'react';
 import styled from 'styled-components';
 import { LayoutContext } from '@suite-components';
 import useSWR from 'swr';
-import invityApi from '@suite/services/invityAPI';
+import invityAPI from '@suite/services/invityAPI';
 import { CoinmarketTopPanel } from '@wallet-components';
 import { variables } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
+
+import PaymentFailed from './components/PaymentFailed';
+import PaymentProcessing from './components/PaymentProcessing';
+import WaitingForPayment from './components/WaitingForPayment';
+import PaymentSuccessful from './components/PaymentSuccessful';
 
 const Wrapper = styled.div`
     padding: 16px 32px 32px 32px;
@@ -23,25 +28,13 @@ const Detail = () => {
         trade => trade.tradeType === 'buy' && trade.data.paymentId === transactionId,
     );
 
-    const [counter, setCounter] = useState<number>(0);
-    const apiHeader = process.env.SUITE_TYPE === 'desktop' ? 'X-SuiteA-Api' : 'X-SuiteW-Api';
+    console.log('trade', trade);
 
-    const fetcher = (url: string) =>
-        fetch(url, {
-            method: 'POST',
-            mode: 'cors',
-            credentials: 'same-origin',
-            headers: {
-                'Cache-Control': 'no-cache',
-                'Content-Type': 'application/json',
-                [apiHeader]: 'token',
-            },
-            body: JSON.stringify(trade ? trade.data : null),
-        }).then(r => {
-            r.json();
-        });
+    invityAPI.createInvityAPIKey('111111');
 
-    const { data, error } = useSWR(`${invityApi.server}/api/buy/watch/${counter}`, fetcher);
+    // @ts-ignore TODO
+    const fetcher = () => invityAPI.watchBuyTrade(trade.data, 0);
+    const { data, error } = useSWR(`watch/buy/trade`, fetcher);
 
     useMemo(() => {
         if (setLayout) setLayout('Trezor Suite | Coinmarket', undefined, <CoinmarketTopPanel />);
@@ -50,7 +43,21 @@ const Detail = () => {
     console.log('data', data);
     console.log('error', error);
 
-    return <Wrapper>detail for {transactionId}</Wrapper>;
+    if (!trade || trade?.tradeType !== 'buy') return null;
+
+    return (
+        <Wrapper>
+            {trade.data.status === 'ERROR' ||
+                (trade.data.status === 'BLOCKED' && (
+                    <PaymentFailed transactionId={trade.data.paymentId} paymentGateUrl="someurl" />
+                ))}
+            {trade.data.status === 'SUBMITTED' && <PaymentProcessing />}
+            {trade.data.status === 'APPROVAL_PENDING' && (
+                <WaitingForPayment transactionId={trade.data.paymentId} paymentGateUrl="someurl" />
+            )}
+            {trade.data.status === 'SUCCESS' && <PaymentSuccessful />}
+        </Wrapper>
+    );
 };
 
 export default Detail;

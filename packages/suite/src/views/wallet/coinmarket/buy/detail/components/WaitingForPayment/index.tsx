@@ -39,7 +39,7 @@ const Link = styled.a`
 `;
 
 interface Props {
-    transactionId: string;
+    transactionId?: string;
     paymentGateUrl: string;
 }
 
@@ -51,7 +51,7 @@ const WaitingForPayment = ({ transactionId, paymentGateUrl }: Props) => {
             <Description>
                 Please click the link bellow to finish the payment through provider.
             </Description>
-            <TransactionId transactionId={transactionId} />
+            {transactionId && <TransactionId transactionId={transactionId} />}
             <Link href={paymentGateUrl}>
                 <Button>Go to Payment Gate</Button>
             </Link>

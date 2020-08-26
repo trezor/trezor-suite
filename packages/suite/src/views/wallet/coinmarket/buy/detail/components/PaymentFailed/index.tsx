@@ -39,7 +39,7 @@ const Link = styled.a`
 `;
 
 interface Props {
-    transactionId: string;
+    transactionId?: string;
     paymentGateUrl: string;
 }
 
@@ -51,7 +51,7 @@ const PaymentFailed = ({ transactionId, paymentGateUrl }: Props) => {
             <Description>
                 Unfortunately, your payment has failed. No funds were taken from your credit card.
             </Description>
-            <TransactionId transactionId={transactionId} />
+            {transactionId && <TransactionId transactionId={transactionId} />}
             <Link href={paymentGateUrl}>
                 <Button>Start again</Button>
             </Link>
