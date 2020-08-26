@@ -61,6 +61,7 @@ class InvityAPI {
         if (!InvityAPI.apiKey) {
             throw Error('apiKey not created');
         }
+
         return InvityAPI.apiKey;
     }
 
