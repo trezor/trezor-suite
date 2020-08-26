@@ -98,7 +98,7 @@ export const migrate = async (
 
             return cursor.continue().then(addMetadataKeys);
         });
-      
+
         // object store for send form
         // @ts-ignore sendForm doesn't exists anymore
         db.deleteObjectStore('sendForm');

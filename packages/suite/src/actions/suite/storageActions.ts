@@ -31,16 +31,14 @@ export const removeDraft = (accountKey: string) => {
 
 export const saveAccountDraft = (account: Account) => async (_: Dispatch, getState: GetState) => {
     const { drafts } = getState().wallet.send;
-    const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
-    const draft = drafts[accountKey];
+    const draft = drafts[account.key];
     if (draft) {
-        return db.addItem('sendFormDrafts', draft, accountKey);
+        return db.addItem('sendFormDrafts', draft, account.key);
     }
 };
 
 export const removeAccountDraft = (account: Account) => {
-    const accountKey = getAccountKey(account.descriptor, account.symbol, account.deviceState);
-    return db.removeItemByPK('sendFormDrafts', accountKey);
+    return db.removeItemByPK('sendFormDrafts', account.key);
 };
 
 // send form drafts end
@@ -96,8 +94,7 @@ export const saveAccountTransactions = (account: Account) => async (
     getState: GetState,
 ) => {
     const allTxs = getState().wallet.transactions.transactions;
-    const accTxs =
-        allTxs[getAccountKey(account.descriptor, account.symbol, account.deviceState)] || [];
+    const accTxs = allTxs[account.key] || [];
 
     // wrap confirmed txs and add its order inside the array
     const orderedTxs = accTxs

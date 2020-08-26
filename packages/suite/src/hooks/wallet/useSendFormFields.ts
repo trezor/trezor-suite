@@ -145,15 +145,6 @@ export const useSendFormFields = ({
         }
     };
 
-    // const calculateDataFee = useCallback((fieldName: string) => {
-
-    // }, []);
-
-    // // save initial selected fee to reducer
-    // useEffect(() => {
-    //     setLastUsedFeeLevel(initialSelectedFee.label, symbol);
-    // }, [setLastUsedFeeLevel, initialSelectedFee, symbol]);
-
     return {
         calculateFiat,
         setAmount,

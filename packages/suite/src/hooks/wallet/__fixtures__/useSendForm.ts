@@ -7,6 +7,7 @@ export const BTC_ACCOUNT = {
         networkType: 'bitcoin',
         descriptor: 'xpub',
         deviceState: 'deviceState',
+        key: 'xpub-btc-deviceState',
         addresses: { change: [], used: [], unused: [] },
         availableBalance: '100000000000',
         utxo: [],
@@ -21,6 +22,7 @@ export const ETH_ACCOUNT = {
         networkType: 'ethereum',
         descriptor: '0xdB09b793984B862C430b64B9ed53AcF867cC041F',
         deviceState: 'deviceState',
+        key: '0xdB09b793984B862C430b64B9ed53AcF867cC041F-eth-deviceState',
         availableBalance: '100000000000',
     },
     network: { networkType: 'ethereum', symbol: 'eth', decimals: 16 },
@@ -33,6 +35,7 @@ export const XRP_ACCOUNT = {
         networkType: 'ripple',
         descriptor: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY',
         deviceState: 'deviceState',
+        key: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY-eth-deviceState',
         availableBalance: '100000000000',
     },
     network: { networkType: 'ripple', symbol: 'xrp', decimals: 6 },
@@ -40,7 +43,6 @@ export const XRP_ACCOUNT = {
 
 export const DEFAULT_STORE = {
     suite: { device: {}, settings: { debug: {} } },
-    labeling: {}, // will not be used in the future
     wallet: {
         accounts: [], // used by auto-labeling
         selectedAccount: BTC_ACCOUNT,

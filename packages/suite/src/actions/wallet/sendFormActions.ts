@@ -5,7 +5,7 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { SEND } from '@wallet-actions/constants';
 
-import { formatNetworkAmount, getAccountKey } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { findValidOutputs } from '@wallet-utils/sendFormUtils';
 
 import { Dispatch, GetState } from '@suite-types';
@@ -46,13 +46,10 @@ export const saveDraft = (formState: FormState) => async (
 ) => {
     const { selectedAccount } = getState().wallet;
     if (selectedAccount.status !== 'loaded') return null;
-    const { account } = selectedAccount;
-    const { symbol, descriptor, deviceState } = account;
-    const key = getAccountKey(descriptor, symbol, deviceState);
 
     dispatch({
         type: SEND.STORE_DRAFT,
-        key,
+        key: selectedAccount.account.key,
         formState,
     });
 };
@@ -60,19 +57,14 @@ export const saveDraft = (formState: FormState) => async (
 export const getDraft = () => (_dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount, send } = getState().wallet;
     if (selectedAccount.status !== 'loaded') return;
-    const { account } = selectedAccount;
-    const { symbol, descriptor, deviceState } = account;
-    const key = getAccountKey(descriptor, symbol, deviceState);
 
-    return send.drafts[key];
+    return send.drafts[selectedAccount.account.key];
 };
 
 export const removeDraft = () => (dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount, send } = getState().wallet;
     if (selectedAccount.status !== 'loaded') return;
-    const { account } = selectedAccount;
-    const { symbol, descriptor, deviceState } = account;
-    const key = getAccountKey(descriptor, symbol, deviceState);
+    const { key } = selectedAccount.account;
 
     if (send.drafts[key]) {
         dispatch({
