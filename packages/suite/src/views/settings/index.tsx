@@ -143,7 +143,7 @@ const Settings = ({
                         </ActionColumn>
                     </SectionItem>
                 )}
-                {metadata.enabled && !metadata.provider && device?.state && (
+                {metadata.enabled && !metadata.provider && device?.metadata.status === 'enabled' && (
                     <SectionItem>
                         <TextColumn
                             title={<Translation id="TR_LABELING_NOT_SYNCED" />}
