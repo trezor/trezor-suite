@@ -14960,6 +14960,11 @@ graceful-fs@^4.2.4:
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.4.tgz#2256bde14d3632958c465ebc96dc467ca07a29fb"
   integrity sha512-WjKPNJF79dtJAVniUlGGWHYGz2jWxT6VhN/4m1NdkbZ2nOsEF+cI1Edgql5zCRhs/VsQYRvrXctxktVXZUkixw==
 
+groestl-hash-js@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/groestl-hash-js/-/groestl-hash-js-1.0.0.tgz#c9ec325716ec48b223cfaaee673c5f8ffd7606c9"
+  integrity sha1-yewyVxbsSLIjz6ruZzxfj/12Bsk=
+
 growly@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
@@ -19413,17 +19418,6 @@ multicast-dns@^6.0.1:
   dependencies:
     dns-packet "^1.3.1"
     thunky "^1.0.2"
-
-multicoin-address-validator@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/multicoin-address-validator/-/multicoin-address-validator-0.4.1.tgz#c55c719e08ca74b9e0479f69d3f39e0cbed89786"
-  integrity sha512-vnCFHgygNCFeva0O+maPt36lC1rX7uJFFlKnP5bDu1TwyId6GCxN9ejBLNpUEHVSqtgmGsV0lyMtlegpIn3TjQ==
-  dependencies:
-    base-x "^3.0.7"
-    browserify-bignum "^1.3.0-2"
-    cbor-js "^0.1.0"
-    crc "^3.8.0"
-    jssha "2.3.1"
 
 multimatch@^3.0.0:
   version "3.0.0"
@@ -26856,6 +26850,19 @@ tree-kill@^1.1.0, tree-kill@^1.2.1, tree-kill@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
   integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
+
+trezor-address-validator@^0.3.19:
+  version "0.3.19"
+  resolved "https://registry.yarnpkg.com/trezor-address-validator/-/trezor-address-validator-0.3.19.tgz#0b9b4bb11a75958cf0af3d46b325dee8fef3cb6d"
+  integrity sha512-EhtSVVWKsgZAs7rnY6A+pqLYMur0JRWysNXDAGDILJTSI/vH79SfD1SJb89Y4wl6j5xlch+wE35LegQU5k4xjQ==
+  dependencies:
+    base-x "^3.0.7"
+    browserify-bignum "^1.3.0-2"
+    cbor-js "^0.1.0"
+    crc "^3.8.0"
+    groestl-hash-js "1.0.0"
+    jssha "2.3.1"
+    lodash "^4.17.15"
 
 trezor-connect@8.1.12-extended:
   version "8.1.12-extended"

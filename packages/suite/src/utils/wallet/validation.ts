@@ -1,8 +1,4 @@
-// @ts-ignore for now
-
-// TODO: use validation from connect and remove this file
-
-import addressValidator from 'multicoin-address-validator';
+import addressValidator from 'trezor-address-validator';
 import { Account } from '@wallet-types';
 
 const isTestnet = (symbol: Account['symbol']): boolean => {
@@ -23,33 +19,9 @@ const getCoinFromTestnet = (symbol: Account['symbol']) => {
 };
 
 export const isAddressValid = (address: string, symbol: Account['symbol']) => {
-    let networkType = 'prod';
-    let symbolWithoutTestnets = null;
-
-    if (isTestnet(symbol)) {
-        networkType = 'testnet';
-        symbolWithoutTestnets = getCoinFromTestnet(symbol);
-    }
-
-    const updatedSymbol = symbolWithoutTestnets || symbol;
-
-    switch (updatedSymbol) {
-        case 'btc':
-        case 'bch':
-        case 'btg':
-        case 'dash':
-        case 'xrp':
-        case 'dgb':
-        case 'doge':
-        case 'ltc':
-        case 'nmc':
-        case 'vtc':
-        case 'zec':
-        case 'eth':
-        case 'etc':
-            return addressValidator.validate(address, updatedSymbol.toUpperCase(), networkType);
-        // no default
-    }
+    const networkType = isTestnet(symbol) ? 'testnet' : 'prod';
+    const updatedSymbol = getCoinFromTestnet(symbol) || symbol;
+    return addressValidator.validate(address, updatedSymbol.toUpperCase(), networkType);
 };
 
 export const isDecimalsValid = (value: string, decimals: number) => {
