@@ -18,6 +18,7 @@ class DropboxProvider implements AbstractMetadataProvider {
     }
 
     async connect() {
+        console.log(getOauthReceiverUrl());
         const url = this.client.getAuthenticationUrl(getOauthReceiverUrl(), 'TODO:RandomToken');
 
         const token = await getMetadataOauthToken(url);
