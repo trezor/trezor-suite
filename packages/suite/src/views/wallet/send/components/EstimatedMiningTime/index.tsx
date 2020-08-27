@@ -18,7 +18,6 @@ const Duration = styled.div`
 
 interface Props {
     seconds: number;
-    className?: 'string';
 }
 
 const EstimatedMiningTime = ({ seconds }: Props) => {

@@ -80,6 +80,10 @@ const FeeUnits = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
+const TxSize = styled(FeeUnits)`
+    padding-left: 4px;
+`;
+
 const EstimatedMiningTimeWrapper = styled.div`
     padding-right: 4px;
 `;
@@ -126,6 +130,11 @@ export default () => {
                                 {selectedLevel.feePerUnit} {getFeeUnits(networkType)}
                             </FeeUnits>
                         )}
+                        {networkType === 'bitcoin' &&
+                            transactionInfo &&
+                            transactionInfo.type !== 'error' && (
+                                <TxSize>({transactionInfo.bytes} B)</TxSize>
+                            )}
                     </FeeInfo>
                 </Left>
                 <Middle>{selectedLabel === 'custom' && <CustomFee />}</Middle>
