@@ -7,7 +7,7 @@ import {
     AggregatedDashboardHistory,
 } from '@wallet-types/graph';
 import { ComposedChart, Tooltip, Bar, YAxis, XAxis, Line, CartesianGrid } from 'recharts';
-import { useLayoutSize, useGraph } from '@suite-hooks';
+import { useGraph } from '@suite-hooks';
 import { calcYDomain, calcXDomain, calcFakeGraphDataForTimestamps } from '@wallet-utils/graphUtils';
 import { Account } from '@wallet-types';
 
