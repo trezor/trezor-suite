@@ -265,6 +265,7 @@ export const composeDebouncedTransaction = [
         connect: {
             response: {
                 success: false,
+                payload: { error: 'error' },
             },
         },
         typing: { element: 'outputs[0].amount', value: '1', delay: 0 },

@@ -25,10 +25,10 @@ jest.mock('trezor-connect', () => {
         default: {
             composeTransaction: jest.fn(async _params => {
                 // console.warn('trezor-connect:', params);
-                if (!fixture) return { success: false };
+                if (!fixture) return { success: false, payload: { error: 'error' } };
                 const f = Array.isArray(fixture) ? fixture[fixtureIndex] : fixture;
                 fixtureIndex++;
-                if (!f) return { success: false };
+                if (!f) return { success: false, payload: { error: 'error' } };
                 if (typeof f.delay === 'number') {
                     await new Promise(resolve => setTimeout(resolve, f.delay));
                 }
@@ -37,6 +37,7 @@ jest.mock('trezor-connect', () => {
             blockchainEstimateFee: () =>
                 fixture || {
                     success: false,
+                    payload: { error: 'error' },
                 },
         },
         setTestFixtures: (f: any) => {
