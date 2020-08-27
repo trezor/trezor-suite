@@ -1,4 +1,4 @@
-// @stable
+// @stable/metadata
 
 import * as METADATA from '../../../../../suite/src/actions/suite/constants/metadataConstants';
 import { stubFetch, stubOpen } from '../../stubs/metadata';
@@ -62,7 +62,7 @@ describe('Metadata', () => {
 
         // and this does the time travel to trigger fetch
         cy.tick(METADATA.FETCH_INTERVAL);
-        cy.getTestElement('@metadata/outputLabel/33T7ExFCVnK2TiQhz73JiXiNLHFmo9JqN2').should('contain', 'label from another window');
+        cy.getTestElement('@metadata/outputLabel/9f472739fa7034dfb9736fa4d98915f2e8ddf70a86ee5e0a9ac0634f8c1d0007-0').should('contain', 'label from another window');
 
         cy.log('Go to settings and lets see what happens if user wipes his data from google drive interface (out of suite)');
         cy.getTestElement('@suite/menu/settings-index').click();

@@ -84,7 +84,7 @@ export const Target = ({
                         accountKey,
                         txid: transaction.txid,
                         outputIndex: target.n,
-                        defaultValue: target.addresses!.join(''),
+                        defaultValue: `${transaction.txid}-${target.n}`,
                         value: targetMetadata,
                     }}
                 />
