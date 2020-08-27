@@ -148,7 +148,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 ticks={xTicks}
                                 tickLine={false}
                             />
-                            {console.log('yDomain', yDomain)}
+
                             <YAxis
                                 type="number"
                                 orientation="right"

@@ -133,9 +133,7 @@ export const getMinMaxValueFromData = <TType extends TypeName>(
             minBalance = newBalanceValue;
         }
     });
-    console.log('minSent', minSent?.toNumber());
-    console.log('minReceived', minReceived?.toNumber());
-    console.log('minBalance', minBalance?.toNumber());
+
     const maxValue = Math.max(maxSent.toNumber(), maxReceived.toNumber(), maxBalance.toNumber());
 
     const minsToCompare = [minSent, minReceived, minBalance]
@@ -255,17 +253,16 @@ export const deviceGraphDataFilterFn = (d: GraphData, deviceState: string | unde
 };
 
 const calcMinYDomain = (minMaxValues: [number, number]) => {
+    // Used in calculating domain interval for Y axis with log scale
+    // We could simply use minimum coin value (eg 0.00000001) as our minimum, but that would results in
+    // Y axis with values/labels 0.00000001, 0.0000001, 0.000001, 0.0001...
+    // So instead we calculate what smallest value we need to show without any value being of of the range.
+    // Maybe we could instead just calculate our own set of ticks
     const [minDataValue] = minMaxValues;
-    console.log('minDataValue', minDataValue);
-    // if (minDataValue >= 1) {
-    //     return 0.1;
-    // }
-
     const decimals = minDataValue.toString().split('.')[1]?.length;
-    console.log('minDataValue decimals', decimals);
     const min = decimals && decimals > 0 ? 1 / 10 ** decimals : 0.00000001;
-    console.log('y min', min);
     return min;
+    // return 0.00000001;
 };
 
 export const calcYDomain = (
@@ -274,7 +271,6 @@ export const calcYDomain = (
     minMaxValues: [number, number],
     lastBalance?: string,
 ): [number, number] => {
-    console.log('minMaxValues', minMaxValues);
     const [, maxDataValue] = minMaxValues;
     const maxValueMultiplier = scale === 'linear' ? 1.2 : 10;
 
