@@ -1,8 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables, Icon, CoinLogo } from '@trezor/components';
+import { colors, variables, Icon, CoinLogo, Button } from '@trezor/components';
 import { PaymentType, ProviderInfo } from '@wallet-components';
+import { Translation } from '@suite-components';
 import { useSelector } from '@suite-hooks';
+import { getStatusMessage } from '@wallet-utils/coinmarket/buyUtils';
 import { Trade } from '@wallet-reducers/coinmarketReducer';
 import { formatDistance } from 'date-fns';
 
@@ -34,6 +36,8 @@ const Transaction = ({ trade }: Props) => {
         receiveCurrency,
     } = data;
 
+    const statusMessage = getStatusMessage(status);
+
     return (
         <Wrapper>
             <Column>
@@ -61,7 +65,17 @@ const Transaction = ({ trade }: Props) => {
                     <PaymentType method={paymentMethod} />
                 </RowSecond>
             </Column>
-            <BuyColumn>Buy Again</BuyColumn>
+            <BuyColumn>
+                {statusMessage === 'TR_BUY_STATUS_SUCCESS' ? (
+                    <Button variant="tertiary">
+                        <Translation id="TR_BUY_BUY_AGAIN" />
+                    </Button>
+                ) : (
+                    <Button variant="tertiary">
+                        <Translation id="TR_BUY_VIEW_DETAILS" />
+                    </Button>
+                )}
+            </BuyColumn>
         </Wrapper>
     );
 };

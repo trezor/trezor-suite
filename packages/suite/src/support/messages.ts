@@ -184,6 +184,14 @@ const definedMessages = defineMessages({
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',
     },
+    TR_BUY_BUY_AGAIN: {
+        defaultMessage: 'Buy again',
+        id: 'TR_BUY_BUY_AGAIN',
+    },
+    TR_BUY_VIEW_DETAILS: {
+        defaultMessage: 'View details',
+        id: 'TR_BUY_VIEW_DETAILS',
+    },
     TR_BUY_STATUS_ERROR: {
         defaultMessage: 'Rejected',
         id: 'TR_BUY_STATUS_ERROR',

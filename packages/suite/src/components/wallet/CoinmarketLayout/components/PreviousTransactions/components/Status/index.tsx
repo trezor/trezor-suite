@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
+import { getStatusMessage } from '@wallet-utils/coinmarket/buyUtils';
 import { colors, variables, Icon } from '@trezor/components';
 import { Trade } from '@wallet-reducers/coinmarketReducer';
 
@@ -10,38 +11,27 @@ interface Props {
 }
 
 const getData = (status: Trade['data']['status']) => {
-    switch (status) {
-        case 'LOGIN_REQUEST':
-        case 'APPROVAL_PENDING':
-        case 'SUBMITTED':
-        case 'LOADING':
-        case 'SENDING':
-        case 'CONVERTING':
-        case 'CONFIRMING':
+    const message = getStatusMessage(status);
+    switch (message) {
+        case 'TR_BUY_STATUS_PENDING':
             return {
                 icon: 'CLOCK',
                 color: colors.NEUE_TYPE_ORANGE,
-                statusMessageId: 'TR_BUY_STATUS_PENDING',
+                statusMessageId: message,
             } as const;
-        case 'BLOCKED':
-        case 'ERROR':
+        case 'TR_BUY_STATUS_ERROR':
             return {
                 icon: 'CROSS',
                 color: colors.NEUE_TYPE_RED,
-                statusMessageId: 'TR_BUY_STATUS_ERROR',
+                statusMessageId: message,
             } as const;
-        case 'SUCCESS':
+        case 'TR_BUY_STATUS_SUCCESS':
             return {
                 icon: 'CHECK',
                 color: colors.NEUE_TYPE_GREEN,
-                statusMessageId: 'TR_BUY_STATUS_SUCCESS',
+                statusMessageId: message,
             } as const;
-        default:
-            return {
-                icon: 'CLOCK',
-                color: colors.NEUE_TYPE_ORANGE,
-                statusMessageId: 'TR_BUY_STATUS_PENDING',
-            } as const;
+        // no default
     }
 };
 

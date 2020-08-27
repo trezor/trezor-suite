@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Account } from '@wallet-types';
 import { BuyTrade, BuyTradeQuoteRequest, BuyTradeFormResponse } from 'invity-api';
+import { Trade } from '@wallet-reducers/coinmarketReducer';
 
 export interface AmountLimits {
     currency: string;
@@ -139,3 +140,23 @@ export function submitRequestForm(tradeForm: BuyTradeFormResponse): void {
     document.body.appendChild(form);
     form.submit();
 }
+
+export const getStatusMessage = (status: Trade['data']['status']) => {
+    switch (status) {
+        case 'LOGIN_REQUEST':
+        case 'APPROVAL_PENDING':
+        case 'SUBMITTED':
+        case 'LOADING':
+        case 'SENDING':
+        case 'CONVERTING':
+        case 'CONFIRMING':
+            return 'TR_BUY_STATUS_PENDING';
+        case 'BLOCKED':
+        case 'ERROR':
+            return 'TR_BUY_STATUS_ERROR';
+        case 'SUCCESS':
+            return 'TR_BUY_STATUS_SUCCESS';
+        default:
+            return 'TR_BUY_STATUS_PENDING';
+    }
+};
