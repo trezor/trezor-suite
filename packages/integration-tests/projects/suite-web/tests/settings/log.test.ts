@@ -1,4 +1,4 @@
-// @stable
+// @stable/suite
 
 describe('Log', () => {
     beforeEach(() => {

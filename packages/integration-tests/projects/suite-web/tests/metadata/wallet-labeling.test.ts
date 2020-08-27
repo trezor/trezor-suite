@@ -1,8 +1,8 @@
-// @stable
+// @stable/metadata
 
 import { stubFetch, stubOpen } from '../../stubs/metadata';
 
-describe.skip('Metadata', () => {
+describe('Metadata', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
     });
@@ -49,7 +49,7 @@ describe.skip('Metadata', () => {
             cy.getConfirmActionOnDeviceModal();
             cy.task('pressYes');
 
-            cy.getTestElement('@passphrase/input').type('abc');
+            cy.getTestElement('@passphrase/input', { timeout: 30000 }).type('abc');
 
             cy.getTestElement('@passphrase/confirm-checkbox').click();
             cy.getTestElement('@passphrase/hidden/submit-button').click();

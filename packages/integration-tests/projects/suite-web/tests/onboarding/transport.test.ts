@@ -1,4 +1,4 @@
-// @stable
+// @stable/device-management
 
 describe('Onboarding - transport webusb/bridge', () => {
     beforeEach(() => {
