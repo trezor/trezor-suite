@@ -44,6 +44,7 @@ describe('Metadata', () => {
 
         cy.log('Already existing label gets loaded');
         cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'label');
+        cy.get('body').type('{enter}');
 
         // this simulates entering label in another window
         cy.task('setupGoogle', {
@@ -64,15 +65,19 @@ describe('Metadata', () => {
         cy.tick(METADATA.FETCH_INTERVAL);
         cy.getTestElement('@metadata/outputLabel/9f472739fa7034dfb9736fa4d98915f2e8ddf70a86ee5e0a9ac0634f8c1d0007-0').should('contain', 'label from another window');
 
-        cy.log('Go to settings and lets see what happens if user wipes his data from Google Drive interface (out of suite)');
-        cy.getTestElement('@suite/menu/settings-index').click();
-        cy.getTestElement('@settings/metadata/disconnect-provider-button');
+        cy.log('See what happens if user wipes his data from Google Drive interface (out of suite)');
         cy.log('Next command simulates that user wiped his Google Drive');
         cy.task('setupGoogle', { prop: 'files', value: []});
         cy.tick(METADATA.FETCH_INTERVAL);
-        cy.getTestElement('@settings/metadata/connect-provider-button');
 
-        cy.getTestElement('@suite/menu/wallet-index').click();
-        cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
+        // in this edge case, all metadata are disposed.
+        cy.getTestElement('@metadata/outputLabel/9f472739fa7034dfb9736fa4d98915f2e8ddf70a86ee5e0a9ac0634f8c1d0007-0').should('not.contain', 'label from another window');
+
+        // cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'").click();
+        // cy.log('Remove is not available when provider is not connected. With remove (unlike with edit) there is not intermediate step where user can find out if he is changing a label that already exists');
+        // cy.getTestElement('@metadata/remove-button').should('not.exist');
+        // cy.getTestElement('@metadata/edit-button').click();
+        // cy.getTestElement('@modal/metadata-provider/google-button').click();
+        // cy.getTestElement('@modal/metadata-provider').should('not.exist');
     });
 });

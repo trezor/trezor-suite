@@ -114,12 +114,13 @@ class Client {
     /**
      * implementation of https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow#tokenrevoke
      */
-    async revoke() {
+    revoke() {
         if (!this.token) return;
-        this.call(`https://oauth2.googleapis.com/revoke?token=${this.token}`, {
+        const promise = this.call(`https://oauth2.googleapis.com/revoke?token=${this.token}`, {
             method: 'POST',
         });
         this.token = '';
+        return promise;
     }
 
     async getTokenInfo(): Promise<GetTokenInfoResponse> {
