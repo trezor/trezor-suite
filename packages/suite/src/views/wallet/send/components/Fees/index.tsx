@@ -131,13 +131,14 @@ export default () => {
                             </FeeUnits>
                         )}
                         {networkType === 'bitcoin' &&
+                            !isCustomLevel &&
                             transactionInfo &&
                             transactionInfo.type !== 'error' && (
                                 <TxSize>({transactionInfo.bytes} B)</TxSize>
                             )}
                     </FeeInfo>
                 </Left>
-                <Middle>{selectedLabel === 'custom' && <CustomFee />}</Middle>
+                <Middle>{isCustomLevel && <CustomFee />}</Middle>
                 <Right>
                     {transactionInfo && transactionInfo.type !== 'error' && (
                         <RightContent>
