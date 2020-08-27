@@ -18,10 +18,9 @@ import {
 } from '@wallet-constants/sendForm';
 import { Dispatch, GetState } from '@suite-types';
 
-export const composeTransaction = (
-    formValues: FormState,
-    formState: UseSendFormState,
-) => async () => {
+export const composeTransaction = (formValues: FormState, formState: UseSendFormState) => async (
+    dispatch: Dispatch,
+) => {
     const { outputs } = formValues;
     const { account, feeInfo } = formState;
     if (!account.addresses || !account.utxo) return;
@@ -95,7 +94,15 @@ export const composeTransaction = (
         account: params.account, // needs to be present in order to correct resolve of trezor-connect params overload
     });
 
-    if (!response.success) return; // TODO: show toast?
+    if (!response.success) {
+        dispatch(
+            notificationActions.addToast({
+                type: 'sign-tx-error',
+                error: response.payload.error,
+            }),
+        );
+        return;
+    }
 
     const wrappedResponse: PrecomposedLevels = {};
 
@@ -150,6 +157,14 @@ export const composeTransaction = (
             }
         } else if (tx.error === 'NOT-ENOUGH-FUNDS') {
             tx.errorMessage = { id: 'AMOUNT_IS_NOT_ENOUGH' };
+        } else {
+            // catch unexpected error
+            dispatch(
+                notificationActions.addToast({
+                    type: 'sign-tx-error',
+                    error: tx.error,
+                }),
+            );
         }
     });
 

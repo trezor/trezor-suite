@@ -116,8 +116,7 @@ export const useSendFormCompose = ({
                 const { error, errorMessage } = composed;
                 if (!errorMessage) {
                     // composed tx doesn't have a errorMessage (Translation props)
-                    // this error is unexpected
-                    // TODO: show toast
+                    // this error is unexpected and should be handled in sendFormActions
                     console.warn('Compose unexpected error', error);
                     return;
                 }
