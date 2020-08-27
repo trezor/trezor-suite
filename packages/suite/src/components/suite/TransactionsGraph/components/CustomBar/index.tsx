@@ -8,6 +8,8 @@ interface CustomBarProps {
 
 const CustomBar = (props: CustomBarProps) => {
     const { fill, filter, x, y, width, height } = props;
+    if (Number.isNaN(height)) return null; // ignore bars with NaN height (case where both sent/received values are zero)
+
     let forcedHeightChange = false;
     let minHeight = height;
     if (Math.abs(height) < 1 && props.value !== 0) {

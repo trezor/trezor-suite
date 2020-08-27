@@ -85,7 +85,6 @@ const TransactionsGraph = React.memo((props: Props) => {
     const { isLoading, data, selectedRange, xTicks } = props;
     const { selectedView } = useGraph();
     const [maxYTickWidth, setMaxYTickWidth] = useState(20);
-    const { isMobileLayout } = useLayoutSize();
     const yDomain = calcYDomain(
         props.variant === 'all-assets' ? 'fiat' : 'crypto',
         selectedView,
