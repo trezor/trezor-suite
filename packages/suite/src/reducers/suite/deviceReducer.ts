@@ -85,7 +85,10 @@ const connectDevice = (draft: State, device: Device) => {
     if (affectedDevices.length > 0) {
         const changedDevices = affectedDevices.map(d => {
             // change availability according to "passphrase_protection" field
-            if (d.instance && !features.passphrase_protection) {
+            // older FW (< 2.3.2) doesn't have `unlocked` field in Features ALSO doesn't have auto-lock, so it's always true
+            const unlocked =
+                typeof features.unlocked === 'boolean' ? device.features.unlocked : true;
+            if (d.instance && unlocked && !features.passphrase_protection) {
                 return merge(d, { ...device, connected: true, available: false });
             }
             return merge(d, { ...device, connected: true, available: true });
@@ -138,7 +141,10 @@ const changeDevice = (
         // merge incoming device with State
         const changedDevices = affectedDevices.map(d => {
             // change availability according to "passphrase_protection" field
-            if (d.instance && !device.features.passphrase_protection) {
+            // older FW (< 2.3.2) doesn't have `unlocked` field in Features ALSO doesn't have auto-lock, so it's always true
+            const unlocked =
+                typeof device.features.unlocked === 'boolean' ? device.features.unlocked : true;
+            if (d.instance && unlocked && !device.features.passphrase_protection) {
                 return merge(d, { ...device, ...extended, available: !d.state });
             }
             return merge(d, { ...device, ...extended, available: true });
