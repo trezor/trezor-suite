@@ -180,6 +180,18 @@ const definedMessages = defineMessages({
         defaultMessage: 'No providers',
         id: 'TR_EXCHANGE_NO_PROVIDERS',
     },
+    TR_BUY_STATUS_PENDING: {
+        defaultMessage: 'Pending',
+        id: 'TR_BUY_STATUS_PENDING',
+    },
+    TR_BUY_STATUS_ERROR: {
+        defaultMessage: 'Rejected',
+        id: 'TR_BUY_STATUS_ERROR',
+    },
+    TR_BUY_STATUS_SUCCESS: {
+        defaultMessage: 'Success',
+        id: 'TR_BUY_STATUS_SUCCESS',
+    },
     TR_BUY_NO_PROVIDERS: {
         defaultMessage: 'No providers',
         id: 'TR_BUY_NO_PROVIDERS',

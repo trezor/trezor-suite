@@ -6,6 +6,8 @@ import { useSelector } from '@suite-hooks';
 import { Trade } from '@wallet-reducers/coinmarketReducer';
 import { formatDistance } from 'date-fns';
 
+import Status from '../components/Status';
+
 interface Props {
     trade: Trade;
 }
@@ -26,6 +28,7 @@ const Transaction = ({ trade }: Props) => {
         fiatStringAmount,
         fiatCurrency,
         status,
+        receiveStringAmount,
         exchange,
         paymentMethod,
         receiveCurrency,
@@ -39,14 +42,16 @@ const Transaction = ({ trade }: Props) => {
                         {fiatStringAmount} {fiatCurrency}
                     </Amount>
                     <Arrow>
-                        <Icon size={13} icon="ARROW_RIGHT" />
+                        <Icon color={colors.NEUE_TYPE_LIGHT_GREY} size={13} icon="ARROW_RIGHT" />
                     </Arrow>
+                    {receiveStringAmount} {receiveCurrency}
                     {/* TODO FIX THIS LOGO */}
-                    <StyledCoinLogo size={13} symbol={symbol} /> {receiveCurrency}
+                    <StyledCoinLogo size={13} symbol={symbol} />
                 </Row>
-                <StatusRow>
-                    {formatDistance(new Date(date), new Date())} ago • {status}
-                </StatusRow>
+                <SmallRow>
+                    {trade.tradeType.toUpperCase()} • {formatDistance(new Date(date), new Date())}{' '}
+                    ago • <StyledStatus status={status} />
+                </SmallRow>
             </Column>
             <Column>
                 <Row>
@@ -64,9 +69,9 @@ const Transaction = ({ trade }: Props) => {
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
+    align-items: center;
     margin-bottom: 20px;
     border: 1px solid ${colors.NEUE_STROKE_GREY};
-    min-height: 81px;
     border-radius: 4px;
     padding: 12px 0;
 
@@ -75,6 +80,10 @@ const Wrapper = styled.div`
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
         cursor: pointer;
     }
+`;
+
+const StyledStatus = styled(Status)`
+    margin-left: 5px;
 `;
 
 const Column = styled.div`
@@ -104,8 +113,9 @@ const RowSecond = styled(Row)`
     padding-top: 8px;
 `;
 
-const StatusRow = styled.div`
+const SmallRow = styled.div`
     padding-top: 8px;
+    display: flex;
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.TINY};
@@ -115,11 +125,13 @@ const Amount = styled.div``;
 
 const StyledCoinLogo = styled(CoinLogo)`
     display: flex;
-    padding: 3px 5px 0 0;
+    padding: 0 0 0 5px;
     height: 100%;
 `;
 
 const Arrow = styled.div`
+    display: flex;
+    align-items: center;
     padding: 0 11px;
 `;
 

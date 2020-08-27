@@ -4,7 +4,12 @@ import ReactSelect, { Props as SelectProps } from 'react-select';
 import { colors, variables } from '../../../config';
 import { InputVariant } from '../../../support/types';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+    .react-select__single-value {
+        position: static;
+        transform: none;
+    }
+`;
 
 const getDropdownVisibility = (isDisabled: boolean, isFocused: boolean, isHovered: boolean) => {
     if (isDisabled) {
@@ -44,6 +49,8 @@ const selectStyle = (isDropdownVisible: boolean, isHovered: boolean, minWidth = 
     valueContainer: (base: Record<string, any>) => ({
         ...base,
         border: 0,
+        padding: '0px',
+        'flex-wrap': 'nowrap',
         paddingRight: 3,
         marginTop: 1,
         fontWeight: variables.FONT_WEIGHT.MEDIUM,
@@ -123,6 +130,7 @@ const CleanSelect = ({
             <ReactSelect
                 styles={selectStyle(isDropdownVisible, isHovered, minWidth)}
                 isSearchable={isSearchable}
+                classNamePrefix="react-select"
                 isDisabled={optionsLength <= 1}
                 options={options}
                 {...props}
