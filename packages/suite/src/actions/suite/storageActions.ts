@@ -294,7 +294,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                         data: walletGraphData || [],
                     },
                     coinmarket: {
-                        buy: { ...initialState.wallet.coinmarket.buy },
+                        ...initialState.wallet.coinmarket,
                         trades: coinmarketTrades,
                     },
                 },
