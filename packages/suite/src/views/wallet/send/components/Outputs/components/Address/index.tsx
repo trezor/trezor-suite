@@ -9,7 +9,7 @@ import { useActions } from '@suite-hooks';
 import { useSendFormContext } from '@wallet-hooks';
 import { isAddressValid } from '@wallet-utils/validation';
 import { getInputState } from '@wallet-utils/sendFormUtils';
-import AddLabel from './components/AddLabel';
+// import AddLabel from './components/AddLabel';
 
 const Label = styled.div`
     display: flex;
@@ -58,7 +58,9 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
         <Input
             state={getInputState(addressError, addressValue)}
             monospace
-            innerAddon={<AddLabel />}
+            // innerAddon={
+            //     <AddLabel onClick={() => setValue(`outputs[${outputId}].labelInput`, 'enabled')} />
+            // }
             label={
                 <Label>
                     <Left>
