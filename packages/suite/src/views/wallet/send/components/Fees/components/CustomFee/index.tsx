@@ -6,6 +6,7 @@ import { Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { getInputState, getFeeUnits } from '@wallet-utils/sendFormUtils';
+import { isDecimalsValid } from '@wallet-utils/validation';
 
 const Wrapper = styled.div`
     display: flex;
@@ -57,9 +58,20 @@ export default () => {
                         if (feeBig.isNaN()) {
                             return 'CUSTOM_FEE_IS_NOT_NUMBER';
                         }
-                        if (!feeBig.isInteger()) {
+                        // allow decimals in ETH since GWEI is not a satoshi
+                        if (network.networkType !== 'ethereum' && !feeBig.isInteger()) {
                             return 'CUSTOM_FEE_IS_NOT_INTEGER';
                         }
+                        if (network.networkType === 'ethereum' && !isDecimalsValid(value, 9)) {
+                            return (
+                                <Translation
+                                    key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                                    id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                                    values={{ decimals: 9 }}
+                                />
+                            );
+                        }
+
                         if (feeBig.isGreaterThan(maxFee) || feeBig.isLessThan(minFee)) {
                             return (
                                 <Translation
