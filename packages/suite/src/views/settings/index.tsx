@@ -40,7 +40,7 @@ const Settings = ({
     setLocalCurrency,
     localCurrency,
     fetchLocale,
-    clearStores,
+    removeDatabase,
     goto,
     initMetadata,
     disconnectProvider,
@@ -173,7 +173,7 @@ const Settings = ({
                     <ActionColumn>
                         <ActionButton
                             onClick={async () => {
-                                clearStores();
+                                removeDatabase();
                                 // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
                                 const { ipcRenderer } = global;
                                 if (ipcRenderer) {
