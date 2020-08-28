@@ -426,6 +426,7 @@ export const getFailedAccounts = (discovery: Discovery): Account[] => {
             index: f.index,
             path: descriptor,
             descriptor,
+            key: descriptor,
             accountType: f.accountType,
             symbol: f.symbol,
             empty: false,
@@ -438,6 +439,13 @@ export const getFailedAccounts = (discovery: Discovery): Account[] => {
             utxo: undefined,
             history: {
                 total: 0,
+            },
+            metadata: {
+                key: descriptor,
+                fileName: '',
+                aesKey: '',
+                outputLabels: {},
+                addressLabels: {},
             },
             ...getAccountSpecific({}, getNetwork(f.symbol)!.networkType),
         };

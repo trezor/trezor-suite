@@ -36,8 +36,8 @@ module.exports = {
         '<rootDir>/src/actions/**',
         '<rootDir>/src/middlewares/**',
         '!**/constants/**',
-        '!**/constants/**',
         '!**/__tests__/**',
+        '!**/__fixtures__/**',
         '!<rootDir>/src/actions/wallet/send/**', // TODO write tests
     ],
     coverageThreshold: {
@@ -45,7 +45,7 @@ module.exports = {
             statements: 61,
             branches: 53,
             functions: 63,
-            lines: 61.8,
+            lines: 61,
         },
     },
     modulePathIgnorePatterns: [

@@ -25,17 +25,17 @@ describe('Onboarding - recover wallet T2', () => {
         cy.getTestElement('@onboarding/button-continue').click();
         cy.getTestElement('@onboarding/recovery/start-button').click();
         cy.getTestElement('@suite/modal/confirm-action-on-device').should('be.visible');
-        cy.task('sendDecision');
-        cy.task('sendDecision');
+        cy.task('pressYes');
+        cy.task('pressYes');
         cy.task('selectNumOfWordsEmu', 12);
-        cy.task('sendDecision');
+        cy.task('pressYes');
 
         for (let i = 0; i <= 12; i++) {
             cy.task('inputEmu', 'all');
         }
 
         // this does nothing with 2.3.1
-        cy.task('sendDecision');
+        cy.task('pressYes');
 
         // pin is tested in create path, so here we test 'skipping' path instead
         cy.getTestElement('@onboarding/recovery/continue-button').click();

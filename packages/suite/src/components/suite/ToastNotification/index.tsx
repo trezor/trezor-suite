@@ -19,7 +19,7 @@ const Text = styled.div`
 
 export default ({ icon, message, action, actionLabel }: ViewProps) => {
     return (
-        <Wrapper>
+        <Wrapper data-test="@toast">
             {icon && <Icon icon={icon} size={12} color={colors.WHITE} />}
             <Text>
                 <Translation {...message} />

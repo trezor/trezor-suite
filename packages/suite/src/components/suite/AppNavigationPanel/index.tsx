@@ -33,6 +33,7 @@ const Title = styled(H1)`
     font-size: ${variables.NEUE_FONT_SIZE.H1};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     white-space: nowrap;
+    overflow: hidden;
 `;
 
 const Row = styled.div`

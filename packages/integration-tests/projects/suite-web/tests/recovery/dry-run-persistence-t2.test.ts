@@ -16,7 +16,7 @@ describe('Recovery - dry run', () => {
         cy.getTestElement('@settings/device/check-seed-button').click();
         cy.getTestElement('@recovery/user-understands-checkbox').click();
         cy.getTestElement('@recovery/start-button').click();
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.getTestElement('@suite/modal/confirm-action-on-device');
 
         /* reinitialize process on device reconnect */
@@ -26,7 +26,7 @@ describe('Recovery - dry run', () => {
         cy.getTestElement('@modal/connect-device');
         cy.task('startEmu', { wipe: false });
         cy.getTestElement('@suite/modal/confirm-action-on-device');
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.log('At this moment, communication with device should be re-established');
 
         /* reinitialize process on app reload */
@@ -34,9 +34,9 @@ describe('Recovery - dry run', () => {
         cy.log('On app reload, recovery process should auto start if app detects initialized device in recovery mode');
         cy.reload();
         cy.getTestElement('@suite/modal/confirm-action-on-device');
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.task('selectNumOfWordsEmu', 12)
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.log('Communication established, now finish the seed check process');
 
         cy.task('inputEmu', 'all');
@@ -51,7 +51,7 @@ describe('Recovery - dry run', () => {
         cy.task('inputEmu', 'all');
         cy.task('inputEmu', 'all');
         cy.task('inputEmu', 'all');
-        cy.task('sendDecision');
+        cy.task('pressYes');
 
         cy.getTestElement('@recovery/success-title');
     });

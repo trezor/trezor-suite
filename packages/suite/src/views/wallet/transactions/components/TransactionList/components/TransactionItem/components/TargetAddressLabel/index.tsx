@@ -1,7 +1,13 @@
 import React from 'react';
+import styled from 'styled-components';
 import { WalletAccountTransaction } from '@wallet-types';
 import { ArrayElement } from '@suite/types/utils';
 import { Translation, AddressLabeling } from '@suite-components';
+
+const TruncatedSpan = styled.span`
+    overflow: hidden;
+    text-overflow: ellipsis;
+`;
 
 interface Props {
     target: ArrayElement<WalletAccountTransaction['targets']>;
@@ -16,7 +22,7 @@ const TargetAddressLabel = ({ target, type }: Props) => {
             type === 'sent' ? <AddressLabeling key={i} address={a} /> : <span key={i}>{a}</span>,
         )
     );
-    return <>{addressLabel}</>;
+    return <TruncatedSpan>{addressLabel}</TruncatedSpan>;
 };
 
 export default TargetAddressLabel;

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { HiddenPlaceholder, FiatValue, Translation } from '@suite-components';
+import { HiddenPlaceholder, FiatValue, Translation, MetadataLabeling } from '@suite-components';
 import { ArrayElement } from '@suite/types/utils';
 import { getTxOperation, getTargetAmount } from '@wallet-utils/transactionUtils';
 import { isTestnet } from '@wallet-utils/accountUtils';
@@ -57,16 +57,38 @@ interface TargetProps {
     useAnimation?: boolean;
     isFirst?: boolean;
     isLast?: boolean;
+    accountKey: string;
+    targetMetadata?: string;
 }
 
-export const Target = ({ target, transaction, ...baseLayoutProps }: TargetProps) => {
+export const Target = ({
+    target,
+    transaction,
+    targetMetadata,
+    accountKey,
+    ...baseLayoutProps
+}: TargetProps) => {
     const targetAmount = getTargetAmount(target, transaction);
     const operation = getTxOperation(transaction);
 
     return (
         <BaseTargetLayout
             {...baseLayoutProps}
-            addressLabel={<TargetAddressLabel target={target} type={transaction.type} />}
+            addressLabel={
+                <MetadataLabeling
+                    defaultVisibleValue={
+                        <TargetAddressLabel target={target} type={transaction.type} />
+                    }
+                    payload={{
+                        type: 'outputLabel',
+                        accountKey,
+                        txid: transaction.txid,
+                        outputIndex: target.n,
+                        defaultValue: `${transaction.txid}-${target.n}`,
+                        value: targetMetadata,
+                    }}
+                />
+            }
             amount={
                 targetAmount && !baseLayoutProps.singleRowLayout ? (
                     <StyledHiddenPlaceholder>
