@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { UseFormMethods, FieldError } from 'react-hook-form';
+import { UseFormMethods, FieldError, DeepPartial } from 'react-hook-form';
 import { Account, Network, CoinFiatRates } from '@wallet-types';
 import {
     FeeLevel,
@@ -47,6 +47,8 @@ export type FormState = {
     ethereumDataHex?: string;
     rippleDestinationTag?: string;
 };
+
+export type PartialFormState = DeepPartial<FormState>;
 
 export interface FeeInfo {
     blockHeight: number; // when fee info was updated; 0 = never
@@ -158,6 +160,7 @@ export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
         updateContext: (value: Partial<UseSendFormState>) => void;
         resetContext: () => void;
         composeTransaction: (field: string, fieldHasError?: boolean) => void;
+        loadTransaction: (state: PartialFormState) => Promise<void>;
         signTransaction: () => void;
         // useSendFormFields utils:
         calculateFiat: (outputIndex: number, amount?: string) => void;

@@ -8,6 +8,7 @@ import {
     UseSendFormProps,
     UseSendFormState,
     FormState,
+    PartialFormState,
     SendContextValues,
     Output,
 } from '@wallet-types/sendForm';
@@ -156,6 +157,47 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         setState(getStateFromProps(props)); // resetting state will trigger "load draft" hook which will reset FormState
     }, [props, removeDraft, setComposedLevels]);
 
+    // state loaded from ImportTransaction
+    // TODO:
+    // - if output[x].amount is set > calculateFiat
+    // - if output[x].fiat is set > calculateAmount
+    const loadTransaction = async (loadedState: PartialFormState) => {
+        setComposedLevels(undefined);
+
+        const stateEnhancement: Partial<FormState> = {};
+        if (!loadedState.selectedFee) {
+            const lastUsedFee = getLastUsedFeeLevel();
+            if (lastUsedFee) {
+                stateEnhancement.selectedFee = lastUsedFee.label;
+                if (lastUsedFee.label === 'custom') {
+                    stateEnhancement.feePerUnit = lastUsedFee.feePerUnit;
+                    stateEnhancement.feeLimit = lastUsedFee.feeLimit;
+                }
+            }
+        }
+
+        if (loadedState.outputs) {
+            loadedState.outputs = loadedState.outputs.map(output => {
+                if (output.type === 'opreturn') {
+                    return output;
+                }
+                if (!output.currency) output.currency = localCurrencyOption;
+                return { ...DEFAULT_PAYMENT, ...output };
+            });
+        }
+        console.warn('loadedState', loadedState);
+        const values = {
+            ...getDefaultValues(localCurrencyOption),
+            ...stateEnhancement,
+            ...loadedState,
+        };
+        reset(values);
+        const valid = await control.trigger();
+        if (valid) {
+            composeRequest('outputs[0].amount');
+        }
+    };
+
     // handle draft change
     useEffect(() => {
         if (!draft.current) return;
@@ -195,6 +237,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         updateContext,
         resetContext,
         composeTransaction: composeRequest,
+        loadTransaction,
         signTransaction: sign,
         ...sendFormUtils,
         ...sendFormOutputs,

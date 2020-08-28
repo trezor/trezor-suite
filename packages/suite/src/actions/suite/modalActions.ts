@@ -2,6 +2,7 @@ import TrezorConnect, { UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
 import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
 import { Account, WalletAccountTransaction } from '@wallet-types';
+import { PartialFormState } from '@wallet-types/sendForm';
 import { createDeferred, Deferred, DeferredResponse } from '@suite-utils/deferred';
 
 export type UserContextPayload =
@@ -54,6 +55,10 @@ export type UserContextPayload =
     | {
           type: 'review-transaction';
           decision: Deferred<boolean>;
+      }
+    | {
+          type: 'import-transaction';
+          decision: Deferred<PartialFormState>;
       }
     | {
           type: 'log';
@@ -163,7 +168,10 @@ export const openModal = (payload: UserContextPayload): Action => ({
 });
 
 // declare all modals with promises
-type DeferredModals = Extract<UserContextPayload, { type: 'qr-reader' | 'review-transaction' }>;
+type DeferredModals = Extract<
+    UserContextPayload,
+    { type: 'qr-reader' | 'review-transaction' | 'import-transaction' }
+>;
 // extract single modal by `type` util
 type DeferredModal<T extends DeferredModals['type']> = Extract<DeferredModals, { type: T }>;
 // extract params except for `type` and 'decision` util

@@ -1,7 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables, colors, Dropdown } from '@trezor/components';
+import { useActions } from '@suite-hooks';
 import { useSendFormContext } from '@wallet-hooks';
+import * as sendFormActions from '@wallet-actions/sendFormActions';
 import Clear from './components/Clear';
 
 const Wrapper = styled.div`
@@ -31,7 +33,12 @@ export default () => {
         outputs,
         account: { networkType },
         addOpReturn,
+        loadTransaction,
     } = useSendFormContext();
+
+    const { importRequest } = useActions({
+        importRequest: sendFormActions.importRequest,
+    });
 
     const opreturnOutput = (outputs || []).find(o => o.type === 'opreturn');
     const options = [
@@ -44,9 +51,21 @@ export default () => {
         },
         {
             key: 'import',
-            callback: () => {},
+            callback: () => {
+                // since Dropdown needs to respond immediately to close itself
+                // opening modal and processing the response needs to be wrapped
+                const loadFile = async () => {
+                    const result = await importRequest();
+                    if (result) {
+                        loadTransaction(result);
+                        console.log('processing', result);
+                    }
+                };
+                loadFile();
+                return true;
+            },
             label: 'Import',
-            isDisabled: true,
+            // isDisabled: true,
         },
         {
             key: 'raw',
