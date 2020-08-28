@@ -2,7 +2,7 @@ import produce from 'immer';
 import { ACCOUNT, GRAPH } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
 import { WalletAction, Account } from '@wallet-types';
-import { GraphRange, GraphView, AccountIdentifier, GraphData } from '@wallet-types/graph';
+import { GraphRange, GraphScale, AccountIdentifier, GraphData } from '@wallet-types/graph';
 import { Action as SuiteAction } from '@suite-types';
 import { SETTINGS } from '@suite-config';
 
@@ -11,7 +11,7 @@ interface State {
     error: null | AccountIdentifier[];
     isLoading: boolean;
     selectedRange: GraphRange;
-    selectedView: GraphView;
+    selectedView: GraphScale;
 }
 
 const initialState: State = {

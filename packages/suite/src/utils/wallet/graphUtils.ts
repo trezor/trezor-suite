@@ -8,6 +8,7 @@ import {
     GraphRange,
     GraphData,
     CommonAggregatedHistory,
+    GraphScale,
 } from '@wallet-types/graph';
 import { formatNetworkAmount } from './accountUtils';
 import { resetTime } from '@suite-utils/date';
@@ -82,30 +83,32 @@ export const sumFiatValueMap = (
 // };
 
 /**
- * Return maximum sent/received crypto or fiat amount from the data
+ * Return array with 2 items, minimum non-zero value and maximum value calculated from sent, received and balance fields
  */
-export const getMaxValueFromData = <TType extends TypeName>(
+export const getMinMaxValueFromData = <TType extends TypeName>(
     data: ObjectType<TType>[],
     _type: TType,
     extractSentValue: (sourceData: ObjectType<TType>) => string | undefined,
     extractReceivedValue: (sourceData: ObjectType<TType>) => string | undefined,
     extractBalanceValue: (sourceData: ObjectType<TType>) => string | undefined,
-) => {
-    let maxSent =
-        data && data.length > 0 ? new BigNumber(extractSentValue(data[0]) || 0) : new BigNumber(0);
-    let maxReceived =
-        data && data.length > 0
-            ? new BigNumber(extractReceivedValue(data[0]) || 0)
-            : new BigNumber(0);
-    let maxBalance =
-        data && data.length > 0
-            ? new BigNumber(extractBalanceValue(data[0]) || 0)
-            : new BigNumber(0);
+): [number, number] => {
+    if (!data || data.length === 0) {
+        return [0, 0];
+    }
+    let maxSent = new BigNumber(extractSentValue(data[0]) || 0);
+    let maxReceived = new BigNumber(extractReceivedValue(data[0]) || 0);
+    let maxBalance = new BigNumber(extractBalanceValue(data[0]) || 0);
+
+    let minSent: BigNumber | undefined;
+    let minReceived: BigNumber | undefined;
+    let minBalance: BigNumber | undefined;
 
     data.forEach(d => {
         const newSentValue = new BigNumber(extractSentValue(d) || 0);
         const newReceivedValue = new BigNumber(extractReceivedValue(d) || 0);
         const newBalanceValue = new BigNumber(extractBalanceValue(d) || 0);
+
+        // max value
         if (newSentValue.gt(maxSent)) {
             maxSent = newSentValue;
         }
@@ -115,9 +118,31 @@ export const getMaxValueFromData = <TType extends TypeName>(
         if (newBalanceValue.gt(maxBalance)) {
             maxBalance = newBalanceValue;
         }
+
+        // min non zero value
+        if ((minSent === undefined || newSentValue.lt(minSent)) && newSentValue.gt(0)) {
+            minSent = newSentValue;
+        }
+        if (
+            (minReceived === undefined || newReceivedValue.lt(minReceived)) &&
+            newReceivedValue.gt(0)
+        ) {
+            minReceived = newReceivedValue;
+        }
+        if ((minBalance === undefined || newBalanceValue.lt(minBalance)) && newBalanceValue.gt(0)) {
+            minBalance = newBalanceValue;
+        }
     });
+
     const maxValue = Math.max(maxSent.toNumber(), maxReceived.toNumber(), maxBalance.toNumber());
-    return maxValue;
+
+    const minsToCompare = [minSent, minReceived, minBalance]
+        .filter(m => !!m)
+        .map(m => {
+            return m!.toNumber();
+        });
+    const minValue = Math.min(...minsToCompare);
+    return [minValue, maxValue];
 };
 
 export const aggregateBalanceHistory = <TType extends TypeName>(
@@ -227,28 +252,51 @@ export const deviceGraphDataFilterFn = (d: GraphData, deviceState: string | unde
     return d.account.deviceState === deviceState;
 };
 
+const calcMinYDomain = (minMaxValues: [number, number]) => {
+    // Used in calculating domain interval for Y axis with log scale
+    // We could simply use minimum coin value (eg 0.00000001) as our minimum, but that would results in
+    // Y axis with values/labels 0.00000001, 0.0000001, 0.000001, 0.0001...
+    // So instead we calculate what smallest value we need to show without any value being of of the range.
+    // Maybe we could instead just calculate our own set of ticks
+    const [minDataValue] = minMaxValues;
+    const decimals = minDataValue.toString().split('.')[1]?.length;
+    const min = decimals && decimals > 0 ? 1 / 10 ** decimals : 0.00000001;
+    return min;
+    // return 0.00000001;
+};
+
 export const calcYDomain = (
-    maxValue?: number,
+    type: 'fiat' | 'crypto',
+    scale: GraphScale,
+    minMaxValues: [number, number],
     lastBalance?: string,
-): [number, number] | undefined => {
-    if (maxValue === undefined) {
-        return undefined;
+): [number, number] => {
+    const [, maxDataValue] = minMaxValues;
+    const maxValueMultiplier = scale === 'linear' ? 1.2 : 10;
+
+    let minValue: number;
+    if (scale === 'linear') {
+        minValue = 0;
+    } else {
+        minValue = type === 'fiat' ? 0.01 : calcMinYDomain(minMaxValues);
     }
-    if (maxValue > 0) {
-        return [0, maxValue * 1.2];
+
+    if (maxDataValue > 0) {
+        return [minValue, maxDataValue * maxValueMultiplier];
     }
 
     // no txs, but there could be non zero balance we still need to show
     const lastBalanceBn = lastBalance ? new BigNumber(lastBalance) : null;
     if (lastBalanceBn && lastBalanceBn.gt(0)) {
-        return [0, lastBalanceBn.toNumber() * 1.2];
+        return [minValue, lastBalanceBn.toNumber() * 1.2];
     }
 
     // got maxValue === 0, zero balance
     // We basically don't handle the value of tokens txs.
     // They'll create dataPoints for the graph, but the sent/received amounts are always 0
-    // This make sure we show nice fake y axis in cases in which there are only tokens txs
-    return [0, 1];
+    // This make sure we show nice fake y axis in cases in which there are only tokens txs.
+    // Second usecase is on the dashboard when someone picks a range in which there are no txs
+    return [minValue, 10 * maxValueMultiplier];
 };
 
 export const calcXDomain = (
