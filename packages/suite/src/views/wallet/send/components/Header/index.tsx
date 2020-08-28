@@ -36,8 +36,9 @@ export default () => {
         loadTransaction,
     } = useSendFormContext();
 
-    const { importRequest } = useActions({
+    const { importRequest, sendRaw } = useActions({
         importRequest: sendFormActions.importRequest,
+        sendRaw: sendFormActions.sendRaw,
     });
 
     const opreturnOutput = (outputs || []).find(o => o.type === 'opreturn');
@@ -69,9 +70,12 @@ export default () => {
         },
         {
             key: 'raw',
-            callback: () => {},
+            callback: () => {
+                sendRaw(true);
+                return true;
+            },
             label: 'Send RAW',
-            isDisabled: true,
+            // isDisabled: true,
         },
     ];
 

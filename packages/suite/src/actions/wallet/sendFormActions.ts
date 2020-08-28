@@ -38,6 +38,13 @@ export type SendFormActions =
               tx: string;
               coin: Account['symbol'];
           };
+      }
+    | {
+          type: typeof SEND.SEND_RAW;
+          payload?: boolean;
+      }
+    | {
+          type: typeof SEND.DISPOSE;
       };
 
 export const saveDraft = (formState: FormState) => async (
@@ -215,6 +222,41 @@ export const signTransaction = (
     }
 };
 
-export const dispose = () => async () => {
-    // TODO: reset send reducer
+export const sendRaw = (payload?: boolean) => ({
+    type: SEND.SEND_RAW,
+    payload,
+});
+
+export const pushRawTransaction = (tx: string) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { account } = getState().wallet.selectedAccount;
+    if (!account) return false;
+
+    const sentTx = await TrezorConnect.pushTransaction({
+        tx,
+        coin: account.symbol,
+    });
+
+    if (sentTx.success) {
+        dispatch(
+            notificationActions.addToast({
+                type: 'raw-tx-sent',
+                txid: sentTx.payload.txid,
+            }),
+        );
+        dispatch(accountActions.fetchAndUpdateAccount(account));
+    } else {
+        dispatch(
+            notificationActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),
+        );
+    }
+
+    // resolve sign process
+    return sentTx.success;
 };
+
+export const dispose = () => ({
+    type: SEND.DISPOSE,
+});

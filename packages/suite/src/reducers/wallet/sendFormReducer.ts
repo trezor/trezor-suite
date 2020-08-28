@@ -8,6 +8,7 @@ interface SendState {
     drafts: {
         [key: string]: FormState; // Key: account key
     };
+    sendRaw?: boolean;
     precomposedTx?: PrecomposedTransactionFinal;
     precomposedForm?: FormState;
     signedTx?: { tx: string; coin: string }; // payload for TrezorConnect.pushTransaction
@@ -45,6 +46,15 @@ export default (state: SendState = initialState, action: Action): SendState => {
                 } else {
                     delete draft.signedTx;
                 }
+                break;
+            case SEND.SEND_RAW:
+                draft.sendRaw = action.payload;
+                break;
+            case SEND.DISPOSE:
+                delete draft.sendRaw;
+                delete draft.precomposedTx;
+                delete draft.precomposedForm;
+                delete draft.signedTx;
                 break;
             // no default
         }

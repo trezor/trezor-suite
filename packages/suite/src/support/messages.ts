@@ -2092,6 +2092,10 @@ const definedMessages = defineMessages({
         id: 'TOAST_TX_SENT',
         defaultMessage: '{amount} sent from {account}',
     },
+    TOAST_RAW_TX_SENT: {
+        id: 'TOAST_RAW_TX_SENT',
+        defaultMessage: 'Transaction sent. TXID: {txid}',
+    },
     TOAST_TX_RECEIVED: {
         id: 'TOAST_TX_RECEIVED',
         defaultMessage: '{amount} received on {account}',
@@ -3537,7 +3541,7 @@ const definedMessages = defineMessages({
     },
     DATA_NOT_SET: {
         defaultMessage: 'Data not set',
-        id: 'DATA_NOT_VALID_HEX',
+        id: 'DATA_NOT_SET',
     },
     DATA_NOT_VALID_HEX: {
         defaultMessage: 'Not valid hex',
@@ -3546,6 +3550,10 @@ const definedMessages = defineMessages({
     DATA_HEX_TOO_BIG: {
         defaultMessage: 'Data limit exceeded',
         id: 'DATA_HEX_TOO_BIG',
+    },
+    RAW_TX_NOT_SET: {
+        defaultMessage: 'Transaction not set',
+        id: 'RAW_TX_NOT_SET',
     },
     ESTIMATED_TIME: {
         defaultMessage: 'Estimated time',
@@ -3567,6 +3575,11 @@ const definedMessages = defineMessages({
         id: 'SEND_TRANSACTION',
         description: 'Sign and send button used in send form and Review modal',
         defaultMessage: 'Send Transaction',
+    },
+    SEND_RAW_TRANSACTION: {
+        id: 'SEND_RAW_TRANSACTION',
+        description: 'Send raw form header',
+        defaultMessage: 'Send raw transaction',
     },
     SIGN_TRANSACTION: {
         id: 'SIGN_TRANSACTION',

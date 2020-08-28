@@ -12,6 +12,7 @@ import Options from './components/Options';
 import Fees from './components/Fees';
 import TotalSent from './components/TotalSent';
 import ReviewButton from './components/ReviewButton';
+import Raw from './components/Raw';
 import { AppState } from '@suite-types';
 import { SendFormProps } from '@wallet-types/sendForm';
 
@@ -22,18 +23,27 @@ const StyledCard = styled(Card)`
     padding: 0;
 `;
 
-const mapStateToProps = (state: AppState) => ({
+const mapStateToProps = (state: AppState): SendFormProps => ({
     selectedAccount: state.wallet.selectedAccount,
     fiat: state.wallet.fiat,
     localCurrency: state.wallet.settings.localCurrency,
     fees: state.wallet.fees,
     online: state.suite.online,
+    sendRaw: state.wallet.send.sendRaw,
 });
 
 const Send = (props: SendFormProps) => {
     const { selectedAccount } = props;
     if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Send" account={selectedAccount} />;
+    }
+
+    if (props.sendRaw) {
+        return (
+            <WalletLayout title="Send" account={selectedAccount}>
+                <Raw />
+            </WalletLayout>
+        );
     }
 
     // It's OK to call this hook conditionally

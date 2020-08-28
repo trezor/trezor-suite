@@ -103,6 +103,7 @@ export interface SendFormProps {
     localCurrency: AppState['wallet']['settings']['localCurrency'];
     fees: AppState['wallet']['fees'];
     online: boolean;
+    sendRaw?: boolean;
 }
 // Props of @wallet-hooks/useSendForm (selectedAccount should be loaded)
 export interface UseSendFormProps extends SendFormProps {
