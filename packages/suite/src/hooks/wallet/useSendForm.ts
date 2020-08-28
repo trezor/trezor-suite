@@ -82,7 +82,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     });
 
     // load draft from reducer
-    // TODO: load "remembered" fee level
     useEffect(() => {
         const storedState = getDraft();
         const lastUsedFee = getLastUsedFeeLevel();

@@ -19,6 +19,7 @@ export const useSendFormFields = ({
     control,
     getValues,
     setValue,
+    errors,
     clearErrors,
     fiatRates,
 }: Props) => {
@@ -91,10 +92,18 @@ export const useSendFormFields = ({
                     feeLimit: currentLevel.feeLimit,
                 });
             } else {
+                // when switching from custom FeeLevel which has an error
+                // this error should be cleared and transaction should be precomposed again
+                // response is handled and used in @wallet-views/send/components/Fees (the caller of this function)
+                const shouldCompose = errors.feePerUnit || errors.feeLimit;
+                if (shouldCompose) {
+                    clearErrors(['feePerUnit', 'feeLimit']);
+                }
                 setLastUsedFeeLevel(newLevel);
+                return shouldCompose;
             }
         },
-        [setValue, setLastUsedFeeLevel],
+        [setValue, errors, clearErrors, setLastUsedFeeLevel],
     );
 
     const changeCustomFeeLevel = (hasError: boolean) => {

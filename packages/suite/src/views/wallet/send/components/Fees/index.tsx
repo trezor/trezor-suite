@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { SelectBar, colors, variables } from '@trezor/components';
 import { Card, Translation, FiatValue } from '@suite-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import EstimatedMiningTime from '../EstimatedMiningTime';
 import { buildFeeOptions, getFeeUnits } from '@wallet-utils/sendFormUtils';
+import EstimatedMiningTime from './components/EstimatedMiningTime';
 import CustomFee from './components/CustomFee';
 import { useSendFormContext } from '@wallet-hooks';
 
@@ -95,6 +95,7 @@ export default () => {
         account: { symbol, networkType },
         getDefaultValue,
         composedLevels,
+        composeTransaction,
     } = useSendFormContext();
 
     const selectedLabel = getDefaultValue('selectedFee') || 'normal';
@@ -110,12 +111,14 @@ export default () => {
                         label={<Translation id="FEE" />}
                         selectedOption={selectedLabel}
                         options={buildFeeOptions(feeInfo.levels)}
-                        onChange={value =>
-                            changeFeeLevel(
+                        onChange={value => {
+                            // changeFeeLevel will decide if composeTransaction in needed or not
+                            const shouldCompose = changeFeeLevel(
                                 selectedLevel,
                                 feeInfo.levels.find(level => level.label === value)!,
-                            )
-                        }
+                            );
+                            if (shouldCompose) composeTransaction('output[0].amount');
+                        }}
                     />
                     <FeeInfo>
                         {networkType === 'bitcoin' && !isCustomLevel && (

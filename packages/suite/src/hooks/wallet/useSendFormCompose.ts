@@ -54,7 +54,7 @@ export const useSendFormCompose = ({
         [state, composeTransaction, updateContext],
     );
 
-    // called from useEffect
+    // called from composeRequest useEffect
     const processComposeRequest = useCallback(async () => {
         const composeInner = async () => {
             if (Object.keys(errors).length > 0) return;
@@ -214,7 +214,7 @@ export const useSendFormCompose = ({
         }
         setDraftSaveRequest(true);
         selectedFeeRef.current = selectedFee;
-    }, [composedLevels, selectedFee, setValue, updateComposedValues]);
+    }, [composedLevels, selectedFee, updateComposedValues]);
 
     // TODO: useEffect on props (check: account change: key||balance, fee change, fiat change)
     // useEffect(() => {

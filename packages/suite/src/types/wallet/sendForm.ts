@@ -162,7 +162,7 @@ export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
         // useSendFormFields utils:
         calculateFiat: (outputIndex: number, amount?: string) => void;
         setAmount: (outputIndex: number, amount: string) => void;
-        changeFeeLevel: (currentLevel: FeeLevel, newLevel: FeeLevel) => void;
+        changeFeeLevel: (currentLevel: FeeLevel, newLevel: FeeLevel) => FieldError | void;
         changeCustomFeeLevel: (fieldHasError: boolean) => void;
         resetDefaultValue: (field: string) => void;
         setMax: (index: number, active: boolean) => void;
