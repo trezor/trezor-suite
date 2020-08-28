@@ -100,49 +100,7 @@ export const scanQrRequest = () => (dispatch: Dispatch) => {
     return dispatch(modalActions.openDeferredModal({ type: 'qr-reader' }));
 };
 
-// non-redux action
-export const checkRippleEmptyAddress = async (descriptor: string, coin: string) => {
-    const response = await TrezorConnect.getAccountInfo({
-        descriptor,
-        coin,
-    });
-
-    if (response.success) {
-        return response.payload.empty;
-    }
-    return false;
-};
-
-// returned and called automatically after from signTransaction process (called from useSendForm hook)
-// Opens a modal with deferred decision
-export const requestPushTransaction = (payload: any) => (dispatch: Dispatch) => {
-    // set signed transaction in reducer
-    dispatch({
-        type: SEND.REQUEST_PUSH_TRANSACTION,
-        payload,
-    });
-    // display modal and wait for user response
-    return dispatch(modalActions.openDeferredModal({ type: 'review-transaction' }));
-};
-
-export const signTransaction = (values: FormState, composedTx: PrecomposedTransactionFinal) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { account } = getState().wallet.selectedAccount;
-
-    if (!account) return;
-    if (account.networkType === 'bitcoin') {
-        return dispatch(sendFormBitcoinActions.signTransaction(values, composedTx));
-    }
-    if (account.networkType === 'ethereum') {
-        return dispatch(sendFormEthereumActions.signTransaction(values, composedTx));
-    }
-    if (account.networkType === 'ripple') {
-        return dispatch(sendFormRippleActions.signTransaction(values, composedTx));
-    }
-};
-
+// this could be called at any time during signTransaction or pushTransaction process (from ReviewTransaction modal)
 export const cancelSignTx = () => (dispatch: Dispatch, getState: GetState) => {
     const { signedTx } = getState().wallet.send;
     dispatch({ type: SEND.REQUEST_SIGN_TRANSACTION });
@@ -156,7 +114,8 @@ export const cancelSignTx = () => (dispatch: Dispatch, getState: GetState) => {
     dispatch(modalActions.onCancel());
 };
 
-export const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => {
+// private, called from signTransaction only
+const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => {
     const { signedTx, precomposedTx } = getState().wallet.send;
     const { account } = getState().wallet.selectedAccount;
     const { device } = getState().suite;
@@ -173,6 +132,7 @@ export const pushTransaction = () => async (dispatch: Dispatch, getState: GetSta
         .toString();
 
     if (sentTx.success) {
+        // TODO: ERC20 notification
         dispatch(
             notificationActions.addToast({
                 type: 'tx-sent',
@@ -195,6 +155,60 @@ export const pushTransaction = () => async (dispatch: Dispatch, getState: GetSta
     return sentTx.success;
 };
 
+export const signTransaction = (
+    formValues: FormState,
+    transactionInfo: PrecomposedTransactionFinal,
+) => async (dispatch: Dispatch, getState: GetState) => {
+    const { account } = getState().wallet.selectedAccount;
+
+    if (!account) return;
+
+    // store formValues and transactionInfo in send reducer to be used by ReviewTransaction modal
+    dispatch({
+        type: SEND.REQUEST_SIGN_TRANSACTION,
+        payload: {
+            formValues,
+            transactionInfo,
+        },
+    });
+
+    // signTransaction by Trezor
+    let serializedTx: string | undefined;
+    if (account.networkType === 'bitcoin') {
+        serializedTx = await dispatch(
+            sendFormBitcoinActions.signTransaction(formValues, transactionInfo),
+        );
+    }
+    if (account.networkType === 'ethereum') {
+        serializedTx = await dispatch(
+            sendFormEthereumActions.signTransaction(formValues, transactionInfo),
+        );
+    }
+    if (account.networkType === 'ripple') {
+        serializedTx = await dispatch(
+            sendFormRippleActions.signTransaction(formValues, transactionInfo),
+        );
+    }
+
+    if (!serializedTx) return;
+
+    // store serializedTx in reducer (TrezorConnect.pushTransaction params) to be used in ReviewTransaction modal and pushTransaction method
+    dispatch({
+        type: SEND.REQUEST_PUSH_TRANSACTION,
+        payload: {
+            tx: serializedTx,
+            coin: account.symbol,
+        },
+    });
+
+    // Open a deferred modal and get the decision
+    const decision = await dispatch(modalActions.openDeferredModal({ type: 'review-transaction' }));
+    if (decision) {
+        // push tx to the network
+        return dispatch(pushTransaction());
+    }
+};
+
 export const dispose = () => async () => {
-    // TODO: reset reducer
+    // TODO: reset send reducer
 };

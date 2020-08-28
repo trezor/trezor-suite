@@ -1,6 +1,7 @@
 import TrezorConnect, { ComposeOutput, FeeLevel, TokenInfo } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import { toWei } from 'web3-utils';
+import * as notificationActions from '@suite-actions/notificationActions';
 import {
     calculateTotal,
     calculateMax,
@@ -9,6 +10,8 @@ import {
     prepareEthereumTransaction,
     findToken,
 } from '@wallet-utils/sendFormUtils';
+import { amountToSatoshi, formatAmount } from '@wallet-utils/accountUtils';
+import { ETH_DEFAULT_GAS_LIMIT, ERC20_GAS_LIMIT } from '@wallet-constants/sendForm';
 import {
     FormState,
     UseSendFormState,
@@ -16,11 +19,6 @@ import {
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
 } from '@wallet-types/sendForm';
-import { amountToSatoshi, formatAmount } from '@wallet-utils/accountUtils';
-import * as notificationActions from '@suite-actions/notificationActions';
-import { requestPushTransaction } from '@wallet-actions/sendFormActions'; // move to common?
-import { SEND } from '@wallet-actions/constants';
-import { ETH_DEFAULT_GAS_LIMIT, ERC20_GAS_LIMIT } from '@wallet-constants/sendForm';
 import { Dispatch, GetState } from '@suite-types';
 
 type EthOutput = Exclude<ComposeOutput, { type: 'opreturn' } | { address_n: number[] }>;
@@ -134,8 +132,8 @@ export const composeTransaction = (
         };
     }
 
+    // additional calculation for gasLimit based on data size
     let customFeeLimit: string | undefined;
-
     if (typeof formValues.ethereumDataHex === 'string' && formValues.ethereumDataHex.length > 0) {
         const response = await TrezorConnect.blockchainEstimateFee({
             coin: account.symbol,
@@ -153,12 +151,14 @@ export const composeTransaction = (
             customFeeLimit = response.payload.levels[0].feeLimit;
         }
     }
+
+    // set gasLimit based on ERC20 transfer
     if (tokenInfo) {
         customFeeLimit = ERC20_GAS_LIMIT;
     }
 
     const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
-    // in case when selectedFee is set to 'custom' construct this FeeLevel from form values
+    // in case when selectedFee is set to 'custom' construct this FeeLevel from values
     if (formValues.selectedFee === 'custom') {
         predefinedLevels.push({
             label: 'custom',
@@ -172,6 +172,8 @@ export const composeTransaction = (
     if (customFeeLimit) {
         predefinedLevels.forEach(l => (l.feeLimit = customFeeLimit));
     }
+
+    // wrap response into PrecomposedLevels object where key is a FeeLevel label
     const wrappedResponse: PrecomposedLevels = {};
     const response = predefinedLevels.map(level =>
         calculate(availableBalance, output, level, tokenInfo),
@@ -182,11 +184,12 @@ export const composeTransaction = (
     });
 
     const hasAtLeastOneValid = response.find(r => r.type !== 'error');
+    // there is no valid tx in predefinedLevels and there is no custom level
     if (!hasAtLeastOneValid && !wrappedResponse.custom) {
         const { minFee } = feeInfo;
-        let maxFee = new BigNumber(predefinedLevels[predefinedLevels.length - 1].feePerUnit).minus(
-            1,
-        );
+        const lastKnownFee = predefinedLevels[predefinedLevels.length - 1].feePerUnit;
+        let maxFee = new BigNumber(lastKnownFee).minus(1);
+        // generate custom levels in range from lastKnownFee - 1 to feeInfo.minFee (coinInfo in trezor-connect)
         const customLevels: FeeLevel[] = [];
         while (maxFee.gte(minFee)) {
             customLevels.push({
@@ -198,6 +201,7 @@ export const composeTransaction = (
             maxFee = maxFee.minus(1);
         }
 
+        // check if any custom level is possible
         const customLevelsResponse = customLevels.map(level =>
             calculate(availableBalance, output, level, tokenInfo),
         );
@@ -208,8 +212,8 @@ export const composeTransaction = (
         }
     }
 
-    // format max
-    // update errorMessage values
+    // format max (calculate sends it as satoshi)
+    // update errorMessage values (symbol)
     Object.keys(wrappedResponse).forEach(key => {
         const tx = wrappedResponse[key];
         if (tx.type !== 'error' && tx.max && !tx.token) {
@@ -243,14 +247,7 @@ export const signTransaction = (
     const { account, network } = selectedAccount;
     if (account.networkType !== 'ethereum' || !network.chainId) return;
 
-    dispatch({
-        type: SEND.REQUEST_SIGN_TRANSACTION,
-        payload: {
-            formValues,
-            transactionInfo,
-        },
-    });
-
+    // transform to TrezorConnect.ethereumSignTransaction params
     const transaction = prepareEthereumTransaction({
         token: transactionInfo.token,
         chainId: network.chainId,
@@ -274,7 +271,7 @@ export const signTransaction = (
     });
 
     if (!signedTx.success) {
-        // catch manual error from cancelSigning
+        // catch manual error from ReviewTransaction modal
         if (signedTx.payload.error === 'tx-cancelled') return;
         dispatch(
             notificationActions.addToast({
@@ -285,15 +282,8 @@ export const signTransaction = (
         return;
     }
 
-    const serializedTx = serializeEthereumTx({
+    return serializeEthereumTx({
         ...transaction,
         ...signedTx.payload,
     });
-
-    return dispatch(
-        requestPushTransaction({
-            tx: serializedTx,
-            coin: account.symbol,
-        }),
-    );
 };

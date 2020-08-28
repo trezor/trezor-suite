@@ -57,9 +57,8 @@ const getState = (index: number, buttonRequests: number) => {
 export default ({ selectedAccount, send, decision }: Props) => {
     const htmlElement = createRef<HTMLDivElement>();
     const { device } = useDevice();
-    const { cancelSignTx, pushTransaction, addNotification } = useActions({
+    const { cancelSignTx, addNotification } = useActions({
         cancelSignTx: sendFormActions.cancelSignTx,
-        pushTransaction: sendFormActions.pushTransaction,
         addNotification: notificationActions.addToast,
     });
 
@@ -155,9 +154,8 @@ export default ({ selectedAccount, send, decision }: Props) => {
                     {broadcastEnabled && (
                         <StyledButton
                             isDisabled={!signedTx}
-                            onClick={async () => {
-                                const result = await pushTransaction();
-                                if (decision) decision.resolve(result);
+                            onClick={() => {
+                                if (decision) decision.resolve(true);
                             }}
                         >
                             <Translation id="SEND_TRANSACTION" />

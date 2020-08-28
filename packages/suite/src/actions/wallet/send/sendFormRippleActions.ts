@@ -1,7 +1,9 @@
 import TrezorConnect, { ComposeOutput, FeeLevel, RipplePayment } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
-
+import * as notificationActions from '@suite-actions/notificationActions';
 import { calculateTotal, calculateMax } from '@wallet-utils/sendFormUtils';
+import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { XRP_FLAG } from '@wallet-constants/sendForm';
 import {
     FormState,
     UseSendFormState,
@@ -9,15 +11,7 @@ import {
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
 } from '@wallet-types/sendForm';
-
-import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
-
-import { XRP_FLAG } from '@wallet-constants/sendForm';
-import { SEND } from '@wallet-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
-
-import * as notificationActions from '@suite-actions/notificationActions';
-import { requestPushTransaction } from '@wallet-actions/sendFormActions'; // move to common?
 
 type XrpOutput = Exclude<ComposeOutput, { type: 'opreturn' } | { address_n: number[] }>;
 
@@ -132,9 +126,10 @@ export const composeTransaction = (
             blocks: -1,
         });
     }
-    const wrappedResponse: PrecomposedLevels = {};
 
     let requiredAmount: BigNumber | undefined;
+    // additional check if recipient address is empty
+    // it will set requiredAmount to recipient account reserve value
     if (address) {
         const accountResponse = await TrezorConnect.getAccountInfo({
             descriptor: address,
@@ -145,6 +140,8 @@ export const composeTransaction = (
         }
     }
 
+    // wrap response into PrecomposedLevels object where key is a FeeLevel label
+    const wrappedResponse: PrecomposedLevels = {};
     const response = predefinedLevels.map(level =>
         calculate(availableBalance, output, level, requiredAmount),
     );
@@ -154,11 +151,12 @@ export const composeTransaction = (
     });
 
     const hasAtLeastOneValid = response.find(r => r.type !== 'error');
+    // there is no valid tx in predefinedLevels and there is no custom level
     if (!hasAtLeastOneValid && !wrappedResponse.custom) {
         const { minFee } = feeInfo;
-        let maxFee = new BigNumber(predefinedLevels[predefinedLevels.length - 1].feePerUnit).minus(
-            1,
-        );
+        const lastKnownFee = predefinedLevels[predefinedLevels.length - 1].feePerUnit;
+        let maxFee = new BigNumber(lastKnownFee).minus(1);
+        // generate custom levels in range from lastKnownFee -1 to feeInfo.minFee (coinInfo in trezor-connect)
         const customLevels: FeeLevel[] = [];
         while (maxFee.gte(minFee)) {
             customLevels.push({ feePerUnit: maxFee.toString(), label: 'custom', blocks: -1 });
@@ -175,7 +173,8 @@ export const composeTransaction = (
         }
     }
 
-    // format max
+    // format max (calculate sends it as satoshi)
+    // update errorMessage values (reserve)
     Object.keys(wrappedResponse).forEach(key => {
         const tx = wrappedResponse[key];
         if (tx.type !== 'error' && tx.max) {
@@ -210,14 +209,6 @@ export const signTransaction = (
     const { account } = selectedAccount;
     if (account.networkType !== 'ripple') return;
 
-    dispatch({
-        type: SEND.REQUEST_SIGN_TRANSACTION,
-        payload: {
-            formValues,
-            transactionInfo,
-        },
-    });
-
     const payment: RipplePayment = {
         destination: formValues.outputs[0].address,
         amount: networkAmountToSatoshi(formValues.outputs[0].amount, account.symbol),
@@ -243,7 +234,7 @@ export const signTransaction = (
         },
     });
     if (!signedTx.success) {
-        // catch manual error from cancelSigning
+        // catch manual error from ReviewTransaction modal
         if (signedTx.payload.error === 'tx-cancelled') return;
         dispatch(
             notificationActions.addToast({
@@ -254,10 +245,5 @@ export const signTransaction = (
         return;
     }
 
-    return dispatch(
-        requestPushTransaction({
-            tx: signedTx.payload.serializedTx,
-            coin: account.symbol,
-        }),
-    );
+    return signedTx.payload.serializedTx;
 };

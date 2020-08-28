@@ -1,5 +1,12 @@
 import TrezorConnect, { FeeLevel, SignTransaction } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
+import * as notificationActions from '@suite-actions/notificationActions';
+import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
+import {
+    ZEC_SIGN_ENHANCEMENT,
+    BTC_RBF_SEQUENCE,
+    BTC_LOCKTIME_SEQUENCE,
+} from '@wallet-constants/sendForm';
 import {
     FormState,
     UseSendFormState,
@@ -7,15 +14,6 @@ import {
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
 } from '@wallet-types/sendForm';
-import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
-import * as notificationActions from '@suite-actions/notificationActions';
-import { requestPushTransaction } from '@wallet-actions/sendFormActions'; // move to common?
-import { SEND } from '@wallet-actions/constants';
-import {
-    ZEC_SIGN_ENHANCEMENT,
-    BTC_RBF_SEQUENCE,
-    BTC_LOCKTIME_SEQUENCE,
-} from '@wallet-constants/sendForm';
 import { Dispatch, GetState } from '@suite-types';
 
 export const composeTransaction = (formValues: FormState, formState: UseSendFormState) => async (
@@ -104,27 +102,27 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
         return;
     }
 
+    // wrap response into PrecomposedLevels object where key is a FeeLevel label
     const wrappedResponse: PrecomposedLevels = {};
-
     response.payload.forEach((tx, index) => {
         const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
         wrappedResponse[feeLabel] = tx as PrecomposedTransaction;
     });
 
     const hasAtLeastOneValid = response.payload.find(r => r.type !== 'error');
-
     // there is no valid tx in predefinedLevels and there is no custom level
     if (!hasAtLeastOneValid && !wrappedResponse.custom) {
         const { minFee } = feeInfo;
-        let maxFee = new BigNumber(predefinedLevels[predefinedLevels.length - 1].feePerUnit).minus(
-            1,
-        );
+        const lastKnownFee = predefinedLevels[predefinedLevels.length - 1].feePerUnit;
+        let maxFee = new BigNumber(lastKnownFee).minus(1);
+        // generate custom levels in range from lastKnownFee -1 to feeInfo.minFee (coinInfo in trezor-connect)
         const customLevels: FeeLevel[] = [];
         while (maxFee.gte(minFee)) {
             customLevels.push({ feePerUnit: maxFee.toString(), label: 'custom', blocks: -1 });
             maxFee = maxFee.minus(1);
         }
 
+        // check if any custom level is possible
         const customLevelsResponse =
             customLevels.length > 0
                 ? await TrezorConnect.composeTransaction({
@@ -143,9 +141,10 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
             }
         }
     }
+
     // make sure that feePerByte is an integer (trezor-connect may return float)
     // format max (trezor-connect sends it as satoshi)
-    // format errorMessage
+    // format errorMessage and catch unexpected error (other than AMOUNT_IS_NOT_ENOUGH)
     Object.keys(wrappedResponse).forEach(key => {
         const tx = wrappedResponse[key];
         if (tx.type !== 'error') {
@@ -185,20 +184,14 @@ export const signTransaction = (
     )
         return;
 
-    dispatch({
-        type: SEND.REQUEST_SIGN_TRANSACTION,
-        payload: {
-            formValues,
-            transactionInfo,
-        },
-    });
-
+    // transactionInfo needs some additional changes:
     const { account } = selectedAccount;
     const { transaction } = transactionInfo;
 
     let sequence: number;
     let signEnhancement: Partial<SignTransaction> = {};
 
+    // enhance signTransaction params for zcash (version_group_id etc.)
     if (account.symbol === 'zec') {
         signEnhancement = ZEC_SIGN_ENHANCEMENT;
     }
@@ -212,13 +205,14 @@ export const signTransaction = (
         signEnhancement.locktime = new BigNumber(formValues.bitcoinLockTime).toNumber();
     }
 
+    // update inputs
+    // TODO: 0 amounts should be excluded together with "exclude dustLimit" feature and "utxo picker" feature in composeTransaction (above)
     const inputs = transaction.inputs
         .map(input => ({
             ...input,
             sequence,
         }))
         .filter(input => input.amount !== '0'); // remove '0' amounts
-
     inputs.forEach(input => {
         if (!input.amount) delete input.amount; // remove undefined amounts
         if (!input.sequence) delete input.sequence; // remove undefined sequence
@@ -240,7 +234,7 @@ export const signTransaction = (
     const signedTx = await TrezorConnect.signTransaction(signPayload);
 
     if (!signedTx.success) {
-        // catch manual error from cancelSigning
+        // catch manual error from ReviewTransaction modal
         if (signedTx.payload.error === 'tx-cancelled') return;
         dispatch(
             notificationActions.addToast({
@@ -251,10 +245,5 @@ export const signTransaction = (
         return;
     }
 
-    return dispatch(
-        requestPushTransaction({
-            tx: signedTx.payload.serializedTx,
-            coin: account.symbol,
-        }),
-    );
+    return signedTx.payload.serializedTx;
 };
