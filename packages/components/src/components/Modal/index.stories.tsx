@@ -21,8 +21,11 @@ storiesOf('Modals', module)
                 'Ave Maria, gratia plena, Dominus tecum. Benedicta tu in mulieribus, et benedictus fructus ventris tui, Iesus.'
             );
             const cancelable = boolean('cancelable', true);
+            const bottomBar = boolean('bottomBar', false);
+            // const showHeaderBar = boolean('headerBar', true);
             const useFixedWidth = boolean('useFixedWidth', false);
             const useFixedHeight = boolean('useFixedHeight', false);
+            const hideCancelButton = boolean('hideCancelButton', false);
 
             return (
                 <Wrapper>
@@ -31,8 +34,11 @@ storiesOf('Modals', module)
                         heading={heading === '' ? undefined : heading}
                         description={description === '' ? undefined : description}
                         cancelable={cancelable}
+                        bottomBar={bottomBar}
+                        // showHeaderBar={showHeaderBar}
                         useFixedWidth={useFixedWidth}
                         useFixedHeight={useFixedHeight}
+                        hideCancelButton={hideCancelButton}
                     >
                         {children}
                     </Modal>

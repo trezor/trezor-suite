@@ -4,7 +4,6 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { useKeyPress } from '../../utils/hooks';
 
-import { Link } from '../typography/Link';
 import { Icon } from '../Icon';
 import { H2 } from '../typography/Heading';
 import { colors, variables } from '../../config';
@@ -49,43 +48,50 @@ const Header = styled.div`
     margin-bottom: 25px;
 `;
 
+const CancelIconWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    margin-left: 30px;
+    cursor: pointer;
+`;
+
 type ModalWindowProps = Omit<Props, 'padding' | 'fixedWidth' | 'fixedHeight'> &
     Required<Pick<Props, 'padding' | 'fixedWidth' | 'fixedHeight'>>; // make some props mandatory
 const ModalWindow = styled.div<ModalWindowProps>`
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    border-radius: 6px;
-    text-align: center;
-    overflow-x: hidden; /* retains border-radius when using background in child component */
-    padding: ${(props: ModalWindowProps) => props.padding[3]};
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border-radius: 6px;
+  text-align: center;
+  overflow-x: hidden; /* retains border-radius when using background in child component */
+  padding: ${(props: ModalWindowProps) => props.padding[3]};
 
-    /* prettier fails to format it properly */
-    
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-                padding: ${(props: ModalWindowProps) => props.padding[0]};
-            }
+  /* prettier fails to format it properly */
 
-    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) and (max-width: ${
+  @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+    padding: ${(props: ModalWindowProps) => props.padding[0]};
+  }
+
+  @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) and (max-width: ${
     variables.SCREEN_SIZE.MD
 }) {
-                padding: ${(props: ModalWindowProps) => props.padding[1]};
-            }
+    padding: ${(props: ModalWindowProps) => props.padding[1]};
+  }
 
-    @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) and (max-width: ${
+  @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) and (max-width: ${
     variables.SCREEN_SIZE.LG
 }) {
-                padding: ${(props: ModalWindowProps) => props.padding[2]};
-            }
+    padding: ${(props: ModalWindowProps) => props.padding[2]};
+  }
 
-    ${props =>
-        !props.noBackground &&
-        css`
-            background: ${colors.WHITE};
-            box-shadow: 0 10px 80px 0 rgba(77, 77, 77, 0.2);
-        `}
+  ${props =>
+      !props.noBackground &&
+      css`
+          background: ${colors.WHITE};
+          box-shadow: 0 10px 80px 0 rgba(77, 77, 77, 0.2);
+      `}
 
-    /* if bottomBar is active we need to disable bottom padding */
+  /* if bottomBar is active we need to disable bottom padding */
     ${props =>
         props.bottomBar &&
         css`
@@ -150,9 +156,43 @@ const ModalWindow = styled.div<ModalWindowProps>`
         `}
 `;
 
-const Heading = styled(H2)<{ noPadding: boolean }>`
-    text-align: center;
+const Wrapper = styled.div<{ padding: [string, string, string, string] }>`
+    padding: ${props => props.padding[3]};
 
+    /* prettier fails to format it properly */
+
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: ${props => props.padding[0]};
+    }
+
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) and (max-width: ${variables
+            .SCREEN_SIZE.MD}) {
+        padding: ${props => props.padding[1]};
+    }
+
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) and (max-width: ${variables
+            .SCREEN_SIZE.LG}) {
+        padding: ${props => props.padding[2]};
+    }
+`;
+
+const Heading = styled(H2)`
+    display: flex;
+    text-align: center;
+    justify-content: space-between;
+    padding: 24px 32px;
+    margin-bottom: 0px;
+    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        /* make sure heading doesn't overflow over close button */
+        padding-right: 20px;
+        padding-left: 20px;
+    }
+`;
+
+const NoBarHeading = styled(H2)<{ noPadding: boolean }>`
+    text-align: center;
     ${props =>
         !props.noPadding &&
         css`
@@ -164,12 +204,22 @@ const Heading = styled(H2)<{ noPadding: boolean }>`
         `}
 `;
 
-const Content = styled.div`
+const Content = styled.div<{ showHeaderBar: boolean; contentPadding: string }>`
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: auto;
     height: 100%;
     overflow-y: auto;
+
+    /* add margin to make sure there is some space between the scrollbar and the edge of the modal */
+    margin: ${props => (props.showHeaderBar ? '0px 8px 0px 8px' : '0')};
+
+    padding: ${props => props.contentPadding};
+
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        /* make sure heading doesn't overflow over close button */
+        padding: ${props => (props.showHeaderBar ? PADDING_TINY[0] : '0')};
+    }
 
     ::-webkit-scrollbar {
         background-color: #fff;
@@ -194,20 +244,30 @@ const Content = styled.div`
     }
 `;
 
-const Description = styled.div`
-    color: ${colors.BLACK50};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    margin-bottom: 10px;
+const Description = styled.div<{ showHeaderBar: boolean }>`
     text-align: center;
+    color: ${colors.BLACK50};
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    padding-left: 16px;
+    padding-right: 16px;
+    margin-bottom: ${props => (props.showHeaderBar ? '0px' : '10px')};
+    margin-top: ${props => (props.showHeaderBar ? '20px' : '0px')};
+    padding-bottom: ${props => (props.showHeaderBar ? '4px' : '0px')};
 `;
 
-const BottomBar = styled.div`
+const BottomBar = styled.div<{ showHeaderBar: boolean }>`
     display: flex;
-    padding-top: 16px;
-    padding-bottom: 16px;
+    padding: ${props => (props.showHeaderBar ? '16px 40px 16px 40px' : '16px 0 16px 0')};
+
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        /* make sure heading doesn't overflow over close button */
+        padding-right: 20px;
+        padding-left: 20px;
+        padding-bottom: 16px;
+    }
 `;
 
-const StyledLink = styled(Link)`
+const NoBarCancelIconWrapper = styled.div`
     display: flex;
     align-items: center;
     position: absolute;
@@ -250,6 +310,17 @@ const getPadding = (size: SIZE) => {
     }
 };
 
+const getContentPadding = (showHeaderBar: boolean, bottomBar: React.ReactNode) => {
+    if (showHeaderBar && !bottomBar) {
+        return '12px 32px 40px 32px';
+    }
+    if (showHeaderBar && bottomBar) {
+        return '12px 32px 0px 32px';
+    }
+    // return zero padding none of the above
+    return '0';
+};
+
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
     children?: React.ReactNode;
     heading?: React.ReactNode;
@@ -266,6 +337,8 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     noBackground?: boolean;
     onCancel?: () => void;
     hideCancelButton?: boolean;
+    showHeaderBar?: boolean;
+    contentPadding?: string;
 }
 
 const Modal = ({
@@ -278,13 +351,15 @@ const Modal = ({
     onClick,
     onCancel,
     size = 'large',
-    padding = getPadding(size),
+    padding = getPadding(size), // ['16px 8px', '35px 40px', '35px 40px', '35px 40px']
     noBackground = false,
     useFixedWidth = true,
     fixedWidth = getFixedWidth(size),
     useFixedHeight = false,
     fixedHeight = FIXED_HEIGHT,
     hideCancelButton = false,
+    showHeaderBar = true,
+    contentPadding = getContentPadding(showHeaderBar, bottomBar),
     ...rest
 }: Props) => {
     const escPressed = useKeyPress('Escape');
@@ -296,7 +371,7 @@ const Modal = ({
     const modalWindow = (
         <ModalWindow
             size={size}
-            padding={padding}
+            padding={showHeaderBar ? ['0px', '0px', '0px', '0px'] : padding}
             useFixedWidth={useFixedWidth}
             fixedWidth={fixedWidth}
             useFixedHeight={useFixedHeight}
@@ -309,15 +384,32 @@ const Modal = ({
             }}
             {...rest}
         >
-            {heading && <Heading noPadding={hideCancelButton}>{heading}</Heading>}
-            {description && <Description>{description}</Description>}
-            {cancelable && !hideCancelButton && (
-                <StyledLink onClick={onCancel}>
-                    <Icon size={24} color={colors.BLACK0} icon="CROSS" />
-                </StyledLink>
-            )}
-            <Content>{children}</Content>
-            {bottomBar && <BottomBar>{bottomBar}</BottomBar>}
+            {heading &&
+                // there are two modal Heading designs that are displayed based on showHeaderBar
+                (showHeaderBar ? (
+                    <Heading>
+                        {heading}
+                        {cancelable && !hideCancelButton && (
+                            <CancelIconWrapper onClick={onCancel}>
+                                <Icon size={24} color={colors.NEUE_TYPE_DARK_GREY} icon="CROSS" />
+                            </CancelIconWrapper>
+                        )}
+                    </Heading>
+                ) : (
+                    <>
+                        <NoBarHeading noPadding={hideCancelButton}>{heading}</NoBarHeading>
+
+                        <NoBarCancelIconWrapper onClick={onCancel}>
+                            <Icon size={24} color={colors.NEUE_TYPE_DARK_GREY} icon="CROSS" />
+                        </NoBarCancelIconWrapper>
+                    </>
+                ))}
+
+            {description && <Description showHeaderBar={showHeaderBar}>{description}</Description>}
+            <Content showHeaderBar={showHeaderBar} contentPadding={contentPadding}>
+                {children}
+            </Content>
+            {bottomBar && <BottomBar showHeaderBar={showHeaderBar}>{bottomBar}</BottomBar>}
         </ModalWindow>
     );
 
@@ -325,6 +417,7 @@ const Modal = ({
         return modalWindow;
     }
 
+    // if there is some background, return modal with a blurred background
     return (
         <ModalOverlay
             onClick={() => {
