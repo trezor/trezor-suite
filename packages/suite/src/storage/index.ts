@@ -10,16 +10,7 @@ import { Account, Discovery, CoinFiatRates, WalletAccountTransaction } from '@wa
 import { GraphData } from '@wallet-types/graph';
 import { migrate } from './migrations';
 
-const VERSION = 15;
-/**
- * Changelog
- *
- * 15
- * - added metadata object store
- * - added device.metadata
- * - added account.metadata
- * - modified sendReducer
- */
+const VERSION = 16; // don't forget to add migration and CHANGELOG when changing versions!
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
