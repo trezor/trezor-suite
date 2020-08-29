@@ -61,7 +61,6 @@ export const preloadFeeInfo = () => async (dispatch: Dispatch) => {
                 ...payload,
                 levels: payload.levels.map(l => ({
                     ...l,
-                    value: l.feePerUnit,
                     label: l.label || 'normal',
                 })),
             };
@@ -115,7 +114,6 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
             levels: payload.levels.map(l => ({
                 ...l,
                 label: l.label || 'normal',
-                value: l.feePerUnit,
             })),
         };
 
