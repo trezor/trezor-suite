@@ -91,7 +91,7 @@ const Symbol = styled.div`
 const Fiat = styled.div`
     display: flex;
     align-items: center;
-    padding-top: 5px;
+    padding-left: 8px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
@@ -173,12 +173,8 @@ export default ({ type, state, label, value, symbol, token }: Props) => {
                     )}
                 </Coin>
                 <Fiat>
-                    {outputSymbol && !token && (
-                        <FiatValue
-                            amount={formatNetworkAmount(outputValue, symbol)}
-                            symbol={symbol}
-                        />
-                    )}
+                    {/* TODO: Fiat value for tokes */}
+                    {outputSymbol && !token && <FiatValue amount={outputValue} symbol={symbol} />}
                 </Fiat>
             </Right>
             <AnimatePresence initial={false}>
