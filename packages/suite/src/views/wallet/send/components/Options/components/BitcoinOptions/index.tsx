@@ -13,10 +13,9 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const Top = styled.div``;
-
 const Row = styled.div`
     display: flex;
+    flex-flow: row wrap;
     flex: 1;
     justify-content: space-between;
 `;
@@ -53,20 +52,19 @@ export default () => {
 
     return (
         <Wrapper>
-            <Top>
-                {locktimeEnabled && (
-                    <Locktime
-                        close={() => {
-                            resetDefaultValue('bitcoinLockTime');
-                            // close additional form
-                            if (!rbfEnabled) toggleOption('bitcoinRBF');
-                            if (!broadcastEnabled) toggleOption('broadcast');
-                            toggleOption('bitcoinLockTime');
-                            composeTransaction('outputs[0].amount', false);
-                        }}
-                    />
-                )}
-            </Top>
+            {locktimeEnabled && (
+                <Locktime
+                    close={() => {
+                        resetDefaultValue('bitcoinLockTime');
+                        // close additional form
+                        if (!rbfEnabled) toggleOption('bitcoinRBF');
+                        if (!broadcastEnabled) toggleOption('broadcast');
+                        toggleOption('bitcoinLockTime');
+                        composeTransaction('outputs[0].amount', false);
+                    }}
+                />
+            )}
+
             <Row>
                 <Left>
                     {!locktimeEnabled && (

@@ -18,6 +18,7 @@ const StyledCard = styled(Card)`
     flex-direction: row;
     justify-items: space-between;
     align-items: center;
+    padding: 32px 42px;
 `;
 
 const Label = styled.div`
@@ -27,7 +28,7 @@ const Label = styled.div`
 
 const IconWrapper = styled.div`
     display: flex;
-    padding: 6px 12px;
+    padding: 8px 12px 8px 12px; /* custom padding to solve jumping content */
     justify-content: flex-end;
 `;
 

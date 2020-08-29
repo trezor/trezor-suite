@@ -10,16 +10,10 @@ import { useSendFormContext } from '@wallet-hooks';
 
 const StyledCard = styled(Card)`
     display: flex;
-    flex-direction: column;
-    margin-bottom: 25px;
-    padding: 0;
-`;
-
-const Top = styled.div`
-    display: flex;
-    margin: 32px 42px;
-    flex-direction: row;
     justify-items: space-between;
+    flex-flow: row wrap;
+    margin-bottom: 25px;
+    padding: 32px 42px;
 `;
 
 const Left = styled.div`
@@ -105,60 +99,60 @@ export default () => {
 
     return (
         <StyledCard>
-            <Top>
-                <Left>
-                    <SelectBar
-                        label={<Translation id="FEE" />}
-                        selectedOption={selectedLabel}
-                        options={buildFeeOptions(feeInfo.levels)}
-                        onChange={value => {
-                            // changeFeeLevel will decide if composeTransaction in needed or not
-                            const shouldCompose = changeFeeLevel(
-                                selectedLevel,
-                                feeInfo.levels.find(level => level.label === value)!,
-                            );
-                            if (shouldCompose) composeTransaction('output[0].amount');
-                        }}
-                    />
-                    <FeeInfo>
-                        {networkType === 'bitcoin' && !isCustomLevel && (
-                            <EstimatedMiningTimeWrapper>
-                                <EstimatedMiningTime
-                                    seconds={feeInfo.blockTime * selectedLevel.blocks * 60}
-                                />
-                            </EstimatedMiningTimeWrapper>
-                        )}
-                        {!isCustomLevel && (
-                            <FeeUnits>
-                                {selectedLevel.feePerUnit} {getFeeUnits(networkType)}
-                            </FeeUnits>
-                        )}
-                        {networkType === 'bitcoin' &&
-                            !isCustomLevel &&
-                            transactionInfo &&
-                            transactionInfo.type !== 'error' && (
-                                <TxSize>({transactionInfo.bytes} B)</TxSize>
-                            )}
-                    </FeeInfo>
-                </Left>
-                <Middle>{isCustomLevel && <CustomFee />}</Middle>
-                <Right>
-                    {transactionInfo && transactionInfo.type !== 'error' && (
-                        <RightContent>
-                            <CoinAmount>
-                                {formatNetworkAmount(transactionInfo.fee, symbol)}
-                                <Label>{symbol}</Label>
-                            </CoinAmount>
-                            <FiatAmount>
-                                <FiatValue
-                                    amount={formatNetworkAmount(transactionInfo.fee, symbol)}
-                                    symbol={symbol}
-                                />
-                            </FiatAmount>
-                        </RightContent>
+            <Left>
+                <SelectBar
+                    label={<Translation id="FEE" />}
+                    selectedOption={selectedLabel}
+                    options={buildFeeOptions(feeInfo.levels)}
+                    onChange={value => {
+                        // changeFeeLevel will decide if composeTransaction in needed or not
+                        const shouldCompose = changeFeeLevel(
+                            selectedLevel,
+                            feeInfo.levels.find(level => level.label === value)!,
+                        );
+                        if (shouldCompose) composeTransaction('output[0].amount');
+                    }}
+                />
+                <FeeInfo>
+                    {networkType === 'bitcoin' && !isCustomLevel && (
+                        <EstimatedMiningTimeWrapper>
+                            <EstimatedMiningTime
+                                seconds={feeInfo.blockTime * selectedLevel.blocks * 60}
+                            />
+                        </EstimatedMiningTimeWrapper>
                     )}
-                </Right>
-            </Top>
+                    {/* {!isCustomLevel && ( */}
+                    <FeeUnits>
+                        {!isCustomLevel
+                            ? `${selectedLevel.feePerUnit} ${getFeeUnits(networkType)}`
+                            : ' '}
+                    </FeeUnits>
+                    {/* )} */}
+                    {networkType === 'bitcoin' &&
+                        !isCustomLevel &&
+                        transactionInfo &&
+                        transactionInfo.type !== 'error' && (
+                            <TxSize>({transactionInfo.bytes} B)</TxSize>
+                        )}
+                </FeeInfo>
+            </Left>
+            <Middle>{isCustomLevel && <CustomFee />}</Middle>
+            <Right>
+                {transactionInfo && transactionInfo.type !== 'error' && (
+                    <RightContent>
+                        <CoinAmount>
+                            {formatNetworkAmount(transactionInfo.fee, symbol)}
+                            <Label>{symbol}</Label>
+                        </CoinAmount>
+                        <FiatAmount>
+                            <FiatValue
+                                amount={formatNetworkAmount(transactionInfo.fee, symbol)}
+                                symbol={symbol}
+                            />
+                        </FiatAmount>
+                    </RightContent>
+                )}
+            </Right>
         </StyledCard>
     );
 };
