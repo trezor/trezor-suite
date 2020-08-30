@@ -2,7 +2,8 @@ import { FIAT } from '@suite-config';
 import { useSelector } from '@suite-hooks';
 import { Account } from '@wallet-types';
 import { CleanSelect, Icon, Input, variables } from '@trezor/components';
-import { AmountLimits, buildOption } from '@wallet-utils/coinmarket/buyUtils';
+import { AmountLimits } from '@wallet-utils/coinmarket/buyUtils';
+import { buildOption, symbolToInvityApiSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
 import React, { useEffect, useState } from 'react';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import { useFormContext, Controller } from 'react-hook-form';
@@ -16,7 +17,7 @@ interface Props {
 }
 
 const getCryptoOptions = (account: Account) => {
-    const supportedTokens = ['usdt20', 'dai', 'gusd', 'ong'];
+    const supportedTokens = ['usdt', 'dai', 'gusd', 'ong'];
     const uppercaseSymbol = account.symbol.toUpperCase();
     const options: { value: string; label: string }[] = [
         { value: uppercaseSymbol, label: uppercaseSymbol },
@@ -24,10 +25,9 @@ const getCryptoOptions = (account: Account) => {
 
     if (account.networkType === 'ethereum') {
         supportedTokens.forEach(token => {
-            const uppercaseToken = token.toUpperCase();
             options.push({
-                label: uppercaseToken,
-                value: uppercaseToken,
+                label: token.toUpperCase(),
+                value: symbolToInvityApiSymbol(token).toUpperCase(),
             });
         });
     }

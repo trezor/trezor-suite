@@ -51,8 +51,8 @@ export function useBuyInfo() {
 export function useExchangeInfo() {
     const [exchangeInfo, setExchangeInfo] = useState<ExchangeInfo>({
         providerInfos: {},
-        buyTickers: new Set<string>(),
-        sellTickers: new Set<string>(),
+        buySymbols: new Set<string>(),
+        sellSymbols: new Set<string>(),
     });
 
     const selectedAccount = useSelector<AppState, AppState['wallet']['selectedAccount']>(

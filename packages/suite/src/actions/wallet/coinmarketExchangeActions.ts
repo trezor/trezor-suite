@@ -12,8 +12,8 @@ import { Dispatch } from '@suite-types';
 export interface ExchangeInfo {
     exchangeList?: ExchangeListResponse;
     providerInfos: { [name: string]: ExchangeProviderInfo };
-    buyTickers: Set<string>;
-    sellTickers: Set<string>;
+    buySymbols: Set<string>;
+    sellSymbols: Set<string>;
 }
 
 export type CoinmarketExchangeActions =
@@ -44,24 +44,24 @@ export async function loadExchangeInfo(): Promise<ExchangeInfo> {
     const exchangeList = await invityAPI.getExchangeList();
 
     if (!exchangeList || exchangeList.length === 0) {
-        return { providerInfos: {}, buyTickers: new Set(), sellTickers: new Set() };
+        return { providerInfos: {}, buySymbols: new Set(), sellSymbols: new Set() };
     }
 
     const providerInfos: { [name: string]: ExchangeProviderInfo } = {};
     exchangeList.forEach(e => (providerInfos[e.name] = e));
 
-    const buyTickers: string[] = [];
-    const sellTickers: string[] = [];
+    const buySymbols: string[] = [];
+    const sellSymbols: string[] = [];
     exchangeList.forEach(p => {
-        buyTickers.push(...p.buyTickers.map(c => c.toLowerCase()));
-        sellTickers.push(...p.sellTickers.map(c => c.toLowerCase()));
+        buySymbols.push(...p.buyTickers.map(c => c.toLowerCase()));
+        sellSymbols.push(...p.sellTickers.map(c => c.toLowerCase()));
     });
 
     return {
         exchangeList,
         providerInfos,
-        buyTickers: new Set(buyTickers),
-        sellTickers: new Set(sellTickers),
+        buySymbols: new Set(buySymbols),
+        sellSymbols: new Set(sellSymbols),
     };
 }
 

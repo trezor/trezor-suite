@@ -90,10 +90,6 @@ export const getAccountInfo = (account: Account) => {
     }
 };
 
-export const buildOption = (currency: string) => {
-    return { value: currency, label: currency.toUpperCase() };
-};
-
 export function createQuoteLink(request: BuyTradeQuoteRequest): string {
     let hash: string;
     if (request.wantCrypto) {

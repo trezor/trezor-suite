@@ -11,6 +11,8 @@ import * as routerActions from '@suite-actions/routerActions';
 import { Translation } from '@suite-components';
 import { ExchangeTradeQuoteRequest } from 'invity-api';
 import invityAPI from '@suite/services/invityAPI';
+import Inputs from './components/Inputs';
+import Footer from './components/Footer';
 
 const CoinmarketExchange = () => {
     const methods = useForm({ mode: 'onChange' });
@@ -37,16 +39,17 @@ const CoinmarketExchange = () => {
     const { account } = selectedAccount;
     const isLoading = !exchangeInfo.exchangeList || exchangeInfo.exchangeList.length === 0;
     const noProviders =
-        exchangeInfo.exchangeList?.length === 0 || !exchangeInfo.sellTickers.has(account.symbol);
+        exchangeInfo.exchangeList?.length === 0 || !exchangeInfo.sellSymbols.has(account.symbol);
 
     const onSubmit = async () => {
-        // const formValues = methods.getValues();
-        // const fiatStringAmount = formValues.fiatInput;
-        // const cryptoStringAmount = formValues.cryptoInput;
+        const formValues = methods.getValues();
+        const sendStringAmount = formValues.cryptoInput;
+        const send = formValues.sellCryptoSelect.value;
+        const receive = formValues.buyCryptoSelect.value;
         const request: ExchangeTradeQuoteRequest = {
-            receive: 'ETH',
-            send: 'BTC',
-            sendStringAmount: '1',
+            receive,
+            send,
+            sendStringAmount,
         };
         await saveQuoteRequest(request);
         const allQuotes = await invityAPI.getExchangeQuotes(request);
@@ -81,13 +84,12 @@ const CoinmarketExchange = () => {
                     {!isLoading && !noProviders && (
                         <Content>
                             <form onSubmit={methods.handleSubmit(onSubmit)}>
-                                exchange
-                                {/* <Inputs
+                                <Inputs
                                     amountLimits={amountLimits}
                                     setAmountLimits={setAmountLimits}
-                                    buyInfo={buyInfo}
+                                    exchangeInfo={exchangeInfo}
                                 />
-                                <Footer buyInfo={buyInfo} setAmountLimits={setAmountLimits} /> */}
+                                <Footer />
                             </form>
                         </Content>
                     )}
