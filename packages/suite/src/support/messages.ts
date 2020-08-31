@@ -267,9 +267,13 @@ const definedMessages = defineMessages({
         description: 'Back button',
         id: 'TR_BACK',
     },
-    TR_BACKEND_CONNECT: {
+    TR_CONNECT: {
         defaultMessage: 'Connect',
-        id: 'TR_BACKEND_CONNECT',
+        id: 'TR_CONNECT',
+    },
+    TR_DISCONNECT: {
+        defaultMessage: 'Disconnect',
+        id: 'TR_DISCONNECT',
     },
     TR_BACKEND_DISCONNECTED: {
         defaultMessage: 'Backend is disconnected',
@@ -448,10 +452,6 @@ const definedMessages = defineMessages({
     TR_CONFIRMED_TX: {
         defaultMessage: 'Confirmed',
         id: 'TR_CONFIRMED_TX',
-    },
-    TR_CONNECT_DROPBOX: {
-        defaultMessage: 'Connect Dropbox',
-        id: 'TR_CONNECT_DROPBOX',
     },
     TR_CONNECT_TREZOR: {
         defaultMessage: 'Connect Trezor to continue...',
@@ -3525,6 +3525,54 @@ const definedMessages = defineMessages({
     TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY: {
         id: 'TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY',
         defaultMessage: 'Wait for discovery process to complete before adding a new account.',
+    },
+
+    TR_CONNECTED_TO_PROVIDER: {
+        defaultMessage: 'Connected to {provider} as {user}',
+        id: 'TR_CONNECTED_TO_PROVIDER',
+    },
+    TR_YOUR_LABELING_IS_SYNCED: {
+        defaultMessage:
+            'Your labeling is synced with cloud storage provider. Your data are safe, only your Trezor can decrypt them.',
+        id: 'TR_YOUR_LABELING_IS_SYNCED',
+    },
+    TR_LABELING_NOT_SYNCED: {
+        defaultMessage: 'Labeling not synced.',
+        id: 'TR_LABELING_NOT_SYNCED',
+    },
+    TR_TO_MAKE_YOUR_LABELS_PERSISTENT: {
+        defaultMessage:
+            'To make your labels persistent and available on different devices connect to cloud storage provider.',
+        id: 'TR_TO_MAKE_YOUR_LABELS_PERSISTENT',
+    },
+    TR_DROPBOX: {
+        defaultMessage: 'Dropbox',
+        id: 'TR_DROPBOX',
+        description:
+            'Name of cloud provider. Intended to be translated only in languages that do not use latin script',
+    },
+    TR_GOOGLE_DRIVE: {
+        defaultMessage: 'Google drive',
+        id: 'TR_GOOGLE_DRIVE',
+        description:
+            'Name of cloud provider. Intended to be translated only in languages that do not use latin script',
+    },
+    METADATA_MODAL_HEADING: {
+        defaultMessage: 'Cloud sync',
+        id: 'METADATA_MODAL_HEADING',
+    },
+    METADATA_MODAL_DESCRIPTION: {
+        defaultMessage: 'Do you want to sync your labeling with selected data provider?',
+        id: 'METADATA_MODAL_DESCRIPTION',
+    },
+    TR_LABELING_FEATURE_ALLOWS: {
+        id: 'TR_LABELING_FEATURE_ALLOWS',
+        defaultMessage:
+            'Labeling feature allows you to label your wallets, accounts and transactions. Your labels are made persistent by syncing with cloud provider.',
+    },
+    TR_LABELING_ENABLED: {
+        id: 'TR_LABELING_ENABLED',
+        defaultMessage: 'Labeling enabled',
     },
 } as const);
 

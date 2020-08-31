@@ -1,4 +1,4 @@
-// @stable
+// @stable/device-management
 
 describe('Firmware', () => {
     beforeEach(() => {
@@ -22,7 +22,7 @@ describe('Firmware', () => {
         cy.getTestElement('@firmware/confirm-seed-button').click();
         cy.getTestElement('@firmware/disconnect-message');
         cy.task('stopEmu');
-        cy.getTestElement('@firmware/connect-message');
+        cy.getTestElement('@firmware/connect-message', { timeout: 10000 });
         cy.log(
             'And this is the end my friends. Emulator does not support bootloader, so we can not proceed with actual fw install',
         );

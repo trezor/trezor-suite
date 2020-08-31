@@ -46,7 +46,6 @@ const Row = styled.div`
 const TitleRow = styled(Row)`
     margin-bottom: 6px;
     align-items: normal;
-    overflow: hidden;
 `;
 
 interface Props {

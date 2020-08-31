@@ -1,4 +1,4 @@
-// @stable
+// @stable/metadata
 
 import { stubFetch, stubOpen } from '../../stubs/metadata';
 

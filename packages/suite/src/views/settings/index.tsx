@@ -40,7 +40,7 @@ const Settings = ({
     setLocalCurrency,
     localCurrency,
     fetchLocale,
-    clearStores,
+    removeDatabase,
     goto,
     initMetadata,
     disconnectProvider,
@@ -105,8 +105,8 @@ const Settings = ({
             <Section title={<Translation id="TR_LABELING" />}>
                 <SectionItem>
                     <TextColumn
-                        title="Labeling enabled"
-                        description="Labeling feature allows you to label your wallets, accounts and transactions. Your labels are made persistent by syncing with cloud provider (Google or Dropbox)."
+                        title={<Translation id="TR_LABELING_ENABLED" />}
+                        description={<Translation id="TR_LABELING_FEATURE_ALLOWS" />}
                     />
                     <ActionColumn>
                         <Switch
@@ -121,8 +121,16 @@ const Settings = ({
                 {metadata.enabled && metadata.provider && (
                     <SectionItem>
                         <TextColumn
-                            title={`Connected to ${metadata.provider.type} as ${metadata.provider.user}`}
-                            description="Your labeling is synced with cloud storage provider. Your data are safe, only your Trezor can decrypt them."
+                            title={
+                                <Translation
+                                    id="TR_CONNECTED_TO_PROVIDER"
+                                    values={{
+                                        provider: metadata.provider.type,
+                                        user: metadata.provider.user,
+                                    }}
+                                />
+                            }
+                            description={<Translation id="TR_YOUR_LABELING_IS_SYNCED" />}
                         />
                         <ActionColumn>
                             <ActionButton
@@ -130,7 +138,7 @@ const Settings = ({
                                 onClick={() => disconnectProvider()}
                                 data-test="@settings/metadata/disconnect-provider-button"
                             >
-                                Disconnect
+                                <Translation id="TR_DISCONNECT" />
                             </ActionButton>
                         </ActionColumn>
                     </SectionItem>
@@ -138,8 +146,8 @@ const Settings = ({
                 {metadata.enabled && !metadata.provider && device?.state && (
                     <SectionItem>
                         <TextColumn
-                            title="Labeling not persistent"
-                            description="To make your labels persistent and available on different devices connect to cloud storage provider. Either Google drive or Dropbox are available."
+                            title={<Translation id="TR_LABELING_NOT_SYNCED" />}
+                            description={<Translation id="TR_TO_MAKE_YOUR_LABELS_PERSISTENT" />}
                         />
                         <ActionColumn>
                             <ActionButton
@@ -147,7 +155,7 @@ const Settings = ({
                                 onClick={() => initMetadata(true)}
                                 data-test="@settings/metadata/connect-provider-button"
                             >
-                                Connect
+                                <Translation id="TR_CONNECT" />
                             </ActionButton>
                         </ActionColumn>
                     </SectionItem>
@@ -165,7 +173,7 @@ const Settings = ({
                     <ActionColumn>
                         <ActionButton
                             onClick={async () => {
-                                clearStores();
+                                removeDatabase();
                                 // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
                                 const { ipcRenderer } = global;
                                 if (ipcRenderer) {

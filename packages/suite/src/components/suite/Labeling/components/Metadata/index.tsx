@@ -91,13 +91,19 @@ const MetadataLabeling = (props: Props) => {
         setEditing: metadataActions.setEditing,
     });
 
+    const labelingAvailable = !!(
+        metadata.enabled &&
+        deviceMetadata?.status === 'enabled' &&
+        metadata.provider
+    );
+
     const activateEdit = () => {
         // when clicking on inline input edit, ensure that everything needed is already ready
         if (
             // isn't initiation in progress?
             !metadata.initiating &&
             // is there something that needs to be initiated?
-            (!metadata.enabled || deviceMetadata?.status !== 'enabled' || !metadata.provider)
+            !labelingAvailable
         ) {
             // provide force=true argument (user wants to enable metadata)
             init(true);
@@ -172,7 +178,8 @@ const MetadataLabeling = (props: Props) => {
                 props.defaultVisibleValue
             )}
 
-            {!props.payload.value && (
+            {((labelingAvailable && !props.payload.value) ||
+                (!labelingAvailable && device?.connected)) && (
                 <AddLabelButton
                     data-test={`${dataTestBase}/add-label-button`}
                     variant="tertiary"

@@ -4,7 +4,7 @@ import { getUnixTime, subWeeks } from 'date-fns';
 import { colors, variables, Button, Card } from '@trezor/components';
 import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
 import { calcTicks, calcTicksFromData } from '@suite-utils/date';
-import { aggregateBalanceHistory, getMaxValueFromData } from '@wallet-utils/graphUtils';
+import { aggregateBalanceHistory, getMinMaxValueFromData } from '@wallet-utils/graphUtils';
 import { GraphData } from '@wallet-types/graph';
 import RangeSelector from '@suite-components/TransactionsGraph/components/RangeSelector';
 import { Props } from './Container';
@@ -79,7 +79,7 @@ const TransactionSummary = (props: Props) => {
     const isLoading = intervalGraphData[0]?.isLoading ?? false;
 
     // aggregate values from shown graph data
-    const maxValue = getMaxValueFromData(
+    const minMaxValues = getMinMaxValueFromData(
         data,
         'account',
         d => d.sent,
@@ -134,7 +134,7 @@ const TransactionSummary = (props: Props) => {
                                     account={account}
                                     isLoading={isLoading}
                                     data={data}
-                                    maxValue={maxValue}
+                                    minMaxValues={minMaxValues}
                                     localCurrency={props.localCurrency}
                                     onRefresh={onRefresh}
                                     selectedRange={selectedRange}

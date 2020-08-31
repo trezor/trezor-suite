@@ -1,6 +1,23 @@
 # Changelog
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). [YY.MM.MICRO]
 
+## [20.9.1-beta]
+
+### Added
+- Labelling
+- Account Search
+- Graph: Toggle between linear and logarithmic scale
+
+
+### Changed
+- Update trezor-connect
+- Graph: responsivity improvements
+
+### Fixed
+ - Detection of unsupported browsers
+ - Various UI fixes and improvements
+
+
 ## [20.8.1-beta]
 
 ### Added
