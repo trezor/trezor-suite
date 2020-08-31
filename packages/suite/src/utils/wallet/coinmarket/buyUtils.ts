@@ -93,20 +93,19 @@ export const getAccountInfo = (account: Account) => {
 export function createQuoteLink(request: BuyTradeQuoteRequest): string {
     let hash: string;
     if (request.wantCrypto) {
-        hash = `/qc/${request.country}/${request.fiatCurrency}/${request.cryptoStringAmount}/${request.receiveCurrency}`;
+        hash = `qc/${request.country}/${request.fiatCurrency}/${request.cryptoStringAmount}/${request.receiveCurrency}`;
     } else {
-        hash = `/qf/${request.country}/${request.fiatCurrency}/${request.fiatStringAmount}/${request.receiveCurrency}`;
+        hash = `qf/${request.country}/${request.fiatCurrency}/${request.fiatStringAmount}/${request.receiveCurrency}`;
     }
-    // TODO - it is presumed here that the location already contains anchor
-    return `${window.location.href}${hash}`;
+    return `${window.location.origin}/coinmarket-redirect#/${hash}`;
 }
 
 export function createTxLink(trade: BuyTrade): string {
     if (process.env.SUITE_TYPE === 'desktop') {
-        return `trezor-suite://coinmarket-redirect#buy/${trade.paymentId}`;
+        return `trezor-suite://coinmarket-detail#/${trade.paymentId}`;
     }
 
-    return `${window.location.origin}/coinmarket-redirect#buy/${trade.paymentId}`;
+    return `${window.location.origin}/coinmarket-detail#/${trade.paymentId}`;
 }
 
 function addHiddenFieldToForm(form: any, fieldName: string, fieldValue: any) {

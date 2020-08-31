@@ -30,6 +30,8 @@ module.exports = api => {
                     '^@(.+)-middlewares': '../../packages/suite/src/middlewares/\\1/index',
                     '^@(.+)-hooks/(.+)': '../../packages/suite/src/hooks/\\1/\\2',
                     '^@(.+)-hooks': '../../packages/suite/src/hooks/\\1/index',
+                    '^@(.+)-services/(.+)': '../../packages/suite/src/services/\\1/\\2',
+                    '^@(.+)-services': '../../packages/suite/src/services/\\1/index',
                 },
             },
         ],

@@ -6,7 +6,7 @@ import { variables, colors } from '@trezor/components';
 import { useSelector, useActions } from '@suite/hooks/suite';
 import { BuyTrade } from 'invity-api';
 import * as modalActions from '@suite-actions/modalActions';
-import invityAPI from '@suite/services/invityAPI';
+import invityAPI from '@suite-services/invityAPI';
 import { createQuoteLink, submitRequestForm } from '@suite/utils/wallet/coinmarket/buyUtils';
 
 import List from './components/List';

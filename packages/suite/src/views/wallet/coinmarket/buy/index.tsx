@@ -9,7 +9,7 @@ import { AmountLimits, getAmountLimits, processQuotes } from '@wallet-utils/coin
 import { useForm, FormProvider } from 'react-hook-form';
 import styled from 'styled-components';
 import * as routerActions from '@suite-actions/routerActions';
-import invityAPI from '@suite/services/invityAPI';
+import invityAPI from '@suite-services/invityAPI';
 import { BuyTradeQuoteRequest } from 'invity-api';
 import Inputs from './components/Inputs';
 import Footer from './components/Footer';

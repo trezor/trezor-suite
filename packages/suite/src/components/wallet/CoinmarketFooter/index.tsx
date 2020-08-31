@@ -1,7 +1,7 @@
 import { colors, variables, Icon, Button } from '@trezor/components';
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
-import { ProvidedByInvity } from '@wallet-components';
+import { CoinmarketProvidedByInvity } from '@wallet-components';
 import { useOnClickOutside } from '@suite-utils/dom';
 import { Translation } from '@suite-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
@@ -20,7 +20,7 @@ const CoinmarketFooter = () => {
     return (
         <Wrapper>
             <Left>
-                <ProvidedByInvity />
+                <CoinmarketProvidedByInvity />
             </Left>
             <Right>
                 {toggled && (

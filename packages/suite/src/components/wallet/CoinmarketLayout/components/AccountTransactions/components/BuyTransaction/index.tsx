@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, variables, Icon, Button } from '@trezor/components';
-import { PaymentType, ProviderInfo } from '@wallet-components';
+import { CoinmarketPaymentType, CoinmarketProviderInfo } from '@wallet-components';
 import { Translation } from '@suite-components';
 import { getStatusMessage } from '@wallet-utils/coinmarket/buyUtils';
 import { TradeBuy } from '@wallet-reducers/coinmarketReducer';
@@ -47,10 +47,10 @@ const BuyTransaction = ({ trade }: Props) => {
             </Column>
             <Column>
                 <Row>
-                    <ProviderInfo exchange={exchange} />
+                    <CoinmarketProviderInfo exchange={exchange} />
                 </Row>
                 <RowSecond>
-                    <PaymentType method={paymentMethod} />
+                    <CoinmarketPaymentType method={paymentMethod} />
                 </RowSecond>
             </Column>
             <BuyColumn>

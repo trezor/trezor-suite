@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { AppState } from '@suite-types';
 import { useState, useEffect } from 'react';
 import { BuyInfo, loadBuyInfo } from '@wallet-actions/coinmarketBuyActions';
-import invityAPI from '@suite/services/invityAPI';
+import invityAPI from '@suite-services/invityAPI';
 import { ExchangeInfo, loadExchangeInfo } from '@suite/actions/wallet/coinmarketExchangeActions';
 
 export const useExchange = () => {

@@ -31,6 +31,8 @@
             "@suite-middlewares": ["./packages/suite/src/middlewares/suite/index"],
             "@suite-hooks/*": ["./packages/suite/src/hooks/suite/*"],
             "@suite-hooks": ["./packages/suite/src/hooks/suite/index"],
+            "@suite-services/*": ["./packages/suite/src/services/suite/*"],
+            "@suite-services": ["./packages/suite/src/services/suite/index"],
             // dashboard
             "@dashboard-components/*": ["./packages/suite/src/components/dashboard/*"],
             "@dashboard-components": ["./packages/suite/src/components/dashboard/index"],
@@ -54,6 +56,8 @@
             "@dashboard-middlewares": ["./packages/suite/src/middlewares/dashboard/index"],
             "@dashboard-hooks/*": ["./packages/suite/src/hooks/dashboard/*"],
             "@dashboard-hooks": ["./packages/suite/src/hooks/dashboard/index"],
+            "@dashboard-services/*": ["./packages/suite/src/services/dashboard/*"],
+            "@dashboard-services": ["./packages/suite/src/services/dashboard/index"],
             // onboarding
             "@onboarding-components/*": ["./packages/suite/src/components/onboarding/*"],
             "@onboarding-components": ["./packages/suite/src/components/onboarding/index"],
@@ -77,6 +81,8 @@
             "@onboarding-middlewares": ["./packages/suite/src/middlewares/onboarding/index"],
             "@onboarding-hooks/*": ["./packages/suite/src/hooks/onboarding/*"],
             "@onboarding-hooks": ["./packages/suite/src/hooks/onboarding/index"],
+            "@onboarding-services/*": ["./packages/suite/src/onboarding/suite/*"],
+            "@onboarding-services": ["./packages/suite/src/onboarding/suite/index"],
             // wallet
             "@wallet-components/*": ["./packages/suite/src/components/wallet/*"],
             "@wallet-components": ["./packages/suite/src/components/wallet/index"],
@@ -100,6 +106,8 @@
             "@wallet-middlewares": ["./packages/suite/src/middlewares/wallet/index"],
             "@wallet-hooks/*": ["./packages/suite/src/hooks/wallet/*"],
             "@wallet-hooks": ["./packages/suite/src/hooks/wallet/index"],
+            "@wallet-services/*": ["./packages/suite/src/services/wallet/*"],
+            "@wallet-services": ["./packages/suite/src/services/wallet/index"],
             // passswords
             "@passwords-components/*": ["./packages/suite/src/components/passwords/*"],
             "@passwords-components": ["./packages/suite/src/components/passwords/index"],
@@ -123,6 +131,8 @@
             "@passwords-middlewares": ["./packages/suite/src/middlewares/passwords/index"],
             "@passwords-hooks/*": ["./packages/suite/src/hooks/passwords/*"],
             "@passwords-hooks": ["./packages/suite/src/hooks/passwords/index"],
+            "@passwords-services/*": ["./packages/suite/src/services/passwords/*"],
+            "@supasswordste-services": ["./packages/suite/src/services/passwords/index"],
             // exchange
             "@exchange-components/*": ["./packages/suite/src/components/exchange/*"],
             "@exchange-components": ["./packages/suite/src/components/exchange/index"],
@@ -146,6 +156,8 @@
             "@exchange-middlewares": ["./packages/suite/src/middlewares/exchange/index"],
             "@exchange-hooks/*": ["./packages/suite/src/hooks/exchange/*"],
             "@exchange-hooks": ["./packages/suite/src/hooks/exchange/index"],
+            "@exchange-services/*": ["./packages/suite/src/services/exchange/*"],
+            "@exchange-services": ["./packages/suite/src/services/exchange/index"],
             // settings
             "@settings-components/*": ["./packages/suite/src/components/settings/*"],
             "@settings-components": ["./packages/suite/src/components/settings/index"],
@@ -169,6 +181,8 @@
             "@settings-middlewares": ["./packages/suite/src/middlewares/settings/index"],
             "@settings-hooks/*": ["./packages/suite/src/hooks/settings/*"],
             "@settings-hooks": ["./packages/suite/src/hooks/settings/index"],
+            "@settings-services/*": ["./packages/suite/src/services/settings/*"],
+            "@settings-services": ["./packages/suite/src/services/settings/index"],
             // firmware
             "@firmware-components/*": ["./packages/suite/src/components/firmware/*"],
             "@firmware-components": ["./packages/suite/src/components/firmware/index"],
@@ -192,6 +206,8 @@
             "@firmware-middlewares": ["./packages/suite/src/middlewares/firmware/index"],
             "@firmware-hooks/*": ["./packages/suite/src/hooks/firmware/*"],
             "@firmware-hooks": ["./packages/suite/src/hooks/firmware/index"],
+            "@firmware-services/*": ["./packages/suite/src/services/firmware/*"],
+            "@firmware-services": ["./packages/suite/src/services/firmware/index"],
             // portfolio
             "@portfolio-components/*": ["./packages/suite/src/components/portfolio/*"],
             "@portfolio-components": ["./packages/suite/src/components/portfolio/index"],
@@ -215,6 +231,9 @@
             "@portfolio-middlewares": ["./packages/suite/src/middlewares/firmware/index"],
             "@portfolio-hooks/*": ["./packages/suite/src/hooks/portfolio/*"],
             "@portfolio-hooks": ["./packages/suite/src/hooks/firmware/index"],
+            "@portfolio-services/*": ["./packages/suite/src/services/portfolio/*"],
+            "@portfolio-services": ["./packages/suite/src/services/portfolio/index"],
+
             // recovery
             "@recovery-components/*": ["./packages/suite/src/components/recovery/*"],
             "@recovery-components": ["./packages/suite/src/components/recovery/index"],
@@ -238,6 +257,8 @@
             "@recovery-middlewares": ["./packages/suite/src/middlewares/recovery/index"],
             "@recovery-hooks/*": ["./packages/suite/src/hooks/recovery/*"],
             "@recovery-hooks": ["./packages/suite/src/hooks/recovery/index"],
+            "@recovery-services/*": ["./packages/suite/src/services/recovery/*"],
+            "@recovery-services": ["./packages/suite/src/services/recovery/index"],
             // backup
             "@backup-components/*": ["./packages/suite/src/components/backup/*"],
             "@backup-components": ["./packages/suite/src/components/backup/index"],
@@ -261,6 +282,8 @@
             "@backup-middlewares": ["./packages/suite/src/middlewares/backup/index"],
             "@backup-hooks/*": ["./packages/suite/src/hooks/backup/*"],
             "@backup-hooks": ["./packages/suite/src/hooks/backup/index"],
+            "@backup-services/*": ["./packages/suite/src/services/backup/*"],
+            "@backup-services": ["./packages/suite/src/services/backup/index"],
             // landing
             "@landing-components/*": ["./packages/landing-page/components/*"],
             // web workers
@@ -279,7 +302,7 @@
         "sourceMap": true,
         "strict": true,
         "target": "ES2020",
-        "noErrorTruncation": true,
+        "noErrorTruncation": true
     },
     "exclude": [
         "node_modules",

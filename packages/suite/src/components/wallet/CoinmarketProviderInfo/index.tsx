@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
 import { join } from 'path';
-import invityApi from '@suite/services/invityAPI';
+import invityApi from '@suite-services/invityAPI';
 
 const Wrapper = styled.div`
     display: flex;

@@ -1,14 +1,17 @@
 import AccountsMenu from './AccountsMenu';
-import CoinmarketLayout from './CoinmarketLayout';
-import CoinmarketTopPanel from './CoinmarketTopPanel';
 import DiscoveryProgress from './DiscoveryProgress';
 import Title from './Title';
 import WalletLayout from './WalletLayout';
 import CoinBalance from './CoinBalance';
-import ProvidedByInvity from './ProvidedByInvity';
-import PaymentType from './PaymentType';
+
+import CoinmarketLayout from './CoinmarketLayout';
+import CoinmarketTopPanel from './CoinmarketTopPanel';
+import CoinmarketProvidedByInvity from './CoinmarketProvidedByInvity';
+import CoinmarketPaymentType from './CoinmarketPaymentType';
 import CoinmarketFooter from './CoinmarketFooter';
-import ProviderInfo from './ProviderInfo';
+import CoinmarketProviderInfo from './CoinmarketProviderInfo';
+import CoinmarketOfferInfo from './CoinmarketOfferInfo';
+import CoinmarketTransactionId from './CoinmarketTransactionId';
 
 export {
     Title,
@@ -16,10 +19,13 @@ export {
     WalletLayout,
     DiscoveryProgress,
     CoinBalance,
+    //
     CoinmarketLayout,
     CoinmarketTopPanel,
     CoinmarketFooter,
-    ProvidedByInvity,
-    PaymentType,
-    ProviderInfo,
+    CoinmarketProviderInfo,
+    CoinmarketOfferInfo,
+    CoinmarketTransactionId,
+    CoinmarketProvidedByInvity,
+    CoinmarketPaymentType,
 };

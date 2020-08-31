@@ -5,7 +5,7 @@ import {
     ExchangeTradeQuoteRequest,
     ExchangeTrade,
 } from 'invity-api';
-import invityAPI from '@suite/services/invityAPI';
+import invityAPI from '@suite-services/invityAPI';
 import { COINMARKET_EXCHANGE } from './constants';
 import { Dispatch } from '@suite-types';
 

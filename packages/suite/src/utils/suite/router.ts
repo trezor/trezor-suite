@@ -59,6 +59,16 @@ const validateWalletParams = (url: string) => {
     };
 };
 
+const validateCoinmarketDetailParams = (url: string) => {
+    const [, hash] = stripPrefixedURL(url).split('#');
+    if (!hash) return;
+    const [transactionId] = hash.split('/').filter(p => p.length > 0);
+
+    return {
+        transactionId,
+    };
+};
+
 const validateModalAppParams = (url: string) => {
     const [, hash] = stripPrefixedURL(url).split('#');
     if (!hash) return;
@@ -88,6 +98,14 @@ export const getAppWithParams = (url: string): RouterAppWithParams => {
         };
     }
 
+    if (route.app === 'coinmarket-detail') {
+        return {
+            app: route.app,
+            params: validateCoinmarketDetailParams(url),
+            route,
+        };
+    }
+
     if (route.params) {
         return {
             app: route.app,
@@ -105,7 +123,8 @@ export const getAppWithParams = (url: string): RouterAppWithParams => {
 
 export type WalletParams = NonNullable<ReturnType<typeof validateWalletParams>>;
 export type ModalAppParams = NonNullable<ReturnType<typeof validateModalAppParams>>;
-export type RouteParams = WalletParams | ModalAppParams;
+export type CoinmarketDetailParams = NonNullable<ReturnType<typeof validateCoinmarketDetailParams>>;
+export type RouteParams = WalletParams | ModalAppParams | CoinmarketDetailParams;
 
 export const getRoute = (name: Route['name'], params?: RouteParams) => {
     const route = findRouteByName(name);

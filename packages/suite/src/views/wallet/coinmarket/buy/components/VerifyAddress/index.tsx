@@ -6,7 +6,7 @@ import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonAction
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { useActions, useSelector } from '@suite-hooks';
 import { Input, Button, colors, variables, CoinLogo, DeviceImage } from '@trezor/components';
-import invityAPI from '@suite/services/invityAPI';
+import invityAPI from '@suite-services/invityAPI';
 import { BuyTrade } from 'invity-api';
 
 interface Props {

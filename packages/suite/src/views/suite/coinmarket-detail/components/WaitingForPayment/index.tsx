@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Button, variables, colors } from '@trezor/components';
-import TransactionId from '../../../components/TransactionId';
+import { CoinmarketTransactionId } from '@wallet-components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -26,7 +26,7 @@ const Description = styled.div`
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin: 17px 0 10px 0;
-    max-width: 310px;
+    max-width: 200px;
     text-align: center;
 `;
 
@@ -43,23 +43,23 @@ interface Props {
     paymentGateUrl: string;
 }
 
-const PaymentFailed = ({ transactionId, paymentGateUrl }: Props) => {
+const WaitingForPayment = ({ transactionId, paymentGateUrl }: Props) => {
     return (
         <Wrapper>
-            <Image src={resolveStaticPath('/images/svg/coinmarket-error.svg')} />
-            <Title>Payment Failed</Title>
+            <Image src={resolveStaticPath('/images/svg/coinmarket-waiting.svg')} />
+            <Title>Waiting for Payment...</Title>
             <Description>
-                Unfortunately, your payment has failed. No funds were taken from your credit card.
+                Please click the link bellow to finish the payment through provider.
             </Description>
-            {transactionId && <TransactionId transactionId={transactionId} />}
+            {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
             <Link href={paymentGateUrl}>
-                <Button>Start again</Button>
+                <Button>Go to Payment Gate</Button>
             </Link>
             <CancelButton isWhite variant="tertiary">
-                Go to Dashboard
+                Cancel transaction
             </CancelButton>
         </Wrapper>
     );
 };
 
-export default PaymentFailed;
+export default WaitingForPayment;

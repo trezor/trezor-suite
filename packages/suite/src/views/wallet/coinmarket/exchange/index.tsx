@@ -10,7 +10,7 @@ import { AmountLimits } from '@suite/utils/wallet/coinmarket/exchangeUtils';
 import * as routerActions from '@suite-actions/routerActions';
 import { Translation } from '@suite-components';
 import { ExchangeTradeQuoteRequest } from 'invity-api';
-import invityAPI from '@suite/services/invityAPI';
+import invityAPI from '@suite-services/invityAPI';
 import Inputs from './components/Inputs';
 import Footer from './components/Footer';
 

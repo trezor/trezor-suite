@@ -1,6 +1,6 @@
 import { Account } from '@wallet-types';
 import { BuyListResponse, BuyProviderInfo, BuyTradeQuoteRequest, BuyTrade } from 'invity-api';
-import invityAPI from '@suite/services/invityAPI';
+import invityAPI from '@suite-services/invityAPI';
 import { COINMARKET_BUY } from './constants';
 import { Dispatch } from '@suite-types';
 import regional from '@suite/constants/wallet/coinmarket/regional';
@@ -15,7 +15,6 @@ export interface BuyInfo {
 export type CoinmarketBuyActions =
     | { type: typeof COINMARKET_BUY.SAVE_BUY_INFO; buyInfo: BuyInfo }
     | { type: typeof COINMARKET_BUY.SAVE_QUOTE_REQUEST; request: BuyTradeQuoteRequest }
-    | { type: typeof COINMARKET_BUY.SAVE_TRANSACTION_ID; transactionId: string }
     | { type: typeof COINMARKET_BUY.VERIFY_ADDRESS; addressVerified: boolean }
     | {
           type: typeof COINMARKET_BUY.SAVE_QUOTES;
@@ -97,13 +96,6 @@ export const saveQuoteRequest = (request: BuyTradeQuoteRequest) => async (dispat
     dispatch({
         type: COINMARKET_BUY.SAVE_QUOTE_REQUEST,
         request,
-    });
-};
-
-export const saveTransactionId = (transactionId: string) => async (dispatch: Dispatch) => {
-    dispatch({
-        type: COINMARKET_BUY.SAVE_TRANSACTION_ID,
-        transactionId,
     });
 };
 

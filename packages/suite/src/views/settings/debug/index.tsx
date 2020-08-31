@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import React from 'react';
 
 import { Props } from './Container';
-import invityAPI from '@suite/services/invityAPI';
+import invityAPI from '@suite-services/invityAPI';
 
 const StyledActionColumn = styled(ActionColumn)`
     max-width: 300px;

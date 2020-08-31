@@ -72,6 +72,10 @@ module.exports = api => {
                             './packages/suite/src/middlewares/\\1/\\2',
                         '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-middlewares':
                             './packages/suite/src/middlewares/\\1/index',
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-services/(.+)':
+                            './packages/suite/src/services/\\1/\\2',
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-services':
+                            './packages/suite/src/services/\\1/index',
 
                         // ??????
                         '^@trezor/components$': './packages/components',
