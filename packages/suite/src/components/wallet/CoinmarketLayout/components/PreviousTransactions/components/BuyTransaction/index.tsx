@@ -1,30 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables, Icon, CoinLogo, Button } from '@trezor/components';
+import { colors, variables, Icon, Button } from '@trezor/components';
 import { PaymentType, ProviderInfo } from '@wallet-components';
 import { Translation } from '@suite-components';
-import { useSelector } from '@suite-hooks';
 import { getStatusMessage } from '@wallet-utils/coinmarket/buyUtils';
-import { Trade } from '@wallet-reducers/coinmarketReducer';
+import { TradeBuy } from '@wallet-reducers/coinmarketReducer';
 import { formatDistance } from 'date-fns';
-
-import Status from '../components/Status';
+import Status from '../Status';
 
 interface Props {
-    trade: Trade;
+    trade: TradeBuy;
 }
 
-const Transaction = ({ trade }: Props) => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    if (selectedAccount.status !== 'loaded') {
-        return null;
-    }
-
-    if (trade.tradeType !== 'buy') return null;
-
-    const {
-        account: { symbol },
-    } = selectedAccount;
+const BuyTransaction = ({ trade }: Props) => {
     const { date, data } = trade;
     const {
         fiatStringAmount,
@@ -50,7 +38,7 @@ const Transaction = ({ trade }: Props) => {
                     </Arrow>
                     {receiveStringAmount} {receiveCurrency}
                     {/* TODO FIX THIS LOGO */}
-                    <StyledCoinLogo size={13} symbol={symbol} />
+                    {/* <StyledCoinLogo size={13} symbol={symbol} /> */}
                 </Row>
                 <SmallRow>
                     {trade.tradeType.toUpperCase()} • {formatDistance(new Date(date), new Date())}{' '}
@@ -137,16 +125,10 @@ const SmallRow = styled.div`
 
 const Amount = styled.div``;
 
-const StyledCoinLogo = styled(CoinLogo)`
-    display: flex;
-    padding: 0 0 0 5px;
-    height: 100%;
-`;
-
 const Arrow = styled.div`
     display: flex;
     align-items: center;
     padding: 0 11px;
 `;
 
-export default Transaction;
+export default BuyTransaction;

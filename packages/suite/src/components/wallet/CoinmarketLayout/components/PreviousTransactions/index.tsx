@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { H2 } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
 
-import Transaction from './Transaction';
+import BuyTransaction from './components/BuyTransaction';
+import ExchangeTransaction from './components/ExchangeTransaction';
 
 const Wrapper = styled.div`
     padding: 60px 0 0 0;
@@ -25,9 +26,17 @@ const PreviousTransactions = () => {
                 <H2>Previous transactions • {previousTransactions.length}</H2>
             </Header>
             <Content>
-                {previousTransactions.map(trade => (
-                    <Transaction trade={trade} />
-                ))}
+                {previousTransactions.map(trade => {
+                    if (trade.tradeType === 'buy') {
+                        return <BuyTransaction trade={trade} />;
+                    }
+
+                    if (trade.tradeType === 'exchange') {
+                        return <ExchangeTransaction trade={trade} />;
+                    }
+
+                    return null;
+                })}
             </Content>
         </Wrapper>
     );

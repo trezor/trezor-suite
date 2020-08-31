@@ -141,12 +141,9 @@ export const getStatusMessage = (status: Trade['data']['status']) => {
     switch (status) {
         case 'LOGIN_REQUEST':
         case 'APPROVAL_PENDING':
-        case 'SUBMITTED':
-        case 'LOADING':
-        case 'SENDING':
-        case 'CONVERTING':
-        case 'CONFIRMING':
             return 'TR_BUY_STATUS_PENDING';
+        case 'SUBMITTED':
+            return 'TR_BUY_STATUS_PENDING_GO_TO_GATEWAY';
         case 'BLOCKED':
         case 'ERROR':
             return 'TR_BUY_STATUS_ERROR';

@@ -23,9 +23,9 @@ type CommonTrade = {
     };
 };
 
-export type Trade =
-    | (CommonTrade & { tradeType: 'buy'; data: BuyTrade })
-    | (CommonTrade & { tradeType: 'exchange'; data: ExchangeTrade });
+export type TradeBuy = CommonTrade & { tradeType: 'buy'; data: BuyTrade };
+export type TradeExchange = CommonTrade & { tradeType: 'buy'; data: BuyTrade };
+export type Trade = TradeExchange | TradeBuy;
 
 interface Buy {
     buyInfo?: BuyInfo;
