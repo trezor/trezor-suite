@@ -63,11 +63,9 @@ const ErrorMessage = styled.span`
 `;
 
 const refresh = () => {
-    // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
-    const { ipcRenderer } = global;
-    if (ipcRenderer) {
+    if (window.desktop_api) {
         // relaunch desktop app
-        ipcRenderer.send('restart-app');
+        window.desktop_api.send('restart-app');
     } else {
         window.location.reload();
     }

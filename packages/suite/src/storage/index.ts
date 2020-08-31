@@ -154,11 +154,9 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
 };
 
 const onDowngrade = () => {
-    // @ts-ignore
-    const { ipcRenderer } = global;
-    if (ipcRenderer) {
+    if (window.desktop_api) {
         // relaunch desktop app
-        ipcRenderer.send('restart-app');
+        window.desktop_api.send('restart-app');
     } else {
         // @ts-ignore TODO: suite-native:  Cannot find name 'window'
         window.location.reload();

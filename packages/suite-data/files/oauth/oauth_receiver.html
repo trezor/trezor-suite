@@ -2,8 +2,8 @@
   <head></head>
   <body>
     <script>
-      if (window.ipcRenderer) {
-        window.ipcRenderer.send('oauth-receiver', window.location.hash);
+      if (window.desktop_api) {
+        window.desktop_api.send('oauth-receiver', window.location.hash);
       }
       if (window.opener) {
         window.opener.postMessage(window.location.hash, window.location.origin);

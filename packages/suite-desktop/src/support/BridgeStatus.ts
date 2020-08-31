@@ -18,19 +18,15 @@ type Props = ReturnType<typeof mapStateToProps>;
 const BridgeStatus = ({ transport, bridgeDevMode }: Props) => {
     useEffect(() => {
         if (!transport) return;
-        // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
-        const { ipcRenderer } = global;
-        if (!transport.type && ipcRenderer) {
-            ipcRenderer.send('start-bridge');
+        if (!transport.type && window.desktop_api) {
+            window.desktop_api.send('start-bridge');
         }
     }, [transport]);
 
     useEffect(() => {
         // run on toggling bridge dev mode
-        // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
-        const { ipcRenderer } = global;
-        if (ipcRenderer) {
-            ipcRenderer.send('start-bridge', bridgeDevMode);
+        if (window.desktop_api) {
+            window.desktop_api.send('start-bridge', bridgeDevMode);
         }
     }, [bridgeDevMode]);
 

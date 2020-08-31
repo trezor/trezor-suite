@@ -61,9 +61,9 @@ if (buildUtils.isDev()) {
     /* eslint-disable no-underscore-dangle */
     if (
         typeof window !== 'undefined' &&
-        typeof (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ === 'function'
+        typeof window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ === 'function'
     ) {
-        enhancers.push((window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__());
+        enhancers.push(window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__());
     }
     /* eslint-enable no-underscore-dangle */
 }
