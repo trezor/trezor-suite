@@ -39,6 +39,7 @@ interface Props {
 export default ({ close }: Props) => {
     const {
         register,
+        outputs,
         errors,
         getDefaultValue,
         setValue,
@@ -51,7 +52,7 @@ export default ({ close }: Props) => {
 
     const asciiValue = getDefaultValue(inputAsciiName);
     const hexValue = getDefaultValue(inputHexName);
-    const { amount } = getDefaultValue('outputs')[0];
+    const amount = getDefaultValue('outputs[0].amount', outputs[0].amount);
     const asciiError = errors.ethereumDataAscii;
     const hexError = errors.ethereumDataHex;
 
