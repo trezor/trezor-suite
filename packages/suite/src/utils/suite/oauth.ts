@@ -12,7 +12,7 @@ export const getOauthReceiverUrl = () => {
     if (!window.ipcRenderer) {
         return `${window.location.origin}${getPrefixedURL('/static/oauth/oauth_receiver.html')}`;
     }
-    // for desktop. but this solution is temporary, local http server will be used later to accept callback
+    // TEMP: for desktop. but this solution is temporary, local http server will be used later to accept callback
     return 'https://wallet.trezor.io/oauth_receiver.html';
 };
 
