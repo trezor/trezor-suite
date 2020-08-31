@@ -5,7 +5,7 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { SEND } from '@wallet-actions/constants';
 
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { formatAmount, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { findValidOutputs } from '@wallet-utils/sendFormUtils';
 
 import { Dispatch, GetState } from '@suite-types';
@@ -140,16 +140,23 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
     // close modal regardless result
     dispatch(cancelSignTx());
 
-    const spentWithoutFee = new BigNumber(precomposedTx.totalSpent)
-        .minus(precomposedTx.fee)
-        .toString();
+    const { token } = precomposedTx;
+    const spentWithoutFee = !token
+        ? new BigNumber(precomposedTx.totalSpent).minus(precomposedTx.fee).toString()
+        : '0';
+    // get total amount without fee OR token amount
+    const formattedAmount = token
+        ? `${formatAmount(
+              precomposedTx.transaction.outputs[0].amount,
+              token.decimals,
+          )} ${token.symbol!.toUpperCase()}`
+        : formatNetworkAmount(spentWithoutFee, account.symbol, true);
 
     if (sentTx.success) {
-        // TODO: ERC20 notification
         dispatch(
             notificationActions.addToast({
                 type: 'tx-sent',
-                formattedAmount: formatNetworkAmount(spentWithoutFee, account.symbol, true),
+                formattedAmount,
                 device,
                 descriptor: account.descriptor,
                 symbol: account.symbol,
