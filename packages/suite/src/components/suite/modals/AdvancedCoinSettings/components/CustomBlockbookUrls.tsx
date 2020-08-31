@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
+import { useForm } from 'react-hook-form';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
 import { CoinInfo } from 'trezor-connect';
@@ -50,6 +51,10 @@ interface Props extends WrappedComponentProps {
     removeBlockbookUrl: (params: BlockbookUrl) => void;
 }
 
+type FormInputs = {
+    url: string;
+};
+
 const CustomBlockbookUrls = ({
     coin,
     coinInfo,
@@ -58,39 +63,21 @@ const CustomBlockbookUrls = ({
     removeBlockbookUrl,
     ...props
 }: Props) => {
-    const [addErrorMessage, setAddErrorMessage] = useState<string | null>(null);
-    const addRef = useRef<HTMLInputElement>(null);
+    const { register, getValues, setValue, errors } = useForm<FormInputs>({
+        mode: 'onChange',
+    });
+
+    const inputName = 'url';
+    const inputValue = getValues(inputName) || '';
+    const error = errors[inputName];
 
     const addUrl = () => {
-        if (addRef.current !== null) {
-            const url = addRef.current.value;
+        addBlockbookUrl({
+            coin,
+            url: inputValue,
+        });
 
-            // URL is not valid
-            if (!isUrl(url)) {
-                setAddErrorMessage(
-                    props.intl.formatMessage(messages.TR_CUSTOM_BACKEND_INVALID_URL),
-                );
-                return;
-            }
-
-            // URL already exists
-            if (blockbookUrls.find(b => b.coin === coin && b.url === url)) {
-                setAddErrorMessage(
-                    props.intl.formatMessage(messages.TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED),
-                );
-                return;
-            }
-
-            // Add blockbook url
-            addBlockbookUrl({
-                coin,
-                url: addRef.current.value,
-            });
-
-            // Clear add form and errors
-            addRef.current.value = '';
-            setAddErrorMessage(null);
-        }
+        setValue(inputName, '');
     };
 
     const urls = blockbookUrls.filter(b => b.coin === coin);
@@ -131,15 +118,35 @@ const CustomBlockbookUrls = ({
             ))}
 
             <Input
-                placeholder={`e.g. https://${coin}1.trezor.io/`}
-                innerRef={addRef}
-                noTopLabel
                 type="text"
-                state={addErrorMessage ? 'error' : undefined}
-                bottomText={addErrorMessage}
+                noTopLabel
+                name={inputName}
+                data-test={inputName}
+                placeholder={props.intl.formatMessage(
+                    messages.SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER,
+                    {
+                        url: `https://${coin}1.trezor.io/`,
+                    },
+                )}
+                innerRef={register({
+                    validate: (value: string) => {
+                        // Check if URL is valid
+                        if (!isUrl(value)) {
+                            return messages.TR_CUSTOM_BACKEND_INVALID_URL.id;
+                        }
+
+                        // Check if already exists
+                        if (blockbookUrls.find(b => b.coin === coin && b.url === value)) {
+                            return messages.TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED.id;
+                        }
+                    },
+                })}
+                state={error ? 'error' : undefined}
+                // @ts-ignore: Accessing messages by providing the property as a string throws an error
+                bottomText={error?.message && props.intl.formatMessage(messages[error.message])}
             />
 
-            <AddButton variant="tertiary" icon="PLUS" onClick={addUrl}>
+            <AddButton variant="tertiary" icon="PLUS" onClick={addUrl} isDisabled={Boolean(error)}>
                 <Translation id="TR_ADD_NEW_BLOCKBOOK_BACKEND" />
             </AddButton>
         </Wrapper>

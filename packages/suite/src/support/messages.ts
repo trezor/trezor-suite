@@ -3688,6 +3688,10 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Coins settings also defines the Discovery process when Trezor is connected, Each time you connect not remembered device.',
     },
+    SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER: {
+        id: 'SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER',
+        defaultMessage: 'e.g. {url}',
+    },
     TR_DEFAULT_VALUE: {
         id: 'TR_DEFAULT_VALUE',
         defaultMessage: 'Default: {value}',
