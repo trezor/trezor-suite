@@ -247,6 +247,23 @@ export const signTransaction = (
     const { account, network } = selectedAccount;
     if (account.networkType !== 'ethereum' || !network.chainId) return;
 
+    // Ethereum account `misc.nonce` is not updated before pending tx is mined
+    // Calculate `pendingNonce`: greatest value in pending tx + 1
+    // This may lead to unexpected/unwanted behavior
+    // whenever pending tx gets rejected all following txs (with higher nonce) will be rejected as well
+    const pendingTxs = (getState().wallet.transactions.transactions[account.key] || []).filter(
+        tx => !tx.blockHeight || tx.blockHeight <= 0,
+    );
+    const pendingNonce = pendingTxs.reduce((value, tx) => {
+        if (!tx.ethereumSpecific) return value;
+        return Math.max(value, tx.ethereumSpecific.nonce + 1);
+    }, 0);
+    const pendingNonceBig = new BigNumber(pendingNonce);
+    const nonce =
+        pendingNonceBig.gt(0) && pendingNonceBig.gt(account.misc.nonce)
+            ? pendingNonceBig.toString()
+            : account.misc.nonce;
+
     // transform to TrezorConnect.ethereumSignTransaction params
     const transaction = prepareEthereumTransaction({
         token: transactionInfo.token,
@@ -256,7 +273,7 @@ export const signTransaction = (
         data: formValues.ethereumDataHex,
         gasLimit: transactionInfo.feeLimit || ETH_DEFAULT_GAS_LIMIT,
         gasPrice: transactionInfo.feePerByte,
-        nonce: account.misc.nonce,
+        nonce,
     });
 
     const signedTx = await TrezorConnect.ethereumSignTransaction({
