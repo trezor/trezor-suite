@@ -2,6 +2,7 @@ import { getPrefixedURL } from '@suite-utils/router';
 import { METADATA } from '@suite-actions/constants';
 import { Deferred, createDeferred } from '@suite-utils/deferred';
 import { urlHashParams } from '@suite-utils/metadata';
+
 /**
  * For desktop, always use oauth_receiver.html from trezor.io
  * For web, use oauth_receiver.html hosted on the same origin (localhost/sldev/trezor.io)
@@ -11,11 +12,8 @@ export const getOauthReceiverUrl = () => {
     if (!window.ipcRenderer) {
         return `${window.location.origin}${getPrefixedURL('/static/oauth/oauth_receiver.html')}`;
     }
-
-    // todo: upload oauth_receiver.html from suite to trezor.io (it contains code to handle ipcRenderer);
-    // return 'https://beta-wallet.trezor.io/oauth_receiver.html';
-    // todo: temporarily herokuapp is used.
-    return 'https://track-suite.herokuapp.com/oauth/';
+    // TEMP: for desktop. but this solution is temporary, local http server will be used later to accept callback
+    return 'https://wallet.trezor.io/oauth_receiver.html';
 };
 
 export const getMetadataOauthToken = (url: string) => {
@@ -28,12 +26,9 @@ export const getMetadataOauthToken = (url: string) => {
     const onMessage = (e: MessageEvent) => {
         // filter non oauth messages
         if (
-            ![
-                'herokuapp.com', // todo: remove
-                'wallet.trezor.io',
-                'beta-wallet.trezor.io',
-                window.location.origin,
-            ].includes(e.origin)
+            !['wallet.trezor.io', 'beta-wallet.trezor.io', window.location.origin].includes(
+                e.origin,
+            )
         ) {
             return;
         }
@@ -59,7 +54,7 @@ export const getMetadataOauthToken = (url: string) => {
     const { ipcRenderer } = global;
     if (ipcRenderer) {
         const onIpcMessage = (_sender: any, message: any) => {
-            onMessage({ ...message, origin: 'herokuapp.com' });
+            onMessage({ ...message, origin: 'wallet.trezor.io' });
             ipcRenderer.off('oauth', onIpcMessage);
         };
         ipcRenderer.on('oauth', onIpcMessage);

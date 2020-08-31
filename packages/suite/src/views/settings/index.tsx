@@ -105,8 +105,8 @@ const Settings = ({
             <Section title={<Translation id="TR_LABELING" />}>
                 <SectionItem>
                     <TextColumn
-                        title="Labeling enabled"
-                        description="Labeling feature allows you to label your wallets, accounts and transactions. Your labels are made persistent by syncing with cloud provider (Google or Dropbox)."
+                        title={<Translation id="TR_LABELING_ENABLED" />}
+                        description={<Translation id="TR_LABELING_FEATURE_ALLOWS" />}
                     />
                     <ActionColumn>
                         <Switch

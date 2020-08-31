@@ -1,4 +1,5 @@
 import { Dropbox } from 'dropbox';
+import crypto from 'crypto';
 import { AbstractMetadataProvider } from '@suite-types/metadata';
 import { getMetadataOauthToken, getOauthReceiverUrl } from '@suite-utils/oauth';
 import { METADATA } from '@suite-actions/constants';
@@ -18,7 +19,8 @@ class DropboxProvider implements AbstractMetadataProvider {
     }
 
     async connect() {
-        const url = this.client.getAuthenticationUrl(getOauthReceiverUrl(), 'TODO:RandomToken');
+        const randomToken = crypto.randomBytes(40).toString('hex');
+        const url = this.client.getAuthenticationUrl(getOauthReceiverUrl(), randomToken);
 
         const token = await getMetadataOauthToken(url);
 
