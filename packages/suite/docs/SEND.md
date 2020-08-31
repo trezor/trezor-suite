@@ -18,7 +18,7 @@
 ### Address errors:
 - RECIPIENT_IS_NOT_SET (empty field)
 - RECIPIENT_IS_NOT_VALID (not valid address)
-- RECIPIENT_CANNOT_SEND_TO_MYSELF (XRP only, cannot send to myself)
+- RECIPIENT_CANNOT_SEND_TO_MYSELF (XRP only: cannot send to myself)
 
 ------
 
@@ -33,15 +33,16 @@
 - IF sendmax is set: on custom fee change
 - IF sendmax is set: on BTC opreturn data changed
 - IF sendmax is set: on ETH data changed
-- IF sendmax is set AND switching between ETH (base currency) and TOKEN
+- (ETH only) IF sendmax is set AND switching between ETH (base currency) and TOKEN
 
 ### Amount errors:
 - AMOUNT_IS_NOT_SET (empty field)
 - AMOUNT_IS_NOT_NUMBER (not valid number)
-- AMOUNT_IS_TOO_LOW (lower/equal than zero + ETH exception: 0 amount is possible for TX with data)
-- AMOUNT_IS_MORE_THAN_RESERVE (XRP only: trying to spend the reserve)
+- AMOUNT_IS_TOO_LOW (lower/equal than zero + ETH exception: 0 amount is possible ONLY for tx with DATA)
 - AMOUNT_IS_NOT_ENOUGH (not enough funds on account)
 - AMOUNT_NOT_ENOUGH_CURRENCY_FEE (ETH only: trying to send TOKEN without enough ETH to cover TX fee)
+- AMOUNT_IS_MORE_THAN_RESERVE (XRP only: trying to spend the reserve)
+- AMOUNT_IS_LESS_THAN_RESERVE (XRP only: trying to send less XRP than required reserve to the empty account)
 - AMOUNT_IS_NOT_IN_RANGE_DECIMALS (amount with invalid decimal places)
 
 ------
@@ -55,7 +56,7 @@
 ### Fiat errors:
 - AMOUNT_IS_NOT_SET (empty field)
 - AMOUNT_IS_NOT_NUMBER
-- AMOUNT_IS_TOO_LOW (lower than 0, 0 is still possible tho)
+- AMOUNT_IS_TOO_LOW (lower than 0, 0 is still possible if recalculated amount is lower than 1 cent)
 
 ------
 
@@ -109,15 +110,14 @@ Additional checkbox in send form, since this could be only true/false there is n
 ------
 
 ### (ETH only) Data:
-Additional field in send form, activated by "Add data" option
-Same behavior as BTC OP_RETURN output
+Additional field in send form, activated by "Add data" option. Same behavior as BTC OP_RETURN output.
 - HEX field, (on the right) should be changed on every ASCII field (on the left) change
 - ASCII field should be changed ONLY if HEX is valid, otherwise should be empty
 
 ### Data errors:
 - DATA_NOT_SET
 - DATA_NOT_VALID_HEX
-- DATA_HEX_TOO_BIG (size greater than 160 chars, FW limitation???)
+- DATA_HEX_TOO_BIG (size greater than 160 chars, FW limitation ??? investigate....)
 
 ------
 
@@ -149,9 +149,19 @@ It doesn't have impact on transaction itself (fee, amount etc)
 
 -------
 
-### Precomposed transaction ("Total Sent" calculated)
+### Precomposed transaction ("Total Sent" field)
 - on load draft
 - on address change
 - on amount change
 - on fee change
 - on additional option change
+
+-------
+
+### Review modal
+- can be cancelled at any time during signing
+- mirroring data displayed on the device
+- if there is BTC OP_RETURN data or ETH DATA present and those data are larger than 10 chars additional "expand button" will appear next to it
+- Expandable "Transaction detail" section
+- Regarding to BROADCAST option "Send transaction" or "Copy/download transaction" buttons are available on the last step
+
