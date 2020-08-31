@@ -65,7 +65,7 @@ async function runTests() {
     }
     const finalTestFiles = getTestFiles()
         .sort((a, b) => a.localeCompare(b))
-        .filter(f => f.indexOf('metadata/') < 0); // TEMP: exclude metadata tests (TODO: implement dropbox request)
+        .filter(f => f.indexOf('metadata/') < 0); // TEMP: exclude metadata tests (TODO: implement dropbox request, https://github.com/trezor/trezor-suite/issues/2276)
 
     if (!finalTestFiles.length) {
         console.log('[run_tests.js] nothing to test!');

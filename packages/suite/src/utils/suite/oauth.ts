@@ -13,7 +13,6 @@ export const getOauthReceiverUrl = () => {
         const { origin } = window.location;
         // For the purpose of e2e tests change the redirect url to develop branch on sldev.cz
         if (origin.indexOf('sldev.cz') >= 0) {
-            console.warn('----use sldev develop file ----------');
             return 'https://suite.corp.sldev.cz/suite-web/develop/wallet/static/oauth/oauth_receiver.html';
         }
         return `${origin}${getPrefixedURL('/static/oauth/oauth_receiver.html')}`;
