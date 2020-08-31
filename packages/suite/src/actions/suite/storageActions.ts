@@ -184,13 +184,13 @@ export const saveMetadataProvider = () => (_dispatch: Dispatch, getState: GetSta
     db.addItem('metadata', { provider: metadata.provider, enabled: metadata.enabled }, 'state');
 };
 
-export const clearStores = () => async (dispatch: Dispatch, getState: GetState) => {
+export const removeDatabase = () => async (dispatch: Dispatch, getState: GetState) => {
     const rememberedDevices = getState().devices.filter(d => d.remember);
     // forget all remembered devices
     rememberedDevices.forEach(d => {
         suiteActions.rememberDevice(d);
     });
-    await db.clearStores();
+    await db.removeDatabase();
     dispatch(
         notificationActions.addToast({
             type: 'clear-storage',
