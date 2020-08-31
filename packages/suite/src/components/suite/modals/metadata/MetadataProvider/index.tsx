@@ -58,6 +58,7 @@ const MetadataProvider = (props: Props) => {
                     onClick={() => connect('dropbox')}
                     isLoading={isLoading === 'dropbox'}
                     isDisabled={!!isLoading}
+                    data-test="@modal/metadata-provider/dropbox-button"
                 >
                     <Translation id="TR_DROPBOX" />
                 </StyledButton>
