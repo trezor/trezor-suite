@@ -1,7 +1,7 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
-import { Input, Icon, Button, variables, Tooltip, colors } from '@trezor/components';
+import { Input, Icon, Button, variables } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -43,10 +43,6 @@ const TokenBalance = styled.div`
     padding-right: 6px;
 `;
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-`;
-
 const StyledTransferIcon = styled(Icon)`
     display: flex;
     flex-direction: column;
@@ -83,7 +79,7 @@ export default ({ outputId }: { outputId: number }) => {
     const inputName = `outputs[${outputId}].amount`;
     const tokenInputName = `outputs[${outputId}].token`;
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
-    const { symbol, networkType } = account;
+    const { symbol } = account;
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const error = outputError ? outputError.amount : undefined;
 
@@ -125,19 +121,6 @@ export default ({ outputId }: { outputId: number }) => {
                             <Text>
                                 <Translation id="AMOUNT" />
                             </Text>
-                            {networkType === 'ripple' && (
-                                <Tooltip
-                                    placement="top"
-                                    content={
-                                        <Translation
-                                            id="AMOUNT_RESERVE_EXPLANATION"
-                                            values={{ reserve: `${reserve} XRP` }}
-                                        />
-                                    }
-                                >
-                                    <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
-                                </Tooltip>
-                            )}
                         </Label>
                     }
                     labelRight={

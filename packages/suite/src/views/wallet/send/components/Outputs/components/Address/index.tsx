@@ -1,8 +1,7 @@
 import React from 'react';
-import { FormattedPlural } from 'react-intl';
 import styled from 'styled-components';
 import { Input, colors, variables, Icon, Button } from '@trezor/components';
-import { AddressLabeling, QuestionTooltip, Translation } from '@suite-components';
+import { AddressLabeling, Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { scanQrRequest } from '@wallet-actions/sendFormActions';
 import { useActions } from '@suite-hooks';
@@ -53,6 +52,7 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const addressError = outputError ? outputError.address : undefined;
     const addressValue = getDefaultValue(inputName, outputs[outputId].address || '');
+    const recipientId = outputId + 1;
 
     return (
         <Input
@@ -65,21 +65,9 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
                 <Label>
                     <Left>
                         <Text>
-                            {outputsCount > 1 && (
-                                <>
-                                    {outputId + 1}
-                                    <FormattedPlural
-                                        one="st"
-                                        two="nd"
-                                        few="rd"
-                                        other="th"
-                                        value={outputId + 1}
-                                    />
-                                </>
-                            )}{' '}
+                            {outputsCount > 1 && `${recipientId}. `}
                             <Translation id="RECIPIENT_ADDRESS" />
                         </Text>
-                        <QuestionTooltip messageId="RECIPIENT_ADDRESS_TOOLTIP" />
                     </Left>
                 </Label>
             }

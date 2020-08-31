@@ -3373,10 +3373,6 @@ const definedMessages = defineMessages({
         id: 'RECIPIENT_ADD_LABEL',
         defaultMessage: 'Add Label',
     },
-    RECIPIENT_ADDRESS_TOOLTIP: {
-        id: 'RECIPIENT_ADDRESS_TOOLTIP',
-        defaultMessage: 'TR_RECIPIENT_ADDRESS_TOOLTIP',
-    },
     RECIPIENT_IS_NOT_SET: {
         defaultMessage: 'Address is not set',
         id: 'RECIPIENT_IS_NOT_SET',
@@ -3424,10 +3420,6 @@ const definedMessages = defineMessages({
     AMOUNT_IS_LESS_THAN_RESERVE: {
         defaultMessage: 'Recipient account requires minimum reserve {reserve} XRP to activate',
         id: 'AMOUNT_IS_LESS_THAN_RESERVE',
-    },
-    AMOUNT_RESERVE_EXPLANATION: {
-        id: 'AMOUNT_RESERVE_EXPLANATION',
-        defaultMessage: 'AMOUNT_RESERVE_EXPLANATION {reserve}',
     },
     AMOUNT_NOT_ENOUGH_CURRENCY_FEE: {
         defaultMessage: 'Not enough {symbol} to cover transaction fee',
