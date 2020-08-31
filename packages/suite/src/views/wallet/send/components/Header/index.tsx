@@ -66,7 +66,7 @@ export default () => {
                 return true;
             },
             label: 'Import',
-            // isDisabled: true,
+            isDisabled: true,
         },
         {
             key: 'raw',
