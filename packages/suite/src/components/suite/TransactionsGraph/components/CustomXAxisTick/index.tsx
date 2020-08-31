@@ -15,7 +15,7 @@ const getFormattedDate = (range: GraphRange['label'], date: Date) => {
         case 'year':
             return <FormattedDate value={date} month="short" />;
         case 'month':
-            return <FormattedDate value={date} day="2-digit" month="2-digit" />;
+            return <FormattedDate value={date} day="2-digit" month="short" />;
         case 'week':
             return <FormattedDate value={date} weekday="short" />;
         // no default
@@ -33,9 +33,8 @@ const CustomXAxisTick = (props: CustomXAxisProps) => {
                 x={0}
                 y={0}
                 dy={16}
-                textAnchor="end"
+                textAnchor="middle"
                 fill={colors.NEUE_TYPE_LIGHT_GREY}
-                transform="rotate(-50)"
                 style={{ fontVariantNumeric: 'tabular-nums' }}
             >
                 {date && getFormattedDate(props.selectedRange.label, date)}

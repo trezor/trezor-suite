@@ -8,6 +8,7 @@ import {
     IndexKey,
     StoreValue,
     IDBPTransaction,
+    deleteDB,
 } from 'idb';
 import { BroadcastChannel } from 'broadcast-channel';
 import { StorageUpdateMessage, StorageMessageEvent } from './types';
@@ -377,6 +378,13 @@ class CommonDB<TDBStructure> {
             return objectStore.clear();
         });
         await Promise.all(promises);
+    };
+
+    removeDatabase = async () => {
+        if (this.db) {
+            this.db.close();
+        }
+        return deleteDB(this.dbName);
     };
 
     static removeStores = async <TDBStructure>(db: IDBPDatabase<TDBStructure>) => {

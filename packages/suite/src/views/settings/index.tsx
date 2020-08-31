@@ -40,7 +40,7 @@ const Settings = ({
     setLocalCurrency,
     localCurrency,
     fetchLocale,
-    clearStores,
+    removeDatabase,
     goto,
     initMetadata,
     disconnectProvider,
@@ -105,8 +105,8 @@ const Settings = ({
             <Section title={<Translation id="TR_LABELING" />}>
                 <SectionItem>
                     <TextColumn
-                        title="Labeling enabled"
-                        description="Labeling feature allows you to label your wallets, accounts and transactions. Your labels are made persistent by syncing with cloud provider (Google or Dropbox)."
+                        title={<Translation id="TR_LABELING_ENABLED" />}
+                        description={<Translation id="TR_LABELING_FEATURE_ALLOWS" />}
                     />
                     <ActionColumn>
                         <Switch
@@ -173,7 +173,7 @@ const Settings = ({
                     <ActionColumn>
                         <ActionButton
                             onClick={async () => {
-                                clearStores();
+                                removeDatabase();
                                 // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
                                 const { ipcRenderer } = global;
                                 if (ipcRenderer) {

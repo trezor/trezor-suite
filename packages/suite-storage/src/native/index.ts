@@ -194,6 +194,10 @@ class CommonDB<TDBStructure> {
     static removeStores = async <TDBStructure>(_db: IDBPDatabase<TDBStructure>) => {
         return Promise.resolve();
     };
+
+    removeDatabase = async () => {
+        return Promise.resolve();
+    };
 }
 
 export default CommonDB;

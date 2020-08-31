@@ -19,7 +19,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     bindActionCreators(
         {
             setLocalCurrency: walletSettingsActions.setLocalCurrency,
-            clearStores: storageActions.clearStores,
+            removeDatabase: storageActions.removeDatabase,
             fetchLocale: languageActions.fetchLocale,
             goto: routerActions.goto,
             initMetadata: metadataActions.init,

@@ -16,6 +16,10 @@ const ConnectDeviceImage = (props: Omit<ImageProps, 'image'>) => {
         <Image
             image="CONNECT_DEVICE"
             onClick={() => {
+                if (process.env.SUITE_TYPE !== 'desktop') {
+                    return;
+                }
+
                 // same logic as in views/suite/device-connect
                 setClickCounter(prev => prev + 1);
                 if (clickCounter === 4) {
