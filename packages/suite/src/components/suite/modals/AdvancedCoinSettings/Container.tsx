@@ -7,6 +7,7 @@ import Index from './index';
 
 const mapStateToProps = (state: AppState) => ({
     blockbookUrls: state.wallet.settings.blockbookUrls,
+    blockchain: state.wallet.blockchain,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>

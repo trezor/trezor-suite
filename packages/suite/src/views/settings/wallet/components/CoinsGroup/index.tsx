@@ -173,30 +173,36 @@ const CoinsGroup = ({
                     <CoinRow key={network.symbol}>
                         <Coin symbol={network.symbol} name={network.name} />
                         <ActionColumn>
-                            <AdvancedSettings
-                                onClick={() =>
-                                    openModal({
-                                        type: 'advanced-coin-settings',
-                                        coin: network.symbol,
-                                    })
-                                }
-                            >
-                                <SettingsIconWrapper>
-                                    <Icon icon="SETTINGS" size={16} color={colors.BLACK25} />
-                                </SettingsIconWrapper>
-                                <AdvancedSettingsText>
-                                    <Translation id="TR_ADVANCED_SETTINGS" />
-                                </AdvancedSettingsText>
-                            </AdvancedSettings>
                             {!unavailableCapabilities[network.symbol] && (
-                                <Switch
-                                    data-test={`@settings/wallet/network/${network.symbol}`}
-                                    onChange={(visible: boolean) => {
-                                        onToggleOneFn(network.symbol, visible);
-                                    }}
-                                    checked={enabledNetworks.includes(network.symbol)}
-                                    isDisabled={isDeviceLocked}
-                                />
+                                <>
+                                    <AdvancedSettings
+                                        onClick={() =>
+                                            openModal({
+                                                type: 'advanced-coin-settings',
+                                                coin: network.symbol,
+                                            })
+                                        }
+                                    >
+                                        <SettingsIconWrapper>
+                                            <Icon
+                                                icon="SETTINGS"
+                                                size={16}
+                                                color={colors.BLACK25}
+                                            />
+                                        </SettingsIconWrapper>
+                                        <AdvancedSettingsText>
+                                            <Translation id="TR_ADVANCED_SETTINGS" />
+                                        </AdvancedSettingsText>
+                                    </AdvancedSettings>
+                                    <Switch
+                                        data-test={`@settings/wallet/network/${network.symbol}`}
+                                        onChange={(visible: boolean) => {
+                                            onToggleOneFn(network.symbol, visible);
+                                        }}
+                                        checked={enabledNetworks.includes(network.symbol)}
+                                        isDisabled={isDeviceLocked}
+                                    />
+                                </>
                             )}
                             {unavailableCapabilities[network.symbol] && (
                                 <UnavailableLabel>

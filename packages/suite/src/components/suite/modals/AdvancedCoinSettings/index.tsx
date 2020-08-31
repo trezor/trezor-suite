@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
 import TrezorConnect, { CoinInfo } from 'trezor-connect';
 import { Modal, Loader } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
@@ -7,7 +8,7 @@ import { Props } from './Container';
 
 // Sub components
 import CustomBlockbookUrls from './components/CustomBlockbookUrls';
-import styled from 'styled-components';
+import ConnectionInfo from './components/ConnectionInfo';
 // import CustomExplorerUrl from './components/CustomExplorerUrl';
 // import AccountUnits from './components/AccountUnits';
 
@@ -26,6 +27,7 @@ const LoaderWrapper = styled.div`
 const AdvancedCoinSettings = ({
     coin,
     blockbookUrls,
+    blockchain,
     addBlockbookUrl,
     removeBlockbookUrl,
     onCancel,
@@ -76,8 +78,10 @@ const AdvancedCoinSettings = ({
                     />
                 </Section>
             )}
-
             {/* <CustomExplorerUrl /> */}
+            <ConnectionInfo
+                blockchain={blockchain[coin]}
+            />
         </Modal>
     );
 };
