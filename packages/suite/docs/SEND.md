@@ -1,144 +1,157 @@
-# Send
+## Send form active elements description
 
-## Common
+### Outputs (BTC coins only):
+- regular (transfer) output is set by default
+- add OP_RETURN: if default output has any values then OP_RETURN is added as a second output otherwise will replace the first input
+- remove OP_RETURN: if there is only 1 output (OP_RETURN) then switch to regular otherwise just remove it
+- add recipient
+- remove recipient
+- Clear all
 
-### Clear
-- address: null
-- amount: null
-- settMaxActive false
-- fiatValue: null
-- localCurrency: user currency setting
-- ethereumGasPrice: normal fee level - feePerUnit
-- ethereumGasLimit:  normal fee level - feeLimit
-- ethereumData: null
-- rippleDestinationTag: null
-- reset outputs count to 1
+------
 
-### Recipient Address
+### Address:
+- on address input change
+- on QR scan
+- on Import (to be done)
 
-#### BTC
-- scan QR
-- validation `TR_ADDRESS_IS_NOT_SET | TR_ADDRESS_IS_NOT_VALID`
+### Address errors:
+- RECIPIENT_IS_NOT_SET (empty field)
+- RECIPIENT_IS_NOT_VALID (not valid address)
+- RECIPIENT_CANNOT_SEND_TO_MYSELF (XRP only, cannot send to myself)
 
-#### ETH
-- scan QR
-- validation `TR_ADDRESS_IS_NOT_SET | TR_ADDRESS_IS_NOT_VALID`
+------
 
-#### XRP
-- scan QR
-- validation `TR_ADDRESS_IS_NOT_SET | TR_ADDRESS_IS_NOT_VALID | TR_XRP_CANNOT_SEND_TO_MYSELF`
-- check empty address state
+### Amount:
+- on amount input change
+- on Fiat input change
+- on QR scan (optional if defined in QR code)
+- on Import (to be done, optional if defined in file)
+- IF sendmax is ON
+- IF sendmax is set AND has second(or multiple) output(s): on second output Amount change
+- IF sendmax is set: on every fee level change
+- IF sendmax is set: on custom fee change
+- IF sendmax is set: on BTC opreturn data changed
+- IF sendmax is set: on ETH data changed
+- IF sendmax is set AND switching between ETH (base currency) and TOKEN
 
-### Amount
+### Amount errors:
+- AMOUNT_IS_NOT_SET (empty field)
+- AMOUNT_IS_NOT_NUMBER (not valid number)
+- AMOUNT_IS_TOO_LOW (lower/equal than zero + ETH exception: 0 amount is possible for TX with data)
+- AMOUNT_IS_MORE_THAN_RESERVE (XRP only: trying to spend the reserve)
+- AMOUNT_IS_NOT_ENOUGH (not enough funds on account)
+- AMOUNT_NOT_ENOUGH_CURRENCY_FEE (ETH only: trying to send TOKEN without enough ETH to cover TX fee)
+- AMOUNT_IS_NOT_IN_RANGE_DECIMALS (amount with invalid decimal places)
 
-#### BTC
-- validation `TR_AMOUNT_IS_NOT_SET | TR_AMOUNT_IS_NOT_NUMBER | TR_AMOUNT_IS_NOT_ENOUGH | TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS`
-- compose transaction
-- fiat input update
-- change set max state for current input
+------
 
-#### ETH
-- validation `TR_AMOUNT_IS_NOT_SET | TR_AMOUNT_IS_NOT_NUMBER | TR_AMOUNT_IS_NOT_ENOUGH | TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS`
-- fiat input update
-- compose transaction
-- change set max state for current input
+### Fiat:
+- on fiat input change
+- on Amount input change (any reason listed above)
+- on Currency select change (recalculation)
+- on Import (to be done, optional if defined in file AND amount is not defined in file)
 
-#### XRP
-- validation `TR_AMOUNT_IS_NOT_SET | TR_AMOUNT_IS_NOT_NUMBER | TR_AMOUNT_IS_NOT_ENOUGH | TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS | TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE`
-- fiat input update
-- compose transaction
-- change set max state for current input
+### Fiat errors:
+- AMOUNT_IS_NOT_SET (empty field)
+- AMOUNT_IS_NOT_NUMBER
+- AMOUNT_IS_TOO_LOW (lower than 0, 0 is still possible tho)
 
-### Token select
+------
 
-#### BTC
-- disabled
+### Fee:
+- on fee level click
+- on custom fee level input change
+- on BTC OP_RETURN data changed
+- on ETH data changed
+- switching from "regular" fee level to "custom" should set value from last selected fee
+- whenever fee level wasn't changed yet (normal) and there is not enough coins to cover default level, should be automatically switched to first possible (lower) level, either LOW or CUSTOM...
+- last used fee level will be remembered globally for this coin
+- estimated time is only available for BTC-like coins
 
-#### ETH
-- select ERC-20 token
+### Fee errors (custom level):
+- CUSTOM_FEE_IS_NOT_SET (empty field)
+- CUSTOM_FEE_IS_NOT_NUMBER
+- CUSTOM_FEE_IS_NOT_INTEGER (BTC and XRP: decimals not allowed)
+- AMOUNT_IS_NOT_IN_RANGE_DECIMALS (ETH only: decimals are allowed but with max. 9 decimals - GWEI is not satoshi)
+- CUSTOM_FEE_NOT_IN_RANGE (must be between minFee and maxFee specified in coins.json, in trezor-connect)
 
-#### XRP
-- disabled
+------
 
-### Fiat
-- not visible with testnets (no fiat rates)
+### (BTC only) OP_RETURN output:
+- HEX field, (on the right) should be changed on every ASCII field (on the left) change
+- ASCII field should be changed ONLY if HEX is valid, otherwise should be empty
 
-#### BTC
-- compose transaction
-- recalculate Amount
+### OP_RETURN output errors:
+- DATA_NOT_SET (empty fields)
+- DATA_NOT_VALID_HEX (not valid hexadecimal)
 
-#### ETH
-- compose transaction
-- recalculate Amount
+------
 
-#### XRP
-- compose transaction
-- recalculate Amount
+### (BTC only) Locktime:
+Additional field in send form, activated by "Add locktime" option
+- on "add locktime" input change
+- on RBF option enable
+- should disable RBF option if set
+- should disable BROADCAST option if set
 
-### Currency select
-- not visible with testnets (no fiat rates)
+### Locktime errors:
+- LOCKTIME_IS_NOT_SET
+- LOCKTIME_IS_NOT_NUMBER
+- LOCKTIME_IS_TOO_LOW (lower/equal zero)
+- LOCKTIME_IS_NOT_INTEGER (decimals not allowed)
 
-#### BTC
-- change currency for input
-- recalculate fiat value
+------
 
-#### ETH
-- change currency for input
-- recalculate fiat value
+### (BTC only) RBF:
+Additional checkbox in send form, since this could be only true/false there is no validation for that filed
 
-#### XRP
-- change currency for input
-- recalculate fiat value
+------
 
-## Advanced form Bitcoin
+### (ETH only) Data:
+Additional field in send form, activated by "Add data" option
+Same behavior as BTC OP_RETURN output
+- HEX field, (on the right) should be changed on every ASCII field (on the left) change
+- ASCII field should be changed ONLY if HEX is valid, otherwise should be empty
 
-### Add
-- add 1 output (Recipient Address, Amount, Token Select, Currency select)
+### Data errors:
+- DATA_NOT_SET
+- DATA_NOT_VALID_HEX
+- DATA_HEX_TOO_BIG (size greater than 160 chars, FW limitation???)
 
-### Fee
-- change selected fee level (Normal, Low, Hight, Custom)
-- if custom option - show custom fee input and paste last selected fee value
-- recalculate Amount if setMax is active
+------
 
-### Custom fee
-- units drops
-- recalculate Fee
+### (XRP only) Destination tag:
+Additional field in send form, activated by "Add destination tag" option
+It doesn't have impact on transaction itself (fee, amount etc)
 
-### Locktime
-- coming soon
+### Destination tag errors:
+- DESTINATION_TAG_NOT_SET
+- DESTINATION_TAG_IS_NOT_NUMBER
+- DESTINATION_TAG_IS_NOT_VALID (decimals not allowed, in range: 0 - 4294967295)
 
-### Replace by fee
-- coming soon
+------
 
-## Advanced form Ethereum
+### Broadcast:
+- toggle "Sign transaction" / "Send transaction" button
+- "Review transaction" modal with different options at the last step (copy or download signed tx)
 
-#### Data
-- validation: `TR_ETH_DATA_NOT_HEX`
-- recalculate Fee
-- disable Fee (Normal)
-- disable GasPrice
+------
 
-#### Gas price
-- validation: `TR_ETH_GAS_PRICE_NOT_NUMBER`
-- change selected fee level to custom
-- recalculate Fee
+### Drafts:
+- draft should be saved on change of any field (if this field is valid)
+- draft should be loaded after changing url (going back to send form from any other page)
 
-#### Gas limit
-- validation: `TR_ETH_GAS_LIMIT_NOT_NUMBER`
-- change selected fee level to custom
-- recalculate Fee
+------
 
-## Advanced form Ripple
+### Send RAW:
+- Broadcast signed tx to the network regardless of tx OWNER, this tx doesn't have to be signed by currently selected account, only selected NETWORK matters
 
-#### Fee
-- change selected fee level (Normal, Low, Hight, Custom)
-- recalculate Amount if setMax is active
+-------
 
-#### Custom fee
-- validation: `TR_CUSTOM_FEE_IS_NOT_SET | TR_CUSTOM_FEE_IS_NOT_NUMBER | TR_CUSTOM_FEE_NOT_IN_RANGE`
-- units sat/B
-- recalculate Fee
-
-#### Destination tag
-- validation: `TR_DESTINATION_TAG_IS_NOT_NUMBER`
-- set additional tx param
+### Precomposed transaction ("Total Sent" calculated)
+- on load draft
+- on address change
+- on amount change
+- on fee change
+- on additional option change
