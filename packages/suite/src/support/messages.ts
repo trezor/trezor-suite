@@ -3542,7 +3542,7 @@ const definedMessages = defineMessages({
     },
     TR_TO_MAKE_YOUR_LABELS_PERSISTENT: {
         defaultMessage:
-            'To make your labels persistent and available on different devices connect to cloud storage provider. Either Google drive or Dropbox are available.',
+            'To make your labels persistent and available on different devices connect to cloud storage provider.',
         id: 'TR_TO_MAKE_YOUR_LABELS_PERSISTENT',
     },
     TR_DROPBOX: {
@@ -3564,6 +3564,15 @@ const definedMessages = defineMessages({
     METADATA_MODAL_DESCRIPTION: {
         defaultMessage: 'Do you want to sync your labeling with selected data provider?',
         id: 'METADATA_MODAL_DESCRIPTION',
+    },
+    TR_LABELING_FEATURE_ALLOWS: {
+        id: 'TR_LABELING_FEATURE_ALLOWS',
+        defaultMessage:
+            'Labeling feature allows you to label your wallets, accounts and transactions. Your labels are made persistent by syncing with cloud provider.',
+    },
+    TR_LABELING_ENABLED: {
+        id: 'TR_LABELING_ENABLED',
+        defaultMessage: 'Labeling enabled',
     },
 } as const);
 
