@@ -19,6 +19,12 @@ const getData = (status: Trade['data']['status']) => {
                 color: colors.NEUE_TYPE_ORANGE,
                 statusMessageId: message,
             } as const;
+        case 'TR_BUY_STATUS_PENDING_GO_TO_GATEWAY':
+            return {
+                icon: 'CLOCK',
+                color: colors.NEUE_TYPE_ORANGE,
+                statusMessageId: message,
+            } as const;
         case 'TR_BUY_STATUS_ERROR':
             return {
                 icon: 'CROSS',

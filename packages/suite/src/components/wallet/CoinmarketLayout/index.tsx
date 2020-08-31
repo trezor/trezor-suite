@@ -5,7 +5,7 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import Navigation from './components/Navigation';
-import PreviousTransactions from './components/PreviousTransactions';
+import AccountTransactions from './components/AccountTransactions';
 
 const Content = styled.div`
     padding: 25px;
@@ -27,7 +27,7 @@ const CoinmarketLayout = ({ children }: Props) => {
                 <Content>{children}</Content>
             </Card>
             <BottomContent>
-                <PreviousTransactions />
+                <AccountTransactions />
                 <CoinmarketFooter />
             </BottomContent>
         </WalletLayout>

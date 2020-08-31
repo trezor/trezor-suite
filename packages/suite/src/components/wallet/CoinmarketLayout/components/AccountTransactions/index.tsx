@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { H2 } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
+import { Translation } from '@suite-components';
 
 import BuyTransaction from './components/BuyTransaction';
 import ExchangeTransaction from './components/ExchangeTransaction';
@@ -17,16 +18,18 @@ const Header = styled.div`
     min-height: 50px;
 `;
 
-const PreviousTransactions = () => {
-    const previousTransactions = useSelector(state => state.wallet.coinmarket.trades);
+const AccountTransactions = () => {
+    const accountTransactions = useSelector(state => state.wallet.coinmarket.trades);
 
     return (
         <Wrapper>
             <Header>
-                <H2>Previous transactions • {previousTransactions.length}</H2>
+                <H2>
+                    <Translation id="TR_BUY_ACCOUNT_TRANSACTIONS" /> • {accountTransactions.length}
+                </H2>
             </Header>
             <Content>
-                {previousTransactions.map(trade => {
+                {accountTransactions.map(trade => {
                     if (trade.tradeType === 'buy') {
                         return <BuyTransaction trade={trade} />;
                     }
@@ -42,4 +45,4 @@ const PreviousTransactions = () => {
     );
 };
 
-export default PreviousTransactions;
+export default AccountTransactions;

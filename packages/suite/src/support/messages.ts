@@ -188,6 +188,14 @@ const definedMessages = defineMessages({
         defaultMessage: 'Buy again',
         id: 'TR_BUY_BUY_AGAIN',
     },
+    TR_BUY_ACCOUNT_TRANSACTIONS: {
+        defaultMessage: 'Account transactions',
+        id: 'TR_BUY_ACCOUNT_TRANSACTIONS',
+    },
+    TR_BUY_STATUS_PENDING_GO_TO_GATEWAY: {
+        defaultMessage: 'Pending',
+        id: 'TR_BUY_STATUS_PENDING_GO_TO_GATEWAY',
+    },
     TR_BUY_VIEW_DETAILS: {
         defaultMessage: 'View details',
         id: 'TR_BUY_VIEW_DETAILS',
