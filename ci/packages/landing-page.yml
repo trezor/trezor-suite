@@ -1,3 +1,9 @@
+.auto_run_branches: &auto_run_branches
+  refs:
+    - develop
+    - releases
+    - schedules
+
 landing-page build:
   stage: build
   script:
@@ -9,8 +15,10 @@ landing-page build:
 
 landing-page build-staging:
   stage: build
+  only:
+    <<: *auto_run_branches
   script:
-    - yarn workspace @trezor/suite-web build
+    - yarn workspace @trezor/landing-page build
   artifacts:
     expire_in: 7 days
     paths:
@@ -19,6 +27,8 @@ landing-page build-staging:
 
 landing-page deploy-staging:
   stage: deploy to staging
+  only:
+    <<: *auto_run_branches
   dependencies:
     - landing-page build-staging
   environment:

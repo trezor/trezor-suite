@@ -1,5 +1,5 @@
 variables:
-  TEST_CMD: 'yarn concurrently --success first --kill-others "cd ./docker/trezor-user-env/controller && python3 ./main.py" "node ./packages/integration-tests/projects/suite-web/run_tests.js --project ./packages/integration-tests/projects/suite-web --stage=$TEST_GROUP"'
+    TEST_CMD: 'yarn concurrently --success first --kill-others "cd ./docker/trezor-user-env/controller && python3 ./main.py" "node ./packages/integration-tests/projects/suite-web/run_tests.js --project ./packages/integration-tests/projects/suite-web --stage=$TEST_GROUP"'
 
 .auto_run_branches: &auto_run_branches
     refs:
@@ -85,7 +85,7 @@ suite-web e2e chrome stage=stable/suite:
         - *e2e_script_common
         - export CYPRESS_SNAPSHOT=1
         - export BROWSER=chrome
-        - 'eval $TEST_CMD'
+        - "eval $TEST_CMD"
     artifacts:
         <<: *e2e_artifacts
     dependencies: []
@@ -98,7 +98,7 @@ suite-web e2e chrome stage=stable/metadata:
         - *e2e_script_common
         - export CYPRESS_SNAPSHOT=1
         - export BROWSER=chrome
-        - 'eval $TEST_CMD'
+        - "eval $TEST_CMD"
     artifacts:
         <<: *e2e_artifacts
     dependencies: []
@@ -111,7 +111,7 @@ suite-web e2e chrome stage=stable/device-management:
         - *e2e_script_common
         - export CYPRESS_SNAPSHOT=1
         - export BROWSER=chrome
-        - 'eval $TEST_CMD'
+        - "eval $TEST_CMD"
     artifacts:
         <<: *e2e_artifacts
     dependencies: []
@@ -127,7 +127,7 @@ suite-web e2e chrome stage=beta:
         - *e2e_script_common
         - export CYPRESS_SNAPSHOT=1
         - export BROWSER=chrome
-        - 'eval $TEST_CMD'
+        - "eval $TEST_CMD"
     artifacts:
         <<: *e2e_artifacts
     dependencies: []
@@ -145,7 +145,7 @@ suite-web e2e chrome-beta stage=stable:
         - *e2e_script_common
         - apt-get update && apt-get upgrade -y # update chrome-beta channel to the latest
         - export BROWSER=/usr/bin/google-chrome-beta
-        - 'eval $TEST_CMD'
+        - "eval $TEST_CMD"
     artifacts:
         <<: *e2e_artifacts
     dependencies: []
@@ -161,6 +161,8 @@ suite-web deploy staging:
         name: ${CI_BUILD_REF_NAME}-staging
         url: ${STAGING_SERVER_URL}
     before_script: []
+    only:
+        <<: *auto_run_branches
     when: manual
     script:
         - source ${STAGING_DEPLOY_KEYFILE}
@@ -172,5 +174,4 @@ suite-web deploy staging:
         - ./scripts/s3sync.sh stage beta
     tags:
         - deploy
-
 # todo: add smoke test job on stage / beta (need basic auth)
