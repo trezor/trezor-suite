@@ -34,7 +34,7 @@ Every `networkType` has own `sendFormActions.composeTransaction` method
 ![img](./compose.png)
 
 - `PrecomposedLevel` are calculated for all possible `FeeLevel` at once.
-- if `FeeLevel` wasn't changed by the user and current `PrecomposedLevel` has error trying to switch to a lower/custom possible `FeeLevel`
+- if `FeeLevel` wasn't changed by the user and current `PrecomposedLevel` has error then tries to switch to a lower/custom possible `FeeLevel`
 - if `PrecomposedLevel` has error set this error in `react-hook-form`
 - if `PrecomposedLevel` has `set-max` set calculated amount in `react-hook-form`
 
