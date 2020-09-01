@@ -99,7 +99,7 @@ export function createQuoteLink(request: BuyTradeQuoteRequest, account: Account)
         hash = `qf/${request.country}/${request.fiatCurrency}/${request.fiatStringAmount}/${request.receiveCurrency}`;
     }
 
-    return `${window.location.origin}/coinmarket-redirect#offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
+    return `${window.location.origin}/coinmarket-redirect#offers/${account.symbol}/${account.accountType}/${account.index}/${account.descriptor}/${account.deviceState}/${hash}`;
 }
 
 export function createTxLink(trade: BuyTrade): string {

@@ -21,9 +21,10 @@ const CoinmarketBuy = () => {
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
-    const { saveQuoteRequest, saveQuotes } = useActions({
+    const { saveQuoteRequest, saveQuotes, saveCachedAccountInfo } = useActions({
         saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
         saveQuotes: coinmarketBuyActions.saveQuotes,
+        saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
     });
 
     const { goto } = useActions({ goto: routerActions.goto });
@@ -54,6 +55,7 @@ const CoinmarketBuy = () => {
             cryptoStringAmount,
         };
         await saveQuoteRequest(request);
+        await saveCachedAccountInfo(account.descriptor, account.deviceState);
         const allQuotes = await invityAPI.getBuyQuotes(request);
         const [quotes, alternativeQuotes] = processQuotes(allQuotes);
         const limits = getAmountLimits(request, quotes);

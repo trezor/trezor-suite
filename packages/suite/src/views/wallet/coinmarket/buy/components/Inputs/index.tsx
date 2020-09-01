@@ -51,6 +51,8 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
     const cryptoSelect = 'cryptoSelect';
 
     const [activeInput, setActiveInput] = useState<'fiatInput' | 'cryptoInput'>(fiatInput);
+    const quotesRequest = useSelector(state => state.wallet.coinmarket.buy.quotesRequest);
+    const cachedAccountInfo = useSelector(state => state.wallet.coinmarket.buy.cachedAccountInfo);
 
     useEffect(() => {
         trigger([fiatInput]);
@@ -62,6 +64,11 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
     }
 
     const { account } = selectedAccount;
+
+    const accountHasCachedRequest =
+        account.deviceState === cachedAccountInfo.deviceState &&
+        account.descriptor === cachedAccountInfo.descriptor;
+
     const uppercaseSymbol = account.symbol.toUpperCase();
     const defaultCurrencyInfo = buyInfo.buyInfo?.suggestedFiatCurrency;
     const defaultCurrency = defaultCurrencyInfo
@@ -73,7 +80,11 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
             <Left>
                 <Input
                     noTopLabel
-                    defaultValue=""
+                    defaultValue={
+                        accountHasCachedRequest && quotesRequest
+                            ? quotesRequest.fiatStringAmount
+                            : ''
+                    }
                     innerRef={register({
                         validate: value => {
                             if (activeInput === fiatInput) {
@@ -113,7 +124,14 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
                         <Controller
                             control={control}
                             name={currencySelect}
-                            defaultValue={defaultCurrency}
+                            defaultValue={
+                                accountHasCachedRequest && quotesRequest
+                                    ? {
+                                          label: quotesRequest.fiatCurrency.toUpperCase(),
+                                          value: quotesRequest.fiatCurrency.toUpperCase(),
+                                      }
+                                    : defaultCurrency
+                            }
                             render={({ onChange, value }) => {
                                 return (
                                     <CleanSelect
@@ -146,6 +164,11 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
                         clearErrors(fiatInput);
                         trigger([cryptoInput]);
                     }}
+                    defaultValue={
+                        accountHasCachedRequest && quotesRequest
+                            ? quotesRequest.cryptoStringAmount
+                            : ''
+                    }
                     state={errors[cryptoInput] ? 'error' : undefined}
                     name={cryptoInput}
                     noTopLabel
@@ -180,10 +203,17 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
                         <Controller
                             control={control}
                             name={cryptoSelect}
-                            defaultValue={{
-                                value: uppercaseSymbol,
-                                label: uppercaseSymbol,
-                            }}
+                            defaultValue={
+                                accountHasCachedRequest && quotesRequest
+                                    ? {
+                                          label: quotesRequest.receiveCurrency.toUpperCase(),
+                                          value: quotesRequest.receiveCurrency.toUpperCase(),
+                                      }
+                                    : {
+                                          value: uppercaseSymbol,
+                                          label: uppercaseSymbol,
+                                      }
+                            }
                             render={({ onChange, value }) => {
                                 return (
                                     <CleanSelect

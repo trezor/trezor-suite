@@ -31,6 +31,10 @@ interface Buy {
     buyInfo?: BuyInfo;
     quotesRequest?: BuyTradeQuoteRequest;
     quotes: BuyTrade[];
+    cachedAccountInfo: {
+        deviceState?: Account['deviceState'];
+        descriptor?: Account['descriptor'];
+    };
     alternativeQuotes?: BuyTrade[];
     addressVerified: boolean;
 }
@@ -53,6 +57,10 @@ const initialState = {
     buy: {
         buyInfo: undefined,
         quotesRequest: undefined,
+        cachedAccountInfo: {
+            deviceState: undefined,
+            descriptor: undefined,
+        },
         quotes: [],
         alternativeQuotes: undefined,
         addressVerified: false,
@@ -84,10 +92,16 @@ export default (state: State = initialState, action: WalletAction | SuiteAction)
             case COINMARKET_BUY.VERIFY_ADDRESS:
                 draft.buy.addressVerified = action.addressVerified;
                 break;
-
+            case COINMARKET_BUY.SAVE_CACHED_ACCOUNT_INFO:
+                draft.buy.cachedAccountInfo = {
+                    deviceState: action.deviceState,
+                    descriptor: action.descriptor,
+                };
+                break;
             case COINMARKET_EXCHANGE.SAVE_EXCHANGE_INFO:
                 draft.exchange.exchangeInfo = action.exchangeInfo;
                 break;
+
             case COINMARKET_EXCHANGE.SAVE_QUOTE_REQUEST:
                 draft.exchange.quotesRequest = action.request;
                 break;

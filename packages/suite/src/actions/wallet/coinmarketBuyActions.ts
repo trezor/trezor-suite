@@ -17,6 +17,11 @@ export type CoinmarketBuyActions =
     | { type: typeof COINMARKET_BUY.SAVE_QUOTE_REQUEST; request: BuyTradeQuoteRequest }
     | { type: typeof COINMARKET_BUY.VERIFY_ADDRESS; addressVerified: boolean }
     | {
+          type: typeof COINMARKET_BUY.SAVE_CACHED_ACCOUNT_INFO;
+          deviceState: Account['deviceState'];
+          descriptor: Account['descriptor'];
+      }
+    | {
           type: typeof COINMARKET_BUY.SAVE_QUOTES;
           quotes: BuyTrade[];
           alternativeQuotes: BuyTrade[] | undefined;
@@ -96,6 +101,17 @@ export const saveQuoteRequest = (request: BuyTradeQuoteRequest) => async (dispat
     dispatch({
         type: COINMARKET_BUY.SAVE_QUOTE_REQUEST,
         request,
+    });
+};
+
+export const saveCachedAccountInfo = (
+    descriptor: Account['descriptor'],
+    deviceState: Account['deviceState'],
+) => async (dispatch: Dispatch) => {
+    dispatch({
+        type: COINMARKET_BUY.SAVE_CACHED_ACCOUNT_INFO,
+        descriptor,
+        deviceState,
     });
 };
 

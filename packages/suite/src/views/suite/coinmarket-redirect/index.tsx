@@ -16,8 +16,9 @@ const Wrapper = styled.div`
 
 const CoinmarketRedirect = () => {
     const { goto } = useActions({ goto: routerActions.goto });
-    const { saveQuoteRequest } = useActions({
+    const { saveQuoteRequest, saveCachedAccountInfo } = useActions({
         saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
+        saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
     });
     const router = useSelector(state => state.router);
     const params = router?.hash?.split('/');
@@ -28,27 +29,28 @@ const CoinmarketRedirect = () => {
         const routeType = params[0];
         const redirectWithQuotes = async () => {
             if (routeType === 'offers') {
-                const wantCrypto = params[4] === 'qc';
+                const wantCrypto = params[6] === 'qc';
                 let request: BuyTradeQuoteRequest;
                 if (wantCrypto) {
                     request = {
                         wantCrypto,
-                        fiatCurrency: params[6],
-                        receiveCurrency: params[8],
-                        country: params[5],
-                        cryptoStringAmount: params[7],
+                        fiatCurrency: params[8],
+                        receiveCurrency: params[10],
+                        country: params[7],
+                        cryptoStringAmount: params[9],
                     };
                 } else {
                     request = {
                         wantCrypto,
-                        fiatCurrency: params[6],
-                        receiveCurrency: params[8],
-                        country: params[5],
-                        fiatStringAmount: params[7],
+                        fiatCurrency: params[8],
+                        receiveCurrency: params[10],
+                        country: params[7],
+                        fiatStringAmount: params[9],
                     };
                 }
 
                 await saveQuoteRequest(request);
+                await saveCachedAccountInfo(params[4], params[5]);
 
                 const accountItems = {
                     symbol: params[1],
