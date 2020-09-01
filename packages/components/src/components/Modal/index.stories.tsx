@@ -22,10 +22,9 @@ storiesOf('Modals', module)
             );
             const cancelable = boolean('cancelable', true);
             const bottomBar = boolean('bottomBar', false);
-            // const showHeaderBar = boolean('headerBar', true);
+            const headerWithBorder = boolean('headerWithBorder', true);
             const useFixedWidth = boolean('useFixedWidth', false);
             const useFixedHeight = boolean('useFixedHeight', false);
-            const hideCancelButton = boolean('hideCancelButton', false);
 
             return (
                 <Wrapper>
@@ -35,10 +34,9 @@ storiesOf('Modals', module)
                         description={description === '' ? undefined : description}
                         cancelable={cancelable}
                         bottomBar={bottomBar}
-                        // showHeaderBar={showHeaderBar}
+                        headerWithBorder={headerWithBorder}
                         useFixedWidth={useFixedWidth}
                         useFixedHeight={useFixedHeight}
-                        hideCancelButton={hideCancelButton}
                     >
                         {children}
                     </Modal>
