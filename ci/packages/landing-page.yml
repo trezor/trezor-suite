@@ -27,8 +27,10 @@ landing-page deploy-staging:
   before_script: []
   when: manual
   script:
+    - ls -la
     - source ${STAGING_DEPLOY_KEYFILE}
     - cd packages/landing-page
+    - ls -la
     - ./scripts/s3sync.sh stage beta
   tags:
     - deploy
