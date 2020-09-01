@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import { BuyTradeQuoteRequest } from 'invity-api';
 // import { Account } from '@wallet-types';
 import { useSelector, useActions } from '@suite/hooks/suite';
-import invityAPI from '@suite-services/invityAPI';
-import { processQuotes } from '@wallet-utils/coinmarket/buyUtils';
 import * as routerActions from '@suite-actions/routerActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 
@@ -18,9 +16,8 @@ const Wrapper = styled.div`
 
 const CoinmarketRedirect = () => {
     const { goto } = useActions({ goto: routerActions.goto });
-    const { saveQuoteRequest, saveQuotes } = useActions({
+    const { saveQuoteRequest } = useActions({
         saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
-        saveQuotes: coinmarketBuyActions.saveQuotes,
     });
     const router = useSelector(state => state.router);
     const params = router?.hash?.split('/');
@@ -32,19 +29,26 @@ const CoinmarketRedirect = () => {
         const redirectWithQuotes = async () => {
             if (routeType === 'offers') {
                 const wantCrypto = params[4] === 'qc';
-                const request: BuyTradeQuoteRequest = {
-                    wantCrypto,
-                    fiatCurrency: params[6],
-                    receiveCurrency: params[8],
-                    country: params[5],
-                    fiatStringAmount: params[7],
-                    cryptoStringAmount: params[7],
-                };
+                let request: BuyTradeQuoteRequest;
+                if (wantCrypto) {
+                    request = {
+                        wantCrypto,
+                        fiatCurrency: params[6],
+                        receiveCurrency: params[8],
+                        country: params[5],
+                        cryptoStringAmount: params[7],
+                    };
+                } else {
+                    request = {
+                        wantCrypto,
+                        fiatCurrency: params[6],
+                        receiveCurrency: params[8],
+                        country: params[5],
+                        fiatStringAmount: params[7],
+                    };
+                }
 
                 await saveQuoteRequest(request);
-                const allQuotes = await invityAPI.getBuyQuotes(request);
-                const [quotes, alternativeQuotes] = processQuotes(allQuotes);
-                await saveQuotes(quotes, alternativeQuotes);
 
                 const accountItems = {
                     symbol: params[1],
@@ -53,7 +57,7 @@ const CoinmarketRedirect = () => {
                 };
 
                 // @ts-ignore TODO FIX THIS TS
-                goto('wallet-coinmarket-buy-offers', { ...accountItems });
+                goto('wallet-coinmarket-buy', { ...accountItems });
             }
         };
         redirectWithQuotes();
