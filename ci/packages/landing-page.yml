@@ -1,9 +1,9 @@
 variables:
 .auto_run_branches: &auto_run_branches
-    refs:
-        - develop
-        - releases
-        - schedules
+  refs:
+    - develop
+    - releases
+    - schedules
 
 landing-page build:
   stage: build
@@ -29,8 +29,8 @@ landing-page build manual:
 
 landing-page build-staging:
   stage: build
-   only:
-        <<: *auto_run_branches
+  only:
+    <<: *auto_run_branches
   script:
     - yarn workspace @trezor/landing-page build
   artifacts:
