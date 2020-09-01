@@ -56,6 +56,8 @@ const Left = styled.div`
     padding: ${ROW_PADDING};
     display: flex;
     align-items: center;
+    flex: 1 1 auto;
+    min-width: 0;
 `;
 
 const IconWrapper = styled.div`
@@ -87,6 +89,7 @@ const Right = styled.div`
     padding: ${ROW_PADDING};
     display: flex;
     align-items: center;
+    flex: 0 0 auto;
 `;
 
 const Amounts = styled.div`
