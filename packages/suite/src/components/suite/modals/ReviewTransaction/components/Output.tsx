@@ -145,6 +145,7 @@ const Row = styled.div<{ responsive?: boolean }>`
 
                 ${Fiat} {
                     margin-left: 12px;
+                    margin-top: 0px;
                 }
             }
         `}
