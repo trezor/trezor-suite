@@ -1,9 +1,9 @@
+variables:
 .auto_run_branches: &auto_run_branches
     refs:
         - develop
         - releases
         - schedules
-
 
 landing-page build:
   stage: build
