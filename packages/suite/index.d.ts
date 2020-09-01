@@ -7,7 +7,7 @@ declare global {
 }
 
 // Interface for exposed Electron API (ipcRenderer)
-interface DesktopApi {
+export interface DesktopApi {
     send: (channel: string, data?: any) => void;
     on: (channel: string, func: function) => void;
     off: (channel: string, func: function) => void;

@@ -24,7 +24,7 @@
         "productName": "Trezor Suite",
         "copyright": "Copyright © ${author}",
         "asar": true,
-        "electronVersion": "9.1.0",
+        "electronVersion": "10.1.0",
         "directories": {
             "output": "build-electron"
         },
