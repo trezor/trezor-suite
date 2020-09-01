@@ -1,6 +1,6 @@
 import React, { createRef } from 'react';
 import styled from 'styled-components';
-import { colors, Modal, ConfirmOnDevice, Button } from '@trezor/components';
+import { colors, Modal, ConfirmOnDevice, Button, variables } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { useDevice, useActions } from '@suite-hooks';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -9,7 +9,7 @@ import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 
 import { Props } from './Container';
-import Output, { OutputProps, Left, Right, Coin, Fiat, Symbol } from './components/Output';
+import Output, { OutputProps, Left, Right, Coin, Fiat, Symbol, Amounts } from './components/Output';
 import Detail from './components/Detail';
 
 const Bottom = styled.div`
@@ -20,10 +20,15 @@ const Bottom = styled.div`
 `;
 
 const BottomContent = styled.div`
-    padding: 20px 37px;
+    padding: 20px;
     display: flex;
     justify-content: space-between;
     flex: 1;
+`;
+
+const Total = styled(Left)`
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
 `;
 
 const Content = styled.div`
@@ -40,6 +45,10 @@ const StyledButton = styled(Button)`
     display: flex;
     align-self: center;
     width: 240px;
+`;
+
+const TotalFiat = styled(Fiat)`
+    font-size: ${variables.FONT_SIZE.NORMAL};
 `;
 
 const getState = (index: number, buttonRequests: number) => {
@@ -118,7 +127,7 @@ export default ({ selectedAccount, send, decision }: Props) => {
     return (
         <Modal
             size="large"
-            padding={['20px', '0', '20px', '0']}
+            padding={['0px', '0px', '0px', '0px']}
             header={
                 <ConfirmOnDevice
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
@@ -132,23 +141,28 @@ export default ({ selectedAccount, send, decision }: Props) => {
             bottomBar={
                 <Bottom>
                     <BottomContent>
-                        <Left>
+                        <Total>
                             <Translation
                                 id="TOTAL_SYMBOL"
                                 values={{ symbol: symbol.toUpperCase() }}
                             />
-                        </Left>
+                        </Total>
                         <Right>
-                            <Coin bold>
-                                {formatNetworkAmount(precomposedTx.totalSpent, symbol)}
-                                <Symbol>{symbol}</Symbol>
-                            </Coin>
-                            <Fiat>
-                                <FiatValue
-                                    amount={formatNetworkAmount(precomposedTx.totalSpent, symbol)}
-                                    symbol={symbol}
-                                />
-                            </Fiat>
+                            <Amounts>
+                                <Coin bold>
+                                    {formatNetworkAmount(precomposedTx.totalSpent, symbol)}
+                                    <Symbol>{symbol}</Symbol>
+                                </Coin>
+                                <TotalFiat>
+                                    <FiatValue
+                                        amount={formatNetworkAmount(
+                                            precomposedTx.totalSpent,
+                                            symbol,
+                                        )}
+                                        symbol={symbol}
+                                    />
+                                </TotalFiat>
+                            </Amounts>
                         </Right>
                     </BottomContent>
                     {broadcastEnabled && (
