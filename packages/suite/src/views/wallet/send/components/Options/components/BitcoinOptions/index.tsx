@@ -24,16 +24,20 @@ const Left = styled.div`
     display: flex;
     flex: 1;
     justify-content: flex-start;
+    flex-wrap: wrap;
+`;
+
+const AddRecipientButton = styled(Button)`
+    align-self: center;
 `;
 
 const Right = styled.div`
     display: flex;
-    flex: 1;
-    justify-content: flex-end;
 `;
 
 const StyledButton = styled(Button)`
     margin-right: 8px;
+    margin: 4px 8px 4px 0px;
 `;
 
 export default () => {
@@ -106,14 +110,14 @@ export default () => {
                     </StyledButton>
                 </Left>
                 <Right>
-                    <Button
+                    <AddRecipientButton
                         variant="tertiary"
                         icon="PLUS"
                         data-test="add-output"
                         onClick={addOutput}
                     >
                         <Translation id="RECIPIENT_ADD" />
-                    </Button>
+                    </AddRecipientButton>
                 </Right>
             </Row>
         </Wrapper>

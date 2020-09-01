@@ -5,14 +5,13 @@ import { Translation } from '@suite-components/Translation';
 
 import { variables, colors } from '@trezor/components';
 
-const Wrapper = styled.div`
-    display: flex;
+const Wrapper = styled.span`
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${colors.NEUE_TYPE_DARK_GREY};
 `;
 
-const Duration = styled.div`
+const Duration = styled.span`
     padding-left: 4px;
 `;
 

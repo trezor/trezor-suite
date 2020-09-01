@@ -189,7 +189,6 @@ const Input = ({
 
     return (
         <Wrapper
-            width={width}
             {...wrapperProps}
             data-test={dataTest}
             onMouseEnter={() => setIsHovered(true)}
