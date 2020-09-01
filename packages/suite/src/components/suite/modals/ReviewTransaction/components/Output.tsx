@@ -117,6 +117,7 @@ const Fiat = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    margin-top: 4px;
 `;
 
 const Row = styled.div<{ responsive?: boolean }>`
@@ -136,6 +137,14 @@ const Row = styled.div<{ responsive?: boolean }>`
                 }
                 ${Amounts} {
                     margin-left: 26px;
+                    flex: 1;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: space-between;
+                }
+
+                ${Fiat} {
+                    margin-left: 12px;
                 }
             }
         `}

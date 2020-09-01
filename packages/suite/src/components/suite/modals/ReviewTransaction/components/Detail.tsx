@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { variables, colors, Button, Box } from '@trezor/components';
+import { variables, colors, Icon, Box } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 import { ANIMATION } from '@suite-config';
+
+const Wrapper = styled.div``;
 
 const ExpandWrapper = styled(motion.div)`
     overflow: hidden;
@@ -20,10 +22,14 @@ const StyledBox = styled(Box)`
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
-const ExpandButton = styled(Button)`
-    justify-content: start;
-    align-self: flex-start;
-    background: transparent;
+const ExpandButton = styled.div`
+    display: flex;
+    padding: 0px 14px;
+    cursor: pointer;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: 500;
+    justify-content: space-between;
 `;
 
 const Top = styled.div`
@@ -69,11 +75,8 @@ export default ({ tx, txHash }: Props) => {
     };
 
     return (
-        <div>
+        <Wrapper>
             <ExpandButton
-                variant="tertiary"
-                icon={!isExpanded ? 'ARROW_DOWN' : 'ARROW_UP'}
-                alignIcon="right"
                 onClick={e => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -81,6 +84,7 @@ export default ({ tx, txHash }: Props) => {
                 }}
             >
                 <Translation id="TR_TRANSACTION_DETAILS" />
+                <Icon size={16} icon={!isExpanded ? 'ARROW_DOWN' : 'ARROW_UP'} />
             </ExpandButton>
             <AnimatePresence initial={false}>
                 {isExpanded && (
@@ -108,6 +112,6 @@ export default ({ tx, txHash }: Props) => {
                     </ExpandWrapper>
                 )}
             </AnimatePresence>
-        </div>
+        </Wrapper>
     );
 };
