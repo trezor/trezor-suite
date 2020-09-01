@@ -20,8 +20,8 @@ export type Output = {
     currency: CurrencyOption;
     label?: string;
     token: string | null;
-    dataHex: string; // bitcoin opreturn/ethereum data
-    dataAscii: string; // bitcoin opreturn/ethereum data
+    dataHex?: string; // bitcoin opreturn/ethereum data
+    dataAscii?: string; // bitcoin opreturn/ethereum data
 };
 
 export type FormOptions =
@@ -161,7 +161,7 @@ export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
         updateContext: (value: Partial<UseSendFormState>) => void;
         resetContext: () => void;
         composeTransaction: (field: string, fieldHasError?: boolean) => void;
-        loadTransaction: (state: PartialFormState) => Promise<void>;
+        loadTransaction: () => Promise<void>;
         signTransaction: () => void;
         // useSendFormFields utils:
         calculateFiat: (outputIndex: number, amount?: string) => void;

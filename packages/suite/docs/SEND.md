@@ -66,7 +66,7 @@
 - on BTC OP_RETURN data changed
 - on ETH data changed
 - switching from "regular" fee level to "custom" should set value from last selected fee
-- whenever fee level wasn't changed yet (normal) and there is not enough coins to cover default level, should be automatically switched to first possible (lower) level, either LOW or CUSTOM...
+- IF fee level wasn't changed yet (normal) and there is not enough coins to satisfy normal level should be automatically switched to first possible (lower) level, either LOW or CUSTOM...
 - last used fee level will be remembered globally for this coin
 - estimated time is only available for BTC-like coins
 

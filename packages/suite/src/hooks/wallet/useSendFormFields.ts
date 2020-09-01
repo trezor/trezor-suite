@@ -15,6 +15,8 @@ type Props = UseFormMethods<FormState> & {
     fiatRates: UseSendFormState['fiatRates'];
 };
 
+// This hook should be used only as a sub-hook of `useSendForm`
+
 export const useSendFormFields = ({
     control,
     getValues,
@@ -30,7 +32,9 @@ export const useSendFormFields = ({
         (outputIndex: number, amount?: string) => {
             const values = getValues();
             if (!values.outputs) return; // this happens during hot-reload
-            const { fiat } = values.outputs[outputIndex];
+            const output = values.outputs[outputIndex];
+            if (output.type !== 'payment') return;
+            const { fiat, currency } = output;
             if (typeof fiat !== 'string') return; // fiat input not registered (testnet? fiat not available?)
             const inputName = `outputs[${outputIndex}].fiat`;
             if (!amount) {
@@ -42,12 +46,7 @@ export const useSendFormFields = ({
             }
             // calculate Fiat value
             if (!fiatRates || !fiatRates.current) return;
-            const selectedCurrency = values.outputs[outputIndex].currency;
-            const fiatValue = toFiatCurrency(
-                amount,
-                selectedCurrency.value,
-                fiatRates.current.rates,
-            );
+            const fiatValue = toFiatCurrency(amount, currency.value, fiatRates.current.rates);
             if (fiatValue) {
                 setValue(inputName, fiatValue, { shouldValidate: true });
             }

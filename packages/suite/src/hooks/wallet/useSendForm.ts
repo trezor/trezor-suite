@@ -8,7 +8,6 @@ import {
     UseSendFormProps,
     UseSendFormState,
     FormState,
-    PartialFormState,
     SendContextValues,
     Output,
 } from '@wallet-types/sendForm';
@@ -16,6 +15,7 @@ import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { useSendFormOutputs } from './useSendFormOutputs';
 import { useSendFormFields } from './useSendFormFields';
 import { useSendFormCompose } from './useSendFormCompose';
+import { useSendFormImport } from './useSendFormImport';
 
 export const SendContext = createContext<SendContextValues | null>(null);
 SendContext.displayName = 'SendContext';
@@ -54,24 +54,35 @@ const getStateFromProps = (props: UseSendFormProps) => {
 };
 
 // Mounted in top level index: @wallet-views/send
-// returned ContextState is a object provided as SendContext values with custom callbacks for updating/resetting state
+// return SendContextValues used by SendFormContext in all nested children components of @wallet-views/send
+// SendContextValues is a combination of `react-hook-form` methods with custom callbacks and utils
+// see: ./packages/suite/send/ARCHITECTURE.md
+
 export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // public variables, exported to SendFormContext
     const [state, setState] = useState<UseSendFormState>(getStateFromProps(props));
 
     // private variables, used inside sendForm hook
     const draft = useRef<FormState | undefined>(undefined);
-    const { getDraft, saveDraft, removeDraft, getLastUsedFeeLevel, signTransaction } = useActions({
+    const {
+        getDraft,
+        saveDraft,
+        removeDraft,
+        getLastUsedFeeLevel,
+        signTransaction,
+        importRequest,
+    } = useActions({
         getDraft: sendFormActions.getDraft,
         saveDraft: sendFormActions.saveDraft,
         removeDraft: sendFormActions.removeDraft,
         getLastUsedFeeLevel: walletSettingsActions.getLastUsedFeeLevel,
         signTransaction: sendFormActions.signTransaction,
+        importRequest: sendFormActions.importRequest,
     });
 
     const { localCurrencyOption } = state;
 
-    // register `react-hook-form`, default values are set later in "loadDraft" useEffect block
+    // register `react-hook-form`, defaultValues are set later in "loadDraft" useEffect block
     const useFormMethods = useForm<FormState>({ mode: 'onChange' });
 
     const { control, reset, register, getValues } = useFormMethods;
@@ -82,36 +93,29 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         name: 'outputs',
     });
 
-    // load draft from reducer
-    useEffect(() => {
-        const storedState = getDraft();
-        const lastUsedFee = getLastUsedFeeLevel();
-        const feeEnhancement: Partial<FormState> = {};
-        if (!storedState && lastUsedFee) {
-            feeEnhancement.selectedFee = lastUsedFee.label;
-            if (lastUsedFee.label === 'custom') {
-                feeEnhancement.feePerUnit = lastUsedFee.feePerUnit;
-                feeEnhancement.feeLimit = lastUsedFee.feeLimit;
+    // enhance DEFAULT_VALUES with last remembered FeeLevel and localCurrencyOption
+    // used in "loadDraft" useEffect and "importTransaction" callback
+    const getLoadedValues = useCallback(
+        (loadedState?: Partial<FormState>) => {
+            const feeEnhancement: Partial<FormState> = {};
+            if (!loadedState || !loadedState.selectedFee) {
+                const lastUsedFee = getLastUsedFeeLevel();
+                if (lastUsedFee) {
+                    feeEnhancement.selectedFee = lastUsedFee.label;
+                    if (lastUsedFee.label === 'custom') {
+                        feeEnhancement.feePerUnit = lastUsedFee.feePerUnit;
+                        feeEnhancement.feeLimit = lastUsedFee.feeLimit;
+                    }
+                }
             }
-        }
-        const values = {
-            ...getDefaultValues(localCurrencyOption),
-            ...storedState,
-            ...feeEnhancement,
-        };
-        reset(values);
-
-        if (storedState) {
-            draft.current = storedState;
-        }
-    }, [localCurrencyOption, getDraft, getLastUsedFeeLevel, getValues, reset]);
-
-    // register custom form fields (without HTMLElement)
-    useEffect(() => {
-        register({ name: 'setMaxOutputId', type: 'custom' });
-        register({ name: 'selectedFee', type: 'custom' });
-        register({ name: 'options', type: 'custom' });
-    }, [register]);
+            return {
+                ...getDefaultValues(localCurrencyOption),
+                ...loadedState,
+                ...feeEnhancement,
+            };
+        },
+        [getLastUsedFeeLevel, localCurrencyOption],
+    );
 
     // update custom values
     const updateContext = useCallback(
@@ -125,11 +129,13 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         [state],
     );
 
+    // declare sendFormUtils, sub-hook of useSendForm
     const sendFormUtils = useSendFormFields({
         ...useFormMethods,
         fiatRates: state.fiatRates,
     });
 
+    // declare sendFormCompose, sub-hook of useSendForm
     const {
         composeDraft,
         draftSaveRequest,
@@ -144,6 +150,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         setAmount: sendFormUtils.setAmount,
     });
 
+    // declare useSendFormOutputs, sub-hook of useSendForm
     const sendFormOutputs = useSendFormOutputs({
         ...useFormMethods,
         outputsFieldArray,
@@ -154,43 +161,21 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const resetContext = useCallback(() => {
         setComposedLevels(undefined);
         removeDraft();
-        setState(getStateFromProps(props)); // resetting state will trigger "load draft" hook which will reset FormState
+        setState(getStateFromProps(props)); // resetting state will trigger "loadDraft" useEffect block, which will reset FormState to default
     }, [props, removeDraft, setComposedLevels]);
 
-    // state loaded from ImportTransaction
-    // TODO:
-    // - if output[x].amount is set > calculateFiat
-    // - if output[x].fiat is set > calculateAmount
-    const loadTransaction = async (loadedState: PartialFormState) => {
+    // declare useSendFormImport, sub-hook of useSendForm
+    const { importTransaction } = useSendFormImport({
+        fiatRates: state.fiatRates,
+        getLoadedValues,
+    });
+
+    // get state from ImportTransaction modal and process it
+    const loadTransaction = async () => {
+        const result = await importRequest();
+        if (!result) return;
         setComposedLevels(undefined);
-
-        const stateEnhancement: Partial<FormState> = {};
-        if (!loadedState.selectedFee) {
-            const lastUsedFee = getLastUsedFeeLevel();
-            if (lastUsedFee) {
-                stateEnhancement.selectedFee = lastUsedFee.label;
-                if (lastUsedFee.label === 'custom') {
-                    stateEnhancement.feePerUnit = lastUsedFee.feePerUnit;
-                    stateEnhancement.feeLimit = lastUsedFee.feeLimit;
-                }
-            }
-        }
-
-        if (loadedState.outputs) {
-            loadedState.outputs = loadedState.outputs.map(output => {
-                if (output.type === 'opreturn') {
-                    return output;
-                }
-                if (!output.currency) output.currency = localCurrencyOption;
-                return { ...DEFAULT_PAYMENT, ...output };
-            });
-        }
-        console.warn('loadedState', loadedState);
-        const values = {
-            ...getDefaultValues(localCurrencyOption),
-            ...stateEnhancement,
-            ...loadedState,
-        };
+        const values = importTransaction(result);
         reset(values);
         const valid = await control.trigger();
         if (valid) {
@@ -198,19 +183,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         }
     };
 
-    // handle draft change
-    useEffect(() => {
-        if (!draft.current) return;
-        composeDraft(draft.current);
-        draft.current = undefined;
-    }, [draft, composeDraft]);
-
-    useEffect(() => {
-        if (!draftSaveRequest) return;
-        saveDraft(getValues());
-        setDraftSaveRequest(false);
-    }, [draftSaveRequest, setDraftSaveRequest, saveDraft, getValues]);
-
+    // get response from ReviewTransaction modal
     const sign = useCallback(async () => {
         const values = getValues();
         const composedTx = composedLevels
@@ -227,6 +200,38 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     }, [getValues, composedLevels, signTransaction, resetContext]);
 
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
+
+    // load draft from reducer
+    useEffect(() => {
+        const storedState = getDraft();
+        const values = getLoadedValues(storedState);
+        reset(values);
+
+        if (storedState) {
+            draft.current = storedState;
+        }
+    }, [getDraft, getLoadedValues, reset]);
+
+    // register custom form fields (without HTMLElement)
+    useEffect(() => {
+        register({ name: 'setMaxOutputId', type: 'custom' });
+        register({ name: 'selectedFee', type: 'custom' });
+        register({ name: 'options', type: 'custom' });
+    }, [register]);
+
+    // handle draft change
+    useEffect(() => {
+        if (!draft.current) return;
+        composeDraft(draft.current);
+        draft.current = undefined;
+    }, [draft, composeDraft]);
+
+    // handle draftSaveRequest
+    useEffect(() => {
+        if (!draftSaveRequest) return;
+        saveDraft(getValues());
+        setDraftSaveRequest(false);
+    }, [draftSaveRequest, setDraftSaveRequest, saveDraft, getValues]);
 
     return {
         ...state,

@@ -36,8 +36,7 @@ export default () => {
         loadTransaction,
     } = useSendFormContext();
 
-    const { importRequest, sendRaw } = useActions({
-        importRequest: sendFormActions.importRequest,
+    const { sendRaw } = useActions({
         sendRaw: sendFormActions.sendRaw,
     });
 
@@ -53,16 +52,7 @@ export default () => {
         {
             key: 'import',
             callback: () => {
-                // since Dropdown needs to respond immediately to close itself
-                // opening modal and processing the response needs to be wrapped
-                const loadFile = async () => {
-                    const result = await importRequest();
-                    if (result) {
-                        loadTransaction(result);
-                        console.log('processing', result);
-                    }
-                };
-                loadFile();
+                loadTransaction();
                 return true;
             },
             label: 'Import',

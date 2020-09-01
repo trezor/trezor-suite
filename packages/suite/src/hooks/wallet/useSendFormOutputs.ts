@@ -9,6 +9,8 @@ type Props = UseFormMethods<FormState> & {
     composeRequest: SendContextValues['composeTransaction'];
 };
 
+// This hook should be used only as a sub-hook of `useSendForm`
+
 export const useSendFormOutputs = ({
     outputsFieldArray,
     getValues,

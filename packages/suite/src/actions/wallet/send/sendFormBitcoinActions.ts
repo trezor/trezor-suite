@@ -28,7 +28,7 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
             if (output.type === 'opreturn') {
                 return {
                     type: 'opreturn',
-                    dataHex: output.dataHex,
+                    dataHex: output.dataHex as string, // at this point it should be already validated
                 } as const;
             }
 
