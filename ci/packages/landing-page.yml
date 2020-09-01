@@ -6,6 +6,8 @@
 
 landing-page build:
   stage: build
+  only:
+    <<: *auto_run_branches
   script:
     - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/landing-page build
   artifacts:
