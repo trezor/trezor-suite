@@ -87,11 +87,12 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
     const validOutputs = findValidOutputs(formValues);
     if (validOutputs.length === 0) return;
 
+    // TEMP: move this to eth & xrp actions (like getBitcoinComposeOutputs util)
     const values = { ...formValues, outputs: validOutputs };
 
     const { account } = formState;
     if (account.networkType === 'bitcoin') {
-        return dispatch(sendFormBitcoinActions.composeTransaction(values, formState));
+        return dispatch(sendFormBitcoinActions.composeTransaction(formValues, formState));
     }
     if (account.networkType === 'ethereum') {
         return dispatch(sendFormEthereumActions.composeTransaction(values, formState));

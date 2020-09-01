@@ -1,12 +1,16 @@
 import BigNumber from 'bignumber.js';
 import { FieldError, UseFormMethods } from 'react-hook-form';
-import { EthereumTransaction, FeeLevel } from 'trezor-connect';
+import { EthereumTransaction, FeeLevel, ComposeOutput } from 'trezor-connect';
 import Common from 'ethereumjs-common';
 import { Transaction, TxData } from 'ethereumjs-tx';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
 import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
-import { amountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
+import {
+    amountToSatoshi,
+    networkAmountToSatoshi,
+    formatNetworkAmount,
+} from '@wallet-utils/accountUtils';
 import { Network, Account, CoinFiatRates } from '@wallet-types';
 import { FormState, FeeInfo, EthTransactionData } from '@wallet-types/sendForm';
 
@@ -235,6 +239,63 @@ export const findValidOutputs = (values: Partial<FormState>) => {
                     typeof output.dataHex === 'string' &&
                     output.dataHex.length > 0)),
     );
+};
+
+// type SimpleOutput = Exclude<ComposeOutput, { type: 'opreturn' } | { address_n: number[] }>;
+
+export const getBitcoinComposeOutputs = (values: Partial<FormState>) => {
+    const result: ComposeOutput[] = [];
+    if (!values || !Array.isArray(values.outputs)) return result;
+
+    values.outputs.forEach((output, index) => {
+        if (output.type === 'opreturn' && output.dataHex) {
+            result.push({
+                type: 'opreturn',
+                dataHex: output.dataHex,
+            });
+        }
+
+        const { address } = output;
+        const isMaxActive = values.setMaxOutputId === index;
+        if (isMaxActive) {
+            if (address) {
+                result.push({
+                    type: 'send-max',
+                    address,
+                });
+            } else {
+                result.push({ type: 'send-max-noaddress' });
+            }
+        } else if (output.amount) {
+            const amount = networkAmountToSatoshi(output.amount, 'btc');
+            if (address) {
+                result.push({
+                    type: 'external',
+                    address,
+                    amount,
+                });
+            } else {
+                result.push({
+                    type: 'noaddress',
+                    amount,
+                });
+            }
+        }
+    });
+
+    // corner case for multiple outputs
+    // one Output is valid and "final" but other has only address
+    // to prevent composing "final" transaction switch it to not-final (noaddress)
+    const hasIncompleteOutput = values.outputs.find(o => o.address && !o.amount);
+    if (hasIncompleteOutput) {
+        const finalOutput = result.find(o => o.type === 'send-max' || o.type === 'external');
+        if (finalOutput) {
+            // replace to noaddress
+            finalOutput.type = finalOutput.type === 'external' ? 'noaddress' : 'send-max-noaddress';
+        }
+    }
+
+    return result;
 };
 
 export const buildTokenOptions = (account: Account) => {

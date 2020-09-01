@@ -90,7 +90,9 @@
 ------
 
 ### (BTC only) Locktime:
-Additional field in send form, activated by "Add locktime" option
+Additional field in send form, activated by "Add locktime" option.
+
+If the number is greater than 500000000 then it is a timestamp otherwise is block number
 - on "add locktime" input change
 - on RBF option enable
 - should disable RBF option if set
