@@ -161,6 +161,8 @@ suite-web deploy staging:
         name: ${CI_BUILD_REF_NAME}-staging
         url: ${STAGING_SERVER_URL}
     before_script: []
+    only:
+        <<: *auto_run_branches
     when: manual
     script:
         - source ${STAGING_DEPLOY_KEYFILE}

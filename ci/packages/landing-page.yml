@@ -1,3 +1,10 @@
+.auto_run_branches: &auto_run_branches
+    refs:
+        - develop
+        - releases
+        - schedules
+
+
 landing-page build:
   stage: build
   script:
@@ -7,8 +14,23 @@ landing-page build:
     paths:
       - packages/landing-page/build
 
+landing-page build manual:
+  stage: build
+  when: manual
+  except:
+    <<: *auto_run_branches
+  script:
+    - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/landing-page build
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - packages/landing-page/build
+
+
 landing-page build-staging:
   stage: build
+   only:
+        <<: *auto_run_branches
   script:
     - yarn workspace @trezor/landing-page build
   artifacts:
@@ -19,6 +41,8 @@ landing-page build-staging:
 
 landing-page deploy-staging:
   stage: deploy to staging
+  only:
+    <<: *auto_run_branches
   dependencies:
     - landing-page build-staging
   environment:
