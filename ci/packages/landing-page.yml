@@ -26,7 +26,6 @@ landing-page build manual:
     paths:
       - packages/landing-page/build
 
-
 landing-page build-staging:
   stage: build
   only:
