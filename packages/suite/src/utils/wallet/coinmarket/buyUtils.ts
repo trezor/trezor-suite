@@ -90,14 +90,16 @@ export const getAccountInfo = (account: Account) => {
     }
 };
 
-export function createQuoteLink(request: BuyTradeQuoteRequest): string {
+export function createQuoteLink(request: BuyTradeQuoteRequest, account: Account): string {
     let hash: string;
+
     if (request.wantCrypto) {
         hash = `qc/${request.country}/${request.fiatCurrency}/${request.cryptoStringAmount}/${request.receiveCurrency}`;
     } else {
         hash = `qf/${request.country}/${request.fiatCurrency}/${request.fiatStringAmount}/${request.receiveCurrency}`;
     }
-    return `${window.location.origin}/coinmarket-redirect#/${hash}`;
+
+    return `${window.location.origin}/coinmarket-redirect#offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
 }
 
 export function createTxLink(trade: BuyTrade): string {

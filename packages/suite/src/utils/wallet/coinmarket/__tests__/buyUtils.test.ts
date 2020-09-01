@@ -1,5 +1,5 @@
 import * as fixtures from '../__fixtures__/buyUtils';
-import { getAmountLimits, processQuotes, createQuoteLink } from '../buyUtils';
+import { getAmountLimits, processQuotes, createQuoteLink, getStatusMessage } from '../buyUtils';
 
 const {
     QUOTE_REQUEST_FIAT,
@@ -54,5 +54,14 @@ describe('coinmarket/buy utils', () => {
         expect(createQuoteLink(QUOTE_REQUEST_CRYPTO)).toStrictEqual(
             `${window.location.href}/qc/CZ/EUR/0.001/BTC`,
         );
+    });
+
+    it('getStatusMessage', () => {
+        expect(getStatusMessage('LOGIN_REQUEST')).toBe('TR_BUY_STATUS_PENDING');
+        expect(getStatusMessage('APPROVAL_PENDING')).toBe('TR_BUY_STATUS_PENDING');
+        expect(getStatusMessage('SUBMITTED')).toBe('TR_BUY_STATUS_PENDING_GO_TO_GATEWAY');
+        expect(getStatusMessage('BLOCKED')).toBe('TR_BUY_STATUS_ERROR');
+        expect(getStatusMessage('ERROR')).toBe('TR_BUY_STATUS_ERROR');
+        expect(getStatusMessage('SUCCESS')).toBe('TR_BUY_STATUS_SUCCESS');
     });
 });

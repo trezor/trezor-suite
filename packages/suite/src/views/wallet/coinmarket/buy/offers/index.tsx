@@ -78,6 +78,14 @@ const Offers = () => {
     const alternativeQuotes = useSelector(state => state.wallet.coinmarket.buy.alternativeQuotes);
     const { openModal } = useActions({ openModal: modalActions.openModal });
 
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+
+    if (selectedAccount.status !== 'loaded') {
+        return null;
+    }
+
+    const { account } = selectedAccount;
+
     if (!quotesRequest) return null;
 
     const selectQuote = (quote: BuyTrade) => {
@@ -88,7 +96,7 @@ const Offers = () => {
                 if (!quote.quoteId) {
                     const response = await invityAPI.doBuyTrade({
                         trade: quote,
-                        returnUrl: createQuoteLink(quotesRequest),
+                        returnUrl: createQuoteLink(quotesRequest, account),
                     });
                     // TODO - finish error handling - probably use modal to show the error to the user
                     if (response) {

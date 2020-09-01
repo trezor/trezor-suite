@@ -4,24 +4,11 @@ import { LayoutContext } from '@suite-components';
 import { CoinmarketTopPanel, CoinmarketOfferInfo } from '@wallet-components';
 import { variables, Card } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
+
 import PaymentFailed from './components/PaymentFailed';
 import PaymentProcessing from './components/PaymentProcessing';
 import WaitingForPayment from './components/WaitingForPayment';
 import PaymentSuccessful from './components/PaymentSuccessful';
-
-const Wrapper = styled.div`
-    display: flex;
-    margin-top: 20px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        flex-direction: column;
-    }
-`;
-
-const StyledCard = styled(Card)`
-    flex: 1;
-    padding: 0;
-`;
 
 const CoinmarketDetail = () => {
     const router = useSelector(state => state.router);
@@ -56,5 +43,19 @@ const CoinmarketDetail = () => {
         </Wrapper>
     );
 };
+
+const Wrapper = styled.div`
+    display: flex;
+    margin-top: 20px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        flex-direction: column;
+    }
+`;
+
+const StyledCard = styled(Card)`
+    flex: 1;
+    padding: 0;
+`;
 
 export default CoinmarketDetail;
