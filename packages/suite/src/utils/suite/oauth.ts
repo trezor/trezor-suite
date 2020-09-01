@@ -10,7 +10,12 @@ import { urlHashParams } from '@suite-utils/metadata';
 export const getOauthReceiverUrl = () => {
     // @ts-ignore
     if (!window.ipcRenderer) {
-        return `${window.location.origin}${getPrefixedURL('/static/oauth/oauth_receiver.html')}`;
+        const { origin } = window.location;
+        // For the purpose of e2e tests change the redirect url to develop branch on sldev.cz
+        if (origin.indexOf('sldev.cz') >= 0) {
+            return 'https://suite.corp.sldev.cz/suite-web/develop/wallet/static/oauth/oauth_receiver.html';
+        }
+        return `${origin}${getPrefixedURL('/static/oauth/oauth_receiver.html')}`;
     }
     // TEMP: for desktop. but this solution is temporary, local http server will be used later to accept callback
     return 'https://wallet.trezor.io/oauth_receiver.html';
