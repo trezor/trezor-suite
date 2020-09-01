@@ -6,20 +6,6 @@
 
 landing-page build:
   stage: build
-  only:
-    <<: *auto_run_branches
-  script:
-    - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/landing-page build
-  artifacts:
-    expire_in: 7 days
-    paths:
-      - packages/landing-page/build
-
-landing-page build manual:
-  stage: build
-  when: manual
-  except:
-    <<: *auto_run_branches
   script:
     - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/landing-page build
   artifacts:
