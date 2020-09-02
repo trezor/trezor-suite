@@ -2,7 +2,33 @@ import React from 'react';
 import { Controller } from 'react-hook-form';
 import { SelectInput } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
-import { buildTokenOptions } from '@wallet-utils/sendFormUtils';
+import { Account } from '@wallet-types';
+
+interface Option {
+    label: string;
+    value: string | null;
+}
+
+export const buildTokenOptions = (account: Account) => {
+    const result: Option[] = [
+        {
+            value: null,
+            label: account.symbol.toUpperCase(),
+        },
+    ];
+
+    if (account.tokens) {
+        account.tokens.forEach(token => {
+            const tokenName = token.symbol || 'N/A';
+            result.push({
+                value: token.address,
+                label: tokenName.toUpperCase(),
+            });
+        });
+    }
+
+    return result;
+};
 
 export default ({ outputId }: { outputId: number }) => {
     const {
@@ -37,7 +63,7 @@ export default ({ outputId }: { outputId: number }) => {
                         value={options.find(o => o.value === tokenValue)}
                         isClearable={false}
                         minWidth="45px"
-                        onChange={(selected: { value: string }) => {
+                        onChange={(selected: Option) => {
                             onChange(selected.value);
                             clearErrors(amountInputName);
                             if (isSetMaxActive || dataEnabled) setAmount(outputId, '');

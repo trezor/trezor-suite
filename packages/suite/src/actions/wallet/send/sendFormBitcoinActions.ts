@@ -1,7 +1,8 @@
 import TrezorConnect, { FeeLevel, SignTransaction } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { getBitcoinComposeOutputs } from '@wallet-utils/sendFormUtils';
 import {
     ZEC_SIGN_ENHANCEMENT,
     BTC_RBF_SEQUENCE,
@@ -19,50 +20,11 @@ import { Dispatch, GetState } from '@suite-types';
 export const composeTransaction = (formValues: FormState, formState: UseSendFormState) => async (
     dispatch: Dispatch,
 ) => {
-    const { outputs } = formValues;
     const { account, feeInfo } = formState;
     if (!account.addresses || !account.utxo) return;
 
-    const composedOutputs = outputs
-        .map((output, index) => {
-            if (output.type === 'opreturn') {
-                return {
-                    type: 'opreturn',
-                    dataHex: output.dataHex,
-                } as const;
-            }
-
-            const { address } = output;
-            const isMaxActive = formValues.setMaxOutputId === index;
-            if (isMaxActive) {
-                if (address) {
-                    return {
-                        address,
-                        type: 'send-max',
-                    } as const;
-                }
-
-                return {
-                    type: 'send-max-noaddress',
-                } as const;
-            }
-
-            const amount = networkAmountToSatoshi(output.amount, account.symbol);
-            if (address) {
-                return {
-                    address,
-                    amount,
-                } as const;
-            }
-
-            return {
-                type: 'noaddress',
-                amount,
-            } as const;
-        })
-        .filter(output => !output.amount || output.amount !== '0');
-
-    if (composedOutputs.length < 1) return;
+    const composeOutputs = getBitcoinComposeOutputs(formValues, account.symbol);
+    if (composeOutputs.length < 1) return;
 
     const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
     // in case when selectedFee is set to 'custom' construct this FeeLevel from values
@@ -83,7 +45,7 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
             utxo: account.utxo.filter(input => input.amount !== '0'),
         },
         feeLevels: predefinedLevels,
-        outputs: composedOutputs,
+        outputs: composeOutputs,
         coin: account.symbol,
     };
 

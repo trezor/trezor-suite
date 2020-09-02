@@ -30,3 +30,18 @@ export const isDecimalsValid = (value: string, decimals: number) => {
     );
     return DECIMALS_RE.test(value);
 };
+
+export const isHexValid = (value: string, prefix?: string) => {
+    // ethereum data/signedTx may start with prefix
+    if (prefix && value.indexOf(prefix) === 0) {
+        const hex = value.substring(prefix.length, value.length);
+        // pad left even, is it necessary in ETH?
+        // TODO: investigate
+        value = hex.length % 2 !== 0 ? `0${hex}` : hex;
+    }
+
+    if (value.length % 2 !== 0) return false;
+    // TODO: ETH may contain uppercase? does BTC as well?
+    if (!/^[0-9A-Fa-f]+$/.test(value)) return false;
+    return true;
+};

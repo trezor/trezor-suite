@@ -8,13 +8,14 @@ import {
     calculateTotal,
     calculateMax,
     findComposeErrors,
-    findValidOutputs,
     calculateEthFee,
     getFiatRate,
-    buildCurrencyOption,
-    buildFeeOptions,
-    buildTokenOptions,
+    getBitcoinComposeOutputs,
+    getExternalComposeOutput,
 } from '../sendFormUtils';
+import { NETWORKS } from '@wallet-config';
+
+const { getWalletAccount } = global.JestMocks;
 
 describe('sendForm utils', () => {
     fixtures.prepareEthereumTransaction.forEach(f => {
@@ -84,17 +85,17 @@ describe('sendForm utils', () => {
         ).toEqual(['outputs[0].amount', 'outputs[1].address', 'topLevelField']);
     });
 
-    it('findValidOutputs', () => {
+    it('getBitcoinComposeOutputs', () => {
         // @ts-ignore: invalid params
-        expect(findValidOutputs(null)).toEqual([]);
+        expect(getBitcoinComposeOutputs(null, 'btc')).toEqual([]);
         // @ts-ignore: invalid params
-        expect(findValidOutputs(true)).toEqual([]);
+        expect(getBitcoinComposeOutputs(true, 'btc')).toEqual([]);
         // @ts-ignore: invalid params
-        expect(findValidOutputs(1)).toEqual([]);
+        expect(getBitcoinComposeOutputs(1, 'btc')).toEqual([]);
         // @ts-ignore: invalid params
-        expect(findValidOutputs('A')).toEqual([]);
+        expect(getBitcoinComposeOutputs('A', 'btc')).toEqual([]);
 
-        expect(findValidOutputs({ outputs: [] })).toEqual([]);
+        expect(getBitcoinComposeOutputs({ outputs: [] }, 'btc')).toEqual([]);
 
         let outputs: any[] = [
             null,
@@ -102,27 +103,190 @@ describe('sendForm utils', () => {
             { type: 'payment', amount: '' },
             { type: 'payment', amount: '1' },
         ];
-        // @ts-ignore: partial outputs
-        expect(findValidOutputs({ outputs })).toEqual([{ type: 'payment', amount: '1' }]);
+        expect(getBitcoinComposeOutputs({ outputs }, 'btc')).toEqual([
+            { type: 'noaddress', amount: '100000000' },
+        ]);
 
         outputs = [
             { type: 'payment', amount: '' },
+            { type: 'payment', amount: '1', address: 'A' },
             { type: 'payment', amount: '1' },
+            { type: 'payment', amount: '2' },
             { type: 'payment', amount: '', fiat: '1' },
+            { type: 'opreturn' },
             { type: 'opreturn', dataHex: '' },
             { type: 'opreturn', dataHex: 'deadbeef' },
         ];
         expect(
-            findValidOutputs({
-                setMaxOutputId: 2,
-                // @ts-ignore: partial outputs
-                outputs,
-            }),
+            getBitcoinComposeOutputs(
+                {
+                    setMaxOutputId: 2,
+                    outputs,
+                },
+                'btc',
+            ),
         ).toEqual([
-            { type: 'payment', amount: '1' },
-            { type: 'payment', amount: '', fiat: '1' },
+            { type: 'external', amount: '100000000', address: 'A' },
+            { type: 'send-max-noaddress' },
+            { type: 'noaddress', amount: '200000000' },
             { type: 'opreturn', dataHex: 'deadbeef' },
         ]);
+
+        // edge case, final Output are changed to not-final
+        outputs = [
+            { type: 'payment', amount: '', address: 'A' },
+            { type: 'payment', amount: '1', address: 'B' },
+        ];
+        expect(getBitcoinComposeOutputs({ outputs }, 'btc')).toEqual([
+            { type: 'noaddress', amount: '100000000', address: 'B' },
+        ]);
+
+        // edge case, final Output are changed to not-final
+        outputs = [
+            { type: 'payment', amount: '', address: 'A' },
+            { type: 'payment', amount: '', address: 'B' },
+        ];
+        expect(
+            getBitcoinComposeOutputs(
+                {
+                    setMaxOutputId: 1,
+                    outputs,
+                },
+                'btc',
+            ),
+        ).toEqual([{ type: 'send-max-noaddress', address: 'B' }]);
+
+        outputs = [
+            { type: 'payment', amount: '', address: 'A' },
+            { type: 'payment', amount: '1' },
+        ];
+        expect(getBitcoinComposeOutputs({ outputs }, 'btc')).toEqual([
+            { type: 'noaddress', amount: '100000000' },
+        ]);
+    });
+
+    it('getExternalComposeOutput', () => {
+        // @ts-ignore: invalid params
+        expect(getExternalComposeOutput(null)).toEqual(undefined);
+        // @ts-ignore: invalid params
+        expect(getExternalComposeOutput(true)).toEqual(undefined);
+        // @ts-ignore: invalid params
+        expect(getExternalComposeOutput(1)).toEqual(undefined);
+        // @ts-ignore: invalid params
+        expect(getExternalComposeOutput('A')).toEqual(undefined);
+        expect(
+            // @ts-ignore: invalid params
+            getExternalComposeOutput({ outputs: [null] }),
+        ).toEqual(undefined);
+        expect(
+            // @ts-ignore: invalid params
+            getExternalComposeOutput({ outputs: [1] }),
+        ).toEqual(undefined);
+        expect(
+            // @ts-ignore: invalid params
+            getExternalComposeOutput({ outputs: ['A'] }),
+        ).toEqual(undefined);
+        expect(
+            // @ts-ignore: invalid params
+            getExternalComposeOutput({ outputs: [{}] }),
+        ).toEqual(undefined);
+
+        const OUTPUT: any = {
+            type: 'payment',
+        };
+
+        const EthAccount = getWalletAccount({
+            tokens: [
+                { type: 'ERC20', address: 'A', symbol: 'A', decimals: 2 },
+                { type: 'ERC20', address: 'B', symbol: 'B', decimals: 6 },
+            ],
+        });
+        const EthNetwork: any = NETWORKS.find(n => n.symbol === 'eth');
+        const XrpNetwork: any = NETWORKS.find(n => n.symbol === 'xrp');
+
+        expect(getExternalComposeOutput({ outputs: [] }, EthAccount, EthNetwork)).toEqual(
+            undefined,
+        );
+
+        expect(
+            getExternalComposeOutput(
+                { outputs: [{ ...OUTPUT, address: 'A' }] },
+                EthAccount,
+                EthNetwork,
+            ),
+        ).toEqual(undefined);
+
+        expect(
+            getExternalComposeOutput(
+                { outputs: [{ ...OUTPUT, amount: '1' }] },
+                EthAccount,
+                EthNetwork,
+            ),
+        ).toEqual({
+            decimals: 18,
+            output: { type: 'noaddress', amount: '1000000000000000000' },
+            tokenInfo: undefined,
+        });
+
+        expect(
+            getExternalComposeOutput(
+                { outputs: [{ ...OUTPUT, address: 'A', amount: '1' }] },
+                EthAccount,
+                EthNetwork,
+            ),
+        ).toEqual({
+            decimals: 18,
+            output: { type: 'external', address: 'A', amount: '1000000000000000000' },
+            tokenInfo: undefined,
+        });
+
+        expect(
+            getExternalComposeOutput(
+                { outputs: [{ ...OUTPUT, amount: '' }], setMaxOutputId: 0 },
+                EthAccount,
+                EthNetwork,
+            ),
+        ).toEqual({
+            decimals: 18,
+            output: { type: 'send-max-noaddress' },
+            tokenInfo: undefined,
+        });
+
+        expect(
+            getExternalComposeOutput(
+                { outputs: [{ ...OUTPUT, address: 'A', amount: '1' }], setMaxOutputId: 0 },
+                EthAccount,
+                EthNetwork,
+            ),
+        ).toEqual({
+            decimals: 18,
+            output: { type: 'send-max', address: 'A' },
+            tokenInfo: undefined,
+        });
+
+        expect(
+            getExternalComposeOutput(
+                { outputs: [{ ...OUTPUT, address: 'A', amount: '1', token: 'A' }] },
+                EthAccount,
+                EthNetwork,
+            ),
+        ).toEqual({
+            decimals: 2,
+            output: { type: 'external', address: 'A', amount: '100' },
+            tokenInfo: EthAccount.tokens![0],
+        });
+
+        expect(
+            getExternalComposeOutput(
+                { outputs: [{ ...OUTPUT, amount: '1' }] },
+                EthAccount,
+                XrpNetwork,
+            ),
+        ).toEqual({
+            decimals: 6,
+            output: { type: 'noaddress', amount: '1000000' },
+            tokenInfo: undefined,
+        });
     });
 
     it('calculateEthFee', () => {
@@ -149,29 +313,5 @@ describe('sendForm utils', () => {
         expect(getFiatRate({ current: { rates: {} } }, 'usd')).toBe(undefined);
         // @ts-ignore invalid params
         expect(getFiatRate({ current: { rates: { usd: 1 } } }, 'usd')).toBe(1);
-    });
-
-    it('build options', () => {
-        // @ts-ignore invalid params
-        expect(buildTokenOptions({ symbol: 'btc' })).toEqual([{ value: null, label: 'BTC' }]);
-        expect(
-            buildTokenOptions({
-                symbol: 'eth',
-                // @ts-ignore invalid params
-                tokens: [{ address: '0x1' }, { symbol: 'Symbol', address: '0x2' }],
-            }),
-        ).toEqual([
-            { value: null, label: 'ETH' },
-            { value: '0x1', label: 'N/A' },
-            { value: '0x2', label: 'SYMBOL' },
-        ]);
-
-        expect(buildFeeOptions([])).toEqual([]);
-        // @ts-ignore invalid params
-        expect(buildFeeOptions([{ label: 'normal' }])).toEqual([
-            { label: 'normal', value: 'normal' },
-        ]);
-
-        expect(buildCurrencyOption('usd')).toEqual({ value: 'usd', label: 'USD' });
     });
 });

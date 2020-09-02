@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import { FeeLevel } from 'trezor-connect';
 import { SelectBar, colors, variables } from '@trezor/components';
 import { Card, Translation, FiatValue, FormattedCryptoAmount } from '@suite-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { buildFeeOptions, getFeeUnits } from '@wallet-utils/sendFormUtils';
+import { getFeeUnits } from '@wallet-utils/sendFormUtils';
 import EstimatedMiningTime from './components/EstimatedMiningTime';
 import CustomFee from './components/CustomFee';
 import { useSendFormContext } from '@wallet-hooks';
@@ -87,6 +88,19 @@ const FeeAmount = styled.div`
     align-items: flex-end;
     margin-left: 12px;
 `;
+interface Option {
+    label: string;
+    value: string;
+}
+
+const buildFeeOptions = (levels: FeeLevel[]) => {
+    const result: Option[] = [];
+    levels.forEach(level => {
+        const { label } = level;
+        result.push({ label, value: label });
+    });
+    return result;
+};
 
 export default () => {
     const {

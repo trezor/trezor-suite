@@ -7,6 +7,8 @@ import { Textarea, Button, Icon } from '@trezor/components';
 import { useActions } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { getInputState } from '@wallet-utils/sendFormUtils';
+import { isHexValid } from '@wallet-utils/validation';
+import { Network } from '@wallet-types';
 
 const Wrapper = styled.div`
     /* display: flex;
@@ -47,7 +49,7 @@ const ButtonSend = styled(Button)`
     margin-bottom: 5px;
 `;
 
-export default () => {
+export default ({ network }: { network: Network }) => {
     const { register, getValues, setValue, errors } = useForm({
         mode: 'onChange',
         defaultValues: {
@@ -80,7 +82,13 @@ export default () => {
                     innerRef={register({
                         required: 'RAW_TX_NOT_SET',
                         validate: (value: string) => {
-                            if (value.length % 2 !== 0) return 'DATA_NOT_VALID_HEX';
+                            if (
+                                !isHexValid(
+                                    value,
+                                    network.networkType === 'ethereum' ? '0x' : undefined,
+                                )
+                            )
+                                return 'DATA_NOT_VALID_HEX';
                         },
                     })}
                     bottomText={<InputError error={error} />}
@@ -95,7 +103,7 @@ export default () => {
                 <ButtonSend
                     isDisabled={inputState !== 'success'}
                     onClick={async () => {
-                        const result = await pushRawTransaction(inputValue);
+                        const result = await pushRawTransaction(inputValue, network.symbol);
                         if (result) {
                             setValue(inputName, '');
                         }

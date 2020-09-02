@@ -4,7 +4,7 @@ import { createDeferred, Deferred } from '@suite-utils/deferred';
 // composeTransaction should be debounced from both sides
 // first: `timeout` prevents from calling 'trezor-connect' method to many times (inputs mad-clicking)
 // second: `dfd` prevents from processing outdated results from 'trezor-connect' (timeout was resolved correctly but 'trezor-connect' method waits too long to respond while another "compose" was called)
-
+// TODO: maybe it should be converted to regular module, could be useful elsewhere
 export const useDebounce = () => {
     const timeout = useRef<ReturnType<typeof setTimeout>>(-1);
     const dfd = useRef<Deferred<boolean> | null>(null);

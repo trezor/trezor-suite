@@ -1,7 +1,11 @@
-import TrezorConnect, { ComposeOutput, FeeLevel, RipplePayment } from 'trezor-connect';
+import TrezorConnect, { FeeLevel, RipplePayment } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { calculateTotal, calculateMax } from '@wallet-utils/sendFormUtils';
+import {
+    calculateTotal,
+    calculateMax,
+    getExternalComposeOutput,
+} from '@wallet-utils/sendFormUtils';
 import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { XRP_FLAG } from '@wallet-constants/sendForm';
 import {
@@ -10,14 +14,13 @@ import {
     PrecomposedLevels,
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
+    ExternalOutput,
 } from '@wallet-types/sendForm';
 import { Dispatch, GetState } from '@suite-types';
 
-type XrpOutput = Exclude<ComposeOutput, { type: 'opreturn' } | { address_n: number[] }>;
-
 const calculate = (
     availableBalance: string,
-    output: XrpOutput,
+    output: ExternalOutput,
     feeLevel: FeeLevel,
     requiredAmount?: BigNumber,
 ): PrecomposedTransaction => {
@@ -85,36 +88,13 @@ export const composeTransaction = (
     formValues: FormState,
     formState: UseSendFormState,
 ) => async () => {
-    const { account, feeInfo } = formState;
-    const { availableBalance } = account;
-    const { address, amount } = formValues.outputs[0];
-    const amountInSatoshi = networkAmountToSatoshi(amount, account.symbol).toString();
-    const isMaxActive = typeof formValues.setMaxOutputId === 'number';
+    const { account, network, feeInfo } = formState;
+    const composeOutputs = getExternalComposeOutput(formValues, account, network);
+    if (!composeOutputs) return; // no valid Output
 
-    let output: XrpOutput;
-    if (isMaxActive) {
-        if (address) {
-            output = {
-                type: 'send-max',
-                address,
-            };
-        } else {
-            output = {
-                type: 'send-max-noaddress',
-            };
-        }
-    } else if (address) {
-        output = {
-            type: 'external',
-            address,
-            amount: amountInSatoshi,
-        };
-    } else {
-        output = {
-            type: 'noaddress',
-            amount: amountInSatoshi,
-        };
-    }
+    const { output } = composeOutputs;
+    const { availableBalance } = account;
+    const { address } = formValues.outputs[0];
 
     const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
     // in case when selectedFee is set to 'custom' construct this FeeLevel from values

@@ -1,14 +1,18 @@
 import BigNumber from 'bignumber.js';
 import { FieldError, UseFormMethods } from 'react-hook-form';
-import { EthereumTransaction, FeeLevel } from 'trezor-connect';
+import { EthereumTransaction, FeeLevel, ComposeOutput } from 'trezor-connect';
 import Common from 'ethereumjs-common';
 import { Transaction, TxData } from 'ethereumjs-tx';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
 import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
-import { amountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
+import {
+    amountToSatoshi,
+    networkAmountToSatoshi,
+    formatNetworkAmount,
+} from '@wallet-utils/accountUtils';
 import { Network, Account, CoinFiatRates } from '@wallet-types';
-import { FormState, FeeInfo, EthTransactionData } from '@wallet-types/sendForm';
+import { FormState, FeeInfo, EthTransactionData, ExternalOutput } from '@wallet-types/sendForm';
 
 export const calculateTotal = (amount: string, fee: string): string => {
     try {
@@ -173,25 +177,6 @@ export const getFiatRate = (fiatRates: CoinFiatRates | undefined, currency: stri
     return fiatRates.current.rates[currency];
 };
 
-export const buildCurrencyOption = (currency: string) => {
-    return { value: currency, label: currency.toUpperCase() };
-};
-
-export const buildFeeOptions = (levels: FeeLevel[]) => {
-    interface Item {
-        label: FeeLevel['label'];
-        value: FeeLevel['label'];
-    }
-    const result: Item[] = [];
-
-    levels.forEach(level => {
-        const { label } = level;
-        result.push({ label, value: label });
-    });
-
-    return result;
-};
-
 export const getFeeUnits = (networkType: Network['networkType']) => {
     if (networkType === 'ethereum') return 'GWEI';
     if (networkType === 'ripple') return 'Drops';
@@ -223,47 +208,117 @@ export const findComposeErrors = (errors: UseFormMethods['errors'], prefix?: str
     return composeErrors;
 };
 
-export const findValidOutputs = (values: Partial<FormState>) => {
-    if (!values || !Array.isArray(values.outputs)) return [];
-    return values.outputs.filter(
-        (output, index) =>
-            output &&
-            ((output.type === 'payment' &&
-                typeof output.amount === 'string' &&
-                (values.setMaxOutputId === index || output.amount.length > 0)) ||
-                (output.type === 'opreturn' &&
-                    typeof output.dataHex === 'string' &&
-                    output.dataHex.length > 0)),
-    );
+export const findToken = (tokens: Account['tokens'], address?: string | null) => {
+    if (!address || !tokens) return;
+    return tokens.find(t => t.address === address);
 };
 
-export const buildTokenOptions = (account: Account) => {
-    interface Option {
-        label: string;
-        value: string | null;
-    }
+// BTC composeTransaction
+// returns ComposeOutput[]
+export const getBitcoinComposeOutputs = (values: Partial<FormState>, symbol: Account['symbol']) => {
+    const result: ComposeOutput[] = [];
+    if (!values || !Array.isArray(values.outputs)) return result;
 
-    const result: Option[] = [
-        {
-            value: null,
-            label: account.symbol.toUpperCase(),
-        },
-    ];
+    values.outputs.forEach((output, index) => {
+        if (!output || typeof output !== 'object') return; // skip invalid object
 
-    if (account.tokens) {
-        account.tokens.forEach(token => {
-            const tokenName = token.symbol || 'N/A';
+        if (output.type === 'opreturn' && output.dataHex) {
             result.push({
-                value: token.address,
-                label: tokenName.toUpperCase(),
+                type: 'opreturn',
+                dataHex: output.dataHex,
             });
-        });
+        }
+
+        const { address } = output;
+        const isMaxActive = values.setMaxOutputId === index;
+        if (isMaxActive) {
+            if (address) {
+                result.push({
+                    type: 'send-max',
+                    address,
+                });
+            } else {
+                result.push({ type: 'send-max-noaddress' });
+            }
+        } else if (output.amount) {
+            const amount = networkAmountToSatoshi(output.amount, symbol);
+            if (address) {
+                result.push({
+                    type: 'external',
+                    address,
+                    amount,
+                });
+            } else {
+                result.push({
+                    type: 'noaddress',
+                    amount,
+                });
+            }
+        }
+    });
+
+    // corner case for multiple outputs
+    // one Output is valid and "final" but other has only address
+    // to prevent composing "final" transaction switch it to not-final (noaddress)
+    const hasIncompleteOutput = values.outputs.find(o => o && o.address && !o.amount);
+    if (hasIncompleteOutput) {
+        const finalOutput = result.find(o => o.type === 'send-max' || o.type === 'external');
+        if (finalOutput) {
+            // replace to noaddress
+            finalOutput.type = finalOutput.type === 'external' ? 'noaddress' : 'send-max-noaddress';
+        }
     }
 
     return result;
 };
 
-export const findToken = (tokens: Account['tokens'], address?: string | null) => {
-    if (!address || !tokens) return;
-    return tokens.find(t => t.address === address);
+// ETH/XRP composeTransaction, only one Output is used
+// returns { output, tokenInfo, decimals }
+export const getExternalComposeOutput = (
+    values: Partial<FormState>,
+    account: Account,
+    network: Network,
+) => {
+    if (!values || !Array.isArray(values.outputs) || !values.outputs[0]) return;
+    const out = values.outputs[0];
+    if (!out || typeof out !== 'object') return;
+    const { address, amount, token } = out;
+
+    const isMaxActive = typeof values.setMaxOutputId === 'number';
+    if (!isMaxActive && !amount) return; // incomplete Output
+
+    const tokenInfo = findToken(account.tokens, token);
+    const decimals = tokenInfo ? tokenInfo.decimals : network.decimals;
+    const amountInSatoshi = amountToSatoshi(amount, decimals);
+
+    let output: ExternalOutput;
+    if (isMaxActive) {
+        if (address) {
+            output = {
+                type: 'send-max',
+                address,
+            };
+        } else {
+            output = {
+                type: 'send-max-noaddress',
+            };
+        }
+    } else if (address) {
+        output = {
+            type: 'external',
+            address,
+            amount: amountInSatoshi,
+        };
+    } else {
+        output = {
+            type: 'noaddress',
+            amount: amountInSatoshi,
+        };
+    }
+
+    return {
+        output,
+        tokenInfo,
+        decimals,
+    };
 };

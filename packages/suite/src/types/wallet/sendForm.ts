@@ -4,6 +4,7 @@ import { Account, Network, CoinFiatRates } from '@wallet-types';
 import {
     FeeLevel,
     TokenInfo,
+    ComposeOutput,
     PrecomposedTransaction as PrecomposedTransactionBase,
 } from 'trezor-connect';
 import { AppState, ExtendedMessageDescriptor } from '@suite-types';
@@ -20,8 +21,8 @@ export type Output = {
     currency: CurrencyOption;
     label?: string;
     token: string | null;
-    dataHex: string; // bitcoin opreturn/ethereum data
-    dataAscii: string; // bitcoin opreturn/ethereum data
+    dataHex?: string; // bitcoin opreturn/ethereum data
+    dataAscii?: string; // bitcoin opreturn/ethereum data
 };
 
 export type FormOptions =
@@ -69,6 +70,8 @@ export type EthTransactionData = {
     gasPrice: string;
     nonce: string;
 };
+
+export type ExternalOutput = Exclude<ComposeOutput, { type: 'opreturn' } | { address_n: number[] }>;
 
 export type PrecomposedTransactionError = Extract<PrecomposedTransactionBase, { type: 'error' }> & {
     errorMessage?: ExtendedMessageDescriptor;
@@ -161,7 +164,7 @@ export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
         updateContext: (value: Partial<UseSendFormState>) => void;
         resetContext: () => void;
         composeTransaction: (field: string, fieldHasError?: boolean) => void;
-        loadTransaction: (state: PartialFormState) => Promise<void>;
+        loadTransaction: () => Promise<void>;
         signTransaction: () => void;
         // useSendFormFields utils:
         calculateFiat: (outputIndex: number, amount?: string) => void;

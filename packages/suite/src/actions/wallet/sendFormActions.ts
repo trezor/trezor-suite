@@ -6,7 +6,6 @@ import * as modalActions from '@suite-actions/modalActions';
 import { SEND } from '@wallet-actions/constants';
 
 import { formatAmount, formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { findValidOutputs } from '@wallet-utils/sendFormUtils';
 
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
@@ -84,20 +83,15 @@ export const removeDraft = () => (dispatch: Dispatch, getState: GetState) => {
 export const composeTransaction = (formValues: FormState, formState: UseSendFormState) => async (
     dispatch: Dispatch,
 ) => {
-    const validOutputs = findValidOutputs(formValues);
-    if (validOutputs.length === 0) return;
-
-    const values = { ...formValues, outputs: validOutputs };
-
     const { account } = formState;
     if (account.networkType === 'bitcoin') {
-        return dispatch(sendFormBitcoinActions.composeTransaction(values, formState));
+        return dispatch(sendFormBitcoinActions.composeTransaction(formValues, formState));
     }
     if (account.networkType === 'ethereum') {
-        return dispatch(sendFormEthereumActions.composeTransaction(values, formState));
+        return dispatch(sendFormEthereumActions.composeTransaction(formValues, formState));
     }
     if (account.networkType === 'ripple') {
-        return dispatch(sendFormRippleActions.composeTransaction(values, formState));
+        return dispatch(sendFormRippleActions.composeTransaction(formValues, formState));
     }
 };
 
@@ -234,16 +228,13 @@ export const sendRaw = (payload?: boolean) => ({
     payload,
 });
 
-export const pushRawTransaction = (tx: string) => async (
+export const pushRawTransaction = (tx: string, coin: Account['symbol']) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const { account } = getState().wallet.selectedAccount;
-    if (!account) return false;
-
     const sentTx = await TrezorConnect.pushTransaction({
         tx,
-        coin: account.symbol,
+        coin,
     });
 
     if (sentTx.success) {
@@ -253,7 +244,12 @@ export const pushRawTransaction = (tx: string) => async (
                 txid: sentTx.payload.txid,
             }),
         );
-        dispatch(accountActions.fetchAndUpdateAccount(account));
+        // raw tx doesn't have to be related to currently selected account
+        // but try to update selectedAccount just to be sure
+        const { account } = getState().wallet.selectedAccount;
+        if (account) {
+            dispatch(accountActions.fetchAndUpdateAccount(account));
+        }
     } else {
         dispatch(
             notificationActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),

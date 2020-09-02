@@ -17,6 +17,8 @@ type Props = UseFormMethods<FormState> & {
     setAmount: any;
 };
 
+// This hook should be used only as a sub-hook of `useSendForm`
+
 export const useSendFormCompose = ({
     watch,
     getValues,

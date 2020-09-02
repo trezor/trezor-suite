@@ -1,4 +1,4 @@
-import TrezorConnect, { ComposeOutput, FeeLevel, TokenInfo } from 'trezor-connect';
+import TrezorConnect, { FeeLevel, TokenInfo } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import { toWei } from 'web3-utils';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -8,7 +8,7 @@ import {
     calculateEthFee,
     serializeEthereumTx,
     prepareEthereumTransaction,
-    findToken,
+    getExternalComposeOutput,
 } from '@wallet-utils/sendFormUtils';
 import { amountToSatoshi, formatAmount } from '@wallet-utils/accountUtils';
 import { ETH_DEFAULT_GAS_LIMIT, ERC20_GAS_LIMIT } from '@wallet-constants/sendForm';
@@ -18,14 +18,13 @@ import {
     PrecomposedLevels,
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
+    ExternalOutput,
 } from '@wallet-types/sendForm';
 import { Dispatch, GetState } from '@suite-types';
 
-type EthOutput = Exclude<ComposeOutput, { type: 'opreturn' } | { address_n: number[] }>;
-
 const calculate = (
     availableBalance: string,
-    output: EthOutput,
+    output: ExternalOutput,
     feeLevel: FeeLevel,
     token?: TokenInfo,
 ): PrecomposedTransaction => {
@@ -100,37 +99,12 @@ export const composeTransaction = (
     formState: UseSendFormState,
 ) => async () => {
     const { account, network, feeInfo } = formState;
-    const { availableBalance } = account;
-    const { address, amount, token } = formValues.outputs[0];
-    const tokenInfo = findToken(account.tokens, token);
-    const decimals = tokenInfo ? tokenInfo.decimals : network.decimals;
-    const amountInSatoshi = amountToSatoshi(amount, decimals);
-    const isMaxActive = typeof formValues.setMaxOutputId === 'number';
+    const composeOutputs = getExternalComposeOutput(formValues, account, network);
+    if (!composeOutputs) return; // no valid Output
 
-    let output: EthOutput;
-    if (isMaxActive) {
-        if (address) {
-            output = {
-                type: 'send-max',
-                address,
-            };
-        } else {
-            output = {
-                type: 'send-max-noaddress',
-            };
-        }
-    } else if (address) {
-        output = {
-            type: 'external',
-            address,
-            amount: amountInSatoshi,
-        };
-    } else {
-        output = {
-            type: 'noaddress',
-            amount: amountInSatoshi,
-        };
-    }
+    const { output, tokenInfo, decimals } = composeOutputs;
+    const { availableBalance } = account;
+    const { address } = formValues.outputs[0];
 
     // additional calculation for gasLimit based on data size
     let customFeeLimit: string | undefined;
