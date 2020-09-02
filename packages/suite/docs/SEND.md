@@ -57,6 +57,7 @@
 - AMOUNT_IS_NOT_SET (empty field)
 - AMOUNT_IS_NOT_NUMBER
 - AMOUNT_IS_TOO_LOW (lower than 0, 0 is still possible if recalculated amount is lower than 1 cent)
+- AMOUNT_IS_NOT_IN_RANGE_DECIMALS (max. 2 decimals allowed)
 
 ------
 

@@ -1,13 +1,16 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
+import { Controller } from 'react-hook-form';
+
 import { Input, SelectInput } from '@trezor/components';
 import { InputError } from '@wallet-components';
-import { Controller } from 'react-hook-form';
+import { Translation } from '@suite-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { FIAT } from '@suite-config';
 import { fromFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { getInputState, getFiatRate, findToken } from '@wallet-utils/sendFormUtils';
+import { isDecimalsValid } from '@wallet-utils/validation';
 import { CurrencyOption } from '@wallet-types/sendForm';
 
 const Wrapper = styled.div`
@@ -102,6 +105,15 @@ export default ({ outputId }: { outputId: number }) => {
                         }
                         if (amountBig.lt(0)) {
                             return 'AMOUNT_IS_TOO_LOW';
+                        }
+                        if (!isDecimalsValid(value, 2)) {
+                            return (
+                                <Translation
+                                    key="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                                    id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                                    values={{ decimals: 2 }}
+                                />
+                            );
                         }
                     },
                 })}
