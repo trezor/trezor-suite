@@ -87,7 +87,7 @@
 ### OP_RETURN output errors:
 - DATA_NOT_SET (empty fields)
 - DATA_NOT_VALID_HEX (not valid hexadecimal)
-- DATA_HEX_TOO_BIG (data size 160 chars exceeded, FW limitation ??? investigate....)
+- DATA_HEX_TOO_BIG (data size limited to 80 bytes)
 
 ------
 
