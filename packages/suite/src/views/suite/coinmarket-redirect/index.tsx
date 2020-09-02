@@ -29,7 +29,7 @@ const CoinmarketRedirect = () => {
         const redirectParams = {
             routeType: params[0] as 'offers',
             symbol: params[1] as Account['symbol'],
-            index: params[2] as Account['accountType'],
+            index: params[2],
             accountType: params[3] as Account['accountType'],
         };
 
@@ -58,8 +58,8 @@ const CoinmarketRedirect = () => {
                 await saveQuoteRequest(request);
                 await saveCachedAccountInfo(
                     redirectParams.symbol,
-                    redirectParams.accountType,
                     redirectParams.index,
+                    redirectParams.accountType,
                     true,
                 );
 

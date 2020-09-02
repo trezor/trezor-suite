@@ -35,7 +35,7 @@ interface Buy {
         accountType?: Account['accountType'];
         index?: Account['index'];
         symbol?: Account['symbol'];
-        shouldSubmit: boolean;
+        shouldSubmit?: boolean;
     };
     alternativeQuotes?: BuyTrade[];
     addressVerified: boolean;

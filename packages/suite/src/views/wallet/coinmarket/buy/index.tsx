@@ -55,7 +55,7 @@ const CoinmarketBuy = () => {
             cryptoStringAmount,
         };
         await saveQuoteRequest(request);
-        await saveCachedAccountInfo(account.symbol, account.index, account.accountType);
+        await saveCachedAccountInfo(account.symbol, account.index.toString(), account.accountType);
         const allQuotes = await invityAPI.getBuyQuotes(request);
         const [quotes, alternativeQuotes] = processQuotes(allQuotes);
         const limits = getAmountLimits(request, quotes);
