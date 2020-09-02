@@ -35,6 +35,7 @@ export default ({ outputId }: { outputId: number }) => {
         fiatRates,
         register,
         errors,
+        clearErrors,
         outputs,
         getDefaultValue,
         control,
@@ -58,10 +59,17 @@ export default ({ outputId }: { outputId: number }) => {
     const token = findToken(account.tokens, tokenValue);
     const decimals = token ? token.decimals : network.decimals;
 
+    // relation case:
+    // Amount input has an error and Fiat has not (but it should)
+    // usually this happens after Fiat > Amount recalculation (from here, onChange event)
+    // or as a result on composeTransaction process
+    const amountError = outputError ? outputError.amount : undefined;
+    const errorToDisplay = !error && fiatValue && amountError ? amountError : error;
+
     return (
         <Wrapper>
             <Input
-                state={getInputState(error, fiatValue)}
+                state={getInputState(errorToDisplay, fiatValue)}
                 monospace
                 onChange={event => {
                     if (isSetMaxActive) {
@@ -71,6 +79,7 @@ export default ({ outputId }: { outputId: number }) => {
                         // reset Amount field in case of invalid Fiat value
                         if (getDefaultValue(amountInputName, '').length > 0) {
                             setValue(amountInputName, '');
+                            clearErrors(amountInputName);
                             composeTransaction(amountInputName, true);
                         }
                         return;
@@ -86,7 +95,7 @@ export default ({ outputId }: { outputId: number }) => {
                               )
                             : null;
                     if (amount) {
-                        // set Amount value
+                        // set Amount value and validate if
                         setValue(amountInputName, amount, {
                             shouldValidate: true,
                         });
@@ -117,7 +126,7 @@ export default ({ outputId }: { outputId: number }) => {
                         }
                     },
                 })}
-                bottomText={<InputError error={error} />}
+                bottomText={<InputError error={errorToDisplay} />}
                 innerAddon={
                     <Controller
                         control={control}
