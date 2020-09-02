@@ -3434,7 +3434,7 @@ const definedMessages = defineMessages({
         defaultMessage: 'OP_RETURN_TOOLTIP',
     },
     OP_RETURN_ADD: {
-        id: 'OP_RETURN',
+        id: 'OP_RETURN_ADD',
         defaultMessage: 'ADD OP RETURN',
     },
     RBF: {
@@ -3495,7 +3495,7 @@ const definedMessages = defineMessages({
         defaultMessage: 'Locktime is not a integer',
     },
     LOCKTIME_IS_TOO_LOW: {
-        id: 'LOCKTIME_IS_NOT_INTEGER',
+        id: 'LOCKTIME_IS_TOO_LOW',
         defaultMessage: 'Locktime is too low',
     },
     DESTINATION_TAG: {

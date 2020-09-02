@@ -1,7 +1,7 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
-import { Input, Icon, Button, variables } from '@trezor/components';
+import { Input, Icon, Button, variables, colors } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -16,6 +16,10 @@ const Wrapper = styled.div`
     display: flex;
     flex-wrap: wrap;
     flex: 1;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        flex-direction: column;
+    }
 `;
 
 const Text = styled.div`
@@ -36,7 +40,7 @@ const Left = styled.div`
     position: relative; /* for TokenBalance positioning */
     display: flex;
     flex: 1;
-    min-width: 350px;
+    min-width: 260px;
 `;
 
 const TokenBalance = styled.div`
@@ -44,20 +48,23 @@ const TokenBalance = styled.div`
 `;
 
 const StyledTransferIcon = styled(Icon)`
-    display: flex;
-    flex-direction: column;
-    width: 66px;
-    padding-top: 55px;
+    @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        transform: rotate(90deg);
+    }
+`;
+const TransferIconWrapper = styled.div`
+    margin: 45px 10px 0px 10px;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
-        display: none;
+    @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        /* transform: rotate(90deg); */
+        margin: 0px;
     }
 `;
 
 const Right = styled.div`
     display: flex;
     flex: 1;
-    min-width: 350px;
+    min-width: 260px;
     align-items: flex-start;
 `;
 
@@ -203,7 +210,12 @@ export default ({ outputId }: { outputId: number }) => {
                     {({ rate }) =>
                         rate && (
                             <>
-                                <StyledTransferIcon icon="TRANSFER" />
+                                <TransferIconWrapper>
+                                    <StyledTransferIcon
+                                        icon="TRANSFER"
+                                        color={colors.NEUE_TYPE_LIGHT_GREY}
+                                    />
+                                </TransferIconWrapper>
                                 <Right>
                                     <Fiat outputId={outputId} />
                                 </Right>

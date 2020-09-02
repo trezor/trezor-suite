@@ -10,7 +10,11 @@ import { isDecimalsValid } from '@wallet-utils/validation';
 
 const Wrapper = styled.div`
     display: flex;
-    padding-left: 11px;
+`;
+
+const StyledInput = styled(Input)`
+    max-width: 120px;
+    width: 100%;
 `;
 
 const Units = styled.div`
@@ -38,7 +42,7 @@ export default () => {
 
     return (
         <Wrapper>
-            <Input
+            <StyledInput
                 noTopLabel
                 variant="small"
                 monospace
