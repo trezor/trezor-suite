@@ -48,11 +48,18 @@ describe('coinmarket/buy utils', () => {
     });
 
     it('createQuoteLink', () => {
-        expect(createQuoteLink(QUOTE_REQUEST_FIAT)).toStrictEqual(
-            `${window.location.href}/qf/CZ/EUR/10/BTC`,
+        const accountMock = {
+            index: 1,
+            accountType: 'normal',
+            symbol: 'btc',
+        };
+        // @ts-ignore
+        expect(createQuoteLink(QUOTE_REQUEST_FIAT, accountMock)).toStrictEqual(
+            `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qf/CZ/EUR/10/BTC`,
         );
-        expect(createQuoteLink(QUOTE_REQUEST_CRYPTO)).toStrictEqual(
-            `${window.location.href}/qc/CZ/EUR/0.001/BTC`,
+        // @ts-ignore
+        expect(createQuoteLink(QUOTE_REQUEST_CRYPTO, accountMock)).toStrictEqual(
+            `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qc/CZ/EUR/0.001/BTC`,
         );
     });
 
