@@ -32,8 +32,9 @@ interface Buy {
     quotesRequest?: BuyTradeQuoteRequest;
     quotes: BuyTrade[];
     cachedAccountInfo: {
-        deviceState?: Account['deviceState'];
-        descriptor?: Account['descriptor'];
+        accountType?: Account['accountType'];
+        index?: Account['index'];
+        symbol?: Account['symbol'];
     };
     alternativeQuotes?: BuyTrade[];
     addressVerified: boolean;
@@ -58,8 +59,9 @@ const initialState = {
         buyInfo: undefined,
         quotesRequest: undefined,
         cachedAccountInfo: {
-            deviceState: undefined,
-            descriptor: undefined,
+            accountType: undefined,
+            index: undefined,
+            symbol: undefined,
         },
         quotes: [],
         alternativeQuotes: undefined,
@@ -94,8 +96,9 @@ export default (state: State = initialState, action: WalletAction | SuiteAction)
                 break;
             case COINMARKET_BUY.SAVE_CACHED_ACCOUNT_INFO:
                 draft.buy.cachedAccountInfo = {
-                    deviceState: action.deviceState,
-                    descriptor: action.descriptor,
+                    symbol: action.symbol,
+                    index: action.index,
+                    accountType: action.accountType,
                 };
                 break;
             case COINMARKET_EXCHANGE.SAVE_EXCHANGE_INFO:

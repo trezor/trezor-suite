@@ -50,7 +50,8 @@ const CoinmarketRedirect = () => {
                 }
 
                 await saveQuoteRequest(request);
-                await saveCachedAccountInfo(params[4], params[5]);
+                // @ts-ignore TODO fix this
+                await saveCachedAccountInfo(params[1], params[3], params[2]);
 
                 const accountItems = {
                     symbol: params[1],

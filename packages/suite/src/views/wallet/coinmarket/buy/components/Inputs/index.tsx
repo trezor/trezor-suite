@@ -66,8 +66,9 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
     const { account } = selectedAccount;
 
     const accountHasCachedRequest =
-        account.deviceState === cachedAccountInfo.deviceState &&
-        account.descriptor === cachedAccountInfo.descriptor;
+        account.symbol === cachedAccountInfo.symbol &&
+        account.index === cachedAccountInfo.index &&
+        account.accountType === cachedAccountInfo.accountType;
 
     const uppercaseSymbol = account.symbol.toUpperCase();
     const defaultCurrencyInfo = buyInfo.buyInfo?.suggestedFiatCurrency;
