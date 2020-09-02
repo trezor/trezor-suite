@@ -107,13 +107,13 @@ export const saveQuoteRequest = (request: BuyTradeQuoteRequest) => async (dispat
 
 export const saveCachedAccountInfo = (
     symbol: Account['symbol'],
-    index: Account['index'],
+    index: string,
     accountType: Account['accountType'],
 ) => async (dispatch: Dispatch) => {
     dispatch({
         type: COINMARKET_BUY.SAVE_CACHED_ACCOUNT_INFO,
         symbol,
-        index,
+        index: parseInt(index, 10),
         accountType,
     });
 };

@@ -64,7 +64,6 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
     }
 
     const { account } = selectedAccount;
-
     const accountHasCachedRequest =
         account.symbol === cachedAccountInfo.symbol &&
         account.index === cachedAccountInfo.index &&
