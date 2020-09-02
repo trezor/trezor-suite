@@ -5,6 +5,7 @@ import { QuestionTooltip, Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { getInputState } from '@wallet-utils/sendFormUtils';
+import { isHexValid } from '@wallet-utils/validation';
 
 const Wrapper = styled.div`
     display: flex;
@@ -101,9 +102,8 @@ export default ({ close }: Props) => {
                 innerRef={register({
                     required: 'DATA_NOT_SET',
                     validate: (value: string) => {
-                        if (value.length % 2 !== 0) return 'DATA_NOT_VALID_HEX';
-                        if (!/^[\da-f]+$/.test(value)) return 'DATA_NOT_VALID_HEX';
-                        if (value.length > 80 * 2) return 'DATA_HEX_TOO_BIG';
+                        if (!isHexValid(value, '0x')) return 'DATA_NOT_VALID_HEX';
+                        if (value.length > 80 * 2) return 'DATA_HEX_TOO_BIG'; // TODO: is the limit necessary?
                     },
                 })}
                 onChange={event => {

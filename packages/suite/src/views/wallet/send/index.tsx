@@ -41,7 +41,7 @@ const Send = (props: SendFormProps) => {
     if (props.sendRaw) {
         return (
             <WalletLayout title="Send" account={selectedAccount}>
-                <Raw />
+                <Raw network={selectedAccount.network} />
             </WalletLayout>
         );
     }

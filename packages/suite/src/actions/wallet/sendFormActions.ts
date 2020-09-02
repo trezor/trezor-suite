@@ -228,16 +228,13 @@ export const sendRaw = (payload?: boolean) => ({
     payload,
 });
 
-export const pushRawTransaction = (tx: string) => async (
+export const pushRawTransaction = (tx: string, coin: Account['symbol']) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const { account } = getState().wallet.selectedAccount;
-    if (!account) return false;
-
     const sentTx = await TrezorConnect.pushTransaction({
         tx,
-        coin: account.symbol,
+        coin,
     });
 
     if (sentTx.success) {
@@ -247,7 +244,12 @@ export const pushRawTransaction = (tx: string) => async (
                 txid: sentTx.payload.txid,
             }),
         );
-        dispatch(accountActions.fetchAndUpdateAccount(account));
+        // raw tx doesn't have to be related to currently selected account
+        // but try to update selectedAccount just to be sure
+        const { account } = getState().wallet.selectedAccount;
+        if (account) {
+            dispatch(accountActions.fetchAndUpdateAccount(account));
+        }
     } else {
         dispatch(
             notificationActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),

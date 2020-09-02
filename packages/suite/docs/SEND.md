@@ -87,6 +87,7 @@
 ### OP_RETURN output errors:
 - DATA_NOT_SET (empty fields)
 - DATA_NOT_VALID_HEX (not valid hexadecimal)
+- DATA_HEX_TOO_BIG (data size 160 chars exceeded, FW limitation ??? investigate....)
 
 ------
 
@@ -120,7 +121,7 @@ Additional field in send form, activated by "Add data" option. Same behavior as 
 ### Data errors:
 - DATA_NOT_SET
 - DATA_NOT_VALID_HEX
-- DATA_HEX_TOO_BIG (size greater than 160 chars, FW limitation ??? investigate....)
+- DATA_HEX_TOO_BIG (data size 160 chars exceeded, FW limitation ??? investigate....)
 
 ------
 
