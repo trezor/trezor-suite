@@ -35,6 +35,7 @@ interface Buy {
         accountType?: Account['accountType'];
         index?: Account['index'];
         symbol?: Account['symbol'];
+        shouldSubmit: boolean;
     };
     alternativeQuotes?: BuyTrade[];
     addressVerified: boolean;
@@ -62,6 +63,7 @@ const initialState = {
             accountType: undefined,
             index: undefined,
             symbol: undefined,
+            shouldSubmit: false,
         },
         quotes: [],
         alternativeQuotes: undefined,
@@ -99,6 +101,7 @@ export default (state: State = initialState, action: WalletAction | SuiteAction)
                     symbol: action.symbol,
                     index: action.index,
                     accountType: action.accountType,
+                    shouldSubmit: action.shouldSubmit,
                 };
                 break;
             case COINMARKET_EXCHANGE.SAVE_EXCHANGE_INFO:

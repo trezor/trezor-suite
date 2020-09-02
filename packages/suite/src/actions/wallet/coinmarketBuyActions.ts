@@ -21,6 +21,7 @@ export type CoinmarketBuyActions =
           symbol: Account['symbol'];
           index: Account['index'];
           accountType: Account['accountType'];
+          shouldSubmit?: boolean;
       }
     | {
           type: typeof COINMARKET_BUY.SAVE_QUOTES;
@@ -109,12 +110,14 @@ export const saveCachedAccountInfo = (
     symbol: Account['symbol'],
     index: string,
     accountType: Account['accountType'],
+    shouldSubmit = false,
 ) => async (dispatch: Dispatch) => {
     dispatch({
         type: COINMARKET_BUY.SAVE_CACHED_ACCOUNT_INFO,
         symbol,
         index: parseInt(index, 10),
         accountType,
+        shouldSubmit,
     });
 };
 

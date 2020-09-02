@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { BuyTradeQuoteRequest } from 'invity-api';
-// import { Account } from '@wallet-types';
+import { Account } from '@wallet-types';
 import { useSelector, useActions } from '@suite/hooks/suite';
 import * as routerActions from '@suite-actions/routerActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
@@ -26,9 +26,15 @@ const CoinmarketRedirect = () => {
     useEffect(() => {
         if (!params) return;
 
-        const routeType = params[0];
+        const redirectParams = {
+            routeType: params[0] as 'offers',
+            symbol: params[1] as Account['symbol'],
+            index: params[2] as Account['accountType'],
+            accountType: params[3] as Account['accountType'],
+        };
+
         const redirectWithQuotes = async () => {
-            if (routeType === 'offers') {
+            if (redirectParams.routeType === 'offers') {
                 const wantCrypto = params[6] === 'qc';
                 let request: BuyTradeQuoteRequest;
                 if (wantCrypto) {
@@ -50,8 +56,12 @@ const CoinmarketRedirect = () => {
                 }
 
                 await saveQuoteRequest(request);
-                // @ts-ignore TODO fix this
-                await saveCachedAccountInfo(params[1], params[3], params[2]);
+                await saveCachedAccountInfo(
+                    redirectParams.symbol,
+                    redirectParams.accountType,
+                    redirectParams.index,
+                    true,
+                );
 
                 const accountItems = {
                     symbol: params[1],
