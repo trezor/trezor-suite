@@ -177,25 +177,6 @@ export const getFiatRate = (fiatRates: CoinFiatRates | undefined, currency: stri
     return fiatRates.current.rates[currency];
 };
 
-export const buildCurrencyOption = (currency: string) => {
-    return { value: currency, label: currency.toUpperCase() };
-};
-
-export const buildFeeOptions = (levels: FeeLevel[]) => {
-    interface Item {
-        label: FeeLevel['label'];
-        value: FeeLevel['label'];
-    }
-    const result: Item[] = [];
-
-    levels.forEach(level => {
-        const { label } = level;
-        result.push({ label, value: label });
-    });
-
-    return result;
-};
-
 export const getFeeUnits = (networkType: Network['networkType']) => {
     if (networkType === 'ethereum') return 'GWEI';
     if (networkType === 'ripple') return 'Drops';
@@ -293,32 +274,6 @@ export const getBitcoinComposeOutputs = (values: Partial<FormState>) => {
             // replace to noaddress
             finalOutput.type = finalOutput.type === 'external' ? 'noaddress' : 'send-max-noaddress';
         }
-    }
-
-    return result;
-};
-
-export const buildTokenOptions = (account: Account) => {
-    interface Option {
-        label: string;
-        value: string | null;
-    }
-
-    const result: Option[] = [
-        {
-            value: null,
-            label: account.symbol.toUpperCase(),
-        },
-    ];
-
-    if (account.tokens) {
-        account.tokens.forEach(token => {
-            const tokenName = token.symbol || 'N/A';
-            result.push({
-                value: token.address,
-                label: tokenName.toUpperCase(),
-            });
-        });
     }
 
     return result;

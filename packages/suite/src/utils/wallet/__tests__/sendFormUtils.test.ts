@@ -11,9 +11,6 @@ import {
     findValidOutputs,
     calculateEthFee,
     getFiatRate,
-    buildCurrencyOption,
-    buildFeeOptions,
-    buildTokenOptions,
 } from '../sendFormUtils';
 
 describe('sendForm utils', () => {
@@ -149,29 +146,5 @@ describe('sendForm utils', () => {
         expect(getFiatRate({ current: { rates: {} } }, 'usd')).toBe(undefined);
         // @ts-ignore invalid params
         expect(getFiatRate({ current: { rates: { usd: 1 } } }, 'usd')).toBe(1);
-    });
-
-    it('build options', () => {
-        // @ts-ignore invalid params
-        expect(buildTokenOptions({ symbol: 'btc' })).toEqual([{ value: null, label: 'BTC' }]);
-        expect(
-            buildTokenOptions({
-                symbol: 'eth',
-                // @ts-ignore invalid params
-                tokens: [{ address: '0x1' }, { symbol: 'Symbol', address: '0x2' }],
-            }),
-        ).toEqual([
-            { value: null, label: 'ETH' },
-            { value: '0x1', label: 'N/A' },
-            { value: '0x2', label: 'SYMBOL' },
-        ]);
-
-        expect(buildFeeOptions([])).toEqual([]);
-        // @ts-ignore invalid params
-        expect(buildFeeOptions([{ label: 'normal' }])).toEqual([
-            { label: 'normal', value: 'normal' },
-        ]);
-
-        expect(buildCurrencyOption('usd')).toEqual({ value: 'usd', label: 'USD' });
     });
 });

@@ -7,12 +7,7 @@ import { Controller } from 'react-hook-form';
 import { useSendFormContext } from '@wallet-hooks';
 import { FIAT } from '@suite-config';
 import { fromFiatCurrency } from '@wallet-utils/fiatConverterUtils';
-import {
-    getInputState,
-    getFiatRate,
-    buildCurrencyOption,
-    findToken,
-} from '@wallet-utils/sendFormUtils';
+import { getInputState, getFiatRate, findToken } from '@wallet-utils/sendFormUtils';
 import { CurrencyOption } from '@wallet-types/sendForm';
 
 const Wrapper = styled.div`
@@ -21,6 +16,14 @@ const Wrapper = styled.div`
     flex-direction: row;
     justify-content: flex-start;
 `;
+
+export const buildCurrencyOptions = () => {
+    const result: CurrencyOption[] = [];
+    FIAT.currencies.forEach(currency =>
+        result.push({ value: currency, label: currency.toUpperCase() }),
+    );
+    return result;
+};
 
 export default ({ outputId }: { outputId: number }) => {
     const {
@@ -112,9 +115,7 @@ export default ({ outputId }: { outputId: number }) => {
                         render={({ onChange, value }) => {
                             return (
                                 <SelectInput
-                                    options={FIAT.currencies.map(currency =>
-                                        buildCurrencyOption(currency),
-                                    )}
+                                    options={buildCurrencyOptions()}
                                     isSearchable
                                     value={value}
                                     isClearable={false}
