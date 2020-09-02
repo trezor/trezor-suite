@@ -105,6 +105,7 @@ If the number is greater than 500000000 then it is a timestamp otherwise is bloc
 - LOCKTIME_IS_NOT_NUMBER
 - LOCKTIME_IS_TOO_LOW (lower/equal zero)
 - LOCKTIME_IS_NOT_INTEGER (decimals not allowed)
+- LOCKTIME_IS_TOO_BIG (locktime larger than max unix timestamp * 2 = 4294967294)
 
 ------
 

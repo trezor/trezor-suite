@@ -3498,6 +3498,10 @@ const definedMessages = defineMessages({
         id: 'LOCKTIME_IS_TOO_LOW',
         defaultMessage: 'Locktime is too low',
     },
+    LOCKTIME_IS_TOO_BIG: {
+        id: 'LOCKTIME_IS_TOO_BIG',
+        defaultMessage: 'Timestamp is too big',
+    },
     DESTINATION_TAG: {
         defaultMessage: 'Destination tag',
         id: 'DESTINATION_TAG',
