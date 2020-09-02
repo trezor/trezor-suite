@@ -164,6 +164,6 @@ It doesn't have impact on transaction itself (fee, amount etc)
 - can be cancelled at any time during signing
 - mirroring data displayed on the device
 - if there is BTC OP_RETURN data or ETH DATA present and those data are larger than 10 chars additional "expand button" will appear next to it
-- Expandable "Transaction detail" section
+- (BTC only) Expandable "Transaction detail" section
 - Regarding to BROADCAST option "Send transaction" or "Copy/download transaction" buttons are available on the last step
 
