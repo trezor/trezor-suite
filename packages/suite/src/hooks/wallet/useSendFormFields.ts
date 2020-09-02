@@ -79,6 +79,7 @@ export const useSendFormFields = ({
 
     const changeFeeLevel = useCallback(
         (currentLevel: FeeLevel, newLevel: FeeLevel) => {
+            if (currentLevel.label === newLevel.label) return;
             setValue('selectedFee', newLevel.label);
             const isCustom = newLevel.label === 'custom';
             // catch first change to custom
