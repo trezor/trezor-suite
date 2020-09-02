@@ -20,7 +20,7 @@ describe('Onboarding - create wallet', () => {
         cy.getTestElement('@onboarding/button-continue').click();
         cy.getTestElement('@onboarding/button-continue').click();
         cy.getTestElement('@onboarding/only-backup-option-button').click();
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.getTestElement('@onboarding/exit-app-button');
     });
 });

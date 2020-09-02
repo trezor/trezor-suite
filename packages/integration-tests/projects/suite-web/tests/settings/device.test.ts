@@ -1,4 +1,4 @@
-// @stable
+// @stable/suite
 
 describe('Device settings', () => {
     beforeEach(() => {
@@ -27,14 +27,14 @@ describe('Device settings', () => {
         cy.getTestElement('@settings/device/label-submit').click();
         cy.getConfirmActionOnDeviceModal();
 
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.getConfirmActionOnDeviceModal().should('not.exist');
 
         cy.log('turn on passphrase protection');
         cy.getTestElement('@settings/device/passphrase-switch')
             .click({ force: true })
             .getConfirmActionOnDeviceModal();
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.getConfirmActionOnDeviceModal().should('not.exist');
 
         cy.log('change background');
@@ -43,14 +43,14 @@ describe('Device settings', () => {
             .getTestElement(`@modal/gallery/t2/xmr`)
             .click()
             .getConfirmActionOnDeviceModal();
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.getConfirmActionOnDeviceModal().should('not.exist');
 
         cy.log('change display rotation');
         cy.getTestElement('@settings/device/rotation-button/90')
             .click()
             .getConfirmActionOnDeviceModal();
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.getConfirmActionOnDeviceModal().should('not.exist');
     });
 
@@ -72,7 +72,7 @@ describe('Device settings', () => {
         cy.getTestElement('@wipe/checkbox-1').click();
         cy.getTestElement('@wipe/checkbox-2').click();
         cy.getTestElement('@wipe/wipe-button').click();
-        cy.task('sendDecision');
+        cy.task('pressYes');
     });
 
     it.skip('t1 - pin mismatch', () => {
@@ -84,7 +84,7 @@ describe('Device settings', () => {
         cy.task('startBridge');
 
         cy.getTestElement('@settings/device/pin-switch').click({ force: true });
-        cy.task('sendDecision');
+        cy.task('pressYes');
         // todo: add support for pin to trezor-user-env. now I may safely test only wrong pin input
         cy.getTestElement('@pin-input/1').click();
         cy.getTestElement('@pin/submit-button').click();

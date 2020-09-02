@@ -1,3 +1,9 @@
+.auto_run_branches: &auto_run_branches
+  refs:
+    - develop
+    - releases
+    - schedules
+
 landing-page build:
   stage: build
   script:
@@ -7,4 +13,32 @@ landing-page build:
     paths:
       - packages/landing-page/build
 
-# deploy is part of "suite-web deploy dev" job
+landing-page build-staging:
+  stage: build
+  only:
+    <<: *auto_run_branches
+  script:
+    - yarn workspace @trezor/landing-page build
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - packages/landing-page/scripts/s3sync.sh
+      - packages/landing-page/build
+
+landing-page deploy-staging:
+  stage: deploy to staging
+  only:
+    <<: *auto_run_branches
+  dependencies:
+    - landing-page build-staging
+  environment:
+    name: ${CI_BUILD_REF_NAME}-staging
+    url: ${STAGING_SERVER_URL}
+  before_script: []
+  when: manual
+  script:
+    - source ${STAGING_DEPLOY_KEYFILE}
+    - cd packages/landing-page
+    - ./scripts/s3sync.sh stage beta
+  tags:
+    - deploy

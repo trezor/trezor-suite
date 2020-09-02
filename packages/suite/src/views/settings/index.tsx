@@ -11,7 +11,7 @@ import {
 } from '@suite-components/Settings';
 import { FIAT, LANGUAGES } from '@suite-config';
 import { useAnalytics } from '@suite-hooks';
-import { Button, Tooltip } from '@trezor/components';
+import { Button, Tooltip, Switch } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -35,11 +35,16 @@ const VersionLink = styled.a``;
 
 const Settings = ({
     language,
+    metadata,
+    device,
     setLocalCurrency,
     localCurrency,
     fetchLocale,
-    clearStores,
+    removeDatabase,
     goto,
+    initMetadata,
+    disconnectProvider,
+    disableMetadata,
 }: Props) => {
     const analytics = useAnalytics();
 
@@ -97,21 +102,65 @@ const Settings = ({
                 </SectionItem>
             </Section>
 
-            {/* TODO: KEEP IT HERE AND UNCOMMENT WHEN READY */}
-            {/* <Section header={<Translation id="TR_LABELING" />}>
+            <Section title={<Translation id="TR_LABELING" />}>
                 <SectionItem>
-                    <TextColumn title={<Translation id="TR_CONNECT_DROPBOX} />" />
+                    <TextColumn
+                        title={<Translation id="TR_LABELING_ENABLED" />}
+                        description={<Translation id="TR_LABELING_FEATURE_ALLOWS" />}
+                    />
                     <ActionColumn>
-                        <ActionButton
-                            onClick={() => console.log('fooo')}
-                            isDisabled={uiLocked}
-                            variant="secondary"
-                        >
-                            <Translation id="TR_CONNECT_DROPBOX" />
-                        </ActionButton>
+                        <Switch
+                            data-test="@settings/metadata-switch"
+                            checked={metadata.enabled}
+                            onChange={() =>
+                                metadata.enabled ? disableMetadata() : initMetadata(true)
+                            }
+                        />
                     </ActionColumn>
                 </SectionItem>
-            </Section> */}
+                {metadata.enabled && metadata.provider && (
+                    <SectionItem>
+                        <TextColumn
+                            title={
+                                <Translation
+                                    id="TR_CONNECTED_TO_PROVIDER"
+                                    values={{
+                                        provider: metadata.provider.type,
+                                        user: metadata.provider.user,
+                                    }}
+                                />
+                            }
+                            description={<Translation id="TR_YOUR_LABELING_IS_SYNCED" />}
+                        />
+                        <ActionColumn>
+                            <ActionButton
+                                variant="secondary"
+                                onClick={() => disconnectProvider()}
+                                data-test="@settings/metadata/disconnect-provider-button"
+                            >
+                                <Translation id="TR_DISCONNECT" />
+                            </ActionButton>
+                        </ActionColumn>
+                    </SectionItem>
+                )}
+                {metadata.enabled && !metadata.provider && device?.state && (
+                    <SectionItem>
+                        <TextColumn
+                            title={<Translation id="TR_LABELING_NOT_SYNCED" />}
+                            description={<Translation id="TR_TO_MAKE_YOUR_LABELS_PERSISTENT" />}
+                        />
+                        <ActionColumn>
+                            <ActionButton
+                                variant="secondary"
+                                onClick={() => initMetadata(true)}
+                                data-test="@settings/metadata/connect-provider-button"
+                            >
+                                <Translation id="TR_CONNECT" />
+                            </ActionButton>
+                        </ActionColumn>
+                    </SectionItem>
+                )}
+            </Section>
 
             <Section title={<Translation id="TR_APPLICATION" />}>
                 <Analytics />
@@ -124,7 +173,7 @@ const Settings = ({
                     <ActionColumn>
                         <ActionButton
                             onClick={async () => {
-                                clearStores();
+                                removeDatabase();
                                 // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
                                 const { ipcRenderer } = global;
                                 if (ipcRenderer) {

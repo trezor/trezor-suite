@@ -43,7 +43,7 @@ export interface AggregatedAccountHistory extends CommonAggregatedHistory {
 }
 export type AggregatedDashboardHistory = CommonAggregatedHistory;
 
-export type GraphView = 'linear' | 'log';
+export type GraphScale = 'linear' | 'log';
 
 export interface AccountIdentifier {
     descriptor: string;

@@ -3,6 +3,7 @@ import TrezorConnect, { BundleProgress, AccountInfo, UI } from 'trezor-connect';
 import { addToast } from '@suite-actions/notificationActions';
 import { SUITE } from '@suite-actions/constants';
 import { create as createAccount } from '@wallet-actions/accountActions';
+import * as metadataActions from '@suite-actions/metadataActions';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { SETTINGS } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
@@ -282,6 +283,8 @@ export const remove = (deviceState: string): DiscoveryActions => ({
 
 export const start = () => async (dispatch: Dispatch, getState: GetState): Promise<void> => {
     const { device } = getState().suite;
+    const { metadata } = getState();
+
     const discovery = dispatch(getDiscoveryForDevice());
     if (!device) {
         dispatch(addToast({ type: 'discovery-error', error: 'Device not found' }));
@@ -302,6 +305,13 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         discovery.status === DISCOVERY.STATUS.IDLE ||
         discovery.status > DISCOVERY.STATUS.STOPPING
     ) {
+        // if metadata is enabled in settings, but metadata master key does not exist for this device
+        // always try to generate device metadata master key first
+        if (metadata.enabled && device.metadata.status !== 'enabled') {
+            await dispatch(metadataActions.init());
+        }
+
+        // start discovery
         dispatch({
             type: DISCOVERY.START,
             payload: {

@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { Device, DEVICE } from 'trezor-connect';
-import { SUITE, STORAGE } from '@suite-actions/constants';
+import { SUITE, STORAGE, METADATA } from '@suite-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
 import { TrezorDevice, AcquiredDevice, Action } from '@suite-types';
 
@@ -43,12 +43,15 @@ const connectDevice = (draft: State, device: Device) => {
             available: false,
             useEmptyPassphrase: true,
             buttonRequests: [],
+            metadata: { status: 'disabled' },
             ts: new Date().getTime(),
         });
         return;
     }
 
     const { features } = device;
+    // older FW (< 2.3.2) doesn't have `unlocked` field in Features ALSO doesn't have auto-lock, so it's always true
+    const unlocked = typeof features.unlocked === 'boolean' ? features.unlocked : true;
     // find affected devices with current "device_id" (acquired only)
     const affectedDevices = draft.filter(d => d.features && d.id === device.id) as AcquiredDevice[];
     // find unacquired device with current "path" (unacquired device will become acquired)
@@ -67,7 +70,7 @@ const connectDevice = (draft: State, device: Device) => {
     // prepare new device
     const newDevice: TrezorDevice = {
         ...device,
-        useEmptyPassphrase: !features.passphrase_protection,
+        useEmptyPassphrase: unlocked && !features.passphrase_protection,
         remember: false,
         connected: true,
         available: true,
@@ -76,6 +79,7 @@ const connectDevice = (draft: State, device: Device) => {
             ? deviceUtils.getNewInstanceNumber(draft, device) || 1
             : undefined,
         buttonRequests: [],
+        metadata: { status: 'disabled' },
         ts: new Date().getTime(),
     };
 
@@ -83,7 +87,7 @@ const connectDevice = (draft: State, device: Device) => {
     if (affectedDevices.length > 0) {
         const changedDevices = affectedDevices.map(d => {
             // change availability according to "passphrase_protection" field
-            if (d.instance && !features.passphrase_protection) {
+            if (d.instance && unlocked && !features.passphrase_protection) {
                 return merge(d, { ...device, connected: true, available: false });
             }
             return merge(d, { ...device, connected: true, available: true });
@@ -136,7 +140,10 @@ const changeDevice = (
         // merge incoming device with State
         const changedDevices = affectedDevices.map(d => {
             // change availability according to "passphrase_protection" field
-            if (d.instance && !device.features.passphrase_protection) {
+            // older FW (< 2.3.2) doesn't have `unlocked` field in Features ALSO doesn't have auto-lock, so it's always true
+            const unlocked =
+                typeof device.features.unlocked === 'boolean' ? device.features.unlocked : true;
+            if (d.instance && unlocked && !device.features.passphrase_protection) {
                 return merge(d, { ...device, ...extended, available: !d.state });
             }
             return merge(d, { ...device, ...extended, available: true });
@@ -295,6 +302,8 @@ const createInstance = (draft: State, device: TrezorDevice) => {
         state: undefined,
         authConfirm: false,
         ts: new Date().getTime(),
+        buttonRequests: [],
+        metadata: { status: 'disabled' },
     };
     draft.push(newDevice);
 };
@@ -335,6 +344,7 @@ const forget = (draft: State, device: TrezorDevice) => {
         draft[index].passphraseOnDevice = false;
         // set remember to false to make it disappear after device is disconnected
         draft[index].remember = false;
+        draft[index].metadata = { status: 'disabled' };
     } else {
         draft.splice(index, 1);
     }
@@ -355,6 +365,22 @@ const addButtonRequest = (
         return;
     }
     draft[index].buttonRequests.push(buttonRequest);
+};
+
+const setMetadata = (draft: State, state: string, metadata: TrezorDevice['metadata']) => {
+    const index = draft.findIndex(d => d.state === state);
+    if (!draft[index]) return;
+    // update state
+    draft[index].metadata = metadata;
+};
+
+const updateMetadata = (draft: State, state: string, walletLabel?: string) => {
+    const index = draft.findIndex(d => d.state === state);
+    if (!draft[index]) return;
+    const { metadata } = draft[index];
+    if (metadata.status !== 'enabled') return;
+    // update state
+    metadata.walletLabel = walletLabel;
 };
 
 export default (state: State = initialState, action: Action): State => {
@@ -398,6 +424,13 @@ export default (state: State = initialState, action: Action): State => {
                 break;
             case SUITE.ADD_BUTTON_REQUEST:
                 addButtonRequest(draft, action.device, action.payload);
+                break;
+            case METADATA.SET_DEVICE_METADATA:
+                setMetadata(draft, action.payload.deviceState, action.payload.metadata);
+                break;
+            case METADATA.WALLET_LOADED:
+            case METADATA.WALLET_ADD:
+                updateMetadata(draft, action.payload.deviceState, action.payload.walletLabel);
                 break;
             // no default
         }

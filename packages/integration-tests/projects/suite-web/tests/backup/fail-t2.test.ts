@@ -1,4 +1,4 @@
-// @stable
+// @stable/device-management
 // @retry=2
 
 describe('Backup', () => {
@@ -19,7 +19,7 @@ describe('Backup', () => {
         cy.getTestElement('@backup/check-item/is-in-private').click();
         cy.getTestElement('@backup/start-button').click();
         cy.getConfirmActionOnDeviceModal();
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.task('stopEmu');
         cy.getTestElement('@backup/no-device', { timeout: 20000 });
         cy.task('startEmu');
@@ -29,6 +29,7 @@ describe('Backup', () => {
             'Now go to dashboard and see if security card and notification reflects backup failed state correctly',
         );
         cy.getTestElement('@backup/close-button').click();
+        
         cy.getTestElement('@notification/failed-backup/learn-more-link').should('be.visible');
 
         cy.getTestElement('@dashboard/security-card/backup/button', { timeout: 30000 }).should(

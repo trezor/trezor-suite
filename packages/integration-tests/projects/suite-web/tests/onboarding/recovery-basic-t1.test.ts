@@ -26,7 +26,7 @@ describe('Onboarding - recover wallet T1', () => {
         cy.getTestElement('@onboarding/button-continue').click();
         cy.getTestElement('@recover/select-count/24').click();
         cy.getTestElement('@recover/select-type/basic').click();
-        cy.task('sendDecision');
+        cy.task('pressYes');
         
         cy.getTestElement('@word-input-select/input').type('all');
         cy.getTestElement(

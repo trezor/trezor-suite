@@ -3,13 +3,16 @@ import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
 import { Button } from '@trezor/components';
 import { OnboardingButton, Text, Wrapper, Loaders } from '@onboarding-components';
-import { Translation, Image, WebusbButton } from '@suite-components';
+import { Translation, WebusbButton, Image, ConnectDeviceImage } from '@suite-components';
 import { isWebUSB } from '@suite-utils/transport';
 
 import Bridge from './components/Bridge/Container';
 import { Props } from './Container';
 
 const StyledImage = styled(Image)`
+    flex: 1;
+`;
+const StyledConnectDeviceImage = styled(ConnectDeviceImage)`
     flex: 1;
 `;
 
@@ -125,8 +128,7 @@ const PairDeviceStep = (props: Props) => {
 
                         {!isDetectingDevice() && (
                             <>
-                                <StyledImage
-                                    image="CONNECT_DEVICE"
+                                <StyledConnectDeviceImage
                                     onLoad={() => setImageLoaded(true)}
                                     onError={() => setImageLoaded(true)}
                                 />

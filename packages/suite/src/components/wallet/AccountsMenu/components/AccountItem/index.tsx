@@ -84,13 +84,21 @@ const AccountHeader = styled.div`
 const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) => {
     const { account, selected } = props;
 
-    const accountLabel = props.labeling[`account:${account.descriptor}`] ? (
-        <span>{props.labeling[`account:${account.descriptor}`]}</span>
-    ) : (
+    const dataTestKey = `@account-menu/${account.symbol}/${account.accountType}/${account.index}`;
+
+    const DefaultLabel = () => (
         <>
             <Translation {...getTitleForNetwork(account.symbol)} />
             <span>&nbsp;#{account.index + 1}</span>
         </>
+    );
+
+    const accountLabel = account.metadata.accountLabel ? (
+        <span style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
+            {account.metadata.accountLabel}
+        </span>
+    ) : (
+        <DefaultLabel />
     );
 
     return (
@@ -110,7 +118,7 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
                 </Left>
                 <Right>
                     <Row>
-                        <AccountName>{accountLabel}</AccountName>
+                        <AccountName data-test={`${dataTestKey}/label`}>{accountLabel}</AccountName>
                     </Row>
                     <Row>
                         <Balance>

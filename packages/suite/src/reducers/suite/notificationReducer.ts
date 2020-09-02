@@ -43,6 +43,10 @@ export type ToastPayload = (
           type: 'clear-storage';
       }
     | {
+          type: 'bridge-dev-restart';
+          devMode: boolean;
+      }
+    | {
           type:
               | 'error'
               | 'auth-failed'

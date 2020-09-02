@@ -1,4 +1,4 @@
-// @stable
+// @stable/device-management
 
 describe('Onboarding - unexpected states', () => {
     beforeEach(() => {
@@ -46,7 +46,7 @@ describe('Onboarding - unexpected states', () => {
         cy.getTestElement('@onboarding/button-continue').click();
         cy.getTestElement('@onboarding/button-continue').click();
         cy.getTestElement('@onboarding/button-standard-backup').click();
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.getTestElement('@onboarding/continue-to-security-button').click();
         cy.task('stopEmu');
         cy.getTestElement('@onboarding/unexpected-state/reconnect');

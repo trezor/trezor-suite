@@ -1,4 +1,4 @@
-// @stable
+// @stable/device-management
 
 describe('Backup', () => {
     beforeEach(() => {
@@ -25,15 +25,15 @@ describe('Backup', () => {
         cy.getTestElement('@backup/start-button').click();
         cy.getConfirmActionOnDeviceModal();
         
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.task('swipeEmu', 'up');
         cy.task('swipeEmu', 'up');
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.task('inputEmu', 'all');
         cy.task('inputEmu', 'all');
         cy.task('inputEmu', 'all');
-        cy.task('sendDecision');
-        cy.task('sendDecision');
+        cy.task('pressYes');
+        cy.task('pressYes');
 
         cy.log('click all after checkboxes and close backup modal');
         cy.getTestElement('@backup/continue-to-pin-button').should('be.disabled');

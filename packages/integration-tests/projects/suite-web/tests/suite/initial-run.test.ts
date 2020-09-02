@@ -1,4 +1,4 @@
-// @stable
+// @stable/suite
 
 describe('Suite initial run', () => {
     beforeEach(() => {

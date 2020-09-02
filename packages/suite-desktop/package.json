@@ -1,7 +1,7 @@
 {
     "name": "@trezor/suite-desktop",
     "description": "TrezorSuite desktop application",
-    "version": "20.8.1-beta",
+    "version": "20.9.1-beta",
     "private": true,
     "author": "Satoshilabs s.r.o <info@satoshilabs.com>",
     "homepage": "http://www.trezor.io",
@@ -13,9 +13,8 @@
         "build:desktop": "rimraf ./build && next build && next export -o build && yarn build:lib",
         "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac",
         "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux",
-        "build:arm": "yarn clean && yarn build:desktop && electron-builder --armv7l",
         "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
-        "publish": "yarn clean && yarn build:desktop && electron-builder --publish always --mac --linux --win --armv7l",
+        "publish": "yarn clean && yarn build:desktop && electron-builder --publish always --mac --linux --win",
         "lint": "eslint '**/*{.ts,.tsx}'",
         "type-check": "tsc --project tsconfig.json"
     },

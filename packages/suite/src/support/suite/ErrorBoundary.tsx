@@ -141,7 +141,7 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
                             icon="REFRESH"
                             variant="tertiary"
                             onClick={async () => {
-                                await db.clearStores();
+                                await db.removeDatabase();
                                 refresh();
                             }}
                         >

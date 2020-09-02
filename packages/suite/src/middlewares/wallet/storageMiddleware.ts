@@ -4,7 +4,7 @@ import * as WALLET_SETTINGS from '@suite/actions/settings/constants/walletSettin
 // import * as transactionActions from '@wallet-actions/transactionActions';
 import * as storageActions from '@suite-actions/storageActions';
 import * as accountUtils from '@wallet-utils/accountUtils';
-import { SUITE, ANALYTICS } from '@suite-actions/constants';
+import { SUITE, ANALYTICS, METADATA } from '@suite-actions/constants';
 import { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import { WalletAction } from '@wallet-types';
 import {
@@ -141,6 +141,12 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
                 },
                 action.date,
             );
+            break;
+
+        case METADATA.ENABLE:
+        case METADATA.DISABLE:
+        case METADATA.SET_PROVIDER:
+            api.dispatch(storageActions.saveMetadataProvider());
             break;
 
         default:

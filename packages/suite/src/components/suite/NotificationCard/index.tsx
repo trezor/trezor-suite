@@ -62,12 +62,13 @@ const Body = styled.div`
 interface Props {
     children: React.ReactNode;
     variant: 'loader' | 'info' | 'warning';
+    ['data-test']?: string;
 }
 
-export default ({ variant, children }: Props) => {
+export default ({ variant, children, ...props }: Props) => {
     const iconElement = getIcon(variant);
     return (
-        <Wrapper variant={variant}>
+        <Wrapper variant={variant} data-test={props['data-test']}>
             {iconElement && <IconWrapper>{iconElement}</IconWrapper>}
             <Body>{children}</Body>
         </Wrapper>

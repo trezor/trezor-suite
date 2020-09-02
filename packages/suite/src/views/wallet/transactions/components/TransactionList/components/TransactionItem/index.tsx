@@ -5,6 +5,8 @@ import { AnimatePresence } from 'framer-motion';
 import { Translation, HiddenPlaceholder } from '@suite-components';
 import { variables, colors, Button } from '@trezor/components';
 import { isTestnet } from '@wallet-utils/accountUtils';
+import { AccountMetadata } from '@suite-types/metadata';
+
 import TransactionTypeIcon from './components/TransactionTypeIcon';
 import TransactionHeading from './components/TransactionHeading';
 import { isTxUnknown } from '@wallet-utils/transactionUtils';
@@ -16,7 +18,6 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: row;
     padding: 12px 0px;
-
     & + & {
         border-top: 1px solid ${colors.NEUE_STROKE_GREY};
     }
@@ -75,10 +76,12 @@ const DEFAULT_LIMIT = 3;
 interface Props {
     transaction: WalletAccountTransaction;
     isPending: boolean;
+    txMetadata?: AccountMetadata['outputLabels'][keyof AccountMetadata['outputLabels']];
+    accountKey: string;
 }
 
 const TransactionItem = React.memo((props: Props) => {
-    const { transaction } = props;
+    const { transaction, txMetadata, accountKey } = props;
     const { type, targets, tokens } = transaction;
     const [limit, setLimit] = useState(0);
     const isTokenTransaction = tokens.length > 0;
@@ -96,7 +99,6 @@ const TransactionItem = React.memo((props: Props) => {
             (isTokenTransaction && tokens.length === 1));
     const showFeeRow =
         !isUnknown && isTokenTransaction && type !== 'recv' && transaction.fee !== '0';
-
     // we are using slightly different layout for 1 targets txs to better match the design
     // the only difference is that crypto amount is in the same row as tx heading/description
     // fiat amount is in the second row along with address
@@ -132,6 +134,8 @@ const TransactionItem = React.memo((props: Props) => {
                                                 ? i === DEFAULT_LIMIT - 1
                                                 : i === targets.length - 1
                                         }
+                                        targetMetadata={txMetadata && txMetadata[t.n]}
+                                        accountKey={accountKey}
                                     />
                                 ))}
                                 <AnimatePresence initial={false}>
@@ -150,6 +154,8 @@ const TransactionItem = React.memo((props: Props) => {
                                                             : i ===
                                                               targets.length - DEFAULT_LIMIT - 1
                                                     }
+                                                    targetMetadata={txMetadata && txMetadata[t.n]}
+                                                    accountKey={accountKey}
                                                 />
                                             ))}
                                 </AnimatePresence>

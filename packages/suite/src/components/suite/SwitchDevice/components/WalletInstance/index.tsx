@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Switch, Box, Icon, colors, variables } from '@trezor/components';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { Props } from './Container';
-import { FormattedNumber, WalletLabeling, Translation } from '@suite-components';
+import { FormattedNumber, WalletLabeling, Translation, MetadataLabeling } from '@suite-components';
 import { useAnalytics } from '@suite-hooks';
 
 const Wrapper = styled(Box)`
@@ -62,6 +62,7 @@ const WalletInstance = ({
     selectDeviceInstance,
     rememberDevice,
     forgetDevice,
+    addMetadata,
     accounts,
     fiat,
     localCurrency,
@@ -85,10 +86,10 @@ const WalletInstance = ({
         }
         return '@switch-device/wallet-instance';
     };
+
     return (
         <Wrapper
             data-test={getDataTestBase()}
-            // data-test={`@switch-device/wallet-instance/${instance.instance ? }`}
             key={`${instance.label}${instance.instance}${instance.state}`}
             state={isSelected ? 'success' : undefined}
             {...rest}
@@ -99,7 +100,24 @@ const WalletInstance = ({
                         {!instance.useEmptyPassphrase && (
                             <LockIcon icon="LOCK" color={colors.NEUE_TYPE_DARK_GREY} size={12} />
                         )}
-                        <WalletLabeling device={instance} />
+                        {instance.state ? (
+                            <MetadataLabeling
+                                defaultVisibleValue={<WalletLabeling device={instance} />}
+                                payload={{
+                                    type: 'walletLabel',
+                                    deviceState: instance.state,
+                                    defaultValue: !instance.instance
+                                        ? 'standard-wallet'
+                                        : `hidden-wallet-${instance.instance}`,
+                                    value:
+                                        instance?.metadata.status === 'enabled'
+                                            ? instance.metadata.walletLabel
+                                            : '',
+                                }}
+                            />
+                        ) : (
+                            <WalletLabeling device={instance} />
+                        )}
                     </InstanceType>
                 )}
                 {!discoveryProcess && (

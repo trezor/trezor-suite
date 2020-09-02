@@ -11,7 +11,7 @@ import {
     SET_SELECTED_VIEW,
 } from './constants/graphConstants';
 import { Account } from '@wallet-types';
-import { GraphRange, GraphView, GraphData } from '@wallet-types/graph';
+import { GraphRange, GraphScale, GraphData } from '@wallet-types/graph';
 import {
     accountGraphDataFilterFn,
     deviceGraphDataFilterFn,
@@ -43,7 +43,7 @@ export type GraphActions =
       }
     | {
           type: typeof SET_SELECTED_VIEW;
-          payload: GraphView;
+          payload: GraphScale;
       };
 
 export const setSelectedRange = (range: GraphRange) => ({
@@ -51,7 +51,7 @@ export const setSelectedRange = (range: GraphRange) => ({
     payload: range,
 });
 
-export const setSelectedView = (view: GraphView) => ({
+export const setSelectedView = (view: GraphScale) => ({
     type: SET_SELECTED_VIEW,
     payload: view,
 });

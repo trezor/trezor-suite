@@ -8,19 +8,13 @@ import { onboardingShouldLoad, dashboardShouldLoad } from './utils/assertions';
 import { connectBootloaderDevice, connectDevice, changeDevice } from './utils/device';
 import { getTestElement, getConfirmActionOnDeviceModal } from './utils/selectors';
 import { resetDb, setState } from './utils/test-env';
-import { toggleDeviceMenu, goToOnboarding, passThroughInitialRun, passThroughBackup } from './utils/shortcuts';
+import { toggleDeviceMenu, goToOnboarding, passThroughInitialRun, passThroughBackup, passThroughInitMetadata } from './utils/shortcuts';
 
 const command = require('cypress-image-snapshot/command');
 
-const prefixedVisit = (route: string) => {
+const prefixedVisit = (route: string, options?: Partial<Cypress.VisitOptions>) => {
     const assetPrefix = Cypress.env('ASSET_PREFIX') || '';
-    return cy.visit(assetPrefix + route, {
-            auth: {
-              // todo: this does not really works 
-              username: Cypress.env('BASIC_AUTH_USER') || '',
-              password: Cypress.env('BASIC_AUTH_PASSWORD') || '',
-            }
-    });
+    return cy.visit(assetPrefix + route, options);
 }
 declare global {
     namespace Cypress {
@@ -47,6 +41,7 @@ declare global {
             toggleDeviceMenu: () => Chainable<Subject>;
             passThroughInitialRun: () => Chainable<Subject>;
             passThroughBackup: () => Chainable<Subject>;
+            passThroughInitMetadata: () => Chainable<Subject>;
             goToOnboarding: () => Chainable<Subject>;
         }
     }
@@ -87,3 +82,4 @@ Cypress.Commands.add('toggleDeviceMenu', toggleDeviceMenu);
 Cypress.Commands.add('goToOnboarding', goToOnboarding);
 Cypress.Commands.add('passThroughInitialRun', passThroughInitialRun);
 Cypress.Commands.add('passThroughBackup', passThroughBackup);
+Cypress.Commands.add('passThroughInitMetadata', passThroughInitMetadata);

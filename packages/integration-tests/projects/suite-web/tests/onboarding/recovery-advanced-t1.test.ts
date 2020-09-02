@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
 // @beta 
-// @retry=2
 
 describe('Onboarding - recover wallet T1', () => {
     beforeEach(() => {
@@ -27,7 +26,7 @@ describe('Onboarding - recover wallet T1', () => {
         cy.getTestElement('@onboarding/button-continue').click();
         cy.getTestElement('@recover/select-count/24').click();
         cy.getTestElement('@recover/select-type/advanced').click();
-        cy.task('sendDecision');
+        cy.task('pressYes');
 
         cy.log('typical user starts doing the T9 craziness');
         for (let i = 0; i <= 4; i++) {
@@ -45,7 +44,7 @@ describe('Onboarding - recover wallet T1', () => {
         cy.getTestElement('@recover/select-count/12').click();
         cy.getTestElement('@recover/select-type/basic').click();
 
-        cy.task('sendDecision');
+        cy.task('pressYes');
         cy.getTestElement('@recovery/word');
     });
 });

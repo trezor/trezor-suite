@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { colors, variables, DeviceImage } from '@trezor/components';
 import { SHAKE } from '@suite-support/styles/animations';
-import { Translation } from '@suite-components';
+import { WalletLabeling } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
 import * as routerActions from '@suite-actions/routerActions';
 import { useAnalytics, useSelector, useActions } from '@suite-hooks';
@@ -70,17 +70,6 @@ const DeviceDetail = styled.div`
     flex-direction: column;
 `;
 
-const getWalletName = (device?: TrezorDevice) => {
-    if (!device) return null;
-    if (device.useEmptyPassphrase) {
-        return <Translation id="TR_STANDARD_WALLET" />;
-    }
-    if (device.state) {
-        return <Translation id="TR_HIDDEN_WALLET" values={{ id: device.instance }} />;
-    }
-    return <Translation id="TR_UNDISCOVERED_WALLET" />;
-};
-
 const needsRefresh = (device?: TrezorDevice) => {
     if (!device) return false;
 
@@ -106,7 +95,6 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
     const countChanged = localCount && localCount !== deviceCount;
     const timerRef = useRef<number | undefined>(undefined);
 
-    const walletName = getWalletName(selectedDevice);
     const analytics = useAnalytics();
 
     const deviceNeedsRefresh = needsRefresh(selectedDevice);
@@ -156,7 +144,9 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
                     </DeviceImageWrapper>
                     <DeviceDetail>
                         <DeviceLabel>{selectedDevice.label}</DeviceLabel>
-                        {walletName && <WalletNameWrapper>{walletName}</WalletNameWrapper>}
+                        <WalletNameWrapper>
+                            <WalletLabeling device={selectedDevice} />
+                        </WalletNameWrapper>
                     </DeviceDetail>
                     <DeviceStatus
                         device={selectedDevice}

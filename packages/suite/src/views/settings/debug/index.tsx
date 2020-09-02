@@ -33,7 +33,7 @@ const DebugSettings = (props: Props) => {
                 </Row>
                 <Row>
                     <TextColumn
-                        title="Bridge dev mode (desktop)"
+                        title="Trezor Bridge dev mode (desktop)"
                         description="Starts Trezor Bridge on port 21324"
                     />
                     <ActionColumn>

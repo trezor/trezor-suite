@@ -7,7 +7,7 @@ import {
     AggregatedDashboardHistory,
 } from '@wallet-types/graph';
 import { ComposedChart, Tooltip, Bar, YAxis, XAxis, Line, CartesianGrid } from 'recharts';
-import { useLayoutSize } from '@suite-hooks';
+import { useGraph } from '@suite-hooks';
 import { calcYDomain, calcXDomain, calcFakeGraphDataForTimestamps } from '@wallet-utils/graphUtils';
 import { Account } from '@wallet-types';
 
@@ -57,7 +57,7 @@ interface CommonProps {
     selectedRange: GraphRange;
     xTicks: number[];
     localCurrency: string;
-    maxValue?: number;
+    minMaxValues: [number, number];
     hideToolbar?: boolean;
     onRefresh?: () => void;
 }
@@ -83,8 +83,14 @@ export type Props = CryptoGraphProps | FiatGraphProps;
 
 const TransactionsGraph = React.memo((props: Props) => {
     const { isLoading, data, selectedRange, xTicks } = props;
+    const { selectedView } = useGraph();
     const [maxYTickWidth, setMaxYTickWidth] = useState(20);
-    const { isMobileLayout } = useLayoutSize();
+    const yDomain = calcYDomain(
+        props.variant === 'all-assets' ? 'fiat' : 'crypto',
+        selectedView,
+        props.minMaxValues,
+        props.account?.formattedBalance,
+    );
 
     const setWidth = (n: number) => {
         setMaxYTickWidth(prevValue => (prevValue > n ? prevValue : n));
@@ -137,12 +143,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 domain={calcXDomain(xTicks, data, selectedRange)}
                                 // width={10}
                                 stroke={colors.NEUE_BG_GRAY}
-                                interval={
-                                    isMobileLayout ||
-                                    (props.selectedRange.label === 'all' && xTicks.length > 24)
-                                        ? 'preserveStartEnd'
-                                        : 0
-                                }
+                                interval="preserveStartEnd"
                                 tick={<CustomXAxisTick selectedRange={selectedRange} />}
                                 ticks={xTicks}
                                 tickLine={false}
@@ -151,11 +152,9 @@ const TransactionsGraph = React.memo((props: Props) => {
                             <YAxis
                                 type="number"
                                 orientation="right"
-                                scale="linear"
-                                domain={calcYDomain(
-                                    props.maxValue,
-                                    props.account?.formattedBalance,
-                                )}
+                                scale={selectedView}
+                                domain={yDomain}
+                                allowDataOverflow={selectedView === 'log'}
                                 stroke={colors.NEUE_BG_GRAY}
                                 tick={
                                     props.variant === 'one-asset' ? (
@@ -198,7 +197,11 @@ const TransactionsGraph = React.memo((props: Props) => {
                             {props.variant === 'one-asset' && (
                                 <Line
                                     type="linear"
-                                    dataKey={(data: any) => Number(props.balanceValueFn(data))}
+                                    dataKey={(data: any) => {
+                                        return selectedView === 'log'
+                                            ? Number(props.balanceValueFn(data)) || yDomain[0]
+                                            : Number(props.balanceValueFn(data));
+                                    }}
                                     stroke={colors.NEUE_TYPE_ORANGE}
                                     dot={false}
                                     activeDot={false}

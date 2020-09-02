@@ -1,6 +1,7 @@
 import Backdrop from './Backdrop';
 import DeviceIcon from './images/DeviceIcon';
-import Image from './images/Image';
+import ConnectDeviceImage from './images/ConnectDeviceImage';
+import Image, { Props as ImageProps } from './images/Image';
 import CheckItem from './CheckItem';
 import ExternalLink from './ExternalLink';
 import Preloader from './Preloader';
@@ -26,7 +27,7 @@ import AppNavigationPanel from './AppNavigationPanel';
 import AppNavigation from './AppNavigation';
 import Ticker from './Ticker';
 import { Translation } from './Translation';
-import { AccountLabeling, AddressLabeling, WalletLabeling } from './Labeling';
+import { AccountLabeling, AddressLabeling, WalletLabeling, MetadataLabeling } from './Labeling';
 import FormattedCryptoAmount from './FormattedCryptoAmount';
 import Sign from './Sign';
 import AddAccountButton from './AddAccountButton';
@@ -58,7 +59,9 @@ export {
     AccountLabeling,
     AddressLabeling,
     WalletLabeling,
+    MetadataLabeling,
     Image,
+    ConnectDeviceImage,
     QuestionTooltip,
     TransactionsGraph,
     AppNavigationPanel,
@@ -68,3 +71,5 @@ export {
     Sign,
     AddAccountButton,
 };
+
+export type { ImageProps };
