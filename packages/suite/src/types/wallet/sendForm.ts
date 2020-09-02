@@ -4,6 +4,7 @@ import { Account, Network, CoinFiatRates } from '@wallet-types';
 import {
     FeeLevel,
     TokenInfo,
+    ComposeOutput,
     PrecomposedTransaction as PrecomposedTransactionBase,
 } from 'trezor-connect';
 import { AppState, ExtendedMessageDescriptor } from '@suite-types';
@@ -69,6 +70,8 @@ export type EthTransactionData = {
     gasPrice: string;
     nonce: string;
 };
+
+export type ExternalOutput = Exclude<ComposeOutput, { type: 'opreturn' } | { address_n: number[] }>;
 
 export type PrecomposedTransactionError = Extract<PrecomposedTransactionBase, { type: 'error' }> & {
     errorMessage?: ExtendedMessageDescriptor;

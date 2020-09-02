@@ -23,8 +23,8 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
     const { account, feeInfo } = formState;
     if (!account.addresses || !account.utxo) return;
 
-    const composedOutputs = getBitcoinComposeOutputs(formValues);
-    if (composedOutputs.length < 1) return;
+    const composeOutputs = getBitcoinComposeOutputs(formValues, account.symbol);
+    if (composeOutputs.length < 1) return;
 
     const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
     // in case when selectedFee is set to 'custom' construct this FeeLevel from values
@@ -45,7 +45,7 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
             utxo: account.utxo.filter(input => input.amount !== '0'),
         },
         feeLevels: predefinedLevels,
-        outputs: composedOutputs,
+        outputs: composeOutputs,
         coin: account.symbol,
     };
 

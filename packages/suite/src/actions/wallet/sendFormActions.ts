@@ -6,7 +6,6 @@ import * as modalActions from '@suite-actions/modalActions';
 import { SEND } from '@wallet-actions/constants';
 
 import { formatAmount, formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { findValidOutputs } from '@wallet-utils/sendFormUtils';
 
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
@@ -84,21 +83,15 @@ export const removeDraft = () => (dispatch: Dispatch, getState: GetState) => {
 export const composeTransaction = (formValues: FormState, formState: UseSendFormState) => async (
     dispatch: Dispatch,
 ) => {
-    const validOutputs = findValidOutputs(formValues);
-    if (validOutputs.length === 0) return;
-
-    // TEMP: move this to eth & xrp actions (like getBitcoinComposeOutputs util)
-    const values = { ...formValues, outputs: validOutputs };
-
     const { account } = formState;
     if (account.networkType === 'bitcoin') {
         return dispatch(sendFormBitcoinActions.composeTransaction(formValues, formState));
     }
     if (account.networkType === 'ethereum') {
-        return dispatch(sendFormEthereumActions.composeTransaction(values, formState));
+        return dispatch(sendFormEthereumActions.composeTransaction(formValues, formState));
     }
     if (account.networkType === 'ripple') {
-        return dispatch(sendFormRippleActions.composeTransaction(values, formState));
+        return dispatch(sendFormRippleActions.composeTransaction(formValues, formState));
     }
 };
 
