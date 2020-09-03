@@ -69,6 +69,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         saveDraft,
         removeDraft,
         getLastUsedFeeLevel,
+        setLastUsedFeeLevel,
         signTransaction,
         importRequest,
     } = useActions({
@@ -76,6 +77,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         saveDraft: sendFormActions.saveDraft,
         removeDraft: sendFormActions.removeDraft,
         getLastUsedFeeLevel: walletSettingsActions.getLastUsedFeeLevel,
+        setLastUsedFeeLevel: walletSettingsActions.setLastUsedFeeLevel,
         signTransaction: sendFormActions.signTransaction,
         importRequest: sendFormActions.importRequest,
     });
@@ -83,7 +85,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const { localCurrencyOption } = state;
 
     // register `react-hook-form`, defaultValues are set later in "loadDraft" useEffect block
-    const useFormMethods = useForm<FormState>({ mode: 'onChange' });
+    const useFormMethods = useForm<FormState>({ mode: 'onChange', shouldUnregister: false });
 
     const { control, reset, register, getValues } = useFormMethods;
 
@@ -124,7 +126,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
                 ...state,
                 ...value,
             });
-            console.warn('updateContext', value, state);
         },
         [state],
     );
@@ -160,9 +161,10 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
     const resetContext = useCallback(() => {
         setComposedLevels(undefined);
-        removeDraft();
+        removeDraft(); // reset draft
+        setLastUsedFeeLevel(); // reset last known FeeLevel
         setState(getStateFromProps(props)); // resetting state will trigger "loadDraft" useEffect block, which will reset FormState to default
-    }, [props, removeDraft, setComposedLevels]);
+    }, [props, removeDraft, setLastUsedFeeLevel, setComposedLevels]);
 
     // declare useSendFormImport, sub-hook of useSendForm
     const { importTransaction } = useSendFormImport({

@@ -47,7 +47,11 @@ export default (state: State = initialState, action: Action): State => {
                 break;
 
             case WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL:
-                draft.lastUsedFeeLevel[action.symbol] = action.feeLevel;
+                if (action.feeLevel) {
+                    draft.lastUsedFeeLevel[action.symbol] = action.feeLevel;
+                } else {
+                    delete draft.lastUsedFeeLevel[action.symbol];
+                }
                 break;
             // no default
         }
