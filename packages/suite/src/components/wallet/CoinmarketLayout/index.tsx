@@ -1,7 +1,9 @@
 import { WalletLayout, CoinmarketFooter } from '@wallet-components';
 import { Card } from '@trezor/components';
-import { useSelector } from '@suite-hooks';
-import React, { ReactNode } from 'react';
+import { useSelector, useActions } from '@suite-hooks';
+import { useBuyInfo } from '@wallet-hooks/useCoinmarket';
+import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
+import React, { ReactNode, useEffect } from 'react';
 import styled from 'styled-components';
 
 import Navigation from './components/Navigation';
@@ -19,6 +21,15 @@ interface Props {
 
 const CoinmarketLayout = ({ children }: Props) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const savedBuyInfo = useSelector(state => state.wallet.coinmarket.buy.buyInfo);
+    const { saveBuyInfo } = useActions({ saveBuyInfo: coinmarketBuyActions.saveBuyInfo });
+    const { buyInfo } = useBuyInfo();
+
+    useEffect(() => {
+        if (!savedBuyInfo?.buyInfo) {
+            saveBuyInfo(buyInfo);
+        }
+    });
 
     return (
         <WalletLayout title="Coinmarket" account={selectedAccount}>
