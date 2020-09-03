@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, Button, variables, Icon } from '@trezor/components';
-import { CoinmarketPaymentType, CoinmarketBuyProviderInfo } from '@wallet-components';
 import { QuestionTooltip, Translation } from '@suite-components';
-import { BuyTrade } from 'invity-api';
+import { ExchangeTrade } from 'invity-api';
+import CoinmarketExchangeProviderInfo from '@suite/components/wallet/CoinmarketExchangeProviderInfo';
+import { useSelector } from '@suite/hooks/suite';
+import { formatCryptoAmount } from '@suite/utils/wallet/coinmarket/exchangeUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -80,16 +82,6 @@ const Value = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const Footer = styled.div`
-    margin: 0 30px;
-    padding: 10px 0;
-    padding-top: 23px;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.SMALL};
-`;
-
 const ErrorFooter = styled.div`
     display: flex;
     margin: 0 30px;
@@ -108,22 +100,25 @@ const IconWrapper = styled.div`
 
 const ErrorText = styled.div``;
 
-interface Props {
-    className?: string;
-    selectQuote: (quote: BuyTrade) => void;
-    quote: BuyTrade;
-    wantCrypto: boolean;
-}
-
 const StyledQuestionTooltip = styled(QuestionTooltip)`
     padding-left: 4px;
     padding-top: 1px;
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
 
-const Quote = ({ className, selectQuote, quote, wantCrypto }: Props) => {
+interface Props {
+    className?: string;
+    selectQuote: (quote: ExchangeTrade) => void;
+    quote: ExchangeTrade;
+}
+
+const Quote = ({ className, selectQuote, quote }: Props) => {
     const hasTag = false; // TODO - tags are in quote.tags, will need some algorithm to evaluate them and show only one
-    const { paymentMethod, exchange, error } = quote;
+    const { exchange, error, receive, receiveStringAmount } = quote;
+    const providers = useSelector(
+        state => state.wallet.coinmarket.exchange.exchangeInfo?.providerInfos,
+    );
+    const provider = providers && exchange ? providers[exchange] : null;
 
     return (
         <Wrapper className={className}>
@@ -131,43 +126,29 @@ const Quote = ({ className, selectQuote, quote, wantCrypto }: Props) => {
             <Main>
                 {error && <Left>N/A</Left>}
                 {!error && (
-                    <Left>
-                        {wantCrypto
-                            ? `${quote.fiatStringAmount} ${quote.fiatCurrency}`
-                            : `${quote.receiveStringAmount} ${quote.receiveCurrency}`}
-                    </Left>
+                    <Left>{`${formatCryptoAmount(Number(receiveStringAmount))} ${receive}`}</Left>
                 )}
                 <Right>
                     <StyledButton isDisabled={!!quote.error} onClick={() => selectQuote(quote)}>
-                        <Translation id="TR_BUY_GET_THIS_OFFER" />
+                        <Translation id="TR_EXCHANGE_GET_THIS_OFFER" />
                     </StyledButton>
                 </Right>
             </Main>
             <Details>
                 <Column>
                     <Heading>
-                        <Translation id="TR_BUY_PROVIDER" />
+                        <Translation id="TR_EXCHANGE_PROVIDER" />
                     </Heading>
                     <Value>
-                        <CoinmarketBuyProviderInfo exchange={exchange} />
+                        <CoinmarketExchangeProviderInfo exchange={exchange} />
                     </Value>
                 </Column>
                 <Column>
                     <Heading>
-                        <Translation id="TR_BUY_PAID_BY" />
+                        <Translation id="TR_EXCHANGE_KYC" />
+                        <StyledQuestionTooltip messageId="TR_EXCHANGE_KYC_INFO" />
                     </Heading>
-                    <Value>
-                        <CoinmarketPaymentType method={paymentMethod} />
-                    </Value>
-                </Column>
-                <Column>
-                    <Heading>
-                        <Translation id="TR_BUY_FEES" />{' '}
-                        <StyledQuestionTooltip messageId="TR_OFFER_FEE_INFO" />
-                    </Heading>
-                    <Value>
-                        <Translation id="TR_BUY_ALL_FEES_INCLUDED" />
-                    </Value>
+                    <Value>{provider?.kycPolicy}</Value>
                 </Column>
             </Details>
             {error && (
@@ -178,8 +159,6 @@ const Quote = ({ className, selectQuote, quote, wantCrypto }: Props) => {
                     <ErrorText>{error}</ErrorText>
                 </ErrorFooter>
             )}
-
-            {quote.infoNote && !error && <Footer>{quote.infoNote}</Footer>}
         </Wrapper>
     );
 };

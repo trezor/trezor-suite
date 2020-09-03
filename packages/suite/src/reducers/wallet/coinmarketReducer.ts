@@ -55,7 +55,7 @@ interface State {
     trades: Trade[];
 }
 
-const initialState = {
+export const initialState = {
     buy: {
         buyInfo: undefined,
         quotesRequest: undefined,

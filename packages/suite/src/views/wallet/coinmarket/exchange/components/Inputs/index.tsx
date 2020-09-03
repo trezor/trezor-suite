@@ -62,8 +62,8 @@ const Inputs = ({ amountLimits, exchangeInfo, setAmountLimits }: Props) => {
         errors,
         trigger,
         control,
-        setValue,
-        clearErrors,
+        // setValue,
+        // clearErrors,
         formState,
     } = useFormContext();
     const cryptoInput = 'cryptoInput';

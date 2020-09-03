@@ -31,3 +31,44 @@ export function getAmountLimits(quotes: ExchangeTrade[]): AmountLimits | undefin
         return { currency: quotes[0].send || '', min, max };
     }
 }
+
+export function isQuoteError(quote: ExchangeTrade): boolean {
+    if (
+        quote.error ||
+        !quote.receive ||
+        !quote.receiveStringAmount ||
+        !quote.sendStringAmount ||
+        !quote.send
+    ) {
+        return true;
+    }
+    if (quote.min && Number(quote.sendStringAmount) < quote.min) {
+        return true;
+    }
+    if (quote.max && quote.max !== 'NONE' && Number(quote.sendStringAmount) > quote.max) {
+        return true;
+    }
+    return false;
+}
+
+// return 3 arrays: quotes not in error, quotes with min/max error, quotes with general error
+export function splitQuotes(
+    quotes: ExchangeTrade[],
+): [ExchangeTrade[], ExchangeTrade[], ExchangeTrade[]] {
+    return [
+        quotes.filter(q => !isQuoteError(q)),
+        quotes.filter(q => isQuoteError(q) && !q.error),
+        quotes.filter(q => q.error),
+    ];
+}
+
+export function formatCryptoAmount(amount: number, decimals = 8): string {
+    let digits = 4;
+    if (amount < 1) {
+        digits = 6;
+    }
+    if (amount < 0.01) {
+        digits = decimals;
+    }
+    return amount.toFixed(digits);
+}

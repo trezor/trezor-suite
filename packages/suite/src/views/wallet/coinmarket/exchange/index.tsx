@@ -6,7 +6,11 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { useActions, useSelector } from '@suite/hooks/suite';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 import { useExchangeInfo } from '@suite/hooks/wallet/useCoinmarket';
-import { AmountLimits } from '@suite/utils/wallet/coinmarket/exchangeUtils';
+import {
+    AmountLimits,
+    splitQuotes,
+    getAmountLimits,
+} from '@suite/utils/wallet/coinmarket/exchangeUtils';
 import * as routerActions from '@suite-actions/routerActions';
 import { Translation } from '@suite-components';
 import { ExchangeTradeQuoteRequest } from 'invity-api';
@@ -53,18 +57,43 @@ const CoinmarketExchange = () => {
         };
         await saveQuoteRequest(request);
         const allQuotes = await invityAPI.getExchangeQuotes(request);
-        // const [fixedQuotes, floatQuotes] = processQuotes(allQuotes);
-        // const limits = getAmountLimits(request, quotes);
-        // if (limits) {
-        //     setAmountLimits(limits);
-        // } else {
-        //     await saveQuotes(fixedQuotes, floatQuotes);
-        //     goto('wallet-coinmarket-exchange-offers', {
-        //         symbol: account.symbol,
-        //         accountIndex: account.index,
-        //         accountType: account.accountType,
-        //     });
-        // }
+        const limits = getAmountLimits(allQuotes);
+
+        if (limits) {
+            setAmountLimits(limits);
+        } else {
+            const [fixedOK, fixedMinMax, fixedError] = splitQuotes(
+                allQuotes.filter(q => exchangeInfo.providerInfos[q.exchange || '']?.isFixedRate) ||
+                    [],
+            );
+            const [floatOK, floatMinMax, floatError] = splitQuotes(
+                allQuotes.filter(q => !exchangeInfo.providerInfos[q.exchange || '']?.isFixedRate) ||
+                    [],
+            );
+
+            // if there are some OK quotes, do not show errors
+            const fixedQuotes =
+                // eslint-disable-next-line no-nested-ternary
+                fixedOK.length > 0
+                    ? fixedOK.concat(fixedMinMax)
+                    : floatOK.length > 0
+                    ? []
+                    : fixedMinMax.concat(fixedError);
+            const floatQuotes =
+                // eslint-disable-next-line no-nested-ternary
+                floatOK.length > 0
+                    ? floatOK.concat(floatMinMax)
+                    : fixedOK.length > 0
+                    ? []
+                    : floatMinMax.concat(floatError);
+
+            await saveQuotes(fixedQuotes, floatQuotes);
+            goto('wallet-coinmarket-exchange-offers', {
+                symbol: account.symbol,
+                accountIndex: account.index,
+                accountType: account.accountType,
+            });
+        }
     };
 
     return (

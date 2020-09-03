@@ -9,9 +9,10 @@ import CoinmarketTopPanel from './CoinmarketTopPanel';
 import CoinmarketProvidedByInvity from './CoinmarketProvidedByInvity';
 import CoinmarketPaymentType from './CoinmarketPaymentType';
 import CoinmarketFooter from './CoinmarketFooter';
-import CoinmarketProviderInfo from './CoinmarketProviderInfo';
+import CoinmarketBuyProviderInfo from './CoinmarketBuyProviderInfo';
 import CoinmarketOfferInfo from './CoinmarketOfferInfo';
 import CoinmarketTransactionId from './CoinmarketTransactionId';
+import CoinmarketExchangeProviderInfo from './CoinmarketExchangeProviderInfo';
 
 export {
     Title,
@@ -23,7 +24,8 @@ export {
     CoinmarketLayout,
     CoinmarketTopPanel,
     CoinmarketFooter,
-    CoinmarketProviderInfo,
+    CoinmarketBuyProviderInfo,
+    CoinmarketExchangeProviderInfo,
     CoinmarketOfferInfo,
     CoinmarketTransactionId,
     CoinmarketProvidedByInvity,
