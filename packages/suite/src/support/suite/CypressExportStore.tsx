@@ -1,10 +1,13 @@
 import { useEffect, FunctionComponent } from 'react';
+import { DesktopApi } from '@trezor/suite/index.d';
 import { Store } from '@suite-types';
 
 declare global {
     interface Window {
         Cypress: any;
         store: Store;
+        __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: () => any | null;
+        desktop_api: DesktopApi; // Electron API
     }
 }
 

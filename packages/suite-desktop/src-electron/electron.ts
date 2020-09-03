@@ -138,6 +138,15 @@ const init = async () => {
                 callback({ cancel: false, requestHeaders: details.requestHeaders });
             });
 
+            session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+                callback({
+                    responseHeaders: {
+                        'Content-Security-Policy': [config.cspRules.join(';')],
+                        ...details.responseHeaders,
+                    },
+                });
+            });
+
             // TODO: implement https://github.com/electron/electron/blob/master/docs/api/browser-window.md#event-unresponsive
             session.defaultSession.protocol.interceptFileProtocol(PROTOCOL, (request, callback) => {
                 let url = request.url.substr(PROTOCOL.length + 1);
