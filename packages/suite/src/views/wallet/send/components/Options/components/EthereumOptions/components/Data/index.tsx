@@ -103,7 +103,7 @@ export default ({ close }: Props) => {
                     required: 'DATA_NOT_SET',
                     validate: (value: string) => {
                         if (!isHexValid(value, '0x')) return 'DATA_NOT_VALID_HEX';
-                        if (value.length > 80 * 2) return 'DATA_HEX_TOO_BIG'; // TODO: is the limit necessary?
+                        if (value.length > 8192 * 2) return 'DATA_HEX_TOO_BIG'; // 8192 bytes limit for protobuf single message encoding in FW
                     },
                 })}
                 onChange={event => {

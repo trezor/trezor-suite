@@ -100,6 +100,10 @@ export default ({ close }: Props) => {
                         if (!amountBig.isInteger()) {
                             return 'LOCKTIME_IS_NOT_INTEGER';
                         }
+                        // max unix timestamp * 2 (2147483647 * 2)
+                        if (amountBig.gt(4294967294)) {
+                            return 'LOCKTIME_IS_TOO_BIG';
+                        }
                     },
                 })}
                 onChange={() => {
