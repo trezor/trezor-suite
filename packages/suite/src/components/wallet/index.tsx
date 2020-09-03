@@ -12,6 +12,7 @@ import CoinmarketFooter from './CoinmarketFooter';
 import CoinmarketBuyProviderInfo from './CoinmarketBuyProviderInfo';
 import CoinmarketOfferInfo from './CoinmarketOfferInfo';
 import CoinmarketTransactionId from './CoinmarketTransactionId';
+import CoinmarketExchangeProviderInfo from './CoinmarketExchangeProviderInfo';
 
 export {
     Title,
@@ -24,6 +25,7 @@ export {
     CoinmarketTopPanel,
     CoinmarketFooter,
     CoinmarketBuyProviderInfo,
+    CoinmarketExchangeProviderInfo,
     CoinmarketOfferInfo,
     CoinmarketTransactionId,
     CoinmarketProvidedByInvity,

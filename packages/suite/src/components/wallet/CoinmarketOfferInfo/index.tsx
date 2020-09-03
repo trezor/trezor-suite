@@ -4,7 +4,7 @@ import { BuyTrade } from 'invity-api';
 import { colors, variables } from '@trezor/components';
 import {
     CoinmarketPaymentType,
-    CoinmarketProviderInfo,
+    CoinmarketBuyProviderInfo,
     CoinmarketTransactionId,
 } from '@wallet-components';
 import { Translation } from '@suite-components';
@@ -50,7 +50,7 @@ const OfferInfo = ({ selectedQuote, transactionId }: Props) => {
                         <Translation id="TR_BUY_PROVIDER" />
                     </LeftColumn>
                     <RightColumn>
-                        <CoinmarketProviderInfo exchange={exchange} />
+                        <CoinmarketBuyProviderInfo exchange={exchange} />
                     </RightColumn>
                 </Row>
                 <Row>

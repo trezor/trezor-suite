@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
-import { CoinmarketPaymentType, CoinmarketProviderInfo } from '@wallet-components';
+import { CoinmarketPaymentType, CoinmarketExchangeProviderInfo } from '@wallet-components';
 import { TradeExchange } from '@wallet-reducers/coinmarketReducer';
 import { formatDistance } from 'date-fns';
 
@@ -26,7 +26,7 @@ const ExchangeTransaction = ({ trade }: Props) => {
             </Column>
             <Column>
                 <Row>
-                    <CoinmarketProviderInfo exchange={exchange} />
+                    <CoinmarketExchangeProviderInfo exchange={exchange} />
                 </Row>
                 <RowSecond>
                     <CoinmarketPaymentType method={paymentMethod} />
