@@ -180,6 +180,46 @@ const definedMessages = defineMessages({
         defaultMessage: 'No providers',
         id: 'TR_EXCHANGE_NO_PROVIDERS',
     },
+    TR_EXCHANGE_PROVIDER: {
+        defaultMessage: 'provider',
+        id: 'TR_EXCHANGE_PROVIDER',
+    },
+    TR_EXCHANGE_GET_THIS_OFFER: {
+        id: 'TR_EXCHANGE_GET_THIS_OFFER',
+        defaultMessage: 'Get this Offer',
+    },
+    TR_EXCHANGE_KYC: {
+        id: 'TR_EXCHANGE_KYC',
+        defaultMessage: 'KYC',
+    },
+    TR_EXCHANGE_KYC_INFO: {
+        id: 'TR_EXCHANGE_KYC_INFO',
+        defaultMessage: 'KYC info TODO',
+    },
+    TR_EXCHANGE_FIXED_OFFERS: {
+        id: 'TR_EXCHANGE_FIXED_OFFERS',
+        defaultMessage: 'Fixed-rate offers',
+    },
+    TR_EXCHANGE_FIXED_OFFERS_INFO: {
+        id: 'TR_EXCHANGE_FIXED_OFFERS_INFO',
+        defaultMessage: 'Fixed-rate offers info TODO',
+    },
+    TR_EXCHANGE_FLOAT_OFFERS: {
+        id: 'TR_EXCHANGE_FLOAT_OFFERS',
+        defaultMessage: 'Float-rate offers',
+    },
+    TR_EXCHANGE_FLOAT_OFFERS_INFO: {
+        id: 'TR_EXCHANGE_FLOAT_OFFERS_INFO',
+        defaultMessage: 'Float-rate offers info TODO',
+    },
+    TR_EXCHANGE_FEES_INCLUDED: {
+        id: 'TR_EXCHANGE_FEES_INCLUDED',
+        defaultMessage: 'All fees included',
+    },
+    TR_EXCHANGE_FEES_INCLUDED_INFO: {
+        id: 'TR_EXCHANGE_FEES_INCLUDED_INFO',
+        defaultMessage: 'All fees included info TODO',
+    },
     TR_BUY_STATUS_PENDING: {
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',

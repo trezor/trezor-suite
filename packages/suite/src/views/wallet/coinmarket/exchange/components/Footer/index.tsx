@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from '@suite-hooks';
-import { Button, colors } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
