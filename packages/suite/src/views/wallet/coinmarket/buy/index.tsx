@@ -32,6 +32,7 @@ const CoinmarketBuy = () => {
     }
 
     const { account } = selectedAccount;
+
     const isLoading = !buyInfo?.buyInfo;
     const noProviders =
         buyInfo?.buyInfo?.providers.length === 0 ||
@@ -77,12 +78,13 @@ const CoinmarketBuy = () => {
                             <Translation id="TR_BUY_LOADING" />
                         </Loading>
                     )}
-                    {!isLoading && noProviders && (
-                        <NoProviders>
-                            <Translation id="TR_BUY_NO_PROVIDERS" />
-                        </NoProviders>
-                    )}
-                    {!isLoading && !noProviders && (
+                    {(!isLoading && noProviders) ||
+                        (!buyInfo && (
+                            <NoProviders>
+                                <Translation id="TR_BUY_NO_PROVIDERS" />
+                            </NoProviders>
+                        ))}
+                    {!isLoading && !noProviders && buyInfo && (
                         <Content>
                             <form onSubmit={methods.handleSubmit(onSubmit)}>
                                 <Inputs
