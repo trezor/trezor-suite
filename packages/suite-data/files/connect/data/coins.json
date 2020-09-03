@@ -994,7 +994,7 @@
                 "Normal": 10
             },
             "dust_limit": 546,
-            "extra_data": false,
+            "extra_data": true,
             "force_bip143": false,
             "fork_id": null,
             "hash_genesis_block": "027e3758c3a65b12aa1046462b486d0a63bfa1beae327897f56c5cfb7daaae71",
@@ -1023,13 +1023,20 @@
             "address_type": 6198,
             "address_type_p2sh": 6203,
             "bech32_prefix": null,
-            "blockbook": [],
+            "blockbook": [
+                "https://blockbook.kotocoin.info"
+            ],
             "blocktime_seconds": 60,
             "cashaddr_prefix": null,
             "coin_label": "Koto",
             "coin_name": "Koto",
             "coin_shortcut": "KOTO",
-            "consensus_branch_id": null,
+            "consensus_branch_id": {
+                "1": 0,
+                "2": 0,
+                "3": 1537743641,
+                "4": 733220448
+            },
             "curve_name": "secp256k1",
             "decimals": 8,
             "decred": false,
@@ -1037,7 +1044,7 @@
                 "Normal": 10
             },
             "dust_limit": 546,
-            "extra_data": false,
+            "extra_data": true,
             "force_bip143": false,
             "fork_id": null,
             "hash_genesis_block": "6d424c350729ae633275d51dc3496e16cd1b1d195c164da00f39c499a2e9959e",
@@ -1830,6 +1837,49 @@
             "xpub_magic_segwit_p2sh": null
         },
         {
+            "address_type": 30,
+            "address_type_p2sh": 33,
+            "bech32_prefix": null,
+            "blockbook": [],
+            "blocktime_seconds": 30,
+            "cashaddr_prefix": null,
+            "coin_label": "Verge",
+            "coin_name": "Verge",
+            "coin_shortcut": "XVG",
+            "consensus_branch_id": null,
+            "curve_name": "secp256k1",
+            "decimals": 6,
+            "decred": false,
+            "default_fee_b": {
+                "Normal": 10
+            },
+            "dust_limit": 10000,
+            "extra_data": false,
+            "force_bip143": false,
+            "fork_id": null,
+            "hash_genesis_block": "00000fc63692467faeb20cdb3b53200dc601d75bdfa1001463304cc790d77278",
+            "max_address_length": 34,
+            "maxfee_kb": 10000000,
+            "min_address_length": 27,
+            "minfee_kb": 1000000,
+            "name": "Verge",
+            "segwit": false,
+            "shortcut": "XVG",
+            "signed_message_header": "Name: Dogecoin Dark\n",
+            "slip44": 77,
+            "support": {
+                "connect": true,
+                "trezor1": "1.9.3",
+                "trezor2": "2.3.3",
+                "webwallet": false
+            },
+            "timestamp": true,
+            "xprv_magic": 35729707,
+            "xpub_magic": 36513075,
+            "xpub_magic_segwit_native": null,
+            "xpub_magic_segwit_p2sh": null
+        },
+        {
             "address_type": 71,
             "address_type_p2sh": 5,
             "bech32_prefix": "vtc",
@@ -1989,7 +2039,7 @@
                 "1": 0,
                 "2": 0,
                 "3": 1537743641,
-                "4": 733220448
+                "4": 4122551051
             },
             "curve_name": "secp256k1",
             "decimals": 8,
@@ -2037,7 +2087,7 @@
                 "1": 0,
                 "2": 0,
                 "3": 1537743641,
-                "4": 733220448
+                "4": 4122551051
             },
             "curve_name": "secp256k1",
             "decimals": 8,
@@ -2092,7 +2142,7 @@
                 "Normal": 100
             },
             "dust_limit": 546,
-            "extra_data": false,
+            "extra_data": true,
             "force_bip143": false,
             "fork_id": null,
             "hash_genesis_block": "4381deb85b1b2c9843c222944b616d997516dcbd6a964e1eaf0def0830695233",
@@ -2138,7 +2188,7 @@
                 "Normal": 100
             },
             "dust_limit": 546,
-            "extra_data": false,
+            "extra_data": true,
             "force_bip143": false,
             "fork_id": null,
             "hash_genesis_block": "7ac038c193c2158c428c59f9ae0c02a07115141c6e9dc244ae96132e99b4e642",
