@@ -338,6 +338,21 @@ class CommonDB<TDBStructure> {
         return tx.store.getAll();
     };
 
+    getItemsWithKeys = async <TStoreName extends StoreNames<TDBStructure>>(store: TStoreName) => {
+        const db = await this.getDB();
+        let cursor = await db.transaction(store).store.openCursor();
+        const resp = [];
+        while (cursor) {
+            resp.push({
+                key: cursor.key,
+                value: cursor.value,
+            });
+            // eslint-disable-next-line no-await-in-loop
+            cursor = await cursor.continue();
+        }
+        return resp;
+    };
+
     clearStores = async <TStoreName extends StoreNames<TDBStructure>>(
         storeNames?: TStoreName[]
     ) => {

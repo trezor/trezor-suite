@@ -1,6 +1,7 @@
-import { Dispatch, GetState } from '@suite-types';
+import { FeeLevel } from 'trezor-connect';
 import { WALLET_SETTINGS } from './constants';
 import * as suiteActions from '@suite-actions/suiteActions';
+import { Dispatch, GetState } from '@suite-types';
 import { Network, ExternalNetwork } from '@wallet-types';
 
 export type WalletSettingsActions =
@@ -10,7 +11,12 @@ export type WalletSettingsActions =
           payload: ExternalNetwork['symbol'][];
       }
     | { type: typeof WALLET_SETTINGS.SET_LOCAL_CURRENCY; localCurrency: string }
-    | { type: typeof WALLET_SETTINGS.SET_HIDE_BALANCE; toggled: boolean };
+    | { type: typeof WALLET_SETTINGS.SET_HIDE_BALANCE; toggled: boolean }
+    | {
+          type: typeof WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL;
+          feeLevel: FeeLevel;
+          symbol: Network['symbol'];
+      };
 
 export const setLocalCurrency = (localCurrency: string) => ({
     type: WALLET_SETTINGS.SET_LOCAL_CURRENCY,
@@ -49,3 +55,22 @@ export const changeNetworks = (payload: Network['symbol'][]) => ({
     type: WALLET_SETTINGS.CHANGE_NETWORKS,
     payload,
 });
+
+export const setLastUsedFeeLevel = (feeLevel: FeeLevel) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { selectedAccount } = getState().wallet;
+    if (selectedAccount.status !== 'loaded') return;
+    dispatch({
+        type: WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL,
+        feeLevel,
+        symbol: selectedAccount.account.symbol,
+    });
+};
+
+export const getLastUsedFeeLevel = () => (_: Dispatch, getState: GetState) => {
+    const { selectedAccount, settings } = getState().wallet;
+    if (selectedAccount.status !== 'loaded') return;
+    return settings.lastUsedFeeLevel[selectedAccount.account.symbol];
+};

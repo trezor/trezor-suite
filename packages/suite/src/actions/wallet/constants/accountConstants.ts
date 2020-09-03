@@ -6,5 +6,4 @@ export const UPDATE = '@account/update';
 export const CHANGE_VISIBILITY = '@account/change-visibility';
 export const SET_BALANCE = '@account/set-balance';
 export const SET_NONCE = '@account/set-nonce';
-export const FROM_STORAGE = '@account/from-storage';
 export const UPDATE_SELECTED_ACCOUNT = '@account/update-selected-account';

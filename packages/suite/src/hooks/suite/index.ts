@@ -8,6 +8,7 @@ export { useAnalytics } from './useAnalytics';
 export { useActions } from './useActions';
 export { useLayoutSize } from './useLayoutSize';
 export { useGraph } from './useGraph';
+export { useDebounce } from './useDebounce';
 export { useAccountSearch } from './useAccountSearch';
 
 /**

@@ -1,53 +1,18 @@
-import { Transaction, TxData } from 'ethereumjs-tx';
-import Common from 'ethereumjs-common'; // this is a dependency of `ethereumjs-tx` therefore it doesn't have to be in package.json
-import { toHex, toWei, fromWei, padLeft } from 'web3-utils';
 import BigNumber from 'bignumber.js';
-import { Output, State, EthTransactionData, FeeInfo, FeeLevel } from '@wallet-types/sendForm';
-import { VALIDATION_ERRORS, ERC20_TRANSFER, ERC20_GAS_LIMIT } from '@wallet-constants/sendForm';
-import { formatNetworkAmount, amountToSatoshi } from '@wallet-utils/accountUtils';
-import { Account, Network } from '@wallet-types';
-import { EthereumTransaction } from 'trezor-connect';
+import { FieldError, UseFormMethods } from 'react-hook-form';
+import { EthereumTransaction, FeeLevel, ComposeOutput } from 'trezor-connect';
+import Common from 'ethereumjs-common';
+import { Transaction, TxData } from 'ethereumjs-tx';
+import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 
-export const getOutput = (outputs: Output[], id: number) =>
-    outputs.find(outputItem => outputItem.id === id) as Output;
-
-export const hasDecimals = (value: string, decimals: number) => {
-    const DECIMALS_REGEX = new RegExp(
-        `^(0|0\\.([0-9]{0,${decimals}})?|[1-9][0-9]*\\.?([0-9]{0,${decimals}})?)$`,
-    );
-    return DECIMALS_REGEX.test(value);
-};
-
-export const shouldComposeBy = (
-    name: 'address' | 'amount',
-    outputs: Output[],
-    networkType: Account['networkType'],
-) => {
-    let shouldCompose = true;
-    const results = [];
-
-    // check if there is at least one filled
-    outputs.forEach(output => {
-        if (output[name].value) {
-            results.push(output[name].value);
-        }
-    });
-
-    if (results.length === 0) {
-        shouldCompose = false;
-    }
-
-    if (networkType !== 'bitcoin') {
-        // one of the inputs is not valid
-        outputs.forEach(output => {
-            if (output[name].error) {
-                shouldCompose = false;
-            }
-        });
-    }
-
-    return shouldCompose;
-};
+import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
+import {
+    amountToSatoshi,
+    networkAmountToSatoshi,
+    formatNetworkAmount,
+} from '@wallet-utils/accountUtils';
+import { Network, Account, CoinFiatRates } from '@wallet-types';
+import { FormState, FeeInfo, EthTransactionData, ExternalOutput } from '@wallet-types/sendForm';
 
 export const calculateTotal = (amount: string, fee: string): string => {
     try {
@@ -72,42 +37,17 @@ export const calculateMax = (availableBalance: string, fee: string): string => {
     }
 };
 
-export const getTransactionInfo = (networkType: Account['networkType'], send: State) => {
-    switch (networkType) {
-        case 'bitcoin': {
-            return send.networkTypeBitcoin.transactionInfo;
-        }
-        case 'ethereum': {
-            return send.networkTypeEthereum.transactionInfo;
-        }
-        case 'ripple': {
-            return send.networkTypeRipple.transactionInfo;
-        }
-        // no default
-    }
-};
-
-export const getInputState = (
-    error: typeof VALIDATION_ERRORS[keyof typeof VALIDATION_ERRORS] | null,
-    value: string | null,
-    noSuccess?: boolean,
-    isMandatory?: boolean,
+export const getFee = (
+    transactionInfo: any,
+    networkType: Account['networkType'],
+    symbol: Account['symbol'],
 ) => {
-    if (!isMandatory && !value) {
-        return undefined;
+    if (networkType === 'ethereum') {
+        const gasPriceInWei = toWei(transactionInfo.feePerUnit, 'gwei');
+        return fromWei(gasPriceInWei, 'ether');
     }
 
-    if (error) {
-        return 'error';
-    }
-
-    if (noSuccess) {
-        return undefined;
-    }
-
-    if (value && !error) {
-        return 'success';
-    }
+    return formatNetworkAmount(transactionInfo.fee, symbol);
 };
 
 // ETH SPECIFIC
@@ -123,14 +63,15 @@ export const sanitizeHex = ($hex: string): string => {
 /*
     Calculate fee from gas price and gas limit
  */
-export const calculateEthFee = (gasPrice: string | null, gasLimit: string | null): string => {
+export const calculateEthFee = (gasPrice?: string, gasLimit?: string): string => {
     if (!gasPrice || !gasLimit) {
         return '0';
     }
     try {
-        return new BigNumber(gasPrice).times(gasLimit).toFixed();
+        const result = new BigNumber(gasPrice).times(gasLimit);
+        if (result.isNaN()) throw new Error('NaN');
+        return result.toFixed();
     } catch (error) {
-        // TODO: empty input throws this error.
         return '0';
     }
 };
@@ -193,26 +134,17 @@ export const serializeEthereumTx = (tx: TxData & EthereumTransaction) => {
     return `0x${ethTx.serialize().toString('hex')}`;
 };
 
-export const getReserveInXrp = (account: Account) => {
-    if (account.networkType !== 'ripple') return null;
-    const { misc } = account;
-    return formatNetworkAmount(misc.reserve, account.symbol);
-};
-
 export const getFeeLevels = (
     networkType: Network['networkType'],
     feeInfo: FeeInfo,
     token = false,
 ) => {
     const convertedEthLevels: FeeLevel[] = [];
-    const initialLevels: FeeLevel[] =
-        networkType === 'ethereum'
-            ? feeInfo.levels
-            : feeInfo.levels.concat({
-                  label: 'custom',
-                  feePerUnit: '0',
-                  blocks: -1,
-              });
+    const initialLevels: FeeLevel[] = feeInfo.levels.concat({
+        label: 'custom',
+        feePerUnit: '0',
+        blocks: -1,
+    });
 
     if (networkType === 'ethereum') {
         initialLevels.forEach(level =>
@@ -228,4 +160,165 @@ export const getFeeLevels = (
     }
 
     return networkType === 'ethereum' ? convertedEthLevels : initialLevels;
+};
+
+export const getInputState = (error?: FieldError, value?: string) => {
+    if (error) {
+        return 'error';
+    }
+
+    if (value && value.length > 0 && !error) {
+        return 'success';
+    }
+};
+
+export const getFiatRate = (fiatRates: CoinFiatRates | undefined, currency: string) => {
+    if (!fiatRates || !fiatRates.current || !fiatRates.current.rates) return;
+    return fiatRates.current.rates[currency];
+};
+
+export const getFeeUnits = (networkType: Network['networkType']) => {
+    if (networkType === 'ethereum') return 'GWEI';
+    if (networkType === 'ripple') return 'Drops';
+    return 'sat/B';
+};
+
+// Find all errors with type='compose' in FormState errors
+export const findComposeErrors = (errors: UseFormMethods['errors'], prefix?: string) => {
+    const composeErrors: string[] = [];
+    if (!errors || typeof errors !== 'object') return composeErrors;
+    Object.keys(errors).forEach(key => {
+        const val = errors[key];
+        if (val) {
+            if (Array.isArray(val)) {
+                // outputs
+                val.forEach((output, index) =>
+                    composeErrors.push(...findComposeErrors(output, `outputs[${index}]`)),
+                );
+            } else if (
+                typeof val === 'object' &&
+                Object.prototype.hasOwnProperty.call(val, 'type') &&
+                val.type === 'compose'
+            ) {
+                // regular top level field
+                composeErrors.push(prefix ? `${prefix}.${key}` : key);
+            }
+        }
+    });
+    return composeErrors;
+};
+
+export const findToken = (tokens: Account['tokens'], address?: string | null) => {
+    if (!address || !tokens) return;
+    return tokens.find(t => t.address === address);
+};
+
+// BTC composeTransaction
+// returns ComposeOutput[]
+export const getBitcoinComposeOutputs = (values: Partial<FormState>, symbol: Account['symbol']) => {
+    const result: ComposeOutput[] = [];
+    if (!values || !Array.isArray(values.outputs)) return result;
+
+    values.outputs.forEach((output, index) => {
+        if (!output || typeof output !== 'object') return; // skip invalid object
+
+        if (output.type === 'opreturn' && output.dataHex) {
+            result.push({
+                type: 'opreturn',
+                dataHex: output.dataHex,
+            });
+        }
+
+        const { address } = output;
+        const isMaxActive = values.setMaxOutputId === index;
+        if (isMaxActive) {
+            if (address) {
+                result.push({
+                    type: 'send-max',
+                    address,
+                });
+            } else {
+                result.push({ type: 'send-max-noaddress' });
+            }
+        } else if (output.amount) {
+            const amount = networkAmountToSatoshi(output.amount, symbol);
+            if (address) {
+                result.push({
+                    type: 'external',
+                    address,
+                    amount,
+                });
+            } else {
+                result.push({
+                    type: 'noaddress',
+                    amount,
+                });
+            }
+        }
+    });
+
+    // corner case for multiple outputs
+    // one Output is valid and "final" but other has only address
+    // to prevent composing "final" transaction switch it to not-final (noaddress)
+    const hasIncompleteOutput = values.outputs.find(o => o && o.address && !o.amount);
+    if (hasIncompleteOutput) {
+        const finalOutput = result.find(o => o.type === 'send-max' || o.type === 'external');
+        if (finalOutput) {
+            // replace to noaddress
+            finalOutput.type = finalOutput.type === 'external' ? 'noaddress' : 'send-max-noaddress';
+        }
+    }
+
+    return result;
+};
+
+// ETH/XRP composeTransaction, only one Output is used
+// returns { output, tokenInfo, decimals }
+export const getExternalComposeOutput = (
+    values: Partial<FormState>,
+    account: Account,
+    network: Network,
+) => {
+    if (!values || !Array.isArray(values.outputs) || !values.outputs[0]) return;
+    const out = values.outputs[0];
+    if (!out || typeof out !== 'object') return;
+    const { address, amount, token } = out;
+
+    const isMaxActive = typeof values.setMaxOutputId === 'number';
+    if (!isMaxActive && !amount) return; // incomplete Output
+
+    const tokenInfo = findToken(account.tokens, token);
+    const decimals = tokenInfo ? tokenInfo.decimals : network.decimals;
+    const amountInSatoshi = amountToSatoshi(amount, decimals);
+
+    let output: ExternalOutput;
+    if (isMaxActive) {
+        if (address) {
+            output = {
+                type: 'send-max',
+                address,
+            };
+        } else {
+            output = {
+                type: 'send-max-noaddress',
+            };
+        }
+    } else if (address) {
+        output = {
+            type: 'external',
+            address,
+            amount: amountInSatoshi,
+        };
+    } else {
+        output = {
+            type: 'noaddress',
+            amount: amountInSatoshi,
+        };
+    }
+
+    return {
+        output,
+        tokenInfo,
+        decimals,
+    };
 };

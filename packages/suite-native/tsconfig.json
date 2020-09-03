@@ -47,6 +47,9 @@
             "@suite-config": ["./src/config/suite/index", "../../packages/suite/src/config/suite/index"],
             "@suite-middlewares/*": ["./src/middlewares/suite/*", "../../packages/suite/src/middlewares/suite/*"],
             "@suite-middlewares": ["./src/middlewares/suite/index", "../../packages/suite/src/middlewares/suite/index"],
+            "@suite-hooks/*": ["./src/hooks/suite/*", "../../packages/suite/src/hooks/suite/*"],
+            "@suite-hooks": ["./src/hooks/suite/index", "../../packages/suite/src/hooks/suite/index"],
+            
             // dashboard
             "@dashboard-components/*": ["./src/components/dashboard/*", "../../packages/suite/src/components/dashboard/*"],
             "@dashboard-components": ["./src/components/dashboard/index", "../../packages/suite/src/components/dashboard/index"],
@@ -68,6 +71,8 @@
             "@dashboard-config": ["./src/config/dashboard/index", "../../packages/suite/src/config/dashboard/index"],
             "@dashboard-middlewares/*": ["./src/middlewares/dashboard/*", "../../packages/suite/src/middlewares/dashboard/*"],
             "@dashboard-middlewares": ["./src/middlewares/dashboard/index", "../../packages/suite/src/middlewares/dashboard/index"],
+            "@dashboard-hooks/*": ["./src/hooks/dashboard/*", "../../packages/suite/src/hooks/dashboard/*"],
+            "@dashboard-hooks": ["./src/hooks/dashboard/index", "../../packages/suite/src/hooks/dashboard/index"],
             // onboarding
             "@onboarding-components/*": ["./src/components/onboarding/*", "../../packages/suite/src/components/onboarding/*"],
             "@onboarding-components": ["./src/components/onboarding/index", "../../packages/suite/src/components/onboarding/index"],
@@ -89,6 +94,8 @@
             "@onboarding-config": ["./src/config/onboarding/index", "../../packages/suite/src/config/onboarding/index"],
             "@onboarding-middlewares/*": ["./src/middlewares/onboarding/*", "../../packages/suite/src/middlewares/onboarding/*"],
             "@onboarding-middlewares": ["./src/middlewares/onboarding/index", "../../packages/suite/src/middlewares/onboarding/index"],
+            "@onboarding-hooks/*": ["./src/hooks/onboarding/*", "../../packages/suite/src/hooks/onboarding/*"],
+            "@onboarding-hooks": ["./src/hooks/onboarding/index", "../../packages/suite/src/hooks/onboarding/index"],
             // wallet
             "@wallet-components/*": ["./src/components/wallet/*", "../../packages/suite/src/components/wallet/*"],
             "@wallet-components": ["./src/components/wallet/index", "../../packages/suite/src/components/wallet/index"],
@@ -110,6 +117,8 @@
             "@wallet-config": ["./src/config/wallet/index", "../../packages/suite/src/config/wallet/index"],
             "@wallet-middlewares/*": ["./src/middlewares/wallet/*", "../../packages/suite/src/middlewares/wallet/*"],
             "@wallet-middlewares": ["./src/middlewares/wallet/index", "../../packages/suite/src/middlewares/wallet/index"],
+            "@wallet-hooks/*": ["./src/hooks/wallet/*", "../../packages/suite/src/hooks/wallet/*"],
+            "@wallet-hooks": ["./src/hooks/wallet/index", "../../packages/suite/src/hooks/wallet/index"],
             // passwords
             "@passwords-components/*": ["./src/components/passwords/*", "../../packages/suite/src/components/passwords/*"],
             "@passwords-components": ["./src/components/passwords/index", "../../packages/suite/src/components/passwords/index"],
@@ -131,6 +140,8 @@
             "@passwords-config": ["./src/config/passwords/index", "../../packages/suite/src/config/passwords/index"],
             "@passwords-middlewares/*": ["./src/middlewares/passwords/*", "../../packages/suite/src/middlewares/passwords/*"],
             "@passwords-middlewares": ["./src/middlewares/passwords/index", "../../packages/suite/src/middlewares/passwords/index"],
+            "@passwords-hooks/*": ["./src/hooks/passwords/*", "../../packages/suite/src/hooks/passwords/*"],
+            "@passwords-hooks": ["./src/hooks/passwords/index", "../../packages/suite/src/hooks/passwords/index"],
             // exchange
             "@exchange-components/*": ["./src/components/exchange/*", "../../packages/suite/src/components/exchange/*"],
             "@exchange-components": ["./src/components/exchange/index", "../../packages/suite/src/components/exchange/index"],
@@ -152,6 +163,8 @@
             "@exchange-config": ["./src/config/exchange/index", "../../packages/suite/src/config/exchange/index"],
             "@exchange-middlewares/*": ["./src/middlewares/exchange/*", "../../packages/suite/src/middlewares/exchange/*"],
             "@exchange-middlewares": ["./src/middlewares/exchange/index", "../../packages/suite/src/middlewares/exchange/index"],
+            "@exchange-hooks/*": ["./src/hooks/exchange/*", "../../packages/suite/src/hooks/exchange/*"],
+            "@exchange-hooks": ["./src/hooks/exchange/index", "../../packages/suite/src/hooks/exchange/index"],
             // settings
             "@settings-components/*": ["./src/components/settings/*", "../../packages/suite/src/components/settings/*"],
             "@settings-components": ["./src/components/settings/index", "../../packages/suite/src/components/settings/index"],
@@ -173,6 +186,8 @@
             "@settings-config": ["./src/config/settings/index", "../../packages/suite/src/config/settings/index"],
             "@settings-middlewares/*": ["./src/middlewares/settings/*", "../../packages/suite/src/middlewares/settings/*"],
             "@settings-middlewares": ["./src/middlewares/settings/index", "../../packages/suite/src/middlewares/settings/index"],
+            "@settings-hooks/*": ["./src/hooks/settings/*", "../../packages/suite/src/hooks/settings/*"],
+            "@settings-hooks": ["./src/hooks/settings/index", "../../packages/suite/src/hooks/settings/index"],
 
             // firmware
             "@firmware-components/*": ["./src/components/firmware/*", "../../packages/suite/src/components/firmware/*"],
@@ -195,6 +210,8 @@
             "@firmware-config": ["./src/config/firmware/index", "../../packages/suite/src/config/firmware/index"],
             "@firmware-middlewares/*": ["./src/middlewares/firmware/*", "../../packages/suite/src/middlewares/firmware/*"],
             "@firmware-middlewares": ["./src/middlewares/firmware/index", "../../packages/suite/src/middlewares/firmware/index"],
+            "@firmware-hooks/*": ["./src/hooks/firmware/*", "../../packages/suite/src/hooks/firmware/*"],
+            "@firmware-hooks": ["./src/hooks/firmware/index", "../../packages/suite/src/hooks/firmware/index"],
 
             // backup
             "@backup-components/*": ["./src/components/backup/*", "../../packages/suite/src/components/backup/*"],
@@ -217,6 +234,8 @@
             "@backup-config": ["./src/config/backup/index", "../../packages/suite/src/config/backup/index"],
             "@backup-middlewares/*": ["./src/middlewares/backup/*", "../../packages/suite/src/middlewares/backup/*"],
             "@backup-middlewares": ["./src/middlewares/backup/index", "../../packages/suite/src/middlewares/backup/index"],
+            "@backup-hooks/*": ["./src/hooks/backup/*", "../../packages/suite/src/hooks/backup/*"],
+            "@backup-hooks": ["./src/hooks/backup/index", "../../packages/suite/src/hooks/backup/index"],
 
             // recovery
             "@recovery-components/*": ["./src/components/recovery/*", "../../packages/suite/src/components/recovery/*"],
@@ -239,6 +258,8 @@
             "@recovery-config": ["./src/config/recovery/index", "../../packages/suite/src/config/recovery/index"],
             "@recovery-middlewares/*": ["./src/middlewares/recovery/*", "../../packages/suite/src/middlewares/recovery/*"],
             "@recovery-middlewares": ["./src/middlewares/recovery/index", "../../packages/suite/src/middlewares/recovery/index"],
+            "@recovery-hooks/*": ["./src/hooks/recovery/*", "../../packages/suite/src/hooks/recovery/*"],
+            "@recovery-hooks": ["./src/hooks/recovery/index", "../../packages/suite/src/hooks/recovery/index"],
         },
         "module": "esnext",
         "noUnusedParameters": true,

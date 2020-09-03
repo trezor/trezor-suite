@@ -1,8 +1,4 @@
-// @ts-ignore for now
-
-// TODO: use validation from connect and remove this file
-
-import addressValidator from 'multicoin-address-validator';
+import addressValidator from 'trezor-address-validator';
 import { Account } from '@wallet-types';
 
 const isTestnet = (symbol: Account['symbol']): boolean => {
@@ -23,31 +19,29 @@ const getCoinFromTestnet = (symbol: Account['symbol']) => {
 };
 
 export const isAddressValid = (address: string, symbol: Account['symbol']) => {
-    let networkType = 'prod';
-    let symbolWithoutTestnets = null;
+    const networkType = isTestnet(symbol) ? 'testnet' : 'prod';
+    const updatedSymbol = getCoinFromTestnet(symbol) || symbol;
+    return addressValidator.validate(address, updatedSymbol.toUpperCase(), networkType);
+};
 
-    if (isTestnet(symbol)) {
-        networkType = 'testnet';
-        symbolWithoutTestnets = getCoinFromTestnet(symbol);
+export const isDecimalsValid = (value: string, decimals: number) => {
+    const DECIMALS_RE = new RegExp(
+        `^(0|0\\.([0-9]{0,${decimals}})?|[1-9][0-9]*\\.?([0-9]{0,${decimals}})?)$`,
+    );
+    return DECIMALS_RE.test(value);
+};
+
+export const isHexValid = (value: string, prefix?: string) => {
+    // ethereum data/signedTx may start with prefix
+    if (prefix && value.indexOf(prefix) === 0) {
+        const hex = value.substring(prefix.length, value.length);
+        // pad left even, is it necessary in ETH?
+        // TODO: investigate
+        value = hex.length % 2 !== 0 ? `0${hex}` : hex;
     }
 
-    const updatedSymbol = symbolWithoutTestnets || symbol;
-
-    switch (updatedSymbol) {
-        case 'btc':
-        case 'bch':
-        case 'btg':
-        case 'dash':
-        case 'xrp':
-        case 'dgb':
-        case 'doge':
-        case 'ltc':
-        case 'nmc':
-        case 'vtc':
-        case 'zec':
-        case 'eth':
-        case 'etc':
-            return addressValidator.validate(address, updatedSymbol.toUpperCase(), networkType);
-        // no default
-    }
+    if (value.length % 2 !== 0) return false;
+    // TODO: ETH may contain uppercase? does BTC as well?
+    if (!/^[0-9A-Fa-f]+$/.test(value)) return false;
+    return true;
 };

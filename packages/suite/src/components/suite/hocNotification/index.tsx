@@ -151,6 +151,18 @@ export default (notification: NotificationEntry, View: React.ComponentType<ViewP
                 actionLabel: messages.TOAST_TX_BUTTON,
             });
 
+        case 'raw-tx-sent':
+            return simple(View, {
+                notification,
+                icon: 'SEND',
+                message: {
+                    ...messages.TOAST_RAW_TX_SENT,
+                    values: {
+                        txid: notification.txid,
+                    },
+                },
+            });
+
         case 'tx-confirmed':
             return withTransaction(View, {
                 notification,

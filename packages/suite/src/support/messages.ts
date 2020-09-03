@@ -1,14 +1,6 @@
 import { defineMessages } from 'react-intl';
 
 const definedMessages = defineMessages({
-    TR_XRP_CANNOT_SEND_TO_MYSELF: {
-        defaultMessage: 'Cannot send to myself',
-        id: 'CANNOT_SEND_TO_MYSELF',
-    },
-    TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE: {
-        defaultMessage: 'Not enough XRP above the required unspendable reserve ({reserve} XRP)',
-        id: 'TR_XRP_CANNOT_SEND_LESS_THAN_RESERVE',
-    },
     TR_3RD_PARTY_WALLETS: {
         defaultMessage: '3rd party wallets',
         id: 'TR_3RD_PARTY_WALLETS',
@@ -134,10 +126,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Add account',
         id: 'TR_ADD_ACCOUNT',
     },
-    TR_FEE_NEEDS_UPDATE: {
-        defaultMessage: 'Fee levels are outdated',
-        id: 'TR_FEE_NEEDS_UPDATE',
-    },
     TR_ADD_WALLET: {
         defaultMessage: 'Add wallet',
         id: 'TR_ADD_WALLET',
@@ -146,22 +134,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Additional security features are waiting to be done.',
         id: 'TR_ADDITIONAL_SECURITY_FEATURES',
     },
-    // TR_ADD_RECIPIENT: {
-    //         defaultMessage: 'Add recipient',
-    //         id: 'TR_ADD_RECIPIENT',
-    // },
     TR_ADDRESS: {
         defaultMessage: 'Address',
         description: 'Used as label for receive/send address input',
         id: 'TR_ADDRESS',
-    },
-    TR_ADDRESS_IS_NOT_SET: {
-        defaultMessage: 'Address is not set',
-        id: 'TR_ADDRESS_IS_NOT_SET',
-    },
-    TR_ADDRESS_IS_NOT_VALID: {
-        defaultMessage: 'Address is not valid',
-        id: 'TR_ADDRESS_IS_NOT_VALID',
     },
     TR_ADDRESS_MODAL_BTC_DESCRIPTION: {
         defaultMessage:
@@ -217,30 +193,6 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Trezor Suite does NOT track any balance-related or personal data, all anonymously',
         id: 'TR_ALLOW_ANALYTICS_DESCRIPTION',
-    },
-    TR_AMOUNT: {
-        defaultMessage: 'Amount',
-        id: 'TR_AMOUNT',
-    },
-    TR_AMOUNT_IS_NOT_ENOUGH: {
-        defaultMessage: 'Not enough funds',
-        id: 'TR_AMOUNT_IS_NOT_ENOUGH',
-    },
-    NOT_ENOUGH_CURRENCY_FEE: {
-        defaultMessage: 'Not enough {symbol} to cover transaction fee',
-        id: 'NOT_ENOUGH_CURRENCY_FEE',
-    },
-    TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS: {
-        defaultMessage: 'Maximum {decimals} decimals allowed',
-        id: 'TR_AMOUNT_IS_NOT_IN_RANGE_DECIMALS',
-    },
-    TR_AMOUNT_IS_NOT_NUMBER: {
-        defaultMessage: 'Amount is not a number',
-        id: 'TR_AMOUNT_IS_NOT_NUMBER',
-    },
-    TR_AMOUNT_IS_NOT_SET: {
-        defaultMessage: 'Amount is not set',
-        id: 'TR_AMOUNT_IS_NOT_SET',
     },
     TR_ASSETS: {
         defaultMessage: 'Assets',
@@ -359,10 +311,6 @@ const definedMessages = defineMessages({
     TR_CAMERA_PERMISSION_DENIED: {
         defaultMessage: 'Permission to access the camera was denied.',
         id: 'TR_CAMERA_PERMISSION_DENIED',
-    },
-    TR_CANNOT_SEND_TO_MYSELF: {
-        defaultMessage: 'Cannot send to myself',
-        id: 'CANNOT_SEND_TO_MYSELF',
     },
     TR_CHANGELOG: {
         defaultMessage: 'Changelog',
@@ -541,30 +489,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Currency',
         id: 'TR_CURRENCY',
     },
-    TR_CUSTOM_FEE: {
-        defaultMessage: 'Custom',
-        description: 'fee level',
-        id: 'TR_CUSTOM_FEE',
-    },
-    TR_CUSTOM_FEE_IS_NOT_SET: {
-        defaultMessage: 'Fee is not set',
-        id: 'TR_CUSTOM_FEE_IS_NOT_SET',
-    },
-    TR_CUSTOM_FEE_IS_NOT_VALID: {
-        defaultMessage: 'Fee is not valid',
-        id: 'TR_CUSTOM_FEE_IS_NOT_VALID',
-    },
-    TR_CUSTOM_FEE_NOT_IN_RANGE: {
-        defaultMessage: 'Allowed fee is between {minFee} and {maxFee}',
-        id: 'TR_CUSTOM_FEE_NOT_IN_RANGE',
-    },
+
     TR_DEACTIVATE_ALL: {
         defaultMessage: 'Deactivate all',
         id: 'TR_DEACTIVATE_ALL',
-    },
-    TR_DESTINATION_TAG_IS_NOT_NUMBER: {
-        defaultMessage: 'Destination tag is not a number',
-        id: 'TR_DESTINATION_TAG_IS_NOT_NUMBER',
     },
     TR_DETECTING_BRIDGE: {
         defaultMessage: 'Detecting Trezor Bridge installation',
@@ -840,22 +768,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Entered PIN for "{deviceLabel}" is not correct',
         id: 'TR_ENTERED_PIN_NOT_CORRECT',
     },
-    TR_ESTIMATED_TIME: {
-        defaultMessage: 'Estimated time',
-        id: 'TR_ESTIMATED_TIME',
-    },
-    TR_ETH_DATA_NOT_HEX: {
-        defaultMessage: 'Data is not hex',
-        id: 'TR_ETH_DATA_NOT_HEX',
-    },
-    TR_ETH_GAS_LIMIT_NOT_NUMBER: {
-        defaultMessage: 'Gas limit is not a number',
-        id: 'TR_ETH_GAS_LIMIT_NOT_NUMBER',
-    },
-    TR_ETH_GAS_PRICE_NOT_NUMBER: {
-        defaultMessage: 'Gas price is not a number',
-        id: 'TR_ETH_GAS_PRICE_NOT_NUMBER',
-    },
     TR_EXCHANGE_RATE: {
         defaultMessage: 'Exchange rate',
         id: 'TR_EXCHANGE_RATE',
@@ -867,11 +779,6 @@ const definedMessages = defineMessages({
     TR_BACKUP_SUCCESSFUL: {
         defaultMessage: 'Backup successful',
         id: 'TR_BACKUP_SUCCESSFUL',
-    },
-    TR_FEE: {
-        defaultMessage: 'Fee',
-        description: 'Label in Send form',
-        id: 'TR_FEE',
     },
     TR_FIAT_RATES_NOT_AVAILABLE: {
         defaultMessage: 'No data available',
@@ -937,15 +844,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Found an empty device, yay! You can continue now.',
         description: 'Case when device was connected and it is in expected state (not initialized)',
         id: 'TR_FOUND_OK_DEVICE',
-    },
-    TR_GAS_LIMIT: {
-        defaultMessage: 'Gas limit',
-        id: 'TR_GAS_LIMIT',
-    },
-    TR_TOKEN_BALANCE: {
-        defaultMessage: 'You have {balance}',
-        description: 'Additional label in send form above amount input',
-        id: 'TR_TOKEN_BALANCE',
     },
     TR_GATHERING_INFO: {
         defaultMessage: 'Gathering information, please wait...',
@@ -1421,10 +1319,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Receive',
         id: 'TR_RECEIVE',
     },
-    TR_RECIPIENT_ADDRESS: {
-        defaultMessage: 'Recipient address',
-        id: 'TR_RECIPIENT_ADDRESS',
-    },
     TR_RECONNECT_HEADER: {
         defaultMessage: 'Reconnect your device',
         id: 'TR_RECONNECT_HEADER',
@@ -1542,10 +1436,6 @@ const definedMessages = defineMessages({
         description: 'Heading on select your device page',
         id: 'TR_SELECT_YOUR_DEVICE_HEADING',
     },
-    TR_SEND: {
-        defaultMessage: 'Send',
-        id: 'TR_SEND',
-    },
     TR_SEND_NETWORK: {
         defaultMessage: 'Send {network}',
         id: 'TR_SEND_NETWORK',
@@ -1558,11 +1448,6 @@ const definedMessages = defineMessages({
         defaultMessage: '(Sent to self)',
         id: 'TR_SENT_TO_SELF',
     },
-    // TR_SET_MAX: {
-    //         defaultMessage: 'Set max',
-    //         description: 'Used for setting maximum amount in Send form',
-    //         id: 'TR_SET_MAX',
-    // },
     TR_SET_PIN: {
         defaultMessage: 'Set pin',
         description: 'Button text',
@@ -2019,15 +1904,6 @@ const definedMessages = defineMessages({
         description: 'Number of words. For example: 12 words',
         id: 'TR_WORDS',
     },
-    TR_XRP_DESTINATION_TAG: {
-        defaultMessage: 'Destination tag',
-        id: 'TR_XRP_DESTINATION_TAG',
-    },
-    TR_XRP_DESTINATION_TAG_EXPLAINED: {
-        defaultMessage:
-            'Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.',
-        id: 'TR_XRP_DESTINATION_TAG_EXPLAINED',
-    },
     TR_SHOW_MORE_ADDRESSES: {
         defaultMessage: 'Show more ({count})',
         id: 'TR_SHOW_MORE_ADDRESSES',
@@ -2077,41 +1953,20 @@ const definedMessages = defineMessages({
         id: 'TR_GAS_PRICE',
         defaultMessage: 'Gas price',
     },
-    TR_SEND_REVIEW_TRANSACTION: {
-        id: 'TR_SEND_REVIEW_TRANSACTION',
-        defaultMessage: 'Review Transaction',
-    },
     TR_TO: {
         id: 'TR_TO',
         defaultMessage: 'To',
     },
-    TR_RECIPIENT_ADDRESS_TOOLTIP: {
-        id: 'TR_RECIPIENT_ADDRESS_TOOLTIP',
-        defaultMessage: 'TR_RECIPIENT_ADDRESS_TOOLTIP',
-    },
-    TR_SEND_DATA_TOOLTIP: {
-        id: 'TR_SEND_DATA_TOOLTIP',
-        defaultMessage: 'Data is usually used when you send transactions to contracts.',
-    },
-    // TR_SEND_GAS_LIMIT_TOOLTIP: {
-    //     id: 'TR_SEND_GAS_LIMIT_TOOLTIP',
-    //     defaultMessage:
-    //         'Gas limit refers to the maximum amount of gas user is willing to spend on a particular transaction. Transaction fee = gas limit * gas price. Increasing the gas limit will not get the transaction confirmed sooner. Default value for sending ETH is {defaultGasLimit}',
-    // },
+
     TR_SEND_GAS_LIMIT_TOOLTIP: {
         id: 'TR_SEND_GAS_LIMIT_TOOLTIP',
         defaultMessage:
-            'Gas limit refers to the maximum amount of gas user is willing to spend on a particular transaction. Transaction fee = gas limit * gas price. Increasing the gas limit will not get the transaction confirmed sooner.',
+            'Gas limit refers to the maximum amount of gas user is willing to spend on a particular transaction. Transaction fee = gas limit * gas price. Increasing the gas limit will not get the transaction confirmed sooner. Default value for sending ETH is {defaultGasLimit}',
     },
-    // TR_SEND_GAS_PRICE_TOOLTIP: {
-    //     id: 'TR_SEND_GAS_PRICE_TOOLTIP',
-    //     defaultMessage:
-    //         'Gas price refers to the amount of ether you are willing to pay for every unit of gas, and is usually measured in “Gwei”. Transaction fee = gas limit * gas price. Increasing the gas price will get the transaction confirmed sooner but makes it more expensive. The recommended gas price is {defaultGasPrice} GWEI.',
-    // },
     TR_SEND_GAS_PRICE_TOOLTIP: {
         id: 'TR_SEND_GAS_PRICE_TOOLTIP',
         defaultMessage:
-            'Gas price refers to the amount of ether you are willing to pay for every unit of gas, and is usually measured in “Gwei”. Transaction fee = gas limit * gas price. Increasing the gas price will get the transaction confirmed sooner but makes it more expensive.',
+            'Gas price refers to the amount of ether you are willing to pay for every unit of gas, and is usually measured in “Gwei”. Transaction fee = gas limit * gas price. Increasing the gas price will get the transaction confirmed sooner but makes it more expensive. The recommended gas price is {defaultGasPrice} GWEI.',
     },
     TR_SEND_FEE_TOOLTIP: {
         id: 'TR_SEND_FEE_TOOLTIP',
@@ -2237,6 +2092,10 @@ const definedMessages = defineMessages({
         id: 'TOAST_TX_SENT',
         defaultMessage: '{amount} sent from {account}',
     },
+    TOAST_RAW_TX_SENT: {
+        id: 'TOAST_RAW_TX_SENT',
+        defaultMessage: 'Transaction sent. TXID: {txid}',
+    },
     TOAST_TX_RECEIVED: {
         id: 'TOAST_TX_RECEIVED',
         defaultMessage: '{amount} received on {account}',
@@ -2269,34 +2128,9 @@ const definedMessages = defineMessages({
         id: 'TOAST_GENERIC_ERROR',
         defaultMessage: 'Error: {error}',
     },
-    TR_RECIPIENT: {
-        id: 'TR_RECIPIENT',
-        defaultMessage: 'Recipient',
-    },
-    TR_SCAN: {
-        id: 'TR_SCAN',
-        defaultMessage: 'Scan',
-    },
     TR_REMOVE: {
         id: 'TR_REMOVE',
         defaultMessage: 'Remove',
-    },
-    LOCKTIME_TITLE: {
-        id: 'LOCKTIME_TITLE',
-        defaultMessage: 'Add Locktime',
-    },
-    LOCKTIME_DESCRIPTION: {
-        id: 'LOCKTIME_DESCRIPTION',
-        defaultMessage: 'Allows you to postpone the transaction by set value (time or block)',
-    },
-    REPLACE_BY_FEE_TITLE: {
-        id: 'REPLACE_BY_FEE_TITLE',
-        defaultMessage: 'Replace by fee (RBF)',
-    },
-    REPLACE_BY_FEE_DESCRIPTION: {
-        id: 'REPLACE_BY_FEE_DESCRIPTION',
-        defaultMessage:
-            'RBF allows to bump fee later in case you want the transaction to be mined faster',
     },
     REFRESH: {
         id: 'REFRESH',
@@ -2413,10 +2247,6 @@ const definedMessages = defineMessages({
     TR_CANCEL: {
         id: 'TR_CANCEL',
         defaultMessage: 'Cancel',
-    },
-    TR_SEND_DATA: {
-        id: 'TR_SEND_DATA',
-        defaultMessage: 'Data',
     },
     TR_FOLLOW_INSTRUCTIONS_ON_DEVICE: {
         id: 'TR_FOLLOW_INSTRUCTIONS_ON_DEVICE',
@@ -3432,21 +3262,9 @@ const definedMessages = defineMessages({
         id: 'TR_LANDING_CONTINUE',
         defaultMessage: 'Continue in browser',
     },
-    TR_SEND_SEND_MAX: {
-        id: 'TR_SEND_SEND_MAX',
-        defaultMessage: 'Send max',
-    },
     TR_HOLD_LEFT_BUTTON: {
         id: 'TR_HOLD_LEFT_BUTTON',
         defaultMessage: 'Hold left or both buttons while connecting device',
-    },
-    TR_TOTAL_AMOUNT: {
-        id: 'TR_TOTAL_AMOUNT',
-        defaultMessage: 'Total amount',
-    },
-    TR_INCLUDING_FEE: {
-        id: 'TR_INCLUDING_FEE',
-        defaultMessage: 'Including fee',
     },
     BACKUP_BACKUP_ALREADY_FINISHED_HEADING: {
         id: 'BACKUP_BACKUP_ALREADY_FINISHED',
@@ -3490,9 +3308,21 @@ const definedMessages = defineMessages({
         id: 'TR_OPEN_IN_MEDIUM',
         defaultMessage: 'Open in Medium',
     },
+    TR_CONFIRM_ON_TREZOR: {
+        id: 'TR_CONFIRM_ON_TREZOR',
+        defaultMessage: 'Confirm on Trezor',
+    },
     TR_MY_ASSETS: {
         id: 'TR_MY_ASSETS',
         defaultMessage: 'My Assets',
+    },
+    TR_ON: {
+        id: 'TR_ON',
+        defaultMessage: 'on',
+    },
+    TR_OFF: {
+        id: 'TR_OFF',
+        defaultMessage: 'off',
     },
     TR_COULD_NOT_RETRIEVE_CHANGELOG: {
         id: 'TR_COULD_NOT_RETRIEVE_CHANGELOG',
@@ -3526,6 +3356,277 @@ const definedMessages = defineMessages({
         id: 'TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY',
         defaultMessage: 'Wait for discovery process to complete before adding a new account.',
     },
+    // Send form start
+    RECIPIENT_ADDRESS: {
+        defaultMessage: 'Recipient address',
+        id: 'RECIPIENT_ADDRESS',
+    },
+    RECIPIENT_SCAN: {
+        defaultMessage: 'Scan',
+        id: 'RECIPIENT_SCAN',
+    },
+    RECIPIENT_ADD: {
+        id: 'RECIPIENT_ADD',
+        defaultMessage: 'Another Recipient',
+    },
+    RECIPIENT_ADD_LABEL: {
+        id: 'RECIPIENT_ADD_LABEL',
+        defaultMessage: 'Add Label',
+    },
+    RECIPIENT_IS_NOT_SET: {
+        defaultMessage: 'Address is not set',
+        id: 'RECIPIENT_IS_NOT_SET',
+    },
+    RECIPIENT_IS_NOT_VALID: {
+        defaultMessage: 'Address is not valid',
+        id: 'RECIPIENT_IS_NOT_VALID',
+    },
+    RECIPIENT_CANNOT_SEND_TO_MYSELF: {
+        defaultMessage: 'Cannot send to myself',
+        id: 'RECIPIENT_CANNOT_SEND_TO_MYSELF',
+    },
+    AMOUNT: {
+        defaultMessage: 'Amount',
+        id: 'AMOUNT',
+    },
+    AMOUNT_SEND_MAX: {
+        id: 'AMOUNT_SEND_MAX',
+        defaultMessage: 'Send max',
+    },
+    AMOUNT_IS_NOT_ENOUGH: {
+        defaultMessage: 'Not enough funds',
+        id: 'AMOUNT_IS_NOT_ENOUGH',
+    },
+    AMOUNT_IS_NOT_IN_RANGE_DECIMALS: {
+        defaultMessage: 'Maximum {decimals} decimals allowed',
+        id: 'AMOUNT_IS_NOT_IN_RANGE_DECIMALS',
+    },
+    AMOUNT_IS_NOT_NUMBER: {
+        defaultMessage: 'Amount is not a number',
+        id: 'AMOUNT_IS_NOT_NUMBER',
+    },
+    AMOUNT_IS_NOT_SET: {
+        defaultMessage: 'Amount is not set',
+        id: 'AMOUNT_IS_NOT_SET',
+    },
+    AMOUNT_IS_TOO_LOW: {
+        defaultMessage: 'Amount is too low',
+        id: 'AMOUNT_IS_TOO_LOW',
+    },
+    AMOUNT_IS_MORE_THAN_RESERVE: {
+        defaultMessage: 'Amount is above the required unspendable reserve ({reserve} XRP)',
+        id: 'AMOUNT_IS_MORE_THAN_RESERVE',
+    },
+    AMOUNT_IS_LESS_THAN_RESERVE: {
+        defaultMessage: 'Recipient account requires minimum reserve {reserve} XRP to activate',
+        id: 'AMOUNT_IS_LESS_THAN_RESERVE',
+    },
+    AMOUNT_NOT_ENOUGH_CURRENCY_FEE: {
+        defaultMessage: 'Not enough {symbol} to cover transaction fee',
+        id: 'AMOUNT_ENOUGH_CURRENCY_FEE',
+    },
+    OP_RETURN: {
+        id: 'OP_RETURN',
+        defaultMessage: 'OP RETURN',
+    },
+    OP_RETURN_TOOLTIP: {
+        id: 'OP_RETURN_TOOLTIP',
+        defaultMessage: 'OP_RETURN_TOOLTIP',
+    },
+    OP_RETURN_ADD: {
+        id: 'OP_RETURN_ADD',
+        defaultMessage: 'ADD OP RETURN',
+    },
+    RBF: {
+        id: 'RBF',
+        defaultMessage: 'RBF',
+    },
+    RBF_ON_TITLE: {
+        id: 'RBF_ON_TITLE',
+        defaultMessage: 'RBF = ON',
+    },
+    RBF_ON_DESCRIPTION: {
+        id: 'RBF_ON_DESCRIPTION',
+        defaultMessage:
+            'RBF allows to bump fee later in case you want the transaction to be mined faster.',
+    },
+    RBF_OFF_TITLE: {
+        id: 'RBF_OFF_TITLE',
+        defaultMessage: 'RBF = OFF',
+    },
+    RBF_OFF_DESCRIPTION: {
+        id: 'RBF_OFF_DESCRIPTION',
+        defaultMessage: 'This allows you to sign not final transaction.',
+    },
+    LOCKTIME: {
+        id: 'LOCKTIME',
+        defaultMessage: 'Locktime',
+    },
+    LOCKTIME_ADD: {
+        id: 'LOCKTIME_ADD',
+        defaultMessage: 'Add Locktime',
+    },
+    LOCKTIME_DESCRIPTION: {
+        id: 'LOCKTIME_DESCRIPTION',
+        defaultMessage: 'Allows you to postpone the transaction by set value (time or block)',
+    },
+    LOCKTIME_SCHEDULE_SEND: {
+        id: 'LOCKTIME_SCHEDULE_SEND',
+        defaultMessage: 'Schedule send',
+    },
+    LOCKTIME_SCHEDULE_SEND_TOOLTIP: {
+        id: 'LOCKTIME_SCHEDULE_SEND_TOOLTIP',
+        defaultMessage: 'LOCKTIME_SCHEDULE_SEND_TOOLTIP',
+    },
+    LOCKTIME_NOT_SET: {
+        id: 'LOCKTIME_NOT_SET',
+        defaultMessage: 'Locktime not set',
+    },
+    LOCKTIME_IS_NOT_SET: {
+        id: 'LOCKTIME_IS_NOT_SET',
+        defaultMessage: 'Locktime not set',
+    },
+    LOCKTIME_IS_NOT_NUMBER: {
+        id: 'LOCKTIME_IS_NOT_NUMBER',
+        defaultMessage: 'Locktime is not a number',
+    },
+    LOCKTIME_IS_NOT_INTEGER: {
+        id: 'LOCKTIME_IS_NOT_INTEGER',
+        defaultMessage: 'Locktime is not a integer',
+    },
+    LOCKTIME_IS_TOO_LOW: {
+        id: 'LOCKTIME_IS_TOO_LOW',
+        defaultMessage: 'Locktime is too low',
+    },
+    LOCKTIME_IS_TOO_BIG: {
+        id: 'LOCKTIME_IS_TOO_BIG',
+        defaultMessage: 'Timestamp is too big',
+    },
+    DESTINATION_TAG: {
+        defaultMessage: 'Destination tag',
+        id: 'DESTINATION_TAG',
+    },
+    DESTINATION_TAG_EXPLAINED: {
+        defaultMessage:
+            'Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.',
+        id: 'DESTINATION_TAG_EXPLAINED',
+    },
+    DESTINATION_TAG_NOT_SET: {
+        defaultMessage: 'Destination tag is not set',
+        id: 'DESTINATION_TAG_NOT_SET',
+    },
+    DESTINATION_TAG_IS_NOT_VALID: {
+        defaultMessage: 'Destination tag is not valid',
+        id: 'DESTINATION_TAG_IS_NOT_VALID',
+    },
+    DESTINATION_TAG_IS_NOT_NUMBER: {
+        defaultMessage: 'Destination tag is not a number',
+        id: 'DESTINATION_TAG_IS_NOT_NUMBER',
+    },
+    DATA_ETH: {
+        id: 'DATA_ETH',
+        defaultMessage: 'Data',
+    },
+    DATA_ETH_TOOLTIP: {
+        id: 'DATA_ETH_TOOLTIP',
+        defaultMessage: 'Data is usually used when you send transactions to contracts.',
+    },
+    DATA_ETH_ADD: {
+        id: 'DATA_ETH_ADD',
+        defaultMessage: 'Add Data',
+    },
+    DATA_NOT_SET: {
+        defaultMessage: 'Data not set',
+        id: 'DATA_NOT_SET',
+    },
+    DATA_NOT_VALID_HEX: {
+        defaultMessage: 'Not valid hex',
+        id: 'DATA_NOT_VALID_HEX',
+    },
+    DATA_HEX_TOO_BIG: {
+        defaultMessage: 'Data limit exceeded',
+        id: 'DATA_HEX_TOO_BIG',
+    },
+    RAW_TX_NOT_SET: {
+        defaultMessage: 'Transaction not set',
+        id: 'RAW_TX_NOT_SET',
+    },
+    ESTIMATED_TIME: {
+        defaultMessage: 'Estimated time',
+        id: 'ESTIMATED_TIME',
+    },
+    TOTAL_SENT: {
+        id: 'TOTAL_SENT',
+        defaultMessage: 'Total Sent',
+    },
+    TOTAL_SYMBOL: {
+        id: 'TOTAL_SYMBOL',
+        defaultMessage: 'Total {symbol}',
+    },
+    INCLUDING_FEE: {
+        id: 'INCLUDING_FEE',
+        defaultMessage: 'Including fee',
+    },
+    SEND_TRANSACTION: {
+        id: 'SEND_TRANSACTION',
+        description: 'Sign and send button used in send form and Review modal',
+        defaultMessage: 'Send Transaction',
+    },
+    SEND_RAW_TRANSACTION: {
+        id: 'SEND_RAW_TRANSACTION',
+        description: 'Send raw form header',
+        defaultMessage: 'Send raw transaction',
+    },
+    SIGN_TRANSACTION: {
+        id: 'SIGN_TRANSACTION',
+        description: 'Sign without sending button',
+        defaultMessage: 'Sign Transaction',
+    },
+    COPY_TRANSACTION_TO_CLIPBOARD: {
+        id: 'COPY_TRANSACTION_TO_CLIPBOARD',
+        description: 'used in review modal',
+        defaultMessage: 'Copy transaction to clipboard',
+    },
+    DOWNLOAD_TRANSACTION: {
+        id: 'DOWNLOAD_TRANSACTION',
+        description: 'used in review modal',
+        defaultMessage: 'Download transaction',
+    },
+    FEE: {
+        defaultMessage: 'Fee',
+        description: 'Label in Send form',
+        id: 'FEE',
+    },
+    FEE_NEEDS_UPDATE: {
+        defaultMessage: 'Fee levels are outdated',
+        id: 'FEE_NEEDS_UPDATE',
+    },
+    CUSTOM_FEE_IS_NOT_SET: {
+        defaultMessage: 'Fee is not set',
+        id: 'CUSTOM_FEE_IS_NOT_SET',
+    },
+    CUSTOM_FEE_IS_NOT_NUMBER: {
+        defaultMessage: 'Fee is not a number',
+        id: 'CUSTOM_FEE_IS_NOT_NUMBER',
+    },
+    CUSTOM_FEE_IS_NOT_INTEGER: {
+        defaultMessage: 'Fee is not a integer',
+        id: 'CUSTOM_FEE_IS_NOT_INTEGER',
+    },
+    CUSTOM_FEE_NOT_IN_RANGE: {
+        defaultMessage: 'Allowed fee is between {minFee} and {maxFee}',
+        id: 'CUSTOM_FEE_NOT_IN_RANGE',
+    },
+    TOKEN_BALANCE: {
+        defaultMessage: 'You have {balance}',
+        description: 'Additional label in send form above amount input',
+        id: 'TOKEN_BALANCE',
+    },
+    BROADCAST: {
+        id: 'BROADCAST',
+        defaultMessage: 'Broadcast',
+    },
+    // Send form end
 
     TR_CONNECTED_TO_PROVIDER: {
         defaultMessage: 'Connected to {provider} as {user}',
