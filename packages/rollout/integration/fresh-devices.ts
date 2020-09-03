@@ -46,9 +46,9 @@ describe('Find firmware info for: ', () => {
         expect(withBinary).toMatchObject({ release: { version: [1, 6, 3] } });
     });
 
-    it('bootloader 1.5.1 -> firmware version 1.9.2', async () => {
+    it('bootloader 1.5.1 -> firmware version 1.9.3', async () => {
         // currently, this is expected to fail after there is new firmware update, since the last version is hardcoded
-        const targetVersion = [1, 9, 2] as VersionArray;
+        const targetVersion = [1, 9, 3] as VersionArray;
         const info = getInfo({
             features: getDeviceFeatures({
                 bootloader_mode: true,
