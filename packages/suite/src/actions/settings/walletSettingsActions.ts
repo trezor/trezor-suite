@@ -14,8 +14,8 @@ export type WalletSettingsActions =
     | { type: typeof WALLET_SETTINGS.SET_HIDE_BALANCE; toggled: boolean }
     | {
           type: typeof WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL;
-          feeLevel: FeeLevel;
           symbol: Network['symbol'];
+          feeLevel?: FeeLevel;
       };
 
 export const setLocalCurrency = (localCurrency: string) => ({
@@ -56,7 +56,7 @@ export const changeNetworks = (payload: Network['symbol'][]) => ({
     payload,
 });
 
-export const setLastUsedFeeLevel = (feeLevel: FeeLevel) => (
+export const setLastUsedFeeLevel = (feeLevel?: FeeLevel) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -64,8 +64,8 @@ export const setLastUsedFeeLevel = (feeLevel: FeeLevel) => (
     if (selectedAccount.status !== 'loaded') return;
     dispatch({
         type: WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL,
-        feeLevel,
         symbol: selectedAccount.account.symbol,
+        feeLevel,
     });
 };
 
