@@ -25,14 +25,14 @@ const StyledCard = styled(Card)<{ isPending: boolean }>`
 const StyledSection = styled(Section)<{ showPagination: boolean }>`
     /* increase the bottom margin if there is no pagination, so it doesn't 
     look like there are more transactions when you scroll to the bottom */
-    margin-bottom: ${props => (props.showPagination ? '20px' : '80px')};
+    margin-bottom: ${props => (props.showPagination ? '20px' : '90px')};
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        margin-bottom: ${props => (props.showPagination ? '20px' : '60px')};
+        margin-bottom: ${props => (props.showPagination ? '20px' : '70px')};
     }
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        margin-bottom: ${props => (props.showPagination ? '20px' : '40px')};
+        margin-bottom: ${props => (props.showPagination ? '20px' : '50px')};
     }
 `;
 
