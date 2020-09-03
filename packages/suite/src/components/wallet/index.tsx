@@ -10,7 +10,7 @@ import CoinmarketProvidedByInvity from './CoinmarketProvidedByInvity';
 import CoinmarketPaymentType from './CoinmarketPaymentType';
 import CoinmarketFooter from './CoinmarketFooter';
 import CoinmarketBuyProviderInfo from './CoinmarketBuyProviderInfo';
-import CoinmarketOfferInfo from './CoinmarketOfferInfo';
+import CoinmarketBuyOfferInfo from './CoinmarketBuyOfferInfo';
 import CoinmarketTransactionId from './CoinmarketTransactionId';
 import CoinmarketExchangeProviderInfo from './CoinmarketExchangeProviderInfo';
 
@@ -26,7 +26,7 @@ export {
     CoinmarketFooter,
     CoinmarketBuyProviderInfo,
     CoinmarketExchangeProviderInfo,
-    CoinmarketOfferInfo,
+    CoinmarketBuyOfferInfo,
     CoinmarketTransactionId,
     CoinmarketProvidedByInvity,
     CoinmarketPaymentType,

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { BuyProviderInfo } from 'invity-api';
 import { colors, variables, Icon, Button } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketBuyProviderInfo } from '@wallet-components';
 import { Translation } from '@suite-components';
@@ -10,9 +11,12 @@ import Status from '../Status';
 
 interface Props {
     trade: TradeBuy;
+    providers?: {
+        [name: string]: BuyProviderInfo;
+    };
 }
 
-const BuyTransaction = ({ trade }: Props) => {
+const BuyTransaction = ({ trade, providers }: Props) => {
     const { date, data } = trade;
     const {
         fiatStringAmount,
@@ -47,7 +51,7 @@ const BuyTransaction = ({ trade }: Props) => {
             </Column>
             <Column>
                 <Row>
-                    <CoinmarketBuyProviderInfo exchange={exchange} />
+                    <CoinmarketBuyProviderInfo exchange={exchange} providers={providers} />
                 </Row>
                 <RowSecond>
                     <CoinmarketPaymentType method={paymentMethod} />

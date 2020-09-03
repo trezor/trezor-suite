@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
-import { useSelector } from '@suite-hooks';
 import { join } from 'path';
+import { BuyProviderInfo } from 'invity-api';
 import invityApi from '@suite-services/invityAPI';
 
 const Wrapper = styled.div`
@@ -22,10 +22,12 @@ const Text = styled.div`
 
 interface Props {
     exchange?: string;
+    providers?: {
+        [name: string]: BuyProviderInfo;
+    };
 }
 
-export default ({ exchange }: Props) => {
-    const providers = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.providerInfos);
+export default ({ exchange, providers }: Props) => {
     const provider = providers && exchange ? providers[exchange] : null;
 
     return (

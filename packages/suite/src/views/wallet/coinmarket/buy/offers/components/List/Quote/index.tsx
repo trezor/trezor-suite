@@ -4,6 +4,7 @@ import { colors, Button, variables, Icon } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketBuyProviderInfo } from '@wallet-components';
 import { QuestionTooltip, Translation } from '@suite-components';
 import { BuyTrade } from 'invity-api';
+import { useSelector } from '@suite-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -124,6 +125,7 @@ const StyledQuestionTooltip = styled(QuestionTooltip)`
 const Quote = ({ className, selectQuote, quote, wantCrypto }: Props) => {
     const hasTag = false; // TODO - tags are in quote.tags, will need some algorithm to evaluate them and show only one
     const { paymentMethod, exchange, error } = quote;
+    const providers = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.providerInfos);
 
     return (
         <Wrapper className={className}>
@@ -149,7 +151,7 @@ const Quote = ({ className, selectQuote, quote, wantCrypto }: Props) => {
                         <Translation id="TR_BUY_PROVIDER" />
                     </Heading>
                     <Value>
-                        <CoinmarketBuyProviderInfo exchange={exchange} />
+                        <CoinmarketBuyProviderInfo exchange={exchange} providers={providers} />
                     </Value>
                 </Column>
                 <Column>

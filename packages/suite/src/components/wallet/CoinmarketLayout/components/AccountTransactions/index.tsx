@@ -20,6 +20,7 @@ const Header = styled.div`
 
 const AccountTransactions = () => {
     const accountTransactions = useSelector(state => state.wallet.coinmarket.trades);
+    const providers = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.providerInfos);
 
     return (
         <Wrapper>
@@ -31,11 +32,11 @@ const AccountTransactions = () => {
             <Content>
                 {accountTransactions.map(trade => {
                     if (trade.tradeType === 'buy') {
-                        return <BuyTransaction trade={trade} />;
+                        return <BuyTransaction trade={trade} providers={providers} />;
                     }
 
                     if (trade.tradeType === 'exchange') {
-                        return <ExchangeTransaction trade={trade} />;
+                        return <ExchangeTransaction trade={trade} providers={providers} />;
                     }
 
                     return null;

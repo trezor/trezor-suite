@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { BuyTrade } from 'invity-api';
+import { BuyTrade, BuyProviderInfo } from 'invity-api';
 import { colors, variables } from '@trezor/components';
 import {
     CoinmarketPaymentType,
@@ -12,9 +12,12 @@ import { Translation } from '@suite-components';
 interface Props {
     selectedQuote: BuyTrade;
     transactionId?: string;
+    providers?: {
+        [name: string]: BuyProviderInfo;
+    };
 }
 
-const OfferInfo = ({ selectedQuote, transactionId }: Props) => {
+const CoinmarketBuyOfferInfo = ({ selectedQuote, transactionId, providers }: Props) => {
     const {
         receiveStringAmount,
         receiveCurrency,
@@ -50,7 +53,7 @@ const OfferInfo = ({ selectedQuote, transactionId }: Props) => {
                         <Translation id="TR_BUY_PROVIDER" />
                     </LeftColumn>
                     <RightColumn>
-                        <CoinmarketBuyProviderInfo exchange={exchange} />
+                        <CoinmarketBuyProviderInfo exchange={exchange} providers={providers} />
                     </RightColumn>
                 </Row>
                 <Row>
@@ -127,8 +130,4 @@ const RowWithBorder = styled(Row)`
     padding-bottom: 10px;
 `;
 
-// const StyledTransactionId = styled(CoinmarketTransactionId)`
-//     margin: 0 0 10px 30px;
-// `;
-
-export default OfferInfo;
+export default CoinmarketBuyOfferInfo;

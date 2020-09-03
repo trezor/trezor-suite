@@ -1,7 +1,7 @@
 import React, { useMemo, useContext } from 'react';
 import styled from 'styled-components';
 import { LayoutContext } from '@suite-components';
-import { CoinmarketTopPanel, CoinmarketOfferInfo } from '@wallet-components';
+import { CoinmarketTopPanel, CoinmarketBuyOfferInfo } from '@wallet-components';
 import { variables, Card } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
 
@@ -39,7 +39,7 @@ const CoinmarketDetail = () => {
                 )}
                 {showSuccess && <PaymentSuccessful />}
             </StyledCard>
-            <CoinmarketOfferInfo selectedQuote={trade.data} transactionId={trade.key} />
+            <CoinmarketBuyOfferInfo selectedQuote={trade.data} transactionId={trade.key} />
         </Wrapper>
     );
 };

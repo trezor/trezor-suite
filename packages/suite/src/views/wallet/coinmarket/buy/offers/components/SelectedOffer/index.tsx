@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { BuyTrade } from 'invity-api';
 import { Card, variables } from '@trezor/components';
 import VerifyAddress from '../../../components/VerifyAddress';
-import { CoinmarketOfferInfo } from '@wallet-components';
+import { CoinmarketBuyOfferInfo } from '@wallet-components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -33,7 +33,7 @@ const SelectedOffer = ({ selectedQuote }: Props) => {
             <StyledCard>
                 <VerifyAddress selectedQuote={selectedQuote} />
             </StyledCard>
-            <CoinmarketOfferInfo selectedQuote={selectedQuote} />
+            <CoinmarketBuyOfferInfo selectedQuote={selectedQuote} />
         </Wrapper>
     );
 };
