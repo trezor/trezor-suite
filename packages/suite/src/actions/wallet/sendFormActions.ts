@@ -64,7 +64,11 @@ export const getDraft = () => (_dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount, send } = getState().wallet;
     if (selectedAccount.status !== 'loaded') return;
 
-    return send.drafts[selectedAccount.account.key];
+    const draft = send.drafts[selectedAccount.account.key];
+    if (draft) {
+        // draft is a read-only redux object. make a copy to be able to modify values
+        return JSON.parse(JSON.stringify(draft));
+    }
 };
 
 export const removeDraft = () => (dispatch: Dispatch, getState: GetState) => {
