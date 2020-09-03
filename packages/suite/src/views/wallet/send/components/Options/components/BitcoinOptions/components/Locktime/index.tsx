@@ -17,7 +17,7 @@ const Label = styled.div`
 `;
 
 const Text = styled.div`
-    padding: 0 4px;
+    margin-left: 8px;
 `;
 
 const StyledIcon = styled(Icon)`
@@ -31,7 +31,7 @@ const RbfMessage = styled.div`
 `;
 
 const Left = styled.div`
-    padding-right: 5px;
+    margin-right: 8px;
 `;
 
 const Center = styled.div`
@@ -54,7 +54,7 @@ const Title = styled.div`
 
 const Description = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-size: ${variables.FONT_SIZE.SMALL};
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
 

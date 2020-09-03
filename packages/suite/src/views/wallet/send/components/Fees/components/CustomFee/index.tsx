@@ -13,8 +13,7 @@ const Wrapper = styled.div`
 `;
 
 const StyledInput = styled(Input)`
-    max-width: 120px;
-    width: 100%;
+    width: 120px;
 `;
 
 const Units = styled.div`
@@ -47,6 +46,7 @@ export default () => {
                 variant="small"
                 monospace
                 width={120}
+                wrapperProps={{ width: '120' }}
                 state={getInputState(feePerUnitError, feePerUnitValue)}
                 innerAddon={<Units>{getFeeUnits(network.networkType)}</Units>}
                 onChange={() => {
