@@ -2,7 +2,7 @@ import React, { useState, useMemo, useContext } from 'react';
 import styled from 'styled-components';
 import { LayoutContext } from '@suite-components';
 import { CoinmarketTopPanel, CoinmarketFooter } from '@wallet-components';
-import { variables, colors, Icon } from '@trezor/components';
+import { variables, Icon } from '@trezor/components';
 import { useSelector, useActions } from '@suite/hooks/suite';
 import { ExchangeTrade } from 'invity-api';
 import * as modalActions from '@suite-actions/modalActions';
