@@ -19,7 +19,7 @@ import {
     SupportTicketResponse,
     SupportTicket,
 } from 'invity-api';
-import { isDev } from '@suite/utils/suite/build';
+import { isDev } from '@suite-utils/build';
 
 // TODO - get from constants
 const BitcoinTestnetTicker = 'TEST';

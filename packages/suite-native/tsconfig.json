@@ -86,6 +86,14 @@
                 "./src/middlewares/suite/index",
                 "../../packages/suite/src/middlewares/suite/index"
             ],
+            "@suite-services/*": [
+                "./src/services/suite/*",
+                "../../packages/suite/src/services/suite/*"
+            ],
+            "@suite-services": [
+                "./src/services/suite/index",
+                "../../packages/suite/src/services/suite/index"
+            ],
             // dashboard
             "@dashboard-components/*": [
                 "./src/components/dashboard/*",
@@ -791,7 +799,7 @@
             "@recovery-middlewares": [
                 "./src/middlewares/recovery/index",
                 "../../packages/suite/src/middlewares/recovery/index"
-            ]
+            ],
         },
         "module": "esnext",
         "noUnusedParameters": true,
