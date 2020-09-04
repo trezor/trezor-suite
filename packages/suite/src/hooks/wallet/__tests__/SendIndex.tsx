@@ -23,6 +23,7 @@ const mapStateToProps = (state: any) => ({
     localCurrency: state.wallet.settings.localCurrency,
     fees: state.wallet.fees,
     online: state.suite.online,
+    metadataEnabled: false,
 });
 
 interface TestCallback {
