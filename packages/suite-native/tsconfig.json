@@ -49,8 +49,8 @@
             "@suite-middlewares": ["./src/middlewares/suite/index", "../../packages/suite/src/middlewares/suite/index"],
             "@suite-hooks/*": ["./src/hooks/suite/*", "../../packages/suite/src/hooks/suite/*"],
             "@suite-hooks": ["./src/hooks/suite/index", "../../packages/suite/src/hooks/suite/index"],
-            "@suite-services/*": ["./src/hooks/suite/*", "../../packages/suite/src/services/suite/*"],
-            "@suite-services": ["./src/hooks/suite/index", "../../packages/suite/src/services/suite/index"],
+            "@suite-services/*": ["./src/services/suite/*", "../../packages/suite/src/services/suite/*"],
+            "@suite-services": ["./src/services/suite/index", "../../packages/suite/src/services/suite/index"],
             
             // dashboard
             "@dashboard-components/*": ["./src/components/dashboard/*", "../../packages/suite/src/components/dashboard/*"],
