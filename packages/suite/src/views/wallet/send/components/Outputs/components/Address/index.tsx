@@ -45,6 +45,7 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
         getDefaultValue,
         errors,
         setValue,
+        metadataEnabled,
     } = useSendFormContext();
     const { descriptor, networkType, symbol } = account;
     const { openQrModal } = useActions({ openQrModal: scanQrRequest });
@@ -53,14 +54,26 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
     const addressError = outputError ? outputError.address : undefined;
     const addressValue = getDefaultValue(inputName, outputs[outputId].address || '');
     const recipientId = outputId + 1;
+    const isLabelEnabled = getDefaultValue(`outputs[${outputId}].labelEnabled`, false);
 
     return (
         <Input
             state={getInputState(addressError, addressValue)}
             monospace
-            // innerAddon={
-            //     <AddLabel onClick={() => setValue(`outputs[${outputId}].labelInput`, 'enabled')} />
-            // }
+            innerAddon={
+                metadataEnabled && !isLabelEnabled ? (
+                    <Button
+                        variant="tertiary"
+                        icon="TAG"
+                        onClick={() => {
+                            setValue(`outputs[${outputId}].labelEnabled`, true);
+                            composeTransaction(`outputs[${outputId}].amount`);
+                        }}
+                    >
+                        <Translation id="RECIPIENT_ADD_LABEL" />
+                    </Button>
+                ) : null
+            }
             label={
                 <Label>
                     <Left>

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useFieldArray, UseFormMethods } from 'react-hook-form';
 import { FormState, UseSendFormState, SendContextValues } from '@wallet-types/sendForm';
 import { DEFAULT_PAYMENT, DEFAULT_OPRETURN } from '@wallet-constants/sendForm';
@@ -13,6 +13,8 @@ type Props = UseFormMethods<FormState> & {
 
 export const useSendFormOutputs = ({
     outputsFieldArray,
+    register,
+    unregister,
     getValues,
     setValue,
     reset,
@@ -89,6 +91,26 @@ export const useSendFormOutputs = ({
         }
         composeRequest('outputs[0].amount');
     };
+
+    // each Output have additional uncontrolled values that needs to be present in FormState
+    // they need to be registered without any HTMLElement as a "custom" field
+    const { fields } = outputsFieldArray;
+    useEffect(() => {
+        fields.forEach((output, index) => {
+            register({ name: `outputs[${index}].type`, type: 'custom' });
+            register({ name: `outputs[${index}].labelEnabled`, type: 'custom' });
+            // set defaultValues
+            setValue(`outputs[${index}].type`, output.type);
+            setValue(`outputs[${index}].labelEnabled`, output.labelEnabled);
+        });
+        return () => {
+            // unregister fields
+            fields.forEach((_output, index) => {
+                unregister(`outputs[${index}].type`);
+                unregister(`outputs[${index}].labelEnabled`);
+            });
+        };
+    }, [fields, register, unregister, setValue]);
 
     return {
         addOutput,

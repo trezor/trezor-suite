@@ -30,6 +30,7 @@ const mapStateToProps = (state: AppState): SendFormProps => ({
     fees: state.wallet.fees,
     online: state.suite.online,
     sendRaw: state.wallet.send.sendRaw,
+    metadataEnabled: state.metadata.enabled && !!state.metadata.provider,
 });
 
 const Send = (props: SendFormProps) => {

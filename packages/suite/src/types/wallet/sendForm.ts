@@ -19,8 +19,9 @@ export type Output = {
     amount: string;
     fiat: string;
     currency: CurrencyOption;
-    label?: string;
     token: string | null;
+    label: string;
+    labelEnabled: boolean;
     dataHex?: string; // bitcoin opreturn/ethereum data
     dataAscii?: string; // bitcoin opreturn/ethereum data
 };
@@ -42,11 +43,11 @@ export type FormState = {
     feeLimit: string; // ethereum only (gasLimit)
     // advanced form inputs
     options: FormOptions[];
-    bitcoinLockTime?: string; // bitcoin RBF/schedule
-    ethereumNonce?: string; // TODO: ethereum RBF
-    ethereumDataAscii?: string;
-    ethereumDataHex?: string;
-    rippleDestinationTag?: string;
+    bitcoinLockTime: string; // bitcoin RBF/schedule
+    ethereumNonce: string; // TODO: ethereum RBF
+    ethereumDataAscii: string;
+    ethereumDataHex: string;
+    rippleDestinationTag: string;
 };
 
 export type PartialFormState = DeepPartial<FormState>;
@@ -107,6 +108,7 @@ export interface SendFormProps {
     fees: AppState['wallet']['fees'];
     online: boolean;
     sendRaw?: boolean;
+    metadataEnabled: boolean;
 }
 // Props of @wallet-hooks/useSendForm (selectedAccount should be loaded)
 export interface UseSendFormProps extends SendFormProps {
@@ -125,6 +127,7 @@ export type UseSendFormState = {
     isLoading: boolean;
     composedLevels?: PrecomposedLevels;
     online: boolean;
+    metadataEnabled: boolean;
 };
 
 // strongly typed UseFormMethods.getValues with fallback value

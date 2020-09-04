@@ -50,6 +50,7 @@ const getStateFromProps = (props: UseSendFormProps) => {
         localCurrencyOption,
         isLoading: false,
         online: props.online,
+        metadataEnabled: props.metadataEnabled,
     };
 };
 

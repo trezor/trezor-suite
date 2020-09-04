@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import { colors } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
 import Address from './components/Address';
+import Label from './components/Label';
 import Amount from './components/Amount';
 import OpReturn from './components/OpReturn';
 
@@ -36,18 +37,12 @@ const Row = styled.div`
 `;
 
 export default () => {
-    const { outputs, register } = useSendFormContext();
+    const { outputs } = useSendFormContext();
+
     return (
         <Wrapper>
             {outputs.map((output, index) => (
                 <OutputWrapper key={output.id} index={index}>
-                    {/* output type needs to be registered as well */}
-                    <input
-                        type="hidden"
-                        name={`outputs[${index}].type`}
-                        ref={register()}
-                        defaultValue={output.type}
-                    />
                     {output.type === 'opreturn' ? (
                         <OpReturn outputId={index} />
                     ) : (
@@ -55,6 +50,7 @@ export default () => {
                             <Row>
                                 <Address outputId={index} outputsCount={outputs.length} />
                             </Row>
+                            <Label outputId={index} />
                             <Row>
                                 <Amount outputId={index} />
                             </Row>

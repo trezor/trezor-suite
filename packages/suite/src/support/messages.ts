@@ -3373,6 +3373,10 @@ const definedMessages = defineMessages({
         id: 'RECIPIENT_ADD_LABEL',
         defaultMessage: 'Add Label',
     },
+    RECIPIENT_LABEL: {
+        id: 'RECIPIENT_LABEL',
+        defaultMessage: 'Recipient label',
+    },
     RECIPIENT_IS_NOT_SET: {
         defaultMessage: 'Address is not set',
         id: 'RECIPIENT_IS_NOT_SET',
