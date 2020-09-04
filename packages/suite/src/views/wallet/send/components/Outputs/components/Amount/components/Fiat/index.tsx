@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
 
-import { Input, SelectInput } from '@trezor/components';
+import { Input, CleanSelect } from '@trezor/components';
 import { InputError } from '@wallet-components';
 import { Translation } from '@suite-components';
 import { useSendFormContext } from '@wallet-hooks';
@@ -137,7 +137,7 @@ export default ({ outputId }: { outputId: number }) => {
                         defaultValue={currencyValue}
                         render={({ onChange, value }) => {
                             return (
-                                <SelectInput
+                                <CleanSelect
                                     options={buildCurrencyOptions()}
                                     isSearchable
                                     value={value}
