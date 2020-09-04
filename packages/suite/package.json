@@ -51,6 +51,7 @@
         "react-toastify": "^5.5.0",
         "react-transition-group": "^4.2.2",
         "react-window": "^1.8.4",
+        "validator": "13.1.1",
         "recharts": "^2.0.0-beta.1",
         "redux": "^4.0.5",
         "redux-devtools-extension": "^2.13.8",
