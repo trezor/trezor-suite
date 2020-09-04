@@ -5,10 +5,9 @@ import GraphScaleDropdownItem from '@suite-components/TransactionsGraph/componen
 interface Props {
     isGraphHidden: boolean;
     setIsGraphHidden: (value: boolean) => void;
-    onRefresh: () => void;
 }
 
-const TransactionSummaryDropdown = (props: Props) => {
+const TransactionSummaryDropdown = (_props: Props) => {
     // TODO: export transactions to a file
 
     return (
@@ -24,23 +23,6 @@ const TransactionSummaryDropdown = (props: Props) => {
                             noHover: true,
                             label: <GraphScaleDropdownItem />,
                             callback: () => false,
-                        },
-                    ],
-                },
-                {
-                    key: 'group2',
-                    label: undefined,
-                    options: [
-                        // {
-                        //     key: 'visibility',
-                        //     label: props.isGraphHidden ? 'Show graph' : 'Hide graph',
-                        //     callback: () => props.setIsGraphHidden(!props.isGraphHidden),
-                        // },
-                        {
-                            key: 'refresh',
-                            label: 'Refresh',
-                            // icon: 'REFRESH',
-                            callback: () => props.onRefresh(),
                         },
                     ],
                 },
