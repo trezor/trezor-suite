@@ -23,6 +23,14 @@ const Translation = (props: MsgType) => {
         values[key] = isMsgType(maybeMsg) ? <Translation {...maybeMsg} isNested /> : maybeMsg;
     });
 
+    // prevent runtime errors
+    if (
+        !props.defaultMessage &&
+        Object.prototype.hasOwnProperty.call(props, 'id') &&
+        !messages[props.id]
+    ) {
+        return <>{`Unknown translation id: ${props.id}`}</>;
+    }
     // pass undefined to a 'values' prop in case of an empty values object
     return (
         <HelperTooltip isNested={props.isNested} messageId={props.id}>

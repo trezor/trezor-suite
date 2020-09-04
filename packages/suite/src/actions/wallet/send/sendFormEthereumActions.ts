@@ -1,288 +1,280 @@
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect, { FeeLevel, TokenInfo } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
-import { SEND } from '@wallet-actions/constants';
+import { toWei } from 'web3-utils';
 import * as notificationActions from '@suite-actions/notificationActions';
-import * as accountActions from '@wallet-actions/accountActions';
-import * as commonActions from './sendFormCommonActions';
-import * as sendFormActions from './sendFormActions';
-import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
-import { toWei, fromWei } from 'web3-utils';
 import {
-    prepareEthereumTransaction,
-    serializeEthereumTx,
-    calculateEthFee,
-    calculateMax,
     calculateTotal,
-    getOutput,
+    calculateMax,
+    calculateEthFee,
+    serializeEthereumTx,
+    prepareEthereumTransaction,
+    getExternalComposeOutput,
 } from '@wallet-utils/sendFormUtils';
+import { amountToSatoshi, formatAmount } from '@wallet-utils/accountUtils';
+import { ETH_DEFAULT_GAS_LIMIT, ERC20_GAS_LIMIT } from '@wallet-constants/sendForm';
+import {
+    FormState,
+    UseSendFormState,
+    PrecomposedLevels,
+    PrecomposedTransaction,
+    PrecomposedTransactionFinal,
+    ExternalOutput,
+} from '@wallet-types/sendForm';
 import { Dispatch, GetState } from '@suite-types';
 
-/*
-    Compose eth transaction
- */
-export const compose = (setMax = false) => async (dispatch: Dispatch, getState: GetState) => {
-    const { selectedAccount, send } = getState().wallet;
-    if (selectedAccount.status !== 'loaded' || !send) return null;
-    const { account } = selectedAccount;
-    const { selectedFee } = send;
-    const { token } = send.networkTypeEthereum;
-    const isFeeValid = !new BigNumber(selectedFee.feePerUnit).isNaN();
-
-    let tx;
-    const output = getOutput(send.outputs, 0);
-    const { availableBalance } = account;
+const calculate = (
+    availableBalance: string,
+    output: ExternalOutput,
+    feeLevel: FeeLevel,
+    token?: TokenInfo,
+): PrecomposedTransaction => {
     const feeInSatoshi = calculateEthFee(
-        toWei(isFeeValid ? selectedFee.feePerUnit : '0', 'gwei'),
-        selectedFee.feeLimit || '0',
+        toWei(feeLevel.feePerUnit, 'gwei'),
+        feeLevel.feeLimit || '0',
     );
-    const max = token
-        ? new BigNumber(token.balance!)
-        : new BigNumber(calculateMax(availableBalance, feeInSatoshi));
-    // use max possible value or input.value
-    // race condition when switching between tokens with set-max enabled
-    // input still holds previous value (previous token max)
-    const amountInSatoshi = setMax
-        ? max.toString()
-        : networkAmountToSatoshi(output.amount.value, account.symbol).toString();
-    const totalSpentBig = new BigNumber(
-        calculateTotal(token ? '0' : amountInSatoshi, feeInSatoshi),
-    );
-    const payloadData = {
-        totalSpent: totalSpentBig.toString(),
-        fee: feeInSatoshi,
-        feePerUnit: send.selectedFee.feePerUnit,
-        max: max.isLessThan('0') ? '0' : max.toString(),
-    };
 
-    // TODO: i'm not sure why this validation is duplicated here and in sendFormReducer, investigate more...
-    // TODO: action.payload.error should use VALIDATION_ERRORS or TRANSLATION_ID
-    if (totalSpentBig.isGreaterThan(availableBalance)) {
-        const error = token ? 'NOT-ENOUGH-CURRENCY-FEE' : 'NOT-ENOUGH-FUNDS';
-        tx = { type: 'error', error } as const;
-        dispatch({
-            type: SEND.ETH_PRECOMPOSED_TX,
-            payload: tx,
-        });
-    } else if (!output.address.value) {
-        dispatch({
-            type: SEND.ETH_PRECOMPOSED_TX,
-            payload: {
-                type: 'nonfinal',
-                ...payloadData,
-            },
-        });
-        tx = { type: 'nonfinal', ...payloadData } as const;
+    let amount;
+    let max;
+    let totalSpent; // total ETH spent (amount + fee)
+    if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
+        const maxBig = token
+            ? new BigNumber(token.balance!)
+            : new BigNumber(calculateMax(availableBalance, feeInSatoshi));
+        max = maxBig.toString();
+        amount = max;
+        totalSpent = new BigNumber(calculateTotal(token ? '0' : max.toString(), feeInSatoshi));
     } else {
-        dispatch({
-            type: SEND.ETH_PRECOMPOSED_TX,
-            payload: {
-                type: 'final',
-                ...payloadData,
-            },
-        });
-        tx = { type: 'final', ...payloadData } as const;
+        amount = output.amount;
+        totalSpent = new BigNumber(calculateTotal(token ? '0' : output.amount, feeInSatoshi));
     }
 
-    dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: false });
+    if (totalSpent.isGreaterThan(availableBalance)) {
+        const error = token ? 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' : 'AMOUNT_IS_NOT_ENOUGH';
+        // errorMessage declared later
+        return { type: 'error', error, errorMessage: { id: error } } as const;
+    }
 
-    return tx;
+    if (token && new BigNumber(amount).gt(amountToSatoshi(token.balance!, token.decimals))) {
+        return {
+            type: 'error',
+            error: 'AMOUNT_IS_NOT_ENOUGH',
+            errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' },
+        } as const;
+    }
+
+    const payloadData = {
+        type: 'nonfinal',
+        totalSpent: totalSpent.toString(),
+        max: max ? max.toString() : undefined,
+        fee: feeInSatoshi,
+        feePerByte: feeLevel.feePerUnit,
+        feeLimit: feeLevel.feeLimit,
+        token,
+        bytes: 0, // TODO: calculate
+    } as const;
+
+    if (output.type === 'send-max' || output.type === 'external') {
+        return {
+            ...payloadData,
+            type: 'final',
+            // compatibility with BTC PrecomposedTransaction from trezor-connect
+            transaction: {
+                inputs: [],
+                outputs: [
+                    {
+                        address: output.address,
+                        amount,
+                        // eslint-disable-next-line @typescript-eslint/camelcase
+                        script_type: 'PAYTOADDRESS',
+                    },
+                ],
+            },
+        };
+    }
+    return payloadData;
 };
 
-/*
-    Sign transaction
- */
-export const send = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { selectedAccount, send } = getState().wallet;
-    const selectedDevice = getState().suite.device;
-    if (selectedAccount.status !== 'loaded' || !send || !selectedDevice) return null;
-    const { account, network } = selectedAccount;
-    const amount = send.outputs[0].amount.value;
-    const address = send.outputs[0].address.value;
-    if (account.networkType !== 'ethereum' || !network.chainId || !amount || !address) return null;
-    const { token, data, gasPrice, gasLimit } = send.networkTypeEthereum;
+export const composeTransaction = (
+    formValues: FormState,
+    formState: UseSendFormState,
+) => async () => {
+    const { account, network, feeInfo } = formState;
+    const composeOutputs = getExternalComposeOutput(formValues, account, network);
+    if (!composeOutputs) return; // no valid Output
 
+    const { output, tokenInfo, decimals } = composeOutputs;
+    const { availableBalance } = account;
+    const { address } = formValues.outputs[0];
+
+    // additional calculation for gasLimit based on data size
+    let customFeeLimit: string | undefined;
+    if (typeof formValues.ethereumDataHex === 'string' && formValues.ethereumDataHex.length > 0) {
+        const response = await TrezorConnect.blockchainEstimateFee({
+            coin: account.symbol,
+            request: {
+                blocks: [2],
+                specific: {
+                    from: account.descriptor,
+                    to: address || account.descriptor,
+                    data: formValues.ethereumDataHex,
+                },
+            },
+        });
+
+        if (response.success) {
+            customFeeLimit = response.payload.levels[0].feeLimit;
+        }
+    }
+
+    // set gasLimit based on ERC20 transfer
+    if (tokenInfo) {
+        customFeeLimit = ERC20_GAS_LIMIT;
+    }
+
+    const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
+    // in case when selectedFee is set to 'custom' construct this FeeLevel from values
+    if (formValues.selectedFee === 'custom') {
+        predefinedLevels.push({
+            label: 'custom',
+            feePerUnit: formValues.feePerUnit,
+            feeLimit: formValues.feeLimit,
+            blocks: -1,
+        });
+    }
+
+    // update predefined levels with customFeeLimit (gasLimit from data size ot erc20 transfer)
+    if (customFeeLimit) {
+        predefinedLevels.forEach(l => (l.feeLimit = customFeeLimit));
+    }
+
+    // wrap response into PrecomposedLevels object where key is a FeeLevel label
+    const wrappedResponse: PrecomposedLevels = {};
+    const response = predefinedLevels.map(level =>
+        calculate(availableBalance, output, level, tokenInfo),
+    );
+    response.forEach((tx, index) => {
+        const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
+        wrappedResponse[feeLabel] = tx;
+    });
+
+    const hasAtLeastOneValid = response.find(r => r.type !== 'error');
+    // there is no valid tx in predefinedLevels and there is no custom level
+    if (!hasAtLeastOneValid && !wrappedResponse.custom) {
+        const { minFee } = feeInfo;
+        const lastKnownFee = predefinedLevels[predefinedLevels.length - 1].feePerUnit;
+        let maxFee = new BigNumber(lastKnownFee).minus(1);
+        // generate custom levels in range from lastKnownFee - 1 to feeInfo.minFee (coinInfo in trezor-connect)
+        const customLevels: FeeLevel[] = [];
+        while (maxFee.gte(minFee)) {
+            customLevels.push({
+                feePerUnit: maxFee.toString(),
+                feeLimit: predefinedLevels[0].feeLimit,
+                label: 'custom',
+                blocks: -1,
+            });
+            maxFee = maxFee.minus(1);
+        }
+
+        // check if any custom level is possible
+        const customLevelsResponse = customLevels.map(level =>
+            calculate(availableBalance, output, level, tokenInfo),
+        );
+
+        const customValid = customLevelsResponse.findIndex(r => r.type !== 'error');
+        if (customValid >= 0) {
+            wrappedResponse.custom = customLevelsResponse[customValid];
+        }
+    }
+
+    // format max (calculate sends it as satoshi)
+    // update errorMessage values (symbol)
+    Object.keys(wrappedResponse).forEach(key => {
+        const tx = wrappedResponse[key];
+        if (tx.type !== 'error' && tx.max && !tx.token) {
+            tx.max = formatAmount(tx.max, decimals);
+        }
+        if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
+            tx.errorMessage = {
+                id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+                values: { symbol: network.symbol.toUpperCase() },
+            };
+        }
+    });
+
+    return wrappedResponse;
+};
+
+export const signTransaction = (
+    formValues: FormState,
+    transactionInfo: PrecomposedTransactionFinal,
+) => async (dispatch: Dispatch, getState: GetState) => {
+    const { selectedAccount } = getState().wallet;
+    const { device } = getState().suite;
+    if (
+        selectedAccount.status !== 'loaded' ||
+        !device ||
+        !transactionInfo ||
+        transactionInfo.type !== 'final'
+    )
+        return;
+
+    const { account, network } = selectedAccount;
+    if (account.networkType !== 'ethereum' || !network.chainId) return;
+
+    // Ethereum account `misc.nonce` is not updated before pending tx is mined
+    // Calculate `pendingNonce`: greatest value in pending tx + 1
+    // This may lead to unexpected/unwanted behavior
+    // whenever pending tx gets rejected all following txs (with higher nonce) will be rejected as well
+    const pendingTxs = (getState().wallet.transactions.transactions[account.key] || []).filter(
+        tx => !tx.blockHeight || tx.blockHeight <= 0,
+    );
+    const pendingNonce = pendingTxs.reduce((value, tx) => {
+        if (!tx.ethereumSpecific) return value;
+        return Math.max(value, tx.ethereumSpecific.nonce + 1);
+    }, 0);
+    const pendingNonceBig = new BigNumber(pendingNonce);
+    const nonce =
+        pendingNonceBig.gt(0) && pendingNonceBig.gt(account.misc.nonce)
+            ? pendingNonceBig.toString()
+            : account.misc.nonce;
+
+    // transform to TrezorConnect.ethereumSignTransaction params
     const transaction = prepareEthereumTransaction({
-        token,
+        token: transactionInfo.token,
         chainId: network.chainId,
-        to: address,
-        amount,
-        data: data.value,
-        gasLimit: gasLimit.value,
-        gasPrice: gasPrice.value,
-        nonce: account.misc.nonce,
+        to: formValues.outputs[0].address,
+        amount: formValues.outputs[0].amount,
+        data: formValues.ethereumDataHex,
+        gasLimit: transactionInfo.feeLimit || ETH_DEFAULT_GAS_LIMIT,
+        gasPrice: transactionInfo.feePerByte,
+        nonce,
     });
 
     const signedTx = await TrezorConnect.ethereumSignTransaction({
         device: {
-            path: selectedDevice.path,
-            instance: selectedDevice.instance,
-            state: selectedDevice.state,
+            path: device.path,
+            instance: device.instance,
+            state: device.state,
         },
-        useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
+        useEmptyPassphrase: device.useEmptyPassphrase,
         path: account.path,
         transaction,
     });
 
     if (!signedTx.success) {
+        // catch manual error from ReviewTransaction modal
+        if (signedTx.payload.error === 'tx-cancelled') return;
         dispatch(
-            notificationActions.addToast({ type: 'sign-tx-error', error: signedTx.payload.error }),
+            notificationActions.addToast({
+                type: 'sign-tx-error',
+                error: signedTx.payload.error,
+            }),
         );
         return;
     }
 
-    const serializedTx = serializeEthereumTx({
+    return serializeEthereumTx({
         ...transaction,
         ...signedTx.payload,
     });
-
-    // TODO: add possibility to show serialized tx without pushing (locktime)
-    const sentTx = await TrezorConnect.pushTransaction({
-        tx: serializedTx,
-        coin: network.symbol,
-    });
-
-    if (sentTx.success) {
-        dispatch(commonActions.clear());
-        const symbol = token ? token.symbol!.toUpperCase() : account.symbol.toUpperCase();
-        dispatch(
-            notificationActions.addToast({
-                type: 'tx-sent',
-                formattedAmount: `${amount} ${symbol}`,
-                device: selectedDevice,
-                descriptor: account.descriptor,
-                symbol: account.symbol,
-                txid: sentTx.payload.txid,
-            }),
-        );
-        dispatch(accountActions.fetchAndUpdateAccount(account));
-    } else {
-        dispatch(
-            notificationActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),
-        );
-    }
-};
-
-/*
-    Change value in input "gas price"
- */
-export const handleGasPrice = (gasPrice: string) => (dispatch: Dispatch, getState: GetState) => {
-    const { send } = getState().wallet;
-    const { account } = getState().wallet.selectedAccount;
-    if (!send || !account) return null;
-
-    const gasLimit = send.networkTypeEthereum.gasLimit.value || '0';
-    const fee = calculateEthFee(gasPrice, gasLimit);
-
-    dispatch({
-        type: SEND.ETH_HANDLE_GAS_PRICE,
-        gasPrice,
-    });
-
-    dispatch({
-        type: SEND.HANDLE_FEE_VALUE_CHANGE,
-        fee: {
-            label: 'custom',
-            feePerUnit: gasPrice,
-            feeLimit: gasLimit,
-            blocks: -1,
-            value: fee,
-        },
-    });
-
-    dispatch(sendFormActions.composeChange());
-
-    if (send.setMaxActivated) {
-        dispatch(sendFormActions.setMax());
-    }
-};
-
-/*
-    Change value in input "gas limit "
- */
-export const handleGasLimit = (gasLimit: string) => (dispatch: Dispatch, getState: GetState) => {
-    const { send } = getState().wallet;
-    const { account } = getState().wallet.selectedAccount;
-    if (!send || !account) return null;
-
-    const gasPrice = send.networkTypeEthereum.gasPrice.value || '0';
-
-    dispatch({
-        type: SEND.ETH_HANDLE_GAS_LIMIT,
-        gasLimit,
-    });
-
-    dispatch({
-        type: SEND.HANDLE_FEE_VALUE_CHANGE,
-        fee: {
-            label: 'custom',
-            feePerUnit: gasPrice,
-            feeLimit: gasLimit,
-            blocks: -1,
-        },
-    });
-
-    dispatch(sendFormActions.composeChange());
-
-    if (send.setMaxActivated) {
-        dispatch(sendFormActions.setMax());
-    }
-};
-
-/*
-    Change value in input "Data"
- */
-export const handleData = (data: string) => async (dispatch: Dispatch, getState: GetState) => {
-    const { send, selectedAccount } = getState().wallet;
-    const { account } = selectedAccount;
-    if (!send || !account) return null;
-
-    dispatch({
-        type: SEND.ETH_HANDLE_DATA,
-        data,
-    });
-
-    const newFeeLevels = await TrezorConnect.blockchainEstimateFee({
-        coin: account.symbol,
-        request: {
-            blocks: [2],
-            specific: {
-                from: account.descriptor,
-                to: send.outputs[0].address.value || account.descriptor,
-                data,
-            },
-        },
-    });
-
-    if (!newFeeLevels.success) return null;
-
-    const level = newFeeLevels.payload.levels[0];
-    const gasLimit = level.feeLimit || '0'; // TODO: default
-    const gasPrice = fromWei(level.feePerUnit, 'gwei');
-
-    // update fee
-    dispatch({
-        type: SEND.HANDLE_FEE_VALUE_CHANGE,
-        fee: {
-            label: 'normal',
-            feePerUnit: gasPrice,
-            feeLimit: gasLimit,
-            blocks: -1,
-        },
-    });
-
-    // update gas limit input
-    dispatch({
-        type: SEND.ETH_HANDLE_GAS_LIMIT,
-        gasLimit,
-    });
-
-    // update gas price input
-    dispatch({
-        type: SEND.ETH_HANDLE_GAS_PRICE,
-        gasPrice,
-    });
-
-    if (send.setMaxActivated) {
-        dispatch(sendFormActions.setMax());
-    }
 };

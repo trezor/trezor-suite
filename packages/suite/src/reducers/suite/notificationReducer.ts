@@ -37,6 +37,10 @@ export type ToastPayload = (
           txid: string;
       }
     | {
+          type: 'raw-tx-sent';
+          txid: string;
+      }
+    | {
           type: 'copy-to-clipboard';
       }
     | {

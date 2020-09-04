@@ -3,6 +3,8 @@ import DiscoveryProgress from './DiscoveryProgress';
 import Title from './Title';
 import WalletLayout from './WalletLayout';
 import CoinBalance from './CoinBalance';
+import OnOffSwitcher from './OnOffSwitcher';
+import InputError from './InputError';
 
 import CoinmarketLayout from './CoinmarketLayout';
 import CoinmarketTopPanel from './CoinmarketTopPanel';
@@ -20,7 +22,6 @@ export {
     WalletLayout,
     DiscoveryProgress,
     CoinBalance,
-    //
     CoinmarketLayout,
     CoinmarketTopPanel,
     CoinmarketFooter,
@@ -30,4 +31,6 @@ export {
     CoinmarketTransactionId,
     CoinmarketProvidedByInvity,
     CoinmarketPaymentType,
+    OnOffSwitcher,
+    InputError,
 };

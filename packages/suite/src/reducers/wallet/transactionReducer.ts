@@ -143,8 +143,6 @@ export default (state: State = initialState, action: Action | WalletAction): Sta
                 draft.error = action.error;
                 draft.isLoading = false;
                 break;
-            // case TRANSACTION.FROM_STORAGE:
-            //     draft.transactions = action.transactions;
             // no default
         }
     });

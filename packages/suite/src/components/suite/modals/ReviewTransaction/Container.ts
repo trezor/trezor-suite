@@ -1,28 +1,20 @@
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as modalActions from '@suite-actions/modalActions';
-import * as sendFormActionsBitcoin from '@wallet-actions/send/sendFormBitcoinActions';
-import * as sendFormActionsEthereum from '@wallet-actions/send/sendFormEthereumActions';
-import * as sendFormActionsRipple from '@wallet-actions/send/sendFormRippleActions';
-
-import { AppState, Dispatch } from '@suite-types';
+import { AppState } from '@suite-types';
+import { UserContextPayload } from '@suite-actions/modalActions';
 import Component from './index';
 
 const mapStateToProps = (state: AppState) => ({
-    account: state.wallet.selectedAccount.account,
+    selectedAccount: state.wallet.selectedAccount,
+    fiat: state.wallet.fiat,
+    settings: state.wallet.settings,
     send: state.wallet.send,
-    suite: state.suite,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    modalActions: bindActionCreators(modalActions, dispatch),
-    sendFormActionsBitcoin: bindActionCreators(sendFormActionsBitcoin, dispatch),
-    sendFormActionsRipple: bindActionCreators(sendFormActionsRipple, dispatch),
-    sendFormActionsEthereum: bindActionCreators(sendFormActionsEthereum, dispatch),
-});
+// Since this modal is opened either in Device or User context
+// those contexts needs to be distinguished by `type` prop
+type DeferredProps =
+    | Extract<UserContextPayload, { type: 'review-transaction' }>
+    | { type: 'sign-transaction'; decision?: undefined };
+export type Props = ReturnType<typeof mapStateToProps> & DeferredProps;
 
-export type StateProps = ReturnType<typeof mapStateToProps>;
-export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-export type Props = StateProps & DispatchProps;
-
-export default connect(mapStateToProps, mapDispatchToProps)(Component);
+export default connect(mapStateToProps)(Component);

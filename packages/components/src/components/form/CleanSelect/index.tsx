@@ -46,19 +46,20 @@ const selectStyle = (isDropdownVisible: boolean, isHovered: boolean, minWidth = 
             border: 0,
         };
     },
-    valueContainer: (base: Record<string, any>) => ({
-        ...base,
-        border: 0,
-        padding: '0px',
-        'flex-wrap': 'nowrap',
-        paddingRight: 3,
-        marginTop: 1,
-        fontWeight: variables.FONT_WEIGHT.MEDIUM,
-        color: colors.NEUE_TYPE_LIGHT_GREY,
-        minWidth,
-        display: 'flex',
-        justifyContent: 'flex-end',
-    }),
+    valueContainer: (base: Record<string, any>) =>
+        ({
+            ...base,
+            border: 0,
+            padding: '0px',
+            paddingRight: 3,
+            marginTop: 1,
+            fontWeight: variables.FONT_WEIGHT.MEDIUM,
+            color: colors.NEUE_TYPE_LIGHT_GREY,
+            minWidth,
+            display: 'flex',
+            flexWrap: 'nowrap',
+            justifyContent: 'flex-end',
+        } as const),
     indicatorSeparator: (base: Record<string, any>) => {
         return {
             display: 'none',
@@ -80,6 +81,7 @@ const selectStyle = (isDropdownVisible: boolean, isHovered: boolean, minWidth = 
     },
     menu: (base: Record<string, any>) => ({
         ...base,
+        minWidth: '85px',
         color: colors.NEUE_TYPE_LIGHT_GREY,
         background: 'white',
         boxShadow: '0 4px 10px 0 rgba(0, 0, 0, 0.15)',

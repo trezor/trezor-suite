@@ -96,7 +96,7 @@ const FiatDetails = ({ tx, totalOutput }: Props) => {
                 </Item>
 
                 <Item allCaps>
-                    <Translation id="TR_AMOUNT" />
+                    <Translation id="AMOUNT" />
                 </Item>
                 <Item alignContent="right">
                     <HiddenPlaceholder>

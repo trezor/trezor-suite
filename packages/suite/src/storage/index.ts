@@ -2,8 +2,8 @@ import SuiteDB, { StorageUpdateMessage, OnUpgradeFunc } from '@trezor/suite-stor
 import { DBSchema } from 'idb';
 import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
 import { SuiteState } from '@suite-reducers/suiteReducer';
-import { State as SendFormState } from '@wallet-types/sendForm';
 import { State as AnalyticsState } from '@suite-reducers/analyticsReducer';
+import { FormState } from '@wallet-types/sendForm';
 import { AcquiredDevice } from '@suite-types';
 import { MetadataState } from '@suite-types/metadata';
 import { Account, Discovery, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
@@ -11,15 +11,7 @@ import { GraphData } from '@wallet-types/graph';
 import { BuyTrade } from 'invity-api';
 import { migrate } from './migrations';
 
-const VERSION = 15;
-/**
- * Changelog
- *
- * 15
- * - added metadata object store
- * - added device.metadata
- * - added account.metadata
- */
+const VERSION = 16; // don't forget to add migration and CHANGELOG when changing versions!
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -38,12 +30,9 @@ export interface SuiteDBSchema extends DBSchema {
             blockTime: number; // TODO: blockTime can be undefined
         };
     };
-    sendForm: {
-        key: string;
-        value: SendFormState;
-        indexes: {
-            deviceState: string;
-        };
+    sendFormDrafts: {
+        key: string; // accountKey
+        value: FormState;
     };
     suiteSettings: {
         key: string;
@@ -155,8 +144,7 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
         db.createObjectStore('discovery', { keyPath: 'deviceState' });
 
         // object store for send form
-        const sendFormStore = db.createObjectStore('sendForm');
-        sendFormStore.createIndex('deviceState', 'deviceState', { unique: false });
+        db.createObjectStore('sendFormDrafts');
 
         db.createObjectStore('fiatRates', { keyPath: 'symbol' });
         db.createObjectStore('analytics');
@@ -180,7 +168,6 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
         db.createObjectStore('metadata');
     } else {
         // migrate functions
-        console.warn('MIGRATE!', oldVersion, newVersion);
         migrate(db, oldVersion, newVersion, transaction);
     }
 };

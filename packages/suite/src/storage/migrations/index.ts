@@ -99,4 +99,11 @@ export const migrate = async (
             return cursor.continue().then(addMetadataKeys);
         });
     }
+
+    if (oldVersion < 16) {
+        // object store for send form
+        // @ts-ignore sendForm doesn't exists anymore
+        db.deleteObjectStore('sendForm');
+        db.createObjectStore('sendFormDrafts');
+    }
 };

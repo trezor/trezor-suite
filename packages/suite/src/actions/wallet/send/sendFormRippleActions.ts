@@ -1,170 +1,221 @@
-import TrezorConnect, { RipplePayment } from 'trezor-connect';
-import Bignumber from 'bignumber.js';
-import { SEND } from '@wallet-actions/constants';
-import { XRP_FLAG } from '@wallet-constants/sendForm';
+import TrezorConnect, { FeeLevel, RipplePayment } from 'trezor-connect';
+import BigNumber from 'bignumber.js';
 import * as notificationActions from '@suite-actions/notificationActions';
-import * as accountActions from '@wallet-actions/accountActions';
-import * as commonActions from './sendFormCommonActions';
-import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import {
-    calculateMax,
     calculateTotal,
-    getOutput,
-    getReserveInXrp,
+    calculateMax,
+    getExternalComposeOutput,
 } from '@wallet-utils/sendFormUtils';
+import { networkAmountToSatoshi, formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { XRP_FLAG } from '@wallet-constants/sendForm';
+import {
+    FormState,
+    UseSendFormState,
+    PrecomposedLevels,
+    PrecomposedTransaction,
+    PrecomposedTransactionFinal,
+    ExternalOutput,
+} from '@wallet-types/sendForm';
 import { Dispatch, GetState } from '@suite-types';
 
-/*
-    Compose xrp transaction
- */
-export const compose = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { send, selectedAccount } = getState().wallet;
-    if (!send || selectedAccount.status !== 'loaded') return;
-    const { account } = selectedAccount;
+const calculate = (
+    availableBalance: string,
+    output: ExternalOutput,
+    feeLevel: FeeLevel,
+    requiredAmount?: BigNumber,
+): PrecomposedTransaction => {
+    const feeInSatoshi = feeLevel.feePerUnit;
 
-    const output = getOutput(send.outputs, 0);
-    const amountInSatoshi = networkAmountToSatoshi(output.amount.value, account.symbol).toString();
-    const { availableBalance } = account;
-    const feeInSatoshi = send.selectedFee.feePerUnit;
-    let tx;
-    const totalSpentBig = new Bignumber(calculateTotal(amountInSatoshi, feeInSatoshi));
-    const max = new Bignumber(calculateMax(availableBalance, feeInSatoshi));
-    const payloadData = {
-        totalSpent: totalSpentBig.toString(),
-        fee: feeInSatoshi,
-        max: max.isLessThan('0') ? '0' : max.toString(),
-    };
-
-    if (!output.address.value) {
-        dispatch({
-            type: SEND.XRP_PRECOMPOSED_TX,
-            payload: {
-                type: 'nonfinal',
-                ...payloadData,
-            },
-        });
-        tx = { type: 'nonfinal', ...payloadData } as const;
-    } else if (totalSpentBig.isGreaterThan(availableBalance)) {
-        dispatch({
-            type: SEND.XRP_PRECOMPOSED_TX,
-            payload: {
-                type: 'error',
-                error: 'NOT-ENOUGH-FUNDS',
-            },
-        });
-        tx = { type: 'error', error: 'NOT-ENOUGH-FUNDS' } as const;
+    let amount;
+    let max;
+    let totalSpent;
+    if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
+        max = new BigNumber(calculateMax(availableBalance, feeInSatoshi));
+        amount = max.toString();
+        totalSpent = new BigNumber(calculateTotal(amount, feeInSatoshi));
     } else {
-        dispatch({
-            type: SEND.XRP_PRECOMPOSED_TX,
-            payload: {
-                type: 'final',
-                ...payloadData,
+        amount = output.amount;
+        totalSpent = new BigNumber(calculateTotal(output.amount, feeInSatoshi));
+    }
+
+    if (totalSpent.isGreaterThan(availableBalance)) {
+        return {
+            type: 'error',
+            error: 'AMOUNT_IS_NOT_ENOUGH',
+            errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' },
+        } as const;
+    }
+
+    if (requiredAmount && requiredAmount.gt(amount)) {
+        return {
+            type: 'error',
+            error: 'AMOUNT_IS_LESS_THAN_RESERVE',
+            // errorMessage declared later
+        } as const;
+    }
+
+    const payloadData = {
+        type: 'nonfinal',
+        totalSpent: totalSpent.toString(),
+        max: max ? max.toString() : undefined,
+        fee: feeInSatoshi,
+        feePerByte: feeLevel.feePerUnit,
+        bytes: 0, // TODO: calculate
+    } as const;
+
+    if (output.type === 'send-max' || output.type === 'external') {
+        return {
+            ...payloadData,
+            type: 'final',
+            // compatibility with BTC PrecomposedTransaction from trezor-connect
+            transaction: {
+                inputs: [],
+                outputs: [
+                    {
+                        address: output.address,
+                        amount,
+                        // eslint-disable-next-line @typescript-eslint/camelcase
+                        script_type: 'PAYTOADDRESS',
+                    },
+                ],
             },
-        });
-        tx = { type: 'final', ...payloadData } as const;
+        };
     }
-
-    dispatch({ type: SEND.COMPOSE_PROGRESS, isComposing: false });
-    return tx;
+    return payloadData;
 };
 
-/*
-    Check destination account reserve
-*/
+export const composeTransaction = (
+    formValues: FormState,
+    formState: UseSendFormState,
+) => async () => {
+    const { account, network, feeInfo } = formState;
+    const composeOutputs = getExternalComposeOutput(formValues, account, network);
+    if (!composeOutputs) return; // no valid Output
 
-export const checkAccountReserve = (outputId: number, address: string) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { send, selectedAccount } = getState().wallet;
-    if (!send || selectedAccount.status !== 'loaded') return;
-    const { account } = selectedAccount;
-    const output = getOutput(send.outputs, outputId);
+    const { output } = composeOutputs;
+    const { availableBalance } = account;
+    const { address } = formValues.outputs[0];
 
-    dispatch({
-        type: SEND.AMOUNT_LOADING,
-        isLoading: true,
-        outputId: output.id,
-    });
-
-    if (!address) return null;
-
-    const response = await TrezorConnect.getAccountInfo({
-        coin: account.symbol,
-        descriptor: address,
-    });
-
-    // TODO: handle error state
-
-    if (response.success) {
-        dispatch({
-            type: SEND.XRP_IS_DESTINATION_ACCOUNT_EMPTY,
-            isDestinationAccountEmpty: response.payload.empty,
-            reserve: getReserveInXrp(account),
+    const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
+    // in case when selectedFee is set to 'custom' construct this FeeLevel from values
+    if (formValues.selectedFee === 'custom') {
+        predefinedLevels.push({
+            label: 'custom',
+            feePerUnit: formValues.feePerUnit,
+            feeLimit: formValues.feeLimit,
+            blocks: -1,
         });
     }
 
-    dispatch({
-        type: SEND.AMOUNT_LOADING,
-        isLoading: false,
-        outputId: output.id,
+    let requiredAmount: BigNumber | undefined;
+    // additional check if recipient address is empty
+    // it will set requiredAmount to recipient account reserve value
+    if (address) {
+        const accountResponse = await TrezorConnect.getAccountInfo({
+            descriptor: address,
+            coin: account.symbol,
+        });
+        if (accountResponse.success && accountResponse.payload.empty) {
+            requiredAmount = new BigNumber(accountResponse.payload.misc!.reserve!);
+        }
+    }
+
+    // wrap response into PrecomposedLevels object where key is a FeeLevel label
+    const wrappedResponse: PrecomposedLevels = {};
+    const response = predefinedLevels.map(level =>
+        calculate(availableBalance, output, level, requiredAmount),
+    );
+    response.forEach((tx, index) => {
+        const feeLabel = predefinedLevels[index].label as FeeLevel['label'];
+        wrappedResponse[feeLabel] = tx;
     });
+
+    const hasAtLeastOneValid = response.find(r => r.type !== 'error');
+    // there is no valid tx in predefinedLevels and there is no custom level
+    if (!hasAtLeastOneValid && !wrappedResponse.custom) {
+        const { minFee } = feeInfo;
+        const lastKnownFee = predefinedLevels[predefinedLevels.length - 1].feePerUnit;
+        let maxFee = new BigNumber(lastKnownFee).minus(1);
+        // generate custom levels in range from lastKnownFee -1 to feeInfo.minFee (coinInfo in trezor-connect)
+        const customLevels: FeeLevel[] = [];
+        while (maxFee.gte(minFee)) {
+            customLevels.push({ feePerUnit: maxFee.toString(), label: 'custom', blocks: -1 });
+            maxFee = maxFee.minus(1);
+        }
+
+        const customLevelsResponse = customLevels.map(level =>
+            calculate(availableBalance, output, level, requiredAmount),
+        );
+
+        const customValid = customLevelsResponse.findIndex(r => r.type !== 'error');
+        if (customValid >= 0) {
+            wrappedResponse.custom = customLevelsResponse[customValid];
+        }
+    }
+
+    // format max (calculate sends it as satoshi)
+    // update errorMessage values (reserve)
+    Object.keys(wrappedResponse).forEach(key => {
+        const tx = wrappedResponse[key];
+        if (tx.type !== 'error' && tx.max) {
+            tx.max = formatNetworkAmount(tx.max, account.symbol);
+        }
+        if (tx.type === 'error' && tx.error === 'AMOUNT_IS_LESS_THAN_RESERVE' && requiredAmount) {
+            tx.errorMessage = {
+                id: 'AMOUNT_IS_LESS_THAN_RESERVE',
+                values: {
+                    reserve: formatNetworkAmount(requiredAmount.toString(), account.symbol),
+                },
+            };
+        }
+    });
+
+    return wrappedResponse;
 };
 
-/*
-    Change value in input "destination tag"
- */
-export const handleDestinationTagChange = (destinationTag: string) => (dispatch: Dispatch) => {
-    dispatch({
-        type: SEND.XRP_HANDLE_DESTINATION_TAG_CHANGE,
-        destinationTag,
-    });
-};
-
-/*
-    Send transaction
- */
-export const send = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { send, selectedAccount } = getState().wallet;
-    const selectedDevice = getState().suite.device;
-    if (!send || !selectedDevice || selectedAccount.status !== 'loaded') return;
-
+export const signTransaction = (
+    formValues: FormState,
+    transactionInfo: PrecomposedTransactionFinal,
+) => async (dispatch: Dispatch, getState: GetState) => {
+    const { selectedAccount } = getState().wallet;
+    const { device } = getState().suite;
+    if (
+        selectedAccount.status !== 'loaded' ||
+        !device ||
+        !transactionInfo ||
+        transactionInfo.type !== 'final'
+    )
+        return;
     const { account } = selectedAccount;
-    const { symbol } = account;
-    const { selectedFee, outputs, networkTypeRipple } = send;
-    const amount = outputs[0].amount.value;
-    const address = outputs[0].address.value;
-    const destinationTag = networkTypeRipple.destinationTag.value;
-
-    if (account.networkType !== 'ripple' || !amount || !address) return null;
+    if (account.networkType !== 'ripple') return;
 
     const payment: RipplePayment = {
-        destination: address,
-        amount: networkAmountToSatoshi(amount, symbol),
+        destination: formValues.outputs[0].address,
+        amount: networkAmountToSatoshi(formValues.outputs[0].amount, account.symbol),
     };
 
-    if (destinationTag) {
-        payment.destinationTag = parseInt(destinationTag, 10);
+    if (formValues.rippleDestinationTag) {
+        payment.destinationTag = parseInt(formValues.rippleDestinationTag, 10);
     }
 
-    const { path, instance, state, useEmptyPassphrase } = selectedDevice;
     const signedTx = await TrezorConnect.rippleSignTransaction({
         device: {
-            path,
-            instance,
-            state,
+            path: device.path,
+            instance: device.instance,
+            state: device.state,
         },
-        useEmptyPassphrase,
+        useEmptyPassphrase: device.useEmptyPassphrase,
         path: account.path,
         transaction: {
-            fee: selectedFee.feePerUnit,
+            fee: transactionInfo.feePerByte,
             flags: XRP_FLAG,
             sequence: account.misc.sequence,
             payment,
         },
     });
-
     if (!signedTx.success) {
+        // catch manual error from ReviewTransaction modal
+        if (signedTx.payload.error === 'tx-cancelled') return;
         dispatch(
             notificationActions.addToast({
                 type: 'sign-tx-error',
@@ -174,28 +225,5 @@ export const send = () => async (dispatch: Dispatch, getState: GetState) => {
         return;
     }
 
-    // TODO: add possibility to show serialized tx without pushing (locktime)
-    const sentTx = await TrezorConnect.pushTransaction({
-        tx: signedTx.payload.serializedTx,
-        coin: account.symbol,
-    });
-
-    if (sentTx.success) {
-        dispatch(commonActions.clear());
-        dispatch(
-            notificationActions.addToast({
-                type: 'tx-sent',
-                formattedAmount: `${amount} ${account.symbol.toUpperCase()}`,
-                device: selectedDevice,
-                descriptor: account.descriptor,
-                symbol: account.symbol,
-                txid: sentTx.payload.txid,
-            }),
-        );
-        dispatch(accountActions.fetchAndUpdateAccount(account));
-    } else {
-        dispatch(
-            notificationActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),
-        );
-    }
+    return signedTx.payload.serializedTx;
 };

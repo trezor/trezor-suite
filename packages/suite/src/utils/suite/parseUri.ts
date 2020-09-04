@@ -30,7 +30,7 @@ const parseUri = (uri: string): ParsedURI => {
     const str = stripPrefix(uri);
     const query: string[] = str.split('?');
     const values: Record<string, any> = query.length > 1 ? parseQuery(query[1]) : {};
-    const address = query[0];
+    const address = query[0] || '';
 
     return {
         ...values,
