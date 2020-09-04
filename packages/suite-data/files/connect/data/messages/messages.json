@@ -1386,6 +1386,61 @@
             "oneofs": {}
         },
         {
+            "name": "AuthorizeCoinJoin",
+            "fields": [
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "string",
+                    "name": "coordinator",
+                    "id": 1
+                },
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "uint64",
+                    "name": "max_total_fee",
+                    "id": 2
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "fee_per_anonymity",
+                    "id": 3
+                },
+                {
+                    "rule": "repeated",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "address_n",
+                    "id": 4
+                },
+                {
+                    "rule": "optional",
+                    "options": {
+                        "default": "Bitcoin"
+                    },
+                    "type": "string",
+                    "name": "coin_name",
+                    "id": 5
+                },
+                {
+                    "rule": "optional",
+                    "options": {
+                        "default": "SPENDADDRESS"
+                    },
+                    "type": "InputScriptType",
+                    "name": "script_type",
+                    "id": 6
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
             "name": "FirmwareErase",
             "fields": [
                 {
@@ -5679,6 +5734,30 @@
             "oneofs": {}
         },
         {
+            "name": "DoPreauthorized",
+            "fields": [],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "PreauthorizedRequest",
+            "fields": [],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "CancelAuthorization",
+            "fields": [],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
             "name": "MoneroTransactionSourceEntry",
             "fields": [
                 {
@@ -9809,6 +9888,18 @@
                     "id": 83
                 },
                 {
+                    "name": "MessageType_DoPreauthorized",
+                    "id": 84
+                },
+                {
+                    "name": "MessageType_PreauthorizedRequest",
+                    "id": 85
+                },
+                {
+                    "name": "MessageType_CancelAuthorization",
+                    "id": 86
+                },
+                {
                     "name": "MessageType_Deprecated_PassphraseStateRequest",
                     "id": 77
                 },
@@ -9887,6 +9978,10 @@
                 {
                     "name": "MessageType_OwnershipProof",
                     "id": 50
+                },
+                {
+                    "name": "MessageType_AuthorizeCoinJoin",
+                    "id": 51
                 },
                 {
                     "name": "MessageType_CipherKeyValue",
