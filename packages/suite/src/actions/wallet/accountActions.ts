@@ -91,9 +91,12 @@ export const disableAccounts = () => (dispatch: Dispatch, getState: GetState) =>
     });
 };
 
-export const changeAccountVisibility = (payload: Account) => ({
+export const changeAccountVisibility = (payload: Account, visible = true) => ({
     type: ACCOUNT.CHANGE_VISIBILITY,
-    payload,
+    payload: {
+        ...payload,
+        visible,
+    },
 });
 
 export const fetchAndUpdateAccount = (account: Account) => async (
