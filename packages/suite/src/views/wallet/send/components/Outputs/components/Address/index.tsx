@@ -8,7 +8,7 @@ import { useActions } from '@suite-hooks';
 import { useSendFormContext } from '@wallet-hooks';
 import { isAddressValid } from '@wallet-utils/validation';
 import { getInputState } from '@wallet-utils/sendFormUtils';
-// import AddLabel from './components/AddLabel';
+import { MAX_LENGTH } from '@suite-constants/inputs';
 
 const Label = styled.div`
     display: flex;
@@ -109,7 +109,7 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
                     </Remove>
                 ) : undefined
             }
-            onChange={async () => {
+            onChange={() => {
                 composeTransaction(`outputs[${outputId}].amount`, !!addressError);
             }}
             bottomText={
@@ -122,6 +122,7 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
             name={inputName}
             data-test={inputName}
             defaultValue={addressValue}
+            maxLength={MAX_LENGTH.ADDRESS}
             innerRef={register({
                 required: 'RECIPIENT_IS_NOT_SET',
                 validate: (value: string) => {

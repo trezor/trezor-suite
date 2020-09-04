@@ -12,6 +12,7 @@ import { fromFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { getInputState, getFiatRate, findToken } from '@wallet-utils/sendFormUtils';
 import { isDecimalsValid } from '@wallet-utils/validation';
 import { CurrencyOption } from '@wallet-types/sendForm';
+import { MAX_LENGTH } from '@suite-constants/inputs';
 
 const Wrapper = styled.div`
     display: flex;
@@ -105,6 +106,7 @@ export default ({ outputId }: { outputId: number }) => {
                 name={inputName}
                 data-test={inputName}
                 defaultValue={fiatValue}
+                maxLength={MAX_LENGTH.FIAT}
                 innerRef={register({
                     required: 'AMOUNT_IS_NOT_SET',
                     validate: (value: string) => {
