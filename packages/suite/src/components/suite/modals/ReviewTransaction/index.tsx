@@ -95,11 +95,11 @@ export default ({ selectedAccount, send, decision }: Props) => {
         }
     });
 
-    if (typeof precomposedForm.bitcoinLockTime === 'string') {
+    if (precomposedForm.bitcoinLockTime) {
         outputs.push({ type: 'locktime', value: precomposedForm.bitcoinLockTime });
     }
 
-    if (typeof precomposedForm.ethereumDataHex === 'string') {
+    if (precomposedForm.ethereumDataHex) {
         outputs.push({ type: 'data', value: precomposedForm.ethereumDataHex });
     }
 
