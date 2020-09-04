@@ -11,7 +11,7 @@ interface CustomXAxisProps {
 const getFormattedDate = (range: GraphRange['label'], date: Date) => {
     switch (range) {
         case 'all':
-            return <FormattedDate value={date} month="2-digit" year="numeric" />;
+            return <FormattedDate value={date} month="short" year="numeric" />;
         case 'year':
             return <FormattedDate value={date} month="short" />;
         case 'month':

@@ -71,14 +71,14 @@ const SummaryCards = ({
                         <FormattedDate
                             value={dataInterval[0] * 1000}
                             year="numeric"
-                            month="2-digit"
+                            month="short"
                             day="2-digit"
                         />{' '}
                         -{' '}
                         <FormattedDate
                             value={dataInterval[1] * 1000}
                             year="numeric"
-                            month="2-digit"
+                            month="short"
                             day="2-digit"
                         />
                     </>

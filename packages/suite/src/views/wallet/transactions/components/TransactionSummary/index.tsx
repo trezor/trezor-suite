@@ -110,7 +110,6 @@ const TransactionSummary = (props: Props) => {
                 <TransactionSummaryDropdown
                     isGraphHidden={isGraphHidden}
                     setIsGraphHidden={setIsGraphHidden}
-                    onRefresh={onRefresh}
                 />
             </Actions>
             {!isGraphHidden && (
