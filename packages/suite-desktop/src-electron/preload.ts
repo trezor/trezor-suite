@@ -2,7 +2,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 
 const validChannels = ['restart-app', 'start-bridge', 'oauth-receiver', 'oauth'];
 
-contextBridge.exposeInMainWorld('desktop_api', {
+contextBridge.exposeInMainWorld('desktopApi', {
     send: (channel: string, data?: any) => {
         // whitelist channels
         if (validChannels.includes(channel)) {

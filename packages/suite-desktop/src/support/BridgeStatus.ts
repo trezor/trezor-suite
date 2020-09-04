@@ -18,15 +18,15 @@ type Props = ReturnType<typeof mapStateToProps>;
 const BridgeStatus = ({ transport, bridgeDevMode }: Props) => {
     useEffect(() => {
         if (!transport) return;
-        if (!transport.type && window.desktop_api) {
-            window.desktop_api.send('start-bridge');
+        if (!transport.type && window.desktopApi) {
+            window.desktopApi.send('start-bridge');
         }
     }, [transport]);
 
     useEffect(() => {
         // run on toggling bridge dev mode
-        if (window.desktop_api) {
-            window.desktop_api.send('start-bridge', bridgeDevMode);
+        if (window.desktopApi) {
+            window.desktopApi.send('start-bridge', bridgeDevMode);
         }
     }, [bridgeDevMode]);
 

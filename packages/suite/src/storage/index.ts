@@ -154,9 +154,9 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
 };
 
 const onDowngrade = () => {
-    if (window.desktop_api) {
+    if (window.desktopApi) {
         // relaunch desktop app
-        window.desktop_api.send('restart-app');
+        window.desktopApi.send('restart-app');
     } else {
         // @ts-ignore TODO: suite-native:  Cannot find name 'window'
         window.location.reload();

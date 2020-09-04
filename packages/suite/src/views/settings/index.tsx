@@ -174,9 +174,9 @@ const Settings = ({
                         <ActionButton
                             onClick={async () => {
                                 removeDatabase();
-                                if (window.desktop_api) {
+                                if (window.desktopApi) {
                                     // relaunch desktop app
-                                    window.desktop_api.send('restart-app');
+                                    window.desktopApi.send('restart-app');
                                 } else {
                                     // redirect to / and reload the web
                                     await goto('suite-index');
