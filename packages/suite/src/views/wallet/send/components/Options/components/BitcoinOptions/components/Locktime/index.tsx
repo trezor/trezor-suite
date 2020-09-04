@@ -6,6 +6,7 @@ import { InputError } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { Icon, Input, Switch, variables, colors } from '@trezor/components';
 import { getInputState } from '@wallet-utils/sendFormUtils';
+import { MAX_LENGTH } from '@suite-constants/inputs';
 
 const Wrapper = styled.div`
     margin-bottom: 25px;
@@ -87,6 +88,7 @@ export default ({ close }: Props) => {
                 name={inputName}
                 data-test={inputName}
                 defaultValue={inputValue}
+                maxLength={MAX_LENGTH.BTC_LOCKTIME}
                 innerRef={register({
                     required: 'LOCKTIME_IS_NOT_SET',
                     validate: (value: string) => {

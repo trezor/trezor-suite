@@ -7,6 +7,7 @@ import { Input, Icon } from '@trezor/components';
 import { U_INT_32 } from '@wallet-constants/sendForm';
 import { Translation, QuestionTooltip } from '@suite-components';
 import { InputError } from '@wallet-components';
+import { MAX_LENGTH } from '@suite-constants/inputs';
 
 const Label = styled.div`
     display: flex;
@@ -40,6 +41,7 @@ export default ({ close }: Props) => {
             name={inputName}
             data-test={inputName}
             defaultValue={inputValue}
+            maxLength={MAX_LENGTH.XRP_DESTINATION_TAG}
             innerRef={register({
                 required: 'DESTINATION_TAG_NOT_SET',
                 validate: (value: string) => {

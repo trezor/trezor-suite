@@ -6,6 +6,7 @@ import { InputError } from '@wallet-components';
 import { Textarea, Icon } from '@trezor/components';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { isHexValid } from '@wallet-utils/validation';
+import { MAX_LENGTH } from '@suite-constants/inputs';
 
 const Wrapper = styled.div`
     display: flex;
@@ -62,6 +63,7 @@ export default ({ outputId }: { outputId: number }) => {
                 name={inputAsciiName}
                 data-test={inputAsciiName}
                 defaultValue={asciiValue}
+                maxLength={MAX_LENGTH.OP_RETURN}
                 innerRef={register({
                     required: 'DATA_NOT_SET',
                 })}
@@ -90,6 +92,7 @@ export default ({ outputId }: { outputId: number }) => {
                 name={inputHexName}
                 data-test={inputHexName}
                 defaultValue={hexValue}
+                maxLength={MAX_LENGTH.OP_RETURN}
                 innerRef={register({
                     required: 'DATA_NOT_SET',
                     validate: (value: string) => {

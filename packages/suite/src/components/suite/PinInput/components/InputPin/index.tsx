@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables, Icon, colors } from '@trezor/components';
+import { MAX_LENGTH } from '@suite-constants/inputs';
 
 const Wrapper = styled.div`
     position: relative;
@@ -37,7 +38,13 @@ interface Props {
 
 const InputPin = ({ value, onDeleteClick, wrapperProps, ...rest }: Props) => (
     <Wrapper {...rest} {...wrapperProps}>
-        <StyledInput disabled type="password" maxLength={9} autoComplete="off" value={value} />
+        <StyledInput
+            disabled
+            type="password"
+            maxLength={MAX_LENGTH.PIN}
+            autoComplete="off"
+            value={value}
+        />
         <StyledIcon onClick={onDeleteClick} color={colors.BLACK25} icon="BACK" />
     </Wrapper>
 );
