@@ -8,6 +8,7 @@ import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getInputState, findToken } from '@wallet-utils/sendFormUtils';
 import { isDecimalsValid } from '@wallet-utils/validation';
 import { useSendFormContext } from '@wallet-hooks';
+import { MAX_LENGTH } from '@suite-constants/inputs';
 
 import TokenSelect from './components/TokenSelect';
 import Fiat from './components/Fiat';
@@ -156,6 +157,7 @@ export default ({ outputId }: { outputId: number }) => {
                     name={inputName}
                     data-test={inputName}
                     defaultValue={amountValue}
+                    maxLength={MAX_LENGTH.AMOUNT}
                     innerRef={register({
                         required: 'AMOUNT_IS_NOT_SET',
                         validate: (value: string) => {

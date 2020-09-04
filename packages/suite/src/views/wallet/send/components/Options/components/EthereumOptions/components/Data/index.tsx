@@ -6,6 +6,7 @@ import { InputError } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { isHexValid } from '@wallet-utils/validation';
+import { MAX_LENGTH } from '@suite-constants/inputs';
 
 const Wrapper = styled.div`
     display: flex;
@@ -65,6 +66,7 @@ export default ({ close }: Props) => {
                 name={inputAsciiName}
                 data-test={inputAsciiName}
                 defaultValue={asciiValue}
+                maxLength={MAX_LENGTH.ETH_DATA}
                 innerRef={register({
                     required: 'DATA_NOT_SET',
                 })}
@@ -99,6 +101,7 @@ export default ({ close }: Props) => {
                 name={inputHexName}
                 data-test={inputHexName}
                 defaultValue={hexValue}
+                maxLength={MAX_LENGTH.ETH_DATA}
                 innerRef={register({
                     required: 'DATA_NOT_SET',
                     validate: (value: string) => {
