@@ -24,7 +24,6 @@ const SettingsMenu = () => {
     const [clickCounter, setClickCounter] = useState(0);
     const showDebugMenu = useSelector(state => state.suite.settings.debug.showDebugMenu);
 
-    console.log('showDebugMenu', showDebugMenu);
     return (
         <AppNavigationPanel
             title={
