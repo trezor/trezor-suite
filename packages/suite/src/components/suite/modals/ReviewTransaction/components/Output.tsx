@@ -230,7 +230,9 @@ export default ({ type, state, label, value, symbol, token }: Props) => {
                             )}
                         </Coin>
                         <Fiat>
-                            {outputSymbol && <FiatValue amount={outputValue} symbol={symbol} />}
+                            {outputSymbol && (
+                                <FiatValue amount={outputValue} symbol={outputSymbol} />
+                            )}
                         </Fiat>
                     </Amounts>
                 </Right>
