@@ -61,6 +61,7 @@
             "entitlements": "entitlements.mac.inherit.plist",
             "entitlementsInherit": "entitlements.mac.inherit.plist",
             "target": [
+                "dmg",
                 "zip"
             ]
         },
@@ -70,7 +71,10 @@
             ],
             "icon": "build/static/images/icons/512x512.png",
             "artifactName": "${productName}-${version}.${ext}",
-            "target": "portable"
+            "target": [
+                "nsis",
+                "zip"
+            ]
         },
         "linux": {
             "files": [
@@ -79,7 +83,14 @@
             ],
             "icon": "build/static/images/icons/512x512.png",
             "artifactName": "${productName}-${version}.${ext}",
-            "target": "AppImage"
+            "executableName": "trezor-suite",
+            "category": "Utility",
+            "target": [
+                "AppImage",
+                "deb",
+                "rpm",
+                "tar.gz"
+            ]
         }
     },
     "dependencies": {
