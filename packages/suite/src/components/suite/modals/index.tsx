@@ -167,9 +167,9 @@ const getUserContextModal = (props: Props) => {
         case 'review-transaction':
             return <ReviewTransaction {...payload} />;
         case 'coinmarket-confirm-terms':
-                return (
-                    <CoinmarketTerms onConfirm={payload.onConfirm} onCancel={modalActions.onCancel} />
-                );
+            return (
+                <CoinmarketTerms onConfirm={payload.onConfirm} onCancel={modalActions.onCancel} />
+            );
         case 'import-transaction':
             return <ImportTransaction {...payload} onCancel={modalActions.onCancel} />;
         case 'pin-mismatch':
