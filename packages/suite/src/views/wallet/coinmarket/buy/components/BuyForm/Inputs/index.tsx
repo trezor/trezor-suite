@@ -1,41 +1,16 @@
 import { FIAT } from '@suite-config';
 import { useSelector } from '@suite-hooks';
-import { Account } from '@wallet-types';
+import { Translation } from '@suite-components';
+import { getCryptoOptions } from '@wallet-utils/coinmarket/buyUtils';
 import { CleanSelect, Icon, Input, variables } from '@trezor/components';
-import { AmountLimits } from '@wallet-utils/coinmarket/buyUtils';
-import { buildOption, symbolToInvityApiSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
+import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
 import React, { useEffect, useState } from 'react';
-import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
-import { useFormContext, Controller } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
+import { useBuyFormContext } from '@wallet-hooks/useBuyForm';
 import styled from 'styled-components';
 import validator from 'validator';
 
-interface Props {
-    amountLimits?: AmountLimits;
-    buyInfo: BuyInfo;
-    setAmountLimits: (amountLimits: AmountLimits | undefined) => void;
-}
-
-const getCryptoOptions = (account: Account) => {
-    const supportedTokens = ['usdt', 'dai', 'gusd', 'ong'];
-    const uppercaseSymbol = account.symbol.toUpperCase();
-    const options: { value: string; label: string }[] = [
-        { value: uppercaseSymbol, label: uppercaseSymbol },
-    ];
-
-    if (account.networkType === 'ethereum') {
-        supportedTokens.forEach(token => {
-            options.push({
-                label: token.toUpperCase(),
-                value: symbolToInvityApiSymbol(token).toUpperCase(),
-            });
-        });
-    }
-
-    return options;
-};
-
-const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
+const Inputs = () => {
     const {
         register,
         errors,
@@ -44,12 +19,16 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
         setValue,
         clearErrors,
         formState,
-    } = useFormContext();
+        account,
+        amountLimits,
+        buyInfo,
+        setAmountLimits,
+        defaultCurrency,
+    } = useBuyFormContext();
     const fiatInput = 'fiatInput';
     const cryptoInput = 'cryptoInput';
     const currencySelect = 'currencySelect';
     const cryptoSelect = 'cryptoSelect';
-
     const [activeInput, setActiveInput] = useState<'fiatInput' | 'cryptoInput'>(fiatInput);
     const quotesRequest = useSelector(state => state.wallet.coinmarket.buy.quotesRequest);
     const cachedAccountInfo = useSelector(state => state.wallet.coinmarket.buy.cachedAccountInfo);
@@ -58,22 +37,11 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
         trigger([fiatInput]);
     }, [amountLimits, trigger]);
 
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    if (selectedAccount.status !== 'loaded') {
-        return null;
-    }
-
-    const { account } = selectedAccount;
     const accountHasCachedRequest =
         account.symbol === cachedAccountInfo.symbol &&
         account.index === cachedAccountInfo.index &&
         account.accountType === cachedAccountInfo.accountType;
-
     const uppercaseSymbol = account.symbol.toUpperCase();
-    const defaultCurrencyInfo = buyInfo.buyInfo?.suggestedFiatCurrency;
-    const defaultCurrency = defaultCurrencyInfo
-        ? buildOption(defaultCurrencyInfo)
-        : { label: 'USD', value: 'usd' };
 
     return (
         <Wrapper>
@@ -86,26 +54,42 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
                             : ''
                     }
                     innerRef={register({
-                        validate: value => {
+                        validate: (value: string) => {
                             if (activeInput === fiatInput) {
                                 if (!value) {
                                     if (formState.isSubmitting) {
-                                        return 'TR_ERROR_EMPTY';
+                                        return <Translation id="TR_BUY_VALIDATION_ERROR_EMPTY" />;
                                     }
                                     return;
                                 }
 
                                 if (!validator.isNumeric(value)) {
-                                    return 'TR_ERROR_NOT_NUMBER';
+                                    return <Translation id="TR_BUY_VALIDATION_ERROR_NOT_NUMBER" />;
                                 }
 
                                 if (amountLimits) {
                                     const amount = Number(value);
                                     if (amountLimits.minFiat && amount < amountLimits.minFiat) {
-                                        return `Minimum is ${amountLimits.minFiat} ${amountLimits.currency}`;
+                                        return (
+                                            <Translation
+                                                id="TR_BUY_VALIDATION_ERROR_MINIMUM_FIAT"
+                                                values={{
+                                                    minimum: amountLimits.minFiat,
+                                                    currency: amountLimits.currency,
+                                                }}
+                                            />
+                                        );
                                     }
                                     if (amountLimits.maxFiat && amount > amountLimits.maxFiat) {
-                                        return `Maximum is ${amountLimits.maxFiat} ${amountLimits.currency}`;
+                                        return (
+                                            <Translation
+                                                id="TR_BUY_VALIDATION_ERROR_MAXIMUM_FIAT"
+                                                values={{
+                                                    maximum: amountLimits.maxFiat,
+                                                    currency: amountLimits.currency,
+                                                }}
+                                            />
+                                        );
                                     }
                                 }
                             }
@@ -119,6 +103,7 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
                     }}
                     state={errors[fiatInput] ? 'error' : undefined}
                     name={fiatInput}
+                    // @ts-ignore TODO
                     bottomText={errors[fiatInput] && errors[fiatInput].message}
                     innerAddon={
                         <Controller
@@ -173,31 +158,48 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
                     name={cryptoInput}
                     noTopLabel
                     innerRef={register({
-                        validate: value => {
+                        validate: (value: string) => {
                             if (activeInput === cryptoInput) {
                                 if (!value) {
                                     if (formState.isSubmitting) {
-                                        return 'TR_ERROR_EMPTY';
+                                        return <Translation id="TR_BUY_VALIDATION_ERROR_EMPTY" />;
                                     }
                                     return;
                                 }
 
                                 if (!validator.isNumeric(value)) {
-                                    return 'TR_ERROR_NOT_NUMBER';
+                                    return <Translation id="TR_BUY_VALIDATION_ERROR_NOT_NUMBER" />;
                                 }
 
                                 if (amountLimits) {
                                     const amount = Number(value);
                                     if (amountLimits.minCrypto && amount < amountLimits.minCrypto) {
-                                        return `Minimum is ${amountLimits.minCrypto} ${amountLimits.currency}`;
+                                        return (
+                                            <Translation
+                                                id="TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO"
+                                                values={{
+                                                    minimum: amountLimits.minCrypto,
+                                                    currency: amountLimits.currency,
+                                                }}
+                                            />
+                                        );
                                     }
                                     if (amountLimits.maxCrypto && amount > amountLimits.maxCrypto) {
-                                        return `Maximum is ${amountLimits.maxCrypto} ${amountLimits.currency}`;
+                                        return (
+                                            <Translation
+                                                id="TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO"
+                                                values={{
+                                                    maximum: amountLimits.maxCrypto,
+                                                    currency: amountLimits.currency,
+                                                }}
+                                            />
+                                        );
                                     }
                                 }
                             }
                         },
                     })}
+                    // @ts-ignore TODO
                     bottomText={errors[cryptoInput] && errors[cryptoInput].message}
                     innerAddon={
                         <Controller
@@ -222,7 +224,10 @@ const Inputs = ({ amountLimits, buyInfo, setAmountLimits }: Props) => {
                                         }}
                                         value={value}
                                         isClearable={false}
-                                        options={getCryptoOptions(account)}
+                                        options={getCryptoOptions(
+                                            account.symbol,
+                                            account.networkType,
+                                        )}
                                         isDropdownVisible={account.networkType === 'ethereum'}
                                         isDisabled={account.networkType !== 'ethereum'}
                                         minWidth="70px"

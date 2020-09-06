@@ -200,6 +200,30 @@ const definedMessages = defineMessages({
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',
     },
+    TR_BUY_VALIDATION_ERROR_EMPTY: {
+        defaultMessage: 'TR_BUY_ERROR_EMPTY',
+        id: 'TR_BUY_ERROR_EMPTY',
+    },
+    TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO: {
+        defaultMessage: 'Minimum is {minimum} {currency}',
+        id: 'TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO',
+    },
+    TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO: {
+        defaultMessage: 'Maximum is {maximum} {currency}',
+        id: 'TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO',
+    },
+    TR_BUY_VALIDATION_ERROR_MINIMUM_FIAT: {
+        defaultMessage: 'Minimum is {minimum} {currency}',
+        id: 'TR_BUY_VALIDATION_ERROR_MINIMUM_FIAT',
+    },
+    TR_BUY_VALIDATION_ERROR_MAXIMUM_FIAT: {
+        defaultMessage: 'Maximum is {maximum} {currency}',
+        id: 'TR_BUY_VALIDATION_ERROR_MAXIMUM_FIAT',
+    },
+    TR_BUY_VALIDATION_ERROR_NOT_NUMBER: {
+        defaultMessage: 'TR_BUY_VALIDATION_ERROR_NO_NUMBER',
+        id: 'TR_BUY_VALIDATION_ERROR_NO_NUMBER',
+    },
     TR_BUY_BUY_AGAIN: {
         defaultMessage: 'Buy again',
         id: 'TR_BUY_BUY_AGAIN',

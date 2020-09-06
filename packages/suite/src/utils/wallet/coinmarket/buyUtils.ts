@@ -1,15 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Account } from '@wallet-types';
+import { AmountLimits } from '@wallet-types/buyForm';
 import { BuyTrade, BuyTradeQuoteRequest, BuyTradeFormResponse } from 'invity-api';
 import { Trade } from '@wallet-reducers/coinmarketReducer';
-
-export interface AmountLimits {
-    currency: string;
-    minCrypto?: number;
-    minFiat?: number;
-    maxCrypto?: number;
-    maxFiat?: number;
-}
+import { symbolToInvityApiSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return the limits
 export function getAmountLimits(
@@ -153,4 +147,26 @@ export const getStatusMessage = (status: Trade['data']['status']) => {
         default:
             return 'TR_BUY_STATUS_PENDING';
     }
+};
+
+export const getCryptoOptions = (
+    symbol: Account['symbol'],
+    networkType: Account['networkType'],
+) => {
+    const supportedTokens = ['usdt', 'dai', 'gusd', 'ong'];
+    const uppercaseSymbol = symbol.toUpperCase();
+    const options: { value: string; label: string }[] = [
+        { value: uppercaseSymbol, label: uppercaseSymbol },
+    ];
+
+    if (networkType === 'ethereum') {
+        supportedTokens.forEach(token => {
+            options.push({
+                label: token.toUpperCase(),
+                value: symbolToInvityApiSymbol(token).toUpperCase(),
+            });
+        });
+    }
+
+    return options;
 };

@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 import { AppState } from '@suite-types';
 import { useState, useEffect } from 'react';
-import { BuyInfo, loadBuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import invityAPI from '@suite-services/invityAPI';
 import { ExchangeInfo, loadExchangeInfo } from '@suite/actions/wallet/coinmarketExchangeActions';
 
@@ -24,29 +23,6 @@ export const useAllAccounts = () => {
     );
     return accounts;
 };
-
-export function useBuyInfo() {
-    const [buyInfo, setBuyInfo] = useState<BuyInfo>({
-        providerInfos: {},
-        supportedFiatCurrencies: new Set<string>(),
-        supportedCryptoCurrencies: new Set<string>(),
-    });
-
-    const selectedAccount = useSelector<AppState, AppState['wallet']['selectedAccount']>(
-        state => state.wallet.selectedAccount,
-    );
-
-    useEffect(() => {
-        if (selectedAccount.status === 'loaded') {
-            invityAPI.createInvityAPIKey(selectedAccount.account?.descriptor);
-            loadBuyInfo().then(bi => {
-                setBuyInfo(bi);
-            });
-        }
-    }, [selectedAccount]);
-
-    return { buyInfo };
-}
 
 export function useExchangeInfo() {
     const [exchangeInfo, setExchangeInfo] = useState<ExchangeInfo>({

@@ -3,7 +3,7 @@ import { BuyListResponse, BuyProviderInfo, BuyTradeQuoteRequest, BuyTrade } from
 import invityAPI from '@suite-services/invityAPI';
 import { COINMARKET_BUY } from './constants';
 import { Dispatch } from '@suite-types';
-import regional from '@suite/constants/wallet/coinmarket/regional';
+import regional from '@wallet-constants/coinmarket/regional';
 
 export interface BuyInfo {
     buyInfo?: BuyListResponse;

@@ -26,6 +26,8 @@ module.exports = {
         '^@(.+)-types': '<rootDir>/src/types/$1/index',
         '^@(.+)-middlewares/(.+)': '<rootDir>/src/middlewares/$1/$2',
         '^@(.+)-middlewares': '<rootDir>/src/middlewares/$1/index',
+        '^@(.+)-services/(.+)': '<rootDir>/src/services/$1/$2',
+        '^@(.+)-services': '<rootDir>/src/services/$1/index',
         '^@(dashboard|suite|wallet)-hooks/(.+)': '<rootDir>/src/hooks/$1/$2',
         '^@(dashboard|suite|wallet)-hooks': '<rootDir>/src/hooks/$1/index',
     },

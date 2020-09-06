@@ -1,128 +1,31 @@
-import React, { useState } from 'react';
-import { useSelector, useActions } from '@suite-hooks';
-import { variables } from '@trezor/components';
-import { Translation } from '@suite-components';
+import React from 'react';
+import { AppState } from '@suite-types';
+import { useBuyForm, BuyFormContext } from '@wallet-hooks/useBuyForm';
 import { CoinmarketLayout, WalletLayout } from '@wallet-components';
-import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
-import { AmountLimits, getAmountLimits, processQuotes } from '@wallet-utils/coinmarket/buyUtils';
-import { useForm, FormProvider } from 'react-hook-form';
-import styled from 'styled-components';
-import * as routerActions from '@suite-actions/routerActions';
-import invityAPI from '@suite-services/invityAPI';
-import { BuyTradeQuoteRequest } from 'invity-api';
-import Inputs from './components/Inputs';
-import Footer from './components/Footer';
+import { BuyFormProps } from '@wallet-types/buyForm';
+import { connect } from 'react-redux';
+import BuyForm from './components/BuyForm';
 
-const CoinmarketBuy = () => {
-    const methods = useForm({ mode: 'onChange' });
-    const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const buyInfo = useSelector(state => state.wallet.coinmarket.buy.buyInfo);
+const mapStateToProps = (state: AppState): BuyFormProps => ({
+    selectedAccount: state.wallet.selectedAccount,
+});
 
-    const { saveQuoteRequest, saveQuotes, saveCachedAccountInfo } = useActions({
-        saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
-        saveQuotes: coinmarketBuyActions.saveQuotes,
-        saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
-    });
-
-    const { goto } = useActions({ goto: routerActions.goto });
-
+const CoinmarketBuy = (props: BuyFormProps) => {
+    const { selectedAccount } = props;
     if (selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="Coinmarket" account={selectedAccount} />;
+        return <WalletLayout title="Coinmarket | buy" account={selectedAccount} />;
     }
 
-    const { account } = selectedAccount;
-
-    const isLoading = !buyInfo?.buyInfo;
-    const noProviders =
-        buyInfo?.buyInfo?.providers.length === 0 ||
-        !buyInfo?.supportedCryptoCurrencies.has(account.symbol);
-
-    const onSubmit = async () => {
-        const formValues = methods.getValues();
-        const fiatStringAmount = formValues.fiatInput;
-        const cryptoStringAmount = formValues.cryptoInput;
-        const wantCrypto = !fiatStringAmount;
-        const request: BuyTradeQuoteRequest = {
-            wantCrypto,
-            fiatCurrency: formValues.currencySelect.value.toUpperCase(),
-            receiveCurrency: formValues.cryptoSelect.value,
-            country: formValues.countrySelect.value,
-            fiatStringAmount,
-            cryptoStringAmount,
-        };
-        await saveQuoteRequest(request);
-        await saveCachedAccountInfo(account.symbol, account.index.toString(), account.accountType);
-        const allQuotes = await invityAPI.getBuyQuotes(request);
-        const [quotes, alternativeQuotes] = processQuotes(allQuotes);
-        const limits = getAmountLimits(request, quotes);
-
-        if (limits) {
-            setAmountLimits(limits);
-        } else {
-            await saveQuotes(quotes, alternativeQuotes);
-            goto('wallet-coinmarket-buy-offers', {
-                symbol: account.symbol,
-                accountIndex: account.index,
-                accountType: account.accountType,
-            });
-        }
-    };
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const coinmarketBuyContextValues = useBuyForm({ selectedAccount });
 
     return (
-        <FormProvider {...methods}>
-            <CoinmarketLayout>
-                <Wrapper>
-                    {isLoading && (
-                        <Loading>
-                            <Translation id="TR_BUY_LOADING" />
-                        </Loading>
-                    )}
-                    {(!isLoading && noProviders) ||
-                        (!buyInfo && (
-                            <NoProviders>
-                                <Translation id="TR_BUY_NO_PROVIDERS" />
-                            </NoProviders>
-                        ))}
-                    {!isLoading && !noProviders && buyInfo && (
-                        <Content>
-                            <form onSubmit={methods.handleSubmit(onSubmit)}>
-                                <Inputs
-                                    amountLimits={amountLimits}
-                                    setAmountLimits={setAmountLimits}
-                                    buyInfo={buyInfo}
-                                />
-                                <Footer buyInfo={buyInfo} setAmountLimits={setAmountLimits} />
-                            </form>
-                        </Content>
-                    )}
-                </Wrapper>
-            </CoinmarketLayout>
-        </FormProvider>
+        <CoinmarketLayout>
+            <BuyFormContext.Provider value={coinmarketBuyContextValues}>
+                <BuyForm />
+            </BuyFormContext.Provider>
+        </CoinmarketLayout>
     );
 };
 
-const Wrapper = styled.div``;
-
-const Content = styled.div`
-    display: flex;
-    flex-direction: column;
-    padding: 0 25px;
-    flex: 1;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding: 0;
-    }
-`;
-
-const Loading = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.BIG};
-`;
-
-const NoProviders = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.BIG};
-`;
-
-export default CoinmarketBuy;
+export default connect(mapStateToProps)(CoinmarketBuy);

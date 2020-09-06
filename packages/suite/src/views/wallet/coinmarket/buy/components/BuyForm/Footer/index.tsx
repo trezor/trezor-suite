@@ -1,33 +1,14 @@
 import React from 'react';
-import { useSelector } from '@suite-hooks';
 import { Button, CleanSelect, colors, variables } from '@trezor/components';
 import regional from '@wallet-constants/coinmarket/regional';
-import { AmountLimits } from '@wallet-utils/coinmarket/buyUtils';
+import { useBuyFormContext } from '@wallet-hooks/useBuyForm';
 import { Translation } from '@suite-components';
-import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 
-interface Props {
-    buyInfo: BuyInfo;
-    setAmountLimits: (amountLimits: AmountLimits | undefined) => void;
-}
-
-const Footer = ({ buyInfo, setAmountLimits }: Props) => {
-    const { control, formState, watch } = useFormContext();
+const Footer = () => {
+    const { control, formState, watch, setAmountLimits, defaultCountry } = useBuyFormContext();
     const countrySelect = 'countrySelect';
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-
-    if (selectedAccount.status !== 'loaded') {
-        return null;
-    }
-
-    const country = buyInfo.buyInfo?.country || regional.unknownCountry;
-    const defaultCountry = {
-        label: regional.countriesMap.get(country),
-        value: country,
-    };
-
     const hasValues =
         (watch('fiatInput') || watch('cryptoInput')) && !!watch('currencySelect').value;
 
