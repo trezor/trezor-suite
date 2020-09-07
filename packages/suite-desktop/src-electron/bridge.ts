@@ -1,5 +1,6 @@
 import psList from 'ps-list';
 import * as os from 'os';
+// import * as fs from 'fs';
 import isDev from 'electron-is-dev';
 import { join } from 'path';
 import { spawn, exec } from 'child_process';
@@ -49,21 +50,16 @@ const getBridgeLibByOs = () => {
     const os = getOS();
     const arch = getArch();
     const bridgeVersion = getBridgeVersion();
-    const filePath = `static/bridge/${bridgeVersion}`;
-    const prefixedFilePath = isDev ? `public/${filePath}` : `build/${filePath}`;
-    const bridgeStaticPath = join(__dirname, `../${prefixedFilePath}`);
-    // bridge binaries need to be unpacked from asar archive otherwise spawning the bridge process won't work
-    const bridgeStaticFolder = isDev
-        ? bridgeStaticPath
-        : bridgeStaticPath.replace('app.asar', 'app.asar.unpacked');
+    const filePath = `bridge/${bridgeVersion}`;
+    const resourcePath = isDev ? '../suite-data/files' : join(__dirname, '../..');
 
     switch (os) {
         case 'mac':
-            return join(bridgeStaticFolder, `trezord-mac`);
+            return join(resourcePath, filePath, `trezord-mac`);
         case 'linux':
-            return join(bridgeStaticFolder, `trezord-linux-${arch}`);
+            return join(resourcePath, filePath, `trezord-linux-${arch}`);
         case 'win':
-            return join(bridgeStaticFolder, `trezord-win.exe`);
+            return join(resourcePath, filePath, `trezord-win.exe`);
         default:
             error(`cannot find library`);
     }

@@ -1,6 +1,6 @@
 {
     "name": "@trezor/suite-desktop",
-    "description": "TrezorSuite desktop application",
+    "description": "Trezor Suite desktop application",
     "version": "20.9.1-beta",
     "private": true,
     "author": "Satoshilabs s.r.o <info@satoshilabs.com>",
@@ -19,8 +19,8 @@
         "type-check": "tsc --project tsconfig.json"
     },
     "build": {
-        "appId": "io.trezor.TrezorWallet",
-        "productName": "Trezor Beta Wallet",
+        "appId": "io.trezor.TrezorSuite",
+        "productName": "Trezor Suite",
         "copyright": "Copyright © ${author}",
         "asar": true,
         "asarUnpack": [
@@ -32,9 +32,7 @@
         },
         "files": [
             "build/**/*",
-            "!build/static/bridge/**/*",
             "dist/*.js",
-            "entitlements.mac.inherit.plist",
             "package.json"
         ],
         "dmg": {
@@ -54,7 +52,14 @@
         },
         "mac": {
             "files": [
-                "../suite-data/files/bridge/**/trezord-mac"
+                "entitlements.mac.inherit.plist"
+            ],
+            "extraResources": [
+                {
+                    "from": "../suite-data/files/bridge",
+                    "to": "bridge",
+                    "filter": ["**/trezord-mac"]
+                }
             ],
             "icon": "../suite-data/files/images/icons/512x512.png",
             "artifactName": "${productName}-${version}.${ext}",
@@ -69,8 +74,12 @@
             ]
         },
         "win": {
-            "files": [
-                "../suite-data/files/bridge/**/trezord-win.exe"
+            "extraResources": [
+                {
+                    "from": "../suite-data/files/bridge",
+                    "to": "bridge",
+                    "filter": ["**/trezord-win.exe"]
+                }
             ],
             "icon": "../suite-data/files/images/icons/512x512.png",
             "artifactName": "${productName}-${version}.${ext}",
@@ -80,9 +89,17 @@
             ]
         },
         "linux": {
-            "files": [
-                "../suite-data/files/bridge/**/trezord-linux-x32",
-                "../suite-data/files/bridge/**/trezord-linux-x64"
+            "extraResources": [
+                {
+                    "from": "../suite-data/files/bridge",
+                    "to": "bridge",
+                    "filter": ["**/trezord-linux-x32"]
+                },
+                {
+                    "from": "../suite-data/files/bridge",
+                    "to": "bridge",
+                    "filter": ["**/trezord-linux-x64"]
+                }
             ],
             "icon": "../suite-data/files/images/icons/512x512.png",
             "artifactName": "${productName}-${version}.${ext}",
