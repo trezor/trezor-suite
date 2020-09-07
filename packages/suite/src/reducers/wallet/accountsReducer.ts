@@ -59,19 +59,6 @@ const create = (draft: Account[], account: Account) => {
     draft.push(account);
 };
 
-const changeVisibility = (draft: Account[], account: Account) => {
-    // TODO: extract the find filter condition to separate function
-    const index = draft.findIndex(
-        a =>
-            a.deviceState === account.deviceState &&
-            a.symbol === account.symbol &&
-            a.descriptor === account.descriptor,
-    );
-    if (draft[index]) {
-        draft[index].visible = true;
-    }
-};
-
 const remove = (draft: Account[], accounts: Account[]) => {
     accounts.forEach(a => {
         const index = draft.findIndex(
@@ -124,7 +111,7 @@ export default (state: Account[] = initialState, action: WalletAction | SuiteAct
                 update(draft, action.payload);
                 break;
             case ACCOUNT.CHANGE_VISIBILITY:
-                changeVisibility(draft, action.payload);
+                update(draft, action.payload);
                 break;
             case ACCOUNT.REMOVE:
                 remove(draft, action.payload);
