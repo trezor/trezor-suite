@@ -23,7 +23,7 @@ const BuyForm = () => {
 
     useEffect(() => {
         if (accountHasCachedRequest && cachedAccountInfo.shouldSubmit) {
-            // handleSubmit(onSubmit)();
+            setTimeout(() => handleSubmit(onSubmit)(), 3000);
         }
     });
 
