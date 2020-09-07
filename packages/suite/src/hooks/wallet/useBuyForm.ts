@@ -14,24 +14,15 @@ import {
     FormState,
     UseBuyFormProps,
     AmountLimits,
-    UseBuyFormState,
     BuyFormContextValues,
 } from '@wallet-types/buyForm';
 
 export const BuyFormContext = createContext<BuyFormContextValues | null>(null);
 BuyFormContext.displayName = 'CoinmarketBuyContext';
 
-const getStateFromProps = (props: UseBuyFormProps) => {
-    const { account } = props.selectedAccount;
-
-    return {
-        account,
-    };
-};
-
 export const useBuyForm = (props: UseBuyFormProps): BuyFormContextValues => {
-    const state: UseBuyFormState = getStateFromProps(props);
-    const { selectedAccount } = props;
+    const { selectedAccount, cachedAccountInfo, quotesRequest } = props;
+    const { account } = selectedAccount;
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
     const methods = useForm<FormState>({ mode: 'onChange' });
     const [buyInfo, setBuyInfo] = useState<BuyInfo>({
@@ -75,7 +66,6 @@ export const useBuyForm = (props: UseBuyFormProps): BuyFormContextValues => {
     }, [selectedAccount, saveBuyInfo]);
 
     const onSubmit = async () => {
-        const { account } = state;
         const formValues = methods.getValues();
         const fiatStringAmount = formValues.fiatInput;
         const cryptoStringAmount = formValues.cryptoInput;
@@ -89,7 +79,7 @@ export const useBuyForm = (props: UseBuyFormProps): BuyFormContextValues => {
             cryptoStringAmount,
         };
         await saveQuoteRequest(request);
-        await saveCachedAccountInfo(account.symbol, account.index.toString(), account.accountType);
+        await saveCachedAccountInfo(account.symbol, account.index, account.accountType);
         const allQuotes = await invityAPI.getBuyQuotes(request);
         const [quotes, alternativeQuotes] = processQuotes(allQuotes);
         const limits = getAmountLimits(request, quotes);
@@ -116,18 +106,26 @@ export const useBuyForm = (props: UseBuyFormProps): BuyFormContextValues => {
         ? buildOption(defaultCurrencyInfo)
         : { label: 'USD', value: 'usd' };
 
+    const accountHasCachedRequest =
+        account.symbol === cachedAccountInfo.symbol &&
+        account.index === cachedAccountInfo.index &&
+        account.accountType === cachedAccountInfo.accountType;
+
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
 
     return {
-        ...state,
         ...methods,
+        account,
         onSubmit,
         defaultCountry,
         defaultCurrency,
         register: typedRegister,
         buyInfo,
+        accountHasCachedRequest,
+        cachedAccountInfo,
         saveQuoteRequest,
         saveQuotes,
+        quotesRequest,
         saveCachedAccountInfo,
         verifyAddress,
         saveTrade,

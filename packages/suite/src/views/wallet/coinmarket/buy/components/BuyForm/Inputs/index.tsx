@@ -1,5 +1,4 @@
 import { FIAT } from '@suite-config';
-import { useSelector } from '@suite-hooks';
 import { Translation } from '@suite-components';
 import { getCryptoOptions } from '@wallet-utils/coinmarket/buyUtils';
 import { CleanSelect, Icon, Input, variables } from '@trezor/components';
@@ -15,33 +14,29 @@ const Inputs = () => {
         register,
         errors,
         trigger,
+        account,
         control,
         setValue,
         clearErrors,
         formState,
-        account,
         amountLimits,
         buyInfo,
         setAmountLimits,
         defaultCurrency,
+        accountHasCachedRequest,
+        quotesRequest,
     } = useBuyFormContext();
+    const { symbol } = account;
+    const uppercaseSymbol = symbol.toUpperCase();
     const fiatInput = 'fiatInput';
     const cryptoInput = 'cryptoInput';
     const currencySelect = 'currencySelect';
     const cryptoSelect = 'cryptoSelect';
     const [activeInput, setActiveInput] = useState<'fiatInput' | 'cryptoInput'>(fiatInput);
-    const quotesRequest = useSelector(state => state.wallet.coinmarket.buy.quotesRequest);
-    const cachedAccountInfo = useSelector(state => state.wallet.coinmarket.buy.cachedAccountInfo);
 
     useEffect(() => {
         trigger([fiatInput]);
     }, [amountLimits, trigger]);
-
-    const accountHasCachedRequest =
-        account.symbol === cachedAccountInfo.symbol &&
-        account.index === cachedAccountInfo.index &&
-        account.accountType === cachedAccountInfo.accountType;
-    const uppercaseSymbol = account.symbol.toUpperCase();
 
     return (
         <Wrapper>
@@ -110,7 +105,7 @@ const Inputs = () => {
                             control={control}
                             name={currencySelect}
                             defaultValue={
-                                accountHasCachedRequest && quotesRequest
+                                accountHasCachedRequest && quotesRequest?.fiatCurrency
                                     ? {
                                           label: quotesRequest.fiatCurrency.toUpperCase(),
                                           value: quotesRequest.fiatCurrency.toUpperCase(),
@@ -206,7 +201,7 @@ const Inputs = () => {
                             control={control}
                             name={cryptoSelect}
                             defaultValue={
-                                accountHasCachedRequest && quotesRequest
+                                accountHasCachedRequest && quotesRequest?.receiveCurrency
                                     ? {
                                           label: quotesRequest.receiveCurrency.toUpperCase(),
                                           value: quotesRequest.receiveCurrency.toUpperCase(),

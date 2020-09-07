@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useBuyFormContext } from '@wallet-hooks/useBuyForm';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
@@ -8,11 +8,24 @@ import Inputs from './Inputs';
 import Footer from './Footer';
 
 const BuyForm = () => {
-    const { onSubmit, handleSubmit, buyInfo, account } = useBuyFormContext();
+    const {
+        onSubmit,
+        handleSubmit,
+        buyInfo,
+        account,
+        cachedAccountInfo,
+        accountHasCachedRequest,
+    } = useBuyFormContext();
     const isLoading = !buyInfo?.buyInfo;
     const noProviders =
         buyInfo?.buyInfo?.providers.length === 0 ||
         !buyInfo?.supportedCryptoCurrencies.has(account.symbol);
+
+    useEffect(() => {
+        if (accountHasCachedRequest && cachedAccountInfo.shouldSubmit) {
+            // handleSubmit(onSubmit)();
+        }
+    });
 
     return (
         <Wrapper>

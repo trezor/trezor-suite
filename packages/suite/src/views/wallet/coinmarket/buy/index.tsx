@@ -8,6 +8,8 @@ import BuyForm from './components/BuyForm';
 
 const mapStateToProps = (state: AppState): BuyFormProps => ({
     selectedAccount: state.wallet.selectedAccount,
+    quotesRequest: state.wallet.coinmarket.buy.quotesRequest,
+    cachedAccountInfo: state.wallet.coinmarket.buy.cachedAccountInfo,
 });
 
 const CoinmarketBuy = (props: BuyFormProps) => {
@@ -17,7 +19,7 @@ const CoinmarketBuy = (props: BuyFormProps) => {
     }
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const coinmarketBuyContextValues = useBuyForm({ selectedAccount });
+    const coinmarketBuyContextValues = useBuyForm({ ...props, selectedAccount });
 
     return (
         <CoinmarketLayout>

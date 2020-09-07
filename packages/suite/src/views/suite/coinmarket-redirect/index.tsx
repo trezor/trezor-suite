@@ -29,29 +29,29 @@ const CoinmarketRedirect = () => {
         const redirectParams = {
             routeType: params[0] as 'offers',
             symbol: params[1] as Account['symbol'],
-            index: params[2],
-            accountType: params[3] as Account['accountType'],
+            accountType: params[2] as Account['accountType'],
+            index: parseInt(params[3], 10),
         };
 
         const redirectWithQuotes = async () => {
             if (redirectParams.routeType === 'offers') {
-                const wantCrypto = params[6] === 'qc';
+                const wantCrypto = params[4] === 'qc';
                 let request: BuyTradeQuoteRequest;
                 if (wantCrypto) {
                     request = {
                         wantCrypto,
-                        fiatCurrency: params[8],
-                        receiveCurrency: params[10],
-                        country: params[7],
-                        cryptoStringAmount: params[9],
+                        fiatCurrency: params[6],
+                        receiveCurrency: params[8],
+                        country: params[5],
+                        cryptoStringAmount: params[7],
                     };
                 } else {
                     request = {
                         wantCrypto,
-                        fiatCurrency: params[8],
-                        receiveCurrency: params[10],
-                        country: params[7],
-                        fiatStringAmount: params[9],
+                        fiatCurrency: params[6],
+                        receiveCurrency: params[8],
+                        country: params[5],
+                        fiatStringAmount: params[7],
                     };
                 }
 
@@ -63,14 +63,11 @@ const CoinmarketRedirect = () => {
                     true,
                 );
 
-                const accountItems = {
-                    symbol: params[1],
-                    accountIndex: params[3],
-                    accountType: params[2],
-                };
-
-                // @ts-ignore TODO FIX THIS TS
-                goto('wallet-coinmarket-buy', { ...accountItems });
+                goto('wallet-coinmarket-buy', {
+                    symbol: redirectParams.symbol,
+                    accountIndex: redirectParams.index,
+                    accountType: redirectParams.accountType,
+                });
             }
         };
         redirectWithQuotes();

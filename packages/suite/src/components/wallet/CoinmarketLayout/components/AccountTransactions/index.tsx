@@ -32,11 +32,23 @@ const AccountTransactions = () => {
             <Content>
                 {accountTransactions.map(trade => {
                     if (trade.tradeType === 'buy') {
-                        return <BuyTransaction trade={trade} providers={providers} />;
+                        return (
+                            <BuyTransaction
+                                key={`${trade.tradeType}-${trade.key}`}
+                                trade={trade}
+                                providers={providers}
+                            />
+                        );
                     }
 
                     if (trade.tradeType === 'exchange') {
-                        return <ExchangeTransaction trade={trade} providers={providers} />;
+                        return (
+                            <ExchangeTransaction
+                                key={`${trade.tradeType}-${trade.key}`}
+                                trade={trade}
+                                providers={providers}
+                            />
+                        );
                     }
 
                     return null;

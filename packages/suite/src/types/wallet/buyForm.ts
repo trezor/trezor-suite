@@ -8,6 +8,8 @@ export type Option = { value: string; label: string };
 export type defaultCountryOption = { value: string; label?: string };
 
 export interface BuyFormProps {
+    quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
+    cachedAccountInfo: AppState['wallet']['coinmarket']['buy']['cachedAccountInfo'];
     selectedAccount: AppState['wallet']['selectedAccount'];
 }
 
@@ -23,10 +25,6 @@ export type FormState = {
     countrySelect: Option;
 };
 
-export type UseBuyFormState = {
-    account: Account;
-};
-
 export interface TypedValidationRules {
     required?: ExtendedMessageDescriptor['id'] | JSX.Element | undefined;
     validate?: (data: string) => ExtendedMessageDescriptor['id'] | JSX.Element | undefined;
@@ -40,25 +38,25 @@ export interface AmountLimits {
     maxFiat?: number;
 }
 
-export type BuyFormContextValues = Omit<UseFormMethods<FormState>, 'register'> &
-    UseBuyFormState & {
-        register: (rules?: TypedValidationRules) => (ref: any) => void; // TODO: ReturnType of UseFormMethods['register'] union
-        onSubmit: () => void;
-        defaultCountry: defaultCountryOption;
-        defaultCurrency: Option;
-        buyInfo: BuyInfo;
-        saveQuoteRequest: (request: BuyTradeQuoteRequest) => Promise<void>;
-        saveQuotes: (
-            quotes: BuyTrade[],
-            alternativeQuotes: BuyTrade[] | undefined,
-        ) => Promise<void>;
-        saveCachedAccountInfo: (
-            symbol: Account['symbol'],
-            index: string,
-            accountType: Account['accountType'],
-        ) => Promise<void>;
-        verifyAddress: (path: string, address: string) => Promise<void>;
-        saveTrade: (buyTrade: BuyTrade, account: Account, date: string) => Promise<void>;
-        amountLimits?: AmountLimits;
-        setAmountLimits: (limits?: AmountLimits) => void;
-    };
+export type BuyFormContextValues = Omit<UseFormMethods<FormState>, 'register'> & {
+    register: (rules?: TypedValidationRules) => (ref: any) => void; // TODO: ReturnType of UseFormMethods['register'] union
+    onSubmit: () => void;
+    account: Account;
+    defaultCountry: defaultCountryOption;
+    defaultCurrency: Option;
+    buyInfo: BuyInfo;
+    saveQuoteRequest: (request: BuyTradeQuoteRequest) => Promise<void>;
+    saveQuotes: (quotes: BuyTrade[], alternativeQuotes: BuyTrade[] | undefined) => Promise<void>;
+    saveCachedAccountInfo: (
+        symbol: Account['symbol'],
+        index: number,
+        accountType: Account['accountType'],
+    ) => Promise<void>;
+    verifyAddress: (path: string, address: string) => Promise<void>;
+    saveTrade: (buyTrade: BuyTrade, account: Account, date: string) => Promise<void>;
+    amountLimits?: AmountLimits;
+    setAmountLimits: (limits?: AmountLimits) => void;
+    accountHasCachedRequest: boolean;
+    cachedAccountInfo: AppState['wallet']['coinmarket']['buy']['cachedAccountInfo'];
+    quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
+};
