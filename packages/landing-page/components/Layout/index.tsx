@@ -9,7 +9,7 @@ const Layout = styled.div`
 `;
 
 const Left = styled.div`
-    min-width: 330px;
+    min-width: 390px;
     object-fit: cover;
     background: url(${resolveStaticPath('images/landing/hero.svg')});
     background-repeat: no-repeat;
