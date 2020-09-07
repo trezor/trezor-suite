@@ -44,7 +44,7 @@ export type BuyFormContextValues = Omit<UseFormMethods<FormState>, 'register'> &
     account: Account;
     defaultCountry: defaultCountryOption;
     defaultCurrency: Option;
-    buyInfo: BuyInfo;
+    buyInfo?: BuyInfo;
     saveQuoteRequest: (request: BuyTradeQuoteRequest) => Promise<void>;
     saveQuotes: (quotes: BuyTrade[], alternativeQuotes: BuyTrade[] | undefined) => Promise<void>;
     saveCachedAccountInfo: (

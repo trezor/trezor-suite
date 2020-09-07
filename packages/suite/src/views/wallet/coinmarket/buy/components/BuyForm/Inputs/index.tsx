@@ -116,7 +116,7 @@ const Inputs = () => {
                                 return (
                                     <CleanSelect
                                         options={FIAT.currencies
-                                            .filter(c => buyInfo.supportedFiatCurrencies.has(c))
+                                            .filter(c => buyInfo?.supportedFiatCurrencies.has(c))
                                             .map((currency: string) => buildOption(currency))}
                                         isSearchable
                                         value={value}

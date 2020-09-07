@@ -13,11 +13,11 @@ import { symbolToInvityApiSymbol } from '@suite/utils/wallet/coinmarket/coinmark
 
 interface Props {
     amountLimits?: AmountLimits;
-    exchangeInfo: ExchangeInfo;
+    exchangeInfo?: ExchangeInfo;
     setAmountLimits: (amountLimits: AmountLimits | undefined) => void;
 }
 
-const getSellCryptoOptions = (account: Account, exchangeInfo: ExchangeInfo) => {
+const getSellCryptoOptions = (account: Account, exchangeInfo?: ExchangeInfo) => {
     const uppercaseSymbol = account.symbol.toUpperCase();
     const options: { value: string; label: string }[] = [
         { value: uppercaseSymbol, label: uppercaseSymbol },
@@ -27,7 +27,7 @@ const getSellCryptoOptions = (account: Account, exchangeInfo: ExchangeInfo) => {
         account.tokens.forEach(token => {
             if (token.symbol) {
                 const invityToken = symbolToInvityApiSymbol(token.symbol);
-                if (exchangeInfo.sellSymbols.has(invityToken)) {
+                if (exchangeInfo?.sellSymbols.has(invityToken)) {
                     options.push({
                         label: token.symbol.toUpperCase(),
                         value: invityToken.toUpperCase(),
@@ -41,8 +41,11 @@ const getSellCryptoOptions = (account: Account, exchangeInfo: ExchangeInfo) => {
 };
 
 // TODO - split by supported and unsupported, sort and probably add coin name
-const getBuyCryptoOptions = (account: Account, exchangeInfo: ExchangeInfo) => {
+const getBuyCryptoOptions = (account: Account, exchangeInfo?: ExchangeInfo) => {
     const options: { value: string; label: string }[] = [];
+
+    if (!exchangeInfo) return null;
+
     exchangeInfo.buySymbols.forEach(token => {
         if (account.symbol !== token) {
             const invityToken = symbolToInvityApiSymbol(token);

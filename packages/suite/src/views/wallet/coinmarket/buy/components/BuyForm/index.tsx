@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useBuyFormContext } from '@wallet-hooks/useBuyForm';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
@@ -8,24 +8,12 @@ import Inputs from './Inputs';
 import Footer from './Footer';
 
 const BuyForm = () => {
-    const {
-        onSubmit,
-        handleSubmit,
-        buyInfo,
-        account,
-        cachedAccountInfo,
-        accountHasCachedRequest,
-    } = useBuyFormContext();
-    const isLoading = !buyInfo?.buyInfo;
+    const { onSubmit, handleSubmit, buyInfo, account } = useBuyFormContext();
+    const isLoading = !buyInfo || !buyInfo?.buyInfo;
     const noProviders =
-        buyInfo?.buyInfo?.providers.length === 0 ||
+        !isLoading &&
+        buyInfo?.buyInfo?.providers.length === 0 &&
         !buyInfo?.supportedCryptoCurrencies.has(account.symbol);
-
-    useEffect(() => {
-        if (accountHasCachedRequest && cachedAccountInfo.shouldSubmit) {
-            setTimeout(() => handleSubmit(onSubmit)(), 3000);
-        }
-    });
 
     return (
         <Wrapper>
@@ -34,12 +22,11 @@ const BuyForm = () => {
                     <Translation id="TR_BUY_LOADING" />
                 </Loading>
             )}
-            {(!isLoading && noProviders) ||
-                (!buyInfo && (
-                    <NoProviders>
-                        <Translation id="TR_BUY_NO_PROVIDERS" />
-                    </NoProviders>
-                ))}
+            {!isLoading && noProviders && (
+                <NoProviders>
+                    <Translation id="TR_BUY_NO_PROVIDERS" />
+                </NoProviders>
+            )}
             {!isLoading && !noProviders && buyInfo && (
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <Inputs />

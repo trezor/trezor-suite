@@ -1,6 +1,6 @@
-import { createContext, useContext, useCallback, useState, useEffect } from 'react';
+import { createContext, useContext, useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { BuyInfo, loadBuyInfo } from '@wallet-actions/coinmarketBuyActions';
+import { useInvityAPI } from '@wallet-hooks/useCoinmarket';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { useActions } from '@suite-hooks';
 import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
@@ -22,25 +22,14 @@ BuyFormContext.displayName = 'CoinmarketBuyContext';
 
 export const useBuyForm = (props: UseBuyFormProps): BuyFormContextValues => {
     const { selectedAccount, cachedAccountInfo, quotesRequest } = props;
+    const { buyInfo } = useInvityAPI();
     const { account } = selectedAccount;
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
     const methods = useForm<FormState>({ mode: 'onChange' });
-    const [buyInfo, setBuyInfo] = useState<BuyInfo>({
-        providerInfos: {},
-        supportedFiatCurrencies: new Set<string>(),
-        supportedCryptoCurrencies: new Set<string>(),
-    });
 
-    const {
-        saveQuoteRequest,
-        saveQuotes,
-        saveCachedAccountInfo,
-        saveTrade,
-        saveBuyInfo,
-    } = useActions({
+    const { saveQuoteRequest, saveQuotes, saveCachedAccountInfo, saveTrade } = useActions({
         saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
         saveQuotes: coinmarketBuyActions.saveQuotes,
-        saveBuyInfo: coinmarketBuyActions.saveBuyInfo,
         saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
         saveTrade: coinmarketBuyActions.saveTrade,
     });
@@ -54,16 +43,6 @@ export const useBuyForm = (props: UseBuyFormProps): BuyFormContextValues => {
     });
 
     const { register } = methods;
-
-    useEffect(() => {
-        if (selectedAccount.status === 'loaded') {
-            invityAPI.createInvityAPIKey(selectedAccount.account?.descriptor);
-            loadBuyInfo().then(bi => {
-                setBuyInfo(bi);
-                saveBuyInfo(bi);
-            });
-        }
-    }, [selectedAccount, saveBuyInfo]);
 
     const onSubmit = async () => {
         const formValues = methods.getValues();
@@ -96,12 +75,12 @@ export const useBuyForm = (props: UseBuyFormProps): BuyFormContextValues => {
         }
     };
 
-    const country = buyInfo.buyInfo?.country || regional.unknownCountry;
+    const country = buyInfo?.buyInfo?.country || regional.unknownCountry;
     const defaultCountry = {
         label: regional.countriesMap.get(country),
         value: country,
     };
-    const defaultCurrencyInfo = buyInfo.buyInfo?.suggestedFiatCurrency;
+    const defaultCurrencyInfo = buyInfo?.buyInfo?.suggestedFiatCurrency;
     const defaultCurrency = defaultCurrencyInfo
         ? buildOption(defaultCurrencyInfo)
         : { label: 'USD', value: 'usd' };

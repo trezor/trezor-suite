@@ -5,7 +5,7 @@ import { variables } from '@trezor/components';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useActions, useSelector } from '@suite/hooks/suite';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
-import { useExchangeInfo } from '@suite/hooks/wallet/useCoinmarket';
+import { useInvityAPI } from '@wallet-hooks/useCoinmarket';
 import {
     AmountLimits,
     splitQuotes,
@@ -20,10 +20,7 @@ import Footer from './components/Footer';
 
 const CoinmarketExchange = () => {
     const methods = useForm({ mode: 'onChange' });
-    const { saveExchangeInfo } = useActions({
-        saveExchangeInfo: coinmarketExchangeActions.saveExchangeInfo,
-    });
-    const { exchangeInfo } = useExchangeInfo();
+    const { exchangeInfo } = useInvityAPI();
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
@@ -38,12 +35,10 @@ const CoinmarketExchange = () => {
         return <WalletLayout title="Coinmarket" account={selectedAccount} />;
     }
 
-    saveExchangeInfo(exchangeInfo);
-
     const { account } = selectedAccount;
-    const isLoading = !exchangeInfo.exchangeList || exchangeInfo.exchangeList.length === 0;
+    const isLoading = !exchangeInfo?.exchangeList || exchangeInfo?.exchangeList.length === 0;
     const noProviders =
-        exchangeInfo.exchangeList?.length === 0 || !exchangeInfo.sellSymbols.has(account.symbol);
+        exchangeInfo?.exchangeList?.length === 0 || !exchangeInfo?.sellSymbols.has(account.symbol);
 
     const onSubmit = async () => {
         const formValues = methods.getValues();
@@ -63,12 +58,13 @@ const CoinmarketExchange = () => {
             setAmountLimits(limits);
         } else {
             const [fixedOK, fixedMinMax, fixedError] = splitQuotes(
-                allQuotes.filter(q => exchangeInfo.providerInfos[q.exchange || '']?.isFixedRate) ||
+                allQuotes.filter(q => exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate) ||
                     [],
             );
             const [floatOK, floatMinMax, floatError] = splitQuotes(
-                allQuotes.filter(q => !exchangeInfo.providerInfos[q.exchange || '']?.isFixedRate) ||
-                    [],
+                allQuotes.filter(
+                    q => !exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate,
+                ) || [],
             );
 
             // if there are some OK quotes, do not show errors

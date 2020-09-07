@@ -1,48 +1,49 @@
 import { useSelector } from 'react-redux';
+import { useActions } from '@suite-hooks';
 import { AppState } from '@suite-types';
-import { useState, useEffect } from 'react';
+import { loadBuyInfo } from '@wallet-actions/coinmarketBuyActions';
+import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
+import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 import invityAPI from '@suite-services/invityAPI';
-import { ExchangeInfo, loadExchangeInfo } from '@suite/actions/wallet/coinmarketExchangeActions';
+import { loadExchangeInfo } from '@suite/actions/wallet/coinmarketExchangeActions';
 
-export const useExchange = () => {
-    const router = useSelector<AppState, AppState['router']>(state => state.router);
+export const useInvityAPI = () => {
     const selectedAccount = useSelector<AppState, AppState['wallet']['selectedAccount']>(
         state => state.wallet.selectedAccount,
     );
 
-    return {
-        app: router.app,
-        router,
-        selectedAccount,
-    };
-};
-
-export const useAllAccounts = () => {
-    const accounts = useSelector<AppState, AppState['wallet']['accounts']>(
-        state => state.wallet.accounts,
+    const buyInfo = useSelector<AppState, AppState['wallet']['coinmarket']['buy']['buyInfo']>(
+        state => state.wallet.coinmarket.buy.buyInfo,
     );
-    return accounts;
-};
 
-export function useExchangeInfo() {
-    const [exchangeInfo, setExchangeInfo] = useState<ExchangeInfo>({
-        providerInfos: {},
-        buySymbols: new Set<string>(),
-        sellSymbols: new Set<string>(),
+    const exchangeInfo = useSelector<
+        AppState,
+        AppState['wallet']['coinmarket']['exchange']['exchangeInfo']
+    >(state => state.wallet.coinmarket.exchange.exchangeInfo);
+
+    const { saveBuyInfo } = useActions({ saveBuyInfo: coinmarketBuyActions.saveBuyInfo });
+    const { saveExchangeInfo } = useActions({
+        saveExchangeInfo: coinmarketExchangeActions.saveExchangeInfo,
     });
 
-    const selectedAccount = useSelector<AppState, AppState['wallet']['selectedAccount']>(
-        state => state.wallet.selectedAccount,
-    );
+    if (selectedAccount.status === 'loaded') {
+        invityAPI.createInvityAPIKey(selectedAccount.account?.descriptor);
 
-    useEffect(() => {
-        if (selectedAccount.status === 'loaded') {
-            invityAPI.createInvityAPIKey(selectedAccount.account?.descriptor);
-            loadExchangeInfo().then(i => {
-                setExchangeInfo(i);
+        if (!buyInfo?.buyInfo) {
+            loadBuyInfo().then(buyInfo => {
+                saveBuyInfo(buyInfo);
             });
         }
-    }, [selectedAccount]);
 
-    return { exchangeInfo };
-}
+        if (!exchangeInfo) {
+            loadExchangeInfo().then(exchangeInfo => {
+                saveExchangeInfo(exchangeInfo);
+            });
+        }
+    }
+
+    return {
+        buyInfo,
+        exchangeInfo,
+    };
+};
