@@ -91,6 +91,11 @@ export const useBuyForm = (props: UseBuyFormProps): BuyFormContextValues => {
         account.accountType === cachedAccountInfo.accountType;
 
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
+    const isLoading = !buyInfo || !buyInfo?.buyInfo;
+    const noProviders =
+        !isLoading &&
+        buyInfo?.buyInfo?.providers.length === 0 &&
+        !buyInfo?.supportedCryptoCurrencies.has(account.symbol);
 
     return {
         ...methods,
@@ -110,6 +115,8 @@ export const useBuyForm = (props: UseBuyFormProps): BuyFormContextValues => {
         saveTrade,
         amountLimits,
         setAmountLimits,
+        isLoading,
+        noProviders,
     };
 };
 

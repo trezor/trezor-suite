@@ -6,6 +6,7 @@ import { variables, colors } from '@trezor/components';
 import { useSelector, useActions } from '@suite/hooks/suite';
 import { BuyTrade } from 'invity-api';
 import * as modalActions from '@suite-actions/modalActions';
+import * as routerActions from '@suite-actions/routerActions';
 import invityAPI from '@suite-services/invityAPI';
 import { createQuoteLink, submitRequestForm } from '@suite/utils/wallet/coinmarket/buyUtils';
 
@@ -77,7 +78,7 @@ const Offers = () => {
     const quotes = useSelector(state => state.wallet.coinmarket.buy.quotes);
     const alternativeQuotes = useSelector(state => state.wallet.coinmarket.buy.alternativeQuotes);
     const { openModal } = useActions({ openModal: modalActions.openModal });
-
+    const { goto } = useActions({ goto: routerActions.goto });
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     if (selectedAccount.status !== 'loaded') {
@@ -86,7 +87,14 @@ const Offers = () => {
 
     const { account } = selectedAccount;
 
-    if (!quotesRequest) return null;
+    if (!quotesRequest) {
+        goto('wallet-coinmarket-buy', {
+            symbol: account.symbol,
+            accountIndex: account.index,
+            accountType: account.accountType,
+        });
+        return null;
+    }
 
     const selectQuote = (quote: BuyTrade) => {
         openModal({

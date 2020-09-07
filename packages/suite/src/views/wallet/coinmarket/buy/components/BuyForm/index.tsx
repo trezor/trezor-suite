@@ -8,12 +8,7 @@ import Inputs from './Inputs';
 import Footer from './Footer';
 
 const BuyForm = () => {
-    const { onSubmit, handleSubmit, buyInfo, account } = useBuyFormContext();
-    const isLoading = !buyInfo || !buyInfo?.buyInfo;
-    const noProviders =
-        !isLoading &&
-        buyInfo?.buyInfo?.providers.length === 0 &&
-        !buyInfo?.supportedCryptoCurrencies.has(account.symbol);
+    const { onSubmit, handleSubmit, isLoading, noProviders } = useBuyFormContext();
 
     return (
         <Wrapper>
@@ -27,7 +22,7 @@ const BuyForm = () => {
                     <Translation id="TR_BUY_NO_PROVIDERS" />
                 </NoProviders>
             )}
-            {!isLoading && !noProviders && buyInfo && (
+            {!isLoading && !noProviders && (
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <Inputs />
                     <Footer />

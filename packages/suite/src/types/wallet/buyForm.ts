@@ -59,4 +59,6 @@ export type BuyFormContextValues = Omit<UseFormMethods<FormState>, 'register'> &
     accountHasCachedRequest: boolean;
     cachedAccountInfo: AppState['wallet']['coinmarket']['buy']['cachedAccountInfo'];
     quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
+    isLoading: boolean;
+    noProviders: boolean;
 };
