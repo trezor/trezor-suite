@@ -79,9 +79,7 @@ const AdvancedCoinSettings = ({
                 </Section>
             )}
             {/* <CustomExplorerUrl /> */}
-            <ConnectionInfo
-                blockchain={blockchain[coin]}
-            />
+            <ConnectionInfo blockchain={blockchain[coin]} />
         </Modal>
     );
 };
