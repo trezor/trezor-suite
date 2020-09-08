@@ -12,7 +12,7 @@ import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
 import { deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
 import { FormState } from '@wallet-types/sendForm';
 import { getAnalyticsRandomId } from '@suite-utils/random';
-import { BuyTrade } from 'invity-api';
+import { BuyTrade, ExchangeTrade } from 'invity-api';
 import { setSentryUser } from '@suite-utils/sentry';
 
 export type StorageActions =
@@ -94,6 +94,24 @@ export const saveBuyTrade = async (buyTrade: BuyTrade, account: AccountPart, dat
         tradeType: 'buy',
         date,
         data: buyTrade,
+        account: {
+            symbol: account.symbol,
+            accountType: account.accountType,
+            accountIndex: account.accountIndex,
+        },
+    });
+};
+
+export const saveExchangeTrade = async (
+    exchangeTrade: ExchangeTrade,
+    account: AccountPart,
+    date: string,
+) => {
+    return db.addItem('coinmarketTrades', {
+        key: exchangeTrade.orderId,
+        tradeType: 'exchange',
+        date,
+        data: exchangeTrade,
         account: {
             symbol: account.symbol,
             accountType: account.accountType,

@@ -8,7 +8,7 @@ import { AcquiredDevice } from '@suite-types';
 import { MetadataState } from '@suite-types/metadata';
 import { Account, Discovery, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
 import { GraphData } from '@wallet-types/graph';
-import { BuyTrade } from 'invity-api';
+import { BuyTrade, ExchangeTrade } from 'invity-api';
 import { migrate } from './migrations';
 
 const VERSION = 16; // don't forget to add migration and CHANGELOG when changing versions!
@@ -81,8 +81,8 @@ export interface SuiteDBSchema extends DBSchema {
         value: {
             key?: string;
             date: string;
-            tradeType: 'buy';
-            data: BuyTrade;
+            tradeType: 'buy' | 'exchange';
+            data: BuyTrade | ExchangeTrade;
             account: {
                 symbol: Account['symbol'];
                 accountIndex: Account['index'];
