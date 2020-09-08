@@ -7,7 +7,7 @@ import Navigation from './components/Navigation';
 import AccountTransactions from './components/AccountTransactions';
 
 const Content = styled.div`
-    padding: 25px;
+    padding: 29px 41px;
 `;
 
 const BottomContent = styled.div``;

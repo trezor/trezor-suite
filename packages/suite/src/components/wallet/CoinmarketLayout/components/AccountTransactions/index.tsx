@@ -1,22 +1,11 @@
+import { Translation } from '@suite-components';
+import { useSelector } from '@suite-hooks';
+import { H2, variables } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
-import { H2 } from '@trezor/components';
-import { useSelector } from '@suite-hooks';
-import { Translation } from '@suite-components';
 
 import BuyTransaction from './components/BuyTransaction';
 import ExchangeTransaction from './components/ExchangeTransaction';
-
-const Wrapper = styled.div`
-    padding: 60px 0 0 0;
-`;
-
-const Content = styled.div``;
-const Header = styled.div`
-    display: flex;
-    align-items: center;
-    min-height: 50px;
-`;
 
 const AccountTransactions = () => {
     const accountTransactions = useSelector(state => state.wallet.coinmarket.trades);
@@ -25,9 +14,9 @@ const AccountTransactions = () => {
     return (
         <Wrapper>
             <Header>
-                <H2>
+                <StyledH2>
                     <Translation id="TR_BUY_ACCOUNT_TRANSACTIONS" /> • {accountTransactions.length}
-                </H2>
+                </StyledH2>
             </Header>
             <Content>
                 {accountTransactions.map(trade => {
@@ -57,5 +46,20 @@ const AccountTransactions = () => {
         </Wrapper>
     );
 };
+
+const Wrapper = styled.div`
+    padding: 64px 0 0 0;
+`;
+
+const Content = styled.div``;
+const Header = styled.div`
+    display: flex;
+    align-items: center;
+    padding-bottom: 32px;
+`;
+
+const StyledH2 = styled(H2)`
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
 
 export default AccountTransactions;

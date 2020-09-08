@@ -46,7 +46,9 @@ const Status = ({ status, className }: Props) => {
     return (
         <Wrapper color={data.color} className={className}>
             <StyledIcon color={data.color} size={10} icon={data.icon} />
-            <Translation id={data.statusMessageId} />
+            <Text>
+                <Translation id={data.statusMessageId} />
+            </Text>
         </Wrapper>
     );
 };
@@ -57,6 +59,10 @@ const Wrapper = styled.div<{ color: string }>`
     align-items: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.TINY};
+`;
+
+const Text = styled.div`
+    padding-top: 1px;
 `;
 
 const StyledIcon = styled(Icon)`

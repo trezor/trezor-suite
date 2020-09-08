@@ -40,20 +40,22 @@ const CoinmarketRedirect = () => {
             if (redirectParams.routeType === 'offers') {
                 const wantCrypto = params[4] === 'qc';
                 let request: BuyTradeQuoteRequest;
+                const commonParams = {
+                    fiatCurrency: params[6],
+                    receiveCurrency: params[8],
+                    country: params[5],
+                };
+
                 if (wantCrypto) {
                     request = {
+                        ...commonParams,
                         wantCrypto,
-                        fiatCurrency: params[6],
-                        receiveCurrency: params[8],
-                        country: params[5],
                         cryptoStringAmount: params[7],
                     };
                 } else {
                     request = {
+                        ...commonParams,
                         wantCrypto,
-                        fiatCurrency: params[6],
-                        receiveCurrency: params[8],
-                        country: params[5],
                         fiatStringAmount: params[7],
                     };
                 }

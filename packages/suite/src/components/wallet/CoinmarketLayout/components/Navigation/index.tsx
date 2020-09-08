@@ -10,6 +10,7 @@ const { FONT_WEIGHT, FONT_SIZE } = variables;
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
+    min-height: 57px;
     padding: 0 25px;
     overflow-x: auto;
     scrollbar-width: none; /* Firefox */

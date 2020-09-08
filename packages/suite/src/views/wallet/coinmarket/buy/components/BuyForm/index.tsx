@@ -35,7 +35,6 @@ const BuyForm = () => {
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 0 25px;
     flex: 1;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
