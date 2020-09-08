@@ -74,6 +74,7 @@ const init = async () => {
             nodeIntegration: false,
             preload: path.join(__dirname, 'preload.js'),
         },
+        // icon: path.join(__dirname, '..', 'public', 'static', 'images', 'icons', '512x512.png'),
     });
 
     Menu.setApplicationMenu(buildMainMenu());

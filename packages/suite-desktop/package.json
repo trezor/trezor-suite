@@ -4,13 +4,14 @@
     "version": "20.9.1-beta",
     "private": true,
     "author": "Satoshilabs s.r.o <info@satoshilabs.com>",
-    "homepage": "http://www.trezor.io",
+    "homepage": "https://trezor.io/",
     "main": "dist/electron.js",
     "scripts": {
-        "dev": "yarn workspace @trezor/suite-data copy-static-files && yarn build:lib && electron .",
+        "dev": "yarn copy-files && yarn build:lib && electron .",
         "clean": "rimraf ./build-electron && rimraf ./build && rimraf ./dist",
+        "copy-files": "yarn workspace @trezor/suite-data copy-static-files",
         "build:lib": "tsc --project src-electron/tsconfig.json",
-        "build:desktop": "rimraf ./build && next build && next export -o build && yarn build:lib",
+        "build:desktop": "rimraf ./build && yarn copy-files && next build && next export -o build && yarn build:lib",
         "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac",
         "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux",
         "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
@@ -23,9 +24,6 @@
         "productName": "Trezor Suite",
         "copyright": "Copyright © ${author}",
         "asar": true,
-        "asarUnpack": [
-            "../suite-data/files/bridge/**/*"
-        ],
         "electronVersion": "9.1.0",
         "directories": {
             "output": "build-electron"
@@ -50,18 +48,22 @@
                 }
             ]
         },
+        "nsis": {
+            "oneClick": false,
+            "allowToChangeInstallationDirectory": true
+        },
         "mac": {
             "files": [
                 "entitlements.mac.inherit.plist"
             ],
             "extraResources": [
                 {
-                    "from": "../suite-data/files/bridge",
+                    "from": "public/static/bridge",
                     "to": "bridge",
                     "filter": ["**/trezord-mac"]
                 }
             ],
-            "icon": "../suite-data/files/images/icons/512x512.png",
+            "icon": "public/static/images/icons/512x512.icns",
             "artifactName": "${productName}-${version}.${ext}",
             "hardenedRuntime": true,
             "gatekeeperAssess": false,
@@ -76,12 +78,12 @@
         "win": {
             "extraResources": [
                 {
-                    "from": "../suite-data/files/bridge",
+                    "from": "public/static/bridge",
                     "to": "bridge",
                     "filter": ["**/trezord-win.exe"]
                 }
             ],
-            "icon": "../suite-data/files/images/icons/512x512.png",
+            "icon": "public/static/images/icons/512x512.ico",
             "artifactName": "${productName}-${version}.${ext}",
             "target": [
                 "nsis",
@@ -91,22 +93,24 @@
         "linux": {
             "extraResources": [
                 {
-                    "from": "../suite-data/files/bridge",
+                    "from": "public/static/bridge",
                     "to": "bridge",
                     "filter": ["**/trezord-linux-x32"]
                 },
                 {
-                    "from": "../suite-data/files/bridge",
+                    "from": "public/static/bridge",
                     "to": "bridge",
                     "filter": ["**/trezord-linux-x64"]
                 }
             ],
-            "icon": "../suite-data/files/images/icons/512x512.png",
+            "icon": "public/static/images/icons/512x512.icns",
             "artifactName": "${productName}-${version}.${ext}",
             "executableName": "trezor-suite",
             "category": "Utility",
             "target": [
-                "AppImage"
+                "AppImage",
+                "deb",
+                "tar.gz"
             ]
         },
         "afterSign": "scripts/notarize.js"
