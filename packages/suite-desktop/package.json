@@ -11,7 +11,7 @@
         "clean": "rimraf ./build-electron && rimraf ./build && rimraf ./dist",
         "copy-files": "yarn workspace @trezor/suite-data copy-static-files",
         "build:lib": "tsc --project src-electron/tsconfig.json",
-        "build:desktop": "rimraf ./build && yarn copy-files && next build && next export -o build && yarn build:lib",
+        "build:desktop": "rimraf ./build && next build && next export -o build && yarn build:lib",
         "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac",
         "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux",
         "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
@@ -30,6 +30,7 @@
         },
         "files": [
             "build/**/*",
+            "!build/static/bridge/**/*",
             "dist/*.js",
             "package.json"
         ],
@@ -58,12 +59,12 @@
             ],
             "extraResources": [
                 {
-                    "from": "public/static/bridge",
+                    "from": "build/static/bridge",
                     "to": "bridge",
                     "filter": ["**/trezord-mac"]
                 }
             ],
-            "icon": "public/static/images/icons/512x512.icns",
+            "icon": "build/static/images/icons/512x512.icns",
             "artifactName": "${productName}-${version}.${ext}",
             "hardenedRuntime": true,
             "gatekeeperAssess": false,
@@ -78,12 +79,12 @@
         "win": {
             "extraResources": [
                 {
-                    "from": "public/static/bridge",
+                    "from": "build/static/bridge",
                     "to": "bridge",
                     "filter": ["**/trezord-win.exe"]
                 }
             ],
-            "icon": "public/static/images/icons/512x512.ico",
+            "icon": "build/static/images/icons/512x512.ico",
             "artifactName": "${productName}-${version}.${ext}",
             "target": [
                 "nsis",
@@ -93,59 +94,58 @@
         "linux": {
             "extraResources": [
                 {
-                    "from": "public/static/bridge",
+                    "from": "build/static/bridge",
                     "to": "bridge",
                     "filter": ["**/trezord-linux-x32"]
                 },
                 {
-                    "from": "public/static/bridge",
+                    "from": "build/static/bridge",
                     "to": "bridge",
                     "filter": ["**/trezord-linux-x64"]
                 }
             ],
-            "icon": "public/static/images/icons/512x512.icns",
+            "icon": "build/static/images/icons/512x512.icns",
             "artifactName": "${productName}-${version}.${ext}",
             "executableName": "trezor-suite",
             "category": "Utility",
             "target": [
                 "AppImage",
-                "deb",
                 "tar.gz"
             ]
         },
         "afterSign": "scripts/notarize.js"
     },
     "dependencies": {
-        "@sentry/browser": "^5.16.0",
-        "@sentry/integrations": "^5.16.0",
-        "@zeit/next-workers": "^1.0.0",
         "electron-is-dev": "^1.2.0",
         "electron-localshortcut": "^3.2.1",
         "electron-next": "^3.1.5",
         "electron-store": "^5.1.1",
-        "next": "^9.4.4",
-        "styled-components": "5.1.1",
         "os": "^0.1.1",
-        "react": "16.9.0",
-        "react-dom": "16.9.0",
-        "react-markdown": "4.3.1",
-        "ps-list": "6.3.0",
-        "worker-loader": "^3.0.1"
+        "ps-list": "6.3.0"
     },
     "devDependencies": {
-        "babel-plugin-styled-components": "1.10.7",
+        "@sentry/browser": "^5.16.0",
+        "@sentry/integrations": "^5.16.0",
         "@types/electron-localshortcut": "^3.1.0",
         "@types/next": "^9.0.0",
         "@types/next-redux-wrapper": "^3.0.0",
         "@types/react": "^16.7.11",
         "@types/react-dom": "^16.0.11",
         "@types/react-redux": "^7.1.7",
+        "@zeit/next-workers": "^1.0.0",
+        "babel-plugin-styled-components": "1.10.7",
         "electron": "^9.1.0",
         "electron-builder": "^22.7.0",
         "electron-notarize": "^1.0.0",
         "git-revision-webpack-plugin": "^3.0.6",
+        "next": "^9.4.4",
         "next-plugin-custom-babel-config": "^1.0.4",
         "next-redux-wrapper": "^5.0.0",
-        "next-transpile-modules": "^2.3.1"
+        "next-transpile-modules": "^2.3.1",
+        "react": "16.9.0",
+        "react-dom": "16.9.0",
+        "react-markdown": "4.3.1",
+        "styled-components": "5.1.1",
+        "worker-loader": "^3.0.1"
     }
 }
