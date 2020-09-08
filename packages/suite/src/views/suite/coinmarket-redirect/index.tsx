@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import { BuyTradeQuoteRequest } from 'invity-api';
 import { Account } from '@wallet-types';
-// import invityAPI from '@suite-services/invityAPI';
-// import { processQuotes } from '@wallet-utils/coinmarket/buyUtils';
 import { useSelector, useActions } from '@suite/hooks/suite';
 import * as routerActions from '@suite-actions/routerActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
@@ -24,7 +22,6 @@ const CoinmarketRedirect = () => {
     const { saveQuoteRequest, saveCachedAccountInfo } = useActions({
         saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
         saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
-        // saveQuotes: coinmarketBuyActions.saveQuotes,
     });
     const router = useSelector(state => state.router);
     const params = router?.hash?.split('/');
@@ -60,11 +57,7 @@ const CoinmarketRedirect = () => {
                         fiatStringAmount: params[7],
                     };
                 }
-
                 await saveQuoteRequest(request);
-                // const allQuotes = await invityAPI.getBuyQuotes(request);
-                // const [quotes, alternativeQuotes] = processQuotes(allQuotes);
-                // await saveQuotes(quotes, alternativeQuotes);
                 await saveCachedAccountInfo(
                     redirectParams.symbol,
                     redirectParams.index,

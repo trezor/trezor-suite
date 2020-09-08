@@ -106,4 +106,8 @@ export const migrate = async (
         db.deleteObjectStore('sendForm');
         db.createObjectStore('sendFormDrafts');
     }
+
+    if (oldVersion < 17) {
+        db.createObjectStore('coinmarketTrades');
+    }
 };
