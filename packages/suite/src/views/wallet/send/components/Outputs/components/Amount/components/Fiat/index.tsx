@@ -56,7 +56,7 @@ export default ({ outputId }: { outputId: number }) => {
     const fiatValue = getDefaultValue(inputName, outputs[outputId].fiat || '');
     const tokenValue = getDefaultValue(tokenInputName, outputs[outputId].token);
     const currencyValue =
-        getDefaultValue(tokenInputName, outputs[outputId].currency) || localCurrencyOption;
+        getDefaultValue(currencyInputName, outputs[outputId].currency) || localCurrencyOption;
     const token = findToken(account.tokens, tokenValue);
     const decimals = token ? token.decimals : network.decimals;
 

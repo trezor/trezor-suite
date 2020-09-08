@@ -36,6 +36,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             break;
 
         case ACCOUNT.CREATE:
+        case ACCOUNT.CHANGE_VISIBILITY:
         case ACCOUNT.UPDATE: {
             const device = accountUtils.findAccountDevice(action.payload, api.getState().devices);
             // update only transactions for remembered device
