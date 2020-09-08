@@ -33,11 +33,13 @@ const Footer = () => {
                                 isSearchable
                                 value={value}
                                 formatOptionLabel={(option: Option) => {
-                                    const { flag, text } = getCountryLabelParts(option.label);
+                                    const labelParts = getCountryLabelParts(option.label);
+                                    if (!labelParts) return null;
+
                                     return (
                                         <OptionLabel>
-                                            <Flag>{flag}</Flag>
-                                            <LabelText>{text}</LabelText>
+                                            <Flag>{labelParts.flag}</Flag>
+                                            <LabelText>{labelParts.text}</LabelText>
                                         </OptionLabel>
                                     );
                                 }}
