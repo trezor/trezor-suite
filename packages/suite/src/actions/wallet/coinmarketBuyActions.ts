@@ -14,6 +14,7 @@ export interface BuyInfo {
 
 export type CoinmarketBuyActions =
     | { type: typeof COINMARKET_BUY.SAVE_BUY_INFO; buyInfo: BuyInfo }
+    | { type: typeof COINMARKET_BUY.SAVE_TRANSACTION_DETAIL_ID; transactionId: string }
     | { type: typeof COINMARKET_BUY.SAVE_QUOTE_REQUEST; request: BuyTradeQuoteRequest }
     | { type: typeof COINMARKET_BUY.VERIFY_ADDRESS; addressVerified: boolean }
     | {
@@ -103,6 +104,13 @@ export const saveQuoteRequest = (request: BuyTradeQuoteRequest) => async (dispat
     dispatch({
         type: COINMARKET_BUY.SAVE_QUOTE_REQUEST,
         request,
+    });
+};
+
+export const saveTransactionDetailId = (transactionId: string) => async (dispatch: Dispatch) => {
+    dispatch({
+        type: COINMARKET_BUY.SAVE_TRANSACTION_DETAIL_ID,
+        transactionId,
     });
 };
 

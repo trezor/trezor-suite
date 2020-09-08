@@ -11,18 +11,19 @@ import WaitingForPayment from './components/WaitingForPayment';
 import PaymentSuccessful from './components/PaymentSuccessful';
 
 const CoinmarketDetail = () => {
-    const router = useSelector(state => state.router);
     const trades = useSelector(state => state.wallet.coinmarket.trades);
+    const transactionId = useSelector(state => state.wallet.coinmarket.buy.transactionId);
     const { setLayout } = useContext(LayoutContext);
 
     useMemo(() => {
         if (setLayout) setLayout('Trezor Suite | Coinmarket', undefined, <CoinmarketTopPanel />);
     }, [setLayout]);
 
-    if (router.app !== 'coinmarket-detail') return null;
-    const transactionId = router.params?.transactionId;
     const trade = trades.find(trade => trade.tradeType === 'buy' && trade.key === transactionId);
-    if (!trade || trade?.tradeType !== 'buy') return null;
+
+    if (!trade || trade?.tradeType !== 'buy') {
+        return null;
+    }
 
     const showError = trade.data.status === 'ERROR' || trade.data.status === 'BLOCKED';
     const showProcessing = trade.data.status === 'SUBMITTED';

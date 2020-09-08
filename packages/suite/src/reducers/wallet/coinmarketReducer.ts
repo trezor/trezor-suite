@@ -31,6 +31,7 @@ interface Buy {
     buyInfo?: BuyInfo;
     quotesRequest?: BuyTradeQuoteRequest;
     quotes: BuyTrade[];
+    transactionId?: string;
     cachedAccountInfo: {
         accountType?: Account['accountType'];
         index?: Account['index'];
@@ -57,6 +58,7 @@ interface State {
 
 export const initialState = {
     buy: {
+        transactionId: undefined,
         buyInfo: undefined,
         quotesRequest: undefined,
         cachedAccountInfo: {
@@ -88,6 +90,9 @@ export default (state: State = initialState, action: WalletAction | SuiteAction)
                 break;
             case COINMARKET_BUY.SAVE_QUOTE_REQUEST:
                 draft.buy.quotesRequest = action.request;
+                break;
+            case COINMARKET_BUY.SAVE_TRANSACTION_DETAIL_ID:
+                draft.buy.transactionId = action.transactionId;
                 break;
             case COINMARKET_BUY.SAVE_QUOTES:
                 draft.buy.quotes = action.quotes;

@@ -6,9 +6,10 @@ import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 
 export const useRedirect = () => {
     const { goto } = useActions({ goto: routerActions.goto });
-    const { saveQuoteRequest, saveCachedAccountInfo } = useActions({
+    const { saveQuoteRequest, saveCachedAccountInfo, saveTransactionDetailId } = useActions({
         saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
         saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
+        saveTransactionDetailId: coinmarketBuyActions.saveTransactionDetailId,
     });
 
     interface OfferRedirectParams {
@@ -64,8 +65,7 @@ export const useRedirect = () => {
     const redirectToDetail = async (params: DetailRedirectParams) => {
         const { transactionId } = params;
 
-        console.log('transactionId', transactionId);
-
+        await saveTransactionDetailId(transactionId);
         goto('wallet-coinmarket-buy-detail', {
             symbol: params.symbol,
             accountIndex: params.index,
