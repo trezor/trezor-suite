@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { variables } from '@trezor/components';
 import { BuyTradeQuoteRequest } from 'invity-api';
 import { Account } from '@wallet-types';
+import invityAPI from '@suite-services/invityAPI';
+import { processQuotes } from '@wallet-utils/coinmarket/buyUtils';
 import { useSelector, useActions } from '@suite/hooks/suite';
 import * as routerActions from '@suite-actions/routerActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
@@ -11,14 +14,17 @@ const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
     flex: 1;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-size: ${variables.FONT_SIZE.BIG};
     height: 100%;
 `;
 
 const CoinmarketRedirect = () => {
     const { goto } = useActions({ goto: routerActions.goto });
-    const { saveQuoteRequest, saveCachedAccountInfo } = useActions({
+    const { saveQuoteRequest, saveCachedAccountInfo, saveQuotes } = useActions({
         saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
         saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
+        saveQuotes: coinmarketBuyActions.saveQuotes,
     });
     const router = useSelector(state => state.router);
     const params = router?.hash?.split('/');
@@ -56,6 +62,9 @@ const CoinmarketRedirect = () => {
                 }
 
                 await saveQuoteRequest(request);
+                const allQuotes = await invityAPI.getBuyQuotes(request);
+                const [quotes, alternativeQuotes] = processQuotes(allQuotes);
+                await saveQuotes(quotes, alternativeQuotes);
                 await saveCachedAccountInfo(
                     redirectParams.symbol,
                     redirectParams.index,
@@ -63,7 +72,7 @@ const CoinmarketRedirect = () => {
                     true,
                 );
 
-                goto('wallet-coinmarket-buy', {
+                goto('wallet-coinmarket-buy-offers', {
                     symbol: redirectParams.symbol,
                     accountIndex: redirectParams.index,
                     accountType: redirectParams.accountType,
