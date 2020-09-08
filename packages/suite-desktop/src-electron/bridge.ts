@@ -6,6 +6,7 @@ import { join } from 'path';
 import { spawn, exec } from 'child_process';
 
 const TREZOR_PROCESS_NAME = 'trezord';
+const res = isDev ? './public/static' : process.resourcesPath;
 
 const error = (msg: string | Error) => {
     throw new Error(`cannot run bridge library - ${msg}`);
@@ -51,15 +52,14 @@ const getBridgeLibByOs = () => {
     const arch = getArch();
     const bridgeVersion = getBridgeVersion();
     const filePath = `bridge/${bridgeVersion}`;
-    const resourcePath = isDev ? '../suite-data/files' : join(__dirname, '../..');
 
     switch (os) {
         case 'mac':
-            return join(resourcePath, filePath, `trezord-mac`);
+            return join(res, filePath, `trezord-mac`);
         case 'linux':
-            return join(resourcePath, filePath, `trezord-linux-${arch}`);
+            return join(res, filePath, `trezord-linux-${arch}`);
         case 'win':
-            return join(resourcePath, filePath, `trezord-win.exe`);
+            return join(res, filePath, `trezord-win.exe`);
         default:
             error(`cannot find library`);
     }

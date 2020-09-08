@@ -34,6 +34,12 @@
             "dist/*.js",
             "package.json"
         ],
+        "extraResources": [
+            {
+                "from": "build/static/images/icons/512x512.png",
+                "to": "images/icons/512x512.png"
+            }
+        ],
         "dmg": {
             "contents": [
                 {

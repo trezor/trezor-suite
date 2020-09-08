@@ -13,6 +13,7 @@ import { openOauthPopup } from './oauth';
 let mainWindow: BrowserWindow;
 const APP_NAME = 'Trezor Beta Wallet';
 const PROTOCOL = 'file';
+const res = isDev ? './public/static' : process.resourcesPath;
 const src = isDev
     ? 'http://localhost:8000/'
     : url.format({
@@ -74,7 +75,7 @@ const init = async () => {
             nodeIntegration: false,
             preload: path.join(__dirname, 'preload.js'),
         },
-        // icon: path.join(__dirname, '..', 'public', 'static', 'images', 'icons', '512x512.png'),
+        icon: path.join(res, 'images', 'icons', '512x512.png'),
     });
 
     Menu.setApplicationMenu(buildMainMenu());
