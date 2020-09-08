@@ -96,12 +96,13 @@ export function createQuoteLink(request: BuyTradeQuoteRequest, account: Account)
     return `${window.location.origin}/coinmarket-redirect#offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
 }
 
-export function createTxLink(trade: BuyTrade): string {
+export function createTxLink(trade: BuyTrade, account: Account): string {
+    const params = `coinmarket-redirect#detail/${account.symbol}/${account.accountType}/${account.index}/${trade.paymentId}`;
     if (process.env.SUITE_TYPE === 'desktop') {
-        return `trezor-suite://coinmarket-detail#/${trade.paymentId}`;
+        return `trezor-suite://${params}`;
     }
 
-    return `${window.location.origin}/coinmarket-detail#/${trade.paymentId}`;
+    return `${window.location.origin}/${params}`;
 }
 
 function addHiddenFieldToForm(form: any, fieldName: string, fieldValue: any) {

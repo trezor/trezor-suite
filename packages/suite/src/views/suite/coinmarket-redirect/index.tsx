@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 `;
 
 const CoinmarketRedirect = () => {
-    const { redirectWithQuotes, redirectToDetail } = useRedirect();
+    const { redirectToOffers, redirectToDetail } = useRedirect();
     const router = useSelector(state => state.router);
 
     useEffect(() => {
@@ -31,7 +31,7 @@ const CoinmarketRedirect = () => {
         };
 
         if (redirectCommonParams.routeType === 'offers') {
-            redirectWithQuotes({
+            redirectToOffers({
                 ...redirectCommonParams,
                 wantCrypto: params[4] === 'qc',
                 fiatCurrency: params[6],

@@ -1,12 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BuyTrade, BuyProviderInfo } from 'invity-api';
-import { colors, variables } from '@trezor/components';
+import { colors, variables, CoinLogo } from '@trezor/components';
 import {
     CoinmarketPaymentType,
     CoinmarketBuyProviderInfo,
     CoinmarketTransactionId,
 } from '@wallet-components';
+import { Account } from '@wallet-types';
 import { Translation } from '@suite-components';
 
 interface Props {
@@ -15,9 +16,10 @@ interface Props {
     providers?: {
         [name: string]: BuyProviderInfo;
     };
+    account: Account;
 }
 
-const CoinmarketBuyOfferInfo = ({ selectedQuote, transactionId, providers }: Props) => {
+const CoinmarketBuyOfferInfo = ({ selectedQuote, transactionId, providers, account }: Props) => {
     const {
         receiveStringAmount,
         receiveCurrency,
@@ -30,6 +32,10 @@ const CoinmarketBuyOfferInfo = ({ selectedQuote, transactionId, providers }: Pro
     return (
         <Wrapper>
             <Info>
+                <Header>
+                    <CoinLogo symbol={account.symbol} size={16} />
+                    <AccountText>{`Account #${account.index + 1}`}</AccountText>
+                </Header>
                 <Row>
                     <LeftColumn>
                         <Translation id="TR_BUY_SPEND" />
@@ -80,6 +86,20 @@ const Wrapper = styled.div`
     }
 `;
 
+const Header = styled.div`
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    margin-bottom: 5px;
+    padding: 15px 24px;
+`;
+
+const AccountText = styled.div`
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    padding-left: 7px;
+`;
+
 const Info = styled.div`
     display: flex;
     flex-direction: column;
@@ -88,7 +108,6 @@ const Info = styled.div`
     min-height: 200px;
     border: 1px solid ${colors.NEUE_STROKE_GREY};
     border-radius: 4px;
-    padding-top: 10px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         flex: 1;

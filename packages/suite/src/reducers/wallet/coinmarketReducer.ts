@@ -29,6 +29,7 @@ export type Trade = TradeExchange | TradeBuy;
 
 interface Buy {
     buyInfo?: BuyInfo;
+    isFromRedirect: boolean;
     quotesRequest?: BuyTradeQuoteRequest;
     quotes: BuyTrade[];
     transactionId?: string;
@@ -59,6 +60,7 @@ interface State {
 export const initialState = {
     buy: {
         transactionId: undefined,
+        isFromRedirect: false,
         buyInfo: undefined,
         quotesRequest: undefined,
         cachedAccountInfo: {
@@ -87,6 +89,9 @@ export default (state: State = initialState, action: WalletAction | SuiteAction)
         switch (action.type) {
             case COINMARKET_BUY.SAVE_BUY_INFO:
                 draft.buy.buyInfo = action.buyInfo;
+                break;
+            case COINMARKET_BUY.SET_IS_FROM_REDIRECT:
+                draft.buy.isFromRedirect = action.isFromRedirect;
                 break;
             case COINMARKET_BUY.SAVE_QUOTE_REQUEST:
                 draft.buy.quotesRequest = action.request;

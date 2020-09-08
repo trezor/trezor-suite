@@ -6,9 +6,9 @@ import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 
 export const useRedirect = () => {
     const { goto } = useActions({ goto: routerActions.goto });
-    const { saveQuoteRequest, saveCachedAccountInfo, saveTransactionDetailId } = useActions({
+    const { saveQuoteRequest, setIsFromRedirect, saveTransactionDetailId } = useActions({
         saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
-        saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
+        setIsFromRedirect: coinmarketBuyActions.setIsFromRedirect,
         saveTransactionDetailId: coinmarketBuyActions.saveTransactionDetailId,
     });
 
@@ -23,7 +23,7 @@ export const useRedirect = () => {
         country: string;
     }
 
-    const redirectWithQuotes = async (params: OfferRedirectParams) => {
+    const redirectToOffers = async (params: OfferRedirectParams) => {
         const {
             symbol,
             index,
@@ -51,7 +51,7 @@ export const useRedirect = () => {
             };
         }
         await saveQuoteRequest(request);
-        await saveCachedAccountInfo(symbol, index, accountType, true);
+        await setIsFromRedirect(true);
         goto('wallet-coinmarket-buy', { symbol, accountIndex: index, accountType });
     };
 
@@ -74,7 +74,7 @@ export const useRedirect = () => {
     };
 
     return {
-        redirectWithQuotes,
+        redirectToOffers,
         redirectToDetail,
     };
 };

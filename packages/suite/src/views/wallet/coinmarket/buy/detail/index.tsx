@@ -13,6 +13,7 @@ import PaymentSuccessful from './components/PaymentSuccessful';
 const CoinmarketDetail = () => {
     const trades = useSelector(state => state.wallet.coinmarket.trades);
     const transactionId = useSelector(state => state.wallet.coinmarket.buy.transactionId);
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const { setLayout } = useContext(LayoutContext);
 
     useMemo(() => {
@@ -20,6 +21,11 @@ const CoinmarketDetail = () => {
     }, [setLayout]);
 
     const trade = trades.find(trade => trade.tradeType === 'buy' && trade.key === transactionId);
+
+    if (selectedAccount.status !== 'loaded') {
+        return null;
+    }
+    const { account } = selectedAccount;
 
     if (!trade || trade?.tradeType !== 'buy') {
         return null;
@@ -40,7 +46,11 @@ const CoinmarketDetail = () => {
                 )}
                 {showSuccess && <PaymentSuccessful />}
             </StyledCard>
-            <CoinmarketBuyOfferInfo selectedQuote={trade.data} transactionId={trade.key} />
+            <CoinmarketBuyOfferInfo
+                account={account}
+                selectedQuote={trade.data}
+                transactionId={trade.key}
+            />
         </Wrapper>
     );
 };
