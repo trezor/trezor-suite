@@ -8,7 +8,6 @@ import { Network } from '@wallet-types';
 // 4. add params types to RouteParamsTypes (below)
 
 const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
-const coinmarketDetailParams = ['transactionId'] as const;
 const modalAppParams = ['cancelable'] as const;
 
 export const BOTTOM_MENU_ITEMS = [
@@ -137,10 +136,10 @@ const routes = [
         params: walletParams,
     },
     {
-        name: 'coinmarket-detail',
-        pattern: '/coinmarket-detail',
-        app: 'coinmarket-detail',
-        params: coinmarketDetailParams,
+        name: 'coinmarket-buy-detail',
+        pattern: 'accounts/coinmarket/buy/detail',
+        app: 'walletParams',
+        params: walletParams,
     },
     {
         name: 'wallet-send',
