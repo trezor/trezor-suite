@@ -291,7 +291,6 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     noBackground?: boolean;
     onCancel?: () => void;
     headerWithBorder?: boolean;
-    hideCancelButton?: boolean;
 }
 
 const Modal = ({
@@ -312,7 +311,6 @@ const Modal = ({
     modalPaddingBottom = getModalPaddingBottom(size),
     sidePadding = getSidePadding(size),
     headerWithBorder = true,
-    hideCancelButton = false,
     ...rest
 }: Props) => {
     const escPressed = useKeyPress('Escape');
@@ -340,7 +338,7 @@ const Modal = ({
             {heading && (
                 <Heading headerWithBorder={headerWithBorder}>
                     {heading}
-                    {cancelable && !hideCancelButton && (
+                    {cancelable && (
                         <CancelIconWrapper onClick={onCancel} headerWithBorder={headerWithBorder}>
                             <Icon size={24} color={colors.NEUE_TYPE_DARK_GREY} icon="CROSS" />
                         </CancelIconWrapper>
