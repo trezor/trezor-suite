@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { colors, Button, variables, Icon } from '@trezor/components';
 import { QuestionTooltip, Translation } from '@suite-components';
 import { ExchangeTrade } from 'invity-api';
-import CoinmarketExchangeProviderInfo from '@suite/components/wallet/CoinmarketExchangeProviderInfo';
-import { useSelector } from '@suite/hooks/suite';
-import { formatCryptoAmount } from '@suite/utils/wallet/coinmarket/exchangeUtils';
+import CoinmarketExchangeProviderInfo from '@wallet-components/CoinmarketExchangeProviderInfo';
+import { useSelector } from '@suite-hooks';
+import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 
 const Wrapper = styled.div`
     display: flex;

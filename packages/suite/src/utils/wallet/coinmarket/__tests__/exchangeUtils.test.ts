@@ -1,5 +1,5 @@
 import * as fixtures from '../__fixtures__/exchangeUtils';
-import { getAmountLimits, isQuoteError, splitQuotes, formatCryptoAmount } from '../exchangeUtils';
+import { getAmountLimits, isQuoteError, splitQuotes } from '../exchangeUtils';
 
 const { MIN_MAX_QUOTES_OK, MIN_MAX_QUOTES_LOW, MIN_MAX_QUOTES_CANNOT_TRADE } = fixtures;
 
@@ -27,9 +27,5 @@ describe('coinmarket/exchange utils', () => {
             [],
             MIN_MAX_QUOTES_CANNOT_TRADE,
         ]);
-    });
-
-    it('formatCryptoAmount', () => {
-        expect(formatCryptoAmount(Number('194.359760816544300225'))).toStrictEqual('194.3598');
     });
 });
