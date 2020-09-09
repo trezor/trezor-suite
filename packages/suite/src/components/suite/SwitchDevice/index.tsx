@@ -51,6 +51,9 @@ const SwitchDeviceModal = (props: Props) => {
 
     return (
         <Modal
+            cancelable={props.cancelable}
+            onCancel={props.onCancel}
+            showHeaderBorder
             heading={
                 <>
                     <Translation id="TR_CHOOSE_WALLET" />
@@ -67,8 +70,6 @@ const SwitchDeviceModal = (props: Props) => {
                     </HeadingActions>
                 </>
             }
-            cancelable={props.cancelable}
-            onCancel={props.onCancel}
         >
             <DeviceItemsWrapper>
                 {sortedDevices.map(device => (

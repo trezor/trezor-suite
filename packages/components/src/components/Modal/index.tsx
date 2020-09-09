@@ -9,7 +9,9 @@ import { H2 } from '../typography/Heading';
 import { colors, variables } from '../../config';
 
 // each item in array corresponds to a screen size  [SM, MD, LG, XL]
+const ZERO_PADDING: [string, string, string, string] = ['0px', '0px', '0px', '0px'];
 const MODAL_PADDING_BOTTOM: [string, string, string, string] = ['16px', '35px', '35px', '35px'];
+const MODAL_PADDING_TOP: [string, string, string, string] = ['16px', '35px', '35px', '35px'];
 const MODAL_PADDING_BOTTOM_TINY: [string, string, string, string] = [
     '16px',
     '24px',
@@ -45,8 +47,11 @@ const Header = styled.div`
     margin-bottom: 25px;
 `;
 
-type ModalWindowProps = Omit<Props, 'fixedWidth' | 'fixedHeight' | 'modalPaddingBottom'> &
-    Required<Pick<Props, 'fixedWidth' | 'fixedHeight' | 'modalPaddingBottom'>>; // make some props mandatory
+type ModalWindowProps = Omit<
+    Props,
+    'fixedWidth' | 'fixedHeight' | 'modalPaddingBottom' | 'modalPaddingTop'
+> &
+    Required<Pick<Props, 'fixedWidth' | 'fixedHeight' | 'modalPaddingBottom' | 'modalPaddingTop'>>; // make some props mandatory
 const ModalWindow = styled.div<ModalWindowProps>`
   display: flex;
   flex-direction: column;
@@ -55,24 +60,28 @@ const ModalWindow = styled.div<ModalWindowProps>`
   text-align: center;
   overflow-x: hidden; /* retains border-radius when using background in child component */
   padding-bottom: ${(props: ModalWindowProps) => props.modalPaddingBottom[3]};
+  padding-top: ${(props: ModalWindowProps) => props.modalPaddingTop[3]};
 
 
   /* prettier fails to format it properly */
 
   @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
     padding-bottom: ${(props: ModalWindowProps) => props.modalPaddingBottom[0]};
+    padding-top: ${(props: ModalWindowProps) => props.modalPaddingTop[0]};
   }
 
   @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) and (max-width: ${
     variables.SCREEN_SIZE.MD
 }) {
     padding-bottom: ${(props: ModalWindowProps) => props.modalPaddingBottom[1]};
+    padding-top: ${(props: ModalWindowProps) => props.modalPaddingTop[1]};
   }
 
   @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) and (max-width: ${
     variables.SCREEN_SIZE.LG
 }) {
     padding-bottom: ${(props: ModalWindowProps) => props.modalPaddingBottom[2]};
+    padding-top: ${(props: ModalWindowProps) => props.modalPaddingTop[2]};
   }
 
   ${props =>
@@ -147,28 +156,48 @@ const ModalWindow = styled.div<ModalWindowProps>`
         `}
 `;
 
-const Heading = styled(H2)<{ headerWithBorder: boolean }>`
+const Heading = styled(H2)<{ showHeaderBorder: boolean; cancelable: boolean }>`
     /*  set css attributes based on the type of Modal header*/
-    display: ${props => (props.headerWithBorder ? 'flex' : 'block')};
-    position: ${props => (props.headerWithBorder ? 'relative' : 'static')};
-    text-align: ${props => (props.headerWithBorder ? 'left' : 'center')};
+    position: ${props => (props.showHeaderBorder ? 'relative' : 'static')};
     border-bottom: ${props =>
-        props.headerWithBorder ? `1px solid ${colors.NEUE_STROKE_GREY}` : 'none'};
-    padding: ${props => (props.headerWithBorder ? '24px 32px' : '35px 32px 0px 32px')};
+        props.showHeaderBorder ? `1px solid ${colors.NEUE_STROKE_GREY}` : 'none'};
+    padding: ${props => (props.showHeaderBorder ? '24px 32px' : '35px 32px 0px 32px')};
 
     justify-content: space-between; /* to move the closing button all the way to the right */
 
+    ${props => {
+        if (props.showHeaderBorder && props.cancelable) {
+            return css`
+                display: flex;
+                text-align: left;
+            `;
+        }
+
+        if (props.showHeaderBorder && !props.cancelable) {
+            return css`
+                display: block;
+                text-align: center;
+            `;
+        }
+
+        // default styles
+        return css`
+            display: block;
+            text-align: center;
+        `;
+    }}
+
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: ${props => (props.headerWithBorder ? '18px 22px' : '35px 20px 0px 20px')};
+        padding: ${props => (props.showHeaderBorder ? '18px 22px' : '35px 20px 0px 20px')};
     }
 `;
 
-const CancelIconWrapper = styled.div<{ headerWithBorder: boolean }>`
+const CancelIconWrapper = styled.div<{ showHeaderBorder: boolean }>`
     /*  set css attributes based on the type of Modal header*/
-    display: ${props => (props.headerWithBorder ? 'inline-block' : 'flex')};
-    position: ${props => (props.headerWithBorder ? 'relative' : 'absolute')};
-    top: ${props => (props.headerWithBorder ? 'auto' : '10px')};
-    right: ${props => (props.headerWithBorder ? 'auto' : '10px')};
+    display: ${props => (props.showHeaderBorder ? 'inline-block' : 'flex')};
+    position: ${props => (props.showHeaderBorder ? 'relative' : 'absolute')};
+    top: ${props => (props.showHeaderBorder ? 'auto' : '10px')};
+    right: ${props => (props.showHeaderBorder ? 'auto' : '10px')};
 
     align-items: center;
     margin-left: 30px;
@@ -194,11 +223,12 @@ const SidePaddingWrapper = styled.div<{ sidePadding: [string, string, string, st
     }
 `;
 
-const Description = styled(SidePaddingWrapper)`
+const Description = styled(SidePaddingWrapper)<{ showHeaderBorder: boolean }>`
     color: ${colors.BLACK50};
     font-size: ${variables.FONT_SIZE.SMALL};
     margin-bottom: 10px;
     text-align: center;
+    margin-top: ${props => (props.showHeaderBorder ? '10px' : '0px')};
 `;
 
 const Content = styled(SidePaddingWrapper)`
@@ -274,6 +304,23 @@ const getSidePadding = (size: SIZE) => {
     }
 };
 
+const getModalPaddingTop = (size: SIZE, heading: React.ReactNode) => {
+    // if heading is present, do not add any padding to the top
+    if (heading) {
+        return ZERO_PADDING;
+    }
+
+    switch (size) {
+        case 'large':
+            return MODAL_PADDING_TOP;
+        case 'small':
+            return MODAL_PADDING_TOP;
+        case 'tiny':
+            return MODAL_PADDING_TOP;
+        // no default
+    }
+};
+
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
     children?: React.ReactNode;
     heading?: React.ReactNode;
@@ -287,10 +334,11 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     useFixedHeight?: boolean;
     fixedHeight?: [string, string, string, string]; // [SM, MD, LG, XL]
     modalPaddingBottom?: [string, string, string, string]; // [SM, MD, LG, XL]
+    modalPaddingTop?: [string, string, string, string]; // [SM, MD, LG, XL]
     sidePadding?: [string, string, string, string]; // [SM, MD, LG, XL]
     noBackground?: boolean;
     onCancel?: () => void;
-    headerWithBorder?: boolean;
+    showHeaderBorder?: boolean;
 }
 
 const Modal = ({
@@ -299,7 +347,7 @@ const Modal = ({
     header,
     description,
     bottomBar,
-    cancelable = true,
+    cancelable = false,
     onClick,
     onCancel,
     size = 'large',
@@ -309,8 +357,9 @@ const Modal = ({
     useFixedHeight = false,
     fixedHeight = FIXED_HEIGHT,
     modalPaddingBottom = getModalPaddingBottom(size),
+    modalPaddingTop = getModalPaddingTop(size, heading),
     sidePadding = getSidePadding(size),
-    headerWithBorder = true,
+    showHeaderBorder = false,
     ...rest
 }: Props) => {
     const escPressed = useKeyPress('Escape');
@@ -327,6 +376,7 @@ const Modal = ({
             useFixedHeight={useFixedHeight}
             fixedHeight={fixedHeight}
             modalPaddingBottom={modalPaddingBottom}
+            modalPaddingTop={modalPaddingTop}
             bottomBar={bottomBar}
             noBackground={noBackground}
             onClick={e => {
@@ -336,17 +386,21 @@ const Modal = ({
             {...rest}
         >
             {heading && (
-                <Heading headerWithBorder={headerWithBorder}>
+                <Heading showHeaderBorder={showHeaderBorder} cancelable={cancelable}>
                     {heading}
                     {cancelable && (
-                        <CancelIconWrapper onClick={onCancel} headerWithBorder={headerWithBorder}>
+                        <CancelIconWrapper onClick={onCancel} showHeaderBorder={showHeaderBorder}>
                             <Icon size={24} color={colors.NEUE_TYPE_DARK_GREY} icon="CROSS" />
                         </CancelIconWrapper>
                     )}
                 </Heading>
             )}
 
-            {description && <Description sidePadding={sidePadding}>{description}</Description>}
+            {description && (
+                <Description showHeaderBorder={showHeaderBorder} sidePadding={sidePadding}>
+                    {description}
+                </Description>
+            )}
             <Content sidePadding={sidePadding}>{children}</Content>
             {bottomBar && <BottomBar sidePadding={sidePadding}>{bottomBar}</BottomBar>}
         </ModalWindow>
