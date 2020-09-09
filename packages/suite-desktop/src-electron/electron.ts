@@ -11,7 +11,7 @@ import { openOauthPopup } from './oauth';
 // import * as metadata from './metadata';
 
 let mainWindow: BrowserWindow;
-const APP_NAME = 'Trezor Beta Wallet';
+const APP_NAME = 'Trezor Suite';
 const PROTOCOL = 'file';
 const res = isDev ? './public/static' : process.resourcesPath;
 const src = isDev

@@ -3,7 +3,7 @@
     "description": "Trezor Suite desktop application",
     "version": "20.10.1-beta",
     "private": true,
-    "author": "Satoshilabs s.r.o <info@satoshilabs.com>",
+    "author": "SatoshiLabs <info@satoshilabs.com>",
     "homepage": "https://trezor.io/",
     "main": "dist/electron.js",
     "scripts": {
