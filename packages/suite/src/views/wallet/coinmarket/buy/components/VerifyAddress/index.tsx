@@ -21,7 +21,7 @@ const VerifyAddress = ({ selectedQuote }: Props) => {
     const { saveTrade } = useActions({ saveTrade: coinmarketBuyActions.saveTrade });
     if (selectedAccount.status !== 'loaded') return null;
     const { account } = selectedAccount;
-    const { symbol, index, availableBalance } = account;
+    const { symbol, index, formattedBalance } = account;
     const { path, address } = getAccountInfo(account);
 
     if (!path || !address) {
@@ -44,9 +44,9 @@ const VerifyAddress = ({ selectedQuote }: Props) => {
                     <AccountWrapper>
                         <AccountName>Account #{index + 1}</AccountName>
                         <Amount>
-                            {availableBalance} <UpperCase>{symbol}</UpperCase> •
+                            {formattedBalance} <UpperCase>{symbol}</UpperCase> •
                             <FiatWrapper>
-                                <FiatValue amount={availableBalance} symbol={symbol} />
+                                <FiatValue amount={formattedBalance} symbol={symbol} />
                             </FiatWrapper>
                         </Amount>
                     </AccountWrapper>
