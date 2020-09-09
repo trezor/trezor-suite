@@ -50,8 +50,8 @@ export default () => {
                 state={getInputState(feePerUnitError, feePerUnitValue)}
                 innerAddon={<Units>{getFeeUnits(network.networkType)}</Units>}
                 onChange={() => {
-                    changeCustomFeeLevel(!!feePerUnitError);
-                    composeTransaction('feePerUnit', !!feePerUnitError);
+                    changeCustomFeeLevel();
+                    composeTransaction('feePerUnit', false);
                 }}
                 name={inputName}
                 data-test={inputName}
@@ -63,7 +63,10 @@ export default () => {
                             return 'CUSTOM_FEE_IS_NOT_NUMBER';
                         }
                         // allow decimals in ETH since GWEI is not a satoshi
-                        if (network.networkType !== 'ethereum' && !feeBig.isInteger()) {
+                        if (
+                            network.networkType !== 'ethereum' &&
+                            (!feeBig.isInteger() || value.includes('.'))
+                        ) {
                             return 'CUSTOM_FEE_IS_NOT_INTEGER';
                         }
                         if (network.networkType === 'ethereum' && !isDecimalsValid(value, 9)) {

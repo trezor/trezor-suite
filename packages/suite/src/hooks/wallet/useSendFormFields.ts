@@ -106,8 +106,7 @@ export const useSendFormFields = ({
         [setValue, errors, clearErrors, setLastUsedFeeLevel],
     );
 
-    const changeCustomFeeLevel = (hasError: boolean) => {
-        if (hasError) return;
+    const changeCustomFeeLevel = () => {
         const { feePerUnit, feeLimit } = getValues();
         setLastUsedFeeLevel({ label: 'custom', feePerUnit, feeLimit, blocks: -1 });
     };
