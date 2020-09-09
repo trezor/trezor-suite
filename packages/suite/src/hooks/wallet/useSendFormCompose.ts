@@ -161,8 +161,6 @@ export const useSendFormCompose = ({
         // do nothing if there are no composedLevels
         if (!composedLevels) return;
 
-        console.warn('---post composeTransaction', composedLevels);
-
         const values = getValues();
         const { selectedFee } = values;
         let composed = composedLevels[selectedFee || 'normal'];
