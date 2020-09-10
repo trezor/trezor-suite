@@ -184,7 +184,7 @@ const PassphraseTypeCard = (props: Props) => {
                     <InputWrapper>
                         <PassphraseInput
                             data-test="@passphrase/input"
-                            placeholder="Enter passphrase"
+                            placeholder="Enter passphrase" // TODO: Localize
                             onChange={onChange}
                             value={displayValue}
                             innerRef={ref}

@@ -66,6 +66,9 @@ export const getInitialState = (state?: InitialState) => {
                 },
                 initAction,
             ),
+            settings: {
+                blockbookUrls: [],
+            },
         },
         notifications: notificationsReducer([], initAction),
         devices: [{ state: 'deviceState' }], // device is needed for notification/event

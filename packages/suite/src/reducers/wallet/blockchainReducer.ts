@@ -12,7 +12,7 @@ interface BlockchainReconnection {
     count: number; // number of tries
 }
 
-interface Blockchain {
+export interface Blockchain {
     url?: string;
     connected: boolean;
     subscribed?: boolean;

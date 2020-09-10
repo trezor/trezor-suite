@@ -1,10 +1,14 @@
 // RFC 5322 - http://emailregex.com/
 const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+// Simple URL regex
+const URL_REGEX = /^(http|ws)s?:\/\/[a-z0-9]([a-z0-9.-]+)?(:[0-9]{1,5})?((\/)?(([a-z0-9-_])+(\/)?)+)$/i;
 
 export function isEmail(value?: string): boolean {
     if (!value) return false;
     return EMAIL_REGEX.test(value);
 }
+
+export const isUrl = (value: string): boolean => URL_REGEX.test(value);
 
 export function isASCII(value?: string): boolean {
     if (!value) return true;
