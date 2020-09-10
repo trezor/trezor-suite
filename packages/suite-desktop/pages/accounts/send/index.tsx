@@ -1,3 +1,3 @@
-import Send from '@wallet-views/send/Container';
+import Send from '@wallet-views/send';
 
 export default Send;

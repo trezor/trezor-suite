@@ -174,11 +174,9 @@ const Settings = ({
                         <ActionButton
                             onClick={async () => {
                                 removeDatabase();
-                                // @ts-ignore global.ipcRenderer is declared in @desktop/preloader.js
-                                const { ipcRenderer } = global;
-                                if (ipcRenderer) {
+                                if (window.desktopApi) {
                                     // relaunch desktop app
-                                    ipcRenderer.send('restart-app');
+                                    window.desktopApi.send('restart-app');
                                 } else {
                                     // redirect to / and reload the web
                                     await goto('suite-index');

@@ -33,6 +33,8 @@ Run a dev build:
 
 Inspired by [GitLab Contributing Guide](https://docs.gitlab.com/ee/development/contributing/)
 
+Using [Conventional Commits](COMMITS.md) is strongly recommended and might be enforced in future.
+
 ## Security vulnerability disclosure
 
 Please report suspected security vulnerabilities in private to [security@satoshilabs.com](mailto:security@satoshilabs.com), also see [the disclosure section on the Trezor.io website](https://trezor.io/security/). Please do NOT create publicly viewable issues for suspected security vulnerabilities.

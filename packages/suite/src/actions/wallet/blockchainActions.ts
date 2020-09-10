@@ -5,7 +5,6 @@ import TrezorConnect, {
     BlockchainEstimateFee,
 } from 'trezor-connect';
 import * as accountUtils from '@wallet-utils/accountUtils';
-import * as sendActions from '@wallet-actions/send/sendFormActions';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as fiatRatesActions from '@wallet-actions/fiatRatesActions';
 import { getNetwork } from '@wallet-utils/accountUtils';
@@ -62,7 +61,6 @@ export const preloadFeeInfo = () => async (dispatch: Dispatch) => {
                 ...payload,
                 levels: payload.levels.map(l => ({
                     ...l,
-                    value: l.feePerUnit,
                     label: l.label || 'normal',
                 })),
             };
@@ -116,7 +114,6 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
             levels: payload.levels.map(l => ({
                 ...l,
                 label: l.label || 'normal',
-                value: l.feePerUnit,
             })),
         };
 
@@ -124,8 +121,6 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
             type: BLOCKCHAIN.UPDATE_FEE,
             payload: partial,
         });
-
-        dispatch(sendActions.updateFeeOrNotify());
     }
 };
 
@@ -136,6 +131,18 @@ export const reconnect = (coin: Network['symbol']) => async (_dispatch: Dispatch
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     await dispatch(preloadFeeInfo());
+
+    // Load custom blockbook backend
+    const { blockbookUrls } = getState().wallet.settings;
+    await blockbookUrls.forEach(async ({ coin }) => {
+        await TrezorConnect.blockchainSetCustomBackend({
+            coin,
+            blockchainLink: {
+                type: 'blockbook',
+                url: blockbookUrls.filter(b => b.coin === coin).map(b => b.url),
+            },
+        });
+    });
 
     const { accounts } = getState().wallet;
     if (accounts.length <= 0) {

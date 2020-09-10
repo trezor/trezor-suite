@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import { Button, colors, variables, Input, Checkbox, Icon } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 
-import { MAX_PASSPHRASE_LENGTH } from '@suite-constants/passphrase';
+import { MAX_LENGTH } from '@suite-constants/inputs';
 import { countBytesInString } from '@suite-utils/string';
 import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
 
@@ -118,7 +118,7 @@ const PassphraseTypeCard = (props: Props) => {
     const enterPressed = useKeyPress('Enter');
     const backspacePressed = useKeyPress('Backspace');
     const ref = createRef<HTMLInputElement>();
-    const isTooLong = countBytesInString(value) > MAX_PASSPHRASE_LENGTH;
+    const isTooLong = countBytesInString(value) > MAX_LENGTH.PASSPHRASE;
 
     useLayoutEffect(() => {
         if (ref && ref.current) {
@@ -184,7 +184,7 @@ const PassphraseTypeCard = (props: Props) => {
                     <InputWrapper>
                         <PassphraseInput
                             data-test="@passphrase/input"
-                            placeholder="Enter passphrase"
+                            placeholder="Enter passphrase" // TODO: Localize
                             onChange={onChange}
                             value={displayValue}
                             innerRef={ref}

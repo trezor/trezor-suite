@@ -1,8 +1,10 @@
+import TrezorConnect from 'trezor-connect';
 import { MiddlewareAPI } from 'redux';
 import { SUITE, ROUTER } from '@suite-actions/constants';
 import { ACCOUNT } from '@wallet-actions/constants';
+import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
-import * as sendFormActions from '@wallet-actions/send/sendFormActions';
+import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
@@ -38,6 +40,23 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         action.type === ACCOUNT.REMOVE
     ) {
         api.dispatch(blockchainActions.subscribe());
+    }
+
+    // Update custom backends
+    if (
+        action.type === WALLET_SETTINGS.ADD_BLOCKBOOK_URL ||
+        action.type === WALLET_SETTINGS.REMOVE_BLOCKBOOK_URL
+    ) {
+        const { coin } = action.payload;
+        const { blockbookUrls } = api.getState().wallet.settings;
+
+        TrezorConnect.blockchainSetCustomBackend({
+            coin: action.payload.coin,
+            blockchainLink: {
+                type: 'blockbook',
+                url: blockbookUrls.filter(b => b.coin === coin).map(b => b.url),
+            },
+        });
     }
 
     const nextRouter = api.getState().router;

@@ -7,7 +7,14 @@ import * as accountUtils from '@wallet-utils/accountUtils';
 import { SUITE, ANALYTICS, METADATA } from '@suite-actions/constants';
 import { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import { WalletAction } from '@wallet-types';
-import { ACCOUNT, DISCOVERY, TRANSACTION, FIAT_RATES, GRAPH } from '@wallet-actions/constants';
+import {
+    ACCOUNT,
+    DISCOVERY,
+    TRANSACTION,
+    FIAT_RATES,
+    GRAPH,
+    SEND,
+} from '@wallet-actions/constants';
 import { getDiscovery } from '@wallet-actions/discoveryActions';
 import { isDeviceRemembered } from '@suite-utils/device';
 import { serializeDiscovery } from '@suite-utils/storage';
@@ -28,6 +35,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             break;
 
         case ACCOUNT.CREATE:
+        case ACCOUNT.CHANGE_VISIBILITY:
         case ACCOUNT.UPDATE: {
             const device = accountUtils.findAccountDevice(action.payload, api.getState().devices);
             // update only transactions for remembered device
@@ -91,6 +99,9 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         case WALLET_SETTINGS.CHANGE_EXTERNAL_NETWORKS:
         case WALLET_SETTINGS.SET_HIDE_BALANCE:
         case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
+        case WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL:
+        case WALLET_SETTINGS.ADD_BLOCKBOOK_URL:
+        case WALLET_SETTINGS.REMOVE_BLOCKBOOK_URL:
             api.dispatch(storageActions.saveWalletSettings());
             break;
 
@@ -123,6 +134,17 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             }
             break;
         }
+        case SEND.STORE_DRAFT: {
+            const { device } = api.getState().suite;
+            // save drafts for remembered device
+            if (isDeviceRemembered(device)) {
+                storageActions.saveDraft(action.formState, action.key);
+            }
+            break;
+        }
+        case SEND.REMOVE_DRAFT:
+            storageActions.removeDraft(action.key);
+            break;
 
         case METADATA.ENABLE:
         case METADATA.DISABLE:

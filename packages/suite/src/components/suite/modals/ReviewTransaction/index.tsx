@@ -1,199 +1,216 @@
-import { AccountLabeling, FiatValue, Translation, FormattedCryptoAmount } from '@suite-components';
-import { useDevice } from '@suite-hooks';
-import { Button, colors, Modal, variables } from '@trezor/components';
-import { Account } from '@wallet-types';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { getTransactionInfo } from '@wallet-utils/sendFormUtils';
-import BigNumber from 'bignumber.js';
-import React from 'react';
+import React, { createRef } from 'react';
 import styled from 'styled-components';
-import { fromWei, toWei } from 'web3-utils';
+import { colors, Modal, ConfirmOnDevice, Button, variables } from '@trezor/components';
+import { FiatValue, Translation } from '@suite-components';
+import { useDevice, useActions } from '@suite-hooks';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { copyToClipboard, download } from '@suite-utils/dom';
+import * as sendFormActions from '@wallet-actions/sendFormActions';
+import * as notificationActions from '@suite-actions/notificationActions';
 
 import { Props } from './Container';
+import Output, { OutputProps, Left, Right, Coin, Fiat, Symbol, Amounts } from './components/Output';
+import Detail from './components/Detail';
 
-const Box = styled.div`
-    height: 46px;
-    border-radius: 3px;
-    border: solid 2px ${colors.BLACK96};
+const Bottom = styled.div`
     display: flex;
-    align-items: center;
-    padding: 12px;
-    margin-bottom: 10px;
+    flex-direction: column;
+    width: 100%;
+    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
 `;
 
-const Symbol = styled.div`
-    margin-right: 4px;
-`;
-
-const Label = styled.div`
+const BottomContent = styled.div`
+    padding: 20px;
     display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    min-width: 80px;
-    color: ${colors.BLACK50};
-    font-size: ${variables.FONT_SIZE.TINY};
-`;
-
-const Value = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    align-items: center;
+    justify-content: space-between;
     flex: 1;
-    font-variant-numeric: tabular-nums;
+`;
+
+const Total = styled(Left)`
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
 `;
 
 const Content = styled.div`
-    margin-top: 16px;
-`;
-
-const OutputWrapper = styled.div`
-    background: ${colors.BLACK96};
-    border-radius: 3px;
+    padding: 20px 20px 0 20px;
 `;
 
 const Buttons = styled.div`
     display: flex;
-    width: 100%;
-    margin-top: 24px;
-    justify-content: space-between;
+    flex-direction: row;
+    justify-content: space-evenly;
 `;
 
-const FiatValueWrapper = styled.div`
-    margin-left: 10px;
+const StyledButton = styled(Button)`
     display: flex;
-    flex: 1;
-    justify-content: flex-end;
+    align-self: center;
+    width: 240px;
 `;
 
-const getFeeValue = (
-    transactionInfo: any,
-    networkType: Account['networkType'],
-    symbol: Account['symbol'],
-) => {
-    if (networkType === 'ethereum') {
-        const gasPriceInWei = toWei(transactionInfo.feePerUnit, 'gwei');
-        return fromWei(gasPriceInWei, 'ether');
+const TotalFiat = styled(Fiat)`
+    font-size: ${variables.FONT_SIZE.NORMAL};
+`;
+
+const getState = (index: number, buttonRequests: number) => {
+    if (index === buttonRequests - 1) {
+        return 'warning';
     }
 
-    return formatNetworkAmount(transactionInfo.fee, symbol);
+    if (index < buttonRequests - 1) {
+        return 'success';
+    }
+
+    return undefined;
 };
 
-export default ({
-    send,
-    account,
-    modalActions,
-    sendFormActionsBitcoin,
-    sendFormActionsRipple,
-    sendFormActionsEthereum,
-}: Props) => {
-    if (!account || !send) return null;
-    const { outputs } = send;
-    const { token } = send.networkTypeEthereum;
-    const { networkType, symbol } = account;
-    const transactionInfo = getTransactionInfo(account.networkType, send);
-    if (!transactionInfo || transactionInfo.type === 'error') return null;
-    const upperCaseSymbol = account.symbol.toUpperCase();
-    const outputSymbol = token ? token.symbol!.toUpperCase() : symbol.toUpperCase();
-    const { isLocked } = useDevice();
-    const isDeviceLocked = isLocked();
-    const fee = getFeeValue(transactionInfo, networkType, symbol);
+export default ({ selectedAccount, send, decision }: Props) => {
+    const htmlElement = createRef<HTMLDivElement>();
+    const { device } = useDevice();
+    const { cancelSignTx, addNotification } = useActions({
+        cancelSignTx: sendFormActions.cancelSignTx,
+        addNotification: notificationActions.addToast,
+    });
+
+    const { precomposedTx, precomposedForm, signedTx } = send;
+    if (selectedAccount.status !== 'loaded' || !device || !precomposedTx || !precomposedForm)
+        return null;
+
+    const { symbol, networkType } = selectedAccount.account;
+    const broadcastEnabled = precomposedForm.options.includes('broadcast');
+
+    const outputs: OutputProps[] = [];
+    precomposedTx.transaction.outputs.forEach(o => {
+        if (typeof o.address === 'string') {
+            outputs.push({
+                type: 'regular',
+                label: o.address,
+                value: o.amount,
+                token: precomposedTx.token,
+            });
+        } else if (o.script_type === 'PAYTOOPRETURN') {
+            outputs.push({
+                type: 'opreturn',
+                value: o.op_return_data,
+            });
+        }
+    });
+
+    if (precomposedForm.bitcoinLockTime) {
+        outputs.push({ type: 'locktime', value: precomposedForm.bitcoinLockTime });
+    }
+
+    if (precomposedForm.ethereumDataHex) {
+        outputs.push({ type: 'data', value: precomposedForm.ethereumDataHex });
+    }
+
+    if (networkType === 'ripple') {
+        // ripple displays requests on device in different order:
+        // 1. destination tag
+        // 2. fee
+        // 3. output
+        outputs.unshift({ type: 'fee', value: precomposedTx.fee });
+        if (precomposedForm.rippleDestinationTag) {
+            outputs.unshift({
+                type: 'destination-tag',
+                value: precomposedForm.rippleDestinationTag,
+            });
+        }
+    } else {
+        outputs.push({ type: 'fee', value: precomposedTx.fee });
+    }
+
+    // omit other button requests (like passphrase)
+    const buttonRequests = device.buttonRequests.filter(
+        r => r === 'ButtonRequest_ConfirmOutput' || r === 'ButtonRequest_SignTx',
+    );
 
     return (
         <Modal
             size="large"
-            cancelable
-            onCancel={!isDeviceLocked ? modalActions.onCancel : () => {}}
-            heading={<Translation id="TR_MODAL_CONFIRM_TX_TITLE" />}
+            padding={['0px', '0px', '0px', '0px']}
+            header={
+                <ConfirmOnDevice
+                    title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
+                    steps={outputs.length}
+                    activeStep={signedTx ? outputs.length + 1 : buttonRequests.length}
+                    trezorModel={device.features?.major_version === 1 ? 1 : 2}
+                    successText={<Translation id="TR_CONFIRMED_TX" />}
+                    onCancel={cancelSignTx}
+                />
+            }
             bottomBar={
-                <Buttons>
-                    <Button
-                        icon="ARROW_LEFT"
-                        variant="secondary"
-                        isDisabled={isDeviceLocked}
-                        onClick={() => modalActions.onCancel()}
-                    >
-                        <Translation id="TR_EDIT" />
-                    </Button>
-                    <Button
-                        isDisabled={isDeviceLocked}
-                        onClick={() => {
-                            switch (networkType) {
-                                case 'bitcoin':
-                                    sendFormActionsBitcoin.send();
-                                    break;
-                                case 'ethereum':
-                                    sendFormActionsEthereum.send();
-                                    break;
-                                case 'ripple':
-                                    sendFormActionsRipple.send();
-                                    break;
-                                // no default
-                            }
-                        }}
-                    >
-                        <Translation id="TR_MODAL_CONFIRM_TX_BUTTON" />
-                    </Button>
-                </Buttons>
+                <Bottom>
+                    <BottomContent>
+                        <Total>
+                            <Translation
+                                id="TOTAL_SYMBOL"
+                                values={{ symbol: symbol.toUpperCase() }}
+                            />
+                        </Total>
+                        <Right>
+                            <Amounts>
+                                <Coin bold>
+                                    {formatNetworkAmount(precomposedTx.totalSpent, symbol)}
+                                    <Symbol>{symbol}</Symbol>
+                                </Coin>
+                                <TotalFiat>
+                                    <FiatValue
+                                        amount={formatNetworkAmount(
+                                            precomposedTx.totalSpent,
+                                            symbol,
+                                        )}
+                                        symbol={symbol}
+                                    />
+                                </TotalFiat>
+                            </Amounts>
+                        </Right>
+                    </BottomContent>
+                    {broadcastEnabled && (
+                        <StyledButton
+                            isDisabled={!signedTx}
+                            onClick={() => {
+                                if (decision) decision.resolve(true);
+                            }}
+                        >
+                            <Translation id="SEND_TRANSACTION" />
+                        </StyledButton>
+                    )}
+                    {!broadcastEnabled && (
+                        <Buttons ref={htmlElement}>
+                            <StyledButton
+                                isDisabled={!signedTx}
+                                onClick={async () => {
+                                    const result = copyToClipboard(
+                                        signedTx!.tx,
+                                        htmlElement.current,
+                                    );
+                                    if (typeof result !== 'string') {
+                                        addNotification({ type: 'copy-to-clipboard' });
+                                    }
+                                }}
+                            >
+                                <Translation id="COPY_TRANSACTION_TO_CLIPBOARD" />
+                            </StyledButton>
+                            <StyledButton
+                                variant="secondary"
+                                isDisabled={!signedTx}
+                                onClick={() => download(signedTx!.tx, 'signed-transaction.txt')}
+                            >
+                                <Translation id="DOWNLOAD_TRANSACTION" />
+                            </StyledButton>
+                        </Buttons>
+                    )}
+                </Bottom>
             }
         >
             <Content>
-                <Box>
-                    <Label>
-                        <Translation id="TR_ADDRESS_FROM" />
-                    </Label>
-                    <Value>
-                        <Symbol>{upperCaseSymbol}</Symbol> <AccountLabeling account={account} />
-                    </Value>
-                </Box>
-                {outputs.map(output => {
-                    const totalAmount = new BigNumber(output.amount.value || '0')
-                        .plus(fee)
-                        .toFixed();
-
-                    return (
-                        <OutputWrapper key={output.id}>
-                            <Box>
-                                <Label>
-                                    <Translation id="TR_TO" />
-                                </Label>
-                                <Value>{output.address.value}</Value>
-                            </Box>
-                            <Box>
-                                <Label>
-                                    <Translation id="TR_TOTAL_AMOUNT" />
-                                </Label>
-                                <Value>
-                                    <FormattedCryptoAmount
-                                        value={totalAmount}
-                                        symbol={outputSymbol}
-                                    />
-                                    <FiatValueWrapper>
-                                        <FiatValue
-                                            amount={totalAmount}
-                                            symbol={symbol}
-                                            badge={{ color: 'gray' }}
-                                        />
-                                    </FiatValueWrapper>
-                                </Value>
-                            </Box>
-                        </OutputWrapper>
-                    );
+                {outputs.map((output, index) => {
+                    const state = signedTx ? 'success' : getState(index, buttonRequests.length);
+                    // it's safe to use array index since outputs do not change
+                    // eslint-disable-next-line react/no-array-index-key
+                    return <Output key={index} {...output} state={state} symbol={symbol} />;
                 })}
-                <Box>
-                    <Label>
-                        {networkType === 'ethereum' ? (
-                            <Translation id="TR_GAS_PRICE" />
-                        ) : (
-                            <Translation id="TR_INCLUDING_FEE" />
-                        )}
-                    </Label>
-                    <Value>
-                        <FormattedCryptoAmount value={fee} symbol={outputSymbol} />
-                        <FiatValueWrapper>
-                            <FiatValue amount={fee} symbol={symbol} badge={{ color: 'gray' }} />
-                        </FiatValueWrapper>
-                    </Value>
-                </Box>
+                <Detail tx={precomposedTx} txHash={signedTx ? signedTx.tx : undefined} />
             </Content>
         </Modal>
     );

@@ -30,7 +30,7 @@ cache:
 variables:
     DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
     STAGING_SERVER_URL: 'http://staging-wallet.trezor.io/wallet'
-    DESKTOP_APP_NAME: 'Trezor Beta Wallet'
+    DESKTOP_APP_NAME: 'Trezor Suite'
 
 stages:
     - setup environment

@@ -71,6 +71,19 @@ export const copyToClipboard = (value: string, parent: HTMLDivElement | HTMLPreE
     }
 };
 
+export const download = (value: string, filename: string) => {
+    const element = document.createElement('a');
+    element.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(value)}`);
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+};
+
 /**
  * When focusing content editable element, caret appears at the begging of string it contains.
  * We need to move it to the end.

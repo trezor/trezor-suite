@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import FocusLock from 'react-focus-lock';
 import { UI } from 'trezor-connect';
 
-import * as modalActions from '@suite-actions/modalActions';
+import * as allModalActions from '@suite-actions/modalActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { MODAL } from '@suite-actions/constants';
 import { AppState, Dispatch, AcquiredDevice } from '@suite-types';
@@ -23,6 +23,7 @@ import ConfirmAddress from './confirm/Address';
 import ConfirmXpub from './confirm/Xpub/Container';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ReviewTransaction from './ReviewTransaction/Container';
+import ImportTransaction from './ImportTransaction';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
 import AddAccount from './AddAccount/Container';
 import QrScanner from './QrScanner';
@@ -32,6 +33,7 @@ import Log from './Log';
 import WipeDevice from './WipeDevice';
 import DisconnectDevice from './DisconnectDevice';
 import MetadataProvider from './metadata/MetadataProvider';
+import AdvancedCoinSettings from './AdvancedCoinSettings/Container';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -40,7 +42,7 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-    modalActions: bindActionCreators(modalActions, dispatch),
+    modalActions: bindActionCreators(allModalActions, dispatch),
     goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
@@ -81,7 +83,6 @@ const getDeviceContextModal = (props: Props) => {
         // Button requests
         // todo: consider fallback (if windowType.contains('ButtonRequest')). but add also possibility to blacklist some buttonRequests
         case 'ButtonRequest_Warning':
-        case 'ButtonRequest_SignTx':
         case 'ButtonRequest_Success':
         case 'ButtonRequest_RecoveryHomepage':
         case 'ButtonRequest_MnemonicWordCount':
@@ -90,12 +91,14 @@ const getDeviceContextModal = (props: Props) => {
         case 'ButtonRequest_Other':
         case 'ButtonRequest_ResetDevice': // dispatched on BackupDevice call for model T, weird but true
         case 'ButtonRequest_ConfirmWord': // dispatched on BackupDevice call for model One
-        case 'ButtonRequest_ConfirmOutput':
         case 'ButtonRequest_WipeDevice':
         case 'ButtonRequest_UnknownDerivationPath':
         case 'ButtonRequest_FirmwareUpdate':
         case 'ButtonRequest_PinEntry':
             return <ConfirmAction device={device} />;
+        case 'ButtonRequest_ConfirmOutput':
+        case 'ButtonRequest_SignTx':
+            return <ReviewTransaction type="sign-transaction" />;
         default:
             return null;
     }
@@ -156,13 +159,15 @@ const getUserContextModal = (props: Props) => {
         case 'wipe-device':
             return <WipeDevice onCancel={modalActions.onCancel} />;
         case 'qr-reader':
-            return <QrScanner outputId={payload.outputId} onCancel={modalActions.onCancel} />;
+            return <QrScanner decision={payload.decision} onCancel={modalActions.onCancel} />;
         case 'transaction-detail':
             return <TransactionDetail tx={payload.tx} onCancel={modalActions.onCancel} />;
         case 'passphrase-duplicate':
             return <PassphraseDuplicate device={payload.device} duplicate={payload.duplicate} />;
         case 'review-transaction':
-            return <ReviewTransaction />;
+            return <ReviewTransaction {...payload} />;
+        case 'import-transaction':
+            return <ImportTransaction {...payload} onCancel={modalActions.onCancel} />;
         case 'pin-mismatch':
             return <PinMismatch />;
         case 'disconnect-device':
@@ -173,6 +178,8 @@ const getUserContextModal = (props: Props) => {
             return (
                 <MetadataProvider onCancel={modalActions.onCancel} decision={payload.decision} />
             );
+        case 'advanced-coin-settings':
+            return <AdvancedCoinSettings {...payload} onCancel={modalActions.onCancel} />;
         default:
             return null;
     }

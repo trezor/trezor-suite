@@ -51,7 +51,7 @@ export default class MyDocument extends Document {
                     />
                 </Head>
                 <body style={{ height: '100%' }}>
-                    <title>Trezor Beta Wallet</title>
+                    <title>Trezor Suite</title>
                     <Main />
                     <NextScript />
                 </body>

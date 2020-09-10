@@ -1,6 +1,19 @@
 [
 	{
 		"required": false,
+		"version": [2, 3, 3],
+		"min_bridge_version": [2, 0, 7],
+		"min_firmware_version": [2, 0, 8],
+		"min_bootloader_version": [2, 0, 0],
+		"url": "data/firmware/2/trezor-2.3.3.bin",
+		"url_bitcoinonly": "data/firmware/2/trezor-2.3.3-bitcoinonly.bin",
+		"fingerprint": "46326222f8afcb82e1cd07867bc3bf8836f4e9d0f367e23b58d1e9bc32cd032e",
+		"fingerprint_bitcoinonly": "dda77cd7893a5f413f8fc4b2f44d1d43ed4b26e8ced5e6e578cc6b302c1a2310",
+		"notes": "https://blog.trezor.io/firmware-updates-for-trezor-model-t-version-2-3-3-and-trezor-model-one-version-1-9-3-c94f7a3b6fea",
+		"changelog": "* Advances the Passphrase feature by showing the entered passphrase on the Trezor screen before opening the wallet.\n* Adds support for Verge (XVG).\n* Drops support for Metaverse (ETP), GINcoin (GIN), Pesetacoin (PTC), and Zel (ZEL).\n* Introduces a hard limit on transaction fees to prevent accidentally paying extra hefty fees (the limit can be manually disabled).\n* Resolves the problems with generating the Crown addresses.\n* Re-enables spending altcoins from Bitcoin paths (fixing some compatibility issues with Bitcoin Cash wallets).\n* Fixes smaller issues with the user interface, customization, and more."
+	},
+	{
+		"required": false,
 		"version": [2, 3, 2],
 		"min_bridge_version": [2, 0, 7],
 		"min_firmware_version": [2, 0, 8],
@@ -9,6 +22,7 @@
 		"url_bitcoinonly": "data/firmware/2/trezor-2.3.2-bitcoinonly.bin",
 		"fingerprint": "f5ccdca0cbe163ecb93df726da72b69abb93f70d24d295db00b3ca2738216160",
 		"fingerprint_bitcoinonly": "389cb54fb6fc75489b788ad669ce51f41d47a67af54b8745a0dfe48da38a777f",
+		"notes": "https://blog.trezor.io/firmware-updates-for-trezor-model-t-version-2-3-2-and-trezor-model-one-version-1-9-2-f4f9c0f1ed7c",
 		"changelog": "* Introduces 'Autolock' feature, which automatically locks the device to enforce the PIN entry after a certain period.\n* Updates the Cardano support to enable staking and other Shelley updates.\n* Reintroduces the ability to spend pre-Overwinter (2018) funds on Zcash-like coins.\n* Fixes compatibility issues with Casa and GreenAddress.\n* Adds support for multiple change outputs in outgoing transactions.\n* Improves some interface elements."
 	},
 	{
@@ -21,6 +35,7 @@
 		"url_bitcoinonly": "data/firmware/2/trezor-2.3.1-bitcoinonly.bin",
 		"fingerprint": "37178a5ec24e34f8a0599aebcadaf206af3ebadef2fc596665d617dd3e05a5db",
 		"fingerprint_bitcoinonly": "41795ec196f74c5d6acecc09047a5eacf1dfca47b0aeaa8442a69568efe20ddb",
+		"notes": "https://blog.trezor.io/details-of-firmware-updates-for-trezor-one-version-1-9-1-and-trezor-model-t-version-2-3-1-1eba8f60f2dd",
 		"changelog": "* Refactor Bitcoin signing"
 	},
 	{
@@ -33,6 +48,7 @@
 		"url_bitcoinonly": "data/firmware/2/trezor-2.3.0-bitcoinonly.bin",
 		"fingerprint": "212929f63fe1393e2ff57e06537a38cff281e3cfb3a4e17235079e2f08871e6c",
 		"fingerprint_bitcoinonly": "bddc0fd3b52fd32d94b776048f62b3d03dcb6ab90140e482a042a2863093115f",
+		"notes": "https://blog.trezor.io/details-of-firmware-updates-for-trezor-one-version-1-9-0-and-trezor-model-t-version-2-3-0-46deb141fc09",
 		"changelog": "* Introduce Wipe code\n* Introduce SD card protection\n* Introduce passphrase cache\n* U2F UX improvements\n* Security fixes"
 	},
 	{
@@ -112,6 +128,7 @@
 		"url": "data/firmware/2/trezor-2.1.0.bin",
 		"tags": ["security"],
 		"fingerprint": "bb5b0308807b45d41d1e2ab66a468152997ad69a01099789d8a35e464cde999f",
+		"notes": "https://blog.trezor.io/firmware-updates-for-trezor-one-firmware-1-8-0-and-trezor-model-t-firmware-2-1-0-b9df91e048df",
 		"changelog": "* Security improvements\n* Upgraded to new storage format\n* Ripple, Stellar, Cardano and NEM fixes\n* New coins: ATS, AXE, FLO, GIN, KMD, NIX,\n  PIVX, REOSC, XPM, XSN, ZCL\n* New ETH tokens"
 	},
 	{

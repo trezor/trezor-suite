@@ -8,9 +8,9 @@ import discoveryReducer from './discoveryReducer';
 import accountsReducer from './accountsReducer';
 import selectedAccountReducer from './selectedAccountReducer';
 import receiveReducer from './receiveReducer';
-import sendFormReducer from './sendFormReducer';
 import feesReducer from './feesReducer';
 import blockchainReducer from './blockchainReducer';
+import sendFormReducer from './sendFormReducer';
 
 const WalletReducers = combineReducers({
     signVerify: signVerifyReducer,
@@ -22,9 +22,9 @@ const WalletReducers = combineReducers({
     accounts: accountsReducer,
     selectedAccount: selectedAccountReducer,
     receive: receiveReducer,
-    send: sendFormReducer,
     fees: feesReducer,
     blockchain: blockchainReducer,
+    send: sendFormReducer,
 });
 
 export default WalletReducers;

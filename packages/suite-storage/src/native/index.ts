@@ -174,6 +174,17 @@ class CommonDB<TDBStructure> {
         return (Promise.resolve() as unknown) as Promise<StoreValue<TDBStructure, TStoreName>[]>;
     };
 
+    getItemsWithKeys = async <TStoreName extends StoreNames<TDBStructure>>(_store: TStoreName) => {
+        return (Promise.resolve() as unknown) as Promise<
+            {
+                key: unknown extends IndexNames<TDBStructure, TStoreName>
+                    ? IndexKey<TDBStructure, TStoreName, IndexNames<TDBStructure, TStoreName>>
+                    : StoreKey<TDBStructure, TStoreName>;
+                value: StoreValue<TDBStructure, TStoreName>;
+            }[]
+        >;
+    };
+
     clearStores = async <TStoreName extends StoreNames<TDBStructure>>(
         _storeNames?: TStoreName[]
     ) => {

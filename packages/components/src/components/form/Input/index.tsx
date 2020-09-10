@@ -1,9 +1,10 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { colors, variables } from '../../../config';
-import { InputState, InputVariant, InputButton } from '../../../support/types';
+import { InputState, InputVariant } from '../../../support/types';
 import { Icon } from '../../../index';
 import { getStateColor } from '../../../utils';
+import { useEffect, createRef } from 'react';
 
 interface WrappedProps {
     width?: any;
@@ -15,7 +16,11 @@ const Wrapper = styled.div<WrappedProps>`
     width: ${props => (props.width ? `${props.width}px` : '100%')};
 `;
 
-const StyledInput = styled.input<Props>`
+interface InputProps extends Props {
+    inputAddonWidth?: number;
+}
+
+const StyledInput = styled.input<InputProps>`
     /* text-indent: ${props => props.textIndent}px; */
     font-family: ${variables.FONT_FAMILY.TTHOVES};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -40,11 +45,22 @@ const StyledInput = styled.input<Props>`
         color: ${colors.BLACK50};
     }
 
+    &::placeholder {
+        color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    }
+
     ${props =>
         props.monospace &&
         css`
             font-variant-numeric: slashed-zero tabular-nums;
         `}
+
+    /* TODO: padding for left input addon */
+    ${props =>
+        props.inputAddonWidth &&
+        css`
+            padding-right: ${props.inputAddonWidth}px;
+        `};
 
     ${props =>
         props.disabled &&
@@ -90,7 +106,6 @@ const InputAddon = styled.div<{ align: 'left' | 'right' }>`
     bottom: 1px;
     display: flex;
     align-items: center;
-    z-index: 2;
 
     ${props =>
         props.align === 'right' &&
@@ -187,10 +202,20 @@ const Input = ({
     ...rest
 }: Props) => {
     const [isHovered, setIsHovered] = React.useState(false);
+    const inputAddonRef = createRef<HTMLDivElement>();
+    const [inputAddonWidth, setInputAddonWidth] = React.useState(0);
+
+    useEffect(() => {
+        if (inputAddonRef.current) {
+            const rect = inputAddonRef.current.getBoundingClientRect();
+            setInputAddonWidth(rect.width + 10); // addon ha absolute pos with 10px offset
+        } else {
+            setInputAddonWidth(0);
+        }
+    }, [inputAddonRef]);
 
     return (
         <Wrapper
-            width={width}
             {...wrapperProps}
             data-test={dataTest}
             onMouseEnter={() => setIsHovered(true)}
@@ -208,10 +233,12 @@ const Input = ({
             )}
             <InputWrapper>
                 {innerAddon && addonAlign === 'left' && (
-                    <InputAddon align="left">{innerAddon}</InputAddon>
+                    <InputAddon align="left" ref={inputAddonRef}>
+                        {innerAddon}
+                    </InputAddon>
                 )}
                 {((innerAddon && addonAlign === 'right') || clearButton) && (
-                    <InputAddon align="right">
+                    <InputAddon align="right" ref={inputAddonRef}>
                         {addonAlign === 'right' && innerAddon}
                         {clearButton && value && value.length > 0 && (
                             <Icon
@@ -241,6 +268,7 @@ const Input = ({
                     monospace={monospace}
                     ref={innerRef}
                     data-lpignore="true"
+                    inputAddonWidth={inputAddonWidth}
                     {...rest}
                 />
             </InputWrapper>

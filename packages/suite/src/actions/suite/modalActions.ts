@@ -2,12 +2,13 @@ import TrezorConnect, { UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
 import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
 import { Account, WalletAccountTransaction } from '@wallet-types';
-import { Deferred } from '@suite-utils/deferred';
+import { PartialFormState } from '@wallet-types/sendForm';
+import { createDeferred, Deferred, DeferredResponse } from '@suite-utils/deferred';
 
 export type UserContextPayload =
     | {
           type: 'qr-reader';
-          outputId: number;
+          decision: Deferred<{ address: string; amount?: string }>;
       }
     | {
           type: 'unverified-address';
@@ -53,6 +54,11 @@ export type UserContextPayload =
       }
     | {
           type: 'review-transaction';
+          decision: Deferred<boolean>;
+      }
+    | {
+          type: 'import-transaction';
+          decision: Deferred<PartialFormState>;
       }
     | {
           type: 'log';
@@ -69,6 +75,10 @@ export type UserContextPayload =
     | {
           type: 'metadata-provider';
           decision: Deferred<boolean>;
+      }
+    | {
+          type: 'advanced-coin-settings';
+          coin: Account['symbol'];
       };
 
 export type ModalActions =
@@ -160,3 +170,34 @@ export const openModal = (payload: UserContextPayload): Action => ({
     type: MODAL.OPEN_USER_CONTEXT,
     payload,
 });
+
+// declare all modals with promises
+type DeferredModals = Extract<
+    UserContextPayload,
+    { type: 'qr-reader' | 'review-transaction' | 'import-transaction' }
+>;
+// extract single modal by `type` util
+type DeferredModal<T extends DeferredModals['type']> = Extract<DeferredModals, { type: T }>;
+// extract params except for `type` and 'decision` util
+type DeferredRest<T extends DeferredModals['type']> = Omit<DeferredModal<T>, 'type' | 'decision'>;
+// openDeferredModal params (without `decision` field)
+type DeferredPayload<T extends DeferredModals['type']> = { type: T } & DeferredRest<T>;
+
+// this overload doesn't work when wrapped by `bindActionCreators` (returns union, TODO: investigate...)
+export const openDeferredModal = <T extends DeferredModals['type']>(
+    payload: DeferredPayload<T>,
+) => (dispatch: Dispatch) => {
+    const dfd = createDeferred<DeferredResponse<DeferredModal<T>['decision']>>();
+    dispatch({
+        type: MODAL.OPEN_USER_CONTEXT,
+        payload: {
+            ...payload,
+            decision: dfd,
+        },
+    });
+    try {
+        return dfd.promise;
+    } catch (error) {
+        // do nothing, return void
+    }
+};

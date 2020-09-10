@@ -22,6 +22,7 @@ const AddLabelButton = styled(Button)`
     visibility: hidden;
     /* opacity: 0; */
     width: 0;
+    margin-left: 14px;
     /* transition: all 0.4s; */
 `;
 
@@ -183,7 +184,7 @@ const MetadataLabeling = (props: Props) => {
                 <AddLabelButton
                     data-test={`${dataTestBase}/add-label-button`}
                     variant="tertiary"
-                    icon={!isDiscoveryRunning ? 'LABEL' : undefined}
+                    icon={!isDiscoveryRunning ? 'TAG' : undefined}
                     isLoading={isDiscoveryRunning}
                     isDisabled={isDiscoveryRunning}
                     onClick={e => {

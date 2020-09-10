@@ -196,7 +196,7 @@ const BasicDetails = ({
                         </HiddenPlaceholder>
                     </BoxRow>
                 )}
-                <BoxRow title={<Translation id="TR_AMOUNT" />}>
+                <BoxRow title={<Translation id="AMOUNT" />}>
                     <HiddenPlaceholder>
                         <FormattedCryptoAmount value={tx.amount} symbol={assetSymbol} />
                     </HiddenPlaceholder>

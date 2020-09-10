@@ -1,9 +1,10 @@
-import { app, session, BrowserWindow, ipcMain, shell, Menu } from 'electron';
+import { app, session, BrowserWindow, ipcMain, shell, Menu, dialog } from 'electron';
 import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 import * as path from 'path';
 import * as url from 'url';
 import * as electronLocalshortcut from 'electron-localshortcut';
+import * as config from './config';
 import * as store from './store';
 import { runBridgeProcess } from './bridge';
 import { buildMainMenu } from './menu';
@@ -11,8 +12,9 @@ import { openOauthPopup } from './oauth';
 // import * as metadata from './metadata';
 
 let mainWindow: BrowserWindow;
-const APP_NAME = 'Trezor Beta Wallet';
+const APP_NAME = 'Trezor Suite';
 const PROTOCOL = 'file';
+const res = isDev ? './public/static' : process.resourcesPath;
 const src = isDev
     ? 'http://localhost:8000/'
     : url.format({
@@ -72,8 +74,11 @@ const init = async () => {
             webSecurity: !isDev,
             allowRunningInsecureContent: isDev,
             nodeIntegration: false,
+            contextIsolation: true,
+            enableRemoteModule: false,
             preload: path.join(__dirname, 'preload.js'),
         },
+        icon: path.join(res, 'images', 'icons', '512x512.png'),
     });
 
     Menu.setApplicationMenu(buildMainMenu());
@@ -90,11 +95,7 @@ const init = async () => {
 
     // open external links in default browser
     const handleExternalLink = (event: Event, url: string) => {
-        const oauthUrls = [
-            'https://accounts.google.com',
-            'https://www.dropbox.com/oauth2/authorize',
-        ];
-        if (oauthUrls.some(url => url.startsWith(url))) {
+        if (config.oauthUrls.some(u => url.startsWith(u))) {
             event.preventDefault();
             openOauthPopup(url);
             return;
@@ -103,6 +104,16 @@ const init = async () => {
         // TODO? url.startsWith('http:') || url.startsWith('https:');
         if (url !== mainWindow.webContents.getURL()) {
             event.preventDefault();
+            if (!config.allowedExternalUrls.some(u => url.startsWith(u))) {
+                // TODO: Replace with in-app modal
+                const result = dialog.showMessageBoxSync(mainWindow, {
+                    type: 'warning',
+                    message: `The following URL is going to be opened in your browser\n\n${url}`,
+                    buttons: ['Cancel', 'Continue'],
+                });
+                // Cancel
+                if (result === 0) return;
+            }
             shell.openExternal(url);
         }
     };
@@ -125,6 +136,15 @@ const init = async () => {
                 // @ts-ignore electron declares requestHeaders as an empty interface
                 details.requestHeaders.Origin = 'https://electron.trezor.io';
                 callback({ cancel: false, requestHeaders: details.requestHeaders });
+            });
+
+            session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+                callback({
+                    responseHeaders: {
+                        'Content-Security-Policy': [config.cspRules.join(';')],
+                        ...details.responseHeaders,
+                    },
+                });
             });
 
             // TODO: implement https://github.com/electron/electron/blob/master/docs/api/browser-window.md#event-unresponsive
