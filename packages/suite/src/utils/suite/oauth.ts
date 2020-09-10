@@ -8,8 +8,7 @@ import { urlHashParams } from '@suite-utils/metadata';
  * For web, use oauth_receiver.html hosted on the same origin (localhost/sldev/trezor.io)
  */
 export const getOauthReceiverUrl = () => {
-    // @ts-ignore
-    if (!window.ipcRenderer) {
+    if (!window.desktopApi) {
         const { origin } = window.location;
         // For the purpose of e2e tests change the redirect url to develop branch on sldev.cz
         if (origin.indexOf('sldev.cz') >= 0) {
@@ -55,14 +54,12 @@ export const getMetadataOauthToken = (url: string) => {
         }
     };
 
-    // @ts-ignore
-    const { ipcRenderer } = global;
-    if (ipcRenderer) {
+    if (window.desktopApi) {
         const onIpcMessage = (_sender: any, message: any) => {
             onMessage({ ...message, origin: 'wallet.trezor.io' });
-            ipcRenderer.off('oauth', onIpcMessage);
+            window.desktopApi.off('oauth', onIpcMessage);
         };
-        ipcRenderer.on('oauth', onIpcMessage);
+        window.desktopApi.on('oauth', onIpcMessage);
     } else {
         window.addEventListener('message', onMessage);
     }

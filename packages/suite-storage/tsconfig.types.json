@@ -10,6 +10,7 @@
         "esModuleInterop": true,
         // Don't emit; this config is just for typechecking
         "noEmit": true,
-        "emitDeclarationOnly": false
+        "emitDeclarationOnly": false,
+        "resolveJsonModule": true
     }
 }
