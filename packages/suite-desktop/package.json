@@ -78,7 +78,6 @@
             "entitlements": "entitlements.mac.inherit.plist",
             "entitlementsInherit": "entitlements.mac.inherit.plist",
             "target": [
-                "dmg",
                 "zip"
             ]
         },
@@ -118,8 +117,7 @@
                 "AppImage",
                 "tar.gz"
             ]
-        },
-        "afterSign": "scripts/notarize.js"
+        }
     },
     "dependencies": {
         "electron-is-dev": "^1.2.0",
