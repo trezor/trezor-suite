@@ -6,7 +6,7 @@ const AccountUnits = () => {
     <SectionItem>
         <TextColumn
             title="Change BTC accounts unit"
-            description="1 BTC = 1,000 mBTC = 1,000,000 uBTC"
+            description="1 BTC = 1,000 mBTC = 1,000,000 uBTC = 100,000,000 sat"
         />
         <ActionColumn>
             <ActionSelect
@@ -15,11 +15,12 @@ const AccountUnits = () => {
                 onChange={(option: { value: string; label: string }) => {
                     console.log(option);
                 }}
-                value={1}
+                value={0}
                 options={[
-                    { value: 0, label: 'Bitcoin' },
-                    { value: 1, label: 'mili-Bitcoin' },
-                    { value: 2, label: 'micro-Bitcoin' },
+                    { value: 0, label: 'Bitcoin (BTC)' },
+                    { value: 1, label: 'milli-Bitcoin (mBTC)' },
+                    { value: 2, label: 'micro-Bitcoin (uBTC)' },
+                    { value: 3, label: 'satoshi (sat)' },
                 ]}
             />
         </ActionColumn>
