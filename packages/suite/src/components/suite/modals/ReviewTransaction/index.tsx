@@ -127,7 +127,6 @@ export default ({ selectedAccount, send, decision }: Props) => {
     return (
         <Modal
             size="large"
-            padding={['0px', '0px', '0px', '0px']}
             header={
                 <ConfirmOnDevice
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
