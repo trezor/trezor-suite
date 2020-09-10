@@ -18,7 +18,7 @@ const In = styled.div`
     color: ${colors.BLACK50};
 `;
 
-export default () => {
+const Clear = () => {
     const { resetContext } = useSendFormContext();
 
     return (
@@ -31,3 +31,5 @@ export default () => {
         </Wrapper>
     );
 };
+
+export default Clear;

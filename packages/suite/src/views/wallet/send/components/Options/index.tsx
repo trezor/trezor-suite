@@ -23,7 +23,7 @@ const Line = styled.div`
     border-top: 1px solid ${colors.NEUE_BG_GRAY};
 `;
 
-export default () => {
+const Options = () => {
     const {
         account: { networkType },
     } = useSendFormContext();
@@ -39,3 +39,5 @@ export default () => {
         </Wrapper>
     );
 };
+
+export default Options;

@@ -29,7 +29,7 @@ const Row = styled.div`
     }
 `;
 
-export default () => {
+const ReviewButton = () => {
     const { device, isLocked } = useDevice();
     const {
         online,
@@ -68,3 +68,5 @@ export default () => {
         </Wrapper>
     );
 };
+
+export default ReviewButton;

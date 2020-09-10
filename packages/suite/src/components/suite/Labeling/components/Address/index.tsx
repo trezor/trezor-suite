@@ -5,7 +5,7 @@ import AccountLabel from '../Account/Container';
 
 // DeviceLabel? / WalletLabel? / Account #N / AccountType?
 
-export default (props: Props) => {
+const Address = (props: Props) => {
     const { address } = props;
     if (!address) return null;
 
@@ -14,3 +14,5 @@ export default (props: Props) => {
 
     return <AccountLabel account={found[0]} />;
 };
+
+export default Address;

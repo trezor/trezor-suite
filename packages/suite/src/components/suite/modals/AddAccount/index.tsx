@@ -11,7 +11,7 @@ import AddAccountButton from './components/AddAccountButton';
 import Wrapper from './components/Wrapper';
 import { Props } from './Container';
 
-export default (props: Props) => {
+const AddAccount = (props: Props) => {
     // Collect all Networks without "accountType" (normal)
     const internalNetworks = NETWORKS.filter(n => !n.accountType && !n.isHidden);
     const externalNetworks = EXTERNAL_NETWORKS.filter(n => !n.isHidden);
@@ -149,3 +149,5 @@ export default (props: Props) => {
         </Wrapper>
     );
 };
+
+export default AddAccount;

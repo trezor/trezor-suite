@@ -63,7 +63,7 @@ const getState = (index: number, buttonRequests: number) => {
     return undefined;
 };
 
-export default ({ selectedAccount, send, decision }: Props) => {
+const ReviewTransaction = ({ selectedAccount, send, decision }: Props) => {
     const htmlElement = createRef<HTMLDivElement>();
     const { device } = useDevice();
     const { cancelSignTx, addNotification } = useActions({
@@ -215,3 +215,5 @@ export default ({ selectedAccount, send, decision }: Props) => {
         </Modal>
     );
 };
+
+export default ReviewTransaction;

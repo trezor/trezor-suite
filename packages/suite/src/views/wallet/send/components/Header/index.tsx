@@ -28,7 +28,7 @@ const HeaderRight = styled.div`
     flex: 1;
 `;
 
-export default () => {
+const Header = () => {
     const {
         outputs,
         account: { networkType },
@@ -87,3 +87,5 @@ export default () => {
         </Wrapper>
     );
 };
+
+export default Header;

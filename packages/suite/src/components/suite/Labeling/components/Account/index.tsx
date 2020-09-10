@@ -13,7 +13,7 @@ const TabularNums = styled.span`
     overflow: hidden;
 `;
 
-export default (props: Props) => {
+const Account = (props: Props) => {
     const { device } = props;
     const accounts = !Array.isArray(props.account) ? [props.account] : props.account;
     if (accounts.length < 1) return null;
@@ -61,3 +61,5 @@ export default (props: Props) => {
 
     return <TabularNums>{accountLabel}</TabularNums>;
 };
+
+export default Account;

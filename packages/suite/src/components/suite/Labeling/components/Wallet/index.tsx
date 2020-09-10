@@ -8,7 +8,7 @@ interface Props {
     useDeviceLabel?: boolean;
 }
 
-export default (props: Props) => {
+const Wallet = (props: Props) => {
     const { device } = props;
     const walletLabel = device.useEmptyPassphrase
         ? messages.TR_NO_PASSPHRASE_WALLET
@@ -33,3 +33,5 @@ export default (props: Props) => {
 
     return label;
 };
+
+export default Wallet;

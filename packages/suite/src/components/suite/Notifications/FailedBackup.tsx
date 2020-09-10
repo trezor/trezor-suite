@@ -10,7 +10,7 @@ interface Props {
     device: BaseProps['suite']['device'];
 }
 
-export default ({ device }: Props) => {
+const FailedBackup = ({ device }: Props) => {
     if (!device?.features?.unfinished_backup) return null;
     return (
         <Wrapper variant="warning">
@@ -25,3 +25,5 @@ export default ({ device }: Props) => {
         </Wrapper>
     );
 };
+
+export default FailedBackup;

@@ -53,7 +53,7 @@ interface Props {
     variant: 'info' | 'warning';
 }
 
-export default ({ variant, children }: Props) => {
+const NotificationsWrapper = ({ variant, children }: Props) => {
     const iconElement = getIcon(variant);
     return (
         <Wrapper variant={variant}>
@@ -62,3 +62,5 @@ export default ({ variant, children }: Props) => {
         </Wrapper>
     );
 };
+
+export default NotificationsWrapper;

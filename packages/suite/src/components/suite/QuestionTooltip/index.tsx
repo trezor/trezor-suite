@@ -12,8 +12,10 @@ interface Props {
     messageId: keyof typeof messages;
 }
 
-export default ({ messageId }: Props) => (
+const QuestionTooltip = ({ messageId }: Props) => (
     <Tooltip placement="top" content={<Translation id={messageId} />}>
         <StyledIcon size={16} color={colors.BLACK50} icon="QUESTION" />
     </Tooltip>
 );
+
+export default QuestionTooltip;

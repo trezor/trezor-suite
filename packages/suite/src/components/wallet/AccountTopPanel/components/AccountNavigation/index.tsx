@@ -7,7 +7,7 @@ interface Props {
     account: Account;
 }
 
-export default (props: Props) => {
+const AccountNavigation = (props: Props) => {
     const { account } = props;
 
     // collect all items suitable for current networkType
@@ -26,3 +26,5 @@ export default (props: Props) => {
 
     return <AppNavigation items={items} />;
 };
+
+export default AccountNavigation;

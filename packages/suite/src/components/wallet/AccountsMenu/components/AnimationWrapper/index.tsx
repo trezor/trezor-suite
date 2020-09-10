@@ -9,7 +9,13 @@ interface Props {
     onAnimationComplete?: () => void;
 }
 
-export default ({ opened, children, onAnimationStart, onUpdate, onAnimationComplete }: Props) => {
+const AnimationWrapper = ({
+    opened,
+    children,
+    onAnimationStart,
+    onUpdate,
+    onAnimationComplete,
+}: Props) => {
     const collapsed = { overflow: 'hidden', height: 0 };
     return (
         <AnimatePresence initial={false}>
@@ -32,3 +38,5 @@ export default ({ opened, children, onAnimationStart, onUpdate, onAnimationCompl
         </AnimatePresence>
     );
 };
+
+export default AnimationWrapper;

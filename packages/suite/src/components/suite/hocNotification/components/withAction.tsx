@@ -12,7 +12,7 @@ import { ViewProps } from '../index';
  * @param {React.ComponentType<ViewProps>} View
  * @param {ViewProps} props
  */
-export default (View: React.ComponentType<ViewProps>, props: ViewProps) => {
+const withAction = (View: React.ComponentType<ViewProps>, props: ViewProps) => {
     // add action callback
     const WrappedView = connect()(({ dispatch }: { dispatch: Dispatch }) => {
         const { notification } = props;
@@ -46,3 +46,5 @@ export default (View: React.ComponentType<ViewProps>, props: ViewProps) => {
     });
     return <WrappedView key={props.notification.id} />;
 };
+
+export default withAction;

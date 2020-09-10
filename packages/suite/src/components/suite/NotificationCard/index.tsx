@@ -63,7 +63,7 @@ interface Props {
     ['data-test']?: string;
 }
 
-export default ({ variant, children, ...props }: Props) => {
+const NotificationCard = ({ variant, children, ...props }: Props) => {
     const iconElement = getIcon(variant);
     return (
         <Wrapper variant={variant} data-test={props['data-test']}>
@@ -72,3 +72,5 @@ export default ({ variant, children, ...props }: Props) => {
         </Wrapper>
     );
 };
+
+export default NotificationCard;

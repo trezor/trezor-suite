@@ -20,8 +20,8 @@
     "dependencies": {
         "@trezor/components": "^1.0.0",
         "@trezor/suite-storage": "20.10.1-beta",
-        "react": "16.9.0",
-        "react-native": "0.61.5",
+        "react": "16.13.1",
+        "react-native": "0.63.2",
         "react-native-gesture-handler": "^1.5.2",
         "react-native-reanimated": "^1.4.0",
         "react-native-screens": "^2.0.0-alpha.20",

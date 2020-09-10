@@ -27,7 +27,7 @@ interface Props {
     close: () => void;
 }
 
-export default ({ close }: Props) => {
+const DestinationTag = ({ close }: Props) => {
     const { register, getDefaultValue, errors, composeTransaction } = useSendFormContext();
 
     const inputName = 'rippleDestinationTag';
@@ -70,3 +70,5 @@ export default ({ close }: Props) => {
         />
     );
 };
+
+export default DestinationTag;

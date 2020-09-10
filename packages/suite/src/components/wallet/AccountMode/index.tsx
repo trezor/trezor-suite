@@ -10,7 +10,7 @@ interface Props {
     mode: AccountWatchOnlyMode[] | undefined;
 }
 
-export default (props: Props) => {
+const AccountMode = (props: Props) => {
     if (!props.mode) return null;
     return (
         <>
@@ -32,3 +32,5 @@ export default (props: Props) => {
         </>
     );
 };
+
+export default AccountMode;

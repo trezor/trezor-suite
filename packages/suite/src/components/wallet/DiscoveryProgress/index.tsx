@@ -22,7 +22,7 @@ const Line = styled.div<{ progress: number }>`
     transition: 1s width;
 `;
 
-export default () => {
+const DiscoveryProgress = () => {
     const { discovery, isDiscoveryRunning, calculateProgress } = useDiscovery();
     if (!discovery || !isDiscoveryRunning) return null;
     return (
@@ -31,3 +31,5 @@ export default () => {
         </Wrapper>
     );
 };
+
+export default DiscoveryProgress;

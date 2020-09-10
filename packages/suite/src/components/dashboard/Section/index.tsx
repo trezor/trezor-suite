@@ -27,7 +27,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     actions?: ReactElement;
 }
 
-export default ({ heading, actions, children, ...rest }: Props) => (
+const Section = ({ heading, actions, children, ...rest }: Props) => (
     <Wrapper {...rest}>
         <Header>
             {heading && <Title>{heading}</Title>}
@@ -36,3 +36,5 @@ export default ({ heading, actions, children, ...rest }: Props) => (
         {children}
     </Wrapper>
 );
+
+export default Section;

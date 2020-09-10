@@ -7,7 +7,7 @@ interface Props {
     isOnline: boolean;
 }
 
-export default ({ isOnline }: Props) => {
+const OnlineStatus = ({ isOnline }: Props) => {
     if (isOnline) return null;
     return (
         <Wrapper variant="warning">
@@ -15,3 +15,5 @@ export default ({ isOnline }: Props) => {
         </Wrapper>
     );
 };
+
+export default OnlineStatus;

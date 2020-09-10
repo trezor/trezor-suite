@@ -6,7 +6,7 @@ import { Button } from '@trezor/components';
 
 const Wrapper = styled.div``;
 
-export default () => {
+const AddLabel = () => {
     return (
         <Wrapper>
             <Button variant="tertiary" icon="TAG" onClick={() => {}}>
@@ -15,3 +15,5 @@ export default () => {
         </Wrapper>
     );
 };
+
+export default AddLabel;
