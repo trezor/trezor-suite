@@ -20,8 +20,6 @@
 suite-desktop build mac:
     only:
         <<: *auto_run_branches
-    tags:
-        - darwin
     variables:
         platform: mac
         artifact: ${DESKTOP_APP_NAME}*
