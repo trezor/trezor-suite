@@ -11,7 +11,9 @@ interface Props {
     onEnableAccount: (account: Account) => void;
 }
 
-export default (props: Props) => {
+const AddAccountButton = (props: Props) => {
+    const analytics = useAnalytics();
+
     if (props.accounts.length === 0) return null;
     const account = props.accounts[props.accounts.length - 1];
     let tooltip;
@@ -26,8 +28,6 @@ export default (props: Props) => {
     if (account.index >= 10) {
         tooltip = <Translation {...messages.MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED} />;
     }
-
-    const analytics = useAnalytics();
 
     const addButton = (
         <Button
@@ -60,3 +60,5 @@ export default (props: Props) => {
     }
     return addButton;
 };
+
+export default AddAccountButton;

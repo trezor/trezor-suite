@@ -35,7 +35,7 @@ const StyledIcon = styled(Icon)`
     display: flex;
 `;
 
-export default ({ outputId, outputsCount }: { outputId: number; outputsCount: number }) => {
+const Address = ({ outputId, outputsCount }: { outputId: number; outputsCount: number }) => {
     const {
         account,
         removeOutput,
@@ -137,3 +137,5 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
         />
     );
 };
+
+export default Address;

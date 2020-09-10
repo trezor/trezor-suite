@@ -28,7 +28,7 @@ module.exports = withBundleAnalyzer(
                         '@trezor',
                         '../packages/suite/src', // issue: https://github.com/zeit/next.js/issues/5666
                     ],
-                    exportTrailingSlash: true,
+                    trailingSlash: true,
                     assetPrefix: process.env.assetPrefix || '',
                     workerLoaderOptions: {
                         name: 'static/[hash].worker.js',

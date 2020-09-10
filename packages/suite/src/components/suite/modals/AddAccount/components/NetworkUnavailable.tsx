@@ -64,7 +64,7 @@ const Description = ({
     }
 };
 
-export default ({ capability, network }: Props) => {
+const NetworkUnavailable = ({ capability, network }: Props) => {
     return (
         <Wrapper>
             <H2>
@@ -76,3 +76,5 @@ export default ({ capability, network }: Props) => {
         </Wrapper>
     );
 };
+
+export default NetworkUnavailable;

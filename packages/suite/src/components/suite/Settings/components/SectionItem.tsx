@@ -13,4 +13,6 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
 }
 
-export default ({ children, ...rest }: Props) => <StyledRow {...rest}>{children}</StyledRow>;
+const SectionItem = ({ children, ...rest }: Props) => <StyledRow {...rest}>{children}</StyledRow>;
+
+export default SectionItem;

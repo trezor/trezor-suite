@@ -57,7 +57,7 @@ const getAppUrl = (appName: App) => {
     }
 };
 
-export default () => {
+const Start = () => {
     const [app, setApp] = useState<App | null>(null);
     const walletUrl = process.env.assetPrefix ? `${process.env.assetPrefix}/wallet` : '/wallet';
 
@@ -116,3 +116,5 @@ export default () => {
         </Layout>
     );
 };
+
+export default Start;

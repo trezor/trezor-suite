@@ -26,7 +26,7 @@ const Row = styled.div`
     }
 `;
 
-export default ({ xpub, accountPath, accountIndex, symbol, addNotification, onCancel }: Props) => {
+const Xpub = ({ xpub, accountPath, accountIndex, symbol, addNotification, onCancel }: Props) => {
     // TODO: no-backup, backup failed
     // const needsBackup = device.features && device.features.needs_backup;
 
@@ -61,3 +61,5 @@ export default ({ xpub, accountPath, accountIndex, symbol, addNotification, onCa
         </Modal>
     );
 };
+
+export default Xpub;

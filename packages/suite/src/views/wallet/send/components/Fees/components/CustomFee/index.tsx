@@ -21,7 +21,7 @@ const Units = styled.div`
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
 
-export default () => {
+const CustomFee = () => {
     const {
         network,
         feeInfo,
@@ -125,3 +125,5 @@ export default () => {
         </Wrapper>
     );
 };
+
+export default CustomFee;

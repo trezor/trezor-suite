@@ -1,6 +1,6 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
-import { FormattedNumber } from 'react-intl';
+import { FormattedNumber as FNumber } from 'react-intl';
 
 // wrapper for react-intl/FormattedNumber
 // FormattedNumber works with "number" values type also we want to handle Number.MAX_SAFE_INTEGER
@@ -13,7 +13,7 @@ interface Props {
     style?: string;
 }
 
-export default (props: Props) => {
+const FormattedNumber = (props: Props) => {
     const bn = new BigNumber(props.value);
     if (bn.gt(Number.MAX_SAFE_INTEGER)) {
         return (
@@ -23,7 +23,7 @@ export default (props: Props) => {
         );
     }
     return (
-        <FormattedNumber
+        <FNumber
             currency={props.currency}
             value={bn.toNumber()}
             minimumFractionDigits={props.minimumFractionDigits ?? 2}
@@ -32,3 +32,5 @@ export default (props: Props) => {
         />
     );
 };
+
+export default FormattedNumber;

@@ -30,7 +30,7 @@ interface Props {
     label: string;
 }
 
-export default ({ label }: Props) => (
+const DeviceDisconnected = ({ label }: Props) => (
     <Wrapper>
         <ContentCol>
             <P size="small">
@@ -48,3 +48,5 @@ export default ({ label }: Props) => (
         </ImageCol>
     </Wrapper>
 );
+
+export default DeviceDisconnected;

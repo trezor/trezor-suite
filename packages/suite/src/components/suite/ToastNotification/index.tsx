@@ -17,18 +17,18 @@ const Text = styled.div`
 
 // button margin-left: auto;
 
-export default ({ icon, message, action, actionLabel }: ViewProps) => {
-    return (
-        <Wrapper data-test="@toast">
-            {icon && <Icon icon={icon} size={12} color={colors.WHITE} />}
-            <Text>
-                <Translation {...message} />
-            </Text>
-            {action && actionLabel && (
-                <Button variant="tertiary" icon="ARROW_RIGHT" alignIcon="right" onClick={action}>
-                    <Translation {...actionLabel} />
-                </Button>
-            )}
-        </Wrapper>
-    );
-};
+const ToastNotification = ({ icon, message, action, actionLabel }: ViewProps) => (
+    <Wrapper data-test="@toast">
+        {icon && <Icon icon={icon} size={12} color={colors.WHITE} />}
+        <Text>
+            <Translation {...message} />
+        </Text>
+        {action && actionLabel && (
+            <Button variant="tertiary" icon="ARROW_RIGHT" alignIcon="right" onClick={action}>
+                <Translation {...actionLabel} />
+            </Button>
+        )}
+    </Wrapper>
+);
+
+export default ToastNotification;

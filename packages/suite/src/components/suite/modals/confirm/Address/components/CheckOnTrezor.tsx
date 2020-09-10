@@ -26,7 +26,7 @@ const StyledImage = styled(DeviceConfirmImage)`
     pointer-events: none;
 `;
 
-export default ({ device }: any) => (
+const CheckOnTrezor = ({ device }: any) => (
     <Wrapper>
         <P size="small">
             <Translation id="TR_ADDRESS_MODAL_CHECK_ON_TREZOR" />
@@ -37,3 +37,5 @@ export default ({ device }: any) => (
         <StyledImage device={device} />
     </Wrapper>
 );
+
+export default CheckOnTrezor;

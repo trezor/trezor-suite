@@ -50,7 +50,7 @@ interface Props {
     password: string;
 }
 
-export default ({ password }: Props) => {
+const PasswordStrengthIndicator = ({ password }: Props) => {
     const passwordInfo = zxcvbn(password);
     const { score } = passwordInfo;
     return (
@@ -62,3 +62,5 @@ export default ({ password }: Props) => {
         </Wrapper>
     );
 };
+
+export default PasswordStrengthIndicator;

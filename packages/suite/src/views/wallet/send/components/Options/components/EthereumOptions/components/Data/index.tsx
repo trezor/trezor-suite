@@ -38,7 +38,7 @@ interface Props {
     close: () => void;
 }
 
-export default ({ close }: Props) => {
+const Data = ({ close }: Props) => {
     const {
         register,
         outputs,
@@ -139,3 +139,5 @@ export default ({ close }: Props) => {
         </Wrapper>
     );
 };
+
+export default Data;

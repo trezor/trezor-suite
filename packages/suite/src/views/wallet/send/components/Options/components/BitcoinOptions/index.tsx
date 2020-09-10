@@ -40,7 +40,7 @@ const StyledButton = styled(Button)`
     margin: 4px 8px 4px 0px;
 `;
 
-export default () => {
+const BitcoinOptions = () => {
     const {
         addOutput,
         getDefaultValue,
@@ -123,3 +123,5 @@ export default () => {
         </Wrapper>
     );
 };
+
+export default BitcoinOptions;

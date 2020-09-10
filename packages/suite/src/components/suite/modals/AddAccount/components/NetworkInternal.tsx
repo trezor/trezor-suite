@@ -18,7 +18,7 @@ const StyledP = styled(P)`
     margin-bottom: 32px;
 `;
 
-export default ({ network, accountTypes }: Props) => {
+const NetworkInternal = ({ network, accountTypes }: Props) => {
     if (!accountTypes || accountTypes.length <= 1) return null;
     const bip43 = getBip43Shortcut(network.bip44);
     let accountTypeDesc: ExtendedMessageDescriptor = messages.TR_ACCOUNT_DETAILS_TYPE_P2PKH;
@@ -41,3 +41,5 @@ export default ({ network, accountTypes }: Props) => {
         </StyledP>
     );
 };
+
+export default NetworkInternal;

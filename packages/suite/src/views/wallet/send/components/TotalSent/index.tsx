@@ -61,7 +61,7 @@ const TotalSentFiat = styled.div`
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
 
-export default () => {
+const TotalSent = () => {
     const {
         account: { symbol },
         composedLevels,
@@ -97,3 +97,5 @@ export default () => {
         </StyledCard>
     );
 };
+
+export default TotalSent;

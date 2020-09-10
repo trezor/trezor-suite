@@ -22,7 +22,7 @@ const StyledButton = styled(Button)`
     margin-right: 8px;
 `;
 
-export default () => {
+const RippleOptions = () => {
     const {
         getDefaultValue,
         toggleOption,
@@ -76,3 +76,5 @@ export default () => {
         </Wrapper>
     );
 };
+
+export default RippleOptions;

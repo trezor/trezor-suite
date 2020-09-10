@@ -35,7 +35,7 @@ const Row = styled.div`
     }
 `;
 
-export default () => {
+const Outputs = () => {
     const { outputs, register } = useSendFormContext();
     return (
         <Wrapper>
@@ -65,3 +65,5 @@ export default () => {
         </Wrapper>
     );
 };
+
+export default Outputs;

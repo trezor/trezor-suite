@@ -20,8 +20,10 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
 }
 
-export default ({ children, ...rest }: Props) => (
+const Row = ({ children, ...rest }: Props) => (
     <Wrapper>
         <Content {...rest}>{children}</Content>
     </Wrapper>
 );
+
+export default Row;

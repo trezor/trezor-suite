@@ -60,7 +60,12 @@ interface Props {
     setSelectedNetwork: (n: Network | ExternalNetwork) => void;
 }
 
-export default ({ network, internalNetworks, externalNetworks, setSelectedNetwork }: Props) => (
+const NetworkSelect = ({
+    network,
+    internalNetworks,
+    externalNetworks,
+    setSelectedNetwork,
+}: Props) => (
     <Select
         isSearchable
         width={250}
@@ -73,3 +78,5 @@ export default ({ network, internalNetworks, externalNetworks, setSelectedNetwor
         noOptionsMessage={() => <Translation id="TR_COIN_NOT_FOUND" />}
     />
 );
+
+export default NetworkSelect;
