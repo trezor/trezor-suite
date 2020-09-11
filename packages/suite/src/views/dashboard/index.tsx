@@ -8,7 +8,7 @@ import NewsFeed from './components/NewsFeed';
 
 const Wrapper = styled.div`
     width: 100%;
-    margin-top: 40px; /* 40px + 24px (default padding in suite layout) = 64px (as designed) */ 
+    margin-top: 40px; /* 40px + 24px (default padding in suite layout) = 64px (as designed) */
     margin-bottom: 32px;
 `;
 
