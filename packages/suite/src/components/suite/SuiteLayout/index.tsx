@@ -1,7 +1,7 @@
 import React, { useState, createContext } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { colors } from '@trezor/components';
+import { colors, variables } from '@trezor/components';
 import SuiteNotifications from '@suite-components/Notifications';
 import Head from 'next/head';
 import { AppState } from '@suite-types';
@@ -44,13 +44,27 @@ const AppWrapper = styled.div`
     flex-direction: column;
     overflow: auto;
     flex: 1 1 0%;
+    align-items: center;
 `;
 
 const MaxWidthWrapper = styled.div`
-    max-width: ${MAX_WIDTH};
+    display: flex;
+    justify-content: center;
     width: 100%;
     height: 100%;
-    margin: 0 auto;
+    max-width: ${MAX_WIDTH};
+`;
+
+const DefaultPaddings = styled.div`
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 24px 32px 0px 32px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        padding: 24px 16px 0px 16px;
+    }
 `;
 
 const mapStateToProps = (state: AppState) => ({
@@ -100,7 +114,9 @@ const BodyWide = ({ url, menu, appMenu, children }: BodyProps) => (
             {menu && <MenuSecondary>{menu}</MenuSecondary>}
             <ScrollAppWrapper url={url}>
                 {appMenu}
-                <MaxWidthWrapper>{children}</MaxWidthWrapper>
+                <DefaultPaddings>
+                    <MaxWidthWrapper>{children}</MaxWidthWrapper>
+                </DefaultPaddings>
             </ScrollAppWrapper>
         </Columns>
     </Body>
@@ -112,7 +128,7 @@ const BodyNarrow = ({ url, menu, appMenu, children }: BodyProps) => (
             <ScrollAppWrapper url={url}>
                 {menu}
                 {appMenu}
-                {children}
+                <DefaultPaddings>{children}</DefaultPaddings>
             </ScrollAppWrapper>
         </Columns>
     </Body>

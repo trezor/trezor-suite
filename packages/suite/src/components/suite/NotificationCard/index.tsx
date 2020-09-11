@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import Card from '@suite-components/Card';
 import { Icon, Loader, colors } from '@trezor/components';
-import { MAX_WIDTH } from '@suite-constants/layout';
 
 const getBorderColor = (variant: Props['variant']) => {
     switch (variant) {
@@ -40,7 +39,6 @@ const getIcon = (variant: Props['variant']) => {
 };
 
 const Wrapper = styled(Card)<{ variant: Props['variant'] }>`
-    max-width: ${MAX_WIDTH};
     border: 1px solid ${props => getBorderColor(props.variant)};
     color: ${props => getTextColor(props.variant)};
     margin: 8px 0;

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { H1, colors, variables } from '@trezor/components';
 import React from 'react';
-import { MAX_WIDTH } from '@suite-constants/layout';
+import { MAX_WIDTH, MAX_WIDTH_WALLET_CONTENT } from '@suite-constants/layout';
 
 const Wrapper = styled.div`
     display: flex;
@@ -9,18 +9,19 @@ const Wrapper = styled.div`
     justify-content: center;
     background: ${colors.NEUE_BG_LIGHT_GREY};
     border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
-`;
 
-const Content = styled.div`
-    display: flex;
-    width: 100%;
     padding: 24px 32px 0px 32px;
-    max-width: ${MAX_WIDTH};
-    flex-direction: column;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         padding: 24px 16px 0px 16px;
     }
+`;
+
+const Content = styled.div<Pick<Props, 'maxWidth'>>`
+    display: flex;
+    width: 100%;
+    max-width: ${props => (props.maxWidth === 'default' ? MAX_WIDTH : MAX_WIDTH_WALLET_CONTENT)};
+    flex-direction: column;
 `;
 
 const BasicInfo = styled.div`
@@ -51,6 +52,7 @@ const TitleRow = styled(Row)`
 interface Props {
     title: React.ReactNode;
     dropdown?: React.ReactNode;
+    maxWidth: 'small' | 'default';
     children?: React.ReactNode;
     navigation?: React.ReactNode;
 }
@@ -58,7 +60,7 @@ interface Props {
 const AppNavigationPanel = (props: Props) => {
     return (
         <Wrapper>
-            <Content>
+            <Content maxWidth={props.maxWidth}>
                 <BasicInfo>
                     <TitleRow>
                         <Title noMargin>{props.title}</Title>

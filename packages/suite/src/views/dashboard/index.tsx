@@ -1,18 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import { LayoutContext } from '@suite-components';
-import { variables } from '@trezor/components';
 import AssetsCard from './components/AssetsCard';
 import PortfolioCard from './components/PortfolioCard';
 import SecurityFeatures from './components/SecurityFeatures/Container';
 import NewsFeed from './components/NewsFeed';
 
 const Wrapper = styled.div`
-    padding: 64px 32px 32px 32px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding: 16px;
-    }
+    width: 100%;
+    margin-top: 40px; /* 40px + 24px (default padding in suite layout) = 64px (as designed) */ 
+    margin-bottom: 32px;
 `;
 
 const Divider = styled.div`

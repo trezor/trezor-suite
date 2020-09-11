@@ -41,6 +41,7 @@ const Announcement = (props: Props) => {
         }
     }
 
+    if (notifications.length === 0) return null;
     return <AnnouncementsWrapper>{notifications}</AnnouncementsWrapper>;
 };
 
