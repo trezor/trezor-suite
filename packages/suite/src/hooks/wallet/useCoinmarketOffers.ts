@@ -1,7 +1,8 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import invityAPI from '@suite-services/invityAPI';
 import { useActions } from '@suite-hooks';
 import { BuyTrade } from 'invity-api';
+import { processQuotes } from '@wallet-utils/coinmarket/buyUtils';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import * as modalActions from '@suite-actions/modalActions';
@@ -26,22 +27,41 @@ export const useOffers = (props: Props) => {
     } = props;
     const { account } = selectedAccount;
     const [selectedQuote, setSelectQuote] = useState<BuyTrade>();
+    const [innerQuotes, setInnerQuotes] = useState<BuyTrade[]>(quotes);
+    const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<BuyTrade[] | undefined>(
+        alternativeQuotes,
+    );
     const { openModal } = useActions({ openModal: modalActions.openModal });
     const { goto } = useActions({ goto: routerActions.goto });
     const { verifyAddress } = useActions({ verifyAddress: coinmarketCommonActions.verifyAddress });
-    const { saveTrade } = useActions({ saveTrade: coinmarketBuyActions.saveTrade });
+    const { saveTrade, setIsFromRedirect } = useActions({
+        saveTrade: coinmarketBuyActions.saveTrade,
+        setIsFromRedirect: coinmarketBuyActions.setIsFromRedirect,
+    });
 
-    if (!quotesRequest) {
-        goto('wallet-coinmarket-buy', {
-            symbol: account.symbol,
-            accountIndex: account.index,
-            accountType: account.accountType,
-        });
-    }
+    useEffect(() => {
+        if (!quotesRequest) {
+            goto('wallet-coinmarket-buy', {
+                symbol: account.symbol,
+                accountIndex: account.index,
+                accountType: account.accountType,
+            });
+            return;
+        }
 
-    if (isFromRedirect) {
-        console.log('aaa');
-    }
+        const getQuotesAfterRedirect = async () => {
+            invityAPI.createInvityAPIKey(account.descriptor);
+            const allQuotes = await invityAPI.getBuyQuotes(quotesRequest);
+            const [quotes, alternativeQuotes] = processQuotes(allQuotes);
+            setInnerQuotes(quotes);
+            setInnerAlternativeQuotes(alternativeQuotes);
+        };
+
+        if (isFromRedirect && quotesRequest) {
+            getQuotesAfterRedirect();
+            setIsFromRedirect(false);
+        }
+    });
 
     const selectQuote = (quote: BuyTrade) => {
         if (quotesRequest) {
@@ -107,8 +127,8 @@ export const useOffers = (props: Props) => {
         saveTrade,
         quotesRequest,
         addressVerified,
-        quotes,
-        alternativeQuotes,
+        quotes: innerQuotes,
+        alternativeQuotes: innerAlternativeQuotes,
         selectQuote,
         account,
     };

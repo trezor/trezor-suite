@@ -52,7 +52,7 @@ export const useRedirect = () => {
         }
         await saveQuoteRequest(request);
         await setIsFromRedirect(true);
-        goto('wallet-coinmarket-buy', { symbol, accountIndex: index, accountType });
+        goto('wallet-coinmarket-buy-offers', { symbol, accountIndex: index, accountType });
     };
 
     interface DetailRedirectParams {

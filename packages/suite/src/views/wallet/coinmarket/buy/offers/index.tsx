@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { AppState } from '@suite-types';
-import { WalletLayout, CoinmarketLayout } from '@wallet-components';
+import { WalletLayout } from '@wallet-components';
 import { ComponentProps, Props } from '@wallet-types/coinmarketOffers';
 import { CoinmarketOffersContext, useOffers } from '@wallet-hooks/useCoinmarketOffers';
 import Offers from './Offers';
@@ -27,11 +27,11 @@ const OffersIndex = (props: Props) => {
     const coinmarketOffersValues = useOffers({ ...props, selectedAccount });
 
     return (
-        <CoinmarketLayout>
+        <>
             <CoinmarketOffersContext.Provider value={coinmarketOffersValues}>
                 <Offers />
             </CoinmarketOffersContext.Provider>
-        </CoinmarketLayout>
+        </>
     );
 };
 
