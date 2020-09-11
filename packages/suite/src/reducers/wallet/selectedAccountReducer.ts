@@ -79,8 +79,10 @@ export const initialState: State = {
     status: 'none',
 };
 
-export default (state: State = initialState, action: Action): State => {
+const selectedAccountReducer = (state: State = initialState, action: Action): State => {
     if (action.type === ACCOUNT.UPDATE_SELECTED_ACCOUNT) return action.payload;
     if (action.type === ACCOUNT.DISPOSE) return initialState;
     return state;
 };
+
+export default selectedAccountReducer;

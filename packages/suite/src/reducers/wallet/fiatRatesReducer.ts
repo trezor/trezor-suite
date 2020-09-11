@@ -69,7 +69,7 @@ const updateLastWeekRates = (state: CoinFiatRates[], payload: LastWeekRates) => 
     }
 };
 
-export default (state: State = initialState, action: Action): State => {
+const fiatRatesReducer = (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
             case RATE_REMOVE:
@@ -96,3 +96,5 @@ export default (state: State = initialState, action: Action): State => {
         }
     });
 };
+
+export default fiatRatesReducer;

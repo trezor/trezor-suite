@@ -39,7 +39,7 @@ const addToStack = (stack: LogEntry[], entry: LogEntry) => {
     }
 };
 
-export default (state: State = initialState, action: Action): State => {
+const logReducer = (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
             case LOG.ADD:
@@ -52,3 +52,5 @@ export default (state: State = initialState, action: Action): State => {
         }
     });
 };
+
+export default logReducer;

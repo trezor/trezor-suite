@@ -23,7 +23,7 @@ const initialState: State = {
     context: MODAL.CONTEXT_NONE,
 };
 
-export default (state: State = initialState, action: Action): State => {
+const modalReducer = (state: State = initialState, action: Action): State => {
     switch (action.type) {
         // device with context assigned to modal was disconnected
         case DEVICE.DISCONNECT:
@@ -81,3 +81,5 @@ export default (state: State = initialState, action: Action): State => {
             return state;
     }
 };
+
+export default modalReducer;

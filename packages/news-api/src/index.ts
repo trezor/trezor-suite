@@ -43,7 +43,7 @@ const getPosts = (data: any, limit = 5) => {
     return result;
 };
 
-export default async (
+const fetcher = async (
     limit: number,
     callback: (statusCode: number, data: string | null, errMessage?: string) => void,
 ) => {
@@ -60,3 +60,5 @@ export default async (
         })
         .catch(error => callback(500, null, error.message));
 };
+
+export default fetcher;

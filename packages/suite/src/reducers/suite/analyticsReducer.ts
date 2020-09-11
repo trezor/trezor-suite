@@ -17,7 +17,7 @@ export const initialState: State = {
     enabled: false,
 };
 
-export default (state: State = initialState, action: Action): State => {
+const analyticsReducer = (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
             case ANALYTICS.INIT:
@@ -36,3 +36,5 @@ export default (state: State = initialState, action: Action): State => {
         }
     });
 };
+
+export default analyticsReducer;

@@ -11,7 +11,7 @@ import { AppState, Action, Dispatch } from '@suite-types';
  * Catch certain actions and store them in notifications reducer
  */
 
-export default (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
+const eventsMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
 ): Action => {
     const prevState = api.getState();
@@ -98,3 +98,5 @@ export default (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     }
     return action;
 };
+
+export default eventsMiddleware;

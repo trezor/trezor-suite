@@ -383,7 +383,7 @@ const updateMetadata = (draft: State, state: string, walletLabel?: string) => {
     metadata.walletLabel = walletLabel;
 };
 
-export default (state: State = initialState, action: Action): State => {
+const deviceReducer = (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOADED:
@@ -436,3 +436,5 @@ export default (state: State = initialState, action: Action): State => {
         }
     });
 };
+
+export default deviceReducer;

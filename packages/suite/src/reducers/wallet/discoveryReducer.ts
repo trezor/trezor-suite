@@ -74,7 +74,10 @@ const remove = (draft: State, payload: PartialDiscovery) => {
     draft.splice(index, 1);
 };
 
-export default (state: State = initialState, action: WalletAction | SuiteAction): State => {
+const discoveryReducer = (
+    state: State = initialState,
+    action: WalletAction | SuiteAction,
+): State => {
     return produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOADED:
@@ -100,3 +103,5 @@ export default (state: State = initialState, action: WalletAction | SuiteAction)
         }
     });
 };
+
+export default discoveryReducer;

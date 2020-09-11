@@ -69,7 +69,7 @@ const Right = styled.div`
     align-items: flex-start;
 `;
 
-export default ({ outputId }: { outputId: number }) => {
+const Amount = ({ outputId }: { outputId: number }) => {
     const {
         account,
         network,
@@ -229,3 +229,5 @@ export default ({ outputId }: { outputId: number }) => {
         </Wrapper>
     );
 };
+
+export default Amount;

@@ -99,7 +99,10 @@ const setMetadata = (draft: Account[], account: Account) => {
     draft[index].metadata = account.metadata;
 };
 
-export default (state: Account[] = initialState, action: WalletAction | SuiteAction): Account[] => {
+const accountsReducer = (
+    state: Account[] = initialState,
+    action: WalletAction | SuiteAction,
+): Account[] => {
     return produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOADED:
@@ -125,3 +128,5 @@ export default (state: Account[] = initialState, action: WalletAction | SuiteAct
         }
     });
 };
+
+export default accountsReducer;
