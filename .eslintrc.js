@@ -51,6 +51,11 @@ module.exports = {
         'import/extensions': ['error', 'never'],
         'import/no-extraneous-dependencies': 'off',
         'import/no-cycle': 'off',
+        'import/no-anonymous-default-export': ['error', {
+            'allowArray': true,
+            'allowLiteral': true,
+            'allowObject': true,
+        }],
         // We have types.
         'react/prop-types': 'off',
         // It's fine.

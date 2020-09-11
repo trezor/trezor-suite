@@ -27,7 +27,7 @@ export const initialState: State = {
     blockbookUrls: [],
 };
 
-export default (state: State = initialState, action: Action): State => {
+const settingsReducer = (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOADED:
@@ -72,3 +72,5 @@ export default (state: State = initialState, action: Action): State => {
         }
     });
 };
+
+export default settingsReducer;

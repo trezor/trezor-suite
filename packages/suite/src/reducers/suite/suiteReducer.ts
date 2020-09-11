@@ -77,7 +77,7 @@ const setFlag = (draft: SuiteState, key: keyof Flags, value: boolean) => {
     draft.flags[key] = value;
 };
 
-export default (state: SuiteState = initialState, action: Action): SuiteState => {
+const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteState => {
     return produce(state, draft => {
         switch (action.type) {
             case SUITE.INIT:
@@ -156,3 +156,5 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
         }
     });
 };
+
+export default suiteReducer;

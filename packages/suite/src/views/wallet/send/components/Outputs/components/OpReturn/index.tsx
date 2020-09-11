@@ -34,7 +34,7 @@ const Space = styled.div`
     min-width: 65px;
 `;
 
-export default ({ outputId }: { outputId: number }) => {
+const OpReturn = ({ outputId }: { outputId: number }) => {
     const {
         register,
         outputs,
@@ -115,3 +115,5 @@ export default ({ outputId }: { outputId: number }) => {
         </Wrapper>
     );
 };
+
+export default OpReturn;

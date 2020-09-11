@@ -49,7 +49,7 @@ const ButtonSend = styled(Button)`
     margin-bottom: 5px;
 `;
 
-export default ({ network }: { network: Network }) => {
+const Raw = ({ network }: { network: Network }) => {
     const { register, getValues, setValue, errors } = useForm({
         mode: 'onChange',
         defaultValues: {
@@ -115,3 +115,5 @@ export default ({ network }: { network: Network }) => {
         </Wrapper>
     );
 };
+
+export default Raw;

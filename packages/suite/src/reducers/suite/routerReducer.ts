@@ -30,7 +30,7 @@ const onLocationChange = (url: string) => {
     };
 };
 
-export default (state: State = initialState, action: Action): State => {
+const routerReducer = (state: State = initialState, action: Action): State => {
     switch (action.type) {
         case ROUTER.LOCATION_CHANGE:
             return onLocationChange(action.url);
@@ -38,3 +38,5 @@ export default (state: State = initialState, action: Action): State => {
             return state;
     }
 };
+
+export default routerReducer;

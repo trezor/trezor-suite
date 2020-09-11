@@ -29,7 +29,7 @@ export const buildCurrencyOptions = () => {
     return result;
 };
 
-export default ({ outputId }: { outputId: number }) => {
+const Fiat = ({ outputId }: { outputId: number }) => {
     const {
         account,
         network,
@@ -172,3 +172,5 @@ export default ({ outputId }: { outputId: number }) => {
         </Wrapper>
     );
 };
+
+export default Fiat;

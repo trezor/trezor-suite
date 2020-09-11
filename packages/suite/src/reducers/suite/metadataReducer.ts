@@ -9,7 +9,7 @@ export const initialState: MetadataState = {
     initiating: false,
 };
 
-export default (state = initialState, action: Action): MetadataState => {
+const metadataReducer = (state = initialState, action: Action): MetadataState => {
     return produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOADED:
@@ -34,3 +34,5 @@ export default (state = initialState, action: Action): MetadataState => {
         }
     });
 };
+
+export default metadataReducer;
