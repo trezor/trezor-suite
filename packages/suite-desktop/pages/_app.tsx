@@ -1,5 +1,6 @@
 import React from 'react';
 import App from 'next/app';
+import Head from 'next/head';
 import { Store } from 'redux';
 import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
@@ -35,22 +36,27 @@ class TrezorSuiteApp extends App<Props> {
         const { Component, pageProps, store } = this.props;
 
         return (
-            <ReduxProvider store={store}>
-                <ErrorBoundary>
-                    <Resize />
-                    <OnlineStatus />
-                    <IntlProvider>
-                        <Router />
-                        <BridgeStatus />
-                        <ToastContainer />
-                        <VersionCheck>
-                            <Preloader>
-                                <Component {...pageProps} />
-                            </Preloader>
-                        </VersionCheck>
-                    </IntlProvider>
-                </ErrorBoundary>
-            </ReduxProvider>
+            <>
+                <Head>
+                    <meta name="viewport" content="width=device-width, initial-scale=1" />
+                </Head>
+                <ReduxProvider store={store}>
+                    <ErrorBoundary>
+                        <Resize />
+                        <OnlineStatus />
+                        <IntlProvider>
+                            <Router />
+                            <BridgeStatus />
+                            <ToastContainer />
+                            <VersionCheck>
+                                <Preloader>
+                                    <Component {...pageProps} />
+                                </Preloader>
+                            </VersionCheck>
+                        </IntlProvider>
+                    </ErrorBoundary>
+                </ReduxProvider>
+            </>
         );
     }
 }
