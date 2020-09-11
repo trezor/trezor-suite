@@ -18,12 +18,11 @@ const Wrapper = styled.div<{ isMobileLayout?: boolean }>`
     flex-direction: column;
     justify-content: space-between;
     z-index: 4; /*  higher than accounts list to prevent box-shadow overflow */
-    /* margin-top: 10px; */
+    width: 100%;
 
     ${props =>
         !props.isMobileLayout &&
         css`
-            flex: 1;
             padding: 0px 8px;
             overflow: auto;
         `}

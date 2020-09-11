@@ -54,6 +54,7 @@ const AccountTopPanel = () => {
 
     return (
         <AppNavigationPanel
+            maxWidth="small"
             title={
                 <MetadataLabeling
                     defaultVisibleValue={<AccountLabeling account={account} />}

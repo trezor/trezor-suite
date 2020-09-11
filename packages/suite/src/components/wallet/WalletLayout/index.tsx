@@ -7,23 +7,16 @@ import Exception from '@wallet-components/AccountException';
 import AccountMode from '@wallet-components/AccountMode';
 import AccountAnnouncement from '@wallet-components/AccountAnnouncement';
 import AccountTopPanel from '@wallet-components/AccountTopPanel';
-import { MAX_WIDTH } from '@suite-constants/layout';
+import { MAX_WIDTH_WALLET_CONTENT } from '@suite-constants/layout';
 import { AppState } from '@suite-types';
-import { variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
-    margin: 0 auto;
     flex-direction: column;
-    padding: 16px 32px 32px 32px;
+    max-width: ${MAX_WIDTH_WALLET_CONTENT};
     width: 100%;
-    max-width: ${MAX_WIDTH};
     height: 100%;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding: 0px 16px 16px 16px;
-    }
 `;
 
 type Props = {
