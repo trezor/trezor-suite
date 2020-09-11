@@ -60,6 +60,7 @@ export function processQuotes(allQuotes: BuyTrade[]): [BuyTrade[], BuyTrade[]] {
     const alternativeQuotes = allQuotes.filter(
         q => q.tags && q.tags.includes('alternativeCurrency') && !q.error,
     );
+
     return [quotes, alternativeQuotes];
 }
 

@@ -24,7 +24,7 @@ const Offers = () => {
 
             {!selectedQuote && quotes.length > 0 && (
                 <>
-                    <List />
+                    <List quotes={quotes} />
                     {alternativeQuotes && alternativeQuotes.length > 0 && (
                         <>
                             <Divider>
@@ -35,7 +35,7 @@ const Offers = () => {
                                 </DividerMiddle>
                                 <DividerRight />
                             </Divider>
-                            <List isAlternative />
+                            <List isAlternative quotes={alternativeQuotes} />
                         </>
                     )}
                 </>

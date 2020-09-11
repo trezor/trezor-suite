@@ -2,14 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import { CoinLogo, variables, Icon, colors } from '@trezor/components';
 import Quote from './Quote';
+import { BuyTrade } from 'invity-api';
 import { useCoinmarketOffersContext } from '@wallet-hooks/useCoinmarketOffers';
 
 interface Props {
     isAlternative?: boolean;
+    quotes: BuyTrade[];
 }
 
-const Offers = ({ isAlternative = false }: Props) => {
-    const { account, quotesRequest, quotes } = useCoinmarketOffersContext();
+const List = ({ isAlternative, quotes }: Props) => {
+    const { account, quotesRequest } = useCoinmarketOffersContext();
     if (!quotesRequest) return null;
     const { fiatStringAmount, fiatCurrency, cryptoStringAmount, wantCrypto } = quotesRequest;
 
@@ -103,4 +105,4 @@ const Receive = styled(Text)`
 
 const StyledCoinLogo = styled(CoinLogo)``;
 
-export default Offers;
+export default List;
