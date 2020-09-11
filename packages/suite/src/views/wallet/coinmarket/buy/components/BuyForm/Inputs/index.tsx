@@ -5,7 +5,7 @@ import { CleanSelect, Icon, Input, variables } from '@trezor/components';
 import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
 import React, { useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
-import { useBuyFormContext } from '@wallet-hooks/useBuyForm';
+import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
 import styled from 'styled-components';
 import validator from 'validator';
 
@@ -25,7 +25,7 @@ const Inputs = () => {
         defaultCurrency,
         accountHasCachedRequest,
         quotesRequest,
-    } = useBuyFormContext();
+    } = useCoinmarketBuyFormContext();
     const { symbol } = account;
     const uppercaseSymbol = symbol.toUpperCase();
     const fiatInput = 'fiatInput';

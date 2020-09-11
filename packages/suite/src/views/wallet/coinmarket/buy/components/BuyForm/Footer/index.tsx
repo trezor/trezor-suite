@@ -1,15 +1,21 @@
 import React from 'react';
 import { Button, CleanSelect, colors, variables } from '@trezor/components';
 import regional from '@wallet-constants/coinmarket/regional';
-import { useBuyFormContext } from '@wallet-hooks/useBuyForm';
+import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
 import { getCountryLabelParts } from '@wallet-utils/coinmarket/buyUtils';
-import { Option } from '@wallet-types/buyForm';
+import { Option } from '@wallet-types/coinmarketBuyForm';
 import { Translation } from '@suite-components';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 
 const Footer = () => {
-    const { control, formState, watch, setAmountLimits, defaultCountry } = useBuyFormContext();
+    const {
+        control,
+        formState,
+        watch,
+        setAmountLimits,
+        defaultCountry,
+    } = useCoinmarketBuyFormContext();
     const countrySelect = 'countrySelect';
     const hasValues =
         (watch('fiatInput') || watch('cryptoInput')) && !!watch('currencySelect').value;

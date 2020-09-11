@@ -7,20 +7,19 @@ import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
 import regional from '@wallet-constants/coinmarket/regional';
 import { BuyTradeQuoteRequest } from 'invity-api';
 import invityAPI from '@suite-services/invityAPI';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { getAmountLimits, processQuotes } from '@wallet-utils/coinmarket/buyUtils';
 import {
     FormState,
-    UseBuyFormProps,
+    Props,
     AmountLimits,
     BuyFormContextValues,
-} from '@wallet-types/buyForm';
+} from '@wallet-types/coinmarketBuyForm';
 
 export const BuyFormContext = createContext<BuyFormContextValues | null>(null);
 BuyFormContext.displayName = 'CoinmarketBuyContext';
 
-export const useBuyForm = (props: UseBuyFormProps): BuyFormContextValues => {
+export const useCoinmarketBuyForm = (props: Props): BuyFormContextValues => {
     const { selectedAccount, cachedAccountInfo, quotesRequest } = props;
     const { buyInfo } = useInvityAPI();
     const { account } = selectedAccount;
@@ -36,10 +35,6 @@ export const useBuyForm = (props: UseBuyFormProps): BuyFormContextValues => {
 
     const { goto } = useActions({
         goto: routerActions.goto,
-    });
-
-    const { verifyAddress } = useActions({
-        verifyAddress: coinmarketCommonActions.verifyAddress,
     });
 
     const { register } = methods;
@@ -111,7 +106,6 @@ export const useBuyForm = (props: UseBuyFormProps): BuyFormContextValues => {
         saveQuotes,
         quotesRequest,
         saveCachedAccountInfo,
-        verifyAddress,
         saveTrade,
         amountLimits,
         setAmountLimits,
@@ -120,7 +114,7 @@ export const useBuyForm = (props: UseBuyFormProps): BuyFormContextValues => {
     };
 };
 
-export const useBuyFormContext = () => {
+export const useCoinmarketBuyFormContext = () => {
     const context = useContext(BuyFormContext);
     if (context === null) throw Error('BuyFormContext used without Context');
     return context;

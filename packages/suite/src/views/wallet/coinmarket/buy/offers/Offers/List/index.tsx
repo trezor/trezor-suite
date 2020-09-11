@@ -2,8 +2,63 @@ import React from 'react';
 import styled from 'styled-components';
 import { CoinLogo, variables, Icon, colors } from '@trezor/components';
 import Quote from './Quote';
-import { BuyTrade } from 'invity-api';
-import { useSelector } from '@suite-hooks';
+import { useCoinmarketOffersContext } from '@wallet-hooks/useCoinmarketOffers';
+
+interface Props {
+    isAlternative?: boolean;
+}
+
+const Offers = ({ isAlternative = false }: Props) => {
+    const { account, quotesRequest, quotes } = useCoinmarketOffersContext();
+    if (!quotesRequest) return null;
+    const { fiatStringAmount, fiatCurrency, cryptoStringAmount, wantCrypto } = quotesRequest;
+
+    return (
+        <Wrapper>
+            <Header>
+                {isAlternative ? (
+                    <>
+                        <SummaryRow>
+                            <Text>
+                                {wantCrypto ? '' : `${quotes[0].fiatStringAmount} `}
+                                {quotes[0].fiatCurrency}
+                            </Text>
+                            <StyledIcon icon="ARROW_RIGHT" />
+                            {wantCrypto && <Receive>{quotes[0].receiveStringAmount}</Receive>}
+                            <StyledCoinLogo size={21} symbol={account.symbol} />
+                            <Crypto>{account.symbol}</Crypto>
+                        </SummaryRow>
+                        {!wantCrypto && (
+                            <OrigAmount>
+                                ≈ {fiatStringAmount} {fiatCurrency}
+                            </OrigAmount>
+                        )}
+                    </>
+                ) : (
+                    <SummaryRow>
+                        <Text>
+                            {wantCrypto ? '' : `${fiatStringAmount} `}
+                            {fiatCurrency}
+                        </Text>
+                        <StyledIcon icon="ARROW_RIGHT" />
+                        {wantCrypto && <Receive>{cryptoStringAmount}</Receive>}
+                        <StyledCoinLogo size={21} symbol={account.symbol} />
+                        <Crypto>{account.symbol}</Crypto>
+                    </SummaryRow>
+                )}
+            </Header>
+            <Quotes>
+                {quotes.map(quote => (
+                    <StyledQuote
+                        wantCrypto={wantCrypto}
+                        key={`${quote.exchange}-${quote.paymentMethod}-${quote.receiveCurrency}`}
+                        quote={quote}
+                    />
+                ))}
+            </Quotes>
+        </Wrapper>
+    );
+};
 
 const Wrapper = styled.div``;
 const Quotes = styled.div``;
@@ -47,68 +102,5 @@ const Receive = styled(Text)`
 `;
 
 const StyledCoinLogo = styled(CoinLogo)``;
-
-interface Props {
-    selectQuote: (quote: BuyTrade) => void;
-    quotes?: BuyTrade[];
-    isAlternative?: boolean;
-}
-
-const Offers = ({ selectQuote, quotes, isAlternative }: Props) => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const quotesRequest = useSelector(state => state.wallet.coinmarket.buy.quotesRequest);
-    if (!quotesRequest || !quotes) return null;
-
-    if (selectedAccount.status !== 'loaded') return null;
-    const { account } = selectedAccount;
-    const { fiatStringAmount, fiatCurrency, cryptoStringAmount, wantCrypto } = quotesRequest;
-
-    return (
-        <Wrapper>
-            <Header>
-                {isAlternative ? (
-                    <>
-                        <SummaryRow>
-                            <Text>
-                                {wantCrypto ? '' : `${quotes[0].fiatStringAmount} `}
-                                {quotes[0].fiatCurrency}
-                            </Text>
-                            <StyledIcon icon="ARROW_RIGHT" />
-                            {wantCrypto && <Receive>{quotes[0].receiveStringAmount}</Receive>}
-                            <StyledCoinLogo size={21} symbol={account.symbol} />
-                            <Crypto>{account.symbol}</Crypto>
-                        </SummaryRow>
-                        {!wantCrypto && (
-                            <OrigAmount>
-                                ≈ {fiatStringAmount} {fiatCurrency}
-                            </OrigAmount>
-                        )}
-                    </>
-                ) : (
-                    <SummaryRow>
-                        <Text>
-                            {wantCrypto ? '' : `${fiatStringAmount} `}
-                            {fiatCurrency}
-                        </Text>
-                        <StyledIcon icon="ARROW_RIGHT" />
-                        {wantCrypto && <Receive>{cryptoStringAmount}</Receive>}
-                        <StyledCoinLogo size={21} symbol={account.symbol} />
-                        <Crypto>{account.symbol}</Crypto>
-                    </SummaryRow>
-                )}
-            </Header>
-            <Quotes>
-                {quotes.map(quote => (
-                    <StyledQuote
-                        wantCrypto={wantCrypto}
-                        key={`${quote.exchange}-${quote.paymentMethod}-${quote.receiveCurrency}`}
-                        quote={quote}
-                        selectQuote={selectQuote}
-                    />
-                ))}
-            </Quotes>
-        </Wrapper>
-    );
-};
 
 export default Offers;

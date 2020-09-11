@@ -1,10 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { BuyTrade } from 'invity-api';
-import { useSelector } from '@suite-hooks';
 import { Card, variables } from '@trezor/components';
-import VerifyAddress from '../../../components/VerifyAddress';
+import VerifyAddress from './components/VerifyAddress';
 import { CoinmarketBuyOfferInfo } from '@wallet-components';
+import { useCoinmarketOffersContext } from '@wallet-hooks/useCoinmarketOffers';
 
 const Wrapper = styled.div`
     display: flex;
@@ -20,21 +19,14 @@ const StyledCard = styled(Card)`
     padding: 0;
 `;
 
-interface Props {
-    selectedQuote?: BuyTrade;
-}
-
-const SelectedOffer = ({ selectedQuote }: Props) => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    if (selectedAccount.status !== 'loaded' || !selectedQuote) {
-        return null;
-    }
-    const { account } = selectedAccount;
+const SelectedOffer = () => {
+    const { account, selectedQuote } = useCoinmarketOffersContext();
+    if (!selectedQuote) return null;
 
     return (
         <Wrapper>
             <StyledCard>
-                <VerifyAddress selectedQuote={selectedQuote} />
+                <VerifyAddress />
             </StyledCard>
             <CoinmarketBuyOfferInfo selectedQuote={selectedQuote} account={account} />
         </Wrapper>

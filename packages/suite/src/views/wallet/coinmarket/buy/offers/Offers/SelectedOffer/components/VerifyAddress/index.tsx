@@ -1,30 +1,23 @@
 import React from 'react';
 import styled from 'styled-components';
-import { getAccountInfo, submitRequestForm, createTxLink } from '@wallet-utils/coinmarket/buyUtils';
+import { getAccountInfo } from '@wallet-utils/coinmarket/buyUtils';
 import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonActions';
-import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
-import { useActions, useSelector } from '@suite-hooks';
 import { Input, Button, colors, variables, CoinLogo, DeviceImage } from '@trezor/components';
-import invityAPI from '@suite-services/invityAPI';
-import { BuyTrade } from 'invity-api';
+import { useCoinmarketOffersContext } from '@wallet-hooks/useCoinmarketOffers';
 
-interface Props {
-    selectedQuote: BuyTrade;
-}
-
-const VerifyAddress = ({ selectedQuote }: Props) => {
-    const selectedDevice = useSelector(state => state.suite.device);
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const addressVerified = useSelector(state => state.wallet.coinmarket.buy.addressVerified);
-    const { verifyAddress } = useActions({ verifyAddress: coinmarketCommonActions.verifyAddress });
-    const { saveTrade } = useActions({ saveTrade: coinmarketBuyActions.saveTrade });
-    if (selectedAccount.status !== 'loaded') return null;
-    const { account } = selectedAccount;
+const VerifyAddressComponent = () => {
+    const {
+        account,
+        device,
+        verifyAddress,
+        selectedQuote,
+        goToPayment,
+        addressVerified,
+    } = useCoinmarketOffersContext();
     const { symbol, index, formattedBalance } = account;
     const { path, address } = getAccountInfo(account);
 
-    if (!path || !address) {
+    if (!path || !address || !selectedQuote) {
         return null;
     }
 
@@ -63,10 +56,10 @@ const VerifyAddress = ({ selectedQuote }: Props) => {
                 />
                 {addressVerified && (
                     <Confirmed>
-                        {selectedDevice && (
+                        {device && (
                             <StyledDeviceImage
                                 height={25}
-                                trezorModel={selectedDevice.features?.major_version === 1 ? 1 : 2}
+                                trezorModel={device.features?.major_version === 1 ? 1 : 2}
                             />
                         )}
                         <Translation id="TR_BUY_CONFIRMED_ON_TREZOR" />
@@ -80,28 +73,7 @@ const VerifyAddress = ({ selectedQuote }: Props) => {
                     </Button>
                 )}
                 {addressVerified && (
-                    <Button
-                        onClick={async () => {
-                            const quote = { ...selectedQuote, receiveAddress: address };
-                            const response = await invityAPI.doBuyTrade({
-                                trade: quote,
-                                returnUrl: createTxLink(selectedQuote, account),
-                            });
-                            if (!response || !response.trade || !response.trade.paymentId) {
-                                // TODO - show error, something really bad happened
-                                console.log('invalid response', response);
-                            } else if (response.trade.error) {
-                                // TODO - show error, trade failed, typically timeout
-                                console.log('response error', response.trade.error);
-                            } else {
-                                await saveTrade(response.trade, account, new Date().toISOString());
-                                // eslint-disable-next-line no-lonely-if
-                                if (response.tradeForm) {
-                                    submitRequestForm(response.tradeForm);
-                                }
-                            }
-                        }}
-                    >
+                    <Button onClick={() => goToPayment(address)}>
                         <Translation id="TR_BUY_GO_TO_PAYMENT" />
                     </Button>
                 )}
@@ -205,4 +177,4 @@ const Confirmed = styled.div`
     justify-content: center;
 `;
 
-export default VerifyAddress;
+export default VerifyAddressComponent;

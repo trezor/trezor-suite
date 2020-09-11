@@ -7,14 +7,14 @@ import { UseFormMethods } from 'react-hook-form';
 export type Option = { value: string; label: string };
 export type defaultCountryOption = { value: string; label?: string };
 
-export interface BuyFormProps {
+export interface ComponentProps {
+    selectedAccount: AppState['wallet']['selectedAccount'];
     quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
     cachedAccountInfo: AppState['wallet']['coinmarket']['buy']['cachedAccountInfo'];
-    selectedAccount: AppState['wallet']['selectedAccount'];
 }
 
-export interface UseBuyFormProps extends BuyFormProps {
-    selectedAccount: Extract<BuyFormProps['selectedAccount'], { status: 'loaded' }>;
+export interface Props extends ComponentProps {
+    selectedAccount: Extract<ComponentProps['selectedAccount'], { status: 'loaded' }>;
 }
 
 export type FormState = {
@@ -52,7 +52,6 @@ export type BuyFormContextValues = Omit<UseFormMethods<FormState>, 'register'> &
         index: number,
         accountType: Account['accountType'],
     ) => Promise<void>;
-    verifyAddress: (path: string, address: string) => Promise<void>;
     saveTrade: (buyTrade: BuyTrade, account: Account, date: string) => Promise<void>;
     amountLimits?: AmountLimits;
     setAmountLimits: (limits?: AmountLimits) => void;

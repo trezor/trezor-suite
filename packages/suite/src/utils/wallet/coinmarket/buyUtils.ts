@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Account } from '@wallet-types';
-import { AmountLimits } from '@wallet-types/buyForm';
+import { AmountLimits } from '@wallet-types/coinmarketBuyForm';
 import { BuyTrade, BuyTradeQuoteRequest, BuyTradeFormResponse } from 'invity-api';
 import { Trade } from '@wallet-reducers/coinmarketReducer';
 import { symbolToInvityApiSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';

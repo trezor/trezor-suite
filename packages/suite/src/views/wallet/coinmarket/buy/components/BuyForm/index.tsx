@@ -1,5 +1,5 @@
 import React from 'react';
-import { useBuyFormContext } from '@wallet-hooks/useBuyForm';
+import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { variables } from '@trezor/components';
@@ -8,7 +8,7 @@ import Inputs from './Inputs';
 import Footer from './Footer';
 
 const BuyForm = () => {
-    const { onSubmit, handleSubmit, isLoading, noProviders } = useBuyFormContext();
+    const { onSubmit, handleSubmit, isLoading, noProviders } = useCoinmarketBuyFormContext();
 
     return (
         <Wrapper>
