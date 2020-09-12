@@ -200,6 +200,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',
     },
+    TR_BUY_OTHER_OFFERS_IN: {
+        defaultMessage: 'Other Offers in',
+        id: 'TR_BUY_OTHER_OFFERS_IN',
+    },
     TR_BUY_VALIDATION_ERROR_EMPTY: {
         defaultMessage: 'TR_BUY_ERROR_EMPTY',
         id: 'TR_BUY_ERROR_EMPTY',

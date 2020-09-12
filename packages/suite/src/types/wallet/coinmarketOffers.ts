@@ -23,6 +23,8 @@ export type ContextValues = {
     alternativeQuotes: AppState['wallet']['coinmarket']['buy']['alternativeQuotes'];
     quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
     quotes: BuyTrade[];
+    lastFetchDate: Date;
+    REFETCH_INTERVAL: number;
     device: AppState['suite']['device'];
     selectedQuote?: BuyTrade;
     addressVerified: AppState['wallet']['coinmarket']['buy']['addressVerified'];

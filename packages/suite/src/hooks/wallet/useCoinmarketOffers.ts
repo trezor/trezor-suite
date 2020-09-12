@@ -15,6 +15,7 @@ import {
 import { Props, ContextValues } from '@wallet-types/coinmarketOffers';
 
 export const useOffers = (props: Props) => {
+    const REFETCH_INTERVAL = 30000;
     const {
         selectedAccount,
         quotesRequest,
@@ -31,6 +32,7 @@ export const useOffers = (props: Props) => {
     const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<BuyTrade[] | undefined>(
         alternativeQuotes,
     );
+    const [lastFetchDate, setLastFetchDate] = useState(new Date());
     const { openModal } = useActions({ openModal: modalActions.openModal });
     const { goto } = useActions({ goto: routerActions.goto });
     const { verifyAddress } = useActions({ verifyAddress: coinmarketCommonActions.verifyAddress });
@@ -49,18 +51,27 @@ export const useOffers = (props: Props) => {
             return;
         }
 
-        const getQuotesAfterRedirect = async () => {
-            invityAPI.createInvityAPIKey(account.descriptor);
-            const allQuotes = await invityAPI.getBuyQuotes(quotesRequest);
-            const [quotes, alternativeQuotes] = processQuotes(allQuotes);
-            setInnerQuotes(quotes);
-            setInnerAlternativeQuotes(alternativeQuotes);
+        const getQuotes = async () => {
+            if (!selectedQuote) {
+                invityAPI.createInvityAPIKey(account.descriptor);
+                const allQuotes = await invityAPI.getBuyQuotes(quotesRequest);
+                const [quotes, alternativeQuotes] = processQuotes(allQuotes);
+                setInnerQuotes(quotes);
+                setInnerAlternativeQuotes(alternativeQuotes);
+            }
         };
 
         if (isFromRedirect && quotesRequest) {
-            getQuotesAfterRedirect();
+            getQuotes();
             setIsFromRedirect(false);
         }
+
+        const interval = setInterval(() => {
+            getQuotes();
+            setLastFetchDate(new Date());
+        }, REFETCH_INTERVAL);
+
+        return () => clearInterval(interval);
     });
 
     const selectQuote = (quote: BuyTrade) => {
@@ -122,6 +133,7 @@ export const useOffers = (props: Props) => {
         selectedQuote,
         verifyAddress,
         device,
+        lastFetchDate,
         providersInfo,
         setSelectQuote,
         saveTrade,
@@ -131,6 +143,7 @@ export const useOffers = (props: Props) => {
         alternativeQuotes: innerAlternativeQuotes,
         selectQuote,
         account,
+        REFETCH_INTERVAL,
     };
 };
 

@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { differenceInSeconds } from 'date-fns';
 import styled from 'styled-components';
 import { CoinLogo, variables, Icon, colors } from '@trezor/components';
-import Quote from './Quote';
 import { BuyTrade } from 'invity-api';
 import { useCoinmarketOffersContext } from '@wallet-hooks/useCoinmarketOffers';
+
+import Quote from './Quote';
 
 interface Props {
     isAlternative?: boolean;
@@ -11,43 +13,61 @@ interface Props {
 }
 
 const List = ({ isAlternative, quotes }: Props) => {
-    const { account, quotesRequest } = useCoinmarketOffersContext();
+    const {
+        account,
+        quotesRequest,
+        lastFetchDate,
+        REFETCH_INTERVAL,
+    } = useCoinmarketOffersContext();
+    const [seconds, setSeconds] = useState(differenceInSeconds(new Date(), lastFetchDate));
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const seconds = differenceInSeconds(new Date(), lastFetchDate);
+            setSeconds(seconds);
+        }, 50);
+        return () => clearInterval(interval);
+    });
+
     if (!quotesRequest) return null;
     const { fiatStringAmount, fiatCurrency, cryptoStringAmount, wantCrypto } = quotesRequest;
 
     return (
         <Wrapper>
             <Header>
-                {isAlternative ? (
-                    <>
+                <Left>
+                    {isAlternative ? (
+                        <>
+                            <SummaryRow>
+                                <Text>
+                                    {wantCrypto ? '' : `${quotes[0].fiatStringAmount} `}
+                                    {quotes[0].fiatCurrency}
+                                </Text>
+                                <StyledIcon icon="ARROW_RIGHT" />
+                                {wantCrypto && <Receive>{quotes[0].receiveStringAmount}</Receive>}
+                                <StyledCoinLogo size={21} symbol={account.symbol} />
+                                <Crypto>{account.symbol}</Crypto>
+                            </SummaryRow>
+                            {!wantCrypto && (
+                                <OrigAmount>
+                                    ≈ {fiatStringAmount} {fiatCurrency}
+                                </OrigAmount>
+                            )}
+                        </>
+                    ) : (
                         <SummaryRow>
                             <Text>
-                                {wantCrypto ? '' : `${quotes[0].fiatStringAmount} `}
-                                {quotes[0].fiatCurrency}
+                                {wantCrypto ? '' : `${fiatStringAmount} `}
+                                {fiatCurrency}
                             </Text>
                             <StyledIcon icon="ARROW_RIGHT" />
-                            {wantCrypto && <Receive>{quotes[0].receiveStringAmount}</Receive>}
+                            {wantCrypto && <Receive>{cryptoStringAmount}</Receive>}
                             <StyledCoinLogo size={21} symbol={account.symbol} />
                             <Crypto>{account.symbol}</Crypto>
                         </SummaryRow>
-                        {!wantCrypto && (
-                            <OrigAmount>
-                                ≈ {fiatStringAmount} {fiatCurrency}
-                            </OrigAmount>
-                        )}
-                    </>
-                ) : (
-                    <SummaryRow>
-                        <Text>
-                            {wantCrypto ? '' : `${fiatStringAmount} `}
-                            {fiatCurrency}
-                        </Text>
-                        <StyledIcon icon="ARROW_RIGHT" />
-                        {wantCrypto && <Receive>{cryptoStringAmount}</Receive>}
-                        <StyledCoinLogo size={21} symbol={account.symbol} />
-                        <Crypto>{account.symbol}</Crypto>
-                    </SummaryRow>
-                )}
+                    )}
+                </Left>
+                <Right>{!isAlternative && REFETCH_INTERVAL / 1000 - seconds}</Right>
             </Header>
             <Quotes>
                 {quotes.map(quote => (
@@ -71,6 +91,15 @@ const StyledQuote = styled(Quote)`
 
 const Header = styled.div`
     margin: 36px 0 24px 0;
+    display: flex;
+    justify-content: space-between;
+`;
+
+const Left = styled.div``;
+const Right = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 `;
 
 const SummaryRow = styled.div`

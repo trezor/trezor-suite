@@ -2,7 +2,7 @@ import React, { useMemo, useContext } from 'react';
 import styled from 'styled-components';
 import { CoinmarketFooter, CoinmarketTopPanel } from '@wallet-components';
 import { variables, colors } from '@trezor/components';
-import { LayoutContext } from '@suite-components';
+import { LayoutContext, Translation } from '@suite-components';
 import { useCoinmarketOffersContext } from '@wallet-hooks/useCoinmarketOffers';
 
 import List from './List';
@@ -30,7 +30,7 @@ const Offers = () => {
                             <Divider>
                                 <DividerLeft />
                                 <DividerMiddle>
-                                    Other offers in
+                                    <Translation id="TR_BUY_OTHER_OFFERS_IN" />
                                     <Currency>{alternativeQuotes[0].fiatCurrency}</Currency>
                                 </DividerMiddle>
                                 <DividerRight />
