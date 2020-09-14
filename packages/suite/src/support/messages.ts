@@ -3734,6 +3734,66 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Not connected to the backend yet. Try going to your account overview to establish the connection with the backend.',
     },
+    TR_LABELING_ADD_LABEL: {
+        id: 'TR_LABELING_ADD_LABEL',
+        defaultMessage: 'Add label',
+    },
+    TR_LABELING_EDIT_LABEL: {
+        id: 'TR_LABELING_EDIT_LABEL',
+        defaultMessage: 'Edit label',
+    },
+    TR_LABELING_REMOVE_LABEL: {
+        id: 'TR_LABELING_REMOVE_LABEL',
+        defaultMessage: 'Remove label',
+    },
+    TR_LABELING_ADD_ADDRESS: {
+        id: 'TR_LABELING_ADD_ADDRESS',
+        defaultMessage: 'Add label',
+    },
+    TR_LABELING_EDIT_ADDRESS: {
+        id: 'TR_LABELING_EDIT_ADDRESS',
+        defaultMessage: 'Edit label',
+    },
+    TR_LABELING_REMOVE_ADDRESS: {
+        id: 'TR_LABELING_REMOVE_ADDRESS',
+        defaultMessage: 'Remove label',
+    },
+    TR_LABELING_ADD_ACCOUNT: {
+        id: 'TR_LABELING_ADD_ACCOUNT',
+        defaultMessage: 'Add label',
+    },
+    TR_LABELING_EDIT_ACCOUNT: {
+        id: 'TR_LABELING_EDIT_ACCOUNT',
+        defaultMessage: 'Edit label',
+    },
+    TR_LABELING_REMOVE_ACCOUNT: {
+        id: 'TR_LABELING_REMOVE_ACCOUNT',
+        defaultMessage: 'Remove label',
+    },
+    TR_LABELING_ADD_WALLET: {
+        id: 'TR_LABELING_ADD_WALLET',
+        defaultMessage: 'Add label',
+    },
+    TR_LABELING_EDIT_WALLET: {
+        id: 'TR_LABELING_EDIT_WALLET',
+        defaultMessage: 'Edit label',
+    },
+    TR_LABELING_REMOVE_WALLET: {
+        id: 'TR_LABELING_REMOVE_WALLET',
+        defaultMessage: 'Remove label',
+    },
+    TR_LABELING_ADD_OUTPUT: {
+        id: 'TR_LABELING_ADD_OUTPUT',
+        defaultMessage: 'Add label',
+    },
+    TR_LABELING_EDIT_OUTPUT: {
+        id: 'TR_LABELING_EDIT_OUTPUT',
+        defaultMessage: 'Edit label',
+    },
+    TR_LABELING_REMOVE_OUTPUT: {
+        id: 'TR_LABELING_REMOVE_OUTPUT',
+        defaultMessage: 'Remove label',
+    },
 } as const);
 
 export default definedMessages;
