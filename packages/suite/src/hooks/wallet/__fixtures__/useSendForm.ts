@@ -367,14 +367,14 @@ export const setMax = [
                 ],
             },
         },
-        results: {
-            connectCalledTimes: 1,
+        finalResult: {
+            composeTransactionCalls: 1,
             composedLevels: {
                 normal: {
                     type: 'nonfinal',
                 },
             },
-            values: {
+            formValues: {
                 selectedFee: undefined,
                 outputs: [{ address: '', amount: '1', fiat: '1.00' }],
             },
@@ -423,14 +423,270 @@ export const setMax = [
                 },
             },
         ],
-        results: {
-            connectCalledTimes: 2,
+        finalResult: {
+            composeTransactionCalls: 2,
             composedLevels: { normal: { type: 'error' }, custom: { type: 'final' } },
-            values: {
+            formValues: {
                 selectedFee: 'custom',
                 feePerUnit: '2',
                 outputs: [{ amount: '0.1', fiat: '0.10' }],
             },
+        },
+    },
+    {
+        description:
+            'setMax sequence: compose not final (without address) then add address',
+        connect: [
+            {
+                response: {
+                    success: true,
+                    payload: [
+                        {
+                            type: 'nonfinal',
+                            max: '100000000',
+                        },
+                    ],
+                },
+            },
+            {
+                response: {
+                    success: true,
+                    payload: [
+                        { 
+                            type: 'final',
+                            max: '100000000',
+                        },
+                    ],
+                },
+            },
+        ],
+        actions: [
+            {
+                type: 'hover',
+                element: 'outputs[0].amount',
+            },
+            {
+                type: 'click',
+                element: 'outputs[0].setMax',
+                result: {
+                    composeTransactionCalls: 1,
+                    composeTransactionParams: {
+                        outputs: [
+                            { type: 'send-max-noaddress' }
+                        ]
+                    },
+                    formValues: {
+                        setMaxOutputId: 0,
+                        outputs: [{ address: '', amount: '1', fiat: '1.00' }],
+                    },
+                    composedLevels: {
+                        normal: { type: 'nonfinal' },
+                    }
+                }
+            },
+            {
+                type: 'input',
+                element: 'outputs[0].address',
+                value: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
+                result: {
+                    composeTransactionParams: {
+                        outputs: [
+                            { type: 'send-max', address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX' }
+                        ]
+                    },
+                },
+            },
+        ],
+        finalResult: {
+            composeTransactionCalls: 2,
+            formValues: {
+                setMaxOutputId: 0,
+                outputs: [{ address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '1', fiat: '1.00' }],
+            },
+            composedLevels: {
+                normal: { type: 'final' },
+            }
+        },
+    },
+    {
+        description:
+            'setMax sequence: compose final with address, disable setMax, add second output',
+        connect: [
+            {
+                response: {
+                    success: true,
+                    payload: [
+                        { 
+                            type: 'final',
+                            max: '100000000',
+                        },
+                    ],
+                },
+            },
+            {
+                response: {
+                    success: true,
+                    payload: [
+                        { 
+                            type: 'nonfinal',
+                            max: '100000000',
+                        },
+                    ],
+                },
+            },
+            {
+                response: {
+                    success: true,
+                    payload: [
+                        { 
+                            type: 'nonfinal',
+                            max: '100000000',
+                        },
+                    ],
+                },
+            },
+            {
+                response: {
+                    success: true,
+                    payload: [
+                        { 
+                            type: 'final',
+                            totalSpent: '120000000',
+                        },
+                    ],
+                },
+            },
+        ],
+        actions: [
+            {
+                type: 'input',
+                element: 'outputs[0].address',
+                value: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
+                result: {
+                    composeTransactionCalls: 0,
+                    composedLevels: undefined,
+                }
+            },
+            {
+                type: 'hover',
+                element: 'outputs[0].amount',
+            },
+            {
+                type: 'click',
+                element: 'outputs[0].setMax',
+                result: {
+                    composeTransactionCalls: 1,
+                    formValues: {
+                        setMaxOutputId: 0,
+                        outputs: [{ address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '1', fiat: '1.00' }],
+                    },
+                    composedLevels: {
+                        normal: { type: 'final' },
+                    }
+                }
+            },
+            // add second output
+            {
+                type: 'click',
+                element: 'add-output',
+                result: {
+                    composeTransactionCalls: 1,
+                    formValues: {
+                        setMaxOutputId: 0,
+                        outputs: [{ address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '1', fiat: '1.00' }, { address: '' }],
+                    },
+                    composedLevels: {
+                        normal: { type: 'final' },
+                    }
+                },
+            },
+            // fill address in second output
+            {
+                type: 'input',
+                element: 'outputs[1].address',
+                value: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
+                result: {
+                    formValues: {
+                        setMaxOutputId: 0,
+                        outputs: [
+                            { address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '1', fiat: '1.00' },
+                            { address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '' }
+                        ],
+                    },
+                    composeTransactionParams: {
+                        outputs: [
+                            // corner-case: send-max was changed to send-max-noaddress
+                            // see sendFormUtils.getBitcoinComposeOutput
+                            { type: 'send-max-noaddress', address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX' }
+                        ]
+                    },
+                }
+            },
+            // disable send max
+            {
+                type: 'click',
+                element: 'outputs[0].setMax',
+                result: {
+                    formValues: {
+                        setMaxOutputId: undefined,
+                    },
+                    composeTransactionParams: {
+                        outputs: [
+                            // corner-case: external was changed to noaddress
+                            // see sendFormUtils.getBitcoinComposeOutput
+                            { type: 'noaddress', address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '100000000' }
+                        ]
+                    },
+                }
+            },
+            // fill fiat in second output
+            {
+                type: 'input',
+                element: 'outputs[1].fiat',
+                value: '0.20',
+                result: {
+                    formValues: {
+                        outputs: [
+                            { address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '1', fiat: '1.00' },
+                            { address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '0.20000000', fiat: '0.20' }
+                        ],
+                    },
+                    composeTransactionParams: {
+                        outputs: [
+                            { type: 'external', address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '100000000' },
+                            { type: 'external', address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '20000000' }
+                        ]
+                    },
+                }
+            },
+            // remove second output
+            // {
+            //     type: 'click',
+            //     element: 'outputs[1].remove',
+            //     result: {
+            //         composeTransactionParams: {
+            //             outputs: [
+            //                 { type: 'external', address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '100000000' }
+            //             ]
+            //         },
+            //     },
+            // }
+        ],
+        finalResult: {
+            composeTransactionCalls: 4,
+            formValues: {
+                setMaxOutputId: undefined,
+                outputs: [
+                    { address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '1', fiat: '1.00' }, 
+                    { address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '0.20000000', fiat: '0.20' }
+                ],
+            },
+            composedLevels: {
+                normal: {
+                    type: 'final',
+                    totalSpent: '120000000',
+                },
+            }
         },
     },
 ];

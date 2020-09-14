@@ -6,7 +6,7 @@ import userEvent from '@testing-library/user-event';
 import * as fixtures from '../__fixtures__/useSendForm';
 import sendFormReducer from '@wallet-reducers/sendFormReducer';
 
-import { renderWithCallback, waitForLoader, findByTestId } from './SendIndex';
+import { renderWithCallback, waitForLoader, findByTestId, actionSequence } from './SendIndex';
 
 jest.mock('react-svg', () => {
     return { ReactSVG: () => 'SVG' };
@@ -84,6 +84,9 @@ const initStore = (state: State) => {
 };
 
 describe('useSendForm hook', () => {
+    beforeEach(() => {
+        jest.setTimeout(30000);
+    });
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -130,23 +133,29 @@ describe('useSendForm hook', () => {
             const store = initStore(getInitialState(f.store));
             const { unmount, callback } = renderWithCallback(store);
 
-            // wait for compose
+            // wait for compose from draft
             await waitForLoader();
             if (!callback.getContextValues) throw Error('callback.getContextValues missing');
-            // wait for render
-            // await waitFor(() => {
-            const { composedLevels, getValues } = callback.getContextValues();
-            expect(require('trezor-connect').default.composeTransaction).toBeCalledTimes(
-                f.results.connectCalledTimes,
-            );
 
-            if (f.results.composedLevels) {
-                expect(composedLevels).toMatchObject(f.results.composedLevels);
-                expect(getValues()).toMatchObject(f.results.values);
-            } else {
-                expect(composedLevels).toBe(undefined);
+            // execute user actions sequence
+            if (f.actions) {
+                await actionSequence(f.actions, callback);
             }
-            // });
+            
+            // compare finalResult
+            if (f.finalResult) {
+                const { composedLevels, getValues } = callback.getContextValues();
+                expect(require('trezor-connect').default.composeTransaction).toBeCalledTimes(
+                    f.finalResult.composeTransactionCalls,
+                );
+
+                if (f.finalResult.composedLevels) {
+                    expect(composedLevels).toMatchObject(f.finalResult.composedLevels);
+                    expect(getValues()).toMatchObject(f.finalResult.formValues);
+                } else {
+                    expect(composedLevels).toBe(undefined);
+                }
+            }
 
             unmount();
         });
