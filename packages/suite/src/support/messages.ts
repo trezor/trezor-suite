@@ -3734,6 +3734,18 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Not connected to the backend yet. Try going to your account overview to establish the connection with the backend.',
     },
+    TR_LABELING_ADD_LABEL: {
+        id: 'TR_LABELING_ADD_LABEL',
+        defaultMessage: 'Add label',
+    },
+    TR_LABELING_EDIT_LABEL: {
+        id: 'TR_LABELING_EDIT_LABEL',
+        defaultMessage: 'Edit label',
+    },
+    TR_LABELING_REMOVE_LABEL: {
+        id: 'TR_LABELING_REMOVE_LABEL',
+        defaultMessage: 'Remove label',
+    },
 } as const);
 
 export default definedMessages;

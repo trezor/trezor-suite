@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useActions, useDiscovery, useSelector } from '@suite-hooks';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { MetadataAddPayload, DeviceMetadata } from '@suite-types/metadata';
+import { Translation } from '@suite-components';
 
 import MetadataEdit from './Edit';
 
@@ -122,13 +123,13 @@ const MetadataLabeling = (props: Props) => {
     let dropdownItems: DropdownMenuItem[] = [
         {
             callback: () => setEditing(props.payload.defaultValue),
-            label: 'Edit label',
+            label: <Translation id="TR_LABELING_EDIT_LABEL" />,
             'data-test': '@metadata/edit-button',
             key: 'edit-label',
         },
         {
             callback: () => onSubmit(''),
-            label: 'Remove label',
+            label: <Translation id="TR_LABELING_REMOVE_LABEL" />,
             'data-test': '@metadata/remove-button',
             key: 'remove-label',
         },
@@ -195,7 +196,11 @@ const MetadataLabeling = (props: Props) => {
                         activateEdit();
                     }}
                 >
-                    {!isDiscoveryRunning ? 'Add label' : 'Loading...'}
+                    {!isDiscoveryRunning ? (
+                        <Translation id="TR_LABELING_ADD_LABEL" />
+                    ) : (
+                        'Loading...'
+                    )}
                 </AddLabelButton>
             )}
         </LabelContainer>
