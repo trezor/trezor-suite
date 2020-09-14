@@ -199,6 +199,10 @@ export const useSendFormCompose = ({
     // watch selectedFee change and update composedLevels or save draft
     const selectedFee = watch('selectedFee') as FormState['selectedFee'];
     useEffect(() => {
+        // reset cached selectedFeeRef if form was cleared to default (selectedFee is undefined)
+        if (!selectedFee && !composedLevels && selectedFeeRef.current) {
+            selectedFeeRef.current = undefined;
+        }
         if (!selectedFee || selectedFeeRef.current === selectedFee) return;
         if (composedLevels) {
             if (selectedFee === 'custom') {
