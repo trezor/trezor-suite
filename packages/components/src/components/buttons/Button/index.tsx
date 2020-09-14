@@ -86,7 +86,7 @@ const Wrapper = styled.button<WrapperProps>`
             &:focus,
             &:active {
                 /* we use this color only for this case  */
-                background: #d6e5d1;
+                background: #e8f3e5;
             }
         `}
 
