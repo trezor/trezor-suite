@@ -75,32 +75,32 @@ interface Props {
 
 const getLocalizedActions = (type: MetadataAddPayload['type']) => {
     const defaultMessages = {
-        add: <Translation id="TR_LABELING_EDIT_LABEL" />,
+        add: <Translation id="TR_LABELING_ADD_LABEL" />,
         edit: <Translation id="TR_LABELING_EDIT_LABEL" />,
         remove: <Translation id="TR_LABELING_REMOVE_LABEL" />,
     };
     switch (type) {
         case 'outputLabel':
             return {
-                add: <Translation id="TR_LABELING_EDIT_OUTPUT" />,
+                add: <Translation id="TR_LABELING_ADD_OUTPUT" />,
                 edit: <Translation id="TR_LABELING_EDIT_OUTPUT" />,
                 remove: <Translation id="TR_LABELING_REMOVE_OUTPUT" />,
             };
         case 'addressLabel':
             return {
-                add: <Translation id="TR_LABELING_EDIT_ADDRESS" />,
+                add: <Translation id="TR_LABELING_ADD_ADDRESS" />,
                 edit: <Translation id="TR_LABELING_EDIT_ADDRESS" />,
                 remove: <Translation id="TR_LABELING_REMOVE_ADDRESS" />,
             };
         case 'accountLabel':
             return {
-                add: <Translation id="TR_LABELING_EDIT_ACCOUNT" />,
+                add: <Translation id="TR_LABELING_ADD_ACCOUNT" />,
                 edit: <Translation id="TR_LABELING_EDIT_ACCOUNT" />,
                 remove: <Translation id="TR_LABELING_REMOVE_ACCOUNT" />,
             };
         case 'walletLabel':
             return {
-                add: <Translation id="TR_LABELING_EDIT_WALLET" />,
+                add: <Translation id="TR_LABELING_ADD_WALLET" />,
                 edit: <Translation id="TR_LABELING_EDIT_WALLET" />,
                 remove: <Translation id="TR_LABELING_REMOVE_WALLET" />,
             };
