@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* TrezorSuiteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* TrezorSuiteTests.m */; };
+		0ABA83AB2DC246AFFCC3B580 /* libPods-TrezorSuite-TrezorSuiteTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AE32AF79EACEF8EC60D1512E /* libPods-TrezorSuite-TrezorSuiteTests.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -20,7 +21,6 @@
 		2DCD954D1E0B4F2C00145EB5 /* TrezorSuiteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* TrezorSuiteTests.m */; };
 		89B52C4817890A33F7733293 /* libPods-TrezorSuite-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E5D766EAD64D35A34F486512 /* libPods-TrezorSuite-tvOS.a */; };
 		96D0FC4A2FE195F9ED0F95FF /* libPods-TrezorSuite-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE68086FA7B7E97EABE6BA1F /* libPods-TrezorSuite-tvOSTests.a */; };
-		9E6C54EBDDAED4C7D9CC63A6 /* libPods-TrezorSuiteTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 617140B78B661739FCB5A90E /* libPods-TrezorSuiteTests.a */; };
 		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
 		ED2971652150620600B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED2971642150620600B7C4FE /* JavaScriptCore.framework */; };
 /* End PBXBuildFile section */
@@ -62,9 +62,11 @@
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		33F5D7CF501034987DF0FEF4 /* Pods-TrezorSuite-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite-tvOS.release.xcconfig"; path = "Target Support Files/Pods-TrezorSuite-tvOS/Pods-TrezorSuite-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		3EFC1831891EB439220FBF02 /* Pods-TrezorSuite-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-TrezorSuite-tvOS/Pods-TrezorSuite-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		617140B78B661739FCB5A90E /* libPods-TrezorSuiteTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TrezorSuiteTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		749D714879E242CC74EE6594 /* Pods-TrezorSuite-TrezorSuiteTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite-TrezorSuiteTests.debug.xcconfig"; path = "Target Support Files/Pods-TrezorSuite-TrezorSuiteTests/Pods-TrezorSuite-TrezorSuiteTests.debug.xcconfig"; sourceTree = "<group>"; };
 		823E88F70F69EE000F30FDDA /* Pods-TrezorSuite-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-TrezorSuite-tvOSTests/Pods-TrezorSuite-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		90CF93E8D03F869732A26A8E /* Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig"; path = "Target Support Files/Pods-TrezorSuite-TrezorSuiteTests/Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig"; sourceTree = "<group>"; };
 		968C2B38512570022F446411 /* Pods-TrezorSuiteTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuiteTests.release.xcconfig"; path = "Target Support Files/Pods-TrezorSuiteTests/Pods-TrezorSuiteTests.release.xcconfig"; sourceTree = "<group>"; };
+		AE32AF79EACEF8EC60D1512E /* libPods-TrezorSuite-TrezorSuiteTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TrezorSuite-TrezorSuiteTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0C9020F3F0E9F418B5970F9 /* libPods-TrezorSuite.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TrezorSuite.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE68086FA7B7E97EABE6BA1F /* libPods-TrezorSuite-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-TrezorSuite-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DFC634785200CA804BFC4CD1 /* Pods-TrezorSuite.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrezorSuite.release.xcconfig"; path = "Target Support Files/Pods-TrezorSuite/Pods-TrezorSuite.release.xcconfig"; sourceTree = "<group>"; };
@@ -78,7 +80,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9E6C54EBDDAED4C7D9CC63A6 /* libPods-TrezorSuiteTests.a in Frameworks */,
+				0ABA83AB2DC246AFFCC3B580 /* libPods-TrezorSuite-TrezorSuiteTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,7 +154,7 @@
 				C0C9020F3F0E9F418B5970F9 /* libPods-TrezorSuite.a */,
 				E5D766EAD64D35A34F486512 /* libPods-TrezorSuite-tvOS.a */,
 				CE68086FA7B7E97EABE6BA1F /* libPods-TrezorSuite-tvOSTests.a */,
-				617140B78B661739FCB5A90E /* libPods-TrezorSuiteTests.a */,
+				AE32AF79EACEF8EC60D1512E /* libPods-TrezorSuite-TrezorSuiteTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -201,6 +203,8 @@
 				18EF84DE94F42B16F5D542EE /* Pods-TrezorSuite-tvOSTests.release.xcconfig */,
 				1117AF447CA10A16424C110D /* Pods-TrezorSuiteTests.debug.xcconfig */,
 				968C2B38512570022F446411 /* Pods-TrezorSuiteTests.release.xcconfig */,
+				749D714879E242CC74EE6594 /* Pods-TrezorSuite-TrezorSuiteTests.debug.xcconfig */,
+				90CF93E8D03F869732A26A8E /* Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -216,6 +220,7 @@
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
+				3BDDF656AD00757D90F9C62D /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -236,6 +241,7 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				53EF6FADD34FAB8EFC264219 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -415,6 +421,42 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../../../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
+		3BDDF656AD00757D90F9C62D /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TrezorSuite-TrezorSuiteTests/Pods-TrezorSuite-TrezorSuiteTests-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TrezorSuite-TrezorSuiteTests/Pods-TrezorSuite-TrezorSuiteTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		53EF6FADD34FAB8EFC264219 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TrezorSuite/Pods-TrezorSuite-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/AccessibilityResources.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AccessibilityResources.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TrezorSuite/Pods-TrezorSuite-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		8E31707BA2E04A258ECF2B6E /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -474,7 +516,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TrezorSuiteTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-TrezorSuite-TrezorSuiteTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -548,7 +590,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1117AF447CA10A16424C110D /* Pods-TrezorSuiteTests.debug.xcconfig */;
+			baseConfigurationReference = 749D714879E242CC74EE6594 /* Pods-TrezorSuite-TrezorSuiteTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -570,7 +612,7 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 968C2B38512570022F446411 /* Pods-TrezorSuiteTests.release.xcconfig */;
+			baseConfigurationReference = 90CF93E8D03F869732A26A8E /* Pods-TrezorSuite-TrezorSuiteTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
