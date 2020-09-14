@@ -115,6 +115,7 @@ const Amount = ({ outputId }: { outputId: number }) => {
                     labelAddon={
                         <Button
                             icon={isSetMaxActive ? 'CHECK' : 'SEND'}
+                            data-test={`outputs[${outputId}].setMax`}
                             onClick={() => {
                                 setMax(outputId, isSetMaxActive);
                                 composeTransaction(inputName);
