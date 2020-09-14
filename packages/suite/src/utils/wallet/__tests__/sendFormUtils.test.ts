@@ -132,6 +132,32 @@ describe('sendForm utils', () => {
             { type: 'opreturn', dataHex: 'deadbeef' },
         ]);
 
+        outputs = [{ type: 'payment', amount: '' }];
+        expect(
+            getBitcoinComposeOutputs(
+                {
+                    setMaxOutputId: 0,
+                    outputs,
+                },
+                'btc',
+            ),
+        ).toEqual([
+            { type: 'send-max-noaddress' },
+        ]);
+
+        outputs = [{ type: 'payment', amount: '', address: 'A' }];
+        expect(
+            getBitcoinComposeOutputs(
+                {
+                    setMaxOutputId: 0,
+                    outputs,
+                },
+                'btc',
+            ),
+        ).toEqual([
+            { type: 'send-max', address: 'A' },
+        ]);
+
         // edge case, final Output are changed to not-final
         outputs = [
             { type: 'payment', amount: '', address: 'A' },
