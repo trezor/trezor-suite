@@ -53,7 +53,6 @@ const SwitchDeviceModal = (props: Props) => {
         <Modal
             cancelable={props.cancelable}
             onCancel={props.onCancel}
-            showHeaderBorder
             heading={
                 <>
                     <Translation id="TR_CHOOSE_WALLET" />

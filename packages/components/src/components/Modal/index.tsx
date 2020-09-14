@@ -169,49 +169,29 @@ const ModalWindow = styled.div<ModalWindowProps>`
         `}
 `;
 
-const Heading = styled(H2)<{ showHeaderBorder: boolean; cancelable: boolean }>`
-    /*  set css attributes based on the type of Modal header*/
-    position: ${props => (props.showHeaderBorder ? 'relative' : 'static')};
-    border-bottom: ${props =>
-        props.showHeaderBorder ? `1px solid ${colors.NEUE_STROKE_GREY}` : 'none'};
-    padding: ${props => (props.showHeaderBorder ? '24px 32px' : '35px 32px 0px 32px')};
+const Heading = styled(H2)<{ cancelable: boolean }>`
+    display: flex;
+    align-items: center;
+    padding: 24px 32px;
+    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
 
-    justify-content: space-between; /* to move the closing button all the way to the right */
-
-    ${props => {
-        if (props.showHeaderBorder && props.cancelable) {
-            return css`
-                display: flex;
-                text-align: left;
-            `;
-        }
-
-        if (props.showHeaderBorder && !props.cancelable) {
-            return css`
-                display: block;
-                text-align: center;
-            `;
-        }
-
-        // default styles
-        return css`
-            display: block;
-            text-align: center;
-        `;
-    }}
+    // align content based on the 'cancelable' prop
+    text-align: ${props => (props.cancelable ? 'left' : 'center')};
+    justify-content: ${props =>
+        props.cancelable
+            ? 'space-between'
+            : 'center'}; /* space-between -> to move the closing button all the way to the right */
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: ${props => (props.showHeaderBorder ? '18px 22px' : '35px 20px 0px 20px')};
+        padding: 18px 22px;
     }
 `;
 
-const CancelIconWrapper = styled.div<{ showHeaderBorder: boolean }>`
-    /*  set css attributes based on the type of Modal header*/
-    display: ${props => (props.showHeaderBorder ? 'inline-block' : 'flex')};
-    position: ${props => (props.showHeaderBorder ? 'relative' : 'absolute')};
-    top: ${props => (props.showHeaderBorder ? 'auto' : '10px')};
-    right: ${props => (props.showHeaderBorder ? 'auto' : '10px')};
-
+const CancelIconWrapper = styled.div`
+    display: inline-block;
+    position: relative;
+    top: auto;
+    right: auto;
     align-items: center;
     margin-left: 30px;
     cursor: pointer;
@@ -236,12 +216,12 @@ const SidePaddingWrapper = styled.div<{ sidePadding: [string, string, string, st
     }
 `;
 
-const Description = styled(SidePaddingWrapper)<{ showHeaderBorder: boolean }>`
+const Description = styled(SidePaddingWrapper)`
     color: ${colors.BLACK50};
     font-size: ${variables.FONT_SIZE.SMALL};
     margin-bottom: 10px;
     text-align: center;
-    margin-top: ${props => (props.showHeaderBorder ? '10px' : '0px')};
+    margin-top: 10px;
 `;
 
 const Content = styled(SidePaddingWrapper)`
@@ -352,7 +332,6 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     sidePadding?: [string, string, string, string]; // [SM, MD, LG, XL]
     noBackground?: boolean;
     onCancel?: () => void;
-    showHeaderBorder?: boolean;
 }
 
 const Modal = ({
@@ -374,7 +353,6 @@ const Modal = ({
     modalPaddingBottom = getModalPaddingBottom(size),
     modalPaddingSide = ZERO_PADDING, // default value is zero padding on sides for Modal container
     sidePadding = getSidePadding(size),
-    showHeaderBorder = false,
     ...rest
 }: Props) => {
     const escPressed = useKeyPress('Escape');
@@ -402,21 +380,17 @@ const Modal = ({
             {...rest}
         >
             {heading && (
-                <Heading showHeaderBorder={showHeaderBorder} cancelable={cancelable}>
+                <Heading cancelable={cancelable}>
                     {heading}
                     {cancelable && (
-                        <CancelIconWrapper onClick={onCancel} showHeaderBorder={showHeaderBorder}>
+                        <CancelIconWrapper onClick={onCancel}>
                             <Icon size={24} color={colors.NEUE_TYPE_DARK_GREY} icon="CROSS" />
                         </CancelIconWrapper>
                     )}
                 </Heading>
             )}
 
-            {description && (
-                <Description showHeaderBorder={showHeaderBorder} sidePadding={sidePadding}>
-                    {description}
-                </Description>
-            )}
+            {description && <Description sidePadding={sidePadding}>{description}</Description>}
             <Content sidePadding={sidePadding}>{children}</Content>
             {bottomBar && <BottomBar sidePadding={sidePadding}>{bottomBar}</BottomBar>}
         </ModalWindow>
