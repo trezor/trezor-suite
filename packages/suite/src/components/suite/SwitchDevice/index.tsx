@@ -12,6 +12,8 @@ import WebusbButton from '../WebusbButton';
 const HeadingActions = styled.div`
     display: flex;
     align-items: center;
+    flex: 1;
+    justify-content: flex-end;
 `;
 
 const CheckForDevicesWrapper = styled.div`
