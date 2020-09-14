@@ -22,7 +22,6 @@ storiesOf('Modals', module)
             );
             const cancelable = boolean('cancelable', true);
             const bottomBar = boolean('bottomBar', false);
-            const showHeaderBorder = boolean('showHeaderBorder', true);
             const useFixedWidth = boolean('useFixedWidth', false);
             const useFixedHeight = boolean('useFixedHeight', false);
 
@@ -34,7 +33,6 @@ storiesOf('Modals', module)
                         description={description === '' ? undefined : description}
                         cancelable={cancelable}
                         bottomBar={bottomBar}
-                        showHeaderBorder={showHeaderBorder}
                         useFixedWidth={useFixedWidth}
                         useFixedHeight={useFixedHeight}
                     >
