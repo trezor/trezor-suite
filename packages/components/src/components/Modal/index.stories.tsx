@@ -24,6 +24,7 @@ storiesOf('Modals', module)
             const bottomBar = boolean('bottomBar', false);
             const useFixedWidth = boolean('useFixedWidth', false);
             const useFixedHeight = boolean('useFixedHeight', false);
+            const showHeaderBorder = boolean('showHeaderBorder', true);
 
             return (
                 <Wrapper>
@@ -35,6 +36,7 @@ storiesOf('Modals', module)
                         bottomBar={bottomBar}
                         useFixedWidth={useFixedWidth}
                         useFixedHeight={useFixedHeight}
+                        showHeaderBorder={showHeaderBorder}
                     >
                         {children}
                     </Modal>

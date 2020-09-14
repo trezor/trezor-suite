@@ -169,13 +169,14 @@ const ModalWindow = styled.div<ModalWindowProps>`
         `}
 `;
 
-const Heading = styled(H2)<{ cancelable: boolean }>`
+const Heading = styled(H2)<{ cancelable: boolean; showHeaderBorder: boolean }>`
     display: flex;
     align-items: center;
     padding: 24px 32px;
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-bottom: ${props =>
+        props.showHeaderBorder ? `1px solid ${colors.NEUE_STROKE_GREY}` : 'none'};
 
-    // align content based on the 'cancelable' prop
+    /* align content based on the 'cancelable' prop */
     text-align: ${props => (props.cancelable ? 'left' : 'center')};
     justify-content: ${props =>
         props.cancelable
@@ -332,6 +333,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     sidePadding?: [string, string, string, string]; // [SM, MD, LG, XL]
     noBackground?: boolean;
     onCancel?: () => void;
+    showHeaderBorder?: boolean;
 }
 
 const Modal = ({
@@ -353,6 +355,7 @@ const Modal = ({
     modalPaddingBottom = getModalPaddingBottom(size),
     modalPaddingSide = ZERO_PADDING, // default value is zero padding on sides for Modal container
     sidePadding = getSidePadding(size),
+    showHeaderBorder = true,
     ...rest
 }: Props) => {
     const escPressed = useKeyPress('Escape');
@@ -380,7 +383,7 @@ const Modal = ({
             {...rest}
         >
             {heading && (
-                <Heading cancelable={cancelable}>
+                <Heading cancelable={cancelable} showHeaderBorder={showHeaderBorder}>
                     {heading}
                     {cancelable && (
                         <CancelIconWrapper onClick={onCancel}>
