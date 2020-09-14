@@ -2,9 +2,9 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { DeviceImage } from '../../DeviceImage';
 import { Icon } from '../../Icon';
-import { colors, variables } from '../../../config';
+import { colors, variables, animations } from '../../../config';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{animated?: boolean;}>`
     display: flex;
     width: 300px;
     height: 62px;
@@ -13,6 +13,12 @@ const Wrapper = styled.div`
     background: white;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.19);
     align-items: center;
+    ${props =>
+        props.animated &&
+        css`
+            animation: ${animations.SLIDE_UP} 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+       
+        `}
 `;
 
 const Column = styled.div`
@@ -103,6 +109,7 @@ interface Props {
     trezorModel: 1 | 2;
     steps?: number;
     activeStep?: number;
+    animated?: boolean;
     onCancel?: () => void;
 }
 
@@ -113,9 +120,10 @@ const ConfirmOnDevice = ({
     onCancel,
     trezorModel,
     successText,
+    animated,
 }: Props) => {
     return (
-        <Wrapper>
+        <Wrapper animated={animated} >
             <Left>
                 <DeviceImage height="34px" trezorModel={trezorModel} />
             </Left>
