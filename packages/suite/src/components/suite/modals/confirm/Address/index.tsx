@@ -1,12 +1,10 @@
 import React, { createRef } from 'react';
 import styled from 'styled-components';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { Button, Modal, colors } from '@trezor/components';
+import { Button, Modal, colors, ConfirmOnDevice } from '@trezor/components';
 import { copyToClipboard } from '@suite-utils/dom';
 import { TrezorDevice } from '@suite-types';
 import { Translation, QrCode } from '@suite-components';
-
-import CheckOnTrezor from './components/CheckOnTrezor';
 import DeviceDisconnected from './components/DeviceDisconnected';
 import { useActions } from '@suite-hooks';
 
@@ -60,6 +58,7 @@ const ConfirmAddress = ({
         }
     };
 
+    // TODO: wait for new designs
     return (
         <Modal
             heading={
@@ -71,6 +70,17 @@ const ConfirmAddress = ({
             description={
                 networkType === 'bitcoin' ? (
                     <Translation id="TR_ADDRESS_MODAL_BTC_DESCRIPTION" />
+                ) : undefined
+            }
+            header={
+                device.connected ? (
+                    <ConfirmOnDevice
+                        title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
+                        trezorModel={device.features?.major_version === 1 ? 1 : 2}
+                        successText={<Translation id="TR_CONFIRMED_TX" />}
+                        onCancel={cancelable ? onCancel : undefined}
+                        animated
+                    />
                 ) : undefined
             }
             cancelable={cancelable}
@@ -86,7 +96,7 @@ const ConfirmAddress = ({
         >
             <QrCode value={address} addressPath={addressPath} />
             <Address data-test="@modal/confirm-address/address-field">{address}</Address>
-            {device.connected && <CheckOnTrezor device={device} />}
+            {/* {device.connected && <CheckOnTrezor device={device} />} */}
             {!device.connected && <DeviceDisconnected label={device.label} />}
         </Modal>
     );
