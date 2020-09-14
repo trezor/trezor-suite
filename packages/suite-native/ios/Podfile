@@ -1,10 +1,12 @@
-require_relative '../node_modules/react-native/scripts/react_native_pods'
+require_relative '../../../node_modules/react-native/scripts/react_native_pods'
 require_relative '../../../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 platform :ios, '10.0'
 target 'TrezorSuite' do
   config = use_native_modules!
-  use_react_native!(:path => config["reactNativePath"])
+  # By default there should be config["reactNativePath"] instead of explicit path,
+  # but it points to suite-native/node_modules while our react-native dep is hoisted to the root of monorepo
+  use_react_native!(:path => './../../../node_modules/react-native/')
   target 'TrezorSuiteTests' do
     inherit! :complete
     # Pods for testing
