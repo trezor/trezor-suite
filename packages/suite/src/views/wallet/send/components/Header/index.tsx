@@ -8,7 +8,7 @@ import Clear from './components/Clear';
 
 const Wrapper = styled.div`
     display: flex;
-    margin-bottom: 22px;
+    margin-bottom: 20px;
 `;
 
 const HeaderLeft = styled.div`
