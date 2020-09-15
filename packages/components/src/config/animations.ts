@@ -49,4 +49,4 @@ export const SLIDE_UP = keyframes`
         transform: translateY(0%);
         /* opacity: 1; */
     }
-  `;
+`;
