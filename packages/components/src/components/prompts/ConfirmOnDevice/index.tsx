@@ -4,7 +4,7 @@ import { DeviceImage } from '../../DeviceImage';
 import { Icon } from '../../Icon';
 import { colors, variables, animations } from '../../../config';
 
-const Wrapper = styled.div<{animated?: boolean;}>`
+const Wrapper = styled.div<{ animated?: boolean }>`
     display: flex;
     width: 300px;
     height: 62px;
@@ -17,7 +17,6 @@ const Wrapper = styled.div<{animated?: boolean;}>`
         props.animated &&
         css`
             animation: ${animations.SLIDE_UP} 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-       
         `}
 `;
 
@@ -123,7 +122,7 @@ const ConfirmOnDevice = ({
     animated,
 }: Props) => {
     return (
-        <Wrapper animated={animated} >
+        <Wrapper animated={animated}>
             <Left>
                 <DeviceImage height="34px" trezorModel={trezorModel} />
             </Left>
