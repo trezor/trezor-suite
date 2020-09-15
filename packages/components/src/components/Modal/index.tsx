@@ -172,7 +172,8 @@ const ModalWindow = styled.div<ModalWindowProps>`
 const Heading = styled(H2)<{ cancelable: boolean; showHeaderBorder: boolean }>`
     display: flex;
     align-items: center;
-    padding: 26px 32px 22px 32px;
+    padding: 28px 32px 22px 32px;
+    margin-bottom: 20px;
     border-bottom: ${props =>
         props.showHeaderBorder ? `1px solid ${colors.NEUE_STROKE_GREY}` : 'none'};
 
@@ -222,7 +223,6 @@ const Description = styled(SidePaddingWrapper)`
     font-size: ${variables.FONT_SIZE.SMALL};
     margin-bottom: 10px;
     text-align: center;
-    margin-top: 10px;
 `;
 
 const Content = styled(SidePaddingWrapper)`
@@ -273,7 +273,11 @@ const getFixedWidth = (size: SIZE) => {
 };
 
 // returns the value of padding-left/right for Heading, Description, Content and BottomBar
-const getSidePadding = (size: SIZE) => {
+const getContentPaddingSide = (size: SIZE, noPadding: boolean) => {
+    if (noPadding) {
+        return ZERO_PADDING;
+    }
+
     switch (size) {
         case 'large':
             return SIDE_PADDING;
@@ -285,9 +289,9 @@ const getSidePadding = (size: SIZE) => {
     }
 };
 
-const getModalPaddingTop = (size: SIZE, heading: React.ReactNode) => {
+const getModalPaddingTop = (size: SIZE, heading: React.ReactNode, noPadding: boolean) => {
     // if heading is present, do not add any padding to the top
-    if (heading) {
+    if (heading || noPadding) {
         return ZERO_PADDING;
     }
 
@@ -303,7 +307,11 @@ const getModalPaddingTop = (size: SIZE, heading: React.ReactNode) => {
 };
 
 // returns the value of padding-bottom for the main Modal container
-const getModalPaddingBottom = (size: SIZE) => {
+const getModalPaddingBottom = (size: SIZE, noPadding: boolean) => {
+    if (noPadding) {
+        return ZERO_PADDING;
+    }
+
     switch (size) {
         case 'large':
             return MODAL_PADDING_BOTTOM;
@@ -330,7 +338,8 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     modalPaddingTop?: [string, string, string, string]; // [SM, MD, LG, XL]
     modalPaddingBottom?: [string, string, string, string]; // [SM, MD, LG, XL]
     modalPaddingSide?: [string, string, string, string]; // [SM, MD, LG, XL]
-    sidePadding?: [string, string, string, string]; // [SM, MD, LG, XL]
+    contentPaddingSide?: [string, string, string, string]; // [SM, MD, LG, XL]
+    noPadding?: boolean;
     noBackground?: boolean;
     onCancel?: () => void;
     showHeaderBorder?: boolean;
@@ -351,10 +360,11 @@ const Modal = ({
     fixedWidth = getFixedWidth(size),
     useFixedHeight = false,
     fixedHeight = FIXED_HEIGHT,
-    modalPaddingTop = getModalPaddingTop(size, heading),
-    modalPaddingBottom = getModalPaddingBottom(size),
+    noPadding = false,
+    modalPaddingTop = getModalPaddingTop(size, heading, noPadding),
+    modalPaddingBottom = getModalPaddingBottom(size, noPadding),
     modalPaddingSide = ZERO_PADDING, // default value is zero padding on sides for Modal container
-    sidePadding = getSidePadding(size),
+    contentPaddingSide = getContentPaddingSide(size, noPadding),
     showHeaderBorder = true,
     ...rest
 }: Props) => {
@@ -393,9 +403,11 @@ const Modal = ({
                 </Heading>
             )}
 
-            {description && <Description sidePadding={sidePadding}>{description}</Description>}
-            <Content sidePadding={sidePadding}>{children}</Content>
-            {bottomBar && <BottomBar sidePadding={sidePadding}>{bottomBar}</BottomBar>}
+            {description && (
+                <Description sidePadding={contentPaddingSide}>{description}</Description>
+            )}
+            <Content sidePadding={contentPaddingSide}>{children}</Content>
+            {bottomBar && <BottomBar sidePadding={contentPaddingSide}>{bottomBar}</BottomBar>}
         </ModalWindow>
     );
 
