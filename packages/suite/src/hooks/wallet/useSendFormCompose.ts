@@ -168,12 +168,15 @@ export const useSendFormCompose = ({
         if (!composedLevels) return;
 
         const values = getValues();
-        const { selectedFee } = values;
+        const { selectedFee, setMaxOutputId } = values;
         let composed = composedLevels[selectedFee || 'normal'];
 
-        // selectedFee was not set (no interaction with Fees yet) and default (normal) fee tx is not valid
+        // selectedFee was not set yet (no interaction with Fees) and default (normal) fee tx is not valid
+        // OR setMax option was used
         // try to switch to nearest possible composed transaction
-        if (!selectedFee && composed.type === 'error') {
+        const shouldSwitch =
+            !selectedFee || (typeof setMaxOutputId === 'number' && selectedFee !== 'custom');
+        if (shouldSwitch && composed.type === 'error') {
             // find nearest possible tx
             const nearest = Object.keys(composedLevels).find(
                 key => composedLevels[key].type !== 'error',
