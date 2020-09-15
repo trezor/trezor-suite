@@ -72,7 +72,7 @@ storiesOf('Modals', module)
         const useFixedWidth = boolean('useFixedWidth', false);
         const useFixedHeight = boolean('useFixedHeight', false);
         const animated = boolean('animated', false);
-       
+
         return (
             <Modal
                 header={
