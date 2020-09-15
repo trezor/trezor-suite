@@ -1,29 +1,37 @@
 import React, { createRef } from 'react';
 import styled from 'styled-components';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { Button, Modal, colors, ConfirmOnDevice } from '@trezor/components';
+import { Button, Modal, colors, variables, ConfirmOnDevice, Box } from '@trezor/components';
 import { copyToClipboard } from '@suite-utils/dom';
 import { TrezorDevice } from '@suite-types';
 import { Translation, QrCode } from '@suite-components';
 import DeviceDisconnected from './components/DeviceDisconnected';
 import { useActions } from '@suite-hooks';
 
-const Address = styled.div`
-    width: 100%;
-    background: ${colors.BLACK96};
-    border: 1px solid ${colors.BLACK80};
-    border-radius: 6px;
-    word-break: break-all;
-    font-size: 20px;
-    padding: 20px;
-    margin-bottom: 40px;
-    font-variant-numeric: tabular-nums slashed-zero;
+const StyledBox = styled(Box)`
+    flex-direction: row;
+    padding: 30px 24px;
+    align-self: center;
 `;
 
-const Row = styled.div`
+const Right = styled.div`
     display: flex;
-    width: 100%;
-    justify-content: center;
+    flex-direction: column;
+`;
+
+const Address = styled.span`
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    border-radius: 6px;
+    word-break: break-all;
+    font-variant-numeric: tabular-nums slashed-zero;
+    text-align: left;
+`;
+
+const CopyButtonWrapper = styled.div`
+    display: flex;
+    margin-top: 14px;
 `;
 
 type Props = {
@@ -85,17 +93,20 @@ const ConfirmAddress = ({
             }
             cancelable={cancelable}
             onCancel={onCancel}
-            size="small"
-            bottomBar={
-                <Row ref={htmlElement}>
-                    <Button variant="primary" onClick={copyAddress}>
-                        <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
-                    </Button>
-                </Row>
-            }
+            // size="large"
+            useFixedWidth={false}
         >
-            <QrCode value={address} addressPath={addressPath} />
-            <Address data-test="@modal/confirm-address/address-field">{address}</Address>
+            <StyledBox>
+                <QrCode value={address} addressPath={addressPath} />
+                <Right>
+                    <Address data-test="@modal/confirm-address/address-field">{address}</Address>
+                    <CopyButtonWrapper ref={htmlElement}>
+                        <Button variant="tertiary" onClick={copyAddress}>
+                            <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
+                        </Button>
+                    </CopyButtonWrapper>
+                </Right>
+            </StyledBox>
             {/* {device.connected && <CheckOnTrezor device={device} />} */}
             {!device.connected && <DeviceDisconnected label={device.label} />}
         </Modal>

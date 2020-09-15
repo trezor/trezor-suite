@@ -2547,7 +2547,7 @@ const definedMessages = defineMessages({
     },
     RECEIVE_ADDRESS: {
         id: 'RECEIVE_ADDRESS',
-        defaultMessage: 'Fresh address',
+        defaultMessage: 'Address',
         description: 'Alternative title for alt-coins',
     },
     RECEIVE_ADDRESS_REVEAL: {

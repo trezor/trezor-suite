@@ -1,10 +1,9 @@
 import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
-import { Button, Input, variables, Card } from '@trezor/components';
-import { Translation, QuestionTooltip, ReadMoreLink } from '@suite-components';
+import { Button, Input, Card } from '@trezor/components';
+import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
-import { parseBIP44Path } from '@wallet-utils/accountUtils';
 import { ChildProps as Props } from '../../Container';
 import { AccountAddress } from 'trezor-connect';
 
@@ -27,13 +26,6 @@ const StyledCard = styled(Card)`
 
 const AddressContainer = styled.div`
     flex: 1;
-`;
-
-const AddressPath = styled.div`
-    display: flex;
-    align-items: center;
-    padding: 5px 16px 0 0px;
-    font-size: ${variables.FONT_SIZE.TINY};
 `;
 
 const StyledInput = styled(Input)`
@@ -89,9 +81,12 @@ const FreshAddress = ({
               },
           ];
     const unrevealed = unused.filter(a => !addresses.find(r => r.path === a.path));
+    // const addressLabel = isBitcoin ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS';
     // NOTE: unrevealed[0] can be undefined (limit exceeded)
     const firstFreshAddress = isBitcoin ? unrevealed[0] : unused[0];
 
+    const isRevealed = (addr: AccountAddress) =>
+        addresses ? !!addresses.find(f => f.address === addr.address) : false;
     const getAddressValue = (address?: AccountAddress) => {
         if (!address) {
             return intl.formatMessage(messages.RECEIVE_ADDRESS_LIMIT_EXCEEDED);
@@ -99,26 +94,21 @@ const FreshAddress = ({
 
         const truncatedAddress = `${address.address.substring(0, 15)}…`;
         // eth, ripple: already revealed address will show in its full form
-        const isRevealed = addresses ? addresses.find(f => f.address === address.address) : false;
-        return isRevealed ? address.address : truncatedAddress;
+        return isRevealed(address) ? address.address : truncatedAddress;
     };
 
     const addressValue = getAddressValue(firstFreshAddress);
-    const addressPath =
-        isBitcoin && firstFreshAddress
-            ? `/${parseBIP44Path(firstFreshAddress.path)!.addrIndex}`
-            : undefined;
 
     return (
         <StyledCard>
-            {addressPath && <AddressPath>{addressPath}</AddressPath>}
             <AddressContainer>
                 <StyledInput
-                    label={<InputLabel isBitcoin={isBitcoin} symbol={account.symbol} />}
+                    // label={<Translation id={addressLabel} />}
                     variant="small"
                     monospace
                     isDisabled
                     value={addressValue}
+                    // isPartiallyHidden={!isRevealed(firstFreshAddress)}
                 />
             </AddressContainer>
             <StyledButton
