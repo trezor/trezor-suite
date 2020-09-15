@@ -1,8 +1,10 @@
 package io.trezor.suite;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
