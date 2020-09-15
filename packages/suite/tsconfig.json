@@ -16,5 +16,10 @@
         "resolveJsonModule": true,
         "isolatedModules": true
     },
-    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
+    "include": [
+        "../../index.d.ts",
+        "next-env.d.ts",
+        "**/*.ts",
+        "**/*.tsx",
+    ]
 }
