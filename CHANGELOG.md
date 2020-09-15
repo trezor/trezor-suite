@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 ### Fixed
+- Send form "setMax" inconsistent behavior. Fix of #2314, #2327
 
 ## [20.9.1-beta]
 
