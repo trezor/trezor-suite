@@ -172,7 +172,7 @@ const ModalWindow = styled.div<ModalWindowProps>`
 const Heading = styled(H2)<{ cancelable: boolean; showHeaderBorder: boolean }>`
     display: flex;
     align-items: center;
-    padding: 24px 32px;
+    padding: 26px 32px 22px 32px;
     border-bottom: ${props =>
         props.showHeaderBorder ? `1px solid ${colors.NEUE_STROKE_GREY}` : 'none'};
 
@@ -184,7 +184,7 @@ const Heading = styled(H2)<{ cancelable: boolean; showHeaderBorder: boolean }>`
             : 'center'}; /* space-between -> to move the closing button all the way to the right */
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: 18px 22px;
+        padding: 20px 22px 16px 22px;
     }
 `;
 
