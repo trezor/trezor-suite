@@ -48,7 +48,10 @@ export const useKeyPress = (targetKey: string) => {
     return keyPressed;
 };
 
-export const copyToClipboard = (value: string, parent: HTMLDivElement | HTMLPreElement | null) => {
+export const copyToClipboard = (
+    value: string,
+    parent: HTMLDivElement | HTMLPreElement | HTMLButtonElement | null,
+) => {
     try {
         const container = parent || document.body;
         const el = document.createElement('textarea');

@@ -39,6 +39,8 @@ const LabelContainer = styled.div`
     display: flex;
     white-space: nowrap;
     align-items: center;
+    overflow: hidden;
+
     &:hover {
         ${AddLabelButton} {
             visibility: visible;

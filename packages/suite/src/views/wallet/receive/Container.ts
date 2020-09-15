@@ -37,7 +37,6 @@ export interface ChildProps {
     addToast: Props['addToast'];
     disabled: boolean;
     locked: boolean;
-    accountKey: string;
 }
 
 export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(SendIndex));
