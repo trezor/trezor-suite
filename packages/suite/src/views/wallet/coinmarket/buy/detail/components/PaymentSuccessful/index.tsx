@@ -24,7 +24,7 @@ const Description = styled.div`
     justify-content: center;
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    margin: 17px 0 10px 0;
+    margin: 17px 0 30px 0;
     max-width: 310px;
     text-align: center;
 `;

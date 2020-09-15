@@ -3,7 +3,7 @@ import { differenceInSeconds } from 'date-fns';
 import styled from 'styled-components';
 import { CoinLogo, variables, Icon, colors } from '@trezor/components';
 import { BuyTrade } from 'invity-api';
-import { useCoinmarketOffersContext } from '@wallet-hooks/useCoinmarketOffers';
+import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
 
 import Quote from './Quote';
 
@@ -18,7 +18,7 @@ const List = ({ isAlternative, quotes }: Props) => {
         quotesRequest,
         lastFetchDate,
         REFETCH_INTERVAL,
-    } = useCoinmarketOffersContext();
+    } = useCoinmarketBuyOffersContext();
     const [seconds, setSeconds] = useState(differenceInSeconds(new Date(), lastFetchDate));
 
     useEffect(() => {

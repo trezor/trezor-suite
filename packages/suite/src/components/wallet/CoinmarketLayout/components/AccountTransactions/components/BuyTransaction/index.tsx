@@ -1,8 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BuyProviderInfo } from 'invity-api';
+import useSWR from 'swr';
+import invityAPI from '@suite-services/invityAPI';
 import { colors, variables, Icon, Button } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketBuyProviderInfo } from '@wallet-components';
+import { Account } from '@wallet-types';
 import { Translation } from '@suite-components';
 import { getStatusMessage } from '@wallet-utils/coinmarket/buyUtils';
 import { TradeBuy } from '@wallet-reducers/coinmarketReducer';
@@ -11,12 +14,13 @@ import Status from '../Status';
 
 interface Props {
     trade: TradeBuy;
+    account: Account;
     providers?: {
         [name: string]: BuyProviderInfo;
     };
 }
 
-const BuyTransaction = ({ trade, providers }: Props) => {
+const BuyTransaction = ({ trade, providers, account }: Props) => {
     const { date, data } = trade;
     const {
         fiatStringAmount,
@@ -28,7 +32,11 @@ const BuyTransaction = ({ trade, providers }: Props) => {
         receiveCurrency,
     } = data;
 
-    const statusMessage = getStatusMessage(status);
+    invityAPI.createInvityAPIKey(account.descriptor);
+    const fetcher = () => invityAPI.watchBuyTrade(data, 1);
+    const fetchResponse = useSWR('/invity-api/watch-buy-trade-accounts', fetcher);
+    const updatedStatus = fetchResponse && fetchResponse.data ? fetchResponse.data.status : null;
+    const statusMessage = getStatusMessage(updatedStatus || status);
 
     return (
         <Wrapper>
@@ -46,7 +54,7 @@ const BuyTransaction = ({ trade, providers }: Props) => {
                 </Row>
                 <SmallRow>
                     {trade.tradeType.toUpperCase()} • {formatDistance(new Date(date), new Date())}{' '}
-                    ago • <StyledStatus status={status} />
+                    ago • <StyledStatus status={updatedStatus || status} />
                 </SmallRow>
             </Column>
             <Column>

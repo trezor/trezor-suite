@@ -9,7 +9,14 @@ import ExchangeTransaction from './components/ExchangeTransaction';
 
 const AccountTransactions = () => {
     const accountTransactions = useSelector(state => state.wallet.coinmarket.trades);
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const providers = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.providerInfos);
+
+    if (selectedAccount.status !== 'loaded') {
+        return null;
+    }
+
+    const { account } = selectedAccount;
 
     return (
         <Wrapper>
@@ -23,6 +30,7 @@ const AccountTransactions = () => {
                     if (trade.tradeType === 'buy') {
                         return (
                             <BuyTransaction
+                                account={account}
                                 key={`${trade.tradeType}-${trade.key}`}
                                 trade={trade}
                                 providers={providers}

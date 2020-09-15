@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Card, variables } from '@trezor/components';
 import VerifyAddress from './components/VerifyAddress';
 import { CoinmarketBuyOfferInfo } from '@wallet-components';
-import { useCoinmarketOffersContext } from '@wallet-hooks/useCoinmarketOffers';
+import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
 
 const Wrapper = styled.div`
     display: flex;
@@ -20,7 +20,7 @@ const StyledCard = styled(Card)`
 `;
 
 const SelectedOffer = () => {
-    const { account, selectedQuote } = useCoinmarketOffersContext();
+    const { account, selectedQuote } = useCoinmarketBuyOffersContext();
     if (!selectedQuote) return null;
 
     return (

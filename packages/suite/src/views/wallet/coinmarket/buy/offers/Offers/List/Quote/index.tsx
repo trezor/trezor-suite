@@ -4,13 +4,7 @@ import { colors, Button, variables, Icon } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketBuyProviderInfo } from '@wallet-components';
 import { QuestionTooltip, Translation } from '@suite-components';
 import { BuyTrade } from 'invity-api';
-import { useCoinmarketOffersContext } from '@wallet-hooks/useCoinmarketOffers';
-
-const StyledQuestionTooltip = styled(QuestionTooltip)`
-    padding-left: 4px;
-    padding-top: 1px;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
-`;
+import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
 
 interface Props {
     className?: string;
@@ -19,7 +13,7 @@ interface Props {
 }
 
 const Quote = ({ className, quote, wantCrypto }: Props) => {
-    const { selectQuote, providersInfo } = useCoinmarketOffersContext();
+    const { selectQuote, providersInfo } = useCoinmarketBuyOffersContext();
     const hasTag = false; // TODO - tags are in quote.tags, will need some algorithm to evaluate them and show only one
     const { paymentMethod, exchange, error } = quote;
 
@@ -184,5 +178,11 @@ const IconWrapper = styled.div`
 `;
 
 const ErrorText = styled.div``;
+
+const StyledQuestionTooltip = styled(QuestionTooltip)`s
+    padding-left: 4px;
+    padding-top: 1px;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+`;
 
 export default Quote;

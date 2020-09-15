@@ -12,7 +12,7 @@ import {
     submitRequestForm,
     createTxLink,
 } from '@suite/utils/wallet/coinmarket/buyUtils';
-import { Props, ContextValues } from '@wallet-types/coinmarketOffers';
+import { Props, ContextValues } from '@wallet-types/coinmarketBuyOffers';
 
 export const useOffers = (props: Props) => {
     const REFETCH_INTERVAL = 30000;
@@ -26,6 +26,7 @@ export const useOffers = (props: Props) => {
         addressVerified,
         isFromRedirect,
     } = props;
+
     const { account } = selectedAccount;
     const [selectedQuote, setSelectQuote] = useState<BuyTrade>();
     const [innerQuotes, setInnerQuotes] = useState<BuyTrade[]>(quotes);
@@ -147,11 +148,11 @@ export const useOffers = (props: Props) => {
     };
 };
 
-export const CoinmarketOffersContext = createContext<ContextValues | null>(null);
-CoinmarketOffersContext.displayName = 'CoinmarketOffersContext';
+export const CoinmarketBuyOffersContext = createContext<ContextValues | null>(null);
+CoinmarketBuyOffersContext.displayName = 'CoinmarketBuyOffersContext';
 
-export const useCoinmarketOffersContext = () => {
-    const context = useContext(CoinmarketOffersContext);
-    if (context === null) throw Error('BuyFormContext used without Context');
+export const useCoinmarketBuyOffersContext = () => {
+    const context = useContext(CoinmarketBuyOffersContext);
+    if (context === null) throw Error('CoinmarketBuyOffersContext used without Context');
     return context;
 };

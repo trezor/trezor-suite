@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { getAccountInfo } from '@wallet-utils/coinmarket/buyUtils';
 import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
 import { Input, Button, colors, variables, CoinLogo, DeviceImage } from '@trezor/components';
-import { useCoinmarketOffersContext } from '@wallet-hooks/useCoinmarketOffers';
+import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
 
 const VerifyAddressComponent = () => {
     const {
@@ -13,7 +13,7 @@ const VerifyAddressComponent = () => {
         selectedQuote,
         goToPayment,
         addressVerified,
-    } = useCoinmarketOffersContext();
+    } = useCoinmarketBuyOffersContext();
     const { symbol, index, formattedBalance } = account;
     const { path, address } = getAccountInfo(account);
 

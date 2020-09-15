@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { AppState } from '@suite-types';
 import { WalletLayout } from '@wallet-components';
-import { ComponentProps, Props } from '@wallet-types/coinmarketOffers';
-import { CoinmarketOffersContext, useOffers } from '@wallet-hooks/useCoinmarketOffers';
+import { ComponentProps, Props } from '@wallet-types/coinmarketBuyOffers';
+import { CoinmarketBuyOffersContext, useOffers } from '@wallet-hooks/useCoinmarketBuyOffers';
 import Offers from './Offers';
 
 const mapStateToProps = (state: AppState): ComponentProps => ({
@@ -27,11 +27,9 @@ const OffersIndex = (props: Props) => {
     const coinmarketOffersValues = useOffers({ ...props, selectedAccount });
 
     return (
-        <>
-            <CoinmarketOffersContext.Provider value={coinmarketOffersValues}>
-                <Offers />
-            </CoinmarketOffersContext.Provider>
-        </>
+        <CoinmarketBuyOffersContext.Provider value={coinmarketOffersValues}>
+            <Offers />
+        </CoinmarketBuyOffersContext.Provider>
     );
 };
 

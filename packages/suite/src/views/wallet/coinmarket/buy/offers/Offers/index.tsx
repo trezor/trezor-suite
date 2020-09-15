@@ -3,13 +3,13 @@ import styled from 'styled-components';
 import { CoinmarketFooter, CoinmarketTopPanel } from '@wallet-components';
 import { variables, colors } from '@trezor/components';
 import { LayoutContext, Translation } from '@suite-components';
-import { useCoinmarketOffersContext } from '@wallet-hooks/useCoinmarketOffers';
+import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
 
 import List from './List';
 import SelectedOffer from './SelectedOffer';
 
 const Offers = () => {
-    const { quotes, alternativeQuotes, selectedQuote } = useCoinmarketOffersContext();
+    const { quotes, alternativeQuotes, selectedQuote } = useCoinmarketBuyOffersContext();
     const { setLayout } = useContext(LayoutContext);
 
     useMemo(() => {
@@ -21,7 +21,6 @@ const Offers = () => {
             {quotes?.length === 0 && alternativeQuotes?.length === 0 && (
                 <NoQuotes>No quotes here</NoQuotes>
             )}
-
             {!selectedQuote && quotes.length > 0 && (
                 <>
                     <List quotes={quotes} />
