@@ -126,6 +126,7 @@ export default ({ selectedAccount, send, decision }: Props) => {
 
     return (
         <Modal
+            noPadding
             size="large"
             header={
                 <ConfirmOnDevice
