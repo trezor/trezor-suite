@@ -141,7 +141,7 @@ describe('useSendForm hook', () => {
             if (f.actions) {
                 await actionSequence(f.actions, callback);
             }
-            
+
             // compare finalResult
             if (f.finalResult) {
                 const { composedLevels, getValues } = callback.getContextValues();

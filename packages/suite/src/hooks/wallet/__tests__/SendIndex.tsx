@@ -89,7 +89,7 @@ export const renderWithCallback = (store: any) => {
 };
 
 type Action = {
-    type: string,
+    type: string;
     element: string;
     value?: string;
     delay?: number;
@@ -99,7 +99,7 @@ type Action = {
         composedLevels: any; // partial PrecomposedLevel
         formValues: DeepPartial<ReturnType<SendContextValues['getValues']>>;
     }>;
-}
+};
 
 // Actions sequence execution
 // used in multiple test cases
@@ -131,18 +131,17 @@ export const actionSequence = async (actions: Action[], callback: TestCallback) 
         const { result } = action;
         const { getContextValues } = callback;
         if (result && getContextValues) {
+            // eslint-disable-next-line global-require
             const { composeTransaction } = require('trezor-connect').default;
             // validate params sent to 'trezor-connect'
             if (result.composeTransactionParams) {
                 expect(composeTransaction).toHaveBeenLastCalledWith(
-                    expect.objectContaining(result.composeTransactionParams)
+                    expect.objectContaining(result.composeTransactionParams),
                 );
             }
             // validate number of calls to 'trezor-connect'
             if (typeof result.composeTransactionCalls === 'number') {
-                expect(composeTransaction).toBeCalledTimes(
-                    result.composeTransactionCalls,
-                );
+                expect(composeTransaction).toBeCalledTimes(result.composeTransactionCalls);
             }
 
             const { composedLevels, getValues } = getContextValues();
@@ -162,4 +161,4 @@ export const actionSequence = async (actions: Action[], callback: TestCallback) 
             }
         }
     }
-}
+};
