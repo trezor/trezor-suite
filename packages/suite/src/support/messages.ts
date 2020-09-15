@@ -3794,6 +3794,11 @@ const definedMessages = defineMessages({
         id: 'TR_LABELING_REMOVE_OUTPUT',
         defaultMessage: 'Remove label',
     },
+    TR_GRAPH_MISSING_DATA: {
+        id: 'TR_GRAPH_MISSING_DATA',
+        defaultMessage:
+            'Ripple transactions and token transactions on ethereum network are excluded from the transaction graph',
+    },
 } as const);
 
 export default definedMessages;
