@@ -434,8 +434,7 @@ export const setMax = [
         },
     },
     {
-        description:
-            'setMax sequence: compose not final (without address) then add address',
+        description: 'setMax sequence: compose not final (without address) then add address',
         connect: [
             {
                 response: {
@@ -452,7 +451,7 @@ export const setMax = [
                 response: {
                     success: true,
                     payload: [
-                        { 
+                        {
                             type: 'final',
                             max: '100000000',
                         },
@@ -471,9 +470,7 @@ export const setMax = [
                 result: {
                     composeTransactionCalls: 1,
                     composeTransactionParams: {
-                        outputs: [
-                            { type: 'send-max-noaddress' }
-                        ]
+                        outputs: [{ type: 'send-max-noaddress' }],
                     },
                     formValues: {
                         setMaxOutputId: 0,
@@ -481,8 +478,8 @@ export const setMax = [
                     },
                     composedLevels: {
                         normal: { type: 'nonfinal' },
-                    }
-                }
+                    },
+                },
             },
             {
                 type: 'input',
@@ -491,8 +488,8 @@ export const setMax = [
                 result: {
                     composeTransactionParams: {
                         outputs: [
-                            { type: 'send-max', address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX' }
-                        ]
+                            { type: 'send-max', address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX' },
+                        ],
                     },
                 },
             },
@@ -501,11 +498,13 @@ export const setMax = [
             composeTransactionCalls: 2,
             formValues: {
                 setMaxOutputId: 0,
-                outputs: [{ address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '1', fiat: '1.00' }],
+                outputs: [
+                    { address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '1', fiat: '1.00' },
+                ],
             },
             composedLevels: {
                 normal: { type: 'final' },
-            }
+            },
         },
     },
     {
@@ -516,7 +515,7 @@ export const setMax = [
                 response: {
                     success: true,
                     payload: [
-                        { 
+                        {
                             type: 'final',
                             max: '100000000',
                         },
@@ -527,7 +526,7 @@ export const setMax = [
                 response: {
                     success: true,
                     payload: [
-                        { 
+                        {
                             type: 'nonfinal',
                             max: '100000000',
                         },
@@ -538,7 +537,7 @@ export const setMax = [
                 response: {
                     success: true,
                     payload: [
-                        { 
+                        {
                             type: 'nonfinal',
                             max: '100000000',
                         },
@@ -549,7 +548,7 @@ export const setMax = [
                 response: {
                     success: true,
                     payload: [
-                        { 
+                        {
                             type: 'final',
                             totalSpent: '120000000',
                         },
@@ -565,7 +564,7 @@ export const setMax = [
                 result: {
                     composeTransactionCalls: 0,
                     composedLevels: undefined,
-                }
+                },
             },
             {
                 type: 'hover',
@@ -578,12 +577,18 @@ export const setMax = [
                     composeTransactionCalls: 1,
                     formValues: {
                         setMaxOutputId: 0,
-                        outputs: [{ address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '1', fiat: '1.00' }],
+                        outputs: [
+                            {
+                                address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
+                                amount: '1',
+                                fiat: '1.00',
+                            },
+                        ],
                     },
                     composedLevels: {
                         normal: { type: 'final' },
-                    }
-                }
+                    },
+                },
             },
             // add second output
             {
@@ -593,11 +598,18 @@ export const setMax = [
                     composeTransactionCalls: 1,
                     formValues: {
                         setMaxOutputId: 0,
-                        outputs: [{ address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '1', fiat: '1.00' }, { address: '' }],
+                        outputs: [
+                            {
+                                address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
+                                amount: '1',
+                                fiat: '1.00',
+                            },
+                            { address: '' },
+                        ],
                     },
                     composedLevels: {
                         normal: { type: 'final' },
-                    }
+                    },
                 },
             },
             // fill address in second output
@@ -609,18 +621,25 @@ export const setMax = [
                     formValues: {
                         setMaxOutputId: 0,
                         outputs: [
-                            { address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '1', fiat: '1.00' },
-                            { address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '' }
+                            {
+                                address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
+                                amount: '1',
+                                fiat: '1.00',
+                            },
+                            { address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '' },
                         ],
                     },
                     composeTransactionParams: {
                         outputs: [
                             // corner-case: send-max was changed to send-max-noaddress
                             // see sendFormUtils.getBitcoinComposeOutput
-                            { type: 'send-max-noaddress', address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX' }
-                        ]
+                            {
+                                type: 'send-max-noaddress',
+                                address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
+                            },
+                        ],
                     },
-                }
+                },
             },
             // disable send max
             {
@@ -634,10 +653,14 @@ export const setMax = [
                         outputs: [
                             // corner-case: external was changed to noaddress
                             // see sendFormUtils.getBitcoinComposeOutput
-                            { type: 'noaddress', address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '100000000' }
-                        ]
+                            {
+                                type: 'noaddress',
+                                address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
+                                amount: '100000000',
+                            },
+                        ],
                     },
-                }
+                },
             },
             // fill fiat in second output
             {
@@ -647,17 +670,33 @@ export const setMax = [
                 result: {
                     formValues: {
                         outputs: [
-                            { address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '1', fiat: '1.00' },
-                            { address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '0.20000000', fiat: '0.20' }
+                            {
+                                address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
+                                amount: '1',
+                                fiat: '1.00',
+                            },
+                            {
+                                address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
+                                amount: '0.20000000',
+                                fiat: '0.20',
+                            },
                         ],
                     },
                     composeTransactionParams: {
                         outputs: [
-                            { type: 'external', address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '100000000' },
-                            { type: 'external', address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '20000000' }
-                        ]
+                            {
+                                type: 'external',
+                                address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
+                                amount: '100000000',
+                            },
+                            {
+                                type: 'external',
+                                address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
+                                amount: '20000000',
+                            },
+                        ],
                     },
-                }
+                },
             },
             // remove second output
             // {
@@ -677,8 +716,12 @@ export const setMax = [
             formValues: {
                 setMaxOutputId: undefined,
                 outputs: [
-                    { address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '1', fiat: '1.00' }, 
-                    { address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '0.20000000', fiat: '0.20' }
+                    { address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX', amount: '1', fiat: '1.00' },
+                    {
+                        address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
+                        amount: '0.20000000',
+                        fiat: '0.20',
+                    },
                 ],
             },
             composedLevels: {
@@ -686,7 +729,7 @@ export const setMax = [
                     type: 'final',
                     totalSpent: '120000000',
                 },
-            }
+            },
         },
     },
 ];

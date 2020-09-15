@@ -141,9 +141,7 @@ describe('sendForm utils', () => {
                 },
                 'btc',
             ),
-        ).toEqual([
-            { type: 'send-max-noaddress' },
-        ]);
+        ).toEqual([{ type: 'send-max-noaddress' }]);
 
         outputs = [{ type: 'payment', amount: '', address: 'A' }];
         expect(
@@ -154,9 +152,7 @@ describe('sendForm utils', () => {
                 },
                 'btc',
             ),
-        ).toEqual([
-            { type: 'send-max', address: 'A' },
-        ]);
+        ).toEqual([{ type: 'send-max', address: 'A' }]);
 
         // edge case, final Output are changed to not-final
         outputs = [
