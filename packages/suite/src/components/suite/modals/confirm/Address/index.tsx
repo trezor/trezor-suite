@@ -8,6 +8,12 @@ import { Translation, QrCode } from '@suite-components';
 import DeviceDisconnected from './components/DeviceDisconnected';
 import { useActions } from '@suite-hooks';
 
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+`;
+
 const StyledBox = styled(Box)`
     flex-direction: row;
     padding: 30px 24px;
@@ -96,19 +102,22 @@ const ConfirmAddress = ({
             // size="large"
             useFixedWidth={false}
         >
-            <StyledBox>
-                <QrCode value={address} addressPath={addressPath} />
-                <Right>
-                    <Address data-test="@modal/confirm-address/address-field">{address}</Address>
-                    <CopyButtonWrapper ref={htmlElement}>
-                        <Button variant="tertiary" onClick={copyAddress}>
-                            <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
-                        </Button>
-                    </CopyButtonWrapper>
-                </Right>
-            </StyledBox>
-            {/* {device.connected && <CheckOnTrezor device={device} />} */}
-            {!device.connected && <DeviceDisconnected label={device.label} />}
+            <Wrapper>
+                <StyledBox>
+                    <QrCode value={address} addressPath={addressPath} />
+                    <Right>
+                        <Address data-test="@modal/confirm-address/address-field">
+                            {address}
+                        </Address>
+                        <CopyButtonWrapper ref={htmlElement}>
+                            <Button variant="tertiary" onClick={copyAddress}>
+                                <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
+                            </Button>
+                        </CopyButtonWrapper>
+                    </Right>
+                </StyledBox>
+                {device.connected && <DeviceDisconnected label={device.label} />}
+            </Wrapper>
         </Modal>
     );
 };
