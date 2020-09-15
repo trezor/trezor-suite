@@ -13,6 +13,7 @@ import {
 } from '@wallet-utils/accountUtils';
 import { Network, Account, CoinFiatRates } from '@wallet-types';
 import { FormState, FeeInfo, EthTransactionData, ExternalOutput } from '@wallet-types/sendForm';
+import { isValidAddress } from 'ethereumjs-util';
 
 export const calculateTotal = (amount: string, fee: string): string => {
     try {
@@ -162,11 +163,18 @@ export const getFeeLevels = (
     return networkType === 'ethereum' ? convertedEthLevels : initialLevels;
 };
 
-export const getInputState = (error?: FieldError, value?: string) => {
-    if (error) {
+export const getInputState = (
+    error?: FieldError,
+    value?: string,
+    resolvingDomain?: boolean,
+    resolvedDomain?: string,
+) => {
+    if (error || (resolvedDomain && value && !isValidAddress(value))) {
         return 'error';
     }
-
+    if (resolvingDomain) {
+        return 'warning';
+    }
     if (value && value.length > 0 && !error) {
         return 'success';
     }

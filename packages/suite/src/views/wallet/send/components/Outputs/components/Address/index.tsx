@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Input, colors, variables, Icon, Button } from '@trezor/components';
 import { AddressLabeling, Translation } from '@suite-components';
@@ -8,6 +8,7 @@ import { useActions } from '@suite-hooks';
 import { useSendFormContext } from '@wallet-hooks';
 import { isAddressValid } from '@wallet-utils/validation';
 import { getInputState } from '@wallet-utils/sendFormUtils';
+import { resolveDomain } from '@wallet-utils/ethUtils';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 
 const Label = styled.div`
@@ -53,10 +54,25 @@ const Address = ({ outputId, outputsCount }: { outputId: number; outputsCount: n
     const addressError = outputError ? outputError.address : undefined;
     const addressValue = getDefaultValue(inputName, outputs[outputId].address || '');
     const recipientId = outputId + 1;
+    const [resolvingDomain, setResolvingDomain] = useState(false);
+    const [resolvedDomain, setResolvedDomain] = useState('');
+
+    const BottomText = () => {
+        if (addressError) {
+            return <InputError error={addressError} />;
+        }
+        if (resolvedDomain && isAddressValid(addressValue, symbol)) {
+            return <AddressLabeling address={`Resolved ${resolvedDomain} to: ${addressValue}`} />;
+        }
+        if (resolvingDomain && addressValue.endsWith('.crypto')) {
+            return <AddressLabeling address={`Resolving ${addressValue}...`} />;
+        }
+        return <AddressLabeling address={addressValue} knownOnly />;
+    };
 
     return (
         <Input
-            state={getInputState(addressError, addressValue)}
+            state={getInputState(addressError, addressValue, resolvingDomain, resolvedDomain)}
             monospace
             // innerAddon={
             //     <AddLabel onClick={() => setValue(`outputs[${outputId}].labelInput`, 'enabled')} />
@@ -109,16 +125,26 @@ const Address = ({ outputId, outputsCount }: { outputId: number; outputsCount: n
                     </Remove>
                 ) : undefined
             }
-            onChange={() => {
+            onChange={async () => {
+                if (
+                    networkType === 'ethereum' &&
+                    addressValue.endsWith('.crypto') &&
+                    !resolvingDomain
+                ) {
+                    setResolvedDomain('');
+                    setResolvingDomain(true);
+                    const resolvedAddress = await resolveDomain(addressValue, 'ETH');
+                    if (resolvedAddress) {
+                        setValue(inputName, resolvedAddress, { shouldValidate: true });
+                    } else {
+                        setValue(inputName, addressValue, { shouldValidate: true });
+                    }
+                    setResolvedDomain(addressValue);
+                    setResolvingDomain(false);
+                }
                 composeTransaction(`outputs[${outputId}].amount`, !!addressError);
             }}
-            bottomText={
-                addressError ? (
-                    <InputError error={addressError} />
-                ) : (
-                    <AddressLabeling address={addressValue} knownOnly />
-                )
-            }
+            bottomText={<BottomText />}
             name={inputName}
             data-test={inputName}
             defaultValue={addressValue}
@@ -126,6 +152,13 @@ const Address = ({ outputId, outputsCount }: { outputId: number; outputsCount: n
             innerRef={register({
                 required: 'RECIPIENT_IS_NOT_SET',
                 validate: (value: string) => {
+                    if (
+                        networkType === 'ethereum' &&
+                        resolvedDomain !== value &&
+                        value.endsWith('.crypto')
+                    ) {
+                        return;
+                    }
                     if (!isAddressValid(value, symbol)) {
                         return 'RECIPIENT_IS_NOT_VALID';
                     }

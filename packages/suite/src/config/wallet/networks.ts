@@ -75,6 +75,7 @@ const networks = [
         bip44: "m/44'/60'/0'/0/i",
         hasSignVerify: true,
         decimals: 18,
+        web3: ['wss://eth2.trezor.io/geth'],
         explorer: {
             tx: 'https://eth1.trezor.io/tx/',
             account: 'https://eth1.trezor.io/address/',
@@ -315,6 +316,7 @@ type Network = {
     isHidden?: boolean;
     chainId?: number;
     hasSignVerify?: boolean;
+    web3?: string[];
 } & ArrayElement<typeof networks>;
 
 export default [...networks] as Network[];
