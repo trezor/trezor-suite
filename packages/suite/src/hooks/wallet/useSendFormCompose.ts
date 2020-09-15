@@ -88,6 +88,12 @@ export const useSendFormCompose = ({
         setComposedLevels(undefined);
         // do nothing if there are no requests running and field got an error (component knows own errors in `onChange` blocks before they are propagated)
         if (!state.isLoading && fieldHasError) return;
+        // interrupt previous compose process
+        if (state.isLoading && fieldHasError) {
+            debounce(async () => {}, false);
+            updateContext({ isLoading: false });
+            return;
+        }
         const composeErrors = findComposeErrors(errors);
         if (composeErrors.length > 0) {
             clearErrors(composeErrors);
