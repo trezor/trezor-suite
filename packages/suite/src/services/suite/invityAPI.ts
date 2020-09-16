@@ -27,7 +27,7 @@ const EthereumTestnetRopstenTicker = 'tROP';
 
 class InvityAPI {
     unknownCountry = 'unknown';
-    productionAPIServer = 'https://exchange.invity.io';
+    productionAPIServer = 'https://exchange.trezor.io';
     stagingAPIServer = 'https://staging-exchange.invity.io';
     localhostAPIServer = 'http://localhost:3330';
 
@@ -54,7 +54,10 @@ class InvityAPI {
     private static apiKey: string;
 
     constructor() {
-        this.server = this.stagingAPIServer;
+        // for development use staging by default
+        if (window.location.hostname === 'localhost') {
+            this.server = this.stagingAPIServer;
+        }
     }
 
     private getInvityAPIKey() {
