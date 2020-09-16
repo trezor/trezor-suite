@@ -5,6 +5,7 @@ import { WALLET_SETTINGS } from '@settings-actions/constants';
 import { EXTERNAL_NETWORKS } from '@wallet-config';
 import { Action } from '@suite-types';
 import { Network, ExternalNetwork } from '@wallet-types';
+import { BlockbookUrl } from '@wallet-types/blockbook';
 
 export interface State {
     localCurrency: string;
@@ -14,6 +15,7 @@ export interface State {
     lastUsedFeeLevel: {
         [key: string]: Omit<FeeLevel, 'blocks'>; // Key: Network['symbol']
     };
+    blockbookUrls: BlockbookUrl[];
 }
 
 export const initialState: State = {
@@ -22,9 +24,10 @@ export const initialState: State = {
     enabledNetworks: ['btc'],
     enabledExternalNetworks: EXTERNAL_NETWORKS.filter(n => !n.isHidden).map(n => n.symbol),
     lastUsedFeeLevel: {},
+    blockbookUrls: [],
 };
 
-export default (state: State = initialState, action: Action): State => {
+const settingsReducer = (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOADED:
@@ -53,7 +56,21 @@ export default (state: State = initialState, action: Action): State => {
                     delete draft.lastUsedFeeLevel[action.symbol];
                 }
                 break;
+
+            case WALLET_SETTINGS.ADD_BLOCKBOOK_URL:
+                draft.blockbookUrls.push(action.payload);
+                break;
+
+            case WALLET_SETTINGS.REMOVE_BLOCKBOOK_URL: {
+                const { coin, url } = action.payload;
+                const index = draft.blockbookUrls.findIndex(b => b.coin !== coin && b.url !== url);
+                draft.blockbookUrls.splice(index, 1);
+                break;
+            }
+
             // no default
         }
     });
 };
+
+export default settingsReducer;

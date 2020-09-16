@@ -29,6 +29,8 @@ suite-desktop build mac manual:
     except:
         <<: *auto_run_branches
     when: manual
+    tags:
+        - darwin
     variables:
         platform: mac
         artifact: ${DESKTOP_APP_NAME}*

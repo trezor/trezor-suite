@@ -51,7 +51,7 @@ type Props = {
     actionButton?: JSX.Element;
 };
 
-export default (props: Props) => (
+const Wrapper = (props: Props) => (
     <StyledModal
         cancelable
         onCancel={props.onCancel}
@@ -94,3 +94,5 @@ export default (props: Props) => (
         </Actions>
     </StyledModal>
 );
+
+export default Wrapper;

@@ -71,7 +71,7 @@ const getOptions = (otherAccounts: Account[]) => {
     return options;
 };
 
-export default ({ accounts, selectedAccount, title, goto, router }: Props) => {
+const AccountSelector = ({ accounts, selectedAccount, title, goto, router }: Props) => {
     if (selectedAccount.status !== 'loaded' || !router.route) return null;
     const { account } = selectedAccount;
 
@@ -136,3 +136,5 @@ export default ({ accounts, selectedAccount, title, goto, router }: Props) => {
         </Wrapper>
     );
 };
+
+export default AccountSelector;

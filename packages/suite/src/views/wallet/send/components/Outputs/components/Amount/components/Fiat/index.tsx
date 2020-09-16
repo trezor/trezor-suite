@@ -29,7 +29,7 @@ export const buildCurrencyOptions = () => {
     return result;
 };
 
-export default ({ outputId }: { outputId: number }) => {
+const Fiat = ({ outputId }: { outputId: number }) => {
     const {
         account,
         network,
@@ -43,6 +43,7 @@ export default ({ outputId }: { outputId: number }) => {
         setValue,
         localCurrencyOption,
         composeTransaction,
+        watch,
     } = useSendFormContext();
 
     const inputName = `outputs[${outputId}].fiat`;
@@ -55,8 +56,10 @@ export default ({ outputId }: { outputId: number }) => {
     const error = outputError ? outputError.fiat : undefined;
     const fiatValue = getDefaultValue(inputName, outputs[outputId].fiat || '');
     const tokenValue = getDefaultValue(tokenInputName, outputs[outputId].token);
-    const currencyValue =
-        getDefaultValue(currencyInputName, outputs[outputId].currency) || localCurrencyOption;
+    const currencyValue = watch(
+        currencyInputName,
+        getDefaultValue(currencyInputName, outputs[outputId].currency) || localCurrencyOption,
+    );
     const token = findToken(account.tokens, tokenValue);
     const decimals = token ? token.decimals : network.decimals;
 
@@ -169,3 +172,5 @@ export default ({ outputId }: { outputId: number }) => {
         </Wrapper>
     );
 };
+
+export default Fiat;

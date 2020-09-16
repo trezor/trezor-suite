@@ -48,23 +48,23 @@ const getAppUrl = (appName: App) => {
     const version = process.env.VERSION ? normalizeVersion(process.env.VERSION) : '';
     switch (appName) {
         case 'win':
-            return encodeURI(`/wallet/static/desktop/Trezor Beta Wallet-${version}.exe`);
+            return encodeURI(`/wallet/static/desktop/Trezor Suite-${version}.exe`);
         case 'macos':
-            return encodeURI(`/wallet/static/desktop/Trezor Beta Wallet-${version}.zip`);
+            return encodeURI(`/wallet/static/desktop/Trezor Suite-${version}.zip`);
         case 'linux':
-            return encodeURI(`/wallet/static/desktop/Trezor Beta Wallet-${version}.AppImage`);
+            return encodeURI(`/wallet/static/desktop/Trezor Suite-${version}.AppImage`);
         // no default
     }
 };
 
-export default () => {
+const Start = () => {
     const [app, setApp] = useState<App | null>(null);
     const walletUrl = process.env.assetPrefix ? `${process.env.assetPrefix}/wallet` : '/wallet';
 
     return (
         <Layout>
             <Wrapper>
-                <H2>Download Trezor Beta Wallet desktop app</H2>
+                <H2>Download Trezor Suite desktop app</H2>
                 <P size="tiny">
                     For testing purposes only. Please keep in mind this is a beta version.
                 </P>
@@ -116,3 +116,5 @@ export default () => {
         </Layout>
     );
 };
+
+export default Start;

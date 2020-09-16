@@ -172,7 +172,7 @@ const Pin = ({ device, cancelable, noBackground, ...rest }: Props) => {
     // TODO: figure out responsive design
     return (
         <Modal
-            padding={['0px', '0px', '0px', '0px']}
+            noPadding
             useFixedWidth={false}
             cancelable={cancelable}
             noBackground={noBackground}

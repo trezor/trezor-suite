@@ -102,7 +102,7 @@ const buildFeeOptions = (levels: FeeLevel[]) => {
     return result;
 };
 
-export default () => {
+const Fees = () => {
     const {
         feeInfo,
         changeFeeLevel,
@@ -182,3 +182,5 @@ export default () => {
         </StyledCard>
     );
 };
+
+export default Fees;

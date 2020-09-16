@@ -34,6 +34,7 @@ import Log from './Log';
 import WipeDevice from './WipeDevice';
 import DisconnectDevice from './DisconnectDevice';
 import MetadataProvider from './metadata/MetadataProvider';
+import AdvancedCoinSettings from './AdvancedCoinSettings/Container';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -182,6 +183,8 @@ const getUserContextModal = (props: Props) => {
             return (
                 <MetadataProvider onCancel={modalActions.onCancel} decision={payload.decision} />
             );
+        case 'advanced-coin-settings':
+            return <AdvancedCoinSettings {...payload} onCancel={modalActions.onCancel} />;
         default:
             return null;
     }
@@ -214,7 +217,11 @@ const Modal = (props: Props) => {
         return <FocusLock autoFocus={false}>{modalComponent}</FocusLock>;
     }
 
-    return React.cloneElement(modalComponent, { noBackground: true, cancelable: false });
+    return React.cloneElement(modalComponent, {
+        noBackground: true,
+        showHeaderBorder: false,
+        cancelable: false,
+    });
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Modal);

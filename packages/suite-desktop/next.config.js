@@ -32,7 +32,7 @@ module.exports = withBundleAnalyzer(
                         '@components',
                         '../packages/components/src',
                     ],
-                    exportTrailingSlash: true,
+                    trailingSlash: true,
                     assetPrefix: process.env.assetPrefix || '',
                     workerLoaderOptions: {
                         name: 'static/[hash].worker.js',

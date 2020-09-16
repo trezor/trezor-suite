@@ -22,7 +22,7 @@ const StyledButton = styled(Button)`
     margin-right: 8px;
 `;
 
-export default () => {
+const EthereumOptions = () => {
     const {
         getDefaultValue,
         toggleOption,
@@ -77,3 +77,5 @@ export default () => {
         </Wrapper>
     );
 };
+
+export default EthereumOptions;

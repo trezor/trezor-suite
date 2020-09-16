@@ -32,7 +32,7 @@ export const initialState = NETWORKS.reduce((state, network) => {
     return state;
 }, initialStatePredefined as State);
 
-export default (state: State = initialState, action: WalletAction) => {
+const feesReducer = (state: State = initialState, action: WalletAction) => {
     return produce(state, draft => {
         switch (action.type) {
             case BLOCKCHAIN.UPDATE_FEE:
@@ -44,3 +44,5 @@ export default (state: State = initialState, action: WalletAction) => {
         }
     });
 };
+
+export default feesReducer;

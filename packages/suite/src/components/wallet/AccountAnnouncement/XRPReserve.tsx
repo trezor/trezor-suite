@@ -9,7 +9,7 @@ interface Props {
     reserve: string;
 }
 
-export default ({ reserve }: Props) => (
+const XRPReserve = ({ reserve }: Props) => (
     <NotificationCard variant="info">
         <Translation
             id="TR_XRP_RESERVE_INFO"
@@ -24,3 +24,5 @@ export default ({ reserve }: Props) => (
         />
     </NotificationCard>
 );
+
+export default XRPReserve;

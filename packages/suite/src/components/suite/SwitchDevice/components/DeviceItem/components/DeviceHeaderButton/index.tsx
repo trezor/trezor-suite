@@ -57,7 +57,7 @@ const DeviceSettingsButton = ({ onDeviceSettingsClick }: Props) => (
     />
 );
 
-export default (props: Props) => {
+const DeviceHeaderButton = (props: Props) => {
     const { device } = props;
     const deviceStatus = deviceUtils.getStatus(device);
     const deviceStatusMessage = deviceUtils.getDeviceNeedsAttentionMessage(deviceStatus);
@@ -78,3 +78,5 @@ export default (props: Props) => {
 
     return null;
 };
+
+export default DeviceHeaderButton;

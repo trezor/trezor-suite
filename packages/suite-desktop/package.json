@@ -1,14 +1,15 @@
 {
     "name": "@trezor/suite-desktop",
-    "description": "TrezorSuite desktop application",
-    "version": "20.9.1-beta",
+    "description": "Trezor Suite desktop application",
+    "version": "20.10.1-beta",
     "private": true,
-    "author": "Satoshilabs s.r.o <info@satoshilabs.com>",
-    "homepage": "http://www.trezor.io",
+    "author": "SatoshiLabs <info@satoshilabs.com>",
+    "homepage": "https://trezor.io/",
     "main": "dist/electron.js",
     "scripts": {
-        "dev": "yarn workspace @trezor/suite-data copy-static-files && yarn build:lib && electron .",
+        "dev": "yarn copy-files && yarn build:lib && electron .",
         "clean": "rimraf ./build-electron && rimraf ./build && rimraf ./dist",
+        "copy-files": "yarn workspace @trezor/suite-data copy-static-files",
         "build:lib": "tsc --project src-electron/tsconfig.json",
         "build:desktop": "rimraf ./build && next build && next export -o build && yarn build:lib",
         "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac",
@@ -19,14 +20,11 @@
         "type-check": "tsc --project tsconfig.json"
     },
     "build": {
-        "appId": "io.trezor.TrezorWallet",
-        "productName": "Trezor Beta Wallet",
+        "appId": "io.trezor.TrezorSuite",
+        "productName": "Trezor Suite",
         "copyright": "Copyright © ${author}",
         "asar": true,
-        "asarUnpack": [
-            "build/static/bridge/**/*"
-        ],
-        "electronVersion": "9.1.0",
+        "electronVersion": "10.1.0",
         "directories": {
             "output": "build-electron"
         },
@@ -34,7 +32,6 @@
             "build/**/*",
             "!build/static/bridge/**/*",
             "dist/*.js",
-            "entitlements.mac.inherit.plist",
             "package.json"
         ],
         "protocols": {
@@ -43,6 +40,12 @@
                 "trezor-suite"
             ]
         },
+        "extraResources": [
+            {
+                "from": "build/static/images/icons/512x512.png",
+                "to": "images/icons/512x512.png"
+            }
+        ],
         "dmg": {
             "contents": [
                 {
@@ -58,12 +61,26 @@
                 }
             ]
         },
+        "nsis": {
+            "oneClick": false,
+            "allowToChangeInstallationDirectory": true
+        },
         "mac": {
             "files": [
-                "build/static/bridge/**/trezord-mac"
+                "entitlements.mac.inherit.plist"
             ],
-            "icon": "build/static/images/icons/512x512.png",
+            "extraResources": [
+                {
+                    "from": "build/static/bridge",
+                    "to": "bridge",
+                    "filter": ["**/trezord-mac"]
+                }
+            ],
+            "icon": "build/static/images/icons/512x512.icns",
             "artifactName": "${productName}-${version}.${ext}",
+            "hardenedRuntime": true,
+            "gatekeeperAssess": false,
+            "darkModeSupport": false,
             "entitlements": "entitlements.mac.inherit.plist",
             "entitlementsInherit": "entitlements.mac.inherit.plist",
             "target": [
@@ -71,53 +88,74 @@
             ]
         },
         "win": {
-            "files": [
-                "build/static/bridge/**/trezord-win.exe"
+            "extraResources": [
+                {
+                    "from": "build/static/bridge",
+                    "to": "bridge",
+                    "filter": ["**/trezord-win.exe"]
+                }
             ],
-            "icon": "build/static/images/icons/512x512.png",
+            "icon": "build/static/images/icons/512x512.ico",
             "artifactName": "${productName}-${version}.${ext}",
-            "target": "portable"
+            "target": [
+                "nsis",
+                "zip"
+            ]
         },
         "linux": {
-            "files": [
-                "build/static/bridge/**/trezord-linux-x32",
-                "build/static/bridge/**/trezord-linux-x64"
+            "extraResources": [
+                {
+                    "from": "build/static/bridge",
+                    "to": "bridge",
+                    "filter": ["**/trezord-linux-x32"]
+                },
+                {
+                    "from": "build/static/bridge",
+                    "to": "bridge",
+                    "filter": ["**/trezord-linux-x64"]
+                }
             ],
-            "icon": "build/static/images/icons/512x512.png",
+            "icon": "build/static/images/icons/512x512.icns",
             "artifactName": "${productName}-${version}.${ext}",
-            "target": "AppImage"
+            "executableName": "trezor-suite",
+            "category": "Utility",
+            "target": [
+                "AppImage",
+                "tar.gz"
+            ]
         }
     },
     "dependencies": {
-        "@sentry/browser": "^5.16.0",
-        "@sentry/integrations": "^5.16.0",
-        "@zeit/next-workers": "^1.0.0",
         "electron-is-dev": "^1.2.0",
         "electron-localshortcut": "^3.2.1",
         "electron-next": "^3.1.5",
         "electron-store": "^5.1.1",
-        "next": "^9.4.4",
-        "styled-components": "5.1.1",
         "os": "^0.1.1",
-        "react": "16.9.0",
-        "react-dom": "16.9.0",
-        "react-markdown": "4.3.1",
-        "ps-list": "6.3.0",
-        "worker-loader": "^3.0.1"
+        "ps-list": "6.3.0"
     },
     "devDependencies": {
-        "babel-plugin-styled-components": "1.10.7",
+        "@sentry/browser": "^5.16.0",
+        "@sentry/integrations": "^5.16.0",
         "@types/electron-localshortcut": "^3.1.0",
         "@types/next": "^9.0.0",
         "@types/next-redux-wrapper": "^3.0.0",
         "@types/react": "^16.7.11",
         "@types/react-dom": "^16.0.11",
         "@types/react-redux": "^7.1.7",
-        "electron": "^9.1.0",
+        "@zeit/next-workers": "^1.0.0",
+        "babel-plugin-styled-components": "1.10.7",
+        "electron": "^10.1.0",
         "electron-builder": "^22.7.0",
+        "electron-notarize": "^1.0.0",
         "git-revision-webpack-plugin": "^3.0.6",
+        "next": "^9.5.3",
         "next-plugin-custom-babel-config": "^1.0.4",
         "next-redux-wrapper": "^5.0.0",
-        "next-transpile-modules": "^2.3.1"
+        "next-transpile-modules": "^2.3.1",
+        "react": "16.13.1",
+        "react-dom": "16.13.1",
+        "react-markdown": "4.3.1",
+        "styled-components": "5.1.1",
+        "worker-loader": "^3.0.1"
     }
 }

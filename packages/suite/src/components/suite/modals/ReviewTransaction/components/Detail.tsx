@@ -64,7 +64,7 @@ type Props = {
     txHash?: string;
 };
 
-export default ({ tx, txHash }: Props) => {
+const Detail = ({ tx, txHash }: Props) => {
     const [isExpanded, setExpanded] = useState(false);
 
     const { transaction } = tx;
@@ -115,3 +115,5 @@ export default ({ tx, txHash }: Props) => {
         </Wrapper>
     );
 };
+
+export default Detail;

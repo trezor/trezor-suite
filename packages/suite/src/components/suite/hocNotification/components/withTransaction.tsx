@@ -36,7 +36,7 @@ type StrictViewProps = ViewProps & {
  * @param {React.ComponentType<ViewProps>} View
  * @param {StrictViewProps} props
  */
-export default (View: React.ComponentType<ViewProps>, props: StrictViewProps) => {
+const withTransaction = (View: React.ComponentType<ViewProps>, props: StrictViewProps) => {
     const WrappedView = connect(mapStateToProps)((state: StateProps) => {
         const { notification } = props;
         const { accounts, transactions, devices, blockchain, dispatch } = state;
@@ -83,3 +83,5 @@ export default (View: React.ComponentType<ViewProps>, props: StrictViewProps) =>
     });
     return <WrappedView key={props.notification.id} />;
 };
+
+export default withTransaction;

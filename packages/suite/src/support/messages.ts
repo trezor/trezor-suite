@@ -3891,6 +3891,130 @@ const definedMessages = defineMessages({
         id: 'TR_LABELING_ENABLED',
         defaultMessage: 'Labeling enabled',
     },
+    SETTINGS_ADV_COIN_MODAL_TITLE: {
+        id: 'SETTINGS_ADV_COIN_MODAL_TITLE',
+        defaultMessage: '{name} ({coin}) advanced settings',
+    },
+    SETTINGS_ADV_COIN_BLOCKBOOK_TITLE: {
+        id: 'SETTINGS_ADV_COIN_BLOCKBOOK_TITLE',
+        defaultMessage: 'Blockbook URL',
+    },
+    SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION: {
+        id: 'SETTINGS_ADV_COIN_BLOCKBOOK_DESCRIPTION',
+        defaultMessage:
+            'Coins settings also defines the Discovery process when Trezor is connected, Each time you connect not remembered device.',
+    },
+    SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER: {
+        id: 'SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER',
+        defaultMessage: 'e.g. {url}',
+    },
+    TR_DEFAULT_VALUE: {
+        id: 'TR_DEFAULT_VALUE',
+        defaultMessage: 'Default: {value}',
+        description: 'Used to show default settings value',
+    },
+    TR_ADD_NEW_BLOCKBOOK_BACKEND: {
+        id: 'TR_ADD_NEW_BLOCKBOOK_BACKEND',
+        defaultMessage: 'Add new',
+    },
+    TR_CUSTOM_BACKEND_INVALID_URL: {
+        id: 'TR_CUSTOM_BACKEND_INVALID_URL',
+        defaultMessage: 'Invalid URL',
+    },
+    TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED: {
+        id: 'TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED',
+        defaultMessage: 'The backend is already added',
+    },
+    SETTINGS_ADV_COIN_CONN_INFO_TITLE: {
+        id: 'SETTINGS_ADV_COIN_CONN_INFO_TITLE',
+        defaultMessage: 'Connection Info',
+    },
+    SETTINGS_ADV_COIN_CONN_INFO_URL: {
+        id: 'SETTINGS_ADV_COIN_CONN_INFO_URL',
+        defaultMessage: 'Currently connected to {url}',
+    },
+    SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HASH: {
+        id: 'SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HASH',
+        defaultMessage: 'Block hash: {hash}',
+    },
+    SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HEIGHT: {
+        id: 'SETTINGS_ADV_COIN_CONN_INFO_BLOCK_HEIGHT',
+        defaultMessage: 'Block height: {height}',
+    },
+    SETTINGS_ADV_COIN_CONN_INFO_VERSION: {
+        id: 'SETTINGS_ADV_COIN_CONN_INFO_VERSION',
+        defaultMessage: 'Backend version: {version}',
+    },
+    SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED: {
+        id: 'SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED',
+        defaultMessage:
+            'Not connected to the backend yet. Try going to your account overview to establish the connection with the backend.',
+    },
+    TR_LABELING_ADD_LABEL: {
+        id: 'TR_LABELING_ADD_LABEL',
+        defaultMessage: 'Add label',
+    },
+    TR_LABELING_EDIT_LABEL: {
+        id: 'TR_LABELING_EDIT_LABEL',
+        defaultMessage: 'Edit label',
+    },
+    TR_LABELING_REMOVE_LABEL: {
+        id: 'TR_LABELING_REMOVE_LABEL',
+        defaultMessage: 'Remove label',
+    },
+    TR_LABELING_ADD_ADDRESS: {
+        id: 'TR_LABELING_ADD_ADDRESS',
+        defaultMessage: 'Add label',
+    },
+    TR_LABELING_EDIT_ADDRESS: {
+        id: 'TR_LABELING_EDIT_ADDRESS',
+        defaultMessage: 'Edit label',
+    },
+    TR_LABELING_REMOVE_ADDRESS: {
+        id: 'TR_LABELING_REMOVE_ADDRESS',
+        defaultMessage: 'Remove label',
+    },
+    TR_LABELING_ADD_ACCOUNT: {
+        id: 'TR_LABELING_ADD_ACCOUNT',
+        defaultMessage: 'Add label',
+    },
+    TR_LABELING_EDIT_ACCOUNT: {
+        id: 'TR_LABELING_EDIT_ACCOUNT',
+        defaultMessage: 'Edit label',
+    },
+    TR_LABELING_REMOVE_ACCOUNT: {
+        id: 'TR_LABELING_REMOVE_ACCOUNT',
+        defaultMessage: 'Remove label',
+    },
+    TR_LABELING_ADD_WALLET: {
+        id: 'TR_LABELING_ADD_WALLET',
+        defaultMessage: 'Add label',
+    },
+    TR_LABELING_EDIT_WALLET: {
+        id: 'TR_LABELING_EDIT_WALLET',
+        defaultMessage: 'Edit label',
+    },
+    TR_LABELING_REMOVE_WALLET: {
+        id: 'TR_LABELING_REMOVE_WALLET',
+        defaultMessage: 'Remove label',
+    },
+    TR_LABELING_ADD_OUTPUT: {
+        id: 'TR_LABELING_ADD_OUTPUT',
+        defaultMessage: 'Add label',
+    },
+    TR_LABELING_EDIT_OUTPUT: {
+        id: 'TR_LABELING_EDIT_OUTPUT',
+        defaultMessage: 'Edit label',
+    },
+    TR_LABELING_REMOVE_OUTPUT: {
+        id: 'TR_LABELING_REMOVE_OUTPUT',
+        defaultMessage: 'Remove label',
+    },
+    TR_GRAPH_MISSING_DATA: {
+        id: 'TR_GRAPH_MISSING_DATA',
+        defaultMessage:
+            'Ripple transactions and token transactions on ethereum network are excluded from the transaction graph',
+    },
 } as const);
 
 export default definedMessages;

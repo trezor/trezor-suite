@@ -147,6 +147,7 @@ const Passphrase = (props: Props) => {
     // show 2-column modal for selecting between standard and hidden wallets
     return (
         <Modal
+            cancelable={false}
             heading={<Translation id="TR_SELECT_WALLET_TO_ACCESS" />}
             description={
                 <>

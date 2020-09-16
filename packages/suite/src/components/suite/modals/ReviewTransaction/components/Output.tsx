@@ -172,7 +172,7 @@ export type Props = OutputProps & {
 
 export { Left, Right, Coin, Symbol, Fiat, Amounts };
 
-export default ({ type, state, label, value, symbol, token }: Props) => {
+const Output = ({ type, state, label, value, symbol, token }: Props) => {
     const [isExpanded, setExpanded] = useState(false);
     let outputLabel: React.ReactNode = label;
 
@@ -247,3 +247,5 @@ export default ({ type, state, label, value, symbol, token }: Props) => {
         </StyledBox>
     );
 };
+
+export default Output;

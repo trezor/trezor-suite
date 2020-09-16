@@ -12,7 +12,7 @@ interface BlockchainReconnection {
     count: number; // number of tries
 }
 
-interface Blockchain {
+export interface Blockchain {
     url?: string;
     connected: boolean;
     subscribed?: boolean;
@@ -79,7 +79,7 @@ const update = (draft: BlockchainState, block: BlockchainBlock) => {
     };
 };
 
-export default (state: BlockchainState = initialState, action: Action) => {
+const blockchainReducer = (state: BlockchainState = initialState, action: Action) => {
     return produce(state, draft => {
         switch (action.type) {
             case BLOCKCHAIN.CONNECT:
@@ -105,3 +105,5 @@ export default (state: BlockchainState = initialState, action: Action) => {
         }
     });
 };
+
+export default blockchainReducer;

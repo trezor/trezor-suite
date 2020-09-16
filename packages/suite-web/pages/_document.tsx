@@ -1,5 +1,5 @@
 import React from 'react';
-import Document, { DocumentContext, Head, Main, NextScript } from 'next/document';
+import Document, { DocumentContext, Html, Head, Main, NextScript } from 'next/document';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { ServerStyleSheet } from 'styled-components';
 import globalStyles from '@suite-support/styles/global';
@@ -35,7 +35,7 @@ export default class MyDocument extends Document {
             // prevents chrome from auto offering page translation https://github.com/trezor/trezor-suite/issues/1806
             // remove 'translate' attr after release to test if fix in Translation component was enough to prevent the issue
             // @ts-ignore TODO: should be fixed in newer React
-            <html lang="en" translate="no">
+            <Html lang="en" translate="no">
                 <Head>
                     <meta charSet="utf-8" />
                     <script
@@ -47,13 +47,12 @@ export default class MyDocument extends Document {
                         rel="stylesheet"
                         href={resolveStaticPath('fonts/fonts.css')}
                     />
-                    <meta name="viewport" content="width=device-width, initial-scale=1" />
                 </Head>
                 <body>
                     <Main />
                     <NextScript />
                 </body>
-            </html>
+            </Html>
         );
     }
 }

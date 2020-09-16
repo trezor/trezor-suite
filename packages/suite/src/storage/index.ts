@@ -172,14 +172,15 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
     }
 };
 
+// ts-ignore below is for `suite-native:  Cannot find name 'window'`. TODO
 const onDowngrade = () => {
     // @ts-ignore
-    const { ipcRenderer } = global;
-    if (ipcRenderer) {
+    if (window.desktopApi) {
         // relaunch desktop app
-        ipcRenderer.send('restart-app');
+        // @ts-ignore
+        window.desktopApi.send('restart-app');
     } else {
-        // @ts-ignore TODO: suite-native:  Cannot find name 'window'
+        // @ts-ignore
         window.location.reload();
     }
 };

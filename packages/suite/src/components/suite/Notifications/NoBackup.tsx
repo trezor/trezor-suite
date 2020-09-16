@@ -12,7 +12,7 @@ interface Props {
     goto: BaseProps['goto'];
 }
 
-export default ({ device, goto }: Props) => {
+const NoBackup = ({ device, goto }: Props) => {
     const needsBackup = device && device.features && device.features.needs_backup;
     if (!needsBackup) return null;
     return (
@@ -32,3 +32,5 @@ export default ({ device, goto }: Props) => {
         </Wrapper>
     );
 };
+
+export default NoBackup;

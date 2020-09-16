@@ -763,7 +763,7 @@
 	"TR_NO_TRANSACTIONS_TO_SHOW_SUB": "Try a different date range.{newLine}Still nothing? Go ahead and send a transaction.",
 	"TR_RECEIVED": "Received",
 	"TR_SENT": "Sent",
-	"TR_LANDING_TITLE": "Download new Trezor Beta Wallet desktop app",
+	"TR_LANDING_TITLE": "Download new Trezor Suite desktop app",
 	"TR_LANDING_DESC": "For testing purpouses only. Please keep in mind this is a beta version.",
 	"TR_LANDING_CHOOSE_LABEL": "Choose your platform",
 	"TR_LANDING_CHOOSE_VALUE": "– Click to choose –",

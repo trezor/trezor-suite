@@ -36,7 +36,7 @@ const showUnverifiedAddress = (draft: State, path: string, address: string) => {
     }
 };
 
-export default (state: State = [], action: SuiteAction): State => {
+const receiveReducer = (state: State = [], action: SuiteAction): State => {
     return produce(state, draft => {
         switch (action.type) {
             case RECEIVE.DISPOSE:
@@ -54,3 +54,5 @@ export default (state: State = [], action: SuiteAction): State => {
         }
     });
 };
+
+export default receiveReducer;

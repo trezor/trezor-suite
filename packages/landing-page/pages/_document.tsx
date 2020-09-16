@@ -1,4 +1,4 @@
-import Document, { DocumentContext, Head, Main, NextScript } from 'next/document';
+import Document, { DocumentContext, Html, Head, Main, NextScript } from 'next/document';
 import React from 'react';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { ServerStyleSheet } from 'styled-components';
@@ -37,10 +37,9 @@ export default class MyDocument extends Document {
 
     render() {
         return (
-            <html lang="en" style={{ height: '100%' }}>
+            <Html lang="en" style={{ height: '100%' }}>
                 <Head>
                     <meta charSet="utf-8" />
-                    <meta name="viewport" content="width=device-width, initial-scale=1" />
                     <meta httpEquiv="Pragma" content="no-cache" />
                     <meta httpEquiv="cache-control" content="no-cache" />
                     <meta httpEquiv="expires" content="-1" />
@@ -51,11 +50,11 @@ export default class MyDocument extends Document {
                     />
                 </Head>
                 <body style={{ height: '100%' }}>
-                    <title>Trezor Beta Wallet</title>
+                    <title>Trezor Suite</title>
                     <Main />
                     <NextScript />
                 </body>
-            </html>
+            </Html>
         );
     }
 }

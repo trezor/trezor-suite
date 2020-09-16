@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 import { CleanSelect } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
@@ -30,7 +30,7 @@ export const buildTokenOptions = (account: Account) => {
     return result;
 };
 
-export default ({ outputId }: { outputId: number }) => {
+const TokenSelect = ({ outputId }: { outputId: number }) => {
     const {
         outputs,
         account,
@@ -55,13 +55,13 @@ export default ({ outputId }: { outputId: number }) => {
     // watch token change and use "useSendFormFields.setAmount" util for validation (if amount is set)
     // if Amount is not valid 'react-hook-form' will set an error to it, and composeTransaction will be prevented
     // N0TE: do this conditionally only for ETH and when set-max is not enabled
-    if (account.networkType === 'ethereum' && !isSetMaxActive) {
-        const tokenWatch = watch(tokenInputName, null);
-        React.useEffect(() => {
+    const tokenWatch = watch(tokenInputName, null);
+    useEffect(() => {
+        if (account.networkType === 'ethereum' && !isSetMaxActive) {
             const amountValue = getValues(`outputs[${outputId}].amount`) as string;
             if (amountValue) setAmount(outputId, amountValue);
-        }, [outputId, tokenWatch, setAmount, getValues]);
-    }
+        }
+    }, [outputId, tokenWatch, setAmount, getValues, account.networkType, isSetMaxActive]);
 
     return (
         <Controller
@@ -95,3 +95,5 @@ export default ({ outputId }: { outputId: number }) => {
         />
     );
 };
+
+export default TokenSelect;

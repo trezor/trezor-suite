@@ -8,7 +8,7 @@ import Clear from './components/Clear';
 
 const Wrapper = styled.div`
     display: flex;
-    padding: 6px 12px;
+    margin-bottom: 22px;
 `;
 
 const HeaderLeft = styled.div`
@@ -28,7 +28,7 @@ const HeaderRight = styled.div`
     flex: 1;
 `;
 
-export default () => {
+const Header = () => {
     const {
         outputs,
         account: { networkType },
@@ -87,3 +87,5 @@ export default () => {
         </Wrapper>
     );
 };
+
+export default Header;

@@ -79,6 +79,10 @@ export type UserContextPayload =
     | {
           type: 'metadata-provider';
           decision: Deferred<boolean>;
+      }
+    | {
+          type: 'advanced-coin-settings';
+          coin: Account['symbol'];
       };
 
 export type ModalActions =

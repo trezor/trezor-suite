@@ -1,31 +1,31 @@
-/ci @vladimirvolek
+/ci @keraf @mroz22
 
-/docker @vladimirvolek
+/docker @mroz22
 
-/packages/blockchain-link @szymonlesisz
+/packages/blockchain-link @keraf
 
-/packages/components @vladimirvolek @slowbackspace
-/packages/components-storybook @vladimirvolek @slowbackspace
-/packages/components-storybook-native @vladimirvolek @slowbackspace
+/packages/components @keraf @slowbackspace @robertbrada
+/packages/components-storybook @keraf @slowbackspace @robertbrada
+/packages/components-storybook-native @keraf @slowbackspace @robertbrada
 
 /packages/integration-tests @mroz22
 
-/packages/landing-page @vladimirvolek
+/packages/landing-page @keraf @robertbrada
 
-/packages/news-api @vladimirvolek
+/packages/news-api @keraf
 
 /packages/rollout @mroz22
 
-/packages/suite @szymonlesisz @mroz22 @vladimirvolek @slowbackspace
+/packages/suite @keraf @mroz22 @slowbackspace @robertbrada
 
-/packages/suite-data @vladimirvolek
+/packages/suite-data @keraf
 
-/packages/suite-desktop @vladimirvolek @szymonlesisz
+/packages/suite-desktop @keraf
 
-/packages/suite-native @slowbackspace @szymonlesisz
+/packages/suite-native @slowbackspace @keraf
 
-/packages/suite-storage @slowbackspace
+/packages/suite-storage @slowbackspace @keraf
 
-/packages/suite-web @vladimirvolek @slowbackspace @mroz22
+/packages/suite-web @keraf @slowbackspace @mroz22 @robertbrada
 
 /packages/translations-manager @slowbackspace

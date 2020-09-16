@@ -17,7 +17,7 @@ interface Props {
     symbol: Account['symbol'];
 }
 
-export default ({ value, symbol }: Props) => (
+const CoinBalance = ({ value, symbol }: Props) => (
     <Wrapper>
         <HiddenPlaceholder>
             <Value>{formatCoinBalance(value)}</Value>
@@ -25,3 +25,5 @@ export default ({ value, symbol }: Props) => (
         </HiddenPlaceholder>
     </Wrapper>
 );
+
+export default CoinBalance;

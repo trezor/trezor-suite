@@ -22,7 +22,7 @@ module.exports = api => {
             },
         ],
         [
-            'styled-components',
+            'babel-plugin-styled-components',
             {
                 ssr: true,
                 displayName: true,

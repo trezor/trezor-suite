@@ -12,7 +12,7 @@ import { AppState, Action, Dispatch } from '@suite-types';
  * Catch NOTIFICATION.TOAST action, get content component and call `react-toastify.toast`
  */
 
-export default (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
+const toastMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
 ): Action => {
     // pass action
@@ -31,3 +31,5 @@ export default (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     });
     return action;
 };
+
+export default toastMiddleware;

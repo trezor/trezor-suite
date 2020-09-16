@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useActions, useDiscovery, useSelector } from '@suite-hooks';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { MetadataAddPayload, DeviceMetadata } from '@suite-types/metadata';
+import { Translation } from '@suite-components';
 
 import MetadataEdit from './Edit';
 
@@ -72,6 +73,42 @@ interface Props {
     payload: MetadataAddPayload;
 }
 
+const getLocalizedActions = (type: MetadataAddPayload['type']) => {
+    const defaultMessages = {
+        add: <Translation id="TR_LABELING_ADD_LABEL" />,
+        edit: <Translation id="TR_LABELING_EDIT_LABEL" />,
+        remove: <Translation id="TR_LABELING_REMOVE_LABEL" />,
+    };
+    switch (type) {
+        case 'outputLabel':
+            return {
+                add: <Translation id="TR_LABELING_ADD_OUTPUT" />,
+                edit: <Translation id="TR_LABELING_EDIT_OUTPUT" />,
+                remove: <Translation id="TR_LABELING_REMOVE_OUTPUT" />,
+            };
+        case 'addressLabel':
+            return {
+                add: <Translation id="TR_LABELING_ADD_ADDRESS" />,
+                edit: <Translation id="TR_LABELING_EDIT_ADDRESS" />,
+                remove: <Translation id="TR_LABELING_REMOVE_ADDRESS" />,
+            };
+        case 'accountLabel':
+            return {
+                add: <Translation id="TR_LABELING_ADD_ACCOUNT" />,
+                edit: <Translation id="TR_LABELING_EDIT_ACCOUNT" />,
+                remove: <Translation id="TR_LABELING_REMOVE_ACCOUNT" />,
+            };
+        case 'walletLabel':
+            return {
+                add: <Translation id="TR_LABELING_ADD_WALLET" />,
+                edit: <Translation id="TR_LABELING_EDIT_WALLET" />,
+                remove: <Translation id="TR_LABELING_REMOVE_WALLET" />,
+            };
+        default:
+            return defaultMessages;
+    }
+};
+
 /**
  * User defined labeling component.
  * - This component shows defaultVisibleValue and "Add label" button if no metadata is present.
@@ -98,6 +135,8 @@ const MetadataLabeling = (props: Props) => {
         metadata.provider
     );
 
+    const l10nLabelling = getLocalizedActions(props.payload.type);
+
     const activateEdit = () => {
         // when clicking on inline input edit, ensure that everything needed is already ready
         if (
@@ -122,13 +161,13 @@ const MetadataLabeling = (props: Props) => {
     let dropdownItems: DropdownMenuItem[] = [
         {
             callback: () => setEditing(props.payload.defaultValue),
-            label: 'Edit label',
+            label: l10nLabelling.edit,
             'data-test': '@metadata/edit-button',
             key: 'edit-label',
         },
         {
             callback: () => onSubmit(''),
-            label: 'Remove label',
+            label: l10nLabelling.remove,
             'data-test': '@metadata/remove-button',
             key: 'remove-label',
         },
@@ -195,7 +234,7 @@ const MetadataLabeling = (props: Props) => {
                         activateEdit();
                     }}
                 >
-                    {!isDiscoveryRunning ? 'Add label' : 'Loading...'}
+                    {!isDiscoveryRunning ? l10nLabelling.add : 'Loading...'}
                 </AddLabelButton>
             )}
         </LabelContainer>

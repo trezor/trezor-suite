@@ -75,7 +75,7 @@ Server needs to be running on https in order to have access to `navigator.usb` f
 2. `cd packages/suite-web`
 3. `cd build/static`
 4. `mkdir desktop`
-5. copy desktop apps into the folder (Trezor-Beta-Wallet.(zip, AppImage, exe)).
+5. copy desktop apps into the folder (Trezor Suite.(zip, AppImage, exe)).
 
 ![Image of Yaktocat](https://i.imgur.com/4bQSMKO.png)
 

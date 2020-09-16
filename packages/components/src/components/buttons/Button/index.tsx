@@ -79,14 +79,14 @@ const Wrapper = styled.button<WrapperProps>`
         props.variant === 'secondary' &&
         css`
             background: ${colors.NEUE_BG_LIGHT_GREEN};
-            font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+            font-weight: ${variables.FONT_WEIGHT.MEDIUM};
             color: ${colors.NEUE_TYPE_GREEN};
 
             &:hover,
             &:focus,
             &:active {
                 /* we use this color only for this case  */
-                background: #d6e5d1;
+                background: #e8f3e5;
             }
         `}
 

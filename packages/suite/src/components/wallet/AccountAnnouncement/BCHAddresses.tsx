@@ -3,7 +3,7 @@ import { NotificationCard, Translation } from '@suite-components';
 import { Link } from '@trezor/components';
 import { URLS } from '@suite-constants';
 
-export default () => (
+const BCHAddresses = () => (
     <NotificationCard variant="info">
         <Translation
             id="TR_BCH_ADDRESS_INFO"
@@ -17,3 +17,5 @@ export default () => (
         />
     </NotificationCard>
 );
+
+export default BCHAddresses;

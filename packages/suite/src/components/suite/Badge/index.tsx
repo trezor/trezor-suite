@@ -7,7 +7,7 @@ interface WrapperProps {
     isSmall?: boolean;
 }
 
-const Badge = styled.div<WrapperProps>`
+const BadgeWrapper = styled.div<WrapperProps>`
     display: flex;
     background: ${colors.BADGE_BLUE_BACKGROUND};
     color: ${colors.BADGE_BLUE_TEXT_COLOR};
@@ -40,10 +40,12 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
 }
 
-export default ({ isGray = false, isSmall = false, children, ...props }: Props) => {
+const Badge = ({ isGray = false, isSmall = false, children, ...props }: Props) => {
     return (
-        <Badge isGray={isGray} isSmall={isSmall} {...props}>
+        <BadgeWrapper isGray={isGray} isSmall={isSmall} {...props}>
             {children}
-        </Badge>
+        </BadgeWrapper>
     );
 };
+
+export default Badge;

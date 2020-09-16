@@ -27,7 +27,7 @@ const simple = (View: React.ComponentType<ViewProps>, props: ViewProps) => {
  * @param {NotificationEntry} notification
  * @param {React.ComponentType<ViewProps>} View
  */
-export default (notification: NotificationEntry, View: React.ComponentType<ViewProps>) => {
+const hocNotification = (notification: NotificationEntry, View: React.ComponentType<ViewProps>) => {
     switch (notification.type) {
         case 'acquire-error':
             return withAction(View, {
@@ -304,3 +304,5 @@ export default (notification: NotificationEntry, View: React.ComponentType<ViewP
             });
     }
 };
+
+export default hocNotification;

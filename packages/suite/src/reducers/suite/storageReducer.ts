@@ -14,7 +14,7 @@ const initialState: SuiteState = {
     error: null,
 };
 
-export default (state: SuiteState = initialState, action: Action): SuiteState => {
+const storageReducer = (state: SuiteState = initialState, action: Action): SuiteState => {
     return produce(state, draft => {
         switch (action.type) {
             case SUITE.INIT:
@@ -32,3 +32,5 @@ export default (state: SuiteState = initialState, action: Action): SuiteState =>
         }
     });
 };
+
+export default storageReducer;

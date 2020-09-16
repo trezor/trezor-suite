@@ -1,12 +1,4 @@
 import { useEffect, FunctionComponent } from 'react';
-import { Store } from '@suite-types';
-
-declare global {
-    interface Window {
-        Cypress: any;
-        store: Store;
-    }
-}
 
 interface Props {
     store: any;

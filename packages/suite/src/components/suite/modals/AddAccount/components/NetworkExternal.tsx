@@ -33,7 +33,7 @@ interface Props {
     network: ExternalNetwork;
 }
 
-export default ({ network }: Props) => (
+const NetworkExternal = ({ network }: Props) => (
     <Wrapper>
         <H2>
             <Translation {...getHeader(network.symbol)} />
@@ -43,3 +43,5 @@ export default ({ network }: Props) => (
         </StyledP>
     </Wrapper>
 );
+
+export default NetworkExternal;

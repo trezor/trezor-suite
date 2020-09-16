@@ -11,4 +11,7 @@ interface Props {
     children: React.ReactNode;
     ['data-test']?: string;
 }
-export default ({ children, ...props }: Props) => <Wrapper {...props}>{children}</Wrapper>;
+
+const StepWrapper = ({ children, ...props }: Props) => <Wrapper {...props}>{children}</Wrapper>;
+
+export default StepWrapper;

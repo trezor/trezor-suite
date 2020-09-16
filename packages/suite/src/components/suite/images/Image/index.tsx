@@ -71,6 +71,8 @@ const Image = styled.img`
     max-width: 100%;
 `;
 
-export default ({ image, alt = '', ...props }: Props) => (
+const ImageComponent = ({ image, alt = '', ...props }: Props) => (
     <Image {...props} alt={alt} src={resolveStaticPath(`${PATH}/${IMAGES[image]}`)} />
 );
+
+export default ImageComponent;
