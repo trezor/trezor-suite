@@ -1,5 +1,6 @@
 import { Button, Modal, Icon, colors, variables, Checkbox, Link } from '@trezor/components';
 import React, { useState } from 'react';
+import { Translation } from '@suite-components';
 import styled, { css } from 'styled-components';
 
 const Text = styled.div<{ isLast?: boolean; isFirst?: boolean }>`
@@ -74,21 +75,22 @@ const StyledLink = styled(Link)``;
 export type Props = {
     onConfirm: () => void;
     onCancel: () => void;
+    provider?: string;
 };
 
-const CoinmarketTerms = ({ onConfirm, onCancel }: Props) => {
+const CoinmarketTerms = ({ onConfirm, onCancel, provider }: Props) => {
     const [isChecked, setIsChecked] = useState<boolean>(false);
+    const providerName = provider || 'unknown provider';
 
     return (
         <Modal
-            hideCancelButton
-            padding={['0px', '0px', '0px', '0px']}
+            noPadding
             onCancel={onCancel}
             heading={
                 <Header>
                     <Left>
                         <StyledIcon size={16} icon="LOCK" />
-                        For your safety
+                        <Translation id="TR_BUY_FOR_YOUR_SAFETY" />
                     </Left>
                     <Right>
                         <StyledLink onClick={onCancel}>
@@ -100,31 +102,27 @@ const CoinmarketTerms = ({ onConfirm, onCancel }: Props) => {
         >
             <Terms>
                 <Text isFirst>
-                    I'm here to buy cryptocurrency. If you were directed to this site for any other
-                    reason, please contact Simplex support before proceeding.
+                    <Translation id="TR_BUY_TERMS_1" values={{ provider: providerName }} />
                 </Text>
                 <Text>
-                    I'm using Invity to purchase funds that will be sent to an account under my
-                    direct personal control.
+                    <Translation id="TR_BUY_TERMS_2" />
                 </Text>
                 <Text>
-                    I'm not using Invity for gambling or any other violation of Invity’s Terms of
-                    service.
+                    <Translation id="TR_BUY_TERMS_3" />
                 </Text>
                 <Text>
-                    I understand that cryptocurrencies are an emerging financial tool and that
-                    regulations may be limited in some areas. This may put me at a higher risk of
-                    fraud, theft, or market instability.
+                    <Translation id="TR_BUY_TERMS_4" />
                 </Text>
                 <Text isLast>
-                    I understand that cryptocurrency transactions are irreversible and I won’t be
-                    able to receive a refund for my purchase.
+                    <Translation id="TR_BUY_TERMS_5" />
                 </Text>
             </Terms>
             <Footer>
                 <FooterContent>
                     <Checkbox isChecked={isChecked} onClick={() => setIsChecked(!isChecked)}>
-                        <CheckText>I understand and agree to all of the above</CheckText>
+                        <CheckText>
+                            <Translation id="TR_BUY_I_UNDERSTAND" />
+                        </CheckText>
                     </Checkbox>
                     <Button
                         isDisabled={!isChecked}
@@ -133,7 +131,7 @@ const CoinmarketTerms = ({ onConfirm, onCancel }: Props) => {
                             onConfirm();
                         }}
                     >
-                        Confirm
+                        <Translation id="TR_BUY_CONFIRM" />
                     </Button>
                 </FooterContent>
             </Footer>

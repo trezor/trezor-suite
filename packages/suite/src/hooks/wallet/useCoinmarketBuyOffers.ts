@@ -76,9 +76,11 @@ export const useOffers = (props: Props) => {
     });
 
     const selectQuote = (quote: BuyTrade) => {
+        const provider = providersInfo && quote.exchange ? providersInfo[quote.exchange] : null;
         if (quotesRequest) {
             openModal({
                 type: 'coinmarket-confirm-terms',
+                provider: provider?.companyName,
                 onConfirm: async () => {
                     // empty quoteId means the partner requests login first, requestTrade to get login screen
                     if (!quote.quoteId) {

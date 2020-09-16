@@ -26,7 +26,7 @@ interface Props {
     };
 }
 
-export default ({ exchange, providers }: Props) => {
+const CoinmarketBuyProviderInfo = ({ exchange, providers }: Props) => {
     const provider = providers && exchange ? providers[exchange] : null;
 
     return (
@@ -45,3 +45,5 @@ export default ({ exchange, providers }: Props) => {
         </Wrapper>
     );
 };
+
+export default CoinmarketBuyProviderInfo;

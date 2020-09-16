@@ -200,6 +200,43 @@ const definedMessages = defineMessages({
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',
     },
+    TR_BUY_FOR_YOUR_SAFETY: {
+        defaultMessage: 'For your safety',
+        id: 'TR_BUY_FOR_YOUR_SAFETY',
+    },
+    TR_BUY_I_UNDERSTAND: {
+        defaultMessage: 'I understand and agree to all of the above',
+        id: 'TR_BUY_I_UNDERSTAND',
+    },
+    TR_BUY_CONFIRM: {
+        defaultMessage: 'Confirm',
+        id: 'TR_BUY_CONFIRM',
+    },
+    TR_BUY_TERMS_1: {
+        defaultMessage:
+            "I'm here to buy cryptocurrency. If you were directed to this site for any other reason, please contact {provider} support before proceeding.",
+        id: 'TR_BUY_TERMS_1',
+    },
+    TR_BUY_TERMS_2: {
+        defaultMessage:
+            "I'm using Invity to purchase funds that will be sent to an account under my direct personal control.",
+        id: 'TR_BUY_TERMS_2',
+    },
+    TR_BUY_TERMS_3: {
+        defaultMessage:
+            "I'm not using Invity for gambling or any other violation of Invity’s Terms of service.",
+        id: 'TR_BUY_TERMS_3',
+    },
+    TR_BUY_TERMS_4: {
+        defaultMessage:
+            'I understand that cryptocurrencies are an emerging financial tool and that regulations may be limited in some areas. This may put me at a higher risk of fraud, theft, or market instability.',
+        id: 'TR_BUY_TERMS_4',
+    },
+    TR_BUY_TERMS_5: {
+        defaultMessage:
+            'I understand that cryptocurrency transactions are irreversible and I won’t be able to receive a refund for my purchase.',
+        id: 'TR_BUY_TERMS_5',
+    },
     TR_BUY_OTHER_OFFERS_IN: {
         defaultMessage: 'Other Offers in',
         id: 'TR_BUY_OTHER_OFFERS_IN',

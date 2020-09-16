@@ -28,7 +28,7 @@ interface Props {
     method?: BuyCryptoPaymentMethod;
 }
 
-export default ({ method }: Props) => (
+const CoinmarketPaymentType = ({ method }: Props) => (
     <Wrapper>
         {!method && <Text>Unknown payment method</Text>}
         {method && (
@@ -41,3 +41,5 @@ export default ({ method }: Props) => (
         )}
     </Wrapper>
 );
+
+export default CoinmarketPaymentType;

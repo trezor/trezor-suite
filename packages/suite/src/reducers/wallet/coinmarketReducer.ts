@@ -84,7 +84,10 @@ export const initialState = {
     trades: [],
 };
 
-export default (state: State = initialState, action: WalletAction | SuiteAction): State => {
+const coinmarketReducer = (
+    state: State = initialState,
+    action: WalletAction | SuiteAction,
+): State => {
     return produce(state, draft => {
         switch (action.type) {
             case COINMARKET_BUY.SAVE_BUY_INFO:
@@ -135,3 +138,5 @@ export default (state: State = initialState, action: WalletAction | SuiteAction)
         }
     });
 };
+
+export default coinmarketReducer;

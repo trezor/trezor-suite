@@ -22,7 +22,7 @@ const Link = styled.a`
     align-items: center;
 `;
 
-export default () => (
+const CoinmarketProvidedByInvity = () => (
     <Wrapper>
         <Translation id="TR_BUY_PROVIDED_BY_INVITY" />
         <Link href="https://invity.io/" target="_blank">
@@ -30,3 +30,5 @@ export default () => (
         </Link>
     </Wrapper>
 );
+
+export default CoinmarketProvidedByInvity;

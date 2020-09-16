@@ -63,6 +63,7 @@ export type UserContextPayload =
     | {
           type: 'coinmarket-confirm-terms';
           onConfirm: () => void;
+          provider?: string;
       }
     | {
           type: 'log';
