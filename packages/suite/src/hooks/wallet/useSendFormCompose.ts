@@ -18,7 +18,6 @@ type Props = UseFormMethods<FormState> & {
 };
 
 // This hook should be used only as a sub-hook of `useSendForm`
-
 export const useSendFormCompose = ({
     watch,
     getValues,
@@ -34,7 +33,8 @@ export const useSendFormCompose = ({
         undefined,
     );
     const selectedFeeRef = useRef<FeeLevel['label'] | undefined>(undefined);
-    const composeRequestRef = useRef<string | undefined>(undefined);
+    const composeRequestRef = useRef<string | undefined>(undefined); // input name, caller of compose request
+    const composeRequestID = useRef(0); // compose ID, incremented with every compose request
     const [composeField, setComposeField] = useState<string | undefined>(undefined);
     const [draftSaveRequest, setDraftSaveRequest] = useState(false);
 
@@ -66,8 +66,11 @@ export const useSendFormCompose = ({
             return composeTransaction(values, state);
         };
 
+        // store current request ID before async debounced process
+        const resultID = composeRequestID.current;
         const result = await debounce(composeInner);
-        if (result !== 'ignore') {
+        // process result ONLY if it's not ignored by debounced process OR there is no "newer" compose request
+        if (result !== 'ignore' && resultID === composeRequestID.current) {
             if (result) {
                 // set new composed transactions
                 setComposedLevels(result);
@@ -86,6 +89,7 @@ export const useSendFormCompose = ({
     const composeRequest = (field: string, fieldHasError = false) => {
         // reset precomposed transactions
         setComposedLevels(undefined);
+        composeRequestID.current++;
         // do nothing if there are no requests running and field got an error (component knows own errors in `onChange` blocks before they are propagated)
         if (!state.isLoading && fieldHasError) return;
         // interrupt previous compose process
