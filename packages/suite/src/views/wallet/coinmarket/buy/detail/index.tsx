@@ -5,6 +5,7 @@ import {
     CoinmarketBuyDetailContext,
 } from '@wallet-hooks/useCoinmarketBuyDetail';
 import { WalletLayout } from '@wallet-components';
+import styled from 'styled-components';
 import { ComponentProps } from '@wallet-types/coinmarketBuyDetail';
 import { connect } from 'react-redux';
 
@@ -28,9 +29,17 @@ const DetailIndex = (props: ComponentProps) => {
 
     return (
         <CoinmarketBuyDetailContext.Provider value={coinmarketBuyContextValues}>
-            <Detail />
+            <Wrapper>
+                <Detail />
+            </Wrapper>
         </CoinmarketBuyDetailContext.Provider>
     );
 };
+
+const Wrapper = styled.div`
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+`;
 
 export default connect(mapStateToProps)(DetailIndex);

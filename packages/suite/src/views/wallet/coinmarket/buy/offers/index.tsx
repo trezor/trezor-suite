@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { AppState } from '@suite-types';
 import { WalletLayout } from '@wallet-components';
+import styled from 'styled-components';
 import { ComponentProps, Props } from '@wallet-types/coinmarketBuyOffers';
 import { CoinmarketBuyOffersContext, useOffers } from '@wallet-hooks/useCoinmarketBuyOffers';
 import Offers from './Offers';
@@ -28,10 +29,18 @@ const OffersIndex = (props: Props) => {
 
     return (
         <CoinmarketBuyOffersContext.Provider value={coinmarketOffersValues}>
-            <Offers />
+            <Wrapper>
+                <Offers />
+            </Wrapper>
         </CoinmarketBuyOffersContext.Provider>
     );
 };
+
+const Wrapper = styled.div`
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+`;
 
 // @ts-ignore
 export default connect(mapStateToProps)(OffersIndex);
