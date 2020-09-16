@@ -66,7 +66,7 @@ const PortfolioCard = React.memo(() => {
 
     const showMissingDataTooltip =
         showGraphControls &&
-        accounts.find(a => a.networkType === 'ethereum' || a.networkType === 'ripple');
+        !!accounts.find(a => a.networkType === 'ethereum' || a.networkType === 'ripple');
 
     return (
         <Section
