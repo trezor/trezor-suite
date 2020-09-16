@@ -5,6 +5,7 @@ import * as walletSettingsActions from '@settings-actions/walletSettingsActions'
 import { useActions } from '@suite-hooks';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import {
+    Output,
     FormState,
     FormOptions,
     UseSendFormState,
@@ -30,10 +31,8 @@ export const useSendFormFields = ({
     });
     const calculateFiat = useCallback(
         (outputIndex: number, amount?: string) => {
-            const values = getValues();
-            if (!values.outputs) return; // this happens during hot-reload
-            const output = values.outputs[outputIndex];
-            if (output.type !== 'payment') return;
+            const output = getValues(`outputs[${outputIndex}]`) as Output;
+            if (!output || output.type !== 'payment') return;
             const { fiat, currency } = output;
             if (typeof fiat !== 'string') return; // fiat input not registered (testnet? fiat not available?)
             const inputName = `outputs[${outputIndex}].fiat`;
