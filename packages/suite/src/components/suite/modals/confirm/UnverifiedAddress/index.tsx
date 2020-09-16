@@ -5,7 +5,7 @@ import * as receiveActions from '@wallet-actions/receiveActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { Translation, Image } from '@suite-components';
 import { Button, Modal } from '@trezor/components';
-import { TrezorDevice, ExtendedMessageDescriptor } from '@suite-types';
+import { ExtendedMessageDescriptor } from '@suite-types';
 
 const ImageWrapper = styled.div`
     padding: 60px 0px;
@@ -18,20 +18,23 @@ const Actions = styled.div`
 `;
 
 type Props = {
-    device: TrezorDevice;
     address: string;
     addressPath: string;
     onCancel: () => void;
 };
 
-const ConfirmUnverifiedAddress = ({ device, address, addressPath, onCancel }: Props) => {
-    const { isLocked } = useDevice();
+const ConfirmUnverifiedAddress = ({ address, addressPath, onCancel }: Props) => {
+    const { device, isLocked } = useDevice();
     const isDeviceLocked = isLocked();
     const { showAddress, showUnverifiedAddress, applySettings } = useActions({
         showAddress: receiveActions.showAddress,
         showUnverifiedAddress: receiveActions.showUnverifiedAddress,
         applySettings: deviceSettingsActions.applySettings,
     });
+
+    // just to make TS happy
+    if (!device) return null;
+
     const verifyAddress = async () => {
         if (!device.available) {
             // eslint-disable-next-line @typescript-eslint/camelcase
@@ -47,16 +50,15 @@ const ConfirmUnverifiedAddress = ({ device, address, addressPath, onCancel }: Pr
         showUnverifiedAddress(addressPath, address);
     };
 
-    let deviceStatus: ExtendedMessageDescriptor['id'];
-    let claim: ExtendedMessageDescriptor['id'];
-    let actionLabel: ExtendedMessageDescriptor['id'];
+    let deviceStatus: ExtendedMessageDescriptor['id'] = 'TR_DEVICE_LABEL_IS_NOT_CONNECTED';
+    let claim: ExtendedMessageDescriptor['id'] = 'TR_PLEASE_CONNECT_YOUR_DEVICE';
+    let actionLabel: ExtendedMessageDescriptor['id'] = 'TR_TRY_VERIFYING_ON_DEVICE_AGAIN';
 
-    if (!device.connected) {
-        deviceStatus = 'TR_DEVICE_LABEL_IS_NOT_CONNECTED';
-        claim = 'TR_PLEASE_CONNECT_YOUR_DEVICE';
-        actionLabel = 'TR_TRY_AGAIN';
-    } else {
-        // case where device is connected but it is unavailable because it was created with different "passphrase_protection" settings
+    // case where device is connected but it is unavailable because it was created with different "passphrase_protection" settings
+    // TODO: doesn't works
+    // right now revealing an address with different settings will cause toast notif error "Verify address error: passphrase is incorrect"
+
+    if (device.connected && !device.available) {
         deviceStatus = 'TR_DEVICE_LABEL_IS_UNAVAILABLE';
         claim = 'TR_PLEASE_ENABLE_PASSPHRASE';
         actionLabel = 'TR_ACCOUNT_ENABLE_PASSPHRASE';
@@ -79,18 +81,12 @@ const ConfirmUnverifiedAddress = ({ device, address, addressPath, onCancel }: Pr
                 <Image image="UNI_ERROR" />
             </ImageWrapper>
             <Actions>
-                <Button
-                    variant="secondary"
-                    onClick={() => unverifiedAddress()}
-                    isLoading={isDeviceLocked}
-                    isDisabled={isDeviceLocked}
-                >
+                <Button variant="secondary" onClick={() => unverifiedAddress()}>
                     <Translation id="TR_SHOW_UNVERIFIED_ADDRESS" />
                 </Button>
                 <Button
                     variant="primary"
                     onClick={() => verifyAddress()}
-                    isLoading={isDeviceLocked}
                     isDisabled={isDeviceLocked}
                 >
                     <Translation id={actionLabel} />

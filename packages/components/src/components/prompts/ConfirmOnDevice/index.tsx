@@ -4,7 +4,8 @@ import { DeviceImage } from '../../DeviceImage';
 import { Icon } from '../../Icon';
 import { colors, variables, animations } from '../../../config';
 
-const Wrapper = styled.div<{ animated?: boolean }>`
+type WrapperProps = Pick<Props, 'animated' | 'animation'>;
+const Wrapper = styled.div<WrapperProps>`
     display: flex;
     width: 300px;
     height: 62px;
@@ -14,9 +15,16 @@ const Wrapper = styled.div<{ animated?: boolean }>`
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.19);
     align-items: center;
     ${props =>
-        props.animated &&
+        props.animated && props.animation === 'SLIDE_UP' &&
         css`
-            animation: ${animations.SLIDE_UP} 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: ${animations.SLIDE_UP}
+                0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        `}
+    ${props =>
+        props.animated && props.animation === 'SLIDE_DOWN' &&
+        css`
+            animation: ${animations.SLIDE_DOWN}
+                0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         `}
 `;
 
@@ -109,6 +117,7 @@ interface Props {
     steps?: number;
     activeStep?: number;
     animated?: boolean;
+    animation?: 'SLIDE_UP' | 'SLIDE_DOWN';
     onCancel?: () => void;
 }
 
@@ -120,9 +129,10 @@ const ConfirmOnDevice = ({
     trezorModel,
     successText,
     animated,
+    animation = 'SLIDE_UP',
 }: Props) => {
     return (
-        <Wrapper animated={animated}>
+        <Wrapper animated={animated} animation={animation}>
             <Left>
                 <DeviceImage height="34px" trezorModel={trezorModel} />
             </Left>
