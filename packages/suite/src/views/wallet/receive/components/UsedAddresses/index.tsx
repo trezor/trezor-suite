@@ -104,7 +104,7 @@ const HeaderItem = styled(GridItem)`
     top: 0;
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
     font-weight: 500;
-    padding: 25px 0px;
+    padding: 12px 0px;
     background: ${colors.WHITE};
 `;
 
@@ -232,8 +232,8 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
-                <AddressActions hide={!revealed && !isHovered}>
-                    {revealed ? (
+                <AddressActions hide={!isHovered}>
+                    {/* {revealed ? (
                         <CopyButton variant="tertiary" isDisabled={!revealed} onClick={onCopy}>
                             Copy address
                         </CopyButton>
@@ -241,7 +241,10 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
                         <CopyButton variant="tertiary" onClick={onClick}>
                             Reveal address
                         </CopyButton>
-                    )}
+                    )} */}
+                    <CopyButton variant="tertiary" onClick={onClick}>
+                        Reveal address
+                    </CopyButton>
                 </AddressActions>
             </GridItem>
         </>
@@ -301,7 +304,7 @@ const UsedAddresses = ({ account, addresses, showAddress, addToast, locked }: Pr
                             defaultValue: addr.address,
                             value: addressLabels[addr.address],
                         }}
-                        revealed={addresses.find(f => f.address === addr.address)}
+                        // revealed={addresses.find(f => f.address === addr.address)}
                         onClick={() => (!locked ? showAddress(addr.path, addr.address) : undefined)}
                         onCopy={() => copyAddress(addr.address)}
                     />

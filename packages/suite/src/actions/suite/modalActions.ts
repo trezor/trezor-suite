@@ -25,6 +25,7 @@ export type UserContextPayload =
           addressPath: string;
           symbol: Account['symbol'];
           networkType: Account['networkType'];
+          confirmed?: boolean;
           cancelable?: boolean;
       }
     | {

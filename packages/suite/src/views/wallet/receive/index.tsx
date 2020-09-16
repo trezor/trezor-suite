@@ -7,7 +7,7 @@ import { Props } from './Container';
 
 const Receive = ({ selectedAccount, receive, device, showAddress, addToast }: Props) => {
     const { isLocked } = useDevice();
-    const isDeviceLocked = isLocked();
+    const isDeviceLocked = isLocked(true);
     if (!device || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Receive" account={selectedAccount} />;
     }

@@ -50,3 +50,14 @@ export const SLIDE_UP = keyframes`
         /* opacity: 1; */
     }
 `;
+
+export const SLIDE_DOWN = keyframes`
+    0% {
+        transform: translateY(0%);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(150%);
+        opacity: 0;
+    }
+`;

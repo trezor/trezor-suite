@@ -106,6 +106,15 @@ export const showAddress = (path: string, address: string) => async (
     TrezorConnect.off(UI.REQUEST_BUTTON, buttonRequestHandler);
 
     if (response.success) {
+        // show second part of the "confirm address" modal
+        dispatch(
+            modalActions.openModal({
+                type: 'address',
+                ...modalPayload,
+                confirmed: true,
+                cancelable: true,
+            }),
+        );
         dispatch({
             type: RECEIVE.SHOW_ADDRESS,
             path,

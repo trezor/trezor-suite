@@ -47,6 +47,7 @@ type Props = {
     networkType: string;
     symbol: string;
     cancelable?: boolean;
+    confirmed?: boolean;
     onCancel?: () => void;
 };
 
@@ -54,9 +55,9 @@ const ConfirmAddress = ({
     device,
     address,
     addressPath,
-    networkType,
     symbol,
     cancelable,
+    confirmed,
     onCancel,
 }: Props) => {
     // TODO: no-backup, backup failed
@@ -72,7 +73,6 @@ const ConfirmAddress = ({
         }
     };
 
-    // TODO: wait for new designs
     return (
         <Modal
             heading={
@@ -80,11 +80,6 @@ const ConfirmAddress = ({
                     id="TR_ADDRESS_MODAL_TITLE"
                     values={{ networkName: symbol.toUpperCase() }}
                 />
-            }
-            description={
-                networkType === 'bitcoin' ? (
-                    <Translation id="TR_ADDRESS_MODAL_BTC_DESCRIPTION" />
-                ) : undefined
             }
             header={
                 device.connected ? (
@@ -94,6 +89,7 @@ const ConfirmAddress = ({
                         successText={<Translation id="TR_CONFIRMED_TX" />}
                         onCancel={cancelable ? onCancel : undefined}
                         animated
+                        animation={confirmed ? 'SLIDE_DOWN' : 'SLIDE_UP'}
                     />
                 ) : undefined
             }
@@ -109,14 +105,16 @@ const ConfirmAddress = ({
                         <Address data-test="@modal/confirm-address/address-field">
                             {address}
                         </Address>
-                        <CopyButtonWrapper ref={htmlElement}>
-                            <Button variant="tertiary" onClick={copyAddress}>
-                                <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
-                            </Button>
-                        </CopyButtonWrapper>
+                        {confirmed && (
+                            <CopyButtonWrapper ref={htmlElement}>
+                                <Button variant="tertiary" onClick={copyAddress}>
+                                    <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
+                                </Button>
+                            </CopyButtonWrapper>
+                        )}
                     </Right>
                 </StyledBox>
-                {device.connected && <DeviceDisconnected label={device.label} />}
+                {!device.connected && <DeviceDisconnected label={device.label} />}
             </Wrapper>
         </Modal>
     );
