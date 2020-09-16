@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
-import { join } from 'path';
 import { BuyProviderInfo } from 'invity-api';
 import invityApi from '@suite-services/invityAPI';
 
@@ -38,7 +37,7 @@ export default ({ exchange, providers }: Props) => {
                 <>
                     <Icon
                         width="16px"
-                        src={join(invityApi.server, 'images/exchange', provider.logo)}
+                        src={`${invityApi.server}/images/exchange/${provider.logo}`}
                     />
                     <Text>{provider.companyName}</Text>
                 </>

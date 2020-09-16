@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { join } from 'path';
 import { colors, variables } from '@trezor/components';
 import invityApi from '@suite-services/invityAPI';
 import { BuyCryptoPaymentMethod } from 'invity-api';
@@ -36,7 +35,7 @@ export default ({ method }: Props) => (
             <IconWrapper>
                 <Icon
                     width="40px"
-                    src={join(invityApi.server, 'images/paymentMethods', `${method}.svg`)}
+                    src={`${invityApi.server}/images/paymentMethods/${method}.svg`}
                 />
             </IconWrapper>
         )}
