@@ -27,12 +27,12 @@ const Terms = styled.div`
 
 const Header = styled.div`
     display: flex;
+    width: 100%;
+    padding: 10px 0;
     align-items: center;
     color: ${colors.NEUE_TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.H2};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
-    padding: 35px;
 `;
 
 const StyledIcon = styled(Icon)`
@@ -85,7 +85,6 @@ const CoinmarketTerms = ({ onConfirm, onCancel, provider }: Props) => {
     return (
         <Modal
             noPadding
-            onCancel={onCancel}
             heading={
                 <Header>
                     <Left>
