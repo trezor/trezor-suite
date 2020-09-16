@@ -40,7 +40,20 @@ const StyledNavLink = styled.div<{ active?: boolean }>`
     }
 `;
 
-const Text = styled.div``;
+const Text = styled.div`
+    position: relative;
+`;
+
+const Soon = styled.div`
+    position: absolute;
+    top: -8px;
+    right: -25px;
+    background: #e1f2dc;
+    padding: 2px;
+    color: ${colors.GREEN};
+    border-radius: 4px;
+    font-size: 9px;
+`;
 
 const Navigation = () => {
     const items = [
@@ -54,6 +67,10 @@ const Navigation = () => {
         goto: routerActions.goto,
     });
 
+    const showSoon = (route: any) => {
+        return route === 'wallet-coinmarket-exchange' || route === 'wallet-coinmarket-spend';
+    };
+
     return (
         <Wrapper>
             {items.map(item => {
@@ -63,9 +80,17 @@ const Navigation = () => {
                     <StyledNavLink
                         key={route}
                         active={active}
-                        onClick={() => goto(route, undefined, true)}
+                        onClick={() => {
+                            if (showSoon(route)) {
+                                return () => {};
+                            }
+                            goto(route, undefined, true);
+                        }}
                     >
-                        <Text>{title}</Text>
+                        <Text>
+                            {showSoon(route) && <Soon>Coming soon</Soon>}
+                            {title}
+                        </Text>
                     </StyledNavLink>
                 );
             })}
