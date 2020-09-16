@@ -53,13 +53,6 @@ class InvityAPI {
 
     private static apiKey: string;
 
-    constructor() {
-        // for development use staging by default
-        if (window.location.hostname === 'localhost') {
-            this.server = this.stagingAPIServer;
-        }
-    }
-
     private getInvityAPIKey() {
         if (!InvityAPI.apiKey) {
             throw Error('apiKey not created');
