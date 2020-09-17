@@ -297,6 +297,26 @@ const definedMessages = defineMessages({
         id: 'TR_BUY_GET_THIS_OFFER',
         defaultMessage: 'Get this Offer',
     },
+    TR_BUY_OFFER_ERROR_MINIMUM_CRYPTO: {
+        defaultMessage:
+            'The chosen amount of {currency} {amount} is lower than the accepted minimum of {currency} {min}.',
+        id: 'TR_BUY_OFFER_ERROR_MINIMUM_CRYPTO',
+    },
+    TR_BUY_OFFER_ERROR_MAXIMUM_CRYPTO: {
+        defaultMessage:
+            'The chosen amount of {currency} {amount} is higher than the accepted maximum of {currency} {max}.',
+        id: 'TR_BUY_OFFER_ERROR_MAXIMUM_CRYPTO',
+    },
+    TR_BUY_OFFER_ERROR_MINIMUM_FIAT: {
+        defaultMessage:
+            'The chosen amount of {currency} {amount} is lower than the accepted minimum of {currency} {min}.',
+        id: 'TR_BUY_OFFER_ERROR_MINIMUM_FIAT',
+    },
+    TR_BUY_OFFER_ERROR_MAXIMUM_FIAT: {
+        defaultMessage:
+            'The chosen amount of {currency} {amount} is higher than the accepted maximum of {currency} {max}.',
+        id: 'TR_BUY_OFFER_ERROR_MINIMUM_FIAT',
+    },
     TR_BUY_LOADING: {
         defaultMessage: 'Loading',
         id: 'TR_BUY_LOADING',

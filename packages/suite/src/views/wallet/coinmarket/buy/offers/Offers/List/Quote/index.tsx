@@ -5,12 +5,68 @@ import { CoinmarketPaymentType, CoinmarketBuyProviderInfo } from '@wallet-compon
 import { QuestionTooltip, Translation } from '@suite-components';
 import { BuyTrade } from 'invity-api';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
+import { formatCryptoAmount } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
 
 interface Props {
     className?: string;
     quote: BuyTrade;
     wantCrypto: boolean;
 }
+
+export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
+    if (quote.error) {
+        if (wantCrypto) {
+            if (quote.minCrypto && Number(quote.receiveStringAmount) < quote.minCrypto) {
+                return (
+                    <Translation
+                        id="TR_BUY_OFFER_ERROR_MINIMUM_CRYPTO"
+                        values={{
+                            amount: formatCryptoAmount(Number(quote.receiveStringAmount)),
+                            min: formatCryptoAmount(quote.minCrypto),
+                            currency: quote.receiveCurrency,
+                        }}
+                    />);
+            }
+            if (quote.maxCrypto && Number(quote.receiveStringAmount) > quote.maxCrypto) {
+                return (
+                    <Translation
+                        id="TR_BUY_OFFER_ERROR_MAXIMUM_CRYPTO"
+                        values={{
+                            amount: formatCryptoAmount(Number(quote.receiveStringAmount)),
+                            max: formatCryptoAmount(quote.maxCrypto),
+                            currency: quote.receiveCurrency,
+                        }}
+                    />);
+            }
+        } else {
+            if (quote.minFiat && Number(quote.fiatStringAmount) < quote.minFiat) {
+                return (
+                    <Translation
+                        id="TR_BUY_OFFER_ERROR_MINIMUM_FIAT"
+                        values={{
+                            amount: quote.fiatStringAmount,
+                            min: quote.minFiat,
+                            currency: quote.fiatCurrency,
+                        }}
+                    />);
+            }
+            if (quote.maxFiat && Number(quote.fiatStringAmount) > quote.maxFiat) {
+                return (
+                    <Translation
+                        id="TR_BUY_OFFER_ERROR_MAXIMUM_FIAT"
+                        values={{
+                            amount: quote.fiatStringAmount,
+                            max: quote.maxFiat,
+                            currency: quote.fiatCurrency,
+                        }}
+                    />);
+            }
+        }
+        return quote.error;
+    }
+    return '';
+}
+
 
 const Quote = ({ className, quote, wantCrypto }: Props) => {
     const { selectQuote, providersInfo } = useCoinmarketBuyOffersContext();
@@ -67,7 +123,7 @@ const Quote = ({ className, quote, wantCrypto }: Props) => {
                     <IconWrapper>
                         <StyledIcon icon="CROSS" size={12} color={colors.RED_ERROR} />
                     </IconWrapper>
-                    <ErrorText>{error}</ErrorText>
+                    <ErrorText>{getQuoteError(quote, wantCrypto)}</ErrorText>
                 </ErrorFooter>
             )}
 
