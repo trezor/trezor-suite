@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { Dropdown } from '@trezor/components';
-import { Card, QuestionTooltip, Translation } from '@suite-components';
+import { Card, QuestionTooltip } from '@suite-components';
 import { Section } from '@dashboard-components';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { useDiscovery } from '@suite-hooks';
@@ -28,10 +28,6 @@ const Body = styled.div`
     flex: 1;
 `;
 
-const TooltipWrapper = styled.div`
-    margin-left: 8px;
-    margin-bottom: 2px;
-`;
 const PortfolioCard = React.memo(() => {
     const dispatch = useDispatch();
     const { fiat, localCurrency } = useFiatValue();
@@ -71,14 +67,12 @@ const PortfolioCard = React.memo(() => {
     return (
         <Section
             heading={
-                <>
-                    <Translation id="TR_MY_PORTFOLIO" />
-                    {showMissingDataTooltip && (
-                        <TooltipWrapper>
-                            <QuestionTooltip size={18} messageId="TR_GRAPH_MISSING_DATA" />
-                        </TooltipWrapper>
-                    )}
-                </>
+                <QuestionTooltip
+                    size={18}
+                    label="TR_MY_PORTFOLIO"
+                    tooltip={showMissingDataTooltip ? 'TR_GRAPH_MISSING_DATA' : undefined}
+                    iconStyle={{ marginBottom: 2, marginLeft: 4 }}
+                />
             }
             actions={
                 showGraphControls ? (
