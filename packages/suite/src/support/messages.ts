@@ -287,7 +287,7 @@ const definedMessages = defineMessages({
     },
     TR_BCH_ADDRESS_INFO: {
         defaultMessage:
-            'Bitcoin Cash changed the format of addresses to cashaddr. Use external tool to convert legacy addresses to the new format. {TR_LEARN_MORE}',
+            'Bitcoin Cash changed the format of addresses to cashaddr. Find more info about how to convert your address on our blog. {TR_LEARN_MORE}',
         id: 'TR_BCH_ADDRESS_INFO',
     },
     TR_BEGIN: {
@@ -3380,6 +3380,10 @@ const definedMessages = defineMessages({
     RECIPIENT_IS_NOT_VALID: {
         defaultMessage: 'Address is not valid',
         id: 'RECIPIENT_IS_NOT_VALID',
+    },
+    RECIPIENT_FORMAT_DEPRECATED: {
+        defaultMessage: 'Unsupported address format. {TR_LEARN_MORE}',
+        id: 'RECIPIENT_FORMAT_DEPRECATED',
     },
     RECIPIENT_CANNOT_SEND_TO_MYSELF: {
         defaultMessage: 'Cannot send to myself',
