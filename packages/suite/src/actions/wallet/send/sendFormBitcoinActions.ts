@@ -76,12 +76,17 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
     if (!hasAtLeastOneValid && !wrappedResponse.custom) {
         const { minFee } = feeInfo;
         const lastKnownFee = predefinedLevels[predefinedLevels.length - 1].feePerUnit;
-        let maxFee = new BigNumber(lastKnownFee).minus(1);
-        // generate custom levels in range from lastKnownFee -1 to feeInfo.minFee (coinInfo in trezor-connect)
+        // define coefficient for maxFee
+        // NOTE: DOGE has very large values of FeeLevels, up to several thousands sat/B, rangeGap should be greater in this case otherwise calculation takes too long
+        // TODO: calculate rangeGap more precisely (percentage of range?)
+        const range = new BigNumber(lastKnownFee).minus(minFee);
+        const rangeGap = range.gt(1000) ? 1000 : 1;
+        let maxFee = new BigNumber(lastKnownFee).minus(rangeGap);
+        // generate custom levels in range from lastKnownFee minus customGap to feeInfo.minFee (coinInfo in trezor-connect)
         const customLevels: FeeLevel[] = [];
         while (maxFee.gte(minFee)) {
             customLevels.push({ feePerUnit: maxFee.toString(), label: 'custom', blocks: -1 });
-            maxFee = maxFee.minus(1);
+            maxFee = maxFee.minus(rangeGap);
         }
 
         // check if any custom level is possible
