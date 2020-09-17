@@ -3,13 +3,14 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 
-import { Link, Button, Modal } from '@trezor/components';
+import { Link, Button, Modal, colors, variables } from '@trezor/components';
 import { AppState } from '@suite-types';
 import { WalletAccountTransaction } from '@wallet-types';
 import TrezorConnect from 'trezor-connect';
 import BasicDetails from './components/BasicDetails';
 import FiatDetails from './components/FiatDetails';
 import IODetails from './components/IODetails';
+import AmountDetails from './components/AmountDetails';
 import BigNumber from 'bignumber.js';
 import { formatNetworkAmount, isTestnet, getNetwork } from '@wallet-utils/accountUtils';
 import { useSelector } from '@suite-hooks';
@@ -19,21 +20,43 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const Divider = styled.div`
-    display: flex;
+const TabSelector = styled.div`
     width: 100%;
-    margin-bottom: 20px;
+    text-align: left;
+    margin-bottom: 6px;
+    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
 `;
 
-const Buttons = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: flex-end;
+const TabButton = styled.button<{ selected: boolean }>`
+    border: none;
+    background-color: inherit;
+    font-size: ${variables.NEUE_FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    padding-top: 12px;
+    padding-bottom: 12px;
+    margin-right: 40px;
+    cursor: pointer;
+    /* change styles if the button is selected*/
+    color: ${props => (props.selected ? `${colors.NEUE_TYPE_GREEN}` : `${colors.BLACK50}`)};
+    border-bottom: ${props => (props.selected ? `2px solid ${colors.NEUE_TYPE_GREEN}` : 'none')};
+`;
+
+const BasicDetailsWrapper = styled.div`
+    background-color: ${colors.BACKGROUND};
+    padding: 18px;
+    border-radius: 6px;
+`;
+const AdvancedDetailsWrapper = styled.div`
+    padding: 24px;
 `;
 
 const mapStateToProps = (state: AppState) => ({
     fiat: state.wallet.fiat,
 });
+
+interface TabProps {
+    tabSelected: 'amount' | 'io';
+}
 
 type Props = {
     tx: WalletAccountTransaction;
@@ -41,6 +64,8 @@ type Props = {
 } & ReturnType<typeof mapStateToProps>;
 
 const TransactionDetail = (props: Props) => {
+    const [selectedTab, setSelectedTab] = useState<TabProps['tabSelected']>('amount');
+
     const { tx } = props;
     const blockchain = useSelector(state => state.wallet.blockchain[tx.symbol]);
     const confirmations =
@@ -95,37 +120,54 @@ const TransactionDetail = (props: Props) => {
     }, [tx]);
 
     return (
+        // TODO add Bitcoin logo to the header of the modal or somewhere else (discuss with designer)
         <Modal
             cancelable
             onCancel={props.onCancel}
+            fixedWidth={['100vw', '90vw', '780px', '780px']}
             heading={<Translation id="TR_TRANSACTION_DETAILS" />}
-            bottomBar={
-                <Buttons>
-                    <Button alignIcon="right" icon="EXTERNAL_LINK" variant="secondary">
-                        <Link variant="nostyle" href={explorerUrl}>
-                            <Translation id="TR_SHOW_DETAILS_IN_BLOCK_EXPLORER" />
-                        </Link>
-                    </Button>
-                </Buttons>
-            }
         >
             <Wrapper>
-                <BasicDetails
-                    tx={tx}
-                    isFetching={isFetching}
-                    explorerUrl={explorerUrl}
-                    totalInput={formattedTotalInput}
-                    totalOutput={formattedTotalOutput}
-                    confirmations={confirmations}
-                />
-                <Divider />
+                <BasicDetailsWrapper>
+                    <BasicDetails
+                        tx={tx}
+                        isFetching={isFetching}
+                        explorerUrl={explorerUrl}
+                        totalInput={formattedTotalInput}
+                        totalOutput={formattedTotalOutput}
+                        confirmations={confirmations}
+                    />
+                </BasicDetailsWrapper>
+                <AdvancedDetailsWrapper>
+                    <TabSelector>
+                        <TabButton
+                            selected={selectedTab === 'amount'}
+                            onClick={() => {
+                                setSelectedTab('amount');
+                            }}
+                        >
+                            Amount
+                        </TabButton>
+                        <TabButton
+                            selected={selectedTab === 'io'}
+                            onClick={() => {
+                                setSelectedTab('io');
+                            }}
+                        >
+                            Inputs, Outputs
+                        </TabButton>
+                    </TabSelector>
 
-                {!isTestnet(tx.symbol) && (
-                    <>
-                        <FiatDetails tx={tx} totalOutput={formattedTotalOutput} />
-                        <Divider />
-                    </>
-                )}
+                    {/* TODO check if testnet is selected and if so, do not show fiat details in AmountDetails */}
+                    <AmountDetails
+                        tx={tx}
+                        totalInput={formattedTotalInput}
+                        totalOutput={formattedTotalOutput}
+                        txDetails={txDetails}
+                        isFetching={isFetching}
+                        isTestnet={isTestnet(tx.symbol)}
+                    />
+                </AdvancedDetailsWrapper>
 
                 {network?.networkType !== 'ripple' && (
                     <IODetails tx={tx} txDetails={txDetails} isFetching={isFetching} />
