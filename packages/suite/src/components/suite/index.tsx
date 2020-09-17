@@ -31,6 +31,7 @@ import { AccountLabeling, AddressLabeling, WalletLabeling, MetadataLabeling } fr
 import FormattedCryptoAmount from './FormattedCryptoAmount';
 import Sign from './Sign';
 import AddAccountButton from './AddAccountButton';
+import { ReadMoreLink } from './ReadMoreLink';
 
 export {
     Backdrop,
@@ -70,6 +71,7 @@ export {
     Ticker,
     Sign,
     AddAccountButton,
+    ReadMoreLink,
 };
 
 export type { ImageProps };
