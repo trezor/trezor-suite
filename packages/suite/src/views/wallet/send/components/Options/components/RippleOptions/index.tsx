@@ -42,7 +42,7 @@ const RippleOptions = () => {
                         resetDefaultValue('rippleDestinationTag');
                         // close additional form
                         toggleOption('rippleDestinationTag');
-                        composeTransaction('outputs[0].amount', false);
+                        composeTransaction();
                     }}
                 />
             )}
@@ -54,7 +54,7 @@ const RippleOptions = () => {
                         onClick={() => {
                             // open additional form
                             toggleOption('rippleDestinationTag');
-                            composeTransaction('outputs[0].amount', false);
+                            composeTransaction();
                         }}
                     >
                         <Translation id="DESTINATION_TAG" />
@@ -66,7 +66,7 @@ const RippleOptions = () => {
                     icon="RBF"
                     onClick={() => {
                         toggleOption('broadcast');
-                        composeTransaction('outputs[0].amount', false);
+                        composeTransaction();
                     }}
                 >
                     <Translation id="BROADCAST" />

@@ -153,7 +153,7 @@ const Amount = ({ outputId }: { outputId: number }) => {
                         // calculate or reset Fiat value
                         calculateFiat(outputId, !error ? event.target.value : undefined);
 
-                        composeTransaction(inputName, !!error);
+                        composeTransaction(inputName);
                     }}
                     name={inputName}
                     data-test={inputName}

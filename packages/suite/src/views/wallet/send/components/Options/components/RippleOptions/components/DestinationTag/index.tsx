@@ -40,7 +40,7 @@ const DestinationTag = ({ close }: Props) => {
                 },
             })}
             onChange={() => {
-                composeTransaction(inputName, !!error);
+                composeTransaction(inputName);
             }}
             label={<QuestionTooltip label="DESTINATION_TAG" tooltip="DESTINATION_TAG_EXPLAINED" />}
             labelRight={<Icon size={20} icon="CROSS" usePointerCursor onClick={close} />}

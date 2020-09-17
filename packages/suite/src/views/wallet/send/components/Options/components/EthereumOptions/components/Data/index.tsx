@@ -73,7 +73,7 @@ const Data = ({ close }: Props) => {
                     if ((event.target.value === '' || asciiError) && amount === '0') {
                         setAmount(0, '');
                     }
-                    composeTransaction(inputAsciiName, !!asciiError);
+                    composeTransaction(inputAsciiName);
                 }}
                 bottomText={<InputError error={asciiError} />}
                 label={<QuestionTooltip label="DATA_ETH" tooltip="DATA_ETH_TOOLTIP" />}
@@ -104,7 +104,7 @@ const Data = ({ close }: Props) => {
                     if ((event.target.value === '' || hexError) && amount === '0') {
                         setValue('outputs[0].amount', '');
                     }
-                    composeTransaction(inputHexName, !!hexError);
+                    composeTransaction(inputHexName);
                 }}
                 bottomText={<InputError error={hexError} />}
                 labelRight={
