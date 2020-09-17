@@ -1,2 +1,4 @@
-## Suite docs
-nothing here :(
+# Suite docs
+
+- [Send form](./SEND.md)
+- [Metadata](./METADATA.md)

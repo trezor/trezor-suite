@@ -156,7 +156,7 @@ const handleProviderError = (error: Error) => (dispatch: Dispatch, getState: Get
                 // case 404 is edge case when user manually wipes file from provider
                 errorMsg = 'Failed to find metadata in cloud provider.';
                 // disposing all metadata might seem a bit too harsh but it is such a minor case that it is ok
-                dispatch(disposeMetadata()); 
+                dispatch(disposeMetadata());
                 break;
             default:
                 break;
