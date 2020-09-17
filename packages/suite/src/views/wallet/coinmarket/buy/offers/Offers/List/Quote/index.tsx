@@ -25,7 +25,8 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
                             min: formatCryptoAmount(quote.minCrypto),
                             currency: quote.receiveCurrency,
                         }}
-                    />);
+                    />
+                );
             }
             if (quote.maxCrypto && Number(quote.receiveStringAmount) > quote.maxCrypto) {
                 return (
@@ -36,7 +37,8 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
                             max: formatCryptoAmount(quote.maxCrypto),
                             currency: quote.receiveCurrency,
                         }}
-                    />);
+                    />
+                );
             }
         } else {
             if (quote.minFiat && Number(quote.fiatStringAmount) < quote.minFiat) {
@@ -48,7 +50,8 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
                             min: quote.minFiat,
                             currency: quote.fiatCurrency,
                         }}
-                    />);
+                    />
+                );
             }
             if (quote.maxFiat && Number(quote.fiatStringAmount) > quote.maxFiat) {
                 return (
@@ -59,14 +62,14 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
                             max: quote.maxFiat,
                             currency: quote.fiatCurrency,
                         }}
-                    />);
+                    />
+                );
             }
         }
         return quote.error;
     }
     return '';
 }
-
 
 const Quote = ({ className, quote, wantCrypto }: Props) => {
     const { selectQuote, providersInfo } = useCoinmarketBuyOffersContext();

@@ -92,9 +92,10 @@ const Inputs = () => {
                     })}
                     onFocus={() => {
                         setActiveInput(fiatInput);
+                    }}
+                    onChange={() => {
                         setValue(cryptoInput, '');
                         clearErrors(cryptoInput);
-                        trigger([cryptoInput]);
                     }}
                     state={errors[fiatInput] ? 'error' : undefined}
                     name={fiatInput}
@@ -140,9 +141,10 @@ const Inputs = () => {
                 <Input
                     onFocus={() => {
                         setActiveInput(cryptoInput);
+                    }}
+                    onChange={() => {
                         setValue(fiatInput, '');
                         clearErrors(fiatInput);
-                        trigger([cryptoInput]);
                     }}
                     defaultValue={
                         accountHasCachedRequest && quotesRequest
