@@ -24,7 +24,7 @@ class File {
 }
 
 /**
- * Mock implementation of google drive service intended to be used in e2e tests.
+ * Mock implementation of Google Drive service intended to be used in e2e tests.
  */
 class GoogleMock {
     constructor() {

@@ -3657,7 +3657,7 @@ const definedMessages = defineMessages({
             'Name of cloud provider. Intended to be translated only in languages that do not use latin script',
     },
     TR_GOOGLE_DRIVE: {
-        defaultMessage: 'Google drive',
+        defaultMessage: 'Google Drive',
         id: 'TR_GOOGLE_DRIVE',
         description:
             'Name of cloud provider. Intended to be translated only in languages that do not use latin script',
