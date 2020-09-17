@@ -15,16 +15,16 @@ const Wrapper = styled.div<WrapperProps>`
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.19);
     align-items: center;
     ${props =>
-        props.animated && props.animation === 'SLIDE_UP' &&
+        props.animated &&
+        props.animation === 'SLIDE_UP' &&
         css`
-            animation: ${animations.SLIDE_UP}
-                0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: ${animations.SLIDE_UP} 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         `}
     ${props =>
-        props.animated && props.animation === 'SLIDE_DOWN' &&
+        props.animated &&
+        props.animation === 'SLIDE_DOWN' &&
         css`
-            animation: ${animations.SLIDE_DOWN}
-                0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: ${animations.SLIDE_DOWN} 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         `}
 `;
 
