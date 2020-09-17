@@ -114,7 +114,7 @@ const FreshAddress = ({
             {addressPath && <AddressPath>{addressPath}</AddressPath>}
             <AddressContainer>
                 <StyledInput
-                    label={<InputLabel isBitcoin symbol={account.symbol} />}
+                    label={<InputLabel isBitcoin={isBitcoin} symbol={account.symbol} />}
                     variant="small"
                     monospace
                     isDisabled
