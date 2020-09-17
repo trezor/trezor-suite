@@ -58,6 +58,6 @@ export const passThroughBackup = () => {
 export const passThroughInitMetadata = () => {
     cy.getConfirmActionOnDeviceModal();
     cy.task('pressYes');
-    cy.getTestElement('@modal/metadata-provider/dropbox-button').click();
+    cy.getTestElement('@modal/metadata-provider/google-button').click();
     cy.getTestElement('@modal/metadata-provider').should('not.exist');
 };
