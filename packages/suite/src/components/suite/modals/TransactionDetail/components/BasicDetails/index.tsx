@@ -9,7 +9,11 @@ import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction } from '@wallet-types';
 import FormattedCryptoAmount from '@suite/components/suite/FormattedCryptoAmount';
 
-const COLOR_TEXT_PRIMARY = colors.BLACK0;
+const Wrapper = styled.div`
+    background-color: ${colors.BACKGROUND};
+    padding: 18px;
+    border-radius: 6px;
+`;
 
 const ExplorerLinkWrapper = styled.div`
     display: flex;
@@ -59,8 +63,6 @@ const LoaderIconWrapper = styled.div`
     margin-left: 1ch;
 `;
 
-const Header = styled.div``;
-
 const HeaderFirstRow = styled.div`
     display: grid;
     grid-gap: 20px;
@@ -83,6 +85,12 @@ const HeaderSecondRow = styled.div`
 const SecondRowTitle = styled.div`
     text-align: left;
     color: ${colors.BLACK50};
+`;
+
+const SecondRowValue = styled.div`
+    color: ${colors.BLACK25};
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const IconWrapper = styled.div`
@@ -160,78 +168,75 @@ const BasicDetails = ({
     const transactionStatus = getHumanReadableTxType(tx);
     const assetSymbol = tx.symbol.toUpperCase();
     return (
-        <>
-            <Header>
-                <HeaderFirstRow>
-                    <IconWrapper>
-                        <Icon size={24} color={colors.BLACK50} icon="SEND" />
-                    </IconWrapper>
-                    <TxStatus>
-                        <TxSentStatus>
-                            {transactionStatus} {assetSymbol}
-                        </TxSentStatus>
+        <Wrapper>
+            <HeaderFirstRow>
+                <IconWrapper>
+                    <Icon size={24} color={colors.BLACK50} icon="SEND" />
+                </IconWrapper>
+                <TxStatus>
+                    <TxSentStatus>
+                        {transactionStatus} {assetSymbol}
+                    </TxSentStatus>
 
-                        {isConfirmed ? (
-                            <StatusWrapper>
-                                {isFetching && (
-                                    <LoaderIconWrapper>
-                                        <Loader size={16} />
-                                    </LoaderIconWrapper>
-                                )}
-                                <ConfirmationStatus>
-                                    <Translation id="TR_CONFIRMED_TX" />
-                                </ConfirmationStatus>
-                                <Circle>&bull;</Circle>
+                    {isConfirmed ? (
+                        <StatusWrapper>
+                            {isFetching && (
+                                <LoaderIconWrapper>
+                                    <Loader size={16} />
+                                </LoaderIconWrapper>
+                            )}
+                            <ConfirmationStatus>
+                                <Translation id="TR_CONFIRMED_TX" />
+                            </ConfirmationStatus>
+                            <Circle>&bull;</Circle>
 
-                                {confirmations && (
-                                    <Confirmations>
-                                        <Translation
-                                            id="TR_TX_CONFIRMATIONS"
-                                            values={{ confirmationsCount: confirmations }}
-                                        />
-                                        <ConfirmationsIconWrapper>
-                                            <Tooltip
-                                                placement="top"
-                                                content={
-                                                    <Translation id="TX_CONFIRMATIONS_EXPLAIN" />
-                                                }
-                                            >
-                                                <Icon
-                                                    icon="QUESTION"
-                                                    color={colors.BLACK50}
-                                                    hoverColor={colors.BLACK25}
-                                                    size={14}
-                                                />
-                                            </Tooltip>
-                                        </ConfirmationsIconWrapper>
-                                    </Confirmations>
-                                )}
-                            </StatusWrapper>
-                        ) : (
-                            <Translation id="TR_UNCONFIRMED_TX" />
-                        )}
-                    </TxStatus>
-                    {explorerUrl ? (
-                        <ExplorerLinkWrapper>
-                            <ExplorerLink variant="nostyle" href={explorerUrl}>
-                                <Translation id="TR_SHOW_DETAILS_IN_BLOCK_EXPLORER" />
-                                <LinkIcon icon="EXTERNAL_LINK" size={14} color={colors.BLACK25} />
-                            </ExplorerLink>
-                        </ExplorerLinkWrapper>
+                            {confirmations && (
+                                <Confirmations>
+                                    <Translation
+                                        id="TR_TX_CONFIRMATIONS"
+                                        values={{ confirmationsCount: confirmations }}
+                                    />
+                                    <ConfirmationsIconWrapper>
+                                        <Tooltip
+                                            placement="top"
+                                            content={<Translation id="TX_CONFIRMATIONS_EXPLAIN" />}
+                                        >
+                                            <Icon
+                                                icon="QUESTION"
+                                                color={colors.BLACK50}
+                                                hoverColor={colors.BLACK25}
+                                                size={14}
+                                            />
+                                        </Tooltip>
+                                    </ConfirmationsIconWrapper>
+                                </Confirmations>
+                            )}
+                        </StatusWrapper>
                     ) : (
-                        <></>
+                        <Translation id="TR_UNCONFIRMED_TX" />
                     )}
-                </HeaderFirstRow>
-                <HeaderSecondRow>
-                    {/* MINED TIME */}
-                    <SecondRowTitle>
-                        {isConfirmed ? (
-                            <Translation id="TR_MINED_TIME" />
-                        ) : (
-                            <Translation id="TR_FIRST_SEEN" />
-                        )}
-                    </SecondRowTitle>
-
+                </TxStatus>
+                {explorerUrl ? (
+                    <ExplorerLinkWrapper>
+                        <ExplorerLink variant="nostyle" href={explorerUrl}>
+                            <Translation id="TR_SHOW_DETAILS_IN_BLOCK_EXPLORER" />
+                            <LinkIcon icon="EXTERNAL_LINK" size={14} color={colors.BLACK25} />
+                        </ExplorerLink>
+                    </ExplorerLinkWrapper>
+                ) : (
+                    <></>
+                )}
+            </HeaderFirstRow>
+            <HeaderSecondRow>
+                {/* FIRST ROW - MINED TIME */}
+                <SecondRowTitle>
+                    {isConfirmed ? (
+                        <Translation id="TR_MINED_TIME" />
+                    ) : (
+                        <Translation id="TR_FIRST_SEEN" />
+                    )}
+                </SecondRowTitle>
+                <SecondRowValue>
                     {tx.blockTime ? (
                         <FormattedDate
                             value={getDateWithTimeZone(tx.blockTime * 1000)}
@@ -246,13 +251,18 @@ const BasicDetails = ({
                     ) : (
                         <Translation id="TR_UNKNOWN_CONFIRMATION_TIME" />
                     )}
-                    <SecondRowTitle>
-                        <Translation id="TR_TRANSACTION_ID" />
-                    </SecondRowTitle>
-                    <TransactionId>{tx.txid}</TransactionId>
-                </HeaderSecondRow>
-            </Header>
-        </>
+                </SecondRowValue>
+
+                {/* SECOND ROW - TX ID */}
+                <SecondRowTitle>
+                    <Translation id="TR_TRANSACTION_ID" />
+                </SecondRowTitle>
+
+                <SecondRowValue>
+                    <TransactionId>{tx.txid}</TransactionId>{' '}
+                </SecondRowValue>
+            </HeaderSecondRow>
+        </Wrapper>
     );
 };
 

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 
-import { Link, Button, Modal, colors, variables } from '@trezor/components';
+import { Link, Button, Modal, colors, variables, CoinLogo } from '@trezor/components';
 import { AppState } from '@suite-types';
 import { WalletAccountTransaction } from '@wallet-types';
 import TrezorConnect from 'trezor-connect';
@@ -18,6 +18,11 @@ import { useSelector } from '@suite-hooks';
 const Wrapper = styled.div`
     width: 100%;
     flex-direction: column;
+`;
+
+const Headeing = styled.div`
+    display: flex;
+    align-items: center;
 `;
 
 const TabSelector = styled.div`
@@ -38,14 +43,9 @@ const TabButton = styled.button<{ selected: boolean }>`
     cursor: pointer;
     /* change styles if the button is selected*/
     color: ${props => (props.selected ? `${colors.NEUE_TYPE_GREEN}` : `${colors.BLACK50}`)};
-    border-bottom: ${props => (props.selected ? `2px solid ${colors.NEUE_TYPE_GREEN}` : 'none')};
+    border-bottom: ${props => (props.selected ? `2px solid ${colors.NEUE_BG_GREEN}` : 'none')};
 `;
 
-const BasicDetailsWrapper = styled.div`
-    background-color: ${colors.BACKGROUND};
-    padding: 18px;
-    border-radius: 6px;
-`;
 const AdvancedDetailsWrapper = styled.div`
     padding: 24px;
 `;
@@ -68,6 +68,7 @@ const TransactionDetail = (props: Props) => {
 
     const { tx } = props;
     const blockchain = useSelector(state => state.wallet.blockchain[tx.symbol]);
+    const coinLogo = tx.symbol;
     const confirmations =
         tx.blockHeight && tx.blockHeight > 0 ? blockchain.blockHeight - tx.blockHeight + 1 : 0;
 
@@ -124,20 +125,27 @@ const TransactionDetail = (props: Props) => {
         <Modal
             cancelable
             onCancel={props.onCancel}
+            size="tiny"
             fixedWidth={['100vw', '90vw', '780px', '780px']}
+            // contentPaddingSide={['8px', '32px', '32px', '32px']}
             heading={<Translation id="TR_TRANSACTION_DETAILS" />}
+
+            // heading={
+            //     <Headeing>
+            //         <CoinLogo size={32} symbol={coinLogo} />
+            //         <Translation id="TR_TRANSACTION_DETAILS" />
+            //     </Headeing>
+            // }
         >
             <Wrapper>
-                <BasicDetailsWrapper>
-                    <BasicDetails
-                        tx={tx}
-                        isFetching={isFetching}
-                        explorerUrl={explorerUrl}
-                        totalInput={formattedTotalInput}
-                        totalOutput={formattedTotalOutput}
-                        confirmations={confirmations}
-                    />
-                </BasicDetailsWrapper>
+                <BasicDetails
+                    tx={tx}
+                    isFetching={isFetching}
+                    explorerUrl={explorerUrl}
+                    totalInput={formattedTotalInput}
+                    totalOutput={formattedTotalOutput}
+                    confirmations={confirmations}
+                />
                 <AdvancedDetailsWrapper>
                     <TabSelector>
                         <TabButton
@@ -159,19 +167,23 @@ const TransactionDetail = (props: Props) => {
                     </TabSelector>
 
                     {/* TODO check if testnet is selected and if so, do not show fiat details in AmountDetails */}
-                    <AmountDetails
-                        tx={tx}
-                        totalInput={formattedTotalInput}
-                        totalOutput={formattedTotalOutput}
-                        txDetails={txDetails}
-                        isFetching={isFetching}
-                        isTestnet={isTestnet(tx.symbol)}
-                    />
+                    {selectedTab === 'amount' ? (
+                        <AmountDetails
+                            tx={tx}
+                            totalInput={formattedTotalInput}
+                            totalOutput={formattedTotalOutput}
+                            txDetails={txDetails}
+                            isFetching={isFetching}
+                            isTestnet={isTestnet(tx.symbol)}
+                        />
+                    ) : (
+                        <IODetails tx={tx} txDetails={txDetails} isFetching={isFetching} />
+                    )}
                 </AdvancedDetailsWrapper>
 
-                {network?.networkType !== 'ripple' && (
+                {/* {network?.networkType !== 'ripple' && (
                     <IODetails tx={tx} txDetails={txDetails} isFetching={isFetching} />
-                )}
+                )} */}
             </Wrapper>
         </Modal>
     );

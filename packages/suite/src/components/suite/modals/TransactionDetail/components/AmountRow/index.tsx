@@ -16,7 +16,6 @@ const leftAlignedStyles = css`
 const RowWrapper = styled.div`
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    padding: 10px 12px;
     display: grid;
     grid-gap: 10px;
     grid-template-columns: 1fr 2fr 1fr 1fr;
