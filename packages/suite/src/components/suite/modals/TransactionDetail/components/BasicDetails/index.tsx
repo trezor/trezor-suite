@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
-import { Icon, colors, variables, Link, Loader, Tooltip } from '@trezor/components';
+import { Icon, colors, variables, Link, Loader, Tooltip, Button } from '@trezor/components';
 import { Translation, HiddenPlaceholder } from '@suite-components';
 import Box from '../Box';
 import BoxRow from '../BoxRow';
@@ -11,23 +11,25 @@ import FormattedCryptoAmount from '@suite/components/suite/FormattedCryptoAmount
 
 const COLOR_TEXT_PRIMARY = colors.BLACK0;
 
-const TransactionIdWrapper = styled.div`
+const ExplorerLinkWrapper = styled.div`
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 100%; /* makes text overflow elipsis work */
+    // justify-content: space-between;
+    // width: 100%; /* makes text overflow elipsis work */
+    display: inline-grid;
+    justify-content: flex-end;
+    j
 `;
 
 const TransactionId = styled(props => <HiddenPlaceholder {...props} />)`
     text-overflow: ellipsis;
     overflow: hidden;
     font-variant-numeric: slashed-zero tabular-nums;
-    font-weight: lighter;
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${COLOR_TEXT_PRIMARY};
 `;
 
 const ExplorerLink = styled(Link)`
+    color: ${colors.BLACK25};
+    font-size: ${variables.NEUE_FONT_SIZE.TINY};
     width: 100%; /* makes text overflow elipsis work */
 `;
 
@@ -39,7 +41,6 @@ const Confirmations = styled.div`
     display: flex;
     color: ${colors.BLACK50};
     font-size: ${variables.FONT_SIZE.TINY};
-    margin-left: 1ch;
 `;
 
 const StatusWrapper = styled.div`
@@ -58,6 +59,71 @@ const LoaderIconWrapper = styled.div`
     margin-left: 1ch;
 `;
 
+const Header = styled.div``;
+
+const HeaderFirstRow = styled.div`
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: 1fr 4fr 5fr;
+    align-items: center;
+    padding-bottom: 28px;
+    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+`;
+
+const HeaderSecondRow = styled.div`
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: 1fr 5fr;
+    font-size: ${variables.NEUE_FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    padding: 28px 6px 10px 6px;
+    text-align: left;
+`;
+
+const SecondRowTitle = styled.div`
+    text-align: left;
+    color: ${colors.BLACK50};
+`;
+
+const IconWrapper = styled.div`
+    background-color: white;
+    border-radius: 100px;
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    & > svg {
+        margin: 0 auto;
+        display: block;
+    }
+`;
+
+const TxStatus = styled.div`
+    text-align: left;
+`;
+
+const TxSentStatus = styled.div`
+    color: ${colors.BLACK25};
+    font-size: ${variables.NEUE_FONT_SIZE.H2};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    line-height: 1.6;
+    margin-bottom: 4px;
+`;
+
+const ConfirmationStatus = styled.div`
+    color: ${colors.NEUE_TYPE_GREEN};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    font-size: ${variables.NEUE_FONT_SIZE.SMALL};
+`;
+
+const Circle = styled.div`
+    margin-left: 5px;
+    margin-right: 5px;
+    color: ${colors.BLACK50};
+`;
+
 interface Props {
     tx: WalletAccountTransaction;
     isFetching: boolean;
@@ -70,9 +136,9 @@ interface Props {
 const getHumanReadableTxType = (tx: WalletAccountTransaction) => {
     switch (tx.type) {
         case 'sent':
-            return <Translation id="TR_OUTGOING" />;
+            return <Translation id="TR_SENT" />;
         case 'recv':
-            return <Translation id="TR_INCOMING" />;
+            return <Translation id="TR_RECEIVED" />;
         case 'self':
             return <Translation id="TR_SENT_TO_SELF" />;
         case 'unknown':
@@ -91,60 +157,81 @@ const BasicDetails = ({
     totalOutput,
 }: Props) => {
     const isConfirmed = confirmations > 0;
-
+    const transactionStatus = getHumanReadableTxType(tx);
     const assetSymbol = tx.symbol.toUpperCase();
     return (
         <>
-            <Box coinLogo={tx.symbol}>
-                <BoxRow title={<Translation id="TR_TX_TYPE" />}>
-                    {getHumanReadableTxType(tx)}
-                </BoxRow>
+            <Header>
+                <HeaderFirstRow>
+                    <IconWrapper>
+                        <Icon size={24} color={colors.BLACK50} icon="SEND" />
+                    </IconWrapper>
+                    <TxStatus>
+                        <TxSentStatus>
+                            {transactionStatus} {assetSymbol}
+                        </TxSentStatus>
 
-                <BoxRow title={<Translation id="TR_STATUS" />}>
-                    {isConfirmed ? (
-                        <StatusWrapper>
-                            {isFetching && (
-                                <LoaderIconWrapper>
-                                    <Loader size={16} />
-                                </LoaderIconWrapper>
-                            )}
-                            {confirmations && (
-                                <Confirmations>
-                                    <Translation
-                                        id="TR_TX_CONFIRMATIONS"
-                                        values={{ confirmationsCount: confirmations }}
-                                    />
-                                    <ConfirmationsIconWrapper>
-                                        <Tooltip
-                                            placement="top"
-                                            content={<Translation id="TX_CONFIRMATIONS_EXPLAIN" />}
-                                        >
-                                            <Icon
-                                                icon="QUESTION"
-                                                color={colors.BLACK50}
-                                                hoverColor={colors.BLACK25}
-                                                size={14}
-                                            />
-                                        </Tooltip>
-                                    </ConfirmationsIconWrapper>
-                                </Confirmations>
-                            )}
-                            <Translation id="TR_CONFIRMED_TX" />
-                        </StatusWrapper>
+                        {isConfirmed ? (
+                            <StatusWrapper>
+                                {isFetching && (
+                                    <LoaderIconWrapper>
+                                        <Loader size={16} />
+                                    </LoaderIconWrapper>
+                                )}
+                                <ConfirmationStatus>
+                                    <Translation id="TR_CONFIRMED_TX" />
+                                </ConfirmationStatus>
+                                <Circle>&bull;</Circle>
+
+                                {confirmations && (
+                                    <Confirmations>
+                                        <Translation
+                                            id="TR_TX_CONFIRMATIONS"
+                                            values={{ confirmationsCount: confirmations }}
+                                        />
+                                        <ConfirmationsIconWrapper>
+                                            <Tooltip
+                                                placement="top"
+                                                content={
+                                                    <Translation id="TX_CONFIRMATIONS_EXPLAIN" />
+                                                }
+                                            >
+                                                <Icon
+                                                    icon="QUESTION"
+                                                    color={colors.BLACK50}
+                                                    hoverColor={colors.BLACK25}
+                                                    size={14}
+                                                />
+                                            </Tooltip>
+                                        </ConfirmationsIconWrapper>
+                                    </Confirmations>
+                                )}
+                            </StatusWrapper>
+                        ) : (
+                            <Translation id="TR_UNCONFIRMED_TX" />
+                        )}
+                    </TxStatus>
+                    {explorerUrl ? (
+                        <ExplorerLinkWrapper>
+                            <ExplorerLink variant="nostyle" href={explorerUrl}>
+                                <Translation id="TR_SHOW_DETAILS_IN_BLOCK_EXPLORER" />
+                                <LinkIcon icon="EXTERNAL_LINK" size={14} color={colors.BLACK25} />
+                            </ExplorerLink>
+                        </ExplorerLinkWrapper>
                     ) : (
-                        <Translation id="TR_UNCONFIRMED_TX" />
+                        <></>
                     )}
-                </BoxRow>
-
-                <BoxRow
-                    title={
-                        isConfirmed ? (
+                </HeaderFirstRow>
+                <HeaderSecondRow>
+                    {/* MINED TIME */}
+                    <SecondRowTitle>
+                        {isConfirmed ? (
                             <Translation id="TR_MINED_TIME" />
                         ) : (
                             <Translation id="TR_FIRST_SEEN" />
-                        )
-                    }
-                >
+                        )}
+                    </SecondRowTitle>
+
                     {tx.blockTime ? (
                         <FormattedDate
                             value={getDateWithTimeZone(tx.blockTime * 1000)}
@@ -159,56 +246,12 @@ const BasicDetails = ({
                     ) : (
                         <Translation id="TR_UNKNOWN_CONFIRMATION_TIME" />
                     )}
-                </BoxRow>
-
-                <BoxRow title={<Translation id="TR_TRANSACTION_ID" />}>
-                    {explorerUrl ? (
-                        <TransactionIdWrapper>
-                            <ExplorerLink variant="nostyle" href={explorerUrl}>
-                                <TransactionId>{tx.txid}</TransactionId>
-                                <LinkIcon
-                                    icon="EXTERNAL_LINK"
-                                    size={14}
-                                    color={COLOR_TEXT_PRIMARY}
-                                />
-                            </ExplorerLink>
-                        </TransactionIdWrapper>
-                    ) : (
-                        <TransactionIdWrapper>
-                            <TransactionId>{tx.txid}</TransactionId>
-                        </TransactionIdWrapper>
-                    )}
-                </BoxRow>
-            </Box>
-
-            <Box>
-                {totalInput && (
-                    <BoxRow title={<Translation id="TR_TOTAL_INPUT" />}>
-                        <HiddenPlaceholder>
-                            <FormattedCryptoAmount value={totalInput} symbol={assetSymbol} />
-                        </HiddenPlaceholder>
-                    </BoxRow>
-                )}
-                {totalOutput && (
-                    <BoxRow title={<Translation id="TR_TOTAL_OUTPUT" />}>
-                        <HiddenPlaceholder>
-                            <FormattedCryptoAmount value={totalOutput} symbol={assetSymbol} />
-                        </HiddenPlaceholder>
-                    </BoxRow>
-                )}
-                <BoxRow title={<Translation id="AMOUNT" />}>
-                    <HiddenPlaceholder>
-                        <FormattedCryptoAmount value={tx.amount} symbol={assetSymbol} />
-                    </HiddenPlaceholder>
-                </BoxRow>
-                <BoxRow title={<Translation id="TR_TX_FEE" />}>
-                    <HiddenPlaceholder>
-                        <FormattedCryptoAmount value={tx.fee} symbol={assetSymbol} />
-                    </HiddenPlaceholder>
-                </BoxRow>
-                {/* TODO: BlockchainLink doesn't return size/vsize field */}
-                {/* {txDetails?.size && <BoxRow title="Size">{`${txDetails.size} B`}</BoxRow>} */}
-            </Box>
+                    <SecondRowTitle>
+                        <Translation id="TR_TRANSACTION_ID" />
+                    </SecondRowTitle>
+                    <TransactionId>{tx.txid}</TransactionId>
+                </HeaderSecondRow>
+            </Header>
         </>
     );
 };
