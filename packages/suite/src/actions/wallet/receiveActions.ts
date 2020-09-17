@@ -78,6 +78,7 @@ export const showAddress = (path: string, address: string) => async (
             modalActions.openModal({
                 type: 'address',
                 ...modalPayload,
+                blockClosing: true,
             }),
         );
     };
@@ -121,6 +122,15 @@ export const showAddress = (path: string, address: string) => async (
             address,
         });
     } else {
+        // we are blocking close event in the modal reducer.
+        // On failed action we need to close it manually
+        const currentModal = getState().modal;
+        if (
+            currentModal.context === '@modal/context-user' &&
+            currentModal.payload.type === 'address'
+        ) {
+            dispatch(modalActions.onCancel());
+        }
         // special case: device no-backup permissions not granted
         if (response.payload.code === 'Method_PermissionsNotGranted') return;
 
