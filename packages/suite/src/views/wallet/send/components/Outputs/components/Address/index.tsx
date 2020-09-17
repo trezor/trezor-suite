@@ -102,7 +102,7 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
                         onClick={() => {
                             removeOutput(outputId);
                             // compose by first Output
-                            composeTransaction(`outputs[0].amount`);
+                            composeTransaction();
                         }}
                     >
                         <StyledIcon size={20} color={colors.BLACK50} icon="CROSS" />
@@ -110,7 +110,7 @@ export default ({ outputId, outputsCount }: { outputId: number; outputsCount: nu
                 ) : undefined
             }
             onChange={() => {
-                composeTransaction(`outputs[${outputId}].amount`, !!addressError);
+                composeTransaction(`outputs[${outputId}].amount`);
             }}
             bottomText={
                 addressError ? (

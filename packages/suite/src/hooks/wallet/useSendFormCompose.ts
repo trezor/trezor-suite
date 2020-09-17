@@ -66,10 +66,14 @@ export const useSendFormCompose = ({
             return composeTransaction(values, state);
         };
 
-        // store current request ID before async debounced process
+        // store current request ID before async debounced process and compare it later. see explanation below
         const resultID = composeRequestID.current;
         const result = await debounce(composeInner);
-        // process result ONLY if it's not ignored by debounced process OR there is no "newer" compose request
+        // process result ONLY if it's not ignored by debounced process
+        // RACE-CONDITION NOTE:
+        // resultID could be outdated when composeRequestID was updated by another upcoming/pending composeRequest and render tick didn't process it yet,
+        // therefore another debounce process was not called yet to interrupt current one
+        // unexpected result: `updateComposedValues` is trying to work with updated/newer FormState
         if (result !== 'ignore' && resultID === composeRequestID.current) {
             if (result) {
                 // set new composed transactions
@@ -80,31 +84,24 @@ export const useSendFormCompose = ({
         }
     }, [state, updateContext, debounce, errors, getValues, composeTransaction]);
 
-    // Create a compose request which should be processes in useEffect below
-    // This method should be called from the UI (input.onChange, button.click ...)
-    // react-hook-form doesn't propagate values right away and new values are available AFTER render tick
-    // Trying to processing request right after `input.onChange` will process a inconsistent values (values are not propagated yet, working with "previous" state at this point)
-    // ALSO this function doesn't have to be wrapped in useCallback since no component is using it as a hook dependency
-    // it will be cleared by garbage collector (useCallback are not)
-    const composeRequest = (field: string, fieldHasError = false) => {
+    // Create a compose request which should be processed in useEffect below
+    // This function should be called from the UI (input.onChange, button.click etc...)
+    // react-hook-form doesn't propagate values immediately. New calculated FormState is available until render tick
+    // IMPORTANT NOTE: Processing request without useEffect will use outdated FormState values (FormState before input.onChange)
+    // NOTE: this function doesn't have to be wrapped in useCallback since no component is using it as a hook dependency and it will be cleared by garbage collector (useCallback are not)
+    const composeRequest = (field = 'outputs[0].amount') => {
         // reset precomposed transactions
         setComposedLevels(undefined);
+        // set ref for later use in useEffect which handle composedLevels change
+        composeRequestRef.current = field;
+        // set ref for later use in processComposeRequest function
         composeRequestID.current++;
-        // do nothing if there are no requests running and field got an error (component knows own errors in `onChange` blocks before they are propagated)
-        if (!state.isLoading && fieldHasError) return;
-        // interrupt previous compose process
-        if (state.isLoading && fieldHasError) {
-            debounce(async () => {}, false);
-            updateContext({ isLoading: false });
-            return;
-        }
+        // clear errors from compose process
         const composeErrors = findComposeErrors(errors);
         if (composeErrors.length > 0) {
             clearErrors(composeErrors);
         }
-        // set field for later use in composedLevels change useEffect
-        // call compose after re-render
-        composeRequestRef.current = field;
+        // set state value for later use in updateComposedValues function
         setComposeField(field);
         // start composing
         updateContext({ isLoading: true });
@@ -114,9 +111,8 @@ export const useSendFormCompose = ({
     useEffect(() => {
         // compose request is not set, do nothing
         if (!composeRequestRef.current) return;
-        // TODO: check errors
-        // TODO: check "compose" errors
         processComposeRequest();
+        // reset compose request
         composeRequestRef.current = undefined;
     }, [composeRequestRef, processComposeRequest]);
 

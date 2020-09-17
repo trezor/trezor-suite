@@ -55,7 +55,7 @@ export default ({ close }: Props) => {
                 },
             })}
             onChange={() => {
-                composeTransaction(inputName, !!error);
+                composeTransaction(inputName);
             }}
             label={
                 <Label>

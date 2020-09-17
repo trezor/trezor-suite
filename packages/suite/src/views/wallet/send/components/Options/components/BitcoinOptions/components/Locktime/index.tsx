@@ -113,7 +113,7 @@ export default ({ close }: Props) => {
                         if (rbfEnabled) toggleOption('bitcoinRBF');
                         if (broadcastEnabled) toggleOption('broadcast');
                     }
-                    composeTransaction(inputName, !!error);
+                    composeTransaction(inputName);
                 }}
                 label={
                     <Label>
@@ -146,7 +146,7 @@ export default ({ close }: Props) => {
                                 setValue(inputName, '');
                             }
                             toggleOption('bitcoinRBF');
-                            composeTransaction(inputName, false);
+                            composeTransaction(inputName);
                         }}
                     />
                 </Right>

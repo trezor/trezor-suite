@@ -64,7 +64,7 @@ export default () => {
                         if (!rbfEnabled) toggleOption('bitcoinRBF');
                         if (!broadcastEnabled) toggleOption('broadcast');
                         toggleOption('bitcoinLockTime');
-                        composeTransaction('outputs[0].amount', false);
+                        composeTransaction();
                     }}
                 />
             )}
@@ -78,7 +78,7 @@ export default () => {
                             onClick={() => {
                                 // open additional form
                                 toggleOption('bitcoinLockTime');
-                                composeTransaction('outputs[0].amount', false);
+                                composeTransaction();
                             }}
                         >
                             <Translation id="LOCKTIME_ADD" />
@@ -90,7 +90,7 @@ export default () => {
                             icon="RBF"
                             onClick={() => {
                                 toggleOption('bitcoinRBF');
-                                composeTransaction('outputs[0].amount', false);
+                                composeTransaction();
                             }}
                         >
                             <Translation id="RBF" />
@@ -102,7 +102,7 @@ export default () => {
                         icon="RBF"
                         onClick={() => {
                             toggleOption('broadcast');
-                            composeTransaction('outputs[0].amount', false);
+                            composeTransaction();
                         }}
                     >
                         <Translation id="BROADCAST" />

@@ -51,7 +51,7 @@ export default () => {
                 innerAddon={<Units>{getFeeUnits(network.networkType)}</Units>}
                 onChange={() => {
                     changeCustomFeeLevel();
-                    composeTransaction('feePerUnit', false);
+                    composeTransaction(inputName);
                 }}
                 name={inputName}
                 data-test={inputName}
@@ -108,7 +108,7 @@ export default () => {
                     innerAddon={<Units>GWEI</Units>}
                     onChange={() => {
                         changeCustomFeeLevel(!!feeLimitError);
-                        composeTransaction('feeLimit', !!feeLimitError);
+                        composeTransaction('feeLimit');
                     }}
                     innerRef={register({
                         required: 'CUSTOM_FEE_IS_NOT_SET',

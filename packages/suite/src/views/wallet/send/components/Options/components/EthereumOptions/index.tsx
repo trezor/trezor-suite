@@ -44,7 +44,7 @@ export default () => {
                         resetDefaultValue('ethereumDataHex');
                         // close additional form
                         toggleOption('ethereumData');
-                        composeTransaction('outputs[0].amount', false);
+                        composeTransaction();
                     }}
                 />
             )}
@@ -56,7 +56,7 @@ export default () => {
                         onClick={() => {
                             // open additional form
                             toggleOption('ethereumData');
-                            composeTransaction('outputs[0].amount', false);
+                            composeTransaction();
                         }}
                     >
                         <Translation id="DATA_ETH_ADD" />
@@ -67,7 +67,7 @@ export default () => {
                     icon="RBF"
                     onClick={() => {
                         toggleOption('broadcast');
-                        composeTransaction('outputs[0].amount', false);
+                        composeTransaction();
                     }}
                 >
                     <Translation id="BROADCAST" />

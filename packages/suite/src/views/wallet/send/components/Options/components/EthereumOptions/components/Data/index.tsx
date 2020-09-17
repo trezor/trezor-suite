@@ -82,7 +82,7 @@ export default ({ close }: Props) => {
                     if ((event.target.value === '' || asciiError) && amount === '0') {
                         setAmount(0, '');
                     }
-                    composeTransaction(inputAsciiName, !!asciiError);
+                    composeTransaction(inputAsciiName);
                 }}
                 bottomText={<InputError error={asciiError} />}
                 label={
@@ -120,7 +120,7 @@ export default ({ close }: Props) => {
                     if ((event.target.value === '' || hexError) && amount === '0') {
                         setValue('outputs[0].amount', '');
                     }
-                    composeTransaction(inputHexName, !!hexError);
+                    composeTransaction(inputHexName);
                 }}
                 bottomText={<InputError error={hexError} />}
                 labelRight={
