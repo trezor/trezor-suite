@@ -229,9 +229,29 @@ export const drafts = [
 export const composeDebouncedTransaction = [
     {
         description: 'compose with validation errors (Address not set)',
-        typing: { element: 'outputs[0].address', value: 'X', delay: 0 },
-        results: {
-            connectCalledTimes: 0,
+        actions: [
+            {
+                type: 'input',
+                element: 'outputs[0].address',
+                value: 'X',
+                result: {
+                    errors: {
+                        outputs: [{ address: { message: 'RECIPIENT_IS_NOT_VALID' } }],
+                    },
+                },
+            },
+            {
+                type: 'input',
+                element: 'outputs[0].address',
+                result: {
+                    errors: {
+                        outputs: [{ address: { message: 'RECIPIENT_IS_NOT_SET' } }],
+                    },
+                },
+            },
+        ],
+        finalResult: {
+            composeTransactionCalls: 0,
             composedLevels: undefined,
             errors: {
                 outputs: [{ address: { message: 'RECIPIENT_IS_NOT_SET' } }],
@@ -240,9 +260,9 @@ export const composeDebouncedTransaction = [
     },
     {
         description: 'compose with validation errors (Address invalid)',
-        typing: { element: 'outputs[0].address', value: 'FOO', delay: 1 },
-        results: {
-            connectCalledTimes: 0,
+        actions: [{ type: 'input', element: 'outputs[0].address', value: 'FOO', delay: 1 }],
+        finalResult: {
+            composeTransactionCalls: 0,
             composedLevels: undefined,
             errors: {
                 outputs: [{ address: { message: 'RECIPIENT_IS_NOT_VALID' } }],
@@ -251,9 +271,9 @@ export const composeDebouncedTransaction = [
     },
     {
         description: 'compose with validation errors (Amount not a number)',
-        typing: { element: 'outputs[0].amount', value: '11a', delay: 1 },
-        results: {
-            connectCalledTimes: 0,
+        actions: [{ type: 'input', element: 'outputs[0].amount', value: '11a', delay: 1 }],
+        finalResult: {
+            composeTransactionCalls: 0,
             composedLevels: undefined,
             errors: {
                 outputs: [{ amount: { message: 'AMOUNT_IS_NOT_NUMBER' } }],
@@ -268,9 +288,9 @@ export const composeDebouncedTransaction = [
                 payload: { error: 'error' },
             },
         },
-        typing: { element: 'outputs[0].amount', value: '1', delay: 0 },
-        results: {
-            connectCalledTimes: 1,
+        actions: [{ type: 'input', element: 'outputs[0].amount', value: '1' }],
+        finalResult: {
+            composeTransactionCalls: 1,
             composedLevels: undefined,
         },
     },
@@ -286,9 +306,9 @@ export const composeDebouncedTransaction = [
                 ],
             },
         },
-        typing: { element: 'outputs[0].amount', value: '111', delay: 100 },
-        results: {
-            connectCalledTimes: 1,
+        actions: [{ type: 'input', element: 'outputs[0].amount', value: '111', delay: 100 }],
+        finalResult: {
+            composeTransactionCalls: 1,
             composedLevels: {
                 normal: {
                     type: 'nonfinal',
@@ -321,9 +341,9 @@ export const composeDebouncedTransaction = [
                 },
             }, // delay in trezor-connect response, greater than typing delay
         ],
-        typing: { element: 'outputs[0].amount', value: '111', delay: 310 }, // delay greater than composeDebounced timeout
-        results: {
-            connectCalledTimes: 3,
+        actions: [{ type: 'input', element: 'outputs[0].amount', value: '111', delay: 310 }], // delay greater than composeDebounced timeout
+        finalResult: {
+            composeTransactionCalls: 3,
             composedLevels: {
                 normal: {
                     type: 'nonfinal',

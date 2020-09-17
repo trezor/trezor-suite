@@ -6,7 +6,7 @@ import React from 'react';
 import { Provider, connect } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { DeepPartial } from 'react-hook-form';
-import { render, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import { act, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { SendContext, useSendForm } from '../useSendForm';
@@ -98,6 +98,7 @@ type Action = {
         composeTransactionParams: any; // partial trezor-connect params
         composedLevels: any; // partial PrecomposedLevel
         formValues: DeepPartial<ReturnType<SendContextValues['getValues']>>;
+        errors: any; // partial SendContextValues['errors']
     }>;
 };
 
@@ -112,13 +113,18 @@ export const actionSequence = async (actions: Action[], callback: TestCallback) 
         if (action.type === 'click') {
             userEvent.click(findByTestId(action.element));
         } else if (action.type === 'input') {
-            if (!action.value) {
-                userEvent.clear(findByTestId(action.element));
+            const { value } = action;
+            if (!value) {
+                act(() => userEvent.clear(findByTestId(action.element)));
             } else {
-                userEvent.type(
-                    findByTestId(action.element),
-                    action.value,
-                    action.delay ? { delay: action.delay } : undefined,
+                // eslint-disable-next-line no-await-in-loop
+                await act(() =>
+                    // @ts-ignore: act => Promise
+                    userEvent.type(
+                        findByTestId(action.element),
+                        value,
+                        action.delay ? { delay: action.delay } : undefined,
+                    ),
                 );
             }
         }
@@ -144,7 +150,7 @@ export const actionSequence = async (actions: Action[], callback: TestCallback) 
                 expect(composeTransaction).toBeCalledTimes(result.composeTransactionCalls);
             }
 
-            const { composedLevels, getValues } = getContextValues();
+            const { composedLevels, getValues, errors } = getContextValues();
 
             // validate composedLevels object
             if (Object.prototype.hasOwnProperty.call(result, 'composedLevels')) {
@@ -158,6 +164,10 @@ export const actionSequence = async (actions: Action[], callback: TestCallback) 
             // validate form values
             if (result.formValues) {
                 expect(getValues()).toMatchObject(result.formValues);
+            }
+
+            if (result.errors) {
+                expect(errors).toMatchObject(result.errors);
             }
         }
     }
