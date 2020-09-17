@@ -1,16 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { BuyProviderInfo } from 'invity-api';
+import { BuyProviderInfo, BuyTradeQuoteRequest } from 'invity-api';
 import useSWR from 'swr';
 import invityAPI from '@suite-services/invityAPI';
 import { colors, variables, Icon, Button } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketBuyProviderInfo } from '@wallet-components';
 import { Account } from '@wallet-types';
 import { Translation } from '@suite-components';
-import { getStatusMessage } from '@wallet-utils/coinmarket/buyUtils';
+import { getStatusMessage, processQuotes } from '@wallet-utils/coinmarket/buyUtils';
 import { TradeBuy } from '@wallet-reducers/coinmarketReducer';
 import { formatDistance } from 'date-fns';
 import Status from '../Status';
+import { useSelector } from '@suite/hooks/suite';
+import {
+    saveCachedAccountInfo,
+    saveQuoteRequest,
+    saveQuotes,
+    saveTransactionDetailId,
+} from '@suite/actions/wallet/coinmarketBuyActions';
+import { goto } from '@suite/actions/suite/routerActions';
 
 interface Props {
     trade: TradeBuy;
@@ -37,6 +45,38 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
     const fetchResponse = useSWR('/invity-api/watch-buy-trade-accounts', fetcher);
     const updatedStatus = fetchResponse && fetchResponse.data ? fetchResponse.data.status : null;
     const statusMessage = getStatusMessage(updatedStatus || status);
+    const country = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.buyInfo?.country);
+
+    const [isGettingOffers, setIsGettingOffers] = useState(false);
+    const getOffers = async () => {
+        setIsGettingOffers(true);
+        const request: BuyTradeQuoteRequest = {
+            fiatCurrency: data.fiatCurrency || '',
+            receiveCurrency: data.receiveCurrency || '',
+            fiatStringAmount: data.fiatStringAmount || '',
+            wantCrypto: false,
+            country,
+        };
+        await saveQuoteRequest(request);
+        await saveCachedAccountInfo(account.symbol, account.index, account.accountType);
+        const allQuotes = await invityAPI.getBuyQuotes(request);
+        const [quotes, alternativeQuotes] = processQuotes(allQuotes);
+        await saveQuotes(quotes, alternativeQuotes);
+        goto('wallet-coinmarket-buy-offers', {
+            symbol: account.symbol,
+            accountIndex: account.index,
+            accountType: account.accountType,
+        });
+    };
+
+    const viewDetail = async () => {
+        await saveTransactionDetailId(trade.key || '');
+        goto('wallet-coinmarket-buy-detail', {
+            symbol: account.symbol,
+            accountIndex: account.index,
+            accountType: account.accountType,
+        });
+    };
 
     return (
         <Wrapper>
@@ -67,11 +107,16 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
             </Column>
             <BuyColumn>
                 {statusMessage === 'TR_BUY_STATUS_SUCCESS' ? (
-                    <Button variant="tertiary">
+                    <Button
+                        variant="tertiary"
+                        onClick={getOffers}
+                        isLoading={isGettingOffers}
+                        isDisabled={isGettingOffers}
+                    >
                         <Translation id="TR_BUY_BUY_AGAIN" />
                     </Button>
                 ) : (
-                    <Button variant="tertiary">
+                    <Button variant="tertiary" onClick={viewDetail}>
                         <Translation id="TR_BUY_VIEW_DETAILS" />
                     </Button>
                 )}
