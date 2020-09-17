@@ -1,7 +1,20 @@
 import { getPrefixedURL } from '@suite-utils/router';
 import { METADATA } from '@suite-actions/constants';
 import { Deferred, createDeferred } from '@suite-utils/deferred';
-import { urlHashParams } from '@suite-utils/metadata';
+
+const urlHashParams = (hash: string) => {
+    const result: { [param: string]: string } = {};
+    if (!hash) return result;
+    if (hash[0] === '#') {
+        hash = hash.substring(1, hash.length);
+    }
+    const parts = hash.split('&');
+    parts.forEach(part => {
+        const [key, value] = part.split('=');
+        result[key] = decodeURIComponent(value);
+    });
+    return result;
+};
 
 /**
  * For desktop, always use oauth_receiver.html from trezor.io
