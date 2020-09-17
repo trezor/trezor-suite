@@ -1,11 +1,12 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
-import { useSendFormContext } from '@wallet-hooks';
-import { getInputState } from '@wallet-utils/sendFormUtils';
 import { Input, Icon } from '@trezor/components';
-import { U_INT_32 } from '@wallet-constants/sendForm';
 import { QuestionTooltip } from '@suite-components';
 import { InputError } from '@wallet-components';
+import { useSendFormContext } from '@wallet-hooks';
+import { getInputState } from '@wallet-utils/sendFormUtils';
+import { isInteger } from '@wallet-utils/validation';
+import { U_INT_32 } from '@wallet-constants/sendForm';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 
 interface Props {
@@ -34,7 +35,7 @@ const DestinationTag = ({ close }: Props) => {
                     if (amountBig.isNaN()) {
                         return 'DESTINATION_TAG_IS_NOT_NUMBER';
                     }
-                    if (!amountBig.isInteger() || amountBig.lt(0) || amountBig.gt(U_INT_32)) {
+                    if (!isInteger(value) || amountBig.lt(0) || amountBig.gt(U_INT_32)) {
                         return 'DESTINATION_TAG_IS_NOT_VALID';
                     }
                 },

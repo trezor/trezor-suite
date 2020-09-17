@@ -3405,6 +3405,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Maximum {decimals} decimals allowed',
         id: 'AMOUNT_IS_NOT_IN_RANGE_DECIMALS',
     },
+    AMOUNT_IS_NOT_INTEGER: {
+        defaultMessage: 'Amount is not a integer',
+        id: 'AMOUNT_IS_NOT_INTEGER',
+    },
     AMOUNT_IS_NOT_NUMBER: {
         defaultMessage: 'Amount is not a number',
         id: 'AMOUNT_IS_NOT_NUMBER',

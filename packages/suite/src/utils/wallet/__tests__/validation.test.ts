@@ -1,4 +1,4 @@
-import { isAddressValid, isDecimalsValid } from '../validation';
+import { isAddressValid, isDecimalsValid, isInteger } from '../validation';
 
 describe('validation', () => {
     // fixtures from https://github.com/trezor/trezor-address-validator/blob/master/test/wallet_address_validator.js
@@ -93,5 +93,18 @@ describe('validation', () => {
         expect(isDecimalsValid('a.100', 18)).toBe(false);
         expect(isDecimalsValid('abc', 18)).toBe(false);
         expect(isDecimalsValid('1abc0', 18)).toBe(false);
+    });
+
+    it('isInteger', () => {
+        expect(isInteger('0')).toBe(true);
+        expect(isInteger('1')).toBe(true);
+        expect(isInteger('321')).toBe(true);
+        expect(isInteger('01')).toBe(false);
+        expect(isInteger('.01')).toBe(false);
+        expect(isInteger('0.1')).toBe(false);
+        expect(isInteger('01.')).toBe(false);
+        expect(isInteger('a01')).toBe(false);
+        expect(isInteger('0a1')).toBe(false);
+        expect(isInteger('01a')).toBe(false);
     });
 });
