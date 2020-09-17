@@ -24,6 +24,18 @@ export const isAddressValid = (address: string, symbol: Account['symbol']) => {
     return addressValidator.validate(address, updatedSymbol.toUpperCase(), networkType);
 };
 
+export const isAddressDeprecated = (address: string, symbol: Account['symbol']) => {
+    // catch deprecated address formats
+    // LTC starting with "3" and valid with a BTC format
+    if (symbol === 'ltc' && address.startsWith('3') && isAddressValid(address, 'btc')) {
+        return 'LTC_ADDRESS_INFO_URL';
+    }
+    // BCH starting with "1" and valid with a BTC format
+    if (symbol === 'bch' && address.startsWith('1') && isAddressValid(address, 'btc')) {
+        return 'BCH_ADDRESS_INFO_URL';
+    }
+};
+
 export const isDecimalsValid = (value: string, decimals: number) => {
     const DECIMALS_RE = new RegExp(
         `^(0|0\\.([0-9]{0,${decimals}})?|[1-9][0-9]*\\.?([0-9]{0,${decimals}})?)$`,
