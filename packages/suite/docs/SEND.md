@@ -19,6 +19,7 @@
 - RECIPIENT_IS_NOT_SET (empty field)
 - RECIPIENT_IS_NOT_VALID (not valid address)
 - RECIPIENT_CANNOT_SEND_TO_MYSELF (XRP only: cannot send to myself)
+- RECIPIENT_FORMAT_DEPRECATED (LTC/BCH: legacy address format with "3" for LTC or "1" for BCH)
 
 ------
 
@@ -44,6 +45,7 @@
 - AMOUNT_IS_MORE_THAN_RESERVE (XRP only: trying to spend the reserve)
 - AMOUNT_IS_LESS_THAN_RESERVE (XRP only: trying to send less XRP than required reserve to the empty account)
 - AMOUNT_IS_NOT_IN_RANGE_DECIMALS (amount with invalid decimal places)
+- AMOUNT_IS_NOT_INTEGER (ERC20 only: token doesn't accept decimal places)
 
 ------
 
