@@ -20,7 +20,7 @@ import Badge from './Badge';
 import WebusbButton from './WebusbButton';
 import HiddenPlaceholder from './HiddenPlaceholder/Container';
 import QrCode from './QrCode';
-import QuestionTooltip from './QuestionTooltip';
+import { QuestionTooltip } from './QuestionTooltip';
 import TransactionsGraph from './TransactionsGraph';
 import DeviceInvalidModeLayout from './DeviceInvalidModeLayout';
 import AppNavigationPanel from './AppNavigationPanel';
