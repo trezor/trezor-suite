@@ -21,12 +21,21 @@ export const useInvityAPI = () => {
         AppState['wallet']['coinmarket']['exchange']['exchangeInfo']
     >(state => state.wallet.coinmarket.exchange.exchangeInfo);
 
+    const invityAPIUrl = useSelector<
+        AppState,
+        AppState['suite']['settings']['debug']['invityAPIUrl']
+    >(state => state.suite.settings.debug.invityAPIUrl);
+
     const { saveBuyInfo } = useActions({ saveBuyInfo: coinmarketBuyActions.saveBuyInfo });
     const { saveExchangeInfo } = useActions({
         saveExchangeInfo: coinmarketExchangeActions.saveExchangeInfo,
     });
 
     if (selectedAccount.status === 'loaded') {
+        if (invityAPIUrl) {
+            invityAPI.setInvityAPIServer(invityAPIUrl);
+        }
+
         invityAPI.createInvityAPIKey(selectedAccount.account?.descriptor);
 
         if (!buyInfo?.buyInfo) {
