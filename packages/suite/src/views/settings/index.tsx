@@ -10,7 +10,7 @@ import {
     TextColumn,
 } from '@suite-components/Settings';
 import { FIAT, LANGUAGES } from '@suite-config';
-import { useAnalytics } from '@suite-hooks';
+import { useAnalytics, useDevice } from '@suite-hooks';
 import { Button, Tooltip, Switch } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
@@ -36,7 +36,6 @@ const VersionLink = styled.a``;
 const Settings = ({
     language,
     metadata,
-    device,
     setLocalCurrency,
     localCurrency,
     fetchLocale,
@@ -47,6 +46,9 @@ const Settings = ({
     disableMetadata,
 }: Props) => {
     const analytics = useAnalytics();
+
+    const { isLocked, device } = useDevice();
+    const isDeviceLocked = isLocked();
 
     return (
         <SettingsLayout data-test="@settings/index">
@@ -110,6 +112,8 @@ const Settings = ({
                     />
                     <ActionColumn>
                         <Switch
+                            // todo: hmm maybe it should never be disabled, as it is not device related option (although it triggers device flow?)
+                            isDisabled={!metadata.enabled && !device?.connected && isDeviceLocked}
                             data-test="@settings/metadata-switch"
                             checked={metadata.enabled}
                             onChange={() =>

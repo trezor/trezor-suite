@@ -66,32 +66,53 @@ const getProvider = async (state?: Partial<MetadataProviderCredentials>) => {
     return providerInstance;
 };
 
-export const disposeMetadata = () => (dispatch: Dispatch, getState: GetState) => {
+/**
+ * dispose metadata from all labelable objects.
+ * Has keys parameter,
+ * if true - dispose also metadata keys
+ * if false - dispose only metadata values
+ */
+export const disposeMetadata = (keys?: boolean) => (dispatch: Dispatch, getState: GetState) => {
     getState().wallet.accounts.forEach(account => {
+        const updatedMetadata = { ...account.metadata };
+
+        // always remove metadata  values
+        updatedMetadata.outputLabels = {};
+        updatedMetadata.addressLabels = {};
+        updatedMetadata.accountLabel = '';
+
+        // and sometimes remove also keys (information we can only if device is connected)
+        if (keys) {
+            updatedMetadata.fileName = '';
+            updatedMetadata.aesKey = '';
+        }
+
         dispatch({
             type: METADATA.ACCOUNT_ADD,
             payload: {
                 ...account,
-                metadata: {
-                    key: account.metadata.key,
-                    fileName: '',
-                    aesKey: '',
-                    outputLabels: {},
-                    addressLabels: {},
-                    accountLabel: '',
-                },
+                metadata: updatedMetadata,
             },
         });
     });
+
     getState().devices.forEach(device => {
         if (device.state) {
+            let updatedMetadata = { ...device.metadata };
+
+            if (keys) {
+                // set metadata as disabled for this device, remove all metadata related information
+                updatedMetadata = { status: 'disabled' };
+            } else if ('key' in updatedMetadata) {
+                // metadata is still enabled for this device, keys are kept, we are only removing walletLabel here
+                updatedMetadata.walletLabel = '';
+            }
+
             dispatch({
                 type: METADATA.SET_DEVICE_METADATA,
                 payload: {
                     deviceState: device.state,
-                    metadata: {
-                        status: 'enabled',
-                    },
+                    metadata: updatedMetadata,
                 },
             });
         }
@@ -108,7 +129,8 @@ export const disableMetadata = () => (dispatch: Dispatch) => {
     dispatch({
         type: METADATA.DISABLE,
     });
-    dispatch(disposeMetadata());
+    // dispose metadata values and keys
+    dispatch(disposeMetadata(true));
 };
 
 export const initProvider = () => async (dispatch: Dispatch) => {
@@ -135,6 +157,9 @@ export const disconnectProvider = () => async (dispatch: Dispatch, getState: Get
         type: METADATA.SET_PROVIDER,
         payload: undefined,
     });
+
+    // dispose metadata values (not keys)
+    dispatch(disposeMetadata());
 };
 
 const handleProviderError = (error: Error) => (dispatch: Dispatch, getState: GetState) => {

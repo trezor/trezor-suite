@@ -145,11 +145,19 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         case SEND.REMOVE_DRAFT:
             storageActions.removeDraft(action.key);
             break;
-
+        case METADATA.ACCOUNT_ADD:
+        case METADATA.ACCOUNT_LOADED: {
+            const device = accountUtils.findAccountDevice(action.payload, api.getState().devices);
+            // if device is remembered, and there is a change in account.metadata (METADATA.ACCOUNT_LOADED), update database
+            if (isDeviceRemembered(device)) {
+                storageActions.saveAccounts([action.payload]);
+            }
+            break;
+        }
         case METADATA.ENABLE:
         case METADATA.DISABLE:
         case METADATA.SET_PROVIDER:
-            api.dispatch(storageActions.saveMetadataProvider());
+            api.dispatch(storageActions.saveMetadata());
             break;
 
         default:

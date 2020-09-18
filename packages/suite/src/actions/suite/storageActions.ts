@@ -199,7 +199,10 @@ export const saveAnalytics = () => (_dispatch: Dispatch, getState: GetState) => 
     );
 };
 
-export const saveMetadataProvider = () => (_dispatch: Dispatch, getState: GetState) => {
+/**
+ * save general metadata settings
+ */
+export const saveMetadata = () => (_dispatch: Dispatch, getState: GetState) => {
     const { metadata } = getState();
     db.addItem('metadata', { provider: metadata.provider, enabled: metadata.enabled }, 'state');
 };
