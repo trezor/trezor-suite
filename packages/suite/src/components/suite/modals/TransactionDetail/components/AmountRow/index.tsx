@@ -17,10 +17,13 @@ const RowWrapper = styled.div`
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     display: grid;
-    grid-gap: 10px;
-    grid-template-columns: 1fr 2fr 1fr 1fr;
+    grid-gap: 5px;
+    grid-template-columns: minmax(100px, 140px) 2fr 1fr 1fr;
     align-items: center;
-    height: 38px;
+    height: 36px;
+    /* line-height: 2; */
+    /* margin-top: 10px; */
+    /* margin-bottom: 10px; */
 `;
 
 interface RowContentProps {

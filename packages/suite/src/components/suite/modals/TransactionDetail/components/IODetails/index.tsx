@@ -104,7 +104,7 @@ const Address = styled.div`
 const Circle = styled.div`
     margin-left: 5px;
     margin-right: 5px;
-    color: ${colors.BLACK25};
+    color: ${colors.BLACK50};
 `;
 
 interface Props {
