@@ -34,6 +34,7 @@ export type UserContextPayload =
           accountIndex: number;
           accountType: Account['accountType'];
           symbol: Account['symbol'];
+          accountLabel: Account['metadata']['accountLabel'];
       }
     | {
           type: 'passphrase-duplicate';

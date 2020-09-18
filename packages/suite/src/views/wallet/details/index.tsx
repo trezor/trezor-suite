@@ -99,6 +99,7 @@ const Details = ({ selectedAccount, openModal }: Props) => {
                                     accountIndex: account.index,
                                     accountType: account.accountType,
                                     symbol: account.symbol,
+                                    accountLabel: account.metadata.accountLabel,
                                 })
                             }
                             isLoading={isLocked() && !disabled}
