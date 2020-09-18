@@ -28,7 +28,6 @@ const CustomFee = () => {
         errors,
         register,
         getDefaultValue,
-        changeCustomFeeLevel,
         composeTransaction,
     } = useSendFormContext();
     const { maxFee, minFee } = feeInfo;
@@ -50,7 +49,6 @@ const CustomFee = () => {
                 state={getInputState(feePerUnitError, feePerUnitValue)}
                 innerAddon={<Units>{getFeeUnits(network.networkType)}</Units>}
                 onChange={() => {
-                    changeCustomFeeLevel();
                     composeTransaction(inputName);
                 }}
                 name={inputName}
@@ -107,7 +105,6 @@ const CustomFee = () => {
                     state={getInputState(feePerUnitError)}
                     innerAddon={<Units>GWEI</Units>}
                     onChange={() => {
-                        changeCustomFeeLevel(!!feeLimitError);
                         composeTransaction('feeLimit');
                     }}
                     innerRef={register({

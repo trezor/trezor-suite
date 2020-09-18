@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { UseFormMethods } from 'react-hook-form';
 import { FeeLevel } from 'trezor-connect';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
@@ -20,6 +20,7 @@ type Props = UseFormMethods<FormState> & {
 
 export const useSendFormFields = ({
     control,
+    watch,
     getValues,
     setValue,
     errors,
@@ -85,11 +86,6 @@ export const useSendFormFields = ({
             if (isCustom) {
                 setValue('feePerUnit', currentLevel.feePerUnit);
                 setValue('feeLimit', currentLevel.feeLimit);
-                setLastUsedFeeLevel({
-                    ...newLevel,
-                    feePerUnit: currentLevel.feePerUnit,
-                    feeLimit: currentLevel.feeLimit,
-                });
             } else {
                 // when switching from custom FeeLevel which has an error
                 // this error should be cleared and transaction should be precomposed again
@@ -98,6 +94,8 @@ export const useSendFormFields = ({
                 if (shouldCompose) {
                     clearErrors(['feePerUnit', 'feeLimit']);
                 }
+                setValue('feePerUnit', '');
+                setValue('feeLimit', '');
                 setLastUsedFeeLevel(newLevel);
                 return shouldCompose;
             }
@@ -105,10 +103,19 @@ export const useSendFormFields = ({
         [setValue, errors, clearErrors, setLastUsedFeeLevel],
     );
 
-    const changeCustomFeeLevel = () => {
-        const { feePerUnit, feeLimit } = getValues();
-        setLastUsedFeeLevel({ label: 'custom', feePerUnit, feeLimit, blocks: -1 });
-    };
+    // watch custom feePerUnit/feeLimit changes
+    const customFeeRef = useRef<string | null>(null);
+    const customFeeLevel = watch('feePerUnit');
+    useEffect(() => {
+        if (customFeeRef.current !== customFeeLevel) {
+            // NOTE: customFeeRef could be null at first render. ignore it (value from draft)
+            if (typeof customFeeRef.current === 'string' && customFeeLevel && !errors.feePerUnit) {
+                const { feePerUnit, feeLimit } = getValues();
+                setLastUsedFeeLevel({ label: 'custom', feePerUnit, feeLimit, blocks: -1 });
+            }
+            customFeeRef.current = customFeeLevel;
+        }
+    }, [customFeeLevel, errors.feePerUnit, getValues, setLastUsedFeeLevel]);
 
     const resetDefaultValue = useCallback(
         (fieldName: string) => {
@@ -120,8 +127,10 @@ export const useSendFormFields = ({
             if (current && current[fieldName]) current[fieldName] = '';
             // reset current value
             setValue(fieldName, '');
+            // clear error
+            clearErrors(fieldName);
         },
-        [control, setValue],
+        [control, setValue, clearErrors],
     );
 
     // `output[x].fieldName` should be a regular `formState` value from `getValues()` method
@@ -156,7 +165,6 @@ export const useSendFormFields = ({
         calculateFiat,
         setAmount,
         changeFeeLevel,
-        changeCustomFeeLevel,
         resetDefaultValue,
         setMax,
         getDefaultValue,
