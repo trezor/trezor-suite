@@ -147,7 +147,10 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
 
     const dropdownOptions = [
         {
-            callback: () => onClick(),
+            callback: () => {
+                onClick();
+                return true;
+            }, // return true makes dropdown to hide on click
             label: 'Confirm on device',
             key: 'confirm-on-device',
             'data-test': '@metadata/confirm-on-device-button',
@@ -155,7 +158,10 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
     ];
     if (isRevealed) {
         dropdownOptions.push({
-            callback: onCopy,
+            callback: () => {
+                onCopy();
+                return true;
+            },
             label: 'Copy address',
             key: 'copy-address',
             'data-test': '@metadata/copy-address-button',
