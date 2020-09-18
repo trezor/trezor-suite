@@ -66,12 +66,6 @@ const getProvider = async (state?: Partial<MetadataProviderCredentials>) => {
     return providerInstance;
 };
 
-export const enableMetadata = () => (dispatch: Dispatch) => {
-    dispatch({
-        type: METADATA.ENABLE,
-    });
-};
-
 export const disposeMetadata = () => (dispatch: Dispatch, getState: GetState) => {
     getState().wallet.accounts.forEach(account => {
         dispatch({
@@ -101,6 +95,12 @@ export const disposeMetadata = () => (dispatch: Dispatch, getState: GetState) =>
                 },
             });
         }
+    });
+};
+
+export const enableMetadata = () => (dispatch: Dispatch) => {
+    dispatch({
+        type: METADATA.ENABLE,
     });
 };
 

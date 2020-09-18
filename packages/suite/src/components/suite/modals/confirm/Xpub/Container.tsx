@@ -15,6 +15,7 @@ export type Props = {
     accountIndex: number;
     accountType: Account['accountType'];
     symbol: Account['symbol'];
+    accountLabel: Account['metadata']['accountLabel'];
     onCancel: () => void;
 } & ReturnType<typeof mapDispatchToProps>;
 

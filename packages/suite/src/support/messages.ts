@@ -169,6 +169,11 @@ const definedMessages = defineMessages({
         defaultMessage: '{networkName} Account {accountIndex} public key (XPUB)',
         id: 'TR_XPUB_MODAL_TITLE',
     },
+    TR_XPUB_MODAL_TITLE_METADATA: {
+        defaultMessage: '{accountLabel} public key (XPUB)',
+        id: 'TR_XPUB_MODAL_TITLE_METADATA',
+        description: 'accountLabel is user defined name of account, might be pretty much anything.',
+    },
     TR_ADVANCED_RECOVERY: {
         defaultMessage: 'advanced recovery',
         description: 'Enter words via obfuscated pin matrix, recovery takes about 5 minutes.',
