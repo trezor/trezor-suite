@@ -110,6 +110,12 @@ First time user:
 1. Fetch data from metadata provider and set interval for fetching data.
 1. Activate editable input.
 
-<!-- TODO:  -->
-<!-- Returning user: -->
-<!-- Disable metadata: -->
+How to turn metadata off
+- controls for common metadata related actions are located in general settings under the labeling section
+- there is a switch which: 
+    1. sets metadata.enabled bool value
+    1. if setting to false, it triggers removal of all metadata (including keys) from devices and accounts.
+    1. if setting to false, disconnects metadata provider (Dropbox, Google Drive)
+- there is a button "disconnect provider" which: 
+    1. triggers removal of all metadata values (**excluding** metadata keys) from devices and accounts. This way provider might be reconnected without reconnecting device
+    1. disconnects metadata provider
