@@ -12,12 +12,7 @@ import FormattedCryptoAmount from '@suite/components/suite/FormattedCryptoAmount
 import FiatValue from '@suite-components/FiatValue/Container';
 import { isTestnet, getNetwork } from '@wallet-utils/accountUtils';
 
-const AmountWrapper = styled.div`
-    // display: grid;
-    // grid-gap: 20px;
-    // grid-template-columns: 1fr 2fr 1fr 1fr;
-    // align-items: center;
-`;
+const AmountWrapper = styled.div``;
 
 // TODO check if all props are necessary
 interface Props {
@@ -32,11 +27,12 @@ interface Props {
 const AmountDetails = ({ tx, totalInput, totalOutput, isTestnet }: Props) => {
     const assetSymbol = tx.symbol.toUpperCase();
     const [showFiat, setShowFiat] = useState(false);
+    // const showFiatButton = showFiat && !isTestnet;
 
     return (
         <AmountWrapper>
             {/* first row with "showFiat button" */}
-            {!showFiat && (
+            {!showFiat && !isTestnet && (
                 <AmountRow
                     firstColumn={<div />}
                     secondColumn={<div />}

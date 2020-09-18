@@ -1221,6 +1221,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Oops! Something went wrong!',
         id: 'TR_OOPS_SOMETHING_WENT_WRONG',
     },
+    TR_OPEN_IN_BLOCK_EXPLORER: {
+        defaultMessage: 'Open in Block Explorer',
+        id: 'TR_OPEN_IN_BLOCK_EXPLORER',
+    },
     TR_OUTGOING: {
         defaultMessage: 'Outgoing',
         id: 'TR_OUTGOING',

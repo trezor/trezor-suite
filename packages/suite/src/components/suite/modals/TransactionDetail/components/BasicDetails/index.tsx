@@ -18,11 +18,15 @@ const Wrapper = styled.div`
 const ExplorerLinkWrapper = styled.div`
     display: flex;
     align-items: center;
-    // justify-content: space-between;
-    // width: 100%; /* makes text overflow elipsis work */
     display: inline-grid;
     justify-content: flex-end;
-    j
+`;
+
+const ExplorerLinkTransationWrapper = styled.div`
+    display: flex;
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        display: none;
+    }
 `;
 
 const TransactionId = styled(props => <HiddenPlaceholder {...props} />)`
@@ -32,7 +36,6 @@ const TransactionId = styled(props => <HiddenPlaceholder {...props} />)`
 `;
 
 const ExplorerLink = styled(Link)`
-    color: ${colors.BLACK25};
     font-size: ${variables.NEUE_FONT_SIZE.TINY};
     width: 100%; /* makes text overflow elipsis work */
 `;
@@ -49,7 +52,8 @@ const Confirmations = styled.div`
 
 const StatusWrapper = styled.div`
     display: flex;
-    align-items: baseline;
+    height: 20px;
+    align-items: center;
 `;
 
 const ConfirmationsIconWrapper = styled.div`
@@ -59,23 +63,30 @@ const ConfirmationsIconWrapper = styled.div`
 `;
 
 const LoaderIconWrapper = styled.div`
-    align-self: center;
-    margin-left: 1ch;
+    align-self: left;
+    margin-right: 10px;
 `;
 
 const HeaderFirstRow = styled.div`
     display: grid;
-    grid-gap: 20px;
-    grid-template-columns: 1fr 4fr 5fr;
+    grid-gap: 10px;
+    grid-template-columns: minmax(45px, 65px) 4fr 160px;
     align-items: center;
     padding-bottom: 28px;
+    padding-right: 6px;
     border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    color: ${colors.BLACK25};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        grid-template-columns: minmax(45px, 55px) 1fr 20px;
+    }
 `;
 
 const HeaderSecondRow = styled.div`
     display: grid;
-    grid-gap: 20px;
-    grid-template-columns: 1fr 5fr;
+    grid-gap: 10px;
+    grid-template-columns: minmax(100px, 140px) 1fr;
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding: 28px 6px 10px 6px;
@@ -96,16 +107,29 @@ const SecondRowValue = styled.div`
 const IconWrapper = styled.div`
     background-color: white;
     border-radius: 100px;
-    width: 54px;
-    height: 54px;
+
     display: flex;
     align-items: center;
     justify-content: center;
-
     & > svg {
         margin: 0 auto;
         display: block;
     }
+`;
+
+const MainIconWrapper = styled(IconWrapper)`
+    width: 54px;
+    height: 54px;
+    position: relative;
+`;
+
+const NestedIconWrapper = styled(IconWrapper)`
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
 `;
 
 const TxStatus = styled.div`
@@ -120,8 +144,8 @@ const TxSentStatus = styled.div`
     margin-bottom: 4px;
 `;
 
-const ConfirmationStatus = styled.div`
-    color: ${colors.NEUE_TYPE_GREEN};
+const ConfirmationStatus = styled.div<{ confirmed: boolean }>`
+    color: ${props => (props.confirmed ? colors.NEUE_TYPE_GREEN : colors.NEUE_TYPE_ORANGE)};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
 `;
@@ -156,23 +180,23 @@ const getHumanReadableTxType = (tx: WalletAccountTransaction) => {
     }
 };
 
-const BasicDetails = ({
-    tx,
-    confirmations,
-    isFetching,
-    explorerUrl,
-    totalInput,
-    totalOutput,
-}: Props) => {
+const BasicDetails = ({ tx, confirmations, isFetching, explorerUrl }: Props) => {
     const isConfirmed = confirmations > 0;
     const transactionStatus = getHumanReadableTxType(tx);
     const assetSymbol = tx.symbol.toUpperCase();
     return (
         <Wrapper>
             <HeaderFirstRow>
-                <IconWrapper>
+                <MainIconWrapper>
                     <Icon size={24} color={colors.BLACK50} icon="SEND" />
-                </IconWrapper>
+                    <NestedIconWrapper>
+                        <Icon
+                            size={12}
+                            color={isConfirmed ? colors.NEUE_BG_GREEN : colors.NEUE_TYPE_ORANGE}
+                            icon={isConfirmed ? 'CHECK' : 'CLOCK'}
+                        />
+                    </NestedIconWrapper>
+                </MainIconWrapper>
                 <TxStatus>
                     <TxSentStatus>
                         {transactionStatus} {assetSymbol}
@@ -185,7 +209,7 @@ const BasicDetails = ({
                                     <Loader size={16} />
                                 </LoaderIconWrapper>
                             )}
-                            <ConfirmationStatus>
+                            <ConfirmationStatus confirmed>
                                 <Translation id="TR_CONFIRMED_TX" />
                             </ConfirmationStatus>
                             <Circle>&bull;</Circle>
@@ -213,13 +237,17 @@ const BasicDetails = ({
                             )}
                         </StatusWrapper>
                     ) : (
-                        <Translation id="TR_UNCONFIRMED_TX" />
+                        <ConfirmationStatus confirmed={false}>
+                            <Translation id="TR_UNCONFIRMED_TX" />
+                        </ConfirmationStatus>
                     )}
                 </TxStatus>
                 {explorerUrl ? (
                     <ExplorerLinkWrapper>
                         <ExplorerLink variant="nostyle" href={explorerUrl}>
-                            <Translation id="TR_SHOW_DETAILS_IN_BLOCK_EXPLORER" />
+                            <ExplorerLinkTransationWrapper>
+                                <Translation id="TR_OPEN_IN_BLOCK_EXPLORER" />
+                            </ExplorerLinkTransationWrapper>
                             <LinkIcon icon="EXTERNAL_LINK" size={14} color={colors.BLACK25} />
                         </ExplorerLink>
                     </ExplorerLinkWrapper>
@@ -227,6 +255,7 @@ const BasicDetails = ({
                     <></>
                 )}
             </HeaderFirstRow>
+
             <HeaderSecondRow>
                 {/* FIRST ROW - MINED TIME */}
                 <SecondRowTitle>

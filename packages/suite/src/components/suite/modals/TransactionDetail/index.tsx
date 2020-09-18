@@ -47,7 +47,7 @@ const TabButton = styled.button<{ selected: boolean }>`
 `;
 
 const AdvancedDetailsWrapper = styled.div`
-    padding: 24px;
+    padding: 24px 24px 14px 24px;
 `;
 
 const mapStateToProps = (state: AppState) => ({
@@ -125,9 +125,9 @@ const TransactionDetail = (props: Props) => {
         <Modal
             cancelable
             onCancel={props.onCancel}
-            size="tiny"
-            fixedWidth={['100vw', '90vw', '780px', '780px']}
-            // contentPaddingSide={['8px', '32px', '32px', '32px']}
+            // size="tiny"
+            fixedWidth={['100vw', '90vw', '750px', '750px']}
+            contentPaddingSide={['8px', '21px', '21px', '21px']}
             heading={<Translation id="TR_TRANSACTION_DETAILS" />}
 
             // heading={
@@ -156,14 +156,16 @@ const TransactionDetail = (props: Props) => {
                         >
                             Amount
                         </TabButton>
-                        <TabButton
-                            selected={selectedTab === 'io'}
-                            onClick={() => {
-                                setSelectedTab('io');
-                            }}
-                        >
-                            Inputs, Outputs
-                        </TabButton>
+                        {network?.networkType !== 'ripple' && (
+                            <TabButton
+                                selected={selectedTab === 'io'}
+                                onClick={() => {
+                                    setSelectedTab('io');
+                                }}
+                            >
+                                Inputs, Outputs
+                            </TabButton>
+                        )}
                     </TabSelector>
 
                     {/* TODO check if testnet is selected and if so, do not show fiat details in AmountDetails */}
@@ -177,7 +179,9 @@ const TransactionDetail = (props: Props) => {
                             isTestnet={isTestnet(tx.symbol)}
                         />
                     ) : (
-                        <IODetails tx={tx} txDetails={txDetails} isFetching={isFetching} />
+                        network?.networkType !== 'ripple' && (
+                            <IODetails tx={tx} txDetails={txDetails} isFetching={isFetching} />
+                        )
                     )}
                 </AdvancedDetailsWrapper>
 
