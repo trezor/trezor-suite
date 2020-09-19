@@ -136,7 +136,10 @@ const Settings = ({
                                 <Translation
                                     id="TR_CONNECTED_TO_PROVIDER"
                                     values={{
-                                        provider: metadata.provider.type,
+                                        // capitalize first letter of provider type
+                                        provider:
+                                            metadata.provider.type.charAt(0).toUpperCase() +
+                                            metadata.provider.type.slice(1),
                                         user: metadata.provider.user,
                                     }}
                                 />
