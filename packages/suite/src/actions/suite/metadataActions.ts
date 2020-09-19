@@ -164,7 +164,6 @@ export const disconnectProvider = () => async (dispatch: Dispatch, getState: Get
 
 const handleProviderError = (error: Error) => (dispatch: Dispatch, getState: GetState) => {
     const { metadata } = getState();
-    console.log('handleProviderError', error);
     let errorMsg = 'labeling action failed with unexpected error';
     if (error) {
         // @ts-ignore todo: type error;

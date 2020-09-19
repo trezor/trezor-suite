@@ -76,6 +76,10 @@ class GoogleMock {
             res.send({});
         });
 
+        app.post('/revoke', (req, res) => {
+            console.log('[mockGoogleDrive]: revoke');
+            res.send()
+        })
 
         app.patch('/upload/drive/v3/files/:id', express.text({ type: '*/*'}), (req, res) => {
             console.log('[mockGoogleDrive]: patch', req.params.id);

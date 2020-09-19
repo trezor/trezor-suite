@@ -1,7 +1,13 @@
 
 // redirect any request to googleapis to custom google mock server running on localhost
 export const stubFetch = (uri: string, options: Parameters<typeof fetch>[1]) => {
-    const url = new URL(uri);
+    let url;
+    try {
+        url = new URL(uri);
+    } catch(_err) {
+        // catching absolute next.js urls which throw in URL constructor
+        return fetch(uri, options);
+    }
     const origins = ['https://www.googleapis.com', 'https://oauth2.googleapis.com'];
 
     if (origins.some(o => uri.includes(o))) {
