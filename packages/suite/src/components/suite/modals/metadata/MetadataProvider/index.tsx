@@ -6,15 +6,21 @@ import { useActions } from '@suite-hooks';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { Deferred } from '@suite-utils/deferred';
 import { MetadataProviderType } from '@suite-types/metadata';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const Buttons = styled.div`
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-around;
 `;
 
 const StyledButton = styled(Button)`
-    margin-top: 10px;
-    margin-bottom: 10px;
+    padding: 10px;
+    flex-basis: 45%;
+`;
+
+const StyledImage = styled.img`
+    margin: 0 8px 0 0;
 `;
 
 type Props = {
@@ -48,26 +54,31 @@ const MetadataProvider = (props: Props) => {
         <Modal
             cancelable
             onCancel={onCancel}
-            size="tiny"
+            size="small"
             heading={<Translation id="METADATA_MODAL_HEADING" />}
             description={<Translation id="METADATA_MODAL_DESCRIPTION" />}
             data-test="@modal/metadata-provider"
         >
             <Buttons>
                 <StyledButton
+                    variant="tertiary"
                     onClick={() => connect('dropbox')}
                     isLoading={isLoading === 'dropbox'}
                     isDisabled={!!isLoading}
                     data-test="@modal/metadata-provider/dropbox-button"
                 >
+                    <StyledImage src={resolveStaticPath('images/png/dropbox.png')} />
                     <Translation id="TR_DROPBOX" />
                 </StyledButton>
                 <StyledButton
+                    variant="tertiary"
                     onClick={() => connect('google')}
                     isLoading={isLoading === 'google'}
                     isDisabled={!!isLoading}
                     data-test="@modal/metadata-provider/google-button"
                 >
+                    <StyledImage src={resolveStaticPath('images/png/google-drive.png')} />
+
                     <Translation id="TR_GOOGLE_DRIVE" />
                 </StyledButton>
 
