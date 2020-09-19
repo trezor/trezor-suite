@@ -519,6 +519,18 @@ export const setDeviceMetadataKey = () => async (dispatch: Dispatch, getState: G
                 },
             },
         });
+
+        // in effort to resolve https://github.com/trezor/trezor-suite/issues/2315
+        // also turn of global metadata.enabled setting
+        // pros:
+        // - user without saved device is not bothered with labeling when reloading page
+        // cons:
+        // - it makes concept device.metadata.status "cancelled" useless
+        // - new device will not be prompted with metadata when connected so even when there is
+        //   existing metadata for this device, user will not see it until he clicks "add label" button
+        dispatch({
+            type: METADATA.DISABLE,
+        });
     }
 };
 

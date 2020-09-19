@@ -52,6 +52,7 @@ describe('Metadata', () => {
             cy.task('pressYes');
             cy.getTestElement('@modal/confirm-address/address-field').should('not.be.visible');
 
+            cy.getTestElement(metadataEl).click();
             cy.getTestElement('@metadata/copy-address-button').click();
     });
 });
