@@ -44,7 +44,7 @@ describe('Onboarding - unexpected states', () => {
         cy.getTestElement('@onboarding/path-used-button').click();
         cy.task('startEmu', { wipe:  true });
         cy.getTestElement('@onboarding/button-continue').click();
-        cy.getTestElement('@onboarding/button-continue').click();
+        cy.getTestElement('@firmware/skip-button').click();
         cy.getTestElement('@onboarding/button-standard-backup').click();
         cy.task('pressYes');
         cy.getTestElement('@onboarding/continue-to-security-button').click();

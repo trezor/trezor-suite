@@ -1,30 +1,49 @@
 import React from 'react';
 import { getFormattedFingerprint, getTextForStatus } from '@firmware-utils';
-import { AppState } from '@suite-types';
 import { Translation } from '@suite-components';
-import { Loaders, Text } from '@onboarding-components';
+import { Loaders } from '@onboarding-components';
+import { useDevice, useFirmware } from '@suite-hooks';
+import { Fingerprint, InitImg, P, H2 } from '@firmware-components';
 
-import { Fingerprint, InitImg } from '.';
+const Body = () => {
+    const { device } = useDevice();
+    const { status } = useFirmware();
 
-interface Props {
-    fingerprint: string;
-    status: AppState['firmware']['status'];
-    model: number;
-}
+    // if device is not connected, there must be error which is handled by another component
+    if (!device?.connected || !device?.features) {
+        return null;
+    }
 
-const FirmwareProgress = ({ fingerprint, status, model }: Props) => {
+    const statusText = getTextForStatus(status);
     return (
         <>
-            <InitImg model={model} />
-            <Text>
-                <Translation id={getTextForStatus(status)} />
-                <Loaders.Dots />
-            </Text>
+            <InitImg model={device.features.major_version} />
+
+            {statusText && (
+                <H2>
+                    <Translation id={statusText} />
+                    <Loaders.Dots />
+                </H2>
+            )}
+
+            {status === 'installing' ? (
+                <P>
+                    <Translation id="TR_DO_NOT_DISCONNECT" />
+                </P>
+            ) : (
+                // empty to avoid jumping
+                <P> </P>
+            )}
+
             {status === 'check-fingerprint' && (
-                <Fingerprint>{getFormattedFingerprint(fingerprint)}</Fingerprint>
+                <Fingerprint>
+                    {getFormattedFingerprint(device.firmwareRelease.release.fingerprint)}
+                </Fingerprint>
             )}
         </>
     );
 };
 
-export default FirmwareProgress;
+export const FirmwareProgressStep = {
+    Body,
+};

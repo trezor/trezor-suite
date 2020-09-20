@@ -1,9 +1,10 @@
-import TrezorConnect, { DEVICE } from 'trezor-connect';
+import TrezorConnect from 'trezor-connect';
 import { MiddlewareAPI } from 'redux';
 
 import { SUITE } from '@suite-actions/constants';
 import * as firmwareActions from '@firmware-actions/firmwareActions';
 import { AppState, Action, Dispatch } from '@suite-types';
+import { FIRMWARE } from '@suite/actions/firmware/constants';
 
 const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
@@ -16,28 +17,26 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
     const { status } = api.getState().firmware;
 
     switch (action.type) {
-        case DEVICE.DISCONNECT:
-            // if current status is error, reset to initial status on device disconnect
-            if (status === 'error' || status === 'done') {
-                api.dispatch(firmwareActions.resetReducer());
-                break;
+        case FIRMWARE.SET_UPDATE_STATUS: {
+            const { device } = api.getState().suite;
+            // device should always be connected here - button setting waiting-for-bootloader should be disabled when
+            // device is not connected
+            if (['waiting-for-bootloader', 'check-seed'].includes(action.payload) && device) {
+                api.dispatch(firmwareActions.setTargetRelease(device.firmwareRelease));
             }
-            // when device disconnects and it is not in bootloader, save its target
-            // firmwareRelease for future use. note that we do not save firmwareRelease
-            // in bootloader, which also means that we do not save it when no firmware is installed
-            // but in this case we may safely fallback to firmwareRelease of currently connected device
-            if (action.payload.features && action.payload.mode !== 'bootloader') {
-                api.dispatch(firmwareActions.setTargetRelease(action.payload.firmwareRelease));
-            }
-
             break;
+        }
         case SUITE.SELECT_DEVICE:
         case SUITE.UPDATE_SELECTED_DEVICE: // UPDATE_SELECTED_DEVICE is needed to handle if device is unacquired in SELECT_DEVICE
+            // both saved and unsaved device
+            if (status === 'unplug' && (!action.payload || !action.payload?.connected)) {
+                api.dispatch(firmwareActions.setStatus('reconnect-in-normal'));
+            }
+
             if (
                 action.payload &&
                 action.payload.features &&
-                ['unplug', 'wait-for-reboot'].includes(status) &&
-                action.payload
+                ['reconnect-in-normal', 'wait-for-reboot'].includes(status)
             ) {
                 // firmwareActions.firmwareUpdate method sends skipFinalReload parameter into trezor-connect, which results
                 // in capabilities not being reloaded properly even after device reconnect. this is because messages definitions

@@ -6,11 +6,10 @@ import thunk from 'redux-thunk';
 import firmwareReducer from '@firmware-reducers/firmwareReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import { ArrayElement } from '@suite/types/utils';
-import * as firmwareActions from '../firmwareActions';
-import { firmwareUpdate, reducerActions } from '../__fixtures__/firmwareActions';
+import { actions, reducerActions } from '../__fixtures__/firmwareActions';
 import { TrezorDevice } from '@suite-types';
 
-type Fixture = ArrayElement<typeof firmwareUpdate>;
+type Fixture = ArrayElement<typeof actions>;
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type FirmwareState = ReturnType<typeof firmwareReducer>;
@@ -96,30 +95,28 @@ const updateStore = (store: ReturnType<typeof mockStore>) => {
 };
 
 describe('Firmware Actions', () => {
-    describe('firmwareUpdate', () => {
-        firmwareUpdate.forEach(f => {
-            it(f.description, async () => {
-                // set fixtures
-                require('trezor-connect').setTestFixtures(f);
+    actions.forEach(f => {
+        it(f.description, async () => {
+            // set fixtures
+            require('trezor-connect').setTestFixtures(f);
 
-                const state = getInitialState(f.initialState);
-                const store = mockStore(state);
+            const state = getInitialState(f.initialState);
+            const store = mockStore(state);
 
-                store.subscribe(() => updateStore(store));
+            store.subscribe(() => updateStore(store));
 
-                await store.dispatch(firmwareActions.firmwareUpdate());
+            await store.dispatch(f.action());
 
-                const result = store.getState();
+            const result = store.getState();
 
-                if (f.result) {
-                    if (f.result.state) {
-                        expect(result).toMatchObject(f.result.state);
-                    }
-                    if (f.result.actions) {
-                        expect(store.getActions()).toMatchObject(f.result.actions);
-                    }
+            if (f.result) {
+                if (f.result.state) {
+                    expect(result).toMatchObject(f.result.state);
                 }
-            });
+                if (f.result.actions) {
+                    expect(store.getActions()).toMatchObject(f.result.actions);
+                }
+            }
         });
     });
 
