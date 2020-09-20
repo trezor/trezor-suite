@@ -1,9 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as routerActions from '@suite-actions/routerActions';
-import * as firmwareActions from '@firmware-actions/firmwareActions';
 
+import * as routerActions from '@suite-actions/routerActions';
 import { Button } from '@trezor/components';
 import { DeviceInvalidModeLayout, Translation } from '@suite-components';
 import { Dispatch } from '@suite-types';
@@ -12,7 +11,6 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     bindActionCreators(
         {
             goto: routerActions.goto,
-            setStatus: firmwareActions.setStatus,
         },
         dispatch,
     );
@@ -28,7 +26,6 @@ const Index = (props: Props) => (
         resolveButton={
             <Button
                 onClick={() => {
-                    props.setStatus('check-seed');
                     props.goto('firmware-index');
                 }}
             >

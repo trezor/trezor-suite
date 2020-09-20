@@ -1,6 +1,5 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { DEVICE } from 'trezor-connect';
 
 import { SUITE } from '@suite-actions/constants';
 import { FIRMWARE } from '@firmware-actions/constants';
@@ -10,7 +9,7 @@ import modalReducer from '@suite-reducers/modalReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import firmwareMiddleware from '@firmware-middlewares/firmwareMiddleware';
 
-const { getConnectDevice, getSuiteDevice } = global.JestMocks;
+const { getSuiteDevice } = global.JestMocks;
 
 const middlewares = [firmwareMiddleware];
 
@@ -58,33 +57,36 @@ const initStore = (state: State) => {
 };
 
 describe('firmware middleware', () => {
-    it('if status of firmware install process is error, disconnecting device triggers reset of firmware reducer', async () => {
+    it('if status === "unplug" disconnecting device results in status "reconnect-in-normal"', async () => {
         const store = initStore(
             getInitialState(undefined, {
-                status: 'error',
+                status: 'unplug',
             }),
         );
-        await store.dispatch({ type: DEVICE.DISCONNECT, payload: getConnectDevice() });
+        await store.dispatch({ type: SUITE.UPDATE_SELECTED_DEVICE, payload: undefined });
 
         const result = store.getActions();
         expect(result).toEqual([
-            { type: DEVICE.DISCONNECT, payload: getConnectDevice() },
-            { type: FIRMWARE.RESET_REDUCER },
+            { type: SUITE.UPDATE_SELECTED_DEVICE, payload: undefined },
+            { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'reconnect-in-normal' },
         ]);
     });
 
-    it('the same happens for status "done"', async () => {
+    it('if status === "unplug" disconnecting SAVED device results in status "reconnect-in-normal"', async () => {
         const store = initStore(
             getInitialState(undefined, {
-                status: 'done',
+                status: 'unplug',
             }),
         );
-        await store.dispatch({ type: DEVICE.DISCONNECT, payload: getConnectDevice() });
+        await store.dispatch({
+            type: SUITE.UPDATE_SELECTED_DEVICE,
+            payload: getSuiteDevice({ connected: false }),
+        });
 
         const result = store.getActions();
         expect(result).toEqual([
-            { type: DEVICE.DISCONNECT, payload: getConnectDevice() },
-            { type: FIRMWARE.RESET_REDUCER },
+            { type: SUITE.UPDATE_SELECTED_DEVICE, payload: getSuiteDevice({ connected: false }) },
+            { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'reconnect-in-normal' },
         ]);
     });
 
@@ -131,26 +133,7 @@ describe('firmware middleware', () => {
     it('SELECT.DEVICE do nothing if not expected payload (hunting coverage)', async () => {
         const store = initStore(
             getInitialState(undefined, {
-                status: 'started',
-            }),
-        );
-
-        await store.dispatch({
-            type: SUITE.SELECT_DEVICE,
-            payload: getSuiteDevice({ firmware: 'outdated' }),
-        });
-
-        const result = store.getActions();
-
-        expect(result).toEqual([
-            { type: SUITE.SELECT_DEVICE, payload: getSuiteDevice({ firmware: 'outdated' }) },
-        ]);
-    });
-
-    it('SELECT.DEVICE do nothing if not expected payload (hunting coverage)', async () => {
-        const store = initStore(
-            getInitialState(undefined, {
-                status: 'unplug',
+                status: 'wait-for-reboot',
             }),
         );
 
@@ -158,24 +141,24 @@ describe('firmware middleware', () => {
             type: SUITE.SELECT_DEVICE,
             payload: getSuiteDevice({ firmware: 'none' }),
         });
-
-        const result = store.getActions();
-
-        expect(result).toEqual([
-            { type: SUITE.SELECT_DEVICE, payload: getSuiteDevice({ firmware: 'none' }) },
-        ]);
     });
 
-    it('DEVICE.DISCONNECT if firmware status is not done or error, update target release on device disconnect', async () => {
+    it('FIRMWARE.SET_UPDATE_STATUS -> FIRMWARE.SET_TARGET_RELEASE', async () => {
         const store = initStore(
-            getInitialState(undefined, {
-                status: 'started',
-            }),
+            getInitialState(
+                undefined,
+                {
+                    status: 'check-seed',
+                },
+                {
+                    device: getSuiteDevice(),
+                },
+            ),
         );
 
         await store.dispatch({
-            type: DEVICE.DISCONNECT,
-            payload: getConnectDevice(),
+            type: FIRMWARE.SET_UPDATE_STATUS,
+            payload: 'waiting-for-bootloader',
         });
 
         const result = store.getActions();

@@ -17,8 +17,6 @@ export const getTextForStatus = (status: AppState['firmware']['status']) => {
             return 'TR_WAITING_FOR_CONFIRMATION';
         case 'installing':
             return 'TR_INSTALLING';
-        case 'started':
-            return 'TR_STARTED';
         case 'downloading':
             return 'TR_DOWNLOADING';
         case 'wait-for-reboot':
@@ -28,6 +26,6 @@ export const getTextForStatus = (status: AppState['firmware']['status']) => {
         case 'check-fingerprint':
             return 'TR_CHECK_FINGERPRINT';
         default:
-            throw new Error('this state does not have human readable variant');
+            return null;
     }
 };

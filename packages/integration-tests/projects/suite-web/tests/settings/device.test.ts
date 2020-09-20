@@ -13,10 +13,9 @@ describe('Device settings', () => {
         cy.task('startEmu', { wipe: true, version: '2.1.4' });
         cy.task('setupEmu');
 
-        // this test needs to be first otherwise close-button could be covered by Toast notification
         cy.log('open firmware modal and close it again');
         cy.getTestElement('@settings/device/update-button').click();
-        cy.getTestElement('@firmware/close-button').click();
+        cy.getTestElement('@modal/close-button').click();
 
         cy.log('change label');
         cy.getTestElement('@settings/device/label-input')

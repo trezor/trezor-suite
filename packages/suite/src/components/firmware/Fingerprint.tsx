@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { colors } from '@trezor/components';
 
-const Fingerprint = styled.pre`
+export const Fingerprint = styled.pre`
     padding: 20px;
     width: 100%;
     overflow: auto;
@@ -11,5 +11,3 @@ const Fingerprint = styled.pre`
     word-break: break-all;
     font-family: monospace;
 `;
-
-export default Fingerprint;

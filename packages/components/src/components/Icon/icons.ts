@@ -84,4 +84,5 @@ export const ICONS = {
     DROPBOX: require('../../images/icons/dropbox.svg'),
     GOOGLE_DRIVE: require('../../images/icons/google-drive.svg'),
     FEEDBACK: require('../../images/icons/feedback.svg'),
+    GITHUB: require('../../images/icons/github.svg'),
 };

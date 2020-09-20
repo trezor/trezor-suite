@@ -176,7 +176,7 @@ const Heading = styled(H1)<{
     hiddenProgressBar: boolean;
 }>`
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     padding: 28px 32px 22px 32px;
     margin-bottom: ${props => (props.showProgressBar ? 0 : '20px')};
 

@@ -14,7 +14,7 @@ describe('Onboarding - create wallet', () => {
         cy.getTestElement('@onboarding/path-create-button').click()
     });
 
-    it('Success', () => {
+    it('Success (no shamir capability)', () => {
        
         cy.getTestElement('@onboarding/path-used-button').click()
         cy.getTestElement('@onboarding/pair-device-step');
@@ -22,7 +22,7 @@ describe('Onboarding - create wallet', () => {
         cy.task('startEmu', { version: '2.1.4', wipe: true });
 
         cy.getTestElement('@onboarding/button-continue').click()
-        cy.getTestElement('@onboarding/button-continue').click()
+        cy.getTestElement('@firmware/skip-button').click()
         
         cy.log('Note that this firmware does not have Shamir capability so we show only single backup option button');
         cy.getTestElement('@onboarding/only-backup-option-button').click()

@@ -30,6 +30,7 @@ describe('Backup', () => {
         // latest (2.3.1 at the time of writing this) has default behavior needs_backup false
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
+        // noticed that it failed here times: 1
         cy.getTestElement('@backup/already-finished-message');
     });
 
