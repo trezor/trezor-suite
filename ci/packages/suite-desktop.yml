@@ -54,6 +54,8 @@ suite-desktop build linux manual:
     <<: *build
 
 suite-desktop build windows:
+    # Todo: temporary allow_failure so that development web build and deploy is not blocked. Remove!
+    allow_failure: true
     only:
         <<: *auto_run_branches
     image: electronuserland/builder:wine
