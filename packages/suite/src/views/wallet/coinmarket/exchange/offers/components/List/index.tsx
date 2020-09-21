@@ -68,18 +68,18 @@ const Offers = ({ selectQuote, quotes, isFixed }: Props) => {
                     {isFixed ? (
                         <>
                             <Translation id="TR_EXCHANGE_FIXED_OFFERS" />
-                            <StyledQuestionTooltip messageId="TR_EXCHANGE_FIXED_OFFERS_INFO" />
+                            <StyledQuestionTooltip tooltip="TR_EXCHANGE_FIXED_OFFERS_INFO" />
                         </>
                     ) : (
                         <>
                             <Translation id="TR_EXCHANGE_FLOAT_OFFERS" />
-                            <StyledQuestionTooltip messageId="TR_EXCHANGE_FLOAT_OFFERS_INFO" />
+                            <StyledQuestionTooltip tooltip="TR_EXCHANGE_FLOAT_OFFERS_INFO" />
                         </>
                     )}
                 </Left>
                 <Right>
                     <Translation id="TR_EXCHANGE_FEES_INCLUDED" />
-                    <StyledQuestionTooltip messageId="TR_EXCHANGE_FEES_INCLUDED_INFO" />
+                    <StyledQuestionTooltip tooltip="TR_EXCHANGE_FEES_INCLUDED_INFO" />
                 </Right>
             </SummaryRow>
             <Quotes>

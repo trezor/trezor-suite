@@ -114,7 +114,7 @@ const Quote = ({ className, quote, wantCrypto }: Props) => {
                 <Column>
                     <Heading>
                         <Translation id="TR_BUY_FEES" />{' '}
-                        <StyledQuestionTooltip messageId="TR_OFFER_FEE_INFO" />
+                        <StyledQuestionTooltip tooltip="TR_OFFER_FEE_INFO" />
                     </Heading>
                     <Value>
                         <Translation id="TR_BUY_ALL_FEES_INCLUDED" />
@@ -238,9 +238,8 @@ const IconWrapper = styled.div`
 
 const ErrorText = styled.div``;
 
-const StyledQuestionTooltip = styled(QuestionTooltip)`s
+const StyledQuestionTooltip = styled(QuestionTooltip)`
     padding-left: 4px;
-    padding-top: 1px;
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
 

@@ -28,7 +28,7 @@ const VerifyAddressComponent = () => {
                     <LabelText>
                         <Translation id="TR_BUY_RECEIVING_ACCOUNT" />
                     </LabelText>
-                    <StyledQuestionTooltip messageId="TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP" />
+                    <StyledQuestionTooltip tooltip="TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP" />
                 </CustomLabel>
                 <FakeInput>
                     <LogoWrapper>
@@ -48,7 +48,7 @@ const VerifyAddressComponent = () => {
                     label={
                         <Label>
                             <Translation id="TR_BUY_RECEIVING_ADDRESS" />
-                            <StyledQuestionTooltip messageId="TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP" />
+                            <StyledQuestionTooltip tooltip="TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP" />
                         </Label>
                     }
                     value={address}
