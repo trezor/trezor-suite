@@ -78,7 +78,7 @@ export const showAddress = (path: string, address: string) => async (
             modalActions.openModal({
                 type: 'address',
                 ...modalPayload,
-                blockClosing: true,
+                confirmed: false,
             }),
         );
     };

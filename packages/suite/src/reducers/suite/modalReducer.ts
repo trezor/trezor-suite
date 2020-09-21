@@ -80,7 +80,7 @@ const modalReducer = (state: State = initialState, action: Action): State => {
             if (
                 state.context === MODAL.CONTEXT_USER &&
                 state.payload.type === 'address' &&
-                state.payload.blockClosing
+                !state.payload.confirmed
             ) {
                 return state;
             }

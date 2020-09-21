@@ -27,7 +27,6 @@ export type UserContextPayload =
           networkType: Account['networkType'];
           confirmed?: boolean;
           cancelable?: boolean;
-          blockClosing?: boolean;
       }
     | {
           type: 'xpub';
