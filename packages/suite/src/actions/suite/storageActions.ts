@@ -89,21 +89,17 @@ interface AccountPart {
 }
 
 export const saveBuyTrade = async (buyTrade: BuyTrade, account: AccountPart, date: string) => {
-    return db.addItem(
-        'coinmarketTrades',
-        {
-            key: buyTrade.paymentId,
-            tradeType: 'buy',
-            date,
-            data: buyTrade,
-            account: {
-                symbol: account.symbol,
-                accountType: account.accountType,
-                accountIndex: account.accountIndex,
-            },
+    return db.addItem('coinmarketTrades', {
+        key: buyTrade.paymentId,
+        tradeType: 'buy',
+        date,
+        data: buyTrade,
+        account: {
+            symbol: account.symbol,
+            accountType: account.accountType,
+            accountIndex: account.accountIndex,
         },
-        buyTrade.paymentId,
-    );
+    });
 };
 
 export const saveExchangeTrade = async (
@@ -111,21 +107,17 @@ export const saveExchangeTrade = async (
     account: AccountPart,
     date: string,
 ) => {
-    return db.addItem(
-        'coinmarketTrades',
-        {
-            key: exchangeTrade.orderId,
-            tradeType: 'exchange',
-            date,
-            data: exchangeTrade,
-            account: {
-                symbol: account.symbol,
-                accountType: account.accountType,
-                accountIndex: account.accountIndex,
-            },
+    return db.addItem('coinmarketTrades', {
+        key: exchangeTrade.orderId,
+        tradeType: 'exchange',
+        date,
+        data: exchangeTrade,
+        account: {
+            symbol: account.symbol,
+            accountType: account.accountType,
+            accountIndex: account.accountIndex,
         },
-        exchangeTrade.orderId,
-    );
+    });
 };
 
 export const saveDiscovery = async (discoveries: Discovery[]) => {
