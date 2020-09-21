@@ -24,28 +24,15 @@ const RowWrapper = styled.div`
 
 interface RowContentProps {
     color?: 'light' | 'dark';
+    textAlign?: 'left' | 'right';
 }
 
 // this wrapper sets the text color of the item based on the  color: 'light' | 'dark' prop
-const ColorizedWrapper = styled.div<RowContentProps>`
+const Row = styled.div<RowContentProps>`
     color: ${props => (props.color === 'light' ? `${colors.BLACK50}` : `${colors.BLACK25}`)};
-`;
 
-const FirstCol = styled.div`
-    color: ${colors.BLACK50};
-    ${leftAlignedStyles}
-`;
-
-const SecondCol = styled(ColorizedWrapper)`
-    ${leftAlignedStyles}
-`;
-
-const ThirdCol = styled(ColorizedWrapper)`
-    ${rightAlignedStyles}
-`;
-
-const FourthCol = styled(ColorizedWrapper)`
-    ${rightAlignedStyles}
+    /* content alignment styles */
+    ${props => (props.textAlign === 'left' ? leftAlignedStyles : rightAlignedStyles)}
 `;
 
 interface Props {
@@ -58,18 +45,26 @@ interface Props {
 
 const AmountRow = ({
     // set default values
-    firstColumn = <div />,
-    secondColumn = <div />,
-    thirdColumn = <div />,
-    fourthColumn = <div />,
+    firstColumn,
+    secondColumn,
+    thirdColumn,
+    fourthColumn,
     color = 'light',
 }: Props) => {
     return (
         <RowWrapper>
-            <FirstCol>{firstColumn}</FirstCol>
-            <SecondCol color={color}>{secondColumn}</SecondCol>
-            <ThirdCol color={color}>{thirdColumn}</ThirdCol>
-            <FourthCol color={color}>{fourthColumn}</FourthCol>
+            <Row textAlign="left" color="light">
+                {firstColumn}
+            </Row>
+            <Row textAlign="left" color={color}>
+                {secondColumn}
+            </Row>
+            <Row textAlign="right" color={color}>
+                {thirdColumn}
+            </Row>
+            <Row textAlign="right" color={color}>
+                {fourthColumn}
+            </Row>
         </RowWrapper>
     );
 };

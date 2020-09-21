@@ -138,6 +138,8 @@ const TxStatus = styled.div`
     text-align: left;
 `;
 
+const ConfirmationStatusWrapper = styled.div``;
+
 const TxSentStatus = styled.div`
     color: ${colors.BLACK25};
     font-size: ${variables.NEUE_FONT_SIZE.H2};
@@ -206,32 +208,38 @@ const BasicDetails = ({ tx, confirmations, isFetching, explorerUrl }: Props) => 
                         {transactionStatus} {assetSymbol}
                     </TxSentStatus>
 
-                    {isConfirmed ? (
-                        <StatusWrapper>
-                            {isFetching && (
-                                <LoaderIconWrapper>
-                                    <Loader size={16} />
-                                </LoaderIconWrapper>
-                            )}
-                            <ConfirmationStatus confirmed>
-                                <Translation id="TR_CONFIRMED_TX" />
-                            </ConfirmationStatus>
-                            <Circle>&bull;</Circle>
+                    <ConfirmationStatusWrapper>
+                        {isConfirmed ? (
+                            <StatusWrapper>
+                                {/* show spinner is data is being fetched */}
+                                {isFetching ? (
+                                    <LoaderIconWrapper>
+                                        <Loader size={16} />
+                                    </LoaderIconWrapper>
+                                ) : (
+                                    <>
+                                        <ConfirmationStatus confirmed>
+                                            <Translation id="TR_CONFIRMED_TX" />
+                                        </ConfirmationStatus>
+                                        <Circle>&bull;</Circle>
+                                    </>
+                                )}
 
-                            {confirmations && (
-                                <Confirmations>
-                                    <Translation
-                                        id="TR_TX_CONFIRMATIONS"
-                                        values={{ confirmationsCount: confirmations }}
-                                    />
-                                </Confirmations>
-                            )}
-                        </StatusWrapper>
-                    ) : (
-                        <ConfirmationStatus confirmed={false}>
-                            <Translation id="TR_UNCONFIRMED_TX" />
-                        </ConfirmationStatus>
-                    )}
+                                {confirmations && (
+                                    <Confirmations>
+                                        <Translation
+                                            id="TR_TX_CONFIRMATIONS"
+                                            values={{ confirmationsCount: confirmations }}
+                                        />
+                                    </Confirmations>
+                                )}
+                            </StatusWrapper>
+                        ) : (
+                            <ConfirmationStatus confirmed={false}>
+                                <Translation id="TR_UNCONFIRMED_TX" />
+                            </ConfirmationStatus>
+                        )}
+                    </ConfirmationStatusWrapper>
                 </TxStatus>
 
                 {/* OPEN IN BLOCK EXPLORER LINK */}
