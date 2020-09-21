@@ -5,7 +5,7 @@ import FreshAddress from './components/FreshAddress';
 import UsedAddresses from './components/UsedAddresses';
 import { Props } from './Container';
 
-const Receive = ({ selectedAccount, receive, device, showAddress, addToast }: Props) => {
+const Receive = ({ selectedAccount, receive, device, showAddress }: Props) => {
     const { isLocked } = useDevice();
     const isDeviceLocked = isLocked(true);
     if (!device || selectedAccount.status !== 'loaded') {
@@ -21,7 +21,6 @@ const Receive = ({ selectedAccount, receive, device, showAddress, addToast }: Pr
                 account={account}
                 addresses={receive}
                 showAddress={showAddress}
-                addToast={addToast}
                 disabled={disabled}
                 locked={isDeviceLocked}
             />
@@ -29,7 +28,6 @@ const Receive = ({ selectedAccount, receive, device, showAddress, addToast }: Pr
                 account={account}
                 addresses={receive}
                 showAddress={showAddress}
-                addToast={addToast}
                 disabled={disabled}
                 locked={isDeviceLocked}
             />

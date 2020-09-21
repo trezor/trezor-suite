@@ -1,9 +1,8 @@
-import React, { useState, createRef } from 'react';
+import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { colors, variables, Button, Icon } from '@trezor/components';
 import { Card, Translation, HiddenPlaceholder, MetadataLabeling } from '@suite-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { copyToClipboard } from '@suite-utils/dom';
 import { ChildProps as Props } from '../../Container';
 import { AccountAddress } from 'trezor-connect';
 import { Network, ReceiveInfo } from '@wallet-types';
@@ -98,10 +97,9 @@ interface ItemProps {
     revealed?: ReceiveInfo;
     metadataPayload: MetadataAddPayload;
     onClick: () => void;
-    onCopy: () => void;
 }
 
-const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index }: ItemProps) => {
+const Item = ({ addr, symbol, onClick, revealed, metadataPayload, index }: ItemProps) => {
     const [isHovered, setIsHovered] = React.useState(false);
     const amount = formatNetworkAmount(addr.received || '0', symbol, true);
     const fresh = addr.transfers < 1;
@@ -161,7 +159,11 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
                 onMouseLeave={() => setIsHovered(false)}
             >
                 <AddressActions hide={!isHovered}>
-                    <Button data-test="@metadata/confirm-on-device-button" variant="tertiary" onClick={onClick}>
+                    <Button
+                        data-test="@metadata/confirm-on-device-button"
+                        variant="tertiary"
+                        onClick={onClick}
+                    >
                         <Translation id="TR_REVEAL_ADDRESS" />
                     </Button>
                 </AddressActions>
@@ -170,7 +172,7 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
     );
 };
 
-const UsedAddresses = ({ account, addresses, showAddress, addToast, locked }: Props) => {
+const UsedAddresses = ({ account, addresses, showAddress, locked }: Props) => {
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
     if (account.networkType !== 'bitcoin' || !account.addresses) return null;
     const { used, unused } = account.addresses;
@@ -188,15 +190,6 @@ const UsedAddresses = ({ account, addresses, showAddress, addToast, locked }: Pr
     const actionButtonsVisible = list.length > DEFAULT_LIMIT;
     const actionShowVisible = limit < list.length;
     const actionHideVisible = limit > DEFAULT_LIMIT;
-
-    const htmlElement = createRef<HTMLDivElement>();
-
-    const copyAddress = (address: string) => {
-        const result = copyToClipboard(address, htmlElement.current);
-        if (typeof result !== 'string') {
-            addToast({ type: 'copy-to-clipboard' });
-        }
-    };
 
     return (
         <StyledCard>
@@ -221,7 +214,6 @@ const UsedAddresses = ({ account, addresses, showAddress, addToast, locked }: Pr
                             value: addressLabels[addr.address],
                         }}
                         onClick={() => (!locked ? showAddress(addr.path, addr.address) : undefined)}
-                        onCopy={() => copyAddress(addr.address)}
                     />
                 ))}
             </GridTable>
