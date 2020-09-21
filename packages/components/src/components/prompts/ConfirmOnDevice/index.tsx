@@ -112,7 +112,7 @@ const isStepActive = (index: number, activeStep?: number) => {
 
 interface Props {
     title: React.ReactNode;
-    successText: React.ReactNode;
+    successText?: React.ReactNode;
     trezorModel: 1 | 2;
     steps?: number;
     activeStep?: number;
