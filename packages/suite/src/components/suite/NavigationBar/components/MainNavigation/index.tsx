@@ -118,9 +118,6 @@ const MainNavigation = (props: Props) => {
             case 'suite-index':
                 analytics.report({ type: 'menu/goto/suite-index' });
                 break;
-            case 'exchange-index':
-                analytics.report({ type: 'menu/goto/exchange-index' });
-                break;
             case 'wallet-index':
                 analytics.report({ type: 'menu/goto/wallet-index' });
                 break;
@@ -158,6 +155,7 @@ const MainNavigation = (props: Props) => {
                             <ItemTitle isActive={isActive} isDisabled={isDisabled}>
                                 <Translation id={translationId} />
                             </ItemTitle>
+                            {/* if the button is disabled, diplay "SOON" badge */}
                             {isDisabled && <NewBadge>soon</NewBadge>}
                         </ItemTitleWrapper>
                     </MenuItemComponent>

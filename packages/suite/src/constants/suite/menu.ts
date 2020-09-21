@@ -17,12 +17,12 @@ export const MAIN_MENU_ITEMS = [
     //     route: 'passwords-index',
     //     isDisabled: true,
     // },
-    {
-        translationId: 'TR_EXCHANGE',
-        icon: 'EXCHANGE',
-        route: 'exchange-index',
-        isDisabled: true,
-    },
+    // {
+    //     translationId: 'TR_EXCHANGE',
+    //     icon: 'EXCHANGE',
+    //     route: 'exchange-index',
+    //     isDisabled: true,
+    // },
     // {
     //     translationId: 'TR_PORTFOLIO',
     //     icon: 'PORTFOLIO',
