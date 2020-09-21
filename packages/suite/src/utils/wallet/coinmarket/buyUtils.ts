@@ -176,6 +176,12 @@ export const getCryptoOptions = (
 export const getCountryLabelParts = (label: string) => {
     try {
         const parts = label.split(' ');
+        if (parts.length === 1) {
+            return {
+                flag: '',
+                text: label,
+            };
+        }
         const flag = parts[0];
         parts.shift();
         const text = parts.join(' ');
