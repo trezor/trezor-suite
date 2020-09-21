@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { BuyProviderInfo, BuyTradeQuoteRequest } from 'invity-api';
 import invityAPI from '@suite-services/invityAPI';
+import { useWatchBuyTrade } from '@wallet-hooks/useCoinmarket';
 import { FormattedDate } from 'react-intl';
 import * as routerActions from '@suite-actions/routerActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
@@ -12,8 +13,7 @@ import { Translation } from '@suite-components';
 import { getStatusMessage, processQuotes } from '@wallet-utils/coinmarket/buyUtils';
 import { TradeBuy } from '@wallet-reducers/coinmarketReducer';
 import Status from '../Status';
-import { useSelector, useActions } from '@suite/hooks/suite';
-import { useCoinmarketBuyDetail } from '@suite/hooks/wallet/useCoinmarketBuyDetail';
+import { useSelector, useActions } from '@suite-hooks';
 
 interface Props {
     trade: TradeBuy;
@@ -45,13 +45,10 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
     }
     // It's OK to call this hook conditionally
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { trade: updatedTrade } = useCoinmarketBuyDetail({
-        selectedAccount,
-        trades,
-        transactionId: trade.key,
-    });
+    const [updatedTrade] = useWatchBuyTrade(account, trades, trade.key);
+    if (!updatedTrade) return null;
 
-    const { date, data } = updatedTrade || trade;
+    const { date, data } = updatedTrade;
     const {
         fiatStringAmount,
         fiatCurrency,
