@@ -51,6 +51,7 @@ class InvityAPI {
     private BUY_GET_TRADE_FORM = '/api/buy/tradeform';
     private BUY_WATCH_TRADE = '/api/buy/watch/{{counter}}';
 
+    private static accountDescriptor: string;
     private static apiKey: string;
 
     private getInvityAPIKey() {
@@ -62,9 +63,12 @@ class InvityAPI {
     }
 
     createInvityAPIKey(accountDescriptor: string) {
-        const hash = createHash('sha256');
-        hash.update(accountDescriptor);
-        InvityAPI.apiKey = hash.digest('hex');
+        if (accountDescriptor !== InvityAPI.accountDescriptor) {
+            const hash = createHash('sha256');
+            hash.update(accountDescriptor);
+            InvityAPI.apiKey = hash.digest('hex');
+            InvityAPI.accountDescriptor = accountDescriptor;
+        }
     }
 
     setInvityAPIServer(server: string) {
