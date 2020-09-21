@@ -1,4 +1,5 @@
 import TrezorConnect, {
+    FeeLevel,
     BlockchainBlock,
     BlockchainNotification,
     BlockchainError,
@@ -38,6 +39,15 @@ export type BlockchainActions =
           payload: Partial<FeeState>;
       };
 
+// sort FeeLevels in reversed order (Low > High)
+// TODO: consider to use same order in trezor-connect to avoid double sorting
+const order: FeeLevel['label'][] = ['low', 'economy', 'normal', 'high'];
+const sortLevels = (levels: FeeLevel[]) => {
+    return levels.sort(
+        (levelA, levelB) => order.indexOf(levelA.label) - order.indexOf(levelB.label),
+    );
+};
+
 export const preloadFeeInfo = () => async (dispatch: Dispatch) => {
     // Fetch default fee levels
     const networks = NETWORKS.filter(n => !n.isHidden && !n.accountType);
@@ -59,7 +69,7 @@ export const preloadFeeInfo = () => async (dispatch: Dispatch) => {
             partial[network.symbol] = {
                 blockHeight: 0,
                 ...payload,
-                levels: payload.levels.map(l => ({
+                levels: sortLevels(payload.levels).map(l => ({
                     ...l,
                     label: l.label || 'normal',
                 })),
@@ -111,7 +121,7 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
         partial[network.symbol] = {
             blockHeight: blockchainInfo.blockHeight,
             ...payload,
-            levels: payload.levels.map(l => ({
+            levels: sortLevels(payload.levels).map(l => ({
                 ...l,
                 label: l.label || 'normal',
             })),
