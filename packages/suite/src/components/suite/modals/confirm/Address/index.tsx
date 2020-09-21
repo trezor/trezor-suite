@@ -86,7 +86,6 @@ const ConfirmAddress = ({
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         trezorModel={device.features?.major_version === 1 ? 1 : 2}
-                        successText={<Translation id="TR_CONFIRMED_TX" />}
                         onCancel={cancelable ? onCancel : undefined}
                         animated
                         animation={confirmed ? 'SLIDE_DOWN' : 'SLIDE_UP'}
