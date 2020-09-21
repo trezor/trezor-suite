@@ -55,7 +55,7 @@ const ConfirmUnverifiedAddress = ({ address, addressPath, onCancel }: Props) => 
     let actionLabel: ExtendedMessageDescriptor['id'] = 'TR_TRY_VERIFYING_ON_DEVICE_AGAIN';
 
     // case where device is connected but it is unavailable because it was created with different "passphrase_protection" settings
-    // TODO: doesn't works
+    // TODO: doesn't work
     // right now revealing an address with different settings will cause toast notif error "Verify address error: passphrase is incorrect"
 
     if (device.connected && !device.available) {
