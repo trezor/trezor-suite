@@ -53,7 +53,7 @@ const PassphraseSource = ({ device, getDiscoveryAuthConfirmationStatus, ...rest 
                 <ConfirmOnDevice
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                     trezorModel={device.features?.major_version === 1 ? 1 : 2}
-                    animated
+                    // animated //animation is in separate PR
                 />
             }
             {...rest}
