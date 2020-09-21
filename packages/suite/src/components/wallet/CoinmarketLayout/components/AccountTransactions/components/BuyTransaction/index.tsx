@@ -160,6 +160,10 @@ const Wrapper = styled.div`
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
         cursor: pointer;
     }
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: column;
+    }
 `;
 
 const StyledStatus = styled(Status)`
@@ -179,6 +183,11 @@ const BuyColumn = styled(Column)`
     justify-content: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     max-width: 130px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        border-left: 0;
+    }
+
     border-left: 1px solid ${colors.NEUE_STROKE_GREY};
 `;
 
@@ -191,6 +200,11 @@ const Row = styled.div`
 
 const RowSecond = styled(Row)`
     padding-top: 8px;
+    display: flex;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        justify-content: center;
+    }
 `;
 
 const SmallRow = styled.div`

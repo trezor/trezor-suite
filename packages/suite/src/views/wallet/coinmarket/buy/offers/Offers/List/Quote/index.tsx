@@ -164,6 +164,10 @@ const Main = styled.div`
     justify-content: space-between;
     padding-bottom: 20px;
     border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: column;
+    }
 `;
 
 const Left = styled.div`
@@ -174,6 +178,11 @@ const Left = styled.div`
 const Right = styled.div`
     display: flex;
     justify-content: flex-end;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        justify-content: center;
+        padding-top: 10px;
+    }
 `;
 
 const Details = styled.div`
@@ -181,6 +190,10 @@ const Details = styled.div`
     min-height: 20px;
     flex-wrap: wrap;
     padding: 10px 30px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: column;
+    }
 `;
 
 const Column = styled.div`
@@ -201,6 +214,10 @@ const Heading = styled.div`
 
 const StyledButton = styled(Button)`
     width: 180px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        width: 100%;
+    }
 `;
 
 const Value = styled.div`
