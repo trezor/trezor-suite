@@ -13,6 +13,8 @@ import { isTxUnknown } from '@wallet-utils/transactionUtils';
 import { Target, TokenTransfer, FeeRow } from './components/Target';
 import TransactionTimestamp from './components/TransactionTimestamp';
 import { WalletAccountTransaction } from '@wallet-types';
+import { useActions } from '@suite-hooks';
+import * as modalActions from '@suite-actions/modalActions';
 
 const Wrapper = styled.div`
     display: flex;
@@ -25,10 +27,13 @@ const Wrapper = styled.div`
 
 const TxTypeIconWrapper = styled.div`
     display: flex;
-    margin-right: 24px;
+    padding-right: 24px;
     margin-top: 8px;
     flex: 0;
+    cursor: pointer;
 `;
+
+const TimeStampWrapper = styled.div``;
 
 const Content = styled.div`
     display: flex;
@@ -99,13 +104,31 @@ const TransactionItem = React.memo((props: Props) => {
             (isTokenTransaction && tokens.length === 1));
     const showFeeRow =
         !isUnknown && isTokenTransaction && type !== 'recv' && transaction.fee !== '0';
+    const [txItemisHovered, setTxItemIsHovered] = useState(false);
+    const [nestedItemIsHovered, setNestedItemIsHovered] = useState(false);
+    const { openModal } = useActions({
+        openModal: modalActions.openModal,
+    });
+    const openTxDetailsModal = () => {
+        openModal({
+            type: 'transaction-detail',
+            tx: transaction,
+        });
+    };
     // we are using slightly different layout for 1 targets txs to better match the design
     // the only difference is that crypto amount is in the same row as tx heading/description
     // fiat amount is in the second row along with address
     // multiple targets txs still use more simple layout
     return (
-        <Wrapper>
-            <TxTypeIconWrapper>
+        <Wrapper
+            onMouseEnter={() => setTxItemIsHovered(true)}
+            onMouseLeave={() => setTxItemIsHovered(false)}
+        >
+            <TxTypeIconWrapper
+                onMouseEnter={() => setNestedItemIsHovered(true)}
+                onMouseLeave={() => setNestedItemIsHovered(false)}
+                onClick={() => openTxDetailsModal()}
+            >
                 <TransactionTypeIcon type={transaction.type} isPending={props.isPending} />
             </TxTypeIconWrapper>
 
@@ -115,10 +138,19 @@ const TransactionItem = React.memo((props: Props) => {
                         transaction={transaction}
                         isPending={props.isPending}
                         useSingleRowLayout={hasSingleTargetOrTransfer}
+                        txItemisHovered={txItemisHovered}
+                        nestedItemIsHovered={nestedItemIsHovered}
+                        onClick={openTxDetailsModal}
                     />
                 </Description>
                 <NextRow>
-                    <TransactionTimestamp transaction={transaction} />
+                    <TimeStampWrapper
+                        onMouseEnter={() => setNestedItemIsHovered(true)}
+                        onMouseLeave={() => setNestedItemIsHovered(false)}
+                        onClick={() => openTxDetailsModal()}
+                    >
+                        <TransactionTimestamp transaction={transaction} />
+                    </TimeStampWrapper>
                     <TargetsWrapper>
                         {!isUnknown && !isTokenTransaction && (
                             <>
