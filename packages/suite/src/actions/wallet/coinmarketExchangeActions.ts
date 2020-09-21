@@ -53,8 +53,12 @@ export async function loadExchangeInfo(): Promise<ExchangeInfo> {
     const buySymbols: string[] = [];
     const sellSymbols: string[] = [];
     exchangeList.forEach(p => {
-        buySymbols.push(...p.buyTickers.map(c => c.toLowerCase()));
-        sellSymbols.push(...p.sellTickers.map(c => c.toLowerCase()));
+        if (p.buyTickers) {
+            buySymbols.push(...p.buyTickers.map(c => c.toLowerCase()));
+        }
+        if (p.sellTickers) {
+            sellSymbols.push(...p.sellTickers.map(c => c.toLowerCase()));
+        }
     });
 
     return {
