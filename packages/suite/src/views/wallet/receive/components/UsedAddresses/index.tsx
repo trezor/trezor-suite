@@ -8,7 +8,6 @@ import { ChildProps as Props } from '../../Container';
 import { AccountAddress } from 'trezor-connect';
 import { Network, ReceiveInfo } from '@wallet-types';
 import { MetadataAddPayload } from '@suite-types/metadata';
-import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -18,19 +17,11 @@ const StyledCard = styled(Card)`
     overflow: hidden;
 `;
 
-// const StyledMetadataLabeling = styled(MetadataLabeling)`
-//     overflow: hidden;
-// `;
-
 const GridTable = styled.div`
     display: grid;
     grid-template-columns: 0.65fr 0.35fr auto;
     color: ${colors.BLACK50};
-    font-size:  ${variables.FONT_SIZE.SMALL};
-    /* @media all and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        grid-template-columns: auto 1fr auto;
-        grid-auto-flow: dense;
-    } */
+    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 // min-width: 0; // to resolve an issue with truncate text
@@ -65,26 +56,6 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
         css`
             cursor: pointer;
         `};
-
-    /* @media all and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        border: 0;
-        padding: 8px;
-        &:nth-child(3n + 3) {
-            top: 43px;
-            padding-top: 0px;
-            padding-right: 0px;
-            grid-column: 1 / 3;
-            border-bottom: 2px solid ${colors.BLACK96};
-        }
-        &:nth-child(1),
-        &:nth-child(2),
-        &:nth-child(3) {
-            padding-top: ${CARD_PADDING_SIZE};
-        }
-        &:nth-last-child(-n + 3) {
-            border: 0;
-        }
-    } */
 `;
 
 const GridItemAddress = styled(GridItem)`
@@ -106,10 +77,6 @@ const HeaderItem = styled(GridItem)`
     font-weight: 500;
     padding: 12px 0px;
     background: ${colors.WHITE};
-`;
-
-const CopyButton = styled(Button)`
-    /* opacity: 0; */
 `;
 
 const Actions = styled.div`
@@ -137,7 +104,6 @@ interface ItemProps {
 const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index }: ItemProps) => {
     const [isHovered, setIsHovered] = React.useState(false);
     const amount = formatNetworkAmount(addr.received || '0', symbol, true);
-    // const [amountF] = amount.split(' ');
     const fresh = addr.transfers < 1;
     const isRevealed = !!revealed;
     const address = revealed ? addr.address : `${addr.address.substring(0, 15)}…`;
@@ -166,7 +132,6 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
     }
     return (
         <>
-            {/* <GridItem revealed={isRevealed}>/{parseBIP44Path(addr.path)!.addrIndex}</GridItem> */}
             <GridItemAddress
                 data-test={`@wallet/receive/used-address/${index}`}
                 revealed={isRevealed}
@@ -193,7 +158,6 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
                     }
                     dropdownOptions={dropdownOptions}
                 />
-                {/* {address} */}
                 {revealed && !revealed.isVerified && (
                     <Icon
                         size={14}
@@ -208,20 +172,7 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
-                {!fresh && (
-                    <>
-                        <HiddenPlaceholder>{amount}</HiddenPlaceholder>
-                        {/* <FiatValue amount={amountF} symbol={symbol}>
-                            {({ value }) =>
-                                value ? (
-                                    <Badge>
-                                        <HiddenPlaceholder>{value}</HiddenPlaceholder>
-                                    </Badge>
-                                ) : null
-                            }
-                        </FiatValue> */}
-                    </>
-                )}
+                {!fresh && <HiddenPlaceholder>{amount}</HiddenPlaceholder>}
                 {fresh && (
                     <Gray>
                         <Translation id="RECEIVE_TABLE_NOT_USED" />
@@ -233,18 +184,9 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
                 onMouseLeave={() => setIsHovered(false)}
             >
                 <AddressActions hide={!isHovered}>
-                    {/* {revealed ? (
-                        <CopyButton variant="tertiary" isDisabled={!revealed} onClick={onCopy}>
-                            Copy address
-                        </CopyButton>
-                    ) : (
-                        <CopyButton variant="tertiary" onClick={onClick}>
-                            Reveal address
-                        </CopyButton>
-                    )} */}
-                    <CopyButton variant="tertiary" onClick={onClick}>
-                        Reveal address
-                    </CopyButton>
+                    <Button variant="tertiary" onClick={onClick}>
+                        <Translation id="TR_REVEAL_ADDRESS" />
+                    </Button>
                 </AddressActions>
             </GridItem>
         </>
@@ -282,9 +224,6 @@ const UsedAddresses = ({ account, addresses, showAddress, addToast, locked }: Pr
     return (
         <StyledCard>
             <GridTable>
-                {/* <HeaderItem>
-                    <Translation id="RECEIVE_TABLE_PATH" />
-                </HeaderItem> */}
                 <HeaderItem>
                     <Translation id="RECEIVE_TABLE_ADDRESS" />
                 </HeaderItem>
@@ -304,7 +243,6 @@ const UsedAddresses = ({ account, addresses, showAddress, addToast, locked }: Pr
                             defaultValue: addr.address,
                             value: addressLabels[addr.address],
                         }}
-                        // revealed={addresses.find(f => f.address === addr.address)}
                         onClick={() => (!locked ? showAddress(addr.path, addr.address) : undefined)}
                         onCopy={() => copyAddress(addr.address)}
                     />

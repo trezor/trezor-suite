@@ -88,8 +88,8 @@ const FreshAddress = ({
 
     const isRevealed = (address: AccountAddress) =>
         addresses ? !!addresses.find(f => f.address === address.address) : false;
-    
-        const getAddressValue = (address?: AccountAddress) => {
+
+    const getAddressValue = (address?: AccountAddress) => {
         if (!address) {
             return intl.formatMessage(messages.RECEIVE_ADDRESS_LIMIT_EXCEEDED);
         }

@@ -3830,6 +3830,10 @@ const definedMessages = defineMessages({
         id: 'TR_TRY_VERIFYING_ON_DEVICE_AGAIN',
         defaultMessage: 'Try again',
     },
+    TR_REVEAL_ADDRESS: {
+        id: 'TR_REVEAL_ADDRESS',
+        defaultMessage: 'Reveal address',
+    },
 } as const);
 
 export default definedMessages;
