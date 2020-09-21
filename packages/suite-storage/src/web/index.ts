@@ -132,7 +132,7 @@ class CommonDB<TDBStructure> {
     >(
         store: TStoreName,
         item: TItem,
-        key?: TKey
+        upsert?: boolean
     ): Promise<StoreKey<TDBStructure, TStoreName>> => {
         // TODO: When using idb wrapper something throws 'Uncaught (in promise) null'
         // and I couldn't figure out how to catch it. Maybe a bug in idb?
@@ -144,8 +144,8 @@ class CommonDB<TDBStructure> {
 
         const p = new Promise<StoreKey<TDBStructure, TStoreName>>((resolve, reject) => {
             const tx = db.transaction(storeName, 'readwrite');
-            const req: IDBRequest = key
-                ? tx.objectStore(storeName).put(item, key)
+            const req: IDBRequest = upsert
+                ? tx.objectStore(storeName).put(item)
                 : tx.objectStore(storeName).add(item);
             req.onerror = _event => {
                 reject(req.error);
