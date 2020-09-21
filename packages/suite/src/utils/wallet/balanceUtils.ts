@@ -28,7 +28,7 @@ export const formatCoinBalance = (value: string) => {
             return fixedBalanceBig.toFixed(2);
         }
 
-        return isTruncated ? `${fixedBalanceBig.toFixed()}...` : fixedBalanceBig.toFixed();
+        return isTruncated ? `${fixedBalanceBig.toFixed()}…` : fixedBalanceBig.toFixed();
     }
 
     return balanceBig.toFixed();
