@@ -421,7 +421,7 @@ const getDeviceInstances = [
         result: [d({ id: '1' }), d({ id: '1', inst: 1 }), d({ id: '1', inst: 2 })],
     },
     {
-        description: 'Selected is a excluded base device',
+        description: 'Selected is an excluded base device',
         selected: d({ id: '1' }),
         devices: [d({ id: '1', inst: 2 }), d({ id: '1', inst: 1 }), d({ id: '1' })],
         excluded: true,

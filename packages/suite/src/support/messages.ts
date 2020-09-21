@@ -2304,7 +2304,7 @@ const definedMessages = defineMessages({
     TR_ALL_THE_WORDS: {
         id: 'TR_ALL_THE_WORDS',
         defaultMessage:
-            'All the words are entered only on the device as a extra security feature. Please enter all the words in the correct order carefully.',
+            'All the words are entered only on the device as an extra security feature. Please enter all the words in the correct order carefully.',
     },
     TR_SEED_CHECK_SUCCESS_TITLE: {
         id: 'TR_SEED_CHECK_SUCCESS_TITLE',
@@ -3406,7 +3406,7 @@ const definedMessages = defineMessages({
         id: 'AMOUNT_IS_NOT_IN_RANGE_DECIMALS',
     },
     AMOUNT_IS_NOT_INTEGER: {
-        defaultMessage: 'Amount is not a integer',
+        defaultMessage: 'Amount is not an integer',
         id: 'AMOUNT_IS_NOT_INTEGER',
     },
     AMOUNT_IS_NOT_NUMBER: {
@@ -3500,7 +3500,7 @@ const definedMessages = defineMessages({
     },
     LOCKTIME_IS_NOT_INTEGER: {
         id: 'LOCKTIME_IS_NOT_INTEGER',
-        defaultMessage: 'Locktime is not a integer',
+        defaultMessage: 'Locktime is not an integer',
     },
     LOCKTIME_IS_TOO_LOW: {
         id: 'LOCKTIME_IS_TOO_LOW',
@@ -3618,7 +3618,7 @@ const definedMessages = defineMessages({
         id: 'CUSTOM_FEE_IS_NOT_NUMBER',
     },
     CUSTOM_FEE_IS_NOT_INTEGER: {
-        defaultMessage: 'Fee is not a integer',
+        defaultMessage: 'Fee is not an integer',
         id: 'CUSTOM_FEE_IS_NOT_INTEGER',
     },
     CUSTOM_FEE_NOT_IN_RANGE: {

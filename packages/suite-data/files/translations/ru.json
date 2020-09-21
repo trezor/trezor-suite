@@ -550,7 +550,7 @@
 	"TR_CHECK_RECOVERY_SEED_DESC_T2": "Your wallet backup, the recovery seed, is entered entirely on the Trezor Model T, through the device screen. We avoid passing any of your sensitive information to a potentially insecure computer or web browser.",
 	"TR_USING_TOUCHSCREEN": "Using the touchscreen display you enter all the words in the correct order until completed.",
 	"TR_CHOSE_RECOVERY_TYPE": "Chose recovery type",
-	"TR_ALL_THE_WORDS": "All the words are entered only on the device as a extra security feature. Please enter all the words in the correct order carefully.",
+	"TR_ALL_THE_WORDS": "All the words are entered only on the device as an extra security feature. Please enter all the words in the correct order carefully.",
 	"TR_SEED_CHECK_SUCCESS_TITLE": "Backup seed successfully checked!",
 	"TR_SEED_CHECK_SUCCESS_DESC": "Your seed is valid and has just been successfully checked. Please take great care of it and/or hide it back where you are goint to find it.",
 	"TR_SEED_CHECK_FAIL_TITLE": "Seed check failed",
