@@ -49,7 +49,7 @@ describe('Metadata', () => {
 
         cy.log('confirming address on device adds copy address option to dropdown');
         cy.getTestElement(metadataEl).click();
-        cy.getTestElement('@metadata/confirm-on-device-button').click();
+        cy.getTestElement('@metadata/confirm-on-device-button/0').click();
         cy.getTestElement('@modal/confirm-address/address-field').should('be.visible');
         cy.getTestElement('@metadata/copy-address-button').should('not.be.visible');
         cy.task('pressYes');
