@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { BuyProviderInfo, BuyTradeQuoteRequest } from 'invity-api';
 import invityAPI from '@suite-services/invityAPI';
+import { FormattedDate } from 'react-intl';
 import * as routerActions from '@suite-actions/routerActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { colors, variables, Icon, Button } from '@trezor/components';
@@ -109,8 +110,16 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
                     {/* <StyledCoinLogo size={13} symbol={symbol} /> */}
                 </Row>
                 <SmallRow>
-                    {trade.tradeType.toUpperCase()} • {formatDistance(new Date(date), new Date())}{' '}
-                    ago • <StyledStatus status={status} />
+                    {trade.tradeType.toUpperCase()} •{' '}
+                    <FormattedDate
+                        value={date}
+                        year="numeric"
+                        month="2-digit"
+                        day="2-digit"
+                        hour="2-digit"
+                        minute="2-digit"
+                    />{' '}
+                    • <StyledStatus status={status} />
                 </SmallRow>
             </Column>
             <Column>
