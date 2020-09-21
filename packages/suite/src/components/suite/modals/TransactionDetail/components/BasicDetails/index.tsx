@@ -1,13 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
-import { Icon, colors, variables, Link, Loader, Tooltip, Button } from '@trezor/components';
+import { Icon, colors, variables, Link, Loader } from '@trezor/components';
 import { Translation, HiddenPlaceholder } from '@suite-components';
-import Box from '../Box';
-import BoxRow from '../BoxRow';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction } from '@wallet-types';
-import FormattedCryptoAmount from '@suite/components/suite/FormattedCryptoAmount';
 
 const Wrapper = styled.div`
     background-color: ${colors.BACKGROUND};
@@ -56,10 +53,11 @@ const StatusWrapper = styled.div`
     align-items: center;
 `;
 
-const ConfirmationsIconWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    margin-right: 0.5ch;
+const HourWrapper = styled.div`
+    display: inline-flex;
+    padding-left: 8px;
+    margin-left: 8px;
+    border-left: 1px solid ${colors.NEUE_STROKE_GREY};
 `;
 
 const LoaderIconWrapper = styled.div`
@@ -86,11 +84,15 @@ const HeaderFirstRow = styled.div`
 const HeaderSecondRow = styled.div`
     display: grid;
     grid-gap: 10px;
-    grid-template-columns: minmax(100px, 140px) 1fr;
+    grid-template-columns: 140px 1fr;
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding: 28px 6px 10px 6px;
     text-align: left;
+
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        grid-template-columns: 110px 1fr;
+    }
 `;
 
 const SecondRowTitle = styled.div`
@@ -189,13 +191,15 @@ const BasicDetails = ({ tx, confirmations, isFetching, explorerUrl }: Props) => 
             <HeaderFirstRow>
                 <MainIconWrapper>
                     <Icon size={24} color={colors.BLACK50} icon="SEND" />
-                    <NestedIconWrapper>
-                        <Icon
-                            size={12}
-                            color={isConfirmed ? colors.NEUE_BG_GREEN : colors.NEUE_TYPE_ORANGE}
-                            icon={isConfirmed ? 'CHECK' : 'CLOCK'}
-                        />
-                    </NestedIconWrapper>
+                    {!isFetching && (
+                        <NestedIconWrapper>
+                            <Icon
+                                size={12}
+                                color={isConfirmed ? colors.NEUE_BG_GREEN : colors.NEUE_TYPE_ORANGE}
+                                icon={isConfirmed ? 'CHECK' : 'CLOCK'}
+                            />
+                        </NestedIconWrapper>
+                    )}
                 </MainIconWrapper>
                 <TxStatus>
                     <TxSentStatus>
@@ -220,19 +224,6 @@ const BasicDetails = ({ tx, confirmations, isFetching, explorerUrl }: Props) => 
                                         id="TR_TX_CONFIRMATIONS"
                                         values={{ confirmationsCount: confirmations }}
                                     />
-                                    <ConfirmationsIconWrapper>
-                                        <Tooltip
-                                            placement="top"
-                                            content={<Translation id="TX_CONFIRMATIONS_EXPLAIN" />}
-                                        >
-                                            <Icon
-                                                icon="QUESTION"
-                                                color={colors.BLACK50}
-                                                hoverColor={colors.BLACK25}
-                                                size={14}
-                                            />
-                                        </Tooltip>
-                                    </ConfirmationsIconWrapper>
                                 </Confirmations>
                             )}
                         </StatusWrapper>
@@ -242,6 +233,8 @@ const BasicDetails = ({ tx, confirmations, isFetching, explorerUrl }: Props) => 
                         </ConfirmationStatus>
                     )}
                 </TxStatus>
+
+                {/* OPEN IN BLOCK EXPLORER LINK */}
                 {explorerUrl ? (
                     <ExplorerLinkWrapper>
                         <ExplorerLink variant="nostyle" href={explorerUrl}>
@@ -267,16 +260,24 @@ const BasicDetails = ({ tx, confirmations, isFetching, explorerUrl }: Props) => 
                 </SecondRowTitle>
                 <SecondRowValue>
                     {tx.blockTime ? (
-                        <FormattedDate
-                            value={getDateWithTimeZone(tx.blockTime * 1000)}
-                            // value={tx.blockTime * 1000}
-                            year="numeric"
-                            month="2-digit"
-                            day="2-digit"
-                            hour="2-digit"
-                            minute="2-digit"
-                            // timeZone="utc"
-                        />
+                        <>
+                            <FormattedDate
+                                value={getDateWithTimeZone(tx.blockTime * 1000)}
+                                // value={tx.blockTime * 1000}
+                                year="numeric"
+                                month="short"
+                                day="2-digit"
+                                // timeZone="utc"
+                            />
+                            <HourWrapper>
+                                <FormattedDate
+                                    value={getDateWithTimeZone(tx.blockTime * 1000)}
+                                    hour="2-digit"
+                                    minute="2-digit"
+                                    timeZone="utc"
+                                />
+                            </HourWrapper>
+                        </>
                     ) : (
                         <Translation id="TR_UNKNOWN_CONFIRMATION_TIME" />
                     )}

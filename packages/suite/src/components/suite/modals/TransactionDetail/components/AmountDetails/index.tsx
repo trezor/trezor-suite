@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
-import { Icon, colors, variables, Link, Loader, Tooltip, Button } from '@trezor/components';
-import { Translation, HiddenPlaceholder } from '@suite-components';
-import Box from '../Box';
-import BoxRow from '../BoxRow';
+import { Button } from '@trezor/components';
+import { Translation } from '@suite-components';
 import AmountRow from '../AmountRow';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction } from '@wallet-types';
 import FormattedCryptoAmount from '@suite/components/suite/FormattedCryptoAmount';
 import FiatValue from '@suite-components/FiatValue/Container';
-import { isTestnet, getNetwork } from '@wallet-utils/accountUtils';
 
 const AmountWrapper = styled.div``;
 
@@ -27,16 +24,12 @@ interface Props {
 const AmountDetails = ({ tx, totalInput, totalOutput, isTestnet }: Props) => {
     const assetSymbol = tx.symbol.toUpperCase();
     const [showFiat, setShowFiat] = useState(false);
-    // const showFiatButton = showFiat && !isTestnet;
 
     return (
         <AmountWrapper>
-            {/* first row with "showFiat button" */}
+            {/* row containing SHOW FIAT BUTTON. Don't show the button is fiat is diplayed already, or if testnet account is selected */}
             {!showFiat && !isTestnet && (
                 <AmountRow
-                    firstColumn={<div />}
-                    secondColumn={<div />}
-                    thirdColumn={<div />}
                     fourthColumn={
                         <Button
                             variant="tertiary"
@@ -51,62 +44,65 @@ const AmountDetails = ({ tx, totalInput, totalOutput, isTestnet }: Props) => {
                 />
             )}
 
-            {/* second row with dates */}
+            {/* DATES FOR FIAT VALUES */}
             {showFiat && (
                 <AmountRow
                     // keep the first two columns empty for the first row
-                    firstColumn={<div />}
-                    secondColumn={<div />}
                     thirdColumn={
                         tx.blockTime && (
                             <FormattedDate
                                 value={getDateWithTimeZone(tx.blockTime * 1000)}
                                 year="numeric"
-                                month="2-digit"
+                                month="short"
                                 day="2-digit"
                             />
                         )
                     }
                     fourthColumn={
-                        <FiatValue amount="1" symbol={tx.symbol}>
-                            {({ timestamp }) =>
-                                timestamp ? (
-                                    <FormattedDate
-                                        value={timestamp}
-                                        year="numeric"
-                                        month="2-digit"
-                                        day="2-digit"
-                                    />
-                                ) : null
-                            }
-                        </FiatValue>
+                        <div>
+                            Today,{' '}
+                            <FiatValue amount="1" symbol={tx.symbol}>
+                                {({ timestamp }) =>
+                                    timestamp ? (
+                                        <FormattedDate
+                                            value={timestamp}
+                                            month="short"
+                                            day="2-digit"
+                                        />
+                                    ) : null
+                                }
+                            </FiatValue>
+                        </div>
                     }
                     color="light"
                 />
             )}
 
-            {/* TOTAL INPUT ROW */}
-            <AmountRow
-                firstColumn={<Translation id="TR_TOTAL_INPUT" />}
-                secondColumn={<FormattedCryptoAmount value={totalInput} symbol={assetSymbol} />}
-                thirdColumn={
-                    showFiat &&
-                    totalOutput && (
-                        <FiatValue
-                            amount={totalInput}
-                            symbol={tx.symbol}
-                            source={tx.rates}
-                            useCustomSource
-                        />
-                    )
-                }
-                fourthColumn={
-                    showFiat && totalOutput && <FiatValue amount={totalInput} symbol={tx.symbol} />
-                }
-                color="dark"
-            />
+            {/* TOTAL INPUT */}
+            {totalInput && (
+                <AmountRow
+                    firstColumn={<Translation id="TR_TOTAL_INPUT" />}
+                    secondColumn={<FormattedCryptoAmount value={totalInput} symbol={assetSymbol} />}
+                    thirdColumn={
+                        showFiat &&
+                        totalOutput && (
+                            <FiatValue
+                                amount={totalInput}
+                                symbol={tx.symbol}
+                                source={tx.rates}
+                                useCustomSource
+                            />
+                        )
+                    }
+                    fourthColumn={
+                        showFiat &&
+                        totalOutput && <FiatValue amount={totalInput} symbol={tx.symbol} />
+                    }
+                    color="dark"
+                />
+            )}
 
-            {/* TOTAL OUPUT ROW */}
+            {/* TOTAL OUPUT */}
             <AmountRow
                 firstColumn={<Translation id="TR_TOTAL_OUTPUT" />}
                 secondColumn={<FormattedCryptoAmount value={totalOutput} symbol={assetSymbol} />}
@@ -127,7 +123,7 @@ const AmountDetails = ({ tx, totalInput, totalOutput, isTestnet }: Props) => {
                 color="dark"
             />
 
-            {/* AMOUNT ROW */}
+            {/* AMOUNT */}
             <AmountRow
                 firstColumn={<Translation id="AMOUNT" />}
                 secondColumn={<FormattedCryptoAmount value={tx.amount} symbol={assetSymbol} />}
@@ -145,7 +141,7 @@ const AmountDetails = ({ tx, totalInput, totalOutput, isTestnet }: Props) => {
                 color="light"
             />
 
-            {/* TX FEE ROW */}
+            {/* TX FEE */}
             <AmountRow
                 firstColumn={<Translation id="TR_TX_FEE" />}
                 secondColumn={<FormattedCryptoAmount value={tx.fee} symbol={assetSymbol} />}

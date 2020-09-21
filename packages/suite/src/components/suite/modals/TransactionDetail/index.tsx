@@ -3,12 +3,11 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 
-import { Link, Button, Modal, colors, variables, CoinLogo } from '@trezor/components';
+import { Modal, colors, variables } from '@trezor/components';
 import { AppState } from '@suite-types';
 import { WalletAccountTransaction } from '@wallet-types';
 import TrezorConnect from 'trezor-connect';
 import BasicDetails from './components/BasicDetails';
-import FiatDetails from './components/FiatDetails';
 import IODetails from './components/IODetails';
 import AmountDetails from './components/AmountDetails';
 import BigNumber from 'bignumber.js';
@@ -18,11 +17,6 @@ import { useSelector } from '@suite-hooks';
 const Wrapper = styled.div`
     width: 100%;
     flex-direction: column;
-`;
-
-const Headeing = styled.div`
-    display: flex;
-    align-items: center;
 `;
 
 const TabSelector = styled.div`
@@ -68,7 +62,6 @@ const TransactionDetail = (props: Props) => {
 
     const { tx } = props;
     const blockchain = useSelector(state => state.wallet.blockchain[tx.symbol]);
-    const coinLogo = tx.symbol;
     const confirmations =
         tx.blockHeight && tx.blockHeight > 0 ? blockchain.blockHeight - tx.blockHeight + 1 : 0;
 
@@ -125,17 +118,9 @@ const TransactionDetail = (props: Props) => {
         <Modal
             cancelable
             onCancel={props.onCancel}
-            // size="tiny"
-            fixedWidth={['100vw', '90vw', '750px', '750px']}
+            fixedWidth={['100vw', '90vw', '755px', '755px']}
             contentPaddingSide={['8px', '21px', '21px', '21px']}
             heading={<Translation id="TR_TRANSACTION_DETAILS" />}
-
-            // heading={
-            //     <Headeing>
-            //         <CoinLogo size={32} symbol={coinLogo} />
-            //         <Translation id="TR_TRANSACTION_DETAILS" />
-            //     </Headeing>
-            // }
         >
             <Wrapper>
                 <BasicDetails
@@ -168,7 +153,6 @@ const TransactionDetail = (props: Props) => {
                         )}
                     </TabSelector>
 
-                    {/* TODO check if testnet is selected and if so, do not show fiat details in AmountDetails */}
                     {selectedTab === 'amount' ? (
                         <AmountDetails
                             tx={tx}
@@ -184,10 +168,6 @@ const TransactionDetail = (props: Props) => {
                         )
                     )}
                 </AdvancedDetailsWrapper>
-
-                {/* {network?.networkType !== 'ripple' && (
-                    <IODetails tx={tx} txDetails={txDetails} isFetching={isFetching} />
-                )} */}
             </Wrapper>
         </Modal>
     );

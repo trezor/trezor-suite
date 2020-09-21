@@ -4,8 +4,7 @@ import { variables, colors } from '@trezor/components';
 
 const rightAlignedStyles = css`
     text-align: right;
-    /* text-align is not enough if you want to align for example button*/
-    justify-self: flex-end;
+    justify-self: flex-end; /* text-align is not enough if you want to align for example button */
 `;
 
 const leftAlignedStyles = css`
@@ -21,9 +20,6 @@ const RowWrapper = styled.div`
     grid-template-columns: minmax(100px, 140px) 2fr 1fr 1fr;
     align-items: center;
     height: 36px;
-    /* line-height: 2; */
-    /* margin-top: 10px; */
-    /* margin-bottom: 10px; */
 `;
 
 interface RowContentProps {
@@ -53,18 +49,19 @@ const FourthCol = styled(ColorizedWrapper)`
 `;
 
 interface Props {
-    firstColumn: React.ReactNode;
-    secondColumn: React.ReactNode;
-    thirdColumn: React.ReactNode;
-    fourthColumn: React.ReactNode;
+    firstColumn?: React.ReactNode;
+    secondColumn?: React.ReactNode;
+    thirdColumn?: React.ReactNode;
+    fourthColumn?: React.ReactNode;
     color?: 'light' | 'dark';
 }
 
 const AmountRow = ({
-    firstColumn,
-    secondColumn,
-    thirdColumn,
-    fourthColumn,
+    // set default values
+    firstColumn = <div />,
+    secondColumn = <div />,
+    thirdColumn = <div />,
+    fourthColumn = <div />,
     color = 'light',
 }: Props) => {
     return (
