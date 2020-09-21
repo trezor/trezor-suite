@@ -75,7 +75,6 @@ const Description = styled.div`
     display: flex;
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: 500;
     line-height: 1.33;
 `;
 
@@ -220,9 +219,9 @@ const PassphraseRectangle = (props: Props) => {
             <Row>
                 <IconWrapper type={props.type}>
                     {props.type === 'standard' ? (
-                        <Icon icon="WALLET" color={colors.NEUE_TYPE_GREEN} />
+                        <Icon size={24} icon="WALLET" color={colors.NEUE_TYPE_GREEN} />
                     ) : (
-                        <Icon icon="LOCK" color={colors.NEUE_TYPE_LIGHT_GREY} />
+                        <Icon size={24} icon="LOCK" color={colors.NEUE_TYPE_LIGHT_GREY} />
                     )}
                 </IconWrapper>
                 <Col>
