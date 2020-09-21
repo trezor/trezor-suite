@@ -146,7 +146,7 @@ const Quote = ({ className, selectQuote, quote }: Props) => {
                 <Column>
                     <Heading>
                         <Translation id="TR_EXCHANGE_KYC" />
-                        <StyledQuestionTooltip messageId="TR_EXCHANGE_KYC_INFO" />
+                        <StyledQuestionTooltip tooltip="TR_EXCHANGE_KYC_INFO" />
                     </Heading>
                     <Value>{provider?.kycPolicy}</Value>
                 </Column>
