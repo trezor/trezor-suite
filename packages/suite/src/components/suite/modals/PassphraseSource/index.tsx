@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Modal, ModalProps } from '@trezor/components';
+import { ConfirmOnDevice, Modal, ModalProps } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
@@ -47,6 +47,13 @@ const PassphraseSource = ({ device, getDiscoveryAuthConfirmationStatus, ...rest 
                 <Translation
                     id="TR_SELECT_PASSPHRASE_SOURCE"
                     values={{ deviceLabel: device.label }}
+                />
+            }
+            header={
+                <ConfirmOnDevice
+                    title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
+                    trezorModel={device.features?.major_version === 1 ? 1 : 2}
+                    animated
                 />
             }
             {...rest}
