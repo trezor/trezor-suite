@@ -79,28 +79,26 @@ const AmountDetails = ({ tx, totalInput, totalOutput, isTestnet }: Props) => {
             )}
 
             {/* TOTAL INPUT */}
-            {totalInput && (
-                <AmountRow
-                    firstColumn={<Translation id="TR_TOTAL_INPUT" />}
-                    secondColumn={<FormattedCryptoAmount value={totalInput} symbol={assetSymbol} />}
-                    thirdColumn={
-                        showFiat &&
-                        totalOutput && (
-                            <FiatValue
-                                amount={totalInput}
-                                symbol={tx.symbol}
-                                source={tx.rates}
-                                useCustomSource
-                            />
-                        )
-                    }
-                    fourthColumn={
-                        showFiat &&
-                        totalOutput && <FiatValue amount={totalInput} symbol={tx.symbol} />
-                    }
-                    color="dark"
-                />
-            )}
+
+            <AmountRow
+                firstColumn={<Translation id="TR_TOTAL_INPUT" />}
+                secondColumn={<FormattedCryptoAmount value={totalInput} symbol={assetSymbol} />}
+                thirdColumn={
+                    showFiat &&
+                    totalInput && (
+                        <FiatValue
+                            amount={totalInput}
+                            symbol={tx.symbol}
+                            source={tx.rates}
+                            useCustomSource
+                        />
+                    )
+                }
+                fourthColumn={
+                    showFiat && totalInput && <FiatValue amount={totalInput} symbol={tx.symbol} />
+                }
+                color="dark"
+            />
 
             {/* TOTAL OUPUT */}
             <AmountRow
