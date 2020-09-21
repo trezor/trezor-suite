@@ -62,14 +62,14 @@ const MetadataProvider = (props: Props) => {
                 >
                     <Translation id="TR_DROPBOX" />
                 </StyledButton>
-                {/* <StyledButton
+                <StyledButton
                     onClick={() => connect('google')}
                     isLoading={isLoading === 'google'}
                     isDisabled={!!isLoading}
                     data-test="@modal/metadata-provider/google-button"
                 >
                     <Translation id="TR_GOOGLE_DRIVE" />
-                </StyledButton> */}
+                </StyledButton>
 
                 {/* <StyledButton
                     variant="secondary"

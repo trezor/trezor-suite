@@ -63,9 +63,7 @@ async function runTests() {
     if (!TRACK_SUITE_URL) {
         console.log('[run_tests.js] TRACK_SUITE_URL env not specified. No logs will be uploaded');
     }
-    const finalTestFiles = getTestFiles()
-        .sort((a, b) => a.localeCompare(b))
-        .filter(f => f.indexOf('metadata/') < 0); // TEMP: exclude metadata tests (TODO: implement dropbox request, https://github.com/trezor/trezor-suite/issues/2276)
+    const finalTestFiles = getTestFiles().sort((a, b) => a.localeCompare(b));
 
     if (!finalTestFiles.length) {
         console.log('[run_tests.js] nothing to test!');
@@ -74,7 +72,6 @@ async function runTests() {
 
     console.log('[run_tests.js] test files after all filters:', finalTestFiles);
 
-    let totalRetries = 0;
     let failedTests = 0;
 
     const log = {
@@ -91,7 +88,7 @@ async function runTests() {
         const retries = Number(grepForValue('@retry', testFile));
         const allowedRuns = !Number.isNaN(retries) ? retries + 1 : 1;
 
-        const spec = path.resolve(__dirname, testFile.substr(testFile.lastIndexOf('/tests')));
+        const spec = __dirname + testFile.substr(testFile.lastIndexOf('/tests'));
         const testFileName = testFile
             .substr(testFile.lastIndexOf('/tests/') + 7)
             .replace('.test.ts', '');

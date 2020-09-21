@@ -14,14 +14,27 @@ const getCoinFromTestnet = (symbol: Account['symbol']) => {
             return 'xrp';
         case 'trop':
             return 'eth';
-        // no default
+        default:
+            return symbol;
     }
 };
 
 export const isAddressValid = (address: string, symbol: Account['symbol']) => {
     const networkType = isTestnet(symbol) ? 'testnet' : 'prod';
-    const updatedSymbol = getCoinFromTestnet(symbol) || symbol;
+    const updatedSymbol = getCoinFromTestnet(symbol);
     return addressValidator.validate(address, updatedSymbol.toUpperCase(), networkType);
+};
+
+export const isAddressDeprecated = (address: string, symbol: Account['symbol']) => {
+    // catch deprecated address formats
+    // LTC starting with "3" and valid with a BTC format
+    if (symbol === 'ltc' && address.startsWith('3') && isAddressValid(address, 'btc')) {
+        return 'LTC_ADDRESS_INFO_URL';
+    }
+    // BCH starting with "1" and valid with a BTC format
+    if (symbol === 'bch' && address.startsWith('1') && isAddressValid(address, 'btc')) {
+        return 'BCH_ADDRESS_INFO_URL';
+    }
 };
 
 export const isDecimalsValid = (value: string, decimals: number) => {
@@ -29,6 +42,11 @@ export const isDecimalsValid = (value: string, decimals: number) => {
         `^(0|0\\.([0-9]{0,${decimals}})?|[1-9][0-9]*\\.?([0-9]{0,${decimals}})?)$`,
     );
     return DECIMALS_RE.test(value);
+};
+
+export const isInteger = (value: string) => {
+    // exclude leading zeros
+    return /^(?:[1-9][0-9]*|0)$/.test(value);
 };
 
 export const isHexValid = (value: string, prefix?: string) => {

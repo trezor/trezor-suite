@@ -153,13 +153,13 @@ class Client {
         });
 
         // hmm this is a rare case that probably can't be solved in elegant way. User may somehow (manually, or some race condition)
-        // create multiple files with same name (file.mtdt, file.mtdt). They can both exist in google drive simultaneously and
+        // create multiple files with same name (file.mtdt, file.mtdt). They can both exist in Google Drive simultaneously and
         // drive has no problem with it as they have different id. What makes this case even more confusing is that list requests
         // returns array of files in randomized order. So user is seeing and is saving his data in one session to file.mtdt(id: A) but
         // then to file.mtdt(id: B) in another session. So this warn should help as debug if this mysterious bug appears some day...
         if (Object.keys(this.nameIdMap).length < json.files.length) {
             console.warn(
-                'There are multiple files with the same name in google drive. This may happen as a result of race condition bug in application.',
+                'There are multiple files with the same name in Google Drive. This may happen as a result of race condition bug in application.',
             );
         }
 
@@ -220,7 +220,7 @@ class Client {
      * tldr: utility function that performs file search by its name and returns file name if file was found, otherwise returns undefined
      *
      * full story:
-     * google drive does not support "get file by path or name concept", you can get file only by id. To get id you must use list api call.
+     * Google Drive does not support "get file by path or name concept", you can get file only by id. To get id you must use list api call.
      * so in theory, you would need 2 calls to get single file: first get list of files from which you would filter file id and then get call.
      * to avoid this, google class holds map of name-ids and performs list request only if it could not find required name in the map.
      */
@@ -292,7 +292,7 @@ class Client {
                 throw {
                     response,
                     status: response.status,
-                    error: 'error communicating with google drive',
+                    error: 'error communicating with Google Drive',
                 };
         }
     }

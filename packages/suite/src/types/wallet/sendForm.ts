@@ -163,14 +163,13 @@ export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
         outputs: Partial<Output & { id: string }>[]; // useFieldArray fields
         updateContext: (value: Partial<UseSendFormState>) => void;
         resetContext: () => void;
-        composeTransaction: (field: string, fieldHasError?: boolean) => void;
+        composeTransaction: (field?: string) => void;
         loadTransaction: () => Promise<void>;
         signTransaction: () => void;
         // useSendFormFields utils:
         calculateFiat: (outputIndex: number, amount?: string) => void;
         setAmount: (outputIndex: number, amount: string) => void;
         changeFeeLevel: (currentLevel: FeeLevel, newLevel: FeeLevel) => FieldError | void;
-        changeCustomFeeLevel: () => void;
         resetDefaultValue: (field: string) => void;
         setMax: (index: number, active: boolean) => void;
         getDefaultValue: GetDefaultValue;

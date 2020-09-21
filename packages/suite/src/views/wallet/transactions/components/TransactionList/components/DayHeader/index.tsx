@@ -16,6 +16,7 @@ import { Network } from '@wallet-types';
 const Wrapper = styled.div`
     display: flex;
     position: sticky;
+    z-index: 1;
     background: ${colors.NEUE_BG_GRAY};
     top: 0;
     align-items: center;

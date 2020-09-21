@@ -2,7 +2,7 @@ import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
 import { Button, Input, variables, Card } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation, QuestionTooltip, ReadMoreLink } from '@suite-components';
 import messages from '@suite/support/messages';
 import { parseBIP44Path } from '@wallet-utils/accountUtils';
 import { ChildProps as Props } from '../../Container';
@@ -47,6 +47,29 @@ const StyledButton = styled(Button)`
     margin-top: 5px;
 `;
 
+const InputLabel = ({ symbol, isBitcoin }: { symbol: string; isBitcoin: boolean }) => {
+    const addressLabel = isBitcoin ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS';
+    if (symbol === 'ltc') {
+        // additional tooltip with LTC addresses explanation
+        return (
+            <QuestionTooltip
+                label={addressLabel}
+                tooltip={<ReadMoreLink message="TR_LTC_ADDRESS_INFO" url="LTC_ADDRESS_INFO_URL" />}
+            />
+        );
+    }
+    if (symbol === 'bch') {
+        // additional tooltip with BCH addresses explanation
+        return (
+            <QuestionTooltip
+                label={addressLabel}
+                tooltip={<ReadMoreLink message="TR_BCH_ADDRESS_INFO" url="BCH_ADDRESS_INFO_URL" />}
+            />
+        );
+    }
+    return <Translation id={addressLabel} />;
+};
+
 const FreshAddress = ({
     account,
     addresses,
@@ -66,7 +89,6 @@ const FreshAddress = ({
               },
           ];
     const unrevealed = unused.filter(a => !addresses.find(r => r.path === a.path));
-    const addressLabel = isBitcoin ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS';
     // NOTE: unrevealed[0] can be undefined (limit exceeded)
     const firstFreshAddress = isBitcoin ? unrevealed[0] : unused[0];
 
@@ -92,7 +114,7 @@ const FreshAddress = ({
             {addressPath && <AddressPath>{addressPath}</AddressPath>}
             <AddressContainer>
                 <StyledInput
-                    label={<Translation id={addressLabel} />}
+                    label={<InputLabel isBitcoin={isBitcoin} symbol={account.symbol} />}
                     variant="small"
                     monospace
                     isDisabled

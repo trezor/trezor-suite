@@ -6,6 +6,7 @@ import { InputError } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { Icon, Input, Switch, variables, colors } from '@trezor/components';
 import { getInputState } from '@wallet-utils/sendFormUtils';
+import { isInteger } from '@wallet-utils/validation';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 
 const Wrapper = styled.div`
@@ -99,7 +100,7 @@ const Locktime = ({ close }: Props) => {
                         if (amountBig.lte(0)) {
                             return 'LOCKTIME_IS_TOO_LOW';
                         }
-                        if (!amountBig.isInteger()) {
+                        if (!isInteger(value)) {
                             return 'LOCKTIME_IS_NOT_INTEGER';
                         }
                         // max unix timestamp * 2 (2147483647 * 2)
@@ -113,7 +114,7 @@ const Locktime = ({ close }: Props) => {
                         if (rbfEnabled) toggleOption('bitcoinRBF');
                         if (broadcastEnabled) toggleOption('broadcast');
                     }
-                    composeTransaction(inputName, !!error);
+                    composeTransaction(inputName);
                 }}
                 label={
                     <Label>
@@ -146,7 +147,7 @@ const Locktime = ({ close }: Props) => {
                                 setValue(inputName, '');
                             }
                             toggleOption('bitcoinRBF');
-                            composeTransaction(inputName, false);
+                            composeTransaction(inputName);
                         }}
                     />
                 </Right>

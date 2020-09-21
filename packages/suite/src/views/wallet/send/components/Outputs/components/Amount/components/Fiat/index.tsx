@@ -84,7 +84,7 @@ const Fiat = ({ outputId }: { outputId: number }) => {
                         if (getDefaultValue(amountInputName, '').length > 0) {
                             setValue(amountInputName, '');
                             clearErrors(amountInputName);
-                            composeTransaction(amountInputName, true);
+                            composeTransaction(amountInputName);
                         }
                         return;
                     }

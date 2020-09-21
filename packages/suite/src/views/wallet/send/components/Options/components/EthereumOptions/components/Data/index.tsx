@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Textarea, Icon } from '@trezor/components';
-import { QuestionTooltip, Translation } from '@suite-components';
+import { QuestionTooltip } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { getInputState } from '@wallet-utils/sendFormUtils';
@@ -13,15 +13,6 @@ const Wrapper = styled.div`
     width: 100%;
     justify-content: space-between;
     align-items: center;
-`;
-
-const Label = styled.div`
-    display: flex;
-    align-items: center;
-`;
-
-const Text = styled.div`
-    margin-right: 3px;
 `;
 
 const Space = styled.div`
@@ -82,17 +73,10 @@ const Data = ({ close }: Props) => {
                     if ((event.target.value === '' || asciiError) && amount === '0') {
                         setAmount(0, '');
                     }
-                    composeTransaction(inputAsciiName, !!asciiError);
+                    composeTransaction(inputAsciiName);
                 }}
                 bottomText={<InputError error={asciiError} />}
-                label={
-                    <Label>
-                        <Text>
-                            <Translation id="DATA_ETH" />
-                        </Text>
-                        <QuestionTooltip messageId="DATA_ETH_TOOLTIP" />
-                    </Label>
-                }
+                label={<QuestionTooltip label="DATA_ETH" tooltip="DATA_ETH_TOOLTIP" />}
             />
             <Space> = </Space>
             <Textarea
@@ -120,7 +104,7 @@ const Data = ({ close }: Props) => {
                     if ((event.target.value === '' || hexError) && amount === '0') {
                         setValue('outputs[0].amount', '');
                     }
-                    composeTransaction(inputHexName, !!hexError);
+                    composeTransaction(inputHexName);
                 }}
                 bottomText={<InputError error={hexError} />}
                 labelRight={

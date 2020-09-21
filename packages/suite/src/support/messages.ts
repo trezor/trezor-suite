@@ -524,7 +524,7 @@ const definedMessages = defineMessages({
     },
     TR_BCH_ADDRESS_INFO: {
         defaultMessage:
-            'Bitcoin Cash changed the format of addresses to cashaddr. Use external tool to convert legacy addresses to the new format. {TR_LEARN_MORE}',
+            'Bitcoin Cash changed the format of addresses to cashaddr. Find more info about how to convert your address on our blog. {TR_LEARN_MORE}',
         id: 'TR_BCH_ADDRESS_INFO',
     },
     TR_BEGIN: {
@@ -2541,7 +2541,7 @@ const definedMessages = defineMessages({
     TR_ALL_THE_WORDS: {
         id: 'TR_ALL_THE_WORDS',
         defaultMessage:
-            'All the words are entered only on the device as a extra security feature. Please enter all the words in the correct order carefully.',
+            'All the words are entered only on the device as an extra security feature. Please enter all the words in the correct order carefully.',
     },
     TR_SEED_CHECK_SUCCESS_TITLE: {
         id: 'TR_SEED_CHECK_SUCCESS_TITLE',
@@ -3654,6 +3654,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Address is not valid',
         id: 'RECIPIENT_IS_NOT_VALID',
     },
+    RECIPIENT_FORMAT_DEPRECATED: {
+        defaultMessage: 'Unsupported address format. {TR_LEARN_MORE}',
+        id: 'RECIPIENT_FORMAT_DEPRECATED',
+    },
     RECIPIENT_CANNOT_SEND_TO_MYSELF: {
         defaultMessage: 'Cannot send to myself',
         id: 'RECIPIENT_CANNOT_SEND_TO_MYSELF',
@@ -3673,6 +3677,10 @@ const definedMessages = defineMessages({
     AMOUNT_IS_NOT_IN_RANGE_DECIMALS: {
         defaultMessage: 'Maximum {decimals} decimals allowed',
         id: 'AMOUNT_IS_NOT_IN_RANGE_DECIMALS',
+    },
+    AMOUNT_IS_NOT_INTEGER: {
+        defaultMessage: 'Amount is not an integer',
+        id: 'AMOUNT_IS_NOT_INTEGER',
     },
     AMOUNT_IS_NOT_NUMBER: {
         defaultMessage: 'Amount is not a number',
@@ -3765,7 +3773,7 @@ const definedMessages = defineMessages({
     },
     LOCKTIME_IS_NOT_INTEGER: {
         id: 'LOCKTIME_IS_NOT_INTEGER',
-        defaultMessage: 'Locktime is not a integer',
+        defaultMessage: 'Locktime is not an integer',
     },
     LOCKTIME_IS_TOO_LOW: {
         id: 'LOCKTIME_IS_TOO_LOW',
@@ -3883,7 +3891,7 @@ const definedMessages = defineMessages({
         id: 'CUSTOM_FEE_IS_NOT_NUMBER',
     },
     CUSTOM_FEE_IS_NOT_INTEGER: {
-        defaultMessage: 'Fee is not a integer',
+        defaultMessage: 'Fee is not an integer',
         id: 'CUSTOM_FEE_IS_NOT_INTEGER',
     },
     CUSTOM_FEE_NOT_IN_RANGE: {
@@ -3926,7 +3934,7 @@ const definedMessages = defineMessages({
             'Name of cloud provider. Intended to be translated only in languages that do not use latin script',
     },
     TR_GOOGLE_DRIVE: {
-        defaultMessage: 'Google drive',
+        defaultMessage: 'Google Drive',
         id: 'TR_GOOGLE_DRIVE',
         description:
             'Name of cloud provider. Intended to be translated only in languages that do not use latin script',

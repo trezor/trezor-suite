@@ -6,7 +6,7 @@ import { Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { getInputState, getFeeUnits } from '@wallet-utils/sendFormUtils';
-import { isDecimalsValid } from '@wallet-utils/validation';
+import { isDecimalsValid, isInteger } from '@wallet-utils/validation';
 
 const Wrapper = styled.div`
     display: flex;
@@ -28,7 +28,6 @@ const CustomFee = () => {
         errors,
         register,
         getDefaultValue,
-        changeCustomFeeLevel,
         composeTransaction,
     } = useSendFormContext();
     const { maxFee, minFee } = feeInfo;
@@ -50,8 +49,7 @@ const CustomFee = () => {
                 state={getInputState(feePerUnitError, feePerUnitValue)}
                 innerAddon={<Units>{getFeeUnits(network.networkType)}</Units>}
                 onChange={() => {
-                    changeCustomFeeLevel();
-                    composeTransaction('feePerUnit', false);
+                    composeTransaction(inputName);
                 }}
                 name={inputName}
                 data-test={inputName}
@@ -63,12 +61,10 @@ const CustomFee = () => {
                             return 'CUSTOM_FEE_IS_NOT_NUMBER';
                         }
                         // allow decimals in ETH since GWEI is not a satoshi
-                        if (
-                            network.networkType !== 'ethereum' &&
-                            (!feeBig.isInteger() || value.includes('.'))
-                        ) {
+                        if (network.networkType !== 'ethereum' && !isInteger(value)) {
                             return 'CUSTOM_FEE_IS_NOT_INTEGER';
                         }
+                        // GWEI: 9 decimal places
                         if (network.networkType === 'ethereum' && !isDecimalsValid(value, 9)) {
                             return (
                                 <Translation
@@ -107,8 +103,7 @@ const CustomFee = () => {
                     state={getInputState(feePerUnitError)}
                     innerAddon={<Units>GWEI</Units>}
                     onChange={() => {
-                        changeCustomFeeLevel(!!feeLimitError);
-                        composeTransaction('feeLimit', !!feeLimitError);
+                        composeTransaction('feeLimit');
                     }}
                     innerRef={register({
                         required: 'CUSTOM_FEE_IS_NOT_SET',

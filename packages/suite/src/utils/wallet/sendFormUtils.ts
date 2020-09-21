@@ -219,6 +219,8 @@ export const getBitcoinComposeOutputs = (values: Partial<FormState>, symbol: Acc
     const result: ComposeOutput[] = [];
     if (!values || !Array.isArray(values.outputs)) return result;
 
+    const { setMaxOutputId } = values;
+
     values.outputs.forEach((output, index) => {
         if (!output || typeof output !== 'object') return; // skip invalid object
 
@@ -230,7 +232,7 @@ export const getBitcoinComposeOutputs = (values: Partial<FormState>, symbol: Acc
         }
 
         const { address } = output;
-        const isMaxActive = values.setMaxOutputId === index;
+        const isMaxActive = setMaxOutputId === index;
         if (isMaxActive) {
             if (address) {
                 result.push({
@@ -260,7 +262,9 @@ export const getBitcoinComposeOutputs = (values: Partial<FormState>, symbol: Acc
     // corner case for multiple outputs
     // one Output is valid and "final" but other has only address
     // to prevent composing "final" transaction switch it to not-final (noaddress)
-    const hasIncompleteOutput = values.outputs.find(o => o && o.address && !o.amount);
+    const hasIncompleteOutput = values.outputs.find(
+        (o, i) => setMaxOutputId !== i && o && o.address && !o.amount,
+    );
     if (hasIncompleteOutput) {
         const finalOutput = result.find(o => o.type === 'send-max' || o.type === 'external');
         if (finalOutput) {

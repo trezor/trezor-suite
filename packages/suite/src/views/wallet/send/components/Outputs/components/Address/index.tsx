@@ -1,12 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Input, colors, variables, Icon, Button } from '@trezor/components';
-import { AddressLabeling, Translation } from '@suite-components';
+import { AddressLabeling, Translation, ReadMoreLink } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { scanQrRequest } from '@wallet-actions/sendFormActions';
 import { useActions } from '@suite-hooks';
 import { useSendFormContext } from '@wallet-hooks';
-import { isAddressValid } from '@wallet-utils/validation';
+import { isAddressValid, isAddressDeprecated } from '@wallet-utils/validation';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 
@@ -102,7 +102,7 @@ const Address = ({ outputId, outputsCount }: { outputId: number; outputsCount: n
                         onClick={() => {
                             removeOutput(outputId);
                             // compose by first Output
-                            composeTransaction(`outputs[0].amount`);
+                            composeTransaction();
                         }}
                     >
                         <StyledIcon size={20} color={colors.BLACK50} icon="CROSS" />
@@ -110,7 +110,7 @@ const Address = ({ outputId, outputsCount }: { outputId: number; outputsCount: n
                 ) : undefined
             }
             onChange={() => {
-                composeTransaction(`outputs[${outputId}].amount`, !!addressError);
+                composeTransaction(`outputs[${outputId}].amount`);
             }}
             bottomText={
                 addressError ? (
@@ -127,6 +127,15 @@ const Address = ({ outputId, outputsCount }: { outputId: number; outputsCount: n
                 required: 'RECIPIENT_IS_NOT_SET',
                 validate: (value: string) => {
                     if (!isAddressValid(value, symbol)) {
+                        const addressDeprecatedUrl = isAddressDeprecated(value, symbol);
+                        if (addressDeprecatedUrl) {
+                            return (
+                                <ReadMoreLink
+                                    message="RECIPIENT_FORMAT_DEPRECATED"
+                                    url={addressDeprecatedUrl}
+                                />
+                            );
+                        }
                         return 'RECIPIENT_IS_NOT_VALID';
                     }
                     if (networkType === 'ripple' && value === descriptor) {

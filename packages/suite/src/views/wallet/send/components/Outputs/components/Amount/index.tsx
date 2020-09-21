@@ -6,7 +6,7 @@ import { FiatValue, Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getInputState, findToken } from '@wallet-utils/sendFormUtils';
-import { isDecimalsValid } from '@wallet-utils/validation';
+import { isDecimalsValid, isInteger } from '@wallet-utils/validation';
 import { useSendFormContext } from '@wallet-hooks';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 
@@ -115,6 +115,7 @@ const Amount = ({ outputId }: { outputId: number }) => {
                     labelAddon={
                         <Button
                             icon={isSetMaxActive ? 'CHECK' : 'SEND'}
+                            data-test={`outputs[${outputId}].setMax`}
                             onClick={() => {
                                 setMax(outputId, isSetMaxActive);
                                 composeTransaction(inputName);
@@ -152,7 +153,7 @@ const Amount = ({ outputId }: { outputId: number }) => {
                         // calculate or reset Fiat value
                         calculateFiat(outputId, !error ? event.target.value : undefined);
 
-                        composeTransaction(inputName, !!error);
+                        composeTransaction(inputName);
                     }}
                     name={inputName}
                     data-test={inputName}
@@ -190,6 +191,11 @@ const Amount = ({ outputId }: { outputId: number }) => {
                                     );
                                 }
                                 return 'AMOUNT_IS_NOT_ENOUGH';
+                            }
+
+                            // ERC20 without decimal places
+                            if (!decimals && !isInteger(value)) {
+                                return 'AMOUNT_IS_NOT_INTEGER';
                             }
 
                             if (!isDecimalsValid(value, decimals)) {

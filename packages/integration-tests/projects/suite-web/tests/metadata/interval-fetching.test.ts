@@ -64,10 +64,10 @@ describe('Metadata', () => {
         cy.tick(METADATA.FETCH_INTERVAL);
         cy.getTestElement('@metadata/outputLabel/9f472739fa7034dfb9736fa4d98915f2e8ddf70a86ee5e0a9ac0634f8c1d0007-0').should('contain', 'label from another window');
 
-        cy.log('Go to settings and lets see what happens if user wipes his data from google drive interface (out of suite)');
+        cy.log('Go to settings and lets see what happens if user wipes his data from Google Drive interface (out of suite)');
         cy.getTestElement('@suite/menu/settings-index').click();
         cy.getTestElement('@settings/metadata/disconnect-provider-button');
-        cy.log('Next command simulates that user wiped his google drive');
+        cy.log('Next command simulates that user wiped his Google Drive');
         cy.task('setupGoogle', { prop: 'files', value: []});
         cy.tick(METADATA.FETCH_INTERVAL);
         cy.getTestElement('@settings/metadata/connect-provider-button');

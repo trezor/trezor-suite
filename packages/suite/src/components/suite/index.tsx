@@ -20,7 +20,7 @@ import Badge from './Badge';
 import WebusbButton from './WebusbButton';
 import HiddenPlaceholder from './HiddenPlaceholder/Container';
 import QrCode from './QrCode';
-import QuestionTooltip from './QuestionTooltip';
+import { QuestionTooltip } from './QuestionTooltip';
 import TransactionsGraph from './TransactionsGraph';
 import DeviceInvalidModeLayout from './DeviceInvalidModeLayout';
 import AppNavigationPanel from './AppNavigationPanel';
@@ -31,6 +31,7 @@ import { AccountLabeling, AddressLabeling, WalletLabeling, MetadataLabeling } fr
 import FormattedCryptoAmount from './FormattedCryptoAmount';
 import Sign from './Sign';
 import AddAccountButton from './AddAccountButton';
+import { ReadMoreLink } from './ReadMoreLink';
 
 export {
     Backdrop,
@@ -70,6 +71,7 @@ export {
     Ticker,
     Sign,
     AddAccountButton,
+    ReadMoreLink,
 };
 
 export type { ImageProps };

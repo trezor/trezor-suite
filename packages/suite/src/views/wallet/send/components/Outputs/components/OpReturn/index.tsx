@@ -73,7 +73,7 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
                         Buffer.from(event.target.value, 'ascii').toString('hex'),
                         { shouldValidate: true },
                     );
-                    composeTransaction(inputAsciiName, !!asciiError);
+                    composeTransaction(inputAsciiName);
                 }}
                 bottomText={<InputError error={asciiError} />}
                 label={
@@ -97,7 +97,7 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
                     required: 'DATA_NOT_SET',
                     validate: (value: string) => {
                         if (!isHexValid(value)) return 'DATA_NOT_VALID_HEX';
-                        if (value.length > 80 * 2) return 'DATA_HEX_TOO_BIG'; // TODO: is the limit necessary?
+                        if (value.length > 80 * 2) return 'DATA_HEX_TOO_BIG';
                     },
                 })}
                 onChange={event => {
@@ -105,7 +105,7 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
                         inputAsciiName,
                         !hexError ? Buffer.from(event.target.value, 'hex').toString('ascii') : '',
                     );
-                    composeTransaction(inputHexName, !!hexError);
+                    composeTransaction(inputHexName);
                 }}
                 bottomText={<InputError error={hexError} />}
                 labelRight={
