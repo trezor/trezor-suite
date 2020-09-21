@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { BuyProviderInfo, BuyTradeQuoteRequest } from 'invity-api';
 import useSWR from 'swr';
 import invityAPI from '@suite-services/invityAPI';
+import * as routerActions from '@suite-actions/routerActions';
+import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { colors, variables, Icon, Button } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketBuyProviderInfo } from '@wallet-components';
 import { Account } from '@wallet-types';
@@ -11,14 +13,7 @@ import { getStatusMessage, processQuotes } from '@wallet-utils/coinmarket/buyUti
 import { TradeBuy } from '@wallet-reducers/coinmarketReducer';
 import { formatDistance } from 'date-fns';
 import Status from '../Status';
-import { useSelector } from '@suite/hooks/suite';
-import {
-    saveCachedAccountInfo,
-    saveQuoteRequest,
-    saveQuotes,
-    saveTransactionDetailId,
-} from '@suite/actions/wallet/coinmarketBuyActions';
-import { goto } from '@suite/actions/suite/routerActions';
+import { useSelector, useActions } from '@suite/hooks/suite';
 
 interface Props {
     trade: TradeBuy;
@@ -29,6 +24,18 @@ interface Props {
 }
 
 const BuyTransaction = ({ trade, providers, account }: Props) => {
+    const { goto } = useActions({ goto: routerActions.goto });
+    const {
+        saveTransactionDetailId,
+        saveQuotes,
+        saveQuoteRequest,
+        saveCachedAccountInfo,
+    } = useActions({
+        saveTransactionDetailId: coinmarketBuyActions.saveTransactionDetailId,
+        saveQuotes: coinmarketBuyActions.saveQuotes,
+        saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
+        saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
+    });
     const { date, data } = trade;
     const {
         fiatStringAmount,
