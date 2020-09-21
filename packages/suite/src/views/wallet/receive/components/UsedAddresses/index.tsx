@@ -108,28 +108,6 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
     const isRevealed = !!revealed;
     const address = revealed ? addr.address : `${addr.address.substring(0, 15)}…`;
 
-    const dropdownOptions = [
-        {
-            callback: () => {
-                onClick();
-                return true;
-            }, // return true makes dropdown to hide on click
-            label: 'Confirm on device',
-            key: 'confirm-on-device',
-            'data-test': '@metadata/confirm-on-device-button',
-        },
-    ];
-    if (isRevealed) {
-        dropdownOptions.push({
-            callback: () => {
-                onCopy();
-                return true;
-            },
-            label: 'Copy address',
-            key: 'copy-address',
-            'data-test': '@metadata/copy-address-button',
-        });
-    }
     return (
         <>
             <GridItemAddress
@@ -156,7 +134,6 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
                             {address}
                         </span>
                     }
-                    dropdownOptions={dropdownOptions}
                 />
                 {revealed && !revealed.isVerified && (
                     <Icon
@@ -184,7 +161,7 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
                 onMouseLeave={() => setIsHovered(false)}
             >
                 <AddressActions hide={!isHovered}>
-                    <Button variant="tertiary" onClick={onClick}>
+                    <Button data-test="@metadata/confirm-on-device-button" variant="tertiary" onClick={onClick}>
                         <Translation id="TR_REVEAL_ADDRESS" />
                     </Button>
                 </AddressActions>
