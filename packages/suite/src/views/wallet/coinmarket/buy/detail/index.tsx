@@ -1,7 +1,7 @@
 import React from 'react';
 import { AppState } from '@suite-types';
 import {
-    useCoinmarketDetail,
+    useCoinmarketBuyDetail,
     CoinmarketBuyDetailContext,
 } from '@wallet-hooks/useCoinmarketBuyDetail';
 import { WalletLayout } from '@wallet-components';
@@ -25,7 +25,7 @@ const DetailIndex = (props: ComponentProps) => {
     }
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const coinmarketBuyContextValues = useCoinmarketDetail({ ...props, selectedAccount });
+    const coinmarketBuyContextValues = useCoinmarketBuyDetail({ ...props, selectedAccount });
 
     return (
         <CoinmarketBuyDetailContext.Provider value={coinmarketBuyContextValues}>

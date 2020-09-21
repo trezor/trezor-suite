@@ -17,7 +17,8 @@ const CoinmarketDetail = () => {
         if (setLayout) setLayout('Trezor Suite | Coinmarket', undefined, <CoinmarketTopPanel />);
     }, [setLayout]);
 
-    const { account, trade, tradeStatus } = useCoinmarketBuyDetailContext();
+    const { account, trade } = useCoinmarketBuyDetailContext();
+    const tradeStatus = trade?.data?.status;
     const showError = tradeStatus === 'ERROR' || tradeStatus === 'BLOCKED';
     const showProcessing = tradeStatus === 'SUBMITTED';
     const showWaiting = tradeStatus === 'APPROVAL_PENDING';

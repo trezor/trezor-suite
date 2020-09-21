@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { BuyProviderInfo, BuyTradeQuoteRequest } from 'invity-api';
-import useSWR from 'swr';
 import invityAPI from '@suite-services/invityAPI';
 import * as routerActions from '@suite-actions/routerActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
@@ -14,6 +13,7 @@ import { TradeBuy } from '@wallet-reducers/coinmarketReducer';
 import { formatDistance } from 'date-fns';
 import Status from '../Status';
 import { useSelector, useActions } from '@suite/hooks/suite';
+import { useCoinmarketBuyDetail } from '@suite/hooks/wallet/useCoinmarketBuyDetail';
 
 interface Props {
     trade: TradeBuy;
@@ -36,7 +36,22 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
         saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
         saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
     });
-    const { date, data } = trade;
+    const country = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.buyInfo?.country);
+    const [isGettingOffers, setIsGettingOffers] = useState(false);
+    const trades = useSelector(state => state.wallet.coinmarket.trades);
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    if (selectedAccount.status !== 'loaded') {
+        return null;
+    }
+    // It's OK to call this hook conditionally
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { trade: updatedTrade } = useCoinmarketBuyDetail({
+        selectedAccount,
+        trades,
+        transactionId: trade.key,
+    });
+
+    const { date, data } = updatedTrade || trade;
     const {
         fiatStringAmount,
         fiatCurrency,
@@ -47,14 +62,8 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
         receiveCurrency,
     } = data;
 
-    invityAPI.createInvityAPIKey(account.descriptor);
-    const fetcher = () => invityAPI.watchBuyTrade(data, 1);
-    const fetchResponse = useSWR('/invity-api/watch-buy-trade-accounts', fetcher);
-    const updatedStatus = fetchResponse && fetchResponse.data ? fetchResponse.data.status : null;
-    const statusMessage = getStatusMessage(updatedStatus || status);
-    const country = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.buyInfo?.country);
+    const statusMessage = getStatusMessage(status);
 
-    const [isGettingOffers, setIsGettingOffers] = useState(false);
     const getOffers = async () => {
         setIsGettingOffers(true);
         const request: BuyTradeQuoteRequest = {
@@ -101,7 +110,7 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
                 </Row>
                 <SmallRow>
                     {trade.tradeType.toUpperCase()} • {formatDistance(new Date(date), new Date())}{' '}
-                    ago • <StyledStatus status={updatedStatus || status} />
+                    ago • <StyledStatus status={status} />
                 </SmallRow>
             </Column>
             <Column>
