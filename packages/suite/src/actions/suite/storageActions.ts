@@ -23,7 +23,7 @@ export type StorageActions =
 // send form drafts start
 
 export const saveDraft = (formState: FormState, accountKey: string) => {
-    return db.addItem('sendFormDrafts', formState, accountKey);
+    return db.addItem('sendFormDrafts', formState, accountKey, true);
 };
 
 export const removeDraft = (accountKey: string) => {
@@ -34,7 +34,7 @@ export const saveAccountDraft = (account: Account) => async (_: Dispatch, getSta
     const { drafts } = getState().wallet.send;
     const draft = drafts[account.key];
     if (draft) {
-        return db.addItem('sendFormDrafts', draft, account.key);
+        return db.addItem('sendFormDrafts', draft, account.key, true);
     }
 };
 
@@ -46,7 +46,7 @@ export const removeAccountDraft = (account: Account) => {
 
 export const saveDevice = async (device: TrezorDevice) => {
     if (!device || !device.features || !device.state) return;
-    return db.addItem('devices', serializeDevice(device), device.state);
+    return db.addItem('devices', serializeDevice(device), device.state, true);
 };
 
 export const removeAccount = async (account: Account) => {
@@ -196,6 +196,7 @@ export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: Ge
             ...getState().wallet.settings,
         },
         'wallet',
+        true,
     );
 };
 
@@ -223,6 +224,7 @@ export const saveSuiteSettings = () => (_dispatch: Dispatch, getState: GetState)
             },
         },
         'suite',
+        true,
     );
 };
 
@@ -235,12 +237,18 @@ export const saveAnalytics = () => (_dispatch: Dispatch, getState: GetState) => 
             instanceId: analytics.instanceId,
         },
         'suite',
+        true,
     );
 };
 
 export const saveMetadataProvider = () => (_dispatch: Dispatch, getState: GetState) => {
     const { metadata } = getState();
-    db.addItem('metadata', { provider: metadata.provider, enabled: metadata.enabled }, 'state');
+    db.addItem(
+        'metadata',
+        { provider: metadata.provider, enabled: metadata.enabled },
+        'state',
+        true,
+    );
 };
 
 export const removeDatabase = () => async (dispatch: Dispatch, getState: GetState) => {

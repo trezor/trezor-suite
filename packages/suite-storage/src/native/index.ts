@@ -88,7 +88,8 @@ class CommonDB<TDBStructure> {
     >(
         _store: TStoreName,
         _item: TItem,
-        _key?: TKey
+        _key?: TKey,
+        _upsert?: boolean
     ): Promise<StoreKey<TDBStructure, TStoreName>> => {
         // @ts-ignore
         return Promise.resolve();
