@@ -145,7 +145,7 @@ class CommonDB<TDBStructure> {
 
         const p = new Promise<StoreKey<TDBStructure, TStoreName>>((resolve, reject) => {
             const tx = db.transaction(storeName, 'readwrite');
-            const params: [TItem, TKey | undefined] = key? [item, key] : [item, undefined]
+            const params: [TItem, TKey | undefined] = key ? [item, key] : [item, undefined];
             const req: IDBRequest = upsert
                 ? tx.objectStore(storeName).put(...params)
                 : tx.objectStore(storeName).add(...params);
