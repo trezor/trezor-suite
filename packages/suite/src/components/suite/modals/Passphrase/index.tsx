@@ -9,11 +9,8 @@ import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as deviceUtils from '@suite-utils/device';
 import { Loading, Translation } from '@suite-components';
 import { AppState, Dispatch, TrezorDevice } from '@suite-types';
-// import { PASSPHRASE_URL } from '@suite-constants/urls';
 import PassphraseTypeCard from './components/PassphraseTypeCard';
 import PassphraseRectangle from './components/PassphraseRectangle';
-
-const CARD_SIZE = '310px';
 
 const Wrapper = styled.div<{ authConfirmation?: boolean }>`
     display: flex;
@@ -27,13 +24,9 @@ const Wrapper = styled.div<{ authConfirmation?: boolean }>`
 `;
 
 const WalletsWrapper = styled.div`
-    /* display: grid;
-    width: 100%;
-    grid-gap: 20px;
-    grid-template-columns: repeat(auto-fit, minmax(${CARD_SIZE}, 1fr));
-    margin-top: 24px; */
     display: flex;
     flex-direction: column;
+    width: 100%;
 `;
 
 const GrayModal = styled(Modal)`
@@ -130,12 +123,12 @@ const Passphrase = (props: Props) => {
             <GrayModal
                 useFixedWidth={false}
                 heading={<Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />}
-                description={<Translation id="TR_ENTER_EXISTING_PASSPHRASE" />}
+                description={<Translation id="TR_HIDDEN_WALLET_TOOLTIP" />}
                 size="tiny"
             >
                 <PassphraseTypeCard
                     // title={<Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />}
-                    // description={<Translation id="TR_ENTER_EXISTING_PASSPHRASE" />}
+                    // description={<Translation id="TR_HIDDEN_WALLET_TOOLTIP" />}
                     submitLabel={<Translation id="TR_ACCESS_HIDDEN_WALLET" />}
                     colorVariant="secondary"
                     offerPassphraseOnDevice={onDeviceOffer}
@@ -153,29 +146,19 @@ const Passphrase = (props: Props) => {
             cancelable={false}
             heading={<Translation id="TR_SELECT_WALLET_TO_ACCESS" />}
             size="small"
-            // description={
-            //     <>
-            //         <Translation id="TR_CHOOSE_BETWEEN_NO_PASSPHRASE" />
-            //         <ExternalLink size="small" href={PASSPHRASE_URL}>
-            //             <Translation id="TR_WHAT_IS_PASSPHRASE" />
-            //         </ExternalLink>
-            //     </>
-            // }
         >
             <Wrapper>
                 <WalletsWrapper>
                     <PassphraseRectangle
                         title={<Translation id="TR_NO_PASSPHRASE_WALLET" />}
-                        description={<Translation id="TR_TO_ACCESS_STANDARD_NO_PASSPHRASE" />}
+                        description={<Translation id="TR_STANDARD_WALLET_DESCRIPTION" />}
                         submitLabel={<Translation id="TR_ACCESS_STANDARD_WALLET" />}
                         type="standard"
                         onSubmit={onSubmit}
                     />
                     <PassphraseRectangle
                         title={<Translation id="TR_WALLET_SELECTION_HIDDEN_WALLET" />}
-                        description={
-                            <Translation id="TR_WALLET_SELECTION_ENTER_EXISTING_PASSPHRASE" />
-                        }
+                        description={<Translation id="TR_HIDDEN_WALLET_DESCRIPTION" />}
                         submitLabel={<Translation id="TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET" />}
                         type="hidden"
                         offerPassphraseOnDevice={onDeviceOffer}

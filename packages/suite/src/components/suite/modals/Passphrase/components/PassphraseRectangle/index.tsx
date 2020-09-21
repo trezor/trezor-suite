@@ -19,6 +19,7 @@ const Wrapper = styled.div<Pick<Props, 'type'>>`
     border-radius: 6px;
     flex-direction: column;
     text-align: left;
+    width: 100%;
 
     & + & {
         margin-top: 18px;
@@ -113,6 +114,13 @@ const ActionButton = styled(Button)`
 const OnDeviceActionButton = styled(ActionButton)`
     background: transparent;
     text-decoration: underline;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+
+    &:hover,
+    &:focus,
+    &:active {
+        color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    }
 
     &::first-child {
         margin-top: 0px;
@@ -223,9 +231,7 @@ const PassphraseRectangle = (props: Props) => {
                         {props.type === 'hidden' && (
                             <Tooltip
                                 placement="top"
-                                content={
-                                    <Translation id="TR_WALLET_SELECTION_ENTER_EXISTING_PASSPHRASE" />
-                                }
+                                content={<Translation id="TR_HIDDEN_WALLET_TOOLTIP" />}
                             >
                                 <TooltipIcon
                                     size={16}
@@ -293,7 +299,6 @@ const PassphraseRectangle = (props: Props) => {
                         {props.type === 'hidden' && props.offerPassphraseOnDevice && (
                             <OnDeviceActionButton
                                 variant="tertiary"
-                                icon="T2"
                                 onClick={() => submit(value, true)}
                                 fullWidth
                             >

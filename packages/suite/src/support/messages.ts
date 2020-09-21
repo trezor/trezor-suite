@@ -39,6 +39,11 @@ const definedMessages = defineMessages({
             'Enter existing passphrase to access existing hidden Wallet. Or enter new passphrase to create a new hidden Wallet.',
         id: 'TR_WALLET_SELECTION_ENTER_EXISTING_PASSPHRASE',
     },
+    TR_HIDDEN_WALLET_TOOLTIP: {
+        id: 'TR_HIDDEN_WALLET_TOOLTIP',
+        defaultMessage:
+            'Extension of the wallet derived from recovery seed by your own chosen input.',
+    },
     TR_ACCESS_STANDARD_WALLET: {
         defaultMessage: 'Access standard Wallet',
         id: 'TR_ACCESS_STANDARD_WALLET',
@@ -735,11 +740,6 @@ const definedMessages = defineMessages({
     TR_ENABLE_NETWORK_BUTTON: {
         defaultMessage: 'Find my {networkName} accounts',
         id: 'TR_ENABLE_NETWORK_BUTTON',
-    },
-    TR_ENTER_EXISTING_PASSPHRASE: {
-        defaultMessage:
-            'Enter existing passphrase to access existing hidden Wallet. Or enter new passphrase to create a new hidden Wallet.',
-        id: 'TR_ENTER_EXISTING_PASSPHRASE',
     },
     TR_ENTER_PASSPHRASE: {
         defaultMessage: 'Enter passphrase',
@@ -3819,6 +3819,14 @@ const definedMessages = defineMessages({
     TR_BACKUP_FAILED: {
         id: 'BACKUP_FAILED',
         defaultMessage: 'Backup failed',
+    },
+    TR_STANDARD_WALLET_DESCRIPTION: {
+        id: 'TR_STANDARD_WALLET_DESCRIPTION',
+        defaultMessage: 'No passphrase',
+    },
+    TR_HIDDEN_WALLET_DESCRIPTION: {
+        id: 'TR_HIDDEN_WALLET_DESCRIPTION',
+        defaultMessage: 'Requires passphrase',
     },
 } as const);
 
