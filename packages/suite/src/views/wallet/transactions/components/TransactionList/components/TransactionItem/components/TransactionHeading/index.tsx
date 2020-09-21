@@ -1,14 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components';
+import { colors, variables, Icon } from '@trezor/components';
 import { Translation, HiddenPlaceholder, Sign } from '@suite-components';
 import { isTxUnknown, getTargetAmount, getTxOperation } from '@wallet-utils/transactionUtils';
 import { WalletAccountTransaction } from '@wallet-types';
 
 const Wrapper = styled.span`
+    display: flex;
     flex: 1 1 auto;
     text-overflow: ellipsis;
     overflow: hidden;
+    align-items: center;
+`;
+
+const HeadingWrapper = styled.div`
+    cursor: pointer;
+`;
+
+const ChevronIconWrapper = styled.div<{ show: boolean; animate: boolean }>`
+    display: flex;
+    visibility: ${props => (props.show ? 'visible' : 'hidden')};
+    margin-left: ${props => (props.animate ? '5px' : '2px')};
+    opacity: ${props => (props.show ? 1 : 0)};
+    transition: visibility 0s, opacity 0.15s linear, margin-left 0.2s ease-in-out;
+
+    /* select non-direct SVG children (the icon) and set animation property */
+    & > * svg {
+        transition: all 0.2ms ease-in-out;
+    }
 `;
 
 const CryptoAmount = styled.span`
@@ -33,9 +52,19 @@ interface Props {
     transaction: WalletAccountTransaction;
     isPending: boolean;
     useSingleRowLayout: boolean;
+    txItemisHovered: boolean;
+    nestedItemIsHovered: boolean;
+    onClick: () => void;
 }
 
-const TransactionHeading = ({ transaction, isPending, useSingleRowLayout }: Props) => {
+const TransactionHeading = ({
+    transaction,
+    isPending,
+    useSingleRowLayout,
+    txItemisHovered,
+    nestedItemIsHovered,
+    onClick,
+}: Props) => {
     const isTokenTransaction = transaction.tokens.length > 0;
     const target = transaction.targets[0];
     const transfer = transaction.tokens[0];
@@ -43,6 +72,8 @@ const TransactionHeading = ({ transaction, isPending, useSingleRowLayout }: Prop
         ? transaction.symbol.toUpperCase()
         : transfer.symbol.toUpperCase();
     let amount = null;
+
+    const [headingIsHovered, setHeadingIsHovered] = useState(false);
 
     if (useSingleRowLayout) {
         const targetAmount = !isTokenTransaction
@@ -79,7 +110,25 @@ const TransactionHeading = ({ transaction, isPending, useSingleRowLayout }: Prop
 
     return (
         <>
-            <Wrapper>{heading}</Wrapper>
+            <Wrapper>
+                <HeadingWrapper
+                    onMouseEnter={() => setHeadingIsHovered(true)}
+                    onMouseLeave={() => setHeadingIsHovered(false)}
+                    onClick={onClick}
+                >
+                    {heading}
+                </HeadingWrapper>
+                <ChevronIconWrapper
+                    show={txItemisHovered}
+                    animate={nestedItemIsHovered || headingIsHovered}
+                >
+                    <Icon
+                        size={nestedItemIsHovered || headingIsHovered ? 18 : 15}
+                        color={colors.BLACK25}
+                        icon="ARROW_RIGHT"
+                    />
+                </ChevronIconWrapper>
+            </Wrapper>
             {amount}
         </>
     );
