@@ -1,11 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, Modal } from '@trezor/components';
-import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
+import { Translation, Image } from '@suite-components';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { useDevice, useActions } from '@suite-hooks';
 import { TrezorDevice } from '@suite-types';
-import { Translation } from '@suite-components';
 
 type Props = {
     device: TrezorDevice;
@@ -17,6 +16,10 @@ const Actions = styled.div`
     button + button {
         margin-top: 8px;
     }
+`;
+
+const StyledImage = styled(Image)`
+    margin: 24px 0px;
 `;
 
 const PassphraseDuplicate = ({ device, duplicate }: Props) => {
@@ -52,7 +55,7 @@ const PassphraseDuplicate = ({ device, duplicate }: Props) => {
                 </Actions>
             }
         >
-            <DeviceConfirmImage device={device} />
+            <StyledImage image="UNI_WARNING" />
         </Modal>
     );
 };
