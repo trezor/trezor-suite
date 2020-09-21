@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Modal, ModalProps } from '@trezor/components';
+import { ConfirmOnDevice, Modal, ModalProps } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { Dispatch, TrezorDevice } from '@suite-types';
@@ -51,6 +51,12 @@ const PassphraseOnDevice = ({ device, getDiscoveryAuthConfirmationStatus, ...res
                 <Translation
                     id="TR_ENTER_PASSPHRASE_ON_DEVICE_LABEL"
                     values={{ deviceLabel: device.label }}
+                />
+            }
+            header={
+                <ConfirmOnDevice
+                    title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
+                    trezorModel={device.features?.major_version === 1 ? 1 : 2}
                 />
             }
             description={<Translation id="TR_PASSPHRASE_CASE_SENSITIVE" />}
