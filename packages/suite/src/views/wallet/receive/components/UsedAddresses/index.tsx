@@ -160,7 +160,7 @@ const Item = ({ addr, symbol, onClick, revealed, metadataPayload, index }: ItemP
             >
                 <AddressActions hide={!isHovered}>
                     <Button
-                        data-test="@metadata/confirm-on-device-button"
+                        data-test={`@metadata/confirm-on-device-button/${index}`}
                         variant="tertiary"
                         onClick={onClick}
                     >
