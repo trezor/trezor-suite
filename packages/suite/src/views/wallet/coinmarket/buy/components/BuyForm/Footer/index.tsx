@@ -78,6 +78,10 @@ const Wrapper = styled.div`
     align-items: center;
     padding-top: 50px;
     border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: column;
+    }
 `;
 
 const OptionLabel = styled.div`
@@ -103,6 +107,10 @@ const Right = styled.div`
     display: flex;
     flex: 1;
     justify-content: flex-end;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        justify-content: flex-start;
+    }
 `;
 
 const Label = styled.div`
@@ -116,8 +124,15 @@ const Label = styled.div`
 `;
 
 const StyledButton = styled(Button)`
+    display: flex;
     min-width: 200px;
     margin-left: 20px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin-top: 20px;
+        margin-left: 0;
+        width: 100%;
+    }
 `;
 
 export default Footer;
