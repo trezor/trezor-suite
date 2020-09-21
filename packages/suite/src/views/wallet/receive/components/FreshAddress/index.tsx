@@ -14,6 +14,7 @@ const StyledCard = styled(Card)`
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
+    padding: 32px 42px;
 
     @media all and (max-width: 860px) {
         button {
@@ -36,7 +37,7 @@ const StyledInput = styled(Input)`
 const StyledButton = styled(Button)`
     min-width: 220px;
     margin-left: 20px;
-    margin-top: 5px;
+    align-self: flex-end;
 `;
 
 const InputLabel = ({ symbol, isBitcoin }: { symbol: string; isBitcoin: boolean }) => {
@@ -85,9 +86,10 @@ const FreshAddress = ({
     // NOTE: unrevealed[0] can be undefined (limit exceeded)
     const firstFreshAddress = isBitcoin ? unrevealed[0] : unused[0];
 
-    const isRevealed = (addr: AccountAddress) =>
-        addresses ? !!addresses.find(f => f.address === addr.address) : false;
-    const getAddressValue = (address?: AccountAddress) => {
+    const isRevealed = (address: AccountAddress) =>
+        addresses ? !!addresses.find(f => f.address === address.address) : false;
+    
+        const getAddressValue = (address?: AccountAddress) => {
         if (!address) {
             return intl.formatMessage(messages.RECEIVE_ADDRESS_LIMIT_EXCEEDED);
         }
@@ -108,7 +110,7 @@ const FreshAddress = ({
                     monospace
                     isDisabled
                     value={addressValue}
-                    // isPartiallyHidden={!isRevealed(firstFreshAddress)}
+                    noError
                 />
             </AddressContainer>
             <StyledButton
