@@ -11,7 +11,6 @@ import { Account } from '@wallet-types';
 import { Translation } from '@suite-components';
 import { getStatusMessage, processQuotes } from '@wallet-utils/coinmarket/buyUtils';
 import { TradeBuy } from '@wallet-reducers/coinmarketReducer';
-import { formatDistance } from 'date-fns';
 import Status from '../Status';
 import { useSelector, useActions } from '@suite/hooks/suite';
 import { useCoinmarketBuyDetail } from '@suite/hooks/wallet/useCoinmarketBuyDetail';

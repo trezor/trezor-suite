@@ -1,76 +1,11 @@
-import {
-    createContext,
-    useContext,
-    useCallback,
-    useEffect,
-    useRef,
-    EffectCallback,
-    useState,
-} from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { useUnmount, useTimeoutFn } from 'react-use';
 import invityAPI from '@suite-services/invityAPI';
 import { Props, ContextValues } from '@wallet-types/coinmarketBuyDetail';
 import { TradeBuy } from '@wallet-reducers/coinmarketReducer';
 import { BuyTradeStatus } from 'invity-api';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { useActions } from '../suite/useActions';
-
-// useTimeoutFn, useEffectOnce and useUnmount - a copy from https://github.com/streamich/react-use, replace by suite equivalent of move to some hook utils
-type UseTimeoutFnReturn = [() => boolean | null, () => void, () => void];
-
-function useTimeoutFn(fn: Function, ms = 0): UseTimeoutFnReturn {
-    const ready = useRef<boolean | null>(false);
-    const timeout = useRef<ReturnType<typeof setTimeout>>();
-    const callback = useRef(fn);
-
-    const isReady = useCallback(() => ready.current, []);
-
-    const set = useCallback(() => {
-        ready.current = false;
-        if (timeout.current) {
-            clearTimeout(timeout.current);
-        }
-
-        timeout.current = setTimeout(() => {
-            ready.current = true;
-            callback.current();
-        }, ms);
-    }, [ms]);
-
-    const clear = useCallback(() => {
-        ready.current = null;
-        if (timeout.current) {
-            clearTimeout(timeout.current);
-        }
-    }, []);
-
-    // update ref when function changes
-    useEffect(() => {
-        callback.current = fn;
-    }, [fn]);
-
-    // set on mount, clear on unmount
-    useEffect(() => {
-        set();
-
-        return clear;
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ms]);
-
-    return [isReady, clear, set];
-}
-
-const useEffectOnce = (effect: EffectCallback) => {
-    useEffect(effect, []);
-};
-
-const useUnmount = (fn: () => any): void => {
-    const fnRef = useRef(fn);
-
-    // update the ref each render so if it change the newest callback will be invoked
-    fnRef.current = fn;
-
-    useEffectOnce(() => () => fnRef.current());
-};
 
 const REFRESH_SECONDS = 30;
 
