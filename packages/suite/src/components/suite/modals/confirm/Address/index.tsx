@@ -106,7 +106,11 @@ const ConfirmAddress = ({
                         </Address>
                         {confirmed && (
                             <CopyButtonWrapper ref={htmlElement}>
-                                <Button variant="tertiary" onClick={copyAddress}>
+                                <Button
+                                    data-test="@metadata/copy-address-button"
+                                    variant="tertiary"
+                                    onClick={copyAddress}
+                                >
                                     <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />
                                 </Button>
                             </CopyButtonWrapper>

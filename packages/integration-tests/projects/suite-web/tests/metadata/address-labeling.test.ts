@@ -8,7 +8,7 @@ describe('Metadata', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
     });
-    
+
     after(() => {
         cy.task('stopGoogle');
     });
@@ -16,43 +16,45 @@ describe('Metadata', () => {
     it(`
         Address labeling
         `, () => {
-            // prepare test
-            cy.task('startEmu', { wipe: true });
-            cy.task('setupEmu');
-            cy.task('startGoogle');
+        // prepare test
+        cy.task('startEmu', { wipe: true });
+        cy.task('setupEmu');
+        cy.task('startGoogle');
 
-            cy.prefixedVisit('/accounts', { onBeforeLoad: (win: Window) => {
+        cy.prefixedVisit('/accounts', {
+            onBeforeLoad: (win: Window) => {
                 cy.stub(win, 'open', stubOpen(win));
-                cy.stub(win, 'fetch', stubFetch)
-            }});
-    
-            cy.passThroughInitialRun();
-            
-            // todo: better waiting for discovery (mock it!)
-            cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 });
-            cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 }).should('not.be.visible');
+                cy.stub(win, 'fetch', stubFetch);
+            },
+        });
 
-            cy.getTestElement('@wallet/menu/wallet-receive').click();
-            cy.getTestElement(`${metadataEl}/add-label-button`).click({force: true });
-            cy.passThroughInitMetadata();
+        cy.passThroughInitialRun();
 
-            cy.getTestElement('@metadata/input').type('meoew address{enter}');
+        // todo: better waiting for discovery (mock it!)
+        cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 });
+        cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 }).should(
+            'not.be.visible',
+        );
 
-            cy.log('Already saved metadata shows dropdown onclick');
-            cy.getTestElement(metadataEl).click();
-            cy.getTestElement('@metadata/confirm-on-device-button').should('be.visible');
-            cy.getTestElement('@metadata/copy-address-button').should('not.be.visible');
-            cy.getTestElement(`@metadata/edit-button`).click();
-            cy.getTestElement('@metadata/input').type(' meoew meow{enter}');
+        cy.getTestElement('@wallet/menu/wallet-receive').click();
+        cy.getTestElement(`${metadataEl}/add-label-button`).click({ force: true });
+        cy.passThroughInitMetadata();
 
-            cy.log('confirming address on device adds copy address option to dropdown');
-            cy.getTestElement(metadataEl).click();
-            cy.getTestElement('@metadata/confirm-on-device-button').click();
-            cy.getTestElement('@modal/confirm-address/address-field').should('be.visible');
-            cy.task('pressYes');
-            cy.getTestElement('@modal/confirm-address/address-field').should('not.be.visible');
+        cy.getTestElement('@metadata/input').type('meoew address{enter}');
 
-            cy.getTestElement(metadataEl).click();
-            cy.getTestElement('@metadata/copy-address-button').click();
+        cy.log('Already saved metadata shows dropdown onclick');
+        cy.getTestElement(metadataEl).click();
+        cy.getTestElement(`@metadata/edit-button`).click();
+        cy.getTestElement('@metadata/input').type(' meoew meow{enter}');
+
+        cy.log('confirming address on device adds copy address option to dropdown');
+        cy.getTestElement(metadataEl).click();
+        cy.getTestElement('@metadata/confirm-on-device-button').click();
+        cy.getTestElement('@modal/confirm-address/address-field').should('be.visible');
+        cy.getTestElement('@metadata/copy-address-button').should('not.be.visible');
+        cy.task('pressYes');
+        cy.getTestElement('@metadata/copy-address-button').should('be.visible');
+
+        cy.getTestElement('@metadata/copy-address-button').click();
     });
 });
