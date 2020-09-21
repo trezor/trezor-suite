@@ -3,27 +3,14 @@ import styled from 'styled-components';
 import { Icon, colors, variables, Loader } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import FiatValue from '@suite-components/FiatValue/Container';
-import { Badge, HiddenPlaceholder, FormattedCryptoAmount } from '@suite-components';
+import { FormattedCryptoAmount } from '@suite-components';
 
 const Wrapper = styled.div`
-    /* display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column; */
     text-align: left;
     margin-top: 25px;
 `;
 
-const IOWrapper = styled.div`
-    /* display: flex;
-    justify-content: center;
-    width: 100%;
-
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: column;
-    } */
-`;
+const IOWrapper = styled.div``;
 
 const IconWrapper = styled.div`
     display: flex;
@@ -31,53 +18,6 @@ const IconWrapper = styled.div`
     width: 100%;
     margin-top: 16px;
     margin-bottom: 16px;
-`;
-
-// const IOBox = styled.div`
-//     display: flex;
-//     flex-direction: column;
-//     border-radius: 3px;
-//     background-color: ${colors.BLACK96};
-//     padding: 12px;
-//     text-align: left;
-
-//     & + & {
-//         margin-top: 10px;
-//     }
-
-//     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-//         width: 100%;
-//     }
-// `;
-
-// const IOBoxPath = styled.div`
-//     display: flex;
-//     font-size: ${variables.FONT_SIZE.TINY};
-//     color: ${colors.BLACK50};
-//     margin-bottom: 10px;
-// `;
-
-const IOBoxAmountWrapper = styled.div`
-    display: flex;
-    justify-content: space-between;
-    font-size: ${variables.FONT_SIZE.TINY};
-`;
-
-const IOBoxAddress = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.BLACK17};
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-variant-numeric: tabular-nums slashed-zero;
-    margin-bottom: 10px;
-`;
-
-const HistoricalBadge = styled(props => <Badge {...props} isGray />)`
-    margin-right: 8px;
-`;
-
-const BadgesWrapper = styled.div`
-    display: flex;
 `;
 
 const IOBox = styled.div``;
