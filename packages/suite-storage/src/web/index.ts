@@ -132,6 +132,7 @@ class CommonDB<TDBStructure> {
     >(
         store: TStoreName,
         item: TItem,
+        key?: TKey,
         upsert?: boolean
     ): Promise<StoreKey<TDBStructure, TStoreName>> => {
         // TODO: When using idb wrapper something throws 'Uncaught (in promise) null'
@@ -144,9 +145,10 @@ class CommonDB<TDBStructure> {
 
         const p = new Promise<StoreKey<TDBStructure, TStoreName>>((resolve, reject) => {
             const tx = db.transaction(storeName, 'readwrite');
+            const params: [TItem, TKey | undefined] = key? [item, key] : [item, undefined]
             const req: IDBRequest = upsert
-                ? tx.objectStore(storeName).put(item)
-                : tx.objectStore(storeName).add(item);
+                ? tx.objectStore(storeName).put(...params)
+                : tx.objectStore(storeName).add(...params);
             req.onerror = _event => {
                 reject(req.error);
             };
