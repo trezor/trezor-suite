@@ -4026,7 +4026,7 @@
     core-js-pure "^3.0.0"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@7.11.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.11.0":
+"@babel/runtime@7.11.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.11.0", "@babel/runtime@^7.11.2":
   version "7.11.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.11.2.tgz#f549c13c754cc40b87644b9fa9f09a6a95fe0736"
   integrity sha512-TeWkU52so0mPtDcaCTxNBI/IHiz0pZgr8VEFqXFtZWpYD08ZB6FaSwVAS8MKRQAP3bYKiVjwysOJgMFY28o6Tw==
@@ -6872,40 +6872,31 @@
   dependencies:
     "@babel/runtime" "^7.9.6"
 
-"@testing-library/dom@^7.22.3":
-  version "7.22.6"
-  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.22.6.tgz#a9466c564e9cccb56175ad2ff471aa4ba43ef0b7"
-  integrity sha512-8703SWfapsEMwG10/c8AV7qK33zyy0NMDs0SbX9uEZnHWnxaNA5SnODuWS1PvFEjoNjBxfoxVZtw6uQAXO7tJw==
+"@testing-library/dom@^7.24.2":
+  version "7.24.2"
+  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.24.2.tgz#6d2b7dd21efbd5358b98c2777fc47c252f3ae55e"
+  integrity sha512-ERxcZSoHx0EcN4HfshySEWmEf5Kkmgi+J7O79yCJ3xggzVlBJ2w/QjJUC+EBkJJ2OeSw48i3IoePN4w8JlVUIA==
   dependencies:
+    "@babel/code-frame" "^7.10.4"
     "@babel/runtime" "^7.10.3"
     "@types/aria-query" "^4.2.0"
     aria-query "^4.2.2"
+    chalk "^4.1.0"
     dom-accessibility-api "^0.5.1"
     pretty-format "^26.4.2"
 
-"@testing-library/dom@^7.23.0":
-  version "7.23.0"
-  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-7.23.0.tgz#c54c0fa53705ad867bcefb52fc0c96487fbc10f6"
-  integrity sha512-H5m090auYH+obdZmsaYLrSWC5OauWD2CvNbz88KBxQJoXgkJzbU0DpAG8BS7Evj5WqCC3nAAKrLS6vw0ljUYLg==
+"@testing-library/react@^11.0.4":
+  version "11.0.4"
+  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-11.0.4.tgz#c84082bfe1593d8fcd475d46baee024452f31dee"
+  integrity sha512-U0fZO2zxm7M0CB5h1+lh31lbAwMSmDMEMGpMT3BUPJwIjDEKYWOV4dx7lb3x2Ue0Pyt77gmz/VropuJnSz/Iew==
   dependencies:
-    "@babel/runtime" "^7.10.3"
-    "@types/aria-query" "^4.2.0"
-    aria-query "^4.2.2"
-    dom-accessibility-api "^0.5.1"
-    pretty-format "^26.4.2"
+    "@babel/runtime" "^7.11.2"
+    "@testing-library/dom" "^7.24.2"
 
-"@testing-library/react@^10.4.9":
-  version "10.4.9"
-  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-10.4.9.tgz#9faa29c6a1a217bf8bbb96a28bd29d7a847ca150"
-  integrity sha512-pHZKkqUy0tmiD81afs8xfiuseXfU/N7rAX3iKjeZYje86t9VaB0LrxYVa+OOsvkrveX5jCK3IjajVn2MbePvqA==
-  dependencies:
-    "@babel/runtime" "^7.10.3"
-    "@testing-library/dom" "^7.22.3"
-
-"@testing-library/user-event@^12.1.3":
-  version "12.1.3"
-  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-12.1.3.tgz#0b19022f4e59596563f3f53293d67b3ab2c394f3"
-  integrity sha512-U6tpKWbBMvqt8tIF77crr9VyP1W+yxK+c48xH5rvYwmT4MER5jvWAFqNzkn542Bt3qeDCn0aqwb0Pv+3mDbLtw==
+"@testing-library/user-event@^12.1.5":
+  version "12.1.5"
+  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-12.1.5.tgz#b2a94b8b3c1a908cc1c425623b11de63b20bb837"
+  integrity sha512-FzTnKvb0KC4T84G6uTx971ja8OOqLlsprzWbeRyd8f1MDwbcLIFgx0Hyr56izY9m9y2KwHGVKeVEkTPslw32lw==
   dependencies:
     "@babel/runtime" "^7.10.2"
 
@@ -10677,6 +10668,14 @@ chalk@^1.0.0, chalk@^1.1.3:
     has-ansi "^2.0.0"
     strip-ansi "^3.0.0"
     supports-color "^2.0.0"
+
+chalk@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/chalk/-/chalk-4.1.0.tgz#4e14870a618d9e2edd97dd8345fd9d9dc315646a"
+  integrity sha512-qwx12AxXe2Q5xQ43Ac//I6v5aXTipYrSESdOgzrN+9XjgEpyjpKuvSGaN4qE93f7TQTlerQQ8S+EQ0EyDoVL1A==
+  dependencies:
+    ansi-styles "^4.1.0"
+    supports-color "^7.1.0"
 
 char-regex@^1.0.2:
   version "1.0.2"
@@ -27215,10 +27214,10 @@ tree-kill@^1.1.0, tree-kill@^1.2.1, tree-kill@^1.2.2:
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
   integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
 
-trezor-address-validator@^0.3.20:
-  version "0.3.20"
-  resolved "https://registry.yarnpkg.com/trezor-address-validator/-/trezor-address-validator-0.3.20.tgz#281f9c86d9c16ad4b99fa3b71132943a2825f092"
-  integrity sha512-5OIkDCJKcePZidkTFp/P1cYCDURa5gKypgZ1yd4qnB/vVnXh9A9cTi4LQV4vthdmOrQYhX/OnsJTv6cqAbnDYQ==
+trezor-address-validator@^0.3.22:
+  version "0.3.22"
+  resolved "https://registry.yarnpkg.com/trezor-address-validator/-/trezor-address-validator-0.3.22.tgz#1769d1338c2d5c2a5b67ea04b1758563c2bf1c7a"
+  integrity sha512-98G8Y3q7WbkjmSYOT0RN088OJhRbPb4lncPQ+6v1jh+O48G5q5xUxE38Jvq6J1DJLsI3Qx1FHuO6vUXrOfs4Ow==
   dependencies:
     base-x "^3.0.7"
     browserify-bignum "^1.3.0-2"
