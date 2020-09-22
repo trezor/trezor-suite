@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { storiesOf } from '@storybook/react';
 import { ConfirmOnDevice, Modal } from '../../index';
-import { text, boolean } from '@storybook/addon-knobs';
+import { text, boolean, number } from '@storybook/addon-knobs';
 
 const Wrapper = styled.div`
     background: black;
@@ -26,6 +26,9 @@ storiesOf('Modals', module)
             const useFixedHeight = boolean('useFixedHeight', false);
             const showHeaderBorder = boolean('showHeaderBorder', true);
             const noPadding = boolean('noPadding', false);
+            const hiddenProgressBar = boolean('hiddenProgressBar', false);
+            const totalProgressBarSteps = number('totalProgressBarSteps', 0);
+            const currentProgressBarStep = number('currentProgressBarStep', 0);
 
             return (
                 <Wrapper>
@@ -39,6 +42,9 @@ storiesOf('Modals', module)
                         useFixedHeight={useFixedHeight}
                         showHeaderBorder={showHeaderBorder}
                         noPadding={noPadding}
+                        hiddenProgressBar={hiddenProgressBar}
+                        totalProgressBarSteps={totalProgressBarSteps}
+                        currentProgressBarStep={currentProgressBarStep}
                     >
                         {children}
                     </Modal>
