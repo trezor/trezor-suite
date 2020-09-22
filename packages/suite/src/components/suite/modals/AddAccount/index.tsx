@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Button, Link } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { Translation } from '@suite-components';
-import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
-import { Account, Network, ExternalNetwork } from '@wallet-types';
+import { NETWORKS } from '@wallet-config';
+import { Account, Network } from '@wallet-types';
 import messages from '@suite/support/messages';
 import NetworkUnavailable from './components/NetworkUnavailable';
-import NetworkExternal from './components/NetworkExternal';
 import NetworkInternal from './components/NetworkInternal';
 import AddAccountButton from './components/AddAccountButton';
 import Wrapper from './components/Wrapper';
@@ -14,7 +13,6 @@ import { Props } from './Container';
 const AddAccount = (props: Props) => {
     // Collect all Networks without "accountType" (normal)
     const internalNetworks = NETWORKS.filter(n => !n.accountType && !n.isHidden);
-    const externalNetworks = EXTERNAL_NETWORKS.filter(n => !n.isHidden);
 
     // Collect device unavailable capabilities
     const unavailableCapabilities = props.device.features
@@ -27,15 +25,14 @@ const AddAccount = (props: Props) => {
         ? (internalNetworks.find(n => n.symbol === account.symbol) as Network)
         : internalNetworks[0];
 
-    const [network, setNetwork] = useState<Network | ExternalNetwork>(preselectedNetwork);
+    const [network, setNetwork] = useState<Network>(preselectedNetwork);
     const [accountType, setAccountType] = useState<Network | undefined>(undefined);
 
     // Common props for Wrapper
     const wrapperProps = {
         selectedNetwork: network,
         internalNetworks,
-        externalNetworks,
-        onSelectNetwork: (network: Network | ExternalNetwork) => {
+        onSelectNetwork: (network: Network) => {
             setNetwork(network);
             setAccountType(undefined);
         },
@@ -50,24 +47,6 @@ const AddAccount = (props: Props) => {
         return (
             <Wrapper {...wrapperProps}>
                 <NetworkUnavailable capability={capability} network={network} />
-            </Wrapper>
-        );
-    }
-
-    // Display: external network
-    if (network.networkType === 'external') {
-        return (
-            <Wrapper
-                {...wrapperProps}
-                actionButton={
-                    <Link href={network.url} variant="nostyle">
-                        <Button icon="EXTERNAL_LINK" variant="primary" onClick={props.onCancel}>
-                            <Translation id="TR_GO_TO_EXTERNAL_WALLET" />
-                        </Button>
-                    </Link>
-                }
-            >
-                <NetworkExternal network={network} />
             </Wrapper>
         );
     }

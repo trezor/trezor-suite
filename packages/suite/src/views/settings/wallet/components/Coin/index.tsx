@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables, colors, CoinLogo } from '@trezor/components';
-import { Network, ExternalNetwork } from '@wallet-types';
+import { Network } from '@wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -24,7 +24,7 @@ const Symbol = styled.div`
 
 interface Props {
     name: string;
-    symbol: Network['symbol'] | ExternalNetwork['symbol'];
+    symbol: Network['symbol'];
 }
 
 const Coin = ({ name, symbol }: Props) => (

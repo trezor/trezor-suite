@@ -60,16 +60,4 @@ describe('settings reducer', () => {
             enabledNetworks: ['eth'],
         });
     });
-
-    it('CHANGE_EXTERNAL_NETWORKS', () => {
-        expect(
-            reducer(undefined, {
-                type: WALLET_SETTINGS.CHANGE_EXTERNAL_NETWORKS,
-                payload: ['xem'],
-            }),
-        ).toEqual({
-            ...initialState,
-            enabledExternalNetworks: ['xem'],
-        });
-    });
 });

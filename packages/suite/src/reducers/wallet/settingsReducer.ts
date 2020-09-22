@@ -2,16 +2,14 @@ import produce from 'immer';
 import { FeeLevel } from 'trezor-connect';
 import { STORAGE } from '@suite-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
-import { EXTERNAL_NETWORKS } from '@wallet-config';
 import { Action } from '@suite-types';
-import { Network, ExternalNetwork } from '@wallet-types';
+import { Network } from '@wallet-types';
 import { BlockbookUrl } from '@wallet-types/blockbook';
 
 export interface State {
     localCurrency: string;
     discreetMode: boolean;
     enabledNetworks: Network['symbol'][];
-    enabledExternalNetworks: ExternalNetwork['symbol'][];
     lastUsedFeeLevel: {
         [key: string]: Omit<FeeLevel, 'blocks'>; // Key: Network['symbol']
     };
@@ -22,7 +20,6 @@ export const initialState: State = {
     localCurrency: 'usd',
     discreetMode: false,
     enabledNetworks: ['btc'],
-    enabledExternalNetworks: EXTERNAL_NETWORKS.filter(n => !n.isHidden).map(n => n.symbol),
     lastUsedFeeLevel: {},
     blockbookUrls: [],
 };
@@ -43,10 +40,6 @@ const settingsReducer = (state: State = initialState, action: Action): State => 
 
             case WALLET_SETTINGS.CHANGE_NETWORKS:
                 draft.enabledNetworks = action.payload;
-                break;
-
-            case WALLET_SETTINGS.CHANGE_EXTERNAL_NETWORKS:
-                draft.enabledExternalNetworks = action.payload;
                 break;
 
             case WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL:

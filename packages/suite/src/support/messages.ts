@@ -2406,10 +2406,6 @@ const definedMessages = defineMessages({
         id: 'MODAL_ADD_ACCOUNT_NETWORK_TESTNET',
         defaultMessage: 'Testnet networks',
     },
-    MODAL_ADD_ACCOUNT_NETWORK_EXTERNAL: {
-        id: 'MODAL_ADD_ACCOUNT_NETWORK_EXTERNAL',
-        defaultMessage: 'External networks',
-    },
     MODAL_ADD_ACCOUNT_NEM_WALLET: {
         id: 'MODAL_ADD_ACCOUNT_NEM_WALLET',
         defaultMessage: 'NEM wallet',

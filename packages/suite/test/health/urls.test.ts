@@ -1,7 +1,6 @@
 import fetch from 'node-fetch';
 
 import { URLS } from '@suite-constants';
-import externalNetworks from '@wallet-config/externalNetworks';
 
 // Excluded urls
 const excluded = [
@@ -15,9 +14,8 @@ const getUrls = () => {
     const constantUrls = Object.values(URLS).filter((url: string) => {
         return !excluded.includes(url);
     });
-    const externalNetworksUrls = externalNetworks.map(n => n.url);
 
-    return [...constantUrls, ...externalNetworksUrls];
+    return [...constantUrls];
 };
 
 describe('Test that all external links are alive', () => {
