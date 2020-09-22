@@ -2396,7 +2396,7 @@ const definedMessages = defineMessages({
     MODAL_ADD_ACCOUNT_DESC: {
         id: 'MODAL_ADD_ACCOUNT_DESC',
         defaultMessage:
-            'Explanation how account works and some other info that is useful for a new user and does not annoy hard core user.',
+            "Explanation how account works and some other info that is useful for a new user and does not annoy hard core user. Can't find your favorite coin? Check {trezorCoinsUrl} for 3rd party wallet support.",
     },
     MODAL_ADD_ACCOUNT_NETWORK_MAINNET: {
         id: 'MODAL_ADD_ACCOUNT_NETWORK_MAINNET',
