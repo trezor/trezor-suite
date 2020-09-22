@@ -19,6 +19,7 @@ export const SET_FLAG = '@suite/set-flag';
 export const ONLINE_STATUS = '@suite/online-status';
 export const APP_CHANGED = '@suite/app-changed';
 export const ADD_BUTTON_REQUEST = '@suite/add-button-request';
+export const SET_PROCESS_MODE = '@suite/set-process-mode';
 export const LOCK_UI = '@suite/lock-ui';
 export const LOCK_DEVICE = '@suite/lock-device';
 export const LOCK_ROUTER = '@suite/lock-router';

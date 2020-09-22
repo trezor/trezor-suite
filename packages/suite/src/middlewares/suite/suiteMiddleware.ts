@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import TrezorConnect, { DEVICE } from 'trezor-connect';
+import TrezorConnect, { DEVICE, UI } from 'trezor-connect';
 import { SUITE, STORAGE, ROUTER } from '@suite-actions/constants';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
 import * as routerActions from '@suite-actions/routerActions';
@@ -13,12 +13,26 @@ import { getApp } from '@suite-utils/router';
 
 import { AppState, Action, Dispatch } from '@suite-types';
 
+// TODO: where it should be defined?
+export const PROCESS_MODE = {
+    'confirm-addr': {
+        blockedActions: [UI.CLOSE_UI_WINDOW],
+    },
+} as const;
+
 const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
     action: Action,
 ): Promise<Action> => {
-    const prevApp = api.getState().router.app;
+    const prevState = api.getState();
+    const prevApp = prevState.router.app;
     if (action.type === ROUTER.LOCATION_CHANGE && getApp(action.url) !== prevApp) {
         api.dispatch({ type: SUITE.APP_CHANGED, payload: getApp(action.url) });
+    }
+
+    // block actions restricted by device's process mode
+    const processMode = prevState.suite.device?.processMode;
+    if (processMode && action.type in PROCESS_MODE[processMode]?.blockedActions) {
+        return action;
     }
 
     // pass action to reducers

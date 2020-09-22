@@ -73,17 +73,7 @@ const modalReducer = (state: State = initialState, action: Action): State => {
             };
 
         case MODAL.CLOSE:
-            return initialState;
-
         case UI.CLOSE_UI_WINDOW:
-            // block closing "confirm address" modal, we will close it manually on failed confirmation
-            if (
-                state.context === MODAL.CONTEXT_USER &&
-                state.payload.type === 'address' &&
-                !state.payload.confirmed
-            ) {
-                return state;
-            }
             return initialState;
 
         default:
