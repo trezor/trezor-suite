@@ -8,27 +8,34 @@ import BuyTransaction from './components/BuyTransaction';
 import ExchangeTransaction from './components/ExchangeTransaction';
 
 const AccountTransactions = () => {
-    const accountTransactions = useSelector(state => state.wallet.coinmarket.trades);
-    // sort descending
-    const sortedAccountTransactions = [...accountTransactions].sort((a, b) => {
-        if (a.date > b.date) return -1;
-        if (a.date < b.date) return 1;
-        return 0;
-    });
+    const allTransactions = useSelector(state => state.wallet.coinmarket.trades);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const providers = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.providerInfos);
 
     if (selectedAccount.status !== 'loaded') {
         return null;
     }
-
     const { account } = selectedAccount;
+    // filter current account transactions and sort descending
+    const sortedAccountTransactions = [...allTransactions]
+        .filter(
+            t =>
+                t.account.symbol === account.symbol &&
+                t.account.accountType === account.accountType &&
+                t.account.accountIndex === account.index,
+        )
+        .sort((a, b) => {
+            if (a.date > b.date) return -1;
+            if (a.date < b.date) return 1;
+            return 0;
+        });
 
     return (
         <Wrapper>
             <Header>
                 <StyledH2>
-                    <Translation id="TR_BUY_ACCOUNT_TRANSACTIONS" /> • {accountTransactions.length}
+                    <Translation id="TR_BUY_ACCOUNT_TRANSACTIONS" /> •{' '}
+                    {sortedAccountTransactions.length}
                 </StyledH2>
             </Header>
             <Content>
