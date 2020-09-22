@@ -123,6 +123,7 @@ export type UseSendFormState = {
     fiatRates: CoinFiatRates | undefined;
     localCurrencyOption: CurrencyOption;
     isLoading: boolean;
+    isDirty: boolean;
     composedLevels?: PrecomposedLevels;
     online: boolean;
 };

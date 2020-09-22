@@ -19,8 +19,9 @@ const In = styled.div`
 `;
 
 const Clear = () => {
-    const { resetContext } = useSendFormContext();
+    const { resetContext, isDirty } = useSendFormContext();
 
+    if (!isDirty) return null;
     return (
         <Wrapper>
             <In>
