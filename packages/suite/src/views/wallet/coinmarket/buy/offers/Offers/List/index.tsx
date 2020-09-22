@@ -7,6 +7,7 @@ import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOff
 
 import Quote from './Quote';
 import { Translation } from '@suite/components/suite';
+import { formatCryptoAmount } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
 
 interface Props {
     isAlternative?: boolean;
@@ -45,7 +46,11 @@ const List = ({ isAlternative, quotes }: Props) => {
                                     {quotes[0].fiatCurrency}
                                 </Text>
                                 <StyledIcon icon="ARROW_RIGHT" />
-                                {wantCrypto && <Receive>{quotes[0].receiveStringAmount}</Receive>}
+                                {wantCrypto && (
+                                    <Receive>
+                                        {formatCryptoAmount(Number(quotes[0].receiveStringAmount))}
+                                    </Receive>
+                                )}
                                 <StyledCoinLogo size={21} symbol={account.symbol} />
                                 <Crypto>{account.symbol}</Crypto>
                             </SummaryRow>
@@ -62,7 +67,9 @@ const List = ({ isAlternative, quotes }: Props) => {
                                 {fiatCurrency}
                             </Text>
                             <StyledIcon icon="ARROW_RIGHT" />
-                            {wantCrypto && <Receive>{cryptoStringAmount}</Receive>}
+                            {wantCrypto && (
+                                <Receive>{formatCryptoAmount(Number(cryptoStringAmount))}</Receive>
+                            )}
                             <StyledCoinLogo size={21} symbol={account.symbol} />
                             <Crypto>{account.symbol}</Crypto>
                         </SummaryRow>

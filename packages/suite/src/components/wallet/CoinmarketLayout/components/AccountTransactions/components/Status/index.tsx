@@ -57,7 +57,6 @@ const Wrapper = styled.div<{ color: string }>`
     display: flex;
     color: ${props => props.color};
     align-items: center;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
