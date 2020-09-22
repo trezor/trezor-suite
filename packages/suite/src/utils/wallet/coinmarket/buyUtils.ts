@@ -124,15 +124,25 @@ export function submitRequestForm(tradeForm: BuyTradeFormResponse): void {
         window.open(tradeForm.form.formAction, windowType);
         return;
     }
+
     form.method = tradeForm.form.formMethod;
     form.action = tradeForm.form.formAction;
     const { fields } = tradeForm.form;
     Object.keys(fields).forEach(k => {
         addHiddenFieldToForm(form, k, fields[k]);
     });
-    if (!document.body) return;
-    document.body.appendChild(form);
-    form.submit();
+
+    if (process.env.SUITE_TYPE === 'desktop') {
+        const formWindow = window.open('', 'in-electron-window');
+        if (formWindow) {
+            formWindow.document.body.appendChild(form);
+            form.submit();
+        }
+    } else {
+        if (!document.body) return;
+        document.body.appendChild(form);
+        form.submit();
+    }
 }
 
 export const getStatusMessage = (status: Trade['data']['status']) => {
