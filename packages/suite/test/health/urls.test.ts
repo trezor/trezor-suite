@@ -15,7 +15,7 @@ const getUrls = () => {
         return !excluded.includes(url);
     });
 
-    return [...constantUrls];
+    return constantUrls;
 };
 
 describe('Test that all external links are alive', () => {
