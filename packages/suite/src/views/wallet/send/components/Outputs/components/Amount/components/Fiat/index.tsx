@@ -43,7 +43,6 @@ const Fiat = ({ outputId }: { outputId: number }) => {
         setValue,
         localCurrencyOption,
         composeTransaction,
-        watch,
     } = useSendFormContext();
 
     const inputName = `outputs[${outputId}].fiat`;
@@ -56,10 +55,8 @@ const Fiat = ({ outputId }: { outputId: number }) => {
     const error = outputError ? outputError.fiat : undefined;
     const fiatValue = getDefaultValue(inputName, outputs[outputId].fiat || '');
     const tokenValue = getDefaultValue(tokenInputName, outputs[outputId].token);
-    const currencyValue = watch(
-        currencyInputName,
-        getDefaultValue(currencyInputName, outputs[outputId].currency) || localCurrencyOption,
-    );
+    const currencyValue =
+        getDefaultValue(currencyInputName, outputs[outputId].currency) || localCurrencyOption;
     const token = findToken(account.tokens, tokenValue);
     const decimals = token ? token.decimals : network.decimals;
 
@@ -89,11 +86,13 @@ const Fiat = ({ outputId }: { outputId: number }) => {
                         return;
                     }
                     // calculate new Amount, Fiat input times currency rate
+                    // NOTE: get fresh values (currencyValue may be outdated)
+                    const { value } = getDefaultValue(currencyInputName, localCurrencyOption);
                     const amount =
-                        fiatRates && fiatRates.current && currencyValue
+                        fiatRates && fiatRates.current && value
                             ? fromFiatCurrency(
                                   event.target.value,
-                                  currencyValue.value,
+                                  value,
                                   fiatRates.current.rates,
                                   decimals,
                               )
@@ -136,7 +135,6 @@ const Fiat = ({ outputId }: { outputId: number }) => {
                     <Controller
                         control={control}
                         name={currencyInputName}
-                        data-test={currencyInputName}
                         defaultValue={currencyValue}
                         render={({ onChange, value }) => {
                             return (
@@ -146,6 +144,7 @@ const Fiat = ({ outputId }: { outputId: number }) => {
                                     value={value}
                                     isClearable={false}
                                     minWidth="45px"
+                                    data-test={currencyInputName}
                                     onChange={(selected: CurrencyOption) => {
                                         // propagate changes to FormState
                                         onChange(selected);
@@ -161,6 +160,8 @@ const Fiat = ({ outputId }: { outputId: number }) => {
                                             setValue(inputName, fiatValueBigNumber.toFixed(2), {
                                                 shouldValidate: true,
                                             });
+                                            // call compose to store draft, precomposedTx should be the same
+                                            composeTransaction(amountInputName);
                                         }
                                     }}
                                 />
