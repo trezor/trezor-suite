@@ -14,6 +14,7 @@ import { useAnalytics, useDevice } from '@suite-hooks';
 import { Button, Tooltip, Switch } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
+import { capitalizeFirstLetter } from '@suite-utils/string';
 
 import { Props } from './Container';
 
@@ -136,10 +137,7 @@ const Settings = ({
                                 <Translation
                                     id="TR_CONNECTED_TO_PROVIDER"
                                     values={{
-                                        // capitalize first letter of provider type
-                                        provider:
-                                            metadata.provider.type.charAt(0).toUpperCase() +
-                                            metadata.provider.type.slice(1),
+                                        provider: capitalizeFirstLetter(metadata.provider.type),
                                         user: metadata.provider.user,
                                     }}
                                 />

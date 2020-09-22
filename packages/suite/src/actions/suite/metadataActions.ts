@@ -74,12 +74,13 @@ const getProvider = async (state?: Partial<MetadataProviderCredentials>) => {
  */
 export const disposeMetadata = (keys?: boolean) => (dispatch: Dispatch, getState: GetState) => {
     getState().wallet.accounts.forEach(account => {
-        const updatedMetadata = { ...account.metadata };
-
-        // always remove metadata  values
-        updatedMetadata.outputLabels = {};
-        updatedMetadata.addressLabels = {};
-        updatedMetadata.accountLabel = '';
+        const updatedMetadata = {
+            ...account.metadata,
+            // always remove metadata  values
+            outputLabels: {},
+            addressLabels: {},
+            accountLabel: '',
+        };
 
         // and sometimes remove also keys (information we can only if device is connected)
         if (keys) {

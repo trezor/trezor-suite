@@ -3808,6 +3808,20 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Ripple transactions and token transactions on ethereum network are excluded from the transaction graph',
     },
+    METADATA_PROVIDER_NOT_FOUND_ERROR: {
+        id: 'METADATA_PROVIDER_NOT_FOUND_ERROR',
+        defaultMessage: 'Failed to find metadata in cloud provider.',
+    },
+    METADATA_PROVIDER_AUTH_ERROR: {
+        id: 'METADATA_PROVIDER_AUTH_ERROR',
+        defaultMessage:
+            'Failed to sync labeling data with cloud provider {provider}. User was logged out.',
+    },
+    METADATA_PROVIDER_UNEXPECTED_ERROR: {
+        id: 'METADATA_PROVIDER_UNEXPECTED_ERROR',
+        defaultMessage:
+            'Failed to sync labeling data with cloud provider {provider}. User was logged out.',
+    },
 } as const);
 
 export default definedMessages;
