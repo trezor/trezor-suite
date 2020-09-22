@@ -36,18 +36,11 @@ const Row = styled.div`
 `;
 
 const Outputs = () => {
-    const { outputs, register } = useSendFormContext();
+    const { outputs } = useSendFormContext();
     return (
         <Wrapper>
             {outputs.map((output, index) => (
                 <OutputWrapper key={output.id} index={index}>
-                    {/* output type needs to be registered as well */}
-                    <input
-                        type="hidden"
-                        name={`outputs[${index}].type`}
-                        ref={register()}
-                        defaultValue={output.type}
-                    />
                     {output.type === 'opreturn' ? (
                         <OpReturn outputId={index} />
                     ) : (
