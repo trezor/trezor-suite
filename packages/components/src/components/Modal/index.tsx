@@ -443,7 +443,7 @@ const Modal = ({
                 >
                     {heading}
                     {cancelable && (
-                        <CancelIconWrapper onClick={onCancel}>
+                        <CancelIconWrapper data-test="@modal/close-button" onClick={onCancel}>
                             <Icon size={24} color={colors.NEUE_TYPE_DARK_GREY} icon="CROSS" />
                         </CancelIconWrapper>
                     )}
