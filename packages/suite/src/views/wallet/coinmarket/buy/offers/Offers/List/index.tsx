@@ -6,6 +6,7 @@ import { BuyTrade } from 'invity-api';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
 
 import Quote from './Quote';
+import { Translation } from '@suite/components/suite';
 
 interface Props {
     isAlternative?: boolean;
@@ -67,7 +68,14 @@ const List = ({ isAlternative, quotes }: Props) => {
                         </SummaryRow>
                     )}
                 </Left>
-                <Right>{!isAlternative && REFETCH_INTERVAL / 1000 - seconds}</Right>
+                {!isAlternative && (
+                    <Right>
+                        <RefreshLabel>
+                            <Translation id="TR_BUY_OFFERS_REFRESH" />
+                        </RefreshLabel>
+                        <RefreshTime>{Math.max(0, REFETCH_INTERVAL / 1000 - seconds)}s</RefreshTime>
+                    </Right>
+                )}
             </Header>
             <Quotes>
                 {quotes.map(quote => (
@@ -112,6 +120,16 @@ const SummaryRow = styled.div`
 const OrigAmount = styled.div`
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
     font-size: smaller;
+`;
+
+const RefreshLabel = styled.div`
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-size: smaller;
+`;
+
+const RefreshTime = styled.div`
+    min-width: 30px;
+    text-align: right;
 `;
 
 const StyledIcon = styled(Icon)`

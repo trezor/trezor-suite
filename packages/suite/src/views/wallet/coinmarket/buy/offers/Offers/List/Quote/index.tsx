@@ -73,7 +73,9 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
 
 const Quote = ({ className, quote, wantCrypto }: Props) => {
     const { selectQuote, providersInfo } = useCoinmarketBuyOffersContext();
-    const hasTag = false; // TODO - tags are in quote.tags, will need some algorithm to evaluate them and show only one
+    // TODO - tags are not yet fully supported by the API server
+    // in the future will be taken from quote.tags, will need some algorithm to evaluate them and show only one
+    const hasTag = false;
     const { paymentMethod, exchange, error } = quote;
 
     return (
@@ -85,7 +87,9 @@ const Quote = ({ className, quote, wantCrypto }: Props) => {
                     <Left>
                         {wantCrypto
                             ? `${quote.fiatStringAmount} ${quote.fiatCurrency}`
-                            : `${quote.receiveStringAmount} ${quote.receiveCurrency}`}
+                            : `${formatCryptoAmount(Number(quote.receiveStringAmount))} ${
+                                  quote.receiveCurrency
+                              }`}
                     </Left>
                 )}
                 <Right>

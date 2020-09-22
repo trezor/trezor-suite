@@ -19,7 +19,9 @@ const Offers = () => {
     return (
         <Wrapper>
             {quotes?.length === 0 && alternativeQuotes?.length === 0 && (
-                <NoQuotes>No quotes here</NoQuotes>
+                <NoQuotes>
+                    <Translation id="TR_BUY_NO_OFFERS" />
+                </NoQuotes>
             )}
             {!selectedQuote && quotes.length > 0 && (
                 <>

@@ -241,6 +241,14 @@ const definedMessages = defineMessages({
         defaultMessage: 'Other Offers in',
         id: 'TR_BUY_OTHER_OFFERS_IN',
     },
+    TR_BUY_NO_OFFERS: {
+        defaultMessage: 'Sorry, none of our partners can provide an offer at this time.',
+        id: 'TR_BUY_NO_OFFERS',
+    },
+    TR_BUY_OFFERS_REFRESH: {
+        defaultMessage: 'Refresh in',
+        id: 'TR_BUY_NO_OFFERS',
+    },
     TR_BUY_VALIDATION_ERROR_EMPTY: {
         defaultMessage: 'TR_BUY_ERROR_EMPTY',
         id: 'TR_BUY_ERROR_EMPTY',
