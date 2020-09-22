@@ -32,7 +32,13 @@ const List = ({ isAlternative, quotes }: Props) => {
     });
 
     if (!quotesRequest) return null;
-    const { fiatStringAmount, fiatCurrency, cryptoStringAmount, wantCrypto } = quotesRequest;
+    const {
+        fiatStringAmount,
+        fiatCurrency,
+        cryptoStringAmount,
+        wantCrypto,
+        receiveCurrency,
+    } = quotesRequest;
 
     return (
         <Wrapper>
@@ -71,7 +77,7 @@ const List = ({ isAlternative, quotes }: Props) => {
                                 <Receive>{formatCryptoAmount(Number(cryptoStringAmount))}</Receive>
                             )}
                             <StyledCoinLogo size={21} symbol={account.symbol} />
-                            <Crypto>{quotes[0].receiveCurrency}</Crypto>
+                            <Crypto>{receiveCurrency}</Crypto>
                         </SummaryRow>
                     )}
                 </Left>
@@ -85,13 +91,19 @@ const List = ({ isAlternative, quotes }: Props) => {
                 )}
             </Header>
             <Quotes>
-                {quotes.map(quote => (
-                    <StyledQuote
-                        wantCrypto={wantCrypto}
-                        key={`${quote.exchange}-${quote.paymentMethod}-${quote.receiveCurrency}`}
-                        quote={quote}
-                    />
-                ))}
+                {quotes?.length === 0 ? (
+                    <NoQuotes>
+                        <Translation id="TR_BUY_NO_OFFERS" />
+                    </NoQuotes>
+                ) : (
+                    quotes.map(quote => (
+                        <StyledQuote
+                            wantCrypto={wantCrypto}
+                            key={`${quote.exchange}-${quote.paymentMethod}-${quote.receiveCurrency}`}
+                            quote={quote}
+                        />
+                    ))
+                )}
             </Quotes>
         </Wrapper>
     );
@@ -158,5 +170,13 @@ const Receive = styled(Text)`
 `;
 
 const StyledCoinLogo = styled(CoinLogo)``;
+
+const NoQuotes = styled.div`
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+`;
 
 export default List;

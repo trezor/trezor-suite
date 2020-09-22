@@ -18,25 +18,28 @@ const Offers = () => {
 
     return (
         <Wrapper>
-            {quotes?.length === 0 && alternativeQuotes?.length === 0 && (
-                <NoQuotes>
-                    <Translation id="TR_BUY_NO_OFFERS" />
-                </NoQuotes>
-            )}
-            {!selectedQuote && quotes.length > 0 && (
+            {!selectedQuote && (
                 <>
-                    <List quotes={quotes} />
-                    {alternativeQuotes && alternativeQuotes.length > 0 && (
+                    {quotes?.length === 0 && alternativeQuotes?.length === 0 ? (
+                        <NoQuotes>
+                            <Translation id="TR_BUY_NO_OFFERS" />
+                        </NoQuotes>
+                    ) : (
                         <>
-                            <Divider>
-                                <DividerLeft />
-                                <DividerMiddle>
-                                    <Translation id="TR_BUY_OTHER_OFFERS_IN" />
-                                    <Currency>{alternativeQuotes[0].fiatCurrency}</Currency>
-                                </DividerMiddle>
-                                <DividerRight />
-                            </Divider>
-                            <List isAlternative quotes={alternativeQuotes} />
+                            <List quotes={quotes} />
+                            {alternativeQuotes && alternativeQuotes.length > 0 && (
+                                <>
+                                    <Divider>
+                                        <DividerLeft />
+                                        <DividerMiddle>
+                                            <Translation id="TR_BUY_OTHER_OFFERS_IN" />
+                                            <Currency>{alternativeQuotes[0].fiatCurrency}</Currency>
+                                        </DividerMiddle>
+                                        <DividerRight />
+                                    </Divider>
+                                    <List isAlternative quotes={alternativeQuotes} />
+                                </>
+                            )}
                         </>
                     )}
                 </>
