@@ -84,6 +84,7 @@ const init = async () => {
         webPreferences: {
             webSecurity: !isDev,
             allowRunningInsecureContent: isDev,
+            nativeWindowOpen: true,
             nodeIntegration: false,
             contextIsolation: true,
             enableRemoteModule: false,
@@ -130,7 +131,27 @@ const init = async () => {
     };
 
     mainWindow.webContents.on('will-navigate', handleExternalLink);
-    mainWindow.webContents.on('new-window', handleExternalLink);
+    mainWindow.webContents.on(
+        'new-window',
+        (event, url, frameName, _disposition, options, _additionalFeatures) => {
+            // open new electron window
+            // example: window.open(YOUR URL, 'in-electron-window');
+            if (frameName === 'in-electron-window') {
+                event.preventDefault();
+                Object.assign(options, {
+                    modal: false,
+                    parent: mainWindow,
+                    closable: true,
+                    center: true,
+                    width: store.MIN_WIDTH,
+                    height: store.MIN_HEIGHT,
+                });
+                event.newGuest = new BrowserWindow(options);
+            } else {
+                handleExternalLink(event, url);
+            }
+        },
+    );
 
     mainWindow.on('page-title-updated', evt => {
         // prevent updating window title

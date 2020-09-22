@@ -116,6 +116,7 @@ export const useOffers = (props: Props) => {
             trade: quote,
             returnUrl: createTxLink(selectedQuote, account),
         });
+
         if (!response || !response.trade || !response.trade.paymentId) {
             // TODO - show error, something really bad happened
             console.log('invalid response', response);
