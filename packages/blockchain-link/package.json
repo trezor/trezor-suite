@@ -36,31 +36,31 @@
         "type-check": "tsc --project tsconfig.json"
     },
     "devDependencies": {
-        "@babel/register": "^7.10.3",
-        "@babel/runtime": "^7.10.3",
+        "@babel/register": "^7.11.5",
+        "@babel/runtime": "^7.11.2",
         "babel-eslint": "^10.1.0",
         "babel-loader": "^8.1.0",
         "bignumber.js": "^9.0.0",
         "eslint-config-airbnb-base": "^14.2.0",
         "eslint-loader": "^4.0.2",
-        "eslint-plugin-jest": "^23.17.1",
-        "html-webpack-plugin": "^4.3.0",
-        "ripple-lib": "1.7.1",
+        "eslint-plugin-jest": "^24.0.2",
+        "html-webpack-plugin": "^4.5.0",
+        "ripple-lib": "1.8.0",
         "tiny-worker": "^2.3.0",
-        "ts-loader": "^7.0.5",
-        "webpack": "^4.43.0",
+        "ts-loader": "^8.0.4",
+        "webpack": "^4.44.2",
         "webpack-cli": "3.3.12",
         "webpack-dev-server": "3.11.0",
-        "worker-loader": "^3.0.1",
-        "ws": "^7.3.0"
+        "worker-loader": "^3.0.2",
+        "ws": "^7.3.1"
     },
     "dependencies": {
         "es6-promise": "^4.2.8",
-        "events": "^3.1.0"
+        "events": "^3.2.0"
     },
     "workersDependencies": {
         "bignumber.js": "^9.0.0",
-        "ripple-lib": "1.6.5",
+        "ripple-lib": "1.8.0",
         "tiny-worker": "^2.3.0",
         "ws": "^7.2.1"
     }
