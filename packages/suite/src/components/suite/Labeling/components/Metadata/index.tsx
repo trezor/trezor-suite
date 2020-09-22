@@ -131,10 +131,9 @@ const MetadataLabeling = (props: Props) => {
         metadata.provider
     );
 
-    // it is impossible to add label. In this case, device is remembered and disconnected but does not have keys.
-    // this may happen if user disabled metadata in settings with remembered device. in such case we get rid
-    // of all metadata related records (keys included).
-    const labelingImpossible = device?.metadata.status !== 'enabled' && !device?.connected;
+    // labeling is possible (it is possible to make it available) when we may obtain keys from device. If enabled, we already have them
+    // (and only need to connect provider), or if device is connected, we may initiate TrezorConnect.CipherKeyValue call and get them
+    const labelingPossible = device?.metadata.status === 'enabled' || device?.connected;
 
     const l10nLabelling = getLocalizedActions(props.payload.type);
 
@@ -222,7 +221,7 @@ const MetadataLabeling = (props: Props) => {
                 props.defaultVisibleValue
             )}
 
-            {!labelingImpossible && !props.payload.value && (
+            {labelingPossible && !props.payload.value && (
                 <AddLabelButton
                     data-test={`${dataTestBase}/add-label-button`}
                     variant="tertiary"

@@ -58,7 +58,10 @@ export type ToastPayload = (
               | 'verify-address-error'
               | 'sign-message-error'
               | 'verify-message-error'
-              | 'sign-tx-error';
+              | 'sign-tx-error'
+              | 'metadata-auth-error'
+              | 'metadata-not-found-error'
+              | 'metadata-unexpected-error';
           error: string;
       }
 ) &
