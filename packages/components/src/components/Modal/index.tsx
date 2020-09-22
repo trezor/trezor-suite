@@ -219,8 +219,7 @@ const ProgressBarPlaceholder = styled.div<{ hiddenProgressBar: boolean }>`
 const GreenBar = styled.div<{ width: number }>`
     height: 4px;
     position: relative;
-    background-color: ${colors.GREEN};
-    z-index: 3;
+    background-color: ${colors.NEUE_BG_GREEN};
     transition: all 0.5s;
     width: ${props => `${props.width}%`};
 `;
@@ -407,11 +406,11 @@ const Modal = ({
         hiddenProgressBar ||
         (totalProgressBarSteps !== undefined && currentProgressBarStep !== undefined);
 
+    console.log('showProgressBarPlaceholder', showProgressBarPlaceholder);
     // compute progress bar width if all data is available and hiddenProgressBar is not selected
     let progressBarWidth = null;
     if (!hiddenProgressBar && totalProgressBarSteps && currentProgressBarStep) {
-        const progress = (100 / totalProgressBarSteps) * currentProgressBarStep;
-        progressBarWidth = Math.min(Math.max(progress - 5, 0), 100);
+        progressBarWidth = (100 / totalProgressBarSteps) * currentProgressBarStep;
     }
 
     if (cancelable && onCancel && escPressed) {
