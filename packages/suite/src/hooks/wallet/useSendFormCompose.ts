@@ -104,7 +104,7 @@ export const useSendFormCompose = ({
         // set state value for later use in updateComposedValues function
         setComposeField(field);
         // start composing
-        updateContext({ isLoading: true });
+        updateContext({ isLoading: true, isDirty: true });
     };
 
     // Handle composeRequest
