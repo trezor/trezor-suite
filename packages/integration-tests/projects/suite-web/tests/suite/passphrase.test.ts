@@ -46,7 +46,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@modal/confirm-address/address-field').should('contain', abcAddr);
         cy.task('pressYes');
         // close modal
-        cy.type('{ esc }');
+        cy.getTestElement('@modal/close-button').click();
 
         cy.log('passphrase def');
         // add 2nd hidden wallet
@@ -67,7 +67,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@modal/confirm-address/address-field').should('contain', defAddr);
         cy.task('pressYes');
         // close modal
-        cy.type('{ esc }');
+        cy.getTestElement('@modal/close-button').click();
 
         cy.log('passphrase abc again. now it is cached in device');
         // now go back to the 1st wallet
