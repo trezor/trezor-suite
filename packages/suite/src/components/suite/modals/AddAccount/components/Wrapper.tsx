@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button, colors, variables, Modal } from '@trezor/components';
 import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
-import { Network, ExternalNetwork } from '@wallet-types';
+import { Network } from '@wallet-types';
 import NetworkSelect from './NetworkSelect';
 import AccountTypeSelect from './AccountTypeSelect';
 
@@ -39,12 +39,11 @@ const Expander = styled.div`
 `;
 
 type Props = {
-    selectedNetwork: Network | ExternalNetwork;
+    selectedNetwork: Network;
     internalNetworks: Network[];
-    externalNetworks: ExternalNetwork[];
     selectedAccountType?: Network;
     accountTypes?: Network[];
-    onSelectNetwork: (network: Network | ExternalNetwork) => void;
+    onSelectNetwork: (network: Network) => void;
     onSelectAccountType: (network: Network) => void;
     onCancel: () => void;
     children?: JSX.Element;
@@ -65,7 +64,6 @@ const Wrapper = (props: Props) => (
             <NetworkSelect
                 network={props.selectedNetwork}
                 internalNetworks={props.internalNetworks}
-                externalNetworks={props.externalNetworks}
                 setSelectedNetwork={props.onSelectNetwork}
             />
         </Row>

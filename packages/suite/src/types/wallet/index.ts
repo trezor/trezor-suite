@@ -18,14 +18,13 @@ import { BlockchainActions } from '@wallet-actions/blockchainActions';
 import { SendFormActions } from '@wallet-actions/sendFormActions';
 import { TransactionAction } from '@wallet-actions/transactionActions';
 import { SelectedAccountActions } from '@wallet-actions/selectedAccountActions';
-import { NETWORKS, EXTERNAL_NETWORKS } from '@wallet-config';
+import { NETWORKS } from '@wallet-config';
 import { Icon as Icon$ } from './iconTypes';
 import { NetworkToken as NetworkToken$, Token as Token$ } from './tokenTypes';
 import { WalletParams as WalletParams$ } from '@suite-utils/router';
 import { ArrayElement } from '../utils';
 
 export type Network = ArrayElement<typeof NETWORKS>;
-export type ExternalNetwork = ArrayElement<typeof EXTERNAL_NETWORKS>;
 export type NetworkToken = NetworkToken$;
 export type Token = Token$;
 export type Account = Account$;
