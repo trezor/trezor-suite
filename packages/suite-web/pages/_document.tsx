@@ -1,6 +1,7 @@
 import React from 'react';
 import Document, { DocumentContext, Html, Head, Main, NextScript } from 'next/document';
 import { resolveStaticPath } from '@suite-utils/nextjs';
+import { isDev } from '@suite-utils/build';
 import { ServerStyleSheet } from 'styled-components';
 import globalStyles from '@suite-support/styles/global';
 
@@ -38,6 +39,7 @@ export default class MyDocument extends Document {
             <Html lang="en" translate="no">
                 <Head>
                     <meta charSet="utf-8" />
+                    <meta name="theme-color" content={process.env.themeColor} />
                     <script
                         type="text/javascript"
                         src={resolveStaticPath('browser-detection/index.js')}
@@ -48,12 +50,10 @@ export default class MyDocument extends Document {
                         href={resolveStaticPath('fonts/fonts.css')}
                     />
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
-                    <link
-                        rel="manifest"
-                        href={resolveStaticPath('browser-detection/manifest.json')}
-                    />
+                    {!isDev() && <link rel="manifest" href={resolveStaticPath('manifest.json')} />}
                 </Head>
                 <body>
+                    <noscript>You need to enable JavaScript to run this app.</noscript>
                     <Main />
                     <NextScript />
                 </body>

@@ -1,5 +1,6 @@
 screenshots
 public
+static
 scripts/localhost.crt
 scripts/localhost.key
 test/plugins/python/__pycache__/

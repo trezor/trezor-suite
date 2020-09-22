@@ -5,6 +5,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
 import * as Sentry from '@sentry/browser';
 import { initStore } from '@suite/reducers/store';
+import { resolveStaticPath } from '@suite-utils/nextjs';
 import Preloader from '@suite-components/Preloader';
 import { ToastContainer } from 'react-toastify';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
@@ -34,6 +35,13 @@ interface Props {
 
 class TrezorSuiteApp extends App<Props> {
     componentDidMount() {
+        // Load Workbox SW (PWA support)
+        if (!isDev()) {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register(resolveStaticPath('workbox/sw.js'));
+            }
+        }
+
         if (!window.Cypress && !isDev()) {
             Sentry.init(SENTRY_CONFIG);
             Sentry.configureScope(scope => {

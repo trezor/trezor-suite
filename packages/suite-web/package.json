@@ -2,6 +2,10 @@
     "name": "@trezor/suite-web",
     "version": "20.10.1-beta",
     "private": true,
+    "shortName": "Suite",
+    "longName": "Trezor Suite",
+    "themeColor": "#212121",
+    "description": "Trezor Suite application.",
     "scripts": {
         "type-check": "tsc --project tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
@@ -21,6 +25,8 @@
         "next": "^9.5.3",
         "next-redux-wrapper": "^5.0.0",
         "styled-components": "5.1.1",
+        "webpack-pwa-manifest": "^4.2.0",
+        "next-workbox-webpack-plugin": "^2.1.1",
         "worker-loader": "^3.0.2"
     },
     "devDependencies": {
