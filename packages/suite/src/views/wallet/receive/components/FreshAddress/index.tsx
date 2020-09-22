@@ -1,8 +1,8 @@
 import React from 'react';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
-import { Button, Input, Card } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Button, Card, colors, variables } from '@trezor/components';
+import { Translation, QuestionTooltip, ReadMoreLink } from '@suite-components';
 import messages from '@suite/support/messages';
 import { ChildProps as Props } from '../../Container';
 import { AccountAddress } from 'trezor-connect';
@@ -15,8 +15,9 @@ const StyledCard = styled(Card)`
     justify-content: space-between;
     flex-wrap: wrap;
     padding: 32px 42px;
+    align-items: center;
 
-    @media all and (max-width: 860px) {
+    @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
         button {
             width: 100%;
             margin-left: auto;
@@ -29,19 +30,47 @@ const AddressContainer = styled.div`
     flex: 1;
 `;
 
-const StyledInput = styled(Input)`
-    height: 36px;
-    font-variant-numeric: tabular-nums slashed-zero;
-`;
-
 const StyledButton = styled(Button)`
     min-width: 220px;
     margin-left: 20px;
-    align-self: flex-end;
 `;
 
-const InputLabel = ({ symbol, isBitcoin }: { symbol: string; isBitcoin: boolean }) => {
-    const addressLabel = isBitcoin ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS';
+const FreshAddressWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin-top: 8px;
+`;
+
+const StyledFreshAddress = styled.span`
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    font-size: ${variables.FONT_SIZE.H2};
+`;
+const AddressLabel = styled.span`
+    font-weight: 600;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.TINY};
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+    font-variant-numeric: slashed-zero tabular-nums;
+`;
+
+const Overlay = styled.div`
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    position: absolute;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 220px);
+`;
+
+const TooltipLabel = ({ symbol, isBitcoin }: { symbol: string; isBitcoin: boolean }) => {
+    const addressLabel = (
+        <AddressLabel>
+            <Translation id={isBitcoin ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS'} />
+        </AddressLabel>
+    );
+
     if (symbol === 'ltc') {
         // additional tooltip with LTC addresses explanation
         return (
@@ -60,7 +89,7 @@ const InputLabel = ({ symbol, isBitcoin }: { symbol: string; isBitcoin: boolean 
             />
         );
     }
-    return <Translation id={addressLabel} />;
+    return addressLabel;
 };
 
 const FreshAddress = ({
@@ -86,17 +115,12 @@ const FreshAddress = ({
     // NOTE: unrevealed[0] can be undefined (limit exceeded)
     const firstFreshAddress = isBitcoin ? unrevealed[0] : unused[0];
 
-    const isRevealed = (address: AccountAddress) =>
-        addresses ? !!addresses.find(f => f.address === address.address) : false;
-
     const getAddressValue = (address?: AccountAddress) => {
         if (!address) {
             return intl.formatMessage(messages.RECEIVE_ADDRESS_LIMIT_EXCEEDED);
         }
 
-        const truncatedAddress = `${address.address.substring(0, 15)}…`;
-        // eth, ripple: already revealed address will show in its full form
-        return isRevealed(address) ? address.address : truncatedAddress;
+        return `${address.address.substring(0, 20)}`;
     };
 
     const addressValue = getAddressValue(firstFreshAddress);
@@ -104,17 +128,15 @@ const FreshAddress = ({
     return (
         <StyledCard>
             <AddressContainer>
-                <StyledInput
-                    // label={<Translation id={addressLabel} />}
-                    variant="small"
-                    monospace
-                    isDisabled
-                    value={addressValue}
-                    noError
-                />
+                <TooltipLabel isBitcoin={isBitcoin} symbol={account.symbol} />
+                <FreshAddressWrapper>
+                    <Overlay />
+                    <StyledFreshAddress>{addressValue}</StyledFreshAddress>
+                </FreshAddressWrapper>
             </AddressContainer>
             <StyledButton
                 data-test="@wallet/receive/reveal-address-button"
+                icon="TREZOR_LOGO"
                 onClick={() => showAddress(firstFreshAddress.path, firstFreshAddress.address)}
                 isDisabled={disabled || locked || !firstFreshAddress}
             >
