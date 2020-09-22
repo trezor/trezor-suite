@@ -107,12 +107,8 @@ const AccountSearchBox = (props: Props) => {
                         isSelected={coinFilter === n}
                         onClick={e => {
                             e.stopPropagation();
-                            const alreadySelected = coinFilter === n;
-                            if (alreadySelected) {
-                                setCoinFilter(undefined);
-                            } else {
-                                setCoinFilter(n);
-                            }
+                            // select the coin or deactivate if it's already selected
+                            setCoinFilter(coinFilter === n ? undefined : n);
                         }}
                     >
                         <StyledCoinLogo
