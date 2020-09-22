@@ -169,13 +169,23 @@ const ModalWindow = styled.div<ModalWindowProps>`
         `}
 `;
 
-const Heading = styled(H2)<{ cancelable: boolean; showHeaderBorder: boolean }>`
+const Heading = styled(H2)<{
+    cancelable: boolean;
+    showHeaderBorder: boolean;
+    showProgressBar: boolean;
+    hiddenProgressBar: boolean;
+}>`
     display: flex;
     align-items: center;
     padding: 28px 32px 22px 32px;
-    margin-bottom: 20px;
+    margin-bottom: ${props => (props.showProgressBar ? 0 : '20px')};
+
     border-bottom: ${props =>
         props.showHeaderBorder ? `1px solid ${colors.NEUE_STROKE_GREY}` : 'none'};
+
+    /* if progress bar with green bar is being showed, do not show header border (set color to white) */
+    border-color: ${props =>
+        props.showProgressBar && !props.hiddenProgressBar ? 'white' : colors.NEUE_STROKE_GREY};
 
     /* align content based on the 'cancelable' prop */
     text-align: ${props => (props.cancelable ? 'left' : 'center')};
@@ -197,6 +207,22 @@ const CancelIconWrapper = styled.div`
     align-items: center;
     margin-left: 30px;
     cursor: pointer;
+`;
+
+const ProgressBarPlaceholder = styled.div<{ hiddenProgressBar: boolean }>`
+    height: 4px;
+    width: 100%;
+    margin-bottom: 20px;
+    background-color: ${props => (props.hiddenProgressBar ? 'white' : colors.NEUE_STROKE_GREY)};
+`;
+
+const GreenBar = styled.div<{ width: number }>`
+    height: 4px;
+    position: relative;
+    background-color: ${colors.GREEN};
+    z-index: 3;
+    transition: all 0.5s;
+    width: ${props => `${props.width}%`};
 `;
 
 const SidePaddingWrapper = styled.div<{ sidePadding: [string, string, string, string] }>`
@@ -343,6 +369,9 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     noBackground?: boolean;
     onCancel?: () => void;
     showHeaderBorder?: boolean;
+    hiddenProgressBar?: boolean;
+    totalProgressBarSteps?: number;
+    currentProgressBarStep?: number;
 }
 
 const Modal = ({
@@ -366,9 +395,24 @@ const Modal = ({
     modalPaddingSide = ZERO_PADDING, // default value is zero padding on sides for Modal container
     contentPaddingSide = getContentPaddingSide(size, noPadding),
     showHeaderBorder = true,
+    hiddenProgressBar = false, // reserves the space for progress bar (4px under the heading), but not showing the green bar
+    totalProgressBarSteps,
+    currentProgressBarStep,
     ...rest
 }: Props) => {
     const escPressed = useKeyPress('Escape');
+
+    // check if progress bar placeholder should be rendered
+    const showProgressBarPlaceholder: boolean =
+        hiddenProgressBar ||
+        (totalProgressBarSteps !== undefined && currentProgressBarStep !== undefined);
+
+    // compute progress bar width if all data is available and hiddenProgressBar is not selected
+    let progressBarWidth = null;
+    if (!hiddenProgressBar && totalProgressBarSteps && currentProgressBarStep) {
+        const progress = (100 / totalProgressBarSteps) * currentProgressBarStep;
+        progressBarWidth = Math.min(Math.max(progress - 5, 0), 100);
+    }
 
     if (cancelable && onCancel && escPressed) {
         onCancel();
@@ -393,7 +437,12 @@ const Modal = ({
             {...rest}
         >
             {heading && (
-                <Heading cancelable={cancelable} showHeaderBorder={showHeaderBorder}>
+                <Heading
+                    cancelable={cancelable}
+                    showHeaderBorder={showHeaderBorder}
+                    hiddenProgressBar={hiddenProgressBar}
+                    showProgressBar={showProgressBarPlaceholder}
+                >
                     {heading}
                     {cancelable && (
                         <CancelIconWrapper onClick={onCancel}>
@@ -401,6 +450,15 @@ const Modal = ({
                         </CancelIconWrapper>
                     )}
                 </Heading>
+            )}
+
+            {showProgressBarPlaceholder && (
+                <ProgressBarPlaceholder hiddenProgressBar={hiddenProgressBar}>
+                    {/* Make sure that hiddenProgressBar is not selected and that progressBarWidth was successfully computed */}
+                    {!hiddenProgressBar && progressBarWidth && (
+                        <GreenBar width={progressBarWidth} />
+                    )}
+                </ProgressBarPlaceholder>
             )}
 
             {description && (
