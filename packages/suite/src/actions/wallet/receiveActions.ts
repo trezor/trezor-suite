@@ -1,5 +1,6 @@
 import TrezorConnect, { UI, ButtonRequestMessage } from 'trezor-connect';
 import { RECEIVE } from '@wallet-actions/constants';
+import * as suiteActions from '@suite-actions/suiteActions';
 import * as modalActions from '@suite-actions/modalActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { GetState, Dispatch } from '@suite-types';
@@ -74,6 +75,7 @@ export const showAddress = (path: string, address: string) => async (
     // catch button request and open modal
     const buttonRequestHandler = (event: ButtonRequestMessage['payload']) => {
         if (!event || event.code !== 'ButtonRequest_Address') return;
+        dispatch(suiteActions.setProcessMode(device, 'confirm-addr'));
         dispatch(
             modalActions.openModal({
                 type: 'address',
@@ -141,4 +143,5 @@ export const showAddress = (path: string, address: string) => async (
             }),
         );
     }
+    dispatch(suiteActions.setProcessMode(device, undefined));
 };
