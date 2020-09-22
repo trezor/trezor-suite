@@ -14,6 +14,7 @@ import { getStatusMessage, processQuotes } from '@wallet-utils/coinmarket/buyUti
 import { TradeBuy } from '@wallet-reducers/coinmarketReducer';
 import Status from '../Status';
 import { useSelector, useActions } from '@suite-hooks';
+import { formatCryptoAmount } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
 
 interface Props {
     trade: TradeBuy;
@@ -101,11 +102,11 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
                     <Arrow>
                         <Icon color={colors.NEUE_TYPE_LIGHT_GREY} size={13} icon="ARROW_RIGHT" />
                     </Arrow>
-                    {receiveStringAmount} {receiveCurrency}
+                    {formatCryptoAmount(Number(receiveStringAmount))} {receiveCurrency}
                     {/* TODO FIX THIS LOGO */}
                     {/* <StyledCoinLogo size={13} symbol={symbol} /> */}
                 </Row>
-                <SmallRow>
+                <SmallRowStatus>
                     {trade.tradeType.toUpperCase()} •{' '}
                     <FormattedDate
                         value={date}
@@ -116,16 +117,20 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
                         minute="2-digit"
                     />{' '}
                     • <StyledStatus status={status} />
+                </SmallRowStatus>
+                <SmallRow>
+                    <Translation id="TR_COINMARKET_TRADE_ID" />
+                    <TradeID>{trade.data.paymentId}</TradeID>
                 </SmallRow>
             </Column>
-            <Column>
+            <ProviderColumn>
                 <Row>
                     <CoinmarketBuyProviderInfo exchange={exchange} providers={providers} />
                 </Row>
                 <RowSecond>
                     <CoinmarketPaymentType method={paymentMethod} />
                 </RowSecond>
-            </Column>
+            </ProviderColumn>
             <BuyColumn>
                 {statusMessage === 'TR_BUY_STATUS_SUCCESS' ? (
                     <Button
@@ -158,7 +163,6 @@ const Wrapper = styled.div`
     &:hover {
         background: ${colors.WHITE};
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-        cursor: pointer;
     }
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -191,6 +195,16 @@ const BuyColumn = styled(Column)`
     border-left: 1px solid ${colors.NEUE_STROKE_GREY};
 `;
 
+const ProviderColumn = styled(Column)`
+    max-width: 220px;
+`;
+
+const TradeID = styled.span`
+    padding-left: 5px;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+`;
+
 const Row = styled.div`
     display: flex;
     align-items: center;
@@ -213,6 +227,10 @@ const SmallRow = styled.div`
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.TINY};
+`;
+
+const SmallRowStatus = styled(SmallRow)`
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
 const Amount = styled.div``;

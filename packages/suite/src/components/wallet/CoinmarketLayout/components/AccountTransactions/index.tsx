@@ -9,6 +9,12 @@ import ExchangeTransaction from './components/ExchangeTransaction';
 
 const AccountTransactions = () => {
     const accountTransactions = useSelector(state => state.wallet.coinmarket.trades);
+    // sort descending
+    const sortedAccountTransactions = [...accountTransactions].sort((a, b) => {
+        if (a.date > b.date) return -1;
+        if (a.date < b.date) return 1;
+        return 0;
+    });
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const providers = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.providerInfos);
 
@@ -26,7 +32,7 @@ const AccountTransactions = () => {
                 </StyledH2>
             </Header>
             <Content>
-                {accountTransactions.map(trade => {
+                {sortedAccountTransactions.map(trade => {
                     if (trade.tradeType === 'buy') {
                         return (
                             <BuyTransaction

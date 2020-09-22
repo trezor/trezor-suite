@@ -28,14 +28,14 @@ const ExchangeTransaction = ({ trade, providers }: Props) => {
                     ago •
                 </SmallRow>
             </Column>
-            <Column>
+            <ProviderColumn>
                 <Row>
                     <CoinmarketExchangeProviderInfo exchange={exchange} providers={providers} />
                 </Row>
                 <RowSecond>
                     <CoinmarketPaymentType method={paymentMethod} />
                 </RowSecond>
-            </Column>
+            </ProviderColumn>
         </Wrapper>
     );
 };
@@ -52,7 +52,6 @@ const Wrapper = styled.div`
     &:hover {
         background: ${colors.WHITE};
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-        cursor: pointer;
     }
 `;
 
@@ -61,6 +60,10 @@ const Column = styled.div`
     flex: 1;
     flex-direction: column;
     padding: 17px 24px;
+`;
+
+const ProviderColumn = styled(Column)`
+    max-width: 220px;
 `;
 
 const Row = styled.div`

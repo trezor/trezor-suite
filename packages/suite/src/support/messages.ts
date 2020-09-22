@@ -148,6 +148,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Check on your Trezor now',
         id: 'TR_ADDRESS_MODAL_CHECK_ON_TREZOR',
     },
+    TR_COINMARKET_TRADE_ID: {
+        defaultMessage: 'Trade ID:',
+        id: 'TR_COINMARKET_TRADE_ID',
+    },
     TR_EXCHANGE_LOADING: {
         defaultMessage: 'Loading',
         id: 'TR_EXCHANGE_LOADING',
@@ -294,7 +298,7 @@ const definedMessages = defineMessages({
         id: 'TR_BUY_STATUS_ERROR',
     },
     TR_BUY_STATUS_SUCCESS: {
-        defaultMessage: 'Success',
+        defaultMessage: 'Approved',
         id: 'TR_BUY_STATUS_SUCCESS',
     },
     TR_BUY_NO_PROVIDERS: {
