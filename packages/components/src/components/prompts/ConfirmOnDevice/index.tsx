@@ -138,7 +138,7 @@ const ConfirmOnDevice = ({
             </Left>
             <Middle>
                 <Title>{title}</Title>
-                {typeof steps === 'number' && activeStep && activeStep > steps && (
+                {successText && typeof steps === 'number' && activeStep && activeStep > steps && (
                     <Success>{successText}</Success>
                 )}
                 {typeof steps === 'number' && activeStep && activeStep <= steps && (
