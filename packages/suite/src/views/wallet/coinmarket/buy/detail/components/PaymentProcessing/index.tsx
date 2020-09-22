@@ -1,12 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, Loader } from '@trezor/components';
+import { variables, Loader, Button } from '@trezor/components';
+import { Translation } from '@suite/components/suite/Translation';
 
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 60px 20px 20px 20px;
+    padding: 60px 20px 60px 20px;
     flex-direction: column;
 `;
 
@@ -15,11 +16,28 @@ const Title = styled.div`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
-const PaymentProcessing = () => {
+const Link = styled.a`
+    margin-top: 50px;
+`;
+
+interface Props {
+    supportUrl?: string;
+}
+
+const PaymentProcessing = ({ supportUrl }: Props) => {
     return (
         <Wrapper>
             <Loader />
-            <Title>Processing your payment, please wait...</Title>
+            <Title>
+                <Translation id="TR_BUY_DETAIL_PENDING_TITLE" />
+            </Title>
+            {supportUrl && (
+                <Link href={supportUrl} target="_blank">
+                    <Button variant="tertiary">
+                        <Translation id="TR_BUY_DETAIL_PENDING_SUPPORT" />
+                    </Button>
+                </Link>
+            )}
         </Wrapper>
     );
 };

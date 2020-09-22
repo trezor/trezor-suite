@@ -1,14 +1,18 @@
+import * as routerActions from '@suite-actions/routerActions';
 import React from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Button, variables, colors } from '@trezor/components';
 import { CoinmarketTransactionId } from '@wallet-components';
+import { useActions } from '@suite/hooks/suite/useActions';
+import { Account } from '@wallet-types';
+import { Translation } from '@suite/components/suite/Translation';
 
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 60px 20px 20px 20px;
+    padding: 60px 20px 60px 20px;
     flex-direction: column;
 `;
 
@@ -30,34 +34,49 @@ const Description = styled.div`
     text-align: center;
 `;
 
-const CancelButton = styled(Button)`
-    margin-top: 15px;
-`;
-
 const Link = styled.a`
-    margin-top: 50px;
+    margin-top: 30px;
+    margin-bottom: 30px;
 `;
 
 interface Props {
     transactionId?: string;
-    paymentGateUrl: string;
+    supportUrl?: string;
+    account: Account;
 }
 
-const PaymentFailed = ({ transactionId, paymentGateUrl }: Props) => {
+const PaymentFailed = ({ transactionId, supportUrl, account }: Props) => {
+    const { goto } = useActions({
+        goto: routerActions.goto,
+    });
     return (
         <Wrapper>
             <Image src={resolveStaticPath('/images/svg/coinmarket-error.svg')} />
-            <Title>Payment Failed</Title>
+            <Title>
+                <Translation id="TR_BUY_DETAIL_ERROR_TITLE" />
+            </Title>
             <Description>
-                Unfortunately, your payment has failed. No funds were taken from your credit card.
+                <Translation id="TR_BUY_DETAIL_ERROR_TEXT" />
             </Description>
             {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
-            <Link href={paymentGateUrl}>
-                <Button>Start again</Button>
-            </Link>
-            <CancelButton isWhite variant="tertiary">
-                Go to Dashboard
-            </CancelButton>
+            {supportUrl && (
+                <Link href={supportUrl} target="_blank">
+                    <Button variant="tertiary">
+                        <Translation id="TR_BUY_DETAIL_ERROR_SUPPORT" />
+                    </Button>
+                </Link>
+            )}
+            <Button
+                onClick={() =>
+                    goto('wallet-coinmarket-buy', {
+                        symbol: account.symbol,
+                        accountIndex: account.index,
+                        accountType: account.accountType,
+                    })
+                }
+            >
+                <Translation id="TR_BUY_DETAIL_ERROR_BUTTON" />
+            </Button>
         </Wrapper>
     );
 };

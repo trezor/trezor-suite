@@ -148,9 +148,9 @@ const definedMessages = defineMessages({
         defaultMessage: 'Check on your Trezor now',
         id: 'TR_ADDRESS_MODAL_CHECK_ON_TREZOR',
     },
-    TR_COINMARKET_TRADE_ID: {
-        defaultMessage: 'Trade ID:',
-        id: 'TR_COINMARKET_TRADE_ID',
+    TR_COINMARKET_TRADE_NOT_FOUND: {
+        defaultMessage: 'Trade not found',
+        id: 'TR_COINMARKET_TRADE_NOT_FOUND',
     },
     TR_EXCHANGE_LOADING: {
         defaultMessage: 'Loading',
@@ -396,6 +396,59 @@ const definedMessages = defineMessages({
     TR_BUY_RECEIVING_ACCOUNT: {
         defaultMessage: ' Receiving Account',
         id: 'TR_BUY_RECEIVING_ACCOUNT',
+    },
+    TR_BUY_DETAIL_SUCCESS_TITLE: {
+        defaultMessage: 'Approved',
+        id: 'TR_BUY_DETAIL_SUCCESS_TITLE',
+    },
+    TR_BUY_DETAIL_SUCCESS_TEXT: {
+        defaultMessage: 'The transaction was approved. Wait for transaction to be finished.',
+        id: 'TR_BUY_DETAIL_SUCCESS_TEXT',
+    },
+    TR_BUY_DETAIL_SUCCESS_BUTTON: {
+        defaultMessage: 'Back to Account',
+        id: 'TR_BUY_DETAIL_SUCCESS_BUTTON',
+    },
+    TR_BUY_DETAIL_ERROR_TITLE: {
+        defaultMessage: 'The transaction failed',
+        id: 'TR_BUY_DETAIL_SUCCESS_TITLE',
+    },
+    TR_BUY_DETAIL_ERROR_TEXT: {
+        defaultMessage:
+            'Unfortunately, your transaction was rejected or has failed. No funds were taken from you.',
+        id: 'TR_BUY_DETAIL_SUCCESS_TEXT',
+    },
+    TR_BUY_DETAIL_ERROR_SUPPORT: {
+        defaultMessage: "Open partner's support site",
+        id: 'TR_BUY_DETAIL_SUCCESS_TEXT',
+    },
+    TR_BUY_DETAIL_ERROR_BUTTON: {
+        defaultMessage: 'Back to Account',
+        id: 'TR_BUY_DETAIL_SUCCESS_BUTTON',
+    },
+    TR_BUY_DETAIL_PENDING_TITLE: {
+        defaultMessage: 'Processing your transaction, please wait...',
+        id: 'TR_BUY_DETAIL_PENDING_TITLE',
+    },
+    TR_BUY_DETAIL_PENDING_SUPPORT: {
+        defaultMessage: "Open partner's support site",
+        id: 'TR_BUY_DETAIL_PENDING_SUPPORT',
+    },
+    TR_BUY_DETAIL_SUBMITTED_TITLE: {
+        defaultMessage: 'Waiting for your payment...',
+        id: 'TR_BUY_DETAIL_SUBMITTED_TITLE',
+    },
+    TR_BUY_DETAIL_SUBMITTED_TEXT: {
+        defaultMessage: 'Please click the link bellow to finish the payment through provider.',
+        id: 'TR_BUY_DETAIL_SUBMITTED_TEXT',
+    },
+    TR_BUY_DETAIL_SUBMITTED_GATE: {
+        defaultMessage: 'Go to Payment Gate',
+        id: 'TR_BUY_DETAIL_SUBMITTED_GATE',
+    },
+    TR_BUY_DETAIL_SUBMITTED_CANCEL: {
+        defaultMessage: 'Cancel Transaction',
+        id: 'TR_BUY_DETAIL_SUBMITTED_CANCEL',
     },
     TR_ADDRESS_MODAL_CHECK_ON_TREZOR_DESC: {
         defaultMessage:

@@ -118,7 +118,7 @@ export function submitRequestForm(tradeForm: BuyTradeFormResponse): void {
     if (!tradeForm || !tradeForm.form) return;
     // for IFRAME there is nothing to submit
     if (tradeForm.form.formMethod === 'IFRAME') return;
-    const windowType = process.env.SUITE_TYPE === 'desktop' ? 'in-electron-window' : 'browser';
+    const windowType = process.env.SUITE_TYPE === 'desktop' ? 'in-electron-window' : '_self';
     const form = document.createElement('form');
     if (tradeForm.form.formMethod === 'GET' && tradeForm.form.formAction) {
         window.open(tradeForm.form.formAction, windowType);

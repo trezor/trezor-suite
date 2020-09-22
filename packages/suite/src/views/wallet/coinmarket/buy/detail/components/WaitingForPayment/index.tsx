@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Button, variables, colors } from '@trezor/components';
 import { CoinmarketTransactionId } from '@wallet-components';
+import { Translation } from '@suite/components/suite/Translation';
+import { BuyTrade } from 'invity-api';
+import { Account } from '@wallet-types';
+import invityAPI from '@suite/services/suite/invityAPI';
+import { createTxLink, submitRequestForm } from '@suite/utils/wallet/coinmarket/buyUtils';
 
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 60px 20px 20px 20px;
+    padding: 60px 20px 60px 20px;
     flex-direction: column;
 `;
 
@@ -30,34 +35,53 @@ const Description = styled.div`
     text-align: center;
 `;
 
-const CancelButton = styled(Button)`
-    margin-top: 15px;
-`;
+// const CancelButton = styled(Button)`
+//     margin-top: 15px;
+// `;
 
-const Link = styled.a`
-    margin-top: 50px;
+const PaymentButton = styled(Button)`
+    margin-top: 30px;
 `;
 
 interface Props {
     transactionId?: string;
-    paymentGateUrl: string;
+    trade: BuyTrade;
+    account: Account;
 }
 
-const WaitingForPayment = ({ transactionId, paymentGateUrl }: Props) => {
+const WaitingForPayment = ({ transactionId, trade, account }: Props) => {
+    const [isWorking, setIsWorking] = useState(false);
+    const goToPayment = () => {
+        setIsWorking(true);
+        invityAPI
+            .getBuyTradeForm({
+                trade,
+                returnUrl: createTxLink(trade, account),
+            })
+            .then(response => {
+                if (response) {
+                    submitRequestForm(response);
+                }
+            });
+    };
+    // const cancelTrade = () => {};
     return (
         <Wrapper>
             <Image src={resolveStaticPath('/images/svg/coinmarket-waiting.svg')} />
-            <Title>Waiting for Payment...</Title>
+            <Title>
+                <Translation id="TR_BUY_DETAIL_SUBMITTED_TITLE" />
+            </Title>
             <Description>
-                Please click the link bellow to finish the payment through provider.
+                <Translation id="TR_BUY_DETAIL_SUBMITTED_TEXT" />
             </Description>
             {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
-            <Link href={paymentGateUrl}>
-                <Button>Go to Payment Gate</Button>
-            </Link>
-            <CancelButton isWhite variant="tertiary">
-                Cancel transaction
-            </CancelButton>
+            <PaymentButton onClick={goToPayment} isLoading={isWorking} isDisabled={isWorking}>
+                <Translation id="TR_BUY_DETAIL_SUBMITTED_GATE" />
+            </PaymentButton>
+            {/* TODO add a possibility in the future to cancel the transaction by the user                
+            <CancelButton isWhite variant="tertiary" onClick={cancelTrade}>
+                <Translation id="TR_BUY_DETAIL_SUBMITTED_CANCEL" />
+            </CancelButton> */}
         </Wrapper>
     );
 };

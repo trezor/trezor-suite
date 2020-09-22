@@ -13,6 +13,8 @@ import {
     createTxLink,
 } from '@suite/utils/wallet/coinmarket/buyUtils';
 import { Props, ContextValues } from '@wallet-types/coinmarketBuyOffers';
+import { useSelector } from 'react-redux';
+import { AppState } from '@suite/types/suite';
 
 export const useOffers = (props: Props) => {
     const REFETCH_INTERVAL = 30000;
@@ -41,6 +43,14 @@ export const useOffers = (props: Props) => {
         saveTrade: coinmarketBuyActions.saveTrade,
         setIsFromRedirect: coinmarketBuyActions.setIsFromRedirect,
     });
+
+    const invityAPIUrl = useSelector<
+        AppState,
+        AppState['suite']['settings']['debug']['invityAPIUrl']
+    >(state => state.suite.settings.debug.invityAPIUrl);
+    if (invityAPIUrl) {
+        invityAPI.setInvityAPIServer(invityAPIUrl);
+    }
 
     useEffect(() => {
         if (!quotesRequest) {

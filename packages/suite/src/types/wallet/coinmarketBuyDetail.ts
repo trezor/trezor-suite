@@ -16,4 +16,5 @@ export type ContextValues = {
     account: Account;
     trade?: TradeBuy;
     transactionId: AppState['wallet']['coinmarket']['buy']['transactionId'];
+    buyInfo?: AppState['wallet']['coinmarket']['buy']['buyInfo'];
 };

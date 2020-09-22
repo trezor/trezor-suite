@@ -15,6 +15,9 @@ export const useCoinmarketBuyDetail = (props: Props) => {
     if (invityAPIUrl) {
         invityAPI.setInvityAPIServer(invityAPIUrl);
     }
+    const buyInfo = useSelector<AppState, AppState['wallet']['coinmarket']['buy']['buyInfo']>(
+        state => state.wallet.coinmarket.buy.buyInfo,
+    );
 
     const [updatedTrade] = useWatchBuyTrade(account, trades, transactionId);
 
@@ -22,6 +25,7 @@ export const useCoinmarketBuyDetail = (props: Props) => {
         account,
         trade: updatedTrade,
         transactionId,
+        buyInfo,
     };
 };
 

@@ -1,13 +1,17 @@
+import * as routerActions from '@suite-actions/routerActions';
 import React from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Button, variables, colors } from '@trezor/components';
+import { Translation } from '@suite/components/suite';
+import { useActions } from '@suite/hooks/suite/useActions';
+import { Account } from '@wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 60px 20px 20px 20px;
+    padding: 60px 20px 60px 20px;
     flex-direction: column;
 `;
 
@@ -29,16 +33,34 @@ const Description = styled.div`
     text-align: center;
 `;
 
-const PaymentSuccessful = () => {
+interface Props {
+    account: Account;
+}
+
+const PaymentSuccessful = ({ account }: Props) => {
+    const { goto } = useActions({
+        goto: routerActions.goto,
+    });
     return (
         <Wrapper>
             <Image src={resolveStaticPath('/images/svg/coinmarket-success.svg')} />
-            <Title>Paid Successfully</Title>
+            <Title>
+                <Translation id="TR_BUY_DETAIL_SUCCESS_TITLE" />
+            </Title>
             <Description>
-                Wait for transaction to be confirmed and executed. You can see it in your account as
-                unconfirmed for now.
+                <Translation id="TR_BUY_DETAIL_SUCCESS_TEXT" />
             </Description>
-            <Button>Back to Account</Button>
+            <Button
+                onClick={() =>
+                    goto('wallet-coinmarket-buy', {
+                        symbol: account.symbol,
+                        accountIndex: account.index,
+                        accountType: account.accountType,
+                    })
+                }
+            >
+                <Translation id="TR_BUY_DETAIL_SUCCESS_BUTTON" />
+            </Button>
         </Wrapper>
     );
 };

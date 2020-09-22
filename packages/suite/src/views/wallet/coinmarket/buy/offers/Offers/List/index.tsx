@@ -52,7 +52,7 @@ const List = ({ isAlternative, quotes }: Props) => {
                                     </Receive>
                                 )}
                                 <StyledCoinLogo size={21} symbol={account.symbol} />
-                                <Crypto>{account.symbol}</Crypto>
+                                <Crypto>{quotes[0].receiveCurrency}</Crypto>
                             </SummaryRow>
                             {!wantCrypto && (
                                 <OrigAmount>
@@ -71,7 +71,7 @@ const List = ({ isAlternative, quotes }: Props) => {
                                 <Receive>{formatCryptoAmount(Number(cryptoStringAmount))}</Receive>
                             )}
                             <StyledCoinLogo size={21} symbol={account.symbol} />
-                            <Crypto>{account.symbol}</Crypto>
+                            <Crypto>{quotes[0].receiveCurrency}</Crypto>
                         </SummaryRow>
                     )}
                 </Left>

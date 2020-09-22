@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from 'react';
 import styled from 'styled-components';
-import { LayoutContext } from '@suite-components';
+import { LayoutContext, Translation } from '@suite-components';
 import { Card, variables } from '@trezor/components';
 import { CoinmarketBuyOfferInfo, CoinmarketTopPanel } from '@wallet-components';
 import { useCoinmarketBuyDetailContext } from '@wallet-hooks/useCoinmarketBuyDetail';
@@ -17,27 +17,45 @@ const CoinmarketDetail = () => {
         if (setLayout) setLayout('Trezor Suite | Coinmarket', undefined, <CoinmarketTopPanel />);
     }, [setLayout]);
 
-    const { account, trade } = useCoinmarketBuyDetailContext();
+    const { account, trade, buyInfo } = useCoinmarketBuyDetailContext();
     const tradeStatus = trade?.data?.status;
     const showError = tradeStatus === 'ERROR' || tradeStatus === 'BLOCKED';
-    const showProcessing = tradeStatus === 'SUBMITTED';
-    const showWaiting = tradeStatus === 'APPROVAL_PENDING';
+    const showProcessing = tradeStatus === 'APPROVAL_PENDING';
+    const showWaiting = tradeStatus === 'SUBMITTED';
     const showSuccess = tradeStatus === 'SUCCESS';
+
+    const exchange = trade?.data?.exchange;
+    const provider =
+        buyInfo && buyInfo.providerInfos && exchange ? buyInfo.providerInfos[exchange] : undefined;
+    const supportUrlTemplate = provider?.statusUrl || provider?.supportUrl;
+    const supportUrl = supportUrlTemplate?.replace('{{paymentId}}', trade?.data?.paymentId || '');
 
     return (
         <Wrapper>
-            {!trade && <NoTradeError>No trade found</NoTradeError>}
+            {!trade && (
+                <NoTradeError>
+                    <Translation id="TR_COINMARKET_TRADE_NOT_FOUND" />
+                </NoTradeError>
+            )}
             {trade && (
                 <>
                     <StyledCard>
                         {showError && (
-                            <PaymentFailed transactionId={trade.key} paymentGateUrl="someurl" />
+                            <PaymentFailed
+                                account={account}
+                                transactionId={trade.key}
+                                supportUrl={supportUrl}
+                            />
                         )}
                         {showProcessing && <PaymentProcessing />}
                         {showWaiting && (
-                            <WaitingForPayment transactionId={trade.key} paymentGateUrl="someurl" />
+                            <WaitingForPayment
+                                trade={trade.data}
+                                transactionId={trade.key}
+                                account={account}
+                            />
                         )}
-                        {showSuccess && <PaymentSuccessful />}
+                        {showSuccess && <PaymentSuccessful account={account} />}
                     </StyledCard>
                     <CoinmarketBuyOfferInfo
                         account={account}

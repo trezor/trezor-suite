@@ -119,7 +119,7 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
                     • <StyledStatus status={status} />
                 </SmallRowStatus>
                 <SmallRow>
-                    <Translation id="TR_COINMARKET_TRADE_ID" />
+                    <Translation id="TR_BUY_TRANS_ID" />
                     <TradeID>{trade.data.paymentId}</TradeID>
                 </SmallRow>
             </Column>
