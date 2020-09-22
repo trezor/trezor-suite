@@ -78,4 +78,5 @@ export const ICONS = {
     BANK: require('../../images/icons/bank.svg'),
     BUY: require('../../images/icons/buy.svg'),
     CREDIT_CARD: require('../../images/icons/credit_card.svg'),
+    TREZOR_LOGO: require('../../images/icons/trezor_logo.svg'),
 };
