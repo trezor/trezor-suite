@@ -20,6 +20,10 @@ const RowWrapper = styled.div`
     grid-template-columns: minmax(100px, 140px) 2fr 1fr 1fr;
     align-items: center;
     height: 36px;
+
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        grid-template-columns: 90px 2fr 1fr 1fr;
+    }
 `;
 
 interface RowContentProps {

@@ -16,7 +16,7 @@ const IconWrapper = styled.div`
     display: flex;
     justify-self: left;
     width: 100%;
-    margin-top: 16px;
+    margin-top: 14px;
     margin-bottom: 16px;
 `;
 
@@ -29,12 +29,17 @@ const IORowTitle = styled.div`
 `;
 
 const IORow = styled.div`
-    display: flex;
+    display: grid;
+    grid-template-columns: fit-content(200px) auto;
+
+    /* display: flex; */
     line-height: 1.9;
     color: ${colors.BLACK25};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
 `;
+
+const CryptoAmountWrapper = styled.div``;
 
 const Address = styled.div`
     text-overflow: ellipsis;
@@ -42,6 +47,7 @@ const Address = styled.div`
 `;
 
 const Circle = styled.div`
+    display: inline-flex;
     margin-left: 5px;
     margin-right: 5px;
     color: ${colors.BLACK50};
@@ -70,8 +76,14 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                             inputAmount = inputAmount === '-1' ? '0' : inputAmount;
                             return (
                                 <IORow key={input.n}>
-                                    <FormattedCryptoAmount value={inputAmount} symbol={tx.symbol} />
-                                    <Circle>&bull;</Circle>
+                                    <CryptoAmountWrapper>
+                                        <FormattedCryptoAmount
+                                            value={inputAmount}
+                                            symbol={tx.symbol}
+                                            disableHiddenPlaceholder
+                                        />
+                                        <Circle>&bull;</Circle>
+                                    </CryptoAmountWrapper>
                                     <Address>{input.addresses.map((addr: string) => addr)}</Address>
                                 </IORow>
                             );
@@ -89,11 +101,13 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                             outputAmount = outputAmount === '-1' ? '0' : outputAmount;
                             return (
                                 <IORow key={output.n}>
-                                    <FormattedCryptoAmount
-                                        value={outputAmount}
-                                        symbol={tx.symbol}
-                                    />
-                                    <Circle>&bull;</Circle>
+                                    <CryptoAmountWrapper>
+                                        <FormattedCryptoAmount
+                                            value={outputAmount}
+                                            symbol={tx.symbol}
+                                        />
+                                        <Circle>&bull;</Circle>
+                                    </CryptoAmountWrapper>
                                     <Address>
                                         {output.addresses.map((addr: string) => addr)}
                                     </Address>

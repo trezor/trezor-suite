@@ -19,7 +19,7 @@ const ExplorerLinkWrapper = styled.div`
     justify-content: flex-end;
 `;
 
-const ExplorerLinkTransationWrapper = styled.div`
+const ExplorerLinkTransactionWrapper = styled.div`
     display: flex;
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         display: none;
@@ -34,7 +34,7 @@ const TransactionId = styled(props => <HiddenPlaceholder {...props} />)`
 
 const ExplorerLink = styled(Link)`
     font-size: ${variables.NEUE_FONT_SIZE.TINY};
-    width: 100%; /* makes text overflow elipsis work */
+    width: 100%; /* makes text overflow ellipsis work */
 `;
 
 const LinkIcon = styled(Icon)`
@@ -68,7 +68,7 @@ const LoaderIconWrapper = styled.div`
 const HeaderFirstRow = styled.div`
     display: grid;
     grid-gap: 10px;
-    grid-template-columns: minmax(45px, 65px) 4fr 160px;
+    grid-template-columns: minmax(55px, 70px) auto 160px;
     align-items: center;
     padding-bottom: 28px;
     padding-right: 6px;
@@ -77,7 +77,7 @@ const HeaderFirstRow = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        grid-template-columns: minmax(45px, 55px) 1fr 20px;
+        grid-template-columns: 55px 1fr fit-content(15px);
     }
 `;
 
@@ -211,7 +211,7 @@ const BasicDetails = ({ tx, confirmations, isFetching, explorerUrl }: Props) => 
                     <ConfirmationStatusWrapper>
                         {isConfirmed ? (
                             <StatusWrapper>
-                                {/* show spinner is data is being fetched */}
+                                {/* show spinner if data is being fetched */}
                                 {isFetching ? (
                                     <LoaderIconWrapper>
                                         <Loader size={16} />
@@ -246,9 +246,9 @@ const BasicDetails = ({ tx, confirmations, isFetching, explorerUrl }: Props) => 
                 {explorerUrl ? (
                     <ExplorerLinkWrapper>
                         <ExplorerLink variant="nostyle" href={explorerUrl}>
-                            <ExplorerLinkTransationWrapper>
+                            <ExplorerLinkTransactionWrapper>
                                 <Translation id="TR_OPEN_IN_BLOCK_EXPLORER" />
-                            </ExplorerLinkTransationWrapper>
+                            </ExplorerLinkTransactionWrapper>
                             <LinkIcon icon="EXTERNAL_LINK" size={14} color={colors.BLACK25} />
                         </ExplorerLink>
                     </ExplorerLinkWrapper>
