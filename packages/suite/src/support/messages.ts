@@ -2406,27 +2406,6 @@ const definedMessages = defineMessages({
         id: 'MODAL_ADD_ACCOUNT_NETWORK_TESTNET',
         defaultMessage: 'Testnet networks',
     },
-    MODAL_ADD_ACCOUNT_NEM_WALLET: {
-        id: 'MODAL_ADD_ACCOUNT_NEM_WALLET',
-        defaultMessage: 'NEM wallet',
-    },
-    MODAL_ADD_ACCOUNT_STELLAR_WALLET: {
-        id: 'MODAL_ADD_ACCOUNT_STELLAR_WALLET',
-        defaultMessage: 'Stellar wallet',
-    },
-    MODAL_ADD_ACCOUNT_CARDANO_WALLET: {
-        id: 'MODAL_ADD_ACCOUNT_CARDANO_WALLET',
-        defaultMessage: 'Cardano wallet',
-    },
-    MODAL_ADD_ACCOUNT_TEZOS_WALLET: {
-        id: 'MODAL_ADD_ACCOUNT_TEZOS_WALLET',
-        defaultMessage: 'Tezos wallet',
-    },
-    MODAL_ADD_ACCOUNT_NETWORK_EXTERNAL_DESC: {
-        id: 'MODAL_ADD_ACCOUNT_NETWORK_EXTERNAL_DESC',
-        defaultMessage:
-            'This coin is only accessible via an external wallet. It is supported by Trezor but not by Trezor Suite app.',
-    },
     MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY: {
         id: 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY',
         defaultMessage: 'Previous account is empty',
