@@ -5,7 +5,6 @@ import * as walletSettingsActions from '@settings-actions/walletSettingsActions'
 import { useActions } from '@suite-hooks';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import {
-    Output,
     FormState,
     FormOptions,
     UseSendFormState,
@@ -32,10 +31,11 @@ export const useSendFormFields = ({
     });
     const calculateFiat = useCallback(
         (outputIndex: number, amount?: string) => {
-            const output = getValues(`outputs[${outputIndex}]`) as Output;
+            const { outputs } = getValues();
+            const output = outputs ? outputs[outputIndex] : undefined;
             if (!output || output.type !== 'payment') return;
             const { fiat, currency } = output;
-            if (typeof fiat !== 'string') return; // fiat input not registered (testnet? fiat not available?)
+            if (typeof fiat !== 'string') return; // fiat input not registered (testnet or fiat not available)
             const inputName = `outputs[${outputIndex}].fiat`;
             if (!amount) {
                 // reset fiat value (Amount field has error)
