@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useLayoutEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { colors, variables } from '../../config';
 import { useOnClickOutside } from '../../utils/hooks';
@@ -18,6 +18,7 @@ const Menu = styled.ul<MenuProps>`
     min-width: 140px;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
     z-index: 10001;
+    padding: 8px 0px;
 
     ${props =>
         props.coords &&
@@ -27,7 +28,10 @@ const Menu = styled.ul<MenuProps>`
         `}
 
     list-style-type: none;
-    margin-top: ${props => (props.offset !== undefined ? `${props.offset}px` : '10px')};
+    margin-top: ${props =>
+        props.alignMenu === 'top-left' || props.alignMenu === 'top-right'
+            ? `-${props.offset}px`
+            : `${props.offset}px`};
     background: ${colors.NEUE_BG_WHITE};
     overflow: hidden;
 
@@ -43,6 +47,22 @@ const Menu = styled.ul<MenuProps>`
         !props.coords &&
         css`
             right: 0px;
+        `};
+
+    ${props =>
+        props.alignMenu === 'top-left' &&
+        !props.coords &&
+        css`
+            left: 0px;
+            top: ${props.menuSize ? `-${props.menuSize[1]}px` : '0px'};
+        `};
+
+    ${props =>
+        props.alignMenu === 'top-right' &&
+        !props.coords &&
+        css`
+            right: 0px;
+            top: ${props.menuSize ? `-${props.menuSize[1]}px` : '0px'};
         `};
 `;
 
@@ -86,7 +106,7 @@ interface DropdownMenuItem {
     key: string;
     label: React.ReactNode;
     callback?: () => boolean | void;
-    icon?: IconProps['icon'];
+    icon?: IconProps['icon'] | JSX.Element;
     isDisabled?: boolean;
     isHidden?: boolean;
     noPadding?: boolean;
@@ -104,8 +124,9 @@ interface MenuItemProps {
     item: DropdownMenuItem;
 }
 interface MenuProps {
-    alignMenu?: 'left' | 'right';
+    alignMenu?: 'left' | 'right' | 'top-left' | 'top-right';
     coords?: Coords;
+    menuSize?: Coords;
     offset?: number;
 }
 
@@ -138,6 +159,7 @@ const Dropdown = ({
 }: Props) => {
     const [toggled, setToggled] = useState(false);
     const [coords, setCoords] = useState<Coords>(undefined);
+    const [menuSize, setMenuSize] = useState<Coords>(undefined);
     const menuRef = useRef<HTMLUListElement>(null);
     const toggleRef = useRef<any>(null);
     const MenuComponent = components?.DropdownMenu ?? Menu;
@@ -147,6 +169,13 @@ const Dropdown = ({
         ...group,
         options: group.options.filter(item => !item.isHidden),
     }));
+
+    useLayoutEffect(() => {
+        if (menuRef.current && toggled) {
+            const rect = menuRef.current.getBoundingClientRect();
+            setMenuSize([rect.width, rect.height]);
+        }
+    }, [toggled]);
 
     const setAdjustedCoords = (c: Coords) => {
         if (!c) {
@@ -160,6 +189,7 @@ const Dropdown = ({
             const rect = menuRef.current.getBoundingClientRect();
             x += rect.width;
         }
+
         setCoords([x, y]);
     };
 
@@ -219,10 +249,24 @@ const Dropdown = ({
         />
     );
 
+    const getIconComponent = (item: DropdownMenuItem) => {
+        if (item.icon) {
+            return typeof item.icon === 'string' ? (
+                <IconWrapper>
+                    <Icon icon={item.icon} size={16} color={colors.NEUE_TYPE_DARK_GREY} />
+                </IconWrapper>
+            ) : (
+                item.icon
+            );
+        }
+        return null;
+    };
+
     const menu = (
         <MenuComponent
             ref={menuRef}
             alignMenu={alignMenu}
+            menuSize={menuSize}
             offset={offset}
             coords={absolutePosition ? coords : undefined}
         >
@@ -239,15 +283,7 @@ const Dropdown = ({
                             key={item.key}
                             item={item}
                         >
-                            {item.icon && (
-                                <IconWrapper>
-                                    <Icon
-                                        icon={item.icon}
-                                        size={16}
-                                        color={colors.NEUE_TYPE_DARK_GREY}
-                                    />
-                                </IconWrapper>
-                            )}
+                            {getIconComponent(item)}
                             {item.label}
                         </MenuItemComponent>
                     ))}

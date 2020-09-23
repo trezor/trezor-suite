@@ -5,6 +5,7 @@ import { colors, variables } from '@trezor/components';
 import SuiteNotifications from '@suite-components/Notifications';
 import Head from 'next/head';
 import { AppState } from '@suite-types';
+import { BetaBadge } from '@suite-components';
 import MenuSecondary from '@suite-components/MenuSecondary';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import { DiscoveryProgress } from '@wallet-components';
@@ -175,6 +176,7 @@ const SuiteLayout = (props: Props) => {
                     )}
                 </LayoutContext.Provider>
             </CoinFilterContext.Provider>
+            <BetaBadge />
         </PageWrapper>
     );
 };

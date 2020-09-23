@@ -142,4 +142,5 @@ export const ICONS: IconType[] = [
     'BUY',
     'CREDIT_CARD',
     'TREZOR_LOGO',
+    'FEEDBACK',
 ];
