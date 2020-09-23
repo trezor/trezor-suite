@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { variables, colors } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount, formatAmount } from '@wallet-utils/accountUtils';
 import { Card, Translation, FiatValue } from '@suite-components';
 
 const StyledCard = styled(Card)`
@@ -63,35 +63,52 @@ const TotalSentFiat = styled.div`
 
 const TotalSent = () => {
     const {
-        account: { symbol },
+        account: { symbol, networkType },
         composedLevels,
         getValues,
     } = useSendFormContext();
 
     const selectedFee = getValues().selectedFee || 'normal';
     const transactionInfo = composedLevels ? composedLevels[selectedFee] : undefined;
+    const isTokenTransfer = networkType === 'ethereum' && !!getValues('outputs[0].token');
+    const tokenInfo =
+        transactionInfo && transactionInfo.type !== 'error' ? transactionInfo.token : undefined;
+
     return (
         <StyledCard>
             <Left>
                 <Label>
                     <Translation id="TOTAL_SENT" />
                 </Label>
-                <SecondaryLabel>
-                    <Translation id="INCLUDING_FEE" />
-                </SecondaryLabel>
+                {!isTokenTransfer && (
+                    <SecondaryLabel>
+                        <Translation id="INCLUDING_FEE" />
+                    </SecondaryLabel>
+                )}
             </Left>
             {transactionInfo && transactionInfo.type !== 'error' && (
                 <Right>
                     <TotalSentCoin>
-                        {formatNetworkAmount(transactionInfo.totalSpent, symbol)}
-                        <Symbol>{symbol}</Symbol>
+                        {tokenInfo
+                            ? formatAmount(transactionInfo.totalSpent, tokenInfo.decimals)
+                            : formatNetworkAmount(transactionInfo.totalSpent, symbol)}
+                        <Symbol>{tokenInfo ? tokenInfo.symbol : symbol}</Symbol>
                     </TotalSentCoin>
-                    <TotalSentFiat>
-                        <FiatValue
-                            amount={formatNetworkAmount(transactionInfo.totalSpent, symbol)}
-                            symbol={symbol}
-                        />
-                    </TotalSentFiat>
+                    {!tokenInfo && (
+                        <TotalSentFiat>
+                            <FiatValue
+                                amount={formatNetworkAmount(transactionInfo.totalSpent, symbol)}
+                                symbol={symbol}
+                            />
+                        </TotalSentFiat>
+                    )}
+                    {tokenInfo && (
+                        <TotalSentFiat>
+                            <Translation id="FEE" />
+                            <Symbol>{formatNetworkAmount(transactionInfo.fee, symbol)}</Symbol>
+                            <Symbol>{symbol}</Symbol>
+                        </TotalSentFiat>
+                    )}
                 </Right>
             )}
         </StyledCard>
