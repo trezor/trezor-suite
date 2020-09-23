@@ -47,11 +47,11 @@ export const useSendFormCompose = ({
     const composeDraft = useCallback(
         async (values: FormState) => {
             // start composing without debounce
-            updateContext({ isLoading: true });
+            updateContext({ isLoading: true, isDirty: true });
             setComposedLevels(undefined);
             const result = await composeTransaction(values, state);
             setComposedLevels(result);
-            updateContext({ isLoading: false });
+            updateContext({ isLoading: false, isDirty: true }); // isDirty needs to be set again, "state" is cached in updateContext callback
         },
         [state, composeTransaction, updateContext],
     );
