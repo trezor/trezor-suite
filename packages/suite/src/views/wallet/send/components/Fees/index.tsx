@@ -23,7 +23,7 @@ const StyledCard = styled(Card)`
 const Label = styled.div`
     display: flex;
     padding-right: 20px;
-    padding-top: 4px;
+    padding-top: 5px;
     padding-bottom: 10px;
 
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -69,11 +69,13 @@ const EstimatedMiningTimeWrapper = styled.span`
 
 const Row = styled.div`
     display: flex;
+    align-items: center;
 
     & + & {
         margin-top: 15px;
     }
 `;
+
 const Col = styled.div`
     display: flex;
     flex-direction: column;
@@ -136,6 +138,22 @@ const Fees = () => {
                             if (shouldCompose) composeTransaction('output[0].amount');
                         }}
                     />
+                    {transactionInfo && transactionInfo.type !== 'error' && (
+                        <FeeAmount>
+                            <CoinAmount>
+                                <FormattedCryptoAmount
+                                    value={formatNetworkAmount(transactionInfo.fee, symbol)}
+                                    symbol={symbol}
+                                />
+                            </CoinAmount>
+                            <FiatAmount>
+                                <FiatValue
+                                    amount={formatNetworkAmount(transactionInfo.fee, symbol)}
+                                    symbol={symbol}
+                                />
+                            </FiatAmount>
+                        </FeeAmount>
+                    )}
                 </Row>
                 <Row>
                     <FeeInfo>
@@ -161,22 +179,6 @@ const Fees = () => {
                                 <TxSize>({transactionInfo.bytes} B)</TxSize>
                             )}
                     </FeeInfo>
-                    {transactionInfo && transactionInfo.type !== 'error' && (
-                        <FeeAmount>
-                            <CoinAmount>
-                                <FormattedCryptoAmount
-                                    value={formatNetworkAmount(transactionInfo.fee, symbol)}
-                                    symbol={symbol}
-                                />
-                            </CoinAmount>
-                            <FiatAmount>
-                                <FiatValue
-                                    amount={formatNetworkAmount(transactionInfo.fee, symbol)}
-                                    symbol={symbol}
-                                />
-                            </FiatAmount>
-                        </FeeAmount>
-                    )}
                 </Row>
             </Col>
         </StyledCard>
