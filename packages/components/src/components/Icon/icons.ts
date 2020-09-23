@@ -83,4 +83,5 @@ export const ICONS = {
     TREZOR_LOGO: require('../../images/icons/trezor_logo.svg'),
     DROPBOX: require('../../images/icons/dropbox.svg'),
     GOOGLE_DRIVE: require('../../images/icons/google-drive.svg'),
+    FEEDBACK: require('../../images/icons/feedback.svg'),
 };
