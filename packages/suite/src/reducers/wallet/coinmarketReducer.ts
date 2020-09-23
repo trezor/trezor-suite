@@ -117,6 +117,9 @@ const coinmarketReducer = (
                     shouldSubmit: action.shouldSubmit,
                 };
                 break;
+            case COINMARKET_BUY.DISPOSE:
+                draft.buy = initialState.buy;
+                break;
             case COINMARKET_EXCHANGE.SAVE_EXCHANGE_INFO:
                 draft.exchange.exchangeInfo = action.exchangeInfo;
                 break;

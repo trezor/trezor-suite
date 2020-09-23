@@ -14,6 +14,7 @@ export interface BuyInfo {
 
 export type CoinmarketBuyActions =
     | { type: typeof COINMARKET_BUY.SAVE_BUY_INFO; buyInfo: BuyInfo }
+    | { type: typeof COINMARKET_BUY.DISPOSE }
     | { type: typeof COINMARKET_BUY.SET_IS_FROM_REDIRECT; isFromRedirect: true }
     | { type: typeof COINMARKET_BUY.SAVE_TRANSACTION_DETAIL_ID; transactionId: string }
     | { type: typeof COINMARKET_BUY.SAVE_QUOTE_REQUEST; request: BuyTradeQuoteRequest }
@@ -82,6 +83,10 @@ export const saveBuyInfo = (buyInfo: BuyInfo) => async (dispatch: Dispatch) => {
         buyInfo,
     });
 };
+
+export const dispose = () => ({
+    type: COINMARKET_BUY.DISPOSE,
+});
 
 export const setIsFromRedirect = (isFromRedirect: boolean) => async (dispatch: Dispatch) => {
     dispatch({
