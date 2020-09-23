@@ -12,7 +12,6 @@ import Router from '@suite-support/Router';
 import OnlineStatus from '@suite-support/OnlineStatus';
 import BridgeStatus from '@desktop/support/BridgeStatus';
 import VersionCheck from '@desktop/support/VersionCheck';
-import Redirect from '@desktop/support/Redirect';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import { SENTRY_CONFIG } from '@suite-config';
@@ -47,7 +46,6 @@ class TrezorSuiteApp extends App<Props> {
                         <OnlineStatus />
                         <IntlProvider>
                             <Router />
-                            <Redirect />
                             <BridgeStatus />
                             <ToastContainer />
                             <VersionCheck>

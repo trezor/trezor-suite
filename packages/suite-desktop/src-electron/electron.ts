@@ -61,14 +61,9 @@ const init = async () => {
 
     const registerSuiteProtocolSchema = () => {
         const SUITE_PROTOCOL_SCHEMA = 'trezor-suite';
-
         app.removeAsDefaultProtocolClient(SUITE_PROTOCOL_SCHEMA);
         app.setAsDefaultProtocolClient(SUITE_PROTOCOL_SCHEMA);
     };
-
-    app.on('open-url', (_event, data) => {
-        mainWindow.webContents.send('coinmarket-redirect', data);
-    });
 
     if (isDev) {
         await prepareNext(path.resolve(__dirname, '../'));
