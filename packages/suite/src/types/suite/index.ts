@@ -79,7 +79,7 @@ export interface ExtendedDevice {
     ts: number;
     buttonRequests: string[];
     metadata: DeviceMetadata;
-    processMode?: keyof typeof PROCESS_MODE | undefined;
+    processMode?: keyof typeof PROCESS_MODE;
 }
 
 export type AcquiredDevice = KnownDevice & ExtendedDevice;
