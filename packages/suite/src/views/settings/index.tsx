@@ -10,10 +10,11 @@ import {
     TextColumn,
 } from '@suite-components/Settings';
 import { FIAT, LANGUAGES } from '@suite-config';
-import { useAnalytics } from '@suite-hooks';
+import { useAnalytics, useDevice } from '@suite-hooks';
 import { Button, Tooltip, Switch } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
+import { capitalizeFirstLetter } from '@suite-utils/string';
 
 import { Props } from './Container';
 
@@ -36,7 +37,6 @@ const VersionLink = styled.a``;
 const Settings = ({
     language,
     metadata,
-    device,
     setLocalCurrency,
     localCurrency,
     fetchLocale,
@@ -47,6 +47,9 @@ const Settings = ({
     disableMetadata,
 }: Props) => {
     const analytics = useAnalytics();
+
+    const { isLocked, device } = useDevice();
+    const isDeviceLocked = isLocked();
 
     return (
         <SettingsLayout data-test="@settings/index">
@@ -110,6 +113,15 @@ const Settings = ({
                     />
                     <ActionColumn>
                         <Switch
+                            // hmm maybe it should never be disabled, as it is not device related option (although it triggers device flow?)
+                            // but on the other hand there still may be case when it remembered device is disconnected and its metadata.status
+                            // is cancelled or disabled. In such case, initMetadata does not make any sense as it needs device connected.
+                            // You could say: "ok, whatever, but this switch is changing only application setting, why messing with device?"
+                            // Yes, you are right, but if it was done this way, you would enable metadata, then go to wallet, discovery
+                            // and maybe device authorization would be triggered and only after that you would get metadata flow started, wouldn't
+                            // that be confusing? I believe it is better to do it right away, but need for disabling this switch in specific
+                            // edge case is a drawback.
+                            isDisabled={!metadata.enabled && !device?.connected && isDeviceLocked}
                             data-test="@settings/metadata-switch"
                             checked={metadata.enabled}
                             onChange={() =>
@@ -125,7 +137,7 @@ const Settings = ({
                                 <Translation
                                     id="TR_CONNECTED_TO_PROVIDER"
                                     values={{
-                                        provider: metadata.provider.type,
+                                        provider: capitalizeFirstLetter(metadata.provider.type),
                                         user: metadata.provider.user,
                                     }}
                                 />
@@ -143,7 +155,7 @@ const Settings = ({
                         </ActionColumn>
                     </SectionItem>
                 )}
-                {metadata.enabled && !metadata.provider && device?.state && (
+                {metadata.enabled && !metadata.provider && device?.metadata.status === 'enabled' && (
                     <SectionItem>
                         <TextColumn
                             title={<Translation id="TR_LABELING_NOT_SYNCED" />}

@@ -53,18 +53,31 @@ const setDeviceMetadataKey = [
                     metadata: { status: 'cancelled' },
                 },
             },
+            {
+                type: METADATA.DISABLE,
+            },
         ],
     },
-    // {
-    //     description: `Master key successfully generated`,
-    //     initialState: {
-    //         metadata: { enabled: true },
-    //         device: { state: 'device-state', metadata: { status: 'disabled' } },
-    //     },
-    //     result: {
-    //         type: MODAL.OPEN_USER_CONTEXT,
-    //     },
-    // },
+    {
+        description: `Master key successfully generated`,
+        initialState: {
+            metadata: { enabled: true },
+            device: { state: 'device-state', metadata: { status: 'disabled' } },
+        },
+        result: [
+            {
+                type: METADATA.SET_DEVICE_METADATA,
+                payload: {
+                    metadata: {
+                        status: 'enabled',
+                    },
+                },
+            },
+            {
+                type: SUITE.UPDATE_SELECTED_DEVICE,
+            },
+        ],
+    },
 
     {
         description: `Master key successfully generated, provider already connected`,

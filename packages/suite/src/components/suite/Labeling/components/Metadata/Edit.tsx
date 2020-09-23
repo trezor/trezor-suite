@@ -104,7 +104,8 @@ const MetadataEdit = (props: {
                     size={14}
                     data-test="@metadata/cancel"
                     icon="CROSS"
-                    onClick={() => {
+                    onClick={e => {
+                        e.stopPropagation();
                         submit(props.originalValue);
                     }}
                     color={colors.NEUE_TYPE_DARK_GREY}

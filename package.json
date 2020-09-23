@@ -32,15 +32,15 @@
         "lint": "yarn lerna run lint"
     },
     "devDependencies": {
-        "@babel/cli": "^7.10.3",
-        "@babel/core": "^7.10.3",
-        "@babel/node": "^7.10.3",
-        "@babel/plugin-proposal-class-properties": "^7.10.1",
-        "@babel/plugin-proposal-object-rest-spread": "^7.10.3",
-        "@babel/plugin-transform-runtime": "^7.10.3",
-        "@babel/preset-env": "^7.10.3",
-        "@babel/preset-react": "^7.10.1",
-        "@babel/preset-typescript": "^7.10.1",
+        "@babel/cli": "^7.11.6",
+        "@babel/core": "^7.11.6",
+        "@babel/node": "^7.10.5",
+        "@babel/plugin-proposal-class-properties": "^7.10.4",
+        "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
+        "@babel/plugin-transform-runtime": "^7.11.5",
+        "@babel/preset-env": "^7.11.5",
+        "@babel/preset-react": "^7.10.4",
+        "@babel/preset-typescript": "^7.10.4",
         "@types/jest": "^26.0.0",
         "@typescript-eslint/eslint-plugin": "^2.25.0",
         "@typescript-eslint/parser": "^2.25.0",
@@ -64,8 +64,8 @@
         "prettier": "2.0.2",
         "prettier-eslint": "^9.0.1",
         "rimraf": "^3.0.2",
-        "ts-jest": "^26.1.0",
-        "babel-jest": "^26.1.0",
+        "ts-jest": "^26.4.0",
+        "babel-jest": "^26.3.0",
         "typescript": "^3.9.5"
     }
 }

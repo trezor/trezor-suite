@@ -253,6 +253,27 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
                     : messages.TR_BRIDGE_DEV_MODE_STOP,
             });
 
+        case 'metadata-not-found-error':
+            return simple(View, {
+                notification,
+                icon: 'WARNING',
+                message: messages.METADATA_PROVIDER_NOT_FOUND_ERROR,
+            });
+
+        case 'metadata-auth-error':
+            return simple(View, {
+                notification,
+                icon: 'WARNING',
+                message: messages.METADATA_PROVIDER_AUTH_ERROR,
+            });
+
+        case 'metadata-unexpected-error':
+            return simple(View, {
+                notification,
+                icon: 'WARNING',
+                message: messages.METADATA_PROVIDER_UNEXPECTED_ERROR,
+            });
+
         // Events:
         case DEVICE.CONNECT:
             return withAction(View, {

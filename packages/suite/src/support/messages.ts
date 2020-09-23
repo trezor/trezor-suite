@@ -471,6 +471,11 @@ const definedMessages = defineMessages({
         defaultMessage: '{networkName} Account {accountIndex} public key (XPUB)',
         id: 'TR_XPUB_MODAL_TITLE',
     },
+    TR_XPUB_MODAL_TITLE_METADATA: {
+        defaultMessage: '{accountLabel} public key (XPUB)',
+        id: 'TR_XPUB_MODAL_TITLE_METADATA',
+        description: 'accountLabel is user defined name of account, might be pretty much anything.',
+    },
     TR_ADVANCED_RECOVERY: {
         defaultMessage: 'advanced recovery',
         description: 'Enter words via obfuscated pin matrix, recovery takes about 5 minutes.',
@@ -4144,6 +4149,20 @@ const definedMessages = defineMessages({
         id: 'TR_GRAPH_MISSING_DATA',
         defaultMessage:
             'Ripple transactions and token transactions on ethereum network are excluded from the transaction graph',
+    },
+    METADATA_PROVIDER_NOT_FOUND_ERROR: {
+        id: 'METADATA_PROVIDER_NOT_FOUND_ERROR',
+        defaultMessage: 'Failed to find metadata in cloud provider.',
+    },
+    METADATA_PROVIDER_AUTH_ERROR: {
+        id: 'METADATA_PROVIDER_AUTH_ERROR',
+        defaultMessage:
+            'Failed to sync labeling data with cloud provider {provider}. User was logged out.',
+    },
+    METADATA_PROVIDER_UNEXPECTED_ERROR: {
+        id: 'METADATA_PROVIDER_UNEXPECTED_ERROR',
+        defaultMessage:
+            'Failed to sync labeling data with cloud provider {provider}. User was logged out.',
     },
 } as const);
 

@@ -90,6 +90,8 @@ const Amount = ({ outputId }: { outputId: number }) => {
     const { symbol } = account;
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const error = outputError ? outputError.amount : undefined;
+    // corner-case: do not display "setMax" button if FormState got ANY error (setMax probably cannot be calculated)
+    const isSetMaxVisible = isSetMaxActive || error || Object.keys(errors).length === 0;
 
     const amountValue = getDefaultValue(inputName, outputs[outputId].amount || '');
     const tokenValue = getDefaultValue(tokenInputName, outputs[outputId].token);
@@ -113,17 +115,19 @@ const Amount = ({ outputId }: { outputId: number }) => {
                     monospace
                     labelAddonIsVisible={isSetMaxActive}
                     labelAddon={
-                        <Button
-                            icon={isSetMaxActive ? 'CHECK' : 'SEND'}
-                            data-test={`outputs[${outputId}].setMax`}
-                            onClick={() => {
-                                setMax(outputId, isSetMaxActive);
-                                composeTransaction(inputName);
-                            }}
-                            variant="tertiary"
-                        >
-                            <Translation id="AMOUNT_SEND_MAX" />
-                        </Button>
+                        isSetMaxVisible ? (
+                            <Button
+                                icon={isSetMaxActive ? 'CHECK' : 'SEND'}
+                                data-test={`outputs[${outputId}].setMax`}
+                                onClick={() => {
+                                    setMax(outputId, isSetMaxActive);
+                                    composeTransaction(inputName);
+                                }}
+                                variant="tertiary"
+                            >
+                                <Translation id="AMOUNT_SEND_MAX" />
+                            </Button>
+                        ) : undefined
                     }
                     label={
                         <Label>

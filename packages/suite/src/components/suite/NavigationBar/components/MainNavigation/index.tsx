@@ -153,6 +153,7 @@ const MainNavigation = (props: Props) => {
                             <ItemTitle isActive={isActive} isDisabled={isDisabled}>
                                 <Translation id={translationId} />
                             </ItemTitle>
+                            {/* if the button is disabled, display "SOON" badge */}
                             {isDisabled && <NewBadge>soon</NewBadge>}
                         </ItemTitleWrapper>
                     </MenuItemComponent>

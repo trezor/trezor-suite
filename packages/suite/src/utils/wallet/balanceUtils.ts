@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 
 export const formatCoinBalance = (value: string) => {
-    const MAX_NUMBERS = 8;
+    const MAX_NUMBERS = 9;
     const MAX_CRYPTO_VALUE = '100000000';
     const balanceBig = new BigNumber(value);
 
@@ -14,8 +14,10 @@ export const formatCoinBalance = (value: string) => {
     const hasDecimals = parts.length > 1;
 
     if (hasDecimals) {
-        const firstPart = parts[0].length || 1;
-        const fixCount = Math.max(MAX_NUMBERS - firstPart, 0); // don't go lower than 0
+        const integerPartLength = parts[0].length || 1;
+        const fractionalPartLength = parts[1].length;
+        const fixCount = Math.max(MAX_NUMBERS - integerPartLength, 0); // don't go lower than 0
+        const isTruncated = fractionalPartLength > fixCount;
         // fix to max visible numbers with decimals
         const fixedBalance = balanceBig.toFixed(fixCount, 1);
         const fixedBalanceBig = new BigNumber(fixedBalance);
@@ -26,7 +28,7 @@ export const formatCoinBalance = (value: string) => {
             return fixedBalanceBig.toFixed(2);
         }
 
-        return fixedBalanceBig.toFixed();
+        return isTruncated ? `${fixedBalanceBig.toFixed()}…` : fixedBalanceBig.toFixed();
     }
 
     return balanceBig.toFixed();

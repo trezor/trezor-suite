@@ -1,3 +1,9 @@
+# 1.0.14
+
+#### changes
+
+-   Update dependencies
+
 # 1.0.13
 
 #### changes

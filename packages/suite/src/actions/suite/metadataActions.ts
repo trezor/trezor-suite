@@ -66,41 +66,63 @@ const getProvider = async (state?: Partial<MetadataProviderCredentials>) => {
     return providerInstance;
 };
 
-export const enableMetadata = () => (dispatch: Dispatch) => {
-    dispatch({
-        type: METADATA.ENABLE,
-    });
-};
-
-export const disposeMetadata = () => (dispatch: Dispatch, getState: GetState) => {
+/**
+ * dispose metadata from all labelable objects.
+ * Has keys parameter,
+ * if true - dispose also metadata keys
+ * if false - dispose only metadata values
+ */
+export const disposeMetadata = (keys?: boolean) => (dispatch: Dispatch, getState: GetState) => {
     getState().wallet.accounts.forEach(account => {
+        const updatedMetadata = {
+            ...account.metadata,
+            // always remove metadata  values
+            outputLabels: {},
+            addressLabels: {},
+            accountLabel: '',
+        };
+
+        // and sometimes remove also keys (information we can only if device is connected)
+        if (keys) {
+            updatedMetadata.fileName = '';
+            updatedMetadata.aesKey = '';
+        }
+
         dispatch({
             type: METADATA.ACCOUNT_ADD,
             payload: {
                 ...account,
-                metadata: {
-                    key: account.metadata.key,
-                    fileName: '',
-                    aesKey: '',
-                    outputLabels: {},
-                    addressLabels: {},
-                    accountLabel: '',
-                },
+                metadata: updatedMetadata,
             },
         });
     });
+
     getState().devices.forEach(device => {
         if (device.state) {
+            let updatedMetadata = { ...device.metadata };
+
+            if (keys) {
+                // set metadata as disabled for this device, remove all metadata related information
+                updatedMetadata = { status: 'disabled' };
+            } else if ('key' in updatedMetadata) {
+                // metadata is still enabled for this device, keys are kept, we are only removing walletLabel here
+                updatedMetadata.walletLabel = '';
+            }
+
             dispatch({
                 type: METADATA.SET_DEVICE_METADATA,
                 payload: {
                     deviceState: device.state,
-                    metadata: {
-                        status: 'disabled',
-                    },
+                    metadata: updatedMetadata,
                 },
             });
         }
+    });
+};
+
+export const enableMetadata = () => (dispatch: Dispatch) => {
+    dispatch({
+        type: METADATA.ENABLE,
     });
 };
 
@@ -108,7 +130,8 @@ export const disableMetadata = () => (dispatch: Dispatch) => {
     dispatch({
         type: METADATA.DISABLE,
     });
-    dispatch(disposeMetadata());
+    // dispose metadata values and keys
+    dispatch(disposeMetadata(true));
 };
 
 export const initProvider = () => async (dispatch: Dispatch) => {
@@ -135,49 +158,43 @@ export const disconnectProvider = () => async (dispatch: Dispatch, getState: Get
         type: METADATA.SET_PROVIDER,
         payload: undefined,
     });
+
+    // dispose metadata values (not keys)
     dispatch(disposeMetadata());
 };
 
 const handleProviderError = (error: Error) => (dispatch: Dispatch, getState: GetState) => {
     const { metadata } = getState();
-    const unexpectedError = 'labeling action failed with unexpected error';
-    if (!error) {
-        return dispatch(
-            notificationActions.addToast({
-                type: 'error',
-                error: unexpectedError,
-            }),
-        );
+    let errorMsg = 'labeling action failed with unexpected error';
+    if (error) {
+        // @ts-ignore todo: type error;
+        switch (error.status) {
+            case 401:
+            case 403:
+                if (getState().metadata.provider) {
+                    errorMsg = `Failed to sync labeling data with cloud provider (${
+                        metadata!.provider!.type
+                    }). User was logged out.`;
+                }
+                break;
+            case 404:
+                // case 404 is edge case when user manually wipes file from provider
+                errorMsg = 'Failed to find metadata in cloud provider.';
+                // disposing all metadata might seem a bit too harsh but it is such a minor case that it is ok
+                dispatch(disposeMetadata());
+                break;
+            default:
+                break;
+        }
     }
-    // @ts-ignore todo: type error;
-    switch (error.status) {
-        case 403:
-        case 401:
-            if (getState().metadata.provider) {
-                dispatch(
-                    notificationActions.addToast({
-                        type: 'error',
-                        error: `Failed to sync labeling data with cloud provider (${
-                            metadata!.provider!.type
-                        }). User was logged out.`,
-                    }),
-                );
-                dispatch(disconnectProvider());
-            }
-            break;
-        case 404:
-            dispatch(
-                notificationActions.addToast({
-                    type: 'error',
-                    error: 'Failed to find metadata in cloud provider.',
-                }),
-            );
-            dispatch(disconnectProvider());
-            break;
-        default:
-            dispatch(notificationActions.addToast({ type: 'error', error: unexpectedError }));
-            break;
-    }
+
+    dispatch(
+        notificationActions.addToast({
+            type: 'error',
+            error: errorMsg,
+        }),
+    );
+    dispatch(disconnectProvider());
 };
 
 export const fetchMetadata = (deviceState: string) => async (
@@ -258,12 +275,11 @@ export const fetchMetadata = (deviceState: string) => async (
 
     const promises = [deviceFileContentP, ...accountPromises];
 
-    return Promise.all(promises).then(
-        result => result,
-        error => {
-            dispatch(handleProviderError(error));
-        },
-    );
+    try {
+        await Promise.all(promises);
+    } catch (error) {
+        dispatch(handleProviderError(error));
+    }
 };
 
 export const setAccountMetadataKey = (account: Account) => (
@@ -504,6 +520,18 @@ export const setDeviceMetadataKey = () => async (dispatch: Dispatch, getState: G
                 },
             },
         });
+
+        // in effort to resolve https://github.com/trezor/trezor-suite/issues/2315
+        // also turn of global metadata.enabled setting
+        // pros:
+        // - user without saved device is not bothered with labeling when reloading page
+        // cons:
+        // - it makes concept device.metadata.status "cancelled" useless
+        // - new device will not be prompted with metadata when connected so even when there is
+        //   existing metadata for this device, user will not see it until he clicks "add label" button
+        dispatch({
+            type: METADATA.DISABLE,
+        });
     }
 };
 
@@ -541,13 +569,14 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
     // 2. set device metadata key (master key). Sometimes, if state is not present
     if (
         device.metadata.status === 'disabled' ||
-        (device.metadata.status === 'cancelled' && force)
+        (device.metadata.status === 'cancelled' && force && device?.connected)
     ) {
         dispatch({ type: METADATA.SET_INITIATING, payload: true });
         await dispatch(setDeviceMetadataKey());
     }
 
-    // did user confirm labeling on device?
+    // did user confirm labeling on device? or maybe device was not connected
+    // so suite does not have keys and needs to stop here
     if (getState().suite.device?.metadata.status !== 'enabled') {
         // if no, end here
         dispatch({ type: METADATA.SET_INITIATING, payload: false });
@@ -556,7 +585,9 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
         return false;
     }
     // if yes, add metadata keys to accounts
-    dispatch(syncMetadataKeys());
+    if (getState().metadata.initiating) {
+        dispatch(syncMetadataKeys());
+    }
 
     // 3. connect to provider
     if (getState().suite.device?.metadata.status === 'enabled' && !getState().metadata.provider) {

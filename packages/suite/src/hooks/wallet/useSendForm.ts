@@ -49,6 +49,7 @@ const getStateFromProps = (props: UseSendFormProps) => {
         fiatRates,
         localCurrencyOption,
         isLoading: false,
+        isDirty: false,
         online: props.online,
     };
 };
@@ -87,7 +88,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // register `react-hook-form`, defaultValues are set later in "loadDraft" useEffect block
     const useFormMethods = useForm<FormState>({ mode: 'onChange', shouldUnregister: false });
 
-    const { control, reset, register, getValues } = useFormMethods;
+    const { control, reset, register, getValues, errors } = useFormMethods;
 
     // register array fields (outputs array in react-hook-form)
     const outputsFieldArray = useFieldArray<Output>({
@@ -231,9 +232,11 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // handle draftSaveRequest
     useEffect(() => {
         if (!draftSaveRequest) return;
-        saveDraft(getValues());
+        if (Object.keys(errors).length === 0) {
+            saveDraft(getValues());
+        }
         setDraftSaveRequest(false);
-    }, [draftSaveRequest, setDraftSaveRequest, saveDraft, getValues]);
+    }, [draftSaveRequest, setDraftSaveRequest, saveDraft, getValues, errors]);
 
     return {
         ...state,

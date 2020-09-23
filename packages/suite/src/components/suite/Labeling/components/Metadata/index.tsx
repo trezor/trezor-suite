@@ -10,8 +10,6 @@ import MetadataEdit from './Edit';
 
 const LabelDefaultValue = styled.div`
     width: 0;
-    /* max-width: 0; */
-    /* transition: all 1s; */
     text-overflow: ellipsis;
 
     &::before {
@@ -21,10 +19,8 @@ const LabelDefaultValue = styled.div`
 
 const AddLabelButton = styled(Button)`
     visibility: hidden;
-    /* opacity: 0; */
     width: 0;
     margin-left: 14px;
-    /* transition: all 0.4s; */
 `;
 
 const LabelValue = styled.div`
@@ -46,7 +42,6 @@ const LabelContainer = styled.div`
     &:hover {
         ${AddLabelButton} {
             visibility: visible;
-            /* opacity: 1; */
             width: auto;
         }
         ${LabelDefaultValue} {
@@ -129,11 +124,16 @@ const MetadataLabeling = (props: Props) => {
         setEditing: metadataActions.setEditing,
     });
 
+    // is everything ready (more or less) to add label?
     const labelingAvailable = !!(
         metadata.enabled &&
         deviceMetadata?.status === 'enabled' &&
         metadata.provider
     );
+
+    // labeling is possible (it is possible to make it available) when we may obtain keys from device. If enabled, we already have them
+    // (and only need to connect provider), or if device is connected, we may initiate TrezorConnect.CipherKeyValue call and get them
+    const labelingPossible = device?.metadata.status === 'enabled' || device?.connected;
 
     const l10nLabelling = getLocalizedActions(props.payload.type);
 
@@ -160,18 +160,21 @@ const MetadataLabeling = (props: Props) => {
 
     let dropdownItems: DropdownMenuItem[] = [
         {
-            callback: () => setEditing(props.payload.defaultValue),
+            callback: () => activateEdit(),
             label: l10nLabelling.edit,
             'data-test': '@metadata/edit-button',
             key: 'edit-label',
         },
-        {
+    ];
+
+    if (labelingAvailable) {
+        dropdownItems.push({
             callback: () => onSubmit(''),
             label: l10nLabelling.remove,
             'data-test': '@metadata/remove-button',
             key: 'remove-label',
-        },
-    ];
+        });
+    }
 
     if (props.dropdownOptions) {
         dropdownItems = [...dropdownItems, ...props.dropdownOptions];
@@ -218,8 +221,7 @@ const MetadataLabeling = (props: Props) => {
                 props.defaultVisibleValue
             )}
 
-            {((labelingAvailable && !props.payload.value) ||
-                (!labelingAvailable && device?.connected)) && (
+            {labelingPossible && !props.payload.value && (
                 <AddLabelButton
                     data-test={`${dataTestBase}/add-label-button`}
                     variant="tertiary"

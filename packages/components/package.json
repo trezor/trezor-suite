@@ -45,7 +45,7 @@
         "react": "16.13.1",
         "react-docgen-typescript-loader": "^3.7.2",
         "react-dom": "16.13.1",
-        "regenerator-runtime": "0.13.5",
+        "regenerator-runtime": "0.13.7",
         "start-server-and-test": "^1.11.0",
         "styled-components": "^5.1.1",
         "stylelint": "13.5.0",
@@ -54,7 +54,7 @@
         "stylelint-custom-processor-loader": "^0.6.0",
         "stylelint-processor-styled-components": "^1.10.0",
         "typescript-styled-plugin": "^0.15.0",
-        "webpack": "^4.43.0"
+        "webpack": "^4.44.2"
     },
     "peerDependencies": {
         "react": "16.13.1",

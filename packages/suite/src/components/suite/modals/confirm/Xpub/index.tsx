@@ -26,7 +26,15 @@ const Row = styled.div`
     }
 `;
 
-const Xpub = ({ xpub, accountPath, accountIndex, symbol, addNotification, onCancel }: Props) => {
+const Xpub = ({
+    xpub,
+    accountPath,
+    accountIndex,
+    symbol,
+    accountLabel,
+    addNotification,
+    onCancel,
+}: Props) => {
     // TODO: no-backup, backup failed
     // const needsBackup = device.features && device.features.needs_backup;
 
@@ -45,10 +53,17 @@ const Xpub = ({ xpub, accountPath, accountIndex, symbol, addNotification, onCanc
             cancelable
             onCancel={onCancel}
             heading={
-                <Translation
-                    id="TR_XPUB_MODAL_TITLE"
-                    values={{ networkName: symbol.toUpperCase(), accountIndex: accountIndex + 1 }}
-                />
+                accountLabel ? (
+                    <Translation id="TR_XPUB_MODAL_TITLE_METADATA" values={{ accountLabel }} />
+                ) : (
+                    <Translation
+                        id="TR_XPUB_MODAL_TITLE"
+                        values={{
+                            networkName: symbol.toUpperCase(),
+                            accountIndex: `#${accountIndex + 1}`,
+                        }}
+                    />
+                )
             }
         >
             <QrCode value={xpub} addressPath={accountPath} />

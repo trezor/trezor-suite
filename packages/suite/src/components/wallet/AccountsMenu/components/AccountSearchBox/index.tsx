@@ -12,7 +12,7 @@ const Wrapper = styled.div`
 
 const CoinsFilter = styled.div`
     display: flex;
-    margin-top: 16px;
+    padding-top: 16px;
     flex-wrap: wrap;
 `;
 
@@ -25,6 +25,7 @@ const OuterCircle = styled.div<{ isSelected?: boolean; isMobile?: boolean }>`
     border-radius: 50%;
     border: 2px solid ${props => (props.isSelected ? colors.NEUE_BG_GREEN : 'transparent')};
     transition: all 0.3;
+    cursor: pointer;
 
     margin-bottom: 8px;
     margin-right: ${props => (props.isMobile ? '12px' : '4px')};
@@ -41,8 +42,6 @@ const StyledCoinLogo = styled(CoinLogo)<{
     isSelected?: boolean;
     filterActivated?: boolean;
 }>`
-    cursor: pointer;
-
     ${props =>
         props.filterActivated &&
         css`
@@ -96,22 +95,27 @@ const AccountSearchBox = (props: Props) => {
                 clearButton
                 onClear={onClear}
             />
-            <CoinsFilter>
+            <CoinsFilter
+                onClick={() => {
+                    setCoinFilter(undefined);
+                }}
+            >
                 {props.networks.map(n => (
-                    <OuterCircle key={n} isMobile={props.isMobile} isSelected={coinFilter === n}>
+                    <OuterCircle
+                        key={n}
+                        isMobile={props.isMobile}
+                        isSelected={coinFilter === n}
+                        onClick={e => {
+                            e.stopPropagation();
+                            // select the coin or deactivate if it's already selected
+                            setCoinFilter(coinFilter === n ? undefined : n);
+                        }}
+                    >
                         <StyledCoinLogo
                             symbol={n}
                             size={props.isMobile ? 24 : 16}
                             filterActivated={!!coinFilter}
                             isSelected={coinFilter === n}
-                            onClick={() => {
-                                const alreadySelected = coinFilter === n;
-                                if (alreadySelected) {
-                                    setCoinFilter(undefined);
-                                } else {
-                                    setCoinFilter(n);
-                                }
-                            }}
                         />
                     </OuterCircle>
                 ))}
