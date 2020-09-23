@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
 import styled from 'styled-components';
-import validator from 'validator';
+import { isInteger } from '@wallet-utils/validation';
 
 const Wrapper = styled.div`
     display: flex;
@@ -96,7 +96,7 @@ const Inputs = () => {
                                     return;
                                 }
 
-                                if (!validator.isNumeric(value)) {
+                                if (!isInteger(value)) {
                                     return <Translation id="TR_BUY_VALIDATION_ERROR_NOT_NUMBER" />;
                                 }
 
@@ -202,7 +202,7 @@ const Inputs = () => {
                                     return;
                                 }
 
-                                if (!validator.isNumeric(value)) {
+                                if (!isInteger(value)) {
                                     return <Translation id="TR_BUY_VALIDATION_ERROR_NOT_NUMBER" />;
                                 }
 

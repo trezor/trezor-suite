@@ -6,7 +6,7 @@ import { CleanSelect, Icon, Input, variables, Select } from '@trezor/components'
 import React, { useEffect, useState } from 'react';
 import { useFormContext, Controller } from 'react-hook-form';
 import styled from 'styled-components';
-import validator from 'validator';
+import { isInteger } from '@wallet-utils/validation';
 import { ExchangeInfo } from '@suite/actions/wallet/coinmarketExchangeActions';
 import { AmountLimits } from '@suite/utils/wallet/coinmarket/exchangeUtils';
 import { symbolToInvityApiSymbol } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
@@ -151,7 +151,7 @@ const Inputs = ({ amountLimits, exchangeInfo, setAmountLimits }: Props) => {
                                         return;
                                     }
 
-                                    if (!validator.isNumeric(value)) {
+                                    if (!isInteger(value)) {
                                         return 'TR_ERROR_NOT_NUMBER';
                                     }
 
@@ -217,7 +217,7 @@ const Inputs = ({ amountLimits, exchangeInfo, setAmountLimits }: Props) => {
                                     return;
                                 }
 
-                                if (!validator.isNumeric(value)) {
+                                if (!isInteger(value)) {
                                     return 'TR_ERROR_NOT_NUMBER';
                                 }
 
