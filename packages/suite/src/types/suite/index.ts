@@ -29,7 +29,7 @@ import { BackupActions } from '@backup-actions/backupActions';
 import { RecoveryActions } from '@recovery-actions/recoveryActions';
 import { ObjectValues } from '@suite/types/utils';
 import { SUITE } from '@suite-actions/constants';
-import { PROCESS_MODE } from '@suite-middlewares/suiteMiddleware';
+import { PROCESS_MODE } from '@suite-middlewares/actionBlockerMiddleware';
 
 // this weird export is because of --isolatedModules and next.js 9
 export type ExtendedMessageDescriptor = ExtendedMessageDescriptor$;

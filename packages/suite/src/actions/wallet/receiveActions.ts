@@ -75,6 +75,11 @@ export const showAddress = (path: string, address: string) => async (
     // catch button request and open modal
     const buttonRequestHandler = (event: ButtonRequestMessage['payload']) => {
         if (!event || event.code !== 'ButtonRequest_Address') return;
+        // Receive modal has 2 steps, 1. step: we are waiting till an user confirms the address on a device
+        // 2. step: we show the copy button and hide confirm-on-device bubble.
+        // The problem is that after user confirms the address device sent UI.CLOSE_UI.WINDOW that triggers closing the modal.
+        // By setting a device's processMode to 'confirm-addr' we are blocking the action UI.CLOSE_UI.WINDOW (handled in actionBlockerMiddleware)
+        // processMode is set back to undefined at the end of the receive modal flow
         dispatch(suiteActions.setProcessMode(device, 'confirm-addr'));
         dispatch(
             modalActions.openModal({
