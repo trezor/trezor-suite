@@ -26,17 +26,15 @@ const calculate = (
 ): PrecomposedTransaction => {
     const feeInSatoshi = feeLevel.feePerUnit;
 
-    let amount;
-    let max;
-    let totalSpent;
+    let amount: string;
+    let max: string | undefined;
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
-        max = new BigNumber(calculateMax(availableBalance, feeInSatoshi));
-        amount = max.toString();
-        totalSpent = new BigNumber(calculateTotal(amount, feeInSatoshi));
+        max = calculateMax(availableBalance, feeInSatoshi);
+        amount = max;
     } else {
         amount = output.amount;
-        totalSpent = new BigNumber(calculateTotal(output.amount, feeInSatoshi));
     }
+    const totalSpent = new BigNumber(calculateTotal(amount, feeInSatoshi));
 
     if (totalSpent.isGreaterThan(availableBalance)) {
         return {
@@ -57,7 +55,7 @@ const calculate = (
     const payloadData = {
         type: 'nonfinal',
         totalSpent: totalSpent.toString(),
-        max: max ? max.toString() : undefined,
+        max,
         fee: feeInSatoshi,
         feePerByte: feeLevel.feePerUnit,
         bytes: 0, // TODO: calculate
