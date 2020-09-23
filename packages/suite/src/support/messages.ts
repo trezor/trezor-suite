@@ -3828,6 +3828,10 @@ const definedMessages = defineMessages({
         id: 'TR_HIDDEN_WALLET_DESCRIPTION',
         defaultMessage: 'Requires passphrase',
     },
+    TR_GIVE_FEEDBACK: {
+        id: 'TR_GIVE_FEEDBACK',
+        defaultMessage: 'Give Feedback',
+    },
 } as const);
 
 export default definedMessages;

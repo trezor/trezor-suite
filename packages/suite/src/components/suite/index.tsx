@@ -32,6 +32,7 @@ import FormattedCryptoAmount from './FormattedCryptoAmount';
 import Sign from './Sign';
 import AddAccountButton from './AddAccountButton';
 import { ReadMoreLink } from './ReadMoreLink';
+import BetaBadge from './BetaBadge';
 
 export {
     Backdrop,
@@ -72,6 +73,7 @@ export {
     Sign,
     AddAccountButton,
     ReadMoreLink,
+    BetaBadge,
 };
 
 export type { ImageProps };
