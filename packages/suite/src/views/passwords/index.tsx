@@ -15,7 +15,7 @@ const Placeholder = styled.div`
 
 const Passwords = () => {
     const { setLayout } = React.useContext(LayoutContext);
-    React.useMemo(() => {
+    React.useEffect(() => {
         if (setLayout) setLayout('Passwords', undefined);
     }, [setLayout]);
 

@@ -15,7 +15,7 @@ const Placeholder = styled.div`
 
 const Portfolio = () => {
     const { setLayout } = React.useContext(LayoutContext);
-    React.useMemo(() => {
+    React.useEffect(() => {
         if (setLayout) setLayout('Portfolio', undefined);
     }, [setLayout]);
 
