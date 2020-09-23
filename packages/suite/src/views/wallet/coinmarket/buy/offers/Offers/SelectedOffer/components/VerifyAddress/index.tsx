@@ -5,83 +5,6 @@ import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
 import { Input, Button, colors, variables, CoinLogo, DeviceImage } from '@trezor/components';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
 
-const VerifyAddressComponent = () => {
-    const {
-        account,
-        device,
-        verifyAddress,
-        selectedQuote,
-        goToPayment,
-        addressVerified,
-    } = useCoinmarketBuyOffersContext();
-    const { symbol, index, formattedBalance } = account;
-    const { path, address } = getAccountInfo(account);
-
-    if (!path || !address || !selectedQuote) {
-        return null;
-    }
-
-    return (
-        <Wrapper>
-            <CardContent>
-                <CustomLabel>
-                    <LabelText>
-                        <Translation id="TR_BUY_RECEIVING_ACCOUNT" />
-                    </LabelText>
-                    <StyledQuestionTooltip tooltip="TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP" />
-                </CustomLabel>
-                <FakeInput>
-                    <LogoWrapper>
-                        <CoinLogo size={25} symbol={symbol} />
-                    </LogoWrapper>
-                    <AccountWrapper>
-                        <AccountName>Account #{index + 1}</AccountName>
-                        <Amount>
-                            {formattedBalance} <UpperCase>{symbol}</UpperCase> •
-                            <FiatWrapper>
-                                <FiatValue amount={formattedBalance} symbol={symbol} />
-                            </FiatWrapper>
-                        </Amount>
-                    </AccountWrapper>
-                </FakeInput>
-                <Input
-                    label={
-                        <Label>
-                            <Translation id="TR_BUY_RECEIVING_ADDRESS" />
-                            <StyledQuestionTooltip tooltip="TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP" />
-                        </Label>
-                    }
-                    value={address}
-                    readOnly
-                />
-                {addressVerified && (
-                    <Confirmed>
-                        {device && (
-                            <StyledDeviceImage
-                                height={25}
-                                trezorModel={device.features?.major_version === 1 ? 1 : 2}
-                            />
-                        )}
-                        <Translation id="TR_BUY_CONFIRMED_ON_TREZOR" />
-                    </Confirmed>
-                )}
-            </CardContent>
-            <ButtonWrapper>
-                {!addressVerified && (
-                    <Button onClick={() => verifyAddress(path, address)}>
-                        <Translation id="TR_BUY_CONFIRM_ON_TREZOR" />
-                    </Button>
-                )}
-                {addressVerified && (
-                    <Button onClick={() => goToPayment(address)}>
-                        <Translation id="TR_BUY_GO_TO_PAYMENT" />
-                    </Button>
-                )}
-            </ButtonWrapper>
-        </Wrapper>
-    );
-};
-
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -176,5 +99,82 @@ const Confirmed = styled.div`
     align-items: center;
     justify-content: center;
 `;
+
+const VerifyAddressComponent = () => {
+    const {
+        account,
+        device,
+        verifyAddress,
+        selectedQuote,
+        goToPayment,
+        addressVerified,
+    } = useCoinmarketBuyOffersContext();
+    const { symbol, index, formattedBalance } = account;
+    const { path, address } = getAccountInfo(account);
+
+    if (!path || !address || !selectedQuote) {
+        return null;
+    }
+
+    return (
+        <Wrapper>
+            <CardContent>
+                <CustomLabel>
+                    <LabelText>
+                        <Translation id="TR_BUY_RECEIVING_ACCOUNT" />
+                    </LabelText>
+                    <StyledQuestionTooltip tooltip="TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP" />
+                </CustomLabel>
+                <FakeInput>
+                    <LogoWrapper>
+                        <CoinLogo size={25} symbol={symbol} />
+                    </LogoWrapper>
+                    <AccountWrapper>
+                        <AccountName>Account #{index + 1}</AccountName>
+                        <Amount>
+                            {formattedBalance} <UpperCase>{symbol}</UpperCase> •
+                            <FiatWrapper>
+                                <FiatValue amount={formattedBalance} symbol={symbol} />
+                            </FiatWrapper>
+                        </Amount>
+                    </AccountWrapper>
+                </FakeInput>
+                <Input
+                    label={
+                        <Label>
+                            <Translation id="TR_BUY_RECEIVING_ADDRESS" />
+                            <StyledQuestionTooltip tooltip="TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP" />
+                        </Label>
+                    }
+                    value={address}
+                    readOnly
+                />
+                {addressVerified && (
+                    <Confirmed>
+                        {device && (
+                            <StyledDeviceImage
+                                height={25}
+                                trezorModel={device.features?.major_version === 1 ? 1 : 2}
+                            />
+                        )}
+                        <Translation id="TR_BUY_CONFIRMED_ON_TREZOR" />
+                    </Confirmed>
+                )}
+            </CardContent>
+            <ButtonWrapper>
+                {!addressVerified && (
+                    <Button onClick={() => verifyAddress(path, address)}>
+                        <Translation id="TR_BUY_CONFIRM_ON_TREZOR" />
+                    </Button>
+                )}
+                {addressVerified && (
+                    <Button onClick={() => goToPayment(address)}>
+                        <Translation id="TR_BUY_GO_TO_PAYMENT" />
+                    </Button>
+                )}
+            </ButtonWrapper>
+        </Wrapper>
+    );
+};
 
 export default VerifyAddressComponent;

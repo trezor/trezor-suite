@@ -24,6 +24,96 @@ interface Props {
     };
 }
 
+const Wrapper = styled.div`
+    display: flex;
+    flex: 1;
+    align-items: center;
+    margin-bottom: 20px;
+    border: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-radius: 4px;
+    padding: 12px 0;
+
+    &:hover {
+        background: ${colors.WHITE};
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: column;
+    }
+`;
+
+const StyledStatus = styled(Status)`
+    margin-left: 5px;
+`;
+
+const Column = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 17px 24px;
+`;
+
+const BuyColumn = styled(Column)`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    max-width: 130px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        border-left: 0;
+    }
+
+    border-left: 1px solid ${colors.NEUE_STROKE_GREY};
+`;
+
+const ProviderColumn = styled(Column)`
+    max-width: 220px;
+`;
+
+const TradeID = styled.span`
+    padding-left: 5px;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+`;
+
+const Row = styled.div`
+    display: flex;
+    align-items: center;
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
+const RowSecond = styled(Row)`
+    padding-top: 8px;
+    display: flex;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        justify-content: center;
+    }
+`;
+
+const SmallRow = styled.div`
+    padding-top: 8px;
+    display: flex;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-size: ${variables.FONT_SIZE.TINY};
+`;
+
+const SmallRowStatus = styled(SmallRow)`
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+`;
+
+const Amount = styled.div``;
+
+const Arrow = styled.div`
+    display: flex;
+    align-items: center;
+    padding: 0 11px;
+`;
+
 const BuyTransaction = ({ trade, providers, account }: Props) => {
     const { goto } = useActions({ goto: routerActions.goto });
     const {
@@ -150,95 +240,5 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
         </Wrapper>
     );
 };
-
-const Wrapper = styled.div`
-    display: flex;
-    flex: 1;
-    align-items: center;
-    margin-bottom: 20px;
-    border: 1px solid ${colors.NEUE_STROKE_GREY};
-    border-radius: 4px;
-    padding: 12px 0;
-
-    &:hover {
-        background: ${colors.WHITE};
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-    }
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: column;
-    }
-`;
-
-const StyledStatus = styled(Status)`
-    margin-left: 5px;
-`;
-
-const Column = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    padding: 17px 24px;
-`;
-
-const BuyColumn = styled(Column)`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    max-width: 130px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        border-left: 0;
-    }
-
-    border-left: 1px solid ${colors.NEUE_STROKE_GREY};
-`;
-
-const ProviderColumn = styled(Column)`
-    max-width: 220px;
-`;
-
-const TradeID = styled.span`
-    padding-left: 5px;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-`;
-
-const Row = styled.div`
-    display: flex;
-    align-items: center;
-    color: ${colors.NEUE_TYPE_DARK_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const RowSecond = styled(Row)`
-    padding-top: 8px;
-    display: flex;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        justify-content: center;
-    }
-`;
-
-const SmallRow = styled.div`
-    padding-top: 8px;
-    display: flex;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.TINY};
-`;
-
-const SmallRowStatus = styled(SmallRow)`
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-`;
-
-const Amount = styled.div``;
-
-const Arrow = styled.div`
-    display: flex;
-    align-items: center;
-    padding: 0 11px;
-`;
 
 export default BuyTransaction;

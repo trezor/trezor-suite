@@ -7,6 +7,28 @@ import { variables } from '@trezor/components';
 import Inputs from './Inputs';
 import Footer from './Footer';
 
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        padding: 0;
+    }
+`;
+
+const Form = styled.form``;
+
+const Loading = styled.div`
+    display: flex;
+    font-size: ${variables.FONT_SIZE.BIG};
+`;
+
+const NoProviders = styled.div`
+    display: flex;
+    font-size: ${variables.FONT_SIZE.BIG};
+`;
+
 const BuyForm = () => {
     const { onSubmit, handleSubmit, isLoading, noProviders } = useCoinmarketBuyFormContext();
 
@@ -31,27 +53,5 @@ const BuyForm = () => {
         </Wrapper>
     );
 };
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding: 0;
-    }
-`;
-
-const Form = styled.form``;
-
-const Loading = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.BIG};
-`;
-
-const NoProviders = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.BIG};
-`;
 
 export default BuyForm;

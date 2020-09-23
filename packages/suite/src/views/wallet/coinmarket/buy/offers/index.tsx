@@ -18,6 +18,12 @@ const mapStateToProps = (state: AppState): ComponentProps => ({
     providersInfo: state.wallet.coinmarket.buy.buyInfo?.providerInfos,
 });
 
+const Wrapper = styled.div`
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+`;
+
 const OffersIndex = (props: Props) => {
     const { selectedAccount } = props;
     if (props.selectedAccount.status !== 'loaded') {
@@ -35,12 +41,6 @@ const OffersIndex = (props: Props) => {
         </CoinmarketBuyOffersContext.Provider>
     );
 };
-
-const Wrapper = styled.div`
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-`;
 
 // @ts-ignore
 export default connect(mapStateToProps)(OffersIndex);

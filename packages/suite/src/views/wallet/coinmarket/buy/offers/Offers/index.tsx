@@ -8,48 +8,6 @@ import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOff
 import List from './List';
 import SelectedOffer from './SelectedOffer';
 
-const Offers = () => {
-    const { quotes, alternativeQuotes, selectedQuote } = useCoinmarketBuyOffersContext();
-    const { setLayout } = useContext(LayoutContext);
-
-    useMemo(() => {
-        if (setLayout) setLayout('Trezor Suite | Coinmarket', undefined, <CoinmarketTopPanel />);
-    }, [setLayout]);
-
-    return (
-        <Wrapper>
-            {!selectedQuote && (
-                <>
-                    {quotes?.length === 0 && alternativeQuotes?.length === 0 ? (
-                        <NoQuotes>
-                            <Translation id="TR_BUY_NO_OFFERS" />
-                        </NoQuotes>
-                    ) : (
-                        <>
-                            <List quotes={quotes} />
-                            {alternativeQuotes && alternativeQuotes.length > 0 && (
-                                <>
-                                    <Divider>
-                                        <DividerLeft />
-                                        <DividerMiddle>
-                                            <Translation id="TR_BUY_OTHER_OFFERS_IN" />
-                                            <Currency>{alternativeQuotes[0].fiatCurrency}</Currency>
-                                        </DividerMiddle>
-                                        <DividerRight />
-                                    </Divider>
-                                    <List isAlternative quotes={alternativeQuotes} />
-                                </>
-                            )}
-                        </>
-                    )}
-                </>
-            )}
-            {selectedQuote && <SelectedOffer />}
-            <CoinmarketFooter />
-        </Wrapper>
-    );
-};
-
 const Wrapper = styled.div`
     padding: 16px 32px 32px 32px;
 
@@ -102,5 +60,47 @@ const NoQuotes = styled.div`
     align-items: center;
     flex: 1;
 `;
+
+const Offers = () => {
+    const { quotes, alternativeQuotes, selectedQuote } = useCoinmarketBuyOffersContext();
+    const { setLayout } = useContext(LayoutContext);
+
+    useMemo(() => {
+        if (setLayout) setLayout('Trezor Suite | Coinmarket', undefined, <CoinmarketTopPanel />);
+    }, [setLayout]);
+
+    return (
+        <Wrapper>
+            {!selectedQuote && (
+                <>
+                    {quotes?.length === 0 && alternativeQuotes?.length === 0 ? (
+                        <NoQuotes>
+                            <Translation id="TR_BUY_NO_OFFERS" />
+                        </NoQuotes>
+                    ) : (
+                        <>
+                            <List quotes={quotes} />
+                            {alternativeQuotes && alternativeQuotes.length > 0 && (
+                                <>
+                                    <Divider>
+                                        <DividerLeft />
+                                        <DividerMiddle>
+                                            <Translation id="TR_BUY_OTHER_OFFERS_IN" />
+                                            <Currency>{alternativeQuotes[0].fiatCurrency}</Currency>
+                                        </DividerMiddle>
+                                        <DividerRight />
+                                    </Divider>
+                                    <List isAlternative quotes={alternativeQuotes} />
+                                </>
+                            )}
+                        </>
+                    )}
+                </>
+            )}
+            {selectedQuote && <SelectedOffer />}
+            <CoinmarketFooter />
+        </Wrapper>
+    );
+};
 
 export default Offers;

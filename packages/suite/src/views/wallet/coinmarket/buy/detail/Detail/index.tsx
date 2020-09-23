@@ -10,6 +10,27 @@ import PaymentProcessing from '../components/PaymentProcessing';
 import PaymentSuccessful from '../components/PaymentSuccessful';
 import WaitingForPayment from '../components/WaitingForPayment';
 
+const Wrapper = styled.div`
+    display: flex;
+    margin-top: 20px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        flex-direction: column;
+    }
+`;
+
+const StyledCard = styled(Card)`
+    flex: 1;
+    padding: 0;
+`;
+
+const NoTradeError = styled.div`
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+`;
+
 const CoinmarketDetail = () => {
     const { setLayout } = useContext(LayoutContext);
 
@@ -67,26 +88,5 @@ const CoinmarketDetail = () => {
         </Wrapper>
     );
 };
-
-const Wrapper = styled.div`
-    display: flex;
-    margin-top: 20px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        flex-direction: column;
-    }
-`;
-
-const StyledCard = styled(Card)`
-    flex: 1;
-    padding: 0;
-`;
-
-const NoTradeError = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-`;
 
 export default CoinmarketDetail;

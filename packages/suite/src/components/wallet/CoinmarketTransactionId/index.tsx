@@ -8,17 +8,6 @@ interface Props {
     className?: string;
 }
 
-const TransactionId = ({ transactionId, className }: Props) => {
-    return (
-        <Wrapper className={className}>
-            <Label>
-                <Translation id="TR_BUY_TRANS_ID" />
-            </Label>
-            <Value>{transactionId}</Value>
-        </Wrapper>
-    );
-};
-
 const Wrapper = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
@@ -33,5 +22,16 @@ const Label = styled.div`
 `;
 
 const Value = styled.div``;
+
+const TransactionId = ({ transactionId, className }: Props) => {
+    return (
+        <Wrapper className={className}>
+            <Label>
+                <Translation id="TR_BUY_TRANS_ID" />
+            </Label>
+            <Value>{transactionId}</Value>
+        </Wrapper>
+    );
+};
 
 export default TransactionId;

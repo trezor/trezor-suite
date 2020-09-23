@@ -7,6 +7,21 @@ import styled from 'styled-components';
 import BuyTransaction from './components/BuyTransaction';
 import ExchangeTransaction from './components/ExchangeTransaction';
 
+const Wrapper = styled.div`
+    padding: 64px 0 0 0;
+`;
+
+const Content = styled.div``;
+const Header = styled.div`
+    display: flex;
+    align-items: center;
+    padding-bottom: 32px;
+`;
+
+const StyledH2 = styled(H2)`
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
 const AccountTransactions = () => {
     const allTransactions = useSelector(state => state.wallet.coinmarket.trades);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
@@ -67,20 +82,5 @@ const AccountTransactions = () => {
         </Wrapper>
     );
 };
-
-const Wrapper = styled.div`
-    padding: 64px 0 0 0;
-`;
-
-const Content = styled.div``;
-const Header = styled.div`
-    display: flex;
-    align-items: center;
-    padding-bottom: 32px;
-`;
-
-const StyledH2 = styled(H2)`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
 
 export default AccountTransactions;

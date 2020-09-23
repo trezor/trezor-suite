@@ -13,33 +13,6 @@ interface Props {
     };
 }
 
-const ExchangeTransaction = ({ trade, providers }: Props) => {
-    const { date, data } = trade;
-    const { receiveStringAmount, exchange, paymentMethod, receiveCurrency } = data;
-
-    return (
-        <Wrapper>
-            <Column>
-                <Row>
-                    {receiveStringAmount} {receiveCurrency}
-                </Row>
-                <SmallRow>
-                    {trade.tradeType.toUpperCase()} • {formatDistance(new Date(date), new Date())}{' '}
-                    ago •
-                </SmallRow>
-            </Column>
-            <ProviderColumn>
-                <Row>
-                    <CoinmarketExchangeProviderInfo exchange={exchange} providers={providers} />
-                </Row>
-                <RowSecond>
-                    <CoinmarketPaymentType method={paymentMethod} />
-                </RowSecond>
-            </ProviderColumn>
-        </Wrapper>
-    );
-};
-
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
@@ -84,5 +57,32 @@ const SmallRow = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.TINY};
 `;
+
+const ExchangeTransaction = ({ trade, providers }: Props) => {
+    const { date, data } = trade;
+    const { receiveStringAmount, exchange, paymentMethod, receiveCurrency } = data;
+
+    return (
+        <Wrapper>
+            <Column>
+                <Row>
+                    {receiveStringAmount} {receiveCurrency}
+                </Row>
+                <SmallRow>
+                    {trade.tradeType.toUpperCase()} • {formatDistance(new Date(date), new Date())}{' '}
+                    ago •
+                </SmallRow>
+            </Column>
+            <ProviderColumn>
+                <Row>
+                    <CoinmarketExchangeProviderInfo exchange={exchange} providers={providers} />
+                </Row>
+                <RowSecond>
+                    <CoinmarketPaymentType method={paymentMethod} />
+                </RowSecond>
+            </ProviderColumn>
+        </Wrapper>
+    );
+};
 
 export default ExchangeTransaction;

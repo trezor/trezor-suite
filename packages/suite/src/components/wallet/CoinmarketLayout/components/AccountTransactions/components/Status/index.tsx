@@ -10,6 +10,21 @@ interface Props {
     className?: string;
 }
 
+const Wrapper = styled.div<{ color: string }>`
+    display: flex;
+    color: ${props => props.color};
+    align-items: center;
+    font-size: ${variables.FONT_SIZE.TINY};
+`;
+
+const Text = styled.div`
+    padding-top: 1px;
+`;
+
+const StyledIcon = styled(Icon)`
+    margin-right: 3px;
+`;
+
 const getData = (status: Trade['data']['status']) => {
     const message = getStatusMessage(status);
     switch (message) {
@@ -52,20 +67,5 @@ const Status = ({ status, className }: Props) => {
         </Wrapper>
     );
 };
-
-const Wrapper = styled.div<{ color: string }>`
-    display: flex;
-    color: ${props => props.color};
-    align-items: center;
-    font-size: ${variables.FONT_SIZE.TINY};
-`;
-
-const Text = styled.div`
-    padding-top: 1px;
-`;
-
-const StyledIcon = styled(Icon)`
-    margin-right: 3px;
-`;
 
 export default Status;

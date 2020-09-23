@@ -14,6 +14,76 @@ interface Props {
     quotes: BuyTrade[];
 }
 
+const Wrapper = styled.div``;
+const Quotes = styled.div``;
+
+const StyledQuote = styled(Quote)`
+    margin-bottom: 20px;
+`;
+
+const Header = styled.div`
+    margin: 36px 0 24px 0;
+    display: flex;
+    justify-content: space-between;
+`;
+
+const Left = styled.div``;
+const Right = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+`;
+
+const SummaryRow = styled.div`
+    display: flex;
+    align-items: center;
+    font-size: ${variables.FONT_SIZE.H2};
+    text-transform: uppercase;
+`;
+
+const OrigAmount = styled.div`
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-size: smaller;
+`;
+
+const RefreshLabel = styled.div`
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-size: smaller;
+`;
+
+const RefreshTime = styled.div`
+    min-width: 30px;
+    text-align: right;
+`;
+
+const StyledIcon = styled(Icon)`
+    padding: 0 10px;
+`;
+
+const Text = styled.div`
+    display: flex;
+    padding-top: 3px;
+    align-items: center;
+`;
+
+const Crypto = styled(Text)`
+    padding-left: 10px;
+`;
+
+const Receive = styled(Text)`
+    padding-right: 10px;
+`;
+
+const StyledCoinLogo = styled(CoinLogo)``;
+
+const NoQuotes = styled.div`
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+`;
+
 const List = ({ isAlternative, quotes }: Props) => {
     const {
         account,
@@ -108,75 +178,5 @@ const List = ({ isAlternative, quotes }: Props) => {
         </Wrapper>
     );
 };
-
-const Wrapper = styled.div``;
-const Quotes = styled.div``;
-
-const StyledQuote = styled(Quote)`
-    margin-bottom: 20px;
-`;
-
-const Header = styled.div`
-    margin: 36px 0 24px 0;
-    display: flex;
-    justify-content: space-between;
-`;
-
-const Left = styled.div``;
-const Right = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-`;
-
-const SummaryRow = styled.div`
-    display: flex;
-    align-items: center;
-    font-size: ${variables.FONT_SIZE.H2};
-    text-transform: uppercase;
-`;
-
-const OrigAmount = styled.div`
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
-    font-size: smaller;
-`;
-
-const RefreshLabel = styled.div`
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
-    font-size: smaller;
-`;
-
-const RefreshTime = styled.div`
-    min-width: 30px;
-    text-align: right;
-`;
-
-const StyledIcon = styled(Icon)`
-    padding: 0 10px;
-`;
-
-const Text = styled.div`
-    display: flex;
-    padding-top: 3px;
-    align-items: center;
-`;
-
-const Crypto = styled(Text)`
-    padding-left: 10px;
-`;
-
-const Receive = styled(Text)`
-    padding-right: 10px;
-`;
-
-const StyledCoinLogo = styled(CoinLogo)``;
-
-const NoQuotes = styled.div`
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    flex: 1;
-`;
 
 export default List;

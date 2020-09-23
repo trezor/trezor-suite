@@ -8,6 +8,68 @@ import { Translation } from '@suite-components';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 
+const Wrapper = styled.div`
+    display: flex;
+    align-items: center;
+    padding-top: 50px;
+    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: column;
+    }
+`;
+
+const OptionLabel = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const Flag = styled.div`
+    font-size: ${variables.FONT_SIZE.H2};
+    padding-right: 5px;
+`;
+
+const LabelText = styled.div`
+    font-size: ${variables.FONT_SIZE.NORMAL};
+`;
+
+const Left = styled.div`
+    display: flex;
+    flex: 1;
+`;
+
+const Right = styled.div`
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        justify-content: flex-start;
+    }
+`;
+
+const Label = styled.div`
+    display: flex;
+    align-items: center;
+    padding-right: 5px;
+    white-space: nowrap;
+    padding-top: 1px;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+`;
+
+const StyledButton = styled(Button)`
+    display: flex;
+    min-width: 200px;
+    margin-left: 20px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        margin-top: 20px;
+        margin-left: 0;
+        width: 100%;
+    }
+`;
+
 const Footer = () => {
     const {
         control,
@@ -72,67 +134,5 @@ const Footer = () => {
         </Wrapper>
     );
 };
-
-const Wrapper = styled.div`
-    display: flex;
-    align-items: center;
-    padding-top: 50px;
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: column;
-    }
-`;
-
-const OptionLabel = styled.div`
-    display: flex;
-    align-items: center;
-`;
-
-const Flag = styled.div`
-    font-size: ${variables.FONT_SIZE.H2};
-    padding-right: 5px;
-`;
-
-const LabelText = styled.div`
-    font-size: ${variables.FONT_SIZE.NORMAL};
-`;
-
-const Left = styled.div`
-    display: flex;
-    flex: 1;
-`;
-
-const Right = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: flex-end;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        justify-content: flex-start;
-    }
-`;
-
-const Label = styled.div`
-    display: flex;
-    align-items: center;
-    padding-right: 5px;
-    white-space: nowrap;
-    padding-top: 1px;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-`;
-
-const StyledButton = styled(Button)`
-    display: flex;
-    min-width: 200px;
-    margin-left: 20px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        margin-top: 20px;
-        margin-left: 0;
-        width: 100%;
-    }
-`;
 
 export default Footer;

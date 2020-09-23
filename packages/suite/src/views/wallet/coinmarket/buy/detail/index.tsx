@@ -17,6 +17,12 @@ const mapStateToProps = (state: AppState): ComponentProps => ({
     transactionId: state.wallet.coinmarket.buy.transactionId,
 });
 
+const Wrapper = styled.div`
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+`;
+
 const DetailIndex = (props: ComponentProps) => {
     const { selectedAccount } = props;
 
@@ -35,11 +41,5 @@ const DetailIndex = (props: ComponentProps) => {
         </CoinmarketBuyDetailContext.Provider>
     );
 };
-
-const Wrapper = styled.div`
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-`;
 
 export default connect(mapStateToProps)(DetailIndex);
