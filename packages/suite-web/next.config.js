@@ -22,6 +22,7 @@ module.exports = withBundleAnalyzer(
             withImages(
                 withWorkers(
                     withOffline({
+                        assetPrefix,
                         typescript: {
                             ignoreDevErrors: true,
                         },
@@ -34,7 +35,6 @@ module.exports = withBundleAnalyzer(
                             '../packages/suite/src', // issue: https://github.com/zeit/next.js/issues/5666
                         ],
                         trailingSlash: true,
-                        assetPrefix,
                         workerLoaderOptions: {
                             name: 'static/[hash].worker.js',
                             publicPath: '/_next/',
@@ -42,10 +42,8 @@ module.exports = withBundleAnalyzer(
                         experimental: {
                             productionBrowserSourceMaps: true,
                         },
+                        dontAutoRegisterSw: true,
                         workboxOpts: {
-                            modifyURLPrefix: {
-                                'app': assetPrefix,
-                            },
                             runtimeCaching: [
                                 {
                                     urlPattern: '/(news|connect).trezor.io/',
@@ -72,7 +70,7 @@ module.exports = withBundleAnalyzer(
                                 new webpack.DefinePlugin({
                                     'process.env.SUITE_TYPE': JSON.stringify('web'),
                                     'process.env.VERSION': JSON.stringify(pkg.version),
-                                    'process.env.assetPrefix': JSON.stringify(process.env.assetPrefix),
+                                    'process.env.assetPrefix': JSON.stringify(assetPrefix),
                                     'process.env.COMMITHASH': JSON.stringify(
                                         gitRevisionPlugin.commithash(),
                                     ),
@@ -94,7 +92,7 @@ module.exports = withBundleAnalyzer(
                                         display: 'standalone',
                                         fingerprints: false,
                                         inject: false,
-                                        start_url: `${assetPrefix}/`,
+                                        start_url: `${assetPrefix}`,
                                         ios: {
                                             'apple-mobile-web-app-title': pkg.longName,
                                             'apple-mobile-web-app-status-bar-style': pkg.themeColor,

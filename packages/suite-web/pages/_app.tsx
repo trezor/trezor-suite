@@ -35,7 +35,8 @@ interface Props {
 
 class TrezorSuiteApp extends App<Props> {
     componentDidMount() {
-        register(); // Next-Offline (Service Worker)
+        // Next-Offline (Service Worker)
+        register(`${process.env.assetPrefix}/service-worker.js`);
 
         if (!window.Cypress && !isDev()) {
             Sentry.init(SENTRY_CONFIG);
@@ -50,7 +51,8 @@ class TrezorSuiteApp extends App<Props> {
     }
 
     componentWillUnmount() {
-        unregister(); // Next-Offline
+        // Next-Offline
+        unregister();
     }
 
     render() {
