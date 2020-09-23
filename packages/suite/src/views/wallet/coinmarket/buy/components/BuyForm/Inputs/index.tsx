@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
 import styled from 'styled-components';
-import { isInteger } from '@wallet-utils/validation';
+import { isDecimalsValid } from '@wallet-utils/validation';
 
 const Wrapper = styled.div`
     display: flex;
@@ -53,6 +53,7 @@ const Inputs = () => {
         errors,
         trigger,
         account,
+        network,
         control,
         setValue,
         clearErrors,
@@ -96,7 +97,7 @@ const Inputs = () => {
                                     return;
                                 }
 
-                                if (!isInteger(value)) {
+                                if (!isDecimalsValid(value, 2)) {
                                     return <Translation id="TR_BUY_VALIDATION_ERROR_NOT_NUMBER" />;
                                 }
 
@@ -202,7 +203,7 @@ const Inputs = () => {
                                     return;
                                 }
 
-                                if (!isInteger(value)) {
+                                if (!isDecimalsValid(value, network.decimals)) {
                                     return <Translation id="TR_BUY_VALIDATION_ERROR_NOT_NUMBER" />;
                                 }
 

@@ -1,5 +1,5 @@
 import { AppState, ExtendedMessageDescriptor } from '@suite-types';
-import { Account } from '@wallet-types';
+import { Account, Network } from '@wallet-types';
 import { BuyTradeQuoteRequest, BuyTrade } from 'invity-api';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import { UseFormMethods } from 'react-hook-form';
@@ -60,4 +60,5 @@ export type BuyFormContextValues = Omit<UseFormMethods<FormState>, 'register'> &
     quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
     isLoading: boolean;
     noProviders: boolean;
+    network: Network;
 };

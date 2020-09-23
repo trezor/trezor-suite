@@ -22,7 +22,7 @@ BuyFormContext.displayName = 'CoinmarketBuyContext';
 export const useCoinmarketBuyForm = (props: Props): BuyFormContextValues => {
     const { selectedAccount, cachedAccountInfo, quotesRequest } = props;
     const { buyInfo } = useInvityAPI();
-    const { account } = selectedAccount;
+    const { account, network } = selectedAccount;
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
     const methods = useForm<FormState>({ mode: 'onChange' });
 
@@ -111,6 +111,7 @@ export const useCoinmarketBuyForm = (props: Props): BuyFormContextValues => {
         setAmountLimits,
         isLoading,
         noProviders,
+        network,
     };
 };
 
