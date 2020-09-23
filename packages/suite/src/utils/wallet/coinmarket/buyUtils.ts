@@ -86,6 +86,7 @@ export const getAccountInfo = (account: Account) => {
 };
 
 export function createQuoteLink(request: BuyTradeQuoteRequest, account: Account): string {
+    const assetPrefix = process.env.assetPrefix || '';
     let hash: string;
 
     if (request.wantCrypto) {
@@ -94,16 +95,17 @@ export function createQuoteLink(request: BuyTradeQuoteRequest, account: Account)
         hash = `qf/${request.country}/${request.fiatCurrency}/${request.fiatStringAmount}/${request.receiveCurrency}`;
     }
 
-    return `${window.location.origin}/coinmarket-redirect#offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
+    return `${window.location.origin}${assetPrefix}/coinmarket-redirect#offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
 }
 
 export function createTxLink(trade: BuyTrade, account: Account): string {
+    const assetPrefix = process.env.assetPrefix || '';
     const params = `coinmarket-redirect#detail/${account.symbol}/${account.accountType}/${account.index}/${trade.paymentId}`;
     if (process.env.SUITE_TYPE === 'desktop') {
         return `trezor-suite://${params}`;
     }
 
-    return `${window.location.origin}/${params}`;
+    return `${window.location.origin}${assetPrefix}/${params}`;
 }
 
 function addHiddenFieldToForm(form: any, fieldName: string, fieldValue: any) {
