@@ -69,10 +69,11 @@ const EstimatedMiningTimeWrapper = styled.span`
 
 const Row = styled.div`
     display: flex;
-    align-items: center;
 
-    & + & {
-        margin-top: 15px;
+    /* set fixed min-height for the first Row, so that the form doesn't change its height while the fee is being calculated 
+    (happens when typing fee value in the input box) */
+    &:first-child {
+        min-height: 55px;
     }
 `;
 
@@ -89,6 +90,7 @@ const FeeAmount = styled.div`
     flex-direction: column;
     align-items: flex-end;
     margin-left: 12px;
+    padding-top: 5px;
 `;
 interface Option {
     label: string;
