@@ -203,6 +203,7 @@ const MetadataLabeling = (props: Props) => {
 
     return (
         <LabelContainer>
+            {/* props.payload.value is the label for the account */}
             {props.payload.value ? (
                 <StyledDropdown
                     alignMenu="left"
@@ -212,13 +213,14 @@ const MetadataLabeling = (props: Props) => {
                 >
                     <Label data-test={dataTestBase}>
                         <LabelValue>{props.payload.value}</LabelValue>
+                        {/* This is the defaultVisibleValue which shows up after you hover over the label name */}
                         {props.defaultVisibleValue && (
                             <LabelDefaultValue>{props.defaultVisibleValue}</LabelDefaultValue>
                         )}
                     </Label>
                 </StyledDropdown>
             ) : (
-                props.defaultVisibleValue
+                props.defaultVisibleValue // defaultVisibleValue looks like "Ethereum #1" in Suite
             )}
 
             {labelingPossible && !props.payload.value && (

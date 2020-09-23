@@ -406,7 +406,6 @@ const Modal = ({
         hiddenProgressBar ||
         (totalProgressBarSteps !== undefined && currentProgressBarStep !== undefined);
 
-    console.log('showProgressBarPlaceholder', showProgressBarPlaceholder);
     // compute progress bar width if all data is available and hiddenProgressBar is not selected
     let progressBarWidth = null;
     if (!hiddenProgressBar && totalProgressBarSteps && currentProgressBarStep) {

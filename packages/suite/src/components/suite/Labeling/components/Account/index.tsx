@@ -16,14 +16,18 @@ const TabularNums = styled.span`
 const Account = (props: Props) => {
     const { device } = props;
     const accounts = !Array.isArray(props.account) ? [props.account] : props.account;
+
     if (accounts.length < 1) return null;
 
     let accountLabel: JSX.Element;
+    const networkName = accountUtils.getTitleForNetwork(accounts[0].symbol).defaultMessage; // Bitcoin, Ethereum, ...
+
     if (accounts[0].accountType !== 'normal') {
         accountLabel = (
             <Translation
                 id="LABELING_ACCOUNT_WITH_TYPE"
                 values={{
+                    networkName,
                     index: accounts[0].index + 1,
                     type:
                         accounts[0].accountType === 'segwit'
@@ -37,7 +41,8 @@ const Account = (props: Props) => {
             <Translation
                 id="LABELING_ACCOUNT"
                 values={{
-                    index: accounts[0].index + 1,
+                    networkName,
+                    index: accounts[0].index + 1, // this is the number which shows after hash, e.g. Account #3
                 }}
             />
         );

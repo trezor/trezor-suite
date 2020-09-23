@@ -2156,11 +2156,11 @@ const definedMessages = defineMessages({
     },
     LABELING_ACCOUNT: {
         id: 'LABELING_ACCOUNT',
-        defaultMessage: 'Account #{index}',
+        defaultMessage: '{networkName} #{index}',
     },
     LABELING_ACCOUNT_WITH_TYPE: {
         id: 'LABELING_ACCOUNT_WITH_TYPE',
-        defaultMessage: 'Account #{index} ({type})',
+        defaultMessage: '{networkName} #{index} ({type})',
     },
     TR_DISCREET_TOOLTIP: {
         id: 'TR_DISCREET_TOOLTIP',
