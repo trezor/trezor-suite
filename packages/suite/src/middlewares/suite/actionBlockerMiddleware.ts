@@ -10,11 +10,11 @@ export const PROCESS_MODE = {
     'confirm-addr': {
         blockedActions: [UI.CLOSE_UI_WINDOW], // prevents closing the modal after user confirms the address on a device (Receive tab)
     },
-} as const;
+};
 
 const actionBlocker = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
     action: Action,
-): Promise<Action> => {
+) => {
     const prevState = api.getState();
 
     // block actions restricted by device's process mode
