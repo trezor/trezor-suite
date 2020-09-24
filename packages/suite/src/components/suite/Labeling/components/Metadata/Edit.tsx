@@ -75,7 +75,7 @@ const MetadataEdit = (props: {
             <div contentEditable ref={divRef} data-test="@metadata/input" />
             <IconWrapper bgColor={colors.NEUE_BG_LIGHT_GREEN}>
                 <Icon
-                    usePointerCursor
+                    useCursorPointer
                     size={14}
                     data-test="@metadata/submit"
                     icon="CHECK"
@@ -92,7 +92,7 @@ const MetadataEdit = (props: {
             </IconWrapper>
             <IconWrapper bgColor={colors.NEUE_BG_GRAY}>
                 <Icon
-                    usePointerCursor
+                    useCursorPointer
                     size={14}
                     data-test="@metadata/cancel"
                     icon="CROSS"
