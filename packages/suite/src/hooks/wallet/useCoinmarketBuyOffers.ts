@@ -14,6 +14,7 @@ import {
 import { Props, ContextValues } from '@wallet-types/coinmarketBuyOffers';
 import { useSelector } from 'react-redux';
 import { AppState } from '@suite/types/suite';
+import * as notificationActions from '@suite-actions/notificationActions';
 
 export const useOffers = (props: Props) => {
     const REFETCH_INTERVAL = 30000;
@@ -37,10 +38,16 @@ export const useOffers = (props: Props) => {
     const [lastFetchDate, setLastFetchDate] = useState(new Date());
     const { goto } = useActions({ goto: routerActions.goto });
     const { verifyAddress } = useActions({ verifyAddress: coinmarketCommonActions.verifyAddress });
-    const { saveTrade, setIsFromRedirect, openCoinmarketBuyConfirmModal } = useActions({
+    const {
+        saveTrade,
+        setIsFromRedirect,
+        openCoinmarketBuyConfirmModal,
+        addNotification,
+    } = useActions({
         saveTrade: coinmarketBuyActions.saveTrade,
         setIsFromRedirect: coinmarketBuyActions.setIsFromRedirect,
         openCoinmarketBuyConfirmModal: coinmarketBuyActions.openCoinmarketBuyConfirmModal,
+        addNotification: notificationActions.addToast,
     });
 
     const invityAPIUrl = useSelector<
@@ -95,7 +102,6 @@ export const useOffers = (props: Props) => {
                         trade: quote,
                         returnUrl: createQuoteLink(quotesRequest, account),
                     });
-                    // TODO - finish error handling - probably use modal to show the error to the user
                     if (response) {
                         if (response.trade.status === 'LOGIN_REQUEST' && response.tradeForm) {
                             submitRequestForm(response.tradeForm);
@@ -104,8 +110,12 @@ export const useOffers = (props: Props) => {
                             console.log(errorMessage);
                         }
                     } else {
-                        const errorMessage = '[doBuyTrade] no response from the server';
-                        console.log(errorMessage);
+                        const errorMessage = 'No response from the server';
+                        console.log(`[doBuyTrade] ${errorMessage}`);
+                        addNotification({
+                            type: 'error',
+                            error: errorMessage,
+                        });
                     }
                 } else {
                     setSelectedQuote(quote);
@@ -124,11 +134,17 @@ export const useOffers = (props: Props) => {
         });
 
         if (!response || !response.trade || !response.trade.paymentId) {
-            // TODO - show error, something really bad happened
             console.log('invalid response', response);
+            addNotification({
+                type: 'error',
+                error: 'No response from the server',
+            });
         } else if (response.trade.error) {
-            // TODO - show error, trade failed, typically timeout
             console.log('response error', response.trade.error);
+            addNotification({
+                type: 'error',
+                error: response.trade.error,
+            });
         } else {
             await saveTrade(response.trade, account, new Date().toISOString());
             // eslint-disable-next-line no-lonely-if
