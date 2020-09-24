@@ -1,11 +1,11 @@
 import React from 'react';
-import { SelectInput } from '.';
+import { CleanSelect } from '.';
 import { storiesOf } from '@storybook/react';
 import { text, boolean, select } from '@storybook/addon-knobs';
 import { infoOptions } from '../../../support/storybook';
 
 storiesOf('Form', module).add(
-    'Input Select',
+    'Clean Select',
     () => {
         const isSearchable = boolean('Searchable', false);
         const isClearable = boolean('Clearable', false);
@@ -47,7 +47,7 @@ storiesOf('Form', module).add(
         );
 
         return (
-            <SelectInput
+            <CleanSelect
                 {...(!isSearchable ? { isSearchable } : {})}
                 {...(isClearable ? { isClearable } : {})}
                 {...(isClean ? { isClean } : {})}

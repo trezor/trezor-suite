@@ -33,3 +33,4 @@ next-env.d.ts
 # native
 android
 ios
+packages/suite-native/tsconfig.json
