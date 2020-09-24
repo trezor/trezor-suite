@@ -23,7 +23,7 @@ const getDropdownVisibility = (isDisabled: boolean, isFocused: boolean, isHovere
     return 'none';
 };
 
-const selectStyle = (isSearchable: boolean, isHovered: boolean, minWidth = '50px') => ({
+const selectStyle = (isDropdownVisible: boolean, isHovered: boolean, minWidth = '50px') => ({
     singleValue: (base: Record<string, any>) => ({
         ...base,
         color: colors.NEUE_TYPE_LIGHT_GREY,
@@ -74,7 +74,9 @@ const selectStyle = (isSearchable: boolean, isHovered: boolean, minWidth = '50px
             padding: 0,
             margin: 0,
             border: '0',
-            display: getDropdownVisibility(isDisabled, isFocused, isHovered),
+            display: isDropdownVisible
+                ? 'flex'
+                : getDropdownVisibility(isDisabled, isFocused, isHovered),
         };
     },
     menu: (base: Record<string, any>) => ({
@@ -109,8 +111,10 @@ interface Props extends Omit<SelectProps, 'components'> {
     minWidth?: string;
 }
 
-const SelectInput = ({
+const CleanSelect = ({
+    isDropdownVisible = false,
     isSearchable = true,
+    isHoveredByDefault = false,
     withDropdownIndicator = true,
     className,
     wrapperProps,
@@ -120,13 +124,13 @@ const SelectInput = ({
     options,
     ...props
 }: Props) => {
-    const [isHovered, setIsHovered] = React.useState(false);
+    const [isHovered, setIsHovered] = React.useState(isHoveredByDefault);
     const optionsLength = options.length;
 
     return (
         <Wrapper onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
             <ReactSelect
-                styles={selectStyle(isSearchable, isHovered, minWidth)}
+                styles={selectStyle(isDropdownVisible, isHovered, minWidth)}
                 classNamePrefix="react-select"
                 isSearchable={isSearchable}
                 isDisabled={optionsLength <= 1}
@@ -137,4 +141,4 @@ const SelectInput = ({
     );
 };
 
-export { SelectInput, Props as SelectInputProps };
+export { CleanSelect, Props as CleanSelectProps };

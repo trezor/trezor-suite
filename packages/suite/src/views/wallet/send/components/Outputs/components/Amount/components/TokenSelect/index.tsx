@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
-import { SelectInput } from '@trezor/components';
+import { CleanSelect } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
 import { Account } from '@wallet-types';
 
@@ -71,7 +71,7 @@ const TokenSelect = ({ outputId }: { outputId: number }) => {
             defaultValue={tokenValue}
             render={({ onChange }) => {
                 return (
-                    <SelectInput
+                    <CleanSelect
                         options={options}
                         isSearchable
                         value={options.find(o => o.value === tokenValue)}
