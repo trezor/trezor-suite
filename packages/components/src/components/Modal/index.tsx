@@ -169,7 +169,7 @@ const ModalWindow = styled.div<ModalWindowProps>`
         `}
 `;
 
-const Heading = styled(H2)<{
+const Heading = styled(H1)<{
     cancelable: boolean;
     showHeaderBorder: boolean;
     showProgressBar: boolean;
