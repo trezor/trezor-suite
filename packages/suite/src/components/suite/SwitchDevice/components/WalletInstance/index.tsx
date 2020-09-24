@@ -25,6 +25,11 @@ const InstanceType = styled.div`
     font-size: ${variables.FONT_SIZE.NORMAL};
     line-height: 1.5;
     align-items: center;
+
+    // these styles ensure proper metadata behavior
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 300px;
 `;
 
 const InstanceTitle = styled.div`

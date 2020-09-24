@@ -1,28 +1,26 @@
 import React from 'react';
 import { Translation } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
+import messages from '@suite/support/messages';
 
 interface Props {
     device: TrezorDevice;
     useDeviceLabel?: boolean;
 }
 
-export const WalletLabeling = (props: Props) => {
+const Wallet = (props: Props) => {
     const { device } = props;
+    const walletLabel = device.useEmptyPassphrase
+        ? messages.TR_NO_PASSPHRASE_WALLET
+        : {
+              ...messages.TR_PASSPHRASE_WALLET,
+              values: {
+                  id: device.instance,
+              },
+          };
 
-    let label: string | ReturnType<typeof Translation>;
-
-    if (device.metadata.status === 'enabled' && device.metadata.walletLabel) {
-        // if metadata enabled, use it
-        label = device.metadata.walletLabel;
-    } else {
-        // otherwise create standard label
-        label = device.useEmptyPassphrase ? (
-            <Translation id="TR_NO_PASSPHRASE_WALLET" />
-        ) : (
-            <Translation id="TR_PASSPHRASE_WALLET" values={{ id: device.instance }} />
-        );
-    }
+    const label =
+        typeof walletLabel === 'string' ? <>{walletLabel}</> : <Translation {...walletLabel} />;
 
     if (props.useDeviceLabel) {
         return (
@@ -33,5 +31,7 @@ export const WalletLabeling = (props: Props) => {
         );
     }
 
-    return <>{label}</>;
+    return label;
 };
+
+export default Wallet;
