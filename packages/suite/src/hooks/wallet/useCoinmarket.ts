@@ -103,7 +103,7 @@ export const useWatchBuyTrade = (account: Account, trades?: TradeBuy[], transact
                         date: newDate,
                         data: tradeData,
                         account: {
-                            deviceState: account.deviceState,
+                            descriptor: account.descriptor,
                             symbol: account.symbol,
                             accountType: account.accountType,
                             accountIndex: account.index,

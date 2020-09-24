@@ -17,7 +17,6 @@ type CommonTrade = {
     key?: string;
     account: {
         descriptor: Account['descriptor'];
-        deviceState: Account['deviceState'];
         symbol: Account['symbol'];
         accountType: Account['accountType'];
         accountIndex: Account['index'];
