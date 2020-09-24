@@ -80,4 +80,6 @@ export const ICONS = {
     BUY: require('../../images/icons/buy.svg'),
     CREDIT_CARD: require('../../images/icons/credit_card.svg'),
     TREZOR_LOGO: require('../../images/icons/trezor_logo.svg'),
+    DROPBOX: require('../../images/icons/dropbox.svg'),
+    GOOGLE_DRIVE: require('../../images/icons/google-drive.svg'),
 };
