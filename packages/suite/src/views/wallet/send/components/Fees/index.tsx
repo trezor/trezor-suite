@@ -10,26 +10,24 @@ import CustomFee from './components/CustomFee';
 import { useSendFormContext } from '@wallet-hooks';
 
 const StyledCard = styled(Card)`
-    display: flex;
-    justify-items: space-between;
     margin-bottom: 25px;
     padding: 32px 42px;
-
-    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: column;
-    }
+    display: grid;
+    grid-gap: 5px;
+    grid-template-columns: 40px 1fr 1fr; /* First column contains for "Fee" title */
 `;
 
 const Label = styled.div`
-    display: flex;
-    padding-right: 20px;
     padding-top: 5px;
-    padding-bottom: 10px;
-
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-transform: capitalize;
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${colors.NEUE_TYPE_DARK_GREY};
+`;
+
+const SelectBarWrapper = styled.div`
+    display: flex;
+    margin-bottom: 20px;
 `;
 
 const CoinAmount = styled.div`
@@ -67,31 +65,15 @@ const EstimatedMiningTimeWrapper = styled.span`
     padding-right: 4px;
 `;
 
-const Row = styled.div`
-    display: flex;
-
-    /* set fixed min-height for the first Row, so that the form doesn't change its height while the fee is being calculated 
-    (happens when typing fee value in the input box) */
-    &:first-child {
-        min-height: 55px;
-    }
-`;
-
-const Col = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-`;
-
 const FeeAmount = styled.div`
     display: flex;
-    flex: 1 0 auto;
     justify-content: flex-start;
     flex-direction: column;
     align-items: flex-end;
-    margin-left: 12px;
+    text-align: right;
     padding-top: 5px;
 `;
+
 interface Option {
     label: string;
     value: string;
@@ -123,11 +105,14 @@ const Fees = () => {
 
     return (
         <StyledCard>
+            {/* FIRST COLUMN - Title */}
             <Label>
                 <Translation id="FEE" />
             </Label>
-            <Col>
-                <Row>
+
+            {/* SECOND COLUMN - Fee selector, Custom fee Input, Mining time message */}
+            <div>
+                <SelectBarWrapper>
                     <SelectBar
                         selectedOption={selectedLabel}
                         options={buildFeeOptions(feeInfo.levels)}
@@ -140,49 +125,48 @@ const Fees = () => {
                             if (shouldCompose) composeTransaction('output[0].amount');
                         }}
                     />
-                    {transactionInfo && transactionInfo.type !== 'error' && (
-                        <FeeAmount>
-                            <CoinAmount>
-                                <FormattedCryptoAmount
-                                    value={formatNetworkAmount(transactionInfo.fee, symbol)}
-                                    symbol={symbol}
-                                />
-                            </CoinAmount>
-                            <FiatAmount>
-                                <FiatValue
-                                    amount={formatNetworkAmount(transactionInfo.fee, symbol)}
-                                    symbol={symbol}
-                                />
-                            </FiatAmount>
-                        </FeeAmount>
+                </SelectBarWrapper>
+
+                <FeeInfo>
+                    {isCustomLevel && <CustomFee />}
+                    {networkType === 'bitcoin' && !isCustomLevel && (
+                        <EstimatedMiningTimeWrapper>
+                            <EstimatedMiningTime
+                                seconds={feeInfo.blockTime * selectedLevel.blocks * 60}
+                            />
+                        </EstimatedMiningTimeWrapper>
                     )}
-                </Row>
-                <Row>
-                    <FeeInfo>
-                        {isCustomLevel && <CustomFee />}
-                        {networkType === 'bitcoin' && !isCustomLevel && (
-                            <EstimatedMiningTimeWrapper>
-                                <EstimatedMiningTime
-                                    seconds={feeInfo.blockTime * selectedLevel.blocks * 60}
-                                />
-                            </EstimatedMiningTimeWrapper>
+                    <FeeUnits>
+                        {!isCustomLevel
+                            ? `${selectedLevel.feePerUnit} ${getFeeUnits(networkType)}`
+                            : ' '}
+                    </FeeUnits>
+                    {networkType === 'bitcoin' &&
+                        !isCustomLevel &&
+                        transactionInfo &&
+                        transactionInfo.type !== 'error' && (
+                            <TxSize>({transactionInfo.bytes} B)</TxSize>
                         )}
-                        {/* {!isCustomLevel && ( */}
-                        <FeeUnits>
-                            {!isCustomLevel
-                                ? `${selectedLevel.feePerUnit} ${getFeeUnits(networkType)}`
-                                : ' '}
-                        </FeeUnits>
-                        {/* )} */}
-                        {networkType === 'bitcoin' &&
-                            !isCustomLevel &&
-                            transactionInfo &&
-                            transactionInfo.type !== 'error' && (
-                                <TxSize>({transactionInfo.bytes} B)</TxSize>
-                            )}
-                    </FeeInfo>
-                </Row>
-            </Col>
+                </FeeInfo>
+            </div>
+
+            {/* THIRD COLUMN - Fee amount in crypto and fiat */}
+            {transactionInfo && transactionInfo.type !== 'error' && (
+                <FeeAmount>
+                    <CoinAmount>
+                        <FormattedCryptoAmount
+                            value={formatNetworkAmount(transactionInfo.fee, symbol)}
+                            symbol={symbol}
+                        />
+                    </CoinAmount>
+                    <FiatAmount>
+                        <FiatValue
+                            amount={formatNetworkAmount(transactionInfo.fee, symbol)}
+                            symbol={symbol}
+                        />
+                    </FiatAmount>
+                </FeeAmount>
+            )}
         </StyledCard>
     );
 };
