@@ -139,7 +139,7 @@ const TransactionDetail = (props: Props) => {
                                 setSelectedTab('amount');
                             }}
                         >
-                            Amount
+                            <Translation id="TR_TX_TAB_AMOUNT" />
                         </TabButton>
                         {network?.networkType !== 'ripple' && (
                             <TabButton
@@ -148,7 +148,7 @@ const TransactionDetail = (props: Props) => {
                                     setSelectedTab('io');
                                 }}
                             >
-                                Inputs, Outputs
+                                <Translation id="TR_INPUTS_OUTPUTS" />
                             </TabButton>
                         )}
                     </TabSelector>

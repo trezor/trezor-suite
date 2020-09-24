@@ -37,7 +37,7 @@ const AmountDetails = ({ tx, totalInput, totalOutput, isTestnet }: Props) => {
                                 setShowFiat(true);
                             }}
                         >
-                            Show FIAT
+                            <Translation id="TR_SHOW_FIAT" />
                         </Button>
                     }
                     color="light"
@@ -59,20 +59,24 @@ const AmountDetails = ({ tx, totalInput, totalOutput, isTestnet }: Props) => {
                         )
                     }
                     fourthColumn={
-                        <div>
-                            Today,{' '}
-                            <FiatValue amount="1" symbol={tx.symbol}>
-                                {({ timestamp }) =>
-                                    timestamp ? (
-                                        <FormattedDate
-                                            value={timestamp}
-                                            month="short"
-                                            day="2-digit"
-                                        />
-                                    ) : null
-                                }
-                            </FiatValue>
-                        </div>
+                        <Translation
+                            id="TR_TODAY_DATE"
+                            values={{
+                                date: (
+                                    <FiatValue amount="1" symbol={tx.symbol}>
+                                        {({ timestamp }) =>
+                                            timestamp ? (
+                                                <FormattedDate
+                                                    value={timestamp}
+                                                    month="short"
+                                                    day="2-digit"
+                                                />
+                                            ) : null
+                                        }
+                                    </FiatValue>
+                                ),
+                            }}
+                        />
                     }
                     color="light"
                 />
