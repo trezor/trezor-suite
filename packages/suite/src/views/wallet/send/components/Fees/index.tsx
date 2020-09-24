@@ -14,7 +14,7 @@ const StyledCard = styled(Card)`
     padding: 32px 42px;
     display: grid;
     grid-gap: 5px;
-    grid-template-columns: 40px 1fr 1fr; /* First column contains for "Fee" title */
+    grid-template-columns: 40px 1fr 1fr; /* First column contains "Fee" title */
 `;
 
 const Label = styled.div`
@@ -25,8 +25,10 @@ const Label = styled.div`
     color: ${colors.NEUE_TYPE_DARK_GREY};
 `;
 
+const FeeSetupWrapper = styled.div``;
+
 const SelectBarWrapper = styled.div`
-    display: flex;
+    display: flex; /* necessary for the <SelectBar> not to be stretched over full column width */
     margin-bottom: 20px;
 `;
 
@@ -111,7 +113,7 @@ const Fees = () => {
             </Label>
 
             {/* SECOND COLUMN - Fee selector, Custom fee Input, Mining time message */}
-            <div>
+            <FeeSetupWrapper>
                 <SelectBarWrapper>
                     <SelectBar
                         selectedOption={selectedLabel}
@@ -148,7 +150,7 @@ const Fees = () => {
                             <TxSize>({transactionInfo.bytes} B)</TxSize>
                         )}
                 </FeeInfo>
-            </div>
+            </FeeSetupWrapper>
 
             {/* THIRD COLUMN - Fee amount in crypto and fiat */}
             {transactionInfo && transactionInfo.type !== 'error' && (
