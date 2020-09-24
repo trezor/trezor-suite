@@ -3,9 +3,8 @@ import styled from 'styled-components';
 import { LayoutContext } from '@suite-components';
 import { CoinmarketTopPanel, CoinmarketFooter } from '@wallet-components';
 import { variables, Icon } from '@trezor/components';
-import { useSelector, useActions } from '@suite/hooks/suite';
+import { useSelector } from '@suite/hooks/suite';
 import { ExchangeTrade } from 'invity-api';
-import * as modalActions from '@suite-actions/modalActions';
 
 import List from './components/List';
 import SelectedOffer from './components/SelectedOffer';
@@ -55,22 +54,17 @@ const Offers = () => {
         if (setLayout) setLayout('Trezor Suite | Coinmarket', undefined, <CoinmarketTopPanel />);
     }, [setLayout]);
 
-    const [selectedQuote, setSelectQuote] = useState<ExchangeTrade>();
+    const [selectedQuote, setSelectedQuote] = useState<ExchangeTrade>();
     const quotesRequest = useSelector(state => state.wallet.coinmarket.exchange.quotesRequest);
     const fixedQuotes = useSelector(state => state.wallet.coinmarket.exchange.fixedQuotes);
     const floatQuotes = useSelector(state => state.wallet.coinmarket.exchange.floatQuotes);
     const quotesCount = fixedQuotes?.length + floatQuotes?.length;
-    const { openModal } = useActions({ openModal: modalActions.openModal });
 
     if (!quotesRequest) return null;
 
     const selectQuote = (quote: ExchangeTrade) => {
-        openModal({
-            type: 'coinmarket-confirm-terms',
-            onConfirm: () => {
-                setSelectQuote(quote);
-            },
-        });
+        // TODO - open coinmarket-exchange-terms
+        setSelectedQuote(quote);
     };
 
     return (
