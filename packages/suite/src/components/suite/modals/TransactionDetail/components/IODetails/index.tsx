@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Icon, colors, variables, Loader } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { FormattedCryptoAmount } from '@suite-components';
+import { FormattedCryptoAmount, Translation } from '@suite-components';
 
 const Wrapper = styled.div`
     text-align: left;
@@ -67,7 +67,9 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
             {txDetails?.vin && txDetails?.vout && (
                 <IOWrapper>
                     <IOBox>
-                        <IORowTitle>Inputs</IORowTitle>
+                        <IORowTitle>
+                            <Translation id="TR_INPUTS" />
+                        </IORowTitle>
 
                         {txDetails.vin?.map((input: any) => {
                             let inputAmount = formatNetworkAmount(input.value, tx.symbol);
@@ -95,7 +97,9 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                     </IconWrapper>
 
                     <IOBox>
-                        <IORowTitle>Outputs</IORowTitle>
+                        <IORowTitle>
+                            <Translation id="TR_OUTPUTS" />
+                        </IORowTitle>
                         {txDetails.vout?.map((output: any) => {
                             let outputAmount = formatNetworkAmount(output.value, tx.symbol);
                             outputAmount = outputAmount === '-1' ? '0' : outputAmount;
