@@ -18,7 +18,7 @@ type Props = {
 const SettingsLayout = (props: Props) => {
     const { setLayout } = React.useContext(LayoutContext);
 
-    React.useMemo(() => {
+    React.useEffect(() => {
         if (setLayout) setLayout(props.title || 'Settings', null, <SettingsMenu />);
     }, [props.title, setLayout]);
 

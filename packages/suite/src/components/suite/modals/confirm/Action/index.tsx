@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, ModalProps } from '@trezor/components';
+import { Modal, ModalProps, ConfirmOnDevice } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import { TrezorDevice } from '@suite-types';
@@ -12,6 +12,13 @@ const ConfirmAction = ({ device, ...rest }: Props) => {
     return (
         <Modal
             size="tiny"
+            header={
+                <ConfirmOnDevice
+                    title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
+                    trezorModel={device.features?.major_version === 1 ? 1 : 2}
+                    animated
+                />
+            }
             heading={
                 <Translation
                     id="TR_CONFIRM_ACTION_ON_YOUR"

@@ -71,6 +71,7 @@ storiesOf('Modals', module)
         const cancelable = boolean('cancelable', true);
         const useFixedWidth = boolean('useFixedWidth', false);
         const useFixedHeight = boolean('useFixedHeight', false);
+        const animated = boolean('animated', false);
 
         return (
             <Modal
@@ -81,6 +82,7 @@ storiesOf('Modals', module)
                         trezorModel={2}
                         steps={3}
                         activeStep={2}
+                        animated={animated}
                     />
                 }
                 data-test="modal"

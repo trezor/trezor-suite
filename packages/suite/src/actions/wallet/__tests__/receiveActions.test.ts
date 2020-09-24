@@ -4,6 +4,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import receiveReducer from '@wallet-reducers/receiveReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
+import modalReducer from '@suite-reducers/modalReducer';
 import { init } from '@suite-actions/trezorConnectActions';
 import { SUITE } from '@suite-actions/constants';
 import * as receiveActions from '@wallet-actions/receiveActions';
@@ -68,6 +69,7 @@ jest.mock('trezor-connect', () => {
 
 type ReceiveState = ReturnType<typeof receiveReducer>;
 type SuiteState = ReturnType<typeof suiteReducer>;
+type ModalState = ReturnType<typeof modalReducer>;
 
 interface InitialState {
     suite: Partial<SuiteState>;
@@ -79,6 +81,7 @@ interface InitialState {
             };
         };
     };
+    modal: ModalState;
 }
 
 export const getInitialState = (state: Partial<InitialState> | undefined) => {
@@ -96,6 +99,7 @@ export const getInitialState = (state: Partial<InitialState> | undefined) => {
                 },
             },
         },
+        modal: modalReducer(undefined, { type: 'foo' } as any),
         ...state,
     };
 };

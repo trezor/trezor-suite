@@ -1,5 +1,6 @@
 import TrezorConnect, { UI, ButtonRequestMessage } from 'trezor-connect';
 import { RECEIVE } from '@wallet-actions/constants';
+import * as suiteActions from '@suite-actions/suiteActions';
 import * as modalActions from '@suite-actions/modalActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { GetState, Dispatch } from '@suite-types';
@@ -74,10 +75,17 @@ export const showAddress = (path: string, address: string) => async (
     // catch button request and open modal
     const buttonRequestHandler = (event: ButtonRequestMessage['payload']) => {
         if (!event || event.code !== 'ButtonRequest_Address') return;
+        // Receive modal has 2 steps, 1. step: we are waiting till an user confirms the address on a device
+        // 2. step: we show the copy button and hide confirm-on-device bubble.
+        // The problem is that after user confirms the address device sent UI.CLOSE_UI.WINDOW that triggers closing the modal.
+        // By setting a device's processMode to 'confirm-addr' we are blocking the action UI.CLOSE_UI.WINDOW (handled in actionBlockerMiddleware)
+        // processMode is set back to undefined at the end of the receive modal flow
+        dispatch(suiteActions.setProcessMode(device, 'confirm-addr'));
         dispatch(
             modalActions.openModal({
                 type: 'address',
                 ...modalPayload,
+                confirmed: false,
             }),
         );
     };
@@ -106,12 +114,30 @@ export const showAddress = (path: string, address: string) => async (
     TrezorConnect.off(UI.REQUEST_BUTTON, buttonRequestHandler);
 
     if (response.success) {
+        // show second part of the "confirm address" modal
+        dispatch(
+            modalActions.openModal({
+                type: 'address',
+                ...modalPayload,
+                confirmed: true,
+                cancelable: true,
+            }),
+        );
         dispatch({
             type: RECEIVE.SHOW_ADDRESS,
             path,
             address,
         });
     } else {
+        // we are blocking close event in the modal reducer.
+        // On failed action we need to close it manually
+        const currentModal = getState().modal;
+        if (
+            currentModal.context === '@modal/context-user' &&
+            currentModal.payload.type === 'address'
+        ) {
+            dispatch(modalActions.onCancel());
+        }
         // special case: device no-backup permissions not granted
         if (response.payload.code === 'Method_PermissionsNotGranted') return;
 
@@ -122,4 +148,5 @@ export const showAddress = (path: string, address: string) => async (
             }),
         );
     }
+    dispatch(suiteActions.setProcessMode(device, undefined));
 };

@@ -2,9 +2,10 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { DeviceImage } from '../../DeviceImage';
 import { Icon } from '../../Icon';
-import { colors, variables } from '../../../config';
+import { colors, variables, animations } from '../../../config';
 
-const Wrapper = styled.div`
+type WrapperProps = Pick<Props, 'animated' | 'animation'>;
+const Wrapper = styled.div<WrapperProps>`
     display: flex;
     width: 300px;
     height: 62px;
@@ -13,6 +14,18 @@ const Wrapper = styled.div`
     background: white;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.19);
     align-items: center;
+    ${props =>
+        props.animated &&
+        props.animation === 'SLIDE_UP' &&
+        css`
+            animation: ${animations.SLIDE_UP} 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        `}
+    ${props =>
+        props.animated &&
+        props.animation === 'SLIDE_DOWN' &&
+        css`
+            animation: ${animations.SLIDE_DOWN} 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        `}
 `;
 
 const Column = styled.div`
@@ -99,10 +112,12 @@ const isStepActive = (index: number, activeStep?: number) => {
 
 interface Props {
     title: React.ReactNode;
-    successText: React.ReactNode;
+    successText?: React.ReactNode;
     trezorModel: 1 | 2;
     steps?: number;
     activeStep?: number;
+    animated?: boolean;
+    animation?: 'SLIDE_UP' | 'SLIDE_DOWN';
     onCancel?: () => void;
 }
 
@@ -113,15 +128,17 @@ const ConfirmOnDevice = ({
     onCancel,
     trezorModel,
     successText,
+    animated,
+    animation = 'SLIDE_UP',
 }: Props) => {
     return (
-        <Wrapper>
+        <Wrapper animated={animated} animation={animation}>
             <Left>
                 <DeviceImage height="34px" trezorModel={trezorModel} />
             </Left>
             <Middle>
                 <Title>{title}</Title>
-                {typeof steps === 'number' && activeStep && activeStep > steps && (
+                {successText && typeof steps === 'number' && activeStep && activeStep > steps && (
                     <Success>{successText}</Success>
                 )}
                 {typeof steps === 'number' && activeStep && activeStep <= steps && (

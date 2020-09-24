@@ -48,7 +48,21 @@ export type SuiteActions =
           type: typeof SUITE.ADD_BUTTON_REQUEST;
           device: TrezorDevice | undefined;
           payload?: string;
+      }
+    | {
+          type: typeof SUITE.SET_PROCESS_MODE;
+          device: TrezorDevice;
+          payload: TrezorDevice['processMode'];
       };
+
+export const setProcessMode = (
+    device: TrezorDevice,
+    processMode: TrezorDevice['processMode'],
+): Action => ({
+    type: SUITE.SET_PROCESS_MODE,
+    device,
+    payload: processMode,
+});
 
 export const setFlag = (key: keyof AppState['suite']['flags'], value: boolean): Action => ({
     type: SUITE.SET_FLAG,
@@ -273,6 +287,7 @@ const actions = [
     SUITE.UPDATE_PASSPHRASE_MODE,
     SUITE.ADD_BUTTON_REQUEST,
     SUITE.FORGET_DEVICE,
+    SUITE.SET_PROCESS_MODE,
     METADATA.SET_DEVICE_METADATA,
     METADATA.WALLET_LOADED,
     METADATA.WALLET_ADD,

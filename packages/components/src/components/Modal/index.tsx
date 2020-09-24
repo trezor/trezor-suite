@@ -406,7 +406,6 @@ const Modal = ({
         hiddenProgressBar ||
         (totalProgressBarSteps !== undefined && currentProgressBarStep !== undefined);
 
-    console.log('showProgressBarPlaceholder', showProgressBarPlaceholder);
     // compute progress bar width if all data is available and hiddenProgressBar is not selected
     let progressBarWidth = null;
     if (!hiddenProgressBar && totalProgressBarSteps && currentProgressBarStep) {
@@ -444,7 +443,7 @@ const Modal = ({
                 >
                     {heading}
                     {cancelable && (
-                        <CancelIconWrapper onClick={onCancel}>
+                        <CancelIconWrapper data-test="@modal/close-button" onClick={onCancel}>
                             <Icon size={24} color={colors.NEUE_TYPE_DARK_GREY} icon="CROSS" />
                         </CancelIconWrapper>
                     )}

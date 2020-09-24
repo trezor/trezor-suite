@@ -47,9 +47,12 @@ export default [
         result: {
             actions: [
                 { type: SUITE.LOCK_DEVICE, payload: true },
+                { type: SUITE.SET_PROCESS_MODE, payload: 'confirm-addr' },
                 { type: MODAL.OPEN_USER_CONTEXT },
                 { type: SUITE.LOCK_DEVICE, payload: false },
+                { type: MODAL.OPEN_USER_CONTEXT },
                 { type: RECEIVE.SHOW_ADDRESS, path: PATH, address: ADDRESS },
+                { type: SUITE.SET_PROCESS_MODE, payload: undefined },
             ],
         },
     },
@@ -69,9 +72,12 @@ export default [
         result: {
             actions: [
                 { type: SUITE.LOCK_DEVICE, payload: true },
+                { type: SUITE.SET_PROCESS_MODE, payload: 'confirm-addr' },
                 { type: MODAL.OPEN_USER_CONTEXT },
                 { type: SUITE.LOCK_DEVICE, payload: false },
+                { type: MODAL.OPEN_USER_CONTEXT },
                 { type: RECEIVE.SHOW_ADDRESS, path: PATH, address: ADDRESS },
+                { type: SUITE.SET_PROCESS_MODE, payload: undefined },
             ],
         },
     },
@@ -91,9 +97,12 @@ export default [
         result: {
             actions: [
                 { type: SUITE.LOCK_DEVICE, payload: true },
+                { type: SUITE.SET_PROCESS_MODE, payload: 'confirm-addr' },
                 { type: MODAL.OPEN_USER_CONTEXT },
                 { type: SUITE.LOCK_DEVICE, payload: false },
+                { type: MODAL.OPEN_USER_CONTEXT },
                 { type: RECEIVE.SHOW_ADDRESS, path: PATH, address: ADDRESS },
+                { type: SUITE.SET_PROCESS_MODE, payload: undefined },
             ],
         },
     },
@@ -119,6 +128,7 @@ export default [
                         error: 'Method for getAddress not defined',
                     },
                 },
+                { type: SUITE.SET_PROCESS_MODE, payload: undefined },
             ],
         },
     },
@@ -168,6 +178,7 @@ export default [
                     type: NOTIFICATION.TOAST,
                     payload: { type: 'verify-address-error', error: 'Runtime error' },
                 },
+                { type: SUITE.SET_PROCESS_MODE, payload: undefined },
             ],
         },
     },

@@ -1,38 +1,26 @@
-import React, { useState, createRef } from 'react';
+import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { colors, variables, Button, Icon } from '@trezor/components';
-import {
-    Card,
-    Translation,
-    HiddenPlaceholder,
-    FiatValue,
-    Badge,
-    MetadataLabeling,
-} from '@suite-components';
-import { parseBIP44Path, formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { copyToClipboard } from '@suite-utils/dom';
+import { Card, Translation, HiddenPlaceholder, MetadataLabeling } from '@suite-components';
+import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { ChildProps as Props } from '../../Container';
 import { AccountAddress } from 'trezor-connect';
 import { Network, ReceiveInfo } from '@wallet-types';
 import { MetadataAddPayload } from '@suite-types/metadata';
-import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
     margin-bottom: 40px;
-    padding: ${CARD_PADDING_SIZE};
-    padding-top: 0px;
+    /* padding: 25px; */
+    padding: 0px;
+    overflow: hidden;
 `;
 
 const GridTable = styled.div`
     display: grid;
-    grid-template-columns: auto 0.65fr 0.35fr auto;
+    grid-template-columns: 0.65fr 0.35fr auto;
     color: ${colors.BLACK50};
-    font-size: 12px;
-    @media all and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        grid-template-columns: auto 1fr auto;
-        grid-auto-flow: dense;
-    }
+    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 // min-width: 0; // to resolve an issue with truncate text
@@ -42,88 +30,62 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
     align-items: center;
     justify-content: space-between;
     white-space: nowrap;
-    padding: 8px 24px;
-    border-bottom: 2px solid ${colors.BLACK96};
+    padding: 16px 0px 12px 0px;
+    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
     font-variant-numeric: tabular-nums;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-weight: 500;
 
     &:nth-child(1n) {
-        padding-left: 0px;
+        padding-left: 25px;
     }
-    &:nth-child(4n) {
-        padding-right: 0px;
+    &:nth-child(3n) {
+        padding-right: 25px;
     }
-    &:nth-last-child(-n + 4) {
+    &:nth-last-child(-n + 3) {
         border: 0;
     }
     ${props =>
         props.revealed &&
         css`
-            color: ${colors.BLACK0};
+            color: ${colors.NEUE_TYPE_DARK_GREY};
         `};
     ${props =>
         props.onClick &&
         css`
             cursor: pointer;
         `};
-
-    @media all and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        border: 0;
-        padding: 8px;
-        &:nth-child(4n + 3) {
-            top: 43px;
-            padding-top: 0px;
-            padding-right: 0px;
-            grid-column: 1 / 4;
-            border-bottom: 2px solid ${colors.BLACK96};
-        }
-        &:nth-child(1),
-        &:nth-child(2),
-        &:nth-child(4) {
-            padding-top: ${CARD_PADDING_SIZE};
-        }
-        &:nth-last-child(-n + 4) {
-            border: 0;
-        }
-    }
 `;
 
 const GridItemAddress = styled(GridItem)`
     font-variant-numeric: tabular-nums slashed-zero;
 `;
 
-const HeaderItem = styled(GridItem)`
-    text-transform: uppercase;
-    font-weight: 600;
-    position: sticky;
-    top: 0;
-    padding-top: ${CARD_PADDING_SIZE};
-    background: ${colors.WHITE};
+const AddressActions = styled.div<{ hide?: boolean }>`
+    opacity: ${props => (props.hide ? '0' : '1')};
 `;
 
-const IconButton = styled(Button)`
-    padding: 0px 0px;
-    background: transparent;
-    &:hover,
-    &:active,
-    &:focus {
-        background: transparent;
-    }
+const Gray = styled.span`
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+`;
 
-    ${props =>
-        props.isDisabled &&
-        css`
-            svg {
-                fill: ${colors.BLACK80};
-            }
-        `};
+const HeaderItem = styled(GridItem)`
+    position: sticky;
+    top: 0;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-weight: 500;
+    padding: 12px 0px;
+    background: ${colors.WHITE};
 `;
 
 const Actions = styled.div`
     display: flex;
     justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 32px;
+    margin: 16px 0px;
+
+    button + button {
+        margin-left: 16px;
+    }
 `;
 
 const DEFAULT_LIMIT = 10;
@@ -135,44 +97,22 @@ interface ItemProps {
     revealed?: ReceiveInfo;
     metadataPayload: MetadataAddPayload;
     onClick: () => void;
-    onCopy: () => void;
 }
 
-const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index }: ItemProps) => {
+const Item = ({ addr, symbol, onClick, revealed, metadataPayload, index }: ItemProps) => {
+    const [isHovered, setIsHovered] = React.useState(false);
     const amount = formatNetworkAmount(addr.received || '0', symbol, true);
-    const [amountF] = amount.split(' ');
     const fresh = addr.transfers < 1;
     const isRevealed = !!revealed;
     const address = revealed ? addr.address : `${addr.address.substring(0, 15)}…`;
 
-    const dropdownOptions = [
-        {
-            callback: () => {
-                onClick();
-                return true;
-            }, // return true makes dropdown to hide on click
-            label: 'Confirm on device',
-            key: 'confirm-on-device',
-            'data-test': '@metadata/confirm-on-device-button',
-        },
-    ];
-    if (isRevealed) {
-        dropdownOptions.push({
-            callback: () => {
-                onCopy();
-                return true;
-            },
-            label: 'Copy address',
-            key: 'copy-address',
-            'data-test': '@metadata/copy-address-button',
-        });
-    }
     return (
         <>
-            <GridItem revealed={isRevealed}>/{parseBIP44Path(addr.path)!.addrIndex}</GridItem>
             <GridItemAddress
                 data-test={`@wallet/receive/used-address/${index}`}
                 revealed={isRevealed}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
             >
                 <MetadataLabeling
                     payload={{
@@ -182,15 +122,17 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
                     defaultVisibleValue={
                         // eslint-disable-next-line
                         <span
-                            style={{ cursor: 'pointer' }}
+                            style={{
+                                cursor: 'pointer',
+                                textOverflow: 'ellipsis',
+                                overflow: 'hidden',
+                            }}
                             onClick={!metadataPayload.value ? onClick : () => {}}
                         >
                             {address}
                         </span>
                     }
-                    dropdownOptions={dropdownOptions}
                 />
-                {/* {address} */}
                 {revealed && !revealed.isVerified && (
                     <Icon
                         size={14}
@@ -200,40 +142,37 @@ const Item = ({ addr, symbol, onClick, onCopy, revealed, metadataPayload, index 
                     />
                 )}
             </GridItemAddress>
-            <GridItem revealed={isRevealed}>
-                {!fresh && (
-                    <>
-                        <HiddenPlaceholder>{amount}</HiddenPlaceholder>
-                        <FiatValue amount={amountF} symbol={symbol}>
-                            {({ value }) =>
-                                value ? (
-                                    <Badge>
-                                        <HiddenPlaceholder>{value}</HiddenPlaceholder>
-                                    </Badge>
-                                ) : null
-                            }
-                        </FiatValue>
-                    </>
+            <GridItem
+                revealed={isRevealed}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+            >
+                {!fresh && <HiddenPlaceholder>{amount}</HiddenPlaceholder>}
+                {fresh && (
+                    <Gray>
+                        <Translation id="RECEIVE_TABLE_NOT_USED" />
+                    </Gray>
                 )}
-                {fresh && <Translation id="RECEIVE_TABLE_NOT_USED" />}
             </GridItem>
-            <GridItem>
-                <IconButton variant="tertiary" isDisabled={!revealed} onClick={onCopy}>
-                    <Icon size={16} icon="COPY" />
-                </IconButton>
+            <GridItem
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+            >
+                <AddressActions hide={!isHovered}>
+                    <Button
+                        data-test={`@metadata/confirm-on-device-button/${index}`}
+                        variant="tertiary"
+                        onClick={onClick}
+                    >
+                        <Translation id="TR_REVEAL_ADDRESS" />
+                    </Button>
+                </AddressActions>
             </GridItem>
         </>
     );
 };
 
-const UsedAddresses = ({
-    account,
-    addresses,
-    showAddress,
-    addToast,
-    locked,
-    accountKey,
-}: Props) => {
+const UsedAddresses = ({ account, addresses, showAddress, locked }: Props) => {
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
     if (account.networkType !== 'bitcoin' || !account.addresses) return null;
     const { used, unused } = account.addresses;
@@ -252,21 +191,9 @@ const UsedAddresses = ({
     const actionShowVisible = limit < list.length;
     const actionHideVisible = limit > DEFAULT_LIMIT;
 
-    const htmlElement = createRef<HTMLDivElement>();
-
-    const copyAddress = (address: string) => {
-        const result = copyToClipboard(address, htmlElement.current);
-        if (typeof result !== 'string') {
-            addToast({ type: 'copy-to-clipboard' });
-        }
-    };
-
     return (
         <StyledCard>
             <GridTable>
-                <HeaderItem>
-                    <Translation id="RECEIVE_TABLE_PATH" />
-                </HeaderItem>
                 <HeaderItem>
                     <Translation id="RECEIVE_TABLE_ADDRESS" />
                 </HeaderItem>
@@ -282,13 +209,11 @@ const UsedAddresses = ({
                         symbol={account.symbol}
                         metadataPayload={{
                             type: 'addressLabel',
-                            accountKey,
+                            accountKey: account.key,
                             defaultValue: addr.address,
                             value: addressLabels[addr.address],
                         }}
-                        revealed={addresses.find(f => f.address === addr.address)}
                         onClick={() => (!locked ? showAddress(addr.path, addr.address) : undefined)}
-                        onCopy={() => copyAddress(addr.address)}
                     />
                 ))}
             </GridTable>

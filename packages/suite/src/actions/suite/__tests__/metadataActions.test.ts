@@ -32,6 +32,7 @@ jest.mock('trezor-connect', () => {
         DEVICE: {},
         BLOCKCHAIN: {},
         TRANSPORT: {},
+        UI: {},
     };
 });
 

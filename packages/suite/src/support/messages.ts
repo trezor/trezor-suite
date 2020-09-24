@@ -2458,11 +2458,11 @@ const definedMessages = defineMessages({
     },
     LABELING_ACCOUNT: {
         id: 'LABELING_ACCOUNT',
-        defaultMessage: 'Account #{index}',
+        defaultMessage: '{networkName} #{index}',
     },
     LABELING_ACCOUNT_WITH_TYPE: {
         id: 'LABELING_ACCOUNT_WITH_TYPE',
-        defaultMessage: 'Account #{index} ({type})',
+        defaultMessage: '{networkName} #{index} ({type})',
     },
     TR_DISCREET_TOOLTIP: {
         id: 'TR_DISCREET_TOOLTIP',
@@ -2849,7 +2849,7 @@ const definedMessages = defineMessages({
     },
     RECEIVE_ADDRESS: {
         id: 'RECEIVE_ADDRESS',
-        defaultMessage: 'Fresh address',
+        defaultMessage: 'Address',
         description: 'Alternative title for alt-coins',
     },
     RECEIVE_ADDRESS_REVEAL: {
@@ -4163,6 +4163,14 @@ const definedMessages = defineMessages({
         id: 'METADATA_PROVIDER_UNEXPECTED_ERROR',
         defaultMessage:
             'Failed to sync labeling data with cloud provider {provider}. User was logged out.',
+    },
+    TR_TRY_VERIFYING_ON_DEVICE_AGAIN: {
+        id: 'TR_TRY_VERIFYING_ON_DEVICE_AGAIN',
+        defaultMessage: 'Try again',
+    },
+    TR_REVEAL_ADDRESS: {
+        id: 'TR_REVEAL_ADDRESS',
+        defaultMessage: 'Reveal address',
     },
 } as const);
 

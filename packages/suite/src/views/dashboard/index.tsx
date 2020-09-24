@@ -21,7 +21,7 @@ const Dashboard = () => {
     // set SuiteLayout
     const { setLayout } = React.useContext(LayoutContext);
 
-    React.useMemo(() => {
+    React.useEffect(() => {
         if (setLayout) setLayout(undefined, undefined);
     }, [setLayout]);
 

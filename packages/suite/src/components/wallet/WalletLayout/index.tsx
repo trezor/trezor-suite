@@ -27,7 +27,7 @@ type Props = {
 
 const WalletLayout = (props: Props) => {
     const { setLayout } = React.useContext(LayoutContext);
-    React.useMemo(() => {
+    React.useEffect(() => {
         if (setLayout)
             setLayout(
                 props.title || 'Trezor Suite | Wallet',

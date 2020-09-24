@@ -5,11 +5,12 @@ import { Translation, Image } from '@suite-components';
 
 const Wrapper = styled.div`
     display: flex;
-    margin: 0px 32px;
-    margin-bottom: 40px;
+    margin: 20px 0px;
     text-align: left;
-    background: ${colors.BLACK96};
+    background: ${colors.NEUE_BG_GRAY};
     align-items: center;
+    width: 100%;
+    justify-content: space-between;
 `;
 
 const Col = styled.div`
@@ -20,10 +21,10 @@ const Col = styled.div`
 `;
 
 const ContentCol = styled(Col)`
-    padding: 16px;
+    padding: 16px 24px;
 `;
 const ImageCol = styled(Col)`
-    padding: 4px;
+    padding: 4px 16px;
 `;
 
 interface Props {

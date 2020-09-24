@@ -39,3 +39,23 @@ export const GREEN_COLOR = keyframes`
         stroke: ${colors.GREENER};
     }
 `;
+
+export const SLIDE_UP = keyframes`
+    0% {
+        transform: translateY(150%);
+    }
+    100% {
+        transform: translateY(0%);
+    }
+`;
+
+export const SLIDE_DOWN = keyframes`
+    0% {
+        transform: translateY(0%);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(150%);
+        opacity: 0;
+    }
+`;

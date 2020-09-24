@@ -72,9 +72,8 @@ const modalReducer = (state: State = initialState, action: Action): State => {
                 payload: action.payload,
             };
 
-        // close modal
-        case UI.CLOSE_UI_WINDOW:
         case MODAL.CLOSE:
+        case UI.CLOSE_UI_WINDOW:
             return initialState;
 
         default:

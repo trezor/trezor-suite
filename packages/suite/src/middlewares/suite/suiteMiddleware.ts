@@ -10,7 +10,6 @@ import { loadStorage } from '@suite-actions/storageActions';
 import { fetchLocale } from '@settings-actions/languageActions';
 import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
 import { getApp } from '@suite-utils/router';
-
 import { AppState, Action, Dispatch } from '@suite-types';
 
 const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (

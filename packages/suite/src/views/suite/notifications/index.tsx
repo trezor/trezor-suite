@@ -100,7 +100,7 @@ const Notifications = (props: Props) => {
     const { notifications } = props;
 
     const { setLayout } = React.useContext(LayoutContext);
-    React.useMemo(() => {
+    React.useEffect(() => {
         if (setLayout) setLayout('Notifications', undefined);
     }, [setLayout]);
 
