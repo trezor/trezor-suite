@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 18
+
+-   add descriptor to coinmarketTrades account
+
 ## 17
 
 -   added coinmarketTrades

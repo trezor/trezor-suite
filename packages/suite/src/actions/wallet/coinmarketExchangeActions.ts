@@ -86,7 +86,7 @@ export const saveTrade = (exchangeTrade: ExchangeTrade, account: Account, date: 
         date,
         data: exchangeTrade,
         account: {
-            deviceState: account.deviceState,
+            descriptor: account.descriptor,
             symbol: account.symbol,
             accountType: account.accountType,
             accountIndex: account.index,

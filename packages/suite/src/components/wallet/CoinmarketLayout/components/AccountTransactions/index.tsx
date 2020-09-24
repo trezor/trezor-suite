@@ -30,15 +30,10 @@ const AccountTransactions = () => {
     if (selectedAccount.status !== 'loaded') {
         return null;
     }
+
     const { account } = selectedAccount;
-    // filter current account transactions and sort descending
     const sortedAccountTransactions = [...allTransactions]
-        .filter(
-            t =>
-                t.account.symbol === account.symbol &&
-                t.account.accountType === account.accountType &&
-                t.account.accountIndex === account.index,
-        )
+        .filter(t => t.account.descriptor === account.descriptor)
         .sort((a, b) => {
             if (a.date > b.date) return -1;
             if (a.date < b.date) return 1;

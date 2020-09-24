@@ -86,6 +86,7 @@ interface AccountPart {
     symbol: Account['symbol'];
     accountType: Account['accountType'];
     accountIndex: Account['index'];
+    descriptor: Account['descriptor'];
 }
 
 export const saveBuyTrade = async (buyTrade: BuyTrade, account: AccountPart, date: string) => {
@@ -97,6 +98,7 @@ export const saveBuyTrade = async (buyTrade: BuyTrade, account: AccountPart, dat
             date,
             data: buyTrade,
             account: {
+                descriptor: account.descriptor,
                 symbol: account.symbol,
                 accountType: account.accountType,
                 accountIndex: account.accountIndex,
@@ -120,6 +122,7 @@ export const saveExchangeTrade = async (
             date,
             data: exchangeTrade,
             account: {
+                descriptor: account.descriptor,
                 symbol: account.symbol,
                 accountType: account.accountType,
                 accountIndex: account.accountIndex,

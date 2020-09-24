@@ -11,7 +11,7 @@ import { GraphData } from '@wallet-types/graph';
 import { BuyTrade, ExchangeTrade } from 'invity-api';
 import { migrate } from './migrations';
 
-const VERSION = 17; // don't forget to add migration and CHANGELOG when changing versions!
+const VERSION = 18; // don't forget to add migration and CHANGELOG when changing versions!
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -84,6 +84,7 @@ export interface SuiteDBSchema extends DBSchema {
             tradeType: 'buy' | 'exchange';
             data: BuyTrade | ExchangeTrade;
             account: {
+                descriptor?: Account['descriptor'];
                 symbol: Account['symbol'];
                 accountIndex: Account['index'];
                 accountType: Account['accountType'];

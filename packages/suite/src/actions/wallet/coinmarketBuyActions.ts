@@ -39,9 +39,9 @@ export type CoinmarketBuyActions =
           data: BuyTrade;
           account: {
               symbol: Account['symbol'];
+              descriptor: Account['descriptor'];
               accountIndex: Account['index'];
               accountType: Account['accountType'];
-              deviceState: Account['deviceState'];
           };
       };
 
@@ -105,7 +105,7 @@ export const saveTrade = (buyTrade: BuyTrade, account: Account, date: string) =>
         date,
         data: buyTrade,
         account: {
-            deviceState: account.deviceState,
+            descriptor: account.descriptor,
             symbol: account.symbol,
             accountType: account.accountType,
             accountIndex: account.index,
