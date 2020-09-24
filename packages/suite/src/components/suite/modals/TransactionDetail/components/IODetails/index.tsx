@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Icon, colors, variables, Loader } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount, getNetwork } from '@wallet-utils/accountUtils';
 import { FormattedCryptoAmount, Translation } from '@suite-components';
 
 const Wrapper = styled.div`
@@ -60,6 +60,7 @@ interface Props {
 }
 
 const IODetails = ({ tx, txDetails, isFetching }: Props) => {
+    const network = getNetwork(tx.symbol);
     return (
         <Wrapper>
             {!txDetails && isFetching && <Loader size={32} />}
@@ -78,14 +79,18 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                             inputAmount = inputAmount === '-1' ? '0' : inputAmount;
                             return (
                                 <IORow key={input.n}>
-                                    <CryptoAmountWrapper>
-                                        <FormattedCryptoAmount
-                                            value={inputAmount}
-                                            symbol={tx.symbol}
-                                            disableHiddenPlaceholder
-                                        />
-                                        <Circle>&bull;</Circle>
-                                    </CryptoAmountWrapper>
+                                    {network?.networkType !== 'ethereum' && (
+                                        // don't show input amount in ethereum
+                                        // consider faking it by showing the same value os the output
+                                        <CryptoAmountWrapper>
+                                            <FormattedCryptoAmount
+                                                value={inputAmount}
+                                                symbol={tx.symbol}
+                                                disableHiddenPlaceholder
+                                            />
+                                            <Circle>&bull;</Circle>
+                                        </CryptoAmountWrapper>
+                                    )}
                                     <Address>{input.addresses.map((addr: string) => addr)}</Address>
                                 </IORow>
                             );
