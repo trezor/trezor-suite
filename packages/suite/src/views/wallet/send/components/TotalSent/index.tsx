@@ -94,21 +94,20 @@ const TotalSent = () => {
                             : formatNetworkAmount(transactionInfo.totalSpent, symbol)}
                         <Symbol>{tokenInfo ? tokenInfo.symbol : symbol}</Symbol>
                     </TotalSentCoin>
-                    {!tokenInfo && (
-                        <TotalSentFiat>
+                    <TotalSentFiat>
+                        {tokenInfo ? (
+                            <>
+                                <Translation id="FEE" />
+                                <Symbol>{formatNetworkAmount(transactionInfo.fee, symbol)}</Symbol>
+                                <Symbol>{symbol}</Symbol>
+                            </>
+                        ) : (
                             <FiatValue
                                 amount={formatNetworkAmount(transactionInfo.totalSpent, symbol)}
                                 symbol={symbol}
                             />
-                        </TotalSentFiat>
-                    )}
-                    {tokenInfo && (
-                        <TotalSentFiat>
-                            <Translation id="FEE" />
-                            <Symbol>{formatNetworkAmount(transactionInfo.fee, symbol)}</Symbol>
-                            <Symbol>{symbol}</Symbol>
-                        </TotalSentFiat>
-                    )}
+                        )}
+                    </TotalSentFiat>
                 </Right>
             )}
         </StyledCard>
