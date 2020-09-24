@@ -37,7 +37,7 @@ export const QuestionTooltip = ({
                 content={typeof tooltip === 'string' ? <Translation id={tooltip} /> : tooltip}
             >
                 <Icon
-                    usePointerCursor
+                    useCursorPointer
                     size={size}
                     color={color}
                     style={iconStyle}

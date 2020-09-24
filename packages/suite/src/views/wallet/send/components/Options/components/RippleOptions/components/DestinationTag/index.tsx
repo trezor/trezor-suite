@@ -44,7 +44,7 @@ const DestinationTag = ({ close }: Props) => {
                 composeTransaction(inputName);
             }}
             label={<QuestionTooltip label="DESTINATION_TAG" tooltip="DESTINATION_TAG_EXPLAINED" />}
-            labelRight={<Icon size={20} icon="CROSS" usePointerCursor onClick={close} />}
+            labelRight={<Icon size={20} icon="CROSS" useCursorPointer onClick={close} />}
             bottomText={<InputError error={error} />}
         />
     );

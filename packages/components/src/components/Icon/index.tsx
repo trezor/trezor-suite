@@ -64,7 +64,7 @@ const SvgWrapper = styled.div<WrapperProps>`
     }
 
     ${props =>
-        props.usePointerCursor &&
+        props.useCursorPointer &&
         css`
             cursor: pointer;
         `}
@@ -79,7 +79,7 @@ interface Props extends React.SVGAttributes<HTMLDivElement> {
     isActive?: boolean;
     canAnimate?: boolean;
     hoverColor?: string;
-    usePointerCursor?: boolean;
+    useCursorPointer?: boolean;
 }
 
 const Icon = React.forwardRef(
@@ -91,7 +91,7 @@ const Icon = React.forwardRef(
             isActive,
             canAnimate,
             hoverColor,
-            usePointerCursor,
+            useCursorPointer,
             className,
             onClick,
             onMouseEnter,
@@ -113,7 +113,7 @@ const Icon = React.forwardRef(
                 isActive={isActive}
                 size={size}
                 ref={ref}
-                usePointerCursor={usePointerCursor}
+                useCursorPointer={useCursorPointer}
                 {...rest}
             >
                 <ReactSVG

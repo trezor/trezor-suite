@@ -49,7 +49,7 @@ const SolveIssueButton = ({ onSolveIssueClick, deviceStatusMessage, device }: Pr
 
 const DeviceSettingsButton = ({ onDeviceSettingsClick }: Props) => (
     <Icon
-        usePointerCursor
+        useCursorPointer
         size={24}
         icon="SETTINGS"
         color={colors.NEUE_TYPE_LIGHT_GREY}
