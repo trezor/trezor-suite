@@ -158,8 +158,8 @@ const TransactionDetail = (props: Props) => {
                             tx={tx}
                             totalInput={formattedTotalInput}
                             totalOutput={formattedTotalOutput}
-                            txDetails={txDetails}
-                            isFetching={isFetching}
+                            // txDetails={txDetails}
+                            // isFetching={isFetching}
                             isTestnet={isTestnet(tx.symbol)}
                         />
                     ) : (
