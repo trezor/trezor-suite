@@ -18,13 +18,11 @@ const Buttons = styled.div`
 
 // todo: can't use button from @trezor/components directly, probably inconsistent design again
 // background-color is not even in components color palette
-
 const StyledButton = styled(Button)`
     padding: 10px;
     margin: 0 16px;
     font-size: ${FONT_SIZE.NORMAL};
-    color: ${colors.BLACK25};
-    background-color: #f7f7f7;
+    background-color: ${colors.NEUE_BG_GRAY};
     font-weight: ${FONT_WEIGHT.DEMI_BOLD};
     height: 42px;
 
@@ -74,7 +72,6 @@ const MetadataProvider = (props: Props) => {
             onCancel={onCancel}
             size="small"
             heading={<Translation id="METADATA_MODAL_HEADING" />}
-            // description={<Translation id="METADATA_MODAL_DESCRIPTION" />}
             data-test="@modal/metadata-provider"
         >
             <StyledP>

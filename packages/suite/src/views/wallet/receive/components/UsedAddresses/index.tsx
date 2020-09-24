@@ -59,6 +59,10 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
 
 const GridItemAddress = styled(GridItem)`
     font-variant-numeric: tabular-nums slashed-zero;
+
+    // these two ensure proper metadata behavior
+    white-space: nowrap;
+    overflow: hidden;
 `;
 
 const AddressActions = styled.div<{ hide?: boolean }>`

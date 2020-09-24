@@ -68,6 +68,7 @@ const DeviceDetail = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
+    overflow: hidden;
 `;
 
 const needsRefresh = (device?: TrezorDevice) => {
@@ -145,7 +146,11 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
                     <DeviceDetail>
                         <DeviceLabel>{selectedDevice.label}</DeviceLabel>
                         <WalletNameWrapper>
-                            <WalletLabeling device={selectedDevice} />
+                            {selectedDevice.metadata.status === 'enabled' && selectedDevice.metadata.walletLabel ? (
+                                selectedDevice.metadata.walletLabel
+                            ) : (
+                                    <WalletLabeling device={selectedDevice} />
+                                )}
                         </WalletNameWrapper>
                     </DeviceDetail>
                     <DeviceStatus
@@ -153,8 +158,8 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
                         onRefreshClick={
                             deviceNeedsRefresh
                                 ? () => {
-                                      acquireDevice(selectedDevice);
-                                  }
+                                    acquireDevice(selectedDevice);
+                                }
                                 : undefined
                         }
                     />

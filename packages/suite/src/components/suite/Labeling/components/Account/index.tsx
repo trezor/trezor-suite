@@ -4,7 +4,7 @@ import * as accountUtils from '@wallet-utils/accountUtils';
 import * as deviceUtils from '@suite-utils/device';
 import { Translation } from '@suite-components';
 import { Props } from './Container';
-import { WalletLabeling } from '../Wallet';
+import WalletLabeling from '../Wallet';
 
 const TabularNums = styled.span`
     font-variant-numeric: tabular-nums;
