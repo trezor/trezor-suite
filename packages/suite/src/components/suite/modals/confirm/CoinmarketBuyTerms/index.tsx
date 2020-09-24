@@ -2,6 +2,7 @@ import { Button, Modal, Icon, colors, variables, Checkbox, Link } from '@trezor/
 import React, { useState } from 'react';
 import { Translation } from '@suite-components';
 import styled, { css } from 'styled-components';
+import { Deferred } from '@suite/utils/suite/deferred';
 
 const Text = styled.div<{ isLast?: boolean; isFirst?: boolean }>`
     padding: 20px 0;
@@ -73,12 +74,12 @@ const Right = styled.div`
 const StyledLink = styled(Link)``;
 
 export type Props = {
-    onConfirm: () => void;
+    decision: Deferred<boolean>;
     onCancel: () => void;
     provider?: string;
 };
 
-const CoinmarketTerms = ({ onConfirm, onCancel, provider }: Props) => {
+const CoinmarketBuyTerms = ({ decision, onCancel, provider }: Props) => {
     const [isChecked, setIsChecked] = useState<boolean>(false);
     const providerName = provider || 'unknown provider';
 
@@ -126,8 +127,8 @@ const CoinmarketTerms = ({ onConfirm, onCancel, provider }: Props) => {
                     <Button
                         isDisabled={!isChecked}
                         onClick={() => {
+                            decision.resolve(true);
                             onCancel();
-                            onConfirm();
                         }}
                     >
                         <Translation id="TR_BUY_CONFIRM" />
@@ -138,4 +139,4 @@ const CoinmarketTerms = ({ onConfirm, onCancel, provider }: Props) => {
     );
 };
 
-export default CoinmarketTerms;
+export default CoinmarketBuyTerms;

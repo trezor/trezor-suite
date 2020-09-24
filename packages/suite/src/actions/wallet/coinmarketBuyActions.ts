@@ -4,6 +4,7 @@ import invityAPI from '@suite-services/invityAPI';
 import { COINMARKET_BUY } from './constants';
 import { Dispatch } from '@suite-types';
 import regional from '@wallet-constants/coinmarket/regional';
+import * as modalActions from '@suite-actions/modalActions';
 
 export interface BuyInfo {
     buyInfo?: BuyListResponse;
@@ -93,6 +94,12 @@ export const setIsFromRedirect = (isFromRedirect: boolean) => async (dispatch: D
         type: COINMARKET_BUY.SET_IS_FROM_REDIRECT,
         isFromRedirect,
     });
+};
+
+// this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
+// used in useCoinmarketBuyOffers
+export const openCoinmarketBuyConfirmModal = (provider?: string) => (dispatch: Dispatch) => {
+    return dispatch(modalActions.openDeferredModal({ type: 'coinmarket-buy-terms', provider }));
 };
 
 export const saveTrade = (buyTrade: BuyTrade, account: Account, date: string) => async (

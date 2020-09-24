@@ -63,9 +63,9 @@ export type UserContextPayload =
           decision: Deferred<PartialFormState>;
       }
     | {
-          type: 'coinmarket-confirm-terms';
-          onConfirm: () => void;
+          type: 'coinmarket-buy-terms';
           provider?: string;
+          decision: Deferred<boolean>;
       }
     | {
           type: 'log';
@@ -181,7 +181,9 @@ export const openModal = (payload: UserContextPayload): Action => ({
 // declare all modals with promises
 type DeferredModals = Extract<
     UserContextPayload,
-    { type: 'qr-reader' | 'review-transaction' | 'import-transaction' }
+    {
+        type: 'qr-reader' | 'review-transaction' | 'import-transaction' | 'coinmarket-buy-terms';
+    }
 >;
 // extract single modal by `type` util
 type DeferredModal<T extends DeferredModals['type']> = Extract<DeferredModals, { type: T }>;

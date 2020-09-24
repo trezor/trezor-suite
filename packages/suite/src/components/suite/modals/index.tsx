@@ -17,7 +17,7 @@ import PassphraseSource from './PassphraseSource';
 import PassphraseOnDevice from './PassphraseOnDevice';
 import PassphraseDuplicate from './PassphraseDuplicate';
 import ConfirmAction from './confirm/Action';
-import CoinmarketTerms from './confirm/CoinmarketTerms';
+import CoinmarketBuyTerms from './confirm/CoinmarketBuyTerms';
 import Word from './Word';
 import WordAdvanced from './WordAdvanced';
 import ConfirmAddress from './confirm/Address';
@@ -167,12 +167,12 @@ const getUserContextModal = (props: Props) => {
             return <PassphraseDuplicate device={payload.device} duplicate={payload.duplicate} />;
         case 'review-transaction':
             return <ReviewTransaction {...payload} />;
-        case 'coinmarket-confirm-terms':
+        case 'coinmarket-buy-terms':
             return (
-                <CoinmarketTerms
-                    onConfirm={payload.onConfirm}
+                <CoinmarketBuyTerms
                     provider={payload.provider}
                     onCancel={modalActions.onCancel}
+                    decision={payload.decision}
                 />
             );
         case 'import-transaction':

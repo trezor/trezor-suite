@@ -5,7 +5,6 @@ import { BuyTrade } from 'invity-api';
 import { processQuotes } from '@wallet-utils/coinmarket/buyUtils';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
-import * as modalActions from '@suite-actions/modalActions';
 import * as routerActions from '@suite-actions/routerActions';
 import {
     createQuoteLink,
@@ -30,18 +29,18 @@ export const useOffers = (props: Props) => {
     } = props;
 
     const { account } = selectedAccount;
-    const [selectedQuote, setSelectQuote] = useState<BuyTrade>();
+    const [selectedQuote, setSelectedQuote] = useState<BuyTrade>();
     const [innerQuotes, setInnerQuotes] = useState<BuyTrade[]>(quotes);
     const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<BuyTrade[] | undefined>(
         alternativeQuotes,
     );
     const [lastFetchDate, setLastFetchDate] = useState(new Date());
-    const { openModal } = useActions({ openModal: modalActions.openModal });
     const { goto } = useActions({ goto: routerActions.goto });
     const { verifyAddress } = useActions({ verifyAddress: coinmarketCommonActions.verifyAddress });
-    const { saveTrade, setIsFromRedirect } = useActions({
+    const { saveTrade, setIsFromRedirect, openCoinmarketBuyConfirmModal } = useActions({
         saveTrade: coinmarketBuyActions.saveTrade,
         setIsFromRedirect: coinmarketBuyActions.setIsFromRedirect,
+        openCoinmarketBuyConfirmModal: coinmarketBuyActions.openCoinmarketBuyConfirmModal,
     });
 
     const invityAPIUrl = useSelector<
@@ -85,36 +84,33 @@ export const useOffers = (props: Props) => {
         return () => clearInterval(interval);
     });
 
-    const selectQuote = (quote: BuyTrade) => {
+    const selectQuote = async (quote: BuyTrade) => {
         const provider = providersInfo && quote.exchange ? providersInfo[quote.exchange] : null;
         if (quotesRequest) {
-            openModal({
-                type: 'coinmarket-confirm-terms',
-                provider: provider?.companyName,
-                onConfirm: async () => {
-                    // empty quoteId means the partner requests login first, requestTrade to get login screen
-                    if (!quote.quoteId) {
-                        const response = await invityAPI.doBuyTrade({
-                            trade: quote,
-                            returnUrl: createQuoteLink(quotesRequest, account),
-                        });
-                        // TODO - finish error handling - probably use modal to show the error to the user
-                        if (response) {
-                            if (response.trade.status === 'LOGIN_REQUEST' && response.tradeForm) {
-                                submitRequestForm(response.tradeForm);
-                            } else {
-                                const errorMessage = `[doBuyTrade] ${response.trade.status} ${response.trade.error}`;
-                                console.log(errorMessage);
-                            }
+            const result = await openCoinmarketBuyConfirmModal(provider?.companyName);
+            if (result) {
+                // empty quoteId means the partner requests login first, requestTrade to get login screen
+                if (!quote.quoteId) {
+                    const response = await invityAPI.doBuyTrade({
+                        trade: quote,
+                        returnUrl: createQuoteLink(quotesRequest, account),
+                    });
+                    // TODO - finish error handling - probably use modal to show the error to the user
+                    if (response) {
+                        if (response.trade.status === 'LOGIN_REQUEST' && response.tradeForm) {
+                            submitRequestForm(response.tradeForm);
                         } else {
-                            const errorMessage = '[doBuyTrade] no response from the server';
+                            const errorMessage = `[doBuyTrade] ${response.trade.status} ${response.trade.error}`;
                             console.log(errorMessage);
                         }
                     } else {
-                        setSelectQuote(quote);
+                        const errorMessage = '[doBuyTrade] no response from the server';
+                        console.log(errorMessage);
                     }
-                },
-            });
+                } else {
+                    setSelectedQuote(quote);
+                }
+            }
         }
     };
 
@@ -149,7 +145,6 @@ export const useOffers = (props: Props) => {
         device,
         lastFetchDate,
         providersInfo,
-        setSelectQuote,
         saveTrade,
         quotesRequest,
         addressVerified,
