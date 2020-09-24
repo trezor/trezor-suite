@@ -243,7 +243,7 @@ const BasicDetails = ({ tx, confirmations, isFetching, explorerUrl }: Props) => 
                 </TxStatus>
 
                 {/* OPEN IN BLOCK EXPLORER LINK */}
-                {explorerUrl ? (
+                {explorerUrl && (
                     <ExplorerLinkWrapper>
                         <ExplorerLink variant="nostyle" href={explorerUrl}>
                             <ExplorerLinkTransactionWrapper>
@@ -252,8 +252,6 @@ const BasicDetails = ({ tx, confirmations, isFetching, explorerUrl }: Props) => 
                             <LinkIcon icon="EXTERNAL_LINK" size={14} color={colors.BLACK25} />
                         </ExplorerLink>
                     </ExplorerLinkWrapper>
-                ) : (
-                    <></>
                 )}
             </HeaderFirstRow>
 
@@ -271,18 +269,15 @@ const BasicDetails = ({ tx, confirmations, isFetching, explorerUrl }: Props) => 
                         <>
                             <FormattedDate
                                 value={getDateWithTimeZone(tx.blockTime * 1000)}
-                                // value={tx.blockTime * 1000}
                                 year="numeric"
                                 month="short"
                                 day="2-digit"
-                                // timeZone="utc"
                             />
                             <HourWrapper>
                                 <FormattedDate
                                     value={getDateWithTimeZone(tx.blockTime * 1000)}
                                     hour="2-digit"
                                     minute="2-digit"
-                                    timeZone="utc"
                                 />
                             </HourWrapper>
                         </>
