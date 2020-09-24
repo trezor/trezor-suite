@@ -1,29 +1,28 @@
+import { FormattedDate } from 'react-intl';
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { FormattedDate } from 'react-intl';
 import { Button } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation, FormattedCryptoAmount, FiatValue } from '@suite-components';
 import AmountRow from '../AmountRow';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction } from '@wallet-types';
-import FormattedCryptoAmount from '@suite/components/suite/FormattedCryptoAmount';
-import FiatValue from '@suite-components/FiatValue/Container';
+import { getNetwork } from '@wallet-utils/accountUtils';
 
 const AmountWrapper = styled.div``;
 
-// TODO check if all props are necessary
 interface Props {
     tx: WalletAccountTransaction;
     totalInput?: string;
     totalOutput?: string;
-    txDetails: any;
-    isFetching: boolean;
+    // txDetails: any;
     isTestnet: boolean;
 }
 
 const AmountDetails = ({ tx, totalInput, totalOutput, isTestnet }: Props) => {
     const assetSymbol = tx.symbol.toUpperCase();
     const [showFiat, setShowFiat] = useState(false);
+    const network = getNetwork(tx.symbol);
+    const showTotalIO = network?.networkType === 'ripple' || network?.networkType === 'ethereum';
 
     return (
         <AmountWrapper>
@@ -82,48 +81,57 @@ const AmountDetails = ({ tx, totalInput, totalOutput, isTestnet }: Props) => {
                 />
             )}
 
-            {/* TOTAL INPUT */}
+            {!showTotalIO && (
+                <>
+                    {/* TOTAL INPUT */}
+                    <AmountRow
+                        firstColumn={<Translation id="TR_TOTAL_INPUT" />}
+                        secondColumn={
+                            <FormattedCryptoAmount value={totalInput} symbol={assetSymbol} />
+                        }
+                        thirdColumn={
+                            showFiat &&
+                            totalInput && (
+                                <FiatValue
+                                    amount={totalInput}
+                                    symbol={tx.symbol}
+                                    source={tx.rates}
+                                    useCustomSource
+                                />
+                            )
+                        }
+                        fourthColumn={
+                            showFiat &&
+                            totalInput && <FiatValue amount={totalInput} symbol={tx.symbol} />
+                        }
+                        color="dark"
+                    />
 
-            <AmountRow
-                firstColumn={<Translation id="TR_TOTAL_INPUT" />}
-                secondColumn={<FormattedCryptoAmount value={totalInput} symbol={assetSymbol} />}
-                thirdColumn={
-                    showFiat &&
-                    totalInput && (
-                        <FiatValue
-                            amount={totalInput}
-                            symbol={tx.symbol}
-                            source={tx.rates}
-                            useCustomSource
-                        />
-                    )
-                }
-                fourthColumn={
-                    showFiat && totalInput && <FiatValue amount={totalInput} symbol={tx.symbol} />
-                }
-                color="dark"
-            />
-
-            {/* TOTAL OUPUT */}
-            <AmountRow
-                firstColumn={<Translation id="TR_TOTAL_OUTPUT" />}
-                secondColumn={<FormattedCryptoAmount value={totalOutput} symbol={assetSymbol} />}
-                thirdColumn={
-                    showFiat &&
-                    totalOutput && (
-                        <FiatValue
-                            amount={totalOutput}
-                            symbol={tx.symbol}
-                            source={tx.rates}
-                            useCustomSource
-                        />
-                    )
-                }
-                fourthColumn={
-                    showFiat && totalOutput && <FiatValue amount={totalOutput} symbol={tx.symbol} />
-                }
-                color="dark"
-            />
+                    {/* TOTAL OUPUT */}
+                    <AmountRow
+                        firstColumn={<Translation id="TR_TOTAL_OUTPUT" />}
+                        secondColumn={
+                            <FormattedCryptoAmount value={totalOutput} symbol={assetSymbol} />
+                        }
+                        thirdColumn={
+                            showFiat &&
+                            totalOutput && (
+                                <FiatValue
+                                    amount={totalOutput}
+                                    symbol={tx.symbol}
+                                    source={tx.rates}
+                                    useCustomSource
+                                />
+                            )
+                        }
+                        fourthColumn={
+                            showFiat &&
+                            totalOutput && <FiatValue amount={totalOutput} symbol={tx.symbol} />
+                        }
+                        color="dark"
+                    />
+                </>
+            )}
 
             {/* AMOUNT */}
             <AmountRow
