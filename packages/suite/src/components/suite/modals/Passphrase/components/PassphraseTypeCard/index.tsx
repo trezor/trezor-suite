@@ -1,61 +1,101 @@
-import React, { useState, createRef, useLayoutEffect } from 'react';
+import React, { useState, createRef } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ANIMATION } from '@suite-config';
 import { useKeyPress } from '@suite-utils/dom';
 import styled, { css } from 'styled-components';
-import { Button, colors, variables, Input, Checkbox, Icon } from '@trezor/components';
+import { Button, colors, variables, Input, Tooltip, Checkbox, Icon } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
-
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { countBytesInString } from '@suite-utils/string';
 import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
 
-const WalletTitle = styled.div`
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    text-align: center;
-    color: ${colors.BLACK0};
-    margin-bottom: 12px;
-`;
-
-const Col = styled.div<Pick<Props, 'colorVariant' | 'singleColModal'>>`
+const Wrapper = styled.div<Pick<Props, 'type' | 'singleColModal'>>`
     display: flex;
     flex: 1;
-    flex-direction: column;
-    padding: 0px;
-    align-items: center;
-    border: solid 2px ${colors.BLACK96};
+    /* align-items: center; */
     border-radius: 6px;
-    justify-self: center;
-    max-width: 360px;
+    flex-direction: column;
+    text-align: left;
+    width: 100%;
+
+    & + & {
+        margin-top: 18px;
+    }
 
     ${props =>
         !props.singleColModal &&
         css`
-            width: 310px;
-            /* padding needed only in big choose wallet type modal */
-            padding: 32px 24px;
-        `};
+            padding: 12px;
+            /* border: solid 1px ${colors.NEUE_STROKE_GREY}; */
+        `}
 
     ${props =>
-        props.colorVariant === 'secondary' &&
+        props.type === 'standard' &&
         css`
-            background: ${colors.BLACK96};
-        `};
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+            cursor: pointer;
+        `}
+    
+    /* @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         width: 100%;
-    }
+    } */
 `;
 
-const Content = styled.div`
+const IconWrapper = styled.div<Pick<Props, 'type'>>`
+    width: 38px;
+    height: 38px;
+    background: ${props =>
+        props.type === 'standard' ? colors.NEUE_BG_LIGHT_GREEN : colors.NEUE_BG_GRAY};
+    border-radius: 6px;
     display: flex;
-    flex: 1;
-    flex-direction: column;
-    color: ${colors.BLACK50};
-    font-size: ${variables.FONT_SIZE.SMALL};
+    justify-content: center;
+    align-items: center;
+    margin-right: 24px;
 `;
 
-const InputWrapper = styled(Content)`
+const Col = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    flex: 1;
+`;
+
+const ArrowCol = styled(Col)`
+    flex: 0 0 auto;
+    height: 100%;
+    justify-content: center;
+`;
+
+const WalletTitle = styled.div`
+    display: flex;
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    font-weight: 500;
+    /* margin-bottom: 12px; */
+    line-height: 1.5;
+    align-items: center;
+`;
+
+const Description = styled.div<Pick<Props, 'authConfirmation'>>`
+    display: flex;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    font-size: ${variables.FONT_SIZE.TINY};
+    line-height: 1.33;
+`;
+
+const InputWrapper = styled(Description)`
     width: 100%;
-    margin-top: 32px;
+
+    ${props =>
+        props.authConfirmation &&
+        css`
+            margin-top: 12px;
+        `}
+`;
+
+const Divider = styled.div`
+    margin: 16px 0px;
+    /* height: 1px; */
+    background: ${colors.NEUE_STROKE_GREY};
 `;
 
 const PassphraseInput = styled(Input)`
@@ -63,17 +103,40 @@ const PassphraseInput = styled(Input)`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
+const Row = styled.div`
+    display: flex;
+`;
+
 const Actions = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-top: 32px;
+    margin-top: 16px;
 `;
 
 const ActionButton = styled(Button)`
-    & + & {
-        margin-top: 8px;
+    margin-top: 8px;
+
+    &::first-child {
+        margin-top: 0px;
+    }
+`;
+
+const OnDeviceActionButton = styled(ActionButton)`
+    background: transparent;
+    text-decoration: underline;
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+
+    &:hover,
+    &:focus,
+    &:active {
+        color: ${colors.NEUE_TYPE_LIGHT_GREY};
+        background: transparent;
+    }
+
+    &::first-child {
+        margin-top: 0px;
     }
 `;
 
@@ -81,28 +144,31 @@ const StyledIcon = styled(Icon)`
     cursor: pointer;
 `;
 
+const TooltipIcon = styled(Icon)`
+    margin-left: 4px;
+`;
+
+const Content = styled.div`
+    display: flex;
+    flex: 1;
+    margin: 8px 12px;
+    color: ${colors.NEUE_TYPE_DARK_GREY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+`;
+
 const RetryButton = styled(Button)`
     align-self: center;
     margin-top: 16px;
-`;
-
-const Padding = styled.div<{ singleColModal?: boolean }>`
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-
-    padding: ${p => (p.singleColModal ? '0px 24px' : '0px')};
 `;
 
 type Props = {
     title?: React.ReactNode;
     description?: React.ReactNode;
     submitLabel: React.ReactNode;
-    colorVariant: 'primary' | 'secondary';
-    showPassphraseInput?: boolean;
-    authConfirmation?: boolean;
+    type: 'standard' | 'hidden';
+    offerPassphraseOnDevice?: boolean;
     singleColModal?: boolean;
-    offerPassphraseOnDevice: boolean;
+    authConfirmation?: boolean;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     recreateWallet?: () => void;
 };
@@ -110,21 +176,15 @@ type Props = {
 const DOT = '●';
 
 const PassphraseTypeCard = (props: Props) => {
-    const { authConfirmation } = props;
-    const [enabled, setEnabled] = useState(!authConfirmation);
     const [value, setValue] = useState('');
+    const [enabled, setEnabled] = useState(!props.authConfirmation);
     const [showPassword, setShowPassword] = useState(false);
+    const [hiddenWalletTouched, setHiddenWalletTouched] = useState(false);
     // const inputType = showPassword ? 'text' : 'password';
     const enterPressed = useKeyPress('Enter');
     const backspacePressed = useKeyPress('Backspace');
     const ref = createRef<HTMLInputElement>();
     const isTooLong = countBytesInString(value) > MAX_LENGTH.PASSPHRASE;
-
-    useLayoutEffect(() => {
-        if (ref && ref.current) {
-            ref.current.focus();
-        }
-    }, [ref]);
 
     const submit = (value: string, passphraseOnDevice?: boolean) => {
         if (!enabled) return;
@@ -135,7 +195,7 @@ const PassphraseTypeCard = (props: Props) => {
         // Trigger submit on pressing Enter in case of single col modal (creating/confirming hidden wallet)
         // In case of two-col modal (selecting between standard and hidden wallet)
         // only the hidden wallet part handle the enter press.
-        if (props.singleColModal || props.showPassphraseInput) {
+        if (props.singleColModal || props.type === 'hidden') {
             if (!isTooLong) {
                 submit(value);
             }
@@ -176,12 +236,62 @@ const PassphraseTypeCard = (props: Props) => {
     const displayValue = !showPassword ? value.replace(/./g, DOT) : value;
 
     return (
-        <Col colorVariant={props.colorVariant} singleColModal={props.singleColModal}>
-            {props.title && <WalletTitle>{props.title}</WalletTitle>}
-            {props.description && <Content>{props.description}</Content>}
-            <Padding singleColModal={props.singleColModal}>
-                {props.showPassphraseInput && (
-                    <InputWrapper>
+        <Wrapper
+            type={props.type}
+            singleColModal={props.singleColModal}
+            onClick={() => {
+                if (props.type === 'standard') {
+                    submit(value);
+                } else if (ref && ref.current) {
+                    ref.current.focus();
+                    setHiddenWalletTouched(true);
+                }
+            }}
+        >
+            {!props.singleColModal && (
+                // only used to show options in modal where user selects wallet type
+                // single col modal such as one for creating hidden wallet shows only input and submit button
+                <>
+                    <Row>
+                        <IconWrapper type={props.type}>
+                            {props.type === 'standard' ? (
+                                <Icon size={24} icon="WALLET" color={colors.NEUE_TYPE_GREEN} />
+                            ) : (
+                                <Icon size={24} icon="LOCK" color={colors.NEUE_TYPE_LIGHT_GREY} />
+                            )}
+                        </IconWrapper>
+                        <Col>
+                            <WalletTitle>
+                                {props.title}
+                                {props.type === 'hidden' && (
+                                    <Tooltip
+                                        placement="top"
+                                        content={<Translation id="TR_HIDDEN_WALLET_TOOLTIP" />}
+                                    >
+                                        <TooltipIcon
+                                            useCursorPointer
+                                            size={16}
+                                            color={colors.NEUE_TYPE_LIGHT_GREY}
+                                            icon="QUESTION_ACTIVE"
+                                        />
+                                    </Tooltip>
+                                )}
+                            </WalletTitle>
+                            <Description>{props.description}</Description>
+                        </Col>
+                        {props.type === 'standard' && (
+                            <ArrowCol>
+                                <Icon icon="ARROW_RIGHT" color={colors.NEUE_TYPE_LIGHT_GREY} />
+                            </ArrowCol>
+                        )}
+                    </Row>
+                    {props.type === 'hidden' && <Divider />}
+                </>
+            )}
+            {props.type === 'hidden' && (
+                <Row>
+                    {/* Show passphrase input */}
+                    <InputWrapper authConfirmation={props.authConfirmation}>
                         <PassphraseInput
                             data-test="@passphrase/input"
                             placeholder="Enter passphrase" // TODO: Localize
@@ -192,14 +302,12 @@ const PassphraseTypeCard = (props: Props) => {
                                 isTooLong ? <Translation id="TR_PASSPHRASE_TOO_LONG" /> : null
                             }
                             state={isTooLong ? 'error' : undefined}
-                            variant="small"
                             noTopLabel
                             noError
                             innerAddon={
                                 <StyledIcon
                                     size={18}
-                                    color={colors.BLACK70}
-                                    hoverColor={colors.BLACK70}
+                                    color={colors.NEUE_TYPE_LIGHT_GREY}
                                     icon={showPassword ? 'HIDE' : 'SHOW'}
                                     onClick={() => setShowPassword(!showPassword)}
                                 />
@@ -207,54 +315,68 @@ const PassphraseTypeCard = (props: Props) => {
                         />
                         {!isTooLong && <PasswordStrengthIndicator password={value} />}
                     </InputWrapper>
-                )}
-                {authConfirmation && (
-                    <Content>
-                        <Checkbox
-                            data-test="@passphrase/confirm-checkbox"
-                            onClick={() => setEnabled(!enabled)}
-                            isChecked={enabled}
-                        >
-                            <Translation id="TR_I_UNDERSTAND_PASSPHRASE" />
-                        </Checkbox>
-                    </Content>
-                )}
-                <Actions>
-                    <ActionButton
-                        data-test={`@passphrase/${
-                            props.showPassphraseInput ? 'hidden' : 'standard'
-                        }/submit-button`}
-                        isDisabled={!enabled || isTooLong}
-                        variant={props.singleColModal ? 'primary' : props.colorVariant}
-                        onClick={() => submit(value)}
-                        fullWidth
+                </Row>
+            )}
+            {props.authConfirmation && (
+                // Checkbox if user fully understands what's happening when confirming empty passphrase
+                <Content>
+                    <Checkbox
+                        data-test="@passphrase/confirm-checkbox"
+                        onClick={() => setEnabled(!enabled)}
+                        isChecked={enabled}
                     >
-                        {props.submitLabel}
-                    </ActionButton>
-                    {props.showPassphraseInput && props.offerPassphraseOnDevice && (
-                        <ActionButton
-                            isDisabled={!enabled}
-                            variant="tertiary"
-                            icon="T2"
-                            onClick={() => submit(value, true)}
-                            fullWidth
-                        >
-                            <Translation id="TR_ENTER_PASSPHRASE_ON_DEVICE" />
-                        </ActionButton>
-                    )}
-                    {props.recreateWallet && (
-                        <RetryButton
-                            variant="tertiary"
-                            icon="ARROW_LEFT"
-                            color={colors.BLACK50}
-                            onClick={props.recreateWallet}
-                        >
-                            <Translation id="TR_TRY_AGAIN" />
-                        </RetryButton>
-                    )}
-                </Actions>
-            </Padding>
-        </Col>
+                        <Translation id="TR_I_UNDERSTAND_PASSPHRASE" />
+                    </Checkbox>
+                </Content>
+            )}
+            <AnimatePresence initial={false}>
+                {props.type === 'hidden' && (
+                    <Actions>
+                        {/* Submit button */}
+                        {/* Visible in standalone modal for creating a hidden wallet or after a click also in modal for selecting wallet type */}
+                        {(props.singleColModal || hiddenWalletTouched) && (
+                            <motion.div {...ANIMATION.EXPAND}>
+                                <ActionButton
+                                    data-test={`@passphrase/${
+                                        props.type === 'hidden' ? 'hidden' : 'standard'
+                                    }/submit-button`}
+                                    isDisabled={!enabled || isTooLong}
+                                    variant="primary"
+                                    onClick={() => submit(value)}
+                                    fullWidth
+                                >
+                                    {props.submitLabel}
+                                </ActionButton>
+                            </motion.div>
+                        )}
+
+                        {/* Offer entering passphrase on a device */}
+                        {props.offerPassphraseOnDevice && (
+                            <OnDeviceActionButton
+                                isDisabled={!enabled}
+                                variant="tertiary"
+                                onClick={() => submit(value, true)}
+                                fullWidth
+                            >
+                                <Translation id="TR_ENTER_PASSPHRASE_ON_DEVICE" />
+                            </OnDeviceActionButton>
+                        )}
+
+                        {/* Try again button shows while confirming a passphrase */}
+                        {props.recreateWallet && (
+                            <RetryButton
+                                variant="tertiary"
+                                icon="ARROW_LEFT"
+                                color={colors.BLACK50}
+                                onClick={props.recreateWallet}
+                            >
+                                <Translation id="TR_TRY_AGAIN" />
+                            </RetryButton>
+                        )}
+                    </Actions>
+                )}
+            </AnimatePresence>
+        </Wrapper>
     );
 };
 

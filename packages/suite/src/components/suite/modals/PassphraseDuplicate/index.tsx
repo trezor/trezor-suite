@@ -39,7 +39,7 @@ const PassphraseDuplicate = ({ device, duplicate }: Props) => {
                     <Button
                         variant="primary"
                         onClick={() => switchDuplicatedDevice(device, duplicate)}
-                        isLoading={isDeviceLocked}
+                        isDisabled={isDeviceLocked}
                         fullWidth
                     >
                         <Translation id="TR_WALLET_DUPLICATE_SWITCH" />
@@ -47,7 +47,7 @@ const PassphraseDuplicate = ({ device, duplicate }: Props) => {
                     <Button
                         variant="secondary"
                         onClick={authorizeDevice}
-                        isLoading={isDeviceLocked}
+                        isDisabled={isDeviceLocked}
                         fullWidth
                     >
                         <Translation id="TR_WALLET_DUPLICATE_RETRY" />
