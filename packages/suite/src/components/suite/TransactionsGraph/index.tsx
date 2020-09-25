@@ -143,7 +143,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 domain={calcXDomain(xTicks, data, selectedRange)}
                                 // width={10}
                                 stroke={colors.NEUE_BG_GRAY}
-                                interval="preserveStartEnd"
+                                interval="preserveEnd"
                                 tick={<CustomXAxisTick selectedRange={selectedRange} />}
                                 ticks={xTicks}
                                 tickLine={false}
