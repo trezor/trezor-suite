@@ -146,11 +146,12 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
                     <DeviceDetail>
                         <DeviceLabel>{selectedDevice.label}</DeviceLabel>
                         <WalletNameWrapper>
-                            {selectedDevice.metadata.status === 'enabled' && selectedDevice.metadata.walletLabel ? (
+                            {selectedDevice.metadata.status === 'enabled' &&
+                            selectedDevice.metadata.walletLabel ? (
                                 selectedDevice.metadata.walletLabel
                             ) : (
-                                    <WalletLabeling device={selectedDevice} />
-                                )}
+                                <WalletLabeling device={selectedDevice} />
+                            )}
                         </WalletNameWrapper>
                     </DeviceDetail>
                     <DeviceStatus
@@ -158,8 +159,8 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
                         onRefreshClick={
                             deviceNeedsRefresh
                                 ? () => {
-                                    acquireDevice(selectedDevice);
-                                }
+                                      acquireDevice(selectedDevice);
+                                  }
                                 : undefined
                         }
                     />
