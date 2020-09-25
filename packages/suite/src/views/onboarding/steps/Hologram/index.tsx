@@ -110,7 +110,6 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
             <Wrapper.StepFooter>
                 <Wrapper.Controls>
                     <OnboardingButton.Back
-                        data-test="@onboarding/hologram/back-button"
                         onClick={() =>
                             onboardingActions.goToPreviousStep(
                                 actualModel ? STEP.ID_NEW_OR_USED : STEP.ID_SELECT_DEVICE_STEP,

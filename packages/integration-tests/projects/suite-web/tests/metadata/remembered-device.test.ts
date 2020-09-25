@@ -1,4 +1,7 @@
 // @stable/metadata
+// @retry=2
+
+// todo: find out why it has become flaky
 
 import { stubFetch, stubOpen } from '../../stubs/metadata';
 
