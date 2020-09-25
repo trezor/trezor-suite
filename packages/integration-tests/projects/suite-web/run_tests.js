@@ -152,7 +152,6 @@ async function runTests() {
                 console.log(
                     `[run_tests.js] failed in run number ${testRunNumber} of ${allowedRuns}`,
                 );
-                totalRetries++;
             } catch (err) {
                 console.log('[run_tests.js] error');
                 console.log(err);
