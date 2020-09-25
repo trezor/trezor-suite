@@ -94,6 +94,7 @@ const AccountSearchBox = (props: Props) => {
                 noError
                 clearButton
                 onClear={onClear}
+                data-test="@account-menu/search-input"
             />
             <CoinsFilter
                 onClick={() => {
