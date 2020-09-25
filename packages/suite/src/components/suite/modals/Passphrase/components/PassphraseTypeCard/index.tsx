@@ -92,10 +92,8 @@ const InputWrapper = styled(Description)`
         `}
 `;
 
-const Divider = styled.div`
+const Spacer = styled.div`
     margin: 16px 0px;
-    /* height: 1px; */
-    background: ${colors.NEUE_STROKE_GREY};
 `;
 
 const PassphraseInput = styled(Input)`
@@ -285,7 +283,7 @@ const PassphraseTypeCard = (props: Props) => {
                             </ArrowCol>
                         )}
                     </Row>
-                    {props.type === 'hidden' && <Divider />}
+                    {props.type === 'hidden' && <Spacer />}
                 </>
             )}
             {props.type === 'hidden' && (
