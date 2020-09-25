@@ -17,15 +17,20 @@ import {
 } from '@firmware-components';
 
 import { Props } from './Container';
-import { resetReducer } from '@suite/actions/firmware/firmwareActions';
 
-const FirmwareStep = ({ device, firmware, goToPreviousStep, goToNextStep }: Props) => {
+const FirmwareStep = ({
+    device,
+    firmware,
+    goToPreviousStep,
+    goToNextStep,
+    resetReducer,
+}: Props) => {
     const getComponent = () => {
         // edge case 1 - error
         if (firmware.error) {
             return {
                 Body: <ErrorStep.Body />,
-                BottomBar: <RetryButton onClick={resetReducer} />,
+                BottomBar: <RetryButton onClick={() => resetReducer()} />,
             };
         }
 

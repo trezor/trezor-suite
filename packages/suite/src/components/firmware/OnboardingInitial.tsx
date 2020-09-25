@@ -3,15 +3,22 @@ import { Button } from '@trezor/components';
 
 import { Translation } from '@suite-components';
 import { getFwVersion } from '@suite-utils/device';
-import { InitImg } from '.';
 import { useDevice, useFirmware, useActions } from '@suite-hooks';
-import { P } from '@firmware-components';
+import { P, H2, InitImg, ConnectInNormalImg } from '@firmware-components';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 
 const Body = () => {
     const { device } = useDevice();
 
-    if (!device?.connected || !device?.features) return null;
+    if (!device?.connected || !device?.features)
+        return (
+            <>
+                <ConnectInNormalImg />
+                <H2>
+                    <Translation id="TR_CONNECT_YOUR_DEVICE" />
+                </H2>
+            </>
+        );
 
     if (device?.firmware === 'none') {
         return (
