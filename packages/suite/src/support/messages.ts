@@ -3809,6 +3809,10 @@ const definedMessages = defineMessages({
         id: 'TR_REVEAL_ADDRESS',
         defaultMessage: 'Reveal address',
     },
+    TR_ENABLE_MORE_COINS: {
+        id: 'TR_ENABLE_MORE_COINS',
+        defaultMessage: 'Enable more coins',
+    },
 } as const);
 
 export default definedMessages;
