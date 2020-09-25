@@ -13,7 +13,6 @@ export const ICONS = {
     COINMARKET: require('../../images/icons/coinmarket.svg'),
     CROSS: require('../../images/icons/cross.svg'),
     CANCEL: require('../../images/icons/cancel.svg'),
-    COINMARKET: require('../../images/icons/coinmarket.svg'),
     DASHBOARD: require('../../images/icons/dashboard.svg'),
     EXCHANGE: require('../../images/icons/exchange.svg'),
     INFO: require('../../images/icons/info.svg'),
