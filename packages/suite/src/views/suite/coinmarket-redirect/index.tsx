@@ -4,6 +4,7 @@ import { useSelector } from '@suite/hooks/suite';
 import { Account } from '@wallet-types';
 import { variables } from '@trezor/components';
 import { useRedirect } from '@suite-hooks/useRedirect';
+import { Translation } from '@suite/components/suite';
 
 const Wrapper = styled.div`
     display: flex;
@@ -20,7 +21,8 @@ const CoinmarketRedirect = () => {
     const router = useSelector(state => state.router);
 
     useEffect(() => {
-        const params = router?.hash?.split('/');
+        // get rid of parameters appended by some partners to url which we pass to them
+        const params = router?.hash?.split('?')[0].split('/');
         if (!params) return;
 
         const redirectCommonParams = {
@@ -46,7 +48,11 @@ const CoinmarketRedirect = () => {
         }
     });
 
-    return <Wrapper>Redirecting ...</Wrapper>;
+    return (
+        <Wrapper>
+            <Translation id="TR_COINMARKET_REDIRECTING" />
+        </Wrapper>
+    );
 };
 
 export default CoinmarketRedirect;

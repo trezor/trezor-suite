@@ -152,6 +152,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Trade not found',
         id: 'TR_COINMARKET_TRADE_NOT_FOUND',
     },
+    TR_COINMARKET_REDIRECTING: {
+        defaultMessage: 'Redirecting ...',
+        id: 'TR_COINMARKET_REDIRECTING',
+    },
     TR_EXCHANGE_LOADING: {
         defaultMessage: 'Loading',
         id: 'TR_EXCHANGE_LOADING',
