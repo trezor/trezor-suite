@@ -103,7 +103,11 @@ const WalletInstance = ({
                 {discoveryProcess && (
                     <InstanceType>
                         {!instance.useEmptyPassphrase && (
-                            <LockIcon icon="LOCK" color={colors.NEUE_TYPE_DARK_GREY} size={12} />
+                            <LockIcon
+                                icon="LOCK_ACTIVE"
+                                color={colors.NEUE_TYPE_DARK_GREY}
+                                size={12}
+                            />
                         )}
                         {instance.state ? (
                             <MetadataLabeling
