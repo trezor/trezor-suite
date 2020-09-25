@@ -1,23 +1,10 @@
 import React from 'react';
-import styled from 'styled-components';
 
-import { P, variables } from '@trezor/components';
-import { Option } from '@onboarding-components';
+import { P } from '@trezor/components';
+import { Option, Wrapper } from '@onboarding-components';
 
 import { WordCount } from '@recovery-types';
 import { Translation } from '@suite-components';
-
-const Wrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    width: 100%;
-    margin-top: 24px;
-
-    @media (min-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: row;
-    }
-`;
 
 interface Props {
     onSelect: (number: WordCount) => void;
@@ -28,7 +15,7 @@ const SelectWordCount = ({ onSelect }: Props) => (
         <P size="small">
             <Translation id="TR_RECOVER_SUBHEADING" />
         </P>
-        <Wrapper>
+        <Wrapper.Options>
             <Option
                 variant={3}
                 action={() => {
@@ -56,7 +43,7 @@ const SelectWordCount = ({ onSelect }: Props) => (
                 imgSrc="images/svg/24-words.svg"
                 data-test="@recover/select-count/24"
             />
-        </Wrapper>
+        </Wrapper.Options>
     </>
 );
 
