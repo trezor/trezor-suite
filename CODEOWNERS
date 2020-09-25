@@ -2,7 +2,7 @@
 
 /docker @mroz22
 
-/packages/blockchain-link @keraf
+/packages/blockchain-link @szymonlesisz @keraf
 
 /packages/components @keraf @slowbackspace @robertbrada
 /packages/components-storybook @keraf @slowbackspace @robertbrada
@@ -16,13 +16,13 @@
 
 /packages/rollout @mroz22
 
-/packages/suite @keraf @mroz22 @slowbackspace @robertbrada
+/packages/suite @szymonlesisz @keraf @mroz22 @slowbackspace @robertbrada
 
 /packages/suite-data @keraf
 
-/packages/suite-desktop @keraf
+/packages/suite-desktop @keraf @szymonlesisz
 
-/packages/suite-native @slowbackspace @keraf
+/packages/suite-native @slowbackspace @szymonlesisz @keraf
 
 /packages/suite-storage @slowbackspace @keraf
 
