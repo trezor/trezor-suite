@@ -18,7 +18,7 @@ describe('Onboarding - hologram', () => {
         cy.log('first check if correct video is displayed according to users choice of device');
         cy.getTestElement('@onboarding/option-model-one-path').click();
         cy.getTestElement('@onboarding/hologram/model-1-video');
-        cy.getTestElement('@onboarding/hologram/back-button').click();
+        cy.getTestElement('@onboarding/back-button').click();
         cy.getTestElement('@onboarding/option-model-t-path').click();
         cy.getTestElement('@onboarding/hologram/model-2-video');
 
