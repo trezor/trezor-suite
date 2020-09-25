@@ -5,10 +5,11 @@ import { NETWORKS } from '@wallet-config';
 import { Section } from '@dashboard-components';
 import Asset from './components/Asset';
 import { Account } from '@wallet-types';
-import { colors, variables, Loader, Icon } from '@trezor/components';
-import { Card, Translation, AddAccountButton } from '@suite-components';
-import { useDiscovery, useDevice } from '@suite-hooks';
+import { colors, variables, Loader, Icon, Button } from '@trezor/components';
+import { Card, Translation } from '@suite-components';
+import { useDiscovery, useActions } from '@suite-hooks';
 import { useAccounts } from '@wallet-hooks';
+import * as routerActions from '@suite-actions/routerActions';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -47,14 +48,16 @@ const Grid = styled.div`
     grid-template-columns: 2fr 2fr 1fr;
 `;
 
-const StyledAddAccountButton = styled(AddAccountButton)`
+const StyledAddAccountButton = styled(Button)`
     margin-left: 20px;
 `;
 
 const AssetsCard = () => {
     const { discovery, getDiscoveryStatus } = useDiscovery();
-    const { device } = useDevice();
     const { accounts } = useAccounts(discovery);
+    const { goto } = useActions({
+        goto: routerActions.goto,
+    });
 
     const assets: { [key: string]: Account[] } = {};
     accounts.forEach(a => {
@@ -75,7 +78,14 @@ const AssetsCard = () => {
             heading={
                 <>
                     <Translation id="TR_MY_ASSETS" />
-                    <StyledAddAccountButton device={device} />
+                    {/* This button is interim solution as described here https://github.com/trezor/trezor-suite/issues/2329 */}
+                    <StyledAddAccountButton
+                        variant="tertiary"
+                        icon="PLUS"
+                        onClick={() => goto('settings-wallet')}
+                    >
+                        <Translation id="TR_ENABLE_MORE_COINS" />
+                    </StyledAddAccountButton>
                 </>
             }
         >
