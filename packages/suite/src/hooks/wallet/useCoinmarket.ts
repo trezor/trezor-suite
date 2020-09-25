@@ -66,7 +66,12 @@ export const useWatchBuyTrade = (account: Account, trades?: TradeBuy[], transact
     const REFRESH_SECONDS = 30;
     const BuyTradeFinalStatuses: BuyTradeStatus[] = ['SUCCESS', 'ERROR', 'BLOCKED'];
     const trade: TradeBuy | undefined =
-        trades && trades.find(trade => trade.tradeType === 'buy' && trade.key === transactionId);
+        trades &&
+        trades.find(
+            trade =>
+                trade.tradeType === 'buy' &&
+                (trade.key === transactionId || trade.data?.originalPaymentId === transactionId),
+        );
     const [updatedTrade, setUpdatedTrade] = useState<TradeBuy | undefined>(trade);
     const { saveTrade } = useActions({ saveTrade: coinmarketBuyActions.saveTrade });
     const shouldRefresh = () => {
