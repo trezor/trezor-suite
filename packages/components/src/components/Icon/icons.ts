@@ -68,6 +68,7 @@ export const ICONS = {
     RBF: require('../../images/icons/rbf.svg'),
     TRANSFER: require('../../images/icons/transfer.svg'),
     LOCK: require('../../images/icons/lock.svg'),
+    LOCK_ACTIVE: require('../../images/icons/lock_active.svg'),
     CLOCK: require('../../images/icons/clock.svg'),
     CALENDAR: require('../../images/icons/calendar.svg'),
     PDF: require('../../images/icons/pdf.svg'),
