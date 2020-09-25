@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Modal, variables } from '@trezor/components';
+import { Modal, variables, colors } from '@trezor/components';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as deviceUtils from '@suite-utils/device';
@@ -26,6 +26,12 @@ const WalletsWrapper = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
+`;
+
+const Divider = styled.div`
+    margin: 16px 16px;
+    height: 1px;
+    background: ${colors.NEUE_STROKE_GREY};
 `;
 
 const mapStateToProps = (state: AppState) => ({
@@ -148,6 +154,7 @@ const Passphrase = (props: Props) => {
                         type="standard"
                         onSubmit={onSubmit}
                     />
+                    <Divider />
                     <PassphraseTypeCard
                         title={<Translation id="TR_WALLET_SELECTION_HIDDEN_WALLET" />}
                         description={<Translation id="TR_HIDDEN_WALLET_DESCRIPTION" />}
