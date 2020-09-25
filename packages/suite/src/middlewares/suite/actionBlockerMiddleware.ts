@@ -19,7 +19,7 @@ const actionBlocker = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatc
 
     // block actions restricted by device's process mode
     const processMode = prevState.suite.device?.processMode;
-    if (processMode && action.type in PROCESS_MODE[processMode]?.blockedActions) {
+    if (processMode && PROCESS_MODE[processMode].blockedActions.includes(action.type)) {
         return action;
     }
 
