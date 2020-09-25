@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { injectIntl, WrappedComponentProps } from 'react-intl';
 
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
+import * as firmwareActions from '@suite/actions/firmware/firmwareActions';
+
 import { Dispatch, AppState } from '@suite-types';
 import Step from './index';
 
@@ -16,6 +18,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
         {
             goToNextStep: onboardingActions.goToNextStep,
             goToPreviousStep: onboardingActions.goToPreviousStep,
+            resetReducer: firmwareActions.resetReducer,
         },
         dispatch,
     );
