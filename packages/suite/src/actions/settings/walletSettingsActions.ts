@@ -2,15 +2,11 @@ import { FeeLevel } from 'trezor-connect';
 import { WALLET_SETTINGS } from './constants';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { Dispatch, GetState } from '@suite-types';
-import { Network, ExternalNetwork } from '@wallet-types';
+import { Network } from '@wallet-types';
 import { BlockbookUrl } from '@wallet-types/blockbook';
 
 export type WalletSettingsActions =
     | { type: typeof WALLET_SETTINGS.CHANGE_NETWORKS; payload: Network['symbol'][] }
-    | {
-          type: typeof WALLET_SETTINGS.CHANGE_EXTERNAL_NETWORKS;
-          payload: ExternalNetwork['symbol'][];
-      }
     | { type: typeof WALLET_SETTINGS.SET_LOCAL_CURRENCY; localCurrency: string }
     | { type: typeof WALLET_SETTINGS.SET_HIDE_BALANCE; toggled: boolean }
     | {

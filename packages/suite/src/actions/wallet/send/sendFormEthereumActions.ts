@@ -33,20 +33,20 @@ const calculate = (
         feeLevel.feeLimit || '0',
     );
 
-    let amount;
-    let max;
-    let totalSpent; // total ETH spent (amount + fee)
+    let amount: string;
+    let max: string | undefined;
+    const availableTokenBalance = token
+        ? amountToSatoshi(token.balance!, token.decimals)
+        : undefined;
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
-        const maxBig = token
-            ? new BigNumber(token.balance!)
-            : new BigNumber(calculateMax(availableBalance, feeInSatoshi));
-        max = maxBig.toString();
+        max = availableTokenBalance || calculateMax(availableBalance, feeInSatoshi);
         amount = max;
-        totalSpent = new BigNumber(calculateTotal(token ? '0' : max.toString(), feeInSatoshi));
     } else {
         amount = output.amount;
-        totalSpent = new BigNumber(calculateTotal(token ? '0' : output.amount, feeInSatoshi));
     }
+
+    // total ETH spent (amount + fee), in ERC20 only fee
+    const totalSpent = new BigNumber(calculateTotal(token ? '0' : amount, feeInSatoshi));
 
     if (totalSpent.isGreaterThan(availableBalance)) {
         const error = token ? 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' : 'AMOUNT_IS_NOT_ENOUGH';
@@ -54,7 +54,7 @@ const calculate = (
         return { type: 'error', error, errorMessage: { id: error } } as const;
     }
 
-    if (token && new BigNumber(amount).gt(amountToSatoshi(token.balance!, token.decimals))) {
+    if (availableTokenBalance && new BigNumber(amount).gt(availableTokenBalance)) {
         return {
             type: 'error',
             error: 'AMOUNT_IS_NOT_ENOUGH',
@@ -64,8 +64,8 @@ const calculate = (
 
     const payloadData = {
         type: 'nonfinal',
-        totalSpent: totalSpent.toString(),
-        max: max ? max.toString() : undefined,
+        totalSpent: token ? amount : totalSpent.toString(),
+        max,
         fee: feeInSatoshi,
         feePerByte: feeLevel.feePerUnit,
         feeLimit: feeLevel.feeLimit,
@@ -190,7 +190,7 @@ export const composeTransaction = (
     // update errorMessage values (symbol)
     Object.keys(wrappedResponse).forEach(key => {
         const tx = wrappedResponse[key];
-        if (tx.type !== 'error' && tx.max && !tx.token) {
+        if (tx.type !== 'error' && tx.max) {
             tx.max = formatAmount(tx.max, decimals);
         }
         if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {

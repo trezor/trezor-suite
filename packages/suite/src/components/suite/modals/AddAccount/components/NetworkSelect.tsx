@@ -1,16 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Select, CoinLogo } from '@trezor/components';
-import { Network, ExternalNetwork } from '@wallet-types';
+import { Network } from '@wallet-types';
 import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
 
-const buildNetworkOption = (network: Network | ExternalNetwork) => ({
+const buildNetworkOption = (network: Network) => ({
     value: network,
     label: network.name,
 });
 
-const buildNetworkOptions = (networks: Network[], externalNetworks: ExternalNetwork[]) => {
+const buildNetworkOptions = (networks: Network[]) => {
     const mainNetworks = networks.filter(n => !n.testnet);
     const testNetworks = networks.filter(n => n.testnet);
     return [
@@ -21,10 +21,6 @@ const buildNetworkOptions = (networks: Network[], externalNetworks: ExternalNetw
         {
             label: <Translation {...messages.MODAL_ADD_ACCOUNT_NETWORK_TESTNET} />,
             options: testNetworks.map(n => buildNetworkOption(n)),
-        },
-        {
-            label: <Translation {...messages.MODAL_ADD_ACCOUNT_NETWORK_EXTERNAL} />,
-            options: externalNetworks.map(n => buildNetworkOption(n)),
         },
     ];
 };
@@ -54,25 +50,19 @@ const NetworkOption = ({ value, label }: Option) => (
 );
 
 interface Props {
-    network: Network | ExternalNetwork;
+    network: Network;
     internalNetworks: Network[];
-    externalNetworks: ExternalNetwork[];
-    setSelectedNetwork: (n: Network | ExternalNetwork) => void;
+    setSelectedNetwork: (n: Network) => void;
 }
 
-const NetworkSelect = ({
-    network,
-    internalNetworks,
-    externalNetworks,
-    setSelectedNetwork,
-}: Props) => (
+const NetworkSelect = ({ network, internalNetworks, setSelectedNetwork }: Props) => (
     <Select
         isSearchable
         width={250}
         maxMenuHeight={250}
         isClearable={false}
         value={buildNetworkOption(network)}
-        options={buildNetworkOptions(internalNetworks, externalNetworks)}
+        options={buildNetworkOptions(internalNetworks)}
         formatOptionLabel={NetworkOption}
         onChange={(option: Option) => setSelectedNetwork(option.value)}
         noOptionsMessage={() => <Translation id="TR_COIN_NOT_FOUND" />}

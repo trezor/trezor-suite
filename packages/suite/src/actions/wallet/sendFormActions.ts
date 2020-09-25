@@ -144,10 +144,7 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
         : '0';
     // get total amount without fee OR token amount
     const formattedAmount = token
-        ? `${formatAmount(
-              precomposedTx.transaction.outputs[0].amount,
-              token.decimals,
-          )} ${token.symbol!.toUpperCase()}`
+        ? `${formatAmount(precomposedTx.totalSpent, token.decimals)} ${token.symbol!.toUpperCase()}`
         : formatNetworkAmount(spentWithoutFee, account.symbol, true);
 
     if (sentTx.success) {

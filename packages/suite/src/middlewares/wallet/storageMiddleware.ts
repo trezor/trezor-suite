@@ -97,7 +97,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             api.dispatch(storageActions.saveFiatRates());
             break;
 
-        case WALLET_SETTINGS.CHANGE_EXTERNAL_NETWORKS:
         case WALLET_SETTINGS.SET_HIDE_BALANCE:
         case WALLET_SETTINGS.SET_LOCAL_CURRENCY:
         case WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL:

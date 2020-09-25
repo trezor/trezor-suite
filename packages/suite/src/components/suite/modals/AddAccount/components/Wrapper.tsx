@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, colors, variables, Modal } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation, ExternalLink } from '@suite-components';
 import messages from '@suite/support/messages';
-import { Network, ExternalNetwork } from '@wallet-types';
+import { Network } from '@wallet-types';
 import NetworkSelect from './NetworkSelect';
 import AccountTypeSelect from './AccountTypeSelect';
+import { TREZOR_COINS_URL } from '@suite-constants/urls';
 
 const StyledModal = styled(Modal)`
     min-height: 540px;
@@ -39,12 +40,11 @@ const Expander = styled.div`
 `;
 
 type Props = {
-    selectedNetwork: Network | ExternalNetwork;
+    selectedNetwork: Network;
     internalNetworks: Network[];
-    externalNetworks: ExternalNetwork[];
     selectedAccountType?: Network;
     accountTypes?: Network[];
-    onSelectNetwork: (network: Network | ExternalNetwork) => void;
+    onSelectNetwork: (network: Network) => void;
     onSelectAccountType: (network: Network) => void;
     onCancel: () => void;
     children?: JSX.Element;
@@ -56,7 +56,18 @@ const Wrapper = (props: Props) => (
         cancelable
         onCancel={props.onCancel}
         heading={<Translation {...messages.MODAL_ADD_ACCOUNT_TITLE} />}
-        description={<Translation {...messages.MODAL_ADD_ACCOUNT_DESC} />}
+        description={
+            <Translation
+                {...messages.MODAL_ADD_ACCOUNT_DESC}
+                values={{
+                    trezorCoinsUrl: (
+                        <ExternalLink size="small" href={TREZOR_COINS_URL}>
+                            {TREZOR_COINS_URL}
+                        </ExternalLink>
+                    ),
+                }}
+            />
+        }
     >
         <Row>
             <RowTitle>
@@ -65,7 +76,6 @@ const Wrapper = (props: Props) => (
             <NetworkSelect
                 network={props.selectedNetwork}
                 internalNetworks={props.internalNetworks}
-                externalNetworks={props.externalNetworks}
                 setSelectedNetwork={props.onSelectNetwork}
             />
         </Row>

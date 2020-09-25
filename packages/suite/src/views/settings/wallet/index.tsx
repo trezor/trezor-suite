@@ -1,19 +1,10 @@
-import { SettingsLayout } from '@settings-components';
-import { ExternalLink, Translation } from '@suite-components';
-import { ActionColumn, Row, Section } from '@suite-components/Settings';
-import { variables } from '@trezor/components';
-import { EXTERNAL_NETWORKS, NETWORKS } from '@wallet-config';
-import { Network } from '@wallet-types';
 import React from 'react';
-import styled from 'styled-components';
-
-import Coin from './components/Coin';
+import { SettingsLayout } from '@settings-components';
+import { Translation } from '@suite-components';
+import { NETWORKS } from '@wallet-config';
+import { Network } from '@wallet-types';
 import CoinsGroup from './components/CoinsGroup';
 import { Props } from './Container';
-
-const StyledLink = styled(ExternalLink)`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
 
 const Settings = (props: Props) => {
     const { enabledNetworks } = props.wallet.settings;
@@ -80,21 +71,6 @@ const Settings = (props: Props) => {
                 type="testnet"
                 unavailableCapabilities={unavailableCapabilities}
             />
-            <Section
-                title={<Translation id="TR_3RD_PARTY_WALLETS" />}
-                description={<Translation id="TR_3RD_PARTY_WALLETS_DESC" />}
-            >
-                {EXTERNAL_NETWORKS.map(network => (
-                    <Row key={network.symbol}>
-                        <Coin name={network.name} symbol={network.symbol} />
-                        <ActionColumn>
-                            <StyledLink variant="nostyle" href={network.url} size="small">
-                                {new URL(network.url).hostname}
-                            </StyledLink>
-                        </ActionColumn>
-                    </Row>
-                ))}
-            </Section>
         </SettingsLayout>
     );
 };

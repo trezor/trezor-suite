@@ -81,8 +81,8 @@ const Fiat = ({ outputId }: { outputId: number }) => {
                         if (getDefaultValue(amountInputName, '').length > 0) {
                             setValue(amountInputName, '');
                             clearErrors(amountInputName);
-                            composeTransaction(amountInputName);
                         }
+                        composeTransaction(amountInputName);
                         return;
                     }
                     // calculate new Amount, Fiat input times currency rate
@@ -102,8 +102,8 @@ const Fiat = ({ outputId }: { outputId: number }) => {
                         setValue(amountInputName, amount, {
                             shouldValidate: true,
                         });
-                        composeTransaction(amountInputName);
                     }
+                    composeTransaction(amountInputName);
                 }}
                 name={inputName}
                 data-test={inputName}

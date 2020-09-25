@@ -4,7 +4,7 @@ import { Translation } from '@suite-components/Translation';
 
 import styled from 'styled-components';
 import { H2, P, colors } from '@trezor/components';
-import { Network, ExternalNetwork } from '@wallet-types';
+import { Network } from '@wallet-types';
 import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
@@ -19,7 +19,7 @@ const StyledP = styled(P)`
 
 interface Props {
     capability: UnavailableCapability;
-    network: Network | ExternalNetwork;
+    network: Network;
 }
 
 const Header = ({ capability }: { capability: UnavailableCapability }) => {

@@ -2702,7 +2702,7 @@ const definedMessages = defineMessages({
     MODAL_ADD_ACCOUNT_DESC: {
         id: 'MODAL_ADD_ACCOUNT_DESC',
         defaultMessage:
-            'Explanation how account works and some other info that is useful for a new user and does not annoy hard core user.',
+            "Explanation how account works and some other info that is useful for a new user and does not annoy hard core user. Can't find your favorite coin? Check {trezorCoinsUrl} for 3rd party wallet support.",
     },
     MODAL_ADD_ACCOUNT_NETWORK_MAINNET: {
         id: 'MODAL_ADD_ACCOUNT_NETWORK_MAINNET',
@@ -2711,31 +2711,6 @@ const definedMessages = defineMessages({
     MODAL_ADD_ACCOUNT_NETWORK_TESTNET: {
         id: 'MODAL_ADD_ACCOUNT_NETWORK_TESTNET',
         defaultMessage: 'Testnet networks',
-    },
-    MODAL_ADD_ACCOUNT_NETWORK_EXTERNAL: {
-        id: 'MODAL_ADD_ACCOUNT_NETWORK_EXTERNAL',
-        defaultMessage: 'External networks',
-    },
-    MODAL_ADD_ACCOUNT_NEM_WALLET: {
-        id: 'MODAL_ADD_ACCOUNT_NEM_WALLET',
-        defaultMessage: 'NEM wallet',
-    },
-    MODAL_ADD_ACCOUNT_STELLAR_WALLET: {
-        id: 'MODAL_ADD_ACCOUNT_STELLAR_WALLET',
-        defaultMessage: 'Stellar wallet',
-    },
-    MODAL_ADD_ACCOUNT_CARDANO_WALLET: {
-        id: 'MODAL_ADD_ACCOUNT_CARDANO_WALLET',
-        defaultMessage: 'Cardano wallet',
-    },
-    MODAL_ADD_ACCOUNT_TEZOS_WALLET: {
-        id: 'MODAL_ADD_ACCOUNT_TEZOS_WALLET',
-        defaultMessage: 'Tezos wallet',
-    },
-    MODAL_ADD_ACCOUNT_NETWORK_EXTERNAL_DESC: {
-        id: 'MODAL_ADD_ACCOUNT_NETWORK_EXTERNAL_DESC',
-        defaultMessage:
-            'This coin is only accessible via an external wallet. It is supported by Trezor but not by Trezor Suite app.',
     },
     MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY: {
         id: 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY',
@@ -4175,6 +4150,10 @@ const definedMessages = defineMessages({
     TR_REVEAL_ADDRESS: {
         id: 'TR_REVEAL_ADDRESS',
         defaultMessage: 'Reveal address',
+    },
+    TR_ENABLE_MORE_COINS: {
+        id: 'TR_ENABLE_MORE_COINS',
+        defaultMessage: 'Enable more coins',
     },
 } as const);
 
