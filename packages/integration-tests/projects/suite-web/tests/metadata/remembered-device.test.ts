@@ -5,7 +5,6 @@
 
 import { stubFetch, stubOpen } from '../../stubs/metadata';
 
-// what is tested here is probably covered in another metadata tests.
 describe('Metadata', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();

@@ -56,6 +56,13 @@ describe('Metadata', () => {
             cy.getTestElement('@metadata/input').clear().type('bcash is true bitcoin{esc}', {timeout: 20 });
             cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'cool new label even cooler');
 
+            cy.log('Check that accounts search reflects also metadata');
+            cy.getTestElement('@account-menu/search-input').click().type('cool new label');
+            cy.getTestElement('@account-menu/btc/normal/0').should('be.visible');
+            cy.getTestElement('@account-menu/search-input').click().type('something retarded');
+            cy.getTestElement('@account-menu/btc/normal/0').should('not.be.visible');
+            cy.getTestElement('@account-menu/search-input').click().clear();
+
             cy.log('We can also remove label from dropdown menu')
             cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'").click();
             cy.getTestElement('@metadata/remove-button').click();

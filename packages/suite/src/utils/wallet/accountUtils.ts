@@ -486,5 +486,14 @@ export const accountSearchFn = (
           account.addresses.change.find(matchAddressFn)
         : false;
 
-    return symbolMatch || networkNameMatch || accountTypeMatch || descriptorMatch || addressMatch;
+    const metadataMatch = account.metadata.accountLabel?.toLowerCase().includes(searchString);
+
+    return (
+        symbolMatch ||
+        networkNameMatch ||
+        accountTypeMatch ||
+        descriptorMatch ||
+        addressMatch ||
+        metadataMatch
+    );
 };
