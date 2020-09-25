@@ -86,7 +86,6 @@ const Passphrase = (props: Props) => {
         // show borderless one-column modal for confirming passphrase and state confirmation
         return (
             <Modal
-                // useFixedWidth={false}
                 heading={
                     !authConfirmation ? (
                         <Translation id="TR_ENTER_PASSPHRASE" />
@@ -120,7 +119,6 @@ const Passphrase = (props: Props) => {
     if (!noPassphraseOffer) {
         return (
             <Modal
-                // useFixedWidth={false}
                 heading={<Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />}
                 description={<Translation id="TR_HIDDEN_WALLET_TOOLTIP" />}
                 size="tiny"
