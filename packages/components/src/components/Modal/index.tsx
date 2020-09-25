@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 import { useKeyPress } from '../../utils/hooks';
 
 import { Icon } from '../Icon';
-import { H2 } from '../typography/Heading';
+import { H1 } from '../typography/Heading';
 import { colors, variables } from '../../config';
 
 // each item in array corresponds to a screen size  [SM, MD, LG, XL]
