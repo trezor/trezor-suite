@@ -13,13 +13,12 @@ interface WrapperProps {
 
 const Wrapper = styled.div<WrapperProps>`
     width: ${({ variant }) => (variant === 2 ? '260px' : '160px')};
-    height: ${({ variant }) => (variant === 2 ? '340px' : '240px')};
+    max-height: ${({ variant }) => (variant === 2 ? '340px' : '240px')};
     padding: 20px 30px 10px 30px;
     margin: 2%;
     border-radius: 6px;
     display: flex;
     flex-direction: column;
-    align-items: center;
 
     &:hover {
         box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.05);
