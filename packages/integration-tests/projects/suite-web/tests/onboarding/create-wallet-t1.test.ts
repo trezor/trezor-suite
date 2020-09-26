@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
-
 // @stable/device-management
 // @retry=2
 
@@ -22,7 +20,7 @@ describe('Onboarding - create wallet', () => {
         cy.task('startEmu', { version: '1.9.0', wipe: true });
         // does it take longer for t1 to get detected?
         cy.getTestElement('@onboarding/button-continue', { timeout: 10000 }).click();
-        cy.getTestElement('@onboarding/button-continue').click();
+        cy.getTestElement('@firmware/skip-button').click();
         cy.getTestElement('@onboarding/only-backup-option-button').click();
         cy.task('pressYes');
 

@@ -283,7 +283,7 @@ export const getFirstDeviceInstance = (devices: TrezorDevice[]) => {
 
 export const isBitcoinOnly = (device: TrezorDevice) => {
     const { features } = device;
-    return (
+    return !!(
         features &&
         features.capabilities &&
         features.capabilities.length > 0 &&

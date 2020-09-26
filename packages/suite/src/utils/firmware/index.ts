@@ -25,6 +25,7 @@ export const getTextForStatus = (status: AppState['firmware']['status']) => {
             return 'TR_DISCONNECT_YOUR_DEVICE';
         case 'check-fingerprint':
             return 'TR_CHECK_FINGERPRINT';
+        // case 'started' is intentionally omitted;
         default:
             return null;
     }

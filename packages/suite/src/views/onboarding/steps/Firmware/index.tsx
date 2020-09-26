@@ -87,7 +87,7 @@ const FirmwareStep = ({
 
             default:
                 // 'ensure' type completeness
-                throw new Error('');
+                throw new Error('state is not handled here');
         }
     };
 
