@@ -10,7 +10,7 @@ import Passwords from '@passwords-views';
 
 import SettingsGeneral from '@settings-views';
 import SettingsDevice from '@settings-views/device';
-import SettingsWallet from '@settings-views/wallet';
+import SettingsCoins from '@settings-views/coins';
 
 import Onboarding from '@suite-views/onboarding';
 import Firmware from '@suite-views/firmware';
@@ -65,7 +65,7 @@ export default [
         tabs: [
             { key: getRoute('settings-index'), screen: SettingsGeneral },
             { key: getRoute('settings-device'), screen: SettingsDevice },
-            { key: getRoute('settings-wallet'), screen: SettingsWallet },
+            { key: getRoute('settings-coins'), screen: SettingsCoins },
         ],
         navigators: defaultNavigatorsViews,
     },

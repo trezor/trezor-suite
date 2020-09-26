@@ -143,7 +143,7 @@ const Exception = ({ exception, discovery }: Props) => {
                     description="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC"
                     cta={[
                         {
-                            action: () => dispatch(routerActions.goto('settings-wallet')),
+                            action: () => dispatch(routerActions.goto('settings-coins')),
                             variant: 'secondary',
                             icon: 'SETTINGS',
                             label: 'TR_COIN_SETTINGS',
