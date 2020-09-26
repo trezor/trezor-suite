@@ -1,4 +1,4 @@
-import fetch from 'cross-fetch';
+import fetch from 'node-fetch';
 
 export const fetchFirmware = async (url: string) => {
     try {
