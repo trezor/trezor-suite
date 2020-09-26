@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { colors } from '@trezor/components';
-import { Translation, HiddenPlaceholder } from '@suite-components';
+import { Translation } from '@suite-components';
 import { TooltipProps } from 'recharts';
 import { getDateWithTimeZone } from '@suite/utils/suite/date';
 import { Props as GraphProps } from '../../index';
@@ -40,7 +40,7 @@ const Title = styled.span`
     font-weight: 500;
     margin-right: 20px;
 `;
-const Value = styled(HiddenPlaceholder)`
+const Value = styled.span`
     font-weight: 600;
 `;
 
