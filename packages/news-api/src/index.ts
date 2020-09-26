@@ -1,17 +1,12 @@
 import axios from 'axios';
 import { Post } from './types';
 import parser from 'fast-xml-parser';
-import { FEED_URL, MEDIUM_CDN_BASE, STG_TREZOR_CDN_BASE, PROD_TREZOR_CDN_BASE } from './config';
+import { MEDIUM_FEED_URL, MEDIUM_CDN_BASE, TREZOR_CDN_BASE } from './config';
 import cheerio from 'cheerio';
 
 const replaceCDNLink = (trezorLink?: string) => {
     if (!trezorLink) return undefined;
-    const isStaging = process.env.ENV === 'staging';
-
-    return trezorLink.replace(
-        MEDIUM_CDN_BASE,
-        isStaging ? STG_TREZOR_CDN_BASE : PROD_TREZOR_CDN_BASE,
-    );
+    return trezorLink.replace(MEDIUM_CDN_BASE, TREZOR_CDN_BASE);
 };
 
 const getPosts = (data: any, limit = 5) => {
@@ -48,7 +43,7 @@ const fetcher = async (
     callback: (statusCode: number, data: string | null, errMessage?: string) => void,
 ) => {
     axios
-        .get(FEED_URL)
+        .get(MEDIUM_FEED_URL)
         .then(response => {
             try {
                 const data = parser.parse(response.data, {}, true);
