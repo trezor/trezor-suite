@@ -82,7 +82,7 @@ const AssetsCard = () => {
                     <StyledAddAccountButton
                         variant="tertiary"
                         icon="PLUS"
-                        onClick={() => goto('settings-wallet')}
+                        onClick={() => goto('settings-coins')}
                     >
                         <Translation id="TR_ENABLE_MORE_COINS" />
                     </StyledAddAccountButton>

@@ -6,7 +6,7 @@ describe.skip('Discovery', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.task('startGoogle');
-        cy.prefixedVisit('/settings/wallet');
+        cy.prefixedVisit('/settings/coins');
         cy.passThroughInitialRun();
     });
 

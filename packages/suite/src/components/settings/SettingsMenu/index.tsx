@@ -60,7 +60,7 @@ const SettingsMenu = () => {
                             title: <Translation id="TR_COINS" />,
                             'data-test': '@settings/menu/wallet',
                             icon: 'COINS',
-                            route: 'settings-wallet',
+                            route: 'settings-coins',
                         },
                     ]}
                 />

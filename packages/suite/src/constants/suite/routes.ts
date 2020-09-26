@@ -91,8 +91,8 @@ const routes = [
         app: 'settings',
     },
     {
-        name: 'settings-wallet',
-        pattern: '/settings/wallet',
+        name: 'settings-coins',
+        pattern: '/settings/coins',
         app: 'settings',
     },
     {
