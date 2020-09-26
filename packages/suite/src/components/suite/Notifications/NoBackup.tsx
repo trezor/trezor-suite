@@ -13,7 +13,7 @@ interface Props {
 }
 
 const NoBackup = ({ device, goto }: Props) => {
-    const needsBackup = device && device.features && device.features.needs_backup;
+    const needsBackup = device?.features?.needs_backup;
     if (!needsBackup) return null;
     return (
         <Wrapper variant="warning">
