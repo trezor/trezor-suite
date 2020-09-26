@@ -30,7 +30,6 @@
         "build:lib": "rimraf lib && tsc --p ./tsconfig.lib.json"
     },
     "dependencies": {
-        "cross-fetch": "^3.0.4",
         "runtypes": "^4.2.0"
     },
     "devDependencies": {}
