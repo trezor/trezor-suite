@@ -65,7 +65,7 @@
     "TR_BACKEND_RECONNECTING": ". Reconnecting in {time} sec...",
     "TR_BACKGROUND_GALLERY": "Homescreen background gallery",
     "TR_BACKUP": "Backup",
-    "TR_BACKUP_FAILED": "Backup failed and your Wallet is not backed up. You can still use it without any problems but highly recommend you following the link and see how to successfully create a backup.",
+    "TR_BACKUP_FAILED": "Backup failed",
     "TR_BACKUP_FINISHED_BUTTON": "My recovery card is safe",
     "TR_BACKUP_FINISHED_TEXT": "Backup is now on your recovery seed card. Once again don't lose it and keep it private!",
     "TR_BACKUP_RECOVERY_SEED": "Backup (Recovery seed)",

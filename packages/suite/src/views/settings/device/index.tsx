@@ -18,7 +18,7 @@ import {
 import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import * as homescreen from '@suite-utils/homescreen';
 import { useDevice, useAnalytics } from '@suite-hooks';
-import { variables, Switch, Link } from '@trezor/components';
+import { variables, Switch } from '@trezor/components';
 import React, { createRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
@@ -89,49 +89,49 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
     return (
         <SettingsLayout>
             <Section title={<Translation id="TR_BACKUP" />}>
-                <SectionItem>
-                    <TextColumn
-                        title={<Translation id="TR_BACKUP_RECOVERY_SEED" />}
-                        description={<Translation id="TR_BACKUP_SUBHEADING_1" />}
-                        learnMore={SEED_MANUAL_URL}
-                    />
-                    <ActionColumn>
-                        <ActionButton
-                            data-test="@settings/device/create-backup-button"
-                            onClick={() => {
-                                goto('backup-index', { cancelable: true });
-                                analytics.report({
-                                    type: 'settings/device/goto/backup',
-                                });
-                            }}
-                            isDisabled={
-                                isDeviceLocked ||
-                                !features.needs_backup ||
-                                features.unfinished_backup
-                            }
-                        >
-                            {features.needs_backup && <Translation id="TR_CREATE_BACKUP" />}
-                            {!features.needs_backup && !features.unfinished_backup && (
-                                <Translation id="TR_BACKUP_SUCCESSFUL" />
-                            )}
-                            {features.unfinished_backup && <Translation id="TOAST_BACKUP_FAILED" />}
-                        </ActionButton>
-                    </ActionColumn>
-                </SectionItem>
+                {!features.unfinished_backup && (
+                    <SectionItem>
+                        <TextColumn
+                            title={<Translation id="TR_BACKUP_RECOVERY_SEED" />}
+                            description={<Translation id="TR_BACKUP_SUBHEADING_1" />}
+                            learnMore={SEED_MANUAL_URL}
+                        />
+                        <ActionColumn>
+                            <ActionButton
+                                data-test="@settings/device/create-backup-button"
+                                onClick={() => {
+                                    goto('backup-index', { cancelable: true });
+                                    analytics.report({
+                                        type: 'settings/device/goto/backup',
+                                    });
+                                }}
+                                isDisabled={
+                                    isDeviceLocked ||
+                                    !features.needs_backup ||
+                                    features.unfinished_backup
+                                }
+                            >
+                                {features.needs_backup && <Translation id="TR_CREATE_BACKUP" />}
+                                {!features.needs_backup && !features.unfinished_backup && (
+                                    <Translation id="TR_BACKUP_SUCCESSFUL" />
+                                )}
+                            </ActionButton>
+                        </ActionColumn>
+                    </SectionItem>
+                )}
                 {features.unfinished_backup && (
                     <SectionItem data-test="@settings/device/failed-backup-row">
-                        <TextColumn description={<Translation id="TR_BACKUP_FAILED" />} />
+                        <TextColumn
+                            title={<Translation id="TR_BACKUP_RECOVERY_SEED_FAILED_TITLE" />}
+                            description={<Translation id="TR_BACKUP_RECOVERY_SEED_FAILED_DESC" />}
+                            learnMore={FAILED_BACKUP_URL}
+                        />
                         <ActionColumn>
-                            <Link variant="nostyle" href={FAILED_BACKUP_URL}>
-                                <ActionButton
-                                    onClick={() => {}}
-                                    variant="secondary"
-                                    icon="EXTERNAL_LINK"
-                                    alignIcon="right"
-                                >
-                                    <Translation id="TR_WHAT_TO_DO_NOW" />
-                                </ActionButton>
-                            </Link>
+                            <ActionButton isDisabled>
+                                {features.unfinished_backup && (
+                                    <Translation id="TR_BACKUP_FAILED" />
+                                )}
+                            </ActionButton>
                         </ActionColumn>
                     </SectionItem>
                 )}
