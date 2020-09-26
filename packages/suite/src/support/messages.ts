@@ -249,11 +249,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Backup',
         id: 'TR_BACKUP',
     },
-    TR_BACKUP_FAILED: {
-        defaultMessage:
-            'Backup failed and your Wallet is not backed up. You can still use it without any problems but highly recommend you following the link and see how to successfully create a backup.',
-        id: 'TR_BACKUP_FAILED',
-    },
     TR_BACKUP_FINISHED_BUTTON: {
         defaultMessage: 'My recovery card is safe',
         description: 'Exit button after backup is finished',
@@ -3812,6 +3807,19 @@ const definedMessages = defineMessages({
     TR_ENABLE_MORE_COINS: {
         id: 'TR_ENABLE_MORE_COINS',
         defaultMessage: 'Enable more coins',
+    },
+    TR_BACKUP_RECOVERY_SEED_FAILED_TITLE: {
+        id: 'TR_BACKUP_RECOVERY_SEED_FAILED_TITLE',
+        defaultMessage: 'Backup failed',
+    },
+    TR_BACKUP_RECOVERY_SEED_FAILED_DESC: {
+        id: 'TR_BACKUP_RECOVERY_SEED_FAILED_DESC',
+        defaultMessage:
+            'Backup failed and your Wallet is not backed up. You can still use it without any problems but highly recommend you following the link and see how to successfully create a backup.',
+    },
+    TR_BACKUP_FAILED: {
+        id: 'BACKUP_FAILED',
+        defaultMessage: 'Backup failed',
     },
 } as const);
 
