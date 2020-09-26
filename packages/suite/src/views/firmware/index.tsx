@@ -161,7 +161,7 @@ const Firmware = ({ closeModalApp, resetReducer, firmware, device }: Props) => {
 
             default:
                 // should never get here
-                return null;
+                throw new Error('state is not handled here');
         }
     };
 

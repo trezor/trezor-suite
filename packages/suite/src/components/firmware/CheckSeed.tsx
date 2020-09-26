@@ -20,35 +20,14 @@ const Body = () => {
     const { device } = useDevice();
     const { toggleHasSeed, hasSeed } = useFirmware();
 
+    // unacquired device handled on higher level
+    if (!device?.features) return null;
+
     // ensure that device is connected in requested mode
-    if (device?.mode !== 'normal') return <ReconnectInNormalStep.Body />;
+    if (device.mode !== 'normal') return <ReconnectInNormalStep.Body />;
 
-    if (!device?.features?.needs_backup) {
-        return (
-            <>
-                <SeedImg />
-                <H2>
-                    <Translation id="TR_SECURITY_CHECKPOINT_GOT_SEED" />
-                </H2>
-                <P>
-                    <Translation id="TR_BEFORE_ANY_FURTHER_ACTIONS" />
-                </P>
-                <CheckboxRow>
-                    <Checkbox
-                        isChecked={hasSeed}
-                        onClick={toggleHasSeed}
-                        data-test="@firmware/confirm-seed-checkbox"
-                    />
-                    <P>
-                        {' '}
-                        <Translation id="FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC" />{' '}
-                    </P>
-                </CheckboxRow>
-            </>
-        );
-    }
-
-    if (device?.features?.needs_backup) {
+    // device is not backed up - it is not advisable to do firmware update
+    if (device.features.needs_backup || device.features.unfinished_backup) {
         return (
             <>
                 <WarningImg />
@@ -74,8 +53,31 @@ const Body = () => {
             </>
         );
     }
-    // should not get here
-    return null;
+
+    // expected flow - device is backed up
+    return (
+        <>
+            <SeedImg />
+            <H2>
+                <Translation id="TR_SECURITY_CHECKPOINT_GOT_SEED" />
+            </H2>
+            <P>
+                <Translation id="TR_BEFORE_ANY_FURTHER_ACTIONS" />
+            </P>
+            <CheckboxRow>
+                <Checkbox
+                    isChecked={hasSeed}
+                    onClick={toggleHasSeed}
+                    data-test="@firmware/confirm-seed-checkbox"
+                />
+                <P>
+                    &nbsp;
+                    <Translation id="FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC" />
+                    &nbsp;
+                </P>
+            </CheckboxRow>
+        </>
+    );
 };
 
 const BottomBar = () => {

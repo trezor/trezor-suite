@@ -4,36 +4,41 @@ import { FIRMWARE } from '@firmware-actions/constants';
 import { SUITE } from '@suite-actions/constants';
 import { Action, AcquiredDevice } from '@suite-types';
 
-export interface FirmwareUpdateState {
-    status:
-        | 'initial' // initial state
-        | 'check-seed' // ask user, if has seed properly backed up
-        | 'waiting-for-bootloader' // navigate user into bootloader mode
-        | 'started' // progress - ??
-        | 'downloading' // progress - firmware is being downloaded
-        | 'waiting-for-confirmation' // progress - device waits for confirmation prior starting to update
-        | 'installing' // progress - firmware is being installed
-        | 'check-fingerprint' // progress - some old t1 firmwares show screen with fingerprint check
-        | 'partially-done' // progress - some old t1 firmwares can't update to the latest version
-        | 'wait-for-reboot' // progress - model t2 is restarting after firmware update
-        | 'unplug' // progress - user is asked to reconnect device (t1)
-        | 'reconnect-in-normal' // progress - after unplugging device from previous step, user is asked to connect it again
-        | 'done' // firmware successfully installed
-        | 'error';
+type FirmwareUpdateCommon = {
     installingProgress?: number;
-    error?: string;
-    btcOnly: boolean;
+    // error?: undefined;
     hasSeed: boolean;
     targetRelease: AcquiredDevice['firmwareRelease'];
     prevDevice?: Device;
-}
+};
+
+export type FirmwareUpdateState =
+    | (FirmwareUpdateCommon & {
+          error: undefined;
+          status:
+              | 'initial' // initial state
+              | 'check-seed' // ask user, if has seed properly backed up
+              | 'waiting-for-bootloader' // navigate user into bootloader mode
+              | 'started' // progress - ??
+              | 'downloading' // progress - firmware is being downloaded
+              | 'waiting-for-confirmation' // progress - device waits for confirmation prior starting to update
+              | 'installing' // progress - firmware is being installed
+              | 'check-fingerprint' // progress - some old t1 firmwares show screen with fingerprint check
+              | 'partially-done' // progress - some old t1 firmwares can't update to the latest version
+              | 'wait-for-reboot' // progress - model t2 is restarting after firmware update
+              | 'unplug' // progress - user is asked to reconnect device (t1)
+              | 'reconnect-in-normal' // progress - after unplugging device from previous step, user is asked to connect it again
+              | 'done'; // firmware successfully installed
+      })
+    | (FirmwareUpdateCommon & {
+          status: 'error';
+          error: string;
+      });
 
 const initialState: FirmwareUpdateState = {
     status: 'initial',
     installingProgress: undefined,
     error: undefined,
-    // user selects whether wants btc only variant or not.
-    btcOnly: false,
     // we need to assess next firmware outside of bootloader mode for best results.
     // we actually can do it even in bl mode, but cant guarantee we will really get the
     // same firmware as was initially offered in 'firmware' mode.

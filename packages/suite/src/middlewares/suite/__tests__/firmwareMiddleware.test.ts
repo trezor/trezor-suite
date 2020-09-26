@@ -24,7 +24,7 @@ export const getInitialState = (
 ) => {
     return {
         firmware: {
-            ...firmwareReducer(undefined, { type: 'foo' } as any),
+            ...firmwareReducer(undefined, { type: FIRMWARE.RESET_REDUCER }),
             ...firmware,
         },
         router: {
@@ -48,6 +48,7 @@ const initStore = (state: State) => {
     store.subscribe(() => {
         const action = store.getActions().pop();
         const { firmware, suite } = store.getState();
+        // @ts-ignore
         store.getState().firmware = firmwareReducer(firmware, action);
         store.getState().suite = suiteReducer(suite, action);
 
@@ -61,6 +62,7 @@ describe('firmware middleware', () => {
         const store = initStore(
             getInitialState(undefined, {
                 status: 'unplug',
+                error: undefined,
             }),
         );
         await store.dispatch({ type: SUITE.UPDATE_SELECTED_DEVICE, payload: undefined });
@@ -76,6 +78,7 @@ describe('firmware middleware', () => {
         const store = initStore(
             getInitialState(undefined, {
                 status: 'unplug',
+                error: undefined,
             }),
         );
         await store.dispatch({
@@ -94,6 +97,7 @@ describe('firmware middleware', () => {
         const store = initStore(
             getInitialState(undefined, {
                 status: 'wait-for-reboot',
+                error: undefined,
             }),
         );
 
@@ -114,6 +118,7 @@ describe('firmware middleware', () => {
         const store = initStore(
             getInitialState(undefined, {
                 status: 'wait-for-reboot',
+                error: undefined,
             }),
         );
 
@@ -134,6 +139,7 @@ describe('firmware middleware', () => {
         const store = initStore(
             getInitialState(undefined, {
                 status: 'wait-for-reboot',
+                error: undefined,
             }),
         );
 
@@ -149,6 +155,7 @@ describe('firmware middleware', () => {
                 undefined,
                 {
                     status: 'check-seed',
+                    error: undefined,
                 },
                 {
                     device: getSuiteDevice(),

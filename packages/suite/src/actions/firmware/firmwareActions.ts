@@ -12,7 +12,7 @@ export type FirmwareActions =
     | { type: typeof FIRMWARE.SET_TARGET_RELEASE; payload: AcquiredDevice['firmwareRelease'] }
     | { type: typeof FIRMWARE.RESET_REDUCER }
     | { type: typeof FIRMWARE.ENABLE_REDUCER; payload: boolean }
-    | { type: typeof FIRMWARE.SET_ERROR; payload: string | undefined }
+    | { type: typeof FIRMWARE.SET_ERROR; payload: string }
     | { type: typeof FIRMWARE.TOGGLE_HAS_SEED };
 
 export const resetReducer = () => (dispatch: Dispatch) => {
@@ -65,7 +65,7 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
     dispatch(setStatus('downloading'));
 
     // update to same variant as is currently installed
-    const toBtcOnly = !!isBitcoinOnly(device);
+    const toBtcOnly = isBitcoinOnly(device);
 
     const payload = {
         keepSession: false,
