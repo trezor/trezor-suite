@@ -41,7 +41,6 @@ const Notifications = (props: Props) => (
         <UpdateFirmware device={props.suite.device} goto={props.goto} />
         <NoBackup device={props.suite.device} goto={props.goto} />
         <FailedBackup device={props.suite.device} />
-        {/* TODO: add Failed backup */}
         {/* TODO: add Pin not set */}
     </Wrapper>
 );

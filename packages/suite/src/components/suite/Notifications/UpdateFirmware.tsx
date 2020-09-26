@@ -17,6 +17,9 @@ const UpdateFirmware = ({ device, goto }: Props) => {
     // don't want to show this notification
     if (device.mode === 'bootloader') return null;
 
+    // backup is more important than firmware
+    if (device.features.unfinished_backup || device.features.no_backup) return null;
+
     const outdated = ['outdated'].includes(device.firmware);
     if (!outdated) return null;
 
