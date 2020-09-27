@@ -20,11 +20,11 @@ const getHoverColor = (variant: Props['variant']) => {
     // design guidelines missing
     switch (variant) {
         case 'info':
-            return '#9B6A00';
+            return '#B3870D';
         case 'warning':
-            return '#9B6A00';
+            return '#B3870D';
         case 'error':
-            return '#A72323';
+            return 'BF4848';
         default:
             return 'transparent';
     }
