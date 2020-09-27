@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Button, colors } from '@trezor/components';
 import { NotificationCard, Translation } from '@suite-components';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 
@@ -58,18 +57,16 @@ const Disconnected = ({ selectedAccount, reconnect, blockchain }: Props) => {
         ) : null;
 
     return (
-        <NotificationCard variant="warning">
+        <NotificationCard
+            variant="warning"
+            button={{
+                onClick: click,
+                isLoading: progress || isResolving,
+                children: <Translation id="TR_CONNECT" />,
+            }}
+        >
             <Translation id="TR_BACKEND_DISCONNECTED" />
             {displayTime}
-            <Button
-                variant="tertiary"
-                icon="REFRESH"
-                color={colors.RED_ERROR}
-                onClick={click}
-                isLoading={progress || isResolving}
-            >
-                <Translation id="TR_CONNECT" />
-            </Button>
         </NotificationCard>
     );
 };

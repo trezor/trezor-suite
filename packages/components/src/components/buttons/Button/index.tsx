@@ -200,6 +200,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     isWhite?: boolean;
     fullWidth?: boolean;
     alignIcon?: 'left' | 'right';
+    dataTest?: string;
 }
 
 const Button = React.forwardRef(
@@ -211,6 +212,7 @@ const Button = React.forwardRef(
             icon,
             additionalClassName,
             color,
+            dataTest,
             fullWidth = false,
             isWhite = false,
             isDisabled = false,
@@ -249,6 +251,7 @@ const Button = React.forwardRef(
                 fullWidth={fullWidth}
                 color={color}
                 ref={ref}
+                data-test={dataTest}
                 {...rest}
             >
                 {!isLoading && alignIcon === 'left' && IconComponent}
