@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button, colors } from '@trezor/components';
 import { NotificationCard, Translation } from '@suite-components';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { useDevice, useActions } from '@suite-hooks';
@@ -10,18 +9,17 @@ const AuthConfirmFailed = () => {
         authConfirm: suiteActions.authConfirm,
     });
     return (
-        <NotificationCard variant="warning">
+        <NotificationCard
+            variant="warning"
+            button={{
+                onClick: authConfirm,
+                isLoading: isLocked(),
+                icon: 'REFRESH',
+                dataTest: '@passphrase-mismatch/retry-button',
+                children: <Translation id="TR_AUTH_CONFIRM_FAILED_RETRY" />,
+            }}
+        >
             <Translation id="TR_AUTH_CONFIRM_FAILED_TITLE" />
-            <Button
-                data-test="@passphrase-mismatch/retry-button"
-                variant="tertiary"
-                icon="REFRESH"
-                color={colors.RED_ERROR}
-                onClick={authConfirm}
-                isLoading={isLocked()}
-            >
-                <Translation id="TR_AUTH_CONFIRM_FAILED_RETRY" />
-            </Button>
         </NotificationCard>
     );
 };
