@@ -95,14 +95,20 @@ export function createQuoteLink(request: BuyTradeQuoteRequest, account: Account)
         hash = `qf/${request.country}/${request.fiatCurrency}/${request.fiatStringAmount}/${request.receiveCurrency}`;
     }
 
-    return `${window.location.origin}${assetPrefix}/coinmarket-redirect#offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
+    const params = `coinmarket-redirect#offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
+
+    if (process.env.SUITE_TYPE === 'desktop') {
+        return `trezor-suite-buy://${params}`;
+    }
+
+    return `${window.location.origin}${assetPrefix}/${params}`;
 }
 
 export function createTxLink(trade: BuyTrade, account: Account): string {
     const assetPrefix = process.env.assetPrefix || '';
     const params = `coinmarket-redirect#detail/${account.symbol}/${account.accountType}/${account.index}/${trade.paymentId}`;
     if (process.env.SUITE_TYPE === 'desktop') {
-        return `trezor-suite://${params}`;
+        return `trezor-suite-buy://${params}`;
     }
 
     return `${window.location.origin}${assetPrefix}/${params}`;
@@ -117,10 +123,11 @@ function addHiddenFieldToForm(form: any, fieldName: string, fieldValue: any) {
 }
 
 export function submitRequestForm(tradeForm: BuyTradeFormResponse): void {
+    const invityWindowName = 'invity-buy-partner-window';
     if (!tradeForm || !tradeForm.form) return;
     // for IFRAME there is nothing to submit
     if (tradeForm.form.formMethod === 'IFRAME') return;
-    const windowType = process.env.SUITE_TYPE === 'desktop' ? 'in-electron-window' : '_self';
+    const windowType = process.env.SUITE_TYPE === 'desktop' ? invityWindowName : '_self';
     const form = document.createElement('form');
     if (tradeForm.form.formMethod === 'GET' && tradeForm.form.formAction) {
         window.open(tradeForm.form.formAction, windowType);
@@ -135,7 +142,7 @@ export function submitRequestForm(tradeForm: BuyTradeFormResponse): void {
     });
 
     if (process.env.SUITE_TYPE === 'desktop') {
-        const formWindow = window.open('', 'in-electron-window');
+        const formWindow = window.open('', invityWindowName);
         if (formWindow) {
             formWindow.document.body.appendChild(form);
             form.submit();

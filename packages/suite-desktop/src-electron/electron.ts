@@ -12,7 +12,7 @@ import { openOauthPopup } from './oauth';
 // import * as metadata from './metadata';
 
 let mainWindow: BrowserWindow;
-const SUITE_PROTOCOL_SCHEMA = 'trezor-suite';
+const SUITE_BUY_PROTOCOL_SCHEMA = 'trezor-suite-buy';
 const APP_NAME = 'Trezor Suite';
 const PROTOCOL = 'file';
 const res = isDev ? './public/static' : process.resourcesPath;
@@ -49,17 +49,21 @@ const registerShortcuts = (window: BrowserWindow) => {
 };
 
 const init = async () => {
-    protocol.registerFileProtocol(SUITE_PROTOCOL_SCHEMA, (request, callback) => {
-        callback({ path: request.url });
+    protocol.registerStringProtocol(SUITE_BUY_PROTOCOL_SCHEMA, (req, cb) => {
+        cb(req.url);
     });
 
-    protocol.interceptHttpProtocol(SUITE_PROTOCOL_SCHEMA, (request, callback) => {
-        const partnerWindow = BrowserWindow.getAllWindows().find(
-            win => win.getTitle() === 'invity-buy-partner-window',
-        );
+    protocol.interceptStringProtocol(SUITE_BUY_PROTOCOL_SCHEMA, (req, _cb) => {
+        const invityBuyPartnerWindow = BrowserWindow.fromId(2);
 
-        if (partnerWindow) {
-            partnerWindow.close();
+        if (invityBuyPartnerWindow) {
+            const redirectUrl = path.join(
+                src,
+                req.url.replace(`${SUITE_BUY_PROTOCOL_SCHEMA}://`, ''),
+            );
+            invityBuyPartnerWindow.close();
+            mainWindow.focus();
+            mainWindow.loadURL(redirectUrl);
         }
     });
 

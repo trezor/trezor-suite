@@ -118,7 +118,7 @@ const coinmarketReducer = (
                 };
                 break;
             case COINMARKET_BUY.DISPOSE:
-                draft.buy = initialState.buy;
+                draft.buy.addressVerified = false;
                 break;
             case COINMARKET_EXCHANGE.SAVE_EXCHANGE_INFO:
                 draft.exchange.exchangeInfo = action.exchangeInfo;
