@@ -5,6 +5,7 @@ import { waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as fixtures from '../__fixtures__/useSendForm';
 import sendFormReducer from '@wallet-reducers/sendFormReducer';
+import resizeReducer from '@suite-reducers/resizeReducer';
 
 import { renderWithCallback, waitForLoader, findByTestId, actionSequence } from './SendIndex';
 
@@ -65,6 +66,7 @@ export const getInitialState = ({ send }: Args = {}) => {
             },
         },
         devices: [],
+        resize: resizeReducer(undefined, { type: 'foo' } as any),
     };
 };
 
