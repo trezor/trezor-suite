@@ -106,7 +106,7 @@ const getIfMobileLayout = (selectBarOptionsCount: number, layoutSize: string) =>
     if (layoutSize === 'TINY') {
         return true;
     }
-    if (selectBarOptionsCount >= 5 && (layoutSize === 'NORMAL' || layoutSize === 'SMALL')) {
+    if (selectBarOptionsCount >= 4 && (layoutSize === 'NORMAL' || layoutSize === 'SMALL')) {
         return true;
     }
     return false;
@@ -147,9 +147,7 @@ const Fees = () => {
                     />
                 </FiatAmount>
             </FeeAmount>
-        ) : (
-            <></>
-        );
+        ) : null;
 
     return (
         <StyledCard>
