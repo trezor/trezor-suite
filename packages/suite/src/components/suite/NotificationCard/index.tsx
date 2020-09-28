@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import Card from '@suite-components/Card';
-import { Icon, Button, Loader, colors, ButtonProps, variables } from '@trezor/components';
+import { Icon, Button, Loader, colors, variables, ButtonProps } from '@trezor/components';
+
+// TODO: move to components
 
 const getMainColor = (variant: Props['variant']) => {
     switch (variant) {
@@ -39,8 +40,9 @@ const getIcon = (variant: Props['variant']) => {
     }
 };
 
-const Wrapper = styled(Card)<{ variant: Props['variant'] }>`
-    margin: 8px 0;
+const Wrapper = styled.div`
+    display: flex;
+    border-radius: 6px;
     padding: 14px 18px 14px 18px;
     align-items: center;
     background: ${colors.NEUE_STROKE_GREY};
@@ -48,6 +50,10 @@ const Wrapper = styled(Card)<{ variant: Props['variant'] }>`
 
 const IconWrapper = styled.div`
     margin-right: 14px;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        display: none;
+    }
 `;
 
 const Body = styled.div`
@@ -60,19 +66,13 @@ const Body = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
-type NotificationButtonProps = { notificationVariant: Props['variant'] } & ButtonProps;
-const NotificationButton = styled(
-    ({ notificationVariant, ...buttonProps }: NotificationButtonProps) => (
-        // prevent passing notificationVariant to Button component
-        <Button {...buttonProps} />
-    ),
-)`
+const NotificationButton = styled(Button)<{ notificationVariant: Props['variant'] }>`
     margin-left: 16px;
-
     color: ${colors.WHITE};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     font-size: ${variables.FONT_SIZE.SMALL};
     background: ${props => getMainColor(props.notificationVariant)};
+    height: 30px;
 
     &:hover,
     &:focus,
@@ -85,13 +85,14 @@ interface Props {
     children: React.ReactNode;
     variant: 'loader' | 'info' | 'warning' | 'error';
     button?: ButtonProps;
-    ['data-test']?: string;
+    className?: string;
+    dataTest?: string;
 }
 
-const NotificationCard = ({ variant, button, children, ...props }: Props) => {
+const NotificationCard = ({ variant, button, children, dataTest, className }: Props) => {
     const iconElement = getIcon(variant);
     return (
-        <Wrapper variant={variant} data-test={props['data-test']}>
+        <Wrapper data-test={dataTest} className={className}>
             {iconElement && <IconWrapper>{iconElement}</IconWrapper>}
             <Body>{children}</Body>
             {button && (
