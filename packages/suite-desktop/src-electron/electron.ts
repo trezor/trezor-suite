@@ -1,4 +1,4 @@
-import { app, session, BrowserWindow, ipcMain, shell, Menu, dialog } from 'electron';
+import { app, session, BrowserWindow, ipcMain, shell, Menu, dialog, protocol } from 'electron';
 import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 import * as path from 'path';
@@ -12,6 +12,7 @@ import { openOauthPopup } from './oauth';
 // import * as metadata from './metadata';
 
 let mainWindow: BrowserWindow;
+const SUITE_PROTOCOL_SCHEMA = 'trezor-suite';
 const APP_NAME = 'Trezor Suite';
 const PROTOCOL = 'file';
 const res = isDev ? './public/static' : process.resourcesPath;
@@ -48,6 +49,20 @@ const registerShortcuts = (window: BrowserWindow) => {
 };
 
 const init = async () => {
+    protocol.registerFileProtocol(SUITE_PROTOCOL_SCHEMA, (request, callback) => {
+        callback({ path: request.url });
+    });
+
+    protocol.interceptHttpProtocol(SUITE_PROTOCOL_SCHEMA, (request, callback) => {
+        const partnerWindow = BrowserWindow.getAllWindows().find(
+            win => win.getTitle() === 'invity-buy-partner-window',
+        );
+
+        if (partnerWindow) {
+            partnerWindow.close();
+        }
+    });
+
     // todo: this is here to force bundler to bundler src-electron/metadata.ts
     // todo: but it is not finished yet. Also it may be better to add it to tsconfig.include
     // metadata.init();
@@ -58,12 +73,6 @@ const init = async () => {
     } catch (error) {
         // do nothing
     }
-
-    const registerSuiteProtocolSchema = () => {
-        const SUITE_PROTOCOL_SCHEMA = 'trezor-suite';
-        app.removeAsDefaultProtocolClient(SUITE_PROTOCOL_SCHEMA);
-        app.setAsDefaultProtocolClient(SUITE_PROTOCOL_SCHEMA);
-    };
 
     if (isDev) {
         await prepareNext(path.resolve(__dirname, '../'));
@@ -125,15 +134,14 @@ const init = async () => {
         }
     };
 
-    mainWindow.webContents.on('will-navigate', handleExternalLink);
     mainWindow.webContents.on(
         'new-window',
         (event, url, frameName, _disposition, options, _additionalFeatures) => {
             // open new electron window
-            // example: window.open(YOUR URL, 'in-electron-window');
-            if (frameName === 'in-electron-window') {
+            if (frameName === 'invity-buy-partner-window') {
                 event.preventDefault();
                 Object.assign(options, {
+                    title: 'invity-buy-partner-window',
                     modal: false,
                     parent: mainWindow,
                     closable: true,
@@ -152,8 +160,6 @@ const init = async () => {
         // prevent updating window title
         evt.preventDefault();
     });
-
-    registerSuiteProtocolSchema();
 
     if (!isDev) {
         const filter = {
