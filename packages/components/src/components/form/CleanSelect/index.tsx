@@ -103,20 +103,20 @@ const selectStyle = (isDropdownVisible: boolean, isHovered: boolean, minWidth = 
 });
 
 interface Props extends Omit<SelectProps, 'components'> {
+    withDropdownIndicator?: boolean;
     isClean?: boolean;
-    isSearchable?: boolean;
     label?: React.ReactNode;
     wrapperProps?: Record<string, any>;
     variant?: InputVariant;
-    isHoveredByDefault?: boolean;
     minWidth?: string;
 }
 
 const CleanSelect = ({
-    isDropdownVisible = true,
-    className,
-    isSearchable,
+    isDropdownVisible = false,
+    isSearchable = true,
     isHoveredByDefault = false,
+    withDropdownIndicator = true,
+    className,
     wrapperProps,
     isClean = false,
     label,
@@ -131,8 +131,8 @@ const CleanSelect = ({
         <Wrapper onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
             <ReactSelect
                 styles={selectStyle(isDropdownVisible, isHovered, minWidth)}
-                isSearchable={isSearchable}
                 classNamePrefix="react-select"
+                isSearchable={isSearchable}
                 isDisabled={optionsLength <= 1}
                 options={options}
                 {...props}
