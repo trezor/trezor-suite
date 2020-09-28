@@ -10,7 +10,6 @@ export const ICONS = {
     COINS: require('../../images/icons/coins.svg'),
     CLEAR: require('../../images/icons/clear.svg'),
     COPY: require('../../images/icons/copy.svg'),
-    COINMARKET: require('../../images/icons/coinmarket.svg'),
     CROSS: require('../../images/icons/cross.svg'),
     CANCEL: require('../../images/icons/cancel.svg'),
     COINMARKET: require('../../images/icons/coinmarket.svg'),
