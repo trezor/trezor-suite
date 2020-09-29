@@ -38,14 +38,16 @@ describe('Metadata', () => {
         cy.getTestElement('@suite/menu/wallet-index').click();
 
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'").click({ force: true });
-        cy.getTestElement("@metadata/edit-button").click({ force: true });
+        cy.getTestElement('@metadata/edit-button').click({ force: true });
 
         cy.log('at this moment, oauth token expires');
         cy.task('setupGoogle', { prop: 'user', value: null });
 
         cy.getTestElement('@metadata/input').type('Kvooo{enter}');
 
-        cy.getTestElement('@toast').should('contain.text', 'Failed to sync labeling data with cloud provider');
+        cy.getTestElement('@toast').should(
+            'contain.text',
+            'Failed to sync labeling data with cloud provider',
+        );
     });
 });
-
