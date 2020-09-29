@@ -101,7 +101,7 @@ Account has metadata property which is an object of following shape:
 ```
 
 ## User stories
-First time user:
+### First time user:
 1. User opens App for the first time. Metadata is disabled. "Add label" buttons are present on mouse hover over labelable data.
 1. User clicks "Add label" button.
 1. Device metadata key is generated.
@@ -110,7 +110,14 @@ First time user:
 1. Fetch data from metadata provider and set interval for fetching data.
 1. Activate editable input.
 
-How to turn metadata off
+### Metadata enabled during discovery process:
+Controlled by `discoveryActions`
+1. If passphrase is not used device metadata key is generated before discovery process start. `discoveryActions`
+1. If passphrase is used metadata key is generated either:
+    * in the middle of the discovery process after successful receiving first bundle of accounts and at least one the account is not empty. `discoveryActions`
+    * after passphrase confirmation process. `metadataMiddleware`
+
+## How to turn metadata off
 - controls for common metadata related actions are located in general settings under the labeling section
 - there is a switch which: 
     1. sets metadata.enabled bool value
