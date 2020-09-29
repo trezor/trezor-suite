@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
-const validChannels = ['restart-app', 'start-bridge', 'oauth-receiver', 'oauth'];
+const validChannels = ['restart-app', 'start-bridge', 'oauth-receiver', 'oauth', 'buy-receiver'];
 
 contextBridge.exposeInMainWorld('desktopApi', {
     send: (channel: string, data?: any) => {

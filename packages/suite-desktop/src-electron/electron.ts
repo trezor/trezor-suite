@@ -9,10 +9,10 @@ import * as store from './store';
 import { runBridgeProcess } from './bridge';
 import { buildMainMenu } from './menu';
 import { openOauthPopup } from './oauth';
+import { openBuyWindow } from './buy';
 // import * as metadata from './metadata';
 
 let mainWindow: BrowserWindow;
-const SUITE_BUY_PROTOCOL_SCHEMA = 'trezor-suite-buy';
 const APP_NAME = 'Trezor Suite';
 const PROTOCOL = 'file';
 const res = isDev ? './public/static' : process.resourcesPath;
@@ -49,24 +49,6 @@ const registerShortcuts = (window: BrowserWindow) => {
 };
 
 const init = async () => {
-    protocol.registerStringProtocol(SUITE_BUY_PROTOCOL_SCHEMA, (req, cb) => {
-        cb(req.url);
-    });
-
-    protocol.interceptStringProtocol(SUITE_BUY_PROTOCOL_SCHEMA, (req, _cb) => {
-        const invityBuyPartnerWindow = BrowserWindow.fromId(2);
-
-        if (invityBuyPartnerWindow) {
-            const redirectUrl = path.join(
-                src,
-                req.url.replace(`${SUITE_BUY_PROTOCOL_SCHEMA}://`, ''),
-            );
-            invityBuyPartnerWindow.close();
-            mainWindow.focus();
-            mainWindow.loadURL(redirectUrl);
-        }
-    });
-
     // todo: this is here to force bundler to bundler src-electron/metadata.ts
     // todo: but it is not finished yet. Also it may be better to add it to tsconfig.include
     // metadata.init();
@@ -141,19 +123,8 @@ const init = async () => {
     mainWindow.webContents.on(
         'new-window',
         (event, url, frameName, _disposition, options, _additionalFeatures) => {
-            // open new electron window
             if (frameName === 'invity-buy-partner-window') {
-                event.preventDefault();
-                Object.assign(options, {
-                    title: 'invity-buy-partner-window',
-                    modal: false,
-                    parent: mainWindow,
-                    closable: true,
-                    center: true,
-                    width: store.MIN_WIDTH,
-                    height: store.MIN_HEIGHT,
-                });
-                event.newGuest = new BrowserWindow(options);
+                openBuyWindow(url);
             } else {
                 handleExternalLink(event, url);
             }
@@ -268,4 +239,11 @@ ipcMain.on('restart-app', () => {
 
 ipcMain.on('oauth-receiver', (_event, message) => {
     mainWindow.webContents.send('oauth', { data: message });
+});
+
+ipcMain.on('buy-receiver', (_event, message) => {
+    mainWindow.focus();
+    const redirectUrl = path.join(src, message.replace('#', ''));
+    console.log('redirectUrl', redirectUrl);
+    mainWindow.loadURL(redirectUrl);
 });
