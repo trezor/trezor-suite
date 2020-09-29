@@ -208,6 +208,15 @@ const definedMessages = defineMessages({
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',
     },
+    TR_BUY_FOOTER_TEXT_1: {
+        defaultMessage:
+            'Invity is our sole provider, and only sees ur something, something and something else.',
+        id: 'TR_BUY_FOOTER_TEXT_1',
+    },
+    TR_BUY_FOOTER_TEXT_2: {
+        defaultMessage: 'Invity will not see your something, and something.',
+        id: 'TR_BUY_FOOTER_TEXT_2',
+    },
     TR_BUY_FOR_YOUR_SAFETY: {
         defaultMessage: 'For your safety',
         id: 'TR_BUY_FOR_YOUR_SAFETY',

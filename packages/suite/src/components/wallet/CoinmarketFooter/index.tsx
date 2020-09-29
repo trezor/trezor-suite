@@ -6,53 +6,6 @@ import { useOnClickOutside } from '@suite-utils/dom';
 import { Translation } from '@suite-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 
-const CoinmarketFooter = () => {
-    const [toggled, setToggled] = useState(false);
-    const menuRef = useRef<any>(null);
-    const toggleRef = useRef<any>(null);
-
-    useOnClickOutside([menuRef, toggleRef], () => {
-        if (toggled) {
-            setToggled(false);
-        }
-    });
-
-    return (
-        <Wrapper>
-            <Left>
-                <CoinmarketProvidedByInvity />
-            </Left>
-            <Right>
-                {toggled && (
-                    <FooterBox ref={menuRef}>
-                        <Header>
-                            <BoxLeft>
-                                <Link href="https://invity.io/" target="_blank">
-                                    <Image src={resolveStaticPath('/images/svg/invity-logo.svg')} />
-                                </Link>
-                            </BoxLeft>
-                            <BoxRight>
-                                <Button variant="tertiary">invity.io</Button>
-                                <IconWrapper onClick={() => setToggled(false)}>
-                                    <StyledIcon icon="CROSS" size={16} />
-                                </IconWrapper>
-                            </BoxRight>
-                        </Header>
-                        <Text>
-                            Invity is our sole provider, and only sees ur something, something and
-                            something else.
-                        </Text>
-                        <Text>Invity will not see your something, and something.</Text>
-                    </FooterBox>
-                )}
-                <Toggle ref={toggleRef} onClick={() => setToggled(true)}>
-                    <Translation id="TR_BUY_LEARN_MORE" />
-                </Toggle>
-            </Right>
-        </Wrapper>
-    );
-};
-
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
@@ -136,5 +89,53 @@ const Text = styled.div`
 const Toggle = styled.div`
     cursor: pointer;
 `;
+
+const CoinmarketFooter = () => {
+    const [toggled, setToggled] = useState(false);
+    const menuRef = useRef<any>(null);
+    const toggleRef = useRef<any>(null);
+
+    useOnClickOutside([menuRef, toggleRef], () => {
+        if (toggled) {
+            setToggled(false);
+        }
+    });
+
+    return (
+        <Wrapper>
+            <Left>
+                <CoinmarketProvidedByInvity />
+            </Left>
+            <Right>
+                {toggled && (
+                    <FooterBox ref={menuRef}>
+                        <Header>
+                            <BoxLeft>
+                                <Link href="https://invity.io/" target="_blank">
+                                    <Image src={resolveStaticPath('/images/svg/invity-logo.svg')} />
+                                </Link>
+                            </BoxLeft>
+                            <BoxRight>
+                                <Button variant="tertiary">invity.io</Button>
+                                <IconWrapper onClick={() => setToggled(false)}>
+                                    <StyledIcon icon="CROSS" size={16} />
+                                </IconWrapper>
+                            </BoxRight>
+                        </Header>
+                        <Text>
+                            <Translation id="TR_BUY_FOOTER_TEXT_1" />
+                        </Text>
+                        <Text>
+                            <Translation id="TR_BUY_FOOTER_TEXT_2" />
+                        </Text>
+                    </FooterBox>
+                )}
+                <Toggle ref={toggleRef} onClick={() => setToggled(true)}>
+                    <Translation id="TR_BUY_LEARN_MORE" />
+                </Toggle>
+            </Right>
+        </Wrapper>
+    );
+};
 
 export default CoinmarketFooter;
