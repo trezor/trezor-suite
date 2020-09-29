@@ -72,7 +72,7 @@ const WalletsTooltips = styled.div`
 const WalletsCount = styled(ColHeader)`
     flex: 1;
     justify-content: flex-start;
-    whitespace: no-wrap;
+    white-space: nowrap;
 `;
 
 const InstancesWrapper = styled.div`
@@ -125,6 +125,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
     const isWalletContext =
         backgroundRoute &&
         (backgroundRoute.app === 'wallet' || backgroundRoute.app === 'dashboard');
+    const instancesWithState = props.instances.filter(i => i.state);
 
     const selectDeviceInstance = async (instance: Props['device']) => {
         await props.selectDevice(instance);
@@ -214,31 +215,35 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                 {!isUnknown && isExpanded && (
                     <motion.div {...ANIMATION.EXPAND}>
                         <WalletsWrapper enabled>
-                            <WalletsTooltips>
-                                <WalletsCount>
-                                    <Translation
-                                        id="TR_COUNT_WALLETS"
-                                        values={{ count: props.instances.length }}
-                                    />
-                                </WalletsCount>
-                                <ColRememberHeader
-                                    tooltipContent={<Translation id="TR_REMEMBER_ALLOWS_YOU_TO" />}
-                                >
-                                    <Translation id="TR_REMEMBER_HEADING" />
-                                </ColRememberHeader>
-                                <ColEjectHeader
-                                    tooltipContent={
-                                        <Translation id="TR_EJECT_WALLET_EXPLANATION" />
-                                    }
-                                >
-                                    <Translation id="TR_EJECT_HEADING" />
-                                </ColEjectHeader>
-                            </WalletsTooltips>
+                            {instancesWithState.length > 0 && (
+                                <WalletsTooltips>
+                                    <WalletsCount>
+                                        <Translation
+                                            id="TR_COUNT_WALLETS"
+                                            values={{ count: instancesWithState.length }}
+                                        />
+                                    </WalletsCount>
+                                    <ColRememberHeader
+                                        tooltipContent={
+                                            <Translation id="TR_REMEMBER_ALLOWS_YOU_TO" />
+                                        }
+                                    >
+                                        <Translation id="TR_REMEMBER_HEADING" />
+                                    </ColRememberHeader>
+                                    <ColEjectHeader
+                                        tooltipContent={
+                                            <Translation id="TR_EJECT_WALLET_EXPLANATION" />
+                                        }
+                                    >
+                                        <Translation id="TR_EJECT_HEADING" />
+                                    </ColEjectHeader>
+                                </WalletsTooltips>
+                            )}
 
                             <InstancesWrapper>
-                                {props.instances.map(instance => (
+                                {instancesWithState.map(instance => (
                                     <StyledWalletInstance
-                                        key={`${instance.label}-${instance.instance}-${instance.state}`}
+                                        key={`${instance.id}-${instance.instance}-${instance.state}`}
                                         instance={instance}
                                         enabled
                                         selected={deviceUtils.isSelectedInstance(
