@@ -1659,9 +1659,8 @@ const definedMessages = defineMessages({
         id: 'TR_TO_PREVENT_PHISHING_ATTACKS_COMMA',
     },
     TR_TOS_INFORMATION: {
-        defaultMessage:
-            'Oh, by the way, we had to pay a hell lot of money to our lawyers to create some {TR_TOS_LINK}',
-        id: 'TR_HELP_TREZOR_SUITE_TEXT',
+        defaultMessage: 'By clicking Continue you agree to our {TR_TOS_LINK}',
+        id: 'TR_TOS_INFORMATION',
     },
     TR_TOS_LINK: {
         defaultMessage: 'Terms & Conditions.',
