@@ -21,7 +21,7 @@ describe('Stories of device remembering', () => {
         });
         cy.getTestElement('@switch-device/wallet-instance/eject-button').click();
         cy.task('stopEmu');
-        cy.getTestElement('@switch-device/wallet-instance').click({ force: true });
+        cy.getTestElement('@switch-device/add-wallet-button').click();
         cy.getTestElement('@modal/connect-device');
     });
 });
