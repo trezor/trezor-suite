@@ -86,13 +86,13 @@ interface Props {
     variant: 'loader' | 'info' | 'warning' | 'error';
     button?: ButtonProps;
     className?: string;
-    dataTest?: string;
+    ['data-test']?: string;
 }
 
-const NotificationCard = ({ variant, button, children, dataTest, className }: Props) => {
+const NotificationCard = ({ variant, button, children, className, ...props }: Props) => {
     const iconElement = getIcon(variant);
     return (
-        <Wrapper data-test={dataTest} className={className}>
+        <Wrapper className={className} data-test={props['data-test']}>
             {iconElement && <IconWrapper>{iconElement}</IconWrapper>}
             <Body>{children}</Body>
             {button && (
