@@ -6,7 +6,7 @@ import withRedux from 'next-redux-wrapper';
 import * as Sentry from '@sentry/browser';
 import { initStore } from '@suite/reducers/store';
 import Preloader from '@suite-components/Preloader';
-import { ToastContainer } from 'react-toastify';
+import ToastContainer from '@suite-components/ToastContainer';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import Resize from '@suite-support/Resize/Container';
 import OnlineStatus from '@suite-support/OnlineStatus';
