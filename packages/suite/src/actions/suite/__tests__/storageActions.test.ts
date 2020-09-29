@@ -3,7 +3,6 @@ import thunk from 'redux-thunk';
 import { Middleware } from 'redux';
 import * as storageActions from '../storageActions';
 import * as suiteActions from '../suiteActions';
-import * as languageActions from '../../settings/languageActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
@@ -197,11 +196,9 @@ describe('Storage actions', () => {
         // @ts-ignore
         global.fetch = mockFetch({ TR_ID: 'Message' });
         await store.dispatch(storageActions.saveSuiteSettings());
-        await store.dispatch(languageActions.fetchLocale('cs'));
         await store.dispatch(suiteActions.initialRunCompleted());
         await store.dispatch(storageActions.loadStorage());
 
-        expect(store.getState().suite.settings.language).toEqual('cs');
         expect(store.getState().suite.flags.initialRun).toEqual(false);
         // @ts-ignore
         global.fetch = f;

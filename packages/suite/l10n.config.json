@@ -7,7 +7,7 @@
         "filename": "master",
         "apiKeyEnv": "CROWDIN_API_KEY"
     },
-    "languages": ["cs", "en", "fr", "de", "ru", "es-ES"],
+    "languages": ["en"],
     "langToFileNameMap": {
         "en": "en",
         "cs": "cs",
