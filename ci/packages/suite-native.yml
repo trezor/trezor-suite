@@ -16,7 +16,7 @@ suite-native build android:
         paths:
             - app-release.apk
 
-suite-native deploy:
+suite-native deploy dev:
     stage: deploy to dev
     only:
         refs:
