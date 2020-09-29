@@ -17,38 +17,37 @@ variables:
 
 .e2e_script_common: &e2e_script_common
     - npx cypress install
-    - export CYPRESS_ASSET_PREFIX=/wallet
+    - export CYPRESS_ASSET_PREFIX=/web
     - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
     - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
 
-suite-web build:
+suite-web build dev:
     stage: build
     script:
-        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/wallet yarn workspace @trezor/suite-web build
+        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/web yarn workspace @trezor/suite-web build
     artifacts:
         expire_in: 7 days
         paths:
             - packages/suite-web/build
 
-suite-web build-staging:
+suite-web build beta:
     stage: build
     only:
         <<: *auto_run_branches
     script:
-        - assetPrefix=/wallet yarn workspace @trezor/suite-web build
+        - assetPrefix=/wallet/web yarn workspace @trezor/suite-web build
     artifacts:
         expire_in: 7 days
         paths:
             - packages/suite-web/scripts/s3sync.sh
             - packages/suite-web/build
 
-suite-web build-staging manual:
+suite-web build stable:
     stage: build
-    when: manual
-    except:
+    only:
         <<: *auto_run_branches
     script:
-        - assetPrefix=/wallet yarn workspace @trezor/suite-web build
+        - assetPrefix=/web yarn workspace @trezor/suite-web build
     artifacts:
         expire_in: 7 days
         paths:
@@ -56,26 +55,23 @@ suite-web build-staging manual:
             - packages/suite-web/build
 
 suite-web deploy dev:
-    stage: deploy to dev servers
-    variables:
-        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}/wallet
-    dependencies:
-        - suite-web build
-        - landing-page build
-    environment:
-        name: ${CI_BUILD_REF_NAME}
-        url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
-    before_script: []
-    script:
-        - cd packages/suite-web
-        - echo "Deploy to dev servers"
-        - mkdir -p ${DEPLOY_BASE_DIR}/suite-web
-        - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
-        - rsync --delete -va build/ "${DEPLOY_DIRECTORY}/"
-        - cd ../landing-page
-        - rsync -abviuzP -va build/ "${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}/"
-    tags:
-        - deploy
+  stage: deploy to dev servers
+  variables:
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
+  dependencies:
+    - install and build
+    - suite-web-landing build dev
+    - suite-web build dev
+  environment:
+    name: ${CI_BUILD_REF_NAME}
+    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+  before_script: []
+  script:
+    - mkdir -p ${DEPLOY_DIRECTORY}/web
+    - rsync --delete -va packages/suite-web-landing/build/ "${DEPLOY_DIRECTORY}/"
+    - rsync --delete -va packages/suite-web/build/ "${DEPLOY_DIRECTORY}/web/"
+  tags:
+    - deploy
 
 suite-web e2e chrome stage=stable/suite:
     stage: integration testing
@@ -150,28 +146,53 @@ suite-web e2e chrome-beta stage=stable:
         <<: *e2e_artifacts
     dependencies: []
 
-suite-web deploy staging:
+suite-web deploy staging-wallet:
     stage: deploy to staging
     dependencies:
-        - suite-web build-staging
+        - suite-web build beta
         - suite-desktop build mac
         - suite-desktop build linux
         - suite-desktop build windows
     environment:
         name: ${CI_BUILD_REF_NAME}-staging
-        url: ${STAGING_SERVER_URL}
+        url: ${STAGING_WALLET_SERVER_URL}
     before_script: []
     only:
         <<: *auto_run_branches
     when: manual
     script:
-        - source ${STAGING_DEPLOY_KEYFILE}
+        - source ${STAGING_WALLET_DEPLOY_KEYFILE}
         - mkdir -p packages/suite-web/build/static/desktop
         - rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage ./packages/suite-web/build/static/desktop
         - rsync --delete -va "${DESKTOP_APP_NAME}"-*.zip ./packages/suite-web/build/static/desktop
         - rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe ./packages/suite-web/build/static/desktop
         - cd packages/suite-web
-        - ./scripts/s3sync.sh stage beta
+        - ./scripts/s3sync.sh staging-wallet
     tags:
         - deploy
 # todo: add smoke test job on stage / beta (need basic auth)
+
+suite-web deploy staging-suite:
+    stage: deploy to staging
+    dependencies:
+        - suite-web build stable
+        - suite-desktop build mac
+        - suite-desktop build linux
+        - suite-desktop build windows
+    environment:
+        name: ${CI_BUILD_REF_NAME}-staging
+        url: ${STAGING_SUITE_SERVER_URL}
+    before_script: []
+    only:
+        <<: *auto_run_branches
+    when: manual
+    script:
+        - source ${STAGING_SUITE_DEPLOY_KEYFILE}
+        - mkdir -p packages/suite-web/build/static/desktop
+        - rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage ./packages/suite-web/build/static/desktop
+        - rsync --delete -va "${DESKTOP_APP_NAME}"-*.zip ./packages/suite-web/build/static/desktop
+        - rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe ./packages/suite-web/build/static/desktop
+        - cd packages/suite-web
+        - ./scripts/s3sync.sh staging-suite
+    tags:
+        - deploy

@@ -4,7 +4,7 @@
     - releases
     - schedules
 
-landing-page build:
+landing-page build dev:
   stage: build
   script:
     - assetPrefix=/suite-web/${CI_BUILD_REF_NAME} yarn workspace @trezor/landing-page build
@@ -13,32 +13,49 @@ landing-page build:
     paths:
       - packages/landing-page/build
 
-landing-page build-staging:
+landing-page build beta:
   stage: build
   only:
     <<: *auto_run_branches
   script:
-    - yarn workspace @trezor/landing-page build
+    - assetPrefix=/wallet yarn workspace @trezor/landing-page build
   artifacts:
     expire_in: 7 days
     paths:
       - packages/landing-page/scripts/s3sync.sh
       - packages/landing-page/build
 
-landing-page deploy-staging:
+landing-page deploy staging-wallet:
   stage: deploy to staging
   only:
     <<: *auto_run_branches
   dependencies:
-    - landing-page build-staging
+    - landing-page build beta
   environment:
     name: ${CI_BUILD_REF_NAME}-staging
-    url: ${STAGING_SERVER_URL}
+    url: ${STAGING_WALLET_SERVER_URL}
   before_script: []
   when: manual
   script:
-    - source ${STAGING_DEPLOY_KEYFILE}
+    - source ${STAGING_WALLET_DEPLOY_KEYFILE}
     - cd packages/landing-page
-    - ./scripts/s3sync.sh stage beta
+    - ./scripts/s3sync.sh staging-wallet
+  tags:
+    - deploy
+
+landing-page deploy dev:
+  stage: deploy to dev servers
+  variables:
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/landing-page/${CI_BUILD_REF_NAME}
+  dependencies:
+    - install and build
+    - landing-page build dev
+  environment:
+    name: ${CI_BUILD_REF_NAME}
+    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+  before_script: []
+  script:
+    - mkdir -p ${DEPLOY_DIRECTORY}
+    - rsync --delete -va packages/landing-page/build/ "${DEPLOY_DIRECTORY}/"
   tags:
     - deploy

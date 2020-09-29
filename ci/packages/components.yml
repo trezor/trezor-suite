@@ -20,11 +20,8 @@ components storybook deploy dev:
     url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
   before_script: []
   script:
-    - cd packages/components
-    - echo "Deploy to dev servers"
-    - mkdir -p ${DEPLOY_BASE_DIR}/components
-    - mkdir -p ${DEPLOY_DIRECTORY} # create build folder
-    - rsync --delete -va .build-storybook/ "${DEPLOY_DIRECTORY}/"
+    - mkdir -p ${DEPLOY_DIRECTORY}
+    - rsync --delete -va packages/components/.build-storybook/ "${DEPLOY_DIRECTORY}/"
   tags:
     - deploy
 
