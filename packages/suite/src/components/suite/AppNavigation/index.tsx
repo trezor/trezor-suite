@@ -57,25 +57,22 @@ interface Props {
 }
 
 const AppNavigation = ({ items }: Props) => {
-    const router = useSelector(state => state.router);
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const routeName = useSelector(state => state.router.route?.name);
+    const { params } = useSelector(state => state.wallet.selectedAccount);
     const { goto } = useActions({
         goto: routerActions.goto,
     });
 
-    const { params } = selectedAccount;
     return (
         <Wrapper>
             {items.map(item => {
                 const { route, title, icon, ...restItemProps } = item;
-                const active = router.route?.name === route;
+                const active = routeName === route;
                 return (
                     <StyledNavLink
                         key={route}
                         active={active}
-                        onClick={() =>
-                            params ? goto(route, params) : goto(route, undefined, true)
-                        }
+                        onClick={() => goto(route, params, !params)}
                         {...restItemProps}
                     >
                         <IconWrapper>
