@@ -59,18 +59,17 @@ interface Props {
 const AppNavigation = ({ items }: Props) => {
     const routeName = useSelector(state => state.router.route?.name);
     const routerParams = useSelector(state => state.router.params);
-    const account = useSelector(state => state.wallet.selectedAccount.account);
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const { goto } = useActions({
         goto: routerActions.goto,
     });
 
-    if (!account) return null;
-
+    if (selectedAccount.status !== 'loaded') return null;
     const params = !routerParams
         ? {
-              symbol: account.symbol,
-              accountIndex: account.index,
-              accountType: account.accountType,
+              symbol: selectedAccount.params.symbol,
+              accountIndex: selectedAccount.params.accountIndex,
+              accountType: selectedAccount.params.accountType,
           }
         : undefined;
 
