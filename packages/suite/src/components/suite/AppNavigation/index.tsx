@@ -63,15 +63,7 @@ const AppNavigation = ({ items }: Props) => {
         goto: routerActions.goto,
     });
 
-    if (selectedAccount.status !== 'loaded') return null;
-    const params = !router.params
-        ? {
-              symbol: selectedAccount.params.symbol,
-              accountIndex: selectedAccount.params.accountIndex,
-              accountType: selectedAccount.params.accountType,
-          }
-        : undefined;
-
+    const { params } = selectedAccount;
     return (
         <Wrapper>
             {items.map(item => {
@@ -81,7 +73,9 @@ const AppNavigation = ({ items }: Props) => {
                     <StyledNavLink
                         key={route}
                         active={active}
-                        onClick={() => goto(route, params, true)}
+                        onClick={() =>
+                            params ? goto(route, params) : goto(route, undefined, true)
+                        }
                         {...restItemProps}
                     >
                         <IconWrapper>
