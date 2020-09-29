@@ -30,7 +30,7 @@ const DeviceHeaderButton = (props: Props) => {
                     button={{
                         children: <Translation id="TR_SOLVE_ISSUE" />,
                         onClick: props.onSolveIssueClick,
-                        dataTest: `@switch-device/${device.path}/solve-issue-button`,
+                        'data-test': `@switch-device/${device.path}/solve-issue-button`,
                     }}
                 >
                     {deviceStatusMessage && <Translation {...deviceStatusMessage} />}
@@ -39,7 +39,7 @@ const DeviceHeaderButton = (props: Props) => {
             {!props.needsAttention && !isUnknown && (
                 // Device Settings button
                 <Icon
-                    usePointerCursor
+                    useCursorPointer
                     size={24}
                     icon="SETTINGS"
                     color={colors.NEUE_TYPE_LIGHT_GREY}
