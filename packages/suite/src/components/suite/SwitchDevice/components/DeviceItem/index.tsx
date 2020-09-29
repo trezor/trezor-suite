@@ -200,7 +200,7 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
                         />
                         {!needsAttention && (
                             <ExpandIcon
-                                usePointerCursor
+                                useCursorPointer
                                 size={24}
                                 icon="ARROW_UP"
                                 color={colors.NEUE_TYPE_LIGHT_GREY}
