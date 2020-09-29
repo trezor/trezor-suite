@@ -11,9 +11,7 @@ describe('Metadata', () => {
         cy.task('stopGoogle');
     });
 
-    it(`
-        suite is watching cloud provider and syncs periodically
-    `, () => {
+    it('suite is watching cloud provider and syncs periodically', () => {
         // prepare test
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
@@ -63,15 +61,21 @@ describe('Metadata', () => {
 
         // and this does the time travel to trigger fetch
         cy.tick(METADATA.FETCH_INTERVAL);
-        cy.getTestElement('@metadata/outputLabel/9f472739fa7034dfb9736fa4d98915f2e8ddf70a86ee5e0a9ac0634f8c1d0007-0').should('contain', 'label from another window');
+        cy.getTestElement(
+            '@metadata/outputLabel/9f472739fa7034dfb9736fa4d98915f2e8ddf70a86ee5e0a9ac0634f8c1d0007-0',
+        ).should('contain', 'label from another window');
 
-        cy.log('See what happens if user wipes his data from Google Drive interface (out of suite)');
+        cy.log(
+            'See what happens if user wipes his data from Google Drive interface (out of suite)',
+        );
         cy.log('Next command simulates that user wiped his Google Drive');
-        cy.task('setupGoogle', { prop: 'files', value: []});
+        cy.task('setupGoogle', { prop: 'files', value: [] });
         cy.tick(METADATA.FETCH_INTERVAL);
 
         // in this edge case, all metadata are disposed.
-        cy.getTestElement('@metadata/outputLabel/9f472739fa7034dfb9736fa4d98915f2e8ddf70a86ee5e0a9ac0634f8c1d0007-0').should('not.contain', 'label from another window');
+        cy.getTestElement(
+            '@metadata/outputLabel/9f472739fa7034dfb9736fa4d98915f2e8ddf70a86ee5e0a9ac0634f8c1d0007-0',
+        ).should('not.contain', 'label from another window');
 
         // cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'").click();
         // cy.log('Remove is not available when provider is not connected. With remove (unlike with edit) there is not intermediate step where user can find out if he is changing a label that already exists');
