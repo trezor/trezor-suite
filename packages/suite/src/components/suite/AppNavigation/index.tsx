@@ -57,15 +57,14 @@ interface Props {
 }
 
 const AppNavigation = ({ items }: Props) => {
-    const routeName = useSelector(state => state.router.route?.name);
-    const routerParams = useSelector(state => state.router.params);
+    const router = useSelector(state => state.router);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const { goto } = useActions({
         goto: routerActions.goto,
     });
 
     if (selectedAccount.status !== 'loaded') return null;
-    const params = !routerParams
+    const params = !router.params
         ? {
               symbol: selectedAccount.params.symbol,
               accountIndex: selectedAccount.params.accountIndex,
@@ -77,7 +76,7 @@ const AppNavigation = ({ items }: Props) => {
         <Wrapper>
             {items.map(item => {
                 const { route, title, icon, ...restItemProps } = item;
-                const active = routeName === route;
+                const active = router.route?.name === route;
                 return (
                     <StyledNavLink
                         key={route}
