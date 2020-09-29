@@ -18,17 +18,24 @@ const toastMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispa
     // pass action
     next(action);
 
-    if (action.type !== NOTIFICATION.TOAST) return action;
+    if (action.type === NOTIFICATION.CLOSE) {
+        // we are using custom close button that dispatch this action
+        toast.dismiss(action.payload);
+    }
 
-    // TODO: set custom timeout
-    const { payload } = action;
-    toast(hocNotification(payload, ToastNotification), {
-        position: 'bottom-center',
-        toastId: payload.id,
-        onClose: () => api.dispatch(close(payload.id)),
-        closeButton: false,
-        hideProgressBar: true,
-    });
+    if (action.type === NOTIFICATION.TOAST) {
+        // TODO: set custom timeout
+        const { payload } = action;
+        toast(hocNotification(payload, ToastNotification), {
+            position: 'bottom-center',
+            toastId: payload.id,
+            onClose: () => api.dispatch(close(payload.id)),
+            closeButton: false,
+            hideProgressBar: true,
+            closeOnClick: false,
+        });
+    }
+
     return action;
 };
 
