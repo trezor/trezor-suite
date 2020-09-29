@@ -243,7 +243,5 @@ ipcMain.on('oauth-receiver', (_event, message) => {
 
 ipcMain.on('buy-receiver', (_event, message) => {
     mainWindow.focus();
-    const redirectUrl = path.join(src, message.replace('#', ''));
-    console.log('redirectUrl', redirectUrl);
-    mainWindow.loadURL(redirectUrl);
+    mainWindow.loadURL(path.join(src, message.replace('#', '')));
 });
