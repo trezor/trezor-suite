@@ -20,65 +20,6 @@ interface Props {
     account: Account;
 }
 
-const CoinmarketBuyOfferInfo = ({ selectedQuote, transactionId, providers, account }: Props) => {
-    const {
-        receiveStringAmount,
-        receiveCurrency,
-        exchange,
-        paymentMethod,
-        fiatCurrency,
-        fiatStringAmount,
-    } = selectedQuote;
-
-    return (
-        <Wrapper>
-            <Info>
-                <Header>
-                    <CoinLogo symbol={account.symbol} size={16} />
-                    <AccountText>{`Account #${account.index + 1}`}</AccountText>
-                </Header>
-                <Row>
-                    <LeftColumn>
-                        <Translation id="TR_BUY_SPEND" />
-                    </LeftColumn>
-                    <RightColumn>
-                        <Dark>
-                            {fiatStringAmount} {fiatCurrency}
-                        </Dark>
-                    </RightColumn>
-                </Row>
-                <RowWithBorder>
-                    <LeftColumn>
-                        <Translation id="TR_BUY_BUY" />
-                    </LeftColumn>
-                    <RightColumn>
-                        <Dark>{`${formatCryptoAmount(
-                            Number(receiveStringAmount),
-                        )} ${receiveCurrency}`}</Dark>
-                    </RightColumn>
-                </RowWithBorder>
-                <Row>
-                    <LeftColumn>
-                        <Translation id="TR_BUY_PROVIDER" />
-                    </LeftColumn>
-                    <RightColumn>
-                        <CoinmarketBuyProviderInfo exchange={exchange} providers={providers} />
-                    </RightColumn>
-                </Row>
-                <Row>
-                    <LeftColumn>
-                        <Translation id="TR_BUY_PAID_BY" />
-                    </LeftColumn>
-                    <RightColumn>
-                        <CoinmarketPaymentType method={paymentMethod} />
-                    </RightColumn>
-                </Row>
-            </Info>
-            {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
-        </Wrapper>
-    );
-};
-
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -151,5 +92,64 @@ const RowWithBorder = styled(Row)`
     margin-bottom: 10px;
     padding-bottom: 10px;
 `;
+
+const CoinmarketBuyOfferInfo = ({ selectedQuote, transactionId, providers, account }: Props) => {
+    const {
+        receiveStringAmount,
+        receiveCurrency,
+        exchange,
+        paymentMethod,
+        fiatCurrency,
+        fiatStringAmount,
+    } = selectedQuote;
+
+    return (
+        <Wrapper>
+            <Info>
+                <Header>
+                    <CoinLogo symbol={account.symbol} size={16} />
+                    <AccountText>{`Account #${account.index + 1}`}</AccountText>
+                </Header>
+                <Row>
+                    <LeftColumn>
+                        <Translation id="TR_BUY_SPEND" />
+                    </LeftColumn>
+                    <RightColumn>
+                        <Dark>
+                            {fiatStringAmount} {fiatCurrency}
+                        </Dark>
+                    </RightColumn>
+                </Row>
+                <RowWithBorder>
+                    <LeftColumn>
+                        <Translation id="TR_BUY_BUY" />
+                    </LeftColumn>
+                    <RightColumn>
+                        <Dark>{`${formatCryptoAmount(
+                            Number(receiveStringAmount),
+                        )} ${receiveCurrency}`}</Dark>
+                    </RightColumn>
+                </RowWithBorder>
+                <Row>
+                    <LeftColumn>
+                        <Translation id="TR_BUY_PROVIDER" />
+                    </LeftColumn>
+                    <RightColumn>
+                        <CoinmarketBuyProviderInfo exchange={exchange} providers={providers} />
+                    </RightColumn>
+                </Row>
+                <Row>
+                    <LeftColumn>
+                        <Translation id="TR_BUY_PAID_BY" />
+                    </LeftColumn>
+                    <RightColumn>
+                        <CoinmarketPaymentType method={paymentMethod} />
+                    </RightColumn>
+                </Row>
+            </Info>
+            {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
+        </Wrapper>
+    );
+};
 
 export default CoinmarketBuyOfferInfo;
