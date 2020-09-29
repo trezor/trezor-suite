@@ -1,25 +1,18 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import { UI } from 'trezor-connect';
 
-import { Link } from '@trezor/components';
 import { Translation, Image } from '@suite-components';
-
-import { URLS } from '@suite-constants';
 import { Text, OnboardingButton, Wrapper } from '@onboarding-components';
 import { Props } from './Container';
 
 const SetPinStep = (props: Props) => {
-    const { device, activeSubStep } = props;
+    const { device } = props;
 
     if (!device || !device.features) {
         return null;
     }
 
     const getStatus = () => {
-        if (activeSubStep) {
-            return activeSubStep;
-        }
         if (device.buttonRequests.filter(b => b === UI.REQUEST_PIN).length === 1) {
             return 'first';
         }
@@ -44,7 +37,6 @@ const SetPinStep = (props: Props) => {
                 {getStatus() === 'first' && <Translation id="TR_PIN_HEADING_FIRST" />}
                 {getStatus() === 'second' && <Translation id="TR_PIN_HEADING_REPEAT" />}
                 {getStatus() === 'success' && <Translation id="TR_PIN_HEADING_SUCCESS" />}
-                {getStatus() === 'mismatch' && <Translation id="TR_PIN_HEADING_MISMATCH" />}
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {getStatus() === 'initial' && (
@@ -91,42 +83,17 @@ const SetPinStep = (props: Props) => {
                         </Wrapper.Controls>
                     </>
                 )}
-
-                {getStatus() === 'mismatch' && (
-                    <>
-                        <Text>
-                            <Translation
-                                id="TR_PIN_ERROR_TROUBLESHOOT"
-                                values={{
-                                    TR_DOCUMENTATION: (
-                                        <Link href={URLS.PIN_MANUAL_URL}>
-                                            <Translation id="TR_DOCUMENTATION" />
-                                        </Link>
-                                    ),
-                                }}
-                            />
-                        </Text>
-
-                        <Wrapper.Controls>
-                            <OnboardingButton.Cta
-                                onClick={() => {
-                                    props.changePin();
-                                }}
-                            >
-                                <Translation id="TR_START_AGAIN" />
-                            </OnboardingButton.Cta>
-                        </Wrapper.Controls>
-                    </>
-                )}
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
-                <OnboardingButton.Back
-                    data-test="@onboarding/skip-button"
-                    icon="CROSS"
-                    onClick={() => props.goToNextStep()}
-                >
-                    <Translation id="TR_SKIP" />
-                </OnboardingButton.Back>
+                {getStatus() !== 'success' && (
+                    <OnboardingButton.Back
+                        data-test="@onboarding/skip-button"
+                        icon="CROSS"
+                        onClick={() => props.goToNextStep()}
+                    >
+                        <Translation id="TR_SKIP" />
+                    </OnboardingButton.Back>
+                )}
             </Wrapper.StepFooter>
         </Wrapper.Step>
     );

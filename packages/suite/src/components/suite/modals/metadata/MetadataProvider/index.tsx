@@ -1,26 +1,42 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Modal, Button } from '@trezor/components';
+import { Modal, P, Button, variables, colors } from '@trezor/components';
+
 import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { Deferred } from '@suite-utils/deferred';
 import { MetadataProviderType } from '@suite-types/metadata';
-import { resolveStaticPath } from '@suite-utils/nextjs';
+
+const { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } = variables;
 
 const Buttons = styled.div`
     display: flex;
+    justify-content: center;
     flex-direction: row;
-    justify-content: space-around;
 `;
 
+// todo: can't use button from @trezor/components directly, probably inconsistent design again
+// background-color is not even in components color palette
 const StyledButton = styled(Button)`
     padding: 10px;
-    flex-basis: 45%;
+    margin: 0 16px;
+    font-size: ${FONT_SIZE.NORMAL};
+    background-color: ${colors.NEUE_BG_GRAY};
+    font-weight: ${FONT_WEIGHT.DEMI_BOLD};
+    height: 42px;
+
+    @media (min-width: ${SCREEN_SIZE.SM}) {
+        width: 210px;
+    }
 `;
 
-const StyledImage = styled.img`
-    margin: 0 8px 0 0;
+// todo: typography shall be unified and these ad hoc styles removed..
+const StyledP = styled(P)`
+    color: ${colors.BLACK0};
+    margin-bottom: 25px;
+    font-size: ${FONT_SIZE.SMALL};
+    font-weight: ${FONT_WEIGHT.REGULAR};
 `;
 
 type Props = {
@@ -56,9 +72,12 @@ const MetadataProvider = (props: Props) => {
             onCancel={onCancel}
             size="small"
             heading={<Translation id="METADATA_MODAL_HEADING" />}
-            description={<Translation id="METADATA_MODAL_DESCRIPTION" />}
             data-test="@modal/metadata-provider"
         >
+            <StyledP>
+                <Translation id="METADATA_MODAL_DESCRIPTION" />
+            </StyledP>
+
             <Buttons>
                 <StyledButton
                     variant="tertiary"
@@ -66,8 +85,8 @@ const MetadataProvider = (props: Props) => {
                     isLoading={isLoading === 'dropbox'}
                     isDisabled={!!isLoading}
                     data-test="@modal/metadata-provider/dropbox-button"
+                    icon="DROPBOX"
                 >
-                    <StyledImage src={resolveStaticPath('images/png/dropbox.png')} />
                     <Translation id="TR_DROPBOX" />
                 </StyledButton>
                 <StyledButton
@@ -76,9 +95,8 @@ const MetadataProvider = (props: Props) => {
                     isLoading={isLoading === 'google'}
                     isDisabled={!!isLoading}
                     data-test="@modal/metadata-provider/google-button"
+                    icon="GOOGLE_DRIVE"
                 >
-                    <StyledImage src={resolveStaticPath('images/png/google-drive.png')} />
-
                     <Translation id="TR_GOOGLE_DRIVE" />
                 </StyledButton>
 

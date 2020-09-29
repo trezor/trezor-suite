@@ -7,13 +7,10 @@ const IconWrapper = styled.div<{ bgColor: string }>`
     display: flex;
     align-items: center;
     justify-content: center;
-    /* width: 24px;
-    height: 24px; */
-    /* padding: 4px; */
     background-color: ${props => props.bgColor};
     border-radius: 4px;
     margin: 0 3px;
-    padding: 2px;
+    padding: 4px;
 `;
 
 const MetadataEdit = (props: {
@@ -75,15 +72,10 @@ const MetadataEdit = (props: {
 
     return (
         <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div
-                style={{ minWidth: '40px', paddingLeft: '2px', overflow: 'hidden' }}
-                contentEditable
-                ref={divRef}
-                data-test="@metadata/input"
-            />
+            <div contentEditable ref={divRef} data-test="@metadata/input" />
             <IconWrapper bgColor={colors.NEUE_BG_LIGHT_GREEN}>
                 <Icon
-                    usePointerCursor
+                    useCursorPointer
                     size={14}
                     data-test="@metadata/submit"
                     icon="CHECK"
@@ -100,7 +92,7 @@ const MetadataEdit = (props: {
             </IconWrapper>
             <IconWrapper bgColor={colors.NEUE_BG_GRAY}>
                 <Icon
-                    usePointerCursor
+                    useCursorPointer
                     size={14}
                     data-test="@metadata/cancel"
                     icon="CROSS"

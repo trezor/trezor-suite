@@ -1,23 +1,10 @@
 import React from 'react';
-import styled from 'styled-components';
 
-import { P, Link, variables } from '@trezor/components';
-import { Option } from '@onboarding-components';
+import { P, Link } from '@trezor/components';
+import { Option, Wrapper } from '@onboarding-components';
 
 import { Translation } from '@suite-components';
 import { URLS } from '@suite-constants';
-
-const Wrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    width: 100%;
-    margin-top: 24px;
-
-    @media (min-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: row;
-    }
-`;
 
 interface Props {
     onSelect: (number: boolean) => void;
@@ -37,7 +24,7 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
                 }}
             />
         </P>
-        <Wrapper>
+        <Wrapper.Options>
             <Option
                 action={() => {
                     onSelect(false);
@@ -73,7 +60,7 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
                 imgSrc="images/svg/recovery-advanced.svg"
                 data-test="@recover/select-type/advanced"
             />
-        </Wrapper>
+        </Wrapper.Options>
     </>
 );
 

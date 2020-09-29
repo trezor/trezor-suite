@@ -31,7 +31,7 @@ const Dashboard = (props: Props) => {
             </View>
             <View style={{ margin: 20 }}>
                 <Button
-                    onPress={() => props.goto('settings-wallet')}
+                    onPress={() => props.goto('settings-coins')}
                     title="Go to wallet settings and add some coins"
                 />
             </View>

@@ -39,6 +39,11 @@ const definedMessages = defineMessages({
             'Enter existing passphrase to access existing hidden Wallet. Or enter new passphrase to create a new hidden Wallet.',
         id: 'TR_WALLET_SELECTION_ENTER_EXISTING_PASSPHRASE',
     },
+    TR_HIDDEN_WALLET_TOOLTIP: {
+        id: 'TR_HIDDEN_WALLET_TOOLTIP',
+        defaultMessage:
+            'Extension of the wallet derived from recovery seed by your own chosen input.',
+    },
     TR_ACCESS_STANDARD_WALLET: {
         defaultMessage: 'Access standard Wallet',
         id: 'TR_ACCESS_STANDARD_WALLET',
@@ -564,11 +569,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Backup',
         id: 'TR_BACKUP',
     },
-    TR_BACKUP_FAILED: {
-        defaultMessage:
-            'Backup failed and your Wallet is not backed up. You can still use it without any problems but highly recommend you following the link and see how to successfully create a backup.',
-        id: 'TR_BACKUP_FAILED',
-    },
     TR_BACKUP_FINISHED_BUTTON: {
         defaultMessage: 'My recovery card is safe',
         description: 'Exit button after backup is finished',
@@ -1055,11 +1055,6 @@ const definedMessages = defineMessages({
     TR_ENABLE_NETWORK_BUTTON: {
         defaultMessage: 'Find my {networkName} accounts',
         id: 'TR_ENABLE_NETWORK_BUTTON',
-    },
-    TR_ENTER_EXISTING_PASSPHRASE: {
-        defaultMessage:
-            'Enter existing passphrase to access existing hidden Wallet. Or enter new passphrase to create a new hidden Wallet.',
-        id: 'TR_ENTER_EXISTING_PASSPHRASE',
     },
     TR_ENTER_PASSPHRASE: {
         defaultMessage: 'Enter passphrase',
@@ -1979,9 +1974,8 @@ const definedMessages = defineMessages({
         id: 'TR_TO_PREVENT_PHISHING_ATTACKS_COMMA',
     },
     TR_TOS_INFORMATION: {
-        defaultMessage:
-            'Oh, by the way, we had to pay a hell lot of money to our lawyers to create some {TR_TOS_LINK}',
-        id: 'TR_HELP_TREZOR_SUITE_TEXT',
+        defaultMessage: 'By clicking Continue you agree to our {TR_TOS_LINK}',
+        id: 'TR_TOS_INFORMATION',
     },
     TR_TOS_LINK: {
         defaultMessage: 'Terms & Conditions.',
@@ -4163,6 +4157,27 @@ const definedMessages = defineMessages({
     TR_ENABLE_MORE_COINS: {
         id: 'TR_ENABLE_MORE_COINS',
         defaultMessage: 'Enable more coins',
+    },
+    TR_BACKUP_RECOVERY_SEED_FAILED_TITLE: {
+        id: 'TR_BACKUP_RECOVERY_SEED_FAILED_TITLE',
+        defaultMessage: 'Backup failed',
+    },
+    TR_BACKUP_RECOVERY_SEED_FAILED_DESC: {
+        id: 'TR_BACKUP_RECOVERY_SEED_FAILED_DESC',
+        defaultMessage:
+            'Backup failed and your Wallet is not backed up. You can still use it without any problems but highly recommend you following the link and see how to successfully create a backup.',
+    },
+    TR_BACKUP_FAILED: {
+        id: 'BACKUP_FAILED',
+        defaultMessage: 'Backup failed',
+    },
+    TR_STANDARD_WALLET_DESCRIPTION: {
+        id: 'TR_STANDARD_WALLET_DESCRIPTION',
+        defaultMessage: 'No passphrase',
+    },
+    TR_HIDDEN_WALLET_DESCRIPTION: {
+        id: 'TR_HIDDEN_WALLET_DESCRIPTION',
+        defaultMessage: 'Requires passphrase',
     },
 } as const);
 

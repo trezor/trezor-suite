@@ -30,7 +30,7 @@ const DiscoveryEmpty = () => {
                 variant="secondary"
                 isLoading={isDeviceLocked}
                 isDisabled={isDisabled}
-                onClick={() => goto('settings-wallet')}
+                onClick={() => goto('settings-coins')}
             >
                 <Translation id="TR_COIN_SETTINGS" />
             </Button>

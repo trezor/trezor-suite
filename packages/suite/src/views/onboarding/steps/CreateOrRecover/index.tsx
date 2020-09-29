@@ -46,7 +46,7 @@ const CreateOrRecoverStep = (props: Props) => {
             <Wrapper.StepFooter>
                 <OnboardingButton.Back
                     onClick={() => {
-                        props.goToPreviousStep();
+                        props.goToPreviousStep('welcome');
                     }}
                 >
                     <Translation id="TR_BACK" />

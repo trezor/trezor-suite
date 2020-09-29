@@ -130,6 +130,7 @@ export const ICONS: IconType[] = [
     'RBF',
     'TRANSFER',
     'LOCK',
+    'LOCK_ACTIVE',
     'CLOCK',
     'CALENDAR',
     'PDF',

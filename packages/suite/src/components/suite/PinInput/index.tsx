@@ -143,7 +143,7 @@ const PinInput = (props: Props) => {
                     type="button"
                     data-value="1"
                     onClick={() => onPinAdd('1')}
-                    data-test="@pin-input/1"
+                    data-test="@pin/input/1"
                 />
                 <ButtonPin type="button" data-value="2" onClick={() => onPinAdd('2')} />
                 <ButtonPin type="button" data-value="3" onClick={() => onPinAdd('3')} />

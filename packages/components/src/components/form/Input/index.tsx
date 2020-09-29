@@ -246,7 +246,7 @@ const Input = ({
                                 size={12}
                                 onClick={onClear}
                                 color={colors.NEUE_TYPE_DARK_GREY}
-                                usePointerCursor
+                                useCursorPointer
                             />
                         )}
                     </InputAddon>

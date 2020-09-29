@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 import { useKeyPress } from '../../utils/hooks';
 
 import { Icon } from '../Icon';
-import { H2 } from '../typography/Heading';
+import { H1 } from '../typography/Heading';
 import { colors, variables } from '../../config';
 
 // each item in array corresponds to a screen size  [SM, MD, LG, XL]
@@ -169,7 +169,7 @@ const ModalWindow = styled.div<ModalWindowProps>`
         `}
 `;
 
-const Heading = styled(H2)<{
+const Heading = styled(H1)<{
     cancelable: boolean;
     showHeaderBorder: boolean;
     showProgressBar: boolean;

@@ -113,6 +113,7 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
                         accountType: account.accountType,
                     });
                 }}
+                data-test={dataTestKey}
             >
                 <Left>
                     <CoinLogo size={16} symbol={account.symbol} />

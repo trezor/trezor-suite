@@ -33,7 +33,7 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
     padding: 16px 0px 12px 0px;
     border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
     font-variant-numeric: tabular-nums;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
     font-weight: 500;
 
     &:nth-child(1n) {
@@ -59,6 +59,10 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
 
 const GridItemAddress = styled(GridItem)`
     font-variant-numeric: tabular-nums slashed-zero;
+
+    // these two ensure proper metadata behavior
+    white-space: nowrap;
+    overflow: hidden;
 `;
 
 const AddressActions = styled.div<{ hide?: boolean }>`

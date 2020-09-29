@@ -9,7 +9,7 @@ const Wrapper = styled.div`
     top: 0;
     width: 100%;
     height: 2px;
-    z-index: 3;
+    z-index: 4;
     background: ${colors.WHITE};
     overflow: hidden;
 `;

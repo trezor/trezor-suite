@@ -222,7 +222,7 @@ const Output = ({ type, state, label, value, symbol, token }: Props) => {
                             {outputSymbol && <Symbol>{outputSymbol}</Symbol>}
                             {hasExpansion && (
                                 <Icon
-                                    usePointerCursor
+                                    useCursorPointer
                                     size={16}
                                     icon={!isExpanded ? 'ARROW_DOWN' : 'ARROW_UP'}
                                     onClick={() => setExpanded(!isExpanded)}

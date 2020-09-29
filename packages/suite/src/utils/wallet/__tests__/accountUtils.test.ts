@@ -268,6 +268,14 @@ describe('account utils', () => {
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             symbol: 'btc',
             accountType: 'legacy',
+            metadata: {
+                key: 'xpub-foo-bar',
+                fileName: '123',
+                aesKey: 'foo',
+                accountLabel: 'meow',
+                outputLabels: {},
+                addressLabels: {},
+            },
         });
 
         expect(accountUtils.accountSearchFn(btcAcc, 'btc')).toBe(true);
@@ -285,6 +293,11 @@ describe('account utils', () => {
         expect(accountUtils.accountSearchFn(btcAcc, 'bitco')).toBe(true);
         expect(accountUtils.accountSearchFn(btcAcc, 'ltc')).toBe(false);
         expect(accountUtils.accountSearchFn(btcAcc, 'litecoin')).toBe(false);
+        expect(accountUtils.accountSearchFn(btcAcc, 'meow')).toBe(true);
+        expect(accountUtils.accountSearchFn(btcAcc, 'meo')).toBe(true);
+        expect(accountUtils.accountSearchFn(btcAcc, 'eow')).toBe(true);
+        expect(accountUtils.accountSearchFn(btcAcc, 'MEOW')).toBe(true);
+        expect(accountUtils.accountSearchFn(btcAcc, 'wuff')).toBe(false);
         expect(
             accountUtils.accountSearchFn(
                 btcAcc,

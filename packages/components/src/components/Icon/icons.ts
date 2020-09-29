@@ -68,6 +68,7 @@ export const ICONS = {
     RBF: require('../../images/icons/rbf.svg'),
     TRANSFER: require('../../images/icons/transfer.svg'),
     LOCK: require('../../images/icons/lock.svg'),
+    LOCK_ACTIVE: require('../../images/icons/lock_active.svg'),
     CLOCK: require('../../images/icons/clock.svg'),
     CALENDAR: require('../../images/icons/calendar.svg'),
     PDF: require('../../images/icons/pdf.svg'),
@@ -80,4 +81,6 @@ export const ICONS = {
     BUY: require('../../images/icons/buy.svg'),
     CREDIT_CARD: require('../../images/icons/credit_card.svg'),
     TREZOR_LOGO: require('../../images/icons/trezor_logo.svg'),
+    DROPBOX: require('../../images/icons/dropbox.svg'),
+    GOOGLE_DRIVE: require('../../images/icons/google-drive.svg'),
 };
