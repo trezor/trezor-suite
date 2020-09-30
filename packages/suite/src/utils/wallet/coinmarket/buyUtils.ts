@@ -98,7 +98,8 @@ export function createQuoteLink(request: BuyTradeQuoteRequest, account: Account)
     const params = `coinmarket-redirect#offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
 
     if (process.env.SUITE_TYPE === 'desktop') {
-        return `http://localhost:8000/static/buy/buy_receiver.html#/${params}`;
+        // TEMP: for desktop. but this solution is temporary, local http server will be used later to accept callback
+        return `https://wallet.trezor.io/buy_receiver.html#/${params}`;
     }
 
     return `${window.location.origin}${assetPrefix}/${params}`;
@@ -108,7 +109,8 @@ export function createTxLink(trade: BuyTrade, account: Account): string {
     const assetPrefix = process.env.assetPrefix || '';
     const params = `coinmarket-redirect#detail/${account.symbol}/${account.accountType}/${account.index}/${trade.paymentId}`;
     if (process.env.SUITE_TYPE === 'desktop') {
-        return `http://localhost:8000/static/buy/buy_receiver.html#/${params}`;
+        // TEMP: for desktop. but this solution is temporary, local http server will be used later to accept callback
+        return `https://wallet.trezor.io/buy_receiver.html#/${params}`;
     }
 
     return `${window.location.origin}${assetPrefix}/${params}`;
