@@ -59,11 +59,14 @@ const DefaultPaddings = styled.div`
     display: flex;
     justify-content: center;
     width: 100%;
-    height: 100%;
-    padding: 24px 32px 0px 32px;
+    padding: 24px 32px 90px 32px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding: 24px 16px 0px 16px;
+        padding: 24px 16px 70px 16px;
+    }
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding-bottom: 50px;
     }
 `;
 
