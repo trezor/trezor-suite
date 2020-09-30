@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, colors, variables, Modal } from '@trezor/components';
+import { colors, variables, Modal } from '@trezor/components';
 import { Translation, ExternalLink } from '@suite-components';
 import messages from '@suite/support/messages';
 import { Network } from '@wallet-types';
@@ -14,7 +14,7 @@ const StyledModal = styled(Modal)`
 
 const Actions = styled.div`
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
 `;
 
 const Row = styled.div`
@@ -96,12 +96,7 @@ const Wrapper = (props: Props) => (
 
         <Expander />
 
-        <Actions>
-            <Button variant="secondary" onClick={props.onCancel}>
-                <Translation {...messages.TR_CANCEL} />
-            </Button>
-            {props.actionButton}
-        </Actions>
+        <Actions>{props.actionButton}</Actions>
     </StyledModal>
 );
 
