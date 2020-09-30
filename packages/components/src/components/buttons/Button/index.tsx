@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { Icon } from '../../Icon';
 import { IconType, ButtonVariant } from '../../../support/types';
 import { colors, variables } from '../../../config';
-import FluidSpinner from '../../loaders/FluidSpinner';
+import { Spinner } from '../../loaders/Spinner';
 
 const getPadding = (variant: ButtonVariant) => {
     if (variant === 'tertiary') {
@@ -235,7 +235,7 @@ const Button = React.forwardRef(
         ) : null;
         const Loader = (
             <IconWrapper alignIcon={alignIcon} hasLabel={!!children}>
-                <FluidSpinner size={10} color={color} />
+                <Spinner size={10} color={color} />
             </IconWrapper>
         );
         return (

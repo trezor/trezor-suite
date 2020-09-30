@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Card from '@suite-components/Card';
-import { Icon, Loader, colors } from '@trezor/components';
+import { Icon, Spinner, colors } from '@trezor/components';
 
 const getBorderColor = (variant: Props['variant']) => {
     switch (variant) {
@@ -28,7 +28,7 @@ const getTextColor = (variant: Props['variant']) => {
 const getIcon = (variant: Props['variant']) => {
     switch (variant) {
         case 'loader':
-            return <Loader size={16} />;
+            return <Spinner size={16} />;
         case 'info':
             return <Icon icon="INFO" size={16} color={colors.BLUE_INFO} />;
         case 'warning':

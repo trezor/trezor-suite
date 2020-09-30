@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Translation, Image } from '@suite-components';
-import { Button, Modal, P, Link, Select, colors, variables, Loader } from '@trezor/components';
+import { Button, Modal, P, Link, Select, colors, variables, Spinner } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { URLS } from '@suite-constants';
 import { AppState, Dispatch } from '@suite-types';
@@ -52,7 +52,7 @@ const DownloadBridgeButton = styled(Button)`
     min-width: 280px;
 `;
 
-const CenteredLoader = styled(Loader)`
+const CenteredLoader = styled(Spinner)`
     margin: 0 auto;
     margin-bottom: 10px;
 `;

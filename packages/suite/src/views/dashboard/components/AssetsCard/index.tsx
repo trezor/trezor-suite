@@ -5,7 +5,7 @@ import { NETWORKS } from '@wallet-config';
 import { Section } from '@dashboard-components';
 import Asset from './components/Asset';
 import { Account } from '@wallet-types';
-import { colors, variables, Loader, Icon } from '@trezor/components';
+import { colors, variables, Spinner, Icon } from '@trezor/components';
 import { Card, Translation, AddAccountButton } from '@suite-components';
 import { useDiscovery, useDevice } from '@suite-hooks';
 import { useAccounts } from '@wallet-hooks';
@@ -118,7 +118,7 @@ const AssetsCard = () => {
                 </Grid>
                 {isLoading && (
                     <InfoMessage>
-                        <Loader size={20} />
+                        <Spinner size={20} />
                     </InfoMessage>
                 )}
                 {isError && (

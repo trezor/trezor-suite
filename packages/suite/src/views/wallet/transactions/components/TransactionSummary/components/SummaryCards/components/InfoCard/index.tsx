@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables, Loader, Card } from '@trezor/components';
+import { colors, variables, Spinner, Card } from '@trezor/components';
 import { HiddenPlaceholder, FormattedCryptoAmount, Sign } from '@suite-components';
 import { Account } from '@wallet-types';
 import BigNumber from 'bignumber.js';
@@ -89,7 +89,7 @@ const InfoCard = (props: Props) => {
                 <Title>{props.title}</Title>
                 {props.isLoading && (
                     <LoaderWrapper>
-                        <Loader size={22} />
+                        <Spinner size={22} />
                     </LoaderWrapper>
                 )}
 

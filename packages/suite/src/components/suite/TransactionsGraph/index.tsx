@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { colors, variables, Loader, Icon } from '@trezor/components';
+import { colors, variables, Spinner, Icon } from '@trezor/components';
 import {
     GraphRange,
     AggregatedAccountHistory,
@@ -120,7 +120,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                 </Toolbar>
             )}
             <Description>
-                {isLoading && <Loader size={24} />}
+                {isLoading && <Spinner size={24} />}
                 {!isLoading && data && (
                     <CustomResponsiveContainer height="100%" width="100%">
                         <ComposedChart

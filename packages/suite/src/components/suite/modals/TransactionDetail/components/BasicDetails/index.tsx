@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
-import { Icon, colors, variables, Link, Loader, Tooltip } from '@trezor/components';
+import { Icon, colors, variables, Link, Spinner, Tooltip } from '@trezor/components';
 import { Translation, HiddenPlaceholder } from '@suite-components';
 import Box from '../Box';
 import BoxRow from '../BoxRow';
@@ -105,7 +105,7 @@ const BasicDetails = ({
                         <StatusWrapper>
                             {isFetching && (
                                 <LoaderIconWrapper>
-                                    <Loader size={16} />
+                                    <Spinner size={16} />
                                 </LoaderIconWrapper>
                             )}
                             {confirmations && (

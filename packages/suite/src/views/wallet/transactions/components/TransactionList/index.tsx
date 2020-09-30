@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import styled, { css } from 'styled-components';
-import { colors, variables, Loader, Card } from '@trezor/components';
+import { colors, variables, Spinner, Card } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
 import { useSelector } from '@suite-hooks';
@@ -105,7 +105,7 @@ const TransactionList = ({
         >
             {isLoading ? (
                 <LoaderWrapper>
-                    <Loader size={28} />
+                    <Spinner size={28} />
                     <LoaderText>
                         <Translation id="TR_LOADING_TRANSACTIONS" />
                     </LoaderText>

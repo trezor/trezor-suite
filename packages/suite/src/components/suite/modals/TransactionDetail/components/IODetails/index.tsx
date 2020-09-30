@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, colors, variables, Loader } from '@trezor/components';
+import { Icon, colors, variables, Spinner } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import FiatValue from '@suite-components/FiatValue/Container';
@@ -115,7 +115,7 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
     return (
         <Wrapper>
             <Title>Inputs/Outputs</Title>
-            {!txDetails && isFetching && <Loader size={32} />}
+            {!txDetails && isFetching && <Spinner size={32} />}
             {txDetails?.vin && txDetails?.vout && (
                 <IOWrapper>
                     <Col direction="column">

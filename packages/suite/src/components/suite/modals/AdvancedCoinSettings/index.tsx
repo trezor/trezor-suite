@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import TrezorConnect, { CoinInfo } from 'trezor-connect';
-import { Modal, Loader } from '@trezor/components';
+import { Modal, Spinner } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { NETWORKS } from '@wallet-config';
 import { Props } from './Container';
@@ -62,7 +62,7 @@ const AdvancedCoinSettings = ({
         >
             {!coinInfo && (
                 <LoaderWrapper>
-                    <Loader size={32} />
+                    <Spinner size={32} />
                 </LoaderWrapper>
             )}
 

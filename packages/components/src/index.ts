@@ -27,7 +27,7 @@ import { ConfirmOnDevice, ConfirmOnDeviceProps } from './components/prompts/Conf
 import { Modal, ModalProps } from './components/Modal';
 import { CoinLogo, CoinLogoProps } from './components/logos/CoinLogo';
 import { TrezorLogo, TrezorLogoProps } from './components/logos/TrezorLogo';
-import { Loader, LoaderProps } from './components/loaders/Loader';
+import { Spinner, SpinnerProps } from './components/loaders/Spinner';
 import { Tooltip, TooltipProps, tooltipGlobalStyles } from './components/Tooltip';
 import { SelectBar, SelectBarProps } from './components/form/SelectBar';
 import * as types from './support/types';
@@ -67,8 +67,6 @@ export {
     CoinLogoProps,
     TrezorLogo,
     TrezorLogoProps,
-    Loader,
-    LoaderProps,
     Tooltip,
     TooltipProps,
     tooltipGlobalStyles,
@@ -87,4 +85,6 @@ export {
     SecurityCardProps,
     SelectBar,
     SelectBarProps,
+    Spinner,
+    SpinnerProps,
 };
