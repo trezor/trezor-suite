@@ -47,7 +47,7 @@
         "react-qr-svg": "^2.2.1",
         "react-redux": "^7.2.0",
         "react-text-truncate": "0.16.0",
-        "react-toastify": "^5.5.0",
+        "react-toastify": "^6.0.8",
         "react-transition-group": "^4.2.2",
         "react-window": "^1.8.4",
         "recharts": "^2.0.0-beta.1",
