@@ -99,3 +99,5 @@ export type InjectedModalApplicationProps = {
     closeModalApp: (preserveParams?: boolean) => void;
     getBackgroundRoute: () => Route$ | typeof undefined;
 };
+
+export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error';
