@@ -27,12 +27,8 @@ const toastMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispa
         // TODO: set custom timeout
         const { payload } = action;
         toast(hocNotification(payload, ToastNotification), {
-            position: 'bottom-center',
             toastId: payload.id,
             onClose: () => api.dispatch(close(payload.id)),
-            closeButton: false,
-            hideProgressBar: true,
-            closeOnClick: false,
         });
     }
 
