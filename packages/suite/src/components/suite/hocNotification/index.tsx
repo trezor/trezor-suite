@@ -4,13 +4,13 @@ import { DEVICE } from 'trezor-connect';
 import { SUITE } from '@suite-actions/constants';
 import { NotificationEntry } from '@suite-reducers/notificationReducer';
 import messages from '@suite/support/messages';
-import { ExtendedMessageDescriptor } from '@suite-types';
+import { ExtendedMessageDescriptor, ToastNotificationVariant } from '@suite-types';
 import withAction from './components/withAction';
 import withTransaction from './components/withTransaction';
 
 export interface ViewProps {
     notification: NotificationEntry;
-    variant: 'success' | 'info' | 'warning' | 'error';
+    variant: ToastNotificationVariant;
     icon?: IconProps['icon'];
     message: ExtendedMessageDescriptor;
     actionLabel?: ExtendedMessageDescriptor;

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { H2, Icon, P, Button, colors } from '@trezor/components';
 import { Translation, Image, Card, LayoutContext } from '@suite-components';
-
+import { getNotificationIcon } from '@suite-utils/notification';
 import hocNotification, { ViewProps } from '@suite-components/hocNotification';
 
 import { Props } from './Container';
@@ -63,9 +63,10 @@ const ActionButton = styled(Button)`
 `;
 
 const NotificationView = (props: ViewProps) => {
+    const defaultIcon = props.icon ?? getNotificationIcon(props.variant);
     return (
         <Item>
-            {props.icon && <Icon size={16} icon={props.icon} style={{ marginTop: '4px' }} />}
+            {defaultIcon && <Icon size={16} icon={defaultIcon} style={{ marginTop: '4px' }} />}
             <Text>
                 <P weight={props.notification.seen ? 'normal' : 'bold'}>
                     <Translation {...props.message} />

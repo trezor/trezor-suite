@@ -4,6 +4,7 @@ import { Button, Icon, variables, colors } from '@trezor/components';
 import { Translation } from '@suite-components';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { useActions } from '@suite-hooks';
+import { getNotificationIcon } from '@suite-utils//notification';
 import { ViewProps } from '@suite-components/hocNotification';
 
 const getVariantColor = (variant: ViewProps['variant']) => {
@@ -18,20 +19,6 @@ const getVariantColor = (variant: ViewProps['variant']) => {
             return colors.NEUE_TYPE_GREEN;
         default:
             return 'transparent';
-    }
-};
-
-const getIcon = (variant: ViewProps['variant']) => {
-    switch (variant) {
-        case 'info':
-            return 'INFO';
-        case 'warning':
-            return 'WARNING_ACTIVE';
-        case 'error':
-            return 'WARNING_ACTIVE';
-        case 'success':
-            return 'CHECK';
-        // no default
     }
 };
 
@@ -70,7 +57,7 @@ const ToastNotification = ({
     cancelable = true,
     ...props
 }: ViewProps) => {
-    const defaultIcon = icon ?? getIcon(props.variant);
+    const defaultIcon = icon ?? getNotificationIcon(props.variant);
     const { closeNotification } = useActions({
         closeNotification: notificationActions.close,
     });
