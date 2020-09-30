@@ -120,16 +120,13 @@ const init = async () => {
         }
     };
 
-    mainWindow.webContents.on(
-        'new-window',
-        (event, url, frameName, _disposition, options, _additionalFeatures) => {
-            if (frameName === 'invity-buy-partner-window') {
-                openBuyWindow(url);
-            } else {
-                handleExternalLink(event, url);
-            }
-        },
-    );
+    mainWindow.webContents.on('new-window', (event, url, frameName) => {
+        if (frameName === 'invity-buy-partner-window') {
+            openBuyWindow(url);
+        } else {
+            handleExternalLink(event, url);
+        }
+    });
 
     mainWindow.on('page-title-updated', evt => {
         // prevent updating window title
