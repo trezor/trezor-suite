@@ -69,4 +69,5 @@ include:
     - ci/packages/suite-native.yml
     - ci/packages/rollout.yml
     - ci/packages/landing-page.yml
+    - ci/packages/suite-web-landing.yml
     
