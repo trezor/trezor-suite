@@ -68,7 +68,7 @@ const ToastNotification = ({
     message,
     action,
     actionLabel,
-    cancelable,
+    cancelable = true,
     ...props
 }: ViewProps) => {
     const defaultIcon = icon ?? getIcon(props.variant);
@@ -78,7 +78,6 @@ const ToastNotification = ({
 
     return (
         <Wrapper data-test="@toast" variant={props.variant}>
-            {console.log('props', props)}
             {defaultIcon && (
                 <Icon icon={defaultIcon} size={20} color={getVariantColor(props.variant)} />
             )}
