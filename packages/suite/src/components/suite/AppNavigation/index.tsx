@@ -58,6 +58,7 @@ interface Props {
 
 const AppNavigation = ({ items }: Props) => {
     const routeName = useSelector(state => state.router.route?.name);
+    const { params } = useSelector(state => state.wallet.selectedAccount);
     const { goto } = useActions({
         goto: routerActions.goto,
     });
@@ -71,7 +72,7 @@ const AppNavigation = ({ items }: Props) => {
                     <StyledNavLink
                         key={route}
                         active={active}
-                        onClick={() => goto(route, undefined, true)}
+                        onClick={() => goto(route, params, !params)}
                         {...restItemProps}
                     >
                         <IconWrapper>
