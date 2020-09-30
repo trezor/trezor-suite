@@ -127,7 +127,6 @@ const NewsFeed = () => {
                 <BottomAction>
                     <Button
                         variant="tertiary"
-                        isWhite
                         onClick={() => {
                             incrementVisibleCount(visibleCount + 3);
                             incrementFetchCount(fetchCount + 3);
