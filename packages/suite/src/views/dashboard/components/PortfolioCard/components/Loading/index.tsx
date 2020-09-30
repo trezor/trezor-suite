@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables, Loader } from '@trezor/components';
+import { colors, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 
 const Wrapper = styled.div`
@@ -23,7 +23,6 @@ type Props = React.HTMLAttributes<HTMLDivElement>;
 const Loading = (props: Props) => {
     return (
         <Wrapper {...props} data-test="@dashboard/loading">
-            <Loader size={20} />
             <Title>
                 <Translation id="TR_LOADING_WALLET" />
             </Title>
