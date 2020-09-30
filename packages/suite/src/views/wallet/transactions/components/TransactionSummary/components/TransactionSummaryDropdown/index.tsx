@@ -13,6 +13,7 @@ const TransactionSummaryDropdown = (_props: Props) => {
     return (
         <Dropdown
             alignMenu="right"
+            offset={16}
             items={[
                 {
                     key: 'group1',
