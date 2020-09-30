@@ -46,8 +46,8 @@ const Text = styled.div`
 
 const Soon = styled.div`
     position: absolute;
-    top: -8px;
-    right: -25px;
+    top: -12px;
+    right: -30px;
     background: #e1f2dc;
     padding: 2px;
     color: ${colors.GREEN};
