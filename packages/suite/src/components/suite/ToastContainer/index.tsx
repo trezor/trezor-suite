@@ -6,7 +6,13 @@ import { colors } from '@trezor/components';
 const StyledContainer = styled(BaseToastContainer)`
     /* Default classes used by react-toastify,
     this is the place if you want to override default styles */
-    .Toastify__toast-container {
+    & {
+        min-width: 330px;
+        max-width: 450px;
+
+        /* set correct position for top-right variant */
+        top: 90px;
+        right: 50px;
     }
     .Toastify__toast {
         border-radius: 4px;
@@ -33,7 +39,15 @@ const StyledContainer = styled(BaseToastContainer)`
 `;
 
 const ToastContainer = () => {
-    return <StyledContainer draggable={false} />;
+    return (
+        <StyledContainer
+            draggable={false}
+            closeButton={false}
+            hideProgressBar
+            closeOnClick={false}
+            position="top-right"
+        />
+    );
 };
 
 export default ToastContainer;
