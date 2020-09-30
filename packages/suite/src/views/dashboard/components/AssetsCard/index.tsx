@@ -5,7 +5,7 @@ import { NETWORKS } from '@wallet-config';
 import { Section } from '@dashboard-components';
 import Asset from './components/Asset';
 import { Account } from '@wallet-types';
-import { colors, variables, Icon, Button } from '@trezor/components';
+import { colors, variables, Loader, Icon, Button } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
 import { useDiscovery, useActions } from '@suite-hooks';
 import { useAccounts } from '@wallet-hooks';
@@ -69,8 +69,8 @@ const AssetsCard = () => {
     const networks = Object.keys(assets);
 
     const discoveryStatus = getDiscoveryStatus();
-    // const isLoading =
-    //     discoveryStatus && discoveryStatus.status === 'loading' && networks.length < 1;
+    const isLoading =
+        discoveryStatus && discoveryStatus.status === 'loading' && networks.length < 1;
     const isError = discoveryStatus && discoveryStatus.status === 'exception' && !networks.length;
 
     return (
@@ -126,11 +126,11 @@ const AssetsCard = () => {
                         );
                     })}
                 </Grid>
-                {/* {isLoading && (
+                {isLoading && (
                     <InfoMessage>
                         <Loader size={20} />
                     </InfoMessage>
-                )} */}
+                )}
                 {isError && (
                     <InfoMessage>
                         <Icon
