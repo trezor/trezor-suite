@@ -26,9 +26,10 @@ suite-desktop build mac:
     <<: *build
 
 suite-desktop build mac codesign:
+    only:
+        refs:
+            - codesign
     when: manual
-    environment:
-        name: codesign
     tags:
         - darwin
     variables:
@@ -45,9 +46,10 @@ suite-desktop build linux:
     <<: *build
 
 suite-desktop build linux codesign:
+    only:
+        refs:
+            - codesign
     when: manual
-    environment:
-        name: codesign
     tags:
         - darwin
     variables:
@@ -65,9 +67,10 @@ suite-desktop build windows:
     <<: *build
 
 suite-desktop build windows codesign:
+    only:
+        refs:
+            - codesign
     when: manual
-    environment:
-        name: codesign
     tags:
         - darwin
     image: electronuserland/builder:wine
