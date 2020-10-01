@@ -12,7 +12,6 @@ const StyledCard = styled(Card)`
     flex-direction: column;
     align-items: center;
     padding: 10px;
-    z-index: 9;
     flex: 1;
     transition: background-color 0.7s ease-out;
 `;
@@ -26,7 +25,6 @@ const Header = styled.div`
 `;
 
 const Circle = styled.div`
-    z-index: 10;
     border: 1px solid ${colors.NEUE_STROKE_GREY};
     background: ${colors.WHITE};
     width: 58px;
