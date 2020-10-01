@@ -3551,8 +3551,13 @@ const definedMessages = defineMessages({
     },
     SEND_TRANSACTION: {
         id: 'SEND_TRANSACTION',
-        description: 'Sign and send button used in send form and Review modal',
-        defaultMessage: 'Send Transaction',
+        description: 'Sign and send button used in Review modal',
+        defaultMessage: 'Send',
+    },
+    REVIEW_AND_SEND_TRANSACTION: {
+        id: 'REVIEW_AND_SEND_TRANSACTION',
+        description: 'Sign and send button used in send form',
+        defaultMessage: 'Review & Send',
     },
     SEND_RAW_TRANSACTION: {
         id: 'SEND_RAW_TRANSACTION',
