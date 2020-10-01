@@ -11,7 +11,6 @@ import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import Resize from '@suite-support/Resize/Container';
 import OnlineStatus from '@suite-support/OnlineStatus';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
-import CypressExportStore from '@suite-support/CypressExportStore';
 import Router from '@suite-support/Router';
 
 import { isDev } from '@suite-utils/build';
@@ -19,12 +18,13 @@ import TrezorConnect from 'trezor-connect';
 import { SENTRY_CONFIG } from '@suite-config';
 import { Store } from '@suite-types';
 import ImagesPreloader from '../support/ImagesPreloader';
+import { CypressExportStore } from '../support/CypressExportStore';
 
 declare global {
     interface Window {
-        store: Store;
-        Cypress: any;
-        TrezorConnect: typeof TrezorConnect;
+        store?: Store;
+        Cypress?: any;
+        TrezorConnect?: typeof TrezorConnect;
     }
 }
 

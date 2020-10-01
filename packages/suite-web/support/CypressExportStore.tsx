@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-namespace */
 import { useEffect } from 'react';
-
 import { Store } from '@suite-types';
 
 interface Props {
-    store?: Store;
+    store: Store;
 }
 
 /**
@@ -12,7 +10,7 @@ interface Props {
  * Used to augment window object with redux store to make it accessible in tests
  * @param {Store} store
  */
-const CypressExportStore = ({ store }: Props) => {
+export const CypressExportStore = ({ store }: Props) => {
     useEffect(() => {
         if (typeof window !== 'undefined' && window.Cypress && store) {
             window.store = store;
@@ -26,5 +24,3 @@ const CypressExportStore = ({ store }: Props) => {
 
     return null;
 };
-
-export default CypressExportStore;
