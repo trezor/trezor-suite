@@ -7,5 +7,17 @@ import * as ROUTER from './routerConstants';
 import * as RESIZE from './resizeConstants';
 import * as ANALYTICS from './analyticsConstants';
 import * as METADATA from './metadataConstants';
+import * as DESKTOP_UPDATE from './desktopUpdateConstants';
 
-export { STORAGE, SUITE, LOG, MODAL, NOTIFICATION, ROUTER, RESIZE, ANALYTICS, METADATA };
+export {
+    STORAGE,
+    SUITE,
+    LOG,
+    MODAL,
+    NOTIFICATION,
+    ROUTER,
+    RESIZE,
+    ANALYTICS,
+    METADATA,
+    DESKTOP_UPDATE,
+};

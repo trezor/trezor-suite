@@ -64,6 +64,10 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             api.dispatch(routerActions.init());
             // backend connected, suite is ready to use
             api.dispatch(suiteActions.onSuiteReady());
+            // desktopApi ready
+            if (window.desktopApi) {
+                window.desktopApi.ready();
+            }
             break;
 
         case DEVICE.CONNECT:

@@ -14,6 +14,7 @@ import BridgeStatus from '@desktop/support/BridgeStatus';
 import VersionCheck from '@desktop/support/VersionCheck';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
+import DesktopUpdater from '@suite-support/DesktopUpdater';
 import { SENTRY_CONFIG } from '@suite-config';
 import Resize from '@suite-support/Resize/Container';
 import { isDev } from '@suite-utils/build';
@@ -44,6 +45,7 @@ class TrezorSuiteApp extends App<Props> {
                     <ErrorBoundary>
                         <Resize />
                         <OnlineStatus />
+                        <DesktopUpdater />
                         <IntlProvider>
                             <Router />
                             <BridgeStatus />
