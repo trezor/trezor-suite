@@ -119,7 +119,7 @@ suite-web e2e chrome stage=stable/device-management:
 # this job is intended to collect statistics on tests in beta stage (=tests that are possibly unstable)
 # failing test here does not make job fail, run_tests script with --stage='@beta' exits with non-zero
 # code only when there is some runtime error
-suite-web e2e chrome stage=beta:
+.suite-web e2e chrome stage=beta:
     stage: integration testing
     variables:
         TEST_GROUP: "@beta"
