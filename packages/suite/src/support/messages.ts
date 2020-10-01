@@ -1909,7 +1909,7 @@ const definedMessages = defineMessages({
     },
     TR_XRP_RESERVE_INFO: {
         defaultMessage:
-            'Ripple addresses require a minimum balance of {minBalance} XRP to activate and maintain the account. {TR_LEARN_MORE}',
+            'Ripple addresses require a minimum balance of {minBalance} XRP to activate and maintain the account.',
         id: 'TR_XRP_RESERVE_INFO',
     },
     TR_YOU_WERE_DISCONNECTED_DOT: {
