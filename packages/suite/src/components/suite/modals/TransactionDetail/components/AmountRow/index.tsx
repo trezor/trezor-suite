@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { variables, colors } from '@trezor/components';
+import { colors } from '@trezor/components';
 
 const rightAlignedStyles = css`
     text-align: right;
@@ -10,20 +10,6 @@ const rightAlignedStyles = css`
 const leftAlignedStyles = css`
     text-align: left;
     justify-self: flex-start;
-`;
-
-const RowWrapper = styled.div`
-    font-size: ${variables.NEUE_FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    display: grid;
-    grid-gap: 5px;
-    grid-template-columns: minmax(100px, 140px) 2fr 1fr 1fr;
-    align-items: center;
-    height: 36px;
-
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        grid-template-columns: 90px 2fr 1fr 1fr;
-    }
 `;
 
 interface RowContentProps {
@@ -56,7 +42,7 @@ const AmountRow = ({
     color = 'light',
 }: Props) => {
     return (
-        <RowWrapper>
+        <>
             <Row textAlign="left" color="light">
                 {firstColumn}
             </Row>
@@ -69,7 +55,7 @@ const AmountRow = ({
             <Row textAlign="right" color={color}>
                 {fourthColumn}
             </Row>
-        </RowWrapper>
+        </>
     );
 };
 
