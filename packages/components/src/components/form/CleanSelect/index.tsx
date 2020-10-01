@@ -109,6 +109,7 @@ interface Props extends Omit<SelectProps, 'components'> {
     wrapperProps?: Record<string, any>;
     variant?: InputVariant;
     minWidth?: string;
+    maxSearchLength?: number;
 }
 
 const CleanSelect = ({
@@ -122,6 +123,7 @@ const CleanSelect = ({
     label,
     minWidth,
     options,
+    maxSearchLength,
     ...props
 }: Props) => {
     const [isHovered, setIsHovered] = React.useState(isHoveredByDefault);
@@ -136,6 +138,15 @@ const CleanSelect = ({
                 isDisabled={optionsLength <= 1}
                 options={options}
                 {...props}
+                onInputChange={
+                    maxSearchLength
+                        ? (inputValue: string) => {
+                              return inputValue.length <= maxSearchLength
+                                  ? inputValue
+                                  : inputValue.substr(0, maxSearchLength);
+                          }
+                        : undefined
+                }
             />
         </Wrapper>
     );
