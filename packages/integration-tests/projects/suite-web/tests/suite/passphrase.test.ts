@@ -38,7 +38,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@passphrase/input').type('abc');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         // go to wallet
-        cy.getTestElement('@suite/menu/wallet-index').click();
+        cy.getTestElement('@suite/menu/wallet-index').click({ force: true });
         // go to receive
         cy.getTestElement('@wallet/menu/wallet-receive').click();
         // click reveal address
