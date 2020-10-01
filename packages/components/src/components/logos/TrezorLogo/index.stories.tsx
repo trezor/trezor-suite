@@ -15,6 +15,7 @@ storiesOf('Logos', module).add(
         const type = select(
             'type',
             {
+                suite: 'suite',
                 horizontal: 'horizontal',
                 vertical: 'vertical',
                 symbol: 'symbol',

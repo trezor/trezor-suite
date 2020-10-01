@@ -30,6 +30,6 @@ export type CoinType = keyof typeof COINS;
 
 export type ParagraphSize = 'normal' | 'small' | 'tiny';
 
-export type TrezorLogoType = 'horizontal' | 'vertical' | 'symbol';
+export type TrezorLogoType = 'horizontal' | 'vertical' | 'symbol' | 'suite';
 
 export type TrezorLogoVariant = 'white' | 'black';
