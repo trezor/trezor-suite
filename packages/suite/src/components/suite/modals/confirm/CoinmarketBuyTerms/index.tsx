@@ -1,4 +1,4 @@
-import { Button, Modal, Icon, colors, variables, Checkbox, Link } from '@trezor/components';
+import { Button, Modal, Icon, colors, variables, Checkbox } from '@trezor/components';
 import React, { useState } from 'react';
 import { Translation } from '@suite-components';
 import styled, { css } from 'styled-components';
@@ -64,15 +64,6 @@ const Left = styled.div`
     align-items: center;
 `;
 
-const Right = styled.div`
-    display: flex;
-    flex: 1;
-    align-items: center;
-    justify-content: flex-end;
-`;
-
-const StyledLink = styled(Link)``;
-
 export type Props = {
     decision: Deferred<boolean>;
     onCancel: () => void;
@@ -85,6 +76,8 @@ const CoinmarketBuyTerms = ({ decision, onCancel, provider }: Props) => {
 
     return (
         <Modal
+            cancelable
+            onCancel={onCancel}
             noPadding
             heading={
                 <Header>
@@ -92,11 +85,6 @@ const CoinmarketBuyTerms = ({ decision, onCancel, provider }: Props) => {
                         <StyledIcon size={16} icon="LOCK" />
                         <Translation id="TR_BUY_FOR_YOUR_SAFETY" />
                     </Left>
-                    <Right>
-                        <StyledLink onClick={onCancel}>
-                            <Icon size={24} color={colors.BLACK0} icon="CROSS" />
-                        </StyledLink>
-                    </Right>
                 </Header>
             }
         >
