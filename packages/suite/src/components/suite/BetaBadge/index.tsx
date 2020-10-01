@@ -2,6 +2,7 @@ import React from 'react';
 import { Dropdown, Icon, Link, colors, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import styled from 'styled-components';
+import { useSelector } from '@suite-hooks';
 import { FEEDBACK_FORM, SUPPORT_URL } from '@suite-constants/urls';
 
 const Wrapper = styled.div`
@@ -43,6 +44,7 @@ const IconWrapper = styled.div`
 `;
 
 const BetaBadge = () => {
+    const instanceId = useSelector(state => state.analytics.instanceId);
     return (
         <Wrapper>
             <Dropdown
@@ -54,7 +56,11 @@ const BetaBadge = () => {
                             {
                                 key: 'feedback',
                                 label: (
-                                    <StyledLink size="small" variant="nostyle" href={FEEDBACK_FORM}>
+                                    <StyledLink
+                                        size="small"
+                                        variant="nostyle"
+                                        href={`${FEEDBACK_FORM}#u=${instanceId}`}
+                                    >
                                         <IconWrapper>
                                             <Icon
                                                 icon="FEEDBACK"
