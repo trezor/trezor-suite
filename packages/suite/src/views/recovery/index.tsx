@@ -159,18 +159,15 @@ const Recovery = ({
     }
 
     return (
-        <Modal useFixedHeight>
+        <Modal
+            useFixedHeight
+            heading={<Translation id="TR_CHECK_RECOVERY_SEED" />}
+            totalProgressBarSteps={statesInProgressBar.length}
+            currentProgressBarStep={statesInProgressBar.findIndex(s => s === recovery.status) + 1}
+        >
             <Wrapper>
-                <ProgressBar
-                    total={statesInProgressBar.length}
-                    current={statesInProgressBar.findIndex(s => s === recovery.status) + 1}
-                />
-
                 {recovery.status === 'initial' && model === 1 && (
                     <>
-                        <H2>
-                            <Translation id="TR_CHECK_RECOVERY_SEED" />
-                        </H2>
                         <StyledP>
                             <Translation id="TR_CHECK_RECOVERY_SEED_DESC_T1" />
                         </StyledP>
@@ -201,9 +198,6 @@ const Recovery = ({
 
                 {recovery.status === 'initial' && model === 2 && (
                     <>
-                        <H2>
-                            <Translation id="TR_CHECK_RECOVERY_SEED" />
-                        </H2>
                         <StyledP>
                             <Translation id="TR_CHECK_RECOVERY_SEED_DESC_T2" />
                         </StyledP>
