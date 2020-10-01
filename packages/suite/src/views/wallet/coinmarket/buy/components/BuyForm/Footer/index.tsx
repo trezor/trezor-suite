@@ -117,6 +117,7 @@ const Footer = () => {
                                     onChange(selected);
                                     setAmountLimits(undefined);
                                 }}
+                                maxSearchLength={12}
                             />
                         );
                     }}
