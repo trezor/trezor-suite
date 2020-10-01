@@ -10,7 +10,7 @@ import { ViewProps } from '@suite-components/hocNotification';
 const getVariantColor = (variant: ViewProps['variant']) => {
     switch (variant) {
         case 'info':
-            return 'transparent';
+            return colors.NEUE_TYPE_BLUE;
         case 'warning':
             return colors.NEUE_TYPE_ORANGE;
         case 'error':
