@@ -1,7 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 // todo: would be great to have these channels strongly typed. for example this is nice reading: https://blog.logrocket.com/electron-ipc-response-request-architecture-with-typescript/
-
 const validChannels = [
     'app/restart',
     'bridge/start',
@@ -12,25 +11,36 @@ const validChannels = [
     'server/address',
 
     'app/focus',
+
+    // Update events
+    'update/checking',
+    'update/available',
+    'update/not-available',
+    'update/error',
+    'update/downloading',
+    'update/downloaded',
 ];
 
 contextBridge.exposeInMainWorld('desktopApi', {
     send: (channel: string, data?: any) => {
-        // whitelist channels
         if (validChannels.includes(channel)) {
             ipcRenderer.send(channel, data);
         }
     },
     on: (channel: string, func: Function) => {
         if (validChannels.includes(channel)) {
-            // event value not used on purpose
-            ipcRenderer.on(channel, (_event, ...args) => func(...args));
+            ipcRenderer.on(channel, (_, ...args) => func(...args));
         }
     },
     off: (channel: string, func: Function) => {
         if (validChannels.includes(channel)) {
-            // event value not used on purpose
-            ipcRenderer.off(channel, (_event, ...args) => func(...args));
+            ipcRenderer.off(channel, (_, ...args) => func(...args));
         }
     },
+    // App ready
+    ready: () => ipcRenderer.send('ready'),
+    // Updater
+    checkForUpdates: () => ipcRenderer.send('update/check'),
+    downloadUpdate: () => ipcRenderer.send('update/download'),
+    installUpdate: () => ipcRenderer.send('update/install'),
 });

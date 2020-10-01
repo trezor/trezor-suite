@@ -1,6 +1,7 @@
 import { app, session, BrowserWindow, ipcMain, shell, Menu, dialog } from 'electron';
 import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
+import { autoUpdater } from 'electron-updater';
 import * as path from 'path';
 import * as url from 'url';
 import * as electronLocalshortcut from 'electron-localshortcut';
@@ -134,6 +135,7 @@ const init = async () => {
                 callback({ cancel: false, requestHeaders: details.requestHeaders });
             });
 
+            /*
             session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
                 callback({
                     responseHeaders: {
@@ -142,6 +144,7 @@ const init = async () => {
                     },
                 });
             });
+            */
 
             // TODO: implement https://github.com/electron/electron/blob/master/docs/api/browser-window.md#event-unresponsive
             session.defaultSession.protocol.interceptFileProtocol(PROTOCOL, (request, callback) => {
@@ -157,6 +160,47 @@ const init = async () => {
     mainWindow.loadURL(src);
 
     httpReceiver.start();
+    mainWindow.webContents.openDevTools();
+
+    // Check for updates when ready
+    ipcMain.on('ready', () => {
+        autoUpdater.checkForUpdates();
+
+        // And every hour
+        setInterval(() => autoUpdater.checkForUpdates(), 60 * 60 * 1000);
+    });
+
+    // Updates
+    autoUpdater.autoDownload = false;
+    autoUpdater.autoInstallOnAppQuit = true;
+
+    autoUpdater.on('checking-for-update', () => {
+        mainWindow.webContents.send('update/checking');
+    });
+
+    autoUpdater.on('update-available', ({ version, releaseDate }) => {
+        mainWindow.webContents.send('update/available', { version, releaseDate });
+    });
+
+    autoUpdater.on('update-not-available', ({ version, releaseDate }) => {
+        mainWindow.webContents.send('update/not-available', { version, releaseDate });
+    });
+
+    autoUpdater.on('error', err => {
+        mainWindow.webContents.send('update/error', { err });
+    });
+
+    autoUpdater.on('download-progress', progressObj => {
+        mainWindow.webContents.send('update/downloading', { ...progressObj });
+    });
+
+    autoUpdater.on('update-downloaded', ({ version, releaseDate, downloadedFile }) => {
+        mainWindow.webContents.send('update/downloaded', { version, releaseDate, downloadedFile });
+    });
+
+    ipcMain.on('update/check', () => autoUpdater.checkForUpdates());
+    ipcMain.on('update/download', () => autoUpdater.downloadUpdate());
+    ipcMain.on('update/install', () => autoUpdater.quitAndInstall());
 };
 
 app.name = APP_NAME; // overrides @trezor/suite-desktop app name in menu
