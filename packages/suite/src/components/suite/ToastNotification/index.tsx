@@ -62,8 +62,10 @@ const ToastNotification = ({
         closeNotification: notificationActions.close,
     });
 
+    const dataTestBase = `@toast/${props.notification.type}`;
+
     return (
-        <Wrapper data-test="@toast" variant={props.variant}>
+        <Wrapper data-test={dataTestBase} variant={props.variant}>
             {defaultIcon && (
                 <Icon icon={defaultIcon} size={20} color={getVariantColor(props.variant)} />
             )}
@@ -88,6 +90,7 @@ const ToastNotification = ({
                         onClick={() => {
                             closeNotification(props.notification.id);
                         }}
+                        data-test={`${dataTestBase}/close`}
                     />
                 </CancelWrapper>
             )}

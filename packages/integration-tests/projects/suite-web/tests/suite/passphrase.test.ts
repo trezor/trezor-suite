@@ -31,6 +31,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@passphrase/confirm-checkbox').click();
         cy.getTestElement('@passphrase/input').type('cba');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
+        cy.getTestElement('@toast/auth-confirm-error/close').click();
         // retry
         cy.getTestElement('@passphrase-mismatch/retry-button').click();
         // confirm again
@@ -38,7 +39,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@passphrase/input').type('abc');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         // go to wallet
-        cy.getTestElement('@suite/menu/wallet-index').click({ force: true });
+        cy.getTestElement('@suite/menu/wallet-index').click();
         // go to receive
         cy.getTestElement('@wallet/menu/wallet-receive').click();
         // click reveal address
