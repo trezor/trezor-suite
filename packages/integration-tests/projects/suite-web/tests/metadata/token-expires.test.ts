@@ -45,7 +45,7 @@ describe('Metadata', () => {
 
         cy.getTestElement('@metadata/input').type('Kvooo{enter}');
 
-        cy.getTestElement('@toast').should(
+        cy.getTestElement('@toast/error').should(
             'contain.text',
             'Failed to sync labeling data with cloud provider',
         );
