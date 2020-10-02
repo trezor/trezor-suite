@@ -1,54 +1,78 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
-import { TrezorLogo, colors, variables } from '@trezor/components';
+import { TrezorLogo, Button, colors, variables, Link } from '@trezor/components';
 
 const Layout = styled.div`
+    max-width: ${variables.SCREEN_SIZE.XL};
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 20px;
+    background: ${colors.NEUE_BG_WHITE};
+`;
+
+const Header = styled.header`
     display: flex;
-    flex: 1;
-`;
-
-const Left = styled.div`
-    min-width: 385px;
-    object-fit: cover;
-    background: url(${resolveStaticPath('images/landing/hero.svg')});
-    background-repeat: no-repeat;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        display: none;
-    }
-`;
-
-const Right = styled.div`
-    display: flex;
-    background: ${colors.WHITE};
-    box-shadow: 0 6px 30px 0 rgba(0, 0, 0, 0.15);
-    flex-direction: column;
-    justify-content: flex-start;
-    flex: 1;
-    padding: 100px 30px 0 120px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding: 100px 30px 0 60px;
-    }
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        padding: 100px 30px 0 30px;
-    }
-`;
-
-// const Footer = styled(P)`
-//     margin: 0 0 20px 0;
-// `;
-
-const Content = styled.div`
-    margin: 70px 0 0 0;
-    flex: 1;
-    max-width: 640px;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 28px 0 0 0;
 `;
 
 const StyledTrezorLogo = styled(TrezorLogo)`
     min-height: 46px;
+`;
+
+const Content = styled.div`
+    margin: 88px 0 0 0;
+`;
+
+const Footer = styled.footer`
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 60px 53px 100px 125px;
+    border-top: 1px solid #e8e8e8;
+`;
+
+const FooterList = styled.div`
+    & + & {
+        margin-left: 107px;
+    }
+`;
+
+const FooterLinks = styled.div`
+    display: flex;
+`;
+
+const FooterHeadline = styled.h3`
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-weight: bold;
+    margin-bottom: 15px;
+`;
+
+const FooterLink = styled(Link)`
+    && {
+        display: block;
+        font-size: ${variables.FONT_SIZE.TINY};
+        & + & {
+            margin-top: 11px;
+        }
+    }
+`;
+
+const FooterCompany = styled.div`
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    align-items: flex-end;
+`;
+
+const FooterParagraph = styled.p`
+    font-size: ${variables.FONT_SIZE.TINY};
+    margin-top: 17px;
+    & a {
+        text-decoration: underline;
+    }
 `;
 
 interface Props {
@@ -57,12 +81,43 @@ interface Props {
 
 const Index = ({ children }: Props) => (
     <Layout>
-        <Left />
-        <Right>
-            <StyledTrezorLogo type="horizontal" width={160} />
-            <Content>{children}</Content>
-            {/* <Footer size="tiny">We use cookies for functionality and analytics purposes.</Footer> */}
-        </Right>
+        <Header>
+            <StyledTrezorLogo type="suite" width={185} />
+            <Button
+                variant="tertiary"
+                icon="EXTERNAL_LINK"
+                alignIcon="right"
+                color={colors.NEUE_TYPE_DARK_GREY}
+            >
+                <Link variant="nostyle" href="https://suite.trezor.io/web">
+                    Trezor Suite for web
+                </Link>
+            </Button>
+        </Header>
+        <Content>{children}</Content>
+        <Footer>
+            <FooterLinks>
+                <FooterList>
+                    <FooterHeadline>Improve</FooterHeadline>
+                    <FooterLink href="https://www.typeform.com/private-typeform">
+                        Give feedback
+                    </FooterLink>
+                    <FooterLink href="https://blog.trezor.io/join-the-trezor-beta-testers-community-b19761f4960a">
+                        Join closed Beta
+                    </FooterLink>
+                </FooterList>
+                <FooterList>
+                    <FooterHeadline>Follow</FooterHeadline>
+                    <FooterLink href="https://blog.trezor.io/">Trezor Blog</FooterLink>
+                </FooterList>
+            </FooterLinks>
+            <FooterCompany>
+                <TrezorLogo type="horizontal" variant="black" width="83px" />
+                <FooterParagraph>
+                    The companion of the <Link href="https://trezor.io/">Trezor HW wallet</Link>
+                </FooterParagraph>
+            </FooterCompany>
+        </Footer>
     </Layout>
 );
 

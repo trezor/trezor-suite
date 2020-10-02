@@ -60,6 +60,7 @@ export default {
     NEUE_TYPE_RED: '#cd4949',
     NEUE_TYPE_DARK_GREY: '#404040',
     NEUE_TYPE_LIGHT_GREY: '#808080',
+    NEUE_TYPE_LIGHTER_GREY: '#bdbdbd',
     NEUE_TYPE_WHITE: '#ffffff',
 
     NEUE_STROKE_GREY: '#e8e8e8',
