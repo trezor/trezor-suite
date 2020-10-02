@@ -6,14 +6,7 @@ import { bindActionCreators } from 'redux';
 import { Button, ButtonProps, H2, P, colors, Modal, variables } from '@trezor/components';
 
 import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components';
-import {
-    ProgressBar,
-    Loading,
-    Translation,
-    CheckItem,
-    ExternalLink,
-    Image,
-} from '@suite-components';
+import { Loading, Translation, CheckItem, ExternalLink, Image } from '@suite-components';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { InjectedModalApplicationProps, AppState, Dispatch } from '@suite-types';
 import { WordCount } from '@recovery-types';
@@ -159,18 +152,15 @@ const Recovery = ({
     }
 
     return (
-        <Modal useFixedHeight>
+        <Modal
+            useFixedHeight
+            heading={<Translation id="TR_CHECK_RECOVERY_SEED" />}
+            totalProgressBarSteps={statesInProgressBar.length}
+            currentProgressBarStep={statesInProgressBar.findIndex(s => s === recovery.status) + 1}
+        >
             <Wrapper>
-                <ProgressBar
-                    total={statesInProgressBar.length}
-                    current={statesInProgressBar.findIndex(s => s === recovery.status) + 1}
-                />
-
                 {recovery.status === 'initial' && model === 1 && (
                     <>
-                        <H2>
-                            <Translation id="TR_CHECK_RECOVERY_SEED" />
-                        </H2>
                         <StyledP>
                             <Translation id="TR_CHECK_RECOVERY_SEED_DESC_T1" />
                         </StyledP>
@@ -201,9 +191,6 @@ const Recovery = ({
 
                 {recovery.status === 'initial' && model === 2 && (
                     <>
-                        <H2>
-                            <Translation id="TR_CHECK_RECOVERY_SEED" />
-                        </H2>
                         <StyledP>
                             <Translation id="TR_CHECK_RECOVERY_SEED_DESC_T2" />
                         </StyledP>

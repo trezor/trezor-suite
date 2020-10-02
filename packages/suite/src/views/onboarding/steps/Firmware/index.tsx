@@ -1,241 +1,107 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React from 'react';
 
-import { Button } from '@trezor/components';
-
-import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
-import { Translation, Image, WebusbButton } from '@suite-components';
+import { OnboardingButton, Wrapper } from '@onboarding-components';
+import { Translation } from '@suite-components';
 import {
-    InitImg,
-    SuccessImg,
-    FirmwareProgress,
-    RetryButton,
+    CheckSeedStep,
+    FirmwareProgressStep,
+    PartiallyDoneStep,
+    DoneStep,
+    ErrorStep,
+    ReconnectInBootloaderStep,
+    ReconnectInNormalStep,
+    NoNewFirmware,
+    OnboardingInitialStep,
     ContinueButton,
-    InstallButton,
-    BitcoinOnlyToggle,
+    RetryButton,
 } from '@firmware-components';
-import { isWebUSB } from '@suite-utils/transport';
-import { getFwVersion } from '@suite-utils/device';
 
 import { Props } from './Container';
 
-const StyledImage = styled(Image)`
-    flex: 1;
-`;
-
 const FirmwareStep = ({
     device,
-    transport,
     firmware,
-    goToNextStep,
     goToPreviousStep,
-    firmwareUpdate,
-    toggleBtcOnly,
+    goToNextStep,
+    resetReducer,
 }: Props) => {
-    // when user disconnects, we still want to keep information about device to show proper images
-    const [savedModel, setSavedModel] = useState(2);
-    const [imageLoaded, setImageLoaded] = useState(false);
+    const getComponent = () => {
+        // edge case 1 - error
+        if (firmware.error) {
+            return {
+                Body: <ErrorStep.Body />,
+                BottomBar: <RetryButton onClick={() => resetReducer()} />,
+            };
+        }
 
-    useEffect(() => {
-        if (!device?.features?.major_version) return;
-        setSavedModel(device?.features?.major_version);
-    }, [device]);
+        // // edge case 2 - user has reconnected device that is already up to date
+        if (firmware.status !== 'done' && device?.firmware === 'valid') {
+            return {
+                Body: <NoNewFirmware.Body />,
+                BottomBar: <ContinueButton onClick={() => goToNextStep()} />,
+            };
+        }
 
-    const { status, btcOnly } = firmware;
-    const isConnected = !!device;
-    const isInBootloader = Boolean(device && device.features && device.mode === 'bootloader');
-    const btcOnlyAvailable = device?.features && device.firmwareRelease.release.url_bitcoinonly;
+        switch (firmware.status) {
+            case 'initial':
+                return {
+                    Body: <OnboardingInitialStep.Body />,
+                    BottomBar: <OnboardingInitialStep.BottomBar />,
+                };
+            case 'check-seed':
+                return {
+                    Body: <CheckSeedStep.Body />,
+                    BottomBar: <CheckSeedStep.BottomBar />,
+                };
+            case 'waiting-for-bootloader':
+                return {
+                    Body: <ReconnectInBootloaderStep.Body />,
+                    BottomBar: <ReconnectInBootloaderStep.BottomBar />,
+                };
+            case 'waiting-for-confirmation':
+            case 'installing':
+            case 'started':
+            case 'downloading':
+            case 'check-fingerprint':
+            case 'wait-for-reboot':
+            case 'unplug':
+                return {
+                    Body: <FirmwareProgressStep.Body />,
+                    BottomBar: null,
+                };
+            case 'reconnect-in-normal':
+                return {
+                    Body: <ReconnectInNormalStep.Body />,
+                    BottomBar: <ReconnectInNormalStep.BottomBar />,
+                };
+            case 'partially-done':
+                return {
+                    Body: <PartiallyDoneStep.Body />,
+                    BottomBar: <ContinueButton onClick={resetReducer} />,
+                };
+            case 'done':
+                return {
+                    Body: <DoneStep.Body />,
+                    BottomBar: <ContinueButton onClick={() => goToNextStep()} />,
+                };
+
+            default:
+                // 'ensure' type completeness
+                throw new Error('state is not handled here');
+        }
+    };
+
+    const Component = getComponent();
 
     return (
         <Wrapper.Step>
-            <Wrapper.StepHeading>
-                <Translation id="TR_FIRMWARE_HEADING" />
-            </Wrapper.StepHeading>
             <Wrapper.StepBody>
-                {status === 'initial' && (
-                    <>
-                        {!device && (
-                            <>
-                                <Text>
-                                    <Translation id="TR_CONNECT_YOUR_DEVICE" />
-                                </Text>
-                                <StyledImage
-                                    onLoad={() => setImageLoaded(true)}
-                                    onError={() => setImageLoaded(true)}
-                                    image="CONNECT_DEVICE"
-                                />
-                                {isWebUSB(transport) && (
-                                    <WebusbButton ready={imageLoaded}>
-                                        <Button icon="SEARCH">
-                                            <Translation id="TR_CHECK_FOR_DEVICES" />
-                                        </Button>
-                                    </WebusbButton>
-                                )}
-                            </>
-                        )}
-
-                        {device?.firmware === 'none' && (
-                            <Text>
-                                <Translation id="TR_FIRMWARE_SUBHEADING" />
-                            </Text>
-                        )}
-
-                        {device?.firmware === 'outdated' && !isInBootloader && (
-                            <>
-                                <Text>
-                                    <Translation
-                                        id="TR_FIRMWARE_INSTALLED_TEXT"
-                                        values={{
-                                            version: getFwVersion(device),
-                                        }}
-                                    />
-                                </Text>
-                                <Text>
-                                    <Translation id="TR_YOU_MAY_EITHER_UPDATE" />
-                                </Text>
-                            </>
-                        )}
-
-                        {device?.firmware === 'required' && !isInBootloader && (
-                            <>
-                                <Text>
-                                    <Translation
-                                        id="TR_FIRMWARE_INSTALLED_TEXT"
-                                        values={{
-                                            version: getFwVersion(device),
-                                        }}
-                                    />
-                                </Text>
-                                <Text>
-                                    <Translation id="TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED" />
-                                </Text>
-                            </>
-                        )}
-
-                        {device?.firmware &&
-                            ['outdated', 'required', 'none', 'unknown'].includes(
-                                device.firmware,
-                            ) && (
-                                <>
-                                    {btcOnlyAvailable && (
-                                        <BitcoinOnlyToggle
-                                            onToggle={toggleBtcOnly}
-                                            isToggled={btcOnly}
-                                        />
-                                    )}
-
-                                    <InitImg model={savedModel} height="230px" />
-                                </>
-                            )}
-
-                        {device?.firmware === 'valid' && (
-                            <>
-                                <Text>
-                                    <Translation id="TR_FIRMWARE_INSTALLED" />
-                                </Text>
-                                <SuccessImg model={savedModel} />
-                            </>
-                        )}
-                    </>
-                )}
-
-                {status === 'done' && (
-                    <>
-                        <Text>
-                            <Translation id="TR_SUCCESS" />
-                        </Text>
-                        <SuccessImg model={savedModel} />
-                    </>
-                )}
-
-                {status === 'partially-done' && (
-                    <>
-                        <Text>
-                            <Translation id="TR_FIRMWARE_PARTIALLY_UPDATED" />
-                        </Text>
-                        <Text>
-                            <Translation id="TR_BUT_THERE_IS_ANOTHER_UPDATE" />
-                        </Text>
-                        <SuccessImg model={savedModel} />
-                    </>
-                )}
-
-                {status === 'error' && (
-                    <>
-                        <Text>
-                            <Translation id="TR_FIRMWARE_INSTALL_FAILED_HEADER" />
-                        </Text>
-                        {/* todo: "null problem" */}
-                        {/* <Text>{error}</Text> */}
-                        <StyledImage image="UNI_ERROR" />
-                    </>
-                )}
-
-                {[
-                    'downloading',
-                    'started',
-                    'waiting-for-confirmation',
-                    'installing',
-                    'check-fingerprint',
-                    'unplug',
-                    'wait-for-reboot',
-                ].includes(status) && (
-                    <FirmwareProgress
-                        status={status}
-                        fingerprint={device?.firmwareRelease.release.fingerprint}
-                        model={savedModel}
-                    />
-                )}
-                {/* buttons section */}
-                <Wrapper.Controls>
-                    {/* 
-                    special case, when doing firmware update with webusb transport, device must be 
-                    paired again after firmware update is done 
-                    */}
-                    {['unplug', 'wait-for-reboot'].includes(status) &&
-                        !device &&
-                        isWebUSB(transport) && (
-                            <WebusbButton ready>
-                                <Button icon="SEARCH">
-                                    <Translation id="TR_CHECK_FOR_DEVICES" />
-                                </Button>
-                            </WebusbButton>
-                        )}
-                    {['initial', 'done', 'partially-done'].includes(status) && (
-                        <>
-                            {device?.firmware &&
-                                ['none', 'unknown', 'required', 'outdated'].includes(
-                                    device.firmware,
-                                ) && (
-                                    <>
-                                        <InstallButton
-                                            btcOnly={btcOnly}
-                                            isConnected={isConnected}
-                                            isInBootloader={isInBootloader}
-                                            onClick={firmwareUpdate}
-                                        />
-                                    </>
-                                )}
-
-                            {device?.firmware && ['outdated', 'valid'].includes(device.firmware) && (
-                                <>
-                                    <ContinueButton
-                                        isConnected={isConnected}
-                                        isInBootloader={isInBootloader}
-                                        onClick={goToNextStep}
-                                    />
-                                </>
-                            )}
-                        </>
-                    )}
-
-                    {status === 'error' && (
-                        <RetryButton isDisabled={!isConnected} onClick={firmwareUpdate} />
-                    )}
-                </Wrapper.Controls>
+                {Component.Body}
+                <Wrapper.Controls>{Component.BottomBar}</Wrapper.Controls>
             </Wrapper.StepBody>
+
             <Wrapper.StepFooter>
-                {status === 'initial' && (
+                {firmware.status === 'initial' && (
                     <OnboardingButton.Back onClick={() => goToPreviousStep()}>
                         <Translation id="TR_BACK" />
                     </OnboardingButton.Back>

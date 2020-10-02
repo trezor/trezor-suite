@@ -13,20 +13,16 @@ describe('Firmware', () => {
         cy.passThroughInitialRun();
         cy.getTestElement('@notification/update-firmware/button').click();
 
-        cy.log('check if bitcoin only toggle works');
-        cy.getTestElement('@firmware/toggle-bitcoin-only/btc').click();
-        cy.getTestElement('@firmware/new/btc-only-badge');
-        cy.getTestElement('@firmware/toggle-bitcoin-only/full').click();
-
-        cy.getTestElement('@firmware/start-button').click();
+        cy.getTestElement('@firmware/continue-button').click();
+        cy.getTestElement('@firmware/confirm-seed-checkbox').click();
         cy.getTestElement('@firmware/confirm-seed-button').click();
         cy.getTestElement('@firmware/disconnect-message');
         cy.task('stopEmu');
-        cy.getTestElement('@firmware/connect-message', { timeout: 10000 });
+        cy.getTestElement('@firmware/connect-in-bootloader-message', { timeout: 10000 });
         cy.log(
             'And this is the end my friends. Emulator does not support bootloader, so we can not proceed with actual fw install',
         );
-        cy.getTestElement('@firmware/close-button').click();
+        cy.getTestElement('@modal/close-button').click();
     });
 
     it('For latest firmware, update button in device settings should display "Up to date" but still be clickable', () => {
@@ -39,6 +35,6 @@ describe('Firmware', () => {
         cy.getTestElement('@settings/device/update-button')
             .should('contain.text', 'Update available')
             .click();
-        cy.getTestElement('@firmware/close-button').click();
+        cy.getTestElement('@modal/close-button').click();
     });
 });

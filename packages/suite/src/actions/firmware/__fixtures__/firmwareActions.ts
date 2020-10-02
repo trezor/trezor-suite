@@ -2,15 +2,16 @@
 import { UI } from 'trezor-connect';
 import { FIRMWARE } from '@firmware-actions/constants';
 import { SUITE } from '@suite-actions/constants';
+import * as firmwareActions from '@firmware-actions/firmwareActions';
 
 const { getSuiteDevice, getDeviceFeatures } = global.JestMocks;
 
 const bootloaderDevice = getSuiteDevice({ mode: 'bootloader', connected: true });
-// const testDevice = getSuiteDevice();
 
-export const firmwareUpdate = [
+export const actions = [
     {
         description: 'Success T2',
+        action: () => firmwareActions.firmwareUpdate(),
         mocks: {
             connect: {
                 success: true,
@@ -24,7 +25,6 @@ export const firmwareUpdate = [
         },
         result: {
             actions: [
-                { type: FIRMWARE.RESET_REDUCER },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'downloading' },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
 
@@ -36,6 +36,7 @@ export const firmwareUpdate = [
     },
     {
         description: 'Success T1',
+        action: () => firmwareActions.firmwareUpdate(),
         mocks: {
             connect: {
                 success: true,
@@ -59,7 +60,6 @@ export const firmwareUpdate = [
         },
         result: {
             actions: [
-                { type: FIRMWARE.RESET_REDUCER },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'downloading' },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'unplug' },
@@ -69,6 +69,7 @@ export const firmwareUpdate = [
     },
     {
         description: 'Fails for missing device',
+        action: () => firmwareActions.firmwareUpdate(),
         initialState: {
             suite: {
                 device: undefined,
@@ -80,6 +81,7 @@ export const firmwareUpdate = [
     },
     {
         description: 'Fails for device not in bootloader',
+        action: () => firmwareActions.firmwareUpdate(),
         initialState: {
             suite: {
                 device: getSuiteDevice({ connected: true, mode: 'normal' }),
@@ -94,6 +96,7 @@ export const firmwareUpdate = [
     },
     {
         description: 'FirmwareUpdate call to connect fails',
+        action: () => firmwareActions.firmwareUpdate(),
         initialState: {
             suite: {
                 device: bootloaderDevice,
@@ -110,11 +113,40 @@ export const firmwareUpdate = [
         },
         result: {
             actions: [
-                { type: FIRMWARE.RESET_REDUCER },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'downloading' },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
                 { type: FIRMWARE.SET_ERROR, payload: 'foo' },
             ],
+        },
+    },
+    {
+        description: 'toggleHasSeed',
+        action: () => firmwareActions.toggleHasSeed(),
+        initialState: {},
+        result: {
+            actions: [{ type: FIRMWARE.TOGGLE_HAS_SEED }],
+        },
+    },
+    {
+        description: 'setTargetRelease',
+        action: () => firmwareActions.setTargetRelease(getSuiteDevice().firmwareRelease),
+        initialState: {},
+        result: {
+            actions: [{ type: FIRMWARE.SET_TARGET_RELEASE }],
+        },
+    },
+
+    {
+        description: 'resetReducer',
+        action: () => firmwareActions.resetReducer(),
+        initialState: {
+            firmware: { hasSeed: true },
+        },
+        result: {
+            actions: [{ type: FIRMWARE.RESET_REDUCER }],
+            state: {
+                firmware: { hasSeed: false },
+            },
         },
     },
 ];

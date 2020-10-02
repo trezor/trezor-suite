@@ -836,7 +836,7 @@ const definedMessages = defineMessages({
         id: 'TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION',
     },
     TR_DEVICE_FIRMWARE_VERSION: {
-        defaultMessage: 'Device firmware: {firmware}.',
+        defaultMessage: 'Your version: {firmware}.',
         description: 'Display firmware of device',
         id: 'TR_DEVICE_FIRMWARE_VERSION',
     },
@@ -1121,10 +1121,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Finish advanced security',
         id: 'TR_FINISH_ADVANCED_SECURITY',
     },
-    TR_FIRMWARE_HEADING: {
-        defaultMessage: 'Firmware installation',
+    TR_FIRMWARE_UPDATE: {
+        defaultMessage: 'Firmware update',
         description: 'Heading on firmware page',
-        id: 'TR_FIRMWARE_HEADING',
+        id: 'TR_FIRMWARE_UPDATE',
     },
     TR_FIRMWARE_INSTALLED: {
         defaultMessage: 'Perfect. The newest firmware is installed. Time to continue',
@@ -2733,14 +2733,6 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Trezor One features two buttons and a monochromatic screen, Trezor T is the high-end model featuring touch-screen display.',
     },
-    TR_INSTALL_BTC_ONLY: {
-        id: 'TR_INSTALL_BTC_ONLY',
-        defaultMessage: 'Install bitcoin-only firmware',
-    },
-    TR_INSTALL_FULL: {
-        id: 'TR_INSTALL_FULL',
-        defaultMessage: 'Install full-featured firmware',
-    },
     TR_DEVICE_IN_RECOVERY_MODE: {
         id: 'TR_DEVICE_IN_RECOVERY_MODE',
         defaultMessage: 'Your device is in recovery mode.',
@@ -3102,11 +3094,6 @@ const definedMessages = defineMessages({
         id: 'TR_SWIPE_YOUR_FINGERS',
         defaultMessage: 'Swipe your finger across the touchscreen while connecting cable.',
     },
-    TR_TO_KEEP_YOUR_TREZOR: {
-        id: 'TR_TO_KEEP_YOUR_TREZOR',
-        defaultMessage:
-            'To keep your Trezor up to date we recommend updating your device. Check what’s new:',
-    },
     TR_VERSION: {
         id: 'TR_VERSION',
         defaultMessage: 'version',
@@ -3127,12 +3114,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'installing',
         description: 'One of states during firmware update. Waiting for install to finish',
     },
-    TR_STARTED: {
-        id: 'TR_STARTED',
-        defaultMessage: 'started',
-        description:
-            'One of states during firmware update. Indicating the process has started, but user was not yet prompted for confirmation',
-    },
     TR_DOWNLOADING: {
         id: 'TR_DOWNLOADING',
         defaultMessage: 'Downloading',
@@ -3143,21 +3124,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Full-featured',
         description:
             'Meant as a label. Used for example in firmware update when indicating which type of firmware version is the new one.',
-    },
-    TR_ALTERNATIVELY_YOU_MAY_INSTALL: {
-        id: 'TR_ALTERNATIVELY_YOU_MAY_INSTALL',
-        defaultMessage: 'Alternatively, you may install {TR_FIRMWARE_TYPE}',
-        description: "Firmware type is either 'bitcoin only' or 'full featured'",
-    },
-    TR_FIRMWARE_TYPE_BTC_ONLY: {
-        id: 'TR_FIRMWARE_TYPE_BTC_ONLY',
-        defaultMessage: 'bitcoin only firmware',
-        description: 'to be used inside TR_ALTERNATIVELY_YOU_MAY_INSTALL',
-    },
-    TR_FIRMWARE_TYPE_FULL: {
-        id: 'TR_FIRMWARE_TYPE_FULL',
-        defaultMessage: 'full featured firmware',
-        description: 'to be used inside TR_ALTERNATIVELY_YOU_MAY_INSTALL',
     },
     TR_SECURITY_CHECKPOINT_GOT_SEED: {
         id: 'TR_SECURITY_CHECKPOINT_GOT_SEED',
@@ -4187,6 +4153,59 @@ const definedMessages = defineMessages({
     TR_GIVE_FEEDBACK: {
         id: 'TR_GIVE_FEEDBACK',
         defaultMessage: 'Give Feedback',
+    },
+    FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC: {
+        id: 'FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC',
+        defaultMessage: 'Yes, I do!',
+    },
+    FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC: {
+        id: 'FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC',
+        defaultMessage: 'I live dangerously!',
+    },
+    FIRMWARE_UPDATE_AVAILABLE_DESC: {
+        id: 'FIRMWARE_UPDATE_AVAILABLE_DESC',
+        defaultMessage:
+            'We’re constantly working to improve your Trezor experience, here’s a summary of what has changed:',
+    },
+    FIRMWARE_RECONNECT_BL_NEXT_STEP_DESC: {
+        id: 'FIRMWARE_RECONNECT_BL_NEXT_STEP_DESC',
+        defaultMessage:
+            'It the next step you will be asked to connect your device in bootloader mode.',
+    },
+    FIRMWARE_RECONNECTED_BL_NEXT_STEP_DESC: {
+        id: 'FIRMWARE_RECONNECTED_BL_NEXT_STEP_DESC',
+        defaultMessage: 'In the next step you will be asked to confirm firmware update on device.',
+    },
+    FIRMWARE_UPDATE_SUCCESS_HEADING: {
+        id: 'FIRMWARE_UPDATE_SUCCESS_HEADING',
+        defaultMessage: 'Firmware update successful',
+    },
+    FIRMWARE_UPDATE_SUCCESS_DESC: {
+        id: 'FIRMWARE_RECONNECTED_BL_NEXT_STEP_DESC',
+        defaultMessage:
+            'Your device was updated successfully and now runs bleeding edge crypto technology!',
+    },
+    FIRMWARE_CONNECT_IN_NORMAL_MODEL_1: {
+        id: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_1',
+        defaultMessage:
+            'Please make sure you are not holding any buttons while connecting your device.',
+    },
+    FIRMWARE_CONNECT_IN_NORMAL_MODEL_2: {
+        id: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_2',
+        defaultMessage:
+            'Please make sure you are not holding any buttons while connecting your device.',
+    },
+    FIRMWARE_UPDATE_TO_VERSION: {
+        id: 'FIRMWARE_UPDATE_TO_VERSION',
+        defaultMessage: 'Update to v{version}',
+    },
+    TR_READ_ALL_ON_GITHUB: {
+        id: 'TR_READ_ALL_ON_GITHUB',
+        defaultMessage: 'Read all on Github',
+    },
+    TR_TAKES_N_MINUTES: {
+        id: 'TR_TAKES_N_MINUTES',
+        defaultMessage: 'Takes ~{n} mins',
     },
 } as const);
 

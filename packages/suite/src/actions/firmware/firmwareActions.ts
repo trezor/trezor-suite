@@ -1,16 +1,19 @@
 import TrezorConnect from 'trezor-connect';
 import { FIRMWARE } from '@firmware-actions/constants';
-import { AnyStatus } from '@firmware-reducers/firmwareReducer';
-import { Dispatch, GetState, Action, AcquiredDevice } from '@suite-types';
+import { Dispatch, GetState, AppState, Action, AcquiredDevice } from '@suite-types';
 import * as analyticsActions from '@suite-actions/analyticsActions';
+import { isBitcoinOnly } from '@suite-utils/device';
 
 export type FirmwareActions =
-    | { type: typeof FIRMWARE.SET_UPDATE_STATUS; payload: AnyStatus }
+    | {
+          type: typeof FIRMWARE.SET_UPDATE_STATUS;
+          payload: ReturnType<GetState>['firmware']['status'];
+      }
     | { type: typeof FIRMWARE.SET_TARGET_RELEASE; payload: AcquiredDevice['firmwareRelease'] }
     | { type: typeof FIRMWARE.RESET_REDUCER }
     | { type: typeof FIRMWARE.ENABLE_REDUCER; payload: boolean }
-    | { type: typeof FIRMWARE.SET_ERROR; payload: string | undefined }
-    | { type: typeof FIRMWARE.TOGGLE_BTC_ONLY };
+    | { type: typeof FIRMWARE.SET_ERROR; payload: string }
+    | { type: typeof FIRMWARE.TOGGLE_HAS_SEED };
 
 export const resetReducer = () => (dispatch: Dispatch) => {
     dispatch({
@@ -18,7 +21,7 @@ export const resetReducer = () => (dispatch: Dispatch) => {
     });
 };
 
-export const setStatus = (payload: AnyStatus): Action => ({
+export const setStatus = (payload: AppState['firmware']['status']): Action => ({
     type: FIRMWARE.SET_UPDATE_STATUS,
     payload,
 });
@@ -32,15 +35,10 @@ export const setTargetRelease = (payload: AcquiredDevice['firmwareRelease']) => 
     });
 };
 
-export const toggleBtcOnly = (): Action => ({
-    type: FIRMWARE.TOGGLE_BTC_ONLY,
-});
-
 export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
-    const { btcOnly, targetRelease } = getState().firmware;
+    const { targetRelease } = getState().firmware;
 
-    dispatch(resetReducer());
     if (!device || !device.connected || !device.features) {
         dispatch({ type: FIRMWARE.SET_ERROR, payload: 'no device connected' });
         return;
@@ -66,13 +64,16 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
 
     dispatch(setStatus('downloading'));
 
+    // update to same variant as is currently installed
+    const toBtcOnly = isBitcoinOnly(device);
+
     const payload = {
         keepSession: false,
         skipFinalReload: true,
         device: {
             path: device.path,
         },
-        btcOnly,
+        btcOnly: toBtcOnly,
         version: toFwVersion,
     };
 
@@ -97,7 +98,7 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
                 // todo: fromBtcOnly,
                 fromBlVersion,
                 toFwVersion,
-                toBtcOnly: btcOnly,
+                toBtcOnly,
                 error: !updateResponse.success ? updateResponse.payload.error : '',
             },
         }),
@@ -109,3 +110,7 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
 
     dispatch(setStatus(model === 1 ? 'unplug' : 'wait-for-reboot'));
 };
+
+export const toggleHasSeed = (): Action => ({
+    type: FIRMWARE.TOGGLE_HAS_SEED,
+});

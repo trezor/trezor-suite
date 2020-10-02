@@ -176,7 +176,7 @@ const Heading = styled(H1)<{
     hiddenProgressBar: boolean;
 }>`
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     padding: 28px 32px 22px 32px;
     margin-bottom: ${props => (props.showProgressBar ? 0 : '20px')};
 
@@ -250,12 +250,13 @@ const Description = styled(SidePaddingWrapper)`
     text-align: center;
 `;
 
-const Content = styled(SidePaddingWrapper)`
+const Content = styled(SidePaddingWrapper)<{ centerContent: boolean }>`
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
     overflow-y: auto;
+
     ::-webkit-scrollbar {
         background-color: #fff;
         width: 10px;
@@ -275,6 +276,14 @@ const Content = styled(SidePaddingWrapper)`
     ::-webkit-scrollbar-button {
         display: none;
     }
+
+    /* center the content if props.centerContent selected. For example useful for centering nested modals */
+    ${props =>
+        props.centerContent &&
+        css`
+            justify-content: center;
+            align-items: center;
+        `}
 `;
 
 const BottomBar = styled(SidePaddingWrapper)`
@@ -371,6 +380,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     hiddenProgressBar?: boolean;
     totalProgressBarSteps?: number;
     currentProgressBarStep?: number;
+    centerContent?: boolean;
 }
 
 const Modal = ({
@@ -397,6 +407,7 @@ const Modal = ({
     hiddenProgressBar = false, // reserves the space for progress bar (4px under the heading), but not showing the green bar
     totalProgressBarSteps,
     currentProgressBarStep,
+    centerContent = false,
     ...rest
 }: Props) => {
     const escPressed = useKeyPress('Escape');
@@ -462,7 +473,9 @@ const Modal = ({
             {description && (
                 <Description sidePadding={contentPaddingSide}>{description}</Description>
             )}
-            <Content sidePadding={contentPaddingSide}>{children}</Content>
+            <Content sidePadding={contentPaddingSide} centerContent={centerContent}>
+                {children}
+            </Content>
             {bottomBar && <BottomBar sidePadding={contentPaddingSide}>{bottomBar}</BottomBar>}
         </ModalWindow>
     );

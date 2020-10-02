@@ -1,8 +1,9 @@
 import React from 'react';
-import { Link, P } from '@trezor/components';
+import { Link, P, H2 } from '@trezor/components';
 import * as STEP from '@onboarding-constants/steps';
 import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
-import { Translation, Image } from '@suite-components';
+import { Translation } from '@suite-components';
+import { SuccessImg } from '@firmware-components';
 import { TOS_URL } from '@suite-constants/urls';
 import { Props } from './Container';
 
@@ -21,17 +22,15 @@ const ResetDeviceStep = (props: Props) => {
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                {!isShamirBackupAvailable() && <Translation id="TR_CREATE_WALLET" />}
                 {isShamirBackupAvailable() && <Translation id="TR_BACKUP_TYPE" />}
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {!isShamirBackupAvailable() && (
                     <>
-                        {device.features.major_version === 2 ? (
-                            <Image image="FIRMWARE_SUCCESS_2" />
-                        ) : (
-                            <Image image="FIRMWARE_SUCCESS_1" />
-                        )}
+                        <SuccessImg model={device.features.major_version || 2} />
+                        <H2>
+                            <Translation id="TR_CREATE_WALLET" />
+                        </H2>
                     </>
                 )}
 

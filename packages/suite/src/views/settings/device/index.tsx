@@ -305,7 +305,11 @@ const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) 
                                     type: 'settings/device/change-label',
                                 });
                             }}
-                            isDisabled={isDeviceLocked || label.length > MAX_LABEL_LENGTH}
+                            isDisabled={
+                                isDeviceLocked ||
+                                label.length > MAX_LABEL_LENGTH ||
+                                label === device.label
+                            }
                             data-test="@settings/device/label-submit"
                         >
                             <Translation id="TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL" />
