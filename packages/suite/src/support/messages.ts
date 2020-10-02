@@ -2224,7 +2224,7 @@ const definedMessages = defineMessages({
     },
     TR_XRP_RESERVE_INFO: {
         defaultMessage:
-            'Ripple addresses require a minimum balance of {minBalance} XRP to activate and maintain the account. {TR_LEARN_MORE}',
+            'Ripple addresses require a minimum balance of {minBalance} XRP to activate and maintain the account.',
         id: 'TR_XRP_RESERVE_INFO',
     },
     TR_YOU_WERE_DISCONNECTED_DOT: {
@@ -3902,8 +3902,13 @@ const definedMessages = defineMessages({
     },
     SEND_TRANSACTION: {
         id: 'SEND_TRANSACTION',
-        description: 'Sign and send button used in send form and Review modal',
-        defaultMessage: 'Send Transaction',
+        description: 'Sign and send button used in Review modal',
+        defaultMessage: 'Send',
+    },
+    REVIEW_AND_SEND_TRANSACTION: {
+        id: 'REVIEW_AND_SEND_TRANSACTION',
+        description: 'Sign and send button used in send form',
+        defaultMessage: 'Review & Send',
     },
     SEND_RAW_TRANSACTION: {
         id: 'SEND_RAW_TRANSACTION',
@@ -4178,6 +4183,10 @@ const definedMessages = defineMessages({
     TR_HIDDEN_WALLET_DESCRIPTION: {
         id: 'TR_HIDDEN_WALLET_DESCRIPTION',
         defaultMessage: 'Requires passphrase',
+    },
+    TR_GIVE_FEEDBACK: {
+        id: 'TR_GIVE_FEEDBACK',
+        defaultMessage: 'Give Feedback',
     },
 } as const);
 

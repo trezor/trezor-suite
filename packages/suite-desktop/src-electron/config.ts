@@ -15,6 +15,7 @@ export const allowedExternalUrls = [
     'https://trezor.io/stellar', // Stellar
     'https://adalite.io/app', // Ada
     'https://wallet.simplestaking.com/tezos/wallet/start', // Tezos
+    'https://satoshilabs.typeform.com',
 ];
 
 export const cspRules = [

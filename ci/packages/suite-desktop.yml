@@ -25,9 +25,10 @@ suite-desktop build mac:
         artifact: ${DESKTOP_APP_NAME}*
     <<: *build
 
-suite-desktop build mac manual:
-    except:
-        <<: *auto_run_branches
+suite-desktop build mac codesign:
+    only:
+        refs:
+            - codesign
     when: manual
     tags:
         - darwin
@@ -44,19 +45,19 @@ suite-desktop build linux:
         artifact: ${DESKTOP_APP_NAME}*
     <<: *build
 
-suite-desktop build linux manual:
-    except:
-        <<: *auto_run_branches
+suite-desktop build linux codesign:
+    only:
+        refs:
+            - codesign
     when: manual
+    tags:
+        - darwin
     variables:
         platform: linux
         artifact: ${DESKTOP_APP_NAME}*
     <<: *build
 
 suite-desktop build windows:
-    # TODO: temporary allow_failure so the broken Windows build does not block the pipeline
-    # Remove when Windows Code Signing is fixed again!
-    allow_failure: true
     only:
         <<: *auto_run_branches
     image: electronuserland/builder:wine
@@ -65,10 +66,13 @@ suite-desktop build windows:
         artifact: ${DESKTOP_APP_NAME}*
     <<: *build
 
-suite-desktop build windows manual:
-    except:
-        <<: *auto_run_branches
+suite-desktop build windows codesign:
+    only:
+        refs:
+            - codesign
     when: manual
+    tags:
+        - darwin
     image: electronuserland/builder:wine
     variables:
         platform: win
@@ -76,9 +80,6 @@ suite-desktop build windows manual:
     <<: *build
 
 suite-desktop deploy dev:
-    # TODO: temporary allow_failure so the broken Windows build does not block the pipeline
-    # Remove when Windows Code Signing is fixed again!
-    allow_failure: true
     stage: deploy to dev
     only:
         <<: *auto_run_branches

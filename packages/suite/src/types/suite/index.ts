@@ -101,3 +101,5 @@ export type InjectedModalApplicationProps = {
 };
 
 export type SelectOption = { value: string; label: string };
+
+export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error';

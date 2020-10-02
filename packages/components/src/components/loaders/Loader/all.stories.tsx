@@ -1,14 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H1, H2, Loader, colors } from '../../../index';
+import { H1, Loader, colors } from '../../../index';
 import { storiesOf } from '@storybook/react';
+import { StoryColumn } from '../../../support/Story';
 
 const Section = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
-    margin: 2rem 0 3rem;
+    display: block;
+    padding: 2em;
 `;
 
 const SectionDark = styled(Section)`
@@ -20,56 +18,22 @@ storiesOf('Loaders', module).add(
     () => {
         return (
             <>
-                <H1>Loader</H1>
-                <H2>default</H2>
-                <Section>
-                    <Loader size={100} strokeWidth={2} text="loading" data-test="loader-default" />
-                </Section>
+                <StoryColumn minWidth={520}>
+                    <H1>Loader</H1>
+                    <Section>
+                        <Loader size={100} strokeWidth={2} data-test="loader-default" />
+                    </Section>
 
-                <H2>small text</H2>
-                <Section>
-                    <Loader
-                        size={100}
-                        strokeWidth={2}
-                        text="loading"
-                        isSmallText
-                        data-test="loader-small-text"
-                    />
-                </Section>
+                    <H1>Loader on dark background</H1>
+                    <SectionDark>
+                        <Loader size={100} strokeWidth={2} data-test="loader-on-dark-background" />
+                    </SectionDark>
 
-                <H2>transparent route</H2>
-                <Section>
-                    <Loader
-                        size={100}
-                        strokeWidth={2}
-                        text="loading"
-                        transparentRoute
-                        data-test="loader-transparent-route"
-                    />
-                </Section>
-
-                <H2>white text</H2>
-                <SectionDark>
-                    <Loader
-                        size={100}
-                        strokeWidth={2}
-                        text="loading"
-                        isWhiteText
-                        data-test="loader-white-text"
-                    />
-                </SectionDark>
-
-                <H2>white text &amp; transparent route</H2>
-                <SectionDark>
-                    <Loader
-                        size={100}
-                        strokeWidth={2}
-                        text="loading"
-                        isWhiteText
-                        transparentRoute
-                        data-test="loader-white-text-transparent"
-                    />
-                </SectionDark>
+                    <H1>Small loader</H1>
+                    <Section>
+                        <Loader size={20} strokeWidth={1} data-test="loader-small" />
+                    </Section>
+                </StoryColumn>
             </>
         );
     },

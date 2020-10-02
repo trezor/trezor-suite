@@ -2,7 +2,7 @@ import { MiddlewareAPI } from 'redux';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { ACCOUNT, DISCOVERY } from '@wallet-actions/constants';
 import { AppState, Action, Dispatch } from '@suite-types';
-import { ROUTER } from '@suite-actions/constants';
+import { ROUTER, SUITE } from '@suite-actions/constants';
 
 const metadata = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
@@ -18,6 +18,15 @@ const metadata = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
         case DISCOVERY.COMPLETE:
             if (api.getState().metadata.enabled) {
                 api.dispatch(metadataActions.fetchMetadata(action.payload.deviceState));
+            }
+            break;
+        case SUITE.RECEIVE_AUTH_CONFIRM:
+            if (
+                action.success &&
+                api.getState().metadata.enabled &&
+                action.payload.metadata.status === 'disabled'
+            ) {
+                api.dispatch(metadataActions.init());
             }
             break;
         case ROUTER.LOCATION_CHANGE:

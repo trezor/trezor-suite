@@ -1,0 +1,8 @@
+[book]
+title = "Trezor Suite"
+description = "Documentation of Trezor Suite."
+src = "."
+
+[build]
+build-dir = "mdbook"
+create-missing = false

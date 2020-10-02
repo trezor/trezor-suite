@@ -1,26 +1,13 @@
 import React from 'react';
 import { Loader } from '../../../index';
 import { storiesOf } from '@storybook/react';
-import { number, boolean, text } from '@storybook/addon-knobs';
+import { number } from '@storybook/addon-knobs';
 import { infoOptions } from '../../../support/storybook';
 
 storiesOf('Loaders', module).add(
     'Loader',
     () => {
-        const isWhiteText = boolean('White text', false);
-        const isSmallText = boolean('Small text', false);
-        const transparentRoute = boolean('Transparent route', false);
-
-        return (
-            <Loader
-                size={number('Size', 100)}
-                strokeWidth={number('Stroke width', 2)}
-                text={text('Text', 'loading')}
-                {...(isWhiteText ? { isWhiteText } : {})}
-                {...(isSmallText ? { isSmallText } : {})}
-                {...(transparentRoute ? { transparentRoute } : {})}
-            />
-        );
+        return <Loader size={number('Size', 50)} strokeWidth={number('Stroke width', 1)} />;
     },
     {
         info: {

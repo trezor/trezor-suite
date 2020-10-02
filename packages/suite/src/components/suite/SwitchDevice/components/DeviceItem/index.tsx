@@ -19,14 +19,13 @@ const DeviceWrapper = styled.div`
     width: 100%;
 
     & + & {
-        margin-top: 64px;
+        margin-top: 50px;
     }
 `;
 
 const Device = styled.div`
     display: flex;
     align-items: center;
-    margin-bottom: 24px;
 `;
 
 const DeviceTitle = styled.span`
@@ -61,6 +60,7 @@ const WalletsWrapper = styled.div<{ enabled: boolean }>`
     pointer-events: ${props => (props.enabled ? 'unset' : 'none')};
     padding-bottom: ${props => (props.enabled ? '0px' : '24px')};
     margin-left: 37px;
+    margin-top: 24px;
 `;
 
 const WalletsTooltips = styled.div`
@@ -72,7 +72,7 @@ const WalletsTooltips = styled.div`
 const WalletsCount = styled(ColHeader)`
     flex: 1;
     justify-content: flex-start;
-    whitespace: no-wrap;
+    white-space: nowrap;
 `;
 
 const InstancesWrapper = styled.div`
@@ -120,11 +120,13 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
     const { device, selectedDevice, backgroundRoute } = props;
 
     const deviceStatus = deviceUtils.getStatus(device);
+    const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
     const isUnknown = device.type !== 'acquired';
     const isSelected = deviceUtils.isSelectedDevice(selectedDevice, device);
     const isWalletContext =
         backgroundRoute &&
         (backgroundRoute.app === 'wallet' || backgroundRoute.app === 'dashboard');
+    const instancesWithState = props.instances.filter(i => i.state);
 
     const selectDeviceInstance = async (instance: Props['device']) => {
         await props.selectDevice(instance);
@@ -191,75 +193,84 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
 
                     <DeviceActions>
                         <DeviceHeaderButton
+                            needsAttention={needsAttention}
                             device={device}
                             onSolveIssueClick={onSolveIssueClick}
                             onDeviceSettingsClick={onDeviceSettingsClick}
                         />
-                        <ExpandIcon
-                            useCursorPointer
-                            size={24}
-                            icon="ARROW_UP"
-                            color={colors.NEUE_TYPE_LIGHT_GREY}
-                            canAnimate={animateArrow}
-                            isActive={!isExpanded}
-                            onClick={() => {
-                                setIsExpanded(!isExpanded);
-                                setAnimateArrow(true);
-                            }}
-                        />
+                        {!needsAttention && (
+                            <ExpandIcon
+                                useCursorPointer
+                                size={24}
+                                icon="ARROW_UP"
+                                color={colors.NEUE_TYPE_LIGHT_GREY}
+                                canAnimate={animateArrow}
+                                isActive={!isExpanded}
+                                onClick={() => {
+                                    setIsExpanded(!isExpanded);
+                                    setAnimateArrow(true);
+                                }}
+                            />
+                        )}
                     </DeviceActions>
                 </DeviceHeader>
             </Device>
-            <AnimatePresence initial={false}>
-                {!isUnknown && isExpanded && (
-                    <motion.div {...ANIMATION.EXPAND}>
-                        <WalletsWrapper enabled>
-                            <WalletsTooltips>
-                                <WalletsCount>
-                                    <Translation
-                                        id="TR_COUNT_WALLETS"
-                                        values={{ count: props.instances.length }}
-                                    />
-                                </WalletsCount>
-                                <ColRememberHeader
-                                    tooltipContent={<Translation id="TR_REMEMBER_ALLOWS_YOU_TO" />}
-                                >
-                                    <Translation id="TR_REMEMBER_HEADING" />
-                                </ColRememberHeader>
-                                <ColEjectHeader
-                                    tooltipContent={
-                                        <Translation id="TR_EJECT_WALLET_EXPLANATION" />
-                                    }
-                                >
-                                    <Translation id="TR_EJECT_HEADING" />
-                                </ColEjectHeader>
-                            </WalletsTooltips>
+            {!needsAttention && (
+                <AnimatePresence initial={false}>
+                    {!isUnknown && isExpanded && (
+                        <motion.div {...ANIMATION.EXPAND}>
+                            <WalletsWrapper enabled>
+                                {instancesWithState.length > 0 && (
+                                    <WalletsTooltips>
+                                        <WalletsCount>
+                                            <Translation
+                                                id="TR_COUNT_WALLETS"
+                                                values={{ count: instancesWithState.length }}
+                                            />
+                                        </WalletsCount>
+                                        <ColRememberHeader
+                                            tooltipContent={
+                                                <Translation id="TR_REMEMBER_ALLOWS_YOU_TO" />
+                                            }
+                                        >
+                                            <Translation id="TR_REMEMBER_HEADING" />
+                                        </ColRememberHeader>
+                                        <ColEjectHeader
+                                            tooltipContent={
+                                                <Translation id="TR_EJECT_WALLET_EXPLANATION" />
+                                            }
+                                        >
+                                            <Translation id="TR_EJECT_HEADING" />
+                                        </ColEjectHeader>
+                                    </WalletsTooltips>
+                                )}
 
-                            <InstancesWrapper>
-                                {props.instances.map(instance => (
-                                    <StyledWalletInstance
-                                        key={`${instance.label}-${instance.instance}-${instance.state}`}
-                                        instance={instance}
-                                        enabled
-                                        selected={deviceUtils.isSelectedInstance(
-                                            selectedDevice,
-                                            instance,
-                                        )}
-                                        selectDeviceInstance={selectDeviceInstance}
-                                    />
-                                ))}
-                            </InstancesWrapper>
+                                <InstancesWrapper>
+                                    {instancesWithState.map(instance => (
+                                        <StyledWalletInstance
+                                            key={`${instance.id}-${instance.instance}-${instance.state}`}
+                                            instance={instance}
+                                            enabled
+                                            selected={deviceUtils.isSelectedInstance(
+                                                selectedDevice,
+                                                instance,
+                                            )}
+                                            selectDeviceInstance={selectDeviceInstance}
+                                        />
+                                    ))}
+                                </InstancesWrapper>
 
-                            <AddWalletButton
-                                device={device}
-                                instances={props.instances}
-                                addDeviceInstance={addDeviceInstance}
-                                selectDeviceInstance={selectDeviceInstance}
-                            />
-                        </WalletsWrapper>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                                <AddWalletButton
+                                    device={device}
+                                    instances={props.instances}
+                                    addDeviceInstance={addDeviceInstance}
+                                    selectDeviceInstance={selectDeviceInstance}
+                                />
+                            </WalletsWrapper>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            )}
         </DeviceWrapper>
     );
 };
