@@ -105,7 +105,7 @@ export type SuiteStorageUpdateMessage = StorageUpdateMessage<SuiteDBSchema>;
  */
 const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersion, transaction) => {
     let shouldInitDB = oldVersion === 0;
-    if (oldVersion > 0 && oldVersion < 16) {
+    if (oldVersion > 0 && oldVersion < 13) {
         // just delete whole db as migrations from version older than 13 (internal releases) are not implemented
         try {
             await SuiteDB.removeStores(db);
