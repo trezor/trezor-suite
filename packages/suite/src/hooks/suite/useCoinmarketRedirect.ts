@@ -4,7 +4,7 @@ import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 
-export const useRedirect = () => {
+export const useCoinmarketRedirect = () => {
     const { goto } = useActions({ goto: routerActions.goto });
     const { saveQuoteRequest, setIsFromRedirect, saveTransactionDetailId } = useActions({
         saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
