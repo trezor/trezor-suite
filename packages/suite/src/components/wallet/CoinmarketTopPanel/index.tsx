@@ -1,6 +1,7 @@
 import * as routerActions from '@suite-actions/routerActions';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import { useActions, useSelector } from '@suite-hooks';
+import { AccountLabeling } from '@suite-components';
 import { colors, Icon, variables } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
@@ -76,7 +77,7 @@ const CoinmarketTopPanel = () => {
                         }
                     >
                         <StyledIcon icon="ARROW_LEFT" />
-                        {`Account #${account.index + 1}`}
+                        <AccountLabeling account={account} />
                     </Back>
                 </Left>
                 <Right />
