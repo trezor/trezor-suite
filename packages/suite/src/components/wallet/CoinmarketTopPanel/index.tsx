@@ -70,9 +70,9 @@ const CoinmarketTopPanel = () => {
                     <Back
                         onClick={() =>
                             goto('wallet-coinmarket-buy', {
-                                symbol: account.symbol,
-                                accountIndex: account.index,
-                                accountType: account.accountType,
+                                symbol: selectedAccount.params.symbol,
+                                accountIndex: selectedAccount.params.accountIndex,
+                                accountType: selectedAccount.params.accountType,
                             })
                         }
                     >

@@ -46,7 +46,7 @@ const CoinmarketRedirect = () => {
         if (redirectCommonParams.routeType === 'detail') {
             redirectToDetail({ ...redirectCommonParams, transactionId: params[4] });
         }
-    });
+    }, [redirectToOffers, redirectToDetail, router]);
 
     return (
         <Wrapper>
