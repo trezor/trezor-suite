@@ -13,7 +13,7 @@ import {
 } from '@suite/utils/wallet/coinmarket/buyUtils';
 import { Props, ContextValues } from '@wallet-types/coinmarketBuyOffers';
 import { useSelector } from 'react-redux';
-import { AppState } from '@suite/types/suite';
+import { AppState } from '@suite-types';
 import * as notificationActions from '@suite-actions/notificationActions';
 
 export const useOffers = (props: Props) => {

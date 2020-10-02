@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Button, variables, colors } from '@trezor/components';
 import { CoinmarketTransactionId } from '@wallet-components';
-import { useActions } from '@suite/hooks/suite/useActions';
+import { useActions } from '@suite-hooks/useActions';
 import { Account } from '@wallet-types';
-import { Translation } from '@suite/components/suite/Translation';
+import { Translation } from '@suite-components/Translation';
 
 const Wrapper = styled.div`
     display: flex;

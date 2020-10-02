@@ -2,8 +2,8 @@ import { createContext, useContext } from 'react';
 import { Props, ContextValues } from '@wallet-types/coinmarketBuyDetail';
 import { useWatchBuyTrade } from '@wallet-hooks/useCoinmarket';
 import { useSelector } from 'react-redux';
-import { AppState } from '@suite/types/suite';
-import invityAPI from '@suite/services/suite/invityAPI';
+import { AppState } from '@suite-types';
+import invityAPI from '@suite-services/invityAPI';
 
 export const useCoinmarketBuyDetail = (props: Props) => {
     const { selectedAccount, trades, transactionId } = props;

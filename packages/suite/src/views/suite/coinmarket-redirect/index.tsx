@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { useSelector } from '@suite/hooks/suite';
+import { useSelector } from '@suite-hooks';
 import { Account } from '@wallet-types';
 import { variables } from '@trezor/components';
 import { useRedirect } from '@suite-hooks/useRedirect';
-import { Translation } from '@suite/components/suite';
+import { Translation } from '@suite-components';
 
 const Wrapper = styled.div`
     display: flex;
