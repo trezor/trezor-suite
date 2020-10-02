@@ -2,6 +2,7 @@ import { app, session, BrowserWindow, ipcMain, shell, Menu, dialog } from 'elect
 import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 import { autoUpdater } from 'electron-updater';
+import electronLogger from 'electron-log';
 import * as path from 'path';
 import * as url from 'url';
 import * as electronLocalshortcut from 'electron-localshortcut';
@@ -201,8 +202,79 @@ const init = async () => {
     });
 
     ipcMain.on('update/check', () => autoUpdater.checkForUpdates());
-    ipcMain.on('update/download', () => autoUpdater.downloadUpdate());
+    ipcMain.on('update/download', () => {
+        mainWindow.webContents.send('update/downloading', {
+            percent: 0,
+            bytesPerSecond: 0,
+            total: 0,
+            transferred: 0,
+        });
+        autoUpdater.downloadUpdate();
+    });
     ipcMain.on('update/install', () => autoUpdater.quitAndInstall());
+
+    // Differential updater hack (https://gist.github.com/the3moon/0e9325228f6334dabac6dadd7a3fc0b9)
+    autoUpdater.logger = electronLogger;
+    // @ts-ignore
+    autoUpdater.logger.transports.file.level = 'info';
+
+    let diffDown = {
+        percent: 0,
+        bytesPerSecond: 0,
+        total: 0,
+        transferred: 0,
+    };
+    let diffDownHelper = {
+        startTime: 0,
+        lastTime: 0,
+        lastSize: 0,
+    };
+
+    electronLogger.hooks.push((msg, transport) => {
+        if (transport !== electronLogger.transports.console) {
+            return msg;
+        }
+
+        let match = /Full: ([\d,.]+) ([GMKB]+), To download: ([\d,.]+) ([GMKB]+)/.exec(msg.data[0]);
+        if (match) {
+            let multiplier = 1;
+            if (match[4] === 'KB') multiplier *= 1024;
+            if (match[4] === 'MB') multiplier *= 1024 * 1024;
+            if (match[4] === 'GB') multiplier *= 1024 * 1024 * 1024;
+
+            diffDown = {
+                percent: 0,
+                bytesPerSecond: 0,
+                total: Number(match[3].split(',').join('')) * multiplier,
+                transferred: 0,
+            };
+            diffDownHelper = {
+                startTime: Date.now(),
+                lastTime: Date.now(),
+                lastSize: 0,
+            };
+
+            return msg;
+        }
+
+        match = /download range: bytes=(\d+)-(\d+)/.exec(msg.data[0]);
+        if (match) {
+            const currentSize = Number(match[2]) - Number(match[1]);
+            const currentTime = Date.now();
+            const deltaTime = currentTime - diffDownHelper.startTime;
+
+            diffDown.transferred += diffDownHelper.lastSize;
+            diffDown.bytesPerSecond = Math.floor((diffDown.transferred * 1000) / deltaTime);
+            diffDown.percent = (diffDown.transferred * 100) / diffDown.total;
+
+            diffDownHelper.lastSize = currentSize;
+            diffDownHelper.lastTime = currentTime;
+            mainWindow.webContents.send('update/downloading', { ...diffDown });
+            return msg;
+        }
+
+        return msg;
+    });
 };
 
 app.name = APP_NAME; // overrides @trezor/suite-desktop app name in menu

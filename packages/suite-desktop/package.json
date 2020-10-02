@@ -1,7 +1,7 @@
 {
     "name": "@trezor/suite-desktop",
     "description": "Trezor Suite desktop application",
-    "version": "20.10.2",
+    "version": "20.10.1",
     "private": true,
     "author": "SatoshiLabs <info@satoshilabs.com>",
     "homepage": "https://trezor.io/",
@@ -16,6 +16,7 @@
         "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux",
         "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
         "publish": "yarn clean && yarn build:desktop && electron-builder --publish always --mac --linux --win",
+        "pubtest": "yarn clean && yarn build:linux && electron-builder --publish always --linux",
         "lint": "eslint '**/*{.ts,.tsx}'",
         "type-check": "tsc --project tsconfig.json"
     },
@@ -119,14 +120,16 @@
         },
         "publish": [
             {
-                "provider": "generic",
-                "url": "http://127.0.0.1:8080/"
+                "provider": "github",
+                "repo": "trezor-desktop-test",
+                "owner": "keraf"
             }
         ]
     },
     "dependencies": {
         "electron-is-dev": "^1.2.0",
         "electron-localshortcut": "^3.2.1",
+        "electron-log": "^4.2.4",
         "electron-next": "^3.1.5",
         "electron-store": "^5.1.1",
         "electron-updater": "^4.3.5",

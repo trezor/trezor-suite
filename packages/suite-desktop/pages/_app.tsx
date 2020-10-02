@@ -1,6 +1,5 @@
 import React from 'react';
 import App from 'next/app';
-import Head from 'next/head';
 import { Store } from 'redux';
 import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
@@ -11,7 +10,6 @@ import ToastContainer from '@suite-components/ToastContainer';
 import Router from '@suite-support/Router';
 import OnlineStatus from '@suite-support/OnlineStatus';
 import BridgeStatus from '@desktop/support/BridgeStatus';
-import VersionCheck from '@desktop/support/VersionCheck';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import DesktopUpdater from '@suite-support/DesktopUpdater';
@@ -38,9 +36,6 @@ class TrezorSuiteApp extends App<Props> {
 
         return (
             <>
-                <Head>
-                    <meta name="viewport" content="width=device-width, initial-scale=1" />
-                </Head>
                 <ReduxProvider store={store}>
                     <ErrorBoundary>
                         <Resize />
@@ -50,11 +45,9 @@ class TrezorSuiteApp extends App<Props> {
                             <Router />
                             <BridgeStatus />
                             <ToastContainer />
-                            <VersionCheck>
-                                <Preloader>
-                                    <Component {...pageProps} />
-                                </Preloader>
-                            </VersionCheck>
+                            <Preloader>
+                                <Component {...pageProps} />
+                            </Preloader>
                         </IntlProvider>
                     </ErrorBoundary>
                 </ReduxProvider>
