@@ -6,14 +6,7 @@ import { bindActionCreators } from 'redux';
 import { Button, ButtonProps, H2, P, colors, Modal, variables } from '@trezor/components';
 
 import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components';
-import {
-    ProgressBar,
-    Loading,
-    Translation,
-    CheckItem,
-    ExternalLink,
-    Image,
-} from '@suite-components';
+import { Loading, Translation, CheckItem, ExternalLink, Image } from '@suite-components';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { InjectedModalApplicationProps, AppState, Dispatch } from '@suite-types';
 import { WordCount } from '@recovery-types';
