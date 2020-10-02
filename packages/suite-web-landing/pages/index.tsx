@@ -1,7 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import Layout from '@suite-web-landing-components/Layout';
-import { H2, Button, P, Link, variables } from '@trezor/components';
+import Download from '@suite-web-landing-components/Download';
+import Feature from '@suite-web-landing-components/Feature';
+import { resolveStaticPath } from '@suite-utils/nextjs';
+import { H1, P, variables, colors } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -9,80 +12,144 @@ const Wrapper = styled.div`
     font-size: ${variables.FONT_SIZE.NORMAL};
 `;
 
-const Item = styled.div``;
+const StyledHeroCta = styled.header`
+    text-align: center;
+`;
 
-const ButtonAccess = styled(Button)`
-    margin: 0 0 10px 0;
+const StyledCta = styled.div`
+    text-align: center;
+    justify-content: center;
+    margin: 168px 0 140px;
+`;
+
+const DownloadWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+`;
+
+const FeaturesWrapper = styled.div`
+    margin: 80px 0 0 0;
+    & > section {
+        margin-bottom: 50px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+`;
+
+const StyledH1 = styled(H1)`
+    font-size: 44px;
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    line-height: 55px;
+`;
+
+const StyledHeadline = styled(H1)<{ size?: number }>`
+    font-size: ${props => (props.size !== undefined ? `${props.size}px` : '64px')};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    line-height: 1.3;
+    margin-bottom: 18px;
+    & > em {
+        font-style: normal;
+        color: ${colors.NEUE_TYPE_GREEN};
+    }
+`;
+
+const StyledSubheadline = styled(P)`
+    font-size: 20px;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.BLACK50} !important;
+    margin-bottom: 65px;
 `;
 
 const StyledP = styled(P)`
-    margin: 10px 0;
-    font-size: ${variables.FONT_SIZE.NORMAL};
+    && {
+        font-size: 20px;
+        line-height: 34px;
+        font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+        color: ${colors.BLACK50};
+    }
 `;
 
-const ButtonWallet = styled(Button)`
-    margin: 10px 0;
+const StyledSoon = styled.div`
+    font-size: 16px;
+    line-height: 24px;
+    text-transform: uppercase;
+    font-weight: ${variables.FONT_WEIGHT.BOLD};
+    color: ${colors.NEUE_TYPE_ORANGE};
 `;
 
-const HeadBackP = styled(P)`
-    display: flex;
-    margin-top: 10px;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    flex-direction: column;
-`;
-
-const InfoRow = styled.div`
-    display: flex;
-    margin: 0 0 20px 0;
-    flex-direction: column;
-`;
-
-const Line = styled.div`
-    margin: 50px 0;
-    border-top: 2px solid #ececec;
-`;
+const features = [
+    {
+        id: 1,
+        headline: 'Desktop app. 2x safer.',
+        text:
+            'Security and privacy. Anti-Phishing, Bitcoin\nCore, Tor support, Discreet mode, Performance.',
+        backgroundPosition: 'bottom right',
+        soon: false,
+    },
+    {
+        id: 2,
+        headline: 'Buy & Exchange Crypto.',
+        text: 'New design improves usability: Passphrase,\nCoin discovery (Accounts)',
+        backgroundPosition: 'center left',
+        soon: true,
+    },
+    {
+        id: 3,
+        headline: 'Coin support.\nOne Trezor app.',
+        text: 'ETH, ETC, XRP, (ERC 20 tokens)\nnow all in one app.',
+        soon: false,
+    },
+];
 
 const Index = () => (
     <Layout>
         <Wrapper>
-            <H2>Beta Wallet</H2>
-            <StyledP size="tiny">
-                Beta Wallet is now specially designated for experimental testing and the access is
-                limited exclusively to our Beta Testers Community.
-            </StyledP>
-            <Item>
-                <Link
-                    href={
-                        process.env.assetPrefix
-                            ? `${process.env.assetPrefix}/wallet/start`
-                            : '/wallet/start'
-                    }
-                    target="_self"
-                    variant="nostyle"
-                >
-                    <ButtonAccess variant="primary">Log in to Beta Wallet</ButtonAccess>
-                </Link>
-            </Item>
-            <Line />
-            <H2>Stable Wallet &amp; ETH / XRP Wallet</H2>
-            <HeadBackP size="tiny">
-                <InfoRow>
-                    For ETH, XRP, ETC and ERC-20 tokens go to Trezor ETH / XRP Wallet:
-                    <Link
-                        href="https://beta-wallet.trezor.io/next"
-                        target="_blank"
-                        variant="nostyle"
-                    >
-                        <ButtonWallet variant="secondary">Trezor ETH / XRP Wallet</ButtonWallet>
-                    </Link>
-                </InfoRow>
-                <InfoRow>
-                    For BTC &amp; other coins go to Trezor Stable Wallet:
-                    <Link href="https://wallet.trezor.io" target="_blank" variant="nostyle">
-                        <ButtonWallet variant="secondary">Trezor Wallet</ButtonWallet>
-                    </Link>
-                </InfoRow>
-            </HeadBackP>
+            <StyledHeroCta>
+                <StyledHeadline>
+                    Managing crypto just got
+                    <br />
+                    <em>safer and easier</em>
+                </StyledHeadline>
+                <StyledSubheadline>
+                    Trezor wallet is now a desktop &amp; browser app.
+                </StyledSubheadline>
+                <DownloadWrapper>
+                    <Download />
+                </DownloadWrapper>
+            </StyledHeroCta>
+            <FeaturesWrapper>
+                {features.map((item, key) => {
+                    return (
+                        <Feature
+                            image={resolveStaticPath(
+                                `images/suite-web-landing/feature${item.id}.png`,
+                            )}
+                            key={item.id}
+                            flip={key % 2 === 1}
+                            backgroundPosition={
+                                item.backgroundPosition !== undefined
+                                    ? item.backgroundPosition
+                                    : undefined
+                            }
+                        >
+                            {item.soon && <StyledSoon>Soon</StyledSoon>}
+                            <StyledH1>{item.headline}</StyledH1>
+                            <StyledP>{item.text}</StyledP>
+                        </Feature>
+                    );
+                })}
+            </FeaturesWrapper>
+            <StyledCta>
+                <StyledHeadline size={44}>
+                    We got <em>63 new features</em>.<br />
+                    See for yourself.
+                </StyledHeadline>
+                <DownloadWrapper>
+                    <Download />
+                </DownloadWrapper>
+            </StyledCta>
         </Wrapper>
     </Layout>
 );
