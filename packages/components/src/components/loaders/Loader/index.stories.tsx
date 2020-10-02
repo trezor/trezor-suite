@@ -7,13 +7,7 @@ import { infoOptions } from '../../../support/storybook';
 storiesOf('Loaders', module).add(
     'Loader',
     () => {
-
-        return (
-            <Loader
-                size={number('Size', 50)}
-                strokeWidth={number('Stroke width', 1)}
-            />
-        );
+        return <Loader size={number('Size', 50)} strokeWidth={number('Stroke width', 1)} />;
     },
     {
         info: {
