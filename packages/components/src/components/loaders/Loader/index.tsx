@@ -13,22 +13,15 @@ const Wrapper = styled.div<Props>`
     align-items: center;
 `;
 
-const SvgWrapper = styled.svg`
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    transform-origin: center center;
-`;
-
 const StyledLoader = styled.div<{ size: number; strokeWidth: number }>`
     position: relative;
     text-indent: -9999em;
-    border-top: ${props => `${props.strokeWidth}px`} solid ${colors.GREEN};
-    border-right: ${props => `${props.strokeWidth}px`} solid ${colors.GREEN};
-    border-bottom: ${props => `${props.strokeWidth}px`} solid ${colors.GREEN};
+    border-top: ${props => `${props.strokeWidth}px`} solid ${colors.NEUE_TYPE_GREEN};
+    border-right: ${props => `${props.strokeWidth}px`} solid ${colors.NEUE_TYPE_GREEN};
+    border-bottom: ${props => `${props.strokeWidth}px`} solid ${colors.NEUE_TYPE_GREEN};
     border-left: ${props => `${props.strokeWidth}px`} solid transparent;
     transform: translateZ(0);
-    animation: ${SPIN} 0.6s infinite linear;
+    animation: ${SPIN} 1s infinite linear;
     &,
     &:after {
         border-radius: 50%;
