@@ -20,7 +20,7 @@ const SvgWrapper = styled.svg`
     transform-origin: center center;
 `;
 
-const StyledLoader = styled.div<{ size: number, strokeWidth: number }>`
+const StyledLoader = styled.div<{ size: number; strokeWidth: number }>`
     position: relative;
     text-indent: -9999em;
     border-top: ${props => `${props.strokeWidth}px`} solid ${colors.GREEN};
@@ -34,7 +34,7 @@ const StyledLoader = styled.div<{ size: number, strokeWidth: number }>`
         border-radius: 50%;
         width: ${props => `${props.size}px`};
         height: ${props => `${props.size}px`};
-    } 
+    }
 `;
 
 interface Props {
@@ -43,12 +43,7 @@ interface Props {
     strokeWidth?: number;
 }
 
-const Loader = ({
-    className,
-    size = 100,
-    strokeWidth = 2,
-    ...rest
-}: Props) => (
+const Loader = ({ className, size = 100, strokeWidth = 2, ...rest }: Props) => (
     <Wrapper className={className} size={size} {...rest}>
         <StyledLoader size={size} strokeWidth={strokeWidth} />
     </Wrapper>
