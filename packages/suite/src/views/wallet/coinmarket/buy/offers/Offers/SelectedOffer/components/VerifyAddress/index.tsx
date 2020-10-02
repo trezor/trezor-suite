@@ -1,7 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { getAccountInfo } from '@wallet-utils/coinmarket/buyUtils';
-import { FiatValue, QuestionTooltip, Translation } from '@suite-components';
+import {
+    FiatValue,
+    QuestionTooltip,
+    Translation,
+    HiddenPlaceholder,
+    AccountLabeling,
+} from '@suite-components';
 import { Input, Button, colors, variables, CoinLogo, DeviceImage } from '@trezor/components';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
 
@@ -130,9 +136,12 @@ const VerifyAddressComponent = () => {
                         <CoinLogo size={25} symbol={symbol} />
                     </LogoWrapper>
                     <AccountWrapper>
-                        <AccountName>Account #{index + 1}</AccountName>
+                        <AccountName>
+                            <AccountLabeling account={account} />
+                        </AccountName>
                         <Amount>
-                            {formattedBalance} <UpperCase>{symbol}</UpperCase> •
+                            <HiddenPlaceholder>{formattedBalance}</HiddenPlaceholder>{' '}
+                            <UpperCase>{symbol}</UpperCase> •
                             <FiatWrapper>
                                 <FiatValue amount={formattedBalance} symbol={symbol} />
                             </FiatWrapper>
