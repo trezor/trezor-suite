@@ -19,11 +19,6 @@ import {
     SupportTicketResponse,
     SupportTicket,
 } from 'invity-api';
-import { isDev } from '@suite-utils/build';
-
-// TODO - get from constants
-const BitcoinTestnetTicker = 'TEST';
-const EthereumTestnetRopstenTicker = 'tROP';
 
 class InvityAPI {
     unknownCountry = 'unknown';
@@ -158,19 +153,6 @@ class InvityAPI {
             const response = await this.request(this.EXCHANGE_COINS, {}, 'GET');
             if (!response || response.length === 0) {
                 return [];
-            }
-            // add BTC and ETH testnet in dev
-            if (isDev()) {
-                response.push({
-                    ticker: BitcoinTestnetTicker,
-                    name: 'Bitcoin Testnet',
-                    category: 'Testnet',
-                });
-                response.push({
-                    ticker: EthereumTestnetRopstenTicker,
-                    name: 'Ethereum Testnet Ropsten',
-                    category: 'Testnet',
-                });
             }
             return response;
         } catch (error) {
