@@ -5,7 +5,7 @@ import { CoinmarketPaymentType, CoinmarketBuyProviderInfo } from '@wallet-compon
 import { QuestionTooltip, Translation } from '@suite-components';
 import { BuyTrade } from 'invity-api';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
-import { formatCryptoAmount } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
+import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 
 interface Props {
     className?: string;

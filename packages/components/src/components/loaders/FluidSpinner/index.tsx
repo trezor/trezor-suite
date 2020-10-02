@@ -23,6 +23,7 @@ const Wrapper = styled.div<Props>`
         animation: ${animations.SPIN} 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
         border-color: #fff transparent transparent transparent;
         border-top-color: ${props => (props.color ? props.color : 'inherit')};
+        will-change: transform;
     }
 
     div:nth-child(1) {

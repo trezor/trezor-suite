@@ -2,7 +2,7 @@ import reducer, { initialState } from '@wallet-reducers/coinmarketReducer';
 import { STORAGE } from '@suite-actions/constants';
 import { COINMARKET_BUY, COINMARKET_EXCHANGE } from '@wallet-actions/constants';
 import { BuyTrade, BuyTradeQuoteRequest, ExchangeTradeQuoteRequest } from 'invity-api';
-import { BuyInfo } from '@suite/actions/wallet/coinmarketBuyActions';
+import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
 
 describe('settings reducer', () => {
     it('test initial state', () => {

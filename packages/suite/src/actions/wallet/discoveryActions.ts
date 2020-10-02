@@ -117,9 +117,12 @@ const calculateProgress = (discovery: Discovery) => (
     };
 };
 
-const handleProgress = (event: ProgressEvent, deviceState: string, item: DiscoveryItem) => (
-    dispatch: Dispatch,
-) => {
+const handleProgress = (
+    event: ProgressEvent,
+    deviceState: string,
+    item: DiscoveryItem,
+    metadataEnabled: boolean,
+) => (dispatch: Dispatch) => {
     // get fresh discovery data
     const discovery = dispatch(getDiscovery(deviceState));
     // ignore progress event when:
@@ -149,11 +152,15 @@ const handleProgress = (event: ProgressEvent, deviceState: string, item: Discove
             failed,
         }),
     );
-    // update discovery
+
+    // change auth confirm field only if metadata are not enabled
+    // otherwise authConfirm is processed in `start() > process response`
     let { authConfirm } = discovery;
-    if (authConfirm && response) {
+    if (authConfirm && response && !metadataEnabled) {
         authConfirm = response.empty;
     }
+
+    // update discovery
     dispatch(
         update({
             ...progress,
@@ -298,16 +305,17 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         dispatch(addToast({ type: 'discovery-error', error: 'Discovery not found' }));
         return;
     }
-    const { deviceState } = discovery;
+    const { deviceState, authConfirm } = discovery;
+    const metadataEnabled = metadata.enabled && device.metadata.status === 'disabled';
 
     // start process
     if (
         discovery.status === DISCOVERY.STATUS.IDLE ||
         discovery.status > DISCOVERY.STATUS.STOPPING
     ) {
-        // if metadata is enabled in settings, but metadata master key does not exist for this device
-        // always try to generate device metadata master key first
-        if (metadata.enabled && device.metadata.status !== 'enabled') {
+        // metadata are enabled in settings but metadata master key does not exist for this device
+        // try to generate device metadata master key if passphrase is not used
+        if (!authConfirm && metadataEnabled) {
             await dispatch(metadataActions.init());
         }
 
@@ -333,7 +341,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
                 keepSession: false,
                 useEmptyPassphrase: device.useEmptyPassphrase,
             });
-            if (discovery.authConfirm) {
+            if (authConfirm) {
                 dispatch({ type: SUITE.REQUEST_AUTH_CONFIRM });
             }
         }
@@ -355,7 +363,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
     const onBundleProgress = (event: ProgressEvent) => {
         const { progress } = event;
         // pass more parameters to handler
-        dispatch(handleProgress(event, deviceState, bundle[progress]));
+        dispatch(handleProgress(event, deviceState, bundle[progress], metadataEnabled));
     };
 
     TrezorConnect.on<AccountInfo>(UI.BUNDLE_PROGRESS, onBundleProgress);
@@ -374,6 +382,25 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
         // fetch fresh data from reducer
         const currentDiscovery = dispatch(getDiscovery(deviceState));
         if (!currentDiscovery) return;
+        // discovery process is still in authConfirm mode (not changed by handleProgress function)
+        // and there is at least one used account in response
+        // try generate metadata keys before next bundle request
+        // otherwise metadata request will be processed in `metadataMiddleware` after auth confirmation
+        if (
+            metadataEnabled &&
+            authConfirm &&
+            currentDiscovery.authConfirm &&
+            result.payload.find(a => !a.empty)
+        ) {
+            dispatch(
+                update({
+                    deviceState,
+                    authConfirm: false,
+                }),
+            );
+            // try to generate device metadata master key
+            await dispatch(metadataActions.init());
+        }
         if (currentDiscovery.status === DISCOVERY.STATUS.RUNNING) {
             await dispatch(start()); // try next index
         } else if (currentDiscovery.status === DISCOVERY.STATUS.STOPPING) {

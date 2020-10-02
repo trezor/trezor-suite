@@ -7,7 +7,7 @@ import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOff
 
 import Quote from './Quote';
 import { Translation } from '@suite/components/suite';
-import { formatCryptoAmount } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
+import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 
 interface Props {
     isAlternative?: boolean;

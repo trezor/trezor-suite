@@ -59,7 +59,7 @@ const ReviewButton = () => {
                     onClick={signTransaction}
                 >
                     {broadcastEnabled ? (
-                        <Translation id="SEND_TRANSACTION" />
+                        <Translation id="REVIEW_AND_SEND_TRANSACTION" />
                     ) : (
                         <Translation id="SIGN_TRANSACTION" />
                     )}

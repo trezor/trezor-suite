@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Button, variables, colors } from '@trezor/components';
 import { CoinmarketTransactionId } from '@wallet-components';
-import { Translation } from '@suite/components/suite/Translation';
+import { Translation } from '@suite-components/Translation';
 import { BuyTrade } from 'invity-api';
 import { Account } from '@wallet-types';
-import invityAPI from '@suite/services/suite/invityAPI';
-import { createTxLink, submitRequestForm } from '@suite/utils/wallet/coinmarket/buyUtils';
+import invityAPI from '@suite-services/invityAPI';
+import { createTxLink, submitRequestForm } from '@wallet-utils/coinmarket/buyUtils';
 
 const Wrapper = styled.div`
     display: flex;

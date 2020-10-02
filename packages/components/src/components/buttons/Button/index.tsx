@@ -200,6 +200,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     isWhite?: boolean;
     fullWidth?: boolean;
     alignIcon?: 'left' | 'right';
+    'data-test'?: string;
 }
 
 const Button = React.forwardRef(

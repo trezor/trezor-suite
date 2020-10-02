@@ -4,15 +4,17 @@ import { DEVICE } from 'trezor-connect';
 import { SUITE } from '@suite-actions/constants';
 import { NotificationEntry } from '@suite-reducers/notificationReducer';
 import messages from '@suite/support/messages';
-import { ExtendedMessageDescriptor } from '@suite-types';
+import { ExtendedMessageDescriptor, ToastNotificationVariant } from '@suite-types';
 import withAction from './components/withAction';
 import withTransaction from './components/withTransaction';
 
 export interface ViewProps {
     notification: NotificationEntry;
+    variant: ToastNotificationVariant;
     icon?: IconProps['icon'];
     message: ExtendedMessageDescriptor;
     actionLabel?: ExtendedMessageDescriptor;
+    cancelable?: boolean;
     action?: () => any;
 }
 
@@ -32,7 +34,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         case 'acquire-error':
             return withAction(View, {
                 notification,
-                icon: 'WARNING',
+                variant: 'warning',
                 message: {
                     ...messages.TOAST_ACQUIRE_ERROR,
                     values: {
@@ -45,7 +47,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         case 'auth-failed':
             return withAction(View, {
                 notification,
-                icon: 'WARNING',
+                variant: 'warning',
                 message: {
                     ...messages.TOAST_AUTH_FAILED,
                     values: {
@@ -58,7 +60,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         case 'auth-confirm-error':
             return withAction(View, {
                 notification,
-                icon: 'WARNING',
+                variant: 'warning',
                 message: {
                     ...messages.TOAST_AUTH_CONFIRM_ERROR,
                     values: {
@@ -71,7 +73,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         case 'discovery-error':
             return withAction(View, {
                 notification,
-                icon: 'WARNING',
+                variant: 'error',
                 message: {
                     ...messages.TOAST_DISCOVERY_ERROR,
                     values: {
@@ -84,7 +86,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         case 'backup-failed':
             return simple(View, {
                 notification,
-                icon: 'WARNING',
+                variant: 'error',
                 message: messages.TOAST_BACKUP_FAILED,
             });
 
@@ -92,6 +94,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
             return simple(View, {
                 notification,
                 icon: 'SETTINGS',
+                variant: 'success',
                 message: messages.TOAST_BACKUP_SUCCESS,
             });
 
@@ -99,6 +102,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
             return simple(View, {
                 notification,
                 icon: 'SETTINGS',
+                variant: 'success',
                 message: messages.TOAST_SETTINGS_APPLIED,
             });
 
@@ -106,6 +110,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
             return simple(View, {
                 notification,
                 icon: 'SETTINGS',
+                variant: 'success',
                 message: messages.TOAST_PIN_CHANGED,
             });
 
@@ -113,13 +118,14 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
             return simple(View, {
                 notification,
                 icon: 'SETTINGS',
+                variant: 'success',
                 message: messages.TOAST_DEVICE_WIPED,
             });
 
         case 'copy-to-clipboard':
             return simple(View, {
                 notification,
-                icon: 'INFO',
+                variant: 'success',
                 message: messages.TOAST_COPY_TO_CLIPBOARD,
             });
 
@@ -127,6 +133,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
             return withTransaction(View, {
                 notification,
                 icon: 'RECEIVE',
+                variant: 'info',
                 message: {
                     ...messages.TOAST_TX_RECEIVED,
                     values: {
@@ -141,6 +148,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
             return withTransaction(View, {
                 notification,
                 icon: 'SEND',
+                variant: 'success',
                 message: {
                     ...messages.TOAST_TX_SENT,
                     values: {
@@ -155,6 +163,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
             return simple(View, {
                 notification,
                 icon: 'SEND',
+                variant: 'success',
                 message: {
                     ...messages.TOAST_RAW_TX_SENT,
                     values: {
@@ -166,7 +175,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         case 'tx-confirmed':
             return withTransaction(View, {
                 notification,
-                icon: 'INFO',
+                variant: 'info',
                 message: {
                     ...messages.TOAST_TX_CONFIRMED,
                     values: {
@@ -180,7 +189,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         case 'sign-tx-error':
             return simple(View, {
                 notification,
-                icon: 'WARNING',
+                variant: 'error',
                 message: {
                     ...messages.TOAST_SIGN_TX_ERROR,
                     values: {
@@ -192,7 +201,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         case 'verify-address-error':
             return simple(View, {
                 notification,
-                icon: 'WARNING',
+                variant: 'error',
                 message: {
                     ...messages.TOAST_VERIFY_ADDRESS_ERROR,
                     values: {
@@ -204,7 +213,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         case 'sign-message-error':
             return simple(View, {
                 notification,
-                icon: 'WARNING',
+                variant: 'error',
                 message: {
                     ...messages.TOAST_SIGN_MESSAGE_ERROR,
                     values: {
@@ -216,7 +225,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         case 'verify-message-error':
             return simple(View, {
                 notification,
-                icon: 'WARNING',
+                variant: 'error',
                 message: {
                     ...messages.TOAST_VERIFY_MESSAGE_ERROR,
                     values: {
@@ -228,7 +237,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         case 'error':
             return simple(View, {
                 notification,
-                icon: 'WARNING',
+                variant: 'error',
                 message: {
                     ...messages.TOAST_GENERIC_ERROR,
                     values: {
@@ -240,14 +249,14 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         case 'clear-storage':
             return simple(View, {
                 notification,
-                icon: 'INFO',
+                variant: 'success',
                 message: messages.TR_STORAGE_CLEARED,
             });
 
         case 'bridge-dev-restart':
             return simple(View, {
                 notification,
-                icon: 'INFO',
+                variant: 'info',
                 message: notification.devMode
                     ? messages.TR_BRIDGE_DEV_MODE_START
                     : messages.TR_BRIDGE_DEV_MODE_STOP,
@@ -256,21 +265,21 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         case 'metadata-not-found-error':
             return simple(View, {
                 notification,
-                icon: 'WARNING',
+                variant: 'error',
                 message: messages.METADATA_PROVIDER_NOT_FOUND_ERROR,
             });
 
         case 'metadata-auth-error':
             return simple(View, {
                 notification,
-                icon: 'WARNING',
+                variant: 'error',
                 message: messages.METADATA_PROVIDER_AUTH_ERROR,
             });
 
         case 'metadata-unexpected-error':
             return simple(View, {
                 notification,
-                icon: 'WARNING',
+                variant: 'error',
                 message: messages.METADATA_PROVIDER_UNEXPECTED_ERROR,
             });
 
@@ -278,7 +287,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         case DEVICE.CONNECT:
             return withAction(View, {
                 notification,
-                icon: 'INFO',
+                variant: 'info',
                 message: {
                     ...messages.EVENT_DEVICE_CONNECT,
                     values: {
@@ -291,7 +300,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         case DEVICE.CONNECT_UNACQUIRED:
             return withAction(View, {
                 notification,
-                icon: 'WARNING',
+                variant: 'warning',
                 message: {
                     ...messages.EVENT_DEVICE_CONNECT_UNACQUIRED,
                     values: {
@@ -304,7 +313,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         case SUITE.AUTH_DEVICE:
             return simple(View, {
                 notification,
-                icon: 'INFO',
+                variant: 'info',
                 message: {
                     ...messages.EVENT_WALLET_CREATED,
                     values: {
@@ -316,7 +325,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         default:
             return simple(View, {
                 notification,
-                icon: 'INFO',
+                variant: 'info',
                 message: {
                     // TODO: proper msg definition
                     id: notification.type as 'TR_404_DESCRIPTION',

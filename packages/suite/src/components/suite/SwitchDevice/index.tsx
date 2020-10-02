@@ -26,7 +26,6 @@ const DeviceItemsWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     flex: 1;
-    padding: 24px 32px;
 `;
 
 const SwitchDeviceModal = (props: Props) => {

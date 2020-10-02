@@ -10,7 +10,6 @@ import { TradeBuy } from '@wallet-reducers/coinmarketReducer';
 import { AppState } from '@suite-types';
 import { loadBuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
-import { loadExchangeInfo } from '@suite/actions/wallet/coinmarketExchangeActions';
 
 export const useInvityAPI = () => {
     const selectedAccount = useSelector<AppState, AppState['wallet']['selectedAccount']>(
@@ -50,7 +49,7 @@ export const useInvityAPI = () => {
         }
 
         if (!exchangeInfo) {
-            loadExchangeInfo().then(exchangeInfo => {
+            coinmarketExchangeActions.loadExchangeInfo().then(exchangeInfo => {
                 saveExchangeInfo(exchangeInfo);
             });
         }

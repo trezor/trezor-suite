@@ -56,6 +56,7 @@ export default {
 
     NEUE_TYPE_GREEN: '#279503',
     NEUE_TYPE_ORANGE: '#c19009',
+    NEUE_TYPE_BLUE: '#197eaa',
     NEUE_TYPE_RED: '#cd4949',
     NEUE_TYPE_DARK_GREY: '#404040',
     NEUE_TYPE_LIGHT_GREY: '#808080',

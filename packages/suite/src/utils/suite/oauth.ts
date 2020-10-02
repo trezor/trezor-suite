@@ -67,12 +67,13 @@ export const getMetadataOauthToken = (url: string) => {
         }
     };
 
-    if (window.desktopApi) {
+    const { desktopApi } = window;
+    if (desktopApi) {
         const onIpcMessage = (_sender: any, message: any) => {
             onMessage({ ...message, origin: 'wallet.trezor.io' });
-            window.desktopApi.off('oauth', onIpcMessage);
+            desktopApi.off('oauth', onIpcMessage);
         };
-        window.desktopApi.on('oauth', onIpcMessage);
+        desktopApi.on('oauth', onIpcMessage);
     } else {
         window.addEventListener('message', onMessage);
     }

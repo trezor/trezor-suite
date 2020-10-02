@@ -13,9 +13,7 @@ describe('Metadata', () => {
         cy.task('stopGoogle');
     });
 
-    it(`
-        Address labeling
-        `, () => {
+    it('Address labeling', () => {
         // prepare test
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');

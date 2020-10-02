@@ -31,6 +31,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@passphrase/confirm-checkbox').click();
         cy.getTestElement('@passphrase/input').type('cba');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
+        cy.getTestElement('@toast/auth-confirm-error/close').click();
         // retry
         cy.getTestElement('@passphrase-mismatch/retry-button').click();
         // confirm again

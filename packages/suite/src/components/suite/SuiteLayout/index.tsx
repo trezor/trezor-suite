@@ -5,6 +5,7 @@ import { colors, variables } from '@trezor/components';
 import SuiteNotifications from '@suite-components/Notifications';
 import Head from 'next/head';
 import { AppState } from '@suite-types';
+import { BetaBadge } from '@suite-components';
 import MenuSecondary from '@suite-components/MenuSecondary';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import { DiscoveryProgress } from '@wallet-components';
@@ -59,11 +60,14 @@ const DefaultPaddings = styled.div`
     display: flex;
     justify-content: center;
     width: 100%;
-    height: 100%;
-    padding: 24px 32px 0px 32px;
+    padding: 24px 32px 90px 32px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding: 24px 16px 0px 16px;
+        padding: 24px 16px 70px 16px;
+    }
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding-bottom: 50px;
     }
 `;
 
@@ -172,6 +176,7 @@ const SuiteLayout = (props: Props) => {
                     )}
                 </LayoutContext.Provider>
             </CoinFilterContext.Provider>
+            <BetaBadge />
         </PageWrapper>
     );
 };

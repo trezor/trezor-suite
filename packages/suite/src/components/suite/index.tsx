@@ -31,7 +31,9 @@ import { AccountLabeling, AddressLabeling, WalletLabeling, MetadataLabeling } fr
 import FormattedCryptoAmount from './FormattedCryptoAmount';
 import Sign from './Sign';
 import AddAccountButton from './AddAccountButton';
+import ToastContainer from './ToastContainer';
 import { ReadMoreLink } from './ReadMoreLink';
+import BetaBadge from './BetaBadge';
 
 export {
     Backdrop,
@@ -72,6 +74,8 @@ export {
     Sign,
     AddAccountButton,
     ReadMoreLink,
+    BetaBadge,
+    ToastContainer,
 };
 
 export type { ImageProps };
