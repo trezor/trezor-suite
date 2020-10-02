@@ -67,15 +67,7 @@ const CoinmarketTopPanel = () => {
         <Wrapper>
             <Content>
                 <Left>
-                    <Back
-                        onClick={() =>
-                            goto('wallet-coinmarket-buy', {
-                                symbol: selectedAccount.params.symbol,
-                                accountIndex: selectedAccount.params.accountIndex,
-                                accountType: selectedAccount.params.accountType,
-                            })
-                        }
-                    >
+                    <Back onClick={() => goto('wallet-coinmarket-buy', selectedAccount.params)}>
                         <StyledIcon icon="ARROW_LEFT" />
                         <AccountLabeling account={account} />
                     </Back>

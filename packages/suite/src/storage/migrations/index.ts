@@ -110,20 +110,4 @@ export const migrate = async (
     if (oldVersion < 17) {
         db.createObjectStore('coinmarketTrades');
     }
-
-    if (oldVersion < 18) {
-        const tradesStore = transaction.objectStore('coinmarketTrades');
-        tradesStore
-            .openCursor()
-            .then(function addAccountDescriptor(cursor): Promise<void> | undefined {
-                if (!cursor) {
-                    return;
-                }
-                const trade = cursor.value;
-                trade.account.descriptor = undefined;
-                cursor.update(trade);
-
-                return cursor.continue().then(addAccountDescriptor);
-            });
-    }
 };
