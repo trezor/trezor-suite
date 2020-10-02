@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
-import { H2, P, Button, ButtonProps, colors, Modal } from '@trezor/components';
+import { P, Button, ButtonProps, colors, Modal } from '@trezor/components';
 import * as backupActions from '@backup-actions/backupActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { Dispatch, AppState, InjectedModalApplicationProps } from '@suite-types';
-import { ProgressBar, Loading, Image, Translation, ExternalLink } from '@suite-components';
+import { Loading, Image, Translation, ExternalLink } from '@suite-components';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
 import { canStart, canContinue } from '@backup-utils';
 import { FAILED_BACKUP_URL } from '@suite-constants/urls';
@@ -60,6 +60,32 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
         dispatch,
     );
 
+type BACKUP_STATUS = 'initial' | 'in-progress' | 'finished';
+
+const getModalHeading = (backupStatus: BACKUP_STATUS, backupError: any) => {
+    if (backupStatus === 'initial') {
+        return <Translation id="TR_CREATE_BACKUP" />;
+    }
+
+    if (backupStatus === 'finished' && !backupError) {
+        return <Translation id="TR_BACKUP_CREATED" />;
+    }
+
+    if (backupStatus === 'finished' && backupError) {
+        return <Translation id="TOAST_BACKUP_FAILED" />;
+    }
+    return null;
+};
+
+const getEdgeCaseModalHeading = (unfinishedBackup: boolean) => {
+    if (unfinishedBackup) {
+        return <Translation id="BACKUP_BACKUP_ALREADY_FAILED_HEADING" />;
+    }
+
+    // if backup finished
+    return <Translation id="BACKUP_BACKUP_ALREADY_FINISHED_HEADING" />;
+};
+
 type Props = ReturnType<typeof mapDispatchToProps> &
     ReturnType<typeof mapStateToProps> &
     InjectedModalApplicationProps;
@@ -73,7 +99,12 @@ const Backup = (props: Props) => {
     if (modal) {
         // modal is shown as standalone not inner modal as expected
         return (
-            <Modal cancelable={props.cancelable} onCancel={props.onCancel} useFixedHeight>
+            <Modal
+                cancelable={props.cancelable}
+                onCancel={props.onCancel}
+                useFixedHeight
+                centerContent
+            >
                 {modal}
             </Modal>
         );
@@ -102,12 +133,14 @@ const Backup = (props: Props) => {
     */
     if (backup.status !== 'finished' && !backup.error && device.features.needs_backup === false) {
         return (
-            <Modal useFixedHeight cancelable onCancel={props.onCancel}>
+            <Modal
+                useFixedHeight
+                cancelable
+                onCancel={props.onCancel}
+                heading={getEdgeCaseModalHeading(device.features.unfinished_backup)}
+            >
                 {!device.features.unfinished_backup && (
                     <>
-                        <H2>
-                            <Translation id="BACKUP_BACKUP_ALREADY_FINISHED_HEADING" />
-                        </H2>
                         <StyledP data-test="@backup/already-finished-message">
                             <Translation id="BACKUP_BACKUP_ALREADY_FINISHED_DESCRIPTION" />
                         </StyledP>
@@ -116,9 +149,6 @@ const Backup = (props: Props) => {
                 )}
                 {device.features.unfinished_backup && (
                     <>
-                        <H2>
-                            <Translation id="BACKUP_BACKUP_ALREADY_FAILED_HEADING" />
-                        </H2>
                         <StyledP data-test="@backup/already-failed-message">
                             <Translation id="BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION" />
                             <ExternalLink href={FAILED_BACKUP_URL}>
@@ -151,29 +181,15 @@ const Backup = (props: Props) => {
             cancelable={props.cancelable}
             onCancel={props.onCancel}
             data-test="@backup"
+            heading={getModalHeading(backup.status, backup.error)}
+            totalProgressBarSteps={backupStatuses.length}
+            currentProgressBarStep={backupStatuses.findIndex(s => s === backup.status) + 1}
         >
-            <ProgressBar
-                showHelp
-                total={backupStatuses.length}
-                current={backupStatuses.findIndex(s => s === backup.status) + 1}
-            />
-
-            <H2>
-                {backup.status === 'initial' && <Translation id="TR_CREATE_BACKUP" />}
-                {backup.status === 'finished' && !backup.error && (
-                    <Translation id="TR_BACKUP_CREATED" />
-                )}
-                {backup.status === 'finished' && backup.error && (
-                    <Translation id="TOAST_BACKUP_FAILED" />
-                )}
-            </H2>
-
             {backup.status === 'initial' && (
                 <>
                     <StyledP size="small">
                         <Translation id="TR_BACKUP_SUBHEADING_1" />
                     </StyledP>
-
                     <PreBackupCheckboxes />
                     <Buttons>
                         <Col>
