@@ -9,3 +9,4 @@
   - [Versioning](misc/versioning.md)
   - [Analytics](misc/analytics.md)
   - [Desktop Updates](misc/desktop_updates.md)
+  - [Feature Flags](misc/feature_flags.md)
