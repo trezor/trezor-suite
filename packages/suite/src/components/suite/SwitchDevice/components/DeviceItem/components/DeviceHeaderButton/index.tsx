@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, Icon } from '@trezor/components';
-import { NotificationCard, Translation } from '@suite-components';
+import { Translation } from '@suite-components';
+import NotificationCard from '@suite-components/NotificationCard'; // on purpose to avoid hacky sc overriding
 import * as deviceUtils from '@suite-utils/device';
 import { TrezorDevice } from '@suite-types';
 
-const GrayNotificationCard = styled(props => <NotificationCard {...props} />)`
+const GrayNotificationCard = styled(NotificationCard)`
     background: ${colors.NEUE_BG_GRAY};
+    margin-bottom: 0px;
 `;
 interface Props {
     needsAttention: boolean;
