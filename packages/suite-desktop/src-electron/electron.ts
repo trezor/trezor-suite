@@ -74,7 +74,6 @@ const init = async () => {
         webPreferences: {
             webSecurity: !isDev,
             allowRunningInsecureContent: isDev,
-            nativeWindowOpen: true,
             nodeIntegration: false,
             contextIsolation: true,
             enableRemoteModule: false,
@@ -127,6 +126,8 @@ const init = async () => {
             handleExternalLink(event, url);
         }
     });
+
+    mainWindow.webContents.on('will-navigate', handleExternalLink);
 
     mainWindow.on('page-title-updated', evt => {
         // prevent updating window title

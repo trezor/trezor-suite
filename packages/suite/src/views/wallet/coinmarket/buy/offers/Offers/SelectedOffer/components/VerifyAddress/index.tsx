@@ -115,7 +115,7 @@ const VerifyAddressComponent = () => {
         goToPayment,
         addressVerified,
     } = useCoinmarketBuyOffersContext();
-    const { symbol, index, formattedBalance } = account;
+    const { symbol, formattedBalance } = account;
     const { path, address } = getAccountInfo(account);
 
     if (!path || !address || !selectedQuote) {
