@@ -34,7 +34,7 @@ const getHoverColor = (variant: Props['variant']) => {
 const getIcon = (variant: Props['variant']) => {
     switch (variant) {
         case 'loader':
-            return <Loader size={22} transparentRoute />;
+            return <Loader size={22} />;
         default:
             return <Icon icon="WARNING_ACTIVE" size={22} color={getMainColor(variant)} />;
     }
