@@ -128,6 +128,7 @@ export const useOffers = (props: Props) => {
         if (!selectedQuote) return;
 
         const quote = { ...selectedQuote, receiveAddress: address };
+        console.log('createTxLink(selectedQuote, account)', createTxLink(selectedQuote, account));
         const response = await invityAPI.doBuyTrade({
             trade: quote,
             returnUrl: createTxLink(selectedQuote, account),

@@ -1,4 +1,4 @@
-import React, { useMemo, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import { CoinmarketFooter, CoinmarketTopPanel } from '@wallet-components';
 import { variables, colors } from '@trezor/components';
@@ -65,7 +65,7 @@ const Offers = () => {
     const { quotes, alternativeQuotes, selectedQuote } = useCoinmarketBuyOffersContext();
     const { setLayout } = useContext(LayoutContext);
 
-    useMemo(() => {
+    useEffect(() => {
         if (setLayout) setLayout('Trezor Suite | Coinmarket', undefined, <CoinmarketTopPanel />);
     }, [setLayout]);
 

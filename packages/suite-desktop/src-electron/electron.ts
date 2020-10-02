@@ -73,6 +73,7 @@ const init = async () => {
         minHeight: store.MIN_HEIGHT,
         webPreferences: {
             webSecurity: !isDev,
+            nativeWindowOpen: true,
             allowRunningInsecureContent: isDev,
             nodeIntegration: false,
             contextIsolation: true,
@@ -241,5 +242,10 @@ ipcMain.on('oauth-receiver', (_event, message) => {
 
 ipcMain.on('buy-receiver', (_event, message) => {
     mainWindow.focus();
-    mainWindow.loadURL(path.join(src, message.replace('#', '')));
+    mainWindow.loadURL(
+        path.join(
+            src,
+            message.replace('#', '').replace('coinmarket-redirect/', 'coinmarket-redirect#'),
+        ),
+    );
 });
