@@ -11,6 +11,7 @@ import MetadataEdit from './Edit';
 const LabelDefaultValue = styled.div`
     width: 0;
     text-overflow: ellipsis;
+    transition: all 0.6s;
 
     &::before {
         content: ': ';
@@ -47,7 +48,7 @@ const LabelContainer = styled.div`
             width: auto;
         }
         ${LabelDefaultValue} {
-            width: auto;
+            width: 400px;
         }
     }
 `;
