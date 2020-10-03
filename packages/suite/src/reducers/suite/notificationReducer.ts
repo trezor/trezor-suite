@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { DEVICE } from 'trezor-connect';
-import { NOTIFICATION, SUITE } from '@suite-actions/constants';
+import { NOTIFICATION, SUITE, DESKTOP_UPDATE } from '@suite-actions/constants';
 import { Action, TrezorDevice } from '@suite-types';
 import { Network } from '@wallet-types';
 
@@ -50,6 +50,17 @@ export type ToastPayload = (
     | {
           type: 'bridge-dev-restart';
           devMode: boolean;
+      }
+    | {
+          type: DESKTOP_UPDATE.AVAILABLE;
+      }
+    | {
+          type: DESKTOP_UPDATE.DOWNLOADING;
+          transferred: number;
+          total: number;
+      }
+    | {
+          type: DESKTOP_UPDATE.READY;
       }
     | {
           type:
