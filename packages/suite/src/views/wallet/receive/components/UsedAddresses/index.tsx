@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
-import { colors, variables, Button, Icon } from '@trezor/components';
+import { colors, variables, Button } from '@trezor/components';
 import { Card, Translation, HiddenPlaceholder, MetadataLabeling } from '@suite-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { ChildProps as Props } from '../../Container';
@@ -45,11 +45,7 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
     &:nth-last-child(-n + 3) {
         border: 0;
     }
-    ${props =>
-        props.revealed &&
-        css`
-            color: ${colors.NEUE_TYPE_DARK_GREY};
-        `};
+
     ${props =>
         props.onClick &&
         css`
@@ -60,7 +56,7 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
 const GridItemAddress = styled(GridItem)`
     font-variant-numeric: tabular-nums slashed-zero;
 
-    // these two ensure proper metadata behavior
+    /* these two ensure proper metadata behavior */
     white-space: nowrap;
     overflow: hidden;
 `;
@@ -92,6 +88,22 @@ const Actions = styled.div`
     }
 `;
 
+const AddressWrapper = styled.span`
+    cursor: pointer;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    position: relative;
+`;
+
+const Overlay = styled.div`
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    position: absolute;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 120px);
+`;
+
 const DEFAULT_LIMIT = 10;
 
 interface ItemProps {
@@ -103,18 +115,18 @@ interface ItemProps {
     onClick: () => void;
 }
 
-const Item = ({ addr, symbol, onClick, revealed, metadataPayload, index }: ItemProps) => {
+const Item = ({ addr, symbol, onClick, metadataPayload, index }: ItemProps) => {
+    // Currently used addresses are always partially hidden
+    // The only place where full address is shown is confirm-addr modal
     const [isHovered, setIsHovered] = React.useState(false);
     const amount = formatNetworkAmount(addr.received || '0', symbol, true);
     const fresh = addr.transfers < 1;
-    const isRevealed = !!revealed;
-    const address = revealed ? addr.address : `${addr.address.substring(0, 15)}…`;
+    const address = addr.address.substring(0, 20);
 
     return (
         <>
             <GridItemAddress
                 data-test={`@wallet/receive/used-address/${index}`}
-                revealed={isRevealed}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
@@ -124,30 +136,14 @@ const Item = ({ addr, symbol, onClick, revealed, metadataPayload, index }: ItemP
                     }}
                     // if metadata is present, confirm on device option will become available in dropdown
                     defaultVisibleValue={
-                        // eslint-disable-next-line
-                        <span
-                            style={{
-                                cursor: 'pointer',
-                                textOverflow: 'ellipsis',
-                                overflow: 'hidden',
-                            }}
-                            onClick={!metadataPayload.value ? onClick : () => {}}
-                        >
+                        <AddressWrapper onClick={!metadataPayload.value ? onClick : () => {}}>
+                            <Overlay />
                             {address}
-                        </span>
+                        </AddressWrapper>
                     }
                 />
-                {revealed && !revealed.isVerified && (
-                    <Icon
-                        size={14}
-                        icon="WARNING"
-                        color={colors.RED}
-                        style={{ marginLeft: '12px' }}
-                    />
-                )}
             </GridItemAddress>
             <GridItem
-                revealed={isRevealed}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
