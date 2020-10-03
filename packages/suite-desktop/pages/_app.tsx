@@ -40,8 +40,8 @@ class TrezorSuiteApp extends App<Props> {
                     <ErrorBoundary>
                         <Resize />
                         <OnlineStatus />
-                        <DesktopUpdater />
                         <IntlProvider>
+                            <DesktopUpdater />
                             <Router />
                             <BridgeStatus />
                             <ToastContainer />
