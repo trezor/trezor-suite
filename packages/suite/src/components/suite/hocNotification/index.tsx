@@ -1,7 +1,7 @@
 import React from 'react';
 import { IconProps } from '@trezor/components';
 import { DEVICE } from 'trezor-connect';
-import { SUITE } from '@suite-actions/constants';
+import { SUITE, DESKTOP_UPDATE } from '@suite-actions/constants';
 import { NotificationEntry } from '@suite-reducers/notificationReducer';
 import messages from '@suite/support/messages';
 import { ExtendedMessageDescriptor, ToastNotificationVariant } from '@suite-types';
@@ -320,6 +320,30 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
                         walletLabel: 'New wallet',
                     },
                 },
+            });
+
+        case DESKTOP_UPDATE.AVAILABLE:
+            return withAction(View, {
+                notification,
+                variant: 'info',
+                message: messages.TR_UPDATE_AVAILABLE,
+                actionLabel: messages.TR_SHOW,
+            });
+
+        case DESKTOP_UPDATE.DOWNLOADING:
+            return withAction(View, {
+                notification,
+                variant: 'info',
+                message: messages.TR_DOWNLOADING_UPDATE,
+                actionLabel: messages.TR_SHOW,
+            });
+
+        case DESKTOP_UPDATE.READY:
+            return withAction(View, {
+                notification,
+                variant: 'success',
+                message: messages.TR_UPDATE_DOWNLOADED,
+                actionLabel: messages.TR_SHOW,
             });
 
         default:

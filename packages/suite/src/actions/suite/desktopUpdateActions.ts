@@ -1,5 +1,6 @@
 import { DESKTOP_UPDATE } from '@suite-actions/constants';
 import { Dispatch } from '@suite-types';
+import * as notificationsActions from '@suite-actions/notificationActions';
 import { UpdateInfo, UpdateProgress, UpdateWindow } from '@suite-types/desktop';
 
 export type DesktopUpdateActions =
@@ -14,11 +15,17 @@ export type DesktopUpdateActions =
 export const checking = () => async (dispatch: Dispatch) =>
     dispatch({ type: DESKTOP_UPDATE.CHECKING });
 
-export const available = (info: UpdateInfo) => async (dispatch: Dispatch) =>
+export const available = (info: UpdateInfo) => async (dispatch: Dispatch) => {
     dispatch({
         type: DESKTOP_UPDATE.AVAILABLE,
         payload: info,
     });
+    dispatch(
+        notificationsActions.addToast({
+            type: DESKTOP_UPDATE.AVAILABLE,
+        }),
+    );
+};
 
 export const notAvailable = (info: UpdateInfo) => async (dispatch: Dispatch) =>
     dispatch({
@@ -26,17 +33,34 @@ export const notAvailable = (info: UpdateInfo) => async (dispatch: Dispatch) =>
         payload: info,
     });
 
-export const downloading = (progress: UpdateProgress) => async (dispatch: Dispatch) =>
+export const downloading = (progress: UpdateProgress) => async (dispatch: Dispatch) => {
     dispatch({
         type: DESKTOP_UPDATE.DOWNLOADING,
         payload: progress,
+        autoClose: false,
     });
+    dispatch(
+        notificationsActions.addToast({
+            type: DESKTOP_UPDATE.DOWNLOADING,
+            transferred: progress.transferred,
+            total: progress.total,
+            autoClose: false,
+        }),
+    );
+};
 
-export const ready = (info: UpdateInfo) => async (dispatch: Dispatch) =>
+export const ready = (info: UpdateInfo) => async (dispatch: Dispatch) => {
     dispatch({
         type: DESKTOP_UPDATE.READY,
         payload: info,
     });
+    dispatch(
+        notificationsActions.addToast({
+            type: DESKTOP_UPDATE.READY,
+            autoClose: false,
+        }),
+    );
+};
 
 export const skip = () => async (dispatch: Dispatch) =>
     dispatch({
