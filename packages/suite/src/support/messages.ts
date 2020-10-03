@@ -3830,7 +3830,7 @@ const definedMessages = defineMessages({
         defaultMessage: 'Firmware update successful',
     },
     FIRMWARE_UPDATE_SUCCESS_DESC: {
-        id: 'FIRMWARE_RECONNECTED_BL_NEXT_STEP_DESC',
+        id: 'FIRMWARE_UPDATE_SUCCESS_DESC',
         defaultMessage:
             'Your device was updated successfully and now runs bleeding edge crypto technology!',
     },
