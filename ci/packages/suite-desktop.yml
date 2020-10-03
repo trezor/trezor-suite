@@ -55,8 +55,8 @@ suite-desktop build mac codesign:
   <<: *build_nix
 
 suite-desktop build linux:
-  only:
-    <<: *run_everything_rules
+  # only:
+  #   <<: *run_everything_rules
   variables:
     artifact: ${DESKTOP_APP_NAME}*
     platform: linux
@@ -97,6 +97,21 @@ suite-desktop build windows codesign:
     platform: win
   <<: *build
   <<: *build_nix
+
+suite-desktop e2e linux:
+    image: circleci/node:11-browsers
+    stage: integration testing
+    script:
+        - export DISPLAY=':99.0'
+        - export ELECTRON_DISABLE_SANDBOX=1 
+        - which google-chrome
+        - google-chrome --version
+        # - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+        # - xvfb :99 -ac &
+        - ls -la
+        - node ./packages/suite-desktop/test/index.js
+    dependencies:
+        - suite-desktop build linux
 
 suite-desktop deploy dev:
   stage: deploy to dev
