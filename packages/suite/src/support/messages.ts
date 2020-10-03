@@ -3856,6 +3856,66 @@ const definedMessages = defineMessages({
         id: 'TR_TAKES_N_MINUTES',
         defaultMessage: 'Takes ~{n} mins',
     },
+    TR_DOWNLOADING_UPDATE: {
+        id: 'TR_DOWNLOADING_UPDATE',
+        defaultMessage: 'Downloading update',
+    },
+    TR_UPDATE_DOWNLOADED: {
+        id: 'TR_UPDATE_DOWNLOADED',
+        defaultMessage: 'Update downloaded!',
+    },
+    TR_SHOW: {
+        id: 'TR_SHOW',
+        defaultMessage: 'Show',
+    },
+    TR_UPDATE_MODAL_AVAILABLE_HEADING: {
+        id: 'TR_UPDATE_MODAL_AVAILABLE_HEADING',
+        defaultMessage: 'Update available',
+    },
+    TR_UPDATE_MODAL_SKIP_THIS_VERSION: {
+        id: 'TR_UPDATE_MODAL_SKIP_THIS_VERSION',
+        defaultMessage: 'Skip',
+    },
+    TR_UPDATE_MODAL_START_DOWNLOAD: {
+        id: 'TR_UPDATE_MODAL_START_DOWNLOAD',
+        defaultMessage: 'Start update',
+    },
+    TR_UPDATE_MODAL_INSTALL_NOW_OR_LATER: {
+        id: 'TR_UPDATE_MODAL_INSTALL_NOW_OR_LATER',
+        defaultMessage: 'Would you like to install the update now?',
+    },
+    TR_UPDATE_MODAL_INSTALL_AND_RESTART: {
+        id: 'TR_UPDATE_MODAL_INSTALL_AND_RESTART',
+        defaultMessage: 'Restart & Update',
+    },
+    TR_UPDATE_MODAL_INSTALL_LATER: {
+        id: 'TR_UPDATE_MODAL_INSTALL_LATER',
+        defaultMessage: 'Update on next launch',
+    },
+    TR_MINIMIZE: {
+        id: 'TR_MINIMIZE',
+        defaultMessage: 'Minimize',
+    },
+    TR_VERSION_HAS_BEEN_RELEASED: {
+        id: 'TR_VERSION_HAS_BEEN_RELEASED',
+        defaultMessage: 'Version {version} has been released!',
+    },
+    TR_CHANGELOG_ON_GITHUB: {
+        id: 'TR_CHANGELOG_ON_GITHUB',
+        defaultMessage: 'Changelog on Github',
+    },
+    TR_UPDATE_MODAL_DOWNLOADING_UPDATE: {
+        id: 'TR_UPDATE_MODAL_DOWNLOADING_UPDATE',
+        defaultMessage: 'Downloading update',
+    },
+    TR_UPDATE_MODAL_UPDATE_DOWNLOADED: {
+        id: 'TR_UPDATE_MODAL_UPDATE_DOWNLOADED',
+        defaultMessage: 'Update downloaded',
+    },
+    TR_UPDATE_MODAL_RESTART_NEEDED: {
+        id: 'TR_UPDATE_MODAL_RESTART_NEEDED',
+        defaultMessage: 'This requires restarting Suite.',
+    },
 } as const);
 
 export default definedMessages;
