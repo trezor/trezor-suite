@@ -3,8 +3,10 @@ import { connect } from 'react-redux';
 import { DEVICE } from 'trezor-connect';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
+import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
 import { Dispatch } from '@suite-types';
 import { ViewProps } from '../index';
+import { DESKTOP_UPDATE } from '@suite/actions/suite/constants';
 
 /**
  * HOC component for specific `state.notifications` views with actions
@@ -39,6 +41,16 @@ const withAction = (View: React.ComponentType<ViewProps>, props: ViewProps) => {
                 action = !notification.seen
                     ? () => dispatch(suiteActions.acquireDevice(notification.device))
                     : undefined;
+                break;
+
+            case DESKTOP_UPDATE.AVAILABLE:
+                action = () => dispatch(desktopUpdateActions.setUpdateWindow('maximized'));
+                break;
+            case DESKTOP_UPDATE.DOWNLOADING:
+                action = () => dispatch(desktopUpdateActions.setUpdateWindow('maximized'));
+                break;
+            case DESKTOP_UPDATE.READY:
+                action = () => dispatch(desktopUpdateActions.setUpdateWindow('maximized'));
                 break;
             // no default
         }
