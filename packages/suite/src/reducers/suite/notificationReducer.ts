@@ -52,15 +52,15 @@ export type ToastPayload = (
           devMode: boolean;
       }
     | {
-          type: DESKTOP_UPDATE.AVAILABLE;
+          type: typeof DESKTOP_UPDATE.AVAILABLE;
       }
     | {
-          type: DESKTOP_UPDATE.DOWNLOADING;
+          type: typeof DESKTOP_UPDATE.DOWNLOADING;
           transferred: number;
           total: number;
       }
     | {
-          type: DESKTOP_UPDATE.READY;
+          type: typeof DESKTOP_UPDATE.READY;
       }
     | {
           type:
