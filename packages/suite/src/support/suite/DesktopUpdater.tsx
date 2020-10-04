@@ -1,22 +1,25 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { FormattedDate } from 'react-intl';
+import ReactMarkdown from 'react-markdown';
+import styled from 'styled-components';
+
 import { Button, Modal, H2, variables, colors, Link } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { UpdateInfo, UpdateProgress } from '@suite-types/desktop';
-import styled from 'styled-components';
+import { useActions, useSelector } from '@suite-hooks';
+
+import { getReleaseNotes, getReleaseUrl } from '@suite/services/github';
 
 import * as file from '@suite-utils/file';
 import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
-import { useActions, useSelector } from '@suite-hooks';
-import { FormattedDate } from 'react-intl';
 
 const GreenH2 = styled(H2)`
     text-align: left;
     color: ${colors.NEUE_TYPE_GREEN};
 `;
 
+// TODO: Style properly
 const ChangelogWrapper = styled.pre`
-    display: flex;
-    white-space: pre-wrap;
     margin: 20px 0px;
     background: ${colors.NEUE_BG_GRAY};
     border-radius: 8px;
@@ -26,6 +29,7 @@ const ChangelogWrapper = styled.pre`
     color: ${colors.NEUE_TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    text-align: left;
 `;
 
 const GithubWrapper = styled.div`
@@ -101,6 +105,12 @@ const Description = styled.span`
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
 
+type ReleaseState = {
+    loading: boolean;
+    version: string | undefined;
+    notes: string | undefined;
+};
+
 const DesktopUpdater = () => {
     const {
         checking,
@@ -120,6 +130,11 @@ const DesktopUpdater = () => {
         setUpdateWindow: desktopUpdateActions.setUpdateWindow,
     });
     const desktopUpdate = useSelector(state => state.desktopUpdate);
+    const [releaseNotes, setReleaseNotes] = useState<ReleaseState>({
+        loading: false,
+        version: undefined,
+        notes: undefined,
+    });
 
     useEffect(() => {
         if (!window.desktopApi) {
@@ -141,6 +156,38 @@ const DesktopUpdater = () => {
         });
         */
     }, [checking, available, notAvailable, downloading, ready]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setReleaseNotes({
+                ...releaseNotes,
+                loading: true,
+            });
+
+            let notes;
+            const version = desktopUpdate.latest?.version;
+
+            try {
+                if (!version) {
+                    throw new Error("Couldn't get latest version.");
+                }
+
+                const release = await getReleaseNotes(version);
+                notes = release.body;
+            } finally {
+                setReleaseNotes({
+                    loading: false,
+                    version,
+                    notes,
+                });
+            }
+        };
+
+        console.log(desktopUpdate.latest, releaseNotes);
+        if (desktopUpdate.latest?.version !== releaseNotes.version && !releaseNotes.loading) {
+            fetchData();
+        }
+    }, [desktopUpdate.latest, releaseNotes]);
 
     const downloadUpdate = useCallback(() => window.desktopApi?.downloadUpdate(), []);
     const installRestart = useCallback(() => window.desktopApi?.installUpdate(), []);
@@ -174,19 +221,28 @@ const DesktopUpdater = () => {
 
     if (desktopUpdate.state === 'available') {
         return (
-            <Modal heading={<Translation id="TR_UPDATE_MODAL_AVAILABLE_HEADING" />} cancelable>
+            <Modal
+                heading={<Translation id="TR_UPDATE_MODAL_AVAILABLE_HEADING" />}
+                cancelable
+                onCancel={hideWindow}
+            >
                 <GreenH2>
                     <Translation
                         id="TR_VERSION_HAS_BEEN_RELEASED"
                         values={{ version: desktopUpdate.latest.version }}
                     />
                 </GreenH2>
-                {/* TODO: CHANGELOG */}
-                <ChangelogWrapper>changelog</ChangelogWrapper>
+
+                <ChangelogWrapper>
+                    {releaseNotes.notes ? (
+                        <ReactMarkdown source={releaseNotes.notes} />
+                    ) : (
+                        <Translation id="TR_COULD_NOT_RETRIEVE_CHANGELOG" />
+                    )}
+                </ChangelogWrapper>
 
                 <GithubWrapper>
-                    {/* TODO: LINK */}
-                    <Link variant="nostyle" href="https://todo.com">
+                    <Link variant="nostyle" href={getReleaseUrl(desktopUpdate.latest.version)}>
                         <Button variant="tertiary" icon="GITHUB">
                             <Translation id="TR_CHANGELOG_ON_GITHUB" />
                         </Button>
@@ -231,6 +287,8 @@ const DesktopUpdater = () => {
                 }
                 currentProgressBarStep={desktopUpdate.progress?.percent || 0}
                 totalProgressBarSteps={100}
+                cancelable
+                onCancel={hideWindow}
             >
                 <DownloadWrapper>
                     <Text>
@@ -242,7 +300,7 @@ const DesktopUpdater = () => {
                         </ReceivedData>
                         /
                         <TotalData>
-                            {file.toHumanReadable(desktopUpdate.progress?.total || 0)}{' '}
+                            {file.toHumanReadable(desktopUpdate.progress?.total || 0)}
                         </TotalData>
                     </DownloadProgress>
                 </DownloadWrapper>
@@ -265,6 +323,8 @@ const DesktopUpdater = () => {
                         </MinimizeButton>
                     </ModalHeadingWrapper>
                 }
+                cancelable
+                onCancel={hideWindow}
             >
                 <H2>
                     <Translation id="TR_UPDATE_MODAL_INSTALL_NOW_OR_LATER" />

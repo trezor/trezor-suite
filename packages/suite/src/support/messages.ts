@@ -331,10 +331,6 @@ const definedMessages = defineMessages({
         defaultMessage: 'Check for devices',
         id: 'TR_CHECK_FOR_DEVICES',
     },
-    TR_CHECK_FOR_UPDATES: {
-        defaultMessage: 'Check for updates',
-        id: 'TR_CHECK_FOR_UPDATES',
-    },
     TR_CHECK_PGP_SIGNATURE: {
         defaultMessage: 'Check PGP signature',
         id: 'TR_CHECK_PGP_SIGNATURE',
@@ -1930,8 +1926,12 @@ const definedMessages = defineMessages({
         id: 'TR_YOUR_CURRENT_FIRMWARE',
     },
     TR_YOUR_CURRENT_VERSION: {
-        defaultMessage: 'You are currently running version',
+        defaultMessage: 'You are currently running version {version}.',
         id: 'TR_YOUR_CURRENT_VERSION',
+    },
+    TR_YOUR_NEW_VERSION: {
+        defaultMessage: 'Version {version} is available.',
+        id: 'TR_YOUR_NEW_VERSION',
     },
     TR_YOUR_TREZOR_IS_NOT_BACKED_UP: {
         defaultMessage: 'Your Trezor is not backed up.',
@@ -1965,7 +1965,6 @@ const definedMessages = defineMessages({
         id: 'TR_TO',
         defaultMessage: 'To',
     },
-
     TR_SEND_GAS_LIMIT_TOOLTIP: {
         id: 'TR_SEND_GAS_LIMIT_TOOLTIP',
         defaultMessage:
@@ -3949,6 +3948,26 @@ const definedMessages = defineMessages({
     TR_UPDATE_MODAL_RESTART_NEEDED: {
         id: 'TR_UPDATE_MODAL_RESTART_NEEDED',
         defaultMessage: 'This requires restarting Suite.',
+    },
+    SETTINGS_UPDATE_CHECKING: {
+        id: 'SETTINGS_UPDATE_CHECKING',
+        defaultMessage: 'Checking...',
+    },
+    SETTINGS_UPDATE_CHECK: {
+        id: 'SETTINGS_UPDATE_CHECK',
+        defaultMessage: 'Check for updates',
+    },
+    SETTINGS_UPDATE_AVAILABLE: {
+        id: 'SETTINGS_UPDATE_AVAILABLE',
+        defaultMessage: 'Get latest version',
+    },
+    SETTINGS_UPDATE_DOWNLOADING: {
+        id: 'SETTINGS_UPDATE_DOWNLOADING',
+        defaultMessage: 'Downloading...',
+    },
+    SETTINGS_UPDATE_READY: {
+        id: 'SETTINGS_UPDATE_READY',
+        defaultMessage: 'Install now!',
     },
 } as const);
 

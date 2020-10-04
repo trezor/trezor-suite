@@ -12,6 +12,7 @@ const mapStateToProps = (state: AppState) => ({
     language: state.suite.settings.language,
     localCurrency: state.wallet.settings.localCurrency,
     metadata: state.metadata,
+    desktopUpdate: state.desktopUpdate,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
