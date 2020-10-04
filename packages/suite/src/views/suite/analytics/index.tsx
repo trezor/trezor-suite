@@ -16,17 +16,20 @@ const Body = styled.div`
     align-items: center;
 `;
 
+const BottomBarWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+`;
+
 const StyledP = styled(P)`
     font-size: ${FONT_SIZE.SMALL};
     color: ${colors.BLACK50};
 `;
 
-const FakePadding50 = styled.div`
-    height: 50px;
-`;
-
 const BottomP = styled(P)`
-    margin-top: auto;
+    margin-top: 8px;
 `;
 
 const Bold = styled.span`
@@ -44,16 +47,7 @@ const AnalyticsComponent = () => {
     return (
         <Modal
             useFixedHeight
-            heading={
-                <>
-                    {/* fake padding is not very nice, I know, but... this modal precedes onboarding modals which all have progress bar
-                above headings. We want to have keep same padding from the top to make it look consistent with onboarding screens, 
-                otherwise title "jumps"
-                 */}
-                    <FakePadding50 />
-                    <Translation id="TR_HELP_TREZOR_SUITE" />
-                </>
-            }
+            heading={<Translation id="TR_HELP_TREZOR_SUITE" />}
             description={
                 <>
                     <StyledP>
@@ -73,32 +67,34 @@ const AnalyticsComponent = () => {
                     </Bold>
                 </>
             }
+            bottomBar={
+                <BottomBarWrapper>
+                    <StyledButton
+                        onClick={() => goto('onboarding-index')}
+                        data-test="@analytics/go-to-onboarding-button"
+                    >
+                        <Translation id="TR_CONTINUE" />
+                    </StyledButton>
+                    <BottomP size="tiny">
+                        <Translation
+                            id="TR_TOS_INFORMATION"
+                            values={{
+                                TR_TOS_LINK: (
+                                    <Link href={URLS.TOS_URL}>
+                                        <Translation id="TR_TOS_LINK" />
+                                    </Link>
+                                ),
+                            }}
+                        />
+                    </BottomP>
+                </BottomBarWrapper>
+            }
         >
             <Body>
                 <Image image="ANALYTICS" />
 
                 <Analytics />
-
-                <StyledButton
-                    onClick={() => goto('onboarding-index')}
-                    data-test="@analytics/go-to-onboarding-button"
-                >
-                    <Translation id="TR_CONTINUE" />
-                </StyledButton>
             </Body>
-
-            <BottomP size="tiny">
-                <Translation
-                    id="TR_TOS_INFORMATION"
-                    values={{
-                        TR_TOS_LINK: (
-                            <Link href={URLS.TOS_URL}>
-                                <Translation id="TR_TOS_LINK" />
-                            </Link>
-                        ),
-                    }}
-                />
-            </BottomP>
         </Modal>
     );
 };
