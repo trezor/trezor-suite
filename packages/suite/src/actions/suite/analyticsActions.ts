@@ -14,8 +14,11 @@ export type AnalyticsActions =
 /**
 simple semver for data-analytics part.
 <breaking-change>.<analytics-extended>
+
+Don't forget to update docs with changelog!
 */
-const version = '1.0';
+
+const version = '1.1';
 
 export type AnalyticsEvent =
     | {
@@ -61,8 +64,10 @@ export type AnalyticsEvent =
         */
           type: 'device-update-firmware';
           payload: {
-              /** version of bootloader before update started. unluckily fw version before update is not logged */
+              /** version of bootloader before update started. */
               fromBlVersion: string;
+              /** version of firmware before update started. */
+              fromFwVersion: string;
               /** version of the new firmware e.g 1.2.3 */
               toFwVersion: string;
               /** is new firmware bitcoin only variant? */
@@ -89,7 +94,6 @@ export type AnalyticsEvent =
               /** how many users chose to create new wallet */
               createSeed: boolean;
               /** how many users chose to do recovery */
-
               recoverSeed: boolean;
               /**  how many users clicked that they have a new/used device */
               newDevice: boolean;
