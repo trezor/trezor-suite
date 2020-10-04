@@ -27,20 +27,40 @@ const Content = styled.div`
 
 const Footer = styled.footer`
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: flex-start;
-    padding: 60px 53px 100px 125px;
+    align-items: center;
     border-top: 1px solid #e8e8e8;
+    padding: 60px 20px 100px 20px;
+    text-align: center;
+
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) {
+        flex-direction: row;
+        align-items: flex-start;
+        padding: 60px 53px 100px 125px;
+        text-align: left;
+    }
 `;
 
 const FooterList = styled.div`
     & + & {
-        margin-left: 107px;
+        margin-top: 40px;
+    }
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) {
+        & + & {
+            margin-top: 0px;
+            margin-left: 107px;
+        }
     }
 `;
 
 const FooterLinks = styled.div`
     display: flex;
+    flex-direction: column;
+
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) {
+        flex-direction: row;
+    }
 `;
 
 const FooterHeadline = styled.h3`
@@ -63,8 +83,15 @@ const FooterCompany = styled.div`
     margin-top: 24px;
     display: flex;
     flex-direction: column;
-    text-align: right;
-    align-items: flex-end;
+    text-align: center;
+    align-items: center;
+    margin-top: 40px;
+
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) {
+        text-align: right;
+        align-items: flex-end;
+        margin-top: 0;
+    }
 `;
 
 const FooterParagraph = styled.p`
