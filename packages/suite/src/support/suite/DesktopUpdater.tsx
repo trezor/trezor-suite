@@ -190,10 +190,13 @@ const DesktopUpdater = () => {
 
     const downloadUpdate = useCallback(() => window.desktopApi?.downloadUpdate(), []);
     const installRestart = useCallback(() => window.desktopApi?.installUpdate(), []);
+    /* Not used for now
     const toggleMaxMinWindow = useCallback(
         () => setUpdateWindow(desktopUpdate.window === 'maximized' ? 'minimized' : 'maximized'),
         [desktopUpdate.window, setUpdateWindow],
     );
+    */
+    const cancelUpdate = useCallback(() => window.desktopApi?.cancelUpdate(), []);
     const hideWindow = useCallback(() => setUpdateWindow('hidden'), [setUpdateWindow]);
 
     if (desktopUpdate.window === 'hidden') {
@@ -211,7 +214,7 @@ const DesktopUpdater = () => {
     }
 
     //
-    // TODO: Single modal with multiple states or one modal per state?
+    // TODO: Design alternative modal for minimized view
     //
 
     if (desktopUpdate.state === 'available') {
@@ -271,12 +274,8 @@ const DesktopUpdater = () => {
                 heading={
                     <ModalHeadingWrapper>
                         <Translation id="TR_UPDATE_MODAL_DOWNLOADING_UPDATE" />
-                        <MinimizeButton
-                            onClick={toggleMaxMinWindow}
-                            variant="tertiary"
-                            icon="ARROW_DOWN"
-                        >
-                            <Translation id="TR_MINIMIZE" />
+                        <MinimizeButton onClick={cancelUpdate} variant="tertiary" icon="CROSS">
+                            <Translation id="TR_CANCEL" />
                         </MinimizeButton>
                     </ModalHeadingWrapper>
                 }
@@ -306,18 +305,7 @@ const DesktopUpdater = () => {
     if (desktopUpdate.state === 'ready') {
         return (
             <Modal
-                heading={
-                    <ModalHeadingWrapper>
-                        <Translation id="TR_UPDATE_MODAL_UPDATE_DOWNLOADED" />
-                        <MinimizeButton
-                            onClick={toggleMaxMinWindow}
-                            variant="tertiary"
-                            icon="ARROW_DOWN"
-                        >
-                            <Translation id="TR_MINIMIZE" />
-                        </MinimizeButton>
-                    </ModalHeadingWrapper>
-                }
+                heading={<Translation id="TR_UPDATE_MODAL_UPDATE_DOWNLOADED" />}
                 cancelable
                 onCancel={hideWindow}
             >

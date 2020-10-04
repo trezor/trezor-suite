@@ -9,6 +9,7 @@ export interface DesktopApi {
     checkForUpdates: () => void;
     downloadUpdate: () => void;
     installUpdate: () => void;
+    cancelUpdate: () => void;
 }
 
 declare global {
