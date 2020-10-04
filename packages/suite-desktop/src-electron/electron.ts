@@ -1,7 +1,7 @@
 import { app, session, BrowserWindow, ipcMain, shell, Menu, dialog } from 'electron';
 import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
-import { autoUpdater } from 'electron-updater';
+import { autoUpdater, CancellationToken } from 'electron-updater';
 import electronLogger from 'electron-log';
 import * as path from 'path';
 import * as url from 'url';
@@ -25,6 +25,8 @@ const src = isDev
           protocol: PROTOCOL,
           slashes: true,
       });
+
+const updateCancellationToken = new CancellationToken();
 
 const registerShortcuts = (window: BrowserWindow) => {
     // internally uses before-input-event, which should be safer than adding globalShortcut and removing it on blur event
@@ -204,9 +206,10 @@ const init = async () => {
             total: 0,
             transferred: 0,
         });
-        autoUpdater.downloadUpdate();
+        autoUpdater.downloadUpdate(updateCancellationToken);
     });
     ipcMain.on('update/install', () => autoUpdater.quitAndInstall());
+    ipcMain.on('update/cancel', () => updateCancellationToken.cancel());
 
     // Differential updater hack (https://gist.github.com/the3moon/0e9325228f6334dabac6dadd7a3fc0b9)
     autoUpdater.logger = electronLogger;
