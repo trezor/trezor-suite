@@ -37,7 +37,7 @@ export const setTargetRelease = (payload: AcquiredDevice['firmwareRelease']) => 
 
 export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
-    const { targetRelease } = getState().firmware;
+    const { targetRelease, prevDevice } = getState().firmware;
 
     if (!device || !device.connected || !device.features) {
         dispatch({ type: FIRMWARE.SET_ERROR, payload: 'no device connected' });
@@ -62,6 +62,16 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
         device.features.patch_version,
     ].join();
 
+    let fromFwVersion = 'none';
+
+    if (prevDevice?.features && prevDevice?.firmware !== 'none') {
+        fromFwVersion = [
+            prevDevice.features.major_version,
+            prevDevice.features.minor_version,
+            prevDevice.features.patch_version,
+        ].join();
+    }
+
     dispatch(setStatus('downloading'));
 
     // update to same variant as is currently installed
@@ -81,21 +91,11 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
 
     const updateResponse = await TrezorConnect.firmwareUpdate(payload);
 
-    // some basic firmware update reporting, not great, not terrible but definitely not complete
-    // we would like to know from which version to which version user updates. the trouble is, that
-    // this is not possible to do with 100% accuracy, why:
-    // - user may connect device A in bootloader, get target firmware for device A, reconnect in normal mode device B and install fw.
-    // - connect device directly into bootloader (actually suite does not allow this, but onboarding does as new devices without fw are in bootloader,
-    // todo: I could rework it into middleware, log multiple actions as user goes through fw update process
-    // -- are we okay that results will not be 100% accurate [product]
-    // -- are we okay that data will need to do some more work with data connecting?
-    // -- (ofc I may store logging data in our data model and send it at once, hmm maybe?)
     dispatch(
         analyticsActions.report({
             type: 'device-update-firmware',
             payload: {
-                // todo: fromFwVersion
-                // todo: fromBtcOnly,
+                fromFwVersion,
                 fromBlVersion,
                 toFwVersion,
                 toBtcOnly,
