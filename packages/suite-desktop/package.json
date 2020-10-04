@@ -158,7 +158,6 @@
         "next-transpile-modules": "^2.3.1",
         "react": "16.13.1",
         "react-dom": "16.13.1",
-        "react-markdown": "4.3.1",
         "styled-components": "5.1.1",
         "worker-loader": "^3.0.2"
     }
