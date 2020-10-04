@@ -24,13 +24,8 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const OffersIndex = (props: Props) => {
+const OffersIndexLoaded = (props: Props) => {
     const { selectedAccount } = props;
-    if (props.selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="Coinmarket | buy" account={selectedAccount} />;
-    }
-
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const coinmarketOffersValues = useOffers({ ...props, selectedAccount });
 
     return (
@@ -40,6 +35,14 @@ const OffersIndex = (props: Props) => {
             </Wrapper>
         </CoinmarketBuyOffersContext.Provider>
     );
+};
+
+const OffersIndex = (props: Props) => {
+    const { selectedAccount } = props;
+    if (props.selectedAccount.status !== 'loaded') {
+        return <WalletLayout title="Coinmarket | buy" account={selectedAccount} />;
+    }
+    return <OffersIndexLoaded {...props} />;
 };
 
 // @ts-ignore

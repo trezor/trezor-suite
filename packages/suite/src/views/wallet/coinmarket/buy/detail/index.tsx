@@ -6,7 +6,7 @@ import {
 } from '@wallet-hooks/useCoinmarketBuyDetail';
 import { WalletLayout } from '@wallet-components';
 import styled from 'styled-components';
-import { ComponentProps } from '@wallet-types/coinmarketBuyDetail';
+import { ComponentProps, Props } from '@wallet-types/coinmarketBuyDetail';
 import { connect } from 'react-redux';
 
 import Detail from './Detail';
@@ -23,14 +23,8 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const DetailIndex = (props: ComponentProps) => {
+const DetailIndexLoaded = (props: Props) => {
     const { selectedAccount } = props;
-
-    if (selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="Coinmarket | buy" account={selectedAccount} />;
-    }
-
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const coinmarketBuyContextValues = useCoinmarketBuyDetail({ ...props, selectedAccount });
 
     return (
@@ -40,6 +34,15 @@ const DetailIndex = (props: ComponentProps) => {
             </Wrapper>
         </CoinmarketBuyDetailContext.Provider>
     );
+};
+
+const DetailIndex = (props: ComponentProps) => {
+    const { selectedAccount } = props;
+
+    if (selectedAccount.status !== 'loaded') {
+        return <WalletLayout title="Coinmarket | buy" account={selectedAccount} />;
+    }
+    return <DetailIndexLoaded {...props} selectedAccount={selectedAccount} />;
 };
 
 export default connect(mapStateToProps)(DetailIndex);

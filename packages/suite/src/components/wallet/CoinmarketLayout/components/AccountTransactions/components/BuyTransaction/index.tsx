@@ -114,7 +114,7 @@ const Arrow = styled.div`
     padding: 0 11px;
 `;
 
-const BuyTransaction = ({ trade, providers, account }: Props) => {
+const BuyTransactionLoaded = ({ trade, providers, account }: Props) => {
     const { goto } = useActions({ goto: routerActions.goto });
     const {
         saveTransactionDetailId,
@@ -130,12 +130,6 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
     const country = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.buyInfo?.country);
     const [isGettingOffers, setIsGettingOffers] = useState(false);
     const trades = useSelector(state => state.wallet.coinmarket.trades);
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    if (selectedAccount.status !== 'loaded') {
-        return null;
-    }
-    // It's OK to call this hook conditionally
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [updatedTrade] = useWatchBuyTrade(account, trades, trade.key);
     if (!updatedTrade) return null;
 
@@ -239,6 +233,14 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
             </BuyColumn>
         </Wrapper>
     );
+};
+
+const BuyTransaction = (props: Props) => {
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    if (selectedAccount.status !== 'loaded') {
+        return null;
+    }
+    return <BuyTransactionLoaded {...props} />;
 };
 
 export default BuyTransaction;

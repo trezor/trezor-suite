@@ -2,7 +2,7 @@ import React from 'react';
 import { AppState } from '@suite-types';
 import { useCoinmarketBuyForm, BuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
 import { CoinmarketLayout, WalletLayout } from '@wallet-components';
-import { ComponentProps } from '@wallet-types/coinmarketBuyForm';
+import { ComponentProps, Props } from '@wallet-types/coinmarketBuyForm';
 import { connect } from 'react-redux';
 import BuyForm from './components/BuyForm';
 
@@ -12,13 +12,8 @@ const mapStateToProps = (state: AppState): ComponentProps => ({
     cachedAccountInfo: state.wallet.coinmarket.buy.cachedAccountInfo,
 });
 
-const CoinmarketBuy = (props: ComponentProps) => {
+const CoinmarketBuyLoaded = (props: Props) => {
     const { selectedAccount } = props;
-    if (selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="Coinmarket | buy" account={selectedAccount} />;
-    }
-
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const coinmarketBuyContextValues = useCoinmarketBuyForm({ ...props, selectedAccount });
 
     return (
@@ -28,6 +23,14 @@ const CoinmarketBuy = (props: ComponentProps) => {
             </BuyFormContext.Provider>
         </CoinmarketLayout>
     );
+};
+
+const CoinmarketBuy = (props: ComponentProps) => {
+    const { selectedAccount } = props;
+    if (selectedAccount.status !== 'loaded') {
+        return <WalletLayout title="Coinmarket | buy" account={selectedAccount} />;
+    }
+    return <CoinmarketBuyLoaded {...props} selectedAccount={selectedAccount} />;
 };
 
 export default connect(mapStateToProps)(CoinmarketBuy);
