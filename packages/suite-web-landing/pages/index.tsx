@@ -39,19 +39,29 @@ const FeaturesWrapper = styled.div`
 `;
 
 const StyledH1 = styled(H1)`
-    font-size: 44px;
+    font-size: 28px;
+    line-height: 36px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    line-height: 55px;
+
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) {
+        font-size: 44px;
+        line-height: 55px;
+        white-space: pre-wrap;
+    }
 `;
 
 const StyledHeadline = styled(H1)<{ size?: number }>`
-    font-size: ${props => (props.size !== undefined ? `${props.size}px` : '64px')};
+    font-size: 40px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     line-height: 1.3;
     margin-bottom: 18px;
     & > em {
         font-style: normal;
         color: ${colors.NEUE_TYPE_GREEN};
+    }
+
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) {
+        font-size: ${props => (props.size !== undefined ? `${props.size}px` : '64px')};
     }
 `;
 
