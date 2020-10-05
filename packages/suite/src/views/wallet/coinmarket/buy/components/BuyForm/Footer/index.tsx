@@ -26,11 +26,13 @@ const OptionLabel = styled.div`
 
 const Flag = styled.div`
     font-size: ${variables.FONT_SIZE.H2};
-    padding-right: 5px;
+    padding-right: 10px;
 `;
 
 const LabelText = styled.div`
-    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
 `;
 
 const Left = styled.div`
@@ -51,11 +53,10 @@ const Right = styled.div`
 const Label = styled.div`
     display: flex;
     align-items: center;
-    padding-right: 5px;
     white-space: nowrap;
     padding-top: 1px;
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const StyledButton = styled(Button)`
@@ -99,6 +100,7 @@ const Footer = () => {
                         return (
                             <CleanSelect
                                 noTopLabel
+                                isDropdownVisible
                                 isHovered
                                 options={regional.countriesOptions}
                                 isSearchable

@@ -46,10 +46,11 @@ const Text = styled.div`
 
 const Soon = styled.div`
     position: absolute;
-    top: -12px;
-    right: -30px;
+    top: -10px;
+    right: -15px;
     background: #e1f2dc;
-    padding: 2px;
+    font-weight: ${variables.FONT_WEIGHT.BOLD};
+    padding: 2px 4px;
     color: ${colors.GREEN};
     border-radius: 4px;
     font-size: 9px;
@@ -58,8 +59,12 @@ const Soon = styled.div`
 const Navigation = () => {
     const items = [
         { route: 'wallet-coinmarket-buy', title: <Translation id="TR_NAV_BUY" /> },
-        { route: 'wallet-coinmarket-exchange', title: <Translation id="TR_NAV_EXCHANGE" /> },
-        { route: 'wallet-coinmarket-spend', title: <Translation id="TR_NAV_SPEND" /> },
+        {
+            route: 'wallet-coinmarket-exchange',
+            title: <Translation id="TR_NAV_EXCHANGE_AND_SPEND" />,
+        },
+        // { route: 'wallet-coinmarket-exchange', title: <Translation id="TR_NAV_EXCHANGE" /> },
+        // { route: 'wallet-coinmarket-spend', title: <Translation id="TR_NAV_SPEND" /> },
     ] as const;
 
     const routeName = useSelector(state => state.router.route?.name);
@@ -88,7 +93,11 @@ const Navigation = () => {
                         }}
                     >
                         <Text>
-                            {showSoon(route) && <Soon>Coming soon</Soon>}
+                            {showSoon(route) && (
+                                <Soon>
+                                    <Translation id="TR_NAV_EXCHANGE_SOON" />
+                                </Soon>
+                            )}
                             {title}
                         </Text>
                     </StyledNavLink>

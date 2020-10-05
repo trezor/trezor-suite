@@ -9,11 +9,11 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
+    flex: 1;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
     padding-top: 20px;
     margin-top: 60px;
-    margin-bottom: 40px;
     border-top: 1px solid ${colors.NEUE_STROKE_GREY};
 `;
 

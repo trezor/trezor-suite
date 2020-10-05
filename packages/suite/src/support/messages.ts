@@ -213,6 +213,14 @@ const definedMessages = defineMessages({
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',
     },
+    TR_NAV_EXCHANGE_AND_SPEND: {
+        defaultMessage: 'Exchange, Spend',
+        id: 'TR_NAV_EXCHANGE_AND_SPEND',
+    },
+    TR_NAV_EXCHANGE_SOON: {
+        defaultMessage: 'SOON',
+        id: 'TR_NAV_EXCHANGE_SOON',
+    },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:
             'Invity is our sole provider, and only sees ur something, something and something else.',
@@ -396,7 +404,7 @@ const definedMessages = defineMessages({
         id: 'TR_BUY_CONFIRMED_ON_TREZOR',
     },
     TR_BUY_OFFERS_FOR: {
-        defaultMessage: 'Offers for:',
+        defaultMessage: 'Offers for',
         id: 'TR_BUY_OFFERS_FOR',
     },
     TR_BUY_SHOW_OFFERS: {

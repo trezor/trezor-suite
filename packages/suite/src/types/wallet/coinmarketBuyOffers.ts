@@ -15,7 +15,7 @@ export interface ComponentProps {
 }
 
 export interface Props extends ComponentProps {
-    selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>;
+    selectedAccount: Extract<ComponentProps['selectedAccount'], { status: 'loaded' }>;
 }
 
 export type ContextValues = {
@@ -30,7 +30,5 @@ export type ContextValues = {
     addressVerified: AppState['wallet']['coinmarket']['buy']['addressVerified'];
     providersInfo?: BuyInfo['providerInfos'];
     selectQuote: (quote: BuyTrade) => void;
-    verifyAddress: (path: string, address: string) => Promise<void>;
-    saveTrade: (buyTrade: BuyTrade, account: Account, date: string) => Promise<void>;
     goToPayment: (address: string) => void;
 };
