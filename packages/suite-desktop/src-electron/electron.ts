@@ -136,7 +136,6 @@ const init = async () => {
                 callback({ cancel: false, requestHeaders: details.requestHeaders });
             });
 
-            /*
             session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
                 callback({
                     responseHeaders: {
@@ -145,7 +144,6 @@ const init = async () => {
                     },
                 });
             });
-            */
 
             // TODO: implement https://github.com/electron/electron/blob/master/docs/api/browser-window.md#event-unresponsive
             session.defaultSession.protocol.interceptFileProtocol(PROTOCOL, (request, callback) => {
@@ -161,7 +159,6 @@ const init = async () => {
     mainWindow.loadURL(src);
 
     httpReceiver.start();
-    mainWindow.webContents.openDevTools();
 
     // Check for updates when ready
     ipcMain.on('ready', () => {

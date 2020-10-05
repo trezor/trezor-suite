@@ -183,7 +183,6 @@ const DesktopUpdater = () => {
             }
         };
 
-        console.log(desktopUpdate.latest, releaseNotes);
         if (desktopUpdate.latest?.version !== releaseNotes.version && !releaseNotes.loading) {
             fetchData();
         }
@@ -196,10 +195,6 @@ const DesktopUpdater = () => {
         [desktopUpdate.window, setUpdateWindow],
     );
     const hideWindow = useCallback(() => setUpdateWindow('hidden'), [setUpdateWindow]);
-
-    // TEMP
-    console.log('desktopUpdate', desktopUpdate);
-    //
 
     if (desktopUpdate.window === 'hidden') {
         return null;
