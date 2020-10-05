@@ -1,4 +1,4 @@
-import { Platform } from '@suite-types';
+import { Platform } from '../types';
 
 export const getPlatform = (navigator: Navigator): Platform => {
     const macPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'];
@@ -9,8 +9,5 @@ export const getPlatform = (navigator: Navigator): Platform => {
     if (windowsPlatforms.includes(navigator.platform)) {
         return 'windows';
     }
-    if (/Linux/.test(navigator.platform)) {
-        return 'linux';
-    }
-    return undefined;
+    return 'linux';
 };
