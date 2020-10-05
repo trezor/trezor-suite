@@ -25,8 +25,12 @@ const StyledDropdownButton = styled(Button)`
 
 const StyledDownloadButton = styled(Button)`
     && {
+        padding: 0;
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
+    }
+    & > a {
+        padding: 9px 12px;
     }
 `;
 
