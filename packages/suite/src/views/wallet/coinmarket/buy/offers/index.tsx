@@ -37,13 +37,12 @@ const OffersIndexLoaded = (props: Props) => {
     );
 };
 
-const OffersIndex = (props: Props) => {
+const OffersIndex = (props: ComponentProps) => {
     const { selectedAccount } = props;
-    if (props.selectedAccount.status !== 'loaded') {
+    if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="Coinmarket | buy" account={selectedAccount} />;
     }
-    return <OffersIndexLoaded {...props} />;
+    return <OffersIndexLoaded {...props} selectedAccount={selectedAccount} />;
 };
 
-// @ts-ignore
 export default connect(mapStateToProps)(OffersIndex);
