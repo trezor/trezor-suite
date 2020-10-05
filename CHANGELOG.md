@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - Send form "setMax" inconsistent behavior. Fix of #2314, #2327
 - Metadata (labeling) flow with passphrase enabled.
+- Metadata (labeling) fix overflow of long labels.
 
 ## [20.9.1-beta]
 
