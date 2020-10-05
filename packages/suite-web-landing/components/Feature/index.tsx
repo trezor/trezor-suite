@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
+import Fade from 'react-reveal/Fade';
 
 const Feature = styled.section<{ flip?: boolean }>`
     position: relative;
@@ -116,7 +117,9 @@ interface Props {
 const Index = ({ children, flip, image, backgroundPosition }: Props) => (
     <Feature flip={flip}>
         <StyledText flip={flip}>
-            <div>{children}</div>
+            <Fade fraction={0.5}>
+                <div>{children}</div>
+            </Fade>
         </StyledText>
         <FeatureImage image={image} flip={flip} backgroundPosition={backgroundPosition} />
     </Feature>
