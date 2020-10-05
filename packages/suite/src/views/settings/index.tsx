@@ -210,9 +210,7 @@ const Settings = ({
                                     id="TR_YOUR_CURRENT_VERSION"
                                     values={{ version: process.env.VERSION }}
                                 />
-                                {!['checking', 'not-available'].includes(
-                                    desktopUpdate.state || '',
-                                ) && (
+                                {!['checking', 'not-available'].includes(desktopUpdate.state) && (
                                     <>
                                         &nbsp;
                                         <Translation

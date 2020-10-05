@@ -190,6 +190,11 @@ const DesktopUpdater = () => {
             downloading(progress),
         );
 
+        // Initial check for updates
+        window.desktopApi.checkForUpdates();
+        // Check for updates every hour
+        setInterval(() => window.desktopApi!.checkForUpdates(), 60 * 60 * 1000);
+
         /* TODO: Implement error handling
         window.desktopApi.on('update/error', ({ data }) => {
 
@@ -239,7 +244,7 @@ const DesktopUpdater = () => {
     const cancelUpdate = useCallback(() => window.desktopApi!.cancelUpdate(), []);
     const hideWindow = useCallback(() => setUpdateWindow('hidden'), [setUpdateWindow]);
     const skipUpdate = useCallback(() => {
-        window.desktopApi!.skipUpdate(desktopUpdate.latest?.version || '');
+        window.desktopApi!.skipUpdate(desktopUpdate.latest!.version);
     }, [desktopUpdate.latest]);
 
     if (desktopUpdate.window === 'hidden') {
@@ -247,7 +252,7 @@ const DesktopUpdater = () => {
     }
 
     // If the state is not set or set to checking or not-available, then show nothing
-    if (!desktopUpdate.state || ['checking', 'not-available'].includes(desktopUpdate.state)) {
+    if (['', 'checking', 'not-available'].includes(desktopUpdate.state)) {
         return null;
     }
 

@@ -12,7 +12,7 @@ import OnlineStatus from '@suite-support/OnlineStatus';
 import BridgeStatus from '@desktop/support/BridgeStatus';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
-import DesktopUpdater from '@suite-support/DesktopUpdater';
+import DesktopUpdater from '@desktop/support/DesktopUpdater';
 import { SENTRY_CONFIG } from '@suite-config';
 import Resize from '@suite-support/Resize/Container';
 import { isDev } from '@suite-utils/build';

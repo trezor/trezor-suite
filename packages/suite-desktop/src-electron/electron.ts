@@ -162,14 +162,6 @@ const init = async () => {
 
     httpReceiver.start();
 
-    // Check for updates when ready
-    ipcMain.on('ready', () => {
-        autoUpdater.checkForUpdates();
-
-        // And every hour
-        setInterval(() => autoUpdater.checkForUpdates(), 60 * 60 * 1000);
-    });
-
     // Updates (move in separate file)
     const updateSettings = store.getUpdateSettings();
 
