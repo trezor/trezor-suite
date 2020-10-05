@@ -33,6 +33,8 @@ const getDropdownVisibility = (isDisabled: boolean, isFocused: boolean, isHovere
 const selectStyle = (
     isDropdownVisible: boolean,
     isHovered: boolean,
+    hideTextCursor: boolean,
+    isSearchable: boolean,
     minWidth = '50px',
     theme: SuiteThemeColors
 ) => ({
@@ -43,6 +45,9 @@ const selectStyle = (
         display: 'flex',
         width: '100%',
         justifyContent: 'flex-end',
+        '&:hover': {
+            cursor: hideTextCursor || !isSearchable ? 'pointer' : 'text',
+        },
     }),
     container: (base: Record<string, any>) => ({
         ...base,
@@ -86,6 +91,7 @@ const selectStyle = (
             padding: 0,
             margin: 0,
             border: '0',
+            cursor: 'pointer',
             display: isDropdownVisible
                 ? 'flex'
                 : getDropdownVisibility(isDisabled, isFocused, isHovered),
@@ -113,6 +119,14 @@ const selectStyle = (
             background: theme.BG_GREY,
         },
     }),
+    input: (base: Record<string, any>) => ({
+        ...base,
+        fontSize: variables.NEUE_FONT_SIZE.NORMAL,
+        color: hideTextCursor ? 'transparent' : theme.TYPE_DARK_GREY,
+        '& input': {
+            textShadow: hideTextCursor ? `0 0 0 ${theme.TYPE_DARK_GREY} !important` : 'none',
+        },
+    }),
 });
 
 interface Props extends Omit<SelectProps, 'components'> {
@@ -137,6 +151,7 @@ const CleanSelect = ({
     minWidth,
     options,
     maxSearchLength,
+    hideTextCursor,
     ...props
 }: Props) => {
     const theme = useTheme();
@@ -146,7 +161,14 @@ const CleanSelect = ({
     return (
         <Wrapper onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
             <ReactSelect
-                styles={selectStyle(isDropdownVisible, isHovered, minWidth, theme)}
+                styles={selectStyle(
+                    isDropdownVisible,
+                    isHovered,
+                    hideTextCursor,
+                    isSearchable,
+                    minWidth,
+                    theme
+                )}
                 classNamePrefix="react-select"
                 isSearchable={isSearchable}
                 isDisabled={optionsLength <= 1}

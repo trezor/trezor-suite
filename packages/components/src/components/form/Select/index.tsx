@@ -10,6 +10,7 @@ const selectStyle = (
     isSearchable: boolean,
     withDropdownIndicator = true,
     variant: InputVariant,
+    hideTextCursor: boolean,
     isClean: boolean,
     theme: SuiteThemeColors
 ) => ({
@@ -19,8 +20,9 @@ const selectStyle = (
         alignItems: 'center',
         width: '100%',
         color: theme.TYPE_DARK_GREY,
+        fontSize: variables.NEUE_FONT_SIZE.NORMAL,
         '&:hover': {
-            cursor: isSearchable ? 'text' : 'pointer',
+            cursor: hideTextCursor || !isSearchable ? 'pointer' : 'text',
         },
     }),
     control: (
@@ -55,6 +57,7 @@ const selectStyle = (
         display: !withDropdownIndicator || isDisabled ? 'none' : 'flex',
         alignItems: 'center',
         color: theme.TYPE_LIGHT_GREY,
+        cursor: 'pointer',
         path: '',
         '&:hover': {
             color: theme.TYPE_DARK_GREY,
@@ -78,8 +81,17 @@ const selectStyle = (
         color: theme.TYPE_DARK_GREY,
         background: isFocused ? theme.BG_WHITE_ALT_HOVER : theme.BG_WHITE_ALT,
         borderRadius: 0,
+        fontSize: variables.NEUE_FONT_SIZE.NORMAL,
         '&:hover': {
             cursor: 'pointer',
+        },
+    }),
+    input: (base: Record<string, any>) => ({
+        ...base,
+        fontSize: variables.NEUE_FONT_SIZE.NORMAL,
+        color: hideTextCursor ? 'transparent' : theme.TYPE_DARK_GREY,
+        '& input': {
+            textShadow: hideTextCursor ? `0 0 0 ${theme.TYPE_DARK_GREY} !important` : 'none',
         },
     }),
 });
@@ -99,6 +111,11 @@ const Label = styled.span`
     min-height: 32px;
 `;
 
+interface Option {
+    value: string;
+    label: string;
+}
+
 interface Props extends Omit<SelectProps, 'components'> {
     withDropdownIndicator?: boolean;
     isClean?: boolean;
@@ -106,10 +123,12 @@ interface Props extends Omit<SelectProps, 'components'> {
     wrapperProps?: Record<string, any>;
     variant?: InputVariant;
     noTopLabel?: boolean;
+    hideTextCursor?: boolean; // this prop hides blinking text cursor
 }
 
 const Select = ({
     isSearchable = true,
+    hideTextCursor = false,
     withDropdownIndicator = true,
     className,
     wrapperProps,
@@ -152,7 +171,14 @@ const Select = ({
             {!noTopLabel && <Label>{label}</Label>}
             <ReactSelect
                 classNamePrefix="react-select"
-                styles={selectStyle(isSearchable, withDropdownIndicator, variant, isClean, theme)}
+                styles={selectStyle(
+                    isSearchable,
+                    withDropdownIndicator,
+                    variant,
+                    hideTextCursor,
+                    isClean,
+                    theme
+                )}
                 isSearchable={isSearchable}
                 {...props}
                 components={{ Control, Option, ...props.components }}

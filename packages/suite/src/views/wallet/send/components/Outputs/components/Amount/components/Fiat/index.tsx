@@ -144,9 +144,10 @@ const Fiat = ({ output, outputId }: Props) => {
                             return (
                                 <CleanSelect
                                     options={buildCurrencyOptions()}
-                                    isSearchable
                                     value={value}
                                     isClearable={false}
+                                    isSearchable
+                                    hideTextCursor
                                     minWidth="45px"
                                     data-test={currencyInputName}
                                     onChange={(selected: CurrencyOption) => {
