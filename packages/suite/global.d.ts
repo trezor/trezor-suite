@@ -10,6 +10,7 @@ export interface DesktopApi {
     downloadUpdate: () => void;
     installUpdate: () => void;
     cancelUpdate: () => void;
+    skipUpdate: (version: string) => void;
 }
 
 declare global {

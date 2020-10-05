@@ -8,7 +8,7 @@ export type DesktopUpdateActions =
     | { type: typeof DESKTOP_UPDATE.NOT_AVAILABLE; payload: UpdateInfo }
     | { type: typeof DESKTOP_UPDATE.DOWNLOADING; payload: UpdateProgress }
     | { type: typeof DESKTOP_UPDATE.READY; payload: UpdateInfo }
-    | { type: typeof DESKTOP_UPDATE.SKIP }
+    | { type: typeof DESKTOP_UPDATE.SKIP; payload: string }
     | { type: typeof DESKTOP_UPDATE.WINDOW; payload: UpdateWindow };
 
 export const checking = () => async (dispatch: Dispatch) =>
@@ -39,9 +39,10 @@ export const ready = (info: UpdateInfo) => async (dispatch: Dispatch) =>
         payload: info,
     });
 
-export const skip = () => async (dispatch: Dispatch) =>
+export const skip = (version: string) => async (dispatch: Dispatch) =>
     dispatch({
         type: DESKTOP_UPDATE.SKIP,
+        payload: version,
     });
 
 export const setUpdateWindow = (win: UpdateWindow) => async (dispatch: Dispatch) =>

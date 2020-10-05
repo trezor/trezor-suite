@@ -38,7 +38,7 @@ const desktopUpdateReducer = (state: State = initialState, action: Action): Stat
                 draft.latest = action.payload;
                 break;
             case DESKTOP_UPDATE.SKIP:
-                draft.skip = state?.latest?.version || '';
+                draft.skip = action.payload;
                 break;
             case DESKTOP_UPDATE.WINDOW:
                 draft.window = action.payload;

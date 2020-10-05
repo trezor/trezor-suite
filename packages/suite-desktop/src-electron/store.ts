@@ -21,3 +21,11 @@ export const setWinBounds = (window: BrowserWindow) => {
         height: bounds.height > MIN_HEIGHT ? bounds.height : MIN_HEIGHT,
     });
 };
+
+export const getUpdateSettings = () => {
+    return store.get('updateSettings', { skipVersion: '' });
+};
+
+export const setUpdateSettings = (updateSettings: UpdateSettings) => {
+    store.set('updateSettings', updateSettings);
+};

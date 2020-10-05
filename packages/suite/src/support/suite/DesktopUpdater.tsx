@@ -144,18 +144,18 @@ const DesktopUpdater = () => {
         window.desktopApi.on('update/checking', () => checking());
         window.desktopApi.on('update/available', (info: UpdateInfo) => available(info));
         window.desktopApi.on('update/not-available', (info: UpdateInfo) => notAvailable(info));
+        window.desktopApi.on('update/skip', (version: string) => skip(version));
         window.desktopApi.on('update/downloaded', (info: UpdateInfo) => ready(info));
-        window.desktopApi.on('update/downloading', (progress: UpdateProgress) => {
-            console.log(progress);
-            downloading(progress);
-        });
+        window.desktopApi.on('update/downloading', (progress: UpdateProgress) =>
+            downloading(progress),
+        );
 
         /* TODO: Implement error handling
         window.desktopApi.on('update/error', ({ data }) => {
 
         });
         */
-    }, [checking, available, notAvailable, downloading, ready]);
+    }, [checking, available, notAvailable, downloading, skip, ready]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -188,16 +188,19 @@ const DesktopUpdater = () => {
         }
     }, [desktopUpdate.latest, releaseNotes]);
 
-    const downloadUpdate = useCallback(() => window.desktopApi?.downloadUpdate(), []);
-    const installRestart = useCallback(() => window.desktopApi?.installUpdate(), []);
+    const downloadUpdate = useCallback(() => window.desktopApi!.downloadUpdate(), []);
+    const installRestart = useCallback(() => window.desktopApi!.installUpdate(), []);
     /* Not used for now
     const toggleMaxMinWindow = useCallback(
         () => setUpdateWindow(desktopUpdate.window === 'maximized' ? 'minimized' : 'maximized'),
         [desktopUpdate.window, setUpdateWindow],
     );
     */
-    const cancelUpdate = useCallback(() => window.desktopApi?.cancelUpdate(), []);
+    const cancelUpdate = useCallback(() => window.desktopApi!.cancelUpdate(), []);
     const hideWindow = useCallback(() => setUpdateWindow('hidden'), [setUpdateWindow]);
+    const skipUpdate = useCallback(() => {
+        window.desktopApi!.skipUpdate(desktopUpdate.latest?.version || '');
+    }, [desktopUpdate.latest]);
 
     if (desktopUpdate.window === 'hidden') {
         return null;
@@ -254,7 +257,7 @@ const DesktopUpdater = () => {
 
                 <Row>
                     <LeftCol>
-                        <Button onClick={skip} variant="secondary" fullWidth>
+                        <Button onClick={skipUpdate} variant="secondary" fullWidth>
                             <Translation id="TR_UPDATE_MODAL_SKIP_THIS_VERSION" />
                         </Button>
                     </LeftCol>
