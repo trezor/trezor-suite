@@ -18,8 +18,7 @@ const GreenH2 = styled(H2)`
     color: ${colors.NEUE_TYPE_GREEN};
 `;
 
-// TODO: Style properly
-const ChangelogWrapper = styled.pre`
+const ChangelogWrapper = styled.div`
     margin: 20px 0px;
     background: ${colors.NEUE_BG_GRAY};
     border-radius: 8px;
@@ -30,6 +29,47 @@ const ChangelogWrapper = styled.pre`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-align: left;
+
+    h3 {
+        margin-bottom: 6px;
+        font-size: ${variables.FONT_SIZE.NORMAL};
+        font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    }
+
+    h3 {
+        margin-bottom: 4px;
+    }
+
+    ul,
+    ol {
+        margin-bottom: 10px;
+        list-style-type: none;
+        margin-left: 36px; /* hacky way to add enough indentation so it is rendered right of an emoji in a section heading */
+    }
+
+    li + li {
+        margin-top: 4px;
+    }
+
+    li {
+        line-height: 1.57;
+    }
+
+    /* 
+    Styling similar to  Link component. 
+    It seems overriding via linkReference renderer doesn't work for some reason
+    */
+    a {
+        cursor: pointer;
+        text-decoration: underline;
+        color: inherit;
+        &:visited,
+        &:active,
+        &:hover {
+            text-decoration: underline;
+            color: inherit;
+        }
+    }
 `;
 
 const GithubWrapper = styled.div`
