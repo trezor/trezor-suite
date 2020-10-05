@@ -89,8 +89,8 @@ export const useCoinmarketBuyForm = (props: Props): BuyFormContextValues => {
     const isLoading = !buyInfo || !buyInfo?.buyInfo;
     const noProviders =
         !isLoading &&
-        buyInfo?.buyInfo?.providers.length === 0 &&
-        !buyInfo?.supportedCryptoCurrencies.has(account.symbol);
+        (buyInfo?.buyInfo?.providers.length === 0 ||
+            !buyInfo?.supportedCryptoCurrencies.has(account.symbol));
 
     return {
         ...methods,
