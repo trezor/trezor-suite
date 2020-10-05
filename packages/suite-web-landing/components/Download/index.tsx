@@ -29,7 +29,7 @@ const StyledDownloadButton = styled(Button)`
         border-bottom-left-radius: 0;
     }
     & > a {
-        padding: 9px 12px;
+        padding: 9px 15px;
     }
 `;
 
