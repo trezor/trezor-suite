@@ -3803,6 +3803,63 @@ const definedMessages = defineMessages({
         id: 'TR_HIDDEN_WALLET_DESCRIPTION',
         defaultMessage: 'Requires passphrase',
     },
+    TR_GIVE_FEEDBACK: {
+        id: 'TR_GIVE_FEEDBACK',
+        defaultMessage: 'Give Feedback',
+    },
+    FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC: {
+        id: 'FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC',
+        defaultMessage: 'Yes, I do!',
+    },
+    FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC: {
+        id: 'FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC',
+        defaultMessage: 'I live dangerously!',
+    },
+    FIRMWARE_UPDATE_AVAILABLE_DESC: {
+        id: 'FIRMWARE_UPDATE_AVAILABLE_DESC',
+        defaultMessage:
+            'We’re constantly working to improve your Trezor experience, here’s a summary of what has changed:',
+    },
+    FIRMWARE_RECONNECT_BL_NEXT_STEP_DESC: {
+        id: 'FIRMWARE_RECONNECT_BL_NEXT_STEP_DESC',
+        defaultMessage:
+            'It the next step you will be asked to connect your device in bootloader mode.',
+    },
+    FIRMWARE_RECONNECTED_BL_NEXT_STEP_DESC: {
+        id: 'FIRMWARE_RECONNECTED_BL_NEXT_STEP_DESC',
+        defaultMessage: 'In the next step you will be asked to confirm firmware update on device.',
+    },
+    FIRMWARE_UPDATE_SUCCESS_HEADING: {
+        id: 'FIRMWARE_UPDATE_SUCCESS_HEADING',
+        defaultMessage: 'Firmware update successful',
+    },
+    FIRMWARE_UPDATE_SUCCESS_DESC: {
+        id: 'FIRMWARE_UPDATE_SUCCESS_DESC',
+        defaultMessage:
+            'Your device was updated successfully and now runs bleeding edge crypto technology!',
+    },
+    FIRMWARE_CONNECT_IN_NORMAL_MODEL_1: {
+        id: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_1',
+        defaultMessage:
+            'Please make sure you are not holding any buttons while connecting your device.',
+    },
+    FIRMWARE_CONNECT_IN_NORMAL_MODEL_2: {
+        id: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_2',
+        defaultMessage:
+            'Please make sure you are not holding any buttons while connecting your device.',
+    },
+    FIRMWARE_UPDATE_TO_VERSION: {
+        id: 'FIRMWARE_UPDATE_TO_VERSION',
+        defaultMessage: 'Update to v{version}',
+    },
+    TR_READ_ALL_ON_GITHUB: {
+        id: 'TR_READ_ALL_ON_GITHUB',
+        defaultMessage: 'Read all on Github',
+    },
+    TR_TAKES_N_MINUTES: {
+        id: 'TR_TAKES_N_MINUTES',
+        defaultMessage: 'Takes ~{n} mins',
+    },
     TR_INPUTS_OUTPUTS: {
         id: 'TR_INPUTS_OUTPUTS',
         defaultMessage: 'Inputs, Outputs',
