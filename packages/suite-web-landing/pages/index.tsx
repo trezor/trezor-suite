@@ -138,26 +138,22 @@ const Index = () => (
                 </DownloadWrapper>
             </StyledHeroCta>
             <FeaturesWrapper>
-                {features.map((item, key) => {
-                    return (
-                        <Feature
-                            image={resolveStaticPath(
-                                `images/suite-web-landing/feature${item.id}.png`,
-                            )}
-                            key={item.id}
-                            flip={key % 2 === 1}
-                            backgroundPosition={
-                                item.backgroundPosition !== undefined
-                                    ? item.backgroundPosition
-                                    : undefined
-                            }
-                        >
-                            {item.soon && <StyledSoon>Soon</StyledSoon>}
-                            <StyledH1>{item.headline}</StyledH1>
-                            <StyledP>{item.text}</StyledP>
-                        </Feature>
-                    );
-                })}
+                {features.map((item, key) => (
+                    <Feature
+                        image={resolveStaticPath(`images/suite-web-landing/feature${item.id}.png`)}
+                        key={item.id}
+                        flip={key % 2 === 1}
+                        backgroundPosition={
+                            item.backgroundPosition !== undefined
+                                ? item.backgroundPosition
+                                : undefined
+                        }
+                    >
+                        {item.soon && <StyledSoon>Soon</StyledSoon>}
+                        <StyledH1>{item.headline}</StyledH1>
+                        <StyledP>{item.text}</StyledP>
+                    </Feature>
+                ))}
             </FeaturesWrapper>
             <StyledCta>
                 <StyledHeadline size={44}>
