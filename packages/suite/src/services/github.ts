@@ -1,6 +1,6 @@
 const REPO_INFO = {
-    owner: 'keraf', // 'trezor',
-    repo: 'trezor-desktop-test', // 'trezor-suite',
+    owner: 'trezor',
+    repo: 'trezor-suite',
 };
 
 const RELEASE_URL = `https://github.com/${REPO_INFO.owner}/${REPO_INFO.repo}`;
