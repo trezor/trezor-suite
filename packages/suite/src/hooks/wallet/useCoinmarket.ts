@@ -61,9 +61,14 @@ export const useInvityAPI = () => {
     };
 };
 
+const BuyTradeFinalStatuses: BuyTradeStatus[] = ['SUCCESS', 'ERROR', 'BLOCKED'];
+
+const shouldRefresh = (trade?: TradeBuy) => {
+    return trade && trade.data.status && !BuyTradeFinalStatuses.includes(trade.data.status);
+};
+
 export const useWatchBuyTrade = (account: Account, trades?: TradeBuy[], transactionId?: string) => {
     const REFRESH_SECONDS = 30;
-    const BuyTradeFinalStatuses: BuyTradeStatus[] = ['SUCCESS', 'ERROR', 'BLOCKED'];
     const trade: TradeBuy | undefined =
         trades &&
         trades.find(
@@ -73,12 +78,9 @@ export const useWatchBuyTrade = (account: Account, trades?: TradeBuy[], transact
         );
     const [updatedTrade, setUpdatedTrade] = useState<TradeBuy | undefined>(trade);
     const { saveTrade } = useActions({ saveTrade: coinmarketBuyActions.saveTrade });
-    const shouldRefresh = () => {
-        return trade && trade.data.status && !BuyTradeFinalStatuses.includes(trade.data.status);
-    };
     const [refreshCount, setRefreshCount] = useState(0);
     const invokeRefresh = () => {
-        if (shouldRefresh()) {
+        if (shouldRefresh(trade)) {
             setRefreshCount(prevValue => prevValue + 1);
         }
     };
@@ -89,7 +91,7 @@ export const useWatchBuyTrade = (account: Account, trades?: TradeBuy[], transact
     });
 
     useEffect(() => {
-        if (trade && shouldRefresh()) {
+        if (trade && shouldRefresh(trade)) {
             cancelRefresh();
             invityAPI.createInvityAPIKey(account.descriptor);
             invityAPI.watchBuyTrade(trade.data, refreshCount).then(response => {
@@ -117,8 +119,7 @@ export const useWatchBuyTrade = (account: Account, trades?: TradeBuy[], transact
             });
             resetRefresh();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [refreshCount]);
+    }, [account, cancelRefresh, refreshCount, resetRefresh, saveTrade, trade]);
 
     return [updatedTrade];
 };

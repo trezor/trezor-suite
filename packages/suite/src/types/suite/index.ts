@@ -100,6 +100,4 @@ export type InjectedModalApplicationProps = {
     getBackgroundRoute: () => Route$ | typeof undefined;
 };
 
-export type SelectOption = { value: string; label: string };
-
 export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error';

@@ -14,7 +14,7 @@ import { getStatusMessage, processQuotes } from '@wallet-utils/coinmarket/buyUti
 import { TradeBuy } from '@wallet-reducers/coinmarketReducer';
 import Status from '../Status';
 import { useSelector, useActions } from '@suite-hooks';
-import { formatCryptoAmount } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
+import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 
 interface Props {
     trade: TradeBuy;
@@ -114,7 +114,7 @@ const Arrow = styled.div`
     padding: 0 11px;
 `;
 
-const BuyTransactionLoaded = ({ trade, providers, account }: Props) => {
+const BuyTransaction = ({ trade, providers, account }: Props) => {
     const { goto } = useActions({ goto: routerActions.goto });
     const {
         saveTransactionDetailId,
@@ -233,14 +233,6 @@ const BuyTransactionLoaded = ({ trade, providers, account }: Props) => {
             </BuyColumn>
         </Wrapper>
     );
-};
-
-const BuyTransaction = (props: Props) => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    if (selectedAccount.status !== 'loaded') {
-        return null;
-    }
-    return <BuyTransactionLoaded {...props} />;
 };
 
 export default BuyTransaction;
