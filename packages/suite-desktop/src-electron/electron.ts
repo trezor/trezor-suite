@@ -220,8 +220,6 @@ const init = async () => {
 
     // Differential updater hack (https://gist.github.com/the3moon/0e9325228f6334dabac6dadd7a3fc0b9)
     autoUpdater.logger = electronLogger;
-    // @ts-ignore
-    autoUpdater.logger.transports.file.level = 'info';
 
     let diffDown = {
         percent: 0,

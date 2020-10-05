@@ -200,7 +200,9 @@ const DesktopUpdater = () => {
 
         });
         */
-    }, [checking, available, notAvailable, downloading, skip, ready]);
+        // No deps needed here
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
