@@ -5,7 +5,10 @@ stdenv.mkDerivation {
   buildInputs = [
     nodejs-12_x
     (yarn.override { nodejs = nodejs-12_x; })
-  ];
+  ] ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
+    Cocoa
+    CoreServices
+  ]);
   shellHook = ''
     export PATH="$PATH:$(pwd)/node_modules/.bin"
   '';
