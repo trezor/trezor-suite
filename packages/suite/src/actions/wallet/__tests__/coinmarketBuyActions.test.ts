@@ -3,8 +3,8 @@ import thunk from 'redux-thunk';
 import coinmarketReducer from '@wallet-reducers/coinmarketReducer';
 
 import * as coinmarketBuyActions from '../coinmarketBuyActions';
-import invityAPI from '@suite/services/suite/invityAPI';
-import { BuyTradeQuoteRequest } from 'invity-api';
+import invityAPI from '@suite-services/invityAPI';
+import { BuyTrade, BuyTradeQuoteRequest } from 'invity-api';
 
 export const getInitialState = () => ({
     wallet: {
@@ -188,5 +188,48 @@ describe('Coinmarket Buy Actions', () => {
         const store = initStore(getInitialState());
         store.dispatch(coinmarketBuyActions.saveTransactionDetailId('1234-4321-4321'));
         expect(store.getState().wallet.coinmarket.buy.transactionId).toEqual('1234-4321-4321');
+    });
+
+    it('saveQuotes', async () => {
+        const store = initStore(getInitialState());
+
+        const quotes: BuyTrade[] = [
+            {
+                fiatStringAmount: '10',
+                fiatCurrency: 'EUR',
+                receiveCurrency: 'BTC',
+                receiveStringAmount: '0.0005',
+                rate: 20000,
+                quoteId: 'fc12d4c4-9078-4175-becd-90fc58a3145c',
+                error: 'Amount too low, minimum is EUR 25 or BTC 0.002.',
+                exchange: 'cexdirect',
+                minFiat: 25,
+                maxFiat: 1000,
+                minCrypto: 0.002,
+                maxCrypto: 0.10532,
+                paymentMethod: 'creditCard',
+                paymentId: 'e709df77-ee9e-4d12-98c2-84004a19c546',
+            },
+            {
+                fiatStringAmount: '10',
+                fiatCurrency: 'EUR',
+                receiveCurrency: 'BTC',
+                receiveStringAmount: '0.0010001683607972866',
+                rate: 9998.316675433,
+                quoteId: 'ff259797-6cbe-4fea-8330-5181353f64a0',
+                exchange: 'mercuryo',
+                minFiat: 20,
+                maxFiat: 1999.96,
+                minCrypto: 0.002,
+                maxCrypto: 0.20003,
+                paymentMethod: 'creditCard',
+                paymentId: 'e709df77-ee9e-4d12-98c2-84004a19c548',
+            },
+        ];
+        const alternativeQuotes: BuyTrade[] = [];
+
+        store.dispatch(coinmarketBuyActions.saveQuotes(quotes, alternativeQuotes));
+        expect(store.getState().wallet.coinmarket.buy.quotes).toEqual(quotes);
+        expect(store.getState().wallet.coinmarket.buy.alternativeQuotes).toEqual(alternativeQuotes);
     });
 });

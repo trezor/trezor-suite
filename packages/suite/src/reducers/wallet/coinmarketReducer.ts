@@ -48,6 +48,7 @@ interface Exchange {
     quotesRequest?: ExchangeTradeQuoteRequest;
     fixedQuotes: ExchangeTrade[];
     floatQuotes: ExchangeTrade[];
+    transactionId?: string;
     addressVerified: boolean;
 }
 
@@ -133,6 +134,9 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_EXCHANGE.VERIFY_ADDRESS:
                 draft.exchange.addressVerified = action.addressVerified;
+                break;
+            case COINMARKET_EXCHANGE.SAVE_TRANSACTION_ID:
+                draft.exchange.transactionId = action.transactionId;
                 break;
 
             case STORAGE.LOADED:
