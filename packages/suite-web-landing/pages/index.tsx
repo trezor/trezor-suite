@@ -5,7 +5,7 @@ import Download from '@suite-web-landing-components/Download';
 import Feature from '@suite-web-landing-components/Feature';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { H1, P, variables, colors } from '@trezor/components';
-import Fade from 'react-reveal/Fade';
+import { Fade } from 'react-awesome-reveal';
 
 const Wrapper = styled.div`
     display: flex;
@@ -118,20 +118,20 @@ const Index = () => (
     <Layout>
         <Wrapper>
             <StyledHeroCta>
-                <Fade bottom delay={500}>
+                <Fade direction="up" delay={500} triggerOnce>
                     <StyledHeadline>
                         Managing crypto just got
                         <br />
                         <em>safer and easier</em>
                     </StyledHeadline>
                 </Fade>
-                <Fade delay={1500}>
+                <Fade delay={1500} triggerOnce>
                     <StyledSubheadline>
                         Trezor wallet is now a desktop &amp; browser app.
                     </StyledSubheadline>
                 </Fade>
                 <DownloadWrapper>
-                    <Fade delay={2000}>
+                    <Fade delay={2000} triggerOnce>
                         <Download />
                     </Fade>
                 </DownloadWrapper>
