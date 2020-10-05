@@ -120,7 +120,7 @@ const Passphrase = (props: Props) => {
         return (
             <Modal
                 heading={<Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />}
-                description={<Translation id="TR_HIDDEN_WALLET_TOOLTIP" />}
+                description={<Translation id="TR_HIDDEN_WALLET_MODAL_DESCRIPTION" />}
                 size="tiny"
             >
                 <PassphraseTypeCard

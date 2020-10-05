@@ -2,107 +2,55 @@ import React from 'react';
 import styled from 'styled-components';
 import { Icon, colors, variables, Loader } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import FiatValue from '@suite-components/FiatValue/Container';
-import { Badge, HiddenPlaceholder, FormattedCryptoAmount } from '@suite-components';
+import { formatNetworkAmount, getNetwork } from '@wallet-utils/accountUtils';
+import { FormattedCryptoAmount, Translation } from '@suite-components';
 
 const Wrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+    text-align: left;
+    margin-top: 25px;
 `;
 
-const IOWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    width: 100%;
-
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: column;
-    }
-`;
-
-const Col = styled.div<{ direction: 'column' | 'row' }>`
-    display: flex;
-    flex-direction: ${props => props.direction};
-    flex: 1 1 calc(50% - 16px);
-    overflow: hidden;
-
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        width: 100%;
-    }
-`;
+const IOWrapper = styled.div``;
 
 const IconWrapper = styled.div`
     display: flex;
-    padding: 8px;
-    margin-top: 18px;
-
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        width: 100%;
-        justify-content: center;
-        transform: rotate(90deg);
-    }
+    justify-self: left;
+    width: 100%;
+    margin-top: 14px;
+    margin-bottom: 16px;
 `;
 
-const IOBox = styled.div`
-    display: flex;
-    flex-direction: column;
-    border-radius: 3px;
-    background-color: ${colors.BLACK96};
-    padding: 12px;
-    text-align: left;
+const IOBox = styled.div``;
 
-    & + & {
-        margin-top: 10px;
-    }
-
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        width: 100%;
-    }
-`;
-
-// const IOBoxPath = styled.div`
-//     display: flex;
-//     font-size: ${variables.FONT_SIZE.TINY};
-//     color: ${colors.BLACK50};
-//     margin-bottom: 10px;
-// `;
-
-const IOBoxAmountWrapper = styled.div`
-    display: flex;
-    justify-content: space-between;
-    font-size: ${variables.FONT_SIZE.TINY};
-`;
-
-const Title = styled.div`
-    color: ${colors.BLACK0};
-    text-align: center;
-    margin-bottom: 18px;
-`;
-
-const Amount = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
+const IORowTitle = styled.div`
+    margin-bottom: 4px;
     color: ${colors.BLACK50};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    font-size: ${variables.NEUE_FONT_SIZE.TINY};
 `;
 
-const IOBoxAddress = styled.div`
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.BLACK17};
-    overflow: hidden;
+const IORow = styled.div`
+    display: grid;
+    grid-template-columns: fit-content(200px) auto;
+
+    /* display: flex; */
+    line-height: 1.9;
+    color: ${colors.BLACK25};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-size: ${variables.NEUE_FONT_SIZE.SMALL};
+`;
+
+const CryptoAmountWrapper = styled.div``;
+
+const Address = styled.div`
     text-overflow: ellipsis;
-    font-variant-numeric: tabular-nums slashed-zero;
-    margin-bottom: 10px;
+    overflow: hidden;
 `;
 
-const HistoricalBadge = styled(props => <Badge {...props} isGray />)`
-    margin-right: 8px;
-`;
-
-const BadgesWrapper = styled.div`
-    display: flex;
+const Circle = styled.div`
+    display: inline-flex;
+    margin-left: 5px;
+    margin-right: 5px;
+    color: ${colors.BLACK50};
 `;
 
 interface Props {
@@ -112,119 +60,70 @@ interface Props {
 }
 
 const IODetails = ({ tx, txDetails, isFetching }: Props) => {
+    const network = getNetwork(tx.symbol);
     return (
         <Wrapper>
-            <Title>Inputs/Outputs</Title>
             {!txDetails && isFetching && <Loader size={32} />}
+            {/* If i have inputs and ouputs, render this: */}
             {txDetails?.vin && txDetails?.vout && (
                 <IOWrapper>
-                    <Col direction="column">
+                    <IOBox>
+                        <IORowTitle>
+                            <Translation id="TR_INPUTS" />
+                        </IORowTitle>
+
                         {txDetails.vin?.map((input: any) => {
                             let inputAmount = formatNetworkAmount(input.value, tx.symbol);
+
+                            // if the input amount is equal to -1, return 0, otherwise return input amount
                             inputAmount = inputAmount === '-1' ? '0' : inputAmount;
                             return (
-                                <IOBox key={input.n}>
-                                    <IOBoxAddress>
-                                        <HiddenPlaceholder>
-                                            {input.addresses.map((addr: string) => addr)}
-                                        </HiddenPlaceholder>
-                                    </IOBoxAddress>
-                                    {/* <IOBoxPath>placeholder</IOBoxPath> */}
-                                    <IOBoxAmountWrapper>
-                                        <HiddenPlaceholder>
-                                            <Amount>
-                                                <FormattedCryptoAmount
-                                                    value={inputAmount}
-                                                    symbol={tx.symbol}
-                                                />
-                                            </Amount>
-                                        </HiddenPlaceholder>
-
-                                        <BadgesWrapper>
-                                            <HiddenPlaceholder>
-                                                <FiatValue
-                                                    amount={inputAmount}
-                                                    symbol={tx.symbol}
-                                                    source={tx.rates}
-                                                    useCustomSource
-                                                >
-                                                    {({ value }) =>
-                                                        value ? (
-                                                            <HistoricalBadge isGrey>
-                                                                {value}
-                                                            </HistoricalBadge>
-                                                        ) : null
-                                                    }
-                                                </FiatValue>
-                                            </HiddenPlaceholder>
-                                            <HiddenPlaceholder>
-                                                <FiatValue
-                                                    amount={inputAmount}
-                                                    symbol={tx.symbol}
-                                                    badge={{ color: 'gray' }}
-                                                />
-                                            </HiddenPlaceholder>
-                                        </BadgesWrapper>
-                                    </IOBoxAmountWrapper>
-                                </IOBox>
+                                <IORow key={input.n}>
+                                    {network?.networkType !== 'ethereum' && (
+                                        // don't show input amount in ethereum
+                                        // consider faking it by showing the same value os the output
+                                        <CryptoAmountWrapper>
+                                            <FormattedCryptoAmount
+                                                value={inputAmount}
+                                                symbol={tx.symbol}
+                                                disableHiddenPlaceholder
+                                            />
+                                            <Circle>&bull;</Circle>
+                                        </CryptoAmountWrapper>
+                                    )}
+                                    <Address>{input.addresses.map((addr: string) => addr)}</Address>
+                                </IORow>
                             );
                         })}
-                    </Col>
+                    </IOBox>
 
                     <IconWrapper>
-                        <Icon icon="ARROW_RIGHT" size={16} />
+                        <Icon icon="ARROW_DOWN" size={17} color={colors.BLACK50} />
                     </IconWrapper>
 
-                    <Col direction="column">
+                    <IOBox>
+                        <IORowTitle>
+                            <Translation id="TR_OUTPUTS" />
+                        </IORowTitle>
                         {txDetails.vout?.map((output: any) => {
                             let outputAmount = formatNetworkAmount(output.value, tx.symbol);
                             outputAmount = outputAmount === '-1' ? '0' : outputAmount;
                             return (
-                                <IOBox key={output.n}>
-                                    <IOBoxAddress>
-                                        <HiddenPlaceholder>
-                                            {output.addresses.map((addr: string) => addr)}
-                                        </HiddenPlaceholder>
-                                    </IOBoxAddress>
-                                    {/* <IOBoxPath>todo: bip44 path</IOBoxPath> */}
-                                    <IOBoxAmountWrapper>
-                                        <HiddenPlaceholder>
-                                            <Amount>
-                                                {' '}
-                                                <FormattedCryptoAmount
-                                                    value={outputAmount}
-                                                    symbol={tx.symbol}
-                                                />
-                                            </Amount>
-                                        </HiddenPlaceholder>
-                                        <BadgesWrapper>
-                                            <HiddenPlaceholder>
-                                                <FiatValue
-                                                    amount={outputAmount}
-                                                    symbol={tx.symbol}
-                                                    source={tx.rates}
-                                                    useCustomSource
-                                                >
-                                                    {({ value }) =>
-                                                        value ? (
-                                                            <HistoricalBadge isGrey>
-                                                                {value}
-                                                            </HistoricalBadge>
-                                                        ) : null
-                                                    }
-                                                </FiatValue>
-                                            </HiddenPlaceholder>
-                                            <FiatValue
-                                                amount={outputAmount}
-                                                symbol={tx.symbol}
-                                                badge={{ color: 'blue' }}
-                                            />
-                                        </BadgesWrapper>
-                                    </IOBoxAmountWrapper>
-                                </IOBox>
+                                <IORow key={output.n}>
+                                    <CryptoAmountWrapper>
+                                        <FormattedCryptoAmount
+                                            value={outputAmount}
+                                            symbol={tx.symbol}
+                                        />
+                                        <Circle>&bull;</Circle>
+                                    </CryptoAmountWrapper>
+                                    <Address>
+                                        {output.addresses.map((addr: string) => addr)}
+                                    </Address>
+                                </IORow>
                             );
                         })}
-                    </Col>
+                    </IOBox>
                 </IOWrapper>
             )}
         </Wrapper>

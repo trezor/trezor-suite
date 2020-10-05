@@ -2,13 +2,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
-import { variables, colors, Link } from '@trezor/components';
-import { useActions } from '@suite-hooks';
+import { variables, colors } from '@trezor/components';
 import { getDateWithTimeZone } from '@suite-utils/date';
-import * as modalActions from '@suite-actions/modalActions';
 import { WalletAccountTransaction } from '@wallet-types';
 
-const TimestampLink = styled(Link)`
+const TimestampLink = styled.div`
     display: block;
     font-variant-numeric: tabular-nums;
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
@@ -17,6 +15,7 @@ const TimestampLink = styled(Link)`
     line-height: 1.57;
     margin-right: 8px;
     white-space: nowrap;
+    cursor: pointer;
 `;
 
 interface Props {
@@ -25,19 +24,9 @@ interface Props {
 
 const TransactionTimestamp = ({ transaction }: Props) => {
     const { blockTime, blockHeight } = transaction;
-    const { openModal } = useActions({
-        openModal: modalActions.openModal,
-    });
 
     return (
-        <TimestampLink
-            onClick={() => {
-                openModal({
-                    type: 'transaction-detail',
-                    tx: transaction,
-                });
-            }}
-        >
+        <TimestampLink>
             {blockHeight !== 0 && blockTime && blockTime > 0 && (
                 <FormattedDate
                     value={getDateWithTimeZone(blockTime * 1000)}

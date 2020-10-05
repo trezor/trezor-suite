@@ -46,6 +46,7 @@ const Wrapper = styled.div`
     padding: 14px 18px 14px 18px;
     align-items: center;
     background: ${colors.NEUE_STROKE_GREY};
+    margin-bottom: 8px;
 `;
 
 const IconWrapper = styled.div`

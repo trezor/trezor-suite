@@ -44,6 +44,11 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Extension of the wallet derived from recovery seed by your own chosen input.',
     },
+    TR_HIDDEN_WALLET_MODAL_DESCRIPTION: {
+        id: 'TR_HIDDEN_WALLET_MODAL_DESCRIPTION',
+        defaultMessage:
+            'Extension of the wallet derived from recovery seed by your own chosen input.',
+    },
     TR_ACCESS_STANDARD_WALLET: {
         defaultMessage: 'Access standard Wallet',
         id: 'TR_ACCESS_STANDARD_WALLET',
@@ -652,10 +657,6 @@ const definedMessages = defineMessages({
     TR_CHECK_FOR_DEVICES: {
         defaultMessage: 'Check for devices',
         id: 'TR_CHECK_FOR_DEVICES',
-    },
-    TR_CHECK_FOR_UPDATES: {
-        defaultMessage: 'Check for updates',
-        id: 'TR_CHECK_FOR_UPDATES',
     },
     TR_CHECK_PGP_SIGNATURE: {
         defaultMessage: 'Check PGP signature',
@@ -1548,6 +1549,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Oops! Something went wrong!',
         id: 'TR_OOPS_SOMETHING_WENT_WRONG',
     },
+    TR_OPEN_IN_BLOCK_EXPLORER: {
+        defaultMessage: 'Open in Block Explorer',
+        id: 'TR_OPEN_IN_BLOCK_EXPLORER',
+    },
     TR_OUTGOING: {
         defaultMessage: 'Outgoing',
         id: 'TR_OUTGOING',
@@ -2248,8 +2253,12 @@ const definedMessages = defineMessages({
         id: 'TR_YOUR_CURRENT_FIRMWARE',
     },
     TR_YOUR_CURRENT_VERSION: {
-        defaultMessage: 'You are currently running version',
+        defaultMessage: 'You are currently running version {version}.',
         id: 'TR_YOUR_CURRENT_VERSION',
+    },
+    TR_YOUR_NEW_VERSION: {
+        defaultMessage: 'Version {version} is available.',
+        id: 'TR_YOUR_NEW_VERSION',
     },
     TR_YOUR_TREZOR_IS_NOT_BACKED_UP: {
         defaultMessage: 'Your Trezor is not backed up.',
@@ -2283,7 +2292,6 @@ const definedMessages = defineMessages({
         id: 'TR_TO',
         defaultMessage: 'To',
     },
-
     TR_SEND_GAS_LIMIT_TOOLTIP: {
         id: 'TR_SEND_GAS_LIMIT_TOOLTIP',
         defaultMessage:
@@ -4193,7 +4201,7 @@ const definedMessages = defineMessages({
         defaultMessage: 'Firmware update successful',
     },
     FIRMWARE_UPDATE_SUCCESS_DESC: {
-        id: 'FIRMWARE_RECONNECTED_BL_NEXT_STEP_DESC',
+        id: 'FIRMWARE_UPDATE_SUCCESS_DESC',
         defaultMessage:
             'Your device was updated successfully and now runs bleeding edge crypto technology!',
     },
@@ -4218,6 +4226,111 @@ const definedMessages = defineMessages({
     TR_TAKES_N_MINUTES: {
         id: 'TR_TAKES_N_MINUTES',
         defaultMessage: 'Takes ~{n} mins',
+    },
+    TR_INPUTS_OUTPUTS: {
+        id: 'TR_INPUTS_OUTPUTS',
+        defaultMessage: 'Inputs, Outputs',
+    },
+    TR_OUTPUTS: {
+        id: 'TR_OUTPUTS',
+        defaultMessage: 'Outputs',
+    },
+    TR_INPUTS: {
+        id: 'TR_INPUTS',
+        defaultMessage: 'Inputs',
+    },
+    TR_TX_TAB_AMOUNT: {
+        id: 'TR_TX_TAB_AMOUNT',
+        defaultMessage: 'Amount',
+        description: 'Title of a tab in a transaction detail modal',
+    },
+    TR_SHOW_FIAT: {
+        id: 'TR_SHOW_FIAT',
+        defaultMessage: 'Show FIAT',
+    },
+    TR_TODAY_DATE: {
+        id: 'TR_TODAY_DATE',
+        defaultMessage: 'Today, {date}',
+    },
+    TR_DOWNLOADING_UPDATE: {
+        id: 'TR_DOWNLOADING_UPDATE',
+        defaultMessage: 'Downloading update',
+    },
+    TR_UPDATE_DOWNLOADED: {
+        id: 'TR_UPDATE_DOWNLOADED',
+        defaultMessage: 'Update downloaded!',
+    },
+    TR_SHOW: {
+        id: 'TR_SHOW',
+        defaultMessage: 'Show',
+    },
+    TR_UPDATE_MODAL_AVAILABLE_HEADING: {
+        id: 'TR_UPDATE_MODAL_AVAILABLE_HEADING',
+        defaultMessage: 'Update available',
+    },
+    TR_UPDATE_MODAL_SKIP_THIS_VERSION: {
+        id: 'TR_UPDATE_MODAL_SKIP_THIS_VERSION',
+        defaultMessage: 'Skip',
+    },
+    TR_UPDATE_MODAL_START_DOWNLOAD: {
+        id: 'TR_UPDATE_MODAL_START_DOWNLOAD',
+        defaultMessage: 'Start update',
+    },
+    TR_UPDATE_MODAL_INSTALL_NOW_OR_LATER: {
+        id: 'TR_UPDATE_MODAL_INSTALL_NOW_OR_LATER',
+        defaultMessage: 'Would you like to install the update now?',
+    },
+    TR_UPDATE_MODAL_INSTALL_AND_RESTART: {
+        id: 'TR_UPDATE_MODAL_INSTALL_AND_RESTART',
+        defaultMessage: 'Restart & Update',
+    },
+    TR_UPDATE_MODAL_INSTALL_LATER: {
+        id: 'TR_UPDATE_MODAL_INSTALL_LATER',
+        defaultMessage: 'Update on next launch',
+    },
+    TR_MINIMIZE: {
+        id: 'TR_MINIMIZE',
+        defaultMessage: 'Minimize',
+    },
+    TR_VERSION_HAS_BEEN_RELEASED: {
+        id: 'TR_VERSION_HAS_BEEN_RELEASED',
+        defaultMessage: 'Version {version} has been released!',
+    },
+    TR_CHANGELOG_ON_GITHUB: {
+        id: 'TR_CHANGELOG_ON_GITHUB',
+        defaultMessage: 'Changelog on Github',
+    },
+    TR_UPDATE_MODAL_DOWNLOADING_UPDATE: {
+        id: 'TR_UPDATE_MODAL_DOWNLOADING_UPDATE',
+        defaultMessage: 'Downloading update',
+    },
+    TR_UPDATE_MODAL_UPDATE_DOWNLOADED: {
+        id: 'TR_UPDATE_MODAL_UPDATE_DOWNLOADED',
+        defaultMessage: 'Update downloaded',
+    },
+    TR_UPDATE_MODAL_RESTART_NEEDED: {
+        id: 'TR_UPDATE_MODAL_RESTART_NEEDED',
+        defaultMessage: 'This requires restarting Suite.',
+    },
+    SETTINGS_UPDATE_CHECKING: {
+        id: 'SETTINGS_UPDATE_CHECKING',
+        defaultMessage: 'Checking...',
+    },
+    SETTINGS_UPDATE_CHECK: {
+        id: 'SETTINGS_UPDATE_CHECK',
+        defaultMessage: 'Check for updates',
+    },
+    SETTINGS_UPDATE_AVAILABLE: {
+        id: 'SETTINGS_UPDATE_AVAILABLE',
+        defaultMessage: 'Get latest version',
+    },
+    SETTINGS_UPDATE_DOWNLOADING: {
+        id: 'SETTINGS_UPDATE_DOWNLOADING',
+        defaultMessage: 'Downloading...',
+    },
+    SETTINGS_UPDATE_READY: {
+        id: 'SETTINGS_UPDATE_READY',
+        defaultMessage: 'Install now!',
     },
 } as const);
 

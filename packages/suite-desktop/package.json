@@ -15,9 +15,13 @@
         "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac",
         "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux",
         "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
-        "publish": "yarn clean && yarn build:desktop && electron-builder --publish always --mac --linux --win",
+        "publish:all": "yarn clean && yarn build:desktop && electron-builder --publish always --mac --linux --win",
+        "publish:linux": "yarn build:linux && electron-builder --publish always --linux",
+        "publish:mac": "yarn build:mac && electron-builder --publish always --mac",
+        "publish:win": "yarn build:win && electron-builder --publish always --win",
         "lint": "eslint '**/*{.ts,.tsx}'",
-        "type-check": "tsc --project tsconfig.json"
+        "type-check": "tsc --project tsconfig.json",
+        "test:unit": "jest"
     },
     "build": {
         "appId": "io.trezor.TrezorSuite",
@@ -130,8 +134,10 @@
     "dependencies": {
         "electron-is-dev": "^1.2.0",
         "electron-localshortcut": "^3.2.1",
+        "electron-log": "^4.2.4",
         "electron-next": "^3.1.5",
         "electron-store": "^5.1.1",
+        "electron-updater": "^4.3.5",
         "os": "^0.1.1",
         "ps-list": "6.3.0"
     },
@@ -156,7 +162,6 @@
         "next-transpile-modules": "^2.3.1",
         "react": "16.13.1",
         "react-dom": "16.13.1",
-        "react-markdown": "4.3.1",
         "styled-components": "5.1.1",
         "worker-loader": "^3.0.2"
     }

@@ -1,3 +1,5 @@
+import React, { useCallback } from 'react';
+import styled from 'styled-components';
 import { SettingsLayout } from '@settings-components';
 import { Translation } from '@suite-components';
 import {
@@ -11,9 +13,7 @@ import {
 } from '@suite-components/Settings';
 import { FIAT, LANGUAGES } from '@suite-config';
 import { useAnalytics, useDevice } from '@suite-hooks';
-import { Button, Tooltip, Switch } from '@trezor/components';
-import React from 'react';
-import styled from 'styled-components';
+import { Switch } from '@trezor/components';
 import { capitalizeFirstLetter } from '@suite-utils/string';
 
 import { Props } from './Container';
@@ -28,17 +28,12 @@ const Version = styled.div`
     align-items: center;
 `;
 
-const VersionButton = styled(Button)`
-    padding-left: 1ch;
-`;
-
-const VersionLink = styled.a``;
-
 const Settings = ({
     language,
     metadata,
-    setLocalCurrency,
     localCurrency,
+    desktopUpdate,
+    setLocalCurrency,
     fetchLocale,
     removeDatabase,
     goto,
@@ -50,6 +45,11 @@ const Settings = ({
 
     const { isLocked, device } = useDevice();
     const isDeviceLocked = isLocked();
+
+    // Auto Updater
+    const checkForUpdates = useCallback(() => window.desktopApi?.checkForUpdates(), []);
+    const downloadUpdate = useCallback(() => window.desktopApi?.downloadUpdate(), []);
+    const installRestart = useCallback(() => window.desktopApi?.installUpdate(), []);
 
     return (
         <SettingsLayout data-test="@settings/index">
@@ -188,7 +188,7 @@ const Settings = ({
                                 removeDatabase();
                                 if (window.desktopApi) {
                                     // relaunch desktop app
-                                    window.desktopApi.send('restart-app');
+                                    window.desktopApi.send('app/restart');
                                 } else {
                                     // redirect to / and reload the web
                                     await goto('suite-index');
@@ -206,33 +206,48 @@ const Settings = ({
                         title={<Translation id="TR_SUITE_VERSION" />}
                         description={
                             <Version>
-                                <Translation id="TR_YOUR_CURRENT_VERSION" />
-                                <Tooltip content={process.env.COMMITHASH || ''}>
-                                    <VersionLink
-                                        target="_blank"
-                                        href={`https://github.com/trezor/trezor-suite/commit/${process.env.COMMITHASH}`}
-                                    >
-                                        <VersionButton
-                                            variant="tertiary"
-                                            icon="EXTERNAL_LINK"
-                                            alignIcon="right"
-                                        >
-                                            {process.env.VERSION}
-                                        </VersionButton>
-                                    </VersionLink>
-                                </Tooltip>
+                                <Translation
+                                    id="TR_YOUR_CURRENT_VERSION"
+                                    values={{ version: process.env.VERSION }}
+                                />
+                                {!['checking', 'not-available'].includes(desktopUpdate.state) && (
+                                    <>
+                                        &nbsp;
+                                        <Translation
+                                            id="TR_YOUR_NEW_VERSION"
+                                            values={{ version: desktopUpdate.latest?.version }}
+                                        />
+                                    </>
+                                )}
                             </Version>
                         }
                     />
                     <ActionColumn>
-                        {/* todo: Button hidden as it does nothing. But still keep info with version here */}
-                        {/* <ActionButton
-                                onClick={() => console.log('moo')}
-                                isDisabled={uiLocked}
-                                variant="secondary"
-                            >
-                                <Translation id="TR_CHECK_FOR_UPDATES" />
-                            </ActionButton> */}
+                        {desktopUpdate.state === 'checking' && (
+                            <ActionButton isDisabled variant="secondary">
+                                <Translation id="SETTINGS_UPDATE_CHECKING" />
+                            </ActionButton>
+                        )}
+                        {desktopUpdate.state === 'not-available' && (
+                            <ActionButton onClick={checkForUpdates} variant="secondary">
+                                <Translation id="SETTINGS_UPDATE_CHECK" />
+                            </ActionButton>
+                        )}
+                        {desktopUpdate.state === 'available' && (
+                            <ActionButton onClick={downloadUpdate} variant="secondary">
+                                <Translation id="SETTINGS_UPDATE_AVAILABLE" />
+                            </ActionButton>
+                        )}
+                        {desktopUpdate.state === 'downloading' && (
+                            <ActionButton isDisabled variant="secondary">
+                                <Translation id="SETTINGS_UPDATE_DOWNLOADING" />
+                            </ActionButton>
+                        )}
+                        {desktopUpdate.state === 'ready' && (
+                            <ActionButton onClick={installRestart} variant="secondary">
+                                <Translation id="SETTINGS_UPDATE_READY" />
+                            </ActionButton>
+                        )}
                     </ActionColumn>
                 </SectionItem>
             </Section>

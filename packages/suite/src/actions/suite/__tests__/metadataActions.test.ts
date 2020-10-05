@@ -54,6 +54,9 @@ jest.mock('dropbox', () => {
                 name: { given_name: 'haf' },
             };
         }
+        getRefreshToken() {
+            return 'token-haf-mnau';
+        }
         getAccessToken() {
             return 'token-haf-mnau';
         }
@@ -201,21 +204,26 @@ describe('Metadata Actions', () => {
             DropboxProvider.prototype.connect = () => Promise.resolve(true);
             DropboxProvider.prototype.getCredentials = () =>
                 Promise.resolve({
-                    type: 'dropbox',
-                    token: 'token',
-                    user: 'power-user',
+                    success: true,
+                    payload: {
+                        type: 'dropbox',
+                        token: 'token',
+                        user: 'power-user',
+                    },
                 });
             DropboxProvider.prototype.getFileContent = async (filename: string) => {
                 if (
                     filename === '828652b66f2e6f919fbb7fe4c9609d4891ed531c6fac4c28441e53ebe577ac85'
                 ) {
-                    return fs.readFileSync(
+                    const file = fs.readFileSync(
                         path.resolve(
                             __dirname,
                             '../../../utils/suite/__fixtures__/828652b66f2e6f919fbb7fe4c9609d4891ed531c6fac4c28441e53ebe577ac85.mtdt',
                         ),
                     );
+                    return { success: true, payload: file };
                 }
+                return { success: true, payload: undefined };
             };
             // @ts-ignore
             const store = initStore(getInitialState(f.initialState));
@@ -265,7 +273,6 @@ describe('Metadata Actions', () => {
             const store = initStore(getInitialState(f.initialState));
             // @ts-ignore, params
             const result = await store.dispatch(metadataActions.init(f.params));
-
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {

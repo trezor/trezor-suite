@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { colors, variables, Modal } from '@trezor/components';
 import { Translation, ExternalLink } from '@suite-components';
-import messages from '@suite/support/messages';
 import { Network } from '@wallet-types';
 import NetworkSelect from './NetworkSelect';
 import AccountTypeSelect from './AccountTypeSelect';
@@ -55,14 +54,14 @@ const Wrapper = (props: Props) => (
     <StyledModal
         cancelable
         onCancel={props.onCancel}
-        heading={<Translation {...messages.MODAL_ADD_ACCOUNT_TITLE} />}
+        heading={<Translation id="MODAL_ADD_ACCOUNT_TITLE" />}
         description={
             <Translation
-                {...messages.MODAL_ADD_ACCOUNT_DESC}
+                id="MODAL_ADD_ACCOUNT_DESC"
                 values={{
                     trezorCoinsUrl: (
                         <ExternalLink size="small" href={TREZOR_COINS_URL}>
-                            {TREZOR_COINS_URL}
+                            <Translation id="TR_LEARN_MORE" />
                         </ExternalLink>
                     ),
                 }}
@@ -71,7 +70,7 @@ const Wrapper = (props: Props) => (
     >
         <Row>
             <RowTitle>
-                <Translation {...messages.TR_CRYPTOCURRENCY} />
+                <Translation id="TR_CRYPTOCURRENCY" />
             </RowTitle>
             <NetworkSelect
                 network={props.selectedNetwork}
@@ -82,7 +81,7 @@ const Wrapper = (props: Props) => (
         {props.accountTypes && props.accountTypes.length > 1 && (
             <Row>
                 <RowTitle>
-                    <Translation {...messages.TR_ACCOUNT_TYPE} />
+                    <Translation id="TR_ACCOUNT_TYPE" />
                 </RowTitle>
                 <AccountTypeSelect
                     network={props.selectedAccountType}

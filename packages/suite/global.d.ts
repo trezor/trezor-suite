@@ -1,7 +1,16 @@
+// Interface for exposed Electron API (ipcRenderer)
 export interface DesktopApi {
     send: (channel: string, data?: any) => void;
     on: (channel: string, func: Function) => void;
     off: (channel: string, func: Function) => void;
+    // App Ready
+    ready: () => void;
+    // Auto Updater
+    checkForUpdates: () => void;
+    downloadUpdate: () => void;
+    installUpdate: () => void;
+    cancelUpdate: () => void;
+    skipUpdate: (version: string) => void;
 }
 
 declare global {

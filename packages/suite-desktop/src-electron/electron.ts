@@ -1,6 +1,8 @@
 import { app, session, BrowserWindow, ipcMain, shell, Menu, dialog } from 'electron';
 import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
+import { autoUpdater, CancellationToken } from 'electron-updater';
+import electronLogger from 'electron-log';
 import * as path from 'path';
 import * as url from 'url';
 import * as electronLocalshortcut from 'electron-localshortcut';
@@ -8,9 +10,11 @@ import * as config from './config';
 import * as store from './store';
 import { runBridgeProcess } from './bridge';
 import { buildMainMenu } from './menu';
-import { openOauthPopup } from './oauth';
 import { openBuyWindow } from './buy';
 // import * as metadata from './metadata';
+import { HttpReceiver } from './http-receiver';
+
+const httpReceiver = new HttpReceiver();
 
 let mainWindow: BrowserWindow;
 const APP_NAME = 'Trezor Suite';
@@ -23,6 +27,8 @@ const src = isDev
           protocol: PROTOCOL,
           slashes: true,
       });
+
+const updateCancellationToken = new CancellationToken();
 
 const registerShortcuts = (window: BrowserWindow) => {
     // internally uses before-input-event, which should be safer than adding globalShortcut and removing it on blur event
@@ -49,9 +55,6 @@ const registerShortcuts = (window: BrowserWindow) => {
 };
 
 const init = async () => {
-    // todo: this is here to force bundler to bundler src-electron/metadata.ts
-    // todo: but it is not finished yet. Also it may be better to add it to tsconfig.include
-    // metadata.init();
     try {
         // TODO: not necessary since suite will send a request to start bridge via IPC
         // but right now removing it causes showing the download bridge modal for a sec
@@ -99,10 +102,8 @@ const init = async () => {
     const handleExternalLink = (event: Event, url: string) => {
         if (config.oauthUrls.some(u => url.startsWith(u))) {
             event.preventDefault();
-            openOauthPopup(url);
-            return;
+            return shell.openExternal(url);
         }
-
         // TODO? url.startsWith('http:') || url.startsWith('https:');
         if (url !== mainWindow.webContents.getURL()) {
             event.preventDefault();
@@ -168,6 +169,125 @@ const init = async () => {
     }
 
     mainWindow.loadURL(src);
+
+    httpReceiver.start();
+
+    // Updates (move in separate file)
+    const updateSettings = store.getUpdateSettings();
+
+    autoUpdater.autoDownload = false;
+    autoUpdater.autoInstallOnAppQuit = true;
+
+    if (updateSettings.skipVersion) {
+        mainWindow.webContents.send('update/skip', updateSettings.skipVersion);
+    }
+
+    autoUpdater.on('checking-for-update', () => {
+        mainWindow.webContents.send('update/checking');
+    });
+
+    autoUpdater.on('update-available', ({ version, releaseDate }) => {
+        if (updateSettings.skipVersion === version) {
+            return;
+        }
+
+        mainWindow.webContents.send('update/available', { version, releaseDate });
+    });
+
+    autoUpdater.on('update-not-available', ({ version, releaseDate }) => {
+        mainWindow.webContents.send('update/not-available', { version, releaseDate });
+    });
+
+    autoUpdater.on('error', err => {
+        mainWindow.webContents.send('update/error', { err });
+    });
+
+    autoUpdater.on('download-progress', progressObj => {
+        mainWindow.webContents.send('update/downloading', { ...progressObj });
+    });
+
+    autoUpdater.on('update-downloaded', ({ version, releaseDate, downloadedFile }) => {
+        mainWindow.webContents.send('update/downloaded', { version, releaseDate, downloadedFile });
+    });
+
+    ipcMain.on('update/check', () => autoUpdater.checkForUpdates());
+    ipcMain.on('update/download', () => {
+        mainWindow.webContents.send('update/downloading', {
+            percent: 0,
+            bytesPerSecond: 0,
+            total: 0,
+            transferred: 0,
+        });
+        autoUpdater.downloadUpdate(updateCancellationToken);
+    });
+    ipcMain.on('update/install', () => autoUpdater.quitAndInstall());
+    ipcMain.on('update/cancel', () => updateCancellationToken.cancel());
+    ipcMain.on('update/skip', (_, version) => {
+        mainWindow.webContents.send('update/skip', version);
+        updateSettings.skipVersion = version;
+        store.setUpdateSettings(updateSettings);
+    });
+
+    // Differential updater hack (https://gist.github.com/the3moon/0e9325228f6334dabac6dadd7a3fc0b9)
+    autoUpdater.logger = electronLogger;
+
+    let diffDown = {
+        percent: 0,
+        bytesPerSecond: 0,
+        total: 0,
+        transferred: 0,
+    };
+    let diffDownHelper = {
+        startTime: 0,
+        lastTime: 0,
+        lastSize: 0,
+    };
+
+    electronLogger.hooks.push((msg, transport) => {
+        if (transport !== electronLogger.transports.console) {
+            return msg;
+        }
+
+        let match = /Full: ([\d,.]+) ([GMKB]+), To download: ([\d,.]+) ([GMKB]+)/.exec(msg.data[0]);
+        if (match) {
+            let multiplier = 1;
+            if (match[4] === 'KB') multiplier *= 1024;
+            if (match[4] === 'MB') multiplier *= 1024 * 1024;
+            if (match[4] === 'GB') multiplier *= 1024 * 1024 * 1024;
+
+            diffDown = {
+                percent: 0,
+                bytesPerSecond: 0,
+                total: Number(match[3].split(',').join('')) * multiplier,
+                transferred: 0,
+            };
+            diffDownHelper = {
+                startTime: Date.now(),
+                lastTime: Date.now(),
+                lastSize: 0,
+            };
+
+            return msg;
+        }
+
+        match = /download range: bytes=(\d+)-(\d+)/.exec(msg.data[0]);
+        if (match) {
+            const currentSize = Number(match[2]) - Number(match[1]);
+            const currentTime = Date.now();
+            const deltaTime = currentTime - diffDownHelper.startTime;
+
+            diffDown.transferred += diffDownHelper.lastSize;
+            diffDown.bytesPerSecond = Math.floor((diffDown.transferred * 1000) / deltaTime);
+            diffDown.percent = (diffDown.transferred * 100) / diffDown.total;
+
+            diffDownHelper.lastSize = currentSize;
+            diffDownHelper.lastTime = currentTime;
+            mainWindow.webContents.send('update/downloading', { ...diffDown });
+            return msg;
+        }
+
+        return msg;
+    });
 };
 
 app.name = APP_NAME; // overrides @trezor/suite-desktop app name in menu
@@ -187,7 +307,7 @@ app.on('before-quit', () => {
         // store window bounds
         store.setWinBounds(mainWindow);
 
-        // TODO: be aware that although it kills the bridge process, another one will start because of start-bridge msgs from ipc
+        // TODO: be aware that although it kills the bridge process, another one will start because of bridge/start msgs from ipc
         // (BridgeStatus component sends the request every time it loses transport.type)
         // killBridgeProcess();
     }
@@ -200,6 +320,7 @@ app.on('will-quit', () => {
     } catch (error) {
         // do nothing
     }
+    httpReceiver.stop();
 });
 
 app.on('activate', () => {
@@ -218,12 +339,7 @@ app.on('browser-window-focus', (_event, win) => {
     }
 });
 
-// listen the channel `message` and resend the received message to the renderer process
-ipcMain.on('message', (event, message) => {
-    event.sender.send('message', message);
-});
-
-ipcMain.on('start-bridge', async (_event, devMode?: boolean) => {
+ipcMain.on('bridge/start', async (_event, devMode?: boolean) => {
     try {
         await runBridgeProcess(devMode);
     } catch (error) {
@@ -231,13 +347,23 @@ ipcMain.on('start-bridge', async (_event, devMode?: boolean) => {
     }
 });
 
-ipcMain.on('restart-app', () => {
+ipcMain.on('app/restart', () => {
     app.relaunch();
     app.exit();
 });
 
-ipcMain.on('oauth-receiver', (_event, message) => {
-    mainWindow.webContents.send('oauth', { data: message });
+// wait for httpReceiver to start accepting connections then register event handlers
+httpReceiver.on('server/listening', () => {
+    // when httpReceiver accepted oauth code
+    httpReceiver.on('oauth/code', code => {
+        mainWindow.webContents.send('oauth/code', code);
+        app.focus();
+    });
+
+    // when httpReceiver was asked to provide current address for given pathname
+    ipcMain.on('server/request-address', (_event, pathname) => {
+        mainWindow.webContents.send('server/address', httpReceiver.getRouteAddress(pathname));
+    });
 });
 
 ipcMain.on('buy-receiver', (_event, message) => {

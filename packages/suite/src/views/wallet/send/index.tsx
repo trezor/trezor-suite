@@ -14,7 +14,7 @@ import TotalSent from './components/TotalSent';
 import ReviewButton from './components/ReviewButton';
 import Raw from './components/Raw';
 import { AppState } from '@suite-types';
-import { SendFormProps } from '@wallet-types/sendForm';
+import { SendFormProps, UseSendFormProps } from '@wallet-types/sendForm';
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -32,6 +32,25 @@ const mapStateToProps = (state: AppState): SendFormProps => ({
     sendRaw: state.wallet.send.sendRaw,
 });
 
+// inner component for selectedAccount.status = "loaded"
+// separated to call `useSendForm` hook at top level
+const SendLoaded = (props: UseSendFormProps) => {
+    const sendContextValues = useSendForm(props);
+    return (
+        <WalletLayout title="Send" account={props.selectedAccount}>
+            <SendContext.Provider value={sendContextValues}>
+                <StyledCard customHeader={<Header />}>
+                    <Outputs />
+                    <Options />
+                </StyledCard>
+                <Fees />
+                <TotalSent />
+                <ReviewButton />
+            </SendContext.Provider>
+        </WalletLayout>
+    );
+};
+
 const Send = (props: SendFormProps) => {
     const { selectedAccount } = props;
     if (selectedAccount.status !== 'loaded') {
@@ -46,22 +65,7 @@ const Send = (props: SendFormProps) => {
         );
     }
 
-    // It's OK to call this hook conditionally
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const sendContextValues = useSendForm({ ...props, selectedAccount });
-    return (
-        <WalletLayout title="Send" account={selectedAccount}>
-            <SendContext.Provider value={sendContextValues}>
-                <StyledCard customHeader={<Header />}>
-                    <Outputs />
-                    <Options />
-                </StyledCard>
-                <Fees />
-                <TotalSent />
-                <ReviewButton />
-            </SendContext.Provider>
-        </WalletLayout>
-    );
+    return <SendLoaded {...props} selectedAccount={selectedAccount} />;
 };
 
 export default connect(mapStateToProps)(Send);

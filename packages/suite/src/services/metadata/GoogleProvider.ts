@@ -1,14 +1,13 @@
 import { AbstractMetadataProvider } from '@suite-types/metadata';
 import GoogleClient from '@suite/services/google';
 
-class GoogleProvider implements AbstractMetadataProvider {
+class GoogleProvider extends AbstractMetadataProvider {
     connected = false;
     client: GoogleClient;
-    type: 'google';
 
     constructor(token?: string) {
+        super('google');
         this.client = new GoogleClient(token);
-        this.type = 'google';
     }
 
     async connect() {
@@ -31,36 +30,51 @@ class GoogleProvider implements AbstractMetadataProvider {
     }
 
     async getFileContent(file: string) {
-        const id = await this.client.getIdByName(`${file}.mtdt`);
-        if (!id) return;
+        try {
+            const id = await this.client.getIdByName(`${file}.mtdt`);
+            if (!id) {
+                return this.ok(undefined);
+            }
 
-        const response = await this.client.get(
-            {
-                query: {
-                    alt: 'media',
+            const response = await this.client.get(
+                {
+                    query: {
+                        alt: 'media',
+                    },
                 },
-            },
-            id,
-        );
-        return Buffer.from(response, 'hex');
+                id,
+            );
+            if (response) {
+                return this.ok(Buffer.from(response, 'hex'));
+            }
+            return this.ok(undefined);
+        } catch (err) {
+            // special case, not found means file is not there which is actually information we want to know
+            if (err?.error?.code === 404) {
+                return this.ok(undefined);
+            }
+            return this.handleProviderError(err);
+        }
     }
 
     async setFileContent(file: string, content: Buffer) {
-        // search for file by name with forceReload=true parameter to make sure that we do not save
-        // two files with the same name but different ids
-        const id = await this.client.getIdByName(`${file}.mtdt`, true);
-        if (id) {
-            await this.client.update(
-                {
-                    body: {
-                        name: `${file}.mtdt`,
-                        mimeType: 'text/plain;charset=UTF-8',
+        try {
+            // search for file by name with forceReload=true parameter to make sure that we do not save
+            // two files with the same name but different ids
+            const id = await this.client.getIdByName(`${file}.mtdt`, true);
+            if (id) {
+                await this.client.update(
+                    {
+                        body: {
+                            name: `${file}.mtdt`,
+                            mimeType: 'text/plain;charset=UTF-8',
+                        },
                     },
-                },
-                content.toString('hex'),
-                id,
-            );
-        } else {
+                    content.toString('hex'),
+                    id,
+                );
+                return this.ok();
+            }
             await this.client.create(
                 {
                     body: {
@@ -71,21 +85,59 @@ class GoogleProvider implements AbstractMetadataProvider {
                 },
                 content.toString('hex'),
             );
+            return this.ok();
+        } catch (err) {
+            return this.handleProviderError(err);
         }
     }
 
     async getCredentials() {
-        if (!this.client.token) return;
-        const response = await this.client.getTokenInfo();
-        return {
-            type: 'google',
-            token: this.client.token,
-            user: response.user.displayName,
-        } as const;
+        if (!this.client.token) return this.error('AUTH_ERROR', 'token is missing');
+        try {
+            const response = await this.client.getTokenInfo();
+            return this.ok({
+                type: 'google',
+                token: this.client.token,
+                user: response.user.displayName,
+            } as const);
+        } catch (err) {
+            return this.handleProviderError(err);
+        }
     }
 
-    isConnected() {
-        return this.connected;
+    async isConnected() {
+        try {
+            await this.client.oauth2Client.getAccessToken();
+            return true;
+        } catch (_err) {
+            return false;
+        }
+    }
+
+    /**
+     * Specific implementation in every provider. Returns standardized error
+     */
+    handleProviderError(err: any) {
+        // collect human readable errors from wherever possible or fill with own general message;
+        const message = err?.error?.message || err?.message;
+
+        if (err?.error?.code >= 500) {
+            return this.error('PROVIDER_ERROR', message);
+        }
+
+        // todo: more fine grained errors for google drive
+        // https://developers.google.com/drive/api/v3/handle-errors
+        switch (err?.error?.code) {
+            case 401:
+                return this.error('AUTH_ERROR', message);
+            case 404:
+                return this.error('NOT_FOUND_ERROR', message);
+            case 429:
+                return this.error('RATE_LIMIT_ERROR', message);
+            default:
+            // no default
+        }
+        return this.error('OTHER_ERROR', message);
     }
 }
 

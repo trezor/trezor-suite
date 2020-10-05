@@ -1,3 +1,4 @@
+// todo: rework to something cryptographically stronger, probably use random bytes from crypto node module?
 export const getRandomId = (length: number) => {
     let id = '';
     const list = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -9,4 +10,12 @@ export const getRandomId = (length: number) => {
 
 export const getAnalyticsRandomId = () => {
     return getRandomId(10);
+};
+
+/**
+ * Generate code_challenge for Oauth2
+ * Authorization code with PKCE flow
+ */
+export const getCodeChallenge = () => {
+    return getRandomId(128);
 };

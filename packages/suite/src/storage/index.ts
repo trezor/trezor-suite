@@ -179,7 +179,7 @@ const onDowngrade = () => {
     if (window.desktopApi) {
         // relaunch desktop app
         // @ts-ignore
-        window.desktopApi.send('restart-app');
+        window.desktopApi.send('app/restart');
     } else {
         // @ts-ignore
         window.location.reload();

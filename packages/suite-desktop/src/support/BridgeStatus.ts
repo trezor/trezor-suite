@@ -19,14 +19,14 @@ const BridgeStatus = ({ transport, bridgeDevMode }: Props) => {
     useEffect(() => {
         if (!transport) return;
         if (!transport.type && window.desktopApi) {
-            window.desktopApi.send('start-bridge');
+            window.desktopApi.send('bridge/start');
         }
     }, [transport]);
 
     useEffect(() => {
         // run on toggling bridge dev mode
         if (window.desktopApi) {
-            window.desktopApi.send('start-bridge', bridgeDevMode);
+            window.desktopApi.send('bridge/start', bridgeDevMode);
         }
     }, [bridgeDevMode]);
 

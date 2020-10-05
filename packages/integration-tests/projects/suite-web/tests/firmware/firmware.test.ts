@@ -22,7 +22,7 @@ describe('Firmware', () => {
         cy.log(
             'And this is the end my friends. Emulator does not support bootloader, so we can not proceed with actual fw install',
         );
-        cy.getTestElement('@modal/close-button').click();
+        // cy.getTestElement('@modal/close-button').click();
     });
 
     it('For latest firmware, update button in device settings should display "Up to date" but still be clickable', () => {
