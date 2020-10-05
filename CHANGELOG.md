@@ -4,8 +4,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [20.10.1]
 
 ### Added
+- Auto updater for desktop version.
+- Logging of previous device firmware in firmware update procedure if analytics is enabled
 
 ### Changed
+- Oauth flow in desktop now opens in default browser.
+- Oauth is now implemented using "authorization code flow with PKCE" method, instead of previously used implicit flow.
+- Firmware update flow redesigned. User is required to connect device in 'normal' mode before updating.
+- New design: toast notifications, modals, passphrase modal,...
 
 ### Fixed
 - Send form "setMax" inconsistent behavior. Fix of #2314, #2327
