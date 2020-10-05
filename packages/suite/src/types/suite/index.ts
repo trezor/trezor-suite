@@ -101,5 +101,3 @@ export type InjectedModalApplicationProps = {
 };
 
 export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error';
-
-export type Platform = 'linux' | 'windows' | 'mac';
