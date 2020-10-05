@@ -6,7 +6,7 @@ import { SectionItem, ActionColumn, TextColumn } from '@suite-components/Setting
 import { useAnalytics } from '@suite-hooks';
 
 const PositionedSwitch = styled.div`
-    align-self: flex-end;
+    align-self: center;
 `;
 
 const Analytics = () => {

@@ -78,6 +78,7 @@ const TokenSelect = ({ output, outputId }: Props) => {
                     <CleanSelect
                         options={options}
                         isSearchable
+                        hideTextCursor
                         value={options.find(o => o.value === tokenValue)}
                         isClearable={false}
                         minWidth="45px"

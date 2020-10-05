@@ -20,6 +20,7 @@ const Wrapper = styled.div`
 const Description = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     margin-bottom: 12px;
+    margin-top: 12px;
     font-size: ${variables.FONT_SIZE.TINY};
 
     &:last-child {
@@ -29,7 +30,6 @@ const Description = styled.div`
 
 const Title = styled.div`
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
-    margin-bottom: 12px;
 `;
 
 const TextColumn = ({ title, description, learnMore }: TextColumnProps) => {
