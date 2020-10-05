@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
 
-const Feature = styled.section<Props>`
+const Feature = styled.section<{ flip?: boolean }>`
     position: relative;
     display: flex;
     flex: 1;
