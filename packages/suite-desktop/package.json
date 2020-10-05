@@ -16,7 +16,6 @@
         "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux",
         "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
         "publish": "yarn clean && yarn build:desktop && electron-builder --publish always --mac --linux --win",
-        "pubtest": "yarn clean && yarn build:linux && electron-builder --publish always --linux",
         "lint": "eslint '**/*{.ts,.tsx}'",
         "type-check": "tsc --project tsconfig.json",
         "test:unit": "jest"
@@ -116,16 +115,10 @@
             "executableName": "trezor-suite",
             "category": "Utility",
             "target": [
-                "AppImage"
+                "AppImage",
+                "tar.gz"
             ]
-        },
-        "publish": [
-            {
-                "provider": "github",
-                "repo": "trezor-desktop-test",
-                "owner": "keraf"
-            }
-        ]
+        }
     },
     "dependencies": {
         "electron-is-dev": "^1.2.0",

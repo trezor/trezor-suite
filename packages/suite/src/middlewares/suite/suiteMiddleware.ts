@@ -65,7 +65,8 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             // backend connected, suite is ready to use
             api.dispatch(suiteActions.onSuiteReady());
             // desktopApi ready
-            if (window.desktopApi) {
+            if (process.env.SUITE_TYPE === 'desktop') {
+                // @ts-ignore
                 window.desktopApi.ready();
             }
             break;

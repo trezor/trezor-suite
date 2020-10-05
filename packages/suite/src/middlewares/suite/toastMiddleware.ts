@@ -29,7 +29,6 @@ const toastMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispa
         toast(hocNotification(payload, ToastNotification), {
             toastId: payload.id,
             onClose: () => api.dispatch(close(payload.id)),
-            autoClose: payload.autoClose,
         });
     }
 
