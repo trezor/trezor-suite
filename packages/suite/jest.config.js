@@ -53,8 +53,8 @@ module.exports = {
         global: {
             statements: 63,
             branches: 55,
-            functions: 64,
-            lines: 64,
+            functions: 63,
+            lines: 63,
         },
     },
     modulePathIgnorePatterns: [
