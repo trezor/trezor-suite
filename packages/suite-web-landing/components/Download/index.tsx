@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Button, Dropdown, Icon, colors, variables, Link } from '@trezor/components';
 import { IconType } from '@trezor/components/src/support/types';
-import { Platform } from '../../types';
-import { getPlatform } from 'packages/suite-web-landing/utils/navigator';
+import { Platform, getPlatform } from '../../utils/navigator';
 import { normalizeVersion } from '@suite-utils/build';
 
 const StyledDropdown = styled(Dropdown)`

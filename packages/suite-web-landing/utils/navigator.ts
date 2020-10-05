@@ -1,4 +1,4 @@
-import { Platform } from '../types';
+export type Platform = 'linux' | 'windows' | 'mac';
 
 export const getPlatform = (navigator: Navigator): Platform => {
     const macPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'];
