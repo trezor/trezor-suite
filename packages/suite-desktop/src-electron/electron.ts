@@ -170,15 +170,25 @@ const init = async () => {
         setInterval(() => autoUpdater.checkForUpdates(), 60 * 60 * 1000);
     });
 
-    // Updates
+    // Updates (move in separate file)
+    const updateSettings = store.getUpdateSettings();
+
     autoUpdater.autoDownload = false;
     autoUpdater.autoInstallOnAppQuit = true;
+
+    if (updateSettings.skipVersion) {
+        mainWindow.webContents.send('update/skip', updateSettings.skipVersion);
+    }
 
     autoUpdater.on('checking-for-update', () => {
         mainWindow.webContents.send('update/checking');
     });
 
     autoUpdater.on('update-available', ({ version, releaseDate }) => {
+        if (updateSettings.skipVersion === version) {
+            return;
+        }
+
         mainWindow.webContents.send('update/available', { version, releaseDate });
     });
 
@@ -210,6 +220,11 @@ const init = async () => {
     });
     ipcMain.on('update/install', () => autoUpdater.quitAndInstall());
     ipcMain.on('update/cancel', () => updateCancellationToken.cancel());
+    ipcMain.on('update/skip', (_, version) => {
+        mainWindow.webContents.send('update/skip', version);
+        updateSettings.skipVersion = version;
+        store.setUpdateSettings(updateSettings);
+    });
 
     // Differential updater hack (https://gist.github.com/the3moon/0e9325228f6334dabac6dadd7a3fc0b9)
     autoUpdater.logger = electronLogger;

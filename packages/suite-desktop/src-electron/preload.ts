@@ -19,6 +19,7 @@ const validChannels = [
     'update/error',
     'update/downloading',
     'update/downloaded',
+    'update/skip',
 ];
 
 contextBridge.exposeInMainWorld('desktopApi', {
@@ -44,4 +45,5 @@ contextBridge.exposeInMainWorld('desktopApi', {
     downloadUpdate: () => ipcRenderer.send('update/download'),
     installUpdate: () => ipcRenderer.send('update/install'),
     cancelUpdate: () => ipcRenderer.send('update/cancel'),
+    skipUpdate: (version: string) => ipcRenderer.send('update/skip', version),
 });

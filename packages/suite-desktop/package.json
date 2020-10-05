@@ -15,7 +15,10 @@
         "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac",
         "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux",
         "build:win": "yarn clean && yarn build:desktop && electron-builder --win",
-        "publish": "yarn clean && yarn build:desktop && electron-builder --publish always --mac --linux --win",
+        "publish:all": "yarn clean && yarn build:desktop && electron-builder --publish always --mac --linux --win",
+        "publish:linux": "yarn build:linux && electron-builder --publish always --linux",
+        "publish:mac": "yarn build:mac && electron-builder --publish always --mac",
+        "publish:win": "yarn build:win && electron-builder --publish always --win",
         "lint": "eslint '**/*{.ts,.tsx}'",
         "type-check": "tsc --project tsconfig.json",
         "test:unit": "jest"

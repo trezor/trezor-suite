@@ -13,3 +13,7 @@ declare module 'electron-next' {
         port?: number,
     ): adjustRenderer | devServer;
 }
+
+declare type UpdateSettings = {
+    skipVersion: string;
+};
