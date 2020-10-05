@@ -30,6 +30,7 @@ const Wrapper = styled.div<Pick<ViewProps, 'variant'>>`
     padding: 6px 12px;
     align-items: center;
     border-left: 4px solid ${props => getVariantColor(props.variant)};
+    word-break: break-word;
 `;
 
 const Title = styled.span`
