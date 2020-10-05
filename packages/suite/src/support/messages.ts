@@ -44,6 +44,11 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Extension of the wallet derived from recovery seed by your own chosen input.',
     },
+    TR_HIDDEN_WALLET_MODAL_DESCRIPTION: {
+        id: 'TR_HIDDEN_WALLET_MODAL_DESCRIPTION',
+        defaultMessage:
+            'Extension of the wallet derived from recovery seed by your own chosen input.',
+    },
     TR_ACCESS_STANDARD_WALLET: {
         defaultMessage: 'Access standard Wallet',
         id: 'TR_ACCESS_STANDARD_WALLET',
