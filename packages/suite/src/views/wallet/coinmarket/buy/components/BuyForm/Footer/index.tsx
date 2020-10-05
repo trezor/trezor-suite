@@ -72,6 +72,7 @@ const StyledButton = styled(Button)`
 
 const Footer = () => {
     const {
+        errors,
         control,
         formState,
         watch,
@@ -81,6 +82,8 @@ const Footer = () => {
     const countrySelect = 'countrySelect';
     const hasValues =
         (watch('fiatInput') || watch('cryptoInput')) && !!watch('currencySelect').value;
+    // used instead of formState.isValid, which is sometimes returning false even if there are no errors
+    const formIsValid = Object.keys(errors).length === 0;
 
     return (
         <Wrapper>
@@ -125,7 +128,7 @@ const Footer = () => {
             </Left>
             <Right>
                 <StyledButton
-                    isDisabled={!(formState.isValid && hasValues) || formState.isSubmitting}
+                    isDisabled={!(formIsValid && hasValues) || formState.isSubmitting}
                     isLoading={formState.isSubmitting}
                     type="submit"
                 >

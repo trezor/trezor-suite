@@ -8,6 +8,7 @@ import { Controller } from 'react-hook-form';
 import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
 import styled from 'styled-components';
 import { isDecimalsValid } from '@wallet-utils/validation';
+import { InputError } from '@wallet-components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -52,6 +53,7 @@ const Inputs = () => {
         register,
         errors,
         trigger,
+        watch,
         account,
         network,
         control,
@@ -71,11 +73,16 @@ const Inputs = () => {
     const cryptoInput = 'cryptoInput';
     const currencySelect = 'currencySelect';
     const cryptoSelect = 'cryptoSelect';
+
     const [activeInput, setActiveInput] = useState<'fiatInput' | 'cryptoInput'>(fiatInput);
+    // if cryptoInput has a valid value, set it as the activeInput
+    if (watch('cryptoInput') && !errors[cryptoInput] && activeInput === fiatInput) {
+        setActiveInput(cryptoInput);
+    }
 
     useEffect(() => {
-        trigger([fiatInput]);
-    }, [amountLimits, trigger]);
+        trigger([activeInput]);
+    }, [activeInput, amountLimits, trigger]);
 
     return (
         <Wrapper>
@@ -138,8 +145,7 @@ const Inputs = () => {
                     }}
                     state={errors[fiatInput] ? 'error' : undefined}
                     name={fiatInput}
-                    // @ts-ignore TODO
-                    bottomText={errors[fiatInput] && errors[fiatInput].message}
+                    bottomText={<InputError error={errors[fiatInput]} />}
                     innerAddon={
                         <Controller
                             control={control}
@@ -235,8 +241,7 @@ const Inputs = () => {
                             }
                         },
                     })}
-                    // @ts-ignore TODO
-                    bottomText={errors[cryptoInput] && errors[cryptoInput].message}
+                    bottomText={<InputError error={errors[cryptoInput]} />}
                     innerAddon={
                         <Controller
                             control={control}
