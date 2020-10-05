@@ -99,7 +99,7 @@ const Index = () => {
         key: 'items',
         options: [
             {
-                key: item.platform as string,
+                key: item.platform,
                 label: (
                     <DropdownItem>
                         <Icon icon={item.icon} color={colors.NEUE_TYPE_LIGHT_GREY} size={16} />{' '}
