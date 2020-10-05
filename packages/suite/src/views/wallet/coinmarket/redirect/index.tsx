@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useSelector } from '@suite-hooks';
 import { Account } from '@wallet-types';
 import { variables } from '@trezor/components';
-import { useCoinmarketRedirect } from '@suite-hooks/useCoinmarketRedirect';
+import { useCoinmarketRedirect } from '@wallet-hooks/useCoinmarketRedirect';
 import { Translation } from '@suite-components';
 
 const Wrapper = styled.div`
