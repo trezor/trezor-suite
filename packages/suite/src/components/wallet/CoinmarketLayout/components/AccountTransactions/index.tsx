@@ -1,6 +1,6 @@
 import { Translation } from '@suite-components';
 import { useSelector } from '@suite-hooks';
-import { H2, variables } from '@trezor/components';
+import { H2, variables, colors } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -16,6 +16,13 @@ const Header = styled.div`
     display: flex;
     align-items: center;
     padding-bottom: 32px;
+`;
+
+const NoTransactions = styled.div`
+    display: flex;
+    justify-content: center;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
 
 const StyledH2 = styled(H2)`
@@ -42,38 +49,47 @@ const AccountTransactions = () => {
 
     return (
         <Wrapper>
-            <Header>
-                <StyledH2>
-                    <Translation id="TR_BUY_ACCOUNT_TRANSACTIONS" /> •{' '}
-                    {sortedAccountTransactions.length}
-                </StyledH2>
-            </Header>
-            <Content>
-                {sortedAccountTransactions.map(trade => {
-                    if (trade.tradeType === 'buy') {
-                        return (
-                            <BuyTransaction
-                                account={account}
-                                key={`${trade.tradeType}-${trade.key}`}
-                                trade={trade}
-                                providers={providers}
-                            />
-                        );
-                    }
+            {sortedAccountTransactions.length === 0 && (
+                <NoTransactions>
+                    <Translation id="TR_BUY_NOT_TRANSACTIONS" />
+                </NoTransactions>
+            )}
+            {sortedAccountTransactions.length > 0 && (
+                <>
+                    <Header>
+                        <StyledH2>
+                            <Translation id="TR_BUY_ACCOUNT_TRANSACTIONS" /> •{' '}
+                            {sortedAccountTransactions.length}
+                        </StyledH2>
+                    </Header>
+                    <Content>
+                        {sortedAccountTransactions.map(trade => {
+                            if (trade.tradeType === 'buy') {
+                                return (
+                                    <BuyTransaction
+                                        account={account}
+                                        key={`${trade.tradeType}-${trade.key}`}
+                                        trade={trade}
+                                        providers={providers}
+                                    />
+                                );
+                            }
 
-                    if (trade.tradeType === 'exchange') {
-                        return (
-                            <ExchangeTransaction
-                                key={`${trade.tradeType}-${trade.key}`}
-                                trade={trade}
-                                providers={providers}
-                            />
-                        );
-                    }
+                            if (trade.tradeType === 'exchange') {
+                                return (
+                                    <ExchangeTransaction
+                                        key={`${trade.tradeType}-${trade.key}`}
+                                        trade={trade}
+                                        providers={providers}
+                                    />
+                                );
+                            }
 
-                    return null;
-                })}
-            </Content>
+                            return null;
+                        })}
+                    </Content>
+                </>
+            )}
         </Wrapper>
     );
 };

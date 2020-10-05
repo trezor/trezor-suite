@@ -407,6 +407,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Offers for',
         id: 'TR_BUY_OFFERS_FOR',
     },
+    TR_BUY_NOT_TRANSACTIONS: {
+        defaultMessage: 'No transactions, yet.',
+        id: 'TR_BUY_NOT_TRANSACTIONS',
+    },
     TR_BUY_SHOW_OFFERS: {
         defaultMessage: 'Show offers',
         id: 'TR_BUY_SHOW_OFFERS',
