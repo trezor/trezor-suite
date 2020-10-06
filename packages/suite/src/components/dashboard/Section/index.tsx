@@ -27,14 +27,16 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     actions?: ReactElement;
 }
 
-const Section = ({ heading, actions, children, ...rest }: Props) => (
-    <Wrapper {...rest}>
-        <Header>
-            {heading && <Title>{heading}</Title>}
-            {actions && <Actions>{actions}</Actions>}
-        </Header>
-        {children}
-    </Wrapper>
+const Section = React.forwardRef(
+    ({ heading, actions, children, ...rest }: Props, ref: React.Ref<HTMLDivElement>) => (
+        <Wrapper {...rest} ref={ref}>
+            <Header>
+                {heading && <Title>{heading}</Title>}
+                {actions && <Actions>{actions}</Actions>}
+            </Header>
+            {children}
+        </Wrapper>
+    ),
 );
 
 export default Section;

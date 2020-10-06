@@ -66,6 +66,7 @@ const TransactionList = ({
     account,
     ...props
 }: Props) => {
+    const ref = React.createRef<HTMLDivElement>();
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
     const startIndex = (currentPage - 1) * perPage;
     const stopIndex = startIndex + perPage;
@@ -89,6 +90,7 @@ const TransactionList = ({
 
     return (
         <StyledSection
+            ref={ref}
             heading={<Translation id="TR_ALL_TRANSACTIONS" />}
             // actions={} // TODO: add Search and Dropdown with export
         >
@@ -131,7 +133,12 @@ const TransactionList = ({
                         currentPage={currentPage}
                         totalPages={totalPages}
                         isOnLastPage={isOnLastPage}
-                        onPageSelected={onPageSelected}
+                        onPageSelected={(page: number) => {
+                            onPageSelected(page);
+                            if (ref.current) {
+                                ref.current.scrollIntoView();
+                            }
+                        }}
                     />
                 </PaginationWrapper>
             )}
