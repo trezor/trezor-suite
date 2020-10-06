@@ -32,11 +32,11 @@ SOURCE=../build/
 if [ "x$1" == "xstaging-wallet" ]; then
     BUCKET=stage.mytrezor.com
     DISTRIBUTION_ID=E24M0QWO692FQL
-    DESTDIR=/wallet
+    DESTDIR=/
 elif [ "x$1" == "xbeta-wallet" ]; then
     BUCKET=beta.mytrezor.com
     DISTRIBUTION_ID=E1PONNHWUNCQ9M
-    DESTDIR=/wallet
+    DESTDIR=/
 elif [ "x$1" == "xstaging-suite" ]; then
     BUCKET=staging-suite.trezor.io
     DISTRIBUTION_ID=E232X8775ST76R
