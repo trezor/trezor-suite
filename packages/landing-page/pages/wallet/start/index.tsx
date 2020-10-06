@@ -48,11 +48,11 @@ const getAppUrl = (appName: App) => {
     const version = process.env.VERSION ? normalizeVersion(process.env.VERSION) : '';
     switch (appName) {
         case 'win':
-            return encodeURI(`/wallet/static/desktop/Trezor Suite-${version}.exe`);
+            return encodeURI(`../web/static/desktop/Trezor Suite-${version}.exe`);
         case 'macos':
-            return encodeURI(`/wallet/static/desktop/Trezor Suite-${version}.zip`);
+            return encodeURI(`../web/static/desktop/Trezor Suite-${version}.zip`);
         case 'linux':
-            return encodeURI(`/wallet/static/desktop/Trezor Suite-${version}.AppImage`);
+            return encodeURI(`../web/static/desktop/Trezor Suite-${version}.AppImage`);
         // no default
     }
 };

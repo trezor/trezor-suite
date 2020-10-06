@@ -54,7 +54,7 @@ const Index = () => (
                 <Link
                     href={
                         process.env.assetPrefix
-                            ? `${process.env.assetPrefix}/wallet/start`
+                            ? `${process.env.assetPrefix}/start`
                             : '/wallet/start'
                     }
                     target="_self"
