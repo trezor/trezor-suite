@@ -1,4 +1,4 @@
-import { AbstractMetadataProvider } from '@suite-types/metadata';
+import { AbstractMetadataProvider, Result } from '@suite-types/metadata';
 import Google from '../google';
 
 class GoogleProvider extends AbstractMetadataProvider {
@@ -29,7 +29,7 @@ class GoogleProvider extends AbstractMetadataProvider {
     }
 
     // @ts-ignore
-    async getFileContent(_file: string) {
+    async getFileContent(_file: string): Result<ArrayBuffer> {
         return this.ok(new ArrayBuffer(0));
     }
 

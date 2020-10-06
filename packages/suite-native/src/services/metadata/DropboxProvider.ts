@@ -1,4 +1,4 @@
-import { AbstractMetadataProvider } from '@suite-types/metadata';
+import { AbstractMetadataProvider, Result } from '@suite-types/metadata';
 
 class DropboxProvider extends AbstractMetadataProvider {
     constructor(_token?: string) {
@@ -24,7 +24,7 @@ class DropboxProvider extends AbstractMetadataProvider {
     }
 
     // @ts-ignore
-    async getFileContent(_file: string) {
+    async getFileContent(_file: string): Result<ArrayBuffer> {
         return this.ok(new ArrayBuffer(0));
     }
 
