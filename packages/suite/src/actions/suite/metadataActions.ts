@@ -237,7 +237,7 @@ export const fetchMetadata = (deviceState: string) => async (
             if (device?.metadata?.status !== 'enabled') return reject();
 
             if (!result.success) {
-                return reject();
+                return reject(result);
             }
 
             let json = { walletLabel: '' };
@@ -274,7 +274,7 @@ export const fetchMetadata = (deviceState: string) => async (
         const response = await provider.getFileContent(account.metadata.fileName);
 
         if (!response.success) {
-            return;
+            throw new Error(response.error);
         }
 
         let json = { accountLabel: '', outputLabels: {}, addressLabels: {} };
