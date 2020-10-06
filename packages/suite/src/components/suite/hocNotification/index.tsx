@@ -34,7 +34,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         case 'acquire-error':
             return withAction(View, {
                 notification,
-                variant: 'warning',
+                variant: 'error',
                 message: {
                     ...messages.TOAST_ACQUIRE_ERROR,
                     values: {
@@ -47,7 +47,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         case 'auth-failed':
             return withAction(View, {
                 notification,
-                variant: 'warning',
+                variant: 'error',
                 message: {
                     ...messages.TOAST_AUTH_FAILED,
                     values: {
@@ -60,7 +60,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
         case 'auth-confirm-error':
             return withAction(View, {
                 notification,
-                variant: 'warning',
+                variant: 'error',
                 message: {
                     ...messages.TOAST_AUTH_CONFIRM_ERROR,
                     values: {
