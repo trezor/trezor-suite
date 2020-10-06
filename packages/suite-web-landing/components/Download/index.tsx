@@ -92,7 +92,7 @@ const getIconForCurrentPlatform = (platform: Platform) => {
 const getInstallerURI = (platform: Platform, version: string) => {
     const extension = dropdownItemsData.find(item => platform === item.platform)!
         .installerExtension;
-    return encodeURI(`/wallet/static/desktop/Trezor Suite-${version}.${extension}`);
+    return encodeURI(`./web/static/desktop/Trezor Suite-${version}.${extension}`);
 };
 
 const Index = () => {
