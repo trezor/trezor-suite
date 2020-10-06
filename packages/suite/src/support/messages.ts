@@ -282,7 +282,7 @@ const definedMessages = defineMessages({
     },
     TR_BUY_OFFERS_REFRESH: {
         defaultMessage: 'Refresh in',
-        id: 'TR_BUY_NO_OFFERS',
+        id: 'TR_BUY_OFFERS_REFRESH',
     },
     TR_BUY_VALIDATION_ERROR_EMPTY: {
         defaultMessage: 'TR_BUY_ERROR_EMPTY',
@@ -358,7 +358,7 @@ const definedMessages = defineMessages({
     TR_BUY_OFFER_ERROR_MAXIMUM_FIAT: {
         defaultMessage:
             'The chosen amount of {currency} {amount} is higher than the accepted maximum of {currency} {max}.',
-        id: 'TR_BUY_OFFER_ERROR_MINIMUM_FIAT',
+        id: 'TR_BUY_OFFER_ERROR_MAXIMUM_FIAT',
     },
     TR_BUY_LOADING: {
         defaultMessage: 'Loading',
@@ -446,20 +446,20 @@ const definedMessages = defineMessages({
     },
     TR_BUY_DETAIL_ERROR_TITLE: {
         defaultMessage: 'The transaction failed',
-        id: 'TR_BUY_DETAIL_SUCCESS_TITLE',
+        id: 'TR_BUY_DETAIL_ERROR_TITLE',
     },
     TR_BUY_DETAIL_ERROR_TEXT: {
         defaultMessage:
             'Unfortunately, your transaction was rejected or has failed. No funds were taken from you.',
-        id: 'TR_BUY_DETAIL_SUCCESS_TEXT',
+        id: 'TR_BUY_DETAIL_ERROR_TEXT',
     },
     TR_BUY_DETAIL_ERROR_SUPPORT: {
         defaultMessage: "Open partner's support site",
-        id: 'TR_BUY_DETAIL_SUCCESS_TEXT',
+        id: 'TR_BUY_DETAIL_ERROR_SUPPORT',
     },
     TR_BUY_DETAIL_ERROR_BUTTON: {
         defaultMessage: 'Back to Account',
-        id: 'TR_BUY_DETAIL_SUCCESS_BUTTON',
+        id: 'TR_BUY_DETAIL_ERROR_BUTTON',
     },
     TR_BUY_DETAIL_PENDING_TITLE: {
         defaultMessage: 'Processing your transaction, please wait...',
