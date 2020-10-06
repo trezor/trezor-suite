@@ -41,10 +41,19 @@ const initStore = (state: State) => {
     return store;
 };
 
+const oldWindowLocation = window.location;
+
 describe('Analytics Actions', () => {
     beforeAll(() => {
         // eslint-disable-next-line global-require
         require('@suite-utils/random');
+
+        delete window.location;
+
+        // @ts-ignore
+        window.location = {
+            hostname: 'not-localhost',
+        };
     });
     beforeEach(() => {
         const mockSuccessResponse = {};
@@ -58,7 +67,12 @@ describe('Analytics Actions', () => {
         jest.spyOn(global, 'fetch').mockImplementation(() => mockFetchPromise);
     });
 
-    it('analyticsActions.report() - should report if enabled', () => {
+    afterAll(() => {
+        // restore `window.location` to the `jsdom` `Location` object
+        window.location = oldWindowLocation;
+    });
+
+    it('analyticsActions.report() - should report if enabled (desktop)', () => {
         const env = process.env.SUITE_TYPE;
         process.env.SUITE_TYPE = 'desktop';
         const state = getInitialState({ analytics: { enabled: true, instanceId: '1' } });
@@ -73,6 +87,21 @@ describe('Analytics Actions', () => {
         process.env.SUITE_TYPE = env;
     });
 
+    it('analyticsActions.report() - should report if enabled (web)', () => {
+        const env = process.env.SUITE_TYPE;
+        process.env.SUITE_TYPE = 'web';
+        const state = getInitialState({ analytics: { enabled: true, instanceId: '1' } });
+        const store = initStore(state);
+        store.dispatch(analyticsActions.report({ type: 'switch-device/eject' }));
+        // @ts-ignore
+        expect(global.fetch).toHaveBeenNthCalledWith(
+            1,
+            'https://data.trezor.io/suite/log/web/develop.log?c_v=1.1&c_type=switch-device%2Feject&c_instance_id=1&c_session_id=very-random',
+            { method: 'GET' },
+        );
+        process.env.SUITE_TYPE = env;
+    });
+
     it('analyticsActions.report() - should not report if not enabled', () => {
         const state = getInitialState({ analytics: { enabled: false } });
         const store = initStore(state);
@@ -81,14 +110,12 @@ describe('Analytics Actions', () => {
         expect(global.fetch).toHaveBeenCalledTimes(0);
     });
 
-    it('analyticsActions.report() - should not report in dev', () => {
-        const env = process.env.NODE_ENV;
-        process.env.NODE_ENV = 'development';
+    it('analyticsActions.report() - should not report if enabled but on localhost', () => {
+        window.location.hostname = 'localhost';
         const state = getInitialState({ analytics: { enabled: true } });
         const store = initStore(state);
         store.dispatch(analyticsActions.report({ type: 'switch-device/eject' }));
         // @ts-ignore
         expect(global.fetch).toHaveBeenCalledTimes(0);
-        process.env.NODE_ENV = env;
     });
 });

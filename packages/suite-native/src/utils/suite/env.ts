@@ -22,3 +22,11 @@ export const getScreenHeight = () => {
     // todo
     return 1;
 };
+
+export const getPlatform = () => {
+    return 'linux';
+};
+
+export const getPlatformLanguage = () => {
+    return 'eskimo';
+};
