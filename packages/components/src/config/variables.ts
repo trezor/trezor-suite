@@ -76,6 +76,7 @@ export const ICONS: IconType[] = [
     'CROSS',
     'DASHBOARD',
     'EXCHANGE',
+    'COINMARKET',
     'INFO',
     'INFO_ACTIVE',
     'LOG',

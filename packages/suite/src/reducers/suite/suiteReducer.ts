@@ -6,8 +6,9 @@ import { Action, TrezorDevice, Lock } from '@suite-types';
 import { LANGUAGES } from '@suite-config';
 
 export interface DebugModeOptions {
-    showDebugMenu: boolean;
     translationMode: boolean;
+    invityAPIUrl?: string;
+    showDebugMenu: boolean;
     bridgeDevMode: boolean;
 }
 
@@ -57,6 +58,7 @@ const initialState: SuiteState = {
     settings: {
         language: 'en',
         debug: {
+            invityAPIUrl: undefined,
             showDebugMenu: false,
             translationMode: false,
             bridgeDevMode: false,

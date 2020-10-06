@@ -36,7 +36,6 @@ const AccountsMenu = (props: Props) => {
             <Text>Application Menu</Text>
             <StyledButton onPress={() => props.goto('suite-index')} title="Dashboard" />
             <StyledButton onPress={() => props.goto('wallet-index')} title="Wallet" />
-            <StyledButton onPress={() => props.goto('exchange-index')} title="Exchange" />
             <StyledButton onPress={() => props.goto('passwords-index')} title="Passwords" />
             <StyledButton onPress={() => props.goto('settings-index')} title="Settings" />
 

@@ -10,6 +10,8 @@ import * as config from './config';
 import * as store from './store';
 import { runBridgeProcess } from './bridge';
 import { buildMainMenu } from './menu';
+import { openBuyWindow } from './buy';
+// import * as metadata from './metadata';
 import { HttpReceiver } from './http-receiver';
 
 const httpReceiver = new HttpReceiver();
@@ -74,6 +76,7 @@ const init = async () => {
         minHeight: store.MIN_HEIGHT,
         webPreferences: {
             webSecurity: !isDev,
+            nativeWindowOpen: true,
             allowRunningInsecureContent: isDev,
             nodeIntegration: false,
             contextIsolation: true,
@@ -118,8 +121,15 @@ const init = async () => {
         }
     };
 
+    mainWindow.webContents.on('new-window', (event, url, frameName) => {
+        if (frameName === 'invity-buy-partner-window') {
+            openBuyWindow(url);
+        } else {
+            handleExternalLink(event, url);
+        }
+    });
+
     mainWindow.webContents.on('will-navigate', handleExternalLink);
-    mainWindow.webContents.on('new-window', handleExternalLink);
 
     mainWindow.on('page-title-updated', evt => {
         // prevent updating window title
@@ -354,4 +364,14 @@ httpReceiver.on('server/listening', () => {
     ipcMain.on('server/request-address', (_event, pathname) => {
         mainWindow.webContents.send('server/address', httpReceiver.getRouteAddress(pathname));
     });
+});
+
+ipcMain.on('buy-receiver', (_event, message) => {
+    mainWindow.focus();
+    mainWindow.loadURL(
+        path.join(
+            src,
+            message.replace('#', '').replace('coinmarket-redirect/', 'coinmarket-redirect#'),
+        ),
+    );
 });

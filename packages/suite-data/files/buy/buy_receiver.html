@@ -1,0 +1,14 @@
+<html>
+
+<head></head>
+
+<body>
+    <script>
+        if (window.desktopApi) {
+            window.desktopApi.send('buy-receiver', window.location.hash);
+        }
+        window.close();
+    </script>
+</body>
+
+</html>

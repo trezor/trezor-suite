@@ -8,9 +8,10 @@ import { AcquiredDevice } from '@suite-types';
 import { MetadataState } from '@suite-types/metadata';
 import { Account, Discovery, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
 import { GraphData } from '@wallet-types/graph';
+import { BuyTrade, ExchangeTrade } from 'invity-api';
 import { migrate } from './migrations';
 
-const VERSION = 16; // don't forget to add migration and CHANGELOG when changing versions!
+const VERSION = 17; // don't forget to add migration and CHANGELOG when changing versions!
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -73,6 +74,21 @@ export interface SuiteDBSchema extends DBSchema {
         indexes: {
             accountKey: string[]; // descriptor, symbol, deviceState
             deviceState: string;
+        };
+    };
+    coinmarketTrades: {
+        key: string;
+        value: {
+            key?: string;
+            date: string;
+            tradeType: 'buy' | 'exchange';
+            data: BuyTrade | ExchangeTrade;
+            account: {
+                descriptor?: Account['descriptor'];
+                symbol: Account['symbol'];
+                accountIndex: Account['index'];
+                accountType: Account['accountType'];
+            };
         };
     };
     metadata: {
@@ -138,12 +154,16 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
         const graphStore = db.createObjectStore('graph', {
             keyPath: ['account.descriptor', 'account.symbol', 'account.deviceState'],
         });
+
         graphStore.createIndex('accountKey', [
             'account.descriptor',
             'account.symbol',
             'account.deviceState',
         ]);
+
         graphStore.createIndex('deviceState', 'account.deviceState');
+
+        db.createObjectStore('coinmarketTrades', { keyPath: 'key' });
 
         // metadata
         db.createObjectStore('metadata');

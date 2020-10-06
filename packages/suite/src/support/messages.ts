@@ -158,6 +158,333 @@ const definedMessages = defineMessages({
         defaultMessage: 'Check on your Trezor now',
         id: 'TR_ADDRESS_MODAL_CHECK_ON_TREZOR',
     },
+    TR_COINMARKET_TRADE_NOT_FOUND: {
+        defaultMessage: 'Trade not found',
+        id: 'TR_COINMARKET_TRADE_NOT_FOUND',
+    },
+    TR_COINMARKET_REDIRECTING: {
+        defaultMessage: 'Redirecting ...',
+        id: 'TR_COINMARKET_REDIRECTING',
+    },
+    TR_EXCHANGE_LOADING: {
+        defaultMessage: 'Loading',
+        id: 'TR_EXCHANGE_LOADING',
+    },
+    TR_EXCHANGE_NO_PROVIDERS: {
+        defaultMessage: 'No providers',
+        id: 'TR_EXCHANGE_NO_PROVIDERS',
+    },
+    TR_EXCHANGE_PROVIDER: {
+        defaultMessage: 'provider',
+        id: 'TR_EXCHANGE_PROVIDER',
+    },
+    TR_EXCHANGE_GET_THIS_OFFER: {
+        id: 'TR_EXCHANGE_GET_THIS_OFFER',
+        defaultMessage: 'Get this Offer',
+    },
+    TR_EXCHANGE_KYC: {
+        id: 'TR_EXCHANGE_KYC',
+        defaultMessage: 'KYC',
+    },
+    TR_EXCHANGE_KYC_INFO: {
+        id: 'TR_EXCHANGE_KYC_INFO',
+        defaultMessage: 'KYC info TODO',
+    },
+    TR_EXCHANGE_FIXED_OFFERS: {
+        id: 'TR_EXCHANGE_FIXED_OFFERS',
+        defaultMessage: 'Fixed-rate offers',
+    },
+    TR_EXCHANGE_FIXED_OFFERS_INFO: {
+        id: 'TR_EXCHANGE_FIXED_OFFERS_INFO',
+        defaultMessage: 'Fixed-rate offers info TODO',
+    },
+    TR_EXCHANGE_FLOAT_OFFERS: {
+        id: 'TR_EXCHANGE_FLOAT_OFFERS',
+        defaultMessage: 'Float-rate offers',
+    },
+    TR_EXCHANGE_FLOAT_OFFERS_INFO: {
+        id: 'TR_EXCHANGE_FLOAT_OFFERS_INFO',
+        defaultMessage: 'Float-rate offers info TODO',
+    },
+    TR_EXCHANGE_FEES_INCLUDED: {
+        id: 'TR_EXCHANGE_FEES_INCLUDED',
+        defaultMessage: 'All fees included',
+    },
+    TR_EXCHANGE_FEES_INCLUDED_INFO: {
+        id: 'TR_EXCHANGE_FEES_INCLUDED_INFO',
+        defaultMessage: 'All fees included info TODO',
+    },
+    TR_BUY_STATUS_PENDING: {
+        defaultMessage: 'Pending',
+        id: 'TR_BUY_STATUS_PENDING',
+    },
+    TR_NAV_EXCHANGE_AND_SPEND: {
+        defaultMessage: 'Exchange, Spend',
+        id: 'TR_NAV_EXCHANGE_AND_SPEND',
+    },
+    TR_NAV_EXCHANGE_SOON: {
+        defaultMessage: 'SOON',
+        id: 'TR_NAV_EXCHANGE_SOON',
+    },
+    TR_BUY_FOOTER_TEXT_1: {
+        defaultMessage:
+            'Invity is our sole provider, and only sees ur something, something and something else.',
+        id: 'TR_BUY_FOOTER_TEXT_1',
+    },
+    TR_BUY_FOOTER_TEXT_2: {
+        defaultMessage: 'Invity will not see your something, and something.',
+        id: 'TR_BUY_FOOTER_TEXT_2',
+    },
+    TR_BUY_FOR_YOUR_SAFETY: {
+        defaultMessage: 'For your safety',
+        id: 'TR_BUY_FOR_YOUR_SAFETY',
+    },
+    TR_BUY_I_UNDERSTAND: {
+        defaultMessage: 'I understand and agree to all of the above',
+        id: 'TR_BUY_I_UNDERSTAND',
+    },
+    TR_BUY_CONFIRM: {
+        defaultMessage: 'Confirm',
+        id: 'TR_BUY_CONFIRM',
+    },
+    TR_BUY_TERMS_1: {
+        defaultMessage:
+            "I'm here to buy cryptocurrency. If you were directed to this site for any other reason, please contact {provider} support before proceeding.",
+        id: 'TR_BUY_TERMS_1',
+    },
+    TR_BUY_TERMS_2: {
+        defaultMessage:
+            "I'm using Invity to purchase funds that will be sent to an account under my direct personal control.",
+        id: 'TR_BUY_TERMS_2',
+    },
+    TR_BUY_TERMS_3: {
+        defaultMessage:
+            "I'm not using Invity for gambling or any other violation of Invity’s Terms of service.",
+        id: 'TR_BUY_TERMS_3',
+    },
+    TR_BUY_TERMS_4: {
+        defaultMessage:
+            'I understand that cryptocurrencies are an emerging financial tool and that regulations may be limited in some areas. This may put me at a higher risk of fraud, theft, or market instability.',
+        id: 'TR_BUY_TERMS_4',
+    },
+    TR_BUY_TERMS_5: {
+        defaultMessage:
+            'I understand that cryptocurrency transactions are irreversible and I won’t be able to receive a refund for my purchase.',
+        id: 'TR_BUY_TERMS_5',
+    },
+    TR_BUY_OTHER_OFFERS_IN: {
+        defaultMessage: 'Other Offers in',
+        id: 'TR_BUY_OTHER_OFFERS_IN',
+    },
+    TR_BUY_NO_OFFERS: {
+        defaultMessage: 'Sorry, none of our partners can provide an offer at this time.',
+        id: 'TR_BUY_NO_OFFERS',
+    },
+    TR_BUY_OFFERS_REFRESH: {
+        defaultMessage: 'Refresh in',
+        id: 'TR_BUY_NO_OFFERS',
+    },
+    TR_BUY_VALIDATION_ERROR_EMPTY: {
+        defaultMessage: 'TR_BUY_ERROR_EMPTY',
+        id: 'TR_BUY_ERROR_EMPTY',
+    },
+    TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO: {
+        defaultMessage: 'Minimum is {minimum} {currency}',
+        id: 'TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO',
+    },
+    TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO: {
+        defaultMessage: 'Maximum is {maximum} {currency}',
+        id: 'TR_BUY_VALIDATION_ERROR_MAXIMUM_CRYPTO',
+    },
+    TR_BUY_VALIDATION_ERROR_MINIMUM_FIAT: {
+        defaultMessage: 'Minimum is {minimum} {currency}',
+        id: 'TR_BUY_VALIDATION_ERROR_MINIMUM_FIAT',
+    },
+    TR_BUY_VALIDATION_ERROR_MAXIMUM_FIAT: {
+        defaultMessage: 'Maximum is {maximum} {currency}',
+        id: 'TR_BUY_VALIDATION_ERROR_MAXIMUM_FIAT',
+    },
+    TR_BUY_VALIDATION_ERROR_NOT_NUMBER: {
+        defaultMessage: 'TR_BUY_VALIDATION_ERROR_NO_NUMBER',
+        id: 'TR_BUY_VALIDATION_ERROR_NO_NUMBER',
+    },
+    TR_BUY_BUY_AGAIN: {
+        defaultMessage: 'Buy again',
+        id: 'TR_BUY_BUY_AGAIN',
+    },
+    TR_BUY_ACCOUNT_TRANSACTIONS: {
+        defaultMessage: 'Account transactions',
+        id: 'TR_BUY_ACCOUNT_TRANSACTIONS',
+    },
+    TR_BUY_STATUS_PENDING_GO_TO_GATEWAY: {
+        defaultMessage: 'Pending',
+        id: 'TR_BUY_STATUS_PENDING_GO_TO_GATEWAY',
+    },
+    TR_BUY_VIEW_DETAILS: {
+        defaultMessage: 'View details',
+        id: 'TR_BUY_VIEW_DETAILS',
+    },
+    TR_BUY_STATUS_ERROR: {
+        defaultMessage: 'Rejected',
+        id: 'TR_BUY_STATUS_ERROR',
+    },
+    TR_BUY_STATUS_SUCCESS: {
+        defaultMessage: 'Approved',
+        id: 'TR_BUY_STATUS_SUCCESS',
+    },
+    TR_BUY_NO_PROVIDERS: {
+        defaultMessage: 'No providers',
+        id: 'TR_BUY_NO_PROVIDERS',
+    },
+    TR_BUY_GET_THIS_OFFER: {
+        id: 'TR_BUY_GET_THIS_OFFER',
+        defaultMessage: 'Get this Offer',
+    },
+    TR_BUY_OFFER_ERROR_MINIMUM_CRYPTO: {
+        defaultMessage:
+            'The chosen amount of {currency} {amount} is lower than the accepted minimum of {currency} {min}.',
+        id: 'TR_BUY_OFFER_ERROR_MINIMUM_CRYPTO',
+    },
+    TR_BUY_OFFER_ERROR_MAXIMUM_CRYPTO: {
+        defaultMessage:
+            'The chosen amount of {currency} {amount} is higher than the accepted maximum of {currency} {max}.',
+        id: 'TR_BUY_OFFER_ERROR_MAXIMUM_CRYPTO',
+    },
+    TR_BUY_OFFER_ERROR_MINIMUM_FIAT: {
+        defaultMessage:
+            'The chosen amount of {currency} {amount} is lower than the accepted minimum of {currency} {min}.',
+        id: 'TR_BUY_OFFER_ERROR_MINIMUM_FIAT',
+    },
+    TR_BUY_OFFER_ERROR_MAXIMUM_FIAT: {
+        defaultMessage:
+            'The chosen amount of {currency} {amount} is higher than the accepted maximum of {currency} {max}.',
+        id: 'TR_BUY_OFFER_ERROR_MINIMUM_FIAT',
+    },
+    TR_BUY_LOADING: {
+        defaultMessage: 'Loading',
+        id: 'TR_BUY_LOADING',
+    },
+    TR_BUY_SPEND: {
+        defaultMessage: 'spend',
+        id: 'TR_BUY_SPEND',
+    },
+    TR_BUY_PROVIDED_BY_INVITY: {
+        defaultMessage: 'Provided by Invity',
+        id: 'TR_BUY_PROVIDED_BY_INVITY',
+    },
+    TR_BUY_LEARN_MORE: {
+        defaultMessage: 'Learn more',
+        id: 'TR_BUY_LEARN_MORE',
+    },
+    TR_BUY_BUY: {
+        defaultMessage: 'buy',
+        id: 'TR_BUY_BUY',
+    },
+    TR_BUY_FEES: {
+        defaultMessage: 'Fees',
+        id: 'TR_BUY_FEES',
+    },
+    TR_BUY_PAID_BY: {
+        defaultMessage: 'paid by',
+        id: 'TR_BUY_PAID_BY',
+    },
+    TR_BUY_ALL_FEES_INCLUDED: {
+        defaultMessage: 'All fees included',
+        id: 'TR_BUY_ALL_FEES_INCLUDED',
+    },
+    TR_BUY_PROVIDER: {
+        defaultMessage: 'provider',
+        id: 'TR_BUY_PROVIDER',
+    },
+    TR_BUY_TRANS_ID: {
+        defaultMessage: 'trans. id:',
+        id: 'TR_BUY_TRANS_ID',
+    },
+    TR_BUY_RECEIVING_ADDRESS: {
+        defaultMessage: 'Receive Address',
+        id: 'TR_BUY_RECEIVING_ADDRESS',
+    },
+    TR_BUY_CONFIRMED_ON_TREZOR: {
+        defaultMessage: 'Confirmed on trezor',
+        id: 'TR_BUY_CONFIRMED_ON_TREZOR',
+    },
+    TR_BUY_OFFERS_FOR: {
+        defaultMessage: 'Offers for',
+        id: 'TR_BUY_OFFERS_FOR',
+    },
+    TR_BUY_NOT_TRANSACTIONS: {
+        defaultMessage: 'No transactions, yet.',
+        id: 'TR_BUY_NOT_TRANSACTIONS',
+    },
+    TR_BUY_SHOW_OFFERS: {
+        defaultMessage: 'Show offers',
+        id: 'TR_BUY_SHOW_OFFERS',
+    },
+    TR_BUY_CONFIRM_ON_TREZOR: {
+        defaultMessage: 'Confirm On Trezor',
+        id: 'TR_BUY_CONFIRM_ON_TREZOR',
+    },
+    TR_BUY_GO_TO_PAYMENT: {
+        defaultMessage: 'Go to payment',
+        id: 'TR_BUY_GO_TO_PAYMENT',
+    },
+    TR_BUY_RECEIVING_ACCOUNT: {
+        defaultMessage: ' Receiving Account',
+        id: 'TR_BUY_RECEIVING_ACCOUNT',
+    },
+    TR_BUY_DETAIL_SUCCESS_TITLE: {
+        defaultMessage: 'Approved',
+        id: 'TR_BUY_DETAIL_SUCCESS_TITLE',
+    },
+    TR_BUY_DETAIL_SUCCESS_TEXT: {
+        defaultMessage: 'The transaction was approved. Wait for transaction to be finished.',
+        id: 'TR_BUY_DETAIL_SUCCESS_TEXT',
+    },
+    TR_BUY_DETAIL_SUCCESS_BUTTON: {
+        defaultMessage: 'Back to Account',
+        id: 'TR_BUY_DETAIL_SUCCESS_BUTTON',
+    },
+    TR_BUY_DETAIL_ERROR_TITLE: {
+        defaultMessage: 'The transaction failed',
+        id: 'TR_BUY_DETAIL_SUCCESS_TITLE',
+    },
+    TR_BUY_DETAIL_ERROR_TEXT: {
+        defaultMessage:
+            'Unfortunately, your transaction was rejected or has failed. No funds were taken from you.',
+        id: 'TR_BUY_DETAIL_SUCCESS_TEXT',
+    },
+    TR_BUY_DETAIL_ERROR_SUPPORT: {
+        defaultMessage: "Open partner's support site",
+        id: 'TR_BUY_DETAIL_SUCCESS_TEXT',
+    },
+    TR_BUY_DETAIL_ERROR_BUTTON: {
+        defaultMessage: 'Back to Account',
+        id: 'TR_BUY_DETAIL_SUCCESS_BUTTON',
+    },
+    TR_BUY_DETAIL_PENDING_TITLE: {
+        defaultMessage: 'Processing your transaction, please wait...',
+        id: 'TR_BUY_DETAIL_PENDING_TITLE',
+    },
+    TR_BUY_DETAIL_PENDING_SUPPORT: {
+        defaultMessage: "Open partner's support site",
+        id: 'TR_BUY_DETAIL_PENDING_SUPPORT',
+    },
+    TR_BUY_DETAIL_SUBMITTED_TITLE: {
+        defaultMessage: 'Waiting for your payment...',
+        id: 'TR_BUY_DETAIL_SUBMITTED_TITLE',
+    },
+    TR_BUY_DETAIL_SUBMITTED_TEXT: {
+        defaultMessage: 'Please click the link bellow to finish the payment through provider.',
+        id: 'TR_BUY_DETAIL_SUBMITTED_TEXT',
+    },
+    TR_BUY_DETAIL_SUBMITTED_GATE: {
+        defaultMessage: 'Go to Payment Gate',
+        id: 'TR_BUY_DETAIL_SUBMITTED_GATE',
+    },
+    TR_BUY_DETAIL_SUBMITTED_CANCEL: {
+        defaultMessage: 'Cancel Transaction',
+        id: 'TR_BUY_DETAIL_SUBMITTED_CANCEL',
+    },
     TR_ADDRESS_MODAL_CHECK_ON_TREZOR_DESC: {
         defaultMessage:
             'For even more security you can check the receive address on your Trezor to make sure nobody hacked your Wallet.',
@@ -2651,6 +2978,26 @@ const definedMessages = defineMessages({
         id: 'TR_HIDE_BUTTON',
         defaultMessage: 'Hide',
     },
+    TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP: {
+        id: 'TR_BUY_RECEIVE_QUESTION_TOOLTIP',
+        defaultMessage: 'TR_BUY_RECEIVE_QUESTION_TOOLTIP',
+    },
+    TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP: {
+        id: 'TR_BUY_RECEIVE_QUESTION_TOOLTIP',
+        defaultMessage: 'TR_BUY_RECEIVE_QUESTION_TOOLTIP',
+    },
+    TR_PAYMENT_METHOD_CARD: {
+        id: 'TR_PAYMENT_METHOD_CARD',
+        defaultMessage: 'Credit Card',
+    },
+    TR_PAYMENT_METHOD_BANK_TRANSFER: {
+        id: 'TR_PAYMENT_METHOD_BANK_TRANSFER',
+        defaultMessage: 'Bank transfer',
+    },
+    TR_OFFER_FEE_INFO: {
+        id: 'TR_OFFER_FEE_INFO',
+        defaultMessage: 'TR_OFFER_FEE_INFO',
+    },
     TR_SHOW_BUTTON: {
         id: 'TR_SHOW_BUTTON',
         defaultMessage: 'Show',
@@ -3275,6 +3622,22 @@ const definedMessages = defineMessages({
     TR_COULD_NOT_RETRIEVE_CHANGELOG: {
         id: 'TR_COULD_NOT_RETRIEVE_CHANGELOG',
         defaultMessage: 'Could not retrieve the changelog',
+    },
+    TR_NAV_COINMARKET: {
+        id: 'TR_NAV_COINMARKET',
+        defaultMessage: 'Coinmarket',
+    },
+    TR_NAV_BUY: {
+        id: 'TR_NAV_BUY',
+        defaultMessage: 'Buy',
+    },
+    TR_NAV_EXCHANGE: {
+        id: 'TR_NAV_EXCHANGE',
+        defaultMessage: 'Exchange',
+    },
+    TR_NAV_SPEND: {
+        id: 'TR_NAV_SPEND',
+        defaultMessage: 'Spend',
     },
     TR_BALANCE: {
         id: 'TR_BALANCE',

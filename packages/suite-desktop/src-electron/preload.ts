@@ -20,6 +20,9 @@ const validChannels = [
     'update/downloading',
     'update/downloaded',
     'update/skip',
+
+    // invity
+    'buy-receiver',
 ];
 
 contextBridge.exposeInMainWorld('desktopApi', {

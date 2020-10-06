@@ -12,6 +12,7 @@ import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
 import { deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
 import { FormState } from '@wallet-types/sendForm';
 import { getAnalyticsRandomId } from '@suite-utils/random';
+import { BuyTrade, ExchangeTrade } from 'invity-api';
 import { setSentryUser } from '@suite-utils/sentry';
 
 export type StorageActions =
@@ -79,6 +80,57 @@ export const forgetDevice = (device: TrezorDevice) => async (_: Dispatch, getSta
 
 export const saveAccounts = async (accounts: Account[]) => {
     return db.addItems('accounts', accounts, true);
+};
+
+interface AccountPart {
+    symbol: Account['symbol'];
+    accountType: Account['accountType'];
+    accountIndex: Account['index'];
+    descriptor: Account['descriptor'];
+}
+
+export const saveBuyTrade = async (buyTrade: BuyTrade, account: AccountPart, date: string) => {
+    return db.addItem(
+        'coinmarketTrades',
+        {
+            key: buyTrade.paymentId,
+            tradeType: 'buy',
+            date,
+            data: buyTrade,
+            account: {
+                descriptor: account.descriptor,
+                symbol: account.symbol,
+                accountType: account.accountType,
+                accountIndex: account.accountIndex,
+            },
+        },
+        undefined,
+        true,
+    );
+};
+
+export const saveExchangeTrade = async (
+    exchangeTrade: ExchangeTrade,
+    account: AccountPart,
+    date: string,
+) => {
+    return db.addItem(
+        'coinmarketTrades',
+        {
+            key: exchangeTrade.orderId,
+            tradeType: 'exchange',
+            date,
+            data: exchangeTrade,
+            account: {
+                descriptor: account.descriptor,
+                symbol: account.symbol,
+                accountType: account.accountType,
+                accountIndex: account.accountIndex,
+            },
+        },
+        undefined,
+        true,
+    );
 };
 
 export const saveDiscovery = async (discoveries: Discovery[]) => {
@@ -249,11 +301,13 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
         const discovery = await db.getItemsExtended('discovery');
         const walletSettings = await db.getItemByPK('walletSettings', 'wallet');
         const fiatRates = await db.getItemsExtended('fiatRates');
+        const coinmarketTrades = await db.getItemsExtended('coinmarketTrades');
         const walletGraphData = await db.getItemsExtended('graph');
         const analytics = await db.getItemByPK('analytics', 'suite');
         const metadata = await db.getItemByPK('metadata', 'state');
         const txs = await db.getItemsExtended('txs', 'order');
         const mappedTxs: AppState['wallet']['transactions']['transactions'] = {};
+
         txs.forEach(item => {
             const k = getAccountKey(item.tx.descriptor, item.tx.symbol, item.tx.deviceState);
             if (!mappedTxs[k]) {
@@ -312,6 +366,10 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                     graph: {
                         ...initialState.wallet.graph,
                         data: walletGraphData || [],
+                    },
+                    coinmarket: {
+                        ...initialState.wallet.coinmarket,
+                        trades: coinmarketTrades,
                     },
                     send: {
                         ...initialState.wallet.send,

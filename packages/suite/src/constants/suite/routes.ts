@@ -123,6 +123,12 @@ const routes = [
         params: walletParams,
     },
     {
+        name: 'coinmarket-buy-detail',
+        pattern: 'accounts/coinmarket/buy/detail',
+        app: 'walletParams',
+        params: walletParams,
+    },
+    {
         name: 'wallet-send',
         pattern: '/accounts/send',
         app: 'wallet',
@@ -141,6 +147,42 @@ const routes = [
         params: walletParams,
     },
     {
+        name: 'wallet-coinmarket-buy',
+        pattern: '/accounts/coinmarket/buy',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
+        name: 'wallet-coinmarket-exchange',
+        pattern: '/accounts/coinmarket/exchange',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
+        name: 'wallet-coinmarket-spend',
+        pattern: '/accounts/coinmarket/spend',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
+        name: 'wallet-coinmarket-buy-offers',
+        pattern: '/accounts/coinmarket/buy/offers',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
+        name: 'wallet-coinmarket-exchange-offers',
+        pattern: '/accounts/coinmarket/exchange/offers',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
+        name: 'wallet-coinmarket-buy-detail',
+        pattern: '/accounts/coinmarket/buy/detail',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
         name: 'wallet-details',
         pattern: '/accounts/details',
         app: 'wallet',
@@ -150,11 +192,6 @@ const routes = [
         name: 'passwords-index',
         pattern: '/passwords',
         app: 'passwords',
-    },
-    {
-        name: 'exchange-index',
-        pattern: '/exchange',
-        app: 'exchange',
     },
     {
         name: 'portfolio-index',

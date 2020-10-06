@@ -18,12 +18,6 @@ export const MAIN_MENU_ITEMS = [
     //     isDisabled: true,
     // },
     // {
-    //     translationId: 'TR_EXCHANGE',
-    //     icon: 'EXCHANGE',
-    //     route: 'exchange-index',
-    //     isDisabled: true,
-    // },
-    // {
     //     translationId: 'TR_PORTFOLIO',
     //     icon: 'PORTFOLIO',
     //     route: 'portfolio-index',

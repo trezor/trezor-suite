@@ -17,6 +17,7 @@ import PassphraseSource from './PassphraseSource';
 import PassphraseOnDevice from './PassphraseOnDevice';
 import PassphraseDuplicate from './PassphraseDuplicate';
 import ConfirmAction from './confirm/Action';
+import CoinmarketBuyTerms from './confirm/CoinmarketBuyTerms';
 import Word from './Word';
 import WordAdvanced from './WordAdvanced';
 import ConfirmAddress from './confirm/Address';
@@ -166,6 +167,14 @@ const getUserContextModal = (props: Props) => {
             return <PassphraseDuplicate device={payload.device} duplicate={payload.duplicate} />;
         case 'review-transaction':
             return <ReviewTransaction {...payload} />;
+        case 'coinmarket-buy-terms':
+            return (
+                <CoinmarketBuyTerms
+                    provider={payload.provider}
+                    onCancel={modalActions.onCancel}
+                    decision={payload.decision}
+                />
+            );
         case 'import-transaction':
             return <ImportTransaction {...payload} onCancel={modalActions.onCancel} />;
         case 'pin-mismatch':

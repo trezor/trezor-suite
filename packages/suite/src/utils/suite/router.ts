@@ -47,9 +47,11 @@ const validateWalletParams = (url: string) => {
     const network = NETWORKS.find(
         n => n.symbol === symbol && (n.accountType || 'normal') === (type || 'normal'),
     );
+
     if (!network) return;
     const accountIndex = parseInt(index, 10);
     if (Number.isNaN(accountIndex)) return;
+
     return {
         symbol: network.symbol,
         accountIndex,
@@ -70,7 +72,14 @@ const validateModalAppParams = (url: string) => {
 // Used in routerReducer
 export const getAppWithParams = (url: string): RouterAppWithParams => {
     const route = findRoute(url);
-    if (!route) return { app: 'unknown', route: undefined, params: undefined };
+
+    if (!route)
+        return {
+            app: 'unknown',
+            route: undefined,
+            params: undefined,
+        };
+
     if (route.app === 'wallet') {
         return {
             app: route.app,
@@ -78,6 +87,7 @@ export const getAppWithParams = (url: string): RouterAppWithParams => {
             route,
         };
     }
+
     if (route.params) {
         return {
             app: route.app,
@@ -85,7 +95,12 @@ export const getAppWithParams = (url: string): RouterAppWithParams => {
             route,
         } as RouterAppWithParams;
     }
-    return { app: route.app, route, params: undefined } as RouterAppWithParams;
+
+    return {
+        app: route.app,
+        route,
+        params: undefined,
+    } as RouterAppWithParams;
 };
 
 export type WalletParams = NonNullable<ReturnType<typeof validateWalletParams>>;

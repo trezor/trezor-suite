@@ -13,6 +13,7 @@ import {
     TRANSACTION,
     FIAT_RATES,
     GRAPH,
+    COINMARKET_BUY,
     SEND,
 } from '@wallet-actions/constants';
 import { getDiscovery } from '@wallet-actions/discoveryActions';
@@ -144,6 +145,20 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         case SEND.REMOVE_DRAFT:
             storageActions.removeDraft(action.key);
             break;
+
+        case COINMARKET_BUY.SAVE_TRADE:
+            storageActions.saveBuyTrade(
+                action.data,
+                {
+                    descriptor: action.account.descriptor,
+                    symbol: action.account.symbol,
+                    accountType: action.account.accountType,
+                    accountIndex: action.account.accountIndex,
+                },
+                action.date,
+            );
+            break;
+
         case METADATA.ACCOUNT_ADD:
         case METADATA.ACCOUNT_LOADED: {
             const device = accountUtils.findAccountDevice(action.payload, api.getState().devices);
@@ -153,6 +168,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             }
             break;
         }
+
         case METADATA.ENABLE:
         case METADATA.DISABLE:
         case METADATA.SET_PROVIDER:

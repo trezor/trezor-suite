@@ -6,6 +6,7 @@ import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
+import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 import { AppState, Action, Dispatch } from '@suite-types';
@@ -72,6 +73,7 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         api.dispatch(selectedAccountActions.dispose());
         api.dispatch(sendFormActions.dispose());
         api.dispatch(receiveActions.dispose());
+        api.dispatch(coinmarketBuyActions.dispose());
     }
 
     api.dispatch(selectedAccountActions.getStateForAction(action));

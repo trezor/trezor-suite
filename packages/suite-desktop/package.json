@@ -71,7 +71,9 @@
                 {
                     "from": "build/static/bridge",
                     "to": "bridge",
-                    "filter": ["**/trezord-mac"]
+                    "filter": [
+                        "**/trezord-mac"
+                    ]
                 }
             ],
             "icon": "build/static/images/icons/512x512.icns",
@@ -90,7 +92,9 @@
                 {
                     "from": "build/static/bridge",
                     "to": "bridge",
-                    "filter": ["**/trezord-win.exe"]
+                    "filter": [
+                        "**/trezord-win.exe"
+                    ]
                 }
             ],
             "icon": "build/static/images/icons/512x512.ico",
@@ -105,12 +109,16 @@
                 {
                     "from": "build/static/bridge",
                     "to": "bridge",
-                    "filter": ["**/trezord-linux-x32"]
+                    "filter": [
+                        "**/trezord-linux-x32"
+                    ]
                 },
                 {
                     "from": "build/static/bridge",
                     "to": "bridge",
-                    "filter": ["**/trezord-linux-x64"]
+                    "filter": [
+                        "**/trezord-linux-x64"
+                    ]
                 }
             ],
             "icon": "build/static/images/icons/512x512.icns",

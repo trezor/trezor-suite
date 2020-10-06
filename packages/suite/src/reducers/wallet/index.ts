@@ -10,6 +10,7 @@ import selectedAccountReducer from './selectedAccountReducer';
 import receiveReducer from './receiveReducer';
 import feesReducer from './feesReducer';
 import blockchainReducer from './blockchainReducer';
+import coinmarketReducer from './coinmarketReducer';
 import sendFormReducer from './sendFormReducer';
 
 const WalletReducers = combineReducers({
@@ -24,6 +25,7 @@ const WalletReducers = combineReducers({
     receive: receiveReducer,
     fees: feesReducer,
     blockchain: blockchainReducer,
+    coinmarket: coinmarketReducer,
     send: sendFormReducer,
 });
 

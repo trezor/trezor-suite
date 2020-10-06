@@ -24,6 +24,12 @@ export const ITEMS = [
         icon: 'SEND',
         isHidden: () => false,
     },
+    {
+        route: 'wallet-coinmarket-buy',
+        title: <Translation id="TR_NAV_COINMARKET" />,
+        icon: 'RBF',
+        isHidden: () => false,
+    },
     // {
     //     route: 'wallet-details',
     //     title: <Translation id="TR_NAV_DETAILS" />,
@@ -38,16 +44,6 @@ export const ITEMS = [
             return true;
             // const network = NETWORKS.find(n => n.symbol === account.symbol);
             // return !(network && network.testnet && network.hasSignVerify);
-        },
-    },
-    {
-        route: 'suite-index',
-        title: <Translation id="TR_BUY" />,
-        icon: 'PLUS',
-        isHidden: (_account: Account) => {
-            // const network = NETWORKS.find(n => n.symbol === account.symbol);
-            // return network && network.testnet;
-            return true;
         },
     },
 ] as const;

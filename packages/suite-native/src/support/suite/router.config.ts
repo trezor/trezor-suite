@@ -5,7 +5,6 @@ import AccountReceive from '@wallet-views/receive';
 import AccountSend from '@wallet-views/send';
 import AccountSignVerify from '@wallet-views/sign-verify';
 
-import Exchange from '@exchange-views';
 import Passwords from '@passwords-views';
 
 import SettingsGeneral from '@settings-views';
@@ -45,12 +44,6 @@ export default [
             { key: getRoute('wallet-send'), screen: AccountSend },
             { key: getRoute('wallet-sign-verify'), screen: AccountSignVerify },
         ],
-        navigators: defaultNavigatorsViews,
-    },
-    {
-        key: getRoute('exchange-index'),
-        type: 'drawer',
-        screen: Exchange,
         navigators: defaultNavigatorsViews,
     },
     {

@@ -1,5 +1,7 @@
 import { ReceiveActions } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
+import { CoinmarketBuyActions } from '@wallet-actions/coinmarketBuyActions';
+import { CoinmarketExchangeActions } from '@wallet-actions/coinmarketExchangeActions';
 
 import {
     FiatTicker as FiatTicker$,
@@ -60,4 +62,6 @@ export type WalletAction =
     | DiscoveryActions
     | AccountActions
     | SelectedAccountActions
+    | CoinmarketExchangeActions
+    | CoinmarketBuyActions
     | SendFormActions;

@@ -1,9 +1,15 @@
 import { SettingsLayout } from '@settings-components';
 import { ActionColumn, Row, Section, TextColumn } from '@suite-components/Settings';
-import { Switch } from '@trezor/components';
+import { Switch, Select } from '@trezor/components';
+import styled from 'styled-components';
 import React from 'react';
 
 import { Props } from './Container';
+import invityAPI from '@suite-services/invityAPI';
+
+const StyledActionColumn = styled(ActionColumn)`
+    max-width: 300px;
+`;
 
 const DebugSettings = (props: Props) => {
     return (
@@ -16,7 +22,7 @@ const DebugSettings = (props: Props) => {
                     />
                     <ActionColumn>
                         <Switch
-                            checked={props.debug.translationMode}
+                            checked={props.debug.translationMode || false}
                             onChange={() => {
                                 props.setDebugMode({
                                     translationMode: !props.debug.translationMode,
@@ -40,6 +46,42 @@ const DebugSettings = (props: Props) => {
                             }}
                         />
                     </ActionColumn>
+                </Row>
+            </Section>
+            <Section title="Invity">
+                <Row>
+                    <TextColumn
+                        title="API server"
+                        description="Set the server url for buy and exchange features"
+                    />
+                    <StyledActionColumn>
+                        <Select
+                            onChange={(item: { value: string; label: string }) => {
+                                props.setDebugMode({
+                                    invityAPIUrl: item.value,
+                                });
+                                invityAPI.setInvityAPIServer(item.value);
+                            }}
+                            value={{
+                                label: invityAPI.server,
+                                value: invityAPI.server,
+                            }}
+                            options={[
+                                {
+                                    label: invityAPI.localhostAPIServer,
+                                    value: invityAPI.localhostAPIServer,
+                                },
+                                {
+                                    label: invityAPI.stagingAPIServer,
+                                    value: invityAPI.stagingAPIServer,
+                                },
+                                {
+                                    label: invityAPI.productionAPIServer,
+                                    value: invityAPI.productionAPIServer,
+                                },
+                            ]}
+                        />
+                    </StyledActionColumn>
                 </Row>
             </Section>
         </SettingsLayout>
