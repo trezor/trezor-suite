@@ -7,7 +7,12 @@ import { ACCOUNT } from '@wallet-actions/constants';
 
 import { AppState, Action, Dispatch } from '@suite-types';
 import * as analyticsActions from '@suite-actions/analyticsActions';
-import { getScreenWidth, getScreenHeight } from '@suite-utils/env';
+import {
+    getScreenWidth,
+    getScreenHeight,
+    getPlatform,
+    getPlatformLanguage,
+} from '@suite-utils/env';
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:
@@ -37,6 +42,8 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                         discreetMode: state.wallet.settings.discreetMode,
                         screenWidth: getScreenWidth(),
                         screenHeight: getScreenHeight(),
+                        platform: getPlatform(),
+                        platformLanguage: getPlatformLanguage(),
                     },
                 }),
             );
@@ -64,6 +71,11 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                             // backup_type: features.backup_type || 'Bip39', // @ts-ignore todo add to features types, missing
                             pin_protection: features.pin_protection,
                             passphrase_protection: features.passphrase_protection,
+                            totalInstances: api.getState().devices.length,
+                            // todo: totalDevices
+                            // it should be easy like this:
+                            // totalDevices: api.getState().devices.filter(d => !d.instance).length,
+                            // but it acts weird on my setup, investigate.
                         },
                     }),
                 );

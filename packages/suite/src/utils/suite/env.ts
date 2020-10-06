@@ -20,3 +20,11 @@ export const getScreenWidth = () => {
 export const getScreenHeight = () => {
     return window.screen.height;
 };
+
+export const getPlatform = () => {
+    return window.navigator.platform;
+};
+
+export const getPlatformLanguage = () => {
+    return window.navigator.language;
+};
