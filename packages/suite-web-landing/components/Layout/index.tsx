@@ -116,10 +116,7 @@ const Index = ({ children }: Props) => (
                 alignIcon="right"
                 color={colors.NEUE_TYPE_DARK_GREY}
             >
-                <Link
-                    variant="nostyle"
-                    href={process.env.assetPrefix ? `${process.env.assetPrefix}/web` : '/web'}
-                >
+                <Link variant="nostyle" href="./web">
                     Trezor Suite for web
                 </Link>
             </Button>
