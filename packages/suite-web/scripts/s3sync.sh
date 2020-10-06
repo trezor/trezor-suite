@@ -19,13 +19,6 @@ function confirm {
     fi
 }
 
-# Validate destination param
-if [ "x$1" != "xstaging-wallet" ] && [ "x$1" != "xstaging-suite" ] && [ "x$1" != "xbeta-wallet" ] && [ "x$1" != "xsuite" ]; then
-    echo "Invalid destination: "$1
-    echo "use: staging-wallet|staging-suite|beta-wallet|suite"
-    exit 1
-fi
-
 SOURCE=../build/
 
 # Set destination
@@ -45,11 +38,13 @@ elif [ "x$1" == "xsuite" ]; then
     BUCKET=suite.trezor.io
     DISTRIBUTION_ID=E4TDVEWU4P4CY
     DESTDIR=/web
+else
+    echo "Invalid destination: $1"
 fi
 
-echo "sync "$SOURCE" with "$BUCKET"/"
+echo "sync $SOURCE with $BUCKET"
 
-if [ "x$1" == "xbeta" ] || [ "x$1" == "xstable" ]; then
+if [ "x$1" == "xbeta-wallet" ] || [ "x$1" == "xsuite" ]; then
     confirm
 fi
 
