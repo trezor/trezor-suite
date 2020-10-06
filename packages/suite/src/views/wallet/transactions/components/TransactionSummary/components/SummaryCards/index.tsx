@@ -40,6 +40,7 @@ const SummaryCards = ({
     isLoading,
     className,
 }: Props) => {
+    const [fromTimestamp, toTimestamp] = dataInterval;
     // aggregate values from shown graph data
     const numOfTransactions = data.reduce((acc, d) => (acc += d.txs), 0);
     const totalSentAmount = data.reduce((acc, d) => acc.plus(d.sent), new BigNumber(0));
@@ -67,21 +68,23 @@ const SummaryCards = ({
                     </HiddenPlaceholder>
                 }
                 secondaryValue={
-                    <>
-                        <FormattedDate
-                            value={dataInterval[0] * 1000}
-                            year="numeric"
-                            month="short"
-                            day="2-digit"
-                        />{' '}
-                        -{' '}
-                        <FormattedDate
-                            value={dataInterval[1] * 1000}
-                            year="numeric"
-                            month="short"
-                            day="2-digit"
-                        />
-                    </>
+                    fromTimestamp && toTimestamp ? (
+                        <>
+                            <FormattedDate
+                                value={fromTimestamp * 1000}
+                                year="numeric"
+                                month="short"
+                                day="2-digit"
+                            />{' '}
+                            -{' '}
+                            <FormattedDate
+                                value={toTimestamp * 1000}
+                                year="numeric"
+                                month="short"
+                                day="2-digit"
+                            />
+                        </>
+                    ) : null
                 }
             />
             <InfoCard
