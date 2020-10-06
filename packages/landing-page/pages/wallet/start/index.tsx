@@ -59,7 +59,6 @@ const getAppUrl = (appName: App) => {
 
 const Start = () => {
     const [app, setApp] = useState<App | null>(null);
-    const walletUrl = process.env.assetPrefix ? `${process.env.assetPrefix}/wallet` : '/wallet';
 
     return (
         <Layout>
@@ -101,7 +100,7 @@ const Start = () => {
                     </Item>
                 </Row>
                 <Item>
-                    <Link href={walletUrl} variant="nostyle" target="_self">
+                    <Link href="../web" variant="nostyle" target="_self">
                         <ButtonContinue
                             onClick={() => {}}
                             variant="tertiary"
