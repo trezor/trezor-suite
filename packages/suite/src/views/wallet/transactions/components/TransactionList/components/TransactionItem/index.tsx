@@ -106,6 +106,9 @@ const TransactionItem = React.memo((props: Props) => {
         !isUnknown && isTokenTransaction && type !== 'recv' && transaction.fee !== '0';
     const [txItemisHovered, setTxItemIsHovered] = useState(false);
     const [nestedItemIsHovered, setNestedItemIsHovered] = useState(false);
+
+    const previewTargets = targets.slice(0, DEFAULT_LIMIT);
+
     const { openModal } = useActions({
         openModal: modalActions.openModal,
     });
@@ -154,18 +157,15 @@ const TransactionItem = React.memo((props: Props) => {
                     <TargetsWrapper>
                         {!isUnknown && !isTokenTransaction && (
                             <>
-                                {targets.slice(0, DEFAULT_LIMIT).map((t, i) => (
+                                {previewTargets.map((t, i) => (
+                                    // render first n targets, n = DEFAULT_LIMIT
                                     <Target
                                         key={i}
                                         target={t}
                                         transaction={transaction}
                                         singleRowLayout={hasSingleTargetOrTransfer}
                                         isFirst={i === 0}
-                                        isLast={
-                                            targets.length > DEFAULT_LIMIT
-                                                ? i === DEFAULT_LIMIT - 1
-                                                : i === targets.length - 1
-                                        }
+                                        isLast={limit > 0 ? false : i === previewTargets.length - 1} // if list of targets is expanded we won't get last item here
                                         targetMetadata={txMetadata && txMetadata[t.n]}
                                         accountKey={accountKey}
                                     />
@@ -181,6 +181,8 @@ const TransactionItem = React.memo((props: Props) => {
                                                     transaction={transaction}
                                                     useAnimation
                                                     isLast={
+                                                        // if list is not fully expanded, an index of last is limit (num of currently showed items) - 1,
+                                                        // otherwise the index is calculated as num of all targets - num of targets that are always shown (DEFAULT_LIMIT) - 1
                                                         targets.length > limit + DEFAULT_LIMIT
                                                             ? i === limit - 1
                                                             : i ===
