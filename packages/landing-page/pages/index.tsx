@@ -51,11 +51,7 @@ const Index = () => (
                 limited exclusively to our Beta Testers Community.
             </StyledP>
             <Item>
-                <Link
-                    href="./wallet/start"
-                    target="_self"
-                    variant="nostyle"
-                >
+                <Link href="./wallet/start" target="_self" variant="nostyle">
                     <ButtonAccess variant="primary">Log in to Beta Wallet</ButtonAccess>
                 </Link>
             </Item>
