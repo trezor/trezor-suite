@@ -1118,7 +1118,6 @@ const definedMessages = defineMessages({
     },
     TR_FINAL_HEADING: {
         defaultMessage: 'Good job! All done',
-        description: 'Heading in newsletter step',
         id: 'TR_FINAL_HEADING',
     },
     TR_FINAL_SUBHEADING: {

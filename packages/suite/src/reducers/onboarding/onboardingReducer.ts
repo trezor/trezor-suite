@@ -14,7 +14,6 @@ export interface OnboardingState {
     activeStepId: AnyStepId;
     activeSubStep: string | null;
     path: AnyPath[];
-    backupType: number;
 }
 
 const initialState: OnboardingState = {
@@ -28,9 +27,6 @@ const initialState: OnboardingState = {
     activeStepId: STEP.ID_WELCOME_STEP,
     activeSubStep: null,
     path: [],
-    // shamir or standard. we need to have this field in reducer for the case
-    // when backup fails and user wants to retry it.
-    backupType: 0,
 };
 
 const setPrevDevice = (state: OnboardingState, device: Device) => {
@@ -95,9 +91,6 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
                 break;
             case ONBOARDING.REMOVE_PATH:
                 draft.path = removePath(action.payload, state);
-                break;
-            case ONBOARDING.SET_BACKUP_TYPE:
-                draft.backupType = action.payload;
                 break;
             case DEVICE.DISCONNECT:
                 draft.prevDevice = setPrevDevice(state, action.payload);
