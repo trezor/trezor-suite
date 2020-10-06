@@ -28,7 +28,7 @@ export const ITEMS = [
         route: 'wallet-coinmarket-buy',
         title: <Translation id="TR_NAV_COINMARKET" />,
         icon: 'RBF',
-        isHidden: () => false,
+        isHidden: () => true,
     },
     // {
     //     route: 'wallet-details',
