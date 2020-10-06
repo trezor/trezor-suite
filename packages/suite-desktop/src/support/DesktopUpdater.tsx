@@ -8,6 +8,7 @@ import { Translation } from '@suite-components';
 import { UpdateInfo, UpdateProgress } from '@suite-types/desktop';
 import { useActions, useSelector } from '@suite-hooks';
 
+import { isDev } from '@suite-utils/build';
 import { getReleaseNotes, getReleaseUrl } from '@suite/services/github';
 
 import * as file from '@suite-utils/file';
@@ -177,16 +178,17 @@ const DesktopUpdater = () => {
     });
 
     useEffect(() => {
-        if (!window.desktopApi) {
+        // Don't run in dev builds (no updates to fetch, triggers errors)
+        if (isDev()) {
             return;
         }
 
-        window.desktopApi.on('update/checking', () => checking());
-        window.desktopApi.on('update/available', (info: UpdateInfo) => available(info));
-        window.desktopApi.on('update/not-available', (info: UpdateInfo) => notAvailable(info));
-        window.desktopApi.on('update/skip', (version: string) => skip(version));
-        window.desktopApi.on('update/downloaded', (info: UpdateInfo) => ready(info));
-        window.desktopApi.on('update/downloading', (progress: UpdateProgress) =>
+        window.desktopApi!.on('update/checking', () => checking());
+        window.desktopApi!.on('update/available', (info: UpdateInfo) => available(info));
+        window.desktopApi!.on('update/not-available', (info: UpdateInfo) => notAvailable(info));
+        window.desktopApi!.on('update/skip', (version: string) => skip(version));
+        window.desktopApi!.on('update/downloaded', (info: UpdateInfo) => ready(info));
+        window.desktopApi!.on('update/downloading', (progress: UpdateProgress) =>
             downloading(progress),
         );
 
