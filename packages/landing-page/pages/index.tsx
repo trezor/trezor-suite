@@ -52,11 +52,7 @@ const Index = () => (
             </StyledP>
             <Item>
                 <Link
-                    href={
-                        process.env.assetPrefix
-                            ? `${process.env.assetPrefix}/start`
-                            : '/wallet/start'
-                    }
+                    href="./wallet/start"
                     target="_self"
                     variant="nostyle"
                 >

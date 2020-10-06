@@ -12,8 +12,8 @@ It has special structure:
 
 | route            | basic auth  | source                | assetPrefix                               |
 | ---------------- | ----------- | --------------------- | ----------------------------------------- |
-| /                | NO          | @trezor/landing-page  | /wallet                                   |
-| /wallet/start    | YES         | @trezor/landing-page  | /wallet                                   |
+| /                | NO          | @trezor/landing-page  | -                                         |
+| /wallet/start    | YES         | @trezor/landing-page  | -                                         |
 | /wallet/web      | YES         | @trezor/suite-web     | /wallet/web                               |
 
 

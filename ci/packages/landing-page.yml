@@ -18,7 +18,7 @@ landing-page build beta:
   only:
     <<: *auto_run_branches
   script:
-    - assetPrefix=/wallet yarn workspace @trezor/landing-page build
+    - yarn workspace @trezor/landing-page build
   artifacts:
     expire_in: 7 days
     paths:
