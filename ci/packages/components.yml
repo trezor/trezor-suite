@@ -9,7 +9,7 @@ components build-storybook:
       - packages/components/.build-storybook
 
 components storybook deploy dev:
-  stage: deploy to dev servers
+  stage: deploy to dev
   variables:
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/components/${CI_BUILD_REF_NAME}
   dependencies:

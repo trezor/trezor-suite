@@ -36,11 +36,10 @@ stages:
     - setup environment
     - lint, types, unit tests
     - build
-    - deploy to dev servers
+    - deploy to dev
     - integration testing
     - build artifacts
     - misc
-    - deploy to dev
     - deploy to staging
     - deploy to production
 
