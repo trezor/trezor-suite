@@ -1,7 +1,11 @@
+/**
+ * Analytics (logging user behavior in the app)
+ * @docs docs/misc/analytics.md
+ */
+
 import * as Sentry from '@sentry/browser';
 
 import { ANALYTICS } from '@suite-actions/constants';
-import { isDev } from '@suite-utils/build';
 import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { getAnalyticsRandomId } from '@suite-utils/random';
 import { encodeDataToQueryString } from '@suite-utils/analytics';
@@ -35,6 +39,9 @@ export type AnalyticsEvent =
               discreetMode: AppState['wallet']['settings']['discreetMode'];
               screenWidth: number;
               screenHeight: number;
+              // added in 1.1
+              platform: string;
+              platformLanguage: string;
           };
       }
     | { type: 'transport-type'; payload: { type: string; version: string } }
@@ -50,6 +57,7 @@ export type AnalyticsEvent =
               firmware: string;
               pin_protection: boolean;
               passphrase_protection: boolean;
+              totalInstances: number;
           };
       }
     | {
@@ -200,25 +208,16 @@ export type AnalyticsEvent =
       };
 
 const getUrl = () => {
-    // Real endpoints
-    // --------------
-    // https://data.trezor.io/suite/log/desktop/staging.log
-    // https://data.trezor.io/suite/log/desktop/beta.log
-    // https://data.trezor.io/suite/log/desktop/develop.log
-    // https://data.trezor.io/suite/log/desktop/stable.log
-
-    // https://data.trezor.io/suite/log/web/staging.log
-    // https://data.trezor.io/suite/log/web/beta.log
-    // https://data.trezor.io/suite/log/web/develop.log
-    // https://data.trezor.io/suite/log/web/stable.log
-
     const base = 'https://data.trezor.io/suite/log';
 
-    // todo: env variables that we might going to use ?
-    // process.env.SUITE_TYPE   stands for web | desktop
-    // process.env.BUILD        stands for development | beta | production ?
-    // - currently, we do not have special beta or prod builds that would contain different features,
-    // - so only hosting environment is important now
+    // ts-ignore is "safe", we are in web env and I don't want to create custom file for native
+    // @ts-ignore
+    const { hostname } = window.location;
+
+    // this is true for both web and develop dev server
+    if (hostname === 'localhost') {
+        return; // no reporting on dev
+    }
 
     if (process.env.SUITE_TYPE === 'desktop') {
         // currently released desktop version is in beta.
@@ -226,32 +225,28 @@ const getUrl = () => {
         // there is no staging for desktop version
     }
 
-    // Intentionally pretty much verbose to be sure what is being sent where
     if (process.env.SUITE_TYPE === 'web') {
-        // ts-ignores are "safe", we are in web env and I don't want to create custom file for native
-        // @ts-ignore
-        if (window.location.hostname === 'staging-wallet.trezor.io') {
-            return `${base}/web/staging.log`;
-        }
-        // @ts-ignore
-        if (window.location.hostname === 'beta-wallet.trezor.io') {
-            return `${base}/web/beta.log`;
-        }
-        // @ts-ignore
-        if (window.location.hostname === 'wallet.trezor.io') {
-            return `${base}/web/stable.log`;
+        switch (hostname) {
+            case 'staging-suite.trezor.io':
+                return `${base}/web/staging.log`;
+            case 'beta-wallet.trezor.io':
+                return `${base}/web/beta.log`;
+            case 'suite.trezor.io':
+                return `${base}/web/stable.log`;
+            default:
+                // on dev server
+                return `${base}/web/develop.log`;
         }
     }
-
-    return `${base}/${process.env.SUITE_TYPE}/develop.log`;
 };
 
 export const report = (data: AnalyticsEvent, force = false) => async (
     _dispatch: Dispatch,
     getState: GetState,
 ) => {
-    if (isDev()) {
-        // on dev, do nothing
+    const url = getUrl();
+    if (!url) {
+        // this is for local dev
         return;
     }
 
@@ -263,12 +258,6 @@ export const report = (data: AnalyticsEvent, force = false) => async (
         return;
     }
     const qs = encodeDataToQueryString(data, { sessionId, instanceId, version });
-    const url = getUrl();
-
-    if (!url) {
-        console.warn('no endpoint for analytics found for this build and env');
-        return;
-    }
 
     try {
         fetch(`${url}?${qs}`, {
