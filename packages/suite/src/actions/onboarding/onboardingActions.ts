@@ -8,10 +8,6 @@ import { GetState, Dispatch, Action } from '@suite-types';
 
 export type OnboardingActionTypes =
     | {
-          type: typeof ONBOARDING.SET_BACKUP_TYPE;
-          payload: number;
-      }
-    | {
           type: typeof ONBOARDING.ENABLE_ONBOARDING_REDUCER;
           payload: boolean;
       }
