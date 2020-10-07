@@ -1,3 +1,3 @@
 # Deployment
 
-This directory contains information about deployments, build types and production environments.
+This chapter contains information about deployments, build types and production environments.

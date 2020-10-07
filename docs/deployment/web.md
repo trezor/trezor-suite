@@ -4,7 +4,7 @@
 
 ### Beta (beta-wallet.trezor.io)
 
-Domain beta-wallet.trezor.io originally hosted beta build of [mytrezor wallet](https://github.com/satoshilabs/mytrezor)
+Domain beta-wallet.trezor.io originally hosted beta build of [mytrezor wallet](https://github.com/satoshilabs/mytrezor).
 With initial release of Trezor Suite this domain was decided to become entry point of closed beta program for Trezor Suite.
 
 It has special structure:
