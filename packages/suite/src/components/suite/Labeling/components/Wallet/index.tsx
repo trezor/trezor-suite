@@ -1,7 +1,6 @@
 import React from 'react';
 import { Translation } from '@suite-components';
-import { TrezorDevice, ExtendedMessageDescriptor } from '@suite-types';
-import messages from '@suite/support/messages';
+import { TrezorDevice } from '@suite-types';
 
 interface Props {
     device: TrezorDevice;
@@ -10,19 +9,16 @@ interface Props {
 
 const Wallet = (props: Props) => {
     const { device } = props;
-    let walletLabel: ExtendedMessageDescriptor | undefined;
+    let label: JSX.Element | null = null;
     if (device.state) {
-        walletLabel = device.useEmptyPassphrase
-            ? messages.TR_NO_PASSPHRASE_WALLET
-            : {
-                  ...messages.TR_PASSPHRASE_WALLET,
-                  values: {
-                      id: device.instance,
-                  },
-              };
+        label = (
+            <Translation
+                {...(device.useEmptyPassphrase
+                    ? { id: 'TR_NO_PASSPHRASE_WALLET' }
+                    : { id: 'TR_PASSPHRASE_WALLET', values: { id: device.instance } })}
+            />
+        );
     }
-
-    const label = walletLabel ? <Translation {...walletLabel} /> : null;
 
     if (props.useDeviceLabel) {
         return (
