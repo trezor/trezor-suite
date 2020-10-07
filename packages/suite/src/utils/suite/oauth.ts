@@ -51,7 +51,7 @@ export const getOauthCode = (url: string) => {
         const params = urlSearchParams(e.data);
 
         if (originalParams.state && params.state !== originalParams.state) {
-            return;
+            dfd.reject(new Error('state does not match'));
         }
 
         if (params.code) {

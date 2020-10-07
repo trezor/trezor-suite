@@ -471,6 +471,7 @@ const initMetadata = [
         initialState: {
             device: { state: 'device-state', metadata: { status: 'disabled' } },
             metadata: { enabled: false },
+            suite: { online: true },
         },
         params: true,
         result: [

@@ -41,7 +41,7 @@ declare global {
             toggleDeviceMenu: () => Chainable<Subject>;
             passThroughInitialRun: () => Chainable<Subject>;
             passThroughBackup: () => Chainable<Subject>;
-            passThroughInitMetadata: () => Chainable<Subject>;
+            passThroughInitMetadata: (provider: 'dropbox' | 'google') => Chainable<Subject>;
             goToOnboarding: () => Chainable<Subject>;
         }
     }

@@ -51,11 +51,11 @@ class DropboxProvider extends AbstractMetadataProvider {
             true,
         );
 
-        const code = await getOauthCode(url);
-
-        if (!code) return false;
-
         try {
+            const code = await getOauthCode(url);
+
+            if (!code) return false;
+
             // @ts-ignore todo: types are broken in the lib, latest version 6.0.1 is broken as well at time of writing this
             const { accessToken, refreshToken } = await this.client.getAccessTokenFromCode(
                 redirectUrl,
@@ -88,11 +88,18 @@ class DropboxProvider extends AbstractMetadataProvider {
                 query: `${file}.mtdt`,
             });
             if (exists?.matches?.length > 0) {
-                const file = await this.client.filesDownload({
-                    path: exists.matches[0].metadata.path_lower!,
+                // sanity check
+                const match = exists.matches.find(
+                    m => m.metadata.path_lower === `/apps/trezor/${file}.mtdt`,
+                );
+                if (!match) return this.ok(undefined);
+
+                const download = await this.client.filesDownload({
+                    path: match.metadata.path_lower!,
                 });
+
                 // @ts-ignore: fileBlob not defined?
-                const buffer = (await file.fileBlob.arrayBuffer()) as Buffer;
+                const buffer = (await download.fileBlob.arrayBuffer()) as Buffer;
 
                 return this.ok(buffer);
             }
@@ -100,7 +107,6 @@ class DropboxProvider extends AbstractMetadataProvider {
             // not found. this is not error. user just has not created the file yet
         } catch (err) {
             // example:
-            // {"error_description": "refresh token is malformed", "error": "invalid_grant"}
             return this.handleProviderError(err);
         }
     }
@@ -127,6 +133,7 @@ class DropboxProvider extends AbstractMetadataProvider {
 
         try {
             const account = await this.client.usersGetCurrentAccount();
+
             const result = {
                 type: 'dropbox',
                 token,
@@ -143,12 +150,17 @@ class DropboxProvider extends AbstractMetadataProvider {
      */
     handleProviderError(err: any) {
         // collect human readable errors from wherever possible or fill with own general message;
-        const message: string =
+        let message: string =
             err?.error?.user_message ||
             err?.error?.error_description ||
             err?.error?.error_summary ||
+            err?.error ||
             err?.message; // if standard error
 
+        if (typeof message !== 'string') {
+            // this should never happen
+            message = 'unknown error';
+        }
         // https://www.dropbox.com/developers/documentation/http/documentation#error-handling
         if (err?.status) {
             if (err.status >= 500) {

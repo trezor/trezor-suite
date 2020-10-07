@@ -1,6 +1,6 @@
 // @stable/metadata
 
-import { stubFetch, stubOpen } from '../../stubs/metadata';
+import { rerouteDropbox, stubOpen } from '../../stubs/metadata';
 
 describe('Metadata', () => {
     beforeEach(() => {
@@ -8,7 +8,7 @@ describe('Metadata', () => {
     });
 
     after(() => {
-        cy.task('stopGoogle');
+        cy.task('stopDropbox');
     });
 
     it(`
@@ -18,12 +18,12 @@ describe('Metadata', () => {
         // prepare test
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
-        cy.task('startGoogle');
+        cy.task('startDropbox');
 
         cy.prefixedVisit('/accounts', {
             onBeforeLoad: (win: Window) => {
                 cy.stub(win, 'open', stubOpen(win));
-                cy.stub(win, 'fetch', stubFetch);
+                cy.stub(win, 'fetch', rerouteDropbox);
             },
         });
 
@@ -43,7 +43,7 @@ describe('Metadata', () => {
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click({
             force: true,
         });
-        cy.passThroughInitMetadata();
+        cy.passThroughInitMetadata('dropbox');
 
         cy.log('Edit and submit changes by pressing enter key');
         cy.getTestElement('@metadata/input').type(
@@ -53,7 +53,9 @@ describe('Metadata', () => {
 
         cy.log('Now edit and submit by clicking on submit button');
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'").click();
-        cy.getTestElement('@metadata/edit-button').click();
+        cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click({
+            force: true,
+        });
         cy.getTestElement('@metadata/input').type(' even cooler');
         cy.getTestElement('@metadata/submit').click();
         cy.getTestElement('@account-menu/btc/normal/0/label').should(
@@ -63,7 +65,9 @@ describe('Metadata', () => {
 
         cy.log('Now edit and press escape, should not save');
         cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'").click();
-        cy.getTestElement('@metadata/edit-button').click();
+        cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click({
+            force: true,
+        });
         cy.getTestElement('@metadata/input')
             .clear()
             .type('bcash is true bitcoin{esc}', { timeout: 20 });
@@ -79,9 +83,11 @@ describe('Metadata', () => {
         cy.getTestElement('@account-menu/btc/normal/0').should('not.be.visible');
         cy.getTestElement('@account-menu/search-input').click().clear();
 
-        cy.log('We can also remove label from dropdown menu');
-        cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'").click();
-        cy.getTestElement('@metadata/remove-button').click();
+        cy.log('We can also remove metadata by clearing input');
+        cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click({
+            force: true,
+        });
+        cy.getTestElement('@metadata/input').clear().type('{enter}');
         cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
     });
 });

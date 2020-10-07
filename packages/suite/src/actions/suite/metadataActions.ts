@@ -41,7 +41,7 @@ export type MetadataActions =
 
 // needs to be declared here in top level context because it's not recommended to keep classes instances in redux state (serialization)
 let providerInstance: DropboxProvider | GoogleProvider | undefined;
-let fetchInterval: any; // any because of native at the moment, otherwise number | undefined
+const fetchIntervals: { [deviceState: string]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
 const createProvider = (
     type: MetadataProviderCredentials['type'],
@@ -112,9 +112,10 @@ export const disposeMetadata = (keys?: boolean) => (dispatch: Dispatch, getState
 };
 
 export const disconnectProvider = () => async (dispatch: Dispatch) => {
-    if (fetchInterval) {
-        clearInterval(fetchInterval);
-    }
+    Object.values(fetchIntervals).forEach((deviceState, num) => {
+        clearInterval(num);
+        delete fetchIntervals[deviceState];
+    });
 
     /* eslint-disable-next-line @typescript-eslint/no-use-before-define */
     const provider = await dispatch(getProvider());
@@ -141,9 +142,12 @@ export const disconnectProvider = () => async (dispatch: Dispatch) => {
 const handleProviderError = (error: MetadataProviderError, action: string) => (
     dispatch: Dispatch,
 ) => {
+    console.log(error);
     // error should be of specified type, but in case it is not (catch is not typed) show generic error
     if (!error?.code) {
         // if this happens, it means that there is a hole in error handling and it should be fixed
+        console.trace();
+
         return dispatch(
             notificationActions.addToast({
                 type: 'error',
@@ -223,18 +227,31 @@ export const fetchMetadata = (deviceState: string) => async (
     getState: GetState,
 ) => {
     const provider = await dispatch(getProvider());
-    if (!provider) return;
-
-    // TODO: watch internet connection
-
+    if (!provider) {
+        return;
+    }
     const device = getState().devices.find(d => d.state === deviceState);
 
+    // device is disconnected or something is wrong with it
+    if (device?.metadata?.status !== 'enabled') {
+        if (fetchIntervals[deviceState]) {
+            clearInterval(fetchIntervals[deviceState]);
+            delete fetchIntervals[deviceState];
+        }
+        return;
+    }
+
     const deviceFileContentP = new Promise((resolve, reject) => {
-        if (device?.metadata?.status !== 'enabled') return reject();
+        if (device?.metadata?.status !== 'enabled') {
+            return reject(new Error('metadata not enabled for this device'));
+        }
 
         return provider.getFileContent(device.metadata.fileName).then(result => {
             // ts-stuff
-            if (device?.metadata?.status !== 'enabled') return reject();
+            if (device?.metadata?.status !== 'enabled') {
+                // this should never happen
+                return reject(new Error('metadata not enabled for this device'));
+            }
 
             if (!result.success) {
                 return reject(result);
@@ -244,16 +261,16 @@ export const fetchMetadata = (deviceState: string) => async (
             if (result.payload) {
                 try {
                     json = metadataUtils.decrypt(
-                        metadataUtils.getFileContent(result.payload),
+                        metadataUtils.arrayBufferToBuffer(result.payload),
                         device.metadata.aesKey,
                     );
                 } catch (err) {
                     const error = provider.error('OTHER_ERROR', err.message);
-                    dispatch(handleProviderError(error, ProviderErrorAction.SAVE));
-                    return reject();
+                    // dispatch(handleProviderError(error, ProviderErrorAction.LOAD));
+                    // todo: ?
+                    return reject(error);
                 }
             }
-
             dispatch({
                 type: METADATA.WALLET_LOADED,
                 payload: {
@@ -284,15 +301,16 @@ export const fetchMetadata = (deviceState: string) => async (
                 // we found associated metadata file for given account, decrypt it
                 // and save its metadata into reducer;
                 json = metadataUtils.decrypt(
-                    metadataUtils.getFileContent(response.payload),
+                    metadataUtils.arrayBufferToBuffer(response.payload),
                     account.metadata.aesKey,
                 );
                 // if (json.version === '1.0.0') {
                 //     TODO: migration
                 // }
             } catch (err) {
+                // todo? ??
                 const error = provider.error('OTHER_ERROR', err.message);
-                return dispatch(handleProviderError(error, ProviderErrorAction.SAVE));
+                return dispatch(handleProviderError(error, ProviderErrorAction.LOAD));
             }
         }
 
@@ -315,13 +333,18 @@ export const fetchMetadata = (deviceState: string) => async (
     try {
         await Promise.all(promises);
         // if interval for watching provider is not set, create it
-        if (!fetchInterval) {
-            fetchInterval = setInterval(() => {
-                if (!device?.state) return;
-                dispatch(fetchMetadata(device?.state));
+
+        // todo: ?? bugs here !!
+        if (!fetchIntervals[deviceState]) {
+            fetchIntervals[deviceState] = setInterval(() => {
+                if (!getState().suite.online) {
+                    return;
+                }
+                dispatch(fetchMetadata(deviceState));
             }, METADATA.FETCH_INTERVAL);
         }
     } catch (error) {
+        // todo: isn't it better to clear interval here?
         dispatch(handleProviderError(error, ProviderErrorAction.LOAD));
     }
 };
@@ -390,7 +413,7 @@ export const addDeviceMetadata = (
     payload: Extract<MetadataAddPayload, { type: 'walletLabel' }>,
 ) => async (dispatch: Dispatch, getState: GetState) => {
     const device = getState().devices.find(d => d.state === payload.deviceState);
-    if (!device || device.metadata.status !== 'enabled') return;
+    if (!device || device.metadata.status !== 'enabled') return false;
 
     const walletLabel =
         typeof payload.value === 'string' && payload.value.length > 0 ? payload.value : undefined;
@@ -407,7 +430,7 @@ export const addDeviceMetadata = (
 
     if (!provider) {
         // provider should always be set here
-        return;
+        return false;
     }
 
     try {
@@ -421,7 +444,9 @@ export const addDeviceMetadata = (
         const result = await provider.setFileContent(device.metadata.fileName, encrypted);
         if (!result.success) {
             dispatch(handleProviderError(result, ProviderErrorAction.SAVE));
+            return false;
         }
+        return true;
     } catch (err) {
         const error = provider.error('OTHER_ERROR', err.message);
         return dispatch(handleProviderError(error, ProviderErrorAction.SAVE));
@@ -432,13 +457,13 @@ export const addAccountMetadata = (
     payload: Exclude<MetadataAddPayload, { type: 'walletLabel' }>,
 ) => async (dispatch: Dispatch, getState: GetState) => {
     const account = getState().wallet.accounts.find(a => a.key === payload.accountKey);
-    if (!account) return;
+    if (!account) return false;
     // clone Account.metadata
     const metadata = JSON.parse(JSON.stringify(account.metadata));
 
     if (payload.type === 'outputLabel') {
         if (typeof payload.value !== 'string' || payload.value.length === 0) {
-            if (!metadata.outputLabels[payload.txid]) return;
+            if (!metadata.outputLabels[payload.txid]) return false;
             delete metadata.outputLabels[payload.txid][payload.outputIndex];
             if (Object.keys(metadata.outputLabels[payload.txid]).length === 0)
                 delete metadata.outputLabels[payload.txid];
@@ -480,7 +505,7 @@ export const addAccountMetadata = (
     const provider = await dispatch(getProvider());
     if (!provider) {
         // provider should always be set here (see init)
-        return;
+        return false;
     }
 
     // todo: can't this throw? heh?
@@ -497,7 +522,9 @@ export const addAccountMetadata = (
     const result = await provider.setFileContent(account.metadata.fileName, encrypted);
     if (!result.success) {
         dispatch(handleProviderError(result, ProviderErrorAction.SAVE));
+        return false;
     }
+    return true;
     // const { ipcRenderer } = global;
     // if (ipcRenderer) {
     //     const onIpcSave = (sender, message) => {
@@ -592,10 +619,9 @@ export const setDeviceMetadataKey = () => async (dispatch: Dispatch, getState: G
 
 export const addMetadata = (payload: MetadataAddPayload) => async (dispatch: Dispatch) => {
     if (payload.type === 'walletLabel') {
-        dispatch(addDeviceMetadata(payload));
-    } else {
-        dispatch(addAccountMetadata(payload));
+        return dispatch(addDeviceMetadata(payload));
     }
+    return dispatch(addAccountMetadata(payload));
 };
 
 /**

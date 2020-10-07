@@ -5,10 +5,13 @@ import { ArrayElement } from '@suite/types/utils';
 import { getTxOperation, getTargetAmount } from '@wallet-utils/transactionUtils';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import { WalletAccountTransaction } from '@wallet-types';
+import * as notificationActions from '@suite-actions/notificationActions';
+import { useActions } from '@suite-hooks';
 import Sign from '@suite-components/Sign';
 import TokenTransferAddressLabel from '../TokenTransferAddressLabel';
 import TargetAddressLabel from '../TargetAddressLabel';
 import BaseTargetLayout from '../BaseTargetLayout';
+import { copyToClipboard } from '@suite-utils/dom';
 
 const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     /* padding: 8px 0px; row padding */
@@ -70,15 +73,38 @@ export const Target = ({
 }: TargetProps) => {
     const targetAmount = getTargetAmount(target, transaction);
     const operation = getTxOperation(transaction);
+    // const htmlElement = createRef<HTMLDivElement>();
+    const { addNotification } = useActions({ addNotification: notificationActions.addToast });
 
     return (
         <BaseTargetLayout
+            // ref={htmlElement}
             {...baseLayoutProps}
             addressLabel={
                 <MetadataLabeling
                     defaultVisibleValue={
                         <TargetAddressLabel target={target} type={transaction.type} />
                     }
+                    dropdownOptions={[
+                        {
+                            callback: () => {
+                                if (!target?.addresses) {
+                                    // probably should not happen?
+                                    return addNotification({
+                                        type: 'error',
+                                        error: 'There is nothing to copy',
+                                    });
+                                }
+                                const result = copyToClipboard(target.addresses.join(), null);
+                                if (typeof result !== 'string') {
+                                    return addNotification({ type: 'copy-to-clipboard' });
+                                }
+                                return addNotification({ type: 'error', error: result });
+                            },
+                            label: 'Copy address',
+                            key: 'copy-address',
+                        },
+                    ]}
                     payload={{
                         type: 'outputLabel',
                         accountKey,

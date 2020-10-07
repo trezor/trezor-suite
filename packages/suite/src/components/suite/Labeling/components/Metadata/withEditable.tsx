@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useCallback } from 'react';
-import { colors, Icon } from '@trezor/components';
+import React, { useEffect, useCallback, createRef } from 'react';
 import styled from 'styled-components';
+import { Icon, colors } from '@trezor/components';
+
 import { moveCaretToEndOfContentEditable } from '@suite-utils/dom';
 
 const IconWrapper = styled.div<{ bgColor: string }>`
@@ -13,37 +14,48 @@ const IconWrapper = styled.div<{ bgColor: string }>`
     padding: 4px;
 `;
 
-const MetadataEdit = (props: {
+interface Props {
     originalValue?: string;
     onSubmit: (value: string | undefined | null) => void;
     onBlur: () => void;
-}) => {
-    const divRef = useRef<HTMLDivElement>(null);
+    divRef: React.RefObject<HTMLDivElement>;
+}
+
+/**
+ * Takes component in parameter and wraps it with content-editable necessities. Renders contenteditable div as it's child
+ * and control buttons (submit, cancel).
+ */
+export const withEditable = (WrappedComponent: React.FC) => ({
+    divRef,
+    onSubmit,
+    onBlur,
+    ...props
+}: Props) => {
+    const wrapperRef = createRef();
     const submit = useCallback(
         value => {
-            if (value && value !== props.originalValue) {
-                props.onSubmit(value);
+            if (props.originalValue && value === props.originalValue) {
+                return onBlur();
             }
-
-            if (divRef && divRef.current) {
-                divRef.current.blur();
-            }
-            props.onBlur();
+            onSubmit(value);
+            onBlur();
         },
-        [props, divRef],
+        [props, onSubmit, onBlur],
     );
 
     useEffect(() => {
         // Set value of content editable element; set caret to correct position;
-        if (divRef && divRef.current) {
+        if (divRef?.current) {
             divRef.current.textContent = props.originalValue || null;
             divRef.current.focus();
             moveCaretToEndOfContentEditable(divRef.current);
         }
-    }, [props]);
+    }, [props, divRef]);
 
     useEffect(() => {
         const keyboardHandler = (event: KeyboardEvent) => {
+            event.stopPropagation();
+
             switch (event.keyCode) {
                 // tab
                 case 9:
@@ -51,13 +63,11 @@ const MetadataEdit = (props: {
                     break;
                 // enter,
                 case 13:
-                    if (divRef && divRef.current) {
-                        submit(divRef.current.textContent);
-                    }
+                    submit(divRef?.current?.textContent);
                     break;
                 // escape
                 case 27:
-                    submit(props.originalValue);
+                    onBlur();
                     break;
                 default: // no default;
             }
@@ -68,11 +78,18 @@ const MetadataEdit = (props: {
         return () => {
             window.removeEventListener('keydown', keyboardHandler, false);
         };
-    }, [submit, props.originalValue]);
+    }, [submit, onBlur, props.originalValue, divRef, wrapperRef]);
 
     return (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div contentEditable ref={divRef} data-test="@metadata/input" />
+        <>
+            <WrappedComponent {...props}>
+                <div
+                    contentEditable
+                    ref={divRef}
+                    data-test="@metadata/input"
+                    style={{ paddingLeft: '1px' }}
+                />
+            </WrappedComponent>
             <IconWrapper bgColor={colors.NEUE_BG_LIGHT_GREEN}>
                 <Icon
                     useCursorPointer
@@ -81,11 +98,7 @@ const MetadataEdit = (props: {
                     icon="CHECK"
                     onClick={e => {
                         e.stopPropagation();
-                        submit(
-                            divRef && divRef.current
-                                ? divRef.current.textContent
-                                : props.originalValue,
-                        );
+                        submit(divRef?.current?.textContent);
                     }}
                     color={colors.NEUE_TYPE_GREEN}
                 />
@@ -98,13 +111,11 @@ const MetadataEdit = (props: {
                     icon="CROSS"
                     onClick={e => {
                         e.stopPropagation();
-                        submit(props.originalValue);
+                        onBlur();
                     }}
                     color={colors.NEUE_TYPE_DARK_GREY}
                 />
             </IconWrapper>
-        </div>
+        </>
     );
 };
-
-export default MetadataEdit;

@@ -55,9 +55,9 @@ export const passThroughBackup = () => {
     cy.getTestElement('@backup/close-button').click();
 };
 
-export const passThroughInitMetadata = () => {
+export const passThroughInitMetadata = (provider: 'dropbox' | 'google') => {
     cy.getConfirmActionOnDeviceModal();
     cy.task('pressYes');
-    cy.getTestElement('@modal/metadata-provider/google-button').click();
+    cy.getTestElement(`@modal/metadata-provider/${provider}-button`).click();
     cy.getTestElement('@modal/metadata-provider').should('not.exist');
 };
