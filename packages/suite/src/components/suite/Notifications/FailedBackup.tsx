@@ -15,7 +15,7 @@ const FailedBackup = ({ device }: Props) => {
         goto: routerActions.goto,
     });
 
-    // if (!device?.features?.unfinished_backup) return null;
+    if (!device?.features?.unfinished_backup) return null;
     return (
         <Wrapper variant="warning">
             <Translation id="TR_FAILED_BACKUP" />

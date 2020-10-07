@@ -807,8 +807,12 @@ const definedMessages = defineMessages({
     },
     TR_CONTINUE: {
         defaultMessage: 'Continue',
-        description: 'Continue button',
+        description: 'Generic continue button',
         id: 'TR_CONTINUE',
+    },
+    TR_CONTINUE_SETUP: {
+        defaultMessage: 'Continue setup',
+        id: 'TR_CONTINUE_SETUP',
     },
     TR_COPY_TO_CLIPBOARD: {
         defaultMessage: 'Copy to clipboard',
