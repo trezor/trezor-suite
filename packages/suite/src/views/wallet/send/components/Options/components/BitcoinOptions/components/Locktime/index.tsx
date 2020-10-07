@@ -133,10 +133,10 @@ const Locktime = ({ close }: Props) => {
                 </Left>
                 <Center>
                     <Title>
-                        <Translation id="RBF_OFF_TITLE" />
+                        <Translation id={rbfEnabled ? 'RBF_ON' : 'RBF_OFF'} />
                     </Title>
                     <Description>
-                        <Translation id="RBF_OFF_DESCRIPTION" />
+                        <Translation id="RBF_DESCRIPTION" />
                     </Description>
                 </Center>
                 <Right>

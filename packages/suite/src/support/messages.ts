@@ -3760,22 +3760,18 @@ const definedMessages = defineMessages({
         id: 'RBF',
         defaultMessage: 'RBF',
     },
-    RBF_ON_TITLE: {
-        id: 'RBF_ON_TITLE',
+    RBF_ON: {
+        id: 'RBF_ON',
         defaultMessage: 'RBF = ON',
     },
-    RBF_ON_DESCRIPTION: {
-        id: 'RBF_ON_DESCRIPTION',
-        defaultMessage:
-            'RBF allows to bump fee later in case you want the transaction to be mined faster.',
-    },
-    RBF_OFF_TITLE: {
-        id: 'RBF_OFF_TITLE',
+    RBF_OFF: {
+        id: 'RBF_OFF',
         defaultMessage: 'RBF = OFF',
     },
-    RBF_OFF_DESCRIPTION: {
-        id: 'RBF_OFF_DESCRIPTION',
-        defaultMessage: 'This allows you to sign not final transaction.',
+    RBF_DESCRIPTION: {
+        id: 'RBF_DESCRIPTION',
+        defaultMessage:
+            'RBF allows to bump fee later in case you want the transaction to be mined faster.',
     },
     LOCKTIME: {
         id: 'LOCKTIME',
