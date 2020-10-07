@@ -8,7 +8,7 @@ import AccountTypeSelect from './AccountTypeSelect';
 import { TREZOR_COINS_URL } from '@suite-constants/urls';
 
 const StyledModal = styled(Modal)`
-    min-height: 540px;
+    min-height: 550px;
 `;
 
 const Actions = styled.div`
