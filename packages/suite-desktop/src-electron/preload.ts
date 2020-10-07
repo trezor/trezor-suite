@@ -26,6 +26,9 @@ const validChannels = [
 ];
 
 contextBridge.exposeInMainWorld('desktopApi', {
+    /**
+     * @deprecated Use dedicated methods instead of send
+     */
     send: (channel: string, data?: any) => {
         if (validChannels.includes(channel)) {
             ipcRenderer.send(channel, data);
@@ -41,8 +44,6 @@ contextBridge.exposeInMainWorld('desktopApi', {
             ipcRenderer.off(channel, (_, ...args) => func(...args));
         }
     },
-    // App ready
-    ready: () => ipcRenderer.send('ready'),
     // Updater
     checkForUpdates: () => ipcRenderer.send('update/check'),
     downloadUpdate: () => ipcRenderer.send('update/download'),
