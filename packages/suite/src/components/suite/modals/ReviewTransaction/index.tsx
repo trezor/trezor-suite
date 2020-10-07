@@ -17,10 +17,12 @@ const Bottom = styled.div`
     flex-direction: column;
     width: 100%;
     border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+    padding-top: 20px;
 `;
 
 const BottomContent = styled.div`
     padding: 20px;
+    padding-top: 0px; /* Bottom padding */
     display: flex;
     justify-content: space-between;
     flex: 1;
@@ -140,32 +142,34 @@ const ReviewTransaction = ({ selectedAccount, send, decision }: Props) => {
             }
             bottomBar={
                 <Bottom>
-                    <BottomContent>
-                        <Total>
-                            <Translation
-                                id="TOTAL_SYMBOL"
-                                values={{ symbol: symbol.toUpperCase() }}
-                            />
-                        </Total>
-                        <Right>
-                            <Amounts>
-                                <Coin bold>
-                                    {formatNetworkAmount(precomposedTx.totalSpent, symbol)}
-                                    <Symbol>{symbol}</Symbol>
-                                </Coin>
-                                <TotalFiat>
-                                    <FiatValue
-                                        amount={formatNetworkAmount(
-                                            precomposedTx.totalSpent,
-                                            symbol,
-                                        )}
-                                        symbol={symbol}
-                                    />
-                                </TotalFiat>
-                            </Amounts>
-                        </Right>
-                    </BottomContent>
-                    {broadcastEnabled && (
+                    {!precomposedTx.token && (
+                        <BottomContent>
+                            <Total>
+                                <Translation
+                                    id="TOTAL_SYMBOL"
+                                    values={{ symbol: symbol.toUpperCase() }}
+                                />
+                            </Total>
+                            <Right>
+                                <Amounts>
+                                    <Coin bold>
+                                        {formatNetworkAmount(precomposedTx.totalSpent, symbol)}
+                                        <Symbol>{symbol}</Symbol>
+                                    </Coin>
+                                    <TotalFiat>
+                                        <FiatValue
+                                            amount={formatNetworkAmount(
+                                                precomposedTx.totalSpent,
+                                                symbol,
+                                            )}
+                                            symbol={symbol}
+                                        />
+                                    </TotalFiat>
+                                </Amounts>
+                            </Right>
+                        </BottomContent>
+                    )}
+                    {broadcastEnabled ? (
                         <StyledButton
                             isDisabled={!signedTx}
                             onClick={() => {
@@ -174,8 +178,7 @@ const ReviewTransaction = ({ selectedAccount, send, decision }: Props) => {
                         >
                             <Translation id="SEND_TRANSACTION" />
                         </StyledButton>
-                    )}
-                    {!broadcastEnabled && (
+                    ) : (
                         <Buttons ref={htmlElement}>
                             <StyledButton
                                 isDisabled={!signedTx}
