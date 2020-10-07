@@ -870,6 +870,8 @@
 	"LOCKTIME_IS_NOT_INTEGER": "Locktime is not an integer",
 	"LOCKTIME_IS_TOO_LOW": "Locktime is too low",
 	"LOCKTIME_IS_TOO_BIG": "Timestamp is too big",
+	"LOCKTIME_BLOCKHEIGHT": "Locktime blockheight",
+	"LOCKTIME_TIMESTAMP": "Locktime timestamp",
 	"DESTINATION_TAG": "Destination tag",
 	"DESTINATION_TAG_EXPLAINED": "Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.",
 	"DESTINATION_TAG_NOT_SET": "Destination tag is not set",
