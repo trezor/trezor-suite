@@ -16,6 +16,7 @@ storiesOf('Logos', module).add(
             'type',
             {
                 suite: 'suite',
+                suiteCompact: 'suite_compact',
                 horizontal: 'horizontal',
                 vertical: 'vertical',
                 symbol: 'symbol',

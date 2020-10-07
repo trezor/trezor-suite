@@ -78,6 +78,12 @@ storiesOf('Logos', module).add(
                             width="200px"
                             data-test="trezor-suite-logo-black"
                         />
+                        <TrezorLogo
+                            type="suite_compact"
+                            variant="black"
+                            width="200px"
+                            data-test="trezor-suite-compact-logo-black"
+                        />
                     </LogoWrapper>
                     <LogoWrapper isDark>
                         <TrezorLogo
@@ -97,6 +103,12 @@ storiesOf('Logos', module).add(
                             variant="white"
                             width="50px"
                             data-test="trezor-logo-symbol-white"
+                        />
+                        <TrezorLogo
+                            type="suite_compact"
+                            variant="white"
+                            width="200px"
+                            data-test="trezor-suite-compact-logo-black"
                         />
                     </LogoWrapper>
                 </StoryColumn>
