@@ -25,12 +25,19 @@ const buildCurrencyOption = (currency: string) => ({
 });
 
 const Version = styled.div`
-    display: flex;
-    align-items: center;
+    span {
+        display: flex;
+        align-items: center;
+    }
 `;
 
 const VersionButton = styled(Button)`
     padding-left: 1ch;
+`;
+
+const VersionTooltip = styled(Tooltip)`
+    display: inline-flex;
+    margin: 0 2px;
 `;
 
 const VersionLink = styled.a``;
@@ -217,7 +224,7 @@ const Settings = ({
                                     id="TR_YOUR_CURRENT_VERSION"
                                     values={{
                                         version: (
-                                            <Tooltip content={process.env.COMMITHASH || ''}>
+                                            <VersionTooltip content={process.env.COMMITHASH || ''}>
                                                 <VersionLink
                                                     target="_blank"
                                                     href={`https://github.com/trezor/trezor-suite/commit/${process.env.COMMITHASH}`}
@@ -230,7 +237,7 @@ const Settings = ({
                                                         {process.env.VERSION}
                                                     </VersionButton>
                                                 </VersionLink>
-                                            </Tooltip>
+                                            </VersionTooltip>
                                         ),
                                     }}
                                 />
