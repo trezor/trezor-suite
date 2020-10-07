@@ -5,8 +5,7 @@
 
 // General flags
 export const FLAGS = {
-    EXAMPLE: true, // Example flag, just here for demo purpose
-    // Add more flags here
+    GOOGLE_DRIVE_SYNC: true, // Google Drive sync (used for labeling)
 } as const;
 
 // Web specific flags
@@ -19,7 +18,6 @@ export const FLAGS_WEB = {
 export const FLAGS_DESKTOP = {
     ...FLAGS,
     // Add overrides below
-    EXAMPLE: false,
 } as const;
 
 // Landing specific flags

@@ -7,6 +7,7 @@ import { useActions } from '@suite-hooks';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { Deferred } from '@suite-utils/deferred';
 import { MetadataProviderType } from '@suite-types/metadata';
+import { isEnabled } from '@suite-utils/features';
 
 const { FONT_SIZE, FONT_WEIGHT, SCREEN_SIZE } = variables;
 
@@ -89,16 +90,18 @@ const MetadataProvider = (props: Props) => {
                 >
                     <Translation id="TR_DROPBOX" />
                 </StyledButton>
-                <StyledButton
-                    variant="tertiary"
-                    onClick={() => connect('google')}
-                    isLoading={isLoading === 'google'}
-                    isDisabled={!!isLoading}
-                    data-test="@modal/metadata-provider/google-button"
-                    icon="GOOGLE_DRIVE"
-                >
-                    <Translation id="TR_GOOGLE_DRIVE" />
-                </StyledButton>
+                {isEnabled('GOOGLE_DRIVE_SYNC') && (
+                    <StyledButton
+                        variant="tertiary"
+                        onClick={() => connect('google')}
+                        isLoading={isLoading === 'google'}
+                        isDisabled={!!isLoading}
+                        data-test="@modal/metadata-provider/google-button"
+                        icon="GOOGLE_DRIVE"
+                    >
+                        <Translation id="TR_GOOGLE_DRIVE" />
+                    </StyledButton>
+                )}
 
                 {/* <StyledButton
                     variant="secondary"
