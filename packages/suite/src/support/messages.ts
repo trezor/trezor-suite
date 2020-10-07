@@ -3817,6 +3817,16 @@ const definedMessages = defineMessages({
         id: 'LOCKTIME_IS_TOO_BIG',
         defaultMessage: 'Timestamp is too big',
     },
+    LOCKTIME_BLOCKHEIGHT: {
+        id: 'LOCKTIME_BLOCKHEIGHT',
+        description: 'Used in reviewTransaction modal, locktime < 500000000',
+        defaultMessage: 'Locktime blockheight',
+    },
+    LOCKTIME_TIMESTAMP: {
+        id: 'LOCKTIME_TIMESTAMP',
+        description: 'Used in reviewTransaction modal, locktime >= 500000000',
+        defaultMessage: 'Locktime timestamp',
+    },
     DESTINATION_TAG: {
         defaultMessage: 'Destination tag',
         id: 'DESTINATION_TAG',

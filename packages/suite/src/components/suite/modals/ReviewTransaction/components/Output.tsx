@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import BigNumber from 'bignumber.js';
 import { colors, variables, Icon } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { formatNetworkAmount, formatAmount } from '@wallet-utils/accountUtils';
+import { BTC_LOCKTIME_VALUE } from '@wallet-constants/sendForm';
 import { Network } from '@wallet-types';
 import { TokenInfo } from 'trezor-connect';
 import { ANIMATION } from '@suite-config';
@@ -183,7 +185,10 @@ const Output = ({ type, state, label, value, symbol, token }: Props) => {
         outputLabel = <Translation id="DATA_ETH" />;
     }
     if (type === 'locktime') {
-        outputLabel = <Translation id="LOCKTIME" />; // TODO: blocks or date
+        const isTimestamp = new BigNumber(value).gte(BTC_LOCKTIME_VALUE);
+        outputLabel = (
+            <Translation id={isTimestamp ? 'LOCKTIME_TIMESTAMP' : 'LOCKTIME_BLOCKHEIGHT'} />
+        );
     }
     if (type === 'fee') {
         outputLabel = <Translation id="FEE" />;
