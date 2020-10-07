@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import styled, { css } from 'styled-components';
 import { colors, Icon, Input, CoinLogo } from '@trezor/components';
 import { CoinFilterContext } from '@suite-hooks/useAccountSearch';
-import { Account } from '@wallet-types';
+import { useSelector } from '@suite-hooks';
 
 const Wrapper = styled.div`
     background: ${colors.NEUE_BG_WHITE};
@@ -52,7 +52,6 @@ const StyledCoinLogo = styled(CoinLogo)<{
 const SearchIconWrapper = styled.div``;
 
 interface Props {
-    networks: Account['symbol'][];
     onChange: (value: string) => void;
     isMobile?: boolean;
 }
@@ -60,6 +59,12 @@ interface Props {
 const AccountSearchBox = (props: Props) => {
     const [value, setValue] = useState('');
     const { coinFilter, setCoinFilter } = useContext(CoinFilterContext);
+
+    const enabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
+    const device = useSelector(state => state.suite.device);
+
+    const unavailableCapabilities = device?.unavailableCapabilities ?? {};
+    const supportedNetworks = enabledNetworks.filter(symbol => !unavailableCapabilities[symbol]);
 
     const onChange = (value: string) => {
         setValue(value);
@@ -101,7 +106,7 @@ const AccountSearchBox = (props: Props) => {
                     setCoinFilter(undefined);
                 }}
             >
-                {props.networks.map(n => (
+                {supportedNetworks.map(n => (
                     <OuterCircle
                         key={n}
                         isMobile={props.isMobile}

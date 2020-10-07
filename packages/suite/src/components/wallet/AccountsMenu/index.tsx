@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { H2, variables, colors, Icon } from '@trezor/components';
 import { Translation, AddAccountButton } from '@suite-components';
-import { useDiscovery, useLayoutSize, useSelector } from '@suite-hooks';
+import { useDiscovery, useLayoutSize } from '@suite-hooks';
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@wallet-utils/accountUtils';
 import { AppState } from '@suite-types';
 import { Account } from '@wallet-types';
@@ -153,7 +153,6 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
     const [animatedIcon, setAnimatedIcon] = useState(false);
     const [searchString, setSearchString] = useState('');
     const { coinFilter } = useContext(CoinFilterContext);
-    const enabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
 
     const selectedItemRef = useCallback((_item: HTMLDivElement | null) => {
         // TODO: scroll to selected item
@@ -263,7 +262,6 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
                             <Search>
                                 <AccountSearchBox
                                     isMobile
-                                    networks={enabledNetworks}
                                     onChange={(value: string) => setSearchString(value)}
                                 />
                                 <AddAccountButtonWrapper>
@@ -294,10 +292,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
                         </Heading>
                         <AddAccountButton device={device} noButtonLabel />
                     </Row>
-                    <AccountSearchBox
-                        networks={enabledNetworks}
-                        onChange={(value: string) => setSearchString(value)}
-                    />
+                    <AccountSearchBox onChange={(value: string) => setSearchString(value)} />
                 </MenuHeader>
 
                 {buildGroup('normal', normalAccounts)}
