@@ -57,7 +57,7 @@ const getStateFromProps = (props: UseSendFormProps) => {
 // Mounted in top level index: @wallet-views/send
 // return SendContextValues used by SendFormContext in all nested children components of @wallet-views/send
 // SendContextValues is a combination of `react-hook-form` methods with custom callbacks and utils
-// see: ./packages/suite/send/ARCHITECTURE.md
+// see: ./packages/suite/docs/send/ARCHITECTURE.md
 
 export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // public variables, exported to SendFormContext
