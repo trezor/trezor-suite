@@ -29,8 +29,8 @@ describe('Backup', () => {
             'Now go to dashboard and see if security card and notification reflects backup failed state correctly',
         );
         cy.getTestElement('@backup/close-button').click();
-        
-        cy.getTestElement('@notification/failed-backup/learn-more-link').should('be.visible');
+
+        cy.getTestElement('@notification/failed-backup/cta').should('be.visible');
 
         cy.getTestElement('@dashboard/security-card/backup/button', { timeout: 30000 }).should(
             'not.be.disabled',

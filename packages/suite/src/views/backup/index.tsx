@@ -113,7 +113,7 @@ const Backup = (props: Props) => {
     if (!device || !device.features || !device.connected) {
         return (
             <Modal
-                size="tiny"
+                size="small"
                 heading={<Translation id="TR_RECONNECT_HEADER" />}
                 cancelable={props.cancelable}
                 onCancel={props.onCancel}
