@@ -133,7 +133,7 @@ export const useSendFormFields = ({
         [control, setValue, clearErrors],
     );
 
-    // `output[x].fieldName` should be a regular `formState` value from `getValues()` method
+    // `outputs[x].fieldName` should be a regular `formState` value from `getValues()` method
     // however `useFieldArray` doesn't provide it BEFORE input is registered (it will be undefined on first render)
     // use fallbackValue from useFieldArray.fields if so, because `useFieldArray` architecture requires `defaultValue` to be provided for registered inputs
     const getDefaultValue: SendContextValues['getDefaultValue'] = <K extends string, T = undefined>(

@@ -147,6 +147,11 @@ export const useSendFormCompose = ({
                 return;
             }
 
+            const composeErrors = findComposeErrors(errors);
+            if (composeErrors.length > 0) {
+                clearErrors(composeErrors);
+            }
+
             // update feeLimit field if present (calculated from ethereum data size)
             if (composed.feeLimit) {
                 setValue('ethereumDataFeeLimit', composed.feeLimit);
@@ -159,7 +164,7 @@ export const useSendFormCompose = ({
                 setDraftSaveRequest(true);
             }
         },
-        [composeField, getValues, setAmount, setError, setValue],
+        [composeField, getValues, setAmount, errors, setError, clearErrors, setValue],
     );
 
     // handle composedLevels change, setValues or errors for composeField

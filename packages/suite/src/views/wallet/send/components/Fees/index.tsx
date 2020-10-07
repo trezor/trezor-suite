@@ -166,7 +166,7 @@ const Fees = () => {
                                 selectedLevel,
                                 feeInfo.levels.find(level => level.label === value)!,
                             );
-                            if (shouldCompose) composeTransaction('output[0].amount');
+                            if (shouldCompose) composeTransaction();
                         }}
                     />
                 </SelectBarWrapper>
