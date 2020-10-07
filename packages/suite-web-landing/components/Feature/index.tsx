@@ -91,12 +91,13 @@ const StyledText = styled.div<{ flip?: boolean }>`
     }
 `;
 
-const FeatureImage = styled.div<{ image: string; flip?: boolean; backgroundPosition?: string }>`
+const FeatureImage = styled.div<Partial<Props>>`
     position: absolute;
     background: url(${props => props.image}) no-repeat;
     width: 100%;
     height: 100%;
     display: none;
+    background-size: ${props => props.backgroundSize};
 
     @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) {
         display: block;
@@ -111,17 +112,23 @@ interface Props {
     children: ReactNode;
     flip?: boolean;
     backgroundPosition?: string;
+    backgroundSize: string;
     image: string;
 }
 
-const Index = ({ children, flip, image, backgroundPosition }: Props) => (
+const Index = ({ children, flip, image, backgroundPosition, backgroundSize }: Props) => (
     <Feature flip={flip}>
         <StyledText flip={flip}>
             <Fade fraction={0.5} triggerOnce>
                 <div>{children}</div>
             </Fade>
         </StyledText>
-        <FeatureImage image={image} flip={flip} backgroundPosition={backgroundPosition} />
+        <FeatureImage
+            image={image}
+            flip={flip}
+            backgroundPosition={backgroundPosition}
+            backgroundSize={backgroundSize}
+        />
     </Feature>
 );
 

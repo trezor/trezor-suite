@@ -98,6 +98,7 @@ const features = [
         text:
             'Security and privacy. Anti-Phishing, Bitcoin\nCore, Tor support, Discreet mode, Performance.',
         backgroundPosition: 'bottom right',
+        backgroundSize: '616px auto',
         soon: false,
     },
     {
@@ -105,12 +106,14 @@ const features = [
         headline: 'Buy & Exchange Crypto.',
         text: 'New design improves usability: Passphrase,\nCoin discovery (Accounts)',
         backgroundPosition: 'center left',
+        backgroundSize: '489px auto',
         soon: true,
     },
     {
         id: 3,
         headline: 'Coin support.\nOne Trezor app.',
         text: 'ETH, ETC, XRP, (ERC 20 tokens)\nnow all in one app.',
+        backgroundSize: '500px auto',
         soon: false,
     },
 ];
@@ -148,6 +151,7 @@ const Index = () => (
                                 ? item.backgroundPosition
                                 : undefined
                         }
+                        backgroundSize={item.backgroundSize}
                     >
                         {item.soon && <StyledSoon>Soon</StyledSoon>}
                         <StyledH1>{item.headline}</StyledH1>
