@@ -13,13 +13,13 @@ export const FLAGS = {
 export const FLAGS_WEB = {
     ...FLAGS,
     // Add overrides below
-    EXAMPLE: true,
 } as const;
 
 // Desktop specific flags
 export const FLAGS_DESKTOP = {
     ...FLAGS,
     // Add overrides below
+    EXAMPLE: false,
 } as const;
 
 // Landing specific flags
