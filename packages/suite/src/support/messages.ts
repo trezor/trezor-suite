@@ -3946,7 +3946,7 @@ const definedMessages = defineMessages({
         id: 'CUSTOM_FEE_NOT_IN_RANGE',
     },
     TOKEN_BALANCE: {
-        defaultMessage: 'You have {balance}',
+        defaultMessage: 'Balance: {balance}',
         description: 'Additional label in send form above amount input',
         id: 'TOKEN_BALANCE',
     },

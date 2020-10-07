@@ -899,7 +899,7 @@
 	"CUSTOM_FEE_IS_NOT_NUMBER": "Fee is not a number",
 	"CUSTOM_FEE_IS_NOT_INTEGER": "Fee is not an integer",
 	"CUSTOM_FEE_NOT_IN_RANGE": "Allowed fee is between {minFee} and {maxFee}",
-	"TOKEN_BALANCE": "You have {balance}",
+	"TOKEN_BALANCE": "Balance: {balance}",
 	"BROADCAST": "Broadcast",
 	"TR_CONNECTED_TO_PROVIDER": "Connected to {provider} as {user}",
 	"TR_YOUR_LABELING_IS_SYNCED": "Your labeling is synced with cloud storage provider. Your data are safe, only your Trezor can decrypt them.",

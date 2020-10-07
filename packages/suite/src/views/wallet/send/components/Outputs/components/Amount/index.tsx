@@ -45,7 +45,13 @@ const Left = styled.div`
 `;
 
 const TokenBalance = styled.div`
-    padding-right: 6px;
+    padding: 0px 6px;
+    font-size: ${variables.NEUE_FONT_SIZE.TINY};
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+`;
+
+const TokenBalanceValue = styled.span`
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
 const StyledTransferIcon = styled(Icon)`
@@ -104,7 +110,9 @@ const Amount = ({ outputId }: { outputId: number }) => {
         account.networkType === 'ripple'
             ? formatNetworkAmount(account.misc.reserve, symbol)
             : undefined;
-    const tokenBalance = token ? `${token.balance} ${token.symbol!.toUpperCase()}` : undefined;
+    const tokenBalance = token ? (
+        <TokenBalanceValue>{`${token.balance} ${token.symbol!.toUpperCase()}`}</TokenBalanceValue>
+    ) : undefined;
     const decimals = token ? token.decimals : network.decimals;
 
     return (
@@ -134,19 +142,15 @@ const Amount = ({ outputId }: { outputId: number }) => {
                             <Text>
                                 <Translation id="AMOUNT" />
                             </Text>
-                        </Label>
-                    }
-                    labelRight={
-                        tokenBalance ? (
-                            <Label>
+                            {tokenBalance && (
                                 <TokenBalance>
                                     <Translation
                                         id="TOKEN_BALANCE"
                                         values={{ balance: tokenBalance }}
                                     />
                                 </TokenBalance>
-                            </Label>
-                        ) : undefined
+                            )}
+                        </Label>
                     }
                     bottomText={<InputError error={error} />}
                     onChange={event => {
