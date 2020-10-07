@@ -4,7 +4,7 @@ import path from 'path';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import metadataReducer from '@suite-reducers/metadataReducer';
-import suiteReducer from '@suite-reducers/suiteReducer';
+import suiteReducer, { SuiteState } from '@suite-reducers/suiteReducer';
 import deviceReducer from '@suite-reducers/deviceReducer';
 import { STORAGE, MODAL } from '../constants';
 import * as metadataActions from '../metadataActions';
@@ -72,10 +72,13 @@ interface InitialState {
     metadata?: MetadataState;
     device: any;
     accounts: any[];
+    suite: Partial<SuiteState>;
 }
 
 export const getInitialState = (state?: InitialState) => {
     const metadata = state ? state.metadata : undefined;
+    const suite = state ? state.suite : {};
+
     const device = state
         ? state.device
         : { state: 'device-state', metadata: { status: 'disabled' } };
@@ -85,6 +88,7 @@ export const getInitialState = (state?: InitialState) => {
         metadata: metadataReducer(metadata, initAction),
         devices: [device], // device is needed for notification/event
         suite: {
+            ...suite,
             device, // device is needed for notification/event
         },
         wallet: {
@@ -132,7 +136,7 @@ const initStore = (state: State) => {
 
 describe('Metadata Actions', () => {
     fixtures.setDeviceMetadataKey.forEach(f => {
-        it(`setDeviceMetadataKey: ${f.description}`, async () => {
+        it(`setDeviceMetadataKey - ${f.description}`, async () => {
             // set fixtures in trezor-connect
             require('trezor-connect').setTestFixtures(f.connect);
             // @ts-ignore
@@ -147,7 +151,7 @@ describe('Metadata Actions', () => {
     });
 
     fixtures.setAccountMetadataKey.forEach(f => {
-        it(`setAccountMetadataKey: ${f.description}`, async () => {
+        it(`setAccountMetadataKey - ${f.description}`, async () => {
             // @ts-ignore
             const store = initStore(getInitialState(f.initialState));
             // @ts-ignore Account is not complete
@@ -157,7 +161,7 @@ describe('Metadata Actions', () => {
     });
 
     fixtures.addDeviceMetadata.forEach(f => {
-        it(`addDeviceMetadata: ${f.description}`, async () => {
+        it(`addDeviceMetadata - ${f.description}`, async () => {
             // @ts-ignore
             const store = initStore(getInitialState(f.initialState));
             // @ts-ignore, params
@@ -169,7 +173,7 @@ describe('Metadata Actions', () => {
     });
 
     fixtures.addAccountMetadata.forEach(f => {
-        it(`addAccountMetadata: ${f.description}`, async () => {
+        it(`addAccountMetadata - ${f.description}`, async () => {
             // @ts-ignore
             const store = initStore(getInitialState(f.initialState));
             // @ts-ignore, params
@@ -181,7 +185,7 @@ describe('Metadata Actions', () => {
     });
 
     fixtures.connectProvider.forEach(f => {
-        it(`connectProvider: ${f.description}`, async () => {
+        it(`connectProvider - ${f.description}`, async () => {
             jest.mock('@suite/services/metadata/DropboxProvider');
             DropboxProvider.prototype.connect = () => Promise.resolve(true);
 
@@ -199,7 +203,7 @@ describe('Metadata Actions', () => {
     });
 
     fixtures.addMetadata.forEach(f => {
-        it(`addMetadata: ${f.description}`, async () => {
+        it(`add metadata - ${f.description}`, async () => {
             jest.mock('@suite/services/metadata/DropboxProvider');
             DropboxProvider.prototype.connect = () => Promise.resolve(true);
             DropboxProvider.prototype.getCredentials = () =>
@@ -240,7 +244,7 @@ describe('Metadata Actions', () => {
     });
 
     fixtures.enableMetadata.forEach(f => {
-        it(f.description, async () => {
+        it(`enableMetadata - ${f.description}`, async () => {
             // @ts-ignore
             const store = initStore(getInitialState(f.initialState));
             // @ts-ignore, params
@@ -254,7 +258,7 @@ describe('Metadata Actions', () => {
     });
 
     fixtures.disableMetadata.forEach(f => {
-        it(f.description, async () => {
+        it(`disableMetadata - ${f.description}`, async () => {
             // @ts-ignore
             const store = initStore(getInitialState(f.initialState));
             // @ts-ignore, params
@@ -268,7 +272,7 @@ describe('Metadata Actions', () => {
     });
 
     fixtures.initMetadata.forEach(f => {
-        it(f.description, async () => {
+        it(`initMetadata - ${f.description}`, async () => {
             // @ts-ignore
             const store = initStore(getInitialState(f.initialState));
             // @ts-ignore, params
@@ -276,8 +280,6 @@ describe('Metadata Actions', () => {
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
-                // expect(store.getActions()).toEqual(expect.arrayContaining(f.result));
-
                 expect(store.getActions()).toMatchObject(f.result);
             }
         });

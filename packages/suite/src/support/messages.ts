@@ -4076,6 +4076,10 @@ const definedMessages = defineMessages({
         id: 'TR_LABELING_EDIT_LABEL',
         defaultMessage: 'Edit label',
     },
+    TR_LABELING_EDITED_LABEL: {
+        id: 'TR_LABELING_EDITED_LABEL',
+        defaultMessage: 'Renamed',
+    },
     TR_LABELING_REMOVE_LABEL: {
         id: 'TR_LABELING_REMOVE_LABEL',
         defaultMessage: 'Remove label',
@@ -4341,6 +4345,10 @@ const definedMessages = defineMessages({
     SETTINGS_UPDATE_READY: {
         id: 'SETTINGS_UPDATE_READY',
         defaultMessage: 'Install now!',
+    },
+    TR_LOADING: {
+        id: 'TR_LOADING',
+        defaultMessage: 'Loading...',
     },
 } as const);
 

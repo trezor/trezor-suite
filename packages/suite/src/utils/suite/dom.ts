@@ -48,6 +48,9 @@ export const useKeyPress = (targetKey: string) => {
     return keyPressed;
 };
 
+/**
+ * Returns string if there is an error, otherwise returns true
+ */
 export const copyToClipboard = (
     value: string,
     parent: HTMLDivElement | HTMLPreElement | HTMLButtonElement | null,

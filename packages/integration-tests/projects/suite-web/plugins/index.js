@@ -9,8 +9,9 @@ const webpack = require('@cypress/webpack-preprocessor');
 
 const { Controller } = require('./websocket-client');
 const googleMock = require('./google');
-
+const dropboxMock = require('./dropbox');
 const CONSTANTS = require('../constants');
+import * as metadataUtils from '../../../../suite/src/utils/suite/metadata';
 
 const controller = new Controller({ url: 'ws://localhost:9001/' });
 module.exports = on => {
@@ -34,7 +35,6 @@ module.exports = on => {
         const response = await controller.send({ type: 'bridge-start' });
         await controller.disconnect();
 
-
         if (browser.name === 'chrome') {
             launchOptions.args.push('--disable-dev-shm-usage');
             return launchOptions;
@@ -43,20 +43,47 @@ module.exports = on => {
     });
 
     on('task', {
-        startGoogle: async() => {
+        startDropbox: async () => {
+            await dropboxMock.start();
+            return null;
+        },
+        stopDropbox: async () => {
+            dropboxMock.stop();
+            return null;
+        },
+        startGoogle: async () => {
             await googleMock.start();
             return null;
         },
-        setupGoogle: (options) => {
+        setupGoogle: options => {
             // use to set files, or user
             googleMock.setup(options.prop, options.value);
             return null;
         },
-        stopGoogle: async() => {
-            await googleMock.stop();
+        stopGoogle: async () => {
+            googleMock.stop();
             return null;
         },
-        startBridge: async (version) => {
+        setFileContent: async ({ provider, file, content, aesKey }) => {
+            const encrypted = await metadataUtils.encrypt(content, aesKey);
+            switch (provider) {
+                case 'dropbox':
+                    dropboxMock.files[file] = encrypted;
+                    break;
+                // todo:
+            }
+            return null;
+        },
+        setNextResponse: ({ provider, status, body }) => {
+            switch (provider) {
+                case 'dropbox':
+                    dropboxMock.nextResponse = { status, body};
+                    break;
+                // todo:
+            }
+            return null;
+        },
+        startBridge: async version => {
             await controller.connect();
             await controller.send({ type: 'bridge-start', version });
             await controller.disconnect();
@@ -78,7 +105,7 @@ module.exports = on => {
             };
 
             await controller.connect();
-            // before setup, stop bridge and start it again after it. it has no performance hit 
+            // before setup, stop bridge and start it again after it. it has no performance hit
             // and avoids 'wrong previous session' errors from bridge. actual setup is done
             // through udp transport if bridge transport is not available
             await controller.send({ type: 'bridge-stop' });
@@ -92,16 +119,16 @@ module.exports = on => {
             return null;
         },
         /**
-         * @version 
+         * @version
          * version of firmware in emulator, only few are supported
          * @wipe
          * shall be emulator wiped before start? defaults to true
          */
-        startEmu: async (arg) => {
+        startEmu: async arg => {
             await controller.connect();
             await controller.send({
                 type: 'emulator-start',
-                ...arg
+                ...arg,
             });
             await controller.disconnect();
             return null;
@@ -154,7 +181,7 @@ module.exports = on => {
             await controller.disconnect();
             return null;
         },
-        applySettings: async (options) => {
+        applySettings: async options => {
             const defaults = {
                 passphrase_always_on_device: false,
             };

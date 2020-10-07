@@ -56,9 +56,7 @@ const getRandomIv = (): Promise<Buffer> => {
     });
 };
 
-export const getFileContent = (ab: ArrayBuffer) => {
-    const isArrayBufferSupported = Buffer.from(new Uint8Array([1]).buffer)[0] === 1;
-    if (isArrayBufferSupported) return Buffer.from(ab);
+export const arrayBufferToBuffer = (ab: ArrayBuffer) => {
     const buffer = Buffer.alloc(ab.byteLength);
     const view = new Uint8Array(ab);
     for (let i = 0; i < buffer.length; ++i) {

@@ -7,7 +7,7 @@ import {
     deriveMetadataKey,
     deriveAesKey,
     deriveFilename,
-    getFileContent,
+    arrayBufferToBuffer,
     urlSearchParams,
 } from '../metadata';
 
@@ -105,7 +105,7 @@ describe('metadata', () => {
             return ab;
         }
 
-        const content = getFileContent(toArrayBuffer(file));
+        const content = arrayBufferToBuffer(toArrayBuffer(file));
         expect(content).toEqual(file);
     });
 

@@ -1,15 +1,18 @@
-import React from 'react';
-import { Button, Dropdown } from '@trezor/components';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import styled from 'styled-components';
+
+import { Button, colors } from '@trezor/components';
 import { useActions, useDiscovery, useSelector } from '@suite-hooks';
 import * as metadataActions from '@suite-actions/metadataActions';
-import { MetadataAddPayload, DeviceMetadata } from '@suite-types/metadata';
+import { MetadataAddPayload } from '@suite-types/metadata';
 import { Translation } from '@suite-components';
 
-import MetadataEdit from './Edit';
+import { withEditable } from './withEditable';
+import { withDropdown } from './withDropdown';
 
 const LabelDefaultValue = styled.div`
     width: 0;
+    overflow: hidden;
     text-overflow: ellipsis;
     transition: all 0.6s;
 
@@ -18,15 +21,8 @@ const LabelDefaultValue = styled.div`
     }
 `;
 
-const AddLabelButton = styled(Button)`
-    visibility: hidden;
-    width: 0;
-    margin-left: 14px;
-`;
-
 const LabelValue = styled.div`
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: flex;
 `;
 
 const Label = styled.div`
@@ -34,6 +30,33 @@ const Label = styled.div`
     display: flex;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding-left: 1px;
+`;
+
+const LabelButton = styled(Button)`
+    justify-content: flex-start;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+`;
+
+const ActionButton = styled(Button)`
+    transition: visibility 0.3s;
+    visibility: hidden;
+    width: auto;
+    margin-left: 14px;
+`;
+
+const SuccessButton = styled(Button)`
+    cursor: wait;
+    width: auto;
+    margin-left: 14px;
+    background-color: ${colors.NEUE_BG_LIGHT_GREEN};
+    color: ${colors.NEUE_BG_GREEN};
+    &:hover {
+        color: ${colors.NEUE_BG_GREEN};
+        background-color: ${colors.NEUE_BG_LIGHT_GREEN};
+    }
 `;
 
 const LabelContainer = styled.div`
@@ -41,21 +64,18 @@ const LabelContainer = styled.div`
     white-space: nowrap;
     align-items: center;
     overflow: hidden;
+    justify-content: flex-start;
 
     &:hover {
-        ${AddLabelButton} {
+        ${ActionButton} {
             visibility: visible;
             width: auto;
         }
+
         ${LabelDefaultValue} {
-            width: 400px;
+            width: 200px;
         }
     }
-`;
-
-const StyledDropdown = styled(Dropdown)`
-    overflow: hidden;
-    text-overflow: ellipsis;
 `;
 
 interface DropdownMenuItem {
@@ -65,16 +85,86 @@ interface DropdownMenuItem {
     'data-test'?: string;
 }
 
-interface Props {
+export interface Props {
     defaultVisibleValue?: React.ReactNode;
-    dropdownOptions?: DropdownMenuItem[];
     payload: MetadataAddPayload;
+    dropdownOptions?: DropdownMenuItem[];
 }
+
+export interface ExtendedProps extends Props {
+    editActive: boolean;
+    onSubmit: (value: string | undefined | null) => void;
+    onBlur: () => void;
+    'data-test': string;
+}
+
+const ButtonLikeLabel = (props: ExtendedProps) => {
+    const divRef = useRef<HTMLDivElement>(null);
+    const EditableButton = withEditable(Button);
+
+    if (props.editActive) {
+        return (
+            <EditableButton
+                // @ts-ignore todo: hm this needs some clever generic
+                variant="tertiary"
+                icon="TAG"
+                data-test={props['data-test']}
+                divRef={divRef}
+                originalValue={props.payload.value}
+                onSubmit={props.onSubmit}
+                onBlur={props.onBlur}
+            />
+        );
+    }
+
+    if (props.payload.value) {
+        return (
+            <LabelButton variant="tertiary" icon="TAG" data-test={props['data-test']}>
+                <LabelValue>
+                    {props.payload.value}
+                    {props.defaultVisibleValue && (
+                        <LabelDefaultValue>{props.defaultVisibleValue}</LabelDefaultValue>
+                    )}
+                </LabelValue>
+                {/* This is the defaultVisibleValue which shows up after you hover over the label name */}
+            </LabelButton>
+        );
+    }
+    return <>{props.defaultVisibleValue}</>;
+};
+
+const TextLikeLabel = (props: ExtendedProps) => {
+    const divRef = useRef<HTMLDivElement>(null);
+    const EditableLabel = withEditable(Label);
+
+    if (props.editActive) {
+        return (
+            <EditableLabel
+                data-test={props['data-test']}
+                divRef={divRef}
+                originalValue={props.payload.value}
+                onSubmit={props.onSubmit}
+                onBlur={props.onBlur}
+            />
+        );
+    }
+
+    if (props.payload.value) {
+        return (
+            <Label data-test={props['data-test']}>
+                <LabelValue>{props.payload.value}</LabelValue>
+            </Label>
+        );
+    }
+
+    return <>{props.defaultVisibleValue}</>;
+};
 
 const getLocalizedActions = (type: MetadataAddPayload['type']) => {
     const defaultMessages = {
         add: <Translation id="TR_LABELING_ADD_LABEL" />,
-        edit: <Translation id="TR_LABELING_EDIT_LABEL" />,
+        edit: <Translation id="TR_LABELING_EDITED_LABEL" />,
+        edited: <Translation id="TR_LABELING_REMOVE_LABEL" />,
         remove: <Translation id="TR_LABELING_REMOVE_LABEL" />,
     };
     switch (type) {
@@ -82,24 +172,28 @@ const getLocalizedActions = (type: MetadataAddPayload['type']) => {
             return {
                 add: <Translation id="TR_LABELING_ADD_OUTPUT" />,
                 edit: <Translation id="TR_LABELING_EDIT_OUTPUT" />,
+                edited: <Translation id="TR_LABELING_EDITED_LABEL" />,
                 remove: <Translation id="TR_LABELING_REMOVE_OUTPUT" />,
             };
         case 'addressLabel':
             return {
                 add: <Translation id="TR_LABELING_ADD_ADDRESS" />,
                 edit: <Translation id="TR_LABELING_EDIT_ADDRESS" />,
+                edited: <Translation id="TR_LABELING_EDITED_LABEL" />,
                 remove: <Translation id="TR_LABELING_REMOVE_ADDRESS" />,
             };
         case 'accountLabel':
             return {
                 add: <Translation id="TR_LABELING_ADD_ACCOUNT" />,
                 edit: <Translation id="TR_LABELING_EDIT_ACCOUNT" />,
+                edited: <Translation id="TR_LABELING_EDITED_LABEL" />,
                 remove: <Translation id="TR_LABELING_REMOVE_ACCOUNT" />,
             };
         case 'walletLabel':
             return {
                 add: <Translation id="TR_LABELING_ADD_WALLET" />,
                 edit: <Translation id="TR_LABELING_EDIT_WALLET" />,
+                edited: <Translation id="TR_LABELING_EDITED_LABEL" />,
                 remove: <Translation id="TR_LABELING_REMOVE_WALLET" />,
             };
         default:
@@ -115,22 +209,24 @@ const getLocalizedActions = (type: MetadataAddPayload['type']) => {
 const MetadataLabeling = (props: Props) => {
     const metadata = useSelector(state => state.metadata);
     const { isDiscoveryRunning, device } = useDiscovery();
-
-    let deviceMetadata: DeviceMetadata | undefined;
-    if (device) {
-        deviceMetadata = device.metadata;
-    }
-
+    const [showSuccess, setShowSuccess] = useState(false);
     const { addMetadata, init, setEditing } = useActions({
         addMetadata: metadataActions.addMetadata,
         init: metadataActions.init,
         setEditing: metadataActions.setEditing,
     });
+    const l10nLabelling = getLocalizedActions(props.payload.type);
+    const dataTestBase = `@metadata/${props.payload.type}/${props.payload.defaultValue}`;
+    let timeout: number | undefined;
+
+    useEffect(() => {
+        return () => clearTimeout(timeout);
+    }, [timeout]);
 
     // is everything ready (more or less) to add label?
     const labelingAvailable = !!(
         metadata.enabled &&
-        deviceMetadata?.status === 'enabled' &&
+        device?.metadata?.status === 'enabled' &&
         metadata.provider
     );
 
@@ -138,7 +234,8 @@ const MetadataLabeling = (props: Props) => {
     // (and only need to connect provider), or if device is connected, we may initiate TrezorConnect.CipherKeyValue call and get them
     const labelingPossible = device?.metadata.status === 'enabled' || device?.connected;
 
-    const l10nLabelling = getLocalizedActions(props.payload.type);
+    // is this concrete instance being edited?
+    const editActive = metadata.editing === props.payload.defaultValue;
 
     const activateEdit = () => {
         // when clicking on inline input edit, ensure that everything needed is already ready
@@ -154,13 +251,6 @@ const MetadataLabeling = (props: Props) => {
         setEditing(props.payload.defaultValue);
     };
 
-    const onSubmit = (value: string | undefined | null) => {
-        addMetadata({
-            ...props.payload,
-            value: value || undefined,
-        });
-    };
-
     let dropdownItems: DropdownMenuItem[] = [
         {
             callback: () => activateEdit(),
@@ -170,79 +260,113 @@ const MetadataLabeling = (props: Props) => {
         },
     ];
 
-    if (labelingAvailable) {
-        dropdownItems.push({
-            callback: () => onSubmit(''),
-            label: l10nLabelling.remove,
-            'data-test': '@metadata/remove-button',
-            key: 'remove-label',
-        });
-    }
-
     if (props.dropdownOptions) {
         dropdownItems = [...dropdownItems, ...props.dropdownOptions];
     }
 
-    const dataTestBase = `@metadata/${props.payload.type}/${props.payload.defaultValue}`;
+    const onSubmit = async (value: string | undefined | null) => {
+        const result = await addMetadata({
+            ...props.payload,
+            value: value || undefined,
+        });
+        // todo: maybe some pending status?
+        if (result) {
+            setShowSuccess(true);
+        }
+        timeout = setTimeout(() => {
+            setShowSuccess(false);
+        }, 2000);
+    };
 
-    if (metadata.initiating) return <span>loading...</span>;
+    const ButtonLikeLabelWithDropdown = useMemo(() => {
+        if (props.payload.value) {
+            return withDropdown(ButtonLikeLabel);
+        }
+        return ButtonLikeLabel;
+    }, [props.payload.value]);
 
-    if (
-        metadata.editing === props.payload.defaultValue &&
-        !metadata.initiating &&
-        metadata.enabled &&
-        deviceMetadata?.status === 'enabled'
-    ) {
+    // metadata is still initiating, on hover, show only disabled button with spinner
+    if (metadata.initiating)
         return (
-            <MetadataEdit
-                originalValue={props.payload.value}
-                onSubmit={onSubmit}
-                onBlur={() => {
-                    setEditing(undefined);
-                }}
-            />
+            <LabelContainer>
+                {props.defaultVisibleValue}
+                <ActionButton variant="tertiary" isDisabled isLoading>
+                    <Translation id="TR_LOADING" />
+                </ActionButton>
+            </LabelContainer>
         );
-    }
 
     return (
         <LabelContainer>
-            {/* props.payload.value is the label for the account */}
-            {props.payload.value ? (
-                <StyledDropdown
-                    alignMenu="left"
-                    items={[{ options: dropdownItems, key: 'dropdown' }]}
-                    absolutePosition
-                    appendTo={document.body}
-                >
-                    <Label data-test={dataTestBase}>
-                        <LabelValue>{props.payload.value}</LabelValue>
-                        {/* This is the defaultVisibleValue which shows up after you hover over the label name */}
-                        {props.defaultVisibleValue && (
-                            <LabelDefaultValue>{props.defaultVisibleValue}</LabelDefaultValue>
-                        )}
-                    </Label>
-                </StyledDropdown>
+            {props.payload.type === 'outputLabel' ? (
+                <>
+                    <ButtonLikeLabelWithDropdown
+                        editActive={editActive}
+                        onSubmit={onSubmit}
+                        onBlur={() => setEditing(undefined)}
+                        data-test={dataTestBase}
+                        {...props}
+                        dropdownOptions={dropdownItems}
+                    />
+
+                    {labelingPossible && !showSuccess && !editActive && !props.payload.value && (
+                        <ActionButton
+                            data-test={`${dataTestBase}/add-label-button`}
+                            variant="tertiary"
+                            icon={!isDiscoveryRunning ? 'TAG' : undefined}
+                            isLoading={isDiscoveryRunning}
+                            isDisabled={isDiscoveryRunning}
+                            onClick={e => {
+                                e.stopPropagation();
+                                // by clicking on add label button, metadata.editing field is set
+                                // to default value of whatever may be labeled (address, etc..)
+                                // this way we ensure that only one field may be active at time
+                                activateEdit();
+                            }}
+                        >
+                            {l10nLabelling.add}
+                        </ActionButton>
+                    )}
+                </>
             ) : (
-                props.defaultVisibleValue // defaultVisibleValue looks like "Ethereum #1" in Suite
+                <>
+                    <TextLikeLabel
+                        editActive={editActive}
+                        onSubmit={onSubmit}
+                        onBlur={() => setEditing(undefined)}
+                        data-test={dataTestBase}
+                        {...props}
+                    />
+                    {labelingPossible && !showSuccess && !editActive && (
+                        <ActionButton
+                            data-test={
+                                props.payload.value
+                                    ? `${dataTestBase}/edit-label-button`
+                                    : `${dataTestBase}/add-label-button`
+                            }
+                            variant="tertiary"
+                            icon={!isDiscoveryRunning ? 'TAG' : undefined}
+                            isLoading={isDiscoveryRunning}
+                            isDisabled={isDiscoveryRunning}
+                            onClick={e => {
+                                e.stopPropagation();
+                                activateEdit();
+                            }}
+                        >
+                            {props.payload.value ? l10nLabelling.edit : l10nLabelling.add}
+                        </ActionButton>
+                    )}
+                </>
             )}
 
-            {labelingPossible && !props.payload.value && (
-                <AddLabelButton
-                    data-test={`${dataTestBase}/add-label-button`}
+            {showSuccess && !editActive && (
+                <SuccessButton
                     variant="tertiary"
-                    icon={!isDiscoveryRunning ? 'TAG' : undefined}
-                    isLoading={isDiscoveryRunning}
-                    isDisabled={isDiscoveryRunning}
-                    onClick={e => {
-                        e.stopPropagation();
-                        // by clicking on add label button, metadata.editing field is set
-                        // to default value of whatever may be labeled (address, etc..)
-                        // this way we ensure that only one field may be active at time
-                        activateEdit();
-                    }}
+                    icon="CHECK"
+                    data-test={`${dataTestBase}/renamed-label-button`}
                 >
-                    {!isDiscoveryRunning ? l10nLabelling.add : 'Loading...'}
-                </AddLabelButton>
+                    {l10nLabelling.edited}
+                </SuccessButton>
             )}
         </LabelContainer>
     );

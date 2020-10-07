@@ -1,6 +1,6 @@
 // @stable/metadata
 
-import { stubFetch, stubOpen } from '../../stubs/metadata';
+import { rerouteDropbox, stubOpen } from '../../stubs/metadata';
 
 const metadataEl = '@metadata/addressLabel/bc1q7e6qu5smalrpgqrx9k2gnf0hgjyref5p36ru2m';
 
@@ -10,19 +10,19 @@ describe('Metadata', () => {
     });
 
     after(() => {
-        cy.task('stopGoogle');
+        cy.task('stopDropbox');
     });
 
     it('Address labeling', () => {
         // prepare test
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
-        cy.task('startGoogle');
+        cy.task('startDropbox');
 
         cy.prefixedVisit('/accounts', {
             onBeforeLoad: (win: Window) => {
                 cy.stub(win, 'open', stubOpen(win));
-                cy.stub(win, 'fetch', stubFetch);
+                cy.stub(win, 'fetch', rerouteDropbox);
             },
         });
 
@@ -36,23 +36,21 @@ describe('Metadata', () => {
 
         cy.getTestElement('@wallet/menu/wallet-receive').click();
         cy.getTestElement(`${metadataEl}/add-label-button`).click({ force: true });
-        cy.passThroughInitMetadata();
+        cy.passThroughInitMetadata('dropbox');
 
         cy.getTestElement('@metadata/input').type('meoew address{enter}');
 
         cy.log('Already saved metadata shows dropdown onclick');
-        cy.getTestElement(metadataEl).click();
-        cy.getTestElement(`@metadata/edit-button`).click();
+        cy.getTestElement(`${metadataEl}/edit-label-button`).click({ force: true });
         cy.getTestElement('@metadata/input').type(' meoew meow{enter}');
 
-        cy.log('confirming address on device adds copy address option to dropdown');
-        cy.getTestElement(metadataEl).click();
-        cy.getTestElement('@metadata/confirm-on-device-button/0').click();
-        cy.getTestElement('@modal/confirm-address/address-field').should('be.visible');
-        cy.getTestElement('@metadata/copy-address-button').should('not.be.visible');
-        cy.task('pressYes');
-        cy.getTestElement('@metadata/copy-address-button').should('be.visible');
+        // cy.log('confirming address on device adds copy address option to dropdown');
+        // cy.getTestElement('@metadata/confirm-on-device-button/0').click();
+        // cy.getTestElement('@modal/confirm-address/address-field').should('be.visible');
+        // cy.getTestElement('@metadata/copy-address-button').should('not.be.visible');
+        // cy.task('pressYes');
+        // cy.getTestElement('@metadata/copy-address-button').should('be.visible');
 
-        cy.getTestElement('@metadata/copy-address-button').click();
+        // cy.getTestElement('@metadata/copy-address-button').click();
     });
 });

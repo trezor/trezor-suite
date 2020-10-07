@@ -102,7 +102,6 @@ const MetadataProvider = (props: Props) => {
                         <Translation id="TR_GOOGLE_DRIVE" />
                     </StyledButton>
                 )}
-
                 {/* <StyledButton
                     variant="secondary"
                     onClick={() => onCancel()}
