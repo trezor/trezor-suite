@@ -164,7 +164,7 @@ suite-web deploy staging-wallet:
         - source ${STAGING_WALLET_DEPLOY_KEYFILE}
         - mkdir -p packages/suite-web/build/static/desktop
         - rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage ./packages/suite-web/build/static/desktop
-        - rsync --delete -va "${DESKTOP_APP_NAME}"-*.zip ./packages/suite-web/build/static/desktop
+        - rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg ./packages/suite-web/build/static/desktop
         - rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe ./packages/suite-web/build/static/desktop
         - cd packages/suite-web
         - ./scripts/s3sync.sh staging-wallet
@@ -190,7 +190,7 @@ suite-web deploy staging-suite:
         - source ${STAGING_SUITE_DEPLOY_KEYFILE}
         - mkdir -p packages/suite-web/build/static/desktop
         - rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage ./packages/suite-web/build/static/desktop
-        - rsync --delete -va "${DESKTOP_APP_NAME}"-*.zip ./packages/suite-web/build/static/desktop
+        - rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg ./packages/suite-web/build/static/desktop
         - rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe ./packages/suite-web/build/static/desktop
         - cd packages/suite-web
         - ./scripts/s3sync.sh staging-suite
