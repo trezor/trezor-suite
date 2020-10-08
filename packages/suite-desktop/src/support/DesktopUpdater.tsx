@@ -193,7 +193,7 @@ const DesktopUpdater = () => {
         );
 
         // Initial check for updates
-        window.desktopApi.checkForUpdates();
+        window.desktopApi!.checkForUpdates();
         // Check for updates every hour
         setInterval(() => window.desktopApi!.checkForUpdates(), 60 * 60 * 1000);
 
