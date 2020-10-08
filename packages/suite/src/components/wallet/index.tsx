@@ -5,6 +5,7 @@ import WalletLayout from './WalletLayout';
 import CoinBalance from './CoinBalance';
 import OnOffSwitcher from './OnOffSwitcher';
 import InputError from './InputError';
+import EstimatedMiningTime from './EstimatedMiningTime';
 
 import CoinmarketLayout from './CoinmarketLayout';
 import CoinmarketTopPanel from './CoinmarketTopPanel';
@@ -33,4 +34,5 @@ export {
     CoinmarketPaymentType,
     OnOffSwitcher,
     InputError,
+    EstimatedMiningTime,
 };

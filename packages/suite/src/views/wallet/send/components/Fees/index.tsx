@@ -5,7 +5,7 @@ import { SelectBar, colors, variables } from '@trezor/components';
 import { Card, Translation, FiatValue, FormattedCryptoAmount } from '@suite-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getFeeUnits } from '@wallet-utils/sendFormUtils';
-import EstimatedMiningTime from './components/EstimatedMiningTime';
+import EstimatedMiningTime from '@wallet-components/EstimatedMiningTime';
 import CustomFee from './components/CustomFee';
 import { useSendFormContext } from '@wallet-hooks';
 import { useLayoutSize } from '@suite-hooks';
