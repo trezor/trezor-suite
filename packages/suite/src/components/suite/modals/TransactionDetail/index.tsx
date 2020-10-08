@@ -10,8 +10,7 @@ import TrezorConnect from 'trezor-connect';
 import BasicDetails from './components/BasicDetails';
 import IODetails from './components/IODetails';
 import AmountDetails from './components/AmountDetails';
-import BigNumber from 'bignumber.js';
-import { formatNetworkAmount, isTestnet, getNetwork } from '@wallet-utils/accountUtils';
+import { isTestnet, getNetwork } from '@wallet-utils/accountUtils';
 import { useSelector } from '@suite-hooks';
 
 const Wrapper = styled.div`
@@ -73,28 +72,6 @@ const TransactionDetail = (props: Props) => {
     const [txDetails, setTxDetails] = useState<any>(null);
     const [isFetching, setIsFetching] = useState(true);
 
-    // sum of all inputs
-    const totalInput: BigNumber | undefined = txDetails?.vin?.reduce(
-        (acc: BigNumber, input: any) => acc.plus(input.value),
-        new BigNumber('0'),
-    );
-
-    // sum of all outputs
-    const totalOutput: BigNumber | undefined = txDetails?.vout?.reduce(
-        (acc: BigNumber, output: any) => acc.plus(output.value ?? 0),
-        new BigNumber('0'),
-    );
-
-    // formatNetworkAmount returns "-1" in case of an error, thus can't be used in reduce above
-    const formattedTotalInput =
-        totalInput && !totalInput.isNaN()
-            ? formatNetworkAmount(totalInput.toFixed(), tx.symbol)
-            : undefined;
-    const formattedTotalOutput =
-        totalOutput && !totalOutput.isNaN()
-            ? formatNetworkAmount(totalOutput.toFixed(), tx.symbol)
-            : undefined;
-
     useEffect(() => {
         // fetch tx details and store them inside the local state 'txDetails'
         const fetchTxDetails = async () => {
@@ -127,8 +104,6 @@ const TransactionDetail = (props: Props) => {
                     tx={tx}
                     isFetching={isFetching}
                     explorerUrl={explorerUrl}
-                    totalInput={formattedTotalInput}
-                    totalOutput={formattedTotalOutput}
                     confirmations={confirmations}
                 />
                 <AdvancedDetailsWrapper>
@@ -156,9 +131,7 @@ const TransactionDetail = (props: Props) => {
                     {selectedTab === 'amount' ? (
                         <AmountDetails
                             tx={tx}
-                            totalInput={formattedTotalInput}
-                            totalOutput={formattedTotalOutput}
-                            // txDetails={txDetails}
+                            txDetails={txDetails}
                             // isFetching={isFetching}
                             isTestnet={isTestnet(tx.symbol)}
                         />
