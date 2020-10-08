@@ -84,6 +84,7 @@
             "entitlements": "entitlements.mac.inherit.plist",
             "entitlementsInherit": "entitlements.mac.inherit.plist",
             "target": [
+                "zip",
                 "dmg"
             ]
         },
@@ -100,8 +101,7 @@
             "icon": "build/static/images/icons/512x512.ico",
             "artifactName": "${productName}-${version}.${ext}",
             "target": [
-                "nsis",
-                "zip"
+                "nsis"
             ]
         },
         "linux": {
@@ -126,8 +126,7 @@
             "executableName": "trezor-suite",
             "category": "Utility",
             "target": [
-                "AppImage",
-                "tar.gz"
+                "AppImage"
             ]
         }
     },
