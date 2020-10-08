@@ -69,7 +69,7 @@ const dropdownItemsData: DropdownItem[] = [
         platform: 'mac',
         label: 'for MacOS',
         icon: 'OS_MAC',
-        installerExtension: 'zip',
+        installerExtension: 'dmg',
     },
     {
         platform: 'windows',
