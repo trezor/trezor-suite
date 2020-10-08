@@ -24,7 +24,7 @@ import { DeviceMetadata } from '@suite-types/metadata';
 import { OnboardingActions } from '@onboarding-types';
 import { SettingsActions } from '@settings-types';
 import { FirmwareActions } from '@firmware-types';
-import { ExtendedMessageDescriptor as ExtendedMessageDescriptor$ } from '@suite-support/ConnectedIntlProvider';
+import { ExtendedMessageDescriptor as ExtendedMessageDescriptor$ } from '@suite-components/Translation/components/BaseTranslation';
 import { WalletAction } from '@wallet-types';
 import { BackupActions } from '@backup-actions/backupActions';
 import { RecoveryActions } from '@recovery-actions/recoveryActions';

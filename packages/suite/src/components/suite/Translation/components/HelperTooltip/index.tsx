@@ -1,7 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
-import { AppState, Dispatch } from '@suite-types';
 import { Tooltip, Link } from '@trezor/components';
 
 const StyledLink = styled(Link)`
@@ -16,20 +14,13 @@ const MessageWrapper = styled.span`
     text-decoration: underline solid red;
 `;
 
-const mapStateToProps = (state: AppState) => ({
-    translationMode: state.suite.settings.debug.translationMode,
-    language: state.suite.settings.language,
-});
-
-const mapDispatchToProps = (_dispatch: Dispatch) => ({});
-
-interface OwnProps {
+export interface Props {
     messageId?: string;
     isNested?: boolean;
+    language?: string;
+    translationMode?: boolean;
     children: any;
 }
-
-type Props = OwnProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 /**
  * When translationMode is enabled wraps a message with a Tooltip and adds styling to provide visual hint for translators
@@ -56,4 +47,4 @@ const HelperTooltip = (props: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(HelperTooltip);
+export default HelperTooltip;

@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
+import Translation from '../Translation';
 import { TrezorLogo, Button, colors, variables, Link } from '@trezor/components';
 
 const Layout = styled.div`
@@ -117,7 +118,7 @@ const Index = ({ children }: Props) => (
                 color={colors.NEUE_TYPE_DARK_GREY}
             >
                 <Link variant="nostyle" href="./web">
-                    Trezor Suite for web
+                    <Translation id="TR_SUITE_WEB_LANDING_SUITE_ON_WEB" />
                 </Link>
             </Button>
         </Header>
@@ -125,23 +126,34 @@ const Index = ({ children }: Props) => (
         <Footer>
             <FooterLinks>
                 <FooterList>
-                    <FooterHeadline>Improve</FooterHeadline>
+                    <FooterHeadline>
+                        <Translation id="TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_1" />
+                    </FooterHeadline>
                     <FooterLink href="https://satoshilabs.typeform.com/to/Dqb71wm1">
-                        Give feedback
+                        <Translation id="TR_SUITE_WEB_LANDING_FOOTER_FEEDBACK" />
                     </FooterLink>
                     <FooterLink href="https://blog.trezor.io/join-the-trezor-beta-testers-community-b19761f4960a">
-                        Join closed Beta
+                        <Translation id="TR_SUITE_WEB_LANDING_FOOTER_JOIN_CLOSED_BETA" />
                     </FooterLink>
                 </FooterList>
                 <FooterList>
-                    <FooterHeadline>Follow</FooterHeadline>
-                    <FooterLink href="https://blog.trezor.io/">Trezor Blog</FooterLink>
+                    <FooterHeadline>
+                        <Translation id="TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_2" />
+                    </FooterHeadline>
+                    <FooterLink href="https://blog.trezor.io/">
+                        <Translation id="TR_SUITE_WEB_LANDING_FOOTER_BLOG" />
+                    </FooterLink>
                 </FooterList>
             </FooterLinks>
             <FooterCompany>
                 <TrezorLogo type="horizontal" variant="black" width="83px" />
                 <FooterParagraph>
-                    Companion to the <Link href="https://trezor.io/">Trezor hardware wallet</Link>
+                    <Translation
+                        id="TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_PARAGRAPH"
+                        values={{
+                            a: chunks => <Link href="https://trezor.io/">{chunks}</Link>,
+                        }}
+                    />
                 </FooterParagraph>
             </FooterCompany>
         </Footer>

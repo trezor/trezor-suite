@@ -5,13 +5,10 @@ import { FormattedNumber as FNumber } from 'react-intl';
 // wrapper for react-intl/FormattedNumber
 // FormattedNumber works with "number" values type also we want to handle Number.MAX_SAFE_INTEGER
 
-interface Props {
-    currency: string;
+type FNProps = React.ComponentProps<typeof FNumber>;
+type Props = {
     value: string | number;
-    minimumFractionDigits?: number;
-    maximumFractionDigits?: number;
-    style?: string;
-}
+} & Omit<FNProps, 'value'>;
 
 const FormattedNumber = (props: Props) => {
     const bn = new BigNumber(props.value);

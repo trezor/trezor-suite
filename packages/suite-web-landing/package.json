@@ -17,7 +17,8 @@
         "polished": "^4.0.3",
         "react": "16.13.1",
         "react-awesome-reveal": "^3.3.1",
-        "react-dom": "16.13.1"
+        "react-dom": "16.13.1",
+        "react-intl": "^5.8.5"
     },
     "devDependencies": {
         "@types/next": "^9.0.0",

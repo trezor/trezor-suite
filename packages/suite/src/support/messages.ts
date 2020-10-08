@@ -4461,6 +4461,98 @@ const definedMessages = defineMessages({
         id: 'TR_ACCOUNT_SEARCH_NO_RESULTS',
         defaultMessage: 'No results',
     },
+    TR_SUITE_WEB_LANDING_HEADLINE: {
+        id: 'TR_SUITE_WEB_LANDING_HEADLINE',
+        defaultMessage: 'Managing crypto just got{lineBreak}<em>safer and easier</em>',
+    },
+    TR_SUITE_WEB_LANDING_SUB_HEADLINE: {
+        id: 'TR_SUITE_WEB_LANDING_SUB_HEADLINE',
+        defaultMessage: 'Take control of your Trezor with our desktop & browser app.',
+    },
+    TR_SUITE_WEB_LANDING_SUB_SOON: {
+        id: 'TR_SUITE_WEB_LANDING_SUB_SOON',
+        defaultMessage: 'Soon',
+    },
+    TR_SUITE_WEB_LANDING_BOTTOM_HEADLINE: {
+        id: 'TR_SUITE_WEB_LANDING_BOTTOM_HEADLINE',
+        defaultMessage:
+            'Dozens of <em>brand-new features</em> to discover.{lineBreak}Try Suite now.',
+    },
+
+    TR_SUITE_WEB_LANDING_FEATURES_1_HEADLINE: {
+        id: 'TR_SUITE_WEB_LANDING_FEATURES_1_HEADLINE',
+        defaultMessage: 'Desktop app',
+    },
+    TR_SUITE_WEB_LANDING_FEATURES_1_TEXT: {
+        id: 'TR_SUITE_WEB_LANDING_FEATURES_1_TEXT',
+        defaultMessage:
+            'Enhanced security and privacy, new design and improved performance, all in one software suite.',
+    },
+    TR_SUITE_WEB_LANDING_FEATURES_2_HEADLINE: {
+        id: 'TR_SUITE_WEB_LANDING_FEATURES_2_HEADLINE',
+        defaultMessage: 'Buy and exchange crypto',
+    },
+    TR_SUITE_WEB_LANDING_FEATURES_2_TEXT: {
+        id: 'TR_SUITE_WEB_LANDING_FEATURES_2_TEXT',
+        defaultMessage:
+            "Compare competitive rates, buy and exchange coins within Trezor's secure environment. Powered by +Invity.",
+    },
+    TR_SUITE_WEB_LANDING_FEATURES_3_HEADLINE: {
+        id: 'TR_SUITE_WEB_LANDING_FEATURES_3_HEADLINE',
+        defaultMessage: 'Native altcoin support',
+    },
+    TR_SUITE_WEB_LANDING_FEATURES_3_TEXT: {
+        id: 'TR_SUITE_WEB_LANDING_FEATURES_3_TEXT',
+        defaultMessage: 'ETH, XRP, ETC and more now supported \ndirectly through the app.',
+    },
+    TR_SUITE_WEB_LANDING_SUITE_ON_WEB: {
+        id: 'TR_SUITE_WEB_LANDING_SUITE_ON_WEB',
+        defaultMessage: 'Trezor Suite for web',
+    },
+    TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_1: {
+        id: 'TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_1',
+        defaultMessage: 'Improve',
+    },
+    TR_SUITE_WEB_LANDING_FOOTER_FEEDBACK: {
+        id: 'TR_SUITE_WEB_LANDING_FOOTER_FEEDBACK',
+        defaultMessage: 'Give feedback',
+    },
+    TR_SUITE_WEB_LANDING_FOOTER_JOIN_CLOSED_BETA: {
+        id: 'TR_SUITE_WEB_LANDING_FOOTER_JOIN_CLOSED_BETA',
+        defaultMessage: 'Join closed Beta',
+    },
+    TR_SUITE_WEB_LANDING_FOOTER_BLOG: {
+        id: 'TR_SUITE_WEB_LANDING_FOOTER_BLOG',
+        defaultMessage: 'Trezor Blog',
+    },
+    TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_2: {
+        id: 'TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_2',
+        defaultMessage: 'Follow',
+    },
+    TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_PARAGRAPH: {
+        id: 'TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_PARAGRAPH',
+        defaultMessage: 'Companion to the <a>Trezor hardware wallet</a>',
+    },
+    TR_SUITE_WEB_LANDING_DOWNLOAD_DESKTOP: {
+        id: 'TR_SUITE_WEB_LANDING_DOWNLOAD_DESKTOP',
+        defaultMessage: 'Get desktop app',
+    },
+    TR_SUITE_WEB_LANDING_VERSION: {
+        id: 'TR_SUITE_WEB_LANDING_VERSION',
+        defaultMessage: 'Version: {version}',
+    },
+    TR_SUITE_WEB_LANDING_LINUX_LABEL: {
+        id: 'TR_SUITE_WEB_LANDING_LINUX_LABEL',
+        defaultMessage: 'for Linux',
+    },
+    TR_SUITE_WEB_LANDING_WINDOWS_LABEL: {
+        id: 'TR_SUITE_WEB_LANDING_WINDOWS_LABEL',
+        defaultMessage: 'for Windows 8+',
+    },
+    TR_SUITE_WEB_LANDING_MACOS_LABEL: {
+        id: 'TR_SUITE_WEB_LANDING_MACOS_LABEL',
+        defaultMessage: 'for MacOS',
+    },
 } as const);
 
 export default definedMessages;
