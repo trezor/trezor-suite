@@ -6,7 +6,8 @@ import { Translation, FormattedCryptoAmount, FiatValue } from '@suite-components
 import AmountRow from '../AmountRow';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction } from '@wallet-types';
-import { getNetwork } from '@wallet-utils/accountUtils';
+import { getNetwork, formatNetworkAmount } from '@wallet-utils/accountUtils';
+import BigNumber from 'bignumber.js';
 
 // define these attributes as a constant because we will use the same values in two different styled components
 const ROW_HEIGHT = '36px';
@@ -17,19 +18,12 @@ const MainContainer = styled.div`
     flex-direction: column;
 `;
 
-const AmountWrapper = styled.div<{ showFiat: boolean }>`
+const AmountWrapper = styled.div`
     display: grid;
     grid-gap: ${GRID_GAP};
 
     /* columns: 1. title, 2. crypto amount, 3. fiat amount old, 4. fiat amount now */
     grid-template-columns: 140px minmax(110px, auto) minmax(100px, auto) minmax(100px, auto);
-
-    /* render 4 or 5 rows based on the value of showFiat props. 
-    If showFiat=true, we will display row with dates as well */
-    grid-template-rows: ${props =>
-        props.showFiat
-            ? `repeat(5, minmax(${ROW_HEIGHT}, auto))`
-            : `repeat(4, minmax(${ROW_HEIGHT}, auto))`};
 
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -58,16 +52,44 @@ const ShowFiatButtonWrapper = styled.div`
 
 interface Props {
     tx: WalletAccountTransaction;
-    totalInput?: string;
-    totalOutput?: string;
-    // txDetails: any;
+    txDetails: any;
     isTestnet: boolean;
 }
-const AmountDetails = ({ tx, totalInput, totalOutput, isTestnet }: Props) => {
-    const assetSymbol = tx.symbol.toUpperCase();
+const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
+    const tokenTransfer = tx.tokens.length > 0 ? tx.tokens[0] : undefined;
+    const amount = tokenTransfer ? tokenTransfer.amount : tx.amount;
+    const assetSymbol = tokenTransfer
+        ? tokenTransfer.symbol.toUpperCase()
+        : tx.symbol.toUpperCase();
+
     const [showFiat, setShowFiat] = useState(false);
     const network = getNetwork(tx.symbol);
-    const showTotalIO = network?.networkType === 'ripple' || network?.networkType === 'ethereum';
+    const hideTotalIORows =
+        network?.networkType === 'ripple' || network?.networkType === 'ethereum';
+
+    const showHistoricalRates = showFiat && !tokenTransfer;
+
+    // sum of all inputs
+    const totalInput: BigNumber | undefined = txDetails?.vin?.reduce(
+        (acc: BigNumber, input: any) => acc.plus(input.value),
+        new BigNumber('0'),
+    );
+
+    // sum of all outputs
+    const totalOutput: BigNumber | undefined = txDetails?.vout?.reduce(
+        (acc: BigNumber, output: any) => acc.plus(output.value ?? 0),
+        new BigNumber('0'),
+    );
+
+    // formatNetworkAmount returns "-1" in case of an error, thus can't be used in reduce above
+    const formattedTotalInput =
+        totalInput && !totalInput.isNaN()
+            ? formatNetworkAmount(totalInput.toFixed(), tx.symbol)
+            : undefined;
+    const formattedTotalOutput =
+        totalOutput && !totalOutput.isNaN()
+            ? formatNetworkAmount(totalOutput.toFixed(), tx.symbol)
+            : undefined;
 
     return (
         <MainContainer>
@@ -84,7 +106,7 @@ const AmountDetails = ({ tx, totalInput, totalOutput, isTestnet }: Props) => {
                 </ShowFiatButtonWrapper>
             )}
 
-            <AmountWrapper showFiat={showFiat}>
+            <AmountWrapper>
                 {/* DATES FOR FIAT VALUES */}
                 {showFiat && (
                     <AmountRow
@@ -123,19 +145,22 @@ const AmountDetails = ({ tx, totalInput, totalOutput, isTestnet }: Props) => {
                     />
                 )}
 
-                {!showTotalIO && (
+                {!hideTotalIORows && (
                     <>
                         {/* TOTAL INPUT */}
                         <AmountRow
                             firstColumn={<Translation id="TR_TOTAL_INPUT" />}
                             secondColumn={
-                                <FormattedCryptoAmount value={totalInput} symbol={assetSymbol} />
+                                <FormattedCryptoAmount
+                                    value={formattedTotalInput}
+                                    symbol={assetSymbol}
+                                />
                             }
                             thirdColumn={
-                                showFiat &&
-                                totalInput && (
+                                showHistoricalRates &&
+                                formattedTotalInput && (
                                     <FiatValue
-                                        amount={totalInput}
+                                        amount={formattedTotalInput}
                                         symbol={tx.symbol}
                                         source={tx.rates}
                                         useCustomSource
@@ -144,7 +169,9 @@ const AmountDetails = ({ tx, totalInput, totalOutput, isTestnet }: Props) => {
                             }
                             fourthColumn={
                                 showFiat &&
-                                totalInput && <FiatValue amount={totalInput} symbol={tx.symbol} />
+                                formattedTotalInput && (
+                                    <FiatValue amount={formattedTotalInput} symbol={tx.symbol} />
+                                )
                             }
                             color="dark"
                         />
@@ -153,13 +180,16 @@ const AmountDetails = ({ tx, totalInput, totalOutput, isTestnet }: Props) => {
                         <AmountRow
                             firstColumn={<Translation id="TR_TOTAL_OUTPUT" />}
                             secondColumn={
-                                <FormattedCryptoAmount value={totalOutput} symbol={assetSymbol} />
+                                <FormattedCryptoAmount
+                                    value={formattedTotalOutput}
+                                    symbol={tx.symbol}
+                                />
                             }
                             thirdColumn={
-                                showFiat &&
-                                totalOutput && (
+                                showHistoricalRates &&
+                                formattedTotalOutput && (
                                     <FiatValue
-                                        amount={totalOutput}
+                                        amount={formattedTotalOutput}
                                         symbol={tx.symbol}
                                         source={tx.rates}
                                         useCustomSource
@@ -168,7 +198,9 @@ const AmountDetails = ({ tx, totalInput, totalOutput, isTestnet }: Props) => {
                             }
                             fourthColumn={
                                 showFiat &&
-                                totalOutput && <FiatValue amount={totalOutput} symbol={tx.symbol} />
+                                formattedTotalOutput && (
+                                    <FiatValue amount={formattedTotalOutput} symbol={tx.symbol} />
+                                )
                             }
                             color="dark"
                         />
@@ -178,27 +210,27 @@ const AmountDetails = ({ tx, totalInput, totalOutput, isTestnet }: Props) => {
                 {/* AMOUNT */}
                 <AmountRow
                     firstColumn={<Translation id="AMOUNT" />}
-                    secondColumn={<FormattedCryptoAmount value={tx.amount} symbol={assetSymbol} />}
+                    secondColumn={<FormattedCryptoAmount value={amount} symbol={assetSymbol} />}
                     thirdColumn={
-                        showFiat && (
+                        showHistoricalRates && (
                             <FiatValue
-                                amount={tx.amount}
-                                symbol={tx.symbol}
+                                amount={amount}
+                                symbol={assetSymbol}
                                 source={tx.rates}
                                 useCustomSource
                             />
                         )
                     }
-                    fourthColumn={showFiat && <FiatValue amount={tx.amount} symbol={tx.symbol} />}
+                    fourthColumn={showFiat && <FiatValue amount={amount} symbol={assetSymbol} />}
                     color="light"
                 />
 
                 {/* TX FEE */}
                 <AmountRow
                     firstColumn={<Translation id="TR_TX_FEE" />}
-                    secondColumn={<FormattedCryptoAmount value={tx.fee} symbol={assetSymbol} />}
+                    secondColumn={<FormattedCryptoAmount value={tx.fee} symbol={tx.symbol} />}
                     thirdColumn={
-                        showFiat && (
+                        showHistoricalRates && (
                             <FiatValue
                                 amount={tx.fee}
                                 symbol={tx.symbol}

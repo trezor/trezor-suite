@@ -164,8 +164,6 @@ interface Props {
     tx: WalletAccountTransaction;
     isFetching: boolean;
     confirmations: number;
-    totalInput?: string;
-    totalOutput?: string;
     explorerUrl?: string;
 }
 
@@ -187,7 +185,8 @@ const getHumanReadableTxType = (tx: WalletAccountTransaction) => {
 const BasicDetails = ({ tx, confirmations, isFetching, explorerUrl }: Props) => {
     const isConfirmed = confirmations > 0;
     const transactionStatus = getHumanReadableTxType(tx);
-    const assetSymbol = tx.symbol.toUpperCase();
+    const tokenSymbol = tx.tokens.length > 0 ? tx.tokens[0].symbol : undefined;
+    const assetSymbol = tokenSymbol ? tokenSymbol.toUpperCase() : tx.symbol.toUpperCase();
     return (
         <Wrapper>
             <HeaderFirstRow>

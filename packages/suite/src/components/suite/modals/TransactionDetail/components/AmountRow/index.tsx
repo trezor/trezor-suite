@@ -19,6 +19,9 @@ interface RowContentProps {
 
 // this wrapper sets the text color of the item based on the  color: 'light' | 'dark' prop
 const Row = styled.div<RowContentProps>`
+    display: flex;
+    align-items: center;
+    height: 36px;
     color: ${props => (props.color === 'light' ? `${colors.BLACK50}` : `${colors.BLACK25}`)};
 
     /* content alignment styles */
