@@ -27,6 +27,10 @@ const src = isDev
           slashes: true,
       });
 
+// Runtime flags
+const disableCspFlag = app.commandLine.hasSwitch('disable-csp');
+
+// Updater
 const updateCancellationToken = new CancellationToken();
 
 const registerShortcuts = (window: BrowserWindow) => {
@@ -84,6 +88,16 @@ const init = async () => {
         },
         icon: path.join(res, 'images', 'icons', '512x512.png'),
     });
+
+    // Security warnings
+    if (disableCspFlag) {
+        dialog.showMessageBox({
+            type: 'warning',
+            message:
+                'The application is running with CSP disabled. This is a security risk! If this is not intentional, please close the application immediately.',
+            buttons: ['OK'],
+        });
+    }
 
     Menu.setApplicationMenu(buildMainMenu());
     mainWindow.setMenuBarVisibility(false);
@@ -147,14 +161,16 @@ const init = async () => {
                 callback({ cancel: false, requestHeaders: details.requestHeaders });
             });
 
-            session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-                callback({
-                    responseHeaders: {
-                        'Content-Security-Policy': [config.cspRules.join(';')],
-                        ...details.responseHeaders,
-                    },
+            if (!disableCspFlag) {
+                session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+                    callback({
+                        responseHeaders: {
+                            'Content-Security-Policy': [config.cspRules.join(';')],
+                            ...details.responseHeaders,
+                        },
+                    });
                 });
-            });
+            }
 
             // TODO: implement https://github.com/electron/electron/blob/master/docs/api/browser-window.md#event-unresponsive
             session.defaultSession.protocol.interceptFileProtocol(PROTOCOL, (request, callback) => {
