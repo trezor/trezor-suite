@@ -29,17 +29,16 @@ const IORowTitle = styled.div`
 `;
 
 const IORow = styled.div`
-    display: grid;
-    grid-template-columns: fit-content(200px) auto;
-
-    /* display: flex; */
+    display: flex;
     line-height: 1.9;
     color: ${colors.BLACK25};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
 `;
 
-const CryptoAmountWrapper = styled.div``;
+const CryptoAmountWrapper = styled.div`
+    flex: 0 0 auto;
+`;
 
 const Address = styled.div`
     text-overflow: ellipsis;
