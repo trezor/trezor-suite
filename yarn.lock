@@ -12609,11 +12609,6 @@ electron-localshortcut@^3.2.1:
     keyboardevent-from-electron-accelerator "^2.0.0"
     keyboardevents-areequal "^0.2.1"
 
-electron-log@^4.2.4:
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-4.2.4.tgz#a13e42a9fc42ca2cc7d2603c3746352efa82112e"
-  integrity sha512-CXbDU+Iwi+TjKzugKZmTRIORIPe3uQRqgChUl19fkW/reFUn5WP7dt+cNGT3bkLV8xfPilpkPFv33HgtmLLewQ==
-
 electron-next@^3.1.5:
   version "3.1.5"
   resolved "https://registry.yarnpkg.com/electron-next/-/electron-next-3.1.5.tgz#6d7df1ffe9bdc300f79b33a1eea43c6767085f57"

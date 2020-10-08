@@ -1,0 +1,23 @@
+diff --git a/node_modules/electron-updater/out/AppImageUpdater.js b/node_modules/electron-updater/out/AppImageUpdater.js
+index baf53e5..ebe5d13 100644
+--- a/node_modules/electron-updater/out/AppImageUpdater.js
++++ b/node_modules/electron-updater/out/AppImageUpdater.js
+@@ -108,8 +108,8 @@ class AppImageUpdater extends _BaseUpdater().BaseUpdater {
+           throw (0, _builderUtilRuntime().newError)("APPIMAGE env is not defined", "ERR_UPDATER_OLD_FILE_NOT_FOUND");
+         }
+
+-        let isDownloadFull = false;
+-
++        let isDownloadFull = true;
++        /*
+         try {
+           await new (_FileWithEmbeddedBlockMapDifferentialDownloader().FileWithEmbeddedBlockMapDifferentialDownloader)(fileInfo.info, this.httpExecutor, {
+             newUrl: fileInfo.url,
+@@ -125,6 +125,7 @@ class AppImageUpdater extends _BaseUpdater().BaseUpdater {
+
+           isDownloadFull = process.platform === "linux";
+         }
++        */
+
+         if (isDownloadFull) {
+           await this.httpExecutor.download(fileInfo.url, updateFile, downloadOptions);
