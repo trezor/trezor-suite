@@ -50,7 +50,7 @@ const getAppUrl = (appName: App) => {
         case 'win':
             return encodeURI(`../web/static/desktop/Trezor Suite-${version}.exe`);
         case 'macos':
-            return encodeURI(`../web/static/desktop/Trezor Suite-${version}.zip`);
+            return encodeURI(`../web/static/desktop/Trezor Suite-${version}.dmg`);
         case 'linux':
             return encodeURI(`../web/static/desktop/Trezor Suite-${version}.AppImage`);
         // no default
