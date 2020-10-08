@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { IntlProvider } from 'react-intl';
 import Layout from '@suite-web-landing-components/Layout';
+import Translation, { TranslationModeContext } from '@suite-web-landing-components/Translation';
 import Download from '@suite-web-landing-components/Download';
 import Feature from '@suite-web-landing-components/Feature';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { H1, P, variables, colors } from '@trezor/components';
 import { Fade } from 'react-awesome-reveal';
+import enLocale from '@trezor/suite-data/files/translations/en.json';
 
 const Wrapper = styled.div`
     display: flex;
@@ -57,7 +60,7 @@ const StyledHeadline = styled(H1)<{ size?: number }>`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     line-height: 1.3;
     margin-bottom: 18px;
-    & > em {
+    em {
         font-style: normal;
         color: ${colors.NEUE_TYPE_GREEN};
     }
@@ -91,87 +94,117 @@ const StyledSoon = styled.div`
     color: ${colors.NEUE_TYPE_ORANGE};
 `;
 
+const TranslationModeTrigger = styled.div`
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    left: 0px;
+    bottom: 0px;
+    /* background: red; */
+`;
+
 const features = [
     {
         id: 1,
-        headline: 'Desktop app',
-        text:
-            'Enhanced security and privacy, new design and improved performance, all in one software suite.',
+        headline: <Translation id="TR_SUITE_WEB_LANDING_FEATURES_1_HEADLINE" />,
+        text: <Translation id="TR_SUITE_WEB_LANDING_FEATURES_1_TEXT" />,
         backgroundPosition: 'bottom right',
         backgroundSize: '616px auto',
         soon: false,
     },
     {
         id: 2,
-        headline: 'Buy and exchange crypto',
-        text:
-            "Compare competitive rates, buy and exchange coins within Trezor's secure environment. Powered by +Invity.",
+        headline: <Translation id="TR_SUITE_WEB_LANDING_FEATURES_2_HEADLINE" />,
+        text: <Translation id="TR_SUITE_WEB_LANDING_FEATURES_2_TEXT" />,
         backgroundPosition: 'center left',
         backgroundSize: '489px auto',
         soon: true,
     },
     {
         id: 3,
-        headline: 'Native altcoin support',
-        text: 'ETH, XRP, ETC and more now supported \ndirectly through the app.',
+        headline: <Translation id="TR_SUITE_WEB_LANDING_FEATURES_3_HEADLINE" />,
+        text: <Translation id="TR_SUITE_WEB_LANDING_FEATURES_3_TEXT" />,
         backgroundSize: '500px auto',
         soon: false,
     },
 ];
 
-const Index = () => (
-    <Layout>
-        <Wrapper>
-            <StyledHeroCta>
-                <Fade direction="up" delay={500} triggerOnce>
-                    <StyledHeadline>
-                        Managing crypto just got
-                        <br />
-                        <em>safer and easier</em>
-                    </StyledHeadline>
-                </Fade>
-                <Fade delay={1500} triggerOnce>
-                    <StyledSubheadline>
-                        Take control of your Trezor with our desktop & browser app.
-                    </StyledSubheadline>
-                </Fade>
-                <DownloadWrapper>
-                    <Fade delay={2000} triggerOnce>
-                        <Download />
-                    </Fade>
-                </DownloadWrapper>
-            </StyledHeroCta>
-            <FeaturesWrapper>
-                {features.map((item, key) => (
-                    <Feature
-                        image={resolveStaticPath(`images/suite-web-landing/feature${item.id}.png`)}
-                        key={item.id}
-                        flip={key % 2 === 1}
-                        backgroundPosition={
-                            item.backgroundPosition !== undefined
-                                ? item.backgroundPosition
-                                : undefined
-                        }
-                        backgroundSize={item.backgroundSize}
-                    >
-                        {item.soon && <StyledSoon>Soon</StyledSoon>}
-                        <StyledH1>{item.headline}</StyledH1>
-                        <StyledP>{item.text}</StyledP>
-                    </Feature>
-                ))}
-            </FeaturesWrapper>
-            <StyledCta>
-                <StyledHeadline size={44}>
-                    Dozens of <em>brand-new features</em> to discover.
-                    <br />
-                    Try Suite now.
-                </StyledHeadline>
-                <DownloadWrapper>
-                    <Download />
-                </DownloadWrapper>
-            </StyledCta>
-        </Wrapper>
-    </Layout>
-);
+const Index = () => {
+    const [translationMode, setTranslationMode] = useState(false);
+
+    return (
+        <TranslationModeContext.Provider value={translationMode}>
+            <IntlProvider locale="en" messages={enLocale}>
+                <Layout>
+                    <Wrapper>
+                        <StyledHeroCta>
+                            <Fade direction="up" delay={500} triggerOnce>
+                                <StyledHeadline>
+                                    <Translation
+                                        id="TR_SUITE_WEB_LANDING_HEADLINE"
+                                        values={{
+                                            em: chunks => <em>{chunks}</em>,
+                                            lineBreak: <br />,
+                                        }}
+                                    />
+                                </StyledHeadline>
+                            </Fade>
+                            <Fade delay={1500} triggerOnce>
+                                <StyledSubheadline>
+                                    <Translation id="TR_SUITE_WEB_LANDING_SUB_HEADLINE" />
+                                </StyledSubheadline>
+                            </Fade>
+                            <DownloadWrapper>
+                                <Fade delay={2000} triggerOnce>
+                                    <Download />
+                                </Fade>
+                            </DownloadWrapper>
+                        </StyledHeroCta>
+                        <FeaturesWrapper>
+                            {features.map((item, key) => (
+                                <Feature
+                                    image={resolveStaticPath(
+                                        `images/suite-web-landing/feature${item.id}.png`,
+                                    )}
+                                    key={item.id}
+                                    flip={key % 2 === 1}
+                                    backgroundPosition={
+                                        item.backgroundPosition !== undefined
+                                            ? item.backgroundPosition
+                                            : undefined
+                                    }
+                                    backgroundSize={item.backgroundSize}
+                                >
+                                    {item.soon && (
+                                        <StyledSoon>
+                                            <Translation id="TR_SUITE_WEB_LANDING_SUB_SOON" />
+                                        </StyledSoon>
+                                    )}
+                                    <StyledH1>{item.headline}</StyledH1>
+                                    <StyledP>{item.text}</StyledP>
+                                </Feature>
+                            ))}
+                        </FeaturesWrapper>
+                        <StyledCta>
+                            <StyledHeadline size={44}>
+                                <Translation
+                                    id="TR_SUITE_WEB_LANDING_BOTTOM_HEADLINE"
+                                    values={{
+                                        em: chunks => <em>{chunks}</em>,
+                                        lineBreak: <br />,
+                                    }}
+                                />
+                            </StyledHeadline>
+                            <DownloadWrapper>
+                                <Download />
+                            </DownloadWrapper>
+                        </StyledCta>
+                    </Wrapper>
+                </Layout>
+                <TranslationModeTrigger onClick={() => setTranslationMode(prev => !prev)} />
+            </IntlProvider>
+        </TranslationModeContext.Provider>
+    );
+};
 
 export default Index;

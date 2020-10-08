@@ -17,8 +17,6 @@
         "test-health": "jest -c jest.config.health.js"
     },
     "dependencies": {
-        "@formatjs/intl-pluralrules": "^1.5.3",
-        "@formatjs/intl-relativetimeformat": "^4.5.10",
         "@trezor/components": "^1.0.0",
         "@trezor/suite-data": "20.10.1",
         "@trezor/suite-storage": "20.10.1",
@@ -38,7 +36,7 @@
         "react-focus-lock": "^2.0.5",
         "react-hook-form": "6.7.1",
         "react-hotkeys-hook": "^1.5.4",
-        "react-intl": "^3.9.2",
+        "react-intl": "^5.8.5",
         "react-markdown": "^4.3.1",
         "react-native-web": "^0.11.2",
         "react-qr-reader": "^2.2.1",
@@ -73,7 +71,6 @@
         "@types/qs": "^6.9.2",
         "@types/react": "^16.7.11",
         "@types/react-dom": "^16.0.11",
-        "@types/react-intl": "^3.0.0",
         "@types/react-qr-reader": "^2.1.2",
         "@types/react-redux": "^7.1.7",
         "@types/react-test-renderer": "^16.9.1",

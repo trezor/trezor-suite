@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Button, Dropdown, Icon, colors, variables, Link } from '@trezor/components';
 import { IconType } from '@trezor/components/src/support/types';
+import Translation from '../Translation';
 import { Platform, getPlatform } from '../../utils/navigator';
 import { normalizeVersion } from '@suite-utils/build';
 
@@ -59,7 +60,7 @@ const VersionInfo = styled.div`
 
 type DropdownItem = {
     platform: Platform;
-    label: string;
+    label: React.ReactNode;
     icon: IconType;
     installerExtension: string;
 };
@@ -67,19 +68,19 @@ type DropdownItem = {
 const dropdownItemsData: DropdownItem[] = [
     {
         platform: 'mac',
-        label: 'for MacOS',
+        label: <Translation id="TR_SUITE_WEB_LANDING_MACOS_LABEL" />,
         icon: 'OS_MAC',
         installerExtension: 'dmg',
     },
     {
         platform: 'win',
-        label: 'for Windows 8+',
+        label: <Translation id="TR_SUITE_WEB_LANDING_WINDOWS_LABEL" />,
         icon: 'OS_WINDOWS',
         installerExtension: 'exe',
     },
     {
         platform: 'linux',
-        label: 'for Linux',
+        label: <Translation id="TR_SUITE_WEB_LANDING_LINUX_LABEL" />,
         icon: 'OS_LINUX',
         installerExtension: 'AppImage',
     },
@@ -130,11 +131,13 @@ const Index = () => {
                 </StyledDropdown>
                 <StyledDownloadButton>
                     <Link variant="nostyle" href={getInstallerURI(platform, version)}>
-                        Get desktop app
+                        <Translation id="TR_SUITE_WEB_LANDING_DOWNLOAD_DESKTOP" />
                     </Link>
                 </StyledDownloadButton>
             </ButtonWrapper>
-            <VersionInfo>Version: {version}</VersionInfo>
+            <VersionInfo>
+                <Translation id="TR_SUITE_WEB_LANDING_VERSION" values={{ version }} />
+            </VersionInfo>
         </div>
     );
 };
