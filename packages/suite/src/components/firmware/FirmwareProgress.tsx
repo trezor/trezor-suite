@@ -1,5 +1,9 @@
 import React from 'react';
-import { getFormattedFingerprint, getTextForStatus } from '@firmware-utils';
+import {
+    getFormattedFingerprint,
+    getTextForStatus,
+    getDescriptionForStatus,
+} from '@firmware-utils';
 import { Translation } from '@suite-components';
 import { Loaders } from '@onboarding-components';
 import { useDevice, useFirmware } from '@suite-hooks';
@@ -15,18 +19,23 @@ const Body = () => {
     }
 
     const statusText = getTextForStatus(status);
+    const statusDescription = getDescriptionForStatus(status);
     return (
         <>
             <InitImg model={device.features.major_version} />
 
             {statusText && (
-                <H2>
-                    <Translation id={statusText} />
-                    <Loaders.Dots />
-                </H2>
+                <>
+                    <H2>
+                        <Translation id={statusText} />
+                        <Loaders.Dots />
+                    </H2>
+                    {statusDescription && <P>{statusDescription}</P>}
+                </>
             )}
 
             {status === 'installing' ? (
+                // TODO: Product wants "Follow progress in you trezor screen" in H2, but that is already used above
                 <P>
                     <Translation id="TR_DO_NOT_DISCONNECT" />
                 </P>

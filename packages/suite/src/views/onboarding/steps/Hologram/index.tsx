@@ -32,7 +32,11 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                <Translation id="TR_HOLOGRAM_STEP_HEADING" />
+                {activeSubStep === 'hologram-different' ? (
+                    <Translation id="TR_HOLOGRAM_STEP_HEADING_INTRO" />
+                ) : (
+                    <Translation id="TR_HOLOGRAM_STEP_HEADING" />
+                )}
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {activeSubStep !== 'hologram-different' && (

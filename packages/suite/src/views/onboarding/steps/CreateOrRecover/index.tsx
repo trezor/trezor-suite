@@ -15,7 +15,7 @@ const CreateOrRecoverStep = (props: Props) => {
                 </Wrapper.StepHeading>
 
                 <Text>
-                    <Translation id="TR_WELCOME_TO_TREZOR_TEXT" />
+                    <Translation id="TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION" />
                 </Text>
 
                 <Wrapper.Options>

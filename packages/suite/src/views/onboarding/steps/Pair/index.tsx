@@ -50,10 +50,22 @@ const PairDeviceStep = (props: Props) => {
         return 'ok';
     };
 
+    const getHeading = () => {
+        if (hasTransport() && isDetectingDevice()) {
+            if (getConnectedDeviceStatus() === 'ok') {
+                return <Translation id="TR_YOUR_TREZOR_IS_ALMOST_READY" />;
+            }
+            if (getConnectedDeviceStatus() === 'initialized') {
+                return <Translation id="TR_THIS_TREZOR_IS_ALREADY_SET_UP" />;
+            }
+        }
+        return <Translation id="TR_CONNECT_YOUR_DEVICE" />;
+    };
+
     return (
         <Wrapper.Step data-test="@onboarding/pair-device-step">
             <Wrapper.StepHeading>
-                <Translation id="TR_CONNECT_YOUR_DEVICE" />
+                {getHeading()}
                 {!isDetectingDevice() && <Loaders.Dots />}
             </Wrapper.StepHeading>
             <Wrapper.StepBody>

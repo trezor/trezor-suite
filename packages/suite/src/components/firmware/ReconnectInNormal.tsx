@@ -21,7 +21,7 @@ const Body = () => {
                 <ConnectInNormalImg />
 
                 <H2>
-                    <Translation id="TR_CONNECT_YOUR_DEVICE" />
+                    <Translation id="TR_RECONNECT_YOUR_DEVICE" />
                 </H2>
                 {expectedModel === 1 && (
                     <P>
