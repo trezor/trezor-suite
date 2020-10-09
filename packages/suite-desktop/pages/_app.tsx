@@ -19,27 +19,27 @@ import Resize from '@suite-support/Resize/Container';
 import { isDev } from '@suite-utils/build';
 import styled from 'styled-components';
 
-// Navbar needs to be loaded dynamically due to the platform detection which is only available on client
-const DesktopNavbar = dynamic(() => import('@desktop/components/DesktopNavbar'), { ssr: false });
+// Titlebar needs to be loaded dynamically due to the platform detection which is only available on client
+const DesktopTitlebar = dynamic(() => import('@desktop/components/DesktopTitlebar'), { ssr: false });
 
 interface Props {
     store: Store;
 }
 
-const navbarHeight = 40;
-const NavbarWrapper = styled.div`
+const titlebarHeight = 40;
+const TitlebarWrapper = styled.div`
     display: block;
     position: fixed;
     z-index: 1000000;
-    height: ${navbarHeight}px;
+    height: ${titlebarHeight}px;
     width: 100%;
     -webkit-user-select: none;
     -webkit-app-region: drag;
 `;
 
 const MainWrapper = styled.div`
-    height: calc(100% - ${navbarHeight}px);
-    margin-top: ${navbarHeight}px;
+    height: calc(100% - ${titlebarHeight}px);
+    margin-top: ${titlebarHeight}px;
     overflow-y: auto;
 `;
 
@@ -58,9 +58,9 @@ class TrezorSuiteApp extends App<Props> {
 
         return (
             <>
-                <NavbarWrapper>
-                    <DesktopNavbar />
-                </NavbarWrapper>
+                <TitlebarWrapper>
+                    <DesktopTitlebar />
+                </TitlebarWrapper>
                 <MainWrapper>
                     <ReduxProvider store={store}>
                         <ErrorBoundary>

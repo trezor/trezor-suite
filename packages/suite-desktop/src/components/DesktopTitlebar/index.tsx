@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { colors, TrezorLogo, Icon } from '@trezor/components';
 import { isMac as isMacOS } from '@suite-utils/env';
 
-const Navbar = styled.div<{ isMac?: boolean }>`
+const Titlebar = styled.div<{ isMac?: boolean }>`
     height: 100%;
     width: 100%;
     background: ${colors.NEUE_TYPE_DARK_GREY};
@@ -66,7 +66,7 @@ const LogoWrapper = styled.div`
     opacity: 69%;
 `;
 
-const DesktopNavbar = () => {
+const DesktopTitlebar = () => {
     const close = () => {
         window.desktopApi!.windowClose();
     };
@@ -82,7 +82,7 @@ const DesktopNavbar = () => {
     const iconColor = isMac ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY;
 
     return (
-        <Navbar isMac={isMac}>
+        <Titlebar isMac={isMac}>
             <Actions isMac={isMac}>
                 <ActionClose isMac={isMac} onClick={() => close()}>
                     <Icon color={iconColor} size={iconSize} icon="WINDOW_CLOSE" />
@@ -102,8 +102,8 @@ const DesktopNavbar = () => {
                     data-test="trezor-suite-compact-logo-black"
                 />
             </LogoWrapper>
-        </Navbar>
+        </Titlebar>
     );
 };
 
-export default DesktopNavbar;
+export default DesktopTitlebar;
