@@ -88,4 +88,5 @@ export const ICONS = {
     OS_LINUX: require('../../images/icons/os_linux.svg'),
     OS_MAC: require('../../images/icons/os_mac.svg'),
     OS_WINDOWS: require('../../images/icons/os_windows.svg'),
+    TRADE: require('../../images/icons/trade.svg'),
 };
