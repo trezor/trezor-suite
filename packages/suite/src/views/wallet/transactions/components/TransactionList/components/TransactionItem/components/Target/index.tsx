@@ -94,10 +94,10 @@ export const Target = ({
                                     });
                                 }
                                 const result = copyToClipboard(target.addresses.join(), null);
-                                if (typeof result !== 'string') {
-                                    return addNotification({ type: 'copy-to-clipboard' });
+                                if (typeof result === 'string') {
+                                    return addNotification({ type: 'error', error: result });
                                 }
-                                return addNotification({ type: 'error', error: result });
+                                return addNotification({ type: 'copy-to-clipboard' });
                             },
                             label: 'Copy address',
                             key: 'copy-address',

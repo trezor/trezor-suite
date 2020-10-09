@@ -142,12 +142,9 @@ export const disconnectProvider = () => async (dispatch: Dispatch) => {
 const handleProviderError = (error: MetadataProviderError, action: string) => (
     dispatch: Dispatch,
 ) => {
-    console.log(error);
     // error should be of specified type, but in case it is not (catch is not typed) show generic error
     if (!error?.code) {
         // if this happens, it means that there is a hole in error handling and it should be fixed
-        console.trace();
-
         return dispatch(
             notificationActions.addToast({
                 type: 'error',
@@ -335,7 +332,6 @@ export const fetchMetadata = (deviceState: string) => async (
         await Promise.all(promises);
         // if interval for watching provider is not set, create it
 
-        // todo: ?? bugs here !!
         if (!fetchIntervals[deviceState]) {
             fetchIntervals[deviceState] = setInterval(() => {
                 if (!getState().suite.online) {
