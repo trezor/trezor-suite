@@ -151,4 +151,5 @@ export const ICONS: IconType[] = [
     'WINDOW_CLOSE',
     'WINDOW_MINIMIZE',
     'WINDOW_MAXIMIZE',
+    'WINDOW_RESTORE',
 ];
