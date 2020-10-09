@@ -10,4 +10,3 @@ Available flags:
 | name | description |
 | --- | --- |
 | `--disable-csp` | Disables the Content Security Policy. Necessary for using DevTools in a production build. |
-| `--pre-release` | Tells the auto-updater to fetch pre-release updates. |
