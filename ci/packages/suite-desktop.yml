@@ -26,14 +26,18 @@
         - releases
         - schedules
         - /^release\//
+        - /^run\//
 
 suite-desktop build mac:
     only:
         <<: *auto_run_branches
+    tags:
+        - darwin
     variables:
         artifact: ${DESKTOP_APP_NAME}*
         platform: mac
     <<: *build
+    <<: *build_nix
 
 suite-desktop build mac codesign:
     only:
