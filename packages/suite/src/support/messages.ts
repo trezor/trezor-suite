@@ -3631,6 +3631,10 @@ const definedMessages = defineMessages({
         id: 'TR_NAV_COINMARKET',
         defaultMessage: 'Coinmarket',
     },
+    TR_NAV_TRADE: {
+        id: 'TR_NAV_TRADE',
+        defaultMessage: 'Trade',
+    },
     TR_NAV_BUY: {
         id: 'TR_NAV_BUY',
         defaultMessage: 'Buy',

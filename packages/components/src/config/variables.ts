@@ -147,4 +147,5 @@ export const ICONS: IconType[] = [
     'OS_LINUX',
     'OS_MAC',
     'OS_WINDOWS',
+    'TRADE',
 ];
