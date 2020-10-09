@@ -30,7 +30,7 @@ suite-web-landing deploy staging-suite:
   stage: deploy to staging
   only:
     <<: *auto_run_branches
-  dependencies:
+  needs:
     - suite-web-landing build stable
   environment:
     name: ${CI_BUILD_REF_NAME}-staging-suite
@@ -48,7 +48,7 @@ suite-web-landing deploy dev:
   stage: deploy to dev
   variables:
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web-landing/${CI_BUILD_REF_NAME}
-  dependencies:
+  needs:
     - install and build
     - suite-web-landing build dev
   environment:
