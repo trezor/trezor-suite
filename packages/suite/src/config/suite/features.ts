@@ -5,7 +5,7 @@
 
 // General flags
 export const FLAGS = {
-    GOOGLE_DRIVE_SYNC: true, // Google Drive sync (used for labeling)
+    GOOGLE_DRIVE_SYNC: false, // Google Drive sync (used for labeling)
 } as const;
 
 // Web specific flags
