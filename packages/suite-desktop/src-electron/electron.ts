@@ -29,6 +29,7 @@ const src = isDev
 
 // Runtime flags
 const disableCspFlag = app.commandLine.hasSwitch('disable-csp');
+const preReleaseFlag = app.commandLine.hasSwitch('pre-release');
 
 // Updater
 const updateCancellationToken = new CancellationToken();
@@ -193,6 +194,7 @@ const init = async () => {
 
     autoUpdater.autoDownload = false;
     autoUpdater.autoInstallOnAppQuit = true;
+    autoUpdater.allowPrerelease = preReleaseFlag;
 
     if (updateSettings.skipVersion) {
         mainWindow.webContents.send('update/skip', updateSettings.skipVersion);
