@@ -163,8 +163,8 @@ const TextLikeLabel = (props: ExtendedProps) => {
 const getLocalizedActions = (type: MetadataAddPayload['type']) => {
     const defaultMessages = {
         add: <Translation id="TR_LABELING_ADD_LABEL" />,
-        edit: <Translation id="TR_LABELING_EDITED_LABEL" />,
-        edited: <Translation id="TR_LABELING_REMOVE_LABEL" />,
+        edit: <Translation id="TR_LABELING_EDIT_LABEL" />,
+        edited: <Translation id="TR_LABELING_EDITED_LABEL" />,
         remove: <Translation id="TR_LABELING_REMOVE_LABEL" />,
     };
     switch (type) {
