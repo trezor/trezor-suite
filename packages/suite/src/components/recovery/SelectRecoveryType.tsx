@@ -31,14 +31,7 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
                 }}
                 title={<Translation id="TR_BASIC_RECOVERY" />}
                 text={<Translation id="TR_BASIC_RECOVERY_OPTION" />}
-                button={
-                    <Translation
-                        id="TR_SELECT_CONCRETE_RECOVERY_TYPE"
-                        values={{
-                            recoveryType: <Translation id="TR_BASIC_RECOVERY" />,
-                        }}
-                    />
-                }
+                button={<Translation id="TR_BASIC_RECOVERY" />}
                 imgSrc="images/svg/recovery-basic.svg"
                 data-test="@recover/select-type/basic"
             />
@@ -49,14 +42,7 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
                 }}
                 title={<Translation id="TR_ADVANCED_RECOVERY" />}
                 text={<Translation id="TR_ADVANCED_RECOVERY_OPTION" />}
-                button={
-                    <Translation
-                        id="TR_SELECT_CONCRETE_RECOVERY_TYPE"
-                        values={{
-                            recoveryType: <Translation id="TR_ADVANCED_RECOVERY" />,
-                        }}
-                    />
-                }
+                button={<Translation id="TR_ADVANCED_RECOVERY" />}
                 imgSrc="images/svg/recovery-advanced.svg"
                 data-test="@recover/select-type/advanced"
             />

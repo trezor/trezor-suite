@@ -30,3 +30,11 @@ export const getTextForStatus = (status: AppState['firmware']['status']) => {
             return null;
     }
 };
+export const getDescriptionForStatus = (status: AppState['firmware']['status']) => {
+    switch (status) {
+        case 'wait-for-reboot':
+            return 'TR_DO_NOT_DISCONNECT';
+        default:
+            return null;
+    }
+};

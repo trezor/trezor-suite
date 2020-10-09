@@ -1,10 +1,11 @@
-import { CheckItem } from '@suite-components';
-import { AppState, Dispatch } from '@suite-types';
-import * as backupActions from '@suite/actions/backup/backupActions';
 import React from 'react';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import styled from 'styled-components';
+
+import { CheckItem, Translation } from '@suite-components';
+import { AppState, Dispatch } from '@suite-types';
+import * as backupActions from '@suite/actions/backup/backupActions';
 
 const CheckboxWrapper = styled.div`
     display: flex;
@@ -40,23 +41,22 @@ const AfterBackupCheckboxes = ({ toggleCheckboxByKey, backup }: Props) => {
             <CheckItem
                 data-test="@backup/check-item/wrote-seed-properly"
                 onClick={() => toggleCheckboxByKey('wrote-seed-properly')}
-                title="I wrote down the seed properly"
-                description="All words must be in the exact order. Make sure the seed won’t get wet or can’t get smudged to make it not readable."
+                title={<Translation id="TR_BACKUP_CHECKBOX_1_TITLE" />}
+                description={<Translation id="TR_BACKUP_CHECKBOX_1_DESCRIPTION" />}
                 isChecked={isChecked('wrote-seed-properly')}
             />
             <CheckItem
                 data-test="@backup/check-item/made-no-digital-copy"
                 onClick={() => toggleCheckboxByKey('made-no-digital-copy')}
-                title="I will never make a digital copy or photo"
-                description="Don’t save your seed in a phone or take a picture with any device.
-                A cloud or photo service can be hacked and your seed stolen."
+                title={<Translation id="TR_BACKUP_CHECKBOX_2_TITLE" />}
+                description={<Translation id="TR_BACKUP_CHECKBOX_2_DESCRIPTION" />}
                 isChecked={isChecked('made-no-digital-copy')}
             />
             <CheckItem
                 data-test="@backup/check-item/will-hide-seed"
                 onClick={() => toggleCheckboxByKey('will-hide-seed')}
-                title="I will hide the seed properly"
-                description="Hide your seed properly and/or use further accessories to ensure maximum security of your seed."
+                title={<Translation id="TR_BACKUP_CHECKBOX_3_TITLE" />}
+                description={<Translation id="TR_BACKUP_CHECKBOX_3_DESCRIPTION" />}
                 isChecked={isChecked('will-hide-seed')}
             />
         </CheckboxWrapper>

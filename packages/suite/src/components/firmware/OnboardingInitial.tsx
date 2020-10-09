@@ -24,7 +24,9 @@ const Body = () => {
         return (
             <>
                 <InitImg model={device.features?.major_version} />
-
+                <H2>
+                    <Translation id="TR_INSTALL_FIRMWARE" />
+                </H2>
                 <P>
                     <Translation id="TR_FIRMWARE_SUBHEADING" />
                 </P>
@@ -36,7 +38,9 @@ const Body = () => {
         return (
             <>
                 <InitImg model={device.features?.major_version} />
-
+                <H2>
+                    <Translation id="TR_INSTALL_FIRMWARE" />
+                </H2>
                 <P>
                     <Translation
                         id="TR_FIRMWARE_INSTALLED_TEXT"
@@ -56,7 +60,7 @@ const Body = () => {
         return (
             <>
                 <InitImg model={device.features?.major_version} />
-
+                {/* TODO: H2 subheading? */}
                 <P>
                     <Translation
                         id="TR_FIRMWARE_INSTALLED_TEXT"

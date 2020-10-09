@@ -52,10 +52,16 @@ const RecoveryStep = (props: Props) => {
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
-                {recovery.status === 'initial' && 'Recover your device from seed'}
-                {recovery.status === 'select-recovery-type' && 'Select recovery method'}
-                {device && device.mode === 'normal' && 'Device recovered from seed'}
-                {recovery.status === 'finished' && recovery.error && 'Recovery failed'}
+                {recovery.status === 'initial' && <Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
+                {recovery.status === 'select-recovery-type' && (
+                    <Translation id="TR_SELECT_RECOVERY_METHOD" />
+                )}
+                {device && device.mode === 'normal' && (
+                    <Translation id="TR_WALLET_RECOVERED_FROM_SEED" />
+                )}
+                {recovery.status === 'finished' && recovery.error && (
+                    <Translation id="TR_RECOVERY_FAILED" />
+                )}
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 {recovery.status === 'initial' && model === 1 && (

@@ -27,6 +27,7 @@ import SetPinStep from '@onboarding-views/steps/Pin/Container';
 import FinalStep from '@onboarding-views/steps/Final/Container';
 import UnexpectedState from '@onboarding-views/unexpected-states';
 import { AppState, Dispatch, InjectedModalApplicationProps } from '@suite-types';
+import { Translation } from '@suite-components';
 
 const InnerModalWrapper = styled.div`
     display: flex;
@@ -108,7 +109,7 @@ const Onboarding = (props: Props) => {
             currentProgressBarStep={stepsInPath.findIndex(step => activeStepId === step.id)}
             hiddenProgressBar={!getStep().progress}
             // heading={capitalizeFirstLetter(activeStepId.replace(/-/g, ' '))}
-            heading="Onboarding"
+            heading={<Translation id="TR_ONBOARDING" />}
         >
             <Head>
                 <title>Onboarding | Trezor Suite</title>

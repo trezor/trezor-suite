@@ -105,7 +105,11 @@ const BackupStep = (props: Props) => {
                         data-test="@onboarding/exit-app-button"
                         onClick={() => props.closeModalApp()}
                     >
-                        <Translation id="TR_SKIP_SECURITY" />
+                        {status === 'finished' ? (
+                            <Translation id="TR_SKIP_SECURITY_PIN" />
+                        ) : (
+                            <Translation id="TR_SKIP_SECURITY" />
+                        )}
                     </OnboardingButton.Back>
                 )}
             </Wrapper.StepFooter>

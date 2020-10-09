@@ -33,7 +33,7 @@ const SetPinStep = (props: Props) => {
     return (
         <Wrapper.Step data-test="@onboarding/pin">
             <Wrapper.StepHeading>
-                {getStatus() === 'initial' && 'PIN'}
+                {getStatus() === 'initial' && <Translation id="TR_PIN_HEADING_INITIAL" />}
                 {getStatus() === 'first' && <Translation id="TR_PIN_HEADING_FIRST" />}
                 {getStatus() === 'second' && <Translation id="TR_PIN_HEADING_REPEAT" />}
                 {getStatus() === 'success' && <Translation id="TR_PIN_HEADING_SUCCESS" />}
@@ -78,7 +78,7 @@ const SetPinStep = (props: Props) => {
                                 data-test="@onboarding/pin/continue-button"
                                 onClick={() => props.goToNextStep()}
                             >
-                                <Translation id="TR_CONTINUE" />
+                                <Translation id="TR_COMPLETE_SETUP" />
                             </OnboardingButton.Cta>
                         </Wrapper.Controls>
                     </>
