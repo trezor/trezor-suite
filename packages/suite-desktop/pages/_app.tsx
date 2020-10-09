@@ -1,6 +1,5 @@
 import React from 'react';
 import App from 'next/app';
-import dynamic from 'next/dynamic';
 import { Store } from 'redux';
 import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
@@ -18,9 +17,7 @@ import { SENTRY_CONFIG } from '@suite-config';
 import Resize from '@suite-support/Resize/Container';
 import { isDev } from '@suite-utils/build';
 import styled from 'styled-components';
-
-// Titlebar needs to be loaded dynamically due to the platform detection which is only available on client
-const DesktopTitlebar = dynamic(() => import('@desktop/components/DesktopTitlebar'), { ssr: false });
+import DesktopTitlebar from '@desktop/components/DesktopTitlebar';
 
 interface Props {
     store: Store;
