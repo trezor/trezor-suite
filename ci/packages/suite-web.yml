@@ -59,7 +59,7 @@ suite-web deploy dev:
   stage: deploy to dev
   variables:
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
-  dependencies:
+  needs:
     - install and build
     - suite-web-landing build dev
     - suite-web build dev
@@ -78,6 +78,8 @@ suite-web e2e chrome stage=suite:
     stage: integration testing
     variables:
         TEST_GROUP: "@group:suite"
+    needs:
+      - suite-web deploy dev
     script:
         - *e2e_script_common
         - export CYPRESS_SNAPSHOT=1
@@ -85,12 +87,13 @@ suite-web e2e chrome stage=suite:
         - "eval $TEST_CMD"
     artifacts:
         <<: *e2e_artifacts
-    dependencies: []
 
 suite-web e2e chrome stage=metadata:
     stage: integration testing
     variables:
         TEST_GROUP: "@group:metadata"
+    needs:
+      - suite-web deploy dev
     script:
         - *e2e_script_common
         - export CYPRESS_SNAPSHOT=1
@@ -98,12 +101,13 @@ suite-web e2e chrome stage=metadata:
         - "eval $TEST_CMD"
     artifacts:
         <<: *e2e_artifacts
-    dependencies: []
 
 suite-web e2e chrome stage=device-management:
     stage: integration testing
     variables:
         TEST_GROUP: "@group:device-management"
+    needs:
+      - suite-web deploy dev
     script:
         - *e2e_script_common
         - export CYPRESS_SNAPSHOT=1
@@ -111,12 +115,13 @@ suite-web e2e chrome stage=device-management:
         - "eval $TEST_CMD"
     artifacts:
         <<: *e2e_artifacts
-    dependencies: []
 
 suite-web e2e chrome stage=onboarding:
     stage: integration testing
     variables:
         TEST_GROUP: "@group:onboarding"
+    needs:
+      - suite-web deploy dev
     script:
         - *e2e_script_common
         - export CYPRESS_SNAPSHOT=1
@@ -124,7 +129,6 @@ suite-web e2e chrome stage=onboarding:
         - "eval $TEST_CMD"
     artifacts:
         <<: *e2e_artifacts
-    dependencies: []
 
 # this job is intended to collect statistics on tests in beta stage (=tests that are possibly unstable)
 # failing test here does not make job fail, run_tests script with --stage='@beta' exits with non-zero
@@ -133,6 +137,8 @@ suite-web e2e chrome stage=onboarding:
     stage: integration testing
     variables:
         TEST_GROUP: "@beta"
+    needs:
+      - suite-web deploy dev
     script:
         - *e2e_script_common
         - export CYPRESS_SNAPSHOT=1
@@ -140,7 +146,6 @@ suite-web e2e chrome stage=onboarding:
         - "eval $TEST_CMD"
     artifacts:
         <<: *e2e_artifacts
-    dependencies: []
 
 # on scheduled job every night, run all stable tests against latest chrome-beta. This is meant to be
 # kind of an early-warning system.
@@ -148,6 +153,8 @@ suite-web e2e chrome-beta stage=stable:
     stage: integration testing
     variables:
         TEST_GROUP: "@stable"
+    needs:
+      - suite-web deploy dev
     only:
         - schedules
     allow_failure: false
@@ -158,11 +165,10 @@ suite-web e2e chrome-beta stage=stable:
         - "eval $TEST_CMD"
     artifacts:
         <<: *e2e_artifacts
-    dependencies: []
 
 suite-web deploy staging-wallet:
     stage: deploy to staging
-    dependencies:
+    needs:
         - suite-web build beta
         - suite-desktop build mac
         - suite-desktop build linux
@@ -188,7 +194,7 @@ suite-web deploy staging-wallet:
 
 suite-web deploy staging-suite:
     stage: deploy to staging
-    dependencies:
+    needs:
         - suite-web build stable
         - suite-desktop build mac
         - suite-desktop build linux
