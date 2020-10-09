@@ -44,6 +44,11 @@
                 "to": "images/icons/512x512.png"
             }
         ],
+        "publish": {
+            "provider": "github",
+            "repo": "trezor-suite",
+            "owner": "trezor"
+        },
         "dmg": {
             "contents": [
                 {
