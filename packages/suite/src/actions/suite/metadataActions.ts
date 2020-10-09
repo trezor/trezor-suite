@@ -170,6 +170,7 @@ const handleProviderError = (error: MetadataProviderError, action: string) => (
         case 'PROVIDER_ERROR':
         case 'RATE_LIMIT_ERROR':
         case 'AUTH_ERROR':
+            dispatch(disconnectProvider());
             break;
         default:
             break;

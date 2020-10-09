@@ -73,12 +73,10 @@ export const Target = ({
 }: TargetProps) => {
     const targetAmount = getTargetAmount(target, transaction);
     const operation = getTxOperation(transaction);
-    // const htmlElement = createRef<HTMLDivElement>();
     const { addNotification } = useActions({ addNotification: notificationActions.addToast });
 
     return (
         <BaseTargetLayout
-            // ref={htmlElement}
             {...baseLayoutProps}
             addressLabel={
                 <MetadataLabeling
