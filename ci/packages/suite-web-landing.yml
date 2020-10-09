@@ -3,6 +3,7 @@
     - develop
     - releases
     - schedules
+    - /^release\//
 
 suite-web-landing build dev:
   stage: build

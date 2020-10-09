@@ -3,6 +3,7 @@
     - develop
     - releases
     - schedules
+    - /^release\//
 
 landing-page build dev:
   stage: build

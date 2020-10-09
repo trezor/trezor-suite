@@ -6,6 +6,7 @@ variables:
         - develop
         - releases
         - schedules
+        - /^release\//
 
 .e2e_artifacts: &e2e_artifacts
     expire_in: 7 days

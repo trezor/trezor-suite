@@ -25,6 +25,7 @@
         - develop
         - releases
         - schedules
+        - /^release\//
 
 suite-desktop build mac:
     only:
