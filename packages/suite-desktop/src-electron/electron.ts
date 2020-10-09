@@ -197,6 +197,12 @@ const init = async () => {
     ipcMain.on('window/maximize', () => {
         mainWindow.maximize();
     });
+    ipcMain.on('window/unmaximize', () => {
+        mainWindow.unmaximize();
+    });
+    mainWindow.on('resize', () => {
+        mainWindow.webContents.send('window/is-maximized', mainWindow.isMaximized());
+    });
 
     httpReceiver.start();
 
