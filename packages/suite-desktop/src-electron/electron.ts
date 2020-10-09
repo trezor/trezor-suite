@@ -85,7 +85,7 @@ const init = async () => {
             allowRunningInsecureContent: isDev,
             nodeIntegration: false,
             contextIsolation: true,
-            enableRemoteModule: true,
+            enableRemoteModule: false,
             preload: path.join(__dirname, 'preload.js'),
         },
         icon: path.join(res, 'images', 'icons', '512x512.png'),
