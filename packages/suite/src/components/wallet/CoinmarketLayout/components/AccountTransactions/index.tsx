@@ -26,7 +26,16 @@ const NoTransactions = styled.div`
 `;
 
 const StyledH2 = styled(H2)`
+    display: flex;
+    flex-direction: column;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
+const TransactionCount = styled.div`
+    margin-top: 6px;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
 
 const AccountTransactions = () => {
@@ -47,6 +56,11 @@ const AccountTransactions = () => {
             return 0;
         });
 
+    const buyTransactions = sortedAccountTransactions.filter(tx => tx.tradeType === 'buy');
+    const exchangeTransactions = sortedAccountTransactions.filter(
+        tx => tx.tradeType === 'exchange',
+    );
+
     return (
         <Wrapper>
             {sortedAccountTransactions.length === 0 && (
@@ -58,8 +72,12 @@ const AccountTransactions = () => {
                 <>
                     <Header>
                         <StyledH2>
-                            <Translation id="TR_BUY_ACCOUNT_TRANSACTIONS" /> •{' '}
-                            {sortedAccountTransactions.length}
+                            <Translation id="TR_BUY_ACCOUNT_TRANSACTIONS" />
+                            <TransactionCount>
+                                {buyTransactions.length} <Translation id="TR_COINMARKET_BUYS" /> •{' '}
+                                {exchangeTransactions.length}{' '}
+                                <Translation id="TR_COINMARKET_EXCHANGES" />
+                            </TransactionCount>
                         </StyledH2>
                     </Header>
                     <Content>
@@ -74,7 +92,6 @@ const AccountTransactions = () => {
                                     />
                                 );
                             }
-
                             if (trade.tradeType === 'exchange') {
                                 return (
                                     <ExchangeTransaction

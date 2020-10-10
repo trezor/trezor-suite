@@ -3009,6 +3009,14 @@ const definedMessages = defineMessages({
         id: 'TR_BUY_RECEIVE_QUESTION_TOOLTIP',
         defaultMessage: 'TR_BUY_RECEIVE_QUESTION_TOOLTIP',
     },
+    TR_COINMARKET_BUYS: {
+        id: 'TR_COINMARKET_BUYS',
+        defaultMessage: 'buys',
+    },
+    TR_COINMARKET_EXCHANGES: {
+        id: 'TR_COINMARKET_EXCHANGES',
+        defaultMessage: 'exchanges',
+    },
     TR_PAYMENT_METHOD_CARD: {
         id: 'TR_PAYMENT_METHOD_CARD',
         defaultMessage: 'Credit Card',
