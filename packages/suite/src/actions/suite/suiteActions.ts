@@ -40,6 +40,7 @@ export type SuiteActions =
       }
     | { type: typeof SUITE.SET_DEBUG_MODE; payload: Partial<DebugModeOptions> }
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
+    | { type: typeof SUITE.TOR_STATUS; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | { type: typeof SUITE.LOCK_DEVICE; payload: boolean }
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean }
@@ -89,6 +90,17 @@ export const initialRunCompleted = () => (dispatch: Dispatch, getState: GetState
  */
 export const updateOnlineStatus = (payload: boolean) => ({
     type: SUITE.ONLINE_STATUS,
+    payload,
+});
+
+/**
+ * Triggered by `@suite-support/TorStatus`
+ * Set `tor` status in suite reducer
+ * @param {boolean} payload
+ * @returns {Action}
+ */
+export const updateTorStatus = (payload: boolean) => ({
+    type: SUITE.TOR_STATUS,
     payload,
 });
 

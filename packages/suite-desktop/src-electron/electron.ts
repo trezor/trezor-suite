@@ -241,6 +241,26 @@ const init = async () => {
 
     httpReceiver.start();
 
+    // TOR
+    const sess = mainWindow.webContents.session;
+    const proxy = 'socks5://localhost:9050';
+    sess.resolveProxy(proxy).then(ttt => console.log(ttt));
+    ipcMain.on('tor/start', () => {
+        // TODO:
+        // - Check if Tor is running on the correct port
+        // - If not, send an error back
+        // - If yes, connect
+        /*
+        sess.setProxy({
+            proxyRules: proxy,
+        });
+        */
+    });
+
+    ipcMain.on('tor/stop', () => {
+        console.log('TOR', 'stop');
+    });
+
     // Updates (move in separate file)
     const updateSettings = store.getUpdateSettings();
     let latestVersion = {};

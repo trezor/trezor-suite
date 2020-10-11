@@ -8,6 +8,7 @@ import { initStore } from '@suite/reducers/store';
 import Preloader from '@suite-components/Preloader';
 import ToastContainer from '@suite-components/ToastContainer';
 import Router from '@suite-support/Router';
+import Tor from '@suite-support/Tor';
 import OnlineStatus from '@suite-support/OnlineStatus';
 import BridgeStatus from '@desktop/support/BridgeStatus';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
@@ -41,6 +42,7 @@ class TrezorSuiteApp extends App<Props> {
                 <ReduxProvider store={store}>
                     <ErrorBoundary>
                         <Resize />
+                        <Tor />
                         <OnlineStatus />
                         <IntlProvider>
                             <DesktopUpdater />
