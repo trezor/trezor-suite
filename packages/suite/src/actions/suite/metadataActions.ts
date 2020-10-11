@@ -224,6 +224,7 @@ export const fetchMetadata = (deviceState: string) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
+    console.log('fetch');
     const provider = await dispatch(getProvider());
     if (!provider) {
         return;
@@ -340,6 +341,8 @@ export const fetchMetadata = (deviceState: string) => async (
         await Promise.all(promises);
         // if interval for watching provider is not set, create it
         if (!fetchIntervals[deviceState]) {
+            // todo: this interval is never set if working with disconnected (remembered) device
+            // as the entire flow of metadata is triggered by discovery which does not run here!
             fetchIntervals[deviceState] = setInterval(() => {
                 if (!getState().suite.online) {
                     return;
@@ -409,6 +412,7 @@ export const connectProvider = (type: MetadataProviderType) => async (dispatch: 
         return;
     }
     const result = await provider.getProviderDetails();
+
     if (!result.success) {
         dispatch(handleProviderError(result, ProviderErrorAction.CONNECT));
         return;
@@ -660,6 +664,7 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
 
         return false;
     }
+
     // if yes, add metadata keys to accounts
     if (getState().metadata.initiating) {
         dispatch(syncMetadataKeys());

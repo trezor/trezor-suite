@@ -1,34 +1,36 @@
-import { Dropbox } from 'dropbox';
+import { Dropbox, users, DropboxAuth } from 'dropbox';
 import { AbstractMetadataProvider } from '@suite-types/metadata';
 import { extractCredentialsFromAuthorizationFlow, getOauthReceiverUrl } from '@suite-utils/oauth';
 import { METADATA } from '@suite-actions/constants';
 import { getRandomId } from '@suite-utils/random';
 
+type DropboxMeow = Dropbox & { auth: DropboxAuth };
 class DropboxProvider extends AbstractMetadataProvider {
     client: Dropbox;
-    user: DropboxTypes.users.FullAccount | undefined;
+    user: users.FullAccount | undefined;
     isCloud = true;
 
     constructor(token?: string) {
         super('dropbox');
 
         const fetch = window.fetch.bind(window);
-        this.client = new Dropbox({ clientId: METADATA.DROPBOX_CLIENT_ID, fetch });
+        this.client = new Dropbox({ clientId: METADATA.DROPBOX_CLIENT_ID, fetch }) as DropboxMeow;
 
         if (token) {
             // token loaded from storage
-            this.client.setRefreshToken(token);
+            this.client.auth.setRefreshToken(token);
         }
     }
 
     async isConnected() {
         // no token -> means not connected
-        if (!this.client.getAccessToken()) {
+        if (!this.client.auth.getAccessToken()) {
             return false;
         }
         // refresh token is present, refresh it and return true
         try {
-            await this.client.refreshAccessToken(['']);
+            const response = await this.client.auth.refreshAccessToken();
+            console.log('refreshAccessToken response', response);
             return true;
         } catch (err) {
             return false;
@@ -39,9 +41,11 @@ class DropboxProvider extends AbstractMetadataProvider {
     async connect() {
         const redirectUrl = await getOauthReceiverUrl();
 
+        console.log('redirectUrl', redirectUrl);
+
         if (!redirectUrl) return false;
 
-        const url = this.client.getAuthenticationUrl(
+        const url = this.client.auth.getAuthenticationUrl(
             redirectUrl,
             getRandomId(10),
             'code',
@@ -52,21 +56,31 @@ class DropboxProvider extends AbstractMetadataProvider {
             true,
         );
 
+        console.log('url', url);
+
         try {
             // dropbox supports authorization code flow for both web and desktop
             const { code } = await extractCredentialsFromAuthorizationFlow(url);
 
+            console.log('code', code);
+
             if (!code) return false;
 
-            // @ts-ignore todo: types are broken in the lib, latest version 6.0.1 is broken as well at time of writing this
-            const { accessToken, refreshToken } = await this.client.getAccessTokenFromCode(
-                redirectUrl,
-                code,
-            );
-            this.client.setAccessToken(accessToken);
-            this.client.setRefreshToken(refreshToken);
+            // this.client.auth is instance of DropboxAuth
+            const response = await this.client.auth.getAccessTokenFromCode(redirectUrl, code);
+            // @ts-ignore response looks like this, typescript thinks it is string
+            const { result, status, headers } = response;
+
+            // dropbox lib is broken, on simulated error, it returns status 400 result undefined and throws unhandled rejection inside the lib itself.
+            // but this should probably never happen so why not let it go as OTHER_ERROR("unknown error")
+            if (status !== 200) {
+                return false;
+                // return this.handleProviderError(result);
+            }
+            this.client.auth.setAccessToken(result.access_token);
+            this.client.auth.setRefreshToken(result.refresh_token);
         } catch (err) {
-            // todo:
+            // probably never happens
             return false;
         }
 
@@ -85,40 +99,38 @@ class DropboxProvider extends AbstractMetadataProvider {
 
     async getFileContent(file: string) {
         try {
-            const exists = await this.client.filesSearch({
+            // @ts-ignore again, wrong type in dropbox lib.
+            const { result } = await this.client.filesSearch({
                 path: '',
                 query: `${file}.mtdt`,
             });
-            if (exists?.matches?.length > 0) {
-                // check whether the file is in the regular folder ...
-                let match = exists.matches.find(m => m.metadata.path_lower === `/${file}.mtdt`);
-
-                // ... or in the legacy folder
-                // tldr: in the initial releases, files were saved into wrong location
-                // see more here: https://github.com/trezor/trezor-suite/pull/2642
-                const matchLegacy = exists.matches.find(
-                    m => m.metadata.path_lower === `/apps/trezor/${file}.mtdt`,
-                );
-
-                // fail if it is in neither
-                if (!match && !matchLegacy) return this.ok(undefined);
-
-                // regular file not found, but found one in the legacy folder
-                if (!match) match = matchLegacy;
-
-                const download = await this.client.filesDownload({
-                    path: match!.metadata.path_lower!,
-                });
-
-                // @ts-ignore: fileBlob not defined?
-                const buffer = (await download.fileBlob.arrayBuffer()) as Buffer;
-
-                return this.ok(buffer);
+            if (!result?.matches?.length) {
+                return this.ok(undefined);
             }
-            return this.ok(undefined);
-            // not found. this is not error. user just has not created the file yet
+
+            // check whether the file is in the regular folder ...
+            let match = result.matches.find(m => m.metadata.path_lower === `/${file}.mtdt`);
+
+            // ... or in the legacy folder
+            // tldr: in the initial releases, files were saved into wrong location
+            // see more here: https://github.com/trezor/trezor-suite/pull/2642
+            const matchLegacy = result.matches.find(
+                m => m.metadata.path_lower === `/apps/trezor/${file}.mtdt`,
+            );
+
+            // fail if it is in neither
+            if (!match && !matchLegacy) return this.ok(undefined);
+
+            // regular file not found, but found one in the legacy folder
+            if (!match) match = matchLegacy;
+
+            const response = await this.client.filesDownload({
+                path: match.metadata.path_lower!,
+            });
+            const buffer = (await response.result.fileBlob.arrayBuffer()) as Buffer;
+
+            return this.ok(buffer);
         } catch (err) {
-            // example:
             return this.handleProviderError(err);
         }
     }
@@ -140,21 +152,25 @@ class DropboxProvider extends AbstractMetadataProvider {
     }
 
     async getProviderDetails() {
-        const token = this.client.getRefreshToken();
+        const token = this.client.auth.getRefreshToken();
         if (!token) return this.error('AUTH_ERROR', 'token is missing');
 
         try {
-            const account = await this.client.usersGetCurrentAccount();
+            // jeeez, this seems to be broken in dropbox lib, type error somewhere low there
+            const response = await this.client.usersGetCurrentAccount();
+            // @ts-ignore ...
+            const { result, status } = response;
 
-            const result = {
+            const details = {
                 type: this.type,
                 isCloud: this.isCloud,
                 token,
-                user: account.name.given_name,
+                user: result.name.given_name,
             } as const;
 
-            return this.ok(result);
+            return this.ok(details);
         } catch (err) {
+            console.log('err', err);
             return this.handleProviderError(err);
         }
     }

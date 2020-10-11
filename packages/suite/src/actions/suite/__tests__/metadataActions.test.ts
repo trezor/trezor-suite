@@ -42,17 +42,30 @@ global.fetch = () => {};
 
 jest.mock('dropbox', () => {
     class Dropbox {
+        constructor() {
+            // @ts-ignore
+            this.auth = {
+                getAuthenticationUrl() {
+                    return 'https://foo/bar';
+                },
+                setAccessToken() {},
+
+                getRefreshToken() {
+                    return 'token-haf-mnau';
+                },
+                getAccessToken() {
+                    return 'token-haf-mnau';
+                },
+            };
+        }
         filesUpload() {
             return true;
         }
-        getAuthenticationUrl() {
-            return 'https://foo/bar';
-        }
-        setAccessToken() {}
         usersGetCurrentAccount() {
             return {
                 // eslint-disable-next-line
-                name: { given_name: 'haf' },
+                result: { name: { given_name: 'haf' } },
+                status: 200,
             };
         }
         getRefreshToken() {

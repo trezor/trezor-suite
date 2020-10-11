@@ -3,6 +3,9 @@ const bodyParser = require('body-parser');
 
 const port = 30002;
 
+// real expires in 14400
+const expires_in = 14400;
+
 /**
  * Mock implementation of Dropbox service intended to be used in e2e tests.
  */
@@ -45,7 +48,7 @@ class DropboxMock {
                 return res.send({
                     uid: '123',
                     access_token: 'dropbox-access-token',
-                    expires_in: 14400,
+                    expires_in,
                     token_type: 'bearer',
                     refresh_token: 'dropbox-refresh-token',
                     account_id: 'dbid:account-id',
@@ -56,7 +59,8 @@ class DropboxMock {
                 return res.send({
                     token_type: 'bearer',
                     access_token: 'dropbox-access-token',
-                    expires_in: 14400,
+                    expires_in,
+                    expires_in: 60,
                 });
             }
             return res.send('foo bar');

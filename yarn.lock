@@ -10386,7 +10386,7 @@ buffer-xor@^1.0.3:
   resolved "https://registry.yarnpkg.com/buffer-xor/-/buffer-xor-1.0.3.tgz#26e61ed1422fb70dd42e6e36729ed51d855fe8d9"
   integrity sha1-JuYe0UIvtw3ULm42cp7VHYVf6Nk=
 
-buffer@5.6.0, buffer@^5.6.0:
+buffer@5.6.0:
   version "5.6.0"
   resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.6.0.tgz#a31749dc7d81d84db08abf937b6b8c4033f62786"
   integrity sha512-/gDYp/UtU0eA1ys8bOs9J6a+E/KWIY+DZ+Q2WESNUA0jFRsJOc0SNUO6xJ5SGA1xueg3NL65W6s+NY5l9cunuw==
@@ -13239,13 +13239,12 @@ drbg.js@^1.0.1:
     create-hash "^1.1.2"
     create-hmac "^1.1.4"
 
-dropbox@5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/dropbox/-/dropbox-5.1.0.tgz#c6109639a2b91225d1adbdc53a87a9dec586f7ee"
-  integrity sha512-2aVdBW+5LpbxVo6bkJTcUY2PcfDJKzAzFQlJKnYZ09b4O33gfEJQtaeTH8yAHUdC1Eb78VK9lzjhnuYpjrSNXQ==
+dropbox@7.3.1:
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/dropbox/-/dropbox-7.3.1.tgz#3fc02c18e1866324ce3fff9a1f16ac4e8922d3cd"
+  integrity sha512-9LOVigrkEiLW1TGh+dVXolirY5Lc3/mdzRQt5XmeklK2RgVRKnRgfRExjfGCyAA8IM84sB2bVkJ/txWYf3L/UA==
   dependencies:
-    buffer "^5.6.0"
-    moment "^2.25.3"
+    node-fetch "^2.6.1"
 
 duplexer3@^0.1.4:
   version "0.1.4"
@@ -20427,11 +20426,6 @@ moment@2.24.0, moment@^2.18.1:
   version "2.24.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
-
-moment@^2.25.3:
-  version "2.29.0"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.0.tgz#fcbef955844d91deb55438613ddcec56e86a3425"
-  integrity sha512-z6IJ5HXYiuxvFTI6eiQ9dm77uE0gyy1yXNApVHqTcnIKfY9tIwEjlzsZ6u1LQXvVgKeTnv9Xm7NDvJ7lso3MtA==
 
 mount-point@^3.0.0:
   version "3.0.0"
