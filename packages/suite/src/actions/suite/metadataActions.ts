@@ -239,6 +239,11 @@ export const fetchMetadata = (deviceState: string) => async (
         return;
     }
 
+    // this triggers renewal of access token if needed. Otherwise multiple requests
+    // to renew access token are issued by every provider.getFileContent
+    const response = await provider.getCredentials();
+    if (!response.success) return;
+
     const deviceFileContentP = new Promise((resolve, reject) => {
         if (device?.metadata?.status !== 'enabled') {
             return reject(new Error('metadata not enabled for this device'));
