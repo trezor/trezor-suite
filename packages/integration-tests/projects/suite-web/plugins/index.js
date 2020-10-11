@@ -83,6 +83,13 @@ module.exports = on => {
             }
             return null;
         },
+        getRequests: ({ provider}) => {
+            switch(provider){ 
+                case 'dropbox':
+                    return dropboxMock.requests;
+                    // todo:
+            }
+        },
         startBridge: async version => {
             await controller.connect();
             await controller.send({ type: 'bridge-start', version });

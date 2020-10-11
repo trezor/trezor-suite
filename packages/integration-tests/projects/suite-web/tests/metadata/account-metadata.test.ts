@@ -88,6 +88,16 @@ describe('Metadata', () => {
             force: true,
         });
         cy.getTestElement('@metadata/input').clear().type('{enter}');
+
+        // check number of requests that were sent to dropbox in the course of this scenario
+        // - note if it fails:  data is not mocked, so it may fail if somebody adds an account to all seed
+        //                      in future there should be mocked discovery
+        //                      if it shoots somebody in leg, just remove this assertion...
+        // - why asserting it:  just to make sure that metadata don't send unnecessary amount of request
+        cy.task('getRequests', { provider: 'dropbox' }).then(requests => {
+            expect(requests).to.have.length(24);
+        });
+
         cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
     });
 });

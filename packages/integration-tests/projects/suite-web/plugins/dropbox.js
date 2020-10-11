@@ -10,12 +10,16 @@ class DropboxMock {
     constructor() {
         this.files = {};
         this.nextResponse = null;
+        // store requests for assertions in tests
+        this.requests = [];
 
         const app = express();
 
         app.use(bodyParser.json());
 
-        app.use((_req, res, next) => {
+        app.use((req, res, next) => {
+            this.requests.push(req.url);
+
             if (this.nextResponse) {
                 console.log('[dropboxMock]', this.nextResponse);
                 res.writeHeader(this.nextResponse.status, this.nextResponse.headers);
@@ -190,6 +194,7 @@ class DropboxMock {
         console.log('[mockDropbox]: reset');
         this.files = {};
         this.nextResponse = null;
+        this.requests = [];
     }
 }
 
