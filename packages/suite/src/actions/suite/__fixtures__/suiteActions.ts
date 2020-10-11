@@ -131,6 +131,18 @@ const reducerActions = [
         ],
     },
     {
+        description: `updateTorStatus (true/false)`,
+        actions: [suiteActions.updateTorStatus(true), suiteActions.updateTorStatus(false)],
+        result: [
+            {
+                online: true,
+            },
+            {
+                online: false,
+            },
+        ],
+    },
+    {
         description: `TRANSPORT.START`,
         actions: [
             {
