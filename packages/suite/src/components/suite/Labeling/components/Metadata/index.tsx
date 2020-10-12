@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { Button, colors } from '@trezor/components';
@@ -99,7 +99,6 @@ export interface ExtendedProps extends Props {
 }
 
 const ButtonLikeLabel = (props: ExtendedProps) => {
-    const divRef = useRef<HTMLDivElement>(null);
     const EditableButton = withEditable(Button);
 
     if (props.editActive) {
@@ -109,7 +108,6 @@ const ButtonLikeLabel = (props: ExtendedProps) => {
                 variant="tertiary"
                 icon="TAG"
                 data-test={props['data-test']}
-                divRef={divRef}
                 originalValue={props.payload.value}
                 onSubmit={props.onSubmit}
                 onBlur={props.onBlur}
@@ -134,14 +132,12 @@ const ButtonLikeLabel = (props: ExtendedProps) => {
 };
 
 const TextLikeLabel = (props: ExtendedProps) => {
-    const divRef = useRef<HTMLDivElement>(null);
     const EditableLabel = withEditable(Label);
 
     if (props.editActive) {
         return (
             <EditableLabel
                 data-test={props['data-test']}
-                divRef={divRef}
                 originalValue={props.payload.value}
                 onSubmit={props.onSubmit}
                 onBlur={props.onBlur}
@@ -210,6 +206,7 @@ const MetadataLabeling = (props: Props) => {
     const metadata = useSelector(state => state.metadata);
     const { isDiscoveryRunning, device } = useDiscovery();
     const [showSuccess, setShowSuccess] = useState(false);
+    const [pending, setPending] = useState(false);
     const { addMetadata, init, setEditing } = useActions({
         addMetadata: metadataActions.addMetadata,
         init: metadataActions.init,
@@ -217,6 +214,7 @@ const MetadataLabeling = (props: Props) => {
     });
     const l10nLabelling = getLocalizedActions(props.payload.type);
     const dataTestBase = `@metadata/${props.payload.type}/${props.payload.defaultValue}`;
+    const actionButtonsDisabled = isDiscoveryRunning || pending;
     let timeout: number | undefined;
 
     useEffect(() => {
@@ -265,11 +263,12 @@ const MetadataLabeling = (props: Props) => {
     }
 
     const onSubmit = async (value: string | undefined | null) => {
+        setPending(true);
         const result = await addMetadata({
             ...props.payload,
             value: value || undefined,
         });
-        // todo: maybe some pending status?
+        setPending(false);
         if (result) {
             setShowSuccess(true);
         }
@@ -313,9 +312,9 @@ const MetadataLabeling = (props: Props) => {
                         <ActionButton
                             data-test={`${dataTestBase}/add-label-button`}
                             variant="tertiary"
-                            icon={!isDiscoveryRunning ? 'TAG' : undefined}
-                            isLoading={isDiscoveryRunning}
-                            isDisabled={isDiscoveryRunning}
+                            icon={!actionButtonsDisabled ? 'TAG' : undefined}
+                            isLoading={actionButtonsDisabled}
+                            isDisabled={actionButtonsDisabled}
                             onClick={e => {
                                 e.stopPropagation();
                                 // by clicking on add label button, metadata.editing field is set
@@ -345,9 +344,9 @@ const MetadataLabeling = (props: Props) => {
                                     : `${dataTestBase}/add-label-button`
                             }
                             variant="tertiary"
-                            icon={!isDiscoveryRunning ? 'TAG' : undefined}
-                            isLoading={isDiscoveryRunning}
-                            isDisabled={isDiscoveryRunning}
+                            icon={!actionButtonsDisabled ? 'TAG' : undefined}
+                            isLoading={actionButtonsDisabled}
+                            isDisabled={actionButtonsDisabled}
                             onClick={e => {
                                 e.stopPropagation();
                                 activateEdit();

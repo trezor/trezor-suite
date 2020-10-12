@@ -61,7 +61,7 @@ describe('Metadata', () => {
         cy.getTestElement('@metadata/submit').click();
         cy.getTestElement('@account-menu/btc/normal/0/label').should(
             'contain',
-            'cool new label even cooler',
+            'even cooler',
         );
 
         cy.log('Now edit and press escape, should not save');
@@ -74,11 +74,11 @@ describe('Metadata', () => {
             .type('bcash is true bitcoin{esc}', { timeout: 20 });
         cy.getTestElement('@account-menu/btc/normal/0/label').should(
             'contain',
-            'cool new label even cooler',
+            'even cooler',
         );
 
         cy.log('Check that accounts search reflects also metadata');
-        cy.getTestElement('@account-menu/search-input').click().type('cool new label');
+        cy.getTestElement('@account-menu/search-input').click().type('even cooler');
         cy.getTestElement('@account-menu/btc/normal/0').should('be.visible');
         cy.getTestElement('@account-menu/search-input').click().type('something retarded');
         cy.getTestElement('@account-menu/btc/normal/0').should('not.be.visible');
