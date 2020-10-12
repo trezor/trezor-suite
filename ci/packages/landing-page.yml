@@ -33,7 +33,7 @@ landing-page deploy staging-wallet:
   dependencies:
     - landing-page build beta
   environment:
-    name: ${CI_BUILD_REF_NAME}-staging
+    name: ${CI_BUILD_REF_NAME}-staging-wallet
     url: ${STAGING_WALLET_SERVER_URL}
   before_script: []
   when: manual
