@@ -7,6 +7,8 @@
   - [Suite Desktop](packages/desktop.md)
 - [Features](features/index.md)
   - [Metadata](features/metadata.md)
+- [Tests](tests/index.md)
+  - [Suite-web e2e](tests/e2e-web.md)
 - [Miscellaneous](misc/index.md)
   - [Versioning](misc/versioning.md)
   - [Analytics](misc/analytics.md)
