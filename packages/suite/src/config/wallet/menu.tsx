@@ -29,7 +29,6 @@ export const ITEMS = [
         title: <Translation id="TR_NAV_TRADE" />,
         icon: 'TRADE',
         isHidden: () => false,
-        isComingSoon: true,
     },
     // {
     //     route: 'wallet-details',
