@@ -4,7 +4,14 @@ import { Button } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { getFwVersion } from '@suite-utils/device';
 import { useDevice, useFirmware, useActions } from '@suite-hooks';
-import { P, H2, InitImg, ConnectInNormalImg } from '@firmware-components';
+import {
+    P,
+    H2,
+    InitImg,
+    ConnectInNormalImg,
+    ReconnectInNormalStep,
+    InstallButton,
+} from '@firmware-components';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 
 const Body = () => {
@@ -20,10 +27,10 @@ const Body = () => {
             </>
         );
 
-    if (device?.firmware === 'none') {
+    if (device.firmware === 'none') {
         return (
             <>
-                <InitImg model={device.features?.major_version} />
+                <InitImg model={device.features.major_version} />
                 <H2>
                     <Translation id="TR_INSTALL_FIRMWARE" />
                 </H2>
@@ -34,10 +41,13 @@ const Body = () => {
         );
     }
 
+    // after firmware none because such device reports as in bootloader mode
+    if (device?.mode === 'bootloader') return <ReconnectInNormalStep.Body />;
+
     if (device.firmware === 'required') {
         return (
             <>
-                <InitImg model={device.features?.major_version} />
+                <InitImg model={device.features.major_version} />
                 <H2>
                     <Translation id="TR_INSTALL_FIRMWARE" />
                 </H2>
@@ -59,7 +69,7 @@ const Body = () => {
     if (device.firmware === 'outdated') {
         return (
             <>
-                <InitImg model={device.features?.major_version} />
+                <InitImg model={device.features.major_version} />
                 {/* TODO: H2 subheading? */}
                 <P>
                     <Translation
@@ -91,12 +101,10 @@ const BottomBar = () => {
     if (!device?.connected || !device?.features) return null;
 
     if (device?.firmware === 'none') {
-        return (
-            <Button onClick={() => firmwareUpdate()} data-test="@firmware/start-button">
-                <Translation id="TR_INSTALL" />
-            </Button>
-        );
+        return <InstallButton onClick={() => firmwareUpdate()} />;
     }
+
+    if (device?.mode === 'bootloader') return null;
 
     const getPrimaryButtonProps = () => {
         return {

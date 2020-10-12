@@ -12,7 +12,7 @@ export type FirmwareActions =
     | { type: typeof FIRMWARE.SET_TARGET_RELEASE; payload: AcquiredDevice['firmwareRelease'] }
     | { type: typeof FIRMWARE.RESET_REDUCER }
     | { type: typeof FIRMWARE.ENABLE_REDUCER; payload: boolean }
-    | { type: typeof FIRMWARE.SET_ERROR; payload: string }
+    | { type: typeof FIRMWARE.SET_ERROR; payload: string | undefined }
     | { type: typeof FIRMWARE.TOGGLE_HAS_SEED };
 
 export const resetReducer = () => (dispatch: Dispatch) => {
@@ -52,6 +52,8 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
         return;
     }
 
+    dispatch(setStatus('started'));
+
     const model = device.features.major_version;
 
     // for update (in firmware modal) target release is set. otherwise use device.firmwareRelease
@@ -72,8 +74,6 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
         ].join();
     }
 
-    dispatch(setStatus('downloading'));
-
     // update to same variant as is currently installed
     const toBtcOnly = isBitcoinOnly(device);
 
@@ -86,8 +86,6 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
         btcOnly: toBtcOnly,
         version: toFwVersion,
     };
-
-    dispatch(setStatus('started'));
 
     const updateResponse = await TrezorConnect.firmwareUpdate(payload);
 

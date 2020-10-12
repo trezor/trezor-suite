@@ -15,23 +15,23 @@ export const getTextForStatus = (status: AppState['firmware']['status']) => {
     switch (status) {
         case 'waiting-for-confirmation':
             return 'TR_WAITING_FOR_CONFIRMATION';
+        case 'started':
         case 'installing':
             return 'TR_INSTALLING';
-        case 'downloading':
-            return 'TR_DOWNLOADING';
         case 'wait-for-reboot':
             return 'TR_WAIT_FOR_REBOOT';
         case 'unplug':
             return 'TR_DISCONNECT_YOUR_DEVICE';
         case 'check-fingerprint':
             return 'TR_CHECK_FINGERPRINT';
-        // case 'started' is intentionally omitted;
         default:
             return null;
     }
 };
 export const getDescriptionForStatus = (status: AppState['firmware']['status']) => {
     switch (status) {
+        case 'started':
+        case 'installing':
         case 'wait-for-reboot':
             return 'TR_DO_NOT_DISCONNECT';
         default:

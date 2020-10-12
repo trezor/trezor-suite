@@ -24,13 +24,15 @@ const FirmwareStep = ({
     goToPreviousStep,
     goToNextStep,
     resetReducer,
+    firmwareUpdate,
 }: Props) => {
     const getComponent = () => {
+        console.log(firmware.error, firmware.status);
         // edge case 1 - error
         if (firmware.error) {
             return {
                 Body: <ErrorStep.Body />,
-                BottomBar: <RetryButton onClick={() => resetReducer()} />,
+                BottomBar: <RetryButton onClick={() => firmwareUpdate()} />,
             };
         }
 
@@ -61,7 +63,6 @@ const FirmwareStep = ({
             case 'waiting-for-confirmation':
             case 'installing':
             case 'started':
-            case 'downloading':
             case 'check-fingerprint':
             case 'wait-for-reboot':
             case 'unplug':
@@ -87,7 +88,7 @@ const FirmwareStep = ({
 
             default:
                 // 'ensure' type completeness
-                throw new Error('state is not handled here');
+                throw new Error(`state "${firmware.status}" is not handled here`);
         }
     };
 
@@ -101,8 +102,12 @@ const FirmwareStep = ({
             </Wrapper.StepBody>
 
             <Wrapper.StepFooter>
-                {firmware.status === 'initial' && (
-                    <OnboardingButton.Back onClick={() => goToPreviousStep()}>
+                {['initial', 'error'].includes(firmware.status) && (
+                    <OnboardingButton.Back
+                        onClick={() =>
+                            firmware.status === 'error' ? resetReducer() : goToPreviousStep()
+                        }
+                    >
                         <Translation id="TR_BACK" />
                     </OnboardingButton.Back>
                 )}

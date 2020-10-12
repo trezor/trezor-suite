@@ -19,8 +19,7 @@ export type FirmwareUpdateState =
               | 'initial' // initial state
               | 'check-seed' // ask user, if has seed properly backed up
               | 'waiting-for-bootloader' // navigate user into bootloader mode
-              | 'started' // progress - ??
-              | 'downloading' // progress - firmware is being downloaded
+              | 'started' // progress - firmware update has started, waiting for events from trezor-connect
               | 'waiting-for-confirmation' // progress - device waits for confirmation prior starting to update
               | 'installing' // progress - firmware is being installed
               | 'check-fingerprint' // progress - some old t1 firmwares show screen with fingerprint check
@@ -52,10 +51,15 @@ const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Actio
         switch (action.type) {
             case FIRMWARE.SET_UPDATE_STATUS:
                 draft.status = action.payload;
+                if (action.payload === 'started') {
+                    draft.error = undefined;
+                }
                 break;
             case FIRMWARE.SET_ERROR:
-                draft.status = 'error';
                 draft.error = action.payload;
+                if (action.payload) {
+                    draft.status = 'error';
+                }
                 break;
             case FIRMWARE.SET_TARGET_RELEASE:
                 draft.targetRelease = action.payload;

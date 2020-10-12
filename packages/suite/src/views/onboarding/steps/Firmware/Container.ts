@@ -19,6 +19,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
             goToNextStep: onboardingActions.goToNextStep,
             goToPreviousStep: onboardingActions.goToPreviousStep,
             resetReducer: firmwareActions.resetReducer,
+            firmwareUpdate: firmwareActions.firmwareUpdate,
         },
         dispatch,
     );
