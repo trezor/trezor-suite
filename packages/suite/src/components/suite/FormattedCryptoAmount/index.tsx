@@ -4,6 +4,8 @@ import { HiddenPlaceholder } from '@suite-components';
 
 const Value = styled.span`
     font-variant-numeric: tabular-nums;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const Symbol = styled.span`
@@ -21,7 +23,7 @@ const FormattedCryptoAmount = ({ value, symbol, disableHiddenPlaceholder, classN
     const content = (
         <>
             <Value>{value}</Value>
-            {symbol && <Symbol>{` ${symbol}`}</Symbol>}
+            {symbol && <Symbol>&nbsp;{symbol}</Symbol>}
         </>
     );
 

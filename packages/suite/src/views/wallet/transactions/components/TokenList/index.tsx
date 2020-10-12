@@ -5,11 +5,10 @@ import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components
 import { Section } from '@dashboard-components';
 import { variables, colors, Icon, Link, Card } from '@trezor/components';
 
-const Wrapper = styled(Card)`
+const Wrapper = styled(Card)<{ isTestnet?: boolean }>`
     display: grid;
-    grid-template-columns: ${(props: { isTestnet?: boolean }) =>
-        props.isTestnet ? '4fr 1fr 44px' : '4fr 1fr 1fr 44px'};
     padding: 12px 16px;
+    grid-template-columns: ${props => (props.isTestnet ? 'auto auto 44px' : 'auto auto auto 44px')};
 `;
 
 interface ColProps {
@@ -21,6 +20,7 @@ interface ColProps {
 const TokenSymbol = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
+    text-transform: uppercase;
     padding-right: 2px;
 `;
 
@@ -30,7 +30,8 @@ const Col = styled.div<ColProps>`
     padding: 10px 12px 10px 0px;
     color: ${colors.NEUE_TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
-    border-top: 1px solid ${colors.BLACK96};
+    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+    overflow: hidden;
 
     &:nth-child(${props => (props.isTestnet ? '-n + 3' : '-n + 4')}) {
         /* first row */
@@ -53,7 +54,7 @@ const Col = styled.div<ColProps>`
         `}
 `;
 
-const TokenName = styled.div`
+const TokenNameWrapper = styled.div`
     display: flex;
     flex: 1;
     overflow: hidden;
@@ -61,11 +62,23 @@ const TokenName = styled.div`
     align-items: center;
 `;
 
+const TokenName = styled.span`
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        display: none;
+    }
+`;
+
 const TokenValue = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${colors.NEUE_TYPE_DARK_GREY};
+    white-space: nowrap;
+    overflow: hidden;
 `;
 
 const FiatWrapper = styled.div`
@@ -80,6 +93,11 @@ const Divider = styled.div`
     height: 1px;
     background: ${colors.NEUE_STROKE_GREY};
     margin: 24px 0px;
+`;
+
+const CryptoAmount = styled(FormattedCryptoAmount)`
+    display: flex;
+    overflow: hidden;
 `;
 
 interface Props {
@@ -97,18 +115,15 @@ const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
                     return (
                         <Fragment key={t.address}>
                             <Col isTestnet={isTestnet}>
-                                <TokenName>
-                                    <TokenSymbol>{t.symbol?.toUpperCase()}</TokenSymbol>
-                                    {` - ${t.name}`}
-                                </TokenName>
+                                <TokenNameWrapper>
+                                    <TokenSymbol>{t.symbol}</TokenSymbol>
+                                    <TokenName> - {t.name}</TokenName>
+                                </TokenNameWrapper>
                             </Col>
                             <Col isTestnet={isTestnet} justify="right">
                                 <TokenValue>
                                     {t.balance && (
-                                        <FormattedCryptoAmount
-                                            value={t.balance}
-                                            symbol={t.symbol}
-                                        />
+                                        <CryptoAmount value={t.balance} symbol={t.symbol} />
                                     )}
                                 </TokenValue>
                             </Col>
