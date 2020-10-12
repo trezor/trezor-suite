@@ -50,6 +50,7 @@
             "owner": "trezor"
         },
         "dmg": {
+            "sign": false,
             "contents": [
                 {
                     "x": 410,
