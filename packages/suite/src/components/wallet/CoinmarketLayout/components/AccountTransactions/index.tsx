@@ -57,9 +57,7 @@ const AccountTransactions = () => {
         });
 
     const buyTransactions = sortedAccountTransactions.filter(tx => tx.tradeType === 'buy');
-    const exchangeTransactions = sortedAccountTransactions.filter(
-        tx => tx.tradeType === 'exchange',
-    );
+    const exchangeTransactions = [];
 
     return (
         <Wrapper>
