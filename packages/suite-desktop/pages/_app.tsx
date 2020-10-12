@@ -24,14 +24,26 @@ interface Props {
 }
 
 const titlebarHeight = 40;
+const resizeHandlerPadding = 4;
 const TitlebarWrapper = styled.div`
     display: block;
     position: fixed;
     z-index: 1000000;
     height: ${titlebarHeight}px;
     width: 100%;
-    -webkit-user-select: none;
-    -webkit-app-region: drag;
+
+    &:after {
+        position: fixed;
+        width: calc(100% - ${resizeHandlerPadding * 2}px);
+        height: ${titlebarHeight - resizeHandlerPadding}px;
+        content: '';
+        display: block;
+        top: ${resizeHandlerPadding}px;
+        left: ${resizeHandlerPadding}px;
+        z-index: 0;
+        -webkit-user-select: none;
+        -webkit-app-region: drag;
+    }
 `;
 
 const MainWrapper = styled.div`
