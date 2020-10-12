@@ -4,7 +4,7 @@ import { Button, ButtonProps } from '@trezor/components';
 import { Translation } from '@suite-components';
 
 export const RetryButton = (props: ButtonProps) => (
-    <Button {...props}>
+    <Button {...props} data-test="@firmware/retry-button">
         <Translation id="TR_RETRY" />
     </Button>
 );
@@ -19,7 +19,7 @@ export const ContinueButton = (props: ButtonProps) => {
 
 export const InstallButton = (props: ButtonProps) => {
     return (
-        <Button {...props}>
+        <Button {...props} data-test="@firmware/install-button">
             <Translation id="TR_INSTALL" />
         </Button>
     );

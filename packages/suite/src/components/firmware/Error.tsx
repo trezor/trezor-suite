@@ -15,7 +15,7 @@ const Body = () => {
                 <Translation id="TR_OOPS_SOMETHING_WENT_WRONG" />
             </H2>
             {/* yeah I know we shouldn't use something called TOAST_ here.. but it is so beautifully generic.. */}
-            <P>
+            <P data-test="@firmware/error-message">
                 <Translation id="TOAST_GENERIC_ERROR" values={{ error }} />
             </P>
         </>

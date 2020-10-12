@@ -38,16 +38,6 @@ const Body = () => {
                 </>
             )}
 
-            {status === 'installing' ? (
-                // TODO: Product wants "Follow progress in you trezor screen" in H2, but that is already used above
-                <P>
-                    <Translation id="TR_DO_NOT_DISCONNECT" />
-                </P>
-            ) : (
-                // empty to avoid jumping
-                <P> </P>
-            )}
-
             {status === 'check-fingerprint' && (
                 <Fingerprint>
                     {getFormattedFingerprint(device.firmwareRelease.release.fingerprint)}

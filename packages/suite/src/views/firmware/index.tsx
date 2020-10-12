@@ -52,7 +52,6 @@ const Firmware = ({ closeModalApp, resetReducer, firmware, device }: Props) => {
         'check-seed',
         'waiting-for-bootloader',
         'started',
-        'downloading',
         'waiting-for-confirmation',
         'installing',
         ['wait-for-reboot', 'unplug'],
@@ -131,7 +130,6 @@ const Firmware = ({ closeModalApp, resetReducer, firmware, device }: Props) => {
             case 'waiting-for-confirmation':
             case 'installing':
             case 'started':
-            case 'downloading':
             case 'check-fingerprint':
             case 'wait-for-reboot':
             case 'unplug':

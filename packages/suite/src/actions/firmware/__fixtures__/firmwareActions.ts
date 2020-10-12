@@ -25,7 +25,6 @@ export const actions = [
         },
         result: {
             actions: [
-                { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'downloading' },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
 
                 // todo: waiting-for-confirmation and installing is not tested
@@ -60,7 +59,6 @@ export const actions = [
         },
         result: {
             actions: [
-                { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'downloading' },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'unplug' },
             ],
@@ -113,9 +111,33 @@ export const actions = [
         },
         result: {
             actions: [
-                { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'downloading' },
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
                 { type: FIRMWARE.SET_ERROR, payload: 'foo' },
+            ],
+        },
+    },
+    {
+        description: 'FirmwareUpdate call to connect fails due to cancelling on device',
+        action: () => firmwareActions.firmwareUpdate(),
+        initialState: {
+            suite: {
+                device: bootloaderDevice,
+            },
+            devices: [bootloaderDevice],
+        },
+        mocks: {
+            connect: {
+                success: false,
+                payload: {
+                    // this is temporary workaround for bug somewhere in connect/trezor-link/trezord?
+                    error: "Cannot read property 'code' of null",
+                },
+            },
+        },
+        result: {
+            actions: [
+                { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
+                { type: FIRMWARE.SET_ERROR, payload: 'Firmware update cancelled' },
             ],
         },
     },
