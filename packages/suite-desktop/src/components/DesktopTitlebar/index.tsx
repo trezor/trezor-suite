@@ -80,44 +80,38 @@ const restore = () => {
 };
 
 const DesktopTitlebar = () => {
-    let isMac;
-    let iconSize;
-    let iconColor;
-    if (typeof window !== 'undefined') {
-        isMac = isMacOS();
-        iconSize = isMac ? 8 : 16;
-        iconColor = isMac ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY;
-    }
-
     const [maximized, setMaximized] = useState(false);
     useEffect(() => {
         window.desktopApi!.on('window/is-maximized', (payload: boolean) => {
             setMaximized(payload);
         });
     });
-
+    if (typeof window === 'undefined') {
+        return null;
+    }
+    const isMac = isMacOS();
+    const iconSize = isMac ? 8 : 16;
+    const iconColor = isMac ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY;
     return (
         <Titlebar>
-            {isMac !== undefined && (
-                <Actions isMac={isMac}>
-                    <ActionClose isMac={isMac} onClick={() => close()}>
-                        <Icon color={iconColor} size={iconSize} icon="WINDOW_CLOSE" />
-                    </ActionClose>
-                    <ActionMinimize isMac={isMac} onClick={() => minimize()}>
-                        <Icon color={iconColor} size={iconSize} icon="WINDOW_MINIMIZE" />
-                    </ActionMinimize>
-                    {maximized && (
-                        <ActionMaximize isMac={isMac} onClick={() => restore()}>
-                            <Icon color={iconColor} size={iconSize} icon="WINDOW_RESTORE" />
-                        </ActionMaximize>
-                    )}
-                    {!maximized && (
-                        <ActionMaximize isMac={isMac} onClick={() => maximize()}>
-                            <Icon color={iconColor} size={iconSize} icon="WINDOW_MAXIMIZE" />
-                        </ActionMaximize>
-                    )}
-                </Actions>
-            )}
+            <Actions isMac={isMac}>
+                <ActionClose isMac={isMac} onClick={() => close()}>
+                    <Icon color={iconColor} size={iconSize} icon="WINDOW_CLOSE" />
+                </ActionClose>
+                <ActionMinimize isMac={isMac} onClick={() => minimize()}>
+                    <Icon color={iconColor} size={iconSize} icon="WINDOW_MINIMIZE" />
+                </ActionMinimize>
+                {maximized && (
+                    <ActionMaximize isMac={isMac} onClick={() => restore()}>
+                        <Icon color={iconColor} size={iconSize} icon="WINDOW_RESTORE" />
+                    </ActionMaximize>
+                )}
+                {!maximized && (
+                    <ActionMaximize isMac={isMac} onClick={() => maximize()}>
+                        <Icon color={iconColor} size={iconSize} icon="WINDOW_MAXIMIZE" />
+                    </ActionMaximize>
+                )}
+            </Actions>
             <LogoWrapper>
                 <TrezorLogo
                     type="suite_compact"
@@ -129,5 +123,4 @@ const DesktopTitlebar = () => {
         </Titlebar>
     );
 };
-
 export default DesktopTitlebar;

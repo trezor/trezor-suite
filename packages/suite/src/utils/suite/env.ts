@@ -14,7 +14,7 @@ export const isAndroid = () => {
 };
 
 export const isMac = () => {
-    if (typeof navigator === 'undefined') return;
+    if (typeof navigator === 'undefined') return false;
     return ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'].includes(navigator.platform);
 };
 
