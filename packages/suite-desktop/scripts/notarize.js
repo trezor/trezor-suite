@@ -3,7 +3,12 @@ const pkg = require('../package.json');
 
 exports.default = async function notarizing(context) {
     const { electronPlatformName, appOutDir } = context;
+
     if (electronPlatformName !== 'darwin') {
+        return;
+    }
+
+    if (!process.env.APPLEID || !process.env.APPLEIDPASS) {
         return;
     }
 
