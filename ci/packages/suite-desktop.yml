@@ -9,6 +9,7 @@
     artifacts:
         paths:
             - ${artifact}
+            - latest*.yml
         expire_in: 1 days
 
 .build_nix: &build_nix
