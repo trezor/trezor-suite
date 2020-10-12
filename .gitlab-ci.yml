@@ -29,7 +29,8 @@ cache:
 
 variables:
     DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
-    STAGING_SERVER_URL: 'http://staging-wallet.trezor.io/wallet'
+    STAGING_WALLET_SERVER_URL: 'https://staging-wallet.trezor.io/wallet'
+    STAGING_SUITE_SERVER_URL: 'https://staging-suite.trezor.io'
     DESKTOP_APP_NAME: 'Trezor Suite'
 
 stages:

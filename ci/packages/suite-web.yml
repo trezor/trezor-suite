@@ -155,7 +155,7 @@ suite-web deploy staging-wallet:
         - suite-desktop build linux
         - suite-desktop build windows
     environment:
-        name: ${CI_BUILD_REF_NAME}-staging
+        name: ${CI_BUILD_REF_NAME}-staging-wallet
         url: ${STAGING_WALLET_SERVER_URL}
     before_script: []
     only:
@@ -181,7 +181,7 @@ suite-web deploy staging-suite:
         - suite-desktop build linux
         - suite-desktop build windows
     environment:
-        name: ${CI_BUILD_REF_NAME}-staging
+        name: ${CI_BUILD_REF_NAME}-staging-suite
         url: ${STAGING_SUITE_SERVER_URL}
     before_script: []
     only:
