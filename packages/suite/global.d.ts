@@ -16,6 +16,8 @@ export interface DesktopApi {
     windowMinimize: () => void;
     windowMaximize: () => void;
     windowUnmaximize: () => void;
+    // Client controls
+    clientReady: () => void;
 }
 
 declare global {
