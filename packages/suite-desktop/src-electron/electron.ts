@@ -58,6 +58,11 @@ const registerShortcuts = (window: BrowserWindow) => {
     });
 };
 
+// notify client with window maximization state
+const notifyWindowMaximized = (window: BrowserWindow) => {
+    window.webContents.send('window/is-maximized', mainWindow.isMaximized());
+};
+
 const init = async () => {
     try {
         // TODO: not necessary since suite will send a request to start bridge via IPC
@@ -201,7 +206,10 @@ const init = async () => {
         mainWindow.unmaximize();
     });
     mainWindow.on('resize', () => {
-        mainWindow.webContents.send('window/is-maximized', mainWindow.isMaximized());
+        notifyWindowMaximized(mainWindow);
+    });
+    mainWindow.on('move', () => {
+        notifyWindowMaximized(mainWindow);
     });
 
     httpReceiver.start();
