@@ -7,11 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 
 ### Changed
-
+- Improved metadata (labeling) input
 
 ### Fixed
 - Account search bug fixes and various small improvements
-
 
 ## [20.10.1]
 

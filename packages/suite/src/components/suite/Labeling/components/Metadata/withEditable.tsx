@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, createRef } from 'react';
+import React, { useEffect, useState, useCallback, createRef, useRef } from 'react';
 import styled from 'styled-components';
 import { Icon, colors } from '@trezor/components';
 
@@ -18,7 +18,6 @@ interface Props {
     originalValue?: string;
     onSubmit: (value: string | undefined | null) => void;
     onBlur: () => void;
-    divRef: React.RefObject<HTMLDivElement>;
 }
 
 /**
@@ -26,12 +25,14 @@ interface Props {
  * and control buttons (submit, cancel).
  */
 export const withEditable = (WrappedComponent: React.FC) => ({
-    divRef,
     onSubmit,
     onBlur,
     ...props
 }: Props) => {
+    const [touched, setTouched] = useState(false);
+    const divRef = useRef<HTMLDivElement>(null);
     const wrapperRef = createRef();
+
     const submit = useCallback(
         value => {
             if (props.originalValue && value === props.originalValue) {
@@ -45,21 +46,27 @@ export const withEditable = (WrappedComponent: React.FC) => ({
 
     useEffect(() => {
         // Set value of content editable element; set caret to correct position;
-        if (divRef?.current) {
-            divRef.current.textContent = props.originalValue || null;
-            divRef.current.focus();
-            moveCaretToEndOfContentEditable(divRef.current);
+        if (!divRef?.current || touched) {
+            return;
         }
-    }, [props, divRef]);
+        if (props.originalValue) {
+            divRef.current.textContent = props.originalValue;
+        }
+        divRef.current.focus();
+        // moveCaretToEndOfContentEditable(divRef.current);
+    }, [props, divRef, touched]);
 
     useEffect(() => {
         const keyboardHandler = (event: KeyboardEvent) => {
             event.stopPropagation();
 
             switch (event.keyCode) {
-                // tab
-                case 9:
-                    event.preventDefault();
+                // backspace
+                case 8:
+                    if (!touched && divRef?.current) {
+                        divRef.current.textContent = '';
+                    }
+
                     break;
                 // enter,
                 case 13:
@@ -69,7 +76,24 @@ export const withEditable = (WrappedComponent: React.FC) => ({
                 case 27:
                     onBlur();
                     break;
-                default: // no default;
+                // right arrow:
+                // tab
+                case 39:
+                case 9: {
+                    event.preventDefault();
+                    if (divRef?.current) {
+                        moveCaretToEndOfContentEditable(divRef.current);
+                        setTouched(true);
+                    }
+
+                    break;
+                }
+                default:
+                    // any other button, just set input to "touched"
+                    if (!touched && divRef?.current) {
+                        divRef.current.textContent = '';
+                        setTouched(true);
+                    }
             }
         };
 
@@ -78,7 +102,7 @@ export const withEditable = (WrappedComponent: React.FC) => ({
         return () => {
             window.removeEventListener('keydown', keyboardHandler, false);
         };
-    }, [submit, onBlur, props.originalValue, divRef, wrapperRef]);
+    }, [submit, onBlur, props.originalValue, divRef, wrapperRef, touched]);
 
     return (
         <>
@@ -87,7 +111,7 @@ export const withEditable = (WrappedComponent: React.FC) => ({
                     contentEditable
                     ref={divRef}
                     data-test="@metadata/input"
-                    style={{ paddingLeft: '1px' }}
+                    style={{ paddingLeft: '1px', color: !touched ? 'grey' : 'inherit' }}
                 />
             </WrappedComponent>
             <IconWrapper bgColor={colors.NEUE_BG_LIGHT_GREEN}>
