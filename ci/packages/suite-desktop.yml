@@ -106,9 +106,9 @@ suite-desktop deploy dev:
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_BUILD_REF_NAME}
     script:
         - mkdir -p ${DEPLOY_DIRECTORY}
-        - rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage "${DEPLOY_DIRECTORY}/"
-        - rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg "${DEPLOY_DIRECTORY}/"
-        - rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe "${DEPLOY_DIRECTORY}/"
+        - rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage "${DEPLOY_DIRECTORY}/" || :
+        - rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg "${DEPLOY_DIRECTORY}/" || :
+        - rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe "${DEPLOY_DIRECTORY}/" || :
     tags:
         - deploy
 
