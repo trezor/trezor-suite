@@ -1,11 +1,12 @@
 import { DESKTOP_UPDATE } from '@suite-actions/constants';
-import { Dispatch } from '@suite-types';
+import { addToast } from '@suite-actions/notificationActions';
+import { Dispatch, GetState } from '@suite-types';
 import { UpdateInfo, UpdateProgress, UpdateWindow } from '@suite-types/desktop';
 
 export type DesktopUpdateActions =
     | { type: typeof DESKTOP_UPDATE.CHECKING }
     | { type: typeof DESKTOP_UPDATE.AVAILABLE; payload: UpdateInfo }
-    | { type: typeof DESKTOP_UPDATE.NOT_AVAILABLE; payload: UpdateInfo }
+    | { type: typeof DESKTOP_UPDATE.NOT_AVAILABLE; payload?: UpdateInfo }
     | { type: typeof DESKTOP_UPDATE.DOWNLOADING; payload: UpdateProgress }
     | { type: typeof DESKTOP_UPDATE.READY; payload: UpdateInfo }
     | { type: typeof DESKTOP_UPDATE.SKIP; payload: string }
@@ -44,6 +45,18 @@ export const skip = (version: string) => async (dispatch: Dispatch) =>
         type: DESKTOP_UPDATE.SKIP,
         payload: version,
     });
+
+export const error = (err: Error) => async (dispatch: Dispatch, getState: GetState) => {
+    // TODO: Properly display error
+    console.error('auto-updater', err);
+
+    const { state } = getState().desktopUpdate;
+    dispatch(addToast({ type: 'auto-updater-error', state }));
+
+    dispatch({
+        type: DESKTOP_UPDATE.NOT_AVAILABLE,
+    });
+};
 
 export const setUpdateWindow = (win: UpdateWindow) => async (dispatch: Dispatch) =>
     dispatch({

@@ -219,7 +219,7 @@ const init = async () => {
     });
 
     autoUpdater.on('error', err => {
-        mainWindow.webContents.send('update/error', { err });
+        mainWindow.webContents.send('update/error', err);
     });
 
     autoUpdater.on('download-progress', progressObj => {

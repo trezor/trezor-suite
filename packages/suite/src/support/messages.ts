@@ -2484,6 +2484,10 @@ const definedMessages = defineMessages({
         id: 'TOAST_VERIFY_MESSAGE_ERROR',
         defaultMessage: 'Verify message error: {error}',
     },
+    TOAST_AUTO_UPDATER_ERROR: {
+        id: 'TOAST_AUTO_UPDATER_ERROR',
+        defaultMessage: 'Auto updater error ({state})',
+    },
     TOAST_GENERIC_ERROR: {
         id: 'TOAST_GENERIC_ERROR',
         defaultMessage: 'Error: {error}',

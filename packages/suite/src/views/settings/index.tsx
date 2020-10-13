@@ -241,34 +241,33 @@ const Settings = ({
                                         ),
                                     }}
                                 />
-                                {!['', 'checking', 'not-available'].includes(
-                                    desktopUpdate.state,
-                                ) && (
-                                    <>
-                                        &nbsp;
-                                        <Translation
-                                            id="TR_YOUR_NEW_VERSION"
-                                            values={{
-                                                version: (
-                                                    <VersionLink
-                                                        target="_blank"
-                                                        href={getReleaseUrl(
-                                                            desktopUpdate.latest!.version,
-                                                        )}
-                                                    >
-                                                        <VersionButton
-                                                            variant="tertiary"
-                                                            icon="EXTERNAL_LINK"
-                                                            alignIcon="right"
+                                {!['checking', 'not-available'].includes(desktopUpdate.state) &&
+                                    desktopUpdate.latest && (
+                                        <>
+                                            &nbsp;
+                                            <Translation
+                                                id="TR_YOUR_NEW_VERSION"
+                                                values={{
+                                                    version: (
+                                                        <VersionLink
+                                                            target="_blank"
+                                                            href={getReleaseUrl(
+                                                                desktopUpdate.latest.version,
+                                                            )}
                                                         >
-                                                            {desktopUpdate.latest!.version}
-                                                        </VersionButton>
-                                                    </VersionLink>
-                                                ),
-                                            }}
-                                        />
-                                    </>
-                                )}
+                                                            <VersionButton
+                                                                variant="tertiary"
+                                                                icon="EXTERNAL_LINK"
+                                                                alignIcon="right"
+                                                            >
+                                                                {desktopUpdate.latest.version}
+                                                            </VersionButton>
+                                                        </VersionLink>
+                                                    ),
+                                                }}
+                                            />
+                                        </>
+                                    )}
                             </Version>
                         }
                     />
