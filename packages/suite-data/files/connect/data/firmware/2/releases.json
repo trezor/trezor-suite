@@ -1,6 +1,19 @@
 [
 	{
 		"required": false,
+		"version": [2, 3, 4],
+		"min_bridge_version": [2, 0, 7],
+		"min_firmware_version": [2, 0, 8],
+		"min_bootloader_version": [2, 0, 0],
+		"url": "data/firmware/2/trezor-2.3.4.bin",
+		"url_bitcoinonly": "data/firmware/2/trezor-2.3.4-bitcoinonly.bin",
+		"fingerprint": "58b51a6587993965979a744f8fcd5c4761f11ce4bec6b059a5d56bd0987d6658",
+		"fingerprint_bitcoinonly": "085acbba98163284ef86dea637f9442b924e80fea245f5ebb60d5aab3be2b7b6",
+		"notes": "https://blog.trezor.io/firmware-update-for-trezor-model-t-version-2-3-4-for-monero-hard-fork-c2ff972101d3",
+		"changelog": "* This firmware only contains the changes needed after the latest Monero update (HF13) by introducing support for the CLSAG transactions."
+	},
+	{
+		"required": false,
 		"version": [2, 3, 3],
 		"min_bridge_version": [2, 0, 7],
 		"min_firmware_version": [2, 0, 8],
