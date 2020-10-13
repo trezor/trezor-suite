@@ -230,9 +230,10 @@ export const useSendFormCompose = ({
                 updateComposedValues(currentLevel);
             }
         }
+        updateContext({ isDirty: true });
         setDraftSaveRequest(true);
         selectedFeeRef.current = selectedFee;
-    }, [composedLevels, selectedFee, updateComposedValues]);
+    }, [composedLevels, selectedFee, updateComposedValues, updateContext]);
 
     // TODO: useEffect on props (check: account change: key||balance, fee change, fiat change)
     // useEffect(() => {
