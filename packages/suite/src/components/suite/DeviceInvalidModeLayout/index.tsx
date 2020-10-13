@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Button, Modal } from '@trezor/components';
 import { Image as Img, Translation } from '@suite-components';
 import * as routerActions from '@suite-actions/routerActions';
@@ -10,6 +10,13 @@ import { AppState, Dispatch } from '@suite-types';
 const Image = styled(Img)`
     flex: 1;
     margin: 20px 0;
+
+    ${props =>
+        props.image === 'UNI_WARNING' &&
+        css`
+            height: 64px;
+            flex: 0 0 auto;
+        `}
 `;
 
 const Buttons = styled.div`
@@ -62,7 +69,7 @@ const DeviceInvalidModeLayout = (props: Props) => {
     } = props;
     return (
         <Modal size="small" heading={title} description={text} data-test={props['data-test']}>
-            <Image height={image === 'UNI_WARNING' ? 48 : undefined} image={image} />
+            <Image image={image} />
             <Buttons>
                 {resolveButton && resolveButton}
                 {allowSwitchDevice && devices.length > 1 && (

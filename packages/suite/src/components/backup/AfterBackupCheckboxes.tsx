@@ -11,7 +11,7 @@ const CheckboxWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 45px;
+    margin-top: 10px;
     margin-bottom: 2px;
 `;
 
