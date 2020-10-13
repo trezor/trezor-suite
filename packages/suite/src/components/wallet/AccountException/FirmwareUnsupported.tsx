@@ -79,6 +79,7 @@ const FirmwareUnsupported = (props: Props) => (
             </Message>
             <Link href={getInfoUrl(props.symbol)}>
                 <Button>
+                    {/* TODO: use TR_LEARN_MORE? */}
                     <Translation id="TR_FIND_OUT_MORE_INFO" />
                 </Button>
             </Link>
