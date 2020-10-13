@@ -1,4 +1,5 @@
-// @stable/device-management
+// @group:device-management
+// @retry=2
 
 describe('Backup', () => {
     beforeEach(() => {

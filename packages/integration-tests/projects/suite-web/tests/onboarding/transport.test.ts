@@ -1,4 +1,5 @@
-// @stable/device-management
+// @group:onboarding
+// @retry=2
 
 describe('Onboarding - transport webusb/bridge', () => {
     beforeEach(() => {

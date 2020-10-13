@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-// @stable/suite
+// @group:suite
+// @retry=2
 
 const FIRST_DEVICE_PATH = '1';
 const SECOND_DEVICE_PATH = '2';
 
+// trying skipped test
 describe('Stories of device connecting', () => {
     before(() => {
         cy.task('stopEmu');
@@ -45,7 +47,7 @@ describe('Stories of device connecting', () => {
             cy.getTestElement('@modal/connect-device');
         });
 
-        it(`bootloader mode -> show info about bootloader, no wallet`, () => {
+        it.skip(`bootloader mode -> show info about bootloader, no wallet`, () => {
             cy.connectBootloaderDevice(SECOND_DEVICE_PATH);
             cy.getTestElement('@device-invalid-mode/bootloader').matchImageSnapshot('bootloader');
         });

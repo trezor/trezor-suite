@@ -74,10 +74,10 @@ suite-web deploy dev:
   tags:
     - deploy
 
-suite-web e2e chrome stage=stable/suite:
+suite-web e2e chrome stage=suite:
     stage: integration testing
     variables:
-        TEST_GROUP: "@stable/suite"
+        TEST_GROUP: "@group:suite"
     script:
         - *e2e_script_common
         - export CYPRESS_SNAPSHOT=1
@@ -87,10 +87,10 @@ suite-web e2e chrome stage=stable/suite:
         <<: *e2e_artifacts
     dependencies: []
 
-suite-web e2e chrome stage=stable/metadata:
+suite-web e2e chrome stage=metadata:
     stage: integration testing
     variables:
-        TEST_GROUP: "@stable/metadata"
+        TEST_GROUP: "@group:metadata"
     script:
         - *e2e_script_common
         - export CYPRESS_SNAPSHOT=1
@@ -100,10 +100,23 @@ suite-web e2e chrome stage=stable/metadata:
         <<: *e2e_artifacts
     dependencies: []
 
-suite-web e2e chrome stage=stable/device-management:
+suite-web e2e chrome stage=device-management:
     stage: integration testing
     variables:
-        TEST_GROUP: "@stable/device-management"
+        TEST_GROUP: "@group:device-management"
+    script:
+        - *e2e_script_common
+        - export CYPRESS_SNAPSHOT=1
+        - export BROWSER=chrome
+        - "eval $TEST_CMD"
+    artifacts:
+        <<: *e2e_artifacts
+    dependencies: []
+
+suite-web e2e chrome stage=onboarding:
+    stage: integration testing
+    variables:
+        TEST_GROUP: "@group:onboarding"
     script:
         - *e2e_script_common
         - export CYPRESS_SNAPSHOT=1

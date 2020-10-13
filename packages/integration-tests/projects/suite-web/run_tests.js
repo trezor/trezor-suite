@@ -56,6 +56,9 @@ async function runTests() {
         CI_COMMIT_BRANCH,
         CI_JOB_ID,
         CI_COMMIT_MESSAGE,
+        CI_COMMIT_SHA,
+        CI_RUNNER_ID,
+        CI_RUNNER_DESCRIPTION,
     } = process.env;
 
     const { stage } = argv;
@@ -79,6 +82,9 @@ async function runTests() {
         jobId: CI_JOB_ID,
         branch: CI_COMMIT_BRANCH,
         commitMessage: CI_COMMIT_MESSAGE,
+        commitSha: CI_COMMIT_SHA,
+        runnerDescription: CI_RUNNER_DESCRIPTION,
+        duration: 0,
         stage,
         records: {},
     };
@@ -122,7 +128,7 @@ async function runTests() {
             testRunNumber++;
             try {
                 // eslint-disable-next-line no-await-in-loop
-                const { totalFailed } = await cypress.run({
+                const runResult = await cypress.run({
                     browser: BROWSER,
                     // headless,
                     headed: true,
@@ -131,27 +137,41 @@ async function runTests() {
                     configFile: false,
                 });
 
-                if (totalFailed === 0) {
-                    // log either success or retried (success after retry)
-                    log.records[testFileName] = testRunNumber === 1 ? 'success' : 'retried';
+                const { totalFailed, totalPending, totalDuration } = runResult;
+
+                console.log(`[run_tests.js] ${testFileName} duration: ${totalDuration}`);
+                log.duration += totalDuration;
+
+                if (totalFailed > 0) {
+                    // record failed tests if it is last run
+                    if (testRunNumber === allowedRuns) {
+                        failedTests += totalFailed;
+                        log.records[testFileName] = 'failed';
+                        console.log(
+                            `[run_tests.js] test ${testFileName} finished failing after ${allowedRuns} run(s)`,
+                        );
+                        break;
+                    }
+                    // or continue
                     console.log(
-                        `[run_tests.js] test ${testFileName} finished as successful after ${allowedRuns} run(s)`,
+                        `[run_tests.js] failed in run number ${testRunNumber} of ${allowedRuns}`,
                     );
+                    continue;
+                }
+
+                if (totalPending > 0) {
+                    // log either success or retried (success after retry)
+                    log.records[testFileName] = 'skipped';
+                    console.log(`[run_tests.js] test ${testFileName} finished as skipped`);
                     break;
                 }
 
-                // record failed tests if it is last run
-                if (testRunNumber === allowedRuns) {
-                    failedTests += totalFailed;
-                    log.records[testFileName] = 'failed';
-                    console.log(
-                        `[run_tests.js] test ${testFileName} finished failing after ${allowedRuns} run(s)`,
-                    );
-                    break;
-                }
+                // log either success or retried (success after retry)
+                log.records[testFileName] = testRunNumber === 1 ? 'success' : 'retried';
                 console.log(
-                    `[run_tests.js] failed in run number ${testRunNumber} of ${allowedRuns}`,
+                    `[run_tests.js] test ${testFileName} finished as successful after ${allowedRuns} run(s)`,
                 );
+                break;
             } catch (err) {
                 console.log('[run_tests.js] error');
                 console.log(err);

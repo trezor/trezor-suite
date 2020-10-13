@@ -1,11 +1,11 @@
-// @stable/device-management
-// @retry=3
+// @group:onboarding
+// @retry=2
 
-// this has become too flaky. skip it for now
 describe.skip('Onboarding - create wallet', () => {
     beforeEach(() => {
         cy.task('stopEmu');
         cy.task('stopBridge');
+        cy.wait(1000);
         cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
@@ -18,15 +18,25 @@ describe.skip('Onboarding - create wallet', () => {
     it('Success (basic)', () => {
         cy.getTestElement('@onboarding/path-used-button').click();
         cy.getTestElement('@onboarding/pair-device-step');
+        
         cy.task('startEmu', { version: '1.9.0', wipe: true });
+        cy.wait(1000);
+
         // does it take longer for t1 to get detected?
-        cy.getTestElement('@onboarding/button-continue', { timeout: 10000 }).click();
+        // seems to be ok, maybe even this wait is not needed
+        cy.wait(1000); // try wait.
+        cy.getTestElement('@onboarding/button-continue', { timeout: 20000 }).click();
         cy.getTestElement('@firmware/skip-button').click();
+
+        // todo: this sometimes fails with "device disconnected during action";
+        // todo: adding huge wait here and see if it does something
+        cy.wait(5000);
         cy.getTestElement('@onboarding/only-backup-option-button').click();
+
         cy.task('pressYes');
 
-        cy.log('It is possible to leave onboarding now');
         cy.getTestElement('@onboarding/exit-app-button');
+        cy.log('It is possible to leave onboarding now');
 
         cy.getTestElement('@onboarding/continue-to-security-button').click();
         cy.getTestElement('@backup/check-item/understands-what-seed-is').click();

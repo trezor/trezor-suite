@@ -1,4 +1,5 @@
-// @stable/suite
+// @group:suite
+// @retry=2
 
 describe('Suite initial run', () => {
     beforeEach(() => {

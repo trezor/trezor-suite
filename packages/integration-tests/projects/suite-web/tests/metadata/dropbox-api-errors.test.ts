@@ -1,4 +1,5 @@
-// @stable/metadata
+// @group:metadata
+// @retry=2
 
 import { rerouteDropbox, stubOpen } from '../../stubs/metadata';
 

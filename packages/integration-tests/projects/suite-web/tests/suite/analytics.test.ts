@@ -1,4 +1,5 @@
-// @stable/suite
+// @group:suite
+// @retry=2
 
 import { urlSearchParams } from '../../../../../suite/src/utils/suite/metadata';
 
@@ -41,12 +42,16 @@ describe('Analytics', () => {
         cy.getTestElement('@onboarding/skip-button').click();
         cy.getTestElement('@onboarding/skip-button').click();
 
+        // NOTE: this will fail on localhost as analytics does not run there
         // assert that only 1 request was fired
         cy.wrap(requests).its(0).its('c_session_id').as('request0');
         cy.wrap(requests).its(0).should('have.property', 'c_type', 'initial-run-completed');
         cy.wrap(requests).its(0).should('have.property', 'analytics', 'false');
         cy.wrap(requests).its(0).should('have.property', 'c_instance_id', 'YYYYYYYYYY');
         cy.wrap(requests).its(1).should('equal', undefined);
+
+        // important, suite needs time to save initialRun flag into storage
+        cy.getTestElement('@suite/loading').should('not.exist')
 
         // go to settings
         cy.prefixedVisit('/settings', {
@@ -71,6 +76,7 @@ describe('Analytics', () => {
         cy.getTestElement('@settings/fiat-select/input').click();
         cy.getTestElement('@settings/fiat-select/option/huf').click({ force: true });
 
+        // NOTE: this will fail on localhost as analytics does not run there
         // check that fiat change got logged.
         cy.wrap(requests).its(1).its('c_session_id').as('request1');
         cy.wrap(requests).its(1).should('have.property', 'c_type', 'settings/general/change-fiat');

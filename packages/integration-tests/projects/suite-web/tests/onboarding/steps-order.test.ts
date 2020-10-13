@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-// @stable/device-management
+// @group:onboarding
+// @retry=2
 
 describe('Onboarding - steps order', () => {
     before(() => {
