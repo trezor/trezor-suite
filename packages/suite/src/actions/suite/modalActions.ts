@@ -45,6 +45,8 @@ export type UserContextPayload =
     | {
           type: 'add-account';
           device: TrezorDevice;
+          symbol?: Account['symbol'];
+          noRedirect?: boolean;
       }
     | {
           type: 'device-background-gallery';

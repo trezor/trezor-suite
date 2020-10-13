@@ -53,9 +53,10 @@ interface Props {
     network: Network;
     internalNetworks: Network[];
     setSelectedNetwork: (n: Network) => void;
+    pinNetwork?: boolean;
 }
 
-const NetworkSelect = ({ network, internalNetworks, setSelectedNetwork }: Props) => (
+const NetworkSelect = ({ network, internalNetworks, setSelectedNetwork, pinNetwork }: Props) => (
     <Select
         isSearchable
         width={250}
@@ -66,6 +67,7 @@ const NetworkSelect = ({ network, internalNetworks, setSelectedNetwork }: Props)
         formatOptionLabel={NetworkOption}
         onChange={(option: Option) => setSelectedNetwork(option.value)}
         noOptionsMessage={() => <Translation id="TR_COIN_NOT_FOUND" />}
+        isDisabled={pinNetwork}
     />
 );
 

@@ -19,10 +19,11 @@ const AddAccount = (props: Props) => {
         ? props.device.unavailableCapabilities
         : {};
 
-    // Use component state, default value is currently selected network or first network item on the list (btc)
-    const { account } = props.selectedAccount;
-    const preselectedNetwork = account
-        ? (internalNetworks.find(n => n.symbol === account.symbol) as Network)
+    // if symbol is passed in the props, preselect it and pin it (do not allow the user to change it)
+    // otherwise default value is currently selected network or first network item on the list (btc)
+    const symbol = props.symbol ? props.symbol : props.selectedAccount?.account?.symbol;
+    const preselectedNetwork = symbol
+        ? (internalNetworks.find(n => n.symbol === symbol) as Network)
         : internalNetworks[0];
 
     const [network, setNetwork] = useState<Network>(preselectedNetwork);
@@ -56,7 +57,7 @@ const AddAccount = (props: Props) => {
         const onEnableNetwork = () => {
             props.onCancel();
             props.changeCoinVisibility(network.symbol, true);
-            if (props.app === 'wallet') {
+            if (props.app === 'wallet' && !props.noRedirect) {
                 // redirect to account only if added from "wallet" app
                 props.goto('wallet-index', {
                     symbol: network.symbol,
@@ -77,6 +78,7 @@ const AddAccount = (props: Props) => {
                         />
                     </Button>
                 }
+                pinNetwork={!!props.symbol}
             />
         );
     }
@@ -100,7 +102,7 @@ const AddAccount = (props: Props) => {
     const onEnableAccount = (account: Account) => {
         props.onCancel();
         props.changeAccountVisibility(account);
-        if (props.app === 'wallet') {
+        if (props.app === 'wallet' && !props.noRedirect) {
             // redirect to account only if added from "wallet" app
             props.goto('wallet-index', {
                 symbol: account.symbol,
@@ -123,6 +125,7 @@ const AddAccount = (props: Props) => {
                     onEnableAccount={onEnableAccount}
                 />
             }
+            pinNetwork={!!props.symbol}
         >
             <NetworkInternal network={accountType || network} accountTypes={accountTypes} />
         </Wrapper>

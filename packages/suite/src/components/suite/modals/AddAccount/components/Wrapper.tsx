@@ -48,6 +48,7 @@ type Props = {
     onCancel: () => void;
     children?: JSX.Element;
     actionButton?: JSX.Element;
+    pinNetwork?: boolean;
 };
 
 const Wrapper = (props: Props) => (
@@ -76,6 +77,7 @@ const Wrapper = (props: Props) => (
                 network={props.selectedNetwork}
                 internalNetworks={props.internalNetworks}
                 setSelectedNetwork={props.onSelectNetwork}
+                pinNetwork={props.pinNetwork}
             />
         </Row>
         {props.accountTypes && props.accountTypes.length > 1 && (
