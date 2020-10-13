@@ -42,23 +42,23 @@ const ButtonDownload = styled(Button)`
     }
 `;
 
-type App = 'win' | 'macos' | 'linux';
+type Platform = 'win' | 'mac' | 'linux';
 
-const getAppUrl = (appName: App) => {
+const getAppUrl = (platform: Platform) => {
     const version = process.env.VERSION ? normalizeVersion(process.env.VERSION) : '';
-    switch (appName) {
+    switch (platform) {
         case 'win':
-            return encodeURI(`../web/static/desktop/Trezor Suite-${version}.exe`);
-        case 'macos':
-            return encodeURI(`../web/static/desktop/Trezor Suite-${version}.dmg`);
+            return encodeURI(`../web/static/desktop/Trezor-Suite-${version}-${platform}.exe`);
+        case 'mac':
+            return encodeURI(`../web/static/desktop/Trezor-Suite-${version}-${platform}.dmg`);
         case 'linux':
-            return encodeURI(`../web/static/desktop/Trezor Suite-${version}.AppImage`);
+            return encodeURI(`../web/static/desktop/Trezor-Suite-${version}-${platform}.AppImage`);
         // no default
     }
 };
 
 const Start = () => {
-    const [app, setApp] = useState<App | null>(null);
+    const [platform, setPlatform] = useState<Platform | null>(null);
 
     return (
         <Layout>
@@ -80,19 +80,19 @@ const Start = () => {
                         options={[
                             { label: 'Windows', value: 'win' },
                             { label: 'Linux', value: 'linux' },
-                            { label: 'macOS', value: 'macos' },
+                            { label: 'macOS', value: 'mac' },
                         ]}
-                        onChange={(option: { value: App | null; label: string | null }) =>
-                            setApp(option.value)
+                        onChange={(option: { value: Platform | null; label: string | null }) =>
+                            setPlatform(option.value)
                         }
                     />
                     <Item>
-                        {app && (
-                            <Link href={getAppUrl(app)} variant="nostyle">
+                        {platform && (
+                            <Link href={getAppUrl(platform)} variant="nostyle">
                                 <ButtonDownload variant="primary">Download</ButtonDownload>
                             </Link>
                         )}
-                        {!app && (
+                        {!platform && (
                             <ButtonDownload isDisabled variant="primary">
                                 Download
                             </ButtonDownload>
