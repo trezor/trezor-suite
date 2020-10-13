@@ -94,25 +94,26 @@ const StyledSoon = styled.div`
 const features = [
     {
         id: 1,
-        headline: 'Desktop app. 2x safer.',
+        headline: 'Desktop app',
         text:
-            'Security and privacy. Anti-Phishing, Bitcoin\nCore, Tor support, Discreet mode, Performance.',
+            'Enhanced security and privacy, new design and improved performance, all in one software suite.',
         backgroundPosition: 'bottom right',
         backgroundSize: '616px auto',
         soon: false,
     },
     {
         id: 2,
-        headline: 'Buy & Exchange Crypto.',
-        text: 'New design improves usability: Passphrase,\nCoin discovery (Accounts)',
+        headline: 'Buy and exchange crypto',
+        text:
+            "Compare competitive rates, buy and exchange coins within Trezor's secure environment. Powered by +Invity.",
         backgroundPosition: 'center left',
         backgroundSize: '489px auto',
         soon: true,
     },
     {
         id: 3,
-        headline: 'Coin support.\nOne Trezor app.',
-        text: 'ETH, ETC, XRP, (ERC 20 tokens)\nnow all in one app.',
+        headline: 'Native altcoin support',
+        text: 'ETH, XRP, ETC and more now supported \ndirectly through the app.',
         backgroundSize: '500px auto',
         soon: false,
     },
@@ -131,7 +132,7 @@ const Index = () => (
                 </Fade>
                 <Fade delay={1500} triggerOnce>
                     <StyledSubheadline>
-                        Trezor wallet is now a desktop &amp; browser app.
+                        Take control of your Trezor with our desktop & browser app.
                     </StyledSubheadline>
                 </Fade>
                 <DownloadWrapper>
@@ -161,8 +162,9 @@ const Index = () => (
             </FeaturesWrapper>
             <StyledCta>
                 <StyledHeadline size={44}>
-                    We got <em>63 new features</em>.<br />
-                    See for yourself.
+                    Dozens of <em>brand-new features</em> to discover.
+                    <br />
+                    Try Suite now.
                 </StyledHeadline>
                 <DownloadWrapper>
                     <Download />
