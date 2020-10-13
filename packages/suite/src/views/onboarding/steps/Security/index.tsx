@@ -7,7 +7,8 @@ import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { Props } from './Container';
 
 const StyledImage = styled(Image)`
-    flex: 1;
+    height: 250px;
+    margin-bottom: auto;
 `;
 
 const SecurityStep = (props: Props) => (
