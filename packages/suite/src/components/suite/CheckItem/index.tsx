@@ -7,12 +7,9 @@ const { FONT_SIZE } = variables;
 
 const StyledCheckbox = styled(Checkbox)`
     padding-left: 0px;
-    margin: 12px auto;
+    margin: 12px 0px;
     align-items: flex-start;
-
-    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
-        width: 400px;
-    }
+    max-width: 80%;
 `;
 
 const CheckboxRight = styled.div`
@@ -26,7 +23,6 @@ const CheckboxTitle = styled.div`
 const CheckboxText = styled.div`
     font-size: ${FONT_SIZE.TINY};
     color: ${colors.BLACK50};
-    max-width: 360px;
 `;
 
 interface CheckItemProps {
