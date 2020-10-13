@@ -2,9 +2,9 @@ import React from 'react';
 import { InitImg, ConnectInBootloaderImg, DisconnectImg, P, H2 } from '@firmware-components';
 
 import { Button } from '@trezor/components';
-
-import { Translation } from '@suite-components';
-import { useDevice, useFirmware } from '@suite-hooks';
+import { Translation, WebusbButton } from '@suite-components';
+import { useDevice, useFirmware, useSelector } from '@suite-hooks';
+import { isWebUSB } from '@suite-utils/transport';
 
 const Body = () => {
     const { device } = useDevice();
@@ -55,12 +55,23 @@ const Body = () => {
 const BottomBar = () => {
     const { device } = useDevice();
     const { firmwareUpdate } = useFirmware();
+    const transport = useSelector(state => state.suite.transport);
 
     if (device?.mode === 'bootloader') {
         return (
             <Button onClick={firmwareUpdate}>
                 <Translation id="TR_START" />
             </Button>
+        );
+    }
+
+    if (!device?.connected && isWebUSB(transport)) {
+        return (
+            <WebusbButton ready>
+                <Button icon="PLUS" variant="tertiary">
+                    <Translation id="TR_CHECK_FOR_DEVICES" />
+                </Button>
+            </WebusbButton>
         );
     }
 
