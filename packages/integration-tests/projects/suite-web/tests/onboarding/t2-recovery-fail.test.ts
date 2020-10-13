@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-// @beta 
+// @group:onboarding
+// @retry=2
 
 describe('Onboarding - recover wallet T2', () => {
     beforeEach(() => {
@@ -20,7 +21,7 @@ describe('Onboarding - recover wallet T2', () => {
         cy.task('startEmu', { version: '2.1.4', wipe: true });
 
         cy.getTestElement('@onboarding/button-continue').click();
-        cy.getTestElement('@onboarding/button-continue').click();
+        cy.getTestElement('@firmware/skip-button').click();
         cy.getTestElement('@onboarding/recovery/start-button').click();
         cy.getTestElement('@suite/modal/confirm-action-on-device');
         cy.task('pressYes');
@@ -30,7 +31,7 @@ describe('Onboarding - recover wallet T2', () => {
         cy.log(
             'If device disconnected during call, error page with retry button should appear. Also note, that unlike with T1, retry button initiates recoveryDevice call immediately',
         );
-        cy.getTestElement('@onboarding/recovery/retry-button');
+        cy.getTestElement('@onboarding/recovery/retry-button', { timeout: 10000 });
         // todo: clicking on retry button causes error, "unexpected message", only in tests, don't know why
     });
 });

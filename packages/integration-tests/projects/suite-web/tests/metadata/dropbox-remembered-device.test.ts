@@ -1,6 +1,7 @@
-// @stable/metadata
+// @group:metadata
 // @retry=2
 
+// todo todo todo:
 // todo: find out why it has become flaky
 // it works on local well but fails in CI
 

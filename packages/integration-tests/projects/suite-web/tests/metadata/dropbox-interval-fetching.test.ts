@@ -1,4 +1,5 @@
-// @stable/metadata
+// @group:metadata
+// @retry=2
 
 import * as METADATA from '../../../../../suite/src/actions/suite/constants/metadataConstants';
 

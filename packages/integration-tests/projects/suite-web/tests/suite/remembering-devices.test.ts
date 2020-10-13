@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-// @stable/suite
+// @group:suite
+// @retry=2
 
 describe('Stories of device remembering', () => {
     beforeEach(() => {

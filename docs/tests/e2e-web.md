@@ -24,9 +24,10 @@ is the entrypoint for e2e tests. It:
 ## @tags
 Each test should be assigned a tag at the top of the test file. Doing so enables run_tests.js script 
 to sort the test files into groups and run them in parallel on CI. At the moment these tags exist: 
-- `@stable/metadata` 
-- `@stable/device-management`
-- `@stable/suite`
+- `@group:metadata` 
+- `@group:device-management`
+- `@group:suite`
+- `@group:onboarding`
 
 ## @retry
 If there is a test that you for any reason need to retry if it fails you may provide `@retry=2` tag. In this 

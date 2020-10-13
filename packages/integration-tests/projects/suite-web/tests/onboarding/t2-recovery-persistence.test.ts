@@ -1,12 +1,51 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-// @beta 
+// @group:onboarding
+// @retry=2
 
 const shareOneOfThree = [
-    'gesture', 'necklace', 'academic', 'acid', 'deadline', 'width', 'armed', 'render', 'filter', 'bundle', 'failure', 'priest', 'injury', 'endorse', 'volume', 'terminal', 'lunch', 'drift', 'diploma', 'rainbow',
+    'gesture',
+    'necklace',
+    'academic',
+    'acid',
+    'deadline',
+    'width',
+    'armed',
+    'render',
+    'filter',
+    'bundle',
+    'failure',
+    'priest',
+    'injury',
+    'endorse',
+    'volume',
+    'terminal',
+    'lunch',
+    'drift',
+    'diploma',
+    'rainbow',
 ];
 const shareTwoOfThree = [
-    'gesture', 'necklace', 'academic', 'agency', 'alpha', 'ecology', 'visitor', 'raisin', 'yelp', 'says', 'findings', 'bulge', 'rapids', 'paper', 'branch', 'spelling', 'cubic', 'tactics', 'formal', 'disease',
+    'gesture',
+    'necklace',
+    'academic',
+    'agency',
+    'alpha',
+    'ecology',
+    'visitor',
+    'raisin',
+    'yelp',
+    'says',
+    'findings',
+    'bulge',
+    'rapids',
+    'paper',
+    'branch',
+    'spelling',
+    'cubic',
+    'tactics',
+    'formal',
+    'disease',
 ];
 
 describe('Onboarding - T2 in recovery mode', () => {
@@ -17,7 +56,6 @@ describe('Onboarding - T2 in recovery mode', () => {
         cy.prefixedVisit('/');
         cy.goToOnboarding();
         cy.onboardingShouldLoad();
-
     });
 
     it('Initial run with device that is already in recovery mode', () => {
@@ -28,12 +66,19 @@ describe('Onboarding - T2 in recovery mode', () => {
         cy.getTestElement('@onboarding/pair-device-step').click();
         cy.task('startEmu', { version: '2.3.1', wipe: true });
         cy.getTestElement('@onboarding/button-continue').click();
-        cy.getTestElement('@onboarding/button-continue').click();
+        cy.getTestElement('@firmware/skip-button').click();
         cy.getTestElement('@onboarding/recovery/start-button').click();
         cy.getTestElement('@suite/modal/confirm-action-on-device');
         cy.task('pressYes');
         cy.task('stopEmu');
-        cy.getTestElement('@onboarding/unexpected-state/reconnect');
+
+        // why sometimes unacquired device?
+        // cy.wait(2000);
+
+        cy.getTestElement('@onboarding/unexpected-state/reconnect', { timeout: 20000});
+
+        // why sometimes unacquired device? session not released before reload?
+        // cy.wait(5000);
 
         cy.resetDb();
         cy.reload();
@@ -61,7 +106,7 @@ describe('Onboarding - T2 in recovery mode', () => {
         cy.getTestElement('@onboarding/pair-device-step').click();
         cy.task('startEmu', { version: '2.3.1', wipe: true });
         cy.getTestElement('@onboarding/button-continue').click();
-        cy.getTestElement('@onboarding/button-continue').click();
+        cy.getTestElement('@firmware/skip-button').click();
         cy.getTestElement('@onboarding/recovery/start-button').click();
         cy.getTestElement('@suite/modal/confirm-action-on-device');
         cy.task('pressYes');
@@ -69,7 +114,7 @@ describe('Onboarding - T2 in recovery mode', () => {
         cy.task('pressYes');
         cy.task('selectNumOfWordsEmu', 20);
         cy.task('pressYes');
-        for (let i = 0; i<shareOneOfThree.length; i++) {
+        for (let i = 0; i < shareOneOfThree.length; i++) {
             cy.task('inputEmu', shareOneOfThree[i]);
         }
         cy.getTestElement('@suite/modal/confirm-action-on-device');
@@ -80,7 +125,7 @@ describe('Onboarding - T2 in recovery mode', () => {
         cy.getTestElement('@suite/modal/confirm-action-on-device');
         cy.task('pressYes');
 
-        for (let i = 0; i<shareTwoOfThree.length; i++) {
+        for (let i = 0; i < shareTwoOfThree.length; i++) {
             cy.task('inputEmu', shareTwoOfThree[i]);
         }
 
@@ -89,5 +134,4 @@ describe('Onboarding - T2 in recovery mode', () => {
     });
 
     // todo: stop recovery and check if back button works as expected in onboarding
-
 });

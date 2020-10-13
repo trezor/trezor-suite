@@ -32,8 +32,8 @@ module.exports = on => {
     on('before:browser:launch', async (browser = {}, launchOptions) => {
         // default state of bridge is ON
         await controller.connect();
-        const response = await controller.send({ type: 'bridge-start' });
-        await controller.disconnect();
+        await controller.send({ type: 'bridge-start' });
+        controller.disconnect();
 
         if (browser.name === 'chrome') {
             launchOptions.args.push('--disable-dev-shm-usage');
