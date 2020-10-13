@@ -1,4 +1,4 @@
-export type Platform = 'linux' | 'windows' | 'mac';
+export type Platform = 'linux' | 'win' | 'mac';
 
 export const getPlatform = (navigator: Navigator): Platform => {
     const macPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'];
@@ -7,7 +7,7 @@ export const getPlatform = (navigator: Navigator): Platform => {
         return 'mac';
     }
     if (windowsPlatforms.includes(navigator.platform)) {
-        return 'windows';
+        return 'win';
     }
     return 'linux';
 };
