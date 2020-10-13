@@ -283,6 +283,18 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
                 message: messages.METADATA_PROVIDER_UNEXPECTED_ERROR,
             });
 
+        case 'auto-updater-error':
+            return simple(View, {
+                notification,
+                variant: 'error',
+                message: {
+                    ...messages.TOAST_AUTO_UPDATER_ERROR,
+                    values: {
+                        state: notification.state,
+                    },
+                },
+            });
+
         // Events:
         case DEVICE.CONNECT:
             return withAction(View, {

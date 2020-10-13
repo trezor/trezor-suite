@@ -64,6 +64,10 @@ export type ToastPayload = (
               | 'metadata-unexpected-error';
           error: string;
       }
+    | {
+          type: 'auto-updater-error';
+          state: string;
+      }
 ) &
     Options;
 

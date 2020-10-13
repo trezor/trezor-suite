@@ -160,6 +160,7 @@ const DesktopUpdater = () => {
         downloading,
         ready,
         skip,
+        error,
         setUpdateWindow,
     } = useActions({
         checking: desktopUpdateActions.checking,
@@ -168,6 +169,7 @@ const DesktopUpdater = () => {
         downloading: desktopUpdateActions.downloading,
         ready: desktopUpdateActions.ready,
         skip: desktopUpdateActions.skip,
+        error: desktopUpdateActions.error,
         setUpdateWindow: desktopUpdateActions.setUpdateWindow,
     });
     const desktopUpdate = useSelector(state => state.desktopUpdate);
@@ -191,18 +193,13 @@ const DesktopUpdater = () => {
         window.desktopApi!.on('update/downloading', (progress: UpdateProgress) =>
             downloading(progress),
         );
+        window.desktopApi!.on('update/error', (err: Error) => error(err));
 
         // Initial check for updates
         window.desktopApi!.checkForUpdates();
         // Check for updates every hour
         setInterval(() => window.desktopApi!.checkForUpdates(), 60 * 60 * 1000);
-
-        /* TODO: Implement error handling
-        window.desktopApi.on('update/error', ({ data }) => {
-
-        });
-        */
-    }, [available, checking, downloading, notAvailable, ready, skip]);
+    }, [available, checking, downloading, notAvailable, ready, skip, error]);
 
     useEffect(() => {
         const fetchData = async () => {
