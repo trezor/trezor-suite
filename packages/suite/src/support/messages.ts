@@ -524,7 +524,7 @@ const definedMessages = defineMessages({
 
     TR_ADVANCED_SETTINGS: {
         defaultMessage: 'Advanced settings',
-        description: 'Shows advanced sending form',
+        description: 'Shows advanced coin settings',
         id: 'TR_ADVANCED_SETTINGS',
     },
     TR_ALLOW_ANALYTICS: {
@@ -733,7 +733,7 @@ const definedMessages = defineMessages({
         id: 'TR_CONNECT_TREZOR',
     },
     TR_CONNECT_YOUR_DEVICE: {
-        defaultMessage: 'Connect your device',
+        defaultMessage: 'Connect your Trezor',
         description: 'Prompt to user to connect his device.',
         id: 'TR_CONNECT_YOUR_DEVICE',
     },
@@ -2247,6 +2247,10 @@ const definedMessages = defineMessages({
     TR_WHATS_NEW: {
         defaultMessage: "What's new",
         id: 'TR_WHATS_NEW',
+    },
+    TR_WHATS_NEW_FIRMWARE: {
+        defaultMessage: 'About this firmware',
+        id: 'TR_WHATS_NEW_FIRMWARE',
     },
     TR_WIPING_YOUR_DEVICE: {
         defaultMessage:

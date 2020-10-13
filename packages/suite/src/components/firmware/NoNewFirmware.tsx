@@ -25,7 +25,7 @@ const Body = () => {
                     values={{ version: getFwVersion(device) }}
                 />{' '}
                 <ExternalLink size="small" href={CHANGELOG_URL}>
-                    <Translation id="TR_WHATS_NEW" />
+                    <Translation id="TR_WHATS_NEW_FIRMWARE" />
                 </ExternalLink>
             </P>
         </>
