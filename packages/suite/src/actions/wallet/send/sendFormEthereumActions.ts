@@ -54,7 +54,11 @@ const calculate = (
         return { type: 'error', error, errorMessage: { id: error } } as const;
     }
 
-    if (availableTokenBalance && new BigNumber(amount).gt(availableTokenBalance)) {
+    // validate if token balance is not 0 or lower than amount
+    if (
+        availableTokenBalance &&
+        (availableTokenBalance === '0' || new BigNumber(amount).gt(availableTokenBalance))
+    ) {
         return {
             type: 'error',
             error: 'AMOUNT_IS_NOT_ENOUGH',
