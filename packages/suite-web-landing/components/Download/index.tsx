@@ -130,7 +130,7 @@ const Index = () => {
                 </StyledDropdown>
                 <StyledDownloadButton>
                     <Link variant="nostyle" href={getInstallerURI(platform, version)}>
-                        Download Desktop
+                        Get desktop app
                     </Link>
                 </StyledDownloadButton>
             </ButtonWrapper>
