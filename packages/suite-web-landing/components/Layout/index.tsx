@@ -141,7 +141,7 @@ const Index = ({ children }: Props) => (
             <FooterCompany>
                 <TrezorLogo type="horizontal" variant="black" width="83px" />
                 <FooterParagraph>
-                    The companion of the <Link href="https://trezor.io/">Trezor HW wallet</Link>
+                    Companion to the <Link href="https://trezor.io/">Trezor hardware wallet</Link>
                 </FooterParagraph>
             </FooterCompany>
         </Footer>
