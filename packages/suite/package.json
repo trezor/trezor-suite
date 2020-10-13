@@ -62,7 +62,7 @@
         "styled-components": "^5.1.1",
         "uuid": "^7.0.3",
         "trezor-address-validator": "^0.3.22",
-        "trezor-connect": "8.1.15-extended",
+        "trezor-connect": "8.1.16-extended",
         "web3-utils": "^1.2.6",
         "zxcvbn": "^4.4.2"
     },
