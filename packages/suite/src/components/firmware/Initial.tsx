@@ -53,14 +53,22 @@ const ChangelogHeading = styled.div`
     font-weight: ${FONT_WEIGHT.MEDIUM};
 `;
 
-const ChangelogPre = styled.pre`
-    white-space: pre-wrap;
-`;
-
 const Version = styled.span`
     display: block;
     font-size: ${FONT_SIZE.SMALL};
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
+`;
+
+const ChangesUl = styled.ul`
+    margin-left: 16px;
+
+    & > li {
+        margin: 4px 0;
+    }
+`;
+
+const StyledExternalLink = styled(ExternalLink)`
+    margin: 4px 0;
 `;
 
 const BottomRow = styled.div`
@@ -74,29 +82,64 @@ const Body = () => {
     if (device?.mode !== 'normal') return <ReconnectInNormalStep.Body />;
     if (device?.firmware === 'valid') return <NoNewFirmware.Body />;
 
+    if (!device?.features) return null; // ts
+
     const { firmwareRelease } = device;
-    if (!device?.features || !firmwareRelease) return null; // ts
+
+    // Create custom object containing changelogs for easier manipulation in render() method.
+    // Default changelog format is just a long string where individual changes are separated by "*" symbol.
+    const logsCustomObject: any = {};
+
+    if (firmwareRelease.changelog?.length > 0) {
+        firmwareRelease.changelog.forEach((log: any) => {
+            // get array of individual changes for a given version
+            const logsArr = log.changelog.trim().split(/\*/g);
+
+            // The first element of logsArr is an empty array, so get rid of it (but still make sure it's really empty).
+            if (!logsArr[0]) {
+                logsArr.shift();
+            }
+
+            // Get firmware version, convert to string and use it as a key in custom object
+            const versionString = log.version.join('.'); // e.g. [1,9,8] => "1.9.8"
+
+            logsCustomObject[versionString] = {}; // Object initialization
+            logsCustomObject[versionString].changelogs = logsArr;
+            logsCustomObject[versionString].url = log.url;
+            logsCustomObject[versionString].notes = log.notes;
+        });
+    }
 
     return (
         <BodyWrapper>
-            <H2 isGreen>v{firmwareRelease.release.version.join('.')} has released!</H2>
+            <H2 isGreen>v{firmwareRelease.release.version.join('.')} has been released!</H2>
             <P>
                 <Translation id="FIRMWARE_UPDATE_AVAILABLE_DESC" />
             </P>
 
-            {firmwareRelease.changelog && (
+            {device.firmwareRelease.changelog?.length > 0 && (
                 <ChangesSummary>
-                    {firmwareRelease.changelog.map(c => (
-                        <ChangelogGroup key={c.url}>
-                            <ChangelogHeading>{c.version.join('.')}</ChangelogHeading>
-                            <ChangelogPre>{c.changelog.replace(/\*/g, '—')}</ChangelogPre>
-                            {c.notes && (
-                                <ExternalLink size="small" href={c.notes}>
-                                    <Translation id="TR_LEARN_MORE" />
-                                </ExternalLink>
-                            )}
-                        </ChangelogGroup>
-                    ))}
+                    {Object.keys(logsCustomObject).map(version => {
+                        const log = logsCustomObject[version];
+                        return (
+                            <ChangelogGroup key={version}>
+                                <ChangelogHeading>{version}</ChangelogHeading>
+                                <ChangesUl>
+                                    {/* render individual changes for a given version */}
+                                    {log.changelogs.map(
+                                        (change: string) =>
+                                            // return only if change is not an empty array
+                                            change && <li key={change}>{change}</li>,
+                                    )}
+                                </ChangesUl>
+                                {log.notes && (
+                                    <StyledExternalLink size="small" href={log.notes}>
+                                        <Translation id="TR_LEARN_MORE" />
+                                    </StyledExternalLink>
+                                )}
+                            </ChangelogGroup>
+                        );
+                    })}
                 </ChangesSummary>
             )}
 
