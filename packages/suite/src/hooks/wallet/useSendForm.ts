@@ -11,6 +11,8 @@ import {
     SendContextValues,
     Output,
 } from '@wallet-types/sendForm';
+import { isEnabled } from '@suite-utils/features';
+
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { useSendFormOutputs } from './useSendFormOutputs';
 import { useSendFormFields } from './useSendFormFields';
@@ -20,10 +22,14 @@ import { useSendFormImport } from './useSendFormImport';
 export const SendContext = createContext<SendContextValues | null>(null);
 SendContext.displayName = 'SendContext';
 
+const options = isEnabled('RBF')
+    ? DEFAULT_OPTIONS
+    : DEFAULT_OPTIONS.filter(val => val !== 'bitcoinRBF');
+
 const getDefaultValues = (currency: Output['currency']) => {
     return {
         ...DEFAULT_VALUES,
-        options: [...DEFAULT_OPTIONS],
+        options: [...options],
         outputs: [{ ...DEFAULT_PAYMENT, currency }],
     };
 };

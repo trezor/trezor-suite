@@ -4,6 +4,7 @@ import { Translation } from '@suite-components';
 import { OnOffSwitcher } from '@wallet-components';
 import { Button } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
+import { isEnabled } from '@suite-utils/features';
 
 import Locktime from './components/Locktime';
 
@@ -84,7 +85,7 @@ const BitcoinOptions = () => {
                             <Translation id="LOCKTIME_ADD" />
                         </StyledButton>
                     )}
-                    {!locktimeEnabled && (
+                    {isEnabled('RBF') && !locktimeEnabled && (
                         <StyledButton
                             variant="tertiary"
                             icon="RBF"
