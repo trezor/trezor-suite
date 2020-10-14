@@ -33,10 +33,7 @@ export const getTextForStatus = (status: AppState['firmware']['status']) => {
 export const getDescriptionForStatus = (status: AppState['firmware']['status']) => {
     switch (status) {
         case 'wait-for-reboot':
-            // todo: hot-fixing for now by just returning plain string; Translation component is not implemented
-            // on the receiving end and this is faster.
-            // return 'TR_DO_NOT_DISCONNECT';
-            return 'Please wait, your device is restarting.';
+            return 'TR_DO_NOT_DISCONNECT';
         default:
             return null;
     }
