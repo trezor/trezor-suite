@@ -33,27 +33,29 @@ const FiatValue = ({
     useCustomSource,
     badge,
     showApproximationIndicator,
+    disableHiddenPlaceholder,
     ...props
 }: Props) => {
     const targetCurrency = fiatCurrency ?? props.settings.localCurrency;
     const currentFiatRates = props.fiat.coins.find(f => f.symbol === symbol)?.current;
     const ratesSource = useCustomSource ? source : currentFiatRates?.rates;
     const fiat = ratesSource ? toFiatCurrency(amount, targetCurrency, ratesSource) : null;
+    const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : StyledHiddenPlaceholder;
     if (fiat) {
         let fiatValueComponent = (
-            <StyledHiddenPlaceholder>
+            <WrapperComponent>
                 {showApproximationIndicator && <>≈ </>}
                 <FormattedNumber currency={targetCurrency} value={fiat} />
-            </StyledHiddenPlaceholder>
+            </WrapperComponent>
         );
 
         if (badge) {
             fiatValueComponent = (
-                <StyledHiddenPlaceholder>
+                <WrapperComponent>
                     <Badge isGray={badge.color === 'gray'} isSmall={badge.size === 'small'}>
                         <FormattedNumber currency={targetCurrency} value={fiat} />
                     </Badge>
-                </StyledHiddenPlaceholder>
+                </WrapperComponent>
             );
         }
 
