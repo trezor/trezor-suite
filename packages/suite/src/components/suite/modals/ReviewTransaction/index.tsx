@@ -158,6 +158,7 @@ const ReviewTransaction = ({ selectedAccount, send, decision }: Props) => {
                                     </Coin>
                                     <TotalFiat>
                                         <FiatValue
+                                            disableHiddenPlaceholder
                                             amount={formatNetworkAmount(
                                                 precomposedTx.totalSpent,
                                                 symbol,

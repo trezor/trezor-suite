@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { variables, colors } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
 import { formatNetworkAmount, formatAmount } from '@wallet-utils/accountUtils';
-import { Card, Translation, FiatValue } from '@suite-components';
+import { Card, Translation, FiatValue, FormattedCryptoAmount } from '@suite-components';
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -49,11 +49,6 @@ const TotalSentCoin = styled.div`
     padding-bottom: 6px;
 `;
 
-const Symbol = styled.div`
-    text-transform: uppercase;
-    padding-left: 4px;
-`;
-
 const TotalSentFiat = styled.div`
     display: flex;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -89,20 +84,29 @@ const TotalSent = () => {
             {transactionInfo && transactionInfo.type !== 'error' && (
                 <Right>
                     <TotalSentCoin>
-                        {tokenInfo
-                            ? formatAmount(transactionInfo.totalSpent, tokenInfo.decimals)
-                            : formatNetworkAmount(transactionInfo.totalSpent, symbol)}
-                        <Symbol>{tokenInfo ? tokenInfo.symbol : symbol}</Symbol>
+                        <FormattedCryptoAmount
+                            disableHiddenPlaceholder
+                            value={
+                                tokenInfo
+                                    ? formatAmount(transactionInfo.totalSpent, tokenInfo.decimals)
+                                    : formatNetworkAmount(transactionInfo.totalSpent, symbol)
+                            }
+                            symbol={tokenInfo ? tokenInfo.symbol : symbol}
+                        />
                     </TotalSentCoin>
                     <TotalSentFiat>
                         {tokenInfo ? (
                             <>
                                 <Translation id="FEE" />
-                                <Symbol>{formatNetworkAmount(transactionInfo.fee, symbol)}</Symbol>
-                                <Symbol>{symbol}</Symbol>
+                                <FormattedCryptoAmount
+                                    disableHiddenPlaceholder
+                                    value={formatNetworkAmount(transactionInfo.fee, symbol)}
+                                    symbol={symbol}
+                                />
                             </>
                         ) : (
                             <FiatValue
+                                disableHiddenPlaceholder
                                 amount={formatNetworkAmount(transactionInfo.totalSpent, symbol)}
                                 symbol={symbol}
                             />

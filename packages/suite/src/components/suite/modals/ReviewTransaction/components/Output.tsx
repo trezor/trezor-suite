@@ -236,7 +236,11 @@ const Output = ({ type, state, label, value, symbol, token }: Props) => {
                         </Coin>
                         <Fiat>
                             {outputSymbol && (
-                                <FiatValue amount={outputValue} symbol={outputSymbol} />
+                                <FiatValue
+                                    disableHiddenPlaceholder
+                                    amount={outputValue}
+                                    symbol={outputSymbol}
+                                />
                             )}
                         </Fiat>
                     </Amounts>
