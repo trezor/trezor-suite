@@ -2,6 +2,7 @@ import React from 'react';
 import { TooltipProps } from 'recharts';
 import { FormattedNumber, FormattedCryptoAmount } from '@suite-components';
 import { Account } from '@wallet-types';
+import { CommonAggregatedHistory } from '@wallet-types/graph';
 import { Props as GraphProps, CryptoGraphProps } from '../../index';
 import CustomTooltipBase from '../CustomTooltipBase';
 
@@ -12,6 +13,8 @@ interface Props extends TooltipProps {
     sentValueFn: CryptoGraphProps['sentValueFn'];
     receivedValueFn: CryptoGraphProps['receivedValueFn'];
     balanceValueFn: CryptoGraphProps['balanceValueFn'];
+    onShow?: (index: number) => void;
+    extendedDataForInterval?: CommonAggregatedHistory[];
 }
 
 const formatAmount = (

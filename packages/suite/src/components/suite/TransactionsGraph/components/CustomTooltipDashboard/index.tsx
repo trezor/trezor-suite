@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormattedNumber } from '@suite-components';
 import { TooltipProps } from 'recharts';
+import { CommonAggregatedHistory } from '@wallet-types/graph';
 import { Props as GraphProps, FiatGraphProps } from '../../index';
 import CustomTooltipBase from '../CustomTooltipBase';
 
@@ -10,6 +11,8 @@ interface Props extends TooltipProps {
     sentValueFn: FiatGraphProps['sentValueFn'];
     receivedValueFn: FiatGraphProps['receivedValueFn'];
     balanceValueFn?: FiatGraphProps['balanceValueFn'];
+    onShow?: (index: number) => void;
+    extendedDataForInterval?: CommonAggregatedHistory[];
 }
 
 const CustomTooltipDashboard = (props: Props) => {

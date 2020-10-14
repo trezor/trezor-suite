@@ -5,7 +5,22 @@ import { colors } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { TooltipProps } from 'recharts';
 import { getDateWithTimeZone } from '@suite/utils/suite/date';
+import { CommonAggregatedHistory } from '@wallet-types/graph';
 import { Props as GraphProps } from '../../index';
+
+const OFFSET_LIMIT_HORIZONTAL = 125;
+
+const getXPositionWithinLimit = (x: number) => `calc(${x}px - ${x / 2}px - 30px)`;
+
+// Tooltip should be centered and above the chart bars but should not overflow horizontally
+const getTooltipXPosition = (x: number): string => {
+    return x <= OFFSET_LIMIT_HORIZONTAL ? getXPositionWithinLimit(x) : `calc(${x}px - 50%)`;
+};
+
+// Align the triangle arrow in a similar manner
+const getTooltipArrowXPosition = (x: number): string => {
+    return x <= OFFSET_LIMIT_HORIZONTAL ? getXPositionWithinLimit(x) : `50%`;
+};
 
 const CustomTooltipWrapper = styled.div<{ coordinate: { x: number; y: number } }>`
     display: flex;
@@ -17,9 +32,21 @@ const CustomTooltipWrapper = styled.div<{ coordinate: { x: number; y: number } }
     border-radius: 4px;
     box-shadow: 0 3px 14px 0 rgba(0, 0, 0, 0.15);
     font-variant-numeric: tabular-nums;
-    transform: ${props => `translate(0px, ${props.coordinate.y - 100}px)`};
-
+    transform: translate(${props => getTooltipXPosition(props.coordinate.x)}, -90px);
     line-height: 1.5;
+
+    &:after {
+        position: absolute;
+        content: '';
+        top: 100%;
+        left: ${props => getTooltipArrowXPosition(props.coordinate.x)};
+        margin-left: ${props => (props.coordinate.x <= OFFSET_LIMIT_HORIZONTAL ? `50px` : `-10px`)};
+        width: 0;
+        height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-top: 10px solid rgba(38, 39, 66, 1);
+    }
 `;
 
 const Col = styled.div`
@@ -74,6 +101,8 @@ interface Props extends TooltipProps {
     receivedAmount: JSX.Element;
     sentAmount: JSX.Element;
     balance?: JSX.Element;
+    onShow?: (index: number) => void;
+    extendedDataForInterval?: CommonAggregatedHistory[];
 }
 
 const formatDate = (date: Date, dateFormat: 'day' | 'month') => {
@@ -91,7 +120,14 @@ const CustomTooltipBase = (props: Props) => {
                 ? 'month'
                 : 'day';
 
-        // console.log('props.payload[0].payload.', props.payload[0].payload);
+        if (props.onShow && props.extendedDataForInterval) {
+            props.onShow(
+                props.extendedDataForInterval.findIndex(
+                    item => item.time === props.payload![0].payload.time,
+                ),
+            );
+        }
+
         return (
             <CustomTooltipWrapper coordinate={props.coordinate!}>
                 <Row>
