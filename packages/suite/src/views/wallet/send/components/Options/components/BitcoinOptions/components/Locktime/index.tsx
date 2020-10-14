@@ -8,6 +8,7 @@ import { Icon, Input, Switch, variables, colors } from '@trezor/components';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { isInteger } from '@wallet-utils/validation';
 import { MAX_LENGTH } from '@suite-constants/inputs';
+import { isEnabled } from '@suite-utils/features';
 
 const Wrapper = styled.div`
     margin-bottom: 25px;
@@ -127,31 +128,33 @@ const Locktime = ({ close }: Props) => {
                 labelRight={<StyledIcon size={20} icon="CROSS" onClick={close} />}
                 bottomText={<InputError error={error} />}
             />
-            <RbfMessage>
-                <Left>
-                    <Icon size={16} icon="RBF" />
-                </Left>
-                <Center>
-                    <Title>
-                        <Translation id={rbfEnabled ? 'RBF_ON' : 'RBF_OFF'} />
-                    </Title>
-                    <Description>
-                        <Translation id="RBF_DESCRIPTION" />
-                    </Description>
-                </Center>
-                <Right>
-                    <Switch
-                        checked={rbfEnabled}
-                        onChange={() => {
-                            if (inputValue.length > 0) {
-                                setValue(inputName, '');
-                            }
-                            toggleOption('bitcoinRBF');
-                            composeTransaction(inputName);
-                        }}
-                    />
-                </Right>
-            </RbfMessage>
+            {isEnabled('RBF') && (
+                <RbfMessage>
+                    <Left>
+                        <Icon size={16} icon="RBF" />
+                    </Left>
+                    <Center>
+                        <Title>
+                            <Translation id={rbfEnabled ? 'RBF_ON' : 'RBF_OFF'} />
+                        </Title>
+                        <Description>
+                            <Translation id="RBF_DESCRIPTION" />
+                        </Description>
+                    </Center>
+                    <Right>
+                        <Switch
+                            checked={rbfEnabled}
+                            onChange={() => {
+                                if (inputValue.length > 0) {
+                                    setValue(inputName, '');
+                                }
+                                toggleOption('bitcoinRBF');
+                                composeTransaction(inputName);
+                            }}
+                        />
+                    </Right>
+                </RbfMessage>
+            )}
         </Wrapper>
     );
 };
