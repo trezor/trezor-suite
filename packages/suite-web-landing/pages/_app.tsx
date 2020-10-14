@@ -9,6 +9,7 @@ class App extends NextApp {
             <>
                 <Head>
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
+                    <title>Trezor Suite</title>
                 </Head>
                 <Component {...pageProps} />
             </>

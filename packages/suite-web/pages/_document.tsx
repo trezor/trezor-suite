@@ -47,6 +47,11 @@ export default class MyDocument extends Document {
                         rel="stylesheet"
                         href={resolveStaticPath('fonts/fonts.css')}
                     />
+                    <link rel="icon" href={resolveStaticPath('images/icons/favicon/favicon.png')} />
+                    <link
+                        rel="apple-touch-icon"
+                        href={resolveStaticPath('images/icons/favicon/favicon.png')}
+                    />
                 </Head>
                 <body>
                     <Main />
