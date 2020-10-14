@@ -21,7 +21,7 @@ const AddAccount = (props: Props) => {
 
     // if symbol is passed in the props, preselect it and pin it (do not allow the user to change it)
     // otherwise default value is currently selected network or first network item on the list (btc)
-    const symbol = props.symbol ? props.symbol : props.selectedAccount?.account?.symbol;
+    const symbol = props.symbol ? props.symbol : props.selectedAccount.account?.symbol;
     const preselectedNetwork = symbol
         ? (internalNetworks.find(n => n.symbol === symbol) as Network)
         : internalNetworks[0];

@@ -77,7 +77,7 @@ const Wrapper = (props: Props) => (
                 network={props.selectedNetwork}
                 internalNetworks={props.internalNetworks}
                 setSelectedNetwork={props.onSelectNetwork}
-                pinNetwork={props.pinNetwork}
+                isDisabled={props.pinNetwork}
             />
         </Row>
         {props.accountTypes && props.accountTypes.length > 1 && (
