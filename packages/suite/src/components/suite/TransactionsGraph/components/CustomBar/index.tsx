@@ -47,7 +47,7 @@ const CustomBar = (props: CustomBarProps) => {
     v${minHeight - BAR_BORDER_RADIUS}
     z`;
 
-    return <path fill={fill} d={path} />;
+    return <path fill={fill} d={path} filter={props.filter} />;
 };
 
 export default CustomBar;

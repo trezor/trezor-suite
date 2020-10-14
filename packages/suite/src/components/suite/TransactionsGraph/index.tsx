@@ -6,7 +6,7 @@ import {
     AggregatedAccountHistory,
     AggregatedDashboardHistory,
 } from '@wallet-types/graph';
-import { ComposedChart, Tooltip, Bar, YAxis, XAxis, Line, CartesianGrid } from 'recharts';
+import { ComposedChart, Tooltip, Bar, YAxis, XAxis, Line, CartesianGrid, Cell } from 'recharts';
 import { useGraph } from '@suite-hooks';
 import { calcYDomain, calcXDomain, calcFakeGraphDataForTimestamps } from '@wallet-utils/graphUtils';
 import { Account } from '@wallet-types';
@@ -61,6 +61,9 @@ interface CommonProps {
     hideToolbar?: boolean;
     onRefresh?: () => void;
 }
+
+type HoveredIndex = number;
+
 export interface CryptoGraphProps extends CommonProps {
     variant: 'one-asset';
     account: Account;
@@ -104,6 +107,10 @@ const TransactionsGraph = React.memo((props: Props) => {
             ? calcFakeGraphDataForTimestamps(xTicks, data, props.account.formattedBalance)
             : calcFakeGraphDataForTimestamps(xTicks, data);
 
+    const hoveredIndex: HoveredIndex = -1;
+    const [hovered, setHovered] = useState(hoveredIndex);
+    const isBarColored = (index: HoveredIndex) => [-1, index].includes(hovered);
+
     return (
         <Wrapper>
             {!props.hideToolbar && (
@@ -133,6 +140,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 right: rightMargin,
                                 left: 20,
                             }}
+                            onMouseLeave={() => setHovered(-1)}
                         >
                             <CartesianGrid vertical={false} stroke={colors.NEUE_BG_GRAY} />
 
@@ -147,6 +155,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 tick={<CustomXAxisTick selectedRange={selectedRange} />}
                                 ticks={xTicks}
                                 tickLine={false}
+                                onMouseEnter={() => setHovered(-1)}
                             />
 
                             <YAxis
@@ -169,8 +178,10 @@ const TransactionsGraph = React.memo((props: Props) => {
                                         />
                                     )
                                 }
+                                onMouseEnter={() => setHovered(-1)}
                             />
                             <Tooltip
+                                position={{ y: 0, x: 0 }}
                                 cursor={{ stroke: '#2b2c4f', strokeWidth: 1 }}
                                 content={
                                     props.variant === 'one-asset' ? (
@@ -181,6 +192,8 @@ const TransactionsGraph = React.memo((props: Props) => {
                                             sentValueFn={props.sentValueFn}
                                             receivedValueFn={props.receivedValueFn}
                                             balanceValueFn={props.balanceValueFn}
+                                            extendedDataForInterval={extendedDataForInterval}
+                                            onShow={index => setHovered(index)}
                                         />
                                     ) : (
                                         <CustomTooltipDashboard
@@ -189,6 +202,8 @@ const TransactionsGraph = React.memo((props: Props) => {
                                             sentValueFn={props.sentValueFn}
                                             receivedValueFn={props.receivedValueFn}
                                             // balanceValueFn={props.balanceValueFn}
+                                            extendedDataForInterval={extendedDataForInterval}
+                                            onShow={index => setHovered(index)}
                                         />
                                     )
                                 }
@@ -233,33 +248,48 @@ const TransactionsGraph = React.memo((props: Props) => {
                                     <stop offset="1" stopColor="#e75f5f" />
                                 </linearGradient>
                             </defs>
-
-                            {/* shadow position is incorrect if there are too many bars, forcing them to be smaller than specified barSize */}
-                            {/* <defs>
-                                <filter id="shadow" x="-20%" y="-20%" width="200%" height="200%">
-                                    <feDropShadow
-                                        stdDeviation="5"
-                                        floodColor="rgba(0, 0, 0, 0.1)"
-                                    />
+                            <defs>
+                                <filter id="shadow" x="-2" y="-2" width="50" height="50">
+                                    <feGaussianBlur in="SourceAlpha" stdDeviation="5" />
+                                    <feOffset dx="0" dy="2" result="offsetblur" />
+                                    <feFlood floodColor="rgb(0,0,0)" floodOpacity="0.2" />
+                                    <feComposite in2="offsetblur" operator="in" />
+                                    <feMerge>
+                                        <feMergeNode in="offsetBlur" />
+                                        <feMergeNode in="SourceGraphic" />
+                                    </feMerge>
                                 </filter>
-                            </defs> */}
-
+                            </defs>
                             <Bar
                                 dataKey={(data: any) => Number(props.receivedValueFn(data) ?? 0)}
                                 // stackId="stack"
-                                fill="url(#greenGradient)"
-                                // filter="url(#shadow)"
                                 barSize={selectedRange.label === 'all' ? 8 : 16}
                                 shape={<CustomBar variant="received" />}
-                            />
+                            >
+                                {extendedDataForInterval.map((entry, index) => (
+                                    <Cell
+                                        key={`cell-${entry}`}
+                                        filter={isBarColored(index) ? 'url(#shadow)' : ''}
+                                        fill={
+                                            isBarColored(index) ? 'url(#greenGradient)' : '#aeaeae'
+                                        }
+                                    />
+                                ))}
+                            </Bar>
                             <Bar
                                 dataKey={(data: any) => Number(props.sentValueFn(data) ?? 0)}
                                 // stackId="stack"
-                                fill="url(#redGradient)"
-                                // filter="url(#shadow)"
                                 barSize={selectedRange.label === 'all' ? 8 : 16}
                                 shape={<CustomBar variant="sent" />}
-                            />
+                            >
+                                {extendedDataForInterval.map((entry, index) => (
+                                    <Cell
+                                        key={`cell-${entry}`}
+                                        filter={isBarColored(index) ? 'url(#shadow)' : ''}
+                                        fill={isBarColored(index) ? 'url(#redGradient)' : '#dfdfdf'}
+                                    />
+                                ))}
+                            </Bar>
                         </ComposedChart>
                     </CustomResponsiveContainer>
                 )}
