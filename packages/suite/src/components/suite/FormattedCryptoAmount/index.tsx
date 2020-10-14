@@ -5,7 +5,10 @@ import { HiddenPlaceholder } from '@suite-components';
 const Value = styled.span`
     font-variant-numeric: tabular-nums;
 `;
-const Symbol = styled.span``;
+
+const Symbol = styled.span`
+    text-transform: uppercase;
+`;
 
 interface Props {
     value: React.ReactNode;
@@ -18,7 +21,7 @@ const FormattedCryptoAmount = ({ value, symbol, disableHiddenPlaceholder, classN
     const content = (
         <>
             <Value>{value}</Value>
-            {symbol && <Symbol>{` ${symbol.toUpperCase()}`}</Symbol>}
+            {symbol && <Symbol>{` ${symbol}`}</Symbol>}
         </>
     );
 
