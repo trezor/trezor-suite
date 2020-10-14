@@ -8,6 +8,7 @@ import { Button, Modal, P, Link, Select, colors, variables, Loader } from '@trez
 import * as routerActions from '@suite-actions/routerActions';
 import { URLS } from '@suite-constants';
 import { AppState, Dispatch } from '@suite-types';
+import { isDesktop } from '@suite-utils/env';
 
 const Content = styled.div`
     display: flex;
@@ -129,7 +130,7 @@ const InstallBridge = (props: Props) => {
     };
 
     const target = selectedTarget || data.target;
-    const isLoading = !props.transport || process.env.SUITE_TYPE === 'desktop';
+    const isLoading = !props.transport || isDesktop();
     const transportAvailable = props.transport && props.transport.type;
 
     return (

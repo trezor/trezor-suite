@@ -28,3 +28,6 @@ export const getPlatform = () => {
 export const getPlatformLanguage = () => {
     return window.navigator.language;
 };
+
+export const isWeb = () => process.env.SUITE_TYPE === 'web';
+export const isDesktop = () => process.env.SUITE_TYPE === 'desktop';

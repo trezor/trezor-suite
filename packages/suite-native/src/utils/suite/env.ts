@@ -30,3 +30,6 @@ export const getPlatform = () => {
 export const getPlatformLanguage = () => {
     return 'eskimo';
 };
+
+export const isDesktop = () => false;
+export const isWeb = () => false;

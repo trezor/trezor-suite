@@ -5,7 +5,6 @@ import styled from 'styled-components';
 
 import { Button, Modal, H2, variables, colors, Link } from '@trezor/components';
 import { Translation } from '@suite-components';
-import { UpdateInfo, UpdateProgress } from '@suite-types/desktop';
 import { useActions, useSelector } from '@suite-hooks';
 
 import { isDev } from '@suite-utils/build';
@@ -185,15 +184,13 @@ const DesktopUpdater = () => {
             return;
         }
 
-        window.desktopApi!.on('update/checking', () => checking());
-        window.desktopApi!.on('update/available', (info: UpdateInfo) => available(info));
-        window.desktopApi!.on('update/not-available', (info: UpdateInfo) => notAvailable(info));
-        window.desktopApi!.on('update/skip', (version: string) => skip(version));
-        window.desktopApi!.on('update/downloaded', (info: UpdateInfo) => ready(info));
-        window.desktopApi!.on('update/downloading', (progress: UpdateProgress) =>
-            downloading(progress),
-        );
-        window.desktopApi!.on('update/error', (err: Error) => error(err));
+        window.desktopApi!.on('update/checking', checking);
+        window.desktopApi!.on('update/available', available);
+        window.desktopApi!.on('update/not-available', notAvailable);
+        window.desktopApi!.on('update/skip', skip);
+        window.desktopApi!.on('update/downloaded', ready);
+        window.desktopApi!.on('update/downloading', downloading);
+        window.desktopApi!.on('update/error', error);
 
         // Initial check for updates
         window.desktopApi!.checkForUpdates();
@@ -251,7 +248,7 @@ const DesktopUpdater = () => {
     }
 
     // If the state is not set or set to checking or not-available, then show nothing
-    if (['', 'checking', 'not-available'].includes(desktopUpdate.state)) {
+    if (['checking', 'not-available'].includes(desktopUpdate.state)) {
         return null;
     }
 

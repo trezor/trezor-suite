@@ -19,6 +19,7 @@ import {
     SupportTicketResponse,
     SupportTicket,
 } from 'invity-api';
+import { isDesktop } from '@suite-utils/env';
 
 class InvityAPI {
     unknownCountry = 'unknown';
@@ -71,7 +72,7 @@ class InvityAPI {
     }
 
     private options(body = {}, method = 'POST'): any {
-        const apiHeader = process.env.SUITE_TYPE === 'desktop' ? 'X-SuiteA-Api' : 'X-SuiteW-Api';
+        const apiHeader = isDesktop() ? 'X-SuiteA-Api' : 'X-SuiteW-Api';
         if (method === 'POST') {
             return {
                 method,

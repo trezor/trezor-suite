@@ -18,6 +18,7 @@ import { capitalizeFirstLetter } from '@suite-utils/string';
 
 import { Props } from './Container';
 import { getReleaseUrl } from '@suite/services/github';
+import { isDesktop } from '@suite-utils/env';
 
 const buildCurrencyOption = (currency: string) => ({
     value: currency,
@@ -271,33 +272,35 @@ const Settings = ({
                             </Version>
                         }
                     />
-                    <ActionColumn>
-                        {desktopUpdate.state === 'checking' && (
-                            <ActionButton isDisabled variant="secondary">
-                                <Translation id="SETTINGS_UPDATE_CHECKING" />
-                            </ActionButton>
-                        )}
-                        {desktopUpdate.state === 'not-available' && (
-                            <ActionButton onClick={checkForUpdates} variant="secondary">
-                                <Translation id="SETTINGS_UPDATE_CHECK" />
-                            </ActionButton>
-                        )}
-                        {desktopUpdate.state === 'available' && (
-                            <ActionButton onClick={downloadUpdate} variant="secondary">
-                                <Translation id="SETTINGS_UPDATE_AVAILABLE" />
-                            </ActionButton>
-                        )}
-                        {desktopUpdate.state === 'downloading' && (
-                            <ActionButton isDisabled variant="secondary">
-                                <Translation id="SETTINGS_UPDATE_DOWNLOADING" />
-                            </ActionButton>
-                        )}
-                        {desktopUpdate.state === 'ready' && (
-                            <ActionButton onClick={installRestart} variant="secondary">
-                                <Translation id="SETTINGS_UPDATE_READY" />
-                            </ActionButton>
-                        )}
-                    </ActionColumn>
+                    {isDesktop() && (
+                        <ActionColumn>
+                            {desktopUpdate.state === 'checking' && (
+                                <ActionButton isDisabled variant="secondary">
+                                    <Translation id="SETTINGS_UPDATE_CHECKING" />
+                                </ActionButton>
+                            )}
+                            {desktopUpdate.state === 'not-available' && (
+                                <ActionButton onClick={checkForUpdates} variant="secondary">
+                                    <Translation id="SETTINGS_UPDATE_CHECK" />
+                                </ActionButton>
+                            )}
+                            {desktopUpdate.state === 'available' && (
+                                <ActionButton onClick={downloadUpdate} variant="secondary">
+                                    <Translation id="SETTINGS_UPDATE_AVAILABLE" />
+                                </ActionButton>
+                            )}
+                            {desktopUpdate.state === 'downloading' && (
+                                <ActionButton isDisabled variant="secondary">
+                                    <Translation id="SETTINGS_UPDATE_DOWNLOADING" />
+                                </ActionButton>
+                            )}
+                            {desktopUpdate.state === 'ready' && (
+                                <ActionButton onClick={installRestart} variant="secondary">
+                                    <Translation id="SETTINGS_UPDATE_READY" />
+                                </ActionButton>
+                            )}
+                        </ActionColumn>
+                    )}
                 </SectionItem>
             </Section>
         </SettingsLayout>

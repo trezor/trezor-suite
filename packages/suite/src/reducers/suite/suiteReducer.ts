@@ -4,6 +4,7 @@ import { SUITE, STORAGE } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { Action, TrezorDevice, Lock } from '@suite-types';
 import { LANGUAGES } from '@suite-config';
+import { isWeb } from '@suite-utils/env';
 
 export interface DebugModeOptions {
     translationMode: boolean;
@@ -49,7 +50,7 @@ const initialState: SuiteState = {
     flags: {
         initialRun: true,
         // on web, there is another preceding initialWebRun, that shows 'download' desktop
-        initialWebRun: process.env.SUITE_TYPE === 'web',
+        initialWebRun: isWeb(),
         // recoveryCompleted: false;
         // pinCompleted: false;
         // passphraseCompleted: false;

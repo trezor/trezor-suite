@@ -11,6 +11,7 @@ import { fetchLocale } from '@settings-actions/languageActions';
 import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
 import { getApp } from '@suite-utils/router';
 import { AppState, Action, Dispatch } from '@suite-types';
+import { isWeb } from '@suite-utils/env';
 
 const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
     action: Action,
@@ -57,7 +58,7 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
         case SUITE.CONNECT_INITIALIZED:
             // trezor-connect init successfully
             api.dispatch(blockchainActions.init());
-            if (process.env.SUITE_TYPE === 'web') TrezorConnect.renderWebUSBButton();
+            if (isWeb()) TrezorConnect.renderWebUSBButton();
             break;
         case BLOCKCHAIN.READY:
             // dispatch initial location change
