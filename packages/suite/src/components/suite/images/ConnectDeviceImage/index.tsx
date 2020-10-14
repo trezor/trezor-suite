@@ -3,6 +3,7 @@ import { Image, ImageProps } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as notificationActions from '@suite-actions/notificationActions';
+import { isDesktop } from '@suite-utils/env';
 
 const ConnectDeviceImage = (props: Omit<ImageProps, 'image'>) => {
     const [clickCounter, setClickCounter] = useState(0);
@@ -16,7 +17,7 @@ const ConnectDeviceImage = (props: Omit<ImageProps, 'image'>) => {
         <Image
             image="CONNECT_DEVICE"
             onClick={() => {
-                if (process.env.SUITE_TYPE !== 'desktop') {
+                if (!isDesktop()) {
                     return;
                 }
 

@@ -19,7 +19,7 @@ import { UpdateInfo, UpdateProgress, UpdateWindow } from '@suite-types/desktop';
  * - hidden: Hidden
  */
 export interface State {
-    state: '' | 'checking' | 'available' | 'not-available' | 'downloading' | 'ready';
+    state: 'checking' | 'available' | 'not-available' | 'downloading' | 'ready';
     skip?: string;
     progress?: UpdateProgress;
     latest?: UpdateInfo;
@@ -27,7 +27,7 @@ export interface State {
 }
 
 const initialState: State = {
-    state: '',
+    state: 'not-available',
     window: 'maximized',
 };
 

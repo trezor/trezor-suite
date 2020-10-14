@@ -8,6 +8,7 @@ import { SUITE } from '@suite-actions/constants';
 import { lockDevice } from '@suite-actions/suiteActions';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Dispatch, GetState } from '@suite-types';
+import { isDesktop, isWeb } from '@suite-utils/env';
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     // set event listeners
@@ -63,10 +64,9 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 
     try {
-        const connectSrc =
-            process.env.SUITE_TYPE === 'desktop'
-                ? resolveStaticPath('connect/')
-                : 'https://connect.trezor.io/8/';
+        const connectSrc = isDesktop()
+            ? resolveStaticPath('connect/')
+            : 'https://connect.trezor.io/8/';
         // 'https://localhost:8088/';
         // 'https://connect.corp.sldev.cz/develop/';
 
@@ -75,7 +75,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             transportReconnect: true,
             debug: false,
             popup: false,
-            webusb: process.env.SUITE_TYPE === 'web',
+            webusb: isWeb(),
             pendingTransportEvent: getState().devices.length < 1,
             manifest: {
                 email: 'info@trezor.io',

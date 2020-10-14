@@ -10,6 +10,7 @@ import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { getAnalyticsRandomId } from '@suite-utils/random';
 import { encodeDataToQueryString } from '@suite-utils/analytics';
 import { Account } from '@wallet-types';
+import { isDesktop, isWeb } from '@suite-utils/env';
 
 export type AnalyticsActions =
     | { type: typeof ANALYTICS.DISPOSE }
@@ -219,13 +220,13 @@ const getUrl = () => {
         return; // no reporting on dev
     }
 
-    if (process.env.SUITE_TYPE === 'desktop') {
+    if (isDesktop()) {
         // currently released desktop version is in beta.
         return `${base}/desktop/beta.log`;
         // there is no staging for desktop version
     }
 
-    if (process.env.SUITE_TYPE === 'web') {
+    if (isWeb()) {
         switch (hostname) {
             case 'staging-suite.trezor.io':
                 return `${base}/web/staging.log`;
