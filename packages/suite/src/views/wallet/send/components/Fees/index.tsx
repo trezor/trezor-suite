@@ -136,12 +136,14 @@ const Fees = () => {
             <FeeAmount>
                 <CoinAmount>
                     <FormattedCryptoAmount
+                        disableHiddenPlaceholder
                         value={formatNetworkAmount(transactionInfo.fee, symbol)}
                         symbol={symbol}
                     />
                 </CoinAmount>
                 <FiatAmount>
                     <FiatValue
+                        disableHiddenPlaceholder
                         amount={formatNetworkAmount(transactionInfo.fee, symbol)}
                         symbol={symbol}
                     />
