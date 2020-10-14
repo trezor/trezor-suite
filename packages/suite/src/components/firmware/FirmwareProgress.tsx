@@ -30,7 +30,11 @@ const Body = () => {
                         <Translation id={statusText} />
                         <Loaders.Dots />
                     </H2>
-                    {statusDescription && <P>{statusDescription}</P>}
+                    {statusDescription && (
+                        <P>
+                            <Translation id={statusDescription} />
+                        </P>
+                    )}
                 </>
             )}
 
