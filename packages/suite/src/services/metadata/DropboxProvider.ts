@@ -88,14 +88,22 @@ class DropboxProvider extends AbstractMetadataProvider {
                 query: `${file}.mtdt`,
             });
             if (exists?.matches?.length > 0) {
-                // sanity check
-                const match = exists.matches.find(
+                // check whether the file is in the regular folder ...
+                let match = exists.matches.find(m => m.metadata.path_lower === `/${file}.mtdt`);
+
+                // ... or in the legacy folder
+                const matchLegacy = exists.matches.find(
                     m => m.metadata.path_lower === `/apps/trezor/${file}.mtdt`,
                 );
-                if (!match) return this.ok(undefined);
+
+                // fail if it is in neither
+                if (!match && !matchLegacy) return this.ok(undefined);
+
+                // regular file not found, but found one in the legacy folder
+                if (!match) match = matchLegacy;
 
                 const download = await this.client.filesDownload({
-                    path: match.metadata.path_lower!,
+                    path: match!.metadata.path_lower!,
                 });
 
                 // @ts-ignore: fileBlob not defined?
@@ -115,7 +123,7 @@ class DropboxProvider extends AbstractMetadataProvider {
         try {
             const blob = new Blob([content], { type: 'text/plain;charset=UTF-8' });
             await this.client.filesUpload({
-                path: `/Apps/TREZOR/${file}.mtdt`,
+                path: `/${file}.mtdt`,
                 contents: blob,
                 // @ts-ignore
                 mode: 'overwrite',
