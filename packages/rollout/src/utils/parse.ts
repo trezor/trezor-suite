@@ -1,111 +1,69 @@
-import { Features } from 'trezor-connect';
-
-import {
-    Boolean,
-    Number,
-    String,
-    Literal,
-    Tuple,
-    Record,
-    Union,
-    Undefined,
-    Partial,
-    Static,
-} from 'runtypes';
-
-const VersionArrayT2 = Tuple(Literal(2), Number, Number);
-const VersionArrayT1 = Tuple(Literal(1), Number, Number);
+import { Boolean, Number, String, Literal, Tuple, Record, Union, Partial, Static } from 'runtypes';
 
 /**
- * Models: 1, 2
- * No firmware installed
+ * Partial types from trezor-connect, argument of `getInfo` method
+ * @param extFeatures
  */
-interface FeaturesShape1<Major> extends Omit<Features, 'major_version'> {
-    major_version: Major;
+export interface Features {
+    bootloader_mode?: boolean | null;
+    device_id: string | null;
+    firmware_present?: boolean | null;
+    fw_major?: number | null;
+    fw_minor?: number | null;
+    fw_patch?: number | null;
+    major_version: number;
     minor_version: number;
     patch_version: number;
-    fw_major: null;
-    fw_minor: null;
-    fw_patch: null;
-    bootloader_mode: true;
-    firmware_present: false;
 }
 
 /**
- * Models: 1, 2
- * Firmware installed
- * Not in bootloader mode
- */
-interface FeaturesShape2<Major> extends Omit<Features, 'major_version'> {
-    major_version: Major;
-    minor_version: number;
-    patch_version: number;
-    fw_major: null;
-    fw_minor: null;
-    fw_patch: null;
-    bootloader_mode: null;
-    firmware_present: null;
-}
-
-/**
- * Models: 2
- * Firmware installed
- * Bootloader mode
- */
-interface FeaturesShape3 extends Features {
-    major_version: 2;
-    minor_version: number;
-    patch_version: number;
-    fw_major: 2;
-    fw_minor: number;
-    fw_patch: number;
-    bootloader_mode: true;
-    firmware_present: true;
-}
-
-/**
- * Models: 1
- * Firmware installed
- * bootloader mode
- */
-interface FeaturesShape4 extends Features {
-    major_version: 1;
-    minor_version: number;
-    patch_version: number;
-    fw_major: null;
-    fw_minor: null;
-    fw_patch: null;
-    bootloader_mode: true;
-    firmware_present: true;
-}
-
-/**
- * Accepts external features (from trezor-connect), checks wheter it comes in expected
+ * Accepts external features (from trezor-connect), checks whether it comes in expected
  * shape and narrows its type to stricter one.
  * @param extFeatures
  */
 
+export interface StrictFeatures<
+    MV extends Features['major_version'],
+    BL extends Features['bootloader_mode'],
+    FW extends Features['firmware_present'],
+    FW_MV extends Features['fw_major'] = null
+> extends Features {
+    major_version: MV;
+    fw_major: FW_MV;
+    fw_minor: FW_MV extends number ? number : null;
+    fw_patch: FW_MV extends number ? number : null;
+    bootloader_mode: BL;
+    firmware_present: FW;
+}
+
 export const parseFeatures = (extFeatures: Features) => {
     if (extFeatures.major_version === 2 && extFeatures.firmware_present === false) {
-        return extFeatures as FeaturesShape1<2>;
+        return extFeatures as StrictFeatures<2, true, false>;
     }
     if (extFeatures.major_version === 2 && extFeatures.bootloader_mode == null) {
-        return extFeatures as FeaturesShape2<2>;
+        return extFeatures as StrictFeatures<2, null, null>;
     }
     if (extFeatures.major_version === 2 && extFeatures.bootloader_mode === true) {
-        return extFeatures as FeaturesShape3;
+        return extFeatures as StrictFeatures<2, true, true, 2>;
     }
     if (extFeatures.major_version === 1 && extFeatures.firmware_present === false) {
-        return extFeatures as FeaturesShape1<1>;
+        return extFeatures as StrictFeatures<1, true, false>;
     }
     if (extFeatures.major_version === 1 && extFeatures.bootloader_mode === null) {
-        return extFeatures as FeaturesShape1<1>;
+        return extFeatures as StrictFeatures<1, true, false>;
     }
     if (extFeatures.major_version === 1 && extFeatures.bootloader_mode === true) {
-        return extFeatures as FeaturesShape4;
+        return extFeatures as StrictFeatures<1, true, true>;
     }
     throw new Error('Features of unexpected shape provided to rollout');
 };
+
+/**
+ * runtime type checking declarations
+ */
+
+const VersionArrayT2 = Tuple(Literal(2), Number, Number);
+const VersionArrayT1 = Tuple(Literal(1), Number, Number);
 
 const Release = Record({
     required: Boolean,
@@ -130,6 +88,7 @@ const Release = Record({
 export type Release = Static<typeof Release>;
 export type VersionArrayT1 = Static<typeof VersionArrayT1>;
 export type VersionArrayT2 = Static<typeof VersionArrayT2>;
+export type VersionArray = VersionArrayT1 | VersionArrayT2;
 
 /**
  * Accepts external releases as published here:

@@ -1,8 +1,11 @@
-import versionUtils from './version';
-import { ReleaseList, VersionArray } from '../types';
+import * as versionUtils from './version';
+import { Release, VersionArray } from './parse';
 
-const filterSafeListByBootloader = (releasesList: ReleaseList, bootloaderVersion: VersionArray) => {
-    return releasesList.filter((item: ReleaseList[number]) => {
+export const filterSafeListByBootloader = (
+    releasesList: Release[],
+    bootloaderVersion: VersionArray
+) => {
+    return releasesList.filter(item => {
         return (
             (!item.min_bootloader_version ||
                 versionUtils.isNewerOrEqual(bootloaderVersion, item.min_bootloader_version)) &&
@@ -12,9 +15,7 @@ const filterSafeListByBootloader = (releasesList: ReleaseList, bootloaderVersion
     });
 };
 
-const filterSafeListByFirmware = (releasesList: ReleaseList, firmwareVersion: VersionArray) =>
-    releasesList.filter((item: ReleaseList[number]) =>
+export const filterSafeListByFirmware = (releasesList: Release[], firmwareVersion: VersionArray) =>
+    releasesList.filter(item =>
         versionUtils.isNewerOrEqual(firmwareVersion, item.min_firmware_version)
     );
-
-export { filterSafeListByBootloader, filterSafeListByFirmware };

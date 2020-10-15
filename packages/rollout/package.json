@@ -19,7 +19,7 @@
     "description": "Small javascript library to get latest safe firmware version for trezor update.",
     "main": "lib/index.js",
     "module": "lib/index.es.js",
-    "types": "lib/src/index.d.ts",
+    "types": "lib/index.d.ts",
     "scripts": {
         "test:unit": "jest",
         "test:watch": "jest --watch",
