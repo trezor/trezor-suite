@@ -1,8 +1,9 @@
-import { AppState, ExtendedMessageDescriptor } from '@suite-types';
+import { AppState } from '@suite-types';
 import { Account, Network } from '@wallet-types';
 import { BuyTradeQuoteRequest, BuyTrade } from 'invity-api';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import { UseFormMethods } from 'react-hook-form';
+import { TypedValidationRules } from './form';
 
 export type Option = { value: string; label: string };
 export type defaultCountryOption = { value: string; label?: string };
@@ -24,11 +25,6 @@ export type FormState = {
     cryptoSelect: Option;
     countrySelect: Option;
 };
-
-export interface TypedValidationRules {
-    required?: ExtendedMessageDescriptor['id'] | JSX.Element | undefined;
-    validate?: (data: string) => ExtendedMessageDescriptor['id'] | JSX.Element | undefined;
-}
 
 export interface AmountLimits {
     currency: string;
