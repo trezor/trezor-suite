@@ -74,9 +74,8 @@ const Body = () => {
     if (device?.mode !== 'normal') return <ReconnectInNormalStep.Body />;
     if (device?.firmware === 'valid') return <NoNewFirmware.Body />;
 
-    if (!device?.features) return null; // ts
-
     const { firmwareRelease } = device;
+    if (!device?.features || !firmwareRelease) return null; // ts
 
     return (
         <BodyWrapper>
@@ -85,9 +84,9 @@ const Body = () => {
                 <Translation id="FIRMWARE_UPDATE_AVAILABLE_DESC" />
             </P>
 
-            {device.firmwareRelease.changelog?.length > 0 && (
+            {firmwareRelease.changelog && (
                 <ChangesSummary>
-                    {device.firmwareRelease.changelog.map((c: any) => (
+                    {firmwareRelease.changelog.map(c => (
                         <ChangelogGroup key={c.url}>
                             <ChangelogHeading>{c.version.join('.')}</ChangelogHeading>
                             <ChangelogPre>{c.changelog.replace(/\*/g, '—')}</ChangelogPre>

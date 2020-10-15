@@ -55,7 +55,7 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
     const model = device.features.major_version;
 
     // for update (in firmware modal) target release is set. otherwise use device.firmwareRelease
-    const toFwVersion = targetRelease?.release?.version || device.firmwareRelease.release.version;
+    const toFwVersion = targetRelease?.release?.version || device.firmwareRelease!.release.version;
     const fromBlVersion = [
         device.features.major_version,
         device.features.minor_version,
@@ -97,7 +97,7 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
             payload: {
                 fromFwVersion,
                 fromBlVersion,
-                toFwVersion,
+                toFwVersion: toFwVersion.join('.'),
                 toBtcOnly,
                 error: !updateResponse.success ? updateResponse.payload.error : '',
             },
