@@ -1,6 +1,6 @@
-import { Version, VersionArray } from '../types';
+import { VersionArray } from './parse';
 
-const parse = (versionArr: VersionArray) => {
+export const parse = (versionArr: VersionArray) => {
     return {
         major: versionArr[0],
         minor: versionArr[1],
@@ -8,11 +8,11 @@ const parse = (versionArr: VersionArray) => {
     };
 };
 
-const toString = (arr: VersionArray) => `${arr[0]}.${arr[1]}.${arr[2]}`;
+export const toString = (arr: VersionArray) => `${arr[0]}.${arr[1]}.${arr[2]}`;
 
-const isNewer = (versionX: VersionArray, versionY: VersionArray) => {
-    const parsedX: Version = parse(versionX);
-    const parsedY: Version = parse(versionY);
+export const isNewer = (versionX: VersionArray, versionY: VersionArray) => {
+    const parsedX = parse(versionX);
+    const parsedY = parse(versionY);
 
     if (parsedX.major - parsedY.major !== 0) {
         return parsedX.major > parsedY.major;
@@ -27,16 +27,8 @@ const isNewer = (versionX: VersionArray, versionY: VersionArray) => {
     return false;
 };
 
-const isEqual = (versionX: VersionArray, versionY: VersionArray) =>
+export const isEqual = (versionX: VersionArray, versionY: VersionArray) =>
     toString(versionX) === toString(versionY);
 
-const isNewerOrEqual = (versionX: VersionArray, versionY: VersionArray) =>
+export const isNewerOrEqual = (versionX: VersionArray, versionY: VersionArray) =>
     isNewer(versionX, versionY) || isEqual(versionX, versionY);
-
-export default {
-    isEqual,
-    isNewer,
-    isNewerOrEqual,
-    parse,
-    toString,
-};

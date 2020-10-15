@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { Features } from 'trezor-connect';
 
-import { Release } from './src/types';
+import { Release } from './src/utils/parse';
 
 export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     device_id: 'device-id',

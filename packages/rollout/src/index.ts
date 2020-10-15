@@ -1,21 +1,22 @@
 import { filterSafeListByFirmware, filterSafeListByBootloader } from './utils/releases';
 import { fetchFirmware } from './utils/fetch';
 import { getScore } from './utils/score';
-import versionUtils from './utils/version';
-import { parseFeatures, parseReleases } from './utils/parse';
-import { ReleaseList, Release, Firmware, ParsedFeatures, OriginalFeatures } from './types';
+import * as versionUtils from './utils/version';
+import { parseFeatures, parseReleases, Release, Features } from './utils/parse';
+
+type ParsedFeatures = ReturnType<typeof parseFeatures>;
 
 /**
- * Returns firmware binary after neccessary modifications. Should be ok to install.
+ * Returns firmware binary after necessary modifications. Should be ok to install.
  */
 const modifyFirmware = ({
     fw,
     features,
     releases,
 }: {
-    fw: Firmware;
+    fw: ArrayBuffer;
     features: ParsedFeatures;
-    releases: ReleaseList;
+    releases: Release[];
 }) => {
     // ---------------------
     // Model T modifications
@@ -42,7 +43,7 @@ const modifyFirmware = ({
     return fw;
 };
 
-const getChangelog = (releases: ReleaseList, features: ParsedFeatures) => {
+const getChangelog = (releases: Release[], features: ParsedFeatures) => {
     // releases are already filtered, so they can be considered "safe".
     // so lets build changelog! It should include only those firmwares, that are
     // newer than currently installed firmware.
@@ -104,8 +105,8 @@ const isLatest = (release: Release, latest: Release) => {
 };
 
 interface GetInfoProps {
-    features: OriginalFeatures;
-    releases: ReleaseList;
+    features: Features;
+    releases: Release[];
 }
 
 /**
@@ -119,7 +120,8 @@ export const getInfo = ({ features, releases }: GetInfoProps) => {
 
     let score = 0; // just because of ts
 
-    /* istanbul ignore next */ if (features.device_id) {
+    /* istanbul ignore next */
+    if (features.device_id) {
         score = getScore(features.device_id);
     }
     const {
@@ -156,7 +158,7 @@ export const getInfo = ({ features, releases }: GetInfoProps) => {
             patch_version,
         ]);
     } else if (major_version === 1 && bootloader_mode) {
-        // model one does not know its firmware, we need to filter by bootloader. this has the consquence
+        // model one does not know its firmware, we need to filter by bootloader. this has the consequence
         // that we do not know if the version we find in the end is newer than the actual installed version
         parsedReleases = filterSafeListByBootloader(parsedReleases, [
             major_version,
@@ -211,7 +213,7 @@ export const getBinary = async ({
 }: GetBinaryProps) => {
     // we get info here again, but only as a sanity check.
     const releaseByFirmware = releases.find(r => versionUtils.isEqual(r.version, version));
-    const infoByBootloader = await getInfo({ features, releases });
+    const infoByBootloader = getInfo({ features, releases });
 
     const parsedFeatures = parseFeatures(features);
     const parsedReleases = parseReleases(releases);
@@ -241,3 +243,6 @@ export const getBinary = async ({
         binary: modifyFirmware({ fw, features: parsedFeatures, releases: parsedReleases }),
     };
 };
+
+export type FirmwareRelease = ReturnType<typeof getInfo>;
+export type FirmwareBinary = ReturnType<typeof getBinary>;

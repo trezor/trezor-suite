@@ -6,7 +6,7 @@
  */
 
 import { getInfo, getBinary } from '../src';
-import { Release, VersionArray } from '../src/types';
+import { Release, VersionArray } from '../src/utils/parse';
 
 const { getDeviceFeatures } = global.JestMocks;
 
