@@ -1,6 +1,6 @@
 {
     "name": "@trezor/rollout",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/packages/rollout",
     "keywords": [
@@ -31,7 +31,7 @@
     },
     "dependencies": {
         "cross-fetch": "^3.0.6",
-        "runtypes": "^4.2.0"
+        "runtypes": "^5.0.1"
     },
     "devDependencies": {}
 }
