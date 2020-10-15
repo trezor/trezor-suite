@@ -1,4 +1,3 @@
-import { ReactElement } from 'react';
 import { UseFormMethods, FieldError, DeepPartial } from 'react-hook-form';
 import { Account, Network, CoinFiatRates } from '@wallet-types';
 import {
@@ -8,6 +7,7 @@ import {
     PrecomposedTransaction as PrecomposedTransactionBase,
 } from 'trezor-connect';
 import { AppState, ExtendedMessageDescriptor } from '@suite-types';
+import { TypedValidationRules } from './form';
 
 // react-hook-form state
 
@@ -136,25 +136,6 @@ interface GetDefaultValue {
     ): K extends keyof FormState ? FormState[K] : unknown;
     <K, T>(fieldName: K, fallback: T): K extends keyof FormState ? FormState[K] : T;
 }
-
-// strongly typed UseFormMethods.register
-export interface TypedValidationRules {
-    required?: ExtendedMessageDescriptor['id'] | JSX.Element | undefined;
-    validate?: (data: string) => ExtendedMessageDescriptor['id'] | JSX.Element | undefined;
-}
-
-// react-hook-form FieldError is not properly typed, even if it accepts string | ReactElement it claims that the message is only a string
-// we need to overload it with expected types which could be:
-// - Translation.id (string, set from field validation methods)
-// - Translation component (ReactElement, set from field validation methods)
-// - ExtendedMessageDescriptor object (set from useSendFormCompose::setError)
-
-export type TypedFieldError =
-    | FieldError
-    | {
-          type: string;
-          message?: ExtendedMessageDescriptor['id'] | ExtendedMessageDescriptor | ReactElement;
-      };
 
 export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
     UseSendFormState & {
