@@ -36,10 +36,10 @@ const getWalletAccount = (account?: Partial<Account>): Account => ({
  * device.firmwareRelease property
  * note that values don't make much sense.
  */
-const getFirmwareRelease = () => ({
+const getFirmwareRelease = (): NonNullable<Device['firmwareRelease']> => ({
     isLatest: false,
     isRequired: false,
-    isNew: true,
+    isNewer: false,
     changelog: [
         {
             required: false,

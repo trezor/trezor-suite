@@ -14,7 +14,7 @@ const Body = () => {
     const { status } = useFirmware();
 
     // if device is not connected, there must be error which is handled by another component
-    if (!device?.connected || !device?.features) {
+    if (!device?.connected || !device?.features || !device?.firmwareRelease) {
         return null;
     }
 
