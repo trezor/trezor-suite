@@ -1,6 +1,18 @@
 # Changelog
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). [YY.MM.MICRO]
 
+## [Unreleased]
+
+### Added
+
+
+### Changed
+
+
+### Fixed
+- Account search bug fixes and various small improvements
+
+
 ## [20.10.1]
 
 ### Added
