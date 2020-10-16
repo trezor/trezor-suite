@@ -260,12 +260,15 @@ export const fetchMetadata = (deviceState: string) => async (
                 return reject(result);
             }
 
-            let json = { walletLabel: '' };
+            const json = { walletLabel: '' };
             if (result.payload) {
                 try {
-                    json = metadataUtils.decrypt(
-                        metadataUtils.arrayBufferToBuffer(result.payload),
-                        device.metadata.aesKey,
+                    Object.assign(
+                        json,
+                        metadataUtils.decrypt(
+                            metadataUtils.arrayBufferToBuffer(result.payload),
+                            device.metadata.aesKey,
+                        ),
                     );
                 } catch (err) {
                     const error = provider.error('OTHER_ERROR', err.message);
@@ -297,15 +300,18 @@ export const fetchMetadata = (deviceState: string) => async (
             throw new Error(response.error);
         }
 
-        let json = { accountLabel: '', outputLabels: {}, addressLabels: {} };
+        const json = { accountLabel: '', outputLabels: {}, addressLabels: {} };
 
         if (response.payload) {
             try {
                 // we found associated metadata file for given account, decrypt it
                 // and save its metadata into reducer;
-                json = metadataUtils.decrypt(
-                    metadataUtils.arrayBufferToBuffer(response.payload),
-                    account.metadata.aesKey,
+                Object.assign(
+                    json,
+                    metadataUtils.decrypt(
+                        metadataUtils.arrayBufferToBuffer(response.payload),
+                        account.metadata.aesKey,
+                    ),
                 );
                 // if (json.version === '1.0.0') {
                 //     TODO: migration
