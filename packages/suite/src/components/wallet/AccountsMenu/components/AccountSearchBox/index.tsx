@@ -97,31 +97,33 @@ const AccountSearchBox = (props: Props) => {
                 onClear={onClear}
                 data-test="@account-menu/search-input"
             />
-            <CoinsFilter
-                onClick={() => {
-                    setCoinFilter(undefined);
-                }}
-            >
-                {supportedNetworks.map(n => (
-                    <OuterCircle
-                        key={n}
-                        isMobile={props.isMobile}
-                        isSelected={coinFilter === n}
-                        onClick={e => {
-                            e.stopPropagation();
-                            // select the coin or deactivate if it's already selected
-                            setCoinFilter(coinFilter === n ? undefined : n);
-                        }}
-                    >
-                        <StyledCoinLogo
-                            symbol={n}
-                            size={props.isMobile ? 24 : 16}
-                            filterActivated={!!coinFilter}
+            {supportedNetworks.length > 1 && (
+                <CoinsFilter
+                    onClick={() => {
+                        setCoinFilter(undefined);
+                    }}
+                >
+                    {supportedNetworks.map(n => (
+                        <OuterCircle
+                            key={n}
+                            isMobile={props.isMobile}
                             isSelected={coinFilter === n}
-                        />
-                    </OuterCircle>
-                ))}
-            </CoinsFilter>
+                            onClick={e => {
+                                e.stopPropagation();
+                                // select the coin or deactivate if it's already selected
+                                setCoinFilter(coinFilter === n ? undefined : n);
+                            }}
+                        >
+                            <StyledCoinLogo
+                                symbol={n}
+                                size={props.isMobile ? 24 : 16}
+                                filterActivated={!!coinFilter}
+                                isSelected={coinFilter === n}
+                            />
+                        </OuterCircle>
+                    ))}
+                </CoinsFilter>
+            )}
         </Wrapper>
     );
 };
