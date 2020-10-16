@@ -3,7 +3,7 @@ import { Button, Tooltip } from '@trezor/components';
 import { Account, Network } from '@wallet-types';
 import { Translation } from '@suite-components';
 import messages from '@suite/support/messages';
-import { useAnalytics } from '@suite-hooks';
+import { useAnalytics, useAccountSearch } from '@suite-hooks';
 
 interface Props {
     network: Network;
@@ -13,6 +13,7 @@ interface Props {
 
 const AddAccountButton = (props: Props) => {
     const analytics = useAnalytics();
+    const { setCoinFilter, setSearchString } = useAccountSearch();
 
     if (props.accounts.length === 0) return null;
     const account = props.accounts[props.accounts.length - 1];
@@ -36,6 +37,9 @@ const AddAccountButton = (props: Props) => {
             isDisabled={!!tooltip}
             onClick={() => {
                 props.onEnableAccount(account);
+                // reset coin filter
+                setSearchString(undefined);
+                setCoinFilter(undefined);
                 // just to log that account was added manually.
                 analytics.report({
                     type: 'wallet/add-account',
