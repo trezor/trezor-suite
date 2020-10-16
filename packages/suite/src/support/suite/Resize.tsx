@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useDebounce } from 'react-use';
-import { useActions } from '@suite-hooks';
+import { useActions } from '@suite-hooks/useActions';
 import { updateWindowSize } from '@suite-actions/resizeActions';
 
 /**
- * window resize handler used in suite-web and suite-desktop apps
+ * Window resize handler
  * Handle changes of window size and dispatch Action with current state to the reducer
  * @returns null
  */

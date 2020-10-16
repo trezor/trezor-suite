@@ -1,24 +1,18 @@
 import { useEffect } from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { useActions } from '@suite-hooks/useActions';
 import { updateOnlineStatus } from '@suite-actions/suiteActions';
-import { Dispatch } from '@suite-types';
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    updateOnlineStatus: bindActionCreators(updateOnlineStatus, dispatch),
-});
-
-type Props = ReturnType<typeof mapDispatchToProps>;
 
 /**
- * Navigator online/offline handler used in suite-web and suite-desktop apps
+ * Navigator online/offline handler
  * Handle changes of state and dispatch Action with current state to the reducer
- * @param {Props} props
+ * @returns null
  */
-const OnlineStatus = (props: Props) => {
+
+const OnlineStatus = () => {
+    const actions = useActions({ updateOnlineStatus });
     useEffect(() => {
         const statusHandler = () => {
-            props.updateOnlineStatus(navigator.onLine);
+            actions.updateOnlineStatus(navigator.onLine);
         };
 
         // handle browser back button
@@ -31,9 +25,9 @@ const OnlineStatus = (props: Props) => {
             window.removeEventListener('online', statusHandler, false);
             window.removeEventListener('offline', statusHandler, false);
         };
-    });
+    }, [actions]);
 
     return null;
 };
 
-export default connect(null, mapDispatchToProps)(OnlineStatus);
+export default OnlineStatus;

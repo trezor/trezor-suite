@@ -1,8 +1,7 @@
 /* eslint-disable global-require */
 import * as React from 'react';
 import { IntlProvider, MessageDescriptor } from 'react-intl';
-import { connect } from 'react-redux';
-import { AppState } from '@suite-types';
+import { useSelector } from '@suite-hooks/useSelector';
 import messages from '@suite/support/messages';
 
 // TODO: removes polyfills as we are not gonna support these browsers anyway
@@ -42,20 +41,16 @@ export interface Messages {
     [key: string]: MessageDescriptor;
 }
 
-const mapStateToProps = (state: AppState) => ({
-    locale: state.suite.settings.language,
-    messages: state.suite.messages,
-});
+const ConnectedIntlProvider: React.FC = ({ children }) => {
+    const { locale, messages } = useSelector(state => ({
+        locale: state.suite.settings.language,
+        messages: state.suite.messages,
+    }));
+    return (
+        <IntlProvider locale={locale} messages={messages}>
+            {children}
+        </IntlProvider>
+    );
+};
 
-interface ReactIntlProps {
-    locale: AppState['suite']['settings']['language'];
-    messages: AppState['suite']['messages'];
-}
-
-const ReactIntlProvider: React.FC<ReactIntlProps> = ({ children, locale, messages }) => (
-    <IntlProvider locale={locale} messages={messages}>
-        {children}
-    </IntlProvider>
-);
-
-export default connect(mapStateToProps)(ReactIntlProvider);
+export default ConnectedIntlProvider;
