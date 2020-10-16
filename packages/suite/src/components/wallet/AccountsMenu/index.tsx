@@ -1,9 +1,9 @@
-import React, { useCallback, useState, useContext } from 'react';
+import React, { useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { H2, variables, colors, Icon } from '@trezor/components';
 import { Translation, AddAccountButton } from '@suite-components';
-import { useDiscovery, useLayoutSize } from '@suite-hooks';
+import { useDiscovery, useLayoutSize, useAccountSearch } from '@suite-hooks';
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@wallet-utils/accountUtils';
 import { AppState } from '@suite-types';
 import { Account } from '@wallet-types';
@@ -11,7 +11,6 @@ import { Account } from '@wallet-types';
 import AccountSearchBox from './components/AccountSearchBox';
 import AccountGroup from './components/AccountGroup';
 import AccountItem from './components/AccountItem/Container';
-import { CoinFilterContext } from '@suite-hooks/useAccountSearch';
 
 const Wrapper = styled.div<{ isMobileLayout?: boolean }>`
     display: flex;
@@ -151,8 +150,8 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
     const { isMobileLayout } = useLayoutSize();
     const [isExpanded, setIsExpanded] = useState(false);
     const [animatedIcon, setAnimatedIcon] = useState(false);
-    const [searchString, setSearchString] = useState('');
-    const { coinFilter } = useContext(CoinFilterContext);
+    const [searchString, setSearchString] = useState<string | undefined>();
+    const { coinFilter } = useAccountSearch();
 
     const selectedItemRef = useCallback((_item: HTMLDivElement | null) => {
         // TODO: scroll to selected item

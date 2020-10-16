@@ -10,8 +10,7 @@ import MenuSecondary from '@suite-components/MenuSecondary';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import { DiscoveryProgress } from '@wallet-components';
 import NavigationBar from '../NavigationBar';
-import { useLayoutSize, useAccountSearch } from '@suite-hooks';
-import { CoinFilterContext } from '@suite-hooks/useAccountSearch';
+import { useLayoutSize } from '@suite-hooks';
 
 const PageWrapper = styled.div`
     display: flex;
@@ -139,7 +138,6 @@ const BodyNarrow = ({ url, menu, appMenu, children }: BodyProps) => (
 
 const SuiteLayout = (props: Props) => {
     // TODO: if (props.layoutSize === 'UNAVAILABLE') return <SmallLayout />;
-    const { coinFilter, setCoinFilter } = useAccountSearch();
     const { isMobileLayout } = useLayoutSize();
     const [title, setTitle] = useState<string | undefined>(undefined);
     const [menu, setMenu] = useState<any>(undefined);
@@ -161,20 +159,18 @@ const SuiteLayout = (props: Props) => {
             <SuiteNotifications />
             <DiscoveryProgress />
             <NavigationBar />
-            <CoinFilterContext.Provider value={{ coinFilter, setCoinFilter }}>
-                <LayoutContext.Provider value={{ title, menu, setLayout }}>
-                    {!isMobileLayout && (
-                        <BodyWide menu={menu} appMenu={appMenu} url={props.router.url}>
-                            {props.children}
-                        </BodyWide>
-                    )}
-                    {isMobileLayout && (
-                        <BodyNarrow menu={menu} appMenu={appMenu} url={props.router.url}>
-                            {props.children}
-                        </BodyNarrow>
-                    )}
-                </LayoutContext.Provider>
-            </CoinFilterContext.Provider>
+            <LayoutContext.Provider value={{ title, menu, setLayout }}>
+                {!isMobileLayout && (
+                    <BodyWide menu={menu} appMenu={appMenu} url={props.router.url}>
+                        {props.children}
+                    </BodyWide>
+                )}
+                {isMobileLayout && (
+                    <BodyNarrow menu={menu} appMenu={appMenu} url={props.router.url}>
+                        {props.children}
+                    </BodyNarrow>
+                )}
+            </LayoutContext.Provider>
             <BetaBadge />
         </PageWrapper>
     );

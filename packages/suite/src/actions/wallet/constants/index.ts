@@ -11,6 +11,7 @@ import * as FIAT_RATES from './fiatRatesConstants';
 import * as GRAPH from './graphConstants';
 import * as COINMARKET_BUY from './coinmarketBuyConstants';
 import * as COINMARKET_EXCHANGE from './coinmarketExchangeConstants';
+import * as ACCOUNT_SEARCH from './accountSearch';
 
 export {
     BLOCKCHAIN,
@@ -26,4 +27,5 @@ export {
     GRAPH,
     COINMARKET_BUY,
     COINMARKET_EXCHANGE,
+    ACCOUNT_SEARCH,
 };

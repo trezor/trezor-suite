@@ -1,18 +1,11 @@
-import React, { useState } from 'react';
-import { Account } from '@wallet-types';
-
-interface AccountSearchContext {
-    coinFilter: Account['symbol'] | undefined;
-    setCoinFilter: (v: Account['symbol'] | undefined) => void;
-}
-
-export const CoinFilterContext = React.createContext<AccountSearchContext>({
-    coinFilter: undefined,
-    setCoinFilter: () => {},
-});
+import * as accountSearchActions from '@wallet-actions/accountSearchActions';
+import { useSelector, useActions } from '@suite-hooks';
 
 export const useAccountSearch = () => {
-    const [coinFilter, setCoinFilter] = useState<Account['symbol'] | undefined>(undefined);
+    const { coinFilter } = useSelector(state => state.wallet.accountSearch);
+    const { setCoinFilter } = useActions({
+        setCoinFilter: accountSearchActions.setCoinFilter,
+    });
 
     return {
         coinFilter,

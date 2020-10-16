@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 import { Network } from '@wallet-types';
 import { CoinLogo, Icon, variables, colors } from '@trezor/components';
@@ -6,8 +6,7 @@ import { FiatValue, Ticker, Translation } from '@suite-components';
 import { CoinBalance } from '@wallet-components';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import * as routerActions from '@suite-actions/routerActions';
-import { useActions } from '@suite-hooks';
-import { CoinFilterContext } from '@suite-hooks/useAccountSearch';
+import { useActions, useAccountSearch } from '@suite-hooks';
 
 const LogoWrapper = styled.div`
     padding-right: 12px;
@@ -104,7 +103,7 @@ interface Props {
 
 const Asset = React.memo(({ network, failed, cryptoValue, isLastRow }: Props) => {
     const { symbol, name } = network;
-    const { setCoinFilter } = useContext(CoinFilterContext);
+    const { setCoinFilter } = useAccountSearch();
 
     const { goto } = useActions({ goto: routerActions.goto });
     return (

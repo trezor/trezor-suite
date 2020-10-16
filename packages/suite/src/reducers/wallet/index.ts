@@ -12,6 +12,7 @@ import feesReducer from './feesReducer';
 import blockchainReducer from './blockchainReducer';
 import coinmarketReducer from './coinmarketReducer';
 import sendFormReducer from './sendFormReducer';
+import accountSearchReducer from './accountSearchReducer';
 
 const WalletReducers = combineReducers({
     signVerify: signVerifyReducer,
@@ -27,6 +28,7 @@ const WalletReducers = combineReducers({
     blockchain: blockchainReducer,
     coinmarket: coinmarketReducer,
     send: sendFormReducer,
+    accountSearch: accountSearchReducer,
 });
 
 export default WalletReducers;
