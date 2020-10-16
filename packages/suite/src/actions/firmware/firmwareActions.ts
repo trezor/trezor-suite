@@ -106,6 +106,17 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
         return dispatch({ type: FIRMWARE.SET_ERROR, payload: updateResponse.payload.error });
     }
 
+    // handling case described here: https://github.com/trezor/trezor-suite/issues/2650
+    // firmwareMiddleware handles device-connect event but it never happens for model T
+    // with pin_protection set to true. In this case, we show success screen directly.
+    if (prevDevice?.features?.pin_protection && prevDevice?.features?.major_version === 2) {
+        return dispatch(setStatus('done'));
+    }
+
+    // model 1
+    // ask user to unplug device (see firmwareMiddleware)
+    // model 2 without pin
+    // ask user to wait until device reboots
     dispatch(setStatus(model === 1 ? 'unplug' : 'wait-for-reboot'));
 };
 
