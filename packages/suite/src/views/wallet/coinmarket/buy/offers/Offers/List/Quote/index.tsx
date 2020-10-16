@@ -20,6 +20,7 @@ const Wrapper = styled.div`
     flex: 1;
     width: 100%;
     min-height: 150px;
+    padding-bottom: 16px;
     background: ${colors.WHITE};
 `;
 
