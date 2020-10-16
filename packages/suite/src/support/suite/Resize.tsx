@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useDebounce } from 'react-use';
+import useDebounce from 'react-use/lib/useDebounce';
 import { useActions } from '@suite-hooks/useActions';
 import { updateWindowSize } from '@suite-actions/resizeActions';
 
