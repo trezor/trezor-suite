@@ -6,7 +6,7 @@ import { AppState } from '@suite/types/suite';
 import { H1, P, Button, variables, colors } from '@trezor/components';
 import { db } from '@suite/storage';
 import { bindActionCreators, Dispatch } from 'redux';
-import * as logActions from '@suite-actions/logActions';
+import { reportToSentry } from '@suite-actions/logActions';
 
 const Wrapper = styled.div`
     display: flex;
@@ -83,15 +83,17 @@ const mapStateToProps = (state: AppState) => ({
     analytics: state.analytics,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
-    bindActionCreators(
-        {
-            reportToSentry: logActions.reportToSentry,
-        },
-        dispatch,
-    );
+const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({ reportToSentry }, dispatch);
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+
+/**
+ * Swallow render errors an display feedback form
+ * Read more: https://reactjs.org/docs/error-boundaries.html
+ * This component cannot be written as a `React.FunctionalComponent`
+ * because of the absence of hook equivalent for `componentDidCatch`
+ * see: https://reactjs.org/docs/hooks-faq.html#do-hooks-cover-all-use-cases-for-classes
+ */
 
 class ErrorBoundary extends React.Component<Props, StateProps> {
     constructor(props: Props) {
