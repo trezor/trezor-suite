@@ -160,8 +160,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
     const { isMobileLayout } = useLayoutSize();
     const [isExpanded, setIsExpanded] = useState(false);
     const [animatedIcon, setAnimatedIcon] = useState(false);
-    const [searchString, setSearchString] = useState<string | undefined>();
-    const { coinFilter } = useAccountSearch();
+    const { coinFilter, searchString } = useAccountSearch();
 
     const selectedItemRef = useCallback((_item: HTMLDivElement | null) => {
         // TODO: scroll to selected item
@@ -285,10 +284,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
                     <MenuItemsWrapper>
                         <ExpandedMobileWrapper>
                             <Search>
-                                <AccountSearchBox
-                                    isMobile
-                                    onChange={(value: string) => setSearchString(value)}
-                                />
+                                <AccountSearchBox isMobile />
                                 <AddAccountButtonWrapper>
                                     <AddAccountButton
                                         device={device}
@@ -315,7 +311,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
                         </Heading>
                         <AddAccountButton device={device} noButtonLabel />
                     </Row>
-                    <AccountSearchBox onChange={(value: string) => setSearchString(value)} />
+                    <AccountSearchBox />
                 </MenuHeader>
 
                 {accountsComponent}

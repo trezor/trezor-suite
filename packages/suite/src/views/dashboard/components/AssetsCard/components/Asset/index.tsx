@@ -103,7 +103,7 @@ interface Props {
 
 const Asset = React.memo(({ network, failed, cryptoValue, isLastRow }: Props) => {
     const { symbol, name } = network;
-    const { setCoinFilter } = useAccountSearch();
+    const { setCoinFilter, setSearchString } = useAccountSearch();
 
     const { goto } = useActions({ goto: routerActions.goto });
     return (
@@ -116,7 +116,9 @@ const Asset = React.memo(({ network, failed, cryptoValue, isLastRow }: Props) =>
                         accountIndex: 0,
                         accountType: 'normal',
                     });
+                    // activate coin filter and reset account search string
                     setCoinFilter(symbol);
+                    setSearchString(undefined);
                 }}
             >
                 <LogoWrapper>
