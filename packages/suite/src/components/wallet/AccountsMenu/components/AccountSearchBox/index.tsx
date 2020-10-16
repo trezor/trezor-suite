@@ -6,7 +6,7 @@ import { useSelector, useAccountSearch } from '@suite-hooks';
 const Wrapper = styled.div`
     background: ${colors.NEUE_BG_WHITE};
     width: 100%;
-    margin-top: 10px;
+    margin-top: 16px;
 `;
 
 const CoinsFilter = styled.div`
@@ -28,6 +28,17 @@ const OuterCircle = styled.div<{ isSelected?: boolean; isMobile?: boolean }>`
 
     margin-bottom: 8px;
     margin-right: ${props => (props.isMobile ? '12px' : '4px')};
+`;
+
+const InputWrapper = styled.div<{ showCoinFilter: boolean }>`
+    ${props =>
+        !props.showCoinFilter &&
+        css`
+            /* additional space under input if we are not showing coin filter */
+            /* one could think why not to remove a margin from coin filter so it can be here regardless of whether coin filter is shown */
+            /* but hold your horses, it is actually essential there is top PADDING on coin filter as a click to the area triggers deactivating the filter */
+            margin-bottom: 12px;
+        `}
 `;
 
 const StyledInput = styled(Input)`
@@ -62,6 +73,8 @@ const AccountSearchBox = (props: Props) => {
     const unavailableCapabilities = device?.unavailableCapabilities ?? {};
     const supportedNetworks = enabledNetworks.filter(symbol => !unavailableCapabilities[symbol]);
 
+    const showCoinFilter = supportedNetworks.length > 1;
+
     const onClear = () => {
         setSearchString(undefined);
         setCoinFilter(undefined);
@@ -69,27 +82,29 @@ const AccountSearchBox = (props: Props) => {
 
     return (
         <Wrapper>
-            <StyledInput
-                value={searchString ?? ''}
-                onChange={e => {
-                    setSearchString(e.target.value);
-                }}
-                innerAddon={
-                    <SearchIconWrapper>
-                        <Icon icon="SEARCH" size={16} color={colors.NEUE_TYPE_DARK_GREY} />
-                    </SearchIconWrapper>
-                }
-                addonAlign="left"
-                textIndent={[16, 12]}
-                variant="small"
-                placeholder="Search"
-                noTopLabel
-                noError
-                clearButton
-                onClear={onClear}
-                data-test="@account-menu/search-input"
-            />
-            {supportedNetworks.length > 1 && (
+            <InputWrapper showCoinFilter={showCoinFilter}>
+                <StyledInput
+                    value={searchString ?? ''}
+                    onChange={e => {
+                        setSearchString(e.target.value);
+                    }}
+                    innerAddon={
+                        <SearchIconWrapper>
+                            <Icon icon="SEARCH" size={16} color={colors.NEUE_TYPE_DARK_GREY} />
+                        </SearchIconWrapper>
+                    }
+                    addonAlign="left"
+                    textIndent={[16, 12]}
+                    variant="small"
+                    placeholder="Search"
+                    noTopLabel
+                    noError
+                    clearButton
+                    onClear={onClear}
+                    data-test="@account-menu/search-input"
+                />
+            </InputWrapper>
+            {showCoinFilter && (
                 <CoinsFilter
                     onClick={() => {
                         setCoinFilter(undefined);
