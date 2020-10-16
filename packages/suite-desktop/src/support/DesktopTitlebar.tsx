@@ -85,7 +85,7 @@ const DesktopTitlebar = () => {
         window.desktopApi!.on('window/is-maximized', (payload: boolean) => {
             setMaximized(payload);
         });
-    });
+    }, []);
     if (typeof window === 'undefined') {
         return null;
     }
@@ -95,19 +95,19 @@ const DesktopTitlebar = () => {
     return (
         <Titlebar>
             <Actions isMac={isMac}>
-                <ActionClose isMac={isMac} onClick={() => close()}>
+                <ActionClose isMac={isMac} onClick={close}>
                     <Icon color={iconColor} size={iconSize} icon="WINDOW_CLOSE" />
                 </ActionClose>
-                <ActionMinimize isMac={isMac} onClick={() => minimize()}>
+                <ActionMinimize isMac={isMac} onClick={minimize}>
                     <Icon color={iconColor} size={iconSize} icon="WINDOW_MINIMIZE" />
                 </ActionMinimize>
                 {maximized && (
-                    <ActionMaximize isMac={isMac} onClick={() => restore()}>
+                    <ActionMaximize isMac={isMac} onClick={restore}>
                         <Icon color={iconColor} size={iconSize} icon="WINDOW_RESTORE" />
                     </ActionMaximize>
                 )}
                 {!maximized && (
-                    <ActionMaximize isMac={isMac} onClick={() => maximize()}>
+                    <ActionMaximize isMac={isMac} onClick={maximize}>
                         <Icon color={iconColor} size={iconSize} icon="WINDOW_MAXIMIZE" />
                     </ActionMaximize>
                 )}

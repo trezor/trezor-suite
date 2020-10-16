@@ -17,7 +17,7 @@ import { SENTRY_CONFIG } from '@suite-config';
 import Resize from '@suite-support/Resize/Container';
 import { isDev } from '@suite-utils/build';
 import styled from 'styled-components';
-import DesktopTitlebar from '@desktop/components/DesktopTitlebar';
+import DesktopTitlebar from '@desktop/support/DesktopTitlebar';
 
 interface Props {
     store: Store;
