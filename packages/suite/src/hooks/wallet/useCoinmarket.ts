@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { BuyTradeStatus } from 'invity-api';
-import { useUnmount, useTimeoutFn } from 'react-use';
+import useUnmount from 'react-use/lib/useUnmount';
+import useTimeoutFn from 'react-use/lib/useTimeoutFn';
 import invityAPI from '@suite-services/invityAPI';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { Account } from '@wallet-types';
