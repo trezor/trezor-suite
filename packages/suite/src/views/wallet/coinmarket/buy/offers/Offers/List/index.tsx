@@ -43,17 +43,20 @@ const SummaryRow = styled.div`
 
 const OrigAmount = styled.div`
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
-    font-size: smaller;
+    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 const RefreshLabel = styled.div`
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
-    font-size: smaller;
+    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 const RefreshTime = styled.div`
-    min-width: 30px;
     text-align: right;
+    padding-left: 4px;
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    color: ${colors.NEUE_TYPE_DARK_GREY};
 `;
 
 const StyledIcon = styled(Icon)`
