@@ -136,6 +136,16 @@ const Scroll = styled.div`
     }
 `;
 
+const NoResults = styled.div`
+    display: flex;
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    justify-content: center;
+    text-align: center;
+    margin: 36px 0px;
+`;
+
 const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
     accounts: state.wallet.accounts,
@@ -224,6 +234,22 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
         );
     };
 
+    const listedAccountsLength =
+        normalAccounts.length + segwitAccounts.length + legacyAccounts.length;
+
+    const accountsComponent =
+        listedAccountsLength > 0 || !searchString ? (
+            <>
+                {buildGroup('normal', normalAccounts)}
+                {buildGroup('segwit', segwitAccounts)}
+                {buildGroup('legacy', legacyAccounts)}
+            </>
+        ) : (
+            <NoResults>
+                <Translation id="TR_ACCOUNT_SEARCH_NO_RESULTS" />
+            </NoResults>
+        );
+
     if (isMobileLayout) {
         return (
             <>
@@ -271,9 +297,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
                                     />
                                 </AddAccountButtonWrapper>
                             </Search>
-                            {buildGroup('normal', normalAccounts)}
-                            {buildGroup('segwit', segwitAccounts)}
-                            {buildGroup('legacy', legacyAccounts)}
+                            {accountsComponent}
                         </ExpandedMobileWrapper>
                     </MenuItemsWrapper>
                 )}
@@ -294,9 +318,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
                     <AccountSearchBox onChange={(value: string) => setSearchString(value)} />
                 </MenuHeader>
 
-                {buildGroup('normal', normalAccounts)}
-                {buildGroup('segwit', segwitAccounts)}
-                {buildGroup('legacy', legacyAccounts)}
+                {accountsComponent}
             </Scroll>
         </Wrapper>
     );

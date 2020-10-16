@@ -4457,6 +4457,10 @@ const definedMessages = defineMessages({
         id: 'TR_ONBOARDING',
         defaultMessage: 'Onboarding',
     },
+    TR_ACCOUNT_SEARCH_NO_RESULTS: {
+        id: 'TR_ACCOUNT_SEARCH_NO_RESULTS',
+        defaultMessage: 'No results',
+    },
 } as const);
 
 export default definedMessages;
