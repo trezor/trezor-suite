@@ -45,10 +45,11 @@ const Body = () => {
                         isChecked={hasSeed}
                         onClick={toggleHasSeed}
                         data-test="@firmware/confirm-seed-checkbox"
-                    />
-                    <P>
-                        <Translation id="FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC" />
-                    </P>
+                    >
+                        <P>
+                            <Translation id="FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC" />
+                        </P>
+                    </Checkbox>
                 </CheckboxRow>
             </>
         );
@@ -69,12 +70,11 @@ const Body = () => {
                     isChecked={hasSeed}
                     onClick={toggleHasSeed}
                     data-test="@firmware/confirm-seed-checkbox"
-                />
-                <P>
-                    &nbsp;
-                    <Translation id="FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC" />
-                    &nbsp;
-                </P>
+                >
+                    <P>
+                        <Translation id="FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC" />
+                    </P>
+                </Checkbox>
             </CheckboxRow>
         </>
     );
