@@ -18,6 +18,7 @@ import { FiatRatesActions } from '@wallet-actions/fiatRatesActions';
 import { GraphActions } from '@wallet-actions/graphActions';
 import { BlockchainActions } from '@wallet-actions/blockchainActions';
 import { SendFormActions } from '@wallet-actions/sendFormActions';
+import { AccountSearchActions } from '@wallet-actions/accountSearchActions';
 import { TransactionAction } from '@wallet-actions/transactionActions';
 import { SelectedAccountActions } from '@wallet-actions/selectedAccountActions';
 import { NETWORKS } from '@wallet-config';
@@ -64,4 +65,5 @@ export type WalletAction =
     | SelectedAccountActions
     | CoinmarketExchangeActions
     | CoinmarketBuyActions
-    | SendFormActions;
+    | SendFormActions
+    | AccountSearchActions;

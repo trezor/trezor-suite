@@ -1,8 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { colors, Icon, Input, CoinLogo } from '@trezor/components';
-import { CoinFilterContext } from '@suite-hooks/useAccountSearch';
-import { useSelector } from '@suite-hooks';
+import { useSelector, useAccountSearch } from '@suite-hooks';
 
 const Wrapper = styled.div`
     background: ${colors.NEUE_BG_WHITE};
@@ -58,7 +57,7 @@ interface Props {
 
 const AccountSearchBox = (props: Props) => {
     const [value, setValue] = useState('');
-    const { coinFilter, setCoinFilter } = useContext(CoinFilterContext);
+    const { coinFilter, setCoinFilter } = useAccountSearch();
 
     const enabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
     const device = useSelector(state => state.suite.device);
@@ -82,9 +81,6 @@ const AccountSearchBox = (props: Props) => {
                 value={value}
                 onChange={e => {
                     onChange(e.target.value);
-                    // if (coinFilter) {
-                    //     setCoinFilter(undefined);
-                    // }
                 }}
                 innerAddon={
                     <SearchIconWrapper>
