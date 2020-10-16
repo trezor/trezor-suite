@@ -11,7 +11,7 @@ import styled from 'styled-components';
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
-    padding-top: 50px;
+    padding-top: 30px;
     border-top: 1px solid ${colors.NEUE_STROKE_GREY};
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
