@@ -462,7 +462,7 @@ export const getAccountIdentifier = (account: Account) => {
 
 export const accountSearchFn = (
     account: Account,
-    rawSearchString: string | undefined,
+    rawSearchString?: string,
     coinFilter?: Account['symbol'],
 ) => {
     // if coin filter is active and account symbol doesn't match return false and don't continue the search
@@ -470,7 +470,7 @@ export const accountSearchFn = (
     if (!coinFilterMatch) return false;
 
     const searchString = rawSearchString?.trim().toLowerCase();
-    if (!searchString || searchString.length === 0) return true; // no search string
+    if (!searchString) return true; // no search string
 
     // helper func for searching in account's addresses
     const matchAddressFn = (u: NonNullable<Account['addresses']>['used'][number]) =>

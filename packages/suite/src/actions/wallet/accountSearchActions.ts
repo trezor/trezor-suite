@@ -4,19 +4,19 @@ import { ACCOUNT_SEARCH } from '@wallet-actions/constants';
 export type AccountSearchActions =
     | {
           type: typeof ACCOUNT_SEARCH.SET_COIN_FILTER;
-          payload: Account['symbol'] | undefined;
+          payload?: Account['symbol'];
       }
     | {
           type: typeof ACCOUNT_SEARCH.SET_SEARCH_STRING;
-          payload: string | undefined;
+          payload?: string;
       };
 
-export const setCoinFilter = (payload: Account['symbol'] | undefined) => ({
+export const setCoinFilter = (payload?: Account['symbol']) => ({
     type: ACCOUNT_SEARCH.SET_COIN_FILTER,
     payload,
 });
 
-export const setSearchString = (payload: string | undefined) => ({
+export const setSearchString = (payload?: string) => ({
     type: ACCOUNT_SEARCH.SET_SEARCH_STRING,
     payload,
 });
