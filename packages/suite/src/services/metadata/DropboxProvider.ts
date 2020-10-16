@@ -92,6 +92,8 @@ class DropboxProvider extends AbstractMetadataProvider {
                 let match = exists.matches.find(m => m.metadata.path_lower === `/${file}.mtdt`);
 
                 // ... or in the legacy folder
+                // tldr: in the initial releases, files were saved into wrong location
+                // see more here: https://github.com/trezor/trezor-suite/pull/2642
                 const matchLegacy = exists.matches.find(
                     m => m.metadata.path_lower === `/apps/trezor/${file}.mtdt`,
                 );
