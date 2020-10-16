@@ -14,7 +14,7 @@ import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import DesktopUpdater from '@desktop/support/DesktopUpdater';
 import { SENTRY_CONFIG } from '@suite-config';
-import Resize from '@suite-support/Resize/Container';
+import Resize from '@suite-support/Resize';
 import { isDev } from '@suite-utils/build';
 import DesktopTitlebarWrapper from '@desktop/support/DesktopTitlebar';
 

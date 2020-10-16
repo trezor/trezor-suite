@@ -8,7 +8,7 @@ import { initStore } from '@suite/reducers/store';
 import Preloader from '@suite-components/Preloader';
 import ToastContainer from '@suite-components/ToastContainer';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
-import Resize from '@suite-support/Resize/Container';
+import Resize from '@suite-support/Resize';
 import OnlineStatus from '@suite-support/OnlineStatus';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import Router from '@suite-support/Router';
