@@ -100,5 +100,16 @@ describe('Metadata', () => {
         });
 
         cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
+
+        // test switching between accounts. make sure that "success" button does not remain 
+        // visible when switching between accounts
+        cy.getTestElement('@account-menu/segwit').click();
+        cy.getTestElement('@account-menu/btc/segwit/0').click();
+        cy.getTestElement("@metadata/accountLabel/m/49'/0'/0'/add-label-button").click({ force: true });
+        cy.getTestElement('@metadata/input').type('typing into one input{enter}');
+        cy.getTestElement("@metadata/accountLabel/m/49'/0'/0'/success").should('be.visible')
+        cy.getTestElement('@account-menu/btc/segwit/1').click();
+        cy.getTestElement("@metadata/accountLabel/m/49'/0'/1'/success").should('not.be.visible')
+        cy.getTestElement("@metadata/accountLabel/m/49'/0'/0'/success").should('not.be.visible')
     });
 });
