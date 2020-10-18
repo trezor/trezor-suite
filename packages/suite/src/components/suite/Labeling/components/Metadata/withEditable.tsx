@@ -54,12 +54,11 @@ export const withEditable = (WrappedComponent: React.FC) => ({
         }
         divRef.current.focus();
         // moveCaretToEndOfContentEditable(divRef.current);
-    }, [props, divRef, touched]);
+    }, [props.originalValue, divRef, touched]);
 
     useEffect(() => {
         const keyboardHandler = (event: KeyboardEvent) => {
             event.stopPropagation();
-
             switch (event.keyCode) {
                 // backspace
                 case 8:
