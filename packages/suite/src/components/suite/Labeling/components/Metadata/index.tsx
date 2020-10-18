@@ -40,9 +40,9 @@ const LabelButton = styled(Button)`
     text-align: left;
 `;
 
-const ActionButton = styled(Button)<{ isLoading: boolean }>`
+const ActionButton = styled(Button)<{ isVisible?: boolean }>`
     transition: visibility 0.3s;
-    visibility: ${props => (props.isLoading ? 'visible' : 'hidden')};
+    visibility: ${props => (props.isVisible ? 'visible' : 'hidden')};
     width: auto;
     margin-left: 14px;
 `;
@@ -285,7 +285,7 @@ const MetadataLabeling = (props: Props) => {
             }
             timeout = setTimeout(() => {
                 setShowSuccess(false);
-            }, 5000);
+            }, 2000);
         }
     };
 
@@ -307,6 +307,16 @@ const MetadataLabeling = (props: Props) => {
             </LabelContainer>
         );
 
+    // should "add label"/"edit label" button be visible
+    const showActionButton = labelingPossible && !showSuccess && !editActive;
+
+    // should "add label"/"edit label" button for output label be visible
+    // special case here. It should not be visible if metadata label already exists (props.payload.value) because
+    // this type of labels has dropdown menu instead of "add/edit label button".
+    // but we still want to show pending and success status after editing the label.
+    const showOutputLabelActionButton =
+        showActionButton && (!props.payload.value || (props.payload.value && pending));
+
     return (
         <LabelContainer>
             {props.payload.type === 'outputLabel' ? (
@@ -320,13 +330,14 @@ const MetadataLabeling = (props: Props) => {
                         dropdownOptions={dropdownItems}
                     />
 
-                    {labelingPossible && !showSuccess && !editActive && !props.payload.value && (
+                    {showOutputLabelActionButton && (
                         <ActionButton
                             data-test={`${dataTestBase}/add-label-button`}
                             variant="tertiary"
                             icon={!actionButtonsDisabled ? 'TAG' : undefined}
                             isLoading={actionButtonsDisabled}
                             isDisabled={actionButtonsDisabled}
+                            isVisible={pending}
                             onClick={e => {
                                 e.stopPropagation();
                                 // by clicking on add label button, metadata.editing field is set
@@ -348,7 +359,7 @@ const MetadataLabeling = (props: Props) => {
                         data-test={dataTestBase}
                         {...props}
                     />
-                    {labelingPossible && !showSuccess && !editActive && (
+                    {showActionButton && (
                         <ActionButton
                             data-test={
                                 props.payload.value
@@ -359,6 +370,7 @@ const MetadataLabeling = (props: Props) => {
                             icon={!actionButtonsDisabled ? 'TAG' : undefined}
                             isLoading={actionButtonsDisabled}
                             isDisabled={actionButtonsDisabled}
+                            isVisible={pending}
                             onClick={e => {
                                 e.stopPropagation();
                                 activateEdit();
