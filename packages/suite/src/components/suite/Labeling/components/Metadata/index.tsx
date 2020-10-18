@@ -99,7 +99,7 @@ export interface ExtendedProps extends Props {
 }
 
 const ButtonLikeLabel = (props: ExtendedProps) => {
-    const EditableButton = withEditable(Button);
+    const EditableButton = useMemo(() => withEditable(Button), []);
 
     if (props.editActive) {
         return (
