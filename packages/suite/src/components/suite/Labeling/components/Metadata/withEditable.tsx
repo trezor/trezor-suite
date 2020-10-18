@@ -53,7 +53,6 @@ export const withEditable = (WrappedComponent: React.FC) => ({
             divRef.current.textContent = props.originalValue;
         }
         divRef.current.focus();
-        // moveCaretToEndOfContentEditable(divRef.current);
     }, [props.originalValue, divRef, touched]);
 
     useEffect(() => {
@@ -110,7 +109,7 @@ export const withEditable = (WrappedComponent: React.FC) => ({
                     contentEditable
                     ref={divRef}
                     data-test="@metadata/input"
-                    style={{ paddingLeft: '1px', color: !touched ? 'grey' : 'inherit' }}
+                    style={{ paddingLeft: '1px', color: !touched ? colors.BLACK50 : 'inherit' }}
                 />
             </WrappedComponent>
             <IconWrapper bgColor={colors.NEUE_BG_LIGHT_GREEN}>
