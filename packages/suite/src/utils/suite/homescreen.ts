@@ -8,6 +8,7 @@ const T1_HEIGHT = 64;
 const T2_WIDTH = 144;
 const T2_HEIGHT = 144;
 const canvasId = 'homescreen-canvas';
+const supportedDataUrlRE = /^data:image\/(jpeg|png)/;
 
 const getWidth = (model: number) => {
     if (model === 2) {
@@ -249,15 +250,7 @@ export const imageDataToHex = (imageData: ImageData, model: number) => {
     return toig(w, h, imageData);
 };
 
-export const isValid = (dataUrl: string) => {
-    if (
-        !dataUrl ||
-        !(dataUrl.startsWith('data:image/jpeg') || dataUrl.startsWith('data:image/png'))
-    ) {
-        return false;
-    }
-    return true;
-};
+export const isValid = (dataUrl: string) => !!dataUrl && supportedDataUrlRE.test(dataUrl);
 
 export const elementToHomescreen = (
     element: HTMLImageElement,
