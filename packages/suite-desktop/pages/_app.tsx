@@ -15,6 +15,7 @@ import ErrorBoundary from '@suite-support/ErrorBoundary';
 import DesktopUpdater from '@desktop/support/DesktopUpdater';
 import { SENTRY_CONFIG } from '@suite-config';
 import Resize from '@suite-support/Resize/Container';
+import NoSSR from '@suite-support/NoSSR';
 import { isDev } from '@suite-utils/build';
 import styled from 'styled-components';
 import DesktopTitlebar from '@desktop/support/DesktopTitlebar';
@@ -68,9 +69,11 @@ class TrezorSuiteApp extends App<Props> {
 
         return (
             <>
-                <TitlebarWrapper>
-                    <DesktopTitlebar />
-                </TitlebarWrapper>
+                <NoSSR>
+                    <TitlebarWrapper>
+                        <DesktopTitlebar />
+                    </TitlebarWrapper>
+                </NoSSR>
                 <MainWrapper>
                     <ReduxProvider store={store}>
                         <ErrorBoundary>

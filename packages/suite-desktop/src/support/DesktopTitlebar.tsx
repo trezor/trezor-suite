@@ -86,9 +86,6 @@ const DesktopTitlebar = () => {
             setMaximized(payload);
         });
     }, []);
-    if (typeof window === 'undefined') {
-        return null;
-    }
     const isMac = isMacOS();
     const iconSize = isMac ? 8 : 16;
     const iconColor = isMac ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY;
