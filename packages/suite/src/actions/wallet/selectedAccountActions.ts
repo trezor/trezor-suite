@@ -194,6 +194,7 @@ const getAccountState = () => (dispatch: Dispatch, getState: GetState): State =>
 
 // list of all actions which has influence on "selectedAccount" reducer
 // other actions will be ignored
+// noinspection SuspiciousTypeOfGuard
 const actions = [
     ROUTER.LOCATION_CHANGE,
     SUITE.SELECT_DEVICE,

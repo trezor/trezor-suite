@@ -13,6 +13,7 @@ export const getPrefixedURL = (url: string) => {
 export const stripPrefixedURL = (url: string) => {
     // do not use object destructuring https://github.com/webpack/webpack/issues/5392
     const prefix = process.env.assetPrefix;
+    // noinspection SuspiciousTypeOfGuard
     if (typeof prefix === 'string' && url.indexOf(prefix) === 0) {
         url = url.slice(prefix.length);
     }
@@ -133,6 +134,7 @@ export const getRoute = (name: Route['name'], params?: RouteParams) => {
 
 // Used in @suite-native routerActions
 export const getTopLevelRoute = (url: string) => {
+    // noinspection SuspiciousTypeOfGuard
     if (typeof url !== 'string') return;
     const clean = stripPrefixedPathname(url);
     const split = clean.split('/');

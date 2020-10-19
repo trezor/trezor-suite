@@ -37,6 +37,7 @@ const RouterComponent: FunctionComponent<Props> = (props: Props) => {
         // handle browser back button
         Router.beforePopState(() => {
             const locked = props.onBeforePopState();
+            // noinspection SuspiciousTypeOfGuard
             return typeof locked === 'boolean' ? locked : true;
         });
 

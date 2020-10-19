@@ -17,6 +17,7 @@ export const toFiatCurrency = (
     }
 
     let formattedAmount = amount;
+    // noinspection SuspiciousTypeOfGuard
     if (typeof amount === 'string') {
         formattedAmount = amount.replace(',', '.');
     }
@@ -41,6 +42,7 @@ export const fromFiatCurrency = (
     }
 
     let formattedLocalAmount = localAmount;
+    // noinspection SuspiciousTypeOfGuard
     if (typeof localAmount === 'string') {
         formattedLocalAmount = localAmount.replace(',', '.');
     }

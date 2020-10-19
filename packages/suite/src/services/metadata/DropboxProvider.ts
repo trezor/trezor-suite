@@ -157,6 +157,7 @@ class DropboxProvider extends AbstractMetadataProvider {
             err?.error ||
             err?.message; // if standard error
 
+        // noinspection SuspiciousTypeOfGuard
         if (typeof message !== 'string') {
             // this should never happen
             message = 'unknown error';

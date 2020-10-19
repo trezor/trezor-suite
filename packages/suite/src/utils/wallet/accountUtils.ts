@@ -106,6 +106,7 @@ export const getTypeForNetwork = (accountType: Account['accountType']) => {
 };
 
 export const getBip43Shortcut = (path: string) => {
+    // noinspection SuspiciousTypeOfGuard
     if (typeof path !== 'string') return 'unknown';
     // https://github.com/bitcoin/bips/blob/master/bip-0043.mediawiki
     const bip43 = path.split('/')[1];

@@ -225,6 +225,7 @@ export const getTargetAmount = (
     const isLocalTarget =
         (transaction.type === 'sent' || transaction.type === 'self') && target.isAccountTarget;
     const hasAmount = !isLocalTarget && typeof target.amount === 'string' && target.amount !== '0';
+    // noinspection SuspiciousTypeOfGuard
     const targetAmount =
         (hasAmount ? target.amount : null) ||
         (target === transaction.targets[0] &&

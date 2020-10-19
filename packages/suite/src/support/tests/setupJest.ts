@@ -98,6 +98,7 @@ export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
  * @returns {Device}
  */
 export const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Device => {
+    // noinspection SuspiciousTypeOfGuard
     if (dev && typeof dev.type === 'string' && dev.type !== 'acquired') {
         return {
             type: dev.type,

@@ -36,6 +36,7 @@ export const useSendFormFields = ({
             const output = outputs ? outputs[outputIndex] : undefined;
             if (!output || output.type !== 'payment') return;
             const { fiat, currency } = output;
+            // noinspection SuspiciousTypeOfGuard
             if (typeof fiat !== 'string') return; // fiat input not registered (testnet or fiat not available)
             const inputName = `outputs[${outputIndex}].fiat`;
             if (!amount) {

@@ -3,6 +3,7 @@ export const mergeObj = (
     source: Record<string, any> | string | boolean | number,
 ) => {
     Object.keys(source).forEach(key => {
+        // noinspection SuspiciousTypeOfGuard
         if (source instanceof Object && source[key] instanceof Object) {
             Object.assign(source[key], mergeObj(target[key], source[key]));
         }

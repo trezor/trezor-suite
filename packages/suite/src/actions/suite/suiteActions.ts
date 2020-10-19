@@ -155,6 +155,7 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
     if (device) {
         // "ts" is one of the field which distinguish Device from TrezorDevice
         const { ts } = device as TrezorDevice;
+        // noinspection SuspiciousTypeOfGuard
         if (typeof ts === 'number') {
             // requested device is a @suite TrezorDevice type. get exact instance from reducer
             payload = deviceUtils.getSelectedDevice(device as TrezorDevice, getState().devices);
@@ -275,6 +276,7 @@ export const handleDeviceDisconnect = (device: Device) => (
     dispatch({ type: SUITE.SELECT_DEVICE, payload: available[0] });
 };
 
+// noinspection SuspiciousTypeOfGuard
 /**
  * list of actions which has influence on `device` field inside `suite` reducer
  * all other actions should be ignored

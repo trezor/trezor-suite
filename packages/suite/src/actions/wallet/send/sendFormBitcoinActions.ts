@@ -118,6 +118,7 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
             tx.feePerByte = new BigNumber(tx.feePerByte)
                 .integerValue(BigNumber.ROUND_FLOOR)
                 .toString();
+            // noinspection SuspiciousTypeOfGuard
             if (typeof tx.max === 'string') {
                 tx.max = formatNetworkAmount(tx.max, account.symbol);
             }
