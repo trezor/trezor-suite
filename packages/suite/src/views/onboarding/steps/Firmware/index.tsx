@@ -27,12 +27,11 @@ const FirmwareStep = ({
     firmwareUpdate,
 }: Props) => {
     const getComponent = () => {
-        console.log(firmware.error, firmware.status);
         // edge case 1 - error
         if (firmware.error) {
             return {
                 Body: <ErrorStep.Body />,
-                BottomBar: <RetryButton onClick={() => firmwareUpdate()} />,
+                BottomBar: <RetryButton onClick={firmwareUpdate} />,
             };
         }
 

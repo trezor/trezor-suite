@@ -42,7 +42,7 @@ const Body = () => {
     }
 
     // after firmware none because such device reports as in bootloader mode
-    if (device?.mode === 'bootloader') return <ReconnectInNormalStep.Body />;
+    if (device.mode === 'bootloader') return <ReconnectInNormalStep.Body />;
 
     if (device.firmware === 'required') {
         return (
@@ -98,13 +98,13 @@ const BottomBar = () => {
         goToNextStep: onboardingActions.goToNextStep,
     });
 
-    if (!device?.connected || !device?.features) return null;
+    if (!device?.connected || !device.features) return null;
 
-    if (device?.firmware === 'none') {
-        return <InstallButton onClick={() => firmwareUpdate()} />;
+    if (device.firmware === 'none') {
+        return <InstallButton onClick={firmwareUpdate} />;
     }
 
-    if (device?.mode === 'bootloader') return null;
+    if (device.mode === 'bootloader') return null;
 
     const getPrimaryButtonProps = () => {
         return {
