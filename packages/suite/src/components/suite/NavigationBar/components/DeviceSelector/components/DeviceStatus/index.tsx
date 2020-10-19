@@ -1,12 +1,12 @@
 import React from 'react';
-import { Icon, colors } from '@trezor/components';
+import { Icon, colors, variables } from '@trezor/components';
 import styled from 'styled-components';
 import * as deviceUtils from '@suite-utils/device';
 import { TrezorDevice } from '@suite-types';
 
 type Status = 'connected' | 'disconnected' | 'warning';
 
-const getDotColor = (status: Status) => {
+const getStatusColor = (status: Status) => {
     const statusColors = {
         connected: colors.NEUE_TYPE_GREEN,
         disconnected: colors.NEUE_TYPE_RED,
@@ -29,6 +29,19 @@ const getStatusForDevice = (device: TrezorDevice) => {
     return 'connected';
 };
 
+const StatusText = styled.div<{ show: boolean; status: Status }>`
+    /* display: ${props => (props.show ? 'flex' : 'none')}; */
+    position: absolute;
+    text-transform: uppercase;
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    font-size: ${variables.FONT_SIZE.TINY};
+    top: 14px;
+    color: ${props => getStatusColor(props.status)};
+    opacity: ${props => (props.show ? 1 : 0)};
+    right: ${props => (props.show ? '12px' : '4px')};
+    transition: opacity 0.5s ease, right 0.5s ease;
+`;
+
 const IconWrapper = styled.div`
     display: flex;
     align-self: flex-start;
@@ -38,32 +51,42 @@ const IconWrapper = styled.div`
 const StyledIcon = styled(Icon)`
     cursor: pointer;
 `;
-const OuterCircle = styled.div<{ status: Status }>`
-    position: absolute;
-    top: 12px;
-    right: 12px;
+
+const OuterCircle = styled.div<{ show: boolean; status: Status }>`
     display: flex;
     justify-content: center;
     align-items: center;
+    position: absolute;
+    top: 12px;
     width: 18px;
     height: 18px;
     border-radius: 50%;
     background: ${props => (props.status === 'connected' ? colors.NEUE_BG_LIGHT_GREEN : '#F6E2E2')};
+    opacity: ${props => (props.show ? 1 : 0)};
+    right: ${props => (props.show ? '12px' : '48px')};
+    transition: opacity 0.5s ease, right 0.5s ease;
 `;
 
 const InnerCircle = styled.div<{ status: Status }>`
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: ${props => getDotColor(props.status)};
+    background: ${props => getStatusColor(props.status)};
 `;
 
 interface Props {
     device: TrezorDevice;
     onRefreshClick?: () => void;
+    showIconStatus?: boolean;
+    showTextStatus?: boolean;
 }
 
-const DeviceStatus = ({ device, onRefreshClick }: Props) => {
+const DeviceStatus = ({
+    device,
+    onRefreshClick,
+    showIconStatus = true,
+    showTextStatus = false,
+}: Props) => {
     const status = getStatusForDevice(device);
 
     // if device needs attention and CTA func was passed show refresh button
@@ -71,13 +94,13 @@ const DeviceStatus = ({ device, onRefreshClick }: Props) => {
         return (
             <IconWrapper>
                 <StyledIcon
-                    onClick={e => {
+                    onClick={(e: any) => {
                         e.stopPropagation();
                         onRefreshClick();
                     }}
                     icon="REFRESH"
                     size={16}
-                    color={getDotColor(status)}
+                    color={getStatusColor(status)}
                 />
             </IconWrapper>
         );
@@ -85,9 +108,14 @@ const DeviceStatus = ({ device, onRefreshClick }: Props) => {
 
     // otherwise show dot icon (green/orange/red)
     return (
-        <OuterCircle status={status}>
-            <InnerCircle status={status} />
-        </OuterCircle>
+        <>
+            <StatusText status={status} show={showTextStatus}>
+                {status}
+            </StatusText>
+            <OuterCircle status={status} show={showIconStatus}>
+                <InnerCircle status={status} />
+            </OuterCircle>
+        </>
     );
 };
 
