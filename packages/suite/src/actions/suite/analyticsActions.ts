@@ -126,7 +126,6 @@ export type AnalyticsEvent =
               symbol: Account['symbol'];
           };
       }
-    | { type: 'switch-device/eject' }
     | { type: 'dashboard/security-card/create-backup' }
     | { type: 'dashboard/security-card/seed-link' }
     | { type: 'dashboard/security-card/set-pin' }
