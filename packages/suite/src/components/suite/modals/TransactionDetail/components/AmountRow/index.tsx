@@ -18,7 +18,7 @@ interface RowContentProps {
 }
 
 // this wrapper sets the text color of the item based on the  color: 'light' | 'dark' prop
-const Row = styled.div<RowContentProps>`
+const Column = styled.div<RowContentProps>`
     display: flex;
     align-items: center;
     height: 36px;
@@ -46,18 +46,18 @@ const AmountRow = ({
 }: Props) => {
     return (
         <>
-            <Row textAlign="left" color="light">
+            <Column textAlign="left" color="light">
                 {firstColumn}
-            </Row>
-            <Row textAlign="left" color={color}>
+            </Column>
+            <Column textAlign="left" color={color}>
                 {secondColumn}
-            </Row>
-            <Row textAlign="right" color={color}>
+            </Column>
+            <Column textAlign="right" color={color}>
                 {thirdColumn}
-            </Row>
-            <Row textAlign="right" color={color}>
+            </Column>
+            <Column textAlign="right" color={color}>
                 {fourthColumn}
-            </Row>
+            </Column>
         </>
     );
 };
