@@ -4,7 +4,7 @@
 - [Deployment](deployment/index.md)
   - [Web](deployment/web.md)
 - [Packages](packages/index.md)
-  - [Suite Desktop](packages/desktop.md)
+  - [Suite Desktop](packages/suite-desktop.md)
 - [Features](features/index.md)
   - [Metadata](features/metadata.md)
 - [Tests](tests/index.md)
