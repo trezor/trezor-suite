@@ -1,14 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import NoSSR from '@suite-support/NoSSR';
 import { colors, TrezorLogo, Icon } from '@trezor/components';
 import { isMac as isMacOS } from '@suite-utils/env';
 
+const TITLEBAR_HEIGHT = 40;
+const RESIZE_HANDLER_PADDING = 4;
+
 const Titlebar = styled.div`
-    height: 100%;
+    display: block;
+    height: ${TITLEBAR_HEIGHT}px;
     width: 100%;
+    position: fixed;
+    z-index: 1000000;
+    position: relative;
     background: ${colors.NEUE_TYPE_DARK_GREY};
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
-    position: relative;
+
+    &:after {
+        position: fixed;
+        width: calc(100% - ${RESIZE_HANDLER_PADDING * 2}px);
+        height: ${TITLEBAR_HEIGHT - RESIZE_HANDLER_PADDING}px;
+        content: '';
+        display: block;
+        top: ${RESIZE_HANDLER_PADDING}px;
+        left: ${RESIZE_HANDLER_PADDING}px;
+        z-index: 0;
+        -webkit-user-select: none;
+        -webkit-app-region: drag;
+    }
 `;
 
 const Actions = styled.div<{ isMac?: boolean }>`
@@ -120,4 +140,20 @@ const DesktopTitlebar = () => {
         </Titlebar>
     );
 };
-export default DesktopTitlebar;
+
+interface Props {
+    children: React.ReactNode;
+}
+
+const DesktopTitlebarWrapper = (props: Props) => {
+    return (
+        <>
+            <NoSSR>
+                <DesktopTitlebar />
+            </NoSSR>
+            {props.children}
+        </>
+    );
+};
+
+export default DesktopTitlebarWrapper;
