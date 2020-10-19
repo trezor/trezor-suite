@@ -2,6 +2,10 @@ import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
 import { Fade } from 'react-awesome-reveal';
+import { rgba } from 'polished';
+
+// due to iOS browser bug, it doesn't handle transparent color in gradients well
+const transparent = rgba(colors.BLACK96, 0);
 
 const Feature = styled.section<{ flip?: boolean }>`
     position: relative;
@@ -51,7 +55,7 @@ const StyledText = styled.div<{ flip?: boolean }>`
         `
             &:after {
                 right: -70%;
-                background: linear-gradient(to left, transparent 0%, ${colors.BLACK96} 100%);
+                background: linear-gradient(to left, ${transparent} 0%, ${colors.BLACK96} 100%);
             }
 
             &:before {
@@ -66,7 +70,7 @@ const StyledText = styled.div<{ flip?: boolean }>`
         `
             &:after {
                 left: -70%;
-                background: linear-gradient(to right, transparent 0%, ${colors.BLACK96} 100%);
+                background: linear-gradient(to right, ${transparent} 0%, ${colors.BLACK96} 100%);
             }
 
             &:before {
