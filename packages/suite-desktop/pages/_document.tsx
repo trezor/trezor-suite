@@ -42,7 +42,7 @@ export default class MyDocument extends Document {
                     />
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
                 </Head>
-                <body>
+                <body style={{ overflow: 'hidden' }}>
                     <Main />
                     <NextScript />
                 </body>

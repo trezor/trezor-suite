@@ -89,4 +89,8 @@ export const ICONS = {
     OS_MAC: require('../../images/icons/os_mac.svg'),
     OS_WINDOWS: require('../../images/icons/os_windows.svg'),
     TRADE: require('../../images/icons/trade.svg'),
+    WINDOW_CLOSE: require('../../images/icons/window_close.svg'),
+    WINDOW_MINIMIZE: require('../../images/icons/window_minimize.svg'),
+    WINDOW_MAXIMIZE: require('../../images/icons/window_maximize.svg'),
+    WINDOW_RESTORE: require('../../images/icons/window_restore.svg'),
 };

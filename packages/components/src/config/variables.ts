@@ -148,4 +148,8 @@ export const ICONS: IconType[] = [
     'OS_MAC',
     'OS_WINDOWS',
     'TRADE',
+    'WINDOW_CLOSE',
+    'WINDOW_MINIMIZE',
+    'WINDOW_MAXIMIZE',
+    'WINDOW_RESTORE',
 ];

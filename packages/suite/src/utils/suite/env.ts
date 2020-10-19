@@ -13,6 +13,21 @@ export const isAndroid = () => {
     return navigator.appVersion.includes('Android');
 };
 
+export const isMac = () => {
+    if (typeof navigator === 'undefined') return false;
+    return ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'].includes(navigator.platform);
+};
+
+export const isWindows = () => {
+    if (typeof navigator === 'undefined') return;
+    return ['Win32', 'Win64', 'Windows', 'WinCE'].includes(navigator.platform);
+};
+
+export const isLinux = () => {
+    if (typeof navigator === 'undefined') return;
+    return /Linux/.test(navigator.platform);
+};
+
 export const getScreenWidth = () => {
     return window.screen.width;
 };

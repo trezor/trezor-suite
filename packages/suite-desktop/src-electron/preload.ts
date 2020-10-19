@@ -23,6 +23,9 @@ const validChannels = [
 
     // invity
     'buy-receiver',
+
+    // window
+    'window/is-maximized',
 ];
 
 contextBridge.exposeInMainWorld('desktopApi', {
@@ -50,4 +53,13 @@ contextBridge.exposeInMainWorld('desktopApi', {
     installUpdate: () => ipcRenderer.send('update/install'),
     cancelUpdate: () => ipcRenderer.send('update/cancel'),
     skipUpdate: (version: string) => ipcRenderer.send('update/skip', version),
+
+    // Window controls
+    windowClose: () => ipcRenderer.send('window/close'),
+    windowMinimize: () => ipcRenderer.send('window/minimize'),
+    windowMaximize: () => ipcRenderer.send('window/maximize'),
+    windowUnmaximize: () => ipcRenderer.send('window/unmaximize'),
+
+    // Client
+    clientReady: () => ipcRenderer.send('client/ready'),
 });

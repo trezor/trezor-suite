@@ -11,6 +11,13 @@ export interface DesktopApi {
     installUpdate: () => void;
     cancelUpdate: () => void;
     skipUpdate: (version: string) => void;
+    // Window controls
+    windowClose: () => void;
+    windowMinimize: () => void;
+    windowMaximize: () => void;
+    windowUnmaximize: () => void;
+    // Client controls
+    clientReady: () => void;
 }
 
 declare global {
