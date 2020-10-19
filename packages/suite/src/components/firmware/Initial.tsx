@@ -72,7 +72,7 @@ const StyledExternalLink = styled(ExternalLink)`
 `;
 
 const BottomRow = styled.div`
-    margin-top: auto;
+    margin-top: 8px;
 `;
 
 const Body = () => {
@@ -85,12 +85,13 @@ const Body = () => {
     if (!device?.features) return null; // ts
 
     const { firmwareRelease } = device;
+    if (!device?.features || !firmwareRelease) return null; // ts
 
     // Create custom object containing changelogs for easier manipulation in render() method.
     // Default changelog format is just a long string where individual changes are separated by "*" symbol.
     const logsCustomObject: any = {};
 
-    if (firmwareRelease.changelog?.length > 0) {
+    if (firmwareRelease.changelog && firmwareRelease.changelog?.length > 0) {
         firmwareRelease.changelog.forEach((log: any) => {
             // get array of individual changes for a given version
             const logsArr = log.changelog.trim().split(/\*/g);
@@ -117,7 +118,7 @@ const Body = () => {
                 <Translation id="FIRMWARE_UPDATE_AVAILABLE_DESC" />
             </P>
 
-            {device.firmwareRelease.changelog?.length > 0 && (
+            {Object.keys(logsCustomObject).length > 0 && (
                 <ChangesSummary>
                     {Object.keys(logsCustomObject).map(version => {
                         const log = logsCustomObject[version];
