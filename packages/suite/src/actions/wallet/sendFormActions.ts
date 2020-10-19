@@ -159,7 +159,7 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
             }),
         );
 
-        dispatch(accountActions.fetchAndUpdateAccount(account));
+        await dispatch(accountActions.fetchAndUpdateAccount(account));
     } else {
         dispatch(
             notificationActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),
@@ -249,7 +249,7 @@ export const pushRawTransaction = (tx: string, coin: Account['symbol']) => async
         // but try to update selectedAccount just to be sure
         const { account } = getState().wallet.selectedAccount;
         if (account) {
-            dispatch(accountActions.fetchAndUpdateAccount(account));
+            await dispatch(accountActions.fetchAndUpdateAccount(account));
         }
     } else {
         dispatch(

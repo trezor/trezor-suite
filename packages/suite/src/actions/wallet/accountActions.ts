@@ -126,10 +126,10 @@ export const fetchAndUpdateAccount = (account: Account) => async (
 
         const analyze = analyzeTransactions(payload.history.transactions || [], accountTxs);
         if (analyze.remove.length > 0) {
-            dispatch(transactionActions.remove(account, analyze.remove));
+            await dispatch(transactionActions.remove(account, analyze.remove));
         }
         if (analyze.add.length > 0) {
-            dispatch(transactionActions.add(analyze.add.reverse(), account));
+            await dispatch(transactionActions.add(analyze.add.reverse(), account));
         }
 
         const accountDevice = accountUtils.findAccountDevice(account, getState().devices);

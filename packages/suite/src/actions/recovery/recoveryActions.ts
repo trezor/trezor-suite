@@ -128,12 +128,12 @@ const rerun = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!features.initialized) {
         dispatch(onboardingActions.goToStep('recovery'));
         dispatch(onboardingActions.addPath('recovery'));
-        dispatch(recoverDevice());
+        await dispatch(recoverDevice());
     }
 
     if (features.initialized) {
-        dispatch(routerActions.goto('recovery-index'));
-        dispatch(checkSeed());
+        await dispatch(routerActions.goto('recovery-index'));
+        await dispatch(checkSeed());
     }
 };
 
