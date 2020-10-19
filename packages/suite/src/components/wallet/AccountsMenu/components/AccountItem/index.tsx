@@ -37,7 +37,7 @@ const Left = styled.div`
 const Right = styled.div`
     display: flex;
     flex-direction: column;
-    margin-left: 8px;
+    padding-left: 8px;
     overflow: hidden;
 `;
 
