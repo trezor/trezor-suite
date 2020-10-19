@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic';
 import React, { useState, createRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ANIMATION } from '@suite-config';
@@ -7,7 +8,11 @@ import { Button, colors, variables, Input, Tooltip, Checkbox, Icon } from '@trez
 import { Translation } from '@suite-components/Translation';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { countBytesInString } from '@suite-utils/string';
-import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
+
+const PasswordStrengthIndicator = dynamic(
+    () => import('@suite-components/PasswordStrengthIndicator'),
+    { ssr: false },
+);
 
 const Wrapper = styled.div<Pick<Props, 'type' | 'singleColModal'>>`
     display: flex;
