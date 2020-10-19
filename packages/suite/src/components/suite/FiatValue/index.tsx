@@ -37,7 +37,10 @@ const FiatValue = ({
     ...props
 }: Props) => {
     const targetCurrency = fiatCurrency ?? props.settings.localCurrency;
-    const currentFiatRates = props.fiat.coins.find(f => f.symbol === symbol)?.current;
+    const currentFiatRates = props.fiat.coins.find(
+        f => f.symbol.toLowerCase() === symbol.toLowerCase(),
+    )?.current;
+
     const ratesSource = useCustomSource ? source : currentFiatRates?.rates;
     const fiat = ratesSource ? toFiatCurrency(amount, targetCurrency, ratesSource) : null;
     const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : StyledHiddenPlaceholder;

@@ -58,9 +58,7 @@ interface Props {
 const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
     const tokenTransfer = tx.tokens.length > 0 ? tx.tokens[0] : undefined;
     const amount = tokenTransfer ? tokenTransfer.amount : tx.amount;
-    const assetSymbol = tokenTransfer
-        ? tokenTransfer.symbol.toUpperCase()
-        : tx.symbol.toUpperCase();
+    const assetSymbol = tokenTransfer ? tokenTransfer.symbol : tx.symbol;
 
     const [showFiat, setShowFiat] = useState(false);
     const network = getNetwork(tx.symbol);
@@ -93,6 +91,7 @@ const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
 
     return (
         <MainContainer>
+            {/* ROW CONTAINING "SHOW FIAT" BUTTON */}
             {!showFiat && !isTestnet && (
                 <ShowFiatButtonWrapper>
                     <Button
@@ -107,7 +106,7 @@ const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
             )}
 
             <AmountWrapper>
-                {/* DATES FOR FIAT VALUES */}
+                {/* ROW CONTAINING DATES FOR FIAT VALUES */}
                 {showFiat && (
                     <AmountRow
                         // keep the first two columns empty for the first row
@@ -144,7 +143,6 @@ const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
                         color="light"
                     />
                 )}
-
                 {!hideTotalIORows && (
                     <>
                         {/* TOTAL INPUT */}
@@ -206,7 +204,6 @@ const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
                         />
                     </>
                 )}
-
                 {/* AMOUNT */}
                 <AmountRow
                     firstColumn={<Translation id="AMOUNT" />}
@@ -224,7 +221,6 @@ const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
                     fourthColumn={showFiat && <FiatValue amount={amount} symbol={assetSymbol} />}
                     color="light"
                 />
-
                 {/* TX FEE */}
                 <AmountRow
                     firstColumn={<Translation id="TR_TX_FEE" />}
