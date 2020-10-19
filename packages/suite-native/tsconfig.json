@@ -24,7 +24,7 @@
             ],
             "@suite": [
                 "./src/index",
-                "../../packages/suite/src/index",
+                "../../packages/suite/src/index"
             ],
             // suite 
             "@suite-components/*": ["./src/components/suite/*", "../../packages/suite/src/components/suite/*"],
@@ -261,17 +261,17 @@
             "@recovery-middlewares/*": ["./src/middlewares/recovery/*", "../../packages/suite/src/middlewares/recovery/*"],
             "@recovery-middlewares": ["./src/middlewares/recovery/index", "../../packages/suite/src/middlewares/recovery/index"],
             "@recovery-hooks/*": ["./src/hooks/recovery/*", "../../packages/suite/src/hooks/recovery/*"],
-            "@recovery-hooks": ["./src/hooks/recovery/index", "../../packages/suite/src/hooks/recovery/index"],
+            "@recovery-hooks": ["./src/hooks/recovery/index", "../../packages/suite/src/hooks/recovery/index"]
         },
         "module": "esnext",
         "noUnusedParameters": true,
         "sourceMap": true,
-        "strict": true,
+        "strict": true
     },
     "include": [
         "./src/App.tsx",
         "./index.d.ts",
-        "./src/utils/suite/oauth.ts", // todo: remove when used somewhere, otherwise eslint complaints
+        "./src/utils/suite/oauth.ts" // todo: remove when used somewhere, otherwise eslint complaints
     ],
     "exclude": ["node_modules", "babel.config.js", "metro.config.js", "jest.config.js"]
 }
