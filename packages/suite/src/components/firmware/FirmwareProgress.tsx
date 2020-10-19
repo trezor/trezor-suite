@@ -11,18 +11,15 @@ import { Fingerprint, InitImg, P, H2 } from '@firmware-components';
 
 const Body = () => {
     const { device } = useDevice();
-    const { status } = useFirmware();
-
-    // if device is not connected, there must be error which is handled by another component
-    if (!device?.connected || !device?.features || !device?.firmwareRelease) {
-        return null;
-    }
+    const { status, prevDevice } = useFirmware();
 
     const statusText = getTextForStatus(status);
     const statusDescription = getDescriptionForStatus(status);
     return (
         <>
-            <InitImg model={device.features.major_version} />
+            <InitImg
+                model={device?.features?.major_version || prevDevice?.features?.major_version || 2}
+            />
 
             {statusText && (
                 <>
@@ -38,7 +35,7 @@ const Body = () => {
                 </>
             )}
 
-            {status === 'check-fingerprint' && (
+            {status === 'check-fingerprint' && device?.firmwareRelease?.release?.fingerprint && (
                 <Fingerprint>
                     {getFormattedFingerprint(device.firmwareRelease.release.fingerprint)}
                 </Fingerprint>
