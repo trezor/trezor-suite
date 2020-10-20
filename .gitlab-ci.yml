@@ -35,7 +35,7 @@ variables:
 
 stages:
     - setup environment
-    - lint, types, unit tests
+    - prebuild
     - build
     - deploy to dev
     - integration testing
@@ -44,24 +44,10 @@ stages:
     - deploy to staging
     - deploy to production
 
-lint:
-    stage: lint, types, unit tests
-    script:
-        - lerna run lint
-
-typescript:
-    stage: lint, types, unit tests
-    script:
-        - lerna run type-check
-
-unit tests:
-    stage: lint, types, unit tests
-    script:
-        - lerna run --stream test:unit -- --passWithNoTests
-
 include:
     - ci/environment.yml
     - ci/install-and-build.yml
+    - ci/prebuild.yml
     - ci/packages/components.yml
     - ci/packages/suite.yml
     - ci/packages/suite-web.yml

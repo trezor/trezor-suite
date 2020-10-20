@@ -1,0 +1,17 @@
+lint:
+    stage: prebuild
+    needs: []
+    script:
+        - lerna run lint
+
+typescript:
+    stage: prebuild
+    needs: []
+    script:
+        - lerna run type-check
+
+unit tests:
+    stage: prebuild
+    needs: []
+    script:
+        - lerna run --stream test:unit -- --passWithNoTests
