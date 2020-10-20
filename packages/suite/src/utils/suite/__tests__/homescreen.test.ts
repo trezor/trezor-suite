@@ -102,4 +102,49 @@ describe('homescreen', () => {
             });
         });
     });
+
+    describe('isValid', () => {
+        describe('returns true for', () => {
+            const validExamples = [
+                "data:image/png,deadbeef",
+                "data:image/jpeg",
+                "data:image/jpeg,",
+                "data:image/jpegsomecontent"
+            ];
+            describe.each(validExamples)(`%p`, (dataUrl) => {
+                expect(homescreen.isValid(dataUrl)).toBe(true);
+            });
+        });
+
+        describe('returns false for', () => {
+            const invalidExamples = [
+                "",
+                "xxx",
+                "data",
+                "data:",
+                "data:deadbeef",
+                "data:image",
+                "data:jpeg", // missing image/ prefix
+                "data:image/jpg", // this is different than valid "image/jpeg"
+                "data:image/x-png",
+                " data:image/jpeg",
+                "data:image\\jpeg",
+                "data:image//jpeg",
+                "data::image/jpeg",
+                // also test some real-world data url examples
+                "data:,Hello%2C%20World!",
+                "data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==",
+                "data:text/html,%3Ch1%3EHello%2C%20World!%3C%2Fh1%3E"
+            ];
+            describe.each(invalidExamples)(`%p`, (dataUrl) => {
+                expect(homescreen.isValid(dataUrl)).toBe(false);
+            });
+        });
+
+        describe('returns false for null', () => {
+            // defensively test a corner case violating type-checking
+            // @ts-ignore
+            expect(homescreen.isValid(null)).toBe(false);
+        });
+    });
 });
