@@ -3694,6 +3694,10 @@ const definedMessages = defineMessages({
         id: 'TR_NAV_SPEND',
         defaultMessage: 'Spend',
     },
+    TR_NAV_SIGN_VERIFY: {
+        id: 'TR_NAV_SIGN_VERIFY',
+        defaultMessage: 'Sign & verify',
+    },
     TR_BALANCE: {
         id: 'TR_BALANCE',
         defaultMessage: 'Balance',

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useIntl } from 'react-intl';
 import { LayoutContext } from '@suite-components';
 import { AccountsMenu } from '@wallet-components';
 import AccountLoader from './components/AccountLoader';
@@ -8,7 +9,8 @@ import AccountMode from '@wallet-components/AccountMode';
 import AccountAnnouncement from '@wallet-components/AccountAnnouncement';
 import AccountTopPanel from '@wallet-components/AccountTopPanel';
 import { MAX_WIDTH_WALLET_CONTENT } from '@suite-constants/layout';
-import { AppState } from '@suite-types';
+import { AppState, ExtendedMessageDescriptor } from '@suite-types';
+import messages from '@suite/support/messages';
 
 const Wrapper = styled.div`
     display: flex;
@@ -20,21 +22,19 @@ const Wrapper = styled.div`
 `;
 
 type Props = {
-    title?: string;
+    title: ExtendedMessageDescriptor['id'];
     children?: React.ReactNode;
     account: AppState['wallet']['selectedAccount'];
 };
 
 const WalletLayout = (props: Props) => {
     const { setLayout } = React.useContext(LayoutContext);
+    const intl = useIntl();
+    const l10nTitle = intl.formatMessage(messages[props.title]);
+
     React.useEffect(() => {
-        if (setLayout)
-            setLayout(
-                props.title || 'Trezor Suite | Wallet',
-                <AccountsMenu />,
-                <AccountTopPanel />,
-            );
-    }, [props.title, setLayout]);
+        if (setLayout) setLayout(l10nTitle, <AccountsMenu />, <AccountTopPanel />);
+    }, [l10nTitle, setLayout]);
     const { account } = props;
 
     if (account.status === 'loading') {

@@ -40,7 +40,7 @@ const OffersIndexLoaded = (props: Props) => {
 const OffersIndex = (props: ComponentProps) => {
     const { selectedAccount } = props;
     if (selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="Coinmarket | buy" account={selectedAccount} />;
+        return <WalletLayout title="TR_NAV_BUY" account={selectedAccount} />;
     }
     return <OffersIndexLoaded {...props} selectedAccount={selectedAccount} />;
 };

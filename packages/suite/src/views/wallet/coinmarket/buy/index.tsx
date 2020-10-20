@@ -28,7 +28,7 @@ const CoinmarketBuyLoaded = (props: Props) => {
 const CoinmarketBuy = (props: ComponentProps) => {
     const { selectedAccount } = props;
     if (selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="Coinmarket | buy" account={selectedAccount} />;
+        return <WalletLayout title="TR_NAV_BUY" account={selectedAccount} />;
     }
     return <CoinmarketBuyLoaded {...props} selectedAccount={selectedAccount} />;
 };

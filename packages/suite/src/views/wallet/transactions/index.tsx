@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useIntl } from 'react-intl';
 import { SETTINGS } from '@suite-config';
 import { WalletLayout } from '@wallet-components';
 import { getAccountTransactions, isTestnet } from '@wallet-utils/accountUtils';
@@ -9,7 +8,6 @@ import TokenList from './components/TokenList';
 import TransactionList from './components/TransactionList';
 import TransactionSummary from './components/TransactionSummary/Container';
 import { Props } from './Container';
-import messages from '@suite/support/messages';
 
 interface ContentProps {
     selectedAccount: Props['selectedAccount'];
@@ -19,15 +17,11 @@ interface ContentProps {
 }
 
 const Content = ({ selectedAccount, showSummary, children }: ContentProps) => {
-    const intl = useIntl();
     if (selectedAccount.status !== 'loaded') return null;
     const { account, network } = selectedAccount;
 
     return (
-        <WalletLayout
-            title={intl.formatMessage(messages.TR_NAV_TRANSACTIONS)}
-            account={selectedAccount}
-        >
+        <WalletLayout title="TR_NAV_TRANSACTIONS" account={selectedAccount}>
             {showSummary && account.networkType !== 'ripple' && (
                 <TransactionSummary account={account} />
             )}
@@ -46,7 +40,6 @@ const Content = ({ selectedAccount, showSummary, children }: ContentProps) => {
 const Transactions = (props: Props) => {
     const { selectedAccount, transactions } = props;
     const [selectedPage, setSelectedPage] = useState(1);
-    const intl = useIntl();
 
     const descriptor = selectedAccount.account?.descriptor;
     const symbol = selectedAccount.account?.symbol;
@@ -56,12 +49,7 @@ const Transactions = (props: Props) => {
     }, [descriptor, symbol]);
 
     if (selectedAccount.status !== 'loaded') {
-        return (
-            <WalletLayout
-                title={intl.formatMessage(messages.TR_NAV_TRANSACTIONS)}
-                account={props.selectedAccount}
-            />
-        );
+        return <WalletLayout title="TR_NAV_TRANSACTIONS" account={props.selectedAccount} />;
     }
 
     const { account } = selectedAccount;

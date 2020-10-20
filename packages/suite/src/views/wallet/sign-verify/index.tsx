@@ -104,7 +104,7 @@ class SignVerify extends Component<Props> {
 
         const verifyAddressError = this.getError('verifyAddress');
         return (
-            <WalletLayout title="Sign & Verify" account={selectedAccount}>
+            <WalletLayout title="TR_NAV_SIGN_VERIFY" account={selectedAccount}>
                 <Wrapper>
                     <Sign>
                         <Title>
