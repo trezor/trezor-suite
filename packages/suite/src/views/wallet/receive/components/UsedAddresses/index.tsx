@@ -89,7 +89,6 @@ const Actions = styled.div`
 `;
 
 const AddressWrapper = styled.span`
-    cursor: pointer;
     text-overflow: ellipsis;
     overflow: hidden;
     position: relative;
@@ -136,7 +135,7 @@ const Item = ({ addr, symbol, onClick, metadataPayload, index }: ItemProps) => {
                     }}
                     // if metadata is present, confirm on device option will become available in dropdown
                     defaultVisibleValue={
-                        <AddressWrapper onClick={!metadataPayload.value ? onClick : () => {}}>
+                        <AddressWrapper>
                             <Overlay />
                             {address}
                         </AddressWrapper>
