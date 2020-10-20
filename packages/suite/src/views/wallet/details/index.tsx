@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useIntl } from 'react-intl';
 import { P } from '@trezor/components';
 import { WalletLayout } from '@wallet-components';
 import { useDevice } from '@suite-hooks';
@@ -40,8 +41,14 @@ const StyledRow = styled(Row)`
 
 const Details = ({ selectedAccount, openModal }: Props) => {
     const { device, isLocked } = useDevice();
+    const intl = useIntl();
     if (!device || selectedAccount.status !== 'loaded') {
-        return <WalletLayout title="Account details" account={selectedAccount} />;
+        return (
+            <WalletLayout
+                title={intl.formatMessage(messages.TR_ACCOUNT_DETAILS_HEADER)}
+                account={selectedAccount}
+            />
+        );
     }
 
     const { account } = selectedAccount;
@@ -64,7 +71,10 @@ const Details = ({ selectedAccount, openModal }: Props) => {
     }
 
     return (
-        <WalletLayout title="Account details" account={selectedAccount}>
+        <WalletLayout
+            title={intl.formatMessage(messages.TR_ACCOUNT_DETAILS_HEADER)}
+            account={selectedAccount}
+        >
             <StyledCard title={<Translation id="TR_ACCOUNT_DETAILS_HEADER" />} largePadding>
                 <StyledRow>
                     <TextColumn
