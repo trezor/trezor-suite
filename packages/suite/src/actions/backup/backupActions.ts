@@ -13,38 +13,30 @@ export type ConfirmKey =
     | 'will-hide-seed';
 
 export type BackupStatus = 'initial' | 'in-progress' | 'finished';
-export type BackupActions =
+export type BackupAction =
     | { type: typeof BACKUP.RESET_REDUCER }
     | { type: typeof BACKUP.TOGGLE_CHECKBOX_BY_KEY; payload: ConfirmKey }
     | { type: typeof BACKUP.SET_STATUS; payload: BackupStatus }
     | { type: typeof BACKUP.SET_ERROR; payload: string };
 
-export const toggleCheckboxByKey = (key: ConfirmKey) => (dispatch: Dispatch) => {
-    return dispatch({
-        type: BACKUP.TOGGLE_CHECKBOX_BY_KEY,
-        payload: key,
-    });
-};
+export const toggleCheckboxByKey = (key: ConfirmKey): BackupAction => ({
+    type: BACKUP.TOGGLE_CHECKBOX_BY_KEY,
+    payload: key,
+});
 
-export const setStatus = (status: BackupStatus) => (dispatch: Dispatch) => {
-    return dispatch({
-        type: BACKUP.SET_STATUS,
-        payload: status,
-    });
-};
+export const setStatus = (status: BackupStatus): BackupAction => ({
+    type: BACKUP.SET_STATUS,
+    payload: status,
+});
 
-export const setError = (error: string) => (dispatch: Dispatch) => {
-    return dispatch({
-        type: BACKUP.SET_ERROR,
-        payload: error,
-    });
-};
+export const setError = (error: string): BackupAction => ({
+    type: BACKUP.SET_ERROR,
+    payload: error,
+});
 
-export const resetReducer = () => (dispatch: Dispatch) => {
-    return dispatch({
-        type: BACKUP.RESET_REDUCER,
-    });
-};
+export const resetReducer = (): BackupAction => ({
+    type: BACKUP.RESET_REDUCER,
+});
 
 export const backupDevice = (params: CommonParams = {}) => async (
     dispatch: Dispatch,

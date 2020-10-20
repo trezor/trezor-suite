@@ -20,13 +20,13 @@ import { NotificationActions } from '@suite-actions/notificationActions';
 import { AnalyticsActions } from '@suite-actions/analyticsActions';
 import { MetadataActions } from '@suite-actions/metadataActions';
 import { DesktopUpdateActions } from '@suite-actions/desktopUpdateActions';
-import { DeviceMetadata } from '@suite-types/metadata';
-import { OnboardingActions } from '@onboarding-types';
+import { OnboardingAction } from '@onboarding-actions/onboardingActions';
 import { SettingsActions } from '@settings-types';
-import { FirmwareActions } from '@firmware-types';
+import { FirmwareAction } from '@firmware-actions/firmwareActions';
 import { WalletAction } from '@wallet-types';
-import { BackupActions } from '@backup-actions/backupActions';
-import { RecoveryActions } from '@recovery-actions/recoveryActions';
+import { BackupAction } from '@backup-actions/backupActions';
+import { RecoveryAction } from '@recovery-actions/recoveryActions';
+import { DeviceMetadata } from '@suite-types/metadata';
 import { ObjectValues } from '@suite/types/utils';
 import { SUITE } from '@suite-actions/constants';
 import { PROCESS_MODE } from '@suite-middlewares/actionBlockerMiddleware';
@@ -51,10 +51,10 @@ export type Action =
     | AnalyticsActions
     | MetadataActions
     | WalletAction
-    | OnboardingActions
-    | FirmwareActions
-    | BackupActions
-    | RecoveryActions
+    | OnboardingAction
+    | FirmwareAction
+    | BackupAction
+    | RecoveryAction
     | SettingsActions
     | DesktopUpdateActions;
 

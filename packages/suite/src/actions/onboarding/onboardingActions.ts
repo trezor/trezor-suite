@@ -4,9 +4,9 @@ import { AnyStepId, AnyPath } from '@onboarding-types/steps';
 import steps from '@onboarding-config/steps';
 import { findNextStep, findPrevStep, isStepInPath } from '@onboarding-utils/steps';
 
-import { GetState, Dispatch, Action } from '@suite-types';
+import { GetState, Dispatch } from '@suite-types';
 
-export type OnboardingActionTypes =
+export type OnboardingAction =
     | {
           type: typeof ONBOARDING.ENABLE_ONBOARDING_REDUCER;
           payload: boolean;
@@ -39,38 +39,30 @@ export type OnboardingActionTypes =
           stepId: AnyStepId;
       };
 
-const goToStep = (stepId: AnyStepId) => (dispatch: Dispatch) => {
-    dispatch({
-        type: ONBOARDING.SET_STEP_ACTIVE,
-        stepId,
-    });
-};
+const goToStep = (stepId: AnyStepId): OnboardingAction => ({
+    type: ONBOARDING.SET_STEP_ACTIVE,
+    stepId,
+});
 
-const goToSubStep = (subStepId: string | null) => (dispatch: Dispatch) => {
-    dispatch({
-        type: ONBOARDING.GO_TO_SUBSTEP,
-        subStepId,
-    });
-};
+const goToSubStep = (subStepId: string | null): OnboardingAction => ({
+    type: ONBOARDING.GO_TO_SUBSTEP,
+    subStepId,
+});
 
-const selectTrezorModel = (model: number) => ({
+const selectTrezorModel = (model: 1 | 2): OnboardingAction => ({
     type: ONBOARDING.SELECT_TREZOR_MODEL,
     model,
 });
 
-const addPath = (payload: AnyPath) => (dispatch: Dispatch) => {
-    dispatch({
-        type: ONBOARDING.ADD_PATH,
-        payload,
-    });
-};
+const addPath = (payload: AnyPath): OnboardingAction => ({
+    type: ONBOARDING.ADD_PATH,
+    payload,
+});
 
-const removePath = (payload: AnyPath[]) => (dispatch: Dispatch) => {
-    dispatch({
-        type: ONBOARDING.REMOVE_PATH,
-        payload,
-    });
-};
+const removePath = (payload: AnyPath[]): OnboardingAction => ({
+    type: ONBOARDING.REMOVE_PATH,
+    payload,
+});
 
 const goToNextStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetState) => {
     if (stepId) {
@@ -108,18 +100,16 @@ const goToPreviousStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: 
 /**
  * Set onboarding reducer to initial state.
  */
-const resetOnboarding = () => (dispatch: Dispatch) => {
-    dispatch({
-        type: ONBOARDING.RESET_ONBOARDING,
-    });
-};
+const resetOnboarding = (): OnboardingAction => ({
+    type: ONBOARDING.RESET_ONBOARDING,
+});
 
 /**
  * Make onboarding reducer listen to actions.
  * @param payload,
  */
 
-const enableOnboardingReducer = (payload: boolean): Action => ({
+const enableOnboardingReducer = (payload: boolean): OnboardingAction => ({
     type: ONBOARDING.ENABLE_ONBOARDING_REDUCER,
     payload,
 });
