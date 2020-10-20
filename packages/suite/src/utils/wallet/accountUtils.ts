@@ -4,7 +4,6 @@ import {
 } from '@wallet-reducers/transactionReducer';
 import { AccountTransaction, AccountInfo } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
-import messages from '@suite/support/messages';
 import { ACCOUNT_TYPE } from '@wallet-constants/account';
 import { Account, Network, CoinFiatRates, WalletParams, Discovery } from '@wallet-types';
 import { AppState } from '@suite-types';
@@ -37,71 +36,58 @@ export const getFiatValue = (amount: string, rate: string, fixedTo = 2) => {
 export const getTitleForNetwork = (symbol: Account['symbol']) => {
     switch (symbol.toLowerCase()) {
         case 'btc':
-            return messages.TR_NETWORK_BITCOIN;
+            return 'TR_NETWORK_BITCOIN';
         case 'test':
-            return messages.TR_NETWORK_BITCOIN_TESTNET;
+            return 'TR_NETWORK_BITCOIN_TESTNET';
         case 'bch':
-            return messages.TR_NETWORK_BITCOIN_CASH;
+            return 'TR_NETWORK_BITCOIN_CASH';
         case 'btg':
-            return messages.TR_NETWORK_BITCOIN_GOLD;
+            return 'TR_NETWORK_BITCOIN_GOLD';
         case 'dash':
-            return messages.TR_NETWORK_DASH;
+            return 'TR_NETWORK_DASH';
         case 'dgb':
-            return messages.TR_NETWORK_DIGIBYTE;
+            return 'TR_NETWORK_DIGIBYTE';
         case 'doge':
-            return messages.TR_NETWORK_DOGECOIN;
+            return 'TR_NETWORK_DOGECOIN';
         case 'ltc':
-            return messages.TR_NETWORK_LITECOIN;
+            return 'TR_NETWORK_LITECOIN';
         case 'nmc':
-            return messages.TR_NETWORK_NAMECOIN;
+            return 'TR_NETWORK_NAMECOIN';
         case 'vtc':
-            return messages.TR_NETWORK_VERTCOIN;
+            return 'TR_NETWORK_VERTCOIN';
         case 'zec':
-            return messages.TR_NETWORK_ZCASH;
+            return 'TR_NETWORK_ZCASH';
         case 'eth':
-            return messages.TR_NETWORK_ETHEREUM;
+            return 'TR_NETWORK_ETHEREUM';
         case 'trop':
-            return messages.TR_NETWORK_ETHEREUM_TESTNET;
+            return 'TR_NETWORK_ETHEREUM_TESTNET';
         case 'etc':
-            return messages.TR_NETWORK_ETHEREUM_CLASSIC;
+            return 'TR_NETWORK_ETHEREUM_CLASSIC';
         case 'xem':
-            return messages.TR_NETWORK_NEM;
+            return 'TR_NETWORK_NEM';
         case 'xlm':
-            return messages.TR_NETWORK_STELLAR;
+            return 'TR_NETWORK_STELLAR';
         case 'ada':
-            return messages.TR_NETWORK_CARDANO;
+            return 'TR_NETWORK_CARDANO';
         case 'xtz':
-            return messages.TR_NETWORK_TEZOS;
+            return 'TR_NETWORK_TEZOS';
         case 'xrp':
-            return messages.TR_NETWORK_XRP;
+            return 'TR_NETWORK_XRP';
         case 'txrp':
-            return messages.TR_NETWORK_XRP_TESTNET;
+            return 'TR_NETWORK_XRP_TESTNET';
         default:
-            return messages.TR_NETWORK_UNKNOWN;
+            return 'TR_NETWORK_UNKNOWN';
     }
 };
 
-// same as 'getTypeForNetwork' below except it returns proper value for NORMAL account type
 export const getAccountTypeIntl = (accountType: Network['accountType']) => {
     switch (accountType) {
         case ACCOUNT_TYPE.SEGWIT:
-            return messages.TR_ACCOUNT_TYPE_SEGWIT;
+            return 'TR_ACCOUNT_TYPE_SEGWIT';
         case ACCOUNT_TYPE.LEGACY:
-            return messages.TR_ACCOUNT_TYPE_LEGACY;
+            return 'TR_ACCOUNT_TYPE_LEGACY';
         default:
-            return messages.TR_ACCOUNT_TYPE_NORMAL;
-    }
-};
-
-export const getTypeForNetwork = (accountType: Account['accountType']) => {
-    switch (accountType) {
-        case ACCOUNT_TYPE.NORMAL:
-            return null;
-        case ACCOUNT_TYPE.SEGWIT:
-            return messages.TR_ACCOUNT_TYPE_SEGWIT;
-        case ACCOUNT_TYPE.LEGACY:
-            return messages.TR_ACCOUNT_TYPE_LEGACY;
-        // no default
+            return 'TR_ACCOUNT_TYPE_NORMAL';
     }
 };
 
@@ -123,9 +109,9 @@ export const getBip43Shortcut = (path: string) => {
 
 export const getBip43Intl = (path: string) => {
     const bip43 = getBip43Shortcut(path);
-    if (bip43 === 'bech32') return messages.TR_ACCOUNT_TYPE_BECH32;
-    if (bip43 === 'p2sh') return messages.TR_ACCOUNT_TYPE_P2SH;
-    return messages.TR_ACCOUNT_TYPE_P2PKH;
+    if (bip43 === 'bech32') return 'TR_ACCOUNT_TYPE_BECH32';
+    if (bip43 === 'p2sh') return 'TR_ACCOUNT_TYPE_P2SH';
+    return 'TR_ACCOUNT_TYPE_P2PKH';
 };
 
 export const stripNetworkAmount = (amount: string, decimals: number) => {

@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { differenceInMinutes } from 'date-fns';
 import { Tooltip, colors, variables, Icon } from '@trezor/components';
 import { FiatValue, Translation, NoRatesTooltip } from '@suite-components';
-import messages from '@suite/support/messages';
 import { FormattedRelativeTime } from 'react-intl';
 import { useSelector } from '@suite-hooks';
 
@@ -54,7 +53,7 @@ const Ticker = ({ symbol, tooltipPos = 'top' }: Props) => {
                         content={
                             <LastUpdate>
                                 <Translation
-                                    {...messages.TR_LAST_UPDATE}
+                                    id="TR_LAST_UPDATE"
                                     values={{
                                         value: (
                                             <FormattedRelativeTime

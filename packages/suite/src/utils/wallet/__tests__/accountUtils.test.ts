@@ -18,17 +18,7 @@ describe('account utils', () => {
     describe('get title for network', () => {
         fixtures.accountTitleFixture.forEach((fixture: any) => {
             it(fixture.symbol, () => {
-                const title = accountUtils.getTitleForNetwork(fixture.symbol);
-                expect(title.defaultMessage).toBe(fixture.title);
-            });
-        });
-    });
-
-    describe('get type for network', () => {
-        fixtures.accountTypeFixture.forEach((fixture: any) => {
-            it(fixture.networkType, () => {
-                const title = accountUtils.getTypeForNetwork(fixture.networkType);
-                expect(title ? title.defaultMessage : null).toBe(fixture.title);
+                expect(accountUtils.getTitleForNetwork(fixture.symbol)).toBe(fixture.title);
             });
         });
     });

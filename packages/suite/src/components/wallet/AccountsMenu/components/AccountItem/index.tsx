@@ -89,7 +89,7 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
 
     const DefaultLabel = () => (
         <>
-            <Translation {...getTitleForNetwork(account.symbol)} />
+            <Translation id={getTitleForNetwork(account.symbol)} />
             <span>&nbsp;#{account.index + 1}</span>
         </>
     );

@@ -2,7 +2,6 @@ import React from 'react';
 import { Button, Tooltip } from '@trezor/components';
 import { Account, Network } from '@wallet-types';
 import { Translation } from '@suite-components';
-import messages from '@suite/support/messages';
 import { useAnalytics, useAccountSearch } from '@suite-hooks';
 
 interface Props {
@@ -20,14 +19,14 @@ const AddAccountButton = (props: Props) => {
     let tooltip;
     if (props.accounts.length > 1) {
         // prev account is empty, do not add another
-        tooltip = <Translation {...messages.MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY} />;
+        tooltip = <Translation id="MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY" />;
     }
     if (account.index === 0 && account.empty && account.accountType === 'normal') {
         // current (first normal) account is empty, do not add another
-        tooltip = <Translation {...messages.MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY} />;
+        tooltip = <Translation id="MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY" />;
     }
     if (account.index >= 10) {
-        tooltip = <Translation {...messages.MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED} />;
+        tooltip = <Translation id="MODAL_ADD_ACCOUNT_LIMIT_EXCEEDED" />;
     }
 
     const addButton = (
@@ -51,7 +50,7 @@ const AddAccountButton = (props: Props) => {
                 });
             }}
         >
-            <Translation {...messages.TR_ADD_ACCOUNT} />
+            <Translation id="TR_ADD_ACCOUNT" />
         </Button>
     );
 

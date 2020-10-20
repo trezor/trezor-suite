@@ -3,7 +3,6 @@ import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
 import { Button, Card, colors, variables } from '@trezor/components';
 import { Translation, QuestionTooltip, ReadMoreLink } from '@suite-components';
-import messages from '@suite/support/messages';
 import { ChildProps as Props } from '../../Container';
 import { AccountAddress } from 'trezor-connect';
 
@@ -122,7 +121,7 @@ const FreshAddress = ({
 
     const getAddressValue = (address?: AccountAddress) => {
         if (!address) {
-            return intl.formatMessage(messages.RECEIVE_ADDRESS_LIMIT_EXCEEDED);
+            return <Translation id="RECEIVE_ADDRESS_LIMIT_EXCEEDED" />;
         }
 
         return `${address.address.substring(0, 20)}`;
