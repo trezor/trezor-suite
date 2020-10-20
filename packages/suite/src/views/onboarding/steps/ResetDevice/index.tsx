@@ -1,9 +1,9 @@
 import React from 'react';
-import { Link, P, H2 } from '@trezor/components';
+import { Link } from '@trezor/components';
 import * as STEP from '@onboarding-constants/steps';
 import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
 import { Translation } from '@suite-components';
-import { SuccessImg } from '@firmware-components';
+import { SuccessImg, H2, P } from '@firmware-components';
 import { TOS_URL } from '@suite-constants/urls';
 import { Props } from './Container';
 
@@ -40,7 +40,7 @@ const ResetDeviceStep = (props: Props) => {
                     </Text>
                 )}
 
-                <P size="tiny">
+                <P>
                     <Translation
                         id="TR_BY_CREATING_WALLET"
                         values={{
