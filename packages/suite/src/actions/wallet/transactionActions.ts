@@ -22,43 +22,37 @@ export type TransactionAction =
       }
     | { type: typeof TRANSACTION.FETCH_ERROR; error: string };
 
-export const add = (transactions: AccountTransaction[], account: Account, page?: number) => async (
-    dispatch: Dispatch,
-) => {
-    dispatch({
-        type: TRANSACTION.ADD,
-        transactions,
-        account,
-        page,
-    });
-};
+export const add = (
+    transactions: AccountTransaction[],
+    account: Account,
+    page?: number,
+): TransactionAction => ({
+    type: TRANSACTION.ADD,
+    transactions,
+    account,
+    page,
+});
 
 /**
  * Remove all transactions for a given account
  *
  * @param {Account} account
  */
-export const reset = (account: Account) => async (dispatch: Dispatch) => {
-    dispatch({
-        type: TRANSACTION.RESET,
-        account,
-    });
-};
+export const reset = (account: Account): TransactionAction => ({
+    type: TRANSACTION.RESET,
+    account,
+});
 
 /**
  * Remove certain transactions for a given account
  *
  * @param {Account} account
  */
-export const remove = (account: Account, txs: WalletAccountTransaction[]) => async (
-    dispatch: Dispatch,
-) => {
-    dispatch({
-        type: TRANSACTION.REMOVE,
-        account,
-        txs,
-    });
-};
+export const remove = (account: Account, txs: WalletAccountTransaction[]): TransactionAction => ({
+    type: TRANSACTION.REMOVE,
+    account,
+    txs,
+});
 
 // export const update = (txId: string) => async (dispatch: Dispatch) => {
 //     const updatedTimestamp = Date.now();
