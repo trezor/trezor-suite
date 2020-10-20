@@ -82,8 +82,6 @@ const Body = () => {
     if (device?.mode !== 'normal') return <ReconnectInNormalStep.Body />;
     if (device?.firmware === 'valid') return <NoNewFirmware.Body />;
 
-    if (!device?.features) return null; // ts
-
     const { firmwareRelease } = device;
     if (!device?.features || !firmwareRelease) return null; // ts
 
