@@ -14,7 +14,6 @@
 
 .build_nix: &build_nix
     script:  # override build script to use nix-shell instead
-        - export NIX_PATH="nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixpkgs:/nix/var/nix/profiles/per-user/root/channels"
         - nix-shell --run "yarn cache clean"
         - nix-shell --run "yarn"
         - nix-shell --run "yarn workspace @trezor/suite-data copy-static-files"
