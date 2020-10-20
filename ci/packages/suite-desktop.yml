@@ -1,5 +1,7 @@
 .build: &build
     stage: build
+    needs:
+        - install and build
     script:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files

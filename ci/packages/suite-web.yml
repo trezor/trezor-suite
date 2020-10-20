@@ -24,6 +24,8 @@ variables:
 
 suite-web build dev:
     stage: build
+    needs:
+      - install and build
     script:
         - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/web yarn workspace @trezor/suite-web build
     artifacts:
@@ -33,6 +35,8 @@ suite-web build dev:
 
 suite-web build beta:
     stage: build
+    needs:
+      - install and build
     only:
         <<: *auto_run_branches
     script:
@@ -45,6 +49,8 @@ suite-web build beta:
 
 suite-web build stable:
     stage: build
+    needs:
+      - install and build
     only:
         <<: *auto_run_branches
     script:
