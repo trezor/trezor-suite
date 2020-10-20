@@ -18,5 +18,8 @@ stdenv.mkDerivation {
   ]);
   shellHook = ''
     export PATH="$PATH:$(pwd)/node_modules/.bin"
+    if [ "$(uname)" = "Linux" ] ; then
+      ln -sf ${p7zip}/bin/7za $(pwd)/node_modules/7zip-bin/linux/x64/7za || :
+    fi
   '';
 }
