@@ -177,7 +177,7 @@ const Heading = styled(H1)<{
 }>`
     display: flex;
     align-items: flex-start;
-    word-break: break-all;
+    word-break: break-word;
     padding: 28px 32px 22px 32px;
     margin-bottom: ${props => (props.showProgressBar ? 0 : '20px')};
 
