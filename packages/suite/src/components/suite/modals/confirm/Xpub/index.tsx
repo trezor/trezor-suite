@@ -14,7 +14,7 @@ const Address = styled.div`
     word-break: break-all;
     font-size: 20px;
     padding: 20px;
-    margin-bottom: 40px;
+    margin: 20px 0 40px 0;
 `;
 
 const Row = styled.div`
