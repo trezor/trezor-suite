@@ -3885,7 +3885,8 @@ const definedMessages = defineMessages({
     },
     OP_RETURN_ADD: {
         id: 'OP_RETURN_ADD',
-        defaultMessage: 'ADD OP RETURN',
+        description: 'item in dropdown menu',
+        defaultMessage: 'Add OP Return',
     },
     RBF: {
         id: 'RBF',
@@ -4033,6 +4034,11 @@ const definedMessages = defineMessages({
         description: 'Sign and send button used in send form',
         defaultMessage: 'Review & Send',
     },
+    SEND_RAW: {
+        id: 'SEND_RAW',
+        description: 'item in dropdown menu',
+        defaultMessage: 'Send RAW',
+    },
     SEND_RAW_TRANSACTION: {
         id: 'SEND_RAW_TRANSACTION',
         description: 'Send raw form header',
@@ -4086,6 +4092,11 @@ const definedMessages = defineMessages({
     BROADCAST: {
         id: 'BROADCAST',
         defaultMessage: 'Broadcast',
+    },
+    IMPORT_CSV: {
+        id: 'IMPORT_CSV',
+        description: 'item in dropdown menu',
+        defaultMessage: 'Import',
     },
     // Send form end
 
