@@ -24,16 +24,4 @@ describe('Date utils', () => {
         );
         expect(utils.getDateWithTimeZone(dateInMs)).toEqual(new Date('2019-08-14T15:52:59.000Z'));
     });
-
-    test('get timestamps between from and to split by hour', () => {
-        expect(utils.splitTimestampsByInterval(1584845764, 1584867364, 3600, true)).toStrictEqual([
-            1584845764,
-            1584849364,
-            1584852964,
-            1584856564,
-            1584860164,
-            1584863764,
-            1584867364,
-        ]);
-    });
 });

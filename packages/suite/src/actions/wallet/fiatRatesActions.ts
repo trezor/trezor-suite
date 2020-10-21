@@ -7,7 +7,7 @@ import {
     fetchCoinList,
 } from '@suite/services/coingecko';
 import { isTestnet } from '@wallet-utils/accountUtils';
-import { splitTimestampsByInterval, getBlockbookSafeTime } from '@suite-utils/date';
+import { getBlockbookSafeTime } from '@suite-utils/date';
 import { FIAT } from '@suite-config';
 import { Dispatch, GetState } from '@suite-types';
 import {
@@ -248,8 +248,7 @@ export const updateLastWeekRates = () => async (dispatch: Dispatch, getState: Ge
     const currentTimestamp = getBlockbookSafeTime();
     const weekAgoTimestamp = currentTimestamp - 7 * 86400;
 
-    // calc timestamps in 1 hour intervals the last 7 days
-    const timestamps = splitTimestampsByInterval(weekAgoTimestamp, currentTimestamp, 3600, true);
+    const timestamps = [weekAgoTimestamp, currentTimestamp];
 
     const lastWeekStaleFn = (coinRates: CoinFiatRates) => {
         if (coinRates.lastWeek?.tickers[0]?.rates[localCurrency]) {
