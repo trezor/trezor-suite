@@ -86,34 +86,6 @@ export const calcTicksFromData = (data: { time: number }[]) => {
 };
 
 /**
- * Returns array of timestamps between `from` and `to` split by `interval`
- *
- * @param {number} from timestamp
- * @param {number} to timestamp
- * @param {number} interval interval in the same units as timestamps
- * @param {boolean} include include trailing and leading timestamps
- * @returns
- */
-export const splitTimestampsByInterval = (
-    from: number,
-    to: number,
-    interval: number,
-    include?: boolean,
-) => {
-    const timestamps: number[] = [];
-
-    if (to < from) return [];
-
-    let timestamp = from;
-    if (include) timestamps.push(timestamp);
-    while (timestamp + interval < to) {
-        timestamp += interval;
-        timestamps.push(timestamp);
-    }
-    if (include) timestamps.push(to);
-    return timestamps;
-};
-/**
  * Returns Blockbook-safe current unix timestamp (current time - 3 mins).
  * Little workaround for Blockbook as it doesn't return rates data for too recent timestamps.
  *
