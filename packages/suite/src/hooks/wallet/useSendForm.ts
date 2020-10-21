@@ -78,7 +78,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         getLastUsedFeeLevel,
         setLastUsedFeeLevel,
         signTransaction,
-        importRequest,
     } = useActions({
         getDraft: sendFormActions.getDraft,
         saveDraft: sendFormActions.saveDraft,
@@ -86,7 +85,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         getLastUsedFeeLevel: walletSettingsActions.getLastUsedFeeLevel,
         setLastUsedFeeLevel: walletSettingsActions.setLastUsedFeeLevel,
         signTransaction: sendFormActions.signTransaction,
-        importRequest: sendFormActions.importRequest,
     });
 
     const { localCurrencyOption } = state;
@@ -175,20 +173,22 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
     // declare useSendFormImport, sub-hook of useSendForm
     const { importTransaction } = useSendFormImport({
+        network: state.network,
+        tokens: state.account.tokens,
         fiatRates: state.fiatRates,
-        getLoadedValues,
+        localCurrencyOption,
     });
 
-    // get state from ImportTransaction modal and process it
     const loadTransaction = async () => {
-        const result = await importRequest();
-        if (!result) return;
+        const outputs = await importTransaction();
+        if (!outputs) return; // ignore empty result (cancelled or error)
         setComposedLevels(undefined);
-        const values = importTransaction(result);
+        const values = getLoadedValues({ outputs });
         reset(values);
+        updateContext({ isLoading: false, isDirty: true });
         const valid = await control.trigger();
         if (valid) {
-            composeRequest('outputs[0].amount');
+            composeRequest();
         }
     };
 

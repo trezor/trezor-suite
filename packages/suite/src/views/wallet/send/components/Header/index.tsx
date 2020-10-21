@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables, colors, Dropdown } from '@trezor/components';
+import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { useSendFormContext } from '@wallet-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
@@ -45,7 +46,7 @@ const Header = () => {
         {
             key: 'opreturn',
             callback: addOpReturn,
-            label: 'Add OP Return',
+            label: <Translation id="OP_RETURN_ADD" />,
             isDisabled: !!opreturnOutput,
             isHidden: networkType !== 'bitcoin',
         },
@@ -55,8 +56,8 @@ const Header = () => {
                 loadTransaction();
                 return true;
             },
-            label: 'Import',
-            isDisabled: true,
+            label: <Translation id="IMPORT_CSV" />,
+            isHidden: networkType !== 'bitcoin',
         },
         {
             key: 'raw',
@@ -64,8 +65,7 @@ const Header = () => {
                 sendRaw(true);
                 return true;
             },
-            label: 'Send RAW',
-            // isDisabled: true,
+            label: <Translation id="SEND_RAW" />,
         },
     ];
 

@@ -2,7 +2,6 @@ import TrezorConnect, { UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
 import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
 import { Account, WalletAccountTransaction } from '@wallet-types';
-import { PartialFormState } from '@wallet-types/sendForm';
 import { createDeferred, Deferred, DeferredResponse } from '@suite-utils/deferred';
 
 export type UserContextPayload =
@@ -62,7 +61,7 @@ export type UserContextPayload =
       }
     | {
           type: 'import-transaction';
-          decision: Deferred<PartialFormState>;
+          decision: Deferred<{ [key: string]: string }[]>;
       }
     | {
           type: 'coinmarket-buy-terms';

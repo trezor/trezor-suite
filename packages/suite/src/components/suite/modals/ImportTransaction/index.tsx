@@ -1,20 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Modal, Button } from '@trezor/components';
-// import { Translation } from '@suite-components';
+import React, { useState } from 'react';
+import { Modal } from '@trezor/components';
+import { Translation } from '@suite-components';
+import { DropZone } from '@suite-components/DropZone';
 import { UserContextPayload } from '@suite-actions/modalActions';
-// import { DEFAULT_PAYMENT, DEFAULT_OPRETURN } from '@wallet-constants/sendForm';
-
-const Description = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-`;
-
-const Actions = styled.div`
-    display: flex;
-    justify-content: center;
-`;
+import { DelimiterForm } from './components/DelimiterForm';
+import { ExampleCSV } from './components/ExampleCSV';
+import { parseCSV } from '@wallet-utils/csvParser';
 
 type Props = {
     onCancel: () => any;
@@ -22,65 +13,24 @@ type Props = {
 };
 
 const ImportTransaction = ({ onCancel, decision }: Props) => {
-    // TODO:
-    // - views and Translations
-    // - delimiter (default ,)
-    // - upload button
-    // - upload drag&drop area
-    // - parse uploaded file with error handler, similar to QRCode reader
+    // const [mode, setMode] = useState<'upload' | 'form'>('upload'); // TODO: upload or textarea form? (fallback for upload)
+    const [delimiter, setDelimiter] = useState<string | undefined>(undefined);
 
-    // result from uploaded file
-    const validData = {
-        outputs: [
-            {
-                type: 'payment',
-                address: '0x7de62F23453E9230cC038390901A9A0130105A3c',
-                amount: '0.1',
-            } as const,
-            // { ...DEFAULT_PAYMENT, address: 'address' },
-            // { ...DEFAULT_PAYMENT, amount: '1' },
-            // // { label: 'label' },
-            // // { fiat: '1' },
-            // { ...DEFAULT_OPRETURN },
-        ],
-    };
-    const invalidData = {
-        outputs: [
-            {
-                type: 'payment',
-                address: '0x7de62F23453E9230cC038390901A9A0130105A3c',
-                amount: '',
-            } as const,
-        ],
+    const onUploadSuccess = (data: string) => {
+        const parsed = parseCSV(data, ['address', 'amount', 'currency', 'label'], delimiter);
+        decision.resolve(parsed);
+        onCancel();
     };
 
     return (
         <Modal
             cancelable
             onCancel={onCancel}
-            heading="upload file"
-            description={<Description>File format description</Description>}
+            heading={<Translation id="TR_IMPORT_CSV_MODAL_TITLE" />}
         >
-            <Actions>
-                <Button
-                    variant="secondary"
-                    onClick={() => {
-                        decision.resolve(validData);
-                        onCancel();
-                    }}
-                >
-                    UPLOAD VALID
-                </Button>
-                <Button
-                    variant="secondary"
-                    onClick={() => {
-                        decision.resolve(invalidData);
-                        onCancel();
-                    }}
-                >
-                    UPLOAD INVALID
-                </Button>
-            </Actions>
+            <ExampleCSV />
+            <DropZone accept="text/csv" onSuccess={onUploadSuccess} />
+            <DelimiterForm value={delimiter} onChange={setDelimiter} />
         </Modal>
     );
 };
