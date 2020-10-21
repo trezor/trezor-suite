@@ -1,6 +1,6 @@
 {
     "name": "@trezor/suite-native",
-    "version": "20.10.1",
+    "version": "20.11.0",
     "private": true,
     "scripts": {
         "dev:ios": "run-p start run-ios",
@@ -19,7 +19,7 @@
     },
     "dependencies": {
         "@trezor/components": "^1.0.0",
-        "@trezor/suite-storage": "20.10.1",
+        "@trezor/suite-storage": "20.11.0",
         "react": "16.13.1",
         "react-native": "0.63.2",
         "react-native-gesture-handler": "^1.5.2",

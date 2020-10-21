@@ -28,3 +28,9 @@ Beta also has +1 `MM` version when compared to stable indicating this is upcomin
 - `20.11.0` release on Oct 29th 2020 to beta
 - `20.11.0` another release on Nov 5th to beta
 - `20.11.1` public release on Nov 14th to stable
+
+## Develop versioning
+
+We use the same scheme as beta. That is, `develop` branch has always `YY.MM.0` version where `MM` is the upcoming month's release.
+When we fork `develop` to `release/20YY-MM` branch, we bump the release branch version to `YY.MM.1` and
+increase the `develop` version to `YY.(MM+1).0` indicating we are already brewing next release in the `develop`.
