@@ -515,6 +515,34 @@ const definedMessages = defineMessages({
         id: 'TR_XPUB_MODAL_TITLE_METADATA',
         description: 'accountLabel is user defined name of account, might be pretty much anything.',
     },
+    TR_IMPORT_CSV_MODAL_TITLE: {
+        defaultMessage: 'Import addresses from CSV',
+        id: 'TR_IMPORT_CSV_MODAL_TITLE',
+    },
+    TR_IMPORT_CSV_MODAL_SHOW_EXAMPLE: {
+        defaultMessage: 'Show CSV example',
+        id: 'TR_IMPORT_CSV_MODAL_SHOW_EXAMPLE',
+    },
+    TR_IMPORT_CSV_MODAL_HIDE_EXAMPLE: {
+        defaultMessage: 'Hide example',
+        id: 'TR_IMPORT_CSV_MODAL_HIDE_EXAMPLE',
+    },
+    TR_IMPORT_CSV_MODAL_DELIMITER_DEFAULT: {
+        defaultMessage: 'Auto detect delimiter',
+        id: 'TR_IMPORT_CSV_MODAL_DELIMITER_DEFAULT',
+    },
+    TR_IMPORT_CSV_MODAL_DELIMITER_CUSTOM: {
+        defaultMessage: 'Custom delimiter',
+        id: 'TR_IMPORT_CSV_MODAL_DELIMITER_CUSTOM',
+    },
+    TR_DROPZONE: {
+        defaultMessage: 'Drag and drop file here or click to select from files',
+        id: 'TR_DROPZONE',
+    },
+    TR_DROPZONE_ERROR: {
+        defaultMessage: 'Import failed {error}',
+        id: 'TR_DROPZONE_ERROR',
+    },
     TR_ADVANCED_RECOVERY: {
         defaultMessage: 'advanced recovery',
         description: 'Enter words via obfuscated pin matrix, recovery takes about 5 minutes.',
