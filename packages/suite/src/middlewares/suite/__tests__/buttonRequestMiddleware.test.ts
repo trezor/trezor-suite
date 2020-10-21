@@ -28,13 +28,13 @@ jest.mock('@wallet-actions/blockchainActions', () => {
 });
 
 jest.mock('trezor-connect', () => {
-    const callbacks: { [key: string]: Function } = {};
+    const callbacks: { [key: string]: (e: string) => any } = {};
     return {
         __esModule: true, // this property makes it work
         default: {
             blockchainSetCustomBackend: () => {},
             init: () => {},
-            on: (event: string, cb: Function) => {
+            on: (event: string, cb: (e: string) => any) => {
                 callbacks[event] = cb;
             },
             changePin: () => {

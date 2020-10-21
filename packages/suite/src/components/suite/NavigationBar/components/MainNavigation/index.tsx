@@ -99,7 +99,6 @@ const NewBadge = styled.span`
 `;
 
 interface Props {
-    openSecondaryMenu?: () => void;
     closeMainNavigation?: () => void;
     isMobileLayout?: boolean;
 }

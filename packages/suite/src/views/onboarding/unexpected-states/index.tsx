@@ -29,7 +29,6 @@ const IsInBootloader = () => (
 const mapStateToProps = (state: AppState) => ({
     onboarding: state.onboarding,
     suite: state.suite,
-    recovery: state.recovery,
 });
 
 type Props = ReturnType<typeof mapStateToProps> & {

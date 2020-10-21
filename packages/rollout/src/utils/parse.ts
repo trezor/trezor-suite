@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { Boolean, Number, String, Literal, Tuple, Record, Union, Partial, Static } from 'runtypes';
 
 /**

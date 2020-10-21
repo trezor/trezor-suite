@@ -1,4 +1,4 @@
-/* eslint @typescript-eslint/camelcase: 0 */
+/* eslint @typescript-eslint/naming-convention: 0 */
 
 /**
  * Reason why this file exists:

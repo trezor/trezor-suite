@@ -6,7 +6,6 @@ const MIN_ALLOWED_HEIGHT = 2;
 const BAR_BORDER_RADIUS = 2;
 
 interface CustomBarProps {
-    variant: 'sent' | 'received';
     filter?: string;
     [key: string]: any;
 }

@@ -223,11 +223,7 @@ type AppWithParams<T extends { [key: string]: any }> = {
     [K in keyof T]: {
         app: T[K]['app'];
         route: Route;
-        params:
-            | (T[K]['params'] extends object
-                  ? ExtractType<ArrayElement<T[K]['params']>>
-                  : undefined)
-            | undefined;
+        params: ExtractType<ArrayElement<T[K]['params']>> | undefined;
     };
 };
 

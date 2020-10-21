@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 import { MiddlewareAPI } from 'redux';
 import { AppState, Action, Dispatch } from '@suite-types';
 import * as logActions from '@suite-actions/logActions';

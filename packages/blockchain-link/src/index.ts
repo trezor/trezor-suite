@@ -13,7 +13,7 @@ interface Emitter {
     emit<K extends keyof Events>(type: K, ...args: Events[K][]): boolean;
 }
 
-const workerWrapper = (factory: string | Function): Worker => {
+const workerWrapper = (factory: BlockchainSettings['worker']): Worker => {
     if (typeof factory === 'function') return factory();
     if (typeof factory === 'string' && typeof Worker !== 'undefined') return new Worker(factory);
     // use custom worker
@@ -21,9 +21,12 @@ const workerWrapper = (factory: string | Function): Worker => {
 };
 
 // initialize worker communication, raise error if worker not found
-const initWorker = async (settings: BlockchainSettings): Promise<Worker> => {
+const initWorker = async ({
+    worker: factory,
+    ...settings
+}: BlockchainSettings): Promise<Worker> => {
     const dfd: Deferred<Worker> = createDeferred(-1);
-    const worker = workerWrapper(settings.worker);
+    const worker = workerWrapper(factory);
 
     if (typeof worker !== 'object' || typeof worker.postMessage !== 'function') {
         throw new CustomError('worker_invalid');
@@ -38,7 +41,6 @@ const initWorker = async (settings: BlockchainSettings): Promise<Worker> => {
     worker.onmessage = (message: any) => {
         if (message.data.type !== MESSAGES.HANDSHAKE) return;
         clearTimeout(timeout);
-        delete settings.worker;
         worker.postMessage({
             type: MESSAGES.HANDSHAKE,
             settings,
@@ -55,7 +57,6 @@ const initWorker = async (settings: BlockchainSettings): Promise<Worker> => {
         } catch (error) {
             // empty
         }
-        delete settings.worker;
 
         const message = error.message
             ? `Worker runtime error: Line ${error.lineno} in ${error.filename}: ${error.message}`

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 import { SettingsLayout } from '@settings-components';
 import { Translation } from '@suite-components';
 import {

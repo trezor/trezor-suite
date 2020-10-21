@@ -5,6 +5,6 @@ module.exports = {
     },
     rules: {
         // Trezor.Features are came-case
-        '@typescript-eslint/camelcase': 'off',
+        '@typescript-eslint/naming-convention': 'off',
     },
 };

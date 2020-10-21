@@ -19,6 +19,8 @@ const TargetAddressLabel = ({ target, type }: Props) => {
         <Translation id="TR_SENT_TO_SELF" />
     ) : (
         target.addresses?.map((a, i) =>
+            // Using index as a key is safe as the array doesn't change (no filter/reordering, pushing new items)
+            // eslint-disable-next-line react/no-array-index-key
             type === 'sent' ? <AddressLabeling key={i} address={a} /> : <span key={i}>{a}</span>,
         )
     );

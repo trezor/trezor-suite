@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 import { colors } from '@trezor/components';
 import messages from '@suite/support/messages';
 
@@ -348,7 +348,6 @@ const d = (obj: any) => ({
     path: obj.path ? obj.path : obj.id,
     features: obj.id
         ? {
-              // eslint-disable-next-line @typescript-eslint/camelcase
               device_id: obj.id,
           }
         : undefined,

@@ -1,5 +1,5 @@
 /* WARNING! This file should be imported ONLY in tests! */
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Device, Features } from 'trezor-connect';
 import { TrezorDevice } from '@suite-types';
 import { Account, WalletAccountTransaction } from '@wallet-types';
@@ -179,7 +179,7 @@ const getWalletTransaction = (t: Partial<WalletAccountTransaction>): WalletAccou
 // Mocked TrezorConnect used in various tests
 const getTrezorConnect = <M>(methods?: M) => {
     // event listeners
-    const listeners: { [key: string]: Function } = {};
+    const listeners: { [key: string]: (e: any) => void } = {};
     // methods response fixtures
     let fixtures: Record<string, any> | Record<string, any>[] | undefined;
     const getFixture = () => {
@@ -194,7 +194,7 @@ const getTrezorConnect = <M>(methods?: M) => {
         default: {
             // define mocked TrezorConnect methods
             init: () => {},
-            on: (event: string, cb: Function) => {
+            on: (event: string, cb: (e: any) => void) => {
                 listeners[event] = cb;
             },
             off: () => {},

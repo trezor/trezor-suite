@@ -2,14 +2,13 @@ import React from 'react';
 import { Button } from '@trezor/components';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { useDevice, useActions } from '@suite-hooks';
-import { Network, Discovery } from '@wallet-types';
+import { Network } from '@wallet-types';
 import { Translation, Image } from '@suite-components';
 
 import Wrapper from './components/Wrapper';
 
 interface Props {
     network: Network;
-    discovery: Discovery;
 }
 
 /**

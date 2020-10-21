@@ -110,7 +110,7 @@ export default class Socket extends EventEmitter {
         this.dispose();
     }
 
-    send: Send = (method, params) => {
+    send: Send = (method, params = {}) => {
         const { ws } = this;
         if (!ws) throw NOT_INITIALIZED;
         const id = this.messageID.toString();
@@ -236,7 +236,7 @@ export default class Socket extends EventEmitter {
     }
 
     getServerInfo() {
-        return this.send('getInfo', {});
+        return this.send('getInfo');
     }
 
     getBlockHash(block: number) {
@@ -302,7 +302,7 @@ export default class Socket extends EventEmitter {
         if (index >= 0) {
             // remove previous subscriptions
             this.subscriptions.splice(index, 1);
-            return this.send('unsubscribeAddresses', {});
+            return this.send('unsubscribeAddresses');
         }
         return { subscribed: false };
     }
@@ -322,7 +322,7 @@ export default class Socket extends EventEmitter {
                 this.emit('block', result);
             },
         });
-        return this.send('subscribeNewBlock', {});
+        return this.send('subscribeNewBlock');
     }
 
     unsubscribeBlock() {
@@ -330,7 +330,7 @@ export default class Socket extends EventEmitter {
         if (index >= 0) {
             // remove previous subscriptions
             this.subscriptions.splice(index, 1);
-            return this.send('unsubscribeNewBlock', {});
+            return this.send('unsubscribeNewBlock');
         }
         return { subscribed: false };
     }
@@ -358,7 +358,7 @@ export default class Socket extends EventEmitter {
         if (index >= 0) {
             // remove previous subscriptions
             this.subscriptions.splice(index, 1);
-            return this.send('unsubscribeFiatRates', {});
+            return this.send('unsubscribeFiatRates');
         }
         return { subscribed: false };
     }

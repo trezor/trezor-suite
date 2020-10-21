@@ -188,7 +188,7 @@ const Exception = ({ exception, discovery }: Props) => {
                         action: async () => {
                             // enable passphrase
                             const result = await dispatch(
-                                // eslint-disable-next-line @typescript-eslint/camelcase
+                                // eslint-disable-next-line @typescript-eslint/naming-convention
                                 deviceSettingsActions.applySettings({ use_passphrase: true }),
                             );
                             if (!result || !result.success) return;

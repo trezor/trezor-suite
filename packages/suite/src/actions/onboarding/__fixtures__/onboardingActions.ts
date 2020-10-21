@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import onboardingReducer from '@onboarding-reducers/onboardingReducer';
 import * as STEP from '@onboarding-constants/steps';

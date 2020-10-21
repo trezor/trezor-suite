@@ -11,7 +11,7 @@ describe('Passphrase', () => {
         cy.task('startEmu', { wipe: true, version: '2.3.1' });
         cy.task('setupEmu');
 
-        // eslint-disable-next-line @typescript-eslint/camelcase
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         cy.task('applySettings', { passphrase_always_on_device: false });
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');

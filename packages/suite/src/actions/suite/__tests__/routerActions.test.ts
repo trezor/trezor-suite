@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import suiteReducer from '@suite-reducers/suiteReducer';
@@ -8,7 +9,7 @@ import * as routerActions from '../routerActions';
 
 jest.mock('next/router', () => {
     const history: string[] = [];
-    let dispatch: Function = () => {};
+    let dispatch = (_d: any) => {};
     return {
         __esModule: true, // this property makes it work
         default: {
@@ -18,7 +19,7 @@ jest.mock('next/router', () => {
             },
             pathname: '/',
         },
-        setDispatch: (d: Function) => {
+        setDispatch: (d: any) => {
             dispatch = d;
         },
     };

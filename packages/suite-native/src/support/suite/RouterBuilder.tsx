@@ -15,9 +15,11 @@ import createNativeStackNavigator from 'react-native-screens/createNativeStackNa
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 type ScreenComponent = NavigationComponent<{}, {}> & {
     router?: any; // nested Navigator
 };
+// eslint-disable-next-line @typescript-eslint/ban-types
 type ScreenConfigMap = NavigationRouteConfigMap<{}, {}>;
 
 const useDrawer = (key: string, customViews: NavigatorViews, screen: ScreenComponent) => {

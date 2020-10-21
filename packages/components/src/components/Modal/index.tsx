@@ -1,5 +1,4 @@
 /* stylelint-disable indentation */
-
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { useKeyPress } from '../../utils/hooks';
@@ -67,44 +66,40 @@ type ModalWindowProps = Omit<
         >
     >; // make some props mandatory
 const ModalWindow = styled.div<ModalWindowProps>`
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  border-radius: 6px;
-  text-align: center;
-  overflow-x: hidden; /* retains border-radius when using background in child component */
-  padding: ${(props: ModalWindowProps) =>
-      `${props.modalPaddingTop[3]} ${props.modalPaddingSide[3]} ${props.modalPaddingBottom[3]}`};
-
-  /* prettier fails to format it properly */
-
-  @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    border-radius: 6px;
+    text-align: center;
+    overflow-x: hidden; /* retains border-radius when using background in child component */
     padding: ${(props: ModalWindowProps) =>
-        `${props.modalPaddingTop[0]} ${props.modalPaddingSide[0]} ${props.modalPaddingBottom[0]}`};
-  }
+        `${props.modalPaddingTop[3]} ${props.modalPaddingSide[3]} ${props.modalPaddingBottom[3]}`};
 
-  @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) and (max-width: ${
-    variables.SCREEN_SIZE.MD
-}) {
-    padding: ${(props: ModalWindowProps) =>
-        `${props.modalPaddingTop[1]} ${props.modalPaddingSide[1]} ${props.modalPaddingBottom[1]}`};
-  }
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        padding: ${(props: ModalWindowProps) =>
+            `${props.modalPaddingTop[0]} ${props.modalPaddingSide[0]} ${props.modalPaddingBottom[0]}`};
+    }
 
-  @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) and (max-width: ${
-    variables.SCREEN_SIZE.LG
-}) {
-    padding: ${(props: ModalWindowProps) =>
-        `${props.modalPaddingTop[2]} ${props.modalPaddingSide[2]} ${props.modalPaddingBottom[2]}`};
-  }
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) and (max-width: ${variables
+            .SCREEN_SIZE.MD}) {
+        padding: ${(props: ModalWindowProps) =>
+            `${props.modalPaddingTop[1]} ${props.modalPaddingSide[1]} ${props.modalPaddingBottom[1]}`};
+    }
 
-  ${props =>
-      !props.noBackground &&
-      css`
-          background: ${colors.WHITE};
-          box-shadow: 0 10px 80px 0 rgba(77, 77, 77, 0.2);
-      `}
+    @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) and (max-width: ${variables
+            .SCREEN_SIZE.LG}) {
+        padding: ${(props: ModalWindowProps) =>
+            `${props.modalPaddingTop[2]} ${props.modalPaddingSide[2]} ${props.modalPaddingBottom[2]}`};
+    }
 
-  /* if bottomBar is active we need to disable bottom padding */
+    ${props =>
+        !props.noBackground &&
+        css`
+            background: ${colors.WHITE};
+            box-shadow: 0 10px 80px 0 rgba(77, 77, 77, 0.2);
+        `}
+
+    /* if bottomBar is active we need to disable bottom padding */
     ${props =>
         props.bottomBar &&
         css`
@@ -229,8 +224,6 @@ const SidePaddingWrapper = styled.div<{ sidePadding: [string, string, string, st
     /* This component applies responsive side padding to all components that inherit from this component */
     padding-left: ${props => props.sidePadding[3]};
     padding-right: ${props => props.sidePadding[3]};
-
-    /* prettier fails to format it properly */
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         padding-left: ${props => props.sidePadding[0]};

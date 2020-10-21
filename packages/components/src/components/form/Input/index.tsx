@@ -25,9 +25,8 @@ const StyledInput = styled.input<InputProps>`
     font-family: ${variables.FONT_FAMILY.TTHOVES};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     /*  this is a bit messy, but basically we want to add textIndent to left/right paddings */
-    padding: 1px ${props =>
-        props.textIndent ? `${props.textIndent[1] + 16}px` : '16px'} 0 ${props =>
-    props.textIndent ? `${props.textIndent[0] + 16}px` : '16px'};
+    padding: 1px ${props => (props.textIndent ? `${props.textIndent[1] + 16}px` : '16px')} 0
+        ${props => (props.textIndent ? `${props.textIndent[0] + 16}px` : '16px')};
     font-size: ${variables.FONT_SIZE.SMALL};
     border-radius: 4px;
     border: solid 2px

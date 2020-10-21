@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -9,7 +10,7 @@ import { init } from '../trezorConnectActions';
 
 jest.mock('trezor-connect', () => {
     let fixture: any;
-    const callbacks: { [key: string]: Function } = {};
+    const callbacks: { [key: string]: (e: any) => any } = {};
     return {
         __esModule: true, // this property makes it work
         default: {
@@ -18,7 +19,7 @@ jest.mock('trezor-connect', () => {
                 if (typeof fixture === 'function') throw fixture();
                 return true;
             },
-            on: (event: string, cb: Function) => {
+            on: (event: string, cb: (e: any) => any) => {
                 callbacks[event] = cb;
             },
             getFeatures: () => ({

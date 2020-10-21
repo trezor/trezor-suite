@@ -58,7 +58,7 @@ const ResetDeviceStep = (props: Props) => {
                             data-test="@onboarding/button-standard-backup"
                             action={() => {
                                 props.callActionAndGoToNextStep(
-                                    // eslint-disable-next-line @typescript-eslint/camelcase
+                                    // eslint-disable-next-line @typescript-eslint/naming-convention
                                     () => props.resetDevice({ backup_type: 0 }),
                                     STEP.ID_SECURITY_STEP,
                                 );
@@ -77,7 +77,7 @@ const ResetDeviceStep = (props: Props) => {
                         <Option
                             action={() => {
                                 props.callActionAndGoToNextStep(
-                                    // eslint-disable-next-line @typescript-eslint/camelcase
+                                    // eslint-disable-next-line @typescript-eslint/naming-convention
                                     () => props.resetDevice({ backup_type: 1 }),
                                     STEP.ID_SECURITY_STEP,
                                 );

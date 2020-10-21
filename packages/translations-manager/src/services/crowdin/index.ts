@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable camelcase */
 import fs from 'fs';
 import { ensureDirSync } from 'fs-extra';
 import * as path from 'path';

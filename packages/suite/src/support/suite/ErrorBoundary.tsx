@@ -101,7 +101,7 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
         this.state = { error: null };
     }
 
-    componentDidCatch(error: Error | null, _errorInfo: object) {
+    componentDidCatch(error: Error | null, _errorInfo: React.ErrorInfo) {
         this.props.reportToSentry(error, this.props.analytics.enabled);
         this.setState({ error });
         // todo: not in development and in production only if user opts in.

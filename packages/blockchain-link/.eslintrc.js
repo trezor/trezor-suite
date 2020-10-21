@@ -3,8 +3,4 @@ module.exports = {
     parserOptions: {
         project: ['./tsconfig.json'],
     },
-    rules: {
-        // Ripple-lib uses camel_Case
-        '@typescript-eslint/camelcase': 'off',
-    },
 };

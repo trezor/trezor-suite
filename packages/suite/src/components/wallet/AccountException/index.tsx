@@ -37,7 +37,7 @@ const getExceptionPage = ({ account }: Props) => {
         case 'discovery-empty':
             return <DiscoveryEmpty />;
         case 'account-not-enabled':
-            return <AccountNotEnabled network={account.network} discovery={account.discovery} />;
+            return <AccountNotEnabled network={account.network} />;
         case 'account-not-loaded':
             return <AccountNotLoaded />;
         case 'account-not-exists':

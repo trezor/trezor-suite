@@ -37,6 +37,7 @@ const { getSuiteDevice, getWalletAccount, getWalletTransaction } = global.JestMo
 jest.mock('@trezor/suite-storage', () => {
     return {
         __esModule: true,
+        // eslint-disable-next-line @typescript-eslint/ban-types
         ...(jest.requireActual('@trezor/suite-storage/lib/web/index') as object), // cast so ts stops complaining
     };
 });

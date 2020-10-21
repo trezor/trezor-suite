@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 
 import { DEVICE } from 'trezor-connect';
 import * as STEP from '@onboarding-constants/steps';

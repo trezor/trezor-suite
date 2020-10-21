@@ -169,10 +169,11 @@ export interface AccountBalanceHistory {
 
 export interface AvailableCurrencies {
     ts: number;
+    // eslint-disable-next-line camelcase
     available_currencies: string[];
 }
 
-declare function FSend(method: 'getInfo', params: {}): Promise<ServerInfo>;
+declare function FSend(method: 'getInfo'): Promise<ServerInfo>;
 declare function FSend(method: 'getBlockHash', params: { height: number }): Promise<BlockHash>;
 declare function FSend(method: 'getAccountInfo', params: AccountInfoParams): Promise<AccountInfo>;
 declare function FSend(method: 'getAccountUtxo', params: AccountUtxoParams): Promise<AccountUtxo>;
@@ -199,12 +200,12 @@ declare function FSend(
     method: 'subscribeAddresses',
     params: { addresses: string[] }
 ): Promise<Subscribe>;
-declare function FSend(method: 'unsubscribeAddresses', params: {}): Promise<Subscribe>;
-declare function FSend(method: 'subscribeNewBlock', params: {}): Promise<Subscribe>;
-declare function FSend(method: 'unsubscribeNewBlock', params: {}): Promise<Subscribe>;
+declare function FSend(method: 'unsubscribeAddresses'): Promise<Subscribe>;
+declare function FSend(method: 'subscribeNewBlock'): Promise<Subscribe>;
+declare function FSend(method: 'unsubscribeNewBlock'): Promise<Subscribe>;
 declare function FSend(
     method: 'subscribeFiatRates',
     params: { currency?: string }
 ): Promise<Subscribe>;
-declare function FSend(method: 'unsubscribeFiatRates', params: {}): Promise<Subscribe>;
+declare function FSend(method: 'unsubscribeFiatRates'): Promise<Subscribe>;
 export type Send = typeof FSend;

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 
 import React from 'react';
 import { useDevice, useActions } from '@suite-hooks';

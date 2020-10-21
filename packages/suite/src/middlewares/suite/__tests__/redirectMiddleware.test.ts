@@ -113,7 +113,7 @@ describe('redirectMiddleware', () => {
                                 path: '2',
                             },
                             {
-                                // eslint-disable-next-line @typescript-eslint/camelcase
+                                // eslint-disable-next-line @typescript-eslint/naming-convention
                                 device_id: 'previous-device',
                             },
                         ),

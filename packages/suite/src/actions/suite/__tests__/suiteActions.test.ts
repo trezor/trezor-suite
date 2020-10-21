@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable global-require */
 // unit test for suite actions
 // data provided by TrezorConnect are mocked

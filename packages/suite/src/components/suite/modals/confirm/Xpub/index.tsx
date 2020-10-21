@@ -26,15 +26,7 @@ const Row = styled.div`
     }
 `;
 
-const Xpub = ({
-    xpub,
-    accountPath,
-    accountIndex,
-    symbol,
-    accountLabel,
-    addNotification,
-    onCancel,
-}: Props) => {
+const Xpub = ({ xpub, accountIndex, symbol, accountLabel, addNotification, onCancel }: Props) => {
     // TODO: no-backup, backup failed
     // const needsBackup = device.features && device.features.needs_backup;
 
@@ -66,7 +58,7 @@ const Xpub = ({
                 )
             }
         >
-            <QrCode value={xpub} addressPath={accountPath} />
+            <QrCode value={xpub} />
             <Address data-test="@xpub-modal/xpub-field">{xpub}</Address>
             <Row ref={htmlElement}>
                 <Button variant="primary" onClick={copyAddress}>

@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
-
 import { Modal, colors, variables } from '@trezor/components';
-import { AppState } from '@suite-types';
 import { WalletAccountTransaction } from '@wallet-types';
 import TrezorConnect from 'trezor-connect';
 import BasicDetails from './components/BasicDetails';
@@ -43,10 +40,6 @@ const AdvancedDetailsWrapper = styled.div`
     padding: 24px 24px 14px 24px;
 `;
 
-const mapStateToProps = (state: AppState) => ({
-    fiat: state.wallet.fiat,
-});
-
 interface TabProps {
     tabSelected: 'amount' | 'io';
 }
@@ -54,7 +47,7 @@ interface TabProps {
 type Props = {
     tx: WalletAccountTransaction;
     onCancel: () => void;
-} & ReturnType<typeof mapStateToProps>;
+};
 
 const TransactionDetail = (props: Props) => {
     const [selectedTab, setSelectedTab] = useState<TabProps['tabSelected']>('amount');
@@ -146,4 +139,4 @@ const TransactionDetail = (props: Props) => {
     );
 };
 
-export default connect(mapStateToProps)(TransactionDetail);
+export default TransactionDetail;

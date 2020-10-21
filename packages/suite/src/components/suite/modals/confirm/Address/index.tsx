@@ -43,23 +43,13 @@ const CopyButtonWrapper = styled.div`
 type Props = {
     device: TrezorDevice;
     address: string;
-    addressPath?: string;
-    networkType: string;
     symbol: string;
     cancelable?: boolean;
     confirmed?: boolean;
     onCancel?: () => void;
 };
 
-const ConfirmAddress = ({
-    device,
-    address,
-    addressPath,
-    symbol,
-    cancelable,
-    confirmed,
-    onCancel,
-}: Props) => {
+const ConfirmAddress = ({ device, address, symbol, cancelable, confirmed, onCancel }: Props) => {
     // TODO: no-backup, backup failed
     // const needsBackup = device.features && device.features.needs_backup;
 
@@ -99,7 +89,7 @@ const ConfirmAddress = ({
         >
             <Wrapper>
                 <StyledBox>
-                    <QrCode value={address} addressPath={addressPath} />
+                    <QrCode value={address} />
                     <Right>
                         <Address data-test="@modal/confirm-address/address-field">
                             {address}

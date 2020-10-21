@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 // unit test for discovery actions
 // data provided by TrezorConnect are mocked
@@ -27,7 +28,8 @@ type Fixture = ArrayElement<typeof fixtures>;
 type Bundle = { path: string; coin: string }[];
 
 jest.mock('trezor-connect', () => {
-    let progressCallback: Function = () => {};
+    let progressCallback = (_e: any): any => {};
+    // eslint-disable-next-line @typescript-eslint/ban-types
     let fixture: Fixture | Promise<Fixture> | Function | typeof undefined;
 
     // The module factory of `jest.mock()` is not allowed to reference any out-of-scope variables.
@@ -59,6 +61,7 @@ jest.mock('trezor-connect', () => {
             // error code is used in case where one of requested coins is not supported
             const { code, error } = connect.error;
             if (code) {
+                // @ts-ignore The operand of a 'delete' operator must be optional.
                 delete connect.error; // reset this value, it shouldn't be used in next iteration
                 return scopedParamsError(error, code);
             }
@@ -144,7 +147,7 @@ jest.mock('trezor-connect', () => {
             off: () => {
                 progressCallback = () => {};
             },
-            on: (_event: string, cb: Function) => {
+            on: (_event: string, cb: () => any) => {
                 progressCallback = cb;
             },
             getAccountInfo,

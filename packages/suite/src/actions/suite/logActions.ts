@@ -9,7 +9,7 @@ export type LogActions =
     | { type: typeof LOG.ADD; payload: LogEntry }
     | { type: typeof LOG.TOGGLE_EXCLUDE_BALANCE_RELATED };
 
-export const addCustom = (action: Action, payload: object | undefined): Action => {
+export const addCustom = (action: Action, payload: Record<string, unknown> | undefined): Action => {
     return {
         type: LOG.ADD,
         payload: {

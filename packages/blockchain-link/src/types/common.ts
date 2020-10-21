@@ -2,7 +2,7 @@
 
 export interface BlockchainSettings {
     name: string;
-    worker: string | Function;
+    worker: string | (() => any);
     server: string[];
     debug?: boolean;
     timeout?: number;

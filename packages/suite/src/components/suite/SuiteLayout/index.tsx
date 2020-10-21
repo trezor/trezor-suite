@@ -70,7 +70,6 @@ const DefaultPaddings = styled.div`
 `;
 
 const mapStateToProps = (state: AppState) => ({
-    layoutSize: state.resize.size,
     router: state.router,
 });
 
@@ -99,8 +98,9 @@ export const LayoutContext = createContext<LayoutContextI>({
     setLayout: undefined,
 });
 
+type ScrollAppWrapperProps = Pick<BodyProps, 'url' | 'children'>;
 // ScrollAppWrapper is mandatory to reset AppWrapper scroll position on url change, fix: issue #1658
-const ScrollAppWrapper = ({ url, children }: BodyProps) => {
+const ScrollAppWrapper = ({ url, children }: ScrollAppWrapperProps) => {
     const ref = React.useRef<HTMLDivElement>(null);
     React.useEffect(() => {
         const { current } = ref;
@@ -136,7 +136,8 @@ const BodyNarrow = ({ url, menu, appMenu, children }: BodyProps) => (
     </Body>
 );
 
-const SuiteLayout = (props: Props) => {
+type SuiteLayoutProps = Omit<Props, 'menu' | 'appMenu'>;
+const SuiteLayout = (props: SuiteLayoutProps) => {
     // TODO: if (props.layoutSize === 'UNAVAILABLE') return <SmallLayout />;
     const { isMobileLayout } = useLayoutSize();
     const [title, setTitle] = useState<string | undefined>(undefined);

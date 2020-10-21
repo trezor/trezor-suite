@@ -14,7 +14,7 @@ const { getSuiteDevice } = global.JestMocks;
 
 jest.mock('trezor-connect', () => {
     let fixture: any;
-    let buttonRequest: Function | undefined;
+    let buttonRequest: ((e?: any) => any) | undefined;
 
     const getAddress = (_params: any) => {
         if (fixture && fixture.getAddress) {
@@ -41,7 +41,7 @@ jest.mock('trezor-connect', () => {
         default: {
             blockchainSetCustomBackend: () => {},
             init: () => null,
-            on: (event: string, cb: Function) => {
+            on: (event: string, cb: () => any) => {
                 if (event === 'ui-button') buttonRequest = cb;
             },
             off: () => {
@@ -123,6 +123,7 @@ describe('ReceiveActions', () => {
     // fixtures.slice(3, 4).forEach(f => {
     fixtures.forEach(f => {
         it(f.description, async () => {
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
             require('trezor-connect').setTestFixtures(f.mocks);
             const state = getInitialState(f.initialState as any);
             const store = initStore(state);
@@ -136,6 +137,7 @@ describe('ReceiveActions', () => {
     });
 
     it('show unverified address then verify', async () => {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         require('trezor-connect').setTestFixtures({});
         const state = getInitialState(undefined);
         const store = initStore(state);

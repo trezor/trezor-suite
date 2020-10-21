@@ -13,7 +13,6 @@ interface ContentProps {
     selectedAccount: Props['selectedAccount'];
     children?: React.ReactNode;
     showSummary?: boolean;
-    showTokens?: boolean;
 }
 
 const Content = ({ selectedAccount, showSummary, children }: ContentProps) => {
@@ -82,10 +81,7 @@ const Transactions = (props: Props) => {
     if (account.empty) {
         return (
             <Content selectedAccount={selectedAccount}>
-                <AccountEmpty
-                    receive={() => props.goto('wallet-receive', undefined, true)}
-                    buy={() => {}}
-                />
+                <AccountEmpty receive={() => props.goto('wallet-receive', undefined, true)} />
             </Content>
         );
     }

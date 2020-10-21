@@ -135,7 +135,7 @@ const SecurityFeatures = ({
                   label: <Translation id="TR_ENABLE_PASSPHRASE" />,
                   action: () => {
                       applySettings({
-                          // eslint-disable-next-line @typescript-eslint/camelcase
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           use_passphrase: true,
                       });
                       analytics.report({

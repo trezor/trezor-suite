@@ -11,7 +11,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 export type Props = {
     xpub: string;
-    accountPath: string;
     accountIndex: number;
     accountType: Account['accountType'];
     symbol: Account['symbol'];

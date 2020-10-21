@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 // this is the same as '@wallet-views/send/index' with:
 // - exported sendFormContext in callback function to upper scope
 // - additional elements which aren't accessible by tests (loader)

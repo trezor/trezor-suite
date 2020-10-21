@@ -6,17 +6,13 @@ import { View, Text, Button } from 'react-native';
 import * as routerActions from '@suite-actions/routerActions';
 import styles from '@suite-support/styles';
 
-import { AppState, Dispatch } from '@suite-types';
-
-const mapStateToProps = (state: AppState) => ({
-    devices: state.devices,
-});
+import { Dispatch } from '@suite-types';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type Props = ReturnType<typeof mapDispatchToProps>;
 
 const SwitchDevice = (props: Props) => {
     return (
@@ -35,4 +31,4 @@ const SwitchDevice = (props: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SwitchDevice);
+export default connect(null, mapDispatchToProps)(SwitchDevice);
