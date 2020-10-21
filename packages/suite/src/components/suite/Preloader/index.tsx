@@ -42,8 +42,12 @@ const mapStateToProps = (state: AppState) => ({
     device: state.suite.device,
     transport: state.suite.transport,
     router: state.router,
-    discovery: state.wallet.discovery,
     actionModalContext: state.modal.context,
+    // TODO: THIS IS SO WRONG
+    // Without this the app will get stuck on "checking balances" in case of entering diff passphrase in passphrase confirmation
+    // So even we do not use discovery anywhere, this component really depends on it
+    // eslint-disable-next-line react/no-unused-prop-types
+    discovery: state.wallet.discovery,
 });
 
 const init = () =>
@@ -68,7 +72,11 @@ type Props = ReturnType<typeof mapStateToProps> &
         children: React.ReactNode;
     };
 
-const getSuiteApplicationState = (props: Props) => {
+type SuiteAppStateProps = Pick<
+    Props,
+    'loaded' | 'transport' | 'device' | 'router' | 'getDiscoveryAuthConfirmationStatus'
+>;
+const getSuiteApplicationState = (props: SuiteAppStateProps) => {
     const { loaded, transport, device, getDiscoveryAuthConfirmationStatus, router } = props;
 
     // if router app is unknown, it means user either entered wrong link into navigation bar
@@ -145,7 +153,17 @@ const getModalApplication = (route: Props['router']['route']) => {
 };
 
 const Preloader = (props: Props) => {
-    const { loading, loaded, error, init, router, transport, actionModalContext } = props;
+    const {
+        loading,
+        loaded,
+        error,
+        device,
+        init,
+        router,
+        transport,
+        actionModalContext,
+        getDiscoveryAuthConfirmationStatus,
+    } = props;
 
     useEffect(() => {
         if (!loading && !loaded && !error) {
@@ -193,7 +211,13 @@ const Preloader = (props: Props) => {
     }
 
     // check route state and display it as not cancelable modal above requested route view
-    const ApplicationStateModal = getSuiteApplicationState(props);
+    const ApplicationStateModal = getSuiteApplicationState({
+        loaded,
+        transport,
+        device,
+        getDiscoveryAuthConfirmationStatus,
+        router,
+    });
     if (ApplicationStateModal) {
         return (
             <>

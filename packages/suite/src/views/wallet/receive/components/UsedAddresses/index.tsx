@@ -5,7 +5,7 @@ import { Card, Translation, HiddenPlaceholder, MetadataLabeling } from '@suite-c
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { ChildProps as Props } from '../../Container';
 import { AccountAddress } from 'trezor-connect';
-import { Network, ReceiveInfo } from '@wallet-types';
+import { Network } from '@wallet-types';
 import { MetadataAddPayload } from '@suite-types/metadata';
 
 const StyledCard = styled(Card)`
@@ -24,7 +24,7 @@ const GridTable = styled.div`
 `;
 
 // min-width: 0; // to resolve an issue with truncate text
-const GridItem = styled.div<{ revealed?: boolean; onClick?: Function }>`
+const GridItem = styled.div<{ revealed?: boolean; onClick?: () => void }>`
     min-width: 0;
     display: flex;
     align-items: center;
@@ -109,7 +109,6 @@ interface ItemProps {
     index: number;
     addr: AccountAddress;
     symbol: Network['symbol'];
-    revealed?: ReceiveInfo;
     metadataPayload: MetadataAddPayload;
     onClick: () => void;
 }

@@ -34,7 +34,7 @@ describe('logUtils', () => {
                 label: REDACTED_REPLACEMENT,
                 features: {
                     ...dev.features,
-                    // eslint-disable-next-line @typescript-eslint/camelcase
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
                     device_id: REDACTED_REPLACEMENT,
                 },
             });

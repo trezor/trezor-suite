@@ -37,12 +37,12 @@ contextBridge.exposeInMainWorld('desktopApi', {
             ipcRenderer.send(channel, data);
         }
     },
-    on: (channel: string, func: Function) => {
+    on: (channel: string, func: (...args: any[]) => any) => {
         if (validChannels.includes(channel)) {
             ipcRenderer.on(channel, (_, ...args) => func(...args));
         }
     },
-    off: (channel: string, func: Function) => {
+    off: (channel: string, func: (...args: any[]) => any) => {
         if (validChannels.includes(channel)) {
             ipcRenderer.off(channel, (_, ...args) => func(...args));
         }

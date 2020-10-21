@@ -6,7 +6,6 @@ import { AppState } from '@suite-types';
 
 const mapStateToProps = (state: AppState) => ({
     suite: state.suite,
-    devices: state.devices,
 });
 
 type Props = ReturnType<typeof mapStateToProps> & {

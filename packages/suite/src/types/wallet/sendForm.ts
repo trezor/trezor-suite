@@ -71,6 +71,7 @@ export type EthTransactionData = {
     nonce: string;
 };
 
+// eslint-disable-next-line camelcase
 export type ExternalOutput = Exclude<ComposeOutput, { type: 'opreturn' } | { address_n: number[] }>;
 
 export type PrecomposedTransactionError = Extract<PrecomposedTransactionBase, { type: 'error' }> & {

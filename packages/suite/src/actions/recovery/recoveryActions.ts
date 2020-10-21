@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 import TrezorConnect, { UI } from 'trezor-connect';
 import { RECOVERY } from '@recovery-actions/constants';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';

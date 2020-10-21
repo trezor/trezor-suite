@@ -2,7 +2,7 @@
 export type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>>;
 
 // object values types
-export type ObjectValues<T extends object> = T[keyof T];
+export type ObjectValues<T extends { [key: string]: any }> = T[keyof T];
 
 // array element type
 export type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];
@@ -13,7 +13,11 @@ export type ConstWithOptionalFields<
     Fields extends string | number | symbol
 > = {
     [Key in keyof Const]: {
-        [FieldKey in Fields]: Const[Key][FieldKey] extends string | number | object | boolean
+        [FieldKey in Fields]: Const[Key][FieldKey] extends
+            | string
+            | number
+            | { [key: string]: any }
+            | boolean
             ? Const[Key][FieldKey]
             : undefined;
     };
@@ -29,8 +33,8 @@ export type Await<T> = T extends {
     ? U
     : T;
 
-export type DeepPartial<T> = T extends Function
+export type DeepPartial<T> = T extends () => any
     ? T
-    : T extends object
+    : T extends { [key: string]: any }
     ? { [P in keyof T]?: DeepPartial<T[P]> }
     : T;

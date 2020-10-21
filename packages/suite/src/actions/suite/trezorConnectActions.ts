@@ -11,29 +11,25 @@ import { Dispatch, GetState } from '@suite-types';
 import { isDesktop, isWeb } from '@suite-utils/env';
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
-    // set event listeners
-    TrezorConnect.on(DEVICE_EVENT, event => {
+    // set event listeners and dispatch as
+    TrezorConnect.on(DEVICE_EVENT, ({ event: _, ...action }) => {
         // dispatch event as action
-        delete event.event;
-        dispatch(event);
+        dispatch(action);
     });
 
-    TrezorConnect.on(UI_EVENT, event => {
+    TrezorConnect.on(UI_EVENT, ({ event: _, ...action }) => {
         // dispatch event as action
-        delete event.event;
-        dispatch(event);
+        dispatch(action);
     });
 
-    TrezorConnect.on(TRANSPORT_EVENT, event => {
+    TrezorConnect.on(TRANSPORT_EVENT, ({ event: _, ...action }) => {
         // dispatch event as action
-        delete event.event;
-        dispatch(event);
+        dispatch(action);
     });
 
-    TrezorConnect.on(BLOCKCHAIN_EVENT, event => {
+    TrezorConnect.on(BLOCKCHAIN_EVENT, ({ event: _, ...action }) => {
         // dispatch event as action
-        delete event.event;
-        dispatch(event);
+        dispatch(action);
     });
 
     const wrappedMethods = [

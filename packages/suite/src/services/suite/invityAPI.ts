@@ -21,6 +21,15 @@ import {
 } from 'invity-api';
 import { isDesktop } from '@suite-utils/env';
 
+type BodyType =
+    | SupportTicket
+    | BuyTrade
+    | ExchangeTradeQuoteRequest
+    | ConfirmExchangeTradeRequest
+    | ExchangeTrade
+    | BuyTradeQuoteRequest
+    | BuyTradeRequest;
+
 class InvityAPI {
     unknownCountry = 'unknown';
     productionAPIServer = 'https://exchange.trezor.io';
@@ -71,7 +80,7 @@ class InvityAPI {
         this.server = server;
     }
 
-    private options(body = {}, method = 'POST'): any {
+    private options(body: BodyType = {}, method = 'POST'): any {
         const apiHeader = isDesktop() ? 'X-SuiteA-Api' : 'X-SuiteW-Api';
         if (method === 'POST') {
             return {
@@ -94,7 +103,7 @@ class InvityAPI {
         };
     }
 
-    private request(url: string, body: {}, method = 'POST'): Promise<any> {
+    private request(url: string, body: BodyType = {}, method = 'POST'): Promise<any> {
         const finalUrl = `${this.server}${url}`;
         const opts = this.options(body, method);
         return fetch(finalUrl, opts).then(response => {

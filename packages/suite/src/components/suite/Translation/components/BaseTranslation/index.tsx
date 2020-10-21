@@ -16,6 +16,7 @@ type OwnProps = {
 type PrimitiveType = string | number | boolean | Date | null | undefined;
 
 // Add MessageDescriptor type to values entry
+// eslint-disable-next-line @typescript-eslint/ban-types
 type FormatXMLElementFn = (...args: any[]) => string | object;
 export interface ExtendedMessageDescriptor extends MessageDescriptor {
     id: keyof typeof messages;

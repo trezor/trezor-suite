@@ -16,7 +16,6 @@ const CheckboxWrapper = styled.div`
 `;
 
 const mapStateToProps = (state: AppState) => ({
-    device: state.suite.device,
     backup: state.backup,
 });
 

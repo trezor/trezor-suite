@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 // @ts-ignore
 import { DEVICE, Features, Device } from 'trezor-connect';
 import {

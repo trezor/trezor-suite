@@ -35,7 +35,6 @@ const StyledLink = styled(Link)``;
 
 const mapStateToProps = (state: AppState) => ({
     transport: state.suite.transport,
-    debug: state.suite.settings.debug,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>

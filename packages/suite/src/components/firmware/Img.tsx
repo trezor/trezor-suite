@@ -10,15 +10,18 @@ const StyledImg = styled.img`
 `;
 interface Props {
     model: number;
-    height?: string;
 }
 
 export const InitImg = ({ model, ...props }: Props) => (
     <StyledImg alt="" src={resolveStaticPath(`images/svg/firmware-init-${model}.svg`)} {...props} />
 );
 
-export const SuccessImg = ({ model }: Props) => (
-    <StyledImg alt="" src={resolveStaticPath(`images/svg/firmware-success-${model}.svg`)} />
+export const SuccessImg = ({ model, ...props }: Props) => (
+    <StyledImg
+        alt=""
+        src={resolveStaticPath(`images/svg/firmware-success-${model}.svg`)}
+        {...props}
+    />
 );
 
 export const WarningImg = () => (

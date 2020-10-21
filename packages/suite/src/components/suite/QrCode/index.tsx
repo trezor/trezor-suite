@@ -12,8 +12,6 @@ const Wrapper = styled.div`
 
 interface Props {
     value: string;
-    width?: number;
-    addressPath?: string;
 }
 
 const QrCode = (props: Props) => (

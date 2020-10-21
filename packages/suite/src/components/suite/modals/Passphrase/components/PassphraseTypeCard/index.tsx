@@ -34,10 +34,6 @@ const Wrapper = styled.div<Pick<Props, 'type' | 'singleColModal'>>`
         css`
             cursor: pointer;
         `}
-    
-    /* @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        width: 100%;
-    } */
 `;
 
 const IconWrapper = styled.div<Pick<Props, 'type'>>`

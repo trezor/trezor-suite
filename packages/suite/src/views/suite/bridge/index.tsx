@@ -87,7 +87,6 @@ const Col = styled.div<{ justify?: string }>`
 
 const mapStateToProps = (state: AppState) => ({
     transport: state.suite.transport,
-    device: state.suite.device,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>

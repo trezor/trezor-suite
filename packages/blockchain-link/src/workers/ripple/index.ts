@@ -167,6 +167,7 @@ interface RawTxData {
         ledger: number;
         seq: number;
     };
+    // eslint-disable-next-line camelcase
     ledger_index_max: number;
     limit: number;
     transactions: any[];

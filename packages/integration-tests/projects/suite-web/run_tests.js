@@ -50,7 +50,7 @@ function getTestFiles() {
 async function runTests() {
     const {
         BROWSER = 'chrome',
-        CYPRESS_baseUrl, // eslint-disable-line @typescript-eslint/camelcase
+        CYPRESS_baseUrl, // eslint-disable-line @typescript-eslint/naming-convention
         TRACK_SUITE_URL,
         CI_JOB_URL,
         CI_COMMIT_BRANCH,
@@ -108,7 +108,7 @@ async function runTests() {
         console.log(`[run_tests.js] allowed to run ${allowedRuns} times`);
 
         const config = {
-            baseUrl: CYPRESS_baseUrl, // eslint-disable-line @typescript-eslint/camelcase
+            baseUrl: CYPRESS_baseUrl, // eslint-disable-line @typescript-eslint/naming-convention
             supportFile: `${__dirname}/support/index.ts`,
             pluginsFile: `${__dirname}/plugins/index.js`,
             screenshotsFolder: `${__dirname}/screenshots`,

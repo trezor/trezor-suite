@@ -1,25 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { Text, View, ScrollView } from 'react-native';
-
+import { Text, View } from 'react-native';
 import Layout from '@suite-components/Layout';
-import * as routerActions from '@suite-actions/routerActions';
-
-import { AppState, Dispatch } from '@suite-types';
+import { AppState } from '@suite-types';
 
 const mapStateToProps = (state: AppState) => ({
-    device: state.suite.device,
     accounts: state.wallet.accounts,
-    selectedAccount: state.wallet.selectedAccount,
     router: state.router,
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
-
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type Props = ReturnType<typeof mapStateToProps>;
 
 const Wallet = (props: Props) => {
     const accounts = props.accounts.map(a => (
@@ -46,4 +36,4 @@ const Wallet = (props: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Wallet);
+export default connect(mapStateToProps)(Wallet);

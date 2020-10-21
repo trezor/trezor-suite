@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { filterSafeListByFirmware, filterSafeListByBootloader } from './utils/releases';
 import { fetchFirmware } from './utils/fetch';
 import { getScore } from './utils/score';

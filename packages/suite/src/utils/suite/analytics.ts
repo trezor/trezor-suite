@@ -13,16 +13,13 @@ export const encodeDataToQueryString = (event: AnalyticsEvent, common: Common) =
     const { type } = event;
     const { version, sessionId, instanceId } = common;
     const commonEncoded = qs.stringify({
-        // eslint-disable-next-line @typescript-eslint/camelcase
+        // eslint-disable @typescript-eslint/naming-convention
         c_v: version,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         c_type: type,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         c_commit: process.env.COMMITHASH,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         c_instance_id: instanceId,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         c_session_id: sessionId,
+        // eslint-enable @typescript-eslint/naming-convention
     });
 
     if ('payload' in event) {

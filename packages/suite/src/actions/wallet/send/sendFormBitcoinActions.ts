@@ -155,7 +155,7 @@ export const signTransaction = (
     const { account } = selectedAccount;
     const { transaction } = transactionInfo;
 
-    let sequence: number;
+    let sequence: number | undefined;
     let signEnhancement: Partial<SignTransaction> = {};
 
     // enhance signTransaction params for zcash (version_group_id etc.)

@@ -15,17 +15,11 @@ const StyledButton = (props: any) => {
     );
 };
 
-const mapStateToProps = (state: AppState) => ({
-    devices: state.devices,
-});
-
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
 });
 
-type Props = ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps> &
-    DrawerContentComponentProps;
+type Props = ReturnType<typeof mapDispatchToProps> & DrawerContentComponentProps;
 
 const AccountsMenu = (props: Props) => {
     return (
@@ -47,4 +41,4 @@ const AccountsMenu = (props: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AccountsMenu);
+export default connect(null, mapDispatchToProps)(AccountsMenu);

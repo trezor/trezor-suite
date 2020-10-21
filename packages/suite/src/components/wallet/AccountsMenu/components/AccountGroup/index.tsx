@@ -33,13 +33,13 @@ const Header = styled.header<{ onClick?: () => void }>`
 
 interface Props {
     type: Account['accountType'];
-    animate?: boolean;
     keepOpened: boolean;
     hasBalance: boolean;
     children?: React.ReactNode;
-    onAnimationStart?: () => void;
     onUpdate?: () => void;
-    onAnimationComplete?: () => void;
+    // onAnimationStart?: () => void;
+    // animate?: boolean;
+    // onAnimationComplete?: () => void;
 }
 
 export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {

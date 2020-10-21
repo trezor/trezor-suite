@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * Analytics (logging user behavior in the app)
  * @docs docs/misc/analytics.md

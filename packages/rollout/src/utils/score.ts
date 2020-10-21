@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { createHash } from 'crypto';
 
 export const getScore = (device_id: string) => {

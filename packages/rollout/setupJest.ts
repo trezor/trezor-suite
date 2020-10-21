@@ -1,6 +1,6 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Features } from 'trezor-connect';
 
 import { Release } from './src/utils/parse';

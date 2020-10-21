@@ -2,11 +2,8 @@ import React from 'react';
 import Head from 'next/head';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-
 import { Modal } from '@trezor/components';
 import { Step } from '@onboarding-types/steps';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as STEP from '@onboarding-constants/steps';
 import steps from '@onboarding-config/steps';
 import { isStepInPath } from '@onboarding-utils/steps';
@@ -26,7 +23,7 @@ import SecurityStep from '@onboarding-views/steps/Security/Container';
 import SetPinStep from '@onboarding-views/steps/Pin/Container';
 import FinalStep from '@onboarding-views/steps/Final/Container';
 import UnexpectedState from '@onboarding-views/unexpected-states';
-import { AppState, Dispatch, InjectedModalApplicationProps } from '@suite-types';
+import { AppState, InjectedModalApplicationProps } from '@suite-types';
 import { Translation } from '@suite-components';
 
 const InnerModalWrapper = styled.div`
@@ -44,13 +41,7 @@ const mapStateToProps = (state: AppState) => {
     };
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    onboardingActions: bindActionCreators(onboardingActions, dispatch),
-});
-
-type Props = ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps> &
-    InjectedModalApplicationProps;
+type Props = ReturnType<typeof mapStateToProps> & InjectedModalApplicationProps;
 
 const Onboarding = (props: Props) => {
     const { activeStepId, modal, path } = props;
@@ -123,4 +114,4 @@ const Onboarding = (props: Props) => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Onboarding);
+export default connect(mapStateToProps)(Onboarding);

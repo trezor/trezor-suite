@@ -19,7 +19,7 @@ const stripPrefix = (str: string) => {
 };
 
 // Parse URL query string (like 'foo=bar&baz=1337) into an object
-const parseQuery = (str: string): {} => {
+const parseQuery = (str: string) => {
     const params: Params = {};
     return str
         .split('&')

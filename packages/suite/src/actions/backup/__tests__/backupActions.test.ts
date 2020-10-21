@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable global-require */
 
 import configureStore from 'redux-mock-store';
@@ -15,7 +16,7 @@ jest.mock('trezor-connect', () => {
     const backupDevice = async () => {
         return fixture;
     };
-    const callbacks: { [key: string]: Function } = {};
+    const callbacks: { [key: string]: () => any } = {};
 
     return {
         __esModule: true, // this property makes it work
@@ -23,7 +24,7 @@ jest.mock('trezor-connect', () => {
             init: () => {
                 return true;
             },
-            on: (event: string, cb: Function) => {
+            on: (event: string, cb: () => any) => {
                 callbacks[event] = cb;
             },
             getFeatures: () => {},

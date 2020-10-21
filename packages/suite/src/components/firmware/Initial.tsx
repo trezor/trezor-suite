@@ -12,24 +12,6 @@ const { FONT_SIZE, FONT_WEIGHT } = variables;
 
 const HeadingWrapper = styled.div``;
 
-const Heading = () => {
-    const { device } = useDevice();
-    if (device?.mode === 'normal') {
-        return (
-            <HeadingWrapper>
-                <Translation id="TR_UPDATE_AVAILABLE" />
-                <Version>
-                    <Translation
-                        id="TR_DEVICE_FIRMWARE_VERSION"
-                        values={{ firmware: getFwVersion(device) }}
-                    />
-                </Version>
-            </HeadingWrapper>
-        );
-    }
-    return <Translation id="TR_FIRMWARE_UPDATE" />;
-};
-
 const BodyWrapper = styled.div`
     text-align: left;
 `;
@@ -74,6 +56,24 @@ const StyledExternalLink = styled(ExternalLink)`
 const BottomRow = styled.div`
     margin-top: 8px;
 `;
+
+const Heading = () => {
+    const { device } = useDevice();
+    if (device?.mode === 'normal') {
+        return (
+            <HeadingWrapper>
+                <Translation id="TR_UPDATE_AVAILABLE" />
+                <Version>
+                    <Translation
+                        id="TR_DEVICE_FIRMWARE_VERSION"
+                        values={{ firmware: getFwVersion(device) }}
+                    />
+                </Version>
+            </HeadingWrapper>
+        );
+    }
+    return <Translation id="TR_FIRMWARE_UPDATE" />;
+};
 
 const Body = () => {
     const { device } = useDevice();

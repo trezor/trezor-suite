@@ -48,7 +48,6 @@ const ActionButton = styled(Button)`
 
 interface Props {
     receive: () => any;
-    buy: () => any;
 }
 
 const AccountEmpty = ({ receive }: Props) => (
@@ -65,9 +64,6 @@ const AccountEmpty = ({ receive }: Props) => (
                 <ActionButton variant="primary" onClick={receive}>
                     <Translation id="TR_RECEIVE" />
                 </ActionButton>
-                {/* <ActionButton variant="primary" onClick={buy}>
-                        <Translation id="TR_BUY" />
-                    </ActionButton> */}
             </Actions>
         </Content>
     </Wrapper>
