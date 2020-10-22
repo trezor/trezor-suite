@@ -24,4 +24,4 @@ install and build:
             - packages/translations-manager/lib
     stage: setup environment
     script:
-        - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline --network-timeout 1000000000
+        - yarn install --pure-lockfile --cache-folder .yarn
