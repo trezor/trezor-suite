@@ -8,21 +8,37 @@ import { getDateWithTimeZone } from '@suite/utils/suite/date';
 import { CommonAggregatedHistory } from '@wallet-types/graph';
 import { Props as GraphProps } from '../../index';
 
+// Used for triggering custom Tooltip alignment
 const OFFSET_LIMIT_HORIZONTAL = 125;
 
-const getXPositionWithinLimit = (x: number) => `calc(${x}px - ${x / 2}px - 30px)`;
+// When the Tooltip gets triggered near to the horizontal boundaries, it might overflow outside of the screen
+// These positioning functions are used to align it properly from each side
+const calculateXPosition = (x: number, offset = 0) => `calc(${x}px - ${x / 2}px + ${offset}px)`;
+const calculateXPositionRight = (x: number, offset = 0) => `calc(${x}px + 25% + ${offset}px)`;
 
-// Tooltip should be centered and above the chart bars but should not overflow horizontally
-const getTooltipXPosition = (x: number): string => {
-    return x <= OFFSET_LIMIT_HORIZONTAL ? getXPositionWithinLimit(x) : `calc(${x}px - 50%)`;
+// Tooltip should be centered and above the chart bars but should not overflow horizontally thanks to the positioning functions
+const getTooltipXPosition = (x: number, width: number): string => {
+    if (x <= OFFSET_LIMIT_HORIZONTAL) {
+        return calculateXPosition(x, -30);
+    }
+    if (x >= width - OFFSET_LIMIT_HORIZONTAL) {
+        return calculateXPositionRight(x);
+    }
+    return `calc(${x}px - 50%)`;
 };
 
 // Align the triangle arrow in a similar manner
-const getTooltipArrowXPosition = (x: number): string => {
-    return x <= OFFSET_LIMIT_HORIZONTAL ? getXPositionWithinLimit(x) : `50%`;
+const getTooltipArrowXPosition = (x: number, width: number): string => {
+    if (x <= OFFSET_LIMIT_HORIZONTAL) {
+        return `left: ${calculateXPosition(x, -30)};`;
+    }
+    return x >= width - OFFSET_LIMIT_HORIZONTAL ? `left: calc(75% + 1px);` : `left: 50%;`;
 };
 
-const CustomTooltipWrapper = styled.div<{ coordinate: { x: number; y: number } }>`
+const CustomTooltipWrapper = styled.div<{
+    positionX: number;
+    boxWidth: number;
+}>`
     display: flex;
     flex-direction: column;
     color: ${colors.WHITE};
@@ -32,15 +48,18 @@ const CustomTooltipWrapper = styled.div<{ coordinate: { x: number; y: number } }
     border-radius: 4px;
     box-shadow: 0 3px 14px 0 rgba(0, 0, 0, 0.15);
     font-variant-numeric: tabular-nums;
-    transform: translate(${props => getTooltipXPosition(props.coordinate.x)}, -90px);
+    ${props =>
+        props.positionX >= props.boxWidth - OFFSET_LIMIT_HORIZONTAL &&
+        `position: absolute; right: 0;`}
+    transform: translate(${props => getTooltipXPosition(props.positionX, props.boxWidth)}, -90px);
     line-height: 1.5;
 
     &:after {
         position: absolute;
         content: '';
         top: 100%;
-        left: ${props => getTooltipArrowXPosition(props.coordinate.x)};
-        margin-left: ${props => (props.coordinate.x <= OFFSET_LIMIT_HORIZONTAL ? `50px` : `-10px`)};
+        ${props => getTooltipArrowXPosition(props.positionX, props.boxWidth)}
+        margin-left: ${props => (props.positionX <= OFFSET_LIMIT_HORIZONTAL ? `50px` : `-10px`)};
         width: 0;
         height: 0;
         border-left: 10px solid transparent;
@@ -131,7 +150,7 @@ const CustomTooltipBase = (props: Props) => {
                 : 'day';
 
         return (
-            <CustomTooltipWrapper coordinate={props.coordinate!}>
+            <CustomTooltipWrapper positionX={props.coordinate!.x} boxWidth={props.viewBox!.width!}>
                 <Row>
                     <Title>{date && formatDate(date, dateFormat)}</Title>
                 </Row>
