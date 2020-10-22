@@ -52,6 +52,7 @@ export default class MyDocument extends Document {
                         rel="apple-touch-icon"
                         href={resolveStaticPath('images/icons/favicon/favicon.png')}
                     />
+                    <meta httpEquiv="onion-location" content="http://suite.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/web" />
                 </Head>
                 <body>
                     <Main />
