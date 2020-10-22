@@ -1,9 +1,13 @@
 import { AbstractMetadataProvider, Result } from '@suite-types/metadata';
+import Google from '../google';
 
-class DropboxProvider extends AbstractMetadataProvider {
+class UserDataProvider extends AbstractMetadataProvider {
+    client: Google;
     isCloud = true;
+
     constructor(_token?: string) {
-        super('dropbox');
+        super('userData');
+        this.client = new Google();
     }
 
     async connect() {
@@ -19,8 +23,8 @@ class DropboxProvider extends AbstractMetadataProvider {
         return this.ok({
             type: this.type,
             isCloud: this.isCloud,
-            token: 'token',
-            user: 'foo',
+            token: '',
+            user: '',
         });
     }
 
@@ -38,9 +42,9 @@ class DropboxProvider extends AbstractMetadataProvider {
         return true;
     }
 
-    handleProviderError() {
-        return this.error('OTHER_ERROR', 'FOOO BAR');
+    handleProviderError(_err: any) {
+        return this.error('OTHER_ERROR', 'Foo bar');
     }
 }
 
-export default DropboxProvider;
+export default UserDataProvider;

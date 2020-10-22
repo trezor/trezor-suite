@@ -1,11 +1,10 @@
 import { AbstractMetadataProvider } from '@suite-types/metadata';
 
-class UserDataProvider implements AbstractMetadataProvider {
-    type: 'userData';
+class UserDataProvider extends AbstractMetadataProvider {
+    isCloud = false;
 
     constructor() {
-        console.warn('UserDataProvider');
-        this.type = 'userData';
+        super('userData');
     }
 
     async connect() {
@@ -16,16 +15,40 @@ class UserDataProvider implements AbstractMetadataProvider {
         return true;
     }
 
-    // @ts-ignore not implemeneted yet
-    async getCredentials() {}
+    async getProviderDetails() {
+        return this.ok({
+            type: this.type,
+            isCloud: this.isCloud,
+            token: '',
+            user: '',
+        });
+    }
 
-    // @ts-ignore not implemeneted yet
-    async getFileContent() {}
+    async getFileContent(file: string) {
+        const result = await window.desktopApi!.metadataRead({ file: `${file}.mtdt` });
+        if (!result.success) {
+            return this.error('PROVIDER_ERROR', result.error);
+        }
+        if (!result.payload) {
+            return this.ok(undefined);
+        }
+        return this.ok(Buffer.from(result.payload, 'hex'));
+    }
 
-    // @ts-ignore not implemeneted yet
-    async setFileContent() {}
+    async setFileContent(file: string, content: Buffer) {
+        const hex = content.toString('hex');
 
-    // @ts-ignore
+        const result = await window.desktopApi!.metadataWrite({
+            file: `${file}.mtdt`,
+            content: hex,
+        });
+        if (!result.success) {
+            return this.error('PROVIDER_ERROR', result.error);
+        }
+
+        return this.ok(undefined);
+    }
+
     isConnected() {
         return true;
     }

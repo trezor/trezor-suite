@@ -12,6 +12,7 @@ import { buildMainMenu } from './menu';
 import { openBuyWindow } from './buy';
 // import * as metadata from './metadata';
 import { HttpReceiver } from './http-receiver';
+import * as metadata from './metadata';
 
 const httpReceiver = new HttpReceiver();
 
@@ -366,3 +367,5 @@ ipcMain.on('buy-receiver', (_event, message) => {
         ),
     );
 });
+
+metadata.init();

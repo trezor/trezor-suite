@@ -18,6 +18,14 @@ export interface DesktopApi {
     windowUnmaximize: () => void;
     // Client controls
     clientReady: () => void;
+    // Metadata
+    metadataWrite: (options: {
+        file: string;
+        content: string;
+    }) => Promise<{ success: true } | { success: false; error: string }>;
+    metadataRead: (options: {
+        file: string;
+    }) => Promise<{ success: true; payload: string } | { success: false; error: string }>;
 }
 
 declare global {
