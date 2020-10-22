@@ -27,7 +27,7 @@ const Col = styled.div<{ noYPadding?: boolean }>`
     width: 348px;
     height: 100%;
     /* no vertical padding if the modal is used as inner modal (eg. inside Recovery) */
-    padding: ${props => (props.noYPadding ? '0px 40px' : '40px 40px 20px 40px')};
+    padding: ${props => (props.noYPadding ? '0px 40px' : '30px 40px 30px 40px')};
 
     @media only screen and (max-width: ${SCREEN_SIZE.MD}) {
         align-self: center;
