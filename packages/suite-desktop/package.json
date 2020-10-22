@@ -7,9 +7,10 @@
     "homepage": "https://trezor.io/",
     "main": "dist/electron.js",
     "scripts": {
-        "dev": "yarn copy-files && yarn build:lib && electron .",
+        "dev": "yarn copy-files && yarn build:ext && yarn build:lib && electron .",
         "clean": "rimraf ./build-electron && rimraf ./build && rimraf ./dist",
         "copy-files": "yarn workspace @trezor/suite-data copy-static-files",
+        "build:ext": "node ./scripts/extensions.js",
         "build:lib": "tsc --project src-electron/tsconfig.json",
         "build:desktop": "rimraf ./build && next build && next export -o build && yarn build:lib",
         "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac -p never",
@@ -168,6 +169,10 @@
         "react": "16.13.1",
         "react-dom": "16.13.1",
         "styled-components": "5.1.1",
+        "unzip-crx-3": "0.2.0",
         "worker-loader": "^3.0.2"
-    }
+    },
+    "extensions": [
+        "lmhkpmbekcpmknklioeibfkpmmfibljd"
+    ]
 }

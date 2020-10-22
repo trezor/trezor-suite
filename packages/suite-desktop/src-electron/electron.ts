@@ -156,7 +156,15 @@ const init = async () => {
         evt.preventDefault();
     });
 
-    if (!isDev) {
+    if (isDev) {
+        const pkgPath = path.join(__dirname, '..', 'package.json');
+        // eslint-disable-next-line
+        const { extensions } = require(pkgPath);
+        await extensions.forEach(async (id: string) => {
+            const extPath = path.join(__dirname, '..', 'extensions', id);
+            await session.defaultSession.loadExtension(extPath);
+        });
+    } else {
         const filter = {
             urls: ['http://127.0.0.1:21325/*'],
         };
