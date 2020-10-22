@@ -179,35 +179,54 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 };
 
-export const subscribe = (symbol?: Network['symbol']) => async (
-    _dispatch: Dispatch,
+// called from WalletMiddleware after ACCOUNT.ADD/UPDATE action
+// or after BLOCKCHAIN.CONNECT event (blockchainActions.onConnect)
+export const subscribe = (symbol: Network['symbol'], fiatRates = false) => async (
+    _: Dispatch,
     getState: GetState,
 ) => {
+    // fiat rates should be subscribed only once, after onConnect event
+    if (fiatRates) {
+        const { success } = await TrezorConnect.blockchainSubscribeFiatRates({ coin: symbol });
+        // if first subscription fails, do not run the second one
+        if (!success) return;
+    }
+
+    // do NOT subscribe if there are no accounts
+    // it leads to websocket disconnection
     const { accounts } = getState().wallet;
-    if (accounts.length <= 0) return;
+    if (!accounts.length) return;
+    const accountsToSubscribe = accounts.filter(a => a.symbol === symbol);
+    if (!accountsToSubscribe.length) return;
+    return TrezorConnect.blockchainSubscribe({
+        accounts: accountsToSubscribe,
+        coin: symbol,
+    });
+};
 
-    const sortedAccounts: { [key: string]: Account[] } = {};
-    const accountsToSubscribe = symbol ? accounts.filter(a => a.symbol === symbol) : accounts;
-    accountsToSubscribe.forEach(a => {
-        if (!sortedAccounts[a.symbol]) {
-            sortedAccounts[a.symbol] = [];
+// called from WalletMiddleware after ACCOUNT.REMOVE action
+export const unsubscribe = (removedAccounts: Account[]) => (_: Dispatch, getState: GetState) => {
+    // collect unique symbols
+    const symbols = removedAccounts.reduce((arr, account) => {
+        if (arr.indexOf(account.symbol) < 0) return arr.concat([account.symbol]);
+        return arr;
+    }, [] as string[]);
+
+    const { accounts } = getState().wallet;
+    const promises = symbols.map(symbol => {
+        const accountsToSubscribe = accounts.filter(a => a.symbol === symbol);
+        if (accountsToSubscribe.length) {
+            // there are some accounts left, update subscription
+            return TrezorConnect.blockchainSubscribe({
+                accounts: accountsToSubscribe,
+                coin: symbol,
+            });
         }
-        sortedAccounts[a.symbol].push(a);
+        // there are no accounts left for this coin, disconnect backend
+        return TrezorConnect.blockchainDisconnect({ coin: symbol });
     });
 
-    const promises = Object.keys(sortedAccounts).map(coin => {
-        return [
-            TrezorConnect.blockchainSubscribe({
-                accounts: sortedAccounts[coin],
-                coin,
-            }),
-            TrezorConnect.blockchainSubscribeFiatRates({
-                coin,
-            }),
-        ];
-    });
-
-    return Promise.all(promises.flat());
+    return Promise.all(promises as Promise<any>[]);
 };
 
 export const onConnect = (symbol: string) => async (dispatch: Dispatch, getState: GetState) => {
@@ -218,7 +237,7 @@ export const onConnect = (symbol: string) => async (dispatch: Dispatch, getState
         // reset previous timeout
         clearTimeout(blockchain.reconnection.id);
     }
-    await dispatch(subscribe(network.symbol));
+    await dispatch(subscribe(network.symbol, true));
     await dispatch(updateFeeInfo(network.symbol));
     dispatch(fiatRatesActions.initRates());
 };
