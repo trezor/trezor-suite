@@ -43,6 +43,7 @@ export default class MyDocument extends Document {
                     <meta httpEquiv="Pragma" content="no-cache" />
                     <meta httpEquiv="cache-control" content="no-cache" />
                     <meta httpEquiv="expires" content="-1" />
+                    <meta httpEquiv="onion-location" content="http://suite.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion" />
                     <link
                         media="all"
                         rel="stylesheet"
