@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
-import { Button } from '@trezor/components';
+import { Button, Link } from '@trezor/components';
 import { OnboardingButton, Text, Wrapper, Loaders } from '@onboarding-components';
 import { Translation, WebusbButton, Image, ConnectDeviceImage } from '@suite-components';
 import { isWebUSB } from '@suite-utils/transport';
+import { SUPPORT_URL } from '@suite-constants/urls';
 
 import Bridge from './components/Bridge/Container';
 import { Props } from './Container';
@@ -78,7 +79,14 @@ const PairDeviceStep = (props: Props) => {
                                 {getConnectedDeviceStatus() === 'initialized' && (
                                     <>
                                         <Text>
-                                            <Translation id="ONBOARDING_PAIR_ALREADY_INITIALIZED" />
+                                            <Translation
+                                                id="ONBOARDING_PAIR_ALREADY_INITIALIZED"
+                                                values={{
+                                                    a: chunks => (
+                                                        <Link href={SUPPORT_URL}>{chunks}</Link>
+                                                    ),
+                                                }}
+                                            />
                                         </Text>
                                         <StyledImage image="UNI_WARNING" />
                                         <Wrapper.Controls>

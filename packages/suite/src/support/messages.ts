@@ -3394,7 +3394,7 @@ const definedMessages = defineMessages({
     ONBOARDING_PAIR_ALREADY_INITIALIZED: {
         id: 'ONBOARDING_PAIR_ALREADY_INITIALIZED',
         defaultMessage:
-            'This device is already initialized. You should always be sure that you did device setup yourself. Otherwise you may become victim of phishing. Having initialized device also means that you can not proceed with setup.',
+            'Only continue if you performed the setup yourself. If someone else set up your Trezor, your funds could be at risk; <a>contact Trezor support</a>.',
     },
     ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_HEADING: {
         id: 'ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_HEADING',
