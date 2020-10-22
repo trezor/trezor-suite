@@ -63,7 +63,8 @@
                     "y": 150,
                     "type": "file"
                 }
-            ]
+            ],
+            "background": "build/static/images/icons/background.tiff"
         },
         "nsis": {
             "oneClick": false,
