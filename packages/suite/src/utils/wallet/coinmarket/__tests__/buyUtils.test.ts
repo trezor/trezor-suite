@@ -156,10 +156,6 @@ describe('coinmarket/buy utils', () => {
                 value: 'GUSD',
                 label: 'GUSD',
             },
-            {
-                value: 'ONG',
-                label: 'ONG',
-            },
         ]);
     });
 
