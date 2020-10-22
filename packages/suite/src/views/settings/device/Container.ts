@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { applySettings, changePin } from '@settings-actions/deviceSettingsActions';
@@ -24,8 +23,6 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
         dispatch,
     );
 
-export type Props = WrappedComponentProps &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>;
+export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(DeviceSettings));
+export default connect(mapStateToProps, mapDispatchToProps)(DeviceSettings);

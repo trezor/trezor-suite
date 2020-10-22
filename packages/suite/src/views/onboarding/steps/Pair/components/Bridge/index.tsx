@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import { Select, Link } from '@trezor/components';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Translation } from '@suite-components/Translation';
 
 import { goToSubStep, goToNextStep, goToPreviousStep } from '@onboarding-actions/onboardingActions';
@@ -48,8 +47,8 @@ interface Props {
 
 // todo: I am not refactoring it now, so issue created https://github.com/trezor/trezor-suite/issues/1634
 
-class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeState> {
-    constructor(props: Props & WrappedComponentProps) {
+class InstallBridge extends PureComponent<Props, BridgeState> {
+    constructor(props: Props) {
         super(props);
         const installers = this.getInstallers();
         this.state = {
@@ -168,4 +167,4 @@ class InstallBridge extends PureComponent<Props & WrappedComponentProps, BridgeS
     }
 }
 
-export default injectIntl(InstallBridge);
+export default InstallBridge;

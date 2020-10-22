@@ -1,6 +1,5 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
 import { CoinInfo } from 'trezor-connect';
 import { Input, Button, colors, variables } from '@trezor/components';
@@ -8,7 +7,8 @@ import { Translation } from '@suite-components/Translation';
 import { Network } from '@suite/types/wallet';
 import { BlockbookUrl } from '@wallet-types/blockbook';
 import { isUrl } from '@suite-utils/validators';
-import messages from '@suite/support/messages';
+import { useTranslation } from '@suite-hooks/useTranslation';
+import InputError from '@wallet-components/InputError';
 
 const Wrapper = styled.div`
     display: flex;
@@ -43,7 +43,7 @@ const DefaultValues = styled(Description)`
     margin-bottom: 14px;
 `;
 
-interface Props extends WrappedComponentProps {
+interface Props {
     coin: Network['symbol'];
     coinInfo: CoinInfo;
     blockbookUrls: BlockbookUrl[];
@@ -61,11 +61,11 @@ const CustomBlockbookUrls = ({
     blockbookUrls,
     addBlockbookUrl,
     removeBlockbookUrl,
-    ...props
 }: Props) => {
     const { register, getValues, setValue, errors } = useForm<FormInputs>({
         mode: 'onChange',
     });
+    const { translationString } = useTranslation();
 
     const inputName = 'url';
     const inputValue = getValues(inputName) || '';
@@ -122,28 +122,24 @@ const CustomBlockbookUrls = ({
                 noTopLabel
                 name={inputName}
                 data-test={inputName}
-                placeholder={props.intl.formatMessage(
-                    messages.SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER,
-                    {
-                        url: `https://${coin}1.trezor.io/`,
-                    },
-                )}
+                placeholder={translationString('SETTINGS_ADV_COIN_URL_INPUT_PLACEHOLDER', {
+                    url: `https://${coin}1.trezor.io/`,
+                })}
                 innerRef={register({
                     validate: (value: string) => {
                         // Check if URL is valid
                         if (!isUrl(value)) {
-                            return messages.TR_CUSTOM_BACKEND_INVALID_URL.id;
+                            return 'TR_CUSTOM_BACKEND_INVALID_URL';
                         }
 
                         // Check if already exists
                         if (blockbookUrls.find(b => b.coin === coin && b.url === value)) {
-                            return messages.TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED.id;
+                            return 'TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED';
                         }
                     },
                 })}
                 state={error ? 'error' : undefined}
-                // @ts-ignore: Accessing messages by providing the property as a string throws an error
-                bottomText={error?.message && props.intl.formatMessage(messages[error.message])}
+                bottomText={<InputError error={error} />}
             />
 
             <AddButton
@@ -158,4 +154,4 @@ const CustomBlockbookUrls = ({
     );
 };
 
-export default injectIntl(CustomBlockbookUrls);
+export default CustomBlockbookUrls;

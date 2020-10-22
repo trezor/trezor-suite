@@ -2,7 +2,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { Dispatch, AppState } from '@suite-types';
 import View from './index';
 
@@ -21,8 +20,6 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
         dispatch,
     );
 
-export type Props = ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps> &
-    WrappedComponentProps;
+export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(View));
+export default connect(mapStateToProps, mapDispatchToProps)(View);

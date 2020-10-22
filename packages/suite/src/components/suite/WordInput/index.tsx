@@ -1,12 +1,10 @@
 import React from 'react';
+import { FixedSizeList as List } from 'react-window';
 import { MenuListComponentProps, createFilter } from 'react-select';
-
 import styled, { keyframes } from 'styled-components';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
-import messages from '@suite/support/messages';
 import { Select, variables } from '@trezor/components';
 import { BIP_39 } from '@suite-constants';
-import { FixedSizeList as List } from 'react-window';
+import { useTranslation } from '@suite-hooks/useTranslation';
 
 const options = BIP_39.map(item => ({ label: item, value: item }));
 
@@ -51,12 +49,13 @@ const MenuList = (props: MenuListComponentProps<Option>) => {
     );
 };
 
-interface Props extends WrappedComponentProps {
+interface Props {
     onSubmit: (word: string) => void;
 }
 
 const WordInput = React.memo((props: Props) => {
     const { onSubmit } = props;
+    const { translationString } = useTranslation();
 
     const MemoSelect = React.memo(() => {
         return (
@@ -66,13 +65,11 @@ const WordInput = React.memo((props: Props) => {
                 isClearable={false}
                 controlShouldRenderValue={false}
                 noOptionsMessage={({ inputValue }: { inputValue: string }) =>
-                    props.intl.formatMessage(messages.TR_WORD_DOES_NOT_EXIST, { word: inputValue })
+                    translationString('TR_WORD_DOES_NOT_EXIST', { word: inputValue })
                 }
-                onChange={(item: any) => {
-                    onSubmit(item.value);
-                }}
+                onChange={(item: Option) => onSubmit(item.value)}
                 components={{ MenuList }}
-                placeholder={props.intl.formatMessage(messages.TR_CHECK_YOUR_DEVICE)}
+                placeholder={translationString('TR_CHECK_YOUR_DEVICE')}
                 options={options}
                 filterOption={createFilter({
                     ignoreCase: true,
@@ -91,4 +88,4 @@ const WordInput = React.memo((props: Props) => {
     );
 });
 
-export default injectIntl(WordInput);
+export default WordInput;

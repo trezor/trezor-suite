@@ -1,5 +1,4 @@
 import React from 'react';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
 import styled from 'styled-components';
 import { Button, Card, colors, variables } from '@trezor/components';
 import { Translation, QuestionTooltip, ReadMoreLink } from '@suite-components';
@@ -98,8 +97,7 @@ const FreshAddress = ({
     disabled,
     pendingAddresses,
     locked,
-    intl,
-}: Props & WrappedComponentProps) => {
+}: Props) => {
     const isBitcoin = account.networkType === 'bitcoin';
     const unused = account.addresses
         ? account.addresses.unused
@@ -150,4 +148,4 @@ const FreshAddress = ({
     );
 };
 
-export default injectIntl(FreshAddress);
+export default FreshAddress;

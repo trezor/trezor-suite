@@ -7,7 +7,6 @@ import * as metadataActions from '@suite-actions/metadataActions';
 
 import { AppState, Dispatch, TrezorDevice, AcquiredDevice } from '@suite-types';
 import WalletInstance from './index';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
 
 const mapStateToProps = (state: AppState) => ({
     accounts: state.wallet.accounts,
@@ -28,7 +27,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
         dispatch,
     );
 
-interface OwnProps extends WrappedComponentProps {
+interface OwnProps {
     instance: AcquiredDevice;
     enabled: boolean;
     selected: boolean;
@@ -39,4 +38,4 @@ export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 export type Props = StateProps & DispatchProps & OwnProps;
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(WalletInstance));
+export default connect(mapStateToProps, mapDispatchToProps)(WalletInstance);
