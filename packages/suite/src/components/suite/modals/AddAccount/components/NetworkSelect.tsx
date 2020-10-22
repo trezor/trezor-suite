@@ -60,7 +60,7 @@ const NetworkSelect = ({ network, internalNetworks, setSelectedNetwork, isDisabl
     <Select
         isSearchable
         width={250}
-        maxMenuHeight={250}
+        maxMenuHeight={220}
         isClearable={false}
         value={buildNetworkOption(network)}
         options={buildNetworkOptions(internalNetworks)}

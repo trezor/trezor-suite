@@ -7,7 +7,10 @@ const Word = (props: ModalProps) => {
     return (
         <Modal
             fixedWidth={['100%', '100%', '100%', '100%']}
+            fixedHeight={['100%', '100%', '100%', '100%']}
+            useFixedHeight
             data-test="@recovery/word"
+            noPadding
             heading={<Translation id="TR_FOLLOW_INSTRUCTIONS_ON_DEVICE" />}
             description={
                 <>

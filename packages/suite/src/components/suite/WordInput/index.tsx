@@ -30,8 +30,7 @@ const shake = keyframes`
 
 const SelectWrapper = styled.div`
     animation: ${shake} 1.3s;
-    margin: 12px auto;
-    min-height: 230px;
+    margin: 12px auto 0px auto;
     text-align: left;
 
     width: 380px;
@@ -65,7 +64,6 @@ const WordInput = React.memo((props: Props) => {
                 autoFocus
                 isSearchable
                 isClearable={false}
-                maxMenuHeight={180}
                 controlShouldRenderValue={false}
                 noOptionsMessage={({ inputValue }: { inputValue: string }) =>
                     props.intl.formatMessage(messages.TR_WORD_DOES_NOT_EXIST, { word: inputValue })

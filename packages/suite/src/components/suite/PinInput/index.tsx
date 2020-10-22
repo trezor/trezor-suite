@@ -30,7 +30,7 @@ const PinRow = styled.div`
 const PinFooter = styled.div`
     display: flex;
     width: 100%;
-    margin: 20px 0 10px 0;
+    margin-top: 20px;
     flex-direction: column;
 `;
 
