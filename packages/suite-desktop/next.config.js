@@ -60,6 +60,10 @@ module.exports = withBundleAnalyzer(
 
                         return config;
                     },
+                    // use static BuildId so the desktop builds are deterministic
+                    generateBuildId: async () => {
+                        return '0';
+                    },
                 }),
             ),
         ),
