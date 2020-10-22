@@ -24,4 +24,6 @@ install and build:
             - packages/translations-manager/lib
     stage: setup environment
     script:
+        - export npm_config_platform="linux"
+        - export npm_config_arch="x64"
         - yarn install --pure-lockfile --cache-folder .yarn
