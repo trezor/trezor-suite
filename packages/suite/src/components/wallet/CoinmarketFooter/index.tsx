@@ -116,7 +116,9 @@ const CoinmarketFooter = () => {
                                 </Link>
                             </BoxLeft>
                             <BoxRight>
-                                <Button variant="tertiary">invity.io</Button>
+                                <Link href="https://invity.io/" target="_blank">
+                                    <Button variant="tertiary">invity.io</Button>
+                                </Link>
                                 <IconWrapper onClick={() => setToggled(false)}>
                                     <StyledIcon icon="CROSS" size={16} />
                                 </IconWrapper>
