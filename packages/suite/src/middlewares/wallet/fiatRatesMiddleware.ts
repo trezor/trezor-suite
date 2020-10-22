@@ -12,6 +12,9 @@ const fiatRatesMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
     next(action);
 
     switch (action.type) {
+        case BLOCKCHAIN.CONNECTED:
+            api.dispatch(fiatRatesActions.initRates());
+            break;
         case BLOCKCHAIN.FIAT_RATES_UPDATE:
             api.dispatch(fiatRatesActions.onUpdateRate(action.payload));
             break;
