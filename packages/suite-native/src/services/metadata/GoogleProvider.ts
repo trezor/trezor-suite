@@ -3,6 +3,7 @@ import Google from '../google';
 
 class GoogleProvider extends AbstractMetadataProvider {
     client: Google;
+    isCloud = true;
 
     constructor(_token?: string) {
         super('google');
@@ -19,10 +20,10 @@ class GoogleProvider extends AbstractMetadataProvider {
     }
 
     // @ts-ignore
-    async getCredentials(): any {
-        const type = 'google' as const;
+    async getProviderDetails(): any {
         return this.ok({
-            type,
+            type: this.type,
+            isCloud: this.isCloud,
             token: 'token',
             user: 'foo',
         });

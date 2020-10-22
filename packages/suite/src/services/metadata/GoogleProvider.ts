@@ -4,6 +4,7 @@ import GoogleClient from '@suite/services/google';
 class GoogleProvider extends AbstractMetadataProvider {
     connected = false;
     client: GoogleClient;
+    isCloud = true;
 
     constructor(token?: string) {
         super('google');
@@ -91,12 +92,13 @@ class GoogleProvider extends AbstractMetadataProvider {
         }
     }
 
-    async getCredentials() {
+    async getProviderDetails() {
         if (!this.client.token) return this.error('AUTH_ERROR', 'token is missing');
         try {
             const response = await this.client.getTokenInfo();
             return this.ok({
-                type: 'google',
+                type: this.type,
+                isCloud: this.isCloud,
                 token: this.client.token,
                 user: response.user.displayName,
             } as const);

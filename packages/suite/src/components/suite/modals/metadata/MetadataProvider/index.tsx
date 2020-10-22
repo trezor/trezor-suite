@@ -90,6 +90,7 @@ const MetadataProvider = (props: Props) => {
                 >
                     <Translation id="TR_DROPBOX" />
                 </StyledButton>
+
                 {isEnabled('GOOGLE_DRIVE_SYNC') && (
                     <StyledButton
                         variant="tertiary"
@@ -102,23 +103,18 @@ const MetadataProvider = (props: Props) => {
                         <Translation id="TR_GOOGLE_DRIVE" />
                     </StyledButton>
                 )}
-                {/* <StyledButton
-                    variant="secondary"
-                    onClick={() => onCancel()}
-                    isDisabled={!!isLoading}
-                    data-test="@modal/metadata-provider/cancel-button"
-                >
-                    Continue without saving
-                </StyledButton> */}
-                {/* TODO: electron only */}
-                {/* <StyledButton
-                    variant="secondary"
-                    onClick={() => connect('userData')}
-                    isLoading={isLoading === 'userData'}
-                    isDisabled={!!isLoading}
-                >
-                    Local file system
-                </StyledButton> */}
+
+                {/* desktop only */}
+                {isEnabled('FILE_SYSTEM_SYNC') && (
+                    <StyledButton
+                        variant="tertiary"
+                        onClick={() => connect('userData')}
+                        isLoading={isLoading === 'userData'}
+                        isDisabled={!!isLoading}
+                    >
+                        Local file system
+                    </StyledButton>
+                )}
             </Buttons>
         </Modal>
     );

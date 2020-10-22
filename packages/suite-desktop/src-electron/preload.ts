@@ -47,6 +47,7 @@ contextBridge.exposeInMainWorld('desktopApi', {
             ipcRenderer.off(channel, (_, ...args) => func(...args));
         }
     },
+
     // Updater
     checkForUpdates: () => ipcRenderer.send('update/check'),
     downloadUpdate: () => ipcRenderer.send('update/download'),
@@ -62,4 +63,9 @@ contextBridge.exposeInMainWorld('desktopApi', {
 
     // Client
     clientReady: () => ipcRenderer.send('client/ready'),
+
+    // Metadata
+    metadataRead: (options: { file: string }) => ipcRenderer.invoke('metadata/read', options),
+    metadataWrite: (options: { file: string; content: string }) =>
+        ipcRenderer.invoke('metadata/write', options),
 });

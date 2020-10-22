@@ -35,10 +35,16 @@ export type MetadataItem = string;
 
 export type MetadataProviderType = 'dropbox' | 'google' | 'userData' | 'sdCard';
 
-export type MetadataProviderCredentials = {
+/**
+ * Representation of provider data stored in reducer
+ * property 'token' and 'type' are needed to recreate corresponding provider instance
+ * others may be used in UI
+ */
+export type MetadataProvider = {
     type: MetadataProviderType;
     user: string;
     token: string;
+    isCloud: boolean;
 };
 
 /**
@@ -78,15 +84,21 @@ export type Error = {
 export type Result<T> = Promise<Success<T> | Error>;
 
 export abstract class AbstractMetadataProvider {
-    constructor(public type: 'google' | 'dropbox' | 'userData' | 'sdCard') {}
+    // isCloud means that this provider is not local and allows multi client sync. These providers are suitable for backing up data.
+    abstract isCloud: boolean;
+
+    constructor(public type: MetadataProviderType) {}
     abstract connect(): Promise<boolean>;
     abstract disconnect(): Promise<boolean>;
     /**
      * Try to get valid access token from refresh token. If operation is successful, provider
      * is connected.
      */
-    abstract isConnected(): Promise<boolean>;
-    abstract getCredentials(): Result<MetadataProviderCredentials>;
+    abstract isConnected(): Promise<boolean> | boolean;
+    /**
+     * Get details if provider that are supposed to be saved in reducer
+     */
+    abstract getProviderDetails(): Result<MetadataProvider>;
     /**
      * For given filename download metadata file from provider
      */
@@ -142,7 +154,7 @@ export type DeviceMetadata =
 
 export interface MetadataState {
     enabled: boolean; // global for all devices
-    provider?: MetadataProviderCredentials;
+    provider?: MetadataProvider;
     // is there active inline input? only one may be active at time so we save this
     // information in reducer to make it easily accessible in UI.
     // field shall hold default value for which user may add metadata (address, txId, etc...);

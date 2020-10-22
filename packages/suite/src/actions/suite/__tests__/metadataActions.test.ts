@@ -206,11 +206,12 @@ describe('Metadata Actions', () => {
         it(`add metadata - ${f.description}`, async () => {
             jest.mock('@suite/services/metadata/DropboxProvider');
             DropboxProvider.prototype.connect = () => Promise.resolve(true);
-            DropboxProvider.prototype.getCredentials = () =>
+            DropboxProvider.prototype.getProviderDetails = () =>
                 Promise.resolve({
                     success: true,
                     payload: {
                         type: 'dropbox',
+                        isCloud: true,
                         token: 'token',
                         user: 'power-user',
                     },

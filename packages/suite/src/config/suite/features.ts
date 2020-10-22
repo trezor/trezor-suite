@@ -7,17 +7,22 @@
 export const FLAGS = {
     GOOGLE_DRIVE_SYNC: false, // Google Drive sync (used for labeling)
     RBF: false, // replace by fee feature in the send form
+    FILE_SYSTEM_SYNC: true,
 } as const;
 
 // Web specific flags
 export const FLAGS_WEB = {
     ...FLAGS,
+    FILE_SYSTEM_SYNC: false,
+
     // Add overrides below
 } as const;
 
 // Desktop specific flags
 export const FLAGS_DESKTOP = {
     ...FLAGS,
+    FILE_SYSTEM_SYNC: true,
+
     // Add overrides below
 } as const;
 

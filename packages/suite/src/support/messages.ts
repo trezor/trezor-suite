@@ -4053,10 +4053,18 @@ const definedMessages = defineMessages({
         defaultMessage: 'Connected to {provider} as {user}',
         id: 'TR_CONNECTED_TO_PROVIDER',
     },
+    TR_CONNECTED_TO_PROVIDER_LOCALLY: {
+        defaultMessage: 'Saving labels locally',
+        id: 'TR_CONNECTED_TO_PROVIDER_LOCALLY',
+    },
     TR_YOUR_LABELING_IS_SYNCED: {
         defaultMessage:
             'Your labeling is synced with cloud storage provider. Your data are safe, only your Trezor can decrypt them.',
         id: 'TR_YOUR_LABELING_IS_SYNCED',
+    },
+    TR_YOUR_LABELING_IS_SYNCED_LOCALLY: {
+        defaultMessage: 'Labels are saved locally on your machine.',
+        id: 'TR_YOUR_LABELING_IS_SYNCED_LOCALLY',
     },
     TR_LABELING_NOT_SYNCED: {
         defaultMessage: 'Labeling not synced.',

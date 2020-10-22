@@ -149,15 +149,25 @@ const Settings = ({
                     <SectionItem>
                         <TextColumn
                             title={
-                                <Translation
-                                    id="TR_CONNECTED_TO_PROVIDER"
-                                    values={{
-                                        provider: capitalizeFirstLetter(metadata.provider.type),
-                                        user: metadata.provider.user,
-                                    }}
-                                />
+                                metadata.provider.isCloud ? (
+                                    <Translation
+                                        id="TR_CONNECTED_TO_PROVIDER"
+                                        values={{
+                                            provider: capitalizeFirstLetter(metadata.provider.type),
+                                            user: metadata.provider.user,
+                                        }}
+                                    />
+                                ) : (
+                                    <Translation id="TR_CONNECTED_TO_PROVIDER_LOCALLY" />
+                                )
                             }
-                            description={<Translation id="TR_YOUR_LABELING_IS_SYNCED" />}
+                            description={
+                                metadata.provider.isCloud ? (
+                                    <Translation id="TR_YOUR_LABELING_IS_SYNCED" />
+                                ) : (
+                                    <Translation id="TR_YOUR_LABELING_IS_SYNCED_LOCALLY" />
+                                )
+                            }
                         />
                         <ActionColumn>
                             <ActionButton

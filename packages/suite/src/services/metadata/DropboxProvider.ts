@@ -7,6 +7,7 @@ import { getRandomId } from '@suite-utils/random';
 class DropboxProvider extends AbstractMetadataProvider {
     client: Dropbox;
     user: DropboxTypes.users.FullAccount | undefined;
+    isCloud = true;
 
     constructor(token?: string) {
         super('dropbox');
@@ -137,7 +138,7 @@ class DropboxProvider extends AbstractMetadataProvider {
         }
     }
 
-    async getCredentials() {
+    async getProviderDetails() {
         const token = this.client.getRefreshToken();
         if (!token) return this.error('AUTH_ERROR', 'token is missing');
 
@@ -145,7 +146,8 @@ class DropboxProvider extends AbstractMetadataProvider {
             const account = await this.client.usersGetCurrentAccount();
 
             const result = {
-                type: 'dropbox',
+                type: this.type,
+                isCloud: this.isCloud,
                 token,
                 user: account.name.given_name,
             } as const;
