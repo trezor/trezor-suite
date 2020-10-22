@@ -35,11 +35,11 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
     // propagate action to reducers
     next(action);
 
-    if (
-        action.type === ACCOUNT.CREATE ||
-        action.type === ACCOUNT.UPDATE ||
-        action.type === ACCOUNT.REMOVE
-    ) {
+    if (action.type === ACCOUNT.CREATE || action.type === ACCOUNT.UPDATE) {
+        api.dispatch(blockchainActions.subscribe(action.payload.symbol));
+    }
+
+    if (action.type === ACCOUNT.REMOVE) {
         api.dispatch(blockchainActions.subscribe());
     }
 
