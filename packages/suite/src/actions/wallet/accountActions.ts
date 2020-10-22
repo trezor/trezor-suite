@@ -85,10 +85,13 @@ export const disableAccounts = () => (dispatch: Dispatch, getState: GetState) =>
     const accountsToRemove = getState().wallet.accounts.filter(a =>
         disabledNetworks.includes(a.symbol),
     );
-    dispatch({
-        type: ACCOUNT.REMOVE,
-        payload: accountsToRemove,
-    });
+
+    if (accountsToRemove.length) {
+        dispatch({
+            type: ACCOUNT.REMOVE,
+            payload: accountsToRemove,
+        });
+    }
 };
 
 export const changeAccountVisibility = (payload: Account, visible = true) => ({
