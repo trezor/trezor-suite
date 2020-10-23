@@ -121,6 +121,8 @@ const DesktopTitlebar = () => {
     const isMac = isMacOS();
     const iconSize = isMac ? 10 : 16;
     const iconColor = isMac ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY;
+    const isMacNotHovering = !isMac || hover !== '';
+    const isNotMacHovering = (btn: string) => !isMac && hover === btn;
 
     return (
         <Titlebar>
@@ -133,9 +135,9 @@ const DesktopTitlebar = () => {
                     onMouseEnter={mouseEnter}
                     onMouseLeave={mouseLeave}
                 >
-                    {(!isMac || hover !== '') && (
+                    {isMacNotHovering && (
                         <Icon
-                            color={!isMac && hover === 'close' ? colors.WHITE : iconColor}
+                            color={isNotMacHovering('close') ? colors.WHITE : iconColor}
                             size={iconSize}
                             icon="WINDOW_CLOSE"
                         />
@@ -148,9 +150,9 @@ const DesktopTitlebar = () => {
                     onMouseEnter={mouseEnter}
                     onMouseLeave={mouseLeave}
                 >
-                    {(!isMac || hover !== '') && (
+                    {isMacNotHovering && (
                         <Icon
-                            color={!isMac && hover === 'minimize' ? colors.WHITE : iconColor}
+                            color={isNotMacHovering('minimize') ? colors.WHITE : iconColor}
                             size={iconSize}
                             icon="WINDOW_MINIMIZE"
                         />
@@ -164,9 +166,9 @@ const DesktopTitlebar = () => {
                         onMouseEnter={mouseEnter}
                         onMouseLeave={mouseLeave}
                     >
-                        {(!isMac || hover !== '') && (
+                        {isMacNotHovering && (
                             <Icon
-                                color={!isMac && hover === 'restore' ? colors.WHITE : iconColor}
+                                color={isNotMacHovering('restore') ? colors.WHITE : iconColor}
                                 size={iconSize}
                                 icon="WINDOW_RESTORE"
                             />
@@ -180,9 +182,9 @@ const DesktopTitlebar = () => {
                         onMouseEnter={mouseEnter}
                         onMouseLeave={mouseLeave}
                     >
-                        {(!isMac || hover !== '') && (
+                        {isMacNotHovering && (
                             <Icon
-                                color={!isMac && hover === 'maximize' ? colors.WHITE : iconColor}
+                                color={isNotMacHovering('maximize') ? colors.WHITE : iconColor}
                                 size={iconSize}
                                 icon="WINDOW_MAXIMIZE"
                             />

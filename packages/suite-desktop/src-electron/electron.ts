@@ -214,6 +214,10 @@ const init = async () => {
     mainWindow.on('unmaximize', () => {
         notifyWindowMaximized(mainWindow);
     });
+    mainWindow.on('moved', () => {
+        console.log('move');
+        notifyWindowMaximized(mainWindow);
+    });
 
     httpReceiver.start();
 
