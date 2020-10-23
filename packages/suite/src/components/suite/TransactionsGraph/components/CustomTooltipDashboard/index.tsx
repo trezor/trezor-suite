@@ -39,6 +39,8 @@ const CustomTooltipDashboard = (props: Props) => {
                 selectedRange={props.selectedRange}
                 sentAmount={sentAmount}
                 receivedAmount={receivedAmount}
+                onShow={props.onShow}
+                extendedDataForInterval={props.extendedDataForInterval}
                 // balance={balanceAmount}
             />
         );
