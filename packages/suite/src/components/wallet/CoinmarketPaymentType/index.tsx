@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
 import invityApi from '@suite-services/invityAPI';
 import { BuyCryptoPaymentMethod } from 'invity-api';
+import { Translation } from '@suite-components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -12,7 +13,7 @@ const Wrapper = styled.div`
 const IconWrapper = styled.div`
     display: flex;
     align-items: center;
-    padding-right: 8px;
+    padding-right: 9px;
 `;
 
 const Icon = styled.img``;
@@ -30,14 +31,22 @@ interface Props {
 
 const CoinmarketPaymentType = ({ method }: Props) => (
     <Wrapper>
-        {!method && <Text>Unknown payment method</Text>}
+        {!method && (
+            <Text>
+                <Translation id="TR_PAYMENT_METHOD_UNKOWN" />
+            </Text>
+        )}
         {method && (
-            <IconWrapper>
-                <Icon
-                    width="40px"
-                    src={`${invityApi.server}/images/paymentMethods/${method}.svg`}
-                />
-            </IconWrapper>
+            <>
+                <IconWrapper>
+                    <Icon
+                        width="24px"
+                        src={`${invityApi.server}/images/paymentMethods/suite/${method}.svg`}
+                    />
+                </IconWrapper>
+                {/* temporary solution - payment mehtod name will be returned by API server to be independent on translations */}
+                <Translation id={`TR_PAYMENT_METHOD_${method.toUpperCase()}` as any} />
+            </>
         )}
     </Wrapper>
 );

@@ -66,6 +66,7 @@ const LeftColumn = styled.div`
     text-transform: uppercase;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    align-self: center;
 `;
 
 const RightColumn = styled.div`

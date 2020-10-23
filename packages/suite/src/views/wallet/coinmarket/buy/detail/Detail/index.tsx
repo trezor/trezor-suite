@@ -82,6 +82,7 @@ const CoinmarketDetail = () => {
                         account={account}
                         selectedQuote={trade.data}
                         transactionId={trade.key}
+                        providers={buyInfo?.providerInfos}
                     />
                 </>
             )}
