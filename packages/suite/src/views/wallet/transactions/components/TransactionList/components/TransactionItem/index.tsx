@@ -39,6 +39,8 @@ const Content = styled.div`
     display: flex;
     flex: 1;
     overflow: hidden;
+    padding: 10px;
+    margin: -10px;
     flex-direction: column;
     font-variant-numeric: tabular-nums;
 `;
@@ -65,6 +67,8 @@ const TargetsWrapper = styled.div`
     flex-direction: column;
     flex: 1;
     overflow: hidden;
+    padding-right: 10px;
+    margin-right: -10px;
 `;
 
 const ExpandButton = styled(Button)`
