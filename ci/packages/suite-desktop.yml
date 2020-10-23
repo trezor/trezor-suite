@@ -8,6 +8,7 @@
         - yarn workspace @trezor/suite-desktop build:${platform}
         - ls -la packages/suite-desktop/build-electron
         - mv packages/suite-desktop/build-electron/* .
+        - more latest*.yml | cat
     artifacts:
         paths:
             - ${artifact}
@@ -22,6 +23,7 @@
         - nix-shell --run "yarn workspace @trezor/suite-desktop build:${platform}"
         - ls -la packages/suite-desktop/build-electron
         - mv packages/suite-desktop/build-electron/* .
+        - more latest*.yml | cat
 
 .auto_run_branches: &auto_run_branches
     refs:
