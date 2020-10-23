@@ -80,6 +80,10 @@
                     "filter": [
                         "**/trezord-mac-x64"
                     ]
+                },
+                {
+                    "from": "build/static/tor/mac-x64",
+                    "to": "tor"
                 }
             ],
             "icon": "build/static/images/icons/512x512.icns",
@@ -102,6 +106,10 @@
                     "filter": [
                         "**/trezord-win-x64.exe"
                     ]
+                },
+                {
+                    "from": "build/static/tor/win-x64",
+                    "to": "tor"
                 }
             ],
             "icon": "build/static/images/icons/512x512.png",
@@ -118,6 +126,10 @@
                     "filter": [
                         "**/trezord-linux-x64"
                     ]
+                },
+                {
+                    "from": "build/static/tor/linux-x64",
+                    "to": "tor"
                 }
             ],
             "icon": "build/static/images/icons/512x512.png",
