@@ -19,7 +19,7 @@ const getPlatformArchExt = () => {
     const arch = os.arch();
     const ext = platform === 'win' ? '.exe' : '';
     const system = `${platform}-${arch}`;
-    const supportedSystems = ['linux-x32', 'linux-x64', 'mac-x64', 'win-x32', 'win-x64'];
+    const supportedSystems = ['linux-x64', 'mac-x64', 'win-x64'];
     if (supportedSystems.includes(system)) {
         return [platform, arch, ext];
     }
