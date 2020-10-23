@@ -1,4 +1,3 @@
-import TrezorConnect from 'trezor-connect';
 import { MiddlewareAPI } from 'redux';
 import { SUITE, ROUTER } from '@suite-actions/constants';
 import { ACCOUNT } from '@wallet-actions/constants';
@@ -15,7 +14,6 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
     action: Action,
 ): Action => {
     const prevState = api.getState();
-    const prevRouter = prevState.router;
 
     if (action.type === SUITE.FORGET_DEVICE) {
         const deviceState = action.payload.state;
@@ -48,20 +46,11 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         action.type === WALLET_SETTINGS.ADD_BLOCKBOOK_URL ||
         action.type === WALLET_SETTINGS.REMOVE_BLOCKBOOK_URL
     ) {
-        const { coin } = action.payload;
-        const { blockbookUrls } = api.getState().wallet.settings;
-
-        TrezorConnect.blockchainSetCustomBackend({
-            coin: action.payload.coin,
-            blockchainLink: {
-                type: 'blockbook',
-                url: blockbookUrls.filter(b => b.coin === coin).map(b => b.url),
-            },
-        });
+        api.dispatch(blockchainActions.setCustomBackend(action.payload.coin));
     }
 
+    const prevRouter = prevState.router;
     const nextRouter = api.getState().router;
-
     let resetReducers = action.type === SUITE.SELECT_DEVICE;
     if (prevRouter.app === 'wallet' && action.type === ROUTER.LOCATION_CHANGE) {
         // leaving wallet app or switching between accounts

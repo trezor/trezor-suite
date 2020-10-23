@@ -138,13 +138,22 @@ export const reconnect = (coin: Network['symbol']) => async (_dispatch: Dispatch
     return TrezorConnect.blockchainUnsubscribeFiatRates({ coin });
 };
 
-export const init = () => async (dispatch: Dispatch, getState: GetState) => {
-    await dispatch(preloadFeeInfo());
-
-    // Load custom blockbook backend
+// called from WalletMiddleware after ADD/REMOVE_BLOCKBOOK_URL action
+// or from blockchainActions.init
+export const setCustomBackend = (symbol?: string) => async (_: Dispatch, getState: GetState) => {
     const { blockbookUrls } = getState().wallet.settings;
-    await blockbookUrls.forEach(async ({ coin }) => {
-        await TrezorConnect.blockchainSetCustomBackend({
+    // collect unique coins
+    const coins = symbol
+        ? [symbol]
+        : blockbookUrls.reduce((arr, b) => {
+              if (arr.indexOf(b.coin) < 0) return arr.concat([b.coin]);
+              return arr;
+          }, [] as string[]);
+    // no custom backends
+    if (!coins.length) return;
+
+    const promises = coins.map(coin => {
+        return TrezorConnect.blockchainSetCustomBackend({
             coin,
             blockchainLink: {
                 type: 'blockbook',
@@ -152,6 +161,14 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
             },
         });
     });
+    return Promise.all(promises);
+};
+
+export const init = () => async (dispatch: Dispatch, getState: GetState) => {
+    await dispatch(preloadFeeInfo());
+
+    // Load custom blockbook backend
+    await dispatch(setCustomBackend());
 
     const { accounts } = getState().wallet;
     if (accounts.length <= 0) {
