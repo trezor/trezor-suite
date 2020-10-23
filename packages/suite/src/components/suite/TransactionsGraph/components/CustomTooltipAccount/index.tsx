@@ -69,6 +69,8 @@ const CustomTooltipAccount = (props: Props) => {
                         symbol={props.symbol}
                     />
                 }
+                onShow={props.onShow}
+                extendedDataForInterval={props.extendedDataForInterval}
             />
         );
     }

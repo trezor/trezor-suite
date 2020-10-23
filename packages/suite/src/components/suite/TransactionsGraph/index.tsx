@@ -62,8 +62,6 @@ interface CommonProps {
     onRefresh?: () => void;
 }
 
-type HoveredIndex = number;
-
 export interface CryptoGraphProps extends CommonProps {
     variant: 'one-asset';
     account: Account;
@@ -107,9 +105,9 @@ const TransactionsGraph = React.memo((props: Props) => {
             ? calcFakeGraphDataForTimestamps(xTicks, data, props.account.formattedBalance)
             : calcFakeGraphDataForTimestamps(xTicks, data);
 
-    const hoveredIndex: HoveredIndex = -1;
+    const hoveredIndex = -1;
     const [hovered, setHovered] = useState(hoveredIndex);
-    const isBarColored = (index: HoveredIndex) => [-1, index].includes(hovered);
+    const isBarColored = (index: number) => [-1, index].includes(hovered);
 
     return (
         <Wrapper>
@@ -193,7 +191,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                             receivedValueFn={props.receivedValueFn}
                                             balanceValueFn={props.balanceValueFn}
                                             extendedDataForInterval={extendedDataForInterval}
-                                            onShow={index => setHovered(index)}
+                                            onShow={(index: number) => setHovered(index)}
                                         />
                                     ) : (
                                         <CustomTooltipDashboard
@@ -203,7 +201,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                             receivedValueFn={props.receivedValueFn}
                                             // balanceValueFn={props.balanceValueFn}
                                             extendedDataForInterval={extendedDataForInterval}
-                                            onShow={index => setHovered(index)}
+                                            onShow={(index: number) => setHovered(index)}
                                         />
                                     )
                                 }
