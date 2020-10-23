@@ -215,7 +215,6 @@ const init = async () => {
         notifyWindowMaximized(mainWindow);
     });
     mainWindow.on('moved', () => {
-        console.log('move');
         notifyWindowMaximized(mainWindow);
     });
 
