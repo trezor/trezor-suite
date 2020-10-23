@@ -20,7 +20,7 @@ const StyledCard = styled(Card)`
 `;
 
 const SelectedOffer = () => {
-    const { account, selectedQuote } = useCoinmarketBuyOffersContext();
+    const { account, selectedQuote, providersInfo } = useCoinmarketBuyOffersContext();
     if (!selectedQuote) return null;
 
     return (
@@ -28,7 +28,11 @@ const SelectedOffer = () => {
             <StyledCard>
                 <VerifyAddress />
             </StyledCard>
-            <CoinmarketBuyOfferInfo selectedQuote={selectedQuote} account={account} />
+            <CoinmarketBuyOfferInfo
+                selectedQuote={selectedQuote}
+                account={account}
+                providers={providersInfo}
+            />
         </Wrapper>
     );
 };

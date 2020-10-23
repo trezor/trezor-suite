@@ -3024,13 +3024,45 @@ const definedMessages = defineMessages({
         id: 'TR_COINMARKET_EXCHANGES',
         defaultMessage: 'exchanges',
     },
-    TR_PAYMENT_METHOD_CARD: {
-        id: 'TR_PAYMENT_METHOD_CARD',
+    TR_PAYMENT_METHOD_CREDITCARD: {
+        id: 'TR_PAYMENT_METHOD_CREDITCARD',
         defaultMessage: 'Credit Card',
     },
-    TR_PAYMENT_METHOD_BANK_TRANSFER: {
-        id: 'TR_PAYMENT_METHOD_BANK_TRANSFER',
-        defaultMessage: 'Bank transfer',
+    TR_PAYMENT_METHOD_BANKTRANSFER: {
+        id: 'TR_PAYMENT_METHOD_BANKTRANSFER',
+        defaultMessage: 'Bank Transfer',
+    },
+    TR_PAYMENT_METHOD_BANCONTACT: {
+        id: 'TR_PAYMENT_METHOD_BANCONTACT',
+        defaultMessage: 'Bancontact',
+    },
+    TR_PAYMENT_METHOD_SOFORT: {
+        id: 'TR_PAYMENT_METHOD_SOFORT',
+        defaultMessage: 'Sofort',
+    },
+    TR_PAYMENT_METHOD_IDEAL: {
+        id: 'TR_PAYMENT_METHOD_IDEAL',
+        defaultMessage: 'iDEAL',
+    },
+    TR_PAYMENT_METHOD_SEPA: {
+        id: 'TR_PAYMENT_METHOD_SEPA',
+        defaultMessage: 'SEPA',
+    },
+    TR_PAYMENT_METHOD_GIROPAY: {
+        id: 'TR_PAYMENT_METHOD_CREDITCARD',
+        defaultMessage: 'giropay',
+    },
+    TR_PAYMENT_METHOD_EPS: {
+        id: 'TR_PAYMENT_METHOD_EPS',
+        defaultMessage: 'eps',
+    },
+    TR_PAYMENT_METHOD_APPLEPAY: {
+        id: 'TR_PAYMENT_METHOD_APPLEPAY',
+        defaultMessage: 'Apple Pay',
+    },
+    TR_PAYMENT_METHOD_UNKOWN: {
+        id: 'TR_PAYMENT_METHOD_UNKOWN',
+        defaultMessage: 'Unknown',
     },
     TR_OFFER_FEE_INFO: {
         id: 'TR_OFFER_FEE_INFO',
