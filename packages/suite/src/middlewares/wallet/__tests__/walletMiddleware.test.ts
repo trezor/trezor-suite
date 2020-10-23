@@ -14,38 +14,9 @@ import * as fixtures from '../__fixtures__/walletMiddleware';
 const { getWalletAccount } = global.JestMocks;
 
 jest.mock('trezor-connect', () => {
-    let fixture: any;
-    return {
-        __esModule: true, // this property makes it work
-        default: {
-            blockchainSubscribe: jest.fn(async _params => {
-                return { success: true, ...fixture };
-            }),
-            blockchainSubscribeFiatRates: jest.fn(async _params => {
-                return { success: true };
-            }),
-            blockchainUnsubscribeFiatRates: jest.fn(async _params => {
-                return { success: true };
-            }),
-            blockchainDisconnect: jest.fn(async _params => {
-                return { success: true };
-            }),
-            blockchainEstimateFee: jest.fn(async _params => {
-                return { success: true };
-            }),
-        },
-        setTestFixtures: (f: any) => {
-            fixture = f;
-        },
-        DEVICE: {},
-        BLOCKCHAIN: {
-            CONNECT: 'bl-connect',
-            BLOCK: 'bl-block',
-            NOTIFICATION: 'notif',
-            ERROR: 'err',
-        },
-    };
+    return global.JestMocks.getTrezorConnect({});
 });
+const TrezorConnect = require('trezor-connect').default;
 
 type AccountsState = ReturnType<typeof accountsReducer>;
 type SettingsState = ReturnType<typeof walletSettingsReducer>;
@@ -97,12 +68,6 @@ describe('walletMiddleware', () => {
         jest.clearAllMocks();
     });
 
-    // TODO: this is failing on fiatRatesActions (missing reducer)
-    // it('connect', () => {
-    //     const store = initStore(getInitialState());
-    //     store.dispatch({ type: BLOCKCHAIN.CONNECT, payload: { coin: { shortcut: 'btc' } } });
-    // });
-
     fixtures.blockchainSubscription.forEach(f => {
         it(f.description, () => {
             // @ts-ignore
@@ -121,14 +86,13 @@ describe('walletMiddleware', () => {
                 store.dispatch({ ...action, payload });
             });
 
-            const { blockchainSubscribe, blockchainDisconnect } = require('trezor-connect').default;
             const { subscribe, disconnect } = f.result;
             if (subscribe) {
-                expect(blockchainSubscribe).toBeCalledTimes(subscribe.called);
+                expect(TrezorConnect.blockchainSubscribe).toBeCalledTimes(subscribe.called);
                 if (subscribe.called) {
                     // @ts-ignore
                     const accounts = subscribe.accounts?.map(a => getWalletAccount(a));
-                    expect(blockchainSubscribe).toHaveBeenLastCalledWith({
+                    expect(TrezorConnect.blockchainSubscribe).toHaveBeenLastCalledWith({
                         accounts,
                         coin: subscribe.coin,
                     });
@@ -136,7 +100,7 @@ describe('walletMiddleware', () => {
             }
 
             if (disconnect) {
-                expect(blockchainDisconnect).toBeCalledTimes(disconnect.called);
+                expect(TrezorConnect.blockchainDisconnect).toBeCalledTimes(disconnect.called);
             }
         });
     });
