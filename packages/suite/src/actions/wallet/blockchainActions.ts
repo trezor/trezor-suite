@@ -134,7 +134,7 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
 };
 
 // call TrezorConnect.unsubscribe, it doesn't cost anything and should emit BLOCKCHAIN.CONNECT or BLOCKCHAIN.ERROR event
-export const reconnect = (coin: Network['symbol']) => async (_dispatch: Dispatch) => {
+export const reconnect = (coin: Network['symbol']) => (_dispatch: Dispatch) => {
     return TrezorConnect.blockchainUnsubscribeFiatRates({ coin });
 };
 
@@ -292,7 +292,6 @@ export const onNotification = (payload: BlockchainNotification) => async (
               )} ${token.symbol.toUpperCase()}`
             : accountUtils.formatNetworkAmount(tx.amount, account.symbol, true);
 
-        console.warn('RECV', tx, token, formattedAmount);
         dispatch(
             notificationActions.addEvent({
                 type: 'tx-received',
@@ -309,11 +308,10 @@ export const onNotification = (payload: BlockchainNotification) => async (
     // TODO: investigate more how to keep ripple pending tx until they are confirmed/rejected
     // ripple-lib doesn't send "pending" txs in history
     if (account.networkType !== 'ripple') {
-        dispatch(accountActions.fetchAndUpdateAccount(account));
         // tmp workaround for BB not sending multiple notifications, fix in progress
         if (account.networkType === 'bitcoin') {
-            networkAccounts.forEach(account => {
-                dispatch(accountActions.fetchAndUpdateAccount(account));
+            networkAccounts.forEach(a => {
+                dispatch(accountActions.fetchAndUpdateAccount(a));
             });
         } else {
             dispatch(accountActions.fetchAndUpdateAccount(account));
