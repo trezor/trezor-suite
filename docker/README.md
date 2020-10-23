@@ -1,46 +1,117 @@
-Disclaimer: 
-- GUI from docker container does not work on mac. Only linux is supported at the moment.
-- Anyone willing to help with mac configuration might start here https://medium.com/@nihon_rafy/building-a-dockerized-gui-by-sharing-the-host-screen-with-docker-container-b660835fb722
+# Docker dev environment
 
-# Docker
+The idea is to run development tools somewhat isolated inside docker containers.
 
-In `/docker` folder, you might find few handy docker-compose recipes. But first check if you have docker installed.
+A developer should be able:
 
-`docker --version`
+1. to spin up whole environment with a single script without complex dependencies, see prerequisites below
+1. to open the trezor-suite web app from his host machine
+1. to see emulator and test the bridge via dev control panel
+1. to run tests inside containers
 
-`docker-compose --version`
+If you are interested in more details about this solution, see [docs/notes.md](docs/notes.md).
 
+## Prerequisites:
 
-## Suite dev
+Please make sure you have the latest versions of these tools:
+```
+docker --version
+docker-compose --version
+mutagen version
+```
 
-Suite-dev helps you run local suite development server. So, in theory, you don't need to have node.js or yarn installed on your machine.
-This container shares suite folder with your machine, so if you don't have dependencies installed yet, you shall run this first:
+In case of [mutagen](https://mutagen.io/documentation/orchestration/compose) we currently require the latest beta 
+version with docker-compose support.
 
-`./docker/docker-suite-install.sh`
+## Level 1 - basic development
 
-`./docker/docker-suite-dev.sh`
+To spin up live development server, emulator and debug control panel, to quit hit CTRL+C:
+```
+./docker-suite-dev.sh
+```
 
-This will open dev server on http://localhost:3000 and as a bonus a control panel that will allow you to start/stop trezor bridge and work with emulators!
+Please give it some time. First time it will download and build everything. Subsequent runs should be faster.
 
-## Suite test
+If all goes well, at the end you should see something like:
+```
+trezor_suite_dev | ready - started server on http://localhost:3000
+```
 
-Suite test opens cypress test runner and prepares everything to run tests.
+On your local machine you should be now able to access the web app:
+* suite web app => [http://localhost:3000](http://localhost:3000)
+* control panel => [http://localhost:3001](http://localhost:3001)
 
-`./docker/docker-suite-test.sh`
+Do you see the [landing page](http://localhost:3000)? Good!
 
-### Image snapshots
+#### Edit source code
 
-It is possible to run tests with image snapshots to test for visual regressions. To enable snapshots, use env variable:
+This app was built from your current sources, and we use [Mutagen](https://mutagen.io) to sync your changes inside container.
+While you are looking at the page in your browser, you can try to edit `packages/suite/src/views/suite/device-connect/index.tsx`
+for example add `background-color: orange;` into `Title = styled.div` section.
+When you hit save, you should see some activity in terminal logs of `./docker-suite-dev.sh`.
+Now, finally the page should live-reload and reflect orange background under the title.
 
-`CYPRESS_SNAPSHOT=1 ./docker/docker-suite-test.sh`
+#### Use emulator
 
-# Maintenance
+New let's try to use emulator to 
 
-Temporarily published on docker-hub under mroz22 account.
+Go to the [control panel](http://localhost:3001) and then:
+1. click "Start" under "Bridge commands" 
+1. click to "Start X.Y.Z" under "Emulator start".
+  
+This should open the emulator in a window using Xserver.
 
-To build:
-`cd ./docker`
+To see the emulator you have to properly setup Xserver on your host machine. Docker containers tries to open Xwindows on 
+your host machine. Running Xserver is more complex topic depending on OS, but you might have easy win running:
 
-`docker build -f ./trezor-user-env/Dockerfile . --tag mroz22/trezor-user-env`
+```
+./prepare-xserver.sh
+```
 
-`docker push mroz22/trezor-user-env:latest`
+Please note that `./docker-suite-dev.sh` is meant to be a long-running process, and it should last during your whole 
+dev session. When you hit CTRL+C, it stops all containers and removes them. It also stops mutagen session.
+
+## Level 2 - running tests
+
+You can run test inside trezor_test_runner container. Note that `./docker-suite-dev.sh` must be fully running 
+for cypress tests.
+
+```
+# to run visual cypress tests (requires Xserver)
+./docker/docker-suite-test-cypress.sh 
+
+# to run unit tests
+./docker/docker-suite-test-unit.sh
+```
+
+## Level 3 - taking more control
+
+See [_config.sh](_config.sh) for configurability options.
+
+While `./docker-suite-dev.sh` is running, you can enter shells inside containers:
+
+```
+./docker-suite-dev-shell.sh
+./docker-suite-test-shell.sh
+./docker-suite-env-shell.sh
+```
+
+## FAQ
+
+> How to run docker-compose commands?
+
+Try `./dc` alias.
+
+> How to check status of the environment?
+
+Try `./dc ps`.
+
+> How to display the current effective config?
+
+Run `./docker-suite-config.sh`
+
+> Something is messed up, how to start from scratch?
+
+1. Stop `./docker-suite-dev.sh`.
+1. Run `./docker-suite-clean.sh`.
+1. Start `./docker-suite-dev.sh` again.

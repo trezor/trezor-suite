@@ -1,0 +1,148 @@
+# this is configuration of our services via docker-compose
+# => https://docs.docker.com/compose
+#
+# please note that it is inconvenient to use this config directly:
+#   1. we use TREZOR_SUITE env variables
+#   2. we rely on mutagen (=> https://mutagen.io/documentation)
+# instead use wrapper scripts in the parent folder, or ./dc wrapper for advanced uses
+#
+# if you are interested in some implementation details, look into docker/docs/notes.md
+
+version: '3.8'
+
+volumes:
+  suite_code:
+    name: trezor_suite_code
+  suite_cache:
+    name: trezor_suite_cache
+
+secrets:
+  root_password:
+    file: ../.generated-password
+
+services:
+
+  user-env:
+    container_name: trezor_user_env
+    hostname: user-env
+    extra_hosts:
+      user-env: 127.0.0.1
+    build:
+      context: .
+      dockerfile: user-env/Dockerfile
+      args:
+        - ROOT_PASSWORD=${TREZOR_SUITE_ROOT_PASSWORD}
+        - SUPPORTED_SHELLS=${TREZOR_SUITE_SUPPORTED_SHELLS}
+    init: true
+    command: "/launch.sh"
+    environment:
+      - DISPLAY=host.docker.internal:0
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+
+  suite-dev:
+    container_name: trezor_suite_dev
+    hostname: suite-dev
+    extra_hosts:
+      suite-dev: 127.0.0.1
+    build:
+      context: .
+      dockerfile: suite-dev/Dockerfile
+      args:
+        - SUPPORTED_SHELLS=${TREZOR_SUITE_SUPPORTED_SHELLS}
+        - UID=${TREZOR_SUITE_DOCKER_UID}
+        - GID=${TREZOR_SUITE_DOCKER_GID}
+    user: "${TREZOR_SUITE_DOCKER_UID}:${TREZOR_SUITE_DOCKER_GID}"
+    init: true
+    command: "serve.sh"
+    working_dir: /home/user/trezor-suite
+    depends_on:
+      - user-env
+    volumes:
+      - suite_code:/home/user/trezor-suite
+      - suite_cache:/home/user/.cache
+    environment:
+      - NODE_ENV=development
+      - UID=${TREZOR_SUITE_DOCKER_UID}
+      - GID=${TREZOR_SUITE_DOCKER_GID}
+      - NO_AUTO_BUILD=${TREZOR_SUITE_NO_AUTO_BUILD}
+
+  test-runner:
+    container_name: trezor_test_runner
+    hostname: test-runner
+    extra_hosts:
+      test-runner: 127.0.0.1
+    build:
+      context: .
+      dockerfile: test-runner/Dockerfile
+      args:
+        - SUPPORTED_SHELLS=${TREZOR_SUITE_SUPPORTED_SHELLS}
+        - UID=${TREZOR_SUITE_DOCKER_UID}
+        - GID=${TREZOR_SUITE_DOCKER_GID}
+    user: "${TREZOR_SUITE_DOCKER_UID}:${TREZOR_SUITE_DOCKER_GID}"
+    init: true
+    depends_on:
+      - user-env
+      - suite-dev
+    environment:
+      #- CYPRESS_SNAPSHOT=$CYPRESS_SNAPSHOT
+      - CYPRESS_baseUrl=http://trezor_suite_dev:3000
+      - CYPRESS_defaultCommandTimeout=60000 # on dev server, due to on-demand compilation nature of next.js, we need much longer timeout
+      - DISPLAY=host.docker.internal:0
+      - QT_X11_NO_MITSHM=1
+      - UID=${TREZOR_SUITE_DOCKER_UID}
+      - GID=${TREZOR_SUITE_DOCKER_GID}
+    working_dir: /home/user/trezor-suite
+    command: "idle.sh"
+    secrets:
+      - root_password
+    volumes:
+      - suite_code:/home/user/trezor-suite
+      - suite_cache:/home/user/.cache
+      - /tmp/.X11-unix:/tmp/.X11-unix
+
+# define mutagen synchronization and forwarding sessions
+# see => https://mutagen.io/documentation/orchestration/compose
+x-mutagen:
+  sync:
+    defaults:
+      ignore:
+        vcs: true
+    development:
+      alpha: "${TREZOR_SUITE_HOME}"
+      beta: "volume://suite_code"
+      mode: "one-way-safe"
+      ignore:
+        # ideally we want to ignore all files already ignored by git
+        # WIP => https://github.com/mutagen-io/mutagen/issues/237
+        paths:
+          - docker
+          - node_modules
+          - packages/**/node_modules
+          - packages/**/.next
+          - packages/**/coverage
+          - packages/**/public
+          - .idea
+      configurationBeta:
+        permissions:
+          defaultOwner: "id:${TREZOR_SUITE_DOCKER_UID}"
+          defaultGroup: "id:${TREZOR_SUITE_DOCKER_GID}"
+  forward:
+    app:
+      source: "tcp:localhost:3000"
+      destination: "network://default:tcp:suite-dev:3000"
+    emulator:
+      source: "tcp:localhost:3001"
+      destination: "network://default:tcp:user-env:3001"
+    emulator-ws:
+      source: "tcp:localhost:9001"
+      destination: "network://default:tcp:user-env:9001"
+    emulator-device:
+      source: "tcp:localhost:21324"
+      destination: "network://default:tcp:user-env:21324"
+    emulator-bridge:
+      source: "tcp:localhost:21325"
+      destination: "network://default:tcp:user-env:21325"
+
+

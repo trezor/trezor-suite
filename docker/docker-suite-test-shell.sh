@@ -7,11 +7,5 @@ set -e -o pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 source _config.sh
 
-goodbye() {
-  ./docker-compose down
-  echo "bye bye"
-}
-
-trap goodbye EXIT
-
-./docker-compose up --build --remove-orphans
+set -x
+exec ./docker-compose exec test-runner "${TREZOR_SUITE_PREFERRED_SHELL}"

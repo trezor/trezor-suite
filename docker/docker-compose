@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# this is a wrapper for docker-compose
+
+set -e -o pipefail
+
+cd "$(dirname "${BASH_SOURCE[0]}")"
+source _config.sh
+
+# we export all config variables to be available for docker-compose
+export_trezor_suite_env
+
+# mutagen compose is a wrapper designed to faithfully emulate the docker-compose
+# => https://mutagen.io/documentation/orchestration/compose
+exec mutagen compose --file services/docker-compose.yml "$@"
