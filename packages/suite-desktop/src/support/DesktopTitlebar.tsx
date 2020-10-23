@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import NoSSR from '@suite-support/NoSSR';
 import { colors, TrezorLogo, Icon } from '@trezor/components';
 import { isMac as isMacOS } from '@suite-utils/env';
 
-const TITLEBAR_HEIGHT = 40;
+const TITLEBAR_HEIGHT = 28;
 const RESIZE_HANDLER_PADDING = 4;
 
 const Titlebar = styled.div`
@@ -16,38 +16,37 @@ const Titlebar = styled.div`
     position: relative;
     background: ${colors.NEUE_TYPE_DARK_GREY};
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
+`;
 
-    &:after {
-        position: fixed;
-        width: calc(100% - ${RESIZE_HANDLER_PADDING * 2}px);
-        height: ${TITLEBAR_HEIGHT - RESIZE_HANDLER_PADDING}px;
-        content: '';
-        display: block;
-        top: ${RESIZE_HANDLER_PADDING}px;
-        left: ${RESIZE_HANDLER_PADDING}px;
-        z-index: 0;
-        -webkit-user-select: none;
-        -webkit-app-region: drag;
-    }
+const Drag = styled.div`
+    position: fixed;
+    width: calc(100% - ${RESIZE_HANDLER_PADDING * 2}px);
+    height: ${TITLEBAR_HEIGHT - RESIZE_HANDLER_PADDING}px;
+    content: '';
+    display: block;
+    top: ${RESIZE_HANDLER_PADDING}px;
+    left: ${RESIZE_HANDLER_PADDING}px;
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
 `;
 
 const Actions = styled.div<{ isMac?: boolean }>`
     display: flex;
     align-content: center;
     align-items: center;
-    margin: 0 18px;
     height: 100%;
     position: relative;
     z-index: 2;
-    flex-direction: ${props => (props.isMac === true ? 'row' : 'row-reverse')};
+    flex-direction: ${props => (props.isMac ? 'row' : 'row-reverse')};
+    margin: ${props => (props.isMac ? '0 10px' : '0')};
 `;
 
 const Action = styled.div<{ isMac?: boolean }>`
-    width: 12px;
-    height: 12px;
-    border-radius: 12px;
+    width: ${props => (props.isMac ? 14 : TITLEBAR_HEIGHT)}px;
+    height: ${props => (props.isMac ? 14 : TITLEBAR_HEIGHT)}px;
+    margin: ${props => (props.isMac ? 2 : 0)}px;
+    border-radius: ${props => (props.isMac ? 50 : 0)}px;
     background: transparent;
-    margin: ${props => (props.isMac === true ? '0 8px 0 0' : '0 0 0 16px')};
     -webkit-app-region: no-drag;
     display: flex;
     align-content: center;
@@ -60,16 +59,28 @@ const Action = styled.div<{ isMac?: boolean }>`
 `;
 
 const ActionClose = styled(Action)`
-    background: ${props => (props.isMac === true ? '#f85550' : 'transparent')};
+    background: ${props => (props.isMac ? '#f85550' : 'transparent')};
+
+    &:hover {
+        background: ${props => (props.isMac ? '#f85550' : colors.NEUE_TYPE_RED)};
+    }
 `;
 
 const ActionMinimize = styled(Action)`
-    background: ${props => (props.isMac === true ? '#fabe3e' : 'transparent')};
-    order: ${props => (props.isMac === true ? '0' : '1')};
+    background: ${props => (props.isMac ? '#fabe3e' : 'transparent')};
+    order: ${props => (props.isMac ? '0' : '1')};
+
+    &:hover {
+        background: ${props => (props.isMac ? '#fabe3e' : colors.NEUE_TYPE_LIGHT_GREY)};
+    }
 `;
 
 const ActionMaximize = styled(Action)`
-    background: ${props => (props.isMac === true ? '#2dcc4d' : 'transparent')};
+    background: ${props => (props.isMac ? '#2dcc4d' : 'transparent')};
+
+    &:hover {
+        background: ${props => (props.isMac ? '#2dcc4d' : colors.NEUE_TYPE_LIGHT_GREY)};
+    }
 `;
 
 const LogoWrapper = styled.div`
@@ -86,46 +97,96 @@ const LogoWrapper = styled.div`
     opacity: 69%;
 `;
 
-const close = () => {
-    window.desktopApi!.windowClose();
-};
-const minimize = () => {
-    window.desktopApi!.windowMinimize();
-};
-const maximize = () => {
-    window.desktopApi!.windowMaximize();
-};
-const restore = () => {
-    window.desktopApi!.windowUnmaximize();
-};
-
 const DesktopTitlebar = () => {
+    const [hover, setHover] = useState('');
     const [maximized, setMaximized] = useState(false);
+
     useEffect(() => {
         window.desktopApi!.on('window/is-maximized', (payload: boolean) => {
             setMaximized(payload);
         });
     }, []);
+
+    const mouseEnter = useCallback(
+        ({ currentTarget }) => {
+            setHover(currentTarget.getAttribute('data-button'));
+        },
+        [setHover],
+    );
+
+    const mouseLeave = useCallback(() => {
+        setHover('');
+    }, [setHover]);
+
     const isMac = isMacOS();
-    const iconSize = isMac ? 8 : 16;
+    const iconSize = isMac ? 10 : 16;
     const iconColor = isMac ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY;
+
     return (
         <Titlebar>
+            <Drag />
             <Actions isMac={isMac}>
-                <ActionClose isMac={isMac} onClick={close}>
-                    <Icon color={iconColor} size={iconSize} icon="WINDOW_CLOSE" />
+                <ActionClose
+                    isMac={isMac}
+                    onClick={() => window.desktopApi!.windowClose()}
+                    data-button="close"
+                    onMouseEnter={mouseEnter}
+                    onMouseLeave={mouseLeave}
+                >
+                    {(!isMac || hover !== '') && (
+                        <Icon
+                            color={!isMac && hover === 'close' ? colors.WHITE : iconColor}
+                            size={iconSize}
+                            icon="WINDOW_CLOSE"
+                        />
+                    )}
                 </ActionClose>
-                <ActionMinimize isMac={isMac} onClick={minimize}>
-                    <Icon color={iconColor} size={iconSize} icon="WINDOW_MINIMIZE" />
+                <ActionMinimize
+                    isMac={isMac}
+                    onClick={() => window.desktopApi!.windowMinimize()}
+                    data-button="minimize"
+                    onMouseEnter={mouseEnter}
+                    onMouseLeave={mouseLeave}
+                >
+                    {(!isMac || hover !== '') && (
+                        <Icon
+                            color={!isMac && hover === 'minimize' ? colors.WHITE : iconColor}
+                            size={iconSize}
+                            icon="WINDOW_MINIMIZE"
+                        />
+                    )}
                 </ActionMinimize>
-                {maximized && (
-                    <ActionMaximize isMac={isMac} onClick={restore}>
-                        <Icon color={iconColor} size={iconSize} icon="WINDOW_RESTORE" />
+                {maximized ? (
+                    <ActionMaximize
+                        isMac={isMac}
+                        onClick={() => window.desktopApi!.windowUnmaximize()}
+                        data-button="restore"
+                        onMouseEnter={mouseEnter}
+                        onMouseLeave={mouseLeave}
+                    >
+                        {(!isMac || hover !== '') && (
+                            <Icon
+                                color={!isMac && hover === 'restore' ? colors.WHITE : iconColor}
+                                size={iconSize}
+                                icon="WINDOW_RESTORE"
+                            />
+                        )}
                     </ActionMaximize>
-                )}
-                {!maximized && (
-                    <ActionMaximize isMac={isMac} onClick={maximize}>
-                        <Icon color={iconColor} size={iconSize} icon="WINDOW_MAXIMIZE" />
+                ) : (
+                    <ActionMaximize
+                        isMac={isMac}
+                        onClick={() => window.desktopApi!.windowMaximize()}
+                        data-button="maximize"
+                        onMouseEnter={mouseEnter}
+                        onMouseLeave={mouseLeave}
+                    >
+                        {(!isMac || hover !== '') && (
+                            <Icon
+                                color={!isMac && hover === 'maximize' ? colors.WHITE : iconColor}
+                                size={iconSize}
+                                icon="WINDOW_MAXIMIZE"
+                            />
+                        )}
                     </ActionMaximize>
                 )}
             </Actions>

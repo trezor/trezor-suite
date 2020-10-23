@@ -208,10 +208,10 @@ const init = async () => {
     ipcMain.on('client/ready', () => {
         notifyWindowMaximized(mainWindow);
     });
-    mainWindow.on('resize', () => {
+    mainWindow.on('maximize', () => {
         notifyWindowMaximized(mainWindow);
     });
-    mainWindow.on('move', () => {
+    mainWindow.on('unmaximize', () => {
         notifyWindowMaximized(mainWindow);
     });
 
