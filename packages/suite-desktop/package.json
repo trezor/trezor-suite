@@ -100,7 +100,6 @@
                     "from": "build/static/bridge",
                     "to": "bridge",
                     "filter": [
-                        "**/trezord-win-x32.exe",
                         "**/trezord-win-x64.exe"
                     ]
                 }
@@ -117,7 +116,6 @@
                     "from": "build/static/bridge",
                     "to": "bridge",
                     "filter": [
-                        "**/trezord-linux-x32",
                         "**/trezord-linux-x64"
                     ]
                 }
