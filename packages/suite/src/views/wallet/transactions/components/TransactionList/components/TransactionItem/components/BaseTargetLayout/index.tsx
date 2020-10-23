@@ -59,6 +59,8 @@ const TargetAddress = styled(motion.div)`
     text-overflow: ellipsis;
     font-variant-numeric: tabular-nums slashed-zero;
     margin-right: 4px;
+    padding-left: 10px;
+    margin-left: -10px;
 `;
 
 const TimelineDotWrapper = styled.div`
