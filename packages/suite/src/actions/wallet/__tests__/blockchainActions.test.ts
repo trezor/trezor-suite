@@ -1,76 +1,58 @@
-/* eslint-disable global-require */
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import accountsReducer from '@wallet-reducers/accountsReducer';
 import transactionReducer from '@wallet-reducers/transactionReducer';
+import blockchainReducer from '@wallet-reducers/blockchainReducer';
+import feesReducer from '@wallet-reducers/feesReducer';
 import notificationsReducer from '@suite-reducers/notificationReducer';
-import { BLOCKCHAIN } from '../constants';
 import * as blockchainActions from '../blockchainActions';
 import * as fixtures from '../__fixtures__/blockchainActions';
 
 jest.mock('trezor-connect', () => {
-    let fixture: any;
-    return {
-        __esModule: true, // this property makes it work
-        default: {
-            blockchainSetCustomBackend: () => {},
-            getAccountInfo: () =>
-                fixture
-                    ? {
-                          success: true,
-                          payload: fixture,
-                      }
-                    : {
-                          success: false,
-                      },
-            blockchainGetTransactions: () => {
-                return {
-                    success: true,
-                    payload: {
-                        txid: 'foo',
-                    },
-                };
-            },
-            blockchainEstimateFee: () =>
-                fixture || {
-                    success: false,
-                },
-        },
-        setTestFixtures: (f: any) => {
-            fixture = f;
-        },
-        DEVICE: {},
-        BLOCKCHAIN: {},
-    };
+    return global.JestMocks.getTrezorConnect({});
 });
+const TrezorConnect = require('trezor-connect').default;
 
 type AccountsState = ReturnType<typeof accountsReducer>;
 type TransactionsState = ReturnType<typeof transactionReducer>;
-interface InitialState {
+type FeesState = ReturnType<typeof feesReducer>;
+type BlockchainState = ReturnType<typeof blockchainReducer>;
+interface Args {
     accounts?: AccountsState;
+    blockchain?: Partial<BlockchainState>;
+    fees?: Partial<FeesState>;
     transactions?: TransactionsState['transactions'];
+    blockbookUrls?: { coin: string }[];
 }
 
-export const getInitialState = (state?: InitialState) => {
-    const accounts = state ? state.accounts : [];
-    const txs = state ? state.transactions : undefined;
-    const initAction: any = { type: 'foo' };
+export const getInitialState = (
+    { accounts, transactions, blockchain, fees, blockbookUrls }: Args = {},
+    action: any = { type: 'initial' },
+) => {
     return {
         wallet: {
-            accounts: accountsReducer(accounts, initAction),
+            accounts: accountsReducer(accounts, action),
             transactions: transactionReducer(
                 {
-                    transactions: txs || {},
+                    transactions: transactions || {},
                     isLoading: false,
                     error: null,
                 },
-                initAction,
+                action,
             ),
+            blockchain: {
+                ...blockchainReducer(undefined, action),
+                ...blockchain,
+            },
+            fees: {
+                ...feesReducer(undefined, action),
+                ...fees,
+            },
             settings: {
-                blockbookUrls: [],
+                blockbookUrls: blockbookUrls || [],
             },
         },
-        notifications: notificationsReducer([], initAction),
+        notifications: notificationsReducer([], action),
         devices: [{ state: 'deviceState' }], // device is needed for notification/event
         suite: {
             device: { state: 'deviceState' }, // device is needed for notification/event
@@ -86,29 +68,82 @@ const initStore = (state: State) => {
     store.subscribe(() => {
         const actions = store.getActions();
         const action = actions[actions.length - 1];
-        const { accounts, transactions } = store.getState().wallet;
-        store.getState().wallet.accounts = accountsReducer(accounts, action);
-        store.getState().wallet.transactions = transactionReducer(transactions, action);
-        store.getState().notifications = notificationsReducer(
-            store.getState().notifications,
-            action,
-        );
+        const state = store.getState();
+        const { wallet } = state;
+        store.getState().wallet = {
+            ...wallet,
+            accounts: accountsReducer(wallet.accounts, action),
+            transactions: transactionReducer(wallet.transactions, action),
+            blockchain: blockchainReducer(wallet.blockchain, action),
+            fees: feesReducer(wallet.fees, action),
+        };
+        store.getState().notifications = notificationsReducer(state.notifications, action);
     });
     return store;
 };
 
 describe('Blockchain Actions', () => {
-    it('init', async () => {
-        const store = initStore(getInitialState());
-        await store.dispatch(blockchainActions.init());
-        const action = store.getActions().pop();
-        expect(action.type).toEqual(BLOCKCHAIN.READY);
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    fixtures.init.forEach(f => {
+        it(`init: ${f.description}`, async () => {
+            const store = initStore(getInitialState(f.initialState as Args));
+            await store.dispatch(blockchainActions.init());
+            expect(store.getActions()).toMatchObject(f.actions);
+            expect(TrezorConnect.blockchainUnsubscribeFiatRates).toBeCalledTimes(
+                f.blockchainUnsubscribeFiatRates,
+            );
+        });
+    });
+
+    fixtures.onConnect.forEach(f => {
+        it(`onConnect: ${f.description}`, async () => {
+            TrezorConnect.setTestFixtures(f.connect);
+            const store = initStore(getInitialState(f.initialState as Args));
+            await store.dispatch(blockchainActions.onConnect(f.symbol));
+            expect(store.getActions()).toMatchObject(f.actions);
+            expect(TrezorConnect.blockchainEstimateFee).toBeCalledTimes(f.blockchainEstimateFee);
+            expect(TrezorConnect.blockchainSubscribe).toBeCalledTimes(f.blockchainSubscribe);
+        });
+    });
+
+    fixtures.onDisconnect.forEach(f => {
+        it(`onDisconnect: ${f.description}`, async () => {
+            const store = initStore(getInitialState(f.initialState as Args));
+            await store.dispatch(
+                blockchainActions.onDisconnect({
+                    // @ts-ignore partial params
+                    coin: { shortcut: f.symbol },
+                }),
+            );
+            const actions = store.getActions();
+            expect(actions).toMatchObject(f.actions);
+            if (actions.length) {
+                // wait for reconnection timeout
+                const timeout = actions[0].payload.time - new Date().getTime() + 500;
+                jest.setTimeout(10000);
+                await new Promise(resolve => setTimeout(resolve, timeout));
+                expect(TrezorConnect.blockchainUnsubscribeFiatRates).toBeCalledTimes(1);
+            }
+        });
+    });
+
+    fixtures.onNotification.forEach(f => {
+        it(`onConnect: ${f.description}`, async () => {
+            // TrezorConnect.setTestFixtures(f.connect);
+            const store = initStore(getInitialState(f.initialState as Args));
+            await store.dispatch(blockchainActions.onNotification(f.params as any));
+            expect(store.getActions()).toMatchObject(f.actions);
+            expect(TrezorConnect.getAccountInfo).toBeCalledTimes(f.getAccountInfo);
+        });
     });
 
     fixtures.onBlock.forEach(f => {
         it(`onBlock: ${f.description}`, async () => {
             // set fixtures in trezor-connect
-            require('trezor-connect').setTestFixtures(f.connect);
+            TrezorConnect.setTestFixtures(f.connect && { success: true, payload: f.connect });
             const store = initStore(getInitialState(f.state as any));
             await store.dispatch(blockchainActions.onBlockMined(f.block as any));
             if (!f.result) {
@@ -130,5 +165,44 @@ describe('Blockchain Actions', () => {
                 }
             }
         });
+    });
+
+    fixtures.customBacked.forEach(f => {
+        it(`customBacked: ${f.description}`, async () => {
+            const store = initStore(
+                getInitialState({
+                    blockbookUrls: f.initialState,
+                }),
+            );
+            await store.dispatch(blockchainActions.setCustomBackend(f.symbol));
+            expect(TrezorConnect.blockchainSetCustomBackend).toBeCalledTimes(
+                f.blockchainSetCustomBackend,
+            );
+        });
+    });
+
+    it('updateFeeInfo: just for coverage', async () => {
+        const store = initStore(
+            getInitialState({
+                blockchain: {
+                    // @ts-ignore partial params
+                    btc: { blockHeight: 109 },
+                },
+                fees: {
+                    // @ts-ignore partial params
+                    btc: { blockHeight: 100 },
+                },
+            }),
+        );
+        // try invalid coin
+        await store.dispatch(blockchainActions.updateFeeInfo('btc-invalid'));
+        // will not trigger update because of blockHeight's
+        await store.dispatch(blockchainActions.updateFeeInfo('btc'));
+        expect(TrezorConnect.blockchainEstimateFee).toBeCalledTimes(0);
+
+        // preload fee info failed in connect
+        TrezorConnect.setTestFixtures({ success: false });
+        await store.dispatch(blockchainActions.preloadFeeInfo());
+        expect(store.getActions()).toMatchObject([{ payload: {} }]);
     });
 });
