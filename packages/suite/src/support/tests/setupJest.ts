@@ -176,6 +176,93 @@ const getWalletTransaction = (t: Partial<WalletAccountTransaction>): WalletAccou
     };
 };
 
+// Mocked TrezorConnect used in various tests
+const getTrezorConnect = <M>(methods?: M) => {
+    // event listeners
+    const listeners: { [key: string]: Function } = {};
+    // methods response fixtures
+    let fixtures: Record<string, any> | Record<string, any>[] | undefined;
+    const getFixture = () => {
+        if (Array.isArray(fixtures)) {
+            return fixtures.shift();
+        }
+        return fixtures;
+    };
+
+    return {
+        __esModule: true, // export as module
+        default: {
+            // define mocked TrezorConnect methods
+            init: () => {},
+            on: (event: string, cb: Function) => {
+                listeners[event] = cb;
+            },
+            off: () => {},
+            blockchainSetCustomBackend: jest.fn(async _params => {
+                return { success: true, ...getFixture(), _params };
+            }),
+            blockchainSubscribe: jest.fn(async _params => {
+                return { success: true, ...getFixture(), _params };
+            }),
+            blockchainSubscribeFiatRates: jest.fn(async _params => {
+                return { success: true, ...getFixture(), _params };
+            }),
+            blockchainUnsubscribeFiatRates: jest.fn(async _params => {
+                return { success: true, ...getFixture(), _params };
+            }),
+            blockchainEstimateFee: jest.fn(async _params => {
+                return { success: true, payload: { levels: [{}] }, ...getFixture(), _params };
+            }),
+            blockchainGetTransactions: jest.fn(async _params => {
+                return { success: true, payload: { txid: 'foo' }, ...getFixture(), _params };
+            }),
+            blockchainDisconnect: jest.fn(async _params => {
+                return { success: true, ...getFixture(), _params };
+            }),
+            getAccountInfo: jest.fn(async _params => {
+                return { success: false, ...getFixture(), _params };
+            }),
+            changePin: () => {
+                return {
+                    success: true,
+                    payload: {
+                        message: 'great success',
+                    },
+                };
+            },
+            // additional methods used by s
+
+            setTestFixtures: (f?: typeof fixtures) => {
+                fixtures = f;
+            },
+            getTestFixtures: () => fixtures,
+            emit: (event: string, data: any) => {
+                listeners[event].call(undefined, {
+                    event,
+                    ...data,
+                });
+            },
+            ...methods,
+        },
+        DEVICE_EVENT: 'DEVICE_EVENT',
+        UI_EVENT: 'UI_EVENT',
+        TRANSPORT_EVENT: 'TRANSPORT_EVENT',
+        BLOCKCHAIN_EVENT: 'BLOCKCHAIN_EVENT',
+        DEVICE: {},
+        BLOCKCHAIN: {
+            CONNECT: 'blockchain-connect',
+            BLOCK: 'blockchain-block',
+            NOTIFICATION: 'blockchain-notification',
+            ERROR: 'blockchain-error',
+        },
+        TRANSPORT: {},
+        UI: {
+            REQUEST_PIN: 'ui-request_pin',
+            REQUEST_BUTTON: 'ui-request_button',
+        },
+    };
+};
+
 class BroadcastChannel {
     name: string;
     constructor(name: string) {
@@ -204,6 +291,7 @@ declare global {
                 getSuiteDevice: typeof getSuiteDevice;
                 getWalletAccount: typeof getWalletAccount;
                 getWalletTransaction: typeof getWalletTransaction;
+                getTrezorConnect: typeof getTrezorConnect;
                 intlMock: typeof intlMock;
             };
             BroadcastChannel: typeof BroadcastChannel;
@@ -222,6 +310,7 @@ global.JestMocks = {
     getSuiteDevice,
     getWalletAccount,
     getWalletTransaction,
+    getTrezorConnect,
     intlMock,
 };
 
