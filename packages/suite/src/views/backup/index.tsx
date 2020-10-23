@@ -200,9 +200,6 @@ const Backup = (props: Props) => {
                             >
                                 <Translation id="TR_CREATE_BACKUP" />
                             </StyledButton>
-                            <CloseButton onClick={onClose}>
-                                <Translation id="TR_CANCEL" />
-                            </CloseButton>
                         </Col>
                     </Buttons>
                 </>

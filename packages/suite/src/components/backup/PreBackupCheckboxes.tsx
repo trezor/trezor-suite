@@ -6,13 +6,20 @@ import { connect } from 'react-redux';
 import * as backupActions from '@suite/actions/backup/backupActions';
 import { CheckItem, Translation } from '@suite-components';
 import { Dispatch, AppState } from '@suite-types';
+import { variables } from '@trezor/components';
 
 const CheckboxWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    align-self: center;
     margin-top: 10px;
     margin-bottom: 2px;
+    max-width: 80%;
+
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        max-width: 100%;
+    }
 `;
 
 const mapStateToProps = (state: AppState) => ({

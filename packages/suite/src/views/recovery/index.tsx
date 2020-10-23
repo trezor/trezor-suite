@@ -153,6 +153,8 @@ const Recovery = ({
 
     return (
         <Modal
+            cancelable={recovery.status !== 'in-progress'}
+            onCancel={closeModalApp}
             useFixedHeight
             heading={<Translation id="TR_CHECK_RECOVERY_SEED" />}
             totalProgressBarSteps={statesInProgressBar.length}
@@ -246,9 +248,6 @@ const Recovery = ({
                             >
                                 <Translation id="TR_START" />
                             </StyledButton>
-                            <CloseButton onClick={() => closeModalApp()}>
-                                <Translation id="TR_CANCEL" />
-                            </CloseButton>
                         </Buttons>
                     </>
                 )}
@@ -259,11 +258,6 @@ const Recovery = ({
                             <Translation id="TR_SELECT_NUMBER_OF_WORDS" />
                         </H2>
                         <SelectWordCount onSelect={(count: WordCount) => onSetWordsCount(count)} />
-                        <Buttons>
-                            <CloseButton onClick={() => closeModalApp()}>
-                                <Translation id="TR_CANCEL" />
-                            </CloseButton>
-                        </Buttons>
                     </>
                 )}
                 {recovery.status === 'select-recovery-type' && (
@@ -272,11 +266,6 @@ const Recovery = ({
                             <Translation id="TR_CHOSE_RECOVERY_TYPE" />
                         </H2>
                         <SelectRecoveryType onSelect={(type: boolean) => onSetRecoveryType(type)} />
-                        <Buttons>
-                            <CloseButton onClick={() => closeModalApp()}>
-                                <Translation id="TR_CANCEL" />
-                            </CloseButton>
-                        </Buttons>
                     </>
                 )}
 
@@ -316,9 +305,6 @@ const Recovery = ({
                             <Translation id="TR_SEED_CHECK_FAIL_TITLE" />
                         </H2>
                         <Error error={recovery.error} />
-                        <Buttons>
-                            <CloseButton onClick={() => closeModalApp()} />
-                        </Buttons>
                     </>
                 )}
             </Wrapper>
