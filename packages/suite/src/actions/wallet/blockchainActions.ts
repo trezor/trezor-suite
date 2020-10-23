@@ -321,38 +321,36 @@ export const onNotification = (payload: BlockchainNotification) => async (
     }
 };
 
-export const setReconnectionTimeout = (error: BlockchainError) => async (
+export const onDisconnect = (error: BlockchainError) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
     const network = getNetwork(error.coin.shortcut.toLowerCase());
     if (!network) return;
 
-    const blockchain = getState().wallet.blockchain[network.symbol];
-    if (blockchain.reconnection) {
+    const { blockchain, accounts } = getState().wallet;
+    const { reconnection } = blockchain[network.symbol];
+    if (reconnection) {
         // reset previous timeout
-        clearTimeout(blockchain.reconnection.id);
+        clearTimeout(reconnection.id);
     }
 
     // there is no need to reconnect since there are no accounts for this network
-    const accounts = getState().wallet.accounts.filter(a => a.symbol === network.symbol);
-    if (!accounts.length) {
-        return;
-    }
+    const a = accounts.filter(a => a.symbol === network.symbol);
+    if (!a.length) return;
 
-    const count = blockchain.reconnection ? blockchain.reconnection.count : 0;
+    const count = reconnection ? reconnection.count : 0;
     const timeout = Math.min(2500 * count, 20000);
+    const time = new Date().getTime() + timeout;
 
-    const id = setTimeout(async () => {
-        await dispatch(reconnect(network.symbol));
-    }, timeout);
+    const id = setTimeout(() => dispatch(reconnect(network.symbol)), timeout);
 
     dispatch({
         type: BLOCKCHAIN.RECONNECT_TIMEOUT_START,
         payload: {
             symbol: network.symbol,
             id,
-            time: new Date().getTime() + timeout,
+            time,
             count: count + 1,
         },
     });

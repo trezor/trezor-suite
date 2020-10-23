@@ -3,7 +3,7 @@ import { BLOCKCHAIN } from 'trezor-connect';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 import { AppState, Action, Dispatch } from '@suite-types';
 
-const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
+const blockchainMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
 ): Action => {
     // propagate action to reducers
@@ -21,7 +21,7 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
             api.dispatch(blockchainActions.onNotification(action.payload));
             break;
         case BLOCKCHAIN.ERROR:
-            api.dispatch(blockchainActions.setReconnectionTimeout(action.payload));
+            api.dispatch(blockchainActions.onDisconnect(action.payload));
             break;
         default:
             break;
@@ -30,4 +30,4 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
     return action;
 };
 
-export default walletMiddleware;
+export default blockchainMiddleware;
