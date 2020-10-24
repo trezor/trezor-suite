@@ -1,17 +1,20 @@
 lint:
     stage: prebuild
-    needs: []
+    needs:
+        - install and build
     script:
         - lerna run lint
 
 typescript:
     stage: prebuild
-    needs: []
+    needs:
+        - install and build
     script:
         - lerna run type-check
 
 unit tests:
     stage: prebuild
-    needs: []
+    needs:
+        - install and build
     script:
         - lerna run --stream test:unit -- --passWithNoTests
