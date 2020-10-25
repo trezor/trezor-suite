@@ -357,7 +357,7 @@ const connectProvider = [
         result: [
             {
                 type: '@metadata/set-provider',
-                payload: { type: 'dropbox', token: 'token-haf-mnau', user: 'haf' },
+                payload: { type: 'dropbox', token: 'token-haf-mnau', user: 'haf', isCloud: true },
             },
         ],
     },
@@ -450,7 +450,7 @@ export const disableMetadata = [
     },
 ];
 
-const initMetadata = [
+const init = [
     {
         description: 'device without state',
         initialState: {
@@ -491,7 +491,7 @@ const initMetadata = [
             },
             {
                 type: '@metadata/set-provider',
-                payload: { type: 'dropbox', token: 'token', user: 'power-user' },
+                payload: { type: 'dropbox', token: 'token', user: 'power-user', isCloud: true },
             },
             {
                 type: '@metadata/wallet-loaded',
@@ -514,5 +514,5 @@ export {
     fetchMetadata,
     connectProvider,
     addMetadata,
-    initMetadata,
+    init,
 };

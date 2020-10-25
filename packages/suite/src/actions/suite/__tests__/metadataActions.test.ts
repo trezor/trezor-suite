@@ -60,6 +60,7 @@ jest.mock('dropbox', () => {
         getAccessToken() {
             return 'token-haf-mnau';
         }
+        refreshAccessToken() {}
     }
     return {
         __esModule: true, // this property makes it work
@@ -272,8 +273,9 @@ describe('Metadata Actions', () => {
         });
     });
 
-    fixtures.initMetadata.forEach(f => {
+    fixtures.init.forEach(f => {
         it(`initMetadata - ${f.description}`, async () => {
+            jest.mock('@suite/services/metadata/DropboxProvider');
             // @ts-ignore
             const store = initStore(getInitialState(f.initialState));
             // @ts-ignore, params

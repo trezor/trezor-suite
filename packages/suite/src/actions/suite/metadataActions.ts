@@ -16,17 +16,7 @@ import * as modalActions from '@suite-actions/modalActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import DropboxProvider from '@suite/services/metadata/DropboxProvider';
 import GoogleProvider from '@suite/services/metadata/GoogleProvider';
-import UserDataProvider from '@suite/services/metadata/UserDataProvider';
-// import { isDesktop } from '@suite-utils/env';
-
-// todo: think, what is the philosophy behind local sync? is it on the same level
-// as cloud sync?
-// const localSyncAllowed = () => {
-//     // web     - disallowed
-//     // desktop - allowed
-//     // native  - ?
-//     return isDesktop();
-// };
+import FileSystemProvider from '@suite/services/metadata/FileSystemProvider';
 
 export type MetadataActions =
     | { type: typeof METADATA.ENABLE }
@@ -51,7 +41,7 @@ export type MetadataActions =
       };
 
 // needs to be declared here in top level context because it's not recommended to keep classes instances in redux state (serialization)
-let providerInstance: DropboxProvider | GoogleProvider | UserDataProvider | undefined;
+let providerInstance: DropboxProvider | GoogleProvider | FileSystemProvider | undefined;
 const fetchIntervals: { [deviceState: string]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
 const createProvider = (type: MetadataProvider['type'], token?: MetadataProvider['token']) => {
@@ -60,8 +50,8 @@ const createProvider = (type: MetadataProvider['type'], token?: MetadataProvider
             return new DropboxProvider(token);
         case 'google':
             return new GoogleProvider(token);
-        case 'userData':
-            return new UserDataProvider();
+        case 'fileSystem':
+            return new FileSystemProvider();
         default:
             throw new Error(`provider of type ${type} is not implemented`);
     }
@@ -251,9 +241,8 @@ export const fetchMetadata = (deviceState: string) => async (
 
     // this triggers renewal of access token if needed. Otherwise multiple requests
     // to renew access token are issued by every provider.getFileContent
-    // const response = await provider.getProviderDetails();
-    const isConnected = await provider.isConnected();
-    if (!isConnected) return;
+    const response = await provider.getProviderDetails();
+    if (!response.success) return;
 
     const deviceFileContentP = new Promise((resolve, reject) => {
         if (device?.metadata?.status !== 'enabled') {
@@ -626,7 +615,7 @@ export const addMetadata = (payload: MetadataAddPayload) => async (dispatch: Dis
 };
 
 /**
- * initMetadata - prepare everything needed to load + decrypt and upload + decrypt metadata. Note that this method
+ * init - prepare everything needed to load + decrypt and upload + decrypt metadata. Note that this method
  * consists of number of steps of which not all have to necessarily happen. For example
  * user may directly navigate to /settings, enable metadata (by invoking init), but his device
  * does not have state yet.
