@@ -1,12 +1,12 @@
 import { AbstractMetadataProvider, Result } from '@suite-types/metadata';
 import Google from '../google';
 
-class UserDataProvider extends AbstractMetadataProvider {
+class FileSystemProvider extends AbstractMetadataProvider {
     client: Google;
     isCloud = true;
 
     constructor(_token?: string) {
-        super('userData');
+        super('fileSystem');
         this.client = new Google();
     }
 
@@ -47,4 +47,4 @@ class UserDataProvider extends AbstractMetadataProvider {
     }
 }
 
-export default UserDataProvider;
+export default FileSystemProvider;

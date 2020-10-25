@@ -1,10 +1,10 @@
 import { AbstractMetadataProvider } from '@suite-types/metadata';
 
-class UserDataProvider extends AbstractMetadataProvider {
+class FileSystemProvider extends AbstractMetadataProvider {
     isCloud = false;
 
     constructor() {
-        super('userData');
+        super('fileSystem');
     }
 
     async connect() {
@@ -54,4 +54,4 @@ class UserDataProvider extends AbstractMetadataProvider {
     }
 }
 
-export default UserDataProvider;
+export default FileSystemProvider;

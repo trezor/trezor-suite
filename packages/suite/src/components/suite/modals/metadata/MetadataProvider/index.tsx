@@ -108,8 +108,8 @@ const MetadataProvider = (props: Props) => {
                 {isEnabled('FILE_SYSTEM_SYNC') && (
                     <StyledButton
                         variant="tertiary"
-                        onClick={() => connect('userData')}
-                        isLoading={isLoading === 'userData'}
+                        onClick={() => connect('fileSystem')}
+                        isLoading={isLoading === 'fileSystem'}
                         isDisabled={!!isLoading}
                     >
                         Local file system

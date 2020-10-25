@@ -33,7 +33,7 @@ export type MetadataAddPayload =
 // }
 export type MetadataItem = string;
 
-export type MetadataProviderType = 'dropbox' | 'google' | 'userData' | 'sdCard';
+export type MetadataProviderType = 'dropbox' | 'google' | 'fileSystem' | 'sdCard';
 
 /**
  * Representation of provider data stored in reducer
