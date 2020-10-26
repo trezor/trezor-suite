@@ -10,7 +10,6 @@ import * as store from './store';
 import { runBridgeProcess } from './bridge';
 import { buildMainMenu } from './menu';
 import { openBuyWindow } from './buy';
-// import * as metadata from './metadata';
 import { HttpReceiver } from './http-receiver';
 import * as metadata from './metadata';
 

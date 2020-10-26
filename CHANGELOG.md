@@ -4,7 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
-
+- Metadata (labeling) may now be saved locally. This feature is available only for desktop version.
 
 ### Changed
 - Improved metadata (labeling) input
