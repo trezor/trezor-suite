@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { Button } from '@trezor/components';
 import ButtonPin from './components/ButtonPin';
 import InputPin from './components/InputPin';
-import { Translation } from '@suite-components/Translation';
+import { Translation } from '@suite-components';
+import { MAX_LENGTH } from '@suite-constants/inputs';
 
 const Wrapper = styled.div`
     display: flex;
@@ -49,7 +50,7 @@ const PinInput = (props: Props) => {
 
     const onPinAdd = useCallback(
         (input: string) => {
-            if (pin.length < 9) {
+            if (pin.length < MAX_LENGTH.PIN) {
                 setPin(pin + input);
             }
         },
