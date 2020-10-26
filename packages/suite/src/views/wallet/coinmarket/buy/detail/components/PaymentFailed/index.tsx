@@ -35,11 +35,12 @@ const Description = styled.div`
 `;
 
 const Link = styled.a`
-    margin-top: 30px;
     margin-bottom: 30px;
 `;
 
-const StyledButton = styled(Button)``;
+const StyledButton = styled(Button)`
+    margin-top: 30px;
+`;
 
 interface Props {
     transactionId?: string;
