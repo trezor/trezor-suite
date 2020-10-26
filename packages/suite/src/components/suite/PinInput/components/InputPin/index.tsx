@@ -1,52 +1,39 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, Icon, colors } from '@trezor/components';
-import { MAX_LENGTH } from '@suite-constants/inputs';
+import { variables, colors, Icon, Input } from '@trezor/components';
 
-const Wrapper = styled.div`
-    position: relative;
-`;
-
-const StyledInput = styled.input`
-    letter-spacing: 7px;
-    width: 100%;
-    height: 53px;
+const StyledInput = styled(Input)`
+    letter-spacing: 8px;
+    min-width: 256px;
+    height: 54px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    font-size: ${variables.FONT_SIZE.H2};
-    padding: 0 31px 0 20px;
+    font-size: ${variables.FONT_SIZE.SMALL};
+    padding: 0 32px 0 20px;
     color: ${colors.BLACK25};
     background: transparent;
-    border-radius: 3px;
+    border-radius: 4px;
     box-shadow: inset 0 3px 6px 0 ${colors.BLACK92};
     border: solid 1px #cccccc;
     box-sizing: border-box;
 `;
 
 const StyledIcon = styled(Icon)`
-    position: absolute;
-    top: 14px;
-    right: 15px;
     cursor: pointer;
 `;
 
-// TODO: proper types for wrapperProps (should be same as React.HTMLAttributes<HTMLDivElement>)
 interface Props {
     value: string;
-    wrapperProps?: Record<string, any>;
     onDeleteClick: (event?: React.MouseEvent<any>) => void;
 }
 
-const InputPin = ({ value, onDeleteClick, wrapperProps, ...rest }: Props) => (
-    <Wrapper {...rest} {...wrapperProps}>
-        <StyledInput
-            disabled
-            type="password"
-            maxLength={MAX_LENGTH.PIN}
-            autoComplete="off"
-            value={value}
-        />
-        <StyledIcon onClick={onDeleteClick} color={colors.BLACK25} icon="BACK" />
-    </Wrapper>
+const InputPin = ({ value, onDeleteClick }: Props) => (
+    <StyledInput
+        disabled
+        noTopLabel
+        noError
+        value={value.replace(/[0-9]/g, '●')}
+        innerAddon={<StyledIcon onClick={onDeleteClick} color={colors.BLACK25} icon="BACK" />}
+    />
 );
 
 export default InputPin;

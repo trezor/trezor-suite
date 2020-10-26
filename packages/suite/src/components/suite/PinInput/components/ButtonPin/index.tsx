@@ -13,7 +13,7 @@ const Button = styled.button`
     padding-top: 30%;
     width: 100%;
 
-    border-radius: 3px;
+    border-radius: 4px;
     border: 1px solid ${colors.BLACK70};
     background: linear-gradient(to bottom, #fefefe, #f2f2f2);
 
