@@ -41,7 +41,7 @@ const Actions = styled.div<{ isMac?: boolean }>`
     margin: ${props => (props.isMac ? '0 10px' : '0')};
 `;
 
-const Action = styled.div<{ isMac?: boolean }>`
+const Action = styled.div<{ isMac?: boolean; isDisabled?: boolean }>`
     width: ${props => (props.isMac ? 14 : TITLEBAR_HEIGHT)}px;
     height: ${props => (props.isMac ? 14 : TITLEBAR_HEIGHT)}px;
     margin: ${props => (props.isMac ? 2 : 0)}px;
@@ -67,12 +67,19 @@ const ActionClose = styled(Action)`
 `;
 
 const ActionMinimize = styled(Action)`
-    background: ${props => (props.isMac ? '#fabe3e' : 'transparent')};
     order: ${props => (props.isMac ? '0' : '1')};
-
-    &:hover {
-        background: ${props => (props.isMac ? '#fabe3e' : colors.NEUE_TYPE_LIGHT_GREY)};
-    }
+    ${props =>
+        props.isDisabled
+            ? `
+                background: ${colors.NEUE_TYPE_LIGHT_GREY};
+                cursor: auto;
+            `
+            : `
+                background: ${props.isMac ? '#fabe3e' : 'transparent'};
+                &:hover {
+                    background: ${props.isMac ? '#fabe3e' : colors.NEUE_TYPE_LIGHT_GREY};
+                }
+            `}
 `;
 
 const ActionMaximize = styled(Action)`
@@ -121,6 +128,7 @@ const DesktopTitlebar = () => {
     const isMac = isMacOS();
     const iconSize = isMac ? 10 : 16;
     const iconColor = isMac ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY;
+    const isMinimizedDisabled = isMac && maximized;
     const isMacNotHovering = !isMac || hover !== '';
     const isNotMacHovering = (btn: string) => !isMac && hover === btn;
 
@@ -145,12 +153,15 @@ const DesktopTitlebar = () => {
                 </ActionClose>
                 <ActionMinimize
                     isMac={isMac}
-                    onClick={() => window.desktopApi!.windowMinimize()}
+                    isDisabled={isMinimizedDisabled}
+                    onClick={
+                        isMinimizedDisabled ? undefined : () => window.desktopApi!.windowMinimize()
+                    }
                     data-button="minimize"
-                    onMouseEnter={mouseEnter}
-                    onMouseLeave={mouseLeave}
+                    onMouseEnter={isMinimizedDisabled ? undefined : mouseEnter}
+                    onMouseLeave={isMinimizedDisabled ? undefined : mouseLeave}
                 >
-                    {isMacNotHovering && (
+                    {isMacNotHovering && !isMinimizedDisabled && (
                         <Icon
                             color={isNotMacHovering('minimize') ? colors.WHITE : iconColor}
                             size={iconSize}
