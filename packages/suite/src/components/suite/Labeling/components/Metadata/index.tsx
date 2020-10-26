@@ -132,7 +132,7 @@ const ButtonLikeLabel = (props: ExtendedProps) => {
 };
 
 const TextLikeLabel = (props: ExtendedProps) => {
-    const EditableLabel = withEditable(Label);
+    const EditableLabel = useMemo(() => withEditable(Label), []);
 
     if (props.editActive) {
         return (
