@@ -14,9 +14,9 @@ import { Account } from '@wallet-types';
 import * as metadataUtils from '@suite-utils/metadata';
 import * as modalActions from '@suite-actions/modalActions';
 import * as notificationActions from '@suite-actions/notificationActions';
-import DropboxProvider from '@suite/services/metadata/DropboxProvider';
-import GoogleProvider from '@suite/services/metadata/GoogleProvider';
-import FileSystemProvider from '@suite/services/metadata/FileSystemProvider';
+import DropboxProvider from '@suite-services/metadata/DropboxProvider';
+import GoogleProvider from '@suite-services/metadata/GoogleProvider';
+import FileSystemProvider from '@suite-services/metadata/FileSystemProvider';
 
 export type MetadataActions =
     | { type: typeof METADATA.ENABLE }

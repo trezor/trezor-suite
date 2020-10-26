@@ -1,13 +1,10 @@
 import { AbstractMetadataProvider, Result } from '@suite-types/metadata';
-import Google from '../google';
 
 class FileSystemProvider extends AbstractMetadataProvider {
-    client: Google;
     isCloud = true;
 
     constructor(_token?: string) {
         super('fileSystem');
-        this.client = new Google();
     }
 
     async connect() {

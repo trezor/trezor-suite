@@ -1,5 +1,5 @@
 import { AbstractMetadataProvider, Result } from '@suite-types/metadata';
-import Google from '../google';
+import Google from '../../google';
 
 class GoogleProvider extends AbstractMetadataProvider {
     client: Google;
