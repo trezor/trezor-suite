@@ -13,6 +13,13 @@ export const allowedExternalUrls = [
     'https://satoshilabs.typeform.com',
     // invity + partners
     'https://invity.io',
+    'https://exchange.mercuryo.io/',
+    'https://btcdirect.eu/',
+    'https://my.btcdirect.eu/',
+    'https://my-sandbox.btcdirect.eu/',
+    'https://cexdirect.com/',
+    // internal server - used for buy post request
+    'http://127.0.0.1',
 ];
 
 export const cspRules = [

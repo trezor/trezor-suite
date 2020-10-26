@@ -49,6 +49,10 @@ export class HttpReceiver extends EventEmitter {
                 pathname: '/buy-redirect',
                 handler: this.buyHandler,
             },
+            {
+                pathname: '/buy-post',
+                handler: this.buyPostSubmitHandler,
+            },
             /**
              * Register more routes here. Each route must have pathname and handler function.
              */
@@ -146,12 +150,33 @@ export class HttpReceiver extends EventEmitter {
 
     private buyHandler = (request: Request, response: http.ServerResponse) => {
         const { hash } = url.parse(request.url, true);
-        this.emit('buy/redirect', hash);
+        if (hash) {
+            this.emit('buy/redirect', hash);
+        }
 
         const template = `
          <body>
-         ${hash}
              You may now close this window.
+         </body>
+     `;
+
+        response.end(template);
+    };
+
+    private buyPostSubmitHandler = (request: Request, response: http.ServerResponse) => {
+        const { query } = url.parse(request.url, true);
+        const action = query.a;
+        const template = `
+         <body>
+            Forwarding to ${action}...
+            <form id="buy-form" method="POST" action="${action}">
+            ${Object.keys(query)
+                .map(q =>
+                    q !== 'a' ? `<input type="hidden" name="${q}" value="${query[q]}">` : '',
+                )
+                .join('')}
+            </form>
+            <script type="text/javascript">document.getElementById("buy-form").submit();</script>
          </body>
      `;
 

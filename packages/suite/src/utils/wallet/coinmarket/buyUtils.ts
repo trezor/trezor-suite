@@ -99,7 +99,7 @@ export function createQuoteLink(request: BuyTradeQuoteRequest, account: Account)
     const params = `offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
 
     if (isDesktop()) {
-        return `https://127.0.0.1:21335/buy-redirect#/coinmarket-redirect/${params}`;
+        return `http://127.0.0.1:21335/buy-redirect#/coinmarket-redirect/${params}`;
     }
 
     return `${window.location.origin}${assetPrefix}/coinmarket-redirect#${params}`;
@@ -109,7 +109,7 @@ export function createTxLink(trade: BuyTrade, account: Account): string {
     const assetPrefix = process.env.assetPrefix || '';
     const params = `detail/${account.symbol}/${account.accountType}/${account.index}/${trade.paymentId}`;
     if (isDesktop()) {
-        return `https://127.0.0.1:21335/buy-redirect#/coinmarket-redirect/${params}`;
+        return `http://127.0.0.1:21335/buy-redirect#/coinmarket-redirect/${params}`;
     }
 
     return `${window.location.origin}${assetPrefix}/coinmarket-redirect#${params}`;
@@ -127,26 +127,27 @@ export function submitRequestForm(tradeForm: BuyTradeFormResponse): void {
     if (!tradeForm || !tradeForm.form) return;
     // for IFRAME there is nothing to submit
     if (tradeForm.form.formMethod === 'IFRAME') return;
-    const form = document.createElement('form');
+
     if (tradeForm.form.formMethod === 'GET' && tradeForm.form.formAction) {
-        window.open(tradeForm.form.formAction, '_self');
+        window.open(tradeForm.form.formAction, isDesktop() ? '_blank' : '_self');
         return;
     }
 
-    form.method = tradeForm.form.formMethod;
-    form.action = tradeForm.form.formAction;
     const { fields } = tradeForm.form;
-    Object.keys(fields).forEach(k => {
-        addHiddenFieldToForm(form, k, fields[k]);
-    });
-
     if (isDesktop()) {
-        const formWindow = window.open('', '_blank');
-        if (formWindow) {
-            formWindow.document.body.appendChild(form);
-            form.submit();
-        }
+        let params = `a=${encodeURIComponent(tradeForm.form.formAction)}`;
+        Object.keys(fields).forEach(k => {
+            params += `&${k}=${encodeURIComponent(fields[k])}`;
+        });
+        window.open(`http://127.0.0.1:21335/buy-post?${params}`, '_blank');
     } else {
+        const form = document.createElement('form');
+        form.method = tradeForm.form.formMethod;
+        form.action = tradeForm.form.formAction;
+        Object.keys(fields).forEach(k => {
+            addHiddenFieldToForm(form, k, fields[k]);
+        });
+
         if (!document.body) return;
         document.body.appendChild(form);
         form.submit();
