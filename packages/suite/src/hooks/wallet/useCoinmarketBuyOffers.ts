@@ -151,6 +151,7 @@ export const useOffers = (props: Props) => {
             if (response.tradeForm) {
                 submitRequestForm(response.tradeForm);
             }
+            goto('wallet-coinmarket-buy-detail');
         }
     };
 
