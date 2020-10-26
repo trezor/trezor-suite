@@ -45,33 +45,23 @@ const Line = styled.div`
 const Index = () => (
     <Layout>
         <Wrapper>
-            <H2>Beta Wallet</H2>
+            <H2>Trezor Suite: Closed Beta</H2>
             <StyledP size="tiny">
-                Beta Wallet is now specially designated for experimental testing and the access is
+                Trezor Suite: Closed Beta is designated for experimental testing and the access is
                 limited exclusively to our Beta Testers Community.
             </StyledP>
             <Item>
                 <Link href="./wallet/start" target="_self" variant="nostyle">
-                    <ButtonAccess variant="primary">Log in to Beta Wallet</ButtonAccess>
+                    <ButtonAccess variant="primary">Log in to Trezor Suite</ButtonAccess>
                 </Link>
             </Item>
             <Line />
-            <H2>Stable Wallet &amp; ETH / XRP Wallet</H2>
+            <H2>Trezor Suite: Public Beta</H2>
             <HeadBackP size="tiny">
                 <InfoRow>
-                    For ETH, XRP, ETC and ERC-20 tokens go to Trezor ETH / XRP Wallet:
-                    <Link
-                        href="https://beta-wallet.trezor.io/next"
-                        target="_blank"
-                        variant="nostyle"
-                    >
-                        <ButtonWallet variant="secondary">Trezor ETH / XRP Wallet</ButtonWallet>
-                    </Link>
-                </InfoRow>
-                <InfoRow>
-                    For BTC &amp; other coins go to Trezor Stable Wallet:
-                    <Link href="https://wallet.trezor.io" target="_blank" variant="nostyle">
-                        <ButtonWallet variant="secondary">Trezor Wallet</ButtonWallet>
+                    Trezor Suite is now available as public beta as well.
+                    <Link href="https://suite.trezor.io" target="_blank" variant="nostyle">
+                        <ButtonWallet variant="secondary">Go to Trezor Suite</ButtonWallet>
                     </Link>
                 </InfoRow>
             </HeadBackP>

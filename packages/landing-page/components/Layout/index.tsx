@@ -9,7 +9,7 @@ const Layout = styled.div`
 `;
 
 const Left = styled.div`
-    min-width: 385px;
+    min-width: 384px;
     object-fit: cover;
     background: url(${resolveStaticPath('images/landing/hero.svg')});
     background-repeat: no-repeat;
@@ -59,7 +59,7 @@ const Index = ({ children }: Props) => (
     <Layout>
         <Left />
         <Right>
-            <StyledTrezorLogo type="horizontal" width={160} />
+            <StyledTrezorLogo type="suite" width={200} />
             <Content>{children}</Content>
             {/* <Footer size="tiny">We use cookies for functionality and analytics purposes.</Footer> */}
         </Right>
