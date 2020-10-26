@@ -15,6 +15,7 @@ import { Props, ContextValues } from '@wallet-types/coinmarketBuyOffers';
 import { useSelector } from 'react-redux';
 import { AppState } from '@suite-types';
 import * as notificationActions from '@suite-actions/notificationActions';
+import { isDesktop } from '@suite/utils/suite/env';
 
 export const useOffers = (props: Props) => {
     const REFETCH_INTERVAL = 30000;
@@ -151,7 +152,9 @@ export const useOffers = (props: Props) => {
             if (response.tradeForm) {
                 submitRequestForm(response.tradeForm);
             }
-            goto('wallet-coinmarket-buy-detail');
+            if (isDesktop()) {
+                goto('wallet-coinmarket-buy-detail');
+            }
         }
     };
 
