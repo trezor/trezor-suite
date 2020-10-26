@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { CoinmarketProvidedByInvity } from '@wallet-components';
 import { useOnClickOutside } from '@suite-utils/dom';
-import { Translation } from '@suite-components';
+import { Translation, ExternalLink } from '@suite-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const Wrapper = styled.div`
@@ -65,7 +65,7 @@ const Image = styled.img`
     width: 70px;
 `;
 
-const Link = styled.a`
+const StyledExternalLink = styled(ExternalLink)`
     display: flex;
     flex: 1;
     padding-top: 1px;
@@ -111,14 +111,14 @@ const CoinmarketFooter = () => {
                     <FooterBox ref={menuRef}>
                         <Header>
                             <BoxLeft>
-                                <Link href="https://invity.io/" target="_blank">
+                                <StyledExternalLink href="https://invity.io/" target="_blank">
                                     <Image src={resolveStaticPath('/images/svg/invity-logo.svg')} />
-                                </Link>
+                                </StyledExternalLink>
                             </BoxLeft>
                             <BoxRight>
-                                <Link href="https://invity.io/" target="_blank">
+                                <ExternalLink href="https://invity.io/" target="_blank">
                                     <Button variant="tertiary">invity.io</Button>
-                                </Link>
+                                </ExternalLink>
                                 <IconWrapper onClick={() => setToggled(false)}>
                                     <StyledIcon icon="CROSS" size={16} />
                                 </IconWrapper>
