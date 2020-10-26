@@ -369,23 +369,23 @@ httpReceiver.on('server/listening', () => {
     httpReceiver.on('buy/redirect', url => {
         // if we are already in the buy detail page of the correct account, we do not have to redirect
         // url is in the form /coinmarket-redirect/detail/btc/normal/0/d36e9922-f522-451d-8024-fd4330ecaf6b
-        // required mainWindow url to skip redirect is /accounts/coinmarket/buy/offers/#/btc/0/normal or /accounts/coinmarket/buy/offers/#/btc/0 for normal account
-        const splitUrl = url.split('/');
+        // required mainWindow url to skip redirect is /accounts/coinmarket/buy/detail/#/btc/0/normal or /accounts/coinmarket/buy/detail/#/btc/0 for normal account
+        const [, , action, coin, type, index] = url.split('/');
+
         if (
             !(
-                splitUrl.length === 7 &&
-                splitUrl[2] === 'detail' &&
+                action === 'detail' &&
                 (mainWindow.webContents
                     .getURL()
-                    .endsWith(
-                        `/accounts/coinmarket/buy/detail/#/${splitUrl[3]}/${splitUrl[5]}/${splitUrl[4]}`,
-                    ) ||
+                    .endsWith(`/accounts/coinmarket/buy/detail/#/${coin}/${index}/${type}`) ||
                     (mainWindow.webContents
                         .getURL()
-                        .endsWith(
-                            `/accounts/coinmarket/buy/detail/#/${splitUrl[3]}/${splitUrl[5]}`,
-                        ) &&
-                        splitUrl[4] === 'normal'))
+                        .endsWith(`/accounts/coinmarket/buy/detail/#/${coin}/${index}`) &&
+                        type === 'normal') ||
+                    (mainWindow.webContents.getURL().endsWith(`/accounts/coinmarket/buy/detail/`) &&
+                        type === 'normal' &&
+                        coin === 'btc' &&
+                        index === '0'))
             )
         ) {
             mainWindow.loadURL(

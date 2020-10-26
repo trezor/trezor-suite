@@ -44,11 +44,13 @@ export const useOffers = (props: Props) => {
         setIsFromRedirect,
         openCoinmarketBuyConfirmModal,
         addNotification,
+        saveTransactionDetailId,
     } = useActions({
         saveTrade: coinmarketBuyActions.saveTrade,
         setIsFromRedirect: coinmarketBuyActions.setIsFromRedirect,
         openCoinmarketBuyConfirmModal: coinmarketBuyActions.openCoinmarketBuyConfirmModal,
         addNotification: notificationActions.addToast,
+        saveTransactionDetailId: coinmarketBuyActions.saveTransactionDetailId,
     });
 
     const invityAPIUrl = useSelector<
@@ -148,12 +150,16 @@ export const useOffers = (props: Props) => {
             });
         } else {
             await saveTrade(response.trade, account, new Date().toISOString());
-            // eslint-disable-next-line no-lonely-if
             if (response.tradeForm) {
                 submitRequestForm(response.tradeForm);
             }
             if (isDesktop()) {
-                goto('wallet-coinmarket-buy-detail');
+                await saveTransactionDetailId(response.trade.paymentId);
+                goto('wallet-coinmarket-buy-detail', {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                });
             }
         }
     };
