@@ -15,7 +15,7 @@ import { Props, ContextValues } from '@wallet-types/coinmarketBuyOffers';
 import { useSelector } from 'react-redux';
 import { AppState } from '@suite-types';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { isDesktop } from '@suite/utils/suite/env';
+import { isDesktop } from '@suite-utils/env';
 
 export const useOffers = (props: Props) => {
     const REFETCH_INTERVAL = 30000;
