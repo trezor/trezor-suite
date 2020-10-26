@@ -121,6 +121,14 @@ const coinmarketReducer = (
             case COINMARKET_BUY.DISPOSE:
                 draft.buy.addressVerified = false;
                 break;
+            case COINMARKET_BUY.SAVE_TRADE:
+                if (action.key) {
+                    const trades = state.trades.filter(t => t.key !== action.key);
+                    const { type, ...trade } = action;
+                    trades.push(trade);
+                    draft.trades = trades;
+                }
+                break;
             case COINMARKET_EXCHANGE.SAVE_EXCHANGE_INFO:
                 draft.exchange.exchangeInfo = action.exchangeInfo;
                 break;
