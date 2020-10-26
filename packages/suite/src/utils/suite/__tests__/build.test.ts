@@ -48,6 +48,9 @@ describe('build', () => {
             expect(normalizeVersion('2022.12.01-beta')).toEqual('2022.12.1-beta');
             expect(normalizeVersion('3000.04.04-beta')).toEqual('3000.4.4-beta');
             expect(normalizeVersion('3000.04.04')).toEqual('3000.4.4');
+            expect(normalizeVersion('3000.04.0')).toEqual('3000.4.0');
+            expect(normalizeVersion('20.11.0')).toEqual('20.11.0');
+            expect(normalizeVersion('20.11.1')).toEqual('20.11.1');
         });
     });
 });
