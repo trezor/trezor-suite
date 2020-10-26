@@ -15,6 +15,7 @@ interface Events {
     'server/error': (error: string) => void;
     'oauth/code': (code: string) => void;
     'oauth/error': (message: string) => void;
+    'buy/redirect': (url: string) => void;
 }
 
 export declare interface HttpReceiver {
@@ -43,6 +44,10 @@ export class HttpReceiver extends EventEmitter {
             {
                 pathname: '/oauth',
                 handler: this.oauthHandler,
+            },
+            {
+                pathname: '/buy-redirect',
+                handler: this.buyHandler,
             },
             /**
              * Register more routes here. Each route must have pathname and handler function.
@@ -135,6 +140,20 @@ export class HttpReceiver extends EventEmitter {
                 You may now close this window.
             </body>
         `;
+
+        response.end(template);
+    };
+
+    private buyHandler = (request: Request, response: http.ServerResponse) => {
+        const { hash } = url.parse(request.url, true);
+        this.emit('buy/redirect', hash);
+
+        const template = `
+         <body>
+         ${hash}
+             You may now close this window.
+         </body>
+     `;
 
         response.end(template);
     };

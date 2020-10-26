@@ -99,8 +99,7 @@ export function createQuoteLink(request: BuyTradeQuoteRequest, account: Account)
     const params = `offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
 
     if (isDesktop()) {
-        // TEMP: for desktop. but this solution is temporary, local http server will be used later to accept callback
-        return `https://wallet.trezor.io/buy_receiver.html#/coinmarket-redirect/${params}`;
+        return `https://127.0.0.1:21335/buy-redirect#/coinmarket-redirect/${params}`;
     }
 
     return `${window.location.origin}${assetPrefix}/coinmarket-redirect#${params}`;
@@ -110,8 +109,7 @@ export function createTxLink(trade: BuyTrade, account: Account): string {
     const assetPrefix = process.env.assetPrefix || '';
     const params = `detail/${account.symbol}/${account.accountType}/${account.index}/${trade.paymentId}`;
     if (isDesktop()) {
-        // TEMP: for desktop. but this solution is temporary, local http server will be used later to accept callback
-        return `https://wallet.trezor.io/buy_receiver.html#/coinmarket-redirect/${params}`;
+        return `https://127.0.0.1:21335/buy-redirect#/coinmarket-redirect/${params}`;
     }
 
     return `${window.location.origin}${assetPrefix}/coinmarket-redirect#${params}`;
@@ -126,14 +124,12 @@ function addHiddenFieldToForm(form: any, fieldName: string, fieldValue: any) {
 }
 
 export function submitRequestForm(tradeForm: BuyTradeFormResponse): void {
-    const invityWindowName = 'invity-buy-partner-window';
     if (!tradeForm || !tradeForm.form) return;
     // for IFRAME there is nothing to submit
     if (tradeForm.form.formMethod === 'IFRAME') return;
-    const windowType = isDesktop() ? invityWindowName : '_self';
     const form = document.createElement('form');
     if (tradeForm.form.formMethod === 'GET' && tradeForm.form.formAction) {
-        window.open(tradeForm.form.formAction, windowType);
+        window.open(tradeForm.form.formAction, '_self');
         return;
     }
 
@@ -145,7 +141,7 @@ export function submitRequestForm(tradeForm: BuyTradeFormResponse): void {
     });
 
     if (isDesktop()) {
-        const formWindow = window.open('', invityWindowName);
+        const formWindow = window.open('', '_blank');
         if (formWindow) {
             formWindow.document.body.appendChild(form);
             form.submit();
