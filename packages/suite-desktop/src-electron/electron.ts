@@ -367,13 +367,36 @@ httpReceiver.on('server/listening', () => {
     });
 
     httpReceiver.on('buy/redirect', url => {
-        mainWindow.loadURL(
-            path.join(
-                src,
-                url.replace('#', '').replace('coinmarket-redirect/', 'coinmarket-redirect#'),
-            ),
-        );
-        app.focus();
+        // if we are already in the buy detail page of the correct account, we do not have to redirect
+        // url is in the form /coinmarket-redirect/detail/btc/normal/0/d36e9922-f522-451d-8024-fd4330ecaf6b
+        // required mainWindow url to skip redirect is /accounts/coinmarket/buy/offers/#/btc/0/normal or /accounts/coinmarket/buy/offers/#/btc/0 for normal account
+        const splitUrl = url.split('/');
+        if (
+            !(
+                splitUrl.length === 7 &&
+                splitUrl[2] === 'detail' &&
+                (mainWindow.webContents
+                    .getURL()
+                    .endsWith(
+                        `/accounts/coinmarket/buy/detail/#/${splitUrl[3]}/${splitUrl[5]}/${splitUrl[4]}`,
+                    ) ||
+                    (mainWindow.webContents
+                        .getURL()
+                        .endsWith(
+                            `/accounts/coinmarket/buy/detail/#/${splitUrl[3]}/${splitUrl[5]}`,
+                        ) &&
+                        splitUrl[4] === 'normal'))
+            )
+        ) {
+            mainWindow.loadURL(
+                path.join(
+                    src,
+                    url.replace('#', '').replace('coinmarket-redirect/', 'coinmarket-redirect#'),
+                ),
+            );
+        }
+
+        app.focus({ steal: true });
     });
 
     // when httpReceiver was asked to provide current address for given pathname

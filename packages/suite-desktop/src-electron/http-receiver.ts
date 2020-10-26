@@ -149,9 +149,9 @@ export class HttpReceiver extends EventEmitter {
     };
 
     private buyHandler = (request: Request, response: http.ServerResponse) => {
-        const { hash } = url.parse(request.url, true);
-        if (hash) {
-            this.emit('buy/redirect', hash);
+        const { query } = url.parse(request.url, true);
+        if (query && query.p) {
+            this.emit('buy/redirect', query.p.toString());
         }
 
         const template = `

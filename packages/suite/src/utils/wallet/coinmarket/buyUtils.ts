@@ -99,7 +99,9 @@ export function createQuoteLink(request: BuyTradeQuoteRequest, account: Account)
     const params = `offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
 
     if (isDesktop()) {
-        return `http://127.0.0.1:21335/buy-redirect#/coinmarket-redirect/${params}`;
+        return `http://127.0.0.1:21335/buy-redirect?p=${encodeURIComponent(
+            `/coinmarket-redirect/${params}`,
+        )}`;
     }
 
     return `${window.location.origin}${assetPrefix}/coinmarket-redirect#${params}`;
@@ -109,7 +111,9 @@ export function createTxLink(trade: BuyTrade, account: Account): string {
     const assetPrefix = process.env.assetPrefix || '';
     const params = `detail/${account.symbol}/${account.accountType}/${account.index}/${trade.paymentId}`;
     if (isDesktop()) {
-        return `http://127.0.0.1:21335/buy-redirect#/coinmarket-redirect/${params}`;
+        return `http://127.0.0.1:21335/buy-redirect?p=${encodeURIComponent(
+            `/coinmarket-redirect/${params}`,
+        )}`;
     }
 
     return `${window.location.origin}${assetPrefix}/coinmarket-redirect#${params}`;
