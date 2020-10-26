@@ -60,7 +60,10 @@ const registerShortcuts = (window: BrowserWindow) => {
 
 // notify client with window maximization state
 const notifyWindowMaximized = (window: BrowserWindow) => {
-    window.webContents.send('window/is-maximized', mainWindow.isMaximized());
+    window.webContents.send(
+        'window/is-maximized',
+        process.platform === 'darwin' ? mainWindow.isFullScreen() : mainWindow.isMaximized(),
+    );
 };
 
 const init = async () => {
@@ -200,18 +203,35 @@ const init = async () => {
         mainWindow.minimize();
     });
     ipcMain.on('window/maximize', () => {
-        mainWindow.maximize();
+        if (process.platform === 'darwin') {
+            mainWindow.setFullScreen(true);
+        } else {
+            mainWindow.maximize();
+        }
     });
     ipcMain.on('window/unmaximize', () => {
-        mainWindow.unmaximize();
+        if (process.platform === 'darwin') {
+            mainWindow.setFullScreen(false);
+        } else {
+            mainWindow.unmaximize();
+        }
     });
     ipcMain.on('client/ready', () => {
         notifyWindowMaximized(mainWindow);
     });
-    mainWindow.on('resize', () => {
+    mainWindow.on('maximize', () => {
         notifyWindowMaximized(mainWindow);
     });
-    mainWindow.on('move', () => {
+    mainWindow.on('unmaximize', () => {
+        notifyWindowMaximized(mainWindow);
+    });
+    mainWindow.on('enter-full-screen', () => {
+        notifyWindowMaximized(mainWindow);
+    });
+    mainWindow.on('leave-full-screen', () => {
+        notifyWindowMaximized(mainWindow);
+    });
+    mainWindow.on('moved', () => {
         notifyWindowMaximized(mainWindow);
     });
 
