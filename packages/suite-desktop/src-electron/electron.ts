@@ -372,9 +372,9 @@ httpReceiver.on('server/listening', () => {
     });
 
     // when httpReceiver was asked to provide current address for given pathname
-    ipcMain.on('server/request-address', (_event, pathname) => {
-        mainWindow.webContents.send('server/address', httpReceiver.getRouteAddress(pathname));
-    });
+    ipcMain.handle('server/request-address', (_event, pathname) =>
+        httpReceiver.getRouteAddress(pathname),
+    );
 });
 
 metadata.init();

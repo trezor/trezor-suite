@@ -68,4 +68,7 @@ contextBridge.exposeInMainWorld('desktopApi', {
     metadataRead: (options: { file: string }) => ipcRenderer.invoke('metadata/read', options),
     metadataWrite: (options: { file: string; content: string }) =>
         ipcRenderer.invoke('metadata/write', options),
+
+    // HttpReceiver
+    getHttpReceiverAddress: (route: string) => ipcRenderer.invoke('server/request-address', route),
 });

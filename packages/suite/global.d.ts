@@ -26,6 +26,8 @@ export interface DesktopApi {
     metadataRead: (options: {
         file: string;
     }) => Promise<{ success: true; payload: string } | { success: false; error: string }>;
+    // HttpReceiver
+    getHttpReceiverAddress: (route: string) => Promise<string>;
 }
 
 declare global {

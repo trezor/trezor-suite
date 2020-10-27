@@ -12,20 +12,7 @@ export const getOauthReceiverUrl = () => {
         return `${window.location.origin}${getPrefixedURL('/static/oauth/oauth_receiver.html')}`;
     }
 
-    // for desktop
-    // start oauth-receiver http service and wait for address
-    return new Promise<string>((resolve, reject) => {
-        const onGetServerAddress = (message: string) => {
-            window.desktopApi!.off('server/address', onGetServerAddress);
-            if (message) {
-                return resolve(message);
-            }
-            return reject(new Error('no response'));
-        };
-
-        window.desktopApi!.on('server/address', onGetServerAddress);
-        window.desktopApi!.send('server/request-address', '/oauth');
-    });
+    return window.desktopApi!.getHttpReceiverAddress('/oauth');
 };
 
 /**
