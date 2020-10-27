@@ -175,6 +175,7 @@ const Firmware = ({ closeModalApp, resetReducer, firmware, device }: Props) => {
         <Modal
             cancelable={[
                 'initial',
+                'check-seed',
                 'done',
                 'partially-done',
                 'waiting-for-bootloader',

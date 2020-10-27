@@ -15,6 +15,7 @@ describe('Firmware', () => {
         cy.getTestElement('@notification/update-firmware/button').click();
 
         cy.getTestElement('@firmware/continue-button').click();
+        cy.getTestElement('@modal/close-button').should('be.visible'); // modal is cancellable at this moment
         cy.getTestElement('@firmware/confirm-seed-checkbox').click();
         cy.getTestElement('@firmware/confirm-seed-button').click();
         cy.getTestElement('@firmware/disconnect-message');
