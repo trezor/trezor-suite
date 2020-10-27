@@ -144,7 +144,7 @@ export function submitRequestForm(tradeForm: BuyTradeFormResponse): void {
         Object.keys(fields).forEach(k => {
             params += `&${k}=${encodeURIComponent(fields[k])}`;
         });
-        window.open(`http://127.0.0.1:21335/buy-post?${params}`, '_blank');
+        window.open(`${ELECTRON_RECEIVER_SERVER}/buy-post?${params}`, '_blank');
     } else {
         const form = document.createElement('form');
         form.method = tradeForm.form.formMethod;

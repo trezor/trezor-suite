@@ -12,7 +12,6 @@ import {
     createTxLink,
 } from '@suite/utils/wallet/coinmarket/buyUtils';
 import { Props, ContextValues } from '@wallet-types/coinmarketBuyOffers';
-import { AppState } from '@suite-types';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { isDesktop } from '@suite-utils/env';
 
@@ -52,9 +51,7 @@ export const useOffers = (props: Props) => {
         saveTransactionDetailId: coinmarketBuyActions.saveTransactionDetailId,
     });
 
-    const invityAPIUrl = useSelector<AppState['suite']['settings']['debug']['invityAPIUrl']>(
-        state => state.suite.settings.debug.invityAPIUrl,
-    );
+    const invityAPIUrl = useSelector(state => state.suite.settings.debug.invityAPIUrl);
     if (invityAPIUrl) {
         invityAPI.setInvityAPIServer(invityAPIUrl);
     }
