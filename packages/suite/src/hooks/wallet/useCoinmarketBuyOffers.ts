@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import invityAPI from '@suite-services/invityAPI';
-import { useActions } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import { BuyTrade } from 'invity-api';
 import { processQuotes } from '@wallet-utils/coinmarket/buyUtils';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonActions';
@@ -12,9 +12,8 @@ import {
     createTxLink,
 } from '@suite/utils/wallet/coinmarket/buyUtils';
 import { Props, ContextValues } from '@wallet-types/coinmarketBuyOffers';
-import { useSelector } from 'react-redux';
-import { AppState } from '@suite-types';
 import * as notificationActions from '@suite-actions/notificationActions';
+import { isDesktop } from '@suite-utils/env';
 
 export const useOffers = (props: Props) => {
     const REFETCH_INTERVAL = 30000;
@@ -43,17 +42,16 @@ export const useOffers = (props: Props) => {
         setIsFromRedirect,
         openCoinmarketBuyConfirmModal,
         addNotification,
+        saveTransactionDetailId,
     } = useActions({
         saveTrade: coinmarketBuyActions.saveTrade,
         setIsFromRedirect: coinmarketBuyActions.setIsFromRedirect,
         openCoinmarketBuyConfirmModal: coinmarketBuyActions.openCoinmarketBuyConfirmModal,
         addNotification: notificationActions.addToast,
+        saveTransactionDetailId: coinmarketBuyActions.saveTransactionDetailId,
     });
 
-    const invityAPIUrl = useSelector<
-        AppState,
-        AppState['suite']['settings']['debug']['invityAPIUrl']
-    >(state => state.suite.settings.debug.invityAPIUrl);
+    const invityAPIUrl = useSelector(state => state.suite.settings.debug.invityAPIUrl);
     if (invityAPIUrl) {
         invityAPI.setInvityAPIServer(invityAPIUrl);
     }
@@ -147,9 +145,12 @@ export const useOffers = (props: Props) => {
             });
         } else {
             await saveTrade(response.trade, account, new Date().toISOString());
-            // eslint-disable-next-line no-lonely-if
             if (response.tradeForm) {
                 submitRequestForm(response.tradeForm);
+            }
+            if (isDesktop()) {
+                await saveTransactionDetailId(response.trade.paymentId);
+                goto('wallet-coinmarket-buy-detail', selectedAccount.params);
             }
         }
     };

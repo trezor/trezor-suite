@@ -68,16 +68,8 @@ const shouldRefresh = (trade?: TradeBuy) => {
     return trade && trade.data.status && !BuyTradeFinalStatuses.includes(trade.data.status);
 };
 
-export const useWatchBuyTrade = (account: Account, trades?: TradeBuy[], transactionId?: string) => {
+export const useWatchBuyTrade = (account: Account, trade: TradeBuy) => {
     const REFRESH_SECONDS = 30;
-    const trade: TradeBuy | undefined =
-        trades &&
-        trades.find(
-            trade =>
-                trade.tradeType === 'buy' &&
-                (trade.key === transactionId || trade.data?.originalPaymentId === transactionId),
-        );
-    const [updatedTrade, setUpdatedTrade] = useState<TradeBuy | undefined>(trade);
     const { saveTrade } = useActions({ saveTrade: coinmarketBuyActions.saveTrade });
     const [refreshCount, setRefreshCount] = useState(0);
     const invokeRefresh = () => {
@@ -104,23 +96,9 @@ export const useWatchBuyTrade = (account: Account, trades?: TradeBuy[], transact
                         error: response.error,
                     };
                     saveTrade(tradeData, account, newDate);
-                    setUpdatedTrade({
-                        tradeType: 'buy',
-                        key: trade.data.paymentId,
-                        date: newDate,
-                        data: tradeData,
-                        account: {
-                            descriptor: account.descriptor,
-                            symbol: account.symbol,
-                            accountType: account.accountType,
-                            accountIndex: account.index,
-                        },
-                    });
                 }
             });
             resetRefresh();
         }
     }, [account, cancelRefresh, refreshCount, resetRefresh, saveTrade, trade]);
-
-    return [updatedTrade];
 };
