@@ -35,8 +35,11 @@ const Description = styled.div`
 `;
 
 const Link = styled.a`
-    margin-top: 30px;
     margin-bottom: 30px;
+`;
+
+const StyledButton = styled(Button)`
+    margin-top: 30px;
 `;
 
 interface Props {
@@ -66,7 +69,7 @@ const PaymentFailed = ({ transactionId, supportUrl, account }: Props) => {
                     </Button>
                 </Link>
             )}
-            <Button
+            <StyledButton
                 onClick={() =>
                     goto('wallet-coinmarket-buy', {
                         symbol: account.symbol,
@@ -76,7 +79,7 @@ const PaymentFailed = ({ transactionId, supportUrl, account }: Props) => {
                 }
             >
                 <Translation id="TR_BUY_DETAIL_ERROR_BUTTON" />
-            </Button>
+            </StyledButton>
         </Wrapper>
     );
 };

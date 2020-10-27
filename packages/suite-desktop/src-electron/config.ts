@@ -11,6 +11,8 @@ export const allowedExternalUrls = [
     // External Services
     'https://github.com/trezor/',
     'https://satoshilabs.typeform.com',
+    // invity + partners
+    'https://invity.io',
 ];
 
 export const cspRules = [

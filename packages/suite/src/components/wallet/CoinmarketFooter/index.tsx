@@ -1,4 +1,4 @@
-import { colors, variables, Icon, Button } from '@trezor/components';
+import { colors, variables, Icon, Button, Link } from '@trezor/components';
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { CoinmarketProvidedByInvity } from '@wallet-components';
@@ -65,7 +65,7 @@ const Image = styled.img`
     width: 70px;
 `;
 
-const Link = styled.a`
+const StyledLink = styled(Link)`
     display: flex;
     flex: 1;
     padding-top: 1px;
@@ -111,12 +111,14 @@ const CoinmarketFooter = () => {
                     <FooterBox ref={menuRef}>
                         <Header>
                             <BoxLeft>
-                                <Link href="https://invity.io/" target="_blank">
+                                <StyledLink href="https://invity.io/" target="_blank">
                                     <Image src={resolveStaticPath('/images/svg/invity-logo.svg')} />
-                                </Link>
+                                </StyledLink>
                             </BoxLeft>
                             <BoxRight>
-                                <Button variant="tertiary">invity.io</Button>
+                                <Link href="https://invity.io/" target="_blank">
+                                    <Button variant="tertiary">invity.io</Button>
+                                </Link>
                                 <IconWrapper onClick={() => setToggled(false)}>
                                     <StyledIcon icon="CROSS" size={16} />
                                 </IconWrapper>
