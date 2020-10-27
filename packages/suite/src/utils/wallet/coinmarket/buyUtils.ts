@@ -5,6 +5,7 @@ import { BuyTrade, BuyTradeQuoteRequest, BuyTradeFormResponse } from 'invity-api
 import { Trade } from '@wallet-reducers/coinmarketReducer';
 import { symbolToInvityApiSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { isDesktop } from '@suite-utils/env';
+import { ELECTRON_RECEIVER_SERVER } from '@wallet-constants/coinmarket/buy';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return the limits
 export function getAmountLimits(
@@ -99,8 +100,9 @@ export function createQuoteLink(request: BuyTradeQuoteRequest, account: Account)
     const params = `offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
 
     if (isDesktop()) {
-        // TEMP: for desktop. but this solution is temporary, local http server will be used later to accept callback
-        return `https://wallet.trezor.io/buy_receiver.html#/coinmarket-redirect/${params}`;
+        return `${ELECTRON_RECEIVER_SERVER}/buy-redirect?p=${encodeURIComponent(
+            `/coinmarket-redirect/${params}`,
+        )}`;
     }
 
     return `${window.location.origin}${assetPrefix}/coinmarket-redirect#${params}`;
@@ -110,8 +112,9 @@ export function createTxLink(trade: BuyTrade, account: Account): string {
     const assetPrefix = process.env.assetPrefix || '';
     const params = `detail/${account.symbol}/${account.accountType}/${account.index}/${trade.paymentId}`;
     if (isDesktop()) {
-        // TEMP: for desktop. but this solution is temporary, local http server will be used later to accept callback
-        return `https://wallet.trezor.io/buy_receiver.html#/coinmarket-redirect/${params}`;
+        return `${ELECTRON_RECEIVER_SERVER}/buy-redirect?p=${encodeURIComponent(
+            `/coinmarket-redirect/${params}`,
+        )}`;
     }
 
     return `${window.location.origin}${assetPrefix}/coinmarket-redirect#${params}`;
@@ -126,31 +129,30 @@ function addHiddenFieldToForm(form: any, fieldName: string, fieldValue: any) {
 }
 
 export function submitRequestForm(tradeForm: BuyTradeFormResponse): void {
-    const invityWindowName = 'invity-buy-partner-window';
     if (!tradeForm || !tradeForm.form) return;
     // for IFRAME there is nothing to submit
     if (tradeForm.form.formMethod === 'IFRAME') return;
-    const windowType = isDesktop() ? invityWindowName : '_self';
-    const form = document.createElement('form');
+
     if (tradeForm.form.formMethod === 'GET' && tradeForm.form.formAction) {
-        window.open(tradeForm.form.formAction, windowType);
+        window.open(tradeForm.form.formAction, isDesktop() ? '_blank' : '_self');
         return;
     }
 
-    form.method = tradeForm.form.formMethod;
-    form.action = tradeForm.form.formAction;
     const { fields } = tradeForm.form;
-    Object.keys(fields).forEach(k => {
-        addHiddenFieldToForm(form, k, fields[k]);
-    });
-
     if (isDesktop()) {
-        const formWindow = window.open('', invityWindowName);
-        if (formWindow) {
-            formWindow.document.body.appendChild(form);
-            form.submit();
-        }
+        let params = `a=${encodeURIComponent(tradeForm.form.formAction)}`;
+        Object.keys(fields).forEach(k => {
+            params += `&${k}=${encodeURIComponent(fields[k])}`;
+        });
+        window.open(`${ELECTRON_RECEIVER_SERVER}/buy-post?${params}`, '_blank');
     } else {
+        const form = document.createElement('form');
+        form.method = tradeForm.form.formMethod;
+        form.action = tradeForm.form.formAction;
+        Object.keys(fields).forEach(k => {
+            addHiddenFieldToForm(form, k, fields[k]);
+        });
+
         if (!document.body) return;
         document.body.appendChild(form);
         form.submit();

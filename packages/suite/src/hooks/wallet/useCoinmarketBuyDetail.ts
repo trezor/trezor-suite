@@ -4,9 +4,15 @@ import { useWatchBuyTrade } from '@wallet-hooks/useCoinmarket';
 import { useSelector } from 'react-redux';
 import { AppState } from '@suite-types';
 import invityAPI from '@suite-services/invityAPI';
+import { TradeBuy } from '@wallet-reducers/coinmarketReducer';
 
 export const useCoinmarketBuyDetail = (props: Props) => {
     const { selectedAccount, trades, transactionId } = props;
+    const buyTrade = trades.find(
+        trade =>
+            trade.tradeType === 'buy' &&
+            (trade.key === transactionId || trade.data?.originalPaymentId === transactionId),
+    );
     const { account } = selectedAccount;
     const invityAPIUrl = useSelector<
         AppState,
@@ -19,11 +25,11 @@ export const useCoinmarketBuyDetail = (props: Props) => {
         state => state.wallet.coinmarket.buy.buyInfo,
     );
 
-    const [updatedTrade] = useWatchBuyTrade(account, trades, transactionId);
+    useWatchBuyTrade(account, buyTrade as TradeBuy);
 
     return {
         account,
-        trade: updatedTrade,
+        trade: buyTrade,
         transactionId,
         buyInfo,
     };

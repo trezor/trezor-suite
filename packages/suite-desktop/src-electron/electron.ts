@@ -9,9 +9,9 @@ import * as config from './config';
 import * as store from './store';
 import { runBridgeProcess } from './bridge';
 import { buildMainMenu } from './menu';
-import { openBuyWindow } from './buy';
-// import * as metadata from './metadata';
 import { HttpReceiver } from './http-receiver';
+import * as metadata from './metadata';
+import { buyRedirectHandler } from './buy';
 
 const httpReceiver = new HttpReceiver();
 
@@ -144,12 +144,8 @@ const init = async () => {
         }
     };
 
-    mainWindow.webContents.on('new-window', (event, url, frameName) => {
-        if (frameName === 'invity-buy-partner-window') {
-            openBuyWindow(url);
-        } else {
-            handleExternalLink(event, url);
-        }
+    mainWindow.webContents.on('new-window', (event, url) => {
+        handleExternalLink(event, url);
     });
 
     mainWindow.webContents.on('will-navigate', handleExternalLink);
@@ -371,18 +367,14 @@ httpReceiver.on('server/listening', () => {
         app.focus();
     });
 
+    httpReceiver.on('buy/redirect', url => {
+        buyRedirectHandler(url, mainWindow, src);
+    });
+
     // when httpReceiver was asked to provide current address for given pathname
     ipcMain.on('server/request-address', (_event, pathname) => {
         mainWindow.webContents.send('server/address', httpReceiver.getRouteAddress(pathname));
     });
 });
 
-ipcMain.on('buy-receiver', (_event, message) => {
-    mainWindow.focus();
-    mainWindow.loadURL(
-        path.join(
-            src,
-            message.replace('#', '').replace('coinmarket-redirect/', 'coinmarket-redirect#'),
-        ),
-    );
-});
+metadata.init();

@@ -15,6 +15,7 @@ interface Events {
     'server/error': (error: string) => void;
     'oauth/code': (code: string) => void;
     'oauth/error': (message: string) => void;
+    'buy/redirect': (url: string) => void;
 }
 
 export declare interface HttpReceiver {
@@ -43,6 +44,14 @@ export class HttpReceiver extends EventEmitter {
             {
                 pathname: '/oauth',
                 handler: this.oauthHandler,
+            },
+            {
+                pathname: '/buy-redirect',
+                handler: this.buyHandler,
+            },
+            {
+                pathname: '/buy-post',
+                handler: this.buyPostSubmitHandler,
             },
             /**
              * Register more routes here. Each route must have pathname and handler function.
@@ -135,6 +144,41 @@ export class HttpReceiver extends EventEmitter {
                 You may now close this window.
             </body>
         `;
+
+        response.end(template);
+    };
+
+    private buyHandler = (request: Request, response: http.ServerResponse) => {
+        const { query } = url.parse(request.url, true);
+        if (query && query.p) {
+            this.emit('buy/redirect', query.p.toString());
+        }
+
+        const template = `
+         <body>
+             You may now close this window.
+         </body>
+     `;
+
+        response.end(template);
+    };
+
+    private buyPostSubmitHandler = (request: Request, response: http.ServerResponse) => {
+        const { query } = url.parse(request.url, true);
+        const action = query.a;
+        const template = `
+         <body>
+            Forwarding to ${action}...
+            <form id="buy-form" method="POST" action="${action}">
+            ${Object.keys(query)
+                .map(q =>
+                    q !== 'a' ? `<input type="hidden" name="${q}" value="${query[q]}">` : '',
+                )
+                .join('')}
+            </form>
+            <script type="text/javascript">document.getElementById("buy-form").submit();</script>
+         </body>
+     `;
 
         response.end(template);
     };
