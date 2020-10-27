@@ -118,7 +118,7 @@ const TransactionList = ({
                                         key={tx.txid}
                                         transaction={tx}
                                         isPending={isPending}
-                                        txMetadata={account.metadata.outputLabels[tx.txid]}
+                                        accountMetadata={account.metadata}
                                         accountKey={account.key}
                                     />
                                 ))}

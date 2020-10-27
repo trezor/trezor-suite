@@ -12,6 +12,7 @@ import TokenTransferAddressLabel from '../TokenTransferAddressLabel';
 import TargetAddressLabel from '../TargetAddressLabel';
 import BaseTargetLayout from '../BaseTargetLayout';
 import { copyToClipboard } from '@suite-utils/dom';
+import { AccountMetadata } from '@suite-types/metadata';
 
 const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     /* padding: 8px 0px; row padding */
@@ -61,19 +62,20 @@ interface TargetProps {
     isFirst?: boolean;
     isLast?: boolean;
     accountKey: string;
-    targetMetadata?: string;
+    accountMetadata?: AccountMetadata;
 }
 
 export const Target = ({
     target,
     transaction,
-    targetMetadata,
+    accountMetadata,
     accountKey,
     ...baseLayoutProps
 }: TargetProps) => {
     const targetAmount = getTargetAmount(target, transaction);
     const operation = getTxOperation(transaction);
     const { addNotification } = useActions({ addNotification: notificationActions.addToast });
+    const targetMetadata = accountMetadata?.outputLabels?.[transaction.txid]?.[target.n];
 
     return (
         <BaseTargetLayout
@@ -81,7 +83,11 @@ export const Target = ({
             addressLabel={
                 <MetadataLabeling
                     defaultVisibleValue={
-                        <TargetAddressLabel target={target} type={transaction.type} />
+                        <TargetAddressLabel
+                            accountMetadata={accountMetadata}
+                            target={target}
+                            type={transaction.type}
+                        />
                     }
                     dropdownOptions={[
                         {

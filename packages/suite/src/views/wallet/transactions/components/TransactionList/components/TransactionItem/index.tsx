@@ -85,12 +85,12 @@ const DEFAULT_LIMIT = 3;
 interface Props {
     transaction: WalletAccountTransaction;
     isPending: boolean;
-    txMetadata?: AccountMetadata['outputLabels'][keyof AccountMetadata['outputLabels']];
+    accountMetadata?: AccountMetadata;
     accountKey: string;
 }
 
 const TransactionItem = React.memo((props: Props) => {
-    const { transaction, txMetadata, accountKey } = props;
+    const { transaction, accountKey, accountMetadata } = props;
     const { type, targets, tokens } = transaction;
     const [limit, setLimit] = useState(0);
     const isTokenTransaction = tokens.length > 0;
@@ -170,7 +170,7 @@ const TransactionItem = React.memo((props: Props) => {
                                         singleRowLayout={hasSingleTargetOrTransfer}
                                         isFirst={i === 0}
                                         isLast={limit > 0 ? false : i === previewTargets.length - 1} // if list of targets is expanded we won't get last item here
-                                        targetMetadata={txMetadata && txMetadata[t.n]}
+                                        accountMetadata={accountMetadata}
                                         accountKey={accountKey}
                                     />
                                 ))}
@@ -192,7 +192,7 @@ const TransactionItem = React.memo((props: Props) => {
                                                             : i ===
                                                               targets.length - DEFAULT_LIMIT - 1
                                                     }
-                                                    targetMetadata={txMetadata && txMetadata[t.n]}
+                                                    accountMetadata={accountMetadata}
                                                     accountKey={accountKey}
                                                 />
                                             ))}
