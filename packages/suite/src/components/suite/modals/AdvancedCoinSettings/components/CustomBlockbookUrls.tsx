@@ -146,7 +146,12 @@ const CustomBlockbookUrls = ({
                 bottomText={error?.message && props.intl.formatMessage(messages[error.message])}
             />
 
-            <AddButton variant="tertiary" icon="PLUS" onClick={addUrl} isDisabled={Boolean(error)}>
+            <AddButton
+                variant="tertiary"
+                icon="PLUS"
+                onClick={addUrl}
+                isDisabled={Boolean(error) || inputValue === ''}
+            >
                 <Translation id="TR_ADD_NEW_BLOCKBOOK_BACKEND" />
             </AddButton>
         </Wrapper>
