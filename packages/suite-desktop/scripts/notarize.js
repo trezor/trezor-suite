@@ -13,10 +13,13 @@ exports.default = async function notarizing(context) {
     }
 
     const appName = context.packager.appInfo.productFilename;
+    const appPath = `${appOutDir}/${appName}.app`;
+
+    console.log(`notarizing ${appPath} ...`);
 
     return await notarize({
         appBundleId: pkg.build.appId,
-        appPath: `${appOutDir}/${appName}.app`,
+        appPath: appPath,
         appleId: process.env.APPLEID,
         appleIdPassword: process.env.APPLEIDPASS,
     });
