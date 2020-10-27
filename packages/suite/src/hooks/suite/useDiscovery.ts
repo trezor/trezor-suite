@@ -1,21 +1,14 @@
-import { useState, useCallback, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useCallback } from 'react';
+import { useSelector } from './useSelector';
 import { DISCOVERY } from '@wallet-actions/constants';
-import { AppState } from '@suite-types';
-import { Discovery, DiscoveryStatus } from '@wallet-types';
+import { DiscoveryStatus } from '@wallet-types';
 
 export const useDiscovery = () => {
-    const [running, setRunning] = useState(false);
-    const [discovery, setDiscovery] = useState<Discovery | undefined>(undefined);
-
-    const device = useSelector<AppState, AppState['suite']['device']>(state => state.suite.device);
-    const discoveryState = useSelector<AppState, AppState['wallet']['discovery']>(
-        state => state.wallet.discovery,
-    );
-    const discoveryItem =
-        device && device.state
-            ? discoveryState.find(d => d.deviceState === device.state)
-            : undefined;
+    const { device, discoveryState } = useSelector(state => ({
+        device: state.suite.device,
+        discoveryState: state.wallet.discovery,
+    }));
+    const discovery = discoveryState.find(d => d.deviceState === device?.state);
 
     const calculateProgress = useCallback(() => {
         if (discovery && discovery.loaded && discovery.total) {
@@ -45,52 +38,45 @@ export const useDiscovery = () => {
                 status: 'loading',
                 type: 'auth',
             };
-        if (running)
-            return {
-                status: 'loading',
-                type: 'discovery',
-            };
 
         if (discovery) {
-            if (discovery.networks.length === 0) {
+            if (discovery.status < DISCOVERY.STATUS.STOPPING)
+                return {
+                    status: 'loading',
+                    type: discovery.authConfirm ? 'auth-confirm' : 'discovery',
+                };
+
+            if (discovery.status === DISCOVERY.STATUS.COMPLETED && discovery.authConfirm)
+                return {
+                    status: 'loading',
+                    type: 'auth-confirm',
+                };
+
+            if (discovery.networks.length === 0)
                 return {
                     status: 'exception',
                     type: 'discovery-empty',
                 };
-            }
 
-            if (discovery.errorCode === 'Device_InvalidState' && !device.available) {
+            if (discovery.errorCode === 'Device_InvalidState' && !device.available)
                 return {
                     status: 'exception',
                     type: 'device-unavailable',
                 };
-            }
 
-            if (discovery.error || discovery.failed.length > 0) {
+            if (discovery.error || discovery.failed.length > 0)
                 return {
                     status: 'exception',
                     type: 'discovery-failed',
                 };
-            }
-            if (discovery.error || discovery.failed.length > 0) {
-                return {
-                    status: 'exception',
-                    type: 'discovery-failed',
-                };
-            }
         }
         return undefined;
-    }, [device, discovery, running]);
-
-    useEffect(() => {
-        setRunning(discoveryItem ? discoveryItem.status < DISCOVERY.STATUS.STOPPING : false);
-        setDiscovery(discoveryItem);
-    }, [discoveryItem]);
+    }, [device, discovery]);
 
     return {
         device,
         discovery,
-        isDiscoveryRunning: running,
+        isDiscoveryRunning: discovery && discovery.status < DISCOVERY.STATUS.STOPPING,
         getDiscoveryStatus: getStatus,
         calculateProgress,
     };

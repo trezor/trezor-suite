@@ -37,7 +37,7 @@ export type Discovery = Discovery$;
 export type DiscoveryStatus =
     | {
           status: 'loading';
-          type: 'waiting-for-device' | 'auth' | 'discovery';
+          type: 'waiting-for-device' | 'auth' | 'auth-confirm' | 'discovery';
       }
     | {
           status: 'exception';
