@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector } from './useSelector';
 import { SUITE } from '@suite-actions/constants';
-import { AppState } from '@suite-types';
 
 export const useDevice = () => {
-    const device = useSelector<AppState, AppState['suite']['device']>(state => state.suite.device);
-    const locks = useSelector<AppState, AppState['suite']['locks']>(state => state.suite.locks);
-
+    const { device, locks } = useSelector(state => ({
+        device: state.suite.device,
+        locks: state.suite.locks,
+    }));
     const isLocked = useCallback(
         (ignoreDisconnectedDevice = false) => {
             if (!device?.connected && !ignoreDisconnectedDevice) return true;

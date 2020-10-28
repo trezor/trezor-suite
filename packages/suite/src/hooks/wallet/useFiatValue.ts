@@ -1,13 +1,11 @@
-import { useSelector } from 'react-redux';
-import { AppState } from '@suite-types';
+import { useSelector } from '@suite-hooks';
 
 // TODO: do the calculation here
 export const useFiatValue = () => {
-    const fiat = useSelector<AppState, AppState['wallet']['fiat']>(state => state.wallet.fiat);
-    const localCurrency = useSelector<AppState, string>(
-        state => state.wallet.settings.localCurrency,
-    );
-
+    const { fiat, localCurrency } = useSelector(state => ({
+        fiat: state.wallet.fiat,
+        localCurrency: state.wallet.settings.localCurrency,
+    }));
     return {
         fiat,
         localCurrency,

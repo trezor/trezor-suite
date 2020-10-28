@@ -28,9 +28,11 @@ interface Props {
 
 const NavigationActions = (props: Props) => {
     const analytics = useAnalytics();
-    const activeApp = useSelector(state => state.router.app);
-    const notifications = useSelector(state => state.notifications);
-    const discreetMode = useSelector(state => state.wallet.settings.discreetMode);
+    const { activeApp, notifications, discreetMode } = useSelector(state => ({
+        activeApp: state.router.app,
+        notifications: state.notifications,
+        discreetMode: state.wallet.settings.discreetMode,
+    }));
     const { goto, setDiscreetMode } = useActions({
         goto: routerActions.goto,
         setDiscreetMode: walletSettingsActions.setDiscreetMode,
