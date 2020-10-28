@@ -29,8 +29,8 @@ const getPlatformArchExt = () => {
 const getBridgeBinBySystem = () => {
     const sys = getPlatformArchExt();
     if (sys) {
-        const [platform, arch, ext] = sys;
-        return join(res, 'bridge', `trezord-${platform}-${arch}${ext}`);
+        const [, , ext] = sys;
+        return join(res, 'bin', 'bridge', `trezord${ext}`);
     }
 };
 
