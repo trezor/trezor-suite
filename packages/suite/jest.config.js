@@ -39,6 +39,7 @@ module.exports = {
         '<rootDir>/src/utils/**',
         '<rootDir>/src/actions/**',
         '<rootDir>/src/middlewares/**',
+        '<rootDir>/src/hooks/suite/useDiscovery.ts',
         '<rootDir>/src/hooks/suite/useDebounce.ts',
         '<rootDir>/src/hooks/wallet/useSendForm.ts',
         '<rootDir>/src/hooks/wallet/useSendFormCompose.ts',
@@ -53,10 +54,10 @@ module.exports = {
     ],
     coverageThreshold: {
         global: {
-            statements: 63,
-            branches: 55,
-            functions: 63,
-            lines: 63,
+            statements: 65,
+            branches: 58,
+            functions: 66,
+            lines: 65,
         },
     },
     modulePathIgnorePatterns: [
