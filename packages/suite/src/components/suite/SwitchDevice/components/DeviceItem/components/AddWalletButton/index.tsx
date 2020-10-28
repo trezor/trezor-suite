@@ -39,7 +39,6 @@ interface Props {
 
 const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceInstance }: Props) => {
     const hasAtLeastOneWallet = instances.find(d => d.state);
-    const tooltipMsg = <Translation id="TR_TO_ACCESS_OTHER_WALLETS" />;
     const locks = useSelector(state => state.suite.locks);
 
     // opportunity to bring useDeviceLocks back (extract it from useDevice hook)?
@@ -54,7 +53,11 @@ const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceIns
     const analytics = useAnalytics();
     return (
         <AddWallet>
-            <StyledTooltip enabled={!device.connected} placement="top" content={tooltipMsg}>
+            <StyledTooltip
+                enabled={!device.connected}
+                placement="top"
+                content={<Translation id="TR_TO_ACCESS_OTHER_WALLETS" />}
+            >
                 <StyledButton
                     data-test="@switch-device/add-wallet-button"
                     variant="tertiary"
