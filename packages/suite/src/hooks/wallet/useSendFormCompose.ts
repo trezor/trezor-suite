@@ -7,7 +7,7 @@ import {
     SendContextValues,
     PrecomposedTransaction,
 } from '@wallet-types/sendForm';
-import { useActions, useDebounce } from '@suite-hooks';
+import { useActions, useAsyncDebounce } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { findComposeErrors } from '@wallet-utils/sendFormUtils';
 
@@ -38,7 +38,7 @@ export const useSendFormCompose = ({
     const [composeField, setComposeField] = useState<string | undefined>(undefined);
     const [draftSaveRequest, setDraftSaveRequest] = useState(false);
 
-    const { debounce } = useDebounce();
+    const debounce = useAsyncDebounce();
 
     const { composeTransaction } = useActions({
         composeTransaction: sendFormActions.composeTransaction,
@@ -69,12 +69,11 @@ export const useSendFormCompose = ({
         // store current request ID before async debounced process and compare it later. see explanation below
         const resultID = composeRequestID.current;
         const result = await debounce(composeInner);
-        // process result ONLY if it's not ignored by debounced process
         // RACE-CONDITION NOTE:
         // resultID could be outdated when composeRequestID was updated by another upcoming/pending composeRequest and render tick didn't process it yet,
         // therefore another debounce process was not called yet to interrupt current one
         // unexpected result: `updateComposedValues` is trying to work with updated/newer FormState
-        if (result !== 'ignore' && resultID === composeRequestID.current) {
+        if (resultID === composeRequestID.current) {
             if (result) {
                 // set new composed transactions
                 setComposedLevels(result);
