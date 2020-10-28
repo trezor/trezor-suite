@@ -191,7 +191,11 @@ const BasicDetails = ({ tx, confirmations, isFetching, explorerUrl }: Props) => 
         <Wrapper>
             <HeaderFirstRow>
                 <MainIconWrapper>
-                    <Icon size={24} color={colors.BLACK50} icon="SEND" />
+                    <Icon
+                        size={24}
+                        color={colors.BLACK50}
+                        icon={tx.type === 'recv' ? 'RECEIVE' : 'SEND'}
+                    />
                     {!isFetching && (
                         <NestedIconWrapper>
                             <Icon
