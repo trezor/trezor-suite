@@ -6,9 +6,14 @@ import { InputError } from '@wallet-components';
 import { scanQrRequest } from '@wallet-actions/sendFormActions';
 import { useActions } from '@suite-hooks';
 import { useSendFormContext } from '@wallet-hooks';
-import { isAddressValid, isAddressDeprecated } from '@wallet-utils/validation';
+import {
+    isAddressValid,
+    isAddressDeprecated,
+    isBech32AddressUppercase,
+} from '@wallet-utils/validation';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { MAX_LENGTH } from '@suite-constants/inputs';
+import ConvertAddress from './components/Convert';
 
 const Label = styled.div`
     display: flex;
@@ -125,7 +130,7 @@ const Address = ({ outputId, outputsCount }: { outputId: number; outputsCount: n
             maxLength={MAX_LENGTH.ADDRESS}
             innerRef={register({
                 required: 'RECIPIENT_IS_NOT_SET',
-                validate: (value: string) => {
+                validate: value => {
                     if (!isAddressValid(value, symbol)) {
                         const addressDeprecatedUrl = isAddressDeprecated(value, symbol);
                         if (addressDeprecatedUrl) {
@@ -137,6 +142,18 @@ const Address = ({ outputId, outputsCount }: { outputId: number; outputsCount: n
                             );
                         }
                         return 'RECIPIENT_IS_NOT_VALID';
+                    }
+                    // bech32 addresses are valid as uppercase but are not accepted by Trezor
+                    if (networkType === 'bitcoin' && isBech32AddressUppercase(value)) {
+                        return (
+                            <ConvertAddress
+                                onClick={() => {
+                                    setValue(inputName, value.toLowerCase(), {
+                                        shouldValidate: true,
+                                    });
+                                }}
+                            />
+                        );
                     }
                     if (networkType === 'ripple' && value === descriptor) {
                         return 'RECIPIENT_CANNOT_SEND_TO_MYSELF';

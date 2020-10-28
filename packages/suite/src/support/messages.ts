@@ -3787,6 +3787,14 @@ const definedMessages = defineMessages({
         defaultMessage: 'Unsupported address format. {TR_LEARN_MORE}',
         id: 'RECIPIENT_FORMAT_DEPRECATED',
     },
+    RECIPIENT_FORMAT_UPPERCASE: {
+        defaultMessage: 'Unsupported address format. {convert}',
+        id: 'RECIPIENT_FORMAT_UPPERCASE',
+    },
+    RECIPIENT_FORMAT_UPPERCASE_CONVERT: {
+        defaultMessage: 'Convert to lowercase',
+        id: 'RECIPIENT_FORMAT_UPPERCASE_CONVERT',
+    },
     RECIPIENT_CANNOT_SEND_TO_MYSELF: {
         defaultMessage: 'Cannot send to myself',
         id: 'RECIPIENT_CANNOT_SEND_TO_MYSELF',
