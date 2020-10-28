@@ -136,6 +136,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Add account',
         id: 'TR_ADD_ACCOUNT',
     },
+    TR_ADD_HIDDEN_WALLET: {
+        defaultMessage: 'Add hidden wallet',
+        id: 'TR_ADD_HIDDEN_WALLET',
+    },
     TR_ADD_WALLET: {
         defaultMessage: 'Add wallet',
         id: 'TR_ADD_WALLET',
