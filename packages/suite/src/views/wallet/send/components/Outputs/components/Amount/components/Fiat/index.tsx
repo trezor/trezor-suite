@@ -11,7 +11,7 @@ import { FIAT } from '@suite-config';
 import { fromFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { getInputState, getFiatRate, findToken } from '@wallet-utils/sendFormUtils';
 import { isDecimalsValid } from '@wallet-utils/validation';
-import { CurrencyOption } from '@wallet-types/sendForm';
+import { CurrencyOption, Output } from '@wallet-types/sendForm';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 
 const Wrapper = styled.div`
@@ -29,7 +29,12 @@ export const buildCurrencyOptions = () => {
     return result;
 };
 
-const Fiat = ({ outputId }: { outputId: number }) => {
+interface Props {
+    output: Partial<Output>;
+    outputId: number;
+}
+
+const Fiat = ({ output, outputId }: Props) => {
     const {
         account,
         network,
@@ -37,7 +42,6 @@ const Fiat = ({ outputId }: { outputId: number }) => {
         register,
         errors,
         clearErrors,
-        outputs,
         getDefaultValue,
         control,
         setValue,
@@ -53,10 +57,10 @@ const Fiat = ({ outputId }: { outputId: number }) => {
 
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const error = outputError ? outputError.fiat : undefined;
-    const fiatValue = getDefaultValue(inputName, outputs[outputId].fiat || '');
-    const tokenValue = getDefaultValue(tokenInputName, outputs[outputId].token);
+    const fiatValue = getDefaultValue(inputName, output.fiat || '');
+    const tokenValue = getDefaultValue(tokenInputName, output.token);
     const currencyValue =
-        getDefaultValue(currencyInputName, outputs[outputId].currency) || localCurrencyOption;
+        getDefaultValue(currencyInputName, output.currency) || localCurrencyOption;
     const token = findToken(account.tokens, tokenValue);
     const decimals = token ? token.decimals : network.decimals;
 

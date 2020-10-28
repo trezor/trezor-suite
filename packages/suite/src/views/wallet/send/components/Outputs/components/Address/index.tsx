@@ -14,6 +14,7 @@ import {
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import ConvertAddress from './components/Convert';
+import { Output } from '@wallet-types/sendForm';
 
 const Label = styled.div`
     display: flex;
@@ -40,23 +41,29 @@ const StyledIcon = styled(Icon)`
     display: flex;
 `;
 
-const Address = ({ outputId, outputsCount }: { outputId: number; outputsCount: number }) => {
+interface Props {
+    outputId: number;
+    outputsCount: number;
+    output: Partial<Output>;
+}
+
+const Address = ({ output, outputId, outputsCount }: Props) => {
     const {
         account,
         removeOutput,
         composeTransaction,
         register,
-        outputs,
         getDefaultValue,
         errors,
         setValue,
     } = useSendFormContext();
-    const { descriptor, networkType, symbol } = account;
     const { openQrModal } = useActions({ openQrModal: scanQrRequest });
+
+    const { descriptor, networkType, symbol } = account;
     const inputName = `outputs[${outputId}].address`;
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const addressError = outputError ? outputError.address : undefined;
-    const addressValue = getDefaultValue(inputName, outputs[outputId].address || '');
+    const addressValue = getDefaultValue(inputName, output.address || '');
     const recipientId = outputId + 1;
 
     return (
