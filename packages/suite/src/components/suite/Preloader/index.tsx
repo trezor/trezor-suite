@@ -1,6 +1,4 @@
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import FocusLock from 'react-focus-lock';
 import { SUITE } from '@suite-actions/constants';
 import Loading from '@suite-components/Loading';
@@ -9,8 +7,8 @@ import InitialLoading from './components/InitialLoading';
 import DiscoveryLoader from '@suite-components/DiscoveryLoader';
 import Modals from '@suite-components/modals';
 import * as routerActions from '@suite-actions/routerActions';
-import * as discoveryActions from '@wallet-actions/discoveryActions';
-import { AppState, Dispatch } from '@suite-types';
+import { AppState } from '@suite-types';
+import { useDiscovery, useSelector, useActions } from '@suite-hooks';
 
 import Firmware from '@firmware-views';
 import Onboarding from '@onboarding-views';
@@ -35,50 +33,21 @@ import {
     Welcome,
 } from '@suite-views';
 
-const mapStateToProps = (state: AppState) => ({
-    loading: state.suite.loading,
-    loaded: state.suite.loaded,
-    error: state.suite.error,
-    device: state.suite.device,
-    transport: state.suite.transport,
-    router: state.router,
-    actionModalContext: state.modal.context,
-    // TODO: THIS IS SO WRONG
-    // Without this the app will get stuck on "checking balances" in case of entering diff passphrase in passphrase confirmation
-    // So even we do not use discovery anywhere, this component really depends on it
-    // eslint-disable-next-line react/no-unused-prop-types
-    discovery: state.wallet.discovery,
-});
+type SuiteAppStateProps = {
+    loaded: boolean;
+    transport: AppState['suite']['transport'];
+    device: AppState['suite']['device'];
+    router: AppState['router'];
+    getDiscoveryStatus: ReturnType<typeof useDiscovery>['getDiscoveryStatus'];
+};
 
-const init = () =>
-    ({
-        type: SUITE.INIT,
-    } as const);
-
-const mapDispatchToProps = (dispatch: Dispatch) =>
-    bindActionCreators(
-        {
-            init,
-            getDiscoveryAuthConfirmationStatus: discoveryActions.getDiscoveryAuthConfirmationStatus,
-            goto: routerActions.goto,
-            closeModalApp: routerActions.closeModalApp,
-            getBackgroundRoute: routerActions.getBackgroundRoute,
-        },
-        dispatch,
-    );
-
-type Props = ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps> & {
-        children: React.ReactNode;
-    };
-
-type SuiteAppStateProps = Pick<
-    Props,
-    'loaded' | 'transport' | 'device' | 'router' | 'getDiscoveryAuthConfirmationStatus'
->;
-const getSuiteApplicationState = (props: SuiteAppStateProps) => {
-    const { loaded, transport, device, getDiscoveryAuthConfirmationStatus, router } = props;
-
+const getSuiteApplicationState = ({
+    router,
+    loaded,
+    transport,
+    device,
+    getDiscoveryStatus,
+}: SuiteAppStateProps) => {
     // if router app is unknown, it means user either entered wrong link into navigation bar
     // or clicked a broken internal link somewhere in suite. In that case 404 page
     // appears and we do not want to show anything above it.
@@ -120,11 +89,11 @@ const getSuiteApplicationState = (props: SuiteAppStateProps) => {
     if (device.mode === 'seedless') return DeviceSeedless;
 
     // account discovery in progress and didn't find any used account yet
-    const authConfirmation = getDiscoveryAuthConfirmationStatus();
-    if (authConfirmation) return DiscoveryLoader;
+    const authConfirmation = getDiscoveryStatus();
+    if (authConfirmation?.type === 'auth-confirm') return DiscoveryLoader;
 };
 
-const getModalApplication = (route: Props['router']['route']) => {
+const getModalApplication = (route: AppState['router']['route']) => {
     if (!route) return;
     switch (route.app) {
         case 'welcome':
@@ -152,24 +121,32 @@ const getModalApplication = (route: Props['router']['route']) => {
     }
 };
 
-const Preloader = (props: Props) => {
-    const {
-        loading,
-        loaded,
-        error,
-        device,
-        init,
-        router,
-        transport,
-        actionModalContext,
-        getDiscoveryAuthConfirmationStatus,
-    } = props;
+const Preloader: React.FC = ({ children }) => {
+    const actions = useActions({
+        init: () => ({ type: SUITE.INIT } as const),
+        goto: routerActions.goto,
+        closeModalApp: routerActions.closeModalApp,
+        getBackgroundRoute: routerActions.getBackgroundRoute,
+    });
+
+    const { loading, loaded, error, router, transport, actionModalContext } = useSelector(
+        state => ({
+            loading: state.suite.loading,
+            loaded: state.suite.loaded,
+            error: state.suite.error,
+            transport: state.suite.transport,
+            router: state.router,
+            actionModalContext: state.modal.context,
+        }),
+    );
+
+    const { device, getDiscoveryStatus } = useDiscovery();
 
     useEffect(() => {
         if (!loading && !loaded && !error) {
-            init();
+            actions.init();
         }
-    }, [init, loaded, loading, error]);
+    }, [loaded, loading, error, actions]);
 
     if (error) {
         // trezor-connect initialization failed
@@ -190,13 +167,13 @@ const Preloader = (props: Props) => {
                 <FocusLock autoFocus={false}>
                     <ApplicationModal
                         cancelable={cancelable}
-                        onCancel={props.closeModalApp}
-                        closeModalApp={props.closeModalApp}
-                        getBackgroundRoute={props.getBackgroundRoute}
+                        onCancel={actions.closeModalApp}
+                        closeModalApp={actions.closeModalApp}
+                        getBackgroundRoute={actions.getBackgroundRoute}
                         modal={hasActionModal ? <Modals background={false} /> : null}
                     />
                 </FocusLock>
-                <SuiteLayout>{props.children}</SuiteLayout>
+                <SuiteLayout>{children}</SuiteLayout>
             </>
         );
     }
@@ -215,7 +192,7 @@ const Preloader = (props: Props) => {
         loaded,
         transport,
         device,
-        getDiscoveryAuthConfirmationStatus,
+        getDiscoveryStatus,
         router,
     });
     if (ApplicationStateModal) {
@@ -227,7 +204,7 @@ const Preloader = (props: Props) => {
                         <ApplicationStateModal />
                     </FocusLock>
                 )}
-                <SuiteLayout>{props.children}</SuiteLayout>
+                <SuiteLayout>{children}</SuiteLayout>
             </>
         );
     }
@@ -236,9 +213,9 @@ const Preloader = (props: Props) => {
     return (
         <>
             <Modals />
-            <SuiteLayout>{props.children}</SuiteLayout>
+            <SuiteLayout>{children}</SuiteLayout>
         </>
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Preloader);
+export default Preloader;
