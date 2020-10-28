@@ -75,7 +75,7 @@ const Container = ({ title, description, cta }: ContainerProps) => {
             <Actions>
                 {actions.map(a => (
                     <Button
-                        key={a.label}
+                        key={a.label || 'TR_RETRY'}
                         variant={a.variant || 'primary'}
                         icon={a.icon || 'PLUS'}
                         isLoading={isLocked()}
