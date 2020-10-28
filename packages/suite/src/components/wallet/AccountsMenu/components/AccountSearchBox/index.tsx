@@ -67,8 +67,10 @@ interface Props {
 
 const AccountSearchBox = (props: Props) => {
     const { coinFilter, setCoinFilter, searchString, setSearchString } = useAccountSearch();
-    const enabledNetworks = useSelector(state => state.wallet.settings.enabledNetworks);
-    const device = useSelector(state => state.suite.device);
+    const { enabledNetworks, device } = useSelector(state => ({
+        enabledNetworks: state.wallet.settings.enabledNetworks,
+        device: state.suite.device,
+    }));
 
     const unavailableCapabilities = device?.unavailableCapabilities ?? {};
     const supportedNetworks = enabledNetworks.filter(symbol => !unavailableCapabilities[symbol]);

@@ -26,14 +26,11 @@ export const useCoinmarketBuyForm = (props: Props): BuyFormContextValues => {
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
     const methods = useForm<FormState>({ mode: 'onChange' });
 
-    const { saveQuoteRequest, saveQuotes, saveCachedAccountInfo, saveTrade } = useActions({
+    const { saveQuoteRequest, saveQuotes, saveCachedAccountInfo, saveTrade, goto } = useActions({
         saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
         saveQuotes: coinmarketBuyActions.saveQuotes,
         saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
         saveTrade: coinmarketBuyActions.saveTrade,
-    });
-
-    const { goto } = useActions({
         goto: routerActions.goto,
     });
 

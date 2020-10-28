@@ -25,10 +25,10 @@ interface Props {
 }
 const Ticker = ({ symbol, tooltipPos = 'top' }: Props) => {
     const rateAge = (timestamp: number) => differenceInMinutes(new Date(timestamp), new Date());
-    const lastWeekRates = useSelector(state => state.wallet.fiat.coins).find(
-        r => r.symbol === symbol,
-    )?.lastWeek;
-    const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
+    const { lastWeekRates, localCurrency } = useSelector(state => ({
+        lastWeekRates: state.wallet.fiat.coins.find(r => r.symbol === symbol)?.lastWeek,
+        localCurrency: state.wallet.settings.localCurrency,
+    }));
     const lastWeekData = lastWeekRates?.tickers ?? [];
 
     let rateGoingUp = false;

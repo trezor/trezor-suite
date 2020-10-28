@@ -35,20 +35,22 @@ export const useOffers = (props: Props) => {
         alternativeQuotes,
     );
     const [lastFetchDate, setLastFetchDate] = useState(new Date());
-    const { goto } = useActions({ goto: routerActions.goto });
-    const { verifyAddress } = useActions({ verifyAddress: coinmarketCommonActions.verifyAddress });
     const {
         saveTrade,
         setIsFromRedirect,
         openCoinmarketBuyConfirmModal,
         addNotification,
         saveTransactionDetailId,
+        verifyAddress,
+        goto,
     } = useActions({
         saveTrade: coinmarketBuyActions.saveTrade,
         setIsFromRedirect: coinmarketBuyActions.setIsFromRedirect,
         openCoinmarketBuyConfirmModal: coinmarketBuyActions.openCoinmarketBuyConfirmModal,
         addNotification: notificationActions.addToast,
         saveTransactionDetailId: coinmarketBuyActions.saveTransactionDetailId,
+        verifyAddress: coinmarketCommonActions.verifyAddress,
+        goto: routerActions.goto,
     });
 
     const invityAPIUrl = useSelector(state => state.suite.settings.debug.invityAPIUrl);

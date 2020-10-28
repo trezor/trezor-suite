@@ -72,8 +72,10 @@ interface Props {
 }
 
 const AppNavigation = ({ items }: Props) => {
-    const routeName = useSelector(state => state.router.route?.name);
-    const { params } = useSelector(state => state.wallet.selectedAccount);
+    const { routeName, params } = useSelector(state => ({
+        routeName: state.router.route?.name,
+        params: state.wallet.selectedAccount.params,
+    }));
     const { goto } = useActions({
         goto: routerActions.goto,
     });

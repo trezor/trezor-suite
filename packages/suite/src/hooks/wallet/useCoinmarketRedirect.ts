@@ -5,11 +5,11 @@ import * as routerActions from '@suite-actions/routerActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 
 export const useCoinmarketRedirect = () => {
-    const { goto } = useActions({ goto: routerActions.goto });
-    const { saveQuoteRequest, setIsFromRedirect, saveTransactionDetailId } = useActions({
+    const { saveQuoteRequest, setIsFromRedirect, saveTransactionDetailId, goto } = useActions({
         saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
         setIsFromRedirect: coinmarketBuyActions.setIsFromRedirect,
         saveTransactionDetailId: coinmarketBuyActions.saveTransactionDetailId,
+        goto: routerActions.goto,
     });
 
     interface OfferRedirectParams {

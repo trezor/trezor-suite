@@ -84,8 +84,10 @@ const needsRefresh = (device?: TrezorDevice) => {
 };
 
 const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
-    const selectedDevice = useSelector(state => state.suite.device);
-    const deviceCount = useSelector(state => state.devices).length;
+    const { selectedDevice, deviceCount } = useSelector(state => ({
+        selectedDevice: state.suite.device,
+        deviceCount: state.devices.length,
+    }));
     const { goto, acquireDevice } = useActions({
         goto: routerActions.goto,
         acquireDevice: suiteActions.acquireDevice,
