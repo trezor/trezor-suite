@@ -30,6 +30,7 @@
 	"TR_ACQUIRE_DEVICE_TITLE": "Another session is running",
 	"TR_ACTIVATE_ALL": "Enable all",
 	"TR_ADD_ACCOUNT": "Add account",
+	"TR_ADD_HIDDEN_WALLET": "Add hidden wallet",
 	"TR_ADD_WALLET": "Add wallet",
 	"TR_ADDITIONAL_SECURITY_FEATURES": "In the meantime, make sure you have completed all security steps below.",
 	"TR_ADDRESS": "Address",

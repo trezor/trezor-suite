@@ -39,6 +39,7 @@ interface Props {
 
 const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceInstance }: Props) => {
     const hasAtLeastOneWallet = instances.find(d => d.state);
+    const emptyPassphraseWalletExists = instances.find(d => d.useEmptyPassphrase); // Find a "standard wallet" among user's wallet instances. If no such wallet is found, the variable is undefined.
     const locks = useSelector(state => state.suite.locks);
 
     // opportunity to bring useDeviceLocks back (extract it from useDevice hook)?
@@ -78,7 +79,11 @@ const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceIns
                     isDisabled={isLocked}
                     onClick={onAddWallet}
                 >
-                    <Translation id="TR_ADD_WALLET" />
+                    {emptyPassphraseWalletExists ? (
+                        <Translation id="TR_ADD_HIDDEN_WALLET" />
+                    ) : (
+                        <Translation id="TR_ADD_WALLET" />
+                    )}
                 </StyledButton>
             </StyledTooltip>
         </AddWallet>
