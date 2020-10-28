@@ -3,6 +3,7 @@ import { Controller } from 'react-hook-form';
 import { CleanSelect } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
 import { Account } from '@wallet-types';
+import { Output } from '@wallet-types/sendForm';
 
 interface Option {
     label: string;
@@ -30,9 +31,12 @@ export const buildTokenOptions = (account: Account) => {
     return result;
 };
 
-const TokenSelect = ({ outputId }: { outputId: number }) => {
+interface Props {
+    output: Partial<Output>;
+    outputId: number;
+}
+const TokenSelect = ({ output, outputId }: Props) => {
     const {
-        outputs,
         account,
         clearErrors,
         control,
@@ -46,7 +50,7 @@ const TokenSelect = ({ outputId }: { outputId: number }) => {
 
     const tokenInputName = `outputs[${outputId}].token`;
     const amountInputName = `outputs[${outputId}].amount`;
-    const tokenValue = getDefaultValue(tokenInputName, outputs[outputId].token);
+    const tokenValue = getDefaultValue(tokenInputName, output.token);
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
     const dataEnabled = getDefaultValue('options', []).includes('ethereumData');
     const options = buildTokenOptions(account);

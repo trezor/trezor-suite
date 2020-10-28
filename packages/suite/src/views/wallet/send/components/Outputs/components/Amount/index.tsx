@@ -8,6 +8,7 @@ import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getInputState, findToken } from '@wallet-utils/sendFormUtils';
 import { isDecimalsValid, isInteger } from '@wallet-utils/validation';
 import { useSendFormContext } from '@wallet-hooks';
+import { Output } from '@wallet-types/sendForm';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 
 import TokenSelect from './components/TokenSelect';
@@ -60,7 +61,7 @@ const StyledTransferIcon = styled(Icon)`
     }
 `;
 const TransferIconWrapper = styled.div`
-    margin: 45px 10px 0px 10px;
+    margin: 50px 20px 0px 20px;
 
     @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
         /* transform: rotate(90deg); */
@@ -75,13 +76,16 @@ const Right = styled.div`
     align-items: flex-start;
 `;
 
-const Amount = ({ outputId }: { outputId: number }) => {
+interface Props {
+    output: Partial<Output>;
+    outputId: number;
+}
+const Amount = ({ output, outputId }: Props) => {
     const {
         account,
         network,
         localCurrencyOption,
         register,
-        outputs,
         getDefaultValue,
         errors,
         setValue,
@@ -99,8 +103,8 @@ const Amount = ({ outputId }: { outputId: number }) => {
     // corner-case: do not display "setMax" button if FormState got ANY error (setMax probably cannot be calculated)
     const isSetMaxVisible = isSetMaxActive || error || Object.keys(errors).length === 0;
 
-    const amountValue = getDefaultValue(inputName, outputs[outputId].amount || '');
-    const tokenValue = getDefaultValue(tokenInputName, outputs[outputId].token);
+    const amountValue = getDefaultValue(inputName, output.amount || '');
+    const tokenValue = getDefaultValue(tokenInputName, output.token);
     const token = findToken(account.tokens, tokenValue);
 
     const formattedAvailableBalance = token
@@ -217,7 +221,7 @@ const Amount = ({ outputId }: { outputId: number }) => {
                             }
                         },
                     })}
-                    innerAddon={<TokenSelect outputId={outputId} />}
+                    innerAddon={<TokenSelect output={output} outputId={outputId} />}
                 />
             </Left>
             {/* TODO: token FIAT rates calculation */}
@@ -229,11 +233,12 @@ const Amount = ({ outputId }: { outputId: number }) => {
                                 <TransferIconWrapper>
                                     <StyledTransferIcon
                                         icon="TRANSFER"
-                                        color={colors.NEUE_TYPE_LIGHT_GREY}
+                                        size={16}
+                                        color={colors.NEUE_TYPE_DARK_GREY}
                                     />
                                 </TransferIconWrapper>
                                 <Right>
-                                    <Fiat outputId={outputId} />
+                                    <Fiat output={output} outputId={outputId} />
                                 </Right>
                             </>
                         )

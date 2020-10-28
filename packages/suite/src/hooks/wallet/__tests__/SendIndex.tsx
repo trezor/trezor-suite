@@ -39,7 +39,7 @@ const Index = (props: UseSendFormProps & { callback: TestCallback }) => {
         <SendContext.Provider value={sendContextValues}>
             {sendContextValues.isLoading && <div>Loading</div>}
             <Header />
-            <Outputs />
+            <Outputs disableAnim />
             <Options />
             <Fees />
             <TotalSent />

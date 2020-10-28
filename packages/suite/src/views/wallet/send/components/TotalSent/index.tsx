@@ -98,6 +98,7 @@ const TotalSent = () => {
                         {tokenInfo ? (
                             <>
                                 <Translation id="FEE" />
+                                &nbsp;
                                 <FormattedCryptoAmount
                                     disableHiddenPlaceholder
                                     value={formatNetworkAmount(transactionInfo.fee, symbol)}

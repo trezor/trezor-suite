@@ -21,6 +21,7 @@ const Line = styled.div`
     width: 100%;
     height: 1px;
     border-top: 1px solid ${colors.NEUE_BG_GRAY};
+    margin-top: 10px;
 `;
 
 const Options = () => {
