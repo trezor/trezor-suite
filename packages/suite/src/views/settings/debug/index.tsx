@@ -6,12 +6,30 @@ import React from 'react';
 
 import { Props } from './Container';
 import invityAPI from '@suite-services/invityAPI';
+import { useSelector } from '@suite-hooks';
 
 const StyledActionColumn = styled(ActionColumn)`
     max-width: 300px;
 `;
 
 const DebugSettings = (props: Props) => {
+    const invityAPIUrl = useSelector(state => state.suite.settings.debug.invityAPIUrl);
+    const invityApiServerOptions = [
+        {
+            label: invityAPI.productionAPIServer,
+            value: invityAPI.productionAPIServer,
+        },
+        {
+            label: invityAPI.stagingAPIServer,
+            value: invityAPI.stagingAPIServer,
+        },
+        {
+            label: invityAPI.localhostAPIServer,
+            value: invityAPI.localhostAPIServer,
+        },
+    ];
+    const selectedInvityApiServer =
+        invityApiServerOptions.find(s => s.value === invityAPIUrl) || invityApiServerOptions[0];
     return (
         <SettingsLayout>
             <Section title="Localization">
@@ -62,24 +80,8 @@ const DebugSettings = (props: Props) => {
                                 });
                                 invityAPI.setInvityAPIServer(item.value);
                             }}
-                            value={{
-                                label: invityAPI.server,
-                                value: invityAPI.server,
-                            }}
-                            options={[
-                                {
-                                    label: invityAPI.localhostAPIServer,
-                                    value: invityAPI.localhostAPIServer,
-                                },
-                                {
-                                    label: invityAPI.stagingAPIServer,
-                                    value: invityAPI.stagingAPIServer,
-                                },
-                                {
-                                    label: invityAPI.productionAPIServer,
-                                    value: invityAPI.productionAPIServer,
-                                },
-                            ]}
+                            value={selectedInvityApiServer}
+                            options={invityApiServerOptions}
                         />
                     </StyledActionColumn>
                 </Row>
