@@ -8,19 +8,19 @@ export const U_INT_32 = 0xffffffff;
 export const ETH_DEFAULT_GAS_PRICE = '1';
 export const ETH_DEFAULT_GAS_LIMIT = '21000';
 
-// todo: remove after zcash heartwood fork;
-export const ZEC_SIGN_ENHANCEMENT_LEGACY = {
+// todo: remove after zcash canopy fork, block 1046400 on approximately November 18th.
+export const ZEC_SIGN_ENHANCEMENT_HEARTWOOD = {
     overwintered: true,
     version: 4,
     versionGroupId: 0x892f2085,
-    branchId: 0x2bb40e60,
+    branchId: 0xf5b9230b,
 };
 
 export const ZEC_SIGN_ENHANCEMENT = {
     overwintered: true,
     version: 4,
     versionGroupId: 0x892f2085,
-    branchId: 0xf5b9230b,
+    branchId: 0xe9ff75a6,
 };
 
 export const ERC20_TRANSFER = 'a9059cbb'; // 4 bytes function signature of solidity erc20 `transfer(address,uint256)`
