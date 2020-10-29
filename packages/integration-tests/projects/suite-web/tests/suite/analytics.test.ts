@@ -51,7 +51,7 @@ describe('Analytics', () => {
         cy.wrap(requests).its(1).should('equal', undefined);
 
         // important, suite needs time to save initialRun flag into storage
-        cy.getTestElement('@suite/loading').should('not.exist')
+        cy.getTestElement('@suite/loading').should('not.exist');
 
         // go to settings
         cy.prefixedVisit('/settings', {
@@ -88,5 +88,13 @@ describe('Analytics', () => {
                 expect(r1).not.to.equal(r0);
             });
         });
+
+        // opening device modal
+        cy.getTestElement('@menu/switch-device').click();
+        cy.wrap(requests).its(2).should('have.property', 'c_type', 'menu/goto/switch-device');
+
+        // adding wallet
+        cy.getTestElement('@switch-device/add-wallet-button').click();
+        cy.wrap(requests).its(3).should('have.property', 'c_type', 'switch-device/add-wallet');
     });
 });
