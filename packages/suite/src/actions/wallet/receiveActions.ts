@@ -70,6 +70,7 @@ export const showAddress = (path: string, address: string) => async (
         device,
         path,
         useEmptyPassphrase: device.useEmptyPassphrase,
+        coin: account.symbol,
     };
 
     // catch button request and open modal
