@@ -7,19 +7,18 @@ import * as url from 'url';
 import * as electronLocalshortcut from 'electron-localshortcut';
 import * as config from './config';
 import * as store from './store';
-import { runBridgeProcess } from './bridge';
 import { buildMainMenu } from './menu';
 import { HttpReceiver } from './http-receiver';
 import * as metadata from './metadata';
 import { buyRedirectHandler } from './buy';
+import { RESOURCES } from './constants';
 
-const httpReceiver = new HttpReceiver();
+import BridgeProcess from './processes/BridgeProcess';
 
 let initRun = false;
 let mainWindow: BrowserWindow;
 const APP_NAME = 'Trezor Suite';
 const PROTOCOL = 'file';
-const res = isDev ? './public/static' : process.resourcesPath;
 const src = isDev
     ? 'http://localhost:8000/'
     : url.format({
@@ -34,6 +33,12 @@ const preReleaseFlag = app.commandLine.hasSwitch('pre-release');
 
 // Updater
 const updateCancellationToken = new CancellationToken();
+
+// External request handler
+const httpReceiver = new HttpReceiver();
+
+// Processes
+const bridge = new BridgeProcess();
 
 const registerShortcuts = (window: BrowserWindow) => {
     // internally uses before-input-event, which should be safer than adding globalShortcut and removing it on blur event
@@ -69,11 +74,9 @@ const notifyWindowMaximized = (window: BrowserWindow) => {
 
 const init = async () => {
     try {
-        // TODO: not necessary since suite will send a request to start bridge via IPC
-        // but right now removing it causes showing the download bridge modal for a sec
-        await runBridgeProcess();
-    } catch (error) {
-        // do nothing
+        await bridge.start();
+    } catch {
+        //
     }
 
     // On Mac, "init" is called again when the window is opened again. For this we need
@@ -99,7 +102,7 @@ const init = async () => {
             enableRemoteModule: false,
             preload: path.join(__dirname, 'preload.js'),
         },
-        icon: path.join(res, 'images', 'icons', '512x512.png'),
+        icon: path.join(RESOURCES, 'images', 'icons', '512x512.png'),
     });
 
     // Security warnings
@@ -312,9 +315,8 @@ app.on('before-quit', () => {
         // store window bounds
         store.setWinBounds(mainWindow);
 
-        // TODO: be aware that although it kills the bridge process, another one will start because of bridge/start msgs from ipc
-        // (BridgeStatus component sends the request every time it loses transport.type)
-        // killBridgeProcess();
+        //
+        bridge.stop();
     }
 });
 
@@ -346,7 +348,11 @@ app.on('browser-window-focus', (_event, win) => {
 
 ipcMain.on('bridge/start', async (_event, devMode?: boolean) => {
     try {
-        await runBridgeProcess(devMode);
+        if (devMode) {
+            await bridge.startDev();
+        } else {
+            await bridge.start();
+        }
     } catch (error) {
         // TODO: return error message to suite?
     }
