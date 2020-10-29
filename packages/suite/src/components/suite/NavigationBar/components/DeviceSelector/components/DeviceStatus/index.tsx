@@ -30,13 +30,20 @@ const getStatusForDevice = (device: TrezorDevice) => {
 };
 
 const StatusText = styled.div<{ show: boolean; status: Status }>`
-    /* display: ${props => (props.show ? 'flex' : 'none')}; */
     position: absolute;
     text-transform: uppercase;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     font-size: ${variables.FONT_SIZE.TINY};
     top: 14px;
     color: ${props => getStatusColor(props.status)};
+    background: linear-gradient(
+        90deg,
+        ${`${colors.NEUE_BG_LIGHT_GREY}00`} 0%,
+        ${colors.NEUE_BG_LIGHT_GREY} 20px,
+        ${colors.NEUE_BG_LIGHT_GREY} 100%
+    );
+
+    padding-left: 24px;
     opacity: ${props => (props.show ? 1 : 0)};
     right: ${props => (props.show ? '12px' : '4px')};
     transition: opacity 0.5s ease, right 0.5s ease;
