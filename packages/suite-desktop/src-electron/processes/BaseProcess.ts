@@ -13,20 +13,23 @@ class BaseProcess {
     resourceName: string;
     processName: string;
     startupCooldown: number;
+    stopKillWait: number;
     startupThrottle: ReturnType<typeof setTimeout> | null;
     supportedSystems = ['linux-x64', 'mac-x64', 'win-x64'];
 
     /**
      * @param resourceName Resource folder name
      * @param processName Process name (without extension)
-     * @param startupCooldown Cooldown before being able to run start again
+     * @param startupCooldown Cooldown before being able to run start again (seconds)
+     * @param stopKillWait How long to wait before killing the process on stop (seconds)
      */
-    constructor(resourceName = '', processName = '', startupCooldown = 0) {
+    constructor(resourceName = '', processName = '', startupCooldown = 0, stopKillWait = 10) {
         this.process = null;
         this.startupThrottle = null;
         this.resourceName = resourceName;
         this.processName = processName;
         this.startupCooldown = startupCooldown;
+        this.stopKillWait = stopKillWait;
     }
 
     /**
@@ -67,7 +70,7 @@ class BaseProcess {
         if (this.startupCooldown > 0) {
             this.startupThrottle = setTimeout(() => {
                 this.startupThrottle = null;
-            }, this.startupCooldown);
+            }, this.startupCooldown * 1000);
         }
 
         const { system, ext } = this.getPlatformInfo();
@@ -106,7 +109,7 @@ class BaseProcess {
                     return;
                 }
 
-                if (timeout >= 10) {
+                if (timeout >= this.stopKillWait) {
                     this.process.kill('SIGKILL');
                 } else {
                     timeout++;
