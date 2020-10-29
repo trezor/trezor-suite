@@ -97,7 +97,7 @@ export const AddAccount = ({ device, onCancel, symbol, noRedirect }: AddAccountP
     );
 
     const availableDisabledTestnetNetworks = disabledTestnetNetworks.filter(
-        (n: Network) => !(n.symbol === 'regtest' && !debug.showDebugMenu),
+        (n: Network) => !(n.debugMode && !debug.showDebugMenu),
     );
 
     const handleNetworkSelection = (symbol?: Network['symbol']) => {

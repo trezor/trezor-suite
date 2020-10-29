@@ -19,7 +19,7 @@ const useBackendOptions = (network: Network) =>
                 .filter(backend => {
                     switch (backend) {
                         case 'default':
-                            return network.symbol !== 'regtest';
+                            return !network.debugMode;
                         case 'electrum':
                             return isDesktop();
                         default:

@@ -282,6 +282,7 @@ export const networks = {
         bip43Path: "m/84'/1'/i'",
         decimals: 8,
         testnet: true,
+        debugMode: true,
         label: 'TR_TESTNET_COINS_LABEL',
         explorer: {
             tx: 'http://localhost:19121/tx/',
@@ -358,6 +359,22 @@ export const networks = {
         },
         features: ['tokens'],
         customBackends: [],
+        accountTypes: {},
+    },
+    taz: {
+        name: 'Zcash Testnet',
+        networkType: 'bitcoin',
+        symbol: 'taz',
+        bip43Path: "m/44'/1'/i'",
+        decimals: 8,
+        testnet: true,
+        debugMode: true,
+        explorer: {
+            tx: 'https://blockbook-dev.corp.sldev.cz:19132/tx/',
+            account: 'https://blockbook-dev.corp.sldev.cz:19132/xpub/',
+        },
+        features: ['sign-verify'],
+        customBackends: ['blockbook'],
         accountTypes: {},
     },
     ada: {
@@ -441,6 +458,7 @@ export type Network = Without<NetworkValue, 'accountTypes'> & {
     accountType?: 'normal' | AccountType;
     backendType?: BackendType;
     testnet?: boolean;
+    debugMode?: boolean;
     isHidden?: boolean;
     chainId?: number;
     features?: NetworkFeature[];
@@ -470,7 +488,7 @@ export const getMainnets = () => networksCompatibility.filter(n => !n.accountTyp
 
 export const getTestnets = (debug = false) =>
     networksCompatibility.filter(
-        n => !n.accountType && n.testnet === true && (n.symbol !== 'regtest' || debug),
+        n => !n.accountType && n.testnet === true && (!n.debugMode || (n.debugMode && debug)),
     );
 
 export const getEthereumTypeNetworkSymbols = () =>

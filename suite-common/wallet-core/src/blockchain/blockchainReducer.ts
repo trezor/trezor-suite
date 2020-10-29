@@ -3,7 +3,7 @@ import { memoizeWithArgs } from 'proxy-memoize';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
-import { BackendType, BlockchainNetworks } from '@suite-common/wallet-types';
+import { BackendType, BlockchainNetworks, BackendSettings } from '@suite-common/wallet-types';
 import { getNetwork } from '@suite-common/wallet-utils';
 import {
     BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS,
@@ -28,6 +28,22 @@ export const isHttpProtocol = (url: string) => /^https?:\/\//.test(url);
 
 const initialStatePredefined: Partial<BlockchainState> = {};
 
+// default backends available only in debug mode
+const defaultBackends: Record<string, BackendSettings> = {
+    regtest: {
+        selected: 'blockbook',
+        urls: {
+            blockbook: ['http://localhost:19121'],
+        },
+    },
+    taz: {
+        selected: 'blockbook',
+        urls: {
+            blockbook: ['https://blockbook-dev.corp.sldev.cz:19132'],
+        },
+    },
+};
+
 // fill initial state, those values will be changed by BLOCKCHAIN.UPDATE_FEE action
 export const blockchainInitialState: BlockchainNetworks = networksCompatibility.reduce(
     (state, network) => {
@@ -38,15 +54,7 @@ export const blockchainInitialState: BlockchainNetworks = networksCompatibility.
             blockHash: '0',
             blockHeight: 0,
             version: '0',
-            backends:
-                network.symbol === 'regtest'
-                    ? {
-                          selected: 'blockbook',
-                          urls: {
-                              blockbook: ['http://localhost:19121'],
-                          },
-                      }
-                    : {},
+            backends: defaultBackends[network.symbol] || {},
         };
         return state;
     },
