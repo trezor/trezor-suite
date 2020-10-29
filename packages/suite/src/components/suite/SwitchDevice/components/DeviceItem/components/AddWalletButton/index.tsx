@@ -51,6 +51,18 @@ const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceIns
         locks.includes(SUITE.LOCK_TYPE.UI);
 
     const analytics = useAnalytics();
+
+    const onAddWallet = () => {
+        if (hasAtLeastOneWallet) {
+            addDeviceInstance(device);
+        } else {
+            selectDeviceInstance(instances[0]);
+        }
+        analytics.report({
+            type: 'switch-device/add-wallet',
+        });
+    };
+
     return (
         <AddWallet>
             <StyledTooltip
@@ -64,14 +76,7 @@ const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceIns
                     fullWidth
                     icon="PLUS"
                     isDisabled={isLocked}
-                    onClick={() =>
-                        hasAtLeastOneWallet
-                            ? addDeviceInstance(device)
-                            : selectDeviceInstance(instances[0]) &&
-                              analytics.report({
-                                  type: 'switch-device/add-wallet',
-                              })
-                    }
+                    onClick={onAddWallet}
                 >
                     <Translation id="TR_ADD_WALLET" />
                 </StyledButton>
