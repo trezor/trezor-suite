@@ -4,7 +4,7 @@ import BaseProcess, { Status } from './BaseProcess';
 
 class BridgeProcess extends BaseProcess {
     constructor() {
-        super('bridge', 'trezord', 3000);
+        super('bridge', 'trezord', 3, 10);
     }
 
     async status(): Promise<Status> {
