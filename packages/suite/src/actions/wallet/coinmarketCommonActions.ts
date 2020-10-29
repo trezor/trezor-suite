@@ -1,8 +1,12 @@
 import TrezorConnect, { UI, ButtonRequestMessage } from 'trezor-connect';
 import * as modalActions from '@suite-actions/modalActions';
 import * as notificationActions from '@suite-actions/notificationActions';
+import * as suiteActions from '@suite-actions/suiteActions';
 import { COINMARKET_BUY } from './constants';
 import { Dispatch, GetState } from '@suite-types';
+import { BuyTradeFormResponse } from 'invity-api';
+import { submitRequestForm as utilsSubmitRequestForm } from '@wallet-utils/coinmarket/buyUtils';
+import { isDesktop } from '@suite/utils/suite/env';
 
 export const verifyAddress = (path: string, address: string) => async (
     dispatch: Dispatch,
@@ -90,4 +94,15 @@ export const verifyAddress = (path: string, address: string) => async (
             }),
         );
     }
+};
+
+export const submitRequestForm = (tradeForm: BuyTradeFormResponse) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { device } = getState().suite;
+    if (device && !device.remember && !isDesktop()) {
+        dispatch(suiteActions.rememberDevice(device, true));
+    }
+    utilsSubmitRequestForm(tradeForm);
 };

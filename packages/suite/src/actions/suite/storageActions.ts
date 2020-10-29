@@ -44,9 +44,9 @@ export const removeAccountDraft = (account: Account) => {
 
 // send form drafts end
 
-export const saveDevice = async (device: TrezorDevice) => {
+export const saveDevice = async (device: TrezorDevice, forceRemember?: true) => {
     if (!device || !device.features || !device.state) return;
-    return db.addItem('devices', serializeDevice(device), device.state, true);
+    return db.addItem('devices', serializeDevice(device, forceRemember), device.state, true);
 };
 
 export const removeAccount = async (account: Account) => {
@@ -166,10 +166,11 @@ export const removeAccountGraph = async (account: Account) => {
     ]);
 };
 
-export const rememberDevice = (device: TrezorDevice, remember: boolean) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
+export const rememberDevice = (
+    device: TrezorDevice,
+    remember: boolean,
+    forcedRemember?: true,
+) => async (dispatch: Dispatch, getState: GetState) => {
     if (!device || !device.features || !device.state) return;
     if (!remember) {
         return dispatch(forgetDevice(device));
@@ -191,7 +192,7 @@ export const rememberDevice = (device: TrezorDevice, remember: boolean) => async
 
     try {
         await Promise.all([
-            saveDevice(device),
+            saveDevice(device, forcedRemember),
             saveAccounts(accounts),
             saveGraph(graphData),
             saveDiscovery(discovery),

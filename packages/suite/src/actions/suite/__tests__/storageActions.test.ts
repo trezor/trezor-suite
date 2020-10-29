@@ -60,6 +60,11 @@ const dev2Instance1 = getSuiteDevice({
     instance: 2,
     remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
 });
+const devNotRemembered = getSuiteDevice({
+    state: 'state1',
+    path: '1',
+    instance: 1,
+});
 
 const acc1 = getWalletAccount({
     deviceState: dev1.state,
@@ -460,5 +465,20 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.loadStorage());
         expect(store.getState().wallet.graph.data.length).toBe(1);
         expect(store.getState().wallet.graph.data[0].account.symbol).toBe('ltc');
+    });
+
+    it('remember device with forceRemember', async () => {
+        const store = mockStore(
+            getInitialState({
+                devices: [devNotRemembered],
+            }),
+        );
+        updateStore(store);
+
+        // store in db
+        await store.dispatch(storageActions.rememberDevice(devNotRemembered, true, true));
+        await store.dispatch(storageActions.loadStorage());
+        expect(store.getState().devices[0].remember).toBe(true);
+        expect(store.getState().devices[0].forceRemember).toBe(true);
     });
 });

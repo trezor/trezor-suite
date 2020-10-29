@@ -12,10 +12,14 @@ export const serializeDiscovery = (discovery: Discovery) => ({ ...discovery, run
  * Strip fields from Device
  * @param {AcquiredDevice} device
  */
-export const serializeDevice = (device: AcquiredDevice) => ({
-    ...device,
-    path: '',
-    remember: true,
-    connected: false,
-    buttonRequests: [],
-});
+export const serializeDevice = (device: AcquiredDevice, forceRemember?: true) => {
+    const sd = {
+        ...device,
+        path: '',
+        remember: true,
+        connected: false,
+        buttonRequests: [],
+    };
+    if (forceRemember) sd.forceRemember = true;
+    return sd;
+};

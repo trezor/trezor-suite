@@ -27,7 +27,12 @@ export type SuiteActions =
     | { type: typeof SUITE.RECEIVE_AUTH_CONFIRM; payload: TrezorDevice; success: boolean }
     | { type: typeof SUITE.CREATE_DEVICE_INSTANCE; payload: TrezorDevice }
     | { type: typeof SUITE.FORGET_DEVICE; payload: TrezorDevice }
-    | { type: typeof SUITE.REMEMBER_DEVICE; payload: TrezorDevice; remember: boolean }
+    | {
+          type: typeof SUITE.REMEMBER_DEVICE;
+          payload: TrezorDevice;
+          remember: boolean;
+          forceRemember?: true;
+      }
     | {
           type: typeof SUITE.SET_LANGUAGE;
           locale: typeof LANGUAGES[number]['code'];
@@ -174,10 +179,12 @@ export const selectDevice = (device?: Device | TrezorDevice) => async (
     });
 };
 
-export const rememberDevice = (payload: TrezorDevice): Action => ({
+export const rememberDevice = (payload: TrezorDevice, forceRemember?: true): Action => ({
     type: SUITE.REMEMBER_DEVICE,
     payload,
-    remember: !payload.remember,
+    remember: !payload.remember || !!forceRemember,
+    // if device is already remembered, do not force it, it would remove the remember on return to suite
+    forceRemember: payload.remember ? undefined : forceRemember,
 });
 
 export const forgetDevice = (payload: TrezorDevice): Action => ({
