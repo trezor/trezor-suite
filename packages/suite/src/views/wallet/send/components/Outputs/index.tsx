@@ -13,7 +13,6 @@ const Wrapper = styled.div``;
 const OutputWrapper = styled.div<{ index: number }>`
     display: flex;
     flex-direction: column;
-    overflow: hidden;
     margin: 32px 42px;
     margin-bottom: 20px;
 
@@ -66,7 +65,12 @@ const Outputs = ({ disableAnim }: Props) => {
         }
     }, [outputs.length, renderedOutputs, setRenderedOutputs]);
 
-    const animation = outputs.length > 1 && !disableAnim ? ANIMATION.EXPAND : {}; // do not animate if there is only 1 output, prevents animation on clear
+    const customAnim: any = { ...ANIMATION.EXPAND };
+    customAnim.variants.visible = {
+        height: 'auto',
+        transitionEnd: { overflow: 'unset' }, // overflow needs to be unset after animation (dropdowns inside)
+    };
+    const animation = outputs.length > 1 && !disableAnim ? customAnim : {}; // do not animate if there is only 1 output, prevents animation on clear
 
     return (
         <AnimatePresence initial={false}>
