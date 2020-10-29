@@ -7,7 +7,9 @@ import { Translation } from '@suite-components/Translation';
 import { BuyTrade } from 'invity-api';
 import { Account } from '@wallet-types';
 import invityAPI from '@suite-services/invityAPI';
-import { createTxLink, submitRequestForm } from '@wallet-utils/coinmarket/buyUtils';
+import { createTxLink } from '@wallet-utils/coinmarket/buyUtils';
+import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonActions';
+import { useActions } from '@suite-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -51,6 +53,11 @@ interface Props {
 
 const WaitingForPayment = ({ transactionId, trade, account }: Props) => {
     const [isWorking, setIsWorking] = useState(false);
+
+    const { submitRequestForm } = useActions({
+        submitRequestForm: coinmarketCommonActions.submitRequestForm,
+    });
+
     const goToPayment = () => {
         setIsWorking(true);
         invityAPI

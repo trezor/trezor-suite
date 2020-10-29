@@ -314,12 +314,14 @@ const createInstance = (draft: State, device: TrezorDevice) => {
  * @param {State} draft
  * @param {TrezorDevice} device
  */
-const remember = (draft: State, device: TrezorDevice, remember: boolean) => {
+const remember = (draft: State, device: TrezorDevice, remember: boolean, forceRemember?: true) => {
     // only acquired devices with state
     if (!device || !device.features || !device.state) return;
     draft.forEach(d => {
         if (deviceUtils.isSelectedInstance(device, d)) {
             d.remember = remember;
+            if (forceRemember) d.forceRemember = true;
+            else delete d.forceRemember;
         }
     });
 };
@@ -428,7 +430,7 @@ const deviceReducer = (state: State = initialState, action: Action): State => {
                 createInstance(draft, action.payload);
                 break;
             case SUITE.REMEMBER_DEVICE:
-                remember(draft, action.payload, action.remember);
+                remember(draft, action.payload, action.remember, action.forceRemember);
                 break;
             case SUITE.FORGET_DEVICE:
                 forget(draft, action.payload);

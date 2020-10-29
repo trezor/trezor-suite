@@ -36,7 +36,19 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
                 action.payload.devices &&
                 action.payload.devices[0]
             ) {
-                api.dispatch(suiteActions.selectDevice(action.payload.devices[0]));
+                // if there are force remember devices, forget them and pick the first one of them as selected device
+                const forcedDevices = action.payload.devices.filter(
+                    d => d.forceRemember && d.remember,
+                );
+                forcedDevices.forEach(d => {
+                    api.dispatch(suiteActions.rememberDevice(d));
+                });
+                // possible improvement - if there are no forcedDevices, try to pick the connected device instead of the first device
+                api.dispatch(
+                    suiteActions.selectDevice(
+                        forcedDevices.length ? forcedDevices[0] : action.payload.devices[0],
+                    ),
+                );
             }
             // right after storage is loaded, we might start:
             // 1. fetching locales
