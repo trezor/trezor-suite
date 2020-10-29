@@ -91,7 +91,7 @@ class BaseProcess {
     /**
      * Stops the process
      */
-    async stop() {
+    stop() {
         return new Promise(resolve => {
             if (!this.process) {
                 resolve();

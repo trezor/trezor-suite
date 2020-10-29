@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useSelector } from '@suite-hooks';
 import NoSSR from '@suite-support/NoSSR';
 import { colors, TrezorLogo, Icon } from '@trezor/components';
 import { isMac as isMacOS } from '@suite-utils/env';
@@ -7,14 +8,14 @@ import { isMac as isMacOS } from '@suite-utils/env';
 const TITLEBAR_HEIGHT = 28;
 const RESIZE_HANDLER_PADDING = 4;
 
-const Titlebar = styled.div`
+const Titlebar = styled.div<{ isTor: boolean }>`
     display: block;
     height: ${TITLEBAR_HEIGHT}px;
     width: 100%;
     position: fixed;
     z-index: 1000000;
     position: relative;
-    background: ${colors.NEUE_TYPE_DARK_GREY};
+    background: ${props => (props.isTor ? '#59316B' : colors.NEUE_TYPE_DARK_GREY)};
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
 
@@ -126,6 +127,7 @@ const LogoWrapper = styled.div`
 `;
 
 const DesktopTitlebar = () => {
+    const isTor = useSelector(state => state.suite.tor);
     const [maximized, setMaximized] = useState(false);
     const [active, setActive] = useState(true);
 
@@ -144,7 +146,7 @@ const DesktopTitlebar = () => {
     const isMinimizedDisabled = isMac && maximized;
 
     return (
-        <Titlebar>
+        <Titlebar isTor={isTor}>
             <Drag />
             <Actions isMac={isMac} isDisabled={isMinimizedDisabled} isActive={active}>
                 <ActionClose
