@@ -63,6 +63,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 
     try {
+        // @ts-ignore - Cannot find name window (suite-native)
         const isTor = isTorDomain(window.location.hostname);
         const connectUrl = isTor ? toTorUrl(CONNECT_URL) : CONNECT_URL;
         const connectSrc = isDesktop() ? resolveStaticPath('connect/') : connectUrl;

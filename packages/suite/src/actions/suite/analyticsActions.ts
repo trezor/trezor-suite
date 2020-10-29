@@ -153,6 +153,12 @@ export type AnalyticsEvent =
           };
       }
     | {
+          type: 'menu/toggle-tor';
+          payload: {
+              value: boolean;
+          };
+      }
+    | {
           type: 'wallet/add-account';
           payload: {
               /** normal, segwit, legacy */

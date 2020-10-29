@@ -38,8 +38,8 @@ class TrezorSuiteApp extends App<Props> {
         const { Component, pageProps, store } = this.props;
 
         return (
-            <DesktopTitlebarWrapper>
-                <ReduxProvider store={store}>
+            <ReduxProvider store={store}>
+                <DesktopTitlebarWrapper>
                     <ErrorBoundary>
                         <Resize />
                         <Tor />
@@ -54,8 +54,8 @@ class TrezorSuiteApp extends App<Props> {
                             </Preloader>
                         </IntlProvider>
                     </ErrorBoundary>
-                </ReduxProvider>
-            </DesktopTitlebarWrapper>
+                </DesktopTitlebarWrapper>
+            </ReduxProvider>
         );
     }
 }

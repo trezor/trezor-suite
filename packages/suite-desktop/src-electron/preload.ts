@@ -27,6 +27,9 @@ const validChannels = [
     // window
     'window/is-maximized',
     'window/is-active',
+
+    // tor
+    'tor/status',
 ];
 
 contextBridge.exposeInMainWorld('desktopApi', {
@@ -72,4 +75,7 @@ contextBridge.exposeInMainWorld('desktopApi', {
 
     // HttpReceiver
     getHttpReceiverAddress: (route: string) => ipcRenderer.invoke('server/request-address', route),
+
+    // Tor
+    toggleTor: (start: boolean) => ipcRenderer.send('tor/toggle', start),
 });

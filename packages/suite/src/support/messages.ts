@@ -3273,6 +3273,10 @@ const definedMessages = defineMessages({
         id: 'TR_DISCREET',
         defaultMessage: 'Discreet',
     },
+    TR_TOR: {
+        id: 'TR_TOR',
+        defaultMessage: 'Tor',
+    },
     TR_STANDARD_WALLET: {
         id: 'TR_STANDARD_WALLET',
         defaultMessage: 'Standard wallet',

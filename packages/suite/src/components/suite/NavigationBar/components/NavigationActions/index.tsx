@@ -28,10 +28,11 @@ interface Props {
 
 const NavigationActions = (props: Props) => {
     const analytics = useAnalytics();
-    const { activeApp, notifications, discreetMode } = useSelector(state => ({
+    const { activeApp, notifications, discreetMode, tor } = useSelector(state => ({
         activeApp: state.router.app,
         notifications: state.notifications,
         discreetMode: state.wallet.settings.discreetMode,
+        tor: state.suite.tor,
     }));
     const { goto, setDiscreetMode } = useActions({
         goto: routerActions.goto,
@@ -51,22 +52,6 @@ const NavigationActions = (props: Props) => {
 
     return (
         <WrapperComponent>
-            <ActionItem
-                onClick={() => {
-                    analytics.report({
-                        type: 'menu/toggle-discreet',
-                        payload: {
-                            value: !discreetMode,
-                        },
-                    });
-                    setDiscreetMode(!discreetMode);
-                }}
-                isActive={discreetMode}
-                label={<Translation id="TR_DISCREET" />}
-                icon={discreetMode ? 'HIDE' : 'SHOW'}
-                isMobileLayout={props.isMobileLayout}
-            />
-
             {BOTTOM_MENU_ITEMS.map(item => {
                 const { route, icon } = item;
                 const dataTestId = `@suite/menu/${route}`;
@@ -92,6 +77,36 @@ const NavigationActions = (props: Props) => {
                     />
                 );
             })}
+            <ActionItem
+                onClick={() => {
+                    analytics.report({
+                        type: 'menu/toggle-discreet',
+                        payload: {
+                            value: !discreetMode,
+                        },
+                    });
+                    setDiscreetMode(!discreetMode);
+                }}
+                isActive={discreetMode}
+                label={<Translation id="TR_DISCREET" />}
+                icon={discreetMode ? 'HIDE' : 'SHOW'}
+                isMobileLayout={props.isMobileLayout}
+            />
+            <ActionItem
+                onClick={() => {
+                    analytics.report({
+                        type: 'menu/toggle-tor',
+                        payload: {
+                            value: !tor,
+                        },
+                    });
+                    window.desktopApi!.toggleTor(!tor);
+                }}
+                isActive={tor}
+                label={<Translation id="TR_TOR" />}
+                icon={tor ? 'HIDE' : 'SHOW'}
+                isMobileLayout={props.isMobileLayout}
+            />
         </WrapperComponent>
     );
 };

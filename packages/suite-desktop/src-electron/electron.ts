@@ -14,6 +14,7 @@ import { buyRedirectHandler } from './buy';
 import { RESOURCES } from './constants';
 
 import BridgeProcess from './processes/BridgeProcess';
+import TorProcess from './processes/TorProcess';
 
 let initRun = false;
 let mainWindow: BrowserWindow;
@@ -30,6 +31,7 @@ const src = isDev
 // Runtime flags
 const disableCspFlag = app.commandLine.hasSwitch('disable-csp');
 const preReleaseFlag = app.commandLine.hasSwitch('pre-release');
+const launchWithTor = app.commandLine.hasSwitch('tor');
 
 // Updater
 const updateCancellationToken = new CancellationToken();
@@ -39,6 +41,7 @@ const httpReceiver = new HttpReceiver();
 
 // Processes
 const bridge = new BridgeProcess();
+const tor = new TorProcess();
 
 const registerShortcuts = (window: BrowserWindow) => {
     // internally uses before-input-event, which should be safer than adding globalShortcut and removing it on blur event
@@ -193,6 +196,31 @@ const init = async () => {
 
     mainWindow.loadURL(src);
 
+    // TOR
+    // let isTorEnabled = false;
+    const sess = mainWindow.webContents.session;
+    const toggleTor = async (start: boolean) => {
+        if (start) {
+            await tor.start();
+        } else {
+            await tor.stop();
+        }
+
+        // isTorEnabled = start;
+        mainWindow.webContents.send('tor/status', start);
+        sess.setProxy({
+            proxyRules: start ? 'socks5://localhost:9050' : '',
+        });
+    };
+
+    if (launchWithTor) {
+        await toggleTor(true);
+    }
+
+    ipcMain.on('tor/toggle', async (_, start: boolean) => {
+        await toggleTor(start);
+    });
+
     // Window controls
     ipcMain.on('window/close', () => {
         mainWindow.close();
@@ -216,6 +244,7 @@ const init = async () => {
     });
     ipcMain.on('client/ready', () => {
         notifyWindowMaximized(mainWindow);
+        // mainWindow.webContents.send('tor/status', isTorEnabled);
     });
     mainWindow.on('maximize', () => {
         notifyWindowMaximized(mainWindow);
@@ -240,26 +269,6 @@ const init = async () => {
     });
 
     httpReceiver.start();
-
-    // TOR
-    const sess = mainWindow.webContents.session;
-    const proxy = 'socks5://localhost:9050';
-    sess.resolveProxy(proxy).then(ttt => console.log(ttt));
-    ipcMain.on('tor/start', () => {
-        // TODO:
-        // - Check if Tor is running on the correct port
-        // - If not, send an error back
-        // - If yes, connect
-        /*
-        sess.setProxy({
-            proxyRules: proxy,
-        });
-        */
-    });
-
-    ipcMain.on('tor/stop', () => {
-        console.log('TOR', 'stop');
-    });
 
     // Updates (move in separate file)
     const updateSettings = store.getUpdateSettings();
