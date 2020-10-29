@@ -72,6 +72,11 @@ const notifyWindowMaximized = (window: BrowserWindow) => {
     );
 };
 
+// notify client with window active state
+const notifyWindowActive = (window: BrowserWindow, state: boolean) => {
+    window.webContents.send('window/is-active', state);
+};
+
 const init = async () => {
     try {
         await bridge.start();
@@ -226,6 +231,12 @@ const init = async () => {
     });
     mainWindow.on('moved', () => {
         notifyWindowMaximized(mainWindow);
+    });
+    mainWindow.on('focus', () => {
+        notifyWindowActive(mainWindow, true);
+    });
+    mainWindow.on('blur', () => {
+        notifyWindowActive(mainWindow, false);
     });
 
     httpReceiver.start();

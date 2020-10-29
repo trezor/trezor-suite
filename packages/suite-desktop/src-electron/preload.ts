@@ -26,6 +26,7 @@ const validChannels = [
 
     // window
     'window/is-maximized',
+    'window/is-active',
 ];
 
 contextBridge.exposeInMainWorld('desktopApi', {

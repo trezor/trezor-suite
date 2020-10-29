@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import NoSSR from '@suite-support/NoSSR';
 import { colors, TrezorLogo, Icon } from '@trezor/components';
@@ -30,21 +30,13 @@ const Drag = styled.div`
     -webkit-app-region: drag;
 `;
 
-const Actions = styled.div<{ isMac?: boolean }>`
-    display: flex;
-    align-content: center;
-    align-items: center;
-    height: 100%;
-    position: relative;
-    z-index: 2;
-    flex-direction: ${props => (props.isMac ? 'row' : 'row-reverse')};
-    margin: ${props => (props.isMac ? '0 10px' : '0')};
-`;
-
-const Action = styled.div<{ isMac?: boolean; isDisabled?: boolean }>`
-    width: ${props => (props.isMac ? 14 : TITLEBAR_HEIGHT)}px;
-    height: ${props => (props.isMac ? 14 : TITLEBAR_HEIGHT)}px;
-    margin: ${props => (props.isMac ? 2 : 0)}px;
+const Action = styled.div<{ isMac?: boolean; isDisabled?: boolean; isActive?: boolean }>`
+    box-sizing: border-box;
+    width: ${props => (props.isMac ? 12 : TITLEBAR_HEIGHT)}px;
+    height: ${props => (props.isMac ? 12 : TITLEBAR_HEIGHT)}px;
+    ${props => (props.isMac ? 'margin: 0 8px 0 0;' : 'margin: 0;')}
+    ${props =>
+        props.isMac && !props.isActive && `border: 1px solid ${colors.NEUE_TYPE_LIGHT_GREY};`}
     border-radius: ${props => (props.isMac ? 50 : 0)}px;
     background: transparent;
     -webkit-app-region: no-drag;
@@ -52,42 +44,71 @@ const Action = styled.div<{ isMac?: boolean; isDisabled?: boolean }>`
     align-content: center;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    & > * {
-        cursor: pointer;
-    }
+    ${props =>
+        !props.isMac &&
+        `&:hover {
+            background: ${colors.NEUE_TYPE_LIGHT_GREY};
+            & svg {
+                fill: ${colors.WHITE}
+            }
+        }`}
 `;
 
 const ActionClose = styled(Action)`
-    background: ${props => (props.isMac ? '#f85550' : 'transparent')};
-
-    &:hover {
-        background: ${props => (props.isMac ? '#f85550' : colors.NEUE_TYPE_RED)};
-    }
+    ${props =>
+        !props.isMac &&
+        `&:hover {
+            background: ${colors.NEUE_TYPE_RED};
+        }`}
 `;
+
+// ${props => props.isMac && props.isActive && `background: ${colors.NEUE_TYPE_RED};`}
 
 const ActionMinimize = styled(Action)`
     order: ${props => (props.isMac ? '0' : '1')};
-    ${props =>
-        props.isDisabled
-            ? `
-                background: ${colors.NEUE_TYPE_LIGHT_GREY};
-                cursor: auto;
-            `
-            : `
-                background: ${props.isMac ? '#fabe3e' : 'transparent'};
-                &:hover {
-                    background: ${props.isMac ? '#fabe3e' : colors.NEUE_TYPE_LIGHT_GREY};
-                }
-            `}
 `;
 
 const ActionMaximize = styled(Action)`
-    background: ${props => (props.isMac ? '#2dcc4d' : 'transparent')};
+    margin-right: 0;
+`;
 
-    &:hover {
-        background: ${props => (props.isMac ? '#2dcc4d' : colors.NEUE_TYPE_LIGHT_GREY)};
-    }
+const Actions = styled.div<{ isMac?: boolean; isDisabled?: boolean; isActive?: boolean }>`
+    display: inline-flex;
+    align-content: center;
+    align-items: center;
+    height: 100%;
+    position: relative;
+    z-index: 2;
+    ${props => !props.isMac && 'float: right;'}
+    flex-direction: ${props => (props.isMac ? 'row' : 'row-reverse')};
+    margin: ${props => (props.isMac ? '0 10px' : '0')};
+    ${props =>
+        props.isMac &&
+        props.isActive &&
+        `& svg {
+            opacity: 0;
+        }
+        &:hover {
+            & svg {
+                opacity: 0.8;
+            }
+        }
+        & > ${ActionClose} {
+            background: #f85550;
+        }
+        & > ${ActionMaximize} {
+            background: #2dcc4d;
+        }
+        ${
+            !props.isDisabled
+                ? `& > ${ActionMinimize} {
+                background: #fabe3e;
+            }`
+                : `& > ${ActionMinimize} {
+                border: 1px solid ${colors.NEUE_TYPE_LIGHT_GREY};
+            }`
+        }
+    `}
 `;
 
 const LogoWrapper = styled.div`
@@ -105,101 +126,70 @@ const LogoWrapper = styled.div`
 `;
 
 const DesktopTitlebar = () => {
-    const [hover, setHover] = useState('');
     const [maximized, setMaximized] = useState(false);
+    const [active, setActive] = useState(true);
 
     useEffect(() => {
         window.desktopApi!.on('window/is-maximized', (payload: boolean) => {
             setMaximized(payload);
         });
+        window.desktopApi!.on('window/is-active', (payload: boolean) => {
+            setActive(payload);
+        });
     }, []);
-
-    const mouseEnter = useCallback(
-        ({ currentTarget }) => {
-            setHover(currentTarget.getAttribute('data-button'));
-        },
-        [setHover],
-    );
-
-    const mouseLeave = useCallback(() => {
-        setHover('');
-    }, [setHover]);
 
     const isMac = isMacOS();
     const iconSize = isMac ? 10 : 16;
     const iconColor = isMac ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY;
     const isMinimizedDisabled = isMac && maximized;
-    const isMacNotHovering = !isMac || hover !== '';
-    const isNotMacHovering = (btn: string) => !isMac && hover === btn;
 
     return (
         <Titlebar>
             <Drag />
-            <Actions isMac={isMac}>
+            <Actions isMac={isMac} isDisabled={isMinimizedDisabled} isActive={active}>
                 <ActionClose
                     isMac={isMac}
+                    isActive={active}
                     onClick={() => window.desktopApi!.windowClose()}
                     data-button="close"
-                    onMouseEnter={mouseEnter}
-                    onMouseLeave={mouseLeave}
                 >
-                    {isMacNotHovering && (
-                        <Icon
-                            color={isNotMacHovering('close') ? colors.WHITE : iconColor}
-                            size={iconSize}
-                            icon="WINDOW_CLOSE"
-                        />
-                    )}
+                    <Icon color={iconColor} size={iconSize} icon="WINDOW_CLOSE" />
                 </ActionClose>
                 <ActionMinimize
                     isMac={isMac}
-                    isDisabled={isMinimizedDisabled}
+                    isActive={active}
                     onClick={
                         isMinimizedDisabled ? undefined : () => window.desktopApi!.windowMinimize()
                     }
                     data-button="minimize"
-                    onMouseEnter={isMinimizedDisabled ? undefined : mouseEnter}
-                    onMouseLeave={isMinimizedDisabled ? undefined : mouseLeave}
                 >
-                    {isMacNotHovering && !isMinimizedDisabled && (
-                        <Icon
-                            color={isNotMacHovering('minimize') ? colors.WHITE : iconColor}
-                            size={iconSize}
-                            icon="WINDOW_MINIMIZE"
-                        />
-                    )}
+                    <Icon color={iconColor} size={iconSize} icon="WINDOW_MINIMIZE" />
                 </ActionMinimize>
                 {maximized ? (
                     <ActionMaximize
                         isMac={isMac}
+                        isActive={active}
                         onClick={() => window.desktopApi!.windowUnmaximize()}
                         data-button="restore"
-                        onMouseEnter={mouseEnter}
-                        onMouseLeave={mouseLeave}
                     >
-                        {isMacNotHovering && (
-                            <Icon
-                                color={isNotMacHovering('restore') ? colors.WHITE : iconColor}
-                                size={iconSize}
-                                icon="WINDOW_RESTORE"
-                            />
-                        )}
+                        <Icon
+                            color={iconColor}
+                            size={iconSize}
+                            icon={isMac ? 'WINDOW_RESTORE_MAC' : 'WINDOW_RESTORE'}
+                        />
                     </ActionMaximize>
                 ) : (
                     <ActionMaximize
                         isMac={isMac}
+                        isActive={active}
                         onClick={() => window.desktopApi!.windowMaximize()}
                         data-button="maximize"
-                        onMouseEnter={mouseEnter}
-                        onMouseLeave={mouseLeave}
                     >
-                        {isMacNotHovering && (
-                            <Icon
-                                color={isNotMacHovering('maximize') ? colors.WHITE : iconColor}
-                                size={iconSize}
-                                icon="WINDOW_MAXIMIZE"
-                            />
-                        )}
+                        <Icon
+                            color={iconColor}
+                            size={iconSize}
+                            icon={isMac ? 'WINDOW_MAXIMIZE_MAC' : 'WINDOW_MAXIMIZE'}
+                        />
                     </ActionMaximize>
                 )}
             </Actions>
