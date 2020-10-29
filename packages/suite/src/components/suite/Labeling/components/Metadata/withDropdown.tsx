@@ -36,7 +36,7 @@ export const withDropdown = (WrappedComponent: React.FC<Props>) => (props: Props
             absolutePosition
             appendTo={document.body}
         >
-            <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', overflow: 'hidden' }}>
                 <WrappedComponent {...props} />
             </div>
         </StyledDropdown>

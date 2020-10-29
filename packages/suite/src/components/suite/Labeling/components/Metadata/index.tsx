@@ -12,8 +12,7 @@ import { withDropdown } from './withDropdown';
 
 const LabelDefaultValue = styled.div`
     width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: inline-block;
     transition: all 0.6s;
 
     &::before {
@@ -22,28 +21,28 @@ const LabelDefaultValue = styled.div`
 `;
 
 const LabelValue = styled.div`
-    display: flex;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const Label = styled.div`
     cursor: pointer;
     display: flex;
     overflow: hidden;
-    text-overflow: ellipsis;
     padding-left: 1px;
 `;
 
 const LabelButton = styled(Button)`
     justify-content: flex-start;
-    overflow: hidden;
-    text-overflow: ellipsis;
     text-align: left;
+    overflow: hidden;
 `;
 
 const ActionButton = styled(Button)<{ isVisible?: boolean }>`
-    transition: visibility 0.3s;
     visibility: ${props => (props.isVisible ? 'visible' : 'hidden')};
-    width: auto;
+    // hack to keep button in place to prevent vertical jumping (if used display: none)
+    width: ${props => (props.isVisible ? 'auto' : '0')};
     margin-left: 14px;
 `;
 
@@ -63,8 +62,8 @@ const LabelContainer = styled.div`
     display: flex;
     white-space: nowrap;
     align-items: center;
-    overflow: hidden;
     justify-content: flex-start;
+    overflow: hidden;
 
     &:hover {
         ${ActionButton} {
