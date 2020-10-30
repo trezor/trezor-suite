@@ -44,7 +44,7 @@ export const passThroughBackup = () => {
     cy.task('readAndConfirmMnemonicEmu');
 
     cy.log('click all after checkboxes and close backup modal');
-    cy.getTestElement('@modal/close-button').should('be.disabled');
+    cy.getTestElement('@modal/close-button').should('not.be.visible');
     cy.getTestElement('@backup/check-item/wrote-seed-properly').click();
     cy.getTestElement('@backup/check-item/made-no-digital-copy').click();
     cy.getTestElement('@backup/check-item/will-hide-seed').click();

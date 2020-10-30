@@ -28,7 +28,7 @@ describe('Backup', () => {
         cy.log(
             'Now go to dashboard and see if security card and notification reflects backup failed state correctly',
         );
-        cy.getTestElement('@modal/close-button').click();
+        cy.getTestElement('@backup/close-button').click();
 
         cy.getTestElement('@notification/failed-backup/cta').should('be.visible');
 
