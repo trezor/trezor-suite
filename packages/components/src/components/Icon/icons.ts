@@ -95,4 +95,5 @@ export const ICONS = {
     WINDOW_MAXIMIZE_MAC: require('../../images/icons/window_maximize_mac.svg'),
     WINDOW_RESTORE: require('../../images/icons/window_restore.svg'),
     WINDOW_RESTORE_MAC: require('../../images/icons/window_restore_mac.svg'),
+    TOR: require('../../images/icons/tor.svg'),
 };
