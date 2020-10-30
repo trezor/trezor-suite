@@ -120,9 +120,6 @@ const Backup = (props: Props) => {
                 data-test="@backup/no-device"
             >
                 <StyledImage image="CONNECT_DEVICE" />
-                <Buttons>
-                    <CloseButton onClick={onClose} />
-                </Buttons>
             </Modal>
         );
     }

@@ -6,29 +6,25 @@ export const toggleDeviceMenu = () => {
 };
 
 export const goToOnboarding = () => {
-    return (
-        cy
-            .getTestElement('@welcome/continue-button')
-            .click()
-            .getTestElement('@analytics/go-to-onboarding-button')
-            .click()
-    );
+    return cy
+        .getTestElement('@welcome/continue-button')
+        .click()
+        .getTestElement('@analytics/go-to-onboarding-button')
+        .click();
 };
 
 export const passThroughInitialRun = () => {
-    return (
-        cy
-            .getTestElement('@welcome/continue-button')
-            .click()
-            .getTestElement('@analytics/go-to-onboarding-button')
-            .click()
-            .getTestElement('@onboarding/skip-button')
-            .click()
-            .getTestElement('@onboarding/skip-button')
-            .click()
-            .getTestElement('@suite/loading')
-            .should('not.exist')
-    );
+    return cy
+        .getTestElement('@welcome/continue-button')
+        .click()
+        .getTestElement('@analytics/go-to-onboarding-button')
+        .click()
+        .getTestElement('@onboarding/skip-button')
+        .click()
+        .getTestElement('@onboarding/skip-button')
+        .click()
+        .getTestElement('@suite/loading')
+        .should('not.exist');
 };
 
 export const passThroughBackup = () => {
@@ -48,11 +44,11 @@ export const passThroughBackup = () => {
     cy.task('readAndConfirmMnemonicEmu');
 
     cy.log('click all after checkboxes and close backup modal');
-    cy.getTestElement('@backup/close-button').should('be.disabled');
+    cy.getTestElement('@modal/close-button').should('be.disabled');
     cy.getTestElement('@backup/check-item/wrote-seed-properly').click();
     cy.getTestElement('@backup/check-item/made-no-digital-copy').click();
     cy.getTestElement('@backup/check-item/will-hide-seed').click();
-    cy.getTestElement('@backup/close-button').click();
+    cy.getTestElement('@modal/close-button').click();
 };
 
 export const passThroughInitMetadata = (provider: 'dropbox' | 'google') => {
