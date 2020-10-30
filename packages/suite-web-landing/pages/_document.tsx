@@ -39,6 +39,38 @@ export default class MyDocument extends Document {
         return (
             <Html lang="en" style={{ height: '100%' }}>
                 <Head>
+                    <meta name="title" content="Trezor Suite" />
+                    <meta
+                        name="description"
+                        content="New desktop &amp; browser app for Trezor hardware wallets. Trezor Suite brings big improvements across our three key pillars of usability, security and privacy."
+                    />
+
+                    {/* Open Graph / Facebook */}
+                    <meta property="og:type" content="website" />
+                    <meta property="og:url" content="https://suite.trezor.io/" />
+                    <meta property="og:title" content="Trezor Suite" />
+                    <meta
+                        property="og:description"
+                        content="New desktop &amp; browser app for Trezor hardware wallets. Trezor Suite brings big improvements across our three key pillars of usability, security and privacy."
+                    />
+                    <meta
+                        property="og:image"
+                        content={resolveStaticPath('images/suite-web-landing/meta.png')}
+                    />
+
+                    {/* Twitter */}
+                    <meta property="twitter:card" content="summary_large_image" />
+                    <meta property="twitter:url" content="https://suite.trezor.io/" />
+                    <meta property="twitter:title" content="Trezor Suite" />
+                    <meta
+                        property="twitter:description"
+                        content="New desktop &amp; browser app for Trezor hardware wallets. Trezor Suite brings major improvements across our three key pillars of usability, security and privacy."
+                    />
+                    <meta
+                        property="twitter:image"
+                        content={resolveStaticPath('images/suite-web-landing/meta.png')}
+                    />
+
                     <meta charSet="utf-8" />
                     <meta httpEquiv="Pragma" content="no-cache" />
                     <meta httpEquiv="cache-control" content="no-cache" />
