@@ -179,9 +179,10 @@ const PassphraseTypeCard = (props: Props) => {
     const [enabled, setEnabled] = useState(!props.authConfirmation);
     const [showPassword, setShowPassword] = useState(false);
     const [hiddenWalletTouched, setHiddenWalletTouched] = useState(false);
-    // const inputType = showPassword ? 'text' : 'password';
     const enterPressed = useKeyPress('Enter');
     const backspacePressed = useKeyPress('Backspace');
+    const deletePressed = useKeyPress('Delete');
+
     const ref = createRef<HTMLInputElement>();
     const isTooLong = countBytesInString(value) > MAX_LENGTH.PASSPHRASE;
 
@@ -208,10 +209,18 @@ const PassphraseTypeCard = (props: Props) => {
         const len = tmpValue.length;
         const pos = event.target.selectionStart || len;
         const diff = newValue.length - len;
-        if (pos < len && diff < 0) {
-            // caret position is somewhere in the middle
-            const fill = new Array(Math.abs(diff)).fill(''); // make space for new string
-            newValue.splice(pos + diff, 0, ...fill); // shift current value
+
+        // caret position is somewhere in the middle
+        if (pos < len) {
+            // added
+            if (diff < 0) {
+                const fill = new Array(Math.abs(diff)).fill(''); // make space for new string
+                newValue.splice(pos + diff, 0, ...fill); // shift current value
+            }
+            // removed
+            if (diff > 0) {
+                newValue.splice(pos, diff);
+            }
         }
         for (let i = 0; i < len; i++) {
             const char = tmpValue.charAt(i);
@@ -221,7 +230,7 @@ const PassphraseTypeCard = (props: Props) => {
         }
         if (len < newValue.length) {
             // Check if last keypress was backspace or delete
-            if (backspacePressed) {
+            if (backspacePressed || deletePressed) {
                 newValue.splice(pos, diff);
             } else {
                 // Highlighted and replaced portion of the passphrase
@@ -309,6 +318,7 @@ const PassphraseTypeCard = (props: Props) => {
                                     color={colors.NEUE_TYPE_LIGHT_GREY}
                                     icon={showPassword ? 'HIDE' : 'SHOW'}
                                     onClick={() => setShowPassword(!showPassword)}
+                                    data-test="@passphrase/show-toggle"
                                 />
                             }
                         />

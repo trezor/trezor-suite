@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 - Account search bug fixes and various small improvements
+- Passphrase input backspace/delete keys behavior
 
 ## [20.10.1]
 
