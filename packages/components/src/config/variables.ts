@@ -154,4 +154,5 @@ export const ICONS: IconType[] = [
     'WINDOW_MAXIMIZE_MAC',
     'WINDOW_RESTORE',
     'WINDOW_RESTORE_MAC',
+    'TOR',
 ];

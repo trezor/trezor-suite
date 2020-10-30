@@ -132,6 +132,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Activate all',
         id: 'TR_ACTIVATE_ALL',
     },
+    TR_ACTIVE: {
+        id: 'TR_ACTIVE',
+        defaultMessage: 'active',
+    },
     TR_ADD_ACCOUNT: {
         defaultMessage: 'Add account',
         id: 'TR_ADD_ACCOUNT',
@@ -4391,6 +4395,10 @@ const definedMessages = defineMessages({
         id: 'TR_TAKES_N_MINUTES',
         defaultMessage: 'Takes ~{n} mins',
     },
+    TR_INACTIVE: {
+        id: 'TR_INACTIVE',
+        defaultMessage: 'inactive',
+    },
     TR_INPUTS_OUTPUTS: {
         id: 'TR_INPUTS_OUTPUTS',
         defaultMessage: 'Inputs, Outputs',
@@ -4451,6 +4459,10 @@ const definedMessages = defineMessages({
     TR_UPDATE_MODAL_INSTALL_LATER: {
         id: 'TR_UPDATE_MODAL_INSTALL_LATER',
         defaultMessage: 'Update on next launch',
+    },
+    TR_MANAGE: {
+        id: 'TR_MANAGE',
+        defaultMessage: 'manage',
     },
     TR_MINIMIZE: {
         id: 'TR_MINIMIZE',
