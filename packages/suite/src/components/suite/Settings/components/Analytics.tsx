@@ -10,7 +10,7 @@ const PositionedSwitch = styled.div`
 `;
 
 const Analytics = () => {
-    const { init, dispose, enabled } = useAnalytics();
+    const { enable, dispose, enabled } = useAnalytics();
     return (
         <SectionItem>
             <TextColumn
@@ -23,12 +23,12 @@ const Analytics = () => {
                 <PositionedSwitch>
                     <Switch
                         data-test="@analytics/toggle-switch"
-                        checked={enabled}
+                        checked={!!enabled}
                         onChange={() => {
                             if (enabled) {
                                 return dispose();
                             }
-                            init();
+                            enable();
                         }}
                     />
                 </PositionedSwitch>

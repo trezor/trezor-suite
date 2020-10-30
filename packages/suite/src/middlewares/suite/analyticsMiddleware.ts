@@ -21,10 +21,9 @@ import {
     - transport (webusb/bridge) and its version
     - backup type (shamir/bip39)
 */
-
 const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
-): Action => {
+) => {
     // pass action
     next(action);
 

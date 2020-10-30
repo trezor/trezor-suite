@@ -4,18 +4,22 @@
  * @docs docs/misc/analytics.md
  */
 
-import * as Sentry from '@sentry/browser';
-
 import { ANALYTICS } from '@suite-actions/constants';
 import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { getAnalyticsRandomId } from '@suite-utils/random';
 import { encodeDataToQueryString } from '@suite-utils/analytics';
 import { Account } from '@wallet-types';
 import { isDesktop, isWeb } from '@suite-utils/env';
+import { setSentryUser } from '@suite-utils/sentry';
+import { State } from '@suite-reducers/analyticsReducer';
 
 export type AnalyticsAction =
+    | { type: typeof ANALYTICS.ENABLE }
     | { type: typeof ANALYTICS.DISPOSE }
-    | { type: typeof ANALYTICS.INIT; payload: { instanceId: string } };
+    | {
+          type: typeof ANALYTICS.INIT;
+          payload: { instanceId: string; sessionId: string; enabled: boolean };
+      };
 
 /**
 simple semver for data-analytics part.
@@ -221,7 +225,7 @@ const getUrl = () => {
     // @ts-ignore
     const { hostname } = window.location;
 
-    // this is true for both web and develop dev server
+    // this is true for both web and desktop dev server
     if (hostname === 'localhost') {
         return; // no reporting on dev
     }
@@ -233,6 +237,7 @@ const getUrl = () => {
     }
 
     if (isWeb()) {
+        /* istanbul ignore next */
         switch (hostname) {
             case 'staging-suite.trezor.io':
                 return `${base}/web/staging.log`;
@@ -277,29 +282,43 @@ export const report = (data: AnalyticsEvent, force = false) => async (
 };
 
 /**
- * Analytics life cycle
- *
- * 1. start app
- * 2. load analytics storage into reducer
- * 3. if empty (first start) generate instanceId and save it back to storage. instanceId exists in storage
- *     regardless of whether user enabled analytics or not.
- *
- * User may disable analytics, see dispose() fn.
+ * Init analytics, should be always run on application start (see suiteMiddleware). It:
+ * - sets common analytics variables based on what was loaded from storage
+ * - initiates sentry
+ * - registers event listeners for reporting events from electron
+ * @param loadedState - analytics state loaded from storage
+ * @param optout if true, analytics will be on by default (opt-out mode)
  */
-export const init = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { analytics } = getState();
-    const instanceId = getAnalyticsRandomId();
-    Sentry.configureScope(scope => {
-        scope.setUser({ id: instanceId });
-    });
+export const init = (loadedState: State, optout: boolean) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    // 1. if instanceId does not exist yet (was not loaded from storage), create a new one
+    const instanceId = loadedState.instanceId || getAnalyticsRandomId();
+    // 2. always create new session id
+    const sessionId = getAnalyticsRandomId();
+    // 3. if enabled was already set to some value, keep it (user made choice), otherwise set it to default represented by optout param
+    const enabled = typeof loadedState.enabled !== 'undefined' ? loadedState.enabled : optout;
+    // 3. set application state
     dispatch({
         type: ANALYTICS.INIT,
         payload: {
-            // if no instanceId exists it means that it was not loaded from storage, so create a new one
-            instanceId: !analytics.instanceId ? instanceId : analytics.instanceId,
+            instanceId,
+            sessionId,
+            enabled,
         },
     });
+    // 5. if analytics was initiated as enabled, continue with setting up side effects
+    if (!getState().analytics.enabled) return;
+    // 6. error logging to sentry
+    setSentryUser(instanceId);
+    // 7. register event listeners to report events from electron
+    // todo:
 };
+
+export const enable = (): AnalyticsAction => ({
+    type: ANALYTICS.ENABLE,
+});
 
 export const dispose = (): AnalyticsAction => ({
     type: ANALYTICS.DISPOSE,

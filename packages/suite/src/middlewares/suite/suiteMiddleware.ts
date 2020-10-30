@@ -60,12 +60,8 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
             ]);
             // 3. init connect;
             api.dispatch(trezorConnectActions.init());
-
-            // 4. init analytics - calling init here means opt-out from analytics. If not called here
-            // it would become opt-in. init analytics only if instanceId does not exist yet.
-            if (!api.getState().analytics.instanceId) {
-                api.dispatch(analyticsActions.init());
-            }
+            // 4. init analytics
+            api.dispatch(analyticsActions.init(action.payload.analytics, true));
             break;
         }
         case SUITE.CONNECT_INITIALIZED:
