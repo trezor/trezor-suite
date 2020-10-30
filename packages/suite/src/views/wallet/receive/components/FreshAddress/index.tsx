@@ -97,6 +97,7 @@ const FreshAddress = ({
     addresses,
     showAddress,
     disabled,
+    pendingAddresses,
     locked,
     intl,
 }: Props & WrappedComponentProps) => {
@@ -110,7 +111,11 @@ const FreshAddress = ({
                   transfers: account.history.total,
               },
           ];
-    const unrevealed = unused.filter(a => !addresses.find(r => r.path === a.path));
+
+    const unrevealed = unused.filter(
+        a =>
+            !addresses.find(r => r.path === a.path) && !pendingAddresses.find(p => p === a.address),
+    );
     // const addressLabel = isBitcoin ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS';
     // NOTE: unrevealed[0] can be undefined (limit exceeded)
     const firstFreshAddress = isBitcoin ? unrevealed[0] : unused[0];
