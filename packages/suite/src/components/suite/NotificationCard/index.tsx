@@ -78,6 +78,7 @@ const NotificationButton = styled(Button)<{ notificationVariant: Props['variant'
     &:hover,
     &:focus,
     &:active {
+        color: ${colors.WHITE};
         background: ${props => getHoverColor(props.notificationVariant)};
     }
 `;
