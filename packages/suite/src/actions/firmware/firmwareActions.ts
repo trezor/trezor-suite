@@ -103,10 +103,6 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
     );
 
     if (!updateResponse.success) {
-        // todo: temporary workaround, weird connect response, issue here: https://github.com/trezor/trezor-suite/issues/2659
-        if (updateResponse.payload.error === "Cannot read property 'code' of null") {
-            return dispatch({ type: FIRMWARE.SET_ERROR, payload: 'Firmware update cancelled' });
-        }
         return dispatch({ type: FIRMWARE.SET_ERROR, payload: updateResponse.payload.error });
     }
 
