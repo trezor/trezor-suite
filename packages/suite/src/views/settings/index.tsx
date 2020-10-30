@@ -1,4 +1,6 @@
 import React, { useCallback } from 'react';
+import { injectIntl, WrappedComponentProps } from 'react-intl';
+import messages from '@suite/support/messages';
 import styled from 'styled-components';
 import { SettingsLayout } from '@settings-components';
 import { Translation } from '@suite-components';
@@ -12,8 +14,8 @@ import {
     TextColumn,
 } from '@suite-components/Settings';
 import { FIAT, LANGUAGES } from '@suite-config';
-import { useAnalytics, useDevice } from '@suite-hooks';
-import { Button, Tooltip, Switch } from '@trezor/components';
+import { useAnalytics, useDevice, useSelector } from '@suite-hooks';
+import { Button, Tooltip, Switch, Input } from '@trezor/components';
 import { capitalizeFirstLetter } from '@suite-utils/string';
 
 import { Props } from './Container';
@@ -41,6 +43,19 @@ const VersionTooltip = styled(Tooltip)`
     margin: 0 2px;
 `;
 
+const TorInputIp = styled(Input)`
+    margin-right: 10px;
+    width: 150px;
+`;
+
+const TorInputPort = styled(Input)`
+    width: 100px;
+`;
+
+const TorInputs = styled.div`
+    display: flex;
+`;
+
 const VersionLink = styled.a``;
 
 const Settings = ({
@@ -55,7 +70,8 @@ const Settings = ({
     initMetadata,
     disconnectProvider,
     disableMetadata,
-}: Props) => {
+    intl,
+}: Props & WrappedComponentProps) => {
     const analytics = useAnalytics();
 
     const { isLocked, device } = useDevice();
@@ -65,6 +81,10 @@ const Settings = ({
     const checkForUpdates = useCallback(() => window.desktopApi?.checkForUpdates(), []);
     const downloadUpdate = useCallback(() => window.desktopApi?.downloadUpdate(), []);
     const installRestart = useCallback(() => window.desktopApi?.installUpdate(), []);
+
+    const { tor } = useSelector(state => ({
+        tor: state.suite.tor,
+    }));
 
     return (
         <SettingsLayout data-test="@settings/index">
@@ -199,6 +219,52 @@ const Settings = ({
                 )}
             </Section>
 
+            <Section title={<Translation id="TR_TOR" />}>
+                <SectionItem>
+                    <TextColumn
+                        title={<Translation id="TR_TOR_TITLE" />}
+                        description={<Translation id="TR_TOR_DESCRIPTION" />}
+                        learnMore="LINK"
+                    />
+                    <ActionColumn>
+                        <Switch
+                            data-test="@settings/metadata-switch"
+                            checked={tor}
+                            onChange={() => {
+                                analytics.report({
+                                    type: 'menu/toggle-tor',
+                                    payload: {
+                                        value: !tor,
+                                    },
+                                });
+                                window.desktopApi!.toggleTor(!tor);
+                            }}
+                        />
+                    </ActionColumn>
+                </SectionItem>
+                {tor && (
+                    <SectionItem>
+                        <TextColumn title={<Translation id="TR_PARAMETERS" />} />
+                        <ActionColumn>
+                            <TorInputs>
+                                <TorInputIp
+                                    name="torIpAddress"
+                                    placeholder={intl.formatMessage(messages.TR_IP_ADDRESS)}
+                                    onChange={() => null}
+                                    type="text"
+                                />
+                                <TorInputPort
+                                    name="torPort"
+                                    placeholder={intl.formatMessage(messages.TR_PORT)}
+                                    onChange={() => null}
+                                    type="text"
+                                />
+                            </TorInputs>
+                        </ActionColumn>
+                    </SectionItem>
+                )}
+            </Section>
+
             <Section title={<Translation id="TR_APPLICATION" />}>
                 <Analytics />
 
@@ -317,4 +383,4 @@ const Settings = ({
     );
 };
 
-export default Settings;
+export default injectIntl(Settings);

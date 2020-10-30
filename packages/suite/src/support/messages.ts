@@ -1681,6 +1681,10 @@ const definedMessages = defineMessages({
             'Please enable passphrase settings to continue with the verification process.',
         id: 'TR_PLEASE_ENABLE_PASSPHRASE',
     },
+    TR_PORT: {
+        id: 'TR_PORT',
+        defaultMessage: 'Port',
+    },
     TR_PRIMARY_FIAT: {
         defaultMessage: 'Primary FIAT currency to display',
         id: 'TR_PRIMARY_FIAT',
@@ -2368,6 +2372,10 @@ const definedMessages = defineMessages({
         id: 'TR_SEND_FEE_TOOLTIP',
         defaultMessage: 'TR_SEND_FEE_TOOLTIP',
     },
+    TR_PARAMETERS: {
+        id: 'TR_PARAMETERS',
+        defaultMessage: 'Parameters',
+    },
     TR_PIN_MISMATCH_HEADING: {
         id: 'TR_PIN_MISMATCH_HEADING',
         defaultMessage: 'Pin mismatch',
@@ -2580,6 +2588,14 @@ const definedMessages = defineMessages({
     TR_LIVE: {
         id: 'TR_LIVE',
         defaultMessage: 'Live',
+    },
+    TR_TOR_TITLE: {
+        id: 'TR_TOR_TITLE',
+        defaultMessage: 'TR_TOR_TITLE',
+    },
+    TR_TOR_DESCRIPTION: {
+        id: 'TR_TOR_DESCRIPTION',
+        defaultMessage: 'TR_TOR_DESCRIPTION',
     },
     TR_TRANSACTIONS: {
         id: 'TR_TRANSACTIONS',
@@ -2885,6 +2901,10 @@ const definedMessages = defineMessages({
     TR_IM_NEW_TO_ALL_THIS: {
         id: 'TR_IM_NEW_TO_ALL_THIS',
         defaultMessage: "I'm new to all this",
+    },
+    TR_IP_ADDRESS: {
+        id: 'TR_IP_ADDRESS',
+        defaultMessage: 'IP Address',
     },
     RECEIVE_TITLE: {
         id: 'RECEIVE_TITLE',
