@@ -46,13 +46,20 @@ type Platform = 'win' | 'mac' | 'linux';
 
 const getAppUrl = (platform: Platform) => {
     const version = process.env.VERSION ? normalizeVersion(process.env.VERSION) : '';
+    const arch = 'x86_64'; // TODO: refactor and make more flexible
     switch (platform) {
         case 'win':
-            return encodeURI(`../web/static/desktop/Trezor-Suite-${version}-${platform}.exe`);
+            return encodeURI(
+                `../web/static/desktop/Trezor-Suite-${version}-${platform}-${arch}.exe`,
+            );
         case 'mac':
-            return encodeURI(`../web/static/desktop/Trezor-Suite-${version}-${platform}.dmg`);
+            return encodeURI(
+                `../web/static/desktop/Trezor-Suite-${version}-${platform}-${arch}.dmg`,
+            );
         case 'linux':
-            return encodeURI(`../web/static/desktop/Trezor-Suite-${version}-${platform}.AppImage`);
+            return encodeURI(
+                `../web/static/desktop/Trezor-Suite-${version}-${platform}-${arch}.AppImage`,
+            );
         // no default
     }
 };

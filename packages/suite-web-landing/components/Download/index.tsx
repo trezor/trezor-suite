@@ -91,9 +91,12 @@ const getIconForCurrentPlatform = (platform: Platform) => {
 };
 
 const getInstallerURI = (platform: Platform, version: string) => {
+    const arch = 'x86_64'; // TODO: refactor and make more flexible
     const extension = dropdownItemsData.find(item => platform === item.platform)!
         .installerExtension;
-    return encodeURI(`./web/static/desktop/Trezor-Suite-${version}-${platform}.${extension}`);
+    return encodeURI(
+        `./web/static/desktop/Trezor-Suite-${version}-${platform}-${arch}.${extension}`,
+    );
 };
 
 const Index = () => {
