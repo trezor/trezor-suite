@@ -129,15 +129,14 @@ export const actions = [
             connect: {
                 success: false,
                 payload: {
-                    // this is temporary workaround for bug somewhere in connect/trezor-link/trezord?
-                    error: "Cannot read property 'code' of null",
+                    error: 'Firmware install failed',
                 },
             },
         },
         result: {
             actions: [
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
-                { type: FIRMWARE.SET_ERROR, payload: 'Firmware update cancelled' },
+                { type: FIRMWARE.SET_ERROR },
             ],
         },
     },
