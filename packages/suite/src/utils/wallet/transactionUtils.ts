@@ -244,3 +244,7 @@ export const isTxUnknown = (transaction: WalletAccountTransaction) => {
         transaction.type === 'unknown'
     );
 };
+
+export const isTxPending = (transaction: WalletAccountTransaction | AccountTransaction) => {
+    return !transaction.blockHeight || transaction.blockHeight < 0;
+};

@@ -170,15 +170,18 @@ const Item = ({ addr, symbol, onClick, metadataPayload, index }: ItemProps) => {
     );
 };
 
-const UsedAddresses = ({ account, addresses, showAddress, locked }: Props) => {
+const UsedAddresses = ({ account, addresses, pendingAddresses, showAddress, locked }: Props) => {
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
+
     if (account.networkType !== 'bitcoin' || !account.addresses) return null;
     const { used, unused } = account.addresses;
     const { addressLabels } = account.metadata;
     // find revealed addresses in `unused` list
-    const revealed = addresses.reduce((result, addr) => {
-        const x = unused.find(u => u.path === addr.path);
-        return x ? result.concat(x) : result;
+    const revealed = unused.reduce((result, addr) => {
+        const r = addresses.find(u => u.path === addr.path);
+        const p = pendingAddresses.find(u => u === addr.address);
+        const f = r || p;
+        return f ? result.concat(addr) : result;
     }, [] as typeof unused);
     // TODO: add skipped addresses?
     // add revealed addresses to `used` list

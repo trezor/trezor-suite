@@ -34,6 +34,7 @@ export interface ChildProps {
     showAddress: Props['showAddress'];
     disabled: boolean;
     locked: boolean;
+    pendingAddresses: string[];
 }
 
 export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(SendIndex));
