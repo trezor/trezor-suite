@@ -3053,7 +3053,7 @@ const definedMessages = defineMessages({
         defaultMessage: 'SEPA',
     },
     TR_PAYMENT_METHOD_GIROPAY: {
-        id: 'TR_PAYMENT_METHOD_CREDITCARD',
+        id: 'TR_PAYMENT_METHOD_GIROPAY',
         defaultMessage: 'giropay',
     },
     TR_PAYMENT_METHOD_EPS: {
