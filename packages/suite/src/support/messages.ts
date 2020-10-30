@@ -4605,6 +4605,11 @@ const definedMessages = defineMessages({
         id: 'TR_SUITE_WEB_LANDING_MACOS_LABEL',
         defaultMessage: 'for MacOS',
     },
+    TR_BITCOIN_CASH_15_NOV_FORK: {
+        id: 'TR_BITCOIN_CASH_15_NOV_FORK',
+        defaultMessage:
+            'Bitcoin Cash will undergo a contentious fork on the 15th of November 2020, which could cause a split in the network. Read our blogpost to understand the risks!',
+    },
 } as const);
 
 export default definedMessages;
