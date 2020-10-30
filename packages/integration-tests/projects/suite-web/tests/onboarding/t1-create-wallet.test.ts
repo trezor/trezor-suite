@@ -18,7 +18,7 @@ describe.skip('Onboarding - create wallet', () => {
     it('Success (basic)', () => {
         cy.getTestElement('@onboarding/path-used-button').click();
         cy.getTestElement('@onboarding/pair-device-step');
-        
+
         cy.task('startEmu', { version: '1.9.0', wipe: true });
         cy.wait(1000);
 
@@ -48,11 +48,11 @@ describe.skip('Onboarding - create wallet', () => {
             cy.task('pressYes');
         }
 
-        cy.getTestElement('@backup/close-button').should('be.disabled');
+        cy.getTestElement('@modal/close-button').should('be.disabled');
         cy.getTestElement('@backup/check-item/wrote-seed-properly').click();
         cy.getTestElement('@backup/check-item/made-no-digital-copy').click();
         cy.getTestElement('@backup/check-item/will-hide-seed').click();
-        cy.getTestElement('@backup/close-button').click();
+        cy.getTestElement('@modal/close-button').click();
 
         cy.log('Now we are in PIN step, skip button is available');
         cy.getTestElement('@onboarding/skip-button').should('be.visible');
