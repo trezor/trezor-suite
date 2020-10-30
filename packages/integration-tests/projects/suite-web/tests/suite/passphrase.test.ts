@@ -34,9 +34,10 @@ describe('Passphrase', () => {
         cy.getTestElement('@toast/auth-confirm-error/close').click();
         // retry
         cy.getTestElement('@passphrase-mismatch/retry-button').click();
-        // confirm again
+        // confirm again (also test some backspacing to make sure custom input works)
         cy.getTestElement('@passphrase/confirm-checkbox').click();
-        cy.getTestElement('@passphrase/input').type('abc');
+        cy.getTestElement('@passphrase/show-toggle').click();
+        cy.getTestElement('@passphrase/input').type('abcdef{leftarrow}{backspace}{backspace}{del}');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         // go to wallet
         cy.getTestElement('@suite/menu/wallet-index').click();
