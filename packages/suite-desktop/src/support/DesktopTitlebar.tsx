@@ -15,7 +15,7 @@ const Titlebar = styled.div<{ isTor: boolean }>`
     position: fixed;
     z-index: 1000000;
     position: relative;
-    background: ${props => (props.isTor ? '#59316B' : colors.NEUE_TYPE_DARK_GREY)};
+    background: ${props => (props.isTor ? colors.TOR : colors.NEUE_TYPE_DARK_GREY)};
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
 `;
 

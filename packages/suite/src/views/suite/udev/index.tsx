@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Translation } from '@suite-components';
-import { Modal, Button, Link, Select } from '@trezor/components';
+import { Translation, TrezorLink } from '@suite-components';
+import { Modal, Button, Select, Link } from '@trezor/components';
 import { URLS } from '@suite-constants';
 import { getLinuxPackage } from '@suite-utils/bridge';
 import { InjectedModalApplicationProps } from '@suite-types';
@@ -77,11 +77,11 @@ const UdevRules = (props: InjectedModalApplicationProps) => {
                             <Translation id="TR_DOWNLOAD" />
                         </StyledButton>
                     </Link>
-                    <Link variant="nostyle" href={URLS.WIKI_UDEV_RULES}>
+                    <TrezorLink variant="nostyle" href={URLS.WIKI_UDEV_RULES}>
                         <StyledButton variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
                             <Translation id="TR_UDEV_DOWNLOAD_MANUAL" />
                         </StyledButton>
-                    </Link>
+                    </TrezorLink>
                 </Download>
             </Wrapper>
         </Modal>

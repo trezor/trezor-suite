@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Button, P, Modal, Link, variables, colors } from '@trezor/components';
+import { Button, P, Modal, variables, colors } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { Analytics } from '@suite-components/Settings';
 import { URLS } from '@suite-constants';
-import { Translation, Image } from '@suite-components';
+import { Translation, Image, TrezorLink } from '@suite-components';
 import { useActions } from '@suite-hooks';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;
@@ -80,9 +80,9 @@ const AnalyticsComponent = () => {
                             id="TR_TOS_INFORMATION"
                             values={{
                                 TR_TOS_LINK: (
-                                    <Link href={URLS.TOS_URL}>
+                                    <TrezorLink href={URLS.TOS_URL}>
                                         <Translation id="TR_TOS_LINK" />
-                                    </Link>
+                                    </TrezorLink>
                                 ),
                             }}
                         />

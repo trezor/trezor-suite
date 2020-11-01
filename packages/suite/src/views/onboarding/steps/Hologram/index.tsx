@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Link, Button, variables } from '@trezor/components';
+import { Button, variables } from '@trezor/components';
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import * as STEP from '@onboarding-constants/steps';
 import { SUPPORT_URL, TREZOR_PACKAGING_URL, TREZOR_RESELLERS_URL } from '@suite-constants/urls';
-import { Translation, Image } from '@suite-components';
+import { Translation, Image, TrezorLink } from '@suite-components';
 
 import Hologram from './components/Hologram';
 import { Props } from './Container';
@@ -70,19 +70,19 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                 id="TR_DID_YOU_PURCHASE"
                                 values={{
                                     TR_PACKAGING_LINK: (
-                                        <Link href={TREZOR_PACKAGING_URL}>
+                                        <TrezorLink href={TREZOR_PACKAGING_URL}>
                                             <Translation id="TR_PACKAGING_LINK" />
-                                        </Link>
+                                        </TrezorLink>
                                     ),
                                     TR_RESELLERS_LINK: (
-                                        <Link href={TREZOR_RESELLERS_URL}>
+                                        <TrezorLink href={TREZOR_RESELLERS_URL}>
                                             <Translation id="TR_RESELLERS_LINK" />
-                                        </Link>
+                                        </TrezorLink>
                                     ),
                                     TR_CONTACT_OUR_SUPPORT_LINK: (
-                                        <Link href={SUPPORT_URL}>
+                                        <TrezorLink href={SUPPORT_URL}>
                                             <Translation id="TR_CONTACT_OUR_SUPPORT_LINK" />
-                                        </Link>
+                                        </TrezorLink>
                                     ),
                                 }}
                             />
@@ -97,7 +97,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                 <Translation id="TR_SHOW_HOLOGRAM_AGAIN" />
                             </OnboardingButton.Alt>
 
-                            <Link variant="nostyle" href={SUPPORT_URL}>
+                            <TrezorLink variant="nostyle" href={SUPPORT_URL}>
                                 <Button
                                     icon="EXTERNAL_LINK"
                                     alignIcon="right"
@@ -106,7 +106,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                                 >
                                     <Translation id="TR_CONTACT_SUPPORT" />
                                 </Button>
-                            </Link>
+                            </TrezorLink>
                         </Wrapper.Controls>
                     </>
                 )}

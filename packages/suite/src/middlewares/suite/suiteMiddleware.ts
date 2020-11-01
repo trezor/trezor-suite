@@ -5,6 +5,7 @@ import { BLOCKCHAIN } from '@wallet-actions/constants';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as analyticsActions from '@suite-actions/analyticsActions';
 import { loadStorage } from '@suite-actions/storageActions';
 import { fetchLocale } from '@settings-actions/languageActions';
@@ -95,6 +96,14 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
         case SUITE.REQUEST_AUTH_CONFIRM:
             api.dispatch(suiteActions.authConfirm());
             break;
+        case SUITE.TOR_STATUS: {
+            if (action.payload) {
+                await api.dispatch(walletSettingsActions.setTorBlockbookUrls());
+            } else {
+                api.dispatch(walletSettingsActions.clearTorBlockbookUrl());
+            }
+            break;
+        }
         default:
             break;
     }

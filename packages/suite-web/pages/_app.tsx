@@ -1,6 +1,7 @@
 import React from 'react';
 import App from 'next/app';
 import Head from 'next/head';
+import dynamic from 'next/dynamic';
 import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
 import * as Sentry from '@sentry/browser';
@@ -9,7 +10,6 @@ import Preloader from '@suite-components/Preloader';
 import ToastContainer from '@suite-components/ToastContainer';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import Resize from '@suite-support/Resize';
-import Tor from '@suite-support/Tor';
 import OnlineStatus from '@suite-support/OnlineStatus';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import Router from '@suite-support/Router';
@@ -20,6 +20,8 @@ import { SENTRY_CONFIG } from '@suite-config';
 import { Store } from '@suite-types';
 import ImagesPreloader from '../support/ImagesPreloader';
 import { CypressExportStore } from '../support/CypressExportStore';
+
+const Tor = dynamic(() => import('@suite-support/Tor'), { ssr: false });
 
 declare global {
     interface Window {

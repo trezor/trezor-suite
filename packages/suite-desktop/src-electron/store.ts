@@ -4,7 +4,7 @@ import { BrowserWindow, screen } from 'electron';
 // creates config.json inside appData folder https://electronjs.org/docs/api/app#appgetpathname
 const store = new Store();
 
-export const MIN_WIDTH = 720;
+export const MIN_WIDTH = 770;
 export const MIN_HEIGHT = 700;
 export const MAX_WIDTH = 1920;
 export const MAX_HEIGHT = 1080;
@@ -61,4 +61,15 @@ export const getUpdateSettings = () => {
 
 export const setUpdateSettings = (updateSettings: UpdateSettings) => {
     store.set('updateSettings', updateSettings);
+};
+
+export const getTorSettings = () => {
+    return store.get('torSettings', {
+        running: false,
+        address: '127.0.0.1:9050',
+    });
+};
+
+export const setTorSettings = (torSettings: TorSettings) => {
+    store.set('torSettings', torSettings);
 };

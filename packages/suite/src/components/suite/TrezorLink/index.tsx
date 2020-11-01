@@ -3,7 +3,7 @@ import { Link, LinkProps } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
 import { toTorUrl } from '@suite-utils/tor';
 
-const TorLink = (props: LinkProps) => {
+const TrezorLink = (props: LinkProps) => {
     const isTor = useSelector(state => state.suite.tor);
     const url = useMemo(() => {
         if (!props.href || !isTor) {
@@ -16,4 +16,4 @@ const TorLink = (props: LinkProps) => {
     return <Link {...props} href={url} />;
 };
 
-export default TorLink;
+export default TrezorLink;

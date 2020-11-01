@@ -1,3 +1,5 @@
+export const onionDomain = 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion';
+
 export const oauthUrls = [
     'https://accounts.google.com',
     'https://www.dropbox.com/oauth2/authorize',
@@ -20,6 +22,14 @@ export const allowedExternalUrls = [
     'https://cexdirect.com/',
     // internal server - used for buy post request
     'http://127.0.0.1',
+];
+
+export const allowedDomains = [
+    'localhost',
+    '127.0.0.1',
+    'trezor.io',
+    'api.coingecko.com',
+    onionDomain,
 ];
 
 export const cspRules = [

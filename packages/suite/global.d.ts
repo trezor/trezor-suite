@@ -29,7 +29,10 @@ export interface DesktopApi {
     // HttpReceiver
     getHttpReceiverAddress: (route: string) => Promise<string>;
     // Tor
+    getStatus: () => void;
     toggleTor: (start: boolean) => void;
+    getTorAddress: () => Promise<string>;
+    setTorAddress: (address: string) => void;
 }
 
 declare global {

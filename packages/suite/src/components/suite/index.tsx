@@ -32,6 +32,7 @@ import FormattedCryptoAmount from './FormattedCryptoAmount';
 import Sign from './Sign';
 import AddAccountButton from './AddAccountButton';
 import ToastContainer from './ToastContainer';
+import TrezorLink from './TrezorLink';
 import { ReadMoreLink } from './ReadMoreLink';
 import BetaBadge from './BetaBadge';
 
@@ -76,6 +77,7 @@ export {
     ReadMoreLink,
     BetaBadge,
     ToastContainer,
+    TrezorLink,
 };
 
 export type { ImageProps };

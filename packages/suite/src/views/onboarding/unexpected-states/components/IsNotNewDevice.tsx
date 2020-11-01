@@ -3,8 +3,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 
-import { Link, H2 } from '@trezor/components';
-import { Translation, Image } from '@suite-components';
+import { H2 } from '@trezor/components';
+import { Translation, Image, TrezorLink } from '@suite-components';
 import { SUPPORT_URL } from '@suite-constants/urls';
 import * as STEP from '@onboarding-constants/steps';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
@@ -47,11 +47,11 @@ const IsNotNewDevice = ({ actionAlt, closeModalApp, device }: Props) => {
                 </Text>
                 <StyledImage image="UNI_WARNING" />
                 <Wrapper.Controls>
-                    <Link href={SUPPORT_URL}>
+                    <TrezorLink href={SUPPORT_URL}>
                         <OnboardingButton.Cta style={{ width: '100%' }}>
                             <Translation id="TR_CONTACT_SUPPORT" />
                         </OnboardingButton.Cta>
-                    </Link>
+                    </TrezorLink>
 
                     {device.mode !== 'initialize' && (
                         <OnboardingButton.Alt

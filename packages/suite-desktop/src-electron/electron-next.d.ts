@@ -17,3 +17,8 @@ declare module 'electron-next' {
 declare type UpdateSettings = {
     skipVersion: string;
 };
+
+declare type TorSettings = {
+    running: boolean;
+    address: string;
+};
