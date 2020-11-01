@@ -1,6 +1,6 @@
 import { LastWeekRates, FiatTicker } from '@wallet-types/fiatRates';
 
-const COINGECKO_BASE_URL = 'https://api.coingecko.com/';
+const COINGECKO_API_BASE_URL = 'https://cdn.trezor.io/dynamic/coingecko/api/v3';
 
 interface HistoricalResponse extends LastWeekRates {
     symbol: string;
@@ -12,7 +12,7 @@ interface HistoricalResponse extends LastWeekRates {
  * @returns {Promise<any>}
  */
 export const fetchCoinList = async (): Promise<any> => {
-    const url = `${COINGECKO_BASE_URL}api/v3/coins/list`;
+    const url = `${COINGECKO_API_BASE_URL}/coins/list`;
 
     const response = await fetch(url);
     const tokens = await response.json();
@@ -31,7 +31,7 @@ const buildCoinUrl = async (ticker: FiatTicker) => {
     const { coinData } = ticker;
     if (coinData) {
         // fetch coin id from coingecko and use it to build URL for fetching rates
-        coinUrl = `${COINGECKO_BASE_URL}/api/v3/coins/${coinData.id}`;
+        coinUrl = `${COINGECKO_API_BASE_URL}/coins/${coinData.id}`;
     }
     return coinUrl;
 };
