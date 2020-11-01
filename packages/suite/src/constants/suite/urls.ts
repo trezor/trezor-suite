@@ -25,8 +25,7 @@ export const SKIP_URL = WALLET_URL;
 export const RECOVERY_MODEL_ONE_URL = 'https://wiki.trezor.io/User_manual:Recovery__T1';
 export const PASSWORD_MANAGER_URL = 'https://trezor.io/passwords/';
 export const TROUBLESHOOTER_URL = 'https://trezor.io/support/#technical-technical-issues';
-export const SATOSHILABS_URL = 'http://satoshilabs.com';
-export const COIN_GECKO_URL = 'https://www.coingecko.com';
+export const SATOSHILABS_URL = 'https://satoshilabs.com';
 export const TRANSLATIONS_MANUAL_URL =
     'https://wiki.trezor.io/Developers_guide:CrowdIn.com_-_A_tool_for_translation';
 export const XRP_MANUAL_URL = 'https://wiki.trezor.io/Ripple_(XRP)';
