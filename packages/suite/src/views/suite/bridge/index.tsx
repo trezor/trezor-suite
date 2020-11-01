@@ -3,12 +3,13 @@ import Head from 'next/head';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Translation, Image } from '@suite-components';
+import { Translation, Image, TrezorLink } from '@suite-components';
 import { Button, Modal, P, Link, Select, colors, variables, Loader } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { URLS } from '@suite-constants';
 import { AppState, Dispatch } from '@suite-types';
-import { isDesktop } from '@suite-utils/env';
+import { isDesktop, isWeb } from '@suite-utils/env';
+import { useSelector } from '@suite-hooks';
 
 const Content = styled.div`
     display: flex;
@@ -107,6 +108,7 @@ interface Installer {
 }
 
 const InstallBridge = (props: Props) => {
+    const tor = useSelector(state => state.suite.tor);
     const [selectedTarget, setSelectedTarget] = useState<Installer | null>(null);
 
     const installers: Installer[] =
@@ -166,15 +168,22 @@ const InstallBridge = (props: Props) => {
                             maxMenuHeight={160}
                         />
 
-                        <Link variant="nostyle" href={`${data.uri}${target.value}`}>
+                        <TrezorLink variant="nostyle" href={`${data.uri}${target.value}`}>
                             <DownloadBridgeButton>
                                 <Translation
                                     id="TR_DOWNLOAD_LATEST_BRIDGE"
                                     values={{ version: data.latestVersion }}
                                 />
                             </DownloadBridgeButton>
-                        </Link>
+                        </TrezorLink>
                     </Download>
+                )}
+                {isWeb() && tor && (
+                    <P>
+                        <TrezorLink href={URLS.WIKI_TOR}>
+                            <Translation id="TR_TOR_BRIDGE" />
+                        </TrezorLink>
+                    </P>
                 )}
             </Content>
 
@@ -207,7 +216,7 @@ const InstallBridge = (props: Props) => {
                         </Col>
                         <Col justify="flex-end">
                             {data && target?.signature && (
-                                <Link variant="nostyle" href={data.uri + target.signature}>
+                                <TrezorLink variant="nostyle" href={data.uri + target.signature}>
                                     <Button
                                         color={colors.BLACK50}
                                         icon="SIGNATURE"
@@ -216,7 +225,7 @@ const InstallBridge = (props: Props) => {
                                     >
                                         <Translation id="TR_CHECK_PGP_SIGNATURE" />
                                     </Button>
-                                </Link>
+                                </TrezorLink>
                             )}
                         </Col>
                     </>

@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { P, Link } from '@trezor/components';
+import { P } from '@trezor/components';
 import { Option, Wrapper } from '@onboarding-components';
 
-import { Translation } from '@suite-components';
+import { Translation, TrezorLink } from '@suite-components';
 import { URLS } from '@suite-constants';
 
 interface Props {
@@ -17,9 +17,9 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
                 id="TR_RECOVERY_TYPES_DESCRIPTION"
                 values={{
                     TR_LEARN_MORE: (
-                        <Link size="small" href={URLS.RECOVERY_MODEL_ONE_URL}>
+                        <TrezorLink size="small" href={URLS.RECOVERY_MODEL_ONE_URL}>
                             <Translation id="TR_LEARN_MORE" />
-                        </Link>
+                        </TrezorLink>
                     ),
                 }}
             />

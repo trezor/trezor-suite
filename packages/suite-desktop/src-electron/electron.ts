@@ -1,4 +1,4 @@
-import { app, session, BrowserWindow, ipcMain, shell, Menu, dialog } from 'electron';
+import { app, session, BrowserWindow, ipcMain, shell, Menu, IpcMainEvent, dialog } from 'electron';
 import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 import { autoUpdater, CancellationToken } from 'electron-updater';
@@ -31,7 +31,7 @@ const src = isDev
 // Runtime flags
 const disableCspFlag = app.commandLine.hasSwitch('disable-csp');
 const preReleaseFlag = app.commandLine.hasSwitch('pre-release');
-const launchWithTor = app.commandLine.hasSwitch('tor');
+const torFlag = app.commandLine.hasSwitch('tor');
 
 // Updater
 const updateCancellationToken = new CancellationToken();
@@ -197,28 +197,93 @@ const init = async () => {
     mainWindow.loadURL(src);
 
     // TOR
-    // let isTorEnabled = false;
+    const torSettings = store.getTorSettings();
     const sess = mainWindow.webContents.session;
     const toggleTor = async (start: boolean) => {
         if (start) {
-            await tor.start();
+            if (torSettings.running) {
+                await tor.restart();
+            } else {
+                await tor.start();
+            }
         } else {
             await tor.stop();
         }
 
-        // isTorEnabled = start;
+        torSettings.running = start;
+        store.setTorSettings(torSettings);
+
         mainWindow.webContents.send('tor/status', start);
         sess.setProxy({
-            proxyRules: start ? 'socks5://localhost:9050' : '',
+            proxyRules: start ? `socks5://${torSettings.address}` : '',
         });
     };
 
-    if (launchWithTor) {
+    if (torFlag || torSettings.running) {
         await toggleTor(true);
     }
 
     ipcMain.on('tor/toggle', async (_, start: boolean) => {
         await toggleTor(start);
+    });
+
+    ipcMain.on('tor/set-address', () => async (_: IpcMainEvent, address: string) => {
+        if (torSettings.address !== address) {
+            torSettings.address = address;
+            store.setTorSettings(torSettings);
+
+            if (torSettings.running) {
+                await toggleTor(true);
+            }
+        }
+    });
+
+    ipcMain.on('tor/get-status', () => {
+        mainWindow.webContents.send('tor/status', torSettings.running);
+    });
+
+    ipcMain.handle('tor/get-address', () => {
+        return torSettings.address;
+    });
+
+    const resourceTypeFilter = ['xhr']; // What resource types we want to filter
+    const caughtDomainExceptions: string[] = []; // Domains that have already shown an exception
+    session.defaultSession.webRequest.onBeforeRequest({ urls: ['*://*/*'] }, (details, cb) => {
+        if (!resourceTypeFilter.includes(details.resourceType)) {
+            cb({ cancel: false });
+            return;
+        }
+
+        const { hostname, protocol } = new URL(details.url);
+
+        // Cancel requests that aren't allowed
+        if (config.allowedDomains.find(d => hostname.endsWith(d)) === undefined) {
+            if (caughtDomainExceptions.find(d => d === hostname) === undefined) {
+                caughtDomainExceptions.push(hostname);
+                dialog.showMessageBox(mainWindow, {
+                    type: 'warning',
+                    message: `Suite blocked a request to ${hostname}.\n\nIf you believe this is an error, please contact our support.`,
+                    buttons: ['OK'],
+                });
+            }
+
+            console.warn(`[Warning] Domain '${hostname}' was blocked.`);
+            cb({ cancel: true });
+            return;
+        }
+
+        // Redirect outgoing trezor.io requests to .onion domain
+        if (torSettings.running && hostname.endsWith('trezor.io') && protocol === 'https:') {
+            cb({
+                redirectURL: details.url.replace(
+                    /https:\/\/(([a-z0-9]+\.)*)trezor\.io(.*)/,
+                    `http://$1${config.onionDomain}$3`,
+                ),
+            });
+            return;
+        }
+
+        cb({ cancel: false });
     });
 
     // Window controls
@@ -244,7 +309,6 @@ const init = async () => {
     });
     ipcMain.on('client/ready', () => {
         notifyWindowMaximized(mainWindow);
-        // mainWindow.webContents.send('tor/status', isTorEnabled);
     });
     mainWindow.on('maximize', () => {
         notifyWindowMaximized(mainWindow);

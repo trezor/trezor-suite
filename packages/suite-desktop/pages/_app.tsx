@@ -1,5 +1,6 @@
 import React from 'react';
 import App from 'next/app';
+import dynamic from 'next/dynamic';
 import { Store } from 'redux';
 import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
@@ -8,7 +9,6 @@ import { initStore } from '@suite/reducers/store';
 import Preloader from '@suite-components/Preloader';
 import ToastContainer from '@suite-components/ToastContainer';
 import Router from '@suite-support/Router';
-import Tor from '@suite-support/Tor';
 import OnlineStatus from '@suite-support/OnlineStatus';
 import BridgeStatus from '@desktop/support/BridgeStatus';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
@@ -18,6 +18,8 @@ import { SENTRY_CONFIG } from '@suite-config';
 import Resize from '@suite-support/Resize';
 import { isDev } from '@suite-utils/build';
 import DesktopTitlebarWrapper from '@desktop/support/DesktopTitlebar';
+
+const Tor = dynamic(() => import('@suite-support/Tor'), { ssr: false });
 
 interface Props {
     store: Store;

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, H2, Button, Link } from '@trezor/components';
-import { Translation, Image } from '@suite-components';
+import { colors, H2, Button } from '@trezor/components';
+import { Translation, Image, TrezorLink } from '@suite-components';
 import { Account } from '@wallet-types';
 import { getNetwork } from '@wallet-utils/accountUtils';
 
@@ -37,9 +37,9 @@ const NoTransactions = ({ account }: Props) => {
             </Title>
             <StyledImage image="EMPTY_WALLET" />
             <Button variant="primary" icon="EXTERNAL_LINK" alignIcon="right">
-                <Link variant="nostyle" href={explorerUrl}>
+                <TrezorLink variant="nostyle" href={explorerUrl}>
                     <Translation id="TR_SHOW_DETAILS_IN_BLOCK_EXPLORER" />
-                </Link>
+                </TrezorLink>
             </Button>
         </Wrapper>
     );

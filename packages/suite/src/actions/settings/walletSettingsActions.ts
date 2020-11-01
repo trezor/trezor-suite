@@ -1,9 +1,11 @@
-import { FeeLevel } from 'trezor-connect';
+import TrezorConnect, { FeeLevel } from 'trezor-connect';
 import { WALLET_SETTINGS } from './constants';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { Dispatch, GetState } from '@suite-types';
 import { Network } from '@wallet-types';
 import { BlockbookUrl } from '@wallet-types/blockbook';
+import { NETWORKS } from '@wallet-config';
+import { toTorUrl } from '@suite-utils/tor';
 
 export type WalletSettingsActions =
     | { type: typeof WALLET_SETTINGS.CHANGE_NETWORKS; payload: Network['symbol'][] }
@@ -14,8 +16,10 @@ export type WalletSettingsActions =
           symbol: Network['symbol'];
           feeLevel?: FeeLevel;
       }
+    | { type: typeof WALLET_SETTINGS.SET_BLOCKBOOK_URLS; payload: BlockbookUrl[] }
     | { type: typeof WALLET_SETTINGS.ADD_BLOCKBOOK_URL; payload: BlockbookUrl }
-    | { type: typeof WALLET_SETTINGS.REMOVE_BLOCKBOOK_URL; payload: BlockbookUrl };
+    | { type: typeof WALLET_SETTINGS.REMOVE_BLOCKBOOK_URL; payload: BlockbookUrl }
+    | { type: typeof WALLET_SETTINGS.CLEAR_TOR_BLOCKBOOK_URLS };
 
 export const setLocalCurrency = (localCurrency: string) => ({
     type: WALLET_SETTINGS.SET_LOCAL_CURRENCY,
@@ -82,4 +86,40 @@ export const addBlockbookUrl = (payload: BlockbookUrl) => ({
 export const removeBlockbookUrl = (payload: BlockbookUrl) => ({
     type: WALLET_SETTINGS.REMOVE_BLOCKBOOK_URL,
     payload,
+});
+
+export const setTorBlockbookUrls = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { blockbookUrls } = getState().wallet.settings;
+    const noTouchyCoins = blockbookUrls.filter(u => !u.tor).map(u => u.coin);
+    const coins = NETWORKS.filter(n => !n.accountType && !noTouchyCoins.includes(n.symbol)).map(
+        n => n.symbol,
+    );
+
+    const torBlockbook: BlockbookUrl[] = [];
+    const promises = coins.map(coin => TrezorConnect.getCoinInfo({ coin }));
+    const results = await Promise.all(promises);
+    results.forEach(resp => {
+        if (resp.success && resp.payload.blockchainLink?.type === 'blockbook') {
+            const coin = resp.payload.shortcut.toLowerCase();
+            const urls = resp.payload.blockchainLink.url;
+            if (urls.find(u => u.endsWith('trezor.io') !== undefined)) {
+                urls.forEach(u => {
+                    torBlockbook.push({
+                        coin,
+                        url: toTorUrl(u),
+                        tor: true,
+                    });
+                });
+            }
+        }
+    });
+
+    dispatch({
+        type: WALLET_SETTINGS.SET_BLOCKBOOK_URLS,
+        payload: [...blockbookUrls.filter(u => !u.tor), ...torBlockbook],
+    });
+};
+
+export const clearTorBlockbookUrl = () => ({
+    type: WALLET_SETTINGS.CLEAR_TOR_BLOCKBOOK_URLS,
 });

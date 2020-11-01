@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from '@trezor/components';
 
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
-import { Translation, Image } from '@suite-components';
+import { Translation, Image, TrezorLink } from '@suite-components';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
 import { canStart, canContinue } from '@backup-utils';
 import { SEED_MANUAL_URL } from '@suite-constants/urls';
@@ -38,9 +37,9 @@ const BackupStep = (props: Props) => {
                                 id="TR_BACKUP_SUBHEADING_1"
                                 values={{
                                     TR_SEED_MANUAL_LINK: (
-                                        <Link href={SEED_MANUAL_URL}>
+                                        <TrezorLink href={SEED_MANUAL_URL}>
                                             <Translation id="TR_SEED_MANUAL_LINK" />
-                                        </Link>
+                                        </TrezorLink>
                                     ),
                                 }}
                             />

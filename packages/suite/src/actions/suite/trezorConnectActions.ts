@@ -9,7 +9,7 @@ import { lockDevice } from '@suite-actions/suiteActions';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Dispatch, GetState } from '@suite-types';
 import { isDesktop, isWeb } from '@suite-utils/env';
-import { toTorUrl, isTorDomain } from '@suite-utils/tor';
+import { toTorUrl } from '@suite-utils/tor';
 
 const CONNECT_URL = 'https://connect.trezor.io/8/';
 
@@ -63,9 +63,8 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 
     try {
-        // @ts-ignore - Cannot find name window (suite-native)
-        const isTor = isTorDomain(window.location.hostname);
-        const connectUrl = isTor ? toTorUrl(CONNECT_URL) : CONNECT_URL;
+        const { tor } = getState().suite;
+        const connectUrl = tor ? toTorUrl(CONNECT_URL) : CONNECT_URL;
         const connectSrc = isDesktop() ? resolveStaticPath('connect/') : connectUrl;
         // 'https://localhost:8088/';
         // 'https://connect.corp.sldev.cz/develop/';

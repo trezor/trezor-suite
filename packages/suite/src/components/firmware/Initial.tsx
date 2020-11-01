@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Icon, Button, Link, colors, variables } from '@trezor/components';
+import { Icon, Button, colors, variables } from '@trezor/components';
 import { CHANGELOG_URL } from '@suite-constants/urls';
-import { Translation, ExternalLink } from '@suite-components';
+import { Translation, ExternalLink, TrezorLink } from '@suite-components';
 import { getFwVersion } from '@suite-utils/device';
 import { useDevice, useFirmware } from '@suite-hooks';
 import { ReconnectInNormalStep, NoNewFirmware, ContinueButton, P, H2 } from '@firmware-components';
@@ -144,9 +144,9 @@ const Body = () => {
 
             <BottomRow>
                 <Button variant="tertiary" icon="GITHUB">
-                    <Link href={CHANGELOG_URL}>
+                    <TrezorLink href={CHANGELOG_URL}>
                         <Translation id="TR_READ_ALL_ON_GITHUB" />
-                    </Link>
+                    </TrezorLink>
                 </Button>
             </BottomRow>
         </BodyWrapper>

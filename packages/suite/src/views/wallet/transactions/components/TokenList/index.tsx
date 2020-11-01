@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react';
 import styled, { css } from 'styled-components';
 import { Account } from '@wallet-types';
-import { FiatValue, FormattedCryptoAmount, Translation } from '@suite-components';
+import { FiatValue, FormattedCryptoAmount, Translation, TrezorLink } from '@suite-components';
 import { Section } from '@dashboard-components';
-import { variables, colors, Icon, Link, Card } from '@trezor/components';
+import { variables, colors, Icon, Card } from '@trezor/components';
 
 const Wrapper = styled(Card)<{ isTestnet?: boolean }>`
     display: grid;
@@ -137,13 +137,13 @@ const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
                                 </Col>
                             )}
                             <Col isTestnet={isTestnet} justify="right">
-                                <Link href={`${explorerUrl}${t.address}`}>
+                                <TrezorLink href={`${explorerUrl}${t.address}`}>
                                     <Icon
                                         icon="EXTERNAL_LINK"
                                         size={16}
                                         color={colors.NEUE_TYPE_LIGHT_GREY}
                                     />
-                                </Link>
+                                </TrezorLink>
                             </Col>
                         </Fragment>
                     );

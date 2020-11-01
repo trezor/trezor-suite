@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { H2, Link, variables, colors, Modal, ModalProps } from '@trezor/components';
-import { PinInput, Loading, Translation, Image } from '@suite-components';
+import { H2, variables, colors, Modal, ModalProps } from '@trezor/components';
+import { PinInput, Loading, Translation, Image, TrezorLink } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
 
 import { URLS } from '@suite-constants';
@@ -117,9 +117,9 @@ const ExplanationCol = (props: { heading: React.ReactNode; description?: React.R
         </Expand>
         <How>
             <Translation id="TR_HOW_PIN_WORKS" />{' '}
-            <Link href={URLS.PIN_MANUAL_URL}>
+            <TrezorLink href={URLS.PIN_MANUAL_URL}>
                 <Translation id="TR_LEARN_MORE" />
-            </Link>
+            </TrezorLink>
         </How>
     </GreyCol>
 );

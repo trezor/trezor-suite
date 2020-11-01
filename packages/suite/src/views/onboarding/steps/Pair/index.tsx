@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
-import { Button, Link } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { OnboardingButton, Text, Wrapper, Loaders } from '@onboarding-components';
-import { Translation, WebusbButton, Image, ConnectDeviceImage } from '@suite-components';
+import {
+    Translation,
+    WebusbButton,
+    Image,
+    ConnectDeviceImage,
+    TrezorLink,
+} from '@suite-components';
 import { isWebUSB } from '@suite-utils/transport';
 import { SUPPORT_URL } from '@suite-constants/urls';
 
@@ -83,7 +89,9 @@ const PairDeviceStep = (props: Props) => {
                                                 id="ONBOARDING_PAIR_ALREADY_INITIALIZED"
                                                 values={{
                                                     a: chunks => (
-                                                        <Link href={SUPPORT_URL}>{chunks}</Link>
+                                                        <TrezorLink href={SUPPORT_URL}>
+                                                            {chunks}
+                                                        </TrezorLink>
                                                     ),
                                                 }}
                                             />

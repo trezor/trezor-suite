@@ -135,10 +135,10 @@ const reducerActions = [
         actions: [suiteActions.updateTorStatus(true), suiteActions.updateTorStatus(false)],
         result: [
             {
-                online: true,
+                tor: true,
             },
             {
-                online: false,
+                tor: false,
             },
         ],
     },

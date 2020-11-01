@@ -50,6 +50,10 @@ const settingsReducer = (state: State = initialState, action: Action): State => 
                 }
                 break;
 
+            case WALLET_SETTINGS.SET_BLOCKBOOK_URLS:
+                draft.blockbookUrls = action.payload;
+                break;
+
             case WALLET_SETTINGS.ADD_BLOCKBOOK_URL:
                 draft.blockbookUrls.push(action.payload);
                 break;
@@ -60,6 +64,10 @@ const settingsReducer = (state: State = initialState, action: Action): State => 
                 draft.blockbookUrls.splice(index, 1);
                 break;
             }
+
+            case WALLET_SETTINGS.CLEAR_TOR_BLOCKBOOK_URLS:
+                draft.blockbookUrls = draft.blockbookUrls.filter(u => !u.tor);
+                break;
 
             // no default
         }

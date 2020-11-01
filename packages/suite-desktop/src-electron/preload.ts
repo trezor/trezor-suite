@@ -77,5 +77,8 @@ contextBridge.exposeInMainWorld('desktopApi', {
     getHttpReceiverAddress: (route: string) => ipcRenderer.invoke('server/request-address', route),
 
     // Tor
+    getStatus: () => ipcRenderer.send('tor/get-status'),
     toggleTor: (start: boolean) => ipcRenderer.send('tor/toggle', start),
+    getTorAddress: () => ipcRenderer.invoke('tor/get-address'),
+    setTorAddress: (address: string) => ipcRenderer.send('tor/set-address', address),
 });

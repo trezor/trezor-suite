@@ -1681,10 +1681,6 @@ const definedMessages = defineMessages({
             'Please enable passphrase settings to continue with the verification process.',
         id: 'TR_PLEASE_ENABLE_PASSPHRASE',
     },
-    TR_PORT: {
-        id: 'TR_PORT',
-        defaultMessage: 'Port',
-    },
     TR_PRIMARY_FIAT: {
         defaultMessage: 'Primary FIAT currency to display',
         id: 'TR_PRIMARY_FIAT',
@@ -2591,11 +2587,25 @@ const definedMessages = defineMessages({
     },
     TR_TOR_TITLE: {
         id: 'TR_TOR_TITLE',
-        defaultMessage: 'TR_TOR_TITLE',
+        defaultMessage: 'Tor',
     },
     TR_TOR_DESCRIPTION: {
         id: 'TR_TOR_DESCRIPTION',
-        defaultMessage: 'TR_TOR_DESCRIPTION',
+        defaultMessage:
+            "Enabling this will route all of Suite's traffic through the Tor network.{lineBreak}All requests to Trezor infrastructure will be pointed to our Tor services, increasing your privacy and security.",
+    },
+    TR_TOR_PARAM_TITLE: {
+        id: 'TR_TOR_PARAM_TITLE',
+        defaultMessage: 'Tor address and port',
+    },
+    TR_TOR_PARAM_DESCRIPTION: {
+        id: 'TR_TOR_PARAM_DESCRIPTION',
+        defaultMessage:
+            'You can configure the address to point to a different Tor instance. Default: 127.0.0.1:9050.',
+    },
+    TR_TOR_BRIDGE: {
+        id: 'TR_TOR_BRIDGE',
+        defaultMessage: 'Bridge not working in Tor Browser?',
     },
     TR_TRANSACTIONS: {
         id: 'TR_TRANSACTIONS',
@@ -2901,10 +2911,6 @@ const definedMessages = defineMessages({
     TR_IM_NEW_TO_ALL_THIS: {
         id: 'TR_IM_NEW_TO_ALL_THIS',
         defaultMessage: "I'm new to all this",
-    },
-    TR_IP_ADDRESS: {
-        id: 'TR_IP_ADDRESS',
-        defaultMessage: 'IP Address',
     },
     RECEIVE_TITLE: {
         id: 'RECEIVE_TITLE',
