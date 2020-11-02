@@ -18,7 +18,7 @@ import { ModalActions } from '@suite-actions/modalActions';
 import { LogAction } from '@suite-actions/logActions';
 import { NotificationActions } from '@suite-actions/notificationActions';
 import { AnalyticsAction } from '@suite-actions/analyticsActions';
-import { MetadataActions } from '@suite-actions/metadataActions';
+import { MetadataAction } from '@suite-actions/metadataActions';
 import { DesktopUpdateAction } from '@suite-actions/desktopUpdateActions';
 import { OnboardingAction } from '@onboarding-actions/onboardingActions';
 import { WalletSettingsAction } from '@settings-actions/walletSettingsActions';
@@ -49,7 +49,7 @@ export type Action =
     | ModalActions
     | NotificationActions
     | AnalyticsAction
-    | MetadataActions
+    | MetadataAction
     | WalletAction
     | OnboardingAction
     | FirmwareAction
