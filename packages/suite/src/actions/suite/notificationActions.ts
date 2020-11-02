@@ -9,7 +9,7 @@ import {
 } from '@suite-reducers/notificationReducer';
 import * as notificationUtils from '@suite-utils/notification';
 
-export type NotificationActions =
+export type NotificationAction =
     | {
           type: typeof NOTIFICATION.TOAST;
           payload: ToastNotification;
@@ -56,17 +56,17 @@ export const addEvent = (payload: EventPayload) => (dispatch: Dispatch, getState
     });
 };
 
-export const close = (id: number): NotificationActions => ({
+export const close = (id: number): NotificationAction => ({
     type: NOTIFICATION.CLOSE,
     payload: id,
 });
 
-export const resetUnseen = (payload?: NotificationEntry[]): NotificationActions => ({
+export const resetUnseen = (payload?: NotificationEntry[]): NotificationAction => ({
     type: NOTIFICATION.RESET_UNSEEN,
     payload,
 });
 
-export const remove = (payload: NotificationEntry[] | NotificationEntry): NotificationActions => ({
+export const remove = (payload: NotificationEntry[] | NotificationEntry): NotificationAction => ({
     type: NOTIFICATION.REMOVE,
     payload,
 });

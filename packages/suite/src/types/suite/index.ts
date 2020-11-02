@@ -16,7 +16,7 @@ import { SuiteActions } from '@suite-actions/suiteActions';
 import { ResizeActions } from '@suite-actions/resizeActions';
 import { ModalAction } from '@suite-actions/modalActions';
 import { LogAction } from '@suite-actions/logActions';
-import { NotificationActions } from '@suite-actions/notificationActions';
+import { NotificationAction } from '@suite-actions/notificationActions';
 import { AnalyticsAction } from '@suite-actions/analyticsActions';
 import { MetadataAction } from '@suite-actions/metadataActions';
 import { DesktopUpdateAction } from '@suite-actions/desktopUpdateActions';
@@ -47,7 +47,7 @@ export type Action =
     | SuiteActions
     | LogAction
     | ModalAction
-    | NotificationActions
+    | NotificationAction
     | AnalyticsAction
     | MetadataAction
     | WalletAction
