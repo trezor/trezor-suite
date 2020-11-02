@@ -1,7 +1,10 @@
 export default {
     tickers: [
         { symbol: 'eth', url: 'https://cdn.trezor.io/dynamic/coingecko/api/v3/coins/ethereum' },
-        { symbol: 'etc', url: 'https://cdn.trezor.io/dynamic/coingecko/api/v3/coins/ethereum-classic' },
+        {
+            symbol: 'etc',
+            url: 'https://cdn.trezor.io/dynamic/coingecko/api/v3/coins/ethereum-classic',
+        },
         { symbol: 'xrp', url: 'https://cdn.trezor.io/dynamic/coingecko/api/v3/coins/ripple' },
         { symbol: 'btc', url: 'https://cdn.trezor.io/dynamic/coingecko/api/v3/coins/bitcoin' },
         { symbol: 'ltc', url: 'https://cdn.trezor.io/dynamic/coingecko/api/v3/coins/litecoin' },
