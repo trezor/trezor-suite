@@ -28,7 +28,6 @@ export const allowedDomains = [
     'localhost',
     '127.0.0.1',
     'trezor.io',
-    'api.coingecko.com',
     onionDomain,
 ];
 
@@ -37,6 +36,6 @@ export const cspRules = [
     "default-src 'self'",
     // Allow all API calls (Can't be restricted bc of custom backends)
     'connect-src *',
-    // Allow images from medium.com and trezor.io domains (news)
-    "img-src 'self' *.medium.com *.trezor.io",
+    // Allow images from trezor.io
+    "img-src 'self' *.trezor.io",
 ];
