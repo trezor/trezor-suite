@@ -8,12 +8,12 @@ import {
     KnownDevice,
     UnknownDevice as UnknownDeviceBase,
 } from 'trezor-connect';
-import { RouterActions } from '@suite-actions/routerActions';
+import { RouterAction } from '@suite-actions/routerActions';
 import { Route } from '@suite-constants/routes';
 import { AppState } from '@suite/reducers/store';
 import { StorageActions } from '@suite-actions/storageActions';
 import { SuiteActions } from '@suite-actions/suiteActions';
-import { ResizeActions } from '@suite-actions/resizeActions';
+import { ResizeAction } from '@suite-actions/resizeActions';
 import { ModalAction } from '@suite-actions/modalActions';
 import { LogAction } from '@suite-actions/logActions';
 import { NotificationAction } from '@suite-actions/notificationActions';
@@ -41,8 +41,8 @@ type TrezorConnectEvents = TransportEvent | UiEvent | DeviceEvent | BlockchainEv
 // all actions from all apps used to properly type Dispatch.
 export type Action =
     | TrezorConnectEvents
-    | RouterActions
-    | ResizeActions
+    | RouterAction
+    | ResizeAction
     | StorageActions
     | SuiteActions
     | LogAction

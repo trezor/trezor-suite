@@ -30,7 +30,7 @@ interface LocationChange {
     url: string;
 }
 
-export type RouterActions = LocationChange;
+export type RouterAction = LocationChange;
 
 /**
  * Dispatch initial url
