@@ -24,12 +24,7 @@ export const allowedExternalUrls = [
     'http://127.0.0.1',
 ];
 
-export const allowedDomains = [
-    'localhost',
-    '127.0.0.1',
-    'trezor.io',
-    onionDomain,
-];
+export const allowedDomains = ['localhost', '127.0.0.1', 'trezor.io', onionDomain];
 
 export const cspRules = [
     // Default to only own resources
