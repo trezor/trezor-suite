@@ -1,8 +1,8 @@
 import dynamic from 'next/dynamic';
-import React, { useState, createRef } from 'react';
+import React, { useState, createRef, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ANIMATION } from '@suite-config';
-import { useKeyPress } from '@suite-utils/dom';
+import { useKeyPress, setCaretPosition } from '@suite-utils/dom';
 import styled, { css } from 'styled-components';
 import { Button, colors, variables, Input, Tooltip, Checkbox, Icon } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
@@ -184,6 +184,8 @@ const PassphraseTypeCard = (props: Props) => {
     const deletePressed = useKeyPress('Delete');
 
     const ref = createRef<HTMLInputElement>();
+    const caretRef = useRef<number>(0);
+
     const isTooLong = countBytesInString(value) > MAX_LENGTH.PASSPHRASE;
 
     const submit = (value: string, passphraseOnDevice?: boolean) => {
@@ -207,7 +209,7 @@ const PassphraseTypeCard = (props: Props) => {
         // spread current value into array
         const newValue = [...value];
         const len = tmpValue.length;
-        const pos = event.target.selectionStart || len;
+        const pos = event.target.selectionStart ?? len;
         const diff = newValue.length - len;
 
         // caret position is somewhere in the middle
@@ -238,10 +240,20 @@ const PassphraseTypeCard = (props: Props) => {
                 newValue.splice(pos - 1, 0, tmpValue[pos - 1]); // insert
             }
         }
+
+        caretRef.current = pos;
         setValue(newValue.join(''));
     };
 
     const displayValue = !showPassword ? value.replace(/./g, DOT) : value;
+
+    useEffect(() => {
+        if (caretRef.current && ref.current) {
+            setCaretPosition(ref.current, caretRef.current);
+        }
+        // todo: I agree that this smells. Need to figure out why input does not work as expected if ref is included in deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [displayValue]);
 
     return (
         <Wrapper
@@ -306,6 +318,16 @@ const PassphraseTypeCard = (props: Props) => {
                             onChange={onChange}
                             value={displayValue}
                             innerRef={ref}
+                            onClick={() => {
+                                if (typeof ref.current?.selectionStart === 'number') {
+                                    caretRef.current = ref.current.selectionStart;
+                                }
+                            }}
+                            onKeyUp={() => {
+                                if (typeof ref.current?.selectionStart === 'number') {
+                                    caretRef.current = ref.current.selectionStart;
+                                }
+                            }}
                             bottomText={
                                 isTooLong ? <Translation id="TR_PASSPHRASE_TOO_LONG" /> : null
                             }
