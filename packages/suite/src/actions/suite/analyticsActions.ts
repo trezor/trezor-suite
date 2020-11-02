@@ -13,7 +13,7 @@ import { encodeDataToQueryString } from '@suite-utils/analytics';
 import { Account } from '@wallet-types';
 import { isDesktop, isWeb } from '@suite-utils/env';
 
-export type AnalyticsActions =
+export type AnalyticsAction =
     | { type: typeof ANALYTICS.DISPOSE }
     | { type: typeof ANALYTICS.INIT; payload: { instanceId: string } };
 
@@ -301,6 +301,6 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 };
 
-export const dispose = () => ({
+export const dispose = (): AnalyticsAction => ({
     type: ANALYTICS.DISPOSE,
 });
