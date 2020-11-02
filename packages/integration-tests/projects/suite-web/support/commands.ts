@@ -8,14 +8,20 @@ import { onboardingShouldLoad, dashboardShouldLoad } from './utils/assertions';
 import { connectBootloaderDevice, connectDevice, changeDevice } from './utils/device';
 import { getTestElement, getConfirmActionOnDeviceModal } from './utils/selectors';
 import { resetDb, setState } from './utils/test-env';
-import { toggleDeviceMenu, goToOnboarding, passThroughInitialRun, passThroughBackup, passThroughInitMetadata } from './utils/shortcuts';
+import {
+    toggleDeviceMenu,
+    goToOnboarding,
+    passThroughInitialRun,
+    passThroughBackup,
+    passThroughInitMetadata,
+} from './utils/shortcuts';
 
 const command = require('cypress-image-snapshot/command');
 
 const prefixedVisit = (route: string, options?: Partial<Cypress.VisitOptions>) => {
     const assetPrefix = Cypress.env('ASSET_PREFIX') || '';
     return cy.visit(assetPrefix + route, options);
-}
+};
 declare global {
     namespace Cypress {
         interface Chainable<Subject> {
@@ -61,8 +67,8 @@ if (Cypress.env('SNAPSHOT')) {
     });
 } else {
     Cypress.Commands.add('matchImageSnapshot', () => {
-        return cy.log('skipping image snapshot')
-    })
+        return cy.log('skipping image snapshot');
+    });
 }
 
 Cypress.Commands.add('prefixedVisit', prefixedVisit);
