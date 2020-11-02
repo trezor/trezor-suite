@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-import React, { useState, createRef, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ANIMATION } from '@suite-config';
 import { useKeyPress, setCaretPosition } from '@suite-utils/dom';
@@ -183,7 +183,7 @@ const PassphraseTypeCard = (props: Props) => {
     const backspacePressed = useKeyPress('Backspace');
     const deletePressed = useKeyPress('Delete');
 
-    const ref = createRef<HTMLInputElement>();
+    const ref = useRef<HTMLInputElement>(null);
     const caretRef = useRef<number>(0);
 
     const isTooLong = countBytesInString(value) > MAX_LENGTH.PASSPHRASE;
@@ -251,8 +251,6 @@ const PassphraseTypeCard = (props: Props) => {
         if (caretRef.current && ref.current) {
             setCaretPosition(ref.current, caretRef.current);
         }
-        // todo: I agree that this smells. Need to figure out why input does not work as expected if ref is included in deps
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [displayValue]);
 
     return (
@@ -318,16 +316,6 @@ const PassphraseTypeCard = (props: Props) => {
                             onChange={onChange}
                             value={displayValue}
                             innerRef={ref}
-                            onClick={() => {
-                                if (typeof ref.current?.selectionStart === 'number') {
-                                    caretRef.current = ref.current.selectionStart;
-                                }
-                            }}
-                            onKeyUp={() => {
-                                if (typeof ref.current?.selectionStart === 'number') {
-                                    caretRef.current = ref.current.selectionStart;
-                                }
-                            }}
                             bottomText={
                                 isTooLong ? <Translation id="TR_PASSPHRASE_TOO_LONG" /> : null
                             }
@@ -339,7 +327,12 @@ const PassphraseTypeCard = (props: Props) => {
                                     size={18}
                                     color={colors.NEUE_TYPE_LIGHT_GREY}
                                     icon={showPassword ? 'HIDE' : 'SHOW'}
-                                    onClick={() => setShowPassword(!showPassword)}
+                                    onClick={() => {
+                                        if (typeof ref.current?.selectionStart === 'number') {
+                                            caretRef.current = ref.current.selectionStart;
+                                        }
+                                        setShowPassword(!showPassword);
+                                    }}
                                     data-test="@passphrase/show-toggle"
                                 />
                             }
