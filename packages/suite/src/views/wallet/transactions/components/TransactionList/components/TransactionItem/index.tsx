@@ -10,6 +10,7 @@ import { AccountMetadata } from '@suite-types/metadata';
 import TransactionTypeIcon from './components/TransactionTypeIcon';
 import TransactionHeading from './components/TransactionHeading';
 import { isTxUnknown } from '@wallet-utils/transactionUtils';
+import { MIN_ROW_HEIGHT } from './components/BaseTargetLayout';
 import { Target, TokenTransfer, FeeRow } from './components/Target';
 import TransactionTimestamp from './components/TransactionTimestamp';
 import { WalletAccountTransaction } from '@wallet-types';
@@ -33,7 +34,11 @@ const TxTypeIconWrapper = styled.div`
     cursor: pointer;
 `;
 
-const TimeStampWrapper = styled.div``;
+const TimestampWrapper = styled.div`
+    display: flex;
+    height: ${MIN_ROW_HEIGHT};
+    align-items: center;
+`;
 
 const Content = styled.div`
     display: flex;
@@ -151,13 +156,13 @@ const TransactionItem = React.memo((props: Props) => {
                     />
                 </Description>
                 <NextRow>
-                    <TimeStampWrapper
+                    <TimestampWrapper
                         onMouseEnter={() => setNestedItemIsHovered(true)}
                         onMouseLeave={() => setNestedItemIsHovered(false)}
                         onClick={() => openTxDetailsModal()}
                     >
                         <TransactionTimestamp transaction={transaction} />
-                    </TimeStampWrapper>
+                    </TimestampWrapper>
                     <TargetsWrapper>
                         {!isUnknown && !isTokenTransaction && (
                             <>
