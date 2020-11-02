@@ -1,7 +1,15 @@
 # Changelog
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). [YY.MM.MICRO]
 
-## [Unreleased]
+## 20.12.0 [Unreleased]
+
+### Added
+
+### Changed
+
+### Fixed
+
+## 20.11.1 [to be released on 11th November 2020]
 
 ### Added
 - Metadata (labeling) may now be saved locally. This feature is available only for desktop version.
@@ -12,7 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - Account search bug fixes and various small improvements
 
-## [20.10.1]
+## 20.10.1 [14th October 2020]
 
 ### Added
 - Auto updater for desktop version.
