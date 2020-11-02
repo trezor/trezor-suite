@@ -7,7 +7,7 @@ import { BlockbookUrl } from '@wallet-types/blockbook';
 import { NETWORKS } from '@wallet-config';
 import { toTorUrl } from '@suite-utils/tor';
 
-export type WalletSettingsActions =
+export type WalletSettingsAction =
     | { type: typeof WALLET_SETTINGS.CHANGE_NETWORKS; payload: Network['symbol'][] }
     | { type: typeof WALLET_SETTINGS.SET_LOCAL_CURRENCY; localCurrency: string }
     | { type: typeof WALLET_SETTINGS.SET_HIDE_BALANCE; toggled: boolean }
@@ -54,7 +54,7 @@ export const changeCoinVisibility = (symbol: Network['symbol'], shouldBeVisible:
     });
 };
 
-export const changeNetworks = (payload: Network['symbol'][]) => ({
+export const changeNetworks = (payload: Network['symbol'][]): WalletSettingsAction => ({
     type: WALLET_SETTINGS.CHANGE_NETWORKS,
     payload,
 });
@@ -78,12 +78,12 @@ export const getLastUsedFeeLevel = () => (_: Dispatch, getState: GetState) => {
     return settings.lastUsedFeeLevel[selectedAccount.account.symbol];
 };
 
-export const addBlockbookUrl = (payload: BlockbookUrl) => ({
+export const addBlockbookUrl = (payload: BlockbookUrl): WalletSettingsAction => ({
     type: WALLET_SETTINGS.ADD_BLOCKBOOK_URL,
     payload,
 });
 
-export const removeBlockbookUrl = (payload: BlockbookUrl) => ({
+export const removeBlockbookUrl = (payload: BlockbookUrl): WalletSettingsAction => ({
     type: WALLET_SETTINGS.REMOVE_BLOCKBOOK_URL,
     payload,
 });

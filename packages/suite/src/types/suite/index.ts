@@ -21,7 +21,7 @@ import { AnalyticsActions } from '@suite-actions/analyticsActions';
 import { MetadataActions } from '@suite-actions/metadataActions';
 import { DesktopUpdateActions } from '@suite-actions/desktopUpdateActions';
 import { OnboardingAction } from '@onboarding-actions/onboardingActions';
-import { SettingsActions } from '@settings-types';
+import { WalletSettingsAction } from '@settings-actions/walletSettingsActions';
 import { FirmwareAction } from '@firmware-actions/firmwareActions';
 import { WalletAction } from '@wallet-types';
 import { BackupAction } from '@backup-actions/backupActions';
@@ -55,7 +55,7 @@ export type Action =
     | FirmwareAction
     | BackupAction
     | RecoveryAction
-    | SettingsActions
+    | WalletSettingsAction
     | DesktopUpdateActions;
 
 // export type Dispatch = ReduxDispatch<Action>;
