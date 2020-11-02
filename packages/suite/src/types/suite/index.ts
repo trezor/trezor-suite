@@ -11,8 +11,8 @@ import {
 import { RouterAction } from '@suite-actions/routerActions';
 import { Route } from '@suite-constants/routes';
 import { AppState } from '@suite/reducers/store';
-import { StorageActions } from '@suite-actions/storageActions';
-import { SuiteActions } from '@suite-actions/suiteActions';
+import { StorageAction } from '@suite-actions/storageActions';
+import { SuiteAction } from '@suite-actions/suiteActions';
 import { ResizeAction } from '@suite-actions/resizeActions';
 import { ModalAction } from '@suite-actions/modalActions';
 import { LogAction } from '@suite-actions/logActions';
@@ -43,8 +43,8 @@ export type Action =
     | TrezorConnectEvents
     | RouterAction
     | ResizeAction
-    | StorageActions
-    | SuiteActions
+    | StorageAction
+    | SuiteAction
     | LogAction
     | ModalAction
     | NotificationAction
