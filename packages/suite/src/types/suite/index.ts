@@ -19,7 +19,7 @@ import { LogActions } from '@suite-actions/logActions';
 import { NotificationActions } from '@suite-actions/notificationActions';
 import { AnalyticsActions } from '@suite-actions/analyticsActions';
 import { MetadataActions } from '@suite-actions/metadataActions';
-import { DesktopUpdateActions } from '@suite-actions/desktopUpdateActions';
+import { DesktopUpdateAction } from '@suite-actions/desktopUpdateActions';
 import { OnboardingAction } from '@onboarding-actions/onboardingActions';
 import { WalletSettingsAction } from '@settings-actions/walletSettingsActions';
 import { FirmwareAction } from '@firmware-actions/firmwareActions';
@@ -56,7 +56,7 @@ export type Action =
     | BackupAction
     | RecoveryAction
     | WalletSettingsAction
-    | DesktopUpdateActions;
+    | DesktopUpdateAction;
 
 // export type Dispatch = ReduxDispatch<Action>;
 // export type Dispatch = ThunkDispatch<AppState, any, Action>;
