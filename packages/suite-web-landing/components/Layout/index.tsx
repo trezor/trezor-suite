@@ -143,6 +143,9 @@ const Index = ({ children }: Props) => (
                     <FooterLink href="https://blog.trezor.io/">
                         <Translation id="TR_SUITE_WEB_LANDING_FOOTER_BLOG" />
                     </FooterLink>
+                    <FooterLink href="https://github.com/orgs/trezor/projects/28?fullscreen=true">
+                        <Translation id="TR_SUITE_WEB_LANDING_FOOTER_ROADMAP" />
+                    </FooterLink>
                 </FooterList>
             </FooterLinks>
             <FooterCompany>

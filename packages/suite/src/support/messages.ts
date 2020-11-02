@@ -4628,6 +4628,10 @@ const definedMessages = defineMessages({
         id: 'TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_PARAGRAPH',
         defaultMessage: 'Companion to the <a>Trezor hardware wallet</a>',
     },
+    TR_SUITE_WEB_LANDING_FOOTER_ROADMAP: {
+        id: 'TR_SUITE_WEB_LANDING_FOOTER_ROADMAP',
+        defaultMessage: 'Roadmap',
+    },
     TR_SUITE_WEB_LANDING_DOWNLOAD_DESKTOP: {
         id: 'TR_SUITE_WEB_LANDING_DOWNLOAD_DESKTOP',
         defaultMessage: 'Get desktop app',
