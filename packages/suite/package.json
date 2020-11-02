@@ -53,7 +53,7 @@
         "redux-thunk": "^2.3.0",
         "styled-components": "^5.1.1",
         "trezor-address-validator": "^0.3.22",
-        "trezor-connect": "8.1.16-extended",
+        "trezor-connect": "8.1.17-extended",
         "uuid": "^7.0.3",
         "web3-utils": "^1.2.6",
         "zxcvbn": "^4.4.2"
