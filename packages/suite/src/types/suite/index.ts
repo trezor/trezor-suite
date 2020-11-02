@@ -15,7 +15,7 @@ import { StorageActions } from '@suite-actions/storageActions';
 import { SuiteActions } from '@suite-actions/suiteActions';
 import { ResizeActions } from '@suite-actions/resizeActions';
 import { ModalActions } from '@suite-actions/modalActions';
-import { LogActions } from '@suite-actions/logActions';
+import { LogAction } from '@suite-actions/logActions';
 import { NotificationActions } from '@suite-actions/notificationActions';
 import { AnalyticsAction } from '@suite-actions/analyticsActions';
 import { MetadataActions } from '@suite-actions/metadataActions';
@@ -45,7 +45,7 @@ export type Action =
     | ResizeActions
     | StorageActions
     | SuiteActions
-    | LogActions
+    | LogAction
     | ModalActions
     | NotificationActions
     | AnalyticsAction

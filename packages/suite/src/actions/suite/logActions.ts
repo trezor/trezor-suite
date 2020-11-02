@@ -5,11 +5,14 @@ import * as Sentry from '@sentry/browser';
 import { LOG } from './constants';
 import { redactDevice, redactCustom, redactAction } from '@suite/utils/suite/logUtils';
 
-export type LogActions =
+export type LogAction =
     | { type: typeof LOG.ADD; payload: LogEntry }
     | { type: typeof LOG.TOGGLE_EXCLUDE_BALANCE_RELATED };
 
-export const addCustom = (action: Action, payload: Record<string, unknown> | undefined): Action => {
+export const addCustom = (
+    action: Action,
+    payload: Record<string, unknown> | undefined,
+): LogAction => {
     return {
         type: LOG.ADD,
         payload: {
@@ -23,7 +26,7 @@ export const addCustom = (action: Action, payload: Record<string, unknown> | und
     };
 };
 
-export const addAction = (action: Action, options?: { stripPayload: true }): Action => {
+export const addAction = (action: Action, options?: { stripPayload: true }): LogAction => {
     const stripPayload = !!options?.stripPayload;
 
     if (stripPayload) {
@@ -49,7 +52,7 @@ export const addAction = (action: Action, options?: { stripPayload: true }): Act
     };
 };
 
-export const toggleExcludeBalanceRelated = () => ({
+export const toggleExcludeBalanceRelated = (): LogAction => ({
     type: LOG.TOGGLE_EXCLUDE_BALANCE_RELATED,
 });
 
