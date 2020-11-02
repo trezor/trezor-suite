@@ -5,6 +5,8 @@ import { HiddenPlaceholder } from '@suite-components';
 import { variables, colors } from '@trezor/components';
 import { ANIMATION } from '@suite-config';
 
+export const MIN_ROW_HEIGHT = '23px';
+
 const CryptoAmount = styled.span`
     color: ${colors.NEUE_TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
@@ -26,10 +28,6 @@ const TargetWrapper = styled(motion.div)`
     /* position: relative; */
     flex: 1;
     justify-content: space-between;
-
-    & + & {
-        /* padding-top: 20px; */
-    }
 `;
 
 const TargetAmountsWrapper = styled.div<{ paddingBottom?: boolean }>`
@@ -61,6 +59,12 @@ const TargetAddress = styled(motion.div)`
     margin-right: 4px;
     padding-left: 10px;
     margin-left: -10px;
+
+    /* start of css to prevent hidden labeling button (23px height) to expand the target row */
+    align-items: center;
+    min-height: ${MIN_ROW_HEIGHT};
+    align-self: baseline;
+    /* end of css to prevent hidden labeling button to expand the target row*/
 `;
 
 const TimelineDotWrapper = styled.div`
@@ -84,7 +88,7 @@ const TimelineLine = styled.div<{ show: boolean; top?: boolean }>`
     ${props =>
         props.top
             ? css`
-                  height: 8px;
+                  height: 10px;
               `
             : css`
                   flex: 1;
