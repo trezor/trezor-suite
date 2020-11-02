@@ -14,7 +14,7 @@ import { AppState } from '@suite/reducers/store';
 import { StorageActions } from '@suite-actions/storageActions';
 import { SuiteActions } from '@suite-actions/suiteActions';
 import { ResizeActions } from '@suite-actions/resizeActions';
-import { ModalActions } from '@suite-actions/modalActions';
+import { ModalAction } from '@suite-actions/modalActions';
 import { LogAction } from '@suite-actions/logActions';
 import { NotificationActions } from '@suite-actions/notificationActions';
 import { AnalyticsAction } from '@suite-actions/analyticsActions';
@@ -46,7 +46,7 @@ export type Action =
     | StorageActions
     | SuiteActions
     | LogAction
-    | ModalActions
+    | ModalAction
     | NotificationActions
     | AnalyticsAction
     | MetadataAction
