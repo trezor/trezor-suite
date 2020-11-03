@@ -164,6 +164,20 @@ export const setCustomBackend = (symbol?: string) => async (_: Dispatch, getStat
     return Promise.all(promises);
 };
 
+export const clearCustomBackend = (symbol: string | string[]) => async () => {
+    const coins = typeof symbol === 'string' ? [symbol] : [...new Set(symbol)];
+    const promises = coins.map(coin => {
+        return TrezorConnect.blockchainSetCustomBackend({
+            coin,
+            blockchainLink: {
+                type: 'blockbook',
+                url: [],
+            },
+        });
+    });
+    return Promise.all(promises);
+};
+
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     await dispatch(preloadFeeInfo());
 
