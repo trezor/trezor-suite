@@ -490,7 +490,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
     }
 };
 
-export const stop = () => async (dispatch: Dispatch) => {
+export const stop = () => (dispatch: Dispatch) => {
     const discovery = dispatch(getDiscoveryForDevice());
     if (discovery && discovery.running) {
         dispatch(
