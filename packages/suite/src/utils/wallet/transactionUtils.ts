@@ -218,21 +218,9 @@ export const getTxOperation = (transaction: WalletAccountTransaction) => {
     return null;
 };
 
-export const getTargetAmount = (
-    target: WalletAccountTransaction['targets'][number],
-    transaction: WalletAccountTransaction,
-) => {
-    const isLocalTarget =
-        (transaction.type === 'sent' || transaction.type === 'self') && target.isAccountTarget;
-    const hasAmount = !isLocalTarget && typeof target.amount === 'string' && target.amount !== '0';
-    const targetAmount =
-        (hasAmount ? target.amount : null) ||
-        (target === transaction.targets[0] &&
-        typeof transaction.amount === 'string' &&
-        transaction.amount !== '0'
-            ? transaction.amount
-            : null);
-    return targetAmount;
+export const getTargetAmount = (target: WalletAccountTransaction['targets'][number]) => {
+    const hasAmount = typeof target.amount === 'string' && target.amount !== '0';
+    return hasAmount ? target.amount : null;
 };
 
 export const isTxUnknown = (transaction: WalletAccountTransaction) => {

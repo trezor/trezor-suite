@@ -72,7 +72,7 @@ export const Target = ({
     accountKey,
     ...baseLayoutProps
 }: TargetProps) => {
-    const targetAmount = getTargetAmount(target, transaction);
+    const targetAmount = getTargetAmount(target);
     const operation = getTxOperation(transaction);
     const { addNotification } = useActions({ addNotification: notificationActions.addToast });
     const targetMetadata = accountMetadata?.outputLabels?.[transaction.txid]?.[target.n];

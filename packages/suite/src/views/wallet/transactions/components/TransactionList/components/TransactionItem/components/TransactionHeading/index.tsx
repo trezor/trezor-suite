@@ -76,9 +76,7 @@ const TransactionHeading = ({
     const [headingIsHovered, setHeadingIsHovered] = useState(false);
 
     if (useSingleRowLayout) {
-        const targetAmount = !isTokenTransaction
-            ? getTargetAmount(target, transaction)
-            : transfer.amount;
+        const targetAmount = !isTokenTransaction ? getTargetAmount(target) : transfer.amount;
         const operation = getTxOperation(transaction);
         amount = (
             <CryptoAmount>
