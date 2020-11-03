@@ -1,6 +1,6 @@
 import { ReceiveActions } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
-import { CoinmarketBuyActions } from '@wallet-actions/coinmarketBuyActions';
+import { CoinmarketBuyAction } from '@wallet-actions/coinmarketBuyActions';
 import { CoinmarketExchangeActions } from '@wallet-actions/coinmarketExchangeActions';
 import { DiscoveryActions } from '@wallet-actions/discoveryActions';
 import { AccountAction } from '@wallet-actions/accountActions';
@@ -50,6 +50,6 @@ export type WalletAction =
     | AccountAction
     | SelectedAccountActions
     | CoinmarketExchangeActions
-    | CoinmarketBuyActions
+    | CoinmarketBuyAction
     | SendFormActions
     | AccountSearchAction;

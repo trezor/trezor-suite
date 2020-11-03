@@ -1,7 +1,12 @@
 import { AppState } from '@suite-types';
 import { Account, Network } from '@wallet-types';
-import { BuyTradeQuoteRequest, BuyTrade } from 'invity-api';
-import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
+import {
+    BuyInfo,
+    saveQuoteRequest,
+    saveQuotes,
+    saveTrade,
+    saveCachedAccountInfo,
+} from '@wallet-actions/coinmarketBuyActions';
 import { UseFormMethods } from 'react-hook-form';
 import { TypedValidationRules } from './form';
 
@@ -41,14 +46,10 @@ export type BuyFormContextValues = Omit<UseFormMethods<FormState>, 'register'> &
     defaultCountry: defaultCountryOption;
     defaultCurrency: Option;
     buyInfo?: BuyInfo;
-    saveQuoteRequest: (request: BuyTradeQuoteRequest) => Promise<void>;
-    saveQuotes: (quotes: BuyTrade[], alternativeQuotes: BuyTrade[] | undefined) => Promise<void>;
-    saveCachedAccountInfo: (
-        symbol: Account['symbol'],
-        index: number,
-        accountType: Account['accountType'],
-    ) => Promise<void>;
-    saveTrade: (buyTrade: BuyTrade, account: Account, date: string) => Promise<void>;
+    saveQuoteRequest: typeof saveQuoteRequest;
+    saveQuotes: typeof saveQuotes;
+    saveCachedAccountInfo: typeof saveCachedAccountInfo;
+    saveTrade: typeof saveTrade;
     amountLimits?: AmountLimits;
     setAmountLimits: (limits?: AmountLimits) => void;
     accountHasCachedRequest: boolean;
