@@ -6,15 +6,14 @@ labels: Bug
 assignees: ''
 
 ---
-
-**Info:**
- - OS: 
- - Browser: , version
- - Wallet Version: app/web, commit
- - Firmware Version: model , revision 
- 
 **Describe the bug**
 A clear and concise description of what the bug is.
+
+**Info:**
+ - Suite Version: app/web, commit 
+ - Browser: , version
+ - OS: 
+ - Firmware Version: model , revision 
 
 **Steps to reproduce:**
 1. a
