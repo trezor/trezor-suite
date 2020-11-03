@@ -1,4 +1,4 @@
-import { ReceiveActions } from '@wallet-actions/receiveActions';
+import { ReceiveAction } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
 import { CoinmarketBuyAction } from '@wallet-actions/coinmarketBuyActions';
 import { CoinmarketExchangeAction } from '@wallet-actions/coinmarketExchangeActions';
@@ -41,7 +41,7 @@ export type { ReceiveInfo } from '@wallet-reducers/receiveReducer';
 
 export type WalletAction =
     | BlockchainAction
-    | ReceiveActions
+    | ReceiveAction
     | SignVerifyActions
     | TransactionAction
     | FiatRatesAction
