@@ -13,7 +13,6 @@ const GrayNotificationCard = styled(NotificationCard)`
 interface Props {
     needsAttention: boolean;
     device: TrezorDevice;
-    deviceStatusMessage?: React.ReactNode;
     onSolveIssueClick: () => void;
     onDeviceSettingsClick: () => void;
 }
@@ -35,7 +34,7 @@ const DeviceHeaderButton = (props: Props) => {
                         'data-test': `@switch-device/${device.path}/solve-issue-button`,
                     }}
                 >
-                    {deviceStatusMessage && <Translation {...deviceStatusMessage} />}
+                    {deviceStatusMessage && <Translation id={deviceStatusMessage} />}
                 </GrayNotificationCard>
             )}
             {!props.needsAttention && !isUnknown && (

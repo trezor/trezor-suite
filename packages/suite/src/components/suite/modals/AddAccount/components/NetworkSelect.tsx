@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Select, CoinLogo } from '@trezor/components';
 import { Network } from '@wallet-types';
 import { Translation } from '@suite-components';
-import messages from '@suite/support/messages';
 
 const buildNetworkOption = (network: Network) => ({
     value: network,
@@ -15,11 +14,11 @@ const buildNetworkOptions = (networks: Network[]) => {
     const testNetworks = networks.filter(n => n.testnet);
     return [
         {
-            label: <Translation {...messages.MODAL_ADD_ACCOUNT_NETWORK_MAINNET} />,
+            label: <Translation id="MODAL_ADD_ACCOUNT_NETWORK_MAINNET" />,
             options: mainNetworks.map(n => buildNetworkOption(n)),
         },
         {
-            label: <Translation {...messages.MODAL_ADD_ACCOUNT_NETWORK_TESTNET} />,
+            label: <Translation id="MODAL_ADD_ACCOUNT_NETWORK_TESTNET" />,
             options: testNetworks.map(n => buildNetworkOption(n)),
         },
     ];

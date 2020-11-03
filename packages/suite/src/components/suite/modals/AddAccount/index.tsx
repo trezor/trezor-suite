@@ -3,7 +3,6 @@ import { Button } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { NETWORKS } from '@wallet-config';
 import { Account, Network } from '@wallet-types';
-import messages from '@suite/support/messages';
 import NetworkUnavailable from './components/NetworkUnavailable';
 import NetworkInternal from './components/NetworkInternal';
 import AddAccountButton from './components/AddAccountButton';
@@ -73,7 +72,7 @@ const AddAccount = (props: Props) => {
                 actionButton={
                     <Button variant="primary" onClick={onEnableNetwork}>
                         <Translation
-                            {...messages.TR_ENABLE_NETWORK_BUTTON}
+                            id="TR_ENABLE_NETWORK_BUTTON"
                             values={{ networkName: network.name }}
                         />
                     </Button>

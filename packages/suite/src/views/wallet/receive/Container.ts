@@ -1,12 +1,11 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { injectIntl } from 'react-intl';
 // import * as modalActions from '@suite-actions/modalActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as metadataActions from '@suite-actions/metadataActions';
 
 import { AppState, Dispatch } from '@suite-types';
-import SendIndex from './index';
+import ReceiveIndex from './index';
 
 const mapStateToProps = (state: AppState) => ({
     selectedAccount: state.wallet.selectedAccount,
@@ -37,4 +36,4 @@ export interface ChildProps {
     pendingAddresses: string[];
 }
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(SendIndex));
+export default connect(mapStateToProps, mapDispatchToProps)(ReceiveIndex);

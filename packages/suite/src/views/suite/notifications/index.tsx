@@ -69,7 +69,11 @@ const NotificationView = (props: ViewProps) => {
             {defaultIcon && <Icon size={16} icon={defaultIcon} style={{ marginTop: '4px' }} />}
             <Text>
                 <P weight={props.notification.seen ? 'normal' : 'bold'}>
-                    <Translation {...props.message} />
+                    {typeof props.message === 'string' ? (
+                        <Translation id={props.message} />
+                    ) : (
+                        <Translation {...props.message} />
+                    )}
                 </P>
                 <DateP size="tiny">
                     <FormattedDate
@@ -84,7 +88,7 @@ const NotificationView = (props: ViewProps) => {
             </Text>
             {props.actionLabel && props.action && (
                 <ActionButton variant="secondary" onClick={props.action}>
-                    <Translation {...props.actionLabel} />
+                    <Translation id={props.actionLabel} />
                 </ActionButton>
             )}
         </Item>

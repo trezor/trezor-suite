@@ -20,10 +20,11 @@ const TypeInfo = styled.div`
     margin-left: 1ch;
 `;
 
-const buildAccountTypeOption = (network: Network) => ({
-    value: network,
-    label: getAccountTypeIntl(network.accountType),
-});
+const buildAccountTypeOption = (network: Network) =>
+    ({
+        value: network,
+        label: getAccountTypeIntl(network.accountType),
+    } as const);
 
 interface Props {
     network?: Network;
@@ -34,9 +35,9 @@ type Option = ReturnType<typeof buildAccountTypeOption>;
 
 const formatLabel = (option: Option) => (
     <LabelWrapper>
-        <Translation {...option.label} />
+        <Translation id={option.label} />
         <TypeInfo>
-            <Translation {...getBip43Intl(option.value.bip44)} />
+            <Translation id={getBip43Intl(option.value.bip44)} />
         </TypeInfo>
     </LabelWrapper>
 );

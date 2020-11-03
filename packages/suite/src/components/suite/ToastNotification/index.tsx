@@ -71,7 +71,11 @@ const ToastNotification = ({
                 <Icon icon={defaultIcon} size={20} color={getVariantColor(props.variant)} />
             )}
             <Title>
-                <Translation {...message} />
+                {typeof message === 'string' ? (
+                    <Translation id={message} />
+                ) : (
+                    <Translation {...message} />
+                )}
             </Title>
             {action && actionLabel && (
                 <StyledButton
@@ -80,7 +84,7 @@ const ToastNotification = ({
                     alignIcon="right"
                     onClick={action}
                 >
-                    <Translation {...actionLabel} />
+                    <Translation id={actionLabel} />
                 </StyledButton>
             )}
             {cancelable && (

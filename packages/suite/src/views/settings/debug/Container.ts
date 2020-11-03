@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { AppState, Dispatch } from '@suite-types';
 
 import DebugSettings from './index';
@@ -18,8 +17,6 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
         dispatch,
     );
 
-export type Props = WrappedComponentProps &
-    ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps>;
+export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(DebugSettings));
+export default connect(mapStateToProps, mapDispatchToProps)(DebugSettings);

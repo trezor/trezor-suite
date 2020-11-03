@@ -7,7 +7,6 @@ import { Translation, HiddenPlaceholder, FormattedNumber } from '@suite-componen
 import { sumFiatValueMap, getFormattedLabelLong } from '@wallet-utils/graphUtils';
 import { Account } from '@wallet-types';
 import { GraphRange, AggregatedAccountHistory } from '@wallet-types/graph';
-import messages from '@suite/support/messages';
 import InfoCard from './components/InfoCard';
 
 const InfoCardsWrapper = styled.div`
@@ -61,10 +60,7 @@ const SummaryCards = ({
                 isLoading={isLoading}
                 value={
                     <HiddenPlaceholder>
-                        <Translation
-                            {...messages.TR_N_TRANSACTIONS}
-                            values={{ value: numOfTransactions }}
-                        />
+                        <Translation id="TR_N_TRANSACTIONS" values={{ value: numOfTransactions }} />
                     </HiddenPlaceholder>
                 }
                 secondaryValue={
@@ -88,7 +84,7 @@ const SummaryCards = ({
                 }
             />
             <InfoCard
-                title={<Translation {...messages.TR_INCOMING} />}
+                title={<Translation id="TR_INCOMING" />}
                 value={totalReceivedAmount.toFixed()}
                 secondaryValue={
                     totalReceivedFiatMap[localCurrency] ? (
@@ -103,7 +99,7 @@ const SummaryCards = ({
                 isNumeric
             />
             <InfoCard
-                title={<Translation {...messages.TR_OUTGOING} />}
+                title={<Translation id="TR_OUTGOING" />}
                 value={totalSentAmount.negated().toFixed()}
                 secondaryValue={
                     totalSentFiatMap[localCurrency] ? (

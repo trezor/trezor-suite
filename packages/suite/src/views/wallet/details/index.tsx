@@ -5,7 +5,6 @@ import { WalletLayout } from '@wallet-components';
 import { useDevice } from '@suite-hooks';
 import { Props } from './Container';
 import { Translation, Card } from '@suite-components';
-import messages from '@suite/support/messages';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import { getAccountTypeIntl, getBip43Shortcut } from '@wallet-utils/accountUtils';
 import { ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/Settings';
@@ -49,17 +48,17 @@ const Details = ({ selectedAccount, openModal }: Props) => {
 
     const accountTypeName = getAccountTypeIntl(account.accountType);
     const bip43 = getBip43Shortcut(account.path);
-    let accountTypeDesc: ExtendedMessageDescriptor = messages.TR_ACCOUNT_DETAILS_TYPE_P2PKH;
-    let accountTypeShortcut: ExtendedMessageDescriptor = messages.TR_ACCOUNT_TYPE_P2PKH;
+    let accountTypeDesc: ExtendedMessageDescriptor['id'] = 'TR_ACCOUNT_DETAILS_TYPE_P2PKH';
+    let accountTypeShortcut: ExtendedMessageDescriptor['id'] = 'TR_ACCOUNT_TYPE_P2PKH';
     let accountTypeUrl = WIKI_P2PHK_URL;
     if (bip43 === 'bech32') {
-        accountTypeDesc = messages.TR_ACCOUNT_DETAILS_TYPE_BECH32;
-        accountTypeShortcut = messages.TR_ACCOUNT_TYPE_BECH32;
+        accountTypeDesc = 'TR_ACCOUNT_DETAILS_TYPE_BECH32';
+        accountTypeShortcut = 'TR_ACCOUNT_TYPE_BECH32';
         accountTypeUrl = WIKI_BECH32_URL;
     }
     if (bip43 === 'p2sh') {
-        accountTypeDesc = messages.TR_ACCOUNT_DETAILS_TYPE_P2SH;
-        accountTypeShortcut = messages.TR_ACCOUNT_TYPE_P2SH;
+        accountTypeDesc = 'TR_ACCOUNT_DETAILS_TYPE_P2SH';
+        accountTypeShortcut = 'TR_ACCOUNT_TYPE_P2SH';
         accountTypeUrl = WIKI_P2SH_URL;
     }
 
@@ -69,15 +68,15 @@ const Details = ({ selectedAccount, openModal }: Props) => {
                 <StyledRow>
                     <TextColumn
                         title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}
-                        description={<Translation {...accountTypeDesc} />}
+                        description={<Translation id={accountTypeDesc} />}
                         learnMore={accountTypeUrl}
                     />
                     <AccountTypeLabel>
                         <P size="small">
-                            <Translation {...accountTypeName} />
+                            <Translation id={accountTypeName} />
                         </P>
                         <P size="tiny">
-                            <Translation {...accountTypeShortcut} />
+                            <Translation id={accountTypeShortcut} />
                         </P>
                     </AccountTypeLabel>
                 </StyledRow>

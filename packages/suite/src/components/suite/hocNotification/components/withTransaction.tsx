@@ -57,11 +57,13 @@ const withTransaction = (View: React.ComponentType<ViewProps>, props: StrictView
                 ? blockchain[account.symbol].blockHeight - tx.blockHeight
                 : 0;
 
-        props.message.values = {
-            amount: <TabularNums>{notification.formattedAmount}</TabularNums>,
-            account: <AccountLabeling account={found} />,
-            confirmations,
-        };
+        if (typeof props.message !== 'string') {
+            props.message.values = {
+                amount: <TabularNums>{notification.formattedAmount}</TabularNums>,
+                account: <AccountLabeling account={found} />,
+                confirmations,
+            };
+        }
 
         return (
             <View

@@ -22,7 +22,9 @@ const Account = (props: Props) => {
         <Translation
             id="LABELING_ACCOUNT"
             values={{
-                networkName: accountUtils.getTitleForNetwork(accounts[0].symbol).defaultMessage, // Bitcoin, Ethereum, ...
+                networkName: (
+                    <Translation id={accountUtils.getTitleForNetwork(accounts[0].symbol)} />
+                ), // Bitcoin, Ethereum, ...
                 index: accounts[0].index + 1, // this is the number which shows after hash, e.g. Ethereum #3
             }}
         />

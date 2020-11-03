@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useIntl } from 'react-intl';
 import { LayoutContext } from '@suite-components';
 import { AccountsMenu } from '@wallet-components';
 import AccountLoader from './components/AccountLoader';
@@ -10,7 +9,7 @@ import AccountAnnouncement from '@wallet-components/AccountAnnouncement';
 import AccountTopPanel from '@wallet-components/AccountTopPanel';
 import { MAX_WIDTH_WALLET_CONTENT } from '@suite-constants/layout';
 import { AppState, ExtendedMessageDescriptor } from '@suite-types';
-import messages from '@suite/support/messages';
+import { useTranslation } from '@suite-hooks/useTranslation';
 
 const Wrapper = styled.div`
     display: flex;
@@ -29,8 +28,8 @@ type Props = {
 
 const WalletLayout = (props: Props) => {
     const { setLayout } = React.useContext(LayoutContext);
-    const intl = useIntl();
-    const l10nTitle = intl.formatMessage(messages[props.title]);
+    const { translationString } = useTranslation();
+    const l10nTitle = translationString(props.title);
 
     React.useEffect(() => {
         if (setLayout) setLayout(l10nTitle, <AccountsMenu />, <AccountTopPanel />);

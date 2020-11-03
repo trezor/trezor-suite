@@ -1,6 +1,5 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
@@ -30,8 +29,6 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
         dispatch,
     );
 
-export type Props = ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps> &
-    WrappedComponentProps;
+export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(SecurityFeatures));
+export default connect(mapStateToProps, mapDispatchToProps)(SecurityFeatures);

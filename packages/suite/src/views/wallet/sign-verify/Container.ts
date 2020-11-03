@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { injectIntl } from 'react-intl';
 
 import * as signVerifyActions from '@wallet-actions/signVerifyActions';
 import { AppState, Dispatch } from '@suite-types';
@@ -18,4 +17,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 export type StateProps = ReturnType<typeof mapStateToProps>;
 export type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(SignVerify));
+export default connect(mapStateToProps, mapDispatchToProps)(SignVerify);

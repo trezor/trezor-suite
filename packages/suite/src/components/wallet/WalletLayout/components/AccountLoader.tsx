@@ -1,6 +1,5 @@
 import React from 'react';
 import { NotificationCard, Translation } from '@suite-components';
-import messages from '@suite/support/messages';
 import { AppState } from '@suite-types';
 
 interface Props {
@@ -10,21 +9,21 @@ interface Props {
 const getMessage = (type: Props['type']) => {
     switch (type) {
         case 'waiting-for-device':
-            return messages.TR_LOADING_DEVICE_DOT_DOT_DOT;
+            return 'TR_LOADING_DEVICE_DOT_DOT_DOT';
         case 'auth':
-            return messages.TR_AUTHENTICATING_DEVICE;
+            return 'TR_AUTHENTICATING_DEVICE';
         case 'account-loading':
-            return messages.TR_LOADING_ACCOUNT;
+            return 'TR_LOADING_ACCOUNT';
         default:
             return undefined;
     }
 };
 
 const AccountLoader = ({ type }: Props) => {
-    const title = getMessage(type) || messages.TR_LOADING_ACCOUNT;
+    const title = getMessage(type) || 'TR_LOADING_ACCOUNT';
     return (
         <NotificationCard variant="loader">
-            <Translation {...title} />
+            <Translation id={title} />
         </NotificationCard>
     );
 };

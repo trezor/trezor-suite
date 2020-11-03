@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { injectIntl, WrappedComponentProps } from 'react-intl';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 import { colors, variables, Icon, DeviceImage } from '@trezor/components';
@@ -113,7 +112,7 @@ const ColEjectHeader = styled(ColHeader)`
     margin: 0px 24px;
 `;
 
-const DeviceItem = (props: Props & WrappedComponentProps) => {
+const DeviceItem = (props: Props) => {
     const [isExpanded, setIsExpanded] = useState(true);
     const [animateArrow, setAnimateArrow] = useState(false);
 
@@ -275,4 +274,4 @@ const DeviceItem = (props: Props & WrappedComponentProps) => {
     );
 };
 
-export default injectIntl(DeviceItem);
+export default DeviceItem;
