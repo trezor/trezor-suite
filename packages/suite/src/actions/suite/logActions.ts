@@ -12,19 +12,17 @@ export type LogAction =
 export const addCustom = (
     action: Action,
     payload: Record<string, unknown> | undefined,
-): LogAction => {
-    return {
-        type: LOG.ADD,
-        payload: {
-            time: new Date().getTime(),
-            custom: true,
-            action: {
-                type: action.type,
-                payload,
-            },
+): LogAction => ({
+    type: LOG.ADD,
+    payload: {
+        time: new Date().getTime(),
+        custom: true,
+        action: {
+            type: action.type,
+            payload,
         },
-    };
-};
+    },
+});
 
 export const addAction = (action: Action, options?: { stripPayload: true }): LogAction => {
     const stripPayload = !!options?.stripPayload;
