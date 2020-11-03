@@ -1,7 +1,7 @@
 import { ReceiveActions } from '@wallet-actions/receiveActions';
 import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
 import { CoinmarketBuyAction } from '@wallet-actions/coinmarketBuyActions';
-import { CoinmarketExchangeActions } from '@wallet-actions/coinmarketExchangeActions';
+import { CoinmarketExchangeAction } from '@wallet-actions/coinmarketExchangeActions';
 import { DiscoveryActions } from '@wallet-actions/discoveryActions';
 import { AccountAction } from '@wallet-actions/accountActions';
 import { FiatRatesActions } from '@wallet-actions/fiatRatesActions';
@@ -49,7 +49,7 @@ export type WalletAction =
     | DiscoveryActions
     | AccountAction
     | SelectedAccountActions
-    | CoinmarketExchangeActions
+    | CoinmarketExchangeAction
     | CoinmarketBuyAction
     | SendFormActions
     | AccountSearchAction;

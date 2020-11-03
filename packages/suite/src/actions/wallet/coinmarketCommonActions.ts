@@ -96,7 +96,7 @@ export const verifyAddress = (path: string, address: string) => async (
     }
 };
 
-export const submitRequestForm = (tradeForm: BuyTradeFormResponse) => async (
+export const submitRequestForm = (tradeForm: BuyTradeFormResponse) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
