@@ -10,7 +10,7 @@ import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
 import { SETTINGS } from '@suite-config';
 
-export type AccountActions =
+export type AccountAction =
     | { type: typeof ACCOUNT.CREATE; payload: Account }
     | { type: typeof ACCOUNT.REMOVE; payload: Account[] }
     | { type: typeof ACCOUNT.CHANGE_VISIBILITY; payload: Account }
@@ -20,7 +20,7 @@ export const create = (
     deviceState: string,
     discoveryItem: DiscoveryItem,
     accountInfo: AccountInfo,
-): AccountActions => ({
+): AccountAction => ({
     type: ACCOUNT.CREATE,
     payload: {
         deviceState,
@@ -58,7 +58,7 @@ export const create = (
     },
 });
 
-export const update = (account: Account, accountInfo: AccountInfo): AccountActions => ({
+export const update = (account: Account, accountInfo: AccountInfo): AccountAction => ({
     type: ACCOUNT.UPDATE,
     payload: {
         ...account,
@@ -94,7 +94,7 @@ export const disableAccounts = () => (dispatch: Dispatch, getState: GetState) =>
     }
 };
 
-export const changeAccountVisibility = (payload: Account, visible = true) => ({
+export const changeAccountVisibility = (payload: Account, visible = true): AccountAction => ({
     type: ACCOUNT.CHANGE_VISIBILITY,
     payload: {
         ...payload,
