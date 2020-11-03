@@ -140,8 +140,8 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
                         <StyledButton
                             icon="REFRESH"
                             variant="tertiary"
-                            onClick={async () => {
-                                await db.removeDatabase();
+                            onClick={() => {
+                                db.removeDatabase();
                                 refresh();
                             }}
                         >
