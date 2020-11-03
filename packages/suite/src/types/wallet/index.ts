@@ -4,7 +4,7 @@ import { CoinmarketBuyAction } from '@wallet-actions/coinmarketBuyActions';
 import { CoinmarketExchangeAction } from '@wallet-actions/coinmarketExchangeActions';
 import { DiscoveryAction } from '@wallet-actions/discoveryActions';
 import { AccountAction } from '@wallet-actions/accountActions';
-import { FiatRatesActions } from '@wallet-actions/fiatRatesActions';
+import { FiatRatesAction } from '@wallet-actions/fiatRatesActions';
 import { GraphActions } from '@wallet-actions/graphActions';
 import { BlockchainAction } from '@wallet-actions/blockchainActions';
 import { SendFormActions } from '@wallet-actions/sendFormActions';
@@ -44,7 +44,7 @@ export type WalletAction =
     | ReceiveActions
     | SignVerifyActions
     | TransactionAction
-    | FiatRatesActions
+    | FiatRatesAction
     | GraphActions
     | DiscoveryAction
     | AccountAction
