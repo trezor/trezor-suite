@@ -14,7 +14,7 @@ import * as sendFormBitcoinActions from './send/sendFormBitcoinActions';
 import * as sendFormEthereumActions from './send/sendFormEthereumActions';
 import * as sendFormRippleActions from './send/sendFormRippleActions';
 
-export type SendFormActions =
+export type SendFormAction =
     | {
           type: typeof SEND.STORE_DRAFT;
           key: string;
@@ -84,7 +84,7 @@ export const removeDraft = () => (dispatch: Dispatch, getState: GetState) => {
     }
 };
 
-export const composeTransaction = (formValues: FormState, formState: UseSendFormState) => async (
+export const composeTransaction = (formValues: FormState, formState: UseSendFormState) => (
     dispatch: Dispatch,
 ) => {
     const { account } = formState;
@@ -224,7 +224,7 @@ export const signTransaction = (
     }
 };
 
-export const sendRaw = (payload?: boolean) => ({
+export const sendRaw = (payload?: boolean): SendFormAction => ({
     type: SEND.SEND_RAW,
     payload,
 });
@@ -261,6 +261,6 @@ export const pushRawTransaction = (tx: string, coin: Account['symbol']) => async
     return sentTx.success;
 };
 
-export const dispose = () => ({
+export const dispose = (): SendFormAction => ({
     type: SEND.DISPOSE,
 });
