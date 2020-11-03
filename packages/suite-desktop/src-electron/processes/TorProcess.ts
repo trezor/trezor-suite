@@ -44,7 +44,7 @@ class TorProcess extends BaseProcess {
         // Only try to start the process if it's the default Tor address.
         // Otherwise the user might be pointing to a different instance.
         if (this.adr === defaultTorAddress) {
-            await super.start();
+            await super.start(['-f', 'torrc']);
         }
     }
 }
