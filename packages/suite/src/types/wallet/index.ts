@@ -10,7 +10,7 @@ import { BlockchainAction } from '@wallet-actions/blockchainActions';
 import { SendFormActions } from '@wallet-actions/sendFormActions';
 import { AccountSearchAction } from '@wallet-actions/accountSearchActions';
 import { TransactionAction } from '@wallet-actions/transactionActions';
-import { SelectedAccountActions } from '@wallet-actions/selectedAccountActions';
+import { SelectedAccountAction } from '@wallet-actions/selectedAccountActions';
 import { NETWORKS } from '@wallet-config';
 import { ArrayElement } from '../utils';
 
@@ -48,7 +48,7 @@ export type WalletAction =
     | GraphAction
     | DiscoveryAction
     | AccountAction
-    | SelectedAccountActions
+    | SelectedAccountAction
     | CoinmarketExchangeAction
     | CoinmarketBuyAction
     | SendFormActions
