@@ -53,15 +53,15 @@ class BaseProcess {
             return;
         }
 
-        const { process, service } = await this.status();
+        const status = await this.status();
 
         // Service is running, nothing to do
-        if (service) {
+        if (status.service) {
             return;
         }
 
         // If the process is running but the service isn't
-        if (process) {
+        if (status.process) {
             // Stop the process
             await this.stop();
         }
@@ -78,14 +78,21 @@ class BaseProcess {
             throw new Error(`[${this.resourceName}] unsupported system (${system})`);
         }
 
-        const processPath = path.join(
-            RESOURCES,
-            'bin',
-            this.resourceName,
-            isDev ? system : '',
-            `${this.processName}${ext}`,
-        );
-        this.process = spawn(processPath, params);
+        const processDir = path.join(RESOURCES, 'bin', this.resourceName, isDev ? system : '');
+        const processPath = path.join(processDir, `${this.processName}${ext}`);
+        const processEnv = { ...process.env };
+        // library search path for macOS
+        processEnv.DYLD_LIBRARY_PATH = processEnv.DYLD_LIBRARY_PATH
+            ? `${processEnv.DYLD_LIBRARY_PATH}:${processDir}`
+            : `${processDir}`;
+        // library search path for Linux
+        processEnv.LD_LIBRARY_PATH = processEnv.LD_LIBRARY_PATH
+            ? `${processEnv.LD_LIBRARY_PATH}:${processDir}`
+            : `${processDir}`;
+        this.process = spawn(processPath, params, {
+            cwd: processDir,
+            env: processEnv,
+        });
     }
 
     /**
