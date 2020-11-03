@@ -3,7 +3,7 @@ import TrezorConnect, { UI } from 'trezor-connect';
 import { RECOVERY } from '@recovery-actions/constants';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as routerActions from '@suite-actions/routerActions';
-import { Dispatch, GetState, Action } from '@suite-types';
+import { Dispatch, GetState } from '@suite-types';
 import { WordCount } from '@recovery-types';
 import { DEVICE } from '@suite-constants';
 
@@ -14,38 +14,38 @@ export type SeedInputStatus =
     | 'in-progress'
     | 'finished';
 
-export type RecoveryActions =
+export type RecoveryAction =
     | { type: typeof RECOVERY.SET_WORDS_COUNT; payload: WordCount }
     | { type: typeof RECOVERY.SET_ADVANCED_RECOVERY; payload: boolean }
     | { type: typeof RECOVERY.SET_ERROR; payload: string }
     | { type: typeof RECOVERY.SET_STATUS; payload: SeedInputStatus }
     | { type: typeof RECOVERY.RESET_REDUCER };
 
-const setWordsCount = (count: WordCount) => ({
+const setWordsCount = (count: WordCount): RecoveryAction => ({
     type: RECOVERY.SET_WORDS_COUNT,
     payload: count,
 });
 
-const setAdvancedRecovery = (value: boolean) => ({
+const setAdvancedRecovery = (value: boolean): RecoveryAction => ({
     type: RECOVERY.SET_ADVANCED_RECOVERY,
     payload: value,
 });
 
-const setError = (payload: string): Action => ({
+const setError = (payload: string): RecoveryAction => ({
     type: RECOVERY.SET_ERROR,
     payload,
 });
 
-const resetReducer = (): Action => ({
+const resetReducer = (): RecoveryAction => ({
     type: RECOVERY.RESET_REDUCER,
 });
 
-const setStatus = (status: SeedInputStatus): Action => ({
+const setStatus = (status: SeedInputStatus): RecoveryAction => ({
     type: RECOVERY.SET_STATUS,
     payload: status,
 });
 
-const submit = (word: string) => async () => {
+const submit = (word: string) => () => {
     TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: word });
 };
 

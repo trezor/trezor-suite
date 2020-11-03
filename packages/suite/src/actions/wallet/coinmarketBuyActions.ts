@@ -13,10 +13,10 @@ export interface BuyInfo {
     supportedCryptoCurrencies: Set<string>;
 }
 
-export type CoinmarketBuyActions =
+export type CoinmarketBuyAction =
     | { type: typeof COINMARKET_BUY.SAVE_BUY_INFO; buyInfo: BuyInfo }
     | { type: typeof COINMARKET_BUY.DISPOSE }
-    | { type: typeof COINMARKET_BUY.SET_IS_FROM_REDIRECT; isFromRedirect: true }
+    | { type: typeof COINMARKET_BUY.SET_IS_FROM_REDIRECT; isFromRedirect: boolean }
     | { type: typeof COINMARKET_BUY.SAVE_TRANSACTION_DETAIL_ID; transactionId: string }
     | { type: typeof COINMARKET_BUY.SAVE_QUOTE_REQUEST; request: BuyTradeQuoteRequest }
     | { type: typeof COINMARKET_BUY.VERIFY_ADDRESS; addressVerified: boolean }
@@ -46,7 +46,7 @@ export type CoinmarketBuyActions =
           };
       };
 
-export async function loadBuyInfo(): Promise<BuyInfo> {
+export const loadBuyInfo = async (): Promise<BuyInfo> => {
     let buyInfo = await invityAPI.getBuyList();
 
     if (!buyInfo) {
@@ -76,25 +76,21 @@ export async function loadBuyInfo(): Promise<BuyInfo> {
         supportedFiatCurrencies,
         supportedCryptoCurrencies,
     };
-}
-
-export const saveBuyInfo = (buyInfo: BuyInfo) => async (dispatch: Dispatch) => {
-    dispatch({
-        type: COINMARKET_BUY.SAVE_BUY_INFO,
-        buyInfo,
-    });
 };
 
-export const dispose = () => ({
+export const saveBuyInfo = (buyInfo: BuyInfo): CoinmarketBuyAction => ({
+    type: COINMARKET_BUY.SAVE_BUY_INFO,
+    buyInfo,
+});
+
+export const dispose = (): CoinmarketBuyAction => ({
     type: COINMARKET_BUY.DISPOSE,
 });
 
-export const setIsFromRedirect = (isFromRedirect: boolean) => async (dispatch: Dispatch) => {
-    dispatch({
-        type: COINMARKET_BUY.SET_IS_FROM_REDIRECT,
-        isFromRedirect,
-    });
-};
+export const setIsFromRedirect = (isFromRedirect: boolean): CoinmarketBuyAction => ({
+    type: COINMARKET_BUY.SET_IS_FROM_REDIRECT,
+    isFromRedirect,
+});
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
 // used in useCoinmarketBuyOffers
@@ -102,59 +98,52 @@ export const openCoinmarketBuyConfirmModal = (provider?: string) => (dispatch: D
     return dispatch(modalActions.openDeferredModal({ type: 'coinmarket-buy-terms', provider }));
 };
 
-export const saveTrade = (buyTrade: BuyTrade, account: Account, date: string) => async (
-    dispatch: Dispatch,
-) => {
-    dispatch({
-        type: COINMARKET_BUY.SAVE_TRADE,
-        tradeType: 'buy',
-        key: buyTrade.paymentId,
-        date,
-        data: buyTrade,
-        account: {
-            descriptor: account.descriptor,
-            symbol: account.symbol,
-            accountType: account.accountType,
-            accountIndex: account.index,
-        },
-    });
-};
+export const saveTrade = (
+    buyTrade: BuyTrade,
+    account: Account,
+    date: string,
+): CoinmarketBuyAction => ({
+    type: COINMARKET_BUY.SAVE_TRADE,
+    tradeType: 'buy',
+    key: buyTrade.paymentId,
+    date,
+    data: buyTrade,
+    account: {
+        descriptor: account.descriptor,
+        symbol: account.symbol,
+        accountType: account.accountType,
+        accountIndex: account.index,
+    },
+});
 
-export const saveQuoteRequest = (request: BuyTradeQuoteRequest) => async (dispatch: Dispatch) => {
-    dispatch({
-        type: COINMARKET_BUY.SAVE_QUOTE_REQUEST,
-        request,
-    });
-};
+export const saveQuoteRequest = (request: BuyTradeQuoteRequest): CoinmarketBuyAction => ({
+    type: COINMARKET_BUY.SAVE_QUOTE_REQUEST,
+    request,
+});
 
-export const saveTransactionDetailId = (transactionId: string) => async (dispatch: Dispatch) => {
-    dispatch({
-        type: COINMARKET_BUY.SAVE_TRANSACTION_DETAIL_ID,
-        transactionId,
-    });
-};
+export const saveTransactionDetailId = (transactionId: string): CoinmarketBuyAction => ({
+    type: COINMARKET_BUY.SAVE_TRANSACTION_DETAIL_ID,
+    transactionId,
+});
 
 export const saveCachedAccountInfo = (
     symbol: Account['symbol'],
     index: number,
     accountType: Account['accountType'],
     shouldSubmit = false,
-) => async (dispatch: Dispatch) => {
-    dispatch({
-        type: COINMARKET_BUY.SAVE_CACHED_ACCOUNT_INFO,
-        symbol,
-        index,
-        accountType,
-        shouldSubmit,
-    });
-};
+): CoinmarketBuyAction => ({
+    type: COINMARKET_BUY.SAVE_CACHED_ACCOUNT_INFO,
+    symbol,
+    index,
+    accountType,
+    shouldSubmit,
+});
 
-export const saveQuotes = (quotes: BuyTrade[], alternativeQuotes: BuyTrade[] | undefined) => async (
-    dispatch: Dispatch,
-) => {
-    dispatch({
-        type: COINMARKET_BUY.SAVE_QUOTES,
-        quotes,
-        alternativeQuotes,
-    });
-};
+export const saveQuotes = (
+    quotes: BuyTrade[],
+    alternativeQuotes: BuyTrade[] | undefined,
+): CoinmarketBuyAction => ({
+    type: COINMARKET_BUY.SAVE_QUOTES,
+    quotes,
+    alternativeQuotes,
+});

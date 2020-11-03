@@ -18,7 +18,7 @@ import {
     enhanceBlockchainAccountHistory,
 } from '@wallet-utils/graphUtils';
 
-export type GraphActions =
+export type GraphAction =
     | {
           type: typeof ACCOUNT_GRAPH_SUCCESS;
           payload: GraphData;
@@ -46,12 +46,12 @@ export type GraphActions =
           payload: GraphScale;
       };
 
-export const setSelectedRange = (range: GraphRange) => ({
+export const setSelectedRange = (range: GraphRange): GraphAction => ({
     type: SET_SELECTED_RANGE,
     payload: range,
 });
 
-export const setSelectedView = (view: GraphScale) => ({
+export const setSelectedView = (view: GraphScale): GraphAction => ({
     type: SET_SELECTED_VIEW,
     payload: view,
 });

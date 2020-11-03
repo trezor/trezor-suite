@@ -10,7 +10,7 @@ import { NETWORKS } from '@wallet-config';
 import { Dispatch, GetState, TrezorDevice } from '@suite-types';
 import { Account } from '@wallet-types';
 
-export type DiscoveryActions =
+export type DiscoveryAction =
     | { type: typeof DISCOVERY.CREATE; payload: Discovery }
     | { type: typeof DISCOVERY.START; payload: Discovery }
     | { type: typeof DISCOVERY.UPDATE; payload: PartialDiscovery }
@@ -81,7 +81,7 @@ export const getDiscoveryAuthConfirmationStatus = () => (
 export const update = (
     payload: PartialDiscovery,
     type: UpdateActionType = DISCOVERY.UPDATE,
-): DiscoveryActions => ({
+): DiscoveryAction => ({
     type,
     payload,
 });
@@ -281,7 +281,7 @@ export const create = (deviceState: string, device: TrezorDevice) => (
     });
 };
 
-export const remove = (deviceState: string): DiscoveryActions => ({
+export const remove = (deviceState: string): DiscoveryAction => ({
     type: DISCOVERY.REMOVE,
     payload: {
         deviceState,
@@ -490,7 +490,7 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
     }
 };
 
-export const stop = () => async (dispatch: Dispatch): Promise<void> => {
+export const stop = () => (dispatch: Dispatch) => {
     const discovery = dispatch(getDiscoveryForDevice());
     if (discovery && discovery.running) {
         dispatch(

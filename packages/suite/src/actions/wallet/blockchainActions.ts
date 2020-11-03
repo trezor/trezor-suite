@@ -20,7 +20,7 @@ import { BLOCKCHAIN } from './constants';
 // checks if there are discovery processes loaded from LocalStorage
 // if so starts subscription to proper networks
 
-export type BlockchainActions =
+export type BlockchainAction =
     | {
           type: typeof BLOCKCHAIN.READY | typeof BLOCKCHAIN.CONNECTED;
       }

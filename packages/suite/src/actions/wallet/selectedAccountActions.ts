@@ -9,15 +9,15 @@ import * as accountUtils from '@wallet-utils/accountUtils';
 import { Action, Dispatch, GetState } from '@suite-types';
 import { State, AccountWatchOnlyMode } from '@wallet-reducers/selectedAccountReducer';
 
-export type SelectedAccountActions =
+export type SelectedAccountAction =
     | { type: typeof ACCOUNT.DISPOSE }
     | { type: typeof ACCOUNT.UPDATE_SELECTED_ACCOUNT; payload: State };
 
-export const dispose = (): Action => ({
+export const dispose = (): SelectedAccountAction => ({
     type: ACCOUNT.DISPOSE,
 });
 
-export const update = (payload: State): Action => ({
+export const update = (payload: State): SelectedAccountAction => ({
     type: ACCOUNT.UPDATE_SELECTED_ACCOUNT,
     payload,
 });
@@ -26,7 +26,7 @@ export const update = (payload: State): Action => ({
 const getAccountStateWithMode = (selectedAccount?: State) => (
     _dispatch: Dispatch,
     getState: GetState,
-): AccountWatchOnlyMode[] | undefined => {
+) => {
     const state = getState();
     const { device, loaded } = state.suite;
     if (!device || !loaded) return;
@@ -63,7 +63,7 @@ const getAccountStateWithMode = (selectedAccount?: State) => (
     return mode.length > 0 ? mode : undefined;
 };
 
-const getAccountState = () => (dispatch: Dispatch, getState: GetState): State => {
+const getAccountState = () => (dispatch: Dispatch, getState: GetState) => {
     const state = getState();
 
     const { device } = state.suite;

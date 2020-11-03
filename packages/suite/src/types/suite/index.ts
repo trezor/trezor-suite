@@ -8,25 +8,25 @@ import {
     KnownDevice,
     UnknownDevice as UnknownDeviceBase,
 } from 'trezor-connect';
-import { RouterActions } from '@suite-actions/routerActions';
+import { RouterAction } from '@suite-actions/routerActions';
 import { Route } from '@suite-constants/routes';
 import { AppState } from '@suite/reducers/store';
-import { StorageActions } from '@suite-actions/storageActions';
-import { SuiteActions } from '@suite-actions/suiteActions';
-import { ResizeActions } from '@suite-actions/resizeActions';
-import { ModalActions } from '@suite-actions/modalActions';
-import { LogActions } from '@suite-actions/logActions';
-import { NotificationActions } from '@suite-actions/notificationActions';
-import { AnalyticsActions } from '@suite-actions/analyticsActions';
-import { MetadataActions } from '@suite-actions/metadataActions';
-import { DesktopUpdateActions } from '@suite-actions/desktopUpdateActions';
-import { DeviceMetadata } from '@suite-types/metadata';
-import { OnboardingActions } from '@onboarding-types';
-import { SettingsActions } from '@settings-types';
-import { FirmwareActions } from '@firmware-types';
+import { StorageAction } from '@suite-actions/storageActions';
+import { SuiteAction } from '@suite-actions/suiteActions';
+import { ResizeAction } from '@suite-actions/resizeActions';
+import { ModalAction } from '@suite-actions/modalActions';
+import { LogAction } from '@suite-actions/logActions';
+import { NotificationAction } from '@suite-actions/notificationActions';
+import { AnalyticsAction } from '@suite-actions/analyticsActions';
+import { MetadataAction } from '@suite-actions/metadataActions';
+import { DesktopUpdateAction } from '@suite-actions/desktopUpdateActions';
+import { OnboardingAction } from '@onboarding-actions/onboardingActions';
+import { WalletSettingsAction } from '@settings-actions/walletSettingsActions';
+import { FirmwareAction } from '@firmware-actions/firmwareActions';
 import { WalletAction } from '@wallet-types';
-import { BackupActions } from '@backup-actions/backupActions';
-import { RecoveryActions } from '@recovery-actions/recoveryActions';
+import { BackupAction } from '@backup-actions/backupActions';
+import { RecoveryAction } from '@recovery-actions/recoveryActions';
+import { DeviceMetadata } from '@suite-types/metadata';
 import { ObjectValues } from '@suite/types/utils';
 import { SUITE } from '@suite-actions/constants';
 import { PROCESS_MODE } from '@suite-middlewares/actionBlockerMiddleware';
@@ -41,22 +41,22 @@ type TrezorConnectEvents = TransportEvent | UiEvent | DeviceEvent | BlockchainEv
 // all actions from all apps used to properly type Dispatch.
 export type Action =
     | TrezorConnectEvents
-    | RouterActions
-    | ResizeActions
-    | StorageActions
-    | SuiteActions
-    | LogActions
-    | ModalActions
-    | NotificationActions
-    | AnalyticsActions
-    | MetadataActions
+    | RouterAction
+    | ResizeAction
+    | StorageAction
+    | SuiteAction
+    | LogAction
+    | ModalAction
+    | NotificationAction
+    | AnalyticsAction
+    | MetadataAction
     | WalletAction
-    | OnboardingActions
-    | FirmwareActions
-    | BackupActions
-    | RecoveryActions
-    | SettingsActions
-    | DesktopUpdateActions;
+    | OnboardingAction
+    | FirmwareAction
+    | BackupAction
+    | RecoveryAction
+    | WalletSettingsAction
+    | DesktopUpdateAction;
 
 // export type Dispatch = ReduxDispatch<Action>;
 // export type Dispatch = ThunkDispatch<AppState, any, Action>;

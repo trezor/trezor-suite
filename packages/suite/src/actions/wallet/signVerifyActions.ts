@@ -12,7 +12,7 @@ export type inputNameType =
     | 'verifyMessage'
     | 'verifySignature';
 
-export type SignVerifyActions =
+export type SignVerifyAction =
     | { type: typeof SIGN_VERIFY.SIGN_SUCCESS; signSignature: string }
     | { type: typeof SIGN_VERIFY.CLEAR_SIGN }
     | { type: typeof SIGN_VERIFY.CLEAR_VERIFY }
@@ -124,10 +124,10 @@ export const inputChange = (inputName: inputNameType, value: string) => (dispatc
     }
 };
 
-export const clearSign = (): SignVerifyActions => ({
+export const clearSign = (): SignVerifyAction => ({
     type: SIGN_VERIFY.CLEAR_SIGN,
 });
 
-export const clearVerify = (): SignVerifyActions => ({
+export const clearVerify = (): SignVerifyAction => ({
     type: SIGN_VERIFY.CLEAR_VERIFY,
 });

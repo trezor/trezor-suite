@@ -30,7 +30,7 @@ import { CoinListItem } from '@wallet-types/fiatRates';
 
 type FiatRatesPayload = NonNullable<CoinFiatRates['current']>;
 
-export type FiatRatesActions =
+export type FiatRatesAction =
     | {
           type: typeof FETCH_COIN_LIST_START;
       }
@@ -76,13 +76,11 @@ const INTERVAL_LAST_WEEK = 1000 * 60 * 60 * 1; // 1 hour
 const MAX_AGE = 1000 * 60 * 10; // 10 mins
 const MAX_AGE_LAST_WEEK = 1000 * 60 * 60 * 1; // 1 hour
 
-export const remove = (symbol: string, mainNetworkSymbol?: string) => (dispatch: Dispatch) => {
-    dispatch({
-        type: RATE_REMOVE,
-        symbol,
-        mainNetworkSymbol,
-    });
-};
+export const remove = (symbol: string, mainNetworkSymbol?: string): FiatRatesAction => ({
+    type: RATE_REMOVE,
+    symbol,
+    mainNetworkSymbol,
+});
 
 export const removeRatesForDisabledNetworks = () => (dispatch: Dispatch, getState: GetState) => {
     const { enabledNetworks } = getState().wallet.settings;

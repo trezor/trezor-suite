@@ -15,7 +15,7 @@ import { getAnalyticsRandomId } from '@suite-utils/random';
 import { BuyTrade, ExchangeTrade } from 'invity-api';
 import { setSentryUser } from '@suite-utils/sentry';
 
-export type StorageActions =
+export type StorageAction =
     | { type: typeof STORAGE.LOAD }
     | { type: typeof STORAGE.LOADED; payload: AppState }
     | { type: typeof STORAGE.ERROR; error: any };

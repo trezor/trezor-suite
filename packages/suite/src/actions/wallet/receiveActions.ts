@@ -5,12 +5,12 @@ import * as modalActions from '@suite-actions/modalActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { GetState, Dispatch } from '@suite-types';
 
-export type ReceiveActions =
+export type ReceiveAction =
     | { type: typeof RECEIVE.DISPOSE }
     | { type: typeof RECEIVE.SHOW_ADDRESS; path: string; address: string }
     | { type: typeof RECEIVE.SHOW_UNVERIFIED_ADDRESS; path: string; address: string };
 
-export const dispose = (): ReceiveActions => ({
+export const dispose = (): ReceiveAction => ({
     type: RECEIVE.DISPOSE,
 });
 

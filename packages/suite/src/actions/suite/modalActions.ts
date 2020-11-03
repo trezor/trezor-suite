@@ -1,6 +1,6 @@
 import TrezorConnect, { UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
-import { Action, Dispatch, GetState, TrezorDevice } from '@suite-types';
+import { Dispatch, GetState, TrezorDevice } from '@suite-types';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { createDeferred, Deferred, DeferredResponse } from '@suite-utils/deferred';
 
@@ -89,7 +89,7 @@ export type UserContextPayload =
           coin: Account['symbol'];
       };
 
-export type ModalActions =
+export type ModalAction =
     | {
           type: typeof MODAL.CLOSE;
       }
@@ -98,7 +98,7 @@ export type ModalActions =
           payload: UserContextPayload;
       };
 
-export const onCancel = (): Action => ({
+export const onCancel = (): ModalAction => ({
     type: MODAL.CLOSE,
 });
 
@@ -174,7 +174,7 @@ export const onReceiveConfirmation = (confirmation: boolean) => async (dispatch:
     dispatch(onCancel());
 };
 
-export const openModal = (payload: UserContextPayload): Action => ({
+export const openModal = (payload: UserContextPayload): ModalAction => ({
     type: MODAL.OPEN_USER_CONTEXT,
     payload,
 });

@@ -18,7 +18,7 @@ import DropboxProvider from '@suite-services/metadata/DropboxProvider';
 import GoogleProvider from '@suite-services/metadata/GoogleProvider';
 import FileSystemProvider from '@suite-services/metadata/FileSystemProvider';
 
-export type MetadataActions =
+export type MetadataAction =
     | { type: typeof METADATA.ENABLE }
     | { type: typeof METADATA.DISABLE }
     | { type: typeof METADATA.SET_EDITING; payload: string | undefined }
@@ -200,11 +200,9 @@ const getProvider = () => async (_dispatch: Dispatch, getState: GetState) => {
     return providerInstance;
 };
 
-export const enableMetadata = () => (dispatch: Dispatch) => {
-    dispatch({
-        type: METADATA.ENABLE,
-    });
-};
+export const enableMetadata = (): MetadataAction => ({
+    type: METADATA.ENABLE,
+});
 
 export const disableMetadata = () => (dispatch: Dispatch) => {
     dispatch({
@@ -680,9 +678,7 @@ export const init = (force = false) => async (dispatch: Dispatch, getState: GetS
     return true;
 };
 
-export const setEditing = (payload: string | undefined) => (dispatch: Dispatch) => {
-    dispatch({
-        type: METADATA.SET_EDITING,
-        payload,
-    });
-};
+export const setEditing = (payload: string | undefined): MetadataAction => ({
+    type: METADATA.SET_EDITING,
+    payload,
+});
