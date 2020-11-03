@@ -47,8 +47,6 @@ export default {
     BADGE_GRAY_BACKGROUND: '#ebebeb',
     BADGE_GRAY_TEXT_COLOR: '#808080',
 
-    TOR: '#59316B',
-
     // Neue design
     NEUE_BG_GREEN: '#39a814',
     NEUE_BG_LIGHT_GREEN: '#effaec',
