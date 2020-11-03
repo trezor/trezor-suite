@@ -156,7 +156,6 @@ const NavigationActions = (props: Props) => {
                                     action={() => action('settings-index')}
                                 />
                             }
-                            className="dark-grey"
                             {...props}
                         >
                             <>

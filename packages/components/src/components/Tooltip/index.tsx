@@ -45,26 +45,6 @@ ${tippy}
     .tippy-arrow {
         border-right-color: ${colors.NEUE_BG_TOOLTIP};
     }
-
-
-.tippy-tooltip.dark-grey  {
-    background: ${colors.NEUE_TYPE_DARK_GREY};
-}
-.tippy-tooltip.dark-grey[data-placement^='top'] > .tippy-arrow {
-    border-top-color: ${colors.NEUE_TYPE_DARK_GREY};
-}
-
-.tippy-tooltip.dark-grey[data-placement^='bottom'] > .tippy-arrow {
-    border-bottom-color: ${colors.NEUE_TYPE_DARK_GREY};
-}
-
-.tippy-tooltip.dark-grey[data-placement^='left'] > .tippy-arrow {
-    border-left-color: ${colors.NEUE_TYPE_DARK_GREY};
-}
-
-.tippy-tooltip.dark-grey[data-placement^='right'] > .tippy-arrow {
-    border-right-color: ${colors.NEUE_TYPE_DARK_GREY};
-}
 `;
 
 const Wrapper = styled.div``;
@@ -94,7 +74,7 @@ const Tooltip = ({
     content,
     ...rest
 }: Props) => (
-    <Wrapper>
+    <Wrapper className={className}>
         <Tippy
             zIndex={10070}
             arrow
@@ -113,7 +93,6 @@ const Tooltip = ({
                     )}
                 </>
             }
-            className={className}
             {...rest}
         >
             <Content>{children}</Content>
