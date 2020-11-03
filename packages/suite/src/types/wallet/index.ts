@@ -6,7 +6,7 @@ import { DiscoveryActions } from '@wallet-actions/discoveryActions';
 import { AccountAction } from '@wallet-actions/accountActions';
 import { FiatRatesActions } from '@wallet-actions/fiatRatesActions';
 import { GraphActions } from '@wallet-actions/graphActions';
-import { BlockchainActions } from '@wallet-actions/blockchainActions';
+import { BlockchainAction } from '@wallet-actions/blockchainActions';
 import { SendFormActions } from '@wallet-actions/sendFormActions';
 import { AccountSearchAction } from '@wallet-actions/accountSearchActions';
 import { TransactionAction } from '@wallet-actions/transactionActions';
@@ -40,7 +40,7 @@ export type { WalletAccountTransaction } from '@wallet-reducers/transactionReduc
 export type { ReceiveInfo } from '@wallet-reducers/receiveReducer';
 
 export type WalletAction =
-    | BlockchainActions
+    | BlockchainAction
     | ReceiveActions
     | SignVerifyActions
     | TransactionAction
