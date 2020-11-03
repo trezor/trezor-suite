@@ -1,5 +1,5 @@
 import { ReceiveAction } from '@wallet-actions/receiveActions';
-import { SignVerifyActions } from '@wallet-actions/signVerifyActions';
+import { SignVerifyAction } from '@wallet-actions/signVerifyActions';
 import { CoinmarketBuyAction } from '@wallet-actions/coinmarketBuyActions';
 import { CoinmarketExchangeAction } from '@wallet-actions/coinmarketExchangeActions';
 import { DiscoveryAction } from '@wallet-actions/discoveryActions';
@@ -42,7 +42,7 @@ export type { ReceiveInfo } from '@wallet-reducers/receiveReducer';
 export type WalletAction =
     | BlockchainAction
     | ReceiveAction
-    | SignVerifyActions
+    | SignVerifyAction
     | TransactionAction
     | FiatRatesAction
     | GraphAction
