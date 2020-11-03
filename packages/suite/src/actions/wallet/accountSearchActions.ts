@@ -1,7 +1,7 @@
 import { Account } from '@wallet-types';
 import { ACCOUNT_SEARCH } from '@wallet-actions/constants';
 
-export type AccountSearchActions =
+export type AccountSearchAction =
     | {
           type: typeof ACCOUNT_SEARCH.SET_COIN_FILTER;
           payload?: Account['symbol'];
@@ -11,12 +11,12 @@ export type AccountSearchActions =
           payload?: string;
       };
 
-export const setCoinFilter = (payload?: Account['symbol']) => ({
+export const setCoinFilter = (payload?: Account['symbol']): AccountSearchAction => ({
     type: ACCOUNT_SEARCH.SET_COIN_FILTER,
     payload,
 });
 
-export const setSearchString = (payload?: string) => ({
+export const setSearchString = (payload?: string): AccountSearchAction => ({
     type: ACCOUNT_SEARCH.SET_SEARCH_STRING,
     payload,
 });
