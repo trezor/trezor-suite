@@ -1,15 +1,14 @@
 import React from 'react';
 import { NotificationCard, Translation } from '@suite-components';
 import { Link } from '@trezor/components';
-import { BLOG_URL } from '@suite-constants/urls';
+import { BCH_FORK_BLOG_POST } from '@suite-constants/urls';
 
 const BCHFork = () => (
     <NotificationCard
         variant="info"
         button={{
             children: (
-                // TODO: URL to blog post
-                <Link variant="nostyle" href={BLOG_URL}>
+                <Link variant="nostyle" href={BCH_FORK_BLOG_POST}>
                     <Translation id="TR_LEARN_MORE" />
                 </Link>
             ),
