@@ -218,6 +218,8 @@ describe('Metadata Actions', () => {
                         user: 'power-user',
                     },
                 });
+
+            // eslint-disable-next-line require-await
             DropboxProvider.prototype.getFileContent = async (filename: string) => {
                 if (
                     filename === '828652b66f2e6f919fbb7fe4c9609d4891ed531c6fac4c28441e53ebe577ac85'

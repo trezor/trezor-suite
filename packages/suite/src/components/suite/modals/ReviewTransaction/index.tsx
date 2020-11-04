@@ -183,7 +183,7 @@ const ReviewTransaction = ({ selectedAccount, send, decision }: Props) => {
                         <Buttons ref={htmlElement}>
                             <StyledButton
                                 isDisabled={!signedTx}
-                                onClick={async () => {
+                                onClick={() => {
                                     const result = copyToClipboard(
                                         signedTx!.tx,
                                         htmlElement.current,

@@ -21,9 +21,9 @@ import { getDiscovery } from '@wallet-actions/discoveryActions';
 import { isDeviceRemembered } from '@suite-utils/device';
 import { serializeDiscovery } from '@suite-utils/storage';
 
-const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
+const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: SuiteAction | WalletAction,
-): Promise<SuiteAction | WalletAction> => {
+): SuiteAction | WalletAction => {
     // pass action
     next(action);
 

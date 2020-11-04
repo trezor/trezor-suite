@@ -26,7 +26,7 @@ export const fetchCoinList = async (): Promise<any> => {
  * @param {FiatTicker} ticker
  * @returns
  */
-const buildCoinUrl = async (ticker: FiatTicker) => {
+const buildCoinUrl = (ticker: FiatTicker) => {
     let coinUrl: string | null = null;
     const { coinData } = ticker;
     if (coinData) {
@@ -44,7 +44,7 @@ const buildCoinUrl = async (ticker: FiatTicker) => {
  * @returns
  */
 export const fetchCurrentFiatRates = async (ticker: FiatTicker) => {
-    const coinUrl = await buildCoinUrl(ticker);
+    const coinUrl = buildCoinUrl(ticker);
     if (!coinUrl) return null;
     const urlParams =
         'tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false';

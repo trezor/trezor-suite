@@ -13,7 +13,7 @@ import * as backupActions from '@backup-actions/backupActions';
 jest.mock('trezor-connect', () => {
     let fixture: any;
 
-    const backupDevice = async () => {
+    const backupDevice = () => {
         return fixture;
     };
     const callbacks: { [key: string]: () => any } = {};

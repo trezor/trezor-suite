@@ -53,7 +53,7 @@ export const useDropZone = ({ accept, onSuccess }: Props) => {
     }, []);
 
     const onDrop = useCallback(
-        async (event: React.DragEvent) => {
+        (event: React.DragEvent) => {
             event.preventDefault();
             if (event.dataTransfer) {
                 readFileContent(event.dataTransfer.files[0]);

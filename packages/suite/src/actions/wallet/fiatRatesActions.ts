@@ -93,7 +93,7 @@ export const removeRatesForDisabledNetworks = () => (dispatch: Dispatch, getStat
     });
 };
 
-export const getCoinData = (symbol: string) => async (_dispatch: Dispatch, getState: GetState) => {
+export const getCoinData = (symbol: string) => (_dispatch: Dispatch, getState: GetState) => {
     const { coinList } = getState().wallet.fiat;
     const coinData = coinList?.find(d => d.symbol === symbol.toLowerCase());
     return coinData;
@@ -341,7 +341,7 @@ export const updateTxsRates = (account: Account, txs: AccountTransaction[]) => a
     }
 };
 
-export const onUpdateRate = (res: BlockchainFiatRatesUpdate) => async (dispatch: Dispatch) => {
+export const onUpdateRate = (res: BlockchainFiatRatesUpdate) => (dispatch: Dispatch) => {
     if (!res?.rates) return;
     dispatch({
         type: RATE_UPDATE,

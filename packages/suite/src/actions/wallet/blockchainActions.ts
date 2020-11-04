@@ -140,7 +140,7 @@ export const reconnect = (coin: Network['symbol']) => (_dispatch: Dispatch) => {
 
 // called from WalletMiddleware after ADD/REMOVE_BLOCKBOOK_URL action
 // or from blockchainActions.init
-export const setCustomBackend = (symbol?: string) => async (_: Dispatch, getState: GetState) => {
+export const setCustomBackend = (symbol?: string) => (_: Dispatch, getState: GetState) => {
     const { blockbookUrls } = getState().wallet.settings;
     // collect unique coins
     const coins = symbol
@@ -164,7 +164,7 @@ export const setCustomBackend = (symbol?: string) => async (_: Dispatch, getStat
     return Promise.all(promises);
 };
 
-export const clearCustomBackend = (symbol: string | string[]) => async () => {
+export const clearCustomBackend = (symbol: string | string[]) => () => {
     const coins = typeof symbol === 'string' ? [symbol] : [...new Set(symbol)];
     const promises = coins.map(coin => {
         return TrezorConnect.blockchainSetCustomBackend({
@@ -278,10 +278,10 @@ export const onConnect = (symbol: string) => async (dispatch: Dispatch, getState
     dispatch({ type: BLOCKCHAIN.CONNECTED });
 };
 
-export const onBlockMined = (block: BlockchainBlock) => async (
+export const onBlockMined = (block: BlockchainBlock) => (
     dispatch: Dispatch,
     getState: GetState,
-): Promise<void> => {
+) => {
     const symbol = block.coin.shortcut.toLowerCase();
     const networkAccounts = getState().wallet.accounts.filter(a => a.symbol === symbol);
     networkAccounts.forEach(account => {
@@ -289,10 +289,10 @@ export const onBlockMined = (block: BlockchainBlock) => async (
     });
 };
 
-export const onNotification = (payload: BlockchainNotification) => async (
+export const onNotification = (payload: BlockchainNotification) => (
     dispatch: Dispatch,
     getState: GetState,
-): Promise<void> => {
+) => {
     const { descriptor, tx } = payload.notification;
     const symbol = payload.coin.shortcut.toLowerCase();
     const networkAccounts = getState().wallet.accounts.filter(a => a.symbol === symbol);
@@ -339,7 +339,7 @@ export const onNotification = (payload: BlockchainNotification) => async (
     }
 };
 
-export const onDisconnect = (error: BlockchainError) => async (
+export const onDisconnect = (error: BlockchainError) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {

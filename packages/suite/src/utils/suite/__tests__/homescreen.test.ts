@@ -54,7 +54,7 @@ interface Fixture {
 
 describe('homescreen', () => {
     describe('imageDataToHomescreen', () => {
-        imgHashFixtures.forEach(async (fixture: Fixture) => {
+        imgHashFixtures.forEach((fixture: Fixture) => {
             it(`${fixture.img} should result in hex that results in hash ${fixture.hexHash}`, async () => {
                 const image: any = await Canvas.loadImage(
                     `${homescreensPath}/t${fixture.model}/${fixture.img}`,
@@ -73,7 +73,7 @@ describe('homescreen', () => {
 
     describe('checkImage', () => {
         describe('with correct dimensions', () => {
-            imgHashFixtures.forEach(async (fixture: Fixture) => {
+            imgHashFixtures.forEach((fixture: Fixture) => {
                 it(`${fixture.img} should be checked as ok`, async () => {
                     const image: any = await Canvas.loadImage(
                         `${homescreensPath}/t${fixture.model}/${fixture.img}`,
@@ -87,7 +87,7 @@ describe('homescreen', () => {
         });
 
         describe('called with swapped trezorModel param', () => {
-            imgHashFixtures.forEach(async (fixture: Fixture) => {
+            imgHashFixtures.forEach((fixture: Fixture) => {
                 it(`${fixture.img} should error with "Not a correct height error"`, async () => {
                     const image: any = await Canvas.loadImage(
                         `${homescreensPath}/t${fixture.model}/${fixture.img}`,

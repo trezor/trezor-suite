@@ -1,3 +1,4 @@
+/* eslint-disable require-await */
 import { AbstractMetadataProvider, Result } from '@suite-types/metadata';
 
 class DropboxProvider extends AbstractMetadataProvider {

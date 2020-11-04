@@ -57,7 +57,7 @@ const getAccountTransaction = (t?: Partial<AccountTransaction>) => ({
 
 // TODO: more tests (updating existing/pending txs, fetching the data from blockbook,...)
 describe('Transaction Actions', () => {
-    it('Add transaction for first page (used on account create)', async () => {
+    it('Add transaction for first page (used on account create)', () => {
         const store = initStore(getInitialState());
         const account = global.JestMocks.getWalletAccount();
         store.dispatch(
@@ -75,7 +75,7 @@ describe('Transaction Actions', () => {
         ).toEqual(1);
     });
 
-    it('Remove txs for a given account', async () => {
+    it('Remove txs for a given account', () => {
         const account1 = global.JestMocks.getWalletAccount({ descriptor: 'xpub1' });
         const account2 = global.JestMocks.getWalletAccount({ descriptor: 'xpub2' });
         const key1 = getAccountKey(account1.descriptor, account1.symbol, account1.deviceState);

@@ -28,6 +28,7 @@ export const removeDraft = (accountKey: string) => {
     return db.removeItemByPK('sendFormDrafts', accountKey);
 };
 
+// eslint-disable-next-line require-await
 export const saveAccountDraft = (account: Account) => async (_: Dispatch, getState: GetState) => {
     const { drafts } = getState().wallet.send;
     const draft = drafts[account.key];
@@ -42,12 +43,12 @@ export const removeAccountDraft = (account: Account) => {
 
 // send form drafts end
 
-export const saveDevice = async (device: TrezorDevice, forceRemember?: true) => {
+export const saveDevice = (device: TrezorDevice, forceRemember?: true) => {
     if (!device || !device.features || !device.state) return;
     return db.addItem('devices', serializeDevice(device, forceRemember), device.state, true);
 };
 
-export const removeAccount = async (account: Account) => {
+export const removeAccount = (account: Account) => {
     return db.removeItemByPK('accounts', [account.descriptor, account.symbol, account.deviceState]);
 };
 
@@ -76,7 +77,7 @@ export const forgetDevice = (device: TrezorDevice) => async (_: Dispatch, getSta
     return promises;
 };
 
-export const saveAccounts = async (accounts: Account[]) => {
+export const saveAccounts = (accounts: Account[]) => {
     return db.addItems('accounts', accounts, true);
 };
 
@@ -87,7 +88,7 @@ interface AccountPart {
     descriptor: Account['descriptor'];
 }
 
-export const saveBuyTrade = async (buyTrade: BuyTrade, account: AccountPart, date: string) => {
+export const saveBuyTrade = (buyTrade: BuyTrade, account: AccountPart, date: string) => {
     return db.addItem(
         'coinmarketTrades',
         {
@@ -107,7 +108,7 @@ export const saveBuyTrade = async (buyTrade: BuyTrade, account: AccountPart, dat
     );
 };
 
-export const saveExchangeTrade = async (
+export const saveExchangeTrade = (
     exchangeTrade: ExchangeTrade,
     account: AccountPart,
     date: string,
@@ -131,15 +132,15 @@ export const saveExchangeTrade = async (
     );
 };
 
-export const saveDiscovery = async (discoveries: Discovery[]) => {
+export const saveDiscovery = (discoveries: Discovery[]) => {
     return db.addItems('discovery', discoveries, true);
 };
 
-export const saveGraph = async (graphData: GraphData[]) => {
+export const saveGraph = (graphData: GraphData[]) => {
     return db.addItems('graph', graphData, true);
 };
 
-export const saveAccountTransactions = (account: Account) => async (
+export const saveAccountTransactions = (account: Account) => (
     _dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -156,7 +157,7 @@ export const saveAccountTransactions = (account: Account) => async (
     return db.addItems('txs', orderedTxs, true);
 };
 
-export const removeAccountGraph = async (account: Account) => {
+export const removeAccountGraph = (account: Account) => {
     return db.removeItemByIndex('graph', 'accountKey', [
         account.descriptor,
         account.symbol,
@@ -281,7 +282,7 @@ export const removeDatabase = () => async (dispatch: Dispatch, getState: GetStat
 };
 
 export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) => {
-    const isDBAvailable = await SuiteDB.isDBAvailable();
+    const isDBAvailable = SuiteDB.isDBAvailable();
 
     if (!isDBAvailable) {
         // console.warn('IndexedDB not supported');

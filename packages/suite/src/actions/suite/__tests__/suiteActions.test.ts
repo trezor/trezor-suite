@@ -116,7 +116,7 @@ const initStore = (state: State) => {
 
 describe('Suite Actions', () => {
     fixtures.reducerActions.forEach(f => {
-        it(f.description, async () => {
+        it(f.description, () => {
             const state = getInitialState();
             const store = initStore(state);
             f.actions.forEach((action: any, i: number) => {
@@ -127,7 +127,7 @@ describe('Suite Actions', () => {
     });
 
     fixtures.initialRun.forEach(f => {
-        it(f.description, async () => {
+        it(f.description, () => {
             const state = getInitialState(f.state);
             const store = initStore(state);
             store.dispatch(suiteActions.initialRunCompleted());
@@ -169,7 +169,7 @@ describe('Suite Actions', () => {
     });
 
     fixtures.handleDeviceDisconnect.forEach(f => {
-        it(`handleDeviceDisconnect: ${f.description}`, async () => {
+        it(`handleDeviceDisconnect: ${f.description}`, () => {
             const state = getInitialState(f.state.suite, f.state.devices);
             const store = initStore(state);
             store.dispatch({

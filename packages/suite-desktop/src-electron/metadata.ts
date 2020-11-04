@@ -38,7 +38,7 @@ export const init = () => {
         }
     };
 
-    ipcMain.handle('metadata/write', async (_event, message) => {
+    ipcMain.handle('metadata/write', (_event, message) => {
         return saveFile(message.file, message.content);
     });
 

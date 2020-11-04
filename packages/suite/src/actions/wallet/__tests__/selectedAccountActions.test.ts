@@ -31,7 +31,7 @@ const initStore = (state: State) => {
 
 describe('selectedAccount Actions', () => {
     fixtures.forEach(f => {
-        it(f.description, async () => {
+        it(f.description, () => {
             const state = getInitialState(f.initialState);
             const store = initStore(state);
             const selectedAccountState = store.dispatch(getStateForAction(f.action as any));

@@ -12,7 +12,7 @@ export const PROCESS_MODE = {
     },
 };
 
-const actionBlocker = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
+const actionBlocker = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
 ) => {
     const prevState = api.getState();

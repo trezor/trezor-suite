@@ -382,14 +382,14 @@ class CommonDB<TDBStructure> {
         await Promise.all(promises);
     };
 
-    removeDatabase = async () => {
+    removeDatabase = () => {
         if (this.db) {
             this.db.close();
         }
         return deleteDB(this.dbName);
     };
 
-    static removeStores = async <TDBStructure>(db: IDBPDatabase<TDBStructure>) => {
+    static removeStores = <TDBStructure>(db: IDBPDatabase<TDBStructure>) => {
         const list = db.objectStoreNames;
         const { length } = list;
         for (let i = 0; i < length; i++) {

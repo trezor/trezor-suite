@@ -58,6 +58,7 @@ export const useSendFormCompose = ({
 
     // called from composeRequest useEffect
     const processComposeRequest = useCallback(async () => {
+        // eslint-disable-next-line require-await
         const composeInner = async () => {
             if (Object.keys(errors).length > 0) return;
             const values = getValues();

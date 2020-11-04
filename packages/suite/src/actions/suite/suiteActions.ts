@@ -170,7 +170,7 @@ export const lockRouter = (payload: boolean): SuiteAction => ({
  * - from user action in `@suite-components/DeviceMenu`
  * @param {(Device | TrezorDevice | undefined)} device
  */
-export const selectDevice = (device?: Device | TrezorDevice) => async (
+export const selectDevice = (device?: Device | TrezorDevice) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {

@@ -184,7 +184,7 @@ const handleProviderError = (error: MetadataProviderError, action: string) => (
 /**
  * Return already existing instance of AbstractProvider or recreate it from token;
  */
-const getProvider = () => async (_dispatch: Dispatch, getState: GetState) => {
+const getProvider = () => (_dispatch: Dispatch, getState: GetState) => {
     const state = getState().metadata.provider;
     if (!state) return;
 
@@ -212,7 +212,7 @@ export const disableMetadata = () => (dispatch: Dispatch) => {
     dispatch(disposeMetadata(true));
 };
 
-export const initProvider = () => async (dispatch: Dispatch) => {
+export const initProvider = () => (dispatch: Dispatch) => {
     const decision = createDeferred<boolean>();
     dispatch(modalActions.openModal({ type: 'metadata-provider', decision }));
     return decision.promise;
@@ -605,7 +605,7 @@ export const setDeviceMetadataKey = () => async (dispatch: Dispatch, getState: G
     }
 };
 
-export const addMetadata = (payload: MetadataAddPayload) => async (dispatch: Dispatch) => {
+export const addMetadata = (payload: MetadataAddPayload) => (dispatch: Dispatch) => {
     if (payload.type === 'walletLabel') {
         return dispatch(addDeviceMetadata(payload));
     }

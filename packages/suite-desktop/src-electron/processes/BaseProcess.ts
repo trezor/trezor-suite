@@ -25,7 +25,7 @@ const defaultOptions: Options = {
     autoRestart: 2,
 };
 
-class BaseProcess {
+abstract class BaseProcess {
     process: ChildProcess | null;
     resourceName: string;
     processName: string;
@@ -55,12 +55,7 @@ class BaseProcess {
      * - service: The service is working
      * - process: The process is running
      */
-    async status() {
-        return {
-            service: false,
-            process: false,
-        };
-    }
+    abstract status(): Promise<{ service: boolean; process: boolean }>;
 
     /**
      * Start the bundled process
@@ -165,7 +160,7 @@ class BaseProcess {
     onExit() {
         this.process = null;
         if (this.options.autoRestart && this.options.autoRestart > 0 && !this.stopped) {
-            setTimeout(async () => this.start(), this.options.autoRestart * 1000);
+            setTimeout(() => this.start(), this.options.autoRestart * 1000);
         }
     }
 

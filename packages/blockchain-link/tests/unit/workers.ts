@@ -14,7 +14,7 @@ declare global {
 describe('Worker', () => {
     let blockchain: BlockchainLink;
 
-    beforeEach(async () => {
+    beforeEach(() => {
         blockchain = new BlockchainLink({
             name: 'Tests:Blockbook',
             worker: () => {},

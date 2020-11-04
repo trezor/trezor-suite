@@ -577,7 +577,7 @@ onmessage = (event: { data: Message }) => {
             break;
         case MESSAGES.CONNECT:
             connect()
-                .then(async () => {
+                .then(() => {
                     common.response({ id: data.id, type: RESPONSES.CONNECT, payload: true });
                 })
                 .catch(error =>

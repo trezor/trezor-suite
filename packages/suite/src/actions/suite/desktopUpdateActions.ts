@@ -39,7 +39,7 @@ export const skip = (version: string): DesktopUpdateAction => ({
     payload: version,
 });
 
-export const error = (err: Error) => async (dispatch: Dispatch, getState: GetState) => {
+export const error = (err: Error) => (dispatch: Dispatch, getState: GetState) => {
     // TODO: Properly display error
     console.error('auto-updater', err);
 

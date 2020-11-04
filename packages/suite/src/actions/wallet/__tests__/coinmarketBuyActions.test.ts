@@ -54,7 +54,7 @@ const setFetchMock = (mock: any) => {
 describe('Coinmarket Buy Actions', () => {
     invityAPI.createInvityAPIKey('mock');
 
-    it('load and saveBuyInfo', async () => {
+    it('load and saveBuyInfo', () => {
         const buyList = {
             country: 'CZ',
             suggestedFiatCurrency: 'CZK',
@@ -163,13 +163,13 @@ describe('Coinmarket Buy Actions', () => {
         });
     });
 
-    it('setIsFromRedirect', async () => {
+    it('setIsFromRedirect', () => {
         const store = initStore(getInitialState());
         store.dispatch(coinmarketBuyActions.setIsFromRedirect(true));
         expect(store.getState().wallet.coinmarket.buy.isFromRedirect).toEqual(true);
     });
 
-    it('saveQuoteRequest', async () => {
+    it('saveQuoteRequest', () => {
         const store = initStore(getInitialState());
 
         const request: BuyTradeQuoteRequest = {
@@ -184,13 +184,13 @@ describe('Coinmarket Buy Actions', () => {
         expect(store.getState().wallet.coinmarket.buy.quotesRequest).toEqual(request);
     });
 
-    it('saveTransactionDetailId', async () => {
+    it('saveTransactionDetailId', () => {
         const store = initStore(getInitialState());
         store.dispatch(coinmarketBuyActions.saveTransactionDetailId('1234-4321-4321'));
         expect(store.getState().wallet.coinmarket.buy.transactionId).toEqual('1234-4321-4321');
     });
 
-    it('saveQuotes', async () => {
+    it('saveQuotes', () => {
         const store = initStore(getInitialState());
 
         const quotes: BuyTrade[] = [
