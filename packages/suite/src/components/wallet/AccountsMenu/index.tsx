@@ -80,10 +80,6 @@ const Heading = styled(H2)<{ isMobileLayout?: boolean }>`
         `}
 `;
 
-const ExpandIcon = styled(Icon)`
-    cursor: pointer;
-`;
-
 const MenuItemsWrapper = styled.div`
     position: relative;
     width: 100%;
@@ -266,7 +262,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
                             <Heading noMargin isMobileLayout={isMobileLayout}>
                                 <Translation id="TR_MY_ACCOUNTS" />
                             </Heading>
-                            <ExpandIcon
+                            <Icon
                                 canAnimate={animatedIcon}
                                 isActive={isExpanded}
                                 size={20}

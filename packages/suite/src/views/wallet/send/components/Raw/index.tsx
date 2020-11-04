@@ -34,10 +34,6 @@ const IconWrapper = styled.div`
     justify-content: flex-end;
 `;
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-`;
-
 const ButtonWrapper = styled.div`
     display: flex;
     margin: 25px 0;
@@ -70,7 +66,7 @@ const Raw = ({ network }: { network: Network }) => {
     return (
         <Wrapper>
             <IconWrapper>
-                <StyledIcon size={20} icon="CROSS" onClick={() => sendRaw(false)} />
+                <Icon size={20} icon="CROSS" onClick={() => sendRaw(false)} />
             </IconWrapper>
             <StyledCard>
                 <Textarea

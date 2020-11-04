@@ -139,10 +139,6 @@ const OnDeviceActionButton = styled(ActionButton)`
     }
 `;
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-`;
-
 const TooltipIcon = styled(Icon)`
     margin-left: 4px;
 `;
@@ -323,7 +319,7 @@ const PassphraseTypeCard = (props: Props) => {
                             noTopLabel
                             noError
                             innerAddon={
-                                <StyledIcon
+                                <Icon
                                     size={18}
                                     color={colors.NEUE_TYPE_LIGHT_GREY}
                                     icon={showPassword ? 'HIDE' : 'SHOW'}

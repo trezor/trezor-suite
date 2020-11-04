@@ -3,11 +3,6 @@ import { Translation } from '@suite-components';
 import styled from 'styled-components';
 import { Icon, Tooltip, colors, variables } from '@trezor/components';
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-    align-items: center;
-`;
-
 const NoRatesMessage = styled.div`
     display: flex;
     align-items: center;
@@ -33,11 +28,12 @@ const NoRatesTooltip = ({ customText, iconOnly, customTooltip, className, ...pro
             content={<Translation id={customTooltip || 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP'} />}
             {...props}
         >
-            <StyledIcon
+            <Icon
                 icon="QUESTION"
                 color={colors.BLACK50}
                 hoverColor={colors.BLACK25}
                 size={14}
+                useCursorPointer
             />
         </Tooltip>
     </NoRatesMessage>
