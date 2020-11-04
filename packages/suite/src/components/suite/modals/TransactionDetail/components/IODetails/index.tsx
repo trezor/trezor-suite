@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, colors, variables, Loader } from '@trezor/components';
+import { Icon, useTheme, variables, Loader } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { formatNetworkAmount, getNetwork } from '@wallet-utils/accountUtils';
 import { FormattedCryptoAmount, Translation } from '@suite-components';
@@ -24,14 +24,14 @@ const IOBox = styled.div``;
 
 const IORowTitle = styled.div`
     margin-bottom: 4px;
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.NEUE_FONT_SIZE.TINY};
 `;
 
 const IORow = styled.div`
     display: flex;
     line-height: 1.9;
-    color: ${colors.BLACK25};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
 `;
@@ -49,7 +49,7 @@ const Circle = styled.div`
     display: inline-flex;
     margin-left: 5px;
     margin-right: 5px;
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 interface Props {
@@ -59,6 +59,7 @@ interface Props {
 }
 
 const IODetails = ({ tx, txDetails, isFetching }: Props) => {
+    const theme = useTheme();
     const network = getNetwork(tx.symbol);
     return (
         <Wrapper>
@@ -97,7 +98,7 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                     </IOBox>
 
                     <IconWrapper>
-                        <Icon icon="ARROW_DOWN" size={17} color={colors.BLACK50} />
+                        <Icon icon="ARROW_DOWN" size={17} color={theme.TYPE_LIGHT_GREY} />
                     </IconWrapper>
 
                     <IOBox>

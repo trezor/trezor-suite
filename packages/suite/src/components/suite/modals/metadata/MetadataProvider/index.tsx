@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Modal, P, Button, variables, colors } from '@trezor/components';
+import { Modal, P, Button, variables } from '@trezor/components';
 
 import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
@@ -23,7 +23,7 @@ const StyledButton = styled(Button)`
     padding: 10px;
     margin: 0 16px;
     font-size: ${FONT_SIZE.NORMAL};
-    background-color: ${colors.NEUE_BG_GRAY};
+    background-color: ${props => props.theme.BG_GREY};
     font-weight: ${FONT_WEIGHT.DEMI_BOLD};
     height: 42px;
 
@@ -34,7 +34,7 @@ const StyledButton = styled(Button)`
 
 // todo: typography shall be unified and these ad hoc styles removed..
 const StyledP = styled(P)`
-    color: ${colors.BLACK0};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     margin-bottom: 25px;
     font-size: ${FONT_SIZE.SMALL};
     font-weight: ${FONT_WEIGHT.REGULAR};

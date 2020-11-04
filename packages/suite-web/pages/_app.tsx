@@ -13,6 +13,7 @@ import Resize from '@suite-support/Resize';
 import OnlineStatus from '@suite-support/OnlineStatus';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import Router from '@suite-support/Router';
+import ThemeProvider from '@suite-support/ThemeProvider';
 
 import { isDev } from '@suite-utils/build';
 import TrezorConnect from 'trezor-connect';
@@ -20,6 +21,7 @@ import { SENTRY_CONFIG } from '@suite-config';
 import { Store } from '@suite-types';
 import ImagesPreloader from '../support/ImagesPreloader';
 import { CypressExportStore } from '../support/CypressExportStore';
+import GlobalStyles from '@suite-support/styles/global';
 
 const Tor = dynamic(() => import('@suite-support/Tor'), { ssr: false });
 
@@ -60,31 +62,34 @@ class TrezorSuiteApp extends App<Props> {
                 <ImagesPreloader />
                 <CypressExportStore store={store} />
                 <ReduxProvider store={store}>
-                    <ErrorBoundary>
-                        <Resize />
-                        <Tor />
-                        <OnlineStatus />
-                        <IntlProvider>
-                            <>
-                                {/*
+                    <ThemeProvider>
+                        <GlobalStyles />
+                        <ErrorBoundary>
+                            <Resize />
+                            <Tor />
+                            <OnlineStatus />
+                            <IntlProvider>
+                                <>
+                                    {/*
                                 just because we need make trezor-connect render the iframe
                             */}
-                                <div
-                                    className="trezor-webusb-button"
-                                    style={{
-                                        width: '100%',
-                                        position: 'absolute',
-                                        top: '-1000px',
-                                    }}
-                                />
-                                <Router />
-                                <ToastContainer />
-                                <Preloader>
-                                    <Component {...pageProps} />
-                                </Preloader>
-                            </>
-                        </IntlProvider>
-                    </ErrorBoundary>
+                                    <div
+                                        className="trezor-webusb-button"
+                                        style={{
+                                            width: '100%',
+                                            position: 'absolute',
+                                            top: '-1000px',
+                                        }}
+                                    />
+                                    <Router />
+                                    <ToastContainer />
+                                    <Preloader>
+                                        <Component {...pageProps} />
+                                    </Preloader>
+                                </>
+                            </IntlProvider>
+                        </ErrorBoundary>
+                    </ThemeProvider>
                 </ReduxProvider>
             </>
         );

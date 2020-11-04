@@ -1,16 +1,16 @@
 import React from 'react';
-import { Icon, colors, variables } from '@trezor/components';
+import { Icon, variables, useTheme, SuiteThemeColors } from '@trezor/components';
 import styled from 'styled-components';
 import * as deviceUtils from '@suite-utils/device';
 import { TrezorDevice } from '@suite-types';
 
 type Status = 'connected' | 'disconnected' | 'warning';
 
-const getStatusColor = (status: Status) => {
+const getStatusColor = (status: Status, theme: SuiteThemeColors) => {
     const statusColors = {
-        connected: colors.NEUE_TYPE_GREEN,
-        disconnected: colors.NEUE_TYPE_RED,
-        warning: colors.NEUE_TYPE_ORANGE,
+        connected: theme.TYPE_GREEN,
+        disconnected: theme.TYPE_RED,
+        warning: theme.TYPE_ORANGE,
     };
 
     return statusColors[status];
@@ -35,12 +35,12 @@ const StatusText = styled.div<{ show: boolean; status: Status }>`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     font-size: ${variables.FONT_SIZE.TINY};
     top: 14px;
-    color: ${props => getStatusColor(props.status)};
+    color: ${props => getStatusColor(props.status, props.theme)};
     background: linear-gradient(
         90deg,
-        ${`${colors.NEUE_BG_LIGHT_GREY}00`} 0%,
-        ${colors.NEUE_BG_LIGHT_GREY} 20px,
-        ${colors.NEUE_BG_LIGHT_GREY} 100%
+        ${props => `${props.theme.BG_LIGHT_GREY}00`} 0%,
+        ${props => props.theme.BG_LIGHT_GREY} 20px,
+        ${props => props.theme.BG_LIGHT_GREY} 100%
     );
 
     padding-left: 24px;
@@ -64,7 +64,8 @@ const OuterCircle = styled.div<{ show: boolean; status: Status }>`
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: ${props => (props.status === 'connected' ? colors.NEUE_BG_LIGHT_GREEN : '#F6E2E2')};
+    background: ${props =>
+        props.status === 'connected' ? props.theme.BG_LIGHT_GREEN : props.theme.BG_LIGHT_RED};
     opacity: ${props => (props.show ? 1 : 0)};
     right: ${props => (props.show ? '12px' : '48px')};
     transition: opacity 0.5s ease, right 0.5s ease;
@@ -74,7 +75,7 @@ const InnerCircle = styled.div<{ status: Status }>`
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: ${props => getStatusColor(props.status)};
+    background: ${props => getStatusColor(props.status, props.theme)};
 `;
 
 interface Props {
@@ -91,6 +92,7 @@ const DeviceStatus = ({
     showTextStatus = false,
 }: Props) => {
     const status = getStatusForDevice(device);
+    const theme = useTheme();
 
     // if device needs attention and CTA func was passed show refresh button
     if (status === 'warning' && onRefreshClick) {
@@ -103,7 +105,7 @@ const DeviceStatus = ({
                     }}
                     icon="REFRESH"
                     size={16}
-                    color={getStatusColor(status)}
+                    color={getStatusColor(status, theme)}
                 />
             </IconWrapper>
         );

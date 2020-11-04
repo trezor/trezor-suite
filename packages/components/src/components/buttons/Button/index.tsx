@@ -1,8 +1,9 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { Icon } from '../../Icon';
-import { IconType, ButtonVariant } from '../../../support/types';
-import { colors, variables } from '../../../config';
+import { IconType, ButtonVariant, SuiteThemeColors } from '../../../support/types';
+import { variables } from '../../../config';
+import { useTheme } from '../../../utils';
 import FluidSpinner from '../../loaders/FluidSpinner';
 
 const getPadding = (variant: ButtonVariant) => {
@@ -13,17 +14,17 @@ const getPadding = (variant: ButtonVariant) => {
     return '9px 12px';
 };
 
-const getIconColor = (variant: ButtonVariant, isDisabled: boolean) => {
-    if (isDisabled) return colors.NEUE_TYPE_LIGHT_GREY;
+const getIconColor = (variant: ButtonVariant, isDisabled: boolean, theme: SuiteThemeColors) => {
+    if (isDisabled) return theme.TYPE_LIGHT_GREY;
 
     switch (variant) {
         case 'primary':
         case 'danger':
-            return colors.WHITE;
+            return theme.TYPE_WHITE;
         case 'tertiary':
-            return colors.NEUE_TYPE_DARK_GREY;
+            return theme.TYPE_DARK_GREY;
         case 'secondary':
-            return colors.NEUE_TYPE_GREEN;
+            return theme.TYPE_GREEN;
         // no default
     }
 };
@@ -55,53 +56,50 @@ const Wrapper = styled.button<WrapperProps>`
     border-radius: 4px;
     font-size: ${props => getFontSize(props.variant)};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => (props.color ? props.color : colors.BLACK25)};
     outline: none;
     padding: ${props => getPadding(props.variant)};
 
     ${props =>
         props.variant === 'primary' &&
         css`
-            color: ${colors.WHITE};
+            color: ${props => props.theme.TYPE_WHITE};
             font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
             font-size: ${variables.FONT_SIZE.NORMAL};
-            background: ${colors.NEUE_BG_GREEN};
+            background: ${props => props.theme.BG_GREEN};
 
             &:hover,
             &:focus,
             &:active {
                 /* we use this color only for this case  */
-                background: #339714;
+                background: ${props => props.theme.BG_GREEN_HOVER};
             }
         `}
 
     ${props =>
         props.variant === 'secondary' &&
         css`
-            background: ${colors.NEUE_BG_LIGHT_GREEN};
+            background: ${props => props.theme.BG_LIGHT_GREEN};
             font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-            color: ${colors.NEUE_TYPE_GREEN};
+            color: ${props => props.theme.TYPE_GREEN};
 
             &:hover,
             &:focus,
             &:active {
                 /* we use this color only for this case  */
-                background: #e8f3e5;
+                background: ${props => props.theme.BG_LIGHT_GREEN_HOVER};
             }
         `}
 
     ${props =>
         props.variant === 'tertiary' &&
         css`
-            color: ${colors.NEUE_TYPE_DARK_GREY};
-            background: ${colors.NEUE_BG_GRAY};
+            color: ${props => props.theme.TYPE_DARK_GREY};
+            background: ${props => props.theme.BG_GREY_ALT};
 
             &:hover,
+            &:active,
             &:focus {
-                color: ${colors.BLACK25};
-            }
-            &:active {
-                color: ${colors.BLACK25};
+                color: ${props => props.theme.TYPE_DARK_GREY};
             }
         `};
 
@@ -109,37 +107,34 @@ const Wrapper = styled.button<WrapperProps>`
         props.variant === 'tertiary' &&
         props.isWhite &&
         css`
-            background: ${colors.WHITE};
+            background: ${props => props.theme.BG_WHITE};
         `};
 
     ${props =>
         props.variant === 'danger' &&
         css`
-            color: ${colors.WHITE};
+            color: ${props => props.theme.TYPE_WHITE};
             font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-            background: ${colors.BUTTON_RED};
+            background: ${props => props.theme.BUTTON_RED};
 
             &:hover,
+            &:active,
             &:focus {
-                background: ${colors.BUTTON_RED_HOVER};
-            }
-
-            &:active {
-                background: ${colors.BUTTON_RED_ACTIVE};
+                background: ${props => props.theme.BUTTON_RED_HOVER};
             }
         `}
 
     ${props =>
         props.isDisabled &&
         css`
-            background: ${colors.NEUE_BG_GRAY};
-            color: ${colors.NEUE_TYPE_LIGHT_GREY};
+            background: ${props => props.theme.BG_GREY};
+            color: ${props => props.theme.TYPE_LIGHT_GREY};
 
             &:hover,
             &:active,
             &:focus {
-                background: ${colors.NEUE_BG_GRAY};
-                color: ${colors.NEUE_TYPE_LIGHT_GREY};
+                background: ${props => props.theme.BG_GREY};
+                color: ${props => props.theme.TYPE_LIGHT_GREY};
             }
         `}
 
@@ -222,6 +217,7 @@ const Button = React.forwardRef(
         }: Props,
         ref?: React.Ref<HTMLButtonElement>
     ) => {
+        const theme = useTheme();
         const newClassName = additionalClassName
             ? `${className} ${additionalClassName}`
             : className;
@@ -230,7 +226,7 @@ const Button = React.forwardRef(
                 <Icon
                     icon={icon}
                     size={variant === 'tertiary' ? 12 : 14}
-                    color={color || getIconColor(variant, isDisabled)}
+                    color={color || getIconColor(variant, isDisabled, theme)}
                 />
             </IconWrapper>
         ) : null;

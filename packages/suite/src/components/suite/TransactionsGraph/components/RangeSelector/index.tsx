@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { useGraph } from '@suite-hooks';
 import { GraphRange } from '@wallet-types/graph';
 import { getFormattedLabel } from '@wallet-utils/graphUtils';
@@ -15,7 +15,7 @@ const RangeItem = styled.div<{ selected: boolean }>`
     font-size: ${variables.FONT_SIZE.SMALL};
     text-align: center;
     font-weight: ${props => (props.selected ? 600 : 500)};
-    color: ${props => (props.selected ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY)};
+    color: ${props => (props.selected ? props.theme.TYPE_DARK_GREY : props.theme.TYPE_LIGHT_GREY)};
     cursor: pointer;
     text-transform: uppercase;
     font-variant-numeric: tabular-nums;

@@ -1,11 +1,11 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { NETWORKS } from '@wallet-config';
 import { Section } from '@dashboard-components';
 import Asset from './components/Asset';
 import { Account } from '@wallet-types';
-import { colors, variables, Loader, Icon, Button } from '@trezor/components';
+import { variables, Loader, Icon, Button } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
 import { useDiscovery, useActions } from '@suite-hooks';
 import { useAccounts } from '@wallet-hooks';
@@ -19,7 +19,7 @@ const StyledCard = styled(Card)`
 const InfoMessage = styled.div`
     padding: 16px 25px;
     display: flex;
-    color: ${colors.RED};
+    color: ${props => props.theme.TYPE_RED};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
@@ -27,12 +27,12 @@ const InfoMessage = styled.div`
 const Header = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: 500;
     line-height: 1.57;
     align-items: center;
     padding: 12px 0px;
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 
     &:first-child {
         padding-left: 18px;
@@ -53,6 +53,7 @@ const StyledAddAccountButton = styled(Button)`
 `;
 
 const AssetsCard = () => {
+    const theme = useTheme();
     const { discovery, getDiscoveryStatus } = useDiscovery();
     const { accounts } = useAccounts(discovery);
     const { goto } = useActions({
@@ -136,7 +137,7 @@ const AssetsCard = () => {
                         <Icon
                             style={{ paddingRight: '4px', paddingBottom: '2px' }}
                             icon="WARNING"
-                            color={colors.RED}
+                            color={theme.TYPE_RED}
                             size={14}
                         />
                         <Translation id="TR_DASHBOARD_ASSETS_ERROR" />

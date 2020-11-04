@@ -1,9 +1,15 @@
 import React from 'react';
 import { TrezorDevice } from '@suite-types';
 import { resolveStaticPath } from '@suite/utils/suite/nextjs';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-const Image = styled.img``;
+const Image = styled.img`
+    ${props =>
+        props.theme.IMAGE_FILTER &&
+        css`
+            filter: ${props.theme.IMAGE_FILTER};
+        `}
+`;
 
 interface Props extends React.HTMLAttributes<HTMLImageElement> {
     device: TrezorDevice;

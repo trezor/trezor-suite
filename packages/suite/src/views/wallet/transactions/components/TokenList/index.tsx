@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { Account } from '@wallet-types';
 import { FiatValue, FormattedCryptoAmount, Translation, TrezorLink } from '@suite-components';
 import { Section } from '@dashboard-components';
-import { variables, colors, Icon, Card } from '@trezor/components';
+import { variables, useTheme, Icon, Card } from '@trezor/components';
 
 const Wrapper = styled(Card)<{ isTestnet?: boolean }>`
     display: grid;
@@ -28,9 +28,9 @@ const Col = styled.div<ColProps>`
     display: flex;
     align-items: center;
     padding: 10px 12px 10px 0px;
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
     overflow: hidden;
 
     &:nth-child(${props => (props.isTestnet ? '-n + 3' : '-n + 4')}) {
@@ -76,7 +76,7 @@ const TokenValue = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     white-space: nowrap;
     overflow: hidden;
 `;
@@ -85,13 +85,13 @@ const FiatWrapper = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const Divider = styled.div`
     width: 100%;
     height: 1px;
-    background: ${colors.NEUE_STROKE_GREY};
+    background: ${props => props.theme.STROKE_GREY};
     margin: 24px 0px;
 `;
 
@@ -107,6 +107,7 @@ interface Props {
 }
 
 const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
+    const theme = useTheme();
     if (!tokens || tokens.length === 0) return null;
     return (
         <Section heading={<Translation id="TR_TOKENS" />}>
@@ -141,7 +142,7 @@ const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
                                     <Icon
                                         icon="EXTERNAL_LINK"
                                         size={16}
-                                        color={colors.NEUE_TYPE_LIGHT_GREY}
+                                        color={theme.TYPE_LIGHT_GREY}
                                     />
                                 </TrezorLink>
                             </Col>

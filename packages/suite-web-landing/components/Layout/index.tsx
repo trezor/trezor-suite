@@ -8,7 +8,7 @@ const Layout = styled.div`
     width: 100%;
     margin: 0 auto;
     padding: 0 20px;
-    background: ${colors.NEUE_BG_WHITE};
+    background: ${colors.BG_WHITE};
 `;
 
 const Header = styled.header`
@@ -115,7 +115,7 @@ const Index = ({ children }: Props) => (
                 variant="tertiary"
                 icon="EXTERNAL_LINK"
                 alignIcon="right"
-                color={colors.NEUE_TYPE_DARK_GREY}
+                color={colors.TYPE_DARK_GREY}
             >
                 <Link variant="nostyle" href="./web">
                     <Translation id="TR_SUITE_WEB_LANDING_SUITE_ON_WEB" />

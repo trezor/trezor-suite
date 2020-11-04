@@ -10,7 +10,7 @@ const Section = styled.div`
 `;
 
 const SectionDark = styled(Section)`
-    background: ${colors.BLACK17};
+    background: ${colors.BG_LIGHT_GREY};
 `;
 
 storiesOf('Loaders', module).add(

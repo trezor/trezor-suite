@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import React from 'react';
 
 import { getStateColor } from '../../../utils';
-import { colors, variables } from '../../../config';
+import { variables } from '../../../config';
 import { InputState } from '../../../support/types';
 
 const Wrapper = styled.div`
@@ -25,13 +25,14 @@ const StyledTextarea = styled.textarea<StyledTextareaProps>`
     padding: 10px;
     box-sizing: border-box;
     border: solid 2px
-        ${props => (props.state ? getStateColor(props.state) : colors.NEUE_STROKE_GREY)};
+        ${props =>
+            props.state ? getStateColor(props.state, props.theme) : props.theme.STROKE_GREY};
     border-radius: 4px;
     resize: none;
     outline: none;
     font-family: ${variables.FONT_FAMILY.TTHOVES};
-    color: ${props => getStateColor(props.state)};
-    background: ${colors.WHITE};
+    color: ${props => getStateColor(props.state, props.theme)};
+    background: ${props => props.theme.BG_WHITE};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
     white-space: pre-wrap; /* css-3 */
@@ -41,16 +42,16 @@ const StyledTextarea = styled.textarea<StyledTextareaProps>`
     word-wrap: break-word; /* Internet Explorer 5.5+ */
 
     &:read-only {
-        background: ${colors.BLACK96};
-        color: ${colors.BLACK50};
+        background: ${props => props.theme.BG_GREY};
+        color: ${props => props.theme.TYPE_DARK_GREY};
     }
 
     ${props =>
         props.disabled &&
         css`
-            background: ${colors.BLACK96};
+            background: ${props => props.theme.BG_GREY};
             box-shadow: none;
-            color: ${colors.BLACK50};
+            color: ${props => props.theme.TYPE_DARK_GREY};
             cursor: not-allowed;
         `}
 
@@ -65,7 +66,7 @@ const BottomText = styled.span<StyledTextareaProps>`
     padding: 10px 10px 0 10px;
     min-height: 27px;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => getStateColor(props.state)};
+    color: ${props => getStateColor(props.state, props.theme)};
 `;
 
 const TooltipAction = styled.div<{ action: React.ReactNode }>`
@@ -76,7 +77,7 @@ const TooltipAction = styled.div<{ action: React.ReactNode }>`
     position: absolute;
     background: black;
     bottom: -25px;
-    color: ${colors.WHITE};
+    color: ${props => props.theme.BG_WHITE};
     border-radius: 5px;
     z-index: 10002;
     transform: translate(-1px, -1px);
@@ -104,7 +105,7 @@ const Left = styled.div`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding: 0 0 12px 0;
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const Right = styled.div`

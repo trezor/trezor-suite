@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dropdown, Icon, colors, variables } from '@trezor/components';
+import { Dropdown, Icon, useTheme, variables } from '@trezor/components';
 import { Translation, TrezorLink } from '@suite-components';
 import styled from 'styled-components';
 import { useSelector } from '@suite-hooks';
@@ -18,8 +18,8 @@ const BetaButton = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     padding: 4px 8px;
     border-radius: 3px;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
-    border: solid 1px ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    border: solid 1px ${props => props.theme.TYPE_LIGHT_GREY};
     text-transform: uppercase;
     cursor: pointer;
 `;
@@ -29,8 +29,8 @@ const Version = styled.div`
     width: 100%;
     margin: 8px 16px 0px 16px;
     padding: 16px 0px 8px 0px;
-    border-top: solid 1px ${colors.NEUE_STROKE_GREY};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    border-top: solid 1px ${props => props.theme.STROKE_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
@@ -45,6 +45,7 @@ const IconWrapper = styled.div`
 `;
 
 const BetaBadge = () => {
+    const theme = useTheme();
     const instanceId = useSelector(state => state.analytics.instanceId);
     return (
         <Wrapper>
@@ -66,7 +67,7 @@ const BetaBadge = () => {
                                             <Icon
                                                 icon="FEEDBACK"
                                                 size={16}
-                                                color={colors.NEUE_TYPE_DARK_GREY}
+                                                color={theme.TYPE_DARK_GREY}
                                             />
                                         </IconWrapper>
                                         <Translation id="TR_GIVE_FEEDBACK" />
@@ -83,7 +84,7 @@ const BetaBadge = () => {
                                             <Icon
                                                 icon="SUPPORT"
                                                 size={16}
-                                                color={colors.NEUE_TYPE_DARK_GREY}
+                                                color={theme.TYPE_DARK_GREY}
                                             />
                                         </IconWrapper>
                                         <Translation id="TR_SUPPORT" />

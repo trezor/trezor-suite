@@ -21,7 +21,7 @@ const Left = styled.div`
 
 const Right = styled.div`
     display: flex;
-    background: ${colors.WHITE};
+    background: ${colors.BG_WHITE};
     box-shadow: 0 6px 30px 0 rgba(0, 0, 0, 0.15);
     flex-direction: column;
     justify-content: flex-start;

@@ -1,30 +1,30 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors } from '../../../config';
 
 const Button = styled.button`
-    width: 80px;
-    height: 80px;
-    border: 1px solid ${colors.BLACK0};
-    background: ${colors.WHITE};
+    max-width: 100px;
+    max-height: 100px;
     transition: all 0.3s;
     position: relative;
     cursor: pointer;
+    margin: 4px;
+
+    padding-top: 30%;
+    width: 100%;
+
+    border-radius: 4px;
+    border: 1px solid ${props => props.theme.STROKE_GREY};
+    background: ${props => props.theme.BG_LIGHT_GREY};
 
     &:first-child {
         margin-left: 0px;
     }
-
-    &:hover {
-        color: ${colors.BLACK0};
-        background-color: ${colors.WHITE};
-        border-color: ${colors.BLACK0};
+    &:last-child {
+        margin-right: 0px;
     }
 
-    &:active {
-        color: ${colors.BLACK0};
-        background: ${colors.BLACK0};
-        border-color: ${colors.BLACK0};
+    &:hover {
+        background: ${props => props.theme.BG_GREY};
     }
 
     &:before {
@@ -33,7 +33,7 @@ const Button = styled.button`
         content: ' ';
         position: absolute;
         border-radius: 100%;
-        background: ${colors.BLACK0};
+        background: ${props => props.theme.TYPE_DARK_GREY};
         top: calc(50% - 3px);
         left: calc(50% - 3px);
     }

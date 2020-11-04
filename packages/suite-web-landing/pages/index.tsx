@@ -62,7 +62,7 @@ const StyledHeadline = styled(H1)<{ size?: number }>`
     margin-bottom: 18px;
     em {
         font-style: normal;
-        color: ${colors.NEUE_TYPE_GREEN};
+        color: ${colors.TYPE_GREEN};
     }
 
     @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) {
@@ -73,7 +73,7 @@ const StyledHeadline = styled(H1)<{ size?: number }>`
 const StyledSubheadline = styled(P)`
     font-size: 20px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.BLACK50} !important;
+    color: ${colors.TYPE_LIGHT_GREY} !important;
     margin-bottom: 65px;
 `;
 
@@ -82,7 +82,7 @@ const StyledP = styled(P)`
         font-size: 20px;
         line-height: 34px;
         font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-        color: ${colors.BLACK50};
+        color: ${colors.TYPE_LIGHT_GREY};
     }
 `;
 
@@ -91,7 +91,7 @@ const StyledSoon = styled.div`
     line-height: 24px;
     text-transform: uppercase;
     font-weight: ${variables.FONT_WEIGHT.BOLD};
-    color: ${colors.NEUE_TYPE_ORANGE};
+    color: ${colors.TYPE_ORANGE};
 `;
 
 const TranslationModeTrigger = styled.div`

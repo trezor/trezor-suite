@@ -25,21 +25,6 @@ export const DASH = keyframes`
     }
 `;
 
-export const GREEN_COLOR = keyframes`
-    100%, 0% {
-        stroke: ${colors.GREEN};
-    }
-    40% {
-        stroke: ${colors.GREEN};
-    }
-    66% {
-        stroke: ${colors.GREENER};
-    }
-    80%, 90% {
-        stroke: ${colors.GREENER};
-    }
-`;
-
 export const SLIDE_UP = keyframes`
     0% {
         transform: translateY(150%);

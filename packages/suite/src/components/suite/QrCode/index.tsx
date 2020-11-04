@@ -17,8 +17,8 @@ interface Props {
 const QrCode = (props: Props) => (
     <Wrapper>
         <QRCode
-            bgColor={colors.WHITE}
-            fgColor={colors.BLACK0}
+            bgColor={colors.BG_WHITE}
+            fgColor={colors.TYPE_DARK_GREY}
             level="Q"
             style={{ width: '80px' }}
             value={props.value}

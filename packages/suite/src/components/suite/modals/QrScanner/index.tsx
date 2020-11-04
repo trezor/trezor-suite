@@ -1,7 +1,7 @@
 import { ExternalLink, Translation } from '@suite-components';
 import * as URLS from '@suite-constants/urls';
 import { parseUri } from '@suite-utils/parseUri';
-import { colors, Icon, Modal, P } from '@trezor/components';
+import { Icon, Modal, colors, P } from '@trezor/components';
 import { UserContextPayload } from '@suite-actions/modalActions';
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
@@ -43,11 +43,11 @@ const Error = styled.div`
 
 const ErrorTitle = styled(P)`
     text-align: center;
-    color: ${colors.RED};
+    color: ${colors.TYPE_RED};
 `;
 const ErrorMessage = styled.span`
     text-align: center;
-    color: ${colors.BLACK25};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const IconWrapper = styled.div`

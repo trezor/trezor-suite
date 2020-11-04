@@ -1,7 +1,7 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 import { Network } from '@wallet-types';
-import { CoinLogo, Icon, variables, colors } from '@trezor/components';
+import { CoinLogo, Icon, variables } from '@trezor/components';
 import { FiatValue, Ticker, Translation } from '@suite-components';
 import { CoinBalance } from '@wallet-components';
 import { isTestnet } from '@wallet-utils/accountUtils';
@@ -21,7 +21,7 @@ const Coin = styled.div`
 `;
 
 const Symbol = styled.div`
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     display: flex;
     align-items: center;
     padding-top: 2px;
@@ -34,10 +34,10 @@ const Col = styled.div<{ isLastRow?: boolean }>`
     display: flex;
     align-items: center;
     padding: 16px 0px;
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
     padding-right: 20px;
 
     ${props =>
@@ -61,14 +61,14 @@ const CoinNameWrapper = styled(Col)`
 `;
 
 const FailedCol = styled(Col)`
-    color: ${colors.RED};
+    color: ${props => props.theme.TYPE_RED};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         grid-column: 1 / 3;
         margin-left: 25px;
-        border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+        border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
     }
 `;
 
@@ -79,12 +79,12 @@ const CryptoBalanceWrapper = styled(Col)`
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         grid-column: 1 / 3;
         margin-left: 25px;
-        border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+        border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
     }
 `;
 
 const FiatBalanceWrapper = styled.span`
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     margin-left: 0.5ch;
 `;
 
@@ -103,6 +103,7 @@ interface Props {
 
 const Asset = React.memo(({ network, failed, cryptoValue, isLastRow }: Props) => {
     const { symbol, name } = network;
+    const theme = useTheme();
     const { setCoinFilter, setSearchString } = useAccountSearch();
 
     const { goto } = useActions({ goto: routerActions.goto });
@@ -144,7 +145,7 @@ const Asset = React.memo(({ network, failed, cryptoValue, isLastRow }: Props) =>
                     <Icon
                         style={{ paddingLeft: '4px', paddingBottom: '2px' }}
                         icon="WARNING"
-                        color={colors.RED}
+                        color={theme.TYPE_RED}
                         size={14}
                     />
                 </FailedCol>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
-import { colors, variables, Button } from '@trezor/components';
+import { variables, Button } from '@trezor/components';
 import { Card, Translation, HiddenPlaceholder, MetadataLabeling } from '@suite-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { ChildProps as Props } from '../../Container';
@@ -19,7 +19,7 @@ const StyledCard = styled(Card)`
 const GridTable = styled.div`
     display: grid;
     grid-template-columns: 0.65fr 0.35fr auto;
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
@@ -31,9 +31,9 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: () => void }>`
     justify-content: space-between;
     white-space: nowrap;
     padding: 16px 0px 12px 0px;
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
     font-variant-numeric: tabular-nums;
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: 500;
 
     &:nth-child(1n) {
@@ -66,16 +66,16 @@ const AddressActions = styled.div<{ hide?: boolean }>`
 `;
 
 const Gray = styled.span`
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const HeaderItem = styled(GridItem)`
     position: sticky;
     top: 0;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: 500;
     padding: 12px 0px;
-    background: ${colors.WHITE};
+    background: ${props => props.theme.BG_WHITE};
 `;
 
 const Actions = styled.div`
@@ -100,7 +100,11 @@ const Overlay = styled.div`
     bottom: 0px;
     left: 0px;
     position: absolute;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 120px);
+    background-image: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0) 0%,
+        ${props => props.theme.BG_WHITE} 120px
+    );
 `;
 
 const DEFAULT_LIMIT = 10;

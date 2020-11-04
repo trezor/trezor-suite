@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
-import { colors, variables, Icon, DeviceImage } from '@trezor/components';
+import { useTheme, variables, Icon, DeviceImage } from '@trezor/components';
 import { Translation } from '@suite-components';
 import * as deviceUtils from '@suite-utils/device';
 import { ANIMATION } from '@suite-config';
@@ -30,7 +30,7 @@ const Device = styled.div`
 const DeviceTitle = styled.span`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const DeviceStatus = styled.span<{ color: string }>`
@@ -79,12 +79,6 @@ const InstancesWrapper = styled.div`
     flex-direction: column;
 `;
 
-const StyledWalletInstance = styled(WalletInstance)`
-    & + & {
-        /* border-top: 2px solid ${colors.BLACK96}; */
-    }
-`;
-
 const DeviceHeader = styled.div`
     display: flex;
     align-items: center;
@@ -113,6 +107,7 @@ const ColEjectHeader = styled(ColHeader)`
 `;
 
 const DeviceItem = (props: Props) => {
+    const theme = useTheme();
     const [isExpanded, setIsExpanded] = useState(true);
     const [animateArrow, setAnimateArrow] = useState(false);
 
@@ -175,11 +170,7 @@ const DeviceItem = (props: Props) => {
                     </DeviceImageWrapper>
                     <Col grow={1}>
                         <DeviceStatus
-                            color={
-                                device.connected
-                                    ? colors.NEUE_TYPE_GREEN
-                                    : colors.NEUE_TYPE_LIGHT_GREY
-                            }
+                            color={device.connected ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY}
                         >
                             {device.connected ? (
                                 <Translation id="TR_CONNECTED" />
@@ -202,7 +193,7 @@ const DeviceItem = (props: Props) => {
                                 useCursorPointer
                                 size={24}
                                 icon="ARROW_UP"
-                                color={colors.NEUE_TYPE_LIGHT_GREY}
+                                color={theme.TYPE_LIGHT_GREY}
                                 canAnimate={animateArrow}
                                 isActive={!isExpanded}
                                 onClick={() => {
@@ -246,7 +237,7 @@ const DeviceItem = (props: Props) => {
 
                                 <InstancesWrapper>
                                     {instancesWithState.map((instance, index) => (
-                                        <StyledWalletInstance
+                                        <WalletInstance
                                             key={`${instance.id}-${instance.instance}-${instance.state}`}
                                             instance={instance}
                                             enabled

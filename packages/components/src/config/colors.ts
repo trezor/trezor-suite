@@ -1,68 +1,97 @@
-export default {
-    BACKGROUND: '#f4f4f4',
+// TODO: button hover color could be derived from its based color by applying something like opacity/darkening
+// same goes for gradients
 
-    GREEN: '#30C101',
-    GREENER: '#259f2a',
-    YELLOW: '#fdcb33',
-    YELLOWER: '#e9b000',
-    BLUE: '#1faaff',
-    BLUE_INFO: '#0088cc',
-    RED: '#cd4949',
-    RED_ERROR: '#d04949',
-    BLACK0: '#000000',
-    BLACK17: '#2b2b2b',
-    BLACK25: '#404040',
-    BLACK50: '#808080',
-    BLACK70: '#b3b3b3',
-    BLACK80: '#cccccc',
-    BLACK92: '#ebebeb',
-    BLACK96: '#f5f5f5',
-    BLACK98: '#fafafa',
-    WHITE: '#ffffff',
+export const THEME = {
+    light: {
+        BG_GREEN: '#39a814',
+        BG_LIGHT_GREEN: '#effaec',
+        BG_GREEN_HOVER: '#339714',
+        BG_LIGHT_GREEN_HOVER: '#e8f3e5',
+        BG_GREY: '#f4f4f4',
+        BG_GREY_ALT: '#f4f4f4',
+        BG_LIGHT_GREY: '#fcfcfc',
+        BG_WHITE: '#ffffff',
+        BG_BLUE: '#1faaff',
+        BG_RED: '#d04949',
+        BG_LIGHT_RED: '#F6E2E2',
+        BG_TOOLTIP: '#262742',
 
-    BUTTON_PRIMARY: '#39A814',
-    BUTTON_PRIMARY_HOVER: '#259f2a',
-    BUTTON_PRIMARY_BORDER: '#DBF3D4',
-    BUTTON_PRIMARY_ACTIVE: '#288E25',
+        TYPE_GREEN: '#279503',
+        TYPE_ORANGE: '#c19009',
+        TYPE_BLUE: '#197eaa',
+        TYPE_RED: '#cd4949',
+        TYPE_DARK_GREY: '#404040',
+        TYPE_LIGHT_GREY: '#808080',
+        TYPE_LIGHTER_GREY: '#bdbdbd',
+        TYPE_WHITE: '#ffffff',
 
-    BUTTON_SECONDARY: '#EBEBEB',
-    BUTTON_SECONDARY_HOVER: '#E0E0E0',
-    BUTTON_SECONDARY_BORDER: '#F5F5F5',
-    BUTTON_SECONDARY_ACTIVE: '#D6D6D6',
+        SCROLLBAR_THUMB: '#babac0',
+        STROKE_GREY: '#e8e8e8',
+        STROKE_LIGHT_GREY: '#f4f4f4',
 
-    BUTTON_TERTIARY: '#FFFFFF',
-    BUTTON_TERTIARY_HOVER: '#EBEBEB',
-    BUTTON_TERTIARY_ACTIVE: '#C9C9C9',
+        BUTTON_RED: '#cd4949',
+        BUTTON_RED_HOVER: '#b93c3c',
 
-    BUTTON_RED: '#cd4949',
-    BUTTON_RED_HOVER: '#b93c3c',
-    BUTTON_RED_BORDER: '#F5DBDC',
-    BUTTON_RED_ACTIVE: '#A63636',
+        GRADIENT_GREEN_START: '#39a814',
+        GRADIENT_GREEN_END: '#4cbc26',
+        GRADIENT_RED_START: '#d15b5b',
+        GRADIENT_RED_END: '#e75f5f',
 
-    BUTTON_DISABLED_BACKGROUND: '#ebebeb',
-    BUTTON_DISABLED_TEXT: '#b3b3b3',
+        BOX_SHADOW_BLACK_15: 'rgba(0, 0, 0, 0.15)',
+        BOX_SHADOW_BLACK_20: 'rgba(0, 0, 0, 0.2)',
+        BOX_SHADOW_MODAL: 'rgba(77, 77, 77, 0.2)',
+    },
+    dark: {
+        BG_GREEN: '#5ea447',
+        BG_GREEN_HOVER: '#4e883b', // improvisation
+        BG_LIGHT_GREEN: '#1a2516',
+        BG_LIGHT_GREEN_HOVER: '#131d10', // improvisation
+        // BG_GREY: '#000000',
+        BG_GREY: '#080808',
+        BG_GREY_ALT: '#262626', // used for selected account item, account search input, tertiary buttons
+        BG_LIGHT_GREY: '#0c0c0c',
+        BG_WHITE: '#101010',
+        BG_BLUE: '#197eaa', // used for big app notification (eg. new fw update)
+        BG_RED: '#ab2626', // used for big app notification
+        BG_LIGHT_RED: '#5a1616', // used for outer glow for disconnected device status dot
+        BG_TOOLTIP: '#151524', // improvisation
 
-    BADGE_BLUE_BACKGROUND: '#d9f3ff',
-    BADGE_BLUE_TEXT_COLOR: '#0077b3',
-    BADGE_GRAY_BACKGROUND: '#ebebeb',
-    BADGE_GRAY_TEXT_COLOR: '#808080',
+        TYPE_GREEN: '#6fa95c',
+        TYPE_ORANGE: '#9b813b',
+        TYPE_BLUE: '#197eaa',
+        TYPE_RED: '#c65353',
+        TYPE_DARK_GREY: '#fafafa',
+        TYPE_LIGHT_GREY: '#8e8e8e',
+        TYPE_LIGHTER_GREY: '#bdbdbd',
+        TYPE_WHITE: '#fafafa',
 
-    // Neue design
-    NEUE_BG_GREEN: '#39a814',
-    NEUE_BG_LIGHT_GREEN: '#effaec',
-    NEUE_BG_GRAY: '#f4f4f4',
-    NEUE_BG_LIGHT_GREY: '#fcfcfc',
-    NEUE_BG_WHITE: '#ffffff',
+        SCROLLBAR_THUMB: '#7F7F7F',
+        STROKE_GREY: '#262626',
+        STROKE_LIGHT_GREY: '#1a1a1a', // graph grid
 
-    NEUE_TYPE_GREEN: '#279503',
-    NEUE_TYPE_ORANGE: '#c19009',
-    NEUE_TYPE_BLUE: '#197eaa',
-    NEUE_TYPE_RED: '#cd4949',
-    NEUE_TYPE_DARK_GREY: '#404040',
-    NEUE_TYPE_LIGHT_GREY: '#808080',
-    NEUE_TYPE_LIGHTER_GREY: '#bdbdbd',
-    NEUE_TYPE_WHITE: '#ffffff',
+        BUTTON_RED: '#cd4949',
+        BUTTON_RED_HOVER: '#b93c3c',
 
-    NEUE_STROKE_GREY: '#e8e8e8',
-    NEUE_BG_TOOLTIP: '#262742',
+        // these gradients are used on transaction graph only
+        GRADIENT_GREEN_START: '#559c3d',
+        GRADIENT_GREEN_END: '#5fa548',
+        GRADIENT_RED_START: '#d15b5b', // same as in light theme
+        GRADIENT_RED_END: '#e75f5f', // same as in light theme
+
+        BOX_SHADOW_BLACK_15: 'rgba(0, 0, 0, 0.5)',
+        BOX_SHADOW_BLACK_20: 'rgba(255, 255, 255, 0.1)', // shadow around dropdown
+        BOX_SHADOW_MODAL: 'rgba(0, 0, 0, 0.5)', // shadow around modal
+        IMAGE_FILTER: 'brightness(0.8) contrast(1.2) saturate(1.2)',
+    },
 } as const;
+
+const oldColors = {
+    // TODO: some colors from old design that are waiting to be reworked into NEUE design
+    GREEN: '#30C101', // used by password strength indicator
+    YELLOW: '#fdcb33', // used by password strength indicator
+    RED: '#cd4949', // used by password strength indicator
+} as const;
+
+const colors = { ...oldColors, ...THEME.light } as const;
+
+export default colors;

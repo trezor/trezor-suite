@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
 import { Translation, HiddenPlaceholder } from '@suite-components';
-import { variables, colors, Button } from '@trezor/components';
+import { variables, Button } from '@trezor/components';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import { AccountMetadata } from '@suite-types/metadata';
 
@@ -22,7 +22,7 @@ const Wrapper = styled.div`
     flex-direction: row;
     padding: 12px 0px;
     & + & {
-        border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+        border-top: 1px solid ${props => props.theme.STROKE_GREY};
     }
 `;
 
@@ -51,7 +51,7 @@ const Content = styled.div`
 `;
 
 const Description = styled(HiddenPlaceholder)`
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     line-height: 1.5;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { variables, colors, Icon, Box } from '@trezor/components';
+import { variables, Icon, Box } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 import { ANIMATION } from '@suite-config';
@@ -15,7 +15,7 @@ const ExpandWrapper = styled(motion.div)`
 
 const StyledBox = styled(Box)`
     border: 0px;
-    background: ${colors.NEUE_BG_GRAY};
+    background: ${props => props.theme.BG_GREY};
     flex-direction: column;
     align-items: start;
     word-break: break-all;
@@ -26,7 +26,7 @@ const ExpandButton = styled.div`
     display: flex;
     padding: 0px 14px;
     cursor: pointer;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: 500;
     justify-content: space-between;
@@ -34,7 +34,7 @@ const ExpandButton = styled.div`
 
 const Top = styled.div`
     width: 100%;
-    border-bottom: solid 1px ${colors.NEUE_STROKE_GREY};
+    border-bottom: solid 1px ${props => props.theme.STROKE_GREY};
     display: flex;
     flex-direction: row;
 `;

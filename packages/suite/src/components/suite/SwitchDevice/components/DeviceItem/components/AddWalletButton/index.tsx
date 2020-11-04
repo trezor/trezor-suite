@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Tooltip, colors } from '@trezor/components';
+import { Button, Tooltip } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
 import { useAnalytics, useSelector } from '@suite-hooks';
@@ -15,7 +15,7 @@ const AddWallet = styled.div`
 const StyledButton = styled(Button)`
     padding: 16px;
     justify-content: center;
-    border: 1px dashed ${colors.NEUE_STROKE_GREY};
+    border: 1px dashed ${props => props.theme.STROKE_GREY};
     border-radius: 6px;
     background: transparent;
 

@@ -1,8 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { Button } from '@trezor/components';
+import { Button, ButtonPin } from '@trezor/components';
 
-import ButtonPin from '@suite-components/PinInput/components/ButtonPin';
 import { Translation } from '@suite-components';
 
 const Wrapper = styled.div`

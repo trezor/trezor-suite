@@ -1,7 +1,6 @@
-import { colors } from '@trezor/components';
-import { useSendFormContext } from '@wallet-hooks';
 import React from 'react';
 import styled from 'styled-components';
+import { useSendFormContext } from '@wallet-hooks';
 
 import BitcoinOptions from './components/BitcoinOptions';
 import EthereumOptions from './components/EthereumOptions';
@@ -20,7 +19,7 @@ const Content = styled.div`
 const Line = styled.div`
     width: 100%;
     height: 1px;
-    border-top: 1px solid ${colors.NEUE_BG_GRAY};
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
     margin-top: 10px;
 `;
 

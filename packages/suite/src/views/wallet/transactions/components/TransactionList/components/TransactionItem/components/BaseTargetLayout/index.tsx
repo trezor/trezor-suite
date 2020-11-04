@@ -2,13 +2,13 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
 import { HiddenPlaceholder } from '@suite-components';
-import { variables, colors } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { ANIMATION } from '@suite-config';
 
 export const MIN_ROW_HEIGHT = '23px';
 
 const CryptoAmount = styled.span`
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     /* line-height: 1.5; */
@@ -17,7 +17,7 @@ const CryptoAmount = styled.span`
 `;
 
 const FiatAmount = styled.span`
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     line-height: 1.57;
@@ -49,7 +49,7 @@ const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
 const TargetAddress = styled(motion.div)`
     display: flex;
     flex: 1;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     overflow: hidden;
@@ -79,11 +79,11 @@ const TimelineDot = styled.div`
     width: 3px;
     height: 3px;
     border-radius: 50%;
-    background: ${colors.NEUE_TYPE_LIGHT_GREY};
+    background: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 const TimelineLine = styled.div<{ show: boolean; top?: boolean }>`
     width: 1px;
-    background: ${props => (props.show ? colors.NEUE_STROKE_GREY : 'transparent')};
+    background: ${props => (props.show ? props.theme.STROKE_GREY : 'transparent')};
 
     ${props =>
         props.top

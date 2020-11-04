@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables, Modal } from '@trezor/components';
+import { variables, Modal } from '@trezor/components';
 import { Translation, ExternalLink } from '@suite-components';
 import { Network } from '@wallet-types';
 import NetworkSelect from './NetworkSelect';
@@ -21,15 +21,11 @@ const Row = styled.div`
     justify-content: space-between;
     align-items: center;
     padding: 20px 0px;
-
-    & + & {
-        border-top: 1px solid ${colors.BLACK96};
-    }
 `;
 
 const RowTitle = styled.div`
     display: flex;
-    color: ${colors.BLACK0};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 

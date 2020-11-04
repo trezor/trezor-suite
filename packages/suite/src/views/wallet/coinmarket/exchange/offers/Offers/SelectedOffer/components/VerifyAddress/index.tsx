@@ -10,13 +10,13 @@ import {
 } from '@suite-components';
 import {
     Input,
-    colors,
     variables,
     CoinLogo,
     DeviceImage,
     Select,
     Icon,
     Button,
+    useTheme,
 } from '@trezor/components';
 import { InputError } from '@wallet-components';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
@@ -37,7 +37,7 @@ const Wrapper = styled.div`
 `;
 
 const Heading = styled.div`
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     padding: 16px 24px 0 24px;
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
@@ -92,7 +92,7 @@ const StyledDeviceImage = styled(DeviceImage)`
 const Amount = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -106,7 +106,7 @@ const ButtonWrapper = styled.div`
     align-items: center;
     justify-content: center;
     padding-top: 20px;
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
     margin: 20px 0;
 `;
 
@@ -115,7 +115,7 @@ const Confirmed = styled.div`
     height: 60px;
     font-size: ${variables.FONT_SIZE.BIG};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    background: ${colors.NEUE_BG_GRAY};
+    background: ${props => props.theme.BG_GREY};
     align-items: center;
     justify-content: center;
 `;
@@ -126,7 +126,7 @@ const Option = styled.div`
 `;
 
 const AccountType = styled.span`
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     padding-left: 5px;
 `;
 
@@ -145,6 +145,7 @@ type FormState = {
 };
 
 const VerifyAddressComponent = () => {
+    const theme = useTheme();
     const {
         device,
         verifyAddress,
@@ -289,7 +290,7 @@ const VerifyAddressComponent = () => {
                                                 <Icon
                                                     icon="PLUS"
                                                     size={25}
-                                                    color={colors.NEUE_TYPE_DARK_GREY}
+                                                    color={theme.TYPE_DARK_GREY}
                                                 />
                                             </LogoWrapper>
                                             <AccountWrapper>
@@ -309,7 +310,7 @@ const VerifyAddressComponent = () => {
                                                 <Icon
                                                     icon="NON_SUITE"
                                                     size={25}
-                                                    color={colors.NEUE_TYPE_DARK_GREY}
+                                                    color={theme.TYPE_DARK_GREY}
                                                 />
                                             </LogoWrapper>
                                             <AccountWrapper>

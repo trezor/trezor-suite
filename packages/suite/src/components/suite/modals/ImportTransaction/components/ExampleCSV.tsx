@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
-import { P, Icon, colors, variables } from '@trezor/components';
+import { P, Icon, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useSelector } from '@suite-hooks';
 import { ANIMATION } from '@suite-config';
@@ -15,7 +15,7 @@ const Wrapper = styled.div`
 
 const ExpandWrapper = styled(motion.div)`
     width: 100%;
-    background: #f4f4f4;
+    background: ${props => props.theme.BG_GREY};
     border-radius: 6px;
     overflow: hidden;
     padding: 12px;
@@ -25,7 +25,7 @@ const ExpandWrapper = styled(motion.div)`
 const ExpandButton = styled.div`
     display: flex;
     cursor: pointer;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: 500;
     justify-content: space-between;

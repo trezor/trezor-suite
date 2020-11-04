@@ -1,7 +1,7 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
-import { Input, variables, colors } from '@trezor/components';
+import { Input, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
@@ -18,7 +18,7 @@ const StyledInput = styled(Input)`
 
 const Units = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const CustomFee = () => {

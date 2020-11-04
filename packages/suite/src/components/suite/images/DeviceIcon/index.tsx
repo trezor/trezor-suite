@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, colors } from '@trezor/components';
+import { Icon, useTheme } from '@trezor/components';
 import { TrezorDevice } from '@suite-types';
 
 interface Props {
@@ -21,14 +21,9 @@ const getDeviceIcon = (majorVersion: number) => {
     }
 };
 
-const DeviceIcon = ({
-    device,
-    size = 32,
-    color = colors.BLACK50,
-    hoverColor,
-    onClick,
-    ...rest
-}: Props) => {
+const DeviceIcon = ({ device, size = 32, color, hoverColor, onClick, ...rest }: Props) => {
+    const theme = useTheme();
+    const defaultColor = color ?? theme.TYPE_LIGHT_GREY;
     const majorVersion = device.features ? device.features.major_version : 2;
     const icon = getDeviceIcon(majorVersion);
     return (
@@ -36,7 +31,7 @@ const DeviceIcon = ({
             icon={icon}
             hoverColor={hoverColor}
             onClick={onClick}
-            color={color}
+            color={defaultColor}
             size={size}
             {...rest}
         />

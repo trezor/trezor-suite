@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 import invityApi from '@suite-services/invityAPI';
 import { BuyCryptoPaymentMethod } from 'invity-api';
 import { Translation } from '@suite-components';
@@ -21,7 +21,7 @@ const Icon = styled.img``;
 const Text = styled.div`
     display: flex;
     align-items: center;
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 

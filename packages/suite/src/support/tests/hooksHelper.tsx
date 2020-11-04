@@ -2,13 +2,16 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { act, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import ThemeProvider from '@suite-support/ThemeProvider';
 import userEvent from '@testing-library/user-event';
 
 // used in hooks tests
 export const renderWithProviders = (store: any, children: React.ReactNode) => {
     const renderMethods = render(
         <Provider store={store}>
-            <IntlProvider locale="en">{children}</IntlProvider>
+            <ThemeProvider>
+                <IntlProvider locale="en">{children}</IntlProvider>
+            </ThemeProvider>
         </Provider>,
     );
     return renderMethods;

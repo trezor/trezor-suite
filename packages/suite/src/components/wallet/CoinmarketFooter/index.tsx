@@ -1,4 +1,4 @@
-import { colors, variables, Icon, Button, Link } from '@trezor/components';
+import { variables, Icon, Button, Link } from '@trezor/components';
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { CoinmarketProvidedByInvity } from '@wallet-components';
@@ -14,14 +14,14 @@ const Wrapper = styled.div`
     align-items: flex-end;
     padding-top: 20px;
     margin-top: 60px;
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
 `;
 
 const Left = styled.div`
     display: flex;
     flex: 1;
     align-items: center;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
@@ -40,10 +40,10 @@ const FooterBox = styled.div`
     flex: 1;
     min-width: 345px;
     bottom: 30px;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 2px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
     z-index: 1;
 
-    background: ${colors.NEUE_BG_WHITE};
+    background: ${props => props.theme.BG_WHITE};
     overflow: hidden;
 `;
 
@@ -52,7 +52,7 @@ const Header = styled.div`
     justify-content: space-between;
     padding-bottom: 10px;
     margin-bottom: 10px;
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 `;
 
 const BoxLeft = styled.div``;
@@ -79,7 +79,7 @@ const IconWrapper = styled.div`
 
 const Text = styled.div`
     padding-left: 10px;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin-bottom: 15px;
 `;

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { P, Switch, Icon, variables, colors, Button } from '@trezor/components';
+import { P, Switch, Icon, variables, Button, useTheme } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { NETWORKS } from '@wallet-config';
 import { UnavailableCapability } from 'trezor-connect';
@@ -37,7 +37,7 @@ const Right = styled.div`
 
 const Title = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.BLACK25};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     text-transform: uppercase;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
@@ -50,7 +50,7 @@ const AdvancedSettings = styled.div`
     display: flex;
     cursor: pointer;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.BLACK25};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     /* todo: not in variables but is in design */
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin-right: 12px;
@@ -64,7 +64,7 @@ const AdvancedSettings = styled.div`
 
 const UnavailableLabel = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.BLACK25};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     white-space: nowrap;
 `;
 
@@ -132,6 +132,7 @@ const CoinsGroup = ({
     });
     const { isLocked } = useDevice();
     const isDeviceLocked = isLocked();
+    const theme = useTheme();
     return (
         <Wrapper data-test="@settings/wallet/coins-group">
             <Section
@@ -187,7 +188,7 @@ const CoinsGroup = ({
                                             <Icon
                                                 icon="SETTINGS"
                                                 size={16}
-                                                color={colors.BLACK25}
+                                                color={theme.TYPE_DARK_GREY}
                                             />
                                         </SettingsIconWrapper>
                                         <AdvancedSettingsText>

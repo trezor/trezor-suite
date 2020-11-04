@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Button, P, Modal, variables, colors } from '@trezor/components';
+import { Button, P, Modal, variables } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { Analytics } from '@suite-components/Settings';
 import { URLS } from '@suite-constants';
@@ -25,7 +25,7 @@ const BottomBarWrapper = styled.div`
 
 const StyledP = styled(P)`
     font-size: ${FONT_SIZE.SMALL};
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const BottomP = styled(P)`
@@ -35,7 +35,7 @@ const BottomP = styled(P)`
 const Bold = styled.span`
     font-size: ${FONT_SIZE.SMALL};
     font-weight: ${FONT_WEIGHT.DEMI_BOLD};
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const StyledButton = styled(Button)`

@@ -3,7 +3,7 @@ import DeviceSelector from './components/DeviceSelector';
 import MainNavigation from './components/MainNavigation';
 import NavigationActions from './components/NavigationActions';
 import styled from 'styled-components';
-import { colors, Icon } from '@trezor/components';
+import { Icon, useTheme } from '@trezor/components';
 import { useLayoutSize } from '@suite-hooks';
 
 const StyledDeviceSelector = styled(DeviceSelector)``;
@@ -16,13 +16,13 @@ const StyledNavigationBar = styled.div<{ isMobileLayout: boolean }>`
     z-index: 3;
     padding: ${props => (!props.isMobileLayout ? '6px 32px 6px 8px' : '6px 8px')};
     align-items: center;
-    background: ${colors.NEUE_BG_WHITE};
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    background: ${props => props.theme.BG_WHITE};
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 
     &:hover ${StyledDeviceSelector} {
         /* apply same device selector's hover styles on hover anywhere in navigation panel */
         border-radius: 4px;
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+        box-shadow: 0 1px 2px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
     }
 `;
 
@@ -42,7 +42,7 @@ const ExpandedMobileNavigation = styled.div`
     display: flex;
     position: absolute;
     flex-direction: column;
-    background: ${colors.NEUE_BG_WHITE};
+    background: ${props => props.theme.BG_WHITE};
     z-index: 3;
     width: 100%;
     height: 100%;
@@ -51,6 +51,7 @@ const ExpandedMobileNavigation = styled.div`
 const NavigationBar = () => {
     const [opened, setOpened] = useState(false);
     const { isMobileLayout } = useLayoutSize();
+    const theme = useTheme();
 
     const closeMainNavigation = () => {
         setOpened(false);
@@ -66,7 +67,7 @@ const NavigationBar = () => {
                             onClick={() => setOpened(!opened)}
                             icon={opened ? 'CROSS' : 'MENU'}
                             size={24}
-                            color={colors.NEUE_TYPE_DARK_GREY}
+                            color={theme.TYPE_DARK_GREY}
                         />
                     </HamburgerWrapper>
                 </StyledNavigationBar>

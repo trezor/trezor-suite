@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Checkbox, variables, colors } from '@trezor/components';
+import { Checkbox, variables } from '@trezor/components';
 
 const { FONT_SIZE } = variables;
 
@@ -22,7 +22,7 @@ const CheckboxTitle = styled.div`
 
 const CheckboxText = styled.div`
     font-size: ${FONT_SIZE.TINY};
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 interface CheckItemProps {

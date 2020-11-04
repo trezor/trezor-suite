@@ -1,11 +1,12 @@
 /* stylelint-disable indentation */
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { useKeyPress } from '../../utils/hooks';
+import { useKeyPress, useTheme } from '../../utils/hooks';
 
 import { Icon } from '../Icon';
+import { scrollbarStyles } from '../Scrollbar';
 import { H1 } from '../typography/Heading';
-import { colors, variables } from '../../config';
+import { variables } from '../../config';
 
 // each item in array corresponds to a screen size  [SM, MD, LG, XL]
 const ZERO_PADDING: [string, string, string, string] = ['0px', '0px', '0px', '0px'];
@@ -95,8 +96,8 @@ const ModalWindow = styled.div<ModalWindowProps>`
     ${props =>
         !props.noBackground &&
         css`
-            background: ${colors.WHITE};
-            box-shadow: 0 10px 80px 0 rgba(77, 77, 77, 0.2);
+            background: ${props => props.theme.BG_WHITE};
+            box-shadow: 0 10px 80px 0 {props => props.theme.BOX_SHADOW_MODAL};
         `}
 
     /* if bottomBar is active we need to disable bottom padding */
@@ -177,11 +178,13 @@ const Heading = styled(H1)<{
     margin-bottom: ${props => (props.showProgressBar ? 0 : '20px')};
 
     border-bottom: ${props =>
-        props.showHeaderBorder ? `1px solid ${colors.NEUE_STROKE_GREY}` : 'none'};
+        props.showHeaderBorder ? `1px solid ${props.theme.STROKE_GREY}` : 'none'};
 
     /* if progress bar with green bar is being showed, do not show header border (set color to white) */
     border-color: ${props =>
-        props.showProgressBar && !props.hiddenProgressBar ? 'white' : colors.NEUE_STROKE_GREY};
+        props.showProgressBar && !props.hiddenProgressBar
+            ? 'transparent'
+            : props.theme.STROKE_GREY};
 
     /* align content based on the 'cancelable' prop */
     text-align: ${props => (props.cancelable ? 'left' : 'center')};
@@ -209,13 +212,14 @@ const ProgressBarPlaceholder = styled.div<{ hiddenProgressBar: boolean }>`
     height: 4px;
     width: 100%;
     margin-bottom: 20px;
-    background-color: ${props => (props.hiddenProgressBar ? 'white' : colors.NEUE_STROKE_GREY)};
+    background-color: ${props =>
+        props.hiddenProgressBar ? 'transparent' : props.theme.STROKE_GREY};
 `;
 
 const GreenBar = styled.div<{ width: number }>`
     height: 4px;
     position: relative;
-    background-color: ${colors.NEUE_BG_GREEN};
+    background-color: ${props => props.theme.BG_GREEN};
     transition: all 0.5s;
     width: ${props => `${props.width}%`};
 `;
@@ -238,7 +242,7 @@ const SidePaddingWrapper = styled.div<{ sidePadding: [string, string, string, st
 `;
 
 const Description = styled(SidePaddingWrapper)`
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     margin-bottom: 10px;
     text-align: center;
@@ -246,30 +250,13 @@ const Description = styled(SidePaddingWrapper)`
 
 const Content = styled(SidePaddingWrapper)<{ centerContent: boolean }>`
     display: flex;
+    color: ${props => props.theme.TYPE_DARK_GREY};
     flex-direction: column;
     width: 100%;
     height: 100%;
     overflow-y: auto;
 
-    ::-webkit-scrollbar {
-        background-color: #fff;
-        width: 10px;
-    }
-    /* background of the scrollbar except button or resizer */
-    ::-webkit-scrollbar-track {
-        background-color: transparent;
-    }
-    /* scrollbar itself */
-    ::-webkit-scrollbar-thumb {
-        /* 7F7F7F for mac-like color */
-        background-color: #babac0;
-        border-radius: 10px;
-        border: 2px solid #fff;
-    }
-    /* set button(top and bottom of the scrollbar) */
-    ::-webkit-scrollbar-button {
-        display: none;
-    }
+    ${scrollbarStyles}
 
     /* center the content if props.centerContent selected. For example useful for centering nested modals */
     ${props =>
@@ -405,6 +392,7 @@ const Modal = ({
     ...rest
 }: Props) => {
     const escPressed = useKeyPress('Escape');
+    const theme = useTheme();
 
     // check if progress bar placeholder should be rendered
     const showProgressBarPlaceholder: boolean =
@@ -449,7 +437,7 @@ const Modal = ({
                     {heading}
                     {cancelable && (
                         <CancelIconWrapper data-test="@modal/close-button" onClick={onCancel}>
-                            <Icon size={24} color={colors.NEUE_TYPE_DARK_GREY} icon="CROSS" />
+                            <Icon size={24} color={theme.TYPE_DARK_GREY} icon="CROSS" />
                         </CancelIconWrapper>
                     )}
                 </Heading>

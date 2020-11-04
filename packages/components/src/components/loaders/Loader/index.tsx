@@ -1,8 +1,7 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import { SPIN } from '../../../config/animations';
-import colors from '../../../config/colors';
 
 const Wrapper = styled.div<Props>`
     position: relative;
@@ -16,9 +15,9 @@ const Wrapper = styled.div<Props>`
 const StyledLoader = styled.div<{ size: number; strokeWidth: number }>`
     position: relative;
     text-indent: -9999em;
-    border-top: ${props => `${props.strokeWidth}px`} solid ${colors.NEUE_TYPE_GREEN};
-    border-right: ${props => `${props.strokeWidth}px`} solid ${colors.NEUE_TYPE_GREEN};
-    border-bottom: ${props => `${props.strokeWidth}px`} solid ${colors.NEUE_TYPE_GREEN};
+    border-top: ${props => `${props.strokeWidth}px`} solid ${props => props.theme.TYPE_GREEN};
+    border-right: ${props => `${props.strokeWidth}px`} solid ${props => props.theme.TYPE_GREEN};
+    border-bottom: ${props => `${props.strokeWidth}px`} solid ${props => props.theme.TYPE_GREEN};
     border-left: ${props => `${props.strokeWidth}px`} solid transparent;
     transform: translateZ(0);
     animation: ${SPIN} 1s infinite linear;

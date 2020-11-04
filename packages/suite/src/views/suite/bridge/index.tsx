@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 import { Translation, Image, TrezorLink } from '@suite-components';
-import { Button, Modal, P, Link, Select, colors, variables, Loader } from '@trezor/components';
+import { Button, Modal, P, Link, Select, useTheme, variables, Loader } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { URLS } from '@suite-constants';
 import { AppState, Dispatch } from '@suite-types';
@@ -115,6 +115,7 @@ interface Installer {
 const InstallBridge = (props: Props) => {
     const tor = useSelector(state => state.suite.tor);
     const [selectedTarget, setSelectedTarget] = useState<Installer | null>(null);
+    const theme = useTheme();
 
     const installers: Installer[] =
         props.transport && props.transport.bridge
@@ -203,7 +204,7 @@ const InstallBridge = (props: Props) => {
                         <Button
                             icon="ARROW_LEFT"
                             variant="tertiary"
-                            color={colors.BLACK50}
+                            color={theme.TYPE_LIGHT_GREY}
                             onClick={() => props.goto('wallet-index')}
                         >
                             <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
@@ -216,7 +217,7 @@ const InstallBridge = (props: Props) => {
                             <Link variant="nostyle" href={URLS.BRIDGE_CHANGELOG_URL}>
                                 <Button
                                     icon="LOG"
-                                    color={colors.BLACK50}
+                                    color={theme.TYPE_LIGHT_GREY}
                                     variant="tertiary"
                                     onClick={() => {}}
                                 >
@@ -228,7 +229,7 @@ const InstallBridge = (props: Props) => {
                             {data && target?.signature && (
                                 <TrezorLink variant="nostyle" href={data.uri + target.signature}>
                                     <Button
-                                        color={colors.BLACK50}
+                                        color={theme.TYPE_LIGHT_GREY}
                                         icon="SIGNATURE"
                                         variant="tertiary"
                                         onClick={() => {}}

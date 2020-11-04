@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
-import { colors, variables, Button } from '@trezor/components';
+import { variables, Button } from '@trezor/components';
 import { Translation, FormattedNumber, HiddenPlaceholder } from '@suite-components';
 import RangeSelector from '@suite-components/TransactionsGraph/components/RangeSelector';
 import { updateGraphData } from '@wallet-actions/graphActions';
@@ -12,13 +12,13 @@ const Wrapper = styled.div`
     flex-direction: row;
     flex-wrap: wrap;
     padding: 20px;
-    border-bottom: solid 1px ${colors.NEUE_STROKE_GREY};
+    border-bottom: solid 1px ${props => props.theme.STROKE_GREY};
 `;
 
 const ValueWrapper = styled.div`
     font-size: ${variables.FONT_SIZE.H2};
     /* font-weight: ${variables.FONT_WEIGHT.LIGHT}; */
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-variant-numeric: tabular-nums;
 `;
 

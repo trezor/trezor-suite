@@ -1,8 +1,6 @@
 import styled, { css } from 'styled-components';
-
 import React from 'react';
 import { FONT_SIZE } from '../../../config/variables';
-import colors from '../../../config/colors';
 import { ParagraphSize } from '../../../support/types';
 
 const getLineHeight = (size: Props['size']) => {
@@ -25,7 +23,8 @@ const P_SIZES: { [key: string]: string } = {
 const Paragraph = styled.div<Props>`
     font-size: ${props => P_SIZES[props.size || 'normal']};
     line-height: ${props => getLineHeight(props.size)};
-    color: ${props => (props.size === 'tiny' ? colors.BLACK50 : colors.BLACK0)};
+    color: ${props =>
+        props.size === 'tiny' ? props.theme.TYPE_LIGHT_GREY : props.theme.TYPE_DARK_GREY};
     padding: 0;
     font-weight: ${props => (props.weight === 'normal' ? 'normal' : 600)};
     ${props =>

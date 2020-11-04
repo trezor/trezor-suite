@@ -5,7 +5,7 @@ import { Card, colors, variables } from '../../../index';
 
 const Wrapper = styled.div`
     margin: 10px 0;
-    background: ${colors.NEUE_BG_GRAY};
+    background: ${props => props.theme.BG_GREY};
     padding: 20px;
 `;
 

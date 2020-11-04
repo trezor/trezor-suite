@@ -2,7 +2,6 @@ import React from 'react';
 import Document, { DocumentContext, Head, Main, NextScript } from 'next/document';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { ServerStyleSheet } from 'styled-components';
-import globalStyles from '@suite-support/styles/global';
 
 export default class MyDocument extends Document {
     static async getInitialProps(ctx: DocumentContext) {
@@ -18,8 +17,6 @@ export default class MyDocument extends Document {
                 ...initialProps,
                 styles: (
                     <>
-                        {/* eslint-disable-next-line react/no-danger */}
-                        <style dangerouslySetInnerHTML={{ __html: globalStyles }} key="styles" />
                         {initialProps.styles}
                         {sheet.getStyleElement()}
                     </>

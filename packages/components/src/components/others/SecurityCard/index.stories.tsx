@@ -10,7 +10,7 @@ const Wrapper = styled.div`
     padding: 20px;
     grid-gap: 20px;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    background: ${colors.NEUE_BG_GRAY};
+    background: ${props => props.theme.BG_GREY};
 `;
 
 const StyledSecurityCard = styled(SecurityCard)`

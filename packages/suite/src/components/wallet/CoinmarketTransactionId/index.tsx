@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, colors } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 const Wrapper = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 

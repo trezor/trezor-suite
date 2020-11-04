@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ANIMATION } from '@suite-config';
 import { useKeyPress, setCaretPosition } from '@suite-utils/dom';
 import styled, { css } from 'styled-components';
-import { Button, colors, variables, Input, Tooltip, Checkbox, Icon } from '@trezor/components';
+import { Button, useTheme, variables, Input, Tooltip, Checkbox, Icon } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { countBytesInString } from '@suite-utils/string';
@@ -31,7 +31,7 @@ const Wrapper = styled.div<Pick<Props, 'type' | 'singleColModal'>>`
         !props.singleColModal &&
         css`
             padding: 12px;
-            /* border: solid 1px ${colors.NEUE_STROKE_GREY}; */
+            /* border: solid 1px ${props => props.theme.STROKE_GREY}; */
         `}
 
     ${props =>
@@ -45,7 +45,7 @@ const IconWrapper = styled.div<Pick<Props, 'type'>>`
     width: 38px;
     height: 38px;
     background: ${props =>
-        props.type === 'standard' ? colors.NEUE_BG_LIGHT_GREEN : colors.NEUE_BG_GRAY};
+        props.type === 'standard' ? props.theme.BG_LIGHT_GREEN : props.theme.BG_GREY};
     border-radius: 6px;
     display: flex;
     justify-content: center;
@@ -69,7 +69,7 @@ const ArrowCol = styled(Col)`
 const WalletTitle = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: 500;
     /* margin-bottom: 12px; */
     line-height: 1.5;
@@ -78,7 +78,7 @@ const WalletTitle = styled.div`
 
 const Description = styled.div<Pick<Props, 'authConfirmation'>>`
     display: flex;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     line-height: 1.33;
 `;
@@ -98,7 +98,7 @@ const Spacer = styled.div`
 `;
 
 const PassphraseInput = styled(Input)`
-    color: ${colors.BLACK0};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
@@ -125,12 +125,12 @@ const ActionButton = styled(Button)`
 const OnDeviceActionButton = styled(ActionButton)`
     background: transparent;
     text-decoration: underline;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 
     &:hover,
     &:focus,
     &:active {
-        color: ${colors.NEUE_TYPE_LIGHT_GREY};
+        color: ${props => props.theme.TYPE_LIGHT_GREY};
         background: transparent;
     }
 
@@ -147,7 +147,7 @@ const Content = styled.div`
     display: flex;
     flex: 1;
     margin: 8px 12px;
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
@@ -171,6 +171,7 @@ type Props = {
 const DOT = '●';
 
 const PassphraseTypeCard = (props: Props) => {
+    const theme = useTheme();
     const [value, setValue] = useState('');
     const [enabled, setEnabled] = useState(!props.authConfirmation);
     const [showPassword, setShowPassword] = useState(false);
@@ -270,9 +271,9 @@ const PassphraseTypeCard = (props: Props) => {
                     <Row>
                         <IconWrapper type={props.type}>
                             {props.type === 'standard' ? (
-                                <Icon size={24} icon="WALLET" color={colors.NEUE_TYPE_GREEN} />
+                                <Icon size={24} icon="WALLET" color={theme.TYPE_GREEN} />
                             ) : (
-                                <Icon size={24} icon="LOCK" color={colors.NEUE_TYPE_LIGHT_GREY} />
+                                <Icon size={24} icon="LOCK" color={theme.TYPE_LIGHT_GREY} />
                             )}
                         </IconWrapper>
                         <Col>
@@ -286,7 +287,7 @@ const PassphraseTypeCard = (props: Props) => {
                                         <TooltipIcon
                                             useCursorPointer
                                             size={16}
-                                            color={colors.NEUE_TYPE_LIGHT_GREY}
+                                            color={theme.TYPE_LIGHT_GREY}
                                             icon="QUESTION_ACTIVE"
                                         />
                                     </Tooltip>
@@ -296,7 +297,7 @@ const PassphraseTypeCard = (props: Props) => {
                         </Col>
                         {props.type === 'standard' && (
                             <ArrowCol>
-                                <Icon icon="ARROW_RIGHT" color={colors.NEUE_TYPE_LIGHT_GREY} />
+                                <Icon icon="ARROW_RIGHT" color={theme.TYPE_LIGHT_GREY} />
                             </ArrowCol>
                         )}
                     </Row>
@@ -304,39 +305,41 @@ const PassphraseTypeCard = (props: Props) => {
                 </>
             )}
             {props.type === 'hidden' && (
-                <Row>
-                    {/* Show passphrase input */}
-                    <InputWrapper authConfirmation={props.authConfirmation}>
-                        <PassphraseInput
-                            data-test="@passphrase/input"
-                            placeholder="Enter passphrase" // TODO: Localize
-                            onChange={onChange}
-                            value={displayValue}
-                            innerRef={ref}
-                            bottomText={
-                                isTooLong ? <Translation id="TR_PASSPHRASE_TOO_LONG" /> : null
-                            }
-                            state={isTooLong ? 'error' : undefined}
-                            noTopLabel
-                            noError
-                            innerAddon={
-                                <Icon
-                                    size={18}
-                                    color={colors.NEUE_TYPE_LIGHT_GREY}
-                                    icon={showPassword ? 'HIDE' : 'SHOW'}
-                                    onClick={() => {
-                                        if (typeof ref.current?.selectionStart === 'number') {
-                                            caretRef.current = ref.current.selectionStart;
-                                        }
-                                        setShowPassword(!showPassword);
-                                    }}
-                                    data-test="@passphrase/show-toggle"
-                                />
-                            }
-                        />
-                        {!isTooLong && <PasswordStrengthIndicator password={value} />}
-                    </InputWrapper>
-                </Row>
+                <>
+                    <Row>
+                        {/* Show passphrase input */}
+                        <InputWrapper authConfirmation={props.authConfirmation}>
+                            <PassphraseInput
+                                data-test="@passphrase/input"
+                                placeholder="Enter passphrase" // TODO: Localize
+                                onChange={onChange}
+                                value={displayValue}
+                                innerRef={ref}
+                                bottomText={
+                                    isTooLong ? <Translation id="TR_PASSPHRASE_TOO_LONG" /> : null
+                                }
+                                state={isTooLong ? 'error' : undefined}
+                                noTopLabel
+                                noError
+                                innerAddon={
+                                    <Icon
+                                        size={18}
+                                        color={theme.TYPE_LIGHT_GREY}
+                                        icon={showPassword ? 'HIDE' : 'SHOW'}
+                                        onClick={() => {
+                                            if (typeof ref.current?.selectionStart === 'number') {
+                                                caretRef.current = ref.current.selectionStart;
+                                            }
+                                            setShowPassword(!showPassword);
+                                        }}
+                                        data-test="@passphrase/show-toggle"
+                                    />
+                                }
+                            />
+                        </InputWrapper>
+                    </Row>
+                    {!isTooLong && <PasswordStrengthIndicator password={value} />}
+                </>
             )}
             {props.authConfirmation && (
                 // Checkbox if user fully understands what's happening when confirming empty passphrase
@@ -388,7 +391,7 @@ const PassphraseTypeCard = (props: Props) => {
                             <RetryButton
                                 variant="tertiary"
                                 icon="ARROW_LEFT"
-                                color={colors.BLACK50}
+                                color={theme.TYPE_LIGHT_GREY}
                                 onClick={props.recreateWallet}
                             >
                                 <Translation id="TR_TRY_AGAIN" />

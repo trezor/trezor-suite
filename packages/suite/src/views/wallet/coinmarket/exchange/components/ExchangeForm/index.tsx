@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, colors } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 
@@ -22,8 +22,8 @@ const Form = styled.form``;
 
 const FeesWrapper = styled.div`
     margin: 25px 0;
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 `;
 
 const Loading = styled.div`

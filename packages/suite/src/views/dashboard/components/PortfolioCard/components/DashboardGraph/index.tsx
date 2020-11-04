@@ -5,7 +5,7 @@ import { Props } from './Container';
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 import { calcTicks, calcTicksFromData } from '@suite-utils/date';
-import { colors, variables, Button } from '@trezor/components';
+import { variables, Button } from '@trezor/components';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 // https://github.com/zeit/next.js/issues/4768
 // eslint-disable-next-line import/no-webpack-loader-syntax
@@ -32,7 +32,7 @@ const ErrorMessage = styled.div`
     padding: 20px;
     align-items: center;
     justify-content: center;
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     text-align: center;
 `;

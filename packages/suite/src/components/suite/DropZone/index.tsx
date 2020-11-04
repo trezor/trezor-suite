@@ -1,6 +1,6 @@
 import React, { useRef, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { P, Icon, colors } from '@trezor/components';
+import { P, Icon } from '@trezor/components';
 import { Translation } from '@suite-components';
 
 interface Props {
@@ -120,13 +120,13 @@ const Wrapper = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border: 2px dashed ${colors.NEUE_STROKE_GREY};
+    border: 2px dashed ${props => props.theme.STROKE_GREY};
     border-radius: 6px;
     cursor: pointer;
     min-height: 300px;
     transition: background-color 0.3s;
     &:hover {
-        background: ${colors.NEUE_BG_GRAY};
+        background: ${props => props.theme.BG_GREY};
     }
 `;
 

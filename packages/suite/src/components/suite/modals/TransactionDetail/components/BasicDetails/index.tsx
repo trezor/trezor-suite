@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
-import { Icon, colors, variables, Loader } from '@trezor/components';
+import { Icon, useTheme, variables, Loader } from '@trezor/components';
 import { Translation, HiddenPlaceholder, TrezorLink } from '@suite-components';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction } from '@wallet-types';
 
 const Wrapper = styled.div`
-    background-color: ${colors.BACKGROUND};
+    background-color: ${props => props.theme.BG_GREY};
     padding: 18px;
     border-radius: 6px;
 `;
@@ -43,7 +43,7 @@ const LinkIcon = styled(Icon)`
 
 const Confirmations = styled.div`
     display: flex;
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
@@ -57,7 +57,7 @@ const HourWrapper = styled.div`
     display: inline-flex;
     padding-left: 8px;
     margin-left: 8px;
-    border-left: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-left: 1px solid ${props => props.theme.STROKE_GREY};
 `;
 
 const LoaderIconWrapper = styled.div`
@@ -72,8 +72,8 @@ const HeaderFirstRow = styled.div`
     align-items: center;
     padding-bottom: 28px;
     padding-right: 6px;
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
-    color: ${colors.BLACK25};
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -97,17 +97,17 @@ const HeaderSecondRow = styled.div`
 
 const SecondRowTitle = styled.div`
     text-align: left;
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const SecondRowValue = styled.div`
-    color: ${colors.BLACK25};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     overflow: hidden;
     text-overflow: ellipsis;
 `;
 
 const IconWrapper = styled.div`
-    background-color: white;
+    background-color: ${props => props.theme.BG_WHITE};
     border-radius: 100px;
 
     display: flex;
@@ -141,7 +141,7 @@ const TxStatus = styled.div`
 const ConfirmationStatusWrapper = styled.div``;
 
 const TxSentStatus = styled.div`
-    color: ${colors.BLACK25};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.NEUE_FONT_SIZE.H2};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     line-height: 1.6;
@@ -149,7 +149,7 @@ const TxSentStatus = styled.div`
 `;
 
 const ConfirmationStatus = styled.div<{ confirmed: boolean }>`
-    color: ${props => (props.confirmed ? colors.NEUE_TYPE_GREEN : colors.NEUE_TYPE_ORANGE)};
+    color: ${props => (props.confirmed ? props.theme.TYPE_GREEN : props.theme.TYPE_ORANGE)};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
 `;
@@ -157,7 +157,7 @@ const ConfirmationStatus = styled.div<{ confirmed: boolean }>`
 const Circle = styled.div`
     margin-left: 5px;
     margin-right: 5px;
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 interface Props {
@@ -183,6 +183,7 @@ const getHumanReadableTxType = (tx: WalletAccountTransaction) => {
 };
 
 const BasicDetails = ({ tx, confirmations, isFetching, explorerUrl }: Props) => {
+    const theme = useTheme();
     const isConfirmed = confirmations > 0;
     const transactionStatus = getHumanReadableTxType(tx);
     const tokenSymbol = tx.tokens.length > 0 ? tx.tokens[0].symbol : undefined;
@@ -193,14 +194,14 @@ const BasicDetails = ({ tx, confirmations, isFetching, explorerUrl }: Props) => 
                 <MainIconWrapper>
                     <Icon
                         size={24}
-                        color={colors.BLACK50}
+                        color={theme.TYPE_LIGHT_GREY}
                         icon={tx.type === 'recv' ? 'RECEIVE' : 'SEND'}
                     />
                     {!isFetching && (
                         <NestedIconWrapper>
                             <Icon
                                 size={12}
-                                color={isConfirmed ? colors.NEUE_BG_GREEN : colors.NEUE_TYPE_ORANGE}
+                                color={isConfirmed ? theme.BG_GREEN : theme.TYPE_ORANGE}
                                 icon={isConfirmed ? 'CHECK' : 'CLOCK'}
                             />
                         </NestedIconWrapper>
@@ -252,7 +253,7 @@ const BasicDetails = ({ tx, confirmations, isFetching, explorerUrl }: Props) => 
                             <ExplorerLinkTransactionWrapper>
                                 <Translation id="TR_OPEN_IN_BLOCK_EXPLORER" />
                             </ExplorerLinkTransactionWrapper>
-                            <LinkIcon icon="EXTERNAL_LINK" size={14} color={colors.BLACK25} />
+                            <LinkIcon icon="EXTERNAL_LINK" size={14} color={theme.TYPE_DARK_GREY} />
                         </ExplorerLink>
                     </ExplorerLinkWrapper>
                 )}

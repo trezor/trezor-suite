@@ -16,7 +16,6 @@ import WordInputAdvanced from './WordInputAdvanced';
 import ProgressBar from './ProgressBar';
 import Loading from './Loading';
 import FiatValue from './FiatValue/Container';
-import Badge from './Badge';
 import WebusbButton from './WebusbButton';
 import HiddenPlaceholder from './HiddenPlaceholder/Container';
 import QrCode from './QrCode';
@@ -58,7 +57,6 @@ export {
     Loading,
     WebusbButton,
     HiddenPlaceholder,
-    Badge,
     QrCode,
     AccountLabeling,
     AddressLabeling,

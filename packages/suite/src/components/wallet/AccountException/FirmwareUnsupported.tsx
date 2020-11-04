@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { CoinLogo, colors, Button, H2, P } from '@trezor/components';
+import { CoinLogo, Button, H2, P } from '@trezor/components';
 import { Translation, TrezorLink } from '@suite-components';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import { Account } from '@wallet-types';
@@ -36,7 +36,7 @@ const getInfoUrl = (symbol?: Props['symbol']) => {
 
 const Wrapper = styled.div`
     display: flex;
-    background: ${colors.WHITE};
+    color: ${props => props.theme.BG_WHITE};
     flex-direction: column;
     flex: 1;
 `;

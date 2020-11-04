@@ -4,6 +4,7 @@ import TextColumn from './components/TextColumn';
 import { ActionColumn, ActionButton, ActionInput, ActionSelect } from './components/ActionColumn';
 import Row from './components/Row';
 import Analytics from './components/Analytics';
+import Theme from './components/Theme';
 
 export {
     Section,
@@ -15,4 +16,5 @@ export {
     ActionInput,
     ActionSelect,
     Analytics,
+    Theme,
 };

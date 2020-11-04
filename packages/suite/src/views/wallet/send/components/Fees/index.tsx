@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FeeLevel } from 'trezor-connect';
-import { SelectBar, colors, variables } from '@trezor/components';
+import { SelectBar, variables } from '@trezor/components';
 import { Card, Translation, FiatValue, FormattedCryptoAmount } from '@suite-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getFeeUnits } from '@wallet-utils/sendFormUtils';
@@ -25,7 +25,7 @@ const Label = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-transform: capitalize;
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const FeeSetupWrapper = styled.div`
@@ -41,7 +41,7 @@ const CoinAmount = styled.div`
     display: flex;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     padding-bottom: 6px;
 `;
 
@@ -49,7 +49,7 @@ const FiatAmount = styled.div`
     display: flex;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const FeeInfo = styled.div`
@@ -61,7 +61,7 @@ const FeeInfo = styled.div`
 
 const FeeUnits = styled.span`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 

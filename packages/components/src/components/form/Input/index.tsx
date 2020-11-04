@@ -1,9 +1,9 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { colors, variables } from '../../../config';
+import { variables } from '../../../config';
 import { InputState, InputVariant } from '../../../support/types';
 import { Icon } from '../../../index';
-import { getStateColor } from '../../../utils';
+import { getStateColor, useTheme } from '../../../utils';
 import { useEffect, createRef } from 'react';
 
 interface WrappedProps {
@@ -21,7 +21,6 @@ interface InputProps extends Props {
 }
 
 const StyledInput = styled.input<InputProps>`
-    /* text-indent: ${props => props.textIndent}px; */
     font-family: ${variables.FONT_FAMILY.TTHOVES};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     /*  this is a bit messy, but basically we want to add textIndent to left/right paddings */
@@ -30,22 +29,23 @@ const StyledInput = styled.input<InputProps>`
     font-size: ${variables.FONT_SIZE.SMALL};
     border-radius: 4px;
     border: solid 2px
-        ${props => (props.state ? getStateColor(props.state) : colors.NEUE_STROKE_GREY)};
-    background-color: ${colors.WHITE};
+        ${props =>
+            props.state ? getStateColor(props.state, props.theme) : props.theme.STROKE_GREY};
+    background-color: ${props => props.theme.BG_WHITE};
     outline: none;
     box-sizing: border-box;
     width: 100%;
     height: ${props => (props.variant === 'small' ? '32px' : '48px')};
-    color: ${props => getStateColor(props.state)};
+    color: ${props => getStateColor(props.state, props.theme)};
 
     &:read-only {
-        background: ${colors.BLACK96};
+        background: ${props => props.theme.BG_LIGHT_GREY};
         box-shadow: none;
-        color: ${colors.BLACK50};
+        color: ${props => props.theme.TYPE_DARK_GREY};
     }
 
     &::placeholder {
-        color: ${colors.NEUE_TYPE_LIGHT_GREY};
+        color: ${props => props.theme.TYPE_LIGHT_GREY};
     }
 
     ${props =>
@@ -64,9 +64,9 @@ const StyledInput = styled.input<InputProps>`
     ${props =>
         props.disabled &&
         css`
-            background: ${colors.BLACK96};
+            background: ${props => props.theme.BG_GREY};
             box-shadow: none;
-            color: ${colors.BLACK50};
+            color: ${props => props.theme.TYPE_DARK_GREY};
             cursor: default;
         `}
 `;
@@ -86,7 +86,7 @@ const Left = styled.div`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding: 0 0 12px 0;
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const Right = styled.div`
@@ -123,7 +123,7 @@ const BottomText = styled.div<Props>`
     padding: 10px 10px 0 10px;
     min-height: 27px;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => getStateColor(props.state)};
+    color: ${props => getStateColor(props.state, props.theme)};
 `;
 
 const Overlay = styled.div<Props>`
@@ -205,6 +205,7 @@ const Input = ({
     const [isHovered, setIsHovered] = React.useState(false);
     const inputAddonRef = createRef<HTMLDivElement>();
     const [inputAddonWidth, setInputAddonWidth] = React.useState(0);
+    const theme = useTheme();
 
     useEffect(() => {
         if (inputAddonRef.current) {
@@ -246,7 +247,7 @@ const Input = ({
                                 icon="CANCEL"
                                 size={12}
                                 onClick={onClear}
-                                color={colors.NEUE_TYPE_DARK_GREY}
+                                color={theme.TYPE_DARK_GREY}
                                 useCursorPointer
                             />
                         )}

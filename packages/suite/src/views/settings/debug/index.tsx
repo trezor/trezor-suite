@@ -1,19 +1,24 @@
+import React from 'react';
+import styled from 'styled-components';
+import { Button, Switch, Select, THEME, SuiteThemeColors } from '@trezor/components';
 import { SettingsLayout } from '@settings-components';
 import { ActionColumn, Row, Section, TextColumn } from '@suite-components/Settings';
-import { Switch, Select } from '@trezor/components';
-import styled from 'styled-components';
-import React from 'react';
+import * as suiteActions from '@suite-actions/suiteActions';
+import { useSelector, useActions } from '@suite-hooks';
 
 import { Props } from './Container';
 import invityAPI from '@suite-services/invityAPI';
-import { useSelector } from '@suite-hooks';
 
 const StyledActionColumn = styled(ActionColumn)`
     max-width: 300px;
 `;
 
 const DebugSettings = (props: Props) => {
+    const { setTheme } = useActions({
+        setTheme: suiteActions.setTheme,
+    });
     const invityAPIUrl = useSelector(state => state.suite.settings.debug.invityAPIUrl);
+    const theme = useSelector(state => state.suite.settings.theme);
     const invityApiServerOptions = [
         {
             label: invityAPI.productionAPIServer,
@@ -85,6 +90,42 @@ const DebugSettings = (props: Props) => {
                         />
                     </StyledActionColumn>
                 </Row>
+            </Section>
+
+            <Section title="Dark mode palette">
+                <Row>
+                    <TextColumn title="Reset palette" />
+                    <ActionColumn>
+                        <Button
+                            onClick={() => {
+                                setTheme('dark', undefined);
+                            }}
+                        >
+                            Reset
+                        </Button>
+                    </ActionColumn>
+                </Row>
+                {Object.entries(THEME.dark).map(kv => {
+                    const colorName = kv[0] as keyof SuiteThemeColors;
+                    const defaultColorHex = kv[1];
+                    return (
+                        <Row>
+                            {colorName}
+                            <input
+                                onChange={e => {
+                                    const color = e.target.value;
+                                    setTheme('custom', {
+                                        ...THEME.dark,
+                                        ...theme.colors,
+                                        ...{ [colorName]: color },
+                                    });
+                                }}
+                                type="color"
+                                value={theme.colors?.[colorName] ?? defaultColorHex}
+                            />
+                        </Row>
+                    );
+                })}
             </Section>
         </SettingsLayout>
     );

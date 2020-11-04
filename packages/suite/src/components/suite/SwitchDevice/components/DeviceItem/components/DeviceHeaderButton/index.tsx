@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, Icon } from '@trezor/components';
+import { useTheme, Icon } from '@trezor/components';
 import { Translation } from '@suite-components';
 import NotificationCard from '@suite-components/NotificationCard'; // on purpose to avoid hacky sc overriding
 import * as deviceUtils from '@suite-utils/device';
 import { TrezorDevice } from '@suite-types';
 
 const GrayNotificationCard = styled(NotificationCard)`
-    background: ${colors.NEUE_BG_GRAY};
+    background: ${props => props.theme.BG_GREY};
     margin-bottom: 0px;
 `;
 interface Props {
@@ -19,6 +19,7 @@ interface Props {
 
 const DeviceHeaderButton = (props: Props) => {
     const { device } = props;
+    const theme = useTheme();
     const deviceStatus = deviceUtils.getStatus(device);
     const deviceStatusMessage = deviceUtils.getDeviceNeedsAttentionMessage(deviceStatus);
     const isUnknown = device.type !== 'acquired';
@@ -43,7 +44,7 @@ const DeviceHeaderButton = (props: Props) => {
                     useCursorPointer
                     size={24}
                     icon="SETTINGS"
-                    color={colors.NEUE_TYPE_LIGHT_GREY}
+                    color={theme.TYPE_LIGHT_GREY}
                     onClick={props.onDeviceSettingsClick}
                 />
             )}

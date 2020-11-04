@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { colors, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -11,8 +11,8 @@ const Wrapper = styled.div`
 const PageItem = styled.div<{ isActive?: boolean }>`
     cursor: pointer;
     font-size: ${variables.FONT_SIZE.SMALL};
-    background: ${props => (props.isActive ? colors.GREEN : 'transparent')};
-    color: ${props => (props.isActive ? colors.WHITE : colors.GREEN)};
+    background: ${props => (props.isActive ? props.theme.BG_GREEN : 'transparent')};
+    color: ${props => (props.isActive ? props.theme.TYPE_WHITE : props.theme.TYPE_GREEN)};
     padding: 4px 8px;
     border-radius: 2px;
 `;

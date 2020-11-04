@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Icon, Button, colors, variables } from '@trezor/components';
+import { Icon, Button, variables } from '@trezor/components';
 import { CHANGELOG_URL } from '@suite-constants/urls';
 import { Translation, ExternalLink, TrezorLink } from '@suite-components';
 import { getFwVersion } from '@suite-utils/device';
@@ -19,7 +19,7 @@ const BodyWrapper = styled.div`
 const ChangesSummary = styled.div`
     width: 100%;
     text-align: left;
-    background-color: ${colors.BLACK98};
+    background-color: ${props => props.theme.BG_LIGHT_GREY};
     border-radius: 8px;
     padding: 20px;
     margin: 20px 0;
@@ -27,7 +27,7 @@ const ChangesSummary = styled.div`
 
 const ChangelogGroup = styled.div`
     margin-bottom: 20px;
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${FONT_SIZE.SMALL};
 `;
 
@@ -38,7 +38,7 @@ const ChangelogHeading = styled.div`
 const Version = styled.span`
     display: block;
     font-size: ${FONT_SIZE.SMALL};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const ChangesUl = styled.ul`
@@ -154,7 +154,7 @@ const Body = () => {
 };
 
 const HowLong = styled.div`
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${FONT_SIZE.TINY};
     display: flex;
     justify-content: center;

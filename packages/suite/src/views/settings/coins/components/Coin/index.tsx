@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, colors, CoinLogo } from '@trezor/components';
+import { variables, CoinLogo } from '@trezor/components';
 import { Network } from '@wallet-types';
 
 const Wrapper = styled.div`
@@ -10,14 +10,14 @@ const Wrapper = styled.div`
 
 const Name = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${colors.BLACK0};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     margin: 0 8px;
     padding-top: 2px;
 `;
 
 const Symbol = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     padding-top: 2px;
 `;

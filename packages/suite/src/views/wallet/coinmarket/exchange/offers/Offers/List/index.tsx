@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 import Quote from './Quote';
 import { ExchangeTrade } from 'invity-api';
 import { QuestionTooltip, Translation } from '@suite-components';
@@ -17,7 +17,7 @@ const SummaryRow = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     padding: 10px 0;
@@ -34,7 +34,7 @@ const Divider = styled.div`
 const DividerLine = styled.div`
     height: 1px;
     flex: 1;
-    background: ${colors.NEUE_STROKE_GREY};
+    background: ${props => props.theme.STROKE_GREY};
 `;
 
 const Left = styled.div`
@@ -50,7 +50,7 @@ const Right = styled.div`
 const StyledQuestionTooltip = styled(QuestionTooltip)`
     padding-left: 4px;
     padding-top: 1px;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const RatesRow = styled.div`

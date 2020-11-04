@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { P, colors } from '@trezor/components';
+import { P } from '@trezor/components';
 import { Translation, Image } from '@suite-components';
 
 const Wrapper = styled.div`
     display: flex;
     margin: 20px 0px;
     text-align: left;
-    background: ${colors.NEUE_BG_GRAY};
+    background: ${props => props.theme.BG_GREY};
     align-items: center;
     width: 100%;
     justify-content: space-between;

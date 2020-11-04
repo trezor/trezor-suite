@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { Translation, Image } from '@suite-components';
 
 const Wrapper = styled.div`
@@ -21,7 +21,7 @@ const Content = styled.div`
 const Title = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.H2};
-    color: ${colors.BLACK0};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     margin-bottom: 30px;
     text-align: center;
 `;
@@ -42,7 +42,7 @@ const StyledImage = styled(props => <Image {...props} />)`
 // `;
 
 const SecurityItem = styled.div`
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.BUTTON};
 
     & + & {

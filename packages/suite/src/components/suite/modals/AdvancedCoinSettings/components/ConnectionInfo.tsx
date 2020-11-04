@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { Blockchain } from '@suite/reducers/wallet/blockchainReducer';
 
@@ -12,14 +12,14 @@ const Wrapper = styled.div`
 `;
 
 const Heading = styled.span`
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: 500;
     line-height: 1.5;
 `;
 
 const Info = styled.span`
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: 500;
     line-height: 1.57;

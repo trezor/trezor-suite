@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import { CoinInfo } from 'trezor-connect';
-import { Input, Button, colors, variables } from '@trezor/components';
+import { Input, Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { Network } from '@suite/types/wallet';
 import { BlockbookUrl } from '@wallet-types/blockbook';
@@ -22,7 +22,7 @@ const AddButton = styled(Button)`
 `;
 
 const Heading = styled.span`
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: 500;
     line-height: 1.5;
@@ -30,7 +30,7 @@ const Heading = styled.span`
 `;
 
 const Description = styled.span`
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: 500;
     line-height: 1.57;

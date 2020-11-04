@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, colors, Tooltip } from '@trezor/components';
+import { Icon, useTheme, Tooltip } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { ExtendedMessageDescriptor } from '@suite-types';
 
@@ -26,28 +26,34 @@ interface Props {
 export const QuestionTooltip = ({
     label,
     tooltip,
-    className,
     size = 16,
-    color = colors.NEUE_TYPE_LIGHT_GREY,
+    color,
     iconStyle,
-}: Props) => (
-    <Wrapper className={className}>
-        {label && <Label>{typeof label === 'string' ? <Translation id={label} /> : label}</Label>}
-        {tooltip && (
-            <Tooltip
-                placement="top"
-                content={typeof tooltip === 'string' ? <Translation id={tooltip} /> : tooltip}
-            >
-                <Icon
-                    useCursorPointer
-                    size={size}
-                    color={color}
-                    style={iconStyle}
-                    icon="QUESTION"
-                />
-            </Tooltip>
-        )}
-    </Wrapper>
-);
+    className,
+}: Props) => {
+    const theme = useTheme();
+    const defaultColor = color ?? theme.TYPE_LIGHT_GREY;
+    return (
+        <Wrapper className={className}>
+            {label && (
+                <Label>{typeof label === 'string' ? <Translation id={label} /> : label}</Label>
+            )}
+            {tooltip && (
+                <Tooltip
+                    placement="top"
+                    content={typeof tooltip === 'string' ? <Translation id={tooltip} /> : tooltip}
+                >
+                    <Icon
+                        useCursorPointer
+                        size={size}
+                        color={defaultColor}
+                        style={iconStyle}
+                        icon="QUESTION"
+                    />
+                </Tooltip>
+            )}
+        </Wrapper>
+    );
+};
 
 export default QuestionTooltip;

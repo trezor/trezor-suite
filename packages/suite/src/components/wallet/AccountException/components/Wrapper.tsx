@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables, H2 } from '@trezor/components';
+import { variables, H2 } from '@trezor/components';
 
 const Content = styled.div`
     display: flex;
@@ -12,7 +12,7 @@ const Content = styled.div`
 const Title = styled(H2)`
     display: flex;
     text-align: center;
-    color: ${colors.BLACK0};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const Actions = styled.div`
@@ -25,7 +25,7 @@ const Description = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
     text-align: center;
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     margin-bottom: 10px;
 `;
 

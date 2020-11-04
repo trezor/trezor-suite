@@ -117,6 +117,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         case SUITE.SET_FLAG:
         case SUITE.SET_DEBUG_MODE:
         case SUITE.ONION_LINKS:
+        case SUITE.SET_THEME:
             api.dispatch(storageActions.saveSuiteSettings());
             break;
 

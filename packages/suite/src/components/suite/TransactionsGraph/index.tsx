@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { colors, variables, Loader, Icon } from '@trezor/components';
+import { variables, Loader, Icon, useTheme } from '@trezor/components';
 import {
     GraphRange,
     AggregatedAccountHistory,
@@ -44,7 +44,7 @@ const Description = styled.div`
     justify-content: center;
     align-items: center;
     text-align: center;
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     flex: 1;
 `;
 
@@ -80,6 +80,7 @@ export type Props = CryptoGraphProps | FiatGraphProps;
 
 const TransactionsGraph = React.memo((props: Props) => {
     const { isLoading, data, selectedRange, xTicks } = props;
+    const theme = useTheme();
     const { selectedView } = useGraph();
     const [maxYTickWidth, setMaxYTickWidth] = useState(20);
     const yDomain = calcYDomain(
@@ -114,7 +115,6 @@ const TransactionsGraph = React.memo((props: Props) => {
                         <Icon
                             size={14}
                             icon="REFRESH"
-                            hoverColor={colors.BLACK0}
                             onClick={() => (props.onRefresh ? props.onRefresh() : undefined)}
                         />
                     )}
@@ -136,7 +136,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                             }}
                             onMouseLeave={() => setHovered(-1)}
                         >
-                            <CartesianGrid vertical={false} stroke={colors.NEUE_BG_GRAY} />
+                            <CartesianGrid vertical={false} stroke={theme.STROKE_LIGHT_GREY} />
 
                             <XAxis
                                 // xAxisId="primary"
@@ -144,7 +144,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 type="number"
                                 domain={calcXDomain(xTicks, data, selectedRange)}
                                 // width={10}
-                                stroke={colors.NEUE_BG_GRAY}
+                                stroke={theme.BG_GREY}
                                 interval="preserveEnd"
                                 tick={<CustomXAxisTick selectedRange={selectedRange} />}
                                 ticks={xTicks}
@@ -158,7 +158,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 scale={selectedView}
                                 domain={yDomain}
                                 allowDataOverflow={selectedView === 'log'}
-                                stroke={colors.NEUE_BG_GRAY}
+                                stroke={theme.BG_GREY}
                                 tick={
                                     props.variant === 'one-asset' ? (
                                         <CustomYAxisTick
@@ -211,7 +211,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                             ? Number(props.balanceValueFn(data)) || yDomain[0]
                                             : Number(props.balanceValueFn(data));
                                     }}
-                                    stroke={colors.NEUE_TYPE_ORANGE}
+                                    stroke={theme.TYPE_ORANGE}
                                     dot={false}
                                     activeDot={false}
                                 />
@@ -225,8 +225,8 @@ const TransactionsGraph = React.memo((props: Props) => {
                                     y2="100%"
                                     spreadMethod="reflect"
                                 >
-                                    <stop offset="0" stopColor={colors.NEUE_BG_GREEN} />
-                                    <stop offset="1" stopColor="#4cbc26" />
+                                    <stop offset="0" stopColor={theme.GRADIENT_GREEN_START} />
+                                    <stop offset="1" stopColor={theme.GRADIENT_GREEN_END} />
                                 </linearGradient>
                             </defs>
                             <defs>
@@ -238,8 +238,8 @@ const TransactionsGraph = React.memo((props: Props) => {
                                     y2="100%"
                                     spreadMethod="reflect"
                                 >
-                                    <stop offset="0" stopColor="#d15b5b" />
-                                    <stop offset="1" stopColor="#e75f5f" />
+                                    <stop offset="0" stopColor={theme.GRADIENT_RED_START} />
+                                    <stop offset="1" stopColor={theme.GRADIENT_RED_END} />
                                 </linearGradient>
                             </defs>
                             <defs>

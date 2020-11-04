@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
-import { H2, variables, colors, Icon } from '@trezor/components';
+import { H2, variables, useTheme, Icon, scrollbarStyles } from '@trezor/components';
 import { Translation, AddAccountButton } from '@suite-components';
 import { useDiscovery, useLayoutSize, useAccountSearch } from '@suite-hooks';
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@wallet-utils/accountUtils';
@@ -22,7 +22,6 @@ const Wrapper = styled.div<{ isMobileLayout?: boolean }>`
     ${props =>
         !props.isMobileLayout &&
         css`
-            padding: 0px 8px;
             overflow: auto;
         `}
 `;
@@ -31,8 +30,8 @@ const MenuHeader = styled.div<{ isMobileLayout?: boolean }>`
     display: flex;
     flex-direction: column;
     /* justify-content: center; */
-    background: ${colors.NEUE_BG_WHITE};
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    background: ${props => props.theme.BG_WHITE};
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 
     ${props =>
         props.isMobileLayout &&
@@ -65,14 +64,14 @@ const Search = styled.div`
     justify-content: space-between;
     padding: 8px 0px;
 
-    background: ${colors.NEUE_BG_WHITE};
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    background: ${props => props.theme.BG_WHITE};
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
     margin-bottom: 8px;
 `;
 
 const Heading = styled(H2)<{ isMobileLayout?: boolean }>`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     ${props =>
         props.isMobileLayout &&
         css`
@@ -90,12 +89,12 @@ const ExpandedMobileWrapper = styled.div`
     display: flex;
     position: absolute;
     flex-direction: column;
-    background: ${colors.NEUE_BG_WHITE};
+    background: ${props => props.theme.BG_WHITE};
     z-index: 3;
     width: 100%;
     max-height: 80vh;
     overflow-y: auto;
-    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     padding: 0px 16px;
@@ -106,37 +105,16 @@ const Scroll = styled.div`
     height: auto;
     overflow-y: auto;
     overflow-x: hidden;
+    padding: 0px 8px;
 
-    /* TODO: this make nice scrollbar on webkit-like browsers however it prevents hiding the scrollbar on macs (should hide when there is no mouse connected) */
-    /* Maybe we should just use something like https://github.com/Grsmto/simplebar */
-    ::-webkit-scrollbar {
-        background-color: #fff;
-        width: 10px;
-    }
-
-    /* background of the scrollbar except button or resizer */
-    ::-webkit-scrollbar-track {
-        background-color: transparent;
-    }
-
-    /* scrollbar itself */
-    ::-webkit-scrollbar-thumb {
-        /* 7F7F7F for mac-like color */
-        background-color: #babac0;
-        border-radius: 10px;
-        border: 2px solid #fff;
-    }
-    /* set button(top and bottom of the scrollbar) */
-    ::-webkit-scrollbar-button {
-        display: none;
-    }
+    ${scrollbarStyles}
 `;
 
 const NoResults = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     justify-content: center;
     text-align: center;
     margin: 36px 0px;
@@ -151,6 +129,7 @@ const mapStateToProps = (state: AppState) => ({
 type Props = ReturnType<typeof mapStateToProps>;
 
 const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
+    const theme = useTheme();
     const { discovery } = useDiscovery();
     const { params } = selectedAccount;
     const { isMobileLayout } = useLayoutSize();
@@ -266,7 +245,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
                                 canAnimate={animatedIcon}
                                 isActive={isExpanded}
                                 size={20}
-                                color={colors.BLACK50}
+                                color={theme.TYPE_LIGHT_GREY}
                                 onClick={() => {
                                     setIsExpanded(!isExpanded);
                                     setAnimatedIcon(true);

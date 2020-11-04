@@ -1,10 +1,9 @@
 import { ICONS } from '../../components/Icon/icons';
 import { ReactNode } from 'react';
 import { COINS } from '../../components/logos/CoinLogo/coins';
+import { THEME } from '../../config/colors';
 
 export type TextAlign = 'left' | 'center' | 'right';
-
-export type FeedbackState = 'success' | 'info' | 'warning' | 'error';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'danger';
 
@@ -33,3 +32,19 @@ export type ParagraphSize = 'normal' | 'small' | 'tiny';
 export type TrezorLogoType = 'horizontal' | 'vertical' | 'symbol' | 'suite' | 'suite_compact';
 
 export type TrezorLogoVariant = 'white' | 'black';
+
+type LightThemeProps = typeof THEME.light;
+type DarkThemeProps = typeof THEME.dark;
+
+// extracts values for common props (eg. NEUE_BG_GREEN: "#39a814" | "#5ea447")
+type CommonThemeProps = {
+    [K in keyof LightThemeProps & keyof DarkThemeProps]: LightThemeProps[K] | DarkThemeProps[K];
+};
+
+type PropsOnlyInLightTheme = Omit<LightThemeProps, keyof DarkThemeProps>;
+type PropsOnlyInDarkTheme = Omit<DarkThemeProps, keyof LightThemeProps>;
+
+// all common theme props and their values are nicely listed, props that are specific to given theme are marked optional
+export type SuiteThemeColors = CommonThemeProps &
+    Partial<PropsOnlyInDarkTheme> &
+    Partial<PropsOnlyInLightTheme>;

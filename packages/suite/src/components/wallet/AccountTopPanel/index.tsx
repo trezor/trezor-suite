@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { CoinLogo, H1, H2, colors, Dropdown, variables } from '@trezor/components';
+import { CoinLogo, H1, H2, Dropdown, variables } from '@trezor/components';
 import {
     Ticker,
     FiatValue,
@@ -26,7 +26,7 @@ const Balance = styled(H1)`
 `;
 
 const FiatBalanceWrapper = styled(H2)`
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin-left: 1ch;
 `;

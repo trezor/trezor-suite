@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, variables, colors } from '@trezor/components';
+import { Button, variables } from '@trezor/components';
 
 import { resolveStaticPath } from '@suite-utils/nextjs';
 
@@ -41,7 +41,7 @@ const Title = styled.div`
 
 const Text = styled.div`
     font-size: ${FONT_SIZE.NORMAL};
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const StyledButton = styled(Button)`

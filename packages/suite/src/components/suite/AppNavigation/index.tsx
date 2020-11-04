@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, colors, variables, IconProps } from '@trezor/components';
+import { Icon, variables, IconProps, useTheme } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useSelector, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
@@ -11,7 +11,7 @@ const { FONT_WEIGHT, FONT_SIZE } = variables;
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
     overflow-x: auto;
     scrollbar-width: none; /* Firefox */
 
@@ -25,13 +25,15 @@ const Wrapper = styled.div`
 const StyledNavLink = styled.div<{ isComingSoon?: boolean; active?: boolean }>`
     cursor: ${props => (props.isComingSoon ? 'default' : 'pointer')};
     font-size: ${FONT_SIZE.NORMAL};
-    color: ${props => (props.active ? colors.NEUE_TYPE_GREEN : colors.NEUE_TYPE_LIGHT_GREY)};
+    color: ${props =>
+        props.active ? props => props.theme.TYPE_GREEN : props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${FONT_WEIGHT.MEDIUM};
     display: flex;
     align-items: center;
     padding: 14px 8px 12px 6px;
     white-space: nowrap;
-    border-bottom: 2px solid ${props => (props.active ? colors.NEUE_BG_GREEN : 'transparent')};
+    border-bottom: 2px solid
+        ${props => (props.active ? props => props.theme.BG_GREEN : 'transparent')};
 
     & + & {
         margin-left: 42px;
@@ -56,7 +58,7 @@ const Soon = styled.div`
     background: #e1f2dc;
     font-weight: ${variables.FONT_WEIGHT.BOLD};
     padding: 2px 4px;
-    color: ${colors.NEUE_TYPE_GREEN};
+    color: ${props => props.theme.TYPE_GREEN};
     border-radius: 4px;
     font-size: 9px;
 `;
@@ -80,6 +82,7 @@ const isRouteActive = (routeName?: Route['name'], route?: Route['name']): boolea
 };
 
 const AppNavigation = ({ items }: Props) => {
+    const theme = useTheme();
     const { routeName, params } = useSelector(state => ({
         routeName: state.router.route?.name,
         params: state.wallet.selectedAccount.params,
@@ -105,7 +108,7 @@ const AppNavigation = ({ items }: Props) => {
                             <Icon
                                 size={18}
                                 icon={icon}
-                                color={active ? colors.NEUE_TYPE_GREEN : undefined}
+                                color={active ? theme.TYPE_GREEN : undefined}
                             />
                         </IconWrapper>
 

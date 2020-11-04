@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Card, colors, Icon, variables } from '@trezor/components';
+import { Card, Icon, variables } from '@trezor/components';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
 import CoinmarketExchangeOfferInfo from '@wallet-components/CoinmarketExchangeOfferInfo';
 import VerifyAddress from './components/VerifyAddress';
@@ -26,7 +26,7 @@ const Header = styled.div`
     align-items: center;
     justify-content: center;
     padding: 10px 25px;
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 `;
 
 interface ActiveProps {
@@ -36,7 +36,8 @@ interface ActiveProps {
 const Step = styled.div<ActiveProps>`
     font-weight: ${props =>
         props.active ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.REGULAR};
-    color: ${props => (props.active ? colors.NEUE_TYPE_GREEN : colors.BLACK25)};
+    color: ${props =>
+        props.active ? props => props.theme.TYPE_GREEN : props.theme.TYPE_DARK_GREY};
     display: flex;
     font-size: ${variables.FONT_SIZE.SMALL};
     flex: 1;
@@ -60,7 +61,7 @@ const Middle = styled.div`
     height: 48px;
     align-items: center;
     justify-content: center;
-    color: ${colors.NEUE_STROKE_GREY};
+    color: ${props => props.theme.STROKE_GREY};
 `;
 
 const SelectedOffer = () => {

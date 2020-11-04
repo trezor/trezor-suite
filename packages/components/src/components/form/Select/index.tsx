@@ -1,21 +1,23 @@
 import React from 'react';
 import ReactSelect, { components, Props as SelectProps } from 'react-select';
 import styled from 'styled-components';
-import { colors, variables } from '../../../config';
-import { InputVariant } from '../../../support/types';
+import { variables } from '../../../config';
+import { useTheme } from '../../../utils';
+import { InputVariant, SuiteThemeColors } from '../../../support/types';
 
 const selectStyle = (
     isSearchable: boolean,
     withDropdownIndicator = true,
     variant: InputVariant,
-    isClean: boolean
+    isClean: boolean,
+    theme: SuiteThemeColors
 ) => ({
     singleValue: (base: Record<string, any>) => ({
         ...base,
         display: 'flex',
         alignItems: 'center',
         width: '100%',
-        color: colors.BLACK0,
+        color: theme.TYPE_DARK_GREY,
         '&:hover': {
             cursor: isSearchable ? 'text' : 'pointer',
         },
@@ -33,13 +35,14 @@ const selectStyle = (
             height: variant === 'small' ? '36px' : '48px',
             borderRadius: '4px',
             borderWidth: '2px',
-            borderColor: colors.NEUE_STROKE_GREY,
+            borderColor: theme.STROKE_GREY,
+            backgroundColor: theme.BG_WHITE,
             boxShadow: 'none',
             '&:hover, &:focus': {
                 cursor: 'pointer',
                 borderRadius: '4px',
                 borderWidth: '2px',
-                borderColor: colors.NEUE_STROKE_GREY,
+                borderColor: theme.STROKE_GREY,
             },
         };
     },
@@ -50,34 +53,32 @@ const selectStyle = (
         ...base,
         display: !withDropdownIndicator || isDisabled ? 'none' : 'flex',
         alignItems: 'center',
-        color: colors.NEUE_TYPE_LIGHT_GREY,
+        color: theme.TYPE_LIGHT_GREY,
         path: '',
         '&:hover': {
-            color: colors.BLACK0,
+            color: theme.TYPE_DARK_GREY,
         },
     }),
     menu: (base: Record<string, any>) => ({
         ...base,
         margin: '5px 0',
-        boxShadow: 'box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.15)',
+        boxShadow: `box-shadow: 0 4px 10px 0 ${theme.BOX_SHADOW_BLACK_20}`,
         zIndex: 9,
     }),
     menuList: (base: Record<string, any>) => ({
         ...base,
         padding: 0,
         boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.2)',
-        background: colors.WHITE,
-        // border: `1px solid ${colors.BLACK80}`,
+        background: theme.BG_WHITE,
         borderRadius: '4px',
     }),
     option: (base: Record<string, any>, { isFocused }: { isFocused: boolean }) => ({
         ...base,
-        color: colors.NEUE_TYPE_DARK_GREY,
-        background: isFocused ? colors.NEUE_BG_GRAY : colors.WHITE,
+        color: theme.TYPE_DARK_GREY,
+        background: isFocused ? theme.BG_GREY : theme.BG_WHITE,
         borderRadius: 0,
         '&:hover': {
             cursor: 'pointer',
-            // background: colors.NEUE_BG_GRAY,
         },
     }),
 });
@@ -114,6 +115,7 @@ const Select = ({
     noTopLabel = false,
     ...props
 }: Props) => {
+    const theme = useTheme();
     // customize control to pass data-test attribute
     const Control = (controlProps: any) => {
         return (
@@ -144,7 +146,7 @@ const Select = ({
         <Wrapper className={className} width={width} {...wrapperProps}>
             {!noTopLabel && <Label>{label}</Label>}
             <ReactSelect
-                styles={selectStyle(isSearchable, withDropdownIndicator, variant, isClean)}
+                styles={selectStyle(isSearchable, withDropdownIndicator, variant, isClean, theme)}
                 isSearchable={isSearchable}
                 {...props}
                 components={{ Control, Option, ...props.components }}

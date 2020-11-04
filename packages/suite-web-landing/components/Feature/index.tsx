@@ -1,18 +1,20 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { Fade } from 'react-awesome-reveal';
 import { rgba } from 'polished';
 
+const LIGHT_GREY = '#f5f5f5';
+
 // due to iOS browser bug, it doesn't handle transparent color in gradients well
-const transparent = rgba(colors.BLACK96, 0);
+const transparent = rgba(LIGHT_GREY, 0);
 
 const Feature = styled.section<{ flip?: boolean }>`
     position: relative;
     display: flex;
     flex: 1;
     border-radius: 40px;
-    background: ${colors.BLACK96};
+    background: ${LIGHT_GREY};
     flex-direction: ${props => (props.flip === true ? 'row-reverse' : 'row')};
     overflow: hidden;
     padding: 40px 0;
@@ -55,12 +57,12 @@ const StyledText = styled.div<{ flip?: boolean }>`
         `
             &:after {
                 right: -70%;
-                background: linear-gradient(to left, ${transparent} 0%, ${colors.BLACK96} 100%);
+                background: linear-gradient(to left, ${transparent} 0%, ${LIGHT_GREY} 100%);
             }
 
             &:before {
                 left: 0;
-                background: ${colors.BLACK96};
+                background: ${LIGHT_GREY};
                 z-index: -1;
             }
         `}
@@ -70,12 +72,12 @@ const StyledText = styled.div<{ flip?: boolean }>`
         `
             &:after {
                 left: -70%;
-                background: linear-gradient(to right, ${transparent} 0%, ${colors.BLACK96} 100%);
+                background: linear-gradient(to right, ${transparent} 0%, ${LIGHT_GREY} 100%);
             }
 
             &:before {
                 right: 0;
-                background: ${colors.BLACK96};
+                background: ${LIGHT_GREY};
             }
         `}
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Card, colors, variables } from '@trezor/components';
+import { Button, Card, variables } from '@trezor/components';
 import { Translation, QuestionTooltip, ReadMoreLink } from '@suite-components';
 import { ChildProps as Props } from '../../Container';
 import { AccountAddress } from 'trezor-connect';
@@ -41,12 +41,12 @@ const FreshAddressWrapper = styled.div`
 `;
 
 const StyledFreshAddress = styled.span`
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.H2};
 `;
 const AddressLabel = styled.span`
     font-weight: 600;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     letter-spacing: 0.2px;
     text-transform: uppercase;
@@ -59,7 +59,11 @@ const Overlay = styled.div`
     bottom: 0px;
     left: 0px;
     position: absolute;
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 220px);
+    background-image: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0) 0%,
+        ${props => props.theme.BG_WHITE} 220px
+    );
 `;
 
 const TooltipLabel = ({ symbol, isBitcoin }: { symbol: string; isBitcoin: boolean }) => {

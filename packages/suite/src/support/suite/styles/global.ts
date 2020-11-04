@@ -1,8 +1,14 @@
 import animations from './animations';
 import { notifications } from './notifications';
-import { variables, colors, tooltipGlobalStyles } from '@trezor/components';
+import {
+    variables,
+    tooltipGlobalStyles,
+    SuiteThemeColors,
+    scrollbarStyles,
+} from '@trezor/components';
+import { createGlobalStyle } from 'styled-components';
 
-export default `
+const globalStyles = createGlobalStyle<{ theme: SuiteThemeColors }>`
     #__next {
         display: flex;
         flex-direction: column;
@@ -14,7 +20,7 @@ export default `
     }
 
     body, html {
-      background: ${colors.BACKGROUND};
+      background: ${props => props.theme.BG_GREY};
       font-size: ${variables.FONT_SIZE.NORMAL};
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
@@ -43,4 +49,7 @@ export default `
     ${animations}
     ${notifications}
     ${tooltipGlobalStyles}
+    ${scrollbarStyles}
 `;
+
+export default globalStyles;

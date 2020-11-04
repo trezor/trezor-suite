@@ -1,7 +1,7 @@
 import React from 'react';
 import { Translation } from '@suite-components/Translation';
 import styled from 'styled-components';
-import { colors, Button } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
 
 const Wrapper = styled.div`
@@ -15,7 +15,7 @@ const In = styled.div`
     display: flex;
     align-items: center;
     padding-right: 10px;
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const Clear = () => {

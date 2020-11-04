@@ -1,6 +1,6 @@
 import React from 'react';
 import { Props } from './Container';
-import { Badge, HiddenPlaceholder } from '@suite-components';
+import { HiddenPlaceholder } from '@suite-components';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import FormattedNumber from '../FormattedNumber';
 import styled from 'styled-components';
@@ -31,7 +31,6 @@ const FiatValue = ({
     fiatCurrency,
     source,
     useCustomSource,
-    badge,
     showApproximationIndicator,
     disableHiddenPlaceholder,
     ...props
@@ -45,22 +44,12 @@ const FiatValue = ({
     const fiat = ratesSource ? toFiatCurrency(amount, targetCurrency, ratesSource) : null;
     const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : StyledHiddenPlaceholder;
     if (fiat) {
-        let fiatValueComponent = (
+        const fiatValueComponent = (
             <WrapperComponent>
                 {showApproximationIndicator && <>≈ </>}
                 <FormattedNumber currency={targetCurrency} value={fiat} />
             </WrapperComponent>
         );
-
-        if (badge) {
-            fiatValueComponent = (
-                <WrapperComponent>
-                    <Badge isGray={badge.color === 'gray'} isSmall={badge.size === 'small'}>
-                        <FormattedNumber currency={targetCurrency} value={fiat} />
-                    </Badge>
-                </WrapperComponent>
-            );
-        }
 
         const fiatRateValue = ratesSource?.[targetCurrency] ?? null;
         const fiatRateComponent = fiatRateValue ? (

@@ -12,7 +12,7 @@ export default `
     }
 
     body, html {
-      background: ${colors.NEUE_BG_WHITE};
+      background: ${colors.BG_WHITE};
       font-size: ${variables.FONT_SIZE.NORMAL};
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;

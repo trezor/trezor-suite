@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import invityAPI from '@suite-services/invityAPI';
 import { LayoutContext, Translation } from '@suite-components';
 import { CoinmarketExchangeTopPanel, CoinmarketFooter } from '@wallet-components';
-import { variables, Icon, colors, CoinLogo } from '@trezor/components';
+import { variables, Icon, CoinLogo } from '@trezor/components';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
 
 import List from './List';
@@ -61,7 +61,7 @@ const Right = styled.div`
 `;
 
 const RefreshLabel = styled.div`
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 

@@ -1,6 +1,8 @@
+import React from 'react';
 import NextApp from 'next/app';
 import Head from 'next/head';
-import React from 'react';
+import { ThemeProvider } from 'styled-components';
+import { THEME } from '@trezor/components';
 
 class App extends NextApp {
     render() {
@@ -11,7 +13,9 @@ class App extends NextApp {
                     <meta name="viewport" content="width=device-width, initial-scale=1" />
                     <title>Trezor Suite</title>
                 </Head>
-                <Component {...pageProps} />
+                <ThemeProvider theme={THEME.light}>
+                    <Component {...pageProps} />
+                </ThemeProvider>
             </>
         );
     }

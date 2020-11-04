@@ -1,6 +1,6 @@
 import { Translation } from '@suite-components';
 import { useSelector } from '@suite-hooks';
-import { H2, variables, colors } from '@trezor/components';
+import { H2, variables } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -22,7 +22,7 @@ const NoTransactions = styled.div`
     display: flex;
     justify-content: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const StyledH2 = styled(H2)`
@@ -35,7 +35,7 @@ const TransactionCount = styled.div`
     margin-top: 6px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const AccountTransactions = () => {

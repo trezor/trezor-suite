@@ -71,7 +71,7 @@ export const DEFAULT_STORE = {
             connected: true,
             available: true,
         }),
-        settings: { debug: {} },
+        settings: { debug: {}, theme: { variant: 'light' } },
         online: true,
         locks: [],
     },

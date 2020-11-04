@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
-import { P, Button, ButtonProps, colors, Modal } from '@trezor/components';
+import { P, Button, ButtonProps, Modal } from '@trezor/components';
 import * as backupActions from '@backup-actions/backupActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { Dispatch, AppState, InjectedModalApplicationProps } from '@suite-types';
@@ -32,7 +32,7 @@ const StyledButton = styled(Button)`
 `;
 
 const StyledP = styled(P)`
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const StyledImage = styled(Image)`

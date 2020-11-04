@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { SuiteThemeVariant } from '@suite-types';
 
 export const selectText = (element: HTMLElement) => {
     const doc = document;
@@ -149,4 +150,13 @@ export const setCaretPosition = (el: HTMLInputElement, pos: number) => {
         el.focus();
         el.setSelectionRange(pos, pos);
     }
+};
+
+export const getOSTheme = (): SuiteThemeVariant => {
+    if (typeof window === 'undefined') return 'light'; // in SSR, where window object is not defined, just return light theme
+    // retrieving os color scheme is supported in Chrome 76+, Firefox 67+
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
+    }
+    return 'light';
 };

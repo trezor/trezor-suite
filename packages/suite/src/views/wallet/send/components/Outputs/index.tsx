@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { AnimatePresence, motion, MotionProps } from 'framer-motion';
-import { colors } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
 import Address from './components/Address';
 import Amount from './components/Amount';
@@ -25,7 +24,7 @@ const OutputWrapper = styled.div<{ index: number }>`
         css`
             margin: 0 42px;
             padding-top: 32px;
-            border-top: 1px solid ${colors.NEUE_BG_GRAY};
+            border-top: 1px solid ${props => props.theme.BG_GREY};
         `}
 `;
 

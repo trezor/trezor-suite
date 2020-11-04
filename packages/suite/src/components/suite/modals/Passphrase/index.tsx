@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Modal, variables, colors } from '@trezor/components';
+import { Modal, variables } from '@trezor/components';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as deviceUtils from '@suite-utils/device';
@@ -31,7 +31,7 @@ const WalletsWrapper = styled.div`
 const Divider = styled.div`
     margin: 16px 16px;
     height: 1px;
-    background: ${colors.NEUE_STROKE_GREY};
+    background: ${props => props.theme.STROKE_GREY};
 `;
 
 const mapStateToProps = (state: AppState) => ({

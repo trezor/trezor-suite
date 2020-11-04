@@ -1,4 +1,4 @@
-import { variables, Select, colors } from '@trezor/components';
+import { variables, Select } from '@trezor/components';
 import { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
 import React from 'react';
 import { Controller } from 'react-hook-form';
@@ -33,7 +33,7 @@ const Option = styled.div`
 
 const OptionName = styled.div`
     display: flex;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const OptionLabel = styled.div`

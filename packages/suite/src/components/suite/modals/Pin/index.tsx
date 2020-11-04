@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { H2, variables, colors, Modal, ModalProps } from '@trezor/components';
+import { H2, variables, Modal, ModalProps } from '@trezor/components';
 import { PinInput, Loading, Translation, Image, TrezorLink } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
 
@@ -35,7 +35,7 @@ const Col = styled.div<{ noYPadding?: boolean }>`
 `;
 
 const GreyCol = styled(Col)`
-    background: ${colors.BLACK96};
+    background: ${props => props.theme.BG_LIGHT_GREY};
     @media only screen and (max-width: ${SCREEN_SIZE.MD}) {
         display: none;
     }
@@ -46,7 +46,7 @@ const Expand = styled.div`
 `;
 
 const How = styled.div`
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${FONT_SIZE.SMALL};
     text-align: center;
 `;

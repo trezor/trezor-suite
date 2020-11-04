@@ -1,19 +1,19 @@
 import React, { useState, forwardRef, useRef } from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
-import { colors, Icon, variables } from '@trezor/components';
+import { useTheme, Icon, variables } from '@trezor/components';
 import { Account } from '@wallet-types';
 import AnimationWrapper from '../AnimationWrapper';
 
 const Wrapper = styled.div`
-    background: ${colors.NEUE_BG_WHITE};
+    background: ${props => props.theme.BG_WHITE};
 `;
 
 const HeaderWrapper = styled.div`
     position: sticky;
     top: 0;
     z-index: 1;
-    background: ${colors.WHITE};
+    background: ${props => props.theme.BG_WHITE};
 `;
 
 const Header = styled.header<{ onClick?: () => void }>`
@@ -27,8 +27,8 @@ const Header = styled.header<{ onClick?: () => void }>`
     text-transform: uppercase;
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
 `;
 
 interface Props {
@@ -43,6 +43,7 @@ interface Props {
 }
 
 export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
+    const theme = useTheme();
     const hasHeader = props.type !== 'normal';
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [expanded, setExpanded] = useState(props.hasBalance || props.keepOpened || !hasHeader);
@@ -107,7 +108,7 @@ export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
                                 canAnimate={animatedIcon}
                                 isActive={isOpened}
                                 size={16}
-                                color={colors.BLACK50}
+                                color={theme.TYPE_LIGHT_GREY}
                                 icon="ARROW_DOWN"
                             />
                         )}

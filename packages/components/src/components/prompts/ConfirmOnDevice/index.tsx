@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { DeviceImage } from '../../DeviceImage';
 import { Icon } from '../../Icon';
-import { colors, variables, animations } from '../../../config';
+import { variables, animations } from '../../../config';
 
 type WrapperProps = Pick<Props, 'animated' | 'animation'>;
 const Wrapper = styled.div<WrapperProps>`
@@ -11,8 +11,8 @@ const Wrapper = styled.div<WrapperProps>`
     height: 62px;
     padding: 0 10px 0 30px;
     border-radius: 100px;
-    background: white;
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.19);
+    background: ${props => props.theme.BG_WHITE};
+    box-shadow: 0 2px 5px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
     align-items: center;
     ${props =>
         props.animated &&
@@ -38,6 +38,7 @@ const Title = styled.div`
     justify-content: center;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.BIG};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const Left = styled(Column)``;
@@ -68,7 +69,7 @@ const CloseWrapper = styled.div`
 const Close = styled.div`
     border-radius: 100%;
     cursor: pointer;
-    background: ${colors.NEUE_STROKE_GREY};
+    background: ${props => props.theme.STROKE_GREY};
     width: 35px;
     height: 35px;
     display: flex;
@@ -81,7 +82,7 @@ const Success = styled.div`
     display: flex;
     flex: 1;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${colors.NEUE_TYPE_GREEN};
+    color: ${props => props.theme.TYPE_GREEN};
     text-align: center;
     justify-content: center;
 `;
@@ -91,12 +92,12 @@ const Step = styled.div<{ isActive: boolean }>`
     height: 4px;
     border-radius: 2px;
     margin-right: 6px;
-    background: ${colors.NEUE_STROKE_GREY};
+    background: ${props => props.theme.STROKE_GREY};
 
     ${props =>
         props.isActive &&
         css`
-            background: ${colors.NEUE_BG_GREEN};
+            background: ${props => props.theme.BG_GREEN};
         `}
 `;
 

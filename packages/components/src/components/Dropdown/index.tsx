@@ -1,9 +1,9 @@
 import React, { useState, useRef, useLayoutEffect } from 'react';
-import styled, { css } from 'styled-components';
-import { colors, variables } from '../../config';
-import { useOnClickOutside } from '../../utils/hooks';
-import { Icon, IconProps } from '../Icon';
 import ReactDOM from 'react-dom';
+import styled, { css } from 'styled-components';
+import { variables } from '../../config';
+import { useOnClickOutside, useTheme } from '../../utils/hooks';
+import { Icon, IconProps } from '../Icon';
 
 const Wrapper = styled.div<{ absolutePosition: boolean }>`
     position: ${props => (props.absolutePosition ? 'static' : 'relative')};
@@ -16,7 +16,7 @@ const Menu = styled.ul<MenuProps>`
     border-radius: 4px;
     flex: 1;
     min-width: 140px;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 2px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
     z-index: 10001;
     padding: 8px 0px;
 
@@ -32,7 +32,7 @@ const Menu = styled.ul<MenuProps>`
         props.alignMenu === 'top-left' || props.alignMenu === 'top-right'
             ? `-${props.offset}px`
             : `${props.offset}px`};
-    background: ${colors.NEUE_BG_WHITE};
+    background: ${props => props.theme.BG_WHITE};
     overflow: hidden;
 
     ${props =>
@@ -67,7 +67,7 @@ const Menu = styled.ul<MenuProps>`
 `;
 
 const Group = styled.li`
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding: 16px 16px 10px 16px;
@@ -80,7 +80,7 @@ const MenuItem = styled.li<MenuItemProps>`
     white-space: nowrap;
     cursor: ${props => (!props.item.isDisabled ? 'pointer' : 'default')};
     color: ${props =>
-        !props.item.isDisabled ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY};
+        !props.item.isDisabled ? props.theme.TYPE_DARK_GREY : props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
@@ -89,7 +89,7 @@ const MenuItem = styled.li<MenuItemProps>`
         !props.item.noHover &&
         css`
             &:hover {
-                background: ${colors.NEUE_BG_GRAY};
+                background: ${props.theme.BG_GREY};
             }
         `}
 `;
@@ -153,6 +153,7 @@ const Dropdown = ({
     appendTo,
     ...rest
 }: Props) => {
+    const theme = useTheme();
     const [toggled, setToggled] = useState(false);
     const [coords, setCoords] = useState<Coords>(undefined);
     const [menuSize, setMenuSize] = useState<Coords>(undefined);
@@ -231,7 +232,7 @@ const Dropdown = ({
             ref={toggleRef}
             size={24}
             icon="MORE"
-            color={!isDisabled ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY}
+            color={!isDisabled ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY}
             onClick={
                 !isDisabled
                     ? e => {
@@ -248,7 +249,7 @@ const Dropdown = ({
         if (item.icon) {
             return typeof item.icon === 'string' ? (
                 <IconWrapper>
-                    <Icon icon={item.icon} size={16} color={colors.NEUE_TYPE_DARK_GREY} />
+                    <Icon icon={item.icon} size={16} color={theme.TYPE_DARK_GREY} />
                 </IconWrapper>
             ) : (
                 item.icon

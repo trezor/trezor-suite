@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { ExchangeTrade } from 'invity-api';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { colors, variables, CoinLogo } from '@trezor/components';
+import { variables, CoinLogo } from '@trezor/components';
 import { CoinmarketExchangeProviderInfo, CoinmarketTransactionId } from '@wallet-components';
 import { Account } from '@wallet-types';
 import { AccountLabeling, Translation } from '@suite-components';
@@ -30,7 +30,7 @@ const Wrapper = styled.div`
 `;
 
 const AccountText = styled.div`
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     padding-left: 7px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
@@ -42,7 +42,7 @@ const Info = styled.div`
     margin: 0 0 10px 30px;
     padding-top: 10px;
     min-height: 200px;
-    border: 1px solid ${colors.NEUE_STROKE_GREY};
+    border: 1px solid ${props => props.theme.STROKE_GREY};
     border-radius: 4px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
@@ -58,7 +58,7 @@ const LeftColumn = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     text-transform: uppercase;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const RightColumn = styled.div`
@@ -66,7 +66,7 @@ const RightColumn = styled.div`
     justify-content: flex-end;
     flex: 1;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const Row = styled.div`
@@ -87,12 +87,12 @@ const Dark = styled.div`
     justify-content: flex-end;
     flex: 1;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const RowWithBorder = styled(Row)`
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
     margin-bottom: 0px;
     margin-top: 10px;
     padding-bottom: 10px;
@@ -104,7 +104,7 @@ const Middle = styled.div`
     justify-content: center;
     align-items: center;
     flex: 1;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -121,7 +121,7 @@ const InvityCoinLogo = styled.img`
 `;
 
 const AccountType = styled.span`
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     padding-left: 5px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;

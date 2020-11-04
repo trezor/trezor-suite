@@ -5005,6 +5005,15 @@ const definedMessages = defineMessages({
         id: 'TR_SUITE_WEB_LANDING_MACOS_LABEL',
         defaultMessage: 'for MacOS',
     },
+    TR_DARK_MODE: {
+        id: 'TR_DARK_MODE',
+        defaultMessage: 'Dark mode',
+    },
+    TR_DARK_MODE_DESCRIPTION: {
+        id: 'TR_DARK_MODE_DESCRIPTION',
+        defaultMessage:
+            'Color scheme that uses light-colored text, icons, and graphical user interface elements on a dark background.',
+    },
     TR_BITCOIN_CASH_15_NOV_FORK: {
         id: 'TR_BITCOIN_CASH_15_NOV_FORK',
         defaultMessage:
