@@ -61,6 +61,12 @@ const AlertDot = styled.div`
     background: ${colors.NEUE_TYPE_RED};
 `;
 
+// The Icon can be switched dynamically (e.g. Discreet mode icon) and without fixed size the whole row of NavigationActions jumps on the first switch
+const StyledIcon = styled(Icon)`
+    width: 24px;
+    height: 24px;
+`;
+
 interface CommonProps extends Pick<React.HTMLAttributes<HTMLDivElement>, 'onClick'> {
     label: React.ReactNode;
     isActive?: boolean;
@@ -81,7 +87,7 @@ type Props = CustomIconComponentProps | IconComponentProps;
 
 const ActionItem = (props: Props) => {
     const iconComponent = props.icon ? (
-        <Icon
+        <StyledIcon
             color={props.isActive ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY}
             size={24}
             icon={props.icon}
