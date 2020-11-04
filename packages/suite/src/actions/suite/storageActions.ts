@@ -11,9 +11,7 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
 import { deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
 import { FormState } from '@wallet-types/sendForm';
-import { getAnalyticsRandomId } from '@suite-utils/random';
 import { BuyTrade, ExchangeTrade } from 'invity-api';
-import { setSentryUser } from '@suite-utils/sentry';
 
 export type StorageAction =
     | { type: typeof STORAGE.LOAD }
@@ -319,10 +317,6 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
 
         const initialState = getState();
 
-        if (analytics?.instanceId) {
-            setSentryUser(analytics.instanceId);
-        }
-
         const sendForm = await db.getItemsWithKeys('sendFormDrafts');
         const drafts: AppState['wallet']['send']['drafts'] = {};
         sendForm.forEach(item => {
@@ -377,9 +371,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                         drafts,
                     },
                 },
-                analytics: analytics?.instanceId
-                    ? { ...analytics, sessionId: getAnalyticsRandomId() }
-                    : initialState.analytics,
+                analytics: { ...initialState.analytics, ...analytics },
                 metadata: {
                     ...initialState.metadata,
                     ...metadata,

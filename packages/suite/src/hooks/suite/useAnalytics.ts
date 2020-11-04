@@ -7,6 +7,7 @@ export const useAnalytics = () => {
     const actions = useActions({
         report: analyticsActions.report,
         init: analyticsActions.init,
+        enable: analyticsActions.enable,
         dispose: analyticsActions.dispose,
     });
 

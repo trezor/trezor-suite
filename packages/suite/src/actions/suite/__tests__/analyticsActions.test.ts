@@ -2,6 +2,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import analyticsReducer from '@suite-reducers/analyticsReducer';
 import * as analyticsActions from '@suite-actions/analyticsActions';
+import { ANALYTICS } from '../constants';
 
 type AnalyticsState = ReturnType<typeof analyticsReducer>;
 
@@ -76,7 +77,9 @@ describe('Analytics Actions', () => {
     it('analyticsActions.report() - should report if enabled (desktop)', () => {
         const env = process.env.SUITE_TYPE;
         process.env.SUITE_TYPE = 'desktop';
-        const state = getInitialState({ analytics: { enabled: true, instanceId: '1' } });
+        const state = getInitialState({
+            analytics: { enabled: true, instanceId: '1', sessionId: 'very-random' },
+        });
         const store = initStore(state);
         store.dispatch(analyticsActions.report({ type: 'switch-device/eject' }));
         // @ts-ignore
@@ -91,7 +94,9 @@ describe('Analytics Actions', () => {
     it('analyticsActions.report() - should report if enabled (web)', () => {
         const env = process.env.SUITE_TYPE;
         process.env.SUITE_TYPE = 'web';
-        const state = getInitialState({ analytics: { enabled: true, instanceId: '1' } });
+        const state = getInitialState({
+            analytics: { enabled: true, instanceId: '1', sessionId: 'very-random' },
+        });
         const store = initStore(state);
         store.dispatch(analyticsActions.report({ type: 'switch-device/eject' }));
         // @ts-ignore
@@ -104,19 +109,76 @@ describe('Analytics Actions', () => {
     });
 
     it('analyticsActions.report() - should not report if not enabled', () => {
-        const state = getInitialState({ analytics: { enabled: false } });
+        const state = getInitialState({
+            analytics: { enabled: false },
+        });
         const store = initStore(state);
         store.dispatch(analyticsActions.report({ type: 'switch-device/eject' }));
         // @ts-ignore
         expect(global.fetch).toHaveBeenCalledTimes(0);
     });
 
-    it('analyticsActions.report() - should not report if enabled but on localhost', () => {
-        window.location.hostname = 'localhost';
-        const state = getInitialState({ analytics: { enabled: true } });
+    it('analyticsActions.report() - enabled: false, force: false', () => {
+        const env = process.env.SUITE_TYPE;
+        process.env.SUITE_TYPE = 'web';
+        const state = getInitialState({
+            analytics: { enabled: false },
+        });
         const store = initStore(state);
         store.dispatch(analyticsActions.report({ type: 'switch-device/eject' }));
         // @ts-ignore
         expect(global.fetch).toHaveBeenCalledTimes(0);
+        process.env.SUITE_TYPE = env;
+    });
+
+    it('analyticsActions.init() - optout false', () => {
+        const state = getInitialState({});
+        const store = initStore(state);
+        store.dispatch(
+            analyticsActions.init(
+                {
+                    enabled: undefined,
+                    sessionId: undefined,
+                    instanceId: undefined,
+                },
+                false,
+            ),
+        );
+        expect(store.getActions()).toMatchObject([
+            {
+                type: ANALYTICS.INIT,
+                payload: { enabled: false, sessionId: 'very-random', instanceId: 'very-random' },
+            },
+        ]);
+    });
+
+    it('analyticsActions.init(true) - output true', () => {
+        const state = getInitialState({});
+        const store = initStore(state);
+        store.dispatch(
+            analyticsActions.init(
+                { enabled: undefined, sessionId: undefined, instanceId: undefined },
+                true,
+            ),
+        );
+        expect(store.getActions()).toMatchObject([
+            {
+                type: ANALYTICS.INIT,
+                payload: { enabled: true, sessionId: 'very-random', instanceId: 'very-random' },
+            },
+        ]);
+    });
+
+    it('analyticsActions.enable/dispose', () => {
+        const state = getInitialState({});
+        const store = initStore(state);
+        store.dispatch(analyticsActions.enable());
+        expect(store.getState()).toMatchObject({
+            analytics: { enabled: true },
+        });
+        store.dispatch(analyticsActions.dispose());
+        expect(store.getState()).toMatchObject({
+            analytics: { enabled: false },
+        });
     });
 });
