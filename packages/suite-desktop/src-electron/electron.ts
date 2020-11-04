@@ -16,7 +16,6 @@ import { RESOURCES } from './constants';
 import BridgeProcess from './processes/BridgeProcess';
 import TorProcess from './processes/TorProcess';
 
-let initRun = false;
 let mainWindow: BrowserWindow;
 const APP_NAME = 'Trezor Suite';
 const PROTOCOL = 'file';
@@ -87,9 +86,7 @@ const init = async () => {
         //
     }
 
-    // On Mac, "init" is called again when the window is opened again. For this we need
-    // to check if init has already run.
-    if (isDev && !initRun) {
+    if (isDev) {
         await prepareNext(path.resolve(__dirname, '../'));
     }
 
@@ -125,6 +122,24 @@ const init = async () => {
 
     Menu.setApplicationMenu(buildMainMenu());
     mainWindow.setMenuBarVisibility(false);
+
+    if (process.platform === 'darwin') {
+        // macOS specific window behavior
+        // it is common for applications and their context menu to stay active until the user quits explicitly
+        // with Cmd + Q or right-click > Quit from the context menu.
+
+        // restore window after click on the Dock icon
+        app.on('activate', () => mainWindow.show());
+        // hide window to the Dock
+        // this event listener will be removed by app.on('before-quit')
+        mainWindow.on('close', event => {
+            event.preventDefault();
+            mainWindow.hide();
+        });
+    } else {
+        // other platform just kills the app
+        app.on('window-all-closed', () => app.quit());
+    }
 
     // open external links in default browser
     const handleExternalLink = (event: Event, url: string) => {
@@ -396,9 +411,6 @@ const init = async () => {
         updateSettings.skipVersion = version;
         store.setUpdateSettings(updateSettings);
     });
-
-    // Init ran
-    initRun = true;
 };
 
 app.name = APP_NAME; // overrides @trezor/suite-desktop app name in menu
@@ -413,35 +425,26 @@ app.on('window-all-closed', () => {
 });
 
 app.on('before-quit', () => {
-    if (mainWindow) {
-        // remove onclose listener
-        mainWindow.removeAllListeners();
-        // store window bounds
-        store.setWinBounds(mainWindow);
+    if (!mainWindow) return;
 
-        //
-        bridge.stop();
-    }
-});
+    // remove onclose listener
+    mainWindow.removeAllListeners();
 
-app.on('will-quit', () => {
-    // try to unregister shortcuts
+    // unregister shortcuts
+    // TODO: not sure if this try/catch is necessary.
+    // it was needed before, when it was handled in 'will-quit' event and when mainWindow could be undefined (not anymore)
     try {
         electronLocalshortcut.unregisterAll(mainWindow);
     } catch (error) {
         // do nothing
     }
-    httpReceiver.stop();
-});
 
-app.on('activate', () => {
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (process.platform === 'darwin') {
-        init();
-    } else {
-        mainWindow.show();
-    }
+    // store window bounds
+    store.setWinBounds(mainWindow);
+
+    // stop services
+    bridge.stop();
+    httpReceiver.stop();
 });
 
 app.on('browser-window-focus', (_event, win) => {
