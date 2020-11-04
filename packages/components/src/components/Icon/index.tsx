@@ -114,7 +114,7 @@ const Icon = React.forwardRef(
                 isActive={isActive}
                 size={size}
                 ref={ref}
-                useCursorPointer={useCursorPointer}
+                useCursorPointer={onClick !== undefined || useCursorPointer}
                 {...rest}
             >
                 <ReactSVG

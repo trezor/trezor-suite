@@ -23,10 +23,6 @@ const Text = styled.div`
     margin-left: 8px;
 `;
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-`;
-
 const RbfMessage = styled.div`
     display: flex;
     flex: 1;
@@ -125,7 +121,7 @@ const Locktime = ({ close }: Props) => {
                         </Text>
                     </Label>
                 }
-                labelRight={<StyledIcon size={20} icon="CROSS" onClick={close} />}
+                labelRight={<Icon size={20} icon="CROSS" onClick={close} />}
                 bottomText={<InputError error={error} />}
             />
             {isEnabled('RBF') && (

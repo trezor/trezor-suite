@@ -77,8 +77,6 @@ const IconWrapper = styled.div`
     margin-left: 10px;
 `;
 
-const StyledIcon = styled(Icon)``;
-
 const Text = styled.div`
     padding-left: 10px;
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
@@ -120,7 +118,7 @@ const CoinmarketFooter = () => {
                                     <Button variant="tertiary">invity.io</Button>
                                 </Link>
                                 <IconWrapper onClick={() => setToggled(false)}>
-                                    <StyledIcon icon="CROSS" size={16} />
+                                    <Icon icon="CROSS" size={16} />
                                 </IconWrapper>
                             </BoxRight>
                         </Header>

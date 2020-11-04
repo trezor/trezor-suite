@@ -94,10 +94,6 @@ const MenuItem = styled.li<MenuItemProps>`
         `}
 `;
 
-const DefaultTogglerIcon = styled(Icon)<Pick<Props, 'isDisabled'>>`
-    cursor: ${props => (!props.isDisabled ? 'pointer' : 'default')};
-`;
-
 const IconWrapper = styled.div`
     margin-right: 16px;
 `;
@@ -231,7 +227,7 @@ const Dropdown = ({
                 : undefined,
         })
     ) : (
-        <DefaultTogglerIcon
+        <Icon
             ref={toggleRef}
             size={24}
             icon="MORE"
@@ -244,7 +240,6 @@ const Dropdown = ({
                       }
                     : undefined
             }
-            isDisabled={isDisabled}
             {...rest}
         />
     );

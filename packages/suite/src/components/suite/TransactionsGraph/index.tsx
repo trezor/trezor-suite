@@ -48,10 +48,6 @@ const Description = styled.div`
     flex: 1;
 `;
 
-const RefreshIcon = styled(Icon)`
-    cursor: pointer;
-`;
-
 interface CommonProps {
     isLoading?: boolean;
     selectedRange: GraphRange;
@@ -115,7 +111,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                 <Toolbar>
                     <RangeSelector />
                     {props.onRefresh && (
-                        <RefreshIcon
+                        <Icon
                             size={14}
                             icon="REFRESH"
                             hoverColor={colors.BLACK0}

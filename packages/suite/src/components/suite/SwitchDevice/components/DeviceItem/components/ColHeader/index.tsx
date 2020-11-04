@@ -16,11 +16,6 @@ const Text = styled.span`
     text-transform: uppercase;
 `;
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-    align-items: center;
-`;
-
 interface Props {
     children?: React.ReactNode;
     tooltipContent?: TooltipProps['content'];
@@ -32,7 +27,12 @@ const ColHeader = ({ children, tooltipContent, ...rest }: Props) => {
             <Text>{children}</Text>
             {tooltipContent && (
                 <Tooltip maxWidth={285} placement="top" content={tooltipContent}>
-                    <StyledIcon icon="INFO_ACTIVE" color={colors.NEUE_TYPE_LIGHT_GREY} size={16} />
+                    <Icon
+                        icon="INFO_ACTIVE"
+                        color={colors.NEUE_TYPE_LIGHT_GREY}
+                        size={16}
+                        useCursorPointer
+                    />
                 </Tooltip>
             )}
         </Wrapper>

@@ -15,10 +15,6 @@ const Wrapper = styled.div`
     align-items: center;
 `;
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-`;
-
 const Label = styled.div`
     display: flex;
     align-items: center;
@@ -109,7 +105,7 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
                 }}
                 bottomText={<InputError error={hexError} />}
                 labelRight={
-                    <StyledIcon size={20} icon="CROSS" onClick={() => removeOpReturn(outputId)} />
+                    <Icon size={20} icon="CROSS" onClick={() => removeOpReturn(outputId)} />
                 }
             />
         </Wrapper>

@@ -48,10 +48,6 @@ const ExpandedMobileNavigation = styled.div`
     height: 100%;
 `;
 
-const HamburgerIcon = styled(Icon)`
-    cursor: pointer;
-`;
-
 const NavigationBar = () => {
     const [opened, setOpened] = useState(false);
     const { isMobileLayout } = useLayoutSize();
@@ -66,7 +62,7 @@ const NavigationBar = () => {
                 <StyledNavigationBar isMobileLayout={isMobileLayout}>
                     <StyledDeviceSelector />
                     <HamburgerWrapper>
-                        <HamburgerIcon
+                        <Icon
                             onClick={() => setOpened(!opened)}
                             icon={opened ? 'CROSS' : 'MENU'}
                             size={24}

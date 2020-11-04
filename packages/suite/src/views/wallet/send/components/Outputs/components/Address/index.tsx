@@ -37,7 +37,6 @@ const Remove = styled.div`
 `;
 
 const StyledIcon = styled(Icon)`
-    cursor: pointer;
     display: flex;
 `;
 
@@ -117,7 +116,12 @@ const Address = ({ output, outputId, outputsCount }: Props) => {
                             composeTransaction();
                         }}
                     >
-                        <StyledIcon size={20} color={colors.BLACK50} icon="CROSS" />
+                        <StyledIcon
+                            size={20}
+                            color={colors.BLACK50}
+                            icon="CROSS"
+                            useCursorPointer
+                        />
                     </Remove>
                 ) : undefined
             }

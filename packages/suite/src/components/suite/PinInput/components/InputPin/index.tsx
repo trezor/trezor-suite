@@ -17,10 +17,6 @@ const StyledInput = styled(Input)`
     box-sizing: border-box;
 `;
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-`;
-
 interface Props {
     value: string;
     onDeleteClick: (event?: React.MouseEvent<any>) => void;
@@ -32,7 +28,7 @@ const InputPin = ({ value, onDeleteClick }: Props) => (
         noTopLabel
         noError
         value={value.replace(/[0-9]/g, '●')}
-        innerAddon={<StyledIcon onClick={onDeleteClick} color={colors.BLACK25} icon="BACK" />}
+        innerAddon={<Icon onClick={onDeleteClick} color={colors.BLACK25} icon="BACK" />}
     />
 );
 

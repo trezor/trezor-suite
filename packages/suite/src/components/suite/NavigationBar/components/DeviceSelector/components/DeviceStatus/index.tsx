@@ -55,10 +55,6 @@ const IconWrapper = styled.div`
     margin-top: 4px;
 `;
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-`;
-
 const OuterCircle = styled.div<{ show: boolean; status: Status }>`
     display: flex;
     justify-content: center;
@@ -100,7 +96,7 @@ const DeviceStatus = ({
     if (status === 'warning' && onRefreshClick) {
         return (
             <IconWrapper>
-                <StyledIcon
+                <Icon
                     onClick={(e: any) => {
                         e.stopPropagation();
                         onRefreshClick();

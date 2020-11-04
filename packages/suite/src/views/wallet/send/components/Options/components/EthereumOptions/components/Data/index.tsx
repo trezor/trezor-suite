@@ -21,10 +21,6 @@ const Space = styled.div`
     min-width: 65px;
 `;
 
-const StyledIcon = styled(Icon)`
-    cursor: pointer;
-`;
-
 interface Props {
     close: () => void;
 }
@@ -108,7 +104,7 @@ const Data = ({ close }: Props) => {
                 }}
                 bottomText={<InputError error={hexError} />}
                 labelRight={
-                    <StyledIcon
+                    <Icon
                         size={20}
                         icon="CROSS"
                         onClick={() => {
