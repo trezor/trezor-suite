@@ -44,8 +44,8 @@ export const calcFiatValueMap = (
 /**
  * Mutates the first object param and adds values from second object.
  *
- * @param {({ [k: string]: string | undefined })} valueMap
- * @param {({ [k: string]: string | undefined })} obj
+ * @param {{ string: string | undefined }} valueMap
+ * @param {{ string: string | undefined }} obj
  * @returns
  */
 export const sumFiatValueMapInPlace = (

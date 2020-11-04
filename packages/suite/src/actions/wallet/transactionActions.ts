@@ -47,6 +47,7 @@ export const reset = (account: Account): TransactionAction => ({
  * Remove certain transactions for a given account
  *
  * @param {Account} account
+ * @param {WalletAccountTransaction[]} txs
  */
 export const remove = (account: Account, txs: WalletAccountTransaction[]): TransactionAction => ({
     type: TRANSACTION.REMOVE,

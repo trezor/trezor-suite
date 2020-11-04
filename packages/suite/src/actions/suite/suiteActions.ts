@@ -207,6 +207,7 @@ export const forgetDevice = (payload: TrezorDevice): SuiteAction => ({
 /**
  * Triggered by `trezor-connect DEVICE_EVENT`
  * @param {Device} device
+ * @param {boolean} [useEmptyPassphrase=false]
  */
 export const createDeviceInstance = (device: TrezorDevice, useEmptyPassphrase = false) => async (
     dispatch: Dispatch,

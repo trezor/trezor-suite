@@ -123,6 +123,7 @@ export const updateCoinList = () => async (dispatch: Dispatch, getState: GetStat
  * Primary source of rates is TrezorConnect, coingecko serves as a fallback
  *
  * @param {FiatTicker} ticker
+ * @param {number} [maxAge=MAX_AGE]
  */
 export const updateCurrentRates = (ticker: FiatTicker, maxAge = MAX_AGE) => async (
     dispatch: Dispatch,
