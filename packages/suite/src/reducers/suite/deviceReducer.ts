@@ -219,6 +219,7 @@ const updateTimestamp = (draft: State, device?: TrezorDevice) => {
  * @param {State} draft
  * @param {TrezorDevice} device
  * @param {boolean} hidden
+ * @param {boolean} [alwaysOnDevice=false]
  * @returns
  */
 const changePassphraseMode = (
@@ -313,6 +314,7 @@ const createInstance = (draft: State, device: TrezorDevice) => {
  * Set `remember` field for a single device instance
  * @param {State} draft
  * @param {TrezorDevice} device
+ * @param {boolean} remember
  */
 const remember = (draft: State, device: TrezorDevice, remember: boolean, forceRemember?: true) => {
     // only acquired devices with state

@@ -121,7 +121,7 @@ export const resetTime = (ts: number, resetDay?: boolean) => {
  * Returns unix timestamp
  *
  * @param {number} ts
- * @param {number} weeks
+ * @param {boolean} [resetDay]
  * @returns
  */
 export const resetUTCTime = (ts: number, resetDay?: boolean) => {

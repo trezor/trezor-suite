@@ -6,7 +6,7 @@ import { Account, WalletAccountTransaction } from '@wallet-types';
 
 /**
  * Generate wallet account
- * @param {Partial<Features>} [feat]
+ * @param {Partial<Account>} [account]
  * @returns {Features}
  */
 // @ts-ignore

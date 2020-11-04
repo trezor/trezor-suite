@@ -64,7 +64,7 @@ export const setSelectedView = (view: GraphScale): GraphAction => ({
  * @param {Account} account
  * @param {Date} startDate
  * @param {Date} endDate
- * @param {number} groupBy
+ * @param {GraphRange} range
  * @returns
  */
 export const fetchAccountGraphData = (

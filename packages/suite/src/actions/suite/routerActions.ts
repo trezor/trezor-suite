@@ -39,7 +39,6 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
 /**
  * Handle Router.beforePopState action (back)
  * Called from ./support/RouterHandler
- * @param {string} url
  */
 export const onBeforePopState = () => (_dispatch: Dispatch, getState: GetState) => {
     const { locks } = getState().suite;

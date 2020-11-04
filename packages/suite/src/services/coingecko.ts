@@ -40,7 +40,7 @@ const buildCoinUrl = async (ticker: FiatTicker) => {
  * Returns the current rate for a given symbol fetched from CoinGecko API.
  * Returns null if coin for a given symbol was not found.
  *
- * @param {string} symbol
+ * @param {FiatTicker} ticker
  * @returns
  */
 export const fetchCurrentFiatRates = async (ticker: FiatTicker) => {
@@ -66,7 +66,8 @@ export const fetchCurrentFiatRates = async (ticker: FiatTicker) => {
  * Be aware that the data granularity is 1 day.
  * Returns null if coin for a given symbol was not found.
  *
- * @param {string} symbol
+ * @param {FiatTicker} ticker
+ * @param {number[]} timestamps
  * @returns
  */
 export const getFiatRatesForTimestamps = async (
