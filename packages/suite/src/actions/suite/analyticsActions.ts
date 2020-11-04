@@ -289,7 +289,7 @@ export const report = (data: AnalyticsEvent, force = false) => async (
  * @param loadedState - analytics state loaded from storage
  * @param optout if true, analytics will be on by default (opt-out mode)
  */
-export const init = (loadedState: State, optout: boolean) => async (
+export const init = (loadedState: State, optout: boolean) => (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
