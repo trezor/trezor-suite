@@ -50,3 +50,5 @@ export const WIKI_UDEV_RULES = 'https://wiki.trezor.io/Udev_rules';
 export const WIKI_TOR = 'https://wiki.trezor.io/Glossary:Tor';
 export const FEEDBACK_FORM = 'https://satoshilabs.typeform.com/to/Dqb71wm1';
 export const TOR_DOMAIN = 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion';
+export const BCH_FORK_BLOG_POST =
+    'https://blog.trezor.io/what-trezor-users-need-to-know-about-the-bitcoin-cash-fork-a21ceafdc03e';
