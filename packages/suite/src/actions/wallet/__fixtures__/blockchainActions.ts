@@ -324,7 +324,7 @@ export const onConnect = [
     {
         description: 'successful with subscription',
         initialState: {
-            accounts: [{ symbol: 'btc' }],
+            accounts: [{ symbol: 'btc', history: {} }],
             blockchain: {
                 btc: {
                     reconnection: { id: 1 },
@@ -340,7 +340,7 @@ export const onConnect = [
     {
         description: 'successful, subscribeFiatRates failed, fee levels sorted',
         initialState: {
-            accounts: [{ symbol: 'btc' }],
+            accounts: [{ symbol: 'btc', history: {} }],
         },
         // order: subscribeFiatRates > estimateFee
         connect: [
@@ -356,7 +356,7 @@ export const onConnect = [
     {
         description: 'successful, blockchainEstimateFee failed',
         initialState: {
-            accounts: [{ symbol: 'eth' }],
+            accounts: [{ symbol: 'eth', history: {} }],
         },
         // order: subscribeFiatRates > subscribe > estimateFee
         connect: [undefined, undefined, { success: false }],

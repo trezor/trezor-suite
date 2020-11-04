@@ -269,6 +269,12 @@ export const onConnect = (symbol: string) => async (dispatch: Dispatch, getState
     }
     await dispatch(subscribe(network.symbol, true));
     await dispatch(updateFeeInfo(network.symbol));
+    // update accounts for connected network
+    const accounts = getState().wallet.accounts.filter(a => a.symbol === network.symbol);
+    if (accounts.length) {
+        const promises = accounts.map(a => dispatch(accountActions.fetchAndUpdateAccount(a)));
+        await Promise.all(promises);
+    }
     dispatch({ type: BLOCKCHAIN.CONNECTED });
 };
 
