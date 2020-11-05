@@ -610,7 +610,7 @@ const definedMessages = defineMessages({
         id: 'TR_BACKEND_DISCONNECTED',
     },
     TR_BACKEND_RECONNECTING: {
-        defaultMessage: '. Reconnecting in {time} sec...',
+        defaultMessage: 'Reconnecting in {time} sec...',
         description: 'Should start with dot, continuation of TR_BACKEND_DISCONNECTED',
         id: 'TR_BACKEND_RECONNECTING',
     },
