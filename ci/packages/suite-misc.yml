@@ -17,3 +17,11 @@ suite misc:
         # find unused messages. these don't have right to exist as they pose additional budget on translators
         # todo: make it work with messages.ts
         # - yarn workspace @trezor/suite translations:unused
+
+release commit messages:
+    stage: misc
+    only:
+        refs:
+            - /^release\//
+    script:
+        - ci/scripts/check_release_commit_messages.sh
