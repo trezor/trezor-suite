@@ -4,14 +4,18 @@ import { useSelector } from '@suite-hooks';
 import { toTorUrl } from '@suite-utils/tor';
 
 const TrezorLink = (props: LinkProps) => {
-    const isTor = useSelector(state => state.suite.tor);
+    const { tor, torOnionLinks } = useSelector(state => ({
+        tor: state.suite.tor,
+        torOnionLinks: state.suite.settings.torOnionLinks,
+    }));
+
     const url = useMemo(() => {
-        if (!props.href || !isTor) {
-            return props.href;
+        if (props.href && tor && torOnionLinks) {
+            return toTorUrl(props.href);
         }
 
-        return toTorUrl(props.href);
-    }, [isTor, props.href]);
+        return props.href;
+    }, [tor, torOnionLinks, props.href]);
 
     return <Link {...props} href={url} />;
 };

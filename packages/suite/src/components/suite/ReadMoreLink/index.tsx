@@ -1,6 +1,5 @@
 import React from 'react';
-import { Link } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation, TrezorLink } from '@suite-components';
 import { URLS } from '@suite-constants';
 import { ExtendedMessageDescriptor } from '@suite-types';
 
@@ -18,15 +17,15 @@ export const ReadMoreLink = ({ url, message, linkLabel }: Props) => {
             id={message}
             values={{
                 TR_LEARN_MORE: (
-                    <Link variant="nostyle" href={URLS[url]}>
+                    <TrezorLink variant="nostyle" href={URLS[url]}>
                         <Translation id={linkLabel || 'TR_LEARN_MORE'} />
-                    </Link>
+                    </TrezorLink>
                 ),
             }}
         />
     ) : (
-        <Link href={URLS[url]}>
+        <TrezorLink href={URLS[url]}>
             <Translation id={linkLabel || 'TR_LEARN_MORE'} />
-        </Link>
+        </TrezorLink>
     );
 };

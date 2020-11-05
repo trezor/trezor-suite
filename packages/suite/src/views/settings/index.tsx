@@ -13,13 +13,14 @@ import {
     TextColumn,
 } from '@suite-components/Settings';
 import { FIAT, LANGUAGES } from '@suite-config';
-import { useAnalytics, useDevice, useSelector } from '@suite-hooks';
+import { useAnalytics, useDevice, useSelector, useActions } from '@suite-hooks';
 import { Button, Tooltip, Switch } from '@trezor/components';
 import { capitalizeFirstLetter } from '@suite-utils/string';
+import * as suiteActions from '@suite-actions/suiteActions';
 
 import { Props } from './Container';
 import { getReleaseUrl } from '@suite/services/github';
-import { isDesktop } from '@suite-utils/env';
+import { isDesktop, isWeb } from '@suite-utils/env';
 
 const buildCurrencyOption = (currency: string) => ({
     value: currency,
@@ -63,7 +64,13 @@ const Settings = ({
     const isDeviceLocked = isLocked();
 
     // Tor
-    const tor = useSelector(state => state.suite.tor);
+    const { tor, torOnionLinks } = useSelector(state => ({
+        tor: state.suite.tor,
+        torOnionLinks: state.suite.settings.torOnionLinks,
+    }));
+    const { setOnionLinks } = useActions({
+        setOnionLinks: suiteActions.setOnionLinks,
+    });
     const [torAddress, setTorAddress] = useState('');
     useEffect(() => {
         window.desktopApi?.getTorAddress().then(address => setTorAddress(address));
@@ -211,54 +218,79 @@ const Settings = ({
                 )}
             </Section>
 
-            {isDesktop() && (
+            {(isDesktop() || (isWeb() && tor)) && (
                 <Section title={<Translation id="TR_TOR" />}>
+                    {isDesktop() && (
+                        <>
+                            <SectionItem>
+                                <TextColumn
+                                    title={<Translation id="TR_TOR_TITLE" />}
+                                    description={
+                                        <Translation
+                                            id="TR_TOR_DESCRIPTION"
+                                            values={{
+                                                lineBreak: <br />,
+                                            }}
+                                        />
+                                    }
+                                    learnMore="https://www.torproject.org/"
+                                />
+                                <ActionColumn>
+                                    <Switch
+                                        data-test="@settings/general/tor-switch"
+                                        checked={tor}
+                                        onChange={() => {
+                                            analytics.report({
+                                                type: 'menu/toggle-tor',
+                                                payload: {
+                                                    value: !tor,
+                                                },
+                                            });
+                                            window.desktopApi!.toggleTor(!tor);
+                                        }}
+                                    />
+                                </ActionColumn>
+                            </SectionItem>
+                            <SectionItem>
+                                <TextColumn
+                                    title={<Translation id="TR_TOR_PARAM_TITLE" />}
+                                    description={<Translation id="TR_TOR_PARAM_DESCRIPTION" />}
+                                />
+                                <ActionColumn>
+                                    <ActionInput
+                                        noTopLabel
+                                        noError
+                                        value={torAddress}
+                                        state={/* (TODO: Error check) ? 'error' : */ undefined}
+                                        onChange={(event: React.FormEvent<HTMLInputElement>) =>
+                                            setTorAddress(event.currentTarget.value)
+                                        }
+                                        onBlur={saveTorAddress}
+                                        data-test="@settings/general/tor-address"
+                                        placeholder="127.0.0.1:9050"
+                                    />
+                                </ActionColumn>
+                            </SectionItem>
+                        </>
+                    )}
                     <SectionItem>
                         <TextColumn
-                            title={<Translation id="TR_TOR_TITLE" />}
-                            description={
-                                <Translation
-                                    id="TR_TOR_DESCRIPTION"
-                                    values={{
-                                        lineBreak: <br />,
-                                    }}
-                                />
-                            }
-                            learnMore="https://www.torproject.org/"
+                            title={<Translation id="TR_ONION_LINKS_TITLE" />}
+                            description={<Translation id="TR_ONION_LINKS_DESCRIPTION" />}
                         />
                         <ActionColumn>
                             <Switch
-                                data-test="@settings/general/tor-switch"
-                                checked={tor}
+                                data-test="@settings/general/onion-links-switch"
+                                checked={torOnionLinks}
                                 onChange={() => {
                                     analytics.report({
-                                        type: 'menu/toggle-tor',
+                                        type: 'menu/toggle-onion-links',
                                         payload: {
-                                            value: !tor,
+                                            value: !torOnionLinks,
                                         },
                                     });
-                                    window.desktopApi!.toggleTor(!tor);
+                                    setOnionLinks(!torOnionLinks);
                                 }}
-                            />
-                        </ActionColumn>
-                    </SectionItem>
-                    <SectionItem>
-                        <TextColumn
-                            title={<Translation id="TR_TOR_PARAM_TITLE" />}
-                            description={<Translation id="TR_TOR_PARAM_DESCRIPTION" />}
-                        />
-                        <ActionColumn>
-                            <ActionInput
-                                noTopLabel
-                                noError
-                                value={torAddress}
-                                state={/* (TODO: Error check) ? 'error' : */ undefined}
-                                onChange={(event: React.FormEvent<HTMLInputElement>) =>
-                                    setTorAddress(event.currentTarget.value)
-                                }
-                                onBlur={saveTorAddress}
-                                data-test="@settings/general/tor-address"
-                                placeholder="127.0.0.1:9050"
                             />
                         </ActionColumn>
                     </SectionItem>

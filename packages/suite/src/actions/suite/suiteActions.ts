@@ -41,6 +41,7 @@ export type SuiteAction =
     | { type: typeof SUITE.SET_DEBUG_MODE; payload: Partial<DebugModeOptions> }
     | { type: typeof SUITE.ONLINE_STATUS; payload: boolean }
     | { type: typeof SUITE.TOR_STATUS; payload: boolean }
+    | { type: typeof SUITE.ONION_LINKS; payload: boolean }
     | { type: typeof SUITE.LOCK_UI; payload: boolean }
     | { type: typeof SUITE.LOCK_DEVICE; payload: boolean }
     | { type: typeof SUITE.LOCK_ROUTER; payload: boolean }
@@ -101,6 +102,11 @@ export const updateOnlineStatus = (payload: boolean): SuiteAction => ({
  */
 export const updateTorStatus = (payload: boolean) => ({
     type: SUITE.TOR_STATUS,
+    payload,
+});
+
+export const setOnionLinks = (payload: boolean) => ({
+    type: SUITE.ONION_LINKS,
     payload,
 });
 

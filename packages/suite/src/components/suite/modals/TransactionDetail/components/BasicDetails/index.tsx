@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
-import { Icon, colors, variables, Link, Loader } from '@trezor/components';
-import { Translation, HiddenPlaceholder } from '@suite-components';
+import { Icon, colors, variables, Loader } from '@trezor/components';
+import { Translation, HiddenPlaceholder, TrezorLink } from '@suite-components';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction } from '@wallet-types';
 
@@ -32,7 +32,7 @@ const TransactionId = styled(props => <HiddenPlaceholder {...props} />)`
     font-variant-numeric: slashed-zero tabular-nums;
 `;
 
-const ExplorerLink = styled(Link)`
+const ExplorerLink = styled(props => <TrezorLink {...props} />)`
     font-size: ${variables.NEUE_FONT_SIZE.TINY};
     width: 100%; /* makes text overflow ellipsis work */
 `;
