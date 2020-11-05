@@ -1,9 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Card } from '@suite-components';
 import { WalletLayout } from '@wallet-components';
 import { useSendForm, SendContext } from '@wallet-hooks/useSendForm';
+import { useSelector } from '@suite-hooks';
 
 import Header from './components/Header';
 import Outputs from './components/Outputs';
@@ -12,8 +12,7 @@ import Fees from './components/Fees';
 import TotalSent from './components/TotalSent';
 import ReviewButton from './components/ReviewButton';
 import Raw from './components/Raw';
-import { AppState } from '@suite-types';
-import { SendFormProps, UseSendFormProps } from '@wallet-types/sendForm';
+import { UseSendFormProps } from '@wallet-types/sendForm';
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -22,35 +21,37 @@ const StyledCard = styled(Card)`
     padding: 0;
 `;
 
-const mapStateToProps = (state: AppState): SendFormProps => ({
-    selectedAccount: state.wallet.selectedAccount,
-    fiat: state.wallet.fiat,
-    localCurrency: state.wallet.settings.localCurrency,
-    fees: state.wallet.fees,
-    online: state.suite.online,
-    sendRaw: state.wallet.send.sendRaw,
-});
-
 // inner component for selectedAccount.status = "loaded"
 // separated to call `useSendForm` hook at top level
-const SendLoaded = (props: UseSendFormProps) => {
+// children are only for test purposes, this prop is not available in regular build
+const SendLoaded: React.FC<UseSendFormProps> = ({ children, ...props }) => {
     const sendContextValues = useSendForm(props);
     return (
         <WalletLayout title="TR_NAV_SEND" account={props.selectedAccount}>
             <SendContext.Provider value={sendContextValues}>
                 <StyledCard customHeader={<Header />}>
-                    <Outputs />
+                    <Outputs disableAnim={!!children} />
                     <Options />
                 </StyledCard>
                 <Fees />
                 <TotalSent />
                 <ReviewButton />
+                {children}
             </SendContext.Provider>
         </WalletLayout>
     );
 };
 
-const Send = (props: SendFormProps) => {
+const Send: React.FC = ({ children }) => {
+    const props = useSelector(state => ({
+        selectedAccount: state.wallet.selectedAccount,
+        fiat: state.wallet.fiat,
+        localCurrency: state.wallet.settings.localCurrency,
+        fees: state.wallet.fees,
+        online: state.suite.online,
+        sendRaw: state.wallet.send.sendRaw,
+    }));
+
     const { selectedAccount } = props;
 
     if (selectedAccount.status !== 'loaded') {
@@ -65,7 +66,12 @@ const Send = (props: SendFormProps) => {
         );
     }
 
-    return <SendLoaded {...props} selectedAccount={selectedAccount} />;
+    /* children are only for test purposes, this prop is not available in regular build */
+    return (
+        <SendLoaded {...props} selectedAccount={selectedAccount}>
+            {children}
+        </SendLoaded>
+    );
 };
 
-export default connect(mapStateToProps)(Send);
+export default Send;
