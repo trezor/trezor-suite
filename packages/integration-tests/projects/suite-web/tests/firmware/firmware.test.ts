@@ -8,7 +8,7 @@ describe('Firmware', () => {
     });
 
     it('Firmware outdated static notification should open firmware update modal', () => {
-        cy.task('startEmu', { version: '2.1.4', wipe: true });
+        cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
