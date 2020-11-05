@@ -37,7 +37,7 @@
         "react-hook-form": "6.7.1",
         "react-hotkeys-hook": "^1.5.4",
         "react-intl": "^5.8.5",
-        "react-markdown": "^4.3.1",
+        "react-markdown": "^5.0.0",
         "react-native-web": "^0.11.2",
         "react-qr-reader": "^2.2.1",
         "react-qr-svg": "^2.2.1",
