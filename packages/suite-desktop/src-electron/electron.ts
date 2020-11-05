@@ -303,6 +303,11 @@ const init = async () => {
 
     // Window controls
     ipcMain.on('window/close', () => {
+        // Keeping the devtools open might prevent the app from closing
+        if (mainWindow.webContents.isDevToolsOpened()) {
+            mainWindow.webContents.closeDevTools();
+        }
+
         mainWindow.close();
     });
     ipcMain.on('window/minimize', () => {
