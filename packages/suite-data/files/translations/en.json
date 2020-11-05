@@ -135,7 +135,7 @@
 	"TR_CONNECT": "Connect",
 	"TR_DISCONNECT": "Disconnect",
 	"TR_BACKEND_DISCONNECTED": "Backend is disconnected",
-	"TR_BACKEND_RECONNECTING": ". Reconnecting in {time} sec...",
+	"TR_BACKEND_RECONNECTING": "Reconnecting in {time} sec...",
 	"TR_BACKGROUND_GALLERY": "Homescreen background gallery",
 	"TR_BACKUP": "Wallet backup",
 	"TR_BACKUP_FINISHED_BUTTON": "Continue setup",
