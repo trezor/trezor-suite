@@ -1,27 +1,30 @@
-# number of utility scripts that are nice and useful but perfectly ok if they run only once a day :]
-suite misc:
-    # only:
-    #     - schedules
+outdated:
     stage: misc
+    only:
+        - schedules
     allow_failure: true
+    script:
+        # tests whether there are not 'too many' outdated dependencies
+        - ./ci/scripts/outdated.sh
+
+urls_health:
+    stage: misc
+    only:
+        - schedules
     script:
         # tests whether urls in constants return 200 status (shall detect dead links)
         - yarn workspace @trezor/suite test-health
-        # tests whether there are not 'too many' outdated dependencies
-        - ./ci/scripts/outdated.sh
+
+# Few very low priority scripts. 
+misc: 
+    stage: misc
+    only:
+        - schedules
+    script:
         # tests whether we have not included same svgs multiple times (it is hard to see from code)
         - yarn workspace @trezor/suite-data test-same-svgs
         # some random script pretending it checks something (actually it should use part of lighthouse.js for vulnerabilities checking)
         # but it should probably be used in more elaborate way. Or we may use lighthouse directly
         - yarn is-website-vulnerable ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME} | node ./ci/scripts/check-vulnerabilities.js
-        # find unused messages. these don't have right to exist as they pose additional budget on translators
         # todo: make it work with messages.ts
         # - yarn workspace @trezor/suite translations:unused
-
-release commit messages:
-    stage: misc
-    only:
-        refs:
-            - /^release\//
-    script:
-        - ci/scripts/check_release_commit_messages.sh

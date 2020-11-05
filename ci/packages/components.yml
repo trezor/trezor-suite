@@ -1,4 +1,18 @@
-components build-storybook:
+.run_all_rules: &run_all_rules
+    refs:
+      - develop
+      - releases
+      - schedules
+      - /^release\//
+      - /^run\//
+    changes:
+      - packages/components
+      - packages/components-storybook
+      - yarn.lock
+
+# Build
+
+.build_common: &build_common
   stage: build
   script:
     - yarn workspace @trezor/components storybook-build
@@ -8,13 +22,23 @@ components build-storybook:
     paths:
       - packages/components/.build-storybook
 
-components storybook deploy dev:
+components build-storybook:
+  <<: *build_common
+  only:
+    <<: *run_all_rules
+
+components build-storybook:
+  <<: *build_common
+  when: manual
+  except:
+      <<: *run_all_rules
+
+# Deploy 
+
+.deploy_common: &deploy_common
   stage: deploy to dev
   variables:
     DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/components/${CI_BUILD_REF_NAME}
-  needs:
-    - install and build
-    - components build-storybook
   environment:
     name: ${CI_BUILD_REF_NAME}
     url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
@@ -25,6 +49,18 @@ components storybook deploy dev:
   tags:
     - deploy
 
+# Currently two jobs needed, it seems not to be possible to have a job depending on manual job
+# https://gitlab.com/gitlab-org/gitlab/-/issues/31264
+components storybook deploy dev:
+  <<: *deploy_common
+  only:
+    <<: *run_all_rules
+
+components storybook deploy dev:
+  <<: *deploy_common
+  when: manual
+  except:
+      <<: *run_all_rules
 
 # components-storybook test snapshots:
 #   stage: integration testing

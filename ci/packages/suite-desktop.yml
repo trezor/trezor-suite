@@ -1,7 +1,5 @@
 .build: &build
     stage: build
-    needs:
-        - install and build
     script:
         - yarn cache clean
         - yarn workspace @trezor/suite-data copy-static-files
@@ -25,7 +23,7 @@
         - mv packages/suite-desktop/build-electron/* .
         - more latest*.yml | cat
 
-.auto_run_branches: &auto_run_branches
+.run_all_rules: &run_all_rules
     refs:
         - develop
         - releases
@@ -35,7 +33,7 @@
 
 suite-desktop build mac:
     only:
-        <<: *auto_run_branches
+        <<: *run_all_rules
     tags:
         - darwin
     variables:
@@ -59,7 +57,7 @@ suite-desktop build mac codesign:
 
 suite-desktop build linux:
     only:
-        <<: *auto_run_branches
+        <<: *run_all_rules
     variables:
         artifact: ${DESKTOP_APP_NAME}*
         platform: linux
@@ -80,7 +78,7 @@ suite-desktop build linux codesign:
 
 suite-desktop build windows:
     only:
-        <<: *auto_run_branches
+        <<: *run_all_rules
     image: electronuserland/builder:wine
     variables:
         artifact: ${DESKTOP_APP_NAME}*
@@ -104,7 +102,7 @@ suite-desktop build windows codesign:
 suite-desktop deploy dev:
     stage: deploy to dev
     only:
-        <<: *auto_run_branches
+        <<: *run_all_rules
     variables:
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_BUILD_REF_NAME}
     script:
