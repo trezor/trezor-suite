@@ -115,6 +115,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         case SUITE.SET_LANGUAGE:
         case SUITE.SET_FLAG:
         case SUITE.SET_DEBUG_MODE:
+        case SUITE.ONION_LINKS:
             api.dispatch(storageActions.saveSuiteSettings());
             break;
 

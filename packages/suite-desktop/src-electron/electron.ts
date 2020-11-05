@@ -42,6 +42,10 @@ const httpReceiver = new HttpReceiver();
 const bridge = new BridgeProcess();
 const tor = new TorProcess();
 
+// Settings
+const updateSettings = store.getUpdateSettings();
+const torSettings = store.getTorSettings();
+
 const registerShortcuts = (window: BrowserWindow) => {
     // internally uses before-input-event, which should be safer than adding globalShortcut and removing it on blur event
     // https://github.com/electron/electron/issues/8491#issuecomment-274790124
@@ -150,7 +154,7 @@ const init = async () => {
         // TODO? url.startsWith('http:') || url.startsWith('https:');
         if (url !== mainWindow.webContents.getURL()) {
             event.preventDefault();
-            if (!config.allowedExternalUrls.some(u => url.startsWith(u))) {
+            if (torSettings.running || !config.allowedExternalUrls.some(u => url.startsWith(u))) {
                 // TODO: Replace with in-app modal
                 const result = dialog.showMessageBoxSync(mainWindow, {
                     type: 'warning',
@@ -212,7 +216,6 @@ const init = async () => {
     mainWindow.loadURL(src);
 
     // TOR
-    const torSettings = store.getTorSettings();
     const sess = mainWindow.webContents.session;
     const toggleTor = async (start: boolean) => {
         if (start) {
@@ -350,7 +353,6 @@ const init = async () => {
     httpReceiver.start();
 
     // Updates (move in separate file)
-    const updateSettings = store.getUpdateSettings();
     let latestVersion = {};
 
     autoUpdater.autoDownload = false;

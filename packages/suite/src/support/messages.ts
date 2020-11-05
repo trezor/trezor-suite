@@ -2594,6 +2594,15 @@ const definedMessages = defineMessages({
         defaultMessage:
             "Enabling this will route all of Suite's traffic through the Tor network.{lineBreak}All requests to Trezor infrastructure will be pointed to our Tor services, increasing your privacy and security.",
     },
+    TR_ONION_LINKS_TITLE: {
+        id: 'TR_ONION_LINKS_TITLE',
+        defaultMessage: 'Open trezor.io links as .onion links',
+    },
+    TR_ONION_LINKS_DESCRIPTION: {
+        id: 'TR_ONION_LINKS_DESCRIPTION',
+        defaultMessage:
+            'With this setting enabled, all trezor.io links will be opened as .onion links.',
+    },
     TR_TOR_PARAM_TITLE: {
         id: 'TR_TOR_PARAM_TITLE',
         defaultMessage: 'Tor address and port',

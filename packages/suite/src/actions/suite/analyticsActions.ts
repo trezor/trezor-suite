@@ -160,6 +160,12 @@ export type AnalyticsEvent =
           };
       }
     | {
+          type: 'menu/toggle-onion-links';
+          payload: {
+              value: boolean;
+          };
+      }
+    | {
           type: 'wallet/add-account';
           payload: {
               /** normal, segwit, legacy */

@@ -25,6 +25,7 @@ interface Flags {
 
 interface SuiteSettings {
     language: typeof LANGUAGES[number]['code'];
+    torOnionLinks: boolean;
     debug: DebugModeOptions;
 }
 
@@ -60,6 +61,7 @@ const initialState: SuiteState = {
     },
     settings: {
         language: 'en',
+        torOnionLinks: isWeb(),
         debug: {
             invityAPIUrl: undefined,
             showDebugMenu: false,
@@ -139,6 +141,10 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.TOR_STATUS:
                 draft.tor = action.payload;
+                break;
+
+            case SUITE.ONION_LINKS:
+                draft.settings.torOnionLinks = action.payload;
                 break;
 
             case SUITE.LOCK_UI:
