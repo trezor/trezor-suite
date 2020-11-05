@@ -1,6 +1,6 @@
 import React from 'react';
-import { Dropdown, Icon, Link, colors, variables } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Dropdown, Icon, colors, variables } from '@trezor/components';
+import { Translation, TrezorLink } from '@suite-components';
 import styled from 'styled-components';
 import { useSelector } from '@suite-hooks';
 import { FEEDBACK_FORM, SUPPORT_URL } from '@suite-constants/urls';
@@ -35,7 +35,7 @@ const Version = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const StyledLink = styled(Link)`
+const StyledLink = styled(TrezorLink)`
     padding: 10px 16px;
     width: 100%;
 `;
