@@ -222,6 +222,14 @@ const getTrezorConnect = <M>(methods?: M) => {
             getAccountInfo: jest.fn(async _params => {
                 return { success: false, ...getFixture(), _params };
             }),
+            composeTransaction: jest.fn(async _params => {
+                const f = getFixture();
+                if (!f) return { success: false, payload: { error: 'error' }, _params };
+                if (typeof f.delay === 'number') {
+                    await new Promise(resolve => setTimeout(resolve, f.delay));
+                }
+                return f.response;
+            }),
             changePin: () => {
                 return {
                     success: true,

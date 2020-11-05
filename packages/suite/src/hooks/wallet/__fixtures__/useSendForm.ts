@@ -90,21 +90,30 @@ export const addingOutputs = [
         },
         actions: [
             {
-                button: 'add-output',
+                type: 'click',
+                element: 'add-output',
                 result: {
-                    outputs: [{ address: '' }, { address: '' }],
+                    formValues: {
+                        outputs: [{ address: '' }, { address: '' }],
+                    },
                 },
             },
             {
-                button: 'outputs[0].remove',
+                type: 'click',
+                element: 'outputs[0].remove',
                 result: {
-                    outputs: [{ address: '' }],
+                    formValues: {
+                        outputs: [{ address: '' }],
+                    },
                 },
             },
             {
-                button: 'clear-form',
+                type: 'click',
+                element: 'clear-form',
                 result: {
-                    outputs: [{ address: '' }],
+                    formValues: {
+                        outputs: [{ address: '' }],
+                    },
                 },
             },
         ],
@@ -138,24 +147,33 @@ export const addingOutputs = [
         },
         actions: [
             {
-                button: 'add-output',
+                type: 'click',
+                element: 'add-output',
                 result: {
-                    outputs: [{ address: 'A' }, { address: 'B' }, { address: '' }],
-                    setMaxOutputId: 1,
+                    formValues: {
+                        outputs: [{ address: 'A' }, { address: 'B' }, { address: '' }],
+                        setMaxOutputId: 1,
+                    },
                 },
             },
             {
-                button: 'outputs[0].remove',
+                type: 'click',
+                element: 'outputs[0].remove',
                 result: {
-                    outputs: [{ address: 'B' }, { address: '' }],
-                    setMaxOutputId: 0,
+                    formValues: {
+                        outputs: [{ address: 'B' }, { address: '' }],
+                        setMaxOutputId: 0,
+                    },
                 },
             },
             {
-                button: 'clear-form',
+                type: 'click',
+                element: 'clear-form',
                 result: {
-                    outputs: [{ address: '' }],
-                    setMaxOutputId: undefined,
+                    formValues: {
+                        outputs: [{ address: '' }],
+                        setMaxOutputId: undefined,
+                    },
                 },
             },
         ],
@@ -189,24 +207,33 @@ export const addingOutputs = [
         },
         actions: [
             {
-                button: 'add-output',
+                type: 'click',
+                element: 'add-output',
                 result: {
-                    outputs: [{ address: 'A' }, { address: 'B' }, { address: '' }],
-                    setMaxOutputId: 0,
+                    formValues: {
+                        outputs: [{ address: 'A' }, { address: 'B' }, { address: '' }],
+                        setMaxOutputId: 0,
+                    },
                 },
             },
             {
-                button: 'outputs[0].remove',
+                type: 'click',
+                element: 'outputs[0].remove',
                 result: {
-                    outputs: [{ address: 'B' }, { address: '' }],
-                    setMaxOutputId: undefined,
+                    formValues: {
+                        outputs: [{ address: 'B' }, { address: '' }],
+                        setMaxOutputId: undefined,
+                    },
                 },
             },
             {
-                button: 'clear-form',
+                type: 'click',
+                element: 'clear-form',
                 result: {
-                    outputs: [{ address: '' }],
-                    setMaxOutputId: undefined,
+                    formValues: {
+                        outputs: [{ address: '' }],
+                        setMaxOutputId: undefined,
+                    },
                 },
             },
         ],
@@ -447,7 +474,7 @@ export const setMax = [
             composeTransactionCalls: 2,
             composedLevels: { normal: { type: 'error' }, custom: { type: 'final' } },
             formValues: {
-                selectedFee: 'custom',
+                selectedFee: 'custom' as const,
                 feePerUnit: '2',
                 outputs: [{ amount: '0.1', fiat: '0.10' }],
             },
