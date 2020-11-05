@@ -4,7 +4,9 @@ import { Account } from '@wallet-types';
 import { formatCoinBalance } from '@wallet-utils/balanceUtils';
 import { HiddenPlaceholder } from '@suite-components';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+    padding-right: 10px;
+`;
 const Value = styled.span`
     font-variant-numeric: tabular-nums;
 `;
