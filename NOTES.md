@@ -18,16 +18,33 @@
 
 ### Debugging Electron build
 
--   Mac: Run /path/to/app/TrezorSuite.app/Contents/MacOS/TrezorSuite --debug
--   Decompile: npx asar extract packages/suite-desktop/build-electron/mac/TrezorSuite.app/Contents/Resources/app.asar ./decompiled
+-   macOS: Run `/path/to/app/TrezorSuite.app/Contents/MacOS/TrezorSuite --debug`
+-   Decompile: `npx asar extract packages/suite-desktop/build-electron/mac/TrezorSuite.app/Contents/Resources/app.asar ./decompiled`
 
 ### Remove IndexedDB from desktop
+To remove a database remove following folder:
 
-Linux
-rm -rf /home/<user>/.config/@trezor/suite-desktop/IndexedDB
+#### Windows
+`C:\Users\<user>\AppData\Roaming\@trezor\suite-desktop\IndexedDB`
 
-Mac
-rm -rf /Users/<user>/Library/Application Support/@trezor/suite-desktop/IndexedDB
+#### Linux
+`/home/<user>/.config/@trezor/suite-desktop/IndexedDB`
+
+#### macOS
+`/Users/<user>/Library/Application Support/@trezor/suite-desktop/IndexedDB`
+
+### Clearing Electron cache
+To clear electron cache delete following folder:
+
+#### Windows
+`C:\Users\<user>\AppData\Roaming\@trezor\suite-desktop\Cache`
+
+#### Linux
+`/home/<user>/.config/@trezor/suite-desktop/Cache`
+
+#### macOS
+`/Users/<user>/Library/ApplicationSupport/@trezor/suite-desktop/Cache`
+
 
 ## Tests
 
