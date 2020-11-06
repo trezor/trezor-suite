@@ -73,6 +73,11 @@ const Version = styled.div<{ show: boolean }>`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
+const BridgeDesktopNote = styled(P)`
+    margin-top: 10px;
+    font-size: ${variables.FONT_SIZE.TINY};
+`;
+
 const StyledImage = styled(Image)`
     @media screen and (max-height: ${variables.SCREEN_SIZE.MD}) {
         /* workaround for low height screens => hide image */
@@ -131,7 +136,7 @@ const InstallBridge = (props: Props) => {
     };
 
     const target = selectedTarget || data.target;
-    const isLoading = !props.transport || isDesktop();
+    const isLoading = !props.transport;
     const transportAvailable = props.transport && props.transport.type;
 
     return (
@@ -148,6 +153,11 @@ const InstallBridge = (props: Props) => {
                         id="TR_CURRENTLY_INSTALLED_TREZOR"
                         values={{ version: data.currentVersion }}
                     />
+                    {isDesktop() && (
+                        <BridgeDesktopNote>
+                            <Translation id="TR_OUTDATED_BRIDGE_DESKTOP" />
+                        </BridgeDesktopNote>
+                    )}
                 </Version>
                 <StyledImage image="T_BRIDGE_CHECK" />
                 {isLoading ? (

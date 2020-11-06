@@ -2631,6 +2631,11 @@ const definedMessages = defineMessages({
         id: 'TR_CURRENTLY_INSTALLED_TREZOR',
         defaultMessage: 'Currently installed: Trezor Bridge {version}',
     },
+    TR_OUTDATED_BRIDGE_DESKTOP: {
+        id: 'TR_OUTDATED_BRIDGE_DESKTOP',
+        defaultMessage:
+            'The Trezor Suite application comes with Trezor Bridge bundled. If you only use the Trezor Suite application, we recommend you to uninstall Trezor Bridge in order to use the bundled one. If you are using Trezor in your browser as well, updating Trezor Bridge is recommended.',
+    },
     EVENT_DEVICE_CONNECT: {
         id: 'EVENT_DEVICE_CONNECT',
         defaultMessage: 'Device {label} connected',
