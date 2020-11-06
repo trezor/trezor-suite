@@ -32,6 +32,7 @@ export type AnalyticsEvent =
         suite-ready
         Triggers on application start. Logs part of suite setup that might have been loaded from storage
         but it might also be suite default setup that is loaded when suite starts for the first time.
+        IMPORTANT: skipped if user opens suite for the first time. In such case, the first log will be 'initial-run-completed'
         */
           type: 'suite-ready';
           payload: {
@@ -258,7 +259,12 @@ export const report = (data: AnalyticsEvent, force = false) => async (
     }
 
     const { enabled, sessionId, instanceId } = getState().analytics;
+    const { initialRun } = getState().suite.flags;
 
+    // don't report until user had chance to optout
+    if (initialRun) {
+        return;
+    }
     // the only case we want to override users 'do not log' choice is when we
     // want to log that user did not give consent to logging.
     if (!enabled && !force) {
