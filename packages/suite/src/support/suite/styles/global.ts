@@ -12,7 +12,8 @@ const globalStyles = createGlobalStyle<{ theme: SuiteThemeColors }>`
     #__next {
         display: flex;
         flex-direction: column;
-        min-height: 100%;
+        height: 100%;
+        overflow-y: hidden;
     }
 
     input, textarea {
@@ -26,6 +27,7 @@ const globalStyles = createGlobalStyle<{ theme: SuiteThemeColors }>`
       -moz-osx-font-smoothing: grayscale;
       font-family: "TT Hoves", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
       height: 100%;
+      overflow-y: hidden;
     }
 
     a {

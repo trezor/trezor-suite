@@ -99,6 +99,8 @@ const ExpandedMobileWrapper = styled.div`
     border-bottom-right-radius: 4px;
     padding: 0px 16px;
     padding-bottom: 16px;
+
+    ${scrollbarStyles}
 `;
 
 const Scroll = styled.div`
