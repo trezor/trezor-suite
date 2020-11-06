@@ -20,6 +20,9 @@ jest.mock('@suite-utils/random', () => {
 export const getInitialState = (state: InitialState | undefined) => {
     const analytics = state ? state.analytics : undefined;
     return {
+        suite: {
+            flags: { initialRun: false },
+        },
         analytics: {
             ...analyticsReducer(undefined, { type: 'foo' } as any),
             ...analytics,
