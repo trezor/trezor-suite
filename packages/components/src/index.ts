@@ -32,6 +32,7 @@ import { TrezorLogo, TrezorLogoProps } from './components/logos/TrezorLogo';
 import { Loader, LoaderProps } from './components/loaders/Loader';
 import { Tooltip, TooltipProps, tooltipGlobalStyles } from './components/Tooltip';
 import { scrollbarStyles } from './components/Scrollbar';
+import { Timerange, TimerangeProps, timerangeGlobalStyles } from './components/Timerange';
 import { SelectBar, SelectBarProps } from './components/form/SelectBar';
 import * as types from './support/types';
 
@@ -76,6 +77,9 @@ export {
     Tooltip,
     TooltipProps,
     tooltipGlobalStyles,
+    Timerange,
+    TimerangeProps,
+    timerangeGlobalStyles,
     types,
     ConfirmOnDevice,
     ConfirmOnDeviceProps,

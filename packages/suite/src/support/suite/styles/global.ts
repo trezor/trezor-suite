@@ -5,6 +5,7 @@ import {
     tooltipGlobalStyles,
     SuiteThemeColors,
     scrollbarStyles,
+    timerangeGlobalStyles,
 } from '@trezor/components';
 import { createGlobalStyle } from 'styled-components';
 
@@ -52,6 +53,7 @@ const globalStyles = createGlobalStyle<{ theme: SuiteThemeColors }>`
     ${notifications}
     ${tooltipGlobalStyles}
     ${scrollbarStyles}
+    ${timerangeGlobalStyles}
 `;
 
 export default globalStyles;
