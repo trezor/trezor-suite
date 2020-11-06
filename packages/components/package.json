@@ -21,13 +21,14 @@
         "@tippy.js/react": "^3.1.1",
         "@types/react-select": "^3.0.13",
         "@types/styled-components": "^5.1.0",
+        "react-datepicker": "3.3.0",
+        "react-is": "16.13.1",
         "react-select": "^3.1.0",
         "react-svg": "^11.0.24",
         "react-switch": "^5.0.1",
-        "react-is": "16.13.1"
+        "date-fns": "^2.15.0"
     },
     "devDependencies": {
-        "@storybook/core": "5.3.19",
         "@storybook/addon-actions": "^5.3.19",
         "@storybook/addon-centered": "^5.3.19",
         "@storybook/addon-info": "5.3.19",
@@ -35,8 +36,10 @@
         "@storybook/addon-links": "^5.3.19",
         "@storybook/addon-viewport": "^5.3.19",
         "@storybook/addons": "^5.3.19",
+        "@storybook/core": "5.3.19",
         "@storybook/react": "^5.3.19",
         "@types/randomcolor": "0.5.5",
+        "@types/react-datepicker": "^3.1.1",
         "awesome-typescript-loader": "^5.2.1",
         "babel-loader": "^8.2.1",
         "fs-extra": "^9.0.1",
