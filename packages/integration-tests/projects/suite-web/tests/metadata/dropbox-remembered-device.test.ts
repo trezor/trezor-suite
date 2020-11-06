@@ -108,10 +108,10 @@ describe.skip('Metadata', () => {
 
         // device saved, disconnect provider
         cy.getTestElement('@menu/switch-device').click();
-        cy.getTestElement('@switch-device/wallet-instance/toggle-remember-switch').click({
+        cy.getTestElement('@switch-device/wallet-on-index/toggle-remember-switch').click({
             force: true,
         });
-        cy.getTestElement('@switch-device/wallet-instance').click();
+        cy.getTestElement('@switch-device/wallet-on-index').click();
         cy.task('stopEmu');
 
         cy.log('Device is saved, when disconnected, user still can edit labels');

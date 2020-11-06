@@ -20,7 +20,7 @@ describe('Passphrase', () => {
 
     it('just test passphrase input', () => {
         cy.getTestElement('@menu/switch-device').click();
-        cy.getTestElement('@switch-device/add-wallet-button').click();
+        cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
         cy.task('pressYes');
 
         // select whole text and delete it
@@ -70,7 +70,7 @@ describe('Passphrase', () => {
         cy.log('passphrase abc for the first time');
         // add 1st hidden wallet
         cy.getTestElement('@menu/switch-device').click();
-        cy.getTestElement('@switch-device/add-wallet-button').click();
+        cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
         cy.task('pressYes');
         // first input
         cy.getTestElement('@passphrase/input').type('abc');
@@ -100,7 +100,7 @@ describe('Passphrase', () => {
         cy.log('passphrase def');
         // add 2nd hidden wallet
         cy.getTestElement('@menu/switch-device').click();
-        cy.getTestElement('@switch-device/add-wallet-button').click();
+        cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
         cy.getTestElement('@passphrase/input').type('def');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         // confirm
@@ -121,7 +121,7 @@ describe('Passphrase', () => {
         cy.log('passphrase abc again. now it is cached in device');
         // now go back to the 1st wallet
         cy.getTestElement('@menu/switch-device').click();
-        cy.getTestElement('@switch-device/wallet-instance/1').click();
+        cy.getTestElement('@switch-device/wallet-on-index/1').click();
         // reveal 0 address again
         // no address should be in table yet
         cy.getTestElement('@wallet/receive/used-address/0').should('not.exist');

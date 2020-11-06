@@ -15,7 +15,7 @@ const Wallet = (props: Props) => {
             <Translation
                 {...(device.useEmptyPassphrase
                     ? { id: 'TR_NO_PASSPHRASE_WALLET' }
-                    : { id: 'TR_PASSPHRASE_WALLET', values: { id: device.instance } })}
+                    : { id: 'TR_PASSPHRASE_WALLET', values: { id: device.walletNumber } })}
             />
         );
     }

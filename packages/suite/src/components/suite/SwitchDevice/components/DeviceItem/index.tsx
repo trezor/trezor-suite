@@ -245,7 +245,7 @@ const DeviceItem = (props: Props) => {
                                 )}
 
                                 <InstancesWrapper>
-                                    {instancesWithState.map(instance => (
+                                    {instancesWithState.map((instance, index) => (
                                         <StyledWalletInstance
                                             key={`${instance.id}-${instance.instance}-${instance.state}`}
                                             instance={instance}
@@ -255,6 +255,7 @@ const DeviceItem = (props: Props) => {
                                                 instance,
                                             )}
                                             selectDeviceInstance={selectDeviceInstance}
+                                            index={index}
                                         />
                                     ))}
                                 </InstancesWrapper>

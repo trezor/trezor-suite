@@ -148,6 +148,16 @@ export const getNewInstanceNumber = (devices: TrezorDevice[], device: TrezorDevi
     return instance > 0 ? instance : undefined;
 };
 
+export const getNewWalletNumber = (devices: TrezorDevice[], device: TrezorDevice) => {
+    const relevantDevices = devices
+        .filter(d => d.features && d.id === device.id && d.walletNumber && !d.useEmptyPassphrase)
+        .sort((a, b) =>
+            a.walletNumber && b.walletNumber && a.walletNumber < b.walletNumber ? 1 : -1,
+        );
+
+    return (relevantDevices[0]?.walletNumber || 0) + 1;
+};
+
 /**
  * Find exact instance index
  * @param {TrezorDevice[]} draft

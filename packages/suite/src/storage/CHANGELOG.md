@@ -1,5 +1,8 @@
 # Storage changelog
 
+## 18
+-   added device.walletNumber
+
 ## 17
 
 -   added coinmarketTrades

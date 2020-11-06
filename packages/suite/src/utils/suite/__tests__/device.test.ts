@@ -56,6 +56,15 @@ describe('getNewInstanceNumber', () => {
     });
 });
 
+describe('getNewWalletNumber', () => {
+    fixtures.getNewWalletNumber.forEach(f => {
+        it(f.description, () => {
+            const instance = utils.getNewWalletNumber(f.state, f.device as AcquiredDevice);
+            expect(instance).toEqual(f.result);
+        });
+    });
+});
+
 describe('findInstanceIndex', () => {
     fixtures.findInstanceIndex.forEach(f => {
         it(f.description, () => {
