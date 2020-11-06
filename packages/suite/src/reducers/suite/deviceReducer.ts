@@ -51,7 +51,11 @@ const connectDevice = (draft: State, device: Device) => {
 
     const { features } = device;
     // older FW (< 2.3.2) doesn't have `unlocked` field in Features ALSO doesn't have auto-lock, so it's always true
-    const unlocked = typeof features.unlocked === 'boolean' ? features.unlocked : true;
+    const unlocked =
+        // todo: remove features.pin_protection once fixed in connect
+        features.pin_protection && typeof features.unlocked === 'boolean'
+            ? features.unlocked
+            : true;
     // find affected devices with current "device_id" (acquired only)
     const affectedDevices = draft.filter(d => d.features && d.id === device.id) as AcquiredDevice[];
     // find unacquired device with current "path" (unacquired device will become acquired)
@@ -142,7 +146,10 @@ const changeDevice = (
             // change availability according to "passphrase_protection" field
             // older FW (< 2.3.2) doesn't have `unlocked` field in Features ALSO doesn't have auto-lock, so it's always true
             const unlocked =
-                typeof device.features.unlocked === 'boolean' ? device.features.unlocked : true;
+                // todo: remove features.pin_protection once fixed in connect
+                device.features.pin_protection && typeof device.features.unlocked === 'boolean'
+                    ? device.features.unlocked
+                    : true;
             if (d.instance && unlocked && !device.features.passphrase_protection) {
                 return merge(d, { ...device, ...extended, available: !d.state });
             }

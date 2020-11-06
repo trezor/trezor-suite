@@ -968,7 +968,7 @@ const createDeviceInstance = [
                 error: 'applySettings error',
             },
         },
-        result: undefined,
+        result: NOTIFICATION.TOAST,
     },
     {
         description: `with passphrase_protection enabled`,

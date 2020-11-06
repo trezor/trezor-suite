@@ -222,6 +222,68 @@ const getNewInstanceNumber = [
     },
 ];
 
+const getNewWalletNumber = [
+    {
+        description: `first instance`,
+        state: [SUITE_DEVICE],
+        device: SUITE_DEVICE,
+        result: 1,
+    },
+    {
+        description: `second instance`,
+        state: [SUITE_DEVICE, getSuiteDevice({ walletNumber: 1, useEmptyPassphrase: false })],
+        device: SUITE_DEVICE,
+        result: 2,
+    },
+    {
+        description: `odd instances`,
+        state: [
+            SUITE_DEVICE,
+            getSuiteDevice({ walletNumber: 1, useEmptyPassphrase: false }),
+            getSuiteDevice({ walletNumber: 4, useEmptyPassphrase: false }),
+        ],
+        device: SUITE_DEVICE,
+        result: 5,
+    },
+    {
+        description: `odd mixed unsorted instances`,
+        state: [
+            SUITE_DEVICE,
+            getSuiteDevice({ walletNumber: 4, useEmptyPassphrase: false }),
+            getSuiteDevice({ walletNumber: 1, useEmptyPassphrase: false }),
+        ],
+        device: SUITE_DEVICE,
+        result: 5,
+    },
+    {
+        description: `standard wallet id skipped`,
+        state: [
+            SUITE_DEVICE,
+            getSuiteDevice({ walletNumber: 1, useEmptyPassphrase: false }),
+            getSuiteDevice({ walletNumber: undefined, useEmptyPassphrase: true }),
+            getSuiteDevice({ walletNumber: 3, useEmptyPassphrase: false }),
+        ],
+        device: SUITE_DEVICE,
+        result: 4,
+    },
+    {
+        description: `device not found in state`,
+        state: [
+            getSuiteDevice(undefined, {
+                device_id: 'ignored-device-id',
+            }),
+        ],
+        device: SUITE_DEVICE,
+        result: 1,
+    },
+    {
+        description: `device doesn't exists in state`,
+        state: [],
+        device: SUITE_DEVICE,
+        result: 1,
+    },
+];
+
 const findInstanceIndex = [
     {
         description: `get first instance`,
@@ -454,6 +516,7 @@ export default {
     isSelectedInstance,
     getVersion,
     getNewInstanceNumber,
+    getNewWalletNumber,
     findInstanceIndex,
     getSelectedDevice,
     sortByTimestamp,

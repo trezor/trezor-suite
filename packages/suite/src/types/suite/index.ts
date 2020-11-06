@@ -80,6 +80,7 @@ export interface ExtendedDevice {
     buttonRequests: string[];
     metadata: DeviceMetadata;
     processMode?: keyof typeof PROCESS_MODE;
+    walletNumber?: number; // number of hidden wallet intended to be used in UI
 }
 
 export type AcquiredDevice = KnownDevice & ExtendedDevice;

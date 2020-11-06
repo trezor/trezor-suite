@@ -32,6 +32,7 @@ interface OwnProps {
     enabled: boolean;
     selected: boolean;
     selectDeviceInstance: (instance: TrezorDevice) => void;
+    index: number; // used only in data-test
 }
 
 export type StateProps = ReturnType<typeof mapStateToProps>;

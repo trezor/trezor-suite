@@ -110,4 +110,19 @@ export const migrate = async (
     if (oldVersion < 17) {
         db.createObjectStore('coinmarketTrades');
     }
+
+    if (oldVersion < 18) {
+        const devicesStore = transaction.objectStore('devices');
+        devicesStore.openCursor().then(function addWalletNumber(cursor): Promise<void> | undefined {
+            if (!cursor) {
+                return;
+            }
+            const device = cursor.value;
+
+            device.walletNumber = device.instance;
+            cursor.update(device);
+
+            return cursor.continue().then(addWalletNumber);
+        });
+    }
 };

@@ -48,7 +48,7 @@ describe('Metadata', () => {
         });
         cy.getTestElement('@metadata/input').clear().type('wallet for drugs{enter}');
 
-        cy.getTestElement('@switch-device/add-wallet-button').click();
+        cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
         cy.getConfirmActionOnDeviceModal();
         cy.task('pressYes');
         cy.getTestElement('@passphrase/input').type('abc');

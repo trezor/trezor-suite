@@ -72,6 +72,7 @@ const WalletInstance = ({
     fiat,
     localCurrency,
     getDiscovery,
+    index,
     ...rest
 }: Props) => {
     const discoveryProcess = instance.state ? getDiscovery(instance.state) : null;
@@ -85,16 +86,11 @@ const WalletInstance = ({
     const analytics = useAnalytics();
     const isSelected = enabled && selected && !!discoveryProcess;
 
-    const getDataTestBase = () => {
-        if (instance.instance) {
-            return `@switch-device/wallet-instance/${instance.instance}`;
-        }
-        return '@switch-device/wallet-instance';
-    };
+    const dataTestBase = `@switch-device/wallet-on-index/${index}`;
 
     return (
         <Wrapper
-            data-test={getDataTestBase()}
+            data-test={dataTestBase}
             key={`${instance.label}${instance.instance}${instance.state}`}
             state={isSelected ? 'success' : undefined}
             {...rest}
@@ -115,9 +111,9 @@ const WalletInstance = ({
                                 payload={{
                                     type: 'walletLabel',
                                     deviceState: instance.state,
-                                    defaultValue: !instance.instance
+                                    defaultValue: instance.useEmptyPassphrase
                                         ? 'standard-wallet'
-                                        : `hidden-wallet-${instance.instance}`,
+                                        : `hidden-wallet-${instance.walletNumber}`,
                                     value:
                                         instance?.metadata.status === 'enabled'
                                             ? instance.metadata.walletLabel
@@ -154,29 +150,29 @@ const WalletInstance = ({
                     <SwitchCol>
                         <Switch
                             checked={!!instance.remember}
-                            onChange={() =>
-                                rememberDevice(instance) &&
+                            onChange={() => {
+                                rememberDevice(instance);
                                 analytics.report({
                                     type: instance.remember
                                         ? 'switch-device/forget'
                                         : 'switch-device/remember',
-                                })
-                            }
-                            data-test={`${getDataTestBase()}/toggle-remember-switch`}
+                                });
+                            }}
+                            data-test={`${dataTestBase}/toggle-remember-switch`}
                         />
                     </SwitchCol>
                     <ColEject centerItems>
                         <Icon
-                            data-test={`${getDataTestBase()}/eject-button`}
+                            data-test={`${dataTestBase}/eject-button`}
                             icon="EJECT"
                             size={22}
                             color={colors.NEUE_TYPE_LIGHT_GREY}
-                            onClick={() =>
-                                forgetDevice(instance) &&
+                            onClick={() => {
+                                forgetDevice(instance);
                                 analytics.report({
                                     type: 'switch-device/eject',
-                                })
-                            }
+                                });
+                            }}
                         />
                     </ColEject>
                 </>

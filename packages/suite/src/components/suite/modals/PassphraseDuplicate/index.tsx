@@ -34,6 +34,7 @@ const PassphraseDuplicate = ({ device, duplicate }: Props) => {
             size="tiny"
             heading={<Translation id="TR_WALLET_DUPLICATE_TITLE" />}
             description={<Translation id="TR_WALLET_DUPLICATE_DESC" />}
+            data-test="@passphrase-duplicate"
             bottomBar={
                 <Actions>
                     <Button

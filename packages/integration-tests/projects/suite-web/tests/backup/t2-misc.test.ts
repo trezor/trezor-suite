@@ -40,10 +40,10 @@ describe('Backup', () => {
     it('User disconnected device that is remembered. Should not be allowed to initiate backup', () => {
         cy.getTestElement('@dashboard/graph', { timeout: 30000 }).should('be.visible');
         cy.toggleDeviceMenu();
-        cy.getTestElement('@switch-device/wallet-instance/toggle-remember-switch').click({
+        cy.getTestElement('@switch-device/wallet-on-index/0/toggle-remember-switch').click({
             force: true,
         });
-        cy.getTestElement('@switch-device/wallet-instance').click();
+        cy.getTestElement('@switch-device/wallet-on-index/0').click();
         cy.getTestElement('@notification/no-backup/button').click();
         cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
         cy.getTestElement('@backup/check-item/has-enough-time').click();

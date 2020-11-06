@@ -261,6 +261,7 @@ const PassphraseTypeCard = (props: Props) => {
                     setHiddenWalletTouched(true);
                 }
             }}
+            data-test={`@passphrase-type/${props.type}`}
         >
             {!props.singleColModal && (
                 // only used to show options in modal where user selects wallet type

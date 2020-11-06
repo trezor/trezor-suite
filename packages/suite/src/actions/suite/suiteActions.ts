@@ -226,11 +226,13 @@ export const createDeviceInstance = (device: TrezorDevice, useEmptyPassphrase = 
             // eslint-disable-next-line @typescript-eslint/naming-convention
             use_passphrase: true,
         });
+
         if (!response.success) {
-            // TODO: show fail notification
+            dispatch(addToast({ type: 'error', error: response.payload.error }));
             return;
         }
-        // TODO: show success notification
+
+        dispatch(addToast({ type: 'settings-applied' }));
     }
 
     dispatch({
@@ -239,6 +241,7 @@ export const createDeviceInstance = (device: TrezorDevice, useEmptyPassphrase = 
             ...device,
             useEmptyPassphrase,
             instance: deviceUtils.getNewInstanceNumber(getState().devices, device),
+            walletNumber: deviceUtils.getNewWalletNumber(getState().devices, device),
         },
     });
 };

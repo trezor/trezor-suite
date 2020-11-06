@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 ### Fixed
+- Bugs with displaying correct hidden wallet number (#2467, #2578). Remembered devices will stick to the old numbering until recreated.
 
 ## 20.11.1 [to be released on 11th November 2020]
 
