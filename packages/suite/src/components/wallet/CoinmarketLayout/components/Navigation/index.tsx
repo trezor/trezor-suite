@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import * as routerActions from '@suite-actions/routerActions';
 import { colors, variables } from '@trezor/components';
-import { useSelector, useActions } from '@suite/hooks/suite';
+import { useSelector, useActions } from '@suite-hooks';
 import { Translation } from '@suite-components';
 
 const { FONT_WEIGHT, FONT_SIZE } = variables;
@@ -59,12 +59,8 @@ const Soon = styled.div`
 const Navigation = () => {
     const items = [
         { route: 'wallet-coinmarket-buy', title: <Translation id="TR_NAV_BUY" /> },
-        {
-            route: 'wallet-coinmarket-exchange',
-            title: <Translation id="TR_NAV_EXCHANGE_AND_SPEND" />,
-        },
-        // { route: 'wallet-coinmarket-exchange', title: <Translation id="TR_NAV_EXCHANGE" /> },
-        // { route: 'wallet-coinmarket-spend', title: <Translation id="TR_NAV_SPEND" /> },
+        { route: 'wallet-coinmarket-exchange', title: <Translation id="TR_NAV_EXCHANGE" /> },
+        { route: 'wallet-coinmarket-spend', title: <Translation id="TR_NAV_SPEND" /> },
     ] as const;
 
     const routeName = useSelector(state => state.router.route?.name);
@@ -73,7 +69,7 @@ const Navigation = () => {
     });
 
     const showSoon = (route: any) => {
-        return route === 'wallet-coinmarket-exchange' || route === 'wallet-coinmarket-spend';
+        return route === 'wallet-coinmarket-spend';
     };
 
     return (
@@ -95,7 +91,7 @@ const Navigation = () => {
                         <Text>
                             {showSoon(route) && (
                                 <Soon>
-                                    <Translation id="TR_NAV_EXCHANGE_SOON" />
+                                    <Translation id="TR_NAV_SOON" />
                                 </Soon>
                             )}
                             {title}

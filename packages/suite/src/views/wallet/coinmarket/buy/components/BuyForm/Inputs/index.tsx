@@ -73,7 +73,6 @@ const Inputs = () => {
     const cryptoInput = 'cryptoInput';
     const currencySelect = 'currencySelect';
     const cryptoSelect = 'cryptoSelect';
-
     const [activeInput, setActiveInput] = useState<'fiatInput' | 'cryptoInput'>(fiatInput);
     // if cryptoInput has a valid value, set it as the activeInput
     if (watch('cryptoInput') && !errors[cryptoInput] && activeInput === fiatInput) {

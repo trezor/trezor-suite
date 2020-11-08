@@ -33,3 +33,17 @@ export const getPlatformLanguage = () => {
 
 export const isDesktop = () => false;
 export const isWeb = () => false;
+
+export const getLocationOrigin = () => {
+    return 'implementation of getLocationOrigin in native';
+};
+
+export const submitRequestForm = (
+    _formMethod: 'GET' | 'POST' | 'IFRAME',
+    _formAction: string,
+    _fields: {
+        [key: string]: string;
+    },
+) => {
+    return 'implementation of submitRequestForm in native';
+};

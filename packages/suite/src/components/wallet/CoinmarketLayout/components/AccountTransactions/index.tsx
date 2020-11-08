@@ -39,11 +39,14 @@ const TransactionCount = styled.div`
 `;
 
 const AccountTransactions = () => {
-    const { selectedAccount, allTransactions, providers } = useSelector(state => ({
-        selectedAccount: state.wallet.selectedAccount,
-        allTransactions: state.wallet.coinmarket.trades,
-        providers: state.wallet.coinmarket.buy.buyInfo?.providerInfos,
-    }));
+    const { selectedAccount, allTransactions, buyProviders, exchangeProviders } = useSelector(
+        state => ({
+            selectedAccount: state.wallet.selectedAccount,
+            allTransactions: state.wallet.coinmarket.trades,
+            buyProviders: state.wallet.coinmarket.buy.buyInfo?.providerInfos,
+            exchangeProviders: state.wallet.coinmarket.exchange.exchangeInfo?.providerInfos,
+        }),
+    );
 
     if (selectedAccount.status !== 'loaded') {
         return null;
@@ -59,7 +62,9 @@ const AccountTransactions = () => {
         });
 
     const buyTransactions = sortedAccountTransactions.filter(tx => tx.tradeType === 'buy');
-    const exchangeTransactions = [];
+    const exchangeTransactions = sortedAccountTransactions.filter(
+        tx => tx.tradeType === 'exchange',
+    );
 
     return (
         <Wrapper>
@@ -88,16 +93,17 @@ const AccountTransactions = () => {
                                         account={account}
                                         key={`${trade.tradeType}-${trade.key}`}
                                         trade={trade}
-                                        providers={providers}
+                                        providers={buyProviders}
                                     />
                                 );
                             }
                             if (trade.tradeType === 'exchange') {
                                 return (
                                     <ExchangeTransaction
+                                        account={account}
                                         key={`${trade.tradeType}-${trade.key}`}
                                         trade={trade}
-                                        providers={providers}
+                                        providers={exchangeProviders}
                                     />
                                 );
                             }

@@ -71,6 +71,14 @@ interface Props {
     }[];
 }
 
+const isRouteActive = (routeName?: Route['name'], route?: Route['name']): boolean => {
+    // coinmarket has multiple routes, match them all
+    if (routeName?.startsWith('wallet-coinmarket') && route?.startsWith('wallet-coinmarket')) {
+        return true;
+    }
+    return routeName === route;
+};
+
 const AppNavigation = ({ items }: Props) => {
     const { routeName, params } = useSelector(state => ({
         routeName: state.router.route?.name,
@@ -84,7 +92,7 @@ const AppNavigation = ({ items }: Props) => {
         <Wrapper>
             {items.map(item => {
                 const { route, title, icon, isComingSoon, ...restItemProps } = item;
-                const active = routeName === route;
+                const active = isRouteActive(routeName, route);
                 return (
                     <StyledNavLink
                         key={route}

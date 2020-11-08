@@ -1,8 +1,8 @@
 import React from 'react';
 import { CoinmarketLayout } from '@wallet-components';
 
-const CoinmarketBuy = () => {
-    return <CoinmarketLayout>Coming soon</CoinmarketLayout>;
+const CoinmarketSpend = () => {
+    return <CoinmarketLayout>spend</CoinmarketLayout>;
 };
 
-export default CoinmarketBuy;
+export default CoinmarketSpend;

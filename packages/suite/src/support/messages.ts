@@ -178,6 +178,18 @@ const definedMessages = defineMessages({
         defaultMessage: 'Loading',
         id: 'TR_EXCHANGE_LOADING',
     },
+    TR_EXCHANGE_OTHER_COINS: {
+        defaultMessage: 'All other currencies',
+        id: 'TR_EXCHANGE_OTHER_COINS',
+    },
+    TR_EXCHANGE_POPULAR_COINS: {
+        defaultMessage: 'Popular coins',
+        id: 'TR_EXCHANGE_POPULAR_COINS',
+    },
+    TR_EXCHANGE_STABLE_COINS: {
+        defaultMessage: 'Stable coins',
+        id: 'TR_EXCHANGE_STABLE_COINS',
+    },
     TR_EXCHANGE_NO_PROVIDERS: {
         defaultMessage: 'No providers',
         id: 'TR_EXCHANGE_NO_PROVIDERS',
@@ -220,19 +232,288 @@ const definedMessages = defineMessages({
     },
     TR_EXCHANGE_FEES_INCLUDED_INFO: {
         id: 'TR_EXCHANGE_FEES_INCLUDED_INFO',
-        defaultMessage: 'All fees included info TODO',
+        defaultMessage: 'All fees included info',
+    },
+    TR_EXCHANGE_VALIDATION_ERROR_EMPTY: {
+        defaultMessage: 'TR_EXCHANGE_VALIDATION_ERROR_EMPTY',
+        id: 'TR_EXCHANGE_VALIDATION_ERROR_EMPTY',
+    },
+    TR_EXCHANGE_VALIDATION_ERROR_MINIMUM_CRYPTO: {
+        defaultMessage: 'Minimum is {minimum} {currency}',
+        id: 'TR_EXCHANGE_VALIDATION_ERROR_MINIMUM_CRYPTO',
+    },
+    TR_EXCHANGE_VALIDATION_ERROR_MAXIMUM_CRYPTO: {
+        defaultMessage: 'Maximum is {maximum} {currency}',
+        id: 'TR_EXCHANGE_VALIDATION_ERROR_MAXIMUM_CRYPTO',
+    },
+    TR_EXCHANGE_VALIDATION_ERROR_NOT_NUMBER: {
+        defaultMessage: 'Not a number',
+        id: 'TR_EXCHANGE_VALIDATION_ERROR_NOT_NUMBER',
+    },
+    TR_EXCHANGE_SHOW_OFFERS: {
+        defaultMessage: 'Show offers',
+        id: 'TR_EXCHANGE_SHOW_OFFERS',
+    },
+    TR_EXCHANGE_OFFERS_REFRESH: {
+        defaultMessage: 'Refresh in',
+        id: 'TR_EXCHANGE_OFFERS_REFRESH',
+    },
+    TR_EXCHANGE_NO_OFFERS: {
+        defaultMessage: 'Sorry, none of our partners can provide an offer at this time.',
+        id: 'TR_EXCHANGE_NO_OFFERS',
+    },
+    TR_EXCHANGE_OFFER_ERROR_MINIMUM: {
+        defaultMessage:
+            'The chosen amount of {currency} {amount} is lower than the accepted minimum of {currency} {min}.',
+        id: 'TR_BUY_OFFER_ERROR_MINIMUM_CRYPTO',
+    },
+    TR_EXCHANGE_OFFER_ERROR_MAXIMUM: {
+        defaultMessage:
+            'The chosen amount of {currency} {amount} is higher than the accepted maximum of {currency} {max}.',
+        id: 'TR_BUY_OFFER_ERROR_MAXIMUM_CRYPTO',
+    },
+    TR_EXCHANGE_FOR_YOUR_SAFETY: {
+        defaultMessage: 'For your safety',
+        id: 'TR_EXCHANGE_FOR_YOUR_SAFETY',
+    },
+    TR_EXCHANGE_I_UNDERSTAND: {
+        defaultMessage: 'I understand and agree to all of the above',
+        id: 'TR_EXCHANGE_I_UNDERSTAND',
+    },
+    TR_EXCHANGE_CONFIRM: {
+        defaultMessage: 'Confirm',
+        id: 'TR_EXCHANGE_CONFIRM',
+    },
+    TR_EXCHANGE_TERMS_1: {
+        defaultMessage:
+            "I'm here to exchange cryptocurrency. If you were directed to this site for any other reason, please contact {provider} support before proceeding.",
+        id: 'TR_EXCHANGE_TERMS_1',
+    },
+    TR_EXCHANGE_TERMS_2: {
+        defaultMessage:
+            "I'm using Invity to purchase funds that will be sent to an account under my direct personal control.",
+        id: 'TR_EXCHANGE_TERMS_2',
+    },
+    TR_EXCHANGE_TERMS_3: {
+        defaultMessage:
+            "I'm not using Invity for gambling or any other violation of Invity’s Terms of service.",
+        id: 'TR_EXCHANGE_TERMS_3',
+    },
+    TR_EXCHANGE_TERMS_4: {
+        defaultMessage:
+            'I understand that cryptocurrencies are an emerging financial tool and that regulations may be limited in some areas. This may put me at a higher risk of fraud, theft, or market instability.',
+        id: 'TR_EXCHANGE_TERMS_4',
+    },
+    TR_EXCHANGE_TERMS_5: {
+        defaultMessage:
+            'I understand that cryptocurrency transactions are irreversible and I won’t be able to receive a refund for my purchase.',
+        id: 'TR_EXCHANGE_TERMS_5',
+    },
+    TR_EXCHANGE_STATUS_ERROR: {
+        defaultMessage: 'Error',
+        id: 'TR_EXCHANGE_STATUS_ERROR',
+    },
+    TR_EXCHANGE_STATUS_SUCCESS: {
+        defaultMessage: 'Success',
+        id: 'TR_EXCHANGE_STATUS_SUCCESS',
+    },
+    TR_EXCHANGE_STATUS_KYC: {
+        defaultMessage: 'KYC',
+        id: 'TR_EXCHANGE_STATUS_KYC',
+    },
+    TR_EXCHANGE_STATUS_CONFIRMING: {
+        defaultMessage: 'Waiting for confirmation...',
+        id: 'TR_EXCHANGE_STATUS_CONFIRMING',
+    },
+    TR_EXCHANGE_STATUS_CONVERTING: {
+        defaultMessage: 'Converting...',
+        id: 'TR_EXCHANGE_STATUS_CONVERTING',
+    },
+    TR_EXCHANGE_TRANS_ID: {
+        defaultMessage: 'Trans. ID:',
+        id: 'TR_EXCHANGE_TRANS_ID',
+    },
+    TR_EXCHANGE_AGAIN: {
+        defaultMessage: 'Exchange again',
+        id: 'TR_EXCHANGE_AGAIN',
+    },
+    TR_EXCHANGE_VIEW_DETAILS: {
+        defaultMessage: 'View details',
+        id: 'TR_EXCHANGE_VIEW_DETAILS',
+    },
+    TR_EXCHANGE_DETAIL_SUCCESS_TITLE: {
+        defaultMessage: 'Trade success',
+        id: 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
+    },
+    TR_EXCHANGE_DETAIL_SUCCESS_TEXT: {
+        defaultMessage: 'The transaction finished successfully.',
+        id: 'TR_EXCHANGE_DETAIL_SUCCESS_TEXT',
+    },
+    TR_EXCHANGE_DETAIL_SUCCESS_BUTTON: {
+        defaultMessage: 'Back to Account',
+        id: 'TR_EXCHANGE_DETAIL_SUCCESS_BUTTON',
+    },
+    TR_EXCHANGE_DETAIL_ERROR_TITLE: {
+        defaultMessage: 'The transaction failed',
+        id: 'TR_EXCHANGE_DETAIL_ERROR_TITLE',
+    },
+    TR_EXCHANGE_DETAIL_ERROR_TEXT: {
+        defaultMessage: 'Unfortunately, your transaction was rejected or has failed.',
+        id: 'TR_EXCHANGE_DETAIL_ERROR_TEXT',
+    },
+    TR_EXCHANGE_DETAIL_ERROR_SUPPORT: {
+        defaultMessage: "Open partner's support site",
+        id: 'TR_BUY_DETAIL_ERROR_SUPPORT',
+    },
+    TR_EXCHANGE_DETAIL_ERROR_BUTTON: {
+        defaultMessage: 'Back to Account',
+        id: 'TR_EXCHANGE_DETAIL_ERROR_BUTTON',
+    },
+    TR_EXCHANGE_DETAIL_KYC_TITLE: {
+        defaultMessage: 'KYC request',
+        id: 'TR_EXCHANGE_DETAIL_KYC_TITLE',
+    },
+    TR_EXCHANGE_DETAIL_KYC_TEXT: {
+        defaultMessage:
+            'This trade has been marked as "suspicious" by the exchange. The exchange might require undergoing the KYC process to finish the trade. Contact the exchange for further details, please.',
+        id: 'TR_EXCHANGE_DETAIL_KYC_TEXT',
+    },
+    TR_EXCHANGE_DETAIL_KYC_SUPPORT: {
+        defaultMessage: "Open partner's support site",
+        id: 'TR_BUY_DETAIL_ERROR_SUPPORT',
+    },
+    TR_EXCHANGE_DETAIL_KYC_INFO_LINK: {
+        defaultMessage: "Open partner's info on KYC",
+        id: 'TR_BUY_DETAIL_ERROR_SUPPORT',
+    },
+    TR_EXCHANGE_DETAIL_KYC_BUTTON: {
+        defaultMessage: 'Back to Account',
+        id: 'TR_EXCHANGE_DETAIL_ERROR_BUTTON',
+    },
+    TR_EXCHANGE_DETAIL_SENDING_TITLE: {
+        defaultMessage: 'Waiting for confirmation...',
+        id: 'TR_EXCHANGE_DETAIL_SENDING_TITLE',
+    },
+    TR_EXCHANGE_DETAIL_SENDING_SUPPORT: {
+        defaultMessage: "Open partner's support site",
+        id: 'TR_EXCHANGE_DETAIL_SENDING_SUPPORT',
+    },
+    TR_EXCHANGE_DETAIL_CONVERTING_TITLE: {
+        defaultMessage: 'Converting...',
+        id: 'TR_EXCHANGE_DETAIL_CONVERTING_TITLE',
+    },
+    TR_EXCHANGE_DETAIL_CONVERTING_SUPPORT: {
+        defaultMessage: "Open partner's support site",
+        id: 'TR_EXCHANGE_DETAIL_CONVERTING_SUPPORT',
+    },
+    TR_EXCHANGE_RECEIVING_ACCOUNT: {
+        defaultMessage: ' Receiving Account',
+        id: 'TR_EXCHANGE_RECEIVING_ACCOUNT',
+    },
+    TR_EXCHANGE_VERIFY_ADDRESS_STEP: {
+        defaultMessage: 'Receive Address',
+        id: 'TR_EXCHANGE_VERIFY_ADDRESS_STEP',
+    },
+    TR_EXCHANGE_CONFIRM_SEND_STEP: {
+        defaultMessage: 'Confirm & Send',
+        id: 'TR_EXCHANGE_CONFIRM_SEND_STEP',
+    },
+    TR_EXCHANGE_SEND_FROM: {
+        defaultMessage: 'Send from',
+        id: 'TR_EXCHANGE_SEND_FROM',
+    },
+    TR_EXCHANGE_SEND_TO: {
+        defaultMessage: 'Send to {providerName}’s address',
+        id: 'TR_EXCHANGE_SEND_TO',
+    },
+    TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND: {
+        defaultMessage: 'Confirm on Trezor & Send',
+        id: 'TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND',
+    },
+    TR_EXCHANGE_RECEIVE_ACCOUNT_QUESTION_TOOLTIP: {
+        id: 'TR_EXCHANGE_RECEIVE_ACCOUNT_QUESTION_TOOLTIP',
+        defaultMessage: 'TR_EXCHANGE_RECEIVE_ACCOUNT_QUESTION_TOOLTIP',
+    },
+    TR_EXCHANGE_SELECT_RECEIVE_ACCOUNT: {
+        id: 'TR_EXCHANGE_SELECT_RECEIVE_ACCOUNT',
+        defaultMessage: 'Select {symbol} Receiving Account',
+    },
+    TR_EXCHANGE_RECEIVING_ADDRESS_INFO: {
+        defaultMessage: '= you will receive your {symbol} to this address',
+        id: 'TR_EXCHANGE_RECEIVING_ADDRESS_INFO',
+    },
+    TR_EXCHANGE_RECEIVING_ADDRESS: {
+        defaultMessage: 'Receive Address',
+        id: 'TR_EXCHANGE_RECEIVING_ADDRESS',
+    },
+    TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED: {
+        defaultMessage: 'Receiving address is required',
+        id: 'TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED',
+    },
+    TR_EXCHANGE_RECEIVING_ADDRESS_INVALID: {
+        defaultMessage: 'Receiving address is invalid',
+        id: 'TR_EXCHANGE_RECEIVING_ADDRESS_INVALID',
+    },
+    TR_EXCHANGE_RECEIVE_ADDRESS_QUESTION_TOOLTIP: {
+        id: 'TR_EXCHANGE_RECEIVE_ADDRESS_QUESTION_TOOLTIP',
+        defaultMessage: 'TR_EXCHANGE_RECEIVE_ADDRESS_QUESTION_TOOLTIP',
+    },
+    TR_EXCHANGE_EXTRA_FIELD: {
+        defaultMessage: '{extraFieldName}',
+        id: 'TR_EXCHANGE_EXTRA_FIELD',
+    },
+    TR_EXCHANGE_EXTRA_FIELD_REQUIRED: {
+        defaultMessage: '{extraFieldName} is required',
+        id: 'TR_EXCHANGE_EXTRA_FIELD_REQUIRED',
+    },
+    TR_EXCHANGE_EXTRA_FIELD_INVALID: {
+        defaultMessage: '{extraFieldName} is invalid',
+        id: 'TR_EXCHANGE_EXTRA_FIELD_INVALID',
+    },
+    TR_EXCHANGE_EXTRA_FIELD_QUESTION_TOOLTIP: {
+        defaultMessage:
+            '{extraFieldName} is another way to identify the transaction you\'ll receive; it helps the exchange make sure the right deposit goes to the right account. Some currencies also use the terms "memo", "message", or "payment ID". {extraFieldDescription}',
+        id: 'TR_EXCHANGE_EXTRA_FIELD_QUESTION_TOOLTIP',
+    },
+    TR_EXCHANGE_CREATE_SUITE_ACCOUNT: {
+        defaultMessage: 'Create a new {symbol} Account',
+        id: 'TR_EXCHANGE_CREATE_SUITE_ACCOUNT',
+    },
+    TR_EXCHANGE_USE_NON_SUITE_ACCOUNT: {
+        defaultMessage: 'Use a non-suite {symbol} Account',
+        id: 'TR_EXCHANGE_USE_NON_SUITE_ACCOUNT',
+    },
+    TR_EXCHANGE_CONFIRMED_ON_TREZOR: {
+        defaultMessage: 'Confirmed on trezor',
+        id: 'TR_EXCHANGE_CONFIRMED_ON_TREZOR',
+    },
+    TR_EXCHANGE_CONFIRM_ON_TREZOR: {
+        defaultMessage: 'Confirm on Trezor',
+        id: 'TR_EXCHANGE_CONFIRM_ON_TREZOR',
+    },
+    TR_EXCHANGE_GO_TO_PAYMENT: {
+        defaultMessage: 'Go to payment',
+        id: 'TR_EXCHANGE_GO_TO_PAYMENT',
+    },
+    TR_EXCHANGE_SELL: {
+        defaultMessage: 'Exchange',
+        id: 'TR_EXCHANGE_SELL',
+    },
+    TR_EXCHANGE_BUY: {
+        defaultMessage: 'For',
+        id: 'TR_EXCHANGE_BUY',
+    },
+    TR_EXCHANGE_FIXED: {
+        defaultMessage: 'Fixed rate offer',
+        id: 'TR_EXCHANGE_FIXED',
+    },
+    TR_EXCHANGE_FLOAT: {
+        defaultMessage: 'Float rate offer',
+        id: 'TR_EXCHANGE_FLOAT',
     },
     TR_BUY_STATUS_PENDING: {
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING',
-    },
-    TR_NAV_EXCHANGE_AND_SPEND: {
-        defaultMessage: 'Exchange, Spend',
-        id: 'TR_NAV_EXCHANGE_AND_SPEND',
-    },
-    TR_NAV_EXCHANGE_SOON: {
-        defaultMessage: 'SOON',
-        id: 'TR_NAV_EXCHANGE_SOON',
     },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:
@@ -311,6 +592,10 @@ const definedMessages = defineMessages({
     TR_BUY_VALIDATION_ERROR_MAXIMUM_FIAT: {
         defaultMessage: 'Maximum is {maximum} {currency}',
         id: 'TR_BUY_VALIDATION_ERROR_MAXIMUM_FIAT',
+    },
+    TR_NAV_EXCHANGE_SOON: {
+        defaultMessage: 'SOON',
+        id: 'TR_NAV_EXCHANGE_SOON',
     },
     TR_BUY_VALIDATION_ERROR_NOT_NUMBER: {
         defaultMessage: 'Not a number',
@@ -405,7 +690,7 @@ const definedMessages = defineMessages({
         id: 'TR_BUY_PROVIDER',
     },
     TR_BUY_TRANS_ID: {
-        defaultMessage: 'trans. id:',
+        defaultMessage: 'Trans. ID:',
         id: 'TR_BUY_TRANS_ID',
     },
     TR_BUY_RECEIVING_ADDRESS: {
@@ -3092,6 +3377,10 @@ const definedMessages = defineMessages({
         id: 'TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP',
         defaultMessage: 'Address from your account to which the coins will be sent',
     },
+    TR_COINMARKET_SELECT_COIN: {
+        id: 'TR_COINMARKET_SELECT_COIN',
+        defaultMessage: 'Select a coin...',
+    },
     TR_COINMARKET_BUYS: {
         id: 'TR_COINMARKET_BUYS',
         defaultMessage: 'buys',
@@ -3585,6 +3874,10 @@ const definedMessages = defineMessages({
     TR_SEND_COMING_SOON: {
         id: 'TR_SEND_COMING_SOON',
         defaultMessage: 'coming soon',
+    },
+    TR_NAV_SOON: {
+        id: 'TR_NAV_SOON',
+        defaultMessage: 'SOON',
     },
     TR_SHOW_HOLOGRAM_AGAIN: {
         id: 'TR_SHOW_HOLOGRAM_AGAIN',

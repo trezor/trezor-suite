@@ -2,11 +2,10 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import invityAPI from '@suite-services/invityAPI';
 import { useActions, useSelector } from '@suite-hooks';
 import { BuyTrade } from 'invity-api';
-import { processQuotes } from '@wallet-utils/coinmarket/buyUtils';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarketCommonActions';
+import { processQuotes, createQuoteLink, createTxLink } from '@wallet-utils/coinmarket/buyUtils';
+import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import * as routerActions from '@suite-actions/routerActions';
-import { createQuoteLink, createTxLink } from '@suite/utils/wallet/coinmarket/buyUtils';
 import { Props, ContextValues } from '@wallet-types/coinmarketBuyOffers';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { isDesktop } from '@suite-utils/env';
@@ -46,8 +45,8 @@ export const useOffers = (props: Props) => {
         openCoinmarketBuyConfirmModal: coinmarketBuyActions.openCoinmarketBuyConfirmModal,
         addNotification: notificationActions.addToast,
         saveTransactionDetailId: coinmarketBuyActions.saveTransactionDetailId,
+        submitRequestForm: coinmarketBuyActions.submitRequestForm,
         verifyAddress: coinmarketCommonActions.verifyAddress,
-        submitRequestForm: coinmarketCommonActions.submitRequestForm,
         goto: routerActions.goto,
     });
 
@@ -102,7 +101,7 @@ export const useOffers = (props: Props) => {
                     });
                     if (response) {
                         if (response.trade.status === 'LOGIN_REQUEST' && response.tradeForm) {
-                            await submitRequestForm(response.tradeForm);
+                            submitRequestForm(response.tradeForm);
                         } else {
                             const errorMessage = `[doBuyTrade] ${response.trade.status} ${response.trade.error}`;
                             console.log(errorMessage);
@@ -132,24 +131,22 @@ export const useOffers = (props: Props) => {
         });
 
         if (!response || !response.trade || !response.trade.paymentId) {
-            console.log('invalid response', response);
             addNotification({
                 type: 'error',
                 error: 'No response from the server',
             });
         } else if (response.trade.error) {
-            console.log('response error', response.trade.error);
             addNotification({
                 type: 'error',
                 error: response.trade.error,
             });
         } else {
-            await saveTrade(response.trade, account, new Date().toISOString());
+            saveTrade(response.trade, account, new Date().toISOString());
             if (response.tradeForm) {
-                await submitRequestForm(response.tradeForm);
+                submitRequestForm(response.tradeForm);
             }
             if (isDesktop()) {
-                await saveTransactionDetailId(response.trade.paymentId);
+                saveTransactionDetailId(response.trade.paymentId);
                 goto('wallet-coinmarket-buy-detail', selectedAccount.params);
             }
         }

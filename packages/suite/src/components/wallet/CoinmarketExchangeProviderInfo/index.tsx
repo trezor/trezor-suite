@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { colors, variables } from '@trezor/components';
-import { BuyProviderInfo } from 'invity-api';
+import { ExchangeProviderInfo } from 'invity-api';
 import invityApi from '@suite-services/invityAPI';
 
 const Wrapper = styled.div`
@@ -9,12 +9,22 @@ const Wrapper = styled.div`
     align-items: center;
 `;
 
-const Icon = styled.img``;
+const IconWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    padding-left: 4px;
+    padding-right: 7px;
+`;
+
+const Icon = styled.img`
+    border-radius: 2px;
+`;
 
 const Text = styled.div`
     display: flex;
     padding-left: 5px;
     align-items: center;
+    font-size: ${variables.FONT_SIZE.SMALL};
     color: ${colors.NEUE_TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
@@ -22,7 +32,7 @@ const Text = styled.div`
 interface Props {
     exchange?: string;
     providers?: {
-        [name: string]: BuyProviderInfo;
+        [name: string]: ExchangeProviderInfo;
     };
 }
 
@@ -35,10 +45,12 @@ const CoinmarketExchangeProviderInfo = ({ exchange, providers }: Props) => {
             {!provider && exchange}
             {provider && (
                 <>
-                    <Icon
-                        width="16px"
-                        src={`${invityApi.server}images/exchange/${provider.logo}`}
-                    />
+                    <IconWrapper>
+                        <Icon
+                            width="16px"
+                            src={`${invityApi.server}/images/exchange/${provider.logo}`}
+                        />
+                    </IconWrapper>
                     <Text>{provider.companyName}</Text>
                 </>
             )}

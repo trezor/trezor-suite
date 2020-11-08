@@ -4,7 +4,7 @@ import coinmarketReducer from '@wallet-reducers/coinmarketReducer';
 
 import * as coinmarketExchangeActions from '../coinmarketExchangeActions';
 import invityAPI from '@suite-services/invityAPI';
-import { ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
+import { ExchangeCoinInfo, ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
 
 export const getInitialState = () => ({
     wallet: {
@@ -30,9 +30,11 @@ const initStore = (state: State) => {
     return store;
 };
 
-const setFetchMock = (mock: any) => {
+const setFetchMock = (mocks: any) => {
     // @ts-ignore
-    global.fetch = jest.fn().mockImplementation(() => {
+    global.fetch = jest.fn().mockImplementation(url => {
+        const mock = mocks[url];
+        if (!mock) return;
         const p = new Promise(resolve => {
             resolve({
                 ok: mock.ok,
@@ -81,7 +83,7 @@ describe('Coinmarket Exchange Actions', () => {
                 logo: 'changenowfr-icon.jpg',
                 isActive: true,
                 isFixedRate: true,
-                buyTickers: ['ETH', 'BTC'],
+                buyTickers: ['ETH', 'BTC', 'BCH'],
                 sellTickers: ['ETH', 'BTC'],
                 addressFormats: {
                     BCH: 'legacy',
@@ -95,12 +97,23 @@ describe('Coinmarket Exchange Actions', () => {
                 isRefundRequired: false,
             },
         ];
+        const exchangeCoinList: ExchangeCoinInfo[] = [
+            { ticker: 'BTC', name: 'Bitcoin', category: 'popular' },
+            { ticker: 'ETH', name: 'Ethereum', category: 'popular' },
+            { ticker: 'XMR', name: 'Ripple', category: 'popular' },
+        ];
 
-        setFetchMock({ ok: true, response: exchangeList });
+        setFetchMock({
+            'https://exchange.trezor.io/api/exchange/list': { ok: true, response: exchangeList },
+            'https://exchange.trezor.io/api/exchange/coins': {
+                ok: true,
+                response: exchangeCoinList,
+            },
+        });
 
         const store = initStore(getInitialState());
 
-        coinmarketExchangeActions.loadExchangeInfo().then(exchangeInfo => {
+        coinmarketExchangeActions.loadExchangeInfo().then(([exchangeInfo, exchangeCoinInfo]) => {
             store.dispatch(coinmarketExchangeActions.saveExchangeInfo(exchangeInfo));
             expect(store.getState().wallet.coinmarket.exchange.exchangeInfo).toEqual({
                 exchangeList,
@@ -108,6 +121,11 @@ describe('Coinmarket Exchange Actions', () => {
                 buySymbols: new Set<string>(['xmr', 'btc', 'eth']),
                 sellSymbols: new Set<string>(['btc', 'eth']),
             });
+
+            store.dispatch(coinmarketExchangeActions.saveExchangeCoinInfo(exchangeCoinInfo));
+            expect(store.getState().wallet.coinmarket.exchange.exchangeCoinInfo).toEqual(
+                exchangeCoinList,
+            );
         });
     });
 

@@ -6,7 +6,7 @@ import { BuyTrade } from 'invity-api';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
 
 import Quote from './Quote';
-import { Translation } from '@suite/components/suite';
+import { Translation } from '@suite-components';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 
 interface Props {

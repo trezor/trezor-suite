@@ -1,9 +1,11 @@
 import React, { useEffect, useContext } from 'react';
 import styled from 'styled-components';
-import { LayoutContext, Translation } from '@suite-components';
+import { LayoutContext } from '@suite-components';
 import { Card, variables } from '@trezor/components';
-import { CoinmarketBuyOfferInfo, CoinmarketTopPanel } from '@wallet-components';
+import { CoinmarketBuyOfferInfo, CoinmarketBuyTopPanel } from '@wallet-components';
 import { useCoinmarketBuyDetailContext } from '@wallet-hooks/useCoinmarketBuyDetail';
+import * as routerActions from '@suite-actions/routerActions';
+import { useActions } from '@suite-hooks';
 
 import PaymentFailed from '../components/PaymentFailed';
 import PaymentProcessing from '../components/PaymentProcessing';
@@ -24,21 +26,27 @@ const StyledCard = styled(Card)`
     padding: 0;
 `;
 
-const NoTradeError = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-`;
-
 const CoinmarketDetail = () => {
     const { setLayout } = useContext(LayoutContext);
 
     useEffect(() => {
-        if (setLayout) setLayout('Trezor Suite | Coinmarket', undefined, <CoinmarketTopPanel />);
+        if (setLayout) setLayout('Trezor Suite | Coinmarket', undefined, <CoinmarketBuyTopPanel />);
     }, [setLayout]);
 
     const { account, trade, buyInfo } = useCoinmarketBuyDetailContext();
+    const { goto } = useActions({ goto: routerActions.goto });
+
+    // if trade not found, it is because user refreshed the page and stored transactionId got removed
+    // go to the default coinmarket page, the trade is shown there in the previous trades
+    if (!trade) {
+        goto('wallet-coinmarket-buy', {
+            symbol: account.symbol,
+            accountIndex: account.index,
+            accountType: account.accountType,
+        });
+        return null;
+    }
+
     const tradeStatus = trade?.data?.status;
     const showError = tradeStatus === 'ERROR' || tradeStatus === 'BLOCKED';
     const showProcessing = tradeStatus === 'APPROVAL_PENDING';
@@ -53,39 +61,30 @@ const CoinmarketDetail = () => {
 
     return (
         <Wrapper>
-            {!trade && (
-                <NoTradeError>
-                    <Translation id="TR_COINMARKET_TRADE_NOT_FOUND" />
-                </NoTradeError>
-            )}
-            {trade && (
-                <>
-                    <StyledCard>
-                        {showError && (
-                            <PaymentFailed
-                                account={account}
-                                transactionId={trade.key}
-                                supportUrl={supportUrl}
-                            />
-                        )}
-                        {showProcessing && <PaymentProcessing />}
-                        {showWaiting && (
-                            <WaitingForPayment
-                                trade={trade.data}
-                                transactionId={trade.key}
-                                account={account}
-                            />
-                        )}
-                        {showSuccess && <PaymentSuccessful account={account} />}
-                    </StyledCard>
-                    <CoinmarketBuyOfferInfo
+            <StyledCard>
+                {showError && (
+                    <PaymentFailed
                         account={account}
-                        selectedQuote={trade.data}
                         transactionId={trade.key}
-                        providers={buyInfo?.providerInfos}
+                        supportUrl={supportUrl}
                     />
-                </>
-            )}
+                )}
+                {showProcessing && <PaymentProcessing />}
+                {showWaiting && (
+                    <WaitingForPayment
+                        trade={trade.data}
+                        transactionId={trade.key}
+                        account={account}
+                    />
+                )}
+                {showSuccess && <PaymentSuccessful account={account} />}
+            </StyledCard>
+            <CoinmarketBuyOfferInfo
+                account={account}
+                selectedQuote={trade.data}
+                transactionId={trade.key}
+                providers={buyInfo?.providerInfos}
+            />
         </Wrapper>
     );
 };

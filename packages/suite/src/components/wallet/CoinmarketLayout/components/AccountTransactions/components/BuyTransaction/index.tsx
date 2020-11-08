@@ -53,6 +53,7 @@ const Column = styled.div`
     flex: 1;
     flex-direction: column;
     padding: 17px 24px;
+    overflow: hidden;
 `;
 
 const BuyColumn = styled(Column)`
@@ -70,13 +71,15 @@ const BuyColumn = styled(Column)`
 `;
 
 const ProviderColumn = styled(Column)`
-    max-width: 220px;
+    max-width: 200px;
 `;
 
 const TradeID = styled.span`
     padding-left: 5px;
     color: ${colors.NEUE_TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const Row = styled.div`
@@ -143,7 +146,7 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
         receiveCurrency,
     } = data;
 
-    const statusMessage = getStatusMessage(status);
+    const statusMessage = getStatusMessage(status || 'SUBMITTED');
 
     const getOffers = async () => {
         setIsGettingOffers(true);
@@ -199,7 +202,7 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
                         hour="2-digit"
                         minute="2-digit"
                     />{' '}
-                    • <StyledStatus status={status} />
+                    • <StyledStatus trade={data} tradeType={trade.tradeType} />
                 </SmallRowStatus>
                 <SmallRow>
                     <Translation id="TR_BUY_TRANS_ID" />

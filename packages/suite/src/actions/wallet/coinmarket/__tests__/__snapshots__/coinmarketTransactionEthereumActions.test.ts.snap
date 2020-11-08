@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Coinmarket Transaction Ethereum Actions signTransaction, ethereum account, normal 1`] = `undefined`;
