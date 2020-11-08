@@ -47,3 +47,10 @@ export const submitRequestForm = (
 ) => {
     return 'implementation of submitRequestForm in native';
 };
+
+/**
+ * override for suite/utils/env - setOnBeforeUnloadListener
+ */
+export const setOnBeforeUnloadListener = (_callback: () => void) => {
+    // todo:
+};
