@@ -75,29 +75,5 @@ describe('Device settings', () => {
         cy.task('pressYes');
     });
 
-    it.skip('t1 - pin mismatch', () => {
-        // todo: acquire device problem with model T1 emu, but why? stop and start bridge is sad workaround :(
-        cy.task('stopEmu');
-        cy.task('stopBridge');
-        cy.task('startEmu', { version: '1.9.0', wipe: true });
-        cy.task('setupEmu', { needs_backup: false });
-        cy.task('startBridge');
-
-        cy.getTestElement('@settings/device/pin-switch').click({ force: true });
-        cy.task('pressYes');
-        // todo: add support for pin to trezor-user-env. now I may safely test only wrong pin input
-        cy.getTestElement('@pin-input/1').click();
-        cy.getTestElement('@pin/submit-button').click();
-        cy.log('enter 2 digits instead of 1 in the first entry. This way pin is always wrong');
-        cy.getTestElement('@pin-input/1').click();
-        cy.getTestElement('@pin-input/1').click();
-
-        cy.getTestElement('@pin/submit-button').click();
-        cy.getTestElement('@pin-mismatch');
-        cy.getTestElement('@pin-mismatch/try-again-button').click();
-    });
-
     // TODO: upload custom image
-    // TODO: t1 - pin success
-    // TODO: t1 - pin caching immediately after it is set
 });
