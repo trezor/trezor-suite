@@ -15,6 +15,7 @@ import {
     GRAPH,
     COINMARKET_BUY,
     SEND,
+    COINMARKET_EXCHANGE,
 } from '@wallet-actions/constants';
 import { getDiscovery } from '@wallet-actions/discoveryActions';
 import { isDeviceRemembered } from '@suite-utils/device';
@@ -157,6 +158,19 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
 
         case COINMARKET_BUY.SAVE_TRADE:
             storageActions.saveBuyTrade(
+                action.data,
+                {
+                    descriptor: action.account.descriptor,
+                    symbol: action.account.symbol,
+                    accountType: action.account.accountType,
+                    accountIndex: action.account.accountIndex,
+                },
+                action.date,
+            );
+            break;
+
+        case COINMARKET_EXCHANGE.SAVE_TRADE:
+            storageActions.saveExchangeTrade(
                 action.data,
                 {
                     descriptor: action.account.descriptor,

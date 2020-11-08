@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import styled from 'styled-components';
-import { CoinmarketFooter, CoinmarketTopPanel } from '@wallet-components';
+import { CoinmarketFooter, CoinmarketBuyTopPanel } from '@wallet-components';
 import { variables, colors } from '@trezor/components';
 import { LayoutContext, Translation } from '@suite-components';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
@@ -66,7 +66,7 @@ const Offers = () => {
     const { setLayout } = useContext(LayoutContext);
 
     useEffect(() => {
-        if (setLayout) setLayout('Trezor Suite | Coinmarket', undefined, <CoinmarketTopPanel />);
+        if (setLayout) setLayout('Trezor Suite | Coinmarket', undefined, <CoinmarketBuyTopPanel />);
     }, [setLayout]);
 
     return (

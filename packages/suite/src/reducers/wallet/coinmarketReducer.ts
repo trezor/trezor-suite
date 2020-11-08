@@ -1,14 +1,18 @@
 import produce from 'immer';
 import { WalletAction, Account } from '@wallet-types';
+import { ReviewTransactionData } from '@wallet-types/transaction';
+import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
+
 import {
     BuyTrade,
     BuyTradeQuoteRequest,
     ExchangeTradeQuoteRequest,
     ExchangeTrade,
+    ExchangeCoinInfo,
 } from 'invity-api';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
-import { ExchangeInfo } from '@suite/actions/wallet/coinmarketExchangeActions';
-import { COINMARKET_BUY, COINMARKET_EXCHANGE } from '@wallet-actions/constants';
+import { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
+import { COINMARKET_BUY, COINMARKET_EXCHANGE, COINMARKET_COMMON } from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
 import { Action as SuiteAction } from '@suite-types';
 
@@ -24,7 +28,7 @@ type CommonTrade = {
 };
 
 export type TradeBuy = CommonTrade & { tradeType: 'buy'; data: BuyTrade };
-export type TradeExchange = CommonTrade & { tradeType: 'buy'; data: BuyTrade };
+export type TradeExchange = CommonTrade & { tradeType: 'exchange'; data: ExchangeTrade };
 export type Trade = TradeExchange | TradeBuy;
 
 interface Buy {
@@ -40,21 +44,26 @@ interface Buy {
         shouldSubmit?: boolean;
     };
     alternativeQuotes?: BuyTrade[];
-    addressVerified: boolean;
+    addressVerified?: string;
 }
 
 interface Exchange {
     exchangeInfo?: ExchangeInfo;
+    exchangeCoinInfo?: ExchangeCoinInfo[];
     quotesRequest?: ExchangeTradeQuoteRequest;
     fixedQuotes: ExchangeTrade[];
     floatQuotes: ExchangeTrade[];
     transactionId?: string;
-    addressVerified: boolean;
+    addressVerified?: string;
 }
 
 interface State {
     buy: Buy;
     exchange: Exchange;
+    transaction: {
+        composed?: PrecomposedTransactionFinal;
+        reviewData?: ReviewTransactionData;
+    };
     trades: Trade[];
 }
 
@@ -72,16 +81,18 @@ export const initialState = {
         },
         quotes: [],
         alternativeQuotes: undefined,
-        addressVerified: false,
+        addressVerified: undefined,
     },
     exchange: {
         exchangeInfo: undefined,
+        exchangeCoinInfo: undefined,
         transactionId: undefined,
         quotesRequest: undefined,
         fixedQuotes: [],
         floatQuotes: [],
-        addressVerified: false,
+        addressVerified: undefined,
     },
+    transaction: {},
     trades: [],
 };
 
@@ -119,8 +130,9 @@ const coinmarketReducer = (
                 };
                 break;
             case COINMARKET_BUY.DISPOSE:
-                draft.buy.addressVerified = false;
+                draft.buy.addressVerified = undefined;
                 break;
+            case COINMARKET_EXCHANGE.SAVE_TRADE:
             case COINMARKET_BUY.SAVE_TRADE:
                 if (action.key) {
                     const trades = state.trades.filter(t => t.key !== action.key);
@@ -132,7 +144,9 @@ const coinmarketReducer = (
             case COINMARKET_EXCHANGE.SAVE_EXCHANGE_INFO:
                 draft.exchange.exchangeInfo = action.exchangeInfo;
                 break;
-
+            case COINMARKET_EXCHANGE.SAVE_EXCHANGE_COIN_INFO:
+                draft.exchange.exchangeCoinInfo = action.exchangeCoinInfo;
+                break;
             case COINMARKET_EXCHANGE.SAVE_QUOTE_REQUEST:
                 draft.exchange.quotesRequest = action.request;
                 break;
@@ -146,7 +160,12 @@ const coinmarketReducer = (
             case COINMARKET_EXCHANGE.SAVE_TRANSACTION_ID:
                 draft.exchange.transactionId = action.transactionId;
                 break;
-
+            case COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION:
+                draft.transaction.composed = action.composedTransaction;
+                break;
+            case COINMARKET_COMMON.SAVE_TRANSACTION_REVIEW:
+                draft.transaction.reviewData = action.reviewData;
+                break;
             case STORAGE.LOADED:
                 return action.payload.wallet.coinmarket;
             // no default

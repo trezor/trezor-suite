@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { getAccountInfo } from '@wallet-utils/coinmarket/buyUtils';
+import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import {
     FiatValue,
     QuestionTooltip,
@@ -116,7 +116,7 @@ const VerifyAddressComponent = () => {
         addressVerified,
     } = useCoinmarketBuyOffersContext();
     const { symbol, formattedBalance } = account;
-    const { path, address } = getAccountInfo(account);
+    const { path, address } = getUnusedAddressFromAccount(account);
 
     if (!path || !address || !selectedQuote) {
         return null;
@@ -158,7 +158,7 @@ const VerifyAddressComponent = () => {
                     value={address}
                     readOnly
                 />
-                {addressVerified && (
+                {addressVerified && addressVerified === address && (
                     <Confirmed>
                         {device && (
                             <StyledDeviceImage
@@ -171,12 +171,12 @@ const VerifyAddressComponent = () => {
                 )}
             </CardContent>
             <ButtonWrapper>
-                {!addressVerified && (
-                    <Button onClick={() => verifyAddress(path, address)}>
+                {(!addressVerified || addressVerified !== address) && (
+                    <Button onClick={() => verifyAddress(account)}>
                         <Translation id="TR_BUY_CONFIRM_ON_TREZOR" />
                     </Button>
                 )}
-                {addressVerified && (
+                {addressVerified && addressVerified === address && (
                     <Button onClick={() => goToPayment(address)}>
                         <Translation id="TR_BUY_GO_TO_PAYMENT" />
                     </Button>

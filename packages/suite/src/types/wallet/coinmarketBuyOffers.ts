@@ -27,7 +27,7 @@ export type ContextValues = {
     REFETCH_INTERVAL: number;
     device: AppState['suite']['device'];
     selectedQuote?: BuyTrade;
-    verifyAddress: (path: string, address: string) => Promise<void>;
+    verifyAddress: (account: Account) => Promise<void>;
     addressVerified: AppState['wallet']['coinmarket']['buy']['addressVerified'];
     providersInfo?: BuyInfo['providerInfos'];
     selectQuote: (quote: BuyTrade) => void;

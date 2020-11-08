@@ -18,12 +18,14 @@ import PassphraseOnDevice from './PassphraseOnDevice';
 import PassphraseDuplicate from './PassphraseDuplicate';
 import ConfirmAction from './confirm/Action';
 import CoinmarketBuyTerms from './confirm/CoinmarketBuyTerms';
+import CoinmarketExchangeTerms from './confirm/CoinmarketExchangeTerms';
 import Word from './Word';
 import WordAdvanced from './WordAdvanced';
 import ConfirmAddress from './confirm/Address';
 import ConfirmXpub from './confirm/Xpub/Container';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ReviewTransaction from './ReviewTransaction/Container';
+import CoinmarketReviewTransaction from './CoinmarketReviewTransaction/Container';
 import ImportTransaction from './ImportTransaction';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
 import AddAccount from './AddAccount/Container';
@@ -40,6 +42,7 @@ const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
     device: state.suite.device,
     devices: state.devices,
+    router: state.router,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -54,8 +57,9 @@ type Props = ReturnType<typeof mapStateToProps> &
 
 // Modals requested byt Device from `trezor-connect`
 const getDeviceContextModal = (props: Props) => {
-    const { modal, device } = props;
+    const { modal, device, router } = props;
     if (modal.context !== MODAL.CONTEXT_DEVICE || !device) return null;
+    const isCoinmarketOffers = router.route?.name.startsWith('wallet-coinmarket');
 
     switch (modal.windowType) {
         // T1 firmware
@@ -98,8 +102,13 @@ const getDeviceContextModal = (props: Props) => {
         case 'ButtonRequest_PinEntry':
             return <ConfirmAction device={device} />;
         case 'ButtonRequest_ConfirmOutput':
-        case 'ButtonRequest_SignTx':
+        case 'ButtonRequest_SignTx': {
+            if (isCoinmarketOffers) {
+                return <CoinmarketReviewTransaction type="sign-transaction" />;
+            }
+
             return <ReviewTransaction type="sign-transaction" />;
+        }
         default:
             return null;
     }
@@ -169,9 +178,19 @@ const getUserContextModal = (props: Props) => {
             return <PassphraseDuplicate device={payload.device} duplicate={payload.duplicate} />;
         case 'review-transaction':
             return <ReviewTransaction {...payload} />;
+        case 'coinmarket-review-transaction':
+            return <CoinmarketReviewTransaction {...payload} />;
         case 'coinmarket-buy-terms':
             return (
                 <CoinmarketBuyTerms
+                    provider={payload.provider}
+                    onCancel={modalActions.onCancel}
+                    decision={payload.decision}
+                />
+            );
+        case 'coinmarket-exchange-terms':
+            return (
+                <CoinmarketExchangeTerms
                     provider={payload.provider}
                     onCancel={modalActions.onCancel}
                     decision={payload.decision}

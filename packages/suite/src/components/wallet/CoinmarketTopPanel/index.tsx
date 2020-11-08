@@ -5,6 +5,7 @@ import { AccountLabeling } from '@suite-components';
 import { colors, Icon, variables } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
+import { Route } from '@suite-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -54,7 +55,11 @@ const StyledIcon = styled(Icon)`
     margin-right: 12px;
 `;
 
-const CoinmarketTopPanel = () => {
+interface Props {
+    backRoute: Route['name'];
+}
+
+const CoinmarketTopPanel = ({ backRoute }: Props) => {
     const { goto } = useActions({
         goto: routerActions.goto,
     });
@@ -67,7 +72,7 @@ const CoinmarketTopPanel = () => {
         <Wrapper>
             <Content>
                 <Left>
-                    <Back onClick={() => goto('wallet-coinmarket-buy', selectedAccount.params)}>
+                    <Back onClick={() => goto(backRoute, selectedAccount.params)}>
                         <StyledIcon icon="ARROW_LEFT" />
                         <AccountLabeling account={account} />
                     </Back>
@@ -78,4 +83,8 @@ const CoinmarketTopPanel = () => {
     );
 };
 
-export default CoinmarketTopPanel;
+export const CoinmarketBuyTopPanel = () => <CoinmarketTopPanel backRoute="wallet-coinmarket-buy" />;
+
+export const CoinmarketExchangeTopPanel = () => (
+    <CoinmarketTopPanel backRoute="wallet-coinmarket-exchange" />
+);

@@ -7221,10 +7221,10 @@
   resolved "https://registry.yarnpkg.com/@types/html-minifier-terser/-/html-minifier-terser-5.0.0.tgz#7532440c138605ced1b555935c3115ddd20e8bef"
   integrity sha512-q95SP4FdkmF0CwO0F2q0H6ZgudsApaY/yCtAQNRn1gduef5fGpyEphzy0YCq/N0UFvDSnLg5V8jFK/YGXlDiCw==
 
-"@types/invity-api@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@types/invity-api/-/invity-api-1.0.0.tgz#ac49fe6b05be900acbed5c85c4a51a98e977a3fd"
-  integrity sha512-kSufxL2cXt7B6QUWvWwjpqHXse/ldbuExmoh8YEL2aDgnUc0xlKGmRnQsybQuHku9cV20QE9Quxqzd99v63nFQ==
+"@types/invity-api@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@types/invity-api/-/invity-api-1.0.1.tgz#7ca998b170b206aa98c09496477a96b75311669f"
+  integrity sha512-pTw50oNjhpRgj/ag7VvEPMwIhHx9Q/Aer/4G7EF6Frd1vXplHcc28WU1b8dOFLYAIQO8an2Zj9F2qRlwY2iSlg==
 
 "@types/is-function@^1.0.0":
   version "1.0.0"

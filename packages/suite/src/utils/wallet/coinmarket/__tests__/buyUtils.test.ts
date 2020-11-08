@@ -7,7 +7,6 @@ import {
     getCountryLabelParts,
     getCryptoOptions,
     createTxLink,
-    getAccountInfo,
 } from '../buyUtils';
 
 const {
@@ -56,44 +55,6 @@ describe('coinmarket/buy utils', () => {
         ]);
     });
 
-    it('getAccountInfo', () => {
-        const accountMockBtc = {
-            index: 1,
-            accountType: 'segwit',
-            networkType: 'bitcoin',
-            symbol: 'btc',
-            addresses: {
-                unused: [
-                    {
-                        address: '177BUDVZqTTzK1Fogqcrfbb5ketHEUDGSJ',
-                        transfers: 0,
-                        path: "m/44'/0'/3'/0/0",
-                    },
-                ],
-            },
-        };
-        // @ts-ignore
-        expect(getAccountInfo(accountMockBtc)).toStrictEqual({
-            address: '177BUDVZqTTzK1Fogqcrfbb5ketHEUDGSJ',
-            path: "m/44'/0'/3'/0/0",
-        });
-
-        const accountMockEth = {
-            index: 1,
-            accountType: 'normal',
-            networkType: 'ethereum',
-            symbol: 'eth',
-            descriptor: '0x2e0DC981d301cdd443C3987cf19Eb9671CB99ddC',
-            path: "m/44'/60'/0'/0/1",
-        };
-
-        // @ts-ignore
-        expect(getAccountInfo(accountMockEth)).toStrictEqual({
-            address: '0x2e0DC981d301cdd443C3987cf19Eb9671CB99ddC',
-            path: "m/44'/60'/0'/0/1",
-        });
-    });
-
     it('createQuoteLink', () => {
         const accountMock = {
             index: 1,
@@ -129,7 +90,6 @@ describe('coinmarket/buy utils', () => {
         expect(getStatusMessage('BLOCKED')).toBe('TR_BUY_STATUS_ERROR');
         expect(getStatusMessage('ERROR')).toBe('TR_BUY_STATUS_ERROR');
         expect(getStatusMessage('SUCCESS')).toBe('TR_BUY_STATUS_SUCCESS');
-        expect(getStatusMessage(undefined)).toBe('TR_BUY_STATUS_PENDING');
     });
 
     it('getCryptoOptions', () => {

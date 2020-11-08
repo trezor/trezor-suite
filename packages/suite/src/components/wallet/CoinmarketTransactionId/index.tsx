@@ -19,6 +19,7 @@ const Label = styled.div`
     text-transform: uppercase;
     font-size: ${variables.FONT_SIZE.TINY};
     padding-right: 3px;
+    white-space: nowrap;
 `;
 
 const Value = styled.div``;

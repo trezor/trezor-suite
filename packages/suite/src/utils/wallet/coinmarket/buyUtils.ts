@@ -1,10 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Account } from '@wallet-types';
 import { AmountLimits } from '@wallet-types/coinmarketBuyForm';
-import { BuyTrade, BuyTradeQuoteRequest, BuyTradeFormResponse } from 'invity-api';
-import { Trade } from '@wallet-reducers/coinmarketReducer';
+import { BuyTrade, BuyTradeQuoteRequest, BuyTradeStatus } from 'invity-api';
 import { symbolToInvityApiSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { isDesktop } from '@suite-utils/env';
+import { getLocationOrigin, isDesktop } from '@suite-utils/env';
 import { ELECTRON_RECEIVER_SERVER } from '@wallet-constants/coinmarket/buy';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return the limits
@@ -66,29 +65,9 @@ export function processQuotes(allQuotes: BuyTrade[]): [BuyTrade[], BuyTrade[]] {
     return [quotes, alternativeQuotes];
 }
 
-export const getAccountInfo = (account: Account) => {
-    switch (account.networkType) {
-        case 'bitcoin': {
-            const firstUnused = account.addresses?.unused[0];
-            if (firstUnused) {
-                return { address: firstUnused.address, path: firstUnused.path };
-            }
-
-            return { address: undefined, path: undefined };
-        }
-        case 'ripple':
-        case 'ethereum': {
-            return {
-                address: account.descriptor,
-                path: account.path,
-            };
-        }
-        // no default
-    }
-};
-
 export function createQuoteLink(request: BuyTradeQuoteRequest, account: Account): string {
     const assetPrefix = process.env.assetPrefix || '';
+    const locationOrigin = getLocationOrigin();
     let hash: string;
 
     if (request.wantCrypto) {
@@ -105,10 +84,11 @@ export function createQuoteLink(request: BuyTradeQuoteRequest, account: Account)
         )}`;
     }
 
-    return `${window.location.origin}${assetPrefix}/coinmarket-redirect#${params}`;
+    return `${locationOrigin}${assetPrefix}/coinmarket-redirect#${params}`;
 }
 
 export function createTxLink(trade: BuyTrade, account: Account): string {
+    const locationOrigin = getLocationOrigin();
     const assetPrefix = process.env.assetPrefix || '';
     const params = `detail/${account.symbol}/${account.accountType}/${account.index}/${trade.paymentId}`;
     if (isDesktop()) {
@@ -117,49 +97,10 @@ export function createTxLink(trade: BuyTrade, account: Account): string {
         )}`;
     }
 
-    return `${window.location.origin}${assetPrefix}/coinmarket-redirect#${params}`;
+    return `${locationOrigin}${assetPrefix}/coinmarket-redirect#${params}`;
 }
 
-function addHiddenFieldToForm(form: any, fieldName: string, fieldValue: any) {
-    const hiddenField = document.createElement('input');
-    hiddenField.type = 'hidden';
-    hiddenField.name = fieldName;
-    hiddenField.value = fieldValue;
-    form.appendChild(hiddenField);
-}
-
-export function submitRequestForm(tradeForm: BuyTradeFormResponse): void {
-    if (!tradeForm || !tradeForm.form) return;
-    // for IFRAME there is nothing to submit
-    if (tradeForm.form.formMethod === 'IFRAME') return;
-
-    if (tradeForm.form.formMethod === 'GET' && tradeForm.form.formAction) {
-        window.open(tradeForm.form.formAction, isDesktop() ? '_blank' : '_self');
-        return;
-    }
-
-    const { fields } = tradeForm.form;
-    if (isDesktop()) {
-        let params = `a=${encodeURIComponent(tradeForm.form.formAction)}`;
-        Object.keys(fields).forEach(k => {
-            params += `&${k}=${encodeURIComponent(fields[k])}`;
-        });
-        window.open(`${ELECTRON_RECEIVER_SERVER}/buy-post?${params}`, '_blank');
-    } else {
-        const form = document.createElement('form');
-        form.method = tradeForm.form.formMethod;
-        form.action = tradeForm.form.formAction;
-        Object.keys(fields).forEach(k => {
-            addHiddenFieldToForm(form, k, fields[k]);
-        });
-
-        if (!document.body) return;
-        document.body.appendChild(form);
-        form.submit();
-    }
-}
-
-export const getStatusMessage = (status: Trade['data']['status']) => {
+export const getStatusMessage = (status: BuyTradeStatus) => {
     switch (status) {
         case 'LOGIN_REQUEST':
         case 'APPROVAL_PENDING':

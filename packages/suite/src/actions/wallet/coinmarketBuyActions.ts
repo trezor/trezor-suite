@@ -1,10 +1,18 @@
 import { Account } from '@wallet-types';
-import { BuyListResponse, BuyProviderInfo, BuyTradeQuoteRequest, BuyTrade } from 'invity-api';
+import {
+    BuyListResponse,
+    BuyProviderInfo,
+    BuyTradeQuoteRequest,
+    BuyTrade,
+    BuyTradeFormResponse,
+} from 'invity-api';
 import invityAPI from '@suite-services/invityAPI';
 import { COINMARKET_BUY } from './constants';
-import { Dispatch } from '@suite-types';
+import { GetState, Dispatch } from '@suite-types';
 import regional from '@wallet-constants/coinmarket/regional';
 import * as modalActions from '@suite-actions/modalActions';
+import * as suiteActions from '@suite-actions/suiteActions';
+import { submitRequestForm as envSubmitRequestForm, isDesktop } from '@suite-utils/env';
 
 export interface BuyInfo {
     buyInfo?: BuyListResponse;
@@ -19,7 +27,7 @@ export type CoinmarketBuyAction =
     | { type: typeof COINMARKET_BUY.SET_IS_FROM_REDIRECT; isFromRedirect: boolean }
     | { type: typeof COINMARKET_BUY.SAVE_TRANSACTION_DETAIL_ID; transactionId: string }
     | { type: typeof COINMARKET_BUY.SAVE_QUOTE_REQUEST; request: BuyTradeQuoteRequest }
-    | { type: typeof COINMARKET_BUY.VERIFY_ADDRESS; addressVerified: boolean }
+    | { type: typeof COINMARKET_BUY.VERIFY_ADDRESS; addressVerified: string }
     | {
           type: typeof COINMARKET_BUY.SAVE_CACHED_ACCOUNT_INFO;
           symbol: Account['symbol'];
@@ -147,3 +155,20 @@ export const saveQuotes = (
     quotes,
     alternativeQuotes,
 });
+
+export const submitRequestForm = (tradeForm: BuyTradeFormResponse) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { device } = getState().suite;
+    if (device && !device.remember && !isDesktop()) {
+        dispatch(suiteActions.rememberDevice(device, true));
+    }
+    if (tradeForm.form) {
+        envSubmitRequestForm(
+            tradeForm.form.formMethod,
+            tradeForm.form.formAction,
+            tradeForm.form.fields,
+        );
+    }
+};

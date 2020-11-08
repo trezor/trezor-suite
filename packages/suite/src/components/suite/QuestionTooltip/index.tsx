@@ -17,6 +17,7 @@ interface Props {
     label?: JSX.Element | ExtendedMessageDescriptor['id'];
     tooltip?: JSX.Element | ExtendedMessageDescriptor['id'];
     size?: number;
+    className?: string;
     color?: string;
     // This is workaround for pixel-perfect alignment of the icon: see https://medium.com/microsoft-design/leading-trim-the-future-of-digital-typesetting-d082d84b202
     iconStyle?: React.SVGAttributes<HTMLDivElement>['style'];
@@ -25,11 +26,12 @@ interface Props {
 export const QuestionTooltip = ({
     label,
     tooltip,
+    className,
     size = 16,
     color = colors.NEUE_TYPE_LIGHT_GREY,
     iconStyle,
 }: Props) => (
-    <Wrapper>
+    <Wrapper className={className}>
         {label && <Label>{typeof label === 'string' ? <Translation id={label} /> : label}</Label>}
         {tooltip && (
             <Tooltip

@@ -4,7 +4,6 @@ import { EthereumTransaction, FeeLevel, ComposeOutput } from 'trezor-connect';
 import Common from 'ethereumjs-common';
 import { Transaction, TxData } from 'ethereumjs-tx';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
-
 import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
 import {
     amountToSatoshi,

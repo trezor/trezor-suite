@@ -8,12 +8,13 @@ import InputError from './InputError';
 import EstimatedMiningTime from './EstimatedMiningTime';
 
 import CoinmarketLayout from './CoinmarketLayout';
-import CoinmarketTopPanel from './CoinmarketTopPanel';
+import { CoinmarketBuyTopPanel, CoinmarketExchangeTopPanel } from './CoinmarketTopPanel';
 import CoinmarketProvidedByInvity from './CoinmarketProvidedByInvity';
 import CoinmarketPaymentType from './CoinmarketPaymentType';
 import CoinmarketFooter from './CoinmarketFooter';
 import CoinmarketBuyProviderInfo from './CoinmarketBuyProviderInfo';
 import CoinmarketBuyOfferInfo from './CoinmarketBuyOfferInfo';
+import CoinmarketExchangeOfferInfo from './CoinmarketExchangeOfferInfo';
 import CoinmarketTransactionId from './CoinmarketTransactionId';
 import CoinmarketExchangeProviderInfo from './CoinmarketExchangeProviderInfo';
 
@@ -24,11 +25,13 @@ export {
     DiscoveryProgress,
     CoinBalance,
     CoinmarketLayout,
-    CoinmarketTopPanel,
+    CoinmarketBuyTopPanel,
+    CoinmarketExchangeTopPanel,
     CoinmarketFooter,
     CoinmarketBuyProviderInfo,
     CoinmarketExchangeProviderInfo,
     CoinmarketBuyOfferInfo,
+    CoinmarketExchangeOfferInfo,
     CoinmarketTransactionId,
     CoinmarketProvidedByInvity,
     CoinmarketPaymentType,
