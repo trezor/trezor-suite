@@ -20,7 +20,7 @@
         "csvtojson": "^2.0.8",
         "dotenv": "^8.2.0",
         "extract-zip": "^1.7.0",
-        "fs-extra": "^9.0.0",
+        "fs-extra": "^9.0.1",
         "glob": "^7.1.6",
         "meow": "^6.1.0",
         "request": "^2.88.2",
