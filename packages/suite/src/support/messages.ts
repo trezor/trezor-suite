@@ -4705,7 +4705,7 @@ const definedMessages = defineMessages({
     },
     TR_DEVICE_IS_IN_UNEXPECTED_MODE: {
         id: 'TR_DEVICE_IS_IN_UNEXPECTED_MODE',
-        defaultMessage: 'Device is in unexpected mode',
+        defaultMessage: 'Device is in unexpected mode.',
     },
 } as const);
 
