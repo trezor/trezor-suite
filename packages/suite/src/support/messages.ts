@@ -4386,10 +4386,6 @@ const definedMessages = defineMessages({
         defaultMessage:
             'In the next step you will be asked to connect your device in bootloader mode.',
     },
-    FIRMWARE_RECONNECT_NORMAL_NEXT_STEP_DESC: {
-        id: 'FIRMWARE_RECONNECT_NORMAL_NEXT_STEP_DESC',
-        defaultMessage: 'In the next step you will be asked to reconnect your device normally.',
-    },
     FIRMWARE_RECONNECTED_BL_NEXT_STEP_DESC: {
         id: 'FIRMWARE_RECONNECTED_BL_NEXT_STEP_DESC',
         defaultMessage: 'In the next step you will be asked to confirm firmware update on device.',
@@ -4705,7 +4701,8 @@ const definedMessages = defineMessages({
     },
     TR_DEVICE_IS_IN_UNEXPECTED_MODE: {
         id: 'TR_DEVICE_IS_IN_UNEXPECTED_MODE',
-        defaultMessage: 'Device is in unexpected mode.',
+        defaultMessage:
+            'Device is in unexpected mode. In the next step you will be asked to reconnect your device normally.',
     },
 } as const);
 

@@ -60,7 +60,6 @@ const Body = () => {
                 </H2>
                 <P>
                     <Translation id="TR_DEVICE_IS_IN_UNEXPECTED_MODE" />
-                    <Translation id="FIRMWARE_RECONNECT_NORMAL_NEXT_STEP_DESC" />
                 </P>
             </>
         );
