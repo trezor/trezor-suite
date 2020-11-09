@@ -1,6 +1,6 @@
 [
 	{
-		"version": [2, 0, 27],
+		"version": [2, 0, 30],
 		"directory": "bridge/{version}/",
 		"packages": [
 			{
@@ -36,6 +36,6 @@
 				"signature": "trezor-bridge-{version}-win32-install.exe.asc"
 			}
 		],
-		"changelog": "* Fix Certificate issue on Windows"
+		"changelog": "* Allow Trezor onion domain, various stability fixes"
 	}
 ]
