@@ -18,3 +18,11 @@ unit tests:
         - install and build
     script:
         - lerna run --stream test:unit -- --passWithNoTests
+
+yaml lint:
+    stage: prebuild
+    image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env
+    needs: []
+    script:
+        - nix-shell --run "yamllint --version"
+        - nix-shell --run "yamllint . && echo 'Success!'"

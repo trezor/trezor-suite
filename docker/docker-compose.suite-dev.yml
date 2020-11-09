@@ -11,7 +11,7 @@ services:
     network_mode: host
     ipc: host
     container_name: trezor-user-env
-    environment: 
+    environment:
       - DISPLAY=$DISPLAY
       - QT_X11_NO_MITSHM=1
       - LOCAL_USER_ID=$LOCAL_USER_ID

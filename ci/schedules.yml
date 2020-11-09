@@ -15,8 +15,8 @@ urls_health:
         # tests whether urls in constants return 200 status (shall detect dead links)
         - yarn workspace @trezor/suite test-health
 
-# Few very low priority scripts. 
-misc: 
+# Few very low priority scripts.
+misc:
     stage: misc
     only:
         - schedules

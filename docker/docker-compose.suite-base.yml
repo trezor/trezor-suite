@@ -13,7 +13,7 @@ services:
       - NODE_ENV=development
       - LOCAL_USER_ID=$LOCAL_USER_ID
     working_dir: /usr/src/service
-  
+
   suite-install:
     extends:
       service: suite-base

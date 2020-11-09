@@ -1,50 +1,50 @@
 variables:
-    TEST_CMD: 'yarn concurrently --success first --kill-others "cd ./docker/trezor-user-env/controller && python3 ./main.py" "node ./packages/integration-tests/projects/suite-web/run_tests.js --project ./packages/integration-tests/projects/suite-web --stage=$TEST_GROUP"'
+  TEST_CMD: 'yarn concurrently --success first --kill-others "cd ./docker/trezor-user-env/controller && python3 ./main.py" "node ./packages/integration-tests/projects/suite-web/run_tests.js --project ./packages/integration-tests/projects/suite-web --stage=$TEST_GROUP"'
 
 .run_everything_rules: &run_everything_rules
-    refs:
-        - develop
-        - releases
-        - schedules
-        - /^release\//
+  refs:
+    - develop
+    - releases
+    - schedules
+    - /^release\//
 
 
-# build 
+# build
 
 suite-web build dev:
-    stage: build
-    script:
-        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/web yarn workspace @trezor/suite-web build
-    artifacts:
-        expire_in: 7 days
-        paths:
-            - packages/suite-web/build
+  stage: build
+  script:
+    - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/web yarn workspace @trezor/suite-web build
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - packages/suite-web/build
 
 suite-web build beta:
-    stage: build
-    only:
-        <<: *run_everything_rules
-    script:
-        - assetPrefix=/wallet/web yarn workspace @trezor/suite-web build
-    artifacts:
-        expire_in: 7 days
-        paths:
-            - packages/suite-web/scripts/s3sync.sh
-            - packages/suite-web/build
+  stage: build
+  only:
+    <<: *run_everything_rules
+  script:
+    - assetPrefix=/wallet/web yarn workspace @trezor/suite-web build
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - packages/suite-web/scripts/s3sync.sh
+      - packages/suite-web/build
 
 suite-web build stable:
-    stage: build
-    only:
-        <<: *run_everything_rules
-    script:
-        - assetPrefix=/web yarn workspace @trezor/suite-web build
-    artifacts:
-        expire_in: 7 days
-        paths:
-            - packages/suite-web/scripts/s3sync.sh
-            - packages/suite-web/build
+  stage: build
+  only:
+    <<: *run_everything_rules
+  script:
+    - assetPrefix=/web yarn workspace @trezor/suite-web build
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - packages/suite-web/scripts/s3sync.sh
+      - packages/suite-web/build
 
-# deploy 
+# deploy
 
 suite-web deploy dev:
   stage: deploy to dev
@@ -64,145 +64,145 @@ suite-web deploy dev:
   tags:
     - deploy
 
-# e2e 
+# e2e
 
 .e2e_artifacts: &e2e_artifacts
-    expire_in: 7 days
-    when: always
-    paths:
-        - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
-        - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
-        - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
+  expire_in: 7 days
+  when: always
+  paths:
+    - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
+    - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
+    - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
 
 .e2e_script_common: &e2e_script_common
-    - npx cypress install
-    - export CYPRESS_ASSET_PREFIX=/web
-    - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
-    - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
+  - npx cypress install
+  - export CYPRESS_ASSET_PREFIX=/web
+  - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
+  - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
 
 suite-web e2e chrome stage=suite:
-    stage: integration testing
-    variables:
-        TEST_GROUP: "@group:suite"
-    needs:
-      - suite-web deploy dev
-    script:
-        - *e2e_script_common
-        - export CYPRESS_SNAPSHOT=1
-        - export BROWSER=chrome
-        - "eval $TEST_CMD"
-    artifacts:
-        <<: *e2e_artifacts
+  stage: integration testing
+  variables:
+    TEST_GROUP: "@group:suite"
+  needs:
+    - suite-web deploy dev
+  script:
+    - *e2e_script_common
+    - export CYPRESS_SNAPSHOT=1
+    - export BROWSER=chrome
+    - "eval $TEST_CMD"
+  artifacts:
+    <<: *e2e_artifacts
 
 suite-web e2e chrome stage=metadata:
-    stage: integration testing
-    variables:
-        TEST_GROUP: "@group:metadata"
-    needs:
-      - suite-web deploy dev
-    script:
-        - *e2e_script_common
-        - export CYPRESS_SNAPSHOT=1
-        - export BROWSER=chrome
-        - "eval $TEST_CMD"
-    artifacts:
-        <<: *e2e_artifacts
+  stage: integration testing
+  variables:
+    TEST_GROUP: "@group:metadata"
+  needs:
+    - suite-web deploy dev
+  script:
+    - *e2e_script_common
+    - export CYPRESS_SNAPSHOT=1
+    - export BROWSER=chrome
+    - "eval $TEST_CMD"
+  artifacts:
+    <<: *e2e_artifacts
 
 suite-web e2e chrome stage=device-management:
-    stage: integration testing
-    variables:
-        TEST_GROUP: "@group:device-management"
-    needs:
-      - suite-web deploy dev
-    script:
-        - *e2e_script_common
-        - export CYPRESS_SNAPSHOT=1
-        - export BROWSER=chrome
-        - "eval $TEST_CMD"
-    artifacts:
-        <<: *e2e_artifacts
+  stage: integration testing
+  variables:
+    TEST_GROUP: "@group:device-management"
+  needs:
+    - suite-web deploy dev
+  script:
+    - *e2e_script_common
+    - export CYPRESS_SNAPSHOT=1
+    - export BROWSER=chrome
+    - "eval $TEST_CMD"
+  artifacts:
+    <<: *e2e_artifacts
 
 suite-web e2e chrome stage=onboarding:
-    stage: integration testing
-    variables:
-        TEST_GROUP: "@group:onboarding"
-    needs:
-      - suite-web deploy dev
-    script:
-        - *e2e_script_common
-        - export CYPRESS_SNAPSHOT=1
-        - export BROWSER=chrome
-        - "eval $TEST_CMD"
-    artifacts:
-        <<: *e2e_artifacts
+  stage: integration testing
+  variables:
+    TEST_GROUP: "@group:onboarding"
+  needs:
+    - suite-web deploy dev
+  script:
+    - *e2e_script_common
+    - export CYPRESS_SNAPSHOT=1
+    - export BROWSER=chrome
+    - "eval $TEST_CMD"
+  artifacts:
+    <<: *e2e_artifacts
 
 # on scheduled job every night, run all stable tests against latest chrome-beta. This is meant to be
 # kind of an early-warning system.
 suite-web e2e chrome-beta stage=stable:
-    stage: integration testing
-    variables:
-        TEST_GROUP: "@stable"
-    needs:
-      - suite-web deploy dev
-    only:
-        - schedules
-    allow_failure: false
-    script:
-        - *e2e_script_common
-        - apt-get update && apt-get upgrade -y # update chrome-beta channel to the latest
-        - export BROWSER=/usr/bin/google-chrome-beta
-        - "eval $TEST_CMD"
-    artifacts:
-        <<: *e2e_artifacts
+  stage: integration testing
+  variables:
+    TEST_GROUP: "@stable"
+  needs:
+    - suite-web deploy dev
+  only:
+    - schedules
+  allow_failure: false
+  script:
+    - *e2e_script_common
+    - apt-get update && apt-get upgrade -y  # update chrome-beta channel to the latest
+    - export BROWSER=/usr/bin/google-chrome-beta
+    - "eval $TEST_CMD"
+  artifacts:
+    <<: *e2e_artifacts
 
 suite-web deploy staging-wallet:
-    stage: deploy to staging
-    needs:
-        - suite-web build beta
-        - suite-desktop build mac
-        - suite-desktop build linux
-        - suite-desktop build windows
-    environment:
-        name: ${CI_BUILD_REF_NAME}-staging-wallet
-        url: ${STAGING_WALLET_SERVER_URL}
-    before_script: []
-    only:
-        <<: *run_everything_rules
-    when: manual
-    script:
-        - source ${STAGING_WALLET_DEPLOY_KEYFILE}
-        - mkdir -p packages/suite-web/build/static/desktop
-        - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage ./packages/suite-web/build/static/desktop || :'
-        - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg ./packages/suite-web/build/static/desktop || :'
-        - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe ./packages/suite-web/build/static/desktop || :'
-        - cd packages/suite-web
-        - ./scripts/s3sync.sh staging-wallet
-    tags:
-        - deploy
+  stage: deploy to staging
+  needs:
+    - suite-web build beta
+    - suite-desktop build mac
+    - suite-desktop build linux
+    - suite-desktop build windows
+  environment:
+    name: ${CI_BUILD_REF_NAME}-staging-wallet
+    url: ${STAGING_WALLET_SERVER_URL}
+  before_script: []
+  only:
+    <<: *run_everything_rules
+  when: manual
+  script:
+    - source ${STAGING_WALLET_DEPLOY_KEYFILE}
+    - mkdir -p packages/suite-web/build/static/desktop
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage ./packages/suite-web/build/static/desktop || :'
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg ./packages/suite-web/build/static/desktop || :'
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe ./packages/suite-web/build/static/desktop || :'
+    - cd packages/suite-web
+    - ./scripts/s3sync.sh staging-wallet
+  tags:
+    - deploy
 
 # todo: add smoke test job on stage / beta (need basic auth)
 
 suite-web deploy staging-suite:
-    stage: deploy to staging
-    needs:
-        - suite-web build stable
-        - suite-desktop build mac
-        - suite-desktop build linux
-        - suite-desktop build windows
-    environment:
-        name: ${CI_BUILD_REF_NAME}-staging-suite
-        url: ${STAGING_SUITE_SERVER_URL}
-    before_script: []
-    only:
-        <<: *run_everything_rules
-    when: manual
-    script:
-        - source ${STAGING_SUITE_DEPLOY_KEYFILE}
-        - mkdir -p packages/suite-web/build/static/desktop
-        - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage ./packages/suite-web/build/static/desktop || :'
-        - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg ./packages/suite-web/build/static/desktop || :'
-        - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe ./packages/suite-web/build/static/desktop || :'
-        - cd packages/suite-web
-        - ./scripts/s3sync.sh staging-suite
-    tags:
-        - deploy
+  stage: deploy to staging
+  needs:
+    - suite-web build stable
+    - suite-desktop build mac
+    - suite-desktop build linux
+    - suite-desktop build windows
+  environment:
+    name: ${CI_BUILD_REF_NAME}-staging-suite
+    url: ${STAGING_SUITE_SERVER_URL}
+  before_script: []
+  only:
+    <<: *run_everything_rules
+  when: manual
+  script:
+    - source ${STAGING_SUITE_DEPLOY_KEYFILE}
+    - mkdir -p packages/suite-web/build/static/desktop
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage ./packages/suite-web/build/static/desktop || :'
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg ./packages/suite-web/build/static/desktop || :'
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe ./packages/suite-web/build/static/desktop || :'
+    - cd packages/suite-web
+    - ./scripts/s3sync.sh staging-suite
+  tags:
+    - deploy
