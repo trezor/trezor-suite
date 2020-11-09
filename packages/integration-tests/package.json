@@ -9,7 +9,7 @@
     },
     "dependencies": {
         "cypress": "^4.7.0",
-        "ts-loader": "^8.0.4",
+        "ts-loader": "^8.0.10",
         "webpack": "^4.44.2"
     },
     "devDependencies": {

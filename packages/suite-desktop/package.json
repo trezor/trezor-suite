@@ -165,6 +165,6 @@
         "react": "16.13.1",
         "react-dom": "16.13.1",
         "styled-components": "5.1.1",
-        "worker-loader": "^3.0.2"
+        "worker-loader": "^3.0.5"
     }
 }
