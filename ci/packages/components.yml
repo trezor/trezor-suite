@@ -1,4 +1,4 @@
-.run_all_rules: &run_all_rules
+.run_everything_rules: &run_everything_rules
     refs:
       - develop
       - releases
@@ -25,13 +25,13 @@
 components build-storybook:
   <<: *build_common
   only:
-    <<: *run_all_rules
+    <<: *run_everything_rules
 
 components build-storybook:
   <<: *build_common
   when: manual
   except:
-      <<: *run_all_rules
+      <<: *run_everything_rules
 
 # Deploy 
 
@@ -54,13 +54,13 @@ components build-storybook:
 components storybook deploy dev:
   <<: *deploy_common
   only:
-    <<: *run_all_rules
+    <<: *run_everything_rules
 
 components storybook deploy dev:
   <<: *deploy_common
   when: manual
   except:
-      <<: *run_all_rules
+      <<: *run_everything_rules
 
 # components-storybook test snapshots:
 #   stage: integration testing

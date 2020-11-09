@@ -1,7 +1,7 @@
 variables:
     TEST_CMD: 'yarn concurrently --success first --kill-others "cd ./docker/trezor-user-env/controller && python3 ./main.py" "node ./packages/integration-tests/projects/suite-web/run_tests.js --project ./packages/integration-tests/projects/suite-web --stage=$TEST_GROUP"'
 
-.run_all_rules: &run_all_rules
+.run_everything_rules: &run_everything_rules
     refs:
         - develop
         - releases
@@ -23,7 +23,7 @@ suite-web build dev:
 suite-web build beta:
     stage: build
     only:
-        <<: *run_all_rules
+        <<: *run_everything_rules
     script:
         - assetPrefix=/wallet/web yarn workspace @trezor/suite-web build
     artifacts:
@@ -35,7 +35,7 @@ suite-web build beta:
 suite-web build stable:
     stage: build
     only:
-        <<: *run_all_rules
+        <<: *run_everything_rules
     script:
         - assetPrefix=/web yarn workspace @trezor/suite-web build
     artifacts:
@@ -167,7 +167,7 @@ suite-web deploy staging-wallet:
         url: ${STAGING_WALLET_SERVER_URL}
     before_script: []
     only:
-        <<: *run_all_rules
+        <<: *run_everything_rules
     when: manual
     script:
         - source ${STAGING_WALLET_DEPLOY_KEYFILE}
@@ -194,7 +194,7 @@ suite-web deploy staging-suite:
         url: ${STAGING_SUITE_SERVER_URL}
     before_script: []
     only:
-        <<: *run_all_rules
+        <<: *run_everything_rules
     when: manual
     script:
         - source ${STAGING_SUITE_DEPLOY_KEYFILE}

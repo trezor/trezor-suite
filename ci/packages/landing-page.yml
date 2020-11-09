@@ -1,4 +1,4 @@
-.run_all_rules: &run_all_rules
+.run_everything_rules: &run_everything_rules
   refs:
     - develop
     - releases
@@ -19,7 +19,7 @@ landing-page build dev:
 landing-page build beta:
   stage: build
   only:
-    <<: *run_all_rules
+    <<: *run_everything_rules
   script:
     - yarn workspace @trezor/landing-page build
   artifacts:
@@ -49,7 +49,7 @@ landing-page deploy dev:
 landing-page deploy staging-wallet:
   stage: deploy to staging
   only:
-    <<: *run_all_rules
+    <<: *run_everything_rules
   needs:
     - landing-page build beta
   environment:

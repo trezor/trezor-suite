@@ -23,7 +23,7 @@
         - mv packages/suite-desktop/build-electron/* .
         - more latest*.yml | cat
 
-.run_all_rules: &run_all_rules
+.run_everything_rules: &run_everything_rules
     refs:
         - develop
         - releases
@@ -33,7 +33,7 @@
 
 suite-desktop build mac:
     only:
-        <<: *run_all_rules
+        <<: *run_everything_rules
     tags:
         - darwin
     variables:
@@ -57,7 +57,7 @@ suite-desktop build mac codesign:
 
 suite-desktop build linux:
     only:
-        <<: *run_all_rules
+        <<: *run_everything_rules
     variables:
         artifact: ${DESKTOP_APP_NAME}*
         platform: linux
@@ -78,7 +78,7 @@ suite-desktop build linux codesign:
 
 suite-desktop build windows:
     only:
-        <<: *run_all_rules
+        <<: *run_everything_rules
     image: electronuserland/builder:wine
     variables:
         artifact: ${DESKTOP_APP_NAME}*
@@ -102,7 +102,7 @@ suite-desktop build windows codesign:
 suite-desktop deploy dev:
     stage: deploy to dev
     only:
-        <<: *run_all_rules
+        <<: *run_everything_rules
     variables:
         DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_BUILD_REF_NAME}
     script:
