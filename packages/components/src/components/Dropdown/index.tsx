@@ -222,7 +222,7 @@ const Dropdown = ({
                       e.preventDefault();
                       if (children.props.onClick) children.props.onClick(e);
                       setToggled(!toggled);
-                      setAdjustedCoords([e.clientX, e.clientY]);
+                      setAdjustedCoords([e.pageX, e.pageY]);
                   }
                 : undefined,
         })
@@ -236,7 +236,7 @@ const Dropdown = ({
                 !isDisabled
                     ? e => {
                           setToggled(!toggled);
-                          setAdjustedCoords([e.clientX, e.clientY]);
+                          setAdjustedCoords([e.pageX, e.pageY]);
                       }
                     : undefined
             }
