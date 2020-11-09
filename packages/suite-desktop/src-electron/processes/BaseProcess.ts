@@ -2,7 +2,6 @@ import path from 'path';
 import { spawn, ChildProcess } from 'child_process';
 import isDev from 'electron-is-dev';
 import { RESOURCES } from '../constants';
-import { TouchBarOtherItemsProxy } from 'electron';
 
 export type Status = {
     service: boolean;
@@ -86,7 +85,7 @@ class BaseProcess {
         }
 
         // Throttle process start
-        if (this.options.startupCooldown > 0) {
+        if (this.options.startupCooldown && this.options.startupCooldown > 0) {
             this.startupThrottle = setTimeout(() => {
                 this.startupThrottle = null;
             }, this.options.startupCooldown * 1000);
@@ -141,10 +140,10 @@ class BaseProcess {
                     return;
                 }
 
-                if (timeout >= this.options.stopKillWait) {
-                    this.process.kill('SIGKILL');
-                } else {
+                if (this.options.stopKillWait && timeout < this.options.stopKillWait) {
                     timeout++;
+                } else {
+                    this.process.kill('SIGKILL');
                 }
             }, 1000);
         });
@@ -165,7 +164,7 @@ class BaseProcess {
 
     onExit() {
         this.process = null;
-        if (this.options.autoRestart > 0 && !this.stopped) {
+        if (this.options.autoRestart && this.options.autoRestart > 0 && !this.stopped) {
             setTimeout(async () => this.start(), this.options.autoRestart * 1000);
         }
     }
