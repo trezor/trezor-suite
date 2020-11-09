@@ -1,12 +1,70 @@
 variables:
     TEST_CMD: 'yarn concurrently --success first --kill-others "cd ./docker/trezor-user-env/controller && python3 ./main.py" "node ./packages/integration-tests/projects/suite-web/run_tests.js --project ./packages/integration-tests/projects/suite-web --stage=$TEST_GROUP"'
 
-.auto_run_branches: &auto_run_branches
+.run_everything_rules: &run_everything_rules
     refs:
         - develop
         - releases
         - schedules
         - /^release\//
+
+
+# build 
+
+suite-web build dev:
+    stage: build
+    script:
+        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/web yarn workspace @trezor/suite-web build
+    artifacts:
+        expire_in: 7 days
+        paths:
+            - packages/suite-web/build
+
+suite-web build beta:
+    stage: build
+    only:
+        <<: *run_everything_rules
+    script:
+        - assetPrefix=/wallet/web yarn workspace @trezor/suite-web build
+    artifacts:
+        expire_in: 7 days
+        paths:
+            - packages/suite-web/scripts/s3sync.sh
+            - packages/suite-web/build
+
+suite-web build stable:
+    stage: build
+    only:
+        <<: *run_everything_rules
+    script:
+        - assetPrefix=/web yarn workspace @trezor/suite-web build
+    artifacts:
+        expire_in: 7 days
+        paths:
+            - packages/suite-web/scripts/s3sync.sh
+            - packages/suite-web/build
+
+# deploy 
+
+suite-web deploy dev:
+  stage: deploy to dev
+  variables:
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
+  needs:
+    - suite-web-landing build dev
+    - suite-web build dev
+  environment:
+    name: ${CI_BUILD_REF_NAME}
+    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+  before_script: []
+  script:
+    - mkdir -p ${DEPLOY_DIRECTORY}/web
+    - rsync --delete -va packages/suite-web-landing/build/ "${DEPLOY_DIRECTORY}/"
+    - rsync --delete -va packages/suite-web/build/ "${DEPLOY_DIRECTORY}/web/"
+  tags:
+    - deploy
+
+# e2e 
 
 .e2e_artifacts: &e2e_artifacts
     expire_in: 7 days
@@ -21,64 +79,6 @@ variables:
     - export CYPRESS_ASSET_PREFIX=/web
     - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
     - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
-
-suite-web build dev:
-    stage: build
-    needs:
-      - install and build
-    script:
-        - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/web yarn workspace @trezor/suite-web build
-    artifacts:
-        expire_in: 7 days
-        paths:
-            - packages/suite-web/build
-
-suite-web build beta:
-    stage: build
-    needs:
-      - install and build
-    only:
-        <<: *auto_run_branches
-    script:
-        - assetPrefix=/wallet/web yarn workspace @trezor/suite-web build
-    artifacts:
-        expire_in: 7 days
-        paths:
-            - packages/suite-web/scripts/s3sync.sh
-            - packages/suite-web/build
-
-suite-web build stable:
-    stage: build
-    needs:
-      - install and build
-    only:
-        <<: *auto_run_branches
-    script:
-        - assetPrefix=/web yarn workspace @trezor/suite-web build
-    artifacts:
-        expire_in: 7 days
-        paths:
-            - packages/suite-web/scripts/s3sync.sh
-            - packages/suite-web/build
-
-suite-web deploy dev:
-  stage: deploy to dev
-  variables:
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
-  needs:
-    - install and build
-    - suite-web-landing build dev
-    - suite-web build dev
-  environment:
-    name: ${CI_BUILD_REF_NAME}
-    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
-  before_script: []
-  script:
-    - mkdir -p ${DEPLOY_DIRECTORY}/web
-    - rsync --delete -va packages/suite-web-landing/build/ "${DEPLOY_DIRECTORY}/"
-    - rsync --delete -va packages/suite-web/build/ "${DEPLOY_DIRECTORY}/web/"
-  tags:
-    - deploy
 
 suite-web e2e chrome stage=suite:
     stage: integration testing
@@ -136,23 +136,6 @@ suite-web e2e chrome stage=onboarding:
     artifacts:
         <<: *e2e_artifacts
 
-# this job is intended to collect statistics on tests in beta stage (=tests that are possibly unstable)
-# failing test here does not make job fail, run_tests script with --stage='@beta' exits with non-zero
-# code only when there is some runtime error
-.suite-web e2e chrome stage=beta:
-    stage: integration testing
-    variables:
-        TEST_GROUP: "@beta"
-    needs:
-      - suite-web deploy dev
-    script:
-        - *e2e_script_common
-        - export CYPRESS_SNAPSHOT=1
-        - export BROWSER=chrome
-        - "eval $TEST_CMD"
-    artifacts:
-        <<: *e2e_artifacts
-
 # on scheduled job every night, run all stable tests against latest chrome-beta. This is meant to be
 # kind of an early-warning system.
 suite-web e2e chrome-beta stage=stable:
@@ -184,7 +167,7 @@ suite-web deploy staging-wallet:
         url: ${STAGING_WALLET_SERVER_URL}
     before_script: []
     only:
-        <<: *auto_run_branches
+        <<: *run_everything_rules
     when: manual
     script:
         - source ${STAGING_WALLET_DEPLOY_KEYFILE}
@@ -196,6 +179,7 @@ suite-web deploy staging-wallet:
         - ./scripts/s3sync.sh staging-wallet
     tags:
         - deploy
+
 # todo: add smoke test job on stage / beta (need basic auth)
 
 suite-web deploy staging-suite:
@@ -210,7 +194,7 @@ suite-web deploy staging-suite:
         url: ${STAGING_SUITE_SERVER_URL}
     before_script: []
     only:
-        <<: *auto_run_branches
+        <<: *run_everything_rules
     when: manual
     script:
         - source ${STAGING_SUITE_DEPLOY_KEYFILE}

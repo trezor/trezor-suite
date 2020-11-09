@@ -1,9 +1,11 @@
-.auto_run_branches: &auto_run_branches
+.run_everything_rules: &run_everything_rules
   refs:
     - develop
     - releases
     - schedules
     - /^release\//
+
+# build 
 
 landing-page build dev:
   stage: build
@@ -17,7 +19,7 @@ landing-page build dev:
 landing-page build beta:
   stage: build
   only:
-    <<: *auto_run_branches
+    <<: *run_everything_rules
   script:
     - yarn workspace @trezor/landing-page build
   artifacts:
@@ -26,10 +28,28 @@ landing-page build beta:
       - packages/landing-page/scripts/s3sync.sh
       - packages/landing-page/build
 
+# deploy 
+
+landing-page deploy dev:
+  stage: deploy to dev
+  variables:
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/landing-page/${CI_BUILD_REF_NAME}
+  needs:
+    - landing-page build dev
+  environment:
+    name: ${CI_BUILD_REF_NAME}
+    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+  before_script: []
+  script:
+    - mkdir -p ${DEPLOY_DIRECTORY}
+    - rsync --delete -va packages/landing-page/build/ "${DEPLOY_DIRECTORY}/"
+  tags:
+    - deploy
+
 landing-page deploy staging-wallet:
   stage: deploy to staging
   only:
-    <<: *auto_run_branches
+    <<: *run_everything_rules
   needs:
     - landing-page build beta
   environment:
@@ -44,19 +64,3 @@ landing-page deploy staging-wallet:
   tags:
     - deploy
 
-landing-page deploy dev:
-  stage: deploy to dev
-  variables:
-    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/landing-page/${CI_BUILD_REF_NAME}
-  needs:
-    - install and build
-    - landing-page build dev
-  environment:
-    name: ${CI_BUILD_REF_NAME}
-    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
-  before_script: []
-  script:
-    - mkdir -p ${DEPLOY_DIRECTORY}
-    - rsync --delete -va packages/landing-page/build/ "${DEPLOY_DIRECTORY}/"
-  tags:
-    - deploy

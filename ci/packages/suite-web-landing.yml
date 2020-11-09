@@ -1,4 +1,4 @@
-.auto_run_branches: &auto_run_branches
+.run_everything_rules: &run_everything_rules
   refs:
     - develop
     - releases
@@ -17,7 +17,7 @@ suite-web-landing build dev:
 suite-web-landing build stable:
   stage: build
   only:
-    <<: *auto_run_branches
+    <<: *run_everything_rules
   script:
     - yarn workspace @trezor/suite-web-landing build
   artifacts:
@@ -29,7 +29,7 @@ suite-web-landing build stable:
 suite-web-landing deploy staging-suite:
   stage: deploy to staging
   only:
-    <<: *auto_run_branches
+    <<: *run_everything_rules
   needs:
     - suite-web-landing build stable
   environment:
