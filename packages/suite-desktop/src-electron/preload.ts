@@ -3,7 +3,6 @@ import { contextBridge, ipcRenderer } from 'electron';
 // todo: would be great to have these channels strongly typed. for example this is nice reading: https://blog.logrocket.com/electron-ipc-response-request-architecture-with-typescript/
 const validChannels = [
     'app/restart',
-    'bridge/start',
 
     'oauth/request-oauth-code',
     'oauth/code',

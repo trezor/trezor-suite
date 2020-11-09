@@ -31,6 +31,7 @@ const src = isDev
 const disableCspFlag = app.commandLine.hasSwitch('disable-csp');
 const preReleaseFlag = app.commandLine.hasSwitch('pre-release');
 const torFlag = app.commandLine.hasSwitch('tor');
+const bridgeDev = app.commandLine.hasSwitch('bridge-dev');
 
 // Updater
 const updateCancellationToken = new CancellationToken();
@@ -81,7 +82,11 @@ const notifyWindowActive = (window: BrowserWindow, state: boolean) => {
 
 const init = async () => {
     try {
-        await bridge.start();
+        if (bridgeDev) {
+            await bridge.startDev();
+        } else {
+            await bridge.start();
+        }
     } catch {
         //
     }
@@ -455,18 +460,6 @@ app.on('before-quit', () => {
 app.on('browser-window-focus', (_event, win) => {
     if (isDev && !win.webContents.isDevToolsOpened()) {
         win.webContents.openDevTools();
-    }
-});
-
-ipcMain.on('bridge/start', async (_event, devMode?: boolean) => {
-    try {
-        if (devMode) {
-            await bridge.startDev();
-        } else {
-            await bridge.start();
-        }
-    } catch (error) {
-        // TODO: return error message to suite?
     }
 });
 
