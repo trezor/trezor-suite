@@ -2,34 +2,53 @@ import path from 'path';
 import { spawn, ChildProcess } from 'child_process';
 import isDev from 'electron-is-dev';
 import { RESOURCES } from '../constants';
+import { TouchBarOtherItemsProxy } from 'electron';
 
 export type Status = {
     service: boolean;
     process: boolean;
 };
 
+/**
+ * [startupCooldown] Cooldown before being able to run start again (seconds).
+ * [stopKillWait] How long to wait before killing the process on stop (seconds).
+ * [autoRestart] Seconds to wait before auto-restarting the process (seconds). 0 = off.
+ */
+export type Options = {
+    startupCooldown?: number;
+    stopKillWait?: number;
+    autoRestart?: number;
+};
+
+const defaultOptions: Options = {
+    startupCooldown: 0,
+    stopKillWait: 10,
+    autoRestart: 2,
+};
+
 class BaseProcess {
     process: ChildProcess | null;
     resourceName: string;
     processName: string;
-    startupCooldown: number;
-    stopKillWait: number;
+    options: Options;
     startupThrottle: ReturnType<typeof setTimeout> | null;
     supportedSystems = ['linux-x64', 'mac-x64', 'win-x64'];
+    stopped = false;
 
     /**
      * @param resourceName Resource folder name
      * @param processName Process name (without extension)
-     * @param startupCooldown Cooldown before being able to run start again (seconds)
-     * @param stopKillWait How long to wait before killing the process on stop (seconds)
+     * @param options Additional options
      */
-    constructor(resourceName = '', processName = '', startupCooldown = 0, stopKillWait = 10) {
+    constructor(resourceName = '', processName = '', options = defaultOptions) {
         this.process = null;
         this.startupThrottle = null;
         this.resourceName = resourceName;
         this.processName = processName;
-        this.startupCooldown = startupCooldown;
-        this.stopKillWait = stopKillWait;
+        this.options = {
+            ...defaultOptions,
+            ...options,
+        };
     }
 
     /**
@@ -67,16 +86,18 @@ class BaseProcess {
         }
 
         // Throttle process start
-        if (this.startupCooldown > 0) {
+        if (this.options.startupCooldown > 0) {
             this.startupThrottle = setTimeout(() => {
                 this.startupThrottle = null;
-            }, this.startupCooldown * 1000);
+            }, this.options.startupCooldown * 1000);
         }
 
         const { system, ext } = this.getPlatformInfo();
         if (!this.isSystemSupported(system)) {
             throw new Error(`[${this.resourceName}] unsupported system (${system})`);
         }
+
+        this.stopped = false;
 
         const processDir = path.join(RESOURCES, 'bin', this.resourceName, isDev ? system : '');
         const processPath = path.join(processDir, `${this.processName}${ext}`);
@@ -93,6 +114,8 @@ class BaseProcess {
             cwd: processDir,
             env: processEnv,
         });
+        this.process.on('error', err => this.onError(err));
+        this.process.on('exit', () => this.onExit());
     }
 
     /**
@@ -101,6 +124,7 @@ class BaseProcess {
     stop() {
         return new Promise(resolve => {
             if (!this.process) {
+                this.stopped = true;
                 resolve();
                 return;
             }
@@ -112,11 +136,12 @@ class BaseProcess {
                 if (!this.process || this.process.killed) {
                     clearInterval(interval);
                     this.process = null;
+                    this.stopped = true;
                     resolve();
                     return;
                 }
 
-                if (timeout >= this.stopKillWait) {
+                if (timeout >= this.options.stopKillWait) {
                     this.process.kill('SIGKILL');
                 } else {
                     timeout++;
@@ -132,6 +157,17 @@ class BaseProcess {
     async restart() {
         await this.stop();
         await this.start();
+    }
+
+    onError(err: Error) {
+        console.error('ERROR', this.processName, err);
+    }
+
+    onExit() {
+        this.process = null;
+        if (this.options.autoRestart > 0 && !this.stopped) {
+            setTimeout(async () => this.start(), this.options.autoRestart * 1000);
+        }
     }
 
     ///

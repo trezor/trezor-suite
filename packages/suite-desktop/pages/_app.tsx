@@ -10,7 +10,6 @@ import Preloader from '@suite-components/Preloader';
 import ToastContainer from '@suite-components/ToastContainer';
 import Router from '@suite-support/Router';
 import OnlineStatus from '@suite-support/OnlineStatus';
-import BridgeStatus from '@desktop/support/BridgeStatus';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import DesktopUpdater from '@desktop/support/DesktopUpdater';
@@ -49,7 +48,6 @@ class TrezorSuiteApp extends App<Props> {
                         <IntlProvider>
                             <DesktopUpdater />
                             <Router />
-                            <BridgeStatus />
                             <ToastContainer />
                             <Preloader>
                                 <Component {...pageProps} />
