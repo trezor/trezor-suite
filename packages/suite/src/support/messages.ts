@@ -4398,7 +4398,7 @@ const definedMessages = defineMessages({
     FIRMWARE_RECONNECT_BL_NEXT_STEP_DESC: {
         id: 'FIRMWARE_RECONNECT_BL_NEXT_STEP_DESC',
         defaultMessage:
-            'It the next step you will be asked to connect your device in bootloader mode.',
+            'In the next step you will be asked to connect your device in bootloader mode.',
     },
     FIRMWARE_RECONNECTED_BL_NEXT_STEP_DESC: {
         id: 'FIRMWARE_RECONNECTED_BL_NEXT_STEP_DESC',
@@ -4712,6 +4712,11 @@ const definedMessages = defineMessages({
         id: 'TR_BITCOIN_CASH_15_NOV_FORK',
         defaultMessage:
             'Bitcoin Cash will undergo a contentious fork on the 15th of November 2020, which could cause a split in the network. Read our blogpost to understand the risks!',
+    },
+    TR_DEVICE_IS_IN_UNEXPECTED_MODE: {
+        id: 'TR_DEVICE_IS_IN_UNEXPECTED_MODE',
+        defaultMessage:
+            'Device is in unexpected mode. In the next step you will be asked to reconnect your device normally.',
     },
 } as const);
 

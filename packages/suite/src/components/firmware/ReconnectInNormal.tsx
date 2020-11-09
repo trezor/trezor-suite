@@ -59,8 +59,7 @@ const Body = () => {
                     <Translation id="TR_DISCONNECT_YOUR_DEVICE" />
                 </H2>
                 <P>
-                    Device is in unexpected model. In the next step you will be asked to reconnect
-                    your device normally.
+                    <Translation id="TR_DEVICE_IS_IN_UNEXPECTED_MODE" />
                 </P>
             </>
         );
