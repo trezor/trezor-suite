@@ -3,6 +3,9 @@ import React from 'react';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { ServerStyleSheet } from 'styled-components';
 import globalStyles from '../support/styles';
+import { isEnabled } from '@suite-utils/features';
+
+const isOnionLocation = isEnabled('ONION_LOCATION_META');
 
 export default class MyDocument extends Document {
     static async getInitialProps(ctx: DocumentContext) {
@@ -75,10 +78,12 @@ export default class MyDocument extends Document {
                     <meta httpEquiv="Pragma" content="no-cache" />
                     <meta httpEquiv="cache-control" content="no-cache" />
                     <meta httpEquiv="expires" content="-1" />
-                    <meta
-                        httpEquiv="onion-location"
-                        content="http://suite.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion"
-                    />
+                    {isOnionLocation && (
+                        <meta
+                            httpEquiv="onion-location"
+                            content="http://suite.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion"
+                        />
+                    )}
                     <link
                         media="all"
                         rel="stylesheet"
