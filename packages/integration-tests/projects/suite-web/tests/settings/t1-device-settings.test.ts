@@ -1,7 +1,7 @@
 // @group:suite
 // @retry=2
 
-describe('Device settings', () => {
+describe.skip('Device settings', () => {
     beforeEach(() => {
         cy.task('stopEmu');
         cy.wait(501);
