@@ -154,7 +154,7 @@ const init = async () => {
         // TODO? url.startsWith('http:') || url.startsWith('https:');
         if (url !== mainWindow.webContents.getURL()) {
             event.preventDefault();
-            if (torSettings.running || !config.allowedExternalUrls.some(u => url.startsWith(u))) {
+            if (torSettings.running) {
                 // TODO: Replace with in-app modal
                 const result = dialog.showMessageBoxSync(mainWindow, {
                     type: 'warning',
