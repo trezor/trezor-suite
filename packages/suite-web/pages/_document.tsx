@@ -3,6 +3,9 @@ import Document, { DocumentContext, Html, Head, Main, NextScript } from 'next/do
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { ServerStyleSheet } from 'styled-components';
 import globalStyles from '@suite-support/styles/global';
+import { isEnabled } from '@suite-utils/features';
+
+const isOnionLocation = isEnabled('ONION_LOCATION_META');
 
 export default class MyDocument extends Document {
     static async getInitialProps(ctx: DocumentContext) {
@@ -52,10 +55,12 @@ export default class MyDocument extends Document {
                         rel="apple-touch-icon"
                         href={resolveStaticPath('images/icons/favicon/favicon.png')}
                     />
-                    <meta
-                        httpEquiv="onion-location"
-                        content="http://suite.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/web"
-                    />
+                    {isOnionLocation && (
+                        <meta
+                            httpEquiv="onion-location"
+                            content="http://suite.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/web"
+                        />
+                    )}
                 </Head>
                 <body>
                     <Main />
