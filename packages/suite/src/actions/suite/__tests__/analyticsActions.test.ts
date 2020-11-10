@@ -21,6 +21,7 @@ export const getInitialState = (state: InitialState | undefined) => {
     const analytics = state ? state.analytics : undefined;
     return {
         suite: {
+            tor: false,
             flags: { initialRun: false },
         },
         analytics: {
@@ -88,7 +89,7 @@ describe('Analytics Actions', () => {
         // @ts-ignore
         expect(global.fetch).toHaveBeenNthCalledWith(
             1,
-            'https://data.trezor.io/suite/log/desktop/beta.log?c_v=1.1&c_type=switch-device%2Feject&c_instance_id=1&c_session_id=very-random',
+            'https://data.trezor.io/suite/log/desktop/beta.log?c_v=1.2&c_type=switch-device%2Feject&c_instance_id=1&c_session_id=very-random',
             { method: 'GET' },
         );
         process.env.SUITE_TYPE = env;
@@ -105,7 +106,7 @@ describe('Analytics Actions', () => {
         // @ts-ignore
         expect(global.fetch).toHaveBeenNthCalledWith(
             1,
-            'https://data.trezor.io/suite/log/web/develop.log?c_v=1.1&c_type=switch-device%2Feject&c_instance_id=1&c_session_id=very-random',
+            'https://data.trezor.io/suite/log/web/develop.log?c_v=1.2&c_type=switch-device%2Feject&c_instance_id=1&c_session_id=very-random',
             { method: 'GET' },
         );
         process.env.SUITE_TYPE = env;

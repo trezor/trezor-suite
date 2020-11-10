@@ -47,9 +47,11 @@ Breaking change should bump major version. Any other change bumps minor version.
 
 ## Changelog
 
-### 1.0.
-- initial version 
-
+### 1.2
+Added
+- suite-ready
+  - tor
+  
 ### 1.1.
 Added:
 - device-update-firmware:
@@ -59,3 +61,6 @@ Added:
   - platform
 - device-connect:
   - totalInstances
+
+### 1.0.
+- initial version 
