@@ -24,7 +24,7 @@ simple semver for data-analytics part.
 Don't forget to update docs with changelog!
 */
 
-const version = '1.1';
+const version = '1.2';
 
 export type AnalyticsEvent =
     | {
@@ -45,6 +45,8 @@ export type AnalyticsEvent =
               // added in 1.1
               platform: string;
               platformLanguage: string;
+              // added in 1.2
+              tor: boolean;
           };
       }
     | { type: 'transport-type'; payload: { type: string; version: string } }
