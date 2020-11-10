@@ -5,7 +5,7 @@
     - schedules
     - /^release\//
 
-# build 
+# build
 
 landing-page build dev:
   stage: build
@@ -28,7 +28,7 @@ landing-page build beta:
       - packages/landing-page/scripts/s3sync.sh
       - packages/landing-page/build
 
-# deploy 
+# deploy
 
 landing-page deploy dev:
   stage: deploy to dev
@@ -63,4 +63,3 @@ landing-page deploy staging-wallet:
     - ./scripts/s3sync.sh staging-wallet
   tags:
     - deploy
-

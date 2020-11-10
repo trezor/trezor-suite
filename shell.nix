@@ -6,20 +6,26 @@ with import
   })
 { };
 
-stdenv.mkDerivation {
-  name = "trezor-suite-dev";
-  buildInputs = [
-    nodejs
-    mdbook
-    yarn
-  ] ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
-    Cocoa
-    CoreServices
+let
+  SuitePython = python3.withPackages(ps: [
+    ps.yamllint
   ]);
-  shellHook = ''
-    export PATH="$PATH:$(pwd)/node_modules/.bin"
-    if [ "$(uname)" = "Linux" ] ; then
-      ln -sf ${p7zip}/bin/7za $(pwd)/node_modules/7zip-bin/linux/x64/7za || :
-    fi
-  '';
-}
+in
+  stdenv.mkDerivation {
+    name = "trezor-suite-dev";
+    buildInputs = [
+      nodejs
+      mdbook
+      yarn
+      SuitePython
+    ] ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
+      Cocoa
+      CoreServices
+    ]);
+    shellHook = ''
+      export PATH="$PATH:$(pwd)/node_modules/.bin"
+      if [ "$(uname)" = "Linux" ] ; then
+        ln -sf ${p7zip}/bin/7za $(pwd)/node_modules/7zip-bin/linux/x64/7za || :
+      fi
+    '';
+  }
