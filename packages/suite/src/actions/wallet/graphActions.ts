@@ -1,5 +1,5 @@
 import TrezorConnect from 'trezor-connect';
-import { getUnixTime, subWeeks, isWithinInterval, fromUnixTime } from 'date-fns';
+import { getUnixTime, isWithinInterval, fromUnixTime } from 'date-fns';
 import { Dispatch, GetState } from '@suite-types';
 import {
     ACCOUNT_GRAPH_SUCCESS,
@@ -62,17 +62,13 @@ export const setSelectedView = (view: GraphScale): GraphAction => ({
  * No XRP support
  *
  * @param {Account} account
- * @param {Date} startDate
- * @param {Date} endDate
  * @param {GraphRange} range
  * @returns
  */
-export const fetchAccountGraphData = (
-    account: Account,
-    startDate: Date | null,
-    endDate: Date | null,
-    range: GraphRange,
-) => async (dispatch: Dispatch, _getState: GetState) => {
+export const fetchAccountGraphData = (account: Account, range: GraphRange) => async (
+    dispatch: Dispatch,
+    _getState: GetState,
+) => {
     dispatch({
         type: ACCOUNT_GRAPH_START,
         payload: {
@@ -88,10 +84,10 @@ export const fetchAccountGraphData = (
     });
 
     let intervalParams = {};
-    if (range.weeks) {
+    if (range.startDate && range.endDate) {
         intervalParams = {
-            from: getUnixTime(startDate!),
-            to: getUnixTime(endDate!),
+            from: getUnixTime(range.startDate),
+            to: getUnixTime(range.endDate),
         };
     }
 
@@ -160,9 +156,7 @@ export const updateGraphData = (
         type: AGGREGATED_GRAPH_START,
     });
     const promises = filteredAccounts.map(
-        a =>
-            // dispatch(fetchAccountGraphData(a, startDate, endDate, selectedRange)),
-            dispatch(fetchAccountGraphData(a, null, null, selectedRange)), // fetch for all range
+        a => dispatch(fetchAccountGraphData(a, selectedRange)), // fetch for all range
     );
     await Promise.all(promises);
 
@@ -178,10 +172,6 @@ export const getGraphDataForInterval = (options: { account?: Account; deviceStat
     const { graph } = getState().wallet;
     const { selectedRange } = graph;
 
-    const startDate =
-        selectedRange.label === 'all' ? null : subWeeks(new Date(), selectedRange.weeks!);
-    const endDate = selectedRange.label === 'all' ? null : new Date();
-
     const data: GraphData[] = [];
     graph.data.forEach(accountGraph => {
         const accountFilter = options.account
@@ -192,14 +182,14 @@ export const getGraphDataForInterval = (options: { account?: Account; deviceStat
             : true;
 
         if (accountFilter && deviceFilter) {
-            if (startDate && endDate) {
+            if (selectedRange.startDate && selectedRange.endDate) {
                 data.push({
                     ...accountGraph,
                     data:
                         accountGraph.data?.filter(d =>
                             isWithinInterval(fromUnixTime(d.time), {
-                                start: startDate,
-                                end: endDate,
+                                start: selectedRange.startDate,
+                                end: selectedRange.endDate,
                             }),
                         ) ?? [],
                 });

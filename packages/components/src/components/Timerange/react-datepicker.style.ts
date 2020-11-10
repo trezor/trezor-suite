@@ -823,7 +823,7 @@ export const style = `
         text-align: center;
         display: table-cell;
         vertical-align: middle;
-        content: '\00d7';
+        content: '×';
     }
 
     .react-datepicker__today-button {

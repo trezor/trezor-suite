@@ -72,7 +72,7 @@ const Header = (props: Props) => {
             // <ActionButton variant="primary" onClick={buyClickHandler}>
             //         <Translation id="TR_BUY" />
             //     </ActionButton>
-            <RangeSelector onSelectedRange={onSelectedRange} />
+            <RangeSelector onSelectedRange={onSelectedRange} align="right" />
         );
     }
 

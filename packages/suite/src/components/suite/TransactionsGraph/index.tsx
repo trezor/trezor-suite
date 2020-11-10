@@ -110,7 +110,7 @@ const TransactionsGraph = React.memo((props: Props) => {
         <Wrapper>
             {!props.hideToolbar && (
                 <Toolbar>
-                    <RangeSelector />
+                    <RangeSelector align="right" />
                     {props.onRefresh && (
                         <Icon
                             size={14}

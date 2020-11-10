@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { startOfMonth, getUnixTime, fromUnixTime } from 'date-fns';
+import { startOfMonth, getUnixTime, fromUnixTime, differenceInMonths } from 'date-fns';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { CoinFiatRates, Account } from '@wallet-types';
 import {
@@ -319,7 +319,15 @@ export const calcXDomain = (
             xPadding = 3600 * 24 * 14; // 14 days
             break;
         case 'month':
+        case 'day':
             xPadding = 3600 * 24; // 1 day
+            break;
+        case 'range':
+            if (differenceInMonths(range.endDate, range.startDate) <= 1) {
+                xPadding = 3600 * 24; // 1 day
+            } else {
+                xPadding = 3600 * 24 * 14; // 14 days
+            }
             break;
         default:
             xPadding = 3600 * 12; // 12 hours
@@ -331,6 +339,8 @@ export const calcXDomain = (
 
 export const getFormattedLabel = (rangeLabel: GraphRange['label']) => {
     switch (rangeLabel) {
+        case 'range':
+            return 'range';
         case 'all':
             return 'all';
         case 'year':
@@ -339,12 +349,16 @@ export const getFormattedLabel = (rangeLabel: GraphRange['label']) => {
             return '1M';
         case 'week':
             return '1W';
+        case 'day':
+            return '1D';
         // no default
     }
 };
 
 export const getFormattedLabelLong = (rangeLabel: GraphRange['label']) => {
     switch (rangeLabel) {
+        case 'range':
+            return 'range';
         case 'all':
             return 'all';
         case 'year':
@@ -353,6 +367,8 @@ export const getFormattedLabelLong = (rangeLabel: GraphRange['label']) => {
             return '1 month';
         case 'week':
             return '1 week';
+        case 'day':
+            return '1 day';
         // no default
     }
 };

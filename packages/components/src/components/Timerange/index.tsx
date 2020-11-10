@@ -1,24 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import DatePicker from 'react-datepicker';
-import colors from '../../config/colors';
-import { style as timerangeGlobalStyles } from './index.style';
+import { Button } from '../buttons/Button';
+import { style as datepickerStyle } from './index.style';
 
 const StyledTimerange = styled.div`
+    ${datepickerStyle}
     width: 345px;
     display: flex;
     flex-direction: column;
-    background: ${colors.NEUE_BG_WHITE};
+    background: ${props => props.theme.BG_WHITE};
     border-radius: 4px;
 `;
 const Inputs = styled.div`
     display: flex;
     width: 100%;
     padding: 10px;
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 
     & .react-datepicker-popper {
         display: none;
+    }
+`;
+const Buttons = styled.div`
+    display: flex;
+    width: 100%;
+    padding: 10px;
+    justify-content: space-between;
+    & > * + * {
+        margin-left: 10px;
     }
 `;
 const Separator = styled.div`
@@ -33,43 +43,36 @@ const Input = styled.div`
 `;
 const Calendar = styled.div`
     width: 345px;
-    padding: 10px;
+    padding: 10px 10px 0;
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 `;
 
 interface Props {
-    onChange: (startDate: Date, endDate: Date) => any;
+    onSubmit: (startDate: Date, endDate: Date) => any;
+    onCancel: () => any;
     startDate?: Date;
     endDate?: Date;
+    ctaCancel: React.ReactNode | string;
+    ctaSubmit: React.ReactNode | string;
 }
 
 const Timerange = (props: Props) => {
     const today = new Date();
     const [startDate, setStartDate] = useState(props.startDate || null);
     const [endDate, setEndDate] = useState(props.endDate || null);
-    const onChangeDate = (dates: any) => {
+    const onChangeDate = (dates: [Date, Date]) => {
         const [start, end] = dates;
         setStartDate(start);
         setEndDate(end);
-        props.onChange(start, end);
     };
-    const onChangeStartDate = (date: Date) => {
-        setStartDate(date);
+    const onSubmit = () => {
         if (startDate && endDate) {
-            props.onChange(startDate, endDate);
+            props.onSubmit(startDate, endDate);
         }
     };
-    const onChangeEndDate = (date: Date) => {
-        setEndDate(date);
-        if (startDate && endDate) {
-            props.onChange(startDate, endDate);
-        }
+    const onCancel = () => {
+        props.onCancel();
     };
-
-    useEffect(() => {
-        if (props.startDate) {
-            setStartDate(props.startDate);
-        }
-    }, [props.startDate]);
 
     useEffect(() => {
         if (props.endDate) {
@@ -83,7 +86,7 @@ const Timerange = (props: Props) => {
                 <Input>
                     <DatePicker
                         selected={startDate}
-                        onChange={(date: Date) => onChangeStartDate(date)}
+                        onChange={(date: Date) => setStartDate(date)}
                         selectsStart
                         startDate={startDate}
                         endDate={endDate}
@@ -94,7 +97,7 @@ const Timerange = (props: Props) => {
                 <Input>
                     <DatePicker
                         selected={endDate}
-                        onChange={(date: Date) => onChangeEndDate(date)}
+                        onChange={(date: Date) => setEndDate(date)}
                         selectsEnd
                         startDate={startDate}
                         endDate={endDate}
@@ -114,8 +117,21 @@ const Timerange = (props: Props) => {
                     maxDate={today}
                 />
             </Calendar>
+            <Buttons>
+                <Button variant="secondary" onClick={onCancel} fullWidth>
+                    {props.ctaCancel}
+                </Button>
+                <Button
+                    variant="primary"
+                    isDisabled={!(startDate && endDate)}
+                    onClick={onSubmit}
+                    fullWidth
+                >
+                    {props.ctaSubmit}
+                </Button>
+            </Buttons>
         </StyledTimerange>
     );
 };
 
-export { Timerange, Props as TimerangeProps, timerangeGlobalStyles };
+export { Timerange, Props as TimerangeProps };

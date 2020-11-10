@@ -7,13 +7,15 @@ export interface AccountHistoryWithBalance extends BlockchainAccountBalanceHisto
 
 export type GraphRange =
     | {
-          label: 'week' | 'month' | 'year';
-          weeks: number;
+          label: 'day' | 'week' | 'month' | 'year' | 'range';
+          startDate: Date;
+          endDate: Date;
           groupBy: 'month' | 'day';
       }
     | {
           label: 'all';
-          weeks: null;
+          startDate: null;
+          endDate: null;
           groupBy: 'month' | 'day';
       };
 
