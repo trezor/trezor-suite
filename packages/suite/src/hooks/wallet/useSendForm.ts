@@ -152,6 +152,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     } = useSendFormCompose({
         ...useFormMethods,
         state,
+        account: props.selectedAccount.account,
         updateContext,
         setAmount: sendFormUtils.setAmount,
     });
@@ -201,12 +202,14 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         if (composedTx && composedTx.type === 'final') {
             // sign workflow in Actions:
             // signTransaction > sign[COIN]Transaction > requestPushTransaction (modal with promise decision)
+            updateContext({ isLoading: true });
             const result = await signTransaction(values, composedTx);
+            updateContext({ isLoading: false });
             if (result) {
                 resetContext();
             }
         }
-    }, [getValues, composedLevels, signTransaction, resetContext]);
+    }, [getValues, composedLevels, signTransaction, resetContext, updateContext]);
 
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
 
