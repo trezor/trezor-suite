@@ -13,8 +13,9 @@ import { findComposeErrors } from '@wallet-utils/sendFormUtils';
 
 type Props = UseFormMethods<FormState> & {
     state: UseSendFormState;
+    account: UseSendFormState['account']; // account from the component props !== state.account
     updateContext: SendContextValues['updateContext'];
-    setAmount: any;
+    setAmount: (index: number, amount: string) => void;
 };
 
 // This hook should be used only as a sub-hook of `useSendForm`
@@ -26,6 +27,7 @@ export const useSendFormCompose = ({
     errors,
     clearErrors,
     state,
+    account,
     updateContext,
     setAmount,
 }: Props) => {
@@ -159,7 +161,7 @@ export const useSendFormCompose = ({
 
             const { setMaxOutputId } = values;
             // set calculated and formatted "max" value to `Amount` input
-            if (typeof setMaxOutputId === 'number') {
+            if (typeof setMaxOutputId === 'number' && composed.max) {
                 setAmount(setMaxOutputId, composed.max);
                 setDraftSaveRequest(true);
             }
@@ -235,10 +237,31 @@ export const useSendFormCompose = ({
         selectedFeeRef.current = selectedFee;
     }, [composedLevels, selectedFee, updateComposedValues, updateContext]);
 
-    // TODO: useEffect on props (check: account change: key||balance, fee change, fiat change)
-    // useEffect(() => {
-    //     console.warn('SET BALANCE', account.balance);
-    // }, [account.balance]);
+    // handle props.account change:
+    // - update context state (state.account)
+    // - compose transaction with new data
+    useEffect(() => {
+        if (state.account === account) return; // account didn't change
+        if (!state.isDirty) {
+            // there was no interaction with the form, just update state.account
+            updateContext({ account });
+            return;
+        }
+
+        // reset precomposed transactions
+        setComposedLevels(undefined);
+        // set ref for later use in useEffect which handle composedLevels change
+        composeRequestRef.current = 'outputs[0].amount';
+        // set ref for later use in processComposeRequest function
+        composeRequestID.current++;
+        // clear errors from compose process
+        const composeErrors = findComposeErrors(errors);
+        if (composeErrors.length > 0) {
+            clearErrors(composeErrors);
+        }
+        // start composing
+        updateContext({ account, isLoading: true });
+    }, [state.account, state.isDirty, account, clearErrors, errors, updateContext]);
 
     return {
         composeDraft,
