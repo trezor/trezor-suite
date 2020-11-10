@@ -1024,6 +1024,10 @@ const definedMessages = defineMessages({
             'Coins settings also defines which network will get discovered after you connect your Trezor.',
         id: 'TR_COINS_SETTINGS_ALSO_DEFINES',
     },
+    TR_CONFIRM: {
+        defaultMessage: 'Confirm',
+        id: 'TR_CONFIRM',
+    },
     TR_CONFIRM_ACTION_ON_YOUR: {
         defaultMessage: 'Confirm action on your "{deviceLabel}" device.',
         id: 'TR_CONFIRM_ACTION_ON_YOUR',
@@ -5063,6 +5067,10 @@ const definedMessages = defineMessages({
     TR_EXPORT_FAIL: {
         id: 'TR_EXPORT_FAIL',
         defaultMessage: 'Export failed.',
+    },
+    TR_RANGE: {
+        id: 'TR_RANGE',
+        defaultMessage: 'range',
     },
 } as const);
 

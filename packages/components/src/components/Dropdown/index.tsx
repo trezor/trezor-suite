@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect } from 'react';
+import React, { useState, useRef, useLayoutEffect, forwardRef, useImperativeHandle } from 'react';
 import ReactDOM from 'react-dom';
 import styled, { css } from 'styled-components';
 import { variables } from '../../config';
@@ -18,7 +18,7 @@ const Menu = styled.ul<MenuProps>`
     min-width: 140px;
     box-shadow: 0 1px 2px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
     z-index: 10001;
-    padding: 8px 0px;
+    padding: ${props => props.verticalPadding}px 0px;
 
     ${props =>
         props.coords &&
@@ -124,6 +124,7 @@ interface MenuProps {
     coords?: Coords;
     menuSize?: Coords;
     offset?: number;
+    verticalPadding?: number;
 }
 
 interface Props extends MenuProps, React.ButtonHTMLAttributes<HTMLDivElement> {
@@ -139,169 +140,187 @@ interface Props extends MenuProps, React.ButtonHTMLAttributes<HTMLDivElement> {
     appendTo?: HTMLElement;
 }
 
+interface DropdownRef {
+    close: () => void;
+}
+
 type Coords = [number, number] | undefined;
 
-const Dropdown = ({
-    children,
-    className,
-    items,
-    components,
-    isDisabled,
-    absolutePosition,
-    alignMenu = 'left',
-    offset = 10,
-    appendTo,
-    ...rest
-}: Props) => {
-    const theme = useTheme();
-    const [toggled, setToggled] = useState(false);
-    const [coords, setCoords] = useState<Coords>(undefined);
-    const [menuSize, setMenuSize] = useState<Coords>(undefined);
-    const menuRef = useRef<HTMLUListElement>(null);
-    const toggleRef = useRef<any>(null);
-    const MenuComponent = components?.DropdownMenu ?? Menu;
-    const MenuItemComponent = components?.DropdownMenuItem ?? MenuItem;
+const Dropdown = forwardRef(
+    (
+        {
+            children,
+            className,
+            items,
+            components,
+            isDisabled,
+            absolutePosition,
+            alignMenu = 'left',
+            offset = 10,
+            appendTo,
+            verticalPadding = 8,
+            ...rest
+        }: Props,
+        ref
+    ) => {
+        const theme = useTheme();
+        const [toggled, setToggled] = useState(false);
+        const [coords, setCoords] = useState<Coords>(undefined);
+        const [menuSize, setMenuSize] = useState<Coords>(undefined);
+        const menuRef = useRef<HTMLUListElement>(null);
+        const toggleRef = useRef<any>(null);
+        const MenuComponent = components?.DropdownMenu ?? Menu;
+        const MenuItemComponent = components?.DropdownMenuItem ?? MenuItem;
 
-    const visibleItems = items.map(group => ({
-        ...group,
-        options: group.options.filter(item => !item.isHidden),
-    }));
+        const visibleItems = items.map(group => ({
+            ...group,
+            options: group.options.filter(item => !item.isHidden),
+        }));
 
-    useLayoutEffect(() => {
-        if (menuRef.current && toggled) {
-            const rect = menuRef.current.getBoundingClientRect();
-            setMenuSize([rect.width, rect.height]);
-        }
-    }, [toggled]);
+        useLayoutEffect(() => {
+            if (menuRef.current && toggled) {
+                const rect = menuRef.current.getBoundingClientRect();
+                setMenuSize([rect.width, rect.height]);
+            }
+        }, [toggled]);
 
-    const setAdjustedCoords = (c: Coords) => {
-        if (!c) {
-            setCoords(c);
-            return;
-        }
+        useImperativeHandle(ref, () => ({
+            close: () => {
+                setToggled(false);
+            },
+        }));
 
-        let x = c[0];
-        const y = c[1];
-        if (menuRef.current) {
-            const rect = menuRef.current.getBoundingClientRect();
-            x += rect.width;
-        }
+        const setAdjustedCoords = (c: Coords) => {
+            if (!c) {
+                setCoords(c);
+                return;
+            }
 
-        setCoords([x, y]);
-    };
+            let x = c[0];
+            const y = c[1];
+            if (menuRef.current) {
+                const rect = menuRef.current.getBoundingClientRect();
+                x += rect.width;
+            }
 
-    useOnClickOutside([menuRef, toggleRef], event => {
-        if (toggled) {
-            setToggled(false);
-        }
-    });
+            setCoords([x, y]);
+        };
 
-    const onMenuItemClick = (item: DropdownMenuItem) => {
-        // Close the menu if item is not disabled and if
-        // a) callback func is not defined
-        // or
-        // b) callback is defined and returns true/void
-        if (!item.isDisabled) {
-            if (item.callback) {
-                const shouldCloseMenu = item.callback();
-                if (shouldCloseMenu === true || shouldCloseMenu === undefined) {
-                    setToggled(false);
-                }
-            } else {
+        useOnClickOutside([menuRef, toggleRef], event => {
+            if (toggled) {
                 setToggled(false);
             }
-        }
-    };
+        });
 
-    const toggleComponent = children ? (
-        React.cloneElement(children, {
-            ref: toggleRef,
-            isDisabled,
-            onClick: !isDisabled
-                ? (e: any) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      if (children.props.onClick) children.props.onClick(e);
-                      setToggled(!toggled);
-                      setAdjustedCoords([e.pageX, e.pageY]);
-                  }
-                : undefined,
-        })
-    ) : (
-        <Icon
-            ref={toggleRef}
-            size={24}
-            icon="MORE"
-            color={!isDisabled ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY}
-            onClick={
-                !isDisabled
-                    ? e => {
+        const onMenuItemClick = (item: DropdownMenuItem) => {
+            // Close the menu if item is not disabled and if
+            // a) callback func is not defined
+            // or
+            // b) callback is defined and returns true/void
+            if (!item.isDisabled) {
+                if (item.callback) {
+                    const shouldCloseMenu = item.callback();
+                    if (shouldCloseMenu === true || shouldCloseMenu === undefined) {
+                        setToggled(false);
+                    }
+                } else {
+                    setToggled(false);
+                }
+            }
+        };
+
+        const toggleComponent = children ? (
+            React.cloneElement(children, {
+                ref: toggleRef,
+                isDisabled,
+                onClick: !isDisabled
+                    ? (e: any) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          if (children.props.onClick) children.props.onClick(e);
                           setToggled(!toggled);
                           setAdjustedCoords([e.pageX, e.pageY]);
                       }
-                    : undefined
+                    : undefined,
+            })
+        ) : (
+            <Icon
+                ref={toggleRef}
+                size={24}
+                icon="MORE"
+                color={!isDisabled ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY}
+                onClick={
+                    !isDisabled
+                        ? e => {
+                              setToggled(!toggled);
+                              setAdjustedCoords([e.pageX, e.pageY]);
+                          }
+                        : undefined
+                }
+                {...rest}
+            />
+        );
+
+        const getIconComponent = (item: DropdownMenuItem) => {
+            if (item.icon) {
+                return typeof item.icon === 'string' ? (
+                    <IconWrapper>
+                        <Icon icon={item.icon} size={16} color={theme.TYPE_DARK_GREY} />
+                    </IconWrapper>
+                ) : (
+                    item.icon
+                );
             }
-            {...rest}
-        />
-    );
+            return null;
+        };
 
-    const getIconComponent = (item: DropdownMenuItem) => {
-        if (item.icon) {
-            return typeof item.icon === 'string' ? (
-                <IconWrapper>
-                    <Icon icon={item.icon} size={16} color={theme.TYPE_DARK_GREY} />
-                </IconWrapper>
-            ) : (
-                item.icon
-            );
-        }
-        return null;
-    };
+        const menu = (
+            <MenuComponent
+                ref={menuRef}
+                alignMenu={alignMenu}
+                menuSize={menuSize}
+                offset={offset}
+                coords={absolutePosition ? coords : undefined}
+            >
+                {visibleItems.map((group, i) => (
+                    <React.Fragment key={group.key}>
+                        {group.label && <Group>{group.label}</Group>}
+                        {group.options.map(item => (
+                            <MenuItemComponent
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    onMenuItemClick(item);
+                                }}
+                                data-test={item['data-test']}
+                                key={item.key}
+                                item={item}
+                            >
+                                {getIconComponent(item)}
+                                {item.label}
+                            </MenuItemComponent>
+                        ))}
+                    </React.Fragment>
+                ))}
+            </MenuComponent>
+        );
 
-    const menu = (
-        <MenuComponent
-            ref={menuRef}
-            alignMenu={alignMenu}
-            menuSize={menuSize}
-            offset={offset}
-            coords={absolutePosition ? coords : undefined}
-        >
-            {visibleItems.map((group, i) => (
-                <React.Fragment key={group.key}>
-                    {group.label && <Group>{group.label}</Group>}
-                    {group.options.map(item => (
-                        <MenuItemComponent
-                            onClick={e => {
-                                e.stopPropagation();
-                                onMenuItemClick(item);
-                            }}
-                            data-test={item['data-test']}
-                            key={item.key}
-                            item={item}
-                        >
-                            {getIconComponent(item)}
-                            {item.label}
-                        </MenuItemComponent>
-                    ))}
-                </React.Fragment>
-            ))}
-        </MenuComponent>
-    );
+        const portalMenu =
+            absolutePosition && appendTo ? ReactDOM.createPortal(menu, appendTo) : menu;
 
-    const portalMenu = absolutePosition && appendTo ? ReactDOM.createPortal(menu, appendTo) : menu;
-
-    return (
-        <Wrapper className={className} absolutePosition={!!absolutePosition}>
-            {toggleComponent}
-            {toggled && portalMenu}
-        </Wrapper>
-    );
-};
+        return (
+            <Wrapper className={className} absolutePosition={!!absolutePosition}>
+                {toggleComponent}
+                {toggled && portalMenu}
+            </Wrapper>
+        );
+    }
+);
 
 Dropdown.displayName = 'Dropdown';
 
 export {
     Dropdown,
+    DropdownRef,
     Props as DropdownProps,
     MenuItemProps as DropdownMenuItemProps,
     MenuProps as DropdownMenuProps,

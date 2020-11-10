@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { getUnixTime, subWeeks } from 'date-fns';
+import { getUnixTime } from 'date-fns';
 import { variables, Button, Card } from '@trezor/components';
 import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
 import { calcTicks, calcTicksFromData } from '@suite-utils/date';
@@ -90,7 +90,7 @@ const TransactionSummary = (props: Props) => {
     const xTicks =
         selectedRange.label === 'all'
             ? calcTicksFromData(data).map(getUnixTime)
-            : calcTicks(selectedRange.weeks).map(getUnixTime);
+            : calcTicks(selectedRange.startDate, selectedRange.endDate).map(getUnixTime);
 
     // Interval shown in InfoCard below the graph
     // For 'all' range pick first and last datapoint's timestamps
@@ -101,12 +101,12 @@ const TransactionSummary = (props: Props) => {
                   intervalGraphData[0]?.data[0]?.time,
                   intervalGraphData[0]?.data[intervalGraphData[0].data.length - 1]?.time,
               ]
-            : [getUnixTime(subWeeks(new Date(), selectedRange.weeks)), getUnixTime(new Date())];
+            : [getUnixTime(selectedRange.startDate), getUnixTime(selectedRange.endDate)];
 
     return (
         <Wrapper>
             <Actions>
-                <RangeSelector onSelectedRange={onSelectedRange} />
+                <RangeSelector onSelectedRange={onSelectedRange} align="left" />
                 <TransactionSummaryDropdown
                     isGraphHidden={isGraphHidden}
                     setIsGraphHidden={setIsGraphHidden}

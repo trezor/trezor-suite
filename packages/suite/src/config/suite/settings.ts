@@ -4,7 +4,8 @@ export default {
     TXS_PER_PAGE: 25,
     DEFAULT_GRAPH_RANGE: {
         label: 'all',
-        weeks: null,
+        startDate: null,
+        endDate: null,
         groupBy: 'month',
     },
 } as const;

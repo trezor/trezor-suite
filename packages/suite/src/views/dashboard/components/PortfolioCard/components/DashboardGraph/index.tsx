@@ -100,7 +100,9 @@ const DashboardGraph = React.memo((props: Props) => {
                 const graphTicks =
                     selectedRange.label === 'all'
                         ? calcTicksFromData(aggregatedData).map(getUnixTime)
-                        : calcTicks(selectedRange.weeks).map(getUnixTime);
+                        : calcTicks(selectedRange.startDate, selectedRange.endDate).map(
+                              getUnixTime,
+                          );
 
                 setData(aggregatedData);
                 setXticks(graphTicks);

@@ -1,6 +1,6 @@
 import {
     formatDistance,
-    subWeeks,
+    differenceInMonths,
     fromUnixTime,
     getUnixTime,
     startOfDay,
@@ -30,15 +30,10 @@ export const getDateWithTimeZone = (date: number, timeZone?: string) => {
     }
 };
 
-export const calcTicks = (weeks: number) => {
-    const startDate = subWeeks(new Date(), weeks);
-    const endDate = new Date();
+export const calcTicks = (startDate: Date, endDate: Date) => {
     let timestamps = [];
-
-    if (weeks === 1 || weeks === 4) {
+    if (differenceInMonths(endDate, startDate) <= 1) {
         timestamps = eachDayOfInterval({ start: startDate, end: endDate });
-    } else if (weeks < 52) {
-        timestamps = eachMonthOfInterval({ start: startDate, end: endDate });
     } else {
         timestamps = eachMonthOfInterval({ start: startDate, end: endDate });
     }

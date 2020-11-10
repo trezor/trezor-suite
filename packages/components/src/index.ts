@@ -8,6 +8,7 @@ import { ButtonPin, ButtonPinProps } from './components/buttons/Pin';
 import { DeviceImage, DeviceImageProps } from './components/DeviceImage';
 import {
     Dropdown,
+    DropdownRef,
     DropdownProps,
     DropdownMenuItemProps,
     DropdownMenuProps,
@@ -32,7 +33,7 @@ import { TrezorLogo, TrezorLogoProps } from './components/logos/TrezorLogo';
 import { Loader, LoaderProps } from './components/loaders/Loader';
 import { Tooltip, TooltipProps, tooltipGlobalStyles } from './components/Tooltip';
 import { scrollbarStyles } from './components/Scrollbar';
-import { Timerange, TimerangeProps, timerangeGlobalStyles } from './components/Timerange';
+import { Timerange, TimerangeProps } from './components/Timerange';
 import { SelectBar, SelectBarProps } from './components/form/SelectBar';
 import * as types from './support/types';
 
@@ -45,6 +46,7 @@ export {
     ButtonPin,
     ButtonPinProps,
     Dropdown,
+    DropdownRef,
     DropdownProps,
     DropdownMenuItemProps,
     DropdownMenuProps,
@@ -79,7 +81,6 @@ export {
     tooltipGlobalStyles,
     Timerange,
     TimerangeProps,
-    timerangeGlobalStyles,
     types,
     ConfirmOnDevice,
     ConfirmOnDeviceProps,
