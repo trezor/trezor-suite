@@ -50,16 +50,11 @@ export const COINS: CoinType[] = [
     'etc',
     'eth',
     'ltc',
-    'nem',
     'nmc',
-    'rinkeby',
     'trop',
     'txrp',
     'vtc',
-    'xem',
-    'xlm',
     'xrp',
-    'xtz',
     'zec',
 ];
 
