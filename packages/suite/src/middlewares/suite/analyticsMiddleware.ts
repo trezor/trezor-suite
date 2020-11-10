@@ -43,6 +43,7 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                         screenHeight: getScreenHeight(),
                         platform: getPlatform(),
                         platformLanguage: getPlatformLanguage(),
+                        tor: state.suite.tor,
                     },
                 }),
             );
