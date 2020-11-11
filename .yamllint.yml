@@ -10,4 +10,4 @@ rules:
   document-start: disable
   comments-indentation: disable
   indentation:
-    spaces: consistent
+    spaces: 2

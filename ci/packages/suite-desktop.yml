@@ -1,123 +1,123 @@
 .build: &build
-    stage: build
-    script:
-        - yarn cache clean
-        - yarn workspace @trezor/suite-data copy-static-files
-        - yarn workspace @trezor/suite-desktop build:${platform}
-        - ls -la packages/suite-desktop/build-electron
-        - mv packages/suite-desktop/build-electron/* .
-        - more latest*.yml | cat
-    artifacts:
-        paths:
-            - ${artifact}
-            - latest*.yml
-        expire_in: 1 days
+  stage: build
+  script:
+    - yarn cache clean
+    - yarn workspace @trezor/suite-data copy-static-files
+    - yarn workspace @trezor/suite-desktop build:${platform}
+    - ls -la packages/suite-desktop/build-electron
+    - mv packages/suite-desktop/build-electron/* .
+    - more latest*.yml | cat
+  artifacts:
+    paths:
+      - ${artifact}
+      - latest*.yml
+    expire_in: 1 days
 
 .build_nix: &build_nix
-    script:  # override build script to use nix-shell instead
-        - nix-shell --run "yarn cache clean"
-        - nix-shell --run "yarn"
-        - nix-shell --run "yarn workspace @trezor/suite-data copy-static-files"
-        - nix-shell --run "yarn workspace @trezor/suite-desktop build:${platform}"
-        - ls -la packages/suite-desktop/build-electron
-        - mv packages/suite-desktop/build-electron/* .
-        - more latest*.yml | cat
+  script:  # override build script to use nix-shell instead
+    - nix-shell --run "yarn cache clean"
+    - nix-shell --run "yarn"
+    - nix-shell --run "yarn workspace @trezor/suite-data copy-static-files"
+    - nix-shell --run "yarn workspace @trezor/suite-desktop build:${platform}"
+    - ls -la packages/suite-desktop/build-electron
+    - mv packages/suite-desktop/build-electron/* .
+    - more latest*.yml | cat
 
 .run_everything_rules: &run_everything_rules
-    refs:
-        - develop
-        - releases
-        - schedules
-        - /^release\//
-        - /^run\//
+  refs:
+    - develop
+    - releases
+    - schedules
+    - /^release\//
+    - /^run\//
 
 suite-desktop build mac:
-    only:
-        <<: *run_everything_rules
-    tags:
-        - darwin
-    variables:
-        artifact: ${DESKTOP_APP_NAME}*
-        platform: mac
-    <<: *build
-    <<: *build_nix
+  only:
+    <<: *run_everything_rules
+  tags:
+    - darwin
+  variables:
+    artifact: ${DESKTOP_APP_NAME}*
+    platform: mac
+  <<: *build
+  <<: *build_nix
 
 suite-desktop build mac codesign:
-    only:
-        refs:
-            - codesign
-    when: manual
-    tags:
-        - darwin
-    variables:
-        artifact: ${DESKTOP_APP_NAME}*
-        platform: mac
-    <<: *build
-    <<: *build_nix
+  only:
+    refs:
+      - codesign
+  when: manual
+  tags:
+    - darwin
+  variables:
+    artifact: ${DESKTOP_APP_NAME}*
+    platform: mac
+  <<: *build
+  <<: *build_nix
 
 suite-desktop build linux:
-    only:
-        <<: *run_everything_rules
-    variables:
-        artifact: ${DESKTOP_APP_NAME}*
-        platform: linux
-    <<: *build
+  only:
+    <<: *run_everything_rules
+  variables:
+    artifact: ${DESKTOP_APP_NAME}*
+    platform: linux
+  <<: *build
 
 suite-desktop build linux codesign:
-    only:
-        refs:
-            - codesign
-    when: manual
-    tags:
-        - darwin
-    variables:
-        artifact: ${DESKTOP_APP_NAME}*
-        platform: linux
-    <<: *build
-    <<: *build_nix
+  only:
+    refs:
+      - codesign
+  when: manual
+  tags:
+    - darwin
+  variables:
+    artifact: ${DESKTOP_APP_NAME}*
+    platform: linux
+  <<: *build
+  <<: *build_nix
 
 suite-desktop build windows:
-    only:
-        <<: *run_everything_rules
-    image: electronuserland/builder:wine
-    variables:
-        artifact: ${DESKTOP_APP_NAME}*
-        platform: win
-    <<: *build
+  only:
+    <<: *run_everything_rules
+  image: electronuserland/builder:wine
+  variables:
+    artifact: ${DESKTOP_APP_NAME}*
+    platform: win
+  <<: *build
 
 suite-desktop build windows codesign:
-    only:
-        refs:
-            - codesign
-    when: manual
-    tags:
-        - darwin
-    image: electronuserland/builder:wine
-    variables:
-        artifact: ${DESKTOP_APP_NAME}*
-        platform: win
-    <<: *build
-    <<: *build_nix
+  only:
+    refs:
+      - codesign
+  when: manual
+  tags:
+    - darwin
+  image: electronuserland/builder:wine
+  variables:
+    artifact: ${DESKTOP_APP_NAME}*
+    platform: win
+  <<: *build
+  <<: *build_nix
 
 suite-desktop deploy dev:
-    stage: deploy to dev
-    only:
-        <<: *run_everything_rules
-    variables:
-        DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_BUILD_REF_NAME}
-    script:
-        - mkdir -p ${DEPLOY_DIRECTORY}
-        - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage "${DEPLOY_DIRECTORY}/" || :'
-        - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg "${DEPLOY_DIRECTORY}/" || :'
-        - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe "${DEPLOY_DIRECTORY}/" || :'
-    tags:
-        - deploy
+  stage: deploy to dev
+  only:
+    <<: *run_everything_rules
+  variables:
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_BUILD_REF_NAME}
+  script:
+    - mkdir -p ${DEPLOY_DIRECTORY}
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage "${DEPLOY_DIRECTORY}/" || :'
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg "${DEPLOY_DIRECTORY}/" || :'
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe "${DEPLOY_DIRECTORY}/" || :'
+  tags:
+    - deploy
 
 suite-desktop publish prod:
-    stage: deploy to production
-    only:
-        refs:
-            - releases
-    script:
-        - cd packages/suite-desktop
-        - yarn publish
+  stage: deploy to production
+  only:
+    refs:
+      - releases
+  script:
+    - cd packages/suite-desktop
+    - yarn publish
