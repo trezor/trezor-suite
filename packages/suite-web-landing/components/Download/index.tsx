@@ -38,7 +38,7 @@ const DropdownItem = styled.div`
     display: flex;
     padding: 8px 15px;
     align-items: center;
-    width: 231px;
+    width: 220px;
     color: ${colors.NEUE_TYPE_DARK_GREY};
     & svg {
         margin-right: 8px;
