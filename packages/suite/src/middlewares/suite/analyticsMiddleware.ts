@@ -69,7 +69,6 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                         payload: {
                             mode,
                             firmware: `${features.major_version}.${features.minor_version}.${features.patch_version}`,
-                            // @ts-ignore todo add to features types in connect https://github.com/trezor/connect/pull/702
                             backup_type: features.backup_type || 'Bip39',
                             pin_protection: features.pin_protection,
                             passphrase_protection: features.passphrase_protection,
