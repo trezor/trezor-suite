@@ -315,7 +315,8 @@ const init = async () => {
         if (mainWindow.webContents.isDevToolsOpened()) {
             mainWindow.webContents.closeDevTools();
         }
-
+        // store window bounds on close btn click
+        store.setWinBounds(mainWindow);
         mainWindow.close();
     });
     ipcMain.on('window/minimize', () => {
@@ -451,7 +452,7 @@ app.on('before-quit', () => {
         // do nothing
     }
 
-    // store window bounds
+    // store window bounds on cmd/ctrl+q
     store.setWinBounds(mainWindow);
 
     // stop services

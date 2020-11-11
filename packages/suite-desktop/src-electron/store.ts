@@ -47,12 +47,10 @@ export const getWinBounds = () => {
 
 export const setWinBounds = (window: BrowserWindow) => {
     const bounds = window.getBounds();
-    // don't allow saving window dimensions smaller than  MIN_WIDTHxMIN_HEIGHT
-    store.set('winBounds', {
-        ...bounds,
-        width: bounds.width > MIN_WIDTH ? bounds.width : MIN_WIDTH,
-        height: bounds.height > MIN_HEIGHT ? bounds.height : MIN_HEIGHT,
-    });
+    // save only non zero dimensions
+    if (bounds.width > 0 && bounds.height > 0) {
+        store.set('winBounds', bounds);
+    }
 };
 
 export const getUpdateSettings = () => {
