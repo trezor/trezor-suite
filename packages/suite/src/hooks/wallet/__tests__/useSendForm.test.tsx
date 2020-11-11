@@ -219,4 +219,39 @@ describe('useSendForm hook', () => {
             unmount();
         });
     });
+
+    fixtures.signAndPush.forEach(f => {
+        it(f.description, async () => {
+            TrezorConnect.setTestFixtures(f.connect);
+            const store = initStore(getInitialState(f.store));
+            const callback: TestCallback = {};
+            const { unmount } = renderWithProviders(
+                store,
+                <SendIndex>
+                    <Component callback={callback} />
+                </SendIndex>,
+            );
+
+            // wait for first render
+            await waitForLoader();
+
+            store.subscribe(() => {
+                const actions = store.getActions();
+                const lastAction = actions[actions.length - 1];
+                if (lastAction.payload?.decision) {
+                    lastAction.payload.decision.resolve(true); // always resolve push tx request
+                }
+            });
+
+            await actionSequence([{ type: 'click', element: '@send/review-button' }], () => {
+                const actions = store.getActions();
+                f.result.actions.forEach((action: any) => {
+                    expect(actions.find(a => a.type === action.type)).toMatchObject(action);
+                });
+                actionCallback(callback, { result: f.result });
+            });
+
+            unmount();
+        });
+    });
 });

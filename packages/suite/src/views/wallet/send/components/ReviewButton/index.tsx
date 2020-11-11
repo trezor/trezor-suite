@@ -53,7 +53,11 @@ const ReviewButton = () => {
     return (
         <Wrapper>
             <Row>
-                <ButtonReview isDisabled={isDisabled || isLoading} onClick={signTransaction}>
+                <ButtonReview
+                    data-test="@send/review-button"
+                    isDisabled={isDisabled || isLoading}
+                    onClick={signTransaction}
+                >
                     {broadcastEnabled ? (
                         <Translation id="REVIEW_AND_SEND_TRANSACTION" />
                     ) : (
