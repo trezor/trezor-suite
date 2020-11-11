@@ -5,7 +5,7 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { SEND } from '@wallet-actions/constants';
 
-import { formatAmount, formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { formatAmount, formatNetworkAmount, getPendingAccount } from '@wallet-utils/accountUtils';
 
 import { Dispatch, GetState } from '@suite-types';
 import { Account } from '@wallet-types';
@@ -159,7 +159,18 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
             }),
         );
 
-        dispatch(accountActions.fetchAndUpdateAccount(account));
+        if (account.networkType === 'bitcoin') {
+            // notification from the backend may be delayed.
+            // temporary calculate pending balance and utxo until the real account update occurs
+            // this will prevent from double spending already used utxo
+            const pendingAccount = getPendingAccount(account, precomposedTx, sentTx.payload.txid);
+            if (pendingAccount) {
+                // update account
+                dispatch(accountActions.updateAccount(pendingAccount));
+            }
+        } else {
+            dispatch(accountActions.fetchAndUpdateAccount(account));
+        }
     } else {
         dispatch(
             notificationActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),

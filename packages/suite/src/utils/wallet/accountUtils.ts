@@ -2,9 +2,15 @@ import {
     State as TransactionsState,
     WalletAccountTransaction,
 } from '@wallet-reducers/transactionReducer';
-import { AccountTransaction, AccountInfo } from 'trezor-connect';
+import {
+    AccountTransaction,
+    AccountInfo,
+    AccountAddress,
+    PrecomposedTransaction,
+} from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import { ACCOUNT_TYPE } from '@wallet-constants/account';
+import { BTC_RBF_SEQUENCE } from '@wallet-constants/sendForm';
 import { Account, Network, CoinFiatRates, WalletParams, Discovery } from '@wallet-types';
 import { AppState } from '@suite-types';
 import { NETWORKS } from '@wallet-config';
@@ -482,4 +488,64 @@ export const accountSearchFn = (
         addressMatch ||
         metadataMatch
     );
+};
+
+// temporary update account until BLOCKCHAIN.NOTIFICATION or BLOCKCHAIN.BLOCK occurs
+// solves race condition between pushing transaction and received notification
+export const getPendingAccount = (account: Account, tx: PrecomposedTransaction, txid: string) => {
+    if (tx.type !== 'final') return;
+
+    // calculate availableBalance
+    let availableBalanceBig = new BigNumber(account.availableBalance).minus(tx.totalSpent);
+
+    // remove utxo used in this transaction, skip RBF inputs
+    const utxo = account.utxo!.filter(
+        u =>
+            !tx.transaction.inputs.find(
+                i => i.prev_hash === u.txid && i.sequence !== BTC_RBF_SEQUENCE,
+            ),
+    );
+    // join all account addresses
+    const addresses = account.addresses
+        ? account.addresses.unused.concat(account.addresses.used).concat(account.addresses.change)
+        : [];
+
+    // append utxo created by this transaction
+    tx.transaction.outputs.forEach((output, vout) => {
+        let addr: AccountAddress | undefined;
+        if (output.address_n) {
+            // find change address
+            const serialized = output.address_n.slice(3, 5).join('/');
+            addr = account.addresses?.change.find(a => a.path.endsWith(serialized));
+        }
+        if (output.address) {
+            // find self address
+            addr = addresses.find(a => a.address === output.address);
+            if (addr) {
+                // append self outputs to balance
+                availableBalanceBig = availableBalanceBig.plus(output.amount);
+            }
+        }
+
+        if (addr) {
+            utxo.unshift({
+                vout,
+                path: addr.path,
+                address: addr.address,
+                amount: output.amount,
+                blockHeight: 0,
+                confirmations: 0,
+                txid,
+            });
+        }
+    });
+
+    const availableBalance = availableBalanceBig.toString();
+
+    return {
+        ...account,
+        availableBalance,
+        formattedBalance: formatNetworkAmount(availableBalance, account.symbol),
+        utxo,
+    };
 };

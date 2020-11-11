@@ -75,6 +75,11 @@ export const update = (account: Account, accountInfo: AccountInfo): AccountActio
     },
 });
 
+export const updateAccount = (payload: Account): AccountAction => ({
+    type: ACCOUNT.UPDATE,
+    payload,
+});
+
 export const disableAccounts = () => (dispatch: Dispatch, getState: GetState) => {
     const { enabledNetworks } = getState().wallet.settings;
     // find disabled networks
