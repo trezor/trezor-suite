@@ -1,10 +1,10 @@
 # This test should exist only until trezor-connect is in monorepo.
 # It checks whether rollout works with currently released webwallet data
 rollout test integration:
-    only:
-        refs:
-            - develop
-            - schedules
-    stage: integration testing
-    script:
-        - yarn workspace @trezor/rollout test:integration
+  only:
+    refs:
+      - develop
+      - schedules
+  stage: integration testing
+  script:
+    - yarn workspace @trezor/rollout test:integration
