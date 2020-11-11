@@ -13,6 +13,7 @@ import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
 import { getApp } from '@suite-utils/router';
 import { AppState, Action, Dispatch } from '@suite-types';
 import { isWeb } from '@suite-utils/env';
+import { sortByTimestamp } from '@suite-utils/device';
 
 const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
     action: Action,
@@ -44,10 +45,11 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
                 forcedDevices.forEach(d => {
                     api.dispatch(suiteActions.rememberDevice(d));
                 });
-                // possible improvement - if there are no forcedDevices, try to pick the connected device instead of the first device
                 api.dispatch(
                     suiteActions.selectDevice(
-                        forcedDevices.length ? forcedDevices[0] : action.payload.devices[0],
+                        forcedDevices.length
+                            ? forcedDevices[0]
+                            : sortByTimestamp([...action.payload.devices])[0],
                     ),
                 );
             }
