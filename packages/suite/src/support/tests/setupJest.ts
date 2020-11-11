@@ -223,12 +223,17 @@ const getTrezorConnect = <M>(methods?: M) => {
                 return { success: false, ...getFixture(), _params };
             }),
             composeTransaction: jest.fn(async _params => {
-                const f = getFixture();
-                if (!f) return { success: false, payload: { error: 'error' }, _params };
-                if (typeof f.delay === 'number') {
-                    await new Promise(resolve => setTimeout(resolve, f.delay));
+                const fixture = getFixture();
+                if (fixture && typeof fixture.delay === 'number') {
+                    await new Promise(resolve => setTimeout(resolve, fixture.delay));
                 }
-                return f.response;
+                return { success: false, payload: { error: 'error' }, ...fixture, _params };
+            }),
+            signTransaction: jest.fn(async _params => {
+                return { success: false, payload: { error: 'error' }, ...getFixture(), _params };
+            }),
+            pushTransaction: jest.fn(async _params => {
+                return { success: true, payload: { txid: 'txid' }, ...getFixture(), _params };
             }),
             changePin: () => {
                 return {

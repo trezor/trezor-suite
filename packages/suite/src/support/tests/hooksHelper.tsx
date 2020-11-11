@@ -48,7 +48,7 @@ export type UserAction<R = any> = {
 
 export const actionSequence = async <A extends UserAction[]>(
     actions: A,
-    callback: (action: A[number]) => void,
+    callback?: (action: A[number]) => void,
 ) => {
     for (let i = 0; i < actions.length; i++) {
         const action = actions[i];
@@ -79,6 +79,6 @@ export const actionSequence = async <A extends UserAction[]>(
         await waitForLoader();
 
         // action complete. run test
-        callback(action);
+        if (callback) callback(action);
     }
 };
