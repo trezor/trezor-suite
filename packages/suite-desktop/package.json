@@ -86,7 +86,7 @@
                 }
             ],
             "icon": "build/static/images/icons/512x512.icns",
-            "artifactName": "Trezor-Suite-${version}-mac.${ext}",
+            "artifactName": "Trezor-Suite-${version}-mac-${arch}.${ext}",
             "hardenedRuntime": true,
             "gatekeeperAssess": false,
             "darkModeSupport": false,
@@ -109,7 +109,7 @@
                 }
             ],
             "icon": "build/static/images/icons/512x512.png",
-            "artifactName": "Trezor-Suite-${version}-win.${ext}",
+            "artifactName": "Trezor-Suite-${version}-win-${arch}.${ext}",
             "target": [
                 "nsis"
             ]
@@ -126,7 +126,7 @@
                 }
             ],
             "icon": "build/static/images/icons/512x512.png",
-            "artifactName": "Trezor-Suite-${version}-linux.${ext}",
+            "artifactName": "Trezor-Suite-${version}-linux-${arch}.${ext}",
             "executableName": "trezor-suite",
             "category": "Utility",
             "target": [

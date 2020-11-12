@@ -67,21 +67,27 @@ type DropdownItem = {
 
 const dropdownItemsData: DropdownItem[] = [
     {
-        platform: 'mac',
+        platform: 'mac-x86_64',
         label: <Translation id="TR_SUITE_WEB_LANDING_MACOS_LABEL" />,
         icon: 'OS_MAC',
         installerExtension: 'dmg',
     },
     {
-        platform: 'win',
+        platform: 'win-x86_64',
         label: <Translation id="TR_SUITE_WEB_LANDING_WINDOWS_LABEL" />,
         icon: 'OS_WINDOWS',
         installerExtension: 'exe',
     },
     {
-        platform: 'linux',
+        platform: 'linux-x86_64',
         label: <Translation id="TR_SUITE_WEB_LANDING_LINUX_LABEL" />,
         icon: 'OS_LINUX',
+        installerExtension: 'AppImage',
+    },
+    {
+        platform: 'linux-arm64',
+        label: <Translation id="TR_SUITE_WEB_LANDING_LINUX_ARM64_LABEL" />,
+        icon: 'OS_LINUX_ARM64',
         installerExtension: 'AppImage',
     },
 ];
@@ -98,7 +104,7 @@ const getInstallerURI = (platform: Platform, version: string) => {
 
 const Index = () => {
     const version: string = process.env.VERSION ? normalizeVersion(process.env.VERSION) : '';
-    const [platform, setPlatform] = useState<Platform>('linux');
+    const [platform, setPlatform] = useState<Platform>('linux-x86_64');
     const dropdownItems = dropdownItemsData.map(item => ({
         key: 'items',
         options: [

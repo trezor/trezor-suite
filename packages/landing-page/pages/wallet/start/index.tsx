@@ -42,19 +42,19 @@ const ButtonDownload = styled(Button)`
     }
 `;
 
-type Platform = 'win' | 'mac' | 'linux';
+type Platform = 'win-x86_64' | 'mac-x86_64' | 'linux-x86_64' | 'linux-arm64';
 
 const getAppUrl = (platform: Platform) => {
     const version = process.env.VERSION ? normalizeVersion(process.env.VERSION) : '';
-    switch (platform) {
-        case 'win':
-            return encodeURI(`../web/static/desktop/Trezor-Suite-${version}-${platform}.exe`);
-        case 'mac':
-            return encodeURI(`../web/static/desktop/Trezor-Suite-${version}-${platform}.dmg`);
-        case 'linux':
-            return encodeURI(`../web/static/desktop/Trezor-Suite-${version}-${platform}.AppImage`);
-        // no default
+    let ext = '';
+    if (platform.startsWith('linux-')) {
+        ext = 'AppImage';
+    } else if (platform.startsWith('mac-')) {
+        ext = 'dmg';
+    } else {
+        ext = 'exe';
     }
+    return encodeURI(`../web/static/desktop/Trezor-Suite-${version}-${platform}.${ext}`);
 };
 
 const Start = () => {
@@ -78,9 +78,10 @@ const Start = () => {
                             value: null,
                         }}
                         options={[
-                            { label: 'Windows', value: 'win' },
-                            { label: 'Linux', value: 'linux' },
-                            { label: 'macOS', value: 'mac' },
+                            { label: 'Windows', value: 'win-x86_64' },
+                            { label: 'Linux', value: 'linux-x86_64' },
+                            { label: 'Linux (arm64)', value: 'linux-arm64' },
+                            { label: 'macOS', value: 'mac-x86_64' },
                         ]}
                         onChange={(option: { value: Platform | null; label: string | null }) =>
                             setPlatform(option.value)
