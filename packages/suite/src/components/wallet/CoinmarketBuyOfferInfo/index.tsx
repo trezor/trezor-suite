@@ -9,7 +9,7 @@ import {
     CoinmarketTransactionId,
 } from '@wallet-components';
 import { Account } from '@wallet-types';
-import { Translation } from '@suite-components';
+import { Translation, AccountLabeling } from '@suite-components';
 
 interface Props {
     selectedQuote: BuyTrade;
@@ -109,7 +109,9 @@ const CoinmarketBuyOfferInfo = ({ selectedQuote, transactionId, providers, accou
             <Info>
                 <Header>
                     <CoinLogo symbol={account.symbol} size={16} />
-                    <AccountText>{`Account #${account.index + 1}`}</AccountText>
+                    <AccountText>
+                        <AccountLabeling account={account} />
+                    </AccountText>
                 </Header>
                 <Row>
                     <LeftColumn>
