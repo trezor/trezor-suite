@@ -13,7 +13,7 @@
         "build:lib": "tsc --project src-electron/tsconfig.json",
         "build:desktop": "rimraf ./build && next build && next export -o build && yarn build:lib",
         "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac --x64 -p never",
-        "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux --x64 -p never",
+        "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux --x64 --arm64 -p never",
         "build:win": "yarn clean && yarn build:desktop && electron-builder --win --x64 -p never",
         "publish:all": "yarn clean && yarn build:desktop && electron-builder --publish always --mac --linux --win",
         "publish:linux": "yarn build:linux && electron-builder --publish always --linux",
