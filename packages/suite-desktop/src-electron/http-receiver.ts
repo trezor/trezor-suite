@@ -7,6 +7,10 @@ export type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>
 
 type Request = RequiredKey<http.IncomingMessage, 'url'>;
 
+type TemplateOptions = {
+    title?: string;
+};
+
 /**
  * Events that may be emitted or listened to by HttpReceiver
  */
@@ -121,10 +125,28 @@ export class HttpReceiver extends EventEmitter {
 
         const route = this.routes.find(r => r.pathname === pathname);
         if (route) {
+            response.setHeader('Content-Type', 'text/html; charset=UTF-8');
             // original type has url as optional, Request alias makes it required.
             return route.handler(request as Request, response);
         }
     };
+
+    // TODO: add option to auto-close after X seconds. Possible?
+    private applyTemplate = (content: string, options?: TemplateOptions) => {
+        const template = `
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    <title>${options.title ?? 'Trezor Suite'}</title>
+                </head>
+                <body>
+                    ${content}
+                </body>
+            </html>
+        `;
+
+        return template;
+    }
 
     /**
      * Handlers sections starts here
@@ -138,13 +160,7 @@ export class HttpReceiver extends EventEmitter {
             this.emit('oauth/code', query.code);
         }
 
-        // todo: would be nice to find how to close default browser window after redirecting.
-        const template = `
-            <body>
-                You may now close this window.
-            </body>
-        `;
-
+        const template = this.applyTemplate('You may now close this window.');
         response.end(template);
     };
 
@@ -154,20 +170,14 @@ export class HttpReceiver extends EventEmitter {
             this.emit('buy/redirect', query.p.toString());
         }
 
-        const template = `
-         <body>
-             You may now close this window.
-         </body>
-     `;
-
+        const template = this.applyTemplate('You may now close this window.');
         response.end(template);
     };
 
     private buyPostSubmitHandler = (request: Request, response: http.ServerResponse) => {
         const { query } = url.parse(request.url, true);
         const action = query.a;
-        const template = `
-         <body>
+        const content = `
             Forwarding to ${action}...
             <form id="buy-form" method="POST" action="${action}">
             ${Object.keys(query)
@@ -177,9 +187,9 @@ export class HttpReceiver extends EventEmitter {
                 .join('')}
             </form>
             <script type="text/javascript">document.getElementById("buy-form").submit();</script>
-         </body>
-     `;
+        `;
 
+        const template = this.applyTemplate(content);
         response.end(template);
     };
 
