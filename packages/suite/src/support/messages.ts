@@ -832,6 +832,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Import failed {error}',
         id: 'TR_DROPZONE_ERROR',
     },
+    TR_EXPORT_TRANSACTIONS: {
+        defaultMessage: 'Export transactions',
+        id: 'TR_EXPORT_TRANSACTIONS',
+    },
     TR_ADVANCED_RECOVERY: {
         defaultMessage: 'advanced recovery',
         description: 'Enter words via obfuscated pin matrix, recovery takes about 5 minutes.',
@@ -842,7 +846,6 @@ const definedMessages = defineMessages({
         description: 'Button for selecting advanced recovery option',
         id: 'TR_ADVANCED_RECOVERY_OPTION',
     },
-
     TR_ADVANCED_SETTINGS: {
         defaultMessage: 'Advanced settings',
         description: 'Shows advanced coin settings',
@@ -5024,6 +5027,14 @@ const definedMessages = defineMessages({
         id: 'TR_DEVICE_IS_IN_UNEXPECTED_MODE',
         defaultMessage:
             'Device is in unexpected mode. In the next step you will be asked to reconnect your device normally.',
+    },
+    TR_EXPORT_AS: {
+        id: 'TR_EXPORT_AS',
+        defaultMessage: 'Export as {as}',
+    },
+    TR_EXPORT_FAIL: {
+        id: 'TR_EXPORT_FAIL',
+        defaultMessage: 'Export failed.',
     },
 } as const);
 

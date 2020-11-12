@@ -1,12 +1,22 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
+import { saveAs } from 'file-saver';
+import TrezorConnect, { AccountTransaction } from 'trezor-connect';
 import styled, { css } from 'styled-components';
-import { variables, Loader, Card } from '@trezor/components';
+import { variables, Loader, Card, Dropdown } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
-import { useSelector } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
+import { useTranslation } from '@suite-hooks/useTranslation';
 import { groupTransactionsByDate } from '@wallet-utils/transactionUtils';
+import { addToast } from '@suite-actions/notificationActions';
 import { SETTINGS } from '@suite-config';
 import { WalletAccountTransaction, Account } from '@wallet-types';
+import { isEnabled } from '@suite-utils/features';
+import { range } from '@suite-utils/array';
+// @ts-ignore - Not sure why it can't find the worker but the path is correct?!
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import ExportWorker from 'worker-loader?filename=static/[hash].worker.js!../../../../../workers/export.worker';
+
 import TransactionItem from './components/TransactionItem';
 import Pagination from './components/Pagination';
 import TransactionsGroup from './components/TransactionsGroup';
@@ -81,6 +91,121 @@ const TransactionList = ({
         slicedTransactions,
     ]);
 
+    const { translationString } = useTranslation();
+    const { addNotification } = useActions({
+        addNotification: addToast,
+    });
+    const [isExportRunning, setIsExportRunning] = useState(false);
+    const runExport = useCallback(
+        async type => {
+            // Don't run again if already running
+            if (isExportRunning) {
+                return;
+            }
+
+            // Set as in running
+            setIsExportRunning(true);
+
+            const exportTransactions: AccountTransaction[] = [];
+            const pages = range(1, account.history.total);
+            const promises = pages.map(p =>
+                TrezorConnect.getAccountInfo({
+                    descriptor: account.descriptor,
+                    coin: account.symbol,
+                    details: 'txs',
+                    page: p,
+                }),
+            );
+            const results = await Promise.all(promises);
+            results.forEach(r => {
+                if (!r.success) {
+                    addNotification({
+                        type: 'error',
+                        error: translationString('TR_EXPORT_FAIL'),
+                    });
+                    setIsExportRunning(false);
+                    return;
+                }
+
+                if (r.payload.history.transactions) {
+                    exportTransactions.push(...r.payload.history.transactions);
+                }
+            });
+
+            // Delegate the formatting/document generation work to a service worker
+            const worker = new ExportWorker();
+            worker.postMessage({
+                coin: account.symbol,
+                type,
+                transactions: exportTransactions,
+            });
+
+            // Handle the response from the worker (fired when the file is available)
+            const handleMessage = (event: MessageEvent) => {
+                saveAs(event.data, `export-${account.symbol}-${+new Date()}.${type}`);
+                setIsExportRunning(false);
+            };
+
+            worker.addEventListener('message', handleMessage);
+            return () => {
+                worker.removeEventListener('message', handleMessage);
+                worker.terminate();
+            };
+        },
+        [
+            isExportRunning,
+            account.descriptor,
+            account.symbol,
+            account.history,
+            addNotification,
+            translationString,
+        ],
+    );
+
+    const exportMenu = useMemo(() => {
+        // Check if the flag is enabled
+        if (!isEnabled('EXPORT_TRANSACTIONS')) {
+            return;
+        }
+
+        // Don't display for Ripple (for now)
+        if (account.networkType === 'ripple') {
+            return;
+        }
+
+        if (isExportRunning) {
+            return <Loader size={18} />;
+        }
+
+        return (
+            <Dropdown
+                alignMenu="right"
+                items={[
+                    {
+                        key: 'export',
+                        options: [
+                            {
+                                key: 'export-csv',
+                                label: <Translation id="TR_EXPORT_AS" values={{ as: 'CSV' }} />,
+                                callback: () => runExport('csv'),
+                            },
+                            {
+                                key: 'export-pdf',
+                                label: <Translation id="TR_EXPORT_AS" values={{ as: 'PDF' }} />,
+                                callback: () => runExport('pdf'),
+                            },
+                            {
+                                key: 'export-json',
+                                label: <Translation id="TR_EXPORT_AS" values={{ as: 'JSON' }} />,
+                                callback: () => runExport('json'),
+                            },
+                        ],
+                    },
+                ]}
+            />
+        );
+    }, [isExportRunning, runExport, account.networkType]);
+
     // if totalPages is 1 do not render pagination
     // if totalPages is undefined check current page and number of txs (e.g. XRP)
     // Edge case: if there is exactly 25 txs, pagination will be displayed
@@ -92,7 +217,7 @@ const TransactionList = ({
         <StyledSection
             ref={ref}
             heading={<Translation id="TR_ALL_TRANSACTIONS" />}
-            // actions={} // TODO: add Search and Dropdown with export
+            actions={exportMenu}
         >
             {isLoading ? (
                 <LoaderWrapper>

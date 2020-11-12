@@ -101,7 +101,7 @@ const IconWrapper = styled.div`
 interface DropdownMenuItem {
     key: string;
     label: React.ReactNode;
-    callback?: () => boolean | void;
+    callback?: () => any | Promise<any>;
     icon?: IconProps['icon'] | JSX.Element;
     isDisabled?: boolean;
     isHidden?: boolean;
