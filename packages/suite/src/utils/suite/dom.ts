@@ -63,7 +63,6 @@ export const copyToClipboard = (
         el.style.position = 'absolute';
         el.style.left = '-9999px';
         container.appendChild(el);
-        el.focus();
         el.select();
         el.setSelectionRange(0, 99999); /* For mobile devices */
         const successful = document.execCommand('copy');
