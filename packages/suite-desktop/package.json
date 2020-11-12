@@ -12,9 +12,9 @@
         "copy-files": "yarn workspace @trezor/suite-data copy-static-files",
         "build:lib": "tsc --project src-electron/tsconfig.json",
         "build:desktop": "rimraf ./build && next build && next export -o build && yarn build:lib",
-        "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac -p never",
-        "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux -p never",
-        "build:win": "yarn clean && yarn build:desktop && electron-builder --win -p never",
+        "build:mac": "yarn clean && yarn build:desktop && electron-builder --mac --x64 -p never",
+        "build:linux": "yarn clean && yarn build:desktop && electron-builder --linux --x64 -p never",
+        "build:win": "yarn clean && yarn build:desktop && electron-builder --win --x64 -p never",
         "publish:all": "yarn clean && yarn build:desktop && electron-builder --publish always --mac --linux --win",
         "publish:linux": "yarn build:linux && electron-builder --publish always --linux",
         "publish:mac": "yarn build:mac && electron-builder --publish always --mac",
@@ -77,11 +77,11 @@
             ],
             "extraResources": [
                 {
-                    "from": "build/static/bin/bridge/mac-x64",
+                    "from": "build/static/bin/bridge/mac-${arch}",
                     "to": "bin/bridge"
                 },
                 {
-                    "from": "build/static/bin/tor/mac-x64",
+                    "from": "build/static/bin/tor/mac-${arch}",
                     "to": "bin/tor"
                 }
             ],
@@ -100,11 +100,11 @@
         "win": {
             "extraResources": [
                 {
-                    "from": "build/static/bin/bridge/win-x64",
+                    "from": "build/static/bin/bridge/win-${arch}",
                     "to": "bin/bridge"
                 },
                 {
-                    "from": "build/static/bin/tor/win-x64",
+                    "from": "build/static/bin/tor/win-${arch}",
                     "to": "bin/tor"
                 }
             ],
@@ -117,11 +117,11 @@
         "linux": {
             "extraResources": [
                 {
-                    "from": "build/static/bin/bridge/linux-x64",
+                    "from": "build/static/bin/bridge/linux-${arch}",
                     "to": "bin/bridge"
                 },
                 {
-                    "from": "build/static/bin/tor/linux-x64",
+                    "from": "build/static/bin/tor/linux-${arch}",
                     "to": "bin/tor"
                 }
             ],
