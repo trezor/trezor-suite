@@ -36,6 +36,7 @@ const Header = styled.div`
     border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
     margin-bottom: 5px;
     padding: 15px 24px;
+    max-width: 340px;
 `;
 
 const AccountText = styled.div`
