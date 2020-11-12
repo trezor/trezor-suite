@@ -380,11 +380,11 @@ const definedMessages = defineMessages({
     },
     TR_EXCHANGE_DETAIL_KYC_SUPPORT: {
         defaultMessage: "Open partner's support site",
-        id: 'TR_BUY_DETAIL_ERROR_SUPPORT',
+        id: 'TR_EXCHANGE_DETAIL_KYC_SUPPORT',
     },
     TR_EXCHANGE_DETAIL_KYC_INFO_LINK: {
         defaultMessage: "Open partner's info on KYC",
-        id: 'TR_BUY_DETAIL_ERROR_SUPPORT',
+        id: 'TR_EXCHANGE_DETAIL_KYC_INFO_LINK',
     },
     TR_EXCHANGE_DETAIL_KYC_BUTTON: {
         defaultMessage: 'Back to Account',
