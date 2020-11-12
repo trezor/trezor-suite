@@ -2,7 +2,7 @@ import React, { useState, createContext } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { variables, scrollbarStyles } from '@trezor/components';
-import SuiteNotifications from '@suite-components/Notifications';
+import SuiteBanners from '@suite/components/suite/Banners';
 import Head from 'next/head';
 import { AppState } from '@suite-types';
 import { BetaBadge } from '@suite-components';
@@ -160,7 +160,7 @@ const SuiteLayout = (props: SuiteLayoutProps) => {
             <Head>
                 <title>{title ? `${title} | Trezor Suite` : 'Trezor Suite'}</title>
             </Head>
-            <SuiteNotifications />
+            <SuiteBanners />
             <DiscoveryProgress />
             <NavigationBar />
             <LayoutContext.Provider value={{ title, menu, setLayout }}>
