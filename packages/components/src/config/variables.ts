@@ -145,6 +145,7 @@ export const ICONS: IconType[] = [
     'TREZOR_LOGO',
     'FEEDBACK',
     'OS_LINUX',
+    'OS_LINUX_ARM64',
     'OS_MAC',
     'OS_WINDOWS',
     'TRADE',
