@@ -137,7 +137,7 @@ export class HttpReceiver extends EventEmitter {
             <!DOCTYPE html>
             <html>
                 <head>
-                    <title>${options.title ?? 'Trezor Suite'}</title>
+                    <title>${options?.title ?? 'Trezor Suite'}</title>
                 </head>
                 <body>
                     ${content}
@@ -146,7 +146,7 @@ export class HttpReceiver extends EventEmitter {
         `;
 
         return template;
-    }
+    };
 
     /**
      * Handlers sections starts here
