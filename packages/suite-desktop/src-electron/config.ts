@@ -9,6 +9,7 @@ export const allowedDomains = [
     'localhost',
     '127.0.0.1',
     'trezor.io',
+    'invity.io',
     'api.github.com',
     'api.dropboxapi.com',
     'content.dropboxapi.com',
