@@ -131,7 +131,7 @@ export const saveTransactionReview = (
     reviewData,
 });
 
-export const composeTransaction = (composeTransactionData: ComposeTransactionData) => async (
+export const composeTransaction = (composeTransactionData: ComposeTransactionData) => (
     dispatch: Dispatch,
 ) => {
     const {

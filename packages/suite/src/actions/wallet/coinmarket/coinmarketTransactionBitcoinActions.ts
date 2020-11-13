@@ -214,7 +214,7 @@ export const signTransaction = (data: SignTransactionData) => async (
             transaction: { ...transaction, inputs, outputs: updatedOutputs },
         },
     };
-    await dispatch(coinmarketCommonActions.saveTransactionReview(reviewData));
+    dispatch(coinmarketCommonActions.saveTransactionReview(reviewData));
 
     const signedTx = await TrezorConnect.signTransaction(signPayload);
 
