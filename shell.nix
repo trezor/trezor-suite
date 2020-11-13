@@ -16,9 +16,16 @@ in
     buildInputs = [
       mdbook
       nodejs
-      # winePackages.minimal
       yarn
       SuitePython
+    ] ++ lib.optionals stdenv.isLinux [
+      appimagekit
+      nsis
+      openjpeg
+      osslsigncode
+      p7zip
+      squashfsTools
+      # winePackages.minimal
     ] ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
       Cocoa
       CoreServices
@@ -26,16 +33,6 @@ in
     shellHook = ''
       export CURDIR="$(pwd)"
       export PATH="$PATH:$CURDIR/node_modules/.bin"
-      export ELECTRON_BUILDER_CACHE="$CURDIR"/.cache/electron-builder
-      if [ "$(uname)" = "Linux" ] ; then
-        # replace bundled binaries in node_modules with symlinks
-        ln -sf ${p7zip}/bin/7za "$CURDIR"/node_modules/7zip-bin/linux/x64/7za || :
-        # replace bundled binaries in .cache/electron-builder with symlinks
-        ln -sf ${appimagekit}/bin/desktop-file-validate "$ELECTRON_BUILDER_CACHE"/appimage/appimage-12.0.1/linux-x64/desktop-file-validate || :
-        ln -sf ${openjpeg}/bin/opj_decompress "$ELECTRON_BUILDER_CACHE"/appimage/appimage-12.0.1/linux-x64/opj_decompress || :
-        ln -sf ${squashfsTools}/bin/mksquashfs "$ELECTRON_BUILDER_CACHE"/appimage/appimage-12.0.1/linux-x64/mksquashfs || :
-        ln -sf ${nsis}/bin/makensis "$ELECTRON_BUILDER_CACHE"/nsis/nsis-3.0.4.1/linux/makensis || :
-        ln -sf ${osslsigncode}/bin/osslsigncode "$ELECTRON_BUILDER_CACHE"/winCodeSign/winCodeSign-2.6.0/linux/osslsigncode || :
-      fi
+      export ELECTRON_BUILDER_CACHE="$CURDIR/.cache/electron-builder"
     '';
   }
