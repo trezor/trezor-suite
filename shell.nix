@@ -14,8 +14,9 @@ in
   stdenv.mkDerivation {
     name = "trezor-suite-dev";
     buildInputs = [
-      nodejs
       mdbook
+      nodejs
+      # winePackages.minimal
       yarn
       SuitePython
     ] ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
@@ -23,9 +24,18 @@ in
       CoreServices
     ]);
     shellHook = ''
-      export PATH="$PATH:$(pwd)/node_modules/.bin"
+      export CURDIR="$(pwd)"
+      export PATH="$PATH:$CURDIR/node_modules/.bin"
+      export ELECTRON_BUILDER_CACHE="$CURDIR"/.cache/electron-builder
       if [ "$(uname)" = "Linux" ] ; then
-        ln -sf ${p7zip}/bin/7za $(pwd)/node_modules/7zip-bin/linux/x64/7za || :
+        # replace bundled binaries in node_modules with symlinks
+        ln -sf ${p7zip}/bin/7za "$CURDIR"/node_modules/7zip-bin/linux/x64/7za || :
+        # replace bundled binaries in .cache/electron-builder with symlinks
+        ln -sf ${appimagekit}/bin/desktop-file-validate "$ELECTRON_BUILDER_CACHE"/appimage/appimage-12.0.1/linux-x64/desktop-file-validate || :
+        ln -sf ${openjpeg}/bin/opj_decompress "$ELECTRON_BUILDER_CACHE"/appimage/appimage-12.0.1/linux-x64/opj_decompress || :
+        ln -sf ${squashfsTools}/bin/mksquashfs "$ELECTRON_BUILDER_CACHE"/appimage/appimage-12.0.1/linux-x64/mksquashfs || :
+        ln -sf ${nsis}/bin/makensis "$ELECTRON_BUILDER_CACHE"/nsis/nsis-3.0.4.1/linux/makensis || :
+        ln -sf ${osslsigncode}/bin/osslsigncode "$ELECTRON_BUILDER_CACHE"/winCodeSign/winCodeSign-2.6.0/linux/osslsigncode || :
       fi
     '';
   }
