@@ -79,6 +79,8 @@ const Footer = () => {
         watch,
         setAmountLimits,
         defaultCountry,
+        accountHasCachedRequest,
+        quotesRequest,
     } = useCoinmarketBuyFormContext();
     const countrySelect = 'countrySelect';
     const hasValues =
@@ -94,7 +96,14 @@ const Footer = () => {
                 </Label>
                 <Controller
                     control={control}
-                    defaultValue={defaultCountry}
+                    defaultValue={
+                        accountHasCachedRequest && quotesRequest?.country
+                            ? {
+                                  label: regional.countriesMap.get(quotesRequest.country),
+                                  value: quotesRequest.country,
+                              }
+                            : defaultCountry
+                    }
                     name={countrySelect}
                     render={({ onChange, value }) => {
                         return (
