@@ -7,12 +7,14 @@ export interface State {
     sessionId?: string;
     instanceId?: string;
     enabled?: boolean;
+    sessionStart?: number;
 }
 
 export const initialState: State = {
     sessionId: undefined,
     instanceId: undefined,
     enabled: undefined,
+    sessionStart: undefined,
 };
 
 const analyticsReducer = (state: State = initialState, action: Action): State => {
@@ -22,6 +24,7 @@ const analyticsReducer = (state: State = initialState, action: Action): State =>
                 draft.enabled = action.payload.enabled;
                 draft.instanceId = action.payload.instanceId;
                 draft.sessionId = action.payload.sessionId;
+                draft.sessionStart = action.payload.sessionStart;
                 break;
             case ANALYTICS.ENABLE:
                 draft.enabled = true;

@@ -2,7 +2,7 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import { SUITE, ROUTER, STORAGE } from '@suite-actions/constants';
+import { SUITE, ROUTER, STORAGE, ANALYTICS } from '@suite-actions/constants';
 import routerReducer from '@suite-reducers/routerReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import modalReducer from '@suite-reducers/modalReducer';
@@ -37,7 +37,10 @@ export const getInitialState = (router?: RouterState, suite?: Partial<SuiteState
             ...suite,
         },
         modal: modalReducer(undefined, { type: 'foo' } as any),
-        analytics: analyticsReducer(undefined, { type: 'foo' } as any),
+        analytics: analyticsReducer(undefined, {
+            type: ANALYTICS.INIT,
+            payload: { instanceId: '1', sessionId: '2', enabled: false, sessionStart: 1 },
+        }),
     };
 };
 
@@ -128,6 +131,7 @@ describe('suite middleware', () => {
                             initialRun: true,
                         },
                     },
+                    analytics: {},
                 },
             });
 
@@ -158,6 +162,7 @@ describe('suite middleware', () => {
                             initialRun: true,
                         },
                     },
+                    analytics: {},
                 },
             });
 
@@ -189,6 +194,7 @@ describe('suite middleware', () => {
                             initialRun: true,
                         },
                     },
+                    analytics: {},
                 },
             });
             expect(goto).toHaveBeenCalledTimes(0);
@@ -213,6 +219,7 @@ describe('suite middleware', () => {
                             initialRun: false,
                         },
                     },
+                    analytics: {},
                 },
             });
             expect(goto).toHaveBeenCalledTimes(0);

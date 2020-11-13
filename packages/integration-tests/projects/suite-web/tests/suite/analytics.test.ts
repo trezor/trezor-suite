@@ -91,10 +91,10 @@ describe('Analytics', () => {
 
         // opening device modal
         cy.getTestElement('@menu/switch-device').click();
-        cy.wrap(requests).its(2).should('have.property', 'c_type', 'menu/goto/switch-device');
+        cy.wrap(requests).its(3).should('have.property', 'c_type', 'menu/goto/switch-device');
 
         // adding wallet
         cy.getTestElement('@switch-device/add-wallet-button').click();
-        cy.wrap(requests).its(3).should('have.property', 'c_type', 'switch-device/add-wallet');
+        cy.wrap(requests).its(4).should('have.property', 'c_type', 'switch-device/add-wallet');
     });
 });

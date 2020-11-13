@@ -9,7 +9,7 @@ import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { getAnalyticsRandomId } from '@suite-utils/random';
 import { encodeDataToQueryString } from '@suite-utils/analytics';
 import { Account } from '@wallet-types';
-import { isDesktop, isWeb } from '@suite-utils/env';
+import { isDesktop, isWeb, setOnBeforeUnloadListener } from '@suite-utils/env';
 import { setSentryUser } from '@suite-utils/sentry';
 import { State } from '@suite-reducers/analyticsReducer';
 
@@ -18,7 +18,12 @@ export type AnalyticsAction =
     | { type: typeof ANALYTICS.DISPOSE }
     | {
           type: typeof ANALYTICS.INIT;
-          payload: { instanceId: string; sessionId: string; enabled: boolean };
+          payload: {
+              instanceId: string;
+              sessionId: string;
+              enabled: boolean;
+              sessionStart: number;
+          };
       };
 
 /**
@@ -28,7 +33,7 @@ simple semver for data-analytics part.
 Don't forget to update docs with changelog!
 */
 
-const version = '1.2';
+const version = '1.3';
 
 export type AnalyticsEvent =
     | {
@@ -67,6 +72,7 @@ export type AnalyticsEvent =
               pin_protection: boolean;
               passphrase_protection: boolean;
               totalInstances: number;
+              backup_type: string;
           };
       }
     | {
@@ -225,6 +231,22 @@ export type AnalyticsEvent =
           payload: {
               fiat: string;
           };
+      }
+    | {
+          type: 'router/location-change';
+          payload: {
+              prevRouterUrl: string;
+              nextRouterUrl: string;
+          };
+      }
+    | {
+          type: 'session-end';
+          payload: {
+              // unix timestamp when session started
+              start: number;
+              // unix timestamp when session ended
+              end: number;
+          };
       };
 
 const getUrl = () => {
@@ -319,6 +341,7 @@ export const init = (loadedState: State, optout: boolean) => (
         payload: {
             instanceId,
             sessionId,
+            sessionStart: Date.now(),
             enabled,
         },
     });
@@ -326,8 +349,18 @@ export const init = (loadedState: State, optout: boolean) => (
     if (!getState().analytics.enabled) return;
     // 6. error logging to sentry
     setSentryUser(instanceId);
-    // 7. register event listeners to report events from electron
-    // todo:
+    // 7. register event listeners
+    setOnBeforeUnloadListener(() => {
+        dispatch(
+            report({
+                type: 'session-end',
+                payload: {
+                    start: getState().analytics.sessionStart!,
+                    end: Date.now(),
+                },
+            }),
+        );
+    });
 };
 
 export const enable = (): AnalyticsAction => ({

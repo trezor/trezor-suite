@@ -91,3 +91,11 @@ export const submitRequestForm = (
         form.submit();
     }
 };
+
+/**
+ * Use this function to add event listener that will be fired before application is closed
+ * @param callback
+ */
+export const setOnBeforeUnloadListener = (callback: () => void) => {
+    window.addEventListener('beforeunload', callback);
+};

@@ -47,12 +47,20 @@ Breaking change should bump major version. Any other change bumps minor version.
 
 ## Changelog
 
+### 1.3
+Added:
+- device-connect
+  - backup_type
+- router/location-change
+  - prevRouterUrl
+  - nextRouterUrl
+
 ### 1.2
 Added
 - suite-ready
   - tor
-  
-### 1.1.
+
+### 1.1
 Added:
 - device-update-firmware:
   - toFwVersion
@@ -62,5 +70,5 @@ Added:
 - device-connect:
   - totalInstances
 
-### 1.0.
+### 1.0
 - initial version 
