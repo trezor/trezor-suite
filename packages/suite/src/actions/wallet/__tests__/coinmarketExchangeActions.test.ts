@@ -56,7 +56,7 @@ const setFetchMock = (mocks: any) => {
 describe('Coinmarket Exchange Actions', () => {
     invityAPI.createInvityAPIKey('mock');
 
-    it('load and saveExchangeInfo', async () => {
+    it('load and saveExchangeInfo', () => {
         const exchangeList = [
             {
                 name: 'changenow',
@@ -129,13 +129,13 @@ describe('Coinmarket Exchange Actions', () => {
         });
     });
 
-    it('saveTransactionDetailId', async () => {
+    it('saveTransactionDetailId', () => {
         const store = initStore(getInitialState());
         store.dispatch(coinmarketExchangeActions.saveTransactionId('1234-4321-4321'));
         expect(store.getState().wallet.coinmarket.exchange.transactionId).toEqual('1234-4321-4321');
     });
 
-    it('saveQuoteRequest', async () => {
+    it('saveQuoteRequest', () => {
         const store = initStore(getInitialState());
 
         const request: ExchangeTradeQuoteRequest = {
@@ -148,7 +148,7 @@ describe('Coinmarket Exchange Actions', () => {
         expect(store.getState().wallet.coinmarket.exchange.quotesRequest).toEqual(request);
     });
 
-    it('saveQuotes', async () => {
+    it('saveQuotes', () => {
         const store = initStore(getInitialState());
 
         const fixedQuotes: ExchangeTrade[] = [];

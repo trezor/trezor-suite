@@ -1,3 +1,5 @@
+/* eslint-disable require-await */
+
 import { AbstractMetadataProvider, Result } from '@suite-types/metadata';
 import Google from '../../google';
 

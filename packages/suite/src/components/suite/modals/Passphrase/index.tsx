@@ -73,7 +73,7 @@ const Passphrase = (props: Props) => {
         props.onPassphraseSubmit(value, !!passphraseOnDevice, !!hasEmptyPassphraseWallet);
     };
 
-    const onRecreate = async () => {
+    const onRecreate = () => {
         // Cancel TrezorConnect request and pass error to suiteAction.authConfirm
         TrezorConnect.cancel('auth-confirm-cancel');
     };

@@ -21,10 +21,7 @@ const workerWrapper = (factory: BlockchainSettings['worker']): Worker => {
 };
 
 // initialize worker communication, raise error if worker not found
-const initWorker = async ({
-    worker: factory,
-    ...settings
-}: BlockchainSettings): Promise<Worker> => {
+const initWorker = ({ worker: factory, ...settings }: BlockchainSettings) => {
     const dfd: Deferred<Worker> = createDeferred(-1);
     const worker = workerWrapper(factory);
 
@@ -100,19 +97,19 @@ class BlockchainLink extends EventEmitter implements Emitter {
         return dfd.promise as Promise<R>;
     }
 
-    async connect(): Promise<void> {
+    connect(): Promise<void> {
         return this.sendMessage({
             type: MESSAGES.CONNECT,
         });
     }
 
-    async getInfo(): Promise<ResponseTypes.GetInfo['payload']> {
+    getInfo(): Promise<ResponseTypes.GetInfo['payload']> {
         return this.sendMessage({
             type: MESSAGES.GET_INFO,
         });
     }
 
-    async getBlockHash(
+    getBlockHash(
         payload: MessageTypes.GetBlockHash['payload']
     ): Promise<ResponseTypes.GetBlockHash['payload']> {
         return this.sendMessage({
@@ -121,7 +118,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
         });
     }
 
-    async getAccountInfo(
+    getAccountInfo(
         payload: MessageTypes.GetAccountInfo['payload']
     ): Promise<ResponseTypes.GetAccountInfo['payload']> {
         return this.sendMessage({
@@ -130,7 +127,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
         });
     }
 
-    async getAccountUtxo(
+    getAccountUtxo(
         payload: MessageTypes.GetAccountUtxo['payload']
     ): Promise<ResponseTypes.GetAccountUtxo['payload']> {
         return this.sendMessage({
@@ -139,7 +136,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
         });
     }
 
-    async getTransaction(
+    getTransaction(
         payload: MessageTypes.GetTransaction['payload']
     ): Promise<ResponseTypes.GetTransaction['payload']> {
         return this.sendMessage({
@@ -148,7 +145,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
         });
     }
 
-    async getAccountBalanceHistory(
+    getAccountBalanceHistory(
         payload: MessageTypes.GetAccountBalanceHistory['payload']
     ): Promise<ResponseTypes.GetAccountBalanceHistory['payload']> {
         return this.sendMessage({
@@ -157,7 +154,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
         });
     }
 
-    async getCurrentFiatRates(
+    getCurrentFiatRates(
         payload: MessageTypes.GetCurrentFiatRates['payload']
     ): Promise<ResponseTypes.GetCurrentFiatRates['payload']> {
         return this.sendMessage({
@@ -166,7 +163,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
         });
     }
 
-    async getFiatRatesForTimestamps(
+    getFiatRatesForTimestamps(
         payload: MessageTypes.GetFiatRatesForTimestamps['payload']
     ): Promise<ResponseTypes.GetFiatRatesForTimestamps['payload']> {
         return this.sendMessage({
@@ -175,7 +172,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
         });
     }
 
-    async getFiatRatesTickersList(
+    getFiatRatesTickersList(
         payload: MessageTypes.GetFiatRatesTickersList['payload']
     ): Promise<ResponseTypes.GetFiatRatesTickersList['payload']> {
         return this.sendMessage({
@@ -184,7 +181,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
         });
     }
 
-    async estimateFee(
+    estimateFee(
         payload: MessageTypes.EstimateFee['payload']
     ): Promise<ResponseTypes.EstimateFee['payload']> {
         return this.sendMessage({
@@ -193,7 +190,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
         });
     }
 
-    async subscribe(
+    subscribe(
         payload: MessageTypes.Subscribe['payload']
     ): Promise<ResponseTypes.Subscribe['payload']> {
         return this.sendMessage({
@@ -202,7 +199,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
         });
     }
 
-    async unsubscribe(
+    unsubscribe(
         payload: MessageTypes.Unsubscribe['payload']
     ): Promise<ResponseTypes.Unsubscribe['payload']> {
         return this.sendMessage({
@@ -211,7 +208,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
         });
     }
 
-    async pushTransaction(
+    pushTransaction(
         payload: MessageTypes.PushTransaction['payload']
     ): Promise<ResponseTypes.PushTransaction['payload']> {
         return this.sendMessage({
@@ -220,6 +217,7 @@ class BlockchainLink extends EventEmitter implements Emitter {
         });
     }
 
+    // eslint-disable-next-line require-await
     async disconnect(): Promise<boolean> {
         if (!this.worker) return true;
         return this.sendMessage({

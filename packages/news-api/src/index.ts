@@ -38,7 +38,7 @@ const getPosts = (data: any, limit = 5) => {
     return result;
 };
 
-const fetcher = async (
+const fetcher = (
     limit: number,
     callback: (statusCode: number, data: string | null, errMessage?: string) => void,
 ) => {

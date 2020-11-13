@@ -76,12 +76,12 @@ class CommonDB<TDBStructure> {
 
     onChange = (_handler: (event: StorageMessageEvent<TDBStructure>) => any) => {};
 
-    getDB = async (): Promise<IDBPDatabase<TDBStructure>> => {
+    getDB = (): Promise<IDBPDatabase<TDBStructure>> => {
         // @ts-ignore
         return Promise.resolve();
     };
 
-    addItem = async <
+    addItem = <
         TStoreName extends StoreNames<TDBStructure>,
         TItem extends StoreValue<TDBStructure, TStoreName>,
         TKey extends StoreKey<TDBStructure, TStoreName>
@@ -95,7 +95,7 @@ class CommonDB<TDBStructure> {
         return Promise.resolve();
     };
 
-    addItems = async <
+    addItems = <
         TStoreName extends StoreNames<TDBStructure>,
         TItem extends StoreValue<TDBStructure, TStoreName>
     >(
@@ -106,7 +106,7 @@ class CommonDB<TDBStructure> {
         return Promise.resolve();
     };
 
-    getItemByPK = async <
+    getItemByPK = <
         TStoreName extends StoreNames<TDBStructure>,
         TKey extends StoreKey<TDBStructure, TStoreName>
     >(
@@ -117,7 +117,7 @@ class CommonDB<TDBStructure> {
         return Promise.resolve();
     };
 
-    getItemByIndex = async <
+    getItemByIndex = <
         TStoreName extends StoreNames<TDBStructure>,
         TIndexName extends IndexNames<TDBStructure, TStoreName>,
         TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>
@@ -129,7 +129,7 @@ class CommonDB<TDBStructure> {
         return Promise.resolve();
     };
 
-    updateItemByIndex = async <
+    updateItemByIndex = <
         TStoreName extends StoreNames<TDBStructure>,
         TIndexName extends IndexNames<TDBStructure, TStoreName>,
         TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>
@@ -142,7 +142,7 @@ class CommonDB<TDBStructure> {
         return Promise.resolve();
     };
 
-    removeItemByPK = async <
+    removeItemByPK = <
         TStoreName extends StoreNames<TDBStructure>,
         TKey extends StoreKey<TDBStructure, TStoreName>
     >(
@@ -152,7 +152,7 @@ class CommonDB<TDBStructure> {
         return Promise.resolve();
     };
 
-    removeItemByIndex = async <
+    removeItemByIndex = <
         TStoreName extends StoreNames<TDBStructure>,
         TIndexName extends IndexNames<TDBStructure, TStoreName>,
         TKey extends IndexKey<TDBStructure, TStoreName, TIndexName>
@@ -164,7 +164,7 @@ class CommonDB<TDBStructure> {
         return Promise.resolve();
     };
 
-    getItemsExtended = async <
+    getItemsExtended = <
         TStoreName extends StoreNames<TDBStructure>,
         TIndexName extends IndexNames<TDBStructure, TStoreName>
     >(
@@ -175,7 +175,7 @@ class CommonDB<TDBStructure> {
         return (Promise.resolve() as unknown) as Promise<StoreValue<TDBStructure, TStoreName>[]>;
     };
 
-    getItemsWithKeys = async <TStoreName extends StoreNames<TDBStructure>>(_store: TStoreName) => {
+    getItemsWithKeys = <TStoreName extends StoreNames<TDBStructure>>(_store: TStoreName) => {
         return (Promise.resolve() as unknown) as Promise<
             {
                 key: unknown extends IndexNames<TDBStructure, TStoreName>
@@ -186,17 +186,15 @@ class CommonDB<TDBStructure> {
         >;
     };
 
-    clearStores = async <TStoreName extends StoreNames<TDBStructure>>(
-        _storeNames?: TStoreName[]
-    ) => {
+    clearStores = <TStoreName extends StoreNames<TDBStructure>>(_storeNames?: TStoreName[]) => {
         return Promise.resolve();
     };
 
-    static removeStores = async <TDBStructure>(_db: IDBPDatabase<TDBStructure>) => {
+    static removeStores = <TDBStructure>(_db: IDBPDatabase<TDBStructure>) => {
         return Promise.resolve();
     };
 
-    removeDatabase = async () => {
+    removeDatabase = () => {
         return Promise.resolve();
     };
 }

@@ -283,7 +283,7 @@ const getUrl = () => {
     }
 };
 
-export const report = (data: AnalyticsEvent, force = false) => async (
+export const report = (data: AnalyticsEvent, force = false) => (
     _dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -335,7 +335,7 @@ export const init = (loadedState: State, optout: boolean) => (
     const sessionId = getAnalyticsRandomId();
     // 3. if enabled was already set to some value, keep it (user made choice), otherwise set it to default represented by optout param
     const enabled = typeof loadedState.enabled !== 'undefined' ? loadedState.enabled : optout;
-    // 3. set application state
+    // 4. set application state
     dispatch({
         type: ANALYTICS.INIT,
         payload: {

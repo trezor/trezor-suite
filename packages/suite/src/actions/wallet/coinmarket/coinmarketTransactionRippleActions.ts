@@ -70,7 +70,7 @@ const calculate = (
     return payloadData;
 };
 
-export const composeTransaction = (composeTransactionData: ComposeTransactionData) => async () => {
+export const composeTransaction = (composeTransactionData: ComposeTransactionData) => () => {
     const { account, feeInfo } = composeTransactionData;
     const composeOutputs = getExternalComposeOutput(composeTransactionData);
     if (!composeOutputs) return; // no valid Output
@@ -175,7 +175,7 @@ export const signTransaction = (data: SignTransactionData) => async (
         },
     };
 
-    await dispatch(coinmarketCommonActions.saveTransactionReview(reviewData));
+    dispatch(coinmarketCommonActions.saveTransactionReview(reviewData));
 
     const signedTx = await TrezorConnect.rippleSignTransaction({
         device: {

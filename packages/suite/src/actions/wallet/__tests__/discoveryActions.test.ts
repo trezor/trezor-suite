@@ -42,6 +42,7 @@ jest.mock('trezor-connect', () => {
     });
 
     // mocked function
+    // eslint-disable-next-line require-await
     const getAccountInfo = async (params: { bundle: Bundle }) => {
         // this error applies only for tests
         if (typeof fixture === 'undefined') {
@@ -362,7 +363,7 @@ describe('Discovery Actions', () => {
         expect(action.type).toEqual(NOTIFICATION.TOAST);
     });
 
-    it('Create discovery which already exist', async () => {
+    it('Create discovery which already exist', () => {
         const store = initStore();
         store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
         store.dispatch(discoveryActions.create('device-state', SUITE_DEVICE));
@@ -375,7 +376,7 @@ describe('Discovery Actions', () => {
         expect(store.getState().wallet.discovery.length).toEqual(0);
     });
 
-    it('Start discovery which does not exist (discoveryReducer test)', async () => {
+    it('Start discovery which does not exist (discoveryReducer test)', () => {
         const store = initStore();
         store.dispatch({
             type: DISCOVERY.START,
@@ -384,13 +385,13 @@ describe('Discovery Actions', () => {
         expect(store.getState().wallet.discovery.length).toEqual(0);
     });
 
-    it('Update discovery which does not exist', async () => {
+    it('Update discovery which does not exist', () => {
         const store = initStore();
         store.dispatch(discoveryActions.update({ deviceState: 'not-existed' }));
         expect(store.getState().wallet.discovery.length).toEqual(0);
     });
 
-    it('Start/stop', async done => {
+    it('Start/stop', done => {
         const f = new Promise(resolve => {
             setTimeout(() => resolve(paramsError('discovery_interrupted')), 100);
         });

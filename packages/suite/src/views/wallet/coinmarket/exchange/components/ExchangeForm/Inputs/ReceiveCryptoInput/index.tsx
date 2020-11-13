@@ -51,13 +51,13 @@ const ReceiveCryptoInput = () => {
     const decimals = tokenData ? tokenData.decimals : network.decimals;
     const amount = getValues(receiveCryptoInput);
     useDebounce(
-        async () => {
+        () => {
             // take value at debounce time, the user may type fast
             const currentAmount = getValues(receiveCryptoInput);
             if (currentAmount && !isMax) {
                 const amountBig = new Bignumber(currentAmount);
                 if (amountBig.gte(0)) {
-                    await compose({
+                    compose({
                         setMax: false,
                         amount: currentAmount,
                     });
@@ -70,7 +70,7 @@ const ReceiveCryptoInput = () => {
 
     return (
         <Input
-            onChange={async event => {
+            onChange={event => {
                 updateFiatValue(event.target.value);
                 clearErrors(fiatInput);
                 setMax(false);

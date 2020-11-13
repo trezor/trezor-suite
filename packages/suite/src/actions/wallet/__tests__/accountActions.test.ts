@@ -54,7 +54,7 @@ const getAccount = (a?: Partial<Account>) => ({
 describe('Account Actions', () => {
     // accountActions.create function is already tested by "discoveryActions"
     // it's pointless to write a complex tests for it
-    it('Create account', async () => {
+    it('Create account', () => {
         const store = initStore(getInitialState());
         store.dispatch(
             accountActions.create(
@@ -83,7 +83,7 @@ describe('Account Actions', () => {
         expect(store.getState().wallet.accounts.length).toEqual(1);
     });
 
-    it('Disable accounts (all removed)', async () => {
+    it('Disable accounts (all removed)', () => {
         const store = initStore(
             getInitialState({
                 accounts: [getAccount() as Account, getAccount() as Account],
@@ -96,7 +96,7 @@ describe('Account Actions', () => {
         expect(store.getState().wallet.accounts.length).toEqual(0);
     });
 
-    it('Disable accounts (not all removed)', async () => {
+    it('Disable accounts (not all removed)', () => {
         const store = initStore(
             getInitialState({
                 accounts: [getAccount({ symbol: 'ltc' }) as Account, getAccount() as Account],
@@ -109,7 +109,7 @@ describe('Account Actions', () => {
         expect(store.getState().wallet.accounts.length).toEqual(1);
     });
 
-    it('Change account visibility', async () => {
+    it('Change account visibility', () => {
         const store = initStore(
             getInitialState({
                 accounts: [getAccount({ symbol: 'ltc', path: '1', visible: false }) as Account],
@@ -129,7 +129,7 @@ describe('Account Actions', () => {
         );
     });
 
-    it('Change account visibility (account not found)', async () => {
+    it('Change account visibility (account not found)', () => {
         const store = initStore(getInitialState());
         store.dispatch(
             accountActions.changeAccountVisibility(

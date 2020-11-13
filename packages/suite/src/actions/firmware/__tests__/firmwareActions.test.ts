@@ -24,7 +24,7 @@ jest.mock('trezor-connect', () => {
     let fixture: Fixture;
 
     // mocked function
-    const firmwareUpdate = async () => {
+    const firmwareUpdate = () => {
         // this error applies only for tests
         if (typeof fixture === 'undefined' || !fixture.mocks || !fixture.mocks.connect) {
             return 'Default error. Fixtures not set';
@@ -123,7 +123,7 @@ describe('Firmware Actions', () => {
 
     describe('reducer actions', () => {
         reducerActions.forEach(f => {
-            it(f.description, async () => {
+            it(f.description, () => {
                 const state = getInitialState(f.initialState);
                 const store = mockStore(state);
                 store.subscribe(() => updateStore(store));

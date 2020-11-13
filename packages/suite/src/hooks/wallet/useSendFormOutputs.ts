@@ -30,7 +30,7 @@ export const useSendFormOutputs = ({
     }, [localCurrencyOption, outputsFieldArray]);
 
     const removeOutput = useCallback(
-        async (index: number) => {
+        (index: number) => {
             const values = getValues();
             const { setMaxOutputId } = values;
             if (setMaxOutputId === index) {

@@ -81,7 +81,7 @@ const TokenSelect = ({ output, outputId }: Props) => {
                         value={options.find(o => o.value === tokenValue)}
                         isClearable={false}
                         minWidth="45px"
-                        onChange={async (selected: Option) => {
+                        onChange={(selected: Option) => {
                             // change selected value
                             onChange(selected.value);
                             // clear errors in Amount input

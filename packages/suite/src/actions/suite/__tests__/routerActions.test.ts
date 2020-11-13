@@ -66,7 +66,7 @@ const initStore = (state: State) => {
 
 describe('Suite Actions', () => {
     fixtures.init.forEach(f => {
-        it(`init: ${f.description}`, async () => {
+        it(`init: ${f.description}`, () => {
             const state = getInitialState(f.state as InitialState);
             const store = initStore(state);
             store.dispatch(routerActions.init());
@@ -79,7 +79,7 @@ describe('Suite Actions', () => {
     });
 
     fixtures.onBeforePopState.forEach(f => {
-        it(`onBeforePopState: ${f.description}`, async () => {
+        it(`onBeforePopState: ${f.description}`, () => {
             const state = getInitialState(f.state as InitialState);
             const store = initStore(state);
             const result = store.dispatch(routerActions.onBeforePopState());
@@ -88,7 +88,7 @@ describe('Suite Actions', () => {
     });
 
     fixtures.initialRedirection.forEach(f => {
-        it(`initialRedirection: ${f.description}`, async () => {
+        it(`initialRedirection: ${f.description}`, () => {
             const state = getInitialState(f.state as InitialState);
             const store = initStore(state);
             // eslint-disable-next-line global-require
@@ -103,7 +103,7 @@ describe('Suite Actions', () => {
     });
 
     fixtures.goto.forEach(f => {
-        it(`goto: ${f.description}`, async () => {
+        it(`goto: ${f.description}`, () => {
             const state = getInitialState(f.state as InitialState);
             const store = initStore(state);
             // eslint-disable-next-line global-require
@@ -122,7 +122,7 @@ describe('Suite Actions', () => {
         });
     });
 
-    it(`onLocationChange with lock`, async () => {
+    it(`onLocationChange with lock`, () => {
         const state = getInitialState({
             suite: {
                 locks: [1],

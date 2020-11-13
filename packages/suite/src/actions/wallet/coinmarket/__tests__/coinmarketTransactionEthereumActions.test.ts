@@ -81,6 +81,7 @@ jest.mock('trezor-connect', () => {
             getAddress,
             ethereumGetAddress: getAddress,
             rippleGetAddress: getAddress,
+            // eslint-disable-next-line require-await
             ethereumSignTransaction: jest.fn(async _params => {
                 return getNextFixture();
             }),

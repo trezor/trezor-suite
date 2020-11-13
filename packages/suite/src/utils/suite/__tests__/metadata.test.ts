@@ -94,7 +94,7 @@ describe('metadata', () => {
         expect(data).toEqual(decrypted);
     });
 
-    it('read file content (ArrayBuffer)', async () => {
+    it('read file content (ArrayBuffer)', () => {
         const file = fs.readFileSync(`./src/utils/suite/__fixtures__/${filename}.mtdt`);
         function toArrayBuffer(buf: Buffer) {
             const ab = new ArrayBuffer(buf.length);

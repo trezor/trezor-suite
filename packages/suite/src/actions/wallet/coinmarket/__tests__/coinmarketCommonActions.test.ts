@@ -83,6 +83,7 @@ jest.mock('trezor-connect', () => {
             getAddress,
             ethereumGetAddress: getAddress,
             rippleGetAddress: getAddress,
+            // eslint-disable-next-line require-await
             composeTransaction: jest.fn(async _params => {
                 return getNextFixture();
             }),
@@ -145,7 +146,7 @@ describe('Coinmarket Common Actions', () => {
         });
     });
 
-    it('saveComposedTransaction', async () => {
+    it('saveComposedTransaction', () => {
         const store = initStore(getInitialState());
 
         const composed: PrecomposedTransactionFinal = {
@@ -165,7 +166,7 @@ describe('Coinmarket Common Actions', () => {
         expect(store.getState().wallet.coinmarket.transaction.composed).toEqual(composed);
     });
 
-    it('saveComposedTransaction', async () => {
+    it('saveComposedTransaction', () => {
         const store = initStore(getInitialState());
 
         const review: ReviewTransactionData = {

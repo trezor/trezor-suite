@@ -1,7 +1,7 @@
 import { OnUpgradeFunc } from '@trezor/suite-storage';
 import { SuiteDBSchema } from '..';
 
-export const migrate = async (
+export const migrate = (
     db: Parameters<OnUpgradeFunc<SuiteDBSchema>>['0'],
     oldVersion: Parameters<OnUpgradeFunc<SuiteDBSchema>>['1'],
     newVersion: Parameters<OnUpgradeFunc<SuiteDBSchema>>['2'],

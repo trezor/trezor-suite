@@ -481,7 +481,7 @@ onmessage = (event: { data: Message }) => {
             break;
         case MESSAGES.CONNECT:
             connect()
-                .then(async () => {
+                .then(() => {
                     common.response({ id, type: RESPONSES.CONNECT, payload: true });
                 })
                 .catch(error => common.errorHandler({ id, error }));

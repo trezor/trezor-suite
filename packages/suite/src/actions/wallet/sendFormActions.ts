@@ -46,10 +46,7 @@ export type SendFormAction =
           type: typeof SEND.DISPOSE;
       };
 
-export const saveDraft = (formState: FormState) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
+export const saveDraft = (formState: FormState) => (dispatch: Dispatch, getState: GetState) => {
     const { selectedAccount } = getState().wallet;
     if (selectedAccount.status !== 'loaded') return null;
 
