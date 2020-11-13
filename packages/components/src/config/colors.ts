@@ -46,8 +46,49 @@ export const THEME = {
         BG_GREEN_HOVER: '#4e883b', // improvisation
         BG_LIGHT_GREEN: '#1a2516',
         BG_LIGHT_GREEN_HOVER: '#131d10', // improvisation
-        // BG_GREY: '#000000',
-        BG_GREY: '#080808',
+        BG_GREY: '#18191a',
+        BG_GREY_ALT: '#3a3b3c', // used for selected account item, account search input, tertiary buttons
+        BG_LIGHT_GREY: '#212223',
+        BG_WHITE: '#242526',
+        BG_BLUE: '#197eaa', // used for big app notification (eg. new fw update)
+        BG_RED: '#ab2626', // used for big app notification
+        BG_LIGHT_RED: '#5a1616', // used for outer glow for disconnected device status dot
+        BG_TOOLTIP: '#151524', // improvisation
+
+        TYPE_GREEN: '#66ab4e',
+        TYPE_ORANGE: '#9b813b',
+        TYPE_BLUE: '#197eaa',
+        TYPE_RED: '#c65353',
+        TYPE_DARK_GREY: '#eaebed',
+        TYPE_LIGHT_GREY: '#959596',
+        TYPE_LIGHTER_GREY: '#bdbdbd',
+        TYPE_WHITE: '#fafafa',
+
+        SCROLLBAR_THUMB: '#7F7F7F',
+        STROKE_GREY: '#3a3b3c',
+        STROKE_LIGHT_GREY: '#3a3b3c', // graph grid uses different color in black theme
+
+        BUTTON_RED: '#cd4949',
+        BUTTON_RED_HOVER: '#b93c3c',
+
+        // these gradients are used on transaction graph only
+        GRADIENT_GREEN_START: '#559c3d',
+        GRADIENT_GREEN_END: '#5fa548',
+        GRADIENT_RED_START: '#d15b5b', // same as in light theme
+        GRADIENT_RED_END: '#e75f5f', // same as in light theme
+
+        BOX_SHADOW_BLACK_15: 'rgba(0, 0, 0, 0.5)',
+        BOX_SHADOW_BLACK_20: 'rgba(0, 0, 0, 0.2)', // shadow around dropdown
+        BOX_SHADOW_MODAL: 'rgba(0, 0, 0, 0.5)', // shadow around modal
+        IMAGE_FILTER: 'brightness(0.8) contrast(1.2) saturate(1.2)',
+    },
+    // black theme is not used currently, but will be in the future
+    black: {
+        BG_GREEN: '#5ea447',
+        BG_GREEN_HOVER: '#4e883b', // improvisation
+        BG_LIGHT_GREEN: '#1a2516',
+        BG_LIGHT_GREEN_HOVER: '#131d10', // improvisation
+        BG_GREY: '#000000',
         BG_GREY_ALT: '#262626', // used for selected account item, account search input, tertiary buttons
         BG_LIGHT_GREY: '#0c0c0c',
         BG_WHITE: '#101010',

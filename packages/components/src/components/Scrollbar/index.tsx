@@ -4,7 +4,7 @@ import { css } from 'styled-components';
 // For Firefox you need to apply `scrollbar-color` prop on per element basis
 const scrollbarStyles = css`
     ::-webkit-scrollbar {
-        background-color: ${props => props.theme.BG_WHITE};
+        background-color: transparent;
         width: 10px;
     }
 

@@ -144,7 +144,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 type="number"
                                 domain={calcXDomain(xTicks, data, selectedRange)}
                                 // width={10}
-                                stroke={theme.BG_GREY}
+                                stroke={theme.STROKE_LIGHT_GREY}
                                 interval="preserveEnd"
                                 tick={<CustomXAxisTick selectedRange={selectedRange} />}
                                 ticks={xTicks}
@@ -158,7 +158,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 scale={selectedView}
                                 domain={yDomain}
                                 allowDataOverflow={selectedView === 'log'}
-                                stroke={theme.BG_GREY}
+                                stroke="transparent"
                                 tick={
                                     props.variant === 'one-asset' ? (
                                         <CustomYAxisTick
