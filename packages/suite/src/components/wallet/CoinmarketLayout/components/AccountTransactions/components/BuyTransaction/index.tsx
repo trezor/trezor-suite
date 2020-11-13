@@ -9,7 +9,7 @@ import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { colors, variables, Icon, Button } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketBuyProviderInfo } from '@wallet-components';
 import { Account } from '@wallet-types';
-import { Translation } from '@suite-components';
+import { Translation, HiddenPlaceholder } from '@suite-components';
 import { getStatusMessage, processQuotes } from '@wallet-utils/coinmarket/buyUtils';
 import { TradeBuy } from '@wallet-reducers/coinmarketReducer';
 import Status from '../Status';
@@ -183,12 +183,16 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
             <Column>
                 <Row>
                     <Amount>
-                        {fiatStringAmount} {fiatCurrency}
+                        <HiddenPlaceholder>
+                            {fiatStringAmount} {fiatCurrency}
+                        </HiddenPlaceholder>
                     </Amount>
                     <Arrow>
                         <Icon color={colors.NEUE_TYPE_LIGHT_GREY} size={13} icon="ARROW_RIGHT" />
                     </Arrow>
-                    {formatCryptoAmount(Number(receiveStringAmount))} {receiveCurrency}
+                    <HiddenPlaceholder>
+                        {formatCryptoAmount(Number(receiveStringAmount))} {receiveCurrency}
+                    </HiddenPlaceholder>
                     {/* TODO FIX THIS LOGO */}
                     {/* <StyledCoinLogo size={13} symbol={symbol} /> */}
                 </Row>
