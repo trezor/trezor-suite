@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import TrezorConnect, { UI } from 'trezor-connect';
+import TrezorConnect, { UI, RecoveryDevice } from 'trezor-connect';
 import { RECOVERY } from '@recovery-actions/constants';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -61,6 +61,7 @@ const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
         dry_run: true,
         type: advancedRecovery ? 1 : 0,
         word_count: wordsCount,
+        enforce_wordlist: true,
         device: {
             path: device.path,
         },
@@ -85,10 +86,19 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch(setError(''));
     dispatch(setStatus('in-progress'));
 
-    const response = await TrezorConnect.recoveryDevice({
+    const params: RecoveryDevice = {
         type: advancedRecovery ? 1 : 0,
         word_count: wordsCount,
         passphrase_protection: DEVICE.DEFAULT_PASSPHRASE_PROTECTION,
+        enforce_wordlist: true,
+    };
+
+    if (device.features.capabilities?.includes('Capability_U2F')) {
+        params.u2f_counter = Math.floor(Date.now() / 1000);
+    }
+
+    const response = await TrezorConnect.recoveryDevice({
+        ...params,
         device: {
             path: device.path,
         },
