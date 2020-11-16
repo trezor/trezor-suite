@@ -111,6 +111,19 @@ const SendCryptoSelect = () => {
         account,
     } = useCoinmarketExchangeFormContext();
 
+    const customSearch = (
+        option: { data: { label: string; value: string; name: string } },
+        searchText: string,
+    ) => {
+        if (
+            option.data.label.toLowerCase().includes(searchText.toLowerCase()) ||
+            option.data.name.toLowerCase().includes(searchText.toLowerCase())
+        ) {
+            return true;
+        }
+        return false;
+    };
+
     return (
         <Wrapper>
             <Controller
@@ -126,6 +139,7 @@ const SendCryptoSelect = () => {
                             }}
                             value={value}
                             isClearable={false}
+                            filterOption={customSearch}
                             options={buildOptions(account, exchangeCoinInfo, exchangeInfo)}
                             minWidth="70px"
                             noTopLabel
