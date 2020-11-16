@@ -111,6 +111,7 @@ const MetadataProvider = (props: Props) => {
                         onClick={() => connect('fileSystem')}
                         isLoading={isLoading === 'fileSystem'}
                         isDisabled={!!isLoading}
+                        data-test="@modal/metadata-provider/file-system-button"
                     >
                         Local file system
                     </StyledButton>

@@ -84,7 +84,7 @@ export type Error = {
 export type Result<T> = Promise<Success<T> | Error>;
 
 export abstract class AbstractMetadataProvider {
-    // isCloud means that this provider is not local and allows multi client sync. These providers are suitable for backing up data.
+    /* isCloud means that this provider is not local and allows multi client sync. These providers are suitable for backing up data. */
     abstract isCloud: boolean;
 
     constructor(public type: MetadataProviderType) {}

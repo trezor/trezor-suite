@@ -1,6 +1,6 @@
 import { Dropbox } from 'dropbox';
 import { AbstractMetadataProvider } from '@suite-types/metadata';
-import { getOauthCode, getOauthReceiverUrl } from '@suite-utils/oauth';
+import { extractCredentialsFromAuthorizationFlow, getOauthReceiverUrl } from '@suite-utils/oauth';
 import { METADATA } from '@suite-actions/constants';
 import { getRandomId } from '@suite-utils/random';
 
@@ -53,7 +53,8 @@ class DropboxProvider extends AbstractMetadataProvider {
         );
 
         try {
-            const code = await getOauthCode(url);
+            // dropbox supports authorization code flow for both web and desktop
+            const { code } = await extractCredentialsFromAuthorizationFlow(url);
 
             if (!code) return false;
 

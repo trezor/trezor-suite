@@ -1,13 +1,15 @@
 <html>
-  <head></head>
-  <body>
-    <script>
-      var message = window.location.search;
-      
-      if (window.opener) {
-        window.opener.postMessage(message, window.location.origin);
-      }  
-      window.close();
-    </script>
-  </body>
+    <head></head>
+    <body>
+        <script>
+            // google implicit flow - hash
+            // dropbox authorization code flow - search
+            var message = { hash: window.location.hash, search: window.location.search };
+
+            if (window.opener) {
+                window.opener.postMessage(message, window.location.origin);
+            }
+            window.close();
+        </script>
+    </body>
 </html>

@@ -5,7 +5,6 @@ class GoogleProvider extends AbstractMetadataProvider {
     connected = false;
     client: GoogleClient;
     isCloud = true;
-
     constructor(token?: string) {
         super('google');
         this.client = new GoogleClient(token);
