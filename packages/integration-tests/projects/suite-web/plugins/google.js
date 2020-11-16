@@ -32,6 +32,29 @@ class GoogleMock {
 
         const app = express();
 
+        app.use((req, res, next) => {
+            this.requests.push(req.url);
+
+            if (this.nextResponse) {
+                console.log('[dropboxMock]', this.nextResponse);
+                res.writeHeader(this.nextResponse.status, this.nextResponse.headers);
+                res.write(JSON.stringify(this.nextResponse.body));
+                res.end();
+                this.nextResponse = null;
+                return;
+            }
+            next();
+        });
+
+        app.use((_req, res, next) => {
+            if (!this.user) {
+                res.status(401);
+                res.send();
+                return;
+            }
+            return next();
+        });
+
         const handleSave = (rawBody, id) => {
             const textContentType = 'Content-Type: text/plain;charset=UTF-8';
             const data = rawBody
@@ -51,22 +74,14 @@ class GoogleMock {
 
             const json = JSON.parse(jsonStr);
             if (id) {
-                const index = this.files.findIndex(f => f.id == id);
-                if (index === -1) throw new Error('no such file exists');
-                this.files[index].data = data;
+                const file = Object.values(this.files).find(f => f.id == id);
+                if (!file) throw new Error('no such file exists');
+                file.data = data;
             } else {
-                this.files.push(new File(uuidv4(), json.name, data));
+                const file = new File(uuidv4(), json.name, data);
+                this.files[file.name] = file;
             }
         };
-
-        app.use((_req, res, next) => {
-            if (!this.user) {
-                res.status(401);
-                res.send();
-                return;
-            }
-            return next();
-        });
 
         app.post('/upload/drive/v3/files', express.text({ type: '*/*' }), (req, res) => {
             console.log('[mockGoogleDrive]: post');
@@ -102,7 +117,7 @@ class GoogleMock {
         app.get('/drive/v3/files/:id', express.json(), (req, res) => {
             const id = req.params.id;
             console.log('[mockGoogleDrive]: get', req.params.id);
-            const file = this.files.find(f => f.id);
+            const file = Object.values(this.files).find(f => f.id === id);
             if (file) {
                 return res.send(file.data);
             }
@@ -113,13 +128,11 @@ class GoogleMock {
                     message: `File not found for ${id}`,
                 },
             });
-
-            res.send();
         });
 
         app.get('/drive/v3/files', express.json(), (req, res) => {
             res.json({
-                files: this.files,
+                files: Object.values(this.files),
             });
         });
 
@@ -160,18 +173,13 @@ class GoogleMock {
 
     reset() {
         console.log('[mockGoogleDrive]: reset');
-
-        this.files = [
-            new File(
-                '13DH0FwzmGHmf2sWRBIvyJ9WJlkKTgL-KKamv-oqw6fvKqcQYGA',
-                'f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
-                'fbace4e987076329426cc882058f8101dd99f1187cf075f9c76a4fedfa962fc5e34c55449fe4539d99dc31e83bff8084552416b43902500c9df9164ba84cf1845aaca0b7b70ec5a4ff90b83f6bb0d7e2ad0f215ec6aea65f5448534c17493d8ae150aa3e871e60b1978b68',
-            ),
-        ];
+        this.files = {};
         this.user = {
             kind: 'drive#user',
             displayName: 'Kryptonit',
         };
+        this.nextResponse = null;
+        this.requests = [];
     }
 
     setup(prop, value) {
@@ -179,6 +187,19 @@ class GoogleMock {
 
         this[prop] = value;
         console.log('[mockGoogleDrive] ', this[prop]);
+    }
+
+    setFile(name, content) {
+        if (this.files[name]) {
+            this.files[name] = new File(
+                this.files[name].id,
+                this.files[name].name,
+                content.toString('hex'),
+            );
+        } else {
+            const file = new File(uuidv4(), name, content.toString('hex'));
+            this.files[file.name] = file;
+        }
     }
 }
 
