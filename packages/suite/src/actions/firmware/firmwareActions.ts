@@ -51,7 +51,10 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
     const model = device.features.major_version;
 
     // for update (in firmware modal) target release is set. otherwise use device.firmwareRelease
-    const toFwVersion = targetRelease?.release?.version || device.firmwareRelease!.release.version;
+    const toRelease = targetRelease || device.firmwareRelease;
+
+    if (!toRelease) return;
+
     const fromBlVersion = [
         device.features.major_version,
         device.features.minor_version,
@@ -78,10 +81,14 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
             path: device.path,
         },
         btcOnly: toBtcOnly,
-        version: toFwVersion,
+        version: toRelease.release.version,
+        // if we detect latest firmware may not be used right away, we should use intermediary instead
+        intermediary: !toRelease.isLatest,
     };
 
     const updateResponse = await TrezorConnect.firmwareUpdate(payload);
+
+    console.warn('updateResponse', updateResponse);
 
     dispatch(
         analyticsActions.report({
@@ -89,7 +96,7 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
             payload: {
                 fromFwVersion,
                 fromBlVersion,
-                toFwVersion: toFwVersion.join('.'),
+                toFwVersion: toRelease.release.version.join('.'),
                 toBtcOnly,
                 error: !updateResponse.success ? updateResponse.payload.error : '',
             },
