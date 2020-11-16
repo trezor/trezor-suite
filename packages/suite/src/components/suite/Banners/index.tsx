@@ -25,8 +25,7 @@ const Banners = () => {
     const showUpdateBridge = () => {
         if (
             isDesktop() &&
-            transport &&
-            transport.version &&
+            transport?.version &&
             ['2.0.27', '2.0.28', '2.0.29'].includes(transport.version)
         ) {
             return false;

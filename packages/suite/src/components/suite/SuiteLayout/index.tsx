@@ -2,7 +2,7 @@ import React, { useState, createContext } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { variables, scrollbarStyles } from '@trezor/components';
-import SuiteBanners from '@suite/components/suite/Banners';
+import SuiteBanners from '@suite-components/Banners';
 import Head from 'next/head';
 import { AppState } from '@suite-types';
 import { BetaBadge } from '@suite-components';

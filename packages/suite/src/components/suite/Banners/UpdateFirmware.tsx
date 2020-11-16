@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Translation } from '@suite-components';
-import { Button, colors } from '@trezor/components';
+import { Button } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 
 import { useActions } from '@suite-hooks';
@@ -17,7 +17,6 @@ const UpdateFirmware = () => {
             <Translation id="TR_NEW_TREZOR_FIRMWARE_IS_AVAILABLE_DOT" />
             <Button
                 variant="tertiary"
-                color={colors.WHITE}
                 onClick={() => goto('firmware-index')}
                 data-test="@notification/update-firmware/button"
             >
