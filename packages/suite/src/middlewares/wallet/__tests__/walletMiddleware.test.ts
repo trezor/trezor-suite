@@ -8,7 +8,6 @@ import walletSettingsReducer from '@wallet-reducers/settingsReducer';
 import blockchainReducer from '@wallet-reducers/blockchainReducer';
 import walletMiddleware from '@wallet-middlewares/walletMiddleware';
 import blockchainMiddleware from '@wallet-middlewares/blockchainMiddleware';
-
 import { Action } from '@suite-types';
 import * as fixtures from '../__fixtures__/walletMiddleware';
 

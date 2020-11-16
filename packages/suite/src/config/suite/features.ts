@@ -5,7 +5,7 @@
 
 // General flags
 export const FLAGS = {
-    GOOGLE_DRIVE_SYNC: false, // Google Drive sync (used for labeling)
+    GOOGLE_DRIVE_SYNC: true, // Google Drive sync (used for labeling)
     RBF: false, // replace by fee feature in the send form
     FILE_SYSTEM_SYNC: false, // File system sync (used for labeling)
     ONION_LOCATION_META: true, // Show TOR onion-location meta tag in page head

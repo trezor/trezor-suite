@@ -111,7 +111,7 @@ export const disposeMetadata = (keys?: boolean) => (dispatch: Dispatch, getState
     });
 };
 
-export const disconnectProvider = () => async (dispatch: Dispatch) => {
+export const disconnectProvider = (removeMetadata = true) => async (dispatch: Dispatch) => {
     Object.values(fetchIntervals).forEach((deviceState, num) => {
         clearInterval(num);
         delete fetchIntervals[deviceState];
@@ -130,7 +130,9 @@ export const disconnectProvider = () => async (dispatch: Dispatch) => {
     });
 
     // dispose metadata values (not keys)
-    dispatch(disposeMetadata());
+    if (removeMetadata) {
+        dispatch(disposeMetadata());
+    }
 };
 
 /**
@@ -337,7 +339,6 @@ export const fetchMetadata = (deviceState: string) => async (
     try {
         await Promise.all(promises);
         // if interval for watching provider is not set, create it
-
         if (!fetchIntervals[deviceState]) {
             fetchIntervals[deviceState] = setInterval(() => {
                 if (!getState().suite.online) {
@@ -347,7 +348,16 @@ export const fetchMetadata = (deviceState: string) => async (
             }, METADATA.FETCH_INTERVAL);
         }
     } catch (error) {
-        // todo: isn't it better to clear interval here?
+        // This handles cases of providers that do not support token renewal.
+        // We want those to work normally as long as their short-lived token allows. And only if
+        // it expires, we want them to silently disconnect provider, keep metadata in place.
+        // So that users will not notice that token expired until they will try to add or edit
+        // already existing label
+        if (fetchIntervals[deviceState]) {
+            return dispatch(disconnectProvider(false));
+        }
+        // If there is no interval set, it means that error occurred in the first fetch
+        // in such case, display error notification
         dispatch(handleProviderError(error, ProviderErrorAction.LOAD));
     }
 };

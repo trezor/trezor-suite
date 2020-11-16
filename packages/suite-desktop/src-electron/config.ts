@@ -14,6 +14,8 @@ export const allowedDomains = [
     'content.dropboxapi.com',
     'notify.dropboxapi.com',
     'o117836.ingest.sentry.io',
+    'oauth2.googleapis.com',
+    'googleapis.com',
     onionDomain,
 ];
 

@@ -2,7 +2,6 @@ import { AbstractMetadataProvider } from '@suite-types/metadata';
 
 class FileSystemProvider extends AbstractMetadataProvider {
     isCloud = false;
-
     constructor() {
         super('fileSystem');
     }
