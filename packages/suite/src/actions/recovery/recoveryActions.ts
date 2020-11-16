@@ -3,6 +3,7 @@ import TrezorConnect, { UI } from 'trezor-connect';
 import { RECOVERY } from '@recovery-actions/constants';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as routerActions from '@suite-actions/routerActions';
+import * as analyticsActions from '@suite-actions/analyticsActions';
 import { Dispatch, GetState } from '@suite-types';
 import { WordCount } from '@recovery-types';
 import { DEVICE } from '@suite-constants';
@@ -67,6 +68,11 @@ const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
 
     if (!response.success) {
         dispatch(setError(response.payload.error));
+        dispatch(
+            analyticsActions.report({ type: 'check-seed/error', error: response.payload.code }),
+        );
+    } else {
+        dispatch(analyticsActions.report({ type: 'check-seed/success' }));
     }
 
     dispatch(setStatus('finished'));

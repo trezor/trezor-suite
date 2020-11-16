@@ -33,7 +33,7 @@ simple semver for data-analytics part.
 Don't forget to update docs with changelog!
 */
 
-const version = '1.3';
+const version = '1.4';
 
 export type AnalyticsEvent =
     | {
@@ -56,6 +56,9 @@ export type AnalyticsEvent =
               platformLanguage: string;
               // added in 1.2
               tor: boolean;
+              // added in 1.4
+              rememberedStandardWallets: number;
+              rememberedHiddenWallets: number;
           };
       }
     | { type: 'transport-type'; payload: { type: string; version: string } }
@@ -247,6 +250,23 @@ export type AnalyticsEvent =
               // unix timestamp when session ended
               end: number;
           };
+      }
+    | {
+          // fired when user manually enables analytics later in the app
+          type: 'analytics/enable';
+      }
+    | {
+          // fired when user manually disables analytics later in the app
+          type: 'analytics/dispose';
+      }
+    | {
+          // failed dry-run recovery any error ranging from disconnected device to wrong seed input
+          type: 'check-seed/error';
+          error?: string;
+      }
+    | {
+          // successful dry-run
+          type: 'check-seed/success';
       };
 
 const getUrl = () => {

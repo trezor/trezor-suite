@@ -71,6 +71,7 @@ describe('Analytics', () => {
         cy.log('enable it again, reload and see it remains checked');
         cy.getTestElement('@analytics/toggle-switch').click({ force: true });
         cy.getTestElement('@analytics/toggle-switch').should('be.checked');
+        cy.wrap(requests).its(1).should('have.property', 'c_type', 'analytics/enable');
 
         // change fiat
         cy.getTestElement('@settings/fiat-select/input').click();
@@ -78,10 +79,11 @@ describe('Analytics', () => {
 
         // NOTE: this will fail on localhost as analytics does not run there
         // check that fiat change got logged.
-        cy.wrap(requests).its(1).its('c_session_id').as('request1');
-        cy.wrap(requests).its(1).should('have.property', 'c_type', 'settings/general/change-fiat');
-        cy.wrap(requests).its(1).should('have.property', 'c_instance_id', 'YYYYYYYYYY');
-        cy.wrap(requests).its(1).should('have.property', 'fiat', 'huf');
+
+        cy.wrap(requests).its(2).its('c_session_id').as('request1');
+        cy.wrap(requests).its(2).should('have.property', 'c_type', 'settings/general/change-fiat');
+        cy.wrap(requests).its(2).should('have.property', 'c_instance_id', 'YYYYYYYYYY');
+        cy.wrap(requests).its(2).should('have.property', 'fiat', 'huf');
         // and check that session ids changed after reload;
         cy.get('@request0').then(r0 => {
             cy.get('@request1').then(r1 => {
@@ -91,10 +93,10 @@ describe('Analytics', () => {
 
         // opening device modal
         cy.getTestElement('@menu/switch-device').click();
-        cy.wrap(requests).its(3).should('have.property', 'c_type', 'menu/goto/switch-device');
+        cy.wrap(requests).its(4).should('have.property', 'c_type', 'menu/goto/switch-device');
 
         // adding wallet
         cy.getTestElement('@switch-device/add-wallet-button').click();
-        cy.wrap(requests).its(4).should('have.property', 'c_type', 'switch-device/add-wallet');
+        cy.wrap(requests).its(5).should('have.property', 'c_type', 'switch-device/add-wallet');
     });
 });

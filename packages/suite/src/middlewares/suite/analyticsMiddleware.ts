@@ -2,7 +2,7 @@
 
 import { MiddlewareAPI } from 'redux';
 import { TRANSPORT, DEVICE } from 'trezor-connect';
-import { SUITE, STORAGE, ROUTER } from '@suite-actions/constants';
+import { SUITE, STORAGE, ROUTER, ANALYTICS } from '@suite-actions/constants';
 import { ACCOUNT } from '@wallet-actions/constants';
 
 import { AppState, Action, Dispatch } from '@suite-types';
@@ -45,6 +45,12 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                         platform: getPlatform(),
                         platformLanguage: getPlatformLanguage(),
                         tor: state.suite.tor,
+                        rememberedStandardWallets: api
+                            .getState()
+                            .devices.filter(d => d.remember && d.useEmptyPassphrase).length,
+                        rememberedHiddenWallets: api
+                            .getState()
+                            .devices.filter(d => d.remember && !d.useEmptyPassphrase).length,
                     },
                 }),
             );
@@ -148,6 +154,12 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                     },
                 }),
             );
+            break;
+        case ANALYTICS.ENABLE:
+            api.dispatch(analyticsActions.report({ type: 'analytics/enable' }));
+            break;
+        case ANALYTICS.DISPOSE:
+            api.dispatch(analyticsActions.report({ type: 'analytics/dispose' }));
             break;
         default:
             break;
