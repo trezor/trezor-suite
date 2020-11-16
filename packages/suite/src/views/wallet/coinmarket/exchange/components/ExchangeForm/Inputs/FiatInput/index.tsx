@@ -51,6 +51,10 @@ const FiatInput = () => {
                             return 'AMOUNT_IS_NOT_NUMBER';
                         }
 
+                        if (amountBig.lt(0) || amountBig.isZero()) {
+                            return 'AMOUNT_IS_TOO_LOW';
+                        }
+
                         if (!isDecimalsValid(value, 18)) {
                             return <Translation id="TR_EXCHANGE_VALIDATION_ERROR_NOT_NUMBER" />;
                         }
