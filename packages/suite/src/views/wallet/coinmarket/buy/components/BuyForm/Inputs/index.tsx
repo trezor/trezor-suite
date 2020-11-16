@@ -139,6 +139,7 @@ const Inputs = () => {
                         setActiveInput(fiatInput);
                     }}
                     onChange={() => {
+                        setActiveInput(fiatInput);
                         setValue(cryptoInput, '');
                         clearErrors(cryptoInput);
                     }}
