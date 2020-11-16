@@ -16,7 +16,7 @@ import {
     ErrorStep,
     ReconnectInBootloaderStep,
     ReconnectInNormalStep,
-    NoNewFirmware,
+    // NoNewFirmware,
     Buttons,
     CloseButton,
     ContinueButton,
@@ -106,13 +106,14 @@ const Firmware = ({ closeModalApp, resetReducer, firmware, device, modal }: Prop
         }
 
         // edge case 2 - user has reconnected device that is already up to date
-        if (firmware.status !== 'done' && device?.firmware === 'valid') {
-            return {
-                Heading: <NoNewFirmware.Heading />,
-                Body: <NoNewFirmware.Body />,
-                BottomBar: <CloseButton onClick={onClose} />,
-            };
-        }
+        // todo: remove this if we want to allow user to 'reinstall'
+        // if (!['done', 'initial'].includes(firmware.status)  && device?.firmware === 'valid') {
+        //     return {
+        //         Heading: <NoNewFirmware.Heading />,
+        //         Body: <NoNewFirmware.Body />,
+        //         BottomBar: <CloseButton onClick={onClose} />,
+        //     };
+        // }
 
         switch (firmware.status) {
             case 'initial':
