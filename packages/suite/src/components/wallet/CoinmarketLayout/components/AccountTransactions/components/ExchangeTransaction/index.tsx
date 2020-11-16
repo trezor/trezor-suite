@@ -10,7 +10,7 @@ import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeAc
 import { Account } from '@wallet-types';
 import { useWatchExchangeTrade } from '@wallet-hooks/useCoinmarket';
 import Status from '../Status';
-import { Translation } from '@suite-components';
+import { Translation, HiddenPlaceholder } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 
@@ -132,12 +132,16 @@ const ExchangeTransaction = ({ trade, providers, account }: Props) => {
             <Column>
                 <Row>
                     <Amount>
-                        {formatCryptoAmount(Number(sendStringAmount))} {send}
+                        <HiddenPlaceholder>
+                            {formatCryptoAmount(Number(sendStringAmount))} {send}
+                        </HiddenPlaceholder>
                     </Amount>
                     <Arrow>
                         <Icon color={colors.NEUE_TYPE_LIGHT_GREY} size={13} icon="ARROW_RIGHT" />
                     </Arrow>
-                    {formatCryptoAmount(Number(receiveStringAmount))} {receive}
+                    <HiddenPlaceholder>
+                        {formatCryptoAmount(Number(receiveStringAmount))} {receive}
+                    </HiddenPlaceholder>
                     {/* TODO FIX THIS LOGO */}
                     {/* <StyledCoinLogo size={13} symbol={symbol} /> */}
                 </Row>
