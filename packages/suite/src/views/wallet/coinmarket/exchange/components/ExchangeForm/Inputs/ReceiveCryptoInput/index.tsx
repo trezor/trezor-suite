@@ -86,7 +86,7 @@ const ReceiveCryptoInput = () => {
                             return 'AMOUNT_IS_NOT_NUMBER';
                         }
 
-                        if (amountBig.lt(0) || amountBig.isZero()) {
+                        if (amountBig.lte(0)) {
                             return 'AMOUNT_IS_TOO_LOW';
                         }
 
