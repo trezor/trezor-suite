@@ -1193,7 +1193,7 @@ const definedMessages = defineMessages({
     },
     TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT: {
         defaultMessage:
-            'This is a big no no. Please dont use device in other window. Close all other windows or tabs that might be using your Trezor device.',
+            'Your Trezor seems to be in use in another window. Please close all other windows or tabs that might be using your Trezor.',
         description: '',
         id: 'TR_DEVICE_IS_USED_IN_OTHER_WINDOW_TEXT',
     },
@@ -2989,7 +2989,7 @@ const definedMessages = defineMessages({
     TR_CHECK_RECOVERY_SEED_DESC_T1: {
         id: 'TR_CHECK_RECOVERY_SEED_DESC_T1',
         defaultMessage:
-            'Your wallet backup, the recovery seed, is entered on your computer (host) and your device shows which word to type. You will also be asked to enter words not in your seed, that is a security meassure to ensure nobody can read what key is being pressed.',
+            'Enter the words from your seed here in the order displayed on your device. You may be asked to type some words that are not part of your recovery seed as an additional security measure.',
     },
     TR_SELECT_NUMBER_OF_WORDS: {
         id: 'TR_SELECT_NUMBER_OF_WORDS',
@@ -3038,7 +3038,7 @@ const definedMessages = defineMessages({
     TR_SEED_CHECK_SUCCESS_DESC: {
         id: 'TR_SEED_CHECK_SUCCESS_DESC',
         defaultMessage:
-            'Your seed is valid and has just been successfully checked. Please take great care of it and/or hide it back where you are goint to find it.',
+            'Your seed is valid and has just been successfully checked. Please take great care of it and/or hide it back where you are going to find it.',
     },
     TR_SEED_CHECK_FAIL_TITLE: {
         id: 'TR_SEED_CHECK_FAIL_TITLE',
@@ -3983,7 +3983,7 @@ const definedMessages = defineMessages({
     },
     TR_LANDING_DESC: {
         id: 'TR_LANDING_DESC',
-        defaultMessage: 'For testing purpouses only. Please keep in mind this is a beta version.',
+        defaultMessage: 'For testing purposes only. Please keep in mind this is a beta version.',
     },
     TR_LANDING_CHOOSE_LABEL: {
         id: 'TR_LANDING_CHOOSE_LABEL',
