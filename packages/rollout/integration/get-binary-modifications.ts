@@ -44,13 +44,15 @@ describe('getBinary() modifications of fw', () => {
         });
 
         // for cross-check, download again original fw and see if it was sliced
-        const response = await fetch(`${BASE_URL}/${result.release.url}`);
-        const rawFw = await response.arrayBuffer();
+        if ('release' in result) {
+            const response = await fetch(`${BASE_URL}/${result.release.url}`);
+            const rawFw = await response.arrayBuffer();
 
-        if (result) {
-            return expect(result.binary.byteLength).toEqual(rawFw.byteLength - 256);
+            if (result) {
+                return expect(result.binary.byteLength).toEqual(rawFw.byteLength - 256);
+            }
+            expect(result).not.toBeNull();
         }
-        expect(result).not.toBeNull();
     });
 
     it('some of the firmwares should be return unmodified', async () => {
@@ -90,13 +92,15 @@ describe('getBinary() modifications of fw', () => {
         });
 
         // for cross-check, download again original fw and see if it was sliced
-        const response = await fetch(`${BASE_URL}/${result.release.url}`);
-        const rawFw = await response.arrayBuffer();
+        if ('release' in result) {
+            const response = await fetch(`${BASE_URL}/${result.release.url}`);
+            const rawFw = await response.arrayBuffer();
 
-        if (result) {
-            return expect(result.binary.byteLength).toEqual(rawFw.byteLength);
+            if (result) {
+                return expect(result.binary.byteLength).toEqual(rawFw.byteLength);
+            }
+            expect(result).not.toBeNull();
         }
-        expect(result).not.toBeNull();
     });
 
     it('currently, no modification should be done for model T', async () => {
@@ -137,12 +141,14 @@ describe('getBinary() modifications of fw', () => {
         });
 
         // for cross-check, download again original fw and see if it was sliced
-        const response = await fetch(`${BASE_URL}/${result.release.url}`);
-        const rawFw = await response.arrayBuffer();
+        if ('release' in result) {
+            const response = await fetch(`${BASE_URL}/${result.release.url}`);
+            const rawFw = await response.arrayBuffer();
 
-        if (result) {
-            return expect(result.binary.byteLength).toEqual(rawFw.byteLength);
+            if (result) {
+                return expect(result.binary.byteLength).toEqual(rawFw.byteLength);
+            }
+            expect(result).not.toBeNull();
         }
-        expect(result).not.toBeNull();
     });
 });
