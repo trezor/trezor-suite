@@ -4,13 +4,12 @@
 // it appears that plugins must be .js files, refer to this example by cypress dev
 // https://github.com/bahmutov/add-typescript-to-cypress/tree/master/e2e/cypress
 
-const { addMatchImageSnapshotPlugin } = require('cypress-image-snapshot/plugin');
-const webpack = require('@cypress/webpack-preprocessor');
-
-const { Controller } = require('./websocket-client');
-const googleMock = require('./google');
-const dropboxMock = require('./dropbox');
-const CONSTANTS = require('../constants');
+import { addMatchImageSnapshotPlugin } from 'cypress-image-snapshot/plugin';
+import webpack from '@cypress/webpack-preprocessor';
+import { Controller } from './websocket-client';
+import googleMock from './google';
+import dropboxMock from './dropbox';
+import CONSTANTS from '../constants';
 import * as metadataUtils from '../../../../suite/src/utils/suite/metadata';
 
 const controller = new Controller({ url: 'ws://localhost:9001/' });
@@ -43,63 +42,64 @@ module.exports = on => {
     });
 
     on('task', {
-        startDropbox: async () => {
-            await dropboxMock.start();
+        metadataStartProvider: async provider => {
+            switch (provider) {
+                case 'dropbox':
+                    await dropboxMock.start();
+                case 'google':
+                    await googleMock.start();
+            }
             return null;
         },
-        stopDropbox: async () => {
-            dropboxMock.stop();
+        metadataStopProvider: async provider => {
+            switch (provider) {
+                case 'dropbox':
+                    dropboxMock.stop();
+                case 'google':
+                    googleMock.stop();
+            }
             return null;
         },
-        startGoogle: async () => {
-            await googleMock.start();
-            return null;
-        },
-        setupGoogle: options => {
-            // use to set files, or user
-            googleMock.setup(options.prop, options.value);
-            return null;
-        },
-        stopGoogle: async () => {
-            googleMock.stop();
-            return null;
-        },
-        setFileContent: async ({ provider, file, content, aesKey }) => {
+        metadataSetFileContent: async ({ provider, file, content, aesKey }) => {
             const encrypted = await metadataUtils.encrypt(content, aesKey);
             switch (provider) {
                 case 'dropbox':
                     dropboxMock.files[file] = encrypted;
                     break;
-                // todo:
+                case 'google':
+                    googleMock.setFile(file, encrypted);
             }
             return null;
         },
-        setNextResponse: ({ provider, status, body }) => {
+        metadataSetNextResponse: ({ provider, status, body }) => {
             switch (provider) {
                 case 'dropbox':
-                    dropboxMock.nextResponse = { status, body};
+                    dropboxMock.nextResponse = { status, body };
                     break;
-                // todo:
+                case 'google':
+                    googleMock.nextResponse = { status, body };
+                    break;
             }
             return null;
         },
-        getRequests: ({ provider}) => {
-            switch(provider){ 
+        metadataGetRequests: ({ provider }) => {
+            switch (provider) {
                 case 'dropbox':
                     return dropboxMock.requests;
-                    // todo:
+                case 'google':
+                    return googleMock.requests;
             }
         },
         startBridge: async version => {
             await controller.connect();
             await controller.send({ type: 'bridge-start', version });
-            await controller.disconnect();
+            controller.disconnect();
             return null;
         },
         stopBridge: async () => {
             await controller.connect();
             const response = await controller.send({ type: 'bridge-stop' });
-            await controller.disconnect();
+            controller.disconnect();
             return null;
         },
         setupEmu: async options => {
@@ -122,7 +122,7 @@ module.exports = on => {
                 ...options,
             });
             await controller.send({ type: 'bridge-start' });
-            await controller.disconnect();
+            controller.disconnect();
             return null;
         },
         /**
@@ -137,55 +137,55 @@ module.exports = on => {
                 type: 'emulator-start',
                 ...arg,
             });
-            await controller.disconnect();
+            controller.disconnect();
             return null;
         },
         stopEmu: async () => {
             await controller.connect();
             await controller.send({ type: 'emulator-stop' });
-            await controller.disconnect();
+            controller.disconnect();
             return null;
         },
         wipeEmu: async () => {
             await controller.connect();
             await controller.send({ type: 'emulator-wipe' });
-            await controller.disconnect();
+            controller.disconnect();
             return null;
         },
         pressYes: async () => {
             await controller.connect();
             await controller.send({ type: 'emulator-press-yes' });
-            await controller.disconnect();
+            controller.disconnect();
             return null;
         },
         pressNo: async () => {
             await controller.connect();
             await controller.send({ type: 'emulator-press-no' });
-            await controller.disconnect();
+            controller.disconnect();
             return null;
         },
         swipeEmu: async direction => {
             await controller.connect();
             await controller.send({ type: 'emulator-swipe', direction });
-            await controller.disconnect();
+            controller.disconnect();
             return null;
         },
         inputEmu: async value => {
             await controller.connect();
             await controller.send({ type: 'emulator-input', value });
-            await controller.disconnect();
+            controller.disconnect();
             return null;
         },
         resetDevice: async options => {
             await controller.connect();
             await controller.send({ type: 'emulator-reset-device', ...options });
-            await controller.disconnect();
+            controller.disconnect();
             return null;
         },
         readAndConfirmMnemonicEmu: async () => {
             await controller.connect();
             await controller.send({ type: 'emulator-read-and-confirm-mnemonic' });
-            await controller.disconnect();
+            controller.disconnect();
             return null;
         },
         applySettings: async options => {
@@ -198,13 +198,13 @@ module.exports = on => {
                 ...defaults,
                 ...options,
             });
-            await controller.disconnect();
+            controller.disconnect();
             return null;
         },
         selectNumOfWordsEmu: async num => {
             await controller.connect();
             await controller.send({ type: 'select-num-of-words', num });
-            await controller.disconnect();
+            controller.disconnect();
             return null;
         },
     });
