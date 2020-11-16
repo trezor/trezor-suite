@@ -169,19 +169,19 @@ const BottomBar = () => {
         return null;
     }
 
-    if (['outdated', 'required'].includes(device.firmware)) {
-        return (
-            <>
-                <ContinueButton onClick={() => setStatus('check-seed')} />
-                <HowLong>
-                    <Icon size={12} icon="CLOCK" />
-                    <Translation id="TR_TAKES_N_MINUTES" values={{ n: '5' }} />
-                </HowLong>
-            </>
-        );
-    }
+    // if (['outdated', 'required'].includes(device.firmware)) {
+    return (
+        <>
+            <ContinueButton onClick={() => setStatus('check-seed')} />
+            <HowLong>
+                <Icon size={12} icon="CLOCK" />
+                <Translation id="TR_TAKES_N_MINUTES" values={{ n: '5' }} />
+            </HowLong>
+        </>
+    );
+    // }
 
-    return null;
+    // return null;
 };
 
 export const InitialStep = {

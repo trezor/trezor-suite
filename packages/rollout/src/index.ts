@@ -10,15 +10,7 @@ type ParsedFeatures = ReturnType<typeof parseFeatures>;
 /**
  * Returns firmware binary after necessary modifications. Should be ok to install.
  */
-const modifyFirmware = ({
-    fw,
-    features,
-    releases,
-}: {
-    fw: ArrayBuffer;
-    features: ParsedFeatures;
-    releases: Release[];
-}) => {
+const modifyFirmware = ({ fw, features }: { fw: ArrayBuffer; features: ParsedFeatures }) => {
     // ---------------------
     // Model T modifications
     // ---------------------
@@ -195,7 +187,8 @@ interface GetBinaryProps extends GetInfoProps {
     baseUrl: string;
     baseUrlBeta: string;
     btcOnly?: boolean;
-    version: Release['version'];
+    version?: Release['version'];
+    intermediary?: boolean;
 }
 
 /**
@@ -211,16 +204,23 @@ export const getBinary = async ({
     baseUrlBeta,
     version,
     btcOnly,
+    intermediary = false,
 }: GetBinaryProps) => {
-    // we get info here again, but only as a sanity check.
-    const releaseByFirmware = releases.find(r => versionUtils.isEqual(r.version, version));
+    const parsedFeatures = parseFeatures(features);
     const infoByBootloader = getInfo({ features, releases });
 
-    const parsedFeatures = parseFeatures(features);
-    const parsedReleases = parseReleases(releases);
+    let releaseByFirmware;
 
-    if (!infoByBootloader || !releaseByFirmware) {
-        throw new Error('no firmware found for this device');
+    if (!intermediary) {
+        // we get info here again, but only as a sanity check.
+        releaseByFirmware = releases.find(r => versionUtils.isEqual(r.version, version!));
+
+        if (!infoByBootloader || !releaseByFirmware) {
+            throw new Error('no firmware found for this device');
+        }
+    } else {
+        const fw = await fetchFirmware(`${baseUrl}/firmware/1/trezor-inter-1.8.0.bin`);
+        return { binary: modifyFirmware({ fw, features: parsedFeatures }) };
     }
 
     if (btcOnly && !releaseByFirmware.url_bitcoinonly) {
@@ -234,14 +234,13 @@ export const getBinary = async ({
             'version provided as param does not match firmware version found by features in bootloader'
         );
     }
-
     const url = releaseByFirmware.channel === 'beta' ? baseUrlBeta : baseUrl;
     const fw = await fetchFirmware(
         `${url}/${btcOnly ? releaseByFirmware.url_bitcoinonly : releaseByFirmware.url}`
     );
     return {
         ...infoByBootloader,
-        binary: modifyFirmware({ fw, features: parsedFeatures, releases: parsedReleases }),
+        binary: modifyFirmware({ fw, features: parsedFeatures }),
     };
 };
 
