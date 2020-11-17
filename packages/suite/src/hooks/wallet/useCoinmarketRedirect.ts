@@ -52,7 +52,7 @@ export const useCoinmarketRedirect = () => {
         }
         await saveQuoteRequest(request);
         await setIsFromRedirect(true);
-        goto('wallet-coinmarket-buy-offers', { symbol, accountIndex: index, accountType });
+        goto('wallet-trade-buy-offers', { symbol, accountIndex: index, accountType });
     };
 
     interface DetailRedirectParams {
@@ -66,7 +66,7 @@ export const useCoinmarketRedirect = () => {
         const { transactionId } = params;
 
         await saveTransactionDetailId(transactionId);
-        goto('wallet-coinmarket-buy-detail', {
+        goto('wallet-trade-buy-detail', {
             symbol: params.symbol,
             accountIndex: params.index,
             accountType: params.accountType,

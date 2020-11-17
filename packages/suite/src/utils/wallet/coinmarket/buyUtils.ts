@@ -80,11 +80,11 @@ export function createQuoteLink(request: BuyTradeQuoteRequest, account: Account)
 
     if (isDesktop()) {
         return `${ELECTRON_RECEIVER_SERVER}/buy-redirect?p=${encodeURIComponent(
-            `/coinmarket-redirect/${params}`,
+            `/trade-redirect/${params}`,
         )}`;
     }
 
-    return `${locationOrigin}${assetPrefix}/coinmarket-redirect#${params}`;
+    return `${locationOrigin}${assetPrefix}/trade-redirect#${params}`;
 }
 
 export function createTxLink(trade: BuyTrade, account: Account): string {
@@ -93,11 +93,11 @@ export function createTxLink(trade: BuyTrade, account: Account): string {
     const params = `detail/${account.symbol}/${account.accountType}/${account.index}/${trade.paymentId}`;
     if (isDesktop()) {
         return `${ELECTRON_RECEIVER_SERVER}/buy-redirect?p=${encodeURIComponent(
-            `/coinmarket-redirect/${params}`,
+            `/trade-redirect/${params}`,
         )}`;
     }
 
-    return `${locationOrigin}${assetPrefix}/coinmarket-redirect#${params}`;
+    return `${locationOrigin}${assetPrefix}/trade-redirect#${params}`;
 }
 
 export const getStatusMessage = (status: BuyTradeStatus) => {

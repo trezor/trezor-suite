@@ -73,7 +73,7 @@ interface Props {
 
 const isRouteActive = (routeName?: Route['name'], route?: Route['name']): boolean => {
     // coinmarket has multiple routes, match them all
-    if (routeName?.startsWith('wallet-coinmarket') && route?.startsWith('wallet-coinmarket')) {
+    if (routeName?.startsWith('wallet-trade') && route?.startsWith('wallet-trade')) {
         return true;
     }
     return routeName === route;

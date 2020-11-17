@@ -57,7 +57,7 @@ export const useOffers = (props: Props) => {
 
     useEffect(() => {
         if (!quotesRequest) {
-            goto('wallet-coinmarket-buy', {
+            goto('wallet-trade-buy', {
                 symbol: account.symbol,
                 accountIndex: account.index,
                 accountType: account.accountType,
@@ -147,7 +147,7 @@ export const useOffers = (props: Props) => {
             }
             if (isDesktop()) {
                 saveTransactionDetailId(response.trade.paymentId);
-                goto('wallet-coinmarket-buy-detail', selectedAccount.params);
+                goto('wallet-trade-buy-detail', selectedAccount.params);
             }
         }
     };

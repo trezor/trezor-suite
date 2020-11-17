@@ -25,7 +25,7 @@ export const ITEMS = [
         isHidden: () => false,
     },
     {
-        route: 'wallet-coinmarket-buy',
+        route: 'wallet-trade-buy',
         title: <Translation id="TR_NAV_TRADE" />,
         icon: 'TRADE',
         isHidden: () => false,

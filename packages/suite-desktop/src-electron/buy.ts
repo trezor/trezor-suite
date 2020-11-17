@@ -12,22 +12,19 @@ export const buyRedirectHandler = (url: string, mainWindow: BrowserWindow, src: 
             action === 'detail' &&
             (mainWindow.webContents
                 .getURL()
-                .endsWith(`/accounts/coinmarket/buy/detail/#/${coin}/${index}/${type}`) ||
+                .endsWith(`/accounts/trade/buy/detail/#/${coin}/${index}/${type}`) ||
                 (mainWindow.webContents
                     .getURL()
-                    .endsWith(`/accounts/coinmarket/buy/detail/#/${coin}/${index}`) &&
+                    .endsWith(`/accounts/trade/buy/detail/#/${coin}/${index}`) &&
                     type === 'normal') ||
-                (mainWindow.webContents.getURL().endsWith(`/accounts/coinmarket/buy/detail/`) &&
+                (mainWindow.webContents.getURL().endsWith(`/accounts/trade/buy/detail/`) &&
                     type === 'normal' &&
                     coin === 'btc' &&
                     index === '0'))
         )
     ) {
         mainWindow.loadURL(
-            path.join(
-                src,
-                url.replace('#', '').replace('coinmarket-redirect/', 'coinmarket-redirect#'),
-            ),
+            path.join(src, url.replace('#', '').replace('trade-redirect/', 'trade-redirect#')),
         );
     }
 
