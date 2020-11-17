@@ -79,9 +79,9 @@ const AccountTransactions = () => {
                         <StyledH2>
                             <Translation id="TR_BUY_ACCOUNT_TRANSACTIONS" />
                             <TransactionCount>
-                                {buyTransactions.length} <Translation id="TR_COINMARKET_BUYS" /> •{' '}
+                                {buyTransactions.length} <Translation id="TR_TRADE_BUYS" /> •{' '}
                                 {exchangeTransactions.length}{' '}
-                                <Translation id="TR_COINMARKET_EXCHANGES" />
+                                <Translation id="TR_TRADE_EXCHANGES" />
                             </TransactionCount>
                         </StyledH2>
                     </Header>

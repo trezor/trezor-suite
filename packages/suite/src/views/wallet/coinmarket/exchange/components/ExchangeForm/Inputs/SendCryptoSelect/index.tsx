@@ -156,7 +156,7 @@ const SendCryptoSelect = () => {
                                     </Option>
                                 );
                             }}
-                            placeholder={<Translation id="TR_COINMARKET_SELECT_COIN" />}
+                            placeholder={<Translation id="TR_TRADE_SELECT_COIN" />}
                         />
                     );
                 }}
