@@ -50,7 +50,7 @@ const CoinmarketRedirect = () => {
 
     return (
         <Wrapper>
-            <Translation id="TR_COINMARKET_REDIRECTING" />
+            <Translation id="TR_TRADE_REDIRECTING" />
         </Wrapper>
     );
 };

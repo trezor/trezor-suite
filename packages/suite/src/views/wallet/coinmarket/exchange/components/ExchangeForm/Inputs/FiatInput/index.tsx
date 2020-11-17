@@ -19,7 +19,6 @@ const FiatInput = () => {
         clearErrors,
         errors,
         trigger,
-        formState,
         updateReceiveCryptoValue,
         setMax,
         setValue,
@@ -58,10 +57,6 @@ const FiatInput = () => {
                         if (!isDecimalsValid(value, 18)) {
                             return <Translation id="TR_EXCHANGE_VALIDATION_ERROR_NOT_NUMBER" />;
                         }
-                    }
-
-                    if (formState.isSubmitting) {
-                        return <Translation id="TR_EXCHANGE_VALIDATION_ERROR_EMPTY" />;
                     }
                 },
             })}

@@ -166,13 +166,13 @@ const definedMessages = defineMessages({
         defaultMessage: 'Check on your Trezor now',
         id: 'TR_ADDRESS_MODAL_CHECK_ON_TREZOR',
     },
-    TR_COINMARKET_TRADE_NOT_FOUND: {
+    TR_TRADE_NOT_FOUND: {
         defaultMessage: 'Trade not found',
-        id: 'TR_COINMARKET_TRADE_NOT_FOUND',
+        id: 'TR_TRADE_NOT_FOUND',
     },
-    TR_COINMARKET_REDIRECTING: {
+    TR_TRADE_REDIRECTING: {
         defaultMessage: 'Redirecting ...',
-        id: 'TR_COINMARKET_REDIRECTING',
+        id: 'TR_TRADE_REDIRECTING',
     },
     TR_EXCHANGE_LOADING: {
         defaultMessage: 'Loading',
@@ -3377,16 +3377,16 @@ const definedMessages = defineMessages({
         id: 'TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP',
         defaultMessage: 'Address from your account to which the coins will be sent',
     },
-    TR_COINMARKET_SELECT_COIN: {
-        id: 'TR_COINMARKET_SELECT_COIN',
+    TR_TRADE_SELECT_COIN: {
+        id: 'TR_TRADE_SELECT_COIN',
         defaultMessage: 'Select a coin...',
     },
-    TR_COINMARKET_BUYS: {
-        id: 'TR_COINMARKET_BUYS',
+    TR_TRADE_BUYS: {
+        id: 'TR_TRADE_BUYS',
         defaultMessage: 'buys',
     },
-    TR_COINMARKET_EXCHANGES: {
-        id: 'TR_COINMARKET_EXCHANGES',
+    TR_TRADE_EXCHANGES: {
+        id: 'TR_TRADE_EXCHANGES',
         defaultMessage: 'exchanges',
     },
     TR_PAYMENT_METHOD_CREDITCARD: {
@@ -4078,10 +4078,6 @@ const definedMessages = defineMessages({
     TR_COULD_NOT_RETRIEVE_CHANGELOG: {
         id: 'TR_COULD_NOT_RETRIEVE_CHANGELOG',
         defaultMessage: 'Could not retrieve the changelog',
-    },
-    TR_NAV_COINMARKET: {
-        id: 'TR_NAV_COINMARKET',
-        defaultMessage: 'Coinmarket',
     },
     TR_NAV_TRADE: {
         id: 'TR_NAV_TRADE',
