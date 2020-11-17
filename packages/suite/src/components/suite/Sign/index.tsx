@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors } from '@trezor/components';
+import { useTheme } from '@trezor/components';
 import BigNumber from 'bignumber.js';
 
 const StyledSign = styled.span<{ color: string }>`
@@ -21,8 +21,10 @@ const Sign = ({
     placeholderOnly,
     grayscale,
     showMinusSign = true,
-    grayscaleColor = colors.NEUE_TYPE_DARK_GREY,
+    grayscaleColor,
 }: Props) => {
+    const theme = useTheme();
+    const defaultColor = grayscaleColor ?? theme.TYPE_DARK_GREY;
     let isValuePos = false;
 
     if (value === undefined || value === null) {
@@ -42,13 +44,11 @@ const Sign = ({
     }
 
     if (isValuePos) {
-        return (
-            <StyledSign color={grayscale ? grayscaleColor : colors.NEUE_TYPE_GREEN}>+</StyledSign>
-        );
+        return <StyledSign color={grayscale ? defaultColor : theme.TYPE_GREEN}>+</StyledSign>;
     }
 
     if (!isValuePos && showMinusSign) {
-        return <StyledSign color={grayscale ? grayscaleColor : colors.NEUE_TYPE_RED}>–</StyledSign>;
+        return <StyledSign color={grayscale ? defaultColor : theme.TYPE_RED}>–</StyledSign>;
     }
     return null;
 };

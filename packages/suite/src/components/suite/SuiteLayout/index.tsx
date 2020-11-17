@@ -1,7 +1,7 @@
 import React, { useState, createContext } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { colors, variables } from '@trezor/components';
+import { variables, scrollbarStyles } from '@trezor/components';
 import SuiteNotifications from '@suite-components/Notifications';
 import Head from 'next/head';
 import { AppState } from '@suite-types';
@@ -24,9 +24,8 @@ const Body = styled.div`
     position: relative;
     display: flex;
     flex-direction: column;
-    flex: 1 1 0%;
+    flex: 1;
     overflow: auto;
-    height: 100vh;
 `;
 
 // AppWrapper and MenuSecondary creates own scrollbars independently
@@ -34,16 +33,20 @@ const Columns = styled.div`
     display: flex;
     flex-direction: row;
     overflow: hidden;
-    height: 100%;
+    flex: 1 0 100%;
+    overflow: auto;
 `;
 
 const AppWrapper = styled.div`
     display: flex;
-    background: ${colors.BACKGROUND};
+    color: ${props => props.theme.TYPE_DARK_GREY};
+    background: ${props => props.theme.BG_GREY};
     flex-direction: column;
     overflow: auto;
-    flex: 1 1 0%;
+    width: 100%;
     align-items: center;
+
+    ${scrollbarStyles}
 `;
 
 const MaxWidthWrapper = styled.div`

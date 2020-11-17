@@ -5,7 +5,15 @@ import { addToast } from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { SUITE, METADATA } from './constants';
 import { LANGUAGES } from '@suite-config';
-import { Action, Dispatch, GetState, TrezorDevice, AppState } from '@suite-types';
+import {
+    Action,
+    Dispatch,
+    GetState,
+    TrezorDevice,
+    AppState,
+    SuiteThemeVariant,
+    SuiteThemeColors,
+} from '@suite-types';
 import { DebugModeOptions } from '@suite-reducers/suiteReducer';
 
 export type SuiteAction =
@@ -60,7 +68,18 @@ export type SuiteAction =
           type: typeof SUITE.SET_PROCESS_MODE;
           device: TrezorDevice;
           payload: TrezorDevice['processMode'];
+      }
+    | {
+          type: typeof SUITE.SET_THEME;
+          variant: SuiteThemeVariant;
+          colors: SuiteThemeColors;
       };
+
+export const setTheme = (variant: SuiteThemeVariant, colors?: SuiteThemeColors) => ({
+    type: SUITE.SET_THEME,
+    variant,
+    colors,
+});
 
 export const setProcessMode = (
     device: TrezorDevice,

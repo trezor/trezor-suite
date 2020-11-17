@@ -68,7 +68,7 @@ export const notifications = `
 
     .Toastify__toast {
         position: relative;
-        background: white;
+        background: ${colors.BG_WHITE};
         min-height: 50px;
         box-sizing: border-box;
         margin-bottom: 1rem;
@@ -90,24 +90,24 @@ export const notifications = `
     }
 
     .Toastify__toast--default {
-        background: ${colors.BLACK17};
-        color: ${colors.WHITE};
+        background: ${colors.BG_LIGHT_GREY};
+        color: ${colors.TYPE_WHITE};
     }
 
     .Toastify__toast--info {
-        background: ${colors.BLUE};
+        background: ${colors.BG_LIGHT_GREY};
     }
 
     .Toastify__toast--success {
-        background: ${colors.GREEN};
+        background: ${colors.BG_LIGHT_GREY};
     }
 
     .Toastify__toast--warning {
-        background: ${colors.YELLOW};
+        background: ${colors.BG_LIGHT_GREY};
     }
 
     .Toastify__toast--error {
-        background: ${colors.RED};
+        background: ${colors.BG_LIGHT_GREY};
     }
 
     .Toastify__toast-body {
@@ -182,7 +182,7 @@ export const notifications = `
     }
 
     .Toastify__progress-bar--default {
-        background: ${colors.WHITE};
+        background: ${colors.BG_WHITE};
     }
 
     @keyframes Toastify__bounceInRight {

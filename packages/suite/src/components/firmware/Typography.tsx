@@ -4,7 +4,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 
-import { P as OrigP, H1 as OrigH1, H2 as OrigH2, variables, colors } from '@trezor/components';
+import { P as OrigP, H1 as OrigH1, H2 as OrigH2, variables } from '@trezor/components';
 
 const { FONT_WEIGHT } = variables;
 
@@ -13,7 +13,7 @@ interface Props {
 }
 
 const StyledP = styled(OrigP)`
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 export const P = (props: Props) => {
@@ -33,7 +33,7 @@ const StyledH2 = styled(OrigH2)<{ isGreen?: boolean }>`
     ${props =>
         props.isGreen &&
         css`
-            color: ${colors.NEUE_TYPE_GREEN};
+            color: ${props => props.theme.TYPE_GREEN};
         `};
 `;
 

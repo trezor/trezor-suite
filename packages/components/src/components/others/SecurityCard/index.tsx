@@ -1,6 +1,7 @@
 import React from 'react';
+import { SuiteThemeColors } from 'src/support/types';
 import styled from 'styled-components';
-import { CardProps, Card, colors, variables, IconProps, Icon, Button } from '../../../index';
+import { CardProps, Card, useTheme, variables, IconProps, Icon, Button } from '../../../index';
 
 const Wrapper = styled.div`
     display: flex;
@@ -25,8 +26,8 @@ const Header = styled.div`
 `;
 
 const Circle = styled.div`
-    border: 1px solid ${colors.NEUE_STROKE_GREY};
-    background: ${colors.WHITE};
+    border: 1px solid ${props => props.theme.STROKE_GREY};
+    background: ${props => props.theme.BG_WHITE};
     width: 58px;
     height: 58px;
     border-radius: 50%;
@@ -38,7 +39,7 @@ const Circle = styled.div`
 `;
 
 const Title = styled.div`
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     width: 200px;
     margin-top: 30px;
     min-height: 44px;
@@ -49,7 +50,7 @@ const Title = styled.div`
 
 const Description = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     text-align: center;
     width: 200px;
     margin-top: 7px;
@@ -83,7 +84,7 @@ const CheckIconWrapper = styled.div`
     height: 16px;
     top: 10px;
     right: 8px;
-    background: ${colors.NEUE_BG_GREEN};
+    background: ${props => props.theme.BG_GREEN};
 `;
 
 const Line = styled.div`
@@ -91,8 +92,8 @@ const Line = styled.div`
     width: 100%;
     height: 1px;
     margin: 10px 0;
-    background: ${colors.NEUE_STROKE_GREY};
-    /* border-top: 1px solid ${colors.NEUE_STROKE_GREY}; */
+    background: ${props => props.theme.STROKE_GREY};
+    /* border-top: 1px solid ${props => props.theme.STROKE_GREY}; */
 `;
 
 export interface Props extends CardProps {
@@ -108,47 +109,31 @@ export interface Props extends CardProps {
     };
 }
 
-const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Props) => (
-    <Wrapper {...rest}>
-        <Header>
-            <Circle>
-                <Icon icon={icon} size={32} color={colors.NEUE_TYPE_DARK_GREY} />
-                {variant === 'secondary' && (
-                    <CheckIconWrapper>
-                        <Icon icon="CHECK" color={colors.WHITE} size={14} />
-                    </CheckIconWrapper>
-                )}
-            </Circle>
-        </Header>
-        <StyledCard noPadding>
-            <Title>{heading}</Title>
-            <Description>{description}</Description>
-            <Footer>
-                {cta && variant === 'primary' && (
-                    <Action>
-                        <Button
-                            fullWidth
-                            variant="secondary"
-                            isDisabled={cta.isDisabled}
-                            onClick={cta.action}
-                            {...(cta.dataTest
-                                ? { 'data-test': `@dashboard/security-card/${cta.dataTest}/button` }
-                                : {})}
-                        >
-                            {cta.label}
-                        </Button>
-                    </Action>
-                )}
-                {cta && variant === 'secondary' && (
-                    <>
-                        <Line />
+const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Props) => {
+    const theme = useTheme();
+    return (
+        <Wrapper {...rest}>
+            <Header>
+                <Circle>
+                    <Icon icon={icon} size={32} color={theme.TYPE_DARK_GREY} />
+                    {variant === 'secondary' && (
+                        <CheckIconWrapper>
+                            <Icon icon="CHECK" color={theme.TYPE_WHITE} size={14} />
+                        </CheckIconWrapper>
+                    )}
+                </Circle>
+            </Header>
+            <StyledCard noPadding>
+                <Title>{heading}</Title>
+                <Description>{description}</Description>
+                <Footer>
+                    {cta && variant === 'primary' && (
                         <Action>
                             <Button
-                                variant="tertiary"
+                                fullWidth
+                                variant="secondary"
                                 isDisabled={cta.isDisabled}
                                 onClick={cta.action}
-                                icon="ARROW_RIGHT"
-                                alignIcon="right"
                                 {...(cta.dataTest
                                     ? {
                                           'data-test': `@dashboard/security-card/${cta.dataTest}/button`,
@@ -158,11 +143,32 @@ const SecurityCard = ({ variant, icon, heading, description, cta, ...rest }: Pro
                                 {cta.label}
                             </Button>
                         </Action>
-                    </>
-                )}
-            </Footer>
-        </StyledCard>
-    </Wrapper>
-);
+                    )}
+                    {cta && variant === 'secondary' && (
+                        <>
+                            <Line />
+                            <Action>
+                                <Button
+                                    variant="tertiary"
+                                    isDisabled={cta.isDisabled}
+                                    onClick={cta.action}
+                                    icon="ARROW_RIGHT"
+                                    alignIcon="right"
+                                    {...(cta.dataTest
+                                        ? {
+                                              'data-test': `@dashboard/security-card/${cta.dataTest}/button`,
+                                          }
+                                        : {})}
+                                >
+                                    {cta.label}
+                                </Button>
+                            </Action>
+                        </>
+                    )}
+                </Footer>
+            </StyledCard>
+        </Wrapper>
+    );
+};
 
 export { SecurityCard, Props as SecurityCardProps };

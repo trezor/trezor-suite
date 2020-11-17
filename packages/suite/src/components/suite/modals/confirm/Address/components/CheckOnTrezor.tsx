@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { P, colors } from '@trezor/components';
+import { P } from '@trezor/components';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import { Translation } from '@suite-components';
 
@@ -11,7 +11,7 @@ const Wrapper = styled.div`
     padding: 16px;
     margin: 0px 32px 32px 32px;
     text-align: left;
-    background: ${colors.BLACK96};
+    background: ${props => props.theme.BG_LIGHT_GREY};
     position: relative;
     padding-right: 200px;
 `;

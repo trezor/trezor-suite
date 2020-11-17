@@ -1,7 +1,7 @@
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
-import { Input, Icon, Button, variables, colors } from '@trezor/components';
+import { Input, Icon, Button, variables, useTheme } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -48,7 +48,7 @@ const Left = styled.div`
 const TokenBalance = styled.div`
     padding: 0px 6px;
     font-size: ${variables.NEUE_FONT_SIZE.TINY};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const TokenBalanceValue = styled.span`
@@ -94,6 +94,7 @@ const Amount = ({ output, outputId }: Props) => {
         composeTransaction,
     } = useSendFormContext();
 
+    const theme = useTheme();
     const inputName = `outputs[${outputId}].amount`;
     const tokenInputName = `outputs[${outputId}].token`;
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
@@ -234,7 +235,7 @@ const Amount = ({ output, outputId }: Props) => {
                                     <StyledTransferIcon
                                         icon="TRANSFER"
                                         size={16}
-                                        color={colors.NEUE_TYPE_DARK_GREY}
+                                        color={theme.TYPE_DARK_GREY}
                                     />
                                 </TransferIconWrapper>
                                 <Right>

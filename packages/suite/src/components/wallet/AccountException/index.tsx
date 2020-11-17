@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H2, colors } from '@trezor/components';
+import { H2 } from '@trezor/components';
 import { AccountException } from '@wallet-reducers/selectedAccountReducer';
 
 import AuthFailed from './AuthFailed';
@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 const Title = styled(H2)`
     display: flex;
     text-align: center;
-    color: ${colors.BLACK0};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 interface Props {

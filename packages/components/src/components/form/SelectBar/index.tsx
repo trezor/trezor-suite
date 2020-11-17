@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
-import { colors, variables } from '../../../config';
+import { variables } from '../../../config';
 
 interface Option {
     label: ReactNode;
@@ -27,7 +27,7 @@ const Label = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-transform: capitalize;
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const Options = styled.div`
@@ -35,7 +35,7 @@ const Options = styled.div`
     flex: 1;
     padding: 0 2px;
     border-radius: 4px;
-    background: ${colors.NEUE_BG_GRAY};
+    background: ${props => props.theme.BG_GREY};
 `;
 
 const Option = styled.div<{ isSelected: boolean }>`
@@ -48,16 +48,16 @@ const Option = styled.div<{ isSelected: boolean }>`
     border-radius: 4px;
     font-size: ${variables.FONT_SIZE.SMALL};
     text-transform: capitalize;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     cursor: pointer;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 
     ${props =>
         props.isSelected &&
         css`
-            background: white;
+            background: ${props => props.theme.BG_WHITE};
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-            color: ${colors.NEUE_TYPE_DARK_GREY};
+            color: ${props => props.theme.TYPE_DARK_GREY};
             font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
         `}
 `;

@@ -8,7 +8,7 @@ storiesOf('Icons', module).add(
     'Icon',
     () => {
         const size = number('Size', 24);
-        const iconColor = color('Color', colors.BLACK50);
+        const iconColor = color('Color', colors.TYPE_LIGHT_GREY);
 
         const iconOptions: any = {
             None: null,

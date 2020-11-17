@@ -1,6 +1,6 @@
-import { colors, Icon, IconProps, variables } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
+import { useTheme, Icon, IconProps, variables } from '@trezor/components';
 
 const Wrapper = styled.div<Pick<Props, 'isActive'>>`
     display: flex;
@@ -21,7 +21,7 @@ const MobileWrapper = styled.div<Pick<Props, 'isActive'>>`
     margin-right: 16px;
 
     & + & {
-        border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+        border-top: 1px solid ${props => props.theme.STROKE_GREY};
     }
 `;
 
@@ -35,7 +35,7 @@ const MobileIconWrapper = styled.div<Pick<Props, 'isActive'>>`
 
 const Label = styled.span`
     padding: 16px 8px;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
 `;
@@ -50,7 +50,7 @@ const AlertDotWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    background: ${colors.NEUE_BG_WHITE};
+    background: ${props => props.theme.BG_WHITE};
 `;
 
 const AlertDot = styled.div`
@@ -58,7 +58,7 @@ const AlertDot = styled.div`
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: ${colors.NEUE_TYPE_RED};
+    background: ${props => props.theme.TYPE_RED};
 `;
 
 interface CommonProps extends Pick<React.HTMLAttributes<HTMLDivElement>, 'onClick'> {
@@ -80,9 +80,10 @@ interface IconComponentProps extends CommonProps {
 type Props = CustomIconComponentProps | IconComponentProps;
 
 const ActionItem = (props: Props) => {
+    const theme = useTheme();
     const iconComponent = props.icon ? (
         <Icon
-            color={props.isActive ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY}
+            color={props.isActive ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY}
             size={24}
             icon={props.icon}
         />

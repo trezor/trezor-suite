@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { Input, Button, Textarea, colors, variables } from '@trezor/components';
+import { Input, Button, Textarea, variables } from '@trezor/components';
 import Title from '@wallet-components/Title';
 import { WalletLayout } from '@wallet-components';
 import * as signVerifyActions from '@wallet-actions/signVerifyActions';
@@ -13,7 +13,7 @@ const Wrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: row;
-    background: ${colors.WHITE};
+    color: ${props => props.theme.BG_WHITE};
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         flex-wrap: wrap;

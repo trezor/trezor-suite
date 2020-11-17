@@ -15,16 +15,18 @@ describe('Backup', () => {
     });
 
     it('Backup should reset if modal is closed', () => {
-        cy.getTestElement('@notification/no-backup/button').click();
+        cy.getTestElement('@notification/no-backup/button').click({ force: true });
         cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
         cy.getTestElement('@backup/close-button').click();
         cy.getTestElement('@notification/no-backup/button').click({ force: true });
-        cy.log('at this moment, after modal was closed and opened again, no checkbox should be checked');
+        cy.log(
+            'at this moment, after modal was closed and opened again, no checkbox should be checked',
+        );
         cy.getTestElement('@backup/check-item/understands-what-seed-is').should('not.be.checked');
     });
 
     it('User is doing backup with device A -> disconnects device A -> connects device B with backup already finished', () => {
-        cy.getTestElement('@notification/no-backup/button').click();
+        cy.getTestElement('@notification/no-backup/button').click({ force: true });
         cy.getTestElement('@backup/check-item/has-enough-time').click();
         cy.task('stopEmu');
         cy.getTestElement('@backup/no-device', { timeout: 20000 });
@@ -44,11 +46,11 @@ describe('Backup', () => {
             force: true,
         });
         cy.getTestElement('@switch-device/wallet-on-index/0').click();
-        cy.getTestElement('@notification/no-backup/button').click();
+        cy.getTestElement('@notification/no-backup/button').click({ force: true });
         cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
         cy.getTestElement('@backup/check-item/has-enough-time').click();
         cy.getTestElement('@backup/check-item/is-in-private').click();
         cy.task('stopEmu');
         cy.getTestElement('@backup/no-device');
-    })
+    });
 });

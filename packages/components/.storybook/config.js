@@ -20,7 +20,7 @@ addParameters({
 
 addDecorator(withInfo);
 addDecorator(withKnobs);
-addDecorator(storyFn => <StoryWrapper>{storyFn()}</StoryWrapper>);
+addDecorator(StoryWrapper);
 
 const loadStories = () => {
     const req = require.context('../src/components', true, /^.*\.stories\.tsx?$/);

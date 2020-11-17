@@ -1,6 +1,6 @@
 import React, { createRef } from 'react';
 import styled from 'styled-components';
-import { colors, Modal, ConfirmOnDevice, Button, variables } from '@trezor/components';
+import { Modal, ConfirmOnDevice, Button, variables } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { useDevice, useActions } from '@suite-hooks';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
@@ -16,7 +16,7 @@ const Bottom = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
     padding-top: 20px;
 `;
 
@@ -30,7 +30,7 @@ const BottomContent = styled.div`
 
 const Total = styled(Left)`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const Content = styled.div`

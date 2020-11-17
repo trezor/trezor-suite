@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { Button, ButtonProps, H2, P, colors, Modal, variables } from '@trezor/components';
+import { Button, ButtonProps, H2, P, Modal, variables } from '@trezor/components';
 
 import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components';
 import { Loading, Translation, CheckItem, ExternalLink, Image } from '@suite-components';
@@ -51,28 +51,28 @@ const InfoBoxText = styled.div`
 `;
 const InfoBoxTitle = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${colors.BLACK0};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     margin-bottom: 8px;
 `;
 
 const InfoBoxDescription = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const Number = styled.div`
     width: 16px;
     height: 16px;
-    background-color: ${colors.BLACK70};
+    background-color: ${props => props.theme.TYPE_LIGHT_GREY};
     border-radius: 50%;
-    color: ${colors.WHITE};
+    color: ${props => props.theme.TYPE_WHITE};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
 const StyledP = styled(P)`
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const StyledImage = styled(Image)`

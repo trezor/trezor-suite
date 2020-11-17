@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { Translation } from '@suite-components';
-import { Icon, colors, Tooltip } from '@trezor/components';
+import { Icon, Tooltip, useTheme } from '@trezor/components';
 import { findRouteByName } from '@suite-utils/router';
 import { BOTTOM_MENU_ITEMS } from '@suite-constants/menu';
 import { useActions, useAnalytics, useSelector } from '@suite-hooks';
@@ -25,7 +26,7 @@ const MobileWrapper = styled.div`
 `;
 
 const ActionsContainer = styled.div<{ desktop: boolean; mobileLayout?: boolean }>`
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
     ${props =>
         !props.mobileLayout &&
         `display: flex;
@@ -40,7 +41,7 @@ const ActionsContainer = styled.div<{ desktop: boolean; mobileLayout?: boolean }
         margin-left: 22px;
         margin-right: -17px;
         padding: 12px 15px;
-        border: 1px solid ${colors.NEUE_STROKE_GREY};
+        border: 1px solid ${props.theme.STROKE_GREY};
         border-radius: 10px;
     `}
 `;
@@ -55,12 +56,12 @@ const ActionItemTor = styled.div<{ mobileLayout?: boolean }>`
     `}
     ${props =>
         props.mobileLayout &&
-        `border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+        `border-top: 1px solid ${props.theme.STROKE_GREY};
     `}
 `;
 
 const ActionItemTorIndicator = styled.div`
-    background: ${colors.WHITE};
+    background: ${props => props.theme.BG_WHITE};
     display: flex;
     align-items: center;
     height: 10px;
@@ -80,15 +81,18 @@ type Route = typeof BOTTOM_MENU_ITEMS[number]['route'];
 
 const NavigationActions = (props: Props) => {
     const analytics = useAnalytics();
+    const themeColors = useTheme();
     const { activeApp, notifications, discreetMode, tor } = useSelector(state => ({
         activeApp: state.router.app,
         notifications: state.notifications,
         discreetMode: state.wallet.settings.discreetMode,
         tor: state.suite.tor,
+        theme: state.suite.settings.theme,
     }));
     const { goto, setDiscreetMode } = useActions({
         goto: routerActions.goto,
         setDiscreetMode: walletSettingsActions.setDiscreetMode,
+        setTheme: suiteActions.setTheme,
     });
 
     const WrapperComponent = props.isMobileLayout ? MobileWrapper : Wrapper;
@@ -180,7 +184,7 @@ const NavigationActions = (props: Props) => {
                                         <Icon
                                             icon="CHECK"
                                             size={10}
-                                            color={colors.NEUE_TYPE_GREEN}
+                                            color={themeColors.TYPE_GREEN}
                                         />
                                     </ActionItemTorIndicator>
                                 )}

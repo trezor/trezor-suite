@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { Icon, IconProps } from '../../Icon';
-import colors from '../../../config/colors';
+import { useTheme } from '../../../utils';
 import { FONT_SIZE } from '../../../config/variables';
 import { ParagraphSize } from '../../../support/types';
 
@@ -15,7 +15,7 @@ const A = styled.a<Props>`
     font-size: ${props => (props.size ? A_SIZES[props.size] : 'inherit')};
     text-decoration: none;
     cursor: pointer;
-    color: ${colors.BLACK25};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: 500;
     display: inline-flex;
     align-items: center;
@@ -55,34 +55,37 @@ interface Props {
     iconProps?: IconProps;
 }
 
-const Link = ({ icon, iconProps, ...props }: Props) => (
-    <A
-        href={props.href}
-        target={props.target || '_blank'}
-        rel="noreferrer noopener"
-        {...props} // make sure {...props} is passed before calling onCLick()
-        onClick={(e: React.MouseEvent<any>) => {
-            // if the user passed custom onClick action, run it first
-            if (props.onClick) {
-                props.onClick(e);
-            }
-            // Prevent events from bubbling to the parent element.
-            // E.g. we don't want the checkbox to be checked when user clicks on link in checkbox label
-            e.stopPropagation();
-        }}
-    >
-        {props.children}
-        {icon && (
-            <IconWrapper>
-                <Icon
-                    size={props.size ? Number(A_SIZES[props.size].replace('px', '')) : 24}
-                    icon={icon}
-                    color={colors.NEUE_TYPE_DARK_GREY}
-                    {...iconProps}
-                />
-            </IconWrapper>
-        )}
-    </A>
-);
+const Link = ({ icon, iconProps, ...props }: Props) => {
+    const theme = useTheme();
+    return (
+        <A
+            href={props.href}
+            target={props.target || '_blank'}
+            rel="noreferrer noopener"
+            {...props} // make sure {...props} is passed before calling onCLick()
+            onClick={(e: React.MouseEvent<any>) => {
+                // if the user passed custom onClick action, run it first
+                if (props.onClick) {
+                    props.onClick(e);
+                }
+                // Prevent events from bubbling to the parent element.
+                // E.g. we don't want the checkbox to be checked when user clicks on link in checkbox label
+                e.stopPropagation();
+            }}
+        >
+            {props.children}
+            {icon && (
+                <IconWrapper>
+                    <Icon
+                        size={props.size ? Number(A_SIZES[props.size].replace('px', '')) : 24}
+                        icon={icon}
+                        color={theme.TYPE_DARK_GREY}
+                        {...iconProps}
+                    />
+                </IconWrapper>
+            )}
+        </A>
+    );
+};
 
 export { Link, Props as LinkProps };

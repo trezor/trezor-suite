@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
-import { colors } from '@trezor/components';
 
 const Wrapper = styled.div`
     padding: 2px 2px 0px;
@@ -30,7 +29,7 @@ const NotificationOuterCircle = styled.div`
     width: 18px;
     height: 18px;
     opacity: 0.13;
-    background: ${colors.NEUE_BG_GREEN};
+    background: ${props => props.theme.BG_GREEN};
 `;
 
 const NotificationInnerCircle = styled.div`
@@ -41,7 +40,7 @@ const NotificationInnerCircle = styled.div`
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: ${colors.NEUE_BG_GREEN};
+    background: ${props => props.theme.BG_GREEN};
 `;
 
 const NavigationLink = styled.span`

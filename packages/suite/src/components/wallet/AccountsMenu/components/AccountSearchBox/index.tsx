@@ -1,10 +1,10 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { colors, Icon, Input, CoinLogo } from '@trezor/components';
+import { useTheme, Icon, Input, CoinLogo } from '@trezor/components';
 import { useSelector, useAccountSearch } from '@suite-hooks';
 
 const Wrapper = styled.div`
-    background: ${colors.NEUE_BG_WHITE};
+    background: ${props => props.theme.BG_WHITE};
     width: 100%;
     margin-top: 16px;
 `;
@@ -20,9 +20,9 @@ const OuterCircle = styled.div<{ isSelected?: boolean; isMobile?: boolean }>`
     justify-content: center;
     align-items: center;
     padding: 3px;
-    background: white;
+    background: ${props => props.theme.BG_WHITE};
     border-radius: 50%;
-    border: 2px solid ${props => (props.isSelected ? colors.NEUE_BG_GREEN : 'transparent')};
+    border: 2px solid ${props => (props.isSelected ? props.theme.BG_GREEN : 'transparent')};
     transition: all 0.3;
     cursor: pointer;
 
@@ -43,7 +43,7 @@ const InputWrapper = styled.div<{ showCoinFilter: boolean }>`
 
 const StyledInput = styled(Input)`
     && {
-        background-color: ${colors.NEUE_BG_GRAY};
+        background-color: ${props => props.theme.BG_GREY_ALT};
         border: none;
     }
 `;
@@ -66,6 +66,7 @@ interface Props {
 }
 
 const AccountSearchBox = (props: Props) => {
+    const theme = useTheme();
     const { coinFilter, setCoinFilter, searchString, setSearchString } = useAccountSearch();
     const { enabledNetworks, device } = useSelector(state => ({
         enabledNetworks: state.wallet.settings.enabledNetworks,
@@ -92,7 +93,7 @@ const AccountSearchBox = (props: Props) => {
                     }}
                     innerAddon={
                         <SearchIconWrapper>
-                            <Icon icon="SEARCH" size={16} color={colors.NEUE_TYPE_DARK_GREY} />
+                            <Icon icon="SEARCH" size={16} color={theme.TYPE_DARK_GREY} />
                         </SearchIconWrapper>
                     }
                     addonAlign="left"

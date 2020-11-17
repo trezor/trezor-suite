@@ -1,5 +1,5 @@
 import React from 'react';
-import { colors } from '@trezor/components';
+import { useTheme } from '@trezor/components';
 import { FormattedDate } from 'react-intl';
 import { GraphRange } from '@wallet-types/graph';
 
@@ -26,6 +26,7 @@ const CustomXAxisTick = (props: CustomXAxisProps) => {
     const { x, y, payload } = props;
     const date = new Date(0);
     date.setUTCSeconds(payload.value);
+    const theme = useTheme();
 
     return (
         <g transform={`translate(${x},${y})`}>
@@ -34,7 +35,7 @@ const CustomXAxisTick = (props: CustomXAxisProps) => {
                 y={0}
                 dy={16}
                 textAnchor="middle"
-                fill={colors.NEUE_TYPE_LIGHT_GREY}
+                fill={theme.TYPE_LIGHT_GREY}
                 style={{ fontVariantNumeric: 'tabular-nums' }}
             >
                 {date && getFormattedDate(props.selectedRange.label, date)}

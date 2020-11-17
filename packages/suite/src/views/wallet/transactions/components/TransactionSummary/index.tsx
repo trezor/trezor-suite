@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { getUnixTime, subWeeks } from 'date-fns';
-import { colors, variables, Button, Card } from '@trezor/components';
+import { variables, Button, Card } from '@trezor/components';
 import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
 import { calcTicks, calcTicksFromData } from '@suite-utils/date';
 import { aggregateBalanceHistory, getMinMaxValueFromData } from '@wallet-utils/graphUtils';
@@ -44,7 +44,7 @@ const ErrorMessage = styled.div`
     padding: 20px;
     align-items: center;
     justify-content: center;
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     text-align: center;
 `;
@@ -52,7 +52,7 @@ const ErrorMessage = styled.div`
 const Divider = styled.div`
     width: 100%;
     height: 1px;
-    background: ${colors.NEUE_STROKE_GREY};
+    background: ${props => props.theme.STROKE_GREY};
     margin: 24px 0px;
 `;
 

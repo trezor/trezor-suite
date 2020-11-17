@@ -1,30 +1,16 @@
-import { FeedbackState, InputState } from '../support/types';
-import colors from '../config/colors';
+import { InputState, SuiteThemeColors } from '../support/types';
 
-const getFeedbackColor = (state: FeedbackState) => {
-    switch (state) {
-        case 'error':
-            return colors.RED;
-        case 'info':
-            return colors.BLUE;
-        case 'warning':
-            return colors.YELLOW;
-        default:
-            return colors.GREEN;
-    }
-};
-
-const getStateColor = (state: InputState | undefined) => {
+const getStateColor = (state: InputState | undefined, theme: SuiteThemeColors) => {
     switch (state) {
         case 'success':
-            return colors.NEUE_BG_GREEN;
+            return theme.BG_GREEN;
         case 'warning':
-            return colors.NEUE_TYPE_ORANGE;
+            return theme.TYPE_ORANGE;
         case 'error':
-            return colors.NEUE_TYPE_RED;
+            return theme.TYPE_RED;
         default:
-            return colors.NEUE_TYPE_DARK_GREY;
+            return theme.TYPE_DARK_GREY;
     }
 };
 
-export { getStateColor, getFeedbackColor };
+export { getStateColor };

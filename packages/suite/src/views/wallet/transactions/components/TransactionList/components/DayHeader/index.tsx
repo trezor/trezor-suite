@@ -2,7 +2,7 @@ import React from 'react';
 import { FormattedDate } from 'react-intl';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
-import { variables, colors } from '@trezor/components';
+import { variables } from '@trezor/components';
 import {
     Translation,
     HiddenPlaceholder,
@@ -17,7 +17,7 @@ const Wrapper = styled.div`
     display: flex;
     position: sticky;
     z-index: 1;
-    background: ${colors.NEUE_BG_GRAY};
+    background: ${props => props.theme.BG_GREY};
     top: 0;
     align-items: center;
     justify-content: space-between;
@@ -29,7 +29,7 @@ const Wrapper = styled.div`
 
 const Col = styled(HiddenPlaceholder)`
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-transform: uppercase;
 `;
@@ -40,7 +40,7 @@ const ColDate = styled(Col)`
 `;
 
 const ColPending = styled(Col)`
-    color: ${colors.NEUE_TYPE_ORANGE};
+    color: ${props => props.theme.TYPE_ORANGE};
     font-variant-numeric: tabular-nums;
 `;
 

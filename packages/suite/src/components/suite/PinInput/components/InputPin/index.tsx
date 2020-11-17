@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, colors, Icon, Input } from '@trezor/components';
+import { variables, useTheme, Icon, Input } from '@trezor/components';
 
 const StyledInput = styled(Input)`
     letter-spacing: 8px;
@@ -9,10 +9,10 @@ const StyledInput = styled(Input)`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     font-size: ${variables.FONT_SIZE.SMALL};
     padding: 0 32px 0 20px;
-    color: ${colors.BLACK25};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     background: transparent;
     border-radius: 4px;
-    box-shadow: inset 0 3px 6px 0 ${colors.BLACK92};
+    box-shadow: inset 0 3px 6px 0 ${props => props.theme.BG_GREY};
     border: solid 1px #cccccc;
     box-sizing: border-box;
 `;
@@ -22,14 +22,18 @@ interface Props {
     onDeleteClick: (event?: React.MouseEvent<any>) => void;
 }
 
-const InputPin = ({ value, onDeleteClick }: Props) => (
-    <StyledInput
-        disabled
-        noTopLabel
-        noError
-        value={value.replace(/[0-9]/g, '●')}
-        innerAddon={<Icon onClick={onDeleteClick} color={colors.BLACK25} icon="BACK" />}
-    />
-);
+const InputPin = ({ value, onDeleteClick }: Props) => {
+    const theme = useTheme();
+
+    return (
+        <StyledInput
+            disabled
+            noTopLabel
+            noError
+            value={value.replace(/[0-9]/g, '●')}
+            innerAddon={<Icon onClick={onDeleteClick} color={theme.TYPE_DARK_GREY} icon="BACK" />}
+        />
+    );
+};
 
 export default InputPin;

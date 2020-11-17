@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { differenceInMinutes } from 'date-fns';
-import { Tooltip, colors, variables, Icon } from '@trezor/components';
+import { Tooltip, useTheme, variables, Icon } from '@trezor/components';
 import { FiatValue, Translation, NoRatesTooltip } from '@suite-components';
 import { FormattedRelativeTime } from 'react-intl';
 import { useSelector } from '@suite-hooks';
@@ -9,7 +9,7 @@ import { useSelector } from '@suite-hooks';
 const FiatRateWrapper = styled.span`
     display: flex;
     align-items: center;
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
@@ -23,6 +23,7 @@ interface Props {
     tooltipPos?: 'top' | 'bottom';
 }
 const Ticker = ({ symbol, tooltipPos = 'top' }: Props) => {
+    const theme = useTheme();
     const rateAge = (timestamp: number) => differenceInMinutes(new Date(timestamp), new Date());
     const { lastWeekRates, localCurrency } = useSelector(state => ({
         lastWeekRates: state.wallet.fiat.coins.find(r => r.symbol === symbol)?.lastWeek,
@@ -70,7 +71,7 @@ const Ticker = ({ symbol, tooltipPos = 'top' }: Props) => {
                         <FiatRateWrapper>
                             <Icon
                                 icon={rateGoingUp ? 'UP' : 'DOWN'}
-                                color={rateGoingUp ? colors.NEUE_TYPE_GREEN : colors.NEUE_TYPE_RED}
+                                color={rateGoingUp ? theme.TYPE_GREEN : theme.TYPE_RED}
                             />
                             {rate}
                         </FiatRateWrapper>

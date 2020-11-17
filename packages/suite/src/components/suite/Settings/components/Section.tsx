@@ -1,7 +1,7 @@
 import React, { ReactNode, ReactElement } from 'react';
 import styled from 'styled-components';
 import Card from '@suite-components/Card';
-import { variables, colors, P } from '@trezor/components';
+import { variables, P } from '@trezor/components';
 
 const Wrapper = styled.div`
     margin-bottom: 36px;
@@ -14,7 +14,7 @@ const Header = styled.div`
 
 const Title = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.BLACK25};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     text-transform: uppercase;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;

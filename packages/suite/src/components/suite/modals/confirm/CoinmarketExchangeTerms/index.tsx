@@ -1,4 +1,4 @@
-import { Button, Modal, Icon, colors, variables, Checkbox } from '@trezor/components';
+import { Button, Modal, Icon, variables, Checkbox } from '@trezor/components';
 import React, { useState } from 'react';
 import { Translation } from '@suite-components';
 import styled, { css } from 'styled-components';
@@ -6,7 +6,7 @@ import { Deferred } from '@suite-utils/deferred';
 
 const Text = styled.div<{ isLast?: boolean; isFirst?: boolean }>`
     padding: 20px 0;
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
     text-align: left;
 
     ${props =>
@@ -31,7 +31,7 @@ const Header = styled.div`
     width: 100%;
     padding: 10px 0;
     align-items: center;
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.H2};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
@@ -48,7 +48,7 @@ const Footer = styled.div`
     display: flex;
     padding: 35px 0;
     flex: 1;
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
 `;
 
 const FooterContent = styled.div`

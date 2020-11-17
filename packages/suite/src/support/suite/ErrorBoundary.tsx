@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import * as Sentry from '@sentry/browser';
 import { connect } from 'react-redux';
 import { AppState } from '@suite/types/suite';
-import { H1, P, Button, variables, colors } from '@trezor/components';
+import { H1, P, Button, variables } from '@trezor/components';
 import { db } from '@suite/storage';
 import { bindActionCreators, Dispatch } from 'redux';
 import { reportToSentry } from '@suite-actions/logActions';
@@ -30,7 +30,7 @@ const Buttons = styled.div`
 `;
 
 const Separator = styled.div`
-    background: ${colors.BLACK80};
+    background: ${props => props.theme.STROKE_GREY};
     height: 1px;
     margin: 30px 0px;
     width: 80%;
@@ -59,7 +59,7 @@ const ErrorMessage = styled.span`
     max-width: 600px;
     font-family: Consolas, Menlo, Courier, monospace;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const refresh = () => {

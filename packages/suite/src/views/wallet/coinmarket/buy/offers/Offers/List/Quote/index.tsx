@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, Button, variables, Icon } from '@trezor/components';
+import { useTheme, Button, variables, Icon } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketBuyProviderInfo } from '@wallet-components';
 import { QuestionTooltip, Translation } from '@suite-components';
 import { BuyTrade } from 'invity-api';
@@ -21,7 +21,7 @@ const Wrapper = styled.div`
     width: 100%;
     min-height: 150px;
     padding-bottom: 16px;
-    background: ${colors.WHITE};
+    color: ${props => props.theme.BG_WHITE};
 `;
 
 const TagRow = styled.div`
@@ -42,7 +42,7 @@ const Main = styled.div`
     margin: 0 30px;
     justify-content: space-between;
     padding-bottom: 20px;
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: column;
@@ -86,7 +86,7 @@ const Column = styled.div`
 const Heading = styled.div`
     display: flex;
     text-transform: uppercase;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     padding-bottom: 9px;
 `;
@@ -102,7 +102,7 @@ const StyledButton = styled(Button)`
 const Value = styled.div`
     display: flex;
     align-items: center;
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -110,8 +110,8 @@ const Footer = styled.div`
     margin: 0 30px;
     padding: 10px 0;
     padding-top: 23px;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
@@ -120,8 +120,8 @@ const ErrorFooter = styled.div`
     display: flex;
     margin: 0 30px;
     padding: 10px 0;
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
-    color: ${colors.RED_ERROR};
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    color: ${props => props.theme.TYPE_RED};
 `;
 
 const StyledIcon = styled(Icon)`
@@ -136,7 +136,7 @@ const ErrorText = styled.div``;
 
 const StyledQuestionTooltip = styled(QuestionTooltip)`
     padding-left: 4px;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
@@ -198,6 +198,7 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
 }
 
 const Quote = ({ className, quote, wantCrypto }: Props) => {
+    const theme = useTheme();
     const { selectQuote, providersInfo } = useCoinmarketBuyOffersContext();
     // TODO - tags are not yet fully supported by the API server
     // in the future will be taken from quote.tags, will need some algorithm to evaluate them and show only one
@@ -254,7 +255,7 @@ const Quote = ({ className, quote, wantCrypto }: Props) => {
             {error && (
                 <ErrorFooter>
                     <IconWrapper>
-                        <StyledIcon icon="CROSS" size={12} color={colors.RED_ERROR} />
+                        <StyledIcon icon="CROSS" size={12} color={theme.TYPE_RED} />
                     </IconWrapper>
                     <ErrorText>{getQuoteError(quote, wantCrypto)}</ErrorText>
                 </ErrorFooter>

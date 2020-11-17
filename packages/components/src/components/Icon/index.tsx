@@ -2,8 +2,8 @@ import styled, { keyframes, css } from 'styled-components';
 
 import React from 'react';
 import { ReactSVG } from 'react-svg';
-import colors from '../../config/colors';
 import { IconType } from '../../support/types';
+import { useTheme } from '../../utils';
 import { ICONS } from './icons';
 
 // TODO: make animation of icons better
@@ -88,7 +88,7 @@ const Icon = React.forwardRef(
         {
             icon,
             size = 24,
-            color = colors.BLACK50,
+            color,
             isActive,
             canAnimate,
             hoverColor,
@@ -102,6 +102,8 @@ const Icon = React.forwardRef(
         }: Props,
         ref?: React.Ref<HTMLDivElement>
     ) => {
+        const theme = useTheme();
+        const defaultColor = color ?? theme.TYPE_LIGHT_GREY;
         return (
             <SvgWrapper
                 className={className}
@@ -115,6 +117,7 @@ const Icon = React.forwardRef(
                 size={size}
                 ref={ref}
                 useCursorPointer={onClick !== undefined || useCursorPointer}
+                color={defaultColor}
                 {...rest}
             >
                 <ReactSVG
@@ -122,7 +125,7 @@ const Icon = React.forwardRef(
                     beforeInjection={svg => {
                         svg.setAttribute('width', `${size}px`);
                         svg.setAttribute('height', `${size}px`);
-                        svg.setAttribute('fill', color);
+                        svg.setAttribute('fill', defaultColor);
                     }}
                     loading={() => <span className="loading" />}
                 />

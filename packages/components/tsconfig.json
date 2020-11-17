@@ -23,7 +23,7 @@
         "jsx": "react",
         "outDir": "lib"
     },
-    "include": ["src/**/*"],
+    "include": ["src/**/*", "styled.d.ts"],
     "exclude": [
         "node_modules",
         "build",

@@ -1,6 +1,6 @@
 import React, { createRef } from 'react';
 import styled from 'styled-components';
-import { Button, Modal, colors } from '@trezor/components';
+import { Button, Modal } from '@trezor/components';
 import { copyToClipboard } from '@suite-utils/dom';
 import { Translation, QrCode } from '@suite-components';
 
@@ -8,8 +8,8 @@ import { Props } from './Container';
 
 const Address = styled.div`
     width: 100%;
-    background: ${colors.BLACK96};
-    border: 1px solid ${colors.BLACK80};
+    background: ${props => props.theme.BG_LIGHT_GREY};
+    border: 1px solid ${props => props.theme.STROKE_GREY};
     border-radius: 6px;
     word-break: break-all;
     font-size: 20px;

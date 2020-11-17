@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
-import { Modal, colors, variables } from '@trezor/components';
+import { Modal, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-types';
 import TrezorConnect from 'trezor-connect';
 import BasicDetails from './components/BasicDetails';
@@ -19,7 +19,7 @@ const TabSelector = styled.div`
     width: 100%;
     text-align: left;
     margin-bottom: 6px;
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 `;
 
 const TabButton = styled.button<{ selected: boolean }>`
@@ -32,8 +32,9 @@ const TabButton = styled.button<{ selected: boolean }>`
     margin-right: 40px;
     cursor: pointer;
     /* change styles if the button is selected*/
-    color: ${props => (props.selected ? `${colors.NEUE_TYPE_GREEN}` : `${colors.BLACK50}`)};
-    border-bottom: ${props => (props.selected ? `2px solid ${colors.NEUE_BG_GREEN}` : 'none')};
+    color: ${props =>
+        props.selected ? `${props.theme.TYPE_GREEN}` : `${props.theme.TYPE_LIGHT_GREY}`};
+    border-bottom: ${props => (props.selected ? `2px solid ${props.theme.BG_GREEN}` : 'none')};
 `;
 
 const AdvancedDetailsWrapper = styled.div`

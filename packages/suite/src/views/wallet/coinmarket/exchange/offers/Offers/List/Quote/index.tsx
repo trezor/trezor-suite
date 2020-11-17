@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, Button, variables, Icon } from '@trezor/components';
+import { Button, variables, Icon, useTheme } from '@trezor/components';
 import { QuestionTooltip, Translation } from '@suite-components';
 import { ExchangeTrade } from 'invity-api';
 import CoinmarketExchangeProviderInfo from '@wallet-components/CoinmarketExchangeProviderInfo';
@@ -15,7 +15,7 @@ const Wrapper = styled.div`
     flex: 1;
     width: 100%;
     min-height: 150px;
-    background: ${colors.WHITE};
+    background: ${props => props.theme.BG_WHITE};
 `;
 
 const TagRow = styled.div`
@@ -36,7 +36,7 @@ const Main = styled.div`
     margin: 0 30px;
     justify-content: space-between;
     padding-bottom: 20px;
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 `;
 
 const Left = styled.div`
@@ -73,7 +73,7 @@ const Heading = styled.div`
     display: flex;
     text-transform: uppercase;
     align-items: center;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     padding-bottom: 9px;
 `;
@@ -85,7 +85,7 @@ const StyledButton = styled(Button)`
 const Value = styled.div`
     display: flex;
     align-items: center;
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -93,8 +93,8 @@ const ErrorFooter = styled.div`
     display: flex;
     margin: 0 30px;
     padding: 20px 0;
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
-    color: ${colors.RED_ERROR};
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    color: ${props => props.theme.TYPE_RED};
 `;
 
 const StyledIcon = styled(Icon)`
@@ -109,7 +109,7 @@ const ErrorText = styled.div``;
 
 const StyledQuestionTooltip = styled(QuestionTooltip)`
     padding-left: 4px;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 interface Props {
@@ -146,6 +146,7 @@ function getQuoteError(quote: ExchangeTrade) {
 }
 
 const Quote = ({ className, quote }: Props) => {
+    const theme = useTheme();
     const { selectQuote, exchangeInfo } = useCoinmarketExchangeOffersContext();
     const hasTag = false;
     const { exchange, receive, receiveStringAmount } = quote;
@@ -191,7 +192,7 @@ const Quote = ({ className, quote }: Props) => {
             {errorQuote && (
                 <ErrorFooter>
                     <IconWrapper>
-                        <StyledIcon icon="CROSS" size={12} color={colors.RED_ERROR} />
+                        <StyledIcon icon="CROSS" size={12} color={theme.TYPE_RED} />
                     </IconWrapper>
                     <ErrorText>{getQuoteError(quote)}</ErrorText>
                 </ErrorFooter>

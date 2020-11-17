@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { Translation, ExternalLink } from '@suite-components';
 
 interface TextColumnProps {
@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 `;
 
 const Description = styled.div`
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     margin-bottom: 12px;
     font-size: ${variables.FONT_SIZE.TINY};
 

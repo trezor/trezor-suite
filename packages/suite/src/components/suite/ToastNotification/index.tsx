@@ -10,13 +10,13 @@ import { ViewProps } from '@suite-components/hocNotification';
 const getVariantColor = (variant: ViewProps['variant']) => {
     switch (variant) {
         case 'info':
-            return colors.NEUE_TYPE_BLUE;
+            return colors.TYPE_BLUE;
         case 'warning':
-            return colors.NEUE_TYPE_ORANGE;
+            return colors.TYPE_ORANGE;
         case 'error':
-            return colors.NEUE_TYPE_RED;
+            return colors.TYPE_RED;
         case 'success':
-            return colors.NEUE_TYPE_GREEN;
+            return colors.TYPE_GREEN;
         default:
             return 'transparent';
     }
@@ -37,7 +37,7 @@ const Title = styled.span`
     margin-left: 10px;
     flex: 1;
     font-weight: 500;
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const StyledButton = styled(Button)`

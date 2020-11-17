@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors } from '@trezor/components';
 
 interface Props {
     children: React.ReactNode;
@@ -8,9 +7,12 @@ interface Props {
 
 const AbsoluteWrapper = styled.aside`
     width: 300px;
-    background: ${colors.WHITE};
-    border-right: 1px solid ${colors.NEUE_STROKE_GREY};
+    flex: 0 0 auto;
+    background: ${props => props.theme.BG_WHITE};
+    border-right: 1px solid ${props => props.theme.STROKE_GREY};
     overflow: hidden;
+    height: 100%;
+    overflow: auto;
 `;
 
 const Wrapper = styled.div`

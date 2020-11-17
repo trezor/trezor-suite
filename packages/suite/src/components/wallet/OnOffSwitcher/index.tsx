@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
-import { colors } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -12,11 +11,11 @@ const Option = styled.div`
 `;
 
 const On = styled(Option)`
-    color: ${colors.NEUE_BG_GREEN};
+    color: ${props => props.theme.BG_GREEN};
 `;
 
 const Off = styled(Option)`
-    color: ${colors.NEUE_TYPE_RED};
+    color: ${props => props.theme.TYPE_RED};
 `;
 
 const EqualSign = styled.div`

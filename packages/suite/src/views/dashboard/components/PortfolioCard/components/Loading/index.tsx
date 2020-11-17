@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables, Loader } from '@trezor/components';
+import { variables, Loader } from '@trezor/components';
 import { Translation } from '@suite-components';
 
 const Wrapper = styled.div`
@@ -14,7 +14,7 @@ const Wrapper = styled.div`
 const Title = styled.div`
     text-align: center;
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     margin-left: 12px;
 `;
 

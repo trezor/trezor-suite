@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
-import { H2, Icon, P, Button, colors } from '@trezor/components';
+import { H2, Icon, P, Button } from '@trezor/components';
 import { Translation, Image, Card, LayoutContext } from '@suite-components';
 import { getNotificationIcon } from '@suite-utils/notification';
 import hocNotification, { ViewProps } from '@suite-components/hocNotification';
@@ -42,7 +42,7 @@ const Item = styled.div`
     padding: 16px 0px;
 
     & + & {
-        border-top: 1px solid ${colors.BLACK96};
+        border-top: 1px solid ${props => props.theme.STROKE_GREY};
     }
 `;
 

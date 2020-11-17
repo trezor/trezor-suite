@@ -7,7 +7,7 @@ const Wrapper = styled.div<{ paddingSize: string }>`
     flex-direction: column;
     border-radius: 6px;
     padding: ${props => props.paddingSize};
-    background: ${colors.WHITE};
+    background: ${props => props.theme.BG_WHITE};
 `;
 
 const getPaddingSize = (

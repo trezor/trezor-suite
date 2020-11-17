@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, Select, variables } from '@trezor/components';
+import { Select, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { Network } from '@wallet-types';
 import { getAccountTypeIntl, getBip43Intl } from '@wallet-utils/accountUtils';
@@ -16,7 +16,7 @@ const TypeInfo = styled.div`
     padding-top: 2px;
     align-items: center;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     margin-left: 1ch;
 `;
 

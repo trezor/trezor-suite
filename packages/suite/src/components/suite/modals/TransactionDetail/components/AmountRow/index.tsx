@@ -1,6 +1,5 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { colors } from '@trezor/components';
 
 const rightAlignedStyles = css`
     text-align: right;
@@ -22,7 +21,10 @@ const Column = styled.div<RowContentProps>`
     display: flex;
     align-items: center;
     height: 36px;
-    color: ${props => (props.color === 'light' ? `${colors.BLACK50}` : `${colors.BLACK25}`)};
+    color: ${props =>
+        props.color === 'light'
+            ? `${props.theme.TYPE_LIGHT_GREY}`
+            : `${props.theme.TYPE_DARK_GREY}`};
 
     /* content alignment styles */
     ${props => (props.textAlign === 'left' ? leftAlignedStyles : rightAlignedStyles)}

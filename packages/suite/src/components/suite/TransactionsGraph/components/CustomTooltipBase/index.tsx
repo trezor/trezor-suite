@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
-import { colors } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { TooltipProps } from 'recharts';
 import { getDateWithTimeZone } from '@suite/utils/suite/date';
@@ -41,12 +40,11 @@ const CustomTooltipWrapper = styled.div<{
 }>`
     display: flex;
     flex-direction: column;
-    color: ${colors.WHITE};
-    background: #262742;
-    background: rgba(38, 39, 66, 1);
+    color: ${props => props.theme.TYPE_WHITE};
+    background: ${props => props.theme.BG_TOOLTIP};
     padding: 8px 6px;
     border-radius: 4px;
-    box-shadow: 0 3px 14px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: 0 3px 14px 0 ${props => props.theme.BOX_SHADOW_BLACK_15};
     font-variant-numeric: tabular-nums;
     ${props =>
         props.positionX >= props.boxWidth - OFFSET_LIMIT_HORIZONTAL &&

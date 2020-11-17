@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { CoinLogo, colors, variables } from '@trezor/components';
+import { CoinLogo, variables } from '@trezor/components';
 import styled, { css } from 'styled-components';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 import { Translation, FiatValue } from '@suite-components';
@@ -19,7 +19,7 @@ const Wrapper = styled.div<{ selected: boolean; type: string }>`
         props.selected &&
         css`
             border-radius: 4px;
-            background: ${colors.NEUE_BG_GRAY};
+            background: ${props => props.theme.BG_GREY_ALT};
             position: inherit;
             top: ${props.type !== 'normal'
                 ? '50px'
@@ -55,7 +55,7 @@ const AccountName = styled.div`
     white-space: nowrap;
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     line-height: 1.5;
     font-variant-numeric: tabular-nums;
 `;
@@ -63,14 +63,14 @@ const AccountName = styled.div`
 const Balance = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     line-height: 1.57;
 `;
 
 const FiatValueWrapper = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     line-height: 1.57;
 `;
 

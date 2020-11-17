@@ -2,14 +2,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
-import { variables, colors } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction } from '@wallet-types';
 
 const TimestampLink = styled.div`
     display: block;
     font-variant-numeric: tabular-nums;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     line-height: 1.57;

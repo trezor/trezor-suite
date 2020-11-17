@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { differenceInSeconds } from 'date-fns';
 import styled from 'styled-components';
-import { CoinLogo, variables, Icon, colors } from '@trezor/components';
+import { CoinLogo, variables, Icon } from '@trezor/components';
 import { BuyTrade } from 'invity-api';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
 
@@ -42,12 +42,12 @@ const SummaryRow = styled.div`
 `;
 
 const OrigAmount = styled.div`
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 const RefreshLabel = styled.div`
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
@@ -56,7 +56,7 @@ const RefreshTime = styled.div`
     padding-left: 4px;
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const StyledIcon = styled(Icon)`

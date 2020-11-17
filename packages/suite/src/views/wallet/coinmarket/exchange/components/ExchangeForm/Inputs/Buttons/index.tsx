@@ -1,4 +1,4 @@
-import { colors, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 import React from 'react';
 import BigNumber from 'bignumber.js';
 import { Translation } from '@suite-components';
@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 const TokenBalance = styled.div`
     padding: 0px 6px;
     font-size: ${variables.NEUE_FONT_SIZE.TINY};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const TokenBalanceValue = styled.span`
@@ -35,8 +35,8 @@ const Button = styled.div`
     margin-right: 10px;
     cursor: pointer;
     border-radius: 4px;
-    background-color: ${colors.NEUE_BG_GRAY};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    background-color: ${props => props.theme.BG_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;

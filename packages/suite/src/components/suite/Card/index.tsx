@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { CARD_PADDING_SIZE, CARD_PADDING_SIZE_LARGE } from '@suite-constants/layout';
 
 const getPaddingSize = (
@@ -26,7 +26,8 @@ const Content = styled.div<{ paddingSize: string }>`
     display: flex;
     border-radius: 6px;
     padding: ${props => props.paddingSize};
-    background: ${colors.WHITE};
+    color: ${props => props.theme.TYPE_DARK_GREY};
+    background: ${props => props.theme.BG_WHITE};
 `;
 
 const Header = styled.div`
@@ -40,7 +41,7 @@ const Title = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-transform: uppercase;
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const Description = styled.div``;

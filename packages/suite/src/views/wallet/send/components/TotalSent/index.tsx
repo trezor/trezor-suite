@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, colors } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
 import { formatNetworkAmount, formatAmount } from '@wallet-utils/accountUtils';
 import { Card, Translation, FiatValue, FormattedCryptoAmount } from '@suite-components';
@@ -24,13 +24,13 @@ const Label = styled.div`
     padding-right: 10px;
     text-transform: capitalize;
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const SecondaryLabel = styled.div`
     padding-top: 2px;
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const Right = styled.div`
@@ -45,7 +45,7 @@ const TotalSentCoin = styled.div`
     display: flex;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     padding-bottom: 6px;
 `;
 
@@ -53,7 +53,7 @@ const TotalSentFiat = styled.div`
     display: flex;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const TotalSent = () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { P, colors } from '@trezor/components';
+import { P } from '@trezor/components';
 import { Network } from '@wallet-types';
 import { Translation, ExternalLink } from '@suite-components';
 import { WIKI_BECH32_URL, WIKI_P2SH_URL, WIKI_P2PHK_URL } from '@suite-constants/urls';
@@ -13,7 +13,7 @@ interface Props {
 }
 
 const StyledP = styled(P)`
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     margin-bottom: 32px;
 `;
 

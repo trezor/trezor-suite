@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
-import { colors, variables, DeviceImage } from '@trezor/components';
+import { variables, DeviceImage } from '@trezor/components';
 import { SHAKE } from '@suite-support/styles/animations';
 import { WalletLabeling } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
@@ -16,13 +16,13 @@ const Wrapper = styled.div<{ triggerAnim?: boolean }>`
     width: 288px;
     padding: 12px;
     align-items: center;
-    background-color: ${colors.NEUE_BG_LIGHT_GREY};
+    background-color: ${props => props.theme.BG_LIGHT_GREY};
     cursor: pointer;
     margin-right: 24px;
 
     &:hover {
         border-radius: 4px;
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+        box-shadow: 0 1px 2px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
     }
 
     ${props =>
@@ -38,7 +38,7 @@ const Wrapper = styled.div<{ triggerAnim?: boolean }>`
 const DeviceLabel = styled.div`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     overflow: hidden;
     text-overflow: ellipsis;
     min-width: 0;
@@ -57,7 +57,7 @@ const DeviceImageWrapper = styled.div<{ lowerOpacity: boolean }>`
 const WalletNameWrapper = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

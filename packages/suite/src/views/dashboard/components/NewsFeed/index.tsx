@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme, css } from 'styled-components';
 import TextTruncate from 'react-text-truncate';
 import { Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
-import { colors, Button, variables } from '@trezor/components';
+import { Button, variables } from '@trezor/components';
 import { useFetchNews } from '@dashboard-hooks/useNews';
 
 const Posts = styled.div`
@@ -19,7 +19,7 @@ const BottomAction = styled.div`
     margin-top: 28px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     justify-content: center;
-    color: ${colors.BLACK25};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const Content = styled.div`
@@ -33,7 +33,7 @@ const Post = styled.div`
     display: flex;
     padding: 6px;
     flex-direction: column;
-    background: ${colors.WHITE};
+    background: ${props => props.theme.BG_WHITE};
     border-radius: 3px;
 `;
 
@@ -42,12 +42,18 @@ const Image = styled.img`
     height: 195px;
     border-radius: 3px;
     object-fit: cover;
+
+    ${props =>
+        props.theme.IMAGE_FILTER &&
+        css`
+            filter: ${props.theme.IMAGE_FILTER};
+        `}
 `;
 
 const Title = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     padding: 14px 0 8px 0;
     min-height: 62px;
 `;
@@ -57,13 +63,13 @@ const Description = styled.div`
     flex: 1;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const ReadMore = styled.a`
     display: flex;
     align-self: flex-start;
-    color: ${colors.BLACK17};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     margin: 10px 0 0 0;
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -74,6 +80,7 @@ const MediumLink = styled.a``;
 const NewsFeed = () => {
     const [visibleCount, incrementVisibleCount] = useState(3);
     const { posts, isError, fetchCount, incrementFetchCount } = useFetchNews();
+    const theme = useTheme();
 
     if (isError) return null;
 
@@ -113,7 +120,7 @@ const NewsFeed = () => {
                                 <Button
                                     variant="tertiary"
                                     alignIcon="right"
-                                    color={colors.BLACK0}
+                                    color={theme.TYPE_DARK_GREY}
                                     icon="EXTERNAL_LINK"
                                 >
                                     <Translation id="TR_READ_MORE" />

@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components';
 
 import { NEUE_FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
-import colors from '../../../config/colors';
 
 interface Props {
     textAlign?: 'left' | 'center' | 'right' | 'justify';
@@ -28,7 +27,7 @@ const baseStyles = css`
     line-height: normal;
     letter-spacing: normal;
     ${(props: Props) => props.fontWeight && fontWeightStyle}
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 
     ${props =>
         !props.noMargin &&

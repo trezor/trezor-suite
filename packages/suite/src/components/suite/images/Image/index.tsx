@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const PATH = 'images/svg';
@@ -69,6 +69,12 @@ export type Props = React.ImgHTMLAttributes<Omit<HTMLImageElement, 'src'>> & {
 const Image = styled.img`
     /* should not overflow it's container */
     max-width: 100%;
+
+    ${props =>
+        props.theme.IMAGE_FILTER &&
+        css`
+            filter: ${props.theme.IMAGE_FILTER};
+        `}
 `;
 
 const ImageComponent = ({ image, alt = '', ...props }: Props) => (

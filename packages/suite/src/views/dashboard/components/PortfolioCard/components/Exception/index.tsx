@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables, Button, IconProps } from '@trezor/components';
+import { variables, Button, IconProps } from '@trezor/components';
 import { Image, Translation } from '@suite-components';
 import { useDevice } from '@suite-hooks';
 import { useDispatch } from 'react-redux';
@@ -24,12 +24,12 @@ const Wrapper = styled.div`
 
 const Title = styled.div`
     font-size: ${variables.FONT_SIZE.H2};
-    color: ${colors.BLACK0};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const Description = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     text-align: center;
 `;
 

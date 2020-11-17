@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables, H2, Button } from '@trezor/components';
+import { variables, H2, Button } from '@trezor/components';
 import { Translation, Image } from '@suite-components';
 
 const Wrapper = styled.div`
@@ -19,14 +19,14 @@ const Content = styled.div`
 const Title = styled(H2)`
     display: flex;
     text-align: center;
-    color: ${colors.BLACK0};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const Description = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.SMALL};
     text-align: center;
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     margin-bottom: 10px;
 `;
 

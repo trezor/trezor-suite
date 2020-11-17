@@ -13,9 +13,10 @@ const Wrapper = styled.div<{ state: Props['state'] }>`
     flex: 1;
     border-radius: 6px;
     padding: 16px 14px;
-    border: solid 1px ${colors.NEUE_STROKE_GREY};
+    border: solid 1px ${props => props.theme.STROKE_GREY};
 
-    ${props => props.state && css && `border-left: 6px solid ${getStateColor(props.state)};`}
+    ${props =>
+        props.state && css && `border-left: 6px solid ${getStateColor(props.state, props.theme)};`}
     ${props => !props.state && css && `padding-left: 20px`}
 `;
 

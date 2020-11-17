@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, colors } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { isDesktop } from '@suite-utils/env';
 
@@ -21,7 +21,7 @@ const UpdateBridge = ({ transport, goto }: Props) => {
     return (
         <Wrapper variant="info">
             <Translation id="TR_NEW_TREZOR_BRIDGE_IS_AVAILABLE" />
-            <Button variant="tertiary" color={colors.WHITE} onClick={() => goto('suite-bridge')}>
+            <Button variant="tertiary" onClick={() => goto('suite-bridge')}>
                 <Translation id="TR_SHOW_DETAILS" />
             </Button>
         </Wrapper>

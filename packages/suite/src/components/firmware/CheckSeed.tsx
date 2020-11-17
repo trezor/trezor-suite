@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Button, Checkbox, colors } from '@trezor/components';
+import { Button, Checkbox } from '@trezor/components';
 import { useDevice, useFirmware } from '@suite-hooks';
 import { Translation } from '@suite-components';
 import { P, H2, WarningImg, SeedImg, ReconnectInNormalStep } from '@firmware-components';
@@ -9,7 +9,7 @@ import { P, H2, WarningImg, SeedImg, ReconnectInNormalStep } from '@firmware-com
 const CheckboxRow = styled.div`
     display: flex;
     flex-direction: row;
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
     width: 380px;
     padding: 20px 0;
     justify-content: center;

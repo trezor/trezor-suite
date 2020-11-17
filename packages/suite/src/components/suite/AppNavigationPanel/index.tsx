@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { H1, colors, variables } from '@trezor/components';
+import { H1, variables } from '@trezor/components';
 import React from 'react';
 import { MAX_WIDTH, MAX_WIDTH_WALLET_CONTENT } from '@suite-constants/layout';
 
@@ -7,8 +7,8 @@ const Wrapper = styled.div`
     display: flex;
     width: 100%;
     justify-content: center;
-    background: ${colors.NEUE_BG_LIGHT_GREY};
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    background: ${props => props.theme.BG_LIGHT_GREY};
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 
     padding: 24px 32px 0px 32px;
 
@@ -33,6 +33,7 @@ const BasicInfo = styled.div`
 const Title = styled(H1)`
     font-size: ${variables.NEUE_FONT_SIZE.H1};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     white-space: nowrap;
     overflow: hidden;
 `;

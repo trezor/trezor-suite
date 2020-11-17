@@ -3,7 +3,7 @@ import { FormattedDate } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
 
-import { Button, Modal, H2, variables, colors, Link } from '@trezor/components';
+import { Button, Modal, H2, variables, Link } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
 
@@ -15,17 +15,17 @@ import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
 
 const GreenH2 = styled(H2)`
     text-align: left;
-    color: ${colors.NEUE_TYPE_GREEN};
+    color: ${props => props.theme.TYPE_GREEN};
 `;
 
 const ChangelogWrapper = styled.div`
     margin: 20px 0px;
-    background: ${colors.NEUE_BG_GRAY};
+    background: ${props => props.theme.BG_GREY};
     border-radius: 8px;
     max-height: 400px;
     overflow-y: auto;
     padding: 16px 20px;
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     text-align: left;
@@ -81,7 +81,7 @@ const Divider = styled.div`
     width: 100%;
     height: 1px;
     margin: 30px 0px;
-    background: ${colors.NEUE_STROKE_GREY};
+    background: ${props => props.theme.STROKE_GREY};
 `;
 
 const Row = styled.div`
@@ -108,24 +108,24 @@ const RightCol = styled.div`
 const DateWrapper = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const DownloadProgress = styled.span`
     font-size: 20px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const ReceivedData = styled.span`
-    color: ${colors.NEUE_TYPE_GREEN};
+    color: ${props => props.theme.TYPE_GREEN};
 `;
 
 const TotalData = styled.span`
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 const Text = styled(H2)`
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -142,7 +142,7 @@ const MinimizeButton = styled(Button)`
 const Description = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 type ReleaseState = {

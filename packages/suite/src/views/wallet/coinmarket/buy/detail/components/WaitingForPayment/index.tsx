@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import { Button, variables, colors } from '@trezor/components';
+import { Button, variables } from '@trezor/components';
 import { CoinmarketTransactionId } from '@wallet-components';
 import { Translation } from '@suite-components/Translation';
 import { BuyTrade } from 'invity-api';
@@ -30,7 +30,7 @@ const Description = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin: 17px 0 10px 0;
     max-width: 200px;

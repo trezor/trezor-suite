@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { colors, variables, Icon } from '@trezor/components';
+import { variables, Icon, useTheme } from '@trezor/components';
 import { Translation, HiddenPlaceholder, Sign } from '@suite-components';
 import { isTxUnknown, getTargetAmount, getTxOperation } from '@wallet-utils/transactionUtils';
 import { WalletAccountTransaction } from '@wallet-types';
@@ -31,7 +31,7 @@ const ChevronIconWrapper = styled.div<{ show: boolean; animate: boolean }>`
 `;
 
 const CryptoAmount = styled.span`
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     /* line-height: 1.5; */
@@ -65,6 +65,7 @@ const TransactionHeading = ({
     nestedItemIsHovered,
     onClick,
 }: Props) => {
+    const theme = useTheme();
     const isTokenTransaction = transaction.tokens.length > 0;
     const target = transaction.targets[0];
     const transfer = transaction.tokens[0];
@@ -124,7 +125,7 @@ const TransactionHeading = ({
                 >
                     <Icon
                         size={nestedItemIsHovered || headingIsHovered ? 18 : 15}
-                        color={colors.BLACK25}
+                        color={theme.TYPE_DARK_GREY}
                         icon="ARROW_RIGHT"
                     />
                 </ChevronIconWrapper>

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, H2, Button } from '@trezor/components';
+import { H2, Button } from '@trezor/components';
 import { Translation, Image, TrezorLink } from '@suite-components';
 import { Account } from '@wallet-types';
 import { getNetwork } from '@wallet-utils/accountUtils';
@@ -14,7 +14,7 @@ const Wrapper = styled.div`
 const Title = styled(H2)`
     display: flex;
     text-align: center;
-    color: ${colors.BLACK0};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const StyledImage = styled(props => <Image {...props} />)`

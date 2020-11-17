@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import BigNumber from 'bignumber.js';
-import { colors, variables, Icon } from '@trezor/components';
+import { useTheme, variables, Icon } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { formatNetworkAmount, formatAmount } from '@wallet-utils/accountUtils';
 import { BTC_LOCKTIME_VALUE } from '@wallet-constants/sendForm';
@@ -17,13 +17,13 @@ const StyledBox = styled.div<{ state?: 'success' }>`
     flex-direction: column;
     flex: 1;
     border-radius: 6px;
-    border: solid 1px ${colors.NEUE_STROKE_GREY};
+    border: solid 1px ${props => props.theme.STROKE_GREY};
     margin-bottom: 20px;
 
     ${props =>
         props.state &&
         css`
-            border-left: 6px solid ${colors.NEUE_BG_GREEN};
+            border-left: 6px solid ${props => props.theme.BG_GREEN};
         `}
 
     ${props =>
@@ -41,7 +41,7 @@ const ExpandWrapper = styled(motion.div)`
     padding: ${ROW_PADDING};
     overflow: hidden;
     width: 100%;
-    border-top: solid 1px ${colors.NEUE_STROKE_GREY};
+    border-top: solid 1px ${props => props.theme.STROKE_GREY};
     padding-left: 40px; /* Left container padding + size of the icon + icon padding-right */
 `;
 
@@ -81,7 +81,7 @@ const Dot = styled.div<{ color: string }>`
 const Address = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-variant-numeric: slashed-zero tabular-nums;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -105,7 +105,7 @@ const Coin = styled.div<{ bold?: boolean }>`
     font-weight: ${props =>
         props.bold ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     align-items: center;
 `;
 
@@ -118,7 +118,7 @@ const Fiat = styled.div`
     text-align: right;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     margin-top: 4px;
 `;
 
@@ -175,6 +175,7 @@ export type Props = OutputProps & {
 export { Left, Right, Coin, Symbol, Fiat, Amounts };
 
 const Output = ({ type, state, label, value, symbol, token }: Props) => {
+    const theme = useTheme();
     const [isExpanded, setExpanded] = useState(false);
     let outputLabel: React.ReactNode = label;
 
@@ -214,9 +215,9 @@ const Output = ({ type, state, label, value, symbol, token }: Props) => {
             <Row responsive={type === 'regular'}>
                 <Left>
                     <IconWrapper>
-                        {!state && <Dot color={colors.NEUE_STROKE_GREY} />}
-                        {state === 'success' && <Icon color={colors.NEUE_BG_GREEN} icon="CHECK" />}
-                        {state === 'warning' && <Dot color={colors.NEUE_TYPE_ORANGE} />}
+                        {!state && <Dot color={theme.STROKE_GREY} />}
+                        {state === 'success' && <Icon color={theme.BG_GREEN} icon="CHECK" />}
+                        {state === 'warning' && <Dot color={theme.TYPE_ORANGE} />}
                     </IconWrapper>
                     <Address>{outputLabel}</Address>
                 </Left>

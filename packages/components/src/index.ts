@@ -1,5 +1,7 @@
-import colors from './config/colors';
+import colors, { THEME } from './config/colors';
 import * as variables from './config/variables';
+import { useTheme } from './utils';
+import { SuiteThemeColors } from './support/types';
 
 import { Button, ButtonProps } from './components/buttons/Button';
 import { ButtonPin, ButtonPinProps } from './components/buttons/Pin';
@@ -29,11 +31,13 @@ import { CoinLogo, CoinLogoProps } from './components/logos/CoinLogo';
 import { TrezorLogo, TrezorLogoProps } from './components/logos/TrezorLogo';
 import { Loader, LoaderProps } from './components/loaders/Loader';
 import { Tooltip, TooltipProps, tooltipGlobalStyles } from './components/Tooltip';
+import { scrollbarStyles } from './components/Scrollbar';
 import { SelectBar, SelectBarProps } from './components/form/SelectBar';
 import * as types from './support/types';
 
 export {
     colors,
+    THEME,
     variables,
     Button,
     ButtonProps,
@@ -87,4 +91,7 @@ export {
     SecurityCardProps,
     SelectBar,
     SelectBarProps,
+    useTheme,
+    SuiteThemeColors,
+    scrollbarStyles,
 };

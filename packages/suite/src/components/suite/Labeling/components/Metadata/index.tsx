@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
-import { Button, colors } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { useActions, useDiscovery, useSelector } from '@suite-hooks';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { MetadataAddPayload } from '@suite-types/metadata';
@@ -50,11 +50,11 @@ const SuccessButton = styled(Button)`
     cursor: wait;
     width: auto;
     margin-left: 14px;
-    background-color: ${colors.NEUE_BG_LIGHT_GREEN};
-    color: ${colors.NEUE_BG_GREEN};
+    background-color: ${props => props.theme.BG_LIGHT_GREEN};
+    color: ${props => props.theme.BG_GREEN};
     &:hover {
-        color: ${colors.NEUE_BG_GREEN};
-        background-color: ${colors.NEUE_BG_LIGHT_GREEN};
+        color: ${props => props.theme.BG_GREEN};
+        background-color: ${props => props.theme.BG_LIGHT_GREEN};
     }
 `;
 

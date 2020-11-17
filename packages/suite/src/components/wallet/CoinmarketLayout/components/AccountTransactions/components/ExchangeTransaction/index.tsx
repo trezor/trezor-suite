@@ -2,7 +2,7 @@ import React from 'react';
 import { FormattedDate } from 'react-intl';
 import styled from 'styled-components';
 import { ExchangeProviderInfo } from 'invity-api';
-import { Button, colors, Icon, variables } from '@trezor/components';
+import { Button, Icon, variables, useTheme } from '@trezor/components';
 import { CoinmarketExchangeProviderInfo } from '@wallet-components';
 import { TradeExchange } from '@wallet-reducers/coinmarketReducer';
 import * as routerActions from '@suite-actions/routerActions';
@@ -27,14 +27,14 @@ const Wrapper = styled.div`
     flex: 1;
     align-items: center;
     margin-bottom: 20px;
-    border: 1px solid ${colors.NEUE_STROKE_GREY};
+    border: 1px solid ${props => props.theme.STROKE_GREY};
     border-radius: 4px;
     padding: 12px 0;
 
     &:hover {
-        background: ${colors.WHITE};
-        border: 1px solid ${colors.WHITE};
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+        color: ${props => props.theme.BG_WHITE};
+        border: 1px solid ${props => props.theme.TYPE_WHITE};
+        box-shadow: 0 1px 2px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
     }
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -65,7 +65,7 @@ const BuyColumn = styled(Column)`
         border-left: 0;
     }
 
-    border-left: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-left: 1px solid ${props => props.theme.STROKE_GREY};
 `;
 
 const ProviderColumn = styled(Column)`
@@ -74,7 +74,7 @@ const ProviderColumn = styled(Column)`
 
 const TradeID = styled.span`
     padding-left: 5px;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     overflow: hidden;
     text-overflow: ellipsis;
@@ -83,14 +83,14 @@ const TradeID = styled.span`
 const Row = styled.div`
     display: flex;
     align-items: center;
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const SmallRow = styled.div`
     padding-top: 8px;
     display: flex;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.TINY};
     white-space: nowrap;
@@ -109,6 +109,7 @@ const Arrow = styled.div`
 `;
 
 const ExchangeTransaction = ({ trade, providers, account }: Props) => {
+    const theme = useTheme();
     const { goto, saveTransactionId } = useActions({
         goto: routerActions.goto,
         saveTransactionId: coinmarketExchangeActions.saveTransactionId,
@@ -137,7 +138,7 @@ const ExchangeTransaction = ({ trade, providers, account }: Props) => {
                         </HiddenPlaceholder>
                     </Amount>
                     <Arrow>
-                        <Icon color={colors.NEUE_TYPE_LIGHT_GREY} size={13} icon="ARROW_RIGHT" />
+                        <Icon color={theme.TYPE_LIGHT_GREY} size={13} icon="ARROW_RIGHT" />
                     </Arrow>
                     <HiddenPlaceholder>
                         {formatCryptoAmount(Number(receiveStringAmount))} {receive}

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import styled, { css } from 'styled-components';
-import { colors, variables, Loader, Card } from '@trezor/components';
+import { variables, Loader, Card } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
 import { useSelector } from '@suite-hooks';
@@ -17,7 +17,7 @@ const StyledCard = styled(Card)<{ isPending: boolean }>`
     ${props =>
         props.isPending &&
         css`
-            border-left: 6px solid ${colors.NEUE_TYPE_ORANGE};
+            border-left: 6px solid ${props => props.theme.TYPE_ORANGE};
             padding-left: 18px;
         `}
 `;
@@ -40,7 +40,7 @@ const LoaderWrapper = styled.div`
 
 const LoaderText = styled.div`
     display: flex;
-    color: ${colors.BLACK25};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     text-align: center;
 `;

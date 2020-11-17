@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, colors } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { Translation } from '@suite-components';
 
 import Wrapper from './components/Wrapper';
@@ -23,7 +23,6 @@ const NoBackup = ({ device, goto }: Props) => {
             </Message>
             <Button
                 variant="tertiary"
-                color={colors.WHITE}
                 onClick={() => goto('backup-index')}
                 data-test="@notification/no-backup/button"
             >

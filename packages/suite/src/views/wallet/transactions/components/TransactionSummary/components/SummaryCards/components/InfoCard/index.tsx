@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors, variables, Loader, Card } from '@trezor/components';
+import { variables, Loader, Card } from '@trezor/components';
 import { HiddenPlaceholder, FormattedCryptoAmount, Sign } from '@suite-components';
 import { Account } from '@wallet-types';
 import BigNumber from 'bignumber.js';
@@ -21,7 +21,7 @@ const InfoCardContent = styled.div`
 const Title = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     text-transform: uppercase;
     margin-bottom: 10px;
 `;
@@ -30,7 +30,7 @@ const Value = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     white-space: nowrap;
     line-height: 1.5;
 `;
@@ -38,7 +38,7 @@ const Value = styled.div`
 const SecondaryValueWrapper = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-variant-numeric: tabular-nums;
     /* margin-left: 1ch; */
     line-height: 1.57;

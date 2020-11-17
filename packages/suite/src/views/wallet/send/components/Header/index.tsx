@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, colors, Dropdown } from '@trezor/components';
+import { variables, Dropdown } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { useSendFormContext } from '@wallet-hooks';
@@ -19,7 +19,7 @@ const HeaderLeft = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-transform: uppercase;
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const HeaderRight = styled.div`

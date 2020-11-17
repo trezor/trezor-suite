@@ -14,8 +14,8 @@ const Titlebar = styled.div`
     position: fixed;
     z-index: 1000000;
     position: relative;
-    background: ${colors.NEUE_TYPE_DARK_GREY};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    background: ${colors.TYPE_DARK_GREY}; // not using theme on purpose
+    color: ${colors.TYPE_LIGHT_GREY};
 `;
 
 const Drag = styled.div`
@@ -35,8 +35,7 @@ const Action = styled.div<{ isMac?: boolean; isDisabled?: boolean; isActive?: bo
     width: ${props => (props.isMac ? 12 : TITLEBAR_HEIGHT)}px;
     height: ${props => (props.isMac ? 12 : TITLEBAR_HEIGHT)}px;
     ${props => (props.isMac ? 'margin: 0 8px 0 0;' : 'margin: 0;')}
-    ${props =>
-        props.isMac && !props.isActive && `border: 1px solid ${colors.NEUE_TYPE_LIGHT_GREY};`}
+    ${props => props.isMac && !props.isActive && `border: 1px solid ${colors.TYPE_LIGHT_GREY};`}
     border-radius: ${props => (props.isMac ? 50 : 0)}px;
     background: transparent;
     -webkit-app-region: no-drag;
@@ -47,9 +46,9 @@ const Action = styled.div<{ isMac?: boolean; isDisabled?: boolean; isActive?: bo
     ${props =>
         !props.isMac &&
         `&:hover {
-            background: ${colors.NEUE_TYPE_LIGHT_GREY};
+            background: ${colors.TYPE_LIGHT_GREY};
             & svg {
-                fill: ${colors.WHITE}
+                fill: ${colors.TYPE_WHITE}
             }
         }`}
 `;
@@ -58,11 +57,11 @@ const ActionClose = styled(Action)`
     ${props =>
         !props.isMac &&
         `&:hover {
-            background: ${colors.NEUE_TYPE_RED};
+            background: ${colors.TYPE_RED};
         }`}
 `;
 
-// ${props => props.isMac && props.isActive && `background: ${colors.NEUE_TYPE_RED};`}
+// ${props => props.isMac && props.isActive && `background: ${colors.TYPE_RED};`}
 
 const ActionMinimize = styled(Action)`
     order: ${props => (props.isMac ? '0' : '1')};
@@ -105,7 +104,7 @@ const Actions = styled.div<{ isMac?: boolean; isDisabled?: boolean; isActive?: b
                 background: #fabe3e;
             }`
                 : `& > ${ActionMinimize} {
-                border: 1px solid ${colors.NEUE_TYPE_LIGHT_GREY};
+                border: 1px solid ${colors.TYPE_LIGHT_GREY};
             }`
         }
     `}
@@ -140,7 +139,7 @@ const DesktopTitlebar = () => {
 
     const isMac = isMacOS();
     const iconSize = isMac ? 10 : 16;
-    const iconColor = isMac ? colors.NEUE_TYPE_DARK_GREY : colors.NEUE_TYPE_LIGHT_GREY;
+    const iconColor = isMac ? colors.TYPE_DARK_GREY : colors.TYPE_LIGHT_GREY;
     const isMinimizedDisabled = isMac && maximized;
 
     return (

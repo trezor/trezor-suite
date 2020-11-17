@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Image } from '@suite-components';
@@ -7,6 +7,12 @@ import { Image } from '@suite-components';
 const StyledImg = styled.img`
     flex: 1 0 auto;
     margin: auto;
+
+    ${props =>
+        props.theme.IMAGE_FILTER &&
+        css`
+            filter: ${props.theme.IMAGE_FILTER};
+        `}
 `;
 interface Props {
     model: number;

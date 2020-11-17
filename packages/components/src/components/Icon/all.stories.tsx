@@ -27,7 +27,7 @@ const IconWrapper = styled.div`
 
 const IconText = styled.div`
     padding-bottom: 10px;
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 storiesOf('Icons', module).add(
@@ -40,7 +40,6 @@ storiesOf('Icons', module).add(
                         <IconText>{icon}</IconText>
                         <Icon
                             icon={icon}
-                            color={colors.BLACK17}
                             data-test={`icon-${icon.toLowerCase().replace('_', '-')}`}
                         />
                     </IconWrapper>

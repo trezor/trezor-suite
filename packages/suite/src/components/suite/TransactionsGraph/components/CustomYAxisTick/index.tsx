@@ -1,5 +1,5 @@
 import React, { useRef, useLayoutEffect } from 'react';
-import { colors } from '@trezor/components';
+import { useTheme } from '@trezor/components';
 import { FormattedNumber } from '@suite-components';
 import { formatCoinBalance } from '@wallet-utils/balanceUtils';
 import BigNumber from 'bignumber.js';
@@ -15,6 +15,7 @@ type CustomProps =
 
 const CustomYAxisTick = (props: CustomProps) => {
     const { x, y, payload, setWidth } = props;
+    const theme = useTheme();
     const ref = useRef<SVGGElement>(null);
 
     useLayoutEffect(() => {
@@ -35,7 +36,7 @@ const CustomYAxisTick = (props: CustomProps) => {
                 y={0}
                 dy={2}
                 textAnchor="start"
-                fill={colors.NEUE_TYPE_LIGHT_GREY}
+                fill={theme.TYPE_LIGHT_GREY}
                 style={{ fontVariantNumeric: 'tabular-nums' }}
             >
                 {props.localCurrency && (

@@ -3,17 +3,17 @@ import { UnavailableCapability } from 'trezor-connect';
 import { Translation } from '@suite-components/Translation';
 
 import styled from 'styled-components';
-import { H2, P, colors } from '@trezor/components';
+import { H2, P } from '@trezor/components';
 import { Network } from '@wallet-types';
 
 const Wrapper = styled.div`
     width: 100%;
     margin-top: 20px;
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const StyledP = styled(P)`
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 interface Props {

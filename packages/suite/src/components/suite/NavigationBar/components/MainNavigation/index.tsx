@@ -1,7 +1,7 @@
 import React from 'react';
 import { findRouteByName } from '@suite-utils/router';
 import styled, { css } from 'styled-components';
-import { colors, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { MAIN_MENU_ITEMS } from '@suite-constants/menu';
 import { useAnalytics, useActions, useSelector } from '@suite-hooks';
@@ -24,7 +24,7 @@ const MobileWrapper = styled.div`
     padding: 0px 16px;
     flex: 1;
 
-    border-bottom: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 `;
 
 const MenuItem = styled.div<ComponentProps>`
@@ -56,7 +56,7 @@ const MobileMenuItem = styled.div<ComponentProps>`
         `}
 
     & + & {
-        border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+        border-top: 1px solid ${props => props.theme.STROKE_GREY};
     }
 `;
 
@@ -65,13 +65,13 @@ const ItemTitleWrapper = styled.span`
 `;
 
 const ItemTitle = styled.span<ComponentProps>`
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
     ${props =>
         props.isActive &&
         css`
-            color: ${colors.BLACK25};
+            color: ${props => props.theme.TYPE_DARK_GREY};
         `}
 
     ${props =>
@@ -86,8 +86,8 @@ const NewBadge = styled.span`
     top: -14px;
     right: -30px;
     padding: 3px 3px 2px 3px;
-    background: ${colors.NEUE_BG_LIGHT_GREEN};
-    color: ${colors.NEUE_TYPE_GREEN};
+    background: ${props => props.theme.BG_LIGHT_GREEN};
+    color: ${props => props.theme.TYPE_GREEN};
     letter-spacing: 0.2px;
     text-transform: UPPERCASE;
     font-size: 12px;

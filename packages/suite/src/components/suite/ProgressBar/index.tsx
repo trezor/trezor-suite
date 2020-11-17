@@ -1,7 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colors } from '@trezor/components';
-
 import HelpBuyIcons from './components/HelpBuyIcons';
 
 const Wrapper = styled.div`
@@ -25,23 +23,23 @@ interface BarProps {
 
 const BackgroundBar = styled(Bar)`
     background-color: initial;
-    border: solid 2px ${colors.BLACK92};
+    border: solid 2px ${props => props.theme.BG_LIGHT_GREY};
     width: 100%;
     bottom: 12px;
 `;
 
 const GrayBar = styled(Bar)<BarProps>`
     bottom: 6px;
-    background-color: ${colors.BLACK92};
-    border: solid 2px ${colors.BLACK92};
+    background-color: ${props => props.theme.BG_LIGHT_GREY};
+    border: solid 2px ${props => props.theme.BG_LIGHT_GREY};
     width: ${props => props.width};
     z-index: 2;
     transition: all 0.5s;
 `;
 
 const GreenBar = styled(Bar)<BarProps>`
-    background-color: ${colors.GREEN};
-    border: solid 2px ${colors.GREEN};
+    background-color: ${props => props.theme.TYPE_GREEN};
+    border: solid 2px ${props => props.theme.TYPE_GREEN};
     width: ${props => props.width};
     z-index: 3;
     transition: all 0.5s;

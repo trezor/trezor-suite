@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback, createRef, useRef } from 'react';
 import styled from 'styled-components';
-import { Icon, colors } from '@trezor/components';
+import { Icon, useTheme } from '@trezor/components';
 
 import { moveCaretToEndOfContentEditable } from '@suite-utils/dom';
 
@@ -29,6 +29,7 @@ export const withEditable = (WrappedComponent: React.FC) => ({
     onBlur,
     ...props
 }: Props) => {
+    const theme = useTheme();
     const [touched, setTouched] = useState(false);
     const divRef = useRef<HTMLDivElement>(null);
     const wrapperRef = createRef();
@@ -109,10 +110,13 @@ export const withEditable = (WrappedComponent: React.FC) => ({
                     contentEditable
                     ref={divRef}
                     data-test="@metadata/input"
-                    style={{ paddingLeft: '1px', color: !touched ? colors.BLACK50 : 'inherit' }}
+                    style={{
+                        paddingLeft: '1px',
+                        color: !touched ? theme.TYPE_LIGHT_GREY : 'inherit',
+                    }}
                 />
             </WrappedComponent>
-            <IconWrapper bgColor={colors.NEUE_BG_LIGHT_GREEN}>
+            <IconWrapper bgColor={theme.BG_LIGHT_GREEN}>
                 <Icon
                     useCursorPointer
                     size={14}
@@ -122,10 +126,10 @@ export const withEditable = (WrappedComponent: React.FC) => ({
                         e.stopPropagation();
                         submit(divRef?.current?.textContent);
                     }}
-                    color={colors.NEUE_TYPE_GREEN}
+                    color={theme.TYPE_GREEN}
                 />
             </IconWrapper>
-            <IconWrapper bgColor={colors.NEUE_BG_GRAY}>
+            <IconWrapper bgColor={theme.BG_GREY}>
                 <Icon
                     useCursorPointer
                     size={14}
@@ -135,7 +139,7 @@ export const withEditable = (WrappedComponent: React.FC) => ({
                         e.stopPropagation();
                         onBlur();
                     }}
-                    color={colors.NEUE_TYPE_DARK_GREY}
+                    color={theme.TYPE_DARK_GREY}
                 />
             </IconWrapper>
         </>

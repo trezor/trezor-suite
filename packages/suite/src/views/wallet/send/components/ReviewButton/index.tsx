@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, colors } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { useDevice } from '@suite-hooks';
 import { useSendFormContext } from '@wallet-hooks';
 import { Translation } from '@suite-components/Translation';
@@ -22,7 +22,7 @@ const Row = styled.div`
     justify-content: center;
     align-items: center;
     padding-bottom: 5px;
-    color: ${colors.BLACK50};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 
     &:last-child {
         padding-bottom: 0;

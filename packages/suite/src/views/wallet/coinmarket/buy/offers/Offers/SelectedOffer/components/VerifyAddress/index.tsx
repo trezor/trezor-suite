@@ -8,7 +8,7 @@ import {
     HiddenPlaceholder,
     AccountLabeling,
 } from '@suite-components';
-import { Input, Button, colors, variables, CoinLogo, DeviceImage } from '@trezor/components';
+import { Input, Button, variables, CoinLogo, DeviceImage } from '@trezor/components';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
 
 const Wrapper = styled.div`
@@ -67,7 +67,7 @@ const StyledDeviceImage = styled(DeviceImage)`
 const Amount = styled.div`
     display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
@@ -83,8 +83,8 @@ const FakeInput = styled.div`
     min-height: 61px;
     align-items: center;
     border-radius: 4px;
-    border: solid 2px ${colors.NEUE_STROKE_GREY};
-    background: ${colors.WHITE};
+    border: solid 2px ${props => props.theme.STROKE_GREY};
+    color: ${props => props.theme.BG_WHITE};
 `;
 
 const ButtonWrapper = styled.div`
@@ -92,7 +92,7 @@ const ButtonWrapper = styled.div`
     align-items: center;
     justify-content: center;
     padding-top: 20px;
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
     margin: 20px 0;
 `;
 
@@ -101,7 +101,7 @@ const Confirmed = styled.div`
     height: 60px;
     font-size: ${variables.FONT_SIZE.BIG};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    background: ${colors.NEUE_BG_GRAY};
+    background: ${props => props.theme.BG_GREY};
     align-items: center;
     justify-content: center;
 `;

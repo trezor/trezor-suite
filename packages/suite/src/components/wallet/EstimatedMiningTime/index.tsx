@@ -3,12 +3,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components/Translation';
 
-import { variables, colors } from '@trezor/components';
+import { variables } from '@trezor/components';
 
 const Wrapper = styled.span`
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const Duration = styled.span`

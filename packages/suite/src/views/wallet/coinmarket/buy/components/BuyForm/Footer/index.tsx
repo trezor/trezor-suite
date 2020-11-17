@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, CleanSelect, colors, variables } from '@trezor/components';
+import { Button, CleanSelect, variables } from '@trezor/components';
 import regional from '@wallet-constants/coinmarket/regional';
 import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
 import { getCountryLabelParts } from '@wallet-utils/coinmarket/buyUtils';
@@ -12,7 +12,7 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     padding-top: 30px;
-    border-top: 1px solid ${colors.NEUE_STROKE_GREY};
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         flex-direction: column;
@@ -32,7 +32,7 @@ const Flag = styled.div`
 const LabelText = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${colors.NEUE_TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 const Left = styled.div`
@@ -55,7 +55,7 @@ const Label = styled.div`
     align-items: center;
     white-space: nowrap;
     padding-top: 1px;
-    color: ${colors.NEUE_TYPE_LIGHT_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
