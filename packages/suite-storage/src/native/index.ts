@@ -47,13 +47,13 @@ class CommonDB<TDBStructure> {
         CommonDB.instance = this;
     }
 
-    static isDBAvailable = () => {
+    static isDBAvailable = (): Promise<boolean> => {
         // Firefox doesn't support indexedDB while in incognito mode, but still returns valid window.indexedDB object.
         // https://bugzilla.mozilla.org/show_bug.cgi?id=781982
         // so we need to try accessing the IDB. try/catch around idb.open() does not catch the error (bug in idb?), that's why we use callbacks.
         // this solution calls callback function from within onerror/onsuccess event handlers.
         // For other browsers checking the window.indexedDB should be enough.
-        return false;
+        return Promise.resolve(false);
         // const isFirefox = navigator && navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
         // return new Promise((resolve, _reject) => {
         //     if (isFirefox) {
