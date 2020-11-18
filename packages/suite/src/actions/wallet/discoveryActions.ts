@@ -345,6 +345,9 @@ export const start = () => async (dispatch: Dispatch, getState: GetState): Promi
                 dispatch({ type: SUITE.REQUEST_AUTH_CONFIRM });
             }
         }
+        
+        // if status prevDiscovery === running, something changed, try
+
         dispatch(
             update(
                 {

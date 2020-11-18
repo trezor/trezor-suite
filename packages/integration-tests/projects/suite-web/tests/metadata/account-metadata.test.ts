@@ -5,8 +5,8 @@ import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
 
 // fixture contains number of request that given provider needs go through this test scenario
 const fixtures = [
-    { provider: 'dropbox', numberOfRequests: [24, 43] },
-    { provider: 'google', numberOfRequests: [10, 16] },
+    { provider: 'dropbox', numberOfRequests: [24, 25] },
+    { provider: 'google', numberOfRequests: [10, 12] },
 ] as const;
 
 describe(`Metadata is by default disabled, this means, that application does not try to generate master key and connect to cloud.

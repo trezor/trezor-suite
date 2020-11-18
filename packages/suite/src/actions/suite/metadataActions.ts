@@ -224,7 +224,7 @@ export const fetchMetadata = (deviceState: string) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const provider = await dispatch(getProvider());
+    const provider = dispatch(getProvider());
     if (!provider) {
         return;
     }
