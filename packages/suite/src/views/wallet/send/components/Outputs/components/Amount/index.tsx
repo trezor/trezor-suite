@@ -16,7 +16,6 @@ import Fiat from './components/Fiat';
 
 const Wrapper = styled.div`
     display: flex;
-    flex-wrap: wrap;
     flex: 1;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
@@ -65,6 +64,7 @@ const TransferIconWrapper = styled.div`
 
     @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
         /* transform: rotate(90deg); */
+        align-self: center;
         margin: 0px;
     }
 `;
@@ -235,7 +235,7 @@ const Amount = ({ output, outputId }: Props) => {
                                     <StyledTransferIcon
                                         icon="TRANSFER"
                                         size={16}
-                                        color={theme.TYPE_DARK_GREY}
+                                        color={theme.TYPE_LIGHT_GREY}
                                     />
                                 </TransferIconWrapper>
                                 <Right>
