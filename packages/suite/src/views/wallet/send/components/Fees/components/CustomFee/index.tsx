@@ -42,10 +42,10 @@ const CustomFee = () => {
         <Wrapper>
             <StyledInput
                 noTopLabel
+                errorPosition="right"
                 variant="small"
                 monospace
                 width={120}
-                wrapperProps={{ width: '120' }}
                 state={getInputState(feePerUnitError, feePerUnitValue)}
                 innerAddon={<Units>{getFeeUnits(network.networkType)}</Units>}
                 onChange={() => {
