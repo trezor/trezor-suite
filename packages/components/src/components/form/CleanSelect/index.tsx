@@ -99,12 +99,12 @@ const selectStyle = (
     }),
     menuList: (base: Record<string, any>) => ({
         ...base,
-        background: theme.BG_WHITE,
+        background: theme.BG_WHITE_ALT,
         padding: 0,
     }),
     option: (base: Record<string, any>, { isFocused }: { isFocused: boolean }) => ({
         ...base,
-        background: isFocused ? theme.BG_GREY : theme.BG_WHITE,
+        background: isFocused ? theme.BG_WHITE_ALT_HOVER : theme.BG_WHITE_ALT,
         color: theme.TYPE_DARK_GREY,
         fontSize: variables.FONT_SIZE.SMALL,
         fontWeight: variables.FONT_WEIGHT.MEDIUM,

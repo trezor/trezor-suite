@@ -176,7 +176,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                             />
                             <Tooltip
                                 position={{ y: 0, x: 0 }}
-                                cursor={{ stroke: '#2b2c4f', strokeWidth: 1 }}
+                                cursor={{ stroke: theme.BG_TOOLTIP, strokeWidth: 1 }}
                                 content={
                                     props.variant === 'one-asset' ? (
                                         <CustomTooltipAccount

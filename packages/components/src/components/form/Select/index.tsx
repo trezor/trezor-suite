@@ -3,6 +3,7 @@ import ReactSelect, { components, Props as SelectProps } from 'react-select';
 import styled from 'styled-components';
 import { variables } from '../../../config';
 import { useTheme } from '../../../utils';
+import { scrollbarStyles } from '../../../index';
 import { InputVariant, SuiteThemeColors } from '../../../support/types';
 
 const selectStyle = (
@@ -36,7 +37,7 @@ const selectStyle = (
             borderRadius: '4px',
             borderWidth: '2px',
             borderColor: theme.STROKE_GREY,
-            backgroundColor: theme.BG_WHITE,
+            backgroundColor: 'transparent',
             boxShadow: 'none',
             '&:hover, &:focus': {
                 cursor: 'pointer',
@@ -69,13 +70,13 @@ const selectStyle = (
         ...base,
         padding: 0,
         boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.2)',
-        background: theme.BG_WHITE,
+        background: theme.BG_WHITE_ALT,
         borderRadius: '4px',
     }),
     option: (base: Record<string, any>, { isFocused }: { isFocused: boolean }) => ({
         ...base,
         color: theme.TYPE_DARK_GREY,
-        background: isFocused ? theme.BG_GREY : theme.BG_WHITE,
+        background: isFocused ? theme.BG_WHITE_ALT_HOVER : theme.BG_WHITE_ALT,
         borderRadius: 0,
         '&:hover': {
             cursor: 'pointer',
@@ -88,6 +89,10 @@ const Wrapper = styled.div<Props>`
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+
+    .react-select__menu-list {
+        ${scrollbarStyles}
+    }
 `;
 
 const Label = styled.span`
@@ -146,6 +151,7 @@ const Select = ({
         <Wrapper className={className} width={width} {...wrapperProps}>
             {!noTopLabel && <Label>{label}</Label>}
             <ReactSelect
+                classNamePrefix="react-select"
                 styles={selectStyle(isSearchable, withDropdownIndicator, variant, isClean, theme)}
                 isSearchable={isSearchable}
                 {...props}

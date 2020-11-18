@@ -78,7 +78,7 @@ const Wrapper = styled.button<WrapperProps>`
     ${props =>
         props.variant === 'secondary' &&
         css`
-            background: ${props => props.theme.BG_LIGHT_GREEN};
+            background: ${props => props.theme.BG_SECONDARY};
             font-weight: ${variables.FONT_WEIGHT.MEDIUM};
             color: ${props => props.theme.TYPE_GREEN};
 
@@ -86,7 +86,7 @@ const Wrapper = styled.button<WrapperProps>`
             &:focus,
             &:active {
                 /* we use this color only for this case  */
-                background: ${props => props.theme.BG_LIGHT_GREEN_HOVER};
+                background: ${props => props.theme.BG_SECONDARY_HOVER};
             }
         `}
 

@@ -5,12 +5,16 @@ export const THEME = {
     light: {
         BG_GREEN: '#39a814',
         BG_LIGHT_GREEN: '#effaec',
+        BG_SECONDARY: '#effaec', // used for secondary button, in light mode same as LIGHT_GREEN
+        BG_SECONDARY_HOVER: '#e8f3e5',
         BG_GREEN_HOVER: '#339714',
         BG_LIGHT_GREEN_HOVER: '#e8f3e5',
         BG_GREY: '#f4f4f4',
         BG_GREY_ALT: '#f4f4f4',
         BG_LIGHT_GREY: '#fcfcfc',
         BG_WHITE: '#ffffff',
+        BG_WHITE_ALT: '#ffffff', // used for dropdown menus
+        BG_WHITE_ALT_HOVER: '#f4f4f4', // used for dropdown menus
         BG_BLUE: '#1faaff',
         BG_RED: '#d04949',
         BG_LIGHT_RED: '#F6E2E2',
@@ -45,15 +49,19 @@ export const THEME = {
         BG_GREEN: '#5ea447',
         BG_GREEN_HOVER: '#4e883b', // improvisation
         BG_LIGHT_GREEN: '#1a2516',
+        BG_SECONDARY: '#3a3b3c', // special color for secondary button bg, in dark mode it is same as tertiary
+        BG_SECONDARY_HOVER: '#373839', // special color for secondary button bg, in dark mode it is same as tertiary
         BG_LIGHT_GREEN_HOVER: '#131d10', // improvisation
         BG_GREY: '#18191a',
         BG_GREY_ALT: '#3a3b3c', // used for selected account item, account search input, tertiary buttons
         BG_LIGHT_GREY: '#212223',
         BG_WHITE: '#242526',
+        BG_WHITE_ALT: '#3a3b3c',
+        BG_WHITE_ALT_HOVER: '#444546',
         BG_BLUE: '#197eaa', // used for big app notification (eg. new fw update)
         BG_RED: '#ab2626', // used for big app notification
         BG_LIGHT_RED: '#5a1616', // used for outer glow for disconnected device status dot
-        BG_TOOLTIP: '#151524', // improvisation
+        BG_TOOLTIP: '#3a3b3c', // same as STROKE_GREY in dark theme
 
         TYPE_GREEN: '#66ab4e',
         TYPE_ORANGE: '#9b813b',
@@ -77,7 +85,7 @@ export const THEME = {
         GRADIENT_RED_START: '#d15b5b', // same as in light theme
         GRADIENT_RED_END: '#e75f5f', // same as in light theme
 
-        BOX_SHADOW_BLACK_15: 'rgba(0, 0, 0, 0.5)',
+        BOX_SHADOW_BLACK_15: 'rgba(0, 0, 0, 0.2)',
         BOX_SHADOW_BLACK_20: 'rgba(0, 0, 0, 0.2)', // shadow around dropdown
         BOX_SHADOW_MODAL: 'rgba(0, 0, 0, 0.5)', // shadow around modal
         IMAGE_FILTER: 'brightness(0.8) contrast(1.2) saturate(1.2)',
@@ -88,14 +96,18 @@ export const THEME = {
         BG_GREEN_HOVER: '#4e883b', // improvisation
         BG_LIGHT_GREEN: '#1a2516',
         BG_LIGHT_GREEN_HOVER: '#131d10', // improvisation
+        BG_SECONDARY: '#3a3b3c', // TODO
+        BG_SECONDARY_HOVER: '#373839', // TODO
         BG_GREY: '#000000',
         BG_GREY_ALT: '#262626', // used for selected account item, account search input, tertiary buttons
         BG_LIGHT_GREY: '#0c0c0c',
         BG_WHITE: '#101010',
+        BG_WHITE_ALT: '#3a3b3c', // TODO
+        BG_WHITE_ALT_HOVER: '#444546', // TODO
         BG_BLUE: '#197eaa', // used for big app notification (eg. new fw update)
         BG_RED: '#ab2626', // used for big app notification
         BG_LIGHT_RED: '#5a1616', // used for outer glow for disconnected device status dot
-        BG_TOOLTIP: '#151524', // improvisation
+        BG_TOOLTIP: '#151524', // todo
 
         TYPE_GREEN: '#6fa95c',
         TYPE_ORANGE: '#9b813b',
@@ -119,7 +131,7 @@ export const THEME = {
         GRADIENT_RED_START: '#d15b5b', // same as in light theme
         GRADIENT_RED_END: '#e75f5f', // same as in light theme
 
-        BOX_SHADOW_BLACK_15: 'rgba(0, 0, 0, 0.5)',
+        BOX_SHADOW_BLACK_15: 'rgba(0, 0, 0, 0.2)',
         BOX_SHADOW_BLACK_20: 'rgba(255, 255, 255, 0.1)', // shadow around dropdown
         BOX_SHADOW_MODAL: 'rgba(0, 0, 0, 0.5)', // shadow around modal
         IMAGE_FILTER: 'brightness(0.8) contrast(1.2) saturate(1.2)',
