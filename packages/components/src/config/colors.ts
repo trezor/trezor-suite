@@ -25,7 +25,7 @@ export const THEME = {
         TYPE_LIGHTER_GREY: '#bdbdbd',
         TYPE_WHITE: '#ffffff',
 
-        SCROLLBAR_THUMB: '#babac0',
+        SCROLLBAR_THUMB: '#dcdcdc',
         STROKE_GREY: '#e8e8e8',
         STROKE_LIGHT_GREY: '#f4f4f4',
 
