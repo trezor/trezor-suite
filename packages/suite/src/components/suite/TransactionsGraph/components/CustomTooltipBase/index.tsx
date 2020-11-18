@@ -62,7 +62,7 @@ const CustomTooltipWrapper = styled.div<{
         height: 0;
         border-left: 10px solid transparent;
         border-right: 10px solid transparent;
-        border-top: 10px solid rgba(38, 39, 66, 1);
+        border-top: 10px solid ${props => props.theme.BG_TOOLTIP};
     }
 `;
 

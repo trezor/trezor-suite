@@ -32,7 +32,7 @@ const Menu = styled.ul<MenuProps>`
         props.alignMenu === 'top-left' || props.alignMenu === 'top-right'
             ? `-${props.offset}px`
             : `${props.offset}px`};
-    background: ${props => props.theme.BG_WHITE};
+    background: ${props => props.theme.BG_WHITE_ALT};
     overflow: hidden;
 
     ${props =>
@@ -89,7 +89,7 @@ const MenuItem = styled.li<MenuItemProps>`
         !props.item.noHover &&
         css`
             &:hover {
-                background: ${props.theme.BG_GREY};
+                background: ${props.theme.BG_WHITE_ALT_HOVER};
             }
         `}
 `;

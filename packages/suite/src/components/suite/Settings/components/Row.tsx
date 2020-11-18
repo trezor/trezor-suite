@@ -12,7 +12,7 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     & + & {
-        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        border-top: 1px solid ${props => props.theme.STROKE_GREY};
     }
 `;
 
