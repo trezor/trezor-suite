@@ -1,12 +1,11 @@
-import { Dropbox, users, DropboxAuth } from 'dropbox';
+import { Dropbox, DropboxAuth, users } from 'dropbox';
 import { AbstractMetadataProvider } from '@suite-types/metadata';
 import { extractCredentialsFromAuthorizationFlow, getOauthReceiverUrl } from '@suite-utils/oauth';
 import { METADATA } from '@suite-actions/constants';
 import { getRandomId } from '@suite-utils/random';
 
-type DropboxMeow = Dropbox & { auth: DropboxAuth };
 class DropboxProvider extends AbstractMetadataProvider {
-    client: Dropbox;
+    client: Dropbox & { auth: DropboxAuth };
     user: users.FullAccount | undefined;
     isCloud = true;
 
@@ -14,12 +13,20 @@ class DropboxProvider extends AbstractMetadataProvider {
         super('dropbox');
 
         const fetch = window.fetch.bind(window);
-        this.client = new Dropbox({ clientId: METADATA.DROPBOX_CLIENT_ID, fetch }) as DropboxMeow;
+        this.client = new Dropbox({
+            clientId: METADATA.DROPBOX_CLIENT_ID,
+            fetch,
+        });
 
-        if (token) {
-            // token loaded from storage
-            this.client.auth.setRefreshToken(token);
-        }
+        this.client.auth = new DropboxAuth({
+            refreshToken: token,
+            clientId: METADATA.DROPBOX_CLIENT_ID,
+        });
+
+        // if (token) {
+        //     // token loaded from storage
+        //     this.client.auth.setRefreshToken(token);
+        // }
     }
 
     async isConnected() {
@@ -68,9 +75,8 @@ class DropboxProvider extends AbstractMetadataProvider {
 
             // this.client.auth is instance of DropboxAuth
             const response = await this.client.auth.getAccessTokenFromCode(redirectUrl, code);
-            // @ts-ignore response looks like this, typescript thinks it is string
             const { result, status, headers } = response;
-
+            console.log(result, status, headers);
             // dropbox lib is broken, on simulated error, it returns status 400 result undefined and throws unhandled rejection inside the lib itself.
             // but this should probably never happen so why not let it go as OTHER_ERROR("unknown error")
             if (status !== 200) {
@@ -80,6 +86,7 @@ class DropboxProvider extends AbstractMetadataProvider {
             this.client.auth.setAccessToken(result.access_token);
             this.client.auth.setRefreshToken(result.refresh_token);
         } catch (err) {
+            console.log(err);
             // probably never happens
             return false;
         }

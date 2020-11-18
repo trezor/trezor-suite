@@ -13239,10 +13239,10 @@ drbg.js@^1.0.1:
     create-hash "^1.1.2"
     create-hmac "^1.1.4"
 
-dropbox@7.3.1:
-  version "7.3.1"
-  resolved "https://registry.yarnpkg.com/dropbox/-/dropbox-7.3.1.tgz#3fc02c18e1866324ce3fff9a1f16ac4e8922d3cd"
-  integrity sha512-9LOVigrkEiLW1TGh+dVXolirY5Lc3/mdzRQt5XmeklK2RgVRKnRgfRExjfGCyAA8IM84sB2bVkJ/txWYf3L/UA==
+dropbox@8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/dropbox/-/dropbox-8.1.0.tgz#7732f8d22f24557936db4ec9e01b641902811acd"
+  integrity sha512-QwnPA9hipCbFYUenIfwOEE4eRnV6hKPuq0+9mwPWHG4jj/0Gx512KrINVcI+tjdqZuOHF07VPGaE60SynsrhSw==
   dependencies:
     node-fetch "^2.6.1"
 
