@@ -1,4 +1,8 @@
 if [ -f /etc/NIXOS ] ; then
+  if [ -z "$IN_NIX_SHELL" ] ; then
+    echo "You need to run this script in a nix-shell. Aborting"
+    exit 1
+  fi
   # replace bundled binaries in node_modules with symlinks
   ln -sf "$(which 7za)" "$CURDIR"/node_modules/7zip-bin/linux/x64/7za || :
   # replace bundled binaries in .cache/electron-builder with symlinks
