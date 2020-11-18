@@ -120,10 +120,22 @@ const InputAddon = styled.div<{ align: 'left' | 'right' }>`
 `;
 
 const BottomText = styled.div<Props>`
-    padding: 10px 10px 0 10px;
-    min-height: 27px;
+    display: flex;
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${props => getStateColor(props.state, props.theme)};
+    ${props =>
+        props.errorPosition === 'right' &&
+        css`
+            align-items: flex-end;
+            margin-bottom: 4px;
+            margin-left: 12px;
+        `}
+    ${props =>
+        props.errorPosition === 'bottom' &&
+        css`
+            padding: 10px 10px 0 10px;
+            min-height: 27px;
+        `}
 `;
 
 const Overlay = styled.div<Props>`
@@ -136,6 +148,16 @@ const Overlay = styled.div<Props>`
     position: absolute;
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 1) 220px);
     z-index: 1;
+`;
+
+const Row = styled.div<Props>`
+    display: flex;
+    flex-direction: column;
+    ${props =>
+        props.errorPosition === 'right' &&
+        css`
+            flex-direction: row;
+        `}
 `;
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -162,6 +184,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     type?: string;
     state?: InputState;
     addonAlign?: 'left' | 'right';
+    errorPosition?: 'bottom' | 'right';
     noError?: boolean;
     noTopLabel?: boolean;
     labelAddonIsVisible?: boolean;
@@ -197,6 +220,7 @@ const Input = ({
     clearButton,
     onClear,
     addonAlign = 'right',
+    errorPosition = 'bottom',
     noError = false,
     noTopLabel = false,
     textIndent = [0, 0],
@@ -233,49 +257,55 @@ const Input = ({
                     </Right>
                 </Label>
             )}
-            <InputWrapper>
-                {innerAddon && addonAlign === 'left' && (
-                    <InputAddon align="left" ref={inputAddonRef}>
-                        {innerAddon}
-                    </InputAddon>
-                )}
-                {((innerAddon && addonAlign === 'right') || clearButton) && (
-                    <InputAddon align="right" ref={inputAddonRef}>
-                        {addonAlign === 'right' && innerAddon}
-                        {clearButton && value && value.length > 0 && (
-                            <Icon
-                                icon="CANCEL"
-                                size={12}
-                                onClick={onClear}
-                                color={theme.TYPE_DARK_GREY}
-                                useCursorPointer
-                            />
-                        )}
-                    </InputAddon>
-                )}
+            <Row errorPosition={errorPosition}>
+                <InputWrapper>
+                    {innerAddon && addonAlign === 'left' && (
+                        <InputAddon align="left" ref={inputAddonRef}>
+                            {innerAddon}
+                        </InputAddon>
+                    )}
+                    {((innerAddon && addonAlign === 'right') || clearButton) && (
+                        <InputAddon align="right" ref={inputAddonRef}>
+                            {addonAlign === 'right' && innerAddon}
+                            {clearButton && value && value.length > 0 && (
+                                <Icon
+                                    icon="CANCEL"
+                                    size={12}
+                                    onClick={onClear}
+                                    color={theme.TYPE_DARK_GREY}
+                                    useCursorPointer
+                                />
+                            )}
+                        </InputAddon>
+                    )}
 
-                {isPartiallyHidden && <Overlay />}
-                <StyledInput
-                    className={className}
-                    value={value}
-                    textIndent={textIndent}
-                    type={type}
-                    autoComplete={autoComplete}
-                    autoCorrect={autoCorrect}
-                    autoCapitalize={autoCapitalize}
-                    spellCheck={false}
-                    state={state}
-                    variant={variant}
-                    disabled={isDisabled}
-                    width={width}
-                    monospace={monospace}
-                    ref={innerRef}
-                    data-lpignore="true"
-                    inputAddonWidth={inputAddonWidth}
-                    {...rest}
-                />
-            </InputWrapper>
-            {!noError && <BottomText state={state}>{bottomText}</BottomText>}
+                    {isPartiallyHidden && <Overlay />}
+                    <StyledInput
+                        className={className}
+                        value={value}
+                        textIndent={textIndent}
+                        type={type}
+                        autoComplete={autoComplete}
+                        autoCorrect={autoCorrect}
+                        autoCapitalize={autoCapitalize}
+                        spellCheck={false}
+                        state={state}
+                        variant={variant}
+                        disabled={isDisabled}
+                        width={width}
+                        monospace={monospace}
+                        ref={innerRef}
+                        data-lpignore="true"
+                        inputAddonWidth={inputAddonWidth}
+                        {...rest}
+                    />
+                </InputWrapper>
+                {!noError && (
+                    <BottomText errorPosition={errorPosition} state={state}>
+                        {bottomText}
+                    </BottomText>
+                )}
+            </Row>
         </Wrapper>
     );
 };

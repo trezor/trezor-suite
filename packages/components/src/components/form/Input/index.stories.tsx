@@ -53,6 +53,14 @@ storiesOf('Form', module).add(
             },
             null
         ) as 'right';
+        const errorPosition = select(
+            'errorPosition',
+            {
+                bottom: 'bottom',
+                right: 'right',
+            },
+            null
+        ) as 'bottom';
 
         const buttonText: string = text('Button', '');
         const button = {
@@ -88,6 +96,7 @@ storiesOf('Form', module).add(
                 {...(monospace ? { monospace } : {})}
                 {...(buttonText ? { button } : {})}
                 {...(align ? { align } : {})}
+                {...(errorPosition ? { errorPosition } : {})}
                 value={value}
             />
         );
