@@ -5,8 +5,8 @@ import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
 
 // fixture contains number of request that given provider needs go through this test scenario
 const fixtures = [
-    { provider: 'dropbox', numberOfRequests: 24 },
-    { provider: 'google', numberOfRequests: 10},
+    { provider: 'dropbox', numberOfRequests: [24, 43] },
+    { provider: 'google', numberOfRequests: [10, 16] },
 ] as const;
 
 describe(`Metadata is by default disabled, this means, that application does not try to generate master key and connect to cloud.
@@ -98,7 +98,7 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             //                      if it shoots somebody in leg, just remove this assertion...
             // - why asserting it:  just to make sure that metadata don't send unnecessary amount of request
             cy.task('metadataGetRequests', { provider: f.provider }).then(requests => {
-                expect(requests).to.have.length(f.numberOfRequests);
+                expect(requests).to.have.length(f.numberOfRequests[0]);
             });
 
             cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
@@ -119,6 +119,17 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             cy.getTestElement("@metadata/accountLabel/m/49'/0'/0'/success").should(
                 'not.be.visible',
             );
+
+            // go to another route that triggers discovery and check whether there are any requests to metadata providers
+            cy.getTestElement('@suite/menu/suite-index').click();
+            cy.getTestElement('@dashboard/graph');
+            // using wait is almost always anti-pattern but I guess we can live with it
+            // problem is that cypress built in retry ability can't be used here when
+            // retrieving number of requests from node.js
+            cy.wait(3000);
+            cy.task('metadataGetRequests', { provider: f.provider }).then(requests => {
+                expect(requests).to.have.length(f.numberOfRequests[1]);
+            });
         });
     });
 });
