@@ -79,11 +79,12 @@ const FeeAmount = styled.div`
     align-items: flex-end;
     text-align: right;
     padding-top: 5px;
-    width: 100%; /* stretch to all available width so that the Fee amount is aligned all the way to the right */
 `;
 
 const FeeInfoWrapper = styled.div`
     display: flex;
+    justify-content: space-between;
+    height: 32px; /* prevent jumps when switching from/to custom fee  */
 `;
 
 interface Option {
