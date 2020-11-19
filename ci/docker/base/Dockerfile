@@ -51,6 +51,7 @@ RUN apt-get install -y \
     python3-dev \
     python3-pip
 
+RUN pip3 install attrs
 RUN pip3 install --upgrade setuptools
 RUN pip3 install trezor
 RUN pip3 install termcolor
