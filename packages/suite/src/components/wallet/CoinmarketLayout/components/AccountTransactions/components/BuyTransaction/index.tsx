@@ -163,7 +163,7 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
         const allQuotes = await invityAPI.getBuyQuotes(request);
         const [quotes, alternativeQuotes] = processQuotes(allQuotes);
         await saveQuotes(quotes, alternativeQuotes);
-        goto('wallet-coinmarket-buy-offers', {
+        goto('wallet-trade-buy-offers', {
             symbol: account.symbol,
             accountIndex: account.index,
             accountType: account.accountType,
@@ -172,7 +172,7 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
 
     const viewDetail = async () => {
         await saveTransactionDetailId(trade.key || '');
-        goto('wallet-coinmarket-buy-detail', {
+        goto('wallet-trade-buy-detail', {
             symbol: account.symbol,
             accountIndex: account.index,
             accountType: account.accountType,

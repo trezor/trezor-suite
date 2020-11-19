@@ -83,8 +83,8 @@ const CoinmarketTopPanel = ({ backRoute }: Props) => {
     );
 };
 
-export const CoinmarketBuyTopPanel = () => <CoinmarketTopPanel backRoute="wallet-coinmarket-buy" />;
+export const CoinmarketBuyTopPanel = () => <CoinmarketTopPanel backRoute="wallet-trade-buy" />;
 
 export const CoinmarketExchangeTopPanel = () => (
-    <CoinmarketTopPanel backRoute="wallet-coinmarket-exchange" />
+    <CoinmarketTopPanel backRoute="wallet-trade-exchange" />
 );

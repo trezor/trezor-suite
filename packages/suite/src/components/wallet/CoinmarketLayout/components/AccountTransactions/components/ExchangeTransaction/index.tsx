@@ -121,7 +121,7 @@ const ExchangeTransaction = ({ trade, providers, account }: Props) => {
 
     const viewDetail = async () => {
         await saveTransactionId(trade.key || '');
-        goto('wallet-coinmarket-exchange-detail', {
+        goto('wallet-trade-exchange-detail', {
             symbol: account.symbol,
             accountIndex: account.index,
             accountType: account.accountType,

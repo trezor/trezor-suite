@@ -234,7 +234,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
             } else {
                 const [fixedQuotes, floatQuotes] = splitToFixedFloatQuotes(allQuotes, exchangeInfo);
                 saveQuotes(fixedQuotes, floatQuotes);
-                goto('wallet-coinmarket-exchange-offers', {
+                goto('wallet-trade-exchange-offers', {
                     symbol: account.symbol,
                     accountIndex: account.index,
                     accountType: account.accountType,

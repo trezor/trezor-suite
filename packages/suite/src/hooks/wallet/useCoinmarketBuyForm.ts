@@ -59,7 +59,7 @@ export const useCoinmarketBuyForm = (props: Props): BuyFormContextValues => {
             setAmountLimits(limits);
         } else {
             await saveQuotes(quotes, alternativeQuotes);
-            goto('wallet-coinmarket-buy-offers', {
+            goto('wallet-trade-buy-offers', {
                 symbol: account.symbol,
                 accountIndex: account.index,
                 accountType: account.accountType,

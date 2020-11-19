@@ -80,7 +80,7 @@ export const useOffers = (props: Props) => {
 
     useEffect(() => {
         if (!quotesRequest) {
-            goto('wallet-coinmarket-exchange', {
+            goto('wallet-trade-exchange', {
                 symbol: account.symbol,
                 accountIndex: account.index,
                 accountType: account.accountType,
@@ -193,7 +193,7 @@ export const useOffers = (props: Props) => {
             if (result) {
                 await saveTrade(selectedQuote, account, new Date().toISOString());
                 await saveTransactionId(selectedQuote.orderId);
-                goto('wallet-coinmarket-exchange-detail', {
+                goto('wallet-trade-exchange-detail', {
                     symbol: account.symbol,
                     accountIndex: account.index,
                     accountType: account.accountType,
