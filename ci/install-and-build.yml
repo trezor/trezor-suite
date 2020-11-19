@@ -1,4 +1,0 @@
-install and build:
-  stage: setup environment
-  script:
-    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline --network-timeout 1000000000

@@ -8,12 +8,12 @@ variables:
     - schedules
     - /^release\//
 
-
 # build
 
 suite-web build dev:
   stage: build
   script:
+    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
     - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/web yarn workspace @trezor/suite-web build
   artifacts:
     expire_in: 7 days
@@ -25,6 +25,7 @@ suite-web build beta:
   only:
     <<: *run_everything_rules
   script:
+    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
     - assetPrefix=/wallet/web yarn workspace @trezor/suite-web build
   artifacts:
     expire_in: 7 days
@@ -37,6 +38,7 @@ suite-web build stable:
   only:
     <<: *run_everything_rules
   script:
+    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
     - assetPrefix=/web yarn workspace @trezor/suite-web build
   artifacts:
     expire_in: 7 days
@@ -149,7 +151,7 @@ suite-web e2e chrome-beta stage=stable:
   allow_failure: false
   script:
     - *e2e_script_common
-    - apt-get update && apt-get upgrade -y  # update chrome-beta channel to the latest
+    - apt-get update && apt-get upgrade -y # update chrome-beta channel to the latest
     - export BROWSER=/usr/bin/google-chrome-beta
     - "eval $TEST_CMD"
   artifacts:
