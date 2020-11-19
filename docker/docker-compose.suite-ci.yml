@@ -1,0 +1,28 @@
+version: "3"
+services:
+  trezor-user-env-unix:
+    image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env
+    environment:
+      - SDL_VIDEODRIVER=dummy
+      - XDG_RUNTIME_DIR=/var/tmp
+
+  test-run:
+    image: cypress/included:4.7.0
+    entrypoint: []
+    environment:
+      - CYPRESS_SNAPSHOT=$CYPRESS_SNAPSHOT
+      - CYPRESS_baseUrl=$CYPRESS_baseUrl
+      - CYPRESS_ASSET_PREFIX=$CYPRESS_ASSET_PREFIX
+      - LOCAL_USER_ID=$LOCAL_USER_ID
+      - TEST_GROUP=$TEST_GROUP
+      - TRACK_SUITE_URL=$TRACK_SUITE_URL
+      - CI_JOB_URL=$CI_JOB_URL
+      - CI_COMMIT_BRANCH=$CI_COMMIT_BRANCH
+      - CI_COMMIT_MESSAGE=$CI_COMMIT_MESSAGE
+      - CI_COMMIT_SHA=$CI_COMMIT_SHA
+      - CI_RUNNER_DESCRIPTION=$CI_RUNNER_DESCRIPTION
+    network_mode: service:trezor-user-env-unix
+    working_dir: /trezor-suite
+    command: bash -c "node ./packages/integration-tests/projects/suite-web/run_tests.js --project /trezor-suite/packages/integration-tests/projects/suite-web --stage=$TEST_GROUP"
+    volumes:
+      - ../:/trezor-suite

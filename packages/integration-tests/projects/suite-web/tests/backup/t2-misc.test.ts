@@ -42,7 +42,10 @@ describe('Backup', () => {
     it('User disconnected device that is remembered. Should not be allowed to initiate backup', () => {
         cy.getTestElement('@dashboard/graph', { timeout: 30000 }).should('be.visible');
         cy.toggleDeviceMenu();
-        cy.getTestElement('@switch-device/wallet-on-index/0/toggle-remember-switch').click({
+        cy.getTestElement('@switch-device/wallet-on-index/0/toggle-remember-switch', {
+            // todo: is that timeout needed?
+            timeout: 30000,
+        }).click({
             force: true,
         });
         cy.getTestElement('@switch-device/wallet-on-index/0').click();

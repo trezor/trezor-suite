@@ -2,8 +2,8 @@
 
 // @group:onboarding
 // @retry=2
-
-describe('Onboarding - recover wallet T2', () => {
+// todo: trezorlib
+describe.skip('Onboarding - recover wallet T2', () => {
     beforeEach(() => {
         cy.task('stopEmu');
         cy.viewport(1024, 768).resetDb();

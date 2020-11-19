@@ -3,7 +3,8 @@
 // @group:device-management
 // @retry=2
 
-describe('Recovery - dry run', () => {
+// todo: trezorlib unskip
+describe.skip('Recovery - dry run', () => {
     beforeEach(() => {
         cy.task('stopEmu');
 
@@ -13,7 +14,7 @@ describe('Recovery - dry run', () => {
     });
 
     it('Communication between device and application is automatically established whenever app detects device in recovery mode', () => {
-        cy.task('startEmu', { wipe: true });
+        cy.task('startEmu', { wipe: true, version: '2.3.1' });
         cy.task('setupEmu');
         cy.getTestElement('@settings/device/check-seed-button').click();
         cy.getTestElement('@recovery/user-understands-checkbox').click();
@@ -24,10 +25,10 @@ describe('Recovery - dry run', () => {
         /* reinitialize process on device reconnect */
         cy.log('Now check that reconnecting device works and seed check procedure does reinitialize correctly');
         cy.task('stopEmu');
-        cy.getTestElement('@recovery/close-button', { timeout: 10000 }).click();
+        cy.getTestElement('@recovery/close-button', { timeout: 30000 }).click();
         cy.getTestElement('@modal/connect-device');
-        cy.task('startEmu', { wipe: false });
-        cy.getTestElement('@suite/modal/confirm-action-on-device', { timeout: 10000 });
+        cy.task('startEmu', { wipe: false, version: '2.3.1' });
+        cy.getTestElement('@suite/modal/confirm-action-on-device', { timeout: 20000 });
         cy.task('pressYes');
         cy.log('At this moment, communication with device should be re-established');
 

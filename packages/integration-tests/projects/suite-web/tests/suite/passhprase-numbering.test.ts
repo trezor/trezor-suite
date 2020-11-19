@@ -3,7 +3,7 @@
 
 describe('Passphrase', () => {
     beforeEach(() => {
-        cy.task('startEmu', { wipe: true });
+        cy.task('startEmu', { wipe: true, version: '2.3.1' });
         cy.task('setupEmu', { passphrase_protection: true });
 
         // eslint-disable-next-line @typescript-eslint/naming-convention

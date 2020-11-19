@@ -1,6 +1,3 @@
-variables:
-  TEST_CMD: 'yarn concurrently --success first --kill-others "cd ./docker/trezor-user-env/controller && python3 ./main.py" "node ./packages/integration-tests/projects/suite-web/run_tests.js --project ./packages/integration-tests/projects/suite-web --stage=$TEST_GROUP"'
-
 .run_everything_rules: &run_everything_rules
   refs:
     - develop
@@ -69,123 +66,69 @@ suite-web deploy dev:
   tags:
     - deploy
 
-# e2e
+# # e2e
 
-.e2e_artifacts: &e2e_artifacts
-  expire_in: 7 days
-  when: always
-  paths:
-    - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/snapshots
-    - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/screenshots
-    - /builds/satoshilabs/trezor/trezor-suite/packages/integration-tests/projects/suite-web/videos
-
-.e2e_script_common: &e2e_script_common
-  - npx cypress install
-  - export CYPRESS_ASSET_PREFIX=/web
-  - export CYPRESS_baseUrl=${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
-  - export TRACK_SUITE_URL=https://track-suite.herokuapp.com
-
-suite-web e2e chrome stage=suite:
+.e2e web:
   stage: integration testing
-  variables:
-    TEST_GROUP: "@group:suite"
+  image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base@sha256:94febe6dbcbd7a64a788bae6350601743201d0c57789b2fe4f7d9c91a64a8837
   needs:
     - suite-web deploy dev
-  script:
-    - *e2e_script_common
-    - export CYPRESS_SNAPSHOT=1
-    - export BROWSER=chrome
-    - "eval $TEST_CMD"
-  artifacts:
-    <<: *e2e_artifacts
-
-suite-web e2e chrome stage=metadata:
-  stage: integration testing
   variables:
-    TEST_GROUP: "@group:metadata"
-  needs:
-    - suite-web deploy dev
+    COMPOSE_PROJECT_NAME: $CI_JOB_ID
+    COMPOSE_FILE: ./docker/docker-compose.suite-ci.yml
+    CYPRESS_ASSET_PREFIX: /web
+    CYPRESS_baseUrl: ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
+    CYPRESS_SNAPSHOT: 0
+    TRACK_SUITE_URL: https://track-suite.herokuapp.com
   script:
-    - *e2e_script_common
-    - export CYPRESS_SNAPSHOT=1
-    - export BROWSER=chrome
-    - "eval $TEST_CMD"
+    - env
+    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
+    - docker-compose pull
+    - docker-compose up -d trezor-user-env-unix
+    - sleep 5
+    - docker-compose run test-run
+  after_script:
+    - docker-compose down
   artifacts:
-    <<: *e2e_artifacts
+    expire_in: 7 days
+    when: always
+    paths:
+      - ./packages/integration-tests/projects/suite-web/snapshots
+      - ./packages/integration-tests/projects/suite-web/screenshots
+      - ./packages/integration-tests/projects/suite-web/videos
 
-suite-web e2e chrome stage=device-management:
-  stage: integration testing
+e2e web suite:
+  extends: .e2e web
   variables:
-    TEST_GROUP: "@group:device-management"
-  needs:
-    - suite-web deploy dev
-  script:
-    - *e2e_script_common
-    - export CYPRESS_SNAPSHOT=1
-    - export BROWSER=chrome
-    - "eval $TEST_CMD"
-  artifacts:
-    <<: *e2e_artifacts
+    TEST_GROUP: '@group:suite'
 
-suite-web e2e chrome stage=onboarding:
-  stage: integration testing
+e2e web onboarding:
+  extends: .e2e web
   variables:
-    TEST_GROUP: "@group:onboarding"
-  needs:
-    - suite-web deploy dev
-  script:
-    - *e2e_script_common
-    - export CYPRESS_SNAPSHOT=1
-    - export BROWSER=chrome
-    - "eval $TEST_CMD"
-  artifacts:
-    <<: *e2e_artifacts
+    TEST_GROUP: '@group:onboarding'
 
-# on scheduled job every night, run all stable tests against latest chrome-beta. This is meant to be
-# kind of an early-warning system.
-suite-web e2e chrome-beta stage=stable:
-  stage: integration testing
+e2e web browsers:
+  extends: .e2e web
   variables:
-    TEST_GROUP: "@stable"
-  needs:
-    - suite-web deploy dev
-  only:
-    - schedules
-  allow_failure: false
-  script:
-    - *e2e_script_common
-    - apt-get update && apt-get upgrade -y # update chrome-beta channel to the latest
-    - export BROWSER=/usr/bin/google-chrome-beta
-    - "eval $TEST_CMD"
-  artifacts:
-    <<: *e2e_artifacts
+    TEST_GROUP: '@group:browsers'
 
-suite-web deploy staging-wallet:
-  stage: deploy to staging
-  needs:
-    - suite-web build beta
-    - suite-desktop build mac
-    - suite-desktop build linux
-    - suite-desktop build windows
-  environment:
-    name: ${CI_BUILD_REF_NAME}-staging-wallet
-    url: ${STAGING_WALLET_SERVER_URL}
-  before_script: []
-  only:
-    <<: *run_everything_rules
-  when: manual
-  script:
-    - source ${STAGING_WALLET_DEPLOY_KEYFILE}
-    - mkdir -p packages/suite-web/build/static/desktop
-    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage ./packages/suite-web/build/static/desktop || :'
-    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg ./packages/suite-web/build/static/desktop || :'
-    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe ./packages/suite-web/build/static/desktop || :'
-    - cd packages/suite-web
-    - ./scripts/s3sync.sh staging-wallet
-  tags:
-    - deploy
+e2e web device-management:
+  extends: .e2e web
+  variables:
+    TEST_GROUP: '@group:device-management'
 
-# todo: add smoke test job on stage / beta (need basic auth)
+e2e web settings:
+  extends: .e2e web
+  variables:
+    TEST_GROUP: '@group:settings'
+
+e2e web metadata:
+  extends: .e2e web
+  variables:
+    TEST_GROUP: '@group:metadata'
+
+# TODO scheduled jobs against beta chrome channel
+# TODO scheduled jobs against suite.trezor.io
 
 suite-web deploy staging-suite:
   stage: deploy to staging

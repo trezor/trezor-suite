@@ -117,6 +117,7 @@ async function runTests() {
             video: true,
             chromeWebSecurity: false,
             trashAssetsBeforeRuns: false,
+            defaultCommandTimeout: 15000,
         };
 
         if (userAgent) {
@@ -180,14 +181,10 @@ async function runTests() {
         }
     }
 
+    console.log(JSON.stringify(log, null, 2));
+
     if (TRACK_SUITE_URL) {
-        console.log(
-            `[run_tests.js] uploading logs to ${TRACK_SUITE_URL}. Logs: ${JSON.stringify(
-                log,
-                null,
-                2,
-            )}`,
-        );
+        console.log(`[run_tests.js] uploading logs to ${TRACK_SUITE_URL}.`);
         const response = await fetch(`${TRACK_SUITE_URL}/api/test-records`, {
             method: 'POST',
             headers: {

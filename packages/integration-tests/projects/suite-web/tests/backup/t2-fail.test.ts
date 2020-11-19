@@ -23,7 +23,7 @@ describe('Backup', () => {
         cy.task('stopEmu');
         cy.getTestElement('@backup/no-device', { timeout: 20000 });
         cy.task('startEmu');
-        cy.getTestElement('@backup/error-message', { timeout: 3000 });
+        cy.getTestElement('@backup/error-message', { timeout: 30000 });
 
         cy.log(
             'Now go to dashboard and see if security card and notification reflects backup failed state correctly',

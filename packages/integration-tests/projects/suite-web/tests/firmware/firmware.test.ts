@@ -30,7 +30,7 @@ describe('Firmware', () => {
 
     it('For latest firmware, update button in device settings should display "Up to date" but still be clickable', () => {
         cy.task('stopBridge');
-        cy.task('startEmu', { wipe: true });
+        cy.task('startEmu', { wipe: true, version: '2.3.0' });
         cy.task('setupEmu');
         cy.task('startBridge');
         cy.prefixedVisit('/settings/device');
