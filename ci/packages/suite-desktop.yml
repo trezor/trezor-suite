@@ -1,7 +1,7 @@
 .build: &build
   stage: build
   script:
-    - yarn cache clean
+    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
     - yarn workspace @trezor/suite-data copy-static-files
     - yarn workspace @trezor/suite-desktop build:${platform}
     - ls -la packages/suite-desktop/build-electron
@@ -14,9 +14,8 @@
     expire_in: 1 days
 
 .build_nix: &build_nix
-  script:  # override build script to use nix-shell instead
-    - nix-shell --run "yarn cache clean"
-    - nix-shell --run "yarn"
+  script: # override build script to use nix-shell instead
+    - nix-shell --run "yarn install --pure-lockfile --cache-folder .yarn --prefer-offline"
     - nix-shell --run "yarn workspace @trezor/suite-data copy-static-files"
     - nix-shell --run "yarn workspace @trezor/suite-desktop build:${platform}"
     - ls -la packages/suite-desktop/build-electron

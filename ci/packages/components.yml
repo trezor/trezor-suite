@@ -15,6 +15,7 @@
 .build_common: &build_common
   stage: build
   script:
+    - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
     - yarn workspace @trezor/components storybook-build
   artifacts:
     name: components-build-storybook-files
