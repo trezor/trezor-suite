@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Account } from '@wallet-types';
-import { AmountLimits } from '@wallet-types/tradeBuyForm';
+import { AmountLimits } from '@wallet-types/coinmarketBuyForm';
 import { BuyTrade, BuyTradeQuoteRequest, BuyTradeStatus } from 'invity-api';
-import { symbolToInvityApiSymbol } from '@wallet-utils/trade/tradeUtils';
+import { symbolToInvityApiSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { getLocationOrigin, isDesktop } from '@suite-utils/env';
-import { ELECTRON_RECEIVER_SERVER } from '@wallet-constants/trade/buy';
+import { ELECTRON_RECEIVER_SERVER } from '@wallet-constants/coinmarket/buy';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return the limits
 export function getAmountLimits(
