@@ -116,7 +116,7 @@ const selectStyle = (
         fontWeight: variables.FONT_WEIGHT.MEDIUM,
         '&:hover': {
             cursor: 'pointer',
-            background: theme.BG_GREY,
+            background: theme.BG_WHITE_ALT_HOVER,
         },
     }),
     input: (base: Record<string, any>) => ({
