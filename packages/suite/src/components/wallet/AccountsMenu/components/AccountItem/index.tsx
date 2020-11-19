@@ -39,6 +39,8 @@ const Right = styled.div`
     flex-direction: column;
     padding-left: 8px;
     overflow: hidden;
+    padding-right: 10px;
+    margin-right: -10px;
 `;
 
 const Row = styled.div`
