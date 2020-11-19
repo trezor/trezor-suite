@@ -1,37 +1,12 @@
 # ! DO NOT set latest here USE custom hash !
 image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base:293dd52c3910666bd91620c23b2c61085ec53d18
 
-cache:
-  untracked: true
-  policy: pull
-  key: ${CI_COMMIT_REF_SLUG}
-  paths:
-    # modules
-    - node_modules/
-    - packages/blockchain-link/node_modules/
-    - packages/components/node_modules/
-    - packages/rollout/node_modules/
-    - packages/suite/node_modules/
-    - packages/suite-web/node_modules/
-    - packages/suite-desktop/node_modules/
-    - packages/suite-native/node_modules/
-    - packages/suite-storage/node_modules/
-    - packages/translations-manager/node_modules/
-    - packages/integration-tests/node_modules/
-    - packages/news-api/node_modules/
-
-    # libs
-    - packages/components/lib
-    - packages/blockchain-link/lib
-    - packages/rollout/lib
-    - packages/suite-storage/lib
-    - packages/translations-manager/lib
-
 variables:
-  DEV_SERVER_URL: 'https://suite.corp.sldev.cz'
-  STAGING_WALLET_SERVER_URL: 'https://staging-wallet.trezor.io/wallet'
-  STAGING_SUITE_SERVER_URL: 'https://staging-suite.trezor.io'
-  DESKTOP_APP_NAME: 'Trezor-Suite'
+  DEV_SERVER_URL: "https://suite.corp.sldev.cz"
+  STAGING_WALLET_SERVER_URL: "https://staging-wallet.trezor.io/wallet"
+  STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
+  DESKTOP_APP_NAME: "Trezor-Suite"
+  GIT_CLEAN_FLAGS: "-ffdx -e node_modules -e packages/*/lib -e .yarn"
 
 stages:
   - setup environment
