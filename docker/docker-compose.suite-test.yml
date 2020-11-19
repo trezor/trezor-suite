@@ -1,14 +1,19 @@
 version: '2'
 services:
-  trezor-user-env:
-    extends:
-      file: docker-compose.suite-dev.yml
-      service: trezor-user-env
+  trezor-user-env-unix:
+    image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env
+    environment:
+      - DISPLAY=$DISPLAY
+      - QT_X11_NO_MITSHM=1
+      - LOCAL_USER_ID=$LOCAL_USER_ID
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
 
   suite-dev:
     extends:
       file: docker-compose.suite-dev.yml
       service: suite-dev
+    network_mode: service:trezor-user-env-unix
 
   test-open:
     # the Docker image to use from https://github.com/cypress-io/cypress-docker-images
@@ -19,8 +24,8 @@ services:
     ipc: host
     depends_on:
       - suite-dev
-      - trezor-user-env
-    network_mode: "host"
+      - trezor-user-env-unix
+    network_mode: service:trezor-user-env-unix
     environment:
       - CYPRESS_SNAPSHOT=$CYPRESS_SNAPSHOT
       - CYPRESS_baseUrl=http://localhost:3000

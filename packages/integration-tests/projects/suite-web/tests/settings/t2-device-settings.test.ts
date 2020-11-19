@@ -1,4 +1,4 @@
-// @group:suite
+// @group:settings
 // @retry=2
 
 describe('Device settings', () => {

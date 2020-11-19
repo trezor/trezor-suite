@@ -3,21 +3,14 @@
 
 version: '2'
 services:
-
-  trezor-user-env:
-    build:
-      context: .
-      dockerfile: ./trezor-user-env/Dockerfile
-    network_mode: host
-    ipc: host
-    container_name: trezor-user-env
+  trezor-user-env-unix:
+    image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env
     environment:
       - DISPLAY=$DISPLAY
       - QT_X11_NO_MITSHM=1
       - LOCAL_USER_ID=$LOCAL_USER_ID
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - ./trezor-user-env/controller:/controller
 
   suite-dev:
     container_name: suite-dev

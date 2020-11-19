@@ -13,7 +13,7 @@ describe('Metadata - wallet labeling', () => {
     providers.forEach(provider => {
         it(provider, () => {
             // prepare test
-            cy.task('startEmu', { wipe: true });
+            cy.task('startEmu', { wipe: true, version: '2.3.1' });
             cy.task('setupEmu');
             cy.task('metadataStartProvider', provider);
 

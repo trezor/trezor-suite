@@ -14,7 +14,7 @@ describe('Onboarding - create wallet', () => {
         cy.getTestElement('@onboarding/path-create-button').click()
     });
 
-    it('Success (no shamir capability)', () => {
+    it.skip('Success (no shamir capability)', () => {
        
         cy.getTestElement('@onboarding/path-used-button').click()
         cy.getTestElement('@onboarding/pair-device-step');
@@ -26,6 +26,33 @@ describe('Onboarding - create wallet', () => {
         
         cy.log('Note that this firmware does not have Shamir capability so we show only single backup option button');
         cy.getTestElement('@onboarding/only-backup-option-button').click()
+        cy.getTestElement('@suite/modal/confirm-action-on-device').should('be.visible');
+        cy.task('pressYes');
+
+        cy.getTestElement('@onboarding/continue-to-security-button').click();
+
+        cy.passThroughBackup();
+
+        cy.getTestElement('@onboarding/set-pin-button').click();
+        cy.getTestElement('@suite/modal/confirm-action-on-device');
+        cy.task('pressYes');
+        cy.task('inputEmu', '1');
+        cy.task('inputEmu', '1');
+        cy.getTestElement('@onboarding/pin/continue-button').click();
+        cy.getTestElement('@onboarding/final');
+    });
+
+    it.skip('Success (Shamir capability)', () => {
+        cy.getTestElement('@onboarding/path-used-button').click()
+        cy.getTestElement('@onboarding/pair-device-step');
+
+        cy.task('startEmu', { wipe: true });
+
+        cy.getTestElement('@onboarding/button-continue').click()
+        cy.getTestElement('@firmware/continue-button').click()
+        
+        cy.log('Note that this firmware does not have Shamir capability so we show only single backup option button');
+        cy.getTestElement('@onboarding/button-standard-backup').click()
         cy.getTestElement('@suite/modal/confirm-action-on-device').should('be.visible');
         cy.task('pressYes');
 

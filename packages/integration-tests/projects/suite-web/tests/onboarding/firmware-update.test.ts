@@ -1,4 +1,4 @@
-// @stable/device-management
+// @group:onboarding
 // @retry=2
 
 const { getSuiteDevice } = global.JestMocks;
