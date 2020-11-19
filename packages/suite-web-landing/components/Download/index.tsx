@@ -67,13 +67,13 @@ type DropdownItem = {
 
 const dropdownItemsData: DropdownItem[] = [
     {
-        platform: 'mac-x86_64',
+        platform: 'mac',
         label: <Translation id="TR_SUITE_WEB_LANDING_MACOS_LABEL" />,
         icon: 'OS_MAC',
         installerExtension: 'dmg',
     },
     {
-        platform: 'win-x86_64',
+        platform: 'win',
         label: <Translation id="TR_SUITE_WEB_LANDING_WINDOWS_LABEL" />,
         icon: 'OS_WINDOWS',
         installerExtension: 'exe',
