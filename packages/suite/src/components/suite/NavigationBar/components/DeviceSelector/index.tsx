@@ -95,19 +95,23 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
 
     const [localCount, setLocalCount] = useState<number | null>(null);
     const [triggerAnim, setTriggerAnim] = useState(false);
-    const [isHovered, setIsHovered] = useState(false);
+    const [showTextStatus, setShowTextStatus] = useState(false);
 
     const countChanged = localCount && localCount !== deviceCount;
-    const timerRef = useRef<number | undefined>(undefined);
+    const shakeAnimationTimerRef = useRef<number | undefined>(undefined);
+    const stateAnimationTimerRef = useRef<number | undefined>(undefined);
 
     const analytics = useAnalytics();
 
     const deviceNeedsRefresh = needsRefresh(selectedDevice);
 
+    const connectState = selectedDevice?.connected;
+
     useEffect(() => {
-        // clear timer on unmount
+        // clear animation timers on unmount
         return () => {
-            if (timerRef.current) clearTimeout(timerRef.current);
+            if (shakeAnimationTimerRef.current) clearTimeout(shakeAnimationTimerRef.current);
+            if (stateAnimationTimerRef.current) clearTimeout(stateAnimationTimerRef.current);
         };
     }, []);
 
@@ -121,17 +125,25 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
             // different count triggers anim
             setTriggerAnim(true);
             // after 1s removes anim, allowing it to restart later
-            timerRef.current = setTimeout(() => {
+            shakeAnimationTimerRef.current = setTimeout(() => {
                 // makes sure component is still mounted
                 setTriggerAnim(false);
             }, 1000);
         }
     }, [countChanged]);
 
+    useEffect(() => {
+        // if the device status changes, show wallet state (dis/connected) as text for 2 seconds
+        setShowTextStatus(true);
+        stateAnimationTimerRef.current = setTimeout(() => {
+            setShowTextStatus(false);
+        }, 2000);
+    }, [connectState]);
+
     return (
         <Wrapper
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
+            onMouseEnter={() => setShowTextStatus(true)}
+            onMouseLeave={() => setShowTextStatus(false)}
             data-test="@menu/switch-device"
             onClick={() =>
                 goto('suite-switch-device', {
@@ -161,8 +173,8 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
                         </WalletNameWrapper>
                     </DeviceDetail>
                     <DeviceStatus
-                        showTextStatus={isHovered}
-                        showIconStatus={!isHovered}
+                        showTextStatus={showTextStatus}
+                        showIconStatus={!showTextStatus}
                         device={selectedDevice}
                         onRefreshClick={
                             deviceNeedsRefresh

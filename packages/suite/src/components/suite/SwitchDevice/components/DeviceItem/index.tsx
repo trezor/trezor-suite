@@ -169,9 +169,7 @@ const DeviceItem = (props: Props) => {
                         />
                     </DeviceImageWrapper>
                     <Col grow={1}>
-                        <DeviceStatus
-                            color={device.connected ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY}
-                        >
+                        <DeviceStatus color={device.connected ? theme.TYPE_GREEN : theme.TYPE_RED}>
                             {device.connected ? (
                                 <Translation id="TR_CONNECTED" />
                             ) : (
