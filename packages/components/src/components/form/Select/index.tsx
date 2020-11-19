@@ -111,6 +111,10 @@ const Label = styled.span`
     min-height: 32px;
 `;
 
+interface Option {
+    value: string;
+    label: string;
+}
 interface Props extends Omit<SelectProps, 'components'> {
     withDropdownIndicator?: boolean;
     isClean?: boolean;
@@ -119,6 +123,7 @@ interface Props extends Omit<SelectProps, 'components'> {
     variant?: InputVariant;
     noTopLabel?: boolean;
     hideTextCursor?: boolean; // this prop hides blinking text cursor
+    useKeyPressScroll?: boolean;
 }
 
 const Select = ({
@@ -132,9 +137,15 @@ const Select = ({
     width,
     variant = 'large',
     noTopLabel = false,
+    useKeyPressScroll = false,
     ...props
 }: Props) => {
+    const selectRef: any = React.useRef(null);
     const theme = useTheme();
+
+    // if useKeyPressScroll flag is present, make sure isSearchable is false
+    isSearchable = useKeyPressScroll ? false : isSearchable;
+
     // customize control to pass data-test attribute
     const Control = (controlProps: any) => {
         return (
@@ -161,10 +172,88 @@ const Select = ({
         );
     };
 
+    const getFirstOptionStartingWithChar = (options: Array<Option>, char: string) => {
+        // get all options that start with the character user just pressed on keyboard
+        if (options.length > 0 && char) {
+            const optionsStartingWithChar = options.filter(
+                // use "option.label", not "option.value". Because "label" is the string user sees
+                option => option.label[0].toLowerCase() === char.toLowerCase()
+            );
+            // return the first option
+            return optionsStartingWithChar[0];
+        }
+
+        return undefined;
+    };
+
+    const scrollToOption = (option: Option) => {
+        // I found a way how to scroll on and option in this tutorial: https://github.com/JedWatson/react-select/issues/3648
+        selectRef.current.select.scrollToFocusedOptionOnUpdate = true;
+        selectRef.current.select.setState({
+            focusedValue: null,
+            focusedOption: option,
+        });
+    };
+
+    const onKeyDown = async (e: React.KeyboardEvent) => {
+        // this function is executed when user presses keyboard
+        if (useKeyPressScroll) {
+            // get char value of pressed key
+            const charValue = String.fromCharCode(e.keyCode);
+
+            if (selectRef) {
+                // get options object
+                let { options } = selectRef.current.select.props;
+
+                if (options && options.length > 1) {
+                    /* 
+                    First, check if the options are nested. 
+                    For example <NetworkSelect> has nested options, which means, that the options are divided
+                    into sub-categories like "mainnet", "testnet", etc.
+                    (This is probably not a very robust solution how to get the correct options object.) 
+                    */
+                    if (options[0].options) {
+                        // If the if() statement is true, the options are nested.
+                        // This selects only options in the first subcategory (index [0])
+                        // TODO search in all sub-categories if the option user wants doesn't exist in the first sub-category
+                        options = options[0].options;
+                    }
+
+                    // Find the first option which starts with the selected char
+                    const optionToFocusOn = getFirstOptionStartingWithChar(options, charValue);
+
+                    // Also get the last option, so I can scroll to it later
+                    const lastOption = options[options.length - 1];
+
+                    // Make sure all the necessary options are defined
+                    if (optionToFocusOn && lastOption) {
+                        /* 
+                        Here we first scroll to the last option in option-list and then we scroll to the focused option.
+ 
+                        The reason why I want to scroll to the last item first is, that I want the focused item to 
+                        appear on the top of the list - I achieve that behavior by scrolling "from bottom-to-top".
+                        (I haven't found other way how to set scroll position coordinates.)
+
+                        If we do not require the focused option to be on top, just delete 'await scrollToOption(lastOption);'
+                        */
+
+                        // 1. scroll to the last option first and wait
+                        await scrollToOption(lastOption);
+
+                        // 2. scroll to the selected option
+                        scrollToOption(optionToFocusOn);
+                    }
+                }
+            }
+        }
+    };
+
     return (
         <Wrapper className={className} width={width} {...wrapperProps}>
             {!noTopLabel && <Label>{label}</Label>}
             <ReactSelect
+                ref={selectRef}
+                onKeyDown={onKeyDown}
                 classNamePrefix="react-select"
                 styles={selectStyle(
                     isSearchable,

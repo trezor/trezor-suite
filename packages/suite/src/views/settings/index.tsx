@@ -94,6 +94,7 @@ const Settings = ({
                     <ActionColumn>
                         <ActionSelect
                             hideTextCursor
+                            useKeyPressScroll
                             noTopLabel
                             value={{
                                 value: language,
@@ -123,6 +124,7 @@ const Settings = ({
                         <ActionSelect
                             noTopLabel
                             hideTextCursor
+                            useKeyPressScroll
                             onChange={(option: { value: string; label: string }) => {
                                 setLocalCurrency(option.value);
                                 analytics.report({

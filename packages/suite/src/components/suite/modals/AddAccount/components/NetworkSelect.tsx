@@ -59,6 +59,7 @@ const NetworkSelect = ({ network, internalNetworks, setSelectedNetwork, isDisabl
     <Select
         isSearchable
         hideTextCursor
+        useKeyPressScroll
         width={250}
         maxMenuHeight={220}
         isClearable={false}
