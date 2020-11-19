@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Account } from '@wallet-types';
-import { AmountLimits } from '@wallet-types/coinmarketBuyForm';
+import { AmountLimits } from '@wallet-types/tradeBuyForm';
 import { BuyTrade, BuyTradeQuoteRequest, BuyTradeStatus } from 'invity-api';
-import { symbolToInvityApiSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
+import { symbolToInvityApiSymbol } from '@wallet-utils/trade/tradeUtils';
 import { getLocationOrigin, isDesktop } from '@suite-utils/env';
-import { ELECTRON_RECEIVER_SERVER } from '@wallet-constants/coinmarket/buy';
+import { ELECTRON_RECEIVER_SERVER } from '@wallet-constants/trade/buy';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return the limits
 export function getAmountLimits(
@@ -80,11 +80,11 @@ export function createQuoteLink(request: BuyTradeQuoteRequest, account: Account)
 
     if (isDesktop()) {
         return `${ELECTRON_RECEIVER_SERVER}/buy-redirect?p=${encodeURIComponent(
-            `/coinmarket-redirect/${params}`,
+            `/trade-redirect/${params}`,
         )}`;
     }
 
-    return `${locationOrigin}${assetPrefix}/coinmarket-redirect#${params}`;
+    return `${locationOrigin}${assetPrefix}/trade-redirect#${params}`;
 }
 
 export function createTxLink(trade: BuyTrade, account: Account): string {
@@ -93,11 +93,11 @@ export function createTxLink(trade: BuyTrade, account: Account): string {
     const params = `detail/${account.symbol}/${account.accountType}/${account.index}/${trade.paymentId}`;
     if (isDesktop()) {
         return `${ELECTRON_RECEIVER_SERVER}/buy-redirect?p=${encodeURIComponent(
-            `/coinmarket-redirect/${params}`,
+            `/trade-redirect/${params}`,
         )}`;
     }
 
-    return `${locationOrigin}${assetPrefix}/coinmarket-redirect#${params}`;
+    return `${locationOrigin}${assetPrefix}/trade-redirect#${params}`;
 }
 
 export const getStatusMessage = (status: BuyTradeStatus) => {
