@@ -50,12 +50,17 @@ const FiatInput = () => {
                             return 'AMOUNT_IS_NOT_NUMBER';
                         }
 
-                        if (amountBig.lte(0)) {
-                            return 'AMOUNT_IS_TOO_LOW';
+                        if (!isDecimalsValid(value, 2)) {
+                            return (
+                                <Translation
+                                    id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                                    values={{ decimals: 2 }}
+                                />
+                            );
                         }
 
-                        if (!isDecimalsValid(value, 18)) {
-                            return <Translation id="TR_EXCHANGE_VALIDATION_ERROR_NOT_NUMBER" />;
+                        if (amountBig.lte(0)) {
+                            return 'AMOUNT_IS_TOO_LOW';
                         }
                     }
                 },
