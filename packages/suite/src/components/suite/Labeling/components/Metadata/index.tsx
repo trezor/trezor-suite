@@ -24,6 +24,7 @@ const LabelValue = styled.div`
     display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding-left: 1px;
 `;
 
 const Label = styled.div`
