@@ -283,3 +283,8 @@ class BlockchainLink extends EventEmitter implements Emitter {
 }
 
 export default BlockchainLink;
+
+export { Message } from './types/messages';
+export { Response } from './types/responses';
+export * from './types/common';
+export * from './types/events';
