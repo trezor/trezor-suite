@@ -84,6 +84,7 @@ const Amount = ({ output, outputId }: Props) => {
     const {
         account,
         network,
+        feeInfo,
         localCurrencyOption,
         register,
         getDefaultValue,
@@ -188,6 +189,20 @@ const Amount = ({ output, outputId }: Props) => {
                             // allow 0 amount ONLY for ethereum transaction with data
                             if (amountBig.eq(0) && !getDefaultValue('ethereumDataHex')) {
                                 return 'AMOUNT_IS_TOO_LOW';
+                            }
+
+                            // amounts below dust are not allowed
+                            const dust =
+                                feeInfo.dustLimit &&
+                                formatNetworkAmount(feeInfo.dustLimit.toString(), symbol);
+                            if (dust && amountBig.lte(dust)) {
+                                return (
+                                    <Translation
+                                        key="AMOUNT_IS_BELOW_DUST"
+                                        id="AMOUNT_IS_BELOW_DUST"
+                                        values={{ dust: `${dust} ${symbol.toUpperCase()}` }}
+                                    />
+                                );
                             }
 
                             if (amountBig.gt(formattedAvailableBalance)) {

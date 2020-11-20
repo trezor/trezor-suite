@@ -4240,6 +4240,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Amount is too low',
         id: 'AMOUNT_IS_TOO_LOW',
     },
+    AMOUNT_IS_BELOW_DUST: {
+        defaultMessage: 'Amount is below the dust limit ({dust})',
+        id: 'AMOUNT_IS_BELOW_DUST',
+    },
     AMOUNT_IS_MORE_THAN_RESERVE: {
         defaultMessage: 'Amount is above the required unspendable reserve ({reserve} XRP)',
         id: 'AMOUNT_IS_MORE_THAN_RESERVE',
