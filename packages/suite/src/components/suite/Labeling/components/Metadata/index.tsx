@@ -111,6 +111,7 @@ const ButtonLikeLabel = (props: ExtendedProps) => {
                 originalValue={props.payload.value}
                 onSubmit={props.onSubmit}
                 onBlur={props.onBlur}
+                defaultVisibleValue={props.defaultVisibleValue}
             />
         );
     }
@@ -141,6 +142,7 @@ const TextLikeLabel = (props: ExtendedProps) => {
                 originalValue={props.payload.value}
                 onSubmit={props.onSubmit}
                 onBlur={props.onBlur}
+                defaultVisibleValue={props.defaultVisibleValue}
             />
         );
     }

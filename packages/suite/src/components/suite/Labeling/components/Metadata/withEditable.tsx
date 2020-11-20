@@ -14,8 +14,18 @@ const IconWrapper = styled.div<{ bgColor: string }>`
     padding: 4px;
 `;
 
+const IconsWrapper = styled.div`
+    margin-left: 12px;
+    display: flex;
+`;
+
+const Placeholder = styled.div`
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
+`;
+
 interface Props {
     originalValue?: string;
+    defaultVisibleValue: React.ReactNode;
     onSubmit: (value: string | undefined | null) => void;
     onBlur: () => void;
 }
@@ -31,6 +41,8 @@ export const withEditable = (WrappedComponent: React.FC) => ({
 }: Props) => {
     const theme = useTheme();
     const [touched, setTouched] = useState(false);
+    // value is used to mirror divRef.current.textContent so that its changes force react to render
+    const [value, setValue] = useState('');
     const divRef = useRef<HTMLDivElement>(null);
 
     const submit = useCallback(
@@ -51,9 +63,10 @@ export const withEditable = (WrappedComponent: React.FC) => ({
         }
         if (props.originalValue) {
             divRef.current.textContent = props.originalValue;
+            setValue(props.originalValue);
         }
         divRef.current.focus();
-    }, [props.originalValue, divRef, touched]);
+    }, [props.originalValue, divRef, touched, setValue]);
 
     useEffect(() => {
         const keyboardHandler = (event: KeyboardEvent) => {
@@ -105,43 +118,54 @@ export const withEditable = (WrappedComponent: React.FC) => ({
     return (
         <>
             <WrappedComponent {...props}>
+                {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
                 <div
                     contentEditable
+                    onKeyPress={e => setValue(e.key)}
+                    onKeyUp={() => {
+                        if (!divRef.current?.textContent) {
+                            setValue('');
+                        }
+                    }}
                     ref={divRef}
                     data-test="@metadata/input"
                     style={{
                         paddingLeft: '1px',
                         color: !touched ? theme.TYPE_LIGHT_GREY : 'inherit',
-                        marginRight: '12px',
+                        marginRight: '1px',
                     }}
                 />
+                {/* show default placeholder */}
+                {!value && <Placeholder>{props.defaultVisibleValue}</Placeholder>}
             </WrappedComponent>
-            <IconWrapper bgColor={theme.BG_LIGHT_GREEN}>
-                <Icon
-                    useCursorPointer
-                    size={14}
-                    data-test="@metadata/submit"
-                    icon="CHECK"
-                    onClick={e => {
-                        e.stopPropagation();
-                        submit(divRef?.current?.textContent);
-                    }}
-                    color={theme.TYPE_GREEN}
-                />
-            </IconWrapper>
-            <IconWrapper bgColor={theme.BG_GREY}>
-                <Icon
-                    useCursorPointer
-                    size={14}
-                    data-test="@metadata/cancel"
-                    icon="CROSS"
-                    onClick={e => {
-                        e.stopPropagation();
-                        onBlur();
-                    }}
-                    color={theme.TYPE_DARK_GREY}
-                />
-            </IconWrapper>
+            <IconsWrapper>
+                <IconWrapper bgColor={theme.BG_LIGHT_GREEN}>
+                    <Icon
+                        useCursorPointer
+                        size={14}
+                        data-test="@metadata/submit"
+                        icon="CHECK"
+                        onClick={e => {
+                            e.stopPropagation();
+                            submit(divRef?.current?.textContent);
+                        }}
+                        color={theme.TYPE_GREEN}
+                    />
+                </IconWrapper>
+                <IconWrapper bgColor={theme.BG_GREY}>
+                    <Icon
+                        useCursorPointer
+                        size={14}
+                        data-test="@metadata/cancel"
+                        icon="CROSS"
+                        onClick={e => {
+                            e.stopPropagation();
+                            onBlur();
+                        }}
+                        color={theme.TYPE_DARK_GREY}
+                    />
+                </IconWrapper>
+            </IconsWrapper>
         </>
     );
 };
