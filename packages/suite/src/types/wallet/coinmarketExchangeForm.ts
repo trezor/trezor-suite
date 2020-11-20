@@ -31,6 +31,7 @@ export type FormState = {
     fiatSelect?: Option;
     sendCryptoSelect: Option;
     feePerUnit?: string;
+    feeLimit?: string;
 };
 
 export interface AmountLimits {
