@@ -79,7 +79,7 @@ const Start = () => {
                         }}
                         options={[
                             { label: 'Windows', value: 'win' },
-                            { label: 'Linux', value: 'linux-x86_64' },
+                            { label: 'Linux (x86_64)', value: 'linux-x86_64' },
                             { label: 'Linux (arm64)', value: 'linux-arm64' },
                             { label: 'macOS', value: 'mac' },
                         ]}
