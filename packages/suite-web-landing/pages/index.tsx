@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 
 const StyledHeroCta = styled.header`
     text-align: center;
-    z-index: 1;
+    z-index: 2;
 `;
 
 const StyledCta = styled.div`
