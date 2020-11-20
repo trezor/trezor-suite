@@ -100,6 +100,7 @@ const CustomFee = ({ isVisible }: Props) => {
                 })}
                 bottomText={<InputError error={feePerUnitError} />}
             />
+            <input type="hidden" name="feeLimit" ref={register()} />
         </Wrapper>
     );
 };

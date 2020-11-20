@@ -139,6 +139,7 @@ const Fees = () => {
                             selectFee(value);
                             if (value === 'custom' && selectedFeeLevel.label !== 'custom') {
                                 setValue('feePerUnit', selectedFeeLevel.feePerUnit);
+                                setValue('feeLimit', selectedFeeLevel.feeLimit);
                             } else {
                                 clearErrors('feePerUnit');
                             }
