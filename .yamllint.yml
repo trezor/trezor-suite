@@ -3,6 +3,7 @@ extends: default
 ignore: |
   vendor/
   node_modules/
+  .yarn/
 
 rules:
   line-length: disable
