@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 
-import { Button } from '@trezor/components';
+import { Button, Icon, useTheme } from '@trezor/components';
 import { useActions, useDiscovery, useSelector } from '@suite-hooks';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { MetadataAddPayload } from '@suite-types/metadata';
@@ -212,6 +212,7 @@ const MetadataLabeling = (props: Props) => {
         init: metadataActions.init,
         setEditing: metadataActions.setEditing,
     });
+    const theme = useTheme();
     const l10nLabelling = getLocalizedActions(props.payload.type);
     const dataTestBase = `@metadata/${props.payload.type}/${props.payload.defaultValue}`;
     const actionButtonsDisabled = isDiscoveryRunning || pending;
@@ -383,12 +384,8 @@ const MetadataLabeling = (props: Props) => {
             )}
 
             {showSuccess && !editActive && (
-                <SuccessButton
-                    variant="tertiary"
-                    icon="CHECK"
-                    data-test={`${dataTestBase}/success`}
-                >
-                    {l10nLabelling.edited}
+                <SuccessButton variant="tertiary" data-test={`${dataTestBase}/success`}>
+                    <Icon icon="CHECK" color={theme.TYPE_GREEN} size={12} /> {l10nLabelling.edited}
                 </SuccessButton>
             )}
         </LabelContainer>
