@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, createRef, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import { Icon, useTheme } from '@trezor/components';
 
@@ -32,7 +32,6 @@ export const withEditable = (WrappedComponent: React.FC) => ({
     const theme = useTheme();
     const [touched, setTouched] = useState(false);
     const divRef = useRef<HTMLDivElement>(null);
-    const wrapperRef = createRef();
 
     const submit = useCallback(
         value => {
@@ -101,7 +100,7 @@ export const withEditable = (WrappedComponent: React.FC) => ({
         return () => {
             window.removeEventListener('keydown', keyboardHandler, false);
         };
-    }, [submit, onBlur, props.originalValue, divRef, wrapperRef, touched]);
+    }, [submit, onBlur, props.originalValue, divRef, touched]);
 
     return (
         <>
@@ -113,6 +112,7 @@ export const withEditable = (WrappedComponent: React.FC) => ({
                     style={{
                         paddingLeft: '1px',
                         color: !touched ? theme.TYPE_LIGHT_GREY : 'inherit',
+                        marginRight: '12px',
                     }}
                 />
             </WrappedComponent>
