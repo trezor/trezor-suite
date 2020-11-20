@@ -36,7 +36,7 @@ const getInfoUrl = (symbol?: Props['symbol']) => {
 
 const Wrapper = styled.div`
     display: flex;
-    color: ${props => props.theme.BG_WHITE};
+    background: ${props => props.theme.BG_WHITE};
     flex-direction: column;
     flex: 1;
 `;
