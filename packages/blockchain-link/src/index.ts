@@ -7,12 +7,6 @@ import * as ResponseTypes from './types/responses';
 import * as MessageTypes from './types/messages';
 import { Events } from './types/events';
 
-interface Emitter {
-    on<K extends keyof Events>(type: K, listener: (event: Events[K]) => void): this;
-    off<K extends keyof Events>(type: K, listener: (event: Events[K]) => void): this;
-    emit<K extends keyof Events>(type: K, ...args: Events[K][]): boolean;
-}
-
 const workerWrapper = (factory: BlockchainSettings['worker']): Worker => {
     if (typeof factory === 'function') return factory();
     if (typeof factory === 'string' && typeof Worker !== 'undefined') return new Worker(factory);
@@ -64,7 +58,13 @@ const initWorker = ({ worker: factory, ...settings }: BlockchainSettings) => {
     return dfd.promise;
 };
 
-class BlockchainLink extends EventEmitter implements Emitter {
+declare interface BlockchainLink {
+    on<K extends keyof Events>(type: K, listener: (event: Events[K]) => void): this;
+    off<K extends keyof Events>(type: K, listener: (event: Events[K]) => void): this;
+    emit<K extends keyof Events>(type: K, ...args: Events[K][]): boolean;
+}
+
+class BlockchainLink extends EventEmitter {
     settings: BlockchainSettings;
 
     messageId = 0;

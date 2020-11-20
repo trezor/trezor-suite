@@ -1,10 +1,10 @@
-interface ConnectEvent {
-    foo: boolean;
-}
+import { BlockEvent, NotificationEvent, FiatRatesEvent } from './responses';
 
 export interface Events {
-    connect: ConnectEvent;
-    disconnect: any;
-    notification: any;
-    block: any;
+    connected: undefined;
+    disconnected: undefined;
+    notification: NotificationEvent['payload'];
+    block: BlockEvent['payload'];
+    fiatRates: FiatRatesEvent['payload'];
+    error: Error;
 }
