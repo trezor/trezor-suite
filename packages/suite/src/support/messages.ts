@@ -4991,7 +4991,7 @@ const definedMessages = defineMessages({
     },
     TR_SUITE_WEB_LANDING_LINUX_ARM64_LABEL: {
         id: 'TR_SUITE_WEB_LANDING_LINUX_ARM64_LABEL',
-        defaultMessage: 'for Linux (aarch64)',
+        defaultMessage: 'for Linux (arm64)',
     },
     TR_SUITE_WEB_LANDING_WINDOWS_LABEL: {
         id: 'TR_SUITE_WEB_LANDING_WINDOWS_LABEL',
