@@ -66,7 +66,7 @@ const Offers = () => {
     const { setLayout } = useContext(LayoutContext);
 
     useEffect(() => {
-        if (setLayout) setLayout('Trezor Suite | Coinmarket', undefined, <CoinmarketBuyTopPanel />);
+        if (setLayout) setLayout('Trezor Suite | Trade', undefined, <CoinmarketBuyTopPanel />);
     }, [setLayout]);
 
     return (
