@@ -40,6 +40,7 @@
 - AMOUNT_IS_NOT_SET (empty field)
 - AMOUNT_IS_NOT_NUMBER (not valid number)
 - AMOUNT_IS_TOO_LOW (lower/equal than zero + ETH exception: 0 amount is possible ONLY for tx with DATA)
+- AMOUNT_IS_BELOW_DUST lower than network dust limit
 - AMOUNT_IS_NOT_ENOUGH (not enough funds on account)
 - AMOUNT_NOT_ENOUGH_CURRENCY_FEE (ETH only: trying to send TOKEN without enough ETH to cover TX fee)
 - AMOUNT_IS_MORE_THAN_RESERVE (XRP only: trying to spend the reserve)

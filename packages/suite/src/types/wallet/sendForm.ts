@@ -54,6 +54,7 @@ export interface FeeInfo {
     blockTime: number; // how often block is mined
     minFee: number;
     maxFee: number;
+    dustLimit?: number; // coin dust limit
     feeLimit?: number; // eth gas limit
     levels: FeeLevel[]; // fee levels are predefined in trezor-connect > trezor-firmware/common
 }
