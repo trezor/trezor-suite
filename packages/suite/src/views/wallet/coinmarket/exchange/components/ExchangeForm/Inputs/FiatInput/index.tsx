@@ -7,6 +7,7 @@ import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExc
 import { Translation } from '@suite-components';
 import FiatSelect from './FiatSelect';
 import BigNumber from 'bignumber.js';
+import { MAX_LENGTH } from '@suite-constants/inputs';
 
 const StyledInput = styled(Input)`
     margin-left: 2px;
@@ -42,6 +43,7 @@ const FiatInput = () => {
             state={errors[fiatInput] ? 'error' : undefined}
             name={fiatInput}
             noTopLabel
+            maxLength={MAX_LENGTH.AMOUNT}
             innerRef={register({
                 validate: (value: any) => {
                     if (value) {
