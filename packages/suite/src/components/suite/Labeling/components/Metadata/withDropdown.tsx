@@ -14,6 +14,11 @@ const StyledDropdown = styled(Dropdown)`
     text-align: left;
 `;
 
+const StyledInner = styled.div`
+    display: flex;
+    overflow: hidden;
+`;
+
 type Props = RequiredKey<ExtendedProps, 'dropdownOptions'>;
 
 /**
@@ -36,9 +41,9 @@ export const withDropdown = (WrappedComponent: React.FC<Props>) => (props: Props
             absolutePosition
             appendTo={document.body}
         >
-            <div style={{ display: 'flex', overflow: 'hidden' }}>
+            <StyledInner>
                 <WrappedComponent {...props} />
-            </div>
+            </StyledInner>
         </StyledDropdown>
     );
 };
