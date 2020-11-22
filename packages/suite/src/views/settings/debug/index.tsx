@@ -4,7 +4,8 @@ import { Button, Switch, Select, THEME, SuiteThemeColors } from '@trezor/compone
 import { SettingsLayout } from '@settings-components';
 import { ActionColumn, Row, Section, TextColumn } from '@suite-components/Settings';
 import * as suiteActions from '@suite-actions/suiteActions';
-import { useSelector, useActions } from '@suite-hooks';
+import { useDevice, useSelector, useActions } from '@suite-hooks';
+import { openGithubIssue } from '@suite/services/github';
 
 import { Props } from './Container';
 import invityAPI from '@suite-services/invityAPI';
@@ -35,6 +36,7 @@ const DebugSettings = (props: Props) => {
     ];
     const selectedInvityApiServer =
         invityApiServerOptions.find(s => s.value === invityAPIUrl) || invityApiServerOptions[0];
+    const { device } = useDevice();
     return (
         <SettingsLayout>
             <Section title="Localization">
@@ -54,6 +56,8 @@ const DebugSettings = (props: Props) => {
                         />
                     </ActionColumn>
                 </Row>
+            </Section>
+            <Section title="Debug">
                 <Row>
                     <TextColumn
                         title="Trezor Bridge dev mode (desktop)"
@@ -68,6 +72,21 @@ const DebugSettings = (props: Props) => {
                                 });
                             }}
                         />
+                    </ActionColumn>
+                </Row>
+                <Row>
+                    <TextColumn
+                        title="Open issue on Github"
+                        description="Open issue on Github with pre-filled details. Do not use with sensitive data!"
+                    />
+                    <ActionColumn>
+                        <Button
+                            onClick={() => {
+                                openGithubIssue(device);
+                            }}
+                        >
+                            Open issue
+                        </Button>
                     </ActionColumn>
                 </Row>
             </Section>
