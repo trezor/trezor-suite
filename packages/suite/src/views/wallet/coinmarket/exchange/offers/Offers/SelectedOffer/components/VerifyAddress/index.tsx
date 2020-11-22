@@ -223,6 +223,8 @@ const VerifyAddressComponent = () => {
           }
         : {};
 
+    const formErrors = !formState.isValid;
+
     return (
         <Wrapper>
             <Heading>
@@ -452,7 +454,7 @@ const VerifyAddressComponent = () => {
                                     confirmTrade(address, extraField);
                                 }
                             }}
-                            isDisabled={!formState.isValid}
+                            isDisabled={formErrors}
                         >
                             <Translation id="TR_EXCHANGE_GO_TO_PAYMENT" />
                         </Button>
