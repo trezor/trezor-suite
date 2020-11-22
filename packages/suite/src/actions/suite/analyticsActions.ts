@@ -33,7 +33,7 @@ simple semver for data-analytics part.
 Don't forget to update docs with changelog!
 */
 
-const version = '1.4';
+const version = '1.5';
 
 export type AnalyticsEvent =
     | {
@@ -59,6 +59,8 @@ export type AnalyticsEvent =
               // added in 1.4
               rememberedStandardWallets: number;
               rememberedHiddenWallets: number;
+              // added in 1.5   
+              theme: string;
           };
       }
     | { type: 'transport-type'; payload: { type: string; version: string } }

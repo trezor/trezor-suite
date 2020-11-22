@@ -47,6 +47,11 @@ Breaking change should bump major version. Any other change bumps minor version.
 
 ## Changelog
 
+### 1.5
+Added:
+- suite-ready
+  - theme (dark mode)
+
 ### 1.4
 Added:
 - suite-ready

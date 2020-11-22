@@ -51,6 +51,7 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                         rememberedHiddenWallets: api
                             .getState()
                             .devices.filter(d => d.remember && !d.useEmptyPassphrase).length,
+                        theme: state.suite.settings.theme.variant,
                     },
                 }),
             );
