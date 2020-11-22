@@ -51,6 +51,8 @@ Breaking change should bump major version. Any other change bumps minor version.
 Added:
 - suite-ready
   - theme (dark mode)
+- wallet/created
+  - type: standard | hidden
 
 ### 1.4
 Added:

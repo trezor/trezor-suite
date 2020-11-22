@@ -162,6 +162,14 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
         case ANALYTICS.DISPOSE:
             api.dispatch(analyticsActions.report({ type: 'analytics/dispose' }));
             break;
+        case SUITE.AUTH_DEVICE:
+            api.dispatch(
+                analyticsActions.report({
+                    type: 'wallet/created',
+                    payload: { type: action.payload.walletNumber ? 'hidden' : 'standard' },
+                }),
+            );
+            break;
         default:
             break;
     }

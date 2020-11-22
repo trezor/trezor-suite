@@ -59,7 +59,7 @@ export type AnalyticsEvent =
               // added in 1.4
               rememberedStandardWallets: number;
               rememberedHiddenWallets: number;
-              // added in 1.5   
+              // added in 1.5
               theme: string;
           };
       }
@@ -269,6 +269,12 @@ export type AnalyticsEvent =
     | {
           // successful dry-run
           type: 'check-seed/success';
+      }
+    | {
+          type: 'wallet/created';
+          payload: {
+              type: 'hidden' | 'standard';
+          };
       };
 
 const getUrl = () => {
