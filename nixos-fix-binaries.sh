@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 if [ -f /etc/NIXOS ] ; then
   if [ -z "$IN_NIX_SHELL" ] ; then
     echo "You need to run this script in a nix-shell. Aborting"
