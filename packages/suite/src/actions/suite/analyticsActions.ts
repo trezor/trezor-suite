@@ -86,6 +86,9 @@ export type AnalyticsEvent =
           payload: { mode: 'bootloader' };
       }
     | {
+          type: 'device-disconnect';
+      }
+    | {
           /**
         device-update-firmware
         is log after firmware update call to device is finished. 
