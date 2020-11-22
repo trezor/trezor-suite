@@ -53,6 +53,7 @@ Added:
   - theme (dark mode)
 - wallet/created
   - type: standard | hidden
+- device-disconnect
 
 ### 1.4
 Added:

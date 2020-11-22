@@ -99,6 +99,9 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
             }
             break;
         }
+        case DEVICE.DISCONNECT:
+            api.dispatch(analyticsActions.report({ type: 'device-disconnect' }));
+            break;
         case SUITE.SET_FLAG:
             // here we are reporting some information of user after he finishes initialRun
             if (action.key === 'initialRun' && action.value === false) {
