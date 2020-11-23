@@ -41,6 +41,7 @@ export const THEME = {
         GRADIENT_RED_START: '#d15b5b',
         GRADIENT_RED_END: '#e75f5f',
 
+        BOX_SHADOW_BLACK_5: 'rgba(0, 0, 0, 0.05)',
         BOX_SHADOW_BLACK_15: 'rgba(0, 0, 0, 0.15)',
         BOX_SHADOW_BLACK_20: 'rgba(0, 0, 0, 0.2)',
         BOX_SHADOW_MODAL: 'rgba(77, 77, 77, 0.2)',
@@ -85,6 +86,7 @@ export const THEME = {
         GRADIENT_RED_START: '#d15b5b', // same as in light theme
         GRADIENT_RED_END: '#e75f5f', // same as in light theme
 
+        BOX_SHADOW_BLACK_5: 'rgba(255, 255, 255, 0.05)',
         BOX_SHADOW_BLACK_15: 'rgba(0, 0, 0, 0.2)',
         BOX_SHADOW_BLACK_20: 'rgba(0, 0, 0, 0.2)', // shadow around dropdown
         BOX_SHADOW_MODAL: 'rgba(0, 0, 0, 0.5)', // shadow around modal
@@ -131,6 +133,7 @@ export const THEME = {
         GRADIENT_RED_START: '#d15b5b', // same as in light theme
         GRADIENT_RED_END: '#e75f5f', // same as in light theme
 
+        BOX_SHADOW_BLACK_5: 'rgba(255, 255, 255, 0.05)',
         BOX_SHADOW_BLACK_15: 'rgba(0, 0, 0, 0.2)',
         BOX_SHADOW_BLACK_20: 'rgba(255, 255, 255, 0.1)', // shadow around dropdown
         BOX_SHADOW_MODAL: 'rgba(0, 0, 0, 0.5)', // shadow around modal

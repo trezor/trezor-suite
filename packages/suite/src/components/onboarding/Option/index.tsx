@@ -21,7 +21,7 @@ const Wrapper = styled.div<WrapperProps>`
     flex-direction: column;
 
     &:hover {
-        box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.05);
+        box-shadow: 0px 0px 6px 2px ${props => props.theme.BOX_SHADOW_BLACK_5};
     }
 `;
 

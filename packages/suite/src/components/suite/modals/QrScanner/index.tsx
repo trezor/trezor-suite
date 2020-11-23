@@ -31,7 +31,7 @@ const CameraPlaceholder = styled.div`
     padding: 40px;
     height: 320px;
     border-radius: 3px;
-    background: #ebebeb;
+    background: ${props => props.theme.BG_GREY};
 `;
 
 const Error = styled.div`
@@ -136,7 +136,7 @@ const QrScanner = ({ onCancel, decision }: Props) => {
                     <CameraPlaceholder>
                         <Error>
                             <ErrorTitle>
-                                <Translation id="TR_OOPS_SOMETHING_WENT_WRONG" />
+                                <Translation id="TR_GENERIC_ERROR_TITLE" />
                             </ErrorTitle>
                             <ErrorMessage>{error}</ErrorMessage>
                         </Error>
