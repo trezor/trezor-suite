@@ -234,10 +234,6 @@ const definedMessages = defineMessages({
         id: 'TR_EXCHANGE_FEES_INCLUDED_INFO',
         defaultMessage: 'All fees included info',
     },
-    TR_EXCHANGE_VALIDATION_ERROR_EMPTY: {
-        defaultMessage: 'TR_EXCHANGE_VALIDATION_ERROR_EMPTY',
-        id: 'TR_EXCHANGE_VALIDATION_ERROR_EMPTY',
-    },
     TR_EXCHANGE_VALIDATION_ERROR_MINIMUM_CRYPTO: {
         defaultMessage: 'Minimum is {minimum} {currency}',
         id: 'TR_EXCHANGE_VALIDATION_ERROR_MINIMUM_CRYPTO',
