@@ -7,11 +7,11 @@ class FileSystemProvider extends AbstractMetadataProvider {
     }
 
     connect() {
-        return Promise.resolve(true);
+        return Promise.resolve(this.ok());
     }
 
     disconnect() {
-        return Promise.resolve(true);
+        return Promise.resolve(this.ok());
     }
 
     // eslint-disable-next-line

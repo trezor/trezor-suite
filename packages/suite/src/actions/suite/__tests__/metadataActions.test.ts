@@ -189,7 +189,8 @@ describe('Metadata Actions', () => {
     fixtures.connectProvider.forEach(f => {
         it(`connectProvider - ${f.description}`, async () => {
             jest.mock('@suite-services/metadata/DropboxProvider');
-            DropboxProvider.prototype.connect = () => Promise.resolve(true);
+            DropboxProvider.prototype.connect = () =>
+                Promise.resolve({ success: true, payload: undefined });
 
             // @ts-ignore
             const store = initStore(getInitialState(f.initialState));
@@ -207,7 +208,8 @@ describe('Metadata Actions', () => {
     fixtures.addMetadata.forEach(f => {
         it(`add metadata - ${f.description}`, async () => {
             jest.mock('@suite-services/metadata/DropboxProvider');
-            DropboxProvider.prototype.connect = () => Promise.resolve(true);
+            DropboxProvider.prototype.connect = () =>
+                Promise.resolve({ success: true, payload: undefined });
             DropboxProvider.prototype.getProviderDetails = () =>
                 Promise.resolve({
                     success: true,

@@ -8,11 +8,18 @@ class DropboxProvider extends AbstractMetadataProvider {
     }
 
     async connect() {
-        return true;
+        try {
+            return this.ok();
+        } catch (err) {
+            if (err instanceof Error) {
+                return this.error('AUTH_ERROR', err.message);
+            }
+            return this.error('OTHER_ERROR', 'failed');
+        }
     }
 
     async disconnect() {
-        return true;
+        return this.ok();
     }
 
     // @ts-ignore

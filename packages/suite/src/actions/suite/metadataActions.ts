@@ -118,7 +118,7 @@ export const disconnectProvider = (removeMetadata = true) => async (dispatch: Di
     });
 
     /* eslint-disable-next-line @typescript-eslint/no-use-before-define */
-    const provider = await dispatch(getProvider());
+    const provider = dispatch(getProvider());
     if (provider) {
         await provider.disconnect();
         providerInstance = undefined;
@@ -396,17 +396,17 @@ const syncMetadataKeys = () => (dispatch: Dispatch, getState: GetState) => {
 };
 
 export const connectProvider = (type: MetadataProviderType) => async (dispatch: Dispatch) => {
-    let provider = await dispatch(getProvider());
+    let provider = dispatch(getProvider());
 
     if (!provider) {
         provider = createProvider(type);
     }
-    let isConnected = await provider.isConnected();
+    const isConnected = await provider.isConnected();
     if (provider && !isConnected) {
-        isConnected = await provider.connect();
-    }
-    if (!isConnected) {
-        return;
+        const connectionResult = await provider.connect();
+        if ('error' in connectionResult) {
+            return connectionResult.error;
+        }
     }
     const result = await provider.getProviderDetails();
     if (!result.success) {
