@@ -48,7 +48,7 @@
         "regenerator-runtime": "0.13.7",
         "start-server-and-test": "^1.11.0",
         "styled-components": "^5.1.1",
-        "stylelint": "13.5.0",
+        "stylelint": "^13.8.0",
         "stylelint-config-recommended": "^3.0.0",
         "stylelint-config-styled-components": "^0.1.1",
         "stylelint-custom-processor-loader": "^0.6.0",
