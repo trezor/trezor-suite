@@ -182,12 +182,11 @@ export default class WebUsbPlugin {
 
     if (first) {
       await device.selectConfiguration(this.configurationId);
-
-      if (typeof navigator !== `undefined`) {
-        const chromeOS = /\bCrOS\b/.test(navigator.userAgent);
-        if (!chromeOS) {
-          await device.reset();
-        }
+      try {
+        // reset fails on ChromeOS and windows
+        await device.reset();
+      } catch (error) {
+        // do nothing
       }
     }
 
