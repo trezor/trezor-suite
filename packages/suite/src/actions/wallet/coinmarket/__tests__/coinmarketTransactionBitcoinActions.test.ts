@@ -8,6 +8,7 @@ import { BTC_SIGN_TRANSACTION_FIXTURES } from '../__fixtures__/coinmarketCommonA
 import { DEFAULT_STORE } from '../__fixtures__/coinmarketCommonActions/store';
 import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
 import transactionReducer from '@wallet-reducers/transactionReducer';
+import { SignTransactionData } from '@wallet-types/transaction';
 
 export const getInitialState = (initial = {}) => {
     return {
@@ -116,7 +117,9 @@ describe('Coinmarket Transaction Bitcoin Actions', () => {
             const store = initStore(getInitialState(f.initialState));
             require('trezor-connect').setTestFixtures(f.connect);
             const result = await store.dispatch(
-                coinmarketTransactionBitcoinActions.signTransaction(f.params.data),
+                coinmarketTransactionBitcoinActions.signTransaction(
+                    f.params.data as SignTransactionData,
+                ),
             );
             expect(result).toMatchSnapshot();
         });

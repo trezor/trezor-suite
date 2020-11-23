@@ -117,7 +117,7 @@ const Actions = styled.div`
 const ActionButton = styled(Button)`
     margin-top: 8px;
 
-    &::first-child {
+    &:first-child {
         margin-top: 0px;
     }
 `;
@@ -127,15 +127,15 @@ const OnDeviceActionButton = styled(ActionButton)`
     text-decoration: underline;
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 
+    &:first-child {
+        margin-top: 0px;
+    }
+
     &:hover,
     &:focus,
     &:active {
         color: ${props => props.theme.TYPE_LIGHT_GREY};
         background: transparent;
-    }
-
-    &::first-child {
-        margin-top: 0px;
     }
 `;
 

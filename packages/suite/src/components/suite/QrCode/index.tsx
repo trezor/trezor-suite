@@ -8,7 +8,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     align-items: center;
     margin-right: 28px;
-    padding: 4px; // some qr code scanners can't recognize qr codes on dark background, having white border around helps with this
+    padding: 4px; /* some qr code scanners can't recognize qr codes on dark background, having white border around helps with this */
     background: ${colors.BG_WHITE};
 `;
 

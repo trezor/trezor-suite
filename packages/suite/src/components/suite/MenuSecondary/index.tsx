@@ -10,7 +10,6 @@ const AbsoluteWrapper = styled.aside`
     flex: 0 0 auto;
     background: ${props => props.theme.BG_WHITE};
     border-right: 1px solid ${props => props.theme.STROKE_GREY};
-    overflow: hidden;
     height: 100%;
     overflow: auto;
 `;

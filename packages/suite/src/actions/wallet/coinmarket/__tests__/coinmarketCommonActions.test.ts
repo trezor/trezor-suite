@@ -6,7 +6,7 @@ import coinmarketReducer from '@wallet-reducers/coinmarketReducer';
 import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
 import * as coinmarketCommonActions from '../coinmarketCommonActions';
 import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
-import { ReviewTransactionData } from '@wallet-types/transaction';
+import { ComposeTransactionData, ReviewTransactionData } from '@wallet-types/transaction';
 import { COMPOSE_TRANSACTION_FIXTURES } from '../__fixtures__/coinmarketCommonActions/compose';
 import { DEFAULT_STORE } from '../__fixtures__/coinmarketCommonActions/store';
 import { VERIFY_ADDRESS_FIXTURES } from '../__fixtures__/coinmarketCommonActions/verifyAddress';
@@ -137,7 +137,7 @@ describe('Coinmarket Common Actions', () => {
             require('trezor-connect').setTestFixtures(f.connect);
 
             const result = await store.dispatch(
-                coinmarketCommonActions.composeTransaction(f.params.data),
+                coinmarketCommonActions.composeTransaction(f.params.data as ComposeTransactionData),
             );
             expect(result).toEqual(f.result.value);
             if (f.result && f.result.actions) {

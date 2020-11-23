@@ -1,6 +1,5 @@
 import { NETWORKS } from '@wallet-config';
 import { BTC_ACCOUNT, ETH_ACCOUNT, XRP_ACCOUNT } from './accounts';
-import { ComposeTransactionData } from '@wallet-types/transaction';
 
 const { getSuiteDevice } = global.JestMocks;
 const AVAILABLE_DEVICE = getSuiteDevice({ available: true, connected: true });
@@ -14,7 +13,7 @@ export const COMPOSE_TRANSACTION_FIXTURES = [
             },
         },
         params: {
-            data: <ComposeTransactionData>{
+            data: {
                 account: BTC_ACCOUNT,
                 amount: '0.1234',
                 feeInfo: {
@@ -53,7 +52,7 @@ export const COMPOSE_TRANSACTION_FIXTURES = [
             },
         },
         params: {
-            data: <ComposeTransactionData>{
+            data: {
                 account: BTC_ACCOUNT,
                 amount: '0.1234',
                 feeInfo: {
@@ -92,7 +91,7 @@ export const COMPOSE_TRANSACTION_FIXTURES = [
             },
         },
         params: {
-            data: <ComposeTransactionData>{
+            data: {
                 account: BTC_ACCOUNT,
                 amount: '0.1234',
                 feeInfo: {
@@ -138,7 +137,7 @@ export const COMPOSE_TRANSACTION_FIXTURES = [
             },
         },
         params: {
-            data: <ComposeTransactionData>{
+            data: {
                 account: BTC_ACCOUNT,
                 amount: '0.1234',
                 feeInfo: {
@@ -191,7 +190,7 @@ export const COMPOSE_TRANSACTION_FIXTURES = [
             },
         },
         params: {
-            data: <ComposeTransactionData>{
+            data: {
                 account: ETH_ACCOUNT,
                 amount: '0.1234',
                 feeInfo: {
@@ -253,7 +252,7 @@ export const COMPOSE_TRANSACTION_FIXTURES = [
             },
         },
         params: {
-            data: <ComposeTransactionData>{
+            data: {
                 account: ETH_ACCOUNT,
                 amount: '0.1234',
                 feeInfo: {
@@ -316,7 +315,7 @@ export const COMPOSE_TRANSACTION_FIXTURES = [
             },
         },
         params: {
-            data: <ComposeTransactionData>{
+            data: {
                 account: XRP_ACCOUNT,
                 amount: '0.1234',
                 feeInfo: {

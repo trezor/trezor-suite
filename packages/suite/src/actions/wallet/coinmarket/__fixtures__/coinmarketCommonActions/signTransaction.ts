@@ -1,5 +1,4 @@
 import { BTC_ACCOUNT, ETH_ACCOUNT, XRP_ACCOUNT } from './accounts';
-import { SignTransactionData } from '@wallet-types/transaction';
 
 const { getSuiteDevice } = global.JestMocks;
 const AVAILABLE_DEVICE = getSuiteDevice({ available: true, connected: true });
@@ -16,7 +15,7 @@ export const BTC_SIGN_TRANSACTION_FIXTURES = [
             },
         },
         params: {
-            data: <SignTransactionData>{
+            data: {
                 account: BTC_ACCOUNT,
                 amount: '1',
                 address: 'bc1q5y487p64hfsjc5gdfeezv29zwcddz5kahve0kp',
@@ -113,7 +112,7 @@ export const ETH_SIGN_TRANSACTION_FIXTURES = [
             },
         },
         params: {
-            data: <SignTransactionData>{
+            data: {
                 account: ETH_ACCOUNT,
                 address: '0x517868D10dD5b8279BAe06E5fb649eDa1Da49833',
                 amount: '85277520000000000',
@@ -174,7 +173,7 @@ export const XRP_SIGN_TRANSACTION_FIXTURES = [
             },
         },
         params: {
-            data: <SignTransactionData>{
+            data: {
                 account: XRP_ACCOUNT,
                 amount: '1',
                 address: 'bc1q5y487p64hfsjc5gdfeezv29zwcddz5kahve0kp',

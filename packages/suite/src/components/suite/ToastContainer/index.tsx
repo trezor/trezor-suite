@@ -5,6 +5,7 @@ import { ToastContainer as BaseToastContainer } from 'react-toastify';
 const StyledContainer = styled(BaseToastContainer)`
     /* Default classes used by react-toastify,
     this is the place if you want to override default styles */
+    /* stylelint-disable no-duplicate-selectors */
     & {
         min-width: 330px;
         max-width: 450px;
@@ -13,6 +14,7 @@ const StyledContainer = styled(BaseToastContainer)`
         top: 90px;
         right: 50px;
     }
+    /* stylelint-enable no-duplicate-selectors */
     .Toastify__toast {
         border-radius: 4px;
         box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.19);

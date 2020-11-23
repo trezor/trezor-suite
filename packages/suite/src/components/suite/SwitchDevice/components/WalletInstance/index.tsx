@@ -26,7 +26,7 @@ const InstanceType = styled.div`
     line-height: 1.5;
     align-items: center;
 
-    // these styles ensure proper metadata behavior
+    /* these styles ensure proper metadata behavior */
     white-space: nowrap;
     overflow: hidden;
     max-width: 300px;
