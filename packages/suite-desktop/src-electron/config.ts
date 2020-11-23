@@ -1,4 +1,6 @@
-export const onionDomain = 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion';
+import { TOR_DOMAIN } from '@suite/constants/suite/urls';
+
+export const onionDomain = TOR_DOMAIN;
 
 export const oauthUrls = [
     'https://accounts.google.com',

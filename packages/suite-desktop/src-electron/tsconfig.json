@@ -18,7 +18,11 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@suite/*": ["../../suite/src/*"]
+    }
   },
   "include": [
     "**/*.ts",

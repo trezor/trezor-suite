@@ -1,6 +1,5 @@
 import { app, session, BrowserWindow, ipcMain, shell, Menu, IpcMainEvent, dialog } from 'electron';
 import isDev from 'electron-is-dev';
-import prepareNext from 'electron-next';
 import { autoUpdater, CancellationToken } from 'electron-updater';
 import * as path from 'path';
 import * as url from 'url';
@@ -93,10 +92,6 @@ const init = async () => {
         }
     } catch {
         //
-    }
-
-    if (isDev) {
-        await prepareNext(path.resolve(__dirname, '../'));
     }
 
     const winBounds = store.getWinBounds();
