@@ -24,7 +24,7 @@
         "worker-loader": "^3.0.5"
     },
     "devDependencies": {
-        "babel-plugin-styled-components": "1.11.1",
+        "babel-plugin-styled-components": "1.12.0",
         "@types/next": "^9.0.0",
         "@types/next-redux-wrapper": "^3.0.0",
         "@types/react": "^16.7.11",
