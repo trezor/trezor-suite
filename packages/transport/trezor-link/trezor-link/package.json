@@ -27,10 +27,10 @@
     "babel-plugin-add-module-exports": "^1.0.4",
     "babel-plugin-inline-version": "^1.0.2",
     "bump-version": "^0.5.0",
-    "eslint": "^6.1.0",
-    "eslint-plugin-flowtype": "^3.12.2",
+    "eslint": "^7.14.0",
+    "eslint-plugin-flowtype": "^5.2.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.0",
+    "eslint-plugin-standard": "^5.0.0",
     "flow-bin": "0.78.0"
   },
   "dependencies": {
