@@ -51,6 +51,13 @@ export const transformTransaction = (descriptor: string, tx: any): Transaction =
             blockHash: tx.hash,
             targets: [],
             tokens: [],
+            details: {
+                vin: [],
+                vout: [],
+                size: 0,
+                totalInput: '0',
+                totalOutput: '0',
+            },
         };
     }
     const type = tx.Account === descriptor ? 'sent' : 'recv';
@@ -79,5 +86,12 @@ export const transformTransaction = (descriptor: string, tx: any): Transaction =
             },
         ],
         tokens: [],
+        details: {
+            vin: [],
+            vout: [],
+            size: 0,
+            totalInput: '0',
+            totalOutput: '0',
+        },
     };
 };
