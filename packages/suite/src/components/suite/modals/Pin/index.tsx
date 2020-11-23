@@ -177,6 +177,7 @@ const Pin = ({ device, cancelable, noBackground, ...rest }: Props) => {
             cancelable={cancelable}
             noBackground={noBackground}
             {...rest}
+            data-test="@modal/pin"
         >
             <Wrapper>
                 {isExtended && (

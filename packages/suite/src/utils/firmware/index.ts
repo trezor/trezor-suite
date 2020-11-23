@@ -22,8 +22,6 @@ export const getTextForStatus = (status: AppState['firmware']['status']) => {
             return 'TR_WAIT_FOR_REBOOT';
         case 'unplug':
             return 'TR_DISCONNECT_YOUR_DEVICE';
-        case 'check-fingerprint':
-            return 'TR_CHECK_FINGERPRINT';
         default:
             return null;
     }

@@ -62,7 +62,6 @@ const FirmwareStep = ({
             case 'waiting-for-confirmation':
             case 'installing':
             case 'started':
-            case 'check-fingerprint':
             case 'wait-for-reboot':
             case 'unplug':
                 return {

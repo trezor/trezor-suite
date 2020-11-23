@@ -2,12 +2,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 import TrezorConnect, { Device, Features } from 'trezor-connect';
-import { Store, AppState } from '@suite-types';
+import { Store, Action } from '@suite-types';
 
 import { onboardingShouldLoad, dashboardShouldLoad } from './utils/assertions';
 import { connectBootloaderDevice, connectDevice, changeDevice } from './utils/device';
 import { getTestElement, getConfirmActionOnDeviceModal } from './utils/selectors';
-import { resetDb, setState } from './utils/test-env';
+import { resetDb, dispatch } from './utils/test-env';
 import {
     toggleDeviceMenu,
     goToOnboarding,
@@ -41,7 +41,7 @@ declare global {
                 device?: Partial<Device>,
                 features?: Partial<Features>,
             ) => Chainable<any>;
-            setState: (state: Partial<AppState>) => undefined;
+            dispatch: (state: Action) => undefined;
             onboardingShouldLoad: () => Chainable<Subject>;
             dashboardShouldLoad: () => Chainable<Subject>;
             toggleDeviceMenu: () => Chainable<Subject>;
@@ -73,7 +73,6 @@ if (Cypress.env('SNAPSHOT')) {
 
 Cypress.Commands.add('prefixedVisit', prefixedVisit);
 Cypress.Commands.add('resetDb', { prevSubject: false }, resetDb);
-Cypress.Commands.add('setState', setState);
 Cypress.Commands.add('connectDevice', connectDevice);
 Cypress.Commands.add('connectBootloaderDevice', connectBootloaderDevice);
 Cypress.Commands.add('changeDevice', changeDevice);
@@ -89,3 +88,5 @@ Cypress.Commands.add('goToOnboarding', goToOnboarding);
 Cypress.Commands.add('passThroughInitialRun', passThroughInitialRun);
 Cypress.Commands.add('passThroughBackup', passThroughBackup);
 Cypress.Commands.add('passThroughInitMetadata', passThroughInitMetadata);
+// redux
+Cypress.Commands.add('dispatch', dispatch);

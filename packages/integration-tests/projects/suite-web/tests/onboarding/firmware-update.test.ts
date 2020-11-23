@@ -1,6 +1,8 @@
 // @stable/device-management
 // @retry=2
 
+const { getSuiteDevice } = global.JestMocks;
+
 describe('Onboarding - firmware update', () => {
     beforeEach(() => {
         cy.task('stopEmu');
@@ -41,5 +43,12 @@ describe('Onboarding - firmware update', () => {
         // and back button which reset state of firmware update and brings user back to initial screen
         cy.getTestElement('@onboarding/back-button').click();
         cy.getTestElement('@firmware/install-button');
+
+        cy.dispatch({
+            type: 'ui-button',
+            payload: { code: 'ButtonRequest_FirmwareCheck', device: getSuiteDevice() },
+        });
+        cy.getTestElement('@suite/modal/confirm-fingerprint-on-device');
+        cy.matchImageSnapshot();
     });
 });

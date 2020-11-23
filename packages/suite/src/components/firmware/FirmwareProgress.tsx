@@ -1,13 +1,9 @@
 import React from 'react';
-import {
-    getFormattedFingerprint,
-    getTextForStatus,
-    getDescriptionForStatus,
-} from '@firmware-utils';
+import { getTextForStatus, getDescriptionForStatus } from '@firmware-utils';
 import { Translation } from '@suite-components';
 import { Loaders } from '@onboarding-components';
 import { useDevice, useFirmware } from '@suite-hooks';
-import { Fingerprint, InitImg, P, H2 } from '@firmware-components';
+import { InitImg, P, H2 } from '@firmware-components';
 
 const Body = () => {
     const { device } = useDevice();
@@ -33,12 +29,6 @@ const Body = () => {
                         </P>
                     )}
                 </>
-            )}
-
-            {status === 'check-fingerprint' && device?.firmwareRelease?.release?.fingerprint && (
-                <Fingerprint>
-                    {getFormattedFingerprint(device.firmwareRelease.release.fingerprint)}
-                </Fingerprint>
             )}
         </>
     );

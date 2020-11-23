@@ -22,7 +22,6 @@ export type FirmwareUpdateState =
               | 'started' // progress - firmware update has started, waiting for events from trezor-connect
               | 'waiting-for-confirmation' // progress - device waits for confirmation prior starting to update
               | 'installing' // progress - firmware is being installed
-              | 'check-fingerprint' // progress - some old t1 firmwares show screen with fingerprint check
               | 'partially-done' // progress - some old t1 firmwares can't update to the latest version
               | 'wait-for-reboot' // progress - model t2 is restarting after firmware update
               | 'unplug' // progress - user is asked to reconnect device (t1)
@@ -71,9 +70,6 @@ const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Actio
             case SUITE.ADD_BUTTON_REQUEST:
                 if (action.payload === 'ButtonRequest_FirmwareUpdate') {
                     draft.status = 'waiting-for-confirmation';
-                }
-                if (action.payload === 'ButtonRequest_FirmwareCheck') {
-                    draft.status = 'check-fingerprint';
                 }
                 break;
             case UI.FIRMWARE_PROGRESS:
