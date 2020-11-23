@@ -74,7 +74,7 @@ declare class ChromeHid {
               callback: (i: Array<ChromeHidDeviceInfo>) => void) => void;
 
   send: (connectionId: number, reportId: number, data: ArrayBuffer, callback: () => void) => void;
-  
+
   receive: (connectionId: number, callback: (reportId: number, data: ArrayBuffer) => void) => void;
 
   connect: (deviceId: number, callback: (connection: {connectionId: number}) => void) => void;
@@ -151,17 +151,17 @@ declare class ChromeOnMessage {
 }
 
 declare class ChromeApp {
-  runtime: ChromeAppRuntime;   
+  runtime: ChromeAppRuntime;
   window: ChromeAppWindow;
 }
 
 declare class ChromeAppRuntime {
-  onLaunched: ChromeAppOnLaunched;        
+  onLaunched: ChromeAppOnLaunched;
 }
 
 declare class ChromeAppOnLaunched {
   addListener: (
-    callback: () => void //callback can have more parameters but I am not using them
+    callback: () => void // callback can have more parameters but I am not using them
   ) => void;
 }
 
@@ -182,7 +182,7 @@ declare type ChromeBoundsSpecification = {
 }
 
 declare class ChromeAppWindowOnClosed {
-  addListener: ( callback: () => void ) => void
+  addListener: (callback: () => void) => void
 }
 
 declare class ChromeAppWindow {
