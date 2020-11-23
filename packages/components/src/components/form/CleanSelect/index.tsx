@@ -99,6 +99,7 @@ const selectStyle = (
     },
     menu: (base: Record<string, any>) => ({
         ...base,
+        background: theme.BG_WHITE_ALT,
         minWidth: '85px',
         color: theme.TYPE_LIGHT_GREY,
         boxShadow: '0 4px 10px 0 rgba(0, 0, 0, 0.15)',
