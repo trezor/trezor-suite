@@ -1,4 +1,5 @@
 import { ICONS } from '../../components/Icon/icons';
+import { FLAGS } from '../../components/Flag/flags';
 import { ReactNode } from 'react';
 import { COINS } from '../../components/logos/CoinLogo/coins';
 import { THEME } from '../../config/colors';
@@ -26,6 +27,8 @@ export interface InputButton {
 export type IconType = keyof typeof ICONS;
 
 export type CoinType = keyof typeof COINS;
+
+export type FlagType = keyof typeof FLAGS;
 
 export type ParagraphSize = 'normal' | 'small' | 'tiny';
 
