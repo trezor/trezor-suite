@@ -35,11 +35,10 @@ class DropboxProvider extends AbstractMetadataProvider {
         }
     }
 
-    // todo: maybe return true if success and string if error
     async connect() {
         const redirectUrl = await getOauthReceiverUrl();
 
-        if (!redirectUrl) return false;
+        if (!redirectUrl) return this.error('AUTH_ERROR', 'Failed to get oauth receiver url');
 
         const url = this.client.getAuthenticationUrl(
             redirectUrl,
@@ -56,7 +55,8 @@ class DropboxProvider extends AbstractMetadataProvider {
             // dropbox supports authorization code flow for both web and desktop
             const { code } = await extractCredentialsFromAuthorizationFlow(url);
 
-            if (!code) return false;
+            if (!code)
+                return this.error('AUTH_ERROR', 'Failed to extract code from authorization flow');
 
             // @ts-ignore todo: types are broken in the lib, latest version 6.0.1 is broken as well at time of writing this
             const { accessToken, refreshToken } = await this.client.getAccessTokenFromCode(
@@ -66,20 +66,24 @@ class DropboxProvider extends AbstractMetadataProvider {
             this.client.setAccessToken(accessToken);
             this.client.setRefreshToken(refreshToken);
         } catch (err) {
-            // todo:
-            return false;
+            if (err instanceof Error) {
+                return this.error('AUTH_ERROR', err.message);
+            }
+            return this.error(
+                'OTHER_ERROR',
+                'Unexpected error when trying to connect to dropbox provider',
+            );
         }
 
-        return true;
+        return this.ok();
     }
 
     async disconnect() {
         try {
             await this.client.authTokenRevoke();
-            return true;
+            return this.ok();
         } catch (error) {
-            // todo: silent error, maybe ok here?
-            return false;
+            return this.handleProviderError(error);
         }
     }
 

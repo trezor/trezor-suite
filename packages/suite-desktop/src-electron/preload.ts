@@ -10,7 +10,7 @@ const validChannels = [
     'bridge/start',
 
     // oauth
-    'oauth/code',
+    'oauth/response',
 
     // Update events
     'update/checking',
@@ -51,12 +51,11 @@ contextBridge.exposeInMainWorld('desktopApi', {
             ipcRenderer.once(channel, (_, ...args) => func(...args));
         }
     },
-    off: (channel: string, func: (...args: any[]) => any) => {
+    removeAllListeners: (channel: string) => {
         if (validChannels.includes(channel)) {
-            ipcRenderer.off(channel, (_, ...args) => func(...args));
+            ipcRenderer.removeAllListeners(channel);
         }
     },
-
     // Updater
     checkForUpdates: (isManual?: boolean) => ipcRenderer.send('update/check', isManual),
     downloadUpdate: () => ipcRenderer.send('update/download'),

@@ -40,7 +40,7 @@ const openWindowOnAnotherDomain = (
     interval = window.setInterval(() => {
         // todo: for some reason, when used in electron, win has closed=true right from the start and thus closeCallback
         // is invoked immediately. temporary workaround is not to use openWindowOnAnotherDomain in electron
-        if (win == null || win.closed) {
+        if (!win || win.closed) {
             window.clearInterval(interval);
             closeCallback();
         }
@@ -48,65 +48,123 @@ const openWindowOnAnotherDomain = (
     return win;
 };
 
+const handleResponse = (
+    message: { [key: string]: string },
+    originalParams: { [key: string]: string },
+    onSuccess: (result: Credentials) => void,
+    onError: (error: any) => void,
+) => {
+    if (!message.search && !message.hash) return;
+    let parsedMessage;
+
+    if (message.search) {
+        parsedMessage = urlSearchParams(message.search);
+    } else if (message.hash) {
+        parsedMessage = urlHashParams(message.hash);
+    }
+
+    if (!parsedMessage) return;
+
+    const { code, access_token, state, error_description, error } = parsedMessage;
+
+    if (error === 'access_denied') {
+        // user clicks cancel in popup interface. This is the same as if user closed the window,
+        onError(new Error('window closed'));
+    } else if (error) {
+        // otherwise just show error. This should not happen often, most of the errors can be caused by improper
+        // implementation only. Possibly "temporarily_unavailable" or "server_error" may appear
+        // see possible errors in oauth protocol described here https://tools.ietf.org/html/rfc6749#section-4.1.2.1
+        onError(new Error(`${error}: ${error_description.replace(/\+/g, ' ')}`));
+    } else if (originalParams.state && state !== originalParams.state) {
+        onError(new Error('state does not match'));
+    } else if (code || access_token) {
+        onSuccess(({ code, access_token } as unknown) as Credentials);
+    } else {
+        onError(new Error('Unexpected response form data provider'));
+    }
+};
+
+// keep handler function instance in top level scope
+let desktopHandlerInstance: (message: { [key: string]: string }) => void;
+let webHandlerInstance: (e: MessageEvent) => void;
+
+const getDesktopHandlerInstance = (
+    dfd: Deferred<Credentials>,
+    originalParams: { [key: string]: string },
+) => {
+    desktopHandlerInstance = message => {
+        handleResponse(
+            message,
+            originalParams,
+            credentials => {
+                window.desktopApi!.removeAllListeners('oauth/response');
+                dfd.resolve(credentials);
+            },
+            error => {
+                window.desktopApi!.removeAllListeners('oauth/response');
+                dfd.reject(error);
+            },
+        );
+    };
+    return desktopHandlerInstance;
+};
+
+const getWebHandlerInstance = (
+    dfd: Deferred<Credentials>,
+    originalParams: { [key: string]: string },
+) => {
+    if (webHandlerInstance) {
+        window.removeEventListener('message', webHandlerInstance);
+    }
+    webHandlerInstance = (e: MessageEvent) => {
+        if (window.location.origin !== e.origin) {
+            return;
+        }
+        if (!e.data.search && !e.data.hash) return;
+
+        handleResponse(
+            e.data,
+            originalParams,
+            credentials => {
+                dfd.resolve(credentials);
+            },
+            error => {
+                dfd.reject(error);
+            },
+        );
+    };
+    return webHandlerInstance;
+};
+
 /**
  * Handle extraction of authorization code from Oauth2 protocol
  */
 export const extractCredentialsFromAuthorizationFlow = (url: string) => {
     const originalParams = urlHashParams(url);
-
     const dfd: Deferred<Credentials> = createDeferred();
 
-    const onMessageWeb = (e: MessageEvent) => {
-        // oauth message is post-messaged from oauth_receiver.html that is hosted on the same origin
-        if (window.location.origin !== e.origin) {
-            return;
-        }
-
-        if (!e.data.search && !e.data.hash) return;
-
-        let message;
-
-        if (e.data.search) {
-            message = urlSearchParams(e.data.search);
-        } else if (e.data.hash) {
-            message = urlHashParams(e.data.hash);
-        }
-        if (!message) return;
-
-        const { code, access_token, state } = message;
-
-        if (originalParams.state && state !== originalParams.state) {
-            dfd.reject(new Error('state does not match'));
-        }
-
-        if (code || access_token) {
-            dfd.resolve(({ code, access_token } as unknown) as Credentials);
-        } else {
-            dfd.reject(new Error('Cancelled'));
-        }
-        window.removeEventListener('message', onMessageWeb);
-    };
-
     const { desktopApi } = window;
+
     if (desktopApi) {
-        const onMessageDesktop = (code: string) => {
-            if (code) {
-                dfd.resolve({ code });
-            } else {
-                dfd.reject(new Error('Cancelled'));
-            }
-        };
+        // to make sure that there is always only one listener registered remove all listeners before creating a new one
+        desktopApi.removeAllListeners('oauth/response');
+        // this listener may never be called in some cases
+        desktopApi.once('oauth/response', getDesktopHandlerInstance(dfd, originalParams));
         window.open(url, METADATA.AUTH_WINDOW_TITLE, METADATA.AUTH_WINDOW_PROPS);
-        desktopApi.once('oauth/code', onMessageDesktop);
     } else {
-        window.addEventListener('message', onMessageWeb);
+        window.addEventListener('message', getWebHandlerInstance(dfd, originalParams));
         openWindowOnAnotherDomain(
             url,
             METADATA.AUTH_WINDOW_TITLE,
             METADATA.AUTH_WINDOW_PROPS,
             () => {
-                window.removeEventListener('message', onMessageWeb);
+                // note that this rejection happens even on successful authorization.
+                // 'window closed' error message may be used to differentiate between errors
                 setTimeout(() => {
+                    window.removeEventListener(
+                        'message',
+                        getWebHandlerInstance(dfd, originalParams),
+                    );
                     dfd.reject(new Error('window closed'));
                 }, 5000);
             },

@@ -14,18 +14,24 @@ class GoogleProvider extends AbstractMetadataProvider {
         try {
             await this.client.authorize();
             this.connected = true;
-            return true;
-        } catch (error) {
-            return false;
+            return this.ok();
+        } catch (err) {
+            if (err instanceof Error) {
+                return this.error('AUTH_ERROR', err.message);
+            }
+            return this.error(
+                'OTHER_ERROR',
+                'Unexpected error when trying to connect to google provider',
+            );
         }
     }
 
     async disconnect() {
         try {
             await this.client.revoke();
-            return true;
-        } catch (_err) {
-            return false;
+            return this.ok();
+        } catch (error) {
+            return this.handleProviderError(error);
         }
     }
 

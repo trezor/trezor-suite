@@ -17,7 +17,7 @@ type TemplateOptions = {
 interface Events {
     'server/listening': (address: NonNullable<net.AddressInfo>) => void;
     'server/error': (error: string) => void;
-    'oauth/code': (code: string) => void;
+    'oauth/response': (response: { [key: string]: string }) => void;
     'oauth/error': (message: string) => void;
     'buy/redirect': (url: string) => void;
 }
@@ -153,11 +153,10 @@ export class HttpReceiver extends EventEmitter {
      */
 
     private oauthHandler = (request: Request, response: http.ServerResponse) => {
-        const { query } = url.parse(request.url, true);
-
-        // send data back to main window
-        if (typeof query.code === 'string') {
-            this.emit('oauth/code', query.code);
+        const { search } = url.parse(request.url, true);
+        if (search) {
+            // send data back to main window
+            this.emit('oauth/response', { search });
         }
 
         const template = this.applyTemplate('You may now close this window.');

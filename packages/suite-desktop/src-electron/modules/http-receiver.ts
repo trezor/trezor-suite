@@ -12,9 +12,9 @@ const httpReceiver = new HttpReceiver();
 const init = (window: BrowserWindow, src: string) => {
     // wait for httpReceiver to start accepting connections then register event handlers
     httpReceiver.on('server/listening', () => {
-        // when httpReceiver accepted oauth code
-        httpReceiver.on('oauth/code', code => {
-            window.webContents.send('oauth/code', code);
+        // when httpReceiver accepted oauth response
+        httpReceiver.on('oauth/response', message => {
+            window.webContents.send('oauth/response', message);
             app.focus();
         });
 

@@ -88,8 +88,9 @@ export abstract class AbstractMetadataProvider {
     abstract isCloud: boolean;
 
     constructor(public type: MetadataProviderType) {}
-    abstract connect(): Promise<boolean>;
-    abstract disconnect(): Promise<boolean>;
+
+    abstract connect(): Result<void>;
+    abstract disconnect(): Result<void>;
     /**
      * Try to get valid access token from refresh token. If operation is successful, provider
      * is connected.

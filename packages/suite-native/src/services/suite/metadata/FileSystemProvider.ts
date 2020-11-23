@@ -10,11 +10,11 @@ class FileSystemProvider extends AbstractMetadataProvider {
     }
 
     async connect() {
-        return true;
+        return this.ok();
     }
 
     async disconnect() {
-        return true;
+        return this.ok();
     }
 
     // @ts-ignore
