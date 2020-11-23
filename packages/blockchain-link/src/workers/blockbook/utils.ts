@@ -116,6 +116,18 @@ const transformTarget = (target: VinVout, incoming: VinVout[]) => {
     };
 };
 
+const sumVinVout = (
+    vinVout: VinVout[],
+    initialValue = '0',
+    operation: 'sum' | 'reduce' = 'sum'
+) => {
+    const sum = vinVout.reduce((bn, v) => {
+        if (typeof v.value !== 'string') return bn;
+        return operation === 'sum' ? bn.plus(v.value) : bn.minus(v.value);
+    }, new BigNumber(initialValue));
+    return sum.toString();
+};
+
 export const transformTransaction = (
     descriptor: string,
     addresses: AccountAddresses | undefined,
@@ -135,6 +147,8 @@ export const transformTransaction = (
     let type: Transaction['type'];
     let targets: VinVout[] = [];
     let amount = tx.value;
+    const totalInput = sumVinVout(vinLength ? tx.vin : []);
+    const totalOutput = sumVinVout(voutLength ? tx.vout : []);
 
     // && !hasJoinsplits (from hd-wallet)
     if (outgoing.length === 0 && incoming.length === 0 && tokens.length === 0) {
@@ -157,41 +171,29 @@ export const transformTransaction = (
         if (incoming.length > 0) {
             targets = incoming;
             // recalculate amount, sum all incoming vout
-            amount = incoming.reduce((prev, vout) => {
-                if (typeof vout.value !== 'string') return prev;
-                const bn = new BigNumber(prev).plus(vout.value);
-                return bn.toString();
-            }, amount);
+            amount = sumVinVout(incoming, amount);
         }
     } else {
         type = 'sent';
         // regular targets
-        if (tokens.length === 0 && Array.isArray(tx.vout)) {
+        if (tokens.length === 0 && voutLength) {
             // filter account change addresses from output
             targets = tx.vout.filter(o => internal.indexOf(o) < 0);
         }
         // ethereum specific transaction
         if (tx.ethereumSpecific) {
             amount = tokens.length > 0 || tx.ethereumSpecific.status === 0 ? tx.fees : tx.value;
-        } else if (Array.isArray(tx.vout)) {
+        } else if (voutLength) {
             // bitcoin-like transaction
             // sum all my inputs
-            const myInputsSum = outgoing.reduce((prev, vin) => {
-                if (typeof vin.value !== 'string') return prev;
-                const bn = new BigNumber(prev).plus(vin.value);
-                return bn.toString();
-            }, '0');
+            const myInputsSum = sumVinVout(outgoing, '0');
             // reduce sum by my outputs values
-            amount = incoming.reduce((prev, vout) => {
-                if (typeof vout.value !== 'string') return prev;
-                const bn = new BigNumber(prev).minus(vout.value);
-                return bn.toString();
-            }, myInputsSum);
+            amount = sumVinVout(incoming, myInputsSum, 'reduce');
         }
     }
 
     let rbf: boolean | undefined;
-    if (Array.isArray(tx.vin)) {
+    if (vinLength) {
         tx.vin.forEach(vin => {
             if (typeof vin.sequence === 'number' && vin.sequence < 0xffffffff - 1) {
                 rbf = true;
@@ -214,6 +216,13 @@ export const transformTransaction = (
         tokens,
         rbf,
         ethereumSpecific: tx.ethereumSpecific,
+        details: {
+            vin: tx.vin,
+            vout: tx.vout,
+            size: typeof tx.hex === 'string' ? tx.hex.length / 2 : 0,
+            totalInput: totalInput ? totalInput.toString() : '0',
+            totalOutput: totalOutput ? totalOutput.toString() : '0',
+        },
     };
 };
 

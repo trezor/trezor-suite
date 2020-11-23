@@ -1,8 +1,7 @@
-import { FormattedTransactionType as RippleTransaction } from 'ripple-lib';
-import { Transaction as BlockbookTransaction, FiatRates, AccountBalanceHistory } from './blockbook';
+import { FiatRates, AccountBalanceHistory } from './blockbook';
 import { HANDSHAKE } from '../constants/messages';
 import * as RESPONSES from '../constants/responses';
-import { AccountInfo, Transaction } from './common';
+import { AccountInfo, Transaction, TypedRawTransaction } from './common';
 
 // messages sent from worker to blockchain.js
 
@@ -61,15 +60,7 @@ export interface GetAccountUtxo {
 
 export interface GetTransaction {
     type: typeof RESPONSES.GET_TRANSACTION;
-    payload:
-        | {
-              type: 'ripple';
-              tx: RippleTransaction;
-          }
-        | {
-              type: 'blockbook';
-              tx: BlockbookTransaction;
-          };
+    payload: TypedRawTransaction;
 }
 
 export interface GetAccountBalanceHistory {

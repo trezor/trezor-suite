@@ -1,3 +1,6 @@
+import { Transaction as BlockbookTransaction, VinVout } from './blockbook';
+import { FormattedTransactionType as RippleTransaction } from 'ripple-lib';
+
 /* Common types used in both params and responses */
 
 export interface BlockchainSettings {
@@ -32,9 +35,26 @@ export interface Target {
     isAccountTarget?: boolean;
 }
 
+export type TypedRawTransaction =
+    | {
+          type: 'blockbook';
+          tx: BlockbookTransaction;
+      }
+    | {
+          type: 'ripple';
+          tx: RippleTransaction;
+      };
+
+export type TransactionDetail = {
+    vin: VinVout[];
+    vout: VinVout[];
+    size: number;
+    totalInput: string;
+    totalOutput: string;
+};
+
 export interface Transaction {
     type: 'sent' | 'recv' | 'self' | 'unknown';
-
     txid: string;
     blockTime?: number;
     blockHeight?: number;
@@ -54,6 +74,7 @@ export interface Transaction {
         gasUsed?: number;
         gasPrice: string;
     };
+    details: TransactionDetail;
 }
 
 /* Account */
