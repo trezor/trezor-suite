@@ -12,7 +12,7 @@ const Body = () => {
         <>
             <ErrorImg />
             <H2>
-                <Translation id="TR_OOPS_SOMETHING_WENT_WRONG" />
+                <Translation id="TR_FW_INSTALLATION_FAILED" />
             </H2>
             {/* yeah I know we shouldn't use something called TOAST_ here.. but it is so beautifully generic.. */}
             <P data-test="@firmware/error-message">

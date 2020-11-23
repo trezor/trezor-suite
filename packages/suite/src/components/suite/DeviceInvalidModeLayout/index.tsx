@@ -14,7 +14,7 @@ const Image = styled(Img)`
     ${props =>
         props.image === 'UNI_WARNING' &&
         css`
-            height: 64px;
+            max-height: 160px;
             flex: 0 0 auto;
         `}
 `;

@@ -1879,9 +1879,14 @@ const definedMessages = defineMessages({
         defaultMessage: 'Online',
         id: 'TR_ONLINE',
     },
-    TR_OOPS_SOMETHING_WENT_WRONG: {
+    TR_GENERIC_ERROR_TITLE: {
         defaultMessage: 'Oops! Something went wrong!',
-        id: 'TR_OOPS_SOMETHING_WENT_WRONG',
+        description: 'Generic error message title',
+        id: 'TR_GENERIC_ERROR_TITLE',
+    },
+    TR_FW_INSTALLATION_FAILED: {
+        defaultMessage: 'Installation failed',
+        id: 'TR_FW_INSTALLATION_FAILED',
     },
     TR_OPEN_IN_BLOCK_EXPLORER: {
         defaultMessage: 'Open in Block Explorer',
