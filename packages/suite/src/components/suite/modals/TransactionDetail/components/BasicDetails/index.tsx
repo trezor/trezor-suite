@@ -13,7 +13,6 @@ const Wrapper = styled.div`
 `;
 
 const ExplorerLinkWrapper = styled.div`
-    display: flex;
     align-items: center;
     display: inline-grid;
     justify-content: flex-end;

@@ -13,7 +13,6 @@ const StyledCard = styled(Card)`
     justify-content: space-between;
     flex-wrap: wrap;
     padding: 32px 42px;
-    align-items: center;
 
     @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
         button {

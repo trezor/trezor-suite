@@ -37,7 +37,6 @@ const Right = styled.div`
 `;
 
 const StyledButton = styled(Button)`
-    margin-right: 8px;
     margin: 4px 8px 4px 0px;
 `;
 

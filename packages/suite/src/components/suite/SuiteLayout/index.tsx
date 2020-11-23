@@ -32,7 +32,6 @@ const Body = styled.div`
 const Columns = styled.div`
     display: flex;
     flex-direction: row;
-    overflow: hidden;
     flex: 1 0 100%;
     overflow: auto;
 `;

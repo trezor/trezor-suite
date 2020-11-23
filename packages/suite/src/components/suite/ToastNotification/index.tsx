@@ -28,7 +28,6 @@ const Wrapper = styled.div<Pick<ViewProps, 'variant'>>`
     font-size: ${variables.FONT_SIZE.SMALL};
     height: 100%;
     padding: 6px 12px;
-    align-items: center;
     border-left: 4px solid ${props => getVariantColor(props.variant)};
     word-break: break-word;
 `;

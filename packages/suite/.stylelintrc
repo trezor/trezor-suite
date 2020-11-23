@@ -1,5 +1,7 @@
 {
-    "processors": [],
+    "processors": [
+        "stylelint-processor-styled-components"
+    ],
     "extends": [
         "stylelint-config-recommended",
         "stylelint-config-styled-components"
@@ -9,7 +11,6 @@
         "declaration-empty-line-before": null,
         "custom-property-empty-line-before": null,
         "max-empty-lines": 1,
-        "no-extra-semicolons": null,
         "block-no-empty": null,
         "property-no-unknown": [
             true, {

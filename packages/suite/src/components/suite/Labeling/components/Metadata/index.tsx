@@ -41,7 +41,7 @@ const LabelButton = styled(Button)`
 
 const ActionButton = styled(Button)<{ isVisible?: boolean }>`
     visibility: ${props => (props.isVisible ? 'visible' : 'hidden')};
-    // hack to keep button in place to prevent vertical jumping (if used display: none)
+    /* hack to keep button in place to prevent vertical jumping (if used display: none) */
     width: ${props => (props.isVisible ? 'auto' : '0')};
     margin-left: 14px;
 `;
