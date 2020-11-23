@@ -33,7 +33,7 @@ simple semver for data-analytics part.
 Don't forget to update docs with changelog!
 */
 
-const version = '1.5';
+const version = '1.4';
 
 export type AnalyticsEvent =
     | {
@@ -59,8 +59,6 @@ export type AnalyticsEvent =
               // added in 1.4
               rememberedStandardWallets: number;
               rememberedHiddenWallets: number;
-              // added in 1.5
-              theme: string;
           };
       }
     | { type: 'transport-type'; payload: { type: string; version: string } }
@@ -84,9 +82,6 @@ export type AnalyticsEvent =
           /** if device is in bootloader, only this event is logged */
           type: 'device-connect';
           payload: { mode: 'bootloader' };
-      }
-    | {
-          type: 'device-disconnect';
       }
     | {
           /**
@@ -272,12 +267,6 @@ export type AnalyticsEvent =
     | {
           // successful dry-run
           type: 'check-seed/success';
-      }
-    | {
-          type: 'wallet/created';
-          payload: {
-              type: 'hidden' | 'standard';
-          };
       };
 
 const getUrl = () => {

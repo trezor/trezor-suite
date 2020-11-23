@@ -32,7 +32,7 @@ const Wrapper = styled.div`
     padding: 12px 0;
 
     &:hover {
-        background: ${props => props.theme.BG_WHITE};
+        color: ${props => props.theme.BG_WHITE};
         border: 1px solid ${props => props.theme.TYPE_WHITE};
         box-shadow: 0 1px 2px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
     }

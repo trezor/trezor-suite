@@ -1,9 +1,9 @@
 import React from 'react';
-import { Button, CleanSelect, variables } from '@trezor/components';
+import { Button, CleanSelect, variables, Flag } from '@trezor/components';
 import regional from '@wallet-constants/coinmarket/regional';
 import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
 import { getCountryLabelParts } from '@wallet-utils/coinmarket/buyUtils';
-import { Option } from '@wallet-types/coinmarketBuyForm';
+import { CountryOption } from '@wallet-types/coinmarketBuyForm';
 import { Translation } from '@suite-components';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
@@ -24,9 +24,11 @@ const OptionLabel = styled.div`
     align-items: center;
 `;
 
-const Flag = styled.div`
+const FlagWrapper = styled.div`
     font-size: ${variables.FONT_SIZE.H2};
     padding-right: 10px;
+    display: flex;
+    align-items: center;
 `;
 
 const LabelText = styled.div`
@@ -114,13 +116,15 @@ const Footer = () => {
                                 options={regional.countriesOptions}
                                 isSearchable
                                 value={value}
-                                formatOptionLabel={(option: Option) => {
+                                formatOptionLabel={(option: CountryOption) => {
                                     const labelParts = getCountryLabelParts(option.label);
                                     if (!labelParts) return null;
 
                                     return (
                                         <OptionLabel>
-                                            <Flag>{labelParts.flag}</Flag>
+                                            <FlagWrapper>
+                                                <Flag country={option.value} />
+                                            </FlagWrapper>
                                             <LabelText>{labelParts.text}</LabelText>
                                         </OptionLabel>
                                     );

@@ -12,7 +12,6 @@ interface Props {
     selectedOption?: Option['value'];
     options: Option[];
     className?: string;
-    isDisabled?: boolean;
     onChange?: (value: Option['value']) => void;
 }
 
@@ -63,7 +62,7 @@ const Option = styled.div<{ isSelected: boolean }>`
         `}
 `;
 
-const SelectBar = ({ options, selectedOption, label, onChange, className, isDisabled }: Props) => {
+const SelectBar = ({ options, selectedOption, label, onChange, className }: Props) => {
     const [selectedOptionIn, setSelected] = useState<Option['value'] | null>(
         selectedOption || null
     );
@@ -81,7 +80,6 @@ const SelectBar = ({ options, selectedOption, label, onChange, className, isDisa
                 {options.map(option => (
                     <Option
                         onClick={() => {
-                            if (isDisabled) return;
                             setSelected(option.value);
                             if (onChange) {
                                 onChange(option.value);

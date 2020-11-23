@@ -32,7 +32,8 @@ const CoinmarketDetail = () => {
     const { setLayout } = useContext(LayoutContext);
 
     useEffect(() => {
-        if (setLayout) setLayout('Trezor Suite | Trade', undefined, <CoinmarketExchangeTopPanel />);
+        if (setLayout)
+            setLayout('Trezor Suite | Coinmarket', undefined, <CoinmarketExchangeTopPanel />);
     }, [setLayout]);
 
     const { account, trade, exchangeInfo } = useCoinmarketExchangeDetailContext();

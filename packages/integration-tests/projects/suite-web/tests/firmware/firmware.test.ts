@@ -7,8 +7,7 @@ describe('Firmware', () => {
         cy.viewport(1024, 768).resetDb();
     });
 
-    // todo: this test requires trezor-user-env ability to run various versions of trezord
-    it.skip('Firmware outdated static notification should open firmware update modal', () => {
+    it('Firmware outdated static notification should open firmware update modal', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.prefixedVisit('/');

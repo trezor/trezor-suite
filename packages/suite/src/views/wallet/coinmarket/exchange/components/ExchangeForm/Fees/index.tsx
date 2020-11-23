@@ -119,7 +119,6 @@ const Fees = () => {
         clearErrors,
         transactionInfo,
         compose,
-        formState,
     } = useCoinmarketExchangeFormContext();
 
     const selectedFeeLevel = feeInfo.levels.find(level => level.label === selectedFee);
@@ -135,13 +134,11 @@ const Fees = () => {
                 <Row>
                     <SelectBar
                         selectedOption={selectedFee}
-                        isDisabled={formState.isSubmitting}
                         options={buildFeeOptions(feeInfo.levels)}
                         onChange={async (value: any) => {
                             selectFee(value);
                             if (value === 'custom' && selectedFeeLevel.label !== 'custom') {
                                 setValue('feePerUnit', selectedFeeLevel.feePerUnit);
-                                setValue('feeLimit', selectedFeeLevel.feeLimit);
                             } else {
                                 clearErrors('feePerUnit');
                             }

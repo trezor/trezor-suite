@@ -145,7 +145,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
             amount: data && data.amount ? data.amount : formValues.receiveCryptoInput || '0',
             feeInfo,
             feePerUnit,
-            feeLimit: data && data.feeLimit ? data.feeLimit : formValues.feeLimit || '0',
+            feeLimit: data && data.feeLimit ? data.feeLimit : selectedFeeLevel.feeLimit || '0',
             network,
             selectedFee,
             isMaxActive: data && data.setMax ? data.setMax || false : false,

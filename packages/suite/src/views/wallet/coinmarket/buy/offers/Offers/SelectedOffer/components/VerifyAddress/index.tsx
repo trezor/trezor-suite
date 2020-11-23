@@ -84,7 +84,7 @@ const FakeInput = styled.div`
     align-items: center;
     border-radius: 4px;
     border: solid 2px ${props => props.theme.STROKE_GREY};
-    background: ${props => props.theme.BG_WHITE};
+    color: ${props => props.theme.BG_WHITE};
 `;
 
 const ButtonWrapper = styled.div`

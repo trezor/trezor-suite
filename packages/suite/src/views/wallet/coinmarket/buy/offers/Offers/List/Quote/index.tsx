@@ -21,7 +21,7 @@ const Wrapper = styled.div`
     width: 100%;
     min-height: 150px;
     padding-bottom: 16px;
-    background: ${props => props.theme.BG_WHITE};
+    color: ${props => props.theme.BG_WHITE};
 `;
 
 const TagRow = styled.div`

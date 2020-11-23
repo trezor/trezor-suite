@@ -13,7 +13,7 @@ const Wrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: row;
-    background: ${props => props.theme.BG_WHITE};
+    color: ${props => props.theme.BG_WHITE};
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         flex-wrap: wrap;

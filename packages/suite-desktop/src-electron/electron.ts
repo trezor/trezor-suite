@@ -184,18 +184,18 @@ const init = async () => {
         evt.preventDefault();
     });
 
-    const filter = {
-        urls: ['http://127.0.0.1:21325/*'],
-    };
+    if (!isDev) {
+        const filter = {
+            urls: ['http://127.0.0.1:21325/*'],
+        };
 
-    if (session.defaultSession) {
-        session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
-            // @ts-ignore electron declares requestHeaders as an empty interface
-            details.requestHeaders.Origin = 'https://electron.trezor.io';
-            callback({ cancel: false, requestHeaders: details.requestHeaders });
-        });
+        if (session.defaultSession) {
+            session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+                // @ts-ignore electron declares requestHeaders as an empty interface
+                details.requestHeaders.Origin = 'https://electron.trezor.io';
+                callback({ cancel: false, requestHeaders: details.requestHeaders });
+            });
 
-        if (!isDev) {
             if (!disableCspFlag) {
                 session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
                     callback({
@@ -214,9 +214,9 @@ const init = async () => {
                 callback(url);
             });
         }
-    }
 
-    registerShortcuts(mainWindow);
+        registerShortcuts(mainWindow);
+    }
 
     mainWindow.loadURL(src);
 

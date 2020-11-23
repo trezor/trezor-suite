@@ -9,7 +9,6 @@ import { Translation } from '@suite-components';
 import ReceiveCryptoSelect from './ReceiveCryptoSelect';
 import { InputError } from '@wallet-components';
 import Bignumber from 'bignumber.js';
-import { MAX_LENGTH } from '@suite-constants/inputs';
 import {
     formatCryptoAmount,
     invityApiSymbolToSymbol,
@@ -79,7 +78,6 @@ const ReceiveCryptoInput = () => {
             state={errors[receiveCryptoInput] ? 'error' : undefined}
             name={receiveCryptoInput}
             noTopLabel
-            maxLength={MAX_LENGTH.AMOUNT}
             innerRef={register({
                 validate: (value: string) => {
                     const amountBig = new Bignumber(value);

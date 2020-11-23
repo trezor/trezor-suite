@@ -42,7 +42,7 @@ const ButtonDownload = styled(Button)`
     }
 `;
 
-type Platform = 'win' | 'mac' | 'linux-x86_64' | 'linux-arm64';
+type Platform = 'win-x86_64' | 'mac-x86_64' | 'linux-x86_64' | 'linux-arm64';
 
 const getAppUrl = (platform: Platform) => {
     const version = process.env.VERSION ? normalizeVersion(process.env.VERSION) : '';
@@ -78,10 +78,10 @@ const Start = () => {
                             value: null,
                         }}
                         options={[
-                            { label: 'Windows', value: 'win' },
-                            { label: 'Linux (x86_64)', value: 'linux-x86_64' },
+                            { label: 'Windows', value: 'win-x86_64' },
+                            { label: 'Linux', value: 'linux-x86_64' },
                             { label: 'Linux (arm64)', value: 'linux-arm64' },
-                            { label: 'macOS', value: 'mac' },
+                            { label: 'macOS', value: 'mac-x86_64' },
                         ]}
                         onChange={(option: { value: Platform | null; label: string | null }) =>
                             setPlatform(option.value)

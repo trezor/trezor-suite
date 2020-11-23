@@ -1,4 +1,5 @@
 import { AppState } from '@suite-types';
+import { FlagProps } from '@trezor/components';
 import { Account, Network } from '@wallet-types';
 import {
     BuyInfo,
@@ -11,6 +12,7 @@ import { UseFormMethods } from 'react-hook-form';
 import { TypedValidationRules } from './form';
 
 export type Option = { value: string; label: string };
+export type CountryOption = { value: FlagProps['country']; label: string };
 export type defaultCountryOption = { value: string; label?: string };
 
 export interface ComponentProps {

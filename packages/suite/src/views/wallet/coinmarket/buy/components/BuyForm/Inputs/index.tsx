@@ -9,7 +9,6 @@ import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm'
 import styled from 'styled-components';
 import { isDecimalsValid } from '@wallet-utils/validation';
 import { InputError } from '@wallet-components';
-import { MAX_LENGTH } from '@suite-constants/inputs';
 
 const Wrapper = styled.div`
     display: flex;
@@ -146,7 +145,6 @@ const Inputs = () => {
                     }}
                     state={errors[fiatInput] ? 'error' : undefined}
                     name={fiatInput}
-                    maxLength={MAX_LENGTH.AMOUNT}
                     bottomText={<InputError error={errors[fiatInput]} />}
                     innerAddon={
                         <Controller
@@ -201,7 +199,6 @@ const Inputs = () => {
                     state={errors[cryptoInput] ? 'error' : undefined}
                     name={cryptoInput}
                     noTopLabel
-                    maxLength={MAX_LENGTH.AMOUNT}
                     innerRef={register({
                         validate: (value: string) => {
                             if (activeInput === cryptoInput) {

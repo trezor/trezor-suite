@@ -106,6 +106,7 @@ export const composeTransaction = (composeTransactionData: ComposeTransactionDat
 
     const { output, tokenInfo, decimals } = composeOutputs;
     const { availableBalance } = account;
+
     // additional calculation for gasLimit based on data size
     let customFeeLimit: string | undefined;
     if (typeof ethereumDataHex === 'string' && ethereumDataHex.length > 0) {

@@ -8,7 +8,6 @@ import { TypedValidationRules } from './form';
 import { FeeInfo, PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 
 export type Option = { value: string; label: string };
-export type defaultCountryOption = { value: string; label?: string };
 
 export interface ComponentProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
@@ -31,7 +30,6 @@ export type FormState = {
     fiatSelect?: Option;
     sendCryptoSelect: Option;
     feePerUnit?: string;
-    feeLimit?: string;
 };
 
 export interface AmountLimits {

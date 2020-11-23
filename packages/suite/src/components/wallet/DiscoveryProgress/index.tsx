@@ -9,7 +9,7 @@ const Wrapper = styled.div`
     width: 100%;
     height: 2px;
     z-index: 4;
-    background: ${props => props.theme.BG_WHITE};
+    color: ${props => props.theme.BG_WHITE};
     overflow: hidden;
 `;
 

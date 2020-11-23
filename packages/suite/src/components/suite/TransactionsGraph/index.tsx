@@ -243,10 +243,10 @@ const TransactionsGraph = React.memo((props: Props) => {
                                 </linearGradient>
                             </defs>
                             <defs>
-                                <filter id="shadow" x="-2" y="-10" width="50" height="50">
+                                <filter id="shadow" x="-2" y="-2" width="50" height="50">
                                     <feGaussianBlur in="SourceAlpha" stdDeviation="5" />
-                                    <feOffset dx="0" dy="-5" result="offsetblur" />
-                                    <feFlood floodColor="rgb(0,0,0)" floodOpacity="0.1" />
+                                    <feOffset dx="0" dy="2" result="offsetblur" />
+                                    <feFlood floodColor="rgb(0,0,0)" floodOpacity="0.2" />
                                     <feComposite in2="offsetblur" operator="in" />
                                     <feMerge>
                                         <feMergeNode in="offsetBlur" />

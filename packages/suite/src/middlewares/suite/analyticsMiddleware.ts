@@ -51,7 +51,6 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                         rememberedHiddenWallets: api
                             .getState()
                             .devices.filter(d => d.remember && !d.useEmptyPassphrase).length,
-                        theme: state.suite.settings.theme.variant,
                     },
                 }),
             );
@@ -99,9 +98,6 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
             }
             break;
         }
-        case DEVICE.DISCONNECT:
-            api.dispatch(analyticsActions.report({ type: 'device-disconnect' }));
-            break;
         case SUITE.SET_FLAG:
             // here we are reporting some information of user after he finishes initialRun
             if (action.key === 'initialRun' && action.value === false) {
@@ -164,14 +160,6 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
             break;
         case ANALYTICS.DISPOSE:
             api.dispatch(analyticsActions.report({ type: 'analytics/dispose' }));
-            break;
-        case SUITE.AUTH_DEVICE:
-            api.dispatch(
-                analyticsActions.report({
-                    type: 'wallet/created',
-                    payload: { type: action.payload.walletNumber ? 'hidden' : 'standard' },
-                }),
-            );
             break;
         default:
             break;

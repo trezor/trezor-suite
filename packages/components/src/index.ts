@@ -4,6 +4,7 @@ import { useTheme } from './utils';
 import { SuiteThemeColors } from './support/types';
 
 import { Button, ButtonProps } from './components/buttons/Button';
+import { Flag, FlagProps } from './components/Flag';
 import { ButtonPin, ButtonPinProps } from './components/buttons/Pin';
 import { DeviceImage, DeviceImageProps } from './components/DeviceImage';
 import {
@@ -91,6 +92,8 @@ export {
     SecurityCardProps,
     SelectBar,
     SelectBarProps,
+    Flag,
+    FlagProps,
     useTheme,
     SuiteThemeColors,
     scrollbarStyles,

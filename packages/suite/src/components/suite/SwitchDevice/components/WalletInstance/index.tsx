@@ -10,7 +10,7 @@ const Wrapper = styled(Box)`
     display: flex;
     width: 100%;
     align-items: center;
-    background: ${props => props.theme.BG_WHITE};
+    color: ${props => props.theme.BG_WHITE};
     cursor: pointer;
 
     & + & {
