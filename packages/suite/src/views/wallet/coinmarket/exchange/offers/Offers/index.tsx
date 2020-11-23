@@ -105,8 +105,7 @@ const Offers = () => {
     });
 
     useMemo(() => {
-        if (setLayout)
-            setLayout('Trezor Suite | Coinmarket', undefined, <CoinmarketExchangeTopPanel />);
+        if (setLayout) setLayout('Trezor Suite | Trade', undefined, <CoinmarketExchangeTopPanel />);
     }, [setLayout]);
 
     if (!quotesRequest) return null;
