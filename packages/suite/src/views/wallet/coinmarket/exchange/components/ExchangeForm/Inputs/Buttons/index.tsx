@@ -51,17 +51,6 @@ const Bottom = () => {
             <Left>
                 <Button
                     onClick={async () => {
-                        setMax(true);
-                        await compose({
-                            setMax: true,
-                            fillValue: true,
-                        });
-                    }}
-                >
-                    All
-                </Button>
-                <Button
-                    onClick={async () => {
                         setMax(false);
                         await compose({
                             setMax: false,
@@ -86,6 +75,24 @@ const Bottom = () => {
                             fillValue: true,
                             amount: tokenData
                                 ? new BigNumber(tokenData.balance || '0')
+                                      .dividedBy(3)
+                                      .toFixed(tokenData.decimals)
+                                : new BigNumber(account.formattedBalance)
+                                      .dividedBy(3)
+                                      .toFixed(network.decimals),
+                        });
+                    }}
+                >
+                    1/3
+                </Button>
+                <Button
+                    onClick={async () => {
+                        setMax(false);
+                        await compose({
+                            setMax: false,
+                            fillValue: true,
+                            amount: tokenData
+                                ? new BigNumber(tokenData.balance || '0')
                                       .dividedBy(4)
                                       .toFixed(tokenData.decimals)
                                 : new BigNumber(account.formattedBalance)
@@ -95,6 +102,17 @@ const Bottom = () => {
                     }}
                 >
                     1/4
+                </Button>
+                <Button
+                    onClick={async () => {
+                        setMax(true);
+                        await compose({
+                            setMax: true,
+                            fillValue: true,
+                        });
+                    }}
+                >
+                    All
                 </Button>
             </Left>
             <TokenBalance>
