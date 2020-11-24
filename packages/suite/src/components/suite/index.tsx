@@ -34,6 +34,7 @@ import ToastContainer from './ToastContainer';
 import TrezorLink from './TrezorLink';
 import { ReadMoreLink } from './ReadMoreLink';
 import BetaBadge from './BetaBadge';
+import { SkeletonRectangle, SkeletonCircle } from './Skeleton';
 
 export {
     Backdrop,
@@ -76,6 +77,8 @@ export {
     BetaBadge,
     ToastContainer,
     TrezorLink,
+    SkeletonRectangle,
+    SkeletonCircle,
 };
 
 export type { ImageProps };
