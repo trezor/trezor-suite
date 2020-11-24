@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { variables, Loader } from '@trezor/components';
 import { Translation } from '@suite-components';
+import { useSelector } from '@suite-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -21,9 +22,11 @@ const Title = styled.div`
 type Props = React.HTMLAttributes<HTMLDivElement>;
 
 const Loading = (props: Props) => {
+    const waitingForDevice = !useSelector(state => state.suite.device)?.state;
+
     return (
         <Wrapper {...props} data-test="@dashboard/loading">
-            <Loader size={20} />
+            {!waitingForDevice && <Loader size={20} />}
             <Title>
                 <Translation id="TR_LOADING_WALLET" />
             </Title>
