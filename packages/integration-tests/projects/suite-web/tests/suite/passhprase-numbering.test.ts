@@ -22,18 +22,16 @@ describe('Passphrase', () => {
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
         cy.getTestElement('@passphrase/input').type('taxation is theft{enter}');
-        cy.getTestElement('@suite/loading');
         cy.getTestElement('@passphrase/input', { timeout: 10000 }).type('taxation is theft');
         cy.getTestElement('@passphrase/confirm-checkbox').click();
         cy.getTestElement('@passphrase/hidden/submit-button').click();
-        cy.getTestElement('@suite/loading').should('not.be.visible');
+        cy.getTestElement('@dashboard/loading').should('not.exist');
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
         cy.getTestElement('@passphrase/input').type('meow{enter}');
-        cy.getTestElement('@suite/loading');
         cy.getTestElement('@passphrase/confirm-checkbox').click();
         cy.getTestElement('@passphrase/input').type('meow{enter}');
-        cy.getTestElement('@suite/loading').should('not.be.visible');
+        cy.getTestElement('@dashboard/loading').should('not.exist');
 
         // assert that wallet labels are correct
         cy.getTestElement('@menu/switch-device').click();
@@ -53,10 +51,9 @@ describe('Passphrase', () => {
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
         cy.getTestElement('@passphrase/input').type('abc{enter}');
-        cy.getTestElement('@suite/loading');
         cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
         cy.getTestElement('@passphrase/input').type('abc{enter}');
-        cy.getTestElement('@suite/loading').should('not.be.visible');
+        cy.getTestElement('@dashboard/loading').should('not.exist');
 
         // assert that wallet labels are correct
         cy.getTestElement('@menu/switch-device').click();

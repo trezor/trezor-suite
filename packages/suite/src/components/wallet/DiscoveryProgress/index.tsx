@@ -25,7 +25,7 @@ const DiscoveryProgress = () => {
     const { discovery, isDiscoveryRunning, calculateProgress } = useDiscovery();
     if (!discovery || !isDiscoveryRunning) return null;
     return (
-        <Wrapper>
+        <Wrapper data-test="@wallet/discovery-progress-bar">
             <Line progress={calculateProgress()} />
         </Wrapper>
     );

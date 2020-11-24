@@ -3,13 +3,14 @@ import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { NETWORKS } from '@wallet-config';
 import { Section } from '@dashboard-components';
-import Asset from './components/Asset';
+import Asset, { AssetSkeleton } from './components/Asset';
 import { Account } from '@wallet-types';
-import { variables, Loader, Icon, Button } from '@trezor/components';
+import { variables, Icon, Button } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
 import { useDiscovery, useActions } from '@suite-hooks';
 import { useAccounts } from '@wallet-hooks';
 import * as routerActions from '@suite-actions/routerActions';
+import { AnimatePresence } from 'framer-motion';
 
 const StyledCard = styled(Card)`
     flex-direction: column;
@@ -70,8 +71,7 @@ const AssetsCard = () => {
     const networks = Object.keys(assets);
 
     const discoveryStatus = getDiscoveryStatus();
-    const isLoading =
-        discoveryStatus && discoveryStatus.status === 'loading' && networks.length < 1;
+    const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
     const isError = discoveryStatus && discoveryStatus.status === 'exception' && !networks.length;
 
     return (
@@ -91,47 +91,48 @@ const AssetsCard = () => {
             }
         >
             <StyledCard>
-                <Grid>
-                    <Header>
-                        <Translation id="TR_ASSETS" />
-                    </Header>
-                    <Header>
-                        <Translation id="TR_VALUES" />
-                    </Header>
-                    <Header>
-                        <Translation id="TR_EXCHANGE_RATE" />
-                    </Header>
-                    {networks.map((symbol, i) => {
-                        const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
-                        if (!network) {
-                            return 'unknown network';
-                        }
+                <AnimatePresence initial={false}>
+                    <Grid>
+                        <Header>
+                            <Translation id="TR_ASSETS" />
+                        </Header>
+                        <Header>
+                            <Translation id="TR_VALUES" />
+                        </Header>
+                        <Header>
+                            <Translation id="TR_EXCHANGE_RATE" />
+                        </Header>
+                        {networks.map((symbol, i) => {
+                            const network = NETWORKS.find(
+                                n => n.symbol === symbol && !n.accountType,
+                            );
+                            if (!network) {
+                                return 'unknown network';
+                            }
 
-                        const assetBalance = assets[symbol].reduce(
-                            (prev, a) => prev.plus(a.formattedBalance),
-                            new BigNumber(0),
-                        );
+                            const assetBalance = assets[symbol].reduce(
+                                (prev, a) => prev.plus(a.formattedBalance),
+                                new BigNumber(0),
+                            );
 
-                        const assetFailed = accounts.find(
-                            f => f.symbol === network.symbol && f.failed,
-                        );
+                            const assetFailed = accounts.find(
+                                f => f.symbol === network.symbol && f.failed,
+                            );
 
-                        return (
-                            <Asset
-                                key={symbol}
-                                network={network}
-                                failed={!!assetFailed}
-                                cryptoValue={assetBalance.toFixed()}
-                                isLastRow={i === networks.length - 1}
-                            />
-                        );
-                    })}
-                </Grid>
-                {isLoading && (
-                    <InfoMessage>
-                        <Loader size={20} />
-                    </InfoMessage>
-                )}
+                            return (
+                                <Asset
+                                    key={symbol}
+                                    network={network}
+                                    failed={!!assetFailed}
+                                    cryptoValue={assetBalance.toFixed()}
+                                    isLastRow={i === networks.length - 1}
+                                />
+                            );
+                        })}
+                        {discoveryInProgress && <AssetSkeleton />}
+                    </Grid>
+                </AnimatePresence>
+
                 {isError && (
                     <InfoMessage>
                         <Icon

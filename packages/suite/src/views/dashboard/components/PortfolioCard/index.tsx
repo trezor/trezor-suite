@@ -8,9 +8,9 @@ import * as accountUtils from '@wallet-utils/accountUtils';
 import { useDiscovery } from '@suite-hooks';
 import { useFastAccounts, useFiatValue } from '@wallet-hooks';
 import { goto } from '@suite-actions/routerActions';
+import { SkeletonTransactionsGraph } from '@suite-components/TransactionsGraph';
 
 import Header from './components/Header';
-import Loading from './components/Loading';
 import Exception from './components/Exception';
 import EmptyWallet from './components/EmptyWallet';
 import DashboardGraph from './components/DashboardGraph/Container';
@@ -50,7 +50,7 @@ const PortfolioCard = React.memo(() => {
     if (discoveryStatus && discoveryStatus.status === 'exception') {
         body = <Exception exception={discoveryStatus} discovery={discovery} />;
     } else if (discoveryStatus && discoveryStatus.status === 'loading') {
-        body = <Loading />;
+        body = <SkeletonTransactionsGraph data-test="@dashboard/loading" />;
     } else {
         body = isDeviceEmpty ? <EmptyWallet /> : <DashboardGraph accounts={accounts} />;
     }

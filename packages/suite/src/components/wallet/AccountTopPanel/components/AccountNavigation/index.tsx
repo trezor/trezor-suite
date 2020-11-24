@@ -4,7 +4,7 @@ import { Account } from '@wallet-types';
 import AppNavigation from '@suite/components/suite/AppNavigation';
 
 interface Props {
-    account: Account;
+    account?: Account;
 }
 
 const AccountNavigation = (props: Props) => {

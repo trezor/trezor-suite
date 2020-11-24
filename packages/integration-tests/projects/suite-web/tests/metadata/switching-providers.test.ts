@@ -25,8 +25,8 @@ describe(`Metadata - switching between cloud providers`, () => {
         cy.passThroughInitialRun();
 
         // todo: better waiting for discovery (mock it!)
-        cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 });
-        cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 }).should(
+        cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
+        cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should(
             'not.be.visible',
         );
 
@@ -54,7 +54,7 @@ describe(`Metadata - switching between cloud providers`, () => {
         });
 
         cy.getTestElement('@modal/metadata-provider').should('be.visible');
-        cy.getTestElement('@modal/metadata-provider/file-system-button').should('not.exist')
+        cy.getTestElement('@modal/metadata-provider/file-system-button').should('not.exist');
         cy.getTestElement('@modal/metadata-provider/google-button').click();
         cy.getTestElement('@modal/metadata-provider').should('not.exist');
 

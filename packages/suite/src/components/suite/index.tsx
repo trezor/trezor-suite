@@ -35,6 +35,7 @@ import TrezorLink from './TrezorLink';
 import { ReadMoreLink } from './ReadMoreLink';
 import BetaBadge from './BetaBadge';
 import { Modal, ModalProps } from './Modal';
+import { SkeletonRectangle, SkeletonCircle } from './Skeleton';
 
 export {
     Backdrop,
@@ -78,5 +79,7 @@ export {
     ToastContainer,
     TrezorLink,
     Modal,
+    SkeletonRectangle,
+    SkeletonCircle,
 };
 export type { ImageProps, ModalProps };

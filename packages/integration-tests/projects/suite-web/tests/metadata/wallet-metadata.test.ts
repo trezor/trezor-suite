@@ -27,8 +27,8 @@ describe('Metadata - wallet labeling', () => {
             cy.passThroughInitialRun();
 
             // todo: better waiting for discovery (mock it!)
-            cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 });
-            cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 }).should(
+            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
+            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should(
                 'not.be.visible',
             );
 
@@ -53,13 +53,14 @@ describe('Metadata - wallet labeling', () => {
             cy.task('pressYes');
             cy.getTestElement('@passphrase/input').type('abc');
             cy.getTestElement('@passphrase/hidden/submit-button').click();
+            cy.getTestElement('@passphrase/input').should('not.be.visible');
 
             cy.getTestElement('@passphrase/input', { timeout: 30000 }).type('abc');
 
             cy.getTestElement('@passphrase/confirm-checkbox').click();
             cy.getTestElement('@passphrase/hidden/submit-button').click();
 
-            cy.getTestElement('@suite/loading').should('not.be.visible');
+            cy.getTestElement('@modal').should('not.be.visible');
 
             cy.log(
                 'discovering new passphrase -> new deviceState -> we need new metadata master key',

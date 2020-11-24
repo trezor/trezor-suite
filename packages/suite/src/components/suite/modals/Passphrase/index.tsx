@@ -7,7 +7,7 @@ import { variables } from '@trezor/components';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as deviceUtils from '@suite-utils/device';
-import { Loading, Translation, Modal } from '@suite-components';
+import { Translation, Modal } from '@suite-components';
 import { AppState, Dispatch, TrezorDevice } from '@suite-types';
 import PassphraseTypeCard from './components/PassphraseTypeCard';
 
@@ -55,7 +55,6 @@ type Props = {
 const Passphrase = (props: Props) => {
     const { device } = props;
     const [submitted, setSubmitted] = useState(false);
-
     const authConfirmation = props.getDiscoveryAuthConfirmationStatus() || device.authConfirm;
     const stateConfirmation = !!device.state;
     const hasEmptyPassphraseWallet = deviceUtils
@@ -79,7 +78,7 @@ const Passphrase = (props: Props) => {
     };
 
     if (submitted) {
-        return <Loading />;
+        return null;
     }
 
     if (authConfirmation || stateConfirmation) {

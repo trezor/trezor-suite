@@ -10,6 +10,7 @@ import {
     FormattedCryptoAmount,
     MetadataLabeling,
 } from '@suite-components';
+import { Stack, SkeletonCircle, SkeletonRectangle } from '@suite-components/Skeleton';
 import { useSelector, useActions } from '@suite-hooks';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import * as routerActions from '@suite-actions/routerActions';
@@ -31,12 +32,30 @@ const FiatBalanceWrapper = styled(H2)`
     margin-left: 1ch;
 `;
 
+const AccountTopPanelSkeleton = (props: { animate?: boolean }) => {
+    return (
+        <AppNavigationPanel
+            maxWidth="small"
+            title={<SkeletonRectangle width="260px" height="26px" animate={props.animate} />}
+            navigation={<AccountNavigation />}
+        >
+            <Stack margin="6px 0px 0px 0px" childMargin="0px 0px 8px 0px">
+                <SkeletonCircle size="24px" />
+                <Balance noMargin>
+                    <SkeletonRectangle width="160px" height="24px" />
+                </Balance>
+            </Stack>
+        </AppNavigationPanel>
+    );
+};
+
 const AccountTopPanel = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const { goto } = useActions({
         goto: routerActions.goto,
     });
-    if (selectedAccount.status !== 'loaded') return null;
+    if (selectedAccount.status !== 'loaded')
+        return <AccountTopPanelSkeleton animate={selectedAccount.loader === 'account-loading'} />;
 
     const { account } = selectedAccount;
     const { symbol, formattedBalance } = account;
