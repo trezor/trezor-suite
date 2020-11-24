@@ -38,4 +38,11 @@ describe('transaction utils', () => {
             expect(utils.analyzeTransactions(f.fresh as any, f.known as any)).toEqual(f.result);
         });
     });
+
+    fixtures.enhanceTransaction.forEach(f => {
+        it('enhanceTransaction', () => {
+            // @ts-ignore
+            expect(utils.enhanceTransaction(f.tx, f.account)).toEqual(f.result);
+        });
+    });
 });
