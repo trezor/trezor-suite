@@ -8,6 +8,7 @@ import BasicDetails from './components/BasicDetails';
 import IODetails from './components/IODetails';
 import AmountDetails from './components/AmountDetails';
 import { isTestnet, getNetwork } from '@wallet-utils/accountUtils';
+import { getConfirmations } from '@wallet-utils/transactionUtils';
 import { useSelector } from '@suite-hooks';
 
 const Wrapper = styled.div`
@@ -55,8 +56,7 @@ const TransactionDetail = (props: Props) => {
 
     const { tx } = props;
     const blockchain = useSelector(state => state.wallet.blockchain[tx.symbol]);
-    const confirmations =
-        tx.blockHeight && tx.blockHeight > 0 ? blockchain.blockHeight - tx.blockHeight + 1 : 0;
+    const confirmations = getConfirmations(tx, blockchain.blockHeight);
 
     const network = getNetwork(tx.symbol);
     const explorerBaseUrl = network?.explorer.tx;

@@ -1,13 +1,5 @@
-import {
-    State as TransactionsState,
-    WalletAccountTransaction,
-} from '@wallet-reducers/transactionReducer';
-import {
-    AccountTransaction,
-    AccountInfo,
-    AccountAddress,
-    PrecomposedTransaction,
-} from 'trezor-connect';
+import { State as TransactionsState } from '@wallet-reducers/transactionReducer';
+import { AccountInfo, AccountAddress, PrecomposedTransaction } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import { ACCOUNT_TYPE } from '@wallet-constants/account';
 import { BTC_RBF_SEQUENCE } from '@wallet-constants/sendForm';
@@ -259,47 +251,6 @@ export const countUniqueCoins = (accounts: Account[]) => {
     const coins = new Set();
     accounts.forEach(acc => coins.add(acc.symbol));
     return coins.size;
-};
-
-/**
- * Formats amounts and attaches fields from the account (descriptor, deviceState, symbol) to the tx object
- *
- * @param {AccountTransaction} tx
- * @param {Account} account
- * @returns {WalletAccountTransaction}
- */
-export const enhanceTransaction = (
-    tx: AccountTransaction,
-    account: Account,
-): WalletAccountTransaction => {
-    return {
-        descriptor: account.descriptor,
-        deviceState: account.deviceState,
-        symbol: account.symbol,
-        ...tx,
-        // https://bitcoin.stackexchange.com/questions/23061/ripple-ledger-time-format/23065#23065
-        blockTime:
-            account.networkType === 'ripple' && tx.blockTime
-                ? tx.blockTime + 946684800
-                : tx.blockTime,
-        tokens: tx.tokens.map(tok => {
-            return {
-                ...tok,
-                amount: formatAmount(tok.amount, tok.decimals),
-            };
-        }),
-        amount: formatNetworkAmount(tx.amount, account.symbol),
-        fee: formatNetworkAmount(tx.fee, account.symbol),
-        targets: tx.targets.map(tr => {
-            if (typeof tr.amount === 'string') {
-                return {
-                    ...tr,
-                    amount: formatNetworkAmount(tr.amount, account.symbol),
-                };
-            }
-            return tr;
-        }),
-    };
 };
 
 /**
