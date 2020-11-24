@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { variables, Loader, Icon, useTheme } from '@trezor/components';
+import { variables, Icon, useTheme } from '@trezor/components';
 import {
     GraphRange,
     AggregatedAccountHistory,
@@ -18,6 +18,7 @@ import CustomYAxisTick from './components/CustomYAxisTick';
 import CustomBar from './components/CustomBar';
 import CustomTooltipDashboard from './components/CustomTooltipDashboard';
 import CustomTooltipAccount from './components/CustomTooltipAccount';
+import SkeletonTransactionsGraph from './components/SkeletonTransactionsGraph';
 
 const Wrapper = styled.div`
     display: flex;
@@ -121,7 +122,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                 </Toolbar>
             )}
             <Description>
-                {isLoading && <Loader size={24} />}
+                {isLoading && <SkeletonTransactionsGraph animate />}
                 {!isLoading && data && (
                     <CustomResponsiveContainer height="100%" width="100%">
                         <ComposedChart
@@ -293,3 +294,4 @@ const TransactionsGraph = React.memo((props: Props) => {
 });
 
 export default TransactionsGraph;
+export { SkeletonTransactionsGraph };

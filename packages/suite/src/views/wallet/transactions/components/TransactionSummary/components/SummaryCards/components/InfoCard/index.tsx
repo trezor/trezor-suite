@@ -1,7 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, Loader, Card } from '@trezor/components';
-import { HiddenPlaceholder, FormattedCryptoAmount, Sign } from '@suite-components';
+import { variables, Card } from '@trezor/components';
+import {
+    HiddenPlaceholder,
+    FormattedCryptoAmount,
+    Sign,
+    SkeletonRectangle,
+} from '@suite-components';
 import { Account } from '@wallet-types';
 import BigNumber from 'bignumber.js';
 
@@ -45,14 +50,6 @@ const SecondaryValueWrapper = styled.div`
     white-space: nowrap;
 `;
 
-const LoaderWrapper = styled.div`
-    display: flex;
-    /* padding-top: 8px; */
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-`;
-
 const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     display: flex;
 `;
@@ -87,11 +84,7 @@ const InfoCard = (props: Props) => {
         <Wrapper>
             <InfoCardContent>
                 <Title>{props.title}</Title>
-                {props.isLoading && (
-                    <LoaderWrapper>
-                        <Loader size={22} />
-                    </LoaderWrapper>
-                )}
+                {props.isLoading && <SkeletonRectangle width="160px" />}
 
                 {!props.isLoading && (
                     <>

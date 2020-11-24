@@ -471,6 +471,7 @@ const Modal = ({
     return (
         <ModalOverlay
             desktopBorder={desktopBorder}
+            data-test="@modal"
             onClick={() => {
                 if (cancelable && onCancel) {
                     onCancel();

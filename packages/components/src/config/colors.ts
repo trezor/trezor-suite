@@ -36,6 +36,8 @@ export const THEME = {
         BUTTON_RED: '#cd4949',
         BUTTON_RED_HOVER: '#b93c3c',
 
+        GRADIENT_SKELETON_START: '#eaeaea',
+
         GRADIENT_GREEN_START: '#39a814',
         GRADIENT_GREEN_END: '#4cbc26',
         GRADIENT_RED_START: '#d15b5b',
@@ -80,6 +82,7 @@ export const THEME = {
         BUTTON_RED: '#cd4949',
         BUTTON_RED_HOVER: '#b93c3c',
 
+        GRADIENT_SKELETON_START: '#272729',
         // these gradients are used on transaction graph only
         GRADIENT_GREEN_START: '#559c3d',
         GRADIENT_GREEN_END: '#5fa548',
@@ -127,6 +130,7 @@ export const THEME = {
         BUTTON_RED: '#cd4949',
         BUTTON_RED_HOVER: '#b93c3c',
 
+        GRADIENT_SKELETON_START: '#272729',
         // these gradients are used on transaction graph only
         GRADIENT_GREEN_START: '#559c3d',
         GRADIENT_GREEN_END: '#5fa548',

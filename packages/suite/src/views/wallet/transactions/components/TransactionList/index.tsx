@@ -2,7 +2,8 @@ import React, { useMemo, useState, useCallback } from 'react';
 import { saveAs } from 'file-saver';
 import TrezorConnect, { AccountTransaction } from 'trezor-connect';
 import styled, { css } from 'styled-components';
-import { variables, Loader, Card, Dropdown } from '@trezor/components';
+import { Loader, Card, Dropdown } from '@trezor/components';
+import { Stack } from '@suite-components/Skeleton';
 import { Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
 import { useActions, useSelector } from '@suite-hooks';
@@ -20,6 +21,7 @@ import ExportWorker from 'worker-loader?filename=static/[hash].worker.js!../../.
 import TransactionItem from './components/TransactionItem';
 import Pagination from './components/Pagination';
 import TransactionsGroup from './components/TransactionsGroup';
+import SkeletonTransactionItem from './components/SkeletonTransactionItem';
 
 const StyledCard = styled(Card)<{ isPending: boolean }>`
     flex-direction: column;
@@ -38,21 +40,6 @@ const StyledSection = styled(Section)`
 
 const PaginationWrapper = styled.div`
     margin-top: 20px;
-`;
-
-const LoaderWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-items: center;
-    align-items: center;
-    margin: 24px 0px;
-`;
-
-const LoaderText = styled.div`
-    display: flex;
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    text-align: center;
 `;
 
 interface Props {
@@ -220,12 +207,11 @@ const TransactionList = ({
             actions={exportMenu}
         >
             {isLoading ? (
-                <LoaderWrapper>
-                    <Loader size={28} />
-                    <LoaderText>
-                        <Translation id="TR_LOADING_TRANSACTIONS" />
-                    </LoaderText>
-                </LoaderWrapper>
+                <Stack col childMargin="0px 0px 16px 0px">
+                    <SkeletonTransactionItem />
+                    <SkeletonTransactionItem />
+                    <SkeletonTransactionItem />
+                </Stack>
             ) : (
                 Object.keys(transactionsByDate).map(dateKey => {
                     const isPending = dateKey === 'pending';
