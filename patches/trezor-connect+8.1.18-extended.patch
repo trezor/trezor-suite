@@ -1,0 +1,24 @@
+diff --git a/node_modules/trezor-connect/lib/typescript/account.d.ts b/node_modules/trezor-connect/lib/typescript/account.d.ts
+index e14ece7..2b3ec16 100644
+--- a/node_modules/trezor-connect/lib/typescript/account.d.ts
++++ b/node_modules/trezor-connect/lib/typescript/account.d.ts
+@@ -1,4 +1,5 @@
+ import { TransactionInput, TransactionOutput } from './trezor/protobuf';
++import { VinVout } from './backend/transactions';
+ 
+ // getAccountInfo params
+ export interface GetAccountInfo {
+@@ -100,6 +101,13 @@ export interface AccountTransaction {
+         gasUsed?: number;
+         gasPrice: string;
+     };
++    details: {
++        vin: VinVout[];
++        vout: VinVout[];
++        size: number;
++        totalInput: string;
++        totalOutput: string;
++    };
+ }
+ 
+ // getAccountInfo response

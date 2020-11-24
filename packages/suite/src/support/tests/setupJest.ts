@@ -174,6 +174,13 @@ const getWalletTransaction = (t: Partial<WalletAccountTransaction>): WalletAccou
             },
         ],
         tokens: [],
+        details: {
+            vin: [],
+            vout: [],
+            size: 0,
+            totalInput: '0',
+            totalOutput: '0',
+        },
         ...t,
     };
 };
