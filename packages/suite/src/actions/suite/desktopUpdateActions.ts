@@ -44,7 +44,11 @@ export const error = (err: Error) => (dispatch: Dispatch, getState: GetState) =>
     console.error('auto-updater', err);
 
     const { state } = getState().desktopUpdate;
-    dispatch(addToast({ type: 'auto-updater-error', state }));
+
+    // Ignore displaying errors while checking
+    if (state !== 'checking') {
+        dispatch(addToast({ type: 'auto-updater-error', state }));
+    }
 
     dispatch({
         type: DESKTOP_UPDATE.NOT_AVAILABLE,
