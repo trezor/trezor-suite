@@ -1,12 +1,20 @@
 import React from 'react';
-import styled, { css, useTheme } from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Network } from '@wallet-types';
-import { CoinLogo, Icon, variables } from '@trezor/components';
-import { FiatValue, Ticker, Translation } from '@suite-components';
+import { CoinLogo, Icon, variables, useTheme } from '@trezor/components';
+import {
+    FiatValue,
+    SkeletonCircle,
+    SkeletonRectangle,
+    Ticker,
+    Translation,
+} from '@suite-components';
 import { CoinBalance } from '@wallet-components';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import * as routerActions from '@suite-actions/routerActions';
 import { useActions, useAccountSearch } from '@suite-hooks';
+import { ANIMATION } from '@suite-config';
+import { motion } from 'framer-motion';
 
 const LogoWrapper = styled.div`
     padding-right: 12px;
@@ -30,7 +38,7 @@ const Symbol = styled.div`
     text-indent: 6px;
 `;
 
-const Col = styled.div<{ isLastRow?: boolean }>`
+const StyledCol = styled(motion.div)<{ isLastRow?: boolean }>`
     display: flex;
     align-items: center;
     padding: 16px 0px;
@@ -46,6 +54,10 @@ const Col = styled.div<{ isLastRow?: boolean }>`
             border-bottom: none;
         `}
 `;
+
+const Col = (props: React.ComponentProps<typeof StyledCol>) => (
+    <StyledCol {...ANIMATION.EXPAND} {...props} />
+);
 
 const CoinNameWrapper = styled(Col)`
     overflow: hidden;
@@ -156,5 +168,27 @@ const Asset = React.memo(({ network, failed, cryptoValue, isLastRow }: Props) =>
         </>
     );
 });
+
+export const AssetSkeleton = ({ animate }: { animate?: boolean }) => {
+    return (
+        <>
+            <CoinNameWrapper isLastRow>
+                <LogoWrapper>
+                    <SkeletonCircle />
+                </LogoWrapper>
+                <Coin>
+                    <SkeletonRectangle animate={animate} />
+                </Coin>
+            </CoinNameWrapper>
+            <CryptoBalanceWrapper isLastRow>
+                <SkeletonRectangle animate={animate} width="160px" />
+            </CryptoBalanceWrapper>
+
+            <ExchangeRateWrapper isLastRow>
+                <SkeletonRectangle animate={animate} />
+            </ExchangeRateWrapper>
+        </>
+    );
+};
 
 export default Asset;
