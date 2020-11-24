@@ -1,3 +1,11 @@
+# 1.0.15
+
+#### changes
+-   Added `details` to `Transaction` object (vin, vout, size)
+-   Fixed types in `BlockchainLink` event listeners
+-   Move "workersDepenedecies" to regular "dependencies" in package.json
+-   Update dependencies
+
 # 1.0.14
 
 #### changes
