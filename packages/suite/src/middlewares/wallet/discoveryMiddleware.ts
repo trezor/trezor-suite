@@ -26,7 +26,9 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
     // temporary workaround, needs to be changed in trezor-connect
     // BLOCK action propagation (via next() function) and respond to trezor-connect
     // otherwise devices without backup will receive several "confirmation" modals during discovery process
-    if (action.type === UI.REQUEST_CONFIRMATION && discoveryIsRunning) {
+    const isCoinmarketExchange = prevState.router.route?.name === 'wallet-coinmarket-exchange';
+
+    if (action.type === UI.REQUEST_CONFIRMATION && (discoveryIsRunning || isCoinmarketExchange)) {
         TrezorConnect.uiResponse({
             type: UI.RECEIVE_CONFIRMATION,
             payload: true,
