@@ -34,7 +34,7 @@ const torFlag = app.commandLine.hasSwitch('tor');
 const bridgeDev = app.commandLine.hasSwitch('bridge-dev');
 
 // Updater
-let quitOnClose = process.platform !== 'darwin';
+let quitOnWindowClose = false; // Mac only
 const updateCancellationToken = new CancellationToken();
 
 // External request handler
@@ -143,19 +143,18 @@ const init = async () => {
         // hide window to the Dock
         // this event listener will be removed by app.on('before-quit')
         mainWindow.on('close', event => {
+            if (quitOnWindowClose) {
+                app.quit();
+                return;
+            }
+
             event.preventDefault();
             mainWindow.hide();
         });
+    } else {
+        // other platform just kills the app
+        app.on('window-all-closed', () => app.quit());
     }
-
-    app.on('window-all-closed', () => {
-        // By default, Mac will not quit on close (unless the auto updater tells it to)
-        if (!quitOnClose) {
-            return;
-        }
-
-        app.quit();
-    });
 
     // open external links in default browser
     const handleExternalLink = (event: Event, url: string) => {
@@ -422,7 +421,7 @@ const init = async () => {
         autoUpdater.downloadUpdate(updateCancellationToken);
     });
     ipcMain.on('update/install', () => {
-        quitOnClose = true;
+        quitOnWindowClose = true; // This will force the closing of the window to quit the app on Mac
         autoUpdater.quitAndInstall();
     });
     ipcMain.on('update/cancel', () => {
