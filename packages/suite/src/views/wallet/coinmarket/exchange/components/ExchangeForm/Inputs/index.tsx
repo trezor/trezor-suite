@@ -1,4 +1,4 @@
-import { Icon, variables } from '@trezor/components';
+import { Icon, variables, useTheme } from '@trezor/components';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { invityApiSymbolToSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
@@ -51,8 +51,14 @@ const StyledIcon = styled(Icon)`
     }
 `;
 
+const Line = styled.div<{ color: string }>`
+    height: 48px;
+    border: 1px solid ${props => props.color};
+`;
+
 const Inputs = () => {
-    const { trigger, amountLimits, token, account } = useCoinmarketExchangeFormContext();
+    const theme = useTheme();
+    const { trigger, amountLimits, token, account, errors } = useCoinmarketExchangeFormContext();
     const formattedToken = invityApiSymbolToSymbol(token);
     const tokenData = account.tokens?.find(t => t.symbol === formattedToken);
     useEffect(() => {
@@ -64,6 +70,13 @@ const Inputs = () => {
             <Top>
                 <LeftWrapper>
                     <ReceiveCryptoInput />
+                    <Line
+                        color={
+                            errors.receiveCryptoInput || errors.fiatInput
+                                ? theme.TYPE_RED
+                                : theme.STROKE_GREY
+                        }
+                    />
                     {!tokenData && <FiatInput />}
                 </LeftWrapper>
                 <MiddleWrapper>

@@ -1,5 +1,6 @@
 import { Input } from '@trezor/components';
 import React from 'react';
+import styled from 'styled-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { FIAT } from '@suite-config';
 import useDebounce from 'react-use/lib/useDebounce';
@@ -22,6 +23,12 @@ export const buildCurrencyOptions = () => {
     );
     return result;
 };
+
+const StyledInput = styled(Input)`
+    border-right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+`;
 
 const ReceiveCryptoInput = () => {
     const {
@@ -70,7 +77,7 @@ const ReceiveCryptoInput = () => {
     );
 
     return (
-        <Input
+        <StyledInput
             onChange={event => {
                 updateFiatValue(event.target.value);
                 clearErrors(fiatInput);
