@@ -8,6 +8,13 @@ const tx = {
     // txid: undefined,
     tokens: [],
     // targets: [],
+    details: {
+        vin: [],
+        vout: [],
+        size: 0,
+        totalInput: '0',
+        totalOutput: '0',
+    },
 };
 // const target = {
 //     addresses: [],

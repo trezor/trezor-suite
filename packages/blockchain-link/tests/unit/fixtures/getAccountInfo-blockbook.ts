@@ -176,6 +176,7 @@ export default [
                                     {
                                         addresses: ['19SW698tGLusJZVBmGDYmHvSwn79WqJP65'],
                                         sequence: 4294967293, // RBF
+                                        value: '1',
                                     },
                                 ],
                                 vout: [
@@ -184,6 +185,7 @@ export default [
                                         value: '1',
                                     },
                                 ],
+                                hex: 'deadbeef',
                             },
                         ],
                         page: 1,
@@ -215,6 +217,24 @@ export default [
                             },
                         ],
                         tokens: [],
+                        details: {
+                            vin: [
+                                {
+                                    addresses: ['19SW698tGLusJZVBmGDYmHvSwn79WqJP65'],
+                                    sequence: 4294967293,
+                                    value: '1',
+                                },
+                            ],
+                            vout: [
+                                {
+                                    addresses: ['1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d'],
+                                    value: '1',
+                                },
+                            ],
+                            size: 4,
+                            totalInput: '1',
+                            totalOutput: '1',
+                        },
                     },
                 ],
             },
@@ -319,6 +339,30 @@ export default [
                             },
                         ],
                         tokens: [],
+                        details: {
+                            vin: [
+                                {
+                                    addresses: ['1J8tVQD9KZZeLhnkMRHHDawsYmwjWAnC5d'],
+                                    sequence: 4294967293,
+                                    value: '100',
+                                },
+                            ],
+                            vout: [
+                                {
+                                    addresses: ['19SW698tGLusJZVBmGDYmHvSwn79WqJP65'],
+                                    value: '50',
+                                    n: 1,
+                                },
+                                {
+                                    addresses: ['1RXiBGixLSBRAAXtZMsCx75EuFqqJnmXZ'],
+                                    value: '40',
+                                    n: 0,
+                                },
+                            ],
+                            size: 0,
+                            totalInput: '100',
+                            totalOutput: '90',
+                        },
                     },
                 ],
             },
