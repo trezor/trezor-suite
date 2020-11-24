@@ -34,6 +34,7 @@ const torFlag = app.commandLine.hasSwitch('tor');
 const bridgeDev = app.commandLine.hasSwitch('bridge-dev');
 
 // Updater
+let quitOnClose = process.platform !== 'darwin';
 const updateCancellationToken = new CancellationToken();
 
 // External request handler
@@ -145,10 +146,16 @@ const init = async () => {
             event.preventDefault();
             mainWindow.hide();
         });
-    } else {
-        // other platform just kills the app
-        app.on('window-all-closed', () => app.quit());
     }
+
+    app.on('window-all-closed', () => {
+        // By default, Mac will not quit on close (unless the auto updater tells it to)
+        if (!quitOnClose) {
+            return;
+        }
+
+        app.quit();
+    });
 
     // open external links in default browser
     const handleExternalLink = (event: Event, url: string) => {
@@ -414,7 +421,10 @@ const init = async () => {
         });
         autoUpdater.downloadUpdate(updateCancellationToken);
     });
-    ipcMain.on('update/install', () => autoUpdater.quitAndInstall());
+    ipcMain.on('update/install', () => {
+        quitOnClose = true;
+        autoUpdater.quitAndInstall();
+    });
     ipcMain.on('update/cancel', () => {
         mainWindow.webContents.send('update/available', latestVersion);
         updateCancellationToken.cancel();
