@@ -24,7 +24,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
         cy.getTestElement('@passphrase/input').type('taxation is theft{enter}');
         cy.getTestElement('@suite/loading');
-        cy.getTestElement('@passphrase/input').type('taxation is theft{enter}');
+        cy.getTestElement('@passphrase/input', { timeout: 10000 }).type('taxation is theft{enter}');
         cy.getTestElement('@passphrase/confirm-checkbox').click();
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.getTestElement('@suite/loading').should('not.be.visible');
@@ -32,7 +32,7 @@ describe('Passphrase', () => {
         // try to add another wallet with the same passphrase
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
-        cy.getTestElement('@passphrase/input').type('taxation is theft{enter}');
+        cy.getTestElement('@passphrase/input', { timeout: 10000 }).type('taxation is theft{enter}');
         cy.getTestElement('@suite/loading');
 
         // duplicate passphrase modal appears;
