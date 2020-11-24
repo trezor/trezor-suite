@@ -1,8 +1,8 @@
 import produce from 'immer';
 import { AccountTransaction } from 'trezor-connect';
 import { ACCOUNT, TRANSACTION, FIAT_RATES } from '@wallet-actions/constants';
-import { getAccountKey, enhanceTransaction } from '@wallet-utils/accountUtils';
-import { findTransaction } from '@wallet-utils/transactionUtils';
+import { getAccountKey } from '@wallet-utils/accountUtils';
+import { findTransaction, enhanceTransaction } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
 import { Account, WalletAction, Network } from '@wallet-types';
 import { Action } from '@suite-types';

@@ -1,8 +1,9 @@
-import { AccountTransaction } from 'trezor-connect';
-import { WalletAccountTransaction } from '@wallet-types';
-import { getDateWithTimeZone } from '../suite/date';
 import BigNumber from 'bignumber.js';
+import { AccountTransaction } from 'trezor-connect';
+import { Account, WalletAccountTransaction } from '@wallet-types';
+import { getDateWithTimeZone } from '../suite/date';
 import { toFiatCurrency } from './fiatConverterUtils';
+import { formatAmount, formatNetworkAmount } from './accountUtils';
 
 export const sortByBlockHeight = (a: WalletAccountTransaction, b: WalletAccountTransaction) => {
     // if both are missing the blockHeight don't change their order
@@ -103,6 +104,16 @@ export const parseKey = (key: string) => {
 export const findTransaction = (txid: string, transactions: WalletAccountTransaction[]) =>
     transactions.find(t => t && t.txid === txid);
 
+export const isPending = (tx: WalletAccountTransaction | AccountTransaction) =>
+    !tx.blockHeight || tx.blockHeight < 0;
+
+export const getConfirmations = (
+    tx: WalletAccountTransaction | AccountTransaction,
+    height: number,
+) => {
+    return tx.blockHeight && tx.blockHeight > 0 ? height - tx.blockHeight + 1 : 0;
+};
+
 // inner private type, it's pointless to move it outside of this file
 interface Analyze {
     newTransactions: AccountTransaction[];
@@ -147,10 +158,10 @@ export const analyzeTransactions = (
 
     // If there are no known confirmed txs
     // remove all known and add all fresh
-    const gotConfirmedTxs = known.some(tx => tx.blockHeight && tx.blockHeight > 0);
+    const gotConfirmedTxs = known.some(tx => !isPending(tx));
     if (!gotConfirmedTxs) {
         return filterAnalyzeResult({
-            newTransactions: fresh.filter(tx => tx.blockHeight && tx.blockHeight > 0),
+            newTransactions: fresh.filter(tx => !isPending(tx)),
             add: fresh,
             remove: known,
         });
@@ -171,12 +182,12 @@ export const analyzeTransactions = (
                 const kTx = known[index];
                 // known tx is pending, it will be removed
                 // move sliceIndex, set firstKnownIndex
-                if (!kTx.blockHeight || kTx.blockHeight <= 0) {
+                if (isPending(kTx)) {
                     firstKnownIndex = index + 1;
                     sliceIndex = index + 1;
                 }
                 // known tx is "older"
-                if (kTx.blockHeight && kTx.blockHeight > 0 && kTx.blockHeight < height) {
+                if (!isPending(kTx) && kTx.blockHeight! < height) {
                     // set sliceIndex
                     sliceIndex = isLast ? len : index;
                     // all fresh txs to this point needs to be added
@@ -245,6 +256,43 @@ export const isTxUnknown = (transaction: WalletAccountTransaction) => {
     );
 };
 
-export const isTxPending = (transaction: WalletAccountTransaction | AccountTransaction) => {
-    return !transaction.blockHeight || transaction.blockHeight < 0;
+/**
+ * Formats amounts and attaches fields from the account (descriptor, deviceState, symbol) to the tx object
+ *
+ * @param {AccountTransaction} tx
+ * @param {Account} account
+ * @returns {WalletAccountTransaction}
+ */
+export const enhanceTransaction = (
+    tx: AccountTransaction,
+    account: Account,
+): WalletAccountTransaction => {
+    return {
+        descriptor: account.descriptor,
+        deviceState: account.deviceState,
+        symbol: account.symbol,
+        ...tx,
+        // https://bitcoin.stackexchange.com/questions/23061/ripple-ledger-time-format/23065#23065
+        blockTime:
+            account.networkType === 'ripple' && tx.blockTime
+                ? tx.blockTime + 946684800
+                : tx.blockTime,
+        tokens: tx.tokens.map(tok => {
+            return {
+                ...tok,
+                amount: formatAmount(tok.amount, tok.decimals),
+            };
+        }),
+        amount: formatNetworkAmount(tx.amount, account.symbol),
+        fee: formatNetworkAmount(tx.fee, account.symbol),
+        targets: tx.targets.map(tr => {
+            if (typeof tr.amount === 'string') {
+                return {
+                    ...tr,
+                    amount: formatNetworkAmount(tr.amount, account.symbol),
+                };
+            }
+            return tr;
+        }),
+    };
 };

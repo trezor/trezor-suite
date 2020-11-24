@@ -52,10 +52,9 @@ const withTransaction = (View: React.ComponentType<ViewProps>, props: StrictView
         const accountTxs = accountUtils.getAccountTransactions(transactions.transactions, account);
         const tx = transactionUtils.findTransaction(notification.txid, accountTxs);
         const device = accountUtils.findAccountDevice(account, devices);
-        const confirmations =
-            tx && tx.blockHeight && tx.blockHeight > 0
-                ? blockchain[account.symbol].blockHeight - tx.blockHeight
-                : 0;
+        const confirmations = tx
+            ? transactionUtils.getConfirmations(tx, blockchain[account.symbol].blockHeight)
+            : 0;
 
         if (typeof props.message !== 'string') {
             props.message.values = {

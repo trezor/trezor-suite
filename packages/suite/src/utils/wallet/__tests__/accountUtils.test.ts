@@ -113,13 +113,6 @@ describe('account utils', () => {
         );
     });
 
-    fixtures.enhanceTransaction.forEach(f => {
-        it('enhanceTransaction', () => {
-            // @ts-ignore
-            expect(accountUtils.enhanceTransaction(f.tx, f.account)).toEqual(f.result);
-        });
-    });
-
     it('getSelectedAccount', () => {
         expect(
             accountUtils.getSelectedAccount(

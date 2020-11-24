@@ -15,6 +15,7 @@ import {
     serializeEthereumTx,
     prepareEthereumTransaction,
 } from '@wallet-utils/sendFormUtils';
+import { isPending } from '@wallet-utils/transactionUtils';
 import { amountToSatoshi, formatAmount } from '@wallet-utils/accountUtils';
 import { ETH_DEFAULT_GAS_LIMIT, ERC20_GAS_LIMIT } from '@wallet-constants/sendForm';
 import { PrecomposedLevels, PrecomposedTransaction, ExternalOutput } from '@wallet-types/sendForm';
@@ -208,7 +209,7 @@ export const signTransaction = (data: SignTransactionData) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
-    const { selectedAccount } = getState().wallet;
+    const { selectedAccount, transactions } = getState().wallet;
     const { device } = getState().suite;
     if (selectedAccount.status !== 'loaded' || !device || !data.transactionInfo) return;
 
@@ -219,9 +220,7 @@ export const signTransaction = (data: SignTransactionData) => async (
     // Calculate `pendingNonce`: greatest value in pending tx + 1
     // This may lead to unexpected/unwanted behavior
     // whenever pending tx gets rejected all following txs (with higher nonce) will be rejected as well
-    const pendingTxs = (getState().wallet.transactions.transactions[account.key] || []).filter(
-        tx => !tx.blockHeight || tx.blockHeight <= 0,
-    );
+    const pendingTxs = (transactions.transactions[account.key] || []).filter(isPending);
     const pendingNonce = pendingTxs.reduce((value, tx) => {
         if (!tx.ethereumSpecific) return value;
         return Math.max(value, tx.ethereumSpecific.nonce + 1);
