@@ -76,14 +76,14 @@ describe('Passphrase', () => {
         cy.getTestElement('@passphrase/input').type('abc');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         // confirm
-        cy.getTestElement('@passphrase/confirm-checkbox').click();
+        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
         cy.getTestElement('@passphrase/input').type('cba');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.getTestElement('@toast/auth-confirm-error/close').click();
         // retry
         cy.getTestElement('@passphrase-mismatch/retry-button').click();
         // confirm again
-        cy.getTestElement('@passphrase/confirm-checkbox').click();
+        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
         cy.getTestElement('@passphrase/input').type('abc');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         // go to wallet
@@ -104,7 +104,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@passphrase/input').type('def');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         // confirm
-        cy.getTestElement('@passphrase/confirm-checkbox').click();
+        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000}).click();
         cy.getTestElement('@passphrase/input').type('def');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.getTestElement('@suite/loading').should('not.be.visible');
@@ -132,7 +132,4 @@ describe('Passphrase', () => {
         cy.getTestElement('@modal/confirm-address/address-field').should('contain', abcAddr);
         cy.task('pressYes');
     });
-
-    // todo: passphrase duplicate test
-    it.skip('passphrase duplicate', () => {});
 });
