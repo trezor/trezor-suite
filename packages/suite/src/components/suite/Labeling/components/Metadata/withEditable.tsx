@@ -23,6 +23,12 @@ const Placeholder = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
+const Editable = styled.div<{ touched: boolean }>`
+    padding-left: 1px;
+    margin-right: 1px;
+    color: ${props => (!props.touched ? props.theme.TYPE_LIGHT_GREY : 'inherit')};
+`;
+
 interface Props {
     originalValue?: string;
     defaultVisibleValue: React.ReactNode;
@@ -118,8 +124,7 @@ export const withEditable = (WrappedComponent: React.FC) => ({
     return (
         <>
             <WrappedComponent {...props}>
-                {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-                <div
+                <Editable
                     contentEditable
                     onKeyPress={e => setValue(e.key)}
                     onKeyUp={() => {
@@ -129,11 +134,7 @@ export const withEditable = (WrappedComponent: React.FC) => ({
                     }}
                     ref={divRef}
                     data-test="@metadata/input"
-                    style={{
-                        paddingLeft: '1px',
-                        color: !touched ? theme.TYPE_LIGHT_GREY : 'inherit',
-                        marginRight: '1px',
-                    }}
+                    touched={touched}
                 />
                 {/* show default placeholder */}
                 {!value && <Placeholder>{props.defaultVisibleValue}</Placeholder>}
