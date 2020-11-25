@@ -125,6 +125,7 @@ export type UseSendFormState = {
     isDirty: boolean;
     composedLevels?: PrecomposedLevels;
     online: boolean;
+    baseFee?: string; // used in rbf
 };
 
 // strongly typed UseFormMethods.getValues with fallback value
