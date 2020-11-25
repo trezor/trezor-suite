@@ -5,12 +5,12 @@ import { Dropdown } from '@trezor/components';
 import { Card, QuestionTooltip } from '@suite-components';
 import { Section } from '@dashboard-components';
 import * as accountUtils from '@wallet-utils/accountUtils';
-import { useDiscovery } from '@suite-hooks';
+import { useDiscovery, useSelector } from '@suite-hooks';
 import { useFastAccounts, useFiatValue } from '@wallet-hooks';
 import { goto } from '@suite-actions/routerActions';
+import { SkeletonTransactionsGraph } from '@suite-components/TransactionsGraph';
 
 import Header from './components/Header';
-import Loading from './components/Loading';
 import Exception from './components/Exception';
 import EmptyWallet from './components/EmptyWallet';
 import DashboardGraph from './components/DashboardGraph/Container';
@@ -30,6 +30,7 @@ const Body = styled.div`
 
 const PortfolioCard = React.memo(() => {
     const dispatch = useDispatch();
+    const waitingForDevice = !useSelector(state => state.suite.device)?.state;
     const { fiat, localCurrency } = useFiatValue();
     const { discovery, getDiscoveryStatus } = useDiscovery();
     const accounts = useFastAccounts();
@@ -50,7 +51,7 @@ const PortfolioCard = React.memo(() => {
     if (discoveryStatus && discoveryStatus.status === 'exception') {
         body = <Exception exception={discoveryStatus} discovery={discovery} />;
     } else if (discoveryStatus && discoveryStatus.status === 'loading') {
-        body = <Loading />;
+        body = <SkeletonTransactionsGraph animate={!waitingForDevice} />;
     } else {
         body = isDeviceEmpty ? <EmptyWallet /> : <DashboardGraph accounts={accounts} />;
     }
