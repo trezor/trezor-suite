@@ -256,6 +256,53 @@ export const isTxUnknown = (transaction: WalletAccountTransaction) => {
     );
 };
 
+const getRbfParams = (tx: AccountTransaction, account: Account) => {
+    if (account.networkType !== 'bitcoin') return;
+    if (!tx.rbf || !isPending(tx)) return; // ignore non rbf and mined transactions
+    const { vin, vout } = tx.details;
+
+    const changeAddresses = account.addresses ? account.addresses.change : [];
+    const allAddresses = account.addresses
+        ? changeAddresses.concat(account.addresses.used).concat(account.addresses.unused)
+        : [];
+    const utxo = vin
+        .map(input => {
+            // find input AccountAddress
+            const addr = allAddresses.find(a => input.addresses?.includes(a.address));
+            // re-create utxo from the input
+            return {
+                amount: input.value!,
+                txid: input.txid!,
+                vout: input.vout!,
+                address: addr!.address,
+                path: addr!.path,
+                blockHeight: 0,
+                confirmations: 0,
+            };
+        })
+        .filter(input => input !== null);
+    // find all change outputs
+    const changeVout = vout.filter(output =>
+        changeAddresses.find(a => output.addresses?.includes(a.address)),
+    );
+    // no change output found, there is no possibility to bump fee
+    // TODO: implement possibility to add another utxo (sign totally different transaction)
+    if (!changeVout.length) return;
+    // re-create external outputs
+    const outputs = vout
+        .filter(output => !changeVout.includes(output))
+        .map(output => ({
+            address: output.addresses![0],
+            amount: formatNetworkAmount(output.value!, account.symbol), // needs to be converted to be used in sedFormActions
+        }));
+
+    // TODO: get other params, like opreturn or locktime? change etc.
+    return {
+        utxo,
+        outputs,
+    };
+};
+
 /**
  * Formats amounts and attaches fields from the account (descriptor, deviceState, symbol) to the tx object
  *
@@ -294,5 +341,6 @@ export const enhanceTransaction = (
             }
             return tr;
         }),
+        rbfParams: getRbfParams(tx, account),
     };
 };
