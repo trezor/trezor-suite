@@ -14,6 +14,7 @@ suite-web build dev:
   stage: build
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
+    - yarn build:libs
     - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/web yarn workspace @trezor/suite-web build
   artifacts:
     expire_in: 7 days
@@ -26,6 +27,7 @@ suite-web build beta:
     <<: *run_everything_rules
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
+    - yarn build:libs
     - assetPrefix=/wallet/web yarn workspace @trezor/suite-web build
   artifacts:
     expire_in: 7 days
@@ -39,6 +41,7 @@ suite-web build stable:
     <<: *run_everything_rules
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
+    - yarn build:libs
     - assetPrefix=/web yarn workspace @trezor/suite-web build
   artifacts:
     expire_in: 7 days
