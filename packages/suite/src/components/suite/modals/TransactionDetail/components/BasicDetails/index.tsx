@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { Icon, useTheme, variables, Loader } from '@trezor/components';
-import { Translation, HiddenPlaceholder, TrezorLink } from '@suite-components';
+import { Translation, HiddenPlaceholder } from '@suite-components';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction } from '@wallet-types';
 
@@ -12,32 +12,10 @@ const Wrapper = styled.div`
     border-radius: 6px;
 `;
 
-const ExplorerLinkWrapper = styled.div`
-    align-items: center;
-    display: inline-grid;
-    justify-content: flex-end;
-`;
-
-const ExplorerLinkTransactionWrapper = styled.div`
-    display: flex;
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        display: none;
-    }
-`;
-
 const TransactionId = styled(props => <HiddenPlaceholder {...props} />)`
     text-overflow: ellipsis;
     overflow: hidden;
     font-variant-numeric: slashed-zero tabular-nums;
-`;
-
-const ExplorerLink = styled(props => <TrezorLink {...props} />)`
-    font-size: ${variables.NEUE_FONT_SIZE.TINY};
-    width: 100%; /* makes text overflow ellipsis work */
-`;
-
-const LinkIcon = styled(Icon)`
-    margin-left: 10px;
 `;
 
 const Confirmations = styled.div`
@@ -67,7 +45,7 @@ const LoaderIconWrapper = styled.div`
 const HeaderFirstRow = styled.div`
     display: grid;
     grid-gap: 10px;
-    grid-template-columns: minmax(55px, 70px) auto 160px;
+    grid-template-columns: minmax(55px, 70px) auto auto;
     align-items: center;
     padding-bottom: 28px;
     padding-right: 6px;
@@ -137,14 +115,16 @@ const TxStatus = styled.div`
     text-align: left;
 `;
 
-const ConfirmationStatusWrapper = styled.div``;
+const ConfirmationStatusWrapper = styled.div`
+    align-items: center;
+    display: inline-grid;
+    justify-content: flex-end;
+`;
 
 const TxSentStatus = styled.div`
     color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.NEUE_FONT_SIZE.H2};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    line-height: 1.6;
-    margin-bottom: 4px;
 `;
 
 const ConfirmationStatus = styled.div<{ confirmed: boolean }>`
@@ -163,7 +143,6 @@ interface Props {
     tx: WalletAccountTransaction;
     isFetching: boolean;
     confirmations: number;
-    explorerUrl?: string;
 }
 
 const getHumanReadableTxType = (tx: WalletAccountTransaction) => {
@@ -181,7 +160,7 @@ const getHumanReadableTxType = (tx: WalletAccountTransaction) => {
     }
 };
 
-const BasicDetails = ({ tx, confirmations, isFetching, explorerUrl }: Props) => {
+const BasicDetails = ({ tx, confirmations, isFetching }: Props) => {
     const theme = useTheme();
     const isConfirmed = confirmations > 0;
     const transactionStatus = getHumanReadableTxType(tx);
@@ -210,52 +189,40 @@ const BasicDetails = ({ tx, confirmations, isFetching, explorerUrl }: Props) => 
                     <TxSentStatus>
                         {transactionStatus} {assetSymbol}
                     </TxSentStatus>
-
-                    <ConfirmationStatusWrapper>
-                        {isConfirmed ? (
-                            <StatusWrapper>
-                                {/* show spinner if data is being fetched */}
-                                {isFetching ? (
-                                    <LoaderIconWrapper>
-                                        <Loader size={16} />
-                                    </LoaderIconWrapper>
-                                ) : (
-                                    <>
-                                        <ConfirmationStatus confirmed>
-                                            <Translation id="TR_CONFIRMED_TX" />
-                                        </ConfirmationStatus>
-                                        <Circle>&bull;</Circle>
-                                    </>
-                                )}
-
-                                {confirmations && (
-                                    <Confirmations>
-                                        <Translation
-                                            id="TR_TX_CONFIRMATIONS"
-                                            values={{ confirmationsCount: confirmations }}
-                                        />
-                                    </Confirmations>
-                                )}
-                            </StatusWrapper>
-                        ) : (
-                            <ConfirmationStatus confirmed={false}>
-                                <Translation id="TR_UNCONFIRMED_TX" />
-                            </ConfirmationStatus>
-                        )}
-                    </ConfirmationStatusWrapper>
                 </TxStatus>
 
-                {/* OPEN IN BLOCK EXPLORER LINK */}
-                {explorerUrl && (
-                    <ExplorerLinkWrapper>
-                        <ExplorerLink variant="nostyle" href={explorerUrl}>
-                            <ExplorerLinkTransactionWrapper>
-                                <Translation id="TR_OPEN_IN_BLOCK_EXPLORER" />
-                            </ExplorerLinkTransactionWrapper>
-                            <LinkIcon icon="EXTERNAL_LINK" size={14} color={theme.TYPE_DARK_GREY} />
-                        </ExplorerLink>
-                    </ExplorerLinkWrapper>
-                )}
+                <ConfirmationStatusWrapper>
+                    {isConfirmed ? (
+                        <StatusWrapper>
+                            {/* show spinner if data is being fetched */}
+                            {isFetching ? (
+                                <LoaderIconWrapper>
+                                    <Loader size={16} />
+                                </LoaderIconWrapper>
+                            ) : (
+                                <>
+                                    <ConfirmationStatus confirmed>
+                                        <Translation id="TR_CONFIRMED_TX" />
+                                    </ConfirmationStatus>
+                                    <Circle>&bull;</Circle>
+                                </>
+                            )}
+
+                            {confirmations && (
+                                <Confirmations>
+                                    <Translation
+                                        id="TR_TX_CONFIRMATIONS"
+                                        values={{ confirmationsCount: confirmations }}
+                                    />
+                                </Confirmations>
+                            )}
+                        </StatusWrapper>
+                    ) : (
+                        <ConfirmationStatus confirmed={false}>
+                            <Translation id="TR_UNCONFIRMED_TX" />
+                        </ConfirmationStatus>
+                    )}
+                </ConfirmationStatusWrapper>
             </HeaderFirstRow>
 
             <HeaderSecondRow>

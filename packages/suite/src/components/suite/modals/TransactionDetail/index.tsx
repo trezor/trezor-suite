@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
-import { Modal, variables } from '@trezor/components';
+import { Modal, Button, variables } from '@trezor/components';
+import { OnOffSwitcher } from '@wallet-components';
 import { WalletAccountTransaction } from '@wallet-types';
 import TrezorConnect from 'trezor-connect';
 import BasicDetails from './components/BasicDetails';
-import IODetails from './components/IODetails';
-import AmountDetails from './components/AmountDetails';
-import { isTestnet, getNetwork } from '@wallet-utils/accountUtils';
+import AdvancedDetails from './components/AdvancedDetails';
+import ChangeFee from './components/ChangeFee';
+import { getNetwork } from '@wallet-utils/accountUtils';
 import { getConfirmations } from '@wallet-utils/transactionUtils';
 import { useSelector } from '@suite-hooks';
 
@@ -16,44 +17,32 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const TabSelector = styled.div`
-    width: 100%;
-    text-align: left;
-    margin-bottom: 6px;
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+const SectionActions = styled.div`
+    position: relative;
+    padding: 15px 0 0;
+    display: flex;
+    justify-content: flex-end;
+    & > * + * {
+        margin-left: 12px;
+    }
 `;
 
-const TabButton = styled.button<{ selected: boolean }>`
-    border: none;
-    background-color: inherit;
-    font-size: ${variables.NEUE_FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    padding-top: 12px;
-    padding-bottom: 12px;
-    margin-right: 40px;
-    cursor: pointer;
-    /* change styles if the button is selected*/
-    color: ${props =>
-        props.selected ? `${props.theme.TYPE_GREEN}` : `${props.theme.TYPE_LIGHT_GREY}`};
-    border-bottom: ${props => (props.selected ? `2px solid ${props.theme.BG_GREEN}` : 'none')};
+const SectionTitle = styled.div`
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    font-size: ${variables.NEUE_FONT_SIZE.SMALL};
+    text-transform: uppercase;
+    position: absolute;
+    top: 18px;
+    left: 0;
 `;
-
-const AdvancedDetailsWrapper = styled.div`
-    padding: 24px 24px 14px 24px;
-`;
-
-interface TabProps {
-    tabSelected: 'amount' | 'io';
-}
 
 type Props = {
     tx: WalletAccountTransaction;
+    rbfForm?: boolean;
     onCancel: () => void;
 };
 
 const TransactionDetail = (props: Props) => {
-    const [selectedTab, setSelectedTab] = useState<TabProps['tabSelected']>('amount');
-
     const { tx } = props;
     const blockchain = useSelector(state => state.wallet.blockchain[tx.symbol]);
     const confirmations = getConfirmations(tx, blockchain.blockHeight);
@@ -65,6 +54,11 @@ const TransactionDetail = (props: Props) => {
     // txDetails stores response from blockchainGetTransactions()
     const [txDetails, setTxDetails] = useState<any>(null);
     const [isFetching, setIsFetching] = useState(true);
+
+    const [section, setSection] = useState<'CHANGE_FEE' | 'DETAILS'>(
+        props.rbfForm ? 'CHANGE_FEE' : 'DETAILS',
+    );
+    const [finalize, setFinalize] = useState<boolean>(false);
 
     useEffect(() => {
         // fetch tx details and store them inside the local state 'txDetails'
@@ -94,47 +88,64 @@ const TransactionDetail = (props: Props) => {
             heading={<Translation id="TR_TRANSACTION_DETAILS" />}
         >
             <Wrapper>
-                <BasicDetails
-                    tx={tx}
-                    isFetching={isFetching}
-                    explorerUrl={explorerUrl}
-                    confirmations={confirmations}
-                />
-                <AdvancedDetailsWrapper>
-                    <TabSelector>
-                        <TabButton
-                            selected={selectedTab === 'amount'}
-                            onClick={() => {
-                                setSelectedTab('amount');
-                            }}
-                        >
-                            <Translation id="TR_TX_TAB_AMOUNT" />
-                        </TabButton>
-                        {network?.networkType !== 'ripple' && (
-                            <TabButton
-                                selected={selectedTab === 'io'}
+                <BasicDetails tx={tx} isFetching={isFetching} confirmations={confirmations} />
+                <SectionActions>
+                    {section === 'CHANGE_FEE' && (
+                        <SectionTitle>
+                            <Translation id={finalize ? 'TR_FINALIZE_TX' : 'TR_REPLACE_TX'} />
+                        </SectionTitle>
+                    )}
+                    {tx.rbfParams && (
+                        <>
+                            {section === 'DETAILS' && (
+                                <Button variant="tertiary" onClick={() => setSection('CHANGE_FEE')}>
+                                    <Translation id="TR_BUMP_FEE" />
+                                </Button>
+                            )}
+                            <Button
+                                variant="tertiary"
+                                icon="RBF"
                                 onClick={() => {
-                                    setSelectedTab('io');
+                                    setFinalize(!finalize);
+                                    if (section !== 'CHANGE_FEE') {
+                                        setSection('CHANGE_FEE');
+                                    }
                                 }}
                             >
-                                <Translation id="TR_INPUTS_OUTPUTS" />
-                            </TabButton>
-                        )}
-                    </TabSelector>
-
-                    {selectedTab === 'amount' ? (
-                        <AmountDetails
-                            tx={tx}
-                            txDetails={txDetails}
-                            // isFetching={isFetching}
-                            isTestnet={isTestnet(tx.symbol)}
-                        />
-                    ) : (
-                        network?.networkType !== 'ripple' && (
-                            <IODetails tx={tx} txDetails={txDetails} isFetching={isFetching} />
-                        )
+                                <Translation id="RBF" />
+                                <OnOffSwitcher isOn={!finalize} />
+                            </Button>
+                            {section === 'CHANGE_FEE' && (
+                                <Button
+                                    variant="tertiary"
+                                    onClick={() => {
+                                        setSection('DETAILS');
+                                        setFinalize(false);
+                                    }}
+                                >
+                                    <Translation id="TR_CANCEL" />
+                                </Button>
+                            )}
+                        </>
                     )}
-                </AdvancedDetailsWrapper>
+                    {explorerUrl && section === 'DETAILS' && (
+                        <a href={explorerUrl} target="_blank" rel="noreferrer">
+                            <Button variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
+                                <Translation id="TR_OPEN_IN_BLOCK_EXPLORER" />
+                            </Button>
+                        </a>
+                    )}
+                </SectionActions>
+                {section === 'CHANGE_FEE' ? (
+                    <ChangeFee tx={tx} finalize={finalize} />
+                ) : (
+                    <AdvancedDetails
+                        network={network!}
+                        tx={tx}
+                        txDetails={txDetails}
+                        isFetching={isFetching}
+                    />
+                )}
             </Wrapper>
         </Modal>
     );
