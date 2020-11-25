@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { AccountTransaction } from 'trezor-connect';
+import { AccountTransaction, AccountUtxo } from 'trezor-connect';
 import { ACCOUNT, TRANSACTION, FIAT_RATES } from '@wallet-actions/constants';
 import { getAccountKey } from '@wallet-utils/accountUtils';
 import { findTransaction, enhanceTransaction } from '@wallet-utils/transactionUtils';
@@ -16,6 +16,13 @@ export interface WalletAccountTransaction extends AccountTransaction {
     descriptor: string;
     symbol: Network['symbol'];
     rates?: TimestampedRates['rates'];
+    rbfParams?: {
+        utxo: AccountUtxo[];
+        outputs: {
+            address: string;
+            amount: string;
+        }[];
+    };
 }
 
 export interface State {
