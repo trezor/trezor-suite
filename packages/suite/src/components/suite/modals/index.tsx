@@ -176,7 +176,7 @@ const getUserContextModal = (props: Props) => {
         case 'qr-reader':
             return <QrScanner decision={payload.decision} onCancel={modalActions.onCancel} />;
         case 'transaction-detail':
-            return <TransactionDetail tx={payload.tx} onCancel={modalActions.onCancel} />;
+            return <TransactionDetail {...payload} onCancel={modalActions.onCancel} />;
         case 'passphrase-duplicate':
             return <PassphraseDuplicate device={payload.device} duplicate={payload.duplicate} />;
         case 'review-transaction':

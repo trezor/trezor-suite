@@ -54,6 +54,7 @@ export type UserContextPayload =
     | {
           type: 'transaction-detail';
           tx: WalletAccountTransaction;
+          rbfForm?: boolean;
       }
     | {
           type: 'review-transaction';
