@@ -19,7 +19,7 @@ interface Props {
 const CoinmarketLayout = ({ children }: Props) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     return (
-        <WalletLayout title="TR_NAV_TRADE" account={selectedAccount}>
+        <WalletLayout title="TR_NAV_TRADE" account={selectedAccount} showEmptyHeaderPlaceholder>
             <Card noPadding>
                 <Navigation />
                 <Content>{children}</Content>

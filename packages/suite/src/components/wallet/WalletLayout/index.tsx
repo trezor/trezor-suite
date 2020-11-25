@@ -20,21 +20,29 @@ const Wrapper = styled.div`
     height: 100%;
 `;
 
+// This placeholder makes the "Receive" and "Trade" tabs look aligned with other tabs in "Accounts" view,
+// which implement some kind of toolbar.
+// Height computation: 24px toolbarHeight + 20px marginBottom = 44px;
+const EmptyHeaderPlaceholder = styled.div`
+    width: 100%;
+    height: 44px;
+`;
+
 type Props = {
     title: ExtendedMessageDescriptor['id'];
     children?: React.ReactNode;
     account: AppState['wallet']['selectedAccount'];
+    showEmptyHeaderPlaceholder?: boolean;
 };
 
-const WalletLayout = (props: Props) => {
+const WalletLayout = ({ showEmptyHeaderPlaceholder = false, title, children, account }: Props) => {
     const { setLayout } = React.useContext(LayoutContext);
     const { translationString } = useTranslation();
-    const l10nTitle = translationString(props.title);
+    const l10nTitle = translationString(title);
 
     React.useEffect(() => {
         if (setLayout) setLayout(l10nTitle, <AccountsMenu />, <AccountTopPanel />);
     }, [l10nTitle, setLayout]);
-    const { account } = props;
 
     if (account.status === 'loading') {
         return (
@@ -63,7 +71,8 @@ const WalletLayout = (props: Props) => {
             <AccountMode mode={account.mode} />
             <AccountAnnouncement selectedAccount={account} />
             {/* <WalletNotifications /> */}
-            {props.children}
+            {showEmptyHeaderPlaceholder && <EmptyHeaderPlaceholder />}
+            {children}
         </Wrapper>
     );
 };
