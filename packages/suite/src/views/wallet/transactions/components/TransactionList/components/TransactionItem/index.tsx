@@ -142,6 +142,7 @@ const TransactionItem = React.memo((props: Props) => {
                 onClick={() => openTxDetailsModal()}
             >
                 <TransactionTypeIcon type={transaction.type} isPending={props.isPending} />
+                {transaction.rbfParams && <Button onClick={openTxDetailsModal}>REPLACE TX</Button>}
             </TxTypeIconWrapper>
 
             <Content>
