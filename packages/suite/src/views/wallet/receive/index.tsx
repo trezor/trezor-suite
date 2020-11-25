@@ -27,7 +27,7 @@ const Receive = ({ selectedAccount, receive, device, showAddress }: Props) => {
     );
 
     return (
-        <WalletLayout title="TR_NAV_RECEIVE" account={selectedAccount}>
+        <WalletLayout title="TR_NAV_RECEIVE" account={selectedAccount} showEmptyHeaderPlaceholder>
             <FreshAddress
                 account={account}
                 addresses={receive}
