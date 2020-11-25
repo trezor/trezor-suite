@@ -2386,8 +2386,7 @@ const definedMessages = defineMessages({
         id: 'TR_TRY_AGAIN',
     },
     TR_TX_CONFIRMATIONS: {
-        defaultMessage:
-            '{confirmationsCount} {confirmationsCount, plural, one {confirmation} other {confirmations}}',
+        defaultMessage: '{confirmationsCount}x',
         id: 'TR_TX_CONFIRMATIONS',
     },
     TR_TX_CURRENT_VALUE: {
@@ -5035,6 +5034,22 @@ const definedMessages = defineMessages({
     TR_EXPORT_FAIL: {
         id: 'TR_EXPORT_FAIL',
         defaultMessage: 'Export failed.',
+    },
+    TR_BUMP_FEE: {
+        id: 'TR_BUMP_FEE',
+        defaultMessage: 'Bump fee',
+    },
+    TR_CHANGE_FEE: {
+        id: 'TR_CHANGE_FEE',
+        defaultMessage: 'Change fee',
+    },
+    TR_CURRENT: {
+        id: 'TR_CURRENT',
+        defaultMessage: 'Current',
+    },
+    TR_NEW: {
+        id: 'TR_NEW',
+        defaultMessage: 'New',
     },
 } as const);
 

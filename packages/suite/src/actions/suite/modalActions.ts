@@ -4,6 +4,8 @@ import { Dispatch, GetState, TrezorDevice } from '@suite-types';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { createDeferred, Deferred, DeferredResponse } from '@suite-utils/deferred';
 
+export type WalletAccountTransactionSection = 'CHANGE_FEE' | 'DETAILS';
+
 export type UserContextPayload =
     | {
           type: 'qr-reader';
@@ -54,6 +56,7 @@ export type UserContextPayload =
     | {
           type: 'transaction-detail';
           tx: WalletAccountTransaction;
+          section?: WalletAccountTransactionSection;
       }
     | {
           type: 'review-transaction';

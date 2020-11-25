@@ -65,6 +65,9 @@ const NextRow = styled.div`
     display: flex;
     flex: 1;
     align-items: flex-start;
+    & > * + * {
+        margin-bottom: 6px;
+    }
 `;
 
 const TargetsWrapper = styled.div`
@@ -121,10 +124,11 @@ const TransactionItem = React.memo((props: Props) => {
     const { openModal } = useActions({
         openModal: modalActions.openModal,
     });
-    const openTxDetailsModal = () => {
+    const openTxDetailsModal = (section?: modalActions.WalletAccountTransactionSection) => {
         openModal({
             type: 'transaction-detail',
             tx: transaction,
+            section,
         });
     };
     // we are using slightly different layout for 1 targets txs to better match the design
@@ -142,7 +146,6 @@ const TransactionItem = React.memo((props: Props) => {
                 onClick={() => openTxDetailsModal()}
             >
                 <TransactionTypeIcon type={transaction.type} isPending={props.isPending} />
-                {transaction.rbfParams && <Button onClick={openTxDetailsModal}>REPLACE TX</Button>}
             </TxTypeIconWrapper>
 
             <Content>
@@ -263,6 +266,13 @@ const TransactionItem = React.memo((props: Props) => {
                         )}
                     </TargetsWrapper>
                 </NextRow>
+                {transaction.rbfParams && (
+                    <NextRow>
+                        <Button variant="tertiary" onClick={() => openTxDetailsModal('CHANGE_FEE')}>
+                            <Translation id="TR_BUMP_FEE" />
+                        </Button>
+                    </NextRow>
+                )}
             </Content>
         </Wrapper>
     );
