@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# check whether there was a change to libs that need to be built
+
+for path in "packages/components" "packages/rollout" "packages/blockchain-link" "packages/suite-storage" "packages/translations-manager"
+do
+    diff="$(git diff HEAD^ --name-only --diff-filter=ACMR "$path")"
+    if [ ! -z "$diff" ]
+    then
+        yarn build:libs
+    fi
+done
+
+# check whether yarn.lock changed and if yes call yarn install
+
+for path in "yarn.lock"
+do
+    diff="$(git diff HEAD^ --name-only --diff-filter=ACMR "$path")"
+    if [ ! -z "$diff" ]
+    then
+        yarn
+    fi
+done
