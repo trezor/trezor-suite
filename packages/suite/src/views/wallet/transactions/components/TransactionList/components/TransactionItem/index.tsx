@@ -65,6 +65,9 @@ const NextRow = styled.div`
     display: flex;
     flex: 1;
     align-items: flex-start;
+    & > * + * {
+        margin-bottom: 6px;
+    }
 `;
 
 const TargetsWrapper = styled.div`
@@ -121,10 +124,11 @@ const TransactionItem = React.memo((props: Props) => {
     const { openModal } = useActions({
         openModal: modalActions.openModal,
     });
-    const openTxDetailsModal = () => {
+    const openTxDetailsModal = (rbfForm?: boolean) => {
         openModal({
             type: 'transaction-detail',
             tx: transaction,
+            rbfForm,
         });
     };
     // we are using slightly different layout for 1 targets txs to better match the design
@@ -152,7 +156,7 @@ const TransactionItem = React.memo((props: Props) => {
                         useSingleRowLayout={hasSingleTargetOrTransfer}
                         txItemisHovered={txItemisHovered}
                         nestedItemIsHovered={nestedItemIsHovered}
-                        onClick={openTxDetailsModal}
+                        onClick={() => openTxDetailsModal()}
                     />
                 </Description>
                 <NextRow>
@@ -262,6 +266,13 @@ const TransactionItem = React.memo((props: Props) => {
                         )}
                     </TargetsWrapper>
                 </NextRow>
+                {transaction.rbfParams && (
+                    <NextRow>
+                        <Button variant="tertiary" onClick={() => openTxDetailsModal(true)}>
+                            <Translation id="TR_BUMP_FEE" />
+                        </Button>
+                    </NextRow>
+                )}
             </Content>
         </Wrapper>
     );
