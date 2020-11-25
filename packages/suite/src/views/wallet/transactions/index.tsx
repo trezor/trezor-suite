@@ -81,7 +81,7 @@ const Transactions = (props: Props) => {
     if (account.empty) {
         return (
             <Content selectedAccount={selectedAccount}>
-                <AccountEmpty receive={() => props.goto('wallet-receive', undefined, true)} />
+                <AccountEmpty account={selectedAccount.account} />
             </Content>
         );
     }

@@ -39,6 +39,8 @@ const IMAGES = {
     '24_WORDS': '24-words.svg',
     EMPTY_DASHBOARD: 'empty-dashboard.svg',
     EMPTY_WALLET: 'wallet-empty.svg',
+    EMPTY_WALLET_NEUE: 'wallet-empty-neue.png',
+    EMPTY_WALLET_NEUE_2x: 'wallet-empty-neue@2x.png',
     ANALYTICS: 'analytics.svg',
     WELCOME: 'welcome.svg',
     UNI_ERROR: 'uni-error.svg',
@@ -66,6 +68,17 @@ export type Props = React.ImgHTMLAttributes<Omit<HTMLImageElement, 'src'>> & {
     alt?: string; // why? Seems not to be part of HTMLImageElement :(
 };
 
+const buildSrcSet = (image: Image) => {
+    const imageFile1x = IMAGES[image];
+    const hiRes = `${image}_2x`;
+    const imageFile2x = hiRes in IMAGES ? IMAGES[hiRes as Image] : undefined;
+    if (!imageFile2x) return undefined;
+
+    return `${resolveStaticPath(`${PATH}/${imageFile1x}`)} 1x, ${resolveStaticPath(
+        `${PATH}/${imageFile2x}`,
+    )} 2x`;
+};
+
 const Image = styled.img`
     /* should not overflow it's container */
     max-width: 100%;
@@ -78,7 +91,12 @@ const Image = styled.img`
 `;
 
 const ImageComponent = ({ image, alt = '', ...props }: Props) => (
-    <Image {...props} alt={alt} src={resolveStaticPath(`${PATH}/${IMAGES[image]}`)} />
+    <Image
+        {...props}
+        alt={alt}
+        src={resolveStaticPath(`${PATH}/${IMAGES[image]}`)}
+        srcSet={buildSrcSet(image)}
+    />
 );
 
 export default ImageComponent;
