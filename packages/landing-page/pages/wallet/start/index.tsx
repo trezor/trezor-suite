@@ -49,7 +49,7 @@ const getAppUrl = (platform: Platform) => {
     let ext = '';
     if (platform.startsWith('linux-')) {
         ext = 'AppImage';
-    } else if (platform.startsWith('mac-')) {
+    } else if (platform.startsWith('mac')) {
         ext = 'dmg';
     } else {
         ext = 'exe';
