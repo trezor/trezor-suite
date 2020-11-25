@@ -126,6 +126,8 @@ export type UseSendFormState = {
     isDirty: boolean;
     composedLevels?: PrecomposedLevels;
     online: boolean;
+    utxo?: Account['utxo'];
+    baseFee?: number;
 };
 
 // strongly typed UseFormMethods.getValues with fallback value

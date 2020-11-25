@@ -43,9 +43,10 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
             // it is technically possible to have utxo with amount '0' see: https://tbtc1.trezor.io/tx/352873fe6cd5a83ca4b02737848d7d839aab864b8223c5ba7150ae35c22f4e38
             // however they should be excluded to avoid increase fee
             // TODO: this should be fixed in TrezorConnect + hd-wallet.composeTx? (connect throws: 'Segwit output without amount' error)
-            utxo: account.utxo.filter(input => input.amount !== '0'),
+            utxo: formState.utxo || account.utxo.filter(input => input.amount !== '0'),
         },
         feeLevels: predefinedLevels,
+        baseFee: formState.baseFee || 0,
         outputs: composeOutputs,
         coin: account.symbol,
     };
