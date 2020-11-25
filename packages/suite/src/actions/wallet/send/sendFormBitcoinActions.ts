@@ -1,7 +1,7 @@
 import TrezorConnect, { FeeLevel, SignTransaction } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { formatNetworkAmount, networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { getBitcoinComposeOutputs } from '@wallet-utils/sendFormUtils';
 import {
     ZEC_SIGN_ENHANCEMENT,
@@ -46,6 +46,9 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
             utxo: account.utxo.filter(input => input.amount !== '0'),
         },
         feeLevels: predefinedLevels,
+        baseFee: formState.baseFee
+            ? parseInt(networkAmountToSatoshi(formState.baseFee, account.symbol), 10)
+            : 0,
         outputs: composeOutputs,
         coin: account.symbol,
     };
