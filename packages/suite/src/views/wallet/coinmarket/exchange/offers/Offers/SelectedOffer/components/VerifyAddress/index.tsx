@@ -39,6 +39,7 @@ const Wrapper = styled.div`
 const Heading = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     padding: 16px 24px 0 24px;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
