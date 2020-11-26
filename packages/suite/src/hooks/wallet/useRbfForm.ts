@@ -7,7 +7,9 @@ import { getFeeLevels, findComposeErrors } from '@wallet-utils/sendFormUtils';
 import { WalletAccountTransaction } from '@wallet-types';
 import { useFees } from './form/useFees';
 
-const getState = (tx: WalletAccountTransaction) => {
+const getState = (tx: WalletAccountTransaction, finalize: boolean) => {
+    // @ts-ignore TEMP
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const state = useSelector(state => ({
         selectedAccount: state.wallet.selectedAccount,
         fees: state.wallet.fees,
@@ -30,24 +32,24 @@ const getState = (tx: WalletAccountTransaction) => {
         formValues: {
             outputs: tx.rbfParams.outputs,
             selectedFee: undefined,
-            options: ['bitcoinRBF', 'broadcast'],
+            options: finalize ? ['broadcast'] : ['bitcoinRBF', 'broadcast'],
             feePerUnit: '',
             feeLimit: '',
         },
     };
 };
 
-type B = NonNullable<ReturnType<typeof getState>>;
-
-export const useRbf = (tx: WalletAccountTransaction) => {
+export const useRbf = (tx: WalletAccountTransaction, finalize: boolean) => {
     // local state variables
-    const [state] = useState(getState(tx));
+    const [state] = useState(getState(tx, finalize));
     const [isLoading, setLoading] = useState(false);
     const [composeRequestID, setComposeRequestID] = useState(0);
     const composeRequestIDRef = useRef(0); // compose ID, incremented with every compose request
     const [composedLevels, setComposedLevels] = useState<SendContextValues['composedLevels']>(
         undefined,
     );
+
+    console.log('StATE OPTIONS', state);
 
     // actions
     const debounce = useAsyncDebounce();
@@ -69,6 +71,7 @@ export const useRbf = (tx: WalletAccountTransaction) => {
 
     // react-hook-form reset, set default values
     useEffect(() => {
+        // @ts-ignore TEMP formValues type
         reset(state?.formValues);
     }, [state, reset]);
 
@@ -78,7 +81,7 @@ export const useRbf = (tx: WalletAccountTransaction) => {
         const composeInner = async () => {
             if (Object.keys(errors).length > 0) return;
             const values = getValues();
-            // @ts-ignore: incomplete UseSendFormState
+            // @ts-ignore: TEMP incomplete UseSendFormState
             const r = await composeTransaction(values, {
                 account: state.account,
                 network: state.network,
@@ -111,6 +114,15 @@ export const useRbf = (tx: WalletAccountTransaction) => {
         compose();
     }, [composeRequestID, compose]);
 
+    // handle `finalize` change
+    useEffect(() => {
+        const rbfEnabled = (getValues('options') || []).includes('bitcoinRBF');
+        if (finalize === rbfEnabled) {
+            setValue('options', finalize ? ['broadcast'] : ['broadcast', 'bitcoinRBF']);
+            composeRequest();
+        }
+    }, [finalize, getValues, setValue, composeRequest]);
+
     const setCustomComposedLevel = useCallback(
         (prev: FormState['selectedFee'], current: FormState['selectedFee']) => {
             if (!composedLevels) return;
@@ -126,7 +138,9 @@ export const useRbf = (tx: WalletAccountTransaction) => {
     );
 
     const { switchToNearestFee } = useFees({
+        // @ts-ignore TEMP
         defaultValue: state.formValues?.selectedFee,
+        // @ts-ignore TEMP
         feeInfo: state.feeInfo!,
         onChange: setCustomComposedLevel,
         composeRequest,
@@ -174,13 +188,13 @@ export const useRbf = (tx: WalletAccountTransaction) => {
     };
 };
 
-type A = ReturnType<typeof useRbf> & B;
+type RbfContextValues = ReturnType<typeof useRbf> & NonNullable<ReturnType<typeof getState>>;
 
-export const RbfContext = createContext<A | null>(null);
+export const RbfContext = createContext<RbfContextValues | null>(null);
 RbfContext.displayName = 'RbfContext';
 
-// Used across send form components
-// Provide combined context of `react-hook-form` with custom values as SendContextValues
+// Used across rbf form components
+// Provide combined context of `react-hook-form` with custom values as RbfContextValues
 export const useRbfContext = () => {
     const ctx = useContext(RbfContext);
     if (ctx === null) throw Error('useRbfContext used without Context');
