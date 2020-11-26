@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
-import { Modal, Button, variables, useTheme } from '@trezor/components';
-import { WalletAccountTransactionSection } from '@suite-actions/modalActions';
+import { Modal, Button, variables } from '@trezor/components';
 import { OnOffSwitcher } from '@wallet-components';
 import { WalletAccountTransaction } from '@wallet-types';
 import TrezorConnect from 'trezor-connect';
@@ -13,7 +12,6 @@ import ChangeFee from './components/ChangeFee';
 import { isTestnet, getNetwork } from '@wallet-utils/accountUtils';
 import { getConfirmations } from '@wallet-utils/transactionUtils';
 import { useSelector } from '@suite-hooks';
-import { useReplaceTransaction } from '@wallet-hooks/useReplaceTransaction';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -75,7 +73,7 @@ interface TabProps {
 
 type Props = {
     tx: WalletAccountTransaction;
-    section: WalletAccountTransactionSection;
+    rbfForm?: boolean;
     onCancel: () => void;
 };
 
@@ -93,10 +91,9 @@ const TransactionDetail = (props: Props) => {
     // txDetails stores response from blockchainGetTransactions()
     const [txDetails, setTxDetails] = useState<any>(null);
     const [isFetching, setIsFetching] = useState(true);
-    const { sign } = useReplaceTransaction(tx);
 
-    const [section, setSection] = useState<WalletAccountTransactionSection>(
-        props.section || 'DETAILS',
+    const [section, setSection] = useState<'CHANGE_FEE' | 'DETAILS'>(
+        props.rbfForm ? 'CHANGE_FEE' : 'DETAILS',
     );
     const [rbfEnabled, setRbfEnabled] = useState<boolean>(false); // TODO replace mock
 

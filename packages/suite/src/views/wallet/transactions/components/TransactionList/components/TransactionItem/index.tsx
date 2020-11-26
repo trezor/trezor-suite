@@ -124,11 +124,11 @@ const TransactionItem = React.memo((props: Props) => {
     const { openModal } = useActions({
         openModal: modalActions.openModal,
     });
-    const openTxDetailsModal = (section?: modalActions.WalletAccountTransactionSection) => {
+    const openTxDetailsModal = (rbfForm?: boolean) => {
         openModal({
             type: 'transaction-detail',
             tx: transaction,
-            section,
+            rbfForm,
         });
     };
     // we are using slightly different layout for 1 targets txs to better match the design
@@ -156,7 +156,7 @@ const TransactionItem = React.memo((props: Props) => {
                         useSingleRowLayout={hasSingleTargetOrTransfer}
                         txItemisHovered={txItemisHovered}
                         nestedItemIsHovered={nestedItemIsHovered}
-                        onClick={openTxDetailsModal}
+                        onClick={() => openTxDetailsModal()}
                     />
                 </Description>
                 <NextRow>
@@ -268,7 +268,7 @@ const TransactionItem = React.memo((props: Props) => {
                 </NextRow>
                 {transaction.rbfParams && (
                     <NextRow>
-                        <Button variant="tertiary" onClick={() => openTxDetailsModal('CHANGE_FEE')}>
+                        <Button variant="tertiary" onClick={() => openTxDetailsModal(true)}>
                             <Translation id="TR_BUMP_FEE" />
                         </Button>
                     </NextRow>
