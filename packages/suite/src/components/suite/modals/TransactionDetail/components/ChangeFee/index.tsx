@@ -3,12 +3,14 @@ import styled from 'styled-components';
 import { Translation, FormattedCryptoAmount, FiatValue } from '@suite-components';
 import { Button, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-types';
+import { useRbf, RbfContext } from '@wallet-hooks/useRbfForm';
+import Fees from './components/Fees';
 
 const Wrapper = styled.div`
     padding: 24px 0 14px;
 `;
 
-const Fees = styled.div`
+const Box = styled.div`
     display: flex;
     flex-direction: column;
     padding: 22px 20px 20px 27px;
@@ -79,15 +81,41 @@ interface Props {
 }
 
 const ChangeFee = ({ tx }: Props) => {
+    const contextValues = useRbf(tx);
+    if (!contextValues.account) return null; // do not render if contextValues.state is not present
+
     return (
         <Wrapper>
-            <Fees>
+            <Box>
                 <Inner>
                     <Title>
                         <Translation id="TR_CURRENT" />
                     </Title>
                     <Content>
                         <Rate>1sat/B</Rate>
+                    </Content>
+                    <Amount>
+                        <StyledCryptoAmount>{tx.fee}</StyledCryptoAmount>
+                        {tx.rates && (
+                            <StyledFiatValue>
+                                <FiatValue
+                                    amount={tx.amount}
+                                    symbol={tx.symbol}
+                                    source={tx.rates}
+                                    useCustomSource
+                                />
+                            </StyledFiatValue>
+                        )}
+                    </Amount>
+                </Inner>
+                <Inner>
+                    <Title>
+                        <Translation id="TR_NEW" />
+                    </Title>
+                    <Content>
+                        <RbfContext.Provider value={contextValues}>
+                            <Fees />
+                        </RbfContext.Provider>
                     </Content>
                     <Amount>
                         <StyledCryptoAmount>
@@ -105,31 +133,10 @@ const ChangeFee = ({ tx }: Props) => {
                         )}
                     </Amount>
                 </Inner>
-                <Inner>
-                    <Title>
-                        <Translation id="TR_NEW" />
-                    </Title>
-                    <Content>placeholder_for_change_fee</Content>
-                    <Amount>
-                        <StyledCryptoAmount>
-                            <FormattedCryptoAmount value={tx.amount} symbol={tx.symbol} />
-                        </StyledCryptoAmount>
-                        {tx.rates && (
-                            <StyledFiatValue>
-                                <FiatValue
-                                    amount={tx.amount}
-                                    symbol={tx.symbol}
-                                    source={tx.rates}
-                                    useCustomSource
-                                />
-                            </StyledFiatValue>
-                        )}
-                    </Amount>
-                </Inner>
-            </Fees>
+            </Box>
             <Submit>
                 <SubmitInner>
-                    <Button onClick={() => {}} fullWidth>
+                    <Button onClick={contextValues.sign} fullWidth>
                         <Translation id="TR_CHANGE_FEE" />
                     </Button>
                 </SubmitInner>
