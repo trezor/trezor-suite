@@ -6,42 +6,15 @@ import { OnOffSwitcher } from '@wallet-components';
 import { WalletAccountTransaction } from '@wallet-types';
 import TrezorConnect from 'trezor-connect';
 import BasicDetails from './components/BasicDetails';
-import IODetails from './components/IODetails';
-import AmountDetails from './components/AmountDetails';
+import AdvancedDetails from './components/AdvancedDetails';
 import ChangeFee from './components/ChangeFee';
-import { isTestnet, getNetwork } from '@wallet-utils/accountUtils';
+import { getNetwork } from '@wallet-utils/accountUtils';
 import { getConfirmations } from '@wallet-utils/transactionUtils';
 import { useSelector } from '@suite-hooks';
 
 const Wrapper = styled.div`
     width: 100%;
     flex-direction: column;
-`;
-
-const TabSelector = styled.div`
-    width: 100%;
-    text-align: left;
-    margin-bottom: 6px;
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
-`;
-
-const TabButton = styled.button<{ selected: boolean }>`
-    border: none;
-    background-color: inherit;
-    font-size: ${variables.NEUE_FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    padding-top: 12px;
-    padding-bottom: 12px;
-    margin-right: 40px;
-    cursor: pointer;
-    /* change styles if the button is selected*/
-    color: ${props =>
-        props.selected ? `${props.theme.TYPE_GREEN}` : `${props.theme.TYPE_LIGHT_GREY}`};
-    border-bottom: ${props => (props.selected ? `2px solid ${props.theme.BG_GREEN}` : 'none')};
-`;
-
-const AdvancedDetailsWrapper = styled.div`
-    padding: 24px 24px 14px 24px;
 `;
 
 const SectionActions = styled.div`
@@ -63,10 +36,6 @@ const SectionTitle = styled.div`
     left: 0;
 `;
 
-interface TabProps {
-    tabSelected: 'amount' | 'io';
-}
-
 type Props = {
     tx: WalletAccountTransaction;
     rbfForm?: boolean;
@@ -74,8 +43,6 @@ type Props = {
 };
 
 const TransactionDetail = (props: Props) => {
-    const [selectedTab, setSelectedTab] = useState<TabProps['tabSelected']>('amount');
-
     const { tx } = props;
     const blockchain = useSelector(state => state.wallet.blockchain[tx.symbol]);
     const confirmations = getConfirmations(tx, blockchain.blockHeight);
@@ -91,7 +58,7 @@ const TransactionDetail = (props: Props) => {
     const [section, setSection] = useState<'CHANGE_FEE' | 'DETAILS'>(
         props.rbfForm ? 'CHANGE_FEE' : 'DETAILS',
     );
-    const [rbfEnabled, setRbfEnabled] = useState<boolean>(false); // TODO replace mock
+    const [finalize, setFinalize] = useState<boolean>(false);
 
     useEffect(() => {
         // fetch tx details and store them inside the local state 'txDetails'
@@ -125,22 +92,37 @@ const TransactionDetail = (props: Props) => {
                 <SectionActions>
                     {section === 'CHANGE_FEE' && (
                         <SectionTitle>
-                            <Translation id="TR_CHANGE_FEE" />
+                            <Translation id={finalize ? 'TR_FINALIZE_TX' : 'TR_REPLACE_TX'} />
                         </SectionTitle>
                     )}
                     {tx.rbfParams && (
                         <>
                             {section === 'DETAILS' && (
                                 <Button variant="tertiary" onClick={() => setSection('CHANGE_FEE')}>
-                                    <Translation id="TR_CHANGE_FEE" />
+                                    <Translation id="TR_BUMP_FEE" />
                                 </Button>
                             )}
-                            <Button variant="tertiary" icon="RBF" onClick={() => {}}>
+                            <Button
+                                variant="tertiary"
+                                icon="RBF"
+                                onClick={() => {
+                                    setFinalize(!finalize);
+                                    if (section !== 'CHANGE_FEE') {
+                                        setSection('CHANGE_FEE');
+                                    }
+                                }}
+                            >
                                 <Translation id="RBF" />
-                                <OnOffSwitcher isOn={rbfEnabled} />
+                                <OnOffSwitcher isOn={!finalize} />
                             </Button>
                             {section === 'CHANGE_FEE' && (
-                                <Button variant="tertiary" onClick={() => setSection('DETAILS')}>
+                                <Button
+                                    variant="tertiary"
+                                    onClick={() => {
+                                        setSection('DETAILS');
+                                        setFinalize(false);
+                                    }}
+                                >
                                     <Translation id="TR_CANCEL" />
                                 </Button>
                             )}
@@ -155,43 +137,14 @@ const TransactionDetail = (props: Props) => {
                     )}
                 </SectionActions>
                 {section === 'CHANGE_FEE' ? (
-                    <ChangeFee tx={tx} />
+                    <ChangeFee tx={tx} finalize={finalize} />
                 ) : (
-                    <AdvancedDetailsWrapper>
-                        <TabSelector>
-                            <TabButton
-                                selected={selectedTab === 'amount'}
-                                onClick={() => {
-                                    setSelectedTab('amount');
-                                }}
-                            >
-                                <Translation id="TR_TX_TAB_AMOUNT" />
-                            </TabButton>
-                            {network?.networkType !== 'ripple' && (
-                                <TabButton
-                                    selected={selectedTab === 'io'}
-                                    onClick={() => {
-                                        setSelectedTab('io');
-                                    }}
-                                >
-                                    <Translation id="TR_INPUTS_OUTPUTS" />
-                                </TabButton>
-                            )}
-                        </TabSelector>
-
-                        {selectedTab === 'amount' ? (
-                            <AmountDetails
-                                tx={tx}
-                                txDetails={txDetails}
-                                // isFetching={isFetching}
-                                isTestnet={isTestnet(tx.symbol)}
-                            />
-                        ) : (
-                            network?.networkType !== 'ripple' && (
-                                <IODetails tx={tx} txDetails={txDetails} isFetching={isFetching} />
-                            )
-                        )}
-                    </AdvancedDetailsWrapper>
+                    <AdvancedDetails
+                        network={network!}
+                        tx={tx}
+                        txDetails={txDetails}
+                        isFetching={isFetching}
+                    />
                 )}
             </Wrapper>
         </Modal>

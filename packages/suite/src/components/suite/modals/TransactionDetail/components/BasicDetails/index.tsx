@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { Icon, useTheme, variables, Loader } from '@trezor/components';
-import { Translation, HiddenPlaceholder, TrezorLink } from '@suite-components';
+import { Translation, HiddenPlaceholder } from '@suite-components';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction } from '@wallet-types';
 

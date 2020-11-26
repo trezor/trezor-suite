@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation, FormattedCryptoAmount, FiatValue } from '@suite-components';
+import { Translation, FiatValue } from '@suite-components';
 import { Button, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-types';
 import { useRbf, RbfContext } from '@wallet-hooks/useRbfForm';
@@ -78,18 +78,19 @@ const SubmitInner = styled.div`
 
 interface Props {
     tx: WalletAccountTransaction;
+    finalize: boolean;
 }
 
-const ChangeFee = ({ tx }: Props) => {
-    const contextValues = useRbf(tx);
-    if (!contextValues.account) return null; // do not render if contextValues.state is not present
+const ChangeFee = ({ tx, finalize }: Props) => {
+    // TEMP any
+    const contextValues: any = useRbf(tx, finalize);
 
     return (
         <Wrapper>
             <Box>
                 <Inner>
                     <Title>
-                        <Translation id="TR_CURRENT" />
+                        <Translation id="TR_CURRENT_FEE" />
                     </Title>
                     <Content>
                         <Rate>1sat/B</Rate>
@@ -110,34 +111,19 @@ const ChangeFee = ({ tx }: Props) => {
                 </Inner>
                 <Inner>
                     <Title>
-                        <Translation id="TR_NEW" />
+                        <Translation id="TR_NEW_FEE" />
                     </Title>
                     <Content>
                         <RbfContext.Provider value={contextValues}>
                             <Fees />
                         </RbfContext.Provider>
                     </Content>
-                    <Amount>
-                        <StyledCryptoAmount>
-                            <FormattedCryptoAmount value={tx.amount} symbol={tx.symbol} />
-                        </StyledCryptoAmount>
-                        {tx.rates && (
-                            <StyledFiatValue>
-                                <FiatValue
-                                    amount={tx.amount}
-                                    symbol={tx.symbol}
-                                    source={tx.rates}
-                                    useCustomSource
-                                />
-                            </StyledFiatValue>
-                        )}
-                    </Amount>
                 </Inner>
             </Box>
             <Submit>
                 <SubmitInner>
                     <Button onClick={contextValues.sign} fullWidth>
-                        <Translation id="TR_CHANGE_FEE" />
+                        <Translation id={finalize ? 'TR_FINALIZE_TX' : 'TR_REPLACE_TX'} />
                     </Button>
                 </SubmitInner>
             </Submit>

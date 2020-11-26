@@ -5039,16 +5039,20 @@ const definedMessages = defineMessages({
         id: 'TR_BUMP_FEE',
         defaultMessage: 'Bump fee',
     },
-    TR_CHANGE_FEE: {
-        id: 'TR_CHANGE_FEE',
-        defaultMessage: 'Change fee',
+    TR_REPLACE_TX: {
+        id: 'TR_REPLACE_TX',
+        defaultMessage: 'Replace transaction',
     },
-    TR_CURRENT: {
-        id: 'TR_CURRENT',
+    TR_FINALIZE_TX: {
+        id: 'TR_FINALIZE_TX',
+        defaultMessage: 'Finalize transaction',
+    },
+    TR_CURRENT_FEE: {
+        id: 'TR_CURRENT_FEE',
         defaultMessage: 'Current',
     },
-    TR_NEW: {
-        id: 'TR_NEW',
+    TR_NEW_FEE: {
+        id: 'TR_NEW_FEE',
         defaultMessage: 'New',
     },
 } as const);
