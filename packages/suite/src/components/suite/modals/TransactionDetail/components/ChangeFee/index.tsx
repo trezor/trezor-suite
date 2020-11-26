@@ -40,30 +40,24 @@ const Content = styled.div`
 `;
 
 const RateWrapper = styled.div`
-    display: grid;
-    grid-gap: 10px;
-    grid-template-columns: 1fr 1fr;
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        grid-template-columns: 1fr;
-    }
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 `;
 
 const Rate = styled.div`
-    margin-top: 3px;
+    margin: 3px 20px 5px 0;
     font-size: ${variables.NEUE_FONT_SIZE.TINY};
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const Amount = styled.div`
     display: flex;
-    text-align: right;
     flex-direction: column;
-    flex: 1;
+    align-items: flex-end;
+    text-align: right;
     & * + * {
         margin-top: 6px;
-    }
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        text-align: left;
     }
 `;
 

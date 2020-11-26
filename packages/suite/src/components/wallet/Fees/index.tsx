@@ -10,13 +10,11 @@ import CustomFee from './components/CustomFee';
 import { Account } from '@wallet-types';
 import { SendContextValues } from '@wallet-types/sendForm';
 
-const FeeSetupWrapper = styled.div`
-    width: 100%;
-`;
+const FeeSetupWrapper = styled.div``;
 
 const SelectBarWrapper = styled.div`
     display: flex; /* necessary for the <SelectBar> not to be stretched over full column width */
-    margin-bottom: 20px;
+    margin: 0 20px 20px 0;
 `;
 
 const CoinAmount = styled.div`
@@ -56,12 +54,9 @@ const EstimatedMiningTimeWrapper = styled.span`
 `;
 
 const FeesWrapper = styled.div`
-    display: grid;
-    grid-gap: 10px;
-    grid-template-columns: 1fr 1fr;
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        grid-template-columns: 1fr;
-    }
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 `;
 
 const FeeAmount = styled.div`
@@ -70,9 +65,6 @@ const FeeAmount = styled.div`
     align-items: flex-end;
     text-align: right;
     padding-top: 5px;
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        align-items: flex-start;
-    }
 `;
 
 const FeeInfoWrapper = styled.div`
