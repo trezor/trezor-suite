@@ -56,12 +56,24 @@ const EstimatedMiningTimeWrapper = styled.span`
     padding-right: 4px;
 `;
 
+const FeesWrapper = styled.div`
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 1fr 1fr;
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        grid-template-columns: 1fr;
+    }
+`;
+
 const FeeAmount = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     text-align: right;
     padding-top: 5px;
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        align-items: flex-start;
+    }
 `;
 
 const FeeInfoWrapper = styled.div`
@@ -121,31 +133,9 @@ const Fees = (props: Props) => {
     const isCustomLevel = selectedLabel === 'custom';
     const feeOptions = buildFeeOptions(feeInfo.levels);
     const { layoutSize } = useLayoutSize();
-    const useMobileLayout = getIfMobileLayout(feeOptions.length, layoutSize);
-
-    // declare feeAmountJSX code before rendering since we will use it at two different locations based on the layout setup (useMobileLayout?)
-    const feeAmountJSX =
-        transactionInfo !== undefined && transactionInfo.type !== 'error' ? (
-            <FeeAmount>
-                <CoinAmount>
-                    <FormattedCryptoAmount
-                        disableHiddenPlaceholder
-                        value={formatNetworkAmount(transactionInfo.fee, symbol)}
-                        symbol={symbol}
-                    />
-                </CoinAmount>
-                <FiatAmount>
-                    <FiatValue
-                        disableHiddenPlaceholder
-                        amount={formatNetworkAmount(transactionInfo.fee, symbol)}
-                        symbol={symbol}
-                    />
-                </FiatAmount>
-            </FeeAmount>
-        ) : null;
 
     return (
-        <>
+        <FeesWrapper>
             <FeeSetupWrapper>
                 <SelectBarWrapper>
                     <SelectBar
@@ -184,11 +174,27 @@ const Fees = (props: Props) => {
                                 <TxSize>({transactionInfo.bytes} B)</TxSize>
                             )}
                     </FeeInfo>
-                    {useMobileLayout && feeAmountJSX}
                 </FeeInfoWrapper>
             </FeeSetupWrapper>
-            {!useMobileLayout && feeAmountJSX}
-        </>
+            {transactionInfo !== undefined && transactionInfo.type !== 'error' && (
+                <FeeAmount>
+                    <CoinAmount>
+                        <FormattedCryptoAmount
+                            disableHiddenPlaceholder
+                            value={formatNetworkAmount(transactionInfo.fee, symbol)}
+                            symbol={symbol}
+                        />
+                    </CoinAmount>
+                    <FiatAmount>
+                        <FiatValue
+                            disableHiddenPlaceholder
+                            amount={formatNetworkAmount(transactionInfo.fee, symbol)}
+                            symbol={symbol}
+                        />
+                    </FiatAmount>
+                </FeeAmount>
+            )}
+        </FeesWrapper>
     );
 };
 

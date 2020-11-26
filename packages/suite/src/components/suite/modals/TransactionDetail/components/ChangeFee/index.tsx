@@ -39,6 +39,15 @@ const Content = styled.div`
     text-align: left;
 `;
 
+const RateWrapper = styled.div`
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: 1fr 1fr;
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        grid-template-columns: 1fr;
+    }
+`;
+
 const Rate = styled.div`
     margin-top: 3px;
     font-size: ${variables.NEUE_FONT_SIZE.TINY};
@@ -49,10 +58,12 @@ const Amount = styled.div`
     display: flex;
     text-align: right;
     flex-direction: column;
-    margin-left: 10px;
     flex: 1;
     & * + * {
         margin-top: 6px;
+    }
+    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        text-align: left;
     }
 `;
 
@@ -73,7 +84,7 @@ const Submit = styled.div`
 `;
 
 const SubmitInner = styled.div`
-    width: 30%;
+    min-width: 30%;
 `;
 
 interface Props {
@@ -93,21 +104,23 @@ const ChangeFee = ({ tx, finalize }: Props) => {
                         <Translation id="TR_CURRENT_FEE" />
                     </Title>
                     <Content>
-                        <Rate>1sat/B</Rate>
+                        <RateWrapper>
+                            <Rate>1sat/B</Rate>
+                            <Amount>
+                                <StyledCryptoAmount>{tx.fee}</StyledCryptoAmount>
+                                {tx.rates && (
+                                    <StyledFiatValue>
+                                        <FiatValue
+                                            amount={tx.amount}
+                                            symbol={tx.symbol}
+                                            source={tx.rates}
+                                            useCustomSource
+                                        />
+                                    </StyledFiatValue>
+                                )}
+                            </Amount>
+                        </RateWrapper>
                     </Content>
-                    <Amount>
-                        <StyledCryptoAmount>{tx.fee}</StyledCryptoAmount>
-                        {tx.rates && (
-                            <StyledFiatValue>
-                                <FiatValue
-                                    amount={tx.amount}
-                                    symbol={tx.symbol}
-                                    source={tx.rates}
-                                    useCustomSource
-                                />
-                            </StyledFiatValue>
-                        )}
-                    </Amount>
                 </Inner>
                 <Inner>
                     <Title>
