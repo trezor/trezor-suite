@@ -10,7 +10,9 @@ import BigNumber from 'bignumber.js';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 
 const StyledInput = styled(Input)`
-    margin-left: 2px;
+    border-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 `;
 
 const FiatInput = () => {

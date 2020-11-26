@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Card, Icon, variables } from '@trezor/components';
+import { Card, Icon, variables, colors } from '@trezor/components';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
 import CoinmarketExchangeOfferInfo from '@wallet-components/CoinmarketExchangeOfferInfo';
 import VerifyAddress from './components/VerifyAddress';
@@ -35,9 +35,9 @@ interface ActiveProps {
 
 const Step = styled.div<ActiveProps>`
     font-weight: ${props =>
-        props.active ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.REGULAR};
+        props.active ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
     color: ${props =>
-        props.active ? props => props.theme.TYPE_GREEN : props.theme.TYPE_DARK_GREY};
+        props.active ? props => props.theme.TYPE_GREEN : props.theme.TYPE_LIGHT_GREY};
     display: flex;
     font-size: ${variables.FONT_SIZE.SMALL};
     flex: 1;
@@ -84,7 +84,7 @@ const SelectedOffer = () => {
                         </Step>
                     </Left>
                     <Middle>
-                        <Icon icon="ARROW_RIGHT" />
+                        <Icon icon="ARROW_RIGHT" color={colors.TYPE_LIGHT_GREY} />
                     </Middle>
                     <Right>
                         <Step active={exchangeStep === 'SEND_TRANSACTION'}>

@@ -19,6 +19,12 @@ const StyledCard = styled.div`
     }
 `;
 
+const StyledSelectBar = styled(SelectBar)`
+    margin-bottom: 20px;
+`;
+
+const TransactionInfo = styled.div``;
+
 const Label = styled.div`
     display: flex;
     padding-right: 20px;
@@ -50,6 +56,7 @@ const FeeInfo = styled.div`
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
+    min-height: 61px;
 `;
 
 const FeeUnits = styled.span`
@@ -68,10 +75,6 @@ const EstimatedMiningTimeWrapper = styled.span`
 
 const Row = styled.div`
     display: flex;
-
-    & + & {
-        margin-top: 15px;
-    }
 `;
 const Col = styled.div`
     display: flex;
@@ -86,12 +89,6 @@ const FeeAmount = styled.div`
     flex-direction: column;
     align-items: flex-end;
     margin-left: 12px;
-`;
-
-const CustomFeeWrapper = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: flex-end;
 `;
 
 interface Option {
@@ -133,7 +130,7 @@ const Fees = () => {
             </Label>
             <Col>
                 <Row>
-                    <SelectBar
+                    <StyledSelectBar
                         selectedOption={selectedFee}
                         isDisabled={formState.isSubmitting}
                         options={buildFeeOptions(feeInfo.levels)}
@@ -152,12 +149,10 @@ const Fees = () => {
                             });
                         }}
                     />
-                    <CustomFeeWrapper>
-                        <CustomFee isVisible={isCustomLevel} />
-                    </CustomFeeWrapper>
                 </Row>
                 <Row>
                     <FeeInfo>
+                        <CustomFee isVisible={isCustomLevel} />
                         {networkType === 'bitcoin' && !isCustomLevel && (
                             <EstimatedMiningTimeWrapper>
                                 <EstimatedMiningTime
@@ -177,24 +172,26 @@ const Fees = () => {
                                 <TxSize>({transactionInfo.bytes} B)</TxSize>
                             )}
                     </FeeInfo>
-                    {transactionInfo?.type === 'final' && (
-                        <FeeAmount>
-                            <CoinAmount>
-                                <FormattedCryptoAmount
-                                    value={formatNetworkAmount(transactionInfo.fee, symbol)}
-                                    symbol={symbol}
-                                />
-                            </CoinAmount>
-                            <FiatAmount>
-                                <FiatValue
-                                    amount={formatNetworkAmount(transactionInfo.fee, symbol)}
-                                    symbol={symbol}
-                                />
-                            </FiatAmount>
-                        </FeeAmount>
-                    )}
                 </Row>
             </Col>
+            <TransactionInfo>
+                {transactionInfo?.type === 'final' && (
+                    <FeeAmount>
+                        <CoinAmount>
+                            <FormattedCryptoAmount
+                                value={formatNetworkAmount(transactionInfo.fee, symbol)}
+                                symbol={symbol}
+                            />
+                        </CoinAmount>
+                        <FiatAmount>
+                            <FiatValue
+                                amount={formatNetworkAmount(transactionInfo.fee, symbol)}
+                                symbol={symbol}
+                            />
+                        </FiatAmount>
+                    </FeeAmount>
+                )}
+            </TransactionInfo>
         </StyledCard>
     );
 };

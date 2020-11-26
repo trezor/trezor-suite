@@ -80,7 +80,7 @@ const InvityCoinLogo = styled.img`
 `;
 
 const TextAmount = styled(Text)`
-    padding-left: 10px;
+    padding-right: 10px;
 `;
 
 const Offers = () => {
@@ -126,8 +126,8 @@ const Offers = () => {
                                 <SummaryRow>
                                     <Left>
                                         <StyledCoinLogo size={21} symbol={account.symbol} />
-                                        <Text>{quotesRequest.send}</Text>
                                         <TextAmount>{quotesRequest.sendStringAmount}</TextAmount>
+                                        <Text>{quotesRequest.send}</Text>
                                         <StyledIcon icon="ARROW_RIGHT_LONG" />
                                         <InvityCoinLogo
                                             src={`${invityAPI.server}/images/coins/suite/${quotesRequest.receive}.svg`}

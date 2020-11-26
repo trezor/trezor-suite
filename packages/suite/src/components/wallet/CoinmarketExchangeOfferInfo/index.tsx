@@ -155,17 +155,19 @@ const CoinmarketExchangeOfferInfo = ({
                         <Dark>
                             <CoinLogo symbol={account.symbol} size={16} />
                             <Amount>
-                                {sendStringAmount} {send}
+                                {formatCryptoAmount(Number(sendStringAmount))} {send}
                             </Amount>
                         </Dark>
                     </RightColumn>
                 </Row>
                 <AdjacentRow>
                     <RightColumn>
-                        <AccountLabeling account={account} />
-                        <AccountType>
-                            {account.accountType !== 'normal' ? account.accountType : ''}
-                        </AccountType>
+                        <AccountText>
+                            <AccountLabeling account={account} />
+                            <AccountType>
+                                {account.accountType !== 'normal' ? account.accountType : ''}
+                            </AccountType>
+                        </AccountText>
                     </RightColumn>
                 </AdjacentRow>
                 <Row>
