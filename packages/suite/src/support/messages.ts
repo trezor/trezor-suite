@@ -1157,7 +1157,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Currency',
         id: 'TR_CURRENCY',
     },
-
+    TR_EXCHANGE_ALL: {
+        defaultMessage: 'All',
+        id: 'TR_EXCHANGE_ALL',
+    },
     TR_DEACTIVATE_ALL: {
         defaultMessage: 'Deactivate all',
         id: 'TR_DEACTIVATE_ALL',
