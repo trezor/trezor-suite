@@ -33,6 +33,7 @@ const torFlag = app.commandLine.hasSwitch('tor');
 const bridgeDev = app.commandLine.hasSwitch('bridge-dev');
 
 // Updater
+let quitOnWindowClose = false; // Mac only
 const updateCancellationToken = new CancellationToken();
 
 // External request handler
@@ -137,6 +138,11 @@ const init = async () => {
         // hide window to the Dock
         // this event listener will be removed by app.on('before-quit')
         mainWindow.on('close', event => {
+            if (quitOnWindowClose) {
+                app.quit();
+                return;
+            }
+
             event.preventDefault();
             mainWindow.hide();
         });
@@ -409,7 +415,10 @@ const init = async () => {
         });
         autoUpdater.downloadUpdate(updateCancellationToken);
     });
-    ipcMain.on('update/install', () => autoUpdater.quitAndInstall());
+    ipcMain.on('update/install', () => {
+        quitOnWindowClose = true; // This will force the closing of the window to quit the app on Mac
+        autoUpdater.quitAndInstall();
+    });
     ipcMain.on('update/cancel', () => {
         mainWindow.webContents.send('update/available', latestVersion);
         updateCancellationToken.cancel();
