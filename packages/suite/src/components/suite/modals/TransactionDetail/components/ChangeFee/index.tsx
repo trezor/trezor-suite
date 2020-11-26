@@ -4,7 +4,9 @@ import { Translation, FormattedCryptoAmount, FiatValue } from '@suite-components
 import { Button, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-types';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+    padding: 24px 0 14px;
+`;
 
 const Fees = styled.div`
     display: flex;

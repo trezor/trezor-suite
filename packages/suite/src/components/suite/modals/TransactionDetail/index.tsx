@@ -44,10 +44,6 @@ const AdvancedDetailsWrapper = styled.div`
     padding: 24px 24px 14px 24px;
 `;
 
-const ChangeFeeWrapper = styled.div`
-    padding: 24px 0 14px;
-`;
-
 const SectionActions = styled.div`
     position: relative;
     padding: 15px 0 0;
@@ -159,9 +155,7 @@ const TransactionDetail = (props: Props) => {
                     )}
                 </SectionActions>
                 {section === 'CHANGE_FEE' ? (
-                    <ChangeFeeWrapper>
-                        <ChangeFee tx={tx} />
-                    </ChangeFeeWrapper>
+                    <ChangeFee tx={tx} />
                 ) : (
                     <AdvancedDetailsWrapper>
                         <TabSelector>
