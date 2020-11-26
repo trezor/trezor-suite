@@ -1,29 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
+import ReceiveOptions from './ReceiveOptions';
 import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
-import {
-    FiatValue,
-    QuestionTooltip,
-    Translation,
-    HiddenPlaceholder,
-    AccountLabeling,
-} from '@suite-components';
-import {
-    Input,
-    variables,
-    CoinLogo,
-    DeviceImage,
-    Select,
-    Icon,
-    Button,
-    useTheme,
-} from '@trezor/components';
+import { QuestionTooltip, Translation } from '@suite-components';
+import { Input, variables, DeviceImage, Button } from '@trezor/components';
 import { InputError } from '@wallet-components';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
 import { Account } from '@wallet-types';
-import * as modalActions from '@suite-actions/modalActions';
-import { useDispatch } from 'react-redux';
-import { Dispatch } from '@suite-types';
 import useTimeoutFn from 'react-use/lib/useTimeoutFn';
 import { useForm } from 'react-hook-form';
 import { TypedValidationRules } from '@wallet-types/form';
@@ -49,18 +32,6 @@ const CardContent = styled.div`
     padding: 0 24px 0 24px;
 `;
 
-const LogoWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    padding: 0 0 0 3px;
-`;
-
-const AccountWrapper = styled.div`
-    display: flex;
-    padding: 0 0 0 15px;
-    flex-direction: column;
-`;
-
 const Label = styled.div`
     display: flex;
     align-items: center;
@@ -71,15 +42,6 @@ const StyledQuestionTooltip = styled(QuestionTooltip)`
     padding-left: 3px;
 `;
 
-const UpperCase = styled.div`
-    text-transform: uppercase;
-    padding: 0 3px;
-`;
-
-const FiatWrapper = styled.div`
-    padding: 0 0 0 3px;
-`;
-
 const CustomLabel = styled(Label)`
     padding: 12px 0;
 `;
@@ -88,18 +50,6 @@ const LabelText = styled.div``;
 
 const StyledDeviceImage = styled(DeviceImage)`
     padding: 0 10px 0 0;
-`;
-
-const Amount = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const AccountName = styled.div`
-    display: flex;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const ButtonWrapper = styled.div`
@@ -121,16 +71,6 @@ const Confirmed = styled.div`
     justify-content: center;
 `;
 
-const Option = styled.div`
-    display: flex;
-    align-items: center;
-`;
-
-const AccountType = styled.span`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    padding-left: 5px;
-`;
-
 const Row = styled.div`
     margin: 12px 0;
 `;
@@ -146,7 +86,6 @@ type FormState = {
 };
 
 const VerifyAddressComponent = () => {
-    const theme = useTheme();
     const {
         device,
         verifyAddress,
@@ -158,8 +97,6 @@ const VerifyAddressComponent = () => {
         setReceiveAccount,
     } = useCoinmarketExchangeOffersContext();
     const [selectedAccountOption, setSelectedAccountOption] = useState<AccountSelectOption>();
-    const [menuIsOpen, setMenuIsOpen] = useState<boolean | undefined>(undefined);
-    const dispatch = useDispatch<Dispatch>();
     const { register, watch, errors, setValue, formState } = useForm<FormState>({
         mode: 'onChange',
     });
@@ -185,25 +122,6 @@ const VerifyAddressComponent = () => {
         if (option.account) {
             const { address } = getUnusedAddressFromAccount(option.account);
             setValue('address', address, { shouldValidate: true });
-        }
-    };
-
-    const onChangeAccount = (account: AccountSelectOption) => {
-        if (account.type === 'ADD_SUITE') {
-            if (device) {
-                setMenuIsOpen(true);
-                dispatch(
-                    modalActions.openModal({
-                        type: 'add-account',
-                        device: device!,
-                        symbol: receiveSymbol as Account['symbol'],
-                        noRedirect: true,
-                    }),
-                );
-            }
-        } else {
-            selectAccountOption(account);
-            setMenuIsOpen(undefined);
         }
     };
 
@@ -242,104 +160,7 @@ const VerifyAddressComponent = () => {
                         </LabelText>
                         <StyledQuestionTooltip tooltip="TR_EXCHANGE_RECEIVE_ACCOUNT_QUESTION_TOOLTIP" />
                     </CustomLabel>
-                    <Select
-                        onChange={(selected: any) => {
-                            onChangeAccount(selected);
-                        }}
-                        noTopLabel
-                        value={selectedAccountOption}
-                        isClearable={false}
-                        options={selectAccountOptions}
-                        minWidth="70px"
-                        formatOptionLabel={(option: AccountSelectOption) => {
-                            switch (option.type) {
-                                case 'SUITE': {
-                                    if (!option.account) return null;
-                                    const { symbol, formattedBalance } = option.account;
-                                    return (
-                                        <Option>
-                                            <LogoWrapper>
-                                                <CoinLogo size={25} symbol={symbol} />
-                                            </LogoWrapper>
-                                            <AccountWrapper>
-                                                <AccountName>
-                                                    <AccountLabeling account={option.account} />
-                                                    <AccountType>
-                                                        {option.account.accountType !== 'normal'
-                                                            ? option.account.accountType
-                                                            : ''}
-                                                    </AccountType>
-                                                </AccountName>
-                                                <Amount>
-                                                    <HiddenPlaceholder>
-                                                        {formattedBalance}
-                                                    </HiddenPlaceholder>{' '}
-                                                    <UpperCase>{symbol}</UpperCase> •
-                                                    <FiatWrapper>
-                                                        <FiatValue
-                                                            amount={formattedBalance}
-                                                            symbol={symbol}
-                                                        />
-                                                    </FiatWrapper>
-                                                </Amount>
-                                            </AccountWrapper>
-                                        </Option>
-                                    );
-                                }
-                                case 'ADD_SUITE':
-                                    return (
-                                        <Option>
-                                            <LogoWrapper>
-                                                <Icon
-                                                    icon="PLUS"
-                                                    size={25}
-                                                    color={theme.TYPE_DARK_GREY}
-                                                />
-                                            </LogoWrapper>
-                                            <AccountWrapper>
-                                                <Translation
-                                                    id="TR_EXCHANGE_CREATE_SUITE_ACCOUNT"
-                                                    values={{
-                                                        symbol: receiveSymbol?.toUpperCase(),
-                                                    }}
-                                                />
-                                            </AccountWrapper>
-                                        </Option>
-                                    );
-                                case 'NON_SUITE':
-                                    return (
-                                        <Option>
-                                            <LogoWrapper>
-                                                <Icon
-                                                    icon="NON_SUITE"
-                                                    size={25}
-                                                    color={theme.TYPE_DARK_GREY}
-                                                />
-                                            </LogoWrapper>
-                                            <AccountWrapper>
-                                                <Translation
-                                                    id="TR_EXCHANGE_USE_NON_SUITE_ACCOUNT"
-                                                    values={{
-                                                        symbol: receiveSymbol?.toUpperCase(),
-                                                    }}
-                                                />
-                                            </AccountWrapper>
-                                        </Option>
-                                    );
-                                default:
-                                    return null;
-                            }
-                        }}
-                        isDropdownVisible={selectAccountOptions.length === 1}
-                        isDisabled={selectAccountOptions.length === 1}
-                        placeholder={
-                            <Translation
-                                id="TR_EXCHANGE_SELECT_RECEIVE_ACCOUNT"
-                                values={{ symbol: receiveSymbol?.toUpperCase() }}
-                            />
-                        }
-                        menuIsOpen={menuIsOpen}
-                    />
+                    <ReceiveOptions />
                 </Row>
                 <Row>
                     <Input
