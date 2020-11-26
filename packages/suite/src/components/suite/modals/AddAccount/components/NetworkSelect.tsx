@@ -57,7 +57,6 @@ interface Props {
 
 const NetworkSelect = ({ network, internalNetworks, setSelectedNetwork, isDisabled }: Props) => (
     <Select
-        isSearchable
         hideTextCursor
         useKeyPressScroll
         width={250}

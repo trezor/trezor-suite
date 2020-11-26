@@ -115,7 +115,8 @@ interface Option {
     value: string;
     label: string;
 }
-interface Props extends Omit<SelectProps, 'components'> {
+
+interface CommonProps extends Omit<SelectProps, 'components' | 'isSearchable'> {
     withDropdownIndicator?: boolean;
     isClean?: boolean;
     label?: React.ReactNode;
@@ -123,11 +124,17 @@ interface Props extends Omit<SelectProps, 'components'> {
     variant?: InputVariant;
     noTopLabel?: boolean;
     hideTextCursor?: boolean; // this prop hides blinking text cursor
-    useKeyPressScroll?: boolean;
 }
 
+// Make sure isSearchable can't be defined if useKeyPressScroll===true
+// If useKeyPressScroll is false or undefined, isSearchable is a boolean value
+type KeyPressScrollProps =
+    | { useKeyPressScroll: true; isSearchable?: never }
+    | { useKeyPressScroll?: false; isSearchable?: boolean };
+
+type Props = CommonProps & KeyPressScrollProps;
+
 const Select = ({
-    isSearchable = true,
     hideTextCursor = false,
     withDropdownIndicator = true,
     className,
@@ -137,14 +144,13 @@ const Select = ({
     width,
     variant = 'large',
     noTopLabel = false,
-    useKeyPressScroll = false,
+    useKeyPressScroll,
+    isSearchable = false,
     ...props
 }: Props) => {
-    const selectRef: any = React.useRef(null);
+    // TODO find proper type
+    const selectRef: React.Ref<any> = React.useRef(null);
     const theme = useTheme();
-
-    // if useKeyPressScroll flag is present, make sure isSearchable is false
-    isSearchable = useKeyPressScroll ? false : isSearchable;
 
     // customize control to pass data-test attribute
     const Control = (controlProps: any) => {
@@ -203,24 +209,32 @@ const Select = ({
 
             if (selectRef) {
                 // get options object
-                let { options } = selectRef.current.select.props;
+                const { options } = selectRef.current.select.props;
 
                 if (options && options.length > 1) {
                     /* 
-                    First, check if the options are nested. 
-                    For example <NetworkSelect> has nested options, which means, that the options are divided
-                    into sub-categories like "mainnet", "testnet", etc.
-                    (This is probably not a very robust solution how to get the correct options object.) 
+                    First, check if the options are divided into sub-categories. 
+                    For example <NetworkSelect> has options divided into sub-categories "mainnet" and "testnet".  
+                    If such scenario I need to loop through all of the sub-categories and try to find suitable option in them.
                     */
+
+                    let optionToFocusOn = null;
+
                     if (options[0].options) {
                         // If the if() statement is true, the options are nested.
-                        // This selects only options in the first subcategory (index [0])
-                        // TODO search in all sub-categories if the option user wants doesn't exist in the first sub-category
-                        options = options[0].options;
+                        // Loop through all of the sub-categories and check if an option starting with specified char is present
+                        for (let i = 0; i < options.length; i++) {
+                            optionToFocusOn = getFirstOptionStartingWithChar(
+                                options[i].options,
+                                charValue
+                            );
+                            // If some option starting with char was found, exit the loop
+                            if (optionToFocusOn !== undefined) break;
+                        }
+                    } else {
+                        // If the options aren't divided into sub-categories, you can use the default options object that is present on "selectRef"
+                        optionToFocusOn = getFirstOptionStartingWithChar(options, charValue);
                     }
-
-                    // Find the first option which starts with the selected char
-                    const optionToFocusOn = getFirstOptionStartingWithChar(options, charValue);
 
                     // Also get the last option, so I can scroll to it later
                     const lastOption = options[options.length - 1];
@@ -230,11 +244,12 @@ const Select = ({
                         /* 
                         Here we first scroll to the last option in option-list and then we scroll to the focused option.
  
-                        The reason why I want to scroll to the last item first is, that I want the focused item to 
+                        The reason why I want to scroll to the last option first is, that I want the focused item to 
                         appear on the top of the list - I achieve that behavior by scrolling "from bottom-to-top".
-                        (I haven't found other way how to set scroll position coordinates.)
+                        The default scrolling behavior is "from top-to-bottom". In that case the focused option appears at the bottom
+                        of options list, which is not a great UX.
 
-                        If we do not require the focused option to be on top, just delete 'await scrollToOption(lastOption);'
+                        If we don't require the focused option to be on top, just delete 'await scrollToOption(lastOption);'
                         */
 
                         // 1. scroll to the last option first and wait
