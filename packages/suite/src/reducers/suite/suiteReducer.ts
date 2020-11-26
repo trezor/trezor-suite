@@ -21,6 +21,7 @@ interface Flags {
     // pinCompleted: boolean;
     // passphraseCompleted: boolean;
     discreetModeCompleted: boolean;
+    bech32BannerClosed: boolean;
 }
 
 interface SuiteSettings {
@@ -62,6 +63,7 @@ const initialState: SuiteState = {
         // pinCompleted: false;
         // passphraseCompleted: false;
         discreetModeCompleted: false,
+        bech32BannerClosed: false,
     },
     settings: {
         theme: {

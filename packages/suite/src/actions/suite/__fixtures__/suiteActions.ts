@@ -248,6 +248,7 @@ const initialRun = [
                 initialRun: false,
                 initialWebRun: false,
                 discreetModeCompleted: false,
+                bech32BannerClosed: false,
             },
         },
     },

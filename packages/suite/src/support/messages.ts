@@ -100,9 +100,9 @@ const definedMessages = defineMessages({
             'A watch-only account is a public address you’ve imported into your wallet, allowing the wallet to watch for outputs but not spend them.',
         id: 'TR_ACCOUNT_IMPORTED_ANNOUNCEMENT',
     },
-    TR_ACCOUNT_IS_EMPTY: {
-        defaultMessage: 'The account is empty',
-        id: 'TR_ACCOUNT_IS_EMPTY',
+    TR_ACCOUNT_IS_EMPTY_TITLE: {
+        defaultMessage: 'No transactions... yet.',
+        id: 'TR_ACCOUNT_IS_EMPTY_TITLE',
     },
     TR_ACCOUNT_PASSPHRASE_DISABLED: {
         defaultMessage: 'Change passphrase settings to use this device',
@@ -1873,10 +1873,9 @@ const definedMessages = defineMessages({
         defaultMessage: 'Offline',
         id: 'TR_OFFLINE',
     },
-    TR_ONCE_YOU_SEND_OR_RECEIVE: {
-        defaultMessage:
-            'Once you send or receive your first transaction it will show up here. Until then, wanna buy some crypto? Click the button below to begin your shopping spree!',
-        id: 'TR_ONCE_YOU_SEND_OR_RECEIVE',
+    TR_ACCOUNT_IS_EMPTY_DESCRIPTION: {
+        defaultMessage: 'Get started by receiving transactions, or buying {network}.',
+        id: 'TR_ACCOUNT_IS_EMPTY_DESCRIPTION',
     },
     TR_ONLINE: {
         defaultMessage: 'Online',
@@ -1992,6 +1991,32 @@ const definedMessages = defineMessages({
     TR_RECEIVE: {
         defaultMessage: 'Receive',
         id: 'TR_RECEIVE',
+    },
+    TR_RECEIVE_NETWORK: {
+        defaultMessage: 'Receive {network}',
+        id: 'TR_RECEIVE_NETWORK',
+    },
+    TR_BUY_NETWORK: {
+        defaultMessage: 'Buy {network}',
+        id: 'TR_BUY_NETWORK',
+    },
+    TR_BECH32_BANNER_TITLE: {
+        defaultMessage: 'New BTC default Accounts natively in Trezor Suite!',
+        id: 'TR_BECH32_BANNER_TITLE',
+    },
+    TR_BECH32_BANNER_POINT_1: {
+        defaultMessage:
+            'Lowercase letters only = <strong>lesser chance of any typing errors</strong>',
+        id: 'TR_BECH32_BANNER_POINT_1',
+    },
+    TR_BECH32_BANNER_POINT_2: {
+        defaultMessage:
+            'Efficient technology = pay <strong>up to 25% smaller transactions fees</strong>',
+        id: 'TR_BECH32_BANNER_POINT_2',
+    },
+    TR_GOT_IT: {
+        defaultMessage: 'Got it!',
+        id: 'TR_GOT_IT',
     },
     TR_RECONNECT_HEADER: {
         defaultMessage: 'Reconnect your device',
