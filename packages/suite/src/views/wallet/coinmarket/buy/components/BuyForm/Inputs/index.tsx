@@ -105,7 +105,12 @@ const Inputs = () => {
                                 }
 
                                 if (!isDecimalsValid(value, 2)) {
-                                    return <Translation id="TR_BUY_VALIDATION_ERROR_NOT_NUMBER" />;
+                                    return (
+                                        <Translation
+                                            id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                                            values={{ decimals: 2 }}
+                                        />
+                                    );
                                 }
 
                                 if (amountLimits) {
@@ -213,7 +218,12 @@ const Inputs = () => {
                                 }
 
                                 if (!isDecimalsValid(value, network.decimals)) {
-                                    return <Translation id="TR_BUY_VALIDATION_ERROR_NOT_NUMBER" />;
+                                    return (
+                                        <Translation
+                                            id="AMOUNT_IS_NOT_IN_RANGE_DECIMALS"
+                                            values={{ decimals: network.decimals }}
+                                        />
+                                    );
                                 }
 
                                 if (amountLimits) {
