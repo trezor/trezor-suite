@@ -258,7 +258,8 @@ export const isTxUnknown = (transaction: WalletAccountTransaction) => {
 
 const getRbfParams = (tx: AccountTransaction, account: Account) => {
     if (account.networkType !== 'bitcoin') return;
-    if (!tx.rbf || !isPending(tx)) return; // ignore non rbf and mined transactions
+    // if (!tx.rbf || !isPending(tx)) return; // ignore non rbf and mined transactions
+    if (!tx.rbf) return; // TEMP: show mined transactions (easier to debug)
     const { vin, vout } = tx.details;
 
     const changeAddresses = account.addresses ? account.addresses.change : [];
