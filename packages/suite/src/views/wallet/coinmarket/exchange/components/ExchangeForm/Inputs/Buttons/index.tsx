@@ -112,7 +112,7 @@ const Bottom = () => {
                         });
                     }}
                 >
-                    All
+                    <Translation id="TR_EXCHANGE_ALL" />
                 </Button>
             </Left>
             <TokenBalance>
