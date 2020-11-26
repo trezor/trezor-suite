@@ -20,6 +20,7 @@
         "**/*.tsx"
     ],
     "exclude": [
-        "**/*.js"
+        "**/*.js",
+        "src-electron/**/*.ts"
     ]
 }

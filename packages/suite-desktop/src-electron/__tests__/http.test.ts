@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { HttpReceiver } from '../http-receiver';
+import { HttpReceiver } from '../libs/http-receiver';
 import fixtures from '../__fixtures__/http';
 
 describe('http receiver', () => {
