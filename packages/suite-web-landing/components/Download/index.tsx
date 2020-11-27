@@ -5,6 +5,7 @@ import { IconType } from '@trezor/components/src/support/types';
 import Translation from '../Translation';
 import { Platform, getPlatform } from '../../utils/navigator';
 import { normalizeVersion } from '@suite-utils/build';
+import { SL_SIGNING_KEY } from '@suite-constants/urls';
 
 const StyledDropdown = styled(Dropdown)`
     & ul {
@@ -53,9 +54,23 @@ const ButtonWrapper = styled.div`
 `;
 
 const VersionInfo = styled.div`
+    display: flex;
     margin-top: 12px;
     color: ${colors.TYPE_LIGHTER_GREY};
     font-size: ${variables.NEUE_FONT_SIZE.TINY};
+`;
+
+const Item = styled.div`
+    display: flex;
+    & + & {
+        margin-left: 8px;
+    }
+`;
+
+const StyledLink = styled(Link)`
+    color: ${colors.TYPE_LIGHTER_GREY};
+    text-decoration: underline;
+    font-weight: 400;
 `;
 
 type DropdownItem = {
@@ -102,6 +117,11 @@ const getInstallerURI = (platform: Platform, version: string) => {
     return encodeURI(`./web/static/desktop/Trezor-Suite-${version}-${platform}.${extension}`);
 };
 
+const getInstallerSignatureURI = (platform: Platform, version: string) => {
+    const installerURI = getInstallerURI(platform, version);
+    return encodeURI(`${installerURI}.asc`);
+};
+
 const Index = () => {
     const version: string = process.env.VERSION ? normalizeVersion(process.env.VERSION) : '';
     const [platform, setPlatform] = useState<Platform>('linux-x86_64');
@@ -142,7 +162,22 @@ const Index = () => {
                 </StyledDownloadButton>
             </ButtonWrapper>
             <VersionInfo>
-                <Translation id="TR_SUITE_WEB_LANDING_VERSION" values={{ version }} />
+                <Item>
+                    <Translation id="TR_SUITE_WEB_LANDING_VERSION" values={{ version }} />
+                </Item>
+                <Item>
+                    <StyledLink variant="nostyle" href={SL_SIGNING_KEY}>
+                        <Translation id="TR_SUITE_WEB_LANDING_SIGNING_KEY" />
+                    </StyledLink>
+                </Item>
+                <Item>
+                    <StyledLink
+                        variant="nostyle"
+                        href={getInstallerSignatureURI(platform, version)}
+                    >
+                        <Translation id="TR_SUITE_WEB_LANDING_SIGNATURE" />
+                    </StyledLink>
+                </Item>
             </VersionInfo>
         </div>
     );

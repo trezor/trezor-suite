@@ -5009,6 +5009,14 @@ const definedMessages = defineMessages({
         id: 'TR_SUITE_WEB_LANDING_MACOS_LABEL',
         defaultMessage: 'for MacOS',
     },
+    TR_SUITE_WEB_LANDING_SIGNING_KEY: {
+        id: 'TR_SUITE_WEB_LANDING_SIGNING_KEY',
+        defaultMessage: 'Signing key',
+    },
+    TR_SUITE_WEB_LANDING_SIGNATURE: {
+        id: 'TR_SUITE_WEB_LANDING_SIGNATURE',
+        defaultMessage: 'Signature',
+    },
     TR_DARK_MODE: {
         id: 'TR_DARK_MODE',
         defaultMessage: 'Dark mode',

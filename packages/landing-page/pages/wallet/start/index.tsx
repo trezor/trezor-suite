@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Layout from '@landing-components/StartLayout';
 import { normalizeVersion } from '@suite-utils/build';
-import { H2, Button, P, Select, Link, variables } from '@trezor/components';
+import { SL_SIGNING_KEY } from '@suite-constants/urls';
+import { H2, Button, P, Select, Link, colors, variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -42,6 +43,24 @@ const ButtonDownload = styled(Button)`
     }
 `;
 
+const StyledLink = styled(Link)`
+    font-weight: 400;
+    font-size: ${variables.FONT_SIZE.TINY};
+    color: ${colors.TYPE_LIGHT_GREY};
+    text-decoration: underline;
+
+    & + & {
+        margin-left: 8px;
+    }
+`;
+
+const Signatures = styled.div`
+    display: flex;
+    height: 16px;
+    color: ${colors.TYPE_LIGHT_GREY};
+    margin: 8px 4px;
+`;
+
 type Platform = 'win' | 'mac' | 'linux-x86_64' | 'linux-arm64';
 
 const getAppUrl = (platform: Platform) => {
@@ -55,6 +74,11 @@ const getAppUrl = (platform: Platform) => {
         ext = 'exe';
     }
     return encodeURI(`../web/static/desktop/Trezor-Suite-${version}-${platform}.${ext}`);
+};
+
+const getAppSignatureUrl = (platform: Platform) => {
+    const installer = getAppUrl(platform);
+    return encodeURI(`${installer}.asc`);
 };
 
 const Start = () => {
@@ -100,6 +124,14 @@ const Start = () => {
                         )}
                     </Item>
                 </Row>
+                <Signatures>
+                    {platform && (
+                        <>
+                            <StyledLink href={SL_SIGNING_KEY}>Signing key</StyledLink>
+                            <StyledLink href={getAppSignatureUrl(platform)}>Signature</StyledLink>
+                        </>
+                    )}
+                </Signatures>
                 <Item>
                     <Link href="../web" variant="nostyle" target="_self">
                         <ButtonContinue
