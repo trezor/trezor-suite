@@ -29,6 +29,7 @@ const ThemeProvider: React.FC = ({ children }) => {
     const [storedTheme, setStoredTheme] = useState<
         AppState['suite']['settings']['theme'] | null | undefined
     >(); // null represents no theme is stored in db, while undefined means reading from db was not completed yet
+    const [error, setError] = useState(false);
 
     const { setTheme } = useActions({
         setTheme: suiteActions.setTheme,
@@ -44,6 +45,7 @@ const ThemeProvider: React.FC = ({ children }) => {
                 setStoredTheme(savedTheme ?? null);
             } catch {
                 setStoredTheme(null);
+                setError(true);
             }
         };
 
@@ -52,13 +54,13 @@ const ThemeProvider: React.FC = ({ children }) => {
         }
 
         // set active theme OS based theme only if there are no saved settings
-        if (storedTheme === null) {
+        if (storedTheme === null && !error) {
             const osTheme = getOSTheme();
             if (osTheme !== theme.variant) {
                 setTheme(osTheme);
             }
         }
-    }, [theme, setTheme, storedTheme, setStoredTheme]);
+    }, [theme, setTheme, storedTheme, setStoredTheme, error]);
 
     return <SCThemeProvider theme={getThemeColors(theme)}>{children}</SCThemeProvider>;
 };
