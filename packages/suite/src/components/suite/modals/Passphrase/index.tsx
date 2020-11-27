@@ -79,7 +79,13 @@ const Passphrase = (props: Props) => {
     };
 
     if (submitted) {
-        return null;
+        return (
+            <div
+                data-help="TODO: this is just for e2e, delete me"
+                data-test="@suite/loading"
+                style={{ width: '1px', height: '1px' }}
+            />
+        );
     }
 
     if (authConfirmation || stateConfirmation) {
