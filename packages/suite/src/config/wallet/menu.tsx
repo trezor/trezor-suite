@@ -40,7 +40,7 @@ export const ITEMS = [
         route: 'wallet-sign-verify',
         title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
         icon: 'SIGN',
-        isHidden: (_account: Account) => {
+        isHidden: (_account?: Account) => {
             return true;
             // const network = NETWORKS.find(n => n.symbol === account.symbol);
             // return !(network && network.testnet && network.hasSignVerify);

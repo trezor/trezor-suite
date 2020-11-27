@@ -3,7 +3,7 @@ import { CoinLogo, variables } from '@trezor/components';
 import styled, { css } from 'styled-components';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 import { Translation, FiatValue } from '@suite-components';
-import { SkeletonCircle, SkeletonRectangle, Stack, Spread } from '@suite-components/Skeleton';
+import { SkeletonCircle, SkeletonRectangle, Stack } from '@suite-components/Skeleton';
 
 import { CoinBalance } from '@wallet-components';
 import { Props } from './Container';

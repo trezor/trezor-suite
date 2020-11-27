@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { LayoutContext } from '@suite-components';
 import { AccountsMenu } from '@wallet-components';
-import AccountLoader from './components/AccountLoader';
+// import AccountLoader from './components/AccountLoader';
 import Exception from '@wallet-components/AccountException';
 import AccountMode from '@wallet-components/AccountMode';
 import AccountAnnouncement from '@wallet-components/AccountAnnouncement';
@@ -10,6 +10,7 @@ import AccountTopPanel from '@wallet-components/AccountTopPanel';
 import { MAX_WIDTH_WALLET_CONTENT } from '@suite-constants/layout';
 import { AppState, ExtendedMessageDescriptor } from '@suite-types';
 import { useTranslation } from '@suite-hooks/useTranslation';
+import { SkeletonRectangle } from '@suite-components/Skeleton';
 
 const Wrapper = styled.div`
     display: flex;
@@ -39,7 +40,11 @@ const WalletLayout = (props: Props) => {
     if (account.status === 'loading') {
         return (
             <Wrapper>
-                <AccountLoader type={account.loader} />
+                <SkeletonRectangle
+                    width="100%"
+                    height="300px"
+                    animate={account.loader === 'account-loading'}
+                />
             </Wrapper>
         );
     }
