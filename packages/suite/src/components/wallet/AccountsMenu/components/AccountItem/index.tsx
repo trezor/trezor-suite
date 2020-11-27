@@ -3,6 +3,8 @@ import { CoinLogo, variables } from '@trezor/components';
 import styled, { css } from 'styled-components';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 import { Translation, FiatValue } from '@suite-components';
+import { SkeletonCircle, SkeletonRectangle, Stack, Spread } from '@suite-components/Skeleton';
+
 import { CoinBalance } from '@wallet-components';
 import { Props } from './Container';
 
@@ -145,5 +147,24 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
         </Wrapper>
     );
 });
+
+export const SkeletonAccountItem = (props: { animate?: boolean }) => {
+    return (
+        <AccountHeader>
+            <Left>
+                <SkeletonCircle size="18px" />
+            </Left>
+            <Right>
+                <Stack col childMargin="0px 0px 8px 0px">
+                    <SkeletonRectangle width="180px" height="20px" animate={props.animate} />
+
+                    <SkeletonRectangle width="100px" height="16px" animate={props.animate} />
+
+                    <SkeletonRectangle width="100px" height="16px" animate={props.animate} />
+                </Stack>
+            </Right>
+        </AccountHeader>
+    );
+};
 
 export default AccountItem;

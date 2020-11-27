@@ -99,6 +99,7 @@ interface SkeletonProps {
     background?: string;
     animate?: boolean;
     borderRadius?: string;
+    alignItems?: string;
 }
 
-export { SkeletonRectangle, SkeletonCircle };
+export { SkeletonRectangle, SkeletonCircle, Spread, Stack };

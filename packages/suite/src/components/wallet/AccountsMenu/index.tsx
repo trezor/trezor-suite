@@ -11,11 +11,12 @@ import { Account } from '@wallet-types';
 import AccountSearchBox from './components/AccountSearchBox';
 import AccountGroup from './components/AccountGroup';
 import AccountItem from './components/AccountItem/Container';
+import { SkeletonAccountItem } from './components/AccountItem';
 
 const Wrapper = styled.div<{ isMobileLayout?: boolean }>`
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     z-index: 4; /*  higher than accounts list to prevent box-shadow overflow */
     width: 100%;
 
@@ -132,12 +133,15 @@ type Props = ReturnType<typeof mapStateToProps>;
 
 const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
     const theme = useTheme();
-    const { discovery } = useDiscovery();
+    const { discovery, getDiscoveryStatus } = useDiscovery();
     const { params } = selectedAccount;
     const { isMobileLayout } = useLayoutSize();
     const [isExpanded, setIsExpanded] = useState(false);
     const [animatedIcon, setAnimatedIcon] = useState(false);
     const { coinFilter, searchString } = useAccountSearch();
+
+    const discoveryStatus = getDiscoveryStatus();
+    const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
 
     const selectedItemRef = useCallback((_item: HTMLDivElement | null) => {
         // TODO: scroll to selected item
@@ -147,11 +151,15 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
         // TODO: default empty state while retrieving data from the device
         return (
             <Wrapper isMobileLayout={isMobileLayout}>
-                <MenuHeader isMobileLayout={isMobileLayout}>
-                    <Heading noMargin isMobileLayout={isMobileLayout}>
-                        <Translation id="TR_MY_ACCOUNTS" />
-                    </Heading>
-                </MenuHeader>
+                <Scroll>
+                    <MenuHeader isMobileLayout={isMobileLayout}>
+                        <Heading noMargin isMobileLayout={isMobileLayout}>
+                            <Translation id="TR_MY_ACCOUNTS" />
+                        </Heading>
+                        <AccountSearchBox isMobile={isMobileLayout} />
+                    </MenuHeader>
+                    {!isMobileLayout && <SkeletonAccountItem animate={!!device?.state} />}
+                </Scroll>
             </Wrapper>
         );
     }
@@ -206,6 +214,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
                         />
                     );
                 })}
+                {discoveryInProgress && <SkeletonAccountItem animate={!!device?.state} />}
             </AccountGroup>
         );
     };
@@ -290,7 +299,6 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
                     </Row>
                     <AccountSearchBox />
                 </MenuHeader>
-
                 {accountsComponent}
             </Scroll>
         </Wrapper>
