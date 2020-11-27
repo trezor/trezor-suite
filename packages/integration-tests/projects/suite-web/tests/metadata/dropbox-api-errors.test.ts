@@ -35,8 +35,8 @@ describe('Dropbox api errors', () => {
         cy.passThroughInitialRun();
 
         // todo: wait for discovery to finish and remove this
-        cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 });
-        cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 }).should(
+        cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
+        cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should(
             'not.be.visible',
         );
 

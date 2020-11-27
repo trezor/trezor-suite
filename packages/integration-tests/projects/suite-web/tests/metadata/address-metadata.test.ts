@@ -29,8 +29,8 @@ describe('Metadata - address labeling', () => {
             cy.passThroughInitialRun();
 
             // todo: better waiting for discovery (mock it!)
-            cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 });
-            cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 }).should(
+            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
+            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should(
                 'not.be.visible',
             );
 

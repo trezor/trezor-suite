@@ -10,7 +10,7 @@ const fixtures = [
         provider: 'google',
         desc: 'does NOT watch files over time',
         file: 'f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
-        content: 'already existing label'
+        content: 'already existing label',
     },
     {
         provider: 'dropbox',
@@ -56,8 +56,8 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
                 'Wait for discovery to finish. There is "add label" button, but no actual metadata appeared',
             );
             // todo: better waiting for discovery (mock it!)
-            cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 });
-            cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 }).should(
+            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
+            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should(
                 'not.be.visible',
             );
             cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click({
@@ -86,10 +86,7 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
 
             // and this does the time travel to trigger fetch
             cy.tick(METADATA.FETCH_INTERVAL);
-            cy.getTestElement('@account-menu/btc/normal/0/label').should(
-                'contain',
-                f.content,
-            );
+            cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', f.content);
         });
     });
 });

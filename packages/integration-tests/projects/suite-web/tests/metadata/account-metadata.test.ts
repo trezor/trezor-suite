@@ -6,7 +6,7 @@ import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
 // fixture contains number of request that given provider needs go through this test scenario
 const fixtures = [
     { provider: 'dropbox', numberOfRequests: 24 },
-    { provider: 'google', numberOfRequests: 10},
+    { provider: 'google', numberOfRequests: 10 },
 ] as const;
 
 describe(`Metadata is by default disabled, this means, that application does not try to generate master key and connect to cloud.
@@ -32,8 +32,8 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             cy.passThroughInitialRun();
 
             // todo: better waiting for discovery (mock it!)
-            cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 });
-            cy.getTestElement('@wallet/loading-other-accounts', { timeout: 30000 }).should(
+            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
+            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should(
                 'not.be.visible',
             );
 
