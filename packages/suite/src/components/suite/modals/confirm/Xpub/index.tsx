@@ -2,7 +2,8 @@ import React, { createRef } from 'react';
 import styled from 'styled-components';
 import { Button, Modal } from '@trezor/components';
 import { copyToClipboard } from '@suite-utils/dom';
-import { Translation, QrCode } from '@suite-components';
+import { Translation } from '@suite-components';
+import QrCode from '@suite-components/QrCode';
 
 import { Props } from './Container';
 
@@ -24,6 +25,10 @@ const Row = styled.div`
     button + button {
         margin-top: 10px;
     }
+`;
+
+const StyledQrCode = styled(QrCode)`
+    align-self: center;
 `;
 
 const Xpub = ({ xpub, accountIndex, symbol, accountLabel, addNotification, onCancel }: Props) => {
@@ -58,7 +63,7 @@ const Xpub = ({ xpub, accountIndex, symbol, accountLabel, addNotification, onCan
                 )
             }
         >
-            <QrCode value={xpub} />
+            <StyledQrCode value={xpub} />
             <Address data-test="@xpub-modal/xpub-field">{xpub}</Address>
             <Row ref={htmlElement}>
                 <Button variant="primary" onClick={copyAddress}>

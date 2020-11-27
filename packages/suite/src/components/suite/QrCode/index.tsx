@@ -14,10 +14,11 @@ const Wrapper = styled.div`
 
 interface Props {
     value: string;
+    className?: string;
 }
 
 const QrCode = (props: Props) => (
-    <Wrapper>
+    <Wrapper className={props.className}>
         <QRCode
             bgColor={colors.BG_WHITE}
             fgColor={colors.TYPE_DARK_GREY}
