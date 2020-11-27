@@ -54,3 +54,5 @@ export const BCH_FORK_BLOG_POST =
 
 // Tor domain
 export const TOR_DOMAIN = 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion';
+
+export const SL_SIGNING_KEY = 'https://trezor.io/security/satoshilabs-2020-signing-key.asc';
