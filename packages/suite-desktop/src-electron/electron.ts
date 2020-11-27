@@ -416,8 +416,13 @@ const init = async () => {
         autoUpdater.downloadUpdate(updateCancellationToken);
     });
     ipcMain.on('update/install', () => {
-        quitOnWindowClose = true; // This will force the closing of the window to quit the app on Mac
-        autoUpdater.quitAndInstall();
+        // This will force the closing of the window to quit the app on Mac
+        quitOnWindowClose = true;
+        // https://www.electron.build/auto-update#module_electron-updater.AppUpdater+quitAndInstall
+        // appUpdater.quitAndInstall(isSilent, isForceRunAfter)
+        // isSilent (windows): Runs the installer in silent mode
+        // isForceRunAfter (windows): Run the app after finish even on silent install
+        autoUpdater.quitAndInstall(true, true);
     });
     ipcMain.on('update/cancel', () => {
         mainWindow.webContents.send('update/available', latestVersion);
