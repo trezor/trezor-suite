@@ -89,7 +89,7 @@ describe('Passphrase', () => {
         // go to wallet
         cy.getTestElement('@suite/menu/wallet-index').click();
         // go to receive
-        cy.getTestElement('@wallet/menu/wallet-receive').click();
+        cy.getTestElement('@wallet/menu/wallet-receive').click({ timeout: 10000 });
         // click reveal address
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
         cy.getTestElement('@modal/confirm-address/address-field').should('contain', abcAddr);
@@ -104,7 +104,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@passphrase/input').type('def');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         // confirm
-        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000}).click();
+        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
         cy.getTestElement('@passphrase/input').type('def');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.getTestElement('@suite/loading').should('not.be.visible');
