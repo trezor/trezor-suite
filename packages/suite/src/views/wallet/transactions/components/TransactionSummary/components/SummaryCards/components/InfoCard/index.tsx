@@ -50,14 +50,6 @@ const SecondaryValueWrapper = styled.div`
     white-space: nowrap;
 `;
 
-const LoaderWrapper = styled.div`
-    display: flex;
-    /* padding-top: 8px; */
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-`;
-
 const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     display: flex;
 `;
