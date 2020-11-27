@@ -16,7 +16,9 @@ describe('Stories of device remembering', () => {
     // todo: this test tests nothing.
     it(`Remember standard wallet, click eject, disconnect device.`, () => {
         cy.getTestElement('@dashboard/index');
-        cy.getTestElement('@dashboard/loading', { timeout: 60000 }).should('not.be.visible');
+        cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 60000 }).should(
+            'not.be.visible',
+        );
         cy.toggleDeviceMenu();
         cy.getTestElement('@switch-device/wallet-on-index/0/toggle-remember-switch').click({
             force: true,

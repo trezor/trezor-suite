@@ -15,8 +15,10 @@ describe('Passphrase', () => {
 
     it('hidden wallet numbering', () => {
         cy.getTestElement('@passphrase-type/standard').click();
-        cy.getTestElement('@dashboard/loading', { timeout: 30000 });
-        cy.getTestElement('@dashboard/loading', { timeout: 30000 }).should('not.exist');
+        cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
+        cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should(
+            'not.exist',
+        );
 
         // create standard and two hidden wallets
         cy.getTestElement('@menu/switch-device').click();
@@ -48,8 +50,10 @@ describe('Passphrase', () => {
         // add standard and another hidden wallet
         cy.getTestElement('@switch-device/add-wallet-button').click();
         cy.getTestElement('@passphrase-type/standard').click();
-        cy.getTestElement('@dashboard/loading', { timeout: 30000 });
-        cy.getTestElement('@dashboard/loading', { timeout: 30000 }).should('not.exist');
+        cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
+        cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should(
+            'not.exist',
+        );
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
         cy.getTestElement('@passphrase/input').type('abc{enter}');
