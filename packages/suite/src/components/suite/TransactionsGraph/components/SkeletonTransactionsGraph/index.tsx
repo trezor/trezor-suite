@@ -14,9 +14,9 @@ const SkeletonBar = (props: React.ComponentProps<typeof SkeletonRectangle>) => (
     <SkeletonRectangle borderRadius="4px 4px 0px 0px" {...props} />
 );
 
-const SkeletonTransactionsGraph = ({ animate }: { animate?: boolean }) => {
+const SkeletonTransactionsGraph = ({ animate, ...rest }: { animate?: boolean }) => {
     return (
-        <SkeletonWrapper animate={animate}>
+        <SkeletonWrapper animate={animate} {...rest}>
             <Spread grow alignItems="flex-end">
                 <Stack childMargin="0px 4px" alignItems="flex-end">
                     <SkeletonBar width="12px" height="30px" animate={false} />

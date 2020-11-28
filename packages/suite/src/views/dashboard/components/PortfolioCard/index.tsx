@@ -51,7 +51,9 @@ const PortfolioCard = React.memo(() => {
     if (discoveryStatus && discoveryStatus.status === 'exception') {
         body = <Exception exception={discoveryStatus} discovery={discovery} />;
     } else if (discoveryStatus && discoveryStatus.status === 'loading') {
-        body = <SkeletonTransactionsGraph animate={!waitingForDevice} />;
+        body = (
+            <SkeletonTransactionsGraph animate={!waitingForDevice} data-test="@dashboard/loading" />
+        );
     } else {
         body = isDeviceEmpty ? <EmptyWallet /> : <DashboardGraph accounts={accounts} />;
     }
