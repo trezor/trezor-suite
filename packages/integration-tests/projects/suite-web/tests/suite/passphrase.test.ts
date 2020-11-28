@@ -75,17 +75,18 @@ describe('Passphrase', () => {
         // first input
         cy.getTestElement('@passphrase/input').type('abc');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
-        // confirm
+        // confirm - input wrong passphrase
         cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
         cy.getTestElement('@passphrase/input').type('cba');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.getTestElement('@toast/auth-confirm-error/close').click();
         // retry
         cy.getTestElement('@passphrase-mismatch/retry-button').click();
-        // confirm again
+        // confirm again - input correct this time
         cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
         cy.getTestElement('@passphrase/input').type('abc');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
+        cy.getTestElement('@dashboard/wallet-ready');
         // go to wallet
         cy.getTestElement('@suite/menu/wallet-index').click();
         // go to receive
