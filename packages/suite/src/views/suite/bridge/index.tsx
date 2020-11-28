@@ -16,7 +16,7 @@ const Content = styled.div`
     flex-direction: column;
     text-align: center;
     flex: 1;
-    padding: 0px 110px;
+    padding: 0px 74px;
     /* min-width: 560px; */
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -79,7 +79,7 @@ const BridgeDesktopNote = styled(P)`
 `;
 
 const StyledImage = styled(Image)`
-    @media screen and (max-height: ${variables.SCREEN_SIZE.MD}) {
+    @media screen and (max-height: ${variables.SCREEN_SIZE.LG}) {
         /* workaround for low height screens => hide image */
         display: none;
     }
