@@ -20,10 +20,8 @@ describe('Suite switch wallet modal', () => {
         cy.getTestElement('@menu/switch-device').click();
         // device does not have state yet, there is only one button to discovery the first wallet
         cy.getTestElement('@switch-device/add-wallet-button').click();
-        cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
-        cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should(
-            'not.exist',
-        );
+        cy.getTestElement('@dashboard/loading', { timeout: 30000 });
+        cy.getTestElement('@dashboard/loading', { timeout: 30000 }).should('not.exist');
         cy.getTestElement('@menu/switch-device').should('contain', DEFAULT_STANDARD_WALLET_LABEL);
 
         cy.getTestElement('@menu/switch-device').click();

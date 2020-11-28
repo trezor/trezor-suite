@@ -16,8 +16,8 @@ describe('Passphrase', () => {
     it('passphrase duplicate', () => {
         // cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@passphrase-type/standard').click();
-        cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
-        cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should('not.exist');
+        cy.getTestElement('@dashboard/loading', { timeout: 30000 });
+        cy.getTestElement('@dashboard/loading', { timeout: 30000 }).should('not.exist');
 
         // enter passphrase A for the first time
         cy.getTestElement('@menu/switch-device').click();
