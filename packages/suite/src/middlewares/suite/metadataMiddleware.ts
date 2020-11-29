@@ -1,6 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 import * as metadataActions from '@suite-actions/metadataActions';
-import { ACCOUNT, DISCOVERY } from '@wallet-actions/constants';
+import { ACCOUNT } from '@wallet-actions/constants';
 import { AppState, Action, Dispatch } from '@suite-types';
 import { ROUTER, SUITE } from '@suite-actions/constants';
 
@@ -15,20 +15,6 @@ const metadata = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
     next(action);
 
     switch (action.type) {
-        case DISCOVERY.UPDATE: {
-            const { total, loaded } = action.payload;
-            if (
-                api.getState().metadata.enabled &&
-                // todo: does loaded include failed count?
-                // todo: wouldn't it be better to change discovery complete action to dispatch some final 'stats'?
-                total &&
-                loaded &&
-                total === loaded
-            ) {
-                api.dispatch(metadataActions.fetchMetadata(action.payload.deviceState));
-            }
-            break;
-        }
         case SUITE.RECEIVE_AUTH_CONFIRM:
             if (
                 action.success &&
