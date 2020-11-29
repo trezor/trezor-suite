@@ -6,12 +6,12 @@ import { Action } from '@suite-types';
 import { Account as AccountType } from '@wallet-types';
 
 export interface State {
-    coinFilter: AccountType['symbol'] | undefined;
+    coinFilter: AccountType['symbol'][];
     searchString: string | undefined;
 }
 
 export const initialState: State = {
-    coinFilter: undefined,
+    coinFilter: [],
     searchString: undefined,
 };
 
@@ -30,7 +30,7 @@ const accountSearchReducer = (state: State = initialState, action: Action): Stat
             // * 3) adding a new account is handled directly in add account modal, reacting on ACCOUNT.CREATE would cause resetting during initial accounts discovery
             case WALLET_SETTINGS.CHANGE_NETWORKS:
             case SUITE.SELECT_DEVICE:
-                draft.coinFilter = undefined;
+                draft.coinFilter = [];
                 draft.searchString = undefined;
                 break;
 

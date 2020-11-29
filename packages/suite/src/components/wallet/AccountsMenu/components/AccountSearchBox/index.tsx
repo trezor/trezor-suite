@@ -2,6 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { useTheme, Icon, Input, CoinLogo } from '@trezor/components';
 import { useSelector, useAccountSearch } from '@suite-hooks';
+import { useKeyPress } from '@suite-utils/dom';
 
 const Wrapper = styled.div`
     background: ${props => props.theme.BG_WHITE};
@@ -72,6 +73,7 @@ const AccountSearchBox = (props: Props) => {
         enabledNetworks: state.wallet.settings.enabledNetworks,
         device: state.suite.device,
     }));
+    const controlPressed = useKeyPress('Control');
 
     const unavailableCapabilities = device?.unavailableCapabilities ?? {};
     const supportedNetworks = enabledNetworks.filter(symbol => !unavailableCapabilities[symbol]);
@@ -80,7 +82,7 @@ const AccountSearchBox = (props: Props) => {
 
     const onClear = () => {
         setSearchString(undefined);
-        setCoinFilter(undefined);
+        setCoinFilter([]);
     };
 
     return (
@@ -110,25 +112,35 @@ const AccountSearchBox = (props: Props) => {
             {showCoinFilter && (
                 <CoinsFilter
                     onClick={() => {
-                        setCoinFilter(undefined);
+                        setCoinFilter([]);
                     }}
                 >
                     {supportedNetworks.map(n => (
                         <OuterCircle
                             key={n}
                             isMobile={props.isMobile}
-                            isSelected={coinFilter === n}
+                            isSelected={coinFilter.includes(n)}
                             onClick={e => {
                                 e.stopPropagation();
-                                // select the coin or deactivate if it's already selected
-                                setCoinFilter(coinFilter === n ? undefined : n);
+                                // remove if already selected
+                                if (coinFilter.includes(n)) {
+                                    const updatedFilter = coinFilter.filter(c => c !== n);
+                                    return setCoinFilter(updatedFilter);
+                                }
+                                // add if control key is pressed
+                                if (controlPressed && coinFilter) {
+                                    setCoinFilter([...coinFilter, n]);
+                                    // or simply select
+                                } else {
+                                    setCoinFilter([n]);
+                                }
                             }}
                         >
                             <StyledCoinLogo
                                 symbol={n}
                                 size={props.isMobile ? 24 : 16}
-                                filterActivated={!!coinFilter}
-                                isSelected={coinFilter === n}
+                                filterActivated={!!coinFilter.length}
+                                isSelected={coinFilter.includes(n)}
                             />
                         </OuterCircle>
                     ))}

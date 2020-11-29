@@ -38,7 +38,7 @@ const AddAccountButton = (props: Props) => {
                 props.onEnableAccount(account);
                 // reset coin filter
                 setSearchString(undefined);
-                setCoinFilter(undefined);
+                setCoinFilter([]);
                 // just to log that account was added manually.
                 analytics.report({
                     type: 'wallet/add-account',

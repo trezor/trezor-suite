@@ -406,10 +406,10 @@ export const getAccountIdentifier = (account: Account) => {
 export const accountSearchFn = (
     account: Account,
     rawSearchString?: string,
-    coinFilter?: Account['symbol'],
+    coinFilter?: Account['symbol'][],
 ) => {
     // if coin filter is active and account symbol doesn't match return false and don't continue the search
-    const coinFilterMatch = coinFilter ? account.symbol === coinFilter : true;
+    const coinFilterMatch = coinFilter?.length ? coinFilter.includes(account.symbol) : true;
     if (!coinFilterMatch) return false;
 
     const searchString = rawSearchString?.trim().toLowerCase();

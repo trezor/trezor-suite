@@ -118,7 +118,7 @@ const Asset = React.memo(({ network, failed, cryptoValue, isLastRow }: Props) =>
                         accountType: 'normal',
                     });
                     // activate coin filter and reset account search string
-                    setCoinFilter(symbol);
+                    setCoinFilter([symbol]);
                     setSearchString(undefined);
                 }}
             >
