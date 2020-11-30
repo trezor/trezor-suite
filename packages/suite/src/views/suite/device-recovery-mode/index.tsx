@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { H2, Button, Modal, ModalProps } from '@trezor/components';
-import { Loading, Translation, Image } from '@suite-components';
+import { H2, Button } from '@trezor/components';
+import { Loading, Translation, Image, Modal, ModalProps } from '@suite-components';
 import { useDevice } from '@suite-hooks';
 
 import { Props } from './Container';
@@ -29,8 +29,8 @@ const Index = ({ recovery, rerun, modalProps }: Props & { modalProps?: ModalProp
         <Modal {...modalProps}>
             <Wrapper data-test="@device-invalid-mode/recovery">
                 {recovery.status === 'in-progress' && <Loading noBackground />}
-                {/* 
-                    The section below shall actually never render. RecoveryDevice call should be triggered 
+                {/*
+                    The section below shall actually never render. RecoveryDevice call should be triggered
                     immediately after suite finds that user has connected device in recovery mode
                 */}
                 {recovery.status !== 'in-progress' && (

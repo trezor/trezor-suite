@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import TrezorConnect, { UI } from 'trezor-connect';
-import { Modal, P, ModalProps } from '@trezor/components';
-import { Translation, WordInputAdvanced, TrezorLink } from '@suite-components';
+import { P } from '@trezor/components';
+import { Translation, WordInputAdvanced, TrezorLink, Modal, ModalProps } from '@suite-components';
 
 import { URLS } from '@suite-constants';
 

@@ -16,6 +16,7 @@ export const isAndroid = () => {
 };
 
 export const isMac = () => {
+    if (process.platform === 'darwin') return true; // For usage in Electron (SSR)
     if (typeof navigator === 'undefined') return false;
     return ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'].includes(navigator.platform);
 };

@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link, H2, P, Modal } from '@trezor/components';
+import { Link, H2, P } from '@trezor/components';
+import { Modal } from '@suite-components';
 
 const Wrapper = styled.div`
     display: flex;

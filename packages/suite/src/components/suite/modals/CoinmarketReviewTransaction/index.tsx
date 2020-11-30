@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Modal, ConfirmOnDevice, variables, Button } from '@trezor/components';
-import { FiatValue, Translation } from '@suite-components';
+import { ConfirmOnDevice, variables, Button } from '@trezor/components';
+import { FiatValue, Translation, Modal } from '@suite-components';
 import { useDevice, useActions } from '@suite-hooks';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import * as sendFormActions from '@wallet-actions/sendFormActions';

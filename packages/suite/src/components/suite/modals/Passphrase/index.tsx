@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Modal, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import * as deviceUtils from '@suite-utils/device';
-import { Loading, Translation } from '@suite-components';
+import { Loading, Translation, Modal } from '@suite-components';
 import { AppState, Dispatch, TrezorDevice } from '@suite-types';
 import PassphraseTypeCard from './components/PassphraseTypeCard';
 

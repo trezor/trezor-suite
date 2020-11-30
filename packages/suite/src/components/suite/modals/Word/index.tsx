@@ -1,7 +1,6 @@
 import React from 'react';
 import TrezorConnect, { UI } from 'trezor-connect';
-import { Modal, ModalProps } from '@trezor/components';
-import { Translation, WordInput } from '@suite-components';
+import { Translation, WordInput, Modal, ModalProps } from '@suite-components';
 
 const Word = (props: ModalProps) => {
     return (

@@ -1,15 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import NoSSR from '@suite-support/NoSSR';
+import { DESKTOP_TITLEBAR_HEIGHT, DESKTOP_WRAPPER_BORDER_WIDTH } from '@suite-constants/layout';
 import { colors, TrezorLogo, Icon } from '@trezor/components';
 import { isMac as isMacOS } from '@suite-utils/env';
 
-const TITLEBAR_HEIGHT = 28;
 const RESIZE_HANDLER_PADDING = 4;
+const WRAPPER_BORDER_WIDTH = isMacOS() ? '0px' : DESKTOP_WRAPPER_BORDER_WIDTH;
+
+const ContentWrapper = styled.div`
+    height: calc(100% - ${DESKTOP_TITLEBAR_HEIGHT});
+    border-top: 0;
+    border-right: ${WRAPPER_BORDER_WIDTH} solid ${colors.TYPE_DARK_GREY};
+    border-bottom: ${WRAPPER_BORDER_WIDTH} solid ${colors.TYPE_DARK_GREY};
+    border-left: ${WRAPPER_BORDER_WIDTH} solid ${colors.TYPE_DARK_GREY};
+    overflow: hidden;
+`;
 
 const Titlebar = styled.div`
     display: block;
-    height: ${TITLEBAR_HEIGHT}px;
+    height: ${DESKTOP_TITLEBAR_HEIGHT};
     width: 100%;
     position: fixed;
     z-index: 1000000;
@@ -21,7 +31,7 @@ const Titlebar = styled.div`
 const Drag = styled.div`
     position: fixed;
     width: calc(100% - ${RESIZE_HANDLER_PADDING * 2}px);
-    height: ${TITLEBAR_HEIGHT - RESIZE_HANDLER_PADDING}px;
+    height: calc(${DESKTOP_TITLEBAR_HEIGHT} - ${RESIZE_HANDLER_PADDING}px);
     content: '';
     display: block;
     top: ${RESIZE_HANDLER_PADDING}px;
@@ -32,8 +42,8 @@ const Drag = styled.div`
 
 const Action = styled.div<{ isMac?: boolean; isDisabled?: boolean; isActive?: boolean }>`
     box-sizing: border-box;
-    width: ${props => (props.isMac ? 12 : TITLEBAR_HEIGHT)}px;
-    height: ${props => (props.isMac ? 12 : TITLEBAR_HEIGHT)}px;
+    width: ${props => (props.isMac ? '12px' : DESKTOP_TITLEBAR_HEIGHT)};
+    height: ${props => (props.isMac ? '12px' : DESKTOP_TITLEBAR_HEIGHT)};
     ${props => (props.isMac ? 'margin: 0 8px 0 0;' : 'margin: 0;')}
     ${props => props.isMac && !props.isActive && `border: 1px solid ${colors.TYPE_LIGHT_GREY};`}
     border-radius: ${props => (props.isMac ? 50 : 0)}px;
@@ -214,7 +224,7 @@ const DesktopTitlebarWrapper = (props: Props) => {
             <NoSSR>
                 <DesktopTitlebar />
             </NoSSR>
-            {props.children}
+            <ContentWrapper>{props.children}</ContentWrapper>
         </>
     );
 };

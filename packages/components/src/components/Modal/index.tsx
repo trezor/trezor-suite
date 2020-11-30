@@ -32,13 +32,13 @@ const FIXED_WIDTH_SMALL: [string, string, string, string] = ['100vw', '90vw', '6
 const FIXED_WIDTH_TINY: [string, string, string, string] = ['360px', '360px', '360px', '360px'];
 const FIXED_HEIGHT: [string, string, string, string] = ['90vh', '90vh', '620px', '620px'];
 
-const ModalOverlay = styled.div`
+const ModalOverlay = styled.div<{ desktopBorder?: string }>`
     position: fixed;
     z-index: 10000;
-    width: 100%;
-    height: 100%;
+    width: ${props => (props.desktopBorder ? `calc(100% - (${props.desktopBorder} * 2))` : '100%')};
+    height: ${props => (props.desktopBorder ? `calc(100% - ${props.desktopBorder})` : '100%')};
     top: 0px;
-    left: 0px;
+    left: ${props => props.desktopBorder || 0};
     background: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(5px);
     display: flex;
@@ -109,7 +109,6 @@ const ModalWindow = styled.div<ModalWindowProps>`
                 padding-bottom: 0px;
             }
         `}
-    
     /* content-based width mode */
     ${props =>
         !props.useFixedWidth &&
@@ -362,6 +361,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     totalProgressBarSteps?: number;
     currentProgressBarStep?: number;
     centerContent?: boolean;
+    desktopBorder?: string;
 }
 
 const Modal = ({
@@ -389,6 +389,7 @@ const Modal = ({
     totalProgressBarSteps,
     currentProgressBarStep,
     centerContent = false,
+    desktopBorder,
     ...rest
 }: Props) => {
     const escPressed = useKeyPress('Escape');
@@ -469,6 +470,7 @@ const Modal = ({
     // if there is some background, return modal with a blurred background
     return (
         <ModalOverlay
+            desktopBorder={desktopBorder}
             onClick={() => {
                 if (cancelable && onCancel) {
                     onCancel();

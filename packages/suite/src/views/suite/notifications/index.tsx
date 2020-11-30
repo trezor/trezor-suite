@@ -5,9 +5,10 @@ import { H2, Icon, P, Button } from '@trezor/components';
 import { Translation, Image, Card, LayoutContext } from '@suite-components';
 import { getNotificationIcon } from '@suite-utils/notification';
 import hocNotification, { ViewProps } from '@suite-components/hocNotification';
+import { isDesktop } from '@suite-utils/env';
 
 import { Props } from './Container';
-import { MAX_WIDTH } from '@suite-constants/layout';
+import { MAX_WIDTH, DESKTOP_TITLEBAR_HEIGHT } from '@suite-constants/layout';
 
 const Wrapper = styled.div`
     display: flex;
@@ -33,7 +34,7 @@ const EmptyWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     padding: 16px 32px 32px 32px;
-    height: 100vh;
+    height: ${isDesktop() ? `calc(100vh - ${DESKTOP_TITLEBAR_HEIGHT})` : '100vh'};
     justify-content: center;
 `;
 

@@ -1,7 +1,7 @@
-import { ExternalLink, Translation } from '@suite-components';
+import { ExternalLink, Translation, Modal } from '@suite-components';
 import * as URLS from '@suite-constants/urls';
 import { parseUri } from '@suite-utils/parseUri';
-import { Icon, Modal, colors, P } from '@trezor/components';
+import { Icon, colors, P } from '@trezor/components';
 import { UserContextPayload } from '@suite-actions/modalActions';
 import dynamic from 'next/dynamic';
 import React, { useState } from 'react';

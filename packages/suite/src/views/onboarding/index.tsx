@@ -2,7 +2,6 @@ import React from 'react';
 import Head from 'next/head';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { Modal } from '@trezor/components';
 import { Step } from '@onboarding-types/steps';
 import * as STEP from '@onboarding-constants/steps';
 import steps from '@onboarding-config/steps';
@@ -24,7 +23,7 @@ import SetPinStep from '@onboarding-views/steps/Pin/Container';
 import FinalStep from '@onboarding-views/steps/Final/Container';
 import UnexpectedState from '@onboarding-views/unexpected-states';
 import { AppState, InjectedModalApplicationProps } from '@suite-types';
-import { Translation } from '@suite-components';
+import { Translation, Modal } from '@suite-components';
 
 const InnerModalWrapper = styled.div`
     display: flex;

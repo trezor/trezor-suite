@@ -3,8 +3,8 @@ import { FormattedDate } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
 
-import { Button, Modal, H2, variables, Link } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Button, H2, variables, Link } from '@trezor/components';
+import { Translation, Modal } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
 
 import { isDev } from '@suite-utils/build';
@@ -55,8 +55,8 @@ const ChangelogWrapper = styled.div`
         line-height: 1.57;
     }
 
-    /* 
-    Styling similar to  Link component. 
+    /*
+    Styling similar to  Link component.
     It seems overriding via linkReference renderer doesn't work for some reason
     */
     a {

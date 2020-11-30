@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Modal, ConfirmOnDevice } from '@trezor/components';
+import { ConfirmOnDevice } from '@trezor/components';
 
 import * as firmwareActions from '@firmware-actions/firmwareActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -22,7 +22,7 @@ import {
     ContinueButton,
 } from '@firmware-components';
 import { DeviceAcquire, DeviceUnknown, DeviceUnreadable } from '@suite-views';
-import { Translation } from '@suite-components';
+import { Translation, Modal } from '@suite-components';
 
 const InnerModalWrapper = styled.div`
     display: flex;

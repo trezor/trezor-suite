@@ -1,8 +1,8 @@
 import React, { createRef } from 'react';
 import styled from 'styled-components';
-import { Button, Modal } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { copyToClipboard } from '@suite-utils/dom';
-import { Translation } from '@suite-components';
+import { Translation, Modal } from '@suite-components';
 import QrCode from '@suite-components/QrCode';
 
 import { Props } from './Container';

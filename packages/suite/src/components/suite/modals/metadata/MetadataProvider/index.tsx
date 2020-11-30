@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Modal, P, Button, variables } from '@trezor/components';
+import { P, Button, variables } from '@trezor/components';
 
-import { Translation } from '@suite-components';
+import { Translation, Modal } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import * as metadataActions from '@suite-actions/metadataActions';
 import { Deferred } from '@suite-utils/deferred';

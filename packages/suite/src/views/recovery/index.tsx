@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { Button, ButtonProps, H2, P, Modal, variables } from '@trezor/components';
+import { Button, ButtonProps, H2, P, variables } from '@trezor/components';
 
 import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components';
-import { Loading, Translation, CheckItem, ExternalLink, Image } from '@suite-components';
+import { Loading, Translation, CheckItem, ExternalLink, Image, Modal } from '@suite-components';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { InjectedModalApplicationProps, AppState, Dispatch } from '@suite-types';
 import { WordCount } from '@recovery-types';
