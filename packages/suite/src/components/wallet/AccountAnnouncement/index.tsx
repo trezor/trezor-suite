@@ -4,7 +4,6 @@ import Bignumber from 'bignumber.js';
 import { AppState } from '@suite-types';
 
 import XRPReserve from './XRPReserve';
-import BCHFork from './BCHFork';
 import AccountImported from './AccountImported';
 
 interface Props {
@@ -22,9 +21,6 @@ const Announcement = (props: Props) => {
     const notifications = [];
 
     if (account) {
-        if (account.symbol === 'bch') {
-            notifications.push(<BCHFork key="bch" />);
-        }
         if (account.networkType === 'ripple') {
             const bigBalance = new Bignumber(account.balance);
             const bigReserve = new Bignumber(account.misc.reserve);

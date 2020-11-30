@@ -5051,11 +5051,6 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Color scheme that uses light-colored text, icons, and graphical user interface elements on a dark background.',
     },
-    TR_BITCOIN_CASH_15_NOV_FORK: {
-        id: 'TR_BITCOIN_CASH_15_NOV_FORK',
-        defaultMessage:
-            'Bitcoin Cash will undergo a contentious fork on the 15th of November 2020, which could cause a split in the network. Read our blogpost to understand the risks!',
-    },
     TR_DEVICE_IS_IN_UNEXPECTED_MODE: {
         id: 'TR_DEVICE_IS_IN_UNEXPECTED_MODE',
         defaultMessage:
