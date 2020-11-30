@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { ConfirmOnDevice, Modal, ModalProps } from '@trezor/components';
+import { ConfirmOnDevice } from '@trezor/components';
+import { Modal, ModalProps } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import * as discoveryActions from '@wallet-actions/discoveryActions';

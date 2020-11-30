@@ -1,10 +1,10 @@
 import React, { createRef } from 'react';
 import styled from 'styled-components';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { Button, Modal, variables, ConfirmOnDevice, Box } from '@trezor/components';
+import { Button, variables, ConfirmOnDevice, Box } from '@trezor/components';
 import { copyToClipboard } from '@suite-utils/dom';
 import { TrezorDevice } from '@suite-types';
-import { Translation, QrCode } from '@suite-components';
+import { Translation, QrCode, Modal } from '@suite-components';
 import DeviceDisconnected from './components/DeviceDisconnected';
 import { useActions } from '@suite-hooks';
 

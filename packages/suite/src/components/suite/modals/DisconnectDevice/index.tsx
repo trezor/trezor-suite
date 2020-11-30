@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Modal } from '@trezor/components';
-import { Image, Translation } from '@suite-components';
+import { Image, Translation, Modal } from '@suite-components';
 
 const StyledImage = styled(Image)`
     flex: 1;

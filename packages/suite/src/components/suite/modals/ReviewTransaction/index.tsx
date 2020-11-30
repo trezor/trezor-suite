@@ -1,7 +1,7 @@
 import React, { createRef } from 'react';
 import styled from 'styled-components';
-import { Modal, ConfirmOnDevice, Button, variables } from '@trezor/components';
-import { FiatValue, Translation } from '@suite-components';
+import { ConfirmOnDevice, Button, variables } from '@trezor/components';
+import { FiatValue, Translation, Modal } from '@suite-components';
 import { useDevice, useActions } from '@suite-hooks';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { copyToClipboard, download } from '@suite-utils/dom';

@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
-import { P, Button, ButtonProps, Modal } from '@trezor/components';
+import { P, Button, ButtonProps } from '@trezor/components';
 import * as backupActions from '@backup-actions/backupActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { Dispatch, AppState, InjectedModalApplicationProps } from '@suite-types';
-import { Loading, Image, Translation, ExternalLink } from '@suite-components';
+import { Loading, Image, Translation, ExternalLink, Modal } from '@suite-components';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
 import { canStart, canContinue } from '@backup-utils';
 import { FAILED_BACKUP_URL } from '@suite-constants/urls';
@@ -128,7 +128,7 @@ const Backup = (props: Props) => {
     }
 
     /*
-        Edge case, user disconnected the device he was doing backup initially with and connected another device 
+        Edge case, user disconnected the device he was doing backup initially with and connected another device
         with backup finished or failed. Either way, there is no way.
     */
     if (backup.status !== 'finished' && !backup.error && device.features.needs_backup === false) {

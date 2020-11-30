@@ -1,14 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Modal, ModalProps } from '@trezor/components';
-import { Image } from '@suite-components';
+import { Image, Modal, ModalProps } from '@suite-components';
 
 interface Props extends ModalProps {
     noBackground?: boolean;
     imageProps?: React.ImgHTMLAttributes<HTMLImageElement>;
 }
 
-const StyledModal = styled(Modal)`
+const StyledModal = styled(props => <Modal {...props} />)`
     margin: auto;
 `;
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Translation, TrezorLink } from '@suite-components';
-import { Modal, Button, variables } from '@trezor/components';
+import { Translation, Modal, TrezorLink } from '@suite-components';
+import { variables, Button } from '@trezor/components';
 import { OnOffSwitcher } from '@wallet-components';
 import { WalletAccountTransaction } from '@wallet-types';
 import TrezorConnect from 'trezor-connect';

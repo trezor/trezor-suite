@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Modal } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation, Modal } from '@suite-components';
 
 import { homescreensT1, homescreensT2 } from '@suite-constants';
 import { resolveStaticPath } from '@suite-utils/nextjs';

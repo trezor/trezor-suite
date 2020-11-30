@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Loading } from '@suite-components';
+import styled from 'styled-components';
+
+const StyledLoading = styled(props => <Loading {...props} />)`
+    height: 100%;
+`;
 
 const InitialLoading = () => {
     const [seconds, setSeconds] = useState(0);
@@ -21,7 +26,7 @@ const InitialLoading = () => {
         }
     }, [seconds]);
 
-    return <Loading noBackground />;
+    return <StyledLoading noBackground />;
 };
 
 export default InitialLoading;

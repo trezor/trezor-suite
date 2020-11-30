@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled, { css } from 'styled-components';
-import { Button, Modal } from '@trezor/components';
-import { Image as Img, Translation } from '@suite-components';
+import { Button } from '@trezor/components';
+import { Image as Img, Translation, Modal } from '@suite-components';
 import * as routerActions from '@suite-actions/routerActions';
 import { AppState, Dispatch } from '@suite-types';
 
@@ -67,6 +67,7 @@ const DeviceInvalidModeLayout = (props: Props) => {
         resolveButton,
         goto,
     } = props;
+
     return (
         <Modal size="small" heading={title} description={text} data-test={props['data-test']}>
             <Image image={image} />

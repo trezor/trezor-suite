@@ -7,16 +7,17 @@ import Head from 'next/head';
 import { AppState } from '@suite-types';
 import { BetaBadge } from '@suite-components';
 import MenuSecondary from '@suite-components/MenuSecondary';
-import { MAX_WIDTH } from '@suite-constants/layout';
+import { MAX_WIDTH, DESKTOP_TITLEBAR_HEIGHT } from '@suite-constants/layout';
 import { DiscoveryProgress } from '@wallet-components';
 import NavigationBar from '../NavigationBar';
 import { useLayoutSize } from '@suite-hooks';
+import { isDesktop } from '@suite-utils/env';
 
 const PageWrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
-    height: 100vh;
+    height: ${isDesktop() ? `calc(100vh - ${DESKTOP_TITLEBAR_HEIGHT})` : '100vh'};
     overflow-x: hidden;
 `;
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Modal, ModalProps, Button } from '@trezor/components';
-import { Translation, Loading, Image } from '@suite-components';
+import { Button } from '@trezor/components';
+import { Translation, Loading, Image, Modal, ModalProps } from '@suite-components';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { useActions } from '@suite-hooks';
 

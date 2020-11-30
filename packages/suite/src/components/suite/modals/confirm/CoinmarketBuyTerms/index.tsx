@@ -1,6 +1,6 @@
-import { Button, Modal, Icon, variables, Checkbox } from '@trezor/components';
+import { Button, Icon, variables, Checkbox } from '@trezor/components';
 import React, { useState } from 'react';
-import { Translation } from '@suite-components';
+import { Translation, Modal } from '@suite-components';
 import styled, { css } from 'styled-components';
 import { Deferred } from '@suite-utils/deferred';
 

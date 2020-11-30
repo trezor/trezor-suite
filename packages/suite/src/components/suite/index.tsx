@@ -34,6 +34,7 @@ import ToastContainer from './ToastContainer';
 import TrezorLink from './TrezorLink';
 import { ReadMoreLink } from './ReadMoreLink';
 import BetaBadge from './BetaBadge';
+import { Modal, ModalProps } from './Modal';
 
 export {
     Backdrop,
@@ -76,6 +77,6 @@ export {
     BetaBadge,
     ToastContainer,
     TrezorLink,
+    Modal,
 };
-
-export type { ImageProps };
+export type { ImageProps, ModalProps };

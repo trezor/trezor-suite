@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Modal } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
+import { Modal } from '@suite-components';
 import * as deviceUtils from '@suite-utils/device';
 import { isWebUSB } from '@suite-utils/transport';
 import DeviceItem from './components/DeviceItem/Container';

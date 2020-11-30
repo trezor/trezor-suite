@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { H2, variables, Modal, ModalProps } from '@trezor/components';
-import { PinInput, Loading, Translation, Image, TrezorLink } from '@suite-components';
+import { H2, variables } from '@trezor/components';
+import {
+    PinInput,
+    Loading,
+    Translation,
+    Image,
+    TrezorLink,
+    Modal,
+    ModalProps,
+} from '@suite-components';
 import { TrezorDevice } from '@suite-types';
 
 import { URLS } from '@suite-constants';

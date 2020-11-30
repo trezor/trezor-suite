@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { Button, P, Modal, variables } from '@trezor/components';
+import { Button, P, variables } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { Analytics } from '@suite-components/Settings';
 import { URLS } from '@suite-constants';
-import { Translation, Image, TrezorLink } from '@suite-components';
+import { Translation, Image, TrezorLink, Modal } from '@suite-components';
 import { useActions } from '@suite-hooks';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;

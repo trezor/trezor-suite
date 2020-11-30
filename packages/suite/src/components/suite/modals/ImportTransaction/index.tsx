@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Modal } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { Translation, Modal } from '@suite-components';
 import { DropZone } from '@suite-components/DropZone';
 import { UserContextPayload } from '@suite-actions/modalActions';
 import { DelimiterForm } from './components/DelimiterForm';

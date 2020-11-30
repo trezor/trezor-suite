@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Translation, TrezorLink } from '@suite-components';
-import { Modal, Button, Select, Link } from '@trezor/components';
+import { Translation, TrezorLink, Modal } from '@suite-components';
+import { Button, Select, Link } from '@trezor/components';
 import { URLS } from '@suite-constants';
 import { getLinuxPackage } from '@suite-utils/bridge';
 import { InjectedModalApplicationProps } from '@suite-types';

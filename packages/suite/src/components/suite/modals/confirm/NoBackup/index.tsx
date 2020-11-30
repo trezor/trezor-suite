@@ -1,5 +1,5 @@
-import { Translation, Image } from '@suite-components';
-import { Button, Modal, ModalProps } from '@trezor/components';
+import { Translation, Image, Modal, ModalProps } from '@suite-components';
+import { Button } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
 

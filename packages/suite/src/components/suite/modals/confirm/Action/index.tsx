@@ -1,5 +1,6 @@
 import React from 'react';
-import { Modal, ModalProps, ConfirmOnDevice } from '@trezor/components';
+import { ConfirmOnDevice } from '@trezor/components';
+import { Modal, ModalProps } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import { TrezorDevice } from '@suite-types';

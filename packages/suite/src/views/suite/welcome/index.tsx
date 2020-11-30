@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Modal, H2, P } from '@trezor/components';
+import { Button, H2, P } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
-import { Translation, Image } from '@suite-components';
+import { Translation, Image, Modal } from '@suite-components';
 import { useActions } from '@suite-hooks';
 
 const Wrapper = styled.div`
