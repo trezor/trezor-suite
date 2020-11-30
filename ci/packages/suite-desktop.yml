@@ -103,6 +103,8 @@ suite-desktop e2e linux:
     stage: integration testing
     script:
         - export DISPLAY=':99.0'
+        - "sh -e /etc/init.d/xvfb start"
+        - sleep 3
         - export ELECTRON_DISABLE_SANDBOX=1 
         - which google-chrome
         - google-chrome --version

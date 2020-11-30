@@ -12,7 +12,9 @@ const run = async () => {
     let app;
     try {
         app = await new Application({
-            path: './Trezor Suite-20.10.1.AppImage',
+            // path: './Trezor Suite-20.10.1.AppImage',
+            path: './packages/suite-desktop/build-electron/Trezor-Suite-20.12.0-linux-x86_64.AppImage',
+
         }).start();
 
         const count = await app.client.getWindowCount();
