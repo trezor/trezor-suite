@@ -469,6 +469,7 @@ const Modal = ({
     // if there is some background, return modal with a blurred background
     return (
         <ModalOverlay
+            data-test="@modal"
             onClick={() => {
                 if (cancelable && onCancel) {
                     onCancel();

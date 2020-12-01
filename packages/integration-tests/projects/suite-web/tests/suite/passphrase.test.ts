@@ -108,7 +108,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
         cy.getTestElement('@passphrase/input').type('def');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
-        cy.getTestElement('@suite/loading').should('not.be.visible');
+        cy.getTestElement('@modal').should('not.exist');
         // click reveal address
         // no address should be in table yet
         cy.getTestElement('@wallet/receive/used-address/0').should('not.exist');
@@ -129,7 +129,6 @@ describe('Passphrase', () => {
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
 
         // should display confirm passphrase modal
-        cy.getTestElement('@suite/loading').should('not.be.visible');
         cy.getTestElement('@modal/confirm-address/address-field').should('contain', abcAddr);
         cy.task('pressYes');
     });

@@ -1,5 +1,5 @@
 import TrezorConnect from 'trezor-connect';
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
@@ -54,7 +54,6 @@ type Props = {
 
 const Passphrase = (props: Props) => {
     const { device } = props;
-    const [submitted, setSubmitted] = useState(false);
 
     const authConfirmation = props.getDiscoveryAuthConfirmationStatus() || device.authConfirm;
     const stateConfirmation = !!device.state;
@@ -69,7 +68,6 @@ const Passphrase = (props: Props) => {
     );
 
     const onSubmit = (value: string, passphraseOnDevice?: boolean) => {
-        setSubmitted(true);
         props.onPassphraseSubmit(value, !!passphraseOnDevice, !!hasEmptyPassphraseWallet);
     };
 
@@ -79,13 +77,7 @@ const Passphrase = (props: Props) => {
     };
 
     if (submitted) {
-        return (
-            <div
-                data-help="TODO: this is just for e2e, delete me"
-                data-test="@suite/loading"
-                style={{ width: '1px', height: '1px' }}
-            />
-        );
+        return null;
     }
 
     if (authConfirmation || stateConfirmation) {
