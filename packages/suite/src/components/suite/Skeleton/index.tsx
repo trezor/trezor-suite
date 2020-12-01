@@ -35,37 +35,22 @@ const Spread = styled(Stack)<
 `;
 
 const SHINE = keyframes`
-    0% {
-        left: -100%;
-        transition-property: left;
-
-    }
-    100% {
-        left: 100%;
-        transition-property: left;
-    }
+    from {
+		background-position: 0 0;
+	}
+	to {
+		background-position: -200% 0;
+	}
 `;
 
 export const shimmerEffect = css`
-    position: relative;
-    overflow: hidden;
-    &::after {
-        animation: ${SHINE} 2s ease-in-out infinite;
-        animation-fill-mode: forwards;
-        content: '';
-        position: absolute;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-
-        background: linear-gradient(
-            to right,
-            rgba(255, 255, 255, 0) 0%,
-            rgba(255, 255, 255, 0.25) 25%,
-            rgba(255, 255, 255, 0.3) 50%,
-            rgba(255, 255, 255, 0) 75%
-        );
-    }
+    animation: ${SHINE} 1.5s ease infinite;
+    background: linear-gradient(
+        90deg,
+        ${props =>
+            `${props.theme.GRADIENT_SKELETON_START}, ${props.theme.BG_GREY_ALT}, ${props.theme.GRADIENT_SKELETON_START}`}
+    );
+    background-size: 200%;
 `;
 
 const SkeletonRectangle = styled.div<SkeletonProps>`
@@ -73,6 +58,8 @@ const SkeletonRectangle = styled.div<SkeletonProps>`
     height: ${props => props.height ?? '20px'};
     background: ${props => props.background ?? props.theme.BG_GREY_ALT};
     border-radius: ${props => props.borderRadius ?? '4px'};
+    background-size: 200%;
+
     ${props =>
         props.animate &&
         css`
@@ -85,6 +72,8 @@ const SkeletonCircle = styled.div<SkeletonProps>`
     height: ${props => props.size ?? '24px'};
     border-radius: ${props => props.size ?? '24px'};
     background: ${props => props.background ?? props.theme.BG_GREY_ALT};
+    background-size: 200%;
+
     ${props =>
         props.animate &&
         css`
