@@ -1,4 +1,4 @@
-import { DEFAULT_PAYMENT, DEFAULT_OPTIONS, DEFAULT_VALUES } from '@wallet-constants/sendForm';
+import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';
 
 export const BTC_ACCOUNT = {
     status: 'loaded',
@@ -35,7 +35,7 @@ export const BTC_ACCOUNT = {
         ],
         history: {},
     },
-    network: { networkType: 'bitcoin', symbol: 'btc', decimals: 8 },
+    network: { networkType: 'bitcoin', symbol: 'btc', decimals: 8, features: ['rbf'] },
 };
 
 export const ETH_ACCOUNT = {
@@ -110,8 +110,8 @@ export const DEFAULT_STORE = {
 
 const DEFAULT_DRAFT = {
     ...DEFAULT_VALUES,
-    options: [...DEFAULT_OPTIONS],
     outputs: [{ ...DEFAULT_PAYMENT }],
+    options: [...DEFAULT_VALUES.options],
 };
 
 export const addingOutputs = [

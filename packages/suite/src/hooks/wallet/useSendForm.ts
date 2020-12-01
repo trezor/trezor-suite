@@ -3,7 +3,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { useActions } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { DEFAULT_PAYMENT, DEFAULT_OPTIONS, DEFAULT_VALUES } from '@wallet-constants/sendForm';
+import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';
 import {
     UseSendFormProps,
     UseSendFormState,
@@ -11,7 +11,7 @@ import {
     SendContextValues,
     Output,
 } from '@wallet-types/sendForm';
-import { isEnabled } from '@suite-utils/features';
+import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
 
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { useSendFormOutputs } from './useSendFormOutputs';
@@ -22,14 +22,16 @@ import { useSendFormImport } from './useSendFormImport';
 export const SendContext = createContext<SendContextValues | null>(null);
 SendContext.displayName = 'SendContext';
 
-const options = isEnabled('RBF')
-    ? DEFAULT_OPTIONS
-    : DEFAULT_OPTIONS.filter(val => val !== 'bitcoinRBF');
-
-const getDefaultValues = (currency: Output['currency']) => {
+const getDefaultValues = (
+    currency: Output['currency'],
+    network: UseSendFormState['network'],
+): FormState => {
     return {
         ...DEFAULT_VALUES,
-        options: [...options],
+        options:
+            isFeatureEnabled('RBF') && network.features?.includes('rbf')
+                ? ['bitcoinRBF', 'broadcast']
+                : ['broadcast'],
         outputs: [{ ...DEFAULT_PAYMENT, currency }],
     };
 };
@@ -116,12 +118,12 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
                 }
             }
             return {
-                ...getDefaultValues(localCurrencyOption),
+                ...getDefaultValues(localCurrencyOption, state.network),
                 ...loadedState,
                 ...feeEnhancement,
             };
         },
-        [getLastUsedFeeLevel, localCurrencyOption],
+        [getLastUsedFeeLevel, localCurrencyOption, state.network],
     );
 
     // update custom values

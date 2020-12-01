@@ -4,7 +4,7 @@ import { Translation } from '@suite-components';
 import { OnOffSwitcher } from '@wallet-components';
 import { Button } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
-import { isEnabled } from '@suite-utils/features';
+import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
 
 import Locktime from './components/Locktime';
 
@@ -42,6 +42,7 @@ const StyledButton = styled(Button)`
 
 const BitcoinOptions = () => {
     const {
+        network,
         addOutput,
         getDefaultValue,
         toggleOption,
@@ -84,19 +85,21 @@ const BitcoinOptions = () => {
                             <Translation id="LOCKTIME_ADD" />
                         </StyledButton>
                     )}
-                    {isEnabled('RBF') && !locktimeEnabled && (
-                        <StyledButton
-                            variant="tertiary"
-                            icon="RBF"
-                            onClick={() => {
-                                toggleOption('bitcoinRBF');
-                                composeTransaction();
-                            }}
-                        >
-                            <Translation id="RBF" />
-                            <OnOffSwitcher isOn={rbfEnabled} />
-                        </StyledButton>
-                    )}
+                    {isFeatureEnabled('RBF') &&
+                        network.features?.includes('rbf') &&
+                        !locktimeEnabled && (
+                            <StyledButton
+                                variant="tertiary"
+                                icon="RBF"
+                                onClick={() => {
+                                    toggleOption('bitcoinRBF');
+                                    composeTransaction();
+                                }}
+                            >
+                                <Translation id="RBF" />
+                                <OnOffSwitcher isOn={rbfEnabled} />
+                            </StyledButton>
+                        )}
                     <StyledButton
                         variant="tertiary"
                         icon="RBF"

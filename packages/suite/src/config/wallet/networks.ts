@@ -13,6 +13,7 @@ const networks = [
             tx: 'https://btc1.trezor.io/tx/',
             account: 'https://btc1.trezor.io/xpub/',
         },
+        features: ['rbf', 'sign-verify'],
     },
     {
         name: 'Bitcoin (segwit)',
@@ -26,6 +27,7 @@ const networks = [
             tx: 'https://btc1.trezor.io/tx/',
             account: 'https://btc1.trezor.io/xpub/',
         },
+        features: ['rbf', 'sign-verify'],
     },
     {
         name: 'Bitcoin (legacy)',
@@ -39,6 +41,7 @@ const networks = [
             tx: 'https://btc1.trezor.io/tx/',
             account: 'https://btc1.trezor.io/xpub/',
         },
+        features: ['rbf', 'sign-verify'],
     },
     // Litecoin
     {
@@ -52,6 +55,7 @@ const networks = [
             tx: 'https://ltc1.trezor.io/tx/',
             account: 'https://ltc1.trezor.io/xpub/',
         },
+        features: ['sign-verify'],
     },
     {
         name: 'Litecoin (legacy)',
@@ -65,6 +69,7 @@ const networks = [
             tx: 'https://ltc1.trezor.io/tx/',
             account: 'https://ltc1.trezor.io/xpub/',
         },
+        features: ['sign-verify'],
     },
     // Ethereum
     {
@@ -79,6 +84,7 @@ const networks = [
             tx: 'https://eth1.trezor.io/tx/',
             account: 'https://eth1.trezor.io/address/',
         },
+        features: ['sign-verify'],
     },
     {
         name: 'Ethereum Classic',
@@ -92,6 +98,7 @@ const networks = [
             tx: 'https://etc1.trezor.io/tx/',
             account: 'https://etc1.trezor.io/address/',
         },
+        features: ['sign-verify'],
     },
     // Ripple
     {
@@ -115,6 +122,7 @@ const networks = [
             tx: 'https://bch1.trezor.io/tx/',
             account: 'https://bch1.trezor.io/xpub/',
         },
+        features: ['sign-verify'],
     },
     {
         name: 'Bitcoin Gold',
@@ -127,6 +135,7 @@ const networks = [
             tx: 'https://btg1.trezor.io/tx/',
             account: 'https://btg1.trezor.io/xpub/',
         },
+        features: ['sign-verify'],
     },
     {
         name: 'Bitcoin Gold (legacy)',
@@ -140,6 +149,7 @@ const networks = [
             tx: 'https://btg1.trezor.io/tx/',
             account: 'https://btg1.trezor.io/xpub/',
         },
+        features: ['sign-verify'],
     },
     {
         name: 'Dash',
@@ -152,6 +162,7 @@ const networks = [
             tx: 'https://dash1.trezor.io/tx/',
             account: 'https://dash1.trezor.io/xpub/',
         },
+        features: ['sign-verify'],
     },
     {
         name: 'DigiByte',
@@ -164,6 +175,7 @@ const networks = [
             tx: 'https://dgb1.trezor.io/tx/',
             account: 'https://dgb1.trezor.io/xpub/',
         },
+        features: ['sign-verify'],
     },
     {
         name: 'DigiByte (legacy)',
@@ -177,6 +189,7 @@ const networks = [
             tx: 'https://dgb1.trezor.io/tx/',
             account: 'https://dgb1.trezor.io/xpub/',
         },
+        features: ['sign-verify'],
     },
     {
         name: 'Dogecoin',
@@ -189,6 +202,7 @@ const networks = [
             tx: 'https://doge1.trezor.io/tx/',
             account: 'https://doge1.trezor.io/xpub/',
         },
+        features: ['sign-verify'],
     },
     {
         name: 'Namecoin',
@@ -201,6 +215,7 @@ const networks = [
             tx: 'https://nmc1.trezor.io/tx/',
             account: 'https://nmc1.trezor.io/xpub/',
         },
+        features: ['sign-verify'],
     },
     {
         name: 'Vertcoin',
@@ -213,6 +228,7 @@ const networks = [
             tx: 'https://vtc1.trezor.io/tx/',
             account: 'https://vtc1.trezor.io/xpub/',
         },
+        features: ['sign-verify'],
     },
     {
         name: 'Vertcoin (legacy)',
@@ -226,6 +242,7 @@ const networks = [
             tx: 'https://vtc1.trezor.io/tx/',
             account: 'https://vtc1.trezor.io/xpub/',
         },
+        features: ['sign-verify'],
     },
     {
         name: 'Zcash',
@@ -238,6 +255,7 @@ const networks = [
             tx: 'https://zec1.trezor.io/tx/',
             account: 'https://zec1.trezor.io/xpub/',
         },
+        features: ['sign-verify'],
     },
     // Bitcoin testnet
     {
@@ -252,6 +270,7 @@ const networks = [
             tx: 'https://tbtc1.trezor.io/tx/',
             account: 'https://tbtc1.trezor.io/xpub/',
         },
+        features: ['rbf', 'sign-verify'],
     },
     {
         name: 'Bitcoin Testnet (segwit)',
@@ -266,6 +285,7 @@ const networks = [
             tx: 'https://tbtc1.trezor.io/tx/',
             account: 'https://tbtc1.trezor.io/xpub/',
         },
+        features: ['rbf', 'sign-verify'],
     },
     {
         name: 'Bitcoin Testnet (legacy)',
@@ -280,6 +300,7 @@ const networks = [
             tx: 'https://tbtc1.trezor.io/tx/',
             account: 'https://tbtc1.trezor.io/xpub/',
         },
+        features: ['rbf', 'sign-verify'],
     },
     {
         name: 'Ethereum Ropsten',
@@ -294,6 +315,7 @@ const networks = [
             tx: 'https://ropsten1.trezor.io/tx/',
             account: 'https://ropsten1.trezor.io/address/',
         },
+        features: ['sign-verify'],
     },
     {
         name: 'XRP Testnet',
@@ -315,6 +337,7 @@ type Network = {
     isHidden?: boolean;
     chainId?: number;
     hasSignVerify?: boolean;
+    features?: string[];
 } & ArrayElement<typeof networks>;
 
 export default [...networks] as Network[];

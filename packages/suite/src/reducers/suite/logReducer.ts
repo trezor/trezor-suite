@@ -43,7 +43,10 @@ const logReducer = (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
             case LOG.ADD:
-                addToStack(draft.entries, action.payload);
+                // idk what is going on with this type. WTF related to ActionLogEntry
+                // draft.entries should have correct State type, but it doesn't
+                // it behave like this since i've added new optional field (features) to `config/wallet/networks.ts`
+                addToStack(draft.entries as LogEntry[], action.payload);
                 break;
             case LOG.TOGGLE_EXCLUDE_BALANCE_RELATED:
                 draft.excludeBalanceRelated = !draft.excludeBalanceRelated;

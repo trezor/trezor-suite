@@ -41,14 +41,12 @@ export const DEFAULT_OPRETURN = {
     dataHex: '',
 } as const;
 
-export const DEFAULT_OPTIONS = ['broadcast', 'bitcoinRBF'] as const;
-
 export const DEFAULT_VALUES = {
     setMaxOutputId: undefined,
     selectedFee: undefined,
     feePerUnit: '',
     feeLimit: '',
-    options: [],
+    options: ['broadcast'],
     bitcoinLockTime: '',
     ethereumNonce: '',
     ethereumDataAscii: '',
