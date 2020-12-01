@@ -25,24 +25,14 @@ interface Props {
 const Ticker = ({ symbol, tooltipPos = 'top' }: Props) => {
     const theme = useTheme();
     const rateAge = (timestamp: number) => differenceInMinutes(new Date(timestamp), new Date());
-    const { lastWeekRates, localCurrency } = useSelector(state => ({
-        lastWeekRates: state.wallet.fiat.coins.find(r => r.symbol === symbol)?.lastWeek,
+    const { rates, localCurrency } = useSelector(state => ({
+        rates: state.wallet.fiat.coins.find(r => r.symbol === symbol),
         localCurrency: state.wallet.settings.localCurrency,
     }));
-    const lastWeekData = lastWeekRates?.tickers ?? [];
-
-    let rateGoingUp = false;
-
-    if (lastWeekData) {
-        const firstDataPoint = lastWeekData[0]?.rates?.[localCurrency];
-        // sometimes blockbook returns empty rates for too recent timestamp, just try one before
-        let lastDataPoint = lastWeekData[lastWeekData.length - 1]?.rates?.[localCurrency];
-        lastDataPoint =
-            lastDataPoint ?? lastWeekData[lastWeekData.length - 2]?.rates?.[localCurrency];
-        if (lastDataPoint && firstDataPoint) {
-            rateGoingUp = lastDataPoint > firstDataPoint;
-        }
-    }
+    const lastWeekRates = rates?.lastWeek?.tickers ?? [];
+    const currentRate = rates?.current?.rates?.[localCurrency];
+    const lastWeekRate = lastWeekRates[0]?.rates?.[localCurrency];
+    const rateGoingUp = currentRate && lastWeekRate ? currentRate >= lastWeekRate : false;
 
     return (
         <FiatValue amount="1" symbol={symbol}>
