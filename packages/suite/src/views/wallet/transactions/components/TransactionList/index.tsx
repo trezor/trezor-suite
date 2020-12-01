@@ -3,8 +3,8 @@ import { saveAs } from 'file-saver';
 import TrezorConnect, { AccountTransaction } from 'trezor-connect';
 import styled, { css } from 'styled-components';
 import { Loader, Card, Dropdown } from '@trezor/components';
+import { Stack } from '@suite-components/Skeleton';
 import { Translation } from '@suite-components';
-import { SkeletonRectangle, Spread, Stack } from '@suite-components/Skeleton';
 import { Section } from '@dashboard-components';
 import { useActions, useSelector } from '@suite-hooks';
 import { useTranslation } from '@suite-hooks/useTranslation';
@@ -21,6 +21,7 @@ import ExportWorker from 'worker-loader?filename=static/[hash].worker.js!../../.
 import TransactionItem from './components/TransactionItem';
 import Pagination from './components/Pagination';
 import TransactionsGroup from './components/TransactionsGroup';
+import SkeletonTransactionItem from './components/SkeletonTransactionItem';
 
 const StyledCard = styled(Card)<{ isPending: boolean }>`
     flex-direction: column;
@@ -206,14 +207,10 @@ const TransactionList = ({
             actions={exportMenu}
         >
             {isLoading ? (
-                <Stack col childMargin="0px 0px 8px 0px">
-                    <Spread>
-                        <SkeletonRectangle width="120px" height="18px" />
-                        <SkeletonRectangle width="80px" height="18px" />
-                    </Spread>
-                    <SkeletonRectangle width="100%" height="70px" animate />
-                    <SkeletonRectangle width="100%" height="70px" animate />
-                    <SkeletonRectangle width="100%" height="70px" animate />
+                <Stack col childMargin="0px 0px 16px 0px">
+                    <SkeletonTransactionItem />
+                    <SkeletonTransactionItem />
+                    <SkeletonTransactionItem />
                 </Stack>
             ) : (
                 Object.keys(transactionsByDate).map(dateKey => {
