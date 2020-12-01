@@ -83,7 +83,7 @@ const Passphrase = (props: Props) => {
             <div
                 data-help="TODO: this is just for e2e, delete me"
                 data-test="@suite/loading"
-                style={{ width: '1px', height: '1px', display: 'none' }}
+                style={{ width: '1px', height: '1px' }}
             />
         );
     }
