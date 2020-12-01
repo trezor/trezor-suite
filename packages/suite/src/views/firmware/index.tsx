@@ -199,7 +199,7 @@ const Firmware = ({ closeModalApp, resetReducer, firmware, device, modal }: Prop
                 'error',
             ].includes(firmware.status)}
             header={
-                ['waiting-for-confirmation'].includes(firmware.status) && (
+                firmware.status === 'waiting-for-confirmation' && (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         trezorModel={device?.features?.major_version === 1 ? 1 : 2}
@@ -216,8 +216,7 @@ const Firmware = ({ closeModalApp, resetReducer, firmware, device, modal }: Prop
             currentProgressBarStep={getCurrentStepIndex()}
             hiddenProgressBar={false}
         >
-            {modal && <InnerModalWrapper>{modal}</InnerModalWrapper>}
-            {!modal && Component.Body}
+            {modal ? <InnerModalWrapper>{modal}</InnerModalWrapper> : Component.Body}
         </Modal>
     );
 };
