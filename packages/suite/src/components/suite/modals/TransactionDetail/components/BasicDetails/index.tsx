@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { Icon, useTheme, variables, Loader } from '@trezor/components';
 import { Translation, HiddenPlaceholder, TrezorLink } from '@suite-components';
-import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction } from '@wallet-types';
 
 const Wrapper = styled.div`
@@ -271,14 +270,14 @@ const BasicDetails = ({ tx, confirmations, isFetching, explorerUrl }: Props) => 
                     {tx.blockTime ? (
                         <>
                             <FormattedDate
-                                value={getDateWithTimeZone(tx.blockTime * 1000)}
+                                value={new Date(tx.blockTime * 1000)}
                                 year="numeric"
                                 month="short"
                                 day="2-digit"
                             />
                             <HourWrapper>
                                 <FormattedDate
-                                    value={getDateWithTimeZone(tx.blockTime * 1000)}
+                                    value={new Date(tx.blockTime * 1000)}
                                     hour="2-digit"
                                     minute="2-digit"
                                 />

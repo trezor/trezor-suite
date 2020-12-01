@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { Button, variables } from '@trezor/components';
 import { Translation, FormattedCryptoAmount, FiatValue } from '@suite-components';
 import AmountRow from '../AmountRow';
-import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction } from '@wallet-types';
 import { getNetwork, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import BigNumber from 'bignumber.js';
@@ -113,7 +112,7 @@ const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
                         thirdColumn={
                             tx.blockTime && (
                                 <FormattedDate
-                                    value={getDateWithTimeZone(tx.blockTime * 1000)}
+                                    value={new Date(tx.blockTime * 1000)}
                                     year="numeric"
                                     month="short"
                                     day="2-digit"

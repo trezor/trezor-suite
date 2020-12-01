@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { Translation } from '@suite-components';
 import { TooltipProps } from 'recharts';
-import { getDateWithTimeZone } from '@suite/utils/suite/date';
 import { CommonAggregatedHistory } from '@wallet-types/graph';
 import { Props as GraphProps } from '../../index';
 
@@ -141,7 +140,7 @@ const CustomTooltipBase = (props: Props) => {
     }, [props]);
 
     if (props.active && props.payload) {
-        const date = getDateWithTimeZone(props.payload[0].payload.time * 1000);
+        const date = new Date(props.payload[0].payload.time * 1000);
         const dateFormat =
             props.selectedRange?.label === 'year' || props.selectedRange?.label === 'all'
                 ? 'month'
