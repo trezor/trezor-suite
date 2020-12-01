@@ -8,7 +8,7 @@ import { Icon, Input, Switch, variables } from '@trezor/components';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { isInteger } from '@wallet-utils/validation';
 import { MAX_LENGTH } from '@suite-constants/inputs';
-import { isEnabled } from '@suite-utils/features';
+import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
 
 const Wrapper = styled.div`
     margin-bottom: 25px;
@@ -63,6 +63,7 @@ interface Props {
 
 const Locktime = ({ close }: Props) => {
     const {
+        network,
         register,
         getDefaultValue,
         setValue,
@@ -124,7 +125,7 @@ const Locktime = ({ close }: Props) => {
                 labelRight={<Icon size={20} icon="CROSS" onClick={close} />}
                 bottomText={<InputError error={error} />}
             />
-            {isEnabled('RBF') && (
+            {isFeatureEnabled('RBF') && network.features?.includes('rbf') && (
                 <RbfMessage>
                     <Left>
                         <Icon size={16} icon="RBF" />

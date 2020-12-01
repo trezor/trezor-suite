@@ -10,7 +10,7 @@ import {
     UseSendFormState,
     SendContextValues,
 } from '@wallet-types/sendForm';
-import { isEnabled as isFlagEnabled } from '@suite-utils/features';
+import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
 
 type Props = UseFormMethods<FormState> & {
     fiatRates: UseSendFormState['fiatRates'];
@@ -150,7 +150,8 @@ export const useSendFormFields = ({
     };
 
     const toggleOption = (option: FormOptions) => {
-        if (!isFlagEnabled('RBF') && option === 'bitcoinRBF') {
+        if (!isFeatureEnabled('RBF') && option === 'bitcoinRBF') {
+            // do not use RBF if disabled
             return;
         }
         const enabledOptions = getValues('options') || [];
