@@ -1,5 +1,5 @@
 import TrezorConnect, { AccountTransaction, BlockchainFiatRatesUpdate } from 'trezor-connect';
-import { getUnixTime, differenceInSeconds } from 'date-fns';
+import { getUnixTime, subWeeks, differenceInSeconds } from 'date-fns';
 import {
     fetchCurrentFiatRates,
     getFiatRatesForTimestamps,
@@ -253,11 +253,8 @@ export const updateStaleRates = () => async (dispatch: Dispatch, _getState: GetS
 export const updateLastWeekRates = () => async (dispatch: Dispatch, getState: GetState) => {
     const { localCurrency } = getState().wallet.settings;
 
-    // unix timestamp in seconds - 3 mins (blockbook returns empty object if timestamp is too fresh)
-    const currentTimestamp = getBlockbookSafeTime();
-    const weekAgoTimestamp = currentTimestamp - 7 * 86400;
-
-    const timestamps = [weekAgoTimestamp, currentTimestamp];
+    const weekAgoTimestamp = getUnixTime(subWeeks(new Date(), 1));
+    const timestamps = [weekAgoTimestamp];
 
     const lastWeekStaleFn = (coinRates: CoinFiatRates) => {
         if (coinRates.lastWeek?.tickers[0]?.rates[localCurrency]) {
