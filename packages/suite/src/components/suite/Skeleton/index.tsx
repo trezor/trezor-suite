@@ -36,11 +36,11 @@ const Spread = styled(Stack)<
 
 const SHINE = keyframes`
     from {
-		background-position: 0 0;
-	}
+        background-position: 0 0;
+    }
 	to {
-		background-position: -200% 0;
-	}
+        background-position: -200% 0;
+    }
 `;
 
 export const shimmerEffect = css`
