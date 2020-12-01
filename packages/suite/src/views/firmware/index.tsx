@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Modal, ConfirmOnDevice } from '@trezor/components';
@@ -23,6 +24,12 @@ import {
 import { DeviceAcquire, DeviceUnknown, DeviceUnreadable } from '@suite-views';
 import { Translation } from '@suite-components';
 
+const InnerModalWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
 const mapStateToProps = (state: AppState) => ({
     firmware: state.firmware,
     device: state.suite.device,
@@ -41,7 +48,7 @@ type Props = ReturnType<typeof mapDispatchToProps> &
     ReturnType<typeof mapStateToProps> &
     InjectedModalApplicationProps;
 
-const Firmware = ({ closeModalApp, resetReducer, firmware, device }: Props) => {
+const Firmware = ({ closeModalApp, resetReducer, firmware, device, modal }: Props) => {
     const onClose = () => {
         closeModalApp();
         resetReducer();
@@ -130,7 +137,6 @@ const Firmware = ({ closeModalApp, resetReducer, firmware, device }: Props) => {
             case 'waiting-for-confirmation':
             case 'installing':
             case 'started':
-            case 'check-fingerprint':
             case 'wait-for-reboot':
             case 'unplug':
                 return {
@@ -171,6 +177,17 @@ const Firmware = ({ closeModalApp, resetReducer, firmware, device }: Props) => {
 
     if (ApplicationStateModal) return <ApplicationStateModal />;
 
+    // todo: we really need to have finally designs on how to display these button requests when
+    // there is a modal active, I could either replace the main content, or display it as a nested modal?
+    // if (modal) {
+    //     return (<Modal>
+    //         <InnerModalWrapper>
+    //             {modal}
+    //         </InnerModalWrapper>
+    //     </Modal>
+    //     )
+    // }
+
     return (
         <Modal
             cancelable={[
@@ -182,7 +199,7 @@ const Firmware = ({ closeModalApp, resetReducer, firmware, device }: Props) => {
                 'error',
             ].includes(firmware.status)}
             header={
-                ['waiting-for-confirmation', 'check-fingerprint'].includes(firmware.status) && (
+                firmware.status === 'waiting-for-confirmation' && (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         trezorModel={device?.features?.major_version === 1 ? 1 : 2}
@@ -194,12 +211,12 @@ const Firmware = ({ closeModalApp, resetReducer, firmware, device }: Props) => {
             useFixedHeight
             data-test="@firmware/index"
             heading={Component.Heading}
-            bottomBar={<Buttons>{Component.BottomBar}</Buttons>}
+            bottomBar={!modal && <Buttons>{Component.BottomBar}</Buttons>}
             totalProgressBarSteps={stepsInProgressBar.length}
             currentProgressBarStep={getCurrentStepIndex()}
             hiddenProgressBar={false}
         >
-            {Component.Body}
+            {modal ? <InnerModalWrapper>{modal}</InnerModalWrapper> : Component.Body}
         </Modal>
     );
 };

@@ -17,6 +17,7 @@ import PassphraseSource from './PassphraseSource';
 import PassphraseOnDevice from './PassphraseOnDevice';
 import PassphraseDuplicate from './PassphraseDuplicate';
 import ConfirmAction from './confirm/Action';
+import ConfirmFingerPrint from './confirm/Fingerprint';
 import CoinmarketBuyTerms from './confirm/CoinmarketBuyTerms';
 import CoinmarketExchangeTerms from './confirm/CoinmarketExchangeTerms';
 import Word from './Word';
@@ -85,7 +86,17 @@ const getDeviceContextModal = (props: Props) => {
         case UI.REQUEST_PASSPHRASE_ON_DEVICE:
         case 'ButtonRequest_PassphraseEntry':
             return <PassphraseOnDevice device={device} />;
-        // Button requests
+        case 'ButtonRequest_ConfirmOutput':
+        case 'ButtonRequest_SignTx': {
+            if (isCoinmarketOffers) {
+                return <CoinmarketReviewTransaction type="sign-transaction" />;
+            }
+
+            return <ReviewTransaction type="sign-transaction" />;
+        }
+        case 'ButtonRequest_FirmwareCheck':
+            return <ConfirmFingerPrint device={device} />;
+        // Generic Button requests
         // todo: consider fallback (if windowType.contains('ButtonRequest')). but add also possibility to blacklist some buttonRequests
         case 'ButtonRequest_Warning':
         case 'ButtonRequest_Success':
@@ -101,14 +112,6 @@ const getDeviceContextModal = (props: Props) => {
         case 'ButtonRequest_FirmwareUpdate':
         case 'ButtonRequest_PinEntry':
             return <ConfirmAction device={device} />;
-        case 'ButtonRequest_ConfirmOutput':
-        case 'ButtonRequest_SignTx': {
-            if (isCoinmarketOffers) {
-                return <CoinmarketReviewTransaction type="sign-transaction" />;
-            }
-
-            return <ReviewTransaction type="sign-transaction" />;
-        }
         default:
             return null;
     }

@@ -1,4 +1,4 @@
-import { AppState } from '@suite-types';
+import { Action } from '@suite-types';
 
 /**
  * Clears database. Use it to avoid persistence between tests
@@ -11,18 +11,9 @@ export const resetDb = () => {
     return cy;
 };
 
-/**
- * Set application state.
- * @param state
- */
-export const setState = (state: Partial<AppState>) => {
-    cy.window()
-        .its('store')
-        .should('exist');
+export const dispatch = (action: Action) => {
+    cy.window().its('store').should('exist');
     return cy.window().then(window => {
-        window.store.getState().onboarding = {
-            ...window.store.getState().onboarding,
-            ...state.onboarding,
-        };
+        window.store.dispatch(action);
     });
 };
