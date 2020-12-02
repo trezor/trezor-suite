@@ -15,3 +15,4 @@
   - [Feature Flags](misc/feature_flags.md)
   - [Review Process](misc/review.md)
   - [Versioning](misc/versioning.md)
+  - [Notes](misc/notes.md)
