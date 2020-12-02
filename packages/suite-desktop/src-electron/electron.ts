@@ -15,6 +15,16 @@ import { RESOURCES } from './constants';
 import BridgeProcess from './processes/BridgeProcess';
 import TorProcess from './processes/TorProcess';
 
+import { version } from '../package.json';
+
+// AppImage fix (https://github.com/trezor/trezor-suite/issues/2962)
+if (process.platform === 'linux' && process.env.APPIMAGE === undefined) {
+    process.env.APPIMAGE = path.join(
+        process.execPath,
+        `Trezor-Suite-${version}-linux-${process.arch}.AppImage`,
+    );
+}
+
 let mainWindow: BrowserWindow;
 const APP_NAME = 'Trezor Suite';
 const PROTOCOL = 'file';
