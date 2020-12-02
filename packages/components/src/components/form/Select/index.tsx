@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import ReactSelect, { components, Props as SelectProps } from 'react-select';
 import styled from 'styled-components';
 import { variables } from '../../../config';
@@ -152,6 +152,10 @@ const Select = ({
     const selectRef: React.Ref<any> = React.useRef(null);
     const theme = useTheme();
 
+    // values used for custom scroll-search behavior
+    const lastKeyPressTimestamp = useRef(0); // timestamp at which last keyPress event occurred
+    const searchedTerm = useRef(''); // string which the user wants to find
+
     // customize control to pass data-test attribute
     const Control = (controlProps: any) => {
         return (
@@ -178,18 +182,34 @@ const Select = ({
         );
     };
 
-    const getFirstOptionStartingWithChar = (options: Array<Option>, char: string) => {
-        // get all options that start with the character user just pressed on keyboard
-        if (options.length > 0 && char) {
-            const optionsStartingWithChar = options.filter(
-                // use "option.label", not "option.value". Because "label" is the string user sees
-                option => option.label[0].toLowerCase() === char.toLowerCase()
-            );
-            // return the first option
-            return optionsStartingWithChar[0];
+    const findOption = (options: Array<Option>, query: string) => {
+        // Option that will be returned
+        let foundOption;
+
+        // Save how far is the query from the beginning of option label (e.g. index of "c" in "Bitcoin" is 3)
+        // This way I can give priority to options which START with the query. (Otherwise I would just return first option that CONTAINS searched term)
+        let lowestIndexOfFirstOccurrence = Infinity;
+
+        // Loop over all options
+        for (let i = 0; i < options.length; i++) {
+            // Find where in the option the query is located (returns -1 if not found)
+            const indexOfFirstOccurrence = options[i].label
+                .toLowerCase()
+                .indexOf(query.toLowerCase());
+
+            // If the query was found and it is closer to the beginning than the closes match so far, set new foundOption.
+            // (This ensures that if I press "B", I return the first option STARTING with "B", not the first option CONTAINING "B")
+            if (
+                indexOfFirstOccurrence >= 0 &&
+                indexOfFirstOccurrence < lowestIndexOfFirstOccurrence
+            ) {
+                lowestIndexOfFirstOccurrence = indexOfFirstOccurrence;
+                foundOption = options[i];
+            }
         }
 
-        return undefined;
+        // returns "undefined" if no option was found
+        return foundOption;
     };
 
     const scrollToOption = (option: Option) => {
@@ -202,39 +222,60 @@ const Select = ({
     };
 
     const onKeyDown = async (e: React.KeyboardEvent) => {
-        // this function is executed when user presses keyboard
+        // This function is executed when user presses keyboard
         if (useKeyPressScroll) {
-            // get char value of pressed key
+            // Get char value of pressed key
             const charValue = String.fromCharCode(e.keyCode);
 
+            // Get current timestamp and check how long it is since the last keyPress event happened.
+            const currentTimestamp = new Date().getTime();
+            const timeSincePreviousKeyPress = currentTimestamp - lastKeyPressTimestamp.current;
+
+            // Save current timestamp to lastKeyPressTime variable
+            lastKeyPressTimestamp.current = currentTimestamp;
+
+            // If user didn't type anything for 1.7 seconds, set searchedValue to just pressed button, otherwise add the new value to the old one
+            if (timeSincePreviousKeyPress > 1700) {
+                searchedTerm.current = charValue;
+            } else {
+                searchedTerm.current += charValue;
+            }
+
             if (selectRef) {
-                // get options object
+                // Get options object
                 const { options } = selectRef.current.select.props;
 
                 if (options && options.length > 1) {
                     /* 
                     First, check if the options are divided into sub-categories. 
                     For example <NetworkSelect> has options divided into sub-categories "mainnet" and "testnet".  
-                    If such scenario I need to loop through all of the sub-categories and try to find suitable option in them.
+                    In such scenario I need to loop through all of the sub-categories and try to find appropriate option in them as well.
                     */
 
-                    let optionToFocusOn = null;
+                    // array of all options in which I want to find the searched term
+                    let optionsToSearchThrough: Array<Option> = [];
 
                     if (options[0].options) {
                         // If the if() statement is true, the options are nested.
-                        // Loop through all of the sub-categories and check if an option starting with specified char is present
+                        // Loop through all of the sub-categories and concatenate them into one array
                         for (let i = 0; i < options.length; i++) {
-                            optionToFocusOn = getFirstOptionStartingWithChar(
-                                options[i].options,
-                                charValue
+                            optionsToSearchThrough = optionsToSearchThrough.concat(
+                                options[i].options
                             );
-                            // If some option starting with char was found, exit the loop
-                            if (optionToFocusOn !== undefined) break;
                         }
                     } else {
-                        // If the options aren't divided into sub-categories, you can use the default options object that is present on "selectRef"
-                        optionToFocusOn = getFirstOptionStartingWithChar(options, charValue);
+                        // If the options aren't divided into sub-categories, you can use the default options array that is present on "selectRef"
+                        optionsToSearchThrough = options;
                     }
+
+                    // Find the option
+                    const optionToFocusOn = findOption(
+                        optionsToSearchThrough,
+                        searchedTerm.current
+                    );
+
+                    // If no option to focus on was found, clear the searchedValue
+                    if (!optionToFocusOn) searchedTerm.current = '';
 
                     // Also get the last option, so I can scroll to it later
                     const lastOption = options[options.length - 1];
