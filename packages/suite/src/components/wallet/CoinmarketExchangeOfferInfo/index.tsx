@@ -20,12 +20,10 @@ interface Props {
 }
 
 const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    margin: 0 0 0 30px;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        flex: 1;
+        margin: 0;
     }
 `;
 
@@ -39,7 +37,7 @@ const Info = styled.div`
     display: flex;
     flex-direction: column;
     min-width: 350px;
-    margin: 0 0 10px 30px;
+
     padding-top: 10px;
     min-height: 200px;
     border: 1px solid ${props => props.theme.STROKE_GREY};
@@ -73,6 +71,7 @@ const Row = styled.div`
     display: flex;
     margin: 18px 24px;
     white-space: nowrap;
+    justify-content: space-between;
 `;
 
 const AdjacentRow = styled.div`
@@ -124,11 +123,6 @@ const AccountType = styled.span`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     padding-left: 5px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const TransactionIdWrapper = styled.div`
-    padding-left: 40px;
-    max-width: 350px;
 `;
 
 const CoinmarketExchangeOfferInfo = ({
@@ -226,11 +220,7 @@ const CoinmarketExchangeOfferInfo = ({
                     </RightColumn>
                 </Row>
             </Info>
-            {transactionId && (
-                <TransactionIdWrapper>
-                    <CoinmarketTransactionId transactionId={transactionId} />
-                </TransactionIdWrapper>
-            )}
+            {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
         </Wrapper>
     );
 };
