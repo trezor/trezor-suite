@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
-import { CleanSelect } from '@trezor/components';
+import { Select } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
 import { Account } from '@wallet-types';
 import { Output } from '@wallet-types/sendForm';
@@ -75,13 +75,14 @@ const TokenSelect = ({ output, outputId }: Props) => {
             defaultValue={tokenValue}
             render={({ onChange }) => {
                 return (
-                    <CleanSelect
+                    <Select
                         options={options}
                         isSearchable
                         hideTextCursor
                         value={options.find(o => o.value === tokenValue)}
                         isClearable={false}
                         minWidth="45px"
+                        isClean
                         onChange={(selected: Option) => {
                             // change selected value
                             onChange(selected.value);

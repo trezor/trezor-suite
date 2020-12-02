@@ -1,4 +1,4 @@
-import { CleanSelect } from '@trezor/components';
+import { Select } from '@trezor/components';
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import { FIAT } from '@suite-config';
@@ -31,7 +31,7 @@ const FiatSelect = () => {
             defaultValue={localCurrencyOption}
             render={({ onChange, value }) => {
                 return (
-                    <CleanSelect
+                    <Select
                         onChange={(selected: any) => {
                             onChange(selected);
                             updateFiatCurrency(selected);
@@ -42,6 +42,8 @@ const FiatSelect = () => {
                         options={currencyOptions}
                         isDropdownVisible={account.networkType === 'ethereum'}
                         minWidth="70px"
+                        isClean
+                        hideTextCursor
                     />
                 );
             }}

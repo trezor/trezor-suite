@@ -1,4 +1,4 @@
-import { CleanSelect, CoinLogo } from '@trezor/components';
+import { Select, CoinLogo } from '@trezor/components';
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
@@ -37,7 +37,7 @@ const ReceiveCryptoSelect = () => {
             }}
             render={({ onChange, value }) => {
                 return (
-                    <CleanSelect
+                    <Select
                         onChange={async (selected: any) => {
                             setMax(false);
                             onChange(selected);
@@ -69,6 +69,8 @@ const ReceiveCryptoSelect = () => {
                         isDropdownVisible={account.networkType === 'ethereum'}
                         isDisabled={account.networkType !== 'ethereum'}
                         minWidth="80px"
+                        isClean
+                        hideTextCursor
                     />
                 );
             }}

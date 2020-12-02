@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input, Textarea, Select, Checkbox, Switch, CleanSelect, Button } from '../../index';
+import { Input, Textarea, Select, Checkbox, Switch, Button } from '../../index';
 import { storiesOf } from '@storybook/react';
 import { StoryColumn } from '../../support/Story';
 
@@ -40,7 +40,8 @@ storiesOf('Form', module).add(
                         value="Input with select"
                         dataTest="input-select"
                         innerAddon={
-                            <CleanSelect
+                            <Select
+                                isClean
                                 value={{ label: 'BTC', value: 'BTC' }}
                                 options={[
                                     { label: 'ETH', value: 'ETH' },

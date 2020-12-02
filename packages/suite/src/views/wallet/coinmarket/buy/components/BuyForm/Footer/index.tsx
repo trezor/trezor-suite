@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, CleanSelect, variables } from '@trezor/components';
+import { Button, Select, variables } from '@trezor/components';
 import regional from '@wallet-constants/coinmarket/regional';
 import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
 import { getCountryLabelParts } from '@wallet-utils/coinmarket/buyUtils';
@@ -71,6 +71,10 @@ const StyledButton = styled(Button)`
     }
 `;
 
+const StyledSelect = styled(Select)`
+    width: max-content;
+`;
+
 const Footer = () => {
     const {
         errors,
@@ -107,7 +111,7 @@ const Footer = () => {
                     name={countrySelect}
                     render={({ onChange, value }) => {
                         return (
-                            <CleanSelect
+                            <StyledSelect
                                 noTopLabel
                                 isDropdownVisible
                                 isHovered
@@ -127,6 +131,8 @@ const Footer = () => {
                                 }}
                                 isClearable={false}
                                 minWidth="160px"
+                                isClean
+                                hideTextCursor
                                 onChange={(selected: any) => {
                                     onChange(selected);
                                     setAmountLimits(undefined);
