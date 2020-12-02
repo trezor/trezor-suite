@@ -2,18 +2,21 @@ lint:
   stage: prebuild
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
+    - yarn build:libs
     - lerna run lint
 
 typescript:
   stage: prebuild
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
+    - yarn build:libs
     - lerna run type-check
 
 unit tests:
   stage: prebuild
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
+    - yarn build:libs
     - lerna run --stream test:unit -- --passWithNoTests
 
 yaml lint:
