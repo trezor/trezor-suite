@@ -1,7 +1,7 @@
 # Changelog
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). [YY.MM.MICRO]
 
-## 20.12.1 [Unreleased]
+## 20.12.1 [to be released Dec 9th]
 
 ### Added
 
