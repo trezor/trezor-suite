@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
 
-import { Input, CleanSelect } from '@trezor/components';
+import { Input, Select } from '@trezor/components';
 import { InputError } from '@wallet-components';
 import { Translation } from '@suite-components';
 import { useSendFormContext } from '@wallet-hooks';
@@ -142,13 +142,14 @@ const Fiat = ({ output, outputId }: Props) => {
                         defaultValue={currencyValue}
                         render={({ onChange, value }) => {
                             return (
-                                <CleanSelect
+                                <Select
                                     options={buildCurrencyOptions()}
                                     value={value}
                                     isClearable={false}
                                     isSearchable
                                     hideTextCursor
                                     minWidth="45px"
+                                    isClean
                                     data-test={currencyInputName}
                                     onChange={(selected: CurrencyOption) => {
                                         // propagate changes to FormState

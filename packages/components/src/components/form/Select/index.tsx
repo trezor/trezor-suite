@@ -5,7 +5,7 @@ import ReactSelect, {
     OptionsType,
     GroupedOptionsType,
 } from 'react-select';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { variables } from '../../../config';
 import { useTheme } from '../../../utils';
 import { scrollbarStyles } from '../../../index';
@@ -17,6 +17,7 @@ const selectStyle = (
     variant: InputVariant,
     hideTextCursor: boolean,
     isClean: boolean,
+    minWidth: string,
     theme: SuiteThemeColors
 ) => ({
     singleValue: (base: Record<string, any>) => ({
@@ -24,8 +25,10 @@ const selectStyle = (
         display: 'flex',
         alignItems: 'center',
         width: '100%',
-        color: theme.TYPE_DARK_GREY,
+        color: isClean ? theme.TYPE_LIGHT_GREY : theme.TYPE_DARK_GREY,
         fontSize: variables.NEUE_FONT_SIZE.NORMAL,
+        borderStyle: 'none',
+        justifyContent: isClean ? 'flex-end' : 'flex-start',
         '&:hover': {
             cursor: hideTextCursor || !isSearchable ? 'pointer' : 'text',
         },
@@ -34,16 +37,18 @@ const selectStyle = (
         base: Record<string, any>,
         { isDisabled, isFocused }: { isDisabled: boolean; isFocused: boolean }
     ) => {
+        let height = variant === 'small' ? '36px' : '48px';
+        if (isClean) height = '22px';
         return {
             ...base,
-            minHeight: 'initial',
             display: 'flex',
             alignItems: 'center',
             fontSize: variables.FONT_SIZE.SMALL,
-            height: variant === 'small' ? '36px' : '48px',
+            height,
             borderRadius: '4px',
             borderWidth: '2px',
             borderColor: theme.STROKE_GREY,
+            borderStyle: isClean ? 'none' : 'solid',
             backgroundColor: 'transparent',
             boxShadow: 'none',
             '&:hover, &:focus': {
@@ -54,6 +59,17 @@ const selectStyle = (
             },
         };
     },
+    valueContainer: (base: Record<string, any>) =>
+        ({
+            ...base,
+            border: 0,
+            padding: isClean ? '0 3px 0 0' : '2px 8px',
+            fontWeight: isClean ? variables.FONT_WEIGHT.MEDIUM : variables.FONT_WEIGHT.REGULAR,
+            minWidth,
+            display: 'flex',
+            flexWrap: 'nowrap',
+            justifyContent: isClean ? 'flex-end' : 'flex-start',
+        } as const),
     indicatorSeparator: () => ({
         display: 'none',
     }),
@@ -61,11 +77,12 @@ const selectStyle = (
         ...base,
         display: !withDropdownIndicator || isDisabled ? 'none' : 'flex',
         alignItems: 'center',
-        color: theme.TYPE_LIGHT_GREY,
+        color: isClean ? theme.TYPE_LIGHTER_GREY : theme.TYPE_LIGHT_GREY,
         cursor: 'pointer',
         path: '',
+        padding: isClean ? 0 : '8px',
         '&:hover': {
-            color: theme.TYPE_DARK_GREY,
+            color: isClean ? theme.TYPE_LIGHT_GREY : theme.TYPE_DARK_GREY,
         },
     }),
     menu: (base: Record<string, any>) => ({
@@ -90,6 +107,10 @@ const selectStyle = (
         fontSize: variables.NEUE_FONT_SIZE.NORMAL,
         '&:hover': {
             cursor: 'pointer',
+            background: theme.BG_WHITE_ALT_HOVER,
+        },
+        '&:active': {
+            background: theme.BG_WHITE_ALT_HOVER,
         },
     }),
     input: (base: Record<string, any>) => ({
@@ -104,10 +125,19 @@ const selectStyle = (
 
 const Wrapper = styled.div<Props>`
     width: ${props => (props.width ? `${props.width}px` : '100%')};
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
 
+    ${props =>
+        !props.isClean &&
+        css`
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        `}
+
+    .react-select__single-value {
+        position: static;
+        transform: none;
+    }
     .react-select__menu-list {
         ${scrollbarStyles}
     }
@@ -137,6 +167,7 @@ interface CommonProps extends Omit<SelectProps, 'components' | 'isSearchable'> {
     variant?: InputVariant;
     noTopLabel?: boolean;
     hideTextCursor?: boolean; // this prop hides blinking text cursor
+    minWidth?: string;
 }
 
 // Make sure isSearchable can't be defined if useKeyPressScroll===true
@@ -159,6 +190,7 @@ const Select = ({
     noTopLabel = false,
     useKeyPressScroll,
     isSearchable = false,
+    minWidth = 'initial',
     ...props
 }: Props) => {
     const selectRef: React.RefObject<ReactSelect<Option>> | null | undefined = useRef(null);
@@ -320,7 +352,7 @@ const Select = ({
     };
 
     return (
-        <Wrapper className={className} width={width} {...wrapperProps}>
+        <Wrapper className={className} width={width} isClean={isClean} {...wrapperProps}>
             {!noTopLabel && <Label>{label}</Label>}
             <ReactSelect
                 ref={selectRef}
@@ -332,6 +364,7 @@ const Select = ({
                     variant,
                     hideTextCursor,
                     isClean,
+                    minWidth,
                     theme
                 )}
                 isSearchable={isSearchable}

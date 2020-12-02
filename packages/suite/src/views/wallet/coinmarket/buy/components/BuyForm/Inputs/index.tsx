@@ -1,7 +1,7 @@
 import { FIAT } from '@suite-config';
 import { Translation } from '@suite-components';
 import { getCryptoOptions } from '@wallet-utils/coinmarket/buyUtils';
-import { CleanSelect, Icon, Input, variables } from '@trezor/components';
+import { Select, Icon, Input, variables } from '@trezor/components';
 import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
 import React, { useEffect, useState } from 'react';
 import Bignumber from 'bignumber.js';
@@ -177,7 +177,7 @@ const Inputs = () => {
                             }
                             render={({ onChange, value }) => {
                                 return (
-                                    <CleanSelect
+                                    <Select
                                         options={FIAT.currencies
                                             .filter(c => buyInfo?.supportedFiatCurrencies.has(c))
                                             .map((currency: string) => buildOption(currency))}
@@ -185,6 +185,8 @@ const Inputs = () => {
                                         value={value}
                                         isClearable={false}
                                         minWidth="45px"
+                                        isClean
+                                        hideTextCursor
                                         onChange={(selected: any) => {
                                             onChange(selected);
                                             setAmountLimits(undefined);
@@ -293,7 +295,7 @@ const Inputs = () => {
                             }
                             render={({ onChange, value }) => {
                                 return (
-                                    <CleanSelect
+                                    <Select
                                         onChange={(selected: any) => {
                                             onChange(selected);
                                         }}
@@ -303,6 +305,8 @@ const Inputs = () => {
                                             account.symbol,
                                             account.networkType,
                                         )}
+                                        isClean
+                                        hideTextCursor
                                         isDropdownVisible={account.networkType === 'ethereum'}
                                         isDisabled={account.networkType !== 'ethereum'}
                                         minWidth="70px"
