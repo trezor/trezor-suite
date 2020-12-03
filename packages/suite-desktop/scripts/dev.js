@@ -12,7 +12,7 @@ const next = require('next')({
 next.prepare().then(() => {
     const requestHandler = next.getRequestHandler();
     const server = createServer(requestHandler).listen(8000, () => {
-        const electron = exec('electron .', {
+        const electron = exec('yarn run dev:run', {
             cwd: projectRoot,
         });
 
