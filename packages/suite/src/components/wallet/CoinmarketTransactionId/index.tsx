@@ -1,4 +1,4 @@
-import React, { createRef } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { variables, Button } from '@trezor/components';
 import { copyToClipboard } from '@suite-utils/dom';
