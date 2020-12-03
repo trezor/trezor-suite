@@ -435,3 +435,224 @@ export const getBip43Shortcut = [
         result: 'unknown',
     },
 ];
+
+export const getUtxoFromSignedTransaction = [
+    {
+        description: 'regular tx, 1 new utxo',
+        params: [
+            {
+                addresses: {
+                    used: [],
+                    unused: [],
+                    change: [
+                        { path: '/1/0', address: 'A-change' },
+                        { path: '/1/1', address: 'B-change' },
+                    ],
+                },
+                utxo: [
+                    { txid: '0000', vout: 0, amount: '4' },
+                    { txid: '0000', vout: 1, amount: '5' },
+                ],
+            },
+            {
+                type: 'final',
+                transaction: {
+                    inputs: [{ prev_hash: '0000', prev_index: 1 }],
+                    outputs: [
+                        { address: 'external', amount: '2' },
+                        { address_n: [0, 0, 0, 1, 1], amount: '1' },
+                    ],
+                },
+            },
+            'ABCD',
+        ],
+        result: [
+            { txid: 'ABCD', vout: 1, amount: '1', address: 'B-change', path: '/1/1' },
+            { txid: '0000', vout: 0, amount: '4' },
+        ],
+    },
+    {
+        description: 'regular tx, multiple outputs, multiple new utxos',
+        params: [
+            {
+                addresses: {
+                    used: [
+                        { path: '/0/0', address: 'A' },
+                        { path: '/0/1', address: 'B' },
+                    ],
+                    unused: [
+                        { path: '/0/2', address: 'C' },
+                        { path: '/0/3', address: 'D' },
+                    ],
+                    change: [
+                        { path: '/1/0', address: 'A-change' },
+                        { path: '/1/1', address: 'B-change' },
+                    ],
+                },
+                utxo: [
+                    { txid: '0000', vout: 0, amount: '20' },
+                    { txid: '0000', vout: 1, amount: '10' },
+                ],
+            },
+            {
+                type: 'final',
+                transaction: {
+                    inputs: [{ prev_hash: '0000', prev_index: 1 }],
+                    outputs: [
+                        { address: 'external', amount: '0.1' },
+                        { address: 'B', amount: '2' },
+                        { address: 'external', amount: '0.1' },
+                        { address: 'D', amount: '3' },
+                        { address: 'external', amount: '0.1' },
+                        { address: 'A-change', amount: '4' },
+                        { address: 'external', amount: '0.1' },
+                        { address_n: [0, 0, 0, 1, 1], amount: '5' },
+                    ],
+                },
+            },
+            'ABCD',
+        ],
+        result: [
+            { txid: 'ABCD', vout: 7, amount: '5', address: 'B-change', path: '/1/1' },
+            { txid: 'ABCD', vout: 5, amount: '4', address: 'A-change', path: '/1/0' },
+            { txid: 'ABCD', vout: 3, amount: '3', address: 'D', path: '/0/3' },
+            { txid: 'ABCD', vout: 1, amount: '2', address: 'B', path: '/0/1' },
+            { txid: '0000', vout: 0, amount: '20' },
+        ],
+    },
+    {
+        description: 'rbf tx, 1 utxo changed',
+        params: [
+            {
+                addresses: {
+                    used: [],
+                    unused: [],
+                    change: [
+                        { path: '/1/0', address: 'A-change' },
+                        { path: '/1/1', address: 'B-change' },
+                    ],
+                },
+                utxo: [
+                    { txid: '0000', vout: 0, amount: '10', address: 'B-change' },
+                    { txid: 'ABCD', vout: 1, amount: '5', address: 'B-change' },
+                ],
+            },
+            {
+                type: 'final',
+                transaction: {
+                    inputs: [{ prev_hash: '9876', prev_index: 2 }],
+                    outputs: [
+                        { address: 'external', amount: '2' },
+                        { address_n: [0, 0, 0, 1, 1], amount: '4' },
+                    ],
+                },
+            },
+            'DBCA',
+            'ABCD',
+        ],
+        result: [
+            { txid: 'DBCA', vout: 1, amount: '4', address: 'B-change', path: '/1/1' },
+            { txid: '0000', vout: 0, amount: '10' },
+        ],
+    },
+    {
+        description: 'rbf tx, multiple utxos changed, 1 utxo ignored',
+        params: [
+            {
+                addresses: {
+                    used: [
+                        { path: '/0/0', address: 'A' },
+                        { path: '/0/1', address: 'B' },
+                    ],
+                    unused: [],
+                    change: [
+                        { path: '/1/0', address: 'A-change' },
+                        { path: '/1/1', address: 'B-change' },
+                    ],
+                },
+                utxo: [
+                    { txid: '0000', vout: 0, amount: '10', address: 'B-change' },
+                    { txid: 'ABCD', vout: 3, amount: '5', address: 'B-change' },
+                    { txid: 'ABCD', vout: 1, amount: '5', address: 'B' },
+                ],
+            },
+            {
+                type: 'final',
+                transaction: {
+                    inputs: [{ prev_hash: '9876', prev_index: 2 }],
+                    outputs: [
+                        { address: 'external', amount: '2' },
+                        { address: 'B', amount: '5' },
+                        { address: 'A', amount: '5' },
+                        { address_n: [0, 0, 0, 1, 1], amount: '4' },
+                    ],
+                },
+            },
+            'DBCA',
+            'ABCD',
+        ],
+        result: [
+            // A should be ignored since it's not present in Account.utxo (its spent)
+            { txid: 'DBCA', vout: 3, amount: '4', address: 'B-change', path: '/1/1' },
+            { txid: 'DBCA', vout: 1, amount: '5', address: 'B', path: '/0/1' },
+            { txid: '0000', vout: 0, amount: '10' },
+        ],
+    },
+    {
+        description: 'rbf tx, all utxos ignored',
+        params: [
+            {
+                addresses: {
+                    used: [
+                        { path: '/0/0', address: 'A' },
+                        { path: '/0/1', address: 'B' },
+                    ],
+                    unused: [],
+                    change: [
+                        { path: '/1/0', address: 'A-change' },
+                        { path: '/1/1', address: 'B-change' },
+                    ],
+                },
+                utxo: [{ txid: '0000', vout: 0, amount: '10', address: 'B-change' }],
+            },
+            {
+                type: 'final',
+                transaction: {
+                    inputs: [{ prev_hash: '9876', prev_index: 2 }],
+                    outputs: [
+                        { address: 'external', amount: '2' },
+                        { address: 'B', amount: '5' },
+                        { address: 'A', amount: '5' },
+                        { address_n: [0, 0, 0, 1, 1], amount: '4' },
+                    ],
+                },
+            },
+            'DBCA',
+            'ABCD',
+        ],
+        result: [{ txid: '0000', vout: 0, amount: '10' }],
+    },
+    {
+        description: 'account without addresses/utxos',
+        params: [
+            {},
+            {
+                type: 'final',
+                transaction: {
+                    inputs: [{ prev_hash: '0000', prev_index: 1 }],
+                    outputs: [
+                        { address: 'external', amount: '2' },
+                        { address_n: [0, 0, 0, 1, 1], amount: '1' },
+                    ],
+                },
+            },
+            'ABCD',
+        ],
+        result: [],
+    },
+    {
+        description: 'tx not final',
+        params: [{}, { type: 'nonfinal' }, 'ABCD'],
+        result: [],
+    },
+];

@@ -3,6 +3,13 @@ import * as fixtures from '../__fixtures__/accountUtils';
 import { Account } from '@wallet-types';
 
 describe('account utils', () => {
+    fixtures.getUtxoFromSignedTransaction.forEach(f => {
+        it(`getUtxoFromSignedTransaction: ${f.description}`, () => {
+            // @ts-ignore params are partial
+            expect(accountUtils.getUtxoFromSignedTransaction(...f.params)).toMatchObject(f.result);
+        });
+    });
+
     fixtures.parseBIP44Path.forEach(f => {
         it('accountUtils.parseBIP44Path', () => {
             expect(accountUtils.parseBIP44Path(f.path)).toEqual(f.result);
