@@ -8,6 +8,7 @@
     "main": "dist/electron.js",
     "scripts": {
         "dev": "yarn copy-files && yarn build:electron && node scripts/dev.js",
+        "dev:run": "electron .",
         "clean": "rimraf ./build-electron && rimraf ./build && rimraf ./dist",
         "copy-files": "yarn workspace @trezor/suite-data copy-static-files",
         "build:electron": "rimraf ./dist && node scripts/build.js",
