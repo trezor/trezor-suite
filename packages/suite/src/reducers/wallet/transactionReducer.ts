@@ -44,6 +44,7 @@ const initializeAccount = (draft: State, accountHash: string) => {
     if (!draft.transactions[accountHash]) {
         draft.transactions[accountHash] = [];
     }
+    return draft.transactions[accountHash];
 };
 
 const update = (
@@ -62,6 +63,12 @@ const update = (
         ...accountTxs[index],
         ...updateObject,
     };
+};
+
+const replace = (draft: State, key: string, txid: string, tx: WalletAccountTransaction) => {
+    const accountTxs = initializeAccount(draft, key);
+    const index = accountTxs.findIndex(t => t && t.txid === txid);
+    accountTxs[index] = tx;
 };
 
 const add = (draft: State, transactions: AccountTransaction[], account: Account, page?: number) => {
@@ -139,8 +146,8 @@ const transactionReducer = (state: State = initialState, action: Action | Wallet
                     update(draft, u.account, u.txid, u.updateObject);
                 });
                 break;
-            case TRANSACTION.UPDATE:
-                // TODO
+            case TRANSACTION.REPLACE:
+                replace(draft, action.key, action.txid, action.tx);
                 break;
             case TRANSACTION.FETCH_INIT:
                 draft.isLoading = true;

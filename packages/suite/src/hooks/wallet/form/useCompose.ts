@@ -19,7 +19,6 @@ type Props = UseFormMethods<FormState> & {
         utxo?: Account['utxo'];
         network: Network;
         feeInfo: FeeInfo;
-        baseFee?: number;
     };
     defaultField?: string;
 };
