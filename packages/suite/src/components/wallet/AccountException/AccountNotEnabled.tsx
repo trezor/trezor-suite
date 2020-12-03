@@ -1,11 +1,9 @@
 import React from 'react';
-import { Button } from '@trezor/components';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { useDevice, useActions } from '@suite-hooks';
 import { Network } from '@wallet-types';
-import { Translation, Image } from '@suite-components';
-
-import Wrapper from './components/Wrapper';
+import { Translation } from '@suite-components';
+import { AccountExceptionLayout } from '@wallet-components';
 
 interface Props {
     network: Network;
@@ -23,24 +21,28 @@ const AccountNotEnabled = (props: Props) => {
     });
 
     return (
-        <Wrapper
+        <AccountExceptionLayout
             title={
                 <Translation
                     id="TR_ACCOUNT_EXCEPTION_NOT_ENABLED"
                     values={{ networkName: network.name }}
                 />
             }
-            image={<Image image="EMPTY_WALLET" />}
-        >
-            <Button
-                variant="primary"
-                icon="PLUS"
-                isLoading={isLocked()}
-                onClick={() => changeCoinVisibility(network.symbol, true)}
-            >
-                <Translation id="TR_ENABLE_NETWORK_BUTTON" values={{ networkName: network.name }} />
-            </Button>
-        </Wrapper>
+            image="EMPTY_WALLET_NEUE"
+            actions={[
+                {
+                    icon: 'PLUS',
+                    isLoading: isLocked(),
+                    onClick: () => changeCoinVisibility(network.symbol, true),
+                    children: (
+                        <Translation
+                            id="TR_ENABLE_NETWORK_BUTTON"
+                            values={{ networkName: network.name }}
+                        />
+                    ),
+                },
+            ]}
+        />
     );
 };
 

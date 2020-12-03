@@ -6,6 +6,7 @@ import CoinBalance from './CoinBalance';
 import OnOffSwitcher from './OnOffSwitcher';
 import InputError from './InputError';
 import EstimatedMiningTime from './EstimatedMiningTime';
+import AccountExceptionLayout from './AccountExceptionLayout';
 
 import CoinmarketLayout from './CoinmarketLayout';
 import { CoinmarketBuyTopPanel, CoinmarketExchangeTopPanel } from './CoinmarketTopPanel';
@@ -38,4 +39,5 @@ export {
     OnOffSwitcher,
     InputError,
     EstimatedMiningTime,
+    AccountExceptionLayout,
 };

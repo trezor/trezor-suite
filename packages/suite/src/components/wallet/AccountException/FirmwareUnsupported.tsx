@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { CoinLogo, Button, H2, P } from '@trezor/components';
+import { CoinLogo, Button } from '@trezor/components';
 import { Translation, TrezorLink } from '@suite-components';
+import { AccountExceptionLayout } from '@wallet-components';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import { Account } from '@wallet-types';
 
@@ -34,13 +35,6 @@ const getInfoUrl = (symbol?: Props['symbol']) => {
     return result;
 };
 
-const Wrapper = styled.div`
-    display: flex;
-    background: ${props => props.theme.BG_WHITE};
-    flex-direction: column;
-    flex: 1;
-`;
-
 const CoinLogoWrapper = styled.div`
     margin: 10px 0 20px 0;
 `;
@@ -49,42 +43,27 @@ const StyledCoinLogo = styled(CoinLogo)`
     width: 32px;
 `;
 
-const Row = styled.div`
-    display: flex;
-    padding: 50px 0;
-
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-`;
-
-const Message = styled(P)`
-    padding: 0 0 15px 0;
-    text-align: center;
-`;
-
+// TODO this doesn't seem to be used anywhere
 const FirmwareUnsupported = (props: Props) => (
-    <Wrapper>
-        <Row>
-            {props.symbol && (
+    <AccountExceptionLayout
+        title={<Translation {...props.title} />}
+        description={<Translation {...props.message} />}
+        imageComponent={
+            props.symbol && (
                 <CoinLogoWrapper>
                     <StyledCoinLogo symbol={props.symbol} />
                 </CoinLogoWrapper>
-            )}
-            <H2>
-                <Translation {...props.title} />
-            </H2>
-            <Message>
-                <Translation {...props.message} />
-            </Message>
+            )
+        }
+        actionComponent={
             <TrezorLink href={getInfoUrl(props.symbol)}>
                 <Button>
                     {/* TODO: use TR_LEARN_MORE? */}
                     <Translation id="TR_FIND_OUT_MORE_INFO" />
                 </Button>
             </TrezorLink>
-        </Row>
-    </Wrapper>
+        }
+    />
 );
 
 export default FirmwareUnsupported;

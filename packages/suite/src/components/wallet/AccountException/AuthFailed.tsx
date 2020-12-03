@@ -1,10 +1,8 @@
 import React from 'react';
-import { Button } from '@trezor/components';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { useDevice, useActions } from '@suite-hooks';
-import { Translation, Image } from '@suite-components';
-
-import Wrapper from './components/Wrapper';
+import { Translation } from '@suite-components';
+import { AccountExceptionLayout } from '@wallet-components';
 
 const AuthFailed = () => {
     const { isLocked } = useDevice();
@@ -12,15 +10,19 @@ const AuthFailed = () => {
         authDevice: suiteActions.authorizeDevice,
     });
     return (
-        <Wrapper
+        <AccountExceptionLayout
             title={<Translation id="TR_ACCOUNT_EXCEPTION_AUTH_ERROR" />}
             description={<Translation id="TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC" />}
-            image={<Image image="UNI_ERROR" />}
-        >
-            <Button variant="primary" icon="PLUS" isLoading={isLocked()} onClick={authDevice}>
-                <Translation id="TR_RETRY" />
-            </Button>
-        </Wrapper>
+            image="UNI_ERROR"
+            actions={[
+                {
+                    icon: 'REFRESH',
+                    isLoading: isLocked(),
+                    onClick: authDevice,
+                    children: <Translation id="TR_RETRY" />,
+                },
+            ]}
+        />
     );
 };
 
