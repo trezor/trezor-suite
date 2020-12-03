@@ -78,6 +78,7 @@ export const replaceTransaction = (
     const transactions = findTransactions(prevTxid, getState().wallet.transactions.transactions);
     const newFee = formatNetworkAmount(tx.fee, account.symbol);
     const newBaseFee = parseInt(tx.fee, 10);
+    let feeDifference = 0;
 
     // prepare replace actions for txs
     const actions = transactions.map(t => {
@@ -104,6 +105,8 @@ export const replaceTransaction = (
         }
         // update tx rbfParams
         if (action.tx.rbfParams) {
+            // balance is reduced only by fee differences
+            feeDifference = newBaseFee - action.tx.rbfParams.baseFee;
             action.tx.rbfParams = {
                 ...action.tx.rbfParams,
                 baseFee: newBaseFee,
@@ -115,13 +118,8 @@ export const replaceTransaction = (
     // dispatch replace actions
     actions.forEach(a => dispatch(a));
 
-    // balance is reduced by fee differences
-    const txToReplace = transactions.find(t => t.tx.type === 'sent' || t.tx.type === 'self');
-    const prevBaseFee = txToReplace?.tx.rbfParams?.baseFee || 0;
-    const feeDiff = prevBaseFee ? newBaseFee - prevBaseFee : 0; // 0 as fallback, balance will not be reduced
-
     // calculate new account balance and utxo
-    const newAccount = getRbfPendingAccount(account, tx, prevTxid, newTxid, feeDiff);
+    const newAccount = getRbfPendingAccount(account, tx, prevTxid, newTxid, feeDifference);
     if (newAccount) {
         dispatch(accountActions.updateAccount(newAccount));
     }

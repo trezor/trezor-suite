@@ -68,7 +68,7 @@ const update = (
 const replace = (draft: State, key: string, txid: string, tx: WalletAccountTransaction) => {
     const accountTxs = initializeAccount(draft, key);
     const index = accountTxs.findIndex(t => t && t.txid === txid);
-    accountTxs[index] = tx;
+    if (accountTxs[index]) accountTxs[index] = tx;
 };
 
 const add = (draft: State, transactions: AccountTransaction[], account: Account, page?: number) => {
