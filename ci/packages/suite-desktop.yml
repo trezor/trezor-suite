@@ -43,6 +43,18 @@ suite-desktop build mac:
   <<: *build
   <<: *build_nix
 
+suite-desktop build mac manual:
+  when: manual
+  except:
+    <<: *run_everything_rules
+  tags:
+    - darwin
+  variables:
+    artifact: ${DESKTOP_APP_NAME}*
+    platform: mac
+  <<: *build
+  <<: *build_nix
+
 suite-desktop build mac codesign:
   only:
     refs:
@@ -64,6 +76,15 @@ suite-desktop build linux:
     platform: linux
   <<: *build
 
+suite-desktop build linux manual:
+  when: manual
+  except:
+    <<: *run_everything_rules
+  variables:
+    artifact: ${DESKTOP_APP_NAME}*
+    platform: linux
+  <<: *build
+
 suite-desktop build linux codesign:
   only:
     refs:
@@ -79,6 +100,16 @@ suite-desktop build linux codesign:
 
 suite-desktop build windows:
   only:
+    <<: *run_everything_rules
+  image: electronuserland/builder:wine
+  variables:
+    artifact: ${DESKTOP_APP_NAME}*
+    platform: win
+  <<: *build
+
+suite-desktop build windows manual:
+  when: manual
+  except:
     <<: *run_everything_rules
   image: electronuserland/builder:wine
   variables:
