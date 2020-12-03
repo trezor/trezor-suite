@@ -449,7 +449,7 @@ export const getUtxoFromSignedTransaction = (
     if (tx.type !== 'final') return [];
 
     // find utxo to replace
-    const replaceUtxo = account.utxo?.filter(u => u.txid === prevTxid) || [];
+    const replaceUtxo = (prevTxid && account.utxo?.filter(u => u.txid === prevTxid)) || [];
 
     // remove utxo used by signed transaction or replaced by new tx (rbf)
     const utxo =
