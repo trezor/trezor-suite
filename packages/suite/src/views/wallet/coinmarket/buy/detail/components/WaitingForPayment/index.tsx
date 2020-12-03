@@ -53,23 +53,18 @@ interface Props {
 
 const WaitingForPayment = ({ transactionId, trade, account }: Props) => {
     const [isWorking, setIsWorking] = useState(false);
-
     const { submitRequestForm } = useActions({
         submitRequestForm: coinmarketBuyActions.submitRequestForm,
     });
 
-    const goToPayment = () => {
+    const goToPayment = async () => {
         setIsWorking(true);
-        invityAPI
-            .getBuyTradeForm({
-                trade,
-                returnUrl: createTxLink(trade, account),
-            })
-            .then(response => {
-                if (response) {
-                    submitRequestForm(response);
-                }
-            });
+        const returnUrl = await createTxLink(trade, account);
+        invityAPI.getBuyTradeForm({ trade, returnUrl }).then(response => {
+            if (response) {
+                submitRequestForm(response);
+            }
+        });
     };
     // const cancelTrade = () => {};
     return (

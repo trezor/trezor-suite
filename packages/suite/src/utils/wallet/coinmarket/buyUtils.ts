@@ -4,7 +4,6 @@ import { AmountLimits } from '@wallet-types/coinmarketBuyForm';
 import { BuyTrade, BuyTradeQuoteRequest, BuyTradeStatus } from 'invity-api';
 import { symbolToInvityApiSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { getLocationOrigin, isDesktop } from '@suite-utils/env';
-import { ELECTRON_RECEIVER_SERVER } from '@wallet-constants/coinmarket/buy';
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return the limits
 export function getAmountLimits(
@@ -65,7 +64,7 @@ export function processQuotes(allQuotes: BuyTrade[]): [BuyTrade[], BuyTrade[]] {
     return [quotes, alternativeQuotes];
 }
 
-export function createQuoteLink(request: BuyTradeQuoteRequest, account: Account): string {
+export const createQuoteLink = async (request: BuyTradeQuoteRequest, account: Account) => {
     const assetPrefix = process.env.assetPrefix || '';
     const locationOrigin = getLocationOrigin();
     let hash: string;
@@ -79,26 +78,25 @@ export function createQuoteLink(request: BuyTradeQuoteRequest, account: Account)
     const params = `offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
 
     if (isDesktop()) {
-        return `${ELECTRON_RECEIVER_SERVER}/buy-redirect?p=${encodeURIComponent(
-            `/coinmarket-redirect/${params}`,
-        )}`;
+        const url = await window.desktopApi?.getHttpReceiverAddress('/buy-redirect');
+        return `${url}?p=${encodeURIComponent(`/coinmarket-redirect/${params}`)}`;
     }
 
     return `${locationOrigin}${assetPrefix}/coinmarket-redirect#${params}`;
-}
+};
 
-export function createTxLink(trade: BuyTrade, account: Account): string {
+export const createTxLink = async (trade: BuyTrade, account: Account) => {
     const locationOrigin = getLocationOrigin();
     const assetPrefix = process.env.assetPrefix || '';
     const params = `detail/${account.symbol}/${account.accountType}/${account.index}/${trade.paymentId}`;
+
     if (isDesktop()) {
-        return `${ELECTRON_RECEIVER_SERVER}/buy-redirect?p=${encodeURIComponent(
-            `/coinmarket-redirect/${params}`,
-        )}`;
+        const url = await window.desktopApi?.getHttpReceiverAddress('/buy-redirect');
+        return `${url}?p=${encodeURIComponent(`/coinmarket-redirect/${params}`)}`;
     }
 
     return `${locationOrigin}${assetPrefix}/coinmarket-redirect#${params}`;
-}
+};
 
 export const getStatusMessage = (status: BuyTradeStatus) => {
     switch (status) {
