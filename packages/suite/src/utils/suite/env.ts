@@ -1,5 +1,3 @@
-import { ELECTRON_RECEIVER_SERVER } from '@wallet-constants/coinmarket/buy';
-
 /**
  * method does not do much, but still it is useful as we do not
  * have navigator.userAgent in native. This way we may define
@@ -48,13 +46,14 @@ export const getPlatformLanguage = () => {
 };
 
 export const isWeb = () => process.env.SUITE_TYPE === 'web';
+
 export const isDesktop = () => process.env.SUITE_TYPE === 'desktop';
 
 export const getLocationOrigin = () => {
     return window.location.origin;
 };
 
-export const submitRequestForm = (
+export const submitRequestForm = async (
     formMethod: 'GET' | 'POST' | 'IFRAME',
     formAction: string,
     fields: {
@@ -74,7 +73,8 @@ export const submitRequestForm = (
         Object.keys(fields).forEach(k => {
             params += `&${k}=${encodeURIComponent(fields[k])}`;
         });
-        window.open(`${ELECTRON_RECEIVER_SERVER}/buy-post?${params}`, '_blank');
+        const serverUrl = await window.desktopApi?.getHttpReceiverAddress('/buy-post');
+        window.open(`${serverUrl}?${params}`, '_blank');
     } else {
         const form = document.createElement('form');
         form.method = formMethod;

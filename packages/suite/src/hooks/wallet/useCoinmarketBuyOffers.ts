@@ -95,10 +95,8 @@ export const useOffers = (props: Props) => {
             if (result) {
                 // empty quoteId means the partner requests login first, requestTrade to get login screen
                 if (!quote.quoteId) {
-                    const response = await invityAPI.doBuyTrade({
-                        trade: quote,
-                        returnUrl: createQuoteLink(quotesRequest, account),
-                    });
+                    const returnUrl = await createQuoteLink(quotesRequest, account);
+                    const response = await invityAPI.doBuyTrade({ trade: quote, returnUrl });
                     if (response) {
                         if (response.trade.status === 'LOGIN_REQUEST' && response.tradeForm) {
                             submitRequestForm(response.tradeForm);
@@ -124,10 +122,11 @@ export const useOffers = (props: Props) => {
     const goToPayment = async (address: string) => {
         if (!selectedQuote) return;
 
+        const returnUrl = await createTxLink(selectedQuote, account);
         const quote = { ...selectedQuote, receiveAddress: address };
         const response = await invityAPI.doBuyTrade({
             trade: quote,
-            returnUrl: createTxLink(selectedQuote, account),
+            returnUrl,
         });
 
         if (!response || !response.trade || !response.trade.paymentId) {

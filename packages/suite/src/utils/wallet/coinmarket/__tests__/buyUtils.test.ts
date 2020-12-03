@@ -55,30 +55,30 @@ describe('coinmarket/buy utils', () => {
         ]);
     });
 
-    it('createQuoteLink', () => {
+    it('createQuoteLink', async () => {
         const accountMock = {
             index: 1,
             accountType: 'normal',
             symbol: 'btc',
         };
         // @ts-ignore
-        expect(createQuoteLink(QUOTE_REQUEST_FIAT, accountMock)).toStrictEqual(
+        expect(await createQuoteLink(QUOTE_REQUEST_FIAT, accountMock)).toStrictEqual(
             `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qf/CZ/EUR/10/BTC`,
         );
         // @ts-ignore
-        expect(createQuoteLink(QUOTE_REQUEST_CRYPTO, accountMock)).toStrictEqual(
+        expect(await createQuoteLink(QUOTE_REQUEST_CRYPTO, accountMock)).toStrictEqual(
             `${window.location.origin}/coinmarket-redirect#offers/btc/normal/1/qc/CZ/EUR/0.001/BTC`,
         );
     });
 
-    it('createTxLink', () => {
+    it('createTxLink', async () => {
         const accountMock = {
             index: 1,
             accountType: 'normal',
             symbol: 'btc',
         };
         // @ts-ignore
-        expect(createTxLink(MIN_MAX_QUOTES_OK[0], accountMock)).toStrictEqual(
+        expect(await createTxLink(MIN_MAX_QUOTES_OK[0], accountMock)).toStrictEqual(
             `${window.location.origin}/coinmarket-redirect#detail/btc/normal/1/e709df77-ee9e-4d12-98c2-84004a19c546`,
         );
     });
