@@ -1,6 +1,7 @@
 import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import * as accountActions from '@wallet-actions/accountActions';
+import * as transactionActions from '@wallet-actions/transactionActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { SEND } from '@wallet-actions/constants';
@@ -145,6 +146,7 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
         : formatNetworkAmount(spentWithoutFee, account.symbol, true);
 
     if (sentTx.success) {
+        const { txid } = sentTx.payload;
         dispatch(
             notificationActions.addToast({
                 type: 'tx-sent',
@@ -152,7 +154,7 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
                 device,
                 descriptor: account.descriptor,
                 symbol: account.symbol,
-                txid: sentTx.payload.txid,
+                txid,
             }),
         );
 
@@ -160,10 +162,22 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
             // notification from the backend may be delayed.
             // temporary calculate pending balance and utxo until the real account update occurs
             // this will prevent from double spending already used utxo
-            const pendingAccount = getPendingAccount(account, precomposedTx, sentTx.payload.txid);
-            if (pendingAccount) {
-                // update account
-                dispatch(accountActions.updateAccount(pendingAccount));
+            if (precomposedTx.prevTxid) {
+                dispatch(
+                    transactionActions.replaceTransaction(
+                        account,
+                        precomposedTx,
+                        precomposedTx.prevTxid,
+                        txid,
+                        precomposedTx.rbf,
+                    ),
+                );
+            } else {
+                const pendingAccount = getPendingAccount(account, precomposedTx, txid);
+                if (pendingAccount) {
+                    // update account
+                    dispatch(accountActions.updateAccount(pendingAccount));
+                }
             }
         } else {
             dispatch(accountActions.fetchAndUpdateAccount(account));
@@ -191,7 +205,11 @@ export const signTransaction = (
         type: SEND.REQUEST_SIGN_TRANSACTION,
         payload: {
             formValues,
-            transactionInfo,
+            transactionInfo: {
+                ...transactionInfo,
+                rbf: formValues.options.includes('bitcoinRBF'),
+                prevTxid: formValues.prevTxid,
+            },
         },
     });
 

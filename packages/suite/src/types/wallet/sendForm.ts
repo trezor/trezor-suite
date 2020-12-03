@@ -47,6 +47,8 @@ export type FormState = {
     ethereumDataAscii?: string;
     ethereumDataHex?: string;
     rippleDestinationTag?: string;
+    baseFee?: number; // used in RBF
+    prevTxid?: string; // used in RBF
 };
 
 export interface FeeInfo {
@@ -90,6 +92,8 @@ export type PrecomposedTransactionFinal = Extract<PrecomposedTransactionBase, { 
     max: string | undefined;
     feeLimit?: string;
     token?: TokenInfo;
+    rbf?: boolean;
+    prevTxid?: string;
 };
 
 export type PrecomposedTransaction =
@@ -127,7 +131,6 @@ export type UseSendFormState = {
     composedLevels?: PrecomposedLevels;
     online: boolean;
     utxo?: Account['utxo'];
-    baseFee?: number;
 };
 
 // strongly typed UseFormMethods.getValues with fallback value
