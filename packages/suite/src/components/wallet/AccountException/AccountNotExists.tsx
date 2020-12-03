@@ -1,7 +1,6 @@
 import React from 'react';
-import { Translation, Image } from '@suite-components';
-
-import Wrapper from './components/Wrapper';
+import { Translation } from '@suite-components';
+import { AccountExceptionLayout } from '@wallet-components';
 
 /**
  * Handler for invalid router params
@@ -9,9 +8,9 @@ import Wrapper from './components/Wrapper';
  */
 const AccountNotExists = () => {
     return (
-        <Wrapper
+        <AccountExceptionLayout
             title={<Translation id="TR_ACCOUNT_EXCEPTION_NOT_EXIST" />}
-            image={<Image image="EMPTY_WALLET" />}
+            image="EMPTY_WALLET_NEUE"
         />
     );
 };

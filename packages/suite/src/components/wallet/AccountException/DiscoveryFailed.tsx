@@ -1,8 +1,7 @@
 import React from 'react';
-import { Button } from '@trezor/components';
-import { Image, Translation } from '@suite-components';
+import { Translation } from '@suite-components';
+import { AccountExceptionLayout } from '@wallet-components';
 import { useDiscovery, useActions } from '@suite-hooks';
-import Wrapper from './components/Wrapper';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 
 /**
@@ -16,15 +15,14 @@ const DiscoveryFailed = () => {
     });
 
     return (
-        <Wrapper
+        <AccountExceptionLayout
             title={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR" />}
             description={discovery && discovery.error ? discovery.error : undefined}
-            image={<Image image="UNI_ERROR" />}
-        >
-            <Button variant="primary" icon="PLUS" onClick={restart}>
-                <Translation id="TR_RETRY" />
-            </Button>
-        </Wrapper>
+            image="UNI_ERROR"
+            actions={[
+                { icon: 'REFRESH', onClick: restart, children: <Translation id="TR_RETRY" /> },
+            ]}
+        />
     );
 };
 

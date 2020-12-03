@@ -1,10 +1,8 @@
 import React from 'react';
-import { Button } from '@trezor/components';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { useDevice, useActions } from '@suite-hooks';
-import { Translation, Image } from '@suite-components';
-
-import Wrapper from './components/Wrapper';
+import { Translation } from '@suite-components';
+import { AccountExceptionLayout } from '@wallet-components';
 
 /**
  * Handler for 'bundle-exception' in discovery
@@ -19,15 +17,19 @@ const AccountNotLoaded = () => {
     });
 
     return (
-        <Wrapper
+        <AccountExceptionLayout
             title={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR" />}
             description={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_DESCRIPTION" />}
-            image={<Image image="EMPTY_WALLET" />}
-        >
-            <Button variant="primary" icon="PLUS" isLoading={isLocked()} onClick={restart}>
-                <Translation id="TR_RETRY" />
-            </Button>
-        </Wrapper>
+            image="EMPTY_WALLET_NEUE"
+            actions={[
+                {
+                    icon: 'REFRESH',
+                    isLoading: isLocked(),
+                    onClick: restart,
+                    children: <Translation id="TR_RETRY" />,
+                },
+            ]}
+        />
     );
 };
 
