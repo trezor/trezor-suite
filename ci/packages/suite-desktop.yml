@@ -21,6 +21,7 @@
     - nix-shell --run "yarn build:libs"
     - nix-shell --run "yarn workspace @trezor/suite-data copy-static-files"
     - nix-shell --run "yarn workspace @trezor/suite-desktop build:${platform}"
+    - nix-shell --run "bash packages/suite-desktop/scripts/gnupg-sign.sh"
     - ls -la packages/suite-desktop/build-electron
     - mv packages/suite-desktop/build-electron/* .
     - more latest*.yml | cat
