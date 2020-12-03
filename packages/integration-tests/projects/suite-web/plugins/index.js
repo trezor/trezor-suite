@@ -29,8 +29,13 @@ module.exports = on => {
     addMatchImageSnapshotPlugin(on);
 
     on('before:browser:launch', async (browser = {}, launchOptions) => {
-        // default state of bridge is ON
+        // todo: maybe turn of bridge on and off here before launching test files.
+        // this would help to prevent messed sessions between tests (unacquired device) which is 
+        // the likeliest source of flakiness in tests
+        // but it is not a silver bullet also, if there are more tests in one file, you still
+        // need to handle bridge reloading manually
         await controller.connect();
+        // default state of bridge is ON
         await controller.send({ type: 'bridge-start' });
         controller.disconnect();
 

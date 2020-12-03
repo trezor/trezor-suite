@@ -6,29 +6,25 @@ export const toggleDeviceMenu = () => {
 };
 
 export const goToOnboarding = () => {
-    return (
-        cy
-            .getTestElement('@welcome/continue-button')
-            .click()
-            .getTestElement('@analytics/go-to-onboarding-button')
-            .click()
-    );
+    return cy
+        .getTestElement('@welcome/continue-button')
+        .click()
+        .getTestElement('@analytics/go-to-onboarding-button')
+        .click();
 };
 
 export const passThroughInitialRun = () => {
-    return (
-        cy
-            .getTestElement('@welcome/continue-button')
-            .click()
-            .getTestElement('@analytics/go-to-onboarding-button')
-            .click()
-            .getTestElement('@onboarding/skip-button')
-            .click()
-            .getTestElement('@onboarding/skip-button')
-            .click()
-            .getTestElement('@suite/loading')
-            .should('not.exist')
-    );
+    return cy
+        .getTestElement('@welcome/continue-button')
+        .click()
+        .getTestElement('@analytics/go-to-onboarding-button')
+        .click()
+        .getTestElement('@onboarding/skip-button')
+        .click()
+        .getTestElement('@onboarding/skip-button')
+        .click()
+        .getTestElement('@suite/loading')
+        .should('not.exist');
 };
 
 export const passThroughBackup = () => {
@@ -44,7 +40,7 @@ export const passThroughBackup = () => {
     cy.log('Create backup on device');
     cy.getTestElement('@backup/start-button').click();
     cy.getConfirmActionOnDeviceModal();
-    cy.task('pressYes');
+    // cy.task('pressYes');
     cy.task('readAndConfirmMnemonicEmu');
 
     cy.log('click all after checkboxes and close backup modal');
@@ -60,4 +56,15 @@ export const passThroughInitMetadata = (provider: 'dropbox' | 'google') => {
     cy.task('pressYes');
     cy.getTestElement(`@modal/metadata-provider/${provider}-button`).click();
     cy.getTestElement('@modal/metadata-provider').should('not.exist');
+};
+
+export const passThroughSetPin = () => {
+    cy.getTestElement('@onboarding/set-pin-button').click();
+    cy.getTestElement('@suite/modal/confirm-action-on-device');
+    cy.task('pressYes');
+    cy.task('inputEmu', '1');
+    cy.task('inputEmu', '1');
+    cy.task('pressYes');
+    cy.getTestElement('@onboarding/pin/continue-button').click();
+
 };

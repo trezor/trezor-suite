@@ -3,13 +3,14 @@
 
 describe('Firmware', () => {
     beforeEach(() => {
+        cy.task('stopBridge');
         cy.task('stopEmu');
+        cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
     });
 
-    // todo: this test requires trezor-user-env ability to run various versions of trezord
-    it.skip('Firmware outdated static notification should open firmware update modal', () => {
-        cy.task('startEmu', { wipe: true });
+    it('Firmware outdated static notification should open firmware update modal', () => {
+        cy.task('startEmu', { wipe: true, version: '2.3.0' });
         cy.task('setupEmu');
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
@@ -21,22 +22,22 @@ describe('Firmware', () => {
         cy.getTestElement('@firmware/confirm-seed-button').click();
         cy.getTestElement('@firmware/disconnect-message');
         cy.task('stopEmu');
-        cy.getTestElement('@firmware/connect-in-bootloader-message', { timeout: 10000 });
+        cy.getTestElement('@firmware/connect-in-bootloader-message', { timeout: 20000 });
         cy.log(
             'And this is the end my friends. Emulator does not support bootloader, so we can not proceed with actual fw install',
         );
-        // cy.getTestElement('@modal/close-button').click();
+        cy.getTestElement('@modal/close-button').click();
+
+        
     });
 
     it('For latest firmware, update button in device settings should display "Up to date" but still be clickable', () => {
-        cy.task('stopBridge');
-        cy.task('startEmu', { wipe: true, version: '2.3.0' });
-        cy.task('setupEmu');
-        cy.task('startBridge');
+        // todo: do not reuse device state from previous test
+        cy.task('startEmu', { wipe: false });
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
         cy.getTestElement('@settings/device/update-button')
-            .should('contain.text', 'Update available')
+            .should('contain.text', 'Up to date')
             .click();
         cy.getTestElement('@modal/close-button').click();
     });

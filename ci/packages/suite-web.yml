@@ -66,7 +66,7 @@ suite-web deploy dev:
   tags:
     - deploy
 
-# # e2e
+# e2e
 
 .e2e web:
   stage: integration testing
@@ -81,7 +81,6 @@ suite-web deploy dev:
     CYPRESS_SNAPSHOT: 0
     TRACK_SUITE_URL: https://track-suite.herokuapp.com
   script:
-    - env
     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
     - docker-compose pull
     - docker-compose up -d trezor-user-env-unix

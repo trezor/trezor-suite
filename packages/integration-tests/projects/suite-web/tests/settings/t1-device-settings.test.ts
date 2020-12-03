@@ -1,12 +1,13 @@
 // @group:settings
 // @retry=2
 
-describe.skip('Device settings', () => {
+describe('Device settings', () => {
     beforeEach(() => {
         cy.task('stopEmu');
-        cy.wait(501);
+        cy.task('stopBridge');
         cy.task('startEmu', { version: '1.9.0', wipe: true });
         cy.task('setupEmu', { needs_backup: false });
+        cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();

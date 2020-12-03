@@ -48,11 +48,12 @@ const shareTwoOfThree = [
     'disease',
 ];
 
-// todo trezorlib fix
-describe.skip('Onboarding - T2 in recovery mode', () => {
+describe('Onboarding - T2 in recovery mode', () => {
     beforeEach(() => {
-        cy.resetDb();
+        cy.task('stopBridge');
         cy.task('stopEmu');
+        cy.task('startBridge');
+        cy.resetDb();
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
         cy.goToOnboarding();
@@ -71,16 +72,10 @@ describe.skip('Onboarding - T2 in recovery mode', () => {
         cy.getTestElement('@onboarding/recovery/start-button').click();
         cy.getTestElement('@suite/modal/confirm-action-on-device');
         cy.task('pressYes');
+        cy.wait(501); // wait for device release
         cy.task('stopEmu');
 
-        // why sometimes unacquired device?
-        // cy.wait(2000);
-
         cy.getTestElement('@onboarding/unexpected-state/reconnect', { timeout: 20000 });
-
-        // why sometimes unacquired device? session not released before reload?
-        // cy.wait(5000);
-
         cy.resetDb();
         cy.reload();
         cy.task('startEmu', { version: '2.3.1', wipe: false });
@@ -90,6 +85,7 @@ describe.skip('Onboarding - T2 in recovery mode', () => {
         cy.getTestElement('@analytics/go-to-onboarding-button').click();
         cy.log('Once we get into first onboarding screen, we can see "recovery mode"');
         cy.getTestElement('@suite/modal/confirm-action-on-device');
+        cy.task('pressNo');
         cy.log('At this moment, device and client communicate again');
     });
 
@@ -119,8 +115,9 @@ describe.skip('Onboarding - T2 in recovery mode', () => {
             cy.task('inputEmu', shareOneOfThree[i]);
         }
         cy.getTestElement('@suite/modal/confirm-action-on-device');
+        cy.wait(501);
         cy.task('stopEmu');
-        cy.getTestElement('@onboarding/unexpected-state/reconnect');
+        cy.getTestElement('@onboarding/unexpected-state/reconnect', { timeout: 20000 });
 
         cy.task('startEmu', { version: '2.3.1', wipe: false });
         cy.getTestElement('@suite/modal/confirm-action-on-device');
