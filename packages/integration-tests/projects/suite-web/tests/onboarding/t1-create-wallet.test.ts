@@ -1,7 +1,7 @@
 // @group:onboarding
 // @retry=2
 
-describe.skip('Onboarding - create wallet', () => {
+describe('Onboarding - create wallet', () => {
     beforeEach(() => {
         cy.task('stopEmu');
         cy.task('stopBridge');
@@ -46,6 +46,7 @@ describe.skip('Onboarding - create wallet', () => {
 
         for (let i = 0; i < 48; i++) {
             cy.task('pressYes');
+            cy.wait(100);
         }
 
         cy.getTestElement('@backup/close-button').should('be.disabled');

@@ -2,8 +2,8 @@
 
 // @group:onboarding
 // @retry=2
-// todo: trezorlib
-describe.skip('Onboarding - recover wallet T2', () => {
+
+describe('Onboarding - recover wallet T2', () => {
     beforeEach(() => {
         cy.task('stopEmu');
         cy.viewport(1024, 768).resetDb();
@@ -25,8 +25,9 @@ describe.skip('Onboarding - recover wallet T2', () => {
         cy.getTestElement('@onboarding/recovery/start-button').click();
         cy.getTestElement('@suite/modal/confirm-action-on-device');
         cy.task('pressYes');
+        cy.wait(501);
         cy.task('stopEmu');
-        cy.getTestElement('@onboarding/unexpected-state/reconnect');
+        cy.getTestElement('@onboarding/unexpected-state/reconnect', { timeout: 20000 });
         cy.task('startEmu', { version: '2.1.4', wipe: false });
         cy.log(
             'If device disconnected during call, error page with retry button should appear. Also note, that unlike with T1, retry button initiates recoveryDevice call immediately',

@@ -3,19 +3,19 @@
 // @group:device-management
 // @retry=2
 
-// todo: trezorlib unskip
-describe.skip('Recovery - dry run', () => {
+describe('Recovery - dry run', () => {
     beforeEach(() => {
+        cy.task('stopBridge');
         cy.task('stopEmu');
-
+        cy.task('startEmu', { wipe: true, version: '2.3.1' });
+        cy.task('setupEmu');
+        cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
-        cy.prefixedVisit('/settings/device');
-        cy.passThroughInitialRun();
     });
 
     it('Communication between device and application is automatically established whenever app detects device in recovery mode', () => {
-        cy.task('startEmu', { wipe: true, version: '2.3.1' });
-        cy.task('setupEmu');
+        cy.prefixedVisit('/settings/device');
+        cy.passThroughInitialRun();
         cy.getTestElement('@settings/device/check-seed-button').click();
         cy.getTestElement('@recovery/user-understands-checkbox').click();
         cy.getTestElement('@recovery/start-button').click();
@@ -23,7 +23,10 @@ describe.skip('Recovery - dry run', () => {
         cy.getTestElement('@suite/modal/confirm-action-on-device');
 
         /* reinitialize process on device reconnect */
-        cy.log('Now check that reconnecting device works and seed check procedure does reinitialize correctly');
+        cy.log(
+            'Now check that reconnecting device works and seed check procedure does reinitialize correctly',
+        );
+        cy.wait(501);
         cy.task('stopEmu');
         cy.getTestElement('@recovery/close-button', { timeout: 30000 }).click();
         cy.getTestElement('@modal/connect-device');
@@ -34,14 +37,16 @@ describe.skip('Recovery - dry run', () => {
 
         /* reinitialize process on app reload */
 
-        cy.log('On app reload, recovery process should auto start if app detects initialized device in recovery mode');
-        cy.wait(2000); // need some waiting here so that communication with emu has time to finish
-        cy.reload();
+        cy.log(
+            'On app reload, recovery process should auto start if app detects initialized device in recovery mode',
+        );
+        
+        cy.reload().task('stopBridge').task('startBridge');
         cy.wait(2000);
 
         cy.getTestElement('@suite/modal/confirm-action-on-device');
         cy.task('pressYes');
-        cy.task('selectNumOfWordsEmu', 12)
+        cy.task('selectNumOfWordsEmu', 12);
         cy.task('pressYes');
         cy.log('Communication established, now finish the seed check process');
 

@@ -14,8 +14,7 @@ const providers = [
     },
 ] as const;
 
-// todo: I'll fix this soon.. disabling it now as there is nothing worse than test that sometimes fail
-describe.skip(`Metadata - In settings, there is enable metadata switch. On enable, it initiates metadata right away (if device already has state).
+describe(`Metadata - In settings, there is enable metadata switch. On enable, it initiates metadata right away (if device already has state).
 On disable, it throws away all metadata related records from memory.`, () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
@@ -24,8 +23,10 @@ On disable, it throws away all metadata related records from memory.`, () => {
     providers.forEach(f => {
         it(f.provider, () => {
             // prepare test
+            cy.task('stopBridge');
             cy.task('startEmu', { wipe: true });
             cy.task('setupEmu');
+            cy.task('startBridge');
             cy.task('metadataStartProvider', f.provider);
             cy.task('metadataSetFileContent', {
                 provider: f.provider,

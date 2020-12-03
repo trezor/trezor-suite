@@ -14,6 +14,7 @@ import {
     passThroughInitialRun,
     passThroughBackup,
     passThroughInitMetadata,
+    passThroughSetPin,
 } from './utils/shortcuts';
 
 const command = require('cypress-image-snapshot/command');
@@ -47,6 +48,7 @@ declare global {
             toggleDeviceMenu: () => Chainable<Subject>;
             passThroughInitialRun: () => Chainable<Subject>;
             passThroughBackup: () => Chainable<Subject>;
+            passThroughSetPin: () => Chainable<Subject>;
             passThroughInitMetadata: (provider: 'dropbox' | 'google') => Chainable<Subject>;
             goToOnboarding: () => Chainable<Subject>;
         }
@@ -88,5 +90,6 @@ Cypress.Commands.add('goToOnboarding', goToOnboarding);
 Cypress.Commands.add('passThroughInitialRun', passThroughInitialRun);
 Cypress.Commands.add('passThroughBackup', passThroughBackup);
 Cypress.Commands.add('passThroughInitMetadata', passThroughInitMetadata);
+Cypress.Commands.add('passThroughSetPin', passThroughSetPin);
 // redux
 Cypress.Commands.add('dispatch', dispatch);

@@ -13,9 +13,7 @@ describe.skip('Recovery - dry run', () => {
         cy.passThroughInitialRun();
     });
 
-    // again, timed out waiting for udp device, but why?
     it('Dry run with model One', () => {
-
         cy.getTestElement('@settings/device/check-seed-button').click();
         cy.getTestElement('@recovery/user-understands-checkbox').click();
         cy.getTestElement('@recovery/start-button').click();
@@ -25,7 +23,6 @@ describe.skip('Recovery - dry run', () => {
         cy.task('pressYes');
         cy.getTestElement('@recovery/word-input-advanced/1');
 
-        // todo: elaborate more
+        // todo: elaborate more, seems like finally t1 tests are stable so it would make finally sense to finish this
     });
-
 });

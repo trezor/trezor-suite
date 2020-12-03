@@ -3,9 +3,15 @@
 // @group:onboarding
 // @retry=2
 
-describe.skip('Onboarding - recover wallet T1', () => {
+describe('Onboarding - recover wallet T1', () => {
     beforeEach(() => {
+        cy.task('stopBridge');
+        // wipe: true does not work in trezor-user-env with model 1 at the moment
+        cy.task('startEmu', { version: '1.9.0' });
+        cy.task('wipeEmu');
         cy.task('stopEmu');
+        cy.task('startBridge');
+
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
         cy.goToOnboarding();
@@ -18,10 +24,7 @@ describe.skip('Onboarding - recover wallet T1', () => {
     });
 
     it('Incomplete run of advanced recovery', () => {
-        // todo: acquire device problem with model T1 emu, but why? stop and start bridge is sad workaround :(
-        cy.task('stopBridge');
-        cy.task('startEmu', { version: '1.9.0', wipe: true });
-        cy.task('startBridge');
+        cy.task('startEmu', { version: '1.9.0' });
 
         cy.getTestElement('@onboarding/button-continue').click();
         cy.getTestElement('@firmware/skip-button').click();
@@ -36,10 +39,10 @@ describe.skip('Onboarding - recover wallet T1', () => {
         cy.log(
             'but after a while he finds he has no chance to finish it ever, so he disconnects device as there is no cancel button',
         );
-
+        cy.wait(501);
         cy.task('stopEmu');
-        cy.getTestElement('@onboarding/unexpected-state/reconnect', { timeout: 10000 });
-        cy.task('startEmu', { version: '1.9.0', wipe: false });
+        cy.getTestElement('@onboarding/unexpected-state/reconnect', { timeout: 20000 });
+        cy.task('startEmu', { version: '1.9.0' });
         cy.getTestElement('@onboarding/recovery/retry-button').click();
 
         cy.getTestElement('@recover/select-count/12').click();
