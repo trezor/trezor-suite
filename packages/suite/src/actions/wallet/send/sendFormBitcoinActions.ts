@@ -46,7 +46,7 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
             utxo: formState.utxo || account.utxo.filter(input => input.amount !== '0'),
         },
         feeLevels: predefinedLevels,
-        baseFee: formState.baseFee || 0,
+        baseFee: formValues.baseFee || 0,
         outputs: composeOutputs,
         coin: account.symbol,
     };

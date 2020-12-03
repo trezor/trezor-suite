@@ -24,7 +24,6 @@ const useRbfState = (tx: WalletAccountTransaction, finalize: boolean) => {
         utxo: tx.rbfParams.utxo, // use only utxo from original tx
         network,
         feeInfo: { ...coinFees, levels },
-        baseFee: tx.rbfParams.baseFee,
         formValues: {
             ...DEFAULT_VALUES,
             outputs: tx.rbfParams.outputs.map(o => ({ ...DEFAULT_PAYMENT, ...o })), // use outputs from original tx
@@ -32,6 +31,8 @@ const useRbfState = (tx: WalletAccountTransaction, finalize: boolean) => {
             options: finalize ? ['broadcast'] : ['bitcoinRBF', 'broadcast'],
             feePerUnit: '',
             feeLimit: '',
+            baseFee: tx.rbfParams.baseFee,
+            prevTxid: tx.txid,
         } as FormState, // TODO: remove type casting (options string[])
     };
 };

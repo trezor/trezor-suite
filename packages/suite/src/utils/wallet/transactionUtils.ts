@@ -104,6 +104,17 @@ export const parseKey = (key: string) => {
 export const findTransaction = (txid: string, transactions: WalletAccountTransaction[]) =>
     transactions.find(t => t && t.txid === txid);
 
+export const findTransactions = (
+    txid: string,
+    transactions: { [key: string]: WalletAccountTransaction[] },
+) => {
+    return Object.keys(transactions).flatMap(key => {
+        const tx = findTransaction(txid, transactions[key]);
+        if (!tx) return [];
+        return [{ key, tx }];
+    });
+};
+
 export const isPending = (tx: WalletAccountTransaction | AccountTransaction) =>
     !tx.blockHeight || tx.blockHeight < 0;
 

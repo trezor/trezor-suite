@@ -1,5 +1,10 @@
-import TrezorConnect, { AccountTransaction } from 'trezor-connect';
-import { getAccountTransactions } from '@wallet-utils/accountUtils';
+import TrezorConnect, { AccountTransaction, PrecomposedTransaction } from 'trezor-connect';
+import {
+    getAccountTransactions,
+    formatNetworkAmount,
+    getRbfPendingAccount,
+} from '@wallet-utils/accountUtils';
+import { findTransactions } from '@wallet-utils/transactionUtils';
 import * as accountActions from '@wallet-actions/accountActions';
 import { TRANSACTION } from '@wallet-actions/constants';
 import { SETTINGS } from '@suite-config';
@@ -15,7 +20,12 @@ export type TransactionAction =
       }
     | { type: typeof TRANSACTION.REMOVE; account: Account; txs: WalletAccountTransaction[] }
     | { type: typeof TRANSACTION.RESET; account: Account }
-    | { type: typeof TRANSACTION.UPDATE; txId: string; timestamp: number }
+    | {
+          type: typeof TRANSACTION.REPLACE;
+          key: string;
+          txid: string;
+          tx: WalletAccountTransaction;
+      }
     | { type: typeof TRANSACTION.FETCH_INIT }
     | {
           type: typeof TRANSACTION.FETCH_SUCCESS;
@@ -55,16 +65,67 @@ export const remove = (account: Account, txs: WalletAccountTransaction[]): Trans
     txs,
 });
 
-// export const update = (txId: string) => async (dispatch: Dispatch) => {
-//     const updatedTimestamp = Date.now();
-//     db.updateItemByIndex('txs', 'txId', txId, { timestamp: updatedTimestamp }).then(_key => {
-//         dispatch({
-//             type: TRANSACTION.UPDATE,
-//             txId,
-//             timestamp: updatedTimestamp,
-//         });
-//     });
-// };
+export const replaceTransaction = (
+    account: Account,
+    tx: PrecomposedTransaction,
+    prevTxid: string,
+    newTxid: string,
+    rbf?: boolean,
+) => (dispatch: Dispatch, getState: GetState) => {
+    if (tx.type !== 'final') return;
+
+    // find all transactions to replace, they may be related to another account
+    const transactions = findTransactions(prevTxid, getState().wallet.transactions.transactions);
+    const newFee = formatNetworkAmount(tx.fee, account.symbol);
+    const newBaseFee = parseInt(tx.fee, 10);
+
+    // prepare replace actions for txs
+    const actions = transactions.map(t => {
+        const action = {
+            type: TRANSACTION.REPLACE,
+            key: t.key,
+            txid: prevTxid,
+            tx: {
+                ...t.tx,
+                txid: newTxid,
+                fee: newFee,
+                rbf: !!rbf,
+                // TODO: details: {}, is it worth it?
+            },
+        };
+        // finalized and recv tx shouldn't have rbfParams
+        if (!rbf || t.tx.type === 'recv') {
+            delete action.tx.rbfParams;
+            return action;
+        }
+
+        if (action.tx.type === 'self') {
+            action.tx.amount = newFee;
+        }
+        // update tx rbfParams
+        if (action.tx.rbfParams) {
+            action.tx.rbfParams = {
+                ...action.tx.rbfParams,
+                baseFee: newBaseFee,
+                feeRate: tx.feePerByte,
+            };
+        }
+        return action;
+    });
+    // dispatch replace actions
+    actions.forEach(a => dispatch(a));
+
+    // balance is reduced by fee differences
+    const txToReplace = transactions.find(t => t.tx.type === 'sent' || t.tx.type === 'self');
+    const prevBaseFee = txToReplace?.tx.rbfParams?.baseFee || 0;
+    const feeDiff = prevBaseFee ? newBaseFee - prevBaseFee : 0; // 0 as fallback, balance will not be reduced
+
+    // calculate new account balance and utxo
+    const newAccount = getRbfPendingAccount(account, tx, prevTxid, newTxid, feeDiff);
+    if (newAccount) {
+        dispatch(accountActions.updateAccount(newAccount));
+    }
+};
 
 export const fetchTransactions = (account: Account, page: number, perPage?: number) => async (
     dispatch: Dispatch,
