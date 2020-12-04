@@ -91,6 +91,7 @@ export const replaceTransaction = (
                 txid: newTxid,
                 fee: newFee,
                 rbf: !!rbf,
+                blockTime: Math.round(new Date().getTime() / 1000),
                 // TODO: details: {}, is it worth it?
             },
         };
