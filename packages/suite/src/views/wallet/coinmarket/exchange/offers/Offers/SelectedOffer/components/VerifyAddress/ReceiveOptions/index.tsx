@@ -9,7 +9,7 @@ import * as modalActions from '@suite-actions/modalActions';
 import { useDispatch } from 'react-redux';
 import { Dispatch } from '@suite-types';
 import useTimeoutFn from 'react-use/lib/useTimeoutFn';
-import { useForm } from 'react-hook-form';
+import { UseFormMethods } from 'react-hook-form';
 
 const LogoWrapper = styled.div`
     display: flex;
@@ -64,7 +64,12 @@ type FormState = {
     extraField?: string;
 };
 
-const VerifyAddressComponent = () => {
+type Props = Pick<UseFormMethods<FormState>, 'setValue'> & {
+    selectedAccountOption?: AccountSelectOption;
+    setSelectedAccountOption: (o: AccountSelectOption) => void;
+};
+
+const ReceiveOptions = (props: Props) => {
     const theme = useTheme();
     const {
         device,
@@ -72,12 +77,10 @@ const VerifyAddressComponent = () => {
         receiveSymbol,
         setReceiveAccount,
     } = useCoinmarketExchangeOffersContext();
-    const [selectedAccountOption, setSelectedAccountOption] = useState<AccountSelectOption>();
     const [menuIsOpen, setMenuIsOpen] = useState<boolean | undefined>(undefined);
     const dispatch = useDispatch<Dispatch>();
-    const { setValue } = useForm<FormState>({
-        mode: 'onChange',
-    });
+
+    const { selectedAccountOption, setSelectedAccountOption, setValue } = props;
 
     const selectAccountOptions: AccountSelectOption[] = [];
 
@@ -213,4 +216,4 @@ const VerifyAddressComponent = () => {
     );
 };
 
-export default VerifyAddressComponent;
+export default ReceiveOptions;

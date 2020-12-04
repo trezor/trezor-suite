@@ -1,13 +1,11 @@
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import ReceiveOptions from './ReceiveOptions';
-import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { QuestionTooltip, Translation } from '@suite-components';
 import { Input, variables, DeviceImage, Button } from '@trezor/components';
 import { InputError } from '@wallet-components';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
 import { Account } from '@wallet-types';
-import useTimeoutFn from 'react-use/lib/useTimeoutFn';
 import { useForm } from 'react-hook-form';
 import { TypedValidationRules } from '@wallet-types/form';
 import addressValidator from 'trezor-address-validator';
@@ -92,12 +90,10 @@ const VerifyAddressComponent = () => {
         confirmTrade,
         selectedQuote,
         addressVerified,
-        suiteReceiveAccounts,
         receiveSymbol,
-        setReceiveAccount,
     } = useCoinmarketExchangeOffersContext();
     const [selectedAccountOption, setSelectedAccountOption] = useState<AccountSelectOption>();
-    const { register, watch, errors, setValue, formState } = useForm<FormState>({
+    const { register, watch, errors, formState, setValue } = useForm<FormState>({
         mode: 'onChange',
     });
 
@@ -105,32 +101,6 @@ const VerifyAddressComponent = () => {
         <T,>(rules?: T) => register(rules),
         [register],
     );
-
-    const selectAccountOptions: AccountSelectOption[] = [];
-
-    if (suiteReceiveAccounts) {
-        suiteReceiveAccounts.forEach(account => {
-            selectAccountOptions.push({ type: 'SUITE', account });
-        });
-        selectAccountOptions.push({ type: 'ADD_SUITE' });
-    }
-    selectAccountOptions.push({ type: 'NON_SUITE' });
-
-    const selectAccountOption = (option: AccountSelectOption) => {
-        setSelectedAccountOption(option);
-        setReceiveAccount(option.account);
-        if (option.account) {
-            const { address } = getUnusedAddressFromAccount(option.account);
-            setValue('address', address, { shouldValidate: true });
-        }
-    };
-
-    // preselect the account after everything is loaded
-    useTimeoutFn(() => {
-        if (selectAccountOptions.length > 0 && selectAccountOptions[0].type !== 'ADD_SUITE') {
-            selectAccountOption(selectAccountOptions[0]);
-        }
-    }, 100);
 
     const { address, extraField } = watch();
 
@@ -160,7 +130,11 @@ const VerifyAddressComponent = () => {
                         </LabelText>
                         <StyledQuestionTooltip tooltip="TR_EXCHANGE_RECEIVE_ACCOUNT_QUESTION_TOOLTIP" />
                     </CustomLabel>
-                    <ReceiveOptions />
+                    <ReceiveOptions
+                        selectedAccountOption={selectedAccountOption}
+                        setSelectedAccountOption={setSelectedAccountOption}
+                        setValue={setValue}
+                    />
                 </Row>
                 <Row>
                     <Input
