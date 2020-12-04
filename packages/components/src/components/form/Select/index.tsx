@@ -1,5 +1,10 @@
 import React, { useRef } from 'react';
-import ReactSelect, { components, Props as SelectProps } from 'react-select';
+import ReactSelect, {
+    components,
+    Props as SelectProps,
+    GroupProps,
+    OptionProps,
+} from 'react-select';
 import styled from 'styled-components';
 import { variables } from '../../../config';
 import { useTheme } from '../../../utils';
@@ -149,7 +154,9 @@ const Select = ({
     ...props
 }: Props) => {
     // TODO find proper type
-    const selectRef: React.Ref<any> = React.useRef(null);
+    // const selectRef: React.Ref<any> = useRef(null);
+    const selectRef: React.RefObject<ReactSelect> | null | undefined = useRef(null);
+
     const theme = useTheme();
 
     // values used for custom scroll-search behavior
@@ -213,12 +220,14 @@ const Select = ({
     };
 
     const scrollToOption = (option: Option) => {
-        // I found a way how to scroll on and option in this tutorial: https://github.com/JedWatson/react-select/issues/3648
-        selectRef.current.select.scrollToFocusedOptionOnUpdate = true;
-        selectRef.current.select.setState({
-            focusedValue: null,
-            focusedOption: option,
-        });
+        if (selectRef.current) {
+            // I found a way how to scroll on and option in this tutorial: https://github.com/JedWatson/react-select/issues/3648
+            selectRef.current.select.scrollToFocusedOptionOnUpdate = true;
+            selectRef.current.select.setState({
+                focusedValue: null,
+                focusedOption: option,
+            });
+        }
     };
 
     const onKeyDown = async (e: React.KeyboardEvent) => {
@@ -234,16 +243,20 @@ const Select = ({
             // Save current timestamp to lastKeyPressTime variable
             lastKeyPressTimestamp.current = currentTimestamp;
 
-            // If user didn't type anything for 1.7 seconds, set searchedValue to just pressed button, otherwise add the new value to the old one
-            if (timeSincePreviousKeyPress > 1700) {
+            // If user didn't type anything for 0.5 seconds, set searchedValue to just pressed key, otherwise add the new value to the old one
+            if (timeSincePreviousKeyPress > 500) {
                 searchedTerm.current = charValue;
             } else {
                 searchedTerm.current += charValue;
             }
 
-            if (selectRef) {
+            if (selectRef.current) {
                 // Get options object
                 const { options } = selectRef.current.select.props;
+
+                if (options !== undefined) {
+                    if (options?[0].value === 'a') console.log('aa');
+                }
 
                 if (options && options.length > 1) {
                     /* 
