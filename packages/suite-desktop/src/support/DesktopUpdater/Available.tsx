@@ -28,13 +28,9 @@ const ChangelogWrapper = styled.div`
     text-align: left;
 
     h3 {
-        margin-bottom: 6px;
+        margin-bottom: 4px;
         font-size: ${variables.FONT_SIZE.NORMAL};
         font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    }
-
-    h3 {
-        margin-bottom: 4px;
     }
 
     ul,
