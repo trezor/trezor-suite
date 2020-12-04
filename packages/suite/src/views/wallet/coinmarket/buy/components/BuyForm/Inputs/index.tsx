@@ -4,6 +4,7 @@ import { getCryptoOptions } from '@wallet-utils/coinmarket/buyUtils';
 import { CleanSelect, Icon, Input, variables } from '@trezor/components';
 import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
 import React, { useEffect, useState } from 'react';
+import Bignumber from 'bignumber.js';
 import { Controller } from 'react-hook-form';
 import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
 import styled from 'styled-components';
@@ -102,6 +103,15 @@ const Inputs = () => {
                                         return <Translation id="TR_BUY_VALIDATION_ERROR_EMPTY" />;
                                     }
                                     return;
+                                }
+
+                                const amountBig = new Bignumber(value);
+                                if (amountBig.isNaN()) {
+                                    return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
+                                }
+
+                                if (amountBig.lte(0)) {
+                                    return <Translation id="AMOUNT_IS_TOO_LOW" />;
                                 }
 
                                 if (!isDecimalsValid(value, 2)) {
@@ -214,7 +224,18 @@ const Inputs = () => {
                                     if (formState.isSubmitting) {
                                         return <Translation id="TR_BUY_VALIDATION_ERROR_EMPTY" />;
                                     }
+
                                     return;
+                                }
+
+                                const amountBig = new Bignumber(value);
+
+                                if (amountBig.isNaN()) {
+                                    return <Translation id="AMOUNT_IS_NOT_NUMBER" />;
+                                }
+
+                                if (amountBig.lte(0)) {
+                                    return <Translation id="AMOUNT_IS_TOO_LOW" />;
                                 }
 
                                 if (!isDecimalsValid(value, network.decimals)) {
