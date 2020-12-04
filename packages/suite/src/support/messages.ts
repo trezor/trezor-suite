@@ -787,6 +787,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Copy address',
         id: 'TR_ADDRESS_MODAL_CLIPBOARD',
     },
+    TR_COPY_TO_CLIPBOARD_TX_ID: {
+        defaultMessage: 'Copy',
+        id: 'TR_COPY_TO_CLIPBOARD_TX_ID',
+    },
     TR_ADDRESS_MODAL_TITLE: {
         defaultMessage: '{networkName} receive address',
         id: 'TR_ADDRESS_MODAL_TITLE',
