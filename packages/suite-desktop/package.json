@@ -9,7 +9,7 @@
     "scripts": {
         "dev": "yarn dev:prepare && cross-env LAUNCH_ELECTRON=true node scripts/dev.js",
         "dev:run": "electron .",
-        "dev:prepare": "yarn copy-files && yarn build:lib",
+        "dev:prepare": "yarn copy-files && yarn build:electron",
         "dev:local": "node scripts/dev.js",
         "clean": "rimraf ./build-electron && rimraf ./build && rimraf ./dist",
         "copy-files": "yarn workspace @trezor/suite-data copy-static-files",
