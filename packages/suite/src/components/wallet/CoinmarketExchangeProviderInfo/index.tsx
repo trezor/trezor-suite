@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables } from '@trezor/components';
+import { variables, useTheme } from '@trezor/components';
 import { ExchangeProviderInfo } from 'invity-api';
 import invityApi from '@suite-services/invityAPI';
 
@@ -9,10 +9,17 @@ const Wrapper = styled.div`
     align-items: center;
 `;
 
+const Bg = styled.div<{ color: string }>`
+    background: ${props => props.color};
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    padding: 4px;
+`;
+
 const IconWrapper = styled.div`
     display: flex;
     align-items: center;
-    padding-left: 4px;
     padding-right: 7px;
 `;
 
@@ -38,6 +45,7 @@ interface Props {
 
 const CoinmarketExchangeProviderInfo = ({ exchange, providers }: Props) => {
     const provider = providers && exchange ? providers[exchange] : null;
+    const theme = useTheme();
 
     return (
         <Wrapper>
@@ -46,10 +54,12 @@ const CoinmarketExchangeProviderInfo = ({ exchange, providers }: Props) => {
             {provider && (
                 <>
                     <IconWrapper>
-                        <Icon
-                            width="16px"
-                            src={`${invityApi.server}/images/exchange/${provider.logo}`}
-                        />
+                        <Bg color={theme.BG_ICON}>
+                            <Icon
+                                width="16px"
+                                src={`${invityApi.server}/images/exchange/${provider.logo}`}
+                            />
+                        </Bg>
                     </IconWrapper>
                     <Text>{provider.companyName}</Text>
                 </>

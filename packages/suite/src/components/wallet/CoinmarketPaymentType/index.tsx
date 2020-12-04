@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables } from '@trezor/components';
+import { variables, useTheme } from '@trezor/components';
 import invityApi from '@suite-services/invityAPI';
 import { BuyCryptoPaymentMethod } from 'invity-api';
 import { Translation } from '@suite-components';
@@ -8,6 +8,13 @@ import { Translation } from '@suite-components';
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
+`;
+
+const Bg = styled.div<{ color: string }>`
+    background: ${props => props.color};
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
 `;
 
 const IconWrapper = styled.div`
@@ -29,26 +36,31 @@ interface Props {
     method?: BuyCryptoPaymentMethod;
 }
 
-const CoinmarketPaymentType = ({ method }: Props) => (
-    <Wrapper>
-        {!method && (
-            <Text>
-                <Translation id="TR_PAYMENT_METHOD_UNKOWN" />
-            </Text>
-        )}
-        {method && (
-            <>
-                <IconWrapper>
-                    <Icon
-                        width="24px"
-                        src={`${invityApi.server}/images/paymentMethods/suite/${method}.svg`}
-                    />
-                </IconWrapper>
-                {/* temporary solution - payment mehtod name will be returned by API server to be independent on translations */}
-                <Translation id={`TR_PAYMENT_METHOD_${method.toUpperCase()}` as any} />
-            </>
-        )}
-    </Wrapper>
-);
+const CoinmarketPaymentType = ({ method }: Props) => {
+    const theme = useTheme();
+    return (
+        <Wrapper>
+            {!method && (
+                <Text>
+                    <Translation id="TR_PAYMENT_METHOD_UNKOWN" />
+                </Text>
+            )}
+            {method && (
+                <>
+                    <IconWrapper>
+                        <Bg color={theme.BG_ICON}>
+                            <Icon
+                                width="24px"
+                                src={`${invityApi.server}/images/paymentMethods/suite/${method}.svg`}
+                            />
+                        </Bg>
+                    </IconWrapper>
+                    {/* temporary solution - payment mehtod name will be returned by API server to be independent on translations */}
+                    <Translation id={`TR_PAYMENT_METHOD_${method.toUpperCase()}` as any} />
+                </>
+            )}
+        </Wrapper>
+    );
+};
 
 export default CoinmarketPaymentType;
