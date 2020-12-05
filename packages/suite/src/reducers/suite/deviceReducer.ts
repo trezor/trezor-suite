@@ -292,6 +292,10 @@ const authConfirm = (draft: State, device: TrezorDevice, success: boolean) => {
     // update state
     draft[index].authConfirm = !success;
     draft[index].available = success;
+
+    if (!draft[index].walletNumber) {
+        draft[index].walletNumber = deviceUtils.getNewWalletNumber(draft, draft[index]);
+    }
 };
 
 /**
