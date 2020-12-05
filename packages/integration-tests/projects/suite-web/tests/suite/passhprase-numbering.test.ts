@@ -64,4 +64,16 @@ describe('Passphrase', () => {
         cy.getTestElement('@switch-device/wallet-on-index/1').should('contain', 'Standard wallet');
         cy.getTestElement('@switch-device/wallet-on-index/2').should('contain', 'Hidden wallet #3');
     });
+
+    // https://github.com/trezor/trezor-suite/issues/3133
+    it('when user adds hidden wallet first (no pre-existing standard wallet)', () => {
+        cy.getTestElement('@passphrase-type/hidden').click();
+        cy.getTestElement('@passphrase/input').type('abc{enter}');
+        cy.getTestElement('@suite/loading');
+        cy.getTestElement('@passphrase/input', { timeout: 10000 }).type('abc');
+        cy.getTestElement('@passphrase/confirm-checkbox').click();
+        cy.getTestElement('@passphrase/hidden/submit-button').click();
+        cy.getTestElement('@suite/loading').should('not.be.visible');
+        cy.getTestElement('@menu/switch-device').should('contain', 'Hidden wallet #1');
+    });
 });

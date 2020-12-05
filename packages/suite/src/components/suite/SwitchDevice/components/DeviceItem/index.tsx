@@ -123,7 +123,7 @@ const DeviceItem = (props: Props) => {
     const instancesWithState = props.instances.filter(i => i.state);
 
     const selectDeviceInstance = async (instance: Props['device']) => {
-        await props.selectDevice(instance);
+        props.selectDevice(instance);
         if (!isWalletContext) {
             await props.goto('suite-index');
         }
@@ -154,7 +154,7 @@ const DeviceItem = (props: Props) => {
         // await needed otherwise it just selects first account (???)
         await props.goto('settings-device');
         if (!isSelected) {
-            await props.selectDevice(device);
+            props.selectDevice(device);
         }
     };
 
