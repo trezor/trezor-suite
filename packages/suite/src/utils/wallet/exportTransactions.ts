@@ -1,15 +1,11 @@
-/* eslint-disable no-restricted-globals */
 import { AccountTransaction } from 'trezor-connect';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
-import { prepareCsv, preparePdf } from '@suite-utils/export';
 import { formatAmount, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { Network } from '@wallet-types';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
-const ctx: Worker = self as any;
 
 type Data = {
     coin: Network['symbol'];
@@ -17,9 +13,10 @@ type Data = {
     transactions: AccountTransaction[];
 };
 
-interface CustomMessageEvent extends MessageEvent {
-    data: Data;
-}
+type Field = { [key: string]: string };
+
+const CSV_NEWLINE = '\n';
+const CSV_SEPARATOR = ';';
 
 const fields = {
     datetime: 'Date & Time',
@@ -90,7 +87,77 @@ const prepareContent = (data: Data) => {
     });
 };
 
-const formatData = async (data: Data) => {
+const prepareCsv = (fields: Field, content: any[]) => {
+    const lines: string[] = [];
+
+    const fieldKeys = Object.keys(fields);
+    const fieldValues = Object.values(fields);
+
+    // Prepare header
+    let line: string[] = [];
+    fieldValues.forEach(v => {
+        line.push(v);
+    });
+
+    lines.push(line.join(CSV_SEPARATOR));
+
+    // Prepare data
+    content.forEach(c => {
+        line = [];
+
+        fieldKeys.forEach(k => {
+            line.push(c[k]);
+        });
+
+        lines.push(line.join(CSV_SEPARATOR));
+    });
+
+    return lines.join(CSV_NEWLINE);
+};
+
+const preparePdf = (fields: Field, content: any[], coin: Network['symbol']) => {
+    const fieldKeys = Object.keys(fields);
+    const fieldValues = Object.values(fields);
+    const lines: any[] = [];
+    content.forEach(c => {
+        const line: string[] = [];
+
+        fieldKeys.forEach(k => {
+            line.push(c[k]);
+        });
+
+        lines.push(line);
+    });
+
+    return {
+        pageOrientation: 'landscape',
+        content: [
+            {
+                text: coin,
+                style: 'header',
+            },
+            {
+                style: 'table',
+                table: {
+                    // widths,
+                    body: [fieldValues, ...lines],
+                },
+            },
+        ],
+        styles: {
+            header: {
+                fontSize: 18,
+                bold: true,
+            },
+            table: {
+                marginTop: 9,
+                fontSize: 8,
+            },
+        },
+    };
+};
+
+export const formatData = async (data: Data) => {
     const { coin, type, transactions } = data;
     switch (type) {
         case 'csv': {
@@ -112,11 +179,3 @@ const formatData = async (data: Data) => {
         // no default
     }
 };
-
-ctx.addEventListener('message', async (event: CustomMessageEvent) => {
-    const result = await formatData(event.data);
-    ctx.postMessage(result);
-});
-
-// // Trickery to fix TypeScript since this will be done by "worker-loader"
-export default {} as typeof Worker & (new () => Worker);
