@@ -1,4 +1,5 @@
 import TrezorConnect, { AccountTransaction, PrecomposedTransaction } from 'trezor-connect';
+import { saveAs } from 'file-saver';
 import {
     getAccountTransactions,
     formatNetworkAmount,
@@ -10,6 +11,8 @@ import { TRANSACTION } from '@wallet-actions/constants';
 import { SETTINGS } from '@suite-config';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
+import { range } from '@suite-utils/array';
+import { formatData } from '@wallet-utils/exportTransactions';
 
 export type TransactionAction =
     | {
@@ -126,10 +129,12 @@ export const replaceTransaction = (
     }
 };
 
-export const fetchTransactions = (account: Account, page: number, perPage?: number) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
+export const fetchTransactions = (
+    account: Account,
+    page: number,
+    perPage?: number,
+    noLoading = false,
+) => async (dispatch: Dispatch, getState: GetState) => {
     const { transactions } = getState().wallet.transactions;
     const reducerTxs = getAccountTransactions(transactions, account);
 
@@ -140,9 +145,11 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
     // we already got txs for the page in reducer
     if (txsForPage.length === SETTINGS.TXS_PER_PAGE) return;
 
-    dispatch({
-        type: TRANSACTION.FETCH_INIT,
-    });
+    if (!noLoading) {
+        dispatch({
+            type: TRANSACTION.FETCH_INIT,
+        });
+    }
 
     const { marker } = account;
     const result = await TrezorConnect.getAccountInfo({
@@ -173,4 +180,29 @@ export const fetchTransactions = (account: Account, page: number, perPage?: numb
             error: result ? result.payload.error : 'unknown error',
         });
     }
+};
+
+export const exportTransactions = (account: Account, type: 'csv' | 'pdf' | 'json') => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    // Fetch all pages
+    const pages = range(2, account.page?.total || 0);
+    await Promise.all(pages.map(p => dispatch(fetchTransactions(account, p, undefined, true))));
+
+    // Get state of transactions
+    const transactions = getAccountTransactions(
+        getState().wallet.transactions.transactions,
+        account,
+    );
+
+    // Prepare data in right format
+    const data = await formatData({
+        coin: account.symbol,
+        type,
+        transactions,
+    });
+
+    // Save file
+    saveAs(data, `export-${account.symbol}-${+new Date()}.${type}`);
 };

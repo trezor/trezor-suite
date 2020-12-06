@@ -112,6 +112,7 @@ const DashboardGraph = React.memo((props: Props) => {
             worker.addEventListener('message', handleMessage);
             return () => {
                 worker.removeEventListener('message', handleMessage);
+                worker.terminate();
             };
         }
     }, [isLoading, getGraphDataForInterval, selectedDeviceState, selectedRange]);

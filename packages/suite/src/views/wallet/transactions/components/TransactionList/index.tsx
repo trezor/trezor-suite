@@ -1,6 +1,4 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import { saveAs } from 'file-saver';
-import TrezorConnect, { AccountTransaction } from 'trezor-connect';
 import styled, { css } from 'styled-components';
 import { Loader, Card, Dropdown } from '@trezor/components';
 import { Stack } from '@suite-components/Skeleton';
@@ -9,14 +7,11 @@ import { Section } from '@dashboard-components';
 import { useActions, useSelector } from '@suite-hooks';
 import { useTranslation } from '@suite-hooks/useTranslation';
 import { groupTransactionsByDate } from '@wallet-utils/transactionUtils';
-import { addToast } from '@suite-actions/notificationActions';
+import * as notificationActions from '@suite-actions/notificationActions';
+import * as transactionActions from '@wallet-actions/transactionActions';
 import { SETTINGS } from '@suite-config';
 import { WalletAccountTransaction, Account } from '@wallet-types';
 import { isEnabled } from '@suite-utils/features';
-import { range } from '@suite-utils/array';
-// @ts-ignore - Not sure why it can't find the worker but the path is correct?!
-// eslint-disable-next-line import/no-webpack-loader-syntax
-import ExportWorker from 'worker-loader?filename=static/[hash].worker.js!../../../../../workers/export.worker';
 
 import TransactionItem from './components/TransactionItem';
 import Pagination from './components/Pagination';
@@ -79,8 +74,9 @@ const TransactionList = ({
     ]);
 
     const { translationString } = useTranslation();
-    const { addNotification } = useActions({
-        addNotification: addToast,
+    const { addToast, exportTransactions } = useActions({
+        addToast: notificationActions.addToast,
+        exportTransactions: transactionActions.exportTransactions,
     });
     const [isExportRunning, setIsExportRunning] = useState(false);
     const runExport = useCallback(
@@ -92,61 +88,18 @@ const TransactionList = ({
 
             // Set as in running
             setIsExportRunning(true);
-
-            const exportTransactions: AccountTransaction[] = [];
-            const pages = range(1, account.history.total);
-            const promises = pages.map(p =>
-                TrezorConnect.getAccountInfo({
-                    descriptor: account.descriptor,
-                    coin: account.symbol,
-                    details: 'txs',
-                    page: p,
-                }),
-            );
-            const results = await Promise.all(promises);
-            results.forEach(r => {
-                if (!r.success) {
-                    addNotification({
-                        type: 'error',
-                        error: translationString('TR_EXPORT_FAIL'),
-                    });
-                    setIsExportRunning(false);
-                    return;
-                }
-
-                if (r.payload.history.transactions) {
-                    exportTransactions.push(...r.payload.history.transactions);
-                }
-            });
-
-            // Delegate the formatting/document generation work to a service worker
-            const worker = new ExportWorker();
-            worker.postMessage({
-                coin: account.symbol,
-                type,
-                transactions: exportTransactions,
-            });
-
-            // Handle the response from the worker (fired when the file is available)
-            const handleMessage = (event: MessageEvent) => {
-                saveAs(event.data, `export-${account.symbol}-${+new Date()}.${type}`);
+            try {
+                await exportTransactions(account, type);
+            } catch {
+                addToast({
+                    type: 'error',
+                    error: translationString('TR_EXPORT_FAIL'),
+                });
+            } finally {
                 setIsExportRunning(false);
-            };
-
-            worker.addEventListener('message', handleMessage);
-            return () => {
-                worker.removeEventListener('message', handleMessage);
-                worker.terminate();
-            };
+            }
         },
-        [
-            isExportRunning,
-            account.descriptor,
-            account.symbol,
-            account.history,
-            addNotification,
-            translationString,
-        ],
+        [isExportRunning, exportTransactions, account, addToast, translationString],
     );
 
     const exportMenu = useMemo(() => {
