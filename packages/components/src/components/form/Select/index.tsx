@@ -2,8 +2,8 @@ import React, { useRef } from 'react';
 import ReactSelect, {
     components,
     Props as SelectProps,
-    GroupProps,
-    OptionProps,
+    GroupType,
+    OptionsType,
 } from 'react-select';
 import styled from 'styled-components';
 import { variables } from '../../../config';
@@ -121,6 +121,18 @@ interface Option {
     label: string;
 }
 
+// const isOption = (variableToCheck: any): variableToCheck is OptionsType<Option>  =>
+//   !('options' in variableToCheck as OptionsType<Option>);
+
+/** Custom Type Guards to check if options are grouped or not */
+const isGrouped = (x: any): x is GroupType<Option> => {
+    return (x as GroupType<Option>).options !== undefined;
+};
+
+const isNotGrouped = (x: any): x is OptionsType<Option> => {
+    return !('options' in (x as OptionsType<Option>));
+};
+
 interface CommonProps extends Omit<SelectProps, 'components' | 'isSearchable'> {
     withDropdownIndicator?: boolean;
     isClean?: boolean;
@@ -153,9 +165,7 @@ const Select = ({
     isSearchable = false,
     ...props
 }: Props) => {
-    // TODO find proper type
-    // const selectRef: React.Ref<any> = useRef(null);
-    const selectRef: React.RefObject<ReactSelect> | null | undefined = useRef(null);
+    const selectRef: React.RefObject<ReactSelect<Option>> | null | undefined = useRef(null);
 
     const theme = useTheme();
 
@@ -189,7 +199,7 @@ const Select = ({
         );
     };
 
-    const findOption = (options: Array<Option>, query: string) => {
+    const findOption = (options: OptionsType<Option>, query: string) => {
         // Option that will be returned
         let foundOption;
 
@@ -254,10 +264,6 @@ const Select = ({
                 // Get options object
                 const { options } = selectRef.current.select.props;
 
-                if (options !== undefined) {
-                    if (options?[0].value === 'a') console.log('aa');
-                }
-
                 if (options && options.length > 1) {
                     /* 
                     First, check if the options are divided into sub-categories. 
@@ -266,18 +272,23 @@ const Select = ({
                     */
 
                     // array of all options in which I want to find the searched term
-                    let optionsToSearchThrough: Array<Option> = [];
+                    let optionsToSearchThrough: OptionsType<Option> = [];
 
-                    if (options[0].options) {
+                    if (isGrouped(options[0])) {
                         // If the if() statement is true, the options are nested.
                         // Loop through all of the sub-categories and concatenate them into one array
-                        for (let i = 0; i < options.length; i++) {
-                            optionsToSearchThrough = optionsToSearchThrough.concat(
-                                options[i].options
-                            );
-                        }
-                    } else {
-                        // If the options aren't divided into sub-categories, you can use the default options array that is present on "selectRef"
+                        options.forEach(option => {
+                            const temp = option;
+                            if (isGrouped(temp)) {
+                                optionsToSearchThrough = optionsToSearchThrough.concat(
+                                    temp.options
+                                );
+                            }
+                        });
+                    }
+
+                    // If the options aren't divided into sub-categories, you can use the default options array that is present on "selectRef"
+                    if (isNotGrouped(options[0]) && isNotGrouped(options)) {
                         optionsToSearchThrough = options;
                     }
 
@@ -291,7 +302,7 @@ const Select = ({
                     if (!optionToFocusOn) searchedTerm.current = '';
 
                     // Also get the last option, so I can scroll to it later
-                    const lastOption = options[options.length - 1];
+                    const lastOption = optionsToSearchThrough[optionsToSearchThrough.length - 1];
 
                     // Make sure all the necessary options are defined
                     if (optionToFocusOn && lastOption) {
