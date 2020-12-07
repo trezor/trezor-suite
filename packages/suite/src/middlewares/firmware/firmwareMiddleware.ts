@@ -1,4 +1,4 @@
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect, { DEVICE } from 'trezor-connect';
 import { MiddlewareAPI } from 'redux';
 
 import { SUITE } from '@suite-actions/constants';
@@ -26,12 +26,18 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
             }
             break;
         }
-        case SUITE.SELECT_DEVICE:
-        case SUITE.UPDATE_SELECTED_DEVICE: // UPDATE_SELECTED_DEVICE is needed to handle if device is unacquired in SELECT_DEVICE
-            // both saved and unsaved device
+
+        case DEVICE.DISCONNECT:
+            console.log(action.payload);
             if (status === 'unplug' && (!action.payload || !action.payload?.connected)) {
                 api.dispatch(firmwareActions.setStatus('reconnect-in-normal'));
             }
+            break;
+        case DEVICE.CONNECT:
+        // case SUITE.UPDATE_SELECTED_DEVICE: // UPDATE_SELECTED_DEVICE is needed to handle if device is unacquired in SELECT_DEVICE
+            // both saved and unsaved device
+            
+            console.log(action.payload);
 
             if (
                 action.payload &&
