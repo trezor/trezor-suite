@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, useTheme } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { BuyProviderInfo } from 'invity-api';
 import invityApi from '@suite-services/invityAPI';
 
@@ -9,8 +9,8 @@ const Wrapper = styled.div`
     align-items: center;
 `;
 
-const Bg = styled.div<{ color: string }>`
-    background: ${props => props.color};
+const Bg = styled.div`
+    background: ${props => props.theme.BG_ICON};
     display: flex;
     align-items: center;
     border-radius: 4px;
@@ -44,7 +44,6 @@ interface Props {
 
 const CoinmarketBuyProviderInfo = ({ exchange, providers }: Props) => {
     const provider = providers && exchange ? providers[exchange] : null;
-    const theme = useTheme();
 
     return (
         <Wrapper>
@@ -53,7 +52,7 @@ const CoinmarketBuyProviderInfo = ({ exchange, providers }: Props) => {
             {provider && (
                 <>
                     <IconWrapper>
-                        <Bg color={theme.BG_ICON}>
+                        <Bg>
                             <Icon
                                 width="16px"
                                 src={`${invityApi.server}/images/exchange/${provider.logo}`}

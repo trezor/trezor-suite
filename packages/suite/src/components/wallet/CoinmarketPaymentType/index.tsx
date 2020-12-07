@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, useTheme } from '@trezor/components';
+import { variables } from '@trezor/components';
 import invityApi from '@suite-services/invityAPI';
 import { BuyCryptoPaymentMethod } from 'invity-api';
 import { Translation } from '@suite-components';
@@ -10,8 +10,8 @@ const Wrapper = styled.div`
     align-items: center;
 `;
 
-const Bg = styled.div<{ color: string }>`
-    background: ${props => props.color};
+const Bg = styled.div`
+    background: ${props => props.theme.BG_ICON};
     display: flex;
     align-items: center;
     border-radius: 4px;
@@ -37,7 +37,6 @@ interface Props {
 }
 
 const CoinmarketPaymentType = ({ method }: Props) => {
-    const theme = useTheme();
     return (
         <Wrapper>
             {!method && (
@@ -48,7 +47,7 @@ const CoinmarketPaymentType = ({ method }: Props) => {
             {method && (
                 <>
                     <IconWrapper>
-                        <Bg color={theme.BG_ICON}>
+                        <Bg>
                             <Icon
                                 width="24px"
                                 src={`${invityApi.server}/images/paymentMethods/suite/${method}.svg`}
