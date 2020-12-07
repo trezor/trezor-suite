@@ -367,3 +367,27 @@ export const enhanceTransaction = (
         rbfParams: getRbfParams(tx, account),
     };
 };
+
+export const searchTransactions = (transactions: WalletAccountTransaction[], search: string) =>
+    transactions.filter(t => {
+        if (search === '') {
+            return true;
+        }
+
+        // Matches Transaction ID
+        if (t.txid.includes(search)) {
+            return true;
+        }
+
+        // Matches any of the addresses
+        if (
+            t.targets.find(
+                target =>
+                    target.addresses && target.addresses[0] && target.addresses[0].includes(search),
+            ) !== undefined
+        ) {
+            return true;
+        }
+
+        return false;
+    });
