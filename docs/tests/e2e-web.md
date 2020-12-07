@@ -19,7 +19,6 @@ to sort the test files into groups and run them in parallel on CI. At the moment
 - `@group:device-management`
 - `@group:suite`
 - `@group:onboarding`
-- `@group:browsers`
 - `@group:settings`
 
 ## @retry
