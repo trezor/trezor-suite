@@ -38,6 +38,8 @@ const openWindowOnAnotherDomain = (
     const win = window.open(uri, name, options);
     clearInterval(interval);
     interval = window.setInterval(() => {
+        // todo: for some reason, when used in electron, win has closed=true right from the start and thus closeCallback
+        // is invoked immediately. temporary workaround is not to use openWindowOnAnotherDomain in electron
         if (win == null || win.closed) {
             window.clearInterval(interval);
             closeCallback();
@@ -94,17 +96,22 @@ export const extractCredentialsFromAuthorizationFlow = (url: string) => {
                 dfd.reject(new Error('Cancelled'));
             }
         };
+        window.open(url, METADATA.AUTH_WINDOW_TITLE, METADATA.AUTH_WINDOW_PROPS);
         desktopApi.once('oauth/code', onMessageDesktop);
     } else {
         window.addEventListener('message', onMessageWeb);
+        openWindowOnAnotherDomain(
+            url,
+            METADATA.AUTH_WINDOW_TITLE,
+            METADATA.AUTH_WINDOW_PROPS,
+            () => {
+                window.removeEventListener('message', onMessageWeb);
+                setTimeout(() => {
+                    dfd.reject(new Error('window closed'));
+                }, 5000);
+            },
+        );
     }
-
-    openWindowOnAnotherDomain(url, METADATA.AUTH_WINDOW_TITLE, METADATA.AUTH_WINDOW_PROPS, () => {
-        window.removeEventListener('message', onMessageWeb);
-        setTimeout(() => {
-            dfd.reject(new Error('window closed'));
-        }, 5000);
-    });
 
     return dfd.promise;
 };
