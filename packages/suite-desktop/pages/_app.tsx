@@ -27,6 +27,10 @@ interface Props {
 }
 
 class TrezorSuiteApp extends App<Props> {
+    state = {
+        isUpdateVisible: false,
+    };
+
     componentDidMount() {
         if (!isDev()) {
             Sentry.init(SENTRY_CONFIG);
@@ -36,6 +40,10 @@ class TrezorSuiteApp extends App<Props> {
         }
         window.desktopApi!.clientReady();
     }
+
+    setIsUpdateVisible = (isUpdateVisible: boolean) => {
+        this.setState({ isUpdateVisible });
+    };
 
     render() {
         const { Component, pageProps, store } = this.props;
@@ -50,10 +58,10 @@ class TrezorSuiteApp extends App<Props> {
                             <Tor />
                             <OnlineStatus />
                             <IntlProvider>
-                                <DesktopUpdater />
+                                <DesktopUpdater setIsUpdateVisible={this.setIsUpdateVisible} />
                                 <Router />
                                 <ToastContainer />
-                                <Preloader>
+                                <Preloader hideModals={this.state.isUpdateVisible}>
                                     <Component {...pageProps} />
                                 </Preloader>
                             </IntlProvider>

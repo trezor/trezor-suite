@@ -121,7 +121,12 @@ const getModalApplication = (route: AppState['router']['route']) => {
     }
 };
 
-const Preloader: React.FC = ({ children }) => {
+interface Props {
+    children: JSX.Element;
+    hideModals?: boolean;
+}
+
+const Preloader = ({ children, hideModals = false }: Props) => {
     const actions = useActions({
         init: () => ({ type: SUITE.INIT } as const),
         goto: routerActions.goto,
@@ -158,7 +163,7 @@ const Preloader: React.FC = ({ children }) => {
     // check if current route is a "modal application" and display it above requested physical route (route in url)
     // pass params to "modal application" and set "cancelable" conditionally
     const ApplicationModal = getModalApplication(router.route);
-    if (ApplicationModal) {
+    if (!hideModals && ApplicationModal) {
         const cancelable = router.params
             ? Object.prototype.hasOwnProperty.call(router.params, 'cancelable')
             : false;
@@ -195,7 +200,7 @@ const Preloader: React.FC = ({ children }) => {
         getDiscoveryStatus,
         router,
     });
-    if (ApplicationStateModal) {
+    if (!hideModals && ApplicationStateModal) {
         return (
             <>
                 {hasActionModal && <Modals />}
@@ -212,7 +217,7 @@ const Preloader: React.FC = ({ children }) => {
     // everything is set. action modals will use own ModalComponent wrapper
     return (
         <>
-            <Modals />
+            {!hideModals && <Modals />}
             <SuiteLayout>{children}</SuiteLayout>
         </>
     );
