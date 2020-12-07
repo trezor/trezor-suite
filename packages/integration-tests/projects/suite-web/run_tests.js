@@ -60,7 +60,7 @@ async function runTests() {
         CI_COMMIT_SHA,
         // CI_RUNNER_ID,
         CI_RUNNER_DESCRIPTION,
-    } = process.env;
+    } = process.env;ALLOW_RETRY
 
     const { stage } = argv;
 
