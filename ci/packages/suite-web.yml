@@ -106,11 +106,6 @@ e2e web onboarding:
   variables:
     TEST_GROUP: '@group:onboarding'
 
-e2e web browsers:
-  extends: .e2e web
-  variables:
-    TEST_GROUP: '@group:browsers'
-
 e2e web device-management:
   extends: .e2e web
   variables:
