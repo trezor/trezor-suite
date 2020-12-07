@@ -2,14 +2,14 @@ import React from 'react';
 
 import { CHANGELOG_URL } from '@suite-constants/urls';
 import { getFwVersion } from '@suite-utils/device';
-import { useDevice } from '@suite-hooks';
+import { useFirmware } from '@suite-hooks';
 import { P, H2, SuccessImg } from '@firmware-components';
 import { Translation, ExternalLink } from '@suite-components';
 
 const Heading = () => <Translation id="TR_FIRMWARE_UPDATE" />;
 
 const Body = () => {
-    const { device } = useDevice();
+    const { device } = useFirmware();
 
     if (!device?.features) return null;
 

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Button, Checkbox } from '@trezor/components';
-import { useDevice, useFirmware } from '@suite-hooks';
+import { useFirmware } from '@suite-hooks';
 import { Translation } from '@suite-components';
 import { P, H2, WarningImg, SeedImg, ReconnectInNormalStep } from '@firmware-components';
 
@@ -17,8 +17,7 @@ const CheckboxRow = styled.div`
 `;
 
 const Body = () => {
-    const { device } = useDevice();
-    const { toggleHasSeed, hasSeed } = useFirmware();
+    const { toggleHasSeed, hasSeed, device } = useFirmware();
 
     // unacquired device handled on higher level
     if (!device?.features) return null;
@@ -81,14 +80,14 @@ const Body = () => {
 };
 
 const BottomBar = () => {
-    const { device } = useDevice();
-    const { hasSeed, setStatus } = useFirmware();
+    // const { device } = useDevice();
+    const { hasSeed, setStatus, device } = useFirmware();
 
     return (
         <Button
             onClick={() => setStatus('waiting-for-bootloader')}
             data-test="@firmware/confirm-seed-button"
-            isDisabled={!device?.connected || device.mode === 'bootloader' || !hasSeed}
+            isDisabled={!device || device.mode === 'bootloader' || !hasSeed}
         >
             <Translation id="TR_CONTINUE" />
         </Button>

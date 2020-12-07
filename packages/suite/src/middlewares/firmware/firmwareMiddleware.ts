@@ -29,14 +29,16 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
 
         case DEVICE.DISCONNECT:
             console.log(action.payload);
-            if (status === 'unplug' && (!action.payload || !action.payload?.connected)) {
+            // todo: hmm ?
+            if (status === 'unplug') {
                 api.dispatch(firmwareActions.setStatus('reconnect-in-normal'));
             }
             break;
         case DEVICE.CONNECT:
-        // case SUITE.UPDATE_SELECTED_DEVICE: // UPDATE_SELECTED_DEVICE is needed to handle if device is unacquired in SELECT_DEVICE
+        case DEVICE.CONNECT_UNACQUIRED:
+            // case SUITE.UPDATE_SELECTED_DEVICE: // UPDATE_SELECTED_DEVICE is needed to handle if device is unacquired in SELECT_DEVICE
             // both saved and unsaved device
-            
+
             console.log(action.payload);
 
             if (

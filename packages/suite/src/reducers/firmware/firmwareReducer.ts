@@ -10,6 +10,7 @@ type FirmwareUpdateCommon = {
     hasSeed: boolean;
     targetRelease: AcquiredDevice['firmwareRelease'];
     prevDevice?: Device;
+    device?: Device;
 };
 
 export type FirmwareUpdateState =
@@ -43,6 +44,7 @@ const initialState: FirmwareUpdateState = {
     targetRelease: undefined,
     hasSeed: false,
     prevDevice: undefined,
+    device: undefined,
 };
 
 const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Action) => {
@@ -80,6 +82,12 @@ const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Actio
                 return initialState;
             case DEVICE.DISCONNECT:
                 draft.prevDevice = action.payload;
+                draft.device = undefined;
+                break;
+            case DEVICE.CONNECT:
+            case DEVICE.CONNECT_UNACQUIRED:
+            case DEVICE.CHANGED:
+                draft.device = action.payload;
                 break;
             default:
 

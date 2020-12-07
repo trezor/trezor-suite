@@ -2,12 +2,11 @@ import React from 'react';
 import { getTextForStatus, getDescriptionForStatus } from '@firmware-utils';
 import { Translation } from '@suite-components';
 import { Loaders } from '@onboarding-components';
-import { useDevice, useFirmware } from '@suite-hooks';
+import { useFirmware } from '@suite-hooks';
 import { InitImg, P, H2 } from '@firmware-components';
 
 const Body = () => {
-    const { device } = useDevice();
-    const { status, prevDevice } = useFirmware();
+    const { status, prevDevice, device } = useFirmware();
 
     const statusText = getTextForStatus(status);
     const statusDescription = getDescriptionForStatus(status);

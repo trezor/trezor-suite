@@ -2,10 +2,11 @@ import React from 'react';
 
 import { SuccessImg, P, H2 } from '@firmware-components';
 import { Translation } from '@suite-components';
-import { useDevice } from '@suite-hooks/useDevice';
+import { useFirmware } from '@suite-hooks';
 
 const Body = () => {
-    const { device } = useDevice();
+    const { device } = useFirmware();
+
     return (
         <>
             <H2>

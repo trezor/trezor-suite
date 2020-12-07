@@ -5,7 +5,7 @@ import { Icon, Button, variables } from '@trezor/components';
 import { CHANGELOG_URL } from '@suite-constants/urls';
 import { Translation, ExternalLink, TrezorLink } from '@suite-components';
 import { getFwVersion } from '@suite-utils/device';
-import { useDevice, useFirmware } from '@suite-hooks';
+import { useFirmware } from '@suite-hooks';
 import { ReconnectInNormalStep, NoNewFirmware, ContinueButton, P, H2 } from '@firmware-components';
 
 const { FONT_SIZE, FONT_WEIGHT } = variables;
@@ -58,7 +58,7 @@ const BottomRow = styled.div`
 `;
 
 const Heading = () => {
-    const { device } = useDevice();
+    const { device } = useFirmware();
     if (device?.mode === 'normal') {
         return (
             <HeadingWrapper>
@@ -76,7 +76,7 @@ const Heading = () => {
 };
 
 const Body = () => {
-    const { device } = useDevice();
+    const { device } = useFirmware();
 
     // ensure that device is connected in requested mode
     if (device?.mode !== 'normal') return <ReconnectInNormalStep.Body />;
@@ -163,9 +163,9 @@ const HowLong = styled.div`
 
 const BottomBar = () => {
     const { setStatus } = useFirmware();
-    const { device } = useDevice();
+    const { device } = useFirmware();
 
-    if (!device?.connected || !device?.features || device.mode !== 'normal') {
+    if (!device || !device?.features || device.mode !== 'normal') {
         return null;
     }
 

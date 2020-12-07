@@ -11,14 +11,13 @@ import {
     InstallButton,
 } from '@firmware-components';
 import { Translation, WebusbButton } from '@suite-components';
-import { useDevice, useFirmware, useSelector } from '@suite-hooks';
+import { useFirmware, useSelector } from '@suite-hooks';
 
 const Body = () => {
-    const { device } = useDevice();
-    const { prevDevice } = useFirmware();
+    const { prevDevice, device } = useFirmware();
     const expectedModel = prevDevice?.features?.major_version || 2;
 
-    if (!device?.connected) {
+    if (!device) {
         return (
             <>
                 <ConnectInBootloaderImg model={expectedModel} />
@@ -60,15 +59,15 @@ const Body = () => {
 };
 
 const BottomBar = () => {
-    const { device } = useDevice();
-    const { firmwareUpdate } = useFirmware();
+    // const { device } = useDevice();
+    const { firmwareUpdate, device } = useFirmware();
     const transport = useSelector(state => state.suite.transport);
 
     if (device?.mode === 'bootloader') {
         return <InstallButton onClick={firmwareUpdate} />;
     }
 
-    if (!device?.connected && isWebUSB(transport)) {
+    if (!device && isWebUSB(transport)) {
         return (
             <WebusbButton ready>
                 <Button icon="PLUS" variant="tertiary">

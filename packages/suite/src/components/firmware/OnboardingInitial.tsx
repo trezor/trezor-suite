@@ -3,7 +3,7 @@ import { Button } from '@trezor/components';
 
 import { Translation } from '@suite-components';
 import { getFwVersion } from '@suite-utils/device';
-import { useDevice, useFirmware, useActions } from '@suite-hooks';
+import { useFirmware, useActions } from '@suite-hooks';
 import {
     P,
     H2,
@@ -15,9 +15,9 @@ import {
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 
 const Body = () => {
-    const { device } = useDevice();
+    const { device } = useFirmware();
 
-    if (!device?.connected || !device?.features)
+    if (!device || !device?.features)
         return (
             <>
                 <ConnectInNormalImg />
@@ -92,13 +92,13 @@ const Body = () => {
 };
 
 const BottomBar = () => {
-    const { setStatus, firmwareUpdate } = useFirmware();
-    const { device } = useDevice();
+    const { setStatus, firmwareUpdate, device } = useFirmware();
+    // const { device } = useDevice();
     const { goToNextStep } = useActions({
         goToNextStep: onboardingActions.goToNextStep,
     });
 
-    if (!device?.connected || !device.features) return null;
+    if (!device || !device.features) return null;
 
     if (device.firmware === 'none') {
         return <InstallButton onClick={firmwareUpdate} />;

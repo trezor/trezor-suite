@@ -2,7 +2,7 @@ import React from 'react';
 import { DisconnectImg, ConnectInNormalImg, P, H2 } from '@firmware-components';
 
 import { Button } from '@trezor/components';
-import { useDevice, useFirmware, useSelector } from '@suite-hooks';
+import { useFirmware, useSelector } from '@suite-hooks';
 import { Translation, WebusbButton } from '@suite-components';
 import { isWebUSB } from '@suite-utils/transport';
 
@@ -11,11 +11,11 @@ const Heading = () => {
 };
 
 const Body = () => {
-    const { device } = useDevice();
-    const { prevDevice } = useFirmware();
+    // const { device } = useDevice();
+    const { prevDevice, device } = useFirmware();
     const expectedModel = prevDevice?.features?.major_version;
 
-    if (!device?.connected) {
+    if (!device) {
         return (
             <>
                 <ConnectInNormalImg />
