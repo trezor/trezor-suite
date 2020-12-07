@@ -52,12 +52,13 @@ async function runTests() {
         BROWSER = 'chrome',
         CYPRESS_baseUrl, // eslint-disable-line @typescript-eslint/naming-convention
         TRACK_SUITE_URL,
+        ALLOW_RETRY,
         CI_JOB_URL,
         CI_COMMIT_BRANCH,
         CI_JOB_ID,
         CI_COMMIT_MESSAGE,
         CI_COMMIT_SHA,
-        CI_RUNNER_ID,
+        // CI_RUNNER_ID,
         CI_RUNNER_DESCRIPTION,
     } = process.env;
 
@@ -92,7 +93,7 @@ async function runTests() {
     for (let i = 0; i < finalTestFiles.length; i++) {
         const testFile = finalTestFiles[i];
         const retries = Number(grepForValue('@retry', testFile));
-        const allowedRuns = !Number.isNaN(retries) ? retries + 1 : 1;
+        const allowedRuns = !Number.isNaN(retries) && Number(ALLOW_RETRY) ? retries + 1 : 1;
 
         const spec = __dirname + testFile.substr(testFile.lastIndexOf('/tests'));
         const testFileName = testFile

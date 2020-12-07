@@ -6,7 +6,7 @@
         "types": ["trezor-connect", "cypress"],
         "allowJs": true,
         "skipLibCheck": true,
-
+        "esModuleInterop": true
     },
     "include": [
         "**/*.ts",

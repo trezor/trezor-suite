@@ -15,6 +15,7 @@ describe('Metadata - wallet labeling', () => {
             // prepare test
             cy.task('startEmu', { wipe: true, version: '2.3.1' });
             cy.task('setupEmu');
+            cy.task('startBridge');
             cy.task('metadataStartProvider', provider);
 
             cy.prefixedVisit('/accounts', {
@@ -26,11 +27,7 @@ describe('Metadata - wallet labeling', () => {
 
             cy.passThroughInitialRun();
 
-            // todo: better waiting for discovery (mock it!)
-            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
-            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should(
-                'not.be.visible',
-            );
+            cy.discoveryShouldFinish();
 
             cy.getTestElement('@menu/switch-device').click();
             cy.getTestElement('@metadata/walletLabel/standard-wallet/add-label-button').click({

@@ -3,8 +3,6 @@
 
 describe('Device settings', () => {
     beforeEach(() => {
-        cy.task('stopEmu');
-        cy.task('stopBridge');
         cy.task('startEmu', { version: '1.9.0', wipe: true });
         cy.task('setupEmu', { needs_backup: false });
         cy.task('startBridge');

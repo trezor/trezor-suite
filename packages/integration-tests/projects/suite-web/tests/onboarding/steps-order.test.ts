@@ -5,7 +5,7 @@
 
 describe('Onboarding - steps order', () => {
     before(() => {
-        cy.task('stopEmu');
+        cy.task('startBridge');
     });
 
     beforeEach(() => {

@@ -10,9 +10,11 @@ describe('Passphrase', () => {
         // back to passphrase that was used before in the session would require to type the passphrase again
         cy.task('startEmu', { wipe: true, version: '2.3.1' });
         cy.task('setupEmu');
+        cy.task('startBridge');
 
         // eslint-disable-next-line @typescript-eslint/naming-convention
         cy.task('applySettings', { passphrase_always_on_device: false });
+
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();

@@ -9,7 +9,7 @@ const SECOND_DEVICE_PATH = '2';
 // trying skipped test
 describe('Stories of device connecting', () => {
     before(() => {
-        cy.task('stopEmu');
+        cy.task('startBridge');
     });
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();

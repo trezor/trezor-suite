@@ -4,7 +4,8 @@
 describe('Suite initial run', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
-        cy.task('stopEmu');
+        cy.task('startBridge');
+
     });
 
     it('Until user passed through initial run, it will be there after reload', () => {

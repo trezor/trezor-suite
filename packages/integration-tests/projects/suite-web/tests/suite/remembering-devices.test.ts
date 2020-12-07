@@ -5,9 +5,9 @@
 
 describe('Stories of device remembering', () => {
     beforeEach(() => {
-        cy.task('stopEmu');
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
+        cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();

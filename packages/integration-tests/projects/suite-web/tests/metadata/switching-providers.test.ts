@@ -12,6 +12,7 @@ describe(`Metadata - switching between cloud providers`, () => {
         // prepare test
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
+        cy.task('startBridge');
         cy.task(`metadataStartProvider`, 'dropbox');
         cy.task(`metadataStartProvider`, 'google');
 
@@ -24,11 +25,7 @@ describe(`Metadata - switching between cloud providers`, () => {
 
         cy.passThroughInitialRun();
 
-        // todo: better waiting for discovery (mock it!)
-        cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
-        cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should(
-            'not.be.visible',
-        );
+        cy.discoveryShouldFinish();
 
         cy.log('');
         cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');

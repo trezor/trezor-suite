@@ -21,6 +21,7 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             cy.task('startEmu', { wipe: true });
             cy.task('setupEmu');
             cy.task(`metadataStartProvider`, f.provider);
+            cy.task('startBridge');
 
             cy.prefixedVisit('/accounts', {
                 onBeforeLoad: (win: Window) => {
@@ -31,11 +32,7 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
 
             cy.passThroughInitialRun();
 
-            // todo: better waiting for discovery (mock it!)
-            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
-            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should(
-                'not.be.visible',
-            );
+            cy.discoveryShouldFinish();
 
             cy.log(
                 'Default label is "Bitcoin #1". Clicking it in accounts menu is not possible. User can click on label in accounts sections. This triggers metadata flow',
@@ -66,7 +63,7 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'even cooler');
             cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/success").should('be.visible');
             cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/success").should(
-                'not.be.visible',
+                'not.exist',
             );
 
             cy.log('Now edit and press escape, should not save');
@@ -83,7 +80,7 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             cy.getTestElement('@account-menu/search-input').click().type('even cooler');
             cy.getTestElement('@account-menu/btc/normal/0').should('be.visible');
             cy.getTestElement('@account-menu/search-input').click().type('something retarded');
-            cy.getTestElement('@account-menu/btc/normal/0').should('not.be.visible');
+            cy.getTestElement('@account-menu/btc/normal/0').should('not.exist');
             cy.getTestElement('@account-menu/search-input').click().clear();
 
             cy.log('We can also remove metadata by clearing input');
@@ -92,16 +89,16 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             });
             cy.getTestElement('@metadata/input').clear().type('{enter}');
 
+            cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
             // check number of requests that were sent to metadata provider in the course of this scenario
             // - note if it fails:  data is not mocked, so it may fail if somebody adds an account to all seed
             //                      in future there should be mocked discovery
             //                      if it shoots somebody in leg, just remove this assertion...
             // - why asserting it:  just to make sure that metadata don't send unnecessary amount of request
+            cy.wait(2000);
             cy.task('metadataGetRequests', { provider: f.provider }).then(requests => {
                 expect(requests).to.have.length(f.numberOfRequests[0]);
             });
-
-            cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
 
             // test switching between accounts. make sure that "success" button does not remain
             // visible when switching between accounts
@@ -114,10 +111,10 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             cy.getTestElement("@metadata/accountLabel/m/49'/0'/0'/success").should('be.visible');
             cy.getTestElement('@account-menu/btc/segwit/1').click();
             cy.getTestElement("@metadata/accountLabel/m/49'/0'/1'/success").should(
-                'not.be.visible',
+                'not.exist',
             );
             cy.getTestElement("@metadata/accountLabel/m/49'/0'/0'/success").should(
-                'not.be.visible',
+                'not.exist',
             );
 
             // go to another route that triggers discovery and check whether there are any requests to metadata providers
@@ -126,7 +123,9 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             // using wait is almost always anti-pattern but I guess we can live with it
             // problem is that cypress built in retry ability can't be used here when
             // retrieving number of requests from node.js
-            cy.wait(3000);
+            cy.wait(2000);
+            cy.getTestElement('@dashboard/graph');
+
             cy.task('metadataGetRequests', { provider: f.provider }).then(requests => {
                 expect(requests).to.have.length(f.numberOfRequests[1]);
             });

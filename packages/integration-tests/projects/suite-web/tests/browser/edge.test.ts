@@ -5,7 +5,6 @@
 
 describe('Windows 10 with edge browser ', () => {
     before(() => {
-        cy.task('stopEmu');
         cy.viewport(1024, 768);
         cy.resetDb();
     });

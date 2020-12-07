@@ -76,10 +76,16 @@ suite-web deploy dev:
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
     COMPOSE_FILE: ./docker/docker-compose.suite-ci.yml
+    # corresponds with the NextJs assetPrefix. Tells Cypress where is the index of application
     CYPRESS_ASSET_PREFIX: /web
     CYPRESS_baseUrl: ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
+    # should tests do snapshot testing
     CYPRESS_SNAPSHOT: 0
+    # reporter url
     TRACK_SUITE_URL: https://track-suite.herokuapp.com
+    # when debugging or developing tests it does not make sense to have retries,
+    # in other cases retries are useful to avoid occasional failures due to flaky tests
+    ALLOW_RETRY: 1
   script:
     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
     - docker-compose pull
@@ -88,6 +94,7 @@ suite-web deploy dev:
     - docker-compose run test-run
   after_script:
     - docker-compose down
+    - docker network prune -f
   artifacts:
     expire_in: 7 days
     when: always

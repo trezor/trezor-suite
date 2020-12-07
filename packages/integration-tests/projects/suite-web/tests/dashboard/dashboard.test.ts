@@ -6,6 +6,7 @@ describe('Dashboard', () => {
         cy.task('startEmu', { version: '2.3.1', wipe: true });
         cy.task('setupEmu', { needs_backup: true });
         cy.task('applySettings', { passphrase_always_on_device: false });
+        cy.task('startBridge');
 
         cy.viewport(1024, 768).resetDb();
     });

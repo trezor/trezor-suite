@@ -5,8 +5,6 @@
 
 describe('Recovery - dry run', () => {
     beforeEach(() => {
-        cy.task('stopBridge');
-        cy.task('stopEmu');
         cy.task('startEmu', { wipe: true, version: '2.3.1' });
         cy.task('setupEmu');
         cy.task('startBridge');

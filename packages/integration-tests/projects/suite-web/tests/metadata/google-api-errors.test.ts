@@ -10,6 +10,7 @@ describe('Google api errors', () => {
         cy.viewport(1024, 768).resetDb();
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
+        cy.task('startBridge');
         cy.task('metadataStartProvider', 'dropbox');
         cy.prefixedVisit('/accounts', {
             onBeforeLoad: (win: Window) => {
@@ -18,11 +19,8 @@ describe('Google api errors', () => {
             },
         });
         cy.passThroughInitialRun();
-        // todo: wait for discovery to finish and remove this
-        cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
-        cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should(
-            'not.be.visible',
-        );
+       
+        cy.discoveryShouldFinish();
     });
 
     it('Malformed token', () => {

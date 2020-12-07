@@ -200,4 +200,4 @@ class DropboxMock {
 
 const dropboxMock = new DropboxMock();
 
-module.exports = dropboxMock;
+export default dropboxMock;

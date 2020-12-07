@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 // @ts-ignore
 import * as base58check from 'bs58check';
 // note we only need base58 conversion fn from base58check, other functions from there might

@@ -205,4 +205,4 @@ class GoogleMock {
 
 const googleMock = new GoogleMock();
 
-module.exports = googleMock;
+export default googleMock;

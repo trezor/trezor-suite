@@ -4,16 +4,15 @@
     "private": true,
     "scripts": {
         "test:components-storybook": "npx cypress run --project ./projects/components-storybook",
-        "test:components-storybook:local": "CYPRESS_baseUrl='http://192.168.88.252:9001' npx cypress open --project ./projects/components-storybook",
-        "test:suite-web:ci:run": "./projects/suite-web/scripts/run-ci.sh"
+        "test:components-storybook:local": "CYPRESS_baseUrl='http://192.168.88.252:9001' npx cypress open --project ./projects/components-storybook"
     },
     "dependencies": {
-        "cypress": "^4.7.0",
+        "cypress": "5.0.0",
         "ts-loader": "^8.0.11",
         "webpack": "^4.44.2"
     },
     "devDependencies": {
-        "@cypress/webpack-preprocessor": "^4.1.3",
+        "@cypress/webpack-preprocessor": "^5.5.0",
         "cypress-image-snapshot": "^3.1.1",
         "shelljs": "^0.8.4",
         "wait-on": "^5.0.1",

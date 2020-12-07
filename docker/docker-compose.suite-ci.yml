@@ -5,9 +5,10 @@ services:
     environment:
       - SDL_VIDEODRIVER=dummy
       - XDG_RUNTIME_DIR=/var/tmp
+    network_mode: bridge # this makes docker reuse existing networks
 
   test-run:
-    image: cypress/included:4.7.0
+    image: cypress/included:5.0.0
     entrypoint: []
     environment:
       - CYPRESS_SNAPSHOT=$CYPRESS_SNAPSHOT
@@ -16,6 +17,7 @@ services:
       - LOCAL_USER_ID=$LOCAL_USER_ID
       - TEST_GROUP=$TEST_GROUP
       - TRACK_SUITE_URL=$TRACK_SUITE_URL
+      - ALLOW_RETRY=$ALLOW_RETRY
       - CI_JOB_URL=$CI_JOB_URL
       - CI_COMMIT_BRANCH=$CI_COMMIT_BRANCH
       - CI_COMMIT_MESSAGE=$CI_COMMIT_MESSAGE

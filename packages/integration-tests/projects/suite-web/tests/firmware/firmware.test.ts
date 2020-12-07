@@ -3,15 +3,13 @@
 
 describe('Firmware', () => {
     beforeEach(() => {
-        cy.task('stopBridge');
-        cy.task('stopEmu');
-        cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
     });
 
     it('Firmware outdated static notification should open firmware update modal', () => {
         cy.task('startEmu', { wipe: true, version: '2.3.0' });
         cy.task('setupEmu');
+        cy.task('startBridge');
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.getTestElement('@notification/update-firmware/button').click();
@@ -34,6 +32,7 @@ describe('Firmware', () => {
     it('For latest firmware, update button in device settings should display "Up to date" but still be clickable', () => {
         // todo: do not reuse device state from previous test
         cy.task('startEmu', { wipe: false });
+        cy.task('startBridge');
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
         cy.getTestElement('@settings/device/update-button')

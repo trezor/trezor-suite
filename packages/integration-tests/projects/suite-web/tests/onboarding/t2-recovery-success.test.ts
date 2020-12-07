@@ -5,7 +5,7 @@
 
 describe('Onboarding - recover wallet T2', () => {
     beforeEach(() => {
-        cy.task('stopEmu');
+        cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
         cy.goToOnboarding();

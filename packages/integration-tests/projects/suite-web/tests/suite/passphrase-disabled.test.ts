@@ -7,12 +7,14 @@ const DEFAULT_HIDDEN_WALLET_LABEL = 'Hidden wallet #';
 describe('Suite switch wallet modal', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
-        cy.task('stopEmu');
+        cy.task('startBridge');
     });
 
     it('passphrase_protection: false', () => {
         cy.task('startEmu', { wipe: true, version: '2.3.1' });
         cy.task('setupEmu', { passphrase_protection: false });
+        cy.task('applySettings', { passphrase_always_on_device: false });
+
         cy.prefixedVisit('/settings');
 
         cy.passThroughInitialRun();

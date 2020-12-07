@@ -5,12 +5,12 @@
 // https://github.com/bahmutov/add-typescript-to-cypress/tree/master/e2e/cypress
 
 import { addMatchImageSnapshotPlugin } from 'cypress-image-snapshot/plugin';
-import webpack from '@cypress/webpack-preprocessor';
 import { Controller } from './websocket-client';
 import googleMock from './google';
 import dropboxMock from './dropbox';
-import CONSTANTS from '../constants';
 import * as metadataUtils from '../../../../suite/src/utils/suite/metadata';
+
+const webpackPreprocessor = require('@cypress/webpack-preprocessor');
 
 const controller = new Controller({ url: 'ws://localhost:9001/' });
 module.exports = on => {
@@ -22,23 +22,14 @@ module.exports = on => {
         webpackOptions: require('../webpack.config'),
         watchOptions: {},
     };
-    on('file:preprocessor', webpack(options));
+    on('file:preprocessor', webpackPreprocessor(options));
+
     // make ts possible end
 
     // add snapshot plugin
     addMatchImageSnapshotPlugin(on);
 
     on('before:browser:launch', async (browser = {}, launchOptions) => {
-        // todo: maybe turn of bridge on and off here before launching test files.
-        // this would help to prevent messed sessions between tests (unacquired device) which is 
-        // the likeliest source of flakiness in tests
-        // but it is not a silver bullet also, if there are more tests in one file, you still
-        // need to handle bridge reloading manually
-        await controller.connect();
-        // default state of bridge is ON
-        await controller.send({ type: 'bridge-start' });
-        controller.disconnect();
-
         if (browser.name === 'chrome') {
             launchOptions.args.push('--disable-dev-shm-usage');
             return launchOptions;
@@ -112,7 +103,7 @@ module.exports = on => {
                 mnemonic: 'all all all all all all all all all all all all',
                 pin: '',
                 passphrase_protection: false,
-                label: CONSTANTS.DEFAULT_TREZOR_LABEL,
+                label: 'My Trevor',
                 needs_backup: false,
             };
 

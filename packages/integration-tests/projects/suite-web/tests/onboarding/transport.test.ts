@@ -3,18 +3,11 @@
 
 describe('Onboarding - transport webusb/bridge', () => {
     beforeEach(() => {
-        cy.task('stopEmu');
-        cy.task('stopBridge');
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
         cy.goToOnboarding()
         cy.onboardingShouldLoad();
     });
-
-    after(() => {
-        // default state of tests framework is bridge running.
-        cy.task('startBridge');
-    })
 
     it('Offer webusb as primary choice on web, but allow user to disable it and fallback to bridge', () => {
         cy.getTestElement('@onboarding/begin-button').click();
