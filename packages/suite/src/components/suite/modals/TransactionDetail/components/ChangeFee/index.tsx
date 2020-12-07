@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { Translation, FiatValue } from '@suite-components';
+import { Translation, FiatValue, FormattedCryptoAmount } from '@suite-components';
 import { WalletAccountTransaction } from '@wallet-types';
 import { useRbf, RbfContext } from '@wallet-hooks/useRbfForm';
 import { getFeeUnits } from '@wallet-utils/sendFormUtils';
@@ -96,7 +96,9 @@ const ChangeFee = ({ tx, finalize }: Props) => {
                                     {tx.rbfParams?.feeRate} {getFeeUnits('bitcoin')}
                                 </Rate>
                                 <Amount>
-                                    <StyledCryptoAmount>{tx.fee}</StyledCryptoAmount>
+                                    <StyledCryptoAmount>
+                                        <FormattedCryptoAmount value={tx.fee} symbol={tx.symbol} />
+                                    </StyledCryptoAmount>
                                     {tx.rates && (
                                         <StyledFiatValue>
                                             <FiatValue
