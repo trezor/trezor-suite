@@ -64,9 +64,9 @@ suite-web deploy dev:
     - rsync --delete -va packages/suite-web-landing/build/ "${DEPLOY_DIRECTORY}/"
     - rsync --delete -va packages/suite-web/build/ "${DEPLOY_DIRECTORY}/web/"
   tags:
-    - deploy
+#     - deploy
 
-# e2e
+# # e2e
 
 .e2e web:
   stage: integration testing
@@ -80,12 +80,12 @@ suite-web deploy dev:
     CYPRESS_ASSET_PREFIX: /web
     CYPRESS_baseUrl: ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
     # should tests do snapshot testing
-    CYPRESS_SNAPSHOT: 0
+    CYPRESS_SNAPSHOT: 1
     # reporter url
     TRACK_SUITE_URL: https://track-suite.herokuapp.com
     # when debugging or developing tests it does not make sense to have retries,
     # in other cases retries are useful to avoid occasional failures due to flaky tests
-    ALLOW_RETRY: 1
+    ALLOW_RETRY: 0
   script:
     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
     - docker-compose pull
@@ -102,31 +102,41 @@ suite-web deploy dev:
       - ./packages/integration-tests/projects/suite-web/snapshots
       - ./packages/integration-tests/projects/suite-web/screenshots
       - ./packages/integration-tests/projects/suite-web/videos
+      - download-snapshots.sh
 
 e2e web suite:
   extends: .e2e web
   variables:
-    TEST_GROUP: '@group:suite'
+    TEST_GROUP: '@group:test'
 
-e2e web onboarding:
-  extends: .e2e web
+e2e web suite snapshots:
+  stage: integration testing snapshots
+  when: manual
+  extends: .e2e web 
   variables:
-    TEST_GROUP: '@group:onboarding'
+    CYPRESS_SNAPSHOT: 1
+    CYPRESS_updateSnapshots: 1
+    TEST_GROUP: '@group:test'
+  
+# e2e web onboarding:
+#   extends: .e2e web
+#   variables:
+#     TEST_GROUP: '@group:onboarding'
 
-e2e web device-management:
-  extends: .e2e web
-  variables:
-    TEST_GROUP: '@group:device-management'
+# e2e web device-management:
+#   extends: .e2e web
+#   variables:
+#     TEST_GROUP: '@group:device-management'
 
-e2e web settings:
-  extends: .e2e web
-  variables:
-    TEST_GROUP: '@group:settings'
+# e2e web settings:
+#   extends: .e2e web
+#   variables:
+#     TEST_GROUP: '@group:settings'
 
-e2e web metadata:
-  extends: .e2e web
-  variables:
-    TEST_GROUP: '@group:metadata'
+# e2e web metadata:
+#   extends: .e2e web
+#   variables:
+#   TEST_GROUP: '@group:metadata'
 
 # TODO scheduled jobs against beta chrome channel
 # TODO scheduled jobs against suite.trezor.io

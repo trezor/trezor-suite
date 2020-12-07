@@ -71,6 +71,7 @@ const DeviceInvalidModeLayout = (props: Props) => {
     return (
         <Modal size="small" heading={title} description={text} data-test={props['data-test']}>
             <Image image={image} />
+            hello
             <Buttons>
                 {resolveButton && resolveButton}
                 {allowSwitchDevice && devices.length > 1 && (

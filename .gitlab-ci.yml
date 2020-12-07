@@ -14,6 +14,7 @@ stages:
   - build
   - deploy to dev
   - integration testing
+  - integration testing snapshots
   - build artifacts
   - misc
   - deploy to staging
@@ -21,14 +22,14 @@ stages:
 
 include:
   - ci/environment.yml
-  - ci/prebuild.yml
-  - ci/packages/components.yml
+  # - ci/prebuild.yml
+  # - ci/packages/components.yml
   - ci/packages/suite.yml
   - ci/packages/suite-web.yml
   - ci/packages/suite-desktop.yml
-  # - ci/packages/suite-native.yml
-  - ci/packages/rollout.yml
+  # # - ci/packages/suite-native.yml
+  # - ci/packages/rollout.yml
   - ci/packages/landing-page.yml
   - ci/packages/suite-web-landing.yml
-  # to be run only on scheduled pipelines
-  - ci/schedules.yml
+  # # to be run only on scheduled pipelines
+  # - ci/schedules.yml

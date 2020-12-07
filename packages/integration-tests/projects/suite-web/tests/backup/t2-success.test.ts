@@ -1,5 +1,5 @@
 // @group:device-management
-// @group:wip
+// @group:test
 
 describe('Backup', () => {
     beforeEach(() => {
@@ -16,7 +16,7 @@ describe('Backup', () => {
         // access from notification
         cy.getTestElement('@notification/no-backup/button').click();
 
-        cy.getTestElement('@backup').matchImageSnapshot('backup')
+        cy.getTestElement('@backup').matchImageSnapshot('backup-confirm-security-screen')
         
         cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
         cy.getTestElement('@backup/check-item/has-enough-time').click();

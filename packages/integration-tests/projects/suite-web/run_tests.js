@@ -8,6 +8,7 @@ const shell = require('shelljs');
 const { argv } = require('yargs');
 const fetch = require('node-fetch');
 const path = require('path');
+const fs = require('fs');
 
 const TEST_DIR = './packages/integration-tests/projects/suite-web';
 
@@ -60,6 +61,7 @@ async function runTests() {
         CI_COMMIT_SHA,
         // CI_RUNNER_ID,
         CI_RUNNER_DESCRIPTION,
+        CYPRESS_updateSnapshots,
     } = process.env;
 
     const { stage } = argv;
@@ -88,6 +90,8 @@ async function runTests() {
         duration: 0,
         stage,
         records: {},
+        screenshots: [],
+        tests: [],
     };
 
     for (let i = 0; i < finalTestFiles.length; i++) {
@@ -139,7 +143,13 @@ async function runTests() {
                     configFile: false,
                 });
 
+                console.log('-----runResult------');
+                console.log(JSON.stringify(runResult, null, 2));
+
                 const { totalFailed, totalPending, totalDuration } = runResult;
+
+                const screenshots = runResult.runs[0].tests.flatMap(t => t.attempts[0].screenshots);
+                const tests = runResult.runs[0].tests;
 
                 console.log(`[run_tests.js] ${testFileName} duration: ${totalDuration}`);
                 log.duration += totalDuration;
@@ -149,6 +159,8 @@ async function runTests() {
                     if (testRunNumber === allowedRuns) {
                         failedTests += totalFailed;
                         log.records[testFileName] = 'failed';
+                        log.screenshots.push(...screenshots);
+                        log.tests.push(...tests);
                         console.log(
                             `[run_tests.js] test ${testFileName} finished failing after ${allowedRuns} run(s)`,
                         );
@@ -160,6 +172,9 @@ async function runTests() {
                     );
                     continue;
                 }
+
+                log.screenshots.push(...screenshots);
+                log.tests.push(...tests);
 
                 if (totalPending > 0) {
                     // log either success or retried (success after retry)
@@ -199,10 +214,36 @@ async function runTests() {
         }
     }
 
-    // beta is only for collecting statistics, so it exits with non-zero code
-    // if there is some runtime error.
-    if (stage === '@beta') {
-        process.exit(0);
+    console.log('CYPRESS_updateSnapshots', CYPRESS_updateSnapshots);
+
+    if (CYPRESS_updateSnapshots) {
+        const script = `
+            #!/bin/sh
+            
+            mkdir tmp
+            cd tmp
+            wget ${CI_JOB_URL}/artifacts/download
+            unzip download
+            rm -rf ../packages/integration-tests/projects/suite-web/snapshots
+            cp -r packages/integration-tests/projects/suite-web/snapshots ../packages/integration-tests/projects/suite-web
+            git status
+            cd ../
+            rm -rf ./tmp
+        `;
+
+        console.log('Generated script to update files locally');
+        console.log(script);
+
+        console.log(`
+        UPDATE SNAPSHOTS THAT CHANGED LOCALLY
+        *********************************************************************
+        *                                                                   *
+        *  $ curl ${CI_JOB_URL}/artifacts/raw/download-snapshots.sh | bash  *
+        *                                                                   *
+        *********************************************************************
+        `);
+
+        fs.appendFileSync('download-snapshots.sh', script);
     }
 
     console.log(`Browse test results: ${TRACK_SUITE_URL}`);

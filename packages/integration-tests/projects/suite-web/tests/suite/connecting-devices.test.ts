@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-// @group:suite
+// @group:test
 // @retry=2
 
 const FIRST_DEVICE_PATH = '1';
@@ -122,7 +122,7 @@ describe('Stories of device connecting', () => {
             cy.getTestElement('@device-invalid-mode/bootloader');
         });
 
-        it(`undreadable device -> show info about undreadable device, offer switch device`, () => {
+        it(`unreadable device -> show info about unreadable device, offer switch device`, () => {
             cy.connectDevice({ path: SECOND_DEVICE_PATH, type: 'unreadable' });
             cy.toggleDeviceMenu();
             cy.getTestElement(`@switch-device/${SECOND_DEVICE_PATH}/solve-issue-button`).click();

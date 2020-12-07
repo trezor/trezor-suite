@@ -190,6 +190,7 @@ const Backup = (props: Props) => {
                     <StyledP size="small">
                         <Translation id="TR_BACKUP_SUBHEADING_1" />
                     </StyledP>
+                    Why it does not fail? It should.
                     <PreBackupCheckboxes />
                     <Buttons>
                         <Col>
