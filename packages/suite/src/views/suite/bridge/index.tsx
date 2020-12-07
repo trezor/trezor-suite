@@ -144,6 +144,7 @@ const InstallBridge = (props: Props) => {
         <Modal
             heading={<Translation id="TR_TREZOR_BRIDGE_DOWNLOAD" />}
             description={<Translation id="TR_NEW_COMMUNICATION_TOOL" />}
+            data-test="@bridge"
         >
             <Head>
                 <title>Download Bridge | Trezor Suite</title>
@@ -162,7 +163,7 @@ const InstallBridge = (props: Props) => {
                 </Version>
                 <StyledImage image="T_BRIDGE_CHECK" />
                 {isLoading ? (
-                    <LoaderWrapper>
+                    <LoaderWrapper data-test="@bridge/loading">
                         <CenteredLoader size={50} strokeWidth={2} />
                         <P>
                             <Translation id="TR_GATHERING_INFO" />

@@ -44,11 +44,12 @@ describe('Onboarding - firmware update', () => {
         cy.getTestElement('@onboarding/back-button').click();
         cy.getTestElement('@firmware/install-button');
 
+        // unrelated. see how fw update reacts to ButtonRequest_FirmwareCheck button request 
         cy.dispatch({
             type: 'ui-button',
             payload: { code: 'ButtonRequest_FirmwareCheck', device: getSuiteDevice() },
         });
         cy.getTestElement('@suite/modal/confirm-fingerprint-on-device');
-        cy.matchImageSnapshot();
+        cy.matchImageSnapshot('firmware-confirm fingerprint');
     });
 });

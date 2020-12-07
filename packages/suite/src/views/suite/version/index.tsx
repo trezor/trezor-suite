@@ -14,7 +14,7 @@ const Line = styled.div`
 `;
 
 const Version = () => (
-    <Modal>
+    <Modal data-test="@version">
         <Wrapper>
             <P size="small" weight="bold">
                 APPLICATION VERSION
@@ -24,7 +24,10 @@ const Version = () => (
             <P size="small" weight="bold">
                 LAST COMMIT HASH
             </P>
-            <Link href={`https://github.com/trezor/trezor-suite/commits/${process.env.COMMITHASH}`}>
+            <Link
+                href={`https://github.com/trezor/trezor-suite/commits/${process.env.COMMITHASH}`}
+                data-test="@version/commit-hash-link"
+            >
                 <H2>{process.env.COMMITHASH}</H2>
             </Link>
         </Wrapper>

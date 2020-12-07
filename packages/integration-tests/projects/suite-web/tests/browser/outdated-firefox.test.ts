@@ -11,7 +11,8 @@ describe('Ubuntu with outdated firefox ', () => {
 
     it('Should just display outdated browser', () => {
         cy.prefixedVisit('/');
+        cy.document().its('fonts.status').should('equal', 'loaded');
         cy.get('html').should('contain.text', 'Your browser is outdated');
-        cy.screenshot();
+        cy.matchImageSnapshot('firefox is supported but outdated');
     });
-})
+});

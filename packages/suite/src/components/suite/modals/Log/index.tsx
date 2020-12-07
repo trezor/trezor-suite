@@ -82,6 +82,7 @@ const Log = (props: Props) => {
             onCancel={props.onCancel}
             heading={<Translation id="TR_LOG" />}
             description={<Translation id="LOG_DESCRIPTION" />}
+            data-test="@log"
             bottomBar={
                 <ButtonWrapper>
                     <Button variant="secondary" onClick={() => copy()} data-test="@log/copy-button">
@@ -97,7 +98,9 @@ const Log = (props: Props) => {
                 </ButtonWrapper>
             }
         >
-            <LogWrapper ref={htmlElement}>{log}</LogWrapper>
+            <LogWrapper ref={htmlElement} data-test="@log/content">
+                {log}
+            </LogWrapper>
             <SectionItem>
                 <TextColumn
                     title={<Translation id="LOG_INCLUDE_BALANCE_TITLE" />}

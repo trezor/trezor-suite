@@ -12,7 +12,8 @@ describe('Windows 7 with outdated chrome ', () => {
 
     it('Should just display outdated browser', () => {
         cy.prefixedVisit('/');
+        cy.document().its('fonts.status').should('equal', 'loaded');
         cy.get('html').should('contain.text', 'Your browser is outdated');
-        cy.screenshot();
+        cy.matchImageSnapshot('chrome is supported but outdated');
     });
-})
+});

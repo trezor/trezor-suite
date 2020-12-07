@@ -11,6 +11,7 @@ services:
     entrypoint: []
     environment:
       - CYPRESS_SNAPSHOT=$CYPRESS_SNAPSHOT
+      - CYPRESS_updateSnapshots=$CYPRESS_updateSnapshots
       - CYPRESS_baseUrl=$CYPRESS_baseUrl
       - CYPRESS_ASSET_PREFIX=$CYPRESS_ASSET_PREFIX
       - LOCAL_USER_ID=$LOCAL_USER_ID

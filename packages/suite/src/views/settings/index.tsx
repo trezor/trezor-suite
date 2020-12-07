@@ -93,7 +93,7 @@ const Settings = ({
     return (
         <SettingsLayout data-test="@settings/index">
             <Section title={<Translation id="TR_LOCALIZATION" />}>
-                <SectionItem>
+                <SectionItem data-test="@settings/language">
                     <TextColumn title={<Translation id="TR_LANGUAGE" />} />
                     <ActionColumn>
                         <ActionSelect
@@ -122,7 +122,7 @@ const Settings = ({
                     </ActionColumn>
                 </SectionItem>
 
-                <SectionItem>
+                <SectionItem data-test="@settings/fiat">
                     <TextColumn title={<Translation id="TR_PRIMARY_FIAT" />} />
                     <ActionColumn>
                         <ActionSelect
@@ -147,7 +147,7 @@ const Settings = ({
             </Section>
 
             <Section title={<Translation id="TR_LABELING" />}>
-                <SectionItem>
+                <SectionItem data-test="@settings/metadata">
                     <TextColumn
                         title={<Translation id="TR_LABELING_ENABLED" />}
                         description={<Translation id="TR_LABELING_FEATURE_ALLOWS" />}
@@ -172,7 +172,7 @@ const Settings = ({
                     </ActionColumn>
                 </SectionItem>
                 {metadata.enabled && metadata.provider && (
-                    <SectionItem>
+                    <SectionItem data-test="@settings/metadata-provider">
                         <TextColumn
                             title={
                                 metadata.provider.isCloud ? (
@@ -308,7 +308,7 @@ const Settings = ({
                 <Theme />
                 <Analytics />
 
-                <SectionItem>
+                <SectionItem data-test="@settings/storage">
                     <TextColumn
                         title={<Translation id="TR_SUITE_STORAGE" />}
                         description={<Translation id="TR_CLEAR_STORAGE_DESCRIPTION" />}
@@ -332,7 +332,7 @@ const Settings = ({
                         </ActionButton>
                     </ActionColumn>
                 </SectionItem>
-                <SectionItem>
+                <SectionItem data-test="@settings/version">
                     <TextColumn
                         title={<Translation id="TR_SUITE_VERSION" />}
                         description={

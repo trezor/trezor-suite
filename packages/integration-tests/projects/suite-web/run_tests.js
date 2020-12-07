@@ -8,6 +8,7 @@ const shell = require('shelljs');
 const { argv } = require('yargs');
 const fetch = require('node-fetch');
 const path = require('path');
+const fs = require('fs');
 
 const TEST_DIR = './packages/integration-tests/projects/suite-web';
 
@@ -60,12 +61,13 @@ async function runTests() {
         CI_COMMIT_SHA,
         // CI_RUNNER_ID,
         CI_RUNNER_DESCRIPTION,
+        CYPRESS_updateSnapshots,
     } = process.env;
 
     const { stage } = argv;
 
-    if (!TRACK_SUITE_URL) {
-        console.log('[run_tests.js] TRACK_SUITE_URL env not specified. No logs will be uploaded');
+    if (!TRACK_SUITE_URL || CYPRESS_updateSnapshots) {
+        console.log('[run_tests.js] TRACK_SUITE_URL env not specified or CYPRESS_updateSnapshots is set. No logs will be uploaded');
     }
     const finalTestFiles = getTestFiles().sort((a, b) => a.localeCompare(b));
 
@@ -88,6 +90,7 @@ async function runTests() {
         duration: 0,
         stage,
         records: {},
+        tests: [],
     };
 
     for (let i = 0; i < finalTestFiles.length; i++) {
@@ -141,6 +144,8 @@ async function runTests() {
 
                 const { totalFailed, totalPending, totalDuration } = runResult;
 
+                const tests = runResult.runs[0].tests;
+
                 console.log(`[run_tests.js] ${testFileName} duration: ${totalDuration}`);
                 log.duration += totalDuration;
 
@@ -149,6 +154,7 @@ async function runTests() {
                     if (testRunNumber === allowedRuns) {
                         failedTests += totalFailed;
                         log.records[testFileName] = 'failed';
+                        log.tests.push(...tests);
                         console.log(
                             `[run_tests.js] test ${testFileName} finished failing after ${allowedRuns} run(s)`,
                         );
@@ -160,6 +166,8 @@ async function runTests() {
                     );
                     continue;
                 }
+
+                log.tests.push(...tests);
 
                 if (totalPending > 0) {
                     // log either success or retried (success after retry)
@@ -182,9 +190,7 @@ async function runTests() {
         }
     }
 
-    console.log(JSON.stringify(log, null, 2));
-
-    if (TRACK_SUITE_URL) {
+    if (TRACK_SUITE_URL && !CYPRESS_updateSnapshots) {
         console.log(`[run_tests.js] uploading logs to ${TRACK_SUITE_URL}.`);
         const response = await fetch(`${TRACK_SUITE_URL}/api/test-records`, {
             method: 'POST',
@@ -199,13 +205,53 @@ async function runTests() {
         }
     }
 
-    // beta is only for collecting statistics, so it exits with non-zero code
-    // if there is some runtime error.
-    if (stage === '@beta') {
-        process.exit(0);
-    }
+    console.log('CYPRESS_updateSnapshots', CYPRESS_updateSnapshots);
 
-    console.log(`Browse test results: ${TRACK_SUITE_URL}`);
+    if (CYPRESS_updateSnapshots) {
+        const script = `
+            #!/bin/sh
+            diff_pre=$(git status --porcelain=v1 2>/dev/null | wc -l)
+            if [ $diff_pre -gt 0 ]
+            then
+              echo "You have unstaged changes."
+              exit 1 
+            fi
+            mkdir tmp
+            cd tmp
+            wget ${CI_JOB_URL}/artifacts/download
+            unzip download
+            cp -rf packages/integration-tests/projects/suite-web/snapshots ../packages/integration-tests/projects/suite-web
+            cd ../
+            rm -rf ./tmp
+            git status
+            diff_after=$(git status --porcelain=v1 2>/dev/null | wc -l)
+            if [ $diff_after -eq 0 ]
+            then
+              echo "There are no new snapshots."
+              exit 0 
+            fi
+            git add .
+            git commit -m "e2e${stage ? `(${stage}):` : ':'} update snapshots"
+            git log -n 2
+            echo "You may now push your changes."  
+        `;
+
+        console.log('Generated script to update files locally');
+        console.log(script);
+
+        console.log(`
+        EXECUTE ^^ SCRIPT TO UPDATE SNAPSHOTS THAT CHANGED LOCALLY
+        *******************************************************************
+                                                                           
+        curl ${CI_JOB_URL}/artifacts/raw/download-snapshots.sh | bash  
+                                                                           
+        *******************************************************************
+        `);
+
+        fs.appendFileSync('download-snapshots.sh', script);
+    } else {
+        console.log(`[run_tests.js] Logs recorded ${TRACK_SUITE_URL}/#/${CI_COMMIT_BRANCH}/${CI_COMMIT_SHA}.`);
+    }
 
     process.exit(failedTests);
 }

@@ -20,7 +20,7 @@ describe('Backup', () => {
         cy.getConfirmActionOnDeviceModal();
         cy.task('pressYes');
         cy.task('stopEmu');
-        cy.getTestElement('@backup/no-device', { timeout: 20000 });
+        cy.getTestElement('@backup/no-device', { timeout: 30000 });
         cy.task('startEmu');
         cy.getTestElement('@backup/error-message', { timeout: 30000 });
 

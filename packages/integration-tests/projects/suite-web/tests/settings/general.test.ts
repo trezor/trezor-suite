@@ -12,10 +12,10 @@ describe('General settings', () => {
     });
 
     it('Change fiat', () => {
+        cy.getTestElement('@settings/fiat');
         cy.getTestElement('@settings/fiat-select/input').click();
         cy.getTestElement('@settings/fiat-select/option/eur').click();
         cy.getTestElement('@suite/menu/suite-index').click();
-        cy.getTestElement('@dashboard/index').should('contain', '€0.00')
-
+        cy.getTestElement('@dashboard/index').should('contain', '€0.00');
     });
 });
