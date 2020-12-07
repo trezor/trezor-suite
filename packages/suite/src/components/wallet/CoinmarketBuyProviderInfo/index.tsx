@@ -9,10 +9,17 @@ const Wrapper = styled.div`
     align-items: center;
 `;
 
+const Bg = styled.div`
+    background: ${props => props.theme.BG_ICON};
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    padding: 4px;
+`;
+
 const IconWrapper = styled.div`
     display: flex;
     align-items: center;
-    padding-left: 4px;
     padding-right: 8px;
 `;
 
@@ -45,10 +52,12 @@ const CoinmarketBuyProviderInfo = ({ exchange, providers }: Props) => {
             {provider && (
                 <>
                     <IconWrapper>
-                        <Icon
-                            width="16px"
-                            src={`${invityApi.server}/images/exchange/${provider.logo}`}
-                        />
+                        <Bg>
+                            <Icon
+                                width="16px"
+                                src={`${invityApi.server}/images/exchange/${provider.logo}`}
+                            />
+                        </Bg>
                     </IconWrapper>
                     <Text>{provider.companyName}</Text>
                 </>

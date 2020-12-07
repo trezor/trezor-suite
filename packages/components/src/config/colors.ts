@@ -19,6 +19,7 @@ export const THEME = {
         BG_RED: '#d04949',
         BG_LIGHT_RED: '#F6E2E2',
         BG_TOOLTIP: '#262742',
+        BG_ICON: '#ffffff',
 
         TYPE_GREEN: '#279503',
         TYPE_ORANGE: '#c19009',
@@ -65,6 +66,7 @@ export const THEME = {
         BG_RED: '#ab2626', // used for big app notification
         BG_LIGHT_RED: '#5a1616', // used for outer glow for disconnected device status dot
         BG_TOOLTIP: '#3a3b3c', // same as STROKE_GREY in dark theme
+        BG_ICON: '#ffffff',
 
         TYPE_GREEN: '#66ab4e',
         TYPE_ORANGE: '#9b813b',
@@ -113,6 +115,7 @@ export const THEME = {
         BG_RED: '#ab2626', // used for big app notification
         BG_LIGHT_RED: '#5a1616', // used for outer glow for disconnected device status dot
         BG_TOOLTIP: '#151524', // todo
+        BG_ICON: '#ffffff', // todo
 
         TYPE_GREEN: '#6fa95c',
         TYPE_ORANGE: '#9b813b',
