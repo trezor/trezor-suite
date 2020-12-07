@@ -43,12 +43,17 @@ const ReceiveCryptoSelect = () => {
                             onChange(selected);
                             setAmountLimits(undefined);
                             const lowerCaseToken = selected.value.toLowerCase();
-                            if (lowerCaseToken === 'eth' || lowerCaseToken === 'trop') {
+                            if (
+                                lowerCaseToken === 'eth' ||
+                                lowerCaseToken === 'trop' ||
+                                lowerCaseToken === 'etc'
+                            ) {
                                 setToken(undefined);
+                                await compose({ token: undefined });
                             } else {
                                 setToken(lowerCaseToken);
+                                await compose({ token: lowerCaseToken });
                             }
-                            await compose({ token: lowerCaseToken });
                         }}
                         formatOptionLabel={(option: any) => {
                             return (

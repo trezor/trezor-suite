@@ -150,7 +150,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
             selectedFee,
             isMaxActive: data && data.setMax ? data.setMax || false : false,
             address: placeholderAddress,
-            token,
+            token: token ? token.toLowerCase() : undefined,
             isInvity: true,
         });
 
