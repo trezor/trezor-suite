@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { SETTINGS } from '@suite-config';
+import React from 'react';
 import { WalletLayout } from '@wallet-components';
 import { getAccountTransactions, isTestnet } from '@wallet-utils/accountUtils';
 import NoTransactions from './components/NoTransactions';
@@ -38,14 +37,6 @@ const Content = ({ selectedAccount, showSummary, children }: ContentProps) => {
 
 const Transactions = (props: Props) => {
     const { selectedAccount, transactions } = props;
-    const [selectedPage, setSelectedPage] = useState(1);
-
-    const descriptor = selectedAccount.account?.descriptor;
-    const symbol = selectedAccount.account?.symbol;
-    useEffect(() => {
-        // reset page on account change
-        setSelectedPage(1);
-    }, [descriptor, symbol]);
 
     if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="TR_NAV_TRANSACTIONS" account={props.selectedAccount} />;
@@ -54,12 +45,6 @@ const Transactions = (props: Props) => {
     const { account } = selectedAccount;
 
     const accountTransactions = getAccountTransactions(transactions.transactions, account);
-    const { size = undefined, total = undefined } = account.page || {};
-
-    const onPageSelected = (page: number) => {
-        setSelectedPage(page);
-        props.fetchTransactions(account, page, size);
-    };
 
     if (accountTransactions.length > 0 || transactions.isLoading) {
         return (
@@ -67,10 +52,6 @@ const Transactions = (props: Props) => {
                 <TransactionList
                     account={account}
                     transactions={accountTransactions}
-                    currentPage={selectedPage}
-                    totalPages={total}
-                    onPageSelected={onPageSelected}
-                    perPage={SETTINGS.TXS_PER_PAGE}
                     symbol={account.symbol}
                     isLoading={transactions.isLoading}
                 />

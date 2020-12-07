@@ -143,7 +143,8 @@ export const fetchTransactions = (
     const txsForPage = reducerTxs.slice(startIndex, stopIndex).filter(tx => !!tx.txid); // filter out "empty" values
 
     // we already got txs for the page in reducer
-    if (txsForPage.length === SETTINGS.TXS_PER_PAGE) return;
+    if ((page > 1 && txsForPage.length === perPage) || txsForPage.length === account.history.total)
+        return;
 
     if (!noLoading) {
         dispatch({
@@ -157,7 +158,7 @@ export const fetchTransactions = (
         descriptor: account.descriptor,
         details: 'txs',
         page, // useful for every network except ripple
-        pageSize: SETTINGS.TXS_PER_PAGE,
+        pageSize: perPage,
         ...(marker ? { marker } : {}), // set marker only if it is not undefined (ripple), otherwise it fails on marker validation
     });
 
@@ -182,14 +183,18 @@ export const fetchTransactions = (
     }
 };
 
+// Fetch all pages
+export const fetchAllTransactions = (account: Account) => async (dispatch: Dispatch) => {
+    const perPage = 500;
+    const totalPages = Math.ceil(account.history.total / perPage);
+    const pages = range(1, totalPages);
+    await Promise.all(pages.map(p => dispatch(fetchTransactions(account, p, perPage, true))));
+};
+
 export const exportTransactions = (account: Account, type: 'csv' | 'pdf' | 'json') => async (
-    dispatch: Dispatch,
+    _: Dispatch,
     getState: GetState,
 ) => {
-    // Fetch all pages
-    const pages = range(2, account.page?.total || 0);
-    await Promise.all(pages.map(p => dispatch(fetchTransactions(account, p, undefined, true))));
-
     // Get state of transactions
     const transactions = getAccountTransactions(
         getState().wallet.transactions.transactions,
