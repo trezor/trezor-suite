@@ -11,7 +11,15 @@ describe('Windows 10 with edge browser ', () => {
 
     it('Should display unsupported browsers page', () => {
         cy.prefixedVisit('/');
+        cy.document().its('fonts.status').should('equal', 'loaded');
         cy.get('html').should('contain.text', 'Your browser is not supported');
-        cy.screenshot();
+        cy.get('img')
+            .should('be.visible')
+            .and($img => {
+                // "naturalWidth" and "naturalHeight" are set when the image loads
+                expect($img[0].naturalWidth).to.be.greaterThan(0);
+                expect($img[1].naturalWidth).to.be.greaterThan(0);
+            });
+        cy.matchImageSnapshot('browser is not supported at all');
     });
-})
+});

@@ -124,7 +124,7 @@ const PinInput = (props: Props) => {
     }, [pin, onPinSubmit, onPinAdd, onPinBackspace]);
 
     return (
-        <Wrapper>
+        <Wrapper data-test="@pin">
             <InputWrapper>
                 <InputPin value={pin} onDeleteClick={() => onPinBackspace()} />
             </InputWrapper>

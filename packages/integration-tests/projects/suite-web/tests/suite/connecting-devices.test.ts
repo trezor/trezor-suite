@@ -90,7 +90,7 @@ describe('Stories of device connecting', () => {
                     initialized: true,
                 },
             );
-            cy.getTestElement('@firmware/index');
+            cy.getTestElement('@firmware');
         });
 
         it(`seedless device -> show info about seedless`, () => {
@@ -122,7 +122,7 @@ describe('Stories of device connecting', () => {
             cy.getTestElement('@device-invalid-mode/bootloader');
         });
 
-        it(`undreadable device -> show info about undreadable device, offer switch device`, () => {
+        it(`unreadable device -> show info about unreadable device, offer switch device`, () => {
             cy.connectDevice({ path: SECOND_DEVICE_PATH, type: 'unreadable' });
             cy.toggleDeviceMenu();
             cy.getTestElement(`@switch-device/${SECOND_DEVICE_PATH}/solve-issue-button`).click();

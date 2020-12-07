@@ -80,7 +80,7 @@ suite-web deploy dev:
     CYPRESS_ASSET_PREFIX: /web
     CYPRESS_baseUrl: ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
     # should tests do snapshot testing
-    CYPRESS_SNAPSHOT: 0
+    CYPRESS_SNAPSHOT: 1
     # reporter url
     TRACK_SUITE_URL: https://track-suite.herokuapp.com
     # when debugging or developing tests it does not make sense to have retries,
@@ -102,6 +102,7 @@ suite-web deploy dev:
       - ./packages/integration-tests/projects/suite-web/snapshots
       - ./packages/integration-tests/projects/suite-web/screenshots
       - ./packages/integration-tests/projects/suite-web/videos
+      - download-snapshots.sh
 
 e2e web suite:
   extends: .e2e web
@@ -127,6 +128,58 @@ e2e web metadata:
   extends: .e2e web
   variables:
     TEST_GROUP: '@group:metadata'
+
+# Update snapshots
+# You may update snapshots either locally (see readme https://docs.trezor.io/trezor-suite/tests/e2e-web.html)
+# But as this is quite time consuming you may prefer to do it in CI
+
+# TODO: should there be one job updating all? not sure
+e2e web suite snapshots:
+  when: manual
+  extends: .e2e web
+  variables:
+    CYPRESS_SNAPSHOT: 1
+    CYPRESS_updateSnapshots: 1
+    TEST_GROUP: '@group:suite'
+
+e2e web onboarding snapshots:
+  when: manual
+  extends: .e2e web
+  variables:
+    CYPRESS_SNAPSHOT: 1
+    CYPRESS_updateSnapshots: 1
+    TEST_GROUP: '@group:onboarding'
+
+e2e web device-management snapshots:
+  when: manual
+  extends: .e2e web
+  variables:
+    CYPRESS_SNAPSHOT: 1
+    CYPRESS_updateSnapshots: 1
+    TEST_GROUP: '@group:device-management'
+
+e2e web settings snapshots:
+  when: manual
+  extends: .e2e web
+  variables:
+    CYPRESS_SNAPSHOT: 1
+    CYPRESS_updateSnapshots: 1
+    TEST_GROUP: '@group:settings'
+
+e2e web metadata snapshots:
+  when: manual
+  extends: .e2e web
+  variables:
+    CYPRESS_SNAPSHOT: 1
+    CYPRESS_updateSnapshots: 1
+    TEST_GROUP: '@group:metadata'
+
+e2e web all snapshots:
+  when: manual
+  extends: .e2e web
+  variables:
+    CYPRESS_SNAPSHOT: 1
+    CYPRESS_updateSnapshots: 1
 
 # TODO scheduled jobs against beta chrome channel
 # TODO scheduled jobs against suite.trezor.io

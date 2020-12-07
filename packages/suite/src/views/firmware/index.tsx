@@ -209,7 +209,7 @@ const Firmware = ({ closeModalApp, resetReducer, firmware, device, modal }: Prop
             }
             onCancel={onClose}
             useFixedHeight
-            data-test="@firmware/index"
+            data-test="@firmware"
             heading={Component.Heading}
             bottomBar={!modal && <Buttons>{Component.BottomBar}</Buttons>}
             totalProgressBarSteps={stepsInProgressBar.length}

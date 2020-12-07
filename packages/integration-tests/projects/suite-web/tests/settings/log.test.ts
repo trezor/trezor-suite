@@ -11,10 +11,12 @@ describe('Log', () => {
         cy.passThroughInitialRun();
     });
 
-    it('open log modal', () => {
+    it('there is a dropdown menu in settings that opens modal with application logs', () => {
         cy.getTestElement('@settings/menu/dropdown').click();
         cy.getTestElement('@settings/menu/log').click();
         cy.getTestElement('@log/copy-button');
+        cy.getTestElement('@log').matchImageSnapshot({ blackout: ['[data-test="@log/content"]'] });
+
         // todo: check that we really copied something;
     });
 });
