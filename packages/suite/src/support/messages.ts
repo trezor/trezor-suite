@@ -5211,6 +5211,14 @@ const definedMessages = defineMessages({
         id: 'TR_NEW_FEE',
         defaultMessage: 'New',
     },
+    TR_SEARCH_TRANSACTIONS: {
+        id: 'TR_SEARCH_TRANSACTIONS',
+        defaultMessage: 'Seach transactions',
+    },
+    TR_NO_SEARCH_RESULTS: {
+        id: 'TR_NO_SEARCH_RESULTS',
+        defaultMessage: 'No results for your search criterias',
+    },
 } as const);
 
 export default definedMessages;

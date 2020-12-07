@@ -10,6 +10,7 @@ export const FLAGS = {
     FILE_SYSTEM_SYNC: false, // File system sync (used for labeling)
     ONION_LOCATION_META: true, // Show TOR onion-location meta tag in page head
     EXPORT_TRANSACTIONS: true, // Display export option on transactions
+    SEARCH_TRANSACTIONS: true, // Display search option on transactions
 } as const;
 
 // Web specific flags
