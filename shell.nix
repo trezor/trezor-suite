@@ -14,6 +14,7 @@ in
   stdenv.mkDerivation {
     name = "trezor-suite-dev";
     buildInputs = [
+      git-lfs
       mdbook
       nodejs
       yarn
