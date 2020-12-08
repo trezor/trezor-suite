@@ -11,7 +11,7 @@ const Wrapper = styled.div`
     display: flex;
     justify-content: space-between;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
         margin-top: 27px;
     }
 `;

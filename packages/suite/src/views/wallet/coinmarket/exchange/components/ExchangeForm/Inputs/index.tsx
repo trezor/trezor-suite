@@ -18,7 +18,7 @@ const Top = styled.div`
     display: flex;
     flex: 1;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
         flex-direction: column;
     }
 `;
@@ -40,13 +40,13 @@ const MiddleWrapper = styled.div`
     align-items: center;
     justify-content: center;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
         padding-bottom: 27px;
     }
 `;
 
 const StyledIcon = styled(Icon)`
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
         transform: rotate(90deg);
     }
 `;
