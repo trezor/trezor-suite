@@ -6,6 +6,7 @@ build-electron
 
 # Dependency directory
 node_modules
+.yarn
 
 # OSX
 .DS_Store
