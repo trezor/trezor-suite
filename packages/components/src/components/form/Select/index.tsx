@@ -2,8 +2,8 @@ import React, { useRef } from 'react';
 import ReactSelect, {
     components,
     Props as SelectProps,
-    GroupType,
     OptionsType,
+    GroupedOptionsType,
 } from 'react-select';
 import styled from 'styled-components';
 import { variables } from '../../../config';
@@ -121,16 +121,11 @@ interface Option {
     label: string;
 }
 
-// const isOption = (variableToCheck: any): variableToCheck is OptionsType<Option>  =>
-//   !('options' in variableToCheck as OptionsType<Option>);
-
 /** Custom Type Guards to check if options are grouped or not */
-const isGrouped = (x: any): x is GroupType<Option> => {
-    return (x as GroupType<Option>).options !== undefined;
-};
-
-const isNotGrouped = (x: any): x is OptionsType<Option> => {
-    return !('options' in (x as OptionsType<Option>));
+const isOptionGrouped = (
+    x: OptionsType<Option> | GroupedOptionsType<Option>
+): x is GroupedOptionsType<Option> => {
+    return (x as GroupedOptionsType<Option>)[0]?.options !== undefined;
 };
 
 interface CommonProps extends Omit<SelectProps, 'components' | 'isSearchable'> {
@@ -274,21 +269,16 @@ const Select = ({
                     // array of all options in which I want to find the searched term
                     let optionsToSearchThrough: OptionsType<Option> = [];
 
-                    if (isGrouped(options[0])) {
-                        // If the if() statement is true, the options are nested.
-                        // Loop through all of the sub-categories and concatenate them into one array
-                        options.forEach(option => {
-                            const temp = option;
-                            if (isGrouped(temp)) {
-                                optionsToSearchThrough = optionsToSearchThrough.concat(
-                                    temp.options
-                                );
-                            }
+                    if (isOptionGrouped(options)) {
+                        // Options are nested. Loop through all of the sub-categories and concatenate them into one array
+                        // Condition is based on the format of the first item,
+                        // I am not sure if it is possible to have both grouped and ungrouped items at the same time
+                        // if so than this is not going to work very well, but it can be fixed easily (just check each item if it is a group or not, and adjust the typeguard to type the item instead of whole options array)
+                        options.forEach(o => {
+                            optionsToSearchThrough = optionsToSearchThrough.concat(o.options);
                         });
-                    }
-
-                    // If the options aren't divided into sub-categories, you can use the default options array that is present on "selectRef"
-                    if (isNotGrouped(options[0]) && isNotGrouped(options)) {
+                    } else {
+                        // If the options aren't divided into sub-categories, you can use the default options array that is present on "selectRef"
                         optionsToSearchThrough = options;
                     }
 
