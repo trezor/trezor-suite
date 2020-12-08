@@ -1,12 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-// import * as TRANSACTION from '@wallet-actions/constants/transactionConstants';
-import * as WALLET_SETTINGS from '@suite/actions/settings/constants/walletSettings';
-// import * as transactionActions from '@wallet-actions/transactionActions';
-import * as storageActions from '@suite-actions/storageActions';
-import * as accountUtils from '@wallet-utils/accountUtils';
-import { SUITE, ANALYTICS, METADATA } from '@suite-actions/constants';
-import { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
-import { WalletAction } from '@wallet-types';
+import { WALLET_SETTINGS } from '@settings-actions/constants';
 import {
     ACCOUNT,
     DISCOVERY,
@@ -17,6 +10,12 @@ import {
     SEND,
     COINMARKET_EXCHANGE,
 } from '@wallet-actions/constants';
+import * as storageActions from '@suite-actions/storageActions';
+import * as accountUtils from '@wallet-utils/accountUtils';
+import { SUITE, ANALYTICS, METADATA } from '@suite-actions/constants';
+import { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
+import { WalletAction } from '@wallet-types';
+
 import { getDiscovery } from '@wallet-actions/discoveryActions';
 import { isDeviceRemembered } from '@suite-utils/device';
 import { serializeDiscovery } from '@suite-utils/storage';

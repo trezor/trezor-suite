@@ -97,6 +97,9 @@ export type UserContextPayload =
     | {
           type: 'advanced-coin-settings';
           coin: Account['symbol'];
+      }
+    | {
+          type: 'add-token';
       };
 
 export type ModalAction =

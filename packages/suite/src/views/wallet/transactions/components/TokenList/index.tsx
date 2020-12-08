@@ -1,9 +1,11 @@
 import React, { Fragment } from 'react';
 import styled, { css } from 'styled-components';
-import { Account } from '@wallet-types';
+import { variables, useTheme, Icon, Card, Dropdown } from '@trezor/components';
 import { FiatValue, FormattedCryptoAmount, Translation, TrezorLink } from '@suite-components';
 import { Section } from '@dashboard-components';
-import { variables, useTheme, Icon, Card } from '@trezor/components';
+import * as modalActions from '@suite-actions/modalActions';
+import { useActions } from '@suite-hooks';
+import { Account } from '@wallet-types';
 
 const Wrapper = styled(Card)<{ isTestnet?: boolean }>`
     display: grid;
@@ -108,9 +110,38 @@ interface Props {
 
 const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
     const theme = useTheme();
+    const { openModal } = useActions({
+        openModal: modalActions.openModal,
+    });
     if (!tokens || tokens.length === 0) return null;
     return (
-        <Section heading={<Translation id="TR_TOKENS" />}>
+        <Section
+            heading={
+                <>
+                    <Translation id="TR_TOKENS" />{' '}
+                </>
+            }
+            actions={
+                <Dropdown
+                    alignMenu="right"
+                    data-test="@settings/menu/dropdown"
+                    items={[
+                        {
+                            key: 'group1',
+                            options: [
+                                {
+                                    key: 'add-token',
+                                    label: <Translation id="TR_TOKENS_ADD" />,
+                                    callback: () => {
+                                        openModal({ type: 'add-token' });
+                                    },
+                                },
+                            ],
+                        },
+                    ]}
+                />
+            }
+        >
             <Wrapper isTestnet={isTestnet} noPadding>
                 {tokens.map(t => {
                     return (

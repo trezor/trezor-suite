@@ -3,6 +3,7 @@ import { ACCOUNT } from '@wallet-actions/constants';
 import { DiscoveryItem } from '@wallet-actions/discoveryActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
+import * as tokenActions from '@wallet-actions/tokenActions';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import { analyzeTransactions } from '@wallet-utils/transactionUtils';
 import { NETWORKS } from '@wallet-config';
@@ -127,6 +128,11 @@ export const fetchAndUpdateAccount = (account: Account) => async (
     if (response.success) {
         const { payload } = response;
 
+        // add custom tokens into the account.tokens
+        const customTokens = await tokenActions.fetchAccountTokens(account, payload.tokens);
+        payload.tokens =
+            customTokens.length > 0 ? (payload.tokens || []).concat(customTokens) : payload.tokens;
+
         const accountTxs = accountUtils.getAccountTransactions(
             getState().wallet.transactions.transactions,
             account,
@@ -164,7 +170,8 @@ export const fetchAndUpdateAccount = (account: Account) => async (
         if (
             analyze.remove.length > 0 ||
             analyze.add.length > 0 ||
-            accountUtils.isAccountOutdated(account, payload)
+            accountUtils.isAccountOutdated(account, payload) ||
+            customTokens.length > 0
         ) {
             dispatch(update(account, payload));
         }

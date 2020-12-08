@@ -14,6 +14,7 @@ import { Stack, SkeletonCircle, SkeletonRectangle } from '@suite-components/Skel
 import { useSelector, useActions } from '@suite-hooks';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import * as routerActions from '@suite-actions/routerActions';
+import * as modalActions from '@suite-actions/modalActions';
 import AccountNavigation from './components/AccountNavigation';
 
 const BalanceWrapper = styled.div`
@@ -51,8 +52,9 @@ const AccountTopPanelSkeleton = (props: { animate?: boolean }) => {
 
 const AccountTopPanel = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const { goto } = useActions({
+    const { goto, openModal } = useActions({
         goto: routerActions.goto,
+        openModal: modalActions.openModal,
     });
     if (selectedAccount.status !== 'loaded')
         return <AccountTopPanelSkeleton animate={selectedAccount.loader === 'account-loading'} />;
@@ -68,7 +70,16 @@ const AccountTopPanel = () => {
             label: <Translation id="TR_NAV_DETAILS" />,
             isHidden: account.networkType !== 'bitcoin',
         },
+        {
+            key: 'add-token',
+            label: <Translation id="TR_TOKENS_ADD" />,
+            callback: () => {
+                openModal({ type: 'add-token' });
+            },
+            isHidden: account.networkType !== 'ethereum',
+        },
     ];
+
     const visibleDropdownItems = dropdownItems.filter(item => !item.isHidden);
 
     return (
