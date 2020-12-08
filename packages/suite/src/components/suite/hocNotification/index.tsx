@@ -301,6 +301,13 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
                 message: 'TOAST_AUTO_UPDATER_NO_NEW',
             });
 
+        case 'add-token-success':
+            return simple(View, {
+                notification,
+                variant: 'success',
+                message: 'TR_ADD_TOKEN_TOAST_SUCCESS',
+            });
+
         // Events:
         case DEVICE.CONNECT:
             return withAction(View, {

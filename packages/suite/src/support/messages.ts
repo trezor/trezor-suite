@@ -4162,6 +4162,50 @@ const definedMessages = defineMessages({
         id: 'TR_TOKENS',
         defaultMessage: 'Tokens',
     },
+    TR_TOKENS_ADD: {
+        id: 'TR_TOKENS_ADD',
+        defaultMessage: 'Add token',
+    },
+    TR_ADD_TOKEN_TITLE: {
+        id: 'TR_ADD_TOKEN_TITLE',
+        defaultMessage: 'Add ERC20 token',
+    },
+    TR_ADD_TOKEN_LABEL: {
+        id: 'TR_ADD_TOKEN_LABEL',
+        defaultMessage: 'ERC20 token address',
+    },
+    TR_ADD_TOKEN_SUBMIT: {
+        id: 'TR_ADD_TOKEN_SUBMIT',
+        defaultMessage: 'Add token',
+    },
+    TR_ADD_TOKEN_PLACEHOLDER: {
+        id: 'TR_ADD_TOKEN_PLACEHOLDER',
+        defaultMessage: 'Paste token address',
+    },
+    TR_ADD_TOKEN_TOOLTIP: {
+        id: 'TR_ADD_TOKEN_TOOLTIP',
+        defaultMessage: 'Enter an ERC20 token contract addrress',
+    },
+    TR_ADD_TOKEN_ADDRESS_NOT_VALID: {
+        id: 'TR_ADD_TOKEN_ADDRESS_NOT_VALID',
+        defaultMessage: 'Invalid address',
+    },
+    TR_ADD_TOKEN_TOKEN_NOT_VALID: {
+        id: 'TR_ADD_TOKEN_TOKEN_NOT_VALID',
+        defaultMessage: "This doesn't look like a valid token",
+    },
+    TR_ADD_TOKEN_ADDRESS_DUPLICATE: {
+        id: 'TR_ADD_TOKEN_ADDRESS_DUPLICATE',
+        defaultMessage: 'Token address is already added',
+    },
+    TR_ADD_TOKEN_TOAST_SUCCESS: {
+        id: 'TR_ADD_TOKEN_TOAST_SUCCESS',
+        defaultMessage: 'Token added',
+    },
+    TR_ADD_TOKEN_TOAST_ERROR: {
+        id: 'TR_ADD_TOKEN_TOAST_ERROR',
+        defaultMessage: 'Action failed: {error}',
+    },
     TR_BRIDGE_DEV_MODE_START: {
         id: 'TR_BRIDGE_DEV_MODE_START',
         defaultMessage: 'Starting Trezor Bridge on port 21324',

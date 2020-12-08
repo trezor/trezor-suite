@@ -10,3 +10,4 @@ export { useAccountSearch } from './useAccountSearch';
 export { useFirmware } from './useFirmware';
 export { useSelector } from './useSelector';
 export { useLoadingSkeleton } from './useLoadingSkeleton';
+export { useTranslation } from './useTranslation';

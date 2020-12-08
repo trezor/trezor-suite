@@ -51,6 +51,9 @@ export type ToastPayload = (
           devMode: boolean;
       }
     | {
+          type: 'add-token-success';
+      }
+    | {
           type:
               | 'error'
               | 'auth-failed'

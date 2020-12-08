@@ -38,6 +38,7 @@ import WipeDevice from './WipeDevice';
 import DisconnectDevice from './DisconnectDevice';
 import MetadataProvider from './metadata/MetadataProvider';
 import AdvancedCoinSettings from './AdvancedCoinSettings/Container';
+import AddToken from './AddToken';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -213,6 +214,8 @@ const getUserContextModal = (props: Props) => {
             );
         case 'advanced-coin-settings':
             return <AdvancedCoinSettings {...payload} onCancel={modalActions.onCancel} />;
+        case 'add-token':
+            return <AddToken {...payload} onCancel={modalActions.onCancel} />;
         default:
             return null;
     }
