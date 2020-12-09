@@ -102,13 +102,18 @@ const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
     let amountSentToSelf = '';
 
     if (txSentToSelf && network && totalOutput && !totalOutput.isNaN()) {
-        // convert float value of fees back to the absolute value in basic network units in order to prevent possible errors coming from summing up float numbers
-        const feesAbsolute = Number(tx.fee) * 10 ** network.decimals;
-        if (feesAbsolute) {
-            amountSentToSelf = formatNetworkAmount(
-                (Number(totalOutput) + feesAbsolute).toFixed(),
-                tx.symbol,
-            );
+        if (tokenTransfer) {
+            // in case of token transfer, the displayed amount will be just the token amount, not token + fee (in ETH for example)
+            amountSentToSelf = tokenTransfer.amount;
+        } else {
+            // convert float value of fees back to the absolute value in basic network units in order to prevent possible errors coming from summing up float numbers
+            const feesAbsolute = Number(tx.fee) * 10 ** network.decimals;
+            if (feesAbsolute) {
+                amountSentToSelf = formatNetworkAmount(
+                    (Number(totalOutput) + feesAbsolute).toFixed(),
+                    tx.symbol,
+                );
+            }
         }
     }
 
