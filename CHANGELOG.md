@@ -9,9 +9,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
-## 20.12.1 [to be released Dec 9th]
+## 20.12.1 [9th December 2020]
 
 ### Added
+- Dark mode
+- Exchange (crypto to crypto)
+- Time range in graphs
+- Export transactions
+- Labeling: Google Drive sync
 
 ### Changed
 
