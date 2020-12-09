@@ -29,6 +29,7 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
             // prepare test
             cy.task('startEmu', { wipe: true });
             cy.task('setupEmu');
+            cy.task('startBridge');
             cy.task('metadataStartProvider', f.provider);
             cy.clock();
             // prepare some initial files
@@ -55,11 +56,8 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
             cy.log(
                 'Wait for discovery to finish. There is "add label" button, but no actual metadata appeared',
             );
-            // todo: better waiting for discovery (mock it!)
-            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
-            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should(
-                'not.be.visible',
-            );
+            cy.discoveryShouldFinish();
+            
             cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click({
                 force: true,
             });

@@ -3,8 +3,6 @@
 
 describe('Backup', () => {
     beforeEach(() => {
-        cy.task('stopBridge');
-        cy.task('stopEmu');
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { needs_backup: true });
         cy.task('startBridge');

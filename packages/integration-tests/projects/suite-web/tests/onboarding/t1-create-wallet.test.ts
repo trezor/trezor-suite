@@ -3,9 +3,6 @@
 
 describe('Onboarding - create wallet', () => {
     beforeEach(() => {
-        cy.task('stopEmu');
-        cy.task('stopBridge');
-        cy.wait(1000);
         cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');

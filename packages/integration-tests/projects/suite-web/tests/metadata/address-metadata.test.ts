@@ -17,8 +17,8 @@ describe('Metadata - address labeling', () => {
             // prepare test
             cy.task('startEmu', { wipe: true });
             cy.task('setupEmu');
+            cy.task('startBridge');
             cy.task('metadataStartProvider', provider);
-
             cy.prefixedVisit('/accounts', {
                 onBeforeLoad: (win: Window) => {
                     cy.stub(win, 'open', stubOpen(win));
@@ -28,11 +28,7 @@ describe('Metadata - address labeling', () => {
 
             cy.passThroughInitialRun();
 
-            // todo: better waiting for discovery (mock it!)
-            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
-            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should(
-                'not.be.visible',
-            );
+            cy.discoveryShouldFinish();
 
             cy.getTestElement('@wallet/menu/wallet-receive').click();
             cy.getTestElement(`${metadataEl}/add-label-button`).click({ force: true });

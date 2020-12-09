@@ -76,17 +76,15 @@ const fixtures = [
 ];
 
 describe('Button requests - test how suite reacts to them depending on current active route', () => {
-    before(() => {
-        cy.task('stopEmu');
+    beforeEach(() => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
+        cy.task('startBridge');
 
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/settings');
         cy.passThroughInitialRun();
-    });
 
-    beforeEach(() => {
         cy.window()
             .its('TrezorConnect')
             .should('exist')

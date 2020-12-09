@@ -3,7 +3,7 @@
 
 describe('Device settings', () => {
     beforeEach(() => {
-        cy.task('stopEmu');
+        cy.task('startBridge');
         // navigate to device settings page
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/settings/device');

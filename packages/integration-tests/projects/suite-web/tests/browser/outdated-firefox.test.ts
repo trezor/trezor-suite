@@ -5,7 +5,6 @@
 
 describe('Ubuntu with outdated firefox ', () => {
     before(() => {
-        cy.task('stopEmu');
         cy.viewport(1024, 768);
         cy.resetDb();
     });

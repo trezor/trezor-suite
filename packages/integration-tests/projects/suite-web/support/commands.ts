@@ -4,7 +4,11 @@
 import TrezorConnect, { Device, Features } from 'trezor-connect';
 import { Store, Action } from '@suite-types';
 
-import { onboardingShouldLoad, dashboardShouldLoad } from './utils/assertions';
+import {
+    onboardingShouldLoad,
+    dashboardShouldLoad,
+    discoveryShouldFinish,
+} from './utils/assertions';
 import { connectBootloaderDevice, connectDevice, changeDevice } from './utils/device';
 import { getTestElement, getConfirmActionOnDeviceModal } from './utils/selectors';
 import { resetDb, dispatch } from './utils/test-env';
@@ -23,6 +27,13 @@ const prefixedVisit = (route: string, options?: Partial<Cypress.VisitOptions>) =
     const assetPrefix = Cypress.env('ASSET_PREFIX') || '';
     return cy.visit(assetPrefix + route, options);
 };
+
+beforeEach(() => {
+    cy.log('stop and start bridge before every test to make sure that there is no pending session');
+    cy.task('stopBridge');
+    cy.task('stopEmu');
+});
+
 declare global {
     namespace Cypress {
         interface Chainable<Subject> {
@@ -45,6 +56,7 @@ declare global {
             dispatch: (state: Action) => undefined;
             onboardingShouldLoad: () => Chainable<Subject>;
             dashboardShouldLoad: () => Chainable<Subject>;
+            discoveryShouldFinish: () => Chainable<Subject>;
             toggleDeviceMenu: () => Chainable<Subject>;
             passThroughInitialRun: () => Chainable<Subject>;
             passThroughBackup: () => Chainable<Subject>;
@@ -81,6 +93,7 @@ Cypress.Commands.add('changeDevice', changeDevice);
 // assertion helpers
 Cypress.Commands.add('onboardingShouldLoad', onboardingShouldLoad);
 Cypress.Commands.add('dashboardShouldLoad', dashboardShouldLoad);
+Cypress.Commands.add('discoveryShouldFinish', discoveryShouldFinish);
 // selector helpers
 Cypress.Commands.add('getTestElement', getTestElement);
 Cypress.Commands.add('getConfirmActionOnDeviceModal', getConfirmActionOnDeviceModal);

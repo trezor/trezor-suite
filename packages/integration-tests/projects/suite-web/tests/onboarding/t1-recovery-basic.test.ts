@@ -6,7 +6,6 @@
 // todo: this started to fail mysteriously after merging new base image. Skipping it for now and will investigate.
 describe.skip('Onboarding - recover wallet T1', () => {
     before(() => {
-        cy.task('stopBridge');
         // wipe: true does not work in trezor-user-env with model 1 at the moment
         cy.task('startEmu', { version: '1.9.0' });
         cy.task('wipeEmu');

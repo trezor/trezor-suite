@@ -11,6 +11,7 @@ describe('Dropbox api errors', () => {
     it('Malformed token', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
+        cy.task('startBridge');
         cy.task('metadataStartProvider', 'dropbox');
         // prepare some initial files
         cy.task('metadataSetFileContent', {
@@ -34,11 +35,7 @@ describe('Dropbox api errors', () => {
 
         cy.passThroughInitialRun();
 
-        // todo: wait for discovery to finish and remove this
-        cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
-        cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should(
-            'not.be.visible',
-        );
+        cy.discoveryShouldFinish();
 
         cy.getTestElement('@suite/menu/settings-index').click();
         cy.getTestElement('@settings/metadata-switch').click({ force: true });

@@ -17,6 +17,7 @@ describe('Metadata - Output labeling', () => {
             // prepare test
             cy.task('startEmu', { wipe: true });
             cy.task('setupEmu');
+            cy.task('startBridge');
             cy.task('metadataStartProvider', provider);
 
             const sentToMyselfEl =
@@ -31,11 +32,7 @@ describe('Metadata - Output labeling', () => {
 
             cy.passThroughInitialRun();
 
-            // todo: better waiting for discovery (mock it!)
-            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
-            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should(
-                'not.be.visible',
-            );
+            cy.discoveryShouldFinish();
 
             cy.getTestElement(targetEl1).click({ force: true });
             cy.passThroughInitMetadata(provider);

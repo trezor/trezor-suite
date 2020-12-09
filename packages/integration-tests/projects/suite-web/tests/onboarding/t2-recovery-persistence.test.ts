@@ -50,8 +50,6 @@ const shareTwoOfThree = [
 
 describe('Onboarding - T2 in recovery mode', () => {
     beforeEach(() => {
-        cy.task('stopBridge');
-        cy.task('stopEmu');
         cy.task('startBridge');
         cy.resetDb();
         cy.viewport(1024, 768).resetDb();

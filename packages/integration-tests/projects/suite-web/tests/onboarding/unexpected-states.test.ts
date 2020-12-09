@@ -3,7 +3,7 @@
 
 describe('Onboarding - unexpected states', () => {
     beforeEach(() => {
-        cy.task('stopEmu');
+        cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
     });
 

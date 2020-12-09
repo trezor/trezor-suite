@@ -52,11 +52,9 @@ On disable, it throws away all metadata related records from memory.`, () => {
             cy.log(
                 'Wait for discovery to finish. There is "add label" button, but no actual metadata appeared',
             );
-            // todo: better waiting for discovery (mock it!)
-            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
-            cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should(
-                'not.be.visible',
-            );
+           
+            cy.discoveryShouldFinish();
+            
             cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
 
             cy.log('Go to settings and enable metadata');

@@ -9,3 +9,9 @@ export const onboardingShouldLoad = () => {
 export const dashboardShouldLoad = () => {
     return cy.getTestElement('@dashboard/index').should('be.visible');
 };
+
+export const discoveryShouldFinish = () => {
+    // todo: better waiting for discovery (mock it!)
+    cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
+    cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should('not.exist');
+};
