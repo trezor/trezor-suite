@@ -1,13 +1,18 @@
 import React from 'react';
-
+import styled from 'styled-components';
 import SearchAction, { Props as SearchProps } from './components/SearchAction';
 import ExportAction, { Props as ExportProps } from './components/ExportAction';
+
+const Wrapper = styled.div`
+    display: flex;
+    align-items: center;
+`;
 
 interface Props extends SearchProps, ExportProps {}
 
 const Actions = ({ account, search, setSearch, setSelectedPage }: Props) => {
     return (
-        <>
+        <Wrapper>
             <SearchAction
                 account={account}
                 search={search}
@@ -15,7 +20,7 @@ const Actions = ({ account, search, setSearch, setSelectedPage }: Props) => {
                 setSelectedPage={setSelectedPage}
             />
             <ExportAction account={account} />
-        </>
+        </Wrapper>
     );
 };
 
