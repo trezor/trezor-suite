@@ -82,7 +82,7 @@ const Settings = ({
     }, [torAddress]);
 
     // Auto Updater
-    const checkForUpdates = useCallback(() => window.desktopApi?.checkForUpdates(), []);
+    const checkForUpdates = useCallback(() => window.desktopApi?.checkForUpdates(true), []);
     const downloadUpdate = useCallback(() => window.desktopApi?.downloadUpdate(), []);
     const installRestart = useCallback(() => window.desktopApi?.installUpdate(), []);
 

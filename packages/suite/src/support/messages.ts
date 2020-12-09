@@ -2856,6 +2856,10 @@ const definedMessages = defineMessages({
         id: 'TOAST_AUTO_UPDATER_ERROR',
         defaultMessage: 'Auto updater error ({state})',
     },
+    TOAST_AUTO_UPDATER_NO_NEW: {
+        id: 'TOAST_AUTO_UPDATER_NO_NEW',
+        defaultMessage: 'No new updates available.',
+    },
     TOAST_GENERIC_ERROR: {
         id: 'TOAST_GENERIC_ERROR',
         defaultMessage: 'Error: {error}',

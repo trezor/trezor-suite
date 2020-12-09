@@ -68,6 +68,9 @@ export type ToastPayload = (
           type: 'auto-updater-error';
           state: string;
       }
+    | {
+          type: 'auto-updater-no-new';
+      }
 ) &
     Options;
 
