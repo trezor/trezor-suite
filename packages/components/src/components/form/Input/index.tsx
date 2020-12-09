@@ -57,6 +57,7 @@ const StyledInput = styled.input<InputProps>`
     /* TODO: padding for left input addon */
     ${props =>
         props.inputAddonWidth &&
+        !props.textIndent &&
         css`
             padding-right: ${props.inputAddonWidth}px;
         `};
@@ -177,7 +178,6 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     autoCorrect?: string;
     autoCapitalize?: string;
     spellCheck?: boolean;
-    isLoading?: boolean;
     dataTest?: string;
     isPartiallyHidden?: boolean;
     wrapperProps?: Record<string, any>;
@@ -214,7 +214,6 @@ const Input = ({
     monospace,
     wrapperProps,
     labelAddonIsVisible,
-    isLoading,
     dataTest,
     isPartiallyHidden,
     clearButton,

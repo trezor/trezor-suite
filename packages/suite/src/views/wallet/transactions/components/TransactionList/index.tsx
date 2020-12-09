@@ -118,6 +118,7 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Props) 
                 />
             }
         >
+            {/* TODO: show this skeleton also while searching in txs */}
             {isLoading ? (
                 <Stack col childMargin="0px 0px 16px 0px">
                     <SkeletonTransactionItem />
