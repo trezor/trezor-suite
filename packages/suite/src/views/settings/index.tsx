@@ -18,6 +18,7 @@ import { useAnalytics, useDevice, useSelector, useActions } from '@suite-hooks';
 import { Button, Tooltip, Switch } from '@trezor/components';
 import { capitalizeFirstLetter } from '@suite-utils/string';
 import * as suiteActions from '@suite-actions/suiteActions';
+import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
 
 import { Props } from './Container';
 import { getReleaseUrl } from '@suite/services/github';
@@ -82,9 +83,12 @@ const Settings = ({
     }, [torAddress]);
 
     // Auto Updater
+    const { setUpdateWindow } = useActions({
+        setUpdateWindow: desktopUpdateActions.setUpdateWindow,
+    });
     const checkForUpdates = useCallback(() => window.desktopApi?.checkForUpdates(true), []);
-    const downloadUpdate = useCallback(() => window.desktopApi?.downloadUpdate(), []);
     const installRestart = useCallback(() => window.desktopApi?.installUpdate(), []);
+    const maximizeUpdater = useCallback(() => setUpdateWindow('maximized'), [setUpdateWindow]);
 
     return (
         <SettingsLayout data-test="@settings/index">
@@ -397,12 +401,12 @@ const Settings = ({
                                 </ActionButton>
                             )}
                             {desktopUpdate.state === 'available' && (
-                                <ActionButton onClick={downloadUpdate} variant="secondary">
+                                <ActionButton onClick={maximizeUpdater} variant="secondary">
                                     <Translation id="SETTINGS_UPDATE_AVAILABLE" />
                                 </ActionButton>
                             )}
                             {desktopUpdate.state === 'downloading' && (
-                                <ActionButton isDisabled variant="secondary">
+                                <ActionButton onClick={maximizeUpdater} variant="secondary">
                                     <Translation id="SETTINGS_UPDATE_DOWNLOADING" />
                                 </ActionButton>
                             )}
