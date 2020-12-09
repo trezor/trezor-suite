@@ -1,4 +1,4 @@
-FROM cypress/included:5.0.0
+FROM cypress/included:6.1.0
   
 RUN apt-get update && apt-get -y --no-install-recommends install \
     ca-certificates \

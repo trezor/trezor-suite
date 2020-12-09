@@ -7,7 +7,7 @@
         "test:components-storybook:local": "CYPRESS_baseUrl='http://192.168.88.252:9001' npx cypress open --project ./projects/components-storybook"
     },
     "dependencies": {
-        "cypress": "5.0.0",
+        "cypress": "6.1.0",
         "ts-loader": "^8.0.11",
         "webpack": "^4.44.2"
     },
