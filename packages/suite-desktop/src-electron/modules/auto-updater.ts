@@ -8,11 +8,10 @@ import { autoUpdater, CancellationToken } from 'electron-updater';
 // Runtime flags
 const preReleaseFlag = app.commandLine.hasSwitch('pre-release');
 
-const updateCancellationToken = new CancellationToken();
-
 const init = (window: BrowserWindow, store: LocalStore) => {
     let isManualCheck = false;
     let latestVersion = {};
+    let updateCancellationToken: CancellationToken;
     const updateSettings = store.getUpdateSettings();
 
     autoUpdater.autoDownload = false;
@@ -73,7 +72,8 @@ const init = (window: BrowserWindow, store: LocalStore) => {
             total: 0,
             transferred: 0,
         });
-        autoUpdater.downloadUpdate(updateCancellationToken);
+        updateCancellationToken = new CancellationToken();
+        autoUpdater.downloadUpdate(updateCancellationToken).catch(() => null); // Suppress error in console
     });
     ipcMain.on('update/install', () => {
         // This will force the closing of the window to quit the app on Mac
