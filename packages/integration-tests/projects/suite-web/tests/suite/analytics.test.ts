@@ -60,7 +60,7 @@ describe('Analytics', () => {
         });
         cy.getTestElement('@modal/connect-device');
         cy.task('startEmu', { wipe: false });
-        cy.getTestElement('@modal/connect-device').should('not.be.visible');
+        cy.getTestElement('@modal/connect-device').should('not.exist');
 
         // analytics is not enabled and no additional requests were fired
         cy.getTestElement('@analytics/toggle-switch').should('not.be.checked');

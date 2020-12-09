@@ -71,7 +71,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@passphrase/input', { timeout: 10000 }).type('abc');
         cy.getTestElement('@passphrase/confirm-checkbox').click();
         cy.getTestElement('@passphrase/hidden/submit-button').click();
-        cy.getTestElement('@modal').should('not.be.visible');
+        cy.getTestElement('@modal').should('not.exist');
         cy.getTestElement('@menu/switch-device').should('contain', 'Hidden wallet #1');
     });
 });

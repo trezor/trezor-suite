@@ -42,7 +42,7 @@ describe('Suite switch wallet modal', () => {
         cy.getTestElement('@passphrase/input', { timeout: 10000 }).type('taxation is theft{enter}');
         cy.getTestElement('@passphrase/confirm-checkbox').click();
         cy.getTestElement('@passphrase/hidden/submit-button').click();
-        cy.getTestElement('@modal').should('not.be.visible');
+        cy.getTestElement('@modal').should('not.exist');
 
         cy.getTestElement('@menu/switch-device').should(
             'contain',

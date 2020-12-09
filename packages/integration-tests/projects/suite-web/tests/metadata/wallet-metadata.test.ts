@@ -37,7 +37,7 @@ describe('Metadata - wallet labeling', () => {
 
             cy.getTestElement('@metadata/input').type('label for standard wallet{enter}');
             cy.getTestElement('@metadata/walletLabel/standard-wallet/renamed-label-button').should(
-                'not.be.visible',
+                'not.exist',
             );
             cy.wait(2001);
             cy.getTestElement('@metadata/walletLabel/standard-wallet/edit-label-button').click({
@@ -50,14 +50,14 @@ describe('Metadata - wallet labeling', () => {
             cy.task('pressYes');
             cy.getTestElement('@passphrase/input').type('abc');
             cy.getTestElement('@passphrase/hidden/submit-button').click();
-            cy.getTestElement('@passphrase/input').should('not.be.visible');
+            cy.getTestElement('@passphrase/input').should('not.exist');
 
             cy.getTestElement('@passphrase/input', { timeout: 30000 }).type('abc');
 
             cy.getTestElement('@passphrase/confirm-checkbox').click();
             cy.getTestElement('@passphrase/hidden/submit-button').click();
 
-            cy.getTestElement('@modal').should('not.be.visible');
+            cy.getTestElement('@modal').should('not.exist');
 
             cy.log(
                 'discovering new passphrase -> new deviceState -> we need new metadata master key',

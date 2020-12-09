@@ -8,7 +8,7 @@ services:
     network_mode: bridge # this makes docker reuse existing networks
 
   test-run:
-    image: cypress/included:5.0.0
+    image: cypress/included:6.1.0
     entrypoint: []
     environment:
       - CYPRESS_SNAPSHOT=$CYPRESS_SNAPSHOT
