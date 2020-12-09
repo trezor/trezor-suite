@@ -58,7 +58,7 @@ contextBridge.exposeInMainWorld('desktopApi', {
     },
 
     // Updater
-    checkForUpdates: () => ipcRenderer.send('update/check'),
+    checkForUpdates: (isManual?: boolean) => ipcRenderer.send('update/check', isManual),
     downloadUpdate: () => ipcRenderer.send('update/download'),
     installUpdate: () => ipcRenderer.send('update/install'),
     cancelUpdate: () => ipcRenderer.send('update/cancel'),

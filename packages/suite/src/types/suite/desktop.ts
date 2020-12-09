@@ -1,6 +1,7 @@
 export type UpdateInfo = {
     version: string;
     releaseDate: string;
+    isManualCheck?: boolean;
     downloadedFile?: string;
 };
 

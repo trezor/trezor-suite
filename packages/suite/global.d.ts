@@ -7,7 +7,7 @@ export interface DesktopApi {
     // App Ready
     ready: () => void;
     // Auto Updater
-    checkForUpdates: () => void;
+    checkForUpdates: (isManual?: boolean) => void;
     downloadUpdate: () => void;
     installUpdate: () => void;
     cancelUpdate: () => void;

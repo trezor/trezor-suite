@@ -19,10 +19,16 @@ export const available = (info: UpdateInfo): DesktopUpdateAction => ({
     payload: info,
 });
 
-export const notAvailable = (info: UpdateInfo): DesktopUpdateAction => ({
-    type: DESKTOP_UPDATE.NOT_AVAILABLE,
-    payload: info,
-});
+export const notAvailable = (info: UpdateInfo) => (dispatch: Dispatch) => {
+    if (info.isManualCheck) {
+        dispatch(addToast({ type: 'auto-updater-no-new' }));
+    }
+
+    dispatch({
+        type: DESKTOP_UPDATE.NOT_AVAILABLE,
+        payload: info,
+    });
+};
 
 export const downloading = (progress: UpdateProgress): DesktopUpdateAction => ({
     type: DESKTOP_UPDATE.DOWNLOADING,

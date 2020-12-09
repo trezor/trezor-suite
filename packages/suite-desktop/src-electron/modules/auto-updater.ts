@@ -11,6 +11,7 @@ const preReleaseFlag = app.commandLine.hasSwitch('pre-release');
 const updateCancellationToken = new CancellationToken();
 
 const init = (window: BrowserWindow, store: LocalStore) => {
+    let isManualCheck = false;
     let latestVersion = {};
     const updateSettings = store.getUpdateSettings();
 
@@ -27,17 +28,23 @@ const init = (window: BrowserWindow, store: LocalStore) => {
     });
 
     autoUpdater.on('update-available', ({ version, releaseDate }) => {
-        latestVersion = { version, releaseDate };
         if (updateSettings.skipVersion === version) {
             return;
         }
 
+        latestVersion = { version, releaseDate, isManualCheck };
         window.webContents.send('update/available', latestVersion);
+
+        // Reset manual check flag
+        isManualCheck = false;
     });
 
     autoUpdater.on('update-not-available', ({ version, releaseDate }) => {
-        latestVersion = { version, releaseDate };
+        latestVersion = { version, releaseDate, isManualCheck };
         window.webContents.send('update/not-available', latestVersion);
+
+        // Reset manual check flag
+        isManualCheck = false;
     });
 
     autoUpdater.on('error', err => {
@@ -52,7 +59,13 @@ const init = (window: BrowserWindow, store: LocalStore) => {
         window.webContents.send('update/downloaded', { version, releaseDate, downloadedFile });
     });
 
-    ipcMain.on('update/check', () => autoUpdater.checkForUpdates());
+    ipcMain.on('update/check', (_, isManual?: boolean) => {
+        if (isManual) {
+            isManualCheck = true;
+        }
+
+        autoUpdater.checkForUpdates();
+    });
     ipcMain.on('update/download', () => {
         window.webContents.send('update/downloading', {
             percent: 0,

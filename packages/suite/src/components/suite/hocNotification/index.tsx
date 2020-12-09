@@ -294,6 +294,13 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
                 },
             });
 
+        case 'auto-updater-no-new':
+            return simple(View, {
+                notification,
+                variant: 'info',
+                message: 'TOAST_AUTO_UPDATER_NO_NEW',
+            });
+
         // Events:
         case DEVICE.CONNECT:
             return withAction(View, {
