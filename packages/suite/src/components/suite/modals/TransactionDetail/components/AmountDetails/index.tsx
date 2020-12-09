@@ -89,6 +89,29 @@ const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
             ? formatNetworkAmount(totalOutput.toFixed(), tx.symbol)
             : undefined;
 
+    /* 
+    Get the Amount value to show if the user sent transaction to himself.
+
+    tx.amount value returns how much the user's wallet balance changed. 
+    But if the user sent transaction to himself, tx.amount returns only the cost of tx.fee. That's valid behavior, but confusing. 
+
+    I couldn't just use amountSentToSelf=totalInput, because totalInput is undefined for Ethereum (is that a bug or valid behavior?).
+    For that reason I added together the value of txFee and totalOutput instead, because that works properly for all currently supported coins. 
+    */
+    const txSentToSelf = tx.type === 'self';
+    let amountSentToSelf = '';
+
+    if (txSentToSelf && network && totalOutput && !totalOutput.isNaN()) {
+        // convert float value of fees back to the absolute value in basic network units in order to prevent possible errors coming from summing up float numbers
+        const feesAbsolute = Number(tx.fee) * 10 ** network.decimals;
+        if (feesAbsolute) {
+            amountSentToSelf = formatNetworkAmount(
+                (Number(totalOutput) + feesAbsolute).toFixed(),
+                tx.symbol,
+            );
+        }
+    }
+
     return (
         <MainContainer>
             {/* ROW CONTAINING "SHOW FIAT" BUTTON */}
@@ -207,18 +230,30 @@ const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
                 {/* AMOUNT */}
                 <AmountRow
                     firstColumn={<Translation id="AMOUNT" />}
-                    secondColumn={<FormattedCryptoAmount value={amount} symbol={assetSymbol} />}
+                    secondColumn={
+                        <FormattedCryptoAmount
+                            value={txSentToSelf ? amountSentToSelf : amount}
+                            symbol={assetSymbol}
+                        />
+                    }
                     thirdColumn={
                         showHistoricalRates && (
                             <FiatValue
-                                amount={amount}
+                                amount={txSentToSelf ? amountSentToSelf : amount}
                                 symbol={assetSymbol}
                                 source={tx.rates}
                                 useCustomSource
                             />
                         )
                     }
-                    fourthColumn={showFiat && <FiatValue amount={amount} symbol={assetSymbol} />}
+                    fourthColumn={
+                        showFiat && (
+                            <FiatValue
+                                amount={txSentToSelf ? amountSentToSelf : amount}
+                                symbol={assetSymbol}
+                            />
+                        )
+                    }
                     color="light"
                 />
                 {/* TX FEE */}
