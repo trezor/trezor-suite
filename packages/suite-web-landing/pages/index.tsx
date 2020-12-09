@@ -118,7 +118,7 @@ const features = [
         text: <Translation id="TR_SUITE_WEB_LANDING_FEATURES_2_TEXT" />,
         backgroundPosition: 'center left',
         backgroundSize: '489px auto',
-        soon: true,
+        soon: false,
     },
     {
         id: 3,
