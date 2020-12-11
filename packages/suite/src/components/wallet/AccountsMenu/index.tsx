@@ -193,6 +193,12 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
 
     const buildGroup = (type: Account['accountType'], accounts: Account[]) => {
         const groupHasBalance = accounts.find(a => a.availableBalance !== '0');
+
+        if (!accounts.length) {
+            // show skeleton in 'normal' group while we wait for a discovery of first account
+            return <>{discoveryInProgress && type === 'normal' && <SkeletonAccountItem />}</>;
+        }
+
         return (
             <AccountGroup
                 key={type}
