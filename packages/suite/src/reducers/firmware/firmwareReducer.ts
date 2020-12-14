@@ -6,7 +6,6 @@ import { Action, AcquiredDevice } from '@suite-types';
 
 type FirmwareUpdateCommon = {
     installingProgress?: number;
-    // error?: undefined;
     hasSeed: boolean;
     targetRelease: AcquiredDevice['firmwareRelease'];
     prevDevice?: Device;
