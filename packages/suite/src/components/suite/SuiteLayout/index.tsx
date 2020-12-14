@@ -42,7 +42,8 @@ const AppWrapper = styled.div`
     color: ${props => props.theme.TYPE_DARK_GREY};
     background: ${props => props.theme.BG_GREY};
     flex-direction: column;
-    overflow: auto;
+    overflow-x: auto;
+    overflow-y: scroll;
     width: 100%;
     align-items: center;
 
