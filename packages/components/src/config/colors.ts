@@ -19,7 +19,7 @@ export const THEME = {
         BG_RED: '#d04949',
         BG_LIGHT_RED: '#F6E2E2',
         BG_TOOLTIP: '#262742',
-        BG_ICON: '#ffffff',
+        BG_ICON: 'transparent',
 
         TYPE_GREEN: '#279503',
         TYPE_ORANGE: '#c19009',
