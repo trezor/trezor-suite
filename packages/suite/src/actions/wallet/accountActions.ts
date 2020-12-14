@@ -128,11 +128,6 @@ export const fetchAndUpdateAccount = (account: Account) => async (
     if (response.success) {
         const { payload } = response;
 
-        // add custom tokens into the account.tokens
-        const customTokens = await tokenActions.fetchAccountTokens(account, payload.tokens);
-        payload.tokens =
-            customTokens.length > 0 ? (payload.tokens || []).concat(customTokens) : payload.tokens;
-
         const accountTxs = accountUtils.getAccountTransactions(
             getState().wallet.transactions.transactions,
             account,
@@ -166,6 +161,11 @@ export const fetchAndUpdateAccount = (account: Account) => async (
                 }),
             );
         });
+
+        // add custom tokens into the account.tokens
+        const customTokens = await tokenActions.fetchAccountTokens(account, payload.tokens);
+        payload.tokens =
+            customTokens.length > 0 ? (payload.tokens || []).concat(customTokens) : payload.tokens;
 
         if (
             analyze.remove.length > 0 ||

@@ -284,9 +284,10 @@ export const onBlockMined = (block: BlockchainBlock) => (
 ) => {
     const symbol = block.coin.shortcut.toLowerCase();
     const networkAccounts = getState().wallet.accounts.filter(a => a.symbol === symbol);
-    networkAccounts.forEach(account => {
-        dispatch(accountActions.fetchAndUpdateAccount(account));
-    });
+    const promises = networkAccounts.map(account =>
+        dispatch(accountActions.fetchAndUpdateAccount(account)),
+    );
+    return Promise.all(promises);
 };
 
 export const onNotification = (payload: BlockchainNotification) => (
