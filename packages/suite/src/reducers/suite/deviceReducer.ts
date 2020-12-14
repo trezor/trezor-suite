@@ -328,8 +328,8 @@ const createInstance = (draft: State, device: TrezorDevice) => {
  * @param {boolean} remember
  */
 const remember = (draft: State, device: TrezorDevice, remember: boolean, forceRemember?: true) => {
-    // only acquired devices with state
-    if (!device || !device.features || !device.state) return;
+    // only acquired devices
+    if (!device || !device.features) return;
     draft.forEach(d => {
         if (deviceUtils.isSelectedInstance(device, d)) {
             d.remember = remember;

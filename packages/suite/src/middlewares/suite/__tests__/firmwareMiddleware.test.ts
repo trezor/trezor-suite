@@ -103,13 +103,16 @@ describe('firmware middleware', () => {
 
         await store.dispatch({
             type: SUITE.SELECT_DEVICE,
-            payload: getSuiteDevice({ firmware: 'valid' }),
+            payload: getSuiteDevice({ firmware: 'valid', connected: true }),
         });
 
         const result = store.getActions();
 
         expect(result).toEqual([
-            { type: SUITE.SELECT_DEVICE, payload: getSuiteDevice({ firmware: 'valid' }) },
+            {
+                type: SUITE.SELECT_DEVICE,
+                payload: getSuiteDevice({ firmware: 'valid', connected: true }),
+            },
             { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'done' },
         ]);
     });
@@ -124,13 +127,16 @@ describe('firmware middleware', () => {
 
         await store.dispatch({
             type: SUITE.SELECT_DEVICE,
-            payload: getSuiteDevice({ firmware: 'outdated' }),
+            payload: getSuiteDevice({ firmware: 'outdated', connected: true }),
         });
 
         const result = store.getActions();
 
         expect(result).toEqual([
-            { type: SUITE.SELECT_DEVICE, payload: getSuiteDevice({ firmware: 'outdated' }) },
+            {
+                type: SUITE.SELECT_DEVICE,
+                payload: getSuiteDevice({ firmware: 'outdated', connected: true }),
+            },
             { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'partially-done' },
         ]);
     });

@@ -1146,20 +1146,23 @@ const remember = [
             {
                 type: SUITE.REMEMBER_DEVICE,
                 payload: SUITE_DEVICE,
+                remember: true,
             },
         ],
-        result: [SUITE_DEVICE],
+        result: [{ ...SUITE_DEVICE, remember: true }],
     },
     {
-        description: `Remember stateless device`,
+        description: `Force remember device`,
         initialState: [SUITE_DEVICE],
         actions: [
             {
                 type: SUITE.REMEMBER_DEVICE,
                 payload: SUITE_DEVICE,
+                remember: true,
+                forceRemember: true,
             },
         ],
-        result: [SUITE_DEVICE],
+        result: [getSuiteDevice({ remember: true, forceRemember: true })],
     },
     {
         description: `Remember device success`,
