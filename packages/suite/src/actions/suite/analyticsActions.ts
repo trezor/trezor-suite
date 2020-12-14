@@ -61,6 +61,8 @@ export type AnalyticsEvent =
               rememberedHiddenWallets: number;
               // added in 1.5
               theme: string;
+              // added in 1.6
+              suiteVersion: string;
           };
       }
     | { type: 'transport-type'; payload: { type: string; version: string } }
@@ -78,6 +80,8 @@ export type AnalyticsEvent =
               passphrase_protection: boolean;
               totalInstances: number;
               backup_type: string;
+              // added in 1.6
+              isBitcoinOnly: boolean;
           };
       }
     | {

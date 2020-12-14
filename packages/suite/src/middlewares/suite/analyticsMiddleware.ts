@@ -13,6 +13,7 @@ import {
     getPlatform,
     getPlatformLanguage,
 } from '@suite-utils/env';
+import { isBitcoinOnly } from '@suite-utils/device';
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:
@@ -52,6 +53,7 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                             .getState()
                             .devices.filter(d => d.remember && !d.useEmptyPassphrase).length,
                         theme: state.suite.settings.theme.variant,
+                        suiteVersion: process.env.version ? process.env.version : '',
                     },
                 }),
             );
@@ -68,7 +70,13 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
             );
             break;
         case DEVICE.CONNECT: {
-            const { features, mode } = action.payload;
+            const { features, mode, id } = action.payload;
+
+            // Find a device with the ID that is equal to the ID in action.payload
+            // I can't use action.payload in isBitcoinOnly() because it has a different type (Device). isBitcoinOnly() expects TrezorDevice
+            const connectedDevice = state.devices.find(device => device.id === id);
+            const isBtcOnly = connectedDevice ? isBitcoinOnly(connectedDevice) : false;
+
             if (features && mode !== 'bootloader') {
                 api.dispatch(
                     analyticsActions.report({
@@ -80,6 +88,7 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                             pin_protection: features.pin_protection,
                             passphrase_protection: features.passphrase_protection,
                             totalInstances: api.getState().devices.length,
+                            isBitcoinOnly: isBtcOnly,
                             // todo: totalDevices
                             // it should be easy like this:
                             // totalDevices: api.getState().devices.filter(d => !d.instance).length,
