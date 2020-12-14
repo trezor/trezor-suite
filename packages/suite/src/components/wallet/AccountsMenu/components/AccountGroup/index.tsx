@@ -60,8 +60,6 @@ export default forwardRef((props: Props, _ref: React.Ref<HTMLDivElement>) => {
         }
     }, [props.keepOpened, props.hasBalance]);
 
-    if (!props.children || React.Children.count(props.children) === 0) return null;
-
     const onClick = () => {
         setExpanded(!expanded);
         setAnimatedIcon(true);
