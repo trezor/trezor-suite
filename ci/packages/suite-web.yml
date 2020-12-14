@@ -70,7 +70,6 @@ suite-web deploy dev:
 
 .e2e web:
   stage: integration testing
-  image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base@sha256:94febe6dbcbd7a64a788bae6350601743201d0c57789b2fe4f7d9c91a64a8837
   needs:
     - suite-web deploy dev
   variables:
