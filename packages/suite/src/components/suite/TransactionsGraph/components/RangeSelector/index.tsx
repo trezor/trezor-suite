@@ -6,6 +6,7 @@ import { useGraph } from '@suite-hooks';
 import { GraphRange } from '@wallet-types/graph';
 import { getFormattedLabel } from '@wallet-utils/graphUtils';
 import {
+    startOfDay,
     startOfToday,
     endOfToday,
     subDays,
@@ -53,19 +54,19 @@ const RANGES = [
     },
     {
         label: 'week',
-        startDate: subDays(END_OF_TODAY, 7),
+        startDate: startOfDay(subDays(END_OF_TODAY, 7)),
         endDate: END_OF_TODAY,
         groupBy: 'day',
     },
     {
         label: 'month',
-        startDate: subMonths(END_OF_TODAY, 1),
+        startDate: startOfDay(subMonths(END_OF_TODAY, 1)),
         endDate: END_OF_TODAY,
         groupBy: 'day',
     },
     {
         label: 'year',
-        startDate: subYears(END_OF_TODAY, 1),
+        startDate: startOfDay(subYears(END_OF_TODAY, 1)),
         endDate: END_OF_TODAY,
         groupBy: 'month',
     },
