@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import DatePicker from 'react-datepicker';
+import { startOfDay, endOfDay } from 'date-fns';
 import { Button } from '../buttons/Button';
 import { style as datepickerStyle } from './index.style';
 
@@ -61,7 +62,8 @@ const Timerange = (props: Props) => {
     const [startDate, setStartDate] = useState(props.startDate || null);
     const [endDate, setEndDate] = useState(props.endDate || null);
     const onChangeDate = (dates: [Date, Date]) => {
-        const [start, end] = dates;
+        const start = dates[0] && startOfDay(dates[0]);
+        const end = dates[1] && endOfDay(dates[1]);
         setStartDate(start);
         setEndDate(end);
     };
@@ -86,7 +88,7 @@ const Timerange = (props: Props) => {
                 <Input>
                     <DatePicker
                         selected={startDate}
-                        onChange={(date: Date) => setStartDate(date)}
+                        onChange={(date: Date) => date && setStartDate(startOfDay(date))}
                         selectsStart
                         startDate={startDate}
                         endDate={endDate}
@@ -97,7 +99,7 @@ const Timerange = (props: Props) => {
                 <Input>
                     <DatePicker
                         selected={endDate}
-                        onChange={(date: Date) => setEndDate(date)}
+                        onChange={(date: Date) => date && setEndDate(endOfDay(date))}
                         selectsEnd
                         startDate={startDate}
                         endDate={endDate}
