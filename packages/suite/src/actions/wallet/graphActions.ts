@@ -1,5 +1,5 @@
 import TrezorConnect from 'trezor-connect';
-import { getUnixTime, isWithinInterval, fromUnixTime } from 'date-fns';
+import { isWithinInterval, fromUnixTime } from 'date-fns';
 import { Dispatch, GetState } from '@suite-types';
 import {
     ACCOUNT_GRAPH_SUCCESS,
@@ -62,10 +62,9 @@ export const setSelectedView = (view: GraphScale): GraphAction => ({
  * No XRP support
  *
  * @param {Account} account
- * @param {GraphRange} range
  * @returns
  */
-export const fetchAccountGraphData = (account: Account, range: GraphRange) => async (
+export const fetchAccountGraphData = (account: Account) => async (
     dispatch: Dispatch,
     _getState: GetState,
 ) => {
@@ -83,19 +82,10 @@ export const fetchAccountGraphData = (account: Account, range: GraphRange) => as
         },
     });
 
-    let intervalParams = {};
-    if (range.startDate && range.endDate) {
-        intervalParams = {
-            from: getUnixTime(range.startDate),
-            to: getUnixTime(range.endDate),
-        };
-    }
-
     const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
         coin: account.symbol,
         descriptor: account.descriptor,
         groupBy: 3600 * 24, // day
-        ...intervalParams,
     });
 
     if (response?.success) {
@@ -138,7 +128,6 @@ export const updateGraphData = (
     },
 ) => async (dispatch: Dispatch, getState: GetState) => {
     const { graph } = getState().wallet;
-    const { selectedRange } = graph;
 
     // TODO: default behaviour should be fetch only new data (since last timestamp)
     let filteredAccounts: Account[] = accounts;
@@ -156,7 +145,7 @@ export const updateGraphData = (
         type: AGGREGATED_GRAPH_START,
     });
     const promises = filteredAccounts.map(
-        a => dispatch(fetchAccountGraphData(a, selectedRange)), // fetch for all range
+        a => dispatch(fetchAccountGraphData(a)), // fetch for all range
     );
     await Promise.all(promises);
 
