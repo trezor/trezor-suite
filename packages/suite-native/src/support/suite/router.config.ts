@@ -36,6 +36,13 @@ export default [
         navigators: defaultNavigatorsViews,
     },
     {
+        // TODO, suite is now redirecting to suite-welcome screen, what is the correct screen to show in RN?
+        key: getRoute('suite-welcome'),
+        type: 'drawer',
+        screen: Onboarding,
+        navigators: defaultNavigatorsViews,
+    },
+    {
         key: getRoute('wallet-index'),
         type: 'tabs',
         tabs: [

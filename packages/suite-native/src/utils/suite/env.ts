@@ -9,6 +9,13 @@ export const getUserAgent = () => {
     return 'some mobile device';
 };
 
+export const isDesktop = () => false;
+export const isWeb = () => false;
+
+export const isMac = () => false;
+export const isWindows = () => false;
+export const isLinux = () => false;
+
 export const isAndroid = () => {
     return Platform.OS === 'android';
 };
@@ -24,18 +31,20 @@ export const getScreenHeight = () => {
 };
 
 export const getPlatform = () => {
-    return 'linux';
+    return 'todo react-native';
 };
 
 export const getPlatformLanguage = () => {
-    return 'eskimo';
+    return 'en';
 };
-
-export const isDesktop = () => false;
-export const isWeb = () => false;
 
 export const getLocationOrigin = () => {
     return 'implementation of getLocationOrigin in native';
+};
+
+export const getLocationHostname = () => {
+    // Used in Tor component, value shouldn't matter in RN env
+    return 'rn-localhost';
 };
 
 export const submitRequestForm = (

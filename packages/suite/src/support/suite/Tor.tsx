@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useActions, useSelector } from '@suite-hooks';
 import { toTorUrl, isTorDomain } from '@suite-utils/tor';
 import * as suiteActions from '@suite-actions/suiteActions';
-import { isWeb, isDesktop } from '@suite-utils/env';
+import { isWeb, isDesktop, getLocationHostname } from '@suite-utils/env';
 
 const baseFetch = window.fetch;
 const torFetch = (input: RequestInfo, init?: RequestInit | undefined) => {
@@ -24,7 +24,7 @@ const Tor = () => {
 
     useEffect(() => {
         if (isWeb()) {
-            updateTorStatus(isTorDomain(window.location.hostname));
+            updateTorStatus(isTorDomain(getLocationHostname()));
         }
 
         if (isDesktop()) {

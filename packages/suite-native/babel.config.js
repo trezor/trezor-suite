@@ -24,6 +24,9 @@ module.exports = api => {
 
                         '^@suite/support/messages': './packages/suite/src/support/messages',
 
+                        // react-native env utils
+                        '^@suite-utils/env': './packages/suite-native/src/utils/suite/env',
+
                         // relative to "projectRoot: ../../" defined in package.json
                         '^@suite/(.+)': './packages/suite/src/\\1',
 

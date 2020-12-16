@@ -18,7 +18,6 @@
         "build:android": "rimraf packages/suite-native/android/app/build && yarn workspace @trezor/suite-native bundle:android && cd ./android && ./gradlew bundleRelease -x bundleReleaseJsAndAssets --no-build-cache && ./gradlew assembleRelease -x bundleReleaseJsAndAssets --no-build-cache"
     },
     "dependencies": {
-        "@trezor/components": "^1.0.0",
         "@trezor/suite-storage": "21.1.0",
         "react": "16.13.1",
         "react-native": "0.63.2",
