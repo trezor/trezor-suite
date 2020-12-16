@@ -34,6 +34,14 @@ module.exports = (async () => {
                 stream: nodejs.stream,
                 path: nodejs.path,
                 vm: nodejs.vm,
+                // TODO: needed for google-aut-library (same thing is in suite-web/desktop)
+                // Find more reasonable solution than setting all missing libs to nodejs.path (null doesn't work)
+                // Or just use other auth client that doesn't bundle those things since we are not using that part of the lib anyway?
+                os: nodejs.os,
+                fs: nodejs.path,
+                child_process: nodejs.path,
+                net: nodejs.path,
+                tls: nodejs.path,
                 '@trezor/blockchain-link': path.resolve(
                     __dirname,
                     '../../packages/blockchain-link',

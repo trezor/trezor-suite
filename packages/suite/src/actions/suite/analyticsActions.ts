@@ -9,7 +9,7 @@ import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { getAnalyticsRandomId } from '@suite-utils/random';
 import { encodeDataToQueryString } from '@suite-utils/analytics';
 import { Account } from '@wallet-types';
-import { isDesktop, isWeb, setOnBeforeUnloadListener } from '@suite-utils/env';
+import { isDesktop, isWeb, setOnBeforeUnloadListener, getLocationHostname } from '@suite-utils/env';
 import { setSentryUser } from '@suite-utils/sentry';
 import { State } from '@suite-reducers/analyticsReducer';
 
@@ -283,9 +283,7 @@ export type AnalyticsEvent =
 const getUrl = () => {
     const base = 'https://data.trezor.io/suite/log';
 
-    // ts-ignore is "safe", we are in web env and I don't want to create custom file for native
-    // @ts-ignore
-    const { hostname } = window.location;
+    const hostname = getLocationHostname();
 
     // this is true for both web and desktop dev server
     if (hostname === 'localhost') {
