@@ -147,7 +147,7 @@ function getQuoteError(quote: ExchangeTrade) {
 
 const Quote = ({ className, quote }: Props) => {
     const theme = useTheme();
-    const { selectQuote, exchangeInfo } = useCoinmarketExchangeOffersContext();
+    const { selectQuote, exchangeInfo, callInProgress } = useCoinmarketExchangeOffersContext();
     const hasTag = false;
     const { exchange, receive, receiveStringAmount } = quote;
     const errorQuote = isQuoteError(quote);
@@ -164,7 +164,11 @@ const Quote = ({ className, quote }: Props) => {
                     <Left>{`${formatCryptoAmount(Number(receiveStringAmount))} ${receive}`}</Left>
                 )}
                 <Right>
-                    <StyledButton isDisabled={errorQuote} onClick={() => selectQuote(quote)}>
+                    <StyledButton
+                        isLoading={callInProgress}
+                        isDisabled={errorQuote}
+                        onClick={() => selectQuote(quote)}
+                    >
                         <Translation id="TR_EXCHANGE_GET_THIS_OFFER" />
                     </StyledButton>
                 </Right>

@@ -40,6 +40,7 @@ const Address = styled.div``;
 const SendTransactionComponent = () => {
     const {
         account,
+        callInProgress,
         selectedQuote,
         exchangeInfo,
         sendTransaction,
@@ -69,7 +70,7 @@ const SendTransactionComponent = () => {
             </Row>
 
             <ButtonWrapper>
-                <Button onClick={sendTransaction}>
+                <Button isLoading={callInProgress} onClick={sendTransaction}>
                     <Translation id="TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND" />
                 </Button>
             </ButtonWrapper>

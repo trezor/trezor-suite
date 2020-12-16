@@ -85,6 +85,7 @@ type FormState = {
 
 const VerifyAddressComponent = () => {
     const {
+        callInProgress,
         device,
         verifyAddress,
         confirmTrade,
@@ -233,6 +234,7 @@ const VerifyAddressComponent = () => {
                     {(!addressVerified || addressVerified !== address) &&
                         selectedAccountOption.account && (
                             <Button
+                                isLoading={callInProgress}
                                 onClick={() => {
                                     if (selectedAccountOption.account) {
                                         verifyAddress(selectedAccountOption.account, true);
@@ -245,6 +247,7 @@ const VerifyAddressComponent = () => {
                     {((addressVerified && addressVerified === address) ||
                         selectedAccountOption?.type === 'NON_SUITE') && (
                         <Button
+                            isLoading={callInProgress}
                             onClick={() => {
                                 if (address) {
                                     confirmTrade(address, extraField);
