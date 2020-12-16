@@ -20,6 +20,7 @@ export interface Props extends ComponentProps {
 export type ExchangeStep = 'RECEIVING_ADDRESS' | 'SEND_TRANSACTION';
 
 export type ContextValues = {
+    callInProgress: boolean;
     account: Account;
     fixedQuotes: AppState['wallet']['coinmarket']['exchange']['fixedQuotes'];
     floatQuotes: AppState['wallet']['coinmarket']['exchange']['floatQuotes'];

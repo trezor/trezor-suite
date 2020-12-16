@@ -41,6 +41,7 @@ export const useOffers = (props: Props) => {
     } = props;
 
     const { account, network } = selectedAccount;
+    const [callInProgress, setCallInProgress] = useState<boolean>(false);
     const [selectedQuote, setSelectedQuote] = useState<ExchangeTrade>();
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
     const [suiteReceiveAccounts, setSuiteReceiveAccounts] = useState<
@@ -91,7 +92,9 @@ export const useOffers = (props: Props) => {
         const getQuotes = async () => {
             if (!selectedQuote) {
                 invityAPI.createInvityAPIKey(account.descriptor);
+                setCallInProgress(true);
                 const allQuotes = await invityAPI.getExchangeQuotes(quotesRequest);
+                setCallInProgress(false);
                 const [fixedQuotes, floatQuotes] = splitToFixedFloatQuotes(allQuotes, exchangeInfo);
                 setInnerFixedQuotes(fixedQuotes);
                 setInnerFloatQuotes(floatQuotes);
@@ -152,6 +155,7 @@ export const useOffers = (props: Props) => {
     const confirmTrade = async (address: string, extraField?: string) => {
         const { address: refundAddress } = getUnusedAddressFromAccount(account);
         if (!selectedQuote || !refundAddress) return;
+        setCallInProgress(true);
         const response = await invityAPI.doExchangeTrade({
             trade: selectedQuote,
             receiveAddress: address,
@@ -172,6 +176,7 @@ export const useOffers = (props: Props) => {
             setExchangeStep('SEND_TRANSACTION');
             setSelectedQuote(response);
         }
+        setCallInProgress(false);
     };
 
     const sendTransaction = async () => {
@@ -208,6 +213,7 @@ export const useOffers = (props: Props) => {
     };
 
     return {
+        callInProgress,
         confirmTrade,
         sendTransaction,
         selectedQuote,
