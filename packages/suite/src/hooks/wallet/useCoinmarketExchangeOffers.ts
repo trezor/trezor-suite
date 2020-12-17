@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import invityAPI from '@suite-services/invityAPI';
 import { useActions, useSelector, useDevice } from '@suite-hooks';
+import { useTimer } from '@suite-hooks/useTimeInterval';
 import { ExchangeCoinInfo, ExchangeTrade } from 'invity-api';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
@@ -29,7 +30,8 @@ const getReceiveAccountSymbol = (
 };
 
 export const useOffers = (props: Props) => {
-    const REFETCH_INTERVAL = 30000;
+    const timer = useTimer();
+    const REFETCH_INTERVAL_IN_SECONDS = 30;
     const {
         selectedAccount,
         quotesRequest,
@@ -51,7 +53,6 @@ export const useOffers = (props: Props) => {
     const [innerFixedQuotes, setInnerFixedQuotes] = useState<ExchangeTrade[]>(fixedQuotes);
     const [innerFloatQuotes, setInnerFloatQuotes] = useState<ExchangeTrade[]>(floatQuotes);
     const [exchangeStep, setExchangeStep] = useState<ExchangeStep>('RECEIVING_ADDRESS');
-    const [lastFetchDate, setLastFetchDate] = useState(new Date());
     const { goto } = useActions({ goto: routerActions.goto });
     const { verifyAddress } = useActions({ verifyAddress: coinmarketCommonActions.verifyAddress });
     const {
@@ -99,15 +100,20 @@ export const useOffers = (props: Props) => {
                 const [fixedQuotes, floatQuotes] = splitToFixedFloatQuotes(allQuotes, exchangeInfo);
                 setInnerFixedQuotes(fixedQuotes);
                 setInnerFloatQuotes(floatQuotes);
+                timer.reset();
             }
         };
 
-        const interval = setInterval(() => {
-            getQuotes();
-            setLastFetchDate(new Date());
-        }, REFETCH_INTERVAL);
+        if (!timer.isLoading && !timer.isStopped) {
+            if (timer.resetCount >= 40) {
+                timer.stop();
+            }
 
-        return () => clearInterval(interval);
+            if (timer.timeSpend.seconds === REFETCH_INTERVAL_IN_SECONDS) {
+                timer.loading();
+                getQuotes();
+            }
+        }
     });
 
     const selectQuote = async (quote: ExchangeTrade) => {
@@ -119,6 +125,7 @@ export const useOffers = (props: Props) => {
             const result = await openCoinmarketExchangeConfirmModal(provider?.companyName);
             if (result) {
                 setSelectedQuote(quote);
+                timer.stop();
             }
         }
     };
@@ -221,7 +228,7 @@ export const useOffers = (props: Props) => {
         suiteReceiveAccounts,
         verifyAddress,
         device,
-        lastFetchDate,
+        timer,
         exchangeInfo,
         exchangeStep,
         setExchangeStep,
@@ -232,7 +239,7 @@ export const useOffers = (props: Props) => {
         floatQuotes: innerFloatQuotes,
         selectQuote,
         account,
-        REFETCH_INTERVAL,
+        REFETCH_INTERVAL_IN_SECONDS,
         receiveSymbol,
         receiveAccount,
         setReceiveAccount,

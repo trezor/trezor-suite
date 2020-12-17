@@ -1,6 +1,7 @@
 import { AppState } from '@suite-types';
 import { Account } from '@wallet-types';
 import { ExchangeTrade } from 'invity-api';
+import { Timer } from '@suite-hooks/useTimeInterval';
 import { CoinmarketExchangeAction, ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
 
 export interface ComponentProps {
@@ -25,8 +26,6 @@ export type ContextValues = {
     fixedQuotes: AppState['wallet']['coinmarket']['exchange']['fixedQuotes'];
     floatQuotes: AppState['wallet']['coinmarket']['exchange']['floatQuotes'];
     quotesRequest: AppState['wallet']['coinmarket']['exchange']['quotesRequest'];
-    lastFetchDate: Date;
-    REFETCH_INTERVAL: number;
     device: AppState['suite']['device'];
     selectedQuote?: ExchangeTrade;
     suiteReceiveAccounts?: AppState['wallet']['accounts'];
@@ -46,4 +45,6 @@ export type ContextValues = {
     ) => CoinmarketExchangeAction;
     confirmTrade: (address: string, extraField?: string) => void;
     sendTransaction: () => void;
+    REFETCH_INTERVAL_IN_SECONDS: number;
+    timer: Timer;
 };

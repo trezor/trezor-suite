@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { differenceInSeconds } from 'date-fns';
+import React from 'react';
 import styled from 'styled-components';
 import { CoinLogo, variables, Icon } from '@trezor/components';
 import { BuyTrade } from 'invity-api';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
-
 import Quote from './Quote';
 import { Translation } from '@suite-components';
+import { CoinmarketRefreshTime } from '@wallet-components';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 
 interface Props {
@@ -46,19 +45,6 @@ const OrigAmount = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
-const RefreshLabel = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-`;
-
-const RefreshTime = styled.div`
-    text-align: right;
-    padding-left: 4px;
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    color: ${props => props.theme.TYPE_DARK_GREY};
-`;
-
 const StyledIcon = styled(Icon)`
     padding: 0 10px;
 `;
@@ -91,18 +77,9 @@ const List = ({ isAlternative, quotes }: Props) => {
     const {
         account,
         quotesRequest,
-        lastFetchDate,
-        REFETCH_INTERVAL,
+        timer,
+        REFETCH_INTERVAL_IN_SECONDS,
     } = useCoinmarketBuyOffersContext();
-    const [seconds, setSeconds] = useState(differenceInSeconds(new Date(), lastFetchDate));
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            const seconds = differenceInSeconds(new Date(), lastFetchDate);
-            setSeconds(seconds);
-        }, 50);
-        return () => clearInterval(interval);
-    });
 
     if (!quotesRequest) return null;
     const {
@@ -154,12 +131,14 @@ const List = ({ isAlternative, quotes }: Props) => {
                         </SummaryRow>
                     )}
                 </Left>
-                {!isAlternative && (
+                {!isAlternative && !timer.isStopped && (
                     <Right>
-                        <RefreshLabel>
-                            <Translation id="TR_BUY_OFFERS_REFRESH" />
-                        </RefreshLabel>
-                        <RefreshTime>{Math.max(0, REFETCH_INTERVAL / 1000 - seconds)}s</RefreshTime>
+                        <CoinmarketRefreshTime
+                            isLoading={timer.isLoading}
+                            refetchInterval={REFETCH_INTERVAL_IN_SECONDS}
+                            seconds={timer.timeSpend.seconds}
+                            label={<Translation id="TR_BUY_OFFERS_REFRESH" />}
+                        />
                     </Right>
                 )}
             </Header>

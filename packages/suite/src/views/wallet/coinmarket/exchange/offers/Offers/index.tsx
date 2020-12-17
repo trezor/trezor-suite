@@ -1,14 +1,17 @@
-import React, { useMemo, useContext, useState, useEffect } from 'react';
+import React, { useMemo, useContext } from 'react';
 import styled from 'styled-components';
 import invityAPI from '@suite-services/invityAPI';
 import { LayoutContext, Translation } from '@suite-components';
-import { CoinmarketExchangeTopPanel, CoinmarketFooter } from '@wallet-components';
+import {
+    CoinmarketExchangeTopPanel,
+    CoinmarketFooter,
+    CoinmarketRefreshTime,
+} from '@wallet-components';
 import { variables, Icon, CoinLogo } from '@trezor/components';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
 
 import List from './List';
 import SelectedOffer from './SelectedOffer';
-import { differenceInSeconds } from 'date-fns';
 
 const Wrapper = styled.div`
     padding: 0 32px 32px 32px;
@@ -60,16 +63,6 @@ const Right = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
-const RefreshLabel = styled.div`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-`;
-
-const RefreshTime = styled.div`
-    padding-left: 5px;
-    text-align: right;
-`;
-
 const StyledCoinLogo = styled(CoinLogo)`
     padding: 0 10px 0 0;
 `;
@@ -89,20 +82,11 @@ const Offers = () => {
         floatQuotes,
         quotesRequest,
         selectedQuote,
+        timer,
+        REFETCH_INTERVAL_IN_SECONDS,
         account,
-        lastFetchDate,
-        REFETCH_INTERVAL,
     } = useCoinmarketExchangeOffersContext();
     const { setLayout } = useContext(LayoutContext);
-    const [seconds, setSeconds] = useState(differenceInSeconds(new Date(), lastFetchDate));
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            const seconds = differenceInSeconds(new Date(), lastFetchDate);
-            setSeconds(seconds);
-        }, 50);
-        return () => clearInterval(interval);
-    });
 
     useMemo(() => {
         if (setLayout) setLayout('Trezor Suite | Trade', undefined, <CoinmarketExchangeTopPanel />);
@@ -110,7 +94,6 @@ const Offers = () => {
 
     if (!quotesRequest) return null;
     const quotesCount = fixedQuotes?.length + floatQuotes?.length;
-
     return (
         <Wrapper>
             {!selectedQuote && (
@@ -134,14 +117,18 @@ const Offers = () => {
                                         />
                                         <Text>{quotesRequest.receive}</Text>
                                     </Left>
-                                    <Right>
-                                        <RefreshLabel>
-                                            <Translation id="TR_EXCHANGE_OFFERS_REFRESH" />
-                                        </RefreshLabel>
-                                        <RefreshTime>
-                                            {Math.max(0, REFETCH_INTERVAL / 1000 - seconds)}s
-                                        </RefreshTime>
-                                    </Right>
+                                    {!timer.isStopped && (
+                                        <Right>
+                                            <CoinmarketRefreshTime
+                                                isLoading={timer.isLoading}
+                                                refetchInterval={REFETCH_INTERVAL_IN_SECONDS}
+                                                seconds={timer.timeSpend.seconds}
+                                                label={
+                                                    <Translation id="TR_EXCHANGE_OFFERS_REFRESH" />
+                                                }
+                                            />
+                                        </Right>
+                                    )}
                                 </SummaryRow>
                             </Header>
                             {fixedQuotes?.length > 0 && <List quotes={fixedQuotes} isFixed />}

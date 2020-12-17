@@ -1,6 +1,7 @@
 import { AppState } from '@suite-types';
 import { Account } from '@wallet-types';
 import { BuyTrade } from 'invity-api';
+import { Timer } from '@suite-hooks/useTimeInterval';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
 
 export interface ComponentProps {
@@ -24,8 +25,6 @@ export type ContextValues = {
     alternativeQuotes: AppState['wallet']['coinmarket']['buy']['alternativeQuotes'];
     quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
     quotes: BuyTrade[];
-    lastFetchDate: Date;
-    REFETCH_INTERVAL: number;
     device: AppState['suite']['device'];
     selectedQuote?: BuyTrade;
     verifyAddress: (account: Account) => Promise<void>;
@@ -33,4 +32,6 @@ export type ContextValues = {
     providersInfo?: BuyInfo['providerInfos'];
     selectQuote: (quote: BuyTrade) => void;
     goToPayment: (address: string) => void;
+    REFETCH_INTERVAL_IN_SECONDS: number;
+    timer: Timer;
 };
