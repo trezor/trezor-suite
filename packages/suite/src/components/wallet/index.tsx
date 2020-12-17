@@ -18,6 +18,7 @@ import CoinmarketBuyOfferInfo from './CoinmarketBuyOfferInfo';
 import CoinmarketExchangeOfferInfo from './CoinmarketExchangeOfferInfo';
 import CoinmarketTransactionId from './CoinmarketTransactionId';
 import CoinmarketExchangeProviderInfo from './CoinmarketExchangeProviderInfo';
+import CoinmarketRefreshTime from './CoinmarketRefreshTime';
 
 export {
     Title,
@@ -36,6 +37,7 @@ export {
     CoinmarketTransactionId,
     CoinmarketProvidedByInvity,
     CoinmarketPaymentType,
+    CoinmarketRefreshTime,
     OnOffSwitcher,
     InputError,
     EstimatedMiningTime,

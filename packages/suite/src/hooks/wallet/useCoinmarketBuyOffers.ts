@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import invityAPI from '@suite-services/invityAPI';
 import { useActions, useSelector, useDevice } from '@suite-hooks';
+import { useTimer } from '@suite-hooks/useTimeInterval';
 import { BuyTrade } from 'invity-api';
 import { processQuotes, createQuoteLink, createTxLink } from '@wallet-utils/coinmarket/buyUtils';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
@@ -11,7 +12,8 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import { isDesktop } from '@suite-utils/env';
 
 export const useOffers = (props: Props) => {
-    const REFETCH_INTERVAL = 30000;
+    const timer = useTimer();
+    const REFETCH_INTERVAL_IN_SECONDS = 30;
     const {
         selectedAccount,
         quotesRequest,
@@ -31,7 +33,6 @@ export const useOffers = (props: Props) => {
     const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<BuyTrade[] | undefined>(
         alternativeQuotes,
     );
-    const [lastFetchDate, setLastFetchDate] = useState(new Date());
     const {
         saveTrade,
         setIsFromRedirect,
@@ -74,6 +75,7 @@ export const useOffers = (props: Props) => {
                 const [quotes, alternativeQuotes] = processQuotes(allQuotes);
                 setInnerQuotes(quotes);
                 setInnerAlternativeQuotes(alternativeQuotes);
+                timer.reset();
             }
         };
 
@@ -82,12 +84,16 @@ export const useOffers = (props: Props) => {
             setIsFromRedirect(false);
         }
 
-        const interval = setInterval(() => {
-            getQuotes();
-            setLastFetchDate(new Date());
-        }, REFETCH_INTERVAL);
+        if (!timer.isLoading && !timer.isStopped) {
+            if (timer.resetCount >= 40) {
+                timer.stop();
+            }
 
-        return () => clearInterval(interval);
+            if (timer.timeSpend.seconds === REFETCH_INTERVAL_IN_SECONDS) {
+                timer.loading();
+                getQuotes();
+            }
+        }
     });
 
     const selectQuote = async (quote: BuyTrade) => {
@@ -116,6 +122,7 @@ export const useOffers = (props: Props) => {
                     }
                 } else {
                     setSelectedQuote(quote);
+                    timer.stop();
                 }
             }
         }
@@ -161,7 +168,6 @@ export const useOffers = (props: Props) => {
         selectedQuote,
         verifyAddress,
         device,
-        lastFetchDate,
         providersInfo,
         saveTrade,
         quotesRequest,
@@ -170,7 +176,8 @@ export const useOffers = (props: Props) => {
         alternativeQuotes: innerAlternativeQuotes,
         selectQuote,
         account,
-        REFETCH_INTERVAL,
+        REFETCH_INTERVAL_IN_SECONDS,
+        timer,
     };
 };
 
