@@ -235,6 +235,7 @@ const VerifyAddressComponent = () => {
                         selectedAccountOption.account && (
                             <Button
                                 isLoading={callInProgress}
+                                isDisabled={callInProgress}
                                 onClick={() => {
                                     if (selectedAccountOption.account) {
                                         verifyAddress(selectedAccountOption.account, true);
@@ -253,7 +254,7 @@ const VerifyAddressComponent = () => {
                                     confirmTrade(address, extraField);
                                 }
                             }}
-                            isDisabled={formErrors}
+                            isDisabled={formErrors || callInProgress}
                         >
                             <Translation id="TR_EXCHANGE_GO_TO_PAYMENT" />
                         </Button>
