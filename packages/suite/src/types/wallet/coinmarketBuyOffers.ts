@@ -20,6 +20,7 @@ export interface Props extends ComponentProps {
 
 export type ContextValues = {
     account: Account;
+    callInProgress: boolean;
     alternativeQuotes: AppState['wallet']['coinmarket']['buy']['alternativeQuotes'];
     quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
     quotes: BuyTrade[];

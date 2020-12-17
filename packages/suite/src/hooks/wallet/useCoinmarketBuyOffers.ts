@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import invityAPI from '@suite-services/invityAPI';
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions, useSelector, useDevice } from '@suite-hooks';
 import { BuyTrade } from 'invity-api';
 import { processQuotes, createQuoteLink, createTxLink } from '@wallet-utils/coinmarket/buyUtils';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
@@ -24,6 +24,8 @@ export const useOffers = (props: Props) => {
     } = props;
 
     const { account } = selectedAccount;
+    const { isLocked } = useDevice();
+    const [callInProgress, setCallInProgress] = useState<boolean>(isLocked || false);
     const [selectedQuote, setSelectedQuote] = useState<BuyTrade>();
     const [innerQuotes, setInnerQuotes] = useState<BuyTrade[]>(quotes);
     const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<BuyTrade[] | undefined>(
@@ -120,6 +122,7 @@ export const useOffers = (props: Props) => {
     };
 
     const goToPayment = async (address: string) => {
+        setCallInProgress(true);
         if (!selectedQuote) return;
 
         const returnUrl = await createTxLink(selectedQuote, account);
@@ -149,10 +152,12 @@ export const useOffers = (props: Props) => {
                 goto('wallet-coinmarket-buy-detail', selectedAccount.params);
             }
         }
+        setCallInProgress(false);
     };
 
     return {
         goToPayment,
+        callInProgress,
         selectedQuote,
         verifyAddress,
         device,

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import invityAPI from '@suite-services/invityAPI';
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions, useSelector, useDevice } from '@suite-hooks';
 import { ExchangeCoinInfo, ExchangeTrade } from 'invity-api';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
@@ -40,8 +40,9 @@ export const useOffers = (props: Props) => {
         addressVerified,
     } = props;
 
+    const { isLocked } = useDevice();
     const { account, network } = selectedAccount;
-    const [callInProgress, setCallInProgress] = useState<boolean>(false);
+    const [callInProgress, setCallInProgress] = useState<boolean>(isLocked() || false);
     const [selectedQuote, setSelectedQuote] = useState<ExchangeTrade>();
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
     const [suiteReceiveAccounts, setSuiteReceiveAccounts] = useState<
