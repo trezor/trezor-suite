@@ -29,7 +29,7 @@ const Content = styled.div`
     flex-direction: column;
 `;
 
-const Post = styled.div`
+const Post = styled.a`
     display: flex;
     padding: 6px;
     flex-direction: column;
@@ -66,7 +66,7 @@ const Description = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
-const ReadMore = styled.a`
+const ReadMore = styled.div`
     display: flex;
     align-self: flex-start;
     color: ${props => props.theme.TYPE_DARK_GREY};
@@ -97,7 +97,7 @@ const NewsFeed = () => {
         >
             <Posts>
                 {posts.slice(0, visibleCount).map(item => (
-                    <Post key={item.link}>
+                    <Post key={item.link} target="_blank" href={item.link}>
                         <Image src={item.thumbnail} />
                         <Content>
                             <Title>
@@ -116,7 +116,7 @@ const NewsFeed = () => {
                                     text={item.description}
                                 />
                             </Description>
-                            <ReadMore target="_blank" href={item.link}>
+                            <ReadMore>
                                 <Button
                                     variant="tertiary"
                                     alignIcon="right"
