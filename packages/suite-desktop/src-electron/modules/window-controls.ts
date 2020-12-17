@@ -95,6 +95,9 @@ const init = (window: BrowserWindow, store: LocalStore) => {
     ipcMain.on('client/ready', () => {
         notifyWindowMaximized(window);
     });
+    ipcMain.on('window/focus', () => {
+        app.focus({ steal: true });
+    });
 
     app.on('before-quit', () => {
         // store window bounds on cmd/ctrl+q

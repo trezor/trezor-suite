@@ -23,6 +23,7 @@ const validChannels = [
 
     // invity
     'buy-receiver',
+    'spend/message',
 
     // window
     'window/is-maximized',
@@ -65,6 +66,7 @@ contextBridge.exposeInMainWorld('desktopApi', {
 
     // Window controls
     windowClose: () => ipcRenderer.send('window/close'),
+    windowFocus: () => ipcRenderer.send('window/focus'),
     windowMinimize: () => ipcRenderer.send('window/minimize'),
     windowMaximize: () => ipcRenderer.send('window/maximize'),
     windowUnmaximize: () => ipcRenderer.send('window/unmaximize'),

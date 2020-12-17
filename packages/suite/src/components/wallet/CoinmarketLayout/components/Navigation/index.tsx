@@ -58,9 +58,14 @@ const Soon = styled.div`
 
 const Navigation = () => {
     const items = [
-        { route: 'wallet-coinmarket-buy', title: <Translation id="TR_NAV_BUY" /> },
-        { route: 'wallet-coinmarket-exchange', title: <Translation id="TR_NAV_EXCHANGE" /> },
-        { route: 'wallet-coinmarket-spend', title: <Translation id="TR_NAV_SPEND" /> },
+        { route: 'wallet-coinmarket-buy', title: <Translation id="TR_NAV_BUY" />, soon: false },
+        {
+            route: 'wallet-coinmarket-exchange',
+            title: <Translation id="TR_NAV_EXCHANGE" />,
+            soon: false,
+        },
+        { route: 'wallet-coinmarket-spend', title: <Translation id="TR_NAV_SPEND" />, soon: false },
+        { route: 'wallet-coinmarket-sell', title: <Translation id="TR_NAV_SELL" />, soon: true },
     ] as const;
 
     const routeName = useSelector(state => state.router.route?.name);
@@ -68,28 +73,24 @@ const Navigation = () => {
         goto: routerActions.goto,
     });
 
-    const showSoon = (route: any) => {
-        return route === 'wallet-coinmarket-spend';
-    };
-
     return (
         <Wrapper>
             {items.map(item => {
-                const { route, title } = item;
+                const { route, title, soon } = item;
                 const active = routeName === route;
                 return (
                     <StyledNavLink
                         key={route}
                         active={active}
                         onClick={() => {
-                            if (showSoon(route)) {
+                            if (soon) {
                                 return () => {};
                             }
                             goto(route, undefined, true);
                         }}
                     >
                         <Text>
-                            {showSoon(route) && (
+                            {soon && (
                                 <Soon>
                                     <Translation id="TR_NAV_SOON" />
                                 </Soon>

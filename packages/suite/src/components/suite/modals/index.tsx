@@ -20,6 +20,7 @@ import ConfirmAction from './confirm/Action';
 import ConfirmFingerPrint from './confirm/Fingerprint';
 import CoinmarketBuyTerms from './confirm/CoinmarketBuyTerms';
 import CoinmarketExchangeTerms from './confirm/CoinmarketExchangeTerms';
+import CoinmarketLeaveSpend from './confirm/CoinmarketLeaveSpend';
 import Word from './Word';
 import WordAdvanced from './WordAdvanced';
 import ConfirmAddress from './confirm/Address';
@@ -184,6 +185,8 @@ const getUserContextModal = (props: Props) => {
             return <ReviewTransaction {...payload} />;
         case 'coinmarket-review-transaction':
             return <CoinmarketReviewTransaction {...payload} />;
+        case 'coinmarket-leave-spend':
+            return <CoinmarketLeaveSpend {...payload} onCancel={modalActions.onCancel} />;
         case 'coinmarket-buy-terms':
             return (
                 <CoinmarketBuyTerms

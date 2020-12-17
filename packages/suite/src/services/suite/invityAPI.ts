@@ -16,19 +16,23 @@ import {
     BuyTrade,
     WatchBuyTradeResponse,
     CountryInfo,
-    SupportTicketResponse,
-    SupportTicket,
+    SellListResponse,
+    SellVoucherTradeQuoteRequest,
+    SellVoucherTradeQuoteResponse,
+    SellVoucherTradeRequest,
+    SellVoucherTrade,
 } from 'invity-api';
 import { isDesktop } from '@suite-utils/env';
 
 type BodyType =
-    | SupportTicket
     | BuyTrade
     | ExchangeTradeQuoteRequest
     | ConfirmExchangeTradeRequest
     | ExchangeTrade
     | BuyTradeQuoteRequest
-    | BuyTradeRequest;
+    | BuyTradeRequest
+    | SellVoucherTradeQuoteRequest
+    | SellVoucherTradeRequest;
 
 class InvityAPI {
     unknownCountry = 'unknown';
@@ -41,7 +45,6 @@ class InvityAPI {
     // info service
     private DETECT_COUNTRY_INFO = '/api/info/country';
     private GET_COUNTRY_INFO = '/api/info/country/{{country}}';
-    private CREATE_SUPPORT_TICKET = '/api/support/ticket';
 
     // exchange service
     private EXCHANGE_LIST = '/api/exchange/list';
@@ -49,12 +52,19 @@ class InvityAPI {
     private EXCHANGE_QUOTES = '/api/exchange/quotes';
     private EXCHANGE_DO_TRADE = '/api/exchange/trade';
     private EXCHANGE_WATCH_TRADE = '/api/exchange/watch/{{counter}}';
+
     // buy service
     private BUY_LIST = '/api/buy/list';
     private BUY_QUOTES = '/api/buy/quotes';
     private BUY_DO_TRADE = '/api/buy/trade';
     private BUY_GET_TRADE_FORM = '/api/buy/tradeform';
     private BUY_WATCH_TRADE = '/api/buy/watch/{{counter}}';
+
+    // sell service
+    private SELL_LIST = '/api/sell/list';
+    private VOUCHER_QUOTES = '/api/sell/voucher/quotes';
+    private VOUCHER_REQUEST_TRADE = '/api/sell/voucher/trade';
+    private VOUCHER_CONFIRM_TRADE = '/api/sell/voucher/confirm';
 
     private static accountDescriptor: string;
     private static apiKey: string;
@@ -118,18 +128,6 @@ class InvityAPI {
             });
         });
     }
-
-    createSupportTicket = async (ticket: SupportTicket): Promise<SupportTicketResponse> => {
-        let response: SupportTicketResponse = { error: '', statusCode: 200 };
-        try {
-            const url = this.CREATE_SUPPORT_TICKET;
-            response = await this.request(url, ticket, 'POST');
-        } catch (error) {
-            console.log('[createSupportTicket]', error);
-            response.error = error;
-        }
-        return response;
-    };
 
     fetchCountryInfo = async (country: string): Promise<CountryInfo> => {
         try {
@@ -278,6 +276,61 @@ class InvityAPI {
         } catch (error) {
             console.log('[watchBuyTrade]', error);
             return { error: error.toString() };
+        }
+    };
+
+    getSellList = async (): Promise<SellListResponse | undefined> => {
+        try {
+            const response = await this.request(this.SELL_LIST, {}, 'GET');
+            return response;
+        } catch (error) {
+            console.log('[getSellList]', error);
+        }
+    };
+
+    getVoucherQuotes = async (
+        params: SellVoucherTradeQuoteRequest,
+    ): Promise<SellVoucherTradeQuoteResponse> => {
+        try {
+            const response: SellVoucherTradeQuoteResponse = await this.request(
+                this.VOUCHER_QUOTES,
+                params,
+                'POST',
+            );
+            return response;
+        } catch (error) {
+            console.log('[getVoucherQuotes]', error);
+        }
+        return [];
+    };
+
+    requestVoucherTrade = async (
+        tradeRequest: SellVoucherTradeRequest,
+    ): Promise<SellVoucherTrade> => {
+        try {
+            const response: SellVoucherTrade = await this.request(
+                this.VOUCHER_REQUEST_TRADE,
+                tradeRequest,
+                'POST',
+            );
+            return response;
+        } catch (error) {
+            console.log('[doVoucherTrade]', error);
+            return { error: error.toString(), exchange: tradeRequest.exchange };
+        }
+    };
+
+    confirmVoucherTrade = async (trade: SellVoucherTrade): Promise<SellVoucherTrade> => {
+        try {
+            const response: SellVoucherTrade = await this.request(
+                this.VOUCHER_CONFIRM_TRADE,
+                trade,
+                'POST',
+            );
+            return response;
+        } catch (error) {
+            console.log('[confirmVoucherTrade]', error);
+            return { error: error.toString(), exchange: trade.exchange };
         }
     };
 }

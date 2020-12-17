@@ -12,9 +12,15 @@ import {
 } from 'invity-api';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
-import { COINMARKET_BUY, COINMARKET_EXCHANGE, COINMARKET_COMMON } from '@wallet-actions/constants';
+import {
+    COINMARKET_BUY,
+    COINMARKET_EXCHANGE,
+    COINMARKET_COMMON,
+    COINMARKET_SELL,
+} from '@wallet-actions/constants';
 import { STORAGE } from '@suite-actions/constants';
 import { Action as SuiteAction } from '@suite-types';
+import { SellInfo } from '@wallet-actions/coinmarketSellActions';
 
 type CommonTrade = {
     date: string;
@@ -57,9 +63,15 @@ interface Exchange {
     addressVerified?: string;
 }
 
+interface Sell {
+    sellInfo?: SellInfo;
+    showLeaveModal: boolean;
+}
+
 interface State {
     buy: Buy;
     exchange: Exchange;
+    sell: Sell;
     transaction: {
         composed?: PrecomposedTransactionFinal;
         reviewData?: ReviewTransactionData;
@@ -91,6 +103,10 @@ export const initialState = {
         fixedQuotes: [],
         floatQuotes: [],
         addressVerified: undefined,
+    },
+    sell: {
+        showLeaveModal: false,
+        sellInfo: undefined,
     },
     transaction: {},
     trades: [],
@@ -168,6 +184,12 @@ const coinmarketReducer = (
                 break;
             case STORAGE.LOADED:
                 return action.payload.wallet.coinmarket;
+            case COINMARKET_SELL.SAVE_SELL_INFO:
+                draft.sell.sellInfo = action.sellInfo;
+                break;
+            case COINMARKET_SELL.SHOW_LEAVE_MODAL:
+                draft.sell.showLeaveModal = action.showLeaveModal;
+                break;
             // no default
         }
     });

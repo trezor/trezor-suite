@@ -22,6 +22,10 @@ const init = (window: BrowserWindow, src: string) => {
             buyRedirectHandler(url, window, src);
         });
 
+        httpReceiver.on('spend/message', event => {
+            window.webContents.send('spend/message', event);
+        });
+
         // when httpReceiver was asked to provide current address for given pathname
         ipcMain.handle('server/request-address', (_event, pathname) =>
             httpReceiver.getRouteAddress(pathname),

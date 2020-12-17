@@ -10,6 +10,7 @@ import * as FIAT_RATES from './fiatRatesConstants';
 import * as GRAPH from './graphConstants';
 import * as COINMARKET_BUY from './coinmarketBuyConstants';
 import * as COINMARKET_EXCHANGE from './coinmarketExchangeConstants';
+import * as COINMARKET_SELL from './coinmarketSellConstants';
 import * as COINMARKET_COMMON from './coinmarketCommonConstants';
 import * as ACCOUNT_SEARCH from './accountSearch';
 
@@ -26,6 +27,7 @@ export {
     GRAPH,
     COINMARKET_BUY,
     COINMARKET_EXCHANGE,
+    COINMARKET_SELL,
     COINMARKET_COMMON,
     ACCOUNT_SEARCH,
 };

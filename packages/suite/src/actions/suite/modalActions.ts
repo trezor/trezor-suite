@@ -1,6 +1,6 @@
 import TrezorConnect, { UI } from 'trezor-connect';
 import { MODAL, SUITE } from '@suite-actions/constants';
-import { Dispatch, GetState, TrezorDevice } from '@suite-types';
+import { Route, Dispatch, GetState, TrezorDevice } from '@suite-types';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { createDeferred, Deferred, DeferredResponse } from '@suite-utils/deferred';
 
@@ -72,6 +72,10 @@ export type UserContextPayload =
           type: 'coinmarket-buy-terms';
           provider?: string;
           decision: Deferred<boolean>;
+      }
+    | {
+          type: 'coinmarket-leave-spend';
+          routeToContinue?: Route['name'];
       }
     | {
           type: 'coinmarket-exchange-terms';

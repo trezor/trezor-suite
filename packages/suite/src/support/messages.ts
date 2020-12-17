@@ -174,6 +174,23 @@ const definedMessages = defineMessages({
         defaultMessage: 'Redirecting ...',
         id: 'TR_TRADE_REDIRECTING',
     },
+    TR_SPEND_LOADING: {
+        defaultMessage: 'Loading',
+        id: 'TR_SPEND_LOADING',
+    },
+    TR_SPEND_NO_PROVIDERS: {
+        defaultMessage: 'No providers',
+        id: 'TR_SPEND_NO_PROVIDERS',
+    },
+    TR_SPEND_PROVIDER_CONTENT: {
+        defaultMessage: 'This content is fully provided by our partner',
+        id: 'TR_SPEND_PROVIDER_CONTENT',
+    },
+    TR_SPEND_PROVIDER_CONTENT_WINDOW: {
+        defaultMessage:
+            'Spend content is fully provided by our partner Bitrefill. You’ll choose your purchase on their website and finish the transaction in Trezor Suite.',
+        id: 'TR_SPEND_PROVIDER_CONTENT_WINDOW',
+    },
     TR_EXCHANGE_LOADING: {
         defaultMessage: 'Loading',
         id: 'TR_EXCHANGE_LOADING',
@@ -1904,6 +1921,26 @@ const definedMessages = defineMessages({
     TR_OUTGOING: {
         defaultMessage: 'Outgoing',
         id: 'TR_OUTGOING',
+    },
+    TR_SPEND_STAY: {
+        defaultMessage: 'Stay in Spend',
+        id: 'TR_SPEND_STAY',
+    },
+    TR_SPEND_LEAVE: {
+        defaultMessage: 'Leave anyway',
+        id: 'TR_SPEND_LEAVE',
+    },
+    TR_SPEND_LEAVE_MODAL_INFO: {
+        defaultMessage: 'Suite is communicating with Bitrefill; do not leave this tab.',
+        id: 'TR_SPEND_LEAVE_MODAL_INFO',
+    },
+    TR_SPEND_LEAVE_MODAL_HEADER: {
+        defaultMessage: 'leave modal text body',
+        id: 'TR_SPEND_LEAVE_MODAL_HEADER',
+    },
+    TR_SPEND_OPEN_WINDOW: {
+        defaultMessage: 'Go to partner site',
+        id: 'TR_SPEND_OPEN_WINDOW',
     },
     TR_PACKAGING_LINK: {
         defaultMessage: 'here',
@@ -4161,6 +4198,10 @@ const definedMessages = defineMessages({
     TR_NAV_SPEND: {
         id: 'TR_NAV_SPEND',
         defaultMessage: 'Spend',
+    },
+    TR_NAV_SELL: {
+        id: 'TR_NAV_SELL',
+        defaultMessage: 'Sell',
     },
     TR_NAV_SIGN_VERIFY: {
         id: 'TR_NAV_SIGN_VERIFY',

@@ -15,6 +15,7 @@ export interface DesktopApi {
     // Window controls
     windowClose: () => void;
     windowMinimize: () => void;
+    windowFocus: () => void;
     windowMaximize: () => void;
     windowUnmaximize: () => void;
     // Client controls

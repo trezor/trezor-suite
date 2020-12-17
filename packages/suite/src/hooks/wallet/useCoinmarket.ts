@@ -6,24 +6,32 @@ import { useSelector, useActions } from '@suite-hooks';
 import invityAPI from '@suite-services/invityAPI';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
+import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 import { Account } from '@wallet-types';
 import { TradeBuy, TradeExchange } from '@wallet-reducers/coinmarketReducer';
 
 export const useInvityAPI = () => {
-    const { selectedAccount, buyInfo, exchangeInfo, invityAPIUrl, exchangeCoinInfo } = useSelector(
-        state => ({
-            selectedAccount: state.wallet.selectedAccount,
-            buyInfo: state.wallet.coinmarket.buy.buyInfo,
-            exchangeInfo: state.wallet.coinmarket.exchange.exchangeInfo,
-            invityAPIUrl: state.suite.settings.debug.invityAPIUrl,
-            exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
-        }),
-    );
+    const {
+        selectedAccount,
+        buyInfo,
+        exchangeInfo,
+        sellInfo,
+        invityAPIUrl,
+        exchangeCoinInfo,
+    } = useSelector(state => ({
+        selectedAccount: state.wallet.selectedAccount,
+        buyInfo: state.wallet.coinmarket.buy.buyInfo,
+        exchangeInfo: state.wallet.coinmarket.exchange.exchangeInfo,
+        sellInfo: state.wallet.coinmarket.sell.sellInfo,
+        invityAPIUrl: state.suite.settings.debug.invityAPIUrl,
+        exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
+    }));
 
-    const { saveBuyInfo, saveExchangeInfo, saveExchangeCoinInfo } = useActions({
+    const { saveBuyInfo, saveExchangeInfo, saveExchangeCoinInfo, saveSellInfo } = useActions({
         saveBuyInfo: coinmarketBuyActions.saveBuyInfo,
         saveExchangeInfo: coinmarketExchangeActions.saveExchangeInfo,
         saveExchangeCoinInfo: coinmarketExchangeActions.saveExchangeCoinInfo,
+        saveSellInfo: coinmarketSellActions.saveSellInfo,
     });
 
     if (selectedAccount.status === 'loaded') {
@@ -47,12 +55,19 @@ export const useInvityAPI = () => {
                     saveExchangeCoinInfo(exchangeCoinInfo);
                 });
         }
+
+        if (!sellInfo) {
+            coinmarketSellActions.loadSellInfo().then(sellInfo => {
+                saveSellInfo(sellInfo);
+            });
+        }
     }
 
     return {
         buyInfo,
         exchangeInfo,
         exchangeCoinInfo,
+        sellInfo,
     };
 };
 
