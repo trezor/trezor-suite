@@ -110,6 +110,7 @@ const VerifyAddressComponent = () => {
     const {
         account,
         device,
+        callInProgress,
         verifyAddress,
         selectedQuote,
         goToPayment,
@@ -172,12 +173,12 @@ const VerifyAddressComponent = () => {
             </CardContent>
             <ButtonWrapper>
                 {(!addressVerified || addressVerified !== address) && (
-                    <Button onClick={() => verifyAddress(account)}>
+                    <Button isLoading={callInProgress} onClick={() => verifyAddress(account)}>
                         <Translation id="TR_BUY_CONFIRM_ON_TREZOR" />
                     </Button>
                 )}
                 {addressVerified && addressVerified === address && (
-                    <Button onClick={() => goToPayment(address)}>
+                    <Button isLoading={callInProgress} onClick={() => goToPayment(address)}>
                         <Translation id="TR_BUY_GO_TO_PAYMENT" />
                     </Button>
                 )}
