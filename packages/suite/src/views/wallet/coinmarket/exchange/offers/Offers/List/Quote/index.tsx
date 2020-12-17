@@ -166,7 +166,7 @@ const Quote = ({ className, quote }: Props) => {
                 <Right>
                     <StyledButton
                         isLoading={callInProgress}
-                        isDisabled={errorQuote}
+                        isDisabled={errorQuote || callInProgress}
                         onClick={() => selectQuote(quote)}
                     >
                         <Translation id="TR_EXCHANGE_GET_THIS_OFFER" />
