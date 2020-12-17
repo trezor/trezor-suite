@@ -4,6 +4,7 @@ import { ACCOUNT } from '@wallet-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
 import * as selectedAccountActions from '@wallet-actions/selectedAccountActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
+import * as modalActions from '@suite-actions/modalActions';
 import * as receiveActions from '@wallet-actions/receiveActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
@@ -64,6 +65,19 @@ const walletMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
     const prevRouter = prevState.router;
     const nextRouter = api.getState().router;
     let resetReducers = action.type === SUITE.SELECT_DEVICE;
+
+    // show modal when leaving the spend tab in active trade
+    if (action.type === ROUTER.LOCATION_CHANGE) {
+        if (prevState.wallet.coinmarket.sell.showLeaveModal) {
+            api.dispatch(
+                modalActions.openModal({
+                    type: 'coinmarket-leave-spend',
+                    routeToContinue: nextRouter.route?.name,
+                }),
+            );
+        }
+    }
+
     if (prevRouter.app === 'wallet' && action.type === ROUTER.LOCATION_CHANGE) {
         // leaving wallet app or switching between accounts
         resetReducers =
