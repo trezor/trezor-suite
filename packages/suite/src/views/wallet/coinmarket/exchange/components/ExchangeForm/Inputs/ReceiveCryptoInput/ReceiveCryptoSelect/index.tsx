@@ -20,6 +20,7 @@ const ReceiveCryptoSelect = () => {
         setAmountLimits,
         account,
         setMax,
+        setValue,
         exchangeInfo,
         setToken,
         compose,
@@ -42,6 +43,8 @@ const ReceiveCryptoSelect = () => {
                             setMax(false);
                             onChange(selected);
                             setAmountLimits(undefined);
+                            setValue('receiveCryptoInput', '');
+                            setValue('fiatInput', '');
                             const lowerCaseToken = selected.value.toLowerCase();
                             if (
                                 lowerCaseToken === 'eth' ||
@@ -68,7 +71,7 @@ const ReceiveCryptoSelect = () => {
                         options={getSendCryptoOptions(account, exchangeInfo)}
                         isDropdownVisible={account.networkType === 'ethereum'}
                         isDisabled={account.networkType !== 'ethereum'}
-                        minWidth="80px"
+                        minWidth="100px"
                         isClean
                         hideTextCursor
                     />

@@ -58,10 +58,12 @@ const Bottom = () => {
                             amount: tokenData
                                 ? new BigNumber(tokenData.balance || '0')
                                       .dividedBy(2)
-                                      .toFixed(tokenData.decimals)
+                                      .decimalPlaces(tokenData.decimals)
+                                      .toString()
                                 : new BigNumber(account.formattedBalance)
                                       .dividedBy(2)
-                                      .toFixed(network.decimals),
+                                      .decimalPlaces(network.decimals)
+                                      .toString(),
                         });
                     }}
                 >
@@ -76,10 +78,12 @@ const Bottom = () => {
                             amount: tokenData
                                 ? new BigNumber(tokenData.balance || '0')
                                       .dividedBy(3)
-                                      .toFixed(tokenData.decimals)
+                                      .decimalPlaces(tokenData.decimals)
+                                      .toString()
                                 : new BigNumber(account.formattedBalance)
                                       .dividedBy(3)
-                                      .toFixed(network.decimals),
+                                      .decimalPlaces(network.decimals)
+                                      .toString(),
                         });
                     }}
                 >
@@ -94,10 +98,12 @@ const Bottom = () => {
                             amount: tokenData
                                 ? new BigNumber(tokenData.balance || '0')
                                       .dividedBy(4)
-                                      .toFixed(tokenData.decimals)
+                                      .decimalPlaces(tokenData.decimals)
+                                      .toString()
                                 : new BigNumber(account.formattedBalance)
                                       .dividedBy(4)
-                                      .toFixed(network.decimals),
+                                      .decimalPlaces(network.decimals)
+                                      .toString(),
                         });
                     }}
                 >

@@ -164,7 +164,9 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
             if (data.fillValue) {
                 let amountToFill = data.amount || '0';
                 if (data.setMax) {
-                    amountToFill = new BigNumber(transactionInfo.max || '0').toFixed(decimals);
+                    amountToFill = new BigNumber(transactionInfo.max || '0')
+                        .decimalPlaces(decimals)
+                        .toFixed();
                 }
                 setValue('receiveCryptoInput', amountToFill, { shouldValidate: true });
                 updateFiatValue(amountToFill);
