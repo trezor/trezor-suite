@@ -47,6 +47,11 @@ class BuiltMessage {
     }
 
     this.type = messages.messageTypes[`MessageType_${name}`];
+    // protobuf lib doesn't know how to work with "wire_type" option
+    // messages: `TxAckInput`, `TxAckOutput`, `TxAckPrevInput`, `TxAckPrevOutput`, `TxAckPrevMeta`, `TxAckPrevExtraData`
+    if (typeof this.type !== `number` && typeof this.message.$type.options[`wire_type`] === `number`) {
+      this.type = this.message.$type.options.wire_type;
+    }
   }
 
   // encodes into "raw" data, but it can be too long and needs to be split into
