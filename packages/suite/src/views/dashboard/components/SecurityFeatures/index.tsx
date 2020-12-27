@@ -236,12 +236,10 @@ const SecurityFeatures = ({
             <Content>
                 {!isHidden &&
                     cards.map((card, i) => {
-                        const ctaObject = card.cta ? { ...card.cta } : undefined;
-
-                        if (ctaObject) {
-                            // re-check if card button is disabled based on the global state as well
-                            ctaObject.isDisabled = !!isDisabledGlobal || ctaObject.isDisabled;
-                        }
+                        // re-check if the card button should be disabled (taking the global loading state into account)
+                        const ctaObject = card.cta
+                            ? { ...card.cta, isDisabled: !!isDisabledGlobal || card.cta.isDisabled }
+                            : undefined;
 
                         return (
                             <SecurityCard
