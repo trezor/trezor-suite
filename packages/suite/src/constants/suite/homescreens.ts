@@ -55,7 +55,6 @@ export const homescreensT1 = [
 
 export const homescreensT2 = [
     'default',
-    'trezor',
     'btc',
     'ltc',
     'eth',
@@ -67,11 +66,6 @@ export const homescreensT2 = [
     'polis',
     'hodl',
     'moon',
-    'bitcoin_gold',
     'decred',
-    'digibyte',
-    'fujicoin',
-    'monacoin',
     'namecoin',
-    'vertcoin',
 ] as const;
