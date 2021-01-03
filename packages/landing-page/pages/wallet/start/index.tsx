@@ -127,8 +127,8 @@ const Start = () => {
                 <Signatures>
                     {platform && (
                         <>
-                            <StyledLink href={SL_SIGNING_KEY}>Signing key</StyledLink>
                             <StyledLink href={getAppSignatureUrl(platform)}>Signature</StyledLink>
+                            <StyledLink href={SL_SIGNING_KEY}>Signing key</StyledLink>
                         </>
                     )}
                 </Signatures>

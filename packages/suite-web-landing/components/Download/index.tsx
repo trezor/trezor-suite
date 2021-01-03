@@ -166,16 +166,16 @@ const Index = () => {
                     <Translation id="TR_SUITE_WEB_LANDING_VERSION" values={{ version }} />
                 </Item>
                 <Item>
-                    <StyledLink variant="nostyle" href={SL_SIGNING_KEY}>
-                        <Translation id="TR_SUITE_WEB_LANDING_SIGNING_KEY" />
-                    </StyledLink>
-                </Item>
-                <Item>
                     <StyledLink
                         variant="nostyle"
                         href={getInstallerSignatureURI(platform, version)}
                     >
                         <Translation id="TR_SUITE_WEB_LANDING_SIGNATURE" />
+                    </StyledLink>
+                </Item>
+                <Item>
+                    <StyledLink variant="nostyle" href={SL_SIGNING_KEY}>
+                        <Translation id="TR_SUITE_WEB_LANDING_SIGNING_KEY" />
                     </StyledLink>
                 </Item>
             </VersionInfo>
