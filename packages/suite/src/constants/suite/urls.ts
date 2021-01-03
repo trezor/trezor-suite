@@ -54,4 +54,4 @@ export const FEEDBACK_FORM = 'https://satoshilabs.typeform.com/to/Dqb71wm1';
 // Tor domain
 export const TOR_DOMAIN = 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion';
 
-export const SL_SIGNING_KEY = 'https://trezor.io/security/satoshilabs-2020-signing-key.asc';
+export const SL_SIGNING_KEY = 'https://trezor.io/security/satoshilabs-2021-signing-key.asc';
