@@ -32,9 +32,7 @@ describe('Backup', () => {
         cy.getTestElement('@notification/failed-backup/cta').should('be.visible');
 
         cy.getTestElement('@dashboard/security-card/backup/button', { timeout: 30000 }).should(
-            'not.be.disabled',
+            'be.disabled',
         );
-        cy.getTestElement('@dashboard/security-card/backup/button').click();
-        cy.getTestElement('@backup/already-failed-message');
     });
 });

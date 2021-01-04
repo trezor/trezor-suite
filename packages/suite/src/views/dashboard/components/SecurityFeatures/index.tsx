@@ -36,13 +36,14 @@ const SecurityFeatures = ({
     const isDeviceLocked = isLocked();
     const { getDiscoveryStatus } = useDiscovery();
     const discoveryStatus = getDiscoveryStatus();
-    const isDisabled = discoveryStatus && discoveryStatus.status === 'loading';
+    const isDisabledGlobal = discoveryStatus && discoveryStatus.status === 'loading';
     const analytics = useAnalytics();
 
     const { discreetModeCompleted } = flags;
     let needsBackup;
     let pinEnabled;
     let hiddenWalletCreated;
+    let backupFailed;
 
     if (device && device.features) {
         // TODO: add "error - backup failed" instead of needsBackup
@@ -50,6 +51,7 @@ const SecurityFeatures = ({
         needsBackup = device.features.needs_backup || device.features.unfinished_backup;
         pinEnabled = device.features.pin_protection;
         hiddenWalletCreated = device.features.passphrase_protection;
+        backupFailed = device.features.unfinished_backup;
     }
 
     const featuresCompleted =
@@ -73,6 +75,7 @@ const SecurityFeatures = ({
                           type: 'dashboard/security-card/create-backup',
                       });
                   },
+                  isDisabled: !!backupFailed,
               },
           }
         : {
@@ -233,8 +236,9 @@ const SecurityFeatures = ({
             <Content>
                 {!isHidden &&
                     cards.map((card, i) => {
+                        // re-check if the card button should be disabled (taking the global loading state into account)
                         const ctaObject = card.cta
-                            ? { ...card.cta, isDisabled: !!isDisabled }
+                            ? { ...card.cta, isDisabled: !!isDisabledGlobal || card.cta.isDisabled }
                             : undefined;
 
                         return (
