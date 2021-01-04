@@ -53,10 +53,10 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Props) 
     // Search
     const [search, setSearch] = useState('');
     const isSearching = search !== '';
-    const fitleredTransactions = useMemo(() => searchTransactions(transactions, search), [
-        transactions,
-        search,
-    ]);
+    const fitleredTransactions = useMemo(
+        () => searchTransactions(transactions, account.metadata, search),
+        [transactions, account.metadata, search],
+    );
 
     // Pagination
     const perPage = SETTINGS.TXS_PER_PAGE;

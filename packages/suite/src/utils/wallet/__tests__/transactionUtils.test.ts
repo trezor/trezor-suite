@@ -1,5 +1,8 @@
 import * as utils from '../transactionUtils';
 import * as fixtures from '../__fixtures__/transactionUtils';
+import stMock from '../__fixtures__/searchTransactions.json';
+import { WalletAccountTransaction } from '@wallet-types';
+import { AccountMetadata } from '@suite-types/metadata';
 
 describe('transaction utils', () => {
     it('parseKey', () => {
@@ -43,6 +46,19 @@ describe('transaction utils', () => {
         it('enhanceTransaction', () => {
             // @ts-ignore
             expect(utils.enhanceTransaction(f.tx, f.account)).toEqual(f.result);
+        });
+    });
+
+    const transactions = stMock.transactions as WalletAccountTransaction[];
+    const metadata = stMock.metadata as AccountMetadata;
+    fixtures.searchTransactions.forEach(f => {
+        it(`searchTransactions - ${f.description}`, () => {
+            const search = utils.searchTransactions(transactions, metadata, f.search);
+
+            expect(search.length).toBe(f.result.length);
+            search.forEach((t, i) => {
+                expect(t.txid).toBe(f.result[i]);
+            });
         });
     });
 });

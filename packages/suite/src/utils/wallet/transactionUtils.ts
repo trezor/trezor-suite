@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { AccountTransaction } from 'trezor-connect';
 import { Account, WalletAccountTransaction } from '@wallet-types';
+import { AccountMetadata } from '@suite-types/metadata';
 import { getDateWithTimeZone } from '../suite/date';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { formatAmount, formatNetworkAmount } from './accountUtils';
@@ -368,26 +369,106 @@ export const enhanceTransaction = (
     };
 };
 
-export const searchTransactions = (transactions: WalletAccountTransaction[], search: string) =>
-    transactions.filter(t => {
-        if (search === '') {
-            return true;
-        }
+// TODO: Cache result
+const groupTransactionIdsByAddress = (transactions: WalletAccountTransaction[]) => {
+    const addresses: { [address: string]: string[] } = {};
 
-        // Matches Transaction ID
-        if (t.txid.includes(search)) {
-            return true;
-        }
+    transactions.forEach(t => {
+        t.targets.forEach(target => {
+            target.addresses?.forEach(address => {
+                if (!addresses[address]) {
+                    addresses[address] = [];
+                }
 
-        // Matches any of the addresses
-        if (
-            t.targets.find(
-                target =>
-                    target.addresses && target.addresses[0] && target.addresses[0].includes(search),
-            ) !== undefined
-        ) {
-            return true;
-        }
-
-        return false;
+                addresses[address].push(t.txid);
+            });
+        });
     });
+
+    return addresses;
+};
+
+const groupTransactionsByLabel = (accountMetadata: AccountMetadata) => {
+    const labels: { [label: string]: string[] } = {};
+    const { outputLabels } = accountMetadata;
+
+    Object.keys(outputLabels).forEach(txid => {
+        Object.values(outputLabels[txid]).forEach(label => {
+            if (!labels[label]) {
+                labels[label] = [];
+            }
+
+            labels[label].push(txid);
+        });
+    });
+
+    return labels;
+};
+
+const groupAddressesByLabel = (accountMetadata: AccountMetadata) => {
+    const labels: { [label: string]: string[] } = {};
+    const { addressLabels } = accountMetadata;
+
+    Object.keys(addressLabels).forEach(address => {
+        const label = addressLabels[address];
+
+        if (!labels[label]) {
+            labels[label] = [];
+        }
+
+        labels[label].push(address);
+    });
+
+    return labels;
+};
+
+export const searchTransactions = (
+    transactions: WalletAccountTransaction[],
+    accountMetadata: AccountMetadata,
+    search: string,
+) => {
+    if (search === '') {
+        return transactions;
+    }
+
+    const txsToSearch: string[] = [];
+
+    // Find by output label
+    const txsForOutputLabels = groupTransactionsByLabel(accountMetadata);
+    const foundTxsForOutputLabel = Object.keys(txsForOutputLabels).flatMap(label => {
+        if (label.toLowerCase().includes(search.toLowerCase())) {
+            return txsForOutputLabels[label];
+        }
+
+        return [];
+    });
+    txsToSearch.push(...foundTxsForOutputLabel);
+
+    // Find by address label
+    const addressesForLabel = groupAddressesByLabel(accountMetadata);
+    const foundAddressesForLabel = Object.keys(addressesForLabel).flatMap(label => {
+        if (label.toLowerCase().includes(search.toLowerCase())) {
+            return addressesForLabel[label];
+        }
+
+        return [];
+    });
+
+    // Find by address
+    const txsForAddresses = groupTransactionIdsByAddress(transactions);
+    const foundTxsForAddress = Object.keys(txsForAddresses).flatMap(address => {
+        if (
+            address.toLowerCase().includes(search.toLowerCase()) ||
+            foundAddressesForLabel.includes(address)
+        ) {
+            return txsForAddresses[address];
+        }
+
+        return [];
+    });
+    txsToSearch.push(...foundTxsForAddress);
+
+    return transactions.filter(
+        t => [...new Set(txsToSearch)].includes(t.txid) || t.txid.includes(search),
+    );
+};
