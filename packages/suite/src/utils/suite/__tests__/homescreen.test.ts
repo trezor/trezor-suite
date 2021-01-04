@@ -27,12 +27,12 @@ const imgHashFixtures = [
     {
         model: 2,
         img: 'btc.png',
-        hexHash: '0f15d6b5d66126e1c9fc54c263323bf9',
+        hexHash: '2f037dc4958b2fb1935f03069eff6c9d',
     },
     {
         model: 2,
         img: 'doge.png',
-        hexHash: 'cfae6996e66d3d67dbfe7cbe01805dd5',
+        hexHash: 'ab152b7d305f53d942a289ffc695e0f1',
     },
     {
         model: 1,
