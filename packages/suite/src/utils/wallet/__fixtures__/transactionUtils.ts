@@ -432,3 +432,96 @@ export const enhanceTransaction = [
         },
     },
 ];
+
+export const searchTransactions = [
+    {
+        description: 'Partial TXID search',
+        search: 'ade',
+        result: [
+            '17b013822da84cc39a0d2df8abc78ade03c8712d078a2d614889fb189c52c8f5',
+            '5986a3b46340a5999d70f86fee8caea6b9870500e602c30b630195ade281a833',
+            'dbe87d35c441d00cb2368b93a50ccd7ee8a984a838561a08b2cbc03b434338fb', // Address contains search
+            '5f8dbb7c7b3ddf297cc21abb66adbadeaede30d14c49f12ec1d42117b3e8c159',
+            '48ce7f7d6344b3cf0bf1f53356941d1df4cade3460fbd33800dcbdb635800d0e',
+            '85a198193021b1298b1a227eae89194502dadef90612b095ff059a579ff88d6c',
+        ],
+    },
+    {
+        description: 'Exact TXID search',
+        search: '93600f534749714165262774ab248a4a1c40e833238d9a4bbf539095213fa258',
+        result: ['93600f534749714165262774ab248a4a1c40e833238d9a4bbf539095213fa258'],
+    },
+    {
+        description: 'Partial Address search',
+        search: 'b1qgu',
+        result: [
+            '072d69d762f33ea5e4c4493e94ce4dcf927fe9d8cf6df5b8d40217336a05571e',
+            'e81dcd9aaa60d855fb219e977a260dc621d9c24e00ffbe2e1cae8aed36f7802f',
+        ],
+    },
+    {
+        description: 'Exact Address search',
+        search: 'tb1qegw9kj8z3206neq9f09m9ahs67h4xq9tgvhjcj',
+        result: [
+            '93600f534749714165262774ab248a4a1c40e833238d9a4bbf539095213fa258',
+            '8c40061886e9815498b59b564be390beb8b7ff73d436b1d1c833475974bc3e5a',
+        ],
+    },
+    {
+        description: 'Partial Output label search',
+        search: 'Pota',
+        result: [
+            '62431e78bb13a4fdd9c87517db1ea70b4cb5763227327da35748c96497c6ea9a', // Potato
+            '4f9af222a7c53ea708f8f370583608eda85c49f9f58901c82f0c79c6ab998b18', // Not Potato
+        ],
+    },
+    {
+        description: 'Exact Output label search',
+        search: 'Not potato',
+        result: [
+            '4f9af222a7c53ea708f8f370583608eda85c49f9f58901c82f0c79c6ab998b18', // Not Potato
+        ],
+    },
+    {
+        description: 'Output label search (ignore casing)',
+        search: 'pOtAtO',
+        result: [
+            '62431e78bb13a4fdd9c87517db1ea70b4cb5763227327da35748c96497c6ea9a', // Potato
+            '4f9af222a7c53ea708f8f370583608eda85c49f9f58901c82f0c79c6ab998b18', // Not Potato
+        ],
+    },
+    {
+        description: 'Partial Address label search',
+        search: 'AAA',
+        result: [
+            '5be0cfd5b439c3112cfaea3cd05fdcea387433990885c86937d2488c59f1e692', // AAA
+            '905e181a3e3066a88bf848690ad32cd260ca53dc192d6f588c0344fa08363b11', // AAAFEFSF
+            'e4b5b24159856ea18ab5819832da3b4a6330f9c3c0a46d96674e632df504b56b', // AAAFEFSF
+            '70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e', // AAAFEFSF
+            '575df1986c414f1d74bebc2229d794e423a2371fb51bac1d3b517e5cca51b5ea', // AAAFEFSF
+            'e294c4c172c3d87991b0369e45d6af8584be92914d01e3060fad1ed31d12ff00', // AAAFEFSF
+        ],
+    },
+    {
+        description: 'Exact Address label search',
+        search: 'AAAFEFSF',
+        result: [
+            '905e181a3e3066a88bf848690ad32cd260ca53dc192d6f588c0344fa08363b11', // AAAFEFSF
+            'e4b5b24159856ea18ab5819832da3b4a6330f9c3c0a46d96674e632df504b56b', // AAAFEFSF
+            '70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e', // AAAFEFSF
+            '575df1986c414f1d74bebc2229d794e423a2371fb51bac1d3b517e5cca51b5ea', // AAAFEFSF
+            'e294c4c172c3d87991b0369e45d6af8584be92914d01e3060fad1ed31d12ff00', // AAAFEFSF
+        ],
+    },
+    {
+        description: 'Address label search (ignore casing)',
+        search: 'aaaFEFSF',
+        result: [
+            '905e181a3e3066a88bf848690ad32cd260ca53dc192d6f588c0344fa08363b11', // AAAFEFSF
+            'e4b5b24159856ea18ab5819832da3b4a6330f9c3c0a46d96674e632df504b56b', // AAAFEFSF
+            '70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e', // AAAFEFSF
+            '575df1986c414f1d74bebc2229d794e423a2371fb51bac1d3b517e5cca51b5ea', // AAAFEFSF
+            'e294c4c172c3d87991b0369e45d6af8584be92914d01e3060fad1ed31d12ff00', // AAAFEFSF
+        ],
+    },
+];
