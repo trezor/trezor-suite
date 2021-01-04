@@ -2,13 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { AccountLabeling } from '@suite-components';
-import * as suiteActions from '@suite-actions/suiteActions';
-import * as routerActions from '@suite-actions/routerActions';
 import { NotificationEntry } from '@suite-reducers/notificationReducer';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import * as transactionUtils from '@wallet-utils/transactionUtils';
 import { AppState, Dispatch } from '@suite-types';
 import { ViewProps } from '../index';
+import { useActions } from '@suite-hooks';
+import * as modalActions from '@suite-actions/modalActions';
+import { WalletAccountTransaction } from '@suite/types/wallet';
 
 const TabularNums = styled.span`
     font-variant-numeric: tabular-nums;
@@ -39,19 +40,22 @@ type StrictViewProps = ViewProps & {
 const withTransaction = (View: React.ComponentType<ViewProps>, props: StrictViewProps) => {
     const WrappedView = connect(mapStateToProps)((state: StateProps) => {
         const { notification } = props;
-        const { accounts, transactions, devices, blockchain, dispatch } = state;
+        const { accounts, transactions, blockchain } = state;
         const networkAccounts = accounts.filter(a => a.symbol === notification.symbol);
         const found = accountUtils.findAccountsByDescriptor(
             notification.descriptor,
             networkAccounts,
         );
+        const { openModal } = useActions({
+            openModal: modalActions.openModal,
+        });
+
         // fallback: account not found, it should never happen tho
         if (!found.length) return <View {...props} />;
 
         const account = found[0];
         const accountTxs = accountUtils.getAccountTransactions(transactions.transactions, account);
         const tx = transactionUtils.findTransaction(notification.txid, accountTxs);
-        const device = accountUtils.findAccountDevice(account, devices);
         const confirmations = tx
             ? transactionUtils.getConfirmations(tx, blockchain[account.symbol].blockHeight)
             : 0;
@@ -64,20 +68,19 @@ const withTransaction = (View: React.ComponentType<ViewProps>, props: StrictView
             };
         }
 
+        const openTxDetailsModal = (transaction: WalletAccountTransaction, rbfForm?: boolean) => {
+            openModal({
+                type: 'transaction-detail',
+                tx: transaction,
+                rbfForm,
+            });
+        };
+
         return (
             <View
                 {...props}
-                action={async () => {
-                    // select device
-                    await dispatch(suiteActions.selectDevice(device || notification.device));
-                    // go to account
-                    dispatch(
-                        routerActions.goto('wallet-index', {
-                            accountIndex: account.index,
-                            accountType: account.accountType,
-                            symbol: account.symbol,
-                        }),
-                    );
+                action={() => {
+                    if (tx) openTxDetailsModal(tx, tx.rbfParams !== undefined);
                 }}
             />
         );
