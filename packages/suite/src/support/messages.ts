@@ -3476,6 +3476,30 @@ const definedMessages = defineMessages({
         id: 'TR_PAYMENT_METHOD_UNKOWN',
         defaultMessage: 'Unknown',
     },
+    TR_PAYMENT_METHOD_POLI: {
+        id: 'TR_PAYMENT_METHOD_POLI',
+        defaultMessage: 'POLi',
+    },
+    TR_PAYMENT_METHOD_AUSPOST: {
+        id: 'TR_PAYMENT_METHOD_AUSPOST',
+        defaultMessage: 'Australia Post',
+    },
+    TR_PAYMENT_METHOD_WORLDPAYCREDIT: {
+        id: 'TR_PAYMENT_METHOD_WORLDPAYCREDIT',
+        defaultMessage: 'Worldpay credit',
+    },
+    TR_PAYMENT_METHOD_BPAY: {
+        id: 'TR_PAYMENT_METHOD_BPAY',
+        defaultMessage: 'Bpay',
+    },
+    TR_PAYMENT_METHOD_DCINTERAC: {
+        id: 'TR_PAYMENT_METHOD_DCINTERAC',
+        defaultMessage: 'DC Interac',
+    },
+    TR_PAYMENT_METHOD_TEN31SEPA: {
+        id: 'TR_PAYMENT_METHOD_TEN31SEPA',
+        defaultMessage: 'TEN31 SEPA',
+    },
     TR_OFFER_FEE_INFO: {
         id: 'TR_OFFER_FEE_INFO',
         defaultMessage: 'TR_OFFER_FEE_INFO',
