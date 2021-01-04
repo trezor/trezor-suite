@@ -2,17 +2,15 @@
 // @retry=2
 
 describe('Device settings', () => {
-    beforeEach(() => {
+    it('change all possible device settings', () => {
+        cy.task('startEmu', { wipe: true, version: '2.1.4' });
+        cy.task('setupEmu');
         cy.task('startBridge');
+
         // navigate to device settings page
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
-    });
-
-    it('change all possible device settings', () => {
-        cy.task('startEmu', { wipe: true, version: '2.1.4' });
-        cy.task('setupEmu');
 
         cy.log('open firmware modal and close it again');
         cy.getTestElement('@settings/device/update-button').click();
@@ -58,6 +56,10 @@ describe('Device settings', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { needs_backup: true });
 
+        cy.viewport(1024, 768).resetDb();
+        cy.prefixedVisit('/settings/device');
+        cy.passThroughInitialRun();
+
         cy.getTestElement('@settings/device/check-seed-button').should('be.disabled');
         cy.getTestElement('@settings/device/failed-backup-row').should('not.exist');
         cy.getTestElement('@settings/device/create-backup-button').click();
@@ -67,6 +69,10 @@ describe('Device settings', () => {
     it('wipe device', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
+
+        cy.viewport(1024, 768).resetDb();
+        cy.prefixedVisit('/settings/device');
+        cy.passThroughInitialRun();
 
         cy.getTestElement('@settings/device/open-wipe-modal-button').click();
         cy.getTestElement('@wipe/checkbox-1').click();
