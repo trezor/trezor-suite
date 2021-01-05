@@ -30,13 +30,19 @@ const init = ({ mainWindow, store }: Dependencies) => {
         mainWindow.webContents.send('update/skip', updateSettings.skipVersion);
     }
 
+    const setSkipVersion = (version: string) => {
+        updateSettings.skipVersion = version;
+        store.setUpdateSettings(updateSettings);
+    };
+
     autoUpdater.on('checking-for-update', () => {
         logger.info('auto-updater', 'Checking for update');
         mainWindow.webContents.send('update/checking');
     });
 
     autoUpdater.on('update-available', ({ version, releaseDate }) => {
-        if (updateSettings.skipVersion === version) {
+        const shouldSkip = updateSettings.skipVersion === version;
+        if (shouldSkip) {
             logger.warn('auto-updater', [
                 'Update is available but was skipped:',
                 `- Update version: ${version}`,
@@ -53,7 +59,7 @@ const init = ({ mainWindow, store }: Dependencies) => {
         ]);
 
         latestVersion = { version, releaseDate, isManualCheck };
-        mainWindow.webContents.send('update/available', latestVersion);
+        mainWindow.webContents.send(`update/${shouldSkip ? 'skip' : 'available'}`, latestVersion);
 
         // Reset manual check flag
         isManualCheck = false;
@@ -102,6 +108,7 @@ const init = ({ mainWindow, store }: Dependencies) => {
     ipcMain.on('update/check', (_, isManual?: boolean) => {
         if (isManual) {
             isManualCheck = true;
+            setSkipVersion('');
         }
 
         logger.info('auto-updater', `Update checking request (manual: ${b2t(isManualCheck)})`);
@@ -139,8 +146,7 @@ const init = ({ mainWindow, store }: Dependencies) => {
     ipcMain.on('update/skip', (_, version) => {
         logger.info('auto-updater', `Skip version (${version}) request`);
         mainWindow.webContents.send('update/skip', version);
-        updateSettings.skipVersion = version;
-        store.setUpdateSettings(updateSettings);
+        setSkipVersion(version);
     });
 };
 
