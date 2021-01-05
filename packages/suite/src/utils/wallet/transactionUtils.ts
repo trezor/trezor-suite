@@ -422,6 +422,38 @@ const groupAddressesByLabel = (accountMetadata: AccountMetadata) => {
     return labels;
 };
 
+const numberSearchOperators = ['<', '>', '='] as const;
+const numberSearchFilter = (
+    transaction: WalletAccountTransaction,
+    amount: BigNumber,
+    operator: typeof numberSearchOperators[number],
+) => {
+    const targetAmount = getTargetAmount(transaction.targets[0], transaction);
+    if (!targetAmount) {
+        return false;
+    }
+
+    const op = getTxOperation(transaction);
+    if (!op) {
+        return false;
+    }
+
+    let bnTargetAmount = new BigNumber(targetAmount);
+    if (op === 'neg') {
+        bnTargetAmount = bnTargetAmount.negated();
+    }
+
+    switch (operator) {
+        case '<':
+            return bnTargetAmount.lte(amount);
+        case '>':
+            return bnTargetAmount.gte(amount);
+        case '=':
+            return bnTargetAmount.eq(amount);
+        // no default
+    }
+};
+
 export const searchTransactions = (
     transactions: WalletAccountTransaction[],
     accountMetadata: AccountMetadata,
@@ -431,7 +463,26 @@ export const searchTransactions = (
         return transactions;
     }
 
+    // If it's an amount search (starting with <, > or = operator)
+    const amountOperator = numberSearchOperators.find(k => search.startsWith(k));
+    if (amountOperator) {
+        const amount = new BigNumber(search.replace(amountOperator, ''));
+        return transactions.filter(t => numberSearchFilter(t, amount, amountOperator));
+    }
+
     const txsToSearch: string[] = [];
+
+    // Searching for an amount (without operator)
+    if (!Number.isNaN(search)) {
+        const foundTxsForNumber = transactions.flatMap(t => {
+            const targetAmount = getTargetAmount(t.targets[0], t);
+            if (!targetAmount || !targetAmount.includes(search)) {
+                return [];
+            }
+            return t.txid;
+        });
+        txsToSearch.push(...foundTxsForNumber);
+    }
 
     // Find by output label
     const txsForOutputLabels = groupTransactionsByLabel(accountMetadata);

@@ -524,4 +524,22 @@ export const searchTransactions = [
             'e294c4c172c3d87991b0369e45d6af8584be92914d01e3060fad1ed31d12ff00', // AAAFEFSF
         ],
     },
+    {
+        description: 'Higher than amount search',
+        search: '> 0.07',
+        result: [
+            'f457a1b85f84dcdaadc06f5dffb1436034bf6fa69a271a08d005f0a65aea7693', // 0.0794905 TEST
+            '121afe39eaeacd0f38ff1ed4ab34dbd34aa1239a82465a112dbcde1646b01ec7', // 0.07806848 TEST
+            'e294c4c172c3d87991b0369e45d6af8584be92914d01e3060fad1ed31d12ff00', // 1.29999867 TEST
+        ],
+    },
+    {
+        description: 'Lower than amount search',
+        search: '< -0.1',
+        result: [
+            'a59a1761ad3fad987258c79850e397398ab8559f157bc6868a7ed4e8b742ef01', // -0.22667356 TEST
+            'b4fc775f2bace65b68ba8c43423fab2f96c8743c54d5468b92923f70ca20ae2e', // -1.19999084 TEST
+            '43d273d3caf41759ad843474f960fbf80ff2ec961135d018b61e9fab3ad1fc06', // -0.1 TEST
+        ],
+    },
 ];
