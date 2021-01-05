@@ -414,12 +414,14 @@ export const accountSearchFn = (
     const searchString = rawSearchString?.trim().toLowerCase();
     if (!searchString) return true; // no search string
 
+    const network = getNetwork(account.symbol);
+
     // helper func for searching in account's addresses
     const matchAddressFn = (u: NonNullable<Account['addresses']>['used'][number]) =>
         u.address.toLowerCase() === searchString;
 
     const symbolMatch = account.symbol.startsWith(searchString);
-    const networkNameMatch = getNetwork(account.symbol)?.name.toLowerCase().includes(searchString);
+    const networkNameMatch = network?.name.toLowerCase().includes(searchString);
     const accountTypeMatch = account.accountType.startsWith(searchString);
     const descriptorMatch = account.descriptor.toLowerCase() === searchString;
     const addressMatch = account.addresses
@@ -427,6 +429,9 @@ export const accountSearchFn = (
           account.addresses.unused.find(matchAddressFn) ||
           account.addresses.change.find(matchAddressFn)
         : false;
+    // find XRP accounts when users types in 'ripple'
+    const matchXRPAlternativeName =
+        network?.networkType === 'ripple' && 'ripple'.includes(searchString);
 
     const metadataMatch = account.metadata.accountLabel?.toLowerCase().includes(searchString);
 
@@ -436,6 +441,7 @@ export const accountSearchFn = (
         accountTypeMatch ||
         descriptorMatch ||
         addressMatch ||
+        matchXRPAlternativeName ||
         metadataMatch
     );
 };

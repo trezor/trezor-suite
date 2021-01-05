@@ -48,6 +48,18 @@ const NetworkOption = ({ value, label }: Option) => (
     </OptionWrapper>
 );
 
+const customNetworkFilter = (option: Option, searchText: string) => {
+    const searchString = searchText.toLowerCase();
+
+    const matchLabel = option.label.toLowerCase().includes(searchString);
+    const matchSymbol = option.value.symbol.toLowerCase().includes(searchString);
+    // match XRP/TXRP when user types "Ripple"
+    const matchXRPAlternativeName =
+        option.value.networkType === 'ripple' && 'ripple'.includes(searchString);
+
+    return matchLabel || matchSymbol || matchXRPAlternativeName;
+};
+
 interface Props {
     network: Network;
     internalNetworks: Network[];
@@ -62,6 +74,7 @@ const NetworkSelect = ({ network, internalNetworks, setSelectedNetwork, isDisabl
         width={250}
         maxMenuHeight={220}
         isClearable={false}
+        filterOption={customNetworkFilter}
         value={buildNetworkOption(network)}
         options={buildNetworkOptions(internalNetworks)}
         formatOptionLabel={NetworkOption}
