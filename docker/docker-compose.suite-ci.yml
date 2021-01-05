@@ -6,7 +6,6 @@ services:
       - SDL_VIDEODRIVER=dummy
       - XDG_RUNTIME_DIR=/var/tmp
     network_mode: bridge # this makes docker reuse existing networks
-
   test-run:
     image: cypress/included:6.1.0
     entrypoint: []
