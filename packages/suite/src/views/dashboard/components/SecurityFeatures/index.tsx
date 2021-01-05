@@ -64,7 +64,9 @@ const SecurityFeatures = ({
         ? {
               variant: 'primary',
               icon: 'BACKUP',
-              heading: <Translation id="TR_BACKUP_YOUR_DEVICE" />,
+              heading: (
+                  <Translation id={backupFailed ? 'TR_BACKUP_FAILED' : 'TR_BACKUP_YOUR_DEVICE'} />
+              ),
               description: <Translation id="TR_RECOVERY_SEED_IS_OFFLINE" />,
               cta: {
                   label: <Translation id="TR_BACKUP_NOW" />,
