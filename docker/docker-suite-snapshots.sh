@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env bash
+set -e
 
 # todo: I am not sure whether locally generated snapshots won't somethimes differ from CI generated, this is to be tested
 

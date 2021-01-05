@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env bash
+set -e
 
 # todo: resolve selective xhost permissions
 # todo: resolve generated files permissions

@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env bash
+set -e
 
 # script that will spin up local dev environment for trezor-suite
 
