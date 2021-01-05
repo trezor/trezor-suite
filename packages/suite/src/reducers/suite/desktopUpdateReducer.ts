@@ -40,6 +40,9 @@ const desktopUpdateReducer = (state: State = initialState, action: Action): Stat
             case DESKTOP_UPDATE.AVAILABLE:
                 draft.state = 'available';
                 draft.latest = action.payload;
+                if (action.payload.isManualCheck) {
+                    delete draft.skip;
+                }
                 break;
             case DESKTOP_UPDATE.NOT_AVAILABLE:
                 draft.state = 'not-available';
@@ -54,6 +57,7 @@ const desktopUpdateReducer = (state: State = initialState, action: Action): Stat
                 draft.latest = action.payload;
                 break;
             case DESKTOP_UPDATE.SKIP:
+                draft.state = 'not-available';
                 draft.skip = action.payload;
                 break;
             case DESKTOP_UPDATE.WINDOW:
