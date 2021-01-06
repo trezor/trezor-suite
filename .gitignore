@@ -16,6 +16,9 @@ node_modules
 .idea
 *.sublime-project
 *.sublime-workspace
+.vscode/**/*
+!.vscode/launch.json
+!.vscode/tasks.json
 
 # Logs
 logs
