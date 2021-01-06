@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { AccountTransaction, AccountUtxo } from 'trezor-connect';
+import { AccountTransaction, AccountUtxo, AccountAddress } from 'trezor-connect';
 import { ACCOUNT, TRANSACTION, FIAT_RATES } from '@wallet-actions/constants';
 import { getAccountKey } from '@wallet-utils/accountUtils';
 import { findTransaction, enhanceTransaction } from '@wallet-utils/transactionUtils';
@@ -9,6 +9,20 @@ import { Action } from '@suite-types';
 import { STORAGE } from '@suite-actions/constants';
 import { TimestampedRates } from '@wallet-types/fiatRates';
 
+export interface RbfTransactionParams {
+    txid: string;
+    utxo: AccountUtxo[]; // original utxo used by this transaction
+    outputs: {
+        type: 'payment' | 'change';
+        address: string;
+        amount: string;
+        formattedAmount: string;
+    }[];
+    changeAddress?: AccountAddress; // original change address
+    feeRate: string; // original fee rate
+    baseFee: number; // original fee
+}
+
 export interface WalletAccountTransaction extends AccountTransaction {
     id?: number;
     page?: number;
@@ -16,15 +30,7 @@ export interface WalletAccountTransaction extends AccountTransaction {
     descriptor: string;
     symbol: Network['symbol'];
     rates?: TimestampedRates['rates'];
-    rbfParams?: {
-        utxo: AccountUtxo[];
-        outputs: {
-            address: string;
-            amount: string;
-        }[];
-        feeRate: string;
-        baseFee: number;
-    };
+    rbfParams?: RbfTransactionParams;
 }
 
 export interface State {

@@ -1,5 +1,4 @@
 import { UseFormMethods } from 'react-hook-form';
-import { Account, Network, CoinFiatRates } from '@wallet-types';
 import {
     FeeLevel,
     TokenInfo,
@@ -7,6 +6,7 @@ import {
     PrecomposedTransaction as PrecomposedTransactionBase,
 } from 'trezor-connect';
 import { AppState, ExtendedMessageDescriptor } from '@suite-types';
+import { Account, Network, CoinFiatRates, RbfTransactionParams } from '@wallet-types';
 import { TypedValidationRules } from './form';
 
 // react-hook-form state
@@ -48,8 +48,7 @@ export type FormState = {
     ethereumDataAscii?: string;
     ethereumDataHex?: string;
     rippleDestinationTag?: string;
-    baseFee?: number; // used in RBF
-    prevTxid?: string; // used in RBF
+    rbfParams?: RbfTransactionParams;
 };
 
 export interface FeeInfo {

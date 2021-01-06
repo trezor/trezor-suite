@@ -16,7 +16,6 @@ type Props = UseFormMethods<FormState> & {
     // TODO: params required by sendFormActions (not the whole UseSendFormState), refactor both in the next PR
     state?: {
         account: Account;
-        utxo?: Account['utxo'];
         network: Network;
         feeInfo: FeeInfo;
     };
@@ -114,8 +113,15 @@ export const useCompose = ({
                         type: 'compose',
                         message: errorMessage as any, // setError types is broken? according to ts it accepts only strings, but object or react component could be used as well...
                     });
+                } else if (defaultFieldRef.current !== 'outputs[0].amount') {
+                    // if defaultField in not an amount (like rbf case, defaultField: selectedFee)
+                    // setError to this particular field
+                    setError(defaultFieldRef.current, {
+                        type: 'compose',
+                        message: errorMessage as any,
+                    });
                 } else if (values.outputs) {
-                    // setError to the all `Amount` fields, composeField not specified (load draft case)
+                    // setError to the all `Amount` fields, composeField is not specified (load draft case)
                     values.outputs.forEach((_, i) => {
                         setError(`outputs[${i}].amount`, {
                             type: 'compose',
