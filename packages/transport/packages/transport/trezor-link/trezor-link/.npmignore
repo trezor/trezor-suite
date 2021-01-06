@@ -22,6 +22,7 @@ yarn.lock
 *.sublime-project
 *.sublime-workspace
 *.swp
+.nix_bash_history
 
 # Logs
 logs
