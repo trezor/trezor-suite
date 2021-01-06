@@ -1,4 +1,4 @@
-import TrezorConnect, { FeeLevel, SignTransaction, TransactionOutput } from 'trezor-connect';
+import TrezorConnect, { FeeLevel, SignTransaction, TxOutputType } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import {
     ComposeTransactionData,
@@ -134,7 +134,7 @@ export const composeTransaction = (composeTransactionData: ComposeTransactionDat
 };
 
 // TODO - maybe move to some utils
-export const outputsWithFinalAddress = (address: string, outputs: TransactionOutput[]) => {
+export const outputsWithFinalAddress = (address: string, outputs: TxOutputType[]) => {
     let updatedOutputsCount = 0;
     const updatedOutputs = outputs.map(o => {
         const updated = { ...o };
@@ -190,7 +190,6 @@ export const signTransaction = (data: SignTransactionData) => async (
         }))
         .filter(input => input.amount !== '0'); // remove '0' amounts
     inputs.forEach(input => {
-        if (!input.amount) delete input.amount; // remove undefined amounts
         if (!input.sequence) delete input.sequence;
     });
 
