@@ -27,7 +27,9 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
     const composeOutputs = getBitcoinComposeOutputs(formValues, account.symbol);
     if (composeOutputs.length < 1) return;
 
-    const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
+    // clone FeeLevels in rbf, the will be modified later
+    const levels = formValues.rbfParams ? feeInfo.levels.map(l => ({ ...l })) : feeInfo.levels;
+    const predefinedLevels = levels.filter(l => l.label !== 'custom');
     // in case when selectedFee is set to 'custom' construct this FeeLevel from values
     if (formValues.selectedFee === 'custom') {
         predefinedLevels.push({
@@ -36,6 +38,17 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
             blocks: -1,
         });
     }
+
+    // FeeLevels in rbf form are increased by original/prev rate
+    // decrease it since the calculation (in connect) is based on the baseFee not the prev rate
+    const origRate = formValues.rbfParams ? parseInt(formValues.rbfParams.feeRate, 10) : undefined;
+    if (origRate) {
+        predefinedLevels.forEach(l => {
+            l.feePerUnit = Number(parseInt(l.feePerUnit, 10) - origRate).toString();
+        });
+    }
+
+    const baseFee = formValues.rbfParams ? formValues.rbfParams.baseFee : 0;
     const params = {
         account: {
             path: account.path,
@@ -46,7 +59,7 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
             utxo: formState.utxo || account.utxo.filter(input => input.amount !== '0'),
         },
         feeLevels: predefinedLevels,
-        baseFee: formValues.baseFee || 0,
+        baseFee,
         outputs: composeOutputs,
         coin: account.symbol,
     };
@@ -182,15 +195,42 @@ export const signTransaction = (
 
     // update inputs
     // TODO: 0 amounts should be excluded together with "exclude dustLimit" feature and "utxo picker" feature in composeTransaction (above)
+    const prevTxid = formValues.rbfParams ? formValues.rbfParams.txid : undefined;
     const inputs = transaction.inputs
-        .map(input => ({
+        .map((input, index) => ({
             ...input,
             sequence,
+            orig_index: prevTxid ? index : undefined,
+            orig_hash: prevTxid,
         }))
         .filter(input => input.amount !== '0'); // remove '0' amounts
     inputs.forEach(input => {
         if (!input.sequence) delete input.sequence; // remove undefined sequence
     });
+
+    let { outputs } = transaction;
+
+    // outputs may be sorted in different order (see hd-wallet buildTx permutations)
+    // restore original tx order before signing replacement transaction
+    if (formValues.rbfParams) {
+        const origOutputs = formValues.rbfParams.outputs;
+        outputs = origOutputs.flatMap((prevOutput, index) => {
+            const output =
+                prevOutput.type === 'change'
+                    ? outputs.find(o => o.address_n)
+                    : outputs.find(
+                          o => o.address === prevOutput.address && o.amount === prevOutput.amount,
+                      );
+            if (!output) return []; // it's possible. example: new tx without change output
+            return [
+                {
+                    ...output,
+                    orig_index: index,
+                    orig_hash: prevTxid,
+                },
+            ];
+        });
+    }
 
     const signPayload = {
         device: {
@@ -199,7 +239,6 @@ export const signTransaction = (
             state: device.state,
         },
         useEmptyPassphrase: device.useEmptyPassphrase,
-        outputs: transaction.outputs,
         inputs,
         outputs,
         account: {
