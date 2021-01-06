@@ -11,7 +11,7 @@ import {
     SendContextValues,
     Output,
 } from '@wallet-types/sendForm';
-// import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
+import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
 
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { useSendFormOutputs } from './useSendFormOutputs';
@@ -24,16 +24,14 @@ SendContext.displayName = 'SendContext';
 
 const getDefaultValues = (
     currency: Output['currency'],
-    _network: UseSendFormState['network'],
+    network: UseSendFormState['network'],
 ): FormState => {
     return {
         ...DEFAULT_VALUES,
-        // TEMP: rbf option is disabled by default
-        // options:
-        //     isFeatureEnabled('RBF') && network.features?.includes('rbf')
-        //         ? ['bitcoinRBF', 'broadcast']
-        //         : ['broadcast'],
-        options: ['broadcast'],
+        options:
+            isFeatureEnabled('RBF') && network.features?.includes('rbf')
+                ? ['bitcoinRBF', 'broadcast']
+                : ['broadcast'],
         outputs: [{ ...DEFAULT_PAYMENT, currency }],
     };
 };
