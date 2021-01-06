@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import BigNumber from 'bignumber.js';
-import { useTheme, variables, Icon } from '@trezor/components';
+import { variables, Icon } from '@trezor/components';
 import { FiatValue, Translation } from '@suite-components';
 import { formatNetworkAmount, formatAmount } from '@wallet-utils/accountUtils';
 import { BTC_LOCKTIME_VALUE } from '@wallet-constants/sendForm';
 import { Network } from '@wallet-types';
 import { TokenInfo } from 'trezor-connect';
 import { ANIMATION } from '@suite-config';
+import Indicator, { Props as IndicatorProps } from './Indicator';
 
 const ROW_PADDING = '16px 14px';
 
@@ -60,22 +61,6 @@ const Left = styled.div`
     align-items: center;
     flex: 1 1 auto;
     min-width: 0;
-`;
-
-const IconWrapper = styled.div`
-    width: 25px;
-    height: 25px;
-    display: flex;
-    padding-right: 6px;
-    justify-content: center;
-    align-items: center;
-`;
-
-const Dot = styled.div<{ color: string }>`
-    width: 10px;
-    height: 10px;
-    border-radius: 100%;
-    background: ${props => props.color};
 `;
 
 const Address = styled.div`
@@ -161,21 +146,20 @@ export type OutputProps =
           token?: TokenInfo;
       }
     | {
-          type: 'opreturn' | 'data' | 'locktime' | 'fee' | 'destination-tag';
+          type: 'opreturn' | 'data' | 'locktime' | 'fee' | 'destination-tag' | 'txid';
           label?: undefined;
           value: string;
           token?: undefined;
       };
 
 export type Props = OutputProps & {
-    state: any;
+    state: IndicatorProps['state'];
     symbol: Network['symbol'];
 };
 
 export { Left, Right, Coin, Symbol, Fiat, Amounts };
 
 const Output = ({ type, state, label, value, symbol, token }: Props) => {
-    const theme = useTheme();
     const [isExpanded, setExpanded] = useState(false);
     let outputLabel: React.ReactNode = label;
 
@@ -214,11 +198,7 @@ const Output = ({ type, state, label, value, symbol, token }: Props) => {
         <StyledBox state={state === 'success' ? state : undefined}>
             <Row responsive={type === 'regular'}>
                 <Left>
-                    <IconWrapper>
-                        {!state && <Dot color={theme.STROKE_GREY} />}
-                        {state === 'success' && <Icon color={theme.BG_GREEN} icon="CHECK" />}
-                        {state === 'warning' && <Dot color={theme.TYPE_ORANGE} />}
-                    </IconWrapper>
+                    <Indicator state={state} />
                     <Address>{outputLabel}</Address>
                 </Left>
                 <Right>

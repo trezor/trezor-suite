@@ -4916,6 +4916,18 @@ const definedMessages = defineMessages({
         id: 'TR_INPUTS_OUTPUTS',
         defaultMessage: 'Inputs, Outputs',
     },
+    TR_CHAINED_TXS: {
+        id: 'TR_CHAINED_TXS',
+        defaultMessage: 'Chained transactions',
+    },
+    TR_CHAINED_TXS_HEADER: {
+        id: 'TR_CHAINED_TXS_HEADER',
+        defaultMessage: 'Chained pending transactions',
+    },
+    TR_AFFECTED_TXS: {
+        id: 'TR_AFFECTED_TXS',
+        defaultMessage: 'This operation will remove following transactions from the mempool:',
+    },
     TR_OUTPUTS: {
         id: 'TR_OUTPUTS',
         defaultMessage: 'Outputs',
@@ -5243,9 +5255,21 @@ const definedMessages = defineMessages({
         id: 'TR_NEW_FEE',
         defaultMessage: 'New',
     },
+    TR_INCREASE_FEE_BY: {
+        id: 'TR_INCREASE_FEE_BY',
+        defaultMessage: 'Increase your fee by',
+    },
+    TR_INCREASED_FEE: {
+        id: 'TR_INCREASED_FEE',
+        defaultMessage: 'New transaction fee',
+    },
+    TR_INCREASED_FEE_RATE: {
+        id: 'TR_INCREASED_FEE_RATE',
+        defaultMessage: 'Fee rate',
+    },
     TR_SEARCH_TRANSACTIONS: {
         id: 'TR_SEARCH_TRANSACTIONS',
-        defaultMessage: 'Seach transactions',
+        defaultMessage: 'Search transactions',
     },
     TR_NO_SEARCH_RESULTS: {
         id: 'TR_NO_SEARCH_RESULTS',
@@ -5274,7 +5298,7 @@ const definedMessages = defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_4: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_4',
         defaultMessage:
-            'Tip: You can exclude an amount by using the exlamation mark and equal symbols together (!=). For example <strong>= -0.01</strong> will show all transactions except the ones with an amount of -0.01.',
+            'Tip: You can exclude an amount by using the exclamation mark and equal symbols together (!=). For example <strong>= -0.01</strong> will show all transactions except the ones with an amount of -0.01.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_5: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_5',

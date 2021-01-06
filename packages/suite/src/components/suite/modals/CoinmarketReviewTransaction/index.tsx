@@ -55,7 +55,7 @@ const TotalFiat = styled(Fiat)`
 
 const getState = (index: number, buttonRequests: number) => {
     if (index === buttonRequests - 1) {
-        return 'warning';
+        return 'active';
     }
 
     if (index < buttonRequests - 1) {

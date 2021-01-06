@@ -1,77 +1,40 @@
-import React, { createRef } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { ConfirmOnDevice, Button, variables } from '@trezor/components';
-import { FiatValue, Translation, Modal } from '@suite-components';
-import { useDevice, useActions } from '@suite-hooks';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { copyToClipboard, download } from '@suite-utils/dom';
+import { ConfirmOnDevice } from '@trezor/components';
+import { Translation, Modal } from '@suite-components';
+import { useDevice, useActions, useSelector } from '@suite-hooks';
+import { UserContextPayload } from '@suite-actions/modalActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
-import * as notificationActions from '@suite-actions/notificationActions';
-
-import { Props } from './Container';
-import Output, { OutputProps, Left, Right, Coin, Fiat, Symbol, Amounts } from './components/Output';
+import Output, { OutputProps } from './components/Output';
 import Detail from './components/Detail';
-
-const Bottom = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
-    padding-top: 20px;
-`;
-
-const BottomContent = styled.div`
-    padding: 20px;
-    padding-top: 0px; /* Bottom padding */
-    display: flex;
-    justify-content: space-between;
-    flex: 1;
-`;
-
-const Total = styled(Left)`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
-`;
+import ChangeFee from './components/ChangeFee';
+import Bottom from './components/Bottom';
 
 const Content = styled.div`
     padding: 20px 20px 0 20px;
 `;
 
-const Buttons = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-`;
-
-const StyledButton = styled(Button)`
-    display: flex;
-    align-self: center;
-    width: 240px;
-`;
-
-const TotalFiat = styled(Fiat)`
-    font-size: ${variables.FONT_SIZE.NORMAL};
-`;
-
 const getState = (index: number, buttonRequests: number) => {
-    if (index === buttonRequests - 1) {
-        return 'warning';
-    }
-
-    if (index < buttonRequests - 1) {
-        return 'success';
-    }
-
+    if (index === buttonRequests - 1) return 'active';
+    if (index < buttonRequests - 1) return 'success';
     return undefined;
 };
 
-const ReviewTransaction = ({ selectedAccount, send, decision }: Props) => {
-    const htmlElement = createRef<HTMLDivElement>();
+// This modal is opened either in Device (button request) or User (push tx) context
+// contexts are distinguished by `type` prop
+type Props =
+    | Extract<UserContextPayload, { type: 'review-transaction' }>
+    | { type: 'sign-transaction'; decision?: undefined };
+
+const ReviewTransaction = ({ decision }: Props) => {
     const { device } = useDevice();
-    const { cancelSignTx, addNotification } = useActions({
+    const { cancelSignTx } = useActions({
         cancelSignTx: sendFormActions.cancelSignTx,
-        addNotification: notificationActions.addToast,
     });
+    const { selectedAccount, send } = useSelector(state => ({
+        selectedAccount: state.wallet.selectedAccount,
+        send: state.wallet.send,
+    }));
 
     const { precomposedTx, precomposedForm, signedTx } = send;
     if (selectedAccount.status !== 'loaded' || !device || !precomposedTx || !precomposedForm)
@@ -79,23 +42,34 @@ const ReviewTransaction = ({ selectedAccount, send, decision }: Props) => {
 
     const { symbol, networkType } = selectedAccount.account;
     const broadcastEnabled = precomposedForm.options.includes('broadcast');
+    const rbfAvailable =
+        networkType === 'bitcoin' &&
+        precomposedTx.prevTxid &&
+        !device.unavailableCapabilities?.replaceTransaction;
 
     const outputs: OutputProps[] = [];
-    precomposedTx.transaction.outputs.forEach(o => {
-        if (typeof o.address === 'string') {
-            outputs.push({
-                type: 'regular',
-                label: o.address,
-                value: o.amount,
-                token: precomposedTx.token,
-            });
-        } else if (o.script_type === 'PAYTOOPRETURN') {
-            outputs.push({
-                type: 'opreturn',
-                value: o.op_return_data,
-            });
-        }
-    });
+    if (precomposedTx.prevTxid && rbfAvailable) {
+        outputs.push({
+            type: 'txid',
+            value: precomposedTx.prevTxid,
+        });
+    } else {
+        precomposedTx.transaction.outputs.forEach(o => {
+            if (typeof o.address === 'string') {
+                outputs.push({
+                    type: 'regular',
+                    label: o.address,
+                    value: o.amount,
+                    token: precomposedTx.token,
+                });
+            } else if (o.script_type === 'PAYTOOPRETURN') {
+                outputs.push({
+                    type: 'opreturn',
+                    value: o.op_return_data,
+                });
+            }
+        });
+    }
 
     if (precomposedForm.bitcoinLockTime) {
         outputs.push({ type: 'locktime', value: precomposedForm.bitcoinLockTime });
@@ -137,85 +111,42 @@ const ReviewTransaction = ({ selectedAccount, send, decision }: Props) => {
                     activeStep={signedTx ? outputs.length + 1 : buttonRequests.length}
                     trezorModel={device.features?.major_version === 1 ? 1 : 2}
                     successText={<Translation id="TR_CONFIRMED_TX" />}
+                    animated
                     onCancel={cancelSignTx}
                 />
             }
             bottomBar={
-                <Bottom>
-                    {!precomposedTx.token && (
-                        <BottomContent>
-                            <Total>
-                                <Translation
-                                    id="TOTAL_SYMBOL"
-                                    values={{ symbol: symbol.toUpperCase() }}
-                                />
-                            </Total>
-                            <Right>
-                                <Amounts>
-                                    <Coin bold>
-                                        {formatNetworkAmount(precomposedTx.totalSpent, symbol)}
-                                        <Symbol>{symbol}</Symbol>
-                                    </Coin>
-                                    <TotalFiat>
-                                        <FiatValue
-                                            disableHiddenPlaceholder
-                                            amount={formatNetworkAmount(
-                                                precomposedTx.totalSpent,
-                                                symbol,
-                                            )}
-                                            symbol={symbol}
-                                        />
-                                    </TotalFiat>
-                                </Amounts>
-                            </Right>
-                        </BottomContent>
-                    )}
-                    {broadcastEnabled ? (
-                        <StyledButton
-                            isDisabled={!signedTx}
-                            onClick={() => {
-                                if (decision) decision.resolve(true);
-                            }}
-                        >
-                            <Translation id="SEND_TRANSACTION" />
-                        </StyledButton>
-                    ) : (
-                        <Buttons ref={htmlElement}>
-                            <StyledButton
-                                isDisabled={!signedTx}
-                                onClick={() => {
-                                    const result = copyToClipboard(
-                                        signedTx!.tx,
-                                        htmlElement.current,
-                                    );
-                                    if (typeof result !== 'string') {
-                                        addNotification({ type: 'copy-to-clipboard' });
-                                    }
-                                }}
-                            >
-                                <Translation id="COPY_TRANSACTION_TO_CLIPBOARD" />
-                            </StyledButton>
-                            <StyledButton
-                                variant="secondary"
-                                isDisabled={!signedTx}
-                                onClick={() => download(signedTx!.tx, 'signed-transaction.txt')}
-                            >
-                                <Translation id="DOWNLOAD_TRANSACTION" />
-                            </StyledButton>
-                        </Buttons>
-                    )}
-                </Bottom>
+                !rbfAvailable && (
+                    <Bottom
+                        symbol={symbol}
+                        broadcast={broadcastEnabled}
+                        precomposedTx={precomposedTx}
+                        signedTx={signedTx}
+                        decision={decision}
+                    />
+                )
             }
         >
-            <Content>
-                {outputs.map((output, index) => {
-                    const state = signedTx ? 'success' : getState(index, buttonRequests.length);
-                    // it's safe to use array index since outputs do not change
-                    // eslint-disable-next-line react/no-array-index-key
-                    return <Output key={index} {...output} state={state} symbol={symbol} />;
-                })}
-                <Detail tx={precomposedTx} txHash={signedTx ? signedTx.tx : undefined} />
-            </Content>
+            {rbfAvailable ? (
+                <ChangeFee
+                    activeStep={signedTx ? outputs.length + 1 : buttonRequests.length}
+                    account={selectedAccount.account}
+                    precomposedForm={precomposedForm}
+                    precomposedTx={precomposedTx}
+                    signedTx={signedTx}
+                    decision={decision}
+                />
+            ) : (
+                <Content>
+                    {outputs.map((output, index) => {
+                        const state = signedTx ? 'success' : getState(index, buttonRequests.length);
+                        // it's safe to use array index since outputs do not change
+                        // eslint-disable-next-line react/no-array-index-key
+                        return <Output key={index} {...output} state={state} symbol={symbol} />;
+                    })}
+                    <Detail tx={precomposedTx} txHash={signedTx ? signedTx.tx : undefined} />
+                </Content>
+            )}
         </Modal>
     );
 };

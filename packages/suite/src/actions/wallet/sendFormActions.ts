@@ -2,6 +2,7 @@ import TrezorConnect from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
+import * as suiteActions from '@suite-actions/suiteActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
 import { SEND } from '@wallet-actions/constants';
@@ -196,9 +197,10 @@ export const signTransaction = (
     formValues: FormState,
     transactionInfo: PrecomposedTransactionFinal,
 ) => async (dispatch: Dispatch, getState: GetState) => {
+    const { device } = getState().suite;
     const { account } = getState().wallet.selectedAccount;
 
-    if (!account) return;
+    if (!device || !account) return;
 
     // store formValues and transactionInfo in send reducer to be used by ReviewTransaction modal
     dispatch({
@@ -212,6 +214,11 @@ export const signTransaction = (
             },
         },
     });
+
+    // ReviewTransaction modal has 2 steps: signing and pushing
+    // TrezorConnect emits UI.CLOSE_UI.WINDOW after the signing process
+    // this action is blocked by actionBlockerMiddleware
+    dispatch(suiteActions.setProcessMode(device, 'sign-tx'));
 
     // signTransaction by Trezor
     let serializedTx: string | undefined;
@@ -231,7 +238,13 @@ export const signTransaction = (
         );
     }
 
-    if (!serializedTx) return;
+    dispatch(suiteActions.setProcessMode(device, undefined));
+
+    if (!serializedTx) {
+        // close modal manually since UI.CLOSE_UI.WINDOW was blocked
+        dispatch(modalActions.onCancel());
+        return;
+    }
 
     // store serializedTx in reducer (TrezorConnect.pushTransaction params) to be used in ReviewTransaction modal and pushTransaction method
     dispatch({

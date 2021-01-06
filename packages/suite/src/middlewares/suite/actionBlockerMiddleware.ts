@@ -10,6 +10,9 @@ export const PROCESS_MODE = {
     'confirm-addr': {
         blockedActions: [UI.CLOSE_UI_WINDOW], // prevents closing the modal after user confirms the address on a device (Receive tab)
     },
+    'sign-tx': {
+        blockedActions: [UI.CLOSE_UI_WINDOW], // prevents closing the modal between sign and push process
+    },
 };
 
 const actionBlocker = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
