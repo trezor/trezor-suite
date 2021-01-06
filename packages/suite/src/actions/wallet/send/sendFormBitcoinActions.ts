@@ -189,7 +189,6 @@ export const signTransaction = (
         }))
         .filter(input => input.amount !== '0'); // remove '0' amounts
     inputs.forEach(input => {
-        if (!input.amount) delete input.amount; // remove undefined amounts
         if (!input.sequence) delete input.sequence; // remove undefined sequence
     });
 
@@ -202,6 +201,10 @@ export const signTransaction = (
         useEmptyPassphrase: device.useEmptyPassphrase,
         outputs: transaction.outputs,
         inputs,
+        outputs,
+        account: {
+            addresses: account.addresses!,
+        },
         coin: account.symbol,
         ...signEnhancement,
     };

@@ -414,7 +414,7 @@
                     "id": 2
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "uint32",
                     "name": "m",
@@ -505,6 +505,13 @@
                     "type": "InputScriptType",
                     "name": "script_type",
                     "id": 5
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "ignore_xpub_magic",
+                    "id": 6
                 }
             ],
             "enums": [],
@@ -528,6 +535,13 @@
                     "type": "string",
                     "name": "xpub",
                     "id": 2
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "root_fingerprint",
+                    "id": 3
                 }
             ],
             "enums": [],
@@ -576,6 +590,13 @@
                     "type": "InputScriptType",
                     "name": "script_type",
                     "id": 5
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "ignore_xpub_magic",
+                    "id": 6
                 }
             ],
             "enums": [],
@@ -724,21 +745,21 @@
             "name": "VerifyMessage",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "string",
                     "name": "address",
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "signature",
                     "id": 2
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "message",
@@ -839,6 +860,15 @@
                     "type": "uint32",
                     "name": "branch_id",
                     "id": 10
+                },
+                {
+                    "rule": "optional",
+                    "options": {
+                        "default": "BITCOIN"
+                    },
+                    "type": "AmountUnit",
+                    "name": "amount_unit",
+                    "id": 11
                 }
             ],
             "enums": [],
@@ -894,6 +924,14 @@
                         {
                             "name": "TXEXTRADATA",
                             "id": 4
+                        },
+                        {
+                            "name": "TXORIGINPUT",
+                            "id": 5
+                        },
+                        {
+                            "name": "TXORIGOUTPUT",
+                            "id": 6
                         }
                     ],
                     "options": {}
@@ -1173,6 +1211,27 @@
                                     "type": "bytes",
                                     "name": "ownership_proof",
                                     "id": 14
+                                },
+                                {
+                                    "rule": "optional",
+                                    "options": {},
+                                    "type": "bytes",
+                                    "name": "commitment_data",
+                                    "id": 15
+                                },
+                                {
+                                    "rule": "optional",
+                                    "options": {},
+                                    "type": "bytes",
+                                    "name": "orig_hash",
+                                    "id": 16
+                                },
+                                {
+                                    "rule": "optional",
+                                    "options": {},
+                                    "type": "uint32",
+                                    "name": "orig_index",
+                                    "id": 17
                                 }
                             ],
                             "enums": [],
@@ -1235,8 +1294,10 @@
                                     "id": 3
                                 },
                                 {
-                                    "rule": "required",
-                                    "options": {},
+                                    "rule": "optional",
+                                    "options": {
+                                        "default": "PAYTOADDRESS"
+                                    },
                                     "type": "OutputScriptType",
                                     "name": "script_type",
                                     "id": 4
@@ -1254,40 +1315,23 @@
                                     "type": "bytes",
                                     "name": "op_return_data",
                                     "id": 6
-                                }
-                            ],
-                            "enums": [
+                                },
                                 {
-                                    "name": "OutputScriptType",
-                                    "values": [
-                                        {
-                                            "name": "PAYTOADDRESS",
-                                            "id": 0
-                                        },
-                                        {
-                                            "name": "PAYTOSCRIPTHASH",
-                                            "id": 1
-                                        },
-                                        {
-                                            "name": "PAYTOMULTISIG",
-                                            "id": 2
-                                        },
-                                        {
-                                            "name": "PAYTOOPRETURN",
-                                            "id": 3
-                                        },
-                                        {
-                                            "name": "PAYTOWITNESS",
-                                            "id": 4
-                                        },
-                                        {
-                                            "name": "PAYTOP2SHWITNESS",
-                                            "id": 5
-                                        }
-                                    ],
-                                    "options": {}
+                                    "rule": "optional",
+                                    "options": {},
+                                    "type": "bytes",
+                                    "name": "orig_hash",
+                                    "id": 10
+                                },
+                                {
+                                    "rule": "optional",
+                                    "options": {},
+                                    "type": "uint32",
+                                    "name": "orig_index",
+                                    "id": 11
                                 }
                             ],
+                            "enums": [],
                             "messages": [],
                             "options": {},
                             "oneofs": {}
@@ -1297,7 +1341,528 @@
                     "oneofs": {}
                 }
             ],
+            "options": {
+                "deprecated": true
+            },
+            "oneofs": {}
+        },
+        {
+            "name": "TxInput",
+            "fields": [
+                {
+                    "rule": "repeated",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "address_n",
+                    "id": 1
+                },
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "prev_hash",
+                    "id": 2
+                },
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "prev_index",
+                    "id": 3
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "script_sig",
+                    "id": 4
+                },
+                {
+                    "rule": "optional",
+                    "options": {
+                        "default": 4294967295
+                    },
+                    "type": "uint32",
+                    "name": "sequence",
+                    "id": 5
+                },
+                {
+                    "rule": "optional",
+                    "options": {
+                        "default": "SPENDADDRESS"
+                    },
+                    "type": "InputScriptType",
+                    "name": "script_type",
+                    "id": 6
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "MultisigRedeemScriptType",
+                    "name": "multisig",
+                    "id": 7
+                },
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "uint64",
+                    "name": "amount",
+                    "id": 8
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "decred_tree",
+                    "id": 9
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "witness",
+                    "id": 13
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "ownership_proof",
+                    "id": 14
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "commitment_data",
+                    "id": 15
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "orig_hash",
+                    "id": 16
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "orig_index",
+                    "id": 17
+                }
+            ],
+            "enums": [],
+            "messages": [],
             "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "TxOutput",
+            "fields": [
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "string",
+                    "name": "address",
+                    "id": 1
+                },
+                {
+                    "rule": "repeated",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "address_n",
+                    "id": 2
+                },
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "uint64",
+                    "name": "amount",
+                    "id": 3
+                },
+                {
+                    "rule": "optional",
+                    "options": {
+                        "default": "PAYTOADDRESS"
+                    },
+                    "type": "OutputScriptType",
+                    "name": "script_type",
+                    "id": 4
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "MultisigRedeemScriptType",
+                    "name": "multisig",
+                    "id": 5
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "op_return_data",
+                    "id": 6
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "orig_hash",
+                    "id": 10
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "orig_index",
+                    "id": 11
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "PrevTx",
+            "fields": [
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "version",
+                    "id": 1
+                },
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "lock_time",
+                    "id": 4
+                },
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "inputs_count",
+                    "id": 6
+                },
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "outputs_count",
+                    "id": 7
+                },
+                {
+                    "rule": "optional",
+                    "options": {
+                        "default": 0
+                    },
+                    "type": "uint32",
+                    "name": "extra_data_len",
+                    "id": 9
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "expiry",
+                    "id": 10
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "version_group_id",
+                    "id": 12
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "timestamp",
+                    "id": 13
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "branch_id",
+                    "id": 14
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "PrevInput",
+            "fields": [
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "prev_hash",
+                    "id": 2
+                },
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "prev_index",
+                    "id": 3
+                },
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "script_sig",
+                    "id": 4
+                },
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "sequence",
+                    "id": 5
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "decred_tree",
+                    "id": 9
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "PrevOutput",
+            "fields": [
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "uint64",
+                    "name": "amount",
+                    "id": 1
+                },
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "script_pubkey",
+                    "id": 2
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "decred_script_version",
+                    "id": 3
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "TxAckInput",
+            "fields": [
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "TxAckInputWrapper",
+                    "name": "tx",
+                    "id": 1
+                }
+            ],
+            "enums": [],
+            "messages": [
+                {
+                    "name": "TxAckInputWrapper",
+                    "fields": [
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "TxInput",
+                            "name": "input",
+                            "id": 2
+                        }
+                    ],
+                    "enums": [],
+                    "messages": [],
+                    "options": {},
+                    "oneofs": {}
+                }
+            ],
+            "options": {
+                "(wire_type)": 22
+            },
+            "oneofs": {}
+        },
+        {
+            "name": "TxAckOutput",
+            "fields": [
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "TxAckOutputWrapper",
+                    "name": "tx",
+                    "id": 1
+                }
+            ],
+            "enums": [],
+            "messages": [
+                {
+                    "name": "TxAckOutputWrapper",
+                    "fields": [
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "TxOutput",
+                            "name": "output",
+                            "id": 5
+                        }
+                    ],
+                    "enums": [],
+                    "messages": [],
+                    "options": {},
+                    "oneofs": {}
+                }
+            ],
+            "options": {
+                "(wire_type)": 22
+            },
+            "oneofs": {}
+        },
+        {
+            "name": "TxAckPrevMeta",
+            "fields": [
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "PrevTx",
+                    "name": "tx",
+                    "id": 1
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {
+                "(wire_type)": 22
+            },
+            "oneofs": {}
+        },
+        {
+            "name": "TxAckPrevInput",
+            "fields": [
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "TxAckPrevInputWrapper",
+                    "name": "tx",
+                    "id": 1
+                }
+            ],
+            "enums": [],
+            "messages": [
+                {
+                    "name": "TxAckPrevInputWrapper",
+                    "fields": [
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "PrevInput",
+                            "name": "input",
+                            "id": 2
+                        }
+                    ],
+                    "enums": [],
+                    "messages": [],
+                    "options": {},
+                    "oneofs": {}
+                }
+            ],
+            "options": {
+                "(wire_type)": 22
+            },
+            "oneofs": {}
+        },
+        {
+            "name": "TxAckPrevOutput",
+            "fields": [
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "TxAckPrevOutputWrapper",
+                    "name": "tx",
+                    "id": 1
+                }
+            ],
+            "enums": [],
+            "messages": [
+                {
+                    "name": "TxAckPrevOutputWrapper",
+                    "fields": [
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "PrevOutput",
+                            "name": "output",
+                            "id": 3
+                        }
+                    ],
+                    "enums": [],
+                    "messages": [],
+                    "options": {},
+                    "oneofs": {}
+                }
+            ],
+            "options": {
+                "(wire_type)": 22
+            },
+            "oneofs": {}
+        },
+        {
+            "name": "TxAckPrevExtraData",
+            "fields": [
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "TxAckPrevExtraDataWrapper",
+                    "name": "tx",
+                    "id": 1
+                }
+            ],
+            "enums": [],
+            "messages": [
+                {
+                    "name": "TxAckPrevExtraDataWrapper",
+                    "fields": [
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "bytes",
+                            "name": "extra_data_chunk",
+                            "id": 8
+                        }
+                    ],
+                    "enums": [],
+                    "messages": [],
+                    "options": {},
+                    "oneofs": {}
+                }
+            ],
+            "options": {
+                "(wire_type)": 22
+            },
             "oneofs": {}
         },
         {
@@ -1337,7 +1902,9 @@
                 },
                 {
                     "rule": "optional",
-                    "options": {},
+                    "options": {
+                        "default": false
+                    },
                     "type": "bool",
                     "name": "user_confirmation",
                     "id": 5
@@ -1351,7 +1918,9 @@
                 },
                 {
                     "rule": "optional",
-                    "options": {},
+                    "options": {
+                        "default": ""
+                    },
                     "type": "bytes",
                     "name": "commitment_data",
                     "id": 7
@@ -1433,11 +2002,22 @@
                     "type": "InputScriptType",
                     "name": "script_type",
                     "id": 6
+                },
+                {
+                    "rule": "optional",
+                    "options": {
+                        "default": "BITCOIN"
+                    },
+                    "type": "AmountUnit",
+                    "name": "amount_unit",
+                    "id": 11
                 }
             ],
             "enums": [],
             "messages": [],
-            "options": {},
+            "options": {
+                "(unstable)": true
+            },
             "oneofs": {}
         },
         {
@@ -1756,6 +2336,13 @@
                     "type": "bytes",
                     "name": "metadata",
                     "id": 11
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint64",
+                    "name": "validity_interval_start",
+                    "id": 12
                 }
             ],
             "enums": [],
@@ -1813,6 +2400,228 @@
                             "type": "CardanoAddressParametersType",
                             "name": "address_parameters",
                             "id": 4
+                        },
+                        {
+                            "rule": "repeated",
+                            "options": {},
+                            "type": "CardanoAssetGroupType",
+                            "name": "token_bundle",
+                            "id": 5
+                        }
+                    ],
+                    "enums": [],
+                    "messages": [],
+                    "options": {},
+                    "oneofs": {}
+                },
+                {
+                    "name": "CardanoAssetGroupType",
+                    "fields": [
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "bytes",
+                            "name": "policy_id",
+                            "id": 1
+                        },
+                        {
+                            "rule": "repeated",
+                            "options": {},
+                            "type": "CardanoTokenType",
+                            "name": "tokens",
+                            "id": 2
+                        }
+                    ],
+                    "enums": [],
+                    "messages": [],
+                    "options": {},
+                    "oneofs": {}
+                },
+                {
+                    "name": "CardanoTokenType",
+                    "fields": [
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "bytes",
+                            "name": "asset_name_bytes",
+                            "id": 1
+                        },
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "uint64",
+                            "name": "amount",
+                            "id": 2
+                        }
+                    ],
+                    "enums": [],
+                    "messages": [],
+                    "options": {},
+                    "oneofs": {}
+                },
+                {
+                    "name": "CardanoPoolOwnerType",
+                    "fields": [
+                        {
+                            "rule": "repeated",
+                            "options": {},
+                            "type": "uint32",
+                            "name": "staking_key_path",
+                            "id": 1
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "bytes",
+                            "name": "staking_key_hash",
+                            "id": 2
+                        }
+                    ],
+                    "enums": [],
+                    "messages": [],
+                    "options": {},
+                    "oneofs": {}
+                },
+                {
+                    "name": "CardanoPoolRelayParametersType",
+                    "fields": [
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "CardanoPoolRelayType",
+                            "name": "type",
+                            "id": 1
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "bytes",
+                            "name": "ipv4_address",
+                            "id": 2
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "bytes",
+                            "name": "ipv6_address",
+                            "id": 3
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "string",
+                            "name": "host_name",
+                            "id": 4
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "uint32",
+                            "name": "port",
+                            "id": 5
+                        }
+                    ],
+                    "enums": [],
+                    "messages": [],
+                    "options": {},
+                    "oneofs": {}
+                },
+                {
+                    "name": "CardanoPoolMetadataType",
+                    "fields": [
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "string",
+                            "name": "url",
+                            "id": 1
+                        },
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "bytes",
+                            "name": "hash",
+                            "id": 2
+                        }
+                    ],
+                    "enums": [],
+                    "messages": [],
+                    "options": {},
+                    "oneofs": {}
+                },
+                {
+                    "name": "CardanoPoolParametersType",
+                    "fields": [
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "bytes",
+                            "name": "pool_id",
+                            "id": 1
+                        },
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "bytes",
+                            "name": "vrf_key_hash",
+                            "id": 2
+                        },
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "uint64",
+                            "name": "pledge",
+                            "id": 3
+                        },
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "uint64",
+                            "name": "cost",
+                            "id": 4
+                        },
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "uint64",
+                            "name": "margin_numerator",
+                            "id": 5
+                        },
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "uint64",
+                            "name": "margin_denominator",
+                            "id": 6
+                        },
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "string",
+                            "name": "reward_account",
+                            "id": 7
+                        },
+                        {
+                            "rule": "repeated",
+                            "options": {},
+                            "type": "CardanoPoolOwnerType",
+                            "name": "owners",
+                            "id": 8
+                        },
+                        {
+                            "rule": "repeated",
+                            "options": {},
+                            "type": "CardanoPoolRelayParametersType",
+                            "name": "relays",
+                            "id": 9
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "CardanoPoolMetadataType",
+                            "name": "metadata",
+                            "id": 10
                         }
                     ],
                     "enums": [],
@@ -1843,6 +2652,13 @@
                             "type": "bytes",
                             "name": "pool",
                             "id": 3
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "CardanoPoolParametersType",
+                            "name": "pool_parameters",
+                            "id": 4
                         }
                     ],
                     "enums": [],
@@ -1989,6 +2805,10 @@
                         {
                             "name": "Failure_WipeCodeMismatch",
                             "id": 13
+                        },
+                        {
+                            "name": "Failure_InvalidSession",
+                            "id": 14
                         },
                         {
                             "name": "Failure_FirmwareError",
@@ -2289,7 +3109,7 @@
                     "id": 5
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "public_key",
@@ -5030,6 +5850,34 @@
                     "type": "bool",
                     "name": "passphrase_always_on_device",
                     "id": 36
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "SafetyCheckLevel",
+                    "name": "safety_checks",
+                    "id": 37
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "auto_lock_delay_ms",
+                    "id": 38
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "display_rotation",
+                    "id": 39
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "experimental_features",
+                    "id": 40
                 }
             ],
             "enums": [
@@ -5186,24 +6034,16 @@
                     "type": "SafetyCheckLevel",
                     "name": "safety_checks",
                     "id": 9
-                }
-            ],
-            "enums": [
+                },
                 {
-                    "name": "SafetyCheckLevel",
-                    "values": [
-                        {
-                            "name": "Strict",
-                            "id": 0
-                        },
-                        {
-                            "name": "Prompt",
-                            "id": 1
-                        }
-                    ],
-                    "options": {}
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "experimental_features",
+                    "id": 10
                 }
             ],
+            "enums": [],
             "messages": [],
             "options": {},
             "oneofs": {}
@@ -5579,9 +6419,7 @@
                 },
                 {
                     "rule": "optional",
-                    "options": {
-                        "default": "en-US"
-                    },
+                    "options": {},
                     "type": "string",
                     "name": "language",
                     "id": 4
@@ -8004,6 +8842,91 @@
             "oneofs": {}
         },
         {
+            "ref": "google.protobuf.EnumValueOptions",
+            "fields": [
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "wire_in",
+                    "id": 50002
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "wire_out",
+                    "id": 50003
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "wire_debug_in",
+                    "id": 50004
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "wire_debug_out",
+                    "id": 50005
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "wire_tiny",
+                    "id": 50006
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "wire_bootloader",
+                    "id": 50007
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "wire_no_fsm",
+                    "id": 50008
+                }
+            ]
+        },
+        {
+            "ref": "google.protobuf.MessageOptions",
+            "fields": [
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "unstable",
+                    "id": 50001
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "wire_type",
+                    "id": 50002
+                }
+            ]
+        },
+        {
+            "ref": "google.protobuf.FieldOptions",
+            "fields": [
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "experimental",
+                    "id": 52001
+                }
+            ]
+        },
+        {
             "name": "RippleGetAddress",
             "fields": [
                 {
@@ -9579,60 +10502,6 @@
             ],
             "options": {},
             "oneofs": {}
-        },
-        {
-            "ref": "google.protobuf.EnumValueOptions",
-            "fields": [
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "bool",
-                    "name": "wire_in",
-                    "id": 50002
-                },
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "bool",
-                    "name": "wire_out",
-                    "id": 50003
-                },
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "bool",
-                    "name": "wire_debug_in",
-                    "id": 50004
-                },
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "bool",
-                    "name": "wire_debug_out",
-                    "id": 50005
-                },
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "bool",
-                    "name": "wire_tiny",
-                    "id": 50006
-                },
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "bool",
-                    "name": "wire_bootloader",
-                    "id": 50007
-                },
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "bool",
-                    "name": "wire_no_fsm",
-                    "id": 50008
-                }
-            ]
         }
     ],
     "enums": [
@@ -9658,6 +10527,58 @@
                 {
                     "name": "SPENDP2SHWITNESS",
                     "id": 4
+                }
+            ],
+            "options": {}
+        },
+        {
+            "name": "OutputScriptType",
+            "values": [
+                {
+                    "name": "PAYTOADDRESS",
+                    "id": 0
+                },
+                {
+                    "name": "PAYTOSCRIPTHASH",
+                    "id": 1
+                },
+                {
+                    "name": "PAYTOMULTISIG",
+                    "id": 2
+                },
+                {
+                    "name": "PAYTOOPRETURN",
+                    "id": 3
+                },
+                {
+                    "name": "PAYTOWITNESS",
+                    "id": 4
+                },
+                {
+                    "name": "PAYTOP2SHWITNESS",
+                    "id": 5
+                }
+            ],
+            "options": {}
+        },
+        {
+            "name": "AmountUnit",
+            "values": [
+                {
+                    "name": "BITCOIN",
+                    "id": 0
+                },
+                {
+                    "name": "MILLIBITCOIN",
+                    "id": 1
+                },
+                {
+                    "name": "MICROBITCOIN",
+                    "id": 2
+                },
+                {
+                    "name": "SATOSHI",
+                    "id": 3
                 }
             ],
             "options": {}
@@ -9726,6 +10647,28 @@
                 {
                     "name": "STAKE_DELEGATION",
                     "id": 2
+                },
+                {
+                    "name": "STAKE_POOL_REGISTRATION",
+                    "id": 3
+                }
+            ],
+            "options": {}
+        },
+        {
+            "name": "CardanoPoolRelayType",
+            "values": [
+                {
+                    "name": "SINGLE_HOST_IP",
+                    "id": 0
+                },
+                {
+                    "name": "SINGLE_HOST_NAME",
+                    "id": 1
+                },
+                {
+                    "name": "MULTIPLE_HOST_NAME",
+                    "id": 2
                 }
             ],
             "options": {}
@@ -9743,6 +10686,24 @@
                 },
                 {
                     "name": "Slip39_Advanced",
+                    "id": 2
+                }
+            ],
+            "options": {}
+        },
+        {
+            "name": "SafetyCheckLevel",
+            "values": [
+                {
+                    "name": "Strict",
+                    "id": 0
+                },
+                {
+                    "name": "PromptAlways",
+                    "id": 1
+                },
+                {
+                    "name": "PromptTemporarily",
                     "id": 2
                 }
             ],
