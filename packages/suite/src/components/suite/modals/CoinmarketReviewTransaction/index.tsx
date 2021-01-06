@@ -7,16 +7,8 @@ import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 
 import { Props } from './Container';
-import Output, {
-    OutputProps,
-    Left,
-    Right,
-    Coin,
-    Fiat,
-    Symbol,
-    Amounts,
-} from '../ReviewTransaction/components/Output';
-import Detail from '../ReviewTransaction/components/Detail';
+import Output, { OutputProps, Left, Right, Coin, Fiat, Symbol, Amounts } from './components/Output';
+import Detail from './components/Detail';
 
 const Bottom = styled.div`
     display: flex;
@@ -55,7 +47,7 @@ const TotalFiat = styled(Fiat)`
 
 const getState = (index: number, buttonRequests: number) => {
     if (index === buttonRequests - 1) {
-        return 'warning';
+        return 'active';
     }
 
     if (index < buttonRequests - 1) {

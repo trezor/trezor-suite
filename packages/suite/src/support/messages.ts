@@ -1187,6 +1187,11 @@ const definedMessages = defineMessages({
         description: 'Message to show after user clicks download bridge.',
         id: 'TR_DETECTING_BRIDGE',
     },
+    TR_DETAIL: {
+        defaultMessage: 'Detail',
+        description: 'Button in modal',
+        id: 'TR_DETAIL',
+    },
     TR_DEVICE: {
         defaultMessage: 'Device',
         description: 'Category in Settings',
@@ -2413,6 +2418,10 @@ const definedMessages = defineMessages({
     TR_TOS_LINK: {
         defaultMessage: 'Terms & Conditions.',
         id: 'TR_TOS_LINK',
+    },
+    TR_TOTAL: {
+        defaultMessage: 'Total',
+        id: 'TR_TOTAL',
     },
     TR_TOTAL_INPUT: {
         defaultMessage: 'Total Input',
@@ -4916,6 +4925,18 @@ const definedMessages = defineMessages({
         id: 'TR_INPUTS_OUTPUTS',
         defaultMessage: 'Inputs, Outputs',
     },
+    TR_CHAINED_TXS: {
+        id: 'TR_CHAINED_TXS',
+        defaultMessage: 'Chained transactions',
+    },
+    TR_CHAINED_TXS_HEADER: {
+        id: 'TR_CHAINED_TXS_HEADER',
+        defaultMessage: 'Chained pending transactions',
+    },
+    TR_AFFECTED_TXS: {
+        id: 'TR_AFFECTED_TXS',
+        defaultMessage: 'This operation will remove following transactions from the mempool:',
+    },
     TR_OUTPUTS: {
         id: 'TR_OUTPUTS',
         defaultMessage: 'Outputs',
@@ -5223,6 +5244,10 @@ const definedMessages = defineMessages({
         id: 'TR_RANGE',
         defaultMessage: 'range',
     },
+    TR_DELIVERY: {
+        id: 'TR_DELIVERY',
+        defaultMessage: 'Delivery',
+    },
     TR_BUMP_FEE: {
         id: 'TR_BUMP_FEE',
         defaultMessage: 'Bump fee',
@@ -5239,13 +5264,29 @@ const definedMessages = defineMessages({
         id: 'TR_CURRENT_FEE',
         defaultMessage: 'Current',
     },
+    TR_SENT_SUCCESSFULLY: {
+        id: 'TR_SENT_SUCCESSFULLY',
+        defaultMessage: 'Sent successfully',
+    },
     TR_NEW_FEE: {
         id: 'TR_NEW_FEE',
         defaultMessage: 'New',
     },
+    TR_INCREASE_FEE_BY: {
+        id: 'TR_INCREASE_FEE_BY',
+        defaultMessage: 'Increase your fee by',
+    },
+    TR_INCREASED_FEE: {
+        id: 'TR_INCREASED_FEE',
+        defaultMessage: 'New transaction fee',
+    },
+    TR_INCREASED_FEE_RATE: {
+        id: 'TR_INCREASED_FEE_RATE',
+        defaultMessage: 'Fee rate',
+    },
     TR_SEARCH_TRANSACTIONS: {
         id: 'TR_SEARCH_TRANSACTIONS',
-        defaultMessage: 'Seach transactions',
+        defaultMessage: 'Search transactions',
     },
     TR_NO_SEARCH_RESULTS: {
         id: 'TR_NO_SEARCH_RESULTS',
@@ -5274,7 +5315,7 @@ const definedMessages = defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_4: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_4',
         defaultMessage:
-            'Tip: You can exclude an amount by using the exlamation mark and equal symbols together (!=). For example <strong>= -0.01</strong> will show all transactions except the ones with an amount of -0.01.',
+            'Tip: You can exclude an amount by using the exclamation mark and equal symbols together (!=). For example <strong>= -0.01</strong> will show all transactions except the ones with an amount of -0.01.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_5: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_5',
@@ -5313,6 +5354,47 @@ const definedMessages = defineMessages({
     TR_PAGINATION_OLDER: {
         id: 'TR_PAGINATION_OLDER',
         defaultMessage: 'Older',
+    },
+    TR_NO_CHANGE_OUTPUT: {
+        id: 'TR_NO_CHANGE_OUTPUT',
+        defaultMessage: "This transaction doesn't contain a change output and cannot be replaced.",
+    },
+    TR_RBF_COL: {
+        id: 'TR_RBF_COL',
+        defaultMessage: 'RBF',
+        description: 'Titlee of RBF column in transaction details modal',
+    },
+    TR_RBF_STATUS: {
+        id: 'TR_RBF_STATUS',
+        defaultMessage: 'Status',
+    },
+    TR_RBF_STATUS_FINAL: {
+        id: 'TR_RBF_STATUS_FINAL',
+        defaultMessage: 'Final',
+    },
+    TR_RBF_STATUS_NOT_FINAL: {
+        id: 'TR_RBF_STATUS_NOT_FINAL',
+        defaultMessage: 'Not Final',
+    },
+    TR_FEE_LEVEL: {
+        id: 'TR_FEE_LEVEL',
+        defaultMessage: 'Fee Level',
+    },
+    TR_TXID: {
+        id: 'TR_TXID',
+        defaultMessage: 'TX ID',
+    },
+    TR_FINALIZE_TS_RBF_OFF_WARN: {
+        id: 'TR_FINALIZE_TS_RBF_OFF_WARN',
+        defaultMessage: 'Finalizing transaction will turn RBF <strong>OFF</strong>',
+    },
+    TR_SIZE: {
+        id: 'TR_SIZE',
+        defaultMessage: 'Size',
+    },
+    TR_BYTES: {
+        id: 'TR_BYTES',
+        defaultMessage: 'bytes',
     },
 } as const);
 

@@ -26,7 +26,7 @@ import WordAdvanced from './WordAdvanced';
 import ConfirmAddress from './confirm/Address';
 import ConfirmXpub from './confirm/Xpub/Container';
 import ConfirmNoBackup from './confirm/NoBackup';
-import ReviewTransaction from './ReviewTransaction/Container';
+import ReviewTransaction from './ReviewTransaction';
 import CoinmarketReviewTransaction from './CoinmarketReviewTransaction/Container';
 import ImportTransaction from './ImportTransaction';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
