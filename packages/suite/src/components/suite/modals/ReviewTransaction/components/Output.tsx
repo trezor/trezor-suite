@@ -161,7 +161,7 @@ export type OutputProps =
           token?: TokenInfo;
       }
     | {
-          type: 'opreturn' | 'data' | 'locktime' | 'fee' | 'destination-tag';
+          type: 'opreturn' | 'data' | 'locktime' | 'fee' | 'destination-tag' | 'txid';
           label?: undefined;
           value: string;
           token?: undefined;

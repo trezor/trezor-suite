@@ -6,6 +6,8 @@ import { WalletAccountTransaction } from '@wallet-types';
 import { useRbf, RbfContext } from '@wallet-hooks/useRbfForm';
 import { getFeeUnits } from '@wallet-utils/sendFormUtils';
 import Fees from './components/Fees';
+import AffectedTransactions from './components/AffectedTransactions';
+import NoChange from './components/NoChange';
 import ReplaceButton from './components/ReplaceButton';
 
 const Wrapper = styled.div`
@@ -86,6 +88,17 @@ const ChangeFee = ({ tx, finalize }: Props) => {
         <RbfContext.Provider value={contextValues}>
             <Wrapper>
                 <Box>
+                    {contextValues.chainedTxs && (
+                        <Inner>
+                            <AffectedTransactions />
+                        </Inner>
+                    )}
+                    {!tx.rbfParams?.changeAddress && (
+                        <Inner>
+                            <NoChange />
+                        </Inner>
+                    )}
+
                     <Inner>
                         <Title>
                             <Translation id="TR_CURRENT_FEE" />
