@@ -6,6 +6,7 @@ import { isTestnet } from '@wallet-utils/accountUtils';
 import { Network, WalletAccountTransaction } from '@wallet-types';
 import AmountDetails from '../AmountDetails';
 import IODetails from '../IODetails';
+import ChainedTxs from '../ChainedTxs';
 
 const Wrapper = styled.div`
     padding: 0px 24px 14px 24px;
@@ -33,15 +34,36 @@ const TabButton = styled.button<{ selected: boolean }>`
     border-bottom: ${props => (props.selected ? `2px solid ${props.theme.BG_GREEN}` : 'none')};
 `;
 
+export type TabID = 'amount' | 'io' | 'chained';
+
 interface Props {
+    defaultTab?: TabID;
     network: Network;
     tx: WalletAccountTransaction;
     txDetails: any; // TODO: from tx.details
     isFetching: boolean;
+    chainedTxs: WalletAccountTransaction[];
 }
 
-const AdvancedDetails = ({ network, tx, txDetails, isFetching }: Props) => {
-    const [selectedTab, setSelectedTab] = useState<'amount' | 'io'>('amount');
+const AdvancedDetails = ({ defaultTab, network, tx, txDetails, isFetching, chainedTxs }: Props) => {
+    const [selectedTab, setSelectedTab] = useState<TabID>(defaultTab ?? 'amount');
+
+    let content: JSX.Element | undefined;
+    if (selectedTab === 'amount') {
+        content = (
+            <AmountDetails
+                tx={tx}
+                txDetails={txDetails}
+                // isFetching={isFetching}
+                isTestnet={isTestnet(network.symbol)}
+            />
+        );
+    } else if (selectedTab === 'io' && network.networkType !== 'ripple') {
+        content = <IODetails tx={tx} txDetails={txDetails} isFetching={isFetching} />;
+    } else if (selectedTab === 'chained' && chainedTxs.length > 0) {
+        content = <ChainedTxs txs={chainedTxs} />;
+    }
+
     return (
         <Wrapper>
             <TabSelector>
@@ -56,19 +78,16 @@ const AdvancedDetails = ({ network, tx, txDetails, isFetching }: Props) => {
                         <Translation id="TR_INPUTS_OUTPUTS" />
                     </TabButton>
                 )}
+                {chainedTxs.length > 0 && (
+                    <TabButton
+                        selected={selectedTab === 'chained'}
+                        onClick={() => setSelectedTab('chained')}
+                    >
+                        <Translation id="TR_CHAINED_TXS" />
+                    </TabButton>
+                )}
             </TabSelector>
-            {selectedTab === 'amount' ? (
-                <AmountDetails
-                    tx={tx}
-                    txDetails={txDetails}
-                    // isFetching={isFetching}
-                    isTestnet={isTestnet(network.symbol)}
-                />
-            ) : (
-                network.networkType !== 'ripple' && (
-                    <IODetails tx={tx} txDetails={txDetails} isFetching={isFetching} />
-                )
-            )}
+            {content}
         </Wrapper>
     );
 };

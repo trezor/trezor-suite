@@ -6,10 +6,14 @@ import { OnOffSwitcher } from '@wallet-components';
 import { WalletAccountTransaction } from '@wallet-types';
 import TrezorConnect from 'trezor-connect';
 import BasicDetails from './components/BasicDetails';
-import AdvancedDetails from './components/AdvancedDetails';
+import AdvancedDetails, { TabID } from './components/AdvancedDetails';
 import ChangeFee from './components/ChangeFee';
 import { getNetwork } from '@wallet-utils/accountUtils';
-import { getConfirmations } from '@wallet-utils/transactionUtils';
+import {
+    getConfirmations,
+    isPending,
+    findChainedTransactions,
+} from '@wallet-utils/transactionUtils';
 import { useSelector } from '@suite-hooks';
 
 const Wrapper = styled.div`
@@ -44,8 +48,22 @@ type Props = {
 
 const TransactionDetail = (props: Props) => {
     const { tx } = props;
-    const blockchain = useSelector(state => state.wallet.blockchain[tx.symbol]);
+    const { blockchain, transactions } = useSelector(state => ({
+        blockchain: state.wallet.blockchain[tx.symbol],
+        transactions: state.wallet.transactions.transactions,
+    }));
     const confirmations = getConfirmations(tx, blockchain.blockHeight);
+    // TODO: replace this part will be refactored after blockbook implementation:
+    // https://github.com/trezor/blockbook/issues/555
+    // currently we are showing only txs related to this account
+    // const chainedTxs =  findChainedTransactions(tx.txid, transactions) : [];
+    const chainedTxs = isPending(tx)
+        ? findChainedTransactions(tx.txid, transactions)
+              .filter(t => t.key.indexOf(tx.descriptor) >= 0) // only for this account (this will change)
+              .reduce((result, item) => {
+                  return result.concat(item.txs); // transforming results into array
+              }, [] as WalletAccountTransaction[])
+        : [];
 
     const network = getNetwork(tx.symbol);
     const explorerBaseUrl = network?.explorer.tx;
@@ -58,6 +76,7 @@ const TransactionDetail = (props: Props) => {
     const [section, setSection] = useState<'CHANGE_FEE' | 'DETAILS'>(
         props.rbfForm ? 'CHANGE_FEE' : 'DETAILS',
     );
+    const [tab, setTab] = useState<TabID | undefined>(undefined);
     const [finalize, setFinalize] = useState<boolean>(false);
 
     useEffect(() => {
@@ -79,7 +98,6 @@ const TransactionDetail = (props: Props) => {
     }, [tx]);
 
     return (
-        // TODO add Bitcoin logo to the header of the modal or somewhere else (discuss with designer)
         <Modal
             cancelable
             onCancel={props.onCancel}
@@ -98,7 +116,13 @@ const TransactionDetail = (props: Props) => {
                     {tx.rbfParams && (
                         <>
                             {section === 'DETAILS' && (
-                                <Button variant="tertiary" onClick={() => setSection('CHANGE_FEE')}>
+                                <Button
+                                    variant="tertiary"
+                                    onClick={() => {
+                                        setSection('CHANGE_FEE');
+                                        setTab(undefined);
+                                    }}
+                                >
                                     <Translation id="TR_BUMP_FEE" />
                                 </Button>
                             )}
@@ -109,6 +133,7 @@ const TransactionDetail = (props: Props) => {
                                     setFinalize(!finalize);
                                     if (section !== 'CHANGE_FEE') {
                                         setSection('CHANGE_FEE');
+                                        setTab(undefined);
                                     }
                                 }}
                             >
@@ -121,6 +146,7 @@ const TransactionDetail = (props: Props) => {
                                     onClick={() => {
                                         setSection('DETAILS');
                                         setFinalize(false);
+                                        setTab(undefined);
                                     }}
                                 >
                                     <Translation id="TR_CANCEL" />
@@ -137,13 +163,23 @@ const TransactionDetail = (props: Props) => {
                     )}
                 </SectionActions>
                 {section === 'CHANGE_FEE' ? (
-                    <ChangeFee tx={tx} finalize={finalize} />
+                    <ChangeFee
+                        tx={tx}
+                        finalize={finalize}
+                        chainedTxs={chainedTxs}
+                        showChained={() => {
+                            setSection('DETAILS');
+                            setTab('chained');
+                        }}
+                    />
                 ) : (
                     <AdvancedDetails
+                        defaultTab={tab}
                         network={network!}
                         tx={tx}
                         txDetails={txDetails}
                         isFetching={isFetching}
+                        chainedTxs={chainedTxs}
                     />
                 )}
             </Wrapper>

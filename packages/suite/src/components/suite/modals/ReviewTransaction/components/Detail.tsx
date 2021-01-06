@@ -1,16 +1,96 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { motion, AnimatePresence } from 'framer-motion';
-import { variables, Icon, Box } from '@trezor/components';
 import { Translation } from '@suite-components';
+import { Icon, useTheme, Box, variables } from '@trezor/components';
 import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
-import { ANIMATION } from '@suite-config';
 
-const Wrapper = styled.div``;
+const TransactionDetailsWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 5px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
+    background: ${props => props.theme.BG_WHITE_ALT};
+    width: calc(100% + 20px);
+    height: calc(100% + 20px);
+    position: absolute;
+    top: -15px;
+    left: -20px;
+    border-radius: 4px;
+    z-index: 2;
+    font-weight: 500;
+`;
 
-const ExpandWrapper = styled(motion.div)`
-    overflow: hidden;
-    padding-top: 12px;
+const DetailsHeader = styled.div`
+    padding: 14px 16px 10px;
+    text-align: left;
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+`;
+
+const CloseButton = styled.button`
+    background: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+`;
+
+const DetailsBody = styled.div`
+    padding: 10px 16px 14px;
+    margin: 0;
+    text-align: left;
+    flex: 1;
+    overflow-y: auto;
+`;
+
+const DetailsBodyInner = styled.div`
+    margin: 0 0 20px 0;
+`;
+
+const HeadSection = styled(Box)`
+    text-align: left;
+    margin: 0 0 12px 0;
+    border: 0;
+    background: ${props => props.theme.BG_GREY};
+`;
+
+const HeadSectionLine = styled.div`
+    display: flex;
+    font-size: 14px;
+    & + & {
+        margin: 5px 0 0 0;
+    }
+`;
+
+const HeadSectionName = styled.div`
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    margin-right: 15px;
+    width: 60px;
+`;
+
+const HeadSectionValue = styled.div`
+    color: ${props => props.theme.TYPE_DARK_GREY};
+    flex: 1;
+`;
+
+const Section = styled.div`
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    font-weight: 500;
+    font-size: 12px;
+`;
+
+const SectionName = styled.div`
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    font-weight: 500;
+    font-size: 12px;
+    margin: 7px 0;
+`;
+
+const SectionDivider = styled.div`
+    margin: 15px 0;
 `;
 
 const StyledBox = styled(Box)`
@@ -22,36 +102,6 @@ const StyledBox = styled(Box)`
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
-const ExpandButton = styled.div`
-    display: flex;
-    padding: 0px 14px;
-    cursor: pointer;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: 500;
-    justify-content: space-between;
-`;
-
-const Top = styled.div`
-    width: 100%;
-    border-bottom: solid 1px ${props => props.theme.STROKE_GREY};
-    display: flex;
-    flex-direction: row;
-`;
-
-const Label = styled.span`
-    color: #808080;
-    margin-right: 8px;
-    padding: 8px 0px;
-`;
-
-const Fee = styled.div`
-    display: flex;
-    flex: 1;
-    text-align: left;
-    align-items: center;
-`;
-
 const Pre = styled.pre`
     text-align: left;
     word-break: break-all;
@@ -59,61 +109,73 @@ const Pre = styled.pre`
     font-size: ${variables.FONT_SIZE.TINY};
 `;
 
-type Props = {
+export interface Props {
     tx: PrecomposedTransactionFinal;
     txHash?: string;
+    onClose: () => void;
+}
+
+const prettify = (json: Record<any, any>) => {
+    return JSON.stringify(json, null, 2);
 };
 
-const Detail = ({ tx, txHash }: Props) => {
-    const [isExpanded, setExpanded] = useState(false);
-
-    const { transaction } = tx;
-    if (transaction.inputs.length === 0) return null; // BTC-only, TODO: eth/ripple
-
-    const prettify = (json: Record<any, any>) => {
-        return JSON.stringify(json, null, 2);
-    };
+const TransactionDetails = ({ tx, txHash, onClose }: Props) => {
+    const theme = useTheme();
+    if (tx.transaction.inputs.length === 0) return null; // BTC-only, TODO: eth/ripple
 
     return (
-        <Wrapper>
-            <ExpandButton
-                onClick={e => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setExpanded(!isExpanded);
-                }}
-            >
-                <Translation id="TR_TRANSACTION_DETAILS" />
-                <Icon size={16} icon={!isExpanded ? 'ARROW_DOWN' : 'ARROW_UP'} />
-            </ExpandButton>
-            <AnimatePresence initial={false}>
-                {isExpanded && (
-                    <ExpandWrapper {...ANIMATION.EXPAND}>
+        <TransactionDetailsWrapper>
+            <DetailsHeader>
+                <Translation id="TR_DETAIL" />
+                <CloseButton onClick={() => onClose()}>
+                    <Icon icon="CROSS" size={16} color={theme.TYPE_LIGHT_GREY} />
+                </CloseButton>
+            </DetailsHeader>
+            <DetailsBody>
+                <DetailsBodyInner>
+                    <HeadSection>
+                        <HeadSectionLine>
+                            <HeadSectionName>
+                                <Translation id="TR_SIZE" />
+                            </HeadSectionName>
+                            <HeadSectionValue>
+                                {tx.bytes} <Translation id="TR_BYTES" />
+                            </HeadSectionValue>
+                        </HeadSectionLine>
+                    </HeadSection>
+                    <Section>
+                        <SectionName>
+                            <Translation id="TR_INPUTS" />
+                        </SectionName>
                         <StyledBox>
-                            <Top>
-                                <Fee>
-                                    <Label>sat/B:</Label> {tx.feePerByte}
-                                </Fee>
-                                <Fee>
-                                    <Label>Size:</Label> {tx.bytes} bytes
-                                </Fee>
-                            </Top>
-                            <Label>Inputs:</Label>
-                            <Pre>{prettify(transaction.inputs)}</Pre>
-                            <Label>Outputs:</Label>
-                            <Pre>{prettify(transaction.outputs)}</Pre>
-                            {txHash && (
-                                <>
-                                    <Label>Signature</Label>
-                                    <Pre>{txHash}</Pre>
-                                </>
-                            )}
+                            <Pre>{prettify(tx.transaction.inputs)}</Pre>
                         </StyledBox>
-                    </ExpandWrapper>
-                )}
-            </AnimatePresence>
-        </Wrapper>
+                    </Section>
+                    <SectionDivider>
+                        <Icon icon="ARROW_DOWN" size={20} color={theme.TYPE_LIGHT_GREY} />
+                    </SectionDivider>
+                    <Section>
+                        <SectionName>
+                            <Translation id="TR_OUTPUTS" />
+                        </SectionName>
+                        <StyledBox>
+                            <Pre>{prettify(tx.transaction.outputs)}</Pre>
+                        </StyledBox>
+                    </Section>
+                    {txHash && (
+                        <Section>
+                            <SectionName>
+                                <Translation id="TR_SIGNATURE" />
+                            </SectionName>
+                            <StyledBox>
+                                <Pre>{txHash}</Pre>
+                            </StyledBox>
+                        </Section>
+                    )}
+                </DetailsBodyInner>
+            </DetailsBody>
+        </TransactionDetailsWrapper>
     );
 };
 
-export default Detail;
+export default TransactionDetails;

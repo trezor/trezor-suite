@@ -1,102 +1,82 @@
-import React, { createRef } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { ConfirmOnDevice, Button, variables } from '@trezor/components';
-import { FiatValue, Translation, Modal } from '@suite-components';
-import { useDevice, useActions, useAnalytics } from '@suite-hooks';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { copyToClipboard, download } from '@suite-utils/dom';
+import BigNumber from 'bignumber.js';
+import { ConfirmOnDevice } from '@trezor/components';
+import { Translation, Modal } from '@suite-components';
+import { useDevice, useActions, useSelector } from '@suite-hooks';
+import { UserContextPayload } from '@suite-actions/modalActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
-import * as notificationActions from '@suite-actions/notificationActions';
+import { OutputProps } from './components/Output';
+import OutputList from './components/OutputList';
+import Summary from './components/Summary';
 
-import { Props } from './Container';
-import Output, { OutputProps, Left, Right, Coin, Fiat, Symbol, Amounts } from './components/Output';
-import Detail from './components/Detail';
-
-const Bottom = styled.div`
+const ModalInner = styled.div`
     display: flex;
-    flex-direction: column;
-    width: 100%;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
-    padding-top: 20px;
+    padding: 10px;
 `;
 
-const BottomContent = styled.div`
-    padding: 20px;
-    padding-top: 0px; /* Bottom padding */
-    display: flex;
-    justify-content: space-between;
-    flex: 1;
-`;
+// This modal is opened either in Device (button request) or User (push tx) context
+// contexts are distinguished by `type` prop
+type Props =
+    | Extract<UserContextPayload, { type: 'review-transaction' }>
+    | { type: 'sign-transaction'; decision?: undefined };
 
-const Total = styled(Left)`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
-`;
-
-const Content = styled.div`
-    padding: 20px 20px 0 20px;
-`;
-
-const Buttons = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-`;
-
-const StyledButton = styled(Button)`
-    display: flex;
-    align-self: center;
-    width: 240px;
-`;
-
-const TotalFiat = styled(Fiat)`
-    font-size: ${variables.FONT_SIZE.NORMAL};
-`;
-
-const getState = (index: number, buttonRequests: number) => {
-    if (index === buttonRequests - 1) {
-        return 'warning';
-    }
-
-    if (index < buttonRequests - 1) {
-        return 'success';
-    }
-
-    return undefined;
-};
-
-const ReviewTransaction = ({ selectedAccount, send, decision }: Props) => {
-    const htmlElement = createRef<HTMLDivElement>();
+const ReviewTransaction = ({ decision }: Props) => {
     const { device } = useDevice();
-    const analytics = useAnalytics();
-    const { cancelSignTx, addNotification } = useActions({
+    const [detailsOpen, setDetailsOpen] = React.useState(false);
+    const { cancelSignTx } = useActions({
         cancelSignTx: sendFormActions.cancelSignTx,
-        addNotification: notificationActions.addToast,
     });
+    const { selectedAccount, send, fees } = useSelector(state => ({
+        selectedAccount: state.wallet.selectedAccount,
+        send: state.wallet.send,
+        fees: state.wallet.fees,
+    }));
 
     const { precomposedTx, precomposedForm, signedTx } = send;
     if (selectedAccount.status !== 'loaded' || !device || !precomposedTx || !precomposedForm)
         return null;
 
-    const { symbol, networkType } = selectedAccount.account;
-    const broadcastEnabled = precomposedForm.options.includes('broadcast');
+    const { networkType } = selectedAccount.account;
+    const rbfAvailable =
+        networkType === 'bitcoin' &&
+        precomposedTx.prevTxid &&
+        !device.unavailableCapabilities?.replaceTransaction;
 
     const outputs: OutputProps[] = [];
-    precomposedTx.transaction.outputs.forEach(o => {
-        if (typeof o.address === 'string') {
-            outputs.push({
-                type: 'regular',
-                label: o.address,
-                value: o.amount,
-                token: precomposedTx.token,
-            });
-        } else if (o.script_type === 'PAYTOOPRETURN') {
-            outputs.push({
-                type: 'opreturn',
-                value: o.op_return_data,
-            });
-        }
-    });
+    if (precomposedTx.prevTxid && rbfAvailable) {
+        // calculate fee difference
+        const diff = new BigNumber(precomposedTx.fee)
+            .minus(precomposedForm.rbfParams?.baseFee || 0)
+            .toFixed();
+        outputs.push(
+            {
+                type: 'txid',
+                value: precomposedTx.prevTxid,
+            },
+            {
+                type: 'fee-replace',
+                value: diff,
+                value2: precomposedTx.fee,
+            },
+        );
+    } else {
+        precomposedTx.transaction.outputs.forEach(o => {
+            if (typeof o.address === 'string') {
+                outputs.push({
+                    type: 'regular',
+                    label: o.address,
+                    value: o.amount,
+                    token: precomposedTx.token,
+                });
+            } else if (o.script_type === 'PAYTOOPRETURN') {
+                outputs.push({
+                    type: 'opreturn',
+                    value: o.op_return_data,
+                });
+            }
+        });
+    }
 
     if (precomposedForm.bitcoinLockTime) {
         outputs.push({ type: 'locktime', value: precomposedForm.bitcoinLockTime });
@@ -118,7 +98,7 @@ const ReviewTransaction = ({ selectedAccount, send, decision }: Props) => {
                 value: precomposedForm.rippleDestinationTag,
             });
         }
-    } else {
+    } else if (!rbfAvailable) {
         outputs.push({ type: 'fee', value: precomposedTx.fee });
     }
 
@@ -127,21 +107,20 @@ const ReviewTransaction = ({ selectedAccount, send, decision }: Props) => {
         r => r === 'ButtonRequest_ConfirmOutput' || r === 'ButtonRequest_SignTx',
     );
 
-    const reportAnalytics = (action: 'sent' | 'copied' | 'downloaded') => {
-        analytics.report({
-            type: 'transaction-created',
-            payload: {
-                action,
-                symbol,
-                broadcast: broadcastEnabled,
-                outputsCount: precomposedForm.outputs.length,
-                bitcoinRbf: precomposedForm.options.includes('bitcoinRBF'),
-                bitcoinLockTime: precomposedForm.options.includes('bitcoinLockTime'),
-                ethereumData: precomposedForm.options.includes('ethereumData'),
-                tokenSent: precomposedTx.token !== undefined,
-            },
-        });
-    };
+    // changing fee rate using RBF
+    const isRbfAction =
+        precomposedForm.rbfParams &&
+        parseInt(precomposedForm.rbfParams.feeRate, 10) < parseInt(precomposedTx.feePerByte, 10);
+
+    // get estimate minig time
+    let estimateTime;
+    const selected = fees[selectedAccount.account.symbol];
+    const matchedFeeLevel = selected.levels.find(
+        item => item.feePerUnit === precomposedTx.feePerByte,
+    );
+    if (networkType === 'bitcoin' && matchedFeeLevel) {
+        estimateTime = selected.blockTime * matchedFeeLevel.blocks * 60;
+    }
 
     return (
         <Modal
@@ -154,90 +133,36 @@ const ReviewTransaction = ({ selectedAccount, send, decision }: Props) => {
                     activeStep={signedTx ? outputs.length + 1 : buttonRequests.length}
                     trezorModel={device.features?.major_version === 1 ? 1 : 2}
                     successText={<Translation id="TR_CONFIRMED_TX" />}
+                    animated
                     onCancel={cancelSignTx}
                 />
             }
-            bottomBar={
-                <Bottom>
-                    {!precomposedTx.token && (
-                        <BottomContent>
-                            <Total>
-                                <Translation
-                                    id="TOTAL_SYMBOL"
-                                    values={{ symbol: symbol.toUpperCase() }}
-                                />
-                            </Total>
-                            <Right>
-                                <Amounts>
-                                    <Coin bold>
-                                        {formatNetworkAmount(precomposedTx.totalSpent, symbol)}
-                                        <Symbol>{symbol}</Symbol>
-                                    </Coin>
-                                    <TotalFiat>
-                                        <FiatValue
-                                            disableHiddenPlaceholder
-                                            amount={formatNetworkAmount(
-                                                precomposedTx.totalSpent,
-                                                symbol,
-                                            )}
-                                            symbol={symbol}
-                                        />
-                                    </TotalFiat>
-                                </Amounts>
-                            </Right>
-                        </BottomContent>
-                    )}
-                    {broadcastEnabled ? (
-                        <StyledButton
-                            isDisabled={!signedTx}
-                            onClick={() => {
-                                if (decision) decision.resolve(true);
-                                reportAnalytics('sent');
-                            }}
-                        >
-                            <Translation id="SEND_TRANSACTION" />
-                        </StyledButton>
-                    ) : (
-                        <Buttons ref={htmlElement}>
-                            <StyledButton
-                                isDisabled={!signedTx}
-                                onClick={() => {
-                                    const result = copyToClipboard(
-                                        signedTx!.tx,
-                                        htmlElement.current,
-                                    );
-                                    if (typeof result !== 'string') {
-                                        addNotification({ type: 'copy-to-clipboard' });
-                                    }
-                                    reportAnalytics('copied');
-                                }}
-                            >
-                                <Translation id="COPY_TRANSACTION_TO_CLIPBOARD" />
-                            </StyledButton>
-                            <StyledButton
-                                variant="secondary"
-                                isDisabled={!signedTx}
-                                onClick={() => {
-                                    download(signedTx!.tx, 'signed-transaction.txt');
-                                    reportAnalytics('downloaded');
-                                }}
-                            >
-                                <Translation id="DOWNLOAD_TRANSACTION" />
-                            </StyledButton>
-                        </Buttons>
-                    )}
-                </Bottom>
-            }
         >
-            <Content>
-                {outputs.map((output, index) => {
-                    const state = signedTx ? 'success' : getState(index, buttonRequests.length);
-                    // it's safe to use array index since outputs do not change
-                    // eslint-disable-next-line react/no-array-index-key
-                    return <Output key={index} {...output} state={state} symbol={symbol} />;
-                })}
-                <Detail tx={precomposedTx} txHash={signedTx ? signedTx.tx : undefined} />
-            </Content>
+            <ModalInner>
+                <Summary
+                    estimateTime={estimateTime}
+                    tx={precomposedTx}
+                    account={selectedAccount.account}
+                    network={selectedAccount.network}
+                    broadcast={precomposedForm.options.includes('broadcast')}
+                    detailsOpen={detailsOpen}
+                    isRbfAction={isRbfAction}
+                    onDetailsClick={() => setDetailsOpen(!detailsOpen)}
+                />
+                <OutputList
+                    activeStep={signedTx ? outputs.length + 1 : buttonRequests.length}
+                    account={selectedAccount.account}
+                    precomposedForm={precomposedForm}
+                    precomposedTx={precomposedTx}
+                    signedTx={signedTx}
+                    decision={decision}
+                    detailsOpen={detailsOpen}
+                    outputs={outputs}
+                    buttonRequests={buttonRequests}
+                    isRbfAction={isRbfAction}
+                    toggleDetails={() => setDetailsOpen(!detailsOpen)}
+                />
+            </ModalInner>
         </Modal>
     );
 };
