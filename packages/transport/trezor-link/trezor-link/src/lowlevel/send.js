@@ -46,11 +46,13 @@ class BuiltMessage {
       this.message = new Builder();
     }
 
-    this.type = messages.messageTypes[`MessageType_${name}`];
-    // protobuf lib doesn't know how to work with "wire_type" option
+    // protobuf lib doesn't know how to work with "(wire_type)" option.
+    // NOTE: round brackets are valid protobuf syntax for custom user declared option
     // messages: `TxAckInput`, `TxAckOutput`, `TxAckPrevInput`, `TxAckPrevOutput`, `TxAckPrevMeta`, `TxAckPrevExtraData`
-    if (typeof this.type !== `number` && typeof this.message.$type.options[`wire_type`] === `number`) {
-      this.type = this.message.$type.options.wire_type;
+    if (typeof this.message.$type.options[`(wire_type)`] === `number`) {
+      this.type = this.message.$type.options[`(wire_type)`];
+    } else {
+      this.type = messages.messageTypes[`MessageType_${name}`];
     }
   }
 
