@@ -208,7 +208,7 @@ export const signTransaction = (
             transactionInfo: {
                 ...transactionInfo,
                 rbf: formValues.options.includes('bitcoinRBF'),
-                prevTxid: formValues.prevTxid,
+                prevTxid: formValues.rbfParams ? formValues.rbfParams.txid : undefined,
             },
         },
     });

@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
-import { AccountTransaction } from 'trezor-connect';
-import { Account, WalletAccountTransaction } from '@wallet-types';
+import { AccountTransaction, AccountAddress } from 'trezor-connect';
+import { Account, WalletAccountTransaction, RbfTransactionParams } from '@wallet-types';
 import { AccountMetadata } from '@suite-types/metadata';
 import { getDateWithTimeZone } from '../suite/date';
 import { toFiatCurrency } from './fiatConverterUtils';
@@ -102,6 +102,9 @@ export const parseKey = (key: string) => {
     return d;
 };
 
+export const isPending = (tx: WalletAccountTransaction | AccountTransaction) =>
+    !tx.blockHeight || tx.blockHeight < 0;
+
 export const findTransaction = (txid: string, transactions: WalletAccountTransaction[]) =>
     transactions.find(t => t && t.txid === txid);
 
@@ -116,8 +119,38 @@ export const findTransactions = (
     });
 };
 
-export const isPending = (tx: WalletAccountTransaction | AccountTransaction) =>
-    !tx.blockHeight || tx.blockHeight < 0;
+// Find chained pending transactions
+export const findChainedTransactions = (
+    txid: string,
+    transactions: { [key: string]: WalletAccountTransaction[] },
+) => {
+    return Object.keys(transactions).flatMap(key => {
+        // check if any pending transaction is using the utxo/vin with requested txid
+        const txs = transactions[key]
+            .filter(isPending)
+            .filter(tx => tx.details.vin.find(i => i.txid === txid));
+        if (!txs.length) return [];
+
+        const result = [{ key, txs }];
+        // each affected tx.vout can be used in another tx.vin
+        // find recursively
+        txs.forEach(tx => {
+            const deep = findChainedTransactions(tx.txid, transactions);
+            deep.forEach(dt => result.push(dt));
+        });
+        // merge result by key
+        return result.reduce((res, item) => {
+            const index = res.findIndex(t => t.key === item.key);
+            if (index >= 0) {
+                // remove duplicates
+                const unique = item.txs.filter(t => !res[index].txs.find(tt => tt.txid === t.txid));
+                res[index].txs = res[index].txs.concat(unique);
+                return res;
+            }
+            return res.concat(item);
+        }, [] as typeof result);
+    });
+};
 
 export const getConfirmations = (
     tx: WalletAccountTransaction | AccountTransaction,
@@ -268,7 +301,10 @@ export const isTxUnknown = (transaction: WalletAccountTransaction) => {
     );
 };
 
-const getRbfParams = (tx: AccountTransaction, account: Account) => {
+export const getRbfParams = (
+    tx: AccountTransaction,
+    account: Account,
+): RbfTransactionParams | undefined => {
     if (account.networkType !== 'bitcoin') return;
     if (tx.type === 'recv' || !tx.rbf || !tx.details || !isPending(tx)) return; // ignore non rbf and mined transactions
     const { vin, vout } = tx.details;
@@ -294,23 +330,24 @@ const getRbfParams = (tx: AccountTransaction, account: Account) => {
             },
         ];
     });
-    // find all change outputs
-    const changeVout = vout.filter(output =>
-        changeAddresses.find(a => output.addresses?.includes(a.address)),
-    );
-    // no change output found, there is no possibility to bump fee
-    // TODO: implement possibility to add another utxo (sign totally different transaction)
-    if (!changeVout.length) return;
-    // re-create external outputs
-    const outputs = vout
-        .filter(output => !changeVout.includes(output))
-        .map(output => ({
+    // find change address and output
+    let changeAddress: AccountAddress | undefined;
+    const outputs: RbfTransactionParams['outputs'] = [];
+    vout.forEach(output => {
+        const changeOutput = changeAddresses.find(a => output.addresses?.includes(a.address));
+        outputs.push({
+            type: changeOutput ? 'change' : 'payment',
             address: output.addresses![0],
-            amount: formatNetworkAmount(output.value!, account.symbol), // needs to be converted to be used in sedFormActions
-        }));
+            amount: output.value!,
+            formattedAmount: formatNetworkAmount(output.value!, account.symbol),
+        });
+        if (changeOutput) {
+            changeAddress = changeOutput;
+        }
+    });
 
-    // no external outputs (opreturn)
-    if (!outputs.length) return;
+    // TODO: implement possibility to add another utxo (sign totally different transaction)
+    if (!utxo.length || !outputs.length) return;
 
     // calculate fee rate, TODO: add this to blockchain-link tx details
     const feeRate = new BigNumber(tx.fee)
@@ -320,8 +357,10 @@ const getRbfParams = (tx: AccountTransaction, account: Account) => {
 
     // TODO: get other params, like opreturn or locktime? change etc.
     return {
+        txid: tx.txid,
         utxo,
         outputs,
+        changeAddress,
         feeRate,
         baseFee: parseInt(tx.fee, 10),
     };
