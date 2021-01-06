@@ -3,7 +3,7 @@ import { app, shell, Menu, MenuItem } from 'electron';
 const isMac = process.platform === 'darwin';
 
 // @ts-ignore should be fine https://www.electronjs.org/docs/api/menu#main-process
-const menuTemplate: MenuItem[] = [
+const mainMenuTemplate: MenuItem[] = [
     // { role: 'appMenu' }
     ...(isMac
         ? [
@@ -96,4 +96,22 @@ const menuTemplate: MenuItem[] = [
     },
 ];
 
-export const buildMainMenu = () => Menu.buildFromTemplate(menuTemplate);
+// for those wondering why is this a function, it is because otherwise app.name used in the template has incorrect value @trezor/suite-desktop instead of "Trezor Suite"
+export const buildMainMenu = () => Menu.buildFromTemplate(mainMenuTemplate);
+
+export const inputMenu = Menu.buildFromTemplate([
+    { role: 'undo' },
+    { role: 'redo' },
+    { type: 'separator' },
+    { role: 'cut' },
+    { role: 'copy' },
+    { role: 'paste' },
+    { type: 'separator' },
+    { role: 'selectAll' },
+]);
+
+export const selectionMenu = Menu.buildFromTemplate([
+    { role: 'copy' },
+    { type: 'separator' },
+    { role: 'selectAll' },
+]);
