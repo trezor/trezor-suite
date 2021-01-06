@@ -77,7 +77,14 @@ const ReadMore = styled.div`
 
 const MediumLink = styled.a``;
 
-const NewsFeed = () => {
+interface Props {
+    maxVisibleCount?: number;
+}
+
+// Medium API allows you to fetch maximum of 10 latest articles. In dashboard we show 3 posts in a row.
+// It means that the last (10th) posts will be alone in a row. We don't want that.
+// For that reason, limit maximum posts shown to 9.
+const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
     const [visibleCount, incrementVisibleCount] = useState(3);
     const { posts, isError, fetchCount, incrementFetchCount } = useFetchNews();
     const theme = useTheme();
@@ -130,7 +137,8 @@ const NewsFeed = () => {
                     </Post>
                 ))}
             </Posts>
-            {posts.length > visibleCount && (
+            {/* display "Show older news" button only if there are more posts to load and I won't exceed maxVisibleCount by fetching another articles */}
+            {posts.length > visibleCount && visibleCount + 3 <= maxVisibleCount && (
                 <BottomAction>
                     <Button
                         variant="tertiary"
