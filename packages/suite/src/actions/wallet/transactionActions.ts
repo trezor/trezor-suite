@@ -110,6 +110,7 @@ export const replaceTransaction = (
             feeDifference = newBaseFee - action.tx.rbfParams.baseFee;
             action.tx.rbfParams = {
                 ...action.tx.rbfParams,
+                txid: newTxid,
                 baseFee: newBaseFee,
                 feeRate: tx.feePerByte,
             };

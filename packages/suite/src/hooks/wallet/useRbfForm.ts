@@ -3,43 +3,98 @@ import { useForm } from 'react-hook-form';
 import { FormState } from '@wallet-types/sendForm';
 import { useSelector } from '@suite-hooks';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
+import { findChainedTransactions } from '@wallet-utils/transactionUtils';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';
 import { WalletAccountTransaction } from '@wallet-types';
 import { useFees } from './form/useFees';
 import { useCompose } from './form/useCompose';
 
-const useRbfState = (tx: WalletAccountTransaction, finalize: boolean) => {
+const useRbfState = (tx: WalletAccountTransaction, finalize: boolean, currentState: boolean) => {
     const state = useSelector(state => ({
         selectedAccount: state.wallet.selectedAccount,
         fees: state.wallet.fees,
+        transactions: state.wallet.transactions.transactions,
     }));
-    if (state.selectedAccount.status !== 'loaded' || !tx.rbfParams) return;
+    // do not calculate if currentState is already set (prevent re-renders)
+    if (state.selectedAccount.status !== 'loaded' || !tx.rbfParams || currentState) return;
 
     const { account, network } = state.selectedAccount;
     const coinFees = state.fees[account.symbol];
-    const levels = getFeeLevels(account.networkType, coinFees);
+    const origRate = parseInt(tx.rbfParams.feeRate, 10);
+
+    // increase FeeLevels for visual purpose (old rate + defined rate)
+    // it will be decreased in sendFormAction before composing
+    const levels = getFeeLevels(account.networkType, coinFees).map(l => ({
+        ...l,
+        feePerUnit: Number(parseInt(l.feePerUnit, 10) + origRate).toString(),
+    }));
+
+    // override Account data
+    const rbfAccount = {
+        ...account,
+        // use only utxo from original tx
+        utxo: tx.rbfParams.utxo,
+        // make sure that the exact same change output will be picked by trezor-connect > hd-wallet during the tx compose process
+        // fallback to default if change address is not present
+        addresses: account.addresses
+            ? {
+                  ...account.addresses,
+                  change: tx.rbfParams.changeAddress
+                      ? [tx.rbfParams.changeAddress]
+                      : account.addresses.change,
+              }
+            : undefined,
+    };
+
+    // transform original outputs
+    const outputs = tx.rbfParams.outputs.flatMap(o => {
+        if (o.type === 'change') return [];
+        return [
+            {
+                ...DEFAULT_PAYMENT,
+                address: o.address,
+                amount: o.formattedAmount,
+            },
+        ];
+    });
+
+    // find chained transactions for current account
+    const chainedTxs = findChainedTransactions(tx.txid, state.transactions).find(
+        t => t.key === account.key,
+    );
 
     return {
-        account,
-        utxo: tx.rbfParams.utxo, // use only utxo from original tx
+        account: rbfAccount,
         network,
-        feeInfo: { ...coinFees, levels },
+        feeInfo: {
+            ...coinFees,
+            levels,
+            minFee: origRate + coinFees.minFee, // increase required minFee rate
+        },
+        chainedTxs,
         formValues: {
             ...DEFAULT_VALUES,
-            outputs: tx.rbfParams.outputs.map(o => ({ ...DEFAULT_PAYMENT, ...o })), // use outputs from original tx
+            outputs,
             selectedFee: undefined,
             options: finalize ? ['broadcast'] : ['bitcoinRBF', 'broadcast'],
             feePerUnit: '',
             feeLimit: '',
-            baseFee: tx.rbfParams.baseFee,
-            prevTxid: tx.txid,
+            rbfParams: tx.rbfParams,
         } as FormState, // TODO: remove type casting (options string[])
     };
 };
 
 export const useRbf = (tx: WalletAccountTransaction, finalize: boolean) => {
     // local state
-    const [state] = useState(useRbfState(tx, finalize));
+    const [state, setState] = useState<ReturnType<typeof useRbfState>>(undefined);
+
+    // throttle state calculation
+    const initState = useRbfState(tx, finalize, !!state);
+    useEffect(() => {
+        if (!state && initState) {
+            setState(initState);
+        }
+    }, [state, initState]);
 
     // react-hook-form
     const useFormMethods = useForm<FormState>({ mode: 'onChange', shouldUnregister: false });
