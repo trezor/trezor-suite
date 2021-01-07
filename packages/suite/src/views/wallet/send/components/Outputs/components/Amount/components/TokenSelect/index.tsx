@@ -78,6 +78,7 @@ const TokenSelect = ({ output, outputId }: Props) => {
                     <Select
                         options={options}
                         isSearchable
+                        isDisabled={options.length === 1} // disable when account has no tokens to choose from
                         hideTextCursor
                         value={options.find(o => o.value === tokenValue)}
                         isClearable={false}
