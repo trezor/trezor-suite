@@ -104,7 +104,12 @@ const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
         >
             <Posts>
                 {posts.slice(0, visibleCount).map((item, index) => (
-                    <Post key={item.link} target="_blank" href={item.link} data-test={`@dashboard/news/post/${index}`} >
+                    <Post
+                        key={item.link}
+                        target="_blank"
+                        href={item.link}
+                        data-test={`@dashboard/news/post/${index}`}
+                    >
                         <Image src={item.thumbnail} />
                         <Content>
                             <Title>
