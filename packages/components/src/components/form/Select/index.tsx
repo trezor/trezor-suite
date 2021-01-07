@@ -281,8 +281,8 @@ const Select = ({
             // Save current timestamp to lastKeyPressTime variable
             lastKeyPressTimestamp.current = currentTimestamp;
 
-            // If user didn't type anything for 0.5 seconds, set searchedValue to just pressed key, otherwise add the new value to the old one
-            if (timeSincePreviousKeyPress > 500) {
+            // If user didn't type anything for 0.8 seconds, set searchedValue to just pressed key, otherwise add the new value to the old one
+            if (timeSincePreviousKeyPress > 800) {
                 searchedTerm.current = charValue;
             } else {
                 searchedTerm.current += charValue;
@@ -320,9 +320,6 @@ const Select = ({
                         optionsToSearchThrough,
                         searchedTerm.current
                     );
-
-                    // If no option to focus on was found, clear the searchedValue
-                    if (!optionToFocusOn) searchedTerm.current = '';
 
                     // Also get the last option, so I can scroll to it later
                     const lastOption = optionsToSearchThrough[optionsToSearchThrough.length - 1];
