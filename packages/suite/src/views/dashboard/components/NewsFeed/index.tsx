@@ -103,8 +103,8 @@ const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
             }
         >
             <Posts>
-                {posts.slice(0, visibleCount).map(item => (
-                    <Post key={item.link} target="_blank" href={item.link}>
+                {posts.slice(0, visibleCount).map((item, index) => (
+                    <Post key={item.link} target="_blank" href={item.link} data-test={`@dashboard/news/post/${index}`} >
                         <Image src={item.thumbnail} />
                         <Content>
                             <Title>
@@ -146,6 +146,7 @@ const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
                             incrementVisibleCount(visibleCount + 3);
                             incrementFetchCount(fetchCount + 3);
                         }}
+                        data-test="@dashboard/news/show-older-news-button"
                     >
                         <Translation id="TR_SHOW_OLDER_NEWS" />
                     </Button>

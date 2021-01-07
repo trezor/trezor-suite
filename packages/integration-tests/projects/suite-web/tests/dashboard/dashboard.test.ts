@@ -9,11 +9,11 @@ describe('Dashboard', () => {
         cy.task('startBridge');
 
         cy.viewport(1024, 768).resetDb();
+        cy.prefixedVisit('/');
+        cy.passThroughInitialRun();
     });
 
     it('Security cards', () => {
-        cy.prefixedVisit('/');
-        cy.passThroughInitialRun();
         // disabled until discovery ends
         cy.getTestElement('@dashboard/security-card/backup/button').should('be.disabled');
         cy.getTestElement('@dashboard/security-card/pin/button').should('be.disabled');
@@ -43,6 +43,22 @@ describe('Dashboard', () => {
         // QA todo: discreet @dashboard/security-card/toggle-discreet/button
     });
 
-    // QA todo: test for news
+    it('Trezor News', () => {
+        cy.getTestElement(`@dashboard/news/post/0`);
+        cy.getTestElement(`@dashboard/news/post/1`);
+        cy.getTestElement(`@dashboard/news/post/2`);
+        cy.getTestElement(`@dashboard/news/post/3`).should('not.exist');
+        cy.getTestElement('@dashboard/news/show-older-news-button').click();
+        cy.getTestElement(`@dashboard/news/post/3`);
+        cy.getTestElement(`@dashboard/news/post/4`);
+        cy.getTestElement(`@dashboard/news/post/5`);
+        cy.getTestElement(`@dashboard/news/post/6`).should('not.exist');
+        cy.getTestElement('@dashboard/news/show-older-news-button').click();
+        cy.getTestElement(`@dashboard/news/post/6`);
+        cy.getTestElement(`@dashboard/news/post/7`);
+        cy.getTestElement(`@dashboard/news/post/8`);
+        cy.getTestElement(`@dashboard/news/post/9`).should('not.exist');
+    });
+
     // QA todo: test for graph
 });
