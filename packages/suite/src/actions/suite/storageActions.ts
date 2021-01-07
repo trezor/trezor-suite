@@ -283,6 +283,10 @@ export const removeDatabase = () => async (dispatch: Dispatch, getState: GetStat
     );
 };
 
+export const loadSuiteSettings = () => {
+    return db.getItemByPK('suiteSettings', 'suite');
+};
+
 export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) => {
     const isDBAvailable = await SuiteDB.isDBAvailable();
 
@@ -297,7 +301,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
         });
     } else {
         //  load state from database
-        const suite = await db.getItemByPK('suiteSettings', 'suite');
+        const suite = await loadSuiteSettings();
         const devices = await db.getItemsExtended('devices');
         const accounts = await db.getItemsExtended('accounts');
         const discovery = await db.getItemsExtended('discovery');

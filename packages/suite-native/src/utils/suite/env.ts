@@ -1,4 +1,5 @@
 import { Platform } from 'react-native';
+import { SuiteThemeVariant } from '@suite-types';
 
 /**
  * override for suite/utils/env - getUserAgent
@@ -62,4 +63,9 @@ export const submitRequestForm = (
  */
 export const setOnBeforeUnloadListener = (_callback: () => void) => {
     // todo:
+};
+
+export const getOSTheme = (): SuiteThemeVariant => {
+    // todo
+    return 'light';
 };

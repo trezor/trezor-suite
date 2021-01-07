@@ -28,6 +28,7 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
 
     switch (action.type) {
         case SUITE.INIT:
+            api.dispatch(suiteActions.setInitialTheme());
             // load storage
             api.dispatch(loadStorage());
             break;
