@@ -33,6 +33,9 @@ __docker-snapshots__
 __pycache__/
 .cache/
 
+# Reports
+report.*.json
+
 # model 1 emulation file
 docker/trezor-user-env/controller/emulator.img
 
