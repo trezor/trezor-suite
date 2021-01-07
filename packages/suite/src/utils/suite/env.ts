@@ -1,3 +1,5 @@
+import { SuiteThemeVariant } from '@suite-types';
+
 /**
  * method does not do much, but still it is useful as we do not
  * have navigator.userAgent in native. This way we may define
@@ -103,4 +105,13 @@ export const submitRequestForm = async (
  */
 export const setOnBeforeUnloadListener = (callback: () => void) => {
     window.addEventListener('beforeunload', callback);
+};
+
+export const getOSTheme = (): SuiteThemeVariant => {
+    if (typeof window === 'undefined') return 'light'; // in SSR, where window object is not defined, just return light theme
+    // retrieving os color scheme is supported in Chrome 76+, Firefox 67+
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
+    }
+    return 'light';
 };
