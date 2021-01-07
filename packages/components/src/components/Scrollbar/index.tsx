@@ -24,6 +24,9 @@ const scrollbarStyles = css`
     ::-webkit-scrollbar-button {
         display: none;
     }
+    ::-webkit-scrollbar-corner {
+        background: transparent;
+    }
 
     /* firefox, first one is thumb, second color is track */
     scrollbar-color: ${props => props.theme.SCROLLBAR_THUMB} transparent;
