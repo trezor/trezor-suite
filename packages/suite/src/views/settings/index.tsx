@@ -118,6 +118,7 @@ const Settings = ({
                                     },
                                 });
                             }}
+                            data-test="@settings/language-select"
                         />
                     </ActionColumn>
                 </SectionItem>

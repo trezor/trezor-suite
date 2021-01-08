@@ -18,4 +18,14 @@ describe('General settings', () => {
         cy.getTestElement('@suite/menu/suite-index').click();
         cy.getTestElement('@dashboard/index').should('contain', '€0.00');
     });
+
+    it('Change language', () => {
+        cy.getTestElement('@settings/language-select/input').should('contain', 'English');
+    });
+
+    it('Change language', () => {
+        cy.getTestElement('@theme/dark-mode-switch').should("not.be.checked");
+        cy.getTestElement('@theme/dark-mode-switch').click({ force: true });
+        cy.getTestElement('@theme/dark-mode-switch').should("be.checked");
+    });
 });

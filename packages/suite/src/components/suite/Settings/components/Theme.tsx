@@ -26,6 +26,7 @@ const Theme = () => {
             <ActionColumn>
                 <PositionedSwitch>
                     <Switch
+                    data-test="@theme/dark-mode-switch"
                         checked={isDarkModeEnabled}
                         onChange={() => {
                             if (isDarkModeEnabled) {
@@ -34,6 +35,7 @@ const Theme = () => {
                                 setTheme('dark');
                             }
                         }}
+                        
                     />
                 </PositionedSwitch>
             </ActionColumn>
