@@ -9,7 +9,9 @@ describe('Google api errors', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
         cy.task('startEmu', { wipe: true });
-        cy.task('setupEmu');
+        cy.task('setupEmu', {
+            mnemonic: 'all all all all all all all all all all all all',
+        });
         cy.task('startBridge');
         cy.task('metadataStartProvider', 'dropbox');
         cy.prefixedVisit('/accounts', {

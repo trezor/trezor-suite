@@ -19,7 +19,9 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
         it(f.provider, () => {
             // prepare test
             cy.task('startEmu', { wipe: true });
-            cy.task('setupEmu');
+            cy.task('setupEmu', {
+                mnemonic: 'all all all all all all all all all all all all',
+            });
             cy.task(`metadataStartProvider`, f.provider);
             cy.task('startBridge');
 
@@ -62,9 +64,7 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             cy.getTestElement('@metadata/submit').click();
             cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'even cooler');
             cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/success").should('be.visible');
-            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/success").should(
-                'not.exist',
-            );
+            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/success").should('not.exist');
 
             cy.log('Now edit and press escape, should not save');
             cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'").click();
@@ -110,12 +110,8 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             cy.getTestElement('@metadata/input').type('typing into one input{enter}');
             cy.getTestElement("@metadata/accountLabel/m/49'/0'/0'/success").should('be.visible');
             cy.getTestElement('@account-menu/btc/segwit/1').click();
-            cy.getTestElement("@metadata/accountLabel/m/49'/0'/1'/success").should(
-                'not.exist',
-            );
-            cy.getTestElement("@metadata/accountLabel/m/49'/0'/0'/success").should(
-                'not.exist',
-            );
+            cy.getTestElement("@metadata/accountLabel/m/49'/0'/1'/success").should('not.exist');
+            cy.getTestElement("@metadata/accountLabel/m/49'/0'/0'/success").should('not.exist');
 
             // go to another route that triggers discovery and check whether there are any requests to metadata providers
             cy.getTestElement('@suite/menu/suite-index').click();

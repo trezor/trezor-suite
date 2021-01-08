@@ -28,7 +28,9 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
         it(`${f.provider}-${f.desc}`, () => {
             // prepare test
             cy.task('startEmu', { wipe: true });
-            cy.task('setupEmu');
+            cy.task('setupEmu', {
+                mnemonic: 'all all all all all all all all all all all all',
+            });
             cy.task('startBridge');
             cy.task('metadataStartProvider', f.provider);
             cy.clock();
@@ -57,7 +59,7 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
                 'Wait for discovery to finish. There is "add label" button, but no actual metadata appeared',
             );
             cy.discoveryShouldFinish();
-            
+
             cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click({
                 force: true,
             });

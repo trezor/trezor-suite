@@ -100,7 +100,8 @@ module.exports = on => {
         },
         setupEmu: async options => {
             const defaults = {
-                mnemonic: 'all all all all all all all all all all all all',
+                // some random empty seed. most of the test don't need any account history so it is better not to slow them down with all all seed
+                mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
                 pin: '',
                 passphrase_protection: false,
                 label: 'My Trevor',

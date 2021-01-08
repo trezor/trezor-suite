@@ -10,7 +10,9 @@ describe('Dropbox api errors', () => {
 
     it('Malformed token', () => {
         cy.task('startEmu', { wipe: true });
-        cy.task('setupEmu');
+        cy.task('setupEmu', {
+            mnemonic: 'all all all all all all all all all all all all',
+        });
         cy.task('startBridge');
         cy.task('metadataStartProvider', 'dropbox');
         // prepare some initial files

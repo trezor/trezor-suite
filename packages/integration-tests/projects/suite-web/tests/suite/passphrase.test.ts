@@ -9,7 +9,7 @@ describe('Passphrase', () => {
         // note that versions before 2.3.1 don't have passphrase caching, this means that returning
         // back to passphrase that was used before in the session would require to type the passphrase again
         cy.task('startEmu', { wipe: true, version: '2.3.1' });
-        cy.task('setupEmu');
+        cy.task('setupEmu', { mnemonic: 'all all all all all all all all all all all all' });
         cy.task('startBridge');
 
         // eslint-disable-next-line @typescript-eslint/naming-convention

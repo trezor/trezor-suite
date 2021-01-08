@@ -16,7 +16,9 @@ describe('Metadata - address labeling', () => {
         it(provider, () => {
             // prepare test
             cy.task('startEmu', { wipe: true });
-            cy.task('setupEmu');
+            cy.task('setupEmu', {
+                mnemonic: 'all all all all all all all all all all all all',
+            });
             cy.task('startBridge');
             cy.task('metadataStartProvider', provider);
             cy.prefixedVisit('/accounts', {

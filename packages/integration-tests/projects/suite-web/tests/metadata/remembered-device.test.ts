@@ -25,7 +25,9 @@ On disable, it throws away all metadata related records from memory.`, () => {
             // prepare test
             cy.task('stopBridge');
             cy.task('startEmu', { wipe: true });
-            cy.task('setupEmu');
+            cy.task('setupEmu', {
+                mnemonic: 'all all all all all all all all all all all all',
+            });
             cy.task('startBridge');
             cy.task('metadataStartProvider', f.provider);
             cy.task('metadataSetFileContent', {
@@ -52,9 +54,9 @@ On disable, it throws away all metadata related records from memory.`, () => {
             cy.log(
                 'Wait for discovery to finish. There is "add label" button, but no actual metadata appeared',
             );
-           
+
             cy.discoveryShouldFinish();
-            
+
             cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
 
             cy.log('Go to settings and enable metadata');

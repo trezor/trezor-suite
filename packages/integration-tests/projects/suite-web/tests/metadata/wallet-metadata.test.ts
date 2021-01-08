@@ -14,7 +14,9 @@ describe('Metadata - wallet labeling', () => {
         it(provider, () => {
             // prepare test
             cy.task('startEmu', { wipe: true, version: '2.3.1' });
-            cy.task('setupEmu');
+            cy.task('setupEmu', {
+                mnemonic: 'all all all all all all all all all all all all',
+            });
             cy.task('startBridge');
             cy.task('metadataStartProvider', provider);
 
