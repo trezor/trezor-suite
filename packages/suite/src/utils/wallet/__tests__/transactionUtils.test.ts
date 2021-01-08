@@ -52,8 +52,8 @@ describe('transaction utils', () => {
     const transactions = stMock.transactions as WalletAccountTransaction[];
     const metadata = stMock.metadata as AccountMetadata;
     fixtures.searchTransactions.forEach(f => {
-        it(`searchTransactions - ${f.description}`, () => {
-            const search = utils.searchTransactions(transactions, metadata, f.search);
+        it(`simpleSearchTransactions - ${f.description}`, () => {
+            const search = utils.simpleSearchTransactions(transactions, metadata, f.search);
 
             if (f.result) {
                 expect(search.length).toBe(f.result.length);

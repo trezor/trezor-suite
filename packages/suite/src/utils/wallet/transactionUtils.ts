@@ -5,6 +5,7 @@ import { AccountMetadata } from '@suite-types/metadata';
 import { getDateWithTimeZone } from '../suite/date';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { formatAmount, formatNetworkAmount } from './accountUtils';
+import { tr } from 'date-fns/locale';
 
 export const sortByBlockHeight = (a: WalletAccountTransaction, b: WalletAccountTransaction) => {
     // if both are missing the blockHeight don't change their order
@@ -457,7 +458,7 @@ const numberSearchFilter = (
 };
 
 const searchDateRegex = new RegExp(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/);
-export const searchTransactions = (
+export const simpleSearchTransactions = (
     transactions: WalletAccountTransaction[],
     accountMetadata: AccountMetadata,
     search: string,
@@ -571,4 +572,53 @@ export const searchTransactions = (
     return transactions.filter(
         t => [...new Set(txsToSearch)].includes(t.txid) || t.txid.includes(search),
     );
+};
+
+export const advancedSearchTransactions = (
+    transactions: WalletAccountTransaction[],
+    accountMetadata: AccountMetadata,
+    search: string,
+) => {
+    // No AND/OR operators, just run a simple search
+    if (!search.includes('&') && !search.includes('|')) {
+        return simpleSearchTransactions(transactions, accountMetadata, search);
+    }
+
+    // Split by OR operator first
+    let orSplit = search.split('|').filter(s => s.trim() !== '');
+    if (!orSplit || orSplit.length === 1) {
+        orSplit = [search.replace('|', '')];
+    }
+
+    // Get all TxIDs matching the searches
+    const filteredTxIDs = new Set([
+        ...orSplit.flatMap(or => {
+            // And searches (only keep results that appear X (split) times)
+            const andSplit = or.split('&');
+            if (!andSplit || andSplit.length === 1) {
+                return simpleSearchTransactions(
+                    transactions,
+                    accountMetadata,
+                    or.replace('&', ''),
+                ).flatMap(t => t.txid);
+            }
+
+            const andTxs = andSplit.flatMap(and =>
+                simpleSearchTransactions(transactions, accountMetadata, and).map(t => t.txid),
+            );
+
+            const transactionCount: { [txid: string]: number } = {};
+            return andTxs.filter(txid => {
+                if (!transactionCount[txid]) {
+                    transactionCount[txid] = 0;
+                }
+
+                transactionCount[txid]++;
+
+                return transactionCount[txid] === andSplit.length;
+            });
+        }),
+    ]);
+
+    return transactions.filter(t => filteredTxIDs.has(t.txid));
 };
