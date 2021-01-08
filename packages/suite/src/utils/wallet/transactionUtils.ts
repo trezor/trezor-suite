@@ -422,7 +422,7 @@ const groupAddressesByLabel = (accountMetadata: AccountMetadata) => {
     return labels;
 };
 
-const searchOperators = ['<', '>', '='] as const;
+const searchOperators = ['<', '>', '=', '!='] as const;
 const numberSearchFilter = (
     transaction: WalletAccountTransaction,
     amount: BigNumber,
@@ -450,6 +450,8 @@ const numberSearchFilter = (
             return bnTargetAmount.gte(amount);
         case '=':
             return bnTargetAmount.eq(amount);
+        case '!=':
+            return !bnTargetAmount.eq(amount);
         // no default
     }
 };
@@ -496,6 +498,12 @@ export const searchTransactions = (
                             t.blockTime &&
                             t.blockTime > timestamp &&
                             t.blockTime < timestamp + 24 * 60 * 60,
+                    );
+                case '!=':
+                    return transactions.filter(
+                        t =>
+                            t.blockTime &&
+                            (t.blockTime < timestamp || t.blockTime > timestamp + 24 * 60 * 60),
                     );
                 // no default
             }

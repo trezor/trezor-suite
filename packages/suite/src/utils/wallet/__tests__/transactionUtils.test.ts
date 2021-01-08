@@ -55,10 +55,16 @@ describe('transaction utils', () => {
         it(`searchTransactions - ${f.description}`, () => {
             const search = utils.searchTransactions(transactions, metadata, f.search);
 
-            expect(search.length).toBe(f.result.length);
-            search.forEach((t, i) => {
-                expect(t.txid).toBe(f.result[i]);
-            });
+            if (f.result) {
+                expect(search.length).toBe(f.result.length);
+                search.forEach((t, i) => {
+                    expect(t.txid).toBe(f.result[i]);
+                });
+            } else if (f.notResult) {
+                search.forEach((t, i) => {
+                    expect(t.txid).not.toBe(f.notResult[i]);
+                });
+            }
         });
     });
 });
