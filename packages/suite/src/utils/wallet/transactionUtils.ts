@@ -454,6 +454,7 @@ const numberSearchFilter = (
     }
 };
 
+const searchDateRegex = new RegExp(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/);
 export const searchTransactions = (
     transactions: WalletAccountTransaction[],
     accountMetadata: AccountMetadata,
@@ -461,6 +462,14 @@ export const searchTransactions = (
 ) => {
     if (search === '') {
         return transactions;
+    }
+
+    // Check for date
+    if (searchDateRegex.test(search)) {
+        const timestamp = +new Date(`${search}T00:00:00Z`) / 1000;
+        return transactions.filter(
+            t => t.blockTime && t.blockTime > timestamp && t.blockTime < timestamp + 24 * 60 * 60,
+        );
     }
 
     // If it's an amount search (starting with <, > or = operator)

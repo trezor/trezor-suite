@@ -542,4 +542,12 @@ export const searchTransactions = [
             '43d273d3caf41759ad843474f960fbf80ff2ec961135d018b61e9fab3ad1fc06', // -0.1 TEST
         ],
     },
+    {
+        description: 'Date search',
+        search: '2020-12-03',
+        result: [
+            '9438960e985b1de4e118cbcedf6122c2467477d768d262863ee13e981b6c2816',
+            '5be0cfd5b439c3112cfaea3cd05fdcea387433990885c86937d2488c59f1e692',
+        ],
+    },
 ];
