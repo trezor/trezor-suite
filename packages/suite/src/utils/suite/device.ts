@@ -301,7 +301,7 @@ export const getFirstDeviceInstance = (devices: TrezorDevice[]) => {
         .sort(sortByPriority);
 };
 
-export const isBitcoinOnly = (device: TrezorDevice) => {
+export const isBitcoinOnly = (device: TrezorDevice | Device) => {
     const { features } = device;
     return !!(
         features &&
