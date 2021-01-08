@@ -16,7 +16,9 @@ describe('Metadata - Output labeling', () => {
                 '@metadata/outputLabel/9f472739fa7034dfb9736fa4d98915f2e8ddf70a86ee5e0a9ac0634f8c1d0007-0/add-label-button';
             // prepare test
             cy.task('startEmu', { wipe: true });
-            cy.task('setupEmu');
+            cy.task('setupEmu', {
+                mnemonic: 'all all all all all all all all all all all all',
+            });
             cy.task('startBridge');
             cy.task('metadataStartProvider', provider);
 

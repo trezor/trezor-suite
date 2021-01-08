@@ -4,7 +4,11 @@
 describe('Dashboard', () => {
     beforeEach(() => {
         cy.task('startEmu', { version: '2.3.1', wipe: true });
-        cy.task('setupEmu', { needs_backup: true });
+        cy.task('setupEmu', {
+            needs_backup: true,
+            mnemonic: 'all all all all all all all all all all all all',
+        });
+
         cy.task('applySettings', { passphrase_always_on_device: false });
         cy.task('startBridge');
 
@@ -61,4 +65,5 @@ describe('Dashboard', () => {
     });
 
     // QA todo: test for graph
+    // QA todo: dashboard appearance for seed with tx history vs seed without tx history
 });

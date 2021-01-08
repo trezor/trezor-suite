@@ -6,7 +6,9 @@
 describe('Recovery - dry run', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true, version: '2.3.1' });
-        cy.task('setupEmu');
+        cy.task('setupEmu', {
+            mnemonic: 'all all all all all all all all all all all all',
+        });
         cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
     });
