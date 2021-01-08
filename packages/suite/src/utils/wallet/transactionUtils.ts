@@ -422,11 +422,11 @@ const groupAddressesByLabel = (accountMetadata: AccountMetadata) => {
     return labels;
 };
 
-const numberSearchOperators = ['<', '>', '='] as const;
+const searchOperators = ['<', '>', '='] as const;
 const numberSearchFilter = (
     transaction: WalletAccountTransaction,
     amount: BigNumber,
-    operator: typeof numberSearchOperators[number],
+    operator: typeof searchOperators[number],
 ) => {
     const targetAmount = getTargetAmount(transaction.targets[0], transaction);
     if (!targetAmount) {
@@ -460,23 +460,54 @@ export const searchTransactions = (
     accountMetadata: AccountMetadata,
     search: string,
 ) => {
-    if (search === '') {
+    // Trim
+    search = search.trim();
+
+    // If the string is empty or only contains search operators, there's no search
+    if (['', ...searchOperators].includes(search)) {
         return transactions;
     }
 
     // Check for date
     if (searchDateRegex.test(search)) {
-        const timestamp = +new Date(`${search}T00:00:00Z`) / 1000;
-        return transactions.filter(
-            t => t.blockTime && t.blockTime > timestamp && t.blockTime < timestamp + 24 * 60 * 60,
-        );
+        // Add search operator so it gets picked up below
+        search = `=${search}`;
     }
 
     // If it's an amount search (starting with <, > or = operator)
-    const amountOperator = numberSearchOperators.find(k => search.startsWith(k));
-    if (amountOperator) {
-        const amount = new BigNumber(search.replace(amountOperator, ''));
-        return transactions.filter(t => numberSearchFilter(t, amount, amountOperator));
+    const searchOperator = searchOperators.find(k => search.startsWith(k));
+    if (searchOperator) {
+        // Remove search operator from search string
+        search = search.replace(searchOperator, '').trim();
+
+        // Is date?
+        if (searchDateRegex.test(search)) {
+            const timestamp = +new Date(`${search}T00:00:00Z`) / 1000;
+            switch (searchOperator) {
+                case '>':
+                    return transactions.filter(t => t.blockTime && t.blockTime > timestamp);
+                case '<':
+                    return transactions.filter(
+                        t => t.blockTime && t.blockTime < timestamp + 24 * 60 * 60,
+                    );
+                case '=':
+                    return transactions.filter(
+                        t =>
+                            t.blockTime &&
+                            t.blockTime > timestamp &&
+                            t.blockTime < timestamp + 24 * 60 * 60,
+                    );
+                // no default
+            }
+        }
+
+        // Is number?
+        if (!Number.isNaN(search)) {
+            const amount = new BigNumber(search);
+            return transactions.filter(t => numberSearchFilter(t, amount, searchOperator));
+        }
+
+        return [];
     }
 
     const txsToSearch: string[] = [];
@@ -528,6 +559,7 @@ export const searchTransactions = (
     });
     txsToSearch.push(...foundTxsForAddress);
 
+    // Remove duplicate txIDs
     return transactions.filter(
         t => [...new Set(txsToSearch)].includes(t.txid) || t.txid.includes(search),
     );

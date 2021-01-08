@@ -550,4 +550,21 @@ export const searchTransactions = [
             '5be0cfd5b439c3112cfaea3cd05fdcea387433990885c86937d2488c59f1e692',
         ],
     },
+    {
+        description: 'After date search',
+        search: '> 2020-12-14',
+        result: [
+            '62431e78bb13a4fdd9c87517db1ea70b4cb5763227327da35748c96497c6ea9a', // 2020-12-27
+            'f5cea29dec1d4e8b83a81b61627caf36adc33085284bde2969ae5beb75bd413c', // 2020-12-14
+        ],
+    },
+    {
+        description: 'Before date search',
+        search: '< 2018-03-20',
+        result: [
+            '575df1986c414f1d74bebc2229d794e423a2371fb51bac1d3b517e5cca51b5ea', // 2020-03-16
+            '43d273d3caf41759ad843474f960fbf80ff2ec961135d018b61e9fab3ad1fc06', // 2020-03-02
+            'e294c4c172c3d87991b0369e45d6af8584be92914d01e3060fad1ed31d12ff00', // 2020-03-02
+        ],
+    },
 ];
