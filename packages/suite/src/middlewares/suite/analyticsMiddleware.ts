@@ -53,7 +53,7 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                             .getState()
                             .devices.filter(d => d.remember && !d.useEmptyPassphrase).length,
                         theme: state.suite.settings.theme.variant,
-                        suiteVersion: process.env.version ? process.env.version : '',
+                        suiteVersion: process.env.version || '',
                     },
                 }),
             );
@@ -70,12 +70,8 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
             );
             break;
         case DEVICE.CONNECT: {
-            const { features, mode, id } = action.payload;
-
-            // Find a device with the ID that is equal to the ID in action.payload
-            // I can't use action.payload in isBitcoinOnly() because it has a different type (Device). isBitcoinOnly() expects TrezorDevice
-            const connectedDevice = state.devices.find(device => device.id === id);
-            const isBtcOnly = connectedDevice ? isBitcoinOnly(connectedDevice) : false;
+            const { features, mode } = action.payload;
+            const isBtcOnly = isBitcoinOnly(action.payload);
 
             if (features && mode !== 'bootloader') {
                 api.dispatch(
