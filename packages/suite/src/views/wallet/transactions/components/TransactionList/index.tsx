@@ -7,7 +7,10 @@ import { AccountExceptionLayout } from '@wallet-components';
 import { Section } from '@dashboard-components';
 import { useSelector, useActions } from '@suite-hooks';
 import * as transactionActions from '@wallet-actions/transactionActions';
-import { groupTransactionsByDate, searchTransactions } from '@wallet-utils/transactionUtils';
+import {
+    groupTransactionsByDate,
+    advancedSearchTransactions,
+} from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
 import { WalletAccountTransaction, Account } from '@wallet-types';
 
@@ -54,7 +57,7 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Props) 
     const [search, setSearch] = useState('');
     const isSearching = search !== '';
     const fitleredTransactions = useMemo(
-        () => searchTransactions(transactions, account.metadata, search),
+        () => advancedSearchTransactions(transactions, account.metadata, search),
         [transactions, account.metadata, search],
     );
 
