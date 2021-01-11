@@ -3,7 +3,6 @@ import styled, { css } from 'styled-components';
 import { Stack } from '@suite-components/Skeleton';
 import { Card } from '@trezor/components';
 import { Translation } from '@suite-components';
-import { AccountExceptionLayout } from '@wallet-components';
 import { Section } from '@dashboard-components';
 import { useSelector, useActions } from '@suite-hooks';
 import * as transactionActions from '@wallet-actions/transactionActions';
@@ -19,6 +18,7 @@ import TransactionItem from './components/TransactionItem';
 import Pagination from './components/Pagination';
 import TransactionsGroup from './components/TransactionsGroup';
 import SkeletonTransactionItem from './components/SkeletonTransactionItem';
+import NoSearchResults from './components/NoSearchResults';
 
 const StyledCard = styled(Card)<{ isPending: boolean }>`
     flex-direction: column;
@@ -131,10 +131,7 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Props) 
             ) : (
                 <>
                     {transactions.length > 0 && fitleredTransactions.length === 0 ? (
-                        <AccountExceptionLayout
-                            title={<Translation id="TR_NO_SEARCH_RESULTS" />}
-                            image="UNI_WARNING"
-                        />
+                        <NoSearchResults />
                     ) : (
                         Object.keys(transactionsByDate).map(dateKey => {
                             const isPending = dateKey === 'pending';

@@ -1,13 +1,14 @@
 import React, { useState, useCallback, useRef } from 'react';
 import styled, { css } from 'styled-components';
-import { Input, Icon, useTheme } from '@trezor/components';
+import { Input, Icon, useTheme, Tooltip } from '@trezor/components';
 import { useActions } from '@suite-hooks';
 import { useTranslation } from '@suite-hooks/useTranslation';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import { Account } from '@wallet-types';
+import { Translation } from '@suite-components';
 import { isEnabled } from '@suite-utils/features';
-import { useOnClickOutside } from '@suite/utils/suite/dom';
+import { useOnClickOutside } from '@suite-utils/dom';
 
 const Wrapper = styled.div<{ expanded: boolean }>`
     margin-right: 20px;
@@ -105,23 +106,25 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
             }}
             expanded={expanded}
         >
-            <StyledInput
-                expanded={expanded}
-                variant="small"
-                innerRef={inputRef}
-                innerAddon={<Icon icon="SEARCH" size={16} color={theme.TYPE_DARK_GREY} />}
-                placeholder={expanded ? translationString('TR_SEARCH_TRANSACTIONS') : undefined}
-                onChange={onSearch}
-                value={search}
-                addonAlign="left"
-                textIndent={[16, 14]}
-                noError
-                noTopLabel
-                clearButton
-                onClear={() => {
-                    setSearch('');
-                }}
-            />
+            <Tooltip placement="top" content={<Translation id="TR_TRANSACTIONS_SEARCH_TOOLTIP" />}>
+                <StyledInput
+                    expanded={expanded}
+                    variant="small"
+                    innerRef={inputRef}
+                    innerAddon={<Icon icon="SEARCH" size={16} color={theme.TYPE_DARK_GREY} />}
+                    placeholder={expanded ? translationString('TR_SEARCH_TRANSACTIONS') : undefined}
+                    onChange={onSearch}
+                    value={search}
+                    addonAlign="left"
+                    textIndent={[16, 14]}
+                    noError
+                    noTopLabel
+                    clearButton
+                    onClear={() => {
+                        setSearch('');
+                    }}
+                />
+            </Tooltip>
         </Wrapper>
     );
 };
