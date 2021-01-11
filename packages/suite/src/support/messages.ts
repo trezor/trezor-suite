@@ -5178,6 +5178,61 @@ const definedMessages = defineMessages({
         id: 'TR_NO_SEARCH_RESULTS',
         defaultMessage: 'No results for your search criterias',
     },
+    TR_TRANSACTIONS_SEARCH_TOOLTIP: {
+        id: 'TR_TRANSACTIONS_SEARCH_TOOLTIP',
+        defaultMessage:
+            'Search by transaction ID, label or amount or use operators such as < > | & = !=.',
+    },
+    TR_TRANSACTIONS_SEARCH_TIP_1: {
+        id: 'TR_TRANSACTIONS_SEARCH_TIP_1',
+        defaultMessage:
+            'Tip: You can search for transaction IDs, addresses, labels, amounts and dates.',
+    },
+    TR_TRANSACTIONS_SEARCH_TIP_2: {
+        id: 'TR_TRANSACTIONS_SEARCH_TIP_2',
+        defaultMessage:
+            'Tip: You can use the greater than (>) and lesser than (<) symbols on amount searches. For example <strong>> 1<strong> will show all transactions that have an amount of 1 or higher.',
+    },
+    TR_TRANSACTIONS_SEARCH_TIP_3: {
+        id: 'TR_TRANSACTIONS_SEARCH_TIP_3',
+        defaultMessage:
+            'Tip: You can search for exact amounts using the equal (=) symbol. For example <strong>= 0.01</strong> will show only transactions that have an amount of exactly 0.01.',
+    },
+    TR_TRANSACTIONS_SEARCH_TIP_4: {
+        id: 'TR_TRANSACTIONS_SEARCH_TIP_4',
+        defaultMessage:
+            'Tip: You can exclude an amount by using the exlamation mark and equal symbols together (!=). For example <strong>= -0.01</strong> will show all transactions except the ones with an amount of -0.01.',
+    },
+    TR_TRANSACTIONS_SEARCH_TIP_5: {
+        id: 'TR_TRANSACTIONS_SEARCH_TIP_5',
+        defaultMessage:
+            'Tip: Dates can be searched using the <strong>YYYY-MM-DD</strong> format. For example <strong>2020-12-14</strong> will show all transactions on December 14th, 2020.',
+    },
+    TR_TRANSACTIONS_SEARCH_TIP_6: {
+        id: 'TR_TRANSACTIONS_SEARCH_TIP_6',
+        defaultMessage:
+            'Tip: You can use greater than (>) and lesser than (<) symbols on date searches. For example <strong>> 2020-12-01<strong> will show all transactions on and after December 1st, 2020.',
+    },
+    TR_TRANSACTIONS_SEARCH_TIP_7: {
+        id: 'TR_TRANSACTIONS_SEARCH_TIP_7',
+        defaultMessage:
+            'Tip: You can exclude a date by using the exlamation mark and equal symbols together (!=). For example <strong>!= 2020-12-14</strong> will show all transactions except the ones on December 14th, 2020.',
+    },
+    TR_TRANSACTIONS_SEARCH_TIP_8: {
+        id: 'TR_TRANSACTIONS_SEARCH_TIP_8',
+        defaultMessage:
+            'Tip: You can display results matching at least one of multiple searches by grouping them with the OR operator (|). For example <strong>2020-12-31 | 2021-01-01</strong> will show all transactions that have happened on the 31st of December 2020 or 1st of January 2021.',
+    },
+    TR_TRANSACTIONS_SEARCH_TIP_9: {
+        id: 'TR_TRANSACTIONS_SEARCH_TIP_9',
+        defaultMessage:
+            'Tip: You can display results matching multiple searches by grouping them with the AND operator (&). For example <strong>> 2020-12-01 & < 2020-12-31 & > 0</strong> will show all incoming (amount higher than 0) transactions in December 2020.',
+    },
+    TR_TRANSACTIONS_SEARCH_TIP_10: {
+        id: 'TR_TRANSACTIONS_SEARCH_TIP_10',
+        defaultMessage:
+            'Tip: You can combine AND (&) and OR (|) operators for more complex searches. For example For example <strong>> 2020-12-01 & < 2020-12-31 | > 2020-12-01 & < 2020-12-31</strong> will show all all transactions in January 2020 or December 2020.',
+    },
 } as const);
 
 export default definedMessages;

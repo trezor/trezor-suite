@@ -19,3 +19,5 @@ export const getAnalyticsRandomId = () => {
 export const getCodeChallenge = () => {
     return getRandomId(128);
 };
+
+export const getRandomNumberInRange = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min; 
