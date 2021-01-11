@@ -8,7 +8,7 @@ import * as transactionActions from '@wallet-actions/transactionActions';
 import { Account } from '@wallet-types';
 import { Translation } from '@suite-components';
 import { isEnabled } from '@suite-utils/features';
-import { useOnClickOutside } from '@suite-utils/dom';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 const Wrapper = styled.div<{ expanded: boolean }>`
     margin-right: 20px;
@@ -54,11 +54,34 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
     // const [isSearchFetching, setIsSearchFetching] = useState(false);
     const [, setIsSearchFetching] = useState(false);
 
-    useOnClickOutside([wrapperRef], () => {
-        if (!search) {
+    const onFocus = useCallback(() => {
+        setExpanded(true);
+        if (search !== '' && inputRef.current) {
+            inputRef.current.select();
+        }
+    }, [setExpanded, search]);
+
+    const onBlur = useCallback(() => {
+        if (search === '') {
             setExpanded(false);
         }
+    }, [setExpanded, search]);
+
+    const onKeyDown = useCallback(e => {
+        // Handle esc (unfocus)
+        if (e.keyCode === 27 && inputRef.current) {
+            inputRef.current.blur();
+        }
+    }, []);
+
+    // Keyboard shortcut (CTRL + F focuses on search box)
+    useHotkeys('ctrl+f, command+f', e => {
+        e.preventDefault();
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
     });
+
     const onSearch = useCallback(
         async e => {
             const { value } = e.target;
@@ -99,7 +122,6 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
         <Wrapper
             ref={wrapperRef}
             onClick={() => {
-                setExpanded(true);
                 if (inputRef.current) {
                     inputRef.current.focus();
                 }
@@ -114,6 +136,9 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
                     innerAddon={<Icon icon="SEARCH" size={16} color={theme.TYPE_DARK_GREY} />}
                     placeholder={expanded ? translationString('TR_SEARCH_TRANSACTIONS') : undefined}
                     onChange={onSearch}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
+                    onKeyDown={onKeyDown}
                     value={search}
                     addonAlign="left"
                     textIndent={[16, 14]}
