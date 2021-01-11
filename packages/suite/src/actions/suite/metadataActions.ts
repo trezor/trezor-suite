@@ -244,7 +244,7 @@ export const fetchMetadata = (deviceState: string) => async (
     const response = await provider.getProviderDetails();
     if (!response.success) return;
 
-    const deviceFileContentP = new Promise((resolve, reject) => {
+    const deviceFileContentP = new Promise<void>((resolve, reject) => {
         if (device?.metadata?.status !== 'enabled') {
             return reject(new Error('metadata not enabled for this device'));
         }

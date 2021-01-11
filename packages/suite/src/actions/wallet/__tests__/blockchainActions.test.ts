@@ -148,13 +148,14 @@ describe('Blockchain Actions', () => {
             TrezorConnect.setTestFixtures(f.connect && { success: true, payload: f.connect });
             const store = initStore(getInitialState(f.state as any));
             await store.dispatch(blockchainActions.onBlockMined(f.block as any));
-            if (!f.result) {
+            const { result } = f;
+            if (!result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
                 const actions = store.getActions().filter(a => a.type !== '@notification/event');
-                expect(actions.length).toEqual(f.result.length);
+                expect(actions.length).toEqual(result.length);
                 actions.forEach((action, index) => {
-                    expect(action.type).toEqual(f.result[index]);
+                    expect(action.type).toEqual(result[index]);
                 });
                 if (f.resultTxs) {
                     const txs = store.getState().wallet.transactions.transactions;

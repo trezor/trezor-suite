@@ -40,7 +40,7 @@ const SelectWrapper = styled.div`
 
 type Option = { label: string; value: string };
 
-const MenuList = (props: MenuListComponentProps<Option>) => {
+const MenuList = (props: MenuListComponentProps<Option, boolean>) => {
     const children = React.Children.toArray(props.children);
     return (
         <List height={32 * 5} itemCount={children.length} itemSize={32} width="100%">
