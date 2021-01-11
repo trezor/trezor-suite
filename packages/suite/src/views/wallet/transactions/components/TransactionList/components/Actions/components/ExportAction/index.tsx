@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { Loader, Dropdown } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';
+import { SETTINGS } from '@suite-config';
 import { useTranslation } from '@suite-hooks/useTranslation';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
@@ -14,9 +15,9 @@ export interface Props {
 
 const ExportAction = ({ account }: Props) => {
     const { translationString } = useTranslation();
-    const { addToast, fetchAllTransactions, exportTransactions } = useActions({
+    const { addToast, fetchTransactions, exportTransactions } = useActions({
         addToast: notificationActions.addToast,
-        fetchAllTransactions: transactionActions.fetchAllTransactions,
+        fetchTransactions: transactionActions.fetchTransactions,
         exportTransactions: transactionActions.exportTransactions,
     });
 
@@ -29,7 +30,7 @@ const ExportAction = ({ account }: Props) => {
 
             setIsExportRunning(true);
             try {
-                await fetchAllTransactions(account);
+                await fetchTransactions(account, 2, SETTINGS.TXS_PER_PAGE, true, true);
                 await exportTransactions(account, type);
             } catch {
                 addToast({
@@ -42,7 +43,7 @@ const ExportAction = ({ account }: Props) => {
         },
         [
             isExportRunning,
-            fetchAllTransactions,
+            fetchTransactions,
             account,
             exportTransactions,
             addToast,
@@ -51,10 +52,6 @@ const ExportAction = ({ account }: Props) => {
     );
 
     if (!isEnabled('EXPORT_TRANSACTIONS')) {
-        return null;
-    }
-
-    if (account.networkType === 'ripple') {
         return null;
     }
 

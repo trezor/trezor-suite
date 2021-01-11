@@ -5,7 +5,6 @@ import { AccountMetadata } from '@suite-types/metadata';
 import { getDateWithTimeZone } from '../suite/date';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { formatAmount, formatNetworkAmount } from './accountUtils';
-import { tr } from 'date-fns/locale';
 
 export const sortByBlockHeight = (a: WalletAccountTransaction, b: WalletAccountTransaction) => {
     // if both are missing the blockHeight don't change their order
@@ -370,20 +369,31 @@ export const enhanceTransaction = (
     };
 };
 
-// TODO: Cache result
 const groupTransactionIdsByAddress = (transactions: WalletAccountTransaction[]) => {
     const addresses: { [address: string]: string[] } = {};
+    const addAddress = (txid: string, addrs: string[] | undefined) => {
+        if (!addrs) {
+            return;
+        }
+
+        addrs.forEach(address => {
+            if (!addresses[address]) {
+                addresses[address] = [];
+            }
+
+            if (addresses[address].indexOf(txid) === -1) {
+                addresses[address].push(txid);
+            }
+        });
+    };
 
     transactions.forEach(t => {
-        t.targets.forEach(target => {
-            target.addresses?.forEach(address => {
-                if (!addresses[address]) {
-                    addresses[address] = [];
-                }
-
-                addresses[address].push(t.txid);
-            });
-        });
+        // Inputs
+        t.details.vin.forEach(vin => addAddress(t.txid, vin.addresses));
+        // Outputs
+        t.details.vout.forEach(vout => addAddress(t.txid, vout.addresses));
+        // Targets
+        t.targets.forEach(target => addAddress(t.txid, target.addresses));
     });
 
     return addresses;

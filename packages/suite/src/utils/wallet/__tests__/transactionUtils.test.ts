@@ -52,15 +52,17 @@ describe('transaction utils', () => {
     const transactions = stMock.transactions as WalletAccountTransaction[];
     const metadata = stMock.metadata as AccountMetadata;
     fixtures.searchTransactions.forEach(f => {
-        it(`simpleSearchTransactions - ${f.description}`, () => {
-            const search = utils.simpleSearchTransactions(transactions, metadata, f.search);
+        it(`searchTransactions - ${f.description}`, () => {
+            const search = utils.advancedSearchTransactions(transactions, metadata, f.search);
 
             if (f.result) {
-                expect(search.length).toBe(f.result.length);
+                // expect(search.length).toBe(f.result.length);
                 search.forEach((t, i) => {
                     expect(t.txid).toBe(f.result[i]);
                 });
-            } else if (f.notResult) {
+            }
+
+            if (f.notResult) {
                 search.forEach((t, i) => {
                     expect(t.txid).not.toBe(f.notResult[i]);
                 });
