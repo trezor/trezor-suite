@@ -15,17 +15,17 @@
         "dev": "ts-node-dev --respawn --transpileOnly ./src/server.ts"
     },
     "dependencies": {
-        "@types/cors": "2.8.6",
+        "axios": "0.21.1",
+        "cheerio": "1.0.0-rc.3",
         "cors": "2.8.5",
         "express": "4.17.1",
-        "@types/cheerio": "0.22.18",
-        "cheerio": "1.0.0-rc.3",
-        "rimraf": "3.0.2",
-        "@types/express": "4.17.6",
-        "axios": "0.21.1",
-        "fast-xml-parser": "3.17.1"
+        "fast-xml-parser": "3.17.1",
+        "rimraf": "3.0.2"
     },
     "devDependencies": {
+        "@types/cheerio": "0.22.23",
+        "@types/cors": "2.8.9",
+        "@types/express": "4.17.9",
         "ts-node-dev": "1.0.0-pre.44"
     }
 }

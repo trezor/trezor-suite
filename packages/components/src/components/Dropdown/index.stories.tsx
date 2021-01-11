@@ -85,15 +85,7 @@ storiesOf('Dropdown', module).add(
                             ],
                         },
                     ]}
-                >
-                    {/* <Button
-                        onClick={() => {
-                            console.log('btn el clicked');
-                        }}
-                    >
-                        Click me
-                    </Button> */}
-                </Dropdown>
+                />
             </div>
         );
     },

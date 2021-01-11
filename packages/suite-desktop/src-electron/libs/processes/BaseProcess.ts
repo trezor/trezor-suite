@@ -116,7 +116,7 @@ abstract class BaseProcess {
      * Stops the process
      */
     stop() {
-        return new Promise(resolve => {
+        return new Promise<void>(resolve => {
             if (!this.process) {
                 this.stopped = true;
                 resolve();

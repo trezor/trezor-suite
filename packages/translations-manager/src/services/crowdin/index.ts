@@ -130,7 +130,7 @@ class Crowdin {
         const data = await this.downloadTranslationsZip(branch);
         fs.writeFileSync(zipFilePath, data);
         // extract zip
-        return new Promise((resolve, reject) => {
+        return new Promise<void>((resolve, reject) => {
             extractZip(zipFilePath, { dir: exportDirAbs }, err => {
                 if (err) return reject(err);
                 // delete downloaded zip file
