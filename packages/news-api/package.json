@@ -22,7 +22,7 @@
         "cheerio": "1.0.0-rc.3",
         "rimraf": "3.0.2",
         "@types/express": "4.17.6",
-        "axios": "0.19.2",
+        "axios": "0.21.1",
         "fast-xml-parser": "3.17.1"
     },
     "devDependencies": {
