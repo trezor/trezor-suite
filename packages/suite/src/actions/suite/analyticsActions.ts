@@ -63,6 +63,7 @@ export type AnalyticsEvent =
               theme: string;
               // added in 1.6
               suiteVersion: string;
+              desktopOSVersion: { platform: string; release: string } | '';
           };
       }
     | { type: 'transport-type'; payload: { type: string; version: string } }

@@ -87,4 +87,7 @@ contextBridge.exposeInMainWorld('desktopApi', {
     toggleTor: (start: boolean) => ipcRenderer.send('tor/toggle', start),
     getTorAddress: () => ipcRenderer.invoke('tor/get-address'),
     setTorAddress: (address: string) => ipcRenderer.send('tor/set-address', address),
+
+    // Analytics
+    getOSVersion: () => ipcRenderer.invoke('analytics/get-os-version'),
 });

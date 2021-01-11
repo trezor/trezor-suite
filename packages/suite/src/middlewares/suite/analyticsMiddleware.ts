@@ -12,6 +12,7 @@ import {
     getScreenHeight,
     getPlatform,
     getPlatformLanguage,
+    getOSVersion,
 } from '@suite-utils/env';
 import { isBitcoinOnly } from '@suite-utils/device';
 
@@ -22,7 +23,7 @@ import { isBitcoinOnly } from '@suite-utils/device';
     - transport (webusb/bridge) and its version
     - backup type (shamir/bip39)
 */
-const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
+const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
     action: Action,
 ) => {
     const prevRouterUrl = api.getState().router.url;
@@ -32,7 +33,17 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
     const state = api.getState();
 
     switch (action.type) {
-        case STORAGE.LOADED:
+        case STORAGE.LOADED: {
+            // get OS version of the desktop app (for web returns resp:undefined)
+            let desktopOSVersion;
+            const resp = await getOSVersion();
+            if (resp?.success) {
+                desktopOSVersion = {
+                    platform: resp.payload.platform,
+                    release: resp.payload.release,
+                };
+            }
+
             api.dispatch(
                 analyticsActions.report({
                     type: 'suite-ready',
@@ -54,10 +65,12 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                             .devices.filter(d => d.remember && !d.useEmptyPassphrase).length,
                         theme: state.suite.settings.theme.variant,
                         suiteVersion: process.env.version || '',
+                        desktopOSVersion: desktopOSVersion || '',
                     },
                 }),
             );
             break;
+        }
         case TRANSPORT.START:
             api.dispatch(
                 analyticsActions.report({
