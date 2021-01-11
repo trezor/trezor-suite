@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { variables } from '@trezor/components';
+import { Translation } from '@suite-components';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -27,17 +28,40 @@ interface Props {
     currentPage: number;
     totalPages?: number;
     isOnLastPage?: boolean;
+    hasPages?: boolean;
     onPageSelected: (page: number) => void;
 }
 
-const Pagination = ({ currentPage, totalPages, onPageSelected, isOnLastPage, ...rest }: Props) => {
-    // if totalPages is undefined show only start/prev/next buttons
-    const showNext = totalPages ? currentPage < totalPages : !isOnLastPage;
+const Pagination = ({
+    currentPage,
+    totalPages,
+    onPageSelected,
+    isOnLastPage,
+    hasPages = true,
+    ...rest
+}: Props) => {
     const showPrevious = currentPage > 1;
     // array of int used for creating all page buttons
     const calculatedPages = useMemo(() => [...Array(totalPages)].map((_p, i) => i + 1), [
         totalPages,
     ]);
+
+    if (!hasPages) {
+        return (
+            <Wrapper {...rest}>
+                <Actions isActive={showPrevious}>
+                    <PageItem onClick={() => onPageSelected(currentPage - 1)}>
+                        ‹ <Translation id="TR_PAGINATION_NEWER" />
+                    </PageItem>
+                </Actions>
+                <Actions isActive={!isOnLastPage}>
+                    <PageItem onClick={() => onPageSelected(currentPage + 1)}>
+                        <Translation id="TR_PAGINATION_OLDER" /> ›
+                    </PageItem>
+                </Actions>
+            </Wrapper>
+        );
+    }
 
     return (
         <Wrapper {...rest}>
@@ -71,7 +95,7 @@ const Pagination = ({ currentPage, totalPages, onPageSelected, isOnLastPage, ...
                     </PageItem>
                 </>
             )}
-            <Actions isActive={showNext}>
+            <Actions isActive={currentPage < (totalPages || 1)}>
                 <PageItem onClick={() => onPageSelected(currentPage + 1)}>›</PageItem>
                 {totalPages && <PageItem onClick={() => onPageSelected(totalPages)}>»</PageItem>}
             </Actions>

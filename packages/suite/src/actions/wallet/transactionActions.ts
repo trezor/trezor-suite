@@ -11,7 +11,6 @@ import { TRANSACTION } from '@wallet-actions/constants';
 import { SETTINGS } from '@suite-config';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
-import { range } from '@suite-utils/array';
 import { formatData } from '@wallet-utils/exportTransactions';
 
 export type TransactionAction =
@@ -134,6 +133,7 @@ export const fetchTransactions = (
     page: number,
     perPage?: number,
     noLoading = false,
+    recursive = false,
 ) => async (dispatch: Dispatch, getState: GetState) => {
     const { transactions } = getState().wallet.transactions;
     const reducerTxs = getAccountTransactions(transactions, account);
@@ -143,8 +143,16 @@ export const fetchTransactions = (
     const txsForPage = reducerTxs.slice(startIndex, stopIndex).filter(tx => !!tx.txid); // filter out "empty" values
 
     // we already got txs for the page in reducer
-    if ((page > 1 && txsForPage.length === perPage) || txsForPage.length === account.history.total)
+    if (
+        (page > 1 && txsForPage.length === perPage) ||
+        txsForPage.length === account.history.total
+    ) {
+        if (recursive) {
+            await dispatch(fetchTransactions(account, page + 1, perPage, noLoading, true));
+        }
+
         return;
+    }
 
     if (!noLoading) {
         dispatch({
@@ -164,31 +172,28 @@ export const fetchTransactions = (
 
     if (result && result.success) {
         const updatedAccount = accountActions.update(account, result.payload).payload as Account;
+        const transactions = result.payload.history.transactions || [];
         dispatch({
             type: TRANSACTION.FETCH_SUCCESS,
         });
         dispatch({
             type: TRANSACTION.ADD,
             account: updatedAccount,
-            transactions: result.payload.history.transactions || [],
+            transactions,
             page,
         });
         // updates the marker/page object for the account
         dispatch(accountActions.update(account, result.payload));
+
+        if (recursive && transactions.length === (perPage || SETTINGS.TXS_PER_PAGE)) {
+            await dispatch(fetchTransactions(updatedAccount, page + 1, perPage, noLoading, true));
+        }
     } else {
         dispatch({
             type: TRANSACTION.FETCH_ERROR,
             error: result ? result.payload.error : 'unknown error',
         });
     }
-};
-
-// Fetch all pages
-export const fetchAllTransactions = (account: Account) => async (dispatch: Dispatch) => {
-    const perPage = 500;
-    const totalPages = Math.ceil(account.history.total / perPage);
-    const pages = range(1, totalPages);
-    await Promise.all(pages.map(p => dispatch(fetchTransactions(account, p, perPage, true))));
 };
 
 export const exportTransactions = (account: Account, type: 'csv' | 'pdf' | 'json') => async (

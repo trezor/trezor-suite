@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
+import useDebounce from 'react-use/lib/useDebounce';
 import { Stack } from '@suite-components/Skeleton';
 import { Card } from '@trezor/components';
 import { Translation } from '@suite-components';
@@ -55,9 +56,15 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Props) 
 
     // Search
     const [search, setSearch] = useState('');
+    const [searchedTransactions, setSearchedTransactions] = useState(transactions);
     const isSearching = search !== '';
-    const fitleredTransactions = useMemo(
-        () => advancedSearchTransactions(transactions, account.metadata, search),
+
+    useDebounce(
+        () => {
+            const results = advancedSearchTransactions(transactions, account.metadata, search);
+            setSearchedTransactions(results);
+        },
+        200,
         [transactions, account.metadata, search],
     );
 
@@ -69,12 +76,12 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Props) 
         setSelectedPage(1);
     }, [account.descriptor, account.symbol]);
 
-    const { size = undefined, total = undefined } = isSearching
-        ? {
-              size: perPage,
-              total: Math.ceil(fitleredTransactions.length / perPage),
-          }
-        : account.page || {};
+    const { size, total } = {
+        size: perPage,
+        total: isSearching
+            ? Math.ceil(searchedTransactions.length / perPage)
+            : account?.page?.total ?? 1,
+    };
 
     const onPageSelected = (page: number) => {
         setSelectedPage(page);
@@ -91,8 +98,8 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Props) 
     const startIndex = (currentPage - 1) * perPage;
     const stopIndex = startIndex + perPage;
 
-    const slicedTransactions = useMemo(() => fitleredTransactions.slice(startIndex, stopIndex), [
-        fitleredTransactions,
+    const slicedTransactions = useMemo(() => searchedTransactions.slice(startIndex, stopIndex), [
+        searchedTransactions,
         startIndex,
         stopIndex,
     ]);
@@ -106,7 +113,8 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Props) 
     // Edge case: if there is exactly 25 txs, pagination will be displayed
     const isOnLastPage = slicedTransactions.length < SETTINGS.TXS_PER_PAGE;
     const shouldShowRipplePagination = !(currentPage === 1 && isOnLastPage);
-    const showPagination = total ? total > 1 : shouldShowRipplePagination;
+    const isRipple = account.networkType === 'ripple';
+    const showPagination = isRipple ? shouldShowRipplePagination : total > 1;
 
     return (
         <StyledSection
@@ -130,7 +138,7 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Props) 
                 </Stack>
             ) : (
                 <>
-                    {transactions.length > 0 && fitleredTransactions.length === 0 ? (
+                    {transactions.length > 0 && searchedTransactions.length === 0 ? (
                         <NoSearchResults />
                     ) : (
                         Object.keys(transactionsByDate).map(dateKey => {
@@ -165,6 +173,7 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Props) 
             {showPagination && (
                 <PaginationWrapper>
                     <Pagination
+                        hasPages={isRipple}
                         currentPage={currentPage}
                         totalPages={total}
                         isOnLastPage={isOnLastPage}

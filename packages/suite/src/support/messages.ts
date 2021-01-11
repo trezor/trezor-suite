@@ -5146,6 +5146,10 @@ const definedMessages = defineMessages({
         id: 'TR_EXPORT_FAIL',
         defaultMessage: 'Export failed.',
     },
+    TR_SEARCH_FAIL: {
+        id: 'TR_SEARCH_FAIL',
+        defaultMessage: 'Search failed.',
+    },
     TR_RANGE: {
         id: 'TR_RANGE',
         defaultMessage: 'range',
@@ -5232,6 +5236,14 @@ const definedMessages = defineMessages({
         id: 'TR_TRANSACTIONS_SEARCH_TIP_10',
         defaultMessage:
             'Tip: You can combine AND (&) and OR (|) operators for more complex searches. For example For example <strong>> 2020-12-01 & < 2020-12-31 | > 2020-12-01 & < 2020-12-31</strong> will show all all transactions in January 2020 or December 2020.',
+    },
+    TR_PAGINATION_NEWER: {
+        id: 'TR_PAGINATION_NEWER',
+        defaultMessage: 'Newer',
+    },
+    TR_PAGINATION_OLDER: {
+        id: 'TR_PAGINATION_OLDER',
+        defaultMessage: 'Older',
     },
 } as const);
 

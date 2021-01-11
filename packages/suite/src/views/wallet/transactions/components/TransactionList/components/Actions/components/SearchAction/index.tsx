@@ -2,6 +2,7 @@ import React, { useState, useCallback, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { Input, Icon, useTheme, Tooltip } from '@trezor/components';
 import { useActions } from '@suite-hooks';
+import { SETTINGS } from '@suite-config';
 import { useTranslation } from '@suite-hooks/useTranslation';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
@@ -47,9 +48,9 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
     const inputRef = useRef<HTMLInputElement | null>(null);
     const [expanded, setExpanded] = useState(false);
     const { translationString } = useTranslation();
-    const { addToast, fetchAllTransactions } = useActions({
+    const { addToast, fetchTransactions } = useActions({
         addToast: notificationActions.addToast,
-        fetchAllTransactions: transactionActions.fetchAllTransactions,
+        fetchTransactions: transactionActions.fetchTransactions,
     });
     // const [isSearchFetching, setIsSearchFetching] = useState(false);
     const [, setIsSearchFetching] = useState(false);
@@ -89,11 +90,11 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
                 // Fetch all transactions
                 setIsSearchFetching(true);
                 try {
-                    await fetchAllTransactions(account);
+                    await fetchTransactions(account, 2, SETTINGS.TXS_PER_PAGE, true, true);
                 } catch (err) {
                     addToast({
                         type: 'error',
-                        error: translationString('TR_EXPORT_FAIL'), // TODO: TR_EXPORT_FAIL doesn't seem as correct error
+                        error: translationString('TR_SEARCH_FAIL'),
                     });
                 } finally {
                     setIsSearchFetching(false);
@@ -106,7 +107,7 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
         [
             account,
             addToast,
-            fetchAllTransactions,
+            fetchTransactions,
             search,
             setSearch,
             setSelectedPage,
