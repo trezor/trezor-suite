@@ -8,17 +8,13 @@
  */
 
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { useActions, useSelector } from '@suite-hooks';
 import { BackHandler } from 'react-native';
-import { NavigationContainer, NavigationContainerProps } from 'react-navigation';
+import { NavigationContainer } from 'react-navigation';
 import { enableScreens } from 'react-native-screens'; // https://github.com/kmagiera/react-native-screens
 import 'react-native-gesture-handler'; // https://reactnavigation.org/docs/en/getting-started.html
 
 import * as routerActions from '@suite-actions/routerActions';
-
-import { AppState, Dispatch } from '@suite-types';
-
 import { create } from './RouterBuilder';
 import config from './router.config';
 import { setNavigator } from './NavigatorService';
@@ -32,34 +28,23 @@ let Navigator: NavigationContainer | typeof undefined;
 // - handle Navigation state change > routerActions.onNavigationStateChange
 // - handle android back button > routerActions.androidBack
 
-const mapStateToProps = (state: AppState) => ({
-    initialPathName: state.router.pathname,
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    onNavigationStateChange: bindActionCreators(routerActions.onNavigationStateChange, dispatch),
-    androidBack: bindActionCreators(routerActions.androidBack, dispatch),
-});
-
-// type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-type Props = ReturnType<typeof mapStateToProps> &
-    ReturnType<typeof mapDispatchToProps> & {
-        // <Navigator> does not accept returned thunk function
-        onNavigationStateChange?: NavigationContainerProps<any>['onNavigationStateChange'];
-    };
-
-export const ReduxNavigator = (props: Props) => {
+export const ReduxNavigator = () => {
+    const initialPathName = useSelector(s => s.router.pathname);
+    const { onNavigationStateChange, androidBack } = useActions({
+        onNavigationStateChange: routerActions.onNavigationStateChange,
+        androidBack: routerActions.androidBack,
+    });
     useEffect(() => {
-        BackHandler.addEventListener('hardwareBackPress', props.androidBack);
+        BackHandler.addEventListener('hardwareBackPress', androidBack);
         return () => {
-            BackHandler.removeEventListener('hardwareBackPress', props.androidBack);
+            BackHandler.removeEventListener('hardwareBackPress', androidBack);
             // TrezorConnect.dispose();
         };
-    }, [props.androidBack]);
+    }, [androidBack]);
 
     if (!Navigator) {
         // initialize and pass current route from suite reducer
-        Navigator = create(config, props.initialPathName);
+        Navigator = create(config, initialPathName);
     }
 
     // TODO:
@@ -68,8 +53,7 @@ export const ReduxNavigator = (props: Props) => {
     // - withNavigationFocus,
     // - withOrientation, createKeyboardAwareNavigator
 
-    return <Navigator onNavigationStateChange={props.onNavigationStateChange} ref={setNavigator} />;
+    return <Navigator onNavigationStateChange={onNavigationStateChange} ref={setNavigator} />;
 };
 
-// @ts-ignore
-export default connect(mapStateToProps, mapDispatchToProps)(ReduxNavigator);
+export default ReduxNavigator;

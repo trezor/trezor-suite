@@ -1,4 +1,4 @@
-import produce from 'immer';
+import produce, { Draft } from 'immer';
 import { BlockchainInfo, BlockchainBlock } from 'trezor-connect';
 import { BLOCKCHAIN } from '@wallet-actions/constants';
 import { getNetwork } from '@wallet-utils/accountUtils';
@@ -41,7 +41,7 @@ export const initialState = NETWORKS.reduce((state, network) => {
     return state;
 }, initialStatePredefined as BlockchainState);
 
-const connect = (draft: BlockchainState, info: BlockchainInfo) => {
+const connect = (draft: Draft<BlockchainState>, info: BlockchainInfo) => {
     const network = getNetwork(info.coin.shortcut.toLowerCase());
     if (!network) return;
 
@@ -56,7 +56,7 @@ const connect = (draft: BlockchainState, info: BlockchainInfo) => {
     delete draft[network.symbol].reconnection;
 };
 
-const error = (draft: BlockchainState, symbol: string, error: string) => {
+const error = (draft: Draft<BlockchainState>, symbol: string, error: string) => {
     const network = getNetwork(symbol.toLowerCase());
     if (!network) return;
 
@@ -68,7 +68,7 @@ const error = (draft: BlockchainState, symbol: string, error: string) => {
     delete draft[network.symbol].url;
 };
 
-const update = (draft: BlockchainState, block: BlockchainBlock) => {
+const update = (draft: Draft<BlockchainState>, block: BlockchainBlock) => {
     const network = getNetwork(block.coin.shortcut.toLowerCase());
     if (!network) return;
 

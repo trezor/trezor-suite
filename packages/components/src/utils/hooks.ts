@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useTheme as useSCTheme } from 'styled-components';
-import { SuiteThemeColors } from '../support/types';
 
 export const useKeyPress = (targetKey: string) => {
     // State for keeping track of whether key is pressed

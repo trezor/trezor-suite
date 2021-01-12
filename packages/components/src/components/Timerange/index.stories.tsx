@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Timerange } from './index';
 import { storiesOf } from '@storybook/react';
 import { date, text } from '@storybook/addon-knobs';
-import { infoOptions } from '../../support/storybook';
 
 const Center = styled.div`
     display: flex;
@@ -37,14 +36,5 @@ storiesOf('Timerange', module).add(
     },
     {
         argTypes: { onChange: { action: 'onChange' } },
-        info: {
-            ...infoOptions,
-            text: `
-        ~~~js
-        import { Timerange } from 'trezor-ui-components';
-        ~~~
-        *<Timerange> is based on [react-datepicker](https://github.com/Hacker0x01/react-datepicker/) component.*
-        `,
-        },
     }
 );

@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Tooltip } from '../../index';
 import { storiesOf } from '@storybook/react';
 import { select, number, text } from '@storybook/addon-knobs';
-import { infoOptions } from '../../support/storybook';
 
 const Center = styled.div`
     display: flex;
@@ -14,41 +13,27 @@ const Center = styled.div`
 
 Center.displayName = 'CenterWrapper';
 
-storiesOf('Tooltip', module).add(
-    'Tooltip',
-    () => {
-        const placement: any = select(
-            'Placement',
-            {
-                Top: 'top',
-                Bottom: 'bottom',
-                Left: 'left',
-                Right: 'right',
-            },
-            'bottom'
-        );
-
-        return (
-            <Center>
-                <Tooltip
-                    maxWidth={number('Max width', 280)}
-                    placement={placement}
-                    content={text('Content', 'Passphrase is an optional feature.')}
-                >
-                    <span>Text with tooltip</span>
-                </Tooltip>
-            </Center>
-        );
-    },
-    {
-        info: {
-            ...infoOptions,
-            text: `
-        ~~~js
-        import { Tooltip } from 'trezor-ui-components';
-        ~~~
-        *<Tooltip> is a wrapper around [Tippy.js for React](https://github.com/atomiks/tippy.js-react) component. See the [official documentation](https://github.com/atomiks/tippy.js-react) for more information about its props and usage.*
-        `,
+storiesOf('Tooltip', module).add('Tooltip', () => {
+    const placement: any = select(
+        'Placement',
+        {
+            Top: 'top',
+            Bottom: 'bottom',
+            Left: 'left',
+            Right: 'right',
         },
-    }
-);
+        'bottom'
+    );
+
+    return (
+        <Center>
+            <Tooltip
+                maxWidth={number('Max width', 280)}
+                placement={placement}
+                content={text('Content', 'Passphrase is an optional feature.')}
+            >
+                <span>Text with tooltip</span>
+            </Tooltip>
+        </Center>
+    );
+});

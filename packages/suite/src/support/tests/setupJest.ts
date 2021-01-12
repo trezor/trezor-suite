@@ -336,6 +336,7 @@ global.JestMocks = {
     intlMock,
 };
 
+// @ts-ignore
 global.BroadcastChannel = BroadcastChannel;
 
 // this helps with debugging - find unhandled promise rejections in jest
