@@ -28,4 +28,16 @@ describe('General settings', () => {
         cy.getTestElement('@theme/dark-mode-switch').click({ force: true });
         cy.getTestElement('@theme/dark-mode-switch').should("be.checked");
     });
+
+    it('Change analytics', () => {
+        cy.getTestElement('@analytics/toggle-switch').should("be.checked");
+        cy.getTestElement('@analytics/toggle-switch').click({ force: true });
+        cy.getTestElement('@analytics/toggle-switch').should("not.be.checked");
+    });
+
+    it.only('Check version', () => {
+        cy.contains('Suite version');
+        cy.contains('You are currently running version');
+    });
+    
 });
