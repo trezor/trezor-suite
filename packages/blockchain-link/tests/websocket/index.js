@@ -14,7 +14,7 @@ const create = async type => {
     const server = new Server({ port, noServer: true });
     const { close } = server;
 
-    const defaultResponses = RESPONSES[type];
+    server.defaultResponses = RESPONSES[type];
     const connections = [];
     let addresses;
 
@@ -37,7 +37,7 @@ const create = async type => {
             }
         }
         if (!data) {
-            data = defaultResponses[method] || {
+            data = server.defaultResponses[method] || {
                 error: { message: `unknown response for ${method}` },
             };
         }
@@ -118,6 +118,8 @@ const create = async type => {
         sendResponse(request);
     });
 
+    server.on('blockbook_getBalanceHistory', request => sendResponse(request));
+
     // Ripple
 
     server.on('ripple_subscribe', request => {
@@ -151,6 +153,10 @@ const create = async type => {
     server.setFixtures = f => {
         server.fixtures = f;
     };
+
+    server.setDefaultResponses = f => {
+        server.defaultResponses = f;
+    }
 
     server.getAddresses = () => {
         return addresses;

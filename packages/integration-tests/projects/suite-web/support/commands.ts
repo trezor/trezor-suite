@@ -28,6 +28,25 @@ const prefixedVisit = (route: string, options?: Partial<Cypress.VisitOptions>) =
     return cy.visit(assetPrefix + route, options);
 };
 
+const mockDiscoveryStart = (options: { fixture?: string; coin?: string }) => {
+    return cy.task('mockDiscoveryStart', options).then(port => {
+        cy.get('#trezorconnect').should('exist');
+        cy.window()
+            .its('store')
+            .invoke('dispatch', {
+                type: '@wallet-settings/add-blockbook-url',
+                payload: {
+                    coin: options.coin || 'btc',
+                    url: `http://localhost:${port}`,
+                },
+            });
+    });
+};
+
+const mockDiscoveryStop = () => {
+    cy.task('mockDiscoveryStop');
+}
+
 beforeEach(() => {
     cy.intercept('POST', 'http://127.0.0.1:21325/', req => {
         req.url = req.url.replace('21325', '21326');
@@ -66,6 +85,22 @@ declare global {
             passThroughSetPin: () => Chainable<Subject>;
             passThroughInitMetadata: (provider: 'dropbox' | 'google') => Chainable<Subject>;
             goToOnboarding: () => Chainable<Subject>;
+            /**
+             * Start websocket server listening on ws://localhost:<random-port>.
+             * Websocket server from blockchain-link tests is reused. Application state will be modified in the way where
+             * custom backend is set to the aforementioned websocket server
+             * @param fixture defines which file from fixtures folder will used. Fixtures are in format of messages copied from chrome dev tools.
+             * @param coin defines for which coin the custom backend is set
+             */
+            mockDiscoveryStart: (options: {
+                fixture?: string;
+                coin?: string;
+                defaultResponses?: any;
+            }) => Cypress.Chainable<undefined>;
+            /**
+             * Stops custom websocket backend server.
+             */
+            mockDiscoveryStop: () => void;
         }
     }
 }
@@ -90,9 +125,13 @@ if (Cypress.env('SNAPSHOT')) {
 
 Cypress.Commands.add('prefixedVisit', prefixedVisit);
 Cypress.Commands.add('resetDb', { prevSubject: false }, resetDb);
+// device
 Cypress.Commands.add('connectDevice', connectDevice);
 Cypress.Commands.add('connectBootloaderDevice', connectBootloaderDevice);
 Cypress.Commands.add('changeDevice', changeDevice);
+// discovery
+Cypress.Commands.add('mockDiscoveryStart', mockDiscoveryStart);
+Cypress.Commands.add('mockDiscoveryStop', mockDiscoveryStop);
 // assertion helpers
 Cypress.Commands.add('onboardingShouldLoad', onboardingShouldLoad);
 Cypress.Commands.add('dashboardShouldLoad', dashboardShouldLoad);

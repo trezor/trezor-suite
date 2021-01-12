@@ -64,5 +64,8 @@
             "message": "Transaction not found"
          }
       }
+   },
+   "getBalanceHistory": {
+      "data": []
    }
 }

@@ -1,10 +1,13 @@
 // @group:suite
 // @retry=2
 
-// discovery should end within this time frame
-const DISCOVERY_LIMIT = 1000 * 60 * 2;
+// QA TODO: idea behind this file was to create a test that checks if all backends are running.
+// Supposed to be a true "end to end" test really testing also that blockbooks are alive.
+// It would be nice to figure out how to split all cypress tests into 2 categories where
+// one would be more "unit tests like" using mocks extensively that would be run on every commit
+// while the other one would more end to end like that would run maybe only on develop branch and possibly
+// in scheduled jobs
 
-// todo: discovery does not run to end, is it only in tests?
 describe.skip('Discovery', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
@@ -16,7 +19,11 @@ describe.skip('Discovery', () => {
     });
 
     it('go to wallet settings page, activate all coins and see that there is equal number of records on dashboard', () => {
-        cy.getTestElement('@settings/wallet/coins-group/mainnet/activate-all').click({ force: true });
+        cy.getTestElement('@settings/wallet/coins-group/mainnet/deactivate-all').click({
+            force: true,
+        });
+        cy.getTestElement('@settings/wallet/network/test').click({ force: true });
+
         cy.getTestElement('@settings/wallet/coins-group/testnet/activate-all').click({
             force: true,
         });
@@ -25,8 +32,6 @@ describe.skip('Discovery', () => {
         cy.log('all available networks should return something from discovery');
 
         cy.getTestElement('@dashboard/loading', { timeout: 1000 * 10 });
-        cy.getTestElement('@dashboard/loading', { timeout: DISCOVERY_LIMIT }).should(
-            'not.exist',
-        );
+        cy.getTestElement('@dashboard/loading', { timeout: 1000 * 60 }).should('not.exist');
     });
 });

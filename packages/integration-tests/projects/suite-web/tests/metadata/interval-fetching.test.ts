@@ -47,9 +47,9 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
                 aesKey: 'c785ef250807166bffc141960c525df97647fcc1bca57f6892ca3742ba86ed8d',
             });
             cy.prefixedVisit('/accounts', {
-                onBeforeLoad: win => {
-                    cy.stub(win, 'open', stubOpen(win));
-                    cy.stub(win, 'fetch', rerouteMetadataToMockProvider);
+                onBeforeLoad: (win: Window) => {
+                    cy.stub(win, 'open').callsFake(stubOpen(win));
+                    cy.stub(win, 'fetch').callsFake(rerouteMetadataToMockProvider);
                 },
             });
             cy.tick(1000);

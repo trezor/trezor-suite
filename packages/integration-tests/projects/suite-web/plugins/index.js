@@ -9,10 +9,14 @@ import { Controller } from './websocket-client';
 import googleMock from './google';
 import dropboxMock from './dropbox';
 import * as metadataUtils from '../../../../suite/src/utils/suite/metadata';
-
+import createServer from '../../../../blockchain-link/tests/websocket';
 const webpackPreprocessor = require('@cypress/webpack-preprocessor');
+import fs from 'fs';
 
 const controller = new Controller({ url: 'ws://localhost:9001/' });
+
+let mockDiscoveryServer;
+
 module.exports = on => {
     // make ts possible start
     const options = {
@@ -101,7 +105,8 @@ module.exports = on => {
         setupEmu: async options => {
             const defaults = {
                 // some random empty seed. most of the test don't need any account history so it is better not to slow them down with all all seed
-                mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
+                mnemonic:
+                    'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
                 pin: '',
                 passphrase_protection: false,
                 label: 'My Trevor',
@@ -202,6 +207,72 @@ module.exports = on => {
             await controller.connect();
             await controller.send({ type: 'select-num-of-words', num });
             controller.disconnect();
+            return null;
+        },
+        mockDiscoveryStart: async (options = {}) => {
+            const { fixture, defaultResponses } = options;
+
+            mockDiscoveryServer = await createServer('blockbook');
+
+            // You may either provide fixtures for the entire communication or set a reasonable default response
+            // that will be used when websocket server runs out of messages
+            mockDiscoveryServer.setDefaultResponses({
+                ...mockDiscoveryServer.defaultResponses,
+                // all default responses in blockchain link tests seem to be ok to be used here, only problem is that 
+                // it works with testnet and we want to test btc primarily so this is to override the default
+                getInfo: {
+                    data: {
+                        name: 'Bitcoin',
+                        shortcut: 'BTC',
+                        decimals: 8,
+                        version: '0.3.4',
+                        bestHeight: 666026,
+                        bestHash:
+                            '0000000000000000000838c2e3a15a1f3756ec462e1be3878dfe39f263c87a96',
+                        block0Hash:
+                            '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f',
+                        testnet: false,
+                    },
+                },
+                ...defaultResponses,
+            });
+
+            if (fixture) {
+                const raw = fs.readFileSync(`${__dirname}/../fixtures/${fixture}`, {
+                    encoding: 'utf-8',
+                });
+
+                const har = JSON.parse(raw).map(item => ({
+                    ...item,
+                    data: JSON.parse(item.data),
+                }));
+
+                const fixtures = [];
+
+                har.forEach(({ type, data }) => {
+                    let send;
+                    if (type === 'receive') {
+                        send = har.find(i => i.data.id === data.id && i.type === 'send');
+                    } else {
+                        return;
+                    }
+                    const { id, ...partial } = data;
+                    fixtures.push({
+                        id,
+                        method: send.data.method,
+                        response: partial,
+                    });
+                });
+
+                mockDiscoveryServer.setFixtures(fixtures);
+            }
+
+            return mockDiscoveryServer.options.port;
+        },
+
+        mockDiscoveryStop: async () => {
+            if (!mockDiscoveryServer) return null;
+            mockDiscoveryServer.close();
             return null;
         },
     });

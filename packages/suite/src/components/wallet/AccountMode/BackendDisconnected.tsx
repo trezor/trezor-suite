@@ -64,6 +64,7 @@ const Disconnected = ({ selectedAccount, reconnect, blockchain }: Props) => {
                 isLoading: progress || isResolving,
                 children: <Translation id="TR_CONNECT" />,
             }}
+            data-test="@notification/backend-disconnected"
         >
             <Translation id="TR_BACKEND_DISCONNECTED" />
             {displayTime}
