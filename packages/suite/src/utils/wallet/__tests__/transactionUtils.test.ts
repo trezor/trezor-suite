@@ -41,8 +41,19 @@ describe('transaction utils', () => {
 
     fixtures.enhanceTransaction.forEach(f => {
         it('enhanceTransaction', () => {
-            // @ts-ignore
-            expect(utils.enhanceTransaction(f.tx, f.account)).toEqual(f.result);
+            expect(utils.enhanceTransaction(f.tx as any, f.account)).toEqual(f.result);
+        });
+    });
+
+    fixtures.getRbfParams.forEach(f => {
+        it(`getRbfParams: ${f.description}`, () => {
+            expect(utils.getRbfParams(f.tx as any, f.account as any)).toEqual(f.result);
+        });
+    });
+
+    fixtures.findChainedTransactions.forEach(f => {
+        it(`findChainedTransactions: ${f.description}`, () => {
+            expect(utils.findChainedTransactions(f.txid, f.transactions as any)).toEqual(f.result);
         });
     });
 });

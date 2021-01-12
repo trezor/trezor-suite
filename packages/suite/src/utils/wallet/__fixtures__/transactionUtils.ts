@@ -432,3 +432,305 @@ export const enhanceTransaction = [
         },
     },
 ];
+
+export const findChainedTransactions = [
+    {
+        description: 'deeply chained transactions',
+        txid: 'ABCD',
+        transactions: {
+            'account1-key': [
+                {
+                    txid: 'ABCD-child',
+                    details: {
+                        vin: [{ txid: 'ABCD' }],
+                    },
+                },
+                {
+                    txid: 'ABCD-child-child',
+                    details: {
+                        vin: [{ txid: 'ABCD-child' }],
+                    },
+                },
+                {
+                    txid: 'ABCD-child-child-child',
+                    details: {
+                        vin: [{ txid: 'ABCD-child-child' }],
+                    },
+                },
+            ],
+            'account2-key': [
+                {
+                    txid: '0123',
+                    details: {
+                        vin: [{ txid: '0012' }],
+                    },
+                },
+                {
+                    txid: 'XYZ0',
+                    details: {
+                        vin: [{ txid: 'ABCD-child-child-child' }],
+                    },
+                },
+                {
+                    txid: '4567',
+                    details: {
+                        vin: [{ txid: '8910' }],
+                    },
+                },
+            ],
+            'account3-key': [
+                {
+                    txid: 'XYZ1',
+                    details: {
+                        vin: [{ txid: 'ABCD-child' }],
+                    },
+                },
+            ],
+        },
+        result: [
+            {
+                key: 'account1-key',
+                txs: [
+                    {
+                        txid: 'ABCD-child',
+                        details: {
+                            vin: [{ txid: 'ABCD' }],
+                        },
+                    },
+                    {
+                        txid: 'ABCD-child-child',
+                        details: {
+                            vin: [{ txid: 'ABCD-child' }],
+                        },
+                    },
+                    {
+                        txid: 'ABCD-child-child-child',
+                        details: {
+                            vin: [{ txid: 'ABCD-child-child' }],
+                        },
+                    },
+                ],
+            },
+            {
+                key: 'account2-key',
+                txs: [
+                    {
+                        txid: 'XYZ0',
+                        details: {
+                            vin: [{ txid: 'ABCD-child-child-child' }],
+                        },
+                    },
+                ],
+            },
+            {
+                key: 'account3-key',
+                txs: [
+                    {
+                        txid: 'XYZ1',
+                        details: {
+                            vin: [{ txid: 'ABCD-child' }],
+                        },
+                    },
+                ],
+            },
+        ],
+    },
+];
+
+export const getRbfParams = [
+    {
+        description: 'invalid account',
+        account: { networkType: 'ethereum' },
+        tx: {},
+        result: undefined,
+    },
+    {
+        description: 'invalid tx (type recv)',
+        account: { networkType: 'bitcoin' },
+        tx: { type: 'recv' },
+        result: undefined,
+    },
+    {
+        description: 'invalid tx (rbf false)',
+        account: { networkType: 'bitcoin' },
+        tx: { type: 'sent', rbf: false },
+        result: undefined,
+    },
+    {
+        description: 'invalid tx (no details)',
+        account: { networkType: 'bitcoin' },
+        tx: { type: 'sent', rbf: true, details: undefined },
+        result: undefined,
+    },
+    {
+        description: 'invalid tx (confirmed)',
+        account: { networkType: 'bitcoin' },
+        tx: { type: 'sent', rbf: true, details: {}, blockHeight: 1 },
+        result: undefined,
+    },
+    {
+        description: 'addresses not found',
+        account: { networkType: 'bitcoin' },
+        tx: {
+            type: 'sent',
+            rbf: true,
+            details: {
+                vin: [
+                    {
+                        addresses: ['abcd'],
+                    },
+                ],
+                vout: [
+                    {
+                        addresses: ['abcd'],
+                    },
+                ],
+            },
+        },
+        result: undefined,
+    },
+    {
+        description: 'outputs not found',
+        account: {
+            networkType: 'bitcoin',
+            addresses: {
+                change: [],
+                used: [{ address: 'abcd' }],
+                unused: [],
+            },
+        },
+        tx: {
+            type: 'sent',
+            rbf: true,
+            details: {
+                vin: [
+                    {
+                        addresses: ['abcd'],
+                    },
+                ],
+                vout: [],
+            },
+        },
+        result: undefined,
+    },
+    {
+        description: 'without change address',
+        account: {
+            networkType: 'bitcoin',
+            addresses: {
+                change: [{ address: '1234', path: 'm/44/1' }],
+                used: [{ address: 'abcd', path: 'm/44/0' }],
+                unused: [],
+            },
+        },
+        tx: {
+            type: 'self',
+            txid: '1A2b',
+            rbf: true,
+            fee: '166',
+            details: {
+                size: 100,
+                vin: [
+                    {
+                        txid: 'prevTxid',
+                        value: '1',
+                        addresses: ['abcd'],
+                    },
+                ],
+                vout: [
+                    {
+                        addresses: ['xyz0'],
+                    },
+                ],
+            },
+        },
+        result: {
+            txid: '1A2b',
+            baseFee: 166,
+            feeRate: '2',
+            utxo: [
+                {
+                    address: 'abcd',
+                    path: 'm/44/0',
+                    blockHeight: 0,
+                    confirmations: 0,
+                    txid: 'prevTxid',
+                    amount: '1',
+                    vout: 0,
+                },
+            ],
+            changeAddress: undefined,
+            outputs: [
+                {
+                    type: 'payment',
+                    address: 'xyz0',
+                },
+            ],
+        },
+    },
+    {
+        description: 'success',
+        account: {
+            networkType: 'bitcoin',
+            addresses: {
+                change: [{ address: '1234', path: 'm/44/1' }],
+                used: [{ address: 'abcd', path: 'm/44/0' }],
+                unused: [],
+            },
+        },
+        tx: {
+            type: 'sent',
+            txid: '1A2b',
+            rbf: true,
+            fee: '366',
+            details: {
+                size: 100,
+                vin: [
+                    {
+                        txid: 'prevTxid',
+                        value: '1',
+                        addresses: ['abcd'],
+                    },
+                ],
+                vout: [
+                    {
+                        addresses: ['xyz0'],
+                    },
+                    {
+                        addresses: ['1234'],
+                    },
+                ],
+            },
+        },
+        result: {
+            txid: '1A2b',
+            baseFee: 366,
+            feeRate: '4',
+            utxo: [
+                {
+                    address: 'abcd',
+                    path: 'm/44/0',
+                    blockHeight: 0,
+                    confirmations: 0,
+                    txid: 'prevTxid',
+                    amount: '1',
+                    vout: 0,
+                },
+            ],
+            changeAddress: {
+                address: '1234',
+                path: 'm/44/1',
+            },
+            outputs: [
+                {
+                    type: 'payment',
+                    address: 'xyz0',
+                },
+                {
+                    type: 'change',
+                    address: '1234',
+                },
+            ],
+        },
+    },
+];
