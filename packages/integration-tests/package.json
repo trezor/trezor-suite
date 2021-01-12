@@ -8,12 +8,12 @@
     },
     "dependencies": {
         "cypress": "6.1.0",
-        "ts-loader": "^8.0.11",
+        "ts-loader": "^8.0.14",
         "webpack": "^4.44.2"
     },
     "devDependencies": {
         "@cypress/webpack-preprocessor": "^5.5.0",
-        "cypress-image-snapshot": "^3.1.1",
+        "cypress-image-snapshot": "^4.0.0",
         "shelljs": "^0.8.4",
         "wait-on": "^5.2.1",
         "ws": "^7.4.0"

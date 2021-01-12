@@ -19,8 +19,8 @@
     },
     "dependencies": {
         "@trezor/suite-storage": "21.1.0",
-        "react": "16.13.1",
-        "react-native": "0.63.2",
+        "react": "17.0.1",
+        "react-native": "0.63.4",
         "react-native-gesture-handler": "^1.5.2",
         "react-native-reanimated": "^1.4.0",
         "react-native-screens": "^2.0.0-alpha.20",
@@ -32,8 +32,8 @@
     },
     "devDependencies": {
         "@babel/runtime": "^7.12.5",
-        "@types/react": "^16.8.13",
-        "@types/react-native": "0.60.25",
+        "@types/react": "^17.0.0",
+        "@types/react-native": "0.63.45",
         "metro-react-native-babel-preset": "^0.59.0",
         "react-native-svg-transformer": "^0.14.0"
     }

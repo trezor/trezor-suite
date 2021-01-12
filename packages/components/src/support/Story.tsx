@@ -18,14 +18,14 @@ const Wrapper = styled.div`
     color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
-const StoryWrapper = (storyFn: any) => {
+const StoryWrapper = (story: any) => {
     return (
         <>
             <P size="normal">Light theme</P>
             <ThemeProvider theme={THEME.light}>
                 <Wrapper>
                     <GlobalStyle />
-                    {storyFn()}
+                    {story.children}
                 </Wrapper>
             </ThemeProvider>
 
@@ -33,7 +33,7 @@ const StoryWrapper = (storyFn: any) => {
             <ThemeProvider theme={THEME.dark}>
                 <Wrapper>
                     <GlobalStyle />
-                    {storyFn()}
+                    {story.children}
                 </Wrapper>
             </ThemeProvider>
         </>

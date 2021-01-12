@@ -31,6 +31,9 @@
         "type-check": "yarn lerna run type-check",
         "lint": "yarn lerna run lint"
     },
+    "resolutions": {
+        "**/@types/react": "17.0.0"
+    },
     "devDependencies": {
         "@babel/cli": "^7.12.7",
         "@babel/core": "^7.12.7",
