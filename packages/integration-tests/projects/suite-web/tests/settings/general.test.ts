@@ -35,7 +35,7 @@ describe('General settings', () => {
         cy.getTestElement('@analytics/toggle-switch').should("not.be.checked");
     });
 
-    it.only('Check version', () => {
+    it('Check version', () => {
         cy.contains('Suite version');
         cy.contains('You are currently running version');
     });
