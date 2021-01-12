@@ -1,6 +1,3 @@
-/**
- * Metadata feature (save/load metadata locally)
- */
 import { ipcMain } from 'electron';
 import { getOSVersion } from '@lib/user-data';
 
