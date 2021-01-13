@@ -211,7 +211,7 @@ export const signTransaction = (
     let { outputs } = transaction;
 
     // outputs may be sorted in different order (see hd-wallet buildTx permutations)
-    // restore original tx order before signing
+    // restore original tx order before signing replacement transaction
     if (formValues.rbfParams) {
         const origOutputs = formValues.rbfParams.outputs;
         outputs = origOutputs.flatMap((prevOutput, index) => {
@@ -241,6 +241,7 @@ export const signTransaction = (
         useEmptyPassphrase: device.useEmptyPassphrase,
         inputs,
         outputs,
+        account,
         coin: account.symbol,
         ...signEnhancement,
     };

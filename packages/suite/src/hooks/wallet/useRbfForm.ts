@@ -4,6 +4,7 @@ import { FormState } from '@wallet-types/sendForm';
 import { useSelector } from '@suite-hooks';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { findChainedTransactions } from '@wallet-utils/transactionUtils';
+import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';
 import { WalletAccountTransaction } from '@wallet-types';
 import { useFees } from './form/useFees';
@@ -63,6 +64,21 @@ const useRbfState = (tx: WalletAccountTransaction, finalize: boolean, currentSta
         t => t.key === account.key,
     );
 
+    let { baseFee } = tx.rbfParams;
+    if (chainedTxs) {
+        // increase baseFee, pay for all child chained transactions
+        baseFee = chainedTxs.txs.reduce((f, ctx) => {
+            // transformation to satoshi should not be here, addressed in another PR
+            const fee = networkAmountToSatoshi(ctx.fee, account.symbol);
+            return f + parseInt(fee, 10);
+        }, baseFee);
+    }
+
+    const rbfParams = {
+        ...tx.rbfParams,
+        baseFee,
+    };
+
     return {
         account: rbfAccount,
         network,
@@ -79,7 +95,7 @@ const useRbfState = (tx: WalletAccountTransaction, finalize: boolean, currentSta
             options: finalize ? ['broadcast'] : ['bitcoinRBF', 'broadcast'],
             feePerUnit: '',
             feeLimit: '',
-            rbfParams: tx.rbfParams,
+            rbfParams,
         } as FormState, // TODO: remove type casting (options string[])
     };
 };
