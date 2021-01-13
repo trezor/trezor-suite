@@ -66,6 +66,7 @@ export const update = (account: Account, accountInfo: AccountInfo): AccountActio
         ...accountInfo,
         path: account.path,
         empty: accountInfo.empty,
+        visible: account.visible || !accountInfo.empty,
         formattedBalance: accountUtils.formatNetworkAmount(
             // xrp `availableBalance` is reduced by reserve, use regular balance
             account.networkType === 'ripple' ? accountInfo.balance : accountInfo.availableBalance,
