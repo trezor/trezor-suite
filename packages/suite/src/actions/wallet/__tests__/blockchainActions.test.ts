@@ -145,7 +145,14 @@ describe('Blockchain Actions', () => {
     fixtures.onBlock.forEach(f => {
         it(`onBlock: ${f.description}`, async () => {
             // set fixtures in trezor-connect
-            TrezorConnect.setTestFixtures(f.connect && { success: true, payload: f.connect });
+            if (Array.isArray(f.connect)) {
+                TrezorConnect.setTestFixtures(
+                    f.connect.map(payload => ({ success: true, payload })),
+                );
+            } else {
+                TrezorConnect.setTestFixtures(f.connect && { success: true, payload: f.connect });
+            }
+
             const store = initStore(getInitialState(f.state as any));
             await store.dispatch(blockchainActions.onBlockMined(f.block as any));
             const { result } = f;

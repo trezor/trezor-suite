@@ -5,7 +5,7 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import * as tokenActions from '@wallet-actions/tokenActions';
 import * as accountUtils from '@wallet-utils/accountUtils';
-import { analyzeTransactions } from '@wallet-utils/transactionUtils';
+import { analyzeTransactions, isPending } from '@wallet-utils/transactionUtils';
 import { NETWORKS } from '@wallet-config';
 import { Account } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
@@ -112,6 +112,23 @@ export const fetchAndUpdateAccount = (account: Account) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
+    // first basic check, traffic optimization
+    // basic check returns only small amount of data without full transaction history
+    const basic = await TrezorConnect.getAccountInfo({
+        coin: account.symbol,
+        descriptor: account.descriptor,
+        details: 'basic',
+    });
+    if (!basic.success) return;
+
+    const accountOutdated = accountUtils.isAccountOutdated(account, basic.payload);
+    const accountTxs = accountUtils.getAccountTransactions(
+        getState().wallet.transactions.transactions,
+        account,
+    );
+    // stop here if account is not outdated and there are no pending transactions
+    if (!accountOutdated && !accountTxs.find(isPending)) return;
+
     // we need to fetch at least the number of unconfirmed txs
     const pageSize =
         (account.history.unconfirmed || 0) > SETTINGS.TXS_PER_PAGE
@@ -127,11 +144,6 @@ export const fetchAndUpdateAccount = (account: Account) => async (
 
     if (response.success) {
         const { payload } = response;
-
-        const accountTxs = accountUtils.getAccountTransactions(
-            getState().wallet.transactions.transactions,
-            account,
-        );
 
         const analyze = analyzeTransactions(payload.history.transactions || [], accountTxs);
         if (analyze.remove.length > 0) {

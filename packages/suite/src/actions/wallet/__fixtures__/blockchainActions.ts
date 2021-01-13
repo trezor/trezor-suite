@@ -7,7 +7,9 @@ const DEFAULT_ACCOUNT = {
     symbol: 'btc',
     networkType: 'bitcoin',
     descriptor: 'xpub',
-    history: {},
+    history: {
+        total: 0,
+    },
 };
 
 const BLOCK = {
@@ -154,11 +156,18 @@ export const onBlock = analyzeTransactions
     .map((f, i) => {
         return {
             description: f.description,
-            connect: {
-                history: {
-                    transactions: f.fresh.slice().map((t: any) => parseTx(t)),
+            connect: [
+                {
+                    history: {
+                        total: 1, // to make sure that "basic" call will catch a difference
+                    },
                 },
-            },
+                {
+                    history: {
+                        transactions: f.fresh.slice().map((t: any) => parseTx(t)),
+                    },
+                },
+            ],
             block: BLOCK,
             state: {
                 accounts: [DEFAULT_ACCOUNT],
