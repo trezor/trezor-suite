@@ -149,7 +149,7 @@ const CoinsGroup = ({
     const deviceVersion = device.features?.major_version === 1 ? 1 : 2;
     const isBtcOnly = isBitcoinOnly(device);
     return (
-        <Wrapper data-test="@settings/wallet/coins-group">
+        <Wrapper data-test={`@settings/wallet/coins-group/${props.type}`}>
             <Section
                 customHeader={
                     <Header>

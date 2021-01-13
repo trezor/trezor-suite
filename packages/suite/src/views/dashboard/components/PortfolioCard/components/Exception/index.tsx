@@ -50,22 +50,24 @@ interface CTA {
     variant?: React.ComponentProps<typeof Button>['variant'];
     action: () => void;
     icon?: IconProps['icon'];
-    testId?: string;
+    //  testId?: string;
 }
 
 interface ContainerProps {
     title: React.ComponentProps<typeof Translation>['id'];
     description: React.ComponentProps<typeof Translation>['id'] | JSX.Element;
     cta: CTA | CTA[];
+    dataTestBase: string;
 }
 
 // Common wrapper for all views
-const Container = ({ title, description, cta }: ContainerProps) => {
+const Container = ({ title, description, cta, dataTestBase }: ContainerProps) => {
     const { isLocked } = useDevice();
     const actions = Array.isArray(cta) ? cta : [cta];
     return (
-        <Wrapper>
+        <Wrapper data-test={`@exception/${dataTestBase}`}>
             <Title>
+                {' '}
                 <Translation id={title} />
             </Title>
             <Description>
@@ -80,7 +82,7 @@ const Container = ({ title, description, cta }: ContainerProps) => {
                         icon={a.icon || 'PLUS'}
                         isLoading={isLocked()}
                         onClick={a.action}
-                        data-test={a.testId}
+                        data-test={`@exception/${dataTestBase}/${a.variant || 'primary'}-button`}
                     >
                         <Translation id={a.label || 'TR_RETRY'} />
                     </Button>
@@ -123,6 +125,7 @@ const Exception = ({ exception, discovery }: Props) => {
                     title="TR_ACCOUNT_EXCEPTION_AUTH_ERROR"
                     description="TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC"
                     cta={{ action: () => dispatch(suiteActions.authorizeDevice()) }}
+                    dataTestBase={exception.type}
                 />
             );
         case 'auth-confirm-failed':
@@ -132,8 +135,9 @@ const Exception = ({ exception, discovery }: Props) => {
                     description="TR_AUTH_CONFIRM_FAILED_DESC"
                     cta={{
                         action: () => dispatch(suiteActions.authConfirm()),
-                        testId: '@passphrase-mismatch/retry-button',
+                        // testId: '@passphrase-mismatch/retry-button',
                     }}
+                    dataTestBase={exception.type}
                 />
             );
         case 'discovery-empty':
@@ -159,6 +163,7 @@ const Exception = ({ exception, discovery }: Props) => {
                             label: 'TR_ADD_ACCOUNT',
                         },
                     ]}
+                    dataTestBase={exception.type}
                 />
             );
         case 'discovery-failed':
@@ -172,6 +177,7 @@ const Exception = ({ exception, discovery }: Props) => {
                         />
                     }
                     cta={{ action: () => dispatch(discoveryActions.restart()) }}
+                    dataTestBase={exception.type}
                 />
             );
         case 'device-unavailable':
@@ -197,6 +203,7 @@ const Exception = ({ exception, discovery }: Props) => {
                         },
                         label: 'TR_ACCOUNT_ENABLE_PASSPHRASE',
                     }}
+                    dataTestBase={exception.type}
                 />
             );
         default:
