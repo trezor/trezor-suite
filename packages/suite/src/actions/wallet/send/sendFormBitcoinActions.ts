@@ -27,8 +27,9 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
     const composeOutputs = getBitcoinComposeOutputs(formValues, account.symbol);
     if (composeOutputs.length < 1) return;
 
-    // clone and filter FeeLevels
-    const predefinedLevels = feeInfo.levels.map(l => ({ ...l })).filter(l => l.label !== 'custom');
+    // clone FeeLevels in rbf, the will be modified later
+    const levels = formValues.rbfParams ? feeInfo.levels.map(l => ({ ...l })) : feeInfo.levels;
+    const predefinedLevels = levels.filter(l => l.label !== 'custom');
     // in case when selectedFee is set to 'custom' construct this FeeLevel from values
     if (formValues.selectedFee === 'custom') {
         predefinedLevels.push({
