@@ -7,6 +7,7 @@ import {
     calculateMax,
     calculateEthFee,
     serializeEthereumTx,
+    getEthereumEstimateFeeParams,
     prepareEthereumTransaction,
     getExternalComposeOutput,
 } from '@wallet-utils/sendFormUtils';
@@ -89,7 +90,6 @@ const calculate = (
                     {
                         address: output.address,
                         amount,
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
@@ -109,34 +109,45 @@ export const composeTransaction = (
 
     const { output, tokenInfo, decimals } = composeOutputs;
     const { availableBalance } = account;
-    const { address } = formValues.outputs[0];
+    const { address, amount } = formValues.outputs[0];
 
-    // additional calculation for gasLimit based on data size
     let customFeeLimit: string | undefined;
-    if (typeof formValues.ethereumDataHex === 'string' && formValues.ethereumDataHex.length > 0) {
-        const response = await TrezorConnect.blockchainEstimateFee({
-            coin: account.symbol,
-            request: {
-                blocks: [2],
-                specific: {
-                    from: account.descriptor,
-                    to: address || account.descriptor,
-                    data: formValues.ethereumDataHex,
-                },
-            },
-        });
-
-        if (response.success) {
-            customFeeLimit = response.payload.levels[0].feeLimit;
-        }
-    }
-
     // set gasLimit based on ERC20 transfer
     if (tokenInfo) {
         customFeeLimit = ERC20_GAS_LIMIT;
     }
 
-    const predefinedLevels = feeInfo.levels.filter(l => l.label !== 'custom');
+    // gasLimit calculation based on address, amount and data size
+    // amount in essential for a proper calculation of gasLimit (via blockbook/geth)
+    const estimatedFee = await TrezorConnect.blockchainEstimateFee({
+        coin: account.symbol,
+        request: {
+            blocks: [2],
+            specific: {
+                from: account.descriptor,
+                ...getEthereumEstimateFeeParams(
+                    address || account.descriptor,
+                    tokenInfo,
+                    amount,
+                    formValues.ethereumDataHex,
+                ),
+            },
+        },
+    });
+
+    if (estimatedFee.success) {
+        customFeeLimit = estimatedFee.payload.levels[0].feeLimit;
+    } else {
+        // TODO: catch error from blockbook/geth (invalid contract, not enough balance...)
+    }
+
+    // FeeLevels are read-only
+    const levels = customFeeLimit ? feeInfo.levels.map(l => ({ ...l })) : feeInfo.levels;
+    const predefinedLevels = levels.filter(l => l.label !== 'custom');
+    // update predefined levels with customFeeLimit (gasLimit from data size or erc20 transfer)
+    if (customFeeLimit) {
+        predefinedLevels.forEach(l => (l.feeLimit = customFeeLimit));
+    }
     // in case when selectedFee is set to 'custom' construct this FeeLevel from values
     if (formValues.selectedFee === 'custom') {
         predefinedLevels.push({
@@ -145,11 +156,6 @@ export const composeTransaction = (
             feeLimit: formValues.feeLimit,
             blocks: -1,
         });
-    }
-
-    // update predefined levels with customFeeLimit (gasLimit from data size ot erc20 transfer)
-    if (customFeeLimit) {
-        predefinedLevels.forEach(l => (l.feeLimit = customFeeLimit));
     }
 
     // wrap response into PrecomposedLevels object where key is a FeeLevel label

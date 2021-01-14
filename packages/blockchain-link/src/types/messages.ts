@@ -94,6 +94,7 @@ export interface EstimateFeeParams {
         from?: string; // eth from
         to?: string; // eth to
         data?: string; // eth tx data
+        value?: string; // eth tx amount
     };
 }
 

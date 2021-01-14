@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js';
 import { FieldError, UseFormMethods } from 'react-hook-form';
-import { EthereumTransaction, FeeLevel, ComposeOutput } from 'trezor-connect';
+import { EthereumTransaction, TokenInfo, ComposeOutput } from 'trezor-connect';
 import Common from 'ethereumjs-common';
 import { Transaction, TxData } from 'ethereumjs-tx';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
-import { ERC20_GAS_LIMIT, ERC20_TRANSFER } from '@wallet-constants/sendForm';
+import { ERC20_TRANSFER } from '@wallet-constants/sendForm';
 import {
     amountToSatoshi,
     networkAmountToSatoshi,
@@ -75,10 +75,43 @@ export const calculateEthFee = (gasPrice?: string, gasLimit?: string): string =>
     }
 };
 
+const getSerializedAmount = (amount?: string) => (amount ? toHex(toWei(amount, 'ether')) : '0x00');
+
+const getSerializedErc20Transfer = (token: TokenInfo, to: string, amount: string) => {
+    // 32 bytes address parameter, remove '0x' prefix
+    const erc20recipient = padLeft(to, 64).substring(2);
+    // convert amount to satoshi
+    const tokenAmount = amountToSatoshi(amount, token.decimals);
+    // 32 bytes amount paramter, remove '0x' prefix
+    const erc20amount = padLeft(toHex(tokenAmount), 64).substring(2);
+    // join data
+    return `0x${ERC20_TRANSFER}${erc20recipient}${erc20amount}`;
+};
+
+export const getEthereumEstimateFeeParams = (
+    to: string,
+    token?: TokenInfo,
+    amount?: string,
+    data?: string,
+) => {
+    if (token) {
+        return {
+            to,
+            value: '0x00',
+            data: getSerializedErc20Transfer(token, to, amount || '0'),
+        };
+    }
+    return {
+        to,
+        value: amount ? getSerializedAmount(amount) : toHex('1'), // use at least 1 wei (satoshi)
+        data,
+    };
+};
+
 export const prepareEthereumTransaction = (txInfo: EthTransactionData) => {
     const result: EthereumTransaction = {
         to: txInfo.to,
-        value: toHex(toWei(txInfo.amount, 'ether')),
+        value: getSerializedAmount(txInfo.amount),
         chainId: txInfo.chainId,
         nonce: toHex(txInfo.nonce),
         gasLimit: toHex(txInfo.gasLimit),
@@ -91,14 +124,8 @@ export const prepareEthereumTransaction = (txInfo: EthTransactionData) => {
 
     // Build erc20 'transfer' method
     if (txInfo.token) {
-        // 32 bytes address parameter, remove '0x' prefix
-        const erc20recipient = padLeft(txInfo.to, 64).substring(2);
-        // convert amount to satoshi
-        const tokenAmount = amountToSatoshi(txInfo.amount, txInfo.token.decimals);
-        // 32 bytes amount paramter, remove '0x' prefix
-        const erc20amount = padLeft(toHex(tokenAmount), 64).substring(2);
         // join data
-        result.data = `0x${ERC20_TRANSFER}${erc20recipient}${erc20amount}`;
+        result.data = getSerializedErc20Transfer(txInfo.token, txInfo.to, txInfo.amount);
         // replace tx recipient to smart contract address
         result.to = txInfo.token.address;
         // replace tx value
@@ -133,32 +160,22 @@ export const serializeEthereumTx = (tx: TxData & EthereumTransaction) => {
     return `0x${ethTx.serialize().toString('hex')}`;
 };
 
-export const getFeeLevels = (
-    networkType: Network['networkType'],
-    feeInfo: FeeInfo,
-    token = false,
-) => {
-    const convertedEthLevels: FeeLevel[] = [];
-    const initialLevels: FeeLevel[] = feeInfo.levels.concat({
+export const getFeeLevels = (networkType: Network['networkType'], feeInfo: FeeInfo) => {
+    const levels = feeInfo.levels.concat({
         label: 'custom',
         feePerUnit: '0',
         blocks: -1,
     });
 
     if (networkType === 'ethereum') {
-        initialLevels.forEach(level =>
-            convertedEthLevels.push({
-                ...level,
-                feePerUnit: fromWei(level.feePerUnit, 'gwei'),
-                feeLimit: token ? ERC20_GAS_LIMIT : level.feeLimit,
-                feePerTx: token
-                    ? new BigNumber(ERC20_GAS_LIMIT).times(level.feePerUnit).toString()
-                    : level.feePerTx,
-            }),
-        );
+        return levels.map(level => ({
+            ...level,
+            feePerUnit: fromWei(level.feePerUnit, 'gwei'),
+            feeLimit: level.feeLimit,
+        }));
     }
 
-    return networkType === 'ethereum' ? convertedEthLevels : initialLevels;
+    return levels;
 };
 
 export const getInputState = (error?: FieldError, value?: string) => {
