@@ -9,7 +9,13 @@ import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
 import { getAnalyticsRandomId } from '@suite-utils/random';
 import { encodeDataToQueryString } from '@suite-utils/analytics';
 import { Account } from '@wallet-types';
-import { isDesktop, isWeb, setOnBeforeUnloadListener, getLocationHostname } from '@suite-utils/env';
+import {
+    isDesktop,
+    isWeb,
+    setOnBeforeUnloadListener,
+    getLocationHostname,
+    getOSVersion,
+} from '@suite-utils/env';
 import { setSentryUser } from '@suite-utils/sentry';
 import { State } from '@suite-reducers/analyticsReducer';
 
@@ -63,7 +69,6 @@ export type AnalyticsEvent =
               theme: string;
               // added in 1.6
               suiteVersion: string;
-              desktopOSVersion: { platform: string; release: string } | '';
           };
       }
     | { type: 'transport-type'; payload: { type: string; version: string } }
@@ -283,6 +288,13 @@ export type AnalyticsEvent =
           payload: {
               type: 'hidden' | 'standard';
           };
+      }
+    | {
+          type: 'desktop-init';
+          payload: {
+              // added in 1.6
+              desktopOSVersion: string;
+          };
       };
 
 const getUrl = () => {
@@ -359,7 +371,7 @@ export const report = (data: AnalyticsEvent, force = false) => (
  * @param loadedState - analytics state loaded from storage
  * @param optout if true, analytics will be on by default (opt-out mode)
  */
-export const init = (loadedState: State, optout: boolean) => (
+export const init = (loadedState: State, optout: boolean) => async (
     dispatch: Dispatch,
     getState: GetState,
 ) => {
@@ -395,6 +407,22 @@ export const init = (loadedState: State, optout: boolean) => (
             }),
         );
     });
+
+    // send OS version if isDesktop
+    if (isDesktop()) {
+        let desktopOSVersion = '';
+        const resp = await getOSVersion();
+        if (resp?.success) {
+            desktopOSVersion = `${resp.payload.platform}_${resp.payload.release}`;
+        }
+
+        dispatch(
+            report({
+                type: 'desktop-init',
+                payload: { desktopOSVersion },
+            }),
+        );
+    }
 };
 
 export const enable = (): AnalyticsAction => ({
