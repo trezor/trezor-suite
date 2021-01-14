@@ -36,6 +36,7 @@ import { ReadMoreLink } from './ReadMoreLink';
 import BetaBadge from './BetaBadge';
 import { Modal, ModalProps } from './Modal';
 import { SkeletonRectangle, SkeletonCircle } from './Skeleton';
+import Notifications from './Notifications';
 
 export {
     Backdrop,
@@ -81,5 +82,6 @@ export {
     Modal,
     SkeletonRectangle,
     SkeletonCircle,
+    Notifications,
 };
 export type { ImageProps, ModalProps };

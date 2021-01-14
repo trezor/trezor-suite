@@ -11,6 +11,7 @@ import { useActions, useAnalytics, useSelector } from '@suite-hooks';
 import ActionItem from './components/ActionItem';
 import TooltipContentTor from './components/TooltipContentTor';
 import { isDesktop } from '@suite-utils/env';
+import NotificationsDropdown from './components/NotificationsDropdown';
 
 const Wrapper = styled.div`
     display: flex;
@@ -119,6 +120,16 @@ const NavigationActions = (props: Props) => {
                 const routeObj = findRouteByName(route);
                 const isActive = routeObj ? routeObj.app === activeApp : false;
                 const unseenNotifications = notifications.some(n => !n.seen);
+
+                // For notifications, return just dropdown menu for desktop layout (do not redirect to separate notifications page)
+                if (route === 'notifications-index' && !props.isMobileLayout)
+                    return (
+                        <NotificationsDropdown
+                            key={item.translationId}
+                            isActive={isActive}
+                            withAlertDot={unseenNotifications}
+                        />
+                    );
 
                 return (
                     <ActionItem

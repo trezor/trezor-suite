@@ -1,4 +1,12 @@
-import React, { useState, useRef, useLayoutEffect, forwardRef, useImperativeHandle } from 'react';
+import React, {
+    useState,
+    useRef,
+    useLayoutEffect,
+    forwardRef,
+    useImperativeHandle,
+    useEffect,
+    useCallback,
+} from 'react';
 import ReactDOM from 'react-dom';
 import styled, { css } from 'styled-components';
 import { variables } from '../../config';
@@ -138,10 +146,12 @@ interface Props extends MenuProps, React.ButtonHTMLAttributes<HTMLDivElement> {
     offset?: number;
     isDisabled?: boolean;
     appendTo?: HTMLElement;
+    onToggleChange?: (toggled: boolean) => void;
 }
 
 interface DropdownRef {
     close: () => void;
+    open: () => void;
 }
 
 type Coords = [number, number] | undefined;
@@ -159,6 +169,7 @@ const Dropdown = forwardRef(
             offset = 10,
             appendTo,
             verticalPadding = 8,
+            onToggleChange,
             ...rest
         }: Props,
         ref
@@ -169,8 +180,13 @@ const Dropdown = forwardRef(
         const [menuSize, setMenuSize] = useState<Coords>(undefined);
         const menuRef = useRef<HTMLUListElement>(null);
         const toggleRef = useRef<any>(null);
+        const onToggleChangeRef = useRef(onToggleChange);
         const MenuComponent = components?.DropdownMenu ?? Menu;
         const MenuItemComponent = components?.DropdownMenuItem ?? MenuItem;
+
+        useEffect(() => {
+            if (onToggleChangeRef?.current) onToggleChangeRef.current(toggled);
+        }, [toggled]);
 
         const visibleItems = items.map(group => ({
             ...group,
@@ -185,6 +201,9 @@ const Dropdown = forwardRef(
         }, [toggled]);
 
         useImperativeHandle(ref, () => ({
+            open: () => {
+                setToggled(true);
+            },
             close: () => {
                 setToggled(false);
             },
