@@ -1,49 +1,68 @@
 /**
  * Tor feature (toggle, configure)
  */
-import { app, session, ipcMain, BrowserWindow, IpcMainEvent } from 'electron';
+import { app, session, ipcMain, IpcMainEvent } from 'electron';
 
 import TorProcess from '@lib/processes/TorProcess';
+import { b2t } from '@lib/utils';
 
 import { onionDomain } from '../config';
 
-const tor = new TorProcess();
-
 const torFlag = app.commandLine.hasSwitch('tor');
 
-const init = async (window: BrowserWindow, store: LocalStore) => {
+const init = async ({ mainWindow, store }: Dependencies) => {
+    const { logger } = global;
+    const tor = new TorProcess();
     const torSettings = store.getTorSettings();
 
     const toggleTor = async (start: boolean) => {
         if (start) {
             if (torSettings.running) {
+                logger.info('tor', 'Restarting');
                 await tor.restart();
             } else {
+                logger.info('tor', 'Starting');
                 await tor.start();
             }
         } else {
+            logger.info('tor', 'Stopping');
             await tor.stop();
         }
 
         torSettings.running = start;
         store.setTorSettings(torSettings);
 
-        window.webContents.send('tor/status', start);
+        mainWindow.webContents.send('tor/status', start);
+
+        const proxy = start ? `socks5://${torSettings.address}` : '';
+        logger.info('tor', `Setting proxy to "${proxy}"`);
         session.defaultSession.setProxy({
-            proxyRules: start ? `socks5://${torSettings.address}` : '',
+            proxyRules: proxy,
         });
     };
 
     if (torFlag || torSettings.running) {
+        logger.info('tor', [
+            'Auto starting:',
+            `- Running with flag: ${b2t(torFlag)}`,
+            `- Running with settings: ${b2t(torSettings.running)}`,
+        ]);
         await toggleTor(true);
     }
 
     ipcMain.on('tor/toggle', async (_, start: boolean) => {
+        logger.info('tor', `Toggling ${start ? 'ON' : 'OFF'}`);
         await toggleTor(start);
     });
 
     ipcMain.on('tor/set-address', () => async (_: IpcMainEvent, address: string) => {
         if (torSettings.address !== address) {
+            logger.debug('tor', [
+                'Updating address:',
+                `- From: ${torSettings.address}`,
+                `- To: ${address}`,
+            ]);
+
             torSettings.address = address;
             store.setTorSettings(torSettings);
 
@@ -54,10 +73,12 @@ const init = async (window: BrowserWindow, store: LocalStore) => {
     });
 
     ipcMain.on('tor/get-status', () => {
-        window.webContents.send('tor/status', torSettings.running);
+        logger.debug('tor', `Getting status (${torSettings.running ? 'ON' : 'OFF'})`);
+        mainWindow.webContents.send('tor/status', torSettings.running);
     });
 
     ipcMain.handle('tor/get-address', () => {
+        logger.debug('tor', `Getting address (${torSettings.address})`);
         return torSettings.address;
     });
 
@@ -66,6 +87,7 @@ const init = async (window: BrowserWindow, store: LocalStore) => {
 
         // Redirect outgoing trezor.io requests to .onion domain
         if (torSettings.running && hostname.endsWith('trezor.io') && protocol === 'https:') {
+            logger.info('tor', `Rewriting ${details.url} to .onion URL`);
             cb({
                 redirectURL: details.url.replace(
                     /https:\/\/(([a-z0-9]+\.)*)trezor\.io(.*)/,

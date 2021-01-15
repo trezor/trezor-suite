@@ -18,6 +18,7 @@ class BridgeProcess extends BaseProcess {
                     Origin: 'https://electron.trezor.io',
                 },
             });
+            this.logger.debug(this.logTopic, `Checking status (${resp.status})`);
             if (resp.status === 200) {
                 const data = await resp.json();
                 if (data?.version) {
@@ -27,8 +28,8 @@ class BridgeProcess extends BaseProcess {
                     };
                 }
             }
-        } catch {
-            //
+        } catch (err) {
+            this.logger.error(this.logTopic, `Status error: ${err.message}`);
         }
 
         // process
@@ -39,7 +40,7 @@ class BridgeProcess extends BaseProcess {
     }
 
     async startDev(): Promise<void> {
-        await this.start(['-e', '21324']);
+        await super.start(['-e', '21324']);
     }
 }
 

@@ -1,7 +1,7 @@
 /**
  * Local web server for handling requests to app
  */
-import { app, ipcMain, BrowserWindow } from 'electron';
+import { app, ipcMain } from 'electron';
 
 import { buyRedirectHandler } from '@lib/buy';
 import { HttpReceiver } from '@lib/http-receiver';
@@ -9,31 +9,35 @@ import { HttpReceiver } from '@lib/http-receiver';
 // External request handler
 const httpReceiver = new HttpReceiver();
 
-const init = (window: BrowserWindow, src: string) => {
+const init = ({ mainWindow, src }: Dependencies) => {
+    const { logger } = global;
+
     // wait for httpReceiver to start accepting connections then register event handlers
     httpReceiver.on('server/listening', () => {
         // when httpReceiver accepted oauth response
         httpReceiver.on('oauth/response', message => {
-            window.webContents.send('oauth/response', message);
+            mainWindow.webContents.send('oauth/response', message);
             app.focus();
         });
 
         httpReceiver.on('buy/redirect', url => {
-            buyRedirectHandler(url, window, src);
+            buyRedirectHandler(url, mainWindow, src);
         });
 
         httpReceiver.on('spend/message', event => {
-            window.webContents.send('spend/message', event);
+            mainWindow.webContents.send('spend/message', event);
         });
 
         // when httpReceiver was asked to provide current address for given pathname
-        ipcMain.handle('server/request-address', (_event, pathname) =>
+        ipcMain.handle('server/request-address', (_, pathname) =>
             httpReceiver.getRouteAddress(pathname),
         );
     });
 
+    logger.info('http-receiver', 'Starting server');
     httpReceiver.start();
     app.on('before-quit', () => {
+        logger.info('http-receiver', 'Stopping server (app quit)');
         httpReceiver.stop();
     });
 };

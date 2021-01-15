@@ -5,6 +5,9 @@ Using VS Code configuration files (inside `.vscode`), Suite Desktop can be built
 
 Known issue: The devtools might blank out at launch. If this happens, simply close and re-open the devtools (CTRL + SHIFT + I).
 
+## Logging
+_TODO_
+
 ## Shortcuts
 _TODO_
 
@@ -18,3 +21,7 @@ Available flags:
 | `--disable-csp` | Disables the Content Security Policy. Necessary for using DevTools in a production build. |
 | `--pre-release` | Tells the auto-updater to fetch pre-release updates. |
 | `--bridge-dev` | Instruct Bridge to support emulator (starts Bridge with `-e 21324`). |
+| `--log-level=NAME` | Set the logging level. Available levels are [name (value)]: error (1), warn (2), info(3), debug (4). All logs with a value equal or lower to the selected log level will be displayed. |
+| `--log-write` | Write log to disk |
+| `--log-no-print` | Disable the log priting in the console. |
+| `--log-output=FILENAME` | Name of the output file (default: log-%ts.txt) |

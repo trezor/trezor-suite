@@ -15,3 +15,6 @@ export const isPortUsed = (port: number) =>
 
         server.listen(port);
     });
+
+// Bool 2 Text
+export const b2t = (bool: boolean) => (bool ? 'Yes' : 'No');

@@ -1,7 +1,7 @@
 import path from 'path';
 import { spawn, ChildProcess } from 'child_process';
 import isDev from 'electron-is-dev';
-import { RESOURCES } from '../constants';
+import { b2t } from '@lib/utils';
 
 export type Status = {
     service: boolean;
@@ -33,6 +33,8 @@ abstract class BaseProcess {
     startupThrottle: ReturnType<typeof setTimeout> | null;
     supportedSystems = ['linux-arm64', 'linux-x64', 'mac-x64', 'win-x64'];
     stopped = false;
+    logger: ILogger;
+    logTopic: string;
 
     /**
      * @param resourceName Resource folder name
@@ -48,6 +50,15 @@ abstract class BaseProcess {
             ...defaultOptions,
             ...options,
         };
+
+        const { logger } = global;
+        this.logger = logger;
+        this.logTopic = `process-${this.processName}`;
+
+        const { system } = this.getPlatformInfo();
+        if (!this.isSystemSupported(system)) {
+            throw new Error(`[${this.resourceName}] unsupported system (${system})`);
+        }
     }
 
     /**
@@ -63,6 +74,7 @@ abstract class BaseProcess {
      */
     async start(params: string[] = []) {
         if (this.startupThrottle) {
+            this.logger.warn(this.logTopic, 'Canceling process start (throttle)');
             return;
         }
 
@@ -70,30 +82,38 @@ abstract class BaseProcess {
 
         // Service is running, nothing to do
         if (status.service) {
+            this.logger.warn(this.logTopic, 'Canceling process start (service running)');
             return;
         }
 
         // If the process is running but the service isn't
         if (status.process) {
+            this.logger.warn(this.logTopic, 'Process is running but service is not');
             // Stop the process
             await this.stop();
         }
 
         // Throttle process start
         if (this.options.startupCooldown && this.options.startupCooldown > 0) {
+            this.logger.debug(
+                this.logTopic,
+                `Setting a restart throttle (${this.options.startupCooldown})`,
+            );
             this.startupThrottle = setTimeout(() => {
+                this.logger.debug(this.logTopic, 'Clearing throttle');
                 this.startupThrottle = null;
             }, this.options.startupCooldown * 1000);
         }
 
-        const { system, ext } = this.getPlatformInfo();
-        if (!this.isSystemSupported(system)) {
-            throw new Error(`[${this.resourceName}] unsupported system (${system})`);
-        }
-
         this.stopped = false;
 
-        const processDir = path.join(RESOURCES, 'bin', this.resourceName, isDev ? system : '');
+        const { system, ext } = this.getPlatformInfo();
+        const processDir = path.join(
+            global.resourcesPath,
+            'bin',
+            this.resourceName,
+            isDev ? system : '',
+        );
         const processPath = path.join(processDir, `${this.processName}${ext}`);
         const processEnv = { ...process.env };
         // library search path for macOS
@@ -104,6 +124,13 @@ abstract class BaseProcess {
         processEnv.LD_LIBRARY_PATH = processEnv.LD_LIBRARY_PATH
             ? `${processEnv.LD_LIBRARY_PATH}:${processDir}`
             : `${processDir}`;
+
+        this.logger.info(this.logTopic, [
+            'Starting process:',
+            `- Path: ${processPath}`,
+            `- Params: ${params}`,
+            `- CWD: ${processDir}`,
+        ]);
         this.process = spawn(processPath, params, {
             cwd: processDir,
             env: processEnv,
@@ -117,27 +144,32 @@ abstract class BaseProcess {
      */
     stop() {
         return new Promise<void>(resolve => {
+            this.stopped = true;
+
             if (!this.process) {
-                this.stopped = true;
+                this.logger.warn(this.logTopic, "Couldn't stop process (already stopped)");
                 resolve();
                 return;
             }
 
+            this.logger.info(this.logTopic, 'Stopping process');
             this.process.kill();
 
             let timeout = 0;
             const interval = setInterval(() => {
                 if (!this.process || this.process.killed) {
+                    this.logger.info(this.logTopic, 'Killed successfully');
                     clearInterval(interval);
                     this.process = null;
-                    this.stopped = true;
                     resolve();
                     return;
                 }
 
                 if (this.options.stopKillWait && timeout < this.options.stopKillWait) {
+                    this.logger.info(this.logTopic, 'Still alive, checking again...');
                     timeout++;
                 } else {
+                    this.logger.info(this.logTopic, 'Still alive, going for the SIGKILL');
                     this.process.kill('SIGKILL');
                 }
             }, 1000);
@@ -149,17 +181,20 @@ abstract class BaseProcess {
      * @param force Force the restart
      */
     async restart() {
+        this.logger.info(this.logTopic, 'Restarting');
         await this.stop();
         await this.start();
     }
 
     onError(err: Error) {
-        console.error('ERROR', this.processName, err);
+        this.logger.error(this.logTopic, err.message);
     }
 
     onExit() {
+        this.logger.info(this.logTopic, `Exited (Stopped: ${b2t(this.stopped)})`);
         this.process = null;
         if (this.options.autoRestart && this.options.autoRestart > 0 && !this.stopped) {
+            this.logger.debug(this.logTopic, 'Auto restarting...');
             setTimeout(() => this.start(), this.options.autoRestart * 1000);
         }
     }

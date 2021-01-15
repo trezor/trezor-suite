@@ -15,6 +15,7 @@ export const save = async (directory: string, name: string, content: string) => 
         await fs.promises.writeFile(file, content, 'utf-8');
         return { success: true };
     } catch (error) {
+        global.logger.error('user-data', `Save failed: ${error.message}`);
         return { success: false, error };
     }
 };
@@ -33,6 +34,7 @@ export const read = async (directory: string, name: string) => {
         const payload = await fs.promises.readFile(file, 'utf-8');
         return { success: true, payload };
     } catch (error) {
+        global.logger.error('user-data', `Read failed: ${error.message}`);
         return { success: false, error };
     }
 };

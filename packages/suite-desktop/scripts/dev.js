@@ -14,8 +14,7 @@ next.prepare().then(() => {
     const requestHandler = next.getRequestHandler();
     const server = createServer(requestHandler).listen(8000, () => {
         if (!launchElectron) {
-            console.error('process.env.LAUNCH_ELECTRON not set to true')
-            return process.exit(1);
+            return;
         }
 
         const electron = exec('yarn run dev:run', {
