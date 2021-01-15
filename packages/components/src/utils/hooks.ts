@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { ThemeContext } from '../support/ThemeProvider';
+import { platform } from './env';
 import { useTheme as useSCTheme } from 'styled-components';
 
 export const useKeyPress = (targetKey: string) => {
@@ -67,6 +69,9 @@ export const useOnClickOutside = (
 };
 
 export const useTheme = () => {
-    const theme = useSCTheme();
-    return theme;
+    // In react-native it retrieves theme from our own context
+    // Use Styled-Components hook/context on web
+    const contextTheme = useContext(ThemeContext);
+    const scTheme = useSCTheme();
+    return platform === 'web' ? scTheme : contextTheme;
 };

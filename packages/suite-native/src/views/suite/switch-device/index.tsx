@@ -5,7 +5,7 @@ import { View, Text, Button } from 'react-native';
 
 import * as routerActions from '@suite-actions/routerActions';
 import styles from '@suite-support/styles';
-
+import { useTheme } from '@suite-hooks';
 import { Dispatch } from '@suite-types';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -15,9 +15,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 type Props = ReturnType<typeof mapDispatchToProps>;
 
 const SwitchDevice = (props: Props) => {
+    const { theme } = useTheme();
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.h1}>SwitchDevice</Text>
+        <View style={styles(theme).container}>
+            <Text style={styles(theme).h1}>SwitchDevice</Text>
             <View style={{ margin: 20 }}>
                 <Text>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor

@@ -5,6 +5,7 @@ import { View, Text, Button } from 'react-native';
 
 import * as routerActions from '@suite-actions/routerActions';
 import styles from '@suite-support/styles';
+import { useTheme } from '@suite-hooks';
 
 import { Dispatch } from '@suite-types';
 
@@ -16,9 +17,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 type Props = ReturnType<typeof mapDispatchToProps>;
 
 const Backup = (props: Props) => {
+    const { theme } = useTheme();
     return (
-        <View style={styles.container}>
-            <Text style={styles.h1}>Firmware update</Text>
+        <View style={styles(theme).container}>
+            <Text style={styles(theme).h1}>Firmware update</Text>
             <View style={{ margin: 20 }}>
                 <Text>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor

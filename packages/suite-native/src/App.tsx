@@ -8,20 +8,23 @@
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import './support/global';
-// import IntlProvider from '@suite-support/ConnectedIntlProvider';
+import IntlProvider from '@suite/support/suite/ConnectedIntlProvider';
 import Preloader from '@suite-components/Preloader';
 import { initStore } from '@suite/reducers/store';
 import Router from '@suite-support/Router';
+import ThemeProvider from '@suite-support/ThemeProvider';
 
 const TrezorSuite = () => {
     const store = initStore();
     return (
         <ReduxProvider store={store}>
-            {/* <IntlProvider> */}
-            <Preloader>
-                <Router />
-            </Preloader>
-            {/* </IntlProvider> */}
+            <IntlProvider>
+                <ThemeProvider>
+                    <Preloader>
+                        <Router />
+                    </Preloader>
+                </ThemeProvider>
+            </IntlProvider>
         </ReduxProvider>
     );
 };

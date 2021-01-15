@@ -10,6 +10,7 @@ interface TooltipProps {
 
 type OwnProps = {
     isNested?: boolean;
+    isReactNative?: boolean; // used to render span on the web, plain node for react-native
     translationTooltip: React.ComponentType<TooltipProps>;
 };
 
@@ -58,11 +59,13 @@ const BaseTranslation = (props: MsgType) => {
         return <>{`Unknown translation id: ${props.id}`}</>;
     }
 
+    const defaultTagName = props.isReactNative || props.isNested ? undefined : 'span';
+
     return (
         <TooltipComponent isNested={props.isNested} messageId={props.id}>
             <FormattedMessage
                 id={props.id}
-                tagName={props.isNested ? undefined : 'span'}
+                tagName={defaultTagName}
                 defaultMessage={props.defaultMessage || messages[props.id].defaultMessage}
                 // pass undefined to a 'values' prop in case of an empty values object
                 values={Object.keys(values).length === 0 ? undefined : values}

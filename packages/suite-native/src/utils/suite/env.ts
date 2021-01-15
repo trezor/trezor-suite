@@ -1,4 +1,4 @@
-import { Platform } from 'react-native';
+import { Appearance, Platform } from 'react-native';
 import { SuiteThemeVariant } from '@suite-types';
 
 /**
@@ -66,6 +66,6 @@ export const setOnBeforeUnloadListener = (_callback: () => void) => {
 };
 
 export const getOSTheme = (): SuiteThemeVariant => {
-    // todo
-    return 'light';
+    const colorScheme = Appearance.getColorScheme();
+    return colorScheme === 'dark' ? 'dark' : 'light';
 };

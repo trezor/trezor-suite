@@ -7,7 +7,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import styles from '@suite-support/styles';
 import InitialRun from './components/InitialRun';
-
+import { useTheme } from '@suite-hooks';
 import { AppState, Dispatch } from '@suite-types';
 
 const mapStateToProps = (state: AppState) => ({
@@ -23,6 +23,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const Onboarding = (props: Props) => {
+    const { theme } = useTheme();
+
     // TODO: "initialRun" view should not depend on props.initialRun
     if (props.initialRun) {
         return <InitialRun />;
@@ -30,7 +32,7 @@ const Onboarding = (props: Props) => {
 
     return (
         <View>
-            <Text style={styles.h1}>Onboarding</Text>
+            <Text style={styles(theme).h1}>Onboarding</Text>
             <View style={{ margin: 20 }}>
                 <Text>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
