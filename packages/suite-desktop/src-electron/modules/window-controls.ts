@@ -15,93 +15,121 @@ const notifyWindowActive = (window: BrowserWindow, state: boolean) => {
     window.webContents.send('window/is-active', state);
 };
 
-const init = (window: BrowserWindow, store: LocalStore) => {
+const init = ({ mainWindow, store }: Dependencies) => {
+    const { logger } = global;
+
     if (process.platform === 'darwin') {
         // macOS specific window behavior
         // it is common for applications and their context menu to stay active until the user quits explicitly
         // with Cmd + Q or right-click > Quit from the context menu.
 
         // restore window after click on the Dock icon
-        app.on('activate', () => window.show());
+        app.on('activate', () => {
+            logger.info('window-control', 'Showing main window on activate');
+            mainWindow.show();
+        });
         // hide window to the Dock
         // this event listener will be removed by app.on('before-quit')
-        window.on('close', event => {
+        mainWindow.on('close', event => {
             if (global.quitOnWindowClose) {
+                logger.info(
+                    'window-control',
+                    'Force quitting the app after the main window has been closed',
+                );
                 app.quit();
                 return;
             }
 
+            logger.info('window-control', 'Hiding the app after the main window has been closed');
+
             event.preventDefault();
-            window.hide();
+            mainWindow.hide();
         });
     } else {
         // other platform just kills the app
-        app.on('window-all-closed', () => app.quit());
+        app.on('window-all-closed', () => {
+            logger.info('window-control', 'Quitting app after all windows have been closed');
+            app.quit();
+        });
     }
 
-    window.on('page-title-updated', evt => {
+    mainWindow.on('page-title-updated', evt => {
         // prevent updating window title
         evt.preventDefault();
     });
-    window.on('maximize', () => {
-        notifyWindowMaximized(window);
+    mainWindow.on('maximize', () => {
+        logger.debug('window-control', 'Maximize');
+        notifyWindowMaximized(mainWindow);
     });
-    window.on('unmaximize', () => {
-        notifyWindowMaximized(window);
+    mainWindow.on('unmaximize', () => {
+        logger.debug('window-control', 'Unmaximize');
+        notifyWindowMaximized(mainWindow);
     });
-    window.on('enter-full-screen', () => {
-        notifyWindowMaximized(window);
+    mainWindow.on('enter-full-screen', () => {
+        logger.debug('window-control', 'Enter full screen');
+        notifyWindowMaximized(mainWindow);
     });
-    window.on('leave-full-screen', () => {
-        notifyWindowMaximized(window);
+    mainWindow.on('leave-full-screen', () => {
+        logger.debug('window-control', 'Leave full screen');
+        notifyWindowMaximized(mainWindow);
     });
-    window.on('moved', () => {
-        notifyWindowMaximized(window);
+    mainWindow.on('moved', () => {
+        logger.debug('window-control', 'Moved');
+        notifyWindowMaximized(mainWindow);
     });
-    window.on('focus', () => {
-        notifyWindowActive(window, true);
+    mainWindow.on('focus', () => {
+        logger.debug('window-control', 'Focus');
+        notifyWindowActive(mainWindow, true);
     });
-    window.on('blur', () => {
-        notifyWindowActive(window, false);
+    mainWindow.on('blur', () => {
+        logger.debug('window-control', 'Blur');
+        notifyWindowActive(mainWindow, false);
     });
 
     ipcMain.on('window/close', () => {
+        logger.debug('window-control', 'Close requested');
         // Keeping the devtools open might prevent the app from closing
-        if (window.webContents.isDevToolsOpened()) {
-            window.webContents.closeDevTools();
+        if (mainWindow.webContents.isDevToolsOpened()) {
+            mainWindow.webContents.closeDevTools();
         }
         // store window bounds on close btn click
-        const winBound = window.getBounds() as WinBounds;
+        const winBound = mainWindow.getBounds() as WinBounds;
         store.setWinBounds(winBound);
-        window.close();
+        mainWindow.close();
     });
     ipcMain.on('window/minimize', () => {
-        window.minimize();
+        logger.debug('window-control', 'Minimize requested');
+        mainWindow.minimize();
     });
     ipcMain.on('window/maximize', () => {
+        logger.debug('window-control', 'Maximize requested');
         if (process.platform === 'darwin') {
-            window.setFullScreen(true);
+            mainWindow.setFullScreen(true);
         } else {
-            window.maximize();
+            mainWindow.maximize();
         }
     });
     ipcMain.on('window/unmaximize', () => {
+        logger.debug('window-control', 'Unmaximize requested');
         if (process.platform === 'darwin') {
-            window.setFullScreen(false);
+            mainWindow.setFullScreen(false);
         } else {
-            window.unmaximize();
+            mainWindow.unmaximize();
         }
     });
-    ipcMain.on('client/ready', () => {
-        notifyWindowMaximized(window);
-    });
     ipcMain.on('window/focus', () => {
+        logger.debug('window-control', 'Focus requested');
         app.focus({ steal: true });
+    });
+
+    ipcMain.on('client/ready', () => {
+        logger.debug('window-control', 'Client ready');
+        notifyWindowMaximized(mainWindow);
     });
 
     app.on('before-quit', () => {
         // store window bounds on cmd/ctrl+q
-        const winBound = window.getBounds() as WinBounds;
+        const winBound = mainWindow.getBounds() as WinBounds;
         store.setWinBounds(winBound);
     });
 };

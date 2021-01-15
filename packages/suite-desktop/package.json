@@ -143,11 +143,13 @@
         "afterSign": "scripts/notarize.js"
     },
     "dependencies": {
+        "chalk": "^4.1.0",
         "electron-is-dev": "^1.2.0",
         "electron-localshortcut": "^3.2.1",
         "electron-store": "^5.1.1",
         "electron-updater": "^4.3.5",
-        "node-fetch": "^2.6.1"
+        "node-fetch": "^2.6.1",
+        "systeminformation": "^4.34.7"
     },
     "devDependencies": {
         "@sentry/browser": "^5.29.2",

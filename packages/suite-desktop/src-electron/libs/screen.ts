@@ -10,6 +10,7 @@ export const BUFFER = 0.2;
 // Functions
 export const getInitialWindowSize = () => {
     const { bounds } = screen.getPrimaryDisplay();
+
     const buffer = {
         width: bounds.width * BUFFER,
         height: bounds.height * BUFFER,

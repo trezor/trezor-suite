@@ -37,6 +37,7 @@ export class HttpReceiver extends EventEmitter {
         pathname: string;
         handler: (request: Request, response: http.ServerResponse) => void;
     }[];
+    logger: ILogger;
 
     // Possible ports
     // todo: add more to prevent case when port is blocked
@@ -56,6 +57,7 @@ export class HttpReceiver extends EventEmitter {
              */
         ];
         this.server = http.createServer(this.onRequest);
+        this.logger = global.logger;
     }
 
     getServerAddress() {
@@ -79,13 +81,13 @@ export class HttpReceiver extends EventEmitter {
         return new Promise((resolve, reject) => {
             this.server.on('error', e => {
                 // @ts-ignore - type is missing
-                if (e.code === 'EADDRINUSE') {
-                    // todo:
-                }
+                this.logger.error('http-receiver', `Start error code: ${e.code}`);
+                // if (e.code === 'EADDRINUSE') {} // TODO: Try different port if already in use
                 this.server.close();
                 return reject();
             });
             this.server.listen(HttpReceiver.PORTS[0], '127.0.0.1', undefined, () => {
+                this.logger.info('http-receiver', 'Server started');
                 const address = this.getServerAddress();
                 if (address) {
                     this.emit('server/listening', address);
@@ -97,7 +99,9 @@ export class HttpReceiver extends EventEmitter {
 
     stop() {
         // note that this method only stops listening but keeps existing connections open and thus port blocked
-        this.server.close();
+        this.server.close(() => {
+            this.logger.info('http-receiver', 'Server stopped');
+        });
     }
 
     /**
@@ -106,6 +110,7 @@ export class HttpReceiver extends EventEmitter {
     private onRequest = (request: http.IncomingMessage, response: http.ServerResponse) => {
         // mostly ts stuff. request should always have url defined.
         if (!request.url) {
+            this.logger.warn('http-receiver', 'Unexpected incoming message (no url)');
             this.emit('server/error', 'Unexpected incoming message');
             return;
         }
@@ -114,15 +119,21 @@ export class HttpReceiver extends EventEmitter {
 
         // only method GET is supported
         if (request.method !== 'GET') {
+            this.logger.warn('http-receiver', `Incorrect method used (${request.method})`);
             return;
         }
 
         const route = this.routes.find(r => r.pathname === pathname);
-        if (route) {
-            response.setHeader('Content-Type', 'text/html; charset=UTF-8');
-            // original type has url as optional, Request alias makes it required.
-            return route.handler(request as Request, response);
+        if (!route) {
+            this.logger.warn('http-receiver', `Route not found for ${pathname}`);
+            return;
         }
+
+        this.logger.info('http-receiver', `Handling request for ${pathname}`);
+
+        response.setHeader('Content-Type', 'text/html; charset=UTF-8');
+        // original type has url as optional, Request alias makes it required.
+        return route.handler(request as Request, response);
     };
 
     // TODO: add option to auto-close after X seconds. Possible?

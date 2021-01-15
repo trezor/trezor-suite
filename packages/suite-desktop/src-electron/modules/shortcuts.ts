@@ -1,21 +1,26 @@
-import { app, BrowserWindow } from 'electron';
+import { app } from 'electron';
 import electronLocalshortcut from 'electron-localshortcut';
 
-const init = (window: BrowserWindow, src: string) => {
-    electronLocalshortcut.register(window, 'CommandOrControl+Alt+I', () => {
-        window.webContents.openDevTools();
+const init = ({ mainWindow, src }: Dependencies) => {
+    const { logger } = global;
+
+    electronLocalshortcut.register(mainWindow, 'CommandOrControl+Alt+I', () => {
+        logger.info('shortcuts', 'CTRL+ALT+I pressed');
+        mainWindow.webContents.openDevTools();
     });
 
-    electronLocalshortcut.register(window, 'F5', () => {
-        window.loadURL(src);
+    electronLocalshortcut.register(mainWindow, 'F5', () => {
+        logger.info('shortcuts', 'F5 pressed');
+        mainWindow.loadURL(src);
     });
 
-    electronLocalshortcut.register(window, 'CommandOrControl+R', () => {
-        window.loadURL(src);
+    electronLocalshortcut.register(mainWindow, 'CommandOrControl+R', () => {
+        logger.info('shortcuts', 'CTRL+R pressed');
+        mainWindow.loadURL(src);
     });
 
     app.on('before-quit', () => {
-        electronLocalshortcut.unregisterAll(window);
+        electronLocalshortcut.unregisterAll(mainWindow);
     });
 };
 
