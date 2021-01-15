@@ -1,44 +1,61 @@
 import React from 'react';
-import { View, Text, Button } from 'react-native';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
+import { View, Text, StyleSheet } from 'react-native';
+import { Button } from '@trezor/components/lib/components/buttons/Button';
 import * as routerActions from '@suite-actions/routerActions';
-import { AppState, Dispatch } from '@suite-types';
+import * as suiteActions from '@suite-actions/suiteActions';
+import { useDevice, useActions, useTheme } from '@suite-hooks';
+import DeviceSelector from '@suite-components/DeviceSelector';
 import { DrawerContentComponentProps } from 'react-navigation-drawer';
+import { SuiteThemeColors } from '@suite-types';
 
-// TODO: remove
-const StyledButton = (props: any) => {
+const styles = (theme: SuiteThemeColors) =>
+    StyleSheet.create({
+        drawer: {
+            backgroundColor: theme.BG_WHITE,
+            flex: 1,
+        },
+    });
+
+const Drawer = (_props: DrawerContentComponentProps) => {
+    const { device } = useDevice();
+    const { theme, themeVariant, setTheme } = useTheme();
+    const { goto, acquireDevice } = useActions({
+        acquireDevice: suiteActions.acquireDevice,
+        goto: routerActions.goto,
+    });
+
     return (
-        <View style={{ margin: 5 }}>
-            <Button {...props} />
-        </View>
-    );
-};
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    goto: bindActionCreators(routerActions.goto, dispatch),
-});
-
-type Props = ReturnType<typeof mapDispatchToProps> & DrawerContentComponentProps;
-
-const AccountsMenu = (props: Props) => {
-    return (
-        <View>
-            {/* <View style={{ margin: 5, marginBottom: 20 }}>
-                <Button onPress={() => props.goto('/device-select')} title="My Trezor (device)" />
-            </View> */}
+        <View style={styles(theme).drawer}>
+            <View style={{ margin: 5, marginBottom: 20 }}>
+                <DeviceSelector />
+                <Button
+                    onClick={() => {
+                        acquireDevice(device);
+                    }}
+                >
+                    Acquire device
+                </Button>
+                <Button
+                    onClick={() => {
+                        setTheme(themeVariant === 'dark' ? 'light' : 'dark');
+                    }}
+                >
+                    Change theme
+                </Button>
+                {/* <Button onClick={() => goto('/device-select')}>My Trezor (device)</Button> */}
+            </View>
             <Text>Application Menu</Text>
-            <StyledButton onPress={() => props.goto('suite-index')} title="Dashboard" />
-            <StyledButton onPress={() => props.goto('wallet-index')} title="Wallet" />
-            <StyledButton onPress={() => props.goto('passwords-index')} title="Passwords" />
-            <StyledButton onPress={() => props.goto('settings-index')} title="Settings" />
+            <Button onClick={() => goto('suite-index')}>Dashboard</Button>
+            <Button onClick={() => goto('wallet-index')}>Wallet</Button>
+            <Button onClick={() => goto('passwords-index')}>Passwords</Button>
+            <Button onClick={() => goto('settings-index')}>Settings</Button>
 
-            <Button onPress={() => props.goto('onboarding-index')} title="Onboarding" />
-            <Button onPress={() => props.goto('firmware-index')} title="Firmware update" />
-            <Button onPress={() => props.goto('settings-device')} title="Backup" />
-            <Button onPress={() => props.goto('suite-switch-device')} title="Switch device" />
+            <Button onClick={() => goto('onboarding-index')}>Onboarding</Button>
+            <Button onClick={() => goto('firmware-index')}>Firmware update</Button>
+            <Button onClick={() => goto('settings-device')}>Backup</Button>
+            <Button onClick={() => goto('suite-switch-device')}>Switch device</Button>
         </View>
     );
 };
 
-export default connect(null, mapDispatchToProps)(AccountsMenu);
+export default Drawer;

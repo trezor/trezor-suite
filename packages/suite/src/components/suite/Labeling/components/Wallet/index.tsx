@@ -1,35 +1,28 @@
 import React from 'react';
-import { Translation } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
+import { useTranslation } from '@suite-hooks/useTranslation';
 
 interface Props {
     device: TrezorDevice;
     useDeviceLabel?: boolean;
 }
 
-const Wallet = (props: Props) => {
+const WalletLabelling = (props: Props) => {
     const { device } = props;
-    let label: JSX.Element | null = null;
+    const { translationString } = useTranslation();
+
+    let label: string | null = null;
     if (device.state) {
-        label = (
-            <Translation
-                {...(device.useEmptyPassphrase
-                    ? { id: 'TR_NO_PASSPHRASE_WALLET' }
-                    : { id: 'TR_PASSPHRASE_WALLET', values: { id: device.walletNumber } })}
-            />
-        );
+        label = device.useEmptyPassphrase
+            ? translationString('TR_NO_PASSPHRASE_WALLET')
+            : translationString('TR_PASSPHRASE_WALLET', { id: device.walletNumber });
     }
 
     if (props.useDeviceLabel) {
-        return (
-            <>
-                {`${device.label} `}
-                {label}
-            </>
-        );
+        return <>{`${device.label} ${label}`}</>;
     }
 
-    return label;
+    return <>{label}</>;
 };
 
-export default Wallet;
+export default WalletLabelling;

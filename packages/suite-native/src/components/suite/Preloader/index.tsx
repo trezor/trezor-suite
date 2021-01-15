@@ -13,6 +13,7 @@ import { SUITE } from '@suite-actions/constants';
 // import { H1, P } from '@trezor/components';
 import { AppState, Dispatch } from '@suite-types';
 import styles from '@suite-support/styles';
+import { useTheme } from '@suite-hooks';
 
 const mapStateToProps = (state: AppState) => ({
     loading: state.suite.loading,
@@ -27,6 +28,7 @@ type Props = ReturnType<typeof mapStateToProps> & {
 
 const Preloader = (props: Props) => {
     const { loading, loaded, error, dispatch } = props;
+    const { theme } = useTheme();
     useEffect(() => {
         if (!loading && !loaded && !error) {
             dispatch({ type: SUITE.INIT });
@@ -43,7 +45,7 @@ const Preloader = (props: Props) => {
     }
 
     return (
-        <SafeAreaView style={styles.safeArea}>
+        <SafeAreaView style={styles(theme).safeArea}>
             {!loaded && <Text>Loading</Text>}
             {loaded && props.children}
         </SafeAreaView>

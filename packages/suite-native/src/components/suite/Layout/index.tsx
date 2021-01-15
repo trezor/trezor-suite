@@ -2,7 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Text, ScrollView, View } from 'react-native';
 import Head from '@suite-support/Head';
-import { AppState } from '@suite-types';
+import { AppState, SuiteThemeColors } from '@suite-types';
+import { useTheme } from '@suite-hooks';
+
+const styles = (theme: SuiteThemeColors) => ({
+    wrapper: { backgroundColor: theme.BG_WHITE },
+});
 
 const mapStateToProps = (state: AppState) => ({
     suite: state.suite,
@@ -20,6 +25,7 @@ const Layout = (props: Props) => {
         suite,
         // router,
     } = props;
+    const { theme } = useTheme();
 
     // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
     if (!suite.transport) {
@@ -78,7 +84,7 @@ const Layout = (props: Props) => {
     }
 
     return (
-        <ScrollView>
+        <ScrollView style={styles(theme).wrapper}>
             <Head title={`${title}: OK`} />
             {props.children}
         </ScrollView>
