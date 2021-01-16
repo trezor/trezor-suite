@@ -1,9 +1,11 @@
 import React from 'react';
 import Announcement from './Announcement';
+import { useFetchAnnouncements } from './UseFetchAnnouncements';
 
-const Announcements = (props: {announcements: string[]}) => {
+const Announcements = () => {
+    const announcements = useFetchAnnouncements();
     return <>{
-        props.announcements.map(a => <Announcement key={a} message={a} />)
+        announcements.map(a => <Announcement key={a} message={a} />)
     }</>
 };
 

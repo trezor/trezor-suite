@@ -165,7 +165,7 @@ const SuiteLayout = (props: SuiteLayoutProps) => {
             <SuiteBanners />
             <DiscoveryProgress />
             <NavigationBar />
-            <Announcements announcements={['Jen Tak would like to work here.', 'We run out of bitcoins!']} />
+            <Announcements />
             <LayoutContext.Provider value={{ title, menu, setLayout }}>
                 {!isMobileLayout && (
                     <BodyWide menu={menu} appMenu={appMenu} url={props.router.url}>
