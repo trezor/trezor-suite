@@ -19,6 +19,7 @@ Before you start make sure you have downloaded and installed [Node.js LTS](https
 
 -   `git clone git@github.com:trezor/trezor-suite.git`
 -   `yarn`
+-   `yarn build:libs`
 
 _To set up your dev environment for a native platform (iOS/Android) follow [these additional steps](https://github.com/trezor/trezor-suite/tree/develop/packages/suite-native#development)._
 
