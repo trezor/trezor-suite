@@ -5,7 +5,7 @@ const ANNOUNCEMENTS_API_URL = 'https://gist.githubusercontent.com/goodhoko/fb87a
 export function useFetchAnnouncements() {
     const [announcements, setAnnouncements] = useState<string[]>([]);
 
-    useEffect(() => {
+    const fetchAnnouncements = () => {
         fetch(ANNOUNCEMENTS_API_URL)
             .then(response => response.json())
             .catch(err => {
@@ -15,6 +15,17 @@ export function useFetchAnnouncements() {
             .then(announcements => {
                 setAnnouncements(announcements)
             })
+    }
+
+    useEffect(() => {
+        // Fetch on mount.
+        fetchAnnouncements();
+        // Re-fetch every 10 minutes.
+        const interval = setInterval(fetchAnnouncements, 1000 * 60 * 10)
+        return () => {
+            // Clear the interval on unmount.
+            clearInterval(interval)
+        }
     }, []);
 
     return announcements;
