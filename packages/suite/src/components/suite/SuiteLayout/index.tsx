@@ -12,6 +12,7 @@ import { DiscoveryProgress } from '@wallet-components';
 import NavigationBar from '../NavigationBar';
 import { useLayoutSize } from '@suite-hooks';
 import { isDesktop } from '@suite-utils/env';
+import Announcements from '../Announcements';
 
 const PageWrapper = styled.div`
     display: flex;
@@ -164,6 +165,7 @@ const SuiteLayout = (props: SuiteLayoutProps) => {
             <SuiteBanners />
             <DiscoveryProgress />
             <NavigationBar />
+            <Announcements announcements={['Jen Tak would like to work here.', 'We run out of bitcoins!']} />
             <LayoutContext.Provider value={{ title, menu, setLayout }}>
                 {!isMobileLayout && (
                     <BodyWide menu={menu} appMenu={appMenu} url={props.router.url}>
