@@ -1,9 +1,14 @@
 import { useState, useEffect } from 'react';
 
-const ANNOUNCEMENTS_API_URL = 'https://gist.githubusercontent.com/goodhoko/fb87ac361a3e13b752e240324dd367df/raw/1099148ee6299cc5500f635882fa5451796fbb79/trezor_announcements_v1.json';
+const ANNOUNCEMENTS_API_URL = 'https://gist.githubusercontent.com/goodhoko/fb87ac361a3e13b752e240324dd367df/raw/a8c011271dd2ed598132afb89aaa0814e38ed5a1/trezor_announcements_v1.json';
+
+interface AnnouncementDTO {
+    message: string,
+    isDismissible: boolean,
+}
 
 export function useFetchAnnouncements() {
-    const [announcements, setAnnouncements] = useState<string[]>([]);
+    const [announcements, setAnnouncements] = useState<AnnouncementDTO[]>([]);
 
     const fetchAnnouncements = () => {
         fetch(ANNOUNCEMENTS_API_URL)
@@ -12,8 +17,8 @@ export function useFetchAnnouncements() {
                 console.error('Could not fetch announcements.', err);
                 return [];
             })
-            .then(announcements => {
-                setAnnouncements(announcements)
+            .then(response => {
+                setAnnouncements(response.announcements)
             })
     }
 
