@@ -2,9 +2,24 @@ import React, { useState } from 'react';
 import Announcement from './Announcement';
 import { useFetchAnnouncements } from './UseFetchAnnouncements';
 
+const KEY = 'trezor:announcements';
+
+const getDismissedMessages: () => string[] = () => {
+    const json = window.localStorage.getItem(KEY);
+    if (json === null) {
+        return []
+    }
+    return JSON.parse(json)
+}
+
+const persistDismissedMessage = (hash: string) => {
+    const messages = [...getDismissedMessages(), hash]
+    window.localStorage.setItem(KEY, JSON.stringify(messages))
+}
+
 const Announcements = () => {
     const announcements = useFetchAnnouncements();
-    const [dismissedMessages, setDismissedMessages] = useState<string[]>([])
+    const [dismissedMessages, setDismissedMessages] = useState(getDismissedMessages())
 
     return <>{
         announcements
@@ -15,6 +30,7 @@ const Announcements = () => {
             }
 
             const dismiss = () => {
+                persistDismissedMessage(a.message)
                 setDismissedMessages((dismissedMessages) => [...dismissedMessages, a.message])
             }
             return <Announcement key={a.message} message={a.message} isDismissible={true} onDismiss = {dismiss} />
