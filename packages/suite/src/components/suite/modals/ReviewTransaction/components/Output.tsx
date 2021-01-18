@@ -9,6 +9,7 @@ import { BTC_LOCKTIME_VALUE } from '@wallet-constants/sendForm';
 import { Network } from '@wallet-types';
 import { TokenInfo } from 'trezor-connect';
 import { ANIMATION } from '@suite-config';
+import Indicator from './Indicator';
 
 const ROW_PADDING = '16px 14px';
 
@@ -60,22 +61,6 @@ const Left = styled.div`
     align-items: center;
     flex: 1 1 auto;
     min-width: 0;
-`;
-
-const IconWrapper = styled.div`
-    width: 25px;
-    height: 25px;
-    display: flex;
-    padding-right: 6px;
-    justify-content: center;
-    align-items: center;
-`;
-
-const Dot = styled.div<{ color: string }>`
-    width: 10px;
-    height: 10px;
-    border-radius: 100%;
-    background: ${props => props.color};
 `;
 
 const Address = styled.div`
@@ -214,11 +199,7 @@ const Output = ({ type, state, label, value, symbol, token }: Props) => {
         <StyledBox state={state === 'success' ? state : undefined}>
             <Row responsive={type === 'regular'}>
                 <Left>
-                    <IconWrapper>
-                        {!state && <Dot color={theme.STROKE_GREY} />}
-                        {state === 'success' && <Icon color={theme.BG_GREEN} icon="CHECK" />}
-                        {state === 'warning' && <Dot color={theme.TYPE_ORANGE} />}
-                    </IconWrapper>
+                    <Indicator state={state} />
                     <Address>{outputLabel}</Address>
                 </Left>
                 <Right>

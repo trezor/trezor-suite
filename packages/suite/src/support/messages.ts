@@ -5168,7 +5168,11 @@ const definedMessages = defineMessages({
     },
     TR_NEW_FEE: {
         id: 'TR_NEW_FEE',
-        defaultMessage: 'New',
+        defaultMessage: 'New fee',
+    },
+    TR_INCREASED_BY: {
+        id: 'TR_INCREASED_BY',
+        defaultMessage: 'Increased by',
     },
 } as const);
 
