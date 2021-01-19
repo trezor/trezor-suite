@@ -21,6 +21,9 @@ describe('logUtils', () => {
                 ...acc,
                 descriptor: REDACTED_REPLACEMENT,
                 addresses: REDACTED_REPLACEMENT,
+                balance: REDACTED_REPLACEMENT,
+                availableBalance: REDACTED_REPLACEMENT,
+                formattedBalance: REDACTED_REPLACEMENT,
                 history: {
                     ...acc.history,
                     transactions: REDACTED_REPLACEMENT,
@@ -42,11 +45,14 @@ describe('logUtils', () => {
         it('should redact sensitive fields on transaction', () => {
             expect(redactTransaction(tx)).toEqual({
                 ...tx,
+                amount: REDACTED_REPLACEMENT,
                 txid: REDACTED_REPLACEMENT,
                 targets: tx.targets.map(t => ({
                     ...t,
+                    amount: REDACTED_REPLACEMENT,
                     addresses: t.addresses?.map(_a => REDACTED_REPLACEMENT),
                 })),
+                details: undefined,
             });
         });
     });
