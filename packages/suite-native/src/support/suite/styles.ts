@@ -13,12 +13,6 @@ const styles = (theme: SuiteThemeColors) =>
             justifyContent: 'center',
             backgroundColor: theme.BG_WHITE,
         },
-        primaryText: {
-            color: theme.TYPE_DARK_GREY,
-        },
-        secondaryText: {
-            color: theme.TYPE_LIGHT_GREY,
-        },
         h1: {
             fontWeight: 'bold',
             fontSize: 20,

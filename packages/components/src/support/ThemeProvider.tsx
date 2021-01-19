@@ -2,7 +2,7 @@ import React from 'react';
 import { THEME } from '../config/colors';
 import { SuiteThemeColors } from './types';
 
-export const ThemeContext = React.createContext<SuiteThemeColors>(THEME.light);
+const ThemeContext = React.createContext<SuiteThemeColors>(THEME.light);
 
 interface Props {
     theme: SuiteThemeColors;
@@ -16,4 +16,5 @@ const ThemeProvider = (props: Props) => {
     return <ThemeContext.Provider value={props.theme}>{props.children}</ThemeContext.Provider>;
 };
 
+export { ThemeProvider, ThemeContext };
 export default ThemeProvider;

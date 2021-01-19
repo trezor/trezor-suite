@@ -2,13 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { View, Button } from 'react-native';
-
+import { P as Text } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import styles from '@native/support/suite/styles';
-
 import { useTheme } from '@suite-hooks';
-
-import Text from '@native-components/suite/Text';
 import Layout from '@native-components/suite/Layout';
 import { Dispatch } from '@suite-types';
 

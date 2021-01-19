@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Button } from '@trezor/components/lib/components/buttons/Button';
+import { Button } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { useDevice, useActions, useTheme } from '@suite-hooks';
