@@ -70,7 +70,7 @@ export const useOnClickOutside = (
 
 export const useTheme = () => {
     // In react-native it retrieves theme from our own context
-    // Use Styled-Components hook/context on web
+    // On web use Styled-Components hook/context instead
     const contextTheme = useContext(ThemeContext);
     const scTheme = useSCTheme();
     return platform === 'web' ? scTheme : contextTheme;

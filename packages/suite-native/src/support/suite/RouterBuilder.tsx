@@ -53,7 +53,7 @@ const useStack = (key: string, customViews: NavigatorViews, screen: ScreenCompon
 };
 
 // Add static method "navigationOptions" to nested component
-// this way it's possible to dynamically change Navigation settings (title, etc.) from view. See: @suite-support/Head
+// this way it's possible to dynamically change Navigation settings (title, etc.) from view. See: @native/support/suite/Head
 // Navigator.onNavigationStateChange > `ScreenComponent.navigationOptions()` will retrieve and apply settings
 const withNavigationOptions = (Component: ScreenComponent) => {
     Component.navigationOptions = ({

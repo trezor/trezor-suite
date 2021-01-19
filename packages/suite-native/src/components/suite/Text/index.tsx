@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text as RNText, TextProps } from 'react-native';
 import { useTheme } from '@suite-hooks';
-import styles from '@suite-support/styles';
+import styles from '@native/support/suite/styles';
 
 interface Props extends TextProps {
     variant?: 'primary' | 'secondary';

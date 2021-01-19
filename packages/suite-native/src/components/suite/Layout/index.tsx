@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Text, ScrollView, View } from 'react-native';
-import Head from '@suite-support/Head';
+import Head from '@native/support/suite/Head';
 import { AppState, SuiteThemeColors } from '@suite-types';
 import { useTheme } from '@suite-hooks';
 

@@ -5,7 +5,7 @@ import { View, Text, Button } from 'react-native';
 
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
-import styles from '@suite-support/styles';
+import styles from '@native/support/suite/styles';
 import InitialRun from './components/InitialRun';
 import { useTheme } from '@suite-hooks';
 import { AppState, Dispatch } from '@suite-types';

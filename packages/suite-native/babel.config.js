@@ -17,12 +17,6 @@ module.exports = api => {
                         // unlike on web, messages are bundled with application and might be simply required
                         '@suite-actions/languageActions':
                             './packages/suite-native/src/actions/suite/languageActions',
-                        // react-native custom store
-                        '@suite/reducers/store': './packages/suite-native/src/reducers/store',
-                        // react-native support
-                        '^@suite-support/(.+)': './packages/suite-native/src/support/suite/\\1/\\2',
-
-                        '^@suite/support/messages': './packages/suite/src/support/messages',
 
                         // react-native env utils
                         '^@suite-utils/env': './packages/suite-native/src/utils/suite/env',
@@ -37,16 +31,22 @@ module.exports = api => {
                         '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-views$':
                             './packages/suite-native/src/views/\\1/index',
 
-                        // === Components - no reuse at all ===
-                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-components/(?!.*[.]messages)(.+)':
-                            './packages/suite-native/src/components/\\1/\\2',
-                        // '^@(.+)-components': './packages/suite-native/src/components/\\1/index',
+                        '^@native/(.+)': './packages/suite-native/src/\\1',
+                        '^@native-components/(.+)': './packages/suite-native/src/components/\\1',
 
                         // === Standard resolvers ===
                         // to find something.messages from suite core
                         // '^@(.+)-views/(.+)': './packages/suite/src/views/\\1/\\2',
                         // '^@(.+)-components/(.+)': './packages/suite/src/components/\\1/\\2',
 
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-components/(.+)':
+                            './packages/suite/src/components/\\1/\\2',
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-components':
+                            './packages/suite/src/components/\\1/index',
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-support/(.+)':
+                            '../../packages/suite/src/support/\\1/\\2',
+                        '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-support':
+                            '../../packages/suite/src/support/\\1/index',
                         '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-actions/(.+)':
                             './packages/suite/src/actions/\\1/\\2',
                         '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-actions':

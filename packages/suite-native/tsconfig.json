@@ -14,10 +14,11 @@
         "paths": {
             // See NOTES.md for regular expression
 
-            // react-native store
-            "@suite/reducers/store": ["./src/reducers/store"],
-
-            // suite root
+            // react-native
+            "@native/*": ["./src/*", "../../packages/suite-native/src/*"],
+            "@native-components": ["./src/components/index", "../../packages/suite-native/src/components/index"],
+            "@native-components/*": ["./src/components/*", "../../packages/suite-native/src/components/*"],
+            
             "@suite/*": [
                 "./src/*",
                 "../../packages/suite/src/*"
@@ -26,6 +27,7 @@
                 "./src/index",
                 "../../packages/suite/src/index"
             ],
+            
             // suite 
             "@suite-components/*": ["./src/components/suite/*", "../../packages/suite/src/components/suite/*"],
             "@suite-components": ["./src/components/suite/index", "../../packages/suite/src/components/suite/index"],

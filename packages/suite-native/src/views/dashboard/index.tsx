@@ -4,12 +4,12 @@ import { bindActionCreators } from 'redux';
 import { View, Button } from 'react-native';
 
 import * as routerActions from '@suite-actions/routerActions';
-import styles from '@suite-support/styles';
+import styles from '@native/support/suite/styles';
 
 import { useTheme } from '@suite-hooks';
 
-import Text from '@suite-components/Text';
-import Layout from '@suite-components/Layout';
+import Text from '@native-components/suite/Text';
+import Layout from '@native-components/suite/Layout';
 import { Dispatch } from '@suite-types';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

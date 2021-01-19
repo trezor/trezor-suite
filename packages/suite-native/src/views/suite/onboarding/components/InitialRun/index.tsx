@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
-import styles from '@suite-support/styles';
+import styles from '@native/support/suite/styles';
 import { Dispatch } from '@suite-types';
 import { useTheme } from '@suite-hooks';
 
