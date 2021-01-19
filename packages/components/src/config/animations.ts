@@ -1,5 +1,4 @@
 import { keyframes } from 'styled-components';
-import colors from './colors';
 
 export const SPIN = keyframes`
     0% { 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from '@suite-hooks';
-import TCThemeProvider from '@trezor/components/lib/support/ThemeProvider';
+import { ThemeProvider as TCThemeProvider } from '@trezor/components';
 import { getThemeColors } from '@suite-utils/theme';
 
 const ThemeProvider: React.FC = ({ children }) => {
