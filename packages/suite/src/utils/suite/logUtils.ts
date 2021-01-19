@@ -14,10 +14,17 @@ export const redactAccount = (account: DeepPartial<Account> | undefined) => {
         ...account,
         descriptor: REDACTED_REPLACEMENT,
         addresses: REDACTED_REPLACEMENT,
+        balance: REDACTED_REPLACEMENT,
+        availableBalance: REDACTED_REPLACEMENT,
+        formattedBalance: REDACTED_REPLACEMENT,
         history: {
             ...account?.history,
             transactions: REDACTED_REPLACEMENT,
         },
+        tokens: account?.tokens?.map(t => ({
+            ...t,
+            balance: REDACTED_REPLACEMENT,
+        })),
     };
 };
 
@@ -40,11 +47,14 @@ export const redactDevice = (device: DeepPartial<Device> | undefined) => {
 export const redactTransaction = (transaction: AccountTransaction) => {
     return {
         ...transaction,
+        amount: REDACTED_REPLACEMENT,
         txid: REDACTED_REPLACEMENT,
         targets: transaction.targets.map(t => ({
             ...t,
+            amount: REDACTED_REPLACEMENT,
             addresses: t.addresses?.map(() => REDACTED_REPLACEMENT),
         })),
+        details: undefined,
     };
 };
 
