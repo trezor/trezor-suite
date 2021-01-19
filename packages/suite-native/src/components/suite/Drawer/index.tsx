@@ -4,8 +4,9 @@ import { Button } from '@trezor/components/lib/components/buttons/Button';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { useDevice, useActions, useTheme } from '@suite-hooks';
-import DeviceSelector from '@suite-components/DeviceSelector';
+import DeviceSelector from '@native-components/suite/DeviceSelector';
 import { DrawerContentComponentProps } from 'react-navigation-drawer';
+import Translation from '@native-components/suite/Translation';
 import { SuiteThemeColors } from '@suite-types';
 
 const styles = (theme: SuiteThemeColors) =>
@@ -44,7 +45,10 @@ const Drawer = (_props: DrawerContentComponentProps) => {
                 </Button>
                 {/* <Button onClick={() => goto('/device-select')}>My Trezor (device)</Button> */}
             </View>
-            <Text>Application Menu</Text>
+            <Text>
+                aa
+                <Translation id="TR_ADD_HIDDEN_WALLET" />
+            </Text>
             <Button onClick={() => goto('suite-index')}>Dashboard</Button>
             <Button onClick={() => goto('wallet-index')}>Wallet</Button>
             <Button onClick={() => goto('passwords-index')}>Passwords</Button>

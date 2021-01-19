@@ -9,10 +9,10 @@ import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import './support/global';
 import IntlProvider from '@suite/support/suite/ConnectedIntlProvider';
-import Preloader from '@suite-components/Preloader';
-import { initStore } from '@suite/reducers/store';
-import Router from '@suite-support/Router';
-import ThemeProvider from '@suite-support/ThemeProvider';
+import Preloader from '@native-components/suite/Preloader';
+import { initStore } from '@native/reducers/store';
+import Router from '@native/support/suite/Router';
+import ThemeProvider from '@native/support/suite/ThemeProvider';
 
 const TrezorSuite = () => {
     const store = initStore();

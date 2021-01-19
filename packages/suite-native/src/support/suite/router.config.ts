@@ -16,9 +16,9 @@ import Firmware from '@suite-views/firmware';
 import Backup from '@suite-views/backup';
 import SwitchDevice from '@suite-views/switch-device';
 
-import TabsBar from '@suite-components/Tabs';
-import Drawer from '@suite-components/Drawer';
-import HeaderLeft from '@suite-components/Header';
+import TabsBar from '@native-components/suite/Tabs';
+import Drawer from '@native-components/suite/Drawer';
+import HeaderLeft from '@native-components/suite/Header';
 
 import { getRoute } from '@suite-utils/router';
 

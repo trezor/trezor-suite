@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { View, Text, Button } from 'react-native';
 
 import * as routerActions from '@suite-actions/routerActions';
-import styles from '@suite-support/styles';
+import styles from '@native/support/suite/styles';
 import { useTheme } from '@suite-hooks';
 
 import { Dispatch } from '@suite-types';

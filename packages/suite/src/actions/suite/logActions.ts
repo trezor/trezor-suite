@@ -1,9 +1,8 @@
 import { LogEntry } from '@suite-reducers/logReducer';
 import { Action, Dispatch, GetState } from '@suite-types';
 import * as Sentry from '@sentry/browser';
-
 import { LOG } from './constants';
-import { redactDevice, redactCustom, redactAction } from '@suite/utils/suite/logUtils';
+import { redactDevice, redactCustom, redactAction } from '@suite-utils/logUtils';
 
 export type LogAction =
     | { type: typeof LOG.ADD; payload: LogEntry }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text } from 'react-native';
-import Layout from '@suite-components/Layout';
+import Layout from '@native-components/suite/Layout';
 
 const WalletSettings = () => {
     return (

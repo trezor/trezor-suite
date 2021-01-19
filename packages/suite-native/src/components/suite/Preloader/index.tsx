@@ -1,8 +1,8 @@
 /**
- * File corresponding with @suite-components/Preloader
+ * File corresponding with @native-components/suite/Preloader
  * Differences:
  * - SafeAreaView wrapper (react-navigation)
- * - No "OnlineStatus" component (@suite-support/OnlineStatus is using "window" object)
+ * - No "OnlineStatus" component (@native/support/suite/OnlineStatus is using "window" object)
  */
 
 import React, { useEffect } from 'react';
@@ -12,7 +12,7 @@ import { SafeAreaView } from 'react-navigation';
 import { SUITE } from '@suite-actions/constants';
 // import { H1, P } from '@trezor/components';
 import { AppState, Dispatch } from '@suite-types';
-import styles from '@suite-support/styles';
+import styles from '@native/support/suite/styles';
 import { useTheme } from '@suite-hooks';
 
 const mapStateToProps = (state: AppState) => ({

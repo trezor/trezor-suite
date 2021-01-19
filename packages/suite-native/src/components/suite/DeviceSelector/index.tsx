@@ -4,8 +4,8 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useDevice, useTheme } from '@suite-hooks';
 import { SuiteThemeColors, TrezorDevice } from '@suite-types';
 import * as deviceUtils from '@suite-utils/device';
-import DeviceImage from '@suite-components/DeviceImage';
-import WalletLabelling from '@suite/components/suite/Labeling/components/Wallet/index';
+import DeviceImage from '@native-components/suite/DeviceImage';
+import WalletLabelling from '@suite-components/Labeling/components/Wallet/';
 
 type Status = 'connected' | 'disconnected' | 'warning';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Text, View } from 'react-native';
-import Layout from '@suite-components/Layout';
+import Layout from '@native-components/suite/Layout';
 import { AppState } from '@suite-types';
 
 const mapStateToProps = (state: AppState) => ({

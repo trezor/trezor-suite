@@ -21,7 +21,7 @@ import {
     getNavigatorState,
     getActiveRoute,
     isDrawerOpened,
-} from '@suite-support/NavigatorService';
+} from '@native/support/suite/NavigatorService';
 
 import { GetState, Dispatch } from '@suite-types';
 
@@ -58,7 +58,7 @@ const isRouterUnlocked = () => (_dispatch: Dispatch, _getState: GetState) => {
 
 /**
  * Handle changes of Navigation state
- * Called from `@suite-support/Router`
+ * Called from `@native/support/suite/Router`
  * @param {string} url
  */
 export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: GetState) => {
@@ -171,7 +171,7 @@ export const gotoUrl = (url: string) => {
 
 /**
  * Handle Android hardware back button
- * Called from `@suite-support/Router`
+ * Called from `@native/support/suite/Router`
  */
 export const androidBack = () => () => {
     const navigator = getNavigator();
@@ -184,7 +184,7 @@ export const androidBack = () => () => {
 
 /**
  * Handle changes of Navigation state
- * Called from `@suite-support/Router`
+ * Called from `@native/support/suite/Router`
  */
 export const onNavigationStateChange = (
     _oldState: NavigationState,
