@@ -32,6 +32,7 @@ const AccountNotEnabled = (props: Props) => {
             actions={[
                 {
                     icon: 'PLUS',
+                    key: '1',
                     isLoading: isLocked(),
                     onClick: () => changeCoinVisibility(network.symbol, true),
                     children: (

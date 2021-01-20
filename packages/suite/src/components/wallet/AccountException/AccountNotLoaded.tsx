@@ -23,6 +23,7 @@ const AccountNotLoaded = () => {
             image="EMPTY_WALLET_NEUE"
             actions={[
                 {
+                    key: '1',
                     icon: 'REFRESH',
                     isLoading: isLocked(),
                     onClick: restart,

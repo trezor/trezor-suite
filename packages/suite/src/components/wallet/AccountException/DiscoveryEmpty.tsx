@@ -25,6 +25,7 @@ const DiscoveryEmpty = () => {
             description={<Translation id="TR_ACCOUNT_EXCEPTION_DISCOVERY_EMPTY_DESC" />}
             actions={[
                 {
+                    key: '1',
                     variant: 'secondary',
                     isLoading: isDeviceLocked,
                     isDisabled,
@@ -32,6 +33,7 @@ const DiscoveryEmpty = () => {
                     children: <Translation id="TR_COIN_SETTINGS" />,
                 },
                 {
+                    key: '2',
                     isLoading: isDeviceLocked,
                     isDisabled,
                     onClick: () =>
