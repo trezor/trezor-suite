@@ -55,7 +55,7 @@ interface Props {
     description?: JSX.Element | string;
     image?: ImageProps['image'];
     imageComponent?: JSX.Element;
-    actions?: ButtonProps[];
+    actions?: ({ key: React.ReactText } & ButtonProps)[];
     actionComponent?: JSX.Element;
 }
 

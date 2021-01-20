@@ -16,6 +16,7 @@ const AuthFailed = () => {
             image="UNI_ERROR"
             actions={[
                 {
+                    key: '1',
                     icon: 'REFRESH',
                     isLoading: isLocked(),
                     onClick: authDevice,

@@ -20,7 +20,12 @@ const DiscoveryFailed = () => {
             description={discovery && discovery.error ? discovery.error : undefined}
             image="UNI_ERROR"
             actions={[
-                { icon: 'REFRESH', onClick: restart, children: <Translation id="TR_RETRY" /> },
+                {
+                    key: '1',
+                    icon: 'REFRESH',
+                    onClick: restart,
+                    children: <Translation id="TR_RETRY" />,
+                },
             ]}
         />
     );
