@@ -57,7 +57,7 @@ abstract class BaseProcess {
 
         const { system } = this.getPlatformInfo();
         if (!this.isSystemSupported(system)) {
-            throw new Error(`[${this.resourceName}] unsupported system (${system})`);
+            this.logger.error(this.logTopic, `Unsupported system (${system})`);
         }
     }
 

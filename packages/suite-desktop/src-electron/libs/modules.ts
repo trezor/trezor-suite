@@ -23,7 +23,7 @@ const modules = async (dependencies: Dependencies) => {
                         'modules',
                         `Dependency ${dep} is missing for module ${module.name}`,
                     );
-                    throw new Error(); // TODO
+                    return;
                 }
                 deps[dep] = dependencies[dep];
             });

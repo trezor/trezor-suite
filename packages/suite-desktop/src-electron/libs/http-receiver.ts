@@ -37,7 +37,7 @@ export class HttpReceiver extends EventEmitter {
         pathname: string;
         handler: (request: Request, response: http.ServerResponse) => void;
     }[];
-    logger: ILogger;
+    private logger: ILogger;
 
     // Possible ports
     // todo: add more to prevent case when port is blocked
