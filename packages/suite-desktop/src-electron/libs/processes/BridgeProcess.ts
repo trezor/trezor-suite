@@ -40,7 +40,7 @@ class BridgeProcess extends BaseProcess {
     }
 
     async startDev(): Promise<void> {
-        await super.start(['-e', '21324']);
+        await this.start(['-e', '21324']);
     }
 }
 
