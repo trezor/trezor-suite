@@ -11,7 +11,7 @@
         "dev:run": "electron .",
         "dev:prepare": "yarn copy-files && yarn build:electron",
         "dev:local": "node scripts/dev.js",
-        "clean": "rimraf ./build-electron && rimraf ./build && rimraf ./dist",
+        "clean": "rimraf ./build-electron && rimraf ./build && rimraf ./dist && rimraf ./.next",
         "copy-files": "yarn workspace @trezor/suite-data copy-static-files",
         "build:electron": "rimraf ./dist && node scripts/build.js",
         "build:desktop": "rimraf ./build && next build && next export -o build && cross-env NODE_ENV=production yarn build:electron",

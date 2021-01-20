@@ -6,7 +6,7 @@ import isDev from 'electron-is-dev';
 import { PROTOCOL } from '@lib/constants';
 import * as store from '@lib/store';
 import { MIN_HEIGHT, MIN_WIDTH } from '@lib/screen';
-import Logger, { LogLevel } from '@lib/logger';
+import Logger, { LogLevel, defaultOptions as loggerDefaults } from '@lib/logger';
 import { buildInfo, computerInfo } from '@lib/info';
 import modules from '@lib/modules';
 
@@ -25,7 +25,8 @@ const log = {
     level: app.commandLine.getSwitchValue('log-level') || (isDev ? 'debug' : 'error'),
     writeToConsole: !app.commandLine.hasSwitch('log-no-print'),
     writeToDisk: app.commandLine.hasSwitch('log-write'),
-    outputFile: app.commandLine.getSwitchValue('log-output'),
+    outputFile: app.commandLine.getSwitchValue('log-file') || loggerDefaults.outputFile,
+    outputPath: app.commandLine.getSwitchValue('log-path') || loggerDefaults.outputPath,
 };
 
 const logger = new Logger(log.level as LogLevel, { ...log });

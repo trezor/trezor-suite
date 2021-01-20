@@ -22,14 +22,14 @@ Any of the following values:
 - info (3)
 - debug (4)
 
-#### Options
+#### Options (all optional)
 | name | type | default value | description |
 | --- | --- | --- | --- |
 | colors | boolean | `true` | Console output has colors |
 | writeToConsole | boolean | `true` | Output is displayed in the console |
 | writeToDisk | boolean | `false` | Output is written to a file |
 | outputFile | string | `'log-%ts.txt'` | file name for the output |
-| outputPath | string | Electron app log path or CWD | path for the output |
+| outputPath | string | Current working directory | path for the output |
 | logFormat | string | `'%dt - %lvl(%top): %msg'` | Output format of the log |
 
 ### String formatters
