@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
-import { app } from 'electron';
 
 const logLevels = ['mute', 'error', 'warn', 'info', 'debug'] as const;
 export type LogLevel = typeof logLevels[number];
@@ -15,12 +14,12 @@ export type Options = {
     logFormat?: string; // Output format of the log
 };
 
-const defaultOptions: Options = {
+export const defaultOptions: Options = {
     colors: true,
     writeToConsole: true,
     writeToDisk: false,
     outputFile: 'log-%ts.txt',
-    outputPath: app?.getPath('logs') || process.cwd(),
+    outputPath: process.cwd(),
     logFormat: '%dt - %lvl(%top): %msg',
 };
 
