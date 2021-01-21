@@ -158,6 +158,12 @@ export type AnalyticsEvent =
               symbol: Account['symbol'];
           };
       }
+    | {
+          type: 'accounts/empty-account/buy';
+          payload: {
+              network: string;
+          };
+      }
     | { type: 'dashboard/security-card/create-backup' }
     | { type: 'dashboard/security-card/seed-link' }
     | { type: 'dashboard/security-card/set-pin' }

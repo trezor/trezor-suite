@@ -53,8 +53,13 @@ Added:
   - suiteVersion: string | "" 
 - device-connect
   - isBitcoinOnly: boolean
+<<<<<<< HEAD
 - desktop-init
   - desktopOSVersion: string | "" (in format: {platform}_{release})
+=======
+- accounts/empty-account/buy
+  - network: string 
+>>>>>>> feat: empty account buy  analytics
   
 ### 1.5
 Added:
