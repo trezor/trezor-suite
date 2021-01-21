@@ -146,7 +146,7 @@ interface Props extends MenuProps, React.ButtonHTMLAttributes<HTMLDivElement> {
     offset?: number;
     isDisabled?: boolean;
     appendTo?: HTMLElement;
-    onToggleChange?: (toggled: boolean) => void;
+    onToggle?: (toggled: boolean) => void;
 }
 
 interface DropdownRef {
@@ -169,7 +169,7 @@ const Dropdown = forwardRef(
             offset = 10,
             appendTo,
             verticalPadding = 8,
-            onToggleChange,
+            onToggle,
             ...rest
         }: Props,
         ref
@@ -180,13 +180,12 @@ const Dropdown = forwardRef(
         const [menuSize, setMenuSize] = useState<Coords>(undefined);
         const menuRef = useRef<HTMLUListElement>(null);
         const toggleRef = useRef<any>(null);
-        const onToggleChangeRef = useRef(onToggleChange);
         const MenuComponent = components?.DropdownMenu ?? Menu;
         const MenuItemComponent = components?.DropdownMenuItem ?? MenuItem;
 
         useEffect(() => {
-            if (onToggleChangeRef?.current) onToggleChangeRef.current(toggled);
-        }, [toggled]);
+            if (onToggle) onToggle(toggled);
+        }, [toggled, onToggle]);
 
         const visibleItems = items.map(group => ({
             ...group,

@@ -1,12 +1,11 @@
 import { Translation } from '@suite-components';
 import { Dropdown, DropdownRef, variables } from '@trezor/components';
-import React, { useRef } from 'react';
+import React, { useRef, useCallback } from 'react';
 import styled from 'styled-components';
 import Notifications from '../../../../../Notifications';
 import ActionItem from '../ActionItem';
-import { useDispatch } from 'react-redux';
+import { useActions } from '@suite-hooks';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { Dispatch } from '@suite-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -31,19 +30,25 @@ interface Props {
 
 const NotificationsDropdown = ({ isActive, withAlertDot }: Props) => {
     const dropdownRef = useRef<DropdownRef>();
-    const dispatch = useDispatch<Dispatch>();
 
-    const handleToggleChange = (toggled?: boolean) => {
-        // if the dropdown is going to be closed, set all notifications as seen
-        if (!toggled) {
-            dispatch(notificationActions.resetUnseen());
-        }
-    };
+    const { resetUnseen } = useActions({
+        resetUnseen: notificationActions.resetUnseen,
+    });
+
+    const handleToggleChange = useCallback(
+        (toggled: boolean) => {
+            // if the dropdown is going to be closed, mark all notifications as seen
+            if (!toggled) {
+                resetUnseen();
+            }
+        },
+        [resetUnseen],
+    );
 
     return (
         <Wrapper>
             <Dropdown
-                onToggleChange={handleToggleChange}
+                onToggle={handleToggleChange}
                 ref={dropdownRef}
                 alignMenu="right"
                 offset={34}
@@ -70,7 +75,6 @@ const NotificationsDropdown = ({ isActive, withAlertDot }: Props) => {
                 ]}
             >
                 <div>
-                    {/* Wrap <ActionItem/> in <div> so that user can close the dropdown by clicking somewhere else (TODO: why does it work like that?) */}
                     <ActionItem
                         label={<Translation id="TR_NOTIFICATIONS" />}
                         icon="NOTIFICATION"
