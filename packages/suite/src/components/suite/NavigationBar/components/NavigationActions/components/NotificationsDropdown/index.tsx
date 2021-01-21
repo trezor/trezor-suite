@@ -69,8 +69,8 @@ const NotificationsDropdown = ({ isActive, withAlertDot }: Props) => {
                     },
                 ]}
             >
-                {/* Wrap <ActionItem/> so that you can close the dropdown by clicking somewhere else (TODO: why does it work like that?) */}
                 <div>
+                    {/* Wrap <ActionItem/> in <div> so that user can close the dropdown by clicking somewhere else (TODO: why does it work like that?) */}
                     <ActionItem
                         label={<Translation id="TR_NOTIFICATIONS" />}
                         icon="NOTIFICATION"

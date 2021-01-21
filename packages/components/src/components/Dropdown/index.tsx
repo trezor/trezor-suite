@@ -201,9 +201,6 @@ const Dropdown = forwardRef(
         }, [toggled]);
 
         useImperativeHandle(ref, () => ({
-            open: () => {
-                setToggled(true);
-            },
             close: () => {
                 setToggled(false);
             },
