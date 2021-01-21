@@ -27,4 +27,4 @@ Available flags:
 | `--log-write` | Write log to disk |
 | `--log-no-print` | Disable the log priting in the console. |
 | `--log-file=FILENAME` | Name of the output file (defaults to `log-%ts.txt`) |
-| `--log-path=FILENAME` | Path for the output file (defaults to current working directory) |
+| `--log-path=PATHNAME` | Path for the output file (defaults to home or current working directory) |

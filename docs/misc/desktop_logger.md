@@ -29,7 +29,7 @@ Any of the following values:
 | writeToConsole | boolean | `true` | Output is displayed in the console |
 | writeToDisk | boolean | `false` | Output is written to a file |
 | outputFile | string | `'log-%ts.txt'` | file name for the output |
-| outputPath | string | Current working directory | path for the output |
+| outputPath | string | Home or CWD | path for the output |
 | logFormat | string | `'%dt - %lvl(%top): %msg'` | Output format of the log |
 
 ### String formatters

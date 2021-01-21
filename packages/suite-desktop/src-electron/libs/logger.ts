@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
+import { app } from 'electron';
 
 const logLevels = ['mute', 'error', 'warn', 'info', 'debug'] as const;
 export type LogLevel = typeof logLevels[number];
@@ -18,8 +19,8 @@ export const defaultOptions: Options = {
     colors: true,
     writeToConsole: true,
     writeToDisk: false,
-    outputFile: 'log-%ts.txt',
-    outputPath: process.cwd(),
+    outputFile: 'trezor-suite-log-%ts.txt',
+    outputPath: app?.getPath('home') ?? process.cwd(),
     logFormat: '%dt - %lvl(%top): %msg',
 };
 
