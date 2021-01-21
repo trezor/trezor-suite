@@ -46,7 +46,7 @@ const NotificationsDropdown = ({ isActive, withAlertDot }: Props) => {
                 onToggleChange={handleToggleChange}
                 ref={dropdownRef}
                 alignMenu="right"
-                offset={16}
+                offset={34}
                 items={[
                     {
                         key: 'dropdown',

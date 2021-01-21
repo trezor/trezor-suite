@@ -1,4 +1,4 @@
-import { Notifications, Translation } from '@suite-components';
+import { LayoutContext, Notifications, Translation } from '@suite-components';
 import { MAX_WIDTH } from '@suite-constants/layout';
 import { variables } from '@trezor/components';
 import React from 'react';
@@ -23,6 +23,11 @@ const Headline = styled.div`
 `;
 
 const NotificationsMobileView = () => {
+    const { setLayout } = React.useContext(LayoutContext);
+    React.useEffect(() => {
+        if (setLayout) setLayout('Notifications', undefined);
+    }, [setLayout]);
+
     return (
         <Wrapper>
             <Headline>
