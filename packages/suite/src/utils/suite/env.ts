@@ -116,7 +116,6 @@ export const getOSTheme = (): SuiteThemeVariant => {
     return 'light';
 };
 
-export const getOSVersion = async () => {
-    const resp = await window.desktopApi?.getOSVersion();
-    return resp;
+export const getOSVersion = () => {
+    return window.desktopApi?.getOSVersion();
 };

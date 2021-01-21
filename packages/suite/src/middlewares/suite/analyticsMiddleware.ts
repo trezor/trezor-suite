@@ -32,7 +32,7 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
     const state = api.getState();
 
     switch (action.type) {
-        case STORAGE.LOADED: {
+        case STORAGE.LOADED:
             api.dispatch(
                 analyticsActions.report({
                     type: 'suite-ready',
@@ -58,7 +58,7 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                 }),
             );
             break;
-        }
+
         case TRANSPORT.START:
             api.dispatch(
                 analyticsActions.report({
