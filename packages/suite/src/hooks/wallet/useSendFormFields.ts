@@ -1,8 +1,5 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback } from 'react';
 import { UseFormMethods } from 'react-hook-form';
-import { FeeLevel } from 'trezor-connect';
-import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
-import { useActions } from '@suite-hooks';
 import { toFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import {
     FormState,
@@ -20,16 +17,11 @@ type Props = UseFormMethods<FormState> & {
 
 export const useSendFormFields = ({
     control,
-    watch,
     getValues,
     setValue,
-    errors,
     clearErrors,
     fiatRates,
 }: Props) => {
-    const { setLastUsedFeeLevel } = useActions({
-        setLastUsedFeeLevel: walletSettingsActions.setLastUsedFeeLevel,
-    });
     const calculateFiat = useCallback(
         (outputIndex: number, amount?: string) => {
             const { outputs } = getValues();
@@ -77,46 +69,6 @@ export const useSendFormFields = ({
         },
         [clearErrors, setValue],
     );
-
-    const changeFeeLevel = useCallback(
-        (currentLevel: FeeLevel, newLevel: FeeLevel) => {
-            if (currentLevel.label === newLevel.label) return;
-            setValue('selectedFee', newLevel.label);
-            const isCustom = newLevel.label === 'custom';
-            // catch first change to custom
-            if (isCustom) {
-                setValue('feePerUnit', currentLevel.feePerUnit);
-                setValue('feeLimit', currentLevel.feeLimit);
-            } else {
-                // when switching from custom FeeLevel which has an error
-                // this error should be cleared and transaction should be precomposed again
-                // response is handled and used in @wallet-views/send/components/Fees (the caller of this function)
-                const shouldCompose = errors.feePerUnit || errors.feeLimit;
-                if (shouldCompose) {
-                    clearErrors(['feePerUnit', 'feeLimit']);
-                }
-                setValue('feePerUnit', '');
-                setValue('feeLimit', '');
-                setLastUsedFeeLevel(newLevel);
-                return shouldCompose;
-            }
-        },
-        [setValue, errors, clearErrors, setLastUsedFeeLevel],
-    );
-
-    // watch custom feePerUnit/feeLimit changes
-    const customFeeRef = useRef<string | null>(null);
-    const customFeeLevel = watch('feePerUnit');
-    useEffect(() => {
-        if (customFeeRef.current !== customFeeLevel) {
-            // NOTE: customFeeRef could be null at first render. ignore it (value from draft)
-            if (typeof customFeeRef.current === 'string' && customFeeLevel && !errors.feePerUnit) {
-                const { feePerUnit, feeLimit } = getValues();
-                setLastUsedFeeLevel({ label: 'custom', feePerUnit, feeLimit, blocks: -1 });
-            }
-            customFeeRef.current = customFeeLevel;
-        }
-    }, [customFeeLevel, errors.feePerUnit, getValues, setLastUsedFeeLevel]);
 
     const resetDefaultValue = useCallback(
         (fieldName: string) => {
@@ -169,7 +121,6 @@ export const useSendFormFields = ({
     return {
         calculateFiat,
         setAmount,
-        changeFeeLevel,
         resetDefaultValue,
         setMax,
         getDefaultValue,

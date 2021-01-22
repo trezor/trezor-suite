@@ -18,6 +18,7 @@ import { useSendFormOutputs } from './useSendFormOutputs';
 import { useSendFormFields } from './useSendFormFields';
 import { useSendFormCompose } from './useSendFormCompose';
 import { useSendFormImport } from './useSendFormImport';
+import { useFees } from './form/useFees';
 
 export const SendContext = createContext<SendContextValues | null>(null);
 SendContext.displayName = 'SendContext';
@@ -153,6 +154,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         composeRequest,
         composedLevels,
         setComposedLevels,
+        onFeeLevelChange,
     } = useSendFormCompose({
         ...useFormMethods,
         state,
@@ -167,6 +169,16 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         outputsFieldArray,
         localCurrencyOption,
         composeRequest,
+    });
+
+    // sub-hook
+    const { changeFeeLevel } = useFees({
+        defaultValue: undefined,
+        feeInfo: state.feeInfo,
+        saveLastUsedFee: true,
+        onChange: onFeeLevelChange,
+        composeRequest,
+        ...useFormMethods,
     });
 
     const resetContext = useCallback(() => {
@@ -231,7 +243,6 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // register custom form fields (without HTMLElement)
     useEffect(() => {
         register({ name: 'setMaxOutputId', type: 'custom' });
-        register({ name: 'selectedFee', type: 'custom' });
         register({ name: 'options', type: 'custom' });
     }, [register]);
 
@@ -259,6 +270,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         composedLevels,
         updateContext,
         resetContext,
+        changeFeeLevel,
         composeTransaction: composeRequest,
         loadTransaction,
         signTransaction: sign,

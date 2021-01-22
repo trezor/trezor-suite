@@ -30,8 +30,10 @@ export type FormState = {
     fiatInput?: string;
     fiatSelect?: Option;
     sendCryptoSelect: Option;
-    feePerUnit?: string;
+    selectedFee: FeeLevel['label'];
+    feePerUnit: string;
     feeLimit?: string;
+    estimatedFeeLimit?: string;
 };
 
 export interface AmountLimits {
@@ -57,13 +59,12 @@ export type ExchangeFormContextValues = Omit<UseFormMethods<FormState>, 'registe
     account: Account;
     isComposing: boolean;
     isMax: boolean;
+    changeFeeLevel: (level: FeeLevel['label']) => void;
     exchangeInfo?: ExchangeInfo;
     exchangeCoinInfo?: ExchangeCoinInfo[];
     localCurrencyOption: { label: string; value: string };
-    selectedFee: FeeLevel['label'];
     setMax: (isMax: boolean) => void;
     compose: (data: ComposeData) => void;
-    selectFee: (feeLevel: FeeLevel['label']) => void;
     updateFiatCurrency: (selectedCurrency: { value: string; label: string }) => void;
     updateReceiveCryptoValue: (fiatValue: string, decimals: number) => void;
     saveQuoteRequest: (request: ExchangeTradeQuoteRequest) => CoinmarketExchangeAction;
@@ -78,7 +79,6 @@ export type ExchangeFormContextValues = Omit<UseFormMethods<FormState>, 'registe
     ) => CoinmarketExchangeAction;
     amountLimits?: AmountLimits;
     transactionInfo: PrecomposedTransactionFinal | null;
-    setTransactionInfo: (transactionInfo: PrecomposedTransactionFinal) => void;
     token: string | undefined;
     setToken: (token: string | undefined) => void;
     fiatRates?: CoinFiatRates;

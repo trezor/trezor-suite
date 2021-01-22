@@ -83,7 +83,6 @@ export const composeTransaction = (composeTransactionData: ComposeTransactionDat
         predefinedLevels.push({
             label: 'custom',
             feePerUnit: composeTransactionData.feePerUnit,
-            feeLimit: composeTransactionData.feeLimit,
             blocks: -1,
         });
     }

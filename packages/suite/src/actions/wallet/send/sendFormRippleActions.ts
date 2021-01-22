@@ -100,7 +100,6 @@ export const composeTransaction = (
         predefinedLevels.push({
             label: 'custom',
             feePerUnit: formValues.feePerUnit,
-            feeLimit: formValues.feeLimit,
             blocks: -1,
         });
     }
