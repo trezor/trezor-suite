@@ -1,8 +1,7 @@
-import { Translation } from '@suite-components';
+import { Translation, Notifications } from '@suite-components';
 import { Dropdown, DropdownRef, variables } from '@trezor/components';
 import React, { useRef, useCallback, useState } from 'react';
 import styled from 'styled-components';
-import Notifications from '../../../../../Notifications';
 import ActionItem from '../ActionItem';
 import { useActions } from '@suite-hooks';
 import * as notificationActions from '@suite-actions/notificationActions';
@@ -28,7 +27,7 @@ interface Props {
 }
 
 const NotificationsDropdown = ({ withAlertDot }: Props) => {
-    // use "opened" state to activate "active" style on ActionItem
+    // use "opened" state to decide if "active" styles on ActionItem should be applied
     const [opened, setOpened] = useState(false);
     const dropdownRef = useRef<DropdownRef>();
 
@@ -78,14 +77,12 @@ const NotificationsDropdown = ({ withAlertDot }: Props) => {
                     },
                 ]}
             >
-                <div>
-                    <ActionItem
-                        label={<Translation id="TR_NOTIFICATIONS" />}
-                        icon="NOTIFICATION"
-                        isActive={opened}
-                        withAlertDot={withAlertDot}
-                    />
-                </div>
+                <ActionItem
+                    label={<Translation id="TR_NOTIFICATIONS" />}
+                    icon="NOTIFICATION"
+                    isActive={opened}
+                    withAlertDot={withAlertDot}
+                />
             </Dropdown>
         </Wrapper>
     );

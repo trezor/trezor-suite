@@ -79,7 +79,7 @@ interface IconComponentProps extends CommonProps {
 
 type Props = CustomIconComponentProps | IconComponentProps;
 
-const ActionItem = (props: Props) => {
+const ActionItem = React.forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) => {
     const theme = useTheme();
     const iconComponent = props.icon ? (
         <Icon
@@ -108,7 +108,7 @@ const ActionItem = (props: Props) => {
     }
 
     return (
-        <Wrapper isActive={props.isActive} {...props}>
+        <Wrapper isActive={props.isActive} {...props} ref={ref}>
             {iconComponent}
             {props.withAlertDot && (
                 <AlertDotWrapper>
@@ -117,6 +117,5 @@ const ActionItem = (props: Props) => {
             )}
         </Wrapper>
     );
-};
-
+});
 export default ActionItem;
