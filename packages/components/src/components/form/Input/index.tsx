@@ -6,11 +6,7 @@ import { Icon } from '../../../index';
 import { getStateColor, useTheme } from '../../../utils';
 import { useEffect, createRef } from 'react';
 
-interface WrappedProps {
-    width?: any;
-}
-
-const Wrapper = styled.div<WrappedProps>`
+const Wrapper = styled.div<Pick<Props, 'width'>>`
     display: inline-flex;
     flex-direction: column;
     width: ${props => (props.width ? `${props.width}px` : '100%')};
@@ -161,7 +157,7 @@ const Row = styled.div<Props>`
         `}
 `;
 
-interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
+interface Props extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'width'> {
     value?: string;
     innerRef?: React.Ref<HTMLInputElement>;
     variant?: InputVariant;
@@ -190,6 +186,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     labelAddonIsVisible?: boolean;
     textIndent?: [number, number]; // [left, right]
     clearButton?: boolean;
+    width?: number;
     onClear?: () => void;
 }
 
@@ -222,7 +219,7 @@ const Input = ({
     errorPosition = 'bottom',
     noError = false,
     noTopLabel = false,
-    textIndent = [0, 0],
+    textIndent,
     ...rest
 }: Props) => {
     const [isHovered, setIsHovered] = React.useState(false);
@@ -242,6 +239,7 @@ const Input = ({
     return (
         <Wrapper
             {...wrapperProps}
+            width={width}
             data-test={dataTest}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -291,7 +289,6 @@ const Input = ({
                         state={state}
                         variant={variant}
                         disabled={isDisabled}
-                        width={width}
                         monospace={monospace}
                         ref={innerRef}
                         data-lpignore="true"

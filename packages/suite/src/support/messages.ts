@@ -2715,6 +2715,10 @@ const definedMessages = defineMessages({
         id: 'TR_TO',
         defaultMessage: 'To',
     },
+    TR_GAS_LIMIT: {
+        id: 'TR_GAS_LIMIT',
+        defaultMessage: 'Gas limit',
+    },
     TR_SEND_GAS_LIMIT_TOOLTIP: {
         id: 'TR_SEND_GAS_LIMIT_TOOLTIP',
         defaultMessage:
@@ -4592,6 +4596,14 @@ const definedMessages = defineMessages({
     CUSTOM_FEE_NOT_IN_RANGE: {
         defaultMessage: 'Allowed fee is between {minFee} and {maxFee}',
         id: 'CUSTOM_FEE_NOT_IN_RANGE',
+    },
+    CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED: {
+        defaultMessage: 'Gas limit below recommended {feeLimit} {button}',
+        id: 'CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED',
+    },
+    CUSTOM_FEE_LIMIT_USE_RECOMMENDED: {
+        defaultMessage: 'Use recommended',
+        id: 'CUSTOM_FEE_LIMIT_USE_RECOMMENDED',
     },
     TOKEN_BALANCE: {
         defaultMessage: 'Balance: {balance}',
