@@ -4,6 +4,7 @@ import { Icon, useTheme, variables } from '@trezor/components';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import NotificationGroup from './components/NotificationGroup';
+import { Translation } from '@suite-components';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -83,13 +84,13 @@ const Notifications = (props: Props) => {
                         selected={selectedTab === 'important'}
                         onClick={() => setSelectedTab('important')}
                     >
-                        Notifications
+                        <Translation id="NOTIFICATIONS_IMPORTANT_TITLE" />
                     </TabButton>
                     <TabButton
                         selected={selectedTab === 'all'}
                         onClick={() => setSelectedTab('all')}
                     >
-                        All activity
+                        <Translation id="NOTIFICATIONS_ALL_TITLE" />
                     </TabButton>
                 </TabSelector>
                 {props.onCancel && (

@@ -650,6 +650,8 @@
     "NOTIFICATIONS_TITLE": "Notifications",
     "NOTIFICATIONS_EMPTY_TITLE": "No notifications..just yet!",
     "NOTIFICATIONS_EMPTY_DESC": "You will see all important notifications and activity records here, once they happen.",
+    "NOTIFICATIONS_ALL_TITLE": "All activity",
+    "NOTIFICATIONS_IMPORTANT_TITLE": "Notifications",
     "NOTIFICATIONS_SEEN_TITLE": "All read",
     "NOTIFICATIONS_UNSEEN_TITLE": "{count} Unread",
     "LABELING_ACCOUNT": "{networkName} #{index}",

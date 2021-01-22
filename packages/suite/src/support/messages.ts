@@ -2922,6 +2922,14 @@ const definedMessages = defineMessages({
         id: 'NOTIFICATIONS_SEEN_TITLE',
         defaultMessage: 'All read',
     },
+    NOTIFICATIONS_ALL_TITLE: {
+        id: 'NOTIFICATIONS_ALL_TITLE',
+        defaultMessage: 'All activity',
+    },
+    NOTIFICATIONS_IMPORTANT_TITLE: {
+        id: 'NOTIFICATIONS_IMPORTANT_TITLE',
+        defaultMessage: 'Notifications',
+    },
     NOTIFICATIONS_UNSEEN_TITLE: {
         id: 'NOTIFICATIONS_UNSEEN_TITLE',
         defaultMessage: '{count} Unread',
