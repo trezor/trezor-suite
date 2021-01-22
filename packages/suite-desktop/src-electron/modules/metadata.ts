@@ -2,7 +2,7 @@
  * Metadata feature (save/load metadata locally)
  */
 import { ipcMain } from 'electron';
-import { save, read } from '@lib/user-data';
+import { save, read } from '@desktop-electron/libs/user-data';
 
 const DATA_DIR = '/metadata';
 

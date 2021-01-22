@@ -389,7 +389,7 @@ const Settings = ({
                             </Version>
                         }
                     />
-                    {isDesktop() && (
+                    {desktopUpdate.enabled && (
                         <ActionColumn>
                             {desktopUpdate.state === 'checking' && (
                                 <ActionButton isDisabled variant="secondary">

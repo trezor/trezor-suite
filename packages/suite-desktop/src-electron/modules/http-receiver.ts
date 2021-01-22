@@ -3,8 +3,8 @@
  */
 import { app, ipcMain } from 'electron';
 
-import { buyRedirectHandler } from '@lib/buy';
-import { HttpReceiver } from '@lib/http-receiver';
+import { buyRedirectHandler } from '@desktop-electron/libs/buy';
+import { HttpReceiver } from '@desktop-electron/libs/http-receiver';
 
 // External request handler
 const httpReceiver = new HttpReceiver();

@@ -4,6 +4,7 @@ import { Dispatch, GetState } from '@suite-types';
 import { UpdateInfo, UpdateProgress, UpdateWindow } from '@suite-types/desktop';
 
 export type DesktopUpdateAction =
+    | { type: typeof DESKTOP_UPDATE.ENABLE }
     | { type: typeof DESKTOP_UPDATE.CHECKING }
     | { type: typeof DESKTOP_UPDATE.AVAILABLE; payload: UpdateInfo }
     | { type: typeof DESKTOP_UPDATE.NOT_AVAILABLE; payload?: UpdateInfo }
@@ -11,6 +12,8 @@ export type DesktopUpdateAction =
     | { type: typeof DESKTOP_UPDATE.READY; payload: UpdateInfo }
     | { type: typeof DESKTOP_UPDATE.SKIP; payload: string }
     | { type: typeof DESKTOP_UPDATE.WINDOW; payload: UpdateWindow };
+
+export const enable = (): DesktopUpdateAction => ({ type: DESKTOP_UPDATE.ENABLE });
 
 export const checking = (): DesktopUpdateAction => ({ type: DESKTOP_UPDATE.CHECKING });
 

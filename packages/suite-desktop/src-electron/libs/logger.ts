@@ -22,11 +22,11 @@ export const defaultOptions: Options = {
     outputFile: 'trezor-suite-log-%ts.txt',
     outputPath: app?.getPath('home') ?? process.cwd(),
     logFormat: '%dt - %lvl(%top): %msg',
-};
+} as const;
 
 class Logger implements ILogger {
     static instance: Logger;
-    private stream: fs.WriteStream;
+    private stream: fs.WriteStream | undefined;
     private options: Options;
     private logLevel = 0;
 
@@ -38,6 +38,22 @@ class Logger implements ILogger {
         };
 
         if (this.logLevel > 0 && this.options.writeToDisk) {
+            if (!this.options.outputFile) {
+                this.error(
+                    'logger',
+                    `Can't write log to file because outputFile is not properly set (${this.options.outputFile})`,
+                );
+                return;
+            }
+
+            if (!this.options.outputPath) {
+                this.error(
+                    'logger',
+                    `Can't write log to file because outputPath is not properly set (${this.options.outputPath})`,
+                );
+                return;
+            }
+
             this.stream = fs.createWriteStream(
                 path.join(this.options.outputPath, this.format(this.options.outputFile)),
             );
@@ -47,7 +63,7 @@ class Logger implements ILogger {
     private log(level: LogLevel, topic: string, message: string | string[]) {
         const { writeToConsole, writeToDisk, logFormat } = this.options;
 
-        if (!writeToConsole && !writeToDisk) {
+        if ((!writeToConsole && !writeToDisk) || !logFormat) {
             return;
         }
 
@@ -74,7 +90,7 @@ class Logger implements ILogger {
             console.log(this.options.colors ? this.color(level, message) : message);
         }
 
-        if (this.options.writeToDisk) {
+        if (this.stream !== undefined) {
             this.stream.write(`${message}\n`);
         }
     }
@@ -109,7 +125,7 @@ class Logger implements ILogger {
     }
 
     public exit() {
-        if (this.options.writeToDisk) {
+        if (this.stream !== undefined) {
             this.stream.end();
         }
     }

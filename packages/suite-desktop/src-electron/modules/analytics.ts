@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import { getOSVersion } from '@lib/user-data';
+import { getOSVersion } from '@desktop-electron/libs/user-data';
 
 export const init = () => {
     const { logger } = global;

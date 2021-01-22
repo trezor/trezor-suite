@@ -3,8 +3,8 @@
  */
 import { app, session, ipcMain, IpcMainEvent } from 'electron';
 
-import TorProcess from '@lib/processes/TorProcess';
-import { b2t } from '@lib/utils';
+import TorProcess from '@desktop-electron/libs/processes/TorProcess';
+import { b2t } from '@desktop-electron/libs/utils';
 
 import { onionDomain } from '../config';
 

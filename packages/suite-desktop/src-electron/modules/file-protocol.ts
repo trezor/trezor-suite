@@ -4,7 +4,7 @@
 import path from 'path';
 import { session } from 'electron';
 
-import { PROTOCOL } from '@lib/constants';
+import { PROTOCOL } from '@desktop-electron/libs/constants';
 
 const init = ({ mainWindow, src }: Dependencies) => {
     // Point to the right directory for file protocol requests

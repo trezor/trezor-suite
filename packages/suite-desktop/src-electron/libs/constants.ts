@@ -1,25 +1,26 @@
 export const PROTOCOL = 'file';
 
+// General modules (both dev & prod)
 export const MODULES = [
     // Event Logging
-    { name: 'event-logging/process', dependencies: [] },
-    { name: 'event-logging/app', dependencies: [] },
-    { name: 'event-logging/contents', dependencies: ['mainWindow'] },
+    'event-logging/process',
+    'event-logging/app',
+    'event-logging/contents',
     // Standard modules
-    { name: 'menu', dependencies: ['mainWindow'] },
-    { name: 'shortcuts', dependencies: ['mainWindow', 'src'] },
-    { name: 'request-filter', dependencies: ['mainWindow'] },
-    { name: 'external-links', dependencies: ['mainWindow', 'store'] },
-    { name: 'window-controls', dependencies: ['mainWindow', 'store'] },
-    { name: 'http-receiver', dependencies: ['mainWindow', 'src'] },
-    { name: 'metadata', dependencies: [] },
-    { name: 'bridge', dependencies: [] },
-    { name: 'tor', dependencies: ['mainWindow', 'store'] },
-    { name: 'analytics', dependencies: [] },
-    // Prod Only
-    { name: 'csp', dependencies: ['mainWindow'], isDev: false },
-    { name: 'file-protocol', dependencies: ['mainWindow', 'src'], isDev: false },
-    { name: 'auto-updater', dependencies: ['mainWindow', 'store'], isDev: false },
-    // Dev Only
-    { name: 'dev-tools', dependencies: ['mainWindow'], isDev: true },
+    'menu',
+    'shortcuts',
+    'request-filter',
+    'external-links',
+    'window-controls',
+    'http-receiver',
+    'metadata',
+    'bridge',
+    'tor',
+    'analytics',
 ];
+
+// Modules only used in prod mode
+export const MODULES_PROD = ['csp', 'file-protocol', 'auto-updater'];
+
+// Modules only used in dev mode
+export const MODULES_DEV = ['dev-tools'];

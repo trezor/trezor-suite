@@ -4,19 +4,38 @@
 
 import { app, ipcMain } from 'electron';
 import { autoUpdater, CancellationToken } from 'electron-updater';
-import { b2t } from '@lib/utils';
-import { toHumanReadable } from '@suite/utils/suite/file';
+import { b2t } from '@desktop-electron/libs/utils';
+import { toHumanReadable } from '@suite-utils/file';
+import { isEnabled } from '@suite-utils/features';
 
 // Runtime flags
+const enableUpdater = app.commandLine.hasSwitch('enable-updater');
+const disableUpdater = app.commandLine.hasSwitch('disable-updater');
 const preReleaseFlag = app.commandLine.hasSwitch('pre-release');
 
 const init = ({ mainWindow, store }: Dependencies) => {
     const { logger } = global;
 
+    if (!isEnabled('DESKTOP_AUTO_UPDATER') && !enableUpdater) {
+        logger.info('auto-updater', 'Disabled via feature flag');
+        return;
+    }
+
+    if (isEnabled('DESKTOP_AUTO_UPDATER') && disableUpdater) {
+        logger.info('auto-updater', 'Disabled via command line parameter');
+        return;
+    }
+
+    // If APPIMAGE is not set on Linux, the auto updater can't handle that
     if (process.platform === 'linux' && process.env.APPIMAGE === undefined) {
         logger.warn('auto-updater', 'APPIMAGE is not defined, skipping auto updater');
         return;
     }
+
+    // Enable feature on FE once it's ready
+    mainWindow.webContents.on('did-finish-load', () => {
+        mainWindow.webContents.send('update/enable');
+    });
 
     let isManualCheck = false;
     let latestVersion = {};

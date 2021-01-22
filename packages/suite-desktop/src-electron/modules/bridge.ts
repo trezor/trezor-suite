@@ -2,8 +2,8 @@
  * Bridge runner
  */
 import { app, session } from 'electron';
-import BridgeProcess from '@lib/processes/BridgeProcess';
-import { b2t } from '@lib/utils';
+import BridgeProcess from '@desktop-electron/libs/processes/BridgeProcess';
+import { b2t } from '@desktop-electron/libs/utils';
 
 const filter = {
     urls: ['http://127.0.0.1:21325/*'],

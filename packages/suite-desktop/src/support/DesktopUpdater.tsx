@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useActions, useSelector } from '@suite-hooks';
-import { isDev } from '@suite-utils/build';
 import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
 
 import Available from './DesktopUpdater/Available';
@@ -13,6 +12,7 @@ interface Props {
 
 const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
     const {
+        enable,
         checking,
         available,
         notAvailable,
@@ -22,6 +22,7 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
         error,
         setUpdateWindow,
     } = useActions({
+        enable: desktopUpdateActions.enable,
         checking: desktopUpdateActions.checking,
         available: desktopUpdateActions.available,
         notAvailable: desktopUpdateActions.notAvailable,
@@ -34,8 +35,8 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
     const desktopUpdate = useSelector(state => state.desktopUpdate);
 
     useEffect(() => {
-        // Don't run in dev builds (no updates to fetch, triggers errors)
-        if (isDev()) {
+        if (!desktopUpdate.enabled) {
+            window.desktopApi!.on('update/enable', enable);
             return;
         }
 
@@ -51,7 +52,17 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
         window.desktopApi!.checkForUpdates();
         // Check for updates every hour
         setInterval(() => window.desktopApi!.checkForUpdates(), 60 * 60 * 1000);
-    }, [available, checking, downloading, notAvailable, ready, skip, error]);
+    }, [
+        available,
+        checking,
+        downloading,
+        notAvailable,
+        ready,
+        skip,
+        error,
+        desktopUpdate.enabled,
+        enable,
+    ]);
 
     const hideWindow = useCallback(() => setUpdateWindow('hidden'), [setUpdateWindow]);
     /* Not used for now

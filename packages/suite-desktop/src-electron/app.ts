@@ -3,12 +3,12 @@ import url from 'url';
 import { app, BrowserWindow, ipcMain } from 'electron';
 import isDev from 'electron-is-dev';
 
-import { PROTOCOL } from '@lib/constants';
-import * as store from '@lib/store';
-import { MIN_HEIGHT, MIN_WIDTH } from '@lib/screen';
-import Logger, { LogLevel, defaultOptions as loggerDefaults } from '@lib/logger';
-import { buildInfo, computerInfo } from '@lib/info';
-import modules from '@lib/modules';
+import { PROTOCOL } from '@desktop-electron/libs/constants';
+import * as store from '@desktop-electron/libs/store';
+import { MIN_HEIGHT, MIN_WIDTH } from '@desktop-electron/libs/screen';
+import Logger, { LogLevel, defaultOptions as loggerDefaults } from '@desktop-electron/libs/logger';
+import { buildInfo, computerInfo } from '@desktop-electron/libs/info';
+import modules from '@desktop-electron/libs/modules';
 
 let mainWindow: BrowserWindow;
 const APP_NAME = 'Trezor Suite';

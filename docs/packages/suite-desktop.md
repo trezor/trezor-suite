@@ -28,3 +28,5 @@ Available flags:
 | `--log-no-print` | Disable the log priting in the console. |
 | `--log-file=FILENAME` | Name of the output file (defaults to `log-%ts.txt`) |
 | `--log-path=PATHNAME` | Path for the output file (defaults to home or current working directory) |
+| `--enable-updater` | Enables the auto updater (if disabled in feature flags) |
+| `--disable-updater` | Disables the auto updater (if enabled in feature flags) |

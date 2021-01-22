@@ -19,6 +19,7 @@ import { UpdateInfo, UpdateProgress, UpdateWindow } from '@suite-types/desktop';
  * - hidden: Hidden
  */
 export interface State {
+    enabled: boolean;
     state: 'checking' | 'available' | 'not-available' | 'downloading' | 'ready';
     skip?: string;
     progress?: UpdateProgress;
@@ -27,6 +28,7 @@ export interface State {
 }
 
 const initialState: State = {
+    enabled: false,
     state: 'not-available',
     window: 'maximized',
 };
@@ -34,6 +36,9 @@ const initialState: State = {
 const desktopUpdateReducer = (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
         switch (action.type) {
+            case DESKTOP_UPDATE.ENABLE:
+                draft.enabled = true;
+                break;
             case DESKTOP_UPDATE.CHECKING:
                 draft.state = 'checking';
                 break;
