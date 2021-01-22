@@ -35,9 +35,11 @@ const TrezorConnect = require('trezor-connect').default;
 type SendState = ReturnType<typeof sendFormReducer>;
 interface Args {
     send?: Partial<SendState>;
+    fees?: any;
+    selectedAccount?: any;
 }
 
-export const getInitialState = ({ send }: Args = {}) => {
+export const getInitialState = ({ send, fees, selectedAccount }: Args = {}) => {
     return {
         ...fixtures.DEFAULT_STORE,
         wallet: {
@@ -46,6 +48,11 @@ export const getInitialState = ({ send }: Args = {}) => {
                 ...sendFormReducer(undefined, { type: 'foo' } as any),
                 ...send,
             },
+            fees: {
+                ...fixtures.DEFAULT_STORE.wallet.fees,
+                ...fees,
+            },
+            selectedAccount: selectedAccount ?? fixtures.DEFAULT_STORE.wallet.selectedAccount,
         },
         devices: [],
         resize: resizeReducer(undefined, { type: 'foo' } as any),
@@ -82,6 +89,10 @@ const Component = ({ callback }: { callback: TestCallback }) => {
 interface Result {
     composeTransactionCalls?: number;
     composeTransactionParams?: any; // partial trezor-connect params
+    estimateFeeCalls?: number; // used in ETH
+    estimateFeeParams?: any; // partial trezor-connect params
+    getAccountInfoCalls?: number; // used in XRP
+    getAccountInfoParams?: any; // partial trezor-connect params
     composedLevels?: any; // partial PrecomposedLevel
     formValues?: DeepPartial<ReturnType<SendContextValues['getValues']>>;
     errors?: any; // partial SendContextValues['errors']
@@ -99,6 +110,12 @@ const actionCallback = (
     if (typeof result.composeTransactionCalls === 'number') {
         expect(TrezorConnect.composeTransaction).toBeCalledTimes(result.composeTransactionCalls);
     }
+    if (typeof result.estimateFeeCalls === 'number') {
+        expect(TrezorConnect.blockchainEstimateFee).toBeCalledTimes(result.estimateFeeCalls);
+    }
+    if (typeof result.getAccountInfoCalls === 'number') {
+        expect(TrezorConnect.getAccountInfo).toBeCalledTimes(result.getAccountInfoCalls);
+    }
 
     // validate 'trezor-connect' params
     if (result.composeTransactionParams) {
@@ -106,13 +123,32 @@ const actionCallback = (
             expect.objectContaining(result.composeTransactionParams),
         );
     }
+    if (result.estimateFeeParams) {
+        expect(TrezorConnect.blockchainEstimateFee).toHaveBeenLastCalledWith(
+            expect.objectContaining(result.estimateFeeParams),
+        );
+    }
+    if (result.getAccountInfoParams) {
+        expect(TrezorConnect.getAccountInfo).toHaveBeenLastCalledWith(
+            expect.objectContaining(result.getAccountInfoParams),
+        );
+    }
 
     const { composedLevels, getValues, errors } = getContextValues();
 
     // validate composedLevels object
     if (Object.prototype.hasOwnProperty.call(result, 'composedLevels')) {
-        if (result.composedLevels) {
-            expect(composedLevels).toMatchObject(result.composedLevels);
+        if (result.composedLevels && composedLevels) {
+            Object.keys(result.composedLevels).forEach(key => {
+                const expectedLevel = result.composedLevels[key];
+                const level = composedLevels[key];
+                if (expectedLevel) {
+                    expect(level).toMatchObject(expectedLevel);
+                } else {
+                    expect(level).toBe(undefined);
+                }
+            });
+            // expect(composedLevels).toMatchObject(result.composedLevels);
         } else {
             expect(composedLevels).toBe(undefined);
         }
@@ -125,7 +161,17 @@ const actionCallback = (
 
     // validate errors
     if (result.errors) {
-        expect(errors).toMatchObject(result.errors);
+        // expect(errors).toMatchObject(result.errors);
+        Object.keys(result.errors).forEach(key => {
+            const expectedError = result.errors[key];
+            // @ts-ignore key: string
+            const error = errors[key];
+            if (expectedError) {
+                expect(error).toMatchObject(expectedError);
+            } else {
+                expect(error).toBe(undefined);
+            }
+        });
     }
 };
 
@@ -250,6 +296,31 @@ describe('useSendForm hook', () => {
                 });
                 actionCallback(callback, { result: f.result });
             });
+
+            unmount();
+        });
+    });
+
+    fixtures.feeChange.forEach(f => {
+        it(f.description, async () => {
+            TrezorConnect.setTestFixtures(f.connect);
+            const store = initStore(getInitialState(f.store));
+            const callback: TestCallback = {};
+            const { unmount } = renderWithProviders(
+                store,
+                <SendIndex>
+                    <Component callback={callback} />
+                </SendIndex>,
+            );
+
+            // wait for first render
+            await waitForLoader();
+
+            // execute user actions sequence
+            await actionSequence(f.actionSequence, a => actionCallback(callback, a));
+
+            // validate finalResult
+            actionCallback(callback, { result: f.finalResult });
 
             unmount();
         });

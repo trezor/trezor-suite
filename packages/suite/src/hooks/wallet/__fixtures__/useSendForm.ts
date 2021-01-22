@@ -46,9 +46,13 @@ export const ETH_ACCOUNT = {
         descriptor: '0xdB09b793984B862C430b64B9ed53AcF867cC041F',
         deviceState: 'deviceState',
         key: '0xdB09b793984B862C430b64B9ed53AcF867cC041F-eth-deviceState',
-        availableBalance: '100000000000',
+        balance: '10000000000000000000', // 10 ETH
+        availableBalance: '10000000000000000000', // 10 ETH
+        misc: { nonce: '0' },
+        history: {},
+        tokens: [{ type: 'ERC20', address: '0xABCD', symbol: '0xABCD', decimals: 3, balance: '1' }],
     },
-    network: { networkType: 'ethereum', symbol: 'eth', decimals: 16 },
+    network: { networkType: 'ethereum', symbol: 'eth', decimals: 18, chainId: 1 },
 };
 
 export const XRP_ACCOUNT = {
@@ -58,8 +62,11 @@ export const XRP_ACCOUNT = {
         networkType: 'ripple',
         descriptor: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY',
         deviceState: 'deviceState',
-        key: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY-eth-deviceState',
-        availableBalance: '100000000000',
+        key: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY-xrp-deviceState',
+        balance: '100000000', // 100 XRP
+        availableBalance: '100000000', // 100 XRP
+        misc: { reserve: '21' },
+        history: {},
     },
     network: { networkType: 'ripple', symbol: 'xrp', decimals: 6 },
 };
@@ -76,7 +83,7 @@ export const DEFAULT_STORE = {
         locks: [],
     },
     wallet: {
-        accounts: [BTC_ACCOUNT.account],
+        accounts: [BTC_ACCOUNT.account, ETH_ACCOUNT.account, XRP_ACCOUNT.account],
         selectedAccount: BTC_ACCOUNT,
         settings: {
             localCurrency: 'usd',
@@ -91,6 +98,22 @@ export const DEFAULT_STORE = {
                 blockTime: 1,
                 levels: [{ label: 'normal', feePerUnit: '4', blocks: 1 }],
             },
+            eth: {
+                minFee: 1,
+                maxFee: 100,
+                blockHeight: 1,
+                blockTime: 1,
+                levels: [
+                    { label: 'normal', feePerUnit: '3300000000', feeLimit: '21000', blocks: -1 },
+                ],
+            },
+            xrp: {
+                minFee: 1,
+                maxFee: 100,
+                blockHeight: 1,
+                blockTime: 1,
+                levels: [{ label: 'normal', feePerUnit: '12', blocks: -1 }],
+            },
         },
         fiat: {
             coins: [
@@ -102,7 +125,26 @@ export const DEFAULT_STORE = {
                         rates: { usd: 1, eur: 1.2, czk: 22 },
                     },
                 },
+                {
+                    symbol: 'eth',
+                    current: {
+                        symbol: 'eth',
+                        ts: 0,
+                        rates: { usd: 1, eur: 1.2, czk: 22 },
+                    },
+                },
+                {
+                    symbol: 'xrp',
+                    current: {
+                        symbol: 'xrp',
+                        ts: 0,
+                        rates: { usd: 1, eur: 1.2, czk: 22 },
+                    },
+                },
             ],
+        },
+        transactions: {
+            transactions: {},
         },
     },
     devices: [], // to remove?
@@ -114,7 +156,68 @@ const DEFAULT_DRAFT = {
     options: [...DEFAULT_VALUES.options],
 };
 
+const getDraft = (draft?: any) => ({
+    'xpub-btc-deviceState': {
+        ...DEFAULT_DRAFT,
+        outputs: [
+            {
+                ...DEFAULT_PAYMENT,
+                address: 'A',
+                amount: '1',
+            },
+        ],
+        ...draft,
+    },
+    '0xdB09b793984B862C430b64B9ed53AcF867cC041F-eth-deviceState': {
+        ...DEFAULT_DRAFT,
+        outputs: [
+            {
+                ...DEFAULT_PAYMENT,
+                address: '0xdB09b793984B862C430b64B9ed53AcF867cC041F',
+                amount: '1',
+            },
+        ],
+        ...draft,
+    },
+    'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY-xrp-deviceState': {
+        ...DEFAULT_DRAFT,
+        outputs: [
+            {
+                ...DEFAULT_PAYMENT,
+                address: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY',
+                amount: '1',
+            },
+        ],
+        ...draft,
+    },
+});
+
 export const addingOutputs = [
+    // {
+    //     description: 'Add/Remove opreturn',
+    //     initial: {
+    //         outputs: [{ address: '' }],
+    //     },
+    //     actions: [
+    //         {
+    //             type: 'click',
+    //             element: '@send/header-dropdown',
+    //         },
+    //         {
+    //             type: 'click',
+    //             element: '@send/header-dropdown',
+    //         },
+    //         {
+    //             type: 'click',
+    //             element: '@send/header-dropdown/opreturn',
+    //             result: {
+    //                 formValues: {
+    //                     outputs: [{ type: 'opreturn' }],
+    //                 },
+    //             },
+    //         },
+    //     ],
+    // },
     {
         description: 'Add/Remove/Reset outputs without draft',
         initial: {
@@ -783,6 +886,106 @@ export const setMax = [
             },
         },
     },
+    {
+        description: 'ETH',
+        store: {
+            send: {
+                drafts: getDraft({
+                    setMaxOutputId: 0,
+                }),
+            },
+            selectedAccount: ETH_ACCOUNT,
+        },
+        finalResult: {
+            estimateFeeCalls: 1,
+            composedLevels: {
+                normal: {
+                    type: 'final',
+                    fee: '69300000000000',
+                    totalSpent: '10000000000000000000',
+                },
+                custom: undefined,
+            },
+            formValues: {
+                outputs: [{ amount: '9.9999307', fiat: '10.00' }],
+            },
+        },
+    },
+    {
+        description: 'ETH with token',
+        store: {
+            send: {
+                drafts: getDraft({
+                    outputs: [
+                        {
+                            ...DEFAULT_PAYMENT,
+                            address: '0xABCD',
+                            token: '0xABCD',
+                        },
+                    ],
+                    setMaxOutputId: 0,
+                }),
+            },
+            selectedAccount: ETH_ACCOUNT,
+        },
+        finalResult: {
+            estimateFeeCalls: 1,
+            composedLevels: {
+                normal: {
+                    type: 'final',
+                    fee: '69300000000000',
+                    totalSpent: '1000', // tokens
+                },
+                custom: undefined,
+            },
+            formValues: {
+                outputs: [{ amount: '1', token: '0xABCD' }],
+            },
+        },
+    },
+    {
+        description: 'XRP',
+        store: {
+            send: {
+                drafts: getDraft({
+                    setMaxOutputId: 0,
+                }),
+            },
+            selectedAccount: XRP_ACCOUNT,
+        },
+        finalResult: {
+            getAccountInfoCalls: 1,
+            composedLevels: {
+                normal: { type: 'final', fee: '12', totalSpent: '100000000' },
+                custom: undefined,
+            },
+            formValues: {
+                outputs: [{ amount: '99.999988', fiat: '100.00' }],
+            },
+        },
+    },
+    {
+        description: 'XRP no address',
+        store: {
+            send: {
+                drafts: getDraft({
+                    outputs: [{ ...DEFAULT_PAYMENT }],
+                    setMaxOutputId: 0,
+                }),
+            },
+            selectedAccount: XRP_ACCOUNT,
+        },
+        finalResult: {
+            getAccountInfoCalls: 0,
+            composedLevels: {
+                normal: { type: 'nonfinal', fee: '12', totalSpent: '100000000' },
+                custom: undefined,
+            },
+            formValues: {
+                outputs: [{ amount: '99.999988', fiat: '100.00' }],
+            },
+        },
+    },
 ];
 
 export const amountChange = [
@@ -827,20 +1030,6 @@ export const amountChange = [
     },
 ];
 
-const getDraft = (draft?: any) => ({
-    'xpub-btc-deviceState': {
-        ...DEFAULT_DRAFT,
-        outputs: [
-            {
-                ...DEFAULT_PAYMENT,
-                address: 'A',
-                amount: '1',
-            },
-        ],
-        ...draft,
-    },
-});
-
 const getComposeResponse = (resp?: any) => ({
     success: true,
     payload: [
@@ -862,11 +1051,133 @@ const getComposeResponse = (resp?: any) => ({
 
 export const signAndPush = [
     {
+        description: 'ETH',
+        store: {
+            send: {
+                drafts: getDraft(),
+            },
+            selectedAccount: ETH_ACCOUNT,
+        },
+        connect: [
+            undefined, // estimateFee
+            {
+                success: true,
+                payload: {
+                    serializedTx: 'serializedABCD',
+                },
+            },
+        ],
+        result: {
+            formValues: {
+                selectedFee: undefined,
+                outputs: [{ address: '', amount: '' }], // form was cleared
+            },
+            actions: [
+                {
+                    type: '@notification/toast',
+                    payload: { type: 'tx-sent', formattedAmount: '1 ETH' }, // BUG ?
+                },
+            ],
+        },
+    },
+    {
+        description: 'ETH failed',
+        store: {
+            send: {
+                drafts: getDraft(),
+            },
+            selectedAccount: ETH_ACCOUNT,
+        },
+        result: {
+            formValues: {
+                selectedFee: undefined,
+                outputs: [{ amount: '1' }], // form not cleared
+            },
+            actions: [
+                {
+                    type: '@notification/toast',
+                    payload: { type: 'sign-tx-error' },
+                },
+            ],
+        },
+    },
+    {
+        description: 'XRP',
+        store: {
+            send: {
+                drafts: getDraft(),
+            },
+            selectedAccount: XRP_ACCOUNT,
+        },
+        connect: [
+            undefined, // getAccountInfo address check
+            {
+                success: true,
+                payload: {
+                    serializedTx: 'serializedABCD',
+                },
+            },
+        ],
+        result: {
+            formValues: {
+                selectedFee: undefined,
+                outputs: [{ address: '', amount: '' }], // form was cleared
+            },
+            actions: [
+                {
+                    type: '@notification/toast',
+                    payload: { type: 'tx-sent', formattedAmount: '1 XRP' },
+                },
+            ],
+        },
+    },
+    {
+        description: 'XRP failed',
+        store: {
+            send: {
+                drafts: getDraft(),
+            },
+            selectedAccount: XRP_ACCOUNT,
+        },
+        result: {
+            formValues: {
+                selectedFee: undefined,
+                outputs: [{ amount: '1' }], // form not cleared
+            },
+            actions: [
+                {
+                    type: '@notification/toast',
+                    payload: { type: 'sign-tx-error' },
+                },
+            ],
+        },
+    },
+    // {
+    //     description: 'XRP',
+    //     store: {
+    //         send: {
+    //             drafts: getDraft(),
+    //         },
+    //         selectedAccount: XRP_ACCOUNT,
+    //     },
+    //     // connect: [
+    //     //     { success: false, payload: { error: 'irrelevant ' } }, // getAccountInfo address check
+    //     //     // { success: true, payload: {} },
+    //     // ],
+    //     result: {
+    //         formValues: {
+    //             selectedFee: undefined,
+    //             outputs: [{ address: '', amount: '' }], // form was cleared
+    //         },
+    //         actions: [1],
+    //     },
+    // },
+    {
         description: 'Success with: custom fee, 2 outputs, 0 utxo (ignored)',
         store: {
             send: {
                 drafts: getDraft({
-                    selectedFee: 'custom',
+                    selectedFee: 'custom' as const,
                     outputs: [
                         {
                             ...DEFAULT_PAYMENT,
@@ -1073,6 +1384,426 @@ export const signAndPush = [
                     payload: { type: 'sign-tx-error' },
                 },
             ],
+        },
+    },
+];
+
+export const feeChange = [
+    {
+        description: 'BTC fee changes',
+        store: {
+            send: {
+                drafts: getDraft(),
+            },
+            fees: {
+                btc: {
+                    minFee: 1,
+                    maxFee: 100,
+                    blockHeight: 1,
+                    blockTime: 1,
+                    // add more levels
+                    levels: [
+                        { label: 'high', feePerUnit: '40', blocks: 1 },
+                        { label: 'normal', feePerUnit: '4', blocks: 1 },
+                        { label: 'low', feePerUnit: '1', blocks: 1 },
+                    ],
+                },
+            },
+        },
+        connect: {
+            success: false,
+            payload: {
+                success: false,
+                payload: {
+                    error: 'compose-response-is-irrelevant',
+                },
+            },
+        },
+        actionSequence: [
+            {
+                type: 'click',
+                element: 'select-bar/high',
+                result: {
+                    composeTransactionCalls: 1,
+                    formValues: {
+                        selectedFee: 'high' as const,
+                        feePerUnit: '',
+                    },
+                },
+            },
+            {
+                type: 'click',
+                element: 'select-bar/custom',
+                result: {
+                    composeTransactionCalls: 1,
+                    formValues: {
+                        selectedFee: 'custom' as const,
+                        feePerUnit: '40', // from high level
+                    },
+                },
+            },
+            {
+                type: 'click',
+                element: 'select-bar/custom',
+                result: {
+                    composeTransactionCalls: 1,
+                    formValues: {
+                        selectedFee: 'custom' as const,
+                        feePerUnit: '40', // from high level
+                    },
+                },
+            },
+            {
+                type: 'click',
+                element: 'select-bar/low',
+                result: {
+                    composeTransactionCalls: 1,
+                    formValues: {
+                        selectedFee: 'low' as const,
+                        feePerUnit: '40', // did not changed
+                    },
+                },
+            },
+            {
+                type: 'click',
+                element: 'select-bar/custom',
+                result: {
+                    composeTransactionCalls: 1,
+                    formValues: {
+                        selectedFee: 'custom' as const,
+                        feePerUnit: '1', // from low level
+                    },
+                },
+            },
+            {
+                type: 'input',
+                element: 'feePerUnit',
+                value: '', // reset value
+                result: {
+                    composeTransactionCalls: 1,
+                    formValues: {
+                        feePerUnit: '',
+                    },
+                    errors: {
+                        feePerUnit: { message: 'CUSTOM_FEE_IS_NOT_SET' },
+                    },
+                },
+            },
+            {
+                type: 'input',
+                element: 'feePerUnit',
+                value: '2', // add new custom
+                result: {
+                    composeTransactionCalls: 2,
+                    formValues: {
+                        feePerUnit: '2',
+                    },
+                    errors: {},
+                },
+            },
+            {
+                type: 'input',
+                element: 'feePerUnit',
+                value: 'a', // add invalid
+                result: {
+                    composeTransactionCalls: 2,
+                    formValues: {
+                        feePerUnit: '2a',
+                    },
+                    errors: {
+                        feePerUnit: { message: 'CUSTOM_FEE_IS_NOT_NUMBER' },
+                    },
+                },
+            },
+            {
+                type: 'click',
+                element: 'select-bar/normal',
+                result: {
+                    composeTransactionCalls: 3, // called after fee level change
+                    formValues: {
+                        selectedFee: 'normal' as const,
+                        feePerUnit: '',
+                    },
+                },
+            },
+        ],
+        finalResult: {
+            composeTransactionCalls: 3,
+        },
+    },
+    {
+        description: 'ETH fee limit changes',
+        store: {
+            send: {
+                drafts: getDraft(),
+            },
+            selectedAccount: ETH_ACCOUNT,
+        },
+        // blockchainEstimateFee responses
+        connect: [
+            {
+                success: false,
+                payload: {
+                    error: 'irrelevant',
+                },
+            },
+            {
+                success: true,
+                payload: {
+                    levels: [{ feeLimit: '41000' }],
+                },
+            },
+            {
+                success: true,
+                payload: {
+                    levels: [{ feeLimit: '21009' }],
+                },
+            },
+        ],
+        actionSequence: [
+            {
+                type: 'click',
+                element: 'select-bar/custom',
+                result: {
+                    estimateFeeCalls: 1,
+                    formValues: {
+                        selectedFee: 'custom' as const,
+                        feePerUnit: '3.3',
+                        feeLimit: '21000', // default
+                        estimatedFeeLimit: undefined,
+                    },
+                },
+            },
+            {
+                type: 'input',
+                element: 'outputs[0].amount',
+                value: '.1',
+                result: {
+                    estimateFeeCalls: 2,
+                    formValues: {
+                        outputs: [{ amount: '1.1' }],
+                        feePerUnit: '3.3',
+                        feeLimit: '21000',
+                        estimatedFeeLimit: '41000',
+                    },
+                    errors: {
+                        feeLimit: { type: 'validate' }, // limit below recommended error
+                    },
+                },
+            },
+            // im not currently able to click on error button
+            // increasing fee level to accepted value
+            {
+                type: 'input',
+                element: 'feeLimit',
+                value: '1',
+                result: {
+                    estimateFeeCalls: 3,
+                    formValues: {
+                        outputs: [{ amount: '1.1' }],
+                        selectedFee: 'custom' as const,
+                        feePerUnit: '3.3',
+                        feeLimit: '210001',
+                        estimatedFeeLimit: '21009',
+                    },
+                    composedLevels: {
+                        normal: {
+                            type: 'final',
+                            feeLimit: '21009',
+                            estimatedFeeLimit: '21009',
+                        },
+                        custom: {
+                            type: 'final',
+                            feeLimit: '210001', // custom composed tx with higher level
+                            estimatedFeeLimit: '21009',
+                        },
+                    },
+                    errors: {
+                        feeLimit: undefined,
+                    }, // no errors
+                },
+            },
+            // reset value
+            {
+                type: 'input',
+                element: 'feeLimit',
+                value: '',
+                result: {
+                    estimateFeeCalls: 3,
+                    formValues: {
+                        feeLimit: '',
+                        estimatedFeeLimit: '21009',
+                    },
+                    composedLevels: undefined, // no levels
+                    errors: {
+                        feeLimit: { type: 'required' }, // not set error
+                    },
+                },
+            },
+            {
+                type: 'input',
+                element: 'feeLimit',
+                value: '21', // too low
+                result: {
+                    formValues: {
+                        feeLimit: '21',
+                    },
+                    errors: {
+                        feeLimit: { type: 'validate' }, // limit error
+                    },
+                },
+            },
+            {
+                type: 'input',
+                element: 'feeLimit',
+                value: 'a', // typo
+                result: {
+                    formValues: {
+                        selectedFee: 'custom' as const,
+                        feePerUnit: '3.3',
+                        feeLimit: '21a',
+                        estimatedFeeLimit: '21009',
+                    },
+                    errors: {
+                        feeLimit: { type: 'validate' }, // limit error
+                    },
+                },
+            },
+            {
+                type: 'click',
+                element: 'send/open-ethereum-data',
+            },
+            {
+                type: 'click',
+                element: 'send/close-ethereum-data',
+            },
+            // switch back to normal
+            {
+                type: 'click',
+                element: 'select-bar/normal',
+                result: {
+                    estimateFeeCalls: 4, // called after fee level change
+                    formValues: {
+                        selectedFee: 'normal' as const,
+                        feePerUnit: '',
+                        feeLimit: '',
+                        estimatedFeeLimit: undefined, // because of missing response from connect
+                    },
+                    composedLevels: {
+                        normal: {
+                            type: 'final',
+                            fee: '69300000000000',
+                            feePerByte: '3.3',
+                            feeLimit: '21000', // default
+                        },
+                        custom: undefined, // no custom level build
+                    },
+                    errors: {
+                        feeLimit: undefined, // no levels,
+                    }, // no errors
+                },
+            },
+        ],
+        finalResult: {
+            estimateFeeCalls: 4,
+        },
+    },
+    {
+        description: 'XRP fee changes',
+        store: {
+            send: {
+                drafts: getDraft(),
+            },
+            selectedAccount: XRP_ACCOUNT,
+        },
+        // getAccountInfo responses
+        connect: [
+            {
+                success: true,
+                payload: {
+                    empty: true,
+                    misc: { reserve: '20000000' },
+                },
+            },
+            // {
+            //     success: true,
+            //     payload: {
+            //         levels: [{ feeLimit: '41000' }],
+            //     },
+            // },
+            // {
+            //     success: true,
+            //     payload: {
+            //         levels: [{ feeLimit: '21009' }],
+            //     },
+            // },
+        ],
+        actionSequence: [
+            {
+                type: 'click',
+                element: 'select-bar/custom',
+                result: {
+                    getAccountInfoCalls: 1,
+                    formValues: {
+                        selectedFee: 'custom' as const,
+                        feePerUnit: '12',
+                    },
+                    composedLevels: {
+                        normal: {
+                            type: 'error', // not enough to cover reserve
+                        },
+                    },
+                    errors: {
+                        outputs: [
+                            {
+                                amount: { type: 'compose' }, // AMOUNT_IS_LESS_THAN_RESERVE
+                            },
+                        ],
+                    },
+                },
+            },
+            {
+                type: 'input',
+                element: 'feePerUnit',
+                value: '', // reset value
+                result: {
+                    getAccountInfoCalls: 1,
+                    formValues: {
+                        feePerUnit: '',
+                    },
+                    composedLevels: undefined,
+                    errors: {
+                        feePerUnit: { message: 'CUSTOM_FEE_IS_NOT_SET' },
+                    },
+                },
+            },
+            {
+                type: 'input',
+                element: 'feePerUnit',
+                value: '10',
+                result: {
+                    getAccountInfoCalls: 2,
+                    formValues: {
+                        feePerUnit: '10',
+                    },
+                    composedLevels: {
+                        normal: {
+                            type: 'final',
+                            fee: '12', // default
+                        },
+                        custom: {
+                            type: 'final',
+                            fee: '10', // default
+                        },
+                    },
+                    errors: {
+                        feePerUnit: undefined,
+                    },
+                },
+            },
+        ],
+        finalResult: {
+            getAccountInfoCalls: 2,
         },
     },
 ];

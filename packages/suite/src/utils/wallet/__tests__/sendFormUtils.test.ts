@@ -48,10 +48,16 @@ describe('sendForm utils', () => {
 
     it('calculateTotal', () => {
         expect(calculateTotal('1', '2')).toEqual('3');
+        expect(calculateTotal('a', '2')).toEqual('0');
+        // @ts-ignore not a string
+        expect(calculateTotal(null, null)).toEqual('0');
     });
 
     it('calculateMax', () => {
         expect(calculateMax('2', '1')).toEqual('1');
+        expect(calculateMax('2', '3')).toEqual('0');
+        // @ts-ignore not a string
+        expect(calculateMax(null, null)).toEqual('0');
     });
 
     it('findComposeErrors', () => {

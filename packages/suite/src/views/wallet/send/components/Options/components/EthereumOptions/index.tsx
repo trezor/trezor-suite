@@ -53,6 +53,7 @@ const EthereumOptions = () => {
                     <StyledButton
                         variant="tertiary"
                         icon="DATA"
+                        data-test="send/open-ethereum-data"
                         onClick={() => {
                             // open additional form
                             toggleOption('ethereumData');
@@ -65,6 +66,7 @@ const EthereumOptions = () => {
                 <StyledButton
                     variant="tertiary"
                     icon="RBF"
+                    data-test="send/broadcast"
                     onClick={() => {
                         toggleOption('broadcast');
                         composeTransaction();
