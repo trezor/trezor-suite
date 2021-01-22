@@ -76,14 +76,21 @@ const NotificationGroup = (props: Props) => {
         <>
             {unseenCount > 0 && (
                 <>
-                    <SectionHeadline>{unseenCount} unread</SectionHeadline>
+                    <SectionHeadline>
+                        <Translation
+                            id="NOTIFICATIONS_UNSEEN_TITLE"
+                            values={{ count: unseenCount }}
+                        />
+                    </SectionHeadline>
                     <NotificationList notifications={unseenNotifications} />
                 </>
             )}
 
             {seenCount > 0 && (
                 <>
-                    <SectionHeadline>All read</SectionHeadline>
+                    <SectionHeadline>
+                        <Translation id="NOTIFICATIONS_SEEN_TITLE" />
+                    </SectionHeadline>
                     <NotificationList notifications={seenNotifications} />
                 </>
             )}

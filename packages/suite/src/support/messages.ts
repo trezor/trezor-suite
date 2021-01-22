@@ -2918,6 +2918,14 @@ const definedMessages = defineMessages({
         defaultMessage:
             'Here you will see all important notifications once they happen. For now, there’s nothing to see.',
     },
+    NOTIFICATIONS_SEEN_TITLE: {
+        id: 'NOTIFICATIONS_SEEN_TITLE',
+        defaultMessage: 'All read',
+    },
+    NOTIFICATIONS_UNSEEN_TITLE: {
+        id: 'NOTIFICATIONS_UNSEEN_TITLE',
+        defaultMessage: '{count} Unread',
+    },
     LABELING_ACCOUNT: {
         id: 'LABELING_ACCOUNT',
         defaultMessage: '{networkName} #{index}',
