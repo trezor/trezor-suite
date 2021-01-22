@@ -1,7 +1,7 @@
 import { Menu } from 'electron';
 
-import { buildMainMenu, inputMenu, selectionMenu } from '@lib/menu';
-import { b2t } from '@lib/utils';
+import { buildMainMenu, inputMenu, selectionMenu } from '@desktop-electron/libs/menu';
+import { b2t } from '@desktop-electron/libs/utils';
 
 const init = ({ mainWindow }: Dependencies) => {
     const { logger } = global;
@@ -10,7 +10,7 @@ const init = ({ mainWindow }: Dependencies) => {
     mainWindow.setMenuBarVisibility(false);
 
     mainWindow.webContents.on('context-menu', (_, props) => {
-        const isTextSelected = props.selectionText && props.selectionText.trim() !== '';
+        const isTextSelected = Boolean(props.selectionText) && props.selectionText.trim() !== '';
         logger.debug('menu', [
             'Context menu:',
             `- Editable: ${b2t(props.isEditable)}`,

@@ -1,5 +1,5 @@
 import isDev from 'electron-is-dev';
-import { MODULES } from '@lib/constants';
+import { MODULES, MODULES_DEV, MODULES_PROD } from '@desktop-electron/libs/constants';
 
 const modules = async (dependencies: Dependencies) => {
     const { logger } = global;
@@ -7,32 +7,14 @@ const modules = async (dependencies: Dependencies) => {
     logger.info('modules', `Loading ${MODULES.length} modules`);
 
     await Promise.all(
-        MODULES.flatMap(async module => {
-            if (module.isDev !== undefined && module.isDev !== isDev) {
-                logger.debug(
-                    'modules',
-                    `${module.name} was skipped because it is configured for a diferent environment`,
-                );
-                return [];
-            }
-
-            const deps: { [name in keyof Dependencies]: any } = {};
-            module.dependencies.forEach((dep: keyof Dependencies) => {
-                if (dependencies[dep] === undefined) {
-                    logger.error(
-                        'modules',
-                        `Dependency ${dep} is missing for module ${module.name}`,
-                    );
-                    return;
-                }
-                deps[dep] = dependencies[dep];
-            });
+        [...MODULES, ...(isDev ? MODULES_DEV : MODULES_PROD)].flatMap(async module => {
+            logger.debug('modules', `Loading ${module}`);
 
             try {
-                const m = await import(`./modules/${module.name}`);
-                return [m.default(deps)];
+                const m = await import(`./modules/${module}`);
+                return [m.default(dependencies)];
             } catch (err) {
-                logger.error('modules', `Couldn't load ${module.name} (${err.toString()})`);
+                logger.error('modules', `Couldn't load ${module} (${err.toString()})`);
             }
         }),
     );

@@ -1,4 +1,5 @@
 {
+    "extends": "../../../tsconfig.json",
     "compilerOptions": {
         "watch": false,
         "preserveWatchOutput": true,
@@ -21,18 +22,12 @@
         "skipLibCheck": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "noImplicitAny": true,
-        "baseUrl": ".",
-        "paths": {
-            "@lib/*": ["./libs/*"],
-            "@module/*": ["./modules/*"],
-            "@suite/*": ["../../suite/src/*"]
-        }
+        "noImplicitAny": true
     },
     "include": [
         "**/*.ts"
     ],
     "exclude": [
-        "**/*.js",
+        "**/*.js"
     ]
 }

@@ -8,7 +8,7 @@ const testOptions: Options = {
     outputFile: 'test-log.txt',
     outputPath: __dirname,
 };
-const output = path.join(testOptions.outputPath, testOptions.outputFile);
+const output = path.join(testOptions.outputPath ?? '', testOptions.outputFile ?? '');
 
 describe('logger', () => {
     let spy: any;

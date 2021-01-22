@@ -13,6 +13,7 @@ const validChannels = [
     'oauth/response',
 
     // Update events
+    'update/enable',
     'update/checking',
     'update/available',
     'update/not-available',

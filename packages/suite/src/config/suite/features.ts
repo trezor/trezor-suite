@@ -11,6 +11,7 @@ export const FLAGS = {
     ONION_LOCATION_META: true, // Show TOR onion-location meta tag in page head
     EXPORT_TRANSACTIONS: true, // Display export option on transactions
     SEARCH_TRANSACTIONS: true, // Display search option on transactions
+    DESKTOP_AUTO_UPDATER: true, // Runs auto updater code on desktop
 } as const;
 
 // Web specific flags

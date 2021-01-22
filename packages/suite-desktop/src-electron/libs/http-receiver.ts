@@ -245,8 +245,8 @@ export class HttpReceiver extends EventEmitter {
     private spendHandleMessage = (request: Request, response: http.ServerResponse) => {
         const { query } = url.parse(request.url, true);
         this.emit('spend/message', {
-            data: query.data,
-            origin: query.origin,
+            data: query.data ?? '',
+            origin: query.origin ?? '',
         });
 
         const template = this.applyTemplate('You may now close this window.');

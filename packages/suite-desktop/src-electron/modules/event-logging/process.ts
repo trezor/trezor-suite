@@ -6,7 +6,9 @@ const init = () => {
     });
 
     process.on('unhandledRejection', e => {
-        logger.warn('rejection', `Unhandled Rejection: ${e.toString()}`);
+        if (e) {
+            logger.warn('rejection', `Unhandled Rejection: ${e.toString()}`);
+        }
     });
 };
 

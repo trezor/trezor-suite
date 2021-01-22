@@ -1,4 +1,4 @@
-import { TOR_DOMAIN } from '@suite/constants/suite/urls';
+import { TOR_DOMAIN } from '@suite-constants/urls';
 
 export const onionDomain = TOR_DOMAIN;
 
