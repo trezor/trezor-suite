@@ -45,6 +45,7 @@ const Header = () => {
     const options = [
         {
             key: 'opreturn',
+            'data-test': '@send/header-dropdown/opreturn',
             callback: addOpReturn,
             label: <Translation id="OP_RETURN_ADD" />,
             isDisabled: !!opreturnOutput,
@@ -76,6 +77,7 @@ const Header = () => {
                 <Clear />
                 <Dropdown
                     alignMenu="right"
+                    data-test="@send/header-dropdown"
                     items={[
                         {
                             key: 'header',

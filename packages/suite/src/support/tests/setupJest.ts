@@ -241,6 +241,12 @@ const getTrezorConnect = <M>(methods?: M) => {
             signTransaction: jest.fn(async _params => {
                 return { success: false, payload: { error: 'error' }, ...getFixture(), _params };
             }),
+            ethereumSignTransaction: jest.fn(async _params => {
+                return { success: false, payload: { error: 'error' }, ...getFixture(), _params };
+            }),
+            rippleSignTransaction: jest.fn(async _params => {
+                return { success: false, payload: { error: 'error' }, ...getFixture(), _params };
+            }),
             pushTransaction: jest.fn(async _params => {
                 return { success: true, payload: { txid: 'txid' }, ...getFixture(), _params };
             }),

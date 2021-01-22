@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { IntlProvider } from 'react-intl';
-import { act, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import { act, render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
 import ThemeProvider from '@suite-support/ThemeProvider';
 import userEvent from '@testing-library/user-event';
 
@@ -55,21 +55,26 @@ export const actionSequence = async <A extends UserAction[]>(
 ) => {
     for (let i = 0; i < actions.length; i++) {
         const action = actions[i];
+        const element = findByTestId(action.element);
         if (action.type === 'hover') {
-            userEvent.hover(findByTestId(action.element));
+            userEvent.hover(element);
         }
         if (action.type === 'click') {
-            userEvent.click(findByTestId(action.element));
+            userEvent.click(element);
         } else if (action.type === 'input') {
             const { value } = action;
             if (!value) {
-                act(() => userEvent.clear(findByTestId(action.element)));
+                userEvent.clear(element);
+                // eslint-disable-next-line no-await-in-loop, no-loop-func
+                await waitFor(() => {
+                    expect(element).toBeTruthy();
+                });
             } else {
                 // eslint-disable-next-line no-await-in-loop
                 await act(() =>
                     // @ts-ignore: act => Promise
                     userEvent.type(
-                        findByTestId(action.element),
+                        element,
                         value,
                         action.delay ? { delay: action.delay } : undefined,
                     ),

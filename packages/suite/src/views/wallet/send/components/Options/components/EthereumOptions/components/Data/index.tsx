@@ -107,6 +107,7 @@ const Data = ({ close }: Props) => {
                     <Icon
                         size={20}
                         icon="CROSS"
+                        data-test="send/close-ethereum-data"
                         onClick={() => {
                             if (amount === '0') {
                                 setValue('outputs[0].amount', '');
