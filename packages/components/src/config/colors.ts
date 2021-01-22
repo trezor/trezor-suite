@@ -32,6 +32,7 @@ export const THEME = {
 
         SCROLLBAR_THUMB: '#dcdcdc',
         STROKE_GREY: '#e8e8e8',
+        STROKE_GREY_ALT: '#e8e8e8',
         STROKE_LIGHT_GREY: '#f4f4f4',
 
         BUTTON_RED: '#cd4949',
@@ -79,6 +80,7 @@ export const THEME = {
 
         SCROLLBAR_THUMB: '#7F7F7F',
         STROKE_GREY: '#3a3b3c',
+        STROKE_GREY_ALT: '#5c5d5e', // used for light border on BG_WHITE_ALT in dark mode
         STROKE_LIGHT_GREY: '#3a3b3c', // graph grid uses different color in black theme
 
         BUTTON_RED: '#cd4949',
@@ -128,6 +130,7 @@ export const THEME = {
 
         SCROLLBAR_THUMB: '#7F7F7F',
         STROKE_GREY: '#262626',
+        STROKE_GREY_ALT: '#262626',
         STROKE_LIGHT_GREY: '#1a1a1a', // graph grid
 
         BUTTON_RED: '#cd4949',

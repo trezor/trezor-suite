@@ -112,6 +112,8 @@ const NavigationActions = (props: Props) => {
         if (props.closeMainNavigation) props.closeMainNavigation();
     };
 
+    const unseenNotifications = notifications.some(n => !n.seen);
+
     return (
         <WrapperComponent>
             {BOTTOM_MENU_ITEMS.map(item => {
@@ -119,14 +121,12 @@ const NavigationActions = (props: Props) => {
                 const dataTestId = `@suite/menu/${route}`;
                 const routeObj = findRouteByName(route);
                 const isActive = routeObj ? routeObj.app === activeApp : false;
-                const unseenNotifications = notifications.some(n => !n.seen);
 
                 // For notifications, return just dropdown menu for desktop layout (do not redirect to separate notifications page)
                 if (route === 'notifications-index' && !props.isMobileLayout)
                     return (
                         <NotificationsDropdown
                             key={item.translationId}
-                            isActive={isActive}
                             withAlertDot={unseenNotifications}
                         />
                     );

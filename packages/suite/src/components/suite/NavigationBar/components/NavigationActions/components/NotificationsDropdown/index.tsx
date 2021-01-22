@@ -1,6 +1,6 @@
 import { Translation } from '@suite-components';
 import { Dropdown, DropdownRef, variables } from '@trezor/components';
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import Notifications from '../../../../../Notifications';
 import ActionItem from '../ActionItem';
@@ -24,11 +24,12 @@ const NotificationsWrapper = styled.div`
 `;
 
 interface Props {
-    isActive: boolean;
     withAlertDot: boolean;
 }
 
-const NotificationsDropdown = ({ isActive, withAlertDot }: Props) => {
+const NotificationsDropdown = ({ withAlertDot }: Props) => {
+    // use "opened" state to activate "active" style on ActionItem
+    const [opened, setOpened] = useState(false);
     const dropdownRef = useRef<DropdownRef>();
 
     const { resetUnseen } = useActions({
@@ -36,10 +37,13 @@ const NotificationsDropdown = ({ isActive, withAlertDot }: Props) => {
     });
 
     const handleToggleChange = useCallback(
-        (toggled: boolean) => {
-            // if the dropdown is going to be closed, mark all notifications as seen
-            if (!toggled) {
+        (isToggled: boolean) => {
+            if (isToggled) {
+                setOpened(true);
+            } else {
+                // if the dropdown is going to be closed, mark all notifications as seen and "deactivate" ActionItem
                 resetUnseen();
+                setOpened(false);
             }
         },
         [resetUnseen],
@@ -78,7 +82,7 @@ const NotificationsDropdown = ({ isActive, withAlertDot }: Props) => {
                     <ActionItem
                         label={<Translation id="TR_NOTIFICATIONS" />}
                         icon="NOTIFICATION"
-                        isActive={isActive}
+                        isActive={opened}
                         withAlertDot={withAlertDot}
                     />
                 </div>

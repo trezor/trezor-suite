@@ -13,7 +13,7 @@ const Header = styled.div`
     display: flex;
     padding: 0 22px;
     align-items: center;
-    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY_ALT};
 `;
 const TabSelector = styled.div`
     display: flex;
@@ -33,7 +33,8 @@ const TabButton = styled.button<{ selected: boolean }>`
     color: ${props =>
         props.selected ? `${props.theme.TYPE_DARK_GREY}` : `${props.theme.TYPE_LIGHT_GREY}`};
     border-bottom: 2px solid;
-    border-color: ${props => (props.selected ? props.theme.TYPE_DARK_GREY : props.theme.BG_WHITE)};
+    border-color: ${props =>
+        props.selected ? props.theme.TYPE_DARK_GREY : props.theme.BG_WHITE_ALT};
 `;
 
 const CloseButtonWrapper = styled.div``;

@@ -58,7 +58,7 @@ const AlertDot = styled.div`
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: ${props => props.theme.TYPE_RED};
+    background: ${props => props.theme.TYPE_ORANGE};
 `;
 
 interface CommonProps extends Pick<React.HTMLAttributes<HTMLDivElement>, 'onClick'> {
