@@ -2,20 +2,6 @@ import React, { useState, useEffect, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { variables } from '../../../config';
 
-interface Option {
-    label: ReactNode;
-    value: string;
-}
-
-interface Props {
-    label?: ReactNode;
-    selectedOption?: Option['value'];
-    options: Option[];
-    className?: string;
-    isDisabled?: boolean;
-    onChange?: (value: Option['value']) => void;
-}
-
 const Wrapper = styled.div`
     display: flex;
     height: 32px;
@@ -63,10 +49,30 @@ const Option = styled.div<{ isSelected: boolean }>`
         `}
 `;
 
-const SelectBar = ({ options, selectedOption, label, onChange, className, isDisabled }: Props) => {
-    const [selectedOptionIn, setSelected] = useState<Option['value'] | null>(
-        selectedOption || null
-    );
+interface Option<V> {
+    label: ReactNode;
+    value: V;
+}
+
+interface Props<V> {
+    label?: ReactNode;
+    selectedOption?: V;
+    options: Option<V>[];
+    className?: string;
+    isDisabled?: boolean;
+    onChange?: (value: V) => void;
+}
+
+// Generic type V is determined by selectedOption/options values
+const SelectBar: <V extends string>(props: Props<V>) => JSX.Element = ({
+    options,
+    selectedOption,
+    label,
+    onChange,
+    className,
+    isDisabled,
+}) => {
+    const [selectedOptionIn, setSelected] = useState<typeof selectedOption>(selectedOption);
 
     useEffect(() => {
         if (selectedOption) {
@@ -89,6 +95,7 @@ const SelectBar = ({ options, selectedOption, label, onChange, className, isDisa
                         }}
                         isSelected={selectedOptionIn ? selectedOptionIn === option.value : false}
                         key={option.value}
+                        data-test={`select-bar/${option.value}`}
                     >
                         {option.label}
                     </Option>
