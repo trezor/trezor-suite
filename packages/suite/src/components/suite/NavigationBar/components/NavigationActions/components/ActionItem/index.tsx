@@ -79,6 +79,8 @@ interface IconComponentProps extends CommonProps {
 
 type Props = CustomIconComponentProps | IconComponentProps;
 
+// Reason to use forwardRef: We want the user to be able to close Notifications dropdown by clicking somewhere else.
+// In order to achieve that behavior, we need to pass reference to ActionItem
 const ActionItem = React.forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) => {
     const theme = useTheme();
     const iconComponent = props.icon ? (

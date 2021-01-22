@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
+import { BOTTOM_MENU_ITEMS } from '@suite-constants/menu';
 import { Translation } from '@suite-components';
 import { Icon, Tooltip, useTheme } from '@trezor/components';
 import { findRouteByName } from '@suite-utils/router';
-import { BOTTOM_MENU_ITEMS } from '@suite-constants/menu';
 import { useActions, useAnalytics, useSelector } from '@suite-hooks';
 import ActionItem from './components/ActionItem';
 import TooltipContentTor from './components/TooltipContentTor';
@@ -78,7 +78,7 @@ interface Props {
     isMobileLayout?: boolean;
 }
 
-type Route = typeof BOTTOM_MENU_ITEMS[number]['route'];
+type Route = typeof BOTTOM_MENU_ITEMS['notifications' | 'settings']['route'];
 
 const NavigationActions = (props: Props) => {
     const analytics = useAnalytics();
@@ -112,40 +112,38 @@ const NavigationActions = (props: Props) => {
         if (props.closeMainNavigation) props.closeMainNavigation();
     };
 
-    const unseenNotifications = notifications.some(n => !n.seen);
+    const getIfRouteIsActive = (route: Route) => {
+        const routeObj = findRouteByName(route);
+        return routeObj ? routeObj.app === activeApp : false;
+    };
+
+    const unseenNotifications = useMemo(() => notifications.some(n => !n.seen), [notifications]);
 
     return (
         <WrapperComponent>
-            {BOTTOM_MENU_ITEMS.map(item => {
-                const { route, icon } = item;
-                const dataTestId = `@suite/menu/${route}`;
-                const routeObj = findRouteByName(route);
-                const isActive = routeObj ? routeObj.app === activeApp : false;
+            {props.isMobileLayout ? (
+                <ActionItem
+                    label={<Translation id={BOTTOM_MENU_ITEMS.notifications.translationId} />}
+                    data-test={`@suite/menu/${BOTTOM_MENU_ITEMS.notifications.route}`}
+                    onClick={() => action(BOTTOM_MENU_ITEMS.notifications.route)}
+                    isActive={getIfRouteIsActive(BOTTOM_MENU_ITEMS.notifications.route)}
+                    icon={BOTTOM_MENU_ITEMS.notifications.icon}
+                    withAlertDot={unseenNotifications}
+                    isMobileLayout={props.isMobileLayout}
+                />
+            ) : (
+                <NotificationsDropdown withAlertDot={unseenNotifications} />
+            )}
 
-                // For notifications, return just dropdown menu for desktop layout (do not redirect to separate notifications page)
-                if (route === 'notifications-index' && !props.isMobileLayout)
-                    return (
-                        <NotificationsDropdown
-                            key={item.translationId}
-                            withAlertDot={unseenNotifications}
-                        />
-                    );
+            <ActionItem
+                label={<Translation id={BOTTOM_MENU_ITEMS.settings.translationId} />}
+                data-test={`@suite/menu/${BOTTOM_MENU_ITEMS.settings.route}`}
+                onClick={() => action(BOTTOM_MENU_ITEMS.settings.route)}
+                isActive={getIfRouteIsActive(BOTTOM_MENU_ITEMS.settings.route)}
+                icon={BOTTOM_MENU_ITEMS.settings.icon}
+                isMobileLayout={props.isMobileLayout}
+            />
 
-                return (
-                    <ActionItem
-                        key={item.translationId}
-                        label={<Translation id={item.translationId} />}
-                        data-test={dataTestId}
-                        onClick={() => action(route)}
-                        isActive={isActive}
-                        icon={icon}
-                        withAlertDot={
-                            !isActive && route === 'notifications-index' && unseenNotifications
-                        }
-                        isMobileLayout={props.isMobileLayout}
-                    />
-                );
-            })}
             <ActionsContainer desktop={isDesktop()} mobileLayout={props.isMobileLayout}>
                 <ActionItem
                     onClick={() => {
