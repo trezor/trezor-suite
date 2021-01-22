@@ -13,6 +13,11 @@ const preReleaseFlag = app.commandLine.hasSwitch('pre-release');
 const init = ({ mainWindow, store }: Dependencies) => {
     const { logger } = global;
 
+    if (process.platform === 'linux' && process.env.APPIMAGE === undefined) {
+        logger.warn('auto-updater', 'APPIMAGE is not defined, skipping auto updater');
+        return;
+    }
+
     let isManualCheck = false;
     let latestVersion = {};
     let updateCancellationToken: CancellationToken;
