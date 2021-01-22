@@ -1,199 +1,54 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FeeLevel } from 'trezor-connect';
-import { SelectBar, variables } from '@trezor/components';
-import { Translation, FiatValue, FormattedCryptoAmount } from '@suite-components';
-import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { getFeeUnits } from '@wallet-utils/sendFormUtils';
-import EstimatedMiningTime from '@wallet-components/EstimatedMiningTime';
-import CustomFee from './components/CustomFee';
+import Fees from '@wallet-components/Fees';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
+import { PrecomposedLevels } from '@wallet-types/sendForm';
 
 const StyledCard = styled.div`
     display: flex;
+    flex-direction: column;
     justify-items: space-between;
     margin: 25px 0;
-
-    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: column;
-    }
 `;
 
-const StyledSelectBar = styled(SelectBar)`
-    margin-bottom: 20px;
-`;
-
-const TransactionInfo = styled.div``;
-
-const Label = styled.div`
-    display: flex;
-    padding-right: 20px;
-    padding-top: 4px;
-    padding-bottom: 10px;
-
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    text-transform: capitalize;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
-`;
-
-const CoinAmount = styled.div`
-    display: flex;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    padding-bottom: 6px;
-`;
-
-const FiatAmount = styled.div`
-    display: flex;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-`;
-
-const FeeInfo = styled.div`
-    display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    min-height: 61px;
-`;
-
-const FeeUnits = styled.span`
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const TxSize = styled(FeeUnits)`
-    padding-left: 4px;
-`;
-
-const EstimatedMiningTimeWrapper = styled.span`
-    padding-right: 4px;
-`;
-
-const Row = styled.div`
-    display: flex;
-`;
-const Col = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-`;
-
-const FeeAmount = styled.div`
-    display: flex;
-    flex: 1 0 auto;
-    justify-content: flex-start;
-    flex-direction: column;
-    align-items: flex-end;
-    margin-left: 12px;
-`;
-
-interface Option {
-    label: string;
-    value: string;
-}
-
-const buildFeeOptions = (levels: FeeLevel[]) => {
-    const result: Option[] = [];
-    levels.forEach(level => {
-        const { label } = level;
-        result.push({ label, value: label });
-    });
-    return result;
-};
-
-const Fees = () => {
+// wrapper for shareable Fees component
+const ExchangeFees = () => {
     const {
-        account: { symbol, networkType },
-        feeInfo,
-        selectedFee,
-        selectFee,
+        errors,
+        register,
         setValue,
-        isMax,
-        clearErrors,
+        getValues,
+        account,
+        changeFeeLevel,
+        feeInfo,
         transactionInfo,
-        compose,
-        formState,
     } = useCoinmarketExchangeFormContext();
 
-    const selectedFeeLevel = feeInfo.levels.find(level => level.label === selectedFee);
-    if (!selectedFeeLevel) return null;
-    const isCustomLevel = selectedFee === 'custom';
+    // workaround
+    // exchange hook does not provide whole PrecomposedLevels object
+    // build it from transactionInfo
+    let composedLevels: PrecomposedLevels | undefined;
+    if (transactionInfo) {
+        const selectedFee = getValues('selectedFee');
+        composedLevels = {};
+        composedLevels[selectedFee] = transactionInfo;
+    }
 
     return (
         <StyledCard>
-            <Label>
-                <Translation id="FEE" />
-            </Label>
-            <Col>
-                <Row>
-                    <StyledSelectBar
-                        selectedOption={selectedFee}
-                        isDisabled={formState.isSubmitting}
-                        options={buildFeeOptions(feeInfo.levels)}
-                        onChange={async (value: any) => {
-                            selectFee(value);
-                            if (value === 'custom' && selectedFeeLevel.label !== 'custom') {
-                                setValue('feePerUnit', selectedFeeLevel.feePerUnit);
-                                setValue('feeLimit', selectedFeeLevel.feeLimit);
-                            } else {
-                                clearErrors('feePerUnit');
-                            }
-                            await compose({
-                                fillValue: isMax,
-                                setMax: isMax,
-                                feeLevelLabel: value,
-                            });
-                        }}
-                    />
-                </Row>
-                <Row>
-                    <FeeInfo>
-                        <CustomFee isVisible={isCustomLevel} />
-                        {networkType === 'bitcoin' && !isCustomLevel && (
-                            <EstimatedMiningTimeWrapper>
-                                <EstimatedMiningTime
-                                    seconds={feeInfo.blockTime * selectedFeeLevel.blocks * 60}
-                                />
-                            </EstimatedMiningTimeWrapper>
-                        )}
-                        <FeeUnits>
-                            {!isCustomLevel
-                                ? `${selectedFeeLevel.feePerUnit} ${getFeeUnits(networkType)}`
-                                : ' '}
-                        </FeeUnits>
-                        {networkType === 'bitcoin' &&
-                            !isCustomLevel &&
-                            transactionInfo &&
-                            transactionInfo.type === 'final' && (
-                                <TxSize>({transactionInfo.bytes} B)</TxSize>
-                            )}
-                    </FeeInfo>
-                </Row>
-            </Col>
-            <TransactionInfo>
-                {transactionInfo?.type === 'final' && (
-                    <FeeAmount>
-                        <CoinAmount>
-                            <FormattedCryptoAmount
-                                value={formatNetworkAmount(transactionInfo.fee, symbol)}
-                                symbol={symbol}
-                            />
-                        </CoinAmount>
-                        <FiatAmount>
-                            <FiatValue
-                                amount={formatNetworkAmount(transactionInfo.fee, symbol)}
-                                symbol={symbol}
-                            />
-                        </FiatAmount>
-                    </FeeAmount>
-                )}
-            </TransactionInfo>
+            <Fees
+                errors={errors}
+                register={register}
+                feeInfo={feeInfo}
+                setValue={setValue}
+                getValues={getValues}
+                account={account}
+                composedLevels={composedLevels}
+                changeFeeLevel={changeFeeLevel}
+                showLabel
+            />
         </StyledCard>
     );
 };
 
-export default Fees;
+export default ExchangeFees;

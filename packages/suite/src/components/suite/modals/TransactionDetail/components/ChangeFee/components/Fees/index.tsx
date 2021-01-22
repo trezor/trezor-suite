@@ -7,6 +7,7 @@ const RbfFees = () => {
     const {
         errors,
         register,
+        setValue,
         getValues,
         changeFeeLevel,
         account,
@@ -15,19 +16,18 @@ const RbfFees = () => {
     } = useRbfContext();
 
     return (
-        <>
-            {/* input needs to be present (react-hook-form errors receiver) */}
-            <input type="hidden" name="selectedFee" ref={register()} />
-            <Fees
-                errors={errors}
-                register={register}
-                feeInfo={feeInfo}
-                getValues={getValues}
-                account={account}
-                composedLevels={composedLevels}
-                changeFeeLevel={changeFeeLevel}
-            />
-        </>
+        <Fees
+            errors={errors}
+            register={register}
+            feeInfo={feeInfo}
+            setValue={setValue}
+            getValues={getValues}
+            account={account}
+            composedLevels={composedLevels}
+            changeFeeLevel={changeFeeLevel}
+            label="TR_NEW_FEE"
+            rbfForm
+        />
     );
 };
 

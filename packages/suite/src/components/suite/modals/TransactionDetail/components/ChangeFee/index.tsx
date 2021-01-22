@@ -114,12 +114,7 @@ const ChangeFee = ({ tx, finalize }: Props) => {
                         </Content>
                     </Inner>
                     <Inner>
-                        <Title>
-                            <Translation id="TR_NEW_FEE" />
-                        </Title>
-                        <Content>
-                            <Fees />
-                        </Content>
+                        <Fees />
                     </Inner>
                 </Box>
                 <ReplaceButton finalize={finalize} />
