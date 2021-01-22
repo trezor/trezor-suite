@@ -132,9 +132,7 @@ export const useCompose = ({
             }
 
             // update feeLimit field if present (calculated from ethereum data size)
-            if (composed.feeLimit) {
-                setValue('ethereumDataFeeLimit', composed.feeLimit);
-            }
+            setValue('estimatedFeeLimit', composed.estimatedFeeLimit);
         },
         [composeField, getValues, setValue, errors, setError, clearErrors],
     );
@@ -143,7 +141,7 @@ export const useCompose = ({
     const onFeeLevelChange = useCallback(
         (prev: FormState['selectedFee'], current: FormState['selectedFee']) => {
             if (!composedLevels) return;
-            if (current === 'custom' && !composedLevels.custom) {
+            if (current === 'custom') {
                 // set custom level from previously selected level
                 const prevLevel = composedLevels[prev || 'normal'];
                 setComposedLevels({

@@ -154,11 +154,6 @@ export const composeTransaction = (composeTransactionData: ComposeTransactionDat
         });
     }
 
-    // update predefined levels with customFeeLimit (gasLimit from data size ot erc20 transfer)
-    if (customFeeLimit) {
-        predefinedLevels.forEach(l => (l.feeLimit = customFeeLimit));
-    }
-
     // wrap response into PrecomposedLevels object where key is a FeeLevel label
     const wrappedResponse: PrecomposedLevels = {};
     const response = predefinedLevels.map(level =>
@@ -202,8 +197,9 @@ export const composeTransaction = (composeTransactionData: ComposeTransactionDat
     // update errorMessage values (symbol)
     Object.keys(wrappedResponse).forEach(key => {
         const tx = wrappedResponse[key];
-        if (tx.type !== 'error' && tx.max) {
-            tx.max = formatAmount(tx.max, decimals);
+        if (tx.type !== 'error') {
+            tx.max = tx.max ? formatAmount(tx.max, decimals) : undefined;
+            tx.estimatedFeeLimit = customFeeLimit;
         }
         if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
             tx.errorMessage = {

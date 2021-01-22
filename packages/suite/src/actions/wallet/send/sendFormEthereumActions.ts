@@ -201,8 +201,9 @@ export const composeTransaction = (
     // update errorMessage values (symbol)
     Object.keys(wrappedResponse).forEach(key => {
         const tx = wrappedResponse[key];
-        if (tx.type !== 'error' && tx.max) {
-            tx.max = formatAmount(tx.max, decimals);
+        if (tx.type !== 'error') {
+            tx.max = tx.max ? formatAmount(tx.max, decimals) : undefined;
+            tx.estimatedFeeLimit = customFeeLimit;
         }
         if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
             tx.errorMessage = {

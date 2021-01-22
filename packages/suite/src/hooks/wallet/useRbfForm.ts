@@ -98,6 +98,7 @@ export const useRbf = (tx: WalletAccountTransaction, finalize: boolean) => {
         isLoading,
         register: typedRegister,
         errors,
+        setValue,
         getValues,
         composedLevels,
         changeFeeLevel,

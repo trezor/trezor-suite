@@ -5,48 +5,36 @@ import Common from 'ethereumjs-common';
 import { Transaction, TxData } from 'ethereumjs-tx';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 import { ERC20_TRANSFER } from '@wallet-constants/sendForm';
-import {
-    amountToSatoshi,
-    networkAmountToSatoshi,
-    formatNetworkAmount,
-} from '@wallet-utils/accountUtils';
+import { amountToSatoshi, networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { Network, Account, CoinFiatRates } from '@wallet-types';
 import { FormState, FeeInfo, EthTransactionData, ExternalOutput } from '@wallet-types/sendForm';
 
 export const calculateTotal = (amount: string, fee: string): string => {
     try {
-        const bAmount = new BigNumber(amount);
-        if (bAmount.isNaN()) {
-            console.error('Amount is not a number');
+        const total = new BigNumber(amount).plus(fee);
+        if (total.isNaN()) {
+            console.error('calculateTotal: Amount is not a number', amount, fee);
+            return '0';
         }
-        return bAmount.plus(fee).toString();
+        return total.toString();
     } catch (error) {
+        console.error('calculateTotal: error', error);
         return '0';
     }
 };
 
 export const calculateMax = (availableBalance: string, fee: string): string => {
     try {
-        const balanceBig = new BigNumber(availableBalance);
-        const max = balanceBig.minus(fee);
-        if (max.isLessThan(0)) return '0';
+        const max = new BigNumber(availableBalance).minus(fee);
+        if (max.isNaN() || max.isLessThan(0)) {
+            console.error('calculateMax: Amount is not a number', availableBalance, fee);
+            return '0';
+        }
         return max.toFixed();
     } catch (error) {
+        console.error('calculateMax: error', error);
         return '0';
     }
-};
-
-export const getFee = (
-    transactionInfo: any,
-    networkType: Account['networkType'],
-    symbol: Account['symbol'],
-) => {
-    if (networkType === 'ethereum') {
-        const gasPriceInWei = toWei(transactionInfo.feePerUnit, 'gwei');
-        return fromWei(gasPriceInWei, 'ether');
-    }
-
-    return formatNetworkAmount(transactionInfo.fee, symbol);
 };
 
 // ETH SPECIFIC
@@ -97,14 +85,14 @@ export const getEthereumEstimateFeeParams = (
     if (token) {
         return {
             to,
-            value: '0x00',
+            value: '0x0',
             data: getSerializedErc20Transfer(token, to, amount || '0'),
         };
     }
     return {
         to,
         value: amount ? getSerializedAmount(amount) : toHex('1'), // use at least 1 wei (satoshi)
-        data,
+        data: data || '',
     };
 };
 

@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { UseFormMethods } from 'react-hook-form';
-import { FeeLevel } from 'trezor-connect';
 import {
     FormState,
     UseSendFormState,
@@ -20,7 +19,6 @@ type Props = UseFormMethods<FormState> & {
 
 // This hook should be used only as a sub-hook of `useSendForm`
 export const useSendFormCompose = ({
-    watch,
     getValues,
     setValue,
     setError,
@@ -34,7 +32,6 @@ export const useSendFormCompose = ({
     const [composedLevels, setComposedLevels] = useState<SendContextValues['composedLevels']>(
         undefined,
     );
-    const selectedFeeRef = useRef<FeeLevel['label'] | undefined>(undefined);
     const composeRequestRef = useRef<string | undefined>(undefined); // input name, caller of compose request
     const composeRequestID = useRef(0); // compose ID, incremented with every compose request
     const [composeField, setComposeField] = useState<string | undefined>(undefined);
@@ -155,9 +152,7 @@ export const useSendFormCompose = ({
             }
 
             // update feeLimit field if present (calculated from ethereum data size)
-            if (composed.feeLimit) {
-                setValue('ethereumDataFeeLimit', composed.feeLimit);
-            }
+            setValue('estimatedFeeLimit', composed.estimatedFeeLimit);
 
             const { setMaxOutputId } = values;
             // set calculated and formatted "max" value to `Amount` input
@@ -191,7 +186,6 @@ export const useSendFormCompose = ({
             // switch to it
             if (nearest) {
                 composed = composedLevels[nearest];
-                selectedFeeRef.current = nearest as FormState['selectedFee'];
                 setValue('selectedFee', nearest);
                 if (nearest === 'custom') {
                     // @ts-ignore: type = error already filtered above
@@ -212,30 +206,26 @@ export const useSendFormCompose = ({
         updateComposedValues(composed);
     }, [composedLevels, getValues, setValue, updateComposedValues]);
 
-    // watch selectedFee change and update composedLevels or save draft
-    const selectedFee = watch('selectedFee') as FormState['selectedFee'];
-    useEffect(() => {
-        // reset cached selectedFeeRef if form was cleared to default (selectedFee is undefined)
-        if (!selectedFee && !composedLevels && selectedFeeRef.current) {
-            selectedFeeRef.current = undefined;
-        }
-        if (!selectedFee || selectedFeeRef.current === selectedFee) return;
-        if (composedLevels) {
-            if (selectedFee === 'custom') {
-                const prevLevel = composedLevels[selectedFeeRef.current || 'normal'];
+    // called from the useFees sub-hook
+    const onFeeLevelChange = useCallback(
+        (prev: FormState['selectedFee'], current: FormState['selectedFee']) => {
+            if (!composedLevels) return;
+            if (current === 'custom') {
+                // set custom level from previously selected level
+                const prevLevel = composedLevels[prev || 'normal'];
                 setComposedLevels({
                     ...composedLevels,
                     custom: prevLevel,
                 });
             } else {
-                const currentLevel = composedLevels[selectedFee];
+                const currentLevel = composedLevels[current || 'normal'];
                 updateComposedValues(currentLevel);
             }
-        }
-        updateContext({ isDirty: true });
-        setDraftSaveRequest(true);
-        selectedFeeRef.current = selectedFee;
-    }, [composedLevels, selectedFee, updateComposedValues, updateContext]);
+            updateContext({ isDirty: true });
+            setDraftSaveRequest(true);
+        },
+        [composedLevels, updateComposedValues, updateContext],
+    );
 
     // handle props.account change:
     // - update context state (state.account)
@@ -270,5 +260,6 @@ export const useSendFormCompose = ({
         setDraftSaveRequest,
         composedLevels,
         setComposedLevels,
+        onFeeLevelChange,
     };
 };

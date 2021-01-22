@@ -1,4 +1,4 @@
-import { UseFormMethods, FieldError } from 'react-hook-form';
+import { UseFormMethods } from 'react-hook-form';
 import { Account, Network, CoinFiatRates } from '@wallet-types';
 import {
     FeeLevel,
@@ -40,6 +40,7 @@ export type FormState = {
     selectedFee?: FeeLevel['label'];
     feePerUnit: string; // bitcoin/ethereum/ripple custom fee field (satB/gasPrice/drops)
     feeLimit: string; // ethereum only (gasLimit)
+    estimatedFeeLimit?: string; // ethereum only (gasLimit)
     // advanced form inputs
     options: FormOptions[];
     bitcoinLockTime?: string; // bitcoin RBF/schedule
@@ -85,12 +86,14 @@ export type PrecomposedTransactionNonFinal = Extract<
 > & {
     max: string | undefined;
     feeLimit?: string;
+    estimatedFeeLimit?: string;
     token?: TokenInfo;
 };
 
 export type PrecomposedTransactionFinal = Extract<PrecomposedTransactionBase, { type: 'final' }> & {
     max: string | undefined;
     feeLimit?: string;
+    estimatedFeeLimit?: string;
     token?: TokenInfo;
     rbf?: boolean;
     prevTxid?: string;
@@ -156,7 +159,7 @@ export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
         // useSendFormFields utils:
         calculateFiat: (outputIndex: number, amount?: string) => void;
         setAmount: (outputIndex: number, amount: string) => void;
-        changeFeeLevel: (currentLevel: FeeLevel, newLevel: FeeLevel) => FieldError | void;
+        changeFeeLevel: (currentLevel: FeeLevel['label']) => void;
         resetDefaultValue: (field: string) => void;
         setMax: (index: number, active: boolean) => void;
         getDefaultValue: GetDefaultValue;

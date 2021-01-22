@@ -1,12 +1,21 @@
 import { useEffect, useRef } from 'react';
 import { UseFormMethods } from 'react-hook-form';
-import { FormState, FeeInfo } from '@wallet-types/sendForm';
+import { FeeLevel } from 'trezor-connect';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import { useActions } from '@suite-hooks';
+import { FeeInfo } from '@wallet-types/sendForm';
 
-type Props = UseFormMethods<FormState> & {
-    defaultValue: FormState['selectedFee'];
+type Props = UseFormMethods<{
+    selectedFee?: FeeLevel['label'];
+    feePerUnit?: string;
+    feeLimit?: string;
+    estimatedFeeLimit?: string;
+}> & {
+    defaultValue?: FeeLevel['label'];
     feeInfo?: FeeInfo;
-    onChange?: (prev: FormState['selectedFee'], current: FormState['selectedFee']) => void;
-    composeRequest: () => void;
+    saveLastUsedFee?: boolean;
+    onChange?: (prev?: FeeLevel['label'], current?: FeeLevel['label']) => void;
+    composeRequest?: (field?: string) => void;
 };
 
 // shareable sub-hook used in useRbfForm and useSendForm (TODO)
@@ -14,9 +23,11 @@ type Props = UseFormMethods<FormState> & {
 export const useFees = ({
     defaultValue,
     feeInfo,
+    saveLastUsedFee,
     onChange,
     composeRequest,
     watch,
+    register,
     getValues,
     setValue,
     errors,
@@ -24,8 +35,20 @@ export const useFees = ({
 }: Props) => {
     // local references
     const selectedFeeRef = useRef(defaultValue);
-    const feePerUnitRef = useRef('');
-    const feeLimitRef = useRef('');
+    const feePerUnitRef = useRef<string | undefined>('');
+    const feeLimitRef = useRef<string | undefined>('');
+    const estimatedFeeLimitRef = useRef<string | undefined>('');
+    const saveLastUsedFeeRef = useRef(saveLastUsedFee);
+
+    const { setLastUsedFeeLevel } = useActions({
+        setLastUsedFeeLevel: walletSettingsActions.setLastUsedFeeLevel,
+    });
+
+    // register custom form fields (without HTMLElement)
+    useEffect(() => {
+        register({ name: 'selectedFee', type: 'custom' }); // NOTE: custom is not a fee level, its a type of `react-hook-form` field
+        register({ name: 'estimatedFeeLimit', type: 'custom' });
+    }, [register]);
 
     // watch selectedFee change and update local references
     const selectedFee = watch('selectedFee');
@@ -37,36 +60,83 @@ export const useFees = ({
         feeLimitRef.current = feeLimit;
     }, [selectedFee, getValues]);
 
-    // watch custom fee input change
+    // watch custom feePerUnit/feeLimit inputs change
     const feePerUnit = watch('feePerUnit');
+    const feeLimit = watch('feeLimit');
     useEffect(() => {
-        if (selectedFeeRef.current === 'custom' && feePerUnitRef.current !== feePerUnit) {
+        if (selectedFeeRef.current !== 'custom') return;
+
+        let updateField: string | undefined;
+        if (feePerUnitRef.current !== feePerUnit) {
             feePerUnitRef.current = feePerUnit;
-            composeRequest();
+            updateField = 'feePerUnit';
         }
-    }, [feePerUnit, composeRequest]);
+
+        if (feeLimitRef.current !== feeLimit) {
+            feeLimitRef.current = feeLimit;
+            updateField = 'feeLimit';
+        }
+
+        // compose
+        if (updateField) {
+            if (composeRequest) composeRequest(updateField);
+            // save last used fee
+            if (
+                saveLastUsedFeeRef.current &&
+                feePerUnit &&
+                !errors.feePerUnit &&
+                !errors.feeLimit
+            ) {
+                setLastUsedFeeLevel({ label: 'custom', feePerUnit, feeLimit, blocks: -1 });
+            }
+        }
+    }, [
+        feePerUnit,
+        feeLimit,
+        errors.feePerUnit,
+        errors.feeLimit,
+        composeRequest,
+        setLastUsedFeeLevel,
+    ]);
+
+    // watch estimatedFee change
+    const estimatedFeeLimit = watch('estimatedFeeLimit');
+    useEffect(() => {
+        if (selectedFeeRef.current !== 'custom') return;
+        if (estimatedFeeLimitRef.current !== estimatedFeeLimit) {
+            estimatedFeeLimitRef.current = estimatedFeeLimit;
+            if (estimatedFeeLimit) {
+                // re validate feeLimit
+                setValue('feeLimit', feeLimitRef.current, { shouldValidate: true });
+                // TODO: switch only if current limit is lower
+                // feeLimitRef.current = estimatedFeeLimit;
+
+                // setValue('feeLimit', estimatedFeeLimit);
+            }
+        }
+    }, [estimatedFeeLimit, setValue]);
 
     // called from UI on click
-    const changeFeeLevel = (level: FormState['selectedFee']) => {
+    const changeFeeLevel = (level: FeeLevel['label']) => {
         if (selectedFeeRef.current === level || !feeInfo) return;
 
         let feePerUnit;
         let feeLimit;
-        if (level === 'custom' && !feePerUnitRef.current) {
+        if (level === 'custom') {
             // switching to custom FeeLevel for the first time
             // set custom values from a previously selected FeeLevel
             const currentLevel = feeInfo.levels.find(
                 l => l.label === (selectedFeeRef.current || 'normal'),
             )!;
             feePerUnit = currentLevel.feePerUnit;
-            feeLimit = currentLevel.feeLimit || '';
+            feeLimit = getValues('estimatedFeeLimit') || currentLevel.feeLimit || '';
         } else if (selectedFeeRef.current === 'custom' && (errors.feePerUnit || errors.feeLimit)) {
             // switching from custom FeeLevel which has an error
             // error should be cleared and levels should be precomposed again
             feePerUnit = '';
             feeLimit = '';
             clearErrors(['feePerUnit', 'feeLimit']);
-            composeRequest();
+            if (composeRequest) composeRequest();
         }
 
         setValue('selectedFee', level);
@@ -80,6 +150,13 @@ export const useFees = ({
 
         // on change callback
         if (onChange) onChange(selectedFeeRef.current, level);
+
+        // save last used fee
+        if (level !== 'custom' && saveLastUsedFeeRef.current) {
+            const nextLevel = feeInfo.levels.find(l => l.label === (level || 'normal'))!;
+            setLastUsedFeeLevel(nextLevel);
+        }
+
         selectedFeeRef.current = selectedFee;
     };
 
