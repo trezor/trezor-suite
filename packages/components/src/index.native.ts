@@ -28,6 +28,13 @@ import { scrollbarStyles } from './components/Scrollbar';
 import { Timerange } from './components/Timerange';
 import { SelectBar } from './components/form/SelectBar';
 import { ThemeProvider, ThemeContext } from './support/ThemeProvider';
+import {
+    RN_FONT_SIZE,
+    RN_FONT_WEIGHT,
+    NEUE_FONT_SIZE as FONT_SIZE,
+    FONT_WEIGHT,
+    SCREEN_SIZE,
+} from './config/variables';
 import * as types from './support/types';
 
 export {
@@ -46,6 +53,7 @@ export {
     H1,
     H2,
     P,
+    P as Text,
     Link,
     Modal,
     CoinLogo,
@@ -65,4 +73,9 @@ export {
     scrollbarStyles,
     ThemeProvider,
     ThemeContext,
+    RN_FONT_SIZE,
+    RN_FONT_WEIGHT,
+    FONT_SIZE,
+    FONT_WEIGHT,
+    SCREEN_SIZE,
 };

@@ -1,5 +1,12 @@
 import colors, { THEME } from './config/colors';
 import * as variables from './config/variables';
+import {
+    RN_FONT_SIZE,
+    RN_FONT_WEIGHT,
+    NEUE_FONT_SIZE as FONT_SIZE,
+    FONT_WEIGHT,
+    SCREEN_SIZE,
+} from './config/variables';
 import { useTheme } from './utils';
 import { SuiteThemeColors } from './support/types';
 
@@ -65,6 +72,7 @@ export {
     H1,
     H2,
     P,
+    P as Text,
     PProps,
     Link,
     LinkProps,
@@ -99,4 +107,9 @@ export {
     scrollbarStyles,
     ThemeProvider,
     ThemeContext,
+    RN_FONT_SIZE,
+    RN_FONT_WEIGHT,
+    FONT_SIZE,
+    FONT_WEIGHT,
+    SCREEN_SIZE,
 };

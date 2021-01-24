@@ -26,6 +26,22 @@ export const NEUE_FONT_SIZE = {
     H2: '20px',
 } as const;
 
+export const RN_FONT_SIZE = {
+    TINY: 12,
+    SMALL: 14,
+    NORMAL: 16,
+    H1: 24,
+    H2: 20,
+} as const;
+
+export const RN_FONT_WEIGHT = {
+    LIGHT: '300',
+    REGULAR: '400',
+    MEDIUM: '500',
+    DEMI_BOLD: '600',
+    BOLD: '700',
+} as const;
+
 export const FONT_WEIGHT = {
     LIGHT: 300,
     REGULAR: 400,

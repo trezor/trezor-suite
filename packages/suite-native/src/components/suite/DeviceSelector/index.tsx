@@ -1,14 +1,15 @@
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { DeviceImage } from '@trezor/components';
 // import * as suiteActions from '@suite-actions/suiteActions';
 import { useDevice, useTheme } from '@suite-hooks';
 import { SuiteThemeColors, TrezorDevice } from '@suite-types';
 import * as deviceUtils from '@suite-utils/device';
-import DeviceImage from '@native-components/suite/DeviceImage';
 import WalletLabelling from '@suite-components/Labeling/components/Wallet/';
 
 type Status = 'connected' | 'disconnected' | 'warning';
 
+// todo move to utils
 const getStatusColor = (status: Status, theme: SuiteThemeColors) => {
     const statusColors = {
         connected: theme.TYPE_GREEN,

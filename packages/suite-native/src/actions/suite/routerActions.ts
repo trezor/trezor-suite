@@ -260,6 +260,6 @@ export const initialRedirection = () => async (dispatch: Dispatch, getState: Get
     }
 };
 
-export const closeModalApp = () => (dispatch: Dispatch) => {
+export const closeModalApp = (_fakeParam?: boolean) => (dispatch: Dispatch) => {
     dispatch(back());
 };
