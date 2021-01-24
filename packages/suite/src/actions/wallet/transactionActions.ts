@@ -1,5 +1,5 @@
 import TrezorConnect, { AccountTransaction, PrecomposedTransaction } from 'trezor-connect';
-import { saveAs } from 'file-saver';
+import { saveFile } from '@suite-utils/fs';
 import {
     getAccountTransactions,
     formatNetworkAmount,
@@ -214,5 +214,5 @@ export const exportTransactions = (account: Account, type: 'csv' | 'pdf' | 'json
     });
 
     // Save file
-    saveAs(data, `export-${account.symbol}-${+new Date()}.${type}`);
+    saveFile(data, `export-${account.symbol}-${+new Date()}.${type}`);
 };

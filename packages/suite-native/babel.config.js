@@ -9,6 +9,8 @@ module.exports = api => {
                     alias: {
                         'node-fetch': 'whatwg-fetch',
 
+                        '^@native/(.+)': './packages/suite-native/src/\\1',
+                        '^@native-components/(.+)': './packages/suite-native/src/components/\\1',
                         // === Custom overrides ===
 
                         // web and desktop use next.js router
@@ -18,8 +20,11 @@ module.exports = api => {
                         '@suite-actions/languageActions':
                             './packages/suite-native/src/actions/suite/languageActions',
 
-                        // react-native env utils
+                        // react-native utils
                         '^@suite-utils/env': './packages/suite-native/src/utils/suite/env',
+                        '^@suite-utils/fs': './packages/suite-native/src/utils/suite/fs',
+                        '^@wallet-utils/exportTransactions':
+                            './packages/suite-native/src/utils/wallet/exportTransactions',
 
                         // relative to "projectRoot: ../../" defined in package.json
                         '^@suite/(.+)': './packages/suite/src/\\1',
@@ -31,9 +36,6 @@ module.exports = api => {
                         '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-views$':
                             './packages/suite-native/src/views/\\1/index',
 
-                        '^@native/(.+)': './packages/suite-native/src/\\1',
-                        '^@native-components/(.+)': './packages/suite-native/src/components/\\1',
-
                         // === Standard resolvers ===
                         // to find something.messages from suite core
                         // '^@(.+)-views/(.+)': './packages/suite/src/views/\\1/\\2',
@@ -44,9 +46,9 @@ module.exports = api => {
                         '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-components':
                             './packages/suite/src/components/\\1/index',
                         '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-support/(.+)':
-                            '../../packages/suite/src/support/\\1/\\2',
+                            './packages/suite/src/support/\\1/\\2',
                         '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-support':
-                            '../../packages/suite/src/support/\\1/index',
+                            './packages/suite/src/support/\\1/index',
                         '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-actions/(.+)':
                             './packages/suite/src/actions/\\1/\\2',
                         '^@(suite|dashboard|onboarding|wallet|passwords|exchange|settings|firmware|backup|recovery)-actions':
