@@ -1497,6 +1497,14 @@
     "@formatjs/ecma402-abstract" "1.5.1"
     tslib "^2.0.1"
 
+"@formatjs/intl-getcanonicallocales@1.5.3":
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/@formatjs/intl-getcanonicallocales/-/intl-getcanonicallocales-1.5.3.tgz#b5978462340da1502502c3fde1c4abccff8f3b8e"
+  integrity sha512-QVBnSPZ32Y80wkXbf36hP9VbyklbOb8edppxFcgO9Lbd47zagllw65Y81QOHEn/j11JcTn2OhW0vea95LHvQmA==
+  dependencies:
+    cldr-core "38"
+    tslib "^2.0.1"
+
 "@formatjs/intl-listformat@5.0.4":
   version "5.0.4"
   resolved "https://registry.yarnpkg.com/@formatjs/intl-listformat/-/intl-listformat-5.0.4.tgz#32b43257a4757ceab93d469c94f0fd067b302668"
@@ -1505,12 +1513,30 @@
     "@formatjs/ecma402-abstract" "1.5.1"
     tslib "^2.0.1"
 
+"@formatjs/intl-locale@^2.4.13":
+  version "2.4.13"
+  resolved "https://registry.yarnpkg.com/@formatjs/intl-locale/-/intl-locale-2.4.13.tgz#f27d1525e116b305db3446974a0c3b11768f3ef4"
+  integrity sha512-hrglCuFjRpMrutmuL+Ck84KBxeHhouk7d5B/G9kqHL4zmrW6AsBwU+0KeyvareiY3MWzYZhQj1Nm3JEGulQRUQ==
+  dependencies:
+    "@formatjs/ecma402-abstract" "1.5.1"
+    "@formatjs/intl-getcanonicallocales" "1.5.3"
+    cldr-core "38"
+    tslib "^2.0.1"
+
 "@formatjs/intl-numberformat@^5.5.2":
   version "5.7.6"
   resolved "https://registry.yarnpkg.com/@formatjs/intl-numberformat/-/intl-numberformat-5.7.6.tgz#630206bb0acefd2d508ccf4f82367c6875cad611"
   integrity sha512-ZlZfYtvbVHYZY5OG3RXizoCwxKxEKOrzEe2YOw9wbzoxF3PmFn0SAgojCFGLyNXkkR6xVxlylhbuOPf1dkIVNg==
   dependencies:
     "@formatjs/ecma402-abstract" "1.4.0"
+    tslib "^2.0.1"
+
+"@formatjs/intl-pluralrules@^4.0.5":
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/@formatjs/intl-pluralrules/-/intl-pluralrules-4.0.5.tgz#22a83ac108599d4fd674a8a72a52399c7902550a"
+  integrity sha512-mWsCpc/SZ6rk0Qb3zpv5bUz6uJysW6qap0qJJz6d0MJpszN3GNsk8CbP5q62oUaWvBmHoeXBvAG9VVEu1TUexw==
+  dependencies:
+    "@formatjs/ecma402-abstract" "1.5.1"
     tslib "^2.0.1"
 
 "@formatjs/intl-relativetimeformat@8.0.3":
@@ -7079,6 +7105,11 @@ classnames@2.2.6, classnames@^2.2.5, classnames@^2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
   integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
+
+cldr-core@38:
+  version "38.0.0"
+  resolved "https://registry.yarnpkg.com/cldr-core/-/cldr-core-38.0.0.tgz#f54a5dfd222c79a050f1fe8e87ad9764f16fb840"
+  integrity sha512-WkjA4zo5rLT/BWTZAxHJ0lJXwI33gCYucEz1+CpoI8Wu+rr5IrC57wyNXyrNNMdxfDE5RsWi/JCQ9qnG8sHTiw==
 
 clean-css@^4.2.3:
   version "4.2.3"

@@ -14,6 +14,11 @@ import { initStore } from '@native/reducers/store';
 import Router from '@native/support/suite/Router';
 import ThemeProvider from '@native/support/suite/ThemeProvider';
 
+// polyfills
+import '@formatjs/intl-locale/polyfill';
+import '@formatjs/intl-pluralrules/polyfill';
+import '@formatjs/intl-pluralrules/locale-data/en'; // locale-data for en
+
 const TrezorSuite = () => {
     const store = initStore();
     return (

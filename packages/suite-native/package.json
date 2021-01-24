@@ -18,6 +18,8 @@
         "build:android": "rimraf packages/suite-native/android/app/build && yarn workspace @trezor/suite-native bundle:android && cd ./android && ./gradlew bundleRelease -x bundleReleaseJsAndAssets --no-build-cache && ./gradlew assembleRelease -x bundleReleaseJsAndAssets --no-build-cache"
     },
     "dependencies": {
+        "@formatjs/intl-locale": "^2.4.13",
+        "@formatjs/intl-pluralrules": "^4.0.5",
         "@trezor/suite-storage": "21.1.0",
         "react": "17.0.1",
         "react-native": "0.63.4",
