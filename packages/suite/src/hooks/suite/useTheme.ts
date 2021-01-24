@@ -1,5 +1,6 @@
 import * as suiteActions from '@suite-actions/suiteActions';
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions } from '@suite-hooks/useActions';
+import { useSelector } from '@suite-hooks/useSelector';
 import { getThemeColors } from '@suite-utils/theme';
 import { SuiteThemeColors } from '@suite-types';
 

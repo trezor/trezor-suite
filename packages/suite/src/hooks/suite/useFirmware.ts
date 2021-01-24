@@ -1,5 +1,6 @@
 import * as firmwareActions from '@firmware-actions/firmwareActions';
-import { useActions, useSelector } from '@suite-hooks';
+import { useSelector } from '@suite-hooks/useSelector';
+import { useActions } from '@suite-hooks/useActions';
 
 export const useFirmware = () => {
     const firmware = useSelector(state => state.firmware);

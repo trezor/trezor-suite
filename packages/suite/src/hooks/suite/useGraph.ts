@@ -1,4 +1,5 @@
-import { useSelector, useActions } from '@suite-hooks';
+import { useActions } from '@suite-hooks/useActions';
+import { useSelector } from '@suite-hooks/useSelector';
 import * as graphActions from '@wallet-actions/graphActions';
 
 export const useGraph = () => {

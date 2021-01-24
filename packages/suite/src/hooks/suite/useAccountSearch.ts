@@ -1,5 +1,6 @@
 import * as accountSearchActions from '@wallet-actions/accountSearchActions';
-import { useSelector, useActions } from '@suite-hooks';
+import { useSelector } from '@suite-hooks/useSelector';
+import { useActions } from '@suite-hooks/useActions';
 
 export const useAccountSearch = () => {
     const { coinFilter, searchString } = useSelector(state => state.wallet.accountSearch);

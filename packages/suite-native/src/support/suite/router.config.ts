@@ -1,20 +1,20 @@
-import Dashboard from '@dashboard-views';
+import Dashboard from '@native/views/dashboard';
 
-import AccountTransactions from '@wallet-views';
-import AccountReceive from '@wallet-views/receive';
-import AccountSend from '@wallet-views/send';
-import AccountSignVerify from '@wallet-views/sign-verify';
+import AccountTransactions from '@native/views/wallet';
+import AccountReceive from '@native/views/wallet/receive';
+import AccountSend from '@native/views/wallet/send';
+import AccountSignVerify from '@native/views/wallet/sign-verify';
 
-import Passwords from '@passwords-views';
+import Passwords from '@native/views/passwords';
 
-import SettingsGeneral from '@settings-views';
-import SettingsDevice from '@settings-views/device';
-import SettingsCoins from '@settings-views/coins';
+import SettingsGeneral from '@native/views/settings';
+import SettingsDevice from '@native/views/settings/device';
+import SettingsCoins from '@native/views/settings/coins';
 
-import Onboarding from '@suite-views/onboarding';
-import Firmware from '@suite-views/firmware';
-import Backup from '@suite-views/backup';
-import SwitchDevice from '@suite-views/switch-device';
+import Onboarding from '@native/views/suite/onboarding';
+import Firmware from '@native/views/suite/firmware';
+import Backup from '@native/views/suite/backup';
+import SwitchDevice from '@native/views/suite/switch-device';
 
 import TabsBar from '@native-components/suite/Tabs';
 import Drawer from '@native-components/suite/Drawer';

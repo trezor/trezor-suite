@@ -1,5 +1,6 @@
 import * as analyticsActions from '@suite-actions/analyticsActions';
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions } from '@suite-hooks/useActions';
+import { useSelector } from '@suite-hooks/useSelector';
 
 export const useAnalytics = () => {
     const analytics = useSelector(state => state.analytics);
