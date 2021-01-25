@@ -22,12 +22,17 @@ jest.mock('trezor-connect', () => {
         setTestFixtures: (f: any) => {
             fixture = f;
         },
+        DEVICE: {
+            CHANGED: 'device-changed',
+        },
     };
 });
 
 export const getInitialState = (): any => {
+    const device = getSuiteDevice();
     return {
-        suite: { device: getSuiteDevice() },
+        suite: { device },
+        devices: [device],
     };
 };
 const mockStore = configureStore<ReturnType<typeof getInitialState>, any>([thunk]);
