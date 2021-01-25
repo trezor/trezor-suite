@@ -42,73 +42,39 @@ const Button = styled.div`
 `;
 
 const Bottom = () => {
-    const { compose, token, account, setMax, network } = useCoinmarketExchangeFormContext();
+    const {
+        compose,
+        token,
+        account,
+        setMax,
+        network,
+        setValue,
+        updateFiatValue,
+    } = useCoinmarketExchangeFormContext();
     const formattedToken = invityApiSymbolToSymbol(token);
     const tokenData = account.tokens?.find(t => t.symbol === formattedToken);
+
+    const setRatioAmount = (divisor: number) => {
+        setMax(false);
+        const amount = tokenData
+            ? new BigNumber(tokenData.balance || '0')
+                  .dividedBy(divisor)
+                  .decimalPlaces(tokenData.decimals)
+                  .toString()
+            : new BigNumber(account.formattedBalance)
+                  .dividedBy(divisor)
+                  .decimalPlaces(network.decimals)
+                  .toString();
+        setValue('receiveCryptoInput', amount);
+        updateFiatValue(amount);
+    };
 
     return (
         <Wrapper>
             <Left>
-                <Button
-                    onClick={async () => {
-                        setMax(false);
-                        await compose({
-                            setMax: false,
-                            fillValue: true,
-                            amount: tokenData
-                                ? new BigNumber(tokenData.balance || '0')
-                                      .dividedBy(2)
-                                      .decimalPlaces(tokenData.decimals)
-                                      .toString()
-                                : new BigNumber(account.formattedBalance)
-                                      .dividedBy(2)
-                                      .decimalPlaces(network.decimals)
-                                      .toString(),
-                        });
-                    }}
-                >
-                    1/2
-                </Button>
-                <Button
-                    onClick={async () => {
-                        setMax(false);
-                        await compose({
-                            setMax: false,
-                            fillValue: true,
-                            amount: tokenData
-                                ? new BigNumber(tokenData.balance || '0')
-                                      .dividedBy(3)
-                                      .decimalPlaces(tokenData.decimals)
-                                      .toString()
-                                : new BigNumber(account.formattedBalance)
-                                      .dividedBy(3)
-                                      .decimalPlaces(network.decimals)
-                                      .toString(),
-                        });
-                    }}
-                >
-                    1/3
-                </Button>
-                <Button
-                    onClick={async () => {
-                        setMax(false);
-                        await compose({
-                            setMax: false,
-                            fillValue: true,
-                            amount: tokenData
-                                ? new BigNumber(tokenData.balance || '0')
-                                      .dividedBy(4)
-                                      .decimalPlaces(tokenData.decimals)
-                                      .toString()
-                                : new BigNumber(account.formattedBalance)
-                                      .dividedBy(4)
-                                      .decimalPlaces(network.decimals)
-                                      .toString(),
-                        });
-                    }}
-                >
-                    1/4
-                </Button>
+                <Button onClick={() => setRatioAmount(2)}>1/2</Button>
+                <Button onClick={() => setRatioAmount(3)}>1/3</Button>
+                <Button onClick={() => setRatioAmount(4)}>1/4</Button>
                 <Button
                     onClick={async () => {
                         setMax(true);
