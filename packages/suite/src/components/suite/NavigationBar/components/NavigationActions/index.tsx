@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
-import { BOTTOM_MENU_ITEMS } from '@suite-constants/menu';
 import { Translation } from '@suite-components';
 import { Icon, Tooltip, useTheme } from '@trezor/components';
 import { findRouteByName } from '@suite-utils/router';
@@ -78,7 +77,7 @@ interface Props {
     isMobileLayout?: boolean;
 }
 
-type Route = typeof BOTTOM_MENU_ITEMS['notifications' | 'settings']['route'];
+type Route = 'settings-index' | 'notifications-index';
 
 const NavigationActions = (props: Props) => {
     const analytics = useAnalytics();
@@ -123,11 +122,11 @@ const NavigationActions = (props: Props) => {
         <WrapperComponent>
             {props.isMobileLayout ? (
                 <ActionItem
-                    label={<Translation id={BOTTOM_MENU_ITEMS.notifications.translationId} />}
-                    data-test={`@suite/menu/${BOTTOM_MENU_ITEMS.notifications.route}`}
-                    onClick={() => action(BOTTOM_MENU_ITEMS.notifications.route)}
-                    isActive={getIfRouteIsActive(BOTTOM_MENU_ITEMS.notifications.route)}
-                    icon={BOTTOM_MENU_ITEMS.notifications.icon}
+                    label={<Translation id="TR_NOTIFICATIONS" />}
+                    data-test="@suite/menu/notifications-index"
+                    onClick={() => action('notifications-index')}
+                    isActive={getIfRouteIsActive('notifications-index')}
+                    icon="NOTIFICATION"
                     withAlertDot={unseenNotifications}
                     isMobileLayout={props.isMobileLayout}
                 />
@@ -136,11 +135,11 @@ const NavigationActions = (props: Props) => {
             )}
 
             <ActionItem
-                label={<Translation id={BOTTOM_MENU_ITEMS.settings.translationId} />}
-                data-test={`@suite/menu/${BOTTOM_MENU_ITEMS.settings.route}`}
-                onClick={() => action(BOTTOM_MENU_ITEMS.settings.route)}
-                isActive={getIfRouteIsActive(BOTTOM_MENU_ITEMS.settings.route)}
-                icon={BOTTOM_MENU_ITEMS.settings.icon}
+                label={<Translation id="TR_SETTINGS" />}
+                data-test="@suite/menu/settings-index"
+                onClick={() => action('settings-index')}
+                isActive={getIfRouteIsActive('settings-index')}
+                icon="SETTINGS"
                 isMobileLayout={props.isMobileLayout}
             />
 
