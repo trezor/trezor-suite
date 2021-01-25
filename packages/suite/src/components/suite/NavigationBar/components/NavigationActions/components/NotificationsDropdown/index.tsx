@@ -6,11 +6,9 @@ import ActionItem from '../ActionItem';
 import { useActions } from '@suite-hooks';
 import * as notificationActions from '@suite-actions/notificationActions';
 
-const Wrapper = styled.div`
-    display: flex;
-    z-index: 10;
-    /* same as left padding for ActionItem */
-    margin-right: 28px;
+const Wrapper = styled.div<Pick<Props, 'marginLeft' | 'marginRight'>>`
+    margin-left: ${props => props.marginLeft};
+    margin-right: ${props => props.marginRight};
 `;
 
 const NotificationsWrapper = styled.div`
@@ -24,9 +22,15 @@ const NotificationsWrapper = styled.div`
 
 interface Props {
     withAlertDot: boolean;
+    marginLeft?: string;
+    marginRight?: string;
 }
 
-const NotificationsDropdown = ({ withAlertDot }: Props) => {
+const NotificationsDropdown = ({
+    withAlertDot,
+    marginLeft = '0px',
+    marginRight = '0px',
+}: Props) => {
     // use "opened" state to decide if "active" styles on ActionItem should be applied
     const [opened, setOpened] = useState(false);
     const dropdownRef = useRef<DropdownRef>();
@@ -49,7 +53,7 @@ const NotificationsDropdown = ({ withAlertDot }: Props) => {
     );
 
     return (
-        <Wrapper>
+        <Wrapper marginLeft={marginLeft} marginRight={marginRight}>
             <Dropdown
                 onToggle={handleToggleChange}
                 ref={dropdownRef}

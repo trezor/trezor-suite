@@ -31,11 +31,9 @@ const TabButton = styled.button<{ selected: boolean }>`
     margin-right: 24px;
     cursor: pointer;
     /* change styles if the button is selected*/
-    color: ${props =>
-        props.selected ? `${props.theme.TYPE_DARK_GREY}` : `${props.theme.TYPE_LIGHT_GREY}`};
+    color: ${props => (props.selected ? props.theme.TYPE_DARK_GREY : props.theme.TYPE_LIGHT_GREY)};
     border-bottom: 2px solid;
-    border-color: ${props =>
-        props.selected ? props.theme.TYPE_DARK_GREY : props.theme.BG_WHITE_ALT};
+    border-color: ${props => (props.selected ? props.theme.TYPE_DARK_GREY : 'transparent')};
 `;
 
 const CloseButtonWrapper = styled.div``;
@@ -45,6 +43,10 @@ const Content = styled.div`
     max-height: 340px;
     overflow-y: auto;
     overflow-x: hidden;
+
+    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
+        max-height: 100%;
+    }
 `;
 interface Props {
     onCancel?: () => any;

@@ -37,7 +37,7 @@ const getSeenAndUnseenNotifications = (notifications: AppState['notifications'])
     const seen: Array<NotificationEntry> = [];
     const unseen: Array<NotificationEntry> = [];
 
-    // loop over all notifications and check which of there were seen or not
+    // loop over all notifications and check which of them there were seen or not
     notifications.forEach(notification => {
         if (notification.seen) {
             seen.push(notification);

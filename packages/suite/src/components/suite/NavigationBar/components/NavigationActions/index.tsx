@@ -12,6 +12,8 @@ import TooltipContentTor from './components/TooltipContentTor';
 import { isDesktop } from '@suite-utils/env';
 import NotificationsDropdown from './components/NotificationsDropdown';
 
+const DESKTOP_LAYOUT_ICONS_MARGIN = '28px';
+
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
@@ -31,7 +33,7 @@ const ActionsContainer = styled.div<{ desktop: boolean; mobileLayout?: boolean }
         !props.mobileLayout &&
         `display: flex;
         align-items: center;
-        margin-left: 28px;
+        margin-left: ${DESKTOP_LAYOUT_ICONS_MARGIN};
         border-top: 0;
     `}
     ${props =>
@@ -52,7 +54,6 @@ const ActionItemTor = styled.div<{ mobileLayout?: boolean }>`
         `display: flex;
         position: relative;
         align-items: center;
-        margin-left: 17px;
     `}
     ${props =>
         props.mobileLayout &&
@@ -141,6 +142,7 @@ const NavigationActions = (props: Props) => {
                 isActive={getIfRouteIsActive('settings-index')}
                 icon="SETTINGS"
                 isMobileLayout={props.isMobileLayout}
+                desktopMarginLeft={DESKTOP_LAYOUT_ICONS_MARGIN}
             />
 
             <ActionsContainer desktop={isDesktop()} mobileLayout={props.isMobileLayout}>
@@ -186,6 +188,7 @@ const NavigationActions = (props: Props) => {
                                     label={<Translation id="TR_TOR" />}
                                     icon="TOR"
                                     isMobileLayout={props.isMobileLayout}
+                                    desktopMarginLeft={DESKTOP_LAYOUT_ICONS_MARGIN}
                                 />
                                 {tor && (
                                     <ActionItemTorIndicator>
