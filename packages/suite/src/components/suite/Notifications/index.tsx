@@ -1,10 +1,10 @@
 import { useSelector } from '@suite-hooks';
-import { NotificationEntry } from '@suite-reducers/notificationReducer';
 import { Icon, useTheme, variables } from '@trezor/components';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import NotificationGroup from './components/NotificationGroup';
 import { Translation } from '@suite-components';
+import { SETTINGS } from '@suite-config';
 
 const Wrapper = styled.div`
     width: 100%;
@@ -57,21 +57,9 @@ const Notifications = (props: Props) => {
     const [selectedTab, setSelectedTab] = useState<'important' | 'all'>('important');
     const theme = useTheme();
 
-    // list of notification types that are important to the user
-    const importantTypes: Array<NotificationEntry['type']> = [
-        'tx-sent',
-        'tx-received',
-        'tx-confirmed',
-        'clear-storage',
-        'pin-changed',
-        'device-wiped',
-        'backup-success',
-        'backup-failed',
-    ];
-
     // get important notifications
     const importantNotifications = notifications.filter(notification =>
-        importantTypes.includes(notification.type),
+        SETTINGS.IMPORTANT_NOTIFICATION_TYPES.includes(notification.type),
     );
 
     const onCancel = () => {

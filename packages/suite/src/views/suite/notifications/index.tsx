@@ -22,7 +22,7 @@ const Headline = styled.div`
     padding-left: 12px;
 `;
 
-const NotificationsMobileView = () => {
+const NotificationsView = () => {
     const { setLayout } = React.useContext(LayoutContext);
     React.useEffect(() => {
         if (setLayout) setLayout('Notifications', undefined);
@@ -40,4 +40,4 @@ const NotificationsMobileView = () => {
     );
 };
 
-export default NotificationsMobileView;
+export default NotificationsView;

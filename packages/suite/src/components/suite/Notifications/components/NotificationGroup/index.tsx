@@ -1,7 +1,7 @@
-import { NotificationEntry } from '@suite-reducers/notificationReducer';
 import { AppState } from '@suite-types';
 import { variables, P } from '@trezor/components';
 import { Translation } from '@suite-components';
+import { getSeenAndUnseenNotifications } from '@suite-utils/notification';
 import React from 'react';
 import styled from 'styled-components';
 import NotificationList from '../NotificationList';
@@ -32,22 +32,6 @@ const EmptyHeadline = styled.div`
 const EmptyDescriptionP = styled(P)`
     opacity: 0.7;
 `;
-
-const getSeenAndUnseenNotifications = (notifications: AppState['notifications']) => {
-    const seen: Array<NotificationEntry> = [];
-    const unseen: Array<NotificationEntry> = [];
-
-    // loop over all notifications and check which of them there were seen or not
-    notifications.forEach(notification => {
-        if (notification.seen) {
-            seen.push(notification);
-        } else {
-            unseen.push(notification);
-        }
-    });
-
-    return { seenNotifications: seen, unseenNotifications: unseen };
-};
 interface Props {
     notifications: AppState['notifications'];
 }
