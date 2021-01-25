@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import TrezorConnect, { ApplySettings, ChangePin, ResetDevice } from 'trezor-connect';
 import { addToast } from '@suite-actions/notificationActions';
+import * as suiteActions from '@suite-actions/suiteActions';
+import * as deviceUtils from '@suite-utils/device';
 import * as modalActions from '@suite-actions/modalActions';
 import { isWebUSB } from '@suite-utils/transport';
 import { Dispatch, GetState } from '@suite-types';
@@ -51,7 +53,9 @@ export const changePin = (params: ChangePin = {}) => async (
 };
 
 export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { device, transport } = getState().suite;
+    const state = getState();
+    const { device, transport } = state.suite;
+
     if (!device) return;
     const result = await TrezorConnect.wipeDevice({
         device: {
@@ -60,6 +64,10 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
     });
 
     if (result.success) {
+        const deviceInstances = deviceUtils.getDeviceInstances(device, state.devices);
+        deviceInstances.forEach(d => {
+            dispatch(suiteActions.forgetDevice(d));
+        });
         dispatch(addToast({ type: 'device-wiped' }));
         // special case with webusb. device after wipe changes device_id. with webusb transport, device_id is used as path
         // and thus as descriptor for webusb. So, after device is wiped, in the transport layer, device is still paired
