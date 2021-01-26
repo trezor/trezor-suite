@@ -59,7 +59,19 @@ Added:
 =======
 - accounts/empty-account/buy
   - network: string 
+<<<<<<< HEAD
 >>>>>>> feat: empty account buy  analytics
+=======
+- transaction-created
+  - action: 'sent' | 'copied' | 'downloaded';
+  - symbol: string;
+  - broadcast: boolean;
+  - outputsCount: number;
+  - bitcoinRbf: boolean;
+  - bitcoinLockTime: boolean;
+  - ethereumData: boolean;
+  - tokenSent: boolean;
+>>>>>>> feat: send-form analytics
   
 ### 1.5
 Added:

@@ -39,7 +39,7 @@ simple semver for data-analytics part.
 Don't forget to update docs with changelog!
 */
 
-const version = '1.5';
+const version = '1.6';
 
 export type AnalyticsEvent =
     | {
@@ -300,6 +300,19 @@ export type AnalyticsEvent =
           payload: {
               // added in 1.6
               desktopOSVersion: string;
+          };
+      }
+    | {
+          type: 'transaction-created';
+          payload: {
+              action: 'sent' | 'copied' | 'downloaded';
+              symbol: Account['symbol'];
+              broadcast: boolean;
+              outputsCount: number;
+              bitcoinRbf: boolean;
+              bitcoinLockTime: boolean;
+              ethereumData: boolean;
+              tokenSent: boolean;
           };
       };
 
