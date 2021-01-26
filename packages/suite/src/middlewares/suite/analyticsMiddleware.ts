@@ -58,7 +58,6 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                 }),
             );
             break;
-
         case TRANSPORT.START:
             api.dispatch(
                 analyticsActions.report({

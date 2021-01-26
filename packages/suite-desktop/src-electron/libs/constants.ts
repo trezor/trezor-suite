@@ -15,6 +15,7 @@ export const MODULES = [
     { name: 'metadata', dependencies: [] },
     { name: 'bridge', dependencies: [] },
     { name: 'tor', dependencies: ['mainWindow', 'store'] },
+    { name: 'analytics', dependencies: [] },
     // Prod Only
     { name: 'csp', dependencies: ['mainWindow'], isDev: false },
     { name: 'file-protocol', dependencies: ['mainWindow', 'src'], isDev: false },
