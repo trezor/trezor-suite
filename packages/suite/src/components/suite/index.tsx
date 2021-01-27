@@ -17,7 +17,7 @@ import ProgressBar from './ProgressBar';
 import Loading from './Loading';
 import FiatValue from './FiatValue/Container';
 import WebusbButton from './WebusbButton';
-import HiddenPlaceholder from './HiddenPlaceholder/Container';
+import { HiddenPlaceholder } from './HiddenPlaceholder';
 import QrCode from './QrCode';
 import { QuestionTooltip } from './QuestionTooltip';
 import TransactionsGraph from './TransactionsGraph';
