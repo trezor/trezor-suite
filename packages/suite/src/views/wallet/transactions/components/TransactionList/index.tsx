@@ -15,7 +15,7 @@ import { SETTINGS } from '@suite-config';
 import { WalletAccountTransaction, Account } from '@wallet-types';
 
 import Actions from './components/Actions';
-import TransactionItem from './components/TransactionItem';
+import TransactionItem from '@wallet-components/TransactionItem';
 import Pagination from './components/Pagination';
 import TransactionsGroup from './components/TransactionsGroup';
 import SkeletonTransactionItem from './components/SkeletonTransactionItem';
