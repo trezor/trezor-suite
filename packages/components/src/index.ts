@@ -33,6 +33,7 @@ import { Loader, LoaderProps } from './components/loaders/Loader';
 import { Tooltip, TooltipProps, tooltipGlobalStyles } from './components/Tooltip';
 import { scrollbarStyles } from './components/Scrollbar';
 import { Timerange, TimerangeProps } from './components/Timerange';
+import { Truncate } from './components/Truncate';
 import { SelectBar, SelectBarProps } from './components/form/SelectBar';
 import { ThemeProvider, ThemeContext } from './support/ThemeProvider';
 import * as types from './support/types';
@@ -81,6 +82,7 @@ export {
     tooltipGlobalStyles,
     Timerange,
     TimerangeProps,
+    Truncate,
     types,
     ConfirmOnDevice,
     ConfirmOnDeviceProps,
