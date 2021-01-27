@@ -40,7 +40,7 @@ const CryptoAmount = styled.span`
     flex: 0;
 `;
 
-const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
+const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />)`
     /* padding: 8px 0px; row padding */
     display: block;
     overflow: hidden;
@@ -52,7 +52,7 @@ interface Props {
     transaction: WalletAccountTransaction;
     isPending: boolean;
     useSingleRowLayout: boolean;
-    txItemisHovered: boolean;
+    txItemIsHovered: boolean;
     nestedItemIsHovered: boolean;
     onClick: () => void;
 }
@@ -61,7 +61,7 @@ const TransactionHeading = ({
     transaction,
     isPending,
     useSingleRowLayout,
-    txItemisHovered,
+    txItemIsHovered,
     nestedItemIsHovered,
     onClick,
 }: Props) => {
@@ -120,7 +120,7 @@ const TransactionHeading = ({
                     {heading}
                 </HeadingWrapper>
                 <ChevronIconWrapper
-                    show={txItemisHovered}
+                    show={txItemIsHovered}
                     animate={nestedItemIsHovered || headingIsHovered}
                 >
                     <Icon
