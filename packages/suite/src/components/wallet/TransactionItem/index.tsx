@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
 import { variables, Button } from '@trezor/components';
 import { Translation, HiddenPlaceholder } from '@suite-components';
@@ -17,13 +17,27 @@ import { MIN_ROW_HEIGHT } from './components/BaseTargetLayout';
 import { Target, TokenTransfer, FeeRow } from './components/Target';
 import TransactionTimestamp from './components/TransactionTimestamp';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ chainedTxMode?: boolean }>`
     display: flex;
     flex-direction: row;
     padding: 12px 0px;
-    & + & {
-        border-top: 1px solid ${props => props.theme.STROKE_GREY};
-    }
+
+    ${props =>
+        props.chainedTxMode
+            ? css`
+                  width: 100%;
+                  padding: 12px 16px;
+                  cursor: pointer;
+                  &:hover {
+                      border-radius: 6px;
+                      background: ${props => props.theme.BG_GREY};
+                  }
+              `
+            : css`
+                  & + & {
+                      border-top: 1px solid ${props => props.theme.STROKE_GREY};
+                  }
+              `}
 `;
 
 const TxTypeIconWrapper = styled.div`
@@ -93,7 +107,7 @@ const DEFAULT_LIMIT = 3;
 interface Props {
     transaction: WalletAccountTransaction;
     isPending: boolean;
-    isActionDisabled?: boolean;
+    isActionDisabled?: boolean; // Used in "chained transactions" transaction detail modal
     accountMetadata?: AccountMetadata;
     accountKey: string;
 }
@@ -126,6 +140,7 @@ const TransactionItem = React.memo((props: Props) => {
         openModal: modalActions.openModal,
     });
     const openTxDetailsModal = (rbfForm?: boolean) => {
+        if (isActionDisabled) return; // open explorer
         openModal({
             type: 'transaction-detail',
             tx: transaction,
@@ -140,6 +155,7 @@ const TransactionItem = React.memo((props: Props) => {
         <Wrapper
             onMouseEnter={() => setTxItemIsHovered(true)}
             onMouseLeave={() => setTxItemIsHovered(false)}
+            chainedTxMode={isActionDisabled}
         >
             <TxTypeIconWrapper
                 onMouseEnter={() => setNestedItemIsHovered(true)}

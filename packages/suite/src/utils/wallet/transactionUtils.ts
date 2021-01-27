@@ -4,7 +4,7 @@ import { Account, WalletAccountTransaction, RbfTransactionParams } from '@wallet
 import { AccountMetadata } from '@suite-types/metadata';
 import { getDateWithTimeZone } from '../suite/date';
 import { toFiatCurrency } from './fiatConverterUtils';
-import { formatAmount, formatNetworkAmount } from './accountUtils';
+import { formatAmount, formatNetworkAmount, amountToSatoshi, getNetwork } from './accountUtils';
 
 export const sortByBlockHeight = (a: WalletAccountTransaction, b: WalletAccountTransaction) => {
     // if both are missing the blockHeight don't change their order
@@ -301,6 +301,12 @@ export const isTxUnknown = (transaction: WalletAccountTransaction) => {
     );
 };
 
+export const getFeeRate = (tx: AccountTransaction, convertToDecimals?: number) => {
+    // calculate fee rate, TODO: add this to blockchain-link tx details
+    const fee = convertToDecimals ? amountToSatoshi(tx.fee, convertToDecimals) : tx.fee;
+    return new BigNumber(fee).div(tx.details.size).integerValue(BigNumber.ROUND_CEIL).toString();
+};
+
 export const getRbfParams = (
     tx: AccountTransaction,
     account: Account,
@@ -350,10 +356,7 @@ export const getRbfParams = (
     if (!utxo.length || !outputs.length) return;
 
     // calculate fee rate, TODO: add this to blockchain-link tx details
-    const feeRate = new BigNumber(tx.fee)
-        .div(tx.details.size)
-        .integerValue(BigNumber.ROUND_CEIL)
-        .toString();
+    const feeRate = getFeeRate(tx);
 
     // TODO: get other params, like opreturn or locktime? change etc.
     return {
@@ -670,4 +673,9 @@ export const advancedSearchTransactions = (
     ]);
 
     return transactions.filter(t => filteredTxIDs.has(t.txid));
+};
+
+export const getBlockExplorerUrl = (tx: WalletAccountTransaction) => {
+    const network = getNetwork(tx.symbol);
+    return `${network!.explorer.tx}${tx.txid}`;
 };
