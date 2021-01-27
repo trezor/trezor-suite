@@ -1,24 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
+import BigNumber from 'bignumber.js';
 import { ConfirmOnDevice } from '@trezor/components';
 import { Translation, Modal } from '@suite-components';
 import { useDevice, useActions, useSelector } from '@suite-hooks';
 import { UserContextPayload } from '@suite-actions/modalActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
-import Output, { OutputProps } from './components/Output';
-import Detail from './components/Detail';
-import ChangeFee from './components/ChangeFee';
-import Bottom from './components/Bottom';
+import { OutputProps } from './components/Output';
+import OutputList from './components/OutputList';
+import Summary from './components/Summary';
 
-const Content = styled.div`
-    padding: 20px 20px 0 20px;
+const ModalInner = styled.div`
+    display: flex;
+    padding: 10px;
 `;
-
-const getState = (index: number, buttonRequests: number) => {
-    if (index === buttonRequests - 1) return 'active';
-    if (index < buttonRequests - 1) return 'success';
-    return undefined;
-};
 
 // This modal is opened either in Device (button request) or User (push tx) context
 // contexts are distinguished by `type` prop
@@ -28,20 +23,21 @@ type Props =
 
 const ReviewTransaction = ({ decision }: Props) => {
     const { device } = useDevice();
+    const [detailsOpen, setDetailsOpen] = React.useState(false);
     const { cancelSignTx } = useActions({
         cancelSignTx: sendFormActions.cancelSignTx,
     });
-    const { selectedAccount, send } = useSelector(state => ({
+    const { selectedAccount, send, fees } = useSelector(state => ({
         selectedAccount: state.wallet.selectedAccount,
         send: state.wallet.send,
+        fees: state.wallet.fees,
     }));
 
     const { precomposedTx, precomposedForm, signedTx } = send;
     if (selectedAccount.status !== 'loaded' || !device || !precomposedTx || !precomposedForm)
         return null;
 
-    const { symbol, networkType } = selectedAccount.account;
-    const broadcastEnabled = precomposedForm.options.includes('broadcast');
+    const { networkType } = selectedAccount.account;
     const rbfAvailable =
         networkType === 'bitcoin' &&
         precomposedTx.prevTxid &&
@@ -49,10 +45,21 @@ const ReviewTransaction = ({ decision }: Props) => {
 
     const outputs: OutputProps[] = [];
     if (precomposedTx.prevTxid && rbfAvailable) {
-        outputs.push({
-            type: 'txid',
-            value: precomposedTx.prevTxid,
-        });
+        // calculate fee difference
+        const diff = new BigNumber(precomposedTx.fee)
+            .minus(precomposedForm.rbfParams?.baseFee || 0)
+            .toFixed();
+        outputs.push(
+            {
+                type: 'txid',
+                value: precomposedTx.prevTxid,
+            },
+            {
+                type: 'fee-replace',
+                value: diff,
+                value2: precomposedTx.fee,
+            },
+        );
     } else {
         precomposedTx.transaction.outputs.forEach(o => {
             if (typeof o.address === 'string') {
@@ -91,7 +98,7 @@ const ReviewTransaction = ({ decision }: Props) => {
                 value: precomposedForm.rippleDestinationTag,
             });
         }
-    } else {
+    } else if (!rbfAvailable) {
         outputs.push({ type: 'fee', value: precomposedTx.fee });
     }
 
@@ -99,6 +106,21 @@ const ReviewTransaction = ({ decision }: Props) => {
     const buttonRequests = device.buttonRequests.filter(
         r => r === 'ButtonRequest_ConfirmOutput' || r === 'ButtonRequest_SignTx',
     );
+
+    // changing fee rate using RBF
+    const isRbfAction =
+        precomposedForm.rbfParams &&
+        parseInt(precomposedForm.rbfParams.feeRate, 10) < parseInt(precomposedTx.feePerByte, 10);
+
+    // get estimate minig time
+    let estimateTime;
+    const selected = fees[selectedAccount.account.symbol];
+    const matchedFeeLevel = selected.levels.find(
+        item => item.feePerUnit === precomposedTx.feePerByte,
+    );
+    if (networkType === 'bitcoin' && matchedFeeLevel) {
+        estimateTime = selected.blockTime * matchedFeeLevel.blocks * 60;
+    }
 
     return (
         <Modal
@@ -115,38 +137,32 @@ const ReviewTransaction = ({ decision }: Props) => {
                     onCancel={cancelSignTx}
                 />
             }
-            bottomBar={
-                !rbfAvailable && (
-                    <Bottom
-                        symbol={symbol}
-                        broadcast={broadcastEnabled}
-                        precomposedTx={precomposedTx}
-                        signedTx={signedTx}
-                        decision={decision}
-                    />
-                )
-            }
         >
-            {rbfAvailable ? (
-                <ChangeFee
+            <ModalInner>
+                <Summary
+                    estimateTime={estimateTime}
+                    tx={precomposedTx}
+                    account={selectedAccount.account}
+                    network={selectedAccount.network}
+                    broadcast={precomposedForm.options.includes('broadcast')}
+                    detailsOpen={detailsOpen}
+                    isRbfAction={isRbfAction}
+                    onDetailsClick={() => setDetailsOpen(!detailsOpen)}
+                />
+                <OutputList
                     activeStep={signedTx ? outputs.length + 1 : buttonRequests.length}
                     account={selectedAccount.account}
                     precomposedForm={precomposedForm}
                     precomposedTx={precomposedTx}
                     signedTx={signedTx}
                     decision={decision}
+                    detailsOpen={detailsOpen}
+                    outputs={outputs}
+                    buttonRequests={buttonRequests}
+                    isRbfAction={isRbfAction}
+                    toggleDetails={() => setDetailsOpen(!detailsOpen)}
                 />
-            ) : (
-                <Content>
-                    {outputs.map((output, index) => {
-                        const state = signedTx ? 'success' : getState(index, buttonRequests.length);
-                        // it's safe to use array index since outputs do not change
-                        // eslint-disable-next-line react/no-array-index-key
-                        return <Output key={index} {...output} state={state} symbol={symbol} />;
-                    })}
-                    <Detail tx={precomposedTx} txHash={signedTx ? signedTx.tx : undefined} />
-                </Content>
-            )}
+            </ModalInner>
         </Modal>
     );
 };

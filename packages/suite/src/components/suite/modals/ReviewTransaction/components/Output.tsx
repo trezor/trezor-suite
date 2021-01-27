@@ -1,154 +1,33 @@
-import React, { useState } from 'react';
-import styled, { css } from 'styled-components';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
 import BigNumber from 'bignumber.js';
-import { variables, Icon } from '@trezor/components';
-import { FiatValue, Translation } from '@suite-components';
-import { formatNetworkAmount, formatAmount } from '@wallet-utils/accountUtils';
+import { Translation } from '@suite-components';
+import { formatNetworkAmount, formatAmount, isTestnet } from '@wallet-utils/accountUtils';
 import { BTC_LOCKTIME_VALUE } from '@wallet-constants/sendForm';
 import { Network } from '@wallet-types';
 import { TokenInfo } from 'trezor-connect';
-import { ANIMATION } from '@suite-config';
 import Indicator, { Props as IndicatorProps } from './Indicator';
-
-const ROW_PADDING = '16px 14px';
-
-const StyledBox = styled.div<{ state?: 'success' }>`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    border-radius: 6px;
-    border: solid 1px ${props => props.theme.STROKE_GREY};
-    margin-bottom: 20px;
-
-    ${props =>
-        props.state &&
-        css`
-            border-left: 6px solid ${props => props.theme.BG_GREEN};
-        `}
-
-    ${props =>
-        !props.state &&
-        css`
-            padding-left: 5px;
-        `}
-
-    &:last-child {
-        margin-bottom: 0px;
-    }
-`;
-
-const ExpandWrapper = styled(motion.div)`
-    padding: ${ROW_PADDING};
-    overflow: hidden;
-    width: 100%;
-    border-top: solid 1px ${props => props.theme.STROKE_GREY};
-    padding-left: 40px; /* Left container padding + size of the icon + icon padding-right */
-`;
-
-const Pre = styled.pre`
-    text-align: left;
-    word-break: break-all;
-    white-space: pre-wrap;
-    font-size: ${variables.FONT_SIZE.TINY};
-
-    font-variant-numeric: slashed-zero tabular-nums;
-`;
-
-const Left = styled.div`
-    padding: ${ROW_PADDING};
-    display: flex;
-    align-items: center;
-    flex: 1 1 auto;
-    min-width: 0;
-`;
-
-const Address = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    font-variant-numeric: slashed-zero tabular-nums;
-    overflow: hidden;
-    text-overflow: ellipsis;
-`;
-
-const Right = styled.div`
-    padding: ${ROW_PADDING};
-    display: flex;
-    align-items: center;
-    flex: 0 0 auto;
-`;
-
-const Amounts = styled.div`
-    display: flex;
-    flex-direction: column;
-    font-variant-numeric: tabular-nums;
-`;
-
-const Coin = styled.div<{ bold?: boolean }>`
-    display: flex;
-    font-weight: ${props =>
-        props.bold ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    align-items: center;
-`;
-
-const Symbol = styled.div`
-    text-transform: uppercase;
-    padding-left: 4px;
-`;
-
-const Fiat = styled.div`
-    text-align: right;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    margin-top: 4px;
-`;
-
-const Row = styled.div<{ responsive?: boolean }>`
-    display: flex;
-    flex: 1;
-    justify-content: space-between;
-    overflow: hidden;
-
-    ${props =>
-        props.responsive &&
-        css`
-            @media all and (max-width: ${variables.SCREEN_SIZE.MD}) {
-                flex-direction: column;
-
-                ${Right} {
-                    padding-top: 0px;
-                }
-                ${Amounts} {
-                    margin-left: 26px;
-                    flex: 1;
-                    flex-direction: row;
-                    align-items: center;
-                    justify-content: space-between;
-                }
-
-                ${Fiat} {
-                    margin-left: 12px;
-                    margin-top: 0px;
-                }
-            }
-        `}
-`;
+import OutputElement, { OutputElementLine } from './OutputElement';
 
 export type OutputProps =
     | {
           type: 'regular';
           label: string;
           value: string;
+          value2?: undefined;
           token?: TokenInfo;
       }
     | {
-          type: 'opreturn' | 'data' | 'locktime' | 'fee' | 'destination-tag' | 'txid';
-          label?: undefined;
+          type:
+              | 'opreturn'
+              | 'data'
+              | 'locktime'
+              | 'fee'
+              | 'destination-tag'
+              | 'txid'
+              | 'fee-replace';
+          label?: string;
           value: string;
+          value2?: string;
           token?: undefined;
       };
 
@@ -157,10 +36,7 @@ export type Props = OutputProps & {
     symbol: Network['symbol'];
 };
 
-export { Left, Right, Coin, Symbol, Fiat, Amounts };
-
-const Output = ({ type, state, label, value, symbol, token }: Props) => {
-    const [isExpanded, setExpanded] = useState(false);
+const Output = ({ type, state, label, value, value2, symbol, token }: Props) => {
     let outputLabel: React.ReactNode = label;
 
     if (type === 'opreturn') {
@@ -184,57 +60,51 @@ const Output = ({ type, state, label, value, symbol, token }: Props) => {
 
     let outputValue = value;
     let outputSymbol;
+    let fiatVisible = false;
     if (token) {
         outputValue = formatAmount(value, token.decimals);
         outputSymbol = token.symbol;
     } else if (type === 'regular' || type === 'fee') {
         outputValue = formatNetworkAmount(value, symbol);
         outputSymbol = symbol;
+        fiatVisible = !isTestnet(symbol);
+    }
+
+    let outputLines: OutputElementLine[];
+
+    if (type === 'fee-replace' && value2) {
+        outputLines = [
+            {
+                label: <Translation id="TR_INCREASE_FEE_BY" />,
+                value: formatNetworkAmount(value, symbol),
+            },
+            {
+                label: <Translation id="TR_INCREASED_FEE" />,
+                value: formatNetworkAmount(value2, symbol),
+            },
+        ];
+        outputSymbol = symbol;
+        fiatVisible = !isTestnet(symbol);
+    } else {
+        outputLines = [
+            {
+                label: outputLabel,
+                value: outputValue,
+            },
+        ];
     }
 
     const hasExpansion = (type === 'opreturn' || type === 'data') && outputValue.length >= 10;
 
     return (
-        <StyledBox state={state === 'success' ? state : undefined}>
-            <Row responsive={type === 'regular'}>
-                <Left>
-                    <Indicator state={state} />
-                    <Address>{outputLabel}</Address>
-                </Left>
-                <Right>
-                    <Amounts>
-                        <Coin>
-                            {hasExpansion ? `${outputValue.substring(0, 10)}...` : outputValue}
-                            {outputSymbol && <Symbol>{outputSymbol}</Symbol>}
-                            {hasExpansion && (
-                                <Icon
-                                    useCursorPointer
-                                    size={16}
-                                    icon={!isExpanded ? 'ARROW_DOWN' : 'ARROW_UP'}
-                                    onClick={() => setExpanded(!isExpanded)}
-                                />
-                            )}
-                        </Coin>
-                        <Fiat>
-                            {outputSymbol && (
-                                <FiatValue
-                                    disableHiddenPlaceholder
-                                    amount={outputValue}
-                                    symbol={outputSymbol}
-                                />
-                            )}
-                        </Fiat>
-                    </Amounts>
-                </Right>
-            </Row>
-            <AnimatePresence initial={false}>
-                {isExpanded && (
-                    <ExpandWrapper {...ANIMATION.EXPAND}>
-                        <Pre>{outputValue}</Pre>
-                    </ExpandWrapper>
-                )}
-            </AnimatePresence>
-        </StyledBox>
+        <OutputElement
+            indicator={<Indicator state={state} size={16} />}
+            lines={outputLines}
+            cryptoSymbol={outputSymbol}
+            fiatSymbol={symbol}
+            hasExpansion={hasExpansion}
+            fiatVisible={fiatVisible}
+        />
     );
 };
 
