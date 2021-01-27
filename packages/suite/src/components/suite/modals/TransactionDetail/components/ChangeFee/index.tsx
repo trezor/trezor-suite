@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables } from '@trezor/components';
+import { Card, Icon, variables } from '@trezor/components';
 import { Translation, FiatValue, FormattedCryptoAmount } from '@suite-components';
 import { useRbf, RbfContext, Props } from '@wallet-hooks/useRbfForm';
 import { getFeeUnits } from '@wallet-utils/sendFormUtils';
@@ -10,13 +10,13 @@ import NoChange from './components/NoChange';
 import ReplaceButton from './components/ReplaceButton';
 
 const Wrapper = styled.div`
-    padding: 24px 0 14px;
+    margin: 12px 0;
 `;
 
 const Box = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 22px 20px 20px 27px;
+    padding: 18px 26px;
     border: 1px solid ${props => props.theme.STROKE_GREY};
     border-radius: 6px;
 `;
@@ -50,7 +50,7 @@ const RateWrapper = styled.div`
 
 const Rate = styled.div`
     margin: 3px 20px 5px 0;
-    font-size: ${variables.NEUE_FONT_SIZE.TINY};
+    font-size: ${variables.NEUE_FONT_SIZE.SMALL};
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
@@ -72,6 +72,29 @@ const StyledCryptoAmount = styled.div`
 const StyledFiatValue = styled.div`
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
     color: ${props => props.theme.TYPE_LIGHT_GREY};
+`;
+
+const FinalizeWarning = styled(Card)`
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 12px 0px;
+    margin-top: 16px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    color: ${props => props.theme.TYPE_DARK_GREY};
+    background: ${props => props.theme.BG_GREY};
+    font-size: ${variables.NEUE_FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
+const InfoIcon = styled(Icon)`
+    margin-right: 18px;
+`;
+
+const Red = styled.span`
+    color: ${props => props.theme.TYPE_RED};
 `;
 
 const ChangeFee = (props: Props & { showChained: () => void }) => {
@@ -113,11 +136,20 @@ const ChangeFee = (props: Props & { showChained: () => void }) => {
                     <Inner>
                         <Fees />
                     </Inner>
-                    {contextValues.chainedTxs && (
+                    {contextValues.chainedTxs.length > 0 && (
                         <AffectedTransactions showChained={props.showChained} />
                     )}
                     {!tx.rbfParams?.changeAddress && <NoChange />}
                 </Box>
+                {props.finalize && (
+                    <FinalizeWarning>
+                        <InfoIcon icon="INFO_ACTIVE" size={16} />
+                        <Translation
+                            id="TR_FINALIZE_TS_RBF_OFF_WARN"
+                            values={{ strong: chunks => <Red>{chunks}</Red> }}
+                        />
+                    </FinalizeWarning>
+                )}
                 <ReplaceButton finalize={props.finalize} />
             </Wrapper>
         </RbfContext.Provider>

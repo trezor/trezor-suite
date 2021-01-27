@@ -1,19 +1,18 @@
 import React from 'react';
-import styled from 'styled-components';
-
-const Wrapper = styled.div`
-    display: block;
-    text-align: left;
-`;
+import { Translation } from '@suite-components';
+import GreyCard from '../GreyCard';
+import WarnHeader from '../WarnHeader';
 
 const NoChange = () => {
     return (
-        <Wrapper>
-            <div>This transaction doesn't contain a change output and cannot be replaced</div>
+        <GreyCard>
+            <WarnHeader>
+                <Translation id="TR_NO_CHANGE_OUTPUT" />
+            </WarnHeader>
             {/* <select>
                 <option>Add another utxo</option>
             </select> */}
-        </Wrapper>
+        </GreyCard>
     );
 };
 

@@ -9,7 +9,7 @@ import IODetails from '../IODetails';
 import ChainedTxs from '../ChainedTxs';
 
 const Wrapper = styled.div`
-    padding: 0px 24px 14px 24px;
+    padding: 0px 24px;
 `;
 
 const TabSelector = styled.div`
