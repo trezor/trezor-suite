@@ -89,6 +89,7 @@ export interface Props {
     defaultVisibleValue?: React.ReactNode;
     payload: MetadataAddPayload;
     dropdownOptions?: DropdownMenuItem[];
+    isDisabled?: boolean;
 }
 
 export interface ExtendedProps extends Props {
@@ -239,7 +240,8 @@ const MetadataLabeling = (props: Props) => {
 
     // labeling is possible (it is possible to make it available) when we may obtain keys from device. If enabled, we already have them
     // (and only need to connect provider), or if device is connected, we may initiate TrezorConnect.CipherKeyValue call and get them
-    const labelingPossible = device?.metadata.status === 'enabled' || device?.connected;
+    const labelingPossible =
+        !props.isDisabled && (device?.metadata.status === 'enabled' || device?.connected);
 
     // is this concrete instance being edited?
     const editActive = metadata.editing === props.payload.defaultValue;

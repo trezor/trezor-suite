@@ -14,7 +14,7 @@ import BaseTargetLayout from '../BaseTargetLayout';
 import { copyToClipboard } from '@suite-utils/dom';
 import { AccountMetadata } from '@suite-types/metadata';
 
-const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
+const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />)`
     /* padding: 8px 0px; row padding */
     display: block;
     overflow: hidden;
@@ -63,6 +63,7 @@ interface TargetProps {
     isLast?: boolean;
     accountKey: string;
     accountMetadata?: AccountMetadata;
+    isActionDisabled?: boolean;
 }
 
 export const Target = ({
@@ -70,6 +71,7 @@ export const Target = ({
     transaction,
     accountMetadata,
     accountKey,
+    isActionDisabled,
     ...baseLayoutProps
 }: TargetProps) => {
     const targetAmount = getTargetAmount(target, transaction);
@@ -82,6 +84,7 @@ export const Target = ({
             {...baseLayoutProps}
             addressLabel={
                 <MetadataLabeling
+                    isDisabled={isActionDisabled}
                     defaultVisibleValue={
                         <TargetAddressLabel
                             accountMetadata={accountMetadata}

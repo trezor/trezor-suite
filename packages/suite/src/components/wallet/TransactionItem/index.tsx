@@ -2,20 +2,20 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence } from 'framer-motion';
-import { Translation, HiddenPlaceholder } from '@suite-components';
 import { variables, Button } from '@trezor/components';
+import { Translation, HiddenPlaceholder } from '@suite-components';
+import { useActions } from '@suite-hooks';
+import * as modalActions from '@suite-actions/modalActions';
 import { isTestnet } from '@wallet-utils/accountUtils';
+import { isTxUnknown } from '@wallet-utils/transactionUtils';
 import { AccountMetadata } from '@suite-types/metadata';
-
+import { WalletAccountTransaction } from '@wallet-types';
+// local
 import TransactionTypeIcon from './components/TransactionTypeIcon';
 import TransactionHeading from './components/TransactionHeading';
-import { isTxUnknown } from '@wallet-utils/transactionUtils';
 import { MIN_ROW_HEIGHT } from './components/BaseTargetLayout';
 import { Target, TokenTransfer, FeeRow } from './components/Target';
 import TransactionTimestamp from './components/TransactionTimestamp';
-import { WalletAccountTransaction } from '@wallet-types';
-import { useActions } from '@suite-hooks';
-import * as modalActions from '@suite-actions/modalActions';
 
 const Wrapper = styled.div`
     display: flex;
@@ -50,7 +50,7 @@ const Content = styled.div`
     font-variant-numeric: tabular-nums;
 `;
 
-const Description = styled(HiddenPlaceholder)`
+const Description = styled(props => <HiddenPlaceholder {...props} />)`
     color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
@@ -93,12 +93,13 @@ const DEFAULT_LIMIT = 3;
 interface Props {
     transaction: WalletAccountTransaction;
     isPending: boolean;
+    isActionDisabled?: boolean;
     accountMetadata?: AccountMetadata;
     accountKey: string;
 }
 
 const TransactionItem = React.memo((props: Props) => {
-    const { transaction, accountKey, accountMetadata } = props;
+    const { transaction, accountKey, accountMetadata, isActionDisabled } = props;
     const { type, targets, tokens } = transaction;
     const [limit, setLimit] = useState(0);
     const isTokenTransaction = tokens.length > 0;
@@ -116,7 +117,7 @@ const TransactionItem = React.memo((props: Props) => {
             (isTokenTransaction && tokens.length === 1));
     const showFeeRow =
         !isUnknown && isTokenTransaction && type !== 'recv' && transaction.fee !== '0';
-    const [txItemisHovered, setTxItemIsHovered] = useState(false);
+    const [txItemIsHovered, setTxItemIsHovered] = useState(false);
     const [nestedItemIsHovered, setNestedItemIsHovered] = useState(false);
 
     const previewTargets = targets.slice(0, DEFAULT_LIMIT);
@@ -154,7 +155,7 @@ const TransactionItem = React.memo((props: Props) => {
                         transaction={transaction}
                         isPending={props.isPending}
                         useSingleRowLayout={hasSingleTargetOrTransfer}
-                        txItemisHovered={txItemisHovered}
+                        txItemIsHovered={txItemIsHovered}
                         nestedItemIsHovered={nestedItemIsHovered}
                         onClick={() => openTxDetailsModal()}
                     />
@@ -181,6 +182,7 @@ const TransactionItem = React.memo((props: Props) => {
                                         isLast={limit > 0 ? false : i === previewTargets.length - 1} // if list of targets is expanded we won't get last item here
                                         accountMetadata={accountMetadata}
                                         accountKey={accountKey}
+                                        isActionDisabled={isActionDisabled}
                                     />
                                 ))}
                                 <AnimatePresence initial={false}>
@@ -266,7 +268,7 @@ const TransactionItem = React.memo((props: Props) => {
                         )}
                     </TargetsWrapper>
                 </NextRow>
-                {transaction.rbfParams && (
+                {!isActionDisabled && transaction.rbfParams && (
                     <NextRow>
                         <Button variant="tertiary" onClick={() => openTxDetailsModal(true)}>
                             <Translation id="TR_BUMP_FEE" />
