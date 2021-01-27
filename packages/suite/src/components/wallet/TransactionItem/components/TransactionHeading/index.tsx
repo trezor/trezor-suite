@@ -11,11 +11,10 @@ const Wrapper = styled.span`
     text-overflow: ellipsis;
     overflow: hidden;
     align-items: center;
-`;
-
-const HeadingWrapper = styled.div`
     cursor: pointer;
 `;
+
+const HeadingWrapper = styled.div``;
 
 const ChevronIconWrapper = styled.div<{ show: boolean; animate: boolean }>`
     display: flex;
@@ -111,20 +110,18 @@ const TransactionHeading = ({
 
     return (
         <>
-            <Wrapper>
-                <HeadingWrapper
-                    onMouseEnter={() => setHeadingIsHovered(true)}
-                    onMouseLeave={() => setHeadingIsHovered(false)}
-                    onClick={onClick}
-                >
-                    {heading}
-                </HeadingWrapper>
+            <Wrapper
+                onMouseEnter={() => setHeadingIsHovered(true)}
+                onMouseLeave={() => setHeadingIsHovered(false)}
+                onClick={onClick}
+            >
+                <HeadingWrapper>{heading}</HeadingWrapper>
                 <ChevronIconWrapper
                     show={txItemIsHovered}
                     animate={nestedItemIsHovered || headingIsHovered}
                 >
                     <Icon
-                        size={nestedItemIsHovered || headingIsHovered ? 18 : 15}
+                        size={nestedItemIsHovered || headingIsHovered ? 18 : 16}
                         color={theme.TYPE_DARK_GREY}
                         icon="ARROW_RIGHT"
                     />
