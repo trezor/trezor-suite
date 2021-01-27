@@ -4935,7 +4935,7 @@ const definedMessages = defineMessages({
     },
     TR_AFFECTED_TXS: {
         id: 'TR_AFFECTED_TXS',
-        defaultMessage: 'This operation will remove following transactions from the mempool:',
+        defaultMessage: 'This operation will remove following transactions from the mempool',
     },
     TR_OUTPUTS: {
         id: 'TR_OUTPUTS',

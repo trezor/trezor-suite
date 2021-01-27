@@ -1,10 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
-import { Icon, useTheme, variables, Loader } from '@trezor/components';
-import { Translation, HiddenPlaceholder } from '@suite-components';
+import { Icon, useTheme, variables, Loader, CoinLogo, Tooltip } from '@trezor/components';
+import { Translation, HiddenPlaceholder, TrezorLink } from '@suite-components';
+import { OnOffSwitcher } from '@wallet-components';
 import { getDateWithTimeZone } from '@suite-utils/date';
-import { WalletAccountTransaction } from '@wallet-types';
+import { WalletAccountTransaction, Network } from '@wallet-types';
+import { getFeeRate, getBlockExplorerUrl } from '@wallet-utils/transactionUtils';
+import { getFeeUnits } from '@wallet-utils/sendFormUtils';
 
 const Wrapper = styled.div`
     background-color: ${props => props.theme.BG_GREY};
@@ -21,7 +24,8 @@ const TransactionId = styled(props => <HiddenPlaceholder {...props} />)`
 const Confirmations = styled.div`
     display: flex;
     color: ${props => props.theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.TINY};
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const StatusWrapper = styled.div`
@@ -32,9 +36,7 @@ const StatusWrapper = styled.div`
 
 const HourWrapper = styled.div`
     display: inline-flex;
-    padding-left: 8px;
-    margin-left: 8px;
-    border-left: 1px solid ${props => props.theme.STROKE_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const LoaderIconWrapper = styled.div`
@@ -58,29 +60,43 @@ const HeaderFirstRow = styled.div`
     }
 `;
 
-const HeaderSecondRow = styled.div`
+const Grid = styled.div<{ showRbfCols?: boolean }>`
     display: grid;
-    grid-gap: 10px;
-    grid-template-columns: 140px 1fr;
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    grid-gap: 12px;
+    grid-template-columns: ${props =>
+        props.showRbfCols
+            ? '100px 2fr 60px 3fr 40px 30px'
+            : '100px 2fr 80px 3fr'}; /* title value title value */
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding: 28px 6px 10px 6px;
     text-align: left;
 
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+    @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         grid-template-columns: 110px 1fr;
     }
 `;
 
-const SecondRowTitle = styled.div`
+const Title = styled.div`
+    display: inline-flex;
     text-align: left;
+    font-size: ${variables.FONT_SIZE.TINY};
     color: ${props => props.theme.TYPE_LIGHT_GREY};
+    align-items: center;
 `;
 
-const SecondRowValue = styled.div`
+const Value = styled.div`
+    display: inline-flex;
     color: ${props => props.theme.TYPE_DARK_GREY};
+    font-size: ${variables.FONT_SIZE.TINY};
     overflow: hidden;
     text-overflow: ellipsis;
+    font-variant-numeric: tabular-nums;
+`;
+
+const TxidValue = styled(Value)`
+    padding-right: 32px;
 `;
 
 const IconWrapper = styled.div`
@@ -103,8 +119,8 @@ const MainIconWrapper = styled(IconWrapper)`
 `;
 
 const NestedIconWrapper = styled(IconWrapper)`
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     position: absolute;
     top: 0px;
     right: 0px;
@@ -127,10 +143,12 @@ const TxSentStatus = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const ConfirmationStatus = styled.div<{ confirmed: boolean }>`
+const ConfirmationStatus = styled.div<{ confirmed: boolean; tiny?: boolean }>`
     color: ${props => (props.confirmed ? props.theme.TYPE_GREEN : props.theme.TYPE_ORANGE)};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    font-size: ${variables.NEUE_FONT_SIZE.SMALL};
+    font-weight: ${props =>
+        props.tiny ? variables.FONT_WEIGHT.MEDIUM : variables.FONT_WEIGHT.DEMI_BOLD};
+    font-size: ${props =>
+        props.tiny ? variables.NEUE_FONT_SIZE.TINY : variables.NEUE_FONT_SIZE.SMALL};
 `;
 
 const Circle = styled.div`
@@ -139,10 +157,29 @@ const Circle = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
+const Bullet = styled.span`
+    margin-left: 0.5ch;
+    margin-right: 0.5ch;
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
+`;
+
+const Timestamp = styled.span`
+    white-space: nowrap;
+`;
+
+const StyledIcon = styled(Icon)`
+    margin-right: 6px;
+`;
+const LinkIcon = styled(Icon)`
+    margin-left: 6px;
+`;
+
 interface Props {
     tx: WalletAccountTransaction;
+    network: Network;
     isFetching: boolean;
     confirmations: number;
+    isRBFon: boolean;
 }
 
 const getHumanReadableTxType = (tx: WalletAccountTransaction) => {
@@ -160,30 +197,25 @@ const getHumanReadableTxType = (tx: WalletAccountTransaction) => {
     }
 };
 
-const BasicDetails = ({ tx, confirmations, isFetching }: Props) => {
+const BasicDetails = ({ tx, confirmations, network, isFetching, isRBFon }: Props) => {
     const theme = useTheme();
     const isConfirmed = confirmations > 0;
     const transactionStatus = getHumanReadableTxType(tx);
     const tokenSymbol = tx.tokens.length > 0 ? tx.tokens[0].symbol : undefined;
     const assetSymbol = tokenSymbol ? tokenSymbol.toUpperCase() : tx.symbol.toUpperCase();
+    const explorerUrl = getBlockExplorerUrl(tx);
     return (
         <Wrapper>
             <HeaderFirstRow>
                 <MainIconWrapper>
-                    <Icon
-                        size={24}
-                        color={theme.TYPE_LIGHT_GREY}
-                        icon={tx.type === 'recv' ? 'RECEIVE' : 'SEND'}
-                    />
-                    {!isFetching && (
-                        <NestedIconWrapper>
-                            <Icon
-                                size={12}
-                                color={isConfirmed ? theme.BG_GREEN : theme.TYPE_ORANGE}
-                                icon={isConfirmed ? 'CHECK' : 'CLOCK'}
-                            />
-                        </NestedIconWrapper>
-                    )}
+                    <CoinLogo symbol={tx.symbol} size={48} />
+                    <NestedIconWrapper>
+                        <Icon
+                            size={14}
+                            color={theme.TYPE_DARK_GREY}
+                            icon={tx.type === 'recv' ? 'RECEIVE' : 'SEND'}
+                        />
+                    </NestedIconWrapper>
                 </MainIconWrapper>
                 <TxStatus>
                     <TxSentStatus>
@@ -225,24 +257,27 @@ const BasicDetails = ({ tx, confirmations, isFetching }: Props) => {
                 </ConfirmationStatusWrapper>
             </HeaderFirstRow>
 
-            <HeaderSecondRow>
-                {/* FIRST ROW - MINED TIME */}
-                <SecondRowTitle>
+            <Grid showRbfCols={!!tx.rbfParams && network.networkType === 'bitcoin'}>
+                {/* MINED TIME */}
+                <Title>
+                    <StyledIcon icon="CALENDAR" size={10} />
                     {isConfirmed ? (
                         <Translation id="TR_MINED_TIME" />
                     ) : (
                         <Translation id="TR_FIRST_SEEN" />
                     )}
-                </SecondRowTitle>
-                <SecondRowValue>
+                </Title>
+                <Value>
                     {tx.blockTime ? (
-                        <>
+                        <Timestamp>
                             <FormattedDate
                                 value={getDateWithTimeZone(tx.blockTime * 1000)}
                                 year="numeric"
                                 month="short"
                                 day="2-digit"
                             />
+
+                            <Bullet>&bull;</Bullet>
                             <HourWrapper>
                                 <FormattedDate
                                     value={getDateWithTimeZone(tx.blockTime * 1000)}
@@ -250,21 +285,71 @@ const BasicDetails = ({ tx, confirmations, isFetching }: Props) => {
                                     minute="2-digit"
                                 />
                             </HourWrapper>
-                        </>
+                        </Timestamp>
                     ) : (
                         <Translation id="TR_UNKNOWN_CONFIRMATION_TIME" />
                     )}
-                </SecondRowValue>
+                </Value>
 
-                {/* SECOND ROW - TX ID */}
-                <SecondRowTitle>
-                    <Translation id="TR_TRANSACTION_ID" />
-                </SecondRowTitle>
+                {/* TX ID */}
+                <Title>
+                    <Translation id="TR_TXID" />
+                </Title>
+                <TxidValue>
+                    <TransactionId>{tx.txid}</TransactionId>
+                    <TrezorLink size="tiny" variant="nostyle" href={explorerUrl}>
+                        <Tooltip content={<Translation id="TR_OPEN_IN_BLOCK_EXPLORER" />}>
+                            <LinkIcon size={12} color={theme.TYPE_DARK_GREY} icon="EXTERNAL_LINK" />
+                        </Tooltip>
+                    </TrezorLink>
+                </TxidValue>
 
-                <SecondRowValue>
-                    <TransactionId>{tx.txid}</TransactionId>{' '}
-                </SecondRowValue>
-            </HeaderSecondRow>
+                {network.networkType === 'bitcoin' && (
+                    <>
+                        {/* RBF */}
+                        {tx.rbfParams && (
+                            <>
+                                <Title>
+                                    <Translation id="TR_RBF_COL" />
+                                </Title>
+                                <Value>
+                                    <OnOffSwitcher isOn={isRBFon} hasEqualSign={false} />
+                                </Value>
+                            </>
+                        )}
+
+                        {/* Fee level */}
+                        <Title>
+                            <StyledIcon icon="GAS" size={10} />
+                            <Translation id="TR_FEE_LEVEL" />
+                        </Title>
+                        <Value>{`${getFeeRate(tx, network.decimals)} ${getFeeUnits(
+                            'bitcoin',
+                        )}`}</Value>
+                    </>
+                )}
+                {!isConfirmed && network.networkType === 'bitcoin' && (
+                    <>
+                        {/* RBF Status */}
+                        <>
+                            <Title>
+                                <Translation id="TR_RBF_STATUS" />
+                            </Title>
+                            <Value>
+                                <ConfirmationStatus confirmed={!tx.rbf} tiny>
+                                    <Translation
+                                        id={
+                                            !tx.rbf
+                                                ? 'TR_RBF_STATUS_FINAL'
+                                                : 'TR_RBF_STATUS_NOT_FINAL'
+                                        }
+                                    />
+                                </ConfirmationStatus>
+                            </Value>
+                        </>
+                    </>
+                )}
+            </Grid>
         </Wrapper>
     );
 };

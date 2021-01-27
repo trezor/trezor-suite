@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Translation, Modal, TrezorLink } from '@suite-components';
+import { Translation, Modal } from '@suite-components';
 import { variables, Button } from '@trezor/components';
-import { OnOffSwitcher } from '@wallet-components';
 import { WalletAccountTransaction } from '@wallet-types';
 import TrezorConnect from 'trezor-connect';
 import BasicDetails from './components/BasicDetails';
@@ -26,18 +25,27 @@ const SectionActions = styled.div`
     padding: 15px 0 0;
     display: flex;
     justify-content: flex-end;
-    & > * + * {
-        margin-left: 12px;
-    }
 `;
 
 const SectionTitle = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.NEUE_FONT_SIZE.SMALL};
-    text-transform: uppercase;
-    position: absolute;
-    top: 18px;
-    left: 0;
+    font-size: ${variables.NEUE_FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+`;
+
+const Col = styled.div`
+    display: flex;
+    flex: 1 1 33%;
+`;
+
+const Middle = styled(Col)`
+    justify-content: center;
+`;
+const Right = styled(Col)`
+    justify-content: flex-end;
+    & > * + * {
+        margin-left: 12px;
+    }
 `;
 
 type Props = {
@@ -66,8 +74,6 @@ const TransactionDetail = (props: Props) => {
         : [];
 
     const network = getNetwork(tx.symbol);
-    const explorerBaseUrl = network?.explorer.tx;
-    const explorerUrl = explorerBaseUrl ? `${explorerBaseUrl}${tx.txid}` : undefined;
 
     // txDetails stores response from blockchainGetTransactions()
     const [txDetails, setTxDetails] = useState<any>(null);
@@ -106,62 +112,72 @@ const TransactionDetail = (props: Props) => {
             heading={<Translation id="TR_TRANSACTION_DETAILS" />}
         >
             <Wrapper>
-                <BasicDetails tx={tx} isFetching={isFetching} confirmations={confirmations} />
+                <BasicDetails
+                    tx={tx}
+                    network={network!}
+                    isFetching={isFetching}
+                    confirmations={confirmations}
+                    isRBFon={!finalize}
+                />
                 <SectionActions>
-                    {section === 'CHANGE_FEE' && (
-                        <SectionTitle>
-                            <Translation id={finalize ? 'TR_FINALIZE_TX' : 'TR_REPLACE_TX'} />
-                        </SectionTitle>
-                    )}
                     {tx.rbfParams && (
                         <>
-                            {section === 'DETAILS' && (
-                                <Button
-                                    variant="tertiary"
-                                    onClick={() => {
-                                        setSection('CHANGE_FEE');
-                                        setTab(undefined);
-                                    }}
-                                >
-                                    <Translation id="TR_BUMP_FEE" />
-                                </Button>
-                            )}
-                            <Button
-                                variant="tertiary"
-                                icon="RBF"
-                                onClick={() => {
-                                    setFinalize(!finalize);
-                                    if (section !== 'CHANGE_FEE') {
-                                        setSection('CHANGE_FEE');
-                                        setTab(undefined);
-                                    }
-                                }}
-                            >
-                                <Translation id="RBF" />
-                                <OnOffSwitcher isOn={!finalize} />
-                            </Button>
                             {section === 'CHANGE_FEE' && (
-                                <Button
-                                    variant="tertiary"
-                                    onClick={() => {
-                                        setSection('DETAILS');
-                                        setFinalize(false);
-                                        setTab(undefined);
-                                    }}
-                                >
-                                    <Translation id="TR_CANCEL" />
-                                </Button>
+                                // Show back button and section title when bumping fee/finalizing txs
+                                <>
+                                    <Col>
+                                        <Button
+                                            variant="tertiary"
+                                            onClick={() => {
+                                                setSection('DETAILS');
+                                                setFinalize(false);
+                                                setTab(undefined);
+                                            }}
+                                            icon="ARROW_LEFT"
+                                        >
+                                            <Translation id="TR_BACK" />
+                                        </Button>
+                                    </Col>
+                                    <Middle>
+                                        <SectionTitle>
+                                            <Translation
+                                                id={finalize ? 'TR_FINALIZE_TX' : 'TR_REPLACE_TX'}
+                                            />
+                                        </SectionTitle>
+                                    </Middle>
+                                </>
                             )}
+
+                            <Right>
+                                {section === 'DETAILS' && (
+                                    // change fee and finalize tx buttons visible only in details
+                                    <>
+                                        <Button
+                                            variant="tertiary"
+                                            onClick={() => {
+                                                setSection('CHANGE_FEE');
+                                                setTab(undefined);
+                                            }}
+                                        >
+                                            <Translation id="TR_BUMP_FEE" />
+                                        </Button>
+                                        <Button
+                                            variant="tertiary"
+                                            onClick={() => {
+                                                setFinalize(true);
+                                                setSection('CHANGE_FEE');
+                                                setTab(undefined);
+                                            }}
+                                        >
+                                            <Translation id="TR_FINALIZE_TX" />
+                                        </Button>
+                                    </>
+                                )}
+                            </Right>
                         </>
                     )}
-                    {explorerUrl && section === 'DETAILS' && (
-                        <TrezorLink variant="nostyle" href={explorerUrl}>
-                            <Button variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
-                                <Translation id="TR_OPEN_IN_BLOCK_EXPLORER" />
-                            </Button>
-                        </TrezorLink>
-                    )}
                 </SectionActions>
+
                 {section === 'CHANGE_FEE' ? (
                     <ChangeFee
                         tx={tx}
