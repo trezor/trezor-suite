@@ -1,6 +1,6 @@
 import React from 'react';
-import { Props } from './Container';
 import styled, { css } from 'styled-components';
+import { useSelector } from '@suite-hooks';
 
 interface WrapperProps {
     intensity: number;
@@ -20,10 +20,16 @@ const Wrapper = styled.span<WrapperProps>`
         `}
 `;
 
-const HiddenPlaceholder = ({ children, discreetMode, intensity = 5, className }: Props) => (
-    <Wrapper discreetMode={discreetMode} intensity={intensity} className={className}>
-        {children}
-    </Wrapper>
-);
+interface Props {
+    intensity?: number;
+    className?: string;
+}
 
-export default HiddenPlaceholder;
+export const HiddenPlaceholder: React.FC<Props> = ({ children, intensity = 5, className }) => {
+    const discreetMode = useSelector(state => state.wallet.settings.discreetMode);
+    return (
+        <Wrapper discreetMode={discreetMode} intensity={intensity} className={className}>
+            {children}
+        </Wrapper>
+    );
+};
