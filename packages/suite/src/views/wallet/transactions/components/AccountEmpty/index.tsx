@@ -113,7 +113,7 @@ const AccountEmpty = (props: Props) => {
                             analytics.report({
                                 type: 'accounts/empty-account/buy',
                                 payload: {
-                                    network: networkSymbol,
+                                    symbol: networkSymbol,
                                 },
                             });
                         }}

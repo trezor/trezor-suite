@@ -56,7 +56,7 @@ Added:
 - desktop-init
   - desktopOSVersion: string | "" (in format: {platform}_{release})
 - accounts/empty-account/buy
-  - network: string 
+  - symbol: string 
 - account-create
   - tokensCount: number
 - transaction-created

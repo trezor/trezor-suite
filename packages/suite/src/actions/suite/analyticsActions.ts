@@ -162,7 +162,7 @@ export type AnalyticsEvent =
     | {
           type: 'accounts/empty-account/buy';
           payload: {
-              network: string;
+              symbol: string;
           };
       }
     | { type: 'dashboard/security-card/create-backup' }
