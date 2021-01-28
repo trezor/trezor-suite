@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as suiteActions from '@suite-actions/suiteActions';
@@ -6,11 +6,13 @@ import * as routerActions from '@suite-actions/routerActions';
 import { Translation } from '@suite-components';
 import { Icon, Tooltip, useTheme } from '@trezor/components';
 import { findRouteByName } from '@suite-utils/router';
-import { BOTTOM_MENU_ITEMS } from '@suite-constants/menu';
 import { useActions, useAnalytics, useSelector } from '@suite-hooks';
 import ActionItem from './components/ActionItem';
 import TooltipContentTor from './components/TooltipContentTor';
 import { isDesktop } from '@suite-utils/env';
+import NotificationsDropdown from './components/NotificationsDropdown';
+
+const DESKTOP_LAYOUT_ICONS_MARGIN = '28px';
 
 const Wrapper = styled.div`
     display: flex;
@@ -31,7 +33,7 @@ const ActionsContainer = styled.div<{ desktop: boolean; mobileLayout?: boolean }
         !props.mobileLayout &&
         `display: flex;
         align-items: center;
-        margin-left: 28px;
+        margin-left: ${DESKTOP_LAYOUT_ICONS_MARGIN};
         border-top: 0;
     `}
     ${props =>
@@ -52,7 +54,6 @@ const ActionItemTor = styled.div<{ mobileLayout?: boolean }>`
         `display: flex;
         position: relative;
         align-items: center;
-        margin-left: 17px;
     `}
     ${props =>
         props.mobileLayout &&
@@ -77,7 +78,7 @@ interface Props {
     isMobileLayout?: boolean;
 }
 
-type Route = typeof BOTTOM_MENU_ITEMS[number]['route'];
+type Route = 'settings-index' | 'notifications-index';
 
 const NavigationActions = (props: Props) => {
     const analytics = useAnalytics();
@@ -111,30 +112,39 @@ const NavigationActions = (props: Props) => {
         if (props.closeMainNavigation) props.closeMainNavigation();
     };
 
+    const getIfRouteIsActive = (route: Route) => {
+        const routeObj = findRouteByName(route);
+        return routeObj ? routeObj.app === activeApp : false;
+    };
+
+    const unseenNotifications = useMemo(() => notifications.some(n => !n.seen), [notifications]);
+
     return (
         <WrapperComponent>
-            {BOTTOM_MENU_ITEMS.map(item => {
-                const { route, icon } = item;
-                const dataTestId = `@suite/menu/${route}`;
-                const routeObj = findRouteByName(route);
-                const isActive = routeObj ? routeObj.app === activeApp : false;
-                const unseenNotifications = notifications.some(n => !n.seen);
+            {props.isMobileLayout ? (
+                <ActionItem
+                    label={<Translation id="TR_NOTIFICATIONS" />}
+                    data-test="@suite/menu/notifications-index"
+                    onClick={() => action('notifications-index')}
+                    isActive={getIfRouteIsActive('notifications-index')}
+                    icon="NOTIFICATION"
+                    withAlertDot={unseenNotifications}
+                    isMobileLayout={props.isMobileLayout}
+                />
+            ) : (
+                <NotificationsDropdown withAlertDot={unseenNotifications} />
+            )}
 
-                return (
-                    <ActionItem
-                        key={item.translationId}
-                        label={<Translation id={item.translationId} />}
-                        data-test={dataTestId}
-                        onClick={() => action(route)}
-                        isActive={isActive}
-                        icon={icon}
-                        withAlertDot={
-                            !isActive && route === 'notifications-index' && unseenNotifications
-                        }
-                        isMobileLayout={props.isMobileLayout}
-                    />
-                );
-            })}
+            <ActionItem
+                label={<Translation id="TR_SETTINGS" />}
+                data-test="@suite/menu/settings-index"
+                onClick={() => action('settings-index')}
+                isActive={getIfRouteIsActive('settings-index')}
+                icon="SETTINGS"
+                isMobileLayout={props.isMobileLayout}
+                desktopMarginLeft={DESKTOP_LAYOUT_ICONS_MARGIN}
+            />
+
             <ActionsContainer desktop={isDesktop()} mobileLayout={props.isMobileLayout}>
                 <ActionItem
                     onClick={() => {
@@ -178,6 +188,7 @@ const NavigationActions = (props: Props) => {
                                     label={<Translation id="TR_TOR" />}
                                     icon="TOR"
                                     isMobileLayout={props.isMobileLayout}
+                                    desktopMarginLeft={DESKTOP_LAYOUT_ICONS_MARGIN}
                                 />
                                 {tor && (
                                     <ActionItemTorIndicator>

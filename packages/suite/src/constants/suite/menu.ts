@@ -24,12 +24,3 @@ export const MAIN_MENU_ITEMS = [
     //     isDisabled: true,
     // },
 ] as const;
-
-export const BOTTOM_MENU_ITEMS = [
-    {
-        translationId: 'TR_NOTIFICATIONS',
-        icon: 'NOTIFICATION',
-        route: 'notifications-index',
-    },
-    { translationId: 'TR_SETTINGS', icon: 'SETTINGS', route: 'settings-index' },
-] as const;

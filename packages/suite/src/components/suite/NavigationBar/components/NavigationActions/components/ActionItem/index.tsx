@@ -2,15 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { useTheme, Icon, IconProps, variables } from '@trezor/components';
 
-const Wrapper = styled.div<Pick<Props, 'isActive'>>`
+const Wrapper = styled.div<Pick<Props, 'isActive' | 'desktopMarginLeft' | 'desktopMarginRight'>>`
     display: flex;
     position: relative;
     cursor: pointer;
     align-items: center;
-
-    & + & {
-        margin-left: 28px;
-    }
+    margin-left: ${props => props.desktopMarginLeft || '0px'};
+    margin-right: ${props => props.desktopMarginRight || '0px'};
 `;
 
 const MobileWrapper = styled.div<Pick<Props, 'isActive'>>`
@@ -58,7 +56,7 @@ const AlertDot = styled.div`
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: ${props => props.theme.TYPE_RED};
+    background: ${props => props.theme.TYPE_ORANGE};
 `;
 
 interface CommonProps extends Pick<React.HTMLAttributes<HTMLDivElement>, 'onClick'> {
@@ -66,6 +64,8 @@ interface CommonProps extends Pick<React.HTMLAttributes<HTMLDivElement>, 'onClic
     isActive?: boolean;
     withAlertDot?: boolean;
     isMobileLayout?: boolean;
+    desktopMarginLeft?: string;
+    desktopMarginRight?: string;
 }
 
 interface CustomIconComponentProps extends CommonProps {
@@ -79,7 +79,9 @@ interface IconComponentProps extends CommonProps {
 
 type Props = CustomIconComponentProps | IconComponentProps;
 
-const ActionItem = (props: Props) => {
+// Reason to use forwardRef: We want the user to be able to close Notifications dropdown by clicking somewhere else.
+// In order to achieve that behavior, we need to pass reference to ActionItem
+const ActionItem = React.forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) => {
     const theme = useTheme();
     const iconComponent = props.icon ? (
         <Icon
@@ -108,7 +110,7 @@ const ActionItem = (props: Props) => {
     }
 
     return (
-        <Wrapper isActive={props.isActive} {...props}>
+        <Wrapper isActive={props.isActive} {...props} ref={ref}>
             {iconComponent}
             {props.withAlertDot && (
                 <AlertDotWrapper>
@@ -117,6 +119,5 @@ const ActionItem = (props: Props) => {
             )}
         </Wrapper>
     );
-};
-
+});
 export default ActionItem;

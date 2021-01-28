@@ -1,4 +1,12 @@
-import React, { useState, useRef, useLayoutEffect, forwardRef, useImperativeHandle } from 'react';
+import React, {
+    useState,
+    useRef,
+    useLayoutEffect,
+    forwardRef,
+    useImperativeHandle,
+    useEffect,
+    useCallback,
+} from 'react';
 import ReactDOM from 'react-dom';
 import styled, { css } from 'styled-components';
 import { variables } from '../../config';
@@ -138,10 +146,12 @@ interface Props extends MenuProps, React.ButtonHTMLAttributes<HTMLDivElement> {
     offset?: number;
     isDisabled?: boolean;
     appendTo?: HTMLElement;
+    onToggle?: (isToggled: boolean) => void;
 }
 
 interface DropdownRef {
     close: () => void;
+    open: () => void;
 }
 
 type Coords = [number, number] | undefined;
@@ -159,12 +169,13 @@ const Dropdown = forwardRef(
             offset = 10,
             appendTo,
             verticalPadding = 8,
+            onToggle,
             ...rest
         }: Props,
         ref
     ) => {
         const theme = useTheme();
-        const [toggled, setToggled] = useState(false);
+        const [toggled, setToggledState] = useState(false);
         const [coords, setCoords] = useState<Coords>(undefined);
         const [menuSize, setMenuSize] = useState<Coords>(undefined);
         const menuRef = useRef<HTMLUListElement>(null);
@@ -176,6 +187,14 @@ const Dropdown = forwardRef(
             ...group,
             options: group.options.filter(item => !item.isHidden),
         }));
+
+        const setToggled = useCallback(
+            (isToggled: boolean) => {
+                if (onToggle) onToggle(isToggled);
+                setToggledState(isToggled);
+            },
+            [onToggle]
+        );
 
         useLayoutEffect(() => {
             if (menuRef.current && toggled) {
