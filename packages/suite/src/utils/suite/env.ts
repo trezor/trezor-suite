@@ -115,3 +115,7 @@ export const getOSTheme = (): SuiteThemeVariant => {
     }
     return 'light';
 };
+
+export const getOSVersion = () => {
+    return window.desktopApi?.getOSVersion();
+};

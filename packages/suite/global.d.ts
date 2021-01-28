@@ -35,6 +35,11 @@ export interface DesktopApi {
     toggleTor: (start: boolean) => void;
     getTorAddress: () => Promise<string>;
     setTorAddress: (address: string) => void;
+    // Analytics
+    getOSVersion: () => Promise<
+        | { success: true; payload: { platform: string; release: string } }
+        | { success: false; error: string }
+    >;
 }
 
 declare global {

@@ -50,9 +50,11 @@ Breaking change should bump major version. Any other change bumps minor version.
 ### 1.6 (unreleased)
 Added: 
 - suite-ready
-  - suiteVersion: string | "" (empty string)
+  - suiteVersion: string | "" 
 - device-connect
   - isBitcoinOnly: boolean
+- desktop-init
+  - desktopOSVersion: string | "" (in format: {platform}_{release})
   
 ### 1.5
 Added:
