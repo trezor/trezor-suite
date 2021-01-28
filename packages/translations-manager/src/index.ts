@@ -41,6 +41,7 @@ export const mergeMessages = (
     outputFilePath: string,
     allowDuplicates = false,
 ) => {
+    // DEPRECATED
     const transformedMessages = glob
         .sync(filePattern)
         .map(filename => fs.readFileSync(filename, 'utf8'))
@@ -80,15 +81,11 @@ export const mergeMessages = (
 /*
     Builds CSV file from JSON with merged messages.
 
-    Format of an input file is same as format of the file created by mergeMessages():
+    Format of an input file is same as format returned by npx formatjs extract --format crowdin:
     [
         {
-        "source": "Source string that is to be translated to target language",
-        "meta": {
-            "comment": "Additional information for translators",
-            "occurrences": [
-                "Path to file that containts the message"
-            ]
+            "message": "Source string that is to be translated to target language",
+            "description": "Additional information for translators",
         },
         ...
     ]

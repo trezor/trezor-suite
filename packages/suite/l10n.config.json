@@ -1,7 +1,7 @@
 {
-    "extractedMessagesFilePattern": "translations/extractedMessages/**/*.json",
-    "localesOutputDir": "../suite-data/files/translations/",
     "outputDir": "translations/",
+    "extractedMessagesFilePattern": "master.json",
+    "localesOutputDir": "../suite-data/files/translations/",
     "project": {
         "identifier": "trezor-suite",
         "filename": "master",
