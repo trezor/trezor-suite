@@ -5,7 +5,7 @@ import { Input, Button } from '@trezor/components';
 import * as tokenActions from '@wallet-actions/tokenActions';
 import { Modal, QuestionTooltip } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
-import { useActions, useSelector, useTranslation } from '@suite-hooks';
+import { useActions, useSelector, useTranslation, useAnalytics } from '@suite-hooks';
 import { isAddressValid } from '@wallet-utils/validation';
 import { Account } from '@wallet-types';
 
@@ -33,6 +33,7 @@ const AddToken = (props: Props) => {
     });
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const { account } = selectedAccount;
+    const analytics = useAnalytics();
 
     const loadTokenInfo = useCallback(
         async (acc: Account, contractAddress: string) => {
@@ -131,6 +132,13 @@ const AddToken = (props: Props) => {
                         if (tokenInfo) {
                             addToken(account, tokenInfo);
                             props.onCancel();
+                            analytics.report({
+                                type: 'add-token',
+                                payload: {
+                                    networkSymbol: account.symbol,
+                                    addedNth: account.tokens ? account.tokens.length + 1 : 0,
+                                },
+                            });
                         }
                     }}
                     isDisabled={!tokenInfo || !!error}

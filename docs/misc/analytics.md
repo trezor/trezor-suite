@@ -53,25 +53,24 @@ Added:
   - suiteVersion: string | "" 
 - device-connect
   - isBitcoinOnly: boolean
-<<<<<<< HEAD
 - desktop-init
   - desktopOSVersion: string | "" (in format: {platform}_{release})
-=======
 - accounts/empty-account/buy
   - network: string 
-<<<<<<< HEAD
->>>>>>> feat: empty account buy  analytics
-=======
+- account-create
+  - tokensCount: number
 - transaction-created
-  - action: 'sent' | 'copied' | 'downloaded';
-  - symbol: string;
-  - broadcast: boolean;
-  - outputsCount: number;
-  - bitcoinRbf: boolean;
-  - bitcoinLockTime: boolean;
-  - ethereumData: boolean;
-  - tokenSent: boolean;
->>>>>>> feat: send-form analytics
+  - action: 'sent' | 'copied' | 'downloaded'
+  - symbol: string
+  - broadcast: boolean
+  - outputsCount: number
+  - bitcoinRbf: boolean
+  - bitcoinLockTime: boolean
+  - ethereumData: boolean
+  - tokenSent: boolean
+- add-token
+  - networkSymbol: string
+  - addedNth: number
   
 ### 1.5
 Added:
