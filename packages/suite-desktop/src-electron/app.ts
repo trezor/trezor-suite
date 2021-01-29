@@ -36,7 +36,6 @@ global.logger = logger;
 global.resourcesPath = isDev
     ? path.join(__dirname, '..', 'public', 'static')
     : process.resourcesPath;
-global.quitOnWindowClose = false;
 
 logger.info('main', 'Application starting');
 
