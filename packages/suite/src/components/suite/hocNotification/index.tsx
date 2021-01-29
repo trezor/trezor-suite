@@ -308,6 +308,15 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
                 message: 'TR_ADD_TOKEN_TOAST_SUCCESS',
             });
 
+        case 'egg': {
+            return withAction(View, {
+                notification,
+                variant: 'info',
+                message: 'TOAST_EGG',
+                actionLabel: 'TOAST_EGG_ACTION',
+            });
+        }
+
         // Events:
         case DEVICE.CONNECT:
             return withAction(View, {

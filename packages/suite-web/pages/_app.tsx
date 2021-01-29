@@ -10,6 +10,7 @@ import Preloader from '@suite-components/Preloader';
 import ToastContainer from '@suite-components/ToastContainer';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import Resize from '@suite-support/Resize';
+import Egg from '@suite-support/Egg';
 import OnlineStatus from '@suite-support/OnlineStatus';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import Router from '@suite-support/Router';
@@ -67,6 +68,7 @@ class TrezorSuiteApp extends App<Props> {
                         <ErrorBoundary>
                             <Resize />
                             <Tor />
+                            <Egg />
                             <OnlineStatus />
                             <IntlProvider>
                                 <>

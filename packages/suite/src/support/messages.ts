@@ -2897,6 +2897,14 @@ const definedMessages = defineMessages({
         id: 'TOAST_GENERIC_ERROR',
         defaultMessage: 'Error: {error}',
     },
+    TOAST_EGG: {
+        id: 'TOAST_EGG',
+        defaultMessage: 'Hey hey hey! You unlocked a new home screen :-)',
+    },
+    TOAST_EGG_ACTION: {
+        id: 'TOAST_EGG_ACTION',
+        defaultMessage: 'Check it out!',
+    },
     TR_REMOVE: {
         id: 'TR_REMOVE',
         defaultMessage: 'Remove',

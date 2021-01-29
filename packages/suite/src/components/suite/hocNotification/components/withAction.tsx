@@ -2,8 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { DEVICE } from 'trezor-connect';
 import * as suiteActions from '@suite-actions/suiteActions';
+import * as routerActions from '@suite-actions/routerActions';
+import * as modalActions from '@suite-actions/modalActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
-import { Dispatch } from '@suite-types';
+import { Dispatch, TrezorDevice } from '@suite-types';
 import { ViewProps } from '../index';
 
 /**
@@ -29,6 +31,17 @@ const withAction = (View: React.ComponentType<ViewProps>, props: ViewProps) => {
                 break;
             case 'discovery-error':
                 action = () => dispatch(discoveryActions.restart());
+                break;
+            case 'egg':
+                action = () => {
+                    dispatch(routerActions.goto('settings-device'));
+                    dispatch(
+                        modalActions.openModal({
+                            type: 'device-background-gallery',
+                            device: notification.device as TrezorDevice,
+                        }),
+                    );
+                };
                 break;
             case DEVICE.CONNECT:
                 action = !notification.seen

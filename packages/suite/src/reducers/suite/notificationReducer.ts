@@ -74,6 +74,9 @@ export type ToastPayload = (
     | {
           type: 'auto-updater-no-new';
       }
+    | {
+          type: 'egg';
+      }
 ) &
     Options;
 

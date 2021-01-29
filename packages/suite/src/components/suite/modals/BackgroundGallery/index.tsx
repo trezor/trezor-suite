@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { Translation, Modal } from '@suite-components';
 
@@ -7,9 +7,7 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { elementToHomescreen } from '@suite-utils/homescreen';
 import { AcquiredDevice } from '@suite-types';
-import { useActions } from '@suite-hooks';
-
-type AnyImageName = typeof homescreensT1[number] | typeof homescreensT2[number];
+import { useActions, useSelector } from '@suite-hooks';
 
 const BackgroundGalleryWrapper = styled.div`
     display: flex;
@@ -38,15 +36,26 @@ type Props = {
 };
 
 const BackgroundGallery = ({ device, onCancel }: Props) => {
+    const egg = useSelector(state => state.suite.settings.egg);
     const { applySettings } = useActions({ applySettings: deviceSettingsActions.applySettings });
 
-    const setHomescreen = (image: AnyImageName) => {
+    const setHomescreen = (image: string) => {
         const element = document.getElementById(image);
         if (element instanceof HTMLImageElement) {
             const hex = elementToHomescreen(element, device.features.major_version);
             applySettings({ homescreen: hex });
         }
     };
+
+    const t1Screens = useMemo(
+        () => (egg ? homescreensT1 : homescreensT1.filter(s => s !== 'carlos')),
+        [egg],
+    ) as string[];
+
+    const t2Screens = useMemo(
+        () => (egg ? homescreensT2 : homescreensT2.filter(s => s !== 'carlos')),
+        [egg],
+    ) as string[];
 
     return (
         <Modal
@@ -57,7 +66,7 @@ const BackgroundGallery = ({ device, onCancel }: Props) => {
         >
             {device.features.major_version === 1 && (
                 <BackgroundGalleryWrapper>
-                    {homescreensT1.map(image => (
+                    {t1Screens.map(image => (
                         <BackgroundImageT1
                             key={image}
                             id={image}
@@ -69,7 +78,7 @@ const BackgroundGallery = ({ device, onCancel }: Props) => {
             )}
             {device.features.major_version === 2 && (
                 <BackgroundGalleryWrapper>
-                    {homescreensT2.map(image => (
+                    {t2Screens.map(image => (
                         <BackgroundImageT2
                             data-test={`@modal/gallery/t2/${image}`}
                             key={image}

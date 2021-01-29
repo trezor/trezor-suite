@@ -31,6 +31,7 @@ interface SuiteSettings {
     };
     language: typeof LANGUAGES[number]['code'];
     torOnionLinks: boolean;
+    egg: boolean;
     debug: DebugModeOptions;
 }
 
@@ -71,6 +72,7 @@ const initialState: SuiteState = {
         },
         language: 'en',
         torOnionLinks: isWeb(),
+        egg: false,
         debug: {
             invityAPIUrl: undefined,
             showDebugMenu: false,
@@ -137,6 +139,10 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
             case SUITE.SET_THEME:
                 draft.settings.theme.variant = action.variant;
                 draft.settings.theme.colors = action.colors;
+                break;
+
+            case SUITE.SET_EGG:
+                draft.settings.egg = action.payload;
                 break;
 
             case TRANSPORT.START:
