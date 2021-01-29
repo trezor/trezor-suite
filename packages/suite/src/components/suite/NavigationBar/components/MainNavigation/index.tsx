@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import { variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { MAIN_MENU_ITEMS } from '@suite-constants/menu';
-import { useAnalytics, useActions, useSelector } from '@suite-hooks';
+import { useAnalytics, useActions, useSelector, useAccountSearch } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 
 interface ComponentProps {
@@ -105,6 +105,7 @@ interface Props {
 
 const MainNavigation = (props: Props) => {
     const analytics = useAnalytics();
+    const { setCoinFilter, setSearchString } = useAccountSearch();
     const activeApp = useSelector(state => state.router.app);
     const { goto } = useActions({
         goto: routerActions.goto,
@@ -116,6 +117,8 @@ const MainNavigation = (props: Props) => {
                 analytics.report({ type: 'menu/goto/suite-index' });
                 break;
             case 'wallet-index':
+                setCoinFilter(undefined);
+                setSearchString(undefined);
                 analytics.report({ type: 'menu/goto/wallet-index' });
                 break;
             default:
