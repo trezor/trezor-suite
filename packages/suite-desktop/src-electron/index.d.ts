@@ -3,7 +3,6 @@ declare namespace NodeJS {
     export interface Global {
         logger: ILogger;
         resourcesPath: string;
-        quitOnWindowClose: boolean;
     }
 }
 

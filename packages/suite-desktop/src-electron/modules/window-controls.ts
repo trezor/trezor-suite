@@ -31,15 +31,6 @@ const init = ({ mainWindow, store }: Dependencies) => {
         // hide window to the Dock
         // this event listener will be removed by app.on('before-quit')
         mainWindow.on('close', event => {
-            if (global.quitOnWindowClose) {
-                logger.info(
-                    'window-control',
-                    'Force quitting the app after the main window has been closed',
-                );
-                app.quit();
-                return;
-            }
-
             logger.info('window-control', 'Hiding the app after the main window has been closed');
 
             event.preventDefault();

@@ -130,8 +130,12 @@ const init = ({ mainWindow, store }: Dependencies) => {
     });
     ipcMain.on('update/install', () => {
         logger.info('auto-updater', 'Installation request');
-        // This will force the closing of the window to quit the app on Mac
-        global.quitOnWindowClose = true;
+
+        // Removing listeners & closing window (https://github.com/electron-userland/electron-builder/issues/1604)
+        app.removeAllListeners('window-all-closed');
+        mainWindow.removeAllListeners('close');
+        mainWindow.close();
+
         // https://www.electron.build/auto-update#module_electron-updater.AppUpdater+quitAndInstall
         // appUpdater.quitAndInstall(isSilent, isForceRunAfter)
         // isSilent (windows): Runs the installer in silent mode
