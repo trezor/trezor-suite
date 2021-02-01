@@ -125,8 +125,8 @@ const init = ({ mainWindow, store }: Dependencies) => {
         updateCancellationToken = new CancellationToken();
         autoUpdater
             .downloadUpdate(updateCancellationToken)
-            .then(() => logger.info('auto-updater', 'Update cancelled'))
-            .catch(() => null); // Suppress error in console
+            .then(() => logger.info('auto-updater', 'Update downloaded'))
+            .catch(() => logger.info('auto-updater', 'Update cancelled'));
     });
     ipcMain.on('update/install', () => {
         logger.info('auto-updater', 'Installation request');
@@ -136,11 +136,7 @@ const init = ({ mainWindow, store }: Dependencies) => {
         mainWindow.removeAllListeners('close');
         mainWindow.close();
 
-        // https://www.electron.build/auto-update#module_electron-updater.AppUpdater+quitAndInstall
-        // appUpdater.quitAndInstall(isSilent, isForceRunAfter)
-        // isSilent (windows): Runs the installer in silent mode
-        // isForceRunAfter (windows): Run the app after finish even on silent install
-        autoUpdater.quitAndInstall(true, true);
+        autoUpdater.quitAndInstall();
     });
     ipcMain.on('update/cancel', () => {
         logger.info('auto-updater', 'Cancel update request');
