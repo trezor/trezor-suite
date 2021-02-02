@@ -2,7 +2,7 @@ import React, { createRef } from 'react';
 import styled from 'styled-components';
 import { ConfirmOnDevice, Button, variables } from '@trezor/components';
 import { FiatValue, Translation, Modal } from '@suite-components';
-import { useDevice, useActions } from '@suite-hooks';
+import { useDevice, useActions, useAnalytics } from '@suite-hooks';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { copyToClipboard, download } from '@suite-utils/dom';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
@@ -68,6 +68,7 @@ const getState = (index: number, buttonRequests: number) => {
 const ReviewTransaction = ({ selectedAccount, send, decision }: Props) => {
     const htmlElement = createRef<HTMLDivElement>();
     const { device } = useDevice();
+    const analytics = useAnalytics();
     const { cancelSignTx, addNotification } = useActions({
         cancelSignTx: sendFormActions.cancelSignTx,
         addNotification: notificationActions.addToast,
@@ -126,6 +127,22 @@ const ReviewTransaction = ({ selectedAccount, send, decision }: Props) => {
         r => r === 'ButtonRequest_ConfirmOutput' || r === 'ButtonRequest_SignTx',
     );
 
+    const reportAnalytics = (action: 'sent' | 'copied' | 'downloaded') => {
+        analytics.report({
+            type: 'transaction-created',
+            payload: {
+                action,
+                symbol,
+                broadcast: broadcastEnabled,
+                outputsCount: precomposedForm.outputs.length,
+                bitcoinRbf: precomposedForm.options.includes('bitcoinRBF'),
+                bitcoinLockTime: precomposedForm.options.includes('bitcoinLockTime'),
+                ethereumData: precomposedForm.options.includes('ethereumData'),
+                tokenSent: precomposedTx.token !== undefined,
+            },
+        });
+    };
+
     return (
         <Modal
             noPadding
@@ -175,6 +192,7 @@ const ReviewTransaction = ({ selectedAccount, send, decision }: Props) => {
                             isDisabled={!signedTx}
                             onClick={() => {
                                 if (decision) decision.resolve(true);
+                                reportAnalytics('sent');
                             }}
                         >
                             <Translation id="SEND_TRANSACTION" />
@@ -191,6 +209,7 @@ const ReviewTransaction = ({ selectedAccount, send, decision }: Props) => {
                                     if (typeof result !== 'string') {
                                         addNotification({ type: 'copy-to-clipboard' });
                                     }
+                                    reportAnalytics('copied');
                                 }}
                             >
                                 <Translation id="COPY_TRANSACTION_TO_CLIPBOARD" />
@@ -198,7 +217,10 @@ const ReviewTransaction = ({ selectedAccount, send, decision }: Props) => {
                             <StyledButton
                                 variant="secondary"
                                 isDisabled={!signedTx}
-                                onClick={() => download(signedTx!.tx, 'signed-transaction.txt')}
+                                onClick={() => {
+                                    download(signedTx!.tx, 'signed-transaction.txt');
+                                    reportAnalytics('downloaded');
+                                }}
                             >
                                 <Translation id="DOWNLOAD_TRANSACTION" />
                             </StyledButton>

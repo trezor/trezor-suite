@@ -141,7 +141,8 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                 }
             }
             break;
-        case ACCOUNT.CREATE:
+        case ACCOUNT.CREATE: {
+            const { tokens } = action.payload;
             api.dispatch(
                 analyticsActions.report({
                     type: 'account-create',
@@ -149,10 +150,12 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                         type: action.payload.accountType,
                         symbol: action.payload.symbol,
                         path: action.payload.path,
+                        tokensCount: tokens ? tokens.length : 0,
                     },
                 }),
             );
             break;
+        }
         case ROUTER.LOCATION_CHANGE:
             api.dispatch(
                 analyticsActions.report({

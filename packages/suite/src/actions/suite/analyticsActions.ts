@@ -39,7 +39,7 @@ simple semver for data-analytics part.
 Don't forget to update docs with changelog!
 */
 
-const version = '1.5';
+const version = '1.6';
 
 export type AnalyticsEvent =
     | {
@@ -152,10 +152,17 @@ export type AnalyticsEvent =
               /** normal, segwit, legacy */
               type: Account['accountType'];
               /** index of account  */
-
               path: Account['path'];
               /** network (btc, eth, etc.) */
               symbol: Account['symbol'];
+              /** if tokens added */
+              tokensCount: number;
+          };
+      }
+    | {
+          type: 'accounts/empty-account/buy';
+          payload: {
+              symbol: string;
           };
       }
     | { type: 'dashboard/security-card/create-backup' }
@@ -294,6 +301,26 @@ export type AnalyticsEvent =
           payload: {
               // added in 1.6
               desktopOSVersion: string;
+          };
+      }
+    | {
+          type: 'transaction-created';
+          payload: {
+              action: 'sent' | 'copied' | 'downloaded';
+              symbol: Account['symbol'];
+              broadcast: boolean;
+              outputsCount: number;
+              bitcoinRbf: boolean;
+              bitcoinLockTime: boolean;
+              ethereumData: boolean;
+              tokenSent: boolean;
+          };
+      }
+    | {
+          type: 'add-token';
+          payload: {
+              networkSymbol: Account['symbol'];
+              addedNth: number; // if the user added 1st, 2nd,... token in his account
           };
       };
 

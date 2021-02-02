@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { variables, H2, Button, Card } from '@trezor/components';
 import { Translation, Image } from '@suite-components';
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions, useSelector, useAnalytics } from '@suite-hooks';
 import { Account } from '@wallet-types';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -74,6 +74,7 @@ const AccountEmpty = (props: Props) => {
     });
     const bip43 = getBip43Shortcut(props.account.path);
     const networkSymbol = props.account.symbol.toUpperCase();
+    const analytics = useAnalytics();
 
     return (
         <Wrapper>
@@ -109,6 +110,12 @@ const AccountEmpty = (props: Props) => {
                         variant="primary"
                         onClick={() => {
                             goto('wallet-coinmarket-buy', undefined, true);
+                            analytics.report({
+                                type: 'accounts/empty-account/buy',
+                                payload: {
+                                    symbol: networkSymbol,
+                                },
+                            });
                         }}
                     >
                         <Translation id="TR_BUY_NETWORK" values={{ network: networkSymbol }} />
