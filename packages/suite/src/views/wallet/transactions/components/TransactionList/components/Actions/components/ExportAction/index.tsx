@@ -8,6 +8,7 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import * as transactionActions from '@wallet-actions/transactionActions';
 import { Account } from '@wallet-types';
 import { isEnabled } from '@suite-utils/features';
+import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 
 export interface Props {
     account: Account;
@@ -31,7 +32,12 @@ const ExportAction = ({ account }: Props) => {
             setIsExportRunning(true);
             try {
                 await fetchTransactions(account, 2, SETTINGS.TXS_PER_PAGE, true, true);
-                await exportTransactions(account, type);
+                const accountName =
+                    account.metadata.accountLabel ||
+                    `${translationString(getTitleForNetwork(account.symbol))} #${
+                        account.index + 1
+                    }`;
+                await exportTransactions(account, accountName, type);
             } catch {
                 addToast({
                     type: 'error',

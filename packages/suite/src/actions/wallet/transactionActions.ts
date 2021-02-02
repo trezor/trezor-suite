@@ -196,10 +196,11 @@ export const fetchTransactions = (
     }
 };
 
-export const exportTransactions = (account: Account, type: 'csv' | 'pdf' | 'json') => async (
-    _: Dispatch,
-    getState: GetState,
-) => {
+export const exportTransactions = (
+    account: Account,
+    accountName: string,
+    type: 'csv' | 'pdf' | 'json',
+) => async (_: Dispatch, getState: GetState) => {
     // Get state of transactions
     const transactions = getAccountTransactions(
         getState().wallet.transactions.transactions,
@@ -209,6 +210,7 @@ export const exportTransactions = (account: Account, type: 'csv' | 'pdf' | 'json
     // Prepare data in right format
     const data = await formatData({
         coin: account.symbol,
+        accountName,
         type,
         transactions,
     });
