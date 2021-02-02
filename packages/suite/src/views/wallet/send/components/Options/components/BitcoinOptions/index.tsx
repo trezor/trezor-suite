@@ -102,7 +102,7 @@ const BitcoinOptions = () => {
                         )}
                     <StyledButton
                         variant="tertiary"
-                        icon="RBF"
+                        icon="BROADCAST"
                         onClick={() => {
                             toggleOption('broadcast');
                             composeTransaction();

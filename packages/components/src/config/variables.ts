@@ -64,6 +64,7 @@ export const ICONS: IconType[] = [
     'ARROW_LEFT',
     'ARROW_RIGHT',
     'ARROW_RIGHT_LONG',
+    'BROADCAST',
     'CHECK',
     'CHECK_ACTIVE',
     'COINS',
