@@ -10,6 +10,7 @@ const Value = styled.span`
 
 const Symbol = styled.span`
     text-transform: uppercase;
+    word-break: initial;
 `;
 
 interface Props {
