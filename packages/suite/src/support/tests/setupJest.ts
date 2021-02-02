@@ -82,14 +82,13 @@ export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     model: 'T',
     needs_backup: false,
     no_backup: false,
-    passphrase_cached: true,
     passphrase_protection: false,
     patch_version: 1,
-    pin_cached: false,
     pin_protection: false,
     revision: '3761663164353835',
     unfinished_backup: false,
     vendor: 'trezor.io',
+    capabilities: [],
     ...feat,
 });
 
