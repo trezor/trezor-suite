@@ -133,6 +133,11 @@
             ],
             "min": ["0", "2.1.8"],
             "comment": ["Since 2.1.8 there are new protobuf fields in tezos transaction (Babylon fork)"]
+        },
+        {
+            "excludedMethods": ["replaceTransaction"],
+            "min": ["1.9.4", "2.3.5"],
+            "comment": ["new sign tx process since 1.9.4/2.3.5"]
         }
     ]
 }
