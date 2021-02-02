@@ -65,7 +65,7 @@ const EthereumOptions = () => {
                 )}
                 <StyledButton
                     variant="tertiary"
-                    icon="RBF"
+                    icon="BROADCAST"
                     data-test="send/broadcast"
                     onClick={() => {
                         toggleOption('broadcast');

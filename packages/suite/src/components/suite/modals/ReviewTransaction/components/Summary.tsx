@@ -244,7 +244,7 @@ const Summary = ({
                 </LeftDetailsRow>
                 <LeftDetailsRow>
                     <ReviewRbfLeftDetailsLineLeft>
-                        <Icon size={12} color={theme.TYPE_LIGHT_GREY} icon="RBF" />
+                        <Icon size={12} color={theme.TYPE_LIGHT_GREY} icon="BROADCAST" />
                         <Translation id="BROADCAST" />
                     </ReviewRbfLeftDetailsLineLeft>
                     <ReviewRbfLeftDetailsLineRight
