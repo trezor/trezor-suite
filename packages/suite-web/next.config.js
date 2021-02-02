@@ -31,9 +31,7 @@ module.exports = withOptimizedImages(
                     name: 'static/[hash].worker.js',
                     publicPath: '/_next/',
                 },
-                experimental: {
-                    productionBrowserSourceMaps: true,
-                },
+                productionBrowserSourceMaps: true,
                 webpack: (config, options) => {
                     config.plugins.push(
                         new webpack.DefinePlugin({
