@@ -51,6 +51,7 @@ export const homescreensT1 = [
     'reddit',
     'hacker',
     'polis',
+    'carlos',
 ] as const;
 
 export const homescreensT2 = [
@@ -68,4 +69,5 @@ export const homescreensT2 = [
     'moon',
     'decred',
     'namecoin',
+    'carlos',
 ] as const;
