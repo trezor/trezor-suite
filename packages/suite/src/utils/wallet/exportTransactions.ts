@@ -2,13 +2,14 @@ import { AccountTransaction } from 'trezor-connect';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
-import { formatAmount, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { Network } from '@wallet-types';
+import { trezorLogo } from '@suite-constants/b64images';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 type Data = {
     coin: Network['symbol'];
+    accountName: string;
     type: 'csv' | 'pdf' | 'json';
     transactions: AccountTransaction[];
 };
@@ -51,15 +52,13 @@ const makePdf = (definitions: TDocumentDefinitions): Promise<Blob> =>
     });
 
 const prepareContent = (data: Data) => {
-    const { coin, type, transactions } = data;
+    const { type, transactions } = data;
     return transactions.map(t => {
         let addresses = [];
         if (t.tokens.length > 0) {
             addresses = t.tokens.map(token => {
                 if (token?.address && token?.amount) {
-                    return `${token.address} (${formatAmount(token.amount, token.decimals)} ${
-                        token.symbol
-                    })`;
+                    return `${token.address} (${token.amount} ${token.symbol.toUpperCase()})`;
                 }
 
                 return null;
@@ -67,7 +66,7 @@ const prepareContent = (data: Data) => {
         } else {
             addresses = t.targets.map(target => {
                 if (target?.addresses?.length && target?.amount) {
-                    return `${target.addresses[0]} (${formatNetworkAmount(target.amount, coin)})`;
+                    return `${target.addresses[0]} (${target.amount})`;
                 }
 
                 return null;
@@ -78,8 +77,6 @@ const prepareContent = (data: Data) => {
             ...t,
             addresses: addresses.join(addressSeparator[type]),
             type: t.type.toUpperCase(),
-            amount: formatNetworkAmount(t.amount, coin),
-            fee: formatNetworkAmount(t.fee, coin),
             datetime: new Intl.DateTimeFormat('default', dateTimeFormat).format(
                 (t.blockTime || 0) * 1000,
             ),
@@ -115,7 +112,12 @@ const prepareCsv = (fields: Field, content: any[]) => {
     return lines.join(CSV_NEWLINE);
 };
 
-const preparePdf = (fields: Field, content: any[], coin: Network['symbol']) => {
+const preparePdf = (
+    fields: Field,
+    content: any[],
+    coin: Network['symbol'],
+    accountName: string,
+): TDocumentDefinitions => {
     const fieldKeys = Object.keys(fields);
     const fieldValues = Object.values(fields);
     const lines: any[] = [];
@@ -131,42 +133,54 @@ const preparePdf = (fields: Field, content: any[], coin: Network['symbol']) => {
 
     return {
         pageOrientation: 'landscape',
-        content: [
+        header: [
             {
-                text: coin,
-                style: 'header',
-            },
-            {
-                style: 'table',
-                table: {
-                    // widths,
-                    body: [fieldValues, ...lines],
-                },
+                columns: [
+                    {
+                        text: `${accountName} (${coin.toUpperCase()})`,
+                        fontSize: 18,
+                        bold: true,
+                        alignment: 'left',
+                        margin: [50, 12, 0, 0],
+                    },
+                    {
+                        image: `data:image/png;base64,${trezorLogo}`,
+                        width: 80,
+                        alignment: 'right',
+                        margin: [0, 10, 30, 0],
+                    },
+                ],
             },
         ],
-        styles: {
-            header: {
-                fontSize: 18,
-                bold: true,
+        footer: (page: number, count: number) => [
+            {
+                text: `${page} of ${count}`,
+                fontSize: 8,
+                alignment: 'right',
+                margin: [0, 6, 50, 0],
             },
-            table: {
-                marginTop: 9,
+        ],
+        content: [
+            {
+                table: {
+                    body: [fieldValues, ...lines],
+                },
                 fontSize: 8,
             },
-        },
+        ],
     };
 };
 
 export const formatData = async (data: Data) => {
-    const { coin, type, transactions } = data;
+    const { coin, accountName, type, transactions } = data;
     switch (type) {
         case 'csv': {
             const csv = prepareCsv(fields, prepareContent(data));
             return new Blob([csv], { type: 'text/csv;charset=utf-8' });
         }
         case 'pdf': {
-            const pdfLayout = preparePdf(fields, prepareContent(data), coin);
-            const pdf = await makePdf(pdfLayout as TDocumentDefinitions);
+            const pdfLayout = preparePdf(fields, prepareContent(data), coin, accountName);
+            const pdf = await makePdf(pdfLayout);
             return pdf;
         }
         case 'json': {
