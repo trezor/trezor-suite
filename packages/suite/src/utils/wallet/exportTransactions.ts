@@ -145,7 +145,7 @@ const preparePdf = (
                     },
                     {
                         image: `data:image/png;base64,${trezorLogo}`,
-                        width: 80,
+                        width: 140,
                         alignment: 'right',
                         margin: [0, 10, 30, 0],
                     },
@@ -163,6 +163,7 @@ const preparePdf = (
         content: [
             {
                 table: {
+                    headerRows: 1,
                     body: [fieldValues, ...lines],
                 },
                 fontSize: 8,
