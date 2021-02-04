@@ -3,10 +3,9 @@ import styled from 'styled-components';
 import { FormattedDate } from 'react-intl';
 import { Icon, useTheme, variables, Loader, CoinLogo, Tooltip } from '@trezor/components';
 import { Translation, HiddenPlaceholder, TrezorLink } from '@suite-components';
-import { OnOffSwitcher } from '@wallet-components';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction, Network } from '@wallet-types';
-import { getFeeRate, getBlockExplorerUrl } from '@wallet-utils/transactionUtils';
+import { getFeeRate, getBlockExplorerUrl, isTxFinal } from '@wallet-utils/transactionUtils';
 import { getFeeUnits } from '@wallet-utils/sendFormUtils';
 
 const Wrapper = styled.div`
@@ -64,10 +63,7 @@ const Grid = styled.div<{ showRbfCols?: boolean }>`
     display: grid;
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
     grid-gap: 12px;
-    grid-template-columns: ${props =>
-        props.showRbfCols
-            ? '100px 2fr 60px 3fr 40px 30px'
-            : '100px 2fr 80px 3fr'}; /* title value title value */
+    grid-template-columns: 100px 2fr 80px 3fr; /* title value title value */
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding: 28px 6px 10px 6px;
@@ -179,7 +175,6 @@ interface Props {
     network: Network;
     isFetching: boolean;
     confirmations: number;
-    isRBFon: boolean;
 }
 
 const getHumanReadableTxType = (tx: WalletAccountTransaction) => {
@@ -197,13 +192,15 @@ const getHumanReadableTxType = (tx: WalletAccountTransaction) => {
     }
 };
 
-const BasicDetails = ({ tx, confirmations, network, isFetching, isRBFon }: Props) => {
+const BasicDetails = ({ tx, confirmations, network, isFetching }: Props) => {
     const theme = useTheme();
     const isConfirmed = confirmations > 0;
     const transactionStatus = getHumanReadableTxType(tx);
     const tokenSymbol = tx.tokens.length > 0 ? tx.tokens[0].symbol : undefined;
     const assetSymbol = tokenSymbol ? tokenSymbol.toUpperCase() : tx.symbol.toUpperCase();
     const explorerUrl = getBlockExplorerUrl(tx);
+    const isFinal = isTxFinal(tx, confirmations);
+
     return (
         <Wrapper>
             <HeaderFirstRow>
@@ -257,7 +254,7 @@ const BasicDetails = ({ tx, confirmations, network, isFetching, isRBFon }: Props
                 </ConfirmationStatusWrapper>
             </HeaderFirstRow>
 
-            <Grid showRbfCols={!!tx.rbfParams && network.networkType === 'bitcoin'}>
+            <Grid>
                 {/* MINED TIME */}
                 <Title>
                     <StyledIcon icon="CALENDAR" size={10} />
@@ -306,18 +303,6 @@ const BasicDetails = ({ tx, confirmations, network, isFetching, isRBFon }: Props
 
                 {network.networkType === 'bitcoin' && (
                     <>
-                        {/* RBF */}
-                        {tx.rbfParams && (
-                            <>
-                                <Title>
-                                    <Translation id="TR_RBF_COL" />
-                                </Title>
-                                <Value>
-                                    <OnOffSwitcher isOn={isRBFon} hasEqualSign={false} />
-                                </Value>
-                            </>
-                        )}
-
                         {/* Fee level */}
                         <Title>
                             <StyledIcon icon="GAS" size={10} />
@@ -326,27 +311,18 @@ const BasicDetails = ({ tx, confirmations, network, isFetching, isRBFon }: Props
                         <Value>{`${getFeeRate(tx, network.decimals)} ${getFeeUnits(
                             'bitcoin',
                         )}`}</Value>
-                    </>
-                )}
-                {!isConfirmed && network.networkType === 'bitcoin' && (
-                    <>
+
                         {/* RBF Status */}
-                        <>
-                            <Title>
-                                <Translation id="TR_RBF_STATUS" />
-                            </Title>
-                            <Value>
-                                <ConfirmationStatus confirmed={!tx.rbf} tiny>
-                                    <Translation
-                                        id={
-                                            !tx.rbf
-                                                ? 'TR_RBF_STATUS_FINAL'
-                                                : 'TR_RBF_STATUS_NOT_FINAL'
-                                        }
-                                    />
-                                </ConfirmationStatus>
-                            </Value>
-                        </>
+                        <Title>
+                            <Translation id="TR_RBF_STATUS" />
+                        </Title>
+                        <Value>
+                            <ConfirmationStatus confirmed={isFinal} tiny>
+                                <Translation
+                                    id={isFinal ? 'TR_RBF_STATUS_FINAL' : 'TR_RBF_STATUS_NOT_FINAL'}
+                                />
+                            </ConfirmationStatus>
+                        </Value>
                     </>
                 )}
             </Grid>

@@ -117,7 +117,6 @@ const TransactionDetail = (props: Props) => {
                     network={network!}
                     isFetching={isFetching}
                     confirmations={confirmations}
-                    isRBFon={!finalize}
                 />
                 <SectionActions>
                     {tx.rbfParams && (

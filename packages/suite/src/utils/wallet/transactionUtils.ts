@@ -679,3 +679,8 @@ export const getBlockExplorerUrl = (tx: WalletAccountTransaction) => {
     const network = getNetwork(tx.symbol);
     return `${network!.explorer.tx}${tx.txid}`;
 };
+
+export const isTxFinal = (tx: WalletAccountTransaction, confirmations: number) => {
+    // checks RBF status
+    return !tx.rbf || confirmations > 0;
+};
