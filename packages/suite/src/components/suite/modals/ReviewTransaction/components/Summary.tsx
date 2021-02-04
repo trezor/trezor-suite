@@ -169,7 +169,7 @@ const Summary = ({
     const { symbol } = account;
 
     const amount = new BigNumber(tx.totalSpent).minus(tx.fee).toString();
-
+    const feePerByte = new BigNumber(tx.feePerByte).decimalPlaces(3).toString();
     const accountLabel = account.metadata.accountLabel ? (
         <span style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
             {account.metadata.accountLabel}
@@ -239,7 +239,7 @@ const Summary = ({
                         {network.networkType === 'ripple' && <Translation id="TR_TX_FEE" />}
                     </ReviewRbfLeftDetailsLineLeft>
                     <ReviewRbfLeftDetailsLineRight color={theme.TYPE_DARK_GREY}>
-                        {tx.feePerByte} {getFeeUnits(network.networkType)}
+                        {feePerByte} {getFeeUnits(network.networkType)}
                     </ReviewRbfLeftDetailsLineRight>
                 </LeftDetailsRow>
                 <LeftDetailsRow>
