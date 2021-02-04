@@ -12,7 +12,7 @@ interface Props {
 
 const AddAccountButton = (props: Props) => {
     const analytics = useAnalytics();
-    const { setCoinFilter, setSearchString } = useAccountSearch();
+    const { setCoinFilter, setSearchString, coinFilter } = useAccountSearch();
 
     if (props.accounts.length === 0) return null;
     const account = props.accounts[props.accounts.length - 1];
@@ -36,9 +36,12 @@ const AddAccountButton = (props: Props) => {
             isDisabled={!!tooltip}
             onClick={() => {
                 props.onEnableAccount(account);
-                // reset coin filter
+                // reset search string in account search box
                 setSearchString(undefined);
-                setCoinFilter(undefined);
+                if (coinFilter && coinFilter !== account.symbol) {
+                    // if coinFilter is active then reset it only if added account doesn't belong to selected/filtered coin
+                    setCoinFilter(undefined);
+                }
                 // just to log that account was added manually.
                 analytics.report({
                     type: 'wallet/add-account',
