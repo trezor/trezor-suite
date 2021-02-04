@@ -167,8 +167,12 @@ const Summary = ({
 }: Props) => {
     const theme = useTheme();
     const { symbol } = account;
-
-    const amount = new BigNumber(tx.totalSpent).minus(tx.fee).toString();
+    let amount;
+    if (tx.token) {
+        amount = new BigNumber(tx.totalSpent).toString();
+    } else {
+        amount = new BigNumber(tx.totalSpent).minus(tx.fee).toString();
+    }
     const feePerByte = new BigNumber(tx.feePerByte).decimalPlaces(3).toString();
     const accountLabel = account.metadata.accountLabel ? (
         <span style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
