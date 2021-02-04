@@ -1968,10 +1968,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Passphrase wallet #{id}',
         id: 'TR_PASSPHRASE_WALLET',
     },
-    TR_PENDING: {
-        defaultMessage: 'Pending',
-        description: 'Pending transaction with no confirmations',
-        id: 'TR_PENDING',
+    TR_PENDING_TX_HEADING: {
+        defaultMessage: 'Pending {count, plural, one {transaction} other {transactions}}',
+        description: 'Heading for the list of pending transactions',
+        id: 'TR_PENDING_TX_HEADING',
     },
     TR_PIN_ERROR_TROUBLESHOOT: {
         defaultMessage:
