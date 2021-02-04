@@ -196,7 +196,7 @@ const Summary = ({
                         <FormattedCryptoAmount
                             disableHiddenPlaceholder
                             value={formatNetworkAmount(amount, symbol)}
-                            symbol={symbol}
+                            symbol={tx.token?.symbol ?? symbol}
                         />
                     </HeadlineAmount>
                 </Headline>
