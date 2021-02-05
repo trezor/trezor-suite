@@ -175,6 +175,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         feeInfo: state.feeInfo,
         saveLastUsedFee: true,
         onChange: onFeeLevelChange,
+        composedLevels,
         composeRequest,
         ...useFormMethods,
     });
