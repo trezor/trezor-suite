@@ -101,47 +101,57 @@ const ChangeFee = (props: Props & { showChained: () => void }) => {
     const contextValues = useRbf(props);
     if (!contextValues.account) return null; // context without account, should never happen
     const { tx } = props;
+    const hasChangeAddress = tx.rbfParams?.changeAddress;
 
     return (
         <RbfContext.Provider value={contextValues}>
             <Wrapper>
-                <Box>
-                    <Inner>
-                        <Title>
-                            <Translation id="TR_CURRENT_FEE" />
-                        </Title>
-                        <Content>
-                            <RateWrapper>
-                                <Rate>
-                                    {tx.rbfParams?.feeRate} {getFeeUnits('bitcoin')}
-                                </Rate>
-                                <Amount>
-                                    <StyledCryptoAmount>
-                                        <FormattedCryptoAmount value={tx.fee} symbol={tx.symbol} />
-                                    </StyledCryptoAmount>
-                                    {tx.rates && (
-                                        <StyledFiatValue>
-                                            <FiatValue
-                                                amount={tx.amount}
+                {hasChangeAddress ? (
+                    <Box>
+                        <Inner>
+                            <Title>
+                                <Translation id="TR_CURRENT_FEE" />
+                            </Title>
+                            <Content>
+                                <RateWrapper>
+                                    <Rate>
+                                        {tx.rbfParams?.feeRate} {getFeeUnits('bitcoin')}
+                                    </Rate>
+                                    <Amount>
+                                        <StyledCryptoAmount>
+                                            <FormattedCryptoAmount
+                                                value={tx.fee}
                                                 symbol={tx.symbol}
-                                                source={tx.rates}
-                                                useCustomSource
                                             />
-                                        </StyledFiatValue>
-                                    )}
-                                </Amount>
-                            </RateWrapper>
-                        </Content>
-                    </Inner>
-                    <Inner>
-                        <Fees />
-                    </Inner>
-                    {contextValues.chainedTxs.length > 0 && (
-                        <AffectedTransactions showChained={props.showChained} />
-                    )}
-                    {!tx.rbfParams?.changeAddress && <NoChange />}
-                </Box>
-                {props.finalize && (
+                                        </StyledCryptoAmount>
+                                        {tx.rates && (
+                                            <StyledFiatValue>
+                                                <FiatValue
+                                                    amount={tx.amount}
+                                                    symbol={tx.symbol}
+                                                    source={tx.rates}
+                                                    useCustomSource
+                                                />
+                                            </StyledFiatValue>
+                                        )}
+                                    </Amount>
+                                </RateWrapper>
+                            </Content>
+                        </Inner>
+                        <Inner>
+                            <Fees />
+                        </Inner>
+                        {contextValues.chainedTxs.length > 0 && (
+                            <AffectedTransactions showChained={props.showChained} />
+                        )}
+                        {!tx.rbfParams?.changeAddress && <NoChange />}
+                    </Box>
+                ) : (
+                    <Box>
+                        <NoChange />
+                    </Box>
+                )}
+                {props.finalize && hasChangeAddress && (
                     <FinalizeWarning>
                         <InfoIcon icon="INFO_ACTIVE" size={16} />
                         <Translation
