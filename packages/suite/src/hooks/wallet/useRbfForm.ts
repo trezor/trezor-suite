@@ -146,6 +146,7 @@ export const useRbf = (props: Props) => {
         feeInfo: state?.feeInfo,
         onChange: onFeeLevelChange,
         composeRequest,
+        composedLevels,
         ...useFormMethods,
     });
 

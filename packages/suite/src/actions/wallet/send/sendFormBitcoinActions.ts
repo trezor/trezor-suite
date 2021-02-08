@@ -124,15 +124,22 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
         }
     }
 
-    // make sure that feePerByte is an integer (trezor-connect may return float)
     // format max (trezor-connect sends it as satoshi)
     // format errorMessage and catch unexpected error (other than AMOUNT_IS_NOT_ENOUGH)
     Object.keys(wrappedResponse).forEach(key => {
         const tx = wrappedResponse[key];
         if (tx.type !== 'error') {
-            tx.feePerByte = new BigNumber(tx.feePerByte)
-                .integerValue(BigNumber.ROUND_FLOOR)
-                .toString();
+            if (formValues.selectedFee === 'custom') {
+                // calculated/real feeePerByte may be slightly higher that requested
+                // example: spending dust limit, chained txs in rbf...
+                // override calculated value
+                tx.feePerByte = formValues.feePerUnit;
+            } else {
+                // make sure that feePerByte is an integer (trezor-connect may return float)
+                tx.feePerByte = new BigNumber(tx.feePerByte)
+                    .integerValue(BigNumber.ROUND_FLOOR)
+                    .toString();
+            }
             if (typeof tx.max === 'string') {
                 tx.max = formatNetworkAmount(tx.max, account.symbol);
             }
