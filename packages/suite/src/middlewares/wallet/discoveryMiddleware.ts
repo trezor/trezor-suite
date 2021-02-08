@@ -71,12 +71,13 @@ const discoveryMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
     if (nextState.router.app !== 'wallet' && nextState.router.app !== 'dashboard') return action;
 
     let authorizationIntent = false;
-    const { device } = nextState.suite;
+    const { device, locks } = nextState.suite;
     // 1. selected device is acquired but doesn't have a state
     if (
         device &&
         device.features &&
         !device.state &&
+        !locks.includes(SUITE.LOCK_TYPE.DEVICE) &&
         (action.type === SUITE.SELECT_DEVICE || action.type === SUITE.APP_CHANGED)
     ) {
         authorizationIntent = true;
