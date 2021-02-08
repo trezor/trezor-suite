@@ -306,7 +306,7 @@ const BasicDetails = ({ tx, confirmations, network, isFetching }: Props) => {
                         {/* Fee level */}
                         <Title>
                             <StyledIcon icon="GAS" size={10} />
-                            <Translation id="TR_FEE_LEVEL" />
+                            <Translation id="TR_FEE_RATE" />
                         </Title>
                         <Value>{`${getFeeRate(tx, network.decimals)} ${getFeeUnits(
                             'bitcoin',

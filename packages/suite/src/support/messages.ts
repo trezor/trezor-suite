@@ -5280,8 +5280,8 @@ const definedMessages = defineMessages({
         id: 'TR_INCREASED_FEE',
         defaultMessage: 'New transaction fee',
     },
-    TR_INCREASED_FEE_RATE: {
-        id: 'TR_INCREASED_FEE_RATE',
+    TR_FEE_RATE: {
+        id: 'TR_FEE_RATE',
         defaultMessage: 'Fee rate',
     },
     TR_SEARCH_TRANSACTIONS: {
@@ -5375,10 +5375,6 @@ const definedMessages = defineMessages({
     TR_RBF_STATUS_NOT_FINAL: {
         id: 'TR_RBF_STATUS_NOT_FINAL',
         defaultMessage: 'Not Final',
-    },
-    TR_FEE_LEVEL: {
-        id: 'TR_FEE_LEVEL',
-        defaultMessage: 'Fee Level',
     },
     TR_TXID: {
         id: 'TR_TXID',
