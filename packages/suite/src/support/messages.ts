@@ -4607,7 +4607,7 @@ const definedMessages = defineMessages({
         id: 'CUSTOM_FEE_NOT_IN_RANGE',
     },
     CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED: {
-        defaultMessage: 'Gas limit below recommended {feeLimit} {button}',
+        defaultMessage: 'Gas limit too low {button}',
         id: 'CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED',
     },
     CUSTOM_FEE_LIMIT_USE_RECOMMENDED: {

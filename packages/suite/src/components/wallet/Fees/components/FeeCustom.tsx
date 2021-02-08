@@ -62,20 +62,19 @@ const ButtonWrapper = styled.div`
 `;
 
 const StyledButton = styled(Button)`
-    margin-right: 8px;
+    margin-left: 8px;
     padding: 0;
     background: none;
 `;
 
 // feeLimit error notification button
-const SetDefaultLimit = ({ feeLimit, onClick }: { feeLimit: string; onClick: () => void }) => {
+const SetDefaultLimit = ({ onClick }: { onClick: () => void }) => {
     return (
         <ButtonWrapper>
             <Translation
                 id="CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED"
                 isNested
                 values={{
-                    feeLimit,
                     button: (
                         <StyledButton variant="tertiary" onClick={onClick}>
                             <Translation id="CUSTOM_FEE_LIMIT_USE_RECOMMENDED" />
@@ -106,7 +105,7 @@ const FeeCustom = ({
 
     const useFeeLimit = networkType === 'ethereum';
     const feeLimitValue = getValues(FEE_LIMIT);
-    const estimatedFeeLimit = getValues('estimatedFeeLimit');
+    const estimatedFeeLimit = getValues('estimatedFeeLimit') || ETH_DEFAULT_GAS_LIMIT;
     const feeLimitError = errors.feeLimit;
     const feeLimitDisabled = false;
 
@@ -133,22 +132,9 @@ const FeeCustom = ({
                                     if (!isInteger(value)) {
                                         return 'CUSTOM_FEE_IS_NOT_INTEGER';
                                     }
-                                    if (feeBig.lt(ETH_DEFAULT_GAS_LIMIT)) {
+                                    if (feeBig.lt(estimatedFeeLimit)) {
                                         return (
                                             <SetDefaultLimit
-                                                feeLimit={ETH_DEFAULT_GAS_LIMIT}
-                                                onClick={() => {
-                                                    setValue(FEE_LIMIT, ETH_DEFAULT_GAS_LIMIT, {
-                                                        shouldValidate: true,
-                                                    });
-                                                }}
-                                            />
-                                        );
-                                    }
-                                    if (estimatedFeeLimit && feeBig.lt(estimatedFeeLimit)) {
-                                        return (
-                                            <SetDefaultLimit
-                                                feeLimit={estimatedFeeLimit}
                                                 onClick={() => {
                                                     setValue(FEE_LIMIT, estimatedFeeLimit, {
                                                         shouldValidate: true,
