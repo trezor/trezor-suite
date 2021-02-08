@@ -4,29 +4,31 @@ import { FeeLevel } from 'trezor-connect';
 import { variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { getFeeUnits } from '@wallet-utils/sendFormUtils';
+import { formatDuration } from '@suite-utils/date';
 import { Network } from '@wallet-types';
 import { FeeInfo, PrecomposedTransaction } from '@wallet-types/sendForm';
-import EstimatedMiningTime from './EstimatedMiningTime';
 
 const Wrapper = styled.div`
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
     min-width: 150px;
+
+    > * {
+        padding-right: 8px;
+    }
 `;
 
-const EstimatedMiningTimeWrapper = styled.span`
-    padding-right: 4px;
-`;
-
-const FeeUnits = styled.span`
+const Item = styled.span`
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const TxSize = styled(FeeUnits)`
-    padding-left: 4px;
+const Label = styled.span`
+    color: ${props => props.theme.TYPE_DARK_GREY};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    padding-right: 8px;
 `;
 
 interface Props {
@@ -42,16 +44,24 @@ interface Props {
 const BitcoinDetails = ({ networkType, feeInfo, selectedLevel, transactionInfo }: Props) => {
     return (
         <Wrapper>
-            <EstimatedMiningTimeWrapper>
-                <EstimatedMiningTime seconds={feeInfo.blockTime * selectedLevel.blocks * 60} />
-            </EstimatedMiningTimeWrapper>
-            <FeeUnits>{`${
-                transactionInfo && transactionInfo.type !== 'error'
-                    ? transactionInfo.feePerByte
-                    : selectedLevel.feePerUnit
-            } ${getFeeUnits(networkType)}`}</FeeUnits>
+            <Item>
+                <Label>
+                    <Translation id="ESTIMATED_TIME" />
+                </Label>
+                {formatDuration(feeInfo.blockTime * selectedLevel.blocks * 60)}
+            </Item>
+            <Item>
+                <Label>
+                    <Translation id="TR_FEE_RATE" />
+                </Label>
+                {`${
+                    transactionInfo && transactionInfo.type !== 'error'
+                        ? transactionInfo.feePerByte
+                        : selectedLevel.feePerUnit
+                } ${getFeeUnits(networkType)}`}
+            </Item>
             {transactionInfo && transactionInfo.type !== 'error' && (
-                <TxSize>({transactionInfo.bytes} B)</TxSize>
+                <Item>({transactionInfo.bytes} B)</Item>
             )}
         </Wrapper>
     );
@@ -60,16 +70,20 @@ const BitcoinDetails = ({ networkType, feeInfo, selectedLevel, transactionInfo }
 const EthereumDetails = ({ networkType, selectedLevel, transactionInfo }: Props) => {
     return (
         <Wrapper>
-            <FeeUnits>
-                <Translation id="TR_GAS_PRICE" />
-                {` ${selectedLevel.feePerUnit} ${getFeeUnits(networkType)}`}
-            </FeeUnits>
-            <TxSize>
-                <Translation id="TR_GAS_LIMIT" />{' '}
+            <Item>
+                <Label>
+                    <Translation id="TR_GAS_LIMIT" />
+                </Label>
                 {transactionInfo && transactionInfo.type !== 'error'
                     ? transactionInfo.feeLimit
                     : selectedLevel.feeLimit}
-            </TxSize>
+            </Item>
+            <Item>
+                <Label>
+                    <Translation id="TR_GAS_PRICE" />
+                </Label>
+                {`${selectedLevel.feePerUnit} ${getFeeUnits(networkType)}`}
+            </Item>
         </Wrapper>
     );
 };
@@ -77,7 +91,7 @@ const EthereumDetails = ({ networkType, selectedLevel, transactionInfo }: Props)
 const RippleDetails = ({ networkType, selectedLevel }: Props) => {
     return (
         <Wrapper>
-            <FeeUnits>{`${selectedLevel.feePerUnit} ${getFeeUnits(networkType)}`}</FeeUnits>
+            <Item>{`${selectedLevel.feePerUnit} ${getFeeUnits(networkType)}`}</Item>
         </Wrapper>
     );
 };
