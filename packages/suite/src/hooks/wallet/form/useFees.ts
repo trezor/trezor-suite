@@ -3,7 +3,7 @@ import { UseFormMethods } from 'react-hook-form';
 import { FeeLevel } from 'trezor-connect';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { useActions } from '@suite-hooks';
-import { FeeInfo } from '@wallet-types/sendForm';
+import { FeeInfo, PrecomposedLevels } from '@wallet-types/sendForm';
 
 type Props = UseFormMethods<{
     selectedFee?: FeeLevel['label'];
@@ -16,6 +16,7 @@ type Props = UseFormMethods<{
     saveLastUsedFee?: boolean;
     onChange?: (prev?: FeeLevel['label'], current?: FeeLevel['label']) => void;
     composeRequest?: (field?: string) => void;
+    composedLevels?: PrecomposedLevels;
 };
 
 // shareable sub-hook used in useRbfForm and useSendForm (TODO)
@@ -26,6 +27,7 @@ export const useFees = ({
     saveLastUsedFee,
     onChange,
     composeRequest,
+    composedLevels,
     watch,
     register,
     getValues,
@@ -124,11 +126,16 @@ export const useFees = ({
         let feeLimit;
         if (level === 'custom') {
             // switching to custom FeeLevel for the first time
-            // set custom values from a previously selected FeeLevel
             const currentLevel = feeInfo.levels.find(
                 l => l.label === (selectedFeeRef.current || 'normal'),
             )!;
-            feePerUnit = currentLevel.feePerUnit;
+            // set custom values from a previously selected composed transaction
+            // or from previously selected FeeLevel
+            const transactionInfo = composedLevels && composedLevels[selectedFeeRef.current!];
+            feePerUnit =
+                transactionInfo && transactionInfo.type !== 'error'
+                    ? transactionInfo.feePerByte
+                    : currentLevel.feePerUnit;
             feeLimit = getValues('estimatedFeeLimit') || currentLevel.feeLimit || '';
         } else if (selectedFeeRef.current === 'custom' && (errors.feePerUnit || errors.feeLimit)) {
             // switching from custom FeeLevel which has an error

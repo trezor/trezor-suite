@@ -39,13 +39,20 @@ interface Props {
     transactionInfo?: PrecomposedTransaction;
 }
 
-const BitcoinDetails = ({ networkType, feeInfo, selectedLevel }: Props) => {
+const BitcoinDetails = ({ networkType, feeInfo, selectedLevel, transactionInfo }: Props) => {
     return (
         <Wrapper>
             <EstimatedMiningTimeWrapper>
                 <EstimatedMiningTime seconds={feeInfo.blockTime * selectedLevel.blocks * 60} />
             </EstimatedMiningTimeWrapper>
-            <FeeUnits>{`${selectedLevel.feePerUnit} ${getFeeUnits(networkType)}`}</FeeUnits>
+            <FeeUnits>{`${
+                transactionInfo && transactionInfo.type !== 'error'
+                    ? transactionInfo.feePerByte
+                    : selectedLevel.feePerUnit
+            } ${getFeeUnits(networkType)}`}</FeeUnits>
+            {transactionInfo && transactionInfo.type !== 'error' && (
+                <TxSize>({transactionInfo.bytes} B)</TxSize>
+            )}
         </Wrapper>
     );
 };

@@ -301,9 +301,9 @@ export const isTxUnknown = (transaction: WalletAccountTransaction) => {
     );
 };
 
-export const getFeeRate = (tx: AccountTransaction, convertToDecimals?: number) => {
+export const getFeeRate = (tx: AccountTransaction, decimals?: number) => {
     // calculate fee rate, TODO: add this to blockchain-link tx details
-    const fee = convertToDecimals ? amountToSatoshi(tx.fee, convertToDecimals) : tx.fee;
+    const fee = typeof decimals === 'number' ? amountToSatoshi(tx.fee, decimals) : tx.fee;
     return new BigNumber(fee).div(tx.details.size).integerValue(BigNumber.ROUND_CEIL).toString();
 };
 
