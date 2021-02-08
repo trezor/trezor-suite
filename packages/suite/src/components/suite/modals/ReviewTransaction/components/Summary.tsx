@@ -211,7 +211,7 @@ const Summary = ({
             </SummaryHead>
             <Separator />
             <LeftDetails>
-                {estimateTime && (
+                {!!estimateTime && (
                     <LeftDetailsRow>
                         <ReviewRbfLeftDetailsLineLeft>
                             <Icon size={12} color={theme.TYPE_LIGHT_GREY} icon="CALENDAR" />
@@ -222,7 +222,7 @@ const Summary = ({
                         </ReviewRbfLeftDetailsLineRight>
                     </LeftDetailsRow>
                 )}
-                {tx.feeLimit && (
+                {!!tx.feeLimit && (
                     <LeftDetailsRow>
                         <ReviewRbfLeftDetailsLineLeft>
                             <Icon size={12} color={theme.TYPE_LIGHT_GREY} icon="GAS" />
