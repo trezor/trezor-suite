@@ -232,9 +232,7 @@ const Summary = ({
                 <LeftDetailsRow>
                     <ReviewRbfLeftDetailsLineLeft>
                         <Icon size={12} color={theme.TYPE_LIGHT_GREY} icon="GAS" />
-                        {network.networkType === 'bitcoin' && (
-                            <Translation id="TR_INCREASED_FEE_RATE" />
-                        )}
+                        {network.networkType === 'bitcoin' && <Translation id="TR_FEE_RATE" />}
                         {network.networkType === 'ethereum' && <Translation id="TR_GAS_PRICE" />}
                         {network.networkType === 'ripple' && <Translation id="TR_TX_FEE" />}
                     </ReviewRbfLeftDetailsLineLeft>
