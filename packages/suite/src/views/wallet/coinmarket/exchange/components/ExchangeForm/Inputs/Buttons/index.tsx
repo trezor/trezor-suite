@@ -65,7 +65,7 @@ const Bottom = () => {
                   .dividedBy(divisor)
                   .decimalPlaces(network.decimals)
                   .toString();
-        setValue('receiveCryptoInput', amount);
+        setValue('sendCryptoInput', amount);
         updateFiatValue(amount);
     };
 
