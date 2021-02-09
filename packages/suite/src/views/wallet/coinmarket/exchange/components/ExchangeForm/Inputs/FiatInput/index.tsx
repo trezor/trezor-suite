@@ -22,7 +22,7 @@ const FiatInput = () => {
         clearErrors,
         errors,
         trigger,
-        updateReceiveCryptoValue,
+        updateSendCryptoValue,
         setMax,
         setValue,
     } = useCoinmarketExchangeFormContext();
@@ -36,9 +36,9 @@ const FiatInput = () => {
             onChange={event => {
                 setMax(false);
                 if (errors[fiatInput]) {
-                    setValue('receiveCryptoInput', '');
+                    setValue('sendCryptoInput', '');
                 } else {
-                    updateReceiveCryptoValue(event.target.value, network.decimals);
+                    updateSendCryptoValue(event.target.value, network.decimals);
                     clearErrors(fiatInput);
                 }
             }}

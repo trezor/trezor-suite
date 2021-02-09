@@ -102,7 +102,7 @@ const buildOptions = (
     return [popular, stable, all];
 };
 
-const SendCryptoSelect = () => {
+const ReceiveCryptoSelect = () => {
     const {
         control,
         setAmountLimits,
@@ -129,7 +129,7 @@ const SendCryptoSelect = () => {
             <Controller
                 control={control}
                 defaultValue={false}
-                name="sendCryptoSelect"
+                name="receiveCryptoSelect"
                 render={({ onChange, value }) => {
                     return (
                         <Select
@@ -166,4 +166,4 @@ const SendCryptoSelect = () => {
     );
 };
 
-export default SendCryptoSelect;
+export default ReceiveCryptoSelect;

@@ -3,9 +3,9 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { invityApiSymbolToSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
-import ReceiveCryptoInput from './ReceiveCryptoInput';
+import SendCryptoInput from './SendCryptoInput';
 import FiatInput from './FiatInput';
-import SendCryptoSelect from './SendCryptoSelect';
+import ReceiveCryptoSelect from './ReceiveCryptoSelect';
 import Buttons from './Buttons';
 
 const Wrapper = styled.div`
@@ -62,17 +62,17 @@ const Inputs = () => {
     const formattedToken = invityApiSymbolToSymbol(token);
     const tokenData = account.tokens?.find(t => t.symbol === formattedToken);
     useEffect(() => {
-        trigger(['receiveCryptoInput']);
+        trigger(['sendCryptoInput']);
     }, [amountLimits, trigger]);
 
     return (
         <Wrapper>
             <Top>
                 <LeftWrapper>
-                    <ReceiveCryptoInput />
+                    <SendCryptoInput />
                     <Line
                         color={
-                            errors.receiveCryptoInput || errors.fiatInput
+                            errors.sendCryptoInput || errors.fiatInput
                                 ? theme.TYPE_RED
                                 : theme.STROKE_GREY
                         }
@@ -83,7 +83,7 @@ const Inputs = () => {
                     <StyledIcon icon="TRANSFER" size={16} />
                 </MiddleWrapper>
                 <RightWrapper>
-                    <SendCryptoSelect />
+                    <ReceiveCryptoSelect />
                 </RightWrapper>
             </Top>
             <Buttons />
