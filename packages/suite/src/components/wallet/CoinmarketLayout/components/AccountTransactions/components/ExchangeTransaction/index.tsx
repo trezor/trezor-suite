@@ -1,5 +1,4 @@
 import React from 'react';
-import { FormattedDate } from 'react-intl';
 import styled from 'styled-components';
 import { ExchangeProviderInfo } from 'invity-api';
 import { Button, Icon, variables, useTheme } from '@trezor/components';
@@ -10,7 +9,7 @@ import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeAc
 import { Account } from '@wallet-types';
 import { useWatchExchangeTrade } from '@wallet-hooks/useCoinmarket';
 import Status from '../Status';
-import { Translation, HiddenPlaceholder } from '@suite-components';
+import { Translation, HiddenPlaceholder, FormattedDate } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 
@@ -147,16 +146,8 @@ const ExchangeTransaction = ({ trade, providers, account }: Props) => {
                     {/* <StyledCoinLogo size={13} symbol={symbol} /> */}
                 </Row>
                 <SmallRowStatus>
-                    {trade.tradeType.toUpperCase()} •{' '}
-                    <FormattedDate
-                        value={date}
-                        year="numeric"
-                        month="2-digit"
-                        day="2-digit"
-                        hour="2-digit"
-                        minute="2-digit"
-                    />{' '}
-                    • <StyledStatus trade={data} tradeType={trade.tradeType} />
+                    {trade.tradeType.toUpperCase()} • <FormattedDate value={date} date time /> •{' '}
+                    <StyledStatus trade={data} tradeType={trade.tradeType} />
                 </SmallRowStatus>
                 <SmallRow>
                     <Translation id="TR_EXCHANGE_TRANS_ID" />

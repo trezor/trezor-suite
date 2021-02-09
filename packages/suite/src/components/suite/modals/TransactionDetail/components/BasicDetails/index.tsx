@@ -1,8 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormattedDate } from 'react-intl';
 import { Icon, useTheme, variables, Loader, CoinLogo, Tooltip } from '@trezor/components';
-import { Translation, HiddenPlaceholder, TrezorLink } from '@suite-components';
+import {
+    Translation,
+    HiddenPlaceholder,
+    TrezorLink,
+    FormattedDateWithBullet,
+} from '@suite-components';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction, Network } from '@wallet-types';
 import { getFeeRate, getBlockExplorerUrl, isTxFinal } from '@wallet-utils/transactionUtils';
@@ -31,11 +35,6 @@ const StatusWrapper = styled.div`
     display: flex;
     height: 20px;
     align-items: center;
-`;
-
-const HourWrapper = styled.div`
-    display: inline-flex;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const LoaderIconWrapper = styled.div`
@@ -153,12 +152,6 @@ const Circle = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
-const Bullet = styled.span`
-    margin-left: 0.5ch;
-    margin-right: 0.5ch;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-`;
-
 const Timestamp = styled.span`
     white-space: nowrap;
 `;
@@ -267,21 +260,10 @@ const BasicDetails = ({ tx, confirmations, network, isFetching }: Props) => {
                 <Value>
                     {tx.blockTime ? (
                         <Timestamp>
-                            <FormattedDate
+                            <FormattedDateWithBullet
                                 value={getDateWithTimeZone(tx.blockTime * 1000)}
-                                year="numeric"
-                                month="short"
-                                day="2-digit"
+                                timeLightColor
                             />
-
-                            <Bullet>&bull;</Bullet>
-                            <HourWrapper>
-                                <FormattedDate
-                                    value={getDateWithTimeZone(tx.blockTime * 1000)}
-                                    hour="2-digit"
-                                    minute="2-digit"
-                                />
-                            </HourWrapper>
                         </Timestamp>
                     ) : (
                         <Translation id="TR_UNKNOWN_CONFIRMATION_TIME" />

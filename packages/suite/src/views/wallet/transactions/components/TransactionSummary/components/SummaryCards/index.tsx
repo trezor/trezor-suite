@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
-import { FormattedDate } from 'react-intl';
 import { variables } from '@trezor/components';
-import { Translation, HiddenPlaceholder, FormattedNumber } from '@suite-components';
+import { Translation, HiddenPlaceholder, FormattedNumber, FormattedDate } from '@suite-components';
 import { sumFiatValueMap, getFormattedLabelLong } from '@wallet-utils/graphUtils';
 import { Account } from '@wallet-types';
 import { GraphRange, AggregatedAccountHistory } from '@wallet-types/graph';
@@ -66,19 +65,8 @@ const SummaryCards = ({
                 secondaryValue={
                     fromTimestamp && toTimestamp ? (
                         <>
-                            <FormattedDate
-                                value={fromTimestamp * 1000}
-                                year="numeric"
-                                month="short"
-                                day="2-digit"
-                            />{' '}
-                            -{' '}
-                            <FormattedDate
-                                value={toTimestamp * 1000}
-                                year="numeric"
-                                month="short"
-                                day="2-digit"
-                            />
+                            <FormattedDate value={fromTimestamp * 1000} date /> -{' '}
+                            <FormattedDate value={toTimestamp * 1000} date />
                         </>
                     ) : null
                 }

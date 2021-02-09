@@ -1,8 +1,7 @@
-import { FormattedDate } from 'react-intl';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button, variables } from '@trezor/components';
-import { Translation, FormattedCryptoAmount, FiatValue } from '@suite-components';
+import { Translation, FormattedCryptoAmount, FiatValue, FormattedDate } from '@suite-components';
 import AmountRow from '../AmountRow';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction } from '@wallet-types';
@@ -114,9 +113,7 @@ const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
                             tx.blockTime && (
                                 <FormattedDate
                                     value={getDateWithTimeZone(tx.blockTime * 1000)}
-                                    year="numeric"
-                                    month="short"
-                                    day="2-digit"
+                                    date
                                 />
                             )
                         }
@@ -130,8 +127,8 @@ const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
                                                 timestamp ? (
                                                     <FormattedDate
                                                         value={timestamp}
-                                                        month="short"
-                                                        day="2-digit"
+                                                        date
+                                                        year={undefined}
                                                     />
                                                 ) : null
                                             }

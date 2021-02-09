@@ -3,13 +3,12 @@ import styled from 'styled-components';
 import { BuyProviderInfo, BuyTradeQuoteRequest } from 'invity-api';
 import invityAPI from '@suite-services/invityAPI';
 import { useWatchBuyTrade } from '@wallet-hooks/useCoinmarket';
-import { FormattedDate } from 'react-intl';
 import * as routerActions from '@suite-actions/routerActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { useTheme, variables, Icon, Button } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketBuyProviderInfo } from '@wallet-components';
 import { Account } from '@wallet-types';
-import { Translation, HiddenPlaceholder } from '@suite-components';
+import { Translation, HiddenPlaceholder, FormattedDate } from '@suite-components';
 import { getStatusMessage, processQuotes } from '@wallet-utils/coinmarket/buyUtils';
 import { TradeBuy } from '@wallet-reducers/coinmarketReducer';
 import Status from '../Status';
@@ -198,16 +197,8 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
                     {/* <StyledCoinLogo size={13} symbol={symbol} /> */}
                 </Row>
                 <SmallRowStatus>
-                    {trade.tradeType.toUpperCase()} •{' '}
-                    <FormattedDate
-                        value={date}
-                        year="numeric"
-                        month="2-digit"
-                        day="2-digit"
-                        hour="2-digit"
-                        minute="2-digit"
-                    />{' '}
-                    • <StyledStatus trade={data} tradeType={trade.tradeType} />
+                    {trade.tradeType.toUpperCase()} • <FormattedDate value={date} date time /> •{' '}
+                    <StyledStatus trade={data} tradeType={trade.tradeType} />
                 </SmallRowStatus>
                 <SmallRow>
                     <Translation id="TR_BUY_TRANS_ID" />

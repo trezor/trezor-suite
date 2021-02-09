@@ -1,10 +1,9 @@
-import { Translation } from '@suite-components';
+import { Translation, FormattedDateWithBullet } from '@suite-components';
 import hocNotification, { ViewProps } from '@suite-components/hocNotification';
 import { AppState } from '@suite-types';
 import { getNotificationIcon } from '@suite-utils/notification';
 import { Button, Icon, P } from '@trezor/components';
 import React from 'react';
-import { FormattedDate } from 'react-intl';
 import styled from 'styled-components';
 import { useLayoutSize } from '@suite-hooks';
 
@@ -69,14 +68,7 @@ const NotificationView = (props: ViewProps) => {
                     )}
                 </P>
                 <DateP size="tiny" style={{ opacity: seen ? 0.7 : 1 }}>
-                    <FormattedDate
-                        value={props.notification.id}
-                        year="numeric"
-                        month="2-digit"
-                        day="2-digit"
-                        hour="2-digit"
-                        minute="2-digit"
-                    />
+                    <FormattedDateWithBullet value={props.notification.id} />
                 </DateP>
             </Text>
 
