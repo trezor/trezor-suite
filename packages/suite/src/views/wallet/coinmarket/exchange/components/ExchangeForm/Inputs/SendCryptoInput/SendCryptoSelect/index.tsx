@@ -14,7 +14,7 @@ const Label = styled.div`
     padding-left: 10px;
 `;
 
-const ReceiveCryptoSelect = () => {
+const SendCryptoSelect = () => {
     const {
         control,
         setAmountLimits,
@@ -25,13 +25,13 @@ const ReceiveCryptoSelect = () => {
         setToken,
         compose,
     } = useCoinmarketExchangeFormContext();
-    const receiveCryptoSelect = 'receiveCryptoSelect';
+    const sendCryptoSelect = 'sendCryptoSelect';
     const uppercaseSymbol = account.symbol.toUpperCase();
 
     return (
         <Controller
             control={control}
-            name={receiveCryptoSelect}
+            name={sendCryptoSelect}
             defaultValue={{
                 value: uppercaseSymbol,
                 label: formatLabel(uppercaseSymbol),
@@ -43,7 +43,7 @@ const ReceiveCryptoSelect = () => {
                             setMax(false);
                             onChange(selected);
                             setAmountLimits(undefined);
-                            setValue('receiveCryptoInput', '');
+                            setValue('sendCryptoInput', '');
                             setValue('fiatInput', '');
                             const lowerCaseToken = selected.value.toLowerCase();
                             if (
@@ -81,4 +81,4 @@ const ReceiveCryptoSelect = () => {
     );
 };
 
-export default ReceiveCryptoSelect;
+export default SendCryptoSelect;
