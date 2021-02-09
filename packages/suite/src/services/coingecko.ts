@@ -6,17 +6,36 @@ interface HistoricalResponse extends LastWeekRates {
     symbol: string;
 }
 
+class FiatRatesFetchError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'FiatRatesFetchError';
+        // Maintains proper stack trace for where our error was thrown (only available on V8)
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, FiatRatesFetchError);
+        }
+    }
+}
+
+const fetchCoinGecko = async (url: string) => {
+    try {
+        const res = await fetch(url);
+        if (!res.ok) {
+            throw new FiatRatesFetchError(`${res.status}: ${url}`);
+        }
+        return res.json();
+    } catch (error) {
+        throw new FiatRatesFetchError(`Failed to fetch: ${url}`);
+    }
+};
 /**
  * Returns an array with coins supported by CoinGecko API
  *
  * @returns {Promise<any>}
  */
-export const fetchCoinList = async (): Promise<any> => {
+export const fetchCoinList = (): Promise<any> => {
     const url = `${COINGECKO_API_BASE_URL}/coins/list`;
-
-    const response = await fetch(url);
-    const tokens = await response.json();
-    return tokens;
+    return fetchCoinGecko(url);
 };
 
 /**
@@ -50,8 +69,7 @@ export const fetchCurrentFiatRates = async (ticker: FiatTicker) => {
         'tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false';
     const url = `${coinUrl}?${urlParams}`;
 
-    const response = await fetch(url);
-    const rates = await response.json();
+    const rates = await fetchCoinGecko(url);
     if (!rates) return null;
 
     return {
@@ -84,8 +102,7 @@ export const getFiatRatesForTimestamps = async (
         const d = new Date(t * 1000);
         const dateParam = `${d.getUTCDate()}-${d.getUTCMonth() + 1}-${d.getUTCFullYear()}`;
 
-        const response = await fetch(`${url}?date=${dateParam}`);
-        const data = await response.json();
+        const data = await fetchCoinGecko(`${url}?date=${dateParam}`);
         return {
             ts: t,
             rates: data?.market_data?.current_price,
@@ -120,8 +137,7 @@ export const fetchLastWeekRates = async (
 
     const { symbol } = ticker;
     const url = `${coinUrl}/${urlEndpoint}?${urlParams}`;
-    const response = await fetch(url);
-    const data = await response.json();
+    const data = await fetchCoinGecko(url);
     const tickers = data?.prices?.map((d: any) => ({
         ts: Math.floor(d[0] / 1000),
         rates: { [localCurrency]: d[1] },
