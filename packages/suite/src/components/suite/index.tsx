@@ -37,6 +37,7 @@ import BetaBadge from './BetaBadge';
 import { Modal, ModalProps } from './Modal';
 import { SkeletonRectangle, SkeletonCircle } from './Skeleton';
 import Notifications from './Notifications';
+import FormattedDate, { FormattedDateWithBullet } from './FormattedDate';
 
 export {
     Backdrop,
@@ -83,5 +84,7 @@ export {
     SkeletonRectangle,
     SkeletonCircle,
     Notifications,
+    FormattedDate,
+    FormattedDateWithBullet,
 };
 export type { ImageProps, ModalProps };

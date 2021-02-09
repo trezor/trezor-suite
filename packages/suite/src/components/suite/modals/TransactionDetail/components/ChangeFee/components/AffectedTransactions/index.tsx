@@ -1,10 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Icon, Button, useTheme, variables } from '@trezor/components';
-import { FormattedCryptoAmount, Sign, Translation } from '@suite-components';
+import { FormattedCryptoAmount, Sign, Translation, FormattedDate } from '@suite-components';
 import { useRbfContext } from '@wallet-hooks/useRbfForm';
 import { useLayoutSize } from '@suite-hooks/useLayoutSize';
-import { FormattedDate } from 'react-intl';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import { truncateMiddle } from '@suite-utils/string';
 import GreyCard from '../GreyCard';
@@ -99,8 +98,7 @@ const AffectedTransactions = ({ showChained }: { showChained: () => void }) => {
                                 <Timestamp>
                                     <FormattedDate
                                         value={getDateWithTimeZone(tx.blockTime * 1000)}
-                                        hour="2-digit"
-                                        minute="2-digit"
+                                        time
                                     />
                                 </Timestamp>
                                 <Bullet>&bull;</Bullet>

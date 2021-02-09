@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { FormattedDate } from 'react-intl';
 import ReactMarkdown from 'react-markdown';
 
 import { Button, H2, variables, Link } from '@trezor/components';
-import { Translation, Modal } from '@suite-components';
+import { Translation, Modal, FormattedDate } from '@suite-components';
 import { Row, LeftCol, RightCol, Divider } from './styles';
 
 import { getReleaseNotes, getReleaseUrl } from '@suite/services/github';
@@ -158,7 +157,7 @@ const Available = ({ hideWindow, latest }: Props) => {
                     </Button>
                 </Link>
                 <DateWrapper>
-                    <FormattedDate value={latest?.releaseDate} />
+                    <FormattedDate value={latest?.releaseDate} date />
                 </DateWrapper>
             </GithubWrapper>
 
