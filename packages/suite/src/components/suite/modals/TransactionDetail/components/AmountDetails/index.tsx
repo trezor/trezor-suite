@@ -6,6 +6,7 @@ import AmountRow from '../AmountRow';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction } from '@wallet-types';
 import { getNetwork, formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { isPending } from '@wallet-utils/transactionUtils';
 import BigNumber from 'bignumber.js';
 
 // define these attributes as a constant because we will use the same values in two different styled components
@@ -65,6 +66,7 @@ const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
         network?.networkType === 'ripple' || network?.networkType === 'ethereum';
 
     const showHistoricalRates = showFiat && !tokenTransfer;
+    const isEthPending = network?.networkType === 'ethereum' && isPending(tx);
 
     // sum of all inputs
     const totalInput: BigNumber | undefined = txDetails?.vin?.reduce(
@@ -218,23 +220,25 @@ const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
                     fourthColumn={showFiat && <FiatValue amount={amount} symbol={assetSymbol} />}
                     color="light"
                 />
-                {/* TX FEE */}
-                <AmountRow
-                    firstColumn={<Translation id="TR_TX_FEE" />}
-                    secondColumn={<FormattedCryptoAmount value={tx.fee} symbol={tx.symbol} />}
-                    thirdColumn={
-                        showHistoricalRates && (
-                            <FiatValue
-                                amount={tx.fee}
-                                symbol={tx.symbol}
-                                source={tx.rates}
-                                useCustomSource
-                            />
-                        )
-                    }
-                    fourthColumn={showFiat && <FiatValue amount={tx.fee} symbol={tx.symbol} />}
-                    color="light"
-                />
+                {/* TX FEE (hide field for pending eth txs as we don't know the exact amount til tx is mined) */}
+                {!isEthPending && (
+                    <AmountRow
+                        firstColumn={<Translation id="TR_TX_FEE" />}
+                        secondColumn={<FormattedCryptoAmount value={tx.fee} symbol={tx.symbol} />}
+                        thirdColumn={
+                            showHistoricalRates && (
+                                <FiatValue
+                                    amount={tx.fee}
+                                    symbol={tx.symbol}
+                                    source={tx.rates}
+                                    useCustomSource
+                                />
+                            )
+                        }
+                        fourthColumn={showFiat && <FiatValue amount={tx.fee} symbol={tx.symbol} />}
+                        color="light"
+                    />
+                )}
                 {/* TODO: BlockchainLink doesn't return size/vsize field */}
                 {/* {txDetails?.size && <BoxRow title="Size">{`${txDetails.size} B`}</BoxRow>} */}
             </AmountWrapper>
