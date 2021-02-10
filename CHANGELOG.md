@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 - Check if IDB is supported before each operation (no idb support in FF incognito/tor browser)
+- Pagination on transaction list
+- Freeze when using transaction search while discovery is running
 
 ## 21.2.1 [10th February 2021]
 
