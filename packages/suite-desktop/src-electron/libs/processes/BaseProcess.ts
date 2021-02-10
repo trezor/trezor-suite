@@ -23,7 +23,7 @@ const defaultOptions: Options = {
     startupCooldown: 0,
     stopKillWait: 10,
     autoRestart: 2,
-};
+} as const;
 
 abstract class BaseProcess {
     process: ChildProcess | null;
@@ -136,7 +136,7 @@ abstract class BaseProcess {
             env: processEnv,
         });
         this.process.on('error', err => this.onError(err));
-        this.process.on('exit', () => this.onExit());
+        this.process.on('exit', code => this.onExit(code));
     }
 
     /**
@@ -190,12 +190,23 @@ abstract class BaseProcess {
         this.logger.error(this.logTopic, err.message);
     }
 
-    onExit() {
-        this.logger.info(this.logTopic, `Exited (Stopped: ${b2t(this.stopped)})`);
+    onExit(code: number | null) {
+        this.logger.info(
+            this.logTopic,
+            `Exited, code: ${code ?? 'N/A'} (Stopped: ${b2t(this.stopped)})`,
+        );
         this.process = null;
+
         if (this.options.autoRestart && this.options.autoRestart > 0 && !this.stopped) {
             this.logger.debug(this.logTopic, 'Auto restarting...');
-            setTimeout(() => this.start(), this.options.autoRestart * 1000);
+            let restartDelay = this.options.autoRestart;
+
+            // Add throttle delay to prevent the process from never restarting if the throttle is hit
+            if (this.startupThrottle && this.options.startupCooldown) {
+                restartDelay += this.options.startupCooldown;
+            }
+
+            setTimeout(() => this.start(), restartDelay * 1000);
         }
     }
 
