@@ -5,6 +5,7 @@ import Layout from '@suite-web-landing-components/Layout';
 import Translation, { TranslationModeContext } from '@suite-web-landing-components/Translation';
 import Download from '@suite-web-landing-components/Download';
 import Feature from '@suite-web-landing-components/Feature';
+import Metadata from '@suite-web-landing-components/Metadata';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { H1, P, variables, colors } from '@trezor/components';
 import { Fade } from 'react-awesome-reveal';
@@ -135,6 +136,7 @@ const Index = () => {
     return (
         <TranslationModeContext.Provider value={translationMode}>
             <IntlProvider locale="en" messages={enLocale}>
+                <Metadata />
                 <Layout>
                     <Wrapper>
                         <StyledHeroCta>
