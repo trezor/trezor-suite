@@ -173,7 +173,7 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Props) 
             {showPagination && (
                 <PaginationWrapper>
                     <Pagination
-                        hasPages={isRipple}
+                        hasPages={!isRipple}
                         currentPage={currentPage}
                         totalPages={total}
                         isOnLastPage={isOnLastPage}
