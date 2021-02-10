@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { Input, Icon, useTheme, Tooltip } from '@trezor/components';
 import { useActions } from '@suite-hooks';
@@ -47,13 +47,12 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
     const [expanded, setExpanded] = useState(false);
+    const [hasFetchedAll, setHasFetchedAll] = useState(false);
     const { translationString } = useTranslation();
     const { addToast, fetchTransactions } = useActions({
         addToast: notificationActions.addToast,
         fetchTransactions: transactionActions.fetchTransactions,
     });
-    // const [isSearchFetching, setIsSearchFetching] = useState(false);
-    const [, setIsSearchFetching] = useState(false);
 
     const onFocus = useCallback(() => {
         setExpanded(true);
@@ -84,11 +83,13 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
     });
 
     const onSearch = useCallback(
-        async e => {
-            const { value } = e.target;
-            if (search === '' && value !== '') {
-                // Fetch all transactions
-                setIsSearchFetching(true);
+        async ({ target }) => {
+            setSelectedPage(1);
+            setSearch(target.value);
+
+            if (!hasFetchedAll) {
+                setHasFetchedAll(true);
+
                 try {
                     await fetchTransactions(account, 2, SETTINGS.TXS_PER_PAGE, true, true);
                 } catch (err) {
@@ -96,24 +97,25 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
                         type: 'error',
                         error: translationString('TR_SEARCH_FAIL'),
                     });
-                } finally {
-                    setIsSearchFetching(false);
                 }
             }
-
-            setSelectedPage(1);
-            setSearch(value);
         },
         [
             account,
             addToast,
             fetchTransactions,
-            search,
+            hasFetchedAll,
             setSearch,
             setSelectedPage,
             translationString,
         ],
     );
+
+    useEffect(() => {
+        setHasFetchedAll(false);
+        setExpanded(false);
+        setSearch('');
+    }, [account.symbol, account.index, account.accountType, setSearch]);
 
     if (!isEnabled('SEARCH_TRANSACTIONS')) {
         return null;
