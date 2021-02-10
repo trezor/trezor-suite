@@ -1,7 +1,7 @@
 {
     "name": "@trezor/suite-desktop",
     "description": "Trezor Suite desktop application",
-    "version": "21.2.1",
+    "version": "21.2.2",
     "private": true,
     "author": "SatoshiLabs <info@satoshilabs.com>",
     "homepage": "https://trezor.io/",
@@ -159,7 +159,7 @@
         "@types/electron-localshortcut": "^3.1.0",
         "@types/next-redux-wrapper": "^3.0.0",
         "@types/node-fetch": "^2.5.7",
-        "@types/react": "^17.0.0",        
+        "@types/react": "^17.0.0",
         "@types/react-dom": "^17.0.0",
         "@types/react-redux": "^7.1.7",
         "@zeit/next-workers": "^1.0.0",
