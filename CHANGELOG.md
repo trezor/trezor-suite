@@ -1,13 +1,29 @@
 # Changelog
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). [YY.MM.MICRO]
 
-## 21.1.0 [to be released Jan 13th]
+## 21.3.0 [to be released 10th March 2021]
 
 ### Added
 
 ### Changed
 
 ### Fixed
+
+## 21.2.1 [10th February 2021]
+
+### Added
+
+- RBF with on-device support
+- Transaction search
+- Spend crypto through Bitrefill vouchers
+- Option to add custom ERC20 tokens
+- Custom fee in ETH
+
+### Changed
+- Redesigned review and send transaction modal
+
+### Fixed
+- M1 Mac compatibility
 
 ## 20.12.1 [9th December 2020]
 
