@@ -1,6 +1,19 @@
 [
 	{
 		"required": false,
+		"version": [2, 3, 5],
+		"min_bridge_version": [2, 0, 7],
+		"min_firmware_version": [2, 0, 8],
+		"min_bootloader_version": [2, 0, 0],
+		"url": "data/firmware/2/trezor-2.3.5.bin",
+		"url_bitcoinonly": "data/firmware/2/trezor-2.3.5-bitcoinonly.bin",
+		"fingerprint": "c0a6cacfed5c7a691314919c22307c29fbe9522071a9a28669769c014762d386",
+		"fingerprint_bitcoinonly": "53e7ee5bfc75cfa6412d8de5461b1ea8d9b7e10970ce7cadae9cbb1e17bbb77d",
+		"notes": "https://blog.trezor.io/trezor-suite-and-firmware-updates-rbf-and-spending-now-live-c2f69c42d7f7",
+		"changelog": "* Replacement transaction signing for replace-by-fee and PayJoin.\n* Support for Output Descriptors export.\n* Paginated display for signing/verifying long messages.\n* Show Ypub/Zpub correctly for multisig GetAddress.\n* Show amounts in mBTC, uBTC and sat denominations."
+	},
+	{
+		"required": false,
 		"version": [2, 3, 4],
 		"min_bridge_version": [2, 0, 7],
 		"min_firmware_version": [2, 0, 8],
