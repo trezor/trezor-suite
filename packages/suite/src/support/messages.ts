@@ -5392,8 +5392,8 @@ const definedMessages = defineMessages({
         id: 'TR_BYTES',
         defaultMessage: 'bytes',
     },
-    TR_SUITE_LANDING_META_DESCRIPTION: {
-        id: 'TR_SUITE_LANDING_META_DESCRIPTION',
+    TR_SUITE_META_DESCRIPTION: {
+        id: 'TR_SUITE_META_DESCRIPTION',
         defaultMessage:
             'New desktop & browser app for Trezor hardware wallets. Trezor Suite brings big improvements across our three key pillars of usability, security and privacy.',
     },

@@ -1,11 +1,11 @@
 import React from 'react';
 import App from 'next/app';
-import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
 import * as Sentry from '@sentry/browser';
 import { initStore } from '@suite/reducers/store';
+import Metadata from '@suite-components/Metadata';
 import Preloader from '@suite-components/Preloader';
 import ToastContainer from '@suite-components/ToastContainer';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
@@ -56,9 +56,6 @@ class TrezorSuiteApp extends App<Props> {
 
         return (
             <>
-                <Head>
-                    <meta name="viewport" content="width=device-width, initial-scale=1" />
-                </Head>
                 <ImagesPreloader />
                 <CypressExportStore store={store} />
                 <ReduxProvider store={store}>
@@ -81,6 +78,7 @@ class TrezorSuiteApp extends App<Props> {
                                             top: '-1000px',
                                         }}
                                     />
+                                    <Metadata />
                                     <Router />
                                     <ToastContainer />
                                     <Preloader>

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import Head from 'next/head';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Translation, Image, TrezorLink, Modal } from '@suite-components';
+import { Translation, Image, TrezorLink, Modal, Metadata } from '@suite-components';
 import { Button, P, Link, Select, useTheme, variables, Loader } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { URLS } from '@suite-constants';
@@ -146,9 +145,7 @@ const InstallBridge = (props: Props) => {
             description={<Translation id="TR_NEW_COMMUNICATION_TOOL" />}
             data-test="@bridge"
         >
-            <Head>
-                <title>Download Bridge | Trezor Suite</title>
-            </Head>
+            <Metadata title="Download Bridge | Trezor Suite" />
             <Content>
                 <Version show={!!data.currentVersion}>
                     <Translation
