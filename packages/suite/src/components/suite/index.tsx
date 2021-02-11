@@ -38,6 +38,7 @@ import { Modal, ModalProps } from './Modal';
 import { SkeletonRectangle, SkeletonCircle } from './Skeleton';
 import Notifications from './Notifications';
 import FormattedDate, { FormattedDateWithBullet } from './FormattedDate';
+import Metadata from './Metadata';
 
 export {
     Backdrop,
@@ -86,5 +87,6 @@ export {
     Notifications,
     FormattedDate,
     FormattedDateWithBullet,
+    Metadata,
 };
 export type { ImageProps, ModalProps };
