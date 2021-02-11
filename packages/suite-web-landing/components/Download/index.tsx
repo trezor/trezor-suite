@@ -58,6 +58,7 @@ const VersionInfo = styled.div`
     margin-top: 12px;
     color: ${colors.TYPE_LIGHTER_GREY};
     font-size: ${variables.NEUE_FONT_SIZE.TINY};
+    justify-content: center;
 `;
 
 const Item = styled.div`
