@@ -23,6 +23,7 @@ class CommonDB<TDBStructure> {
     broadcastChannel!: any;
     onUpgrade!: OnUpgradeFunc<TDBStructure>;
     onDowngrade!: () => any;
+    supported!: boolean | undefined;
 
     constructor(
         dbName: string,
@@ -38,7 +39,7 @@ class CommonDB<TDBStructure> {
         this.version = version;
         this.onUpgrade = onUpgrade.bind(this);
         this.onDowngrade = onDowngrade.bind(this);
-
+        this.supported = false;
         // @ts-ignore
         this.db = null;
         // create global instance of broadcast channel
@@ -70,6 +71,11 @@ class CommonDB<TDBStructure> {
         //         }
         //     }
         // });
+    };
+
+    isSupported = (): Promise<boolean> => {
+        this.supported = false;
+        return Promise.resolve(false);
     };
 
     notify = (_store: StoreNames<TDBStructure>, _keys: any[]) => {};

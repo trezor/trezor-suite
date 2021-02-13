@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 ### Fixed
+- Check if IDB is supported before each operation (no idb support in FF incognito/tor browser)
 
 ## 21.2.1 [10th February 2021]
 
