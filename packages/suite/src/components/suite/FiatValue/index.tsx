@@ -28,6 +28,7 @@ const SameWidthNums = styled.span`
 const FiatValue = ({
     amount,
     symbol,
+    tokenAddress,
     fiatCurrency,
     source,
     useCustomSource,
@@ -37,7 +38,9 @@ const FiatValue = ({
 }: Props) => {
     const targetCurrency = fiatCurrency ?? props.settings.localCurrency;
     const currentFiatRates = props.fiat.coins.find(
-        f => f.symbol.toLowerCase() === symbol.toLowerCase(),
+        f =>
+            f.symbol.toLowerCase() === symbol.toLowerCase() &&
+            f.tokenAddress?.toLowerCase() === tokenAddress?.toLowerCase(),
     )?.current;
 
     const ratesSource = useCustomSource ? source : currentFiatRates?.rates;

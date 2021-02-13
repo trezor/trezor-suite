@@ -1,5 +1,8 @@
 # Storage changelog
 
+## 19
+-   removed keyPath from fiatRates definition
+
 ## 18
 -   added device.walletNumber
 

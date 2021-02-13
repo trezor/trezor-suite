@@ -4,54 +4,49 @@ import {
     RATE_UPDATE,
     LAST_WEEK_RATES_UPDATE,
     RATE_REMOVE,
-    FETCH_COIN_LIST_START,
-    FETCH_COIN_LIST_SUCCESS,
-    FETCH_COIN_LIST_FAIL,
 } from '@wallet-actions/constants/fiatRatesConstants';
 import { STORAGE } from '@suite-actions/constants';
-import {
-    CoinListItem,
-    CoinFiatRates,
-    CurrentFiatRates,
-    LastWeekRates,
-} from '@wallet-types/fiatRates';
+import { CoinFiatRates, CurrentFiatRates, LastWeekRates, TickerId } from '@wallet-types/fiatRates';
 
 export interface State {
     coins: CoinFiatRates[];
-    coinList: CoinListItem[] | null;
 }
 
 export const initialState: State = {
     coins: [],
-    coinList: null,
 };
 
-const remove = (state: CoinFiatRates[], symbol: string, mainNetworkSymbol?: string) => {
+const remove = (state: CoinFiatRates[], payload: TickerId) => {
     const index = state.findIndex(
-        f => f.symbol === symbol && f.mainNetworkSymbol === mainNetworkSymbol,
+        f =>
+            f.symbol === payload.symbol &&
+            f.mainNetworkSymbol === payload.mainNetworkSymbol &&
+            f.tokenAddress === payload.tokenAddress,
     );
     state.splice(index, 1);
 };
 
 const updateCurrentRates = (
     state: CoinFiatRates[],
-    current: CurrentFiatRates,
-    mainNetworkSymbol?: string,
+    ticker: TickerId,
+    payload: CurrentFiatRates,
 ) => {
-    const { symbol } = current;
+    const { symbol, mainNetworkSymbol, tokenAddress } = ticker;
     const affected = state.find(
-        f => f.symbol === symbol && f.mainNetworkSymbol === mainNetworkSymbol,
+        f =>
+            f.symbol === symbol &&
+            f.mainNetworkSymbol === mainNetworkSymbol &&
+            f.tokenAddress === tokenAddress,
     );
 
     if (!affected) {
         state.push({
-            symbol,
-            mainNetworkSymbol,
-            current,
+            ...ticker,
+            current: payload,
             lastWeek: undefined,
         });
     } else {
-        affected.current = current;
+        affected.current = payload;
     }
 };
 
@@ -73,22 +68,13 @@ const fiatRatesReducer = (state: State = initialState, action: Action): State =>
     return produce(state, draft => {
         switch (action.type) {
             case RATE_REMOVE:
-                remove(draft.coins, action.symbol, action.mainNetworkSymbol);
+                remove(draft.coins, action.payload);
                 break;
             case RATE_UPDATE:
-                updateCurrentRates(draft.coins, action.payload, action.mainNetworkSymbol);
+                updateCurrentRates(draft.coins, action.ticker, action.payload);
                 break;
             case LAST_WEEK_RATES_UPDATE:
                 updateLastWeekRates(draft.coins, action.payload);
-                break;
-            case FETCH_COIN_LIST_START:
-                draft.coinList = null;
-                break;
-            case FETCH_COIN_LIST_SUCCESS:
-                draft.coinList = action.payload;
-                break;
-            case FETCH_COIN_LIST_FAIL:
-                draft.coinList = null;
                 break;
             case STORAGE.LOADED:
                 return action.payload.wallet.fiat;

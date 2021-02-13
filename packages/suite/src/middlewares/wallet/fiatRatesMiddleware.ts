@@ -40,6 +40,7 @@ const fiatRatesMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
                             fiatRatesActions.updateCurrentRates({
                                 symbol: t.symbol,
                                 mainNetworkSymbol: account.symbol,
+                                tokenAddress: t.address,
                             }),
                         );
                     }
@@ -60,6 +61,7 @@ const fiatRatesMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
                                 fiatRatesActions.updateCurrentRates({
                                     symbol: s,
                                     mainNetworkSymbol: account.symbol,
+                                    tokenAddress: t.address,
                                 }),
                             );
                         }, i * 500);
