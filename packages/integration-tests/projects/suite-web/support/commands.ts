@@ -44,8 +44,9 @@ declare global {
             prefixedVisit: typeof prefixedVisit;
             getConfirmActionOnDeviceModal: typeof getConfirmActionOnDeviceModal;
             resetDb: typeof resetDb;
-            // todo: better types
-            matchImageSnapshot: (options?: any) => Chainable<any>;
+            // todo: better types, this is not 100% correct as this fn may get more args from 
+            // cypress-image-snapshot lib
+            matchImageSnapshot: typeof cy['screenshot'];
             connectDevice: (
                 device?: Partial<Device>,
                 features?: Partial<Features>,
