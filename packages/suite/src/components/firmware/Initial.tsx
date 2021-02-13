@@ -63,7 +63,7 @@ const Heading = () => {
         return (
             <HeadingWrapper>
                 <Translation id="TR_UPDATE_AVAILABLE" />
-                <Version>
+                <Version data-test="@firmware/initial/heading/version">
                     <Translation
                         id="TR_DEVICE_FIRMWARE_VERSION"
                         values={{ firmware: getFwVersion(device) }}
@@ -111,13 +111,15 @@ const Body = () => {
 
     return (
         <BodyWrapper>
-            <H2 isGreen>v{firmwareRelease.release.version.join('.')} has been released!</H2>
+            <H2 isGreen data-test="@firmware/initial/subheading/version">
+                v{firmwareRelease.release.version.join('.')} has been released!
+            </H2>
             <P>
                 <Translation id="FIRMWARE_UPDATE_AVAILABLE_DESC" />
             </P>
 
             {Object.keys(logsCustomObject).length > 0 && (
-                <ChangesSummary>
+                <ChangesSummary data-test="@firmware/initial/changelog">
                     {Object.keys(logsCustomObject).map(version => {
                         const log = logsCustomObject[version];
                         return (
