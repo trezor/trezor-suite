@@ -21,7 +21,7 @@ export type Network = ArrayElement<typeof NETWORKS>;
 export type { NetworkToken, Token } from './tokenTypes';
 export type { Icon } from './iconTypes';
 export type { Account } from '@wallet-reducers/accountsReducer';
-export type { CoinFiatRates, FiatTicker } from '@wallet-types/fiatRates';
+export type { CoinFiatRates, TickerId } from '@wallet-types/fiatRates';
 export type { Discovery } from '@wallet-reducers/discoveryReducer';
 export type DiscoveryStatus =
     | {

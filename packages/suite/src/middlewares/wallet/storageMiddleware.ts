@@ -125,7 +125,9 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             break;
 
         case FIAT_RATES.RATE_REMOVE:
-            api.dispatch(storageActions.removeFiatRate(action.symbol));
+            api.dispatch(
+                storageActions.removeFiatRate(action.payload.symbol, action.payload.tokenAddress),
+            );
             break;
 
         case ANALYTICS.INIT:

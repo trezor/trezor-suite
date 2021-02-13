@@ -1,13 +1,7 @@
-export interface CoinListItem {
-    id: string;
+export interface TickerId {
     symbol: string;
-    name: string;
-}
-
-export interface FiatTicker {
-    symbol: string;
-    coinData?: CoinListItem; // coingecko metadata including identifier used for request
     mainNetworkSymbol?: string; // symbol of thee main network. (used for tokens)
+    tokenAddress?: string;
 }
 
 export interface CurrentFiatRates {
@@ -27,9 +21,7 @@ export interface LastWeekRates {
     ts: number;
 }
 
-export interface CoinFiatRates {
+export interface CoinFiatRates extends TickerId {
     current?: CurrentFiatRates;
     lastWeek?: LastWeekRates;
-    symbol: string;
-    mainNetworkSymbol?: string;
 }

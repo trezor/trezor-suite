@@ -163,7 +163,11 @@ const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
                                 <Col isTestnet={isTestnet} justify="right">
                                     <FiatWrapper>
                                         {t.balance && t.symbol && (
-                                            <FiatValue amount={t.balance} symbol={t.symbol} />
+                                            <FiatValue
+                                                amount={t.balance}
+                                                symbol={t.symbol}
+                                                tokenAddress={t.address}
+                                            />
                                         )}
                                     </FiatWrapper>
                                 </Col>

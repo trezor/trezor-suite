@@ -125,4 +125,10 @@ export const migrate = (
             return cursor.continue().then(addWalletNumber);
         });
     }
+
+    if (oldVersion < 19) {
+        // no longer uses keyPath to generate primary key
+        db.deleteObjectStore('fiatRates');
+        db.createObjectStore('fiatRates');
+    }
 };

@@ -11,7 +11,7 @@ import { GraphData } from '@wallet-types/graph';
 import { BuyTrade, ExchangeTrade } from 'invity-api';
 import { migrate } from './migrations';
 
-const VERSION = 18; // don't forget to add migration and CHANGELOG when changing versions!
+const VERSION = 19; // don't forget to add migration and CHANGELOG when changing versions!
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -147,7 +147,7 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
         // object store for send form
         db.createObjectStore('sendFormDrafts');
 
-        db.createObjectStore('fiatRates', { keyPath: 'symbol' });
+        db.createObjectStore('fiatRates');
         db.createObjectStore('analytics');
 
         // graph

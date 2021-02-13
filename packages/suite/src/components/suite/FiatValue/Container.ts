@@ -18,6 +18,7 @@ interface Params {
 interface CommonOwnProps {
     amount: string;
     symbol: Network['symbol'] | string;
+    tokenAddress?: string;
     fiatCurrency?: string;
     children?: (props: Params) => React.ReactElement | null;
     showApproximationIndicator?: boolean;
