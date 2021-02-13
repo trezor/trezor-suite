@@ -21,8 +21,6 @@ import fiatRatesReducer from '@wallet-reducers/fiatRatesReducer';
 import storageMiddleware from '@wallet-middlewares/storageMiddleware';
 import { getAccountTransactions, getAccountIdentifier } from '@wallet-utils/accountUtils';
 import { AppState } from '@suite-types';
-// in-memory implementation of indexedDB
-import 'fake-indexeddb/auto';
 import { SETTINGS } from '@suite/config/suite';
 
 const { getSuiteDevice, getWalletAccount, getWalletTransaction } = global.JestMocks;
