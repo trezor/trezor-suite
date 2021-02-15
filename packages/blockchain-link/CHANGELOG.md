@@ -1,3 +1,8 @@
+# Unreleased
+
+#### changes
+- Fixed an issue where account with non-zero balance could be marked as empty (eth)
+
 # 1.0.15
 
 #### changes
