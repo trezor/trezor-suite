@@ -44,6 +44,7 @@ const buildOptions = (
     account: Account,
     exchangeCoinInfo?: ExchangeCoinInfo[],
     exchangeInfo?: ExchangeInfo,
+    token?: string,
 ) => {
     if (!exchangeInfo || !exchangeCoinInfo) return null;
 
@@ -67,8 +68,10 @@ const buildOptions = (
         options: [],
     };
 
+    const symbolToFilter = token || account.symbol;
+
     const filteredExchangeCoins = exchangeCoinInfo.filter(
-        coin => coin.ticker.toLowerCase() !== account.symbol,
+        coin => coin.ticker.toLowerCase() !== symbolToFilter,
     );
 
     filteredExchangeCoins.forEach(info => {
@@ -109,6 +112,7 @@ const ReceiveCryptoSelect = () => {
         exchangeInfo,
         exchangeCoinInfo,
         account,
+        token,
     } = useCoinmarketExchangeFormContext();
 
     const customSearch = (
@@ -140,7 +144,7 @@ const ReceiveCryptoSelect = () => {
                             value={value}
                             isClearable={false}
                             filterOption={customSearch}
-                            options={buildOptions(account, exchangeCoinInfo, exchangeInfo)}
+                            options={buildOptions(account, exchangeCoinInfo, exchangeInfo, token)}
                             minWidth="70px"
                             noTopLabel
                             formatOptionLabel={(option: any) => {
