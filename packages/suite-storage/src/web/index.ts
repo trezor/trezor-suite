@@ -13,8 +13,6 @@ import {
 import { BroadcastChannel } from 'broadcast-channel';
 import { StorageUpdateMessage, StorageMessageEvent } from './types';
 
-// const VERSION = 1;
-
 export type OnUpgradeFunc<TDBStructure> = (
     db: IDBPDatabase<TDBStructure>,
     oldVersion: number,
@@ -30,6 +28,7 @@ class CommonDB<TDBStructure> {
     broadcastChannel!: BroadcastChannel;
     onUpgrade!: OnUpgradeFunc<TDBStructure>;
     onDowngrade!: () => any;
+    supported: boolean | undefined;
 
     constructor(
         dbName: string,
@@ -43,16 +42,20 @@ class CommonDB<TDBStructure> {
 
         this.dbName = dbName;
         this.version = version;
+        this.supported = undefined;
         this.onUpgrade = onUpgrade.bind(this);
         this.onDowngrade = onDowngrade.bind(this);
         this.db = null;
+
+        this.isSupported();
+
         // create global instance of broadcast channel
         this.broadcastChannel = new BroadcastChannel('storageChangeEvent');
 
         CommonDB.instance = this;
     }
 
-    static isDBAvailable = () => {
+    static isDBAvailable = (): Promise<boolean> => {
         // Firefox doesn't support indexedDB while in incognito mode, but still returns valid window.indexedDB object.
         // https://bugzilla.mozilla.org/show_bug.cgi?id=781982
         // so we need to try accessing the IDB. try/catch around idb.open() does not catch the error (bug in idb?), that's why we use callbacks.
@@ -74,6 +77,17 @@ class CommonDB<TDBStructure> {
                 }
             }
         });
+    };
+
+    isSupported = async () => {
+        if (this.supported === undefined) {
+            const isAvailable = await CommonDB.isDBAvailable();
+            this.supported = isAvailable;
+            if (!isAvailable) {
+                console.warn("Couldn't get an access to IndexedDB.");
+            }
+        }
+        return this.supported;
     };
 
     notify = (store: StoreNames<TDBStructure>, keys: any[]) => {

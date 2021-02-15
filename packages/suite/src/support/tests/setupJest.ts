@@ -5,7 +5,8 @@
 import { Device, Features } from 'trezor-connect';
 import { TrezorDevice } from '@suite-types';
 import { Account, WalletAccountTransaction } from '@wallet-types';
-
+// in-memory implementation of indexedDB
+import 'fake-indexeddb/auto';
 /**
  * Generate wallet account
  * @param {Partial<Account>} [account]
