@@ -3194,6 +3194,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Not supported',
         description: 'Firmware with missing capability (eg: LTC on Bitcoin-only FW, XRP on T1...)',
     },
+    FW_CAPABILITY_SUPPORTED_IN_T2: {
+        id: 'FW_CAPABILITY_SUPPORTED_IN_T2',
+        defaultMessage: 'Coin is supported only on Trezor Model T',
+    },
     FW_CAPABILITY_NO_CAPABILITY_DESC: {
         id: 'FW_CAPABILITY_NO_CAPABILITY_DESC',
         defaultMessage: 'Firmware does not have capability to work with {networkName}',
