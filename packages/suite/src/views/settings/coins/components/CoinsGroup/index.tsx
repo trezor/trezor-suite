@@ -7,6 +7,7 @@ import { UnavailableCapability } from 'trezor-connect';
 import { Network } from '@wallet-types';
 import { Section, ActionColumn, Row } from '@suite-components/Settings';
 import { useDevice, useActions } from '@suite-hooks';
+import { isBitcoinOnly } from '@suite-utils/device';
 import * as modalActions from '@suite-actions/modalActions';
 import Coin from '../Coin';
 
@@ -102,10 +103,20 @@ interface Props {
     unavailableCapabilities: { [key: string]: UnavailableCapability };
 }
 
-const Unavailable = ({ type }: { type: UnavailableCapability }) => {
+interface UnavailableMessageProps {
+    type: UnavailableCapability;
+    deviceVersion: number;
+    isBtcOnly: boolean;
+}
+const UnavailableMessage = ({ type, deviceVersion, isBtcOnly }: UnavailableMessageProps) => {
     switch (type) {
         case 'no-capability':
-            return <Translation id="FW_CAPABILITY_NO_CAPABILITY" />;
+            return deviceVersion === 1 && !isBtcOnly ? (
+                // right know it serves only one purpose - in case of XRP on T1 inform user that the capability is available on TT
+                <Translation id="FW_CAPABILITY_SUPPORTED_IN_T2" />
+            ) : (
+                <Translation id="FW_CAPABILITY_NO_CAPABILITY" />
+            );
         case 'no-support':
             return <Translation id="FW_CAPABILITY_NO_SUPPORT" />;
         case 'update-required':
@@ -130,9 +141,13 @@ const CoinsGroup = ({
     const { openModal } = useActions({
         openModal: modalActions.openModal,
     });
-    const { isLocked } = useDevice();
-    const isDeviceLocked = isLocked();
+    const { device, isLocked } = useDevice();
     const theme = useTheme();
+    if (!device) return null;
+
+    const isDeviceLocked = isLocked();
+    const deviceVersion = device.features?.major_version === 1 ? 1 : 2;
+    const isBtcOnly = isBitcoinOnly(device);
     return (
         <Wrapper data-test="@settings/wallet/coins-group">
             <Section
@@ -207,7 +222,11 @@ const CoinsGroup = ({
                             )}
                             {unavailableCapabilities[network.symbol] && (
                                 <UnavailableLabel>
-                                    <Unavailable type={unavailableCapabilities[network.symbol]} />
+                                    <UnavailableMessage
+                                        deviceVersion={deviceVersion}
+                                        isBtcOnly={isBtcOnly}
+                                        type={unavailableCapabilities[network.symbol]}
+                                    />
                                 </UnavailableLabel>
                             )}
                         </ActionColumn>
