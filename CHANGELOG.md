@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 ### Fixed
+- Loading bar in Suite Desktop
 
 ## 21.2.1 [10th February 2021]
 
