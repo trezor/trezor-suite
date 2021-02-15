@@ -1,3 +1,4 @@
+# lfs files
 packages/suite-data/files/bin/bridge/linux-*/trezord filter=lfs diff=lfs merge=lfs -text
 packages/suite-data/files/bin/bridge/mac-*/trezord filter=lfs diff=lfs merge=lfs -text
 packages/suite-data/files/bin/bridge/win-*/trezord.exe filter=lfs diff=lfs merge=lfs -text
@@ -8,3 +9,6 @@ packages/suite-data/files/bin/tor/mac-*/tor filter=lfs diff=lfs merge=lfs -text
 packages/suite-data/files/bin/tor/win-*/*.dll filter=lfs diff=lfs merge=lfs -text
 packages/suite-data/files/bin/tor/win-*/tor.exe filter=lfs diff=lfs merge=lfs -text
 packages/integration-tests/projects/suite-web/snapshots/** filter=lfs diff=lfs merge=lfs -text
+
+# Changelog to be merged via union always.
+CHANGELOG.md merge=union
