@@ -422,6 +422,39 @@ export default [
         },
     },
     {
+        description:
+            'ETH account with non-zero balance and 0 txs (blockbook cannot parse internal txs)',
+        params: {
+            descriptor: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
+        },
+        serverFixtures: [
+            {
+                method: 'getAccountInfo',
+                response: {
+                    data: {
+                        address: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
+                        balance: '1',
+                        txs: 0,
+                        unconfirmedBalance: '0',
+                        unconfirmedTxs: 0,
+                        nonce: '0',
+                    },
+                },
+            },
+        ],
+        response: {
+            descriptor: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',
+            balance: '1',
+            availableBalance: '1',
+            empty: false,
+            history: {
+                total: 0,
+                unconfirmed: 0,
+            },
+            misc: { nonce: '0' },
+        },
+    },
+    {
         description: 'ETH account with tokens',
         params: {
             descriptor: '0x1e6E3708a059aEa1241a81c7aAe84b6CDbC54d59',

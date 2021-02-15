@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 - Check if IDB is supported before each operation (no idb support in FF incognito/tor browser)
+- Account with non-zero balance could be marked as empty (eth)
 
 ## 21.2.3 [17th February 2021]
 
