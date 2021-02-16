@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, useTheme, variables, Loader } from '@trezor/components';
+import { Icon, useTheme, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
-import { formatNetworkAmount, getNetwork } from '@wallet-utils/accountUtils';
+import { getNetwork } from '@wallet-utils/accountUtils';
 import { FormattedCryptoAmount, Translation } from '@suite-components';
 
 const Wrapper = styled.div`
@@ -54,29 +54,22 @@ const Circle = styled.div`
 
 interface Props {
     tx: WalletAccountTransaction;
-    txDetails: any;
-    isFetching: boolean;
 }
 
-const IODetails = ({ tx, txDetails, isFetching }: Props) => {
+const IODetails = ({ tx }: Props) => {
     const theme = useTheme();
     const network = getNetwork(tx.symbol);
+
     return (
         <Wrapper>
-            {!txDetails && isFetching && <Loader size={32} />}
-            {/* If i have inputs and ouputs, render this: */}
-            {txDetails?.vin && txDetails?.vout && (
+            {tx.details.vin && tx.details.vout && (
                 <IOWrapper>
                     <IOBox>
                         <IORowTitle>
                             <Translation id="TR_INPUTS" />
                         </IORowTitle>
 
-                        {txDetails.vin?.map((input: any) => {
-                            let inputAmount = formatNetworkAmount(input.value, tx.symbol);
-
-                            // if the input amount is equal to -1, return 0, otherwise return input amount
-                            inputAmount = inputAmount === '-1' ? '0' : inputAmount;
+                        {tx.details.vin.map(input => {
                             return (
                                 <IORow key={input.n}>
                                     {network?.networkType !== 'ethereum' && (
@@ -84,14 +77,14 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                                         // consider faking it by showing the same value os the output
                                         <CryptoAmountWrapper>
                                             <FormattedCryptoAmount
-                                                value={inputAmount}
+                                                value={input.value}
                                                 symbol={tx.symbol}
                                                 disableHiddenPlaceholder
                                             />
                                             <Circle>&bull;</Circle>
                                         </CryptoAmountWrapper>
                                     )}
-                                    <Address>{input.addresses.map((addr: string) => addr)}</Address>
+                                    <Address>{input.addresses?.map(addr => addr)}</Address>
                                 </IORow>
                             );
                         })}
@@ -105,21 +98,17 @@ const IODetails = ({ tx, txDetails, isFetching }: Props) => {
                         <IORowTitle>
                             <Translation id="TR_OUTPUTS" />
                         </IORowTitle>
-                        {txDetails.vout?.map((output: any) => {
-                            let outputAmount = formatNetworkAmount(output.value, tx.symbol);
-                            outputAmount = outputAmount === '-1' ? '0' : outputAmount;
+                        {tx.details.vout.map(output => {
                             return (
                                 <IORow key={output.n}>
                                     <CryptoAmountWrapper>
                                         <FormattedCryptoAmount
-                                            value={outputAmount}
+                                            value={output.value}
                                             symbol={tx.symbol}
                                         />
                                         <Circle>&bull;</Circle>
                                     </CryptoAmountWrapper>
-                                    <Address>
-                                        {output.addresses.map((addr: string) => addr)}
-                                    </Address>
+                                    <Address>{output.addresses?.map(addr => addr)}</Address>
                                 </IORow>
                             );
                         })}

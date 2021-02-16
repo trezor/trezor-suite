@@ -369,6 +369,20 @@ export const getRbfParams = (
     };
 };
 
+export const enhanceTransactionDetails = (tx: AccountTransaction, symbol: Account['symbol']) => ({
+    ...tx.details,
+    vin: tx.details.vin.map(v => ({
+        ...v,
+        value: v.value ? formatNetworkAmount(v.value, symbol) : v.value,
+    })),
+    vout: tx.details.vout.map(v => ({
+        ...v,
+        value: v.value ? formatNetworkAmount(v.value, symbol) : v.value,
+    })),
+    totalInput: formatNetworkAmount(tx.details.totalInput, symbol),
+    totalOutput: formatNetworkAmount(tx.details.totalOutput, symbol),
+});
+
 /**
  * Formats amounts and attaches fields from the account (descriptor, deviceState, symbol) to the tx object
  *
@@ -408,6 +422,7 @@ export const enhanceTransaction = (
             return tr;
         }),
         rbfParams: getRbfParams(tx, account),
+        details: enhanceTransactionDetails(tx, account.symbol),
     };
 };
 

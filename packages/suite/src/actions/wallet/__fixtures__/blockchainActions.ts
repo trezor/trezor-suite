@@ -21,6 +21,13 @@ const parseTx = (data: any) => ({
     tokens: [],
     amount: '0',
     fee: '0',
+    details: {
+        vin: [],
+        vout: [],
+        size: 255,
+        totalInput: '0',
+        totalOutput: '0',
+    },
     ...data,
 });
 

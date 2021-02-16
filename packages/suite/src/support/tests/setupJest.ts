@@ -152,7 +152,7 @@ const getSuiteDevice = (dev?: Partial<TrezorDevice>, feat?: Partial<Features>): 
     return device as TrezorDevice;
 };
 
-const getWalletTransaction = (t: Partial<WalletAccountTransaction>): WalletAccountTransaction => {
+const getWalletTransaction = (t?: Partial<WalletAccountTransaction>): WalletAccountTransaction => {
     return {
         descriptor:
             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
@@ -163,23 +163,48 @@ const getWalletTransaction = (t: Partial<WalletAccountTransaction>): WalletAccou
         blockTime: 1565797979,
         blockHeight: 590093,
         blockHash: '00000000000000000017277948d61a631dae6cce1d7fb501301b825599189f51',
-        amount: '0.00006497',
-        fee: '0.00002929',
+        amount: '0.00001',
+        fee: '0.00000144',
         targets: [
             {
-                addresses: ['36JkLACrdxARqXXffZk91V9W6SJvghKaVK'],
-                amount: '0.00006497',
+                addresses: ['mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q'],
+                amount: '0.00001',
+                isAccountTarget: true,
                 isAddress: true,
-                n: 0,
+                n: 1,
             },
         ],
         tokens: [],
         details: {
-            vin: [],
-            vout: [],
-            size: 0,
-            totalInput: '0',
-            totalOutput: '0',
+            vin: [
+                {
+                    addresses: ['tb1q4nytpy37cuz8yndtfqpau4nzsva0jh787ny3yg'],
+                    isAddress: true,
+                    n: 0,
+                    sequence: 4294967294,
+                    txid: 'c894b064beb2f9be4b0d64cffcd89da2e8dc6decac399f5617323a303e07e4e1',
+                    value: '0.80720012',
+                },
+            ],
+            vout: [
+                {
+                    addresses: ['tb1q4s560ew83wcd6lcjg7uku9qlx4p6gwh74q4jap'],
+                    hex: '0014ac29a7e5c78bb0dd7f1247b96e141f3543a43afe',
+                    isAddress: true,
+                    n: 0,
+                    value: '0.80718868',
+                },
+                {
+                    addresses: ['mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q'],
+                    hex: '76a914a579388225827d9f2fe9014add644487808c695d88ac',
+                    isAddress: true,
+                    n: 1,
+                    value: '0.00001',
+                },
+            ],
+            size: 225,
+            totalInput: '0.80720012',
+            totalOutput: '0.80719868',
         },
         ...t,
     };

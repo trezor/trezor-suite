@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Translation, Modal } from '@suite-components';
 import { variables, Button } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-types';
-import TrezorConnect from 'trezor-connect';
 import BasicDetails from './components/BasicDetails';
 import AdvancedDetails, { TabID } from './components/AdvancedDetails';
 import ChangeFee from './components/ChangeFee';
@@ -75,33 +74,11 @@ const TransactionDetail = (props: Props) => {
 
     const network = getNetwork(tx.symbol);
 
-    // txDetails stores response from blockchainGetTransactions()
-    const [txDetails, setTxDetails] = useState<any>(null);
-    const [isFetching, setIsFetching] = useState(true);
-
     const [section, setSection] = useState<'CHANGE_FEE' | 'DETAILS'>(
         props.rbfForm ? 'CHANGE_FEE' : 'DETAILS',
     );
     const [tab, setTab] = useState<TabID | undefined>(undefined);
     const [finalize, setFinalize] = useState<boolean>(false);
-
-    useEffect(() => {
-        // fetch tx details and store them inside the local state 'txDetails'
-        const fetchTxDetails = async () => {
-            setIsFetching(true);
-            const res = await TrezorConnect.blockchainGetTransactions({
-                txs: [tx.txid],
-                coin: tx.symbol,
-            });
-
-            if (res.success && res.payload.length > 0) {
-                setTxDetails(res.payload[0].tx);
-            }
-            setIsFetching(false);
-        };
-
-        fetchTxDetails();
-    }, [tx]);
 
     return (
         <Modal
@@ -112,12 +89,7 @@ const TransactionDetail = (props: Props) => {
             heading={<Translation id="TR_TRANSACTION_DETAILS" />}
         >
             <Wrapper>
-                <BasicDetails
-                    tx={tx}
-                    network={network!}
-                    isFetching={isFetching}
-                    confirmations={confirmations}
-                />
+                <BasicDetails tx={tx} network={network!} confirmations={confirmations} />
                 <SectionActions>
                     {tx.rbfParams && (
                         <>
@@ -192,8 +164,6 @@ const TransactionDetail = (props: Props) => {
                         defaultTab={tab}
                         network={network!}
                         tx={tx}
-                        txDetails={txDetails}
-                        isFetching={isFetching}
                         chainedTxs={chainedTxs}
                     />
                 )}
