@@ -13,7 +13,6 @@
   - [Suite-web e2e](tests/e2e-web.md)
 - [Miscellaneous](misc/index.md)
   - [Analytics](misc/analytics.md)
-  - [Changelog](misc/changelog.md)
   - [Desktop Updates](misc/desktop_updates.md)
   - [Desktop Logger](misc/desktop_logger.md)
   - [Feature Flags](misc/feature_flags.md)
