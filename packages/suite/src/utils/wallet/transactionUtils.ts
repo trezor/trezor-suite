@@ -380,6 +380,13 @@ export const enhanceTransaction = (
     tx: AccountTransaction,
     account: Account,
 ): WalletAccountTransaction => {
+    const network = getNetwork(account.symbol);
+    // subtract fee from sent transaction amount (looks like only btc-like txs amounts are including fee, ethereum tx.amount does not include a fee)
+    const amount =
+        tx.type === 'sent' && network!.networkType === 'bitcoin'
+            ? new BigNumber(tx.amount).minus(tx.fee).toString()
+            : tx.amount;
+
     return {
         descriptor: account.descriptor,
         deviceState: account.deviceState,
@@ -396,7 +403,7 @@ export const enhanceTransaction = (
                 amount: formatAmount(tok.amount, tok.decimals),
             };
         }),
-        amount: formatNetworkAmount(tx.amount, account.symbol),
+        amount: formatNetworkAmount(amount, account.symbol),
         fee: formatNetworkAmount(tx.fee, account.symbol),
         targets: tx.targets.map(tr => {
             if (typeof tr.amount === 'string') {
