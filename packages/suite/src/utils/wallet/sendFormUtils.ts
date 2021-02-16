@@ -84,7 +84,7 @@ export const getEthereumEstimateFeeParams = (
 ) => {
     if (token) {
         return {
-            to,
+            to: token.address,
             value: '0x0',
             data: getSerializedErc20Transfer(token, to, amount || '0'),
         };
