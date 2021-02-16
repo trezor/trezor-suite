@@ -10,9 +10,11 @@ assignees: ''
 A clear and concise description of what the bug is.
 
 **Info:**
- - Suite Version: app/web, commit 
+ - Remembered Wallet: yes/no
+ - Suite Version: app/web, commit
  - Browser: , version
- - OS: 
+ - OS: system, build
+ - Bridge: build version
  - Firmware Version: model , revision 
 
 **Steps to reproduce:**
