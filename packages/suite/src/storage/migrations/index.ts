@@ -1,7 +1,8 @@
+import { enhanceTransactionDetails } from '@suite/utils/wallet/transactionUtils';
 import { OnUpgradeFunc } from '@trezor/suite-storage';
 import { SuiteDBSchema } from '..';
 
-export const migrate = (
+export const migrate = async (
     db: Parameters<OnUpgradeFunc<SuiteDBSchema>>['0'],
     oldVersion: Parameters<OnUpgradeFunc<SuiteDBSchema>>['1'],
     newVersion: Parameters<OnUpgradeFunc<SuiteDBSchema>>['2'],
@@ -130,5 +131,20 @@ export const migrate = (
         // no longer uses keyPath to generate primary key
         db.deleteObjectStore('fiatRates');
         db.createObjectStore('fiatRates');
+    }
+
+    if (oldVersion < 20) {
+        // enhance tx.details
+        let cursor = await transaction.objectStore('txs').openCursor();
+        while (cursor) {
+            const tx = cursor.value;
+            if (tx.tx.details) {
+                tx.tx.details = enhanceTransactionDetails(tx.tx, tx.tx.symbol);
+            }
+
+            cursor.update(tx);
+            // eslint-disable-next-line no-await-in-loop
+            cursor = await cursor.continue();
+        }
     }
 };

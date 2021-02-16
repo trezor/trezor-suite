@@ -1,5 +1,7 @@
 # Storage changelog
 
+## 20
+-   format tx.details
 ## 19
 -   removed keyPath from fiatRates definition
 

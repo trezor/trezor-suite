@@ -302,6 +302,37 @@ export const enhanceTransaction = [
             ],
             txid: '7e58757f43015242c0efa29447bea4583336f2358fdff587b52bbe040ad8982a',
             type: 'sent',
+            details: {
+                vin: [
+                    {
+                        addresses: ['tb1q4nytpy37cuz8yndtfqpau4nzsva0jh787ny3yg'],
+                        isAddress: true,
+                        n: 0,
+                        sequence: 4294967294,
+                        txid: 'c894b064beb2f9be4b0d64cffcd89da2e8dc6decac399f5617323a303e07e4e1',
+                        value: '80720012',
+                    },
+                ],
+                vout: [
+                    {
+                        addresses: ['tb1q4s560ew83wcd6lcjg7uku9qlx4p6gwh74q4jap'],
+                        hex: '0014ac29a7e5c78bb0dd7f1247b96e141f3543a43afe',
+                        isAddress: true,
+                        n: 0,
+                        value: '80718868',
+                    },
+                    {
+                        addresses: ['mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q'],
+                        hex: '76a914a579388225827d9f2fe9014add644487808c695d88ac',
+                        isAddress: true,
+                        n: 1,
+                        value: '1000',
+                    },
+                ],
+                size: 225,
+                totalInput: '80720012',
+                totalOutput: '80719868',
+            },
         },
         account: global.JestMocks.getWalletAccount({
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
@@ -335,6 +366,37 @@ export const enhanceTransaction = [
             ],
             txid: '7e58757f43015242c0efa29447bea4583336f2358fdff587b52bbe040ad8982a',
             type: 'sent',
+            details: {
+                vin: [
+                    {
+                        addresses: ['tb1q4nytpy37cuz8yndtfqpau4nzsva0jh787ny3yg'],
+                        isAddress: true,
+                        n: 0,
+                        sequence: 4294967294,
+                        txid: 'c894b064beb2f9be4b0d64cffcd89da2e8dc6decac399f5617323a303e07e4e1',
+                        value: '0.80720012',
+                    },
+                ],
+                vout: [
+                    {
+                        addresses: ['tb1q4s560ew83wcd6lcjg7uku9qlx4p6gwh74q4jap'],
+                        hex: '0014ac29a7e5c78bb0dd7f1247b96e141f3543a43afe',
+                        isAddress: true,
+                        n: 0,
+                        value: '0.80718868',
+                    },
+                    {
+                        addresses: ['mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q'],
+                        hex: '76a914a579388225827d9f2fe9014add644487808c695d88ac',
+                        isAddress: true,
+                        n: 1,
+                        value: '0.00001',
+                    },
+                ],
+                size: 225,
+                totalInput: '0.80720012',
+                totalOutput: '0.80719868',
+            },
         },
     },
     {
@@ -354,6 +416,13 @@ export const enhanceTransaction = [
             tokens: [],
             txid: '7e58757f43015242c0efa29447bea4583336f2358fdff587b52bbe040ad8982a',
             type: 'sent',
+            details: {
+                vin: [],
+                vout: [],
+                totalInput: '10000000',
+                totalOutput: '10000000',
+                size: 255,
+            },
         },
         account: global.JestMocks.getWalletAccount({
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
@@ -382,6 +451,13 @@ export const enhanceTransaction = [
             tokens: [],
             txid: '7e58757f43015242c0efa29447bea4583336f2358fdff587b52bbe040ad8982a',
             type: 'sent',
+            details: {
+                vin: [],
+                vout: [],
+                totalInput: '0.1',
+                totalOutput: '0.1',
+                size: 255,
+            },
         },
     },
     {
@@ -401,6 +477,13 @@ export const enhanceTransaction = [
             tokens: [],
             txid: '7e58757f43015242c0efa29447bea4583336f2358fdff587b52bbe040ad8982a',
             type: 'sent',
+            details: {
+                vin: [],
+                vout: [],
+                totalInput: '10000000',
+                totalOutput: '10000000',
+                size: 255,
+            },
         },
         account: global.JestMocks.getWalletAccount({
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
@@ -429,6 +512,13 @@ export const enhanceTransaction = [
             tokens: [],
             txid: '7e58757f43015242c0efa29447bea4583336f2358fdff587b52bbe040ad8982a',
             type: 'sent',
+            details: {
+                vin: [],
+                vout: [],
+                totalInput: '0.1',
+                totalOutput: '0.1',
+                size: 255,
+            },
         },
     },
 ];

@@ -5,8 +5,7 @@ import { Translation, FormattedCryptoAmount, FiatValue, FormattedDate } from '@s
 import AmountRow from '../AmountRow';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction } from '@wallet-types';
-import { getNetwork, formatNetworkAmount } from '@wallet-utils/accountUtils';
-import BigNumber from 'bignumber.js';
+import { getNetwork } from '@wallet-utils/accountUtils';
 
 // define these attributes as a constant because we will use the same values in two different styled components
 const ROW_HEIGHT = '36px';
@@ -51,10 +50,9 @@ const ShowFiatButtonWrapper = styled.div`
 
 interface Props {
     tx: WalletAccountTransaction;
-    txDetails: any;
     isTestnet: boolean;
 }
-const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
+const AmountDetails = ({ tx, isTestnet }: Props) => {
     const tokenTransfer = tx.tokens.length > 0 ? tx.tokens[0] : undefined;
     const amount = tokenTransfer ? tokenTransfer.amount : tx.amount;
     const assetSymbol = tokenTransfer ? tokenTransfer.symbol : tx.symbol;
@@ -62,31 +60,9 @@ const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
     const [showFiat, setShowFiat] = useState(false);
     const network = getNetwork(tx.symbol);
     const hideTotalIORows =
-        network?.networkType === 'ripple' || network?.networkType === 'ethereum';
+        network?.networkType === 'ripple' || network?.networkType === 'ethereum'; // don't show for eth, xrp
 
     const showHistoricalRates = showFiat && !tokenTransfer;
-
-    // sum of all inputs
-    const totalInput: BigNumber | undefined = txDetails?.vin?.reduce(
-        (acc: BigNumber, input: any) => acc.plus(input.value),
-        new BigNumber('0'),
-    );
-
-    // sum of all outputs
-    const totalOutput: BigNumber | undefined = txDetails?.vout?.reduce(
-        (acc: BigNumber, output: any) => acc.plus(output.value ?? 0),
-        new BigNumber('0'),
-    );
-
-    // formatNetworkAmount returns "-1" in case of an error, thus can't be used in reduce above
-    const formattedTotalInput =
-        totalInput && !totalInput.isNaN()
-            ? formatNetworkAmount(totalInput.toFixed(), tx.symbol)
-            : undefined;
-    const formattedTotalOutput =
-        totalOutput && !totalOutput.isNaN()
-            ? formatNetworkAmount(totalOutput.toFixed(), tx.symbol)
-            : undefined;
 
     return (
         <MainContainer>
@@ -147,15 +123,15 @@ const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
                             firstColumn={<Translation id="TR_TOTAL_INPUT" />}
                             secondColumn={
                                 <FormattedCryptoAmount
-                                    value={formattedTotalInput}
+                                    value={tx.details.totalInput}
                                     symbol={assetSymbol}
                                 />
                             }
                             thirdColumn={
                                 showHistoricalRates &&
-                                formattedTotalInput && (
+                                tx.details.totalInput && (
                                     <FiatValue
-                                        amount={formattedTotalInput}
+                                        amount={tx.details.totalInput}
                                         symbol={tx.symbol}
                                         source={tx.rates}
                                         useCustomSource
@@ -164,8 +140,8 @@ const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
                             }
                             fourthColumn={
                                 showFiat &&
-                                formattedTotalInput && (
-                                    <FiatValue amount={formattedTotalInput} symbol={tx.symbol} />
+                                tx.details.totalInput && (
+                                    <FiatValue amount={tx.details.totalInput} symbol={tx.symbol} />
                                 )
                             }
                             color="dark"
@@ -176,15 +152,15 @@ const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
                             firstColumn={<Translation id="TR_TOTAL_OUTPUT" />}
                             secondColumn={
                                 <FormattedCryptoAmount
-                                    value={formattedTotalOutput}
+                                    value={tx.details.totalOutput}
                                     symbol={tx.symbol}
                                 />
                             }
                             thirdColumn={
                                 showHistoricalRates &&
-                                formattedTotalOutput && (
+                                tx.details.totalOutput && (
                                     <FiatValue
-                                        amount={formattedTotalOutput}
+                                        amount={tx.details.totalOutput}
                                         symbol={tx.symbol}
                                         source={tx.rates}
                                         useCustomSource
@@ -193,8 +169,8 @@ const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
                             }
                             fourthColumn={
                                 showFiat &&
-                                formattedTotalOutput && (
-                                    <FiatValue amount={formattedTotalOutput} symbol={tx.symbol} />
+                                tx.details.totalOutput && (
+                                    <FiatValue amount={tx.details.totalOutput} symbol={tx.symbol} />
                                 )
                             }
                             color="dark"
@@ -235,8 +211,6 @@ const AmountDetails = ({ tx, txDetails, isTestnet }: Props) => {
                     fourthColumn={showFiat && <FiatValue amount={tx.fee} symbol={tx.symbol} />}
                     color="light"
                 />
-                {/* TODO: BlockchainLink doesn't return size/vsize field */}
-                {/* {txDetails?.size && <BoxRow title="Size">{`${txDetails.size} B`}</BoxRow>} */}
             </AmountWrapper>
         </MainContainer>
     );

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, useTheme, variables, Loader, CoinLogo, Tooltip } from '@trezor/components';
+import { Icon, useTheme, variables, CoinLogo, Tooltip } from '@trezor/components';
 import {
     Translation,
     HiddenPlaceholder,
@@ -35,11 +35,6 @@ const StatusWrapper = styled.div`
     display: flex;
     height: 20px;
     align-items: center;
-`;
-
-const LoaderIconWrapper = styled.div`
-    align-self: left;
-    margin-right: 10px;
 `;
 
 const HeaderFirstRow = styled.div`
@@ -166,7 +161,6 @@ const LinkIcon = styled(Icon)`
 interface Props {
     tx: WalletAccountTransaction;
     network: Network;
-    isFetching: boolean;
     confirmations: number;
 }
 
@@ -185,7 +179,7 @@ const getHumanReadableTxType = (tx: WalletAccountTransaction) => {
     }
 };
 
-const BasicDetails = ({ tx, confirmations, network, isFetching }: Props) => {
+const BasicDetails = ({ tx, confirmations, network }: Props) => {
     const theme = useTheme();
     const isConfirmed = confirmations > 0;
     const transactionStatus = getHumanReadableTxType(tx);
@@ -216,19 +210,10 @@ const BasicDetails = ({ tx, confirmations, network, isFetching }: Props) => {
                 <ConfirmationStatusWrapper>
                     {isConfirmed ? (
                         <StatusWrapper>
-                            {/* show spinner if data is being fetched */}
-                            {isFetching ? (
-                                <LoaderIconWrapper>
-                                    <Loader size={16} />
-                                </LoaderIconWrapper>
-                            ) : (
-                                <>
-                                    <ConfirmationStatus confirmed>
-                                        <Translation id="TR_CONFIRMED_TX" />
-                                    </ConfirmationStatus>
-                                    <Circle>&bull;</Circle>
-                                </>
-                            )}
+                            <ConfirmationStatus confirmed>
+                                <Translation id="TR_CONFIRMED_TX" />
+                            </ConfirmationStatus>
+                            <Circle>&bull;</Circle>
 
                             {confirmations && (
                                 <Confirmations>

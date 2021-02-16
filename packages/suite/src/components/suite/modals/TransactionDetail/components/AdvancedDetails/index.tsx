@@ -40,26 +40,17 @@ interface Props {
     defaultTab?: TabID;
     network: Network;
     tx: WalletAccountTransaction;
-    txDetails: any; // TODO: from tx.details
-    isFetching: boolean;
     chainedTxs: WalletAccountTransaction[];
 }
 
-const AdvancedDetails = ({ defaultTab, network, tx, txDetails, isFetching, chainedTxs }: Props) => {
+const AdvancedDetails = ({ defaultTab, network, tx, chainedTxs }: Props) => {
     const [selectedTab, setSelectedTab] = useState<TabID>(defaultTab ?? 'amount');
 
     let content: JSX.Element | undefined;
     if (selectedTab === 'amount') {
-        content = (
-            <AmountDetails
-                tx={tx}
-                txDetails={txDetails}
-                // isFetching={isFetching}
-                isTestnet={isTestnet(network.symbol)}
-            />
-        );
+        content = <AmountDetails tx={tx} isTestnet={isTestnet(network.symbol)} />;
     } else if (selectedTab === 'io' && network.networkType !== 'ripple') {
-        content = <IODetails tx={tx} txDetails={txDetails} isFetching={isFetching} />;
+        content = <IODetails tx={tx} />;
     } else if (selectedTab === 'chained' && chainedTxs.length > 0) {
         content = <ChainedTxs txs={chainedTxs} />;
     }
