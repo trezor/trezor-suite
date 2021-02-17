@@ -154,6 +154,10 @@ const Timestamp = styled.span`
 const StyledIcon = styled(Icon)`
     margin-right: 6px;
 `;
+const IconPlaceholder = styled.span`
+    min-width: 10px;
+    margin-right: 6px;
+`;
 const LinkIcon = styled(Icon)`
     margin-left: 6px;
 `;
@@ -290,6 +294,40 @@ const BasicDetails = ({ tx, confirmations, network }: Props) => {
                                 />
                             </ConfirmationStatus>
                         </Value>
+                    </>
+                )}
+
+                {/* Ethereum */}
+                {tx.ethereumSpecific && (
+                    <>
+                        <Title>
+                            <StyledIcon icon="GAS" size={10} />
+                            <Translation id="TR_GAS_LIMIT" />
+                        </Title>
+                        <Value>{tx.ethereumSpecific.gasLimit}</Value>
+                        <Title>
+                            <StyledIcon icon="GAS" size={10} />
+                            <Translation id="TR_GAS_USED" />
+                        </Title>
+                        <Value>
+                            {tx.ethereumSpecific.gasUsed ? (
+                                tx.ethereumSpecific.gasUsed
+                            ) : (
+                                <Translation id="TR_BUY_STATUS_PENDING" />
+                            )}
+                        </Value>
+                        <Title>
+                            <StyledIcon icon="GAS" size={10} />
+                            <Translation id="TR_GAS_PRICE" />
+                        </Title>
+                        <Value>{`${tx.ethereumSpecific.gasPrice} ${getFeeUnits(
+                            'ethereum',
+                        )}`}</Value>
+                        <Title>
+                            <IconPlaceholder>#</IconPlaceholder>
+                            <Translation id="TR_NONCE" />
+                        </Title>
+                        <Value>{tx.ethereumSpecific.nonce}</Value>
                     </>
                 )}
             </Grid>

@@ -2728,6 +2728,14 @@ const definedMessages = defineMessages({
         id: 'TR_GAS_LIMIT',
         defaultMessage: 'Gas limit',
     },
+    TR_GAS_USED: {
+        id: 'TR_GAS_USED',
+        defaultMessage: 'Gas used',
+    },
+    TR_NONCE: {
+        id: 'TR_NONCE',
+        defaultMessage: 'Nonce',
+    },
     TR_SEND_GAS_LIMIT_TOOLTIP: {
         id: 'TR_SEND_GAS_LIMIT_TOOLTIP',
         defaultMessage:
