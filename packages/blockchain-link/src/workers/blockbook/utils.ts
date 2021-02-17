@@ -201,6 +201,13 @@ export const transformTransaction = (
         });
     }
 
+    let fee = tx.fees;
+    if (tx.ethereumSpecific && !tx.ethereumSpecific.gasUsed) {
+        fee = new BigNumber(tx.ethereumSpecific.gasPrice)
+            .times(tx.ethereumSpecific.gasLimit)
+            .toString();
+    }
+
     return {
         type,
 
@@ -210,7 +217,7 @@ export const transformTransaction = (
         blockHash: tx.blockHash,
 
         amount,
-        fee: tx.fees,
+        fee,
 
         targets: targets.filter(t => typeof t === 'object').map(t => transformTarget(t, incoming)),
         tokens,

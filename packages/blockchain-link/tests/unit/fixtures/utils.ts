@@ -699,7 +699,7 @@ export default {
         },
 
         {
-            description: 'ETH: sent',
+            description: 'ETH: sent with final fee',
             descriptor: 'A',
             tx: {
                 vin: [
@@ -714,12 +714,47 @@ export default {
                 ],
                 ethereumSpecific: {
                     status: 1,
+                    gasLimit: 21000,
+                    gasUsed: 21000,
+                    gasPrice: 3,
                 },
                 ...FEES,
             },
             parsed: {
                 type: 'sent',
                 amount: '90',
+                fee: '10', // fee from blockbook, not calculated from ethereumSpecific
+                targets: [
+                    {
+                        addresses: ['B'],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'ETH: pending with not final fee',
+            descriptor: 'A',
+            tx: {
+                vin: [
+                    {
+                        addresses: ['A'],
+                    },
+                ],
+                vout: [
+                    {
+                        addresses: ['B'],
+                    },
+                ],
+                ethereumSpecific: {
+                    status: 1,
+                    gasLimit: 21000,
+                    gasPrice: '3',
+                },
+                ...FEES,
+            },
+            parsed: {
+                type: 'sent',
+                fee: '63000', // fee calculated from ethereumSpecific
                 targets: [
                     {
                         addresses: ['B'],
