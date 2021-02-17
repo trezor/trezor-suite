@@ -98,6 +98,7 @@ export default [
                         type: 'unknown',
                         amount: '0',
                         fee: '0',
+                        totalSpent: '0',
                         targets: [],
                         tokens: [],
                         details: {
@@ -184,7 +185,7 @@ export default [
                             '33F2085B0EF572376335716521E412CF611C4124B1088E5CCED48A7901CAF95E',
                         amount: '5718112',
                         fee: '12',
-                        // total: '5718124',
+                        totalSpent: '5718124',
                         targets: [
                             {
                                 addresses: ['rw62XQr4hLZjiuiq46CWiA6FretVuyZaoG'],
@@ -211,7 +212,7 @@ export default [
                             '533A8A2EDBCE914159C5491429763FD39A1F0F19E0F82800C3B7909B67B166A7',
                         amount: '25718124',
                         fee: '6000',
-                        // total: '25724124',
+                        totalSpent: '25724124',
                         targets: [
                             {
                                 addresses: ['rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj'],

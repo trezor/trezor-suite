@@ -62,7 +62,7 @@ export interface Transaction {
 
     amount: string;
     fee: string;
-    // total: string, // amount + total
+    totalSpent: string; // amount + total
 
     targets: Target[];
     tokens: TokenTransfer[];
