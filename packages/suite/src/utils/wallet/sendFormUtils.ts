@@ -163,9 +163,12 @@ export const getFeeLevels = (networkType: Network['networkType'], feeInfo: FeeIn
     });
 
     if (networkType === 'ethereum') {
+        // convert wei to gwei and floor value to avoid decimals
         return levels.map(level => ({
             ...level,
-            feePerUnit: fromWei(level.feePerUnit, 'gwei'),
+            feePerUnit: new BigNumber(fromWei(level.feePerUnit, 'gwei'))
+                .integerValue(BigNumber.ROUND_FLOOR)
+                .toString(),
             feeLimit: level.feeLimit,
         }));
     }
