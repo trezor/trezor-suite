@@ -243,10 +243,14 @@ export const signTransaction = (
         return Math.max(value, tx.ethereumSpecific.nonce + 1);
     }, 0);
     const pendingNonceBig = new BigNumber(pendingNonce);
-    const nonce =
+    let nonce =
         pendingNonceBig.gt(0) && pendingNonceBig.gt(account.misc.nonce)
             ? pendingNonceBig.toString()
             : account.misc.nonce;
+
+    if (formValues.rbfParams && typeof formValues.rbfParams.ethereumNonce === 'number') {
+        nonce = formValues.rbfParams.ethereumNonce.toString();
+    }
 
     // transform to TrezorConnect.ethereumSignTransaction params
     const transaction = prepareEthereumTransaction({
