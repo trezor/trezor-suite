@@ -132,16 +132,19 @@ const TransactionDetail = (props: Props) => {
                                         >
                                             <Translation id="TR_BUMP_FEE" />
                                         </Button>
-                                        <Button
-                                            variant="tertiary"
-                                            onClick={() => {
-                                                setFinalize(true);
-                                                setSection('CHANGE_FEE');
-                                                setTab(undefined);
-                                            }}
-                                        >
-                                            <Translation id="TR_FINALIZE_TX" />
-                                        </Button>
+                                        {network?.networkType === 'bitcoin' && (
+                                            // finalize button only possible in BTC rbf
+                                            <Button
+                                                variant="tertiary"
+                                                onClick={() => {
+                                                    setFinalize(true);
+                                                    setSection('CHANGE_FEE');
+                                                    setTab(undefined);
+                                                }}
+                                            >
+                                                <Translation id="TR_FINALIZE_TX" />
+                                            </Button>
+                                        )}
                                     </>
                                 )}
                             </Right>

@@ -101,7 +101,10 @@ const ChangeFee = (props: Props & { showChained: () => void }) => {
     const contextValues = useRbf(props);
     if (!contextValues.account) return null; // context without account, should never happen
     const { tx } = props;
-    const hasChangeAddress = tx.rbfParams?.changeAddress;
+    const { networkType } = contextValues.account;
+    const feeRate =
+        networkType === 'bitcoin' ? `${tx.rbfParams?.feeRate} ${getFeeUnits(networkType)}` : null;
+    const hasChangeAddress = tx.rbfParams?.changeAddress || networkType !== 'bitcoin';
 
     return (
         <RbfContext.Provider value={contextValues}>
@@ -114,9 +117,7 @@ const ChangeFee = (props: Props & { showChained: () => void }) => {
                             </Title>
                             <Content>
                                 <RateWrapper>
-                                    <Rate>
-                                        {tx.rbfParams?.feeRate} {getFeeUnits('bitcoin')}
-                                    </Rate>
+                                    <Rate>{feeRate}</Rate>
                                     <Amount>
                                         <StyledCryptoAmount>
                                             <FormattedCryptoAmount
@@ -144,7 +145,6 @@ const ChangeFee = (props: Props & { showChained: () => void }) => {
                         {contextValues.chainedTxs.length > 0 && (
                             <AffectedTransactions showChained={props.showChained} />
                         )}
-                        {!tx.rbfParams?.changeAddress && <NoChange />}
                     </Box>
                 ) : (
                     <Box>

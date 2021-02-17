@@ -5,7 +5,7 @@ import Common from 'ethereumjs-common';
 import { Transaction, TxData } from 'ethereumjs-tx';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 import { ERC20_TRANSFER } from '@wallet-constants/sendForm';
-import { amountToSatoshi, networkAmountToSatoshi } from '@wallet-utils/accountUtils';
+import { amountToSatoshi, networkAmountToSatoshi, formatAmount } from '@wallet-utils/accountUtils';
 import { Network, Account, CoinFiatRates } from '@wallet-types';
 import { FormState, FeeInfo, EthTransactionData, ExternalOutput } from '@wallet-types/sendForm';
 
@@ -76,6 +76,9 @@ const getSerializedErc20Transfer = (token: TokenInfo, to: string, amount: string
     return `0x${ERC20_TRANSFER}${erc20recipient}${erc20amount}`;
 };
 
+// TrezorConnect.blockchainEstimateFee for ethereum
+// NOTE:
+// - amount cannot be "0" (send max calculation), use at least 1 unit.
 export const getEthereumEstimateFeeParams = (
     to: string,
     token?: TokenInfo,
@@ -86,7 +89,11 @@ export const getEthereumEstimateFeeParams = (
         return {
             to: token.address,
             value: '0x0',
-            data: getSerializedErc20Transfer(token, to, amount || '0'),
+            data: getSerializedErc20Transfer(
+                token,
+                to,
+                amount || formatAmount('1', token.decimals), // use at least 1 smallest unit of token (satoshi)
+            ),
         };
     }
     return {

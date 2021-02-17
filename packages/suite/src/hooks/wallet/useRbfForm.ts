@@ -1,11 +1,12 @@
+import BigNumber from 'bignumber.js';
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { FormState } from '@wallet-types/sendForm';
 import { useSelector } from '@suite-hooks';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';
-import { WalletAccountTransaction } from '@wallet-types';
+import { Account, WalletAccountTransaction } from '@wallet-types';
+import { FormState, FeeInfo } from '@wallet-types/sendForm';
 import { useFees } from './form/useFees';
 import { useCompose } from './form/useCompose';
 
@@ -13,6 +14,45 @@ export type Props = {
     tx: WalletAccountTransaction;
     finalize: boolean;
     chainedTxs: WalletAccountTransaction[];
+};
+
+const getBitcoinFeeInfo = (info: FeeInfo, feeRate: string) => {
+    // increase FeeLevels for visual purpose (old rate + defined rate)
+    // it will be decreased in sendFormAction before composing
+    const levels = getFeeLevels('bitcoin', info).map(l => ({
+        ...l,
+        feePerUnit: new BigNumber(l.feePerUnit).plus(feeRate).toString(),
+    }));
+    return {
+        ...info,
+        levels,
+        minFee: new BigNumber(feeRate).plus(info.minFee).toNumber(), // increase required minFee rate
+    };
+};
+
+const getEthereumFeeInfo = (info: FeeInfo, gasPrice: string) => {
+    const current = new BigNumber(gasPrice);
+    const minFee = current.plus(1);
+    // increase FeeLevel only if it's lower than predefined
+    const levels = getFeeLevels('ethereum', info).map(l => ({
+        ...l,
+        feePerUnit: current.lte(gasPrice) ? minFee.toString() : gasPrice,
+    }));
+    return {
+        ...info,
+        levels,
+        minFee: minFee.toNumber(), // increase required minFee rate
+    };
+};
+
+const getFeeInfo = (
+    networkType: Account['networkType'],
+    info: FeeInfo,
+    rbfParams: NonNullable<WalletAccountTransaction['rbfParams']>,
+) => {
+    if (networkType === 'bitcoin') return getBitcoinFeeInfo(info, rbfParams.feeRate);
+    if (networkType === 'ethereum') return getEthereumFeeInfo(info, rbfParams.feeRate);
+    return info;
 };
 
 const useRbfState = ({ tx, finalize, chainedTxs }: Props, currentState: boolean) => {
@@ -25,15 +65,7 @@ const useRbfState = ({ tx, finalize, chainedTxs }: Props, currentState: boolean)
     if (state.selectedAccount.status !== 'loaded' || !tx.rbfParams || currentState) return;
 
     const { account, network } = state.selectedAccount;
-    const coinFees = state.fees[account.symbol];
-    const origRate = parseInt(tx.rbfParams.feeRate, 10);
-
-    // increase FeeLevels for visual purpose (old rate + defined rate)
-    // it will be decreased in sendFormAction before composing
-    const levels = getFeeLevels(account.networkType, coinFees).map(l => ({
-        ...l,
-        feePerUnit: Number(parseInt(l.feePerUnit, 10) + origRate).toString(),
-    }));
+    const feeInfo = getFeeInfo(account.networkType, state.fees[account.symbol], tx.rbfParams);
 
     // override Account data
     const rbfAccount = {
@@ -60,6 +92,7 @@ const useRbfState = ({ tx, finalize, chainedTxs }: Props, currentState: boolean)
                 ...DEFAULT_PAYMENT,
                 address: o.address,
                 amount: o.formattedAmount,
+                token: o.token,
             },
         ];
     });
@@ -82,19 +115,14 @@ const useRbfState = ({ tx, finalize, chainedTxs }: Props, currentState: boolean)
     return {
         account: rbfAccount,
         network,
-        feeInfo: {
-            ...coinFees,
-            levels,
-            minFee: origRate + coinFees.minFee, // increase required minFee rate
-        },
+        feeInfo,
         chainedTxs,
         formValues: {
             ...DEFAULT_VALUES,
             outputs,
             selectedFee: undefined,
             options: finalize ? ['broadcast'] : ['bitcoinRBF', 'broadcast'],
-            feePerUnit: '',
-            feeLimit: '',
+            ethereumDataHex: tx.rbfParams.ethereumData,
             rbfParams,
         } as FormState, // TODO: remove type casting (options string[])
     };

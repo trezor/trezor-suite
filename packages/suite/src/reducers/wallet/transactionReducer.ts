@@ -17,10 +17,13 @@ export interface RbfTransactionParams {
         address: string;
         amount: string;
         formattedAmount: string;
+        token?: string;
     }[];
     changeAddress?: AccountAddress; // original change address
     feeRate: string; // original fee rate
     baseFee: number; // original fee
+    ethereumNonce?: number;
+    ethereumData?: string;
 }
 
 export interface WalletAccountTransaction extends AccountTransaction {
