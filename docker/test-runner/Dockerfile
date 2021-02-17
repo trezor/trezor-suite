@@ -1,5 +1,5 @@
-FROM cypress/included:6.1.0
-  
+FROM cypress/included:6.4.0
+
 RUN apt-get update && apt-get -y --no-install-recommends install \
     ca-certificates \
     curl
