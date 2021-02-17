@@ -1,7 +1,9 @@
-# Unreleased
+# 1.0.16
 
 #### changes
 - Fixed an issue where account with non-zero balance could be marked as empty (eth)
+- Pending ETH transaction fee calculated from `ethereumSpecific` field
+- Added missing types (data) to `ethereumSpecific` field
 
 # 1.0.15
 
