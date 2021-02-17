@@ -16,7 +16,17 @@ describe('Firmware', () => {
         cy.getTestElement('@notification/update-firmware/button').click();
 
         // initial screen
-        // cy.getTestElement('@firmware').matchImageSnapshot('initial'); there is a changelog which should be covered with black rectangle (there is a command for it somewheree)
+        // to make screenshots stable, make changelog fixed height
+        cy.getTestElement('@firmware/initial/changelog').invoke('css', 'height', '300px')
+        cy.getTestElement('@firmware')
+            .matchImageSnapshot('initial', {
+                // to make screenshot test stable we need to blackout all parts that change expectedly
+                blackout: [
+                    '[data-test="@firmware/initial/changelog"]',
+                    '[data-test="@firmware/initial/heading/version"]',
+                    '[data-test="@firmware/initial/subheading/version"]',
+                ]
+            });
         cy.getTestElement('@firmware/continue-button').click();
 
         // check seed screen
