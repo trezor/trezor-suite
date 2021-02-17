@@ -92,6 +92,11 @@ const StyledText = styled.div<{ flip?: boolean }>`
 
     @media only screen and (min-width: ${variables.SCREEN_SIZE.MD}) {
         max-width: 50%;
+        ${props =>
+            props.flip === false &&
+            `
+            max-width: 40%;
+        `}
         margin-left: 100px;
         white-space: pre-wrap;
     }
