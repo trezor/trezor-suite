@@ -67,13 +67,7 @@ export interface Transaction {
     targets: Target[];
     tokens: TokenTransfer[];
     rbf?: boolean;
-    ethereumSpecific?: {
-        status: number;
-        nonce: number;
-        gasLimit: number;
-        gasUsed?: number;
-        gasPrice: string;
-    };
+    ethereumSpecific?: BlockbookTransaction['ethereumSpecific'];
     details: TransactionDetail;
 }
 
