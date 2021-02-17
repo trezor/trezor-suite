@@ -618,7 +618,8 @@ export default {
             },
             parsed: {
                 type: 'sent',
-                amount: '50', // B.value + fee
+                amount: '40',
+                totalSpent: '50', // B.value + fee
                 targets: [
                     {
                         addresses: ['B'],
@@ -659,7 +660,8 @@ export default {
             },
             parsed: {
                 type: 'sent',
-                amount: '30', // B.value + fee
+                amount: '20',
+                totalSpent: '30', // B.value + fee
                 targets: [
                     {
                         addresses: ['A2'],

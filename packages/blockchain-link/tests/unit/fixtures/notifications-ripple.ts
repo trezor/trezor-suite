@@ -6,6 +6,7 @@ const tx = {
     // blockTime: undefined,
     // fee: undefined,
     // txid: undefined,
+    totalSpent: '0',
     tokens: [],
     // targets: [],
     details: {
