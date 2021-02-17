@@ -4,15 +4,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## 21.3.0 [to be released 10th March 2021]
 
 ### Added
+- Discovery progress bar in electron
 
 ### Changed
 
 ### Fixed
 - Check if IDB is supported before each operation (no idb support in FF incognito/tor browser)
+
+## 21.2.3 [17th February 2021]
+
+### Added
 - Pagination on transaction list
+
+### Fixed
 - Freeze when using transaction search while discovery is running
-- Discovery progress bar in electron
 - Fix exchange between eth and tokens
+- Correctly estimate Gas price for ERC20 tokens
+
+## 21.2.2 [10th February 2021]
+
+### Fixed
+- Device in bootloader not recognized on Windows due to Bridge v2.0.30 (replaced by 2.0.27)
 
 ## 21.2.1 [10th February 2021]
 
