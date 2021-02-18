@@ -1,4 +1,4 @@
-import { resolveStaticPath } from '@suite-utils/nextjs';
+import { resolveStaticPath } from '@suite-utils/build';
 import { SUITE } from '@suite-actions/constants';
 import { Dispatch } from '@suite-types';
 import { LANGUAGES } from '@suite-config';

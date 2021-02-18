@@ -25,6 +25,7 @@
         "noImplicitAny": true
     },
     "include": [
+        "index.d.ts",
         "**/*.ts"
     ],
     "exclude": [

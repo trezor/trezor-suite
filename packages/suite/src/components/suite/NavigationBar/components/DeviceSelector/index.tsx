@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import styled, { css } from 'styled-components';
 import { variables, DeviceImage } from '@trezor/components';
 import { SHAKE } from '@suite-support/styles/animations';
@@ -142,16 +142,19 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
         }, 2000);
     }, [connectState]);
 
+    const switchDevice = useCallback(() => {
+        goto('suite-switch-device', {
+            cancelable: true,
+        });
+        analytics.report({ type: 'menu/goto/switch-device' });
+    }, [goto, analytics]);
+
     return (
         <Wrapper
             onMouseEnter={() => setShowTextStatus(true)}
             onMouseLeave={() => setShowTextStatus(false)}
             data-test="@menu/switch-device"
-            onClick={() =>
-                goto('suite-switch-device', {
-                    cancelable: true,
-                }) && analytics.report({ type: 'menu/goto/switch-device' })
-            }
+            onClick={switchDevice}
             triggerAnim={triggerAnim}
             {...props}
         >

@@ -1,4 +1,4 @@
-import { resolveStaticPath } from '@suite-utils/nextjs';
+import { resolveStaticPath } from '@suite-utils/build';
 
 export const FETCH_CONFIG_SUCCESS = '@message-system/fetch-config-success';
 export const FETCH_CONFIG_SUCCESS_UPDATE = '@message-system/fetch-config-success-update';

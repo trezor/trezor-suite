@@ -1,7 +1,7 @@
 import * as routerActions from '@suite-actions/routerActions';
 import React from 'react';
 import styled from 'styled-components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
+import { resolveStaticPath } from '@suite-utils/build';
 import { Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useActions } from '@suite-hooks';

@@ -1,0 +1,13 @@
+diff --git a/node_modules/@pmmmwh/react-refresh-webpack-plugin/client/ErrorOverlayEntry.js b/node_modules/@pmmmwh/react-refresh-webpack-plugin/client/ErrorOverlayEntry.js
+index 829e5d7..1a94b3a 100644
+--- a/node_modules/@pmmmwh/react-refresh-webpack-plugin/client/ErrorOverlayEntry.js
++++ b/node_modules/@pmmmwh/react-refresh-webpack-plugin/client/ErrorOverlayEntry.js
+@@ -74,7 +74,7 @@ function compileMessageHandler(message) {
+ if (process.env.NODE_ENV !== 'production' && typeof window !== 'undefined') {
+   runWithPatchedUrl(function setupOverlay() {
+     // Only register if no other overlay have been registered
+-    if (!window.__reactRefreshOverlayInjected) {
++    if (!window.__reactRefreshOverlayInjected && __react_refresh_socket__) {
+       // Registers handlers for compile errors
+       __react_refresh_socket__.init(compileMessageHandler, __resourceQuery);
+       // Registers handlers for runtime errors

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+    <head>
+        <meta name="google" content="notranslate" />
+        <meta charset="utf-8">
+        <title>Trezor Suite</title>
+
+        <link
+            media="all"
+            rel="stylesheet"
+            href="<%= assetPrefix %>/static/fonts/fonts.css"
+        />
+        <link rel="icon" href="<%= assetPrefix %>/static/images/icons/favicon/favicon.png" />
+        <link
+            rel="apple-touch-icon"
+            href="<%= assetPrefix %>/static/images/icons/favicon/favicon.png"
+        />
+        <link rel="manifest" href="<%= assetPrefix %>/app.webmanifest" />
+        <% if(isOnionLocation) { %>
+            <meta
+                httpEquiv="onion-location"
+                content="http://suite.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/web"
+            />
+        <% } %>
+        <script src="<%= assetPrefix %>/static/browser-detection/index.js"></script>
+    </head>
+    <body>
+        <noscript>This website requires JavaScript to run.</noscript>
+    </body>
+</html>

@@ -1,11 +1,8 @@
 import { AccountTransaction } from 'trezor-connect';
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
-import { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { Network } from '@wallet-types';
 import { trezorLogo } from '@suite-constants/b64images';
 
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 
 type Data = {
     coin: Network['symbol'];
@@ -44,7 +41,18 @@ const dateTimeFormat = {
     day: 'numeric',
 };
 
-const makePdf = (definitions: TDocumentDefinitions): Promise<Blob> =>
+const loadPdfMake = async () => {
+    const pdfMake = await import(/* webpackChunkName: "pdfMake" */ 'pdfmake/build/pdfmake');
+    const pdfFonts = await import(/* webpackChunkName: "pdfFonts" */ 'pdfmake/build/vfs_fonts');
+    pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
+    return pdfMake;
+};
+
+const makePdf = (
+    definitions: TDocumentDefinitions,
+    pdfMake: typeof import('pdfmake/build/pdfmake'),
+): Promise<Blob> =>
     new Promise(resolve => {
         pdfMake.createPdf(definitions).getBlob(blob => {
             resolve(blob);
@@ -181,7 +189,8 @@ export const formatData = async (data: Data) => {
         }
         case 'pdf': {
             const pdfLayout = preparePdf(fields, prepareContent(data), coin, accountName);
-            const pdf = await makePdf(pdfLayout);
+            const pdfMake = await loadPdfMake();
+            const pdf = await makePdf(pdfLayout, pdfMake);
             return pdf;
         }
         case 'json': {

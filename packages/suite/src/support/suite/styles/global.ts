@@ -4,7 +4,7 @@ import { variables, SuiteThemeColors, scrollbarStyles } from '@trezor/components
 import { createGlobalStyle } from 'styled-components';
 
 const globalStyles = createGlobalStyle<{ theme: SuiteThemeColors }>`
-    #__next {
+    #app {
         display: flex;
         flex-direction: column;
         height: 100%;

@@ -12,6 +12,7 @@ export const FLAGS = {
     EXPORT_TRANSACTIONS: true, // Display export option on transactions
     SEARCH_TRANSACTIONS: true, // Display search option on transactions
     DESKTOP_AUTO_UPDATER: true, // Runs auto updater code on desktop
+    PWA: false, // Enable PWA support for suite-web
 } as const;
 
 // Web specific flags

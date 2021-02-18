@@ -1,29 +1,30 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable prefer-destructuring */
+const path = require('path');
+const { compilerOptions } = require('../../../../tsconfig.json');
 
-const babel = require('../../../suite-web/babel.config');
+const { paths } = compilerOptions;
+const pathKeys = Object.keys(paths).filter(p => !p.includes('*'));
 
-// get babel config
-const babelOptions = babel({ cache: () => {} });
-// adjust paths
-const alternatedPaths = {};
-const moduleResolverOptionsIndex = babelOptions.plugins.findIndex(o => o[0] === 'module-resolver');
-Object.entries(babelOptions.plugins[moduleResolverOptionsIndex][1].alias).forEach(a => {
-    // if it is relative path, move it two levels up
-    if (a[1].startsWith('.')) {
-        alternatedPaths[a[0]] = `../../${a[1]}`;
-    } else {
-        alternatedPaths[a[0]] = a[1];
+const getPath = key => {
+    let p = paths[key][0];
+    if (p.endsWith('index')) {
+        p = p.slice(0, -5);
     }
-});
 
-babelOptions.plugins[moduleResolverOptionsIndex][1].alias = alternatedPaths;
+    return path.join('..', '..', p);
+};
+
+// Alias
+const alias = {};
+pathKeys.forEach(key => {
+    alias[key] = path.resolve(getPath(key));
+});
 
 module.exports = {
     mode: 'development',
     // webpack will transpile TS and JS files
     resolve: {
         extensions: ['.ts', '.js'],
+        alias,
     },
     module: {
         rules: [
@@ -33,10 +34,6 @@ module.exports = {
                 test: /\.ts$/,
                 exclude: [/node_modules/],
                 use: [
-                    {
-                        loader: 'babel-loader',
-                        options: babelOptions,
-                    },
                     {
                         loader: 'ts-loader',
                         options: {

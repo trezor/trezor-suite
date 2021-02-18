@@ -25,9 +25,9 @@ describe('router', () => {
         });
     });
 
-    describe('getApp with assetPrefix', () => {
+    describe('getApp with ASSET_PREFIX', () => {
         it('should return string indicating the current app', () => {
-            process.env.assetPrefix = '/next';
+            process.env.ASSET_PREFIX = '/next';
             expect(getApp('/next/accounts/')).toEqual('wallet');
             expect(getApp('/next/accounts/receive/#/btc/0')).toEqual('wallet');
             expect(getApp('/next/onboarding/')).toEqual('onboarding');
@@ -36,13 +36,13 @@ describe('router', () => {
     });
 
     describe('getPrefixedURL', () => {
-        it('should return url not prefixed since assetPrefix is not set', () => {
-            process.env.assetPrefix = '';
+        it('should return url not prefixed since ASSET_PREFIX is not set', () => {
+            process.env.ASSET_PREFIX = '';
             expect(getPrefixedURL('/accounts')).toEqual(`/accounts`);
         });
-        it('should return url prefixed with assetPrefix env variable', () => {
+        it('should return url prefixed with ASSET_PREFIX env variable', () => {
             const prefix = '/test/asset/prefix';
-            process.env.assetPrefix = prefix;
+            process.env.ASSET_PREFIX = prefix;
             expect(getPrefixedURL('/accounts')).toEqual(`${prefix}/accounts`);
             expect(getPrefixedURL(`${prefix}/accounts`)).toEqual(`${prefix}/accounts`);
             expect(getPrefixedURL('/suite-web/accounts/receive/#/btc/0')).toEqual(
@@ -177,7 +177,7 @@ describe('router', () => {
 
     describe('getTopLevelRoute', () => {
         it('should return value if url is a nested page', () => {
-            process.env.assetPrefix = undefined;
+            process.env.ASSET_PREFIX = undefined;
             expect(getTopLevelRoute('/')).toEqual(undefined);
             expect(getTopLevelRoute('/accounts')).toEqual(undefined);
             expect(getTopLevelRoute('/accounts/receive')).toEqual('/accounts');
@@ -188,7 +188,7 @@ describe('router', () => {
 
         it('should return value if url is a nested page (with prefix)', () => {
             const prefix = '/test/asset/prefix';
-            process.env.assetPrefix = prefix;
+            process.env.ASSET_PREFIX = prefix;
             expect(getTopLevelRoute(`${prefix}/`)).toEqual(undefined);
             expect(getTopLevelRoute(`${prefix}/accounts`)).toEqual(undefined);
             expect(getTopLevelRoute(`${prefix}/accounts/receive`)).toEqual(`${prefix}/accounts`);

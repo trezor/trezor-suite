@@ -1,6 +1,6 @@
 import Document, { DocumentContext, Html, Head, Main, NextScript } from 'next/document';
 import React from 'react';
-import { resolveStaticPath } from '@suite-utils/nextjs';
+import { resolveStaticPath } from '@suite-utils/build';
 import { ServerStyleSheet } from 'styled-components';
 import globalStyles from '../support/styles';
 import { isEnabled } from '@suite-utils/features';

@@ -1,4 +1,4 @@
-import { isDev, normalizeVersion } from '../build';
+import { isDev, normalizeVersion, resolveStaticPath } from '../build';
 
 const OLD_ENV = { ...process.env };
 
@@ -51,6 +51,22 @@ describe('build', () => {
             expect(normalizeVersion('3000.04.0')).toEqual('3000.4.0');
             expect(normalizeVersion('20.11.0')).toEqual('20.11.0');
             expect(normalizeVersion('20.11.1')).toEqual('20.11.1');
+        });
+    });
+
+    describe('resolve static path', () => {
+        afterEach(() => {
+            // restore old env vars
+            process.env = OLD_ENV;
+        });
+        it('should return static path', () => {
+            process.env.ASSET_PREFIX = '';
+            expect(resolveStaticPath('mypath')).toBe('/static/mypath');
+        });
+
+        it('should return static path prefixed with ASSET_PREFIX', () => {
+            process.env.ASSET_PREFIX = 'brachName';
+            expect(resolveStaticPath('mypath')).toBe('brachName/static/mypath');
         });
     });
 });

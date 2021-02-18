@@ -11,8 +11,11 @@ describe('iPhone with chrome browser ', () => {
 
     it('There is no way to connect trezor to iPhone at the moment', () => {
         cy.prefixedVisit('/');
+        cy.getTestElement('@browser-detect').get('h1').should('contain', 'No WebUSB support');
+        cy.matchImageSnapshot('no webusb support');
+        /*
         cy.document().its('fonts.status').should('equal', 'loaded');
         cy.get('body').should('contain.text', 'No WebUSB support');
-        cy.matchImageSnapshot('no webusb support');
+        */
     });
 });

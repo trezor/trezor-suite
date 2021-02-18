@@ -65,7 +65,7 @@ export function processQuotes(allQuotes: BuyTrade[]): [BuyTrade[], BuyTrade[]] {
 }
 
 export const createQuoteLink = async (request: BuyTradeQuoteRequest, account: Account) => {
-    const assetPrefix = process.env.assetPrefix || '';
+    const assetPrefix = process.env.ASSET_PREFIX || '';
     const locationOrigin = getLocationOrigin();
     let hash: string;
 
@@ -87,7 +87,7 @@ export const createQuoteLink = async (request: BuyTradeQuoteRequest, account: Ac
 
 export const createTxLink = async (trade: BuyTrade, account: Account) => {
     const locationOrigin = getLocationOrigin();
-    const assetPrefix = process.env.assetPrefix || '';
+    const assetPrefix = process.env.ASSET_PREFIX || '';
     const params = `detail/${account.symbol}/${account.accountType}/${account.index}/${trade.paymentId}`;
 
     if (isDesktop()) {

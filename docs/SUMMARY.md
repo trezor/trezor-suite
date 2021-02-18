@@ -10,6 +10,7 @@
   - [Connect](packages/connect/index.md)
     - [Bump](packages/connect/bump.md)
     - [Debugging](packages/connect/debugging.md)
+  - [Suite Build](packages/suite-build.md)
   - [Suite Desktop](packages/suite-desktop.md)
 - [Features](features/index.md)
   - [Metadata](features/metadata.md)

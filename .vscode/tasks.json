@@ -37,8 +37,8 @@
 				},
 				"background": {
 					"activeOnStart": true,
-					"beginsPattern": "warn  - You have enabled experimental feature(s).",
-					"endsPattern": "event - compiled successfully"
+					"beginsPattern": "Project is running at",
+					"endsPattern": "Compiled successfully"
 				},
 			}
 		}

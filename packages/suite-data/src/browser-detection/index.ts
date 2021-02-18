@@ -1,4 +1,6 @@
 import UAParser from 'ua-parser-js';
+
+import style from './styles.css';
 import iconChrome from './images/browser-chrome.png';
 import iconFirefox from './images/browser-firefox.png';
 
@@ -18,19 +20,19 @@ type MainHtmlProps = {
 
 const getButtonPartial = (props: MainHtmlProps) =>
     props.button && props.url
-        ? `<a href="${props.url}" target="_blank" style="display:inline-block;margin-top: 10px;position:relative;align-items:center;padding:11px 24px;text-align:center;border-radius:3px;font-size:1rem;font-weight:300;cursor:pointer;outline:none;background:#01B757;color:#FFFFFF;border:1px solid #01B757;justify-content:center;" rel="noopener noreferrer">${props.button}</a>`
+        ? `<a href="${props.url}" target="_blank" class="${style.button}" rel="noopener noreferrer">${props.button}</a>`
         : ``;
 
 const getSupportedBrowsersPartial = (supportedBrowsers?: SupportedBrowser[]) =>
     supportedBrowsers
-        ? `<div style="width:300px;margin:15px auto">
+        ? `<div class="${style.browsers}">
             ${supportedBrowsers
                 .map(
                     (item: SupportedBrowser) => `
-                <div style="float:left;width:50%;text-align:center">
+                <div class="${style.browser}">
                     <img src="${item.icon}" height="56px" />
-                    <div style="display:block">
-                        <a href="${item.url}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top: 10px;position:relative;align-items:center;padding:11px 24px;text-align:center;border-radius:3px;font-size:1rem;font-weight:300;cursor:pointer;outline:none;background:#01B757;color:#FFFFFF;border:1px solid #01B757;justify-content:center;">
+                    <div class="${style.download}">
+                        <a href="${item.url}" target="_blank" class="${style.button}" rel="noopener noreferrer">
                             Get ${item.name}
                         </a>
                     </div>
@@ -41,17 +43,15 @@ const getSupportedBrowsersPartial = (supportedBrowsers?: SupportedBrowser[]) =>
         : ``;
 
 const getMainHtml = (props: MainHtmlProps) => `
-<div style="position:absolute;left:0;right:0;top:0;bottom:0;background:#fff;z-index:99999;text-align:center;padding-top:150px">
-    <h1 style="text-rendering:optimizeLegibility;color:#494949;font-weight:bold;margin:0;padding:0;font-size:2rem;padding-bottom:10px">
-        ${props.title}
-    </h1>
-    <p style="font-size:1rem;line-height:1.8;color:#757575;padding:0;margin:0">${props.subtitle}</p>
+<div class="${style.container}" data-test="@browser-detect">
+    <h1 class="${style.title}">${props.title}</h1>
+    <p class="${style.subtitle}">${props.subtitle}</p>
     ${getButtonPartial(props)}
     ${getSupportedBrowsersPartial(props.supportedBrowsers)}
 </div>
 `;
 
-window.onload = () => {
+window.addEventListener('load', () => {
     const unsupportedBrowser = getMainHtml({
         title: 'Your browser is not supported',
         subtitle: 'Please choose one of the supported browsers',
@@ -118,14 +118,15 @@ window.onload = () => {
     const result = parser.getResult();
 
     const isMobile = result.device.type === 'mobile';
-    const supportedBrowser = supportedBrowsers.find(browser => {
-        return browser.name === result.browser.name;
-    });
+    const supportedBrowser = supportedBrowsers.find(
+        browser => browser.name === result.browser.name,
+    );
     const updateRequired =
         supportedBrowser && result.browser.version
             ? supportedBrowser.version > parseInt(result.browser.version, 10)
             : false;
-    const setBody = content => {
+
+    const setBody = (content: string) => {
         document.body.innerHTML = '';
         document.body.insertAdjacentHTML('afterbegin', content);
     };
@@ -148,5 +149,10 @@ window.onload = () => {
     } else if (!supportedBrowser) {
         // Unsupported browser
         setBody(unsupportedBrowser);
+    } else {
+        // Inject app div
+        const appDiv = document.createElement('div');
+        appDiv.id = 'app';
+        document.body.appendChild(appDiv);
     }
-};
+});

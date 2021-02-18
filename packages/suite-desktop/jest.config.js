@@ -26,7 +26,12 @@ module.exports = {
         '**/*.test.(ts|tsx|js)'
     ],
     transform: {
-        '^.+\\.(ts|tsx)$': 'babel-jest',
+        '^.+\\.(ts|tsx)$': 'ts-jest',
     },
     verbose: false,
+    globals: {
+        'ts-jest': {
+            tsconfig: '<rootDir>/src-electron/tsconfig.json',
+        },
+    },
 };

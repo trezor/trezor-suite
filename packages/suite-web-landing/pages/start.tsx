@@ -4,7 +4,7 @@ import Layout from '@suite-web-landing-components/Layout';
 import Translation, { TranslationModeContext } from '@suite-web-landing-components/Translation';
 import Download from '@suite-web-landing-components/Download';
 import Feature from '@suite-web-landing-components/Feature';
-import { resolveStaticPath } from '@suite-utils/nextjs';
+import { resolveStaticPath } from '@suite-utils/build';
 import Metadata from '@suite-components/Metadata';
 import { URLS } from '@suite-constants';
 import { Fade } from 'react-awesome-reveal';

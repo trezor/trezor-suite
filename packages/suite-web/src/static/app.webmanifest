@@ -1,0 +1,18 @@
+{
+    "icons": [
+        {
+            "src": "{assetPrefix}/static/images/icons/512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "name": "Trezor Suite",
+    "short_name": "Suite",
+    "orientation": "portrait",
+    "display": "standalone",
+    "start_url": "{assetPrefix}/",
+    "scope": "{assetPrefix}/",
+    "description": "New app for Trezor hardware wallets.",
+    "theme_color": "#212121",
+    "background_color": "#e3e3e3"
+}

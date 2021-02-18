@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import zxcvbn from 'zxcvbn';
 import { colors } from '@trezor/components';
+
+import type { ZXCVBNScore } from 'zxcvbn';
 
 interface WrapperProps {
     width?: number;
@@ -46,13 +47,25 @@ const getColor = (score: 0 | 1 | 2 | 3 | 4, password: string) => {
     }
 };
 
+const getPasswordScore = async (password: string) => {
+    const zxcvbn = await import(/* webpackChunkName: "zxcvbn" */ 'zxcvbn');
+    return zxcvbn.default(password).score;
+};
+
 interface Props {
     password: string;
 }
 
 const PasswordStrengthIndicator = ({ password }: Props) => {
-    const passwordInfo = zxcvbn(password);
-    const { score } = passwordInfo;
+    const [score, setScore] = useState<ZXCVBNScore>(0);
+    useEffect(() => {
+        const runScoring = async () => {
+            const pwScore = await getPasswordScore(password);
+            setScore(pwScore);
+        };
+
+        runScoring();
+    }, [password]);
     return (
         <Wrapper>
             {[...Array(5)].map((_x, i) => (

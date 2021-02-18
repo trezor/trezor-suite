@@ -7,24 +7,6 @@ import modalReducer from '@suite-reducers/modalReducer';
 import * as fixtures from '../__fixtures__/routerActions';
 import * as routerActions from '../routerActions';
 
-jest.mock('next/router', () => {
-    const history: string[] = [];
-    let dispatch = (_d: any) => {};
-    return {
-        __esModule: true, // this property makes it work
-        default: {
-            push: (_url: string, asUrl: string) => {
-                history.push(asUrl);
-                dispatch(asUrl);
-            },
-            pathname: '/',
-        },
-        setDispatch: (d: any) => {
-            dispatch = d;
-        },
-    };
-});
-
 type SuiteState = ReturnType<typeof suiteReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
 interface InitialState {
@@ -77,7 +59,6 @@ describe('Suite Actions', () => {
             }
         });
     });
-
     fixtures.onBeforePopState.forEach(f => {
         it(`onBeforePopState: ${f.description}`, () => {
             const state = getInitialState(f.state as InitialState);
@@ -92,11 +73,7 @@ describe('Suite Actions', () => {
             const state = getInitialState(f.state as InitialState);
             const store = initStore(state);
             // eslint-disable-next-line global-require
-            require('next/router').default.pathname = f.pathname || '/';
-            // eslint-disable-next-line global-require
-            require('next/router').setDispatch((url: string) => {
-                store.dispatch(routerActions.onLocationChange(url));
-            });
+            require('@suite/support/history').default.location.pathname = f.pathname || '/';
             store.dispatch(routerActions.initialRedirection());
             expect(store.getState().router.app).toEqual(f.app);
         });
@@ -107,11 +84,13 @@ describe('Suite Actions', () => {
             const state = getInitialState(f.state as InitialState);
             const store = initStore(state);
             // eslint-disable-next-line global-require
-            require('next/router').setDispatch((url: string) => {
-                store.dispatch(routerActions.onLocationChange(url));
+            require('@suite/support/history').default.listen((location: any) => {
+                store.dispatch(
+                    routerActions.onLocationChange(`${location.pathname}${location.hash}`),
+                );
             });
-            // @ts-ignore
-            window.location.hash = f.hash;
+            // eslint-disable-next-line global-require
+            require('@suite/support/history').default.location.hash = `#${f.hash}`;
             store.dispatch(routerActions.goto(f.url as any, undefined, f.preserveHash));
             if (f.result) {
                 expect(store.getActions()[0].url).toEqual(f.result);
@@ -138,7 +117,7 @@ describe('Suite Actions', () => {
         const state = getInitialState({ router: { pathname: '/firmware' } });
         const store = initStore(state);
         // eslint-disable-next-line global-require
-        require('next/router').default.pathname = '/accounts/send';
+        require('@suite/support/history').default.location.pathname = '/accounts/send';
         store.dispatch(routerActions.closeModalApp());
         expect(store.getActions().length).toEqual(2); // unlock + location change
         expect(store.getState().router.app).toEqual('wallet');

@@ -21,7 +21,7 @@ in
       xorg.xhost     # for e2e tests running on localhost
       docker         # for e2e tests running on localhost
       docker-compose # for e2e tests running on localhost
-      nodejs
+      nodejs-14_x
       yarn
       SuitePython
     ] ++ lib.optionals stdenv.isLinux [
@@ -29,7 +29,7 @@ in
       python2                                                     # older node-gyp still requires python2.x
       p7zip                                                       # binaries used by node_module: 7zip-bin
       appimagekit nsis openjpeg osslsigncode p7zip squashfsTools  # binaries used by node_module: electron-builder
-      cairo giflib libjpeg libpng librsvg pango                   # build dependencies for node-canvas
+      cairo giflib libjpeg libpng librsvg libuuid pango           # build dependencies for node-canvas
       # winePackages.minimal
     ] ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
       Cocoa

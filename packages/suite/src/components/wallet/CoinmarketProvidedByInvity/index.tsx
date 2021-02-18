@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
-import { resolveStaticPath } from '@suite-utils/nextjs';
+import { resolveStaticPath } from '@suite-utils/build';
 import { variables, Link } from '@trezor/components';
 
 const Wrapper = styled.div`
