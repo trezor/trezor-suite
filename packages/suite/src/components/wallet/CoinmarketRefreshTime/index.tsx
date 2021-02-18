@@ -36,10 +36,13 @@ const CoinmarketRefreshTime = ({ isLoading, seconds, refetchInterval, label }: P
     <Wrapper>
         {!isLoading && <RefreshLabel>{label}</RefreshLabel>}
         <RefreshTime>
-            {isLoading && <Loader size={15} />}
-            {!isLoading
-                ? `0:${refetchInterval - seconds < 10 ? '0' : ''}${refetchInterval - seconds}`
-                : ''}
+            {isLoading ? (
+                <Loader size={15} />
+            ) : (
+                <span>
+                    {`0:${refetchInterval - seconds < 10 ? '0' : ''}${refetchInterval - seconds}`}
+                </span>
+            )}
         </RefreshTime>
     </Wrapper>
 );
