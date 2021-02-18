@@ -19,7 +19,7 @@ const Version = () => (
             <P size="small" weight="bold">
                 APPLICATION VERSION
             </P>
-            <H2>{process.env.VERSION}</H2>
+            <H2 data-test="@version/number">{process.env.VERSION}</H2>
             <Line />
             <P size="small" weight="bold">
                 LAST COMMIT HASH

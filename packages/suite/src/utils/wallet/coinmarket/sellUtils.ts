@@ -68,7 +68,7 @@ export const createQuoteLink = async (
     account: Account,
     composedInfo: ComposedTransactionInfo,
 ) => {
-    const assetPrefix = process.env.assetPrefix || '';
+    const assetPrefix = process.env.ASSET_PREFIX || '';
     const locationOrigin = getLocationOrigin();
     let hash: string;
 

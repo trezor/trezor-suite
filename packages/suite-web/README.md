@@ -8,7 +8,7 @@ Notes on testing strategies [here](./test/README.md)
 
 ## How to sync into staging
 
-`assetPrefix=/suite yarn workspace @trezor/suite-web build`
+`ASSET_PREFIX=/suite yarn workspace @trezor/suite-web build`
 
 and
 

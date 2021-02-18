@@ -20,7 +20,7 @@ module.exports = withTranspileModules(
             // https://github.com/zeit/next.js/issues/6219
             // target: 'serverless',
             trailingSlash: true,
-            assetPrefix: process.env.assetPrefix || '',
+            assetPrefix: process.env.ASSET_PREFIX || '',
             webpack: (config, options) => {
                 config.plugins.push(
                     new webpack.DefinePlugin({

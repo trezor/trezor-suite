@@ -6,9 +6,7 @@ import styled from 'styled-components';
 import { calcTicks, calcTicksFromData } from '@suite-utils/date';
 import { variables, Button } from '@trezor/components';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
-// https://github.com/zeit/next.js/issues/4768
-// eslint-disable-next-line import/no-webpack-loader-syntax
-import GraphWorker from 'worker-loader?filename=static/[hash].worker.js!../../../../../../workers/graph.worker';
+import GraphWorker from '@suite-workers/graph';
 import { getMinMaxValueFromData } from '@suite/utils/wallet/graphUtils';
 import * as graphActions from '@wallet-actions/graphActions';
 import { useActions, useSelector } from '@suite-hooks';

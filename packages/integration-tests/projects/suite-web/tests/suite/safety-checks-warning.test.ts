@@ -53,7 +53,7 @@ describe('safety_checks Warning For PromptTemporarily', () => {
     it('CTA button opens device settings', () => {
         cy.getTestElement('@banner/safety-checks/button').click();
         // In CI the path is prefixed with a branch name. Test only against the end of the path.
-        cy.location('pathname').should('match', /\/settings\/device\/$/);
+        cy.location('pathname').should('match', /\/settings\/device$/);
     });
 
     it('Dismiss button hides the warning', () => {

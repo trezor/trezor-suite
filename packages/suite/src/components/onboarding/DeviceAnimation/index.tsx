@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import Lottie from 'lottie-react';
 import * as semver from 'semver';
 
-import { resolveStaticPath } from '@suite-utils/nextjs';
+import { resolveStaticPath } from '@suite-utils/build';
 import { useTheme } from '@suite-hooks';
 import LottieT1Connect from './lottie/t1_connect.json';
 import LottieTTConnect from './lottie/tt_connect.json';

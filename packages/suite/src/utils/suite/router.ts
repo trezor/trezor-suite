@@ -1,18 +1,18 @@
 import routes, { Route, RouterAppWithParams } from '@suite-constants/routes';
 import { NETWORKS } from '@wallet-config';
 
-// Prefix a url with assetPrefix (eg. name of the branch in CI)
+// Prefix a url with ASSET_PREFIX (eg. name of the branch in CI)
 // Useful with next.js Router.push() that accepts `as` prop as second arg
 export const getPrefixedURL = (url: string) => {
     // do not use object destructuring https://github.com/webpack/webpack/issues/5392
-    const prefix = process.env.assetPrefix;
+    const prefix = process.env.ASSET_PREFIX;
     if (prefix && url.indexOf(prefix) !== 0) return prefix + url;
     return url;
 };
 
 export const stripPrefixedURL = (url: string) => {
     // do not use object destructuring https://github.com/webpack/webpack/issues/5392
-    const prefix = process.env.assetPrefix;
+    const prefix = process.env.ASSET_PREFIX;
     if (typeof prefix === 'string' && url.indexOf(prefix) === 0) {
         url = url.slice(prefix.length);
     }
@@ -71,12 +71,13 @@ const validateModalAppParams = (url: string) => {
 export const getAppWithParams = (url: string): RouterAppWithParams => {
     const route = findRoute(url);
 
-    if (!route)
+    if (!route) {
         return {
             app: 'unknown',
             route: undefined,
             params: undefined,
         };
+    }
 
     if (route.app === 'wallet') {
         return {

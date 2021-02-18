@@ -49,5 +49,10 @@ declare global {
     interface Window {
         __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: () => any | null;
         desktopApi?: DesktopApi; // Electron API
+
+        // Needed for Cypress
+        Cypress?: any;
+        TrezorConnect?: any;
+        store?: any;
     }
 }

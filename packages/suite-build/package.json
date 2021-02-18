@@ -1,0 +1,56 @@
+{
+    "name": "@trezor/suite-build",
+    "version": "21.8.0",
+    "author": "Trezor <info@trezor.io>",
+    "private": true,
+    "keywords": [
+        "Trezor",
+        "suite-build"
+    ],
+    "license": "SEE LICENSE IN LICENSE.md",
+    "description": "trezor suite build",
+    "scripts": {
+        "patch": "yarn patch-package",
+        "base": "TS_NODE_PROJECT=\"tsconfig.json\" wp --config ./webpack.config.ts",
+        "web": "PROJECT=web yarn run base",
+        "dev:web": "yarn run web",
+        "build:web": "NODE_ENV=production yarn run web",
+        "desktop": "PROJECT=desktop yarn run base",
+        "dev:desktop": "yarn run desktop",
+        "build:desktop": "NODE_ENV=production yarn run desktop",
+        "lint": "eslint '**/*{.ts,.tsx}'",
+        "type-check": "tsc --project tsconfig.json",
+        "type-check:watch": "yarn type-check -- --watch"
+    },
+    "dependencies": {
+        "@pmmmwh/react-refresh-webpack-plugin": "^0.5.0-rc.2",
+        "@sentry/webpack-plugin": "^1.16.0",
+        "babel-loader": "^8.2.2",
+        "babel-plugin-styled-components": "1.12.0",
+        "buffer": "^6.0.3",
+        "clean-webpack-plugin": "^3.0.0",
+        "copy-webpack-plugin": "^9.0.1",
+        "crypto-browserify": "^3.12.0",
+        "css-loader": "^5.2.1",
+        "git-revision-webpack-plugin": "^3.0.6",
+        "html-webpack-plugin": "^5.1.0",
+        "is-website-vulnerable": "^1.14.6",
+        "react-refresh": "^0.9.0",
+        "stream-browserify": "^3.0.0",
+        "style-loader": "^2.0.0",
+        "ts-loader": "^8.0.14",
+        "webpack-bundle-analyzer": "^4.4.2",
+        "webpack": "^5.46.0",
+        "webpack-merge": "^5.8.0",
+        "webpack-nano": "^1.1.1",
+        "webpack-plugin-serve": "^1.5.0",
+        "worker-loader": "^3.0.8"
+    },
+    "devDependencies": {
+        "@types/copy-webpack-plugin": "^8.0.1",
+        "@types/webpack": "^5.28.0",
+        "@types/webpack-bundle-analyzer": "^4.4.1",
+        "@types/webpack-plugin-serve": "^1.4.1",
+        "@types/terser-webpack-plugin": "^5.0.4"
+    }
+}

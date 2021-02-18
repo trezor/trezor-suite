@@ -9,6 +9,7 @@
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "Trezor data",
     "scripts": {
+        "build:connect": "rimraf ./files/connect && webpack --config ./trezor-connect.webpack.js",
         "build:lib": "yarn browser-detection && yarn msg-system-types && yarn guide-pull-content",
         "browser-detection": "webpack --config ./browser-detection.webpack.js",
         "copy-static-files": "ts-node ./index.ts",
@@ -19,7 +20,7 @@
         "guide-pull-content": "ts-node ./src/guide/index.ts"
     },
     "dependencies": {
-        "ua-parser-js": "^0.7.24"
+        "ua-parser-js": "^0.7.28"
     },
     "devDependencies": {
         "@types/fs-extra": "^9.0.6",
@@ -33,8 +34,8 @@
         "remove-files-webpack-plugin": "^1.4.3",
         "sharedworker-loader": "^2.1.1",
         "simple-git": "^2.39.0",
+        "terser-webpack-plugin": "^4.2.3",
         "ts-node": "^8.10.2",
-        "url-loader": "^4.1.1",
         "webpack": "^4.44.2",
         "webpack-cli": "3.3.12",
         "worker-loader": "^3.0.7"

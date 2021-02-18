@@ -14,6 +14,7 @@ import Recovery from '@recovery-views';
 import Backup from '@backup-views';
 import Onboarding from '@onboarding-views';
 import { getPrerequisites } from '@suite-utils/prerequisites';
+import ErrorPage from '@suite-views/error';
 
 import { Bridge, Udev, SwitchDevice, Version } from '@suite-views';
 import type { AppState } from '@suite-types';
@@ -142,6 +143,12 @@ const Preloader = ({ children, hideModals = false }: Props) => {
                 <SuiteLayout>{children}</SuiteLayout>
             </>
         );
+    }
+
+    // route does not exist, display error page in fullscreen mode
+    // because if it is handled by Router it is wrapped in SuiteLayout
+    if (!router.route) {
+        return <ErrorPage />;
     }
 
     // everything is set.
