@@ -1,7 +1,7 @@
 import React from 'react';
-import { resolveStaticPath } from '@suite-utils/nextjs';
+import { resolveStaticPath } from '@suite-utils/build';
 import { URLS } from '@suite-constants';
-import Head from 'next/head';
+import Helmet from 'react-helmet';
 import { useIntl } from 'react-intl';
 import messages from '@suite/support/messages';
 
@@ -21,7 +21,7 @@ const Metadata = ({
     const intl = useIntl();
     description = description || intl.formatMessage(messages.TR_SUITE_META_DESCRIPTION);
     return (
-        <Head>
+        <Helmet>
             <meta name="viewport" content="width=device-width, initial-scale=1" />
 
             <title>{title}</title>
@@ -41,7 +41,7 @@ const Metadata = ({
             <meta property="twitter:title" key="twitter:title" content={title} />
             <meta property="twitter:description" key="twitter:description" content={description} />
             <meta property="twitter:image" key="twitter:image" content={image} />
-        </Head>
+        </Helmet>
     );
 };
 

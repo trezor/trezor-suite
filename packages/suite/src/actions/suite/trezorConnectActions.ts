@@ -6,7 +6,7 @@ import TrezorConnect, {
 } from 'trezor-connect';
 import { SUITE } from '@suite-actions/constants';
 import { lockDevice } from '@suite-actions/suiteActions';
-import { resolveStaticPath } from '@suite-utils/nextjs';
+import { resolveStaticPath } from '@suite-utils/build';
 import { Dispatch, GetState } from '@suite-types';
 import { isWeb } from '@suite-utils/env';
 

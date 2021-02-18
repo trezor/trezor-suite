@@ -1,8 +1,6 @@
 /**
- * Router actions for 'next/router' used in web and desktop apps
  * Use override for react-native (@trezor/suite-native/src/actions)
  */
-import Router from 'next/router';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { SUITE, ROUTER } from '@suite-actions/constants';
 import {
@@ -13,6 +11,7 @@ import {
     RouteParams,
 } from '@suite-utils/router';
 import { Dispatch, GetState, Route } from '@suite-types';
+import history from '@suite/support/history';
 
 interface LocationChange {
     type: typeof ROUTER.LOCATION_CHANGE;
@@ -28,7 +27,7 @@ export type RouterAction = LocationChange;
 export const init = () => (dispatch: Dispatch, getState: GetState) => {
     // check if location was not already changed by initialRedirection
     if (getState().router.app === 'unknown') {
-        const url = Router.pathname + window.location.hash;
+        const url = history.location.pathname + history.location.hash;
         dispatch({
             type: ROUTER.LOCATION_CHANGE,
             url,
@@ -48,7 +47,7 @@ export const onBeforePopState = () => (_dispatch: Dispatch, getState: GetState) 
 };
 
 /**
- * Handle changes of window.location and window.location.hash
+ * Handle changes of history.location and history.location.hash
  * Called from ./support/RouterHandler
  * @param {string} url
  */
@@ -66,11 +65,10 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
 };
 
 // links inside of application
-export const goto = (
-    routeName: Route['name'],
-    params?: RouteParams,
-    preserveParams = false,
-) => async (dispatch: Dispatch, getState: GetState) => {
+export const goto = (routeName: Route['name'], params?: RouteParams, preserveParams = false) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     const hasRouterLock = getState().suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
     if (hasRouterLock) {
         dispatch(suiteActions.lockRouter(false));
@@ -79,6 +77,8 @@ export const goto = (
     if (!unlocked) return;
 
     const url = getRoute(routeName, params);
+    if (url === getState().router.url) return;
+
     const route = findRouteByName(routeName);
     if (route && route.isForegroundApp) {
         dispatch(onLocationChange(url));
@@ -87,27 +87,28 @@ export const goto = (
     }
 
     if (preserveParams) {
-        const { hash } = window.location;
-        await Router.push(url + hash, getPrefixedURL(url) + hash);
+        const { hash } = history.location;
+        history.push(getPrefixedURL(url) + hash);
     } else {
-        await Router.push(url, getPrefixedURL(url));
+        history.push(getPrefixedURL(url));
     }
 };
 
 /**
  * Used only in application modal.
- * Returns Route of application beneath the application modal. (real nextjs/Router value)
+ * Returns Route of application beneath the application modal. (real Router value)
  */
-export const getBackgroundRoute = () => () => findRoute(Router.pathname + window.location.hash);
+export const getBackgroundRoute = () => () =>
+    findRoute(history.location.pathname + history.location.hash);
 
 /**
  * Used only in application modal.
  * Application modal does not push route into router history, it changes it only in reducer (see goto action).
  * Reverse operation (again without touching history) needs to be done in back action.
  */
-export const closeModalApp = (preserveParams = true) => async (dispatch: Dispatch) => {
+export const closeModalApp = (preserveParams = true) => (dispatch: Dispatch) => {
     dispatch(suiteActions.lockRouter(false));
-    // const route = findRoute(Router.pathname + window.location.hash);
+
     const route = dispatch(getBackgroundRoute());
 
     // if user enters route of modal app manually, back would redirect him again to the same route and he would remain stuck
@@ -116,11 +117,11 @@ export const closeModalApp = (preserveParams = true) => async (dispatch: Dispatc
         return dispatch(goto('suite-index'));
     }
 
-    if (!preserveParams && window.location.hash.length > 0) {
-        await Router.push(Router.pathname, getPrefixedURL(Router.pathname));
+    if (!preserveParams && history.location.hash.length > 0) {
+        history.push(getPrefixedURL(history.location.pathname));
     } else {
-        // + window.location.hash is here to preserve params (eg nth account)
-        dispatch(onLocationChange(Router.pathname + window.location.hash));
+        // + history.location.hash is here to preserve params (eg nth account)
+        dispatch(onLocationChange(history.location.pathname + history.location.hash));
     }
 };
 
@@ -129,7 +130,7 @@ export const closeModalApp = (preserveParams = true) => async (dispatch: Dispatc
  * Redirects to requested modal app or welcome screen if `suite.flags.initialRun` is set to true
  */
 export const initialRedirection = () => async (dispatch: Dispatch, getState: GetState) => {
-    const route = findRoute(Router.pathname + window.location.hash);
+    const route = findRoute(history.location.pathname + history.location.hash);
     const { initialRun } = getState().suite.flags;
 
     if (route && route.isForegroundApp) {

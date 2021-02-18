@@ -36,7 +36,7 @@ class GoogleMock {
             this.requests.push(req.url);
 
             if (this.nextResponse) {
-                console.log('[dropboxMock]', this.nextResponse);
+                console.log('[mockGoogleDrive]', this.nextResponse);
                 res.writeHeader(this.nextResponse.status, this.nextResponse.headers);
                 res.write(JSON.stringify(this.nextResponse.body));
                 res.end();

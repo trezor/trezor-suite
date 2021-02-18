@@ -82,7 +82,7 @@ Server needs to be running on https in order to have access to `navigator.usb` f
 
 ## Suite web release
 
-1. `assetPrefix=/wallet yarn workspace @trezor/suite-web build`
+1. `ASSET_PREFIX=/wallet yarn workspace @trezor/suite-web build`
 2. `cd packages/suite-web`
 3. `cd build/static`
 4. `mkdir desktop`

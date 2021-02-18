@@ -8,7 +8,7 @@ import { SuiteThemeVariant } from '@suite/types/suite';
 import { useTheme } from '@suite-hooks';
 
 const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors; themeVariant: SuiteThemeVariant }>`
-    #__next {
+    #app {
         display: flex;
         flex-direction: column;
         height: 100%;

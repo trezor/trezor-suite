@@ -6,7 +6,7 @@
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
     COMPOSE_FILE: ./docker/docker-compose.suite-ci.yml
-    ## corresponds with the NextJs assetPrefix. Tells Cypress where is the index of application
+    ## Tells Cypress where is the index of application
     CYPRESS_ASSET_PREFIX: /web
     CYPRESS_baseUrl: ${DEV_SERVER_URL}/suite-web/${CI_BUILD_REF_NAME}
     ## should tests do snapshot testing

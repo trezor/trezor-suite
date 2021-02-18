@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { homescreensT1, homescreensT2 } from '@suite-constants';
-import { resolveStaticPath } from '@suite-utils/nextjs';
+import { resolveStaticPath } from '@suite-utils/build';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { elementToHomescreen } from '@suite-utils/homescreen';
 import { AcquiredDevice } from '@suite-types';

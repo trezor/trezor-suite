@@ -34,7 +34,7 @@ const logger = new Logger(log.level as LogLevel, { ...log });
 // Globals
 global.logger = logger;
 global.resourcesPath = isDev
-    ? path.join(__dirname, '..', 'public', 'static')
+    ? path.join(__dirname, '..', 'build', 'static')
     : process.resourcesPath;
 
 logger.info('main', 'Application starting');
