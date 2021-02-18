@@ -228,6 +228,13 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
 
+    // reset on account change
+    useEffect(() => {
+        if (state.account.key !== props.selectedAccount.account.key) {
+            resetContext();
+        }
+    }, [props, resetContext, state.account]);
+
     // load draft from reducer
     useEffect(() => {
         const storedState = getDraft();
