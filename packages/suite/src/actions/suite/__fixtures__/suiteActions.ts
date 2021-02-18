@@ -249,6 +249,8 @@ const initialRun = [
                 initialWebRun: false,
                 discreetModeCompleted: false,
                 bech32BannerClosed: false,
+                dashboardGraphHidden: false,
+                securityStepsHidden: false,
             },
         },
     },

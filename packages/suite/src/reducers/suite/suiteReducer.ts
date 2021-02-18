@@ -22,6 +22,8 @@ interface Flags {
     // passphraseCompleted: boolean;
     discreetModeCompleted: boolean;
     bech32BannerClosed: boolean;
+    securityStepsHidden: boolean;
+    dashboardGraphHidden: boolean;
 }
 
 interface SuiteSettings {
@@ -64,6 +66,8 @@ const initialState: SuiteState = {
         // passphraseCompleted: false;
         discreetModeCompleted: false,
         bech32BannerClosed: false,
+        securityStepsHidden: false,
+        dashboardGraphHidden: false,
     },
     settings: {
         theme: {

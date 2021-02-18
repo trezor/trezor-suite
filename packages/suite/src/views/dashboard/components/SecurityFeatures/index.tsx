@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Button, SecurityCard, SecurityCardProps, variables } from '@trezor/components';
+import * as suiteActions from '@suite-actions/suiteActions';
 import { Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
 import { Props } from './Container';
 import { AcquiredDevice } from '@suite-types';
-import { useDevice, useDiscovery, useAnalytics } from '@suite-hooks';
+import { useDevice, useDiscovery, useAnalytics, useSelector, useActions } from '@suite-hooks';
 
 const Content = styled.div`
     display: grid;
@@ -31,7 +32,9 @@ const SecurityFeatures = ({
     changePin,
     ...rest
 }: Props) => {
-    const [isHidden, setIsHidden] = useState(false);
+    const { securityStepsHidden } = useSelector(s => s.suite.flags);
+    const { setFlag } = useActions({ setFlag: suiteActions.setFlag });
+
     const { isLocked } = useDevice();
     const isDeviceLocked = isLocked();
     const { getDiscoveryStatus } = useDiscovery();
@@ -219,12 +222,12 @@ const SecurityFeatures = ({
             actions={
                 <Button
                     variant="tertiary"
-                    icon={isHidden ? 'ARROW_DOWN' : 'ARROW_UP'}
+                    icon={securityStepsHidden ? 'ARROW_DOWN' : 'ARROW_UP'}
                     onClick={() => {
-                        setIsHidden(!isHidden);
+                        setFlag('securityStepsHidden', !securityStepsHidden);
                     }}
                 >
-                    {isHidden ? (
+                    {securityStepsHidden ? (
                         <Translation id="TR_SHOW_BUTTON" />
                     ) : (
                         <Translation id="TR_HIDE_BUTTON" />
@@ -234,7 +237,7 @@ const SecurityFeatures = ({
             {...rest}
         >
             <Content>
-                {!isHidden &&
+                {!securityStepsHidden &&
                     cards.map((card, i) => {
                         // re-check if the card button should be disabled (taking the global loading state into account)
                         const ctaObject = card.cta
