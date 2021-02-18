@@ -2,13 +2,14 @@ import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { Dropdown } from '@trezor/components';
-import { Card, QuestionTooltip } from '@suite-components';
+import { Card, QuestionTooltip, Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
 import * as accountUtils from '@wallet-utils/accountUtils';
-import { useDiscovery } from '@suite-hooks';
+import { useDiscovery, useSelector, useActions } from '@suite-hooks';
 import { useFastAccounts, useFiatValue } from '@wallet-hooks';
 import { goto } from '@suite-actions/routerActions';
 import { SkeletonTransactionsGraph } from '@suite-components/TransactionsGraph';
+import * as suiteActions from '@suite-actions/suiteActions';
 
 import Header from './components/Header';
 import Exception from './components/Exception';
@@ -18,13 +19,13 @@ import GraphScaleDropdownItem from '@suite-components/TransactionsGraph/componen
 
 const StyledCard = styled(Card)`
     flex-direction: column;
-    min-height: 400px;
 `;
 
 const Body = styled.div`
     display: flex;
     align-items: center;
     padding: 0px 20px;
+    min-height: 329px;
     flex: 1;
 `;
 
@@ -33,6 +34,8 @@ const PortfolioCard = React.memo(() => {
     const { fiat, localCurrency } = useFiatValue();
     const { discovery, getDiscoveryStatus } = useDiscovery();
     const accounts = useFastAccounts();
+    const { dashboardGraphHidden } = useSelector(s => s.suite.flags);
+    const { setFlag } = useActions({ setFlag: suiteActions.setFlag });
 
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
     const portfolioValue = accountUtils
@@ -50,15 +53,20 @@ const PortfolioCard = React.memo(() => {
     if (discoveryStatus && discoveryStatus.status === 'exception') {
         body = <Exception exception={discoveryStatus} discovery={discovery} />;
     } else if (discoveryStatus && discoveryStatus.status === 'loading') {
-        body = <SkeletonTransactionsGraph data-test="@dashboard/loading" />;
-    } else {
-        body = isDeviceEmpty ? <EmptyWallet /> : <DashboardGraph accounts={accounts} />;
+        body = dashboardGraphHidden ? null : (
+            <SkeletonTransactionsGraph data-test="@dashboard/loading" />
+        );
+    } else if (isDeviceEmpty) {
+        body = <EmptyWallet />;
+    } else if (!dashboardGraphHidden) {
+        body = <DashboardGraph accounts={accounts} />;
     }
 
     const isWalletEmpty = !discoveryStatus && isDeviceEmpty;
     const isWalletLoading = discoveryStatus?.status === 'loading' ?? false;
     const isWalletError = discoveryStatus?.status === 'exception' ?? false;
-    const showGraphControls = !isWalletEmpty && !isWalletLoading && !isWalletError;
+    const showGraphControls =
+        !isWalletEmpty && !isWalletLoading && !isWalletError && !dashboardGraphHidden;
 
     const showMissingDataTooltip =
         showGraphControls &&
@@ -75,7 +83,7 @@ const PortfolioCard = React.memo(() => {
                 />
             }
             actions={
-                showGraphControls ? (
+                !isWalletEmpty && !isWalletLoading && !isWalletError ? (
                     <Dropdown
                         alignMenu="right"
                         items={[
@@ -89,6 +97,19 @@ const PortfolioCard = React.memo(() => {
                                         label: <GraphScaleDropdownItem />,
                                         callback: () => false,
                                     },
+                                    {
+                                        key: 'hide',
+                                        icon: dashboardGraphHidden ? 'SHOW' : 'HIDE',
+                                        label: dashboardGraphHidden ? (
+                                            <Translation id="TR_SHOW_GRAPH" />
+                                        ) : (
+                                            <Translation id="TR_HIDE_GRAPH" />
+                                        ),
+                                        callback: () => {
+                                            setFlag('dashboardGraphHidden', !dashboardGraphHidden);
+                                            return true;
+                                        },
+                                    },
                                 ],
                             },
                         ]}
@@ -98,6 +119,8 @@ const PortfolioCard = React.memo(() => {
         >
             <StyledCard noPadding>
                 <Header
+                    showGraphControls={showGraphControls}
+                    hideBorder={!body}
                     portfolioValue={portfolioValue}
                     localCurrency={localCurrency}
                     isWalletEmpty={isWalletEmpty}
@@ -105,7 +128,8 @@ const PortfolioCard = React.memo(() => {
                     isWalletError={isWalletError}
                     receiveClickHandler={() => dispatch(goto('wallet-receive'))}
                 />
-                <Body>{body}</Body>
+
+                {body && <Body>{body}</Body>}
             </StyledCard>
         </Section>
     );

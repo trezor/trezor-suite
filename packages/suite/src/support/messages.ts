@@ -5392,6 +5392,14 @@ const definedMessages = defineMessages({
         id: 'TR_BYTES',
         defaultMessage: 'bytes',
     },
+    TR_SHOW_GRAPH: {
+        id: 'TR_SHOW_GRAPH',
+        defaultMessage: 'Show Graph',
+    },
+    TR_HIDE_GRAPH: {
+        id: 'TR_HIDE_GRAPH',
+        defaultMessage: 'Hide Graph',
+    },
     TR_SUITE_META_DESCRIPTION: {
         id: 'TR_SUITE_META_DESCRIPTION',
         defaultMessage:

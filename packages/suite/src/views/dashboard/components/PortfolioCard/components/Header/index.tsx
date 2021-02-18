@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { variables, Button } from '@trezor/components';
 import { Translation, FormattedNumber, HiddenPlaceholder } from '@suite-components';
 import RangeSelector from '@suite-components/TransactionsGraph/components/RangeSelector';
@@ -7,12 +7,16 @@ import { updateGraphData } from '@wallet-actions/graphActions';
 import { useFastAccounts } from '@wallet-hooks';
 import { GraphRange } from '@wallet-types/graph';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ hideBorder: boolean }>`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     padding: 20px;
-    border-bottom: solid 1px ${props => props.theme.STROKE_GREY};
+    ${props =>
+        !props.hideBorder &&
+        css`
+            border-bottom: solid 1px ${props => props.theme.STROKE_GREY};
+        `}
 `;
 
 const ValueWrapper = styled.div`
@@ -48,6 +52,8 @@ export interface Props {
     isWalletEmpty: boolean;
     isWalletLoading: boolean;
     isWalletError: boolean;
+    showGraphControls: boolean;
+    hideBorder: boolean;
     // buyClickHandler: () => void;
     receiveClickHandler: () => void;
 }
@@ -64,20 +70,19 @@ const Header = (props: Props) => {
 
     let actions = null;
     if (!props.isWalletLoading && !props.isWalletError) {
-        actions = props.isWalletEmpty ? (
-            <ActionButton variant="primary" onClick={props.receiveClickHandler}>
-                <Translation id="TR_RECEIVE" />
-            </ActionButton>
-        ) : (
-            // <ActionButton variant="primary" onClick={buyClickHandler}>
-            //         <Translation id="TR_BUY" />
-            //     </ActionButton>
-            <RangeSelector onSelectedRange={onSelectedRange} align="right" />
-        );
+        if (props.isWalletEmpty) {
+            actions = (
+                <ActionButton variant="primary" onClick={props.receiveClickHandler}>
+                    <Translation id="TR_RECEIVE" />
+                </ActionButton>
+            );
+        } else if (props.showGraphControls) {
+            actions = <RangeSelector onSelectedRange={onSelectedRange} align="right" />;
+        }
     }
 
     return (
-        <Wrapper>
+        <Wrapper hideBorder={props.hideBorder}>
             <Left>
                 <ValueWrapper>
                     <HiddenPlaceholder intensity={7}>
