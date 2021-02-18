@@ -162,7 +162,7 @@ const TransactionItem = React.memo((props: Props) => {
                 onMouseLeave={() => setNestedItemIsHovered(false)}
                 onClick={() => openTxDetailsModal()}
             >
-                <TransactionTypeIcon type={transaction.type} isPending={props.isPending} />
+                <TransactionTypeIcon type={type} isPending={props.isPending} />
             </TxTypeIconWrapper>
 
             <Content>
@@ -185,7 +185,7 @@ const TransactionItem = React.memo((props: Props) => {
                         <TransactionTimestamp transaction={transaction} />
                     </TimestampWrapper>
                     <TargetsWrapper>
-                        {!isUnknown && !isTokenTransaction && (
+                        {!isUnknown && type !== 'failed' && !isTokenTransaction && (
                             <>
                                 {previewTargets.map((t, i) => (
                                     // render first n targets, n = DEFAULT_LIMIT

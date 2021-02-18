@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { WalletAccountTransaction } from '@wallet-types';
 import { Icon, useTheme, IconProps } from '@trezor/components';
+import { getTxIcon } from '@wallet-utils/transactionUtils';
 
 const IconsWrapper = styled.div`
     position: relative;
@@ -20,14 +21,14 @@ interface Props extends Omit<IconProps, 'icon'> {
 
 const TransactionTypeIcon = ({ type, isPending, ...rest }: Props) => {
     const theme = useTheme();
-    let icon = null;
-    if (type === 'sent' || type === 'self') {
-        icon = <Icon icon="SEND" color={theme.TYPE_LIGHT_GREY} size={24} {...rest} />;
-    } else if (type === 'recv') {
-        icon = <Icon icon="RECEIVE" color={theme.TYPE_LIGHT_GREY} size={24} {...rest} />;
-    } else {
-        icon = <Icon icon="QUESTION" color={theme.TYPE_LIGHT_GREY} size={24} {...rest} />;
-    }
+    const icon = (
+        <Icon
+            icon={getTxIcon(type)}
+            color={type === 'failed' ? theme.TYPE_RED : theme.TYPE_LIGHT_GREY}
+            size={24}
+            {...rest}
+        />
+    );
 
     if (isPending) {
         return (
