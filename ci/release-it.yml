@@ -1,0 +1,36 @@
+github:
+  release: true
+  draft: true
+  preRelease: true
+  releaseName: "v${version}"
+  releaseNotes: node ./ci/scripts/fetch_changelog.js
+  assets:
+    - "*.AppImage"
+    - "*.AppImage.asc"
+    - "*.dmg"
+    - "*.dmg.asc"
+    - "*.exe"
+    - "*.exe.asc"
+    - "latest.yml"
+    - "latest-mac.yml"
+    - "latest-linux.yml"
+    - "latest-linux-arm64.yml"
+git:
+  requireCommits: true
+  tag: false
+  commit: false
+  push: false
+npm:
+  publish: false
+plugins:
+  "@release-it/bumper":
+    in: "package.json"
+    out:
+      - packages/landing-page/package.json
+      - packages/suite-data/package.json
+      - packages/suite-desktop/package.json
+      - packages/suite-native/package.json
+      - packages/suite-storage/package.json
+      - packages/suite-web-landing/package.json
+      - packages/suite-web/package.json
+      - packages/suite/package.json

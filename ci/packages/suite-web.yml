@@ -182,28 +182,3 @@ e2e web all snapshots:
 
 # TODO scheduled jobs against beta chrome channel
 # TODO scheduled jobs against suite.trezor.io
-
-suite-web deploy staging-suite:
-  stage: deploy to staging
-  needs:
-    - suite-web build stable
-    - suite-desktop build mac
-    - suite-desktop build linux
-    - suite-desktop build windows
-  environment:
-    name: ${CI_BUILD_REF_NAME}-staging-suite
-    url: ${STAGING_SUITE_SERVER_URL}
-  before_script: []
-  only:
-    <<: *run_everything_rules
-  when: manual
-  script:
-    - source ${STAGING_SUITE_DEPLOY_KEYFILE}
-    - mkdir -p packages/suite-web/build/static/desktop
-    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage ./packages/suite-web/build/static/desktop || :'
-    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg ./packages/suite-web/build/static/desktop || :'
-    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe ./packages/suite-web/build/static/desktop || :'
-    - cd packages/suite-web
-    - ./scripts/s3sync.sh staging-suite
-  tags:
-    - deploy
