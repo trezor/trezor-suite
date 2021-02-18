@@ -2508,6 +2508,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Unknown transaction',
         id: 'TR_UNKNOWN_TRANSACTION',
     },
+    TR_FAILED_TRANSACTION: {
+        defaultMessage: 'Failed transaction',
+        id: 'TR_FAILED_TRANSACTION',
+    },
     TR_UNKNOWN_ERROR_SEE_CONSOLE: {
         defaultMessage: 'Unknown error. See console logs for details.',
         id: 'TR_UNKNOWN_ERROR_SEE_CONSOLE',

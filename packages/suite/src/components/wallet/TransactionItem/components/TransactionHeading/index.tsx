@@ -92,6 +92,17 @@ const TransactionHeading = ({
         );
     }
 
+    if (transaction.type === 'failed') {
+        amount = (
+            <CryptoAmount>
+                <StyledHiddenPlaceholder>
+                    <Sign value="neg" />
+                    {transaction.fee} {symbol}
+                </StyledHiddenPlaceholder>
+            </CryptoAmount>
+        );
+    }
+
     // TODO: intl once the structure and all combinations are decided
     let heading = null;
     // const symbol = transaction.symbol.toUpperCase();
@@ -104,6 +115,8 @@ const TransactionHeading = ({
         heading = isPending ? `Receiving ${symbol}` : `Received ${symbol}`;
     } else if (transaction.type === 'self') {
         heading = isPending ? `Sending ${symbol} to myself` : `Sent ${symbol} to myself`;
+    } else if (transaction.type === 'failed') {
+        heading = <Translation id="TR_FAILED_TRANSACTION" />;
     } else {
         heading = <Translation id="TR_UNKNOWN_TRANSACTION" />;
     }

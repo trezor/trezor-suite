@@ -9,7 +9,12 @@ import {
 } from '@suite-components';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction, Network } from '@wallet-types';
-import { getFeeRate, getBlockExplorerUrl, isTxFinal } from '@wallet-utils/transactionUtils';
+import {
+    getFeeRate,
+    getBlockExplorerUrl,
+    isTxFinal,
+    getTxIcon,
+} from '@wallet-utils/transactionUtils';
 import { getFeeUnits } from '@wallet-utils/sendFormUtils';
 
 const Wrapper = styled.div`
@@ -200,14 +205,20 @@ const BasicDetails = ({ tx, confirmations, network }: Props) => {
                     <NestedIconWrapper>
                         <Icon
                             size={14}
-                            color={theme.TYPE_DARK_GREY}
-                            icon={tx.type === 'recv' ? 'RECEIVE' : 'SEND'}
+                            color={tx.type === 'failed' ? theme.TYPE_RED : theme.TYPE_DARK_GREY}
+                            icon={getTxIcon(tx.type)}
                         />
                     </NestedIconWrapper>
                 </MainIconWrapper>
                 <TxStatus>
                     <TxSentStatus>
-                        {transactionStatus} {assetSymbol}
+                        {tx.type === 'failed' ? (
+                            <Translation id="TR_FAILED_TRANSACTION" />
+                        ) : (
+                            <>
+                                {transactionStatus} {assetSymbol}
+                            </>
+                        )}
                     </TxSentStatus>
                 </TxStatus>
 
