@@ -31,4 +31,5 @@ include:
   - ci/packages/landing-page.yml
   - ci/packages/suite-web-landing.yml
   # to be run only on scheduled pipelines
+  - ci/releases.yml
   - ci/schedules.yml

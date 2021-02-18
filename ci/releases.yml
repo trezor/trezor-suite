@@ -1,0 +1,75 @@
+# Upload UNSIGNED binaries to staging
+suite-web deploy staging-suite:
+  stage: deploy to staging
+  needs:
+    - suite-web build stable
+    - suite-desktop build mac
+    - suite-desktop build linux
+    - suite-desktop build windows
+  environment:
+    name: ${CI_BUILD_REF_NAME}-staging-suite
+    url: ${STAGING_SUITE_SERVER_URL}
+  before_script: []
+  only:
+    - /^release\//
+  when: manual
+  script:
+    - source ${STAGING_SUITE_DEPLOY_KEYFILE}
+    - mkdir -p packages/suite-web/build/static/desktop
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage ./packages/suite-web/build/static/desktop || :'
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg ./packages/suite-web/build/static/desktop || :'
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe ./packages/suite-web/build/static/desktop || :'
+    - cd packages/suite-web
+    - ./scripts/s3sync.sh staging-suite
+  tags:
+    - deploy
+
+# Upload signed binaries to staging
+suite-desktop codesign deploy staging-suite:
+  stage: deploy to staging
+  needs:
+    - suite-web build stable
+    - suite-desktop build mac codesign
+    - suite-desktop build linux codesign
+    - suite-desktop build windows codesign
+  environment:
+    name: ${CI_BUILD_REF_NAME}-staging-suite
+    url: ${STAGING_SUITE_SERVER_URL}
+  before_script: []
+  only:
+    refs:
+      - codesign
+  when: manual
+  script:
+    - source ${STAGING_SUITE_DEPLOY_KEYFILE}
+    - mkdir -p packages/suite-web/build/static/desktop
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage ./packages/suite-web/build/static/desktop || :'
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage.asc ./packages/suite-web/build/static/desktop || :'
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg ./packages/suite-web/build/static/desktop || :'
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg.asc ./packages/suite-web/build/static/desktop || :'
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe ./packages/suite-web/build/static/desktop || :'
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe.asc ./packages/suite-web/build/static/desktop || :'
+    - cd packages/suite-web
+    - ./scripts/s3sync.sh staging-suite
+  tags:
+    - deploy
+
+# Create a GitHub release and append signed binaries
+suite-desktop github release:
+  stage: deploy to production
+  needs:
+    - suite-desktop build mac codesign
+    - suite-desktop build linux codesign
+    - suite-desktop build windows codesign
+  environment:
+    name: ${CI_BUILD_REF_NAME}-staging-suite
+    url: ${STAGING_SUITE_SERVER_URL}
+  before_script: []
+  only:
+    refs:
+      - codesign
+  when: manual
+  script:
+    - release-it --ci --config=ci/release-it.yml --disable-metrics
+  tags:
+    - deploy
