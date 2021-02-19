@@ -37,6 +37,7 @@ export default class MyDocument extends Document {
             // @ts-ignore TODO: should be fixed in newer React
             <Html lang="en" translate="no">
                 <Head>
+                    <meta name="google" content="notranslate" />
                     <meta charSet="utf-8" />
                     <script
                         type="text/javascript"
