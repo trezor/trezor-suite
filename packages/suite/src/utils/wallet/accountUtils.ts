@@ -274,15 +274,37 @@ export const getAccountFiatBalance = (
     localCurrency: string,
     fiat: CoinFiatRates[],
 ) => {
-    const fiatRates = fiat.find(f => f.symbol === account.symbol);
-    if (fiatRates) {
-        const fiatBalance = toFiatCurrency(
-            account.formattedBalance,
-            localCurrency,
-            fiatRates.current?.rates,
+    const coinFiatRates = fiat.find(f => f.symbol === account.symbol);
+    if (!coinFiatRates) return null;
+
+    let totalBalance = new BigNumber(0);
+
+    // account fiat balance
+    const balance = toFiatCurrency(
+        account.formattedBalance,
+        localCurrency,
+        coinFiatRates.current?.rates,
+    );
+
+    // sum fiat value of all tokens
+    account.tokens?.forEach(t => {
+        const tokenRates = fiat.find(
+            f => f.mainNetworkSymbol === account.symbol && f.tokenAddress === t.address,
         );
-        return fiatBalance;
-    }
+        if (tokenRates && t.balance) {
+            const tokenBalance = toFiatCurrency(
+                t.balance,
+                localCurrency,
+                tokenRates.current?.rates,
+            );
+            if (tokenBalance) {
+                totalBalance = totalBalance.plus(tokenBalance);
+            }
+        }
+    });
+
+    totalBalance = totalBalance.plus(balance ?? 0);
+    return totalBalance.toFixed();
 };
 
 export const getTotalFiatBalance = (
