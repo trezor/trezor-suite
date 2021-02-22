@@ -22,6 +22,7 @@ export type SuiteAction =
     | { type: typeof SUITE.INIT }
     | { type: typeof SUITE.READY }
     | { type: typeof SUITE.ERROR; error: string }
+    | { type: typeof SUITE.SET_DB_ERROR; payload: AppState['suite']['dbError'] }
     | { type: typeof SUITE.CONNECT_INITIALIZED }
     | { type: typeof SUITE.SELECT_DEVICE; payload?: TrezorDevice }
     | { type: typeof SUITE.UPDATE_SELECTED_DEVICE; payload: TrezorDevice }
@@ -76,6 +77,11 @@ export type SuiteAction =
           variant: SuiteThemeVariant;
           colors: SuiteThemeColors;
       };
+
+export const setDbError = (payload: AppState['suite']['dbError']) => ({
+    type: SUITE.SET_DB_ERROR,
+    payload,
+});
 
 export const setTheme = (variant: SuiteThemeVariant, colors?: SuiteThemeColors) => ({
     type: SUITE.SET_THEME,

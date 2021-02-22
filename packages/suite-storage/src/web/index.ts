@@ -26,15 +26,21 @@ class CommonDB<TDBStructure> {
     version!: number;
     db!: IDBPDatabase<TDBStructure> | null;
     broadcastChannel!: BroadcastChannel;
+    supported: boolean | undefined;
+    blocking = false;
+    blocked = false;
     onUpgrade!: OnUpgradeFunc<TDBStructure>;
     onDowngrade!: () => any;
-    supported: boolean | undefined;
+    onBlocked?: () => void;
+    onBlocking?: () => void;
 
     constructor(
         dbName: string,
         version: number,
         onUpgrade: OnUpgradeFunc<TDBStructure>,
-        onDowngrade: () => any
+        onDowngrade: () => any,
+        onBlocked?: () => void,
+        onBlocking?: () => void
     ) {
         if (CommonDB.instance) {
             return CommonDB.instance;
@@ -45,7 +51,11 @@ class CommonDB<TDBStructure> {
         this.supported = undefined;
         this.onUpgrade = onUpgrade.bind(this);
         this.onDowngrade = onDowngrade.bind(this);
+        this.onBlocked = onBlocked;
+        this.onBlocking = onBlocking;
         this.db = null;
+        this.blocking = false;
+        this.blocked = false;
 
         this.isSupported();
 
@@ -101,6 +111,12 @@ class CommonDB<TDBStructure> {
         this.broadcastChannel.onmessage = handler;
     };
 
+    closeAfterTimeout = (timeout = 1000) => {
+        setTimeout(() => {
+            this.db?.close();
+        }, timeout);
+    };
+
     getDB = async () => {
         if (!this.db) {
             try {
@@ -111,22 +127,32 @@ class CommonDB<TDBStructure> {
                         this.onUpgrade(db, oldVersion, newVersion, transaction);
                     },
                     blocked: () => {
+                        this.blocked = true;
                         // Called if there are older versions of the database open on the origin, so this version cannot open.
-                        // TODO
-                        console.log(
-                            'Accessing the IDB is blocked by another window running older version.'
-                        );
+                        if (this.onBlocked) {
+                            this.onBlocked();
+                        }
+                        // wait 1 sec before closing the db to let app enough time to finish all requests
+                        this.closeAfterTimeout();
                     },
                     blocking: () => {
                         // Called if this connection is blocking a future version of the database from opening.
-                        // TODO
-                        console.log('This instance is blocking the IDB upgrade to new version.');
+                        this.blocking = true;
+                        if (this.onBlocking) {
+                            this.onBlocking();
+                        }
+                        // wait 1 sec before closing the db to let app enough time to finish all requests
+                        this.closeAfterTimeout();
+                    },
+                    terminated: () => {
+                        // browser killed idb, user cleared history
+                        console.warn('Unexpected IDB close');
                     },
                 });
             } catch (error) {
                 if (error && error.name === 'VersionError') {
                     indexedDB.deleteDatabase(this.dbName);
-                    console.log(
+                    console.warn(
                         'IndexedDB was deleted because your version is higher than it should be (downgrade)'
                     );
                     this.onDowngrade();

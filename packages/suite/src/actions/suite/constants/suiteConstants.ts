@@ -1,6 +1,7 @@
 export const INIT = '@suite/init';
 export const READY = '@suite/ready';
 export const ERROR = '@suite/error';
+export const SET_DB_ERROR = '@suite/set-db-error';
 export const INITIAL_RUN_COMPLETED = '@suite/initial-run-completed';
 export const CONNECT_INITIALIZED = '@suite/trezor-connect-initialized';
 export const SELECT_DEVICE = '@suite/select-device';

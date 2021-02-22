@@ -1187,7 +1187,6 @@
 	"TR_VALUES": "Balance",
 	"TR_VERIFY": "Verify",
 	"TR_VERIFY_MESSAGE": "Verify Message",
-	"TR_VERSION": "version",
 	"TR_VERSION_HAS_BEEN_RELEASED": "Version {version} has been released!",
 	"TR_WAITING_FOR_CONFIRMATION": "Waiting for confirmation on device\n",
 	"TR_WAIT_FOR_FILE_TO_DOWNLOAD": "Wait for file to download",
