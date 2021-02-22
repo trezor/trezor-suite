@@ -7,7 +7,7 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import * as blockchainActions from '@wallet-actions/blockchainActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as analyticsActions from '@suite-actions/analyticsActions';
-import { loadStorage } from '@suite-actions/storageActions';
+import * as storageActions from '@suite-actions/storageActions';
 import { fetchLocale } from '@settings-actions/languageActions';
 import * as trezorConnectActions from '@suite-actions/trezorConnectActions';
 import { getApp } from '@suite-utils/router';
@@ -28,9 +28,10 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
 
     switch (action.type) {
         case SUITE.INIT:
+            await api.dispatch(storageActions.init());
             api.dispatch(suiteActions.setInitialTheme());
             // load storage
-            api.dispatch(loadStorage());
+            api.dispatch(storageActions.loadStorage());
             break;
         case STORAGE.LOADED: {
             // select first device from storage

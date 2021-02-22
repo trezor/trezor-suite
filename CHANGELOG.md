@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Incorrect fiat rates for tokens sharing the same symbol
 - Include tokens in portfolio value showed on the Dashboard
 - Potential crash when switching active wallet in Send form
+- Upgrading idb between releases should not lead to "Loading takes too long" error
 
 ## 21.2.3 [17th February 2021]
 

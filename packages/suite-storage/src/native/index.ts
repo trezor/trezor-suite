@@ -21,15 +21,21 @@ class CommonDB<TDBStructure> {
     version!: number;
     db!: IDBPDatabase<TDBStructure>;
     broadcastChannel!: any;
+    supported: boolean | undefined;
+    blocking = false;
+    blocked = false;
     onUpgrade!: OnUpgradeFunc<TDBStructure>;
     onDowngrade!: () => any;
-    supported!: boolean | undefined;
+    onBlocked?: () => void;
+    onBlocking?: () => void;
 
     constructor(
         dbName: string,
         version: number,
         onUpgrade: OnUpgradeFunc<TDBStructure>,
-        onDowngrade: () => any
+        onDowngrade: () => any,
+        onBlocked?: () => void,
+        onBlocking?: () => void
     ) {
         if (CommonDB.instance) {
             return CommonDB.instance;
@@ -39,7 +45,12 @@ class CommonDB<TDBStructure> {
         this.version = version;
         this.onUpgrade = onUpgrade.bind(this);
         this.onDowngrade = onDowngrade.bind(this);
+        this.onBlocked = onBlocked;
+        this.onBlocking = onBlocking;
         this.supported = false;
+        this.blocking = false;
+        this.blocked = false;
+
         // @ts-ignore
         this.db = null;
         // create global instance of broadcast channel

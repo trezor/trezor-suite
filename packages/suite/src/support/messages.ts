@@ -3688,7 +3688,7 @@ const definedMessages = defineMessages({
     },
     TR_VERSION: {
         id: 'TR_VERSION',
-        defaultMessage: 'version',
+        defaultMessage: 'Version {version}',
     },
     TR_BTC_ONLY_LABEL: {
         id: 'TR_BTC_ONLY_LABEL',
@@ -5412,6 +5412,19 @@ const definedMessages = defineMessages({
         id: 'TR_SUITE_META_DESCRIPTION',
         defaultMessage:
             'New desktop & browser app for Trezor hardware wallets. Trezor Suite brings big improvements across our three key pillars of usability, security and privacy.',
+    },
+    TR_DATABASE_UPGRADE_BLOCKED: {
+        id: 'TR_DATABASE_UPGRADE_BLOCKED',
+        defaultMessage: 'Database upgrade blocked by another app instance',
+    },
+    TR_THIS_INSTANCE_IS_BLOCKING: {
+        id: 'TR_THIS_INSTANCE_IS_BLOCKING',
+        defaultMessage: 'This instance is blocking a database upgrade',
+    },
+    TR_RUNNING_MULTIPLE_INSTANCES: {
+        id: 'TR_RUNNING_MULTIPLE_INSTANCES',
+        defaultMessage:
+            'It seems you are running multiple instances of the app. If you are using Suite in other window or tab, close it and refresh the app.',
     },
 } as const);
 

@@ -7,6 +7,7 @@ import InitialLoading from './components/InitialLoading';
 import DiscoveryLoader from '@suite-components/DiscoveryLoader';
 import Modals from '@suite-components/modals';
 import * as routerActions from '@suite-actions/routerActions';
+import DatabaseUpgradeModal from './components/DatabaseUpgradeModal';
 import { AppState } from '@suite-types';
 import { useDiscovery, useSelector, useActions } from '@suite-hooks';
 
@@ -128,17 +129,18 @@ interface Props {
 
 const Preloader = ({ children, hideModals = false }: Props) => {
     const actions = useActions({
-        init: () => ({ type: SUITE.INIT } as const),
+        suiteInit: () => ({ type: SUITE.INIT } as const),
         goto: routerActions.goto,
         closeModalApp: routerActions.closeModalApp,
         getBackgroundRoute: routerActions.getBackgroundRoute,
     });
 
-    const { loading, loaded, error, router, transport, actionModalContext } = useSelector(
+    const { loading, loaded, error, dbError, router, transport, actionModalContext } = useSelector(
         state => ({
             loading: state.suite.loading,
             loaded: state.suite.loaded,
             error: state.suite.error,
+            dbError: state.suite.dbError,
             transport: state.suite.transport,
             router: state.router,
             actionModalContext: state.modal.context,
@@ -148,15 +150,17 @@ const Preloader = ({ children, hideModals = false }: Props) => {
     const { device, getDiscoveryStatus } = useDiscovery();
 
     useEffect(() => {
-        if (!loading && !loaded && !error) {
-            actions.init();
+        if (!loading && !loaded && !error && !dbError) {
+            actions.suiteInit();
         }
-    }, [loaded, loading, error, actions]);
+    }, [loaded, loading, error, actions, dbError]);
 
     if (error) {
         // trezor-connect initialization failed
         // throw error to <ErrorBoundary /> in _app.tsx
         throw new Error(error);
+    } else if (dbError) {
+        return <DatabaseUpgradeModal variant={dbError} />;
     }
 
     const hasActionModal = actionModalContext !== '@modal/context-none';
