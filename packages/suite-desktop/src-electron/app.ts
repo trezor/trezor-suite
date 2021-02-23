@@ -77,8 +77,25 @@ const init = async () => {
     });
 };
 
-app.name = APP_NAME; // overrides @trezor/suite-desktop app name in menu
-app.on('ready', init);
+// https://www.electronjs.org/docs/all#apprequestsingleinstancelock
+const singleInstance = app.requestSingleInstanceLock();
+if (!singleInstance) {
+    logger.warn('main', 'Second instance detected, quitting...');
+    app.quit();
+} else {
+    logger.info('main', 'Application starting');
+
+    app.on('second-instance', () => {
+        // Someone tried to run a second instance, we should focus our window.
+        if (mainWindow) {
+            if (mainWindow.isMinimized()) mainWindow.restore();
+            mainWindow.focus();
+        }
+    });
+
+    app.name = APP_NAME; // overrides @trezor/suite-desktop app name in menu
+    app.on('ready', init);
+}
 
 app.on('before-quit', () => {
     if (!mainWindow) return;
