@@ -4274,7 +4274,7 @@ const definedMessages = defineMessages({
     },
     TR_ADD_TOKEN_TOOLTIP: {
         id: 'TR_ADD_TOKEN_TOOLTIP',
-        defaultMessage: 'Enter an ERC20 token contract addrress',
+        defaultMessage: 'Enter an ERC20 token contract address',
     },
     TR_ADD_TOKEN_ADDRESS_NOT_VALID: {
         id: 'TR_ADD_TOKEN_ADDRESS_NOT_VALID',
@@ -5213,6 +5213,10 @@ const definedMessages = defineMessages({
     TR_SUITE_WEB_LANDING_SIGNATURE: {
         id: 'TR_SUITE_WEB_LANDING_SIGNATURE',
         defaultMessage: 'Signature',
+    },
+    TR_SUITE_WEB_LANDING_HOW_TO_VERIFY: {
+        id: 'TR_SUITE_WEB_LANDING_HOW_TO_VERIFY',
+        defaultMessage: 'How to verify and run on Linux',
     },
     TR_DARK_MODE: {
         id: 'TR_DARK_MODE',
