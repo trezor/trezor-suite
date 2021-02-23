@@ -49,6 +49,7 @@ export const WIKI_P2PHK_URL = 'https://wiki.trezor.io/P2PHK_address';
 export const WIKI_ADVANCED_RECOVERY = 'https://wiki.trezor.io/User_manual:Advanced_recovery';
 export const WIKI_UDEV_RULES = 'https://wiki.trezor.io/Udev_rules';
 export const WIKI_TOR = 'https://wiki.trezor.io/Glossary:Tor';
+export const WIKI_HOW_TO_RUN = 'https://wiki.trezor.io/Apps:Trezor_Suite#How_to_run';
 export const FEEDBACK_FORM = 'https://satoshilabs.typeform.com/to/Dqb71wm1';
 
 // Tor domain
