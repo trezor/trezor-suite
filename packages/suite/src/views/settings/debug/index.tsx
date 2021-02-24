@@ -7,19 +7,21 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import { useDevice, useSelector, useActions } from '@suite-hooks';
 import { openGithubIssue } from '@suite/services/github';
 
-import { Props } from './Container';
 import invityAPI from '@suite-services/invityAPI';
 
 const StyledActionColumn = styled(ActionColumn)`
     max-width: 300px;
 `;
 
-const DebugSettings = (props: Props) => {
-    const { setTheme } = useActions({
+const DebugSettings = () => {
+    const { setTheme, setDebugMode } = useActions({
         setTheme: suiteActions.setTheme,
+        setDebugMode: suiteActions.setDebugMode,
     });
-    const invityAPIUrl = useSelector(state => state.suite.settings.debug.invityAPIUrl);
-    const theme = useSelector(state => state.suite.settings.theme);
+    const { debug, theme } = useSelector(state => ({
+        debug: state.suite.settings.debug,
+        theme: state.suite.settings.theme,
+    }));
     const invityApiServerOptions = [
         {
             label: invityAPI.productionAPIServer,
@@ -35,7 +37,8 @@ const DebugSettings = (props: Props) => {
         },
     ];
     const selectedInvityApiServer =
-        invityApiServerOptions.find(s => s.value === invityAPIUrl) || invityApiServerOptions[0];
+        invityApiServerOptions.find(s => s.value === debug.invityAPIUrl) ||
+        invityApiServerOptions[0];
     const { device } = useDevice();
     return (
         <SettingsLayout>
@@ -47,10 +50,10 @@ const DebugSettings = (props: Props) => {
                     />
                     <ActionColumn>
                         <Switch
-                            checked={props.debug.translationMode || false}
+                            checked={debug.translationMode || false}
                             onChange={() => {
-                                props.setDebugMode({
-                                    translationMode: !props.debug.translationMode,
+                                setDebugMode({
+                                    translationMode: !debug.translationMode,
                                 });
                             }}
                         />
@@ -65,10 +68,10 @@ const DebugSettings = (props: Props) => {
                     />
                     <ActionColumn>
                         <Switch
-                            checked={props.debug.bridgeDevMode}
+                            checked={debug.bridgeDevMode}
                             onChange={() => {
-                                props.setDebugMode({
-                                    bridgeDevMode: !props.debug.bridgeDevMode,
+                                setDebugMode({
+                                    bridgeDevMode: !debug.bridgeDevMode,
                                 });
                             }}
                         />
@@ -99,7 +102,7 @@ const DebugSettings = (props: Props) => {
                     <StyledActionColumn>
                         <Select
                             onChange={(item: { value: string; label: string }) => {
-                                props.setDebugMode({
+                                setDebugMode({
                                     invityAPIUrl: item.value,
                                 });
                                 invityAPI.setInvityAPIServer(item.value);

@@ -4,9 +4,10 @@ import styled, { css } from 'styled-components';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 import { Translation, FiatValue } from '@suite-components';
 import { SkeletonCircle, SkeletonRectangle, Stack } from '@suite-components/Skeleton';
-import { useLoadingSkeleton } from '@suite-hooks';
+import { useLoadingSkeleton, useActions } from '@suite-hooks';
 import { CoinBalance } from '@wallet-components';
-import { Props } from './Container';
+import { Account } from '@wallet-types';
+import * as routerActions from '@suite-actions/routerActions';
 
 // position: inherit - get position from parent (AccountGroup), it will be set after animation ends
 // sticky top: 34, sticky header
@@ -85,9 +86,18 @@ const AccountHeader = styled.div`
     cursor: pointer;
 `;
 
+interface Props {
+    account: Account;
+    selected: boolean;
+    closeMenu: () => void;
+}
+
 // Using `React.forwardRef` to be able to pass `ref` (item) TO parent (Menu/index)
 const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) => {
-    const { account, selected } = props;
+    const { goto } = useActions({
+        goto: routerActions.goto,
+    });
+    const { account, selected, closeMenu } = props;
 
     const dataTestKey = `@account-menu/${account.symbol}/${account.accountType}/${account.index}`;
 
@@ -110,8 +120,8 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
         <Wrapper selected={selected} type={account.accountType} ref={ref}>
             <AccountHeader
                 onClick={() => {
-                    props.closeMenu();
-                    props.goto('wallet-index', {
+                    closeMenu();
+                    goto('wallet-index', {
                         symbol: account.symbol,
                         accountIndex: account.index,
                         accountType: account.accountType,

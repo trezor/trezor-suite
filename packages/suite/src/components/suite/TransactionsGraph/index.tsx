@@ -1,16 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { variables, Icon, useTheme } from '@trezor/components';
-import {
-    GraphRange,
-    AggregatedAccountHistory,
-    AggregatedDashboardHistory,
-} from '@wallet-types/graph';
 import { ComposedChart, Tooltip, Bar, YAxis, XAxis, Line, CartesianGrid, Cell } from 'recharts';
 import { useGraph } from '@suite-hooks';
 import { calcYDomain, calcXDomain, calcFakeGraphDataForTimestamps } from '@wallet-utils/graphUtils';
-import { Account } from '@wallet-types';
 
+import { Props } from './definitions';
 import RangeSelector from './components/RangeSelector';
 import CustomResponsiveContainer from './components/CustomResponsiveContainer';
 import CustomXAxisTick from './components/CustomXAxisTick';
@@ -48,36 +43,6 @@ const Description = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     flex: 1;
 `;
-
-interface CommonProps {
-    isLoading?: boolean;
-    selectedRange: GraphRange;
-    xTicks: number[];
-    localCurrency: string;
-    minMaxValues: [number, number];
-    hideToolbar?: boolean;
-    onRefresh?: () => void;
-}
-
-export interface CryptoGraphProps extends CommonProps {
-    variant: 'one-asset';
-    account: Account;
-    data: AggregatedAccountHistory[];
-    receivedValueFn: (data: AggregatedAccountHistory) => string | undefined;
-    sentValueFn: (data: AggregatedAccountHistory) => string | undefined;
-    balanceValueFn: (data: AggregatedAccountHistory) => string | undefined;
-}
-
-export interface FiatGraphProps extends CommonProps {
-    variant: 'all-assets';
-    data: AggregatedDashboardHistory[];
-    receivedValueFn: (data: AggregatedDashboardHistory) => string | undefined;
-    sentValueFn: (data: AggregatedDashboardHistory) => string | undefined;
-    balanceValueFn: (data: AggregatedDashboardHistory) => string | undefined;
-    account?: never;
-}
-
-export type Props = CryptoGraphProps | FiatGraphProps;
 
 const TransactionsGraph = React.memo((props: Props) => {
     const { isLoading, data, selectedRange, xTicks } = props;

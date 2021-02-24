@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { getUnixTime } from 'date-fns';
+import { Account } from '@wallet-types';
 import { variables, Button, Card } from '@trezor/components';
 import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
 import { calcTicks, calcTicksFromData } from '@suite-utils/date';
 import { aggregateBalanceHistory, getMinMaxValueFromData } from '@wallet-utils/graphUtils';
+import { useSelector, useActions } from '@suite-hooks';
 import { GraphData } from '@wallet-types/graph';
+import * as graphActions from '@wallet-actions/graphActions';
 import RangeSelector from '@suite-components/TransactionsGraph/components/RangeSelector';
-import { Props } from './Container';
 import TransactionSummaryDropdown from './components/TransactionSummaryDropdown';
 import SummaryCards from './components/SummaryCards';
 
@@ -56,8 +58,21 @@ const Divider = styled.div`
     margin: 24px 0px;
 `;
 
-const TransactionSummary = (props: Props) => {
-    const { account, graph, getGraphDataForInterval, updateGraphData } = props;
+interface Props {
+    account: Account;
+}
+
+const TransactionSummary = ({ account }: Props) => {
+    const { graph, localCurrency } = useSelector(state => ({
+        graph: state.wallet.graph,
+        localCurrency: state.wallet.settings.localCurrency,
+    }));
+    const { updateGraphData, getGraphDataForInterval } = useActions({
+        updateGraphData: graphActions.updateGraphData,
+        getGraphDataForInterval: graphActions.getGraphDataForInterval,
+    });
+
+    // const { account, graph, getGraphDataForInterval, updateGraphData } = props;
 
     const { selectedRange } = graph;
 
@@ -134,7 +149,7 @@ const TransactionSummary = (props: Props) => {
                                     isLoading={isLoading}
                                     data={data}
                                     minMaxValues={minMaxValues}
-                                    localCurrency={props.localCurrency}
+                                    localCurrency={localCurrency}
                                     onRefresh={onRefresh}
                                     selectedRange={selectedRange}
                                     receivedValueFn={data => data.received}
@@ -149,7 +164,7 @@ const TransactionSummary = (props: Props) => {
                         selectedRange={selectedRange}
                         dataInterval={dataInterval}
                         data={data}
-                        localCurrency={props.localCurrency}
+                        localCurrency={localCurrency}
                         symbol={account.symbol}
                         isLoading={isLoading}
                     />

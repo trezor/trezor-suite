@@ -4,24 +4,37 @@ import styled from 'styled-components';
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components';
 import { Translation, Loading, Image } from '@suite-components';
-import { Props } from './Container';
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
+import * as recoveryActions from '@recovery-actions/recoveryActions';
+import { useActions, useSelector } from '@suite-hooks';
 
 const StyledImage = styled(Image)`
     flex: 1;
 `;
 
-const RecoveryStep = (props: Props) => {
+const RecoveryStep = () => {
     const {
         goToNextStep,
         goToPreviousStep,
         setWordsCount,
         setAdvancedRecovery,
-        setStatus,
         recoverDevice,
+        setStatus,
         resetReducer,
-        recovery,
-        device,
-    } = props;
+    } = useActions({
+        goToNextStep: onboardingActions.goToNextStep,
+        goToPreviousStep: onboardingActions.goToPreviousStep,
+        setWordsCount: recoveryActions.setWordsCount,
+        setAdvancedRecovery: recoveryActions.setAdvancedRecovery,
+        recoverDevice: recoveryActions.recoverDevice,
+        setStatus: recoveryActions.setStatus,
+        resetReducer: recoveryActions.resetReducer,
+    });
+
+    const { recovery, device } = useSelector(state => ({
+        device: state.suite.device,
+        recovery: state.recovery,
+    }));
 
     if (!device || !device.features) {
         return null;

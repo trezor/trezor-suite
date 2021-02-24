@@ -24,13 +24,13 @@ import CoinmarketLeaveSpend from './confirm/CoinmarketLeaveSpend';
 import Word from './Word';
 import WordAdvanced from './WordAdvanced';
 import ConfirmAddress from './confirm/Address';
-import ConfirmXpub from './confirm/Xpub/Container';
+import ConfirmXpub from './confirm/Xpub';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ReviewTransaction from './ReviewTransaction';
-import CoinmarketReviewTransaction from './CoinmarketReviewTransaction/Container';
+import CoinmarketReviewTransaction from './CoinmarketReviewTransaction';
 import ImportTransaction from './ImportTransaction';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
-import AddAccount from './AddAccount/Container';
+import AddAccount from './AddAccount';
 import QrScanner from './QrScanner';
 import BackgroundGallery from './BackgroundGallery';
 import TransactionDetail from './TransactionDetail';
@@ -38,7 +38,7 @@ import Log from './Log';
 import WipeDevice from './WipeDevice';
 import DisconnectDevice from './DisconnectDevice';
 import MetadataProvider from './metadata/MetadataProvider';
-import AdvancedCoinSettings from './AdvancedCoinSettings/Container';
+import AdvancedCoinSettings from './AdvancedCoinSettings';
 import AddToken from './AddToken';
 
 const mapStateToProps = (state: AppState) => ({

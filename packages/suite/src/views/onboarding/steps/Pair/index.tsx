@@ -12,9 +12,11 @@ import {
 } from '@suite-components';
 import { isWebUSB } from '@suite-utils/transport';
 import { SUPPORT_URL } from '@suite-constants/urls';
+import * as routerActions from '@suite-actions/routerActions';
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
+import { useActions, useSelector } from '@suite-hooks';
 
 import Bridge from './components/Bridge/Container';
-import { Props } from './Container';
 
 const StyledImage = styled(Image)`
     flex: 1;
@@ -23,8 +25,16 @@ const StyledConnectDeviceImage = styled(ConnectDeviceImage)`
     flex: 1;
 `;
 
-const PairDeviceStep = (props: Props) => {
-    const { device, transport } = props;
+const PairDeviceStep = () => {
+    const { goto, goToNextStep, goToPreviousStep } = useActions({
+        goto: routerActions.goto,
+        goToNextStep: onboardingActions.goToNextStep,
+        goToPreviousStep: onboardingActions.goToPreviousStep,
+    });
+    const { device, transport } = useSelector(state => ({
+        device: state.suite.device,
+        transport: state.suite.transport,
+    }));
 
     const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -100,7 +110,7 @@ const PairDeviceStep = (props: Props) => {
                                         <Wrapper.Controls>
                                             <OnboardingButton.Cta
                                                 data-test="@onboarding/button-continue"
-                                                onClick={() => props.goto('suite-index')}
+                                                onClick={() => goto('suite-index')}
                                             >
                                                 <Translation id="TR_GO_TO_SUITE" />
                                             </OnboardingButton.Cta>
@@ -116,7 +126,7 @@ const PairDeviceStep = (props: Props) => {
                                         <Wrapper.Controls>
                                             <OnboardingButton.Cta
                                                 data-test="@onboarding/button-continue"
-                                                onClick={() => props.goToNextStep()}
+                                                onClick={() => goToNextStep()}
                                             >
                                                 <Translation id="TR_CONTINUE" />
                                             </OnboardingButton.Cta>
@@ -186,7 +196,7 @@ const PairDeviceStep = (props: Props) => {
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
                 <Wrapper.Controls>
-                    <OnboardingButton.Back onClick={() => props.goToPreviousStep()}>
+                    <OnboardingButton.Back onClick={() => goToPreviousStep()}>
                         <Translation id="TR_BACK" />
                     </OnboardingButton.Back>
                 </Wrapper.Controls>

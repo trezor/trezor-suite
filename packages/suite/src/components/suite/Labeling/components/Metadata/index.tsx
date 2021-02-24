@@ -7,6 +7,7 @@ import * as metadataActions from '@suite-actions/metadataActions';
 import { MetadataAddPayload } from '@suite-types/metadata';
 import { Translation } from '@suite-components';
 
+import { Props, ExtendedProps, DropdownMenuItem } from './definitions';
 import { withEditable } from './withEditable';
 import { withDropdown } from './withDropdown';
 
@@ -77,27 +78,6 @@ const LabelContainer = styled.div`
         }
     }
 `;
-
-interface DropdownMenuItem {
-    key: string;
-    label: React.ReactNode;
-    callback?: () => boolean | void;
-    'data-test'?: string;
-}
-
-export interface Props {
-    defaultVisibleValue?: React.ReactNode;
-    payload: MetadataAddPayload;
-    dropdownOptions?: DropdownMenuItem[];
-    isDisabled?: boolean;
-}
-
-export interface ExtendedProps extends Props {
-    editActive: boolean;
-    onSubmit: (value: string | undefined | null) => void;
-    onBlur: () => void;
-    'data-test': string;
-}
 
 const ButtonLikeLabel = (props: ExtendedProps) => {
     const EditableButton = useMemo(() => withEditable(Button), []);

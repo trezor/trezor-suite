@@ -1,7 +1,11 @@
 import React from 'react';
 import { SuiteThemeColors } from 'src/support/types';
 import styled from 'styled-components';
-import { CardProps, Card, useTheme, variables, IconProps, Icon, Button } from '../../../index';
+import { CardProps, Card } from '../Card';
+import { IconProps, Icon } from '../../Icon';
+import { Button } from '../../buttons/Button';
+import { useTheme } from '../../../utils/hooks';
+import * as variables from '../../../config/variables';
 
 const Wrapper = styled.div`
     display: flex;

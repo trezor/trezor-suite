@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/naming-convention */
+import React, { createRef, useEffect, useState } from 'react';
+import styled from 'styled-components';
 import { SettingsLayout } from '@settings-components';
 import { Translation } from '@suite-components';
 import {
@@ -17,12 +18,11 @@ import {
 } from '@suite-constants/urls';
 import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import * as homescreen from '@suite-utils/homescreen';
-import { useDevice, useAnalytics } from '@suite-hooks';
+import { useDevice, useAnalytics, useActions, useSelector } from '@suite-hooks';
 import { variables, Switch } from '@trezor/components';
-import React, { createRef, useEffect, useState } from 'react';
-import styled from 'styled-components';
-
-import { Props } from './Container';
+import * as routerActions from '@suite-actions/routerActions';
+import * as modalActions from '@suite-actions/modalActions';
+import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 
 const RotationButton = styled(ActionButton)`
     min-width: 81px;
@@ -42,7 +42,15 @@ const Col = styled.div`
     flex-direction: column;
 `;
 
-const Settings = ({ device, applySettings, changePin, openModal, goto }: Props) => {
+const Settings = () => {
+    const device = useSelector(state => state.suite.device);
+    const { applySettings, changePin, goto, openModal } = useActions({
+        applySettings: deviceSettingsActions.applySettings,
+        changePin: deviceSettingsActions.changePin,
+        goto: routerActions.goto,
+        openModal: modalActions.openModal,
+    });
+
     const [label, setLabel] = useState('');
     const [customHomescreen, setCustomHomescreen] = useState('');
     const fileInputElement = createRef<HTMLInputElement>();

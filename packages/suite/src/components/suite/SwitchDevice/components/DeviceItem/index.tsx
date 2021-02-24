@@ -5,9 +5,12 @@ import { useTheme, variables, Icon, DeviceImage } from '@trezor/components';
 import { Translation } from '@suite-components';
 import * as deviceUtils from '@suite-utils/device';
 import { ANIMATION } from '@suite-config';
+import { TrezorDevice, AcquiredDevice, InjectedModalApplicationProps } from '@suite-types';
+import { useSelector, useActions } from '@suite-hooks';
+import * as routerActions from '@suite-actions/routerActions';
+import * as suiteActions from '@suite-actions/suiteActions';
 
-import WalletInstance from '../WalletInstance/Container';
-import { Props } from './Container';
+import WalletInstance from '../WalletInstance';
 import ColHeader from './components/ColHeader';
 import AddWalletButton from './components/AddWalletButton';
 import DeviceHeaderButton from './components/DeviceHeaderButton';
@@ -106,12 +109,25 @@ const ColEjectHeader = styled(ColHeader)`
     margin: 0px 24px;
 `;
 
-const DeviceItem = (props: Props) => {
+interface Props {
+    device: TrezorDevice;
+    instances: AcquiredDevice[];
+    closeModalApp: InjectedModalApplicationProps['closeModalApp'];
+    backgroundRoute: ReturnType<InjectedModalApplicationProps['getBackgroundRoute']>;
+}
+
+const DeviceItem = ({ device, instances, closeModalApp, backgroundRoute }: Props) => {
+    const { goto, selectDevice, acquireDevice, createDeviceInstance } = useActions({
+        goto: routerActions.goto,
+        selectDevice: suiteActions.selectDevice,
+        acquireDevice: suiteActions.acquireDevice,
+        createDeviceInstance: suiteActions.createDeviceInstance,
+    });
+    const selectedDevice = useSelector(state => state.suite.device);
+
     const theme = useTheme();
     const [isExpanded, setIsExpanded] = useState(true);
     const [animateArrow, setAnimateArrow] = useState(false);
-
-    const { device, selectedDevice, backgroundRoute } = props;
 
     const deviceStatus = deviceUtils.getStatus(device);
     const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
@@ -120,22 +136,22 @@ const DeviceItem = (props: Props) => {
     const isWalletContext =
         backgroundRoute &&
         (backgroundRoute.app === 'wallet' || backgroundRoute.app === 'dashboard');
-    const instancesWithState = props.instances.filter(i => i.state);
+    const instancesWithState = instances.filter(i => i.state);
 
     const selectDeviceInstance = async (instance: Props['device']) => {
-        props.selectDevice(instance);
+        selectDevice(instance);
         if (!isWalletContext) {
-            await props.goto('suite-index');
+            await goto('suite-index');
         }
-        props.closeModalApp(!isWalletContext);
+        closeModalApp(!isWalletContext);
     };
 
     const addDeviceInstance = async (instance: Props['device']) => {
-        await props.createDeviceInstance(instance);
+        await createDeviceInstance(instance);
         if (!isWalletContext) {
-            await props.goto('suite-index');
+            await goto('suite-index');
         }
-        props.closeModalApp(!isWalletContext);
+        closeModalApp(!isWalletContext);
     };
 
     const onSolveIssueClick = () => {
@@ -144,7 +160,7 @@ const DeviceItem = (props: Props) => {
             deviceStatus === 'used-in-other-window' ||
             deviceStatus === 'was-used-in-other-window';
         if (needsAcquire) {
-            props.acquireDevice(device);
+            acquireDevice(device);
         } else {
             selectDeviceInstance(device);
         }
@@ -152,9 +168,9 @@ const DeviceItem = (props: Props) => {
 
     const onDeviceSettingsClick = async () => {
         // await needed otherwise it just selects first account (???)
-        await props.goto('settings-device');
+        await goto('settings-device');
         if (!isSelected) {
-            props.selectDevice(device);
+            selectDevice(device);
         }
     };
 
@@ -251,7 +267,7 @@ const DeviceItem = (props: Props) => {
 
                                 <AddWalletButton
                                     device={device}
-                                    instances={props.instances}
+                                    instances={instances}
                                     addDeviceInstance={addDeviceInstance}
                                     selectDeviceInstance={selectDeviceInstance}
                                 />

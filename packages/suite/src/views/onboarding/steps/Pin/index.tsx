@@ -3,10 +3,16 @@ import { UI } from 'trezor-connect';
 
 import { Translation, Image } from '@suite-components';
 import { Text, OnboardingButton, Wrapper } from '@onboarding-components';
-import { Props } from './Container';
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
+import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
+import { useActions, useSelector } from '@suite-hooks';
 
-const SetPinStep = (props: Props) => {
-    const { device } = props;
+const SetPinStep = () => {
+    const { goToNextStep, changePin } = useActions({
+        goToNextStep: onboardingActions.goToNextStep,
+        changePin: deviceSettingsActions.changePin,
+    });
+    const device = useSelector(state => state.suite.device);
 
     if (!device || !device.features) {
         return null;
@@ -52,7 +58,7 @@ const SetPinStep = (props: Props) => {
                             <OnboardingButton.Cta
                                 data-test="@onboarding/set-pin-button"
                                 onClick={() => {
-                                    props.changePin();
+                                    changePin();
                                 }}
                             >
                                 <Translation id="TR_SET_PIN" />
@@ -76,7 +82,7 @@ const SetPinStep = (props: Props) => {
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 data-test="@onboarding/pin/continue-button"
-                                onClick={() => props.goToNextStep()}
+                                onClick={() => goToNextStep()}
                             >
                                 <Translation id="TR_COMPLETE_SETUP" />
                             </OnboardingButton.Cta>
@@ -89,7 +95,7 @@ const SetPinStep = (props: Props) => {
                     <OnboardingButton.Back
                         data-test="@onboarding/skip-button"
                         icon="CROSS"
-                        onClick={() => props.goToNextStep()}
+                        onClick={() => goToNextStep()}
                     >
                         <Translation id="TR_SKIP" />
                     </OnboardingButton.Back>

@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { ConfirmOnDevice, variables, Button } from '@trezor/components';
 import { FiatValue, Translation, Modal } from '@suite-components';
-import { useDevice, useActions } from '@suite-hooks';
+import { useDevice, useActions, useSelector } from '@suite-hooks';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { UserContextPayload } from '@suite-actions/modalActions';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 
-import { Props } from './Container';
 import Output, { OutputProps, Left, Right, Coin, Fiat, Symbol, Amounts } from './components/Output';
 import Detail from './components/Detail';
 
@@ -57,11 +57,19 @@ const getState = (index: number, buttonRequests: number) => {
     return undefined;
 };
 
-const CoinmarketReviewTransaction = ({ selectedAccount, reviewData, decision }: Props) => {
-    const { device } = useDevice();
+type Props =
+    | Extract<UserContextPayload, { type: 'coinmarket-review-transaction' }>
+    | { type: 'sign-transaction'; decision?: undefined };
+
+const CoinmarketReviewTransaction = (props: Props) => {
+    const { selectedAccount, reviewData } = useSelector(state => ({
+        selectedAccount: state.wallet.selectedAccount,
+        reviewData: state.wallet.coinmarket.transaction.reviewData,
+    }));
     const { cancelSignTx } = useActions({
         cancelSignTx: sendFormActions.cancelSignTx,
     });
+    const { device } = useDevice();
 
     if (!reviewData) {
         return null;
@@ -164,8 +172,8 @@ const CoinmarketReviewTransaction = ({ selectedAccount, reviewData, decision }: 
                     <StyledButton
                         isDisabled={!signedTx}
                         onClick={() => {
-                            if (decision) {
-                                decision.resolve(true);
+                            if (props.decision) {
+                                props.decision.resolve(true);
                             }
                         }}
                     >

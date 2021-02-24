@@ -8,7 +8,7 @@ import { NotificationEntry } from '@suite-reducers/notificationReducer';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import * as transactionUtils from '@wallet-utils/transactionUtils';
 import { AppState, Dispatch } from '@suite-types';
-import { ViewProps } from '../index';
+import { ViewProps } from '../definitions';
 
 const TabularNums = styled.span`
     font-variant-numeric: tabular-nums;

@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, SecurityCard, SecurityCardProps, variables } from '@trezor/components';
-import * as suiteActions from '@suite-actions/suiteActions';
 import { Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
-import { Props } from './Container';
 import { AcquiredDevice } from '@suite-types';
-import { useDevice, useDiscovery, useAnalytics, useSelector, useActions } from '@suite-hooks';
+import { useDevice, useDiscovery, useAnalytics, useActions, useSelector } from '@suite-hooks';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import * as suiteActions from '@suite-actions/suiteActions';
+import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
+import * as routerActions from '@suite-actions/routerActions';
 
 const Content = styled.div`
     display: grid;
@@ -21,19 +23,27 @@ const Content = styled.div`
     }
 `;
 
-const SecurityFeatures = ({
-    device,
-    flags,
-    discreetMode,
-    setDiscreetMode,
-    createDeviceInstance,
-    applySettings,
-    goto,
-    changePin,
-    ...rest
-}: Props) => {
-    const { securityStepsHidden } = useSelector(s => s.suite.flags);
-    const { setFlag } = useActions({ setFlag: suiteActions.setFlag });
+const SecurityFeatures = () => {
+    const {
+        setDiscreetMode,
+        createDeviceInstance,
+        changePin,
+        applySettings,
+        goto,
+        setFlag,
+    } = useActions({
+        setDiscreetMode: walletSettingsActions.setDiscreetMode,
+        createDeviceInstance: suiteActions.createDeviceInstance,
+        changePin: deviceSettingsActions.changePin,
+        applySettings: deviceSettingsActions.applySettings,
+        goto: routerActions.goto,
+        setFlag: suiteActions.setFlag,
+    });
+    const { discreetMode, device, flags } = useSelector(state => ({
+        discreetMode: state.wallet.settings.discreetMode,
+        device: state.suite.device,
+        flags: state.suite.flags,
+    }));
 
     const { isLocked } = useDevice();
     const isDeviceLocked = isLocked();
@@ -42,7 +52,7 @@ const SecurityFeatures = ({
     const isDisabledGlobal = discoveryStatus && discoveryStatus.status === 'loading';
     const analytics = useAnalytics();
 
-    const { discreetModeCompleted } = flags;
+    const { discreetModeCompleted, securityStepsHidden } = flags;
     let needsBackup;
     let pinEnabled;
     let hiddenWalletCreated;
@@ -234,7 +244,6 @@ const SecurityFeatures = ({
                     )}
                 </Button>
             }
-            {...rest}
         >
             <Content>
                 {!securityStepsHidden &&

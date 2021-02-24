@@ -1,3 +1,3 @@
-import Account from '@wallet-views/details/Container';
+import Account from '@wallet-views/details';
 
 export default Account;

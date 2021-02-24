@@ -1,5 +1,6 @@
 import { Translation, FormattedDateWithBullet } from '@suite-components';
-import hocNotification, { ViewProps } from '@suite-components/hocNotification';
+import hocNotification from '@suite-components/hocNotification';
+import { ViewProps } from '@suite-components/hocNotification/definitions';
 import { AppState } from '@suite-types';
 import { getNotificationIcon } from '@suite-utils/notification';
 import { Button, Icon, P } from '@trezor/components';

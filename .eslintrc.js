@@ -50,7 +50,7 @@ module.exports = {
         'import/no-unresolved': 'off',
         'import/extensions': ['error', 'never'],
         'import/no-extraneous-dependencies': 'off',
-        'import/no-cycle': 'off',
+        'import/no-cycle': 'error',
         'import/no-anonymous-default-export': [
             'error',
             {

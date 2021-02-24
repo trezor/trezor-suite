@@ -3,9 +3,10 @@ import styled from 'styled-components';
 import { Button } from '@trezor/components';
 import { copyToClipboard } from '@suite-utils/dom';
 import { Translation, Modal } from '@suite-components';
+import { Account } from '@wallet-types';
+import * as notificationActions from '@suite-actions/notificationActions';
+import { useActions } from '@suite-hooks';
 import QrCode from '@suite-components/QrCode';
-
-import { Props } from './Container';
 
 const Address = styled.div`
     width: 100%;
@@ -31,9 +32,20 @@ const StyledQrCode = styled(QrCode)`
     align-self: center;
 `;
 
-const Xpub = ({ xpub, accountIndex, symbol, accountLabel, addNotification, onCancel }: Props) => {
+interface Props {
+    xpub: string;
+    accountIndex: number;
+    symbol: Account['symbol'];
+    accountLabel: Account['metadata']['accountLabel'];
+    onCancel: () => void;
+}
+
+const Xpub = ({ xpub, accountIndex, symbol, accountLabel, onCancel }: Props) => {
     // TODO: no-backup, backup failed
     // const needsBackup = device.features && device.features.needs_backup;
+    const { addNotification } = useActions({
+        addNotification: notificationActions.addToast,
+    });
 
     const htmlElement = createRef<HTMLDivElement>();
 

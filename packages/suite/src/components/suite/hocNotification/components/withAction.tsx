@@ -4,7 +4,7 @@ import { DEVICE } from 'trezor-connect';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { Dispatch } from '@suite-types';
-import { ViewProps } from '../index';
+import { ViewProps } from '../definitions';
 
 /**
  * HOC component for specific `state.notifications` views with actions

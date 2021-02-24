@@ -14,7 +14,7 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import Header from './components/Header';
 import Exception from './components/Exception';
 import EmptyWallet from './components/EmptyWallet';
-import DashboardGraph from './components/DashboardGraph/Container';
+import DashboardGraph from './components/DashboardGraph';
 import GraphScaleDropdownItem from '@suite-components/TransactionsGraph/components/GraphScaleDropdownItem';
 
 const StyledCard = styled(Card)`

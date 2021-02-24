@@ -2,9 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { Switch, Box, Icon, useTheme, variables } from '@trezor/components';
 import * as accountUtils from '@wallet-utils/accountUtils';
-import { Props } from './Container';
+import * as suiteActions from '@suite-actions/suiteActions';
+import * as discoveryActions from '@wallet-actions/discoveryActions';
 import { FormattedNumber, WalletLabeling, Translation, MetadataLabeling } from '@suite-components';
-import { useAnalytics } from '@suite-hooks';
+import { useAnalytics, useSelector, useActions } from '@suite-hooks';
+import { TrezorDevice, AcquiredDevice } from '@suite-types';
 
 const Wrapper = styled(Box)`
     display: flex;
@@ -60,21 +62,33 @@ const LockIcon = styled(Icon)`
     margin-right: 4px;
 `;
 
+interface Props {
+    instance: AcquiredDevice;
+    enabled: boolean;
+    selected: boolean;
+    selectDeviceInstance: (instance: TrezorDevice) => void;
+    index: number; // used only in data-test
+}
+
 const WalletInstance = ({
     instance,
     enabled,
     selected,
     selectDeviceInstance,
-    rememberDevice,
-    forgetDevice,
-    addMetadata,
-    accounts,
-    fiat,
-    localCurrency,
-    getDiscovery,
     index,
     ...rest
 }: Props) => {
+    const { rememberDevice, forgetDevice, getDiscovery } = useActions({
+        rememberDevice: suiteActions.rememberDevice,
+        forgetDevice: suiteActions.forgetDevice,
+        getDiscovery: discoveryActions.getDiscovery,
+    });
+    const { accounts, fiat, localCurrency } = useSelector(state => ({
+        accounts: state.wallet.accounts,
+        fiat: state.wallet.fiat,
+        localCurrency: state.wallet.settings.localCurrency,
+    }));
+
     const theme = useTheme();
 
     const discoveryProcess = instance.state ? getDiscovery(instance.state) : null;

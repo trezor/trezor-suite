@@ -1,3 +1,3 @@
-import Page from '@settings-views/device/Container';
+import Page from '@settings-views/device';
 
 export default Page;

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Dropdown } from '@trezor/components';
-import { ExtendedProps } from './index';
+import { ExtendedProps } from './definitions';
 import { RequiredKey } from '@suite/types/utils';
 
 const StyledDropdown = styled(Dropdown)`
