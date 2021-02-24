@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { LayoutContext } from '@suite-components';
 import AssetsCard from './components/AssetsCard';
 import PortfolioCard from './components/PortfolioCard';
-import SecurityFeatures from './components/SecurityFeatures/Container';
+import SecurityFeatures from './components/SecurityFeatures';
 import NewsFeed from './components/NewsFeed';
 
 const Wrapper = styled.div`

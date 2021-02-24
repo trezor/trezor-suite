@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { OnboardingButton, Wrapper } from '@onboarding-components';
 import { Translation } from '@suite-components';
@@ -15,18 +15,23 @@ import {
     ContinueButton,
     RetryButton,
 } from '@firmware-components';
+import { useSelector, useActions } from '@suite-hooks';
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
+import * as firmwareActions from '@suite/actions/firmware/firmwareActions';
 
-import { Props } from './Container';
+const FirmwareStep = () => {
+    const { device, firmware } = useSelector(state => ({
+        device: state.suite.device,
+        firmware: state.firmware,
+    }));
+    const { goToNextStep, goToPreviousStep, resetReducer, firmwareUpdate } = useActions({
+        goToNextStep: onboardingActions.goToNextStep,
+        goToPreviousStep: onboardingActions.goToPreviousStep,
+        resetReducer: firmwareActions.resetReducer,
+        firmwareUpdate: firmwareActions.firmwareUpdate,
+    });
 
-const FirmwareStep = ({
-    device,
-    firmware,
-    goToPreviousStep,
-    goToNextStep,
-    resetReducer,
-    firmwareUpdate,
-}: Props) => {
-    const getComponent = () => {
+    const Component = useMemo(() => {
         // edge case 1 - error
         if (firmware.error) {
             return {
@@ -88,9 +93,14 @@ const FirmwareStep = ({
                 // 'ensure' type completeness
                 throw new Error(`state "${firmware.status}" is not handled here`);
         }
-    };
-
-    const Component = getComponent();
+    }, [
+        device?.firmware,
+        firmware.error,
+        firmware.status,
+        firmwareUpdate,
+        goToNextStep,
+        resetReducer,
+    ]);
 
     return (
         <Wrapper.Step>

@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { memo, useState, useEffect, useCallback } from 'react';
 import { AggregatedDashboardHistory } from '@wallet-types/graph';
 import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-components';
-import { Props } from './Container';
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 import { calcTicks, calcTicksFromData } from '@suite-utils/date';
@@ -11,6 +10,9 @@ import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import GraphWorker from 'worker-loader?filename=static/[hash].worker.js!../../../../../../workers/graph.worker';
 import { getMinMaxValueFromData } from '@suite/utils/wallet/graphUtils';
+import * as graphActions from '@wallet-actions/graphActions';
+import { useActions, useSelector } from '@suite-hooks';
+import { Account } from '@wallet-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -37,23 +39,30 @@ const ErrorMessage = styled.div`
     text-align: center;
 `;
 
-const DashboardGraph = React.memo((props: Props) => {
-    const {
-        accounts,
-        selectedDevice,
-        updateGraphData,
-        getGraphDataForInterval,
-        localCurrency,
-    } = props;
-    const { selectedRange } = props.graph;
+interface Props {
+    accounts: Account[];
+}
+
+const DashboardGraph = ({ accounts }: Props) => {
+    const { updateGraphData, getGraphDataForInterval } = useActions({
+        updateGraphData: graphActions.updateGraphData,
+        getGraphDataForInterval: graphActions.getGraphDataForInterval,
+    });
+    const { graph, selectedDevice, localCurrency } = useSelector(state => ({
+        graph: state.wallet.graph,
+        selectedDevice: state.suite.device,
+        localCurrency: state.wallet.settings.localCurrency,
+    }));
+
+    const { selectedRange } = graph;
 
     const [data, setData] = useState<AggregatedDashboardHistory[]>([]);
     const [isProcessing, setIsProcessing] = useState(false);
     const [xTicks, setXticks] = useState<number[]>([]);
 
     const selectedDeviceState = selectedDevice?.state;
-    const { isLoading } = props.graph;
-    const failedAccounts = props.graph.error?.filter(a => a.deviceState === selectedDeviceState);
+    const { isLoading } = graph;
+    const failedAccounts = graph.error?.filter(a => a.deviceState === selectedDeviceState);
     const allFailed = failedAccounts && failedAccounts.length === accounts.length;
 
     const onRefresh = useCallback(() => {
@@ -133,7 +142,7 @@ const DashboardGraph = React.memo((props: Props) => {
                         variant="all-assets"
                         onRefresh={onRefresh}
                         isLoading={isLoading || isProcessing}
-                        localCurrency={props.localCurrency}
+                        localCurrency={localCurrency}
                         xTicks={xTicks}
                         minMaxValues={minMaxValues}
                         data={data}
@@ -146,7 +155,7 @@ const DashboardGraph = React.memo((props: Props) => {
             </GraphWrapper>
         </Wrapper>
     );
-});
+};
 
 // DashboardGraph.whyDidYouRender = true;
-export default DashboardGraph;
+export default memo(DashboardGraph);

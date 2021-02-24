@@ -1,21 +1,10 @@
 import React from 'react';
-import { IconProps } from '@trezor/components';
 import { DEVICE } from 'trezor-connect';
 import { SUITE } from '@suite-actions/constants';
 import { NotificationEntry } from '@suite-reducers/notificationReducer';
-import { ExtendedMessageDescriptor, ToastNotificationVariant } from '@suite-types';
 import withAction from './components/withAction';
 import withTransaction from './components/withTransaction';
-
-export interface ViewProps {
-    notification: NotificationEntry;
-    variant: ToastNotificationVariant;
-    icon?: IconProps['icon'];
-    message: ExtendedMessageDescriptor | ExtendedMessageDescriptor['id'];
-    actionLabel?: ExtendedMessageDescriptor['id'];
-    cancelable?: boolean;
-    action?: () => any;
-}
+import { ViewProps } from './definitions';
 
 const simple = (View: React.ComponentType<ViewProps>, props: ViewProps) => {
     return <View key={props.notification.id} {...props} />;

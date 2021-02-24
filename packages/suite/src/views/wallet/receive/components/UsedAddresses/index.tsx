@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
+import { AccountAddress } from 'trezor-connect';
 import { variables, Button } from '@trezor/components';
 import { Card, Translation, HiddenPlaceholder, MetadataLabeling } from '@suite-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { ChildProps as Props } from '../../Container';
-import { AccountAddress } from 'trezor-connect';
 import { Network } from '@wallet-types';
+import { AppState } from '@suite-types';
 import { MetadataAddPayload } from '@suite-types/metadata';
 
 const StyledCard = styled(Card)`
@@ -174,8 +174,18 @@ const Item = ({ addr, symbol, onClick, metadataPayload, index }: ItemProps) => {
     );
 };
 
+interface Props {
+    account: AppState['wallet']['selectedAccount']['account'];
+    addresses: AppState['wallet']['receive'];
+    showAddress: (path: string, address: string) => void;
+    locked: boolean;
+    pendingAddresses: string[];
+}
+
 const UsedAddresses = ({ account, addresses, pendingAddresses, showAddress, locked }: Props) => {
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
+
+    if (!account) return null;
 
     if (account.networkType !== 'bitcoin' || !account.addresses) return null;
     const { used, unused } = account.addresses;

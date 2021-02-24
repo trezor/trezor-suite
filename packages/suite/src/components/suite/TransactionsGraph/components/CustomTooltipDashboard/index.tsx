@@ -2,7 +2,7 @@ import React from 'react';
 import { FormattedNumber } from '@suite-components';
 import { TooltipProps } from 'recharts';
 import { CommonAggregatedHistory } from '@wallet-types/graph';
-import { Props as GraphProps, FiatGraphProps } from '../../index';
+import { Props as GraphProps, FiatGraphProps } from '../../definitions';
 import CustomTooltipBase from '../CustomTooltipBase';
 
 interface Props extends TooltipProps {

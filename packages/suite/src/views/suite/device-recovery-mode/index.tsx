@@ -2,9 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { H2, Button } from '@trezor/components';
 import { Loading, Translation, Image, Modal, ModalProps } from '@suite-components';
-import { useDevice } from '@suite-hooks';
-
-import { Props } from './Container';
+import * as recoveryActions from '@recovery-actions/recoveryActions';
+import { useDevice, useSelector, useActions } from '@suite-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -23,7 +22,14 @@ const StyledImage = styled(Image)`
     flex: 1;
 `;
 
-const Index = ({ recovery, rerun, modalProps }: Props & { modalProps?: ModalProps }) => {
+interface Props {
+    modalProps?: ModalProps;
+}
+
+const Index = ({ modalProps }: Props) => {
+    const recovery = useSelector(state => state.recovery);
+    const { rerun } = useActions({ rerun: recoveryActions.rerun });
+
     const { isLocked } = useDevice();
     return (
         <Modal {...modalProps}>

@@ -1,3 +1,3 @@
-import SwitchDevice from '@suite-components/SwitchDevice/Container';
+import SwitchDevice from '@suite-components/SwitchDevice';
 
 export default SwitchDevice;

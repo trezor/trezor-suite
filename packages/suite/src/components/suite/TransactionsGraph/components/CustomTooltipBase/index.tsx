@@ -4,7 +4,7 @@ import { Translation, FormattedDate } from '@suite-components';
 import { TooltipProps } from 'recharts';
 import { getDateWithTimeZone } from '@suite/utils/suite/date';
 import { CommonAggregatedHistory } from '@wallet-types/graph';
-import { Props as GraphProps } from '../../index';
+import { Props as GraphProps } from '../../definitions';
 
 // Used for triggering custom Tooltip alignment
 const OFFSET_LIMIT_HORIZONTAL = 125;

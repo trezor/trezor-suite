@@ -5,7 +5,7 @@ import { Translation } from '@suite-components';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { useActions } from '@suite-hooks';
 import { getNotificationIcon } from '@suite-utils//notification';
-import { ViewProps } from '@suite-components/hocNotification';
+import { ViewProps } from '@suite-components/hocNotification/definitions';
 
 const getVariantColor = (variant: ViewProps['variant']) => {
     switch (variant) {

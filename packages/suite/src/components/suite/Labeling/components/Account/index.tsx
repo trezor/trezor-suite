@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import * as deviceUtils from '@suite-utils/device';
 import { Translation } from '@suite-components';
-import { Props } from './Container';
+import { Account as WalletAccount } from '@wallet-types';
+import { useSelector } from '@suite-hooks';
 import WalletLabeling from '../Wallet';
 
 const TabularNums = styled.span`
@@ -12,9 +13,16 @@ const TabularNums = styled.span`
     overflow: hidden;
 `;
 
-const Account = (props: Props) => {
-    const { device } = props;
-    const accounts = !Array.isArray(props.account) ? [props.account] : props.account;
+interface Props {
+    account: WalletAccount | WalletAccount[];
+}
+
+const Account = ({ account }: Props) => {
+    const { device, devices } = useSelector(state => ({
+        device: state.suite.device,
+        devices: state.devices,
+    }));
+    const accounts = !Array.isArray(account) ? [account] : account;
 
     if (accounts.length < 1) return null;
 
@@ -49,7 +57,7 @@ const Account = (props: Props) => {
 
     if (device && !accounts.find(a => a.deviceState === device.state)) {
         // account is not associated with selected device, add wallet label
-        const accountDevice = accountUtils.findAccountDevice(accounts[0], props.devices);
+        const accountDevice = accountUtils.findAccountDevice(accounts[0], devices);
         if (accountDevice) {
             return (
                 <>

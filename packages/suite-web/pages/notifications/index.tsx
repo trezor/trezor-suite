@@ -1,3 +1,3 @@
-import Notifications from '@suite-views/notifications/Container';
+import Notifications from '@suite-views/notifications';
 
 export default Notifications;

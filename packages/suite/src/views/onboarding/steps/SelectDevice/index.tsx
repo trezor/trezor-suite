@@ -1,10 +1,16 @@
 import React from 'react';
 import { Translation } from '@suite-components';
 import { Wrapper, Text, OnboardingButton, Option } from '@onboarding-components';
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
+import { useActions } from '@suite-hooks';
 
-import { Props } from './Container';
+const SelectDeviceStep = () => {
+    const { goToPreviousStep, goToNextStep, selectTrezorModel } = useActions({
+        goToPreviousStep: onboardingActions.goToPreviousStep,
+        goToNextStep: onboardingActions.goToNextStep,
+        selectTrezorModel: onboardingActions.selectTrezorModel,
+    });
 
-const SelectDeviceStep = ({ onboardingActions }: Props) => {
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
@@ -18,8 +24,8 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                     <Option
                         data-test="@onboarding/option-model-one-path"
                         action={() => {
-                            onboardingActions.selectTrezorModel(1);
-                            onboardingActions.goToNextStep();
+                            selectTrezorModel(1);
+                            goToNextStep();
                         }}
                         title={<Translation id="TR_MODEL_ONE" />}
                         text={<Translation id="TR_MODEL_ONE_DESC" />}
@@ -34,8 +40,8 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                     <Option
                         data-test="@onboarding/option-model-t-path"
                         action={() => {
-                            onboardingActions.selectTrezorModel(2);
-                            onboardingActions.goToNextStep();
+                            selectTrezorModel(2);
+                            goToNextStep();
                         }}
                         title={<Translation id="TR_MODEL_T" />}
                         text={<Translation id="TR_MODEL_T_DESC" />}
@@ -53,7 +59,7 @@ const SelectDeviceStep = ({ onboardingActions }: Props) => {
                 <Wrapper.Controls>
                     <OnboardingButton.Back
                         onClick={() => {
-                            onboardingActions.goToPreviousStep();
+                            goToPreviousStep();
                         }}
                     >
                         <Translation id="TR_BACK" />

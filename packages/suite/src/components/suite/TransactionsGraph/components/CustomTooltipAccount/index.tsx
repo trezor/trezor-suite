@@ -3,7 +3,7 @@ import { TooltipProps } from 'recharts';
 import { FormattedNumber, FormattedCryptoAmount } from '@suite-components';
 import { Account } from '@wallet-types';
 import { CommonAggregatedHistory } from '@wallet-types/graph';
-import { Props as GraphProps, CryptoGraphProps } from '../../index';
+import { Props as GraphProps, CryptoGraphProps } from '../../definitions';
 import CustomTooltipBase from '../CustomTooltipBase';
 
 interface Props extends TooltipProps {

@@ -4,11 +4,12 @@ import styled from 'styled-components';
 import { Button, variables } from '@trezor/components';
 import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import * as STEP from '@onboarding-constants/steps';
-import { SUPPORT_URL, TREZOR_PACKAGING_URL, TREZOR_RESELLERS_URL } from '@suite-constants/urls';
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import { Translation, Image, TrezorLink } from '@suite-components';
+import { useActions, useSelector } from '@suite-hooks';
+import { SUPPORT_URL, TREZOR_PACKAGING_URL, TREZOR_RESELLERS_URL } from '@suite-constants/urls';
 
 import Hologram from './components/Hologram';
-import { Props } from './Container';
 
 const StyledImage = styled(Image)`
     flex: 1;
@@ -24,11 +25,23 @@ const HologramWrapper = styled.div`
     }
 `;
 
-const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props) => {
+const HologramStep = () => {
+    const { goToPreviousStep, goToNextStep, goToSubStep } = useActions({
+        goToPreviousStep: onboardingActions.goToPreviousStep,
+        goToNextStep: onboardingActions.goToNextStep,
+        goToSubStep: onboardingActions.goToSubStep,
+    });
+    const { device, model, activeSubStep } = useSelector(state => ({
+        device: state.suite.device,
+        model: state.onboarding.selectedModel,
+        activeSubStep: state.onboarding.activeSubStep,
+    }));
+
     const actualModel =
         device && device.features && device.features.major_version
             ? device.features.major_version
             : null;
+
     return (
         <Wrapper.Step>
             <Wrapper.StepHeading>
@@ -50,13 +63,13 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                         <Wrapper.Controls>
                             <OnboardingButton.Alt
                                 data-test="@onboarding/hologram/hologram-different-button"
-                                onClick={() => onboardingActions.goToSubStep('hologram-different')}
+                                onClick={() => goToSubStep('hologram-different')}
                             >
                                 <Translation id="TR_HOLOGRAM_STEP_ACTION_NOT_OK" />
                             </OnboardingButton.Alt>
                             <OnboardingButton.Cta
                                 data-test="@onboarding/hologram/continue-button"
-                                onClick={() => onboardingActions.goToNextStep()}
+                                onClick={() => goToNextStep()}
                             >
                                 <Translation id="TR_HOLOGRAM_STEP_ACTION_OK" />
                             </OnboardingButton.Cta>
@@ -91,7 +104,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
 
                         <Wrapper.Controls>
                             <OnboardingButton.Alt
-                                onClick={() => onboardingActions.goToSubStep(null)}
+                                onClick={() => goToSubStep(null)}
                                 data-test="@onboarding/hologram/show-hologram-again-button"
                             >
                                 <Translation id="TR_SHOW_HOLOGRAM_AGAIN" />
@@ -115,7 +128,7 @@ const HologramStep = ({ onboardingActions, activeSubStep, model, device }: Props
                 <Wrapper.Controls>
                     <OnboardingButton.Back
                         onClick={() =>
-                            onboardingActions.goToPreviousStep(
+                            goToPreviousStep(
                                 actualModel ? STEP.ID_NEW_OR_USED : STEP.ID_SELECT_DEVICE_STEP,
                             )
                         }

@@ -1,12 +1,18 @@
 import React from 'react';
 
 import { Translation } from '@suite-components';
+import { useActions } from '@suite-hooks';
 import * as STEP from '@onboarding-constants/steps';
 import { Text, Option, Wrapper, OnboardingButton } from '@onboarding-components';
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
 
-import { Props } from './Container';
+const CreateOrRecoverStep = () => {
+    const { goToNextStep, goToPreviousStep, addPath } = useActions({
+        goToNextStep: onboardingActions.goToNextStep,
+        goToPreviousStep: onboardingActions.goToPreviousStep,
+        addPath: onboardingActions.addPath,
+    });
 
-const CreateOrRecoverStep = (props: Props) => {
     return (
         <Wrapper.Step>
             <Wrapper.StepBody>
@@ -22,8 +28,8 @@ const CreateOrRecoverStep = (props: Props) => {
                     <Option
                         data-test="@onboarding/path-create-button"
                         action={() => {
-                            props.addPath(STEP.PATH_CREATE);
-                            props.goToNextStep();
+                            addPath(STEP.PATH_CREATE);
+                            goToNextStep();
                         }}
                         title={<Translation id="TR_CREATE_WALLET" />}
                         text={<Translation id="TR_IF_YOU_NEVER_HAD_WALLET" />}
@@ -33,8 +39,8 @@ const CreateOrRecoverStep = (props: Props) => {
                     <Option
                         data-test="@onboarding/path-recovery-button"
                         action={() => {
-                            props.addPath(STEP.PATH_RECOVERY);
-                            props.goToNextStep();
+                            addPath(STEP.PATH_RECOVERY);
+                            goToNextStep();
                         }}
                         title={<Translation id="TR_RESTORE_EXISTING_WALLET" />}
                         text={<Translation id="TR_USING_EITHER_YOUR_SINGLE_BACKUP" />}
@@ -46,7 +52,7 @@ const CreateOrRecoverStep = (props: Props) => {
             <Wrapper.StepFooter>
                 <OnboardingButton.Back
                     onClick={() => {
-                        props.goToPreviousStep('welcome');
+                        goToPreviousStep('welcome');
                     }}
                 >
                     <Translation id="TR_BACK" />

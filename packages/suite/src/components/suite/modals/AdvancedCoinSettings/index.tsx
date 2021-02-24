@@ -5,7 +5,9 @@ import { Loader } from '@trezor/components';
 import { Modal } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
 import { NETWORKS } from '@wallet-config';
-import { Props } from './Container';
+import { Network } from '@suite/types/wallet';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import { useActions, useSelector } from '@suite-hooks';
 
 // Sub components
 import CustomBlockbookUrls from './components/CustomBlockbookUrls';
@@ -25,14 +27,21 @@ const LoaderWrapper = styled.div`
     justify-content: center;
 `;
 
-const AdvancedCoinSettings = ({
-    coin,
-    blockbookUrls,
-    blockchain,
-    addBlockbookUrl,
-    removeBlockbookUrl,
-    onCancel,
-}: Props) => {
+interface Props {
+    coin: Network['symbol'];
+    onCancel: () => void;
+}
+
+const AdvancedCoinSettings = ({ coin, onCancel }: Props) => {
+    const { addBlockbookUrl, removeBlockbookUrl } = useActions({
+        addBlockbookUrl: walletSettingsActions.addBlockbookUrl,
+        removeBlockbookUrl: walletSettingsActions.removeBlockbookUrl,
+    });
+    const { blockbookUrls, blockchain } = useSelector(state => ({
+        blockbookUrls: state.wallet.settings.blockbookUrls,
+        blockchain: state.wallet.blockchain,
+    }));
+
     const network = NETWORKS.find(n => n.symbol === coin);
     const [coinInfo, setCoinInfo] = useState<CoinInfo>();
     const isBlockbook = coinInfo?.blockchainLink?.type === 'blockbook';

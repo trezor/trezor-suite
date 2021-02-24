@@ -1,3 +1,3 @@
-import Page from '@settings-views/coins/Container';
+import Page from '@settings-views/coins';
 
 export default Page;

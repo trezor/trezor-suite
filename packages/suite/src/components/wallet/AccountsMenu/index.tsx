@@ -10,8 +10,7 @@ import { Account } from '@wallet-types';
 
 import AccountSearchBox from './components/AccountSearchBox';
 import AccountGroup from './components/AccountGroup';
-import AccountItem from './components/AccountItem/Container';
-import { SkeletonAccountItem } from './components/AccountItem';
+import AccountItem, { SkeletonAccountItem } from './components/AccountItem';
 
 const Wrapper = styled.div<{ isMobileLayout?: boolean }>`
     display: flex;
@@ -212,9 +211,9 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
                     return (
                         <AccountItem
                             key={`${account.descriptor}-${account.symbol}`}
+                            ref={forwardedRef}
                             account={account}
                             selected={selected}
-                            forwardedRef={forwardedRef}
                             closeMenu={() => setIsExpanded(false)}
                         />
                     );

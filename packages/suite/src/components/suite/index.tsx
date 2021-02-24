@@ -15,7 +15,7 @@ import WordInput from './WordInput';
 import WordInputAdvanced from './WordInputAdvanced';
 import ProgressBar from './ProgressBar';
 import Loading from './Loading';
-import FiatValue from './FiatValue/Container';
+import FiatValue from './FiatValue';
 import WebusbButton from './WebusbButton';
 import { HiddenPlaceholder } from './HiddenPlaceholder';
 import QrCode from './QrCode';

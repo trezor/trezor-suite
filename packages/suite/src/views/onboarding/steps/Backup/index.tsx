@@ -5,16 +5,29 @@ import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
 import { Translation, Image, TrezorLink } from '@suite-components';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
 import { canStart, canContinue } from '@backup-utils';
+import { useSelector, useActions } from '@suite-hooks';
 import { SEED_MANUAL_URL } from '@suite-constants/urls';
 
-import { Props } from './Container';
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
+import * as backupActions from '@backup-actions/backupActions';
+import * as routerActions from '@suite-actions/routerActions';
 
 const StyledImage = styled(Image)`
     flex: 1;
 `;
 
-const BackupStep = (props: Props) => {
-    const { device, backup, locks } = props;
+const BackupStep = () => {
+    const { goToNextStep, backupDevice, goto, closeModalApp } = useActions({
+        goToNextStep: onboardingActions.goToNextStep,
+        backupDevice: backupActions.backupDevice,
+        goto: routerActions.goto,
+        closeModalApp: routerActions.closeModalApp,
+    });
+    const { device, backup, locks } = useSelector(state => ({
+        device: state.suite.device,
+        backup: state.backup,
+        locks: state.suite.locks,
+    }));
 
     if (!device || !device.features) {
         return null;
@@ -50,7 +63,7 @@ const BackupStep = (props: Props) => {
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 data-test="@backup/start-button"
-                                onClick={() => props.backupDevice()}
+                                onClick={() => backupDevice()}
                                 isDisabled={!canStart(backup.userConfirmed, locks)}
                             >
                                 <Translation id="TR_START_BACKUP" />
@@ -68,7 +81,7 @@ const BackupStep = (props: Props) => {
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 onClick={() => {
-                                    props.goto('settings-index');
+                                    goto('settings-index');
                                 }}
                             >
                                 <Translation id="TR_GO_TO_SETTINGS" />
@@ -88,7 +101,7 @@ const BackupStep = (props: Props) => {
                         <Wrapper.Controls>
                             <OnboardingButton.Cta
                                 data-test="@backup/close-button"
-                                onClick={() => props.goToNextStep()}
+                                onClick={() => goToNextStep()}
                                 isDisabled={!canContinue(backup.userConfirmed)}
                             >
                                 <Translation id="TR_BACKUP_FINISHED_BUTTON" />
@@ -102,7 +115,7 @@ const BackupStep = (props: Props) => {
                     <OnboardingButton.Back
                         icon="CROSS"
                         data-test="@onboarding/exit-app-button"
-                        onClick={() => props.closeModalApp()}
+                        onClick={() => closeModalApp()}
                     >
                         {status === 'finished' ? (
                             <Translation id="TR_SKIP_SECURITY_PIN" />

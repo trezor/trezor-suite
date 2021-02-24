@@ -7,7 +7,7 @@ import { InputError } from '@wallet-components';
 import { getInputState, getFeeUnits } from '@wallet-utils/sendFormUtils';
 import { isDecimalsValid, isInteger } from '@wallet-utils/validation';
 import { ETH_DEFAULT_GAS_LIMIT } from '@wallet-constants/sendForm';
-import { Props } from '../index';
+import { Props } from '../definitions';
 
 const Wrapper = styled.div`
     display: flex;

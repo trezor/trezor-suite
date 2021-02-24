@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { variables } from '../../../config';
 import { InputState, InputVariant } from '../../../support/types';
-import { Icon } from '../../../index';
+import { Icon } from '../../Icon';
 import { getStateColor, useTheme } from '../../../utils';
 import { useEffect, createRef } from 'react';
 

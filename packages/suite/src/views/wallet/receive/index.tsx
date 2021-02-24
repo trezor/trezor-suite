@@ -1,17 +1,25 @@
 import React from 'react';
 import { WalletLayout } from '@wallet-components';
-import { useDevice } from '@suite-hooks';
+import { useDevice, useSelector, useActions } from '@suite-hooks';
+import * as receiveActions from '@wallet-actions/receiveActions';
 import FreshAddress from './components/FreshAddress';
 import UsedAddresses from './components/UsedAddresses';
-import { useSelector } from '@suite/hooks/suite';
 import { isPending } from '@wallet-utils/transactionUtils';
 import { getAccountTransactions } from '@wallet-utils/accountUtils';
-import { Props } from './Container';
 
-const Receive = ({ selectedAccount, receive, device, showAddress }: Props) => {
+const Receive = () => {
+    const { selectedAccount, receive, device, transactions } = useSelector(state => ({
+        selectedAccount: state.wallet.selectedAccount,
+        receive: state.wallet.receive,
+        device: state.suite.device,
+        transactions: state.wallet.transactions.transactions,
+    }));
+    const { showAddress } = useActions({
+        showAddress: receiveActions.showAddress,
+    });
+
     const { isLocked } = useDevice();
     const isDeviceLocked = isLocked(true);
-    const transactions = useSelector(state => state.wallet.transactions.transactions);
 
     if (!device || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="TR_NAV_RECEIVE" account={selectedAccount} />;
@@ -40,7 +48,6 @@ const Receive = ({ selectedAccount, receive, device, showAddress }: Props) => {
                 account={account}
                 addresses={receive}
                 showAddress={showAddress}
-                disabled={disabled}
                 locked={isDeviceLocked}
                 pendingAddresses={pendingAddresses}
             />

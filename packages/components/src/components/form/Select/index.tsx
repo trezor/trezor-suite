@@ -8,7 +8,7 @@ import ReactSelect, {
 import styled, { css } from 'styled-components';
 import { variables } from '../../../config';
 import { useTheme } from '../../../utils';
-import { scrollbarStyles } from '../../../index';
+import { scrollbarStyles } from '../../Scrollbar';
 import { InputVariant, SuiteThemeColors } from '../../../support/types';
 
 const selectStyle = (

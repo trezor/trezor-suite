@@ -1,7 +1,7 @@
 import { enhanceTransactionDetails } from '@suite/utils/wallet/transactionUtils';
 import { OnUpgradeFunc } from '@trezor/suite-storage';
 import BigNumber from 'bignumber.js';
-import { SuiteDBSchema } from '..';
+import { SuiteDBSchema } from '../definitions';
 
 export const migrate = async (
     db: Parameters<OnUpgradeFunc<SuiteDBSchema>>['0'],

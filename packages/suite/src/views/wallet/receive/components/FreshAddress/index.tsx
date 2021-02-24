@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import { AccountAddress } from 'trezor-connect';
 import { Button, Card, variables } from '@trezor/components';
 import { Translation, QuestionTooltip, ReadMoreLink } from '@suite-components';
-import { ChildProps as Props } from '../../Container';
-import { AccountAddress } from 'trezor-connect';
+import { AppState } from '@suite-types';
 
 const StyledCard = styled(Card)`
     width: 100%;
@@ -93,6 +93,15 @@ const TooltipLabel = ({ symbol, isBitcoin }: { symbol: string; isBitcoin: boolea
     return addressLabel;
 };
 
+interface Props {
+    account: AppState['wallet']['selectedAccount']['account'];
+    addresses: AppState['wallet']['receive'];
+    showAddress: (path: string, address: string) => void;
+    disabled: boolean;
+    locked: boolean;
+    pendingAddresses: string[];
+}
+
 const FreshAddress = ({
     account,
     addresses,
@@ -101,6 +110,8 @@ const FreshAddress = ({
     pendingAddresses,
     locked,
 }: Props) => {
+    if (!account) return null; // Needed?
+
     const isBitcoin = account.networkType === 'bitcoin';
     const unused = account.addresses
         ? account.addresses.unused

@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { P } from '@trezor/components';
 import { WalletLayout } from '@wallet-components';
-import { useDevice } from '@suite-hooks';
-import { Props } from './Container';
+import { useDevice, useActions, useSelector } from '@suite-hooks';
 import { Translation, Card } from '@suite-components';
 import { ExtendedMessageDescriptor } from '@suite-types';
+import * as modalActions from '@suite-actions/modalActions';
 import { getAccountTypeIntl, getBip43Shortcut } from '@wallet-utils/accountUtils';
 import { ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/Settings';
 import {
@@ -37,7 +37,12 @@ const StyledRow = styled(Row)`
     padding-top: 0;
 `;
 
-const Details = ({ selectedAccount, openModal }: Props) => {
+const Details = () => {
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const { openModal } = useActions({
+        openModal: modalActions.openModal,
+    });
+
     const { device, isLocked } = useDevice();
     if (!device || selectedAccount.status !== 'loaded') {
         return <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount} />;

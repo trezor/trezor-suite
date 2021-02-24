@@ -1,15 +1,23 @@
 import React from 'react';
 import { SettingsLayout } from '@settings-components';
 import { Translation } from '@suite-components';
+import { useSelector, useActions } from '@suite-hooks';
 import { NETWORKS } from '@wallet-config';
 import { Network } from '@wallet-types';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import CoinsGroup from './components/CoinsGroup';
-import { Props } from './Container';
 
-const Settings = (props: Props) => {
-    const { enabledNetworks } = props.wallet.settings;
-    const unavailableCapabilities =
-        props.device && props.device.features ? props.device.unavailableCapabilities : {};
+const Settings = () => {
+    const { changeCoinVisibility, changeNetworks } = useActions({
+        changeCoinVisibility: walletSettingsActions.changeCoinVisibility,
+        changeNetworks: walletSettingsActions.changeNetworks,
+    });
+    const { device, enabledNetworks } = useSelector(state => ({
+        device: state.suite.device,
+        enabledNetworks: state.wallet.settings.enabledNetworks,
+    }));
+
+    const unavailableCapabilities = device && device.features ? device.unavailableCapabilities : {};
 
     const mainnetNetworksFilterFn = (n: Network) => !n.accountType && !n.testnet;
 
@@ -39,16 +47,16 @@ const Settings = (props: Props) => {
                 description={<Translation id="TR_COINS_SETTINGS_ALSO_DEFINES" />}
                 enabledNetworks={enabledMainnetNetworks}
                 filterFn={mainnetNetworksFilterFn}
-                onToggleOneFn={props.changeCoinVisibility}
+                onToggleOneFn={changeCoinVisibility}
                 onActivateAll={() =>
-                    props.changeNetworks([
+                    changeNetworks([
                         ...enabledTestnetNetworks.filter(unavailableNetworksFilterFn),
                         ...NETWORKS.filter(mainnetNetworksFilterFn)
                             .map(n => n.symbol)
                             .filter(unavailableNetworksFilterFn),
                     ])
                 }
-                onDeactivateAll={() => props.changeNetworks(enabledTestnetNetworks)}
+                onDeactivateAll={() => changeNetworks(enabledTestnetNetworks)}
                 type="mainnet"
                 unavailableCapabilities={unavailableCapabilities}
             />
@@ -58,16 +66,16 @@ const Settings = (props: Props) => {
                 description={<Translation id="TR_TESTNET_COINS_EXPLAINED" />}
                 enabledNetworks={enabledTestnetNetworks}
                 filterFn={testnetNetworksFilterFn}
-                onToggleOneFn={props.changeCoinVisibility}
+                onToggleOneFn={changeCoinVisibility}
                 onActivateAll={() =>
-                    props.changeNetworks([
+                    changeNetworks([
                         ...enabledMainnetNetworks.filter(unavailableNetworksFilterFn),
                         ...NETWORKS.filter(testnetNetworksFilterFn)
                             .map(n => n.symbol)
                             .filter(unavailableNetworksFilterFn),
                     ])
                 }
-                onDeactivateAll={() => props.changeNetworks(enabledMainnetNetworks)}
+                onDeactivateAll={() => changeNetworks(enabledMainnetNetworks)}
                 type="testnet"
                 unavailableCapabilities={unavailableCapabilities}
             />

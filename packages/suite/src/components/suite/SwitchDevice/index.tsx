@@ -5,9 +5,10 @@ import { Translation } from '@suite-components/Translation';
 import { Modal } from '@suite-components';
 import * as deviceUtils from '@suite-utils/device';
 import { isWebUSB } from '@suite-utils/transport';
-import DeviceItem from './components/DeviceItem/Container';
+import DeviceItem from './components/DeviceItem';
+import { InjectedModalApplicationProps } from '@suite-types';
+import { useSelector } from '@suite-hooks';
 
-import { Props } from './Container';
 import WebusbButton from '../WebusbButton';
 
 const HeadingActions = styled.div`
@@ -29,9 +30,16 @@ const DeviceItemsWrapper = styled.div`
     flex: 1;
 `;
 
-const SwitchDeviceModal = (props: Props) => {
-    const { devices, selectedDevice, modal } = props;
-    const showWebUsb = isWebUSB(props.transport);
+const SwitchDeviceModal = (props: InjectedModalApplicationProps) => {
+    const { selectedDevice, devices, transport } = useSelector(state => ({
+        router: state.router,
+        selectedDevice: state.suite.device,
+        devices: state.devices,
+        transport: state.suite.transport,
+    }));
+
+    const { modal } = props;
+    const showWebUsb = isWebUSB(transport);
     // return action modal, it could be requested by Trezor while enabling passphrase encryption
     if (modal)
         return (

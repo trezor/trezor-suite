@@ -1,16 +1,22 @@
 import React from 'react';
 import * as accountUtils from '@wallet-utils/accountUtils';
-import { Props } from './Container';
-import AccountLabel from '../Account/Container';
+import { useSelector } from '@suite-hooks';
+import AccountLabel from '../Account';
 
 // DeviceLabel? / WalletLabel? / Account #N / AccountType?
 
-const Address = (props: Props) => {
-    const { address } = props;
+interface Props {
+    address?: string | null;
+    knownOnly?: boolean;
+}
+
+const Address = ({ address, knownOnly }: Props) => {
+    const accounts = useSelector(state => state.wallet.accounts);
+
     if (!address) return null;
 
-    const found = accountUtils.findAccountsByAddress(address, props.accounts);
-    if (found.length < 1) return !props.knownOnly ? <span>{address}</span> : null;
+    const found = accountUtils.findAccountsByAddress(address, accounts);
+    if (found.length < 1) return !knownOnly ? <span>{address}</span> : null;
 
     return <AccountLabel account={found[0]} />;
 };

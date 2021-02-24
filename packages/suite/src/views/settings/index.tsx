@@ -17,10 +17,15 @@ import { FIAT, LANGUAGES } from '@suite-config';
 import { useAnalytics, useDevice, useSelector, useActions } from '@suite-hooks';
 import { Button, Tooltip, Switch } from '@trezor/components';
 import { capitalizeFirstLetter } from '@suite-utils/string';
+
 import * as suiteActions from '@suite-actions/suiteActions';
+import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import * as storageActions from '@suite-actions/storageActions';
+import * as languageActions from '@settings-actions/languageActions';
+import * as routerActions from '@suite-actions/routerActions';
+import * as metadataActions from '@suite-actions/metadataActions';
 import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
 
-import { Props } from './Container';
 import { getReleaseUrl } from '@suite/services/github';
 import { isDesktop, isWeb } from '@suite-utils/env';
 
@@ -47,45 +52,56 @@ const VersionTooltip = styled(Tooltip)`
 
 const VersionLink = styled.a``;
 
-const Settings = ({
-    language,
-    metadata,
-    localCurrency,
-    desktopUpdate,
-    setLocalCurrency,
-    fetchLocale,
-    removeDatabase,
-    goto,
-    initMetadata,
-    disconnectProvider,
-    disableMetadata,
-}: Props) => {
+const Settings = () => {
     const analytics = useAnalytics();
 
     const { isLocked, device } = useDevice();
     const isDeviceLocked = isLocked();
 
-    // Tor
-    const { tor, torOnionLinks } = useSelector(state => ({
-        tor: state.suite.tor,
-        torOnionLinks: state.suite.settings.torOnionLinks,
-    }));
-    const { setOnionLinks } = useActions({
+    const { language, localCurrency, metadata, desktopUpdate, tor, torOnionLinks } = useSelector(
+        state => ({
+            language: state.suite.settings.language,
+            localCurrency: state.wallet.settings.localCurrency,
+            metadata: state.metadata,
+            desktopUpdate: state.desktopUpdate,
+            tor: state.suite.tor,
+            torOnionLinks: state.suite.settings.torOnionLinks,
+        }),
+    );
+    const {
+        setLocalCurrency,
+        removeDatabase,
+        fetchLocale,
+        goto,
+        initMetadata,
+        disableMetadata,
+        disconnectProvider,
+        setOnionLinks,
+        setUpdateWindow,
+    } = useActions({
+        setLocalCurrency: walletSettingsActions.setLocalCurrency,
+        removeDatabase: storageActions.removeDatabase,
+        fetchLocale: languageActions.fetchLocale,
+        goto: routerActions.goto,
+        initMetadata: metadataActions.init,
+        disableMetadata: metadataActions.disableMetadata,
+        disconnectProvider: metadataActions.disconnectProvider,
         setOnionLinks: suiteActions.setOnionLinks,
+        setUpdateWindow: desktopUpdateActions.setUpdateWindow,
     });
+
+    // Tor
     const [torAddress, setTorAddress] = useState('');
     useEffect(() => {
         window.desktopApi?.getTorAddress().then(address => setTorAddress(address));
     }, [setTorAddress]);
+
     const saveTorAddress = useCallback(() => {
         // TODO: Validation
         window.desktopApi!.setTorAddress(torAddress);
     }, [torAddress]);
 
     // Auto Updater
-    const { setUpdateWindow } = useActions({
-        setUpdateWindow: desktopUpdateActions.setUpdateWindow,
-    });
     const checkForUpdates = useCallback(() => window.desktopApi?.checkForUpdates(true), []);
     const installRestart = useCallback(() => window.desktopApi?.installUpdate(), []);
     const maximizeUpdater = useCallback(() => setUpdateWindow('maximized'), [setUpdateWindow]);

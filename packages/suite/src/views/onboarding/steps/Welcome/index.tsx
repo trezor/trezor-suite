@@ -2,10 +2,14 @@ import React from 'react';
 
 import { Translation } from '@suite-components';
 import { Text, Option, Wrapper } from '@onboarding-components';
+import { useActions } from '@suite-hooks';
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
 
-import { Props } from './Container';
+const WelcomeStep = () => {
+    const { goToNextStep } = useActions({
+        goToNextStep: onboardingActions.goToNextStep,
+    });
 
-const WelcomeStep = (props: Props) => {
     return (
         <Wrapper.Step data-test="@onboarding/welcome-step">
             <Wrapper.StepBody>
@@ -21,7 +25,7 @@ const WelcomeStep = (props: Props) => {
                     <Option
                         data-test="@onboarding/begin-button"
                         action={() => {
-                            props.goToNextStep('create-or-recover');
+                            goToNextStep('create-or-recover');
                         }}
                         title={<Translation id="TR_IM_NEW_TO_ALL_THIS" />}
                         text={<Translation id="TR_I_WANT_TO_BE_GUIDED_THROUGH" />}
@@ -31,7 +35,7 @@ const WelcomeStep = (props: Props) => {
                     <Option
                         data-test="@onboarding/skip-button"
                         action={() => {
-                            props.goToNextStep('skip');
+                            goToNextStep('skip');
                         }}
                         title={<Translation id="TR_I_HAVE_INITIALIZED_DEVICE" />}
                         text={<Translation id="TR_MY_DEVICE_IS_INITIALIZED" />}

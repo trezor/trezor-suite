@@ -5,10 +5,17 @@ import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components'
 import { Translation } from '@suite-components';
 import { SuccessImg, H2, P } from '@firmware-components';
 import { TOS_URL } from '@suite-constants/urls';
-import { Props } from './Container';
+import { useActions, useSelector } from '@suite-hooks';
+import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
+import * as onboardingActions from '@onboarding-actions/onboardingActions';
 
-const ResetDeviceStep = (props: Props) => {
-    const { device } = props;
+const ResetDeviceStep = () => {
+    const { resetDevice, goToPreviousStep, callActionAndGoToNextStep } = useActions({
+        resetDevice: deviceSettingsActions.resetDevice,
+        goToPreviousStep: onboardingActions.goToPreviousStep,
+        callActionAndGoToNextStep: onboardingActions.callActionAndGoToNextStep,
+    });
+    const device = useSelector(state => state.suite.device);
 
     // this step expects device
     if (!device || !device.features) {
@@ -57,9 +64,9 @@ const ResetDeviceStep = (props: Props) => {
                         <Option
                             data-test="@onboarding/button-standard-backup"
                             action={() => {
-                                props.callActionAndGoToNextStep(
+                                callActionAndGoToNextStep(
                                     // eslint-disable-next-line @typescript-eslint/naming-convention
-                                    () => props.resetDevice({ backup_type: 0 }),
+                                    () => resetDevice({ backup_type: 0 }),
                                     STEP.ID_SECURITY_STEP,
                                 );
                             }}
@@ -76,9 +83,9 @@ const ResetDeviceStep = (props: Props) => {
 
                         <Option
                             action={() => {
-                                props.callActionAndGoToNextStep(
+                                callActionAndGoToNextStep(
                                     // eslint-disable-next-line @typescript-eslint/naming-convention
-                                    () => props.resetDevice({ backup_type: 1 }),
+                                    () => resetDevice({ backup_type: 1 }),
                                     STEP.ID_SECURITY_STEP,
                                 );
                             }}
@@ -99,10 +106,7 @@ const ResetDeviceStep = (props: Props) => {
                         <OnboardingButton.Cta
                             data-test="@onboarding/only-backup-option-button"
                             onClick={() =>
-                                props.callActionAndGoToNextStep(
-                                    props.resetDevice,
-                                    STEP.ID_SECURITY_STEP,
-                                )
+                                callActionAndGoToNextStep(resetDevice, STEP.ID_SECURITY_STEP)
                             }
                         >
                             <Translation id="TR_CREATE_WALLET" />
@@ -111,7 +115,7 @@ const ResetDeviceStep = (props: Props) => {
                 )}
             </Wrapper.StepBody>
             <Wrapper.StepFooter>
-                <OnboardingButton.Back onClick={() => props.goToPreviousStep()}>
+                <OnboardingButton.Back onClick={() => goToPreviousStep()}>
                     <Translation id="TR_BACK" />
                 </OnboardingButton.Back>
             </Wrapper.StepFooter>
