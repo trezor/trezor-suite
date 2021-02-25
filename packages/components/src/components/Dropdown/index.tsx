@@ -40,7 +40,7 @@ const Menu = styled.ul<MenuProps>`
         props.alignMenu === 'top-left' || props.alignMenu === 'top-right'
             ? `-${props.offset}px`
             : `${props.offset}px`};
-    background: ${props => props.theme.BG_WHITE_ALT};
+    background: ${props => props.theme.BG_WHITE};
     overflow: hidden;
 
     ${props =>
