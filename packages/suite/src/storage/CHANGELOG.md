@@ -1,5 +1,8 @@
 # Storage changelog
 
+## 21
+-   fix tx.amount for btc sent txs (subtract tx.fee from it), add tx.totalSpent field
+
 ## 20
 -   format tx.details
 ## 19

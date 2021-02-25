@@ -1,5 +1,6 @@
 import { enhanceTransactionDetails } from '@suite/utils/wallet/transactionUtils';
 import { OnUpgradeFunc } from '@trezor/suite-storage';
+import BigNumber from 'bignumber.js';
 import { SuiteDBSchema } from '..';
 
 export const migrate = async (
@@ -143,6 +144,47 @@ export const migrate = async (
             }
 
             cursor.update(tx);
+            // eslint-disable-next-line no-await-in-loop
+            cursor = await cursor.continue();
+        }
+    }
+
+    if (oldVersion < 21) {
+        // do the same thing as in blockchain-link's transformTransaction
+        let cursor = await transaction.objectStore('txs').openCursor();
+        const symbolsToExclude = ['eth', 'etc', 'xrp', 'trop', 'txrp'];
+        while (cursor) {
+            const tx = cursor.value;
+            if (!tx.tx.totalSpent) {
+                if (!symbolsToExclude.includes(tx.tx.symbol)) {
+                    // btc-like txs
+                    if (tx.tx.type === 'sent') {
+                        // fix tx.amount = tx.amount - tx.fee for btc-like sent txs
+                        tx.tx.totalSpent = tx.tx.amount;
+                        tx.tx.amount = new BigNumber(tx.tx.amount).minus(tx.tx.fee).toString();
+                    } else {
+                        tx.tx.totalSpent = tx.tx.amount;
+                    }
+                } else if (tx.tx.type === 'sent') {
+                    // eth, xrp like sent txs
+                    if (tx.tx.ethereumSpecific) {
+                        if (tx.tx.tokens.length > 0 || tx.tx.ethereumSpecific.status === 0) {
+                            // eth with tokens (amount === fee == totalSpent)
+                            tx.tx.totalSpent = tx.tx.amount;
+                        } else {
+                            tx.tx.totalSpent = new BigNumber(tx.tx.amount)
+                                .plus(tx.tx.fee)
+                                .toString();
+                        }
+                    } else {
+                        tx.tx.totalSpent = new BigNumber(tx.tx.amount).plus(tx.tx.fee).toString();
+                    }
+                } else {
+                    // self, recv txs
+                    tx.tx.totalSpent = tx.tx.amount;
+                }
+                cursor.update(tx);
+            }
             // eslint-disable-next-line no-await-in-loop
             cursor = await cursor.continue();
         }
