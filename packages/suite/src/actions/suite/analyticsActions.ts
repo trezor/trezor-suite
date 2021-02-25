@@ -322,6 +322,12 @@ export type AnalyticsEvent =
               networkSymbol: Account['symbol'];
               addedNth: number; // if the user added 1st, 2nd,... token in his account
           };
+      }
+    | {
+          type: 'send-raw-transaction';
+          payload: {
+              networkSymbol: Account['symbol'];
+          };
       };
 
 const getUrl = () => {
