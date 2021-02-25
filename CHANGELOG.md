@@ -6,14 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 - Discovery progress bar in electron
 - OpenGraph meta tags for Suite (web version)
+- Option to hide dashboard graph
+- Instructions for verifying linux binary (landing page)
 
 ### Changed
+- Don't allow to run multiple instances of Suite desktop app
 
 ### Fixed
 - Check if IDB is supported before each operation (no idb support in FF incognito/tor browser)
 - Account with non-zero balance could be marked as empty (eth)
 - OpenGraph meta tags for Suite landing page
 - Incorrect fiat rates for tokens sharing the same symbol
+- Include tokens in portfolio value showed on the Dashboard
+- Potential crash when switching active wallet in Send form
 
 ## 21.2.3 [17th February 2021]
 
