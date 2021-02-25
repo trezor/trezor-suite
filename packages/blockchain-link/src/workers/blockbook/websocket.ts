@@ -11,11 +11,13 @@ import {
 import {
     GetFiatRatesForTimestamps,
     GetFiatRatesTickersList,
+    GetCurrentFiatRates,
+} from '../../types/messages';
+import {
     AccountInfoParams,
     EstimateFeeParams,
     AccountBalanceHistoryParams,
-    GetCurrentFiatRates,
-} from '../../types/messages';
+} from '../../types/params';
 
 const NOT_INITIALIZED = new CustomError('websocket_not_initialized');
 
