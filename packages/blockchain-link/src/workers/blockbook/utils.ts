@@ -225,6 +225,7 @@ export const transformTransaction = (
         blockTime: tx.blockTime,
         blockHeight: tx.blockHeight,
         blockHash: tx.blockHash,
+        lockTime: tx.lockTime,
 
         amount,
         fee,

@@ -59,6 +59,7 @@ export interface Transaction {
     blockTime?: number;
     blockHeight?: number;
     blockHash?: string;
+    lockTime?: number;
 
     amount: string;
     fee: string;
