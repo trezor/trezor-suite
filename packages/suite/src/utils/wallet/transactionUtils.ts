@@ -59,9 +59,8 @@ export const groupTransactionsByDate = (
 export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
     let totalAmount = new BigNumber(0);
     transactions.forEach(tx => {
-        // count only recv/sent txs
-        if (tx.type === 'sent') {
-            totalAmount = totalAmount.minus(tx.amount).minus(tx.fee);
+        if (tx.type === 'sent' || tx.type === 'self') {
+            totalAmount = totalAmount.minus(tx.amount);
         }
         if (tx.type === 'recv') {
             totalAmount = totalAmount.plus(tx.amount);
@@ -76,11 +75,10 @@ export const sumTransactionsFiat = (
 ) => {
     let totalAmount = new BigNumber(0);
     transactions.forEach(tx => {
-        // count only recv/sent txs
-        if (tx.type === 'sent') {
-            totalAmount = totalAmount
-                .minus(toFiatCurrency(tx.amount, fiatCurrency, tx.rates, -1) ?? 0)
-                .minus(toFiatCurrency(tx.fee, fiatCurrency, tx.rates, -1) ?? 0);
+        if (tx.type === 'sent' || tx.type === 'self') {
+            totalAmount = totalAmount.minus(
+                toFiatCurrency(tx.amount, fiatCurrency, tx.rates, -1) ?? 0,
+            );
         }
         if (tx.type === 'recv') {
             totalAmount = totalAmount.plus(
