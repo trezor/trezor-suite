@@ -1,3 +1,8 @@
+# 1.0.17
+
+#### changes
+- Fixed tx.amount for btc-like sent txs
+- Added tx.totalSpent
 # 1.0.16
 
 #### changes
