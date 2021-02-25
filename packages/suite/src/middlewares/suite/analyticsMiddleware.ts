@@ -33,30 +33,38 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
 
     switch (action.type) {
         case STORAGE.LOADED:
-            api.dispatch(
-                analyticsActions.report({
-                    type: 'suite-ready',
-                    payload: {
-                        language: state.suite.settings.language,
-                        enabledNetworks: state.wallet.settings.enabledNetworks,
-                        localCurrency: state.wallet.settings.localCurrency,
-                        discreetMode: state.wallet.settings.discreetMode,
-                        screenWidth: getScreenWidth(),
-                        screenHeight: getScreenHeight(),
-                        platform: getPlatform(),
-                        platformLanguage: getPlatformLanguage(),
-                        tor: state.suite.tor,
-                        rememberedStandardWallets: api
-                            .getState()
-                            .devices.filter(d => d.remember && d.useEmptyPassphrase).length,
-                        rememberedHiddenWallets: api
-                            .getState()
-                            .devices.filter(d => d.remember && !d.useEmptyPassphrase).length,
-                        theme: state.suite.settings.theme.variant,
-                        suiteVersion: process.env.version || '',
-                    },
-                }),
-            );
+            {
+                const { enabled } = action.payload.analytics;
+                api.dispatch(
+                    analyticsActions.report(
+                        {
+                            type: 'suite-ready',
+                            payload: {
+                                language: state.suite.settings.language,
+                                enabledNetworks: state.wallet.settings.enabledNetworks,
+                                localCurrency: state.wallet.settings.localCurrency,
+                                discreetMode: state.wallet.settings.discreetMode,
+                                screenWidth: getScreenWidth(),
+                                screenHeight: getScreenHeight(),
+                                platform: getPlatform(),
+                                platformLanguage: getPlatformLanguage(),
+                                tor: state.suite.tor,
+                                rememberedStandardWallets: api
+                                    .getState()
+                                    .devices.filter(d => d.remember && d.useEmptyPassphrase).length,
+                                rememberedHiddenWallets: api
+                                    .getState()
+                                    .devices.filter(d => d.remember && !d.useEmptyPassphrase)
+                                    .length,
+                                theme: state.suite.settings.theme.variant,
+                                suiteVersion: process.env.version || '',
+                            },
+                        },
+                        // force logging if analytics are enabled (may happen that reducers are not yet populated with data from this action)
+                        !!enabled,
+                    ),
+                );
+            }
             break;
         case TRANSPORT.START:
             api.dispatch(
