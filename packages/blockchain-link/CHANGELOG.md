@@ -3,6 +3,7 @@
 #### changes
 - Fixed tx.amount for btc-like sent txs
 - Added tx.totalSpent
+- Added tx.details.locktime
 # 1.0.16
 
 #### changes

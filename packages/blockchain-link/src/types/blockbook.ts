@@ -103,6 +103,7 @@ export interface Transaction {
     valueIn: string;
     fees: string;
     hex: string;
+    lockTime?: number;
     ethereumSpecific?: {
         status: number;
         nonce: number;
