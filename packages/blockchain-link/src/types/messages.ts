@@ -1,4 +1,12 @@
 import { SubscriptionAccountInfo, BlockchainSettings } from './common';
+import {
+    AccountBalanceHistoryParams,
+    GetCurrentFiatRatesParams,
+    GetFiatRatesForTimestampsParams,
+    GetFiatRatesTickersListParams,
+    EstimateFeeParams,
+    AccountInfoParams,
+} from './params';
 import * as MESSAGES from '../constants/messages';
 
 // messages sent from blockchain.js to worker
@@ -19,23 +27,6 @@ export interface GetBlockHash {
     payload: number;
 }
 
-export interface AccountInfoParams {
-    descriptor: string; // address or xpub
-    details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs'; // depth, default: 'basic'
-    tokens?: 'nonzero' | 'used' | 'derived'; // blockbook only, default: 'derived' - show all derived addresses, 'used' - show only used addresses, 'nonzero' - show only address with balance
-    page?: number; // blockbook only, page index
-    pageSize?: number; // how many transactions on page
-    from?: number; // from block
-    to?: number; // to block
-    contractFilter?: string; // blockbook only, ethereum token filter
-    gap?: number; // blockbook only, derived addresses gap
-    // since ripple-lib cannot use pages "marker" is used as first unknown point in history (block and sequence of transaction)
-    marker?: {
-        ledger: number;
-        seq: number;
-    };
-}
-
 export interface GetAccountInfo {
     type: typeof MESSAGES.GET_ACCOUNT_INFO;
     payload: AccountInfoParams;
@@ -53,17 +44,7 @@ export interface GetTransaction {
 
 export interface GetFiatRatesTickersList {
     type: typeof MESSAGES.GET_FIAT_RATES_TICKERS_LIST;
-    payload: {
-        timestamp?: number;
-    };
-}
-
-export interface AccountBalanceHistoryParams {
-    descriptor: string;
-    from: number;
-    to: number;
-    currencies?: string[];
-    groupBy?: number;
+    payload: GetFiatRatesTickersListParams;
 }
 
 export interface GetAccountBalanceHistory {
@@ -73,29 +54,12 @@ export interface GetAccountBalanceHistory {
 
 export interface GetCurrentFiatRates {
     type: typeof MESSAGES.GET_CURRENT_FIAT_RATES;
-    payload: {
-        currencies?: string[];
-    };
+    payload: GetCurrentFiatRatesParams;
 }
 
 export interface GetFiatRatesForTimestamps {
     type: typeof MESSAGES.GET_FIAT_RATES_FOR_TIMESTAMPS;
-    payload: {
-        timestamps: number[];
-        currencies?: string[];
-    };
-}
-
-export interface EstimateFeeParams {
-    blocks?: number[];
-    specific?: {
-        conservative?: boolean; // btc
-        txsize?: number; // btc transaction size
-        from?: string; // eth from
-        to?: string; // eth to
-        data?: string; // eth tx data
-        value?: string; // eth tx amount
-    };
+    payload: GetFiatRatesForTimestampsParams;
 }
 
 export interface EstimateFee {

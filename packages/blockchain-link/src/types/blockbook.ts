@@ -1,11 +1,11 @@
 import {
     AccountBalanceHistoryParams,
-    GetCurrentFiatRates,
-    GetFiatRatesForTimestamps,
-    GetFiatRatesTickersList,
-    AccountInfoParams,
+    GetCurrentFiatRatesParams,
+    GetFiatRatesForTimestampsParams,
+    GetFiatRatesTickersListParams,
     EstimateFeeParams,
-} from './messages';
+    AccountInfoParams,
+} from './params';
 
 export interface Subscribe {
     subscribed: boolean;
@@ -186,15 +186,15 @@ declare function FSend(
 ): Promise<AccountBalanceHistory[]>;
 declare function FSend(
     method: 'getCurrentFiatRates',
-    params: GetCurrentFiatRates['payload']
+    params: GetCurrentFiatRatesParams
 ): Promise<TimestampedFiatRates>;
 declare function FSend(
     method: 'getFiatRatesTickersList',
-    params: GetFiatRatesTickersList['payload']
+    params: GetFiatRatesTickersListParams
 ): Promise<AvailableCurrencies>;
 declare function FSend(
     method: 'getFiatRatesForTimestamps',
-    params: GetFiatRatesForTimestamps['payload']
+    params: GetFiatRatesForTimestampsParams
 ): Promise<FiatRatesForTimestamp>;
 declare function FSend(method: 'estimateFee', params: EstimateFeeParams): Promise<Fee>;
 declare function FSend(
