@@ -34,3 +34,16 @@ Beta also has +1 `MM` version when compared to stable indicating this is upcomin
 We use the same scheme as beta. That is, `develop` branch has always `YY.MM.0` version where `MM` is the upcoming month's release.
 When we fork `develop` to `release/20YY-MM` branch, we bump the release branch version to `YY.MM.1` and
 increase the `develop` version to `YY.(MM+1).0` indicating we are already brewing next release in the `develop`.
+
+## Version bumping
+
+You can use `release-it` to semi-automate the version bumping. You need to:
+1. Modify the version in the root `package.json`.
+2. Run `release-it --ci --config=ci/release-it.yml --disable-metrics --no-increment` which will propagate the version into workspaces' `package.json`.
+3. Manually modify dependencies in:
+
+- packages/suite-native/package.json
+- packages/suite-web/package.json
+- packages/suite/package.json
+
+It seems release-it can't do that just yet.
