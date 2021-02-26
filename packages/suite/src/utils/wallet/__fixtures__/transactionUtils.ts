@@ -287,6 +287,7 @@ export const enhanceTransaction = [
             blockHeight: 590093,
             blockTime: 1565797979,
             fee: '0.00002929',
+            totalSpent: '123.00002929',
             targets: [],
             tokens: [
                 {
@@ -350,6 +351,7 @@ export const enhanceTransaction = [
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
             fee: '0.0000000000002929',
+            totalSpent: '0.0000012300002929',
             symbol: 'btc',
             targets: [],
             tokens: [
@@ -406,6 +408,7 @@ export const enhanceTransaction = [
             blockHeight: 590093,
             blockTime: 1565797979,
             fee: '0.00002929',
+            totalSpent: '0.00009426',
             targets: [
                 {
                     addresses: ['0x4f4f1488acb1ae1b46146ceff804f591dfe660ac'],
@@ -440,6 +443,7 @@ export const enhanceTransaction = [
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
             fee: '0.0000000000002929',
+            totalSpent: '0.0000000000009426',
             symbol: 'btc',
             targets: [
                 {
@@ -467,6 +471,7 @@ export const enhanceTransaction = [
             blockHeight: 590093,
             blockTime: 1565797979,
             fee: '0.00002929',
+            totalSpent: '0.00009426',
             targets: [
                 {
                     addresses: ['0x4f4f1488acb1ae1b46146ceff804f591dfe660ac'],
@@ -501,6 +506,7 @@ export const enhanceTransaction = [
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             deviceState: '7dcccffe70d8bb8bb28a2185daac8e05639490eee913b326097ae1d73abc8b4f',
             fee: '0.0000000000002929',
+            totalSpent: '0.0000000000009426',
             symbol: 'btc',
             targets: [
                 {

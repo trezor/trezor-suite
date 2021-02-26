@@ -410,6 +410,7 @@ export const enhanceTransaction = (
         }),
         amount: formatNetworkAmount(tx.amount, account.symbol),
         fee: formatNetworkAmount(tx.fee, account.symbol),
+        totalSpent: formatNetworkAmount(tx.totalSpent, account.symbol),
         targets: tx.targets.map(tr => {
             if (typeof tr.amount === 'string') {
                 return {
