@@ -16,6 +16,7 @@ const ConnectDeviceImage = (props: Omit<ImageProps, 'image'>) => {
     return (
         <Image
             image="CONNECT_DEVICE"
+            width="360"
             onClick={() => {
                 if (!isDesktop()) {
                     return;

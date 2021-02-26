@@ -119,7 +119,7 @@ const Backup = (props: Props) => {
                 onCancel={props.onCancel}
                 data-test="@backup/no-device"
             >
-                <StyledImage image="CONNECT_DEVICE" />
+                <StyledImage image="CONNECT_DEVICE" width="360" />
                 <Buttons>
                     <CloseButton onClick={onClose} />
                 </Buttons>

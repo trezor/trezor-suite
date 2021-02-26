@@ -54,7 +54,7 @@ const Index = (props: Props) => {
     const [imageLoaded, setImageLoaded] = useState(false);
 
     return (
-        <Modal data-test="@modal/connect-device">
+        <Modal data-test="@modal/connect-device" centerContent>
             <HelpBuyIcons showBuy showHelp />
             <Title>
                 <H2>
