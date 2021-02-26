@@ -151,7 +151,7 @@
         "electron-store": "^5.1.1",
         "electron-updater": "^4.3.5",
         "node-fetch": "^2.6.1",
-        "systeminformation": "^4.34.7"
+        "systeminformation": "^5.4.0"
     },
     "devDependencies": {
         "@sentry/browser": "^5.29.2",
@@ -159,7 +159,7 @@
         "@types/electron-localshortcut": "^3.1.0",
         "@types/next-redux-wrapper": "^3.0.0",
         "@types/node-fetch": "^2.5.7",
-        "@types/react": "^17.0.0",        
+        "@types/react": "^17.0.0",
         "@types/react-dom": "^17.0.0",
         "@types/react-redux": "^7.1.7",
         "@zeit/next-workers": "^1.0.0",
