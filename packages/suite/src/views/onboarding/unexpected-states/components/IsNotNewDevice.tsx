@@ -45,7 +45,7 @@ const IsNotNewDevice = ({ actionAlt, closeModalApp, device }: Props) => {
                 <Text>
                     <Translation id="TR_IS_NOT_NEW_DEVICE" />
                 </Text>
-                <StyledImage image="UNI_WARNING" />
+                <StyledImage image="UNI_WARNING" width="160" />
                 <Wrapper.Controls>
                     <TrezorLink variant="nostyle" href={SUPPORT_URL}>
                         <OnboardingButton.Cta style={{ width: '100%' }}>

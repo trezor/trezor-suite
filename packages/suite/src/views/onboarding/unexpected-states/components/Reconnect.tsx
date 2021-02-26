@@ -25,6 +25,7 @@ const Reconnect = ({ showWebUsb }: Props) => {
             </Wrapper.StepHeading>
             <Wrapper.StepBody>
                 <Image
+                    width="360"
                     image="CONNECT_DEVICE"
                     onLoad={() => setImageLoaded(true)}
                     onError={() => setImageLoaded(true)}
