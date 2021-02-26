@@ -28,7 +28,7 @@
             "name": "BinanceAddress",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "string",
                     "name": "address",
@@ -67,7 +67,7 @@
             "name": "BinancePublicKey",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "public_key",
@@ -377,14 +377,14 @@
             "name": "BinanceSignedTx",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "signature",
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "public_key",
@@ -523,14 +523,14 @@
             "name": "PublicKey",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "HDNodeType",
                     "name": "node",
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "string",
                     "name": "xpub",
@@ -722,14 +722,14 @@
             "name": "MessageSignature",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "string",
                     "name": "address",
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "signature",
@@ -2102,21 +2102,21 @@
             "name": "CardanoBlockchainPointerType",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "uint32",
                     "name": "block_index",
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "uint32",
                     "name": "tx_index",
                     "id": 2
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "uint32",
                     "name": "certificate_index",
@@ -2132,7 +2132,7 @@
             "name": "CardanoAddressParametersType",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "CardanoAddressType",
                     "name": "address_type",
@@ -2177,27 +2177,29 @@
             "fields": [
                 {
                     "rule": "optional",
-                    "options": {},
+                    "options": {
+                        "default": false
+                    },
                     "type": "bool",
                     "name": "show_display",
                     "id": 2
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "uint32",
                     "name": "protocol_magic",
                     "id": 3
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "uint32",
                     "name": "network_id",
                     "id": 4
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "CardanoAddressParametersType",
                     "name": "address_parameters",
@@ -2213,7 +2215,7 @@
             "name": "CardanoAddress",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "string",
                     "name": "address",
@@ -2252,14 +2254,14 @@
             "name": "CardanoPublicKey",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "string",
                     "name": "xpub",
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "HDNodeType",
                     "name": "node",
@@ -2289,14 +2291,14 @@
                     "id": 2
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "uint32",
                     "name": "protocol_magic",
                     "id": 5
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "uint64",
                     "name": "fee",
@@ -2310,7 +2312,7 @@
                     "id": 7
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "uint32",
                     "name": "network_id",
@@ -2358,14 +2360,14 @@
                             "id": 1
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "bytes",
                             "name": "prev_hash",
                             "id": 2
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint32",
                             "name": "prev_index",
@@ -2388,7 +2390,7 @@
                             "id": 1
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "amount",
@@ -2633,7 +2635,7 @@
                     "name": "CardanoTxCertificateType",
                     "fields": [
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "CardanoCertificateType",
                             "name": "type",
@@ -2677,7 +2679,7 @@
                             "id": 1
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "amount",
@@ -2697,14 +2699,14 @@
             "name": "CardanoSignedTx",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "tx_hash",
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "serialized_tx",
@@ -2721,7 +2723,9 @@
             "fields": [
                 {
                     "rule": "optional",
-                    "options": {},
+                    "options": {
+                        "default": ""
+                    },
                     "type": "string",
                     "name": "message",
                     "id": 1
@@ -3132,14 +3136,14 @@
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "string",
                     "name": "key",
                     "id": 2
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "value",
@@ -3183,7 +3187,7 @@
             "name": "CipheredKeyValue",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "value",
@@ -3252,7 +3256,7 @@
             "name": "SignIdentity",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "IdentityType",
                     "name": "identity",
@@ -3260,14 +3264,18 @@
                 },
                 {
                     "rule": "optional",
-                    "options": {},
+                    "options": {
+                        "default": ""
+                    },
                     "type": "bytes",
                     "name": "challenge_hidden",
                     "id": 2
                 },
                 {
                     "rule": "optional",
-                    "options": {},
+                    "options": {
+                        "default": ""
+                    },
                     "type": "string",
                     "name": "challenge_visual",
                     "id": 3
@@ -3296,14 +3304,14 @@
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "public_key",
                     "id": 2
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "signature",
@@ -3319,14 +3327,14 @@
             "name": "GetECDHSessionKey",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "IdentityType",
                     "name": "identity",
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "peer_public_key",
@@ -3349,7 +3357,7 @@
             "name": "ECDHSessionKey",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "session_key",
@@ -3448,7 +3456,7 @@
             "name": "CosiSignature",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "signature",
@@ -3986,14 +3994,14 @@
             "name": "EosPublicKey",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "string",
                     "name": "wif_public_key",
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "raw_public_key",
@@ -4271,7 +4279,7 @@
                     "name": "EosAuthorizationKey",
                     "fields": [
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint32",
                             "name": "type",
@@ -4292,7 +4300,7 @@
                             "id": 3
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint32",
                             "name": "weight",
@@ -4832,7 +4840,7 @@
                     "name": "EosActionUnknown",
                     "fields": [
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint32",
                             "name": "data_size",
@@ -4859,7 +4867,7 @@
             "name": "EosSignedTx",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "string",
                     "name": "signature",
@@ -4898,14 +4906,14 @@
             "name": "EthereumPublicKey",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "HDNodeType",
                     "name": "node",
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "string",
                     "name": "xpub",
@@ -5124,14 +5132,14 @@
             "name": "EthereumMessageSignature",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "signature",
                     "id": 2
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "string",
                     "name": "address",
@@ -5200,7 +5208,7 @@
             "name": "LiskAddress",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "string",
                     "name": "address",
@@ -5239,7 +5247,7 @@
             "name": "LiskPublicKey",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "public_key",
@@ -5262,7 +5270,7 @@
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "LiskTransactionCommon",
                     "name": "transaction",
@@ -5498,7 +5506,7 @@
             "name": "LiskSignedTx",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "signature",
@@ -5521,7 +5529,7 @@
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "message",
@@ -5537,14 +5545,14 @@
             "name": "LiskMessageSignature",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "public_key",
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "signature",
@@ -5560,21 +5568,21 @@
             "name": "LiskVerifyMessage",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "public_key",
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "signature",
                     "id": 2
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "message",
@@ -5621,21 +5629,21 @@
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "uint32",
                     "name": "major_version",
                     "id": 2
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "uint32",
                     "name": "minor_version",
                     "id": 3
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "uint32",
                     "name": "patch_version",
@@ -6136,7 +6144,9 @@
             "fields": [
                 {
                     "rule": "optional",
-                    "options": {},
+                    "options": {
+                        "default": ""
+                    },
                     "type": "string",
                     "name": "message",
                     "id": 1
@@ -8769,14 +8779,14 @@
             "name": "NEMSignedTx",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "data",
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "signature",
@@ -8829,7 +8839,7 @@
             "name": "NEMDecryptedMessage",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "payload",
@@ -8953,7 +8963,7 @@
             "name": "RippleAddress",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "string",
                     "name": "address",
@@ -9017,14 +9027,14 @@
                     "name": "RipplePayment",
                     "fields": [
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "amount",
                             "id": 1
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "string",
                             "name": "destination",
@@ -9051,14 +9061,14 @@
             "name": "RippleSignedTx",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "signature",
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "serialized_tx",
@@ -9074,7 +9084,7 @@
             "name": "StellarAssetType",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "uint32",
                     "name": "type",
@@ -9127,7 +9137,7 @@
             "name": "StellarAddress",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "string",
                     "name": "address",
@@ -9721,14 +9731,14 @@
             "name": "StellarSignedTx",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "public_key",
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "signature",
@@ -9767,7 +9777,7 @@
             "name": "TezosAddress",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "string",
                     "name": "address",
@@ -9806,7 +9816,7 @@
             "name": "TezosPublicKey",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "string",
                     "name": "public_key",
@@ -9829,7 +9839,7 @@
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "branch",
@@ -9884,14 +9894,14 @@
                     "name": "TezosContractID",
                     "fields": [
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "TezosContractType",
                             "name": "tag",
                             "id": 1
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "bytes",
                             "name": "hash",
@@ -9922,42 +9932,42 @@
                     "name": "TezosRevealOp",
                     "fields": [
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "bytes",
                             "name": "source",
                             "id": 7
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "fee",
                             "id": 2
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "counter",
                             "id": 3
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "gas_limit",
                             "id": 4
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "storage_limit",
                             "id": 5
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "bytes",
                             "name": "public_key",
@@ -9973,49 +9983,49 @@
                     "name": "TezosTransactionOp",
                     "fields": [
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "bytes",
                             "name": "source",
                             "id": 9
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "fee",
                             "id": 2
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "counter",
                             "id": 3
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "gas_limit",
                             "id": 4
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "storage_limit",
                             "id": 5
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "amount",
                             "id": 6
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "TezosContractID",
                             "name": "destination",
@@ -10100,35 +10110,35 @@
                     "name": "TezosOriginationOp",
                     "fields": [
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "bytes",
                             "name": "source",
                             "id": 12
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "fee",
                             "id": 2
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "counter",
                             "id": 3
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "gas_limit",
                             "id": 4
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "storage_limit",
@@ -10142,7 +10152,7 @@
                             "id": 6
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "balance",
@@ -10170,7 +10180,7 @@
                             "id": 10
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "bytes",
                             "name": "script",
@@ -10186,42 +10196,42 @@
                     "name": "TezosDelegationOp",
                     "fields": [
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "bytes",
                             "name": "source",
                             "id": 7
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "fee",
                             "id": 2
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "counter",
                             "id": 3
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "gas_limit",
                             "id": 4
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "uint64",
                             "name": "storage_limit",
                             "id": 5
                         },
                         {
-                            "rule": "optional",
+                            "rule": "required",
                             "options": {},
                             "type": "bytes",
                             "name": "delegate",
@@ -10327,21 +10337,21 @@
             "name": "TezosSignedTx",
             "fields": [
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "string",
                     "name": "signature",
                     "id": 1
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "bytes",
                     "name": "sig_op_contents",
                     "id": 2
                 },
                 {
-                    "rule": "optional",
+                    "rule": "required",
                     "options": {},
                     "type": "string",
                     "name": "operation_hash",
