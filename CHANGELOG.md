@@ -4,8 +4,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## 21.4.0 [to be released 14th April 2021]
 
 ### Added
+- Responsive sticky account menu
 
 ### Changed
+- Updated account navigation
 
 ### Fixed
 

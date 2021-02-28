@@ -62,27 +62,27 @@ describe('Metadata - Output labeling', () => {
             cy.getTestElement(`${sentToMyselfEl}/add-label-button`).click({ force: true });
             cy.getTestElement('@metadata/input').type('really to myself{enter}');
 
-            cy.getTestElement(sentToMyselfEl).click();
+            cy.getTestElement(sentToMyselfEl).click({ force: true });
             // dropdown/
-            cy.getTestElement(`${sentToMyselfEl}/dropdown/edit-label`).click();
+            cy.getTestElement(`${sentToMyselfEl}/dropdown/edit-label`).click({ force: true });
             cy.getTestElement('@metadata/input').type(' edited{enter}');
 
-            cy.getTestElement(`${sentToMyselfEl}`).click();
+            cy.getTestElement(`${sentToMyselfEl}`).click({ force: true });
             // todo: don't know why this does not end with success in tests but works for me when trying it manually.
-            cy.getTestElement(`${sentToMyselfEl}/dropdown/copy-address`).click();
+            cy.getTestElement(`${sentToMyselfEl}/dropdown/copy-address`).click({ force: true });
 
             // test that buttons work as well - submit button
-            cy.getTestElement(`${sentToMyselfEl}`).click();
-            cy.getTestElement(`${sentToMyselfEl}/dropdown/edit-label`).click();
+            cy.getTestElement(`${sentToMyselfEl}`).click({ force: true });
+            cy.getTestElement(`${sentToMyselfEl}/dropdown/edit-label`).click({ force: true });
             cy.getTestElement('@metadata/input').clear().type('submitted by button');
-            cy.getTestElement('@metadata/submit').click();
+            cy.getTestElement('@metadata/submit').click({ force: true });
             cy.getTestElement(`${sentToMyselfEl}`).should('contain', 'submitted by button');
 
             // test that buttons work as well - cancel button
-            cy.getTestElement(`${sentToMyselfEl}`).click();
-            cy.getTestElement(`${sentToMyselfEl}/dropdown/edit-label`).click();
+            cy.getTestElement(`${sentToMyselfEl}`).click({ force: true });
+            cy.getTestElement(`${sentToMyselfEl}/dropdown/edit-label`).click({ force: true });
             cy.getTestElement('@metadata/input').clear().type('write something that wont be saved');
-            cy.getTestElement('@metadata/cancel').click();
+            cy.getTestElement('@metadata/cancel').click({ force: true });
             cy.getTestElement(`${sentToMyselfEl}`).should('contain', 'submitted by button');
         });
     });

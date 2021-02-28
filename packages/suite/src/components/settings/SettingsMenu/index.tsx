@@ -45,22 +45,34 @@ const SettingsMenu = () => {
                 <AppNavigation
                     items={[
                         {
+                            id: 'general',
                             title: <Translation id="TR_GENERAL" />,
+                            position: 'primary',
                             'data-test': '@settings/menu/general',
                             icon: 'SETTINGS',
-                            route: 'settings-index',
+                            callback: () => {
+                                goto('settings-index', undefined, true);
+                            },
                         },
                         {
+                            id: 'device',
                             title: <Translation id="TR_DEVICE" />,
+                            position: 'primary',
                             'data-test': '@settings/menu/device',
                             icon: 'TREZOR',
-                            route: 'settings-device',
+                            callback: () => {
+                                goto('settings-device', undefined, true);
+                            },
                         },
                         {
+                            id: 'coins',
                             title: <Translation id="TR_COINS" />,
+                            position: 'primary',
                             'data-test': '@settings/menu/wallet',
                             icon: 'COINS',
-                            route: 'settings-coins',
+                            callback: () => {
+                                goto('settings-coins', undefined, true);
+                            },
                         },
                     ]}
                 />

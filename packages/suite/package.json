@@ -17,6 +17,7 @@
         "test-health": "jest -c jest.config.health.js"
     },
     "dependencies": {
+        "@react-hook/resize-observer": "^1.2.0",
         "@trezor/components": "^1.0.0",
         "@trezor/suite-data": "21.4.0",
         "@trezor/suite-storage": "21.4.0",
@@ -38,6 +39,7 @@
         "react-focus-lock": "^2.5.0",
         "react-hook-form": "6.14.1",
         "react-hotkeys-hook": "^3.0.3",
+        "react-intersection-observer": "^8.31.0",
         "react-intl": "^5.10.19",
         "react-markdown": "^5.0.3",
         "react-native-web": "^0.14.9",

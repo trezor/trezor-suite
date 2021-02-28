@@ -45,6 +45,7 @@ const AppWrapper = styled.div`
     overflow-y: scroll;
     width: 100%;
     align-items: center;
+    position: relative;
 
     ${scrollbarStyles}
 `;
