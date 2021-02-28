@@ -1,30 +1,106 @@
 import React from 'react';
-import { ITEMS } from '@wallet-config/menu';
 import { Account } from '@wallet-types';
-import AppNavigation from '@suite/components/suite/AppNavigation';
+import AppNavigation, { AppNavigationItem } from '@suite/components/suite/AppNavigation';
+import { Translation } from '@suite-components/Translation';
+import { useActions } from '@suite-hooks';
+import * as routerActions from '@suite-actions/routerActions';
+import * as modalActions from '@suite-actions/modalActions';
 
 interface Props {
     account?: Account;
+    filterPosition?: 'primary' | 'secondary';
+    dataTestSuffix?: string;
+    primaryContent?: React.ReactNode;
 }
 
 const AccountNavigation = (props: Props) => {
     const { account } = props;
+    const { goto, openModal } = useActions({
+        goto: routerActions.goto,
+        openModal: modalActions.openModal,
+    });
+    const ITEMS: AppNavigationItem[] = [
+        {
+            id: 'wallet-index',
+            callback: () => {
+                goto('wallet-index', undefined, true);
+            },
+            title: <Translation id="TR_NAV_TRANSACTIONS" />,
+            position: 'primary',
+            isHidden: () => false,
+        },
+        {
+            id: 'wallet-details',
+            callback: () => {
+                goto('wallet-details', undefined, true);
+            },
+            title: <Translation id="TR_NAV_DETAILS" />,
+            position: 'primary',
+            isHidden: () => account?.networkType !== 'bitcoin',
+        },
+        {
+            id: 'wallet-send',
+            callback: () => {
+                goto('wallet-send', undefined, true);
+            },
+            title: <Translation id="TR_NAV_SEND" />,
+            position: 'secondary',
+            isHidden: () => false,
+        },
+        {
+            id: 'wallet-receive',
+            callback: () => {
+                goto('wallet-receive', undefined, true);
+            },
+            title: <Translation id="TR_NAV_RECEIVE" />,
+            position: 'secondary',
+            isHidden: () => false,
+        },
+        {
+            id: 'wallet-coinmarket-buy',
+            callback: () => {
+                goto('wallet-coinmarket-buy', undefined, true);
+            },
+            title: <Translation id="TR_NAV_TRADE" />,
+            position: 'secondary',
+            isHidden: () => false,
+        },
+        {
+            id: 'wallet-add-token',
+            callback: () => {
+                openModal({ type: 'add-token' });
+            },
+            title: <Translation id="TR_TOKENS_ADD" />,
+            position: 'secondary',
+            extra: true,
+            isHidden: () => account?.networkType !== 'ethereum',
+        },
+        {
+            id: 'wallet-sign-verify',
+            callback: () => {
+                goto('wallet-sign-verify', undefined, true);
+            },
+            title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
+            icon: 'SIGN',
+            position: 'secondary',
+            extra: true,
+            isHidden: () => true,
+        },
+    ];
 
     // collect all items suitable for current networkType
-    const items = ITEMS.filter(item => !item.isHidden(account)).map(item => ({
+    let items = ITEMS.filter(item => item.isHidden && !item.isHidden()).map(item => ({
         ...item,
-        'data-test': `@wallet/menu/${item.route}`,
+        'data-test': `@wallet/menu/${item.id}${
+            props.dataTestSuffix ? `-${props.dataTestSuffix}` : ''
+        }`,
     }));
 
-    // TODO: Do we still need hidden items?
-    // const gotHiddenItems = items.length > VISIBLE_ITEMS_LIMIT + 1;
-    // const visibleItems = gotHiddenItems ? items.slice(0, VISIBLE_ITEMS_LIMIT) : items;
-    // const hiddenItems = gotHiddenItems ? items.slice(VISIBLE_ITEMS_LIMIT) : [];
-    // const isHiddenItemSelected = !!hiddenItems.find(item => item.props.active);
-    // const isOpened = expanded || isHiddenItemSelected;
-    // const showMoreStyles = isHiddenItemSelected ? { opacity: 0.4, cursor: 'default' } : {};
+    if (props.filterPosition) {
+        items = items.filter(item => item.position === props.filterPosition);
+    }
 
-    return <AppNavigation items={items} />;
+    return <AppNavigation items={items} primaryContent={props.primaryContent} />;
 };
 
 export default AccountNavigation;
