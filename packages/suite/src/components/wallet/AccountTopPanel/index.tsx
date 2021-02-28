@@ -1,21 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
-import { CoinLogo, H1, H2, Dropdown, variables } from '@trezor/components';
+import { CoinLogo, H1, H2, variables } from '@trezor/components';
 import {
     Ticker,
     FiatValue,
-    Translation,
     AccountLabeling,
     AppNavigationPanel,
     FormattedCryptoAmount,
     MetadataLabeling,
 } from '@suite-components';
 import { Stack, SkeletonCircle, SkeletonRectangle } from '@suite-components/Skeleton';
-import { useSelector, useActions } from '@suite-hooks';
+import { useSelector } from '@suite-hooks';
 import { isTestnet } from '@wallet-utils/accountUtils';
-import * as routerActions from '@suite-actions/routerActions';
-import * as modalActions from '@suite-actions/modalActions';
 import AccountNavigation from './components/AccountNavigation';
+import AccountNavigationSticky from './components/AccountNavigationSticky';
 
 const BalanceWrapper = styled.div`
     display: flex;
@@ -29,8 +27,8 @@ const Balance = styled(H1)`
 
 const FiatBalanceWrapper = styled(H2)`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin-left: 1ch;
+    font-size: ${variables.FONT_SIZE.H2};
 `;
 
 const AccountTopPanelSkeleton = (props: { animate?: boolean }) => {
@@ -52,35 +50,11 @@ const AccountTopPanelSkeleton = (props: { animate?: boolean }) => {
 
 const AccountTopPanel = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const { goto, openModal } = useActions({
-        goto: routerActions.goto,
-        openModal: modalActions.openModal,
-    });
     if (selectedAccount.status !== 'loaded')
         return <AccountTopPanelSkeleton animate={selectedAccount.loader === 'account-loading'} />;
 
     const { account } = selectedAccount;
     const { symbol, formattedBalance } = account;
-    const dropdownItems = [
-        {
-            key: 'account-details',
-            callback: () => {
-                goto('wallet-details', undefined, true);
-            },
-            label: <Translation id="TR_NAV_DETAILS" />,
-            isHidden: account.networkType !== 'bitcoin',
-        },
-        {
-            key: 'add-token',
-            label: <Translation id="TR_TOKENS_ADD" />,
-            callback: () => {
-                openModal({ type: 'add-token' });
-            },
-            isHidden: account.networkType !== 'ethereum',
-        },
-    ];
-
-    const visibleDropdownItems = dropdownItems.filter(item => !item.isHidden);
 
     return (
         <AppNavigationPanel
@@ -96,15 +70,9 @@ const AccountTopPanel = () => {
                     }}
                 />
             }
+            navigationSticky={<AccountNavigationSticky account={account} />}
             navigation={<AccountNavigation account={account} />}
-            dropdown={
-                visibleDropdownItems.length > 0 ? (
-                    <Dropdown
-                        alignMenu="right"
-                        items={[{ key: 'group1', options: visibleDropdownItems }]}
-                    />
-                ) : undefined
-            }
+            ticker={!isTestnet(symbol) ? <Ticker symbol={symbol} tooltipPos="bottom" /> : undefined}
         >
             <BalanceWrapper>
                 <CoinLogo size={24} symbol={symbol} />
@@ -121,8 +89,6 @@ const AccountTopPanel = () => {
                     }
                 </FiatValue>
             </BalanceWrapper>
-
-            {!isTestnet(symbol) && <Ticker symbol={symbol} tooltipPos="bottom" />}
         </AppNavigationPanel>
     );
 };

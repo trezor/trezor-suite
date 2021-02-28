@@ -5,9 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - Timerange selector UX/UI improved, ability to pick year/month, date format aligned with Suite
+- Responsive sticky account menu
 
 ### Changed
 - MacOS desktop icon updated
+- Updated account navigation
 
 ### Fixed
 - Discreet mode fixed in Wallet modal and chart hover tooltip
