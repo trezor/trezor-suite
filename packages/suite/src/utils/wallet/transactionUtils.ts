@@ -495,7 +495,11 @@ const numberSearchFilter = (
     amount: BigNumber,
     operator: typeof searchOperators[number],
 ) => {
-    const targetAmount = getTargetAmount(transaction.targets[0], transaction);
+    const targetAmount =
+        transaction.targets[0] !== undefined
+            ? getTargetAmount(transaction.targets[0], transaction)
+            : transaction.amount;
+
     if (!targetAmount) {
         return false;
     }
