@@ -109,11 +109,10 @@ export const useFees = ({
             estimatedFeeLimitRef.current = estimatedFeeLimit;
             if (estimatedFeeLimit) {
                 // re validate feeLimit
-                setValue('feeLimit', feeLimitRef.current, { shouldValidate: true });
-                // TODO: switch only if current limit is lower
-                // feeLimitRef.current = estimatedFeeLimit;
-
-                // setValue('feeLimit', estimatedFeeLimit);
+                // setValue('feeLimit', feeLimitRef.current, { shouldValidate: true });
+                // switch to recommended fee limit
+                feeLimitRef.current = estimatedFeeLimit;
+                setValue('feeLimit', estimatedFeeLimit, { shouldValidate: true });
             }
         }
     }, [estimatedFeeLimit, setValue]);

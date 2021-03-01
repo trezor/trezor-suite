@@ -1583,7 +1583,22 @@ export const feeChange = [
                     formValues: {
                         outputs: [{ amount: '1.1' }],
                         feePerUnit: '3',
-                        feeLimit: '21000',
+                        feeLimit: '41000', // feeLimit is switched automatically
+                        estimatedFeeLimit: '41000',
+                    },
+                },
+            },
+            // trigger "gas limit below recommended" error
+            {
+                type: 'input',
+                element: 'feeLimit',
+                value: '{backspace}',
+                result: {
+                    estimateFeeCalls: 2,
+                    formValues: {
+                        outputs: [{ amount: '1.1' }],
+                        feePerUnit: '3',
+                        feeLimit: '4100',
                         estimatedFeeLimit: '41000',
                     },
                     errors: {
@@ -1596,14 +1611,14 @@ export const feeChange = [
             {
                 type: 'input',
                 element: 'feeLimit',
-                value: '1',
+                value: '0',
                 result: {
                     estimateFeeCalls: 3,
                     formValues: {
                         outputs: [{ amount: '1.1' }],
                         selectedFee: 'custom' as const,
                         feePerUnit: '3',
-                        feeLimit: '210001',
+                        feeLimit: '21009', // feeLimit is switched automatically again
                         estimatedFeeLimit: '21009',
                     },
                     composedLevels: {
@@ -1614,7 +1629,7 @@ export const feeChange = [
                         },
                         custom: {
                             type: 'final',
-                            feeLimit: '210001', // custom composed tx with higher level
+                            feeLimit: '41000', // custom composed tx with higher level (as requested)
                             estimatedFeeLimit: '21009',
                         },
                     },
