@@ -85,6 +85,7 @@ const Index = (props: Props) => {
                                         onClick={() =>
                                             props.goto('suite-udev', { cancelable: true })
                                         }
+                                        data-test="@modal/connect-device/goto/suite-udev"
                                     >
                                         Udev rules
                                     </StyledLink>
@@ -105,6 +106,7 @@ const Index = (props: Props) => {
                                         onClick={() =>
                                             props.goto('suite-bridge', { cancelable: true })
                                         }
+                                        data-test="@modal/connect-device/goto/suite-bridge"
                                     >
                                         Trezor Bridge
                                     </StyledLink>
