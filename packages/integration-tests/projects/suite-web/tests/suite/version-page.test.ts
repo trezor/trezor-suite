@@ -1,17 +1,9 @@
 // @group:suite
 // @retry=2
 
-describe('Static pages accessible even without device', () => {
+describe('There is a hidden route (not accessible in UI)', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
-    });
-
-    it('/bridge', () => {
-        cy.prefixedVisit('/bridge');
-        cy.get('html').should('contain', 'bridge');
-        cy.getTestElement('@bridge').matchImageSnapshot({
-            blackout: ['[data-test="@bridge/loading"]'],
-        });
     });
 
     it('/version', () => {

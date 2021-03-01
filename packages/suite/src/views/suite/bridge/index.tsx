@@ -175,10 +175,11 @@ const InstallBridge = (props: Props) => {
                             onChange={setSelectedTarget}
                             options={installers}
                             maxMenuHeight={160}
+                            data-test="@bridge/installers"
                         />
 
                         <TrezorLink variant="nostyle" href={`${data.uri}${target.value}`}>
-                            <DownloadBridgeButton>
+                            <DownloadBridgeButton data-test="@bridge/download-button">
                                 <Translation
                                     id="TR_DOWNLOAD_LATEST_BRIDGE"
                                     values={{ version: data.latestVersion }}
@@ -204,6 +205,7 @@ const InstallBridge = (props: Props) => {
                             variant="tertiary"
                             color={theme.TYPE_LIGHT_GREY}
                             onClick={() => props.goto('wallet-index')}
+                            data-test="@bridge/goto/wallet-index"
                         >
                             <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
                         </Button>
