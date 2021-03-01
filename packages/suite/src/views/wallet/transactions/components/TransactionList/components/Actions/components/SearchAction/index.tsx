@@ -145,6 +145,7 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
                     value={search}
                     addonAlign="left"
                     textIndent={[16, 14]}
+                    maxLength={512}
                     noError
                     noTopLabel
                     clearButton
