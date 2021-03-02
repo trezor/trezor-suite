@@ -1,163 +1,397 @@
 import { css } from 'styled-components';
-import { style as reactDatepickerStyle } from './react-datepicker.style';
 
 export const style = css`
-    ${reactDatepickerStyle}
-
-    .react-datepicker {
-        font-weight: 500;
-        border: 0;
-    }
-    .react-datepicker__header {
-        background-color: ${props => props.theme.BG_WHITE};
-        border: 0;
-        padding: 10px 0 0;
-        border-top-left-radius: 0;
-    }
-    .react-datepicker__current-month {
-        padding-bottom: 22px;
-        font-size: 14px;
-        font-weight: 500;
-        color: ${props => props.theme.TYPE_DARK_GREY};
-    }
-    .react-datepicker__week {
-        padding: 2px 0;
-    }
-    .react-datepicker__day {
-        color: ${props => props.theme.TYPE_LIGHT_GREY};
-        font-size: 14px;
-        width: 45px;
-        line-height: 2.5;
-        padding: 3px 0 1px;
-    }
-    .react-datepicker__day--disabled {
-        opacity: 0.5;
-    }
-    .react-datepicker__day-name {
-        text-transform: uppercase;
-        color: ${props => props.theme.TYPE_LIGHT_GREY};
-        opacity: 0.5;
-        line-height: 1.3;
-        width: 45px;
-    }
-    .react-datepicker__day--keyboard-selected {
-        background: transparent;
-    }
-    .react-datepicker__day--today {
-        border-radius: 4px;
-        background: ${props => props.theme.BG_GREY};
-    }
-    .react-datepicker__day--today,
-    .react-datepicker__month-text--today,
-    .react-datepicker__quarter-text--today,
-    .react-datepicker__year-text--today {
-        font-weight: 500;
-    }
-    .react-datepicker__navigation {
-        top: 12px;
-        overflow: visible;
-        transform: scale(0.7);
-        border: 7px solid transparent;
-    }
-    .react-datepicker__navigation:after {
-        content: '';
-        background: none;
-        line-height: 1.7;
-        text-align: center;
-        cursor: pointer;
-        position: absolute;
-        top: -5px;
-        padding: 0;
-        border: 5px solid transparent;
-        z-index: 1;
-        height: 10px;
-        width: 10px;
-        text-indent: -999em;
-        overflow: hidden;
-    }
-    .react-datepicker__navigation--previous {
-        left: 50px;
-        border-right-color: ${props => props.theme.TYPE_LIGHT_GREY};
-    }
-    .react-datepicker__navigation--previous:after {
-        left: -2px;
-        border-right-color: ${props => props.theme.BG_SECONDARY};
-    }
-    .react-datepicker__navigation--next {
-        right: 50px;
-        border-left-color: ${props => props.theme.TYPE_LIGHT_GREY};
-    }
-    .react-datepicker__navigation--next:after {
-        right: -2px;
-        border-left-color: ${props => props.theme.BG_SECONDARY};
-    }
-    .react-datepicker__day--outside-month {
-        opacity: 0.5;
-    }
-    .react-datepicker__header:not(.react-datepicker__header--has-time-select) {
-        border-top-right-radius: 0;
-    }
-    .react-datepicker__day--selected,
-    .react-datepicker__day--in-range,
-    .react-datepicker__day--in-selecting-range {
-        background: ${props => props.theme.BG_LIGHT_GREEN};
-        color: ${props => props.theme.TYPE_LIGHT_GREY};
-        border-radius: 0;
-        position: relative;
-    }
-    .react-datepicker__day--in-range {
-        border-radius: 0;
-    }
-    .react-datepicker__day-name,
-    .react-datepicker__day,
-    .react-datepicker__time-name {
-        margin: 0;
-    }
-    .react-datepicker__day:hover,
-    .react-datepicker__month-text:hover,
-    .react-datepicker__quarter-text:hover,
-    .react-datepicker__year-text:hover {
-        background: ${props => props.theme.BG_GREY};
-    }
-    .react-datepicker__day--keyboard-selected:hover,
-    .react-datepicker__day--range-start,
-    .react-datepicker__day--range-end,
-    .react-datepicker__day--in-selecting-range:hover,
-    .react-datepicker__day--in-range:hover,
-    .react-datepicker__day--selected,
-    .react-datepicker__day--selected:hover,
-    .react-datepicker__month-text--selected:hover,
-    .react-datepicker__quarter-text--selected:hover,
-    .react-datepicker__year-text--selected:hover {
-        background: ${props => props.theme.BG_GREEN};
-        color: ${props => props.theme.BG_SECONDARY};
-        box-shadow: 0 0 0px 1px ${props => props.theme.BG_GREEN};
-        border-radius: 4px;
-        z-index: 1;
-        position: relative;
-    }
-    .react-datepicker__month-text--in-selecting-range:hover,
-    .react-datepicker__month-text--in-range:hover,
-    .react-datepicker__quarter-text--in-selecting-range:hover,
-    .react-datepicker__quarter-text--in-range:hover,
-    .react-datepicker__year-text--in-selecting-range:hover,
-    .react-datepicker__year-text--in-range:hover {
-        background: ${props => props.theme.BG_GREEN};
-        color: ${props => props.theme.BG_SECONDARY};
-        border-radius: 0px;
-    }
-    .react-datepicker__input-container input {
-        background: ${props => props.theme.BG_WHITE};
-        padding: 1px 16px 0 16px;
-        color: ${props => props.theme.TYPE_DARK_GREY};
-        border: 2px solid ${props => props.theme.STROKE_GREY};
-        border-radius: 4px;
-        font-weight: 500;
-        height: 48px;
-        font-size: 14px;
+    .rdrCalendarWrapper {
+        box-sizing: border-box;
+        display: inline-flex;
+        flex-direction: column;
+        user-select: none;
+        font-size: 12px;
         width: 100%;
     }
-    .react-datepicker__month-container {
-        background-color: ${props => props.theme.BG_WHITE};
+
+    .rdrDateDisplay {
+        display: flex;
+        justify-content: space-between;
+        margin: 10px;
+    }
+
+    .rdrDateDisplayItem {
+        flex: 1 1;
+        width: 0;
+        text-align: center;
+        color: inherit;
+    }
+
+    .rdrDateDisplayItem + .rdrDateDisplayItem {
+        margin-left: 41px;
+        &:after {
+            content: '-';
+            display: block;
+            position: absolute;
+            left: -25px;
+            top: 7px;
+            font-size: 20px;
+        }
+    }
+
+    .rdrDateDisplayItem input {
+        text-align: inherit;
+        cursor: pointer;
+        height: 2.8em;
+        line-height: 3em;
+        border: 0px;
+        background: transparent;
+        width: 100%;
+        font-size: 14px;
+    }
+
+    .rdrDateInput input {
+        outline: none;
+    }
+
+    .rdrDateDisplayItem input:disabled {
+        cursor: default;
+    }
+
+    .rdrMonthAndYearWrapper {
+        box-sizing: inherit;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 60px;
+        padding-top: 10px;
+    }
+
+    .rdrMonthAndYearPickers {
+        flex: 1 1 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .rdrNextPrevButton {
+        box-sizing: inherit;
+        cursor: pointer;
+        outline: none;
+        display: block;
+        width: 32px;
+        height: 32px;
+        margin: 0 10px;
+        padding: 0;
+        border: 0;
+        border-radius: 5px;
+        background: none;
+    }
+
+    .rdrMonths {
+        display: flex;
+    }
+
+    .rdrMonthsVertical {
+        flex-direction: column;
+    }
+
+    .rdrMonthsHorizontal > div > div > div {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .rdrMonth {
+        width: 100%;
+        padding: 0 0 1em 0;
+    }
+
+    .rdrWeekDays {
+        display: flex;
+        padding: 0;
+    }
+
+    .rdrWeekDay {
+        flex-basis: calc(100% / 7);
+        box-sizing: inherit;
+        text-align: center;
+        line-height: 3em;
+    }
+
+    .rdrDays {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .rdrInfiniteMonths {
+        overflow: auto;
+    }
+
+    .rdrDateRangeWrapper {
+        user-select: none;
+    }
+
+    .rdrDateInput {
+        position: relative;
+    }
+
+    .rdrDateInput .rdrWarning {
+        position: absolute;
+        font-size: 1.3em;
+        line-height: 1em;
+        top: 12px;
+        right: 7px;
+    }
+
+    .rdrDay {
+        box-sizing: inherit;
+        width: calc(100% / 7);
+        position: relative;
+        font: inherit;
+        cursor: pointer;
+        font-size: 14px;
+        background: transparent;
+        user-select: none;
+        border: 0;
+        padding: 0;
+        line-height: 3em;
+        height: 3em;
+        text-align: center;
+    }
+
+    .rdrDayNumber {
+        outline: 0;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 5px;
+        bottom: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+    }
+
+    .rdrSelected,
+    .rdrInRange,
+    .rdrStartEdge,
+    .rdrEndEdge {
+        pointer-events: none;
+        position: absolute;
+        top: 5px;
+        left: 0;
+        right: 0;
+        bottom: 5px;
+    }
+
+    .rdrDayStartPreview,
+    .rdrDayInPreview,
+    .rdrDayEndPreview {
+        position: absolute;
+        top: 3px;
+        left: 0px;
+        right: 0px;
+        bottom: 3px;
+        pointer-events: none;
+        border: 0px solid currentColor;
+        z-index: 5;
+    }
+
+    .rdrDayStartPreview {
+        border-top-width: 1px;
+        border-left-width: 1px;
+        border-bottom-width: 1px;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+        left: 0px;
+    }
+
+    .rdrDateRangePickerWrapper {
+        display: inline-flex;
+        user-select: none;
+    }
+
+    .rdrStaticRanges {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .rdrStaticRange {
+        font-size: inherit;
+    }
+
+    .rdrInputRange {
+        display: flex;
+    }
+
+    .rdrDayDisabled {
+        cursor: not-allowed;
+    }
+
+    .rdrMonthAndYearPickers select {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        padding: 10px;
+        border-radius: 4px;
+        outline: 0;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .rdrMonthPicker,
+    .rdrYearPicker {
+        margin: 0 5px;
+        text-align: center;
+        text-align-last: center;
+        width: 90px;
+    }
+
+    .rdrNextPrevButton i {
+        display: block;
+        width: 0;
+        height: 0;
+        padding: 0;
+        text-align: center;
+        border-style: solid;
+        margin: auto;
+        transform: translate(-3px, 0px);
+    }
+
+    .rdrPprevButton i {
+        border-width: 4px 6px 4px 4px;
+        transform: translate(-3px, 0px);
+    }
+
+    .rdrNextButton i {
+        margin: 0 0 0 10px;
+        border-width: 4px 4px 4px 6px;
+        transform: translate(3px, 0px);
+    }
+
+    .rdrMonth .rdrWeekDays {
+        padding: 0;
+    }
+
+    .rdrMonthName {
+        text-align: left;
+        font-weight: 600;
+        padding: 0.833em;
+    }
+
+    .rdrMonths.rdrMonthsVertical .rdrMonth:first-child .rdrMonthName {
+        display: none;
+    }
+
+    .rdrDay:focus {
+        outline: 0;
+    }
+
+    .rdrSelected {
+        left: 2px;
+        right: 2px;
+        border-radius: 4px;
+    }
+
+    .rdrStartEdge {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+        left: 2px;
+    }
+
+    .rdrDayStartOfMonth .rdrInRange,
+    .rdrDayStartOfMonth .rdrEndEdge,
+    .rdrDayStartOfWeek .rdrInRange,
+    .rdrDayStartOfWeek .rdrEndEdge {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+        left: 2px;
+    }
+
+    .rdrDayEndOfMonth .rdrInRange,
+    .rdrDayEndOfMonth .rdrStartEdge,
+    .rdrDayEndOfWeek .rdrInRange,
+    .rdrDayEndOfWeek .rdrStartEdge {
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+        right: 2px;
+    }
+
+    .rdrDayInPreview {
+        border-top-width: 1px;
+        border-bottom-width: 1px;
+    }
+
+    .rdrDayEndPreview {
+        border-top-width: 1px;
+        border-right-width: 1px;
+        border-bottom-width: 1px;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+        right: 2px;
+        right: 0px;
+    }
+
+    .rdrDayStartOfMonth .rdrDayInPreview,
+    .rdrDayStartOfMonth .rdrDayEndPreview,
+    .rdrDayStartOfWeek .rdrDayInPreview,
+    .rdrDayStartOfWeek .rdrDayEndPreview {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+        border-left-width: 1px;
+        left: 0px;
+    }
+
+    .rdrDayEndOfMonth .rdrDayInPreview,
+    .rdrDayEndOfMonth .rdrDayStartPreview,
+    .rdrDayEndOfWeek .rdrDayInPreview,
+    .rdrDayEndOfWeek .rdrDayStartPreview {
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+        border-right-width: 1px;
+        right: 0px;
+    }
+
+    .rdrCalendarWrapper:not(.rdrDateRangeWrapper) .rdrDayHovered .rdrDayNumber:after {
+        content: '';
+        border: 1px solid currentColor;
+        border-radius: 4px;
+        position: absolute;
+        top: -2px;
+        bottom: -2px;
+        left: 0px;
+        right: 0px;
+        background: transparent;
+    }
+
+    .rdrDayPassive {
+        pointer-events: none;
+    }
+
+    .rdrDayPassive .rdrInRange,
+    .rdrDayPassive .rdrStartEdge,
+    .rdrDayPassive .rdrEndEdge,
+    .rdrDayPassive .rdrSelected,
+    .rdrDayPassive .rdrDayStartPreview,
+    .rdrDayPassive .rdrDayInPreview,
+    .rdrDayPassive .rdrDayEndPreview {
+        display: none;
+    }
+
+    .rdrDayDisabled .rdrInRange,
+    .rdrDayDisabled .rdrStartEdge,
+    .rdrDayDisabled .rdrEndEdge,
+    .rdrDayDisabled .rdrSelected,
+    .rdrDayDisabled .rdrDayStartPreview,
+    .rdrDayDisabled .rdrDayInPreview,
+    .rdrDayDisabled .rdrDayEndPreview {
+        filter: grayscale(100%) opacity(60%);
+    }
+
+    .rdrDayToday .rdrDayNumber span:after {
+        content: '';
+        position: absolute;
+        bottom: 4px;
+        left: 50%;
+        transform: translate(-50%, 0);
+        width: 18px;
+        height: 2px;
+        border-radius: 2px;
     }
 `;
