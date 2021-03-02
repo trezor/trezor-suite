@@ -35,7 +35,7 @@ const MAX_ENTRIES = 200;
 const addToStack = (stack: LogEntry[], entry: LogEntry) => {
     stack.push(entry);
     if (stack.length > MAX_ENTRIES) {
-        stack.pop();
+        stack.shift();
     }
 };
 
