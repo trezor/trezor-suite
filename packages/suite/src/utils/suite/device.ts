@@ -310,3 +310,8 @@ export const isBitcoinOnly = (device: TrezorDevice | Device) => {
         !features.capabilities.includes('Capability_Bitcoin_like')
     );
 };
+
+export const getPhysicalDeviceCount = (devices: Device[]) => {
+    const uniqueIds = new Set(devices.map(d => d.id));
+    return uniqueIds.size;
+};
