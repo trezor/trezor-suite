@@ -129,7 +129,7 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
     Object.keys(wrappedResponse).forEach(key => {
         const tx = wrappedResponse[key];
         if (tx.type !== 'error') {
-            if (formValues.selectedFee === 'custom') {
+            if (formValues.selectedFee === 'custom' && key === 'custom') {
                 // calculated/real feeePerByte may be slightly higher that requested
                 // example: spending dust limit, chained txs in rbf...
                 // override calculated value
