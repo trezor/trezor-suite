@@ -49,13 +49,15 @@ Breaking change should bump major version. Any other change bumps minor version.
 
 ## Changelog
 
-### 1.7 (unreleased)
-Added: 
+### 1.7
+Added:
 - send-raw-transaction
   - networkSymbol: string 
+- device-connect
+  - totalDevices: number
   
 ### 1.6
-Added: 
+Added:
 - suite-ready
   - suiteVersion: string | "" 
 - device-connect

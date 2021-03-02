@@ -88,6 +88,8 @@ export type AnalyticsEvent =
               backup_type: string;
               // added in 1.6
               isBitcoinOnly: boolean;
+              // added in 1.7
+              totalDevices: number;
           };
       }
     | {
