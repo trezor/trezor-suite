@@ -26,10 +26,11 @@ export const calculateTotal = (amount: string, fee: string): string => {
 export const calculateMax = (availableBalance: string, fee: string): string => {
     try {
         const max = new BigNumber(availableBalance).minus(fee);
-        if (max.isNaN() || max.isLessThan(0)) {
+        if (max.isNaN()) {
             console.error('calculateMax: Amount is not a number', availableBalance, fee);
             return '0';
         }
+        if (max.isLessThan(0)) return '0';
         return max.toFixed();
     } catch (error) {
         console.error('calculateMax: error', error);
