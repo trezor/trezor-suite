@@ -35,7 +35,12 @@ suite-web build beta:
 suite-web build stable:
   stage: build
   only:
-    <<: *run_everything_rules
+    refs:
+      - develop
+      - releases
+      - schedules
+      - /^release\//
+      - codesign
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
