@@ -1,6 +1,6 @@
 {
     "name": "@trezor/suite-storage",
-    "version": "21.3.0",
+    "version": "21.4.0",
     "author": "Trezor <info@trezor.io>",
     "private": true,
     "keywords": [

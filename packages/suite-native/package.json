@@ -1,6 +1,6 @@
 {
     "name": "@trezor/suite-native",
-    "version": "21.3.0",
+    "version": "21.4.0",
     "private": true,
     "scripts": {
         "dev:ios": "run-p start run-ios",
@@ -18,7 +18,7 @@
         "build:android": "rimraf packages/suite-native/android/app/build && yarn workspace @trezor/suite-native bundle:android && cd ./android && ./gradlew bundleRelease -x bundleReleaseJsAndAssets --no-build-cache && ./gradlew assembleRelease -x bundleReleaseJsAndAssets --no-build-cache"
     },
     "dependencies": {
-        "@trezor/suite-storage": "21.3.0",
+        "@trezor/suite-storage": "21.4.0",
         "react": "17.0.1",
         "react-native": "0.63.4",
         "react-native-gesture-handler": "^1.5.2",
