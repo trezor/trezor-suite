@@ -39,7 +39,7 @@ increase the `develop` version to `YY.(MM+1).0` indicating we are already brewin
 
 You can use `release-it` to semi-automate the version bumping. You need to:
 1. Modify the version in the root `package.json`.
-2. Run `release-it --ci --config=ci/release-it.yml --disable-metrics --no-increment` which will propagate the version into workspaces' `package.json`.
+2. Run `release-it --ci --config=ci/release-it.yml --disable-metrics --no-increment --dry-run` which will propagate the version into workspaces' `package.json`.
 3. Manually modify dependencies in:
 
 - packages/suite-native/package.json
