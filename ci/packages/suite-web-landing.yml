@@ -1,10 +1,3 @@
-.run_everything_rules: &run_everything_rules
-  refs:
-    - develop
-    - releases
-    - schedules
-    - /^release\//
-
 suite-web-landing build dev:
   stage: build
   script:
@@ -19,7 +12,12 @@ suite-web-landing build dev:
 suite-web-landing build stable:
   stage: build
   only:
-    <<: *run_everything_rules
+    refs:
+      - develop
+      - releases
+      - schedules
+      - /^release\//
+      - codesign
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
@@ -29,24 +27,6 @@ suite-web-landing build stable:
     paths:
       - packages/suite-web-landing/scripts/s3sync.sh
       - packages/suite-web-landing/build
-
-suite-web-landing deploy staging-suite:
-  stage: deploy to staging
-  only:
-    <<: *run_everything_rules
-  needs:
-    - suite-web-landing build stable
-  environment:
-    name: ${CI_BUILD_REF_NAME}-staging-suite
-    url: ${STAGING_SUITE_SERVER_URL}
-  before_script: []
-  when: manual
-  script:
-    - source ${STAGING_SUITE_DEPLOY_KEYFILE}
-    - cd packages/suite-web-landing
-    - ./scripts/s3sync.sh staging-suite
-  tags:
-    - deploy
 
 suite-web-landing deploy dev:
   stage: deploy to dev

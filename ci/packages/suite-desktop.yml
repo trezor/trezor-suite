@@ -68,6 +68,11 @@ suite-desktop build mac codesign:
     platform: mac
   <<: *build
   <<: *build_nix
+  artifacts:
+    paths:
+      - ${artifact}
+      - latest*.yml
+    expire_in: 7 days
 
 suite-desktop build linux:
   only:
@@ -97,6 +102,11 @@ suite-desktop build linux codesign:
     platform: linux
   <<: *build
   <<: *build_nix
+  artifacts:
+    paths:
+      - ${artifact}
+      - latest*.yml
+    expire_in: 7 days
 
 suite-desktop build windows:
   only:
@@ -129,6 +139,11 @@ suite-desktop build windows codesign:
     platform: win
   <<: *build
   <<: *build_nix
+  artifacts:
+    paths:
+      - ${artifact}
+      - latest*.yml
+    expire_in: 7 days
 
 suite-desktop deploy dev:
   stage: deploy to dev

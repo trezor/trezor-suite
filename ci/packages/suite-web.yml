@@ -18,6 +18,7 @@ suite-web build dev:
     paths:
       - packages/suite-web/build
 
+# to be removed after beta-wallet is officially killed
 suite-web build beta:
   stage: build
   only:

@@ -1,7 +1,0 @@
-release commit messages:
-  stage: misc
-  only:
-    refs:
-      - /^release\//
-  script:
-    - ci/scripts/check_release_commit_messages.sh

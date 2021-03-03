@@ -50,6 +50,7 @@ landing-page deploy dev:
   tags:
     - deploy
 
+# to be removed after beta-wallet is officially killed
 landing-page deploy staging-wallet:
   stage: deploy to staging
   only:
