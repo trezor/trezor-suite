@@ -37,13 +37,10 @@ increase the `develop` version to `YY.(MM+1).0` indicating we are already brewin
 
 ## Version bumping
 
-You can use `release-it` to semi-automate the version bumping. You need to:
-1. Modify the version in the root `package.json`.
-2. Run `release-it --ci --config=ci/release-it.yml --disable-metrics --no-increment --dry-run` which will propagate the version into workspaces' `package.json`.
-3. Manually modify dependencies in:
+Do not use `release-it` to semi-automate the version bumping. It is very aggressive and it may delete/modify some Github releases.
+
+Versions you need to modify manually for now besides all the package.json files:
 
 - packages/suite-native/package.json
 - packages/suite-web/package.json
 - packages/suite/package.json
-
-It seems release-it can't do that just yet.
