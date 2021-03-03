@@ -428,7 +428,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
 
 export const init = () => async (dispatch: Dispatch) => {
     // should be called only once
-    if (!db.onBlocked && !db.onBlocking) {
+    if (await isDBAccessible()) {
         // set callbacks that are fired when upgrading the db is blocked because of multiple instances are running
         db.onBlocked = () => dispatch(suiteActions.setDbError('blocked'));
         db.onBlocking = () => dispatch(suiteActions.setDbError('blocking'));
