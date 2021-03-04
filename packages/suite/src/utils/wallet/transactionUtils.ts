@@ -685,7 +685,8 @@ export const simpleSearchTransactions = (
     // Searching for an amount (without operator)
     if (!Number.isNaN(search)) {
         const foundTxsForNumber = transactions.flatMap(t => {
-            const targetAmount = getTargetAmount(t.targets[0], t);
+            const targetAmount =
+                t.targets[0] !== undefined ? getTargetAmount(t.targets[0], t) : t.amount;
             if (!targetAmount || !targetAmount.includes(search)) {
                 return [];
             }
