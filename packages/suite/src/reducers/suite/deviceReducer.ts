@@ -253,13 +253,15 @@ const changePassphraseMode = (
  * @param {string} state
  * @returns
  */
-const authDevice = (draft: State, device: TrezorDevice, state: string) => {
+const authDevice = (draft: State, device: TrezorDevice, state: string, walletNumber: number) => {
     // only acquired devices
     if (!device || !device.features) return;
     const index = deviceUtils.findInstanceIndex(draft, device);
     if (!draft[index]) return;
     // update state
     draft[index].state = state;
+    draft[index].walletNumber = walletNumber;
+
     delete draft[index].authFailed;
 };
 
@@ -292,10 +294,6 @@ const authConfirm = (draft: State, device: TrezorDevice, success: boolean) => {
     // update state
     draft[index].authConfirm = !success;
     draft[index].available = success;
-
-    if (!draft[index].walletNumber) {
-        draft[index].walletNumber = deviceUtils.getNewWalletNumber(draft, draft[index]);
-    }
 };
 
 /**
@@ -431,7 +429,7 @@ const deviceReducer = (state: State = initialState, action: Action): State => {
                 changePassphraseMode(draft, action.payload, action.hidden, action.alwaysOnDevice);
                 break;
             case SUITE.AUTH_DEVICE:
-                authDevice(draft, action.payload, action.state);
+                authDevice(draft, action.payload, action.state, action.walletNumber);
                 break;
             case SUITE.AUTH_FAILED:
                 authFailed(draft, action.payload);

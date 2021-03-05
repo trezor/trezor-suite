@@ -32,7 +32,7 @@ export type SuiteAction =
           hidden: boolean;
           alwaysOnDevice?: boolean;
       }
-    | { type: typeof SUITE.AUTH_DEVICE; payload: TrezorDevice; state: string }
+    | { type: typeof SUITE.AUTH_DEVICE; payload: TrezorDevice; state: string; walletNumber: number }
     | { type: typeof SUITE.AUTH_FAILED; payload: TrezorDevice }
     | { type: typeof SUITE.REQUEST_AUTH_CONFIRM }
     | { type: typeof SUITE.RECEIVE_AUTH_CONFIRM; payload: TrezorDevice; success: boolean }
@@ -268,7 +268,6 @@ export const createDeviceInstance = (device: TrezorDevice, useEmptyPassphrase = 
             ...device,
             useEmptyPassphrase,
             instance: deviceUtils.getNewInstanceNumber(getState().devices, device),
-            walletNumber: deviceUtils.getNewWalletNumber(getState().devices, device),
         },
     });
 };
@@ -470,6 +469,7 @@ export const authorizeDevice = () => async (
             type: SUITE.AUTH_DEVICE,
             payload: device,
             state,
+            walletNumber: deviceUtils.getNewWalletNumber(getState().devices, device),
         });
         return true;
     }
