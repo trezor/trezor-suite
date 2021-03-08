@@ -18,7 +18,7 @@ build({
     entryPoints: ['app.ts', 'preload.ts', ...modules].map(f => path.join(electronSource, f)),
     platform: 'node',
     bundle: true,
-    target: 'node12.18.2', // Electron 11
+    target: 'node14.16.0', // Electron 12
     external: Object.keys({
         ...pkg.dependencies,
         ...pkg.devDependencies,
