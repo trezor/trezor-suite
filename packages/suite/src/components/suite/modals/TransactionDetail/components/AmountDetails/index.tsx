@@ -191,7 +191,15 @@ const AmountDetails = ({ tx, isTestnet }: Props) => {
                             />
                         )
                     }
-                    fourthColumn={showFiat && <FiatValue amount={amount} symbol={assetSymbol} />}
+                    fourthColumn={
+                        showFiat && (
+                            <FiatValue
+                                amount={amount}
+                                symbol={assetSymbol}
+                                tokenAddress={tokenTransfer?.address}
+                            />
+                        )
+                    }
                     color="light"
                 />
                 {/* TX FEE */}
