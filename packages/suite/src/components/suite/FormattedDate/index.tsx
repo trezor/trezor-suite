@@ -31,8 +31,8 @@ const defaultDateFormat = {
 const defaultTimeFormat = {
     hour: 'numeric',
     minute: 'numeric',
-    hour12: false,
-};
+    hourCycle: 'h23',
+} as const;
 
 const FormattedDate = (props: Props) => {
     return (
