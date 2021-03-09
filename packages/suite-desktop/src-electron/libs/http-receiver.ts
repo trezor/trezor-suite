@@ -2,6 +2,7 @@ import * as http from 'http';
 import * as net from 'net';
 import * as url from 'url';
 import { EventEmitter } from 'events';
+import { HTTP_ORIGINS_DEFAULT } from './constants';
 
 export type RequiredKey<M, K extends keyof M> = Omit<M, K> & Required<Pick<M, K>>;
 
@@ -10,7 +11,6 @@ type Request = RequiredKey<http.IncomingMessage, 'url'>;
 type TemplateOptions = {
     title?: string;
 };
-
 /**
  * Events that may be emitted or listened to by HttpReceiver
  */
@@ -37,6 +37,7 @@ export class HttpReceiver extends EventEmitter {
     routes: {
         pathname: string;
         handler: (request: Request, response: http.ServerResponse) => void;
+        origins?: string[];
     }[];
     private logger: ILogger;
 
@@ -48,12 +49,36 @@ export class HttpReceiver extends EventEmitter {
         super();
 
         this.routes = [
-            { pathname: '/oauth', handler: this.oauthHandler },
-            { pathname: '/buy-redirect', handler: this.buyHandler },
-            { pathname: '/sell-redirect', handler: this.sellHandler },
-            { pathname: '/spend-iframe', handler: this.spendIframeHandler },
-            { pathname: '/spend-handle-message', handler: this.spendHandleMessage },
-            { pathname: '/buy-post', handler: this.buyPostSubmitHandler },
+            {
+                pathname: '/oauth',
+                handler: this.oauthHandler,
+                origins: [''], // No referer is sent by Google and Dropbox
+            },
+            {
+                pathname: '/buy-redirect',
+                handler: this.buyHandler,
+                origins: [''], // No referer
+            },
+            {
+                pathname: '/buy-post',
+                handler: this.buyPostSubmitHandler,
+                origins: [''], // No referer
+            },
+            {
+                pathname: '/sell-redirect',
+                handler: this.sellHandler,
+                origins: [''], // No referer
+            },
+            {
+                pathname: '/spend-iframe',
+                handler: this.spendIframeHandler,
+                origins: [''], // Opened in a new tab, no referer
+            },
+            {
+                pathname: '/spend-handle-message',
+                handler: this.spendHandleMessage,
+                // Default referers
+            },
             /**
              * Register more routes here. Each route must have pathname and handler function.
              */
@@ -117,17 +142,28 @@ export class HttpReceiver extends EventEmitter {
             return;
         }
 
-        const { pathname } = url.parse(request.url, true);
-
         // only method GET is supported
         if (request.method !== 'GET') {
             this.logger.warn('http-receiver', `Incorrect method used (${request.method})`);
             return;
         }
 
+        const { pathname } = url.parse(request.url, true);
         const route = this.routes.find(r => r.pathname === pathname);
         if (!route) {
             this.logger.warn('http-receiver', `Route not found for ${pathname}`);
+            return;
+        }
+
+        const { referer } = request.headers;
+        const origins = route.origins ?? HTTP_ORIGINS_DEFAULT;
+        if (!this.isOriginAllowed(origins, referer)) {
+            this.logger.warn('http-receiver', `Origin rejected for ${pathname}`);
+            this.logger.warn('http-receiver', `- Received: '${referer}'`);
+            this.logger.warn(
+                'http-receiver',
+                `- Allowed origins: ${origins.map(o => `'${o}'`).join(', ')}`,
+            );
             return;
         }
 
@@ -136,6 +172,31 @@ export class HttpReceiver extends EventEmitter {
         response.setHeader('Content-Type', 'text/html; charset=UTF-8');
         // original type has url as optional, Request alias makes it required.
         return route.handler(request as Request, response);
+    };
+
+    private isOriginAllowed = (origins: string[], referer?: string) => {
+        // Allow all origins
+        if (origins.includes('*')) {
+            return true;
+        }
+
+        // If referer is not define, check if empty referers are allowed
+        if (referer === undefined) {
+            return origins.includes('');
+        }
+
+        // Domain of referer has to be in the allowed origins for that endpoint
+        const domain = new URL(referer).hostname;
+        return (
+            origins.findIndex(origin => {
+                // Wildcard for subdomains
+                if (origin.startsWith('*')) {
+                    return domain.endsWith(origin.substr(1));
+                }
+
+                return origin.includes(domain);
+            }) > -1
+        );
     };
 
     // TODO: add option to auto-close after X seconds. Possible?
