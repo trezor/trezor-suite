@@ -4,8 +4,10 @@
   "description": "Trezor Link for browser",
   "main": "lib/index.js",
   "scripts": {
-    "build": "make build",
-    "check": "make check"
+    "type-check": "flow check src",
+    "lint": "eslint src",
+    "build:lib": "./scripts/build-lib.sh",
+    "publish:lib": "./scripts/publish-lib.sh"
   },
   "repository": "https://github.com/trezor/trezor-link.git",
   "author": "Karel Bílek <kb@karelbilek.com>",
