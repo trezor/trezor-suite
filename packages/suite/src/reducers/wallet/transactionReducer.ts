@@ -2,7 +2,7 @@ import produce from 'immer';
 import { AccountTransaction, AccountUtxo, AccountAddress } from 'trezor-connect';
 import { ACCOUNT, TRANSACTION, FIAT_RATES } from '@wallet-actions/constants';
 import { getAccountKey } from '@wallet-utils/accountUtils';
-import { findTransaction, enhanceTransaction } from '@wallet-utils/transactionUtils';
+import { findTransaction } from '@wallet-utils/transactionUtils';
 import { SETTINGS } from '@suite-config';
 import { Account, WalletAction, Network } from '@wallet-types';
 import { Action } from '@suite-types';
@@ -80,7 +80,12 @@ const replace = (draft: State, key: string, txid: string, tx: WalletAccountTrans
     if (accountTxs[index]) accountTxs[index] = tx;
 };
 
-const add = (draft: State, transactions: AccountTransaction[], account: Account, page?: number) => {
+const add = (
+    draft: State,
+    transactions: WalletAccountTransaction[],
+    account: Account,
+    page?: number,
+) => {
     if (transactions.length < 1) return;
     const accountHash = getAccountKey(account.descriptor, account.symbol, account.deviceState);
     initializeAccount(draft, accountHash);
@@ -88,7 +93,6 @@ const add = (draft: State, transactions: AccountTransaction[], account: Account,
     if (!accountTxs) return;
 
     transactions.forEach((tx, i) => {
-        const enhancedTx = enhanceTransaction(tx, account);
         // first we need to make sure that tx is not undefined, then check if txid matches
         const existingTx = findTransaction(tx.txid, accountTxs);
         if (!existingTx) {
@@ -96,21 +100,21 @@ const add = (draft: State, transactions: AccountTransaction[], account: Account,
             if (page) {
                 // insert a tx object at correct index
                 const txIndex = (page - 1) * SETTINGS.TXS_PER_PAGE + i;
-                accountTxs[txIndex] = enhancedTx;
+                accountTxs[txIndex] = tx;
             } else {
                 // no page arg, insert the tx at the beginning of the array
-                accountTxs.unshift(enhancedTx);
+                accountTxs.unshift(tx);
             }
         } else {
             // update the transaction if conditions are met
             const existingTxIndex = accountTxs.findIndex(t => t && t.txid === existingTx.txid);
             // eslint-disable-next-line no-lonely-if
             if (
-                (!existingTx.blockHeight && enhancedTx.blockHeight) ||
-                (!existingTx.blockTime && enhancedTx.blockTime)
+                (!existingTx.blockHeight && tx.blockHeight) ||
+                (!existingTx.blockTime && tx.blockTime)
             ) {
                 // pending tx got confirmed (blockHeight changed from undefined/0 to a number > 0)
-                accountTxs[existingTxIndex] = { ...enhancedTx };
+                accountTxs[existingTxIndex] = { ...tx };
             }
         }
     });

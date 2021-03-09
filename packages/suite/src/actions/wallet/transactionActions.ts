@@ -5,7 +5,7 @@ import {
     formatNetworkAmount,
     getRbfPendingAccount,
 } from '@wallet-utils/accountUtils';
-import { findTransactions } from '@wallet-utils/transactionUtils';
+import { enhanceTransaction, findTransactions } from '@wallet-utils/transactionUtils';
 import * as accountActions from '@wallet-actions/accountActions';
 import { TRANSACTION } from '@wallet-actions/constants';
 import { SETTINGS } from '@suite-config';
@@ -16,7 +16,7 @@ import { formatData } from '@wallet-utils/exportTransactions';
 export type TransactionAction =
     | {
           type: typeof TRANSACTION.ADD;
-          transactions: AccountTransaction[];
+          transactions: WalletAccountTransaction[];
           account: Account;
           page?: number;
       }
@@ -40,7 +40,7 @@ export const add = (
     page?: number,
 ): TransactionAction => ({
     type: TRANSACTION.ADD,
-    transactions,
+    transactions: transactions.map(tx => enhanceTransaction(tx, account)),
     account,
     page,
 });
@@ -177,12 +177,7 @@ export const fetchTransactions = (
         dispatch({
             type: TRANSACTION.FETCH_SUCCESS,
         });
-        dispatch({
-            type: TRANSACTION.ADD,
-            account: updatedAccount,
-            transactions,
-            page,
-        });
+        dispatch(add(transactions, updatedAccount, page));
         // updates the marker/page object for the account
         dispatch(accountActions.update(account, result.payload));
 
