@@ -10,7 +10,7 @@ import { Loading, Translation, CheckItem, ExternalLink, Image, Modal } from '@su
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { InjectedModalApplicationProps, AppState, Dispatch } from '@suite-types';
 import { WordCount } from '@recovery-types';
-import { useDevice } from '@suite-hooks';
+import { useDevice, useAnalytics } from '@suite-hooks';
 import { URLS } from '@suite-constants';
 
 const Wrapper = styled.div`
@@ -123,10 +123,20 @@ const Recovery = ({
         setWordsCount(count);
         setStatus('select-recovery-type');
     };
+    const analytics = useAnalytics();
 
     const onSetRecoveryType = (type: boolean) => {
         setAdvancedRecovery(type);
         checkSeed();
+    };
+
+    const reportBackupCompleteAnalytics = (success: boolean) => {
+        analytics.report({
+            type: 'dry-run-completed',
+            payload: {
+                success,
+            },
+        });
     };
 
     const statesInProgressBar =
@@ -305,7 +315,12 @@ const Recovery = ({
                         </StyledP>
                         <StyledImage image="UNI_SUCCESS" />
                         <Buttons>
-                            <CloseButton onClick={() => closeModalApp()} />
+                            <CloseButton
+                                onClick={() => {
+                                    closeModalApp();
+                                    reportBackupCompleteAnalytics(true);
+                                }}
+                            />
                         </Buttons>
                     </>
                 )}
@@ -317,7 +332,12 @@ const Recovery = ({
                         </H2>
                         <Error error={recovery.error} />
                         <Buttons>
-                            <CloseButton onClick={() => closeModalApp()} />
+                            <CloseButton
+                                onClick={() => {
+                                    closeModalApp();
+                                    reportBackupCompleteAnalytics(false);
+                                }}
+                            />
                         </Buttons>
                     </>
                 )}

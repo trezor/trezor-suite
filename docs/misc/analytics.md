@@ -47,7 +47,11 @@ Breaking change should bump major version. Any other change bumps minor version.
 
 ## Changelog
 
-### 1.6 (unreleased)
+### 1.7 (unreleased)
+Added:
+- dry-run-completed
+  - success: boolean
+### 1.6
 Added: 
 - suite-ready
   - suiteVersion: string | "" 

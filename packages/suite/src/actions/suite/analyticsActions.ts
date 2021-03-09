@@ -322,6 +322,13 @@ export type AnalyticsEvent =
               networkSymbol: Account['symbol'];
               addedNth: number; // if the user added 1st, 2nd,... token in his account
           };
+      }
+    | {
+          // added in 1.7
+          type: 'dry-run-completed';
+          payload: {
+              success: boolean;
+          };
       };
 
 const getUrl = () => {
