@@ -3,6 +3,7 @@ import Document, { DocumentContext, Html, Head, Main, NextScript } from 'next/do
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { ServerStyleSheet } from 'styled-components';
 import { isEnabled } from '@suite-utils/features';
+import { TOR_DOMAIN } from '@suite-constants/urls';
 
 const isOnionLocation = isEnabled('ONION_LOCATION_META');
 
@@ -56,7 +57,7 @@ export default class MyDocument extends Document {
                     {isOnionLocation && (
                         <meta
                             httpEquiv="onion-location"
-                            content="http://suite.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/web"
+                            content={`http://suite.${TOR_DOMAIN}/web`}
                         />
                     )}
                 </Head>

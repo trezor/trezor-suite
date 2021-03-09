@@ -1,3 +1,5 @@
+import { TOR_DOMAIN } from '@suite-constants/urls';
+
 export const PROTOCOL = 'file';
 
 // General modules (both dev & prod)
@@ -24,3 +26,14 @@ export const MODULES_PROD = ['csp', 'file-protocol', 'auto-updater'];
 
 // Modules only used in dev mode
 export const MODULES_DEV = ['dev-tools'];
+
+// HTTP server default origins
+export const HTTP_ORIGINS_DEFAULT = [
+    '127.0.0.1',
+    'localhost',
+    'trezor.io',
+    '*.trezor.io',
+    '*.sldev.cz',
+    TOR_DOMAIN,
+    `*.${TOR_DOMAIN}`,
+];

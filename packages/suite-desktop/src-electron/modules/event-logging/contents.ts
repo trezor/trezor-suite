@@ -1,3 +1,5 @@
+import isDev from 'electron-is-dev';
+
 const init = ({ mainWindow }: Dependencies) => {
     const { logger } = global;
 
@@ -41,6 +43,9 @@ const init = ({ mainWindow }: Dependencies) => {
     });
 
     mainWindow.webContents.on('console-message', (_, level, message, line, sourceId) => {
+        // Don't log console log when in dev because dev tools are already open
+        if (isDev) return;
+
         const msg = `${message} - ${sourceId}:${line}`;
         switch (level) {
             case 0:
