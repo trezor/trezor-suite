@@ -2,11 +2,11 @@
 src
 babel.config.js
 .eslintrc
+.eslintignore
 .flowconfig
 .gitignore
 .gitmodules
 .travis.yml
-Makefile
 
 # Dependency directory
 node_modules
