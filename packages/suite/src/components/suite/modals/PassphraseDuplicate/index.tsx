@@ -35,6 +35,7 @@ const PassphraseDuplicate = ({ device, duplicate }: Props) => {
             heading={<Translation id="TR_WALLET_DUPLICATE_TITLE" />}
             description={<Translation id="TR_WALLET_DUPLICATE_DESC" />}
             data-test="@passphrase-duplicate"
+            centerContent
             bottomBar={
                 <Actions>
                     <Button
@@ -56,7 +57,7 @@ const PassphraseDuplicate = ({ device, duplicate }: Props) => {
                 </Actions>
             }
         >
-            <StyledImage image="UNI_WARNING" />
+            <StyledImage image="UNI_WARNING" width="160" />
         </Modal>
     );
 };

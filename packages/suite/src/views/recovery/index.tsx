@@ -303,7 +303,7 @@ const Recovery = ({
                         <StyledP>
                             <Translation id="TR_SEED_CHECK_SUCCESS_DESC" />
                         </StyledP>
-                        <StyledImage image="UNI_SUCCESS" />
+                        <StyledImage image="UNI_SUCCESS" width="160" />
                         <Buttons>
                             <CloseButton onClick={() => closeModalApp()} />
                         </Buttons>
