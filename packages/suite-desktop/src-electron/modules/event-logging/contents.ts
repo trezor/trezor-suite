@@ -13,7 +13,7 @@ const init = ({ mainWindow }: Dependencies) => {
     });
 
     mainWindow.webContents.on('render-process-gone', (_, { reason }) => {
-        logger.error('content', `Render process gone (reason: ${reason}`);
+        logger.error('content', `Render process gone (reason: ${reason})`);
     });
 
     let unresponsiveStart = 0;

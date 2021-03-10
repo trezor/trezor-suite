@@ -7,6 +7,7 @@ export const MODULES = [
     'event-logging/app',
     'event-logging/contents',
     // Standard modules
+    'crash-recover',
     'menu',
     'shortcuts',
     'request-filter',
