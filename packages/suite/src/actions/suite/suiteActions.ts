@@ -542,7 +542,9 @@ export const switchDuplicatedDevice = (device: TrezorDevice, duplicate: TrezorDe
     });
 
     // switch to existing wallet
-    dispatch(selectDevice(duplicate));
+    // NOTE: await is important. otherwise `forgetDevice` action will be resolved first leading to race condition:
+    // forgetDevice > suiteMiddleware > handleDeviceDisconnect > selectDevice (first available)
+    await dispatch(selectDevice(duplicate));
     // remove stateless instance
     dispatch(forgetDevice(device));
 };
