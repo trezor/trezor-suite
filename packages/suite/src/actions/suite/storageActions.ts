@@ -244,7 +244,7 @@ export const saveSuiteSettings = () => async (_dispatch: Dispatch, getState: Get
         {
             settings: suite.settings,
             flags: {
-                initialRun: suite.flags.initialRun,
+                initialRun: true,
                 // is not saved at the moment, but probably will be in future. now we always
                 // initialWebRun: suite.flag.initialWebRun,
                 // TODO: maybe spread all flags and set flags that we don't want to save to undefined?
