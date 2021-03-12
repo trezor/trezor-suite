@@ -872,6 +872,10 @@ const definedMessages = defineMessages({
         description: 'Shows advanced coin settings',
         id: 'TR_ADVANCED_SETTINGS',
     },
+    TR_ONBOARDING_ALLOW_ANALYTICS: {
+        defaultMessage: 'Allow anonymous data storing',
+        id: 'TR_ONBOARDING_ALLOW_ANALYTICS',
+    },
     TR_ALLOW_ANALYTICS: {
         defaultMessage: 'Allow anonymous data storing',
         id: 'TR_ALLOW_ANALYTICS',
@@ -1165,6 +1169,10 @@ const definedMessages = defineMessages({
     TR_CONTINUE_SETUP: {
         defaultMessage: 'Continue setup',
         id: 'TR_CONTINUE_SETUP',
+    },
+    TR_ONBOARDING_START_CTA: {
+        defaultMessage: 'Setup Trezor',
+        id: 'TR_ONBOARDING_START_CTA',
     },
     TR_COPY_TO_CLIPBOARD: {
         defaultMessage: 'Copy to clipboard',
@@ -1628,6 +1636,15 @@ const definedMessages = defineMessages({
     TR_HELP_TREZOR_SUITE_TEXT_2: {
         defaultMessage: 'Trezor Suite does NOT track any balance-related or personal data.',
         id: 'TR_HELP_TREZOR_SUITE_TEXT_2',
+    },
+    TR_ONBOARDING_DATA_COLLECTION_HEADING: {
+        id: 'TR_ONBOARDING_DATA_COLLECTION_HEADING',
+        defaultMessage: 'Anonymous data collection',
+    },
+    TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION: {
+        id: 'TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION',
+        defaultMessage:
+            'All data is anonymous and only for product development purposes. Read more in <a>Terms & Conditions</a>.',
     },
     TR_HIDE_ADVANCED_OPTIONS: {
         defaultMessage: 'Hide advanced options',
@@ -5503,6 +5520,115 @@ const definedMessages = defineMessages({
     TR_WAIT_FOR_REBOOT_WEBUSB_DESCRIPTION: {
         id: 'TR_WAIT_FOR_REBOOT_WEBUSB_DESCRIPTION',
         defaultMessage: 'Please wait for Trezor to reboot and pair the device again.',
+    },
+    TR_ONBOARDING_STEP_FIRMWARE: {
+        id: 'TR_ONBOARDING_STEP_FIRMWARE',
+        defaultMessage: 'Firmware',
+    },
+    TR_ONBOARDING_STEP_WALLET: {
+        id: 'TR_ONBOARDING_STEP_WALLET',
+        defaultMessage: 'Wallet',
+    },
+    TR_ONBOARDING_STEP_PIN: {
+        id: 'TR_ONBOARDING_STEP_PIN',
+        defaultMessage: 'PIN',
+    },
+    TR_ONBOARDING_STEP_COINS: {
+        id: 'TR_ONBOARDING_STEP_COINS',
+        defaultMessage: 'Coins',
+    },
+    TR_ONBOARDING_CURRENT_VERSION: {
+        id: 'TR_ONBOARDING_CURRENT_VERSION',
+        defaultMessage: 'Current Version',
+    },
+    TR_ONBOARDING_NEW_VERSION: {
+        id: 'TR_ONBOARDING_NEW_VERSION',
+        defaultMessage: 'New Version',
+    },
+    TR_PIN_MATRIX_DISPLAYED_ON_TREZOR: {
+        id: 'TR_PIN_MATRIX_DISPLAYED_ON_TREZOR',
+        defaultMessage: 'The numbers are displayed on your Trezor',
+    },
+    TR_DEVICE_CONNECTED: {
+        id: 'TR_DEVICE_CONNECTED',
+        defaultMessage: 'Device connected',
+    },
+    TR_DEVICE_CONNECTED_WRONG_STATE: {
+        id: 'TR_DEVICE_CONNECTED_WRONG_STATE',
+        defaultMessage: 'Device detected, but there is a problem ',
+    },
+    TR_ONBOARDING_DEVICE_CHECK: {
+        id: 'TR_ONBOARDING_DEVICE_CHECK',
+        defaultMessage: 'Security check',
+        description:
+            'Heading for an onboarding step where we ask the user to verify authenticity of his device',
+    },
+    TR_ONBOARDING_DEVICE_CHECK_1: {
+        id: 'TR_ONBOARDING_DEVICE_CHECK_1',
+        defaultMessage: 'My <strong>hologram</strong> looked prtty much incredible',
+    },
+    TR_ONBOARDING_DEVICE_CHECK_2: {
+        id: 'TR_ONBOARDING_DEVICE_CHECK_2',
+        defaultMessage: 'I bought from the official shop or a trusted reseller.',
+    },
+    TR_ONBOARDING_DEVICE_CHECK_3: {
+        id: 'TR_ONBOARDING_DEVICE_CHECK_3',
+        defaultMessage: 'Package wasn’t tampered with.',
+    },
+    TR_HOLOGRAM_WARNING_BANNER: {
+        defaultMessage: 'Does your hologram looks suspicious? <a>Contact us</a>.',
+        id: 'TR_HOLOGRAM_WARNING_BANNER',
+    },
+    TR_ONBOARDING_COINS_STEP: {
+        id: 'TR_ONBOARDING_COINS_STEP',
+        defaultMessage: 'Activate Coins',
+    },
+    TR_ONBOARDING_COINS_STEP_DESCRIPTION: {
+        id: 'TR_ONBOARDING_COINS_STEP_DESCRIPTION',
+        defaultMessage:
+            'We preselected our 3 most popular, for which we’ll create accounts. U can always enable more later.',
+    },
+    TR_WHAT_DATA_WE_COLLECT: {
+        id: 'TR_WHAT_DATA_WE_COLLECT',
+        defaultMessage: 'What data we collect?',
+    },
+    TR_ONBOARDING_TROUBLESHOOTING_FAILED: {
+        id: 'TR_ONBOARDING_TROUBLESHOOTING_FAILED',
+        defaultMessage: "Didn't work?",
+        decription:
+            "If troubleshooting steps for connecting a device in Onboarding didn't do the trick there is at the end link to contact a support",
+    },
+    TR_STILL_DONT_SEE_YOUR_TREZOR: {
+        id: 'TR_STILL_DONT_SEE_YOUR_TREZOR',
+        defaultMessage: 'Still don’t see your Trezor?',
+    },
+    TR_ONBOARDING_CUSTOM_BACKEND_HEADING: {
+        id: 'TR_ONBOARDING_CUSTOM_BACKEND_HEADING',
+        defaultMessage: 'Set custom backend',
+    },
+    TR_ONBOARDING_CUSTOM_BACKEND_DESCRIPTION: {
+        id: 'TR_ONBOARDING_CUSTOM_BACKEND_DESCRIPTION',
+        defaultMessage: 'You can set custom backend for ...',
+    },
+    TR_ONBOARDING_TOR_HEADING: {
+        id: 'TR_ONBOARDING_CUSTOM_BACKEND_HEADING',
+        defaultMessage: 'Setup TOR',
+    },
+    TR_ONBOARDING_TOR_DESCRIPTION: {
+        id: 'TR_ONBOARDING_CUSTOM_BACKEND_DESCRIPTION',
+        defaultMessage: 'You can setup TOR ...',
+    },
+    TR_ONBOARDING_ADVANCED: {
+        id: 'TR_ONBOARDING_ADVANCED',
+        defaultMessage: 'Advanced',
+    },
+    TR_ONBOARDING_DOWNLOAD_DESKTOP_APP: {
+        id: 'TR_ONBOARDING_DOWNLOAD_DESKTOP_APP',
+        defaultMessage: 'Download Desktop App',
+    },
+    TR_ONBOARDING_WELCOME_HEADING: {
+        id: 'TR_ONBOARDING_WELCOME_HEADING',
+        defaultMessage: 'Welcome!',
     },
 } as const);
 

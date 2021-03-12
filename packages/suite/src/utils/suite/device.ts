@@ -1,6 +1,26 @@
 import { Device } from 'trezor-connect';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
 
+/**
+ * Used in Welcome step in Onboarding
+ * Status 'ok' or 'initialized' is what we expect, 'in-bootloader', 'seedless' and 'unreadable' are no go
+ *
+ * @param {(TrezorDevice | undefined)} device
+ * @returns
+ */
+export const getConnectedDeviceStatus = (device: TrezorDevice | undefined) => {
+    if (!device) return null;
+
+    const isInBlWithFwPresent =
+        device.mode === 'bootloader' && device.features?.firmware_present === true;
+
+    if (isInBlWithFwPresent) return 'in-bootloader';
+    if (device.features?.initialized) return 'initialized';
+    if (device.features?.no_backup) return 'seedless';
+    if (device.type === 'unreadable') return 'unreadable';
+    return 'ok';
+};
+
 export const getStatus = (device: TrezorDevice): string => {
     if (device.type === 'acquired') {
         if (!device.connected) {
