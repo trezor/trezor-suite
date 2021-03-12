@@ -1,6 +1,6 @@
 import { ONBOARDING } from '@onboarding-actions/constants';
 import * as STEP from '@onboarding-constants/steps';
-import { AnyStepId, AnyPath } from '@onboarding-types/steps';
+import { AnyStepId, AnyPath } from '@onboarding-types';
 import steps from '@onboarding-config/steps';
 import { findNextStep, findPrevStep, isStepInPath } from '@onboarding-utils/steps';
 
