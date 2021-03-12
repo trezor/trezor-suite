@@ -9,6 +9,7 @@ export type ConnectedDeviceStatus =
 
 export interface Step {
     id: AnyStepId;
+    stepGroup: number | undefined;
     disallowedDeviceStates?: AnyStepDisallowedState[];
     path?: AnyPath[];
     buy: boolean;
@@ -18,7 +19,6 @@ export interface Step {
 
 export type AnyStepId =
     | typeof STEP.ID_WELCOME_STEP
-    | typeof STEP.ID_SKIP_STEP
     | typeof STEP.ID_CREATE_OR_RECOVER
     | typeof STEP.ID_INIT_DEVICE
     | typeof STEP.ID_BACKUP_STEP

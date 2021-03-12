@@ -39,6 +39,9 @@ import { SkeletonRectangle, SkeletonCircle } from './Skeleton';
 import Notifications from './Notifications';
 import FormattedDate, { FormattedDateWithBullet } from './FormattedDate';
 import Metadata from './Metadata';
+import HomescreenGallery from './HomescreenGallery';
+import PinMatrix from './PinMatrix';
+import CollapsibleBox from './CollapsibleBox';
 
 export {
     Backdrop,
