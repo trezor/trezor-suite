@@ -35,7 +35,7 @@ export type AnalyticsAction =
 
 // Don't forget to update docs with changelog!
 // <breaking-change>.<analytics-extended>
-export const version = '1.9';
+export const version = '1.10';
 
 export type AnalyticsEvent =
     | {
@@ -146,9 +146,6 @@ export type AnalyticsEvent =
               createSeed: boolean;
               /** how many users chose to do recovery */
               recoverSeed: boolean;
-              /**  how many users clicked that they have a new/used device */
-              newDevice: boolean;
-              usedDevice: boolean;
           };
       }
     | {

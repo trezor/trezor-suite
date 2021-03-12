@@ -15,7 +15,7 @@ export default [
         },
         action: () => onboardingActions.goToNextStep(),
         expect: {
-            toMatchObject: { activeStepId: STEP.ID_SKIP_STEP },
+            toMatchObject: { activeStepId: STEP.ID_FIRMWARE_STEP },
         },
     },
     {
@@ -46,12 +46,12 @@ export default [
         description: 'goToPreviousStep',
         initialState: {
             onboarding: {
-                activeStepId: STEP.ID_NEW_OR_USED,
+                activeStepId: STEP.ID_RECOVERY_STEP,
             },
         },
         action: () => onboardingActions.goToPreviousStep(),
         expect: {
-            toMatchObject: { activeStepId: STEP.ID_CREATE_OR_RECOVER },
+            toMatchObject: { activeStepId: STEP.ID_RESET_DEVICE_STEP },
         },
     },
     {
@@ -73,64 +73,49 @@ export default [
         description: 'addPath: should add duplicit entry',
         initialState: {
             onboarding: {
-                path: ['new'],
+                path: ['create'],
             },
             suite: {
                 device: getSuiteDevice(),
             },
         },
-        action: () => onboardingActions.addPath('new'),
+        action: () => onboardingActions.addPath('create'),
         expect: {
-            toMatchObject: { path: ['new'] },
+            toMatchObject: { path: ['create'] },
         },
     },
     {
         description: 'removePath: one element',
         initialState: {
             onboarding: {
-                path: ['create', 'new'],
+                path: ['create'],
             },
         },
         action: () => onboardingActions.removePath(['create']),
         expect: {
-            toMatchObject: { path: ['new'] },
+            toMatchObject: { path: [] },
         },
     },
     {
         description: 'removePath: multiple elements',
         initialState: {
             onboarding: {
-                path: ['create', 'new'],
+                path: ['create', 'recovery'],
             },
             suite: {
                 device: getSuiteDevice(),
             },
         },
-        action: () => onboardingActions.removePath(['create', 'new']),
+        action: () => onboardingActions.removePath(['recovery']),
         expect: {
-            toMatchObject: { path: [] },
-        },
-    },
-    {
-        description: 'selectTrezorModel',
-        initialState: {
-            onboarding: {
-                selectModel: 1,
-            },
-            suite: {
-                device: getSuiteDevice(),
-            },
-        },
-        action: () => onboardingActions.selectTrezorModel(2),
-        expect: {
-            toMatchObject: { selectedModel: 2 },
+            toMatchObject: { path: ['create'] },
         },
     },
     {
         description: 'resetOnboarding: should set onboarding reducer to initial state',
         initialState: {
             onboarding: {
-                path: ['create', 'new', 'used'],
+                path: ['create'],
                 activeStepId: STEP.ID_RECOVERY_STEP,
             },
             suite: {

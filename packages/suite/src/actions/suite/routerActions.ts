@@ -136,7 +136,7 @@ export const initialRedirection = () => async (dispatch: Dispatch, getState: Get
         await dispatch(goto(route.name));
     } else if (route && initialRun) {
         // only do initial redirection of route is valid
-        await dispatch(goto('suite-welcome'));
+        await dispatch(goto('onboarding-index'));
     }
     // otherwise do nothing -> just show 404 page
 };

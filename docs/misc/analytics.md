@@ -88,6 +88,8 @@ Breaking change should bump major version. Any other change bumps minor version.
 4. **Option**: Edit NAT to resolve requests to `https://data.trezor.io/suite/log/web/stable.log` to your local server 
    
 ## Changelog
+### 1.10
+- removed newDevice, usedDevice from initial-run-completed
 
 ### 1.9
 Changed:

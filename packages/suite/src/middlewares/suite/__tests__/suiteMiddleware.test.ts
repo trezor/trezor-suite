@@ -86,7 +86,7 @@ describe('suite middleware', () => {
                 getInitialState({
                     loaded: true,
                     url: '/onboarding',
-                    pathname: '/',
+                    pathname: '/onboarding',
                     hash: undefined,
                     app: 'onboarding',
                     params: undefined,
@@ -95,7 +95,7 @@ describe('suite middleware', () => {
                         pattern: '/onboarding',
                         app: 'onboarding',
                         isModal: true,
-                        params: ['cancelable'],
+                        params: undefined,
                     },
                 }),
             );
@@ -110,7 +110,7 @@ describe('suite middleware', () => {
     });
 
     describe('redirection on initial run', () => {
-        it('if initialRun is true, should redirect to welcome screen after STORAGE.LOADED action', () => {
+        it('if initialRun is true, should redirect to onboarding screen after STORAGE.LOADED action', () => {
             // eslint-disable-next-line global-require
             require('next/router').default.pathname = '/accounts';
 
@@ -137,7 +137,7 @@ describe('suite middleware', () => {
                 .filter(a => a.type === ROUTER.LOCATION_CHANGE);
             expect(locationChangedAction.length).toBe(1);
             expect(locationChangedAction[0].url).toBe(
-                routes.find(r => r.name === 'suite-welcome')?.pattern,
+                routes.find(r => r.name === 'onboarding-index')?.pattern,
             );
         });
 

@@ -46,19 +46,19 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
                 },
                 aesKey: 'c785ef250807166bffc141960c525df97647fcc1bca57f6892ca3742ba86ed8d',
             });
-            cy.prefixedVisit('/accounts', {
+            cy.prefixedVisit('/', {
                 onBeforeLoad: win => {
                     cy.stub(win, 'open', stubOpen(win));
                     cy.stub(win, 'fetch', rerouteMetadataToMockProvider);
                 },
             });
             cy.tick(1000);
-
             cy.passThroughInitialRun();
             cy.log(
                 'Wait for discovery to finish. There is "add label" button, but no actual metadata appeared',
             );
             cy.discoveryShouldFinish();
+            cy.getTestElement('@suite/menu/wallet-index').click();
 
             cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click({
                 force: true,

@@ -5,3 +5,4 @@ export const RESET_REDUCER = '@firmware/reset-reducer';
 export const SET_ERROR = '@firmware/set-error';
 export const TOGGLE_HAS_SEED = '@firmware/toggle-has-seed';
 export const REMEMBER_PREVIOUS_DEVICE = '@firmware/remember-previous-device';
+export const SET_INTERMEDIARY_INSTALLED = '@firmware/set-intermediary-installed';

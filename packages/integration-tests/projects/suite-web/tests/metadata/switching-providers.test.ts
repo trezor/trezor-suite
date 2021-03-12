@@ -18,16 +18,15 @@ describe(`Metadata - switching between cloud providers`, () => {
         cy.task(`metadataStartProvider`, 'dropbox');
         cy.task(`metadataStartProvider`, 'google');
 
-        cy.prefixedVisit('/accounts', {
+        cy.prefixedVisit('/', {
             onBeforeLoad: (win: Window) => {
                 cy.stub(win, 'open', stubOpen(win));
                 cy.stub(win, 'fetch', rerouteMetadataToMockProvider);
             },
         });
-
         cy.passThroughInitialRun();
-
         cy.discoveryShouldFinish();
+        cy.getTestElement('@suite/menu/wallet-index').click();
 
         cy.log('');
         cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');

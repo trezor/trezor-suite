@@ -4,9 +4,19 @@ import { FIRMWARE } from '@firmware-actions/constants';
 import { SUITE } from '@suite-actions/constants';
 import * as firmwareActions from '@firmware-actions/firmwareActions';
 
-const { getSuiteDevice, getDeviceFeatures } = global.JestMocks;
+const { getSuiteDevice, getDeviceFeatures, getFirmwareRelease } = global.JestMocks;
 
 const bootloaderDevice = getSuiteDevice({ mode: 'bootloader', connected: true });
+const bootloaderDeviceNeedsIntermediary = {
+    ...getSuiteDevice(
+        {
+            mode: 'bootloader',
+            connected: true,
+            firmwareRelease: { ...getFirmwareRelease(), isLatest: false },
+        },
+        { major_version: 1 },
+    ),
+};
 
 export const actions = [
     {
@@ -26,7 +36,6 @@ export const actions = [
         result: {
             actions: [
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
-
                 // todo: waiting-for-confirmation and installing is not tested
                 { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'wait-for-reboot' },
             ],
@@ -34,7 +43,30 @@ export const actions = [
         },
     },
     {
-        description: 'Success T1',
+        description: 'Success T1 (with intermediary)',
+        action: () => firmwareActions.firmwareUpdate(),
+        mocks: {
+            connect: {
+                success: true,
+            },
+        },
+        initialState: {
+            suite: {
+                device: bootloaderDeviceNeedsIntermediary,
+            },
+            devices: [bootloaderDeviceNeedsIntermediary],
+        },
+        result: {
+            actions: [
+                { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'started' },
+                { type: FIRMWARE.SET_INTERMEDIARY_INSTALLED },
+                { type: FIRMWARE.SET_UPDATE_STATUS, payload: 'unplug' },
+            ],
+            state: { firmware: { status: 'unplug', error: undefined } },
+        },
+    },
+    {
+        description: 'Success T1 (without intermediary)',
         action: () => firmwareActions.firmwareUpdate(),
         mocks: {
             connect: {

@@ -1,78 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { ConfirmOnDevice } from '@trezor/components';
-
-import * as firmwareActions from '@firmware-actions/firmwareActions';
 import * as routerActions from '@suite-actions/routerActions';
-import { InjectedModalApplicationProps, Dispatch, AppState } from '@suite-types';
+import { AcquiredDevice } from '@suite-types';
 import {
-    InitialStep,
     CheckSeedStep,
-    FirmwareProgressStep,
-    PartiallyDoneStep,
-    DoneStep,
-    ErrorStep,
-    ReconnectInBootloaderStep,
-    ReconnectInNormalStep,
-    NoNewFirmware,
-    Buttons,
     CloseButton,
-    ContinueButton,
+    FirmwareInitial,
+    FirmwareInstallation,
 } from '@firmware-components';
 import { DeviceAcquire, DeviceUnknown, DeviceUnreadable } from '@suite-views';
 import { Translation, Modal } from '@suite-components';
+import { OnboardingStepBox } from '@onboarding-components';
+import { useActions, useFirmware, useSelector, useTheme } from '@suite-hooks';
+import { ConfirmOnDevice, Icon } from '@trezor/components';
 
-const InnerModalWrapper = styled.div`
+const Wrapper = styled.div`
     display: flex;
-    justify-content: center;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
     align-items: center;
+    text-align: left;
+    position: relative;
+    padding: 40px 0px 20px 0px;
 `;
 
-const mapStateToProps = (state: AppState) => ({
-    firmware: state.firmware,
-    device: state.suite.device,
-});
+const CancelIconWrapper = styled.div`
+    display: inline-block;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    align-items: center;
+    cursor: pointer;
+`;
 
-const mapDispatchToProps = (dispatch: Dispatch) =>
-    bindActionCreators(
-        {
-            closeModalApp: routerActions.closeModalApp,
-            resetReducer: firmwareActions.resetReducer,
-        },
-        dispatch,
-    );
+const Firmware = () => {
+    const { theme } = useTheme();
+    const { resetReducer, status, error } = useFirmware();
+    const { device } = useSelector(state => ({
+        device: state.suite.device,
+    }));
+    const { closeModalApp } = useActions({
+        closeModalApp: routerActions.closeModalApp,
+    });
 
-type Props = ReturnType<typeof mapDispatchToProps> &
-    ReturnType<typeof mapStateToProps> &
-    InjectedModalApplicationProps;
-
-const Firmware = ({ closeModalApp, resetReducer, firmware, device, modal }: Props) => {
     const onClose = () => {
         closeModalApp();
         resetReducer();
     };
 
-    const stepsInProgressBar = [
-        'initial',
-        'check-seed',
-        'waiting-for-bootloader',
-        'started',
-        'waiting-for-confirmation',
-        'installing',
-        ['wait-for-reboot', 'unplug'],
-        'reconnect-in-normal', // maybe rename "reconnect-after-install" ?
-        ['done', 'partially-done', 'error'],
-    ];
-
-    const getCurrentStepIndex = () =>
-        stepsInProgressBar.findIndex(s => {
-            if (Array.isArray(s)) {
-                return s.includes(firmware.status);
-            }
-            return s === firmware.status;
-        });
+    const [cachedDevice, setCachedDevice] = useState<AcquiredDevice>(device as AcquiredDevice);
 
     // some of the application states can be reused here.
     // some don't make sense handling here as they are handled somewhere up the tree
@@ -87,84 +64,48 @@ const Firmware = ({ closeModalApp, resetReducer, firmware, device, modal }: Prop
         if (!device.features) return DeviceUnknown;
     };
 
-    // standalone firmware update has 2 heading variants
-    const CommonHeading = () => {
-        const nextVersion =
-            // device?.firmwareRelease?.release.version.join('.') ||
-            firmware.targetRelease?.release.version.join('.');
-        return <Translation id="FIRMWARE_UPDATE_TO_VERSION" values={{ version: nextVersion }} />;
-    };
-
     const getComponent = () => {
         // edge case 1 - error
-        if (firmware.error) {
-            return {
-                Heading: <ErrorStep.Heading />,
-                Body: <ErrorStep.Body />,
-                BottomBar: <CloseButton onClick={onClose} />,
-            };
+        if (error) {
+            return (
+                <OnboardingStepBox
+                    image="FIRMWARE"
+                    heading={<Translation id="TR_FW_INSTALLATION_FAILED" />}
+                    description={<Translation id="TOAST_GENERIC_ERROR" values={{ error }} />}
+                    innerActions={
+                        <CloseButton onClick={onClose}>
+                            <Translation id="TR_BACK" />
+                        </CloseButton>
+                    }
+                    nested
+                />
+            );
         }
 
-        // edge case 2 - user has reconnected device that is already up to date
-        if (firmware.status !== 'done' && device?.firmware === 'valid') {
-            return {
-                Heading: <NoNewFirmware.Heading />,
-                Body: <NoNewFirmware.Body />,
-                BottomBar: <CloseButton onClick={onClose} />,
-            };
-        }
-
-        switch (firmware.status) {
+        switch (status) {
             case 'initial':
-                return {
-                    Heading: <InitialStep.Heading />,
-                    Body: <InitialStep.Body />,
-                    BottomBar: <InitialStep.BottomBar />,
-                };
-            case 'check-seed':
-                return {
-                    Heading: <CommonHeading />,
-                    Body: <CheckSeedStep.Body />,
-                    BottomBar: <CheckSeedStep.BottomBar />,
-                };
-            case 'waiting-for-bootloader':
-                return {
-                    Heading: <CommonHeading />,
-                    Body: <ReconnectInBootloaderStep.Body />,
-                    BottomBar: <ReconnectInBootloaderStep.BottomBar />,
-                };
-            case 'waiting-for-confirmation':
+            case 'waiting-for-bootloader': // waiting for user to reconnect in bootloader
+                return (
+                    <FirmwareInitial
+                        cachedDevice={cachedDevice}
+                        setCachedDevice={setCachedDevice}
+                        standaloneFwUpdate
+                    />
+                );
+            case 'check-seed': // triggered from FirmwareInitial
+                return <CheckSeedStep />;
+            case 'waiting-for-confirmation': // waiting for confirming installation on a device
+            case 'started': // called from firmwareUpdate()
             case 'installing':
-            case 'started':
             case 'wait-for-reboot':
-            case 'unplug':
-                return {
-                    Heading: <CommonHeading />,
-                    Body: <FirmwareProgressStep.Body />,
-                    BottomBar: null,
-                };
-            case 'reconnect-in-normal':
-                return {
-                    Heading: <CommonHeading />,
-                    Body: <ReconnectInNormalStep.Body />,
-                    BottomBar: <ReconnectInNormalStep.BottomBar />,
-                };
-            case 'partially-done':
-                return {
-                    Heading: <CommonHeading />,
-                    Body: <PartiallyDoneStep.Body />,
-                    BottomBar: <ContinueButton onClick={resetReducer} />,
-                };
+            case 'unplug': // only relevant for T1, TT auto restarts itself
+            case 'reconnect-in-normal': // only relevant for T1, TT auto restarts itself
+            case 'partially-done': // only relevant for T1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
             case 'done':
-                return {
-                    Heading: <DoneStep.Heading />,
-                    Body: <DoneStep.Body />,
-                    BottomBar: <CloseButton onClick={onClose} />,
-                };
-
+                return <FirmwareInstallation cachedDevice={cachedDevice} standaloneFwUpdate />;
             default:
-                // should never get here
-                throw new Error('state is not handled here');
+                // 'ensure' type completeness
+                throw new Error(`state "${status}" is not handled here`);
         }
     };
 
@@ -176,29 +117,20 @@ const Firmware = ({ closeModalApp, resetReducer, firmware, device, modal }: Prop
 
     if (ApplicationStateModal) return <ApplicationStateModal />;
 
-    // todo: we really need to have finally designs on how to display these button requests when
-    // there is a modal active, I could either replace the main content, or display it as a nested modal?
-    // if (modal) {
-    //     return (<Modal>
-    //         <InnerModalWrapper>
-    //             {modal}
-    //         </InnerModalWrapper>
-    //     </Modal>
-    //     )
-    // }
+    const isCancelable = [
+        'initial',
+        'check-seed',
+        'done',
+        'partially-done',
+        'waiting-for-bootloader',
+        'error',
+    ].includes(status);
 
     return (
         <Modal
-            cancelable={[
-                'initial',
-                'check-seed',
-                'done',
-                'partially-done',
-                'waiting-for-bootloader',
-                'error',
-            ].includes(firmware.status)}
+            cancelable={isCancelable}
             header={
-                firmware.status === 'waiting-for-confirmation' && (
+                status === 'waiting-for-confirmation' && (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         trezorModel={device?.features?.major_version === 1 ? 1 : 2}
@@ -208,16 +140,23 @@ const Firmware = ({ closeModalApp, resetReducer, firmware, device, modal }: Prop
             }
             onCancel={onClose}
             useFixedHeight
+            fixedHeight={['90vh', '90vh', '500px', '500px']}
+            fixedWidth={['100vw', '90vw', '620px', '620px']}
             data-test="@firmware"
-            heading={Component.Heading}
-            bottomBar={!modal && <Buttons>{Component.BottomBar}</Buttons>}
-            totalProgressBarSteps={stepsInProgressBar.length}
-            currentProgressBarStep={getCurrentStepIndex()}
-            hiddenProgressBar={false}
+            centerContent
+            noPadding
         >
-            {modal ? <InnerModalWrapper>{modal}</InnerModalWrapper> : Component.Body}
+            <Wrapper>
+                {isCancelable && (
+                    // we need to provide custom close button as we don't use default one included in Modal's heading component
+                    <CancelIconWrapper data-test="@modal/close-button" onClick={onClose}>
+                        <Icon size={24} color={theme.TYPE_DARK_GREY} icon="CROSS" />
+                    </CancelIconWrapper>
+                )}
+                {Component}
+            </Wrapper>
         </Modal>
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Firmware);
+export default Firmware;

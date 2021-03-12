@@ -13,20 +13,18 @@ describe('Onboarding - recover wallet T1', () => {
 
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
-        cy.goToOnboarding();
-        cy.onboardingShouldLoad();
-        // common steps - navigation through onboarding
-        cy.getTestElement('@onboarding/begin-button').click();
-        cy.getTestElement('@onboarding/path-recovery-button').click();
-        cy.getTestElement('@onboarding/path-used-button').click();
-        cy.getTestElement('@onboarding/pair-device-step').click();
     });
 
     it('Incomplete run of advanced recovery', () => {
         cy.task('startEmu', { version: '1.9.0' });
 
-        cy.getTestElement('@onboarding/button-continue').click();
-        cy.getTestElement('@firmware/skip-button').click();
+        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement("@firmware/skip-button").click();
+        cy.getTestElement('@onboarding/path-recovery-button').click();
+
+        // cy.getTestElement('@onboarding/button-continue').click();
+        // cy.getTestElement('@firmware/skip-button').click();
         cy.getTestElement('@recover/select-count/24').click();
         cy.getTestElement('@recover/select-type/advanced').click();
         cy.task('pressYes');
@@ -40,14 +38,16 @@ describe('Onboarding - recover wallet T1', () => {
         );
         cy.wait(501);
         cy.task('stopEmu');
-        cy.getTestElement('@onboarding/unexpected-state/reconnect', { timeout: 20000 });
+        cy.getTestElement('@onboarding/connect-device', { timeout: 20000 });
         cy.task('startEmu', { version: '1.9.0' });
-        cy.getTestElement('@onboarding/recovery/retry-button').click();
 
+        cy.getTestElement('@onboarding/recovery/retry-button').click();
         cy.getTestElement('@recover/select-count/12').click();
         cy.getTestElement('@recover/select-type/basic').click();
 
         cy.task('pressYes');
-        cy.getTestElement('@recovery/word');
+        cy.getTestElement('@word-input-select/input');
+        
+        // todo: finish reading from device. needs support in trezor-user-env
     });
 });

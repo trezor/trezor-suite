@@ -1,74 +1,87 @@
 import React from 'react';
-import styled from 'styled-components';
-import { Button, variables } from '@trezor/components';
+import styled, { css } from 'styled-components';
+import { Icon, IconProps, variables } from '@trezor/components';
 
-import { resolveStaticPath } from '@suite-utils/nextjs';
+const Wrapper = styled.div`
+    display: flex;
+    padding: 24px 16px 24px 24px;
+    border-radius: 5px;
+    border: solid 1px ${props => props.theme.STROKE_GREY};
+    align-items: center;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s;
 
-const { FONT_SIZE } = variables;
+    :hover {
+        box-shadow: 0 6px 40px 0 ${props => props.theme.BOX_SHADOW_OPTION_CARD};
+        border: 1px solid transparent;
+    }
+`;
 
-type Variant = 2 | 3;
-interface WrapperProps {
-    variant?: Variant;
-}
-
-const Wrapper = styled.div<WrapperProps>`
-    width: ${({ variant }) => (variant === 2 ? '260px' : '160px')};
-    max-height: ${({ variant }) => (variant === 2 ? '340px' : '240px')};
-    padding: 20px 30px 10px 30px;
-    margin: 2%;
-    border-radius: 6px;
+const Content = styled.div`
     display: flex;
     flex-direction: column;
-
-    &:hover {
-        box-shadow: 0px 0px 6px 2px ${props => props.theme.BOX_SHADOW_BLACK_5};
-    }
+    justify-items: center;
 `;
 
-const Image = styled.img`
-    height: 92px;
-    margin-bottom: 20px;
+const Heading = styled.span`
+    color: ${props => props.theme.TYPE_DARK_GREY};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    font-size: ${variables.FONT_SIZE.NORMAL};
 `;
 
-const Title = styled.div`
-    font-size: ${FONT_SIZE.BIG};
-    margin-bottom: 12px;
-
-    ::first-letter {
-        text-transform: capitalize;
-    }
-`;
-
-const Text = styled.div`
-    font-size: ${FONT_SIZE.NORMAL};
+const Description = styled.span`
+    margin-top: 5px;
     color: ${props => props.theme.TYPE_LIGHT_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
-const StyledButton = styled(Button)`
-    margin-top: auto;
+const IconWrapper = styled.div`
+    margin-right: 24px;
 `;
-interface Props {
-    imgSrc?: string;
-    title?: React.ReactNode;
-    text?: React.ReactNode;
-    action: () => void;
-    button: React.ReactNode;
-    variant?: Variant;
-    'data-test'?: string;
+
+export const OptionsWrapper = styled.div<{ fullWidth?: boolean }>`
+    display: flex;
+
+    @media all and (max-width: ${variables.SCREEN_SIZE.SM}) {
+        flex-direction: column;
+    }
+
+    ${props =>
+        props.fullWidth !== false &&
+        css`
+            width: 100%;
+        `}
+`;
+
+export const OptionWrapper = styled.div`
+    display: flex;
+    width: 100%;
+`;
+
+export const OptionsDivider = styled.div`
+    flex: 0 0 24px;
+`;
+
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
+    heading: React.ReactNode;
+    description?: React.ReactNode;
+    icon?: IconProps['icon'];
 }
 
-const Option = (props: Props) => {
-    const { imgSrc, title, text, action, button, variant } = props;
-    return (
-        <Wrapper variant={variant || 2}>
-            {imgSrc && <Image src={resolveStaticPath(imgSrc)} />}
-            <Title>{title}</Title>
-            <Text>{text}</Text>
-            <StyledButton onClick={action} data-test={props['data-test']}>
-                {button}
-            </StyledButton>
-        </Wrapper>
-    );
-};
+const Option = ({ icon, heading, description, ...rest }: Props) => (
+    <Wrapper {...rest}>
+        {icon && (
+            <IconWrapper>
+                <Icon icon={icon} size={48} />
+            </IconWrapper>
+        )}
+        <Content>
+            <Heading>{heading}</Heading>
+            {description && <Description>{description}</Description>}
+        </Content>
+    </Wrapper>
+);
 
 export default Option;

@@ -135,8 +135,6 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                                 analytics: true,
                                 createSeed: state.onboarding.path.includes('create'),
                                 recoverSeed: state.onboarding.path.includes('recovery'),
-                                newDevice: state.onboarding.path.includes('new'),
-                                usedDevice: state.onboarding.path.includes('used'),
                             },
                         }),
                     );

@@ -3,6 +3,8 @@
 
 export const THEME = {
     light: {
+        THEME: 'light',
+
         BG_GREEN: '#39a814',
         BG_LIGHT_GREEN: '#effaec',
         BG_SECONDARY: '#effaec', // used for secondary button, in light mode same as LIGHT_GREEN
@@ -49,8 +51,11 @@ export const THEME = {
         BOX_SHADOW_BLACK_15: 'rgba(0, 0, 0, 0.15)',
         BOX_SHADOW_BLACK_20: 'rgba(0, 0, 0, 0.2)',
         BOX_SHADOW_MODAL: 'rgba(77, 77, 77, 0.2)',
+        BOX_SHADOW_OPTION_CARD: 'rgba(77, 77, 77, 0.12)',
     },
     dark: {
+        THEME: 'dark',
+
         BG_GREEN: '#5ea447',
         BG_GREEN_HOVER: '#4e883b', // improvisation
         BG_LIGHT_GREEN: '#1a2516',
@@ -97,10 +102,13 @@ export const THEME = {
         BOX_SHADOW_BLACK_15: 'rgba(0, 0, 0, 0.2)',
         BOX_SHADOW_BLACK_20: 'rgba(0, 0, 0, 0.2)', // shadow around dropdown
         BOX_SHADOW_MODAL: 'rgba(0, 0, 0, 0.5)', // shadow around modal
+        BOX_SHADOW_OPTION_CARD: 'rgba(0, 0, 0, 0.2)', // shadow around Options card in onboarding
         IMAGE_FILTER: 'brightness(0.8) contrast(1.2) saturate(1.2)',
     },
     // black theme is not used currently, but will be in the future
     black: {
+        THEME: 'black',
+
         BG_GREEN: '#5ea447',
         BG_GREEN_HOVER: '#4e883b', // improvisation
         BG_LIGHT_GREEN: '#1a2516',
@@ -147,6 +155,7 @@ export const THEME = {
         BOX_SHADOW_BLACK_15: 'rgba(0, 0, 0, 0.2)',
         BOX_SHADOW_BLACK_20: 'rgba(255, 255, 255, 0.1)', // shadow around dropdown
         BOX_SHADOW_MODAL: 'rgba(0, 0, 0, 0.5)', // shadow around modal
+        BOX_SHADOW_OPTION_CARD: 'rgba(0, 0, 0, 0.2)', // shadow around Options card in onboarding
         IMAGE_FILTER: 'brightness(0.8) contrast(1.2) saturate(1.2)',
     },
 } as const;

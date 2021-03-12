@@ -30,6 +30,7 @@ module.exports = {
         '^@(.+)-services': '<rootDir>/src/services/$1/index',
         '^@(dashboard|suite|wallet)-hooks/(.+)': '<rootDir>/src/hooks/$1/$2',
         '^@(dashboard|suite|wallet)-hooks': '<rootDir>/src/hooks/$1/index',
+        '\\.(mp4)$': '<rootDir>/__mocks__/file.js',
     },
     moduleFileExtensions: ['js', 'ts', 'tsx'],
     coverageDirectory: './coverage',

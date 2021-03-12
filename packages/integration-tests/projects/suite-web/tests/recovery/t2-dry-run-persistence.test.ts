@@ -14,8 +14,12 @@ describe('Recovery - dry run', () => {
     });
 
     it('Communication between device and application is automatically established whenever app detects device in recovery mode', () => {
-        cy.prefixedVisit('/settings/device');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@suite/menu/settings-index').click();
+        cy.getTestElement('@settings/menu/device').click();
+
         cy.getTestElement('@settings/device/check-seed-button').click();
         cy.getTestElement('@recovery/user-understands-checkbox').click();
         cy.getTestElement('@recovery/start-button').click();
@@ -40,7 +44,7 @@ describe('Recovery - dry run', () => {
         cy.log(
             'On app reload, recovery process should auto start if app detects initialized device in recovery mode',
         );
-        
+
         cy.reload().task('stopBridge').task('startBridge');
         cy.wait(2000);
 

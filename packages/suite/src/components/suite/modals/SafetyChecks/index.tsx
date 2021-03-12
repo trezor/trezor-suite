@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { useActions, useSelector } from '@suite-hooks';
-import { RadioButton, H2, P, Warning } from '@trezor/components';
+import { RadioButton, Button, H2, P, Warning } from '@trezor/components';
 import { Translation, Modal, ModalProps } from '@suite-components';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { Buttons, ConfirmButton } from '@firmware-components';
 import styled from 'styled-components';
+
+const Buttons = styled.div`
+    display: flex;
+    width: 100%;
+`;
 
 const OptionsWrapper = styled.div`
     width: 100%;
@@ -38,14 +42,16 @@ const SafetyChecks = (props: ModalProps) => {
 
     const ApplyButton = (
         <Buttons>
-            <ConfirmButton
+            <Button
                 onClick={() => {
                     applySettings({ safety_checks: level });
                 }}
                 // Only allow confirming when the value will be changed.
                 isDisabled={level === device?.features?.safety_checks}
                 data-test="@safety-checks-apply"
-            />
+            >
+                <Translation id="TR_CONFIRM" />
+            </Button>
         </Buttons>
     );
 

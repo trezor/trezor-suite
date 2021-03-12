@@ -1,6 +1,26 @@
 import { Device, KnownDevice } from 'trezor-connect';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
 
+/**
+ * Used in Welcome step in Onboarding
+ * Status 'ok' or 'initialized' is what we expect, 'in-bootloader', 'seedless' and 'unreadable' are no go
+ *
+ * @param {(TrezorDevice | undefined)} device
+ * @returns
+ */
+export const getConnectedDeviceStatus = (device: TrezorDevice | undefined) => {
+    if (!device) return null;
+
+    const isInBlWithFwPresent =
+        device.mode === 'bootloader' && device.features?.firmware_present === true;
+
+    if (isInBlWithFwPresent) return 'in-bootloader';
+    if (device.features?.initialized) return 'initialized';
+    if (device.features?.no_backup) return 'seedless';
+    if (device.type === 'unreadable') return 'unreadable';
+    return 'ok';
+};
+
 export const getStatus = (device: TrezorDevice): string => {
     if (device.type === 'acquired') {
         if (!device.connected) {
@@ -119,6 +139,11 @@ export const getVersion = (device: TrezorDevice) => {
 export const getFwVersion = (device: KnownDevice) => {
     const { features } = device;
     return `${features.major_version}.${features.minor_version}.${features.patch_version}`;
+};
+
+export const getFwUpdateVersion = (device: AcquiredDevice) => {
+    const version = device.firmwareRelease?.release.version;
+    return version ? version.join('.') : null;
 };
 
 /**
@@ -312,4 +337,33 @@ export const isBitcoinOnly = (device: TrezorDevice | Device) => {
 export const getPhysicalDeviceCount = (devices: Device[]) => {
     const uniqueIds = new Set(devices.map(d => d.id));
     return uniqueIds.size;
+};
+
+export const parseFirmwareChangelog = (firmwareRelease: TrezorDevice['firmwareRelease']) => {
+    if (!firmwareRelease?.changelog || firmwareRelease?.changelog?.length === 0) return null;
+    const changelogs = firmwareRelease.changelog;
+
+    // Default changelog format is just a long string where individual changes are separated by "*" symbol.
+
+    return changelogs.map(log => {
+        // get array of individual changes for a given version
+        const parsedChangelogEntries = log.changelog
+            .trim()
+            .split(/\*/g)
+            .map(l => l.trim());
+
+        // The first element of logsArr is an empty array, so get rid of it (but still make sure it's really empty).
+        if (!parsedChangelogEntries[0]) {
+            parsedChangelogEntries.shift();
+        }
+
+        // Get firmware version, convert to string and use it as a key in custom object
+        const versionString = log.version.join('.'); // e.g. [1,9,8] => "1.9.8"
+        return {
+            url: log.url,
+            notes: log.notes,
+            changelog: parsedChangelogEntries,
+            versionString,
+        };
+    });
 };

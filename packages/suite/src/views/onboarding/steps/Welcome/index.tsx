@@ -1,50 +1,38 @@
 import React from 'react';
+import styled from 'styled-components';
+import { variables } from '@trezor/components';
+import { useSelector } from '@suite-hooks';
+import { ConnectDevicePromptManager } from '@onboarding-components';
+import PreOnboardingSetup from './components/PreOnboardingSetup';
 
-import { Translation } from '@suite-components';
-import { Text, Option, Wrapper } from '@onboarding-components';
-import { useActions } from '@suite-hooks';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    /* height: 480px; */
+    align-items: center;
+    margin-top: 20vh;
+
+    @media all and (max-height: ${variables.SCREEN_SIZE.MD}) {
+        margin-top: 5vh;
+    }
+    @media all and (max-height: ${variables.SCREEN_SIZE.SM}) {
+        margin-top: 0vh;
+    }
+`;
 
 const WelcomeStep = () => {
-    const { goToNextStep } = useActions({
-        goToNextStep: onboardingActions.goToNextStep,
-    });
-
+    const { device } = useSelector(state => ({
+        device: state.suite.device,
+    }));
     return (
-        <Wrapper.Step data-test="@onboarding/welcome-step">
-            <Wrapper.StepBody>
-                <Wrapper.StepHeading>
-                    <Translation id="TR_WELCOME_TO_TREZOR" />
-                </Wrapper.StepHeading>
-
-                <Text>
-                    <Translation id="TR_WELCOME_TO_TREZOR_TEXT" />
-                </Text>
-
-                <Wrapper.Options>
-                    <Option
-                        data-test="@onboarding/begin-button"
-                        action={() => {
-                            goToNextStep('create-or-recover');
-                        }}
-                        title={<Translation id="TR_IM_NEW_TO_ALL_THIS" />}
-                        text={<Translation id="TR_I_WANT_TO_BE_GUIDED_THROUGH" />}
-                        button={<Translation id="TR_BEGIN_ONBOARDING" />}
-                        imgSrc="images/svg/new-user.svg"
-                    />
-                    <Option
-                        data-test="@onboarding/skip-button"
-                        action={() => {
-                            goToNextStep('skip');
-                        }}
-                        title={<Translation id="TR_I_HAVE_INITIALIZED_DEVICE" />}
-                        text={<Translation id="TR_MY_DEVICE_IS_INITIALIZED" />}
-                        button={<Translation id="TR_SKIP_ONBOARDING" />}
-                        imgSrc="images/svg/existing-user.svg"
-                    />
-                </Wrapper.Options>
-            </Wrapper.StepBody>
-        </Wrapper.Step>
+        <Wrapper>
+            <ConnectDevicePromptManager device={device}>
+                {/* Happy path
+                User connected uninitialized or initialized device
+                Show analytics, device security/integrity check  */}
+                <PreOnboardingSetup />
+            </ConnectDevicePromptManager>
+        </Wrapper>
     );
 };
 

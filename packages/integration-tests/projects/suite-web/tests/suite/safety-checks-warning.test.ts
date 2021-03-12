@@ -27,8 +27,12 @@ describe('safety_checks Warning For PromptTemporarily', () => {
         cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
         // Start in the device settings to easily open safety_checks setting modal.
-        cy.prefixedVisit('/settings/device/');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@suite/menu/settings-index').click();
+        cy.getTestElement('@settings/menu/device').click();
+
         // Set safety_checks to `PromptTemporarily'.
         // TODO: do this via the `applySetting` task once https://github.com/trezor/trezor-user-env/issues/54
         // is resolved.
@@ -46,7 +50,7 @@ describe('safety_checks Warning For PromptTemporarily', () => {
     it('CTA button opens device settings', () => {
         cy.getTestElement('@banner/safety-checks/button').click();
         // In CI the path is prefixed with a branch name. Test only against the end of the path.
-        cy.location('pathname').should('match', /\/settings\/device\/$/)
+        cy.location('pathname').should('match', /\/settings\/device\/$/);
     });
 
     it('Dismiss button hides the warning', () => {

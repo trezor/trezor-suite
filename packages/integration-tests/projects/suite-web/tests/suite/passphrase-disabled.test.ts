@@ -15,11 +15,15 @@ describe('Suite switch wallet modal', () => {
         cy.task('setupEmu', { passphrase_protection: false });
         cy.task('applySettings', { passphrase_always_on_device: false });
 
-        cy.prefixedVisit('/settings');
+        cy.prefixedVisit('/');
 
         cy.passThroughInitialRun();
+        cy.discoveryShouldFinish();
+        cy.wait(501);
+        cy.prefixedVisit('/settings');
 
         cy.getTestElement('@menu/switch-device').click();
+
         // device does not have state yet, there is only one button to discovery the first wallet
         cy.getTestElement('@switch-device/add-wallet-button').click();
         cy.getTestElement('@dashboard/loading', { timeout: 30000 });

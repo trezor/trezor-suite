@@ -1,6 +1,9 @@
+import React from 'react';
 import styled from 'styled-components';
+import { TrezorDevice } from '@suite-types';
+import { getFormattedFingerprint } from '@firmware-utils';
 
-export const Fingerprint = styled.pre`
+const Wrapper = styled.pre`
     padding: 8px;
     width: 100%;
     overflow: hidden;
@@ -10,3 +13,12 @@ export const Fingerprint = styled.pre`
     word-break: break-all;
     font-family: monospace;
 `;
+
+const Fingerprint = ({ device }: { device: TrezorDevice }) => (
+    <Wrapper>
+        {/* device.firmwareRelease should be always defined here (this renders upon dispatching ButtonRequest_FirmwareCheck) */}
+        {getFormattedFingerprint(device.firmwareRelease!.release.fingerprint)}
+    </Wrapper>
+);
+
+export { Fingerprint };

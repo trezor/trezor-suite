@@ -2,6 +2,8 @@ import { MiddlewareAPI } from 'redux';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Action, Dispatch } from '@suite-types';
 import TrezorConnect, { UI } from 'trezor-connect';
+import { addButtonRequest, removeButtonRequests } from '@suite-actions/suiteActions';
+import { ONBOARDING } from '@onboarding-actions/constants';
 
 const buttonRequest = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
@@ -35,28 +37,24 @@ const buttonRequest = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatc
     switch (action.type) {
         case UI.REQUEST_PIN:
         case UI.INVALID_PIN:
-            api.dispatch({
-                type: SUITE.ADD_BUTTON_REQUEST,
-                device: api.getState().suite.device,
-                payload: action.payload.type ? action.payload.type : action.type,
-            });
+            api.dispatch(
+                addButtonRequest(
+                    api.getState().suite.device,
+                    action.payload.type ? action.payload.type : action.type,
+                ),
+            );
             break;
         case UI.REQUEST_BUTTON:
-            api.dispatch({
-                type: SUITE.ADD_BUTTON_REQUEST,
-                device: api.getState().suite.device,
-                payload: action.payload.code,
-            });
+            api.dispatch(addButtonRequest(api.getState().suite.device, action.payload.code));
             break;
         case SUITE.LOCK_DEVICE:
             if (!action.payload) {
-                api.dispatch({
-                    type: SUITE.ADD_BUTTON_REQUEST,
-                    device: api.getState().suite.device,
-                    // no payload empties TrezorDevice.buttonRequests[] field
-                });
+                api.dispatch(removeButtonRequests(api.getState().suite.device));
             }
-
+            break;
+        case ONBOARDING.SET_STEP_ACTIVE:
+            // clear all device's button requests in each step of the onboarding
+            api.dispatch(removeButtonRequests(api.getState().suite.device));
             break;
         default:
         // no default

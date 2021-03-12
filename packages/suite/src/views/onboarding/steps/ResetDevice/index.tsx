@@ -1,19 +1,24 @@
-import React from 'react';
-import { Link } from '@trezor/components';
+import React, { useState } from 'react';
 import * as STEP from '@onboarding-constants/steps';
-import { Wrapper, Text, Option, OnboardingButton } from '@onboarding-components';
+import {
+    OnboardingButtonBack,
+    Option,
+    OptionsWrapper,
+    OptionWrapper,
+    OptionsDivider,
+    OnboardingStepBox,
+} from '@onboarding-components';
 import { Translation } from '@suite-components';
-import { SuccessImg, H2, P } from '@firmware-components';
-import { TOS_URL } from '@suite-constants/urls';
 import { useActions, useSelector } from '@suite-hooks';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 
 const ResetDeviceStep = () => {
-    const { resetDevice, goToPreviousStep, callActionAndGoToNextStep } = useActions({
+    const [submitted, setSubmitted] = useState(false);
+    const { resetDevice, goToPreviousStep, goToNextStep } = useActions({
         resetDevice: deviceSettingsActions.resetDevice,
         goToPreviousStep: onboardingActions.goToPreviousStep,
-        callActionAndGoToNextStep: onboardingActions.callActionAndGoToNextStep,
+        goToNextStep: onboardingActions.goToNextStep,
     });
     const device = useSelector(state => state.suite.device);
 
@@ -22,103 +27,78 @@ const ResetDeviceStep = () => {
         return null;
     }
 
-    const isShamirBackupAvailable = () =>
-        device.features?.capabilities?.includes('Capability_Shamir');
+    const isShamirBackupAvailable = device.features?.capabilities?.includes('Capability_Shamir');
+    const isWaitingForConfirmation =
+        device.buttonRequests.some(
+            r => r === 'ButtonRequest_ResetDevice' || r === 'ButtonRequest_ProtectCall',
+        ) && !submitted; // ButtonRequest_ResetDevice is for TT, ButtonRequest_ProtectCall for T1
+
+    // eslint-disable-next-line camelcase
+    const onResetDevice = async (params?: { backup_type?: 0 | 1 | undefined }) => {
+        setSubmitted(false);
+        const result = await resetDevice(params);
+        setSubmitted(true);
+        if (result?.success) {
+            goToNextStep(STEP.ID_SECURITY_STEP);
+        }
+    };
 
     return (
-        <Wrapper.Step>
-            <Wrapper.StepHeading>
-                {isShamirBackupAvailable() && <Translation id="TR_BACKUP_TYPE" />}
-            </Wrapper.StepHeading>
-            <Wrapper.StepBody>
-                {!isShamirBackupAvailable() && (
-                    <>
-                        <SuccessImg model={device.features.major_version || 2} />
-                        <H2>
-                            <Translation id="TR_CREATE_WALLET" />
-                        </H2>
-                    </>
-                )}
-
-                {isShamirBackupAvailable() && (
-                    <Text>
-                        <Translation id="TR_YOU_MAY_CHOSE_EITHER_STANDARD" />
-                    </Text>
-                )}
-
-                <P>
-                    <Translation
-                        id="TR_BY_CREATING_WALLET"
-                        values={{
-                            TERMS_AND_CONDITIONS: (
-                                <Link href={TOS_URL}>
-                                    <Translation id="TERMS_AND_CONDTIONS" />
-                                </Link>
-                            ),
-                        }}
-                    />
-                </P>
-                {isShamirBackupAvailable() && (
-                    <Wrapper.Options>
+        <OnboardingStepBox
+            image="KEY"
+            heading={<Translation id="TR_ONBOARDING_GENERATE_SEED" />}
+            description={<Translation id="TR_ONBOARDING_GENERATE_SEED_DESCRIPTION" />}
+            confirmOnDevice={isWaitingForConfirmation ? device?.features?.major_version : undefined}
+            outerActions={
+                !isWaitingForConfirmation ? (
+                    // There is no point to show back button if user can't click it because confirmOnDevice bubble is active
+                    <OnboardingButtonBack onClick={() => goToPreviousStep()}>
+                        <Translation id="TR_BACK" />
+                    </OnboardingButtonBack>
+                ) : undefined
+            }
+        >
+            {!isWaitingForConfirmation ? (
+                // Show options to chose from only if we are not waiting for confirmation on the device (because that means user has already chosen )
+                <OptionsWrapper fullWidth={false}>
+                    <OptionWrapper>
                         <Option
-                            data-test="@onboarding/button-standard-backup"
-                            action={() => {
-                                callActionAndGoToNextStep(
-                                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                                    () => resetDevice({ backup_type: 0 }),
-                                    STEP.ID_SECURITY_STEP,
-                                );
+                            icon="SEED_SINGLE"
+                            data-test={
+                                isShamirBackupAvailable
+                                    ? '@onboarding/button-standard-backup'
+                                    : '@onboarding/only-backup-option-button'
+                            }
+                            onClick={async () => {
+                                if (isShamirBackupAvailable) {
+                                    await onResetDevice({ backup_type: 0 });
+                                } else {
+                                    await onResetDevice();
+                                }
                             }}
-                            title={<Translation id="SINGLE_SEED" />}
-                            text={<Translation id="SINGLE_SEED_DESCRIPTION" />}
-                            button={
-                                <Translation
-                                    id="TR_SELECT_SEED_TYPE"
-                                    values={{ seedType: <Translation id="SINGLE_SEED" /> }}
-                                />
-                            }
-                            imgSrc="images/svg/seed-card-single.svg"
+                            heading={<Translation id="SINGLE_SEED" />}
+                            description={<Translation id="SINGLE_SEED_DESCRIPTION" />}
                         />
-
-                        <Option
-                            action={() => {
-                                callActionAndGoToNextStep(
-                                    // eslint-disable-next-line @typescript-eslint/naming-convention
-                                    () => resetDevice({ backup_type: 1 }),
-                                    STEP.ID_SECURITY_STEP,
-                                );
-                            }}
-                            title={<Translation id="SHAMIR_SEED" />}
-                            text={<Translation id="SHAMIR_SEED_DESCRIPTION" />}
-                            button={
-                                <Translation
-                                    id="TR_SELECT_SEED_TYPE"
-                                    values={{ seedType: <Translation id="SHAMIR_SEED" /> }}
+                    </OptionWrapper>
+                    {isShamirBackupAvailable && (
+                        <>
+                            <OptionsDivider />
+                            <OptionWrapper>
+                                <Option
+                                    icon="SEED_SHAMIR"
+                                    data-test="@onboarding/shamir-backup-option-button"
+                                    onClick={async () => {
+                                        await onResetDevice({ backup_type: 1 });
+                                    }}
+                                    heading={<Translation id="SHAMIR_SEED" />}
+                                    description={<Translation id="SHAMIR_SEED_DESCRIPTION" />}
                                 />
-                            }
-                            imgSrc="images/svg/seed-card-shamir.svg"
-                        />
-                    </Wrapper.Options>
-                )}
-                {!isShamirBackupAvailable() && (
-                    <Wrapper.Controls>
-                        <OnboardingButton.Cta
-                            data-test="@onboarding/only-backup-option-button"
-                            onClick={() =>
-                                callActionAndGoToNextStep(resetDevice, STEP.ID_SECURITY_STEP)
-                            }
-                        >
-                            <Translation id="TR_CREATE_WALLET" />
-                        </OnboardingButton.Cta>
-                    </Wrapper.Controls>
-                )}
-            </Wrapper.StepBody>
-            <Wrapper.StepFooter>
-                <OnboardingButton.Back onClick={() => goToPreviousStep()}>
-                    <Translation id="TR_BACK" />
-                </OnboardingButton.Back>
-            </Wrapper.StepFooter>
-        </Wrapper.Step>
+                            </OptionWrapper>
+                        </>
+                    )}
+                </OptionsWrapper>
+            ) : undefined}
+        </OnboardingStepBox>
     );
 };
 

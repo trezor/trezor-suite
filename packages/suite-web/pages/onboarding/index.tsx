@@ -1,3 +1,3 @@
-// This route will be displayed as ApplicationModal
-// eslint-disable-next-line import/no-anonymous-default-export
-export default () => null;
+// This route will be displayed by Preloader
+const Onboarding = () => null;
+export default Onboarding;
