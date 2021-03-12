@@ -11,9 +11,6 @@ const StyledInput = styled(Input)`
     padding: 0 32px 0 20px;
     color: ${props => props.theme.TYPE_DARK_GREY};
     background: transparent;
-    border-radius: 4px;
-    box-shadow: inset 0 3px 6px 0 ${props => props.theme.BG_GREY};
-    border: solid 1px #cccccc;
     box-sizing: border-box;
 `;
 
@@ -31,7 +28,13 @@ const InputPin = ({ value, onDeleteClick }: Props) => {
             noTopLabel
             noError
             value={value.replace(/[0-9]/g, '●')}
-            innerAddon={<Icon onClick={onDeleteClick} color={theme.TYPE_DARK_GREY} icon="BACK" />}
+            innerAddon={
+                <Icon
+                    onClick={onDeleteClick}
+                    color={!value ? theme.TYPE_LIGHT_GREY : theme.TYPE_DARK_GREY}
+                    icon="BACK"
+                />
+            }
         />
     );
 };

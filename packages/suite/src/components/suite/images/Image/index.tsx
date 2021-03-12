@@ -2,9 +2,63 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 
-const PATH = 'images/svg';
+const PNG_PATH = 'images/png';
 
-const IMAGES = {
+const PNG_IMAGES = {
+    EMPTY_WALLET_NEUE: 'wallet-empty-neue.png',
+    EMPTY_WALLET_NEUE_2x: 'wallet-empty-neue@2x.png',
+    // 3D: "3D.png",
+    // 3D_2x: '3D@2x.png',
+    // 3D_3x: '3D@3x.png',
+    BACKUP: 'Backup.png',
+    BACKUP_2x: 'Backup@2x.png',
+    BACKUP_3x: 'Backup@3x.png',
+    CHECK: 'Check.png',
+    CHECK_2x: 'Check@2x.png',
+    CHECK_3x: 'Check@3x.png',
+    CLOCK: 'Clock.png',
+    CLOCK_2x: 'Clock@2x.png',
+    CLOCK_3x: 'Clock@3x.png',
+    COINS: 'Coins.png',
+    COINS_2x: 'Coins@2x.png',
+    COINS_3x: 'Coins@3x.png',
+    ERROR: 'Error.png',
+    ERROR_2x: 'Error@2x.png',
+    ERROR_3x: 'Error@3x.png',
+    EXTRA_INFO: 'ExtraInfo.png',
+    EXTRA_INFO_2x: 'ExtraInfo@2x.png',
+    EXTRA_INFO_3x: 'ExtraInfo@3x.png',
+    FIRMWARE: 'Firmware.png',
+    FIRMWARE_2x: 'Firmware@2x.png',
+    FIRMWARE_3x: 'Firmware@3x.png',
+    FOLDER: 'Folder.png',
+    FOLDER_2x: 'Folder@2x.png',
+    FOLDER_3x: 'Folder@3x.png',
+    KEY: 'Key.png',
+    KEY_2x: 'Key@2x.png',
+    KEY_3x: 'Key@3x.png',
+    NO_TRANSACTION: 'NoTransaction.png',
+    NO_TRANSACTION_2x: 'NoTransaction@2x.png',
+    NO_TRANSACTION_3x: 'NoTransaction@3x.png',
+    PIN: 'Pin.png',
+    PIN_2x: 'Pin@2x.png',
+    PIN_3x: 'Pin@3x.png',
+    PIN_LOCKED: 'Pin_locked.png',
+    PIN_LOCKED_2x: 'Pin_locked@2x.png',
+    PIN_LOCKED_3x: 'Pin_locked@3x.png',
+    RECOVERY: 'Recovery.png',
+    RECOVERY_2x: 'Recovery@2x.png',
+    RECOVERY_3x: 'Recovery@3x.png',
+    UNDERSTAND: 'Understand.png',
+    UNDERSTAND_2x: 'Understand@2x.png',
+    UNDERSTAND_3x: 'Understand@3x.png',
+    WALLET: 'Wallet.png',
+    WALLET_2x: 'Wallet@2x.png',
+    WALLET_3x: 'Wallet@3x.png',
+} as const;
+
+const SVG_PATH = 'images/svg';
+const SVG_IMAGES = {
     RECOVERY_ADVANCED: 'recovery-advanced.svg',
     RECOVERY_BASIC: 'recovery-basic.svg',
     FIRMWARE_INIT_1: 'firmware-init-1.svg',
@@ -39,8 +93,6 @@ const IMAGES = {
     '24_WORDS': '24-words.svg',
     EMPTY_DASHBOARD: 'empty-dashboard.svg',
     EMPTY_WALLET: 'wallet-empty.svg',
-    EMPTY_WALLET_NEUE: 'wallet-empty-neue.png',
-    EMPTY_WALLET_NEUE_2x: 'wallet-empty-neue@2x.png',
     ANALYTICS: 'analytics.svg',
     WELCOME: 'welcome.svg',
     UNI_ERROR: 'uni-error.svg',
@@ -62,20 +114,29 @@ const IMAGES = {
     HOW_TO_ENTER_BOOTLOADER_MODEL_2: 'how-to-enter-bootloader-model-2.svg',
 } as const;
 
-type Image = keyof typeof IMAGES;
+type pngImageKey = keyof typeof PNG_IMAGES;
+type svgImageKey = keyof typeof SVG_IMAGES;
 export type Props = React.ImgHTMLAttributes<Omit<HTMLImageElement, 'src'>> & {
-    image: Image;
+    image: pngImageKey | svgImageKey;
     alt?: string; // why? Seems not to be part of HTMLImageElement :(
 };
 
-const buildSrcSet = (image: Image) => {
-    const imageFile1x = IMAGES[image];
-    const hiRes = `${image}_2x`;
-    const imageFile2x = hiRes in IMAGES ? IMAGES[hiRes as Image] : undefined;
+const buildSrcSet = <
+    BasePath extends string,
+    ImageObject extends typeof PNG_IMAGES | typeof SVG_IMAGES,
+    ImageKey extends keyof ImageObject
+>(
+    basePath: BasePath,
+    imageObject: ImageObject,
+    imageKey: ImageKey,
+) => {
+    const imageFile1x = imageObject[imageKey];
+    const hiRes = `${imageKey}_2x`;
+    const imageFile2x = hiRes in imageObject ? imageObject[hiRes as ImageKey] : undefined;
     if (!imageFile2x) return undefined;
 
-    return `${resolveStaticPath(`${PATH}/${imageFile1x}`)} 1x, ${resolveStaticPath(
-        `${PATH}/${imageFile2x}`,
+    return `${resolveStaticPath(`${basePath}/${imageFile1x}`)} 1x, ${resolveStaticPath(
+        `${basePath}/${imageFile2x}`,
     )} 2x`;
 };
 
@@ -90,13 +151,26 @@ const Image = styled.img`
         `}
 `;
 
-const ImageComponent = ({ image, alt = '', ...props }: Props) => (
-    <Image
-        {...props}
-        alt={alt}
-        src={resolveStaticPath(`${PATH}/${IMAGES[image]}`)}
-        srcSet={buildSrcSet(image)}
-    />
-);
+const ImageComponent = ({ image, ...props }: Props) => {
+    if (image in PNG_IMAGES) {
+        return (
+            <Image
+                src={resolveStaticPath(`${PNG_PATH}/${PNG_IMAGES[image as pngImageKey]}`)}
+                srcSet={buildSrcSet(PNG_PATH, PNG_IMAGES, image as pngImageKey)}
+                {...props}
+            />
+        );
+    }
+    if (image in SVG_IMAGES) {
+        return (
+            <Image
+                src={resolveStaticPath(`${SVG_PATH}/${SVG_IMAGES[image as svgImageKey]}`)}
+                srcSet={buildSrcSet(SVG_PATH, SVG_IMAGES, image as svgImageKey)}
+                {...props}
+            />
+        );
+    }
+    return null;
+};
 
 export default ImageComponent;

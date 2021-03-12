@@ -5,12 +5,11 @@ import { ONBOARDING } from '@onboarding-actions/constants';
 import * as STEP from '@onboarding-constants/steps';
 import steps from '@onboarding-config/steps';
 import { Action } from '@suite-types';
-import { AnyStepId, AnyPath } from '@onboarding-types/steps';
+import { AnyStepId, AnyPath } from '@onboarding-types';
 
 export interface OnboardingState {
     reducerEnabled: boolean;
     prevDevice: Device | null;
-    selectedModel: number | null;
     activeStepId: AnyStepId;
     activeSubStep: string | null;
     path: AnyPath[];
@@ -23,7 +22,6 @@ const initialState: OnboardingState = {
     // prevDevice is used only in firmwareUpdate so maybe move it to firmwareUpdate
     // and here leave only isMatchingPrevDevice ?
     prevDevice: null,
-    selectedModel: null,
     activeStepId: STEP.ID_WELCOME_STEP,
     activeSubStep: null,
     path: [],
@@ -81,9 +79,6 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
                 break;
             case ONBOARDING.GO_TO_SUBSTEP:
                 draft.activeSubStep = action.subStepId;
-                break;
-            case ONBOARDING.SELECT_TREZOR_MODEL:
-                draft.selectedModel = action.model;
                 break;
             case ONBOARDING.ADD_PATH:
                 draft.path = addPath(action.payload, state);

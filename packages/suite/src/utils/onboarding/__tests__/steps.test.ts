@@ -1,21 +1,17 @@
 import * as STEP from '@onboarding-constants/steps';
-import { Step } from '@onboarding-types/steps';
+import { Step } from '@onboarding-types';
 import { findNextStep, findPrevStep, isStepInPath } from '../steps';
 
 const welcomeStep: Step = {
     id: STEP.ID_WELCOME_STEP,
     path: [],
-    buy: false,
-    help: false,
-    progress: false,
+    stepGroup: undefined,
 };
 
 const backupStep: Step = {
     id: STEP.ID_BACKUP_STEP,
     path: [],
-    buy: false,
-    help: false,
-    progress: false,
+    stepGroup: 1,
 };
 
 const stepsMock = [welcomeStep, backupStep];
@@ -54,14 +50,8 @@ describe('steps', () => {
 
         it('should return true for full overlap', () => {
             const step = welcomeStep;
-            welcomeStep.path = ['create', 'new'];
-            expect(isStepInPath(step, ['create', 'new'])).toEqual(true);
-        });
-
-        it('should return false for partial overlap', () => {
-            const step = welcomeStep;
-            welcomeStep.path = ['create', 'new'];
-            expect(isStepInPath(step, ['recovery', 'new'])).toEqual(false);
+            welcomeStep.path = ['create'];
+            expect(isStepInPath(step, ['create'])).toEqual(true);
         });
     });
 });

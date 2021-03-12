@@ -14,6 +14,7 @@ export type FirmwareAction =
     | { type: typeof FIRMWARE.SET_TARGET_RELEASE; payload: AcquiredDevice['firmwareRelease'] }
     | { type: typeof FIRMWARE.RESET_REDUCER }
     | { type: typeof FIRMWARE.ENABLE_REDUCER; payload: boolean }
+    | { type: typeof FIRMWARE.SET_INTERMEDIARY_INSTALLED; payload: boolean }
     | { type: typeof FIRMWARE.SET_ERROR; payload?: string }
     | { type: typeof FIRMWARE.TOGGLE_HAS_SEED }
     | { type: typeof FIRMWARE.REMEMBER_PREVIOUS_DEVICE; payload: Device };
@@ -59,13 +60,22 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
     }
 
     // for update (in firmware modal) target release is set. otherwise use device.firmwareRelease
-    const toFwVersion = targetRelease?.release?.version || device.firmwareRelease!.release.version;
+    const toRelease = targetRelease || device.firmwareRelease;
+
+    if (!toRelease) return;
 
     // device in bootloader mode have bootloader version in attributes used for fw version in non-bootloader mode
     const fromBlVersion = getFwVersion(device);
 
     // update to same variant as is currently installed or to the regular one if device does not have any fw (new/wiped device)
     const isBtcOnlyFirmware = !prevDevice ? false : isBitcoinOnly(prevDevice);
+
+    const intermediary = !toRelease.isLatest;
+    if (intermediary) {
+        console.warn('Cannot install latest firmware. Will install intermediary fw instead.');
+    } else {
+        console.warn(`Installing firmware ${toRelease.release.version}`);
+    }
 
     const payload = {
         keepSession: false,
@@ -74,7 +84,9 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
             path: device.path,
         },
         btcOnly: isBtcOnlyFirmware,
-        version: toFwVersion,
+        version: toRelease.release.version,
+        // if we detect latest firmware may not be used right away, we should use intermediary instead
+        intermediary,
     };
 
     const updateResponse = await TrezorConnect.firmwareUpdate(payload);
@@ -85,7 +97,7 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
             payload: {
                 fromFwVersion,
                 fromBlVersion,
-                toFwVersion: toFwVersion.join('.'),
+                toFwVersion: toRelease.release.version.join('.'),
                 toBtcOnly: isBtcOnlyFirmware,
                 error: !updateResponse.success ? updateResponse.payload.error : '',
             },
@@ -94,6 +106,10 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
 
     if (!updateResponse.success) {
         return dispatch({ type: FIRMWARE.SET_ERROR, payload: updateResponse.payload.error });
+    }
+
+    if (intermediary) {
+        dispatch({ type: FIRMWARE.SET_INTERMEDIARY_INSTALLED, payload: true });
     }
 
     // handling case described here: https://github.com/trezor/trezor-suite/issues/2650

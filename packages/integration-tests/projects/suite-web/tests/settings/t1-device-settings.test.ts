@@ -7,8 +7,12 @@ describe('T1 - Device settings', () => {
         cy.task('setupEmu', { needs_backup: false });
         cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
-        cy.prefixedVisit('/settings/device');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.discoveryShouldFinish();
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@suite/menu/settings-index').click();
+        cy.getTestElement('@settings/menu/device').click();
 
         cy.getTestElement('@settings/device/pin-switch').click({ force: true });
         cy.task('pressYes');
@@ -34,11 +38,14 @@ describe('T1 - Device settings', () => {
         cy.task('setupEmu', { needs_backup: false });
         cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
-        cy.prefixedVisit('/settings/device');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.discoveryShouldFinish();
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@suite/menu/settings-index').click();
+        cy.getTestElement('@settings/menu/device').click();
 
         // TODO - add pin to verify it properly
-
         cy.getTestElement('@settings/auto-lock-select/input').should('not.exist');
     });
 

@@ -11,7 +11,6 @@ describe('Analytics', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
-        cy.task('stopEmu');
         cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
     });
@@ -33,30 +32,29 @@ describe('Analytics', () => {
         cy.prefixedVisit('/');
 
         // pass through initial run
-        cy.getTestElement('@welcome/continue-button').click();
         cy.getTestElement('@analytics/toggle-switch').should('be.checked');
         cy.getTestElement('@analytics/toggle-switch').click({ force: true });
         cy.getTestElement('@analytics/toggle-switch').should('not.be.checked');
-        cy.getTestElement('@analytics/go-to-onboarding-button').click();
-        cy.getTestElement('@onboarding/skip-button').click();
-        cy.getTestElement('@onboarding/skip-button').click();
+        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@onboarding/exit-app-button').click();
 
         // assert that only 1 request was fired
         cy.wait('@data-fetch');
         cy.wrap(requests).its(0).its('c_session_id').as('request0');
         cy.wrap(requests).its(0).should('have.property', 'c_type', 'initial-run-completed');
         cy.wrap(requests).its(0).should('have.property', 'analytics', 'false');
-        cy.wrap(requests).its(0).should('have.property', 'c_instance_id').should('match', instance);
         cy.wrap(requests).its(1).should('equal', undefined);
 
         // important, suite needs time to save initialRun flag into storage
         cy.getTestElement('@suite/loading').should('not.exist');
 
         // go to settings
-        cy.prefixedVisit('/settings');
-        cy.getTestElement('@modal/connect-device');
+        cy.wait(5000);
+        cy.prefixedVisit('/');
         cy.task('startEmu', { wipe: false });
-        cy.getTestElement('@modal/connect-device').should('not.exist');
+        cy.discoveryShouldFinish();
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@suite/menu/settings-index').click();
 
         // analytics is not enabled and no additional requests were fired
         cy.getTestElement('@analytics/toggle-switch').should('not.be.checked');
@@ -95,7 +93,7 @@ describe('Analytics', () => {
         cy.wrap(requests).its(4).should('have.property', 'c_type', 'menu/goto/switch-device');
 
         // adding wallet
-        cy.getTestElement('@switch-device/add-wallet-button').click();
+        cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
         cy.wait('@data-fetch');
         cy.wrap(requests).its(5).should('have.property', 'c_type', 'switch-device/add-wallet');
     });

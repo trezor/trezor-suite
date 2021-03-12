@@ -14,15 +14,16 @@ describe('Google api errors', () => {
         });
         cy.task('startBridge');
         cy.task('metadataStartProvider', 'dropbox');
-        cy.prefixedVisit('/accounts', {
+        cy.prefixedVisit('/', {
             onBeforeLoad: (win: Window) => {
                 cy.stub(win, 'open', stubOpen(win));
                 cy.stub(win, 'fetch', rerouteMetadataToMockProvider);
             },
         });
         cy.passThroughInitialRun();
-       
         cy.discoveryShouldFinish();
+        cy.getTestElement('@suite/menu/wallet-index').click();
+
     });
 
     it('Malformed token', () => {

@@ -151,6 +151,7 @@
         "electron-localshortcut": "^3.2.1",
         "electron-store": "^5.1.1",
         "electron-updater": "^4.3.5",
+        "next-videos": "^1.4.0",
         "node-fetch": "^2.6.1",
         "openpgp": "^5.0.0-2",
         "systeminformation": "^5.4.0"

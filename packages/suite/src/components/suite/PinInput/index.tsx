@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Button, ButtonPin } from '@trezor/components';
 import InputPin from './components/InputPin';
 import { Translation } from '@suite-components';
@@ -9,10 +9,10 @@ const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 `;
 
 const InputWrapper = styled.div`
-    margin-top: 12px;
     margin-bottom: 12px;
     width: 100%;
 `;
@@ -34,13 +34,21 @@ const PinFooter = styled.div`
     flex-direction: column;
 `;
 
+const StyledButtonPin = styled(ButtonPin)<{ blur?: boolean }>`
+    ${props =>
+        props.blur &&
+        css`
+            filter: blur(5px);
+            pointer-events: none;
+        `}
+`;
+
 interface Props {
+    isSubmitting: boolean;
     onPinSubmit: (pin: string) => void;
 }
 
-const PinInput = (props: Props) => {
-    const { onPinSubmit } = props;
-
+const PinInput = ({ isSubmitting, onPinSubmit }: Props) => {
     const [pin, setPin] = useState('');
 
     const onPinBackspace = useCallback(() => {
@@ -56,10 +64,10 @@ const PinInput = (props: Props) => {
         [pin],
     );
 
-    const submit = () => {
+    const submit = useCallback(() => {
         onPinSubmit(pin);
         setPin('');
-    };
+    }, [onPinSubmit, setPin, pin]);
 
     useEffect(() => {
         const keyboardHandler = (event: KeyboardEvent) => {
@@ -67,7 +75,7 @@ const PinInput = (props: Props) => {
             switch (event.keyCode) {
                 case 13:
                     // enter,
-                    onPinSubmit(pin);
+                    submit();
                     break;
                 // backspace
                 case 8:
@@ -121,7 +129,7 @@ const PinInput = (props: Props) => {
         return () => {
             window.removeEventListener('keydown', keyboardHandler, false);
         };
-    }, [pin, onPinSubmit, onPinAdd, onPinBackspace]);
+    }, [onPinAdd, onPinBackspace, submit]);
 
     return (
         <Wrapper data-test="@pin">
@@ -129,30 +137,81 @@ const PinInput = (props: Props) => {
                 <InputPin value={pin} onDeleteClick={() => onPinBackspace()} />
             </InputWrapper>
             <PinRow>
-                <ButtonPin type="button" data-value="7" onClick={() => onPinAdd('7')} />
-                <ButtonPin type="button" data-value="8" onClick={() => onPinAdd('8')} />
-                <ButtonPin type="button" data-value="9" onClick={() => onPinAdd('9')} />
-            </PinRow>
-            <PinRow>
-                <ButtonPin type="button" data-value="4" onClick={() => onPinAdd('4')} />
-                <ButtonPin type="button" data-value="5" onClick={() => onPinAdd('5')} />
-                <ButtonPin type="button" data-value="6" onClick={() => onPinAdd('6')} />
-            </PinRow>
-            <PinRow>
-                <ButtonPin
+                <StyledButtonPin
+                    blur={isSubmitting}
                     type="button"
+                    data-value="7"
+                    onClick={() => onPinAdd('7')}
+                />
+                <StyledButtonPin
+                    blur={isSubmitting}
+                    type="button"
+                    data-value="8"
+                    onClick={() => onPinAdd('8')}
+                />
+                <StyledButtonPin
+                    blur={isSubmitting}
+                    type="button"
+                    data-value="9"
+                    onClick={() => onPinAdd('9')}
+                />
+            </PinRow>
+            <PinRow>
+                <StyledButtonPin
+                    blur={isSubmitting}
+                    type="button"
+                    data-value="4"
+                    onClick={() => onPinAdd('4')}
+                />
+                <StyledButtonPin
+                    blur={isSubmitting}
+                    type="button"
+                    data-value="5"
+                    onClick={() => onPinAdd('5')}
+                />
+                <StyledButtonPin
+                    blur={isSubmitting}
+                    type="button"
+                    data-value="6"
+                    onClick={() => onPinAdd('6')}
+                />
+            </PinRow>
+            <PinRow>
+                <StyledButtonPin
+                    type="button"
+                    blur={isSubmitting}
                     data-value="1"
                     onClick={() => onPinAdd('1')}
                     data-test="@pin/input/1"
                 />
-                <ButtonPin type="button" data-value="2" onClick={() => onPinAdd('2')} />
-                <ButtonPin type="button" data-value="3" onClick={() => onPinAdd('3')} />
+                <StyledButtonPin
+                    blur={isSubmitting}
+                    type="button"
+                    data-value="2"
+                    onClick={() => onPinAdd('2')}
+                />
+                <StyledButtonPin
+                    blur={isSubmitting}
+                    type="button"
+                    data-value="3"
+                    onClick={() => onPinAdd('3')}
+                />
             </PinRow>
 
             <Expander />
             <PinFooter>
-                <Button variant="primary" fullWidth onClick={submit} data-test="@pin/submit-button">
-                    <Translation id="TR_ENTER_PIN" />
+                <Button
+                    variant="primary"
+                    isDisabled={isSubmitting}
+                    fullWidth
+                    onClick={submit}
+                    data-test="@pin/submit-button"
+                >
+                    {isSubmitting ? (
+                        <Translation id="TR_VERIFYING_PIN" />
+                    ) : (
+                        <Translation id="TR_ENTER_PIN" />
+                    )}
                 </Button>
             </PinFooter>
         </Wrapper>

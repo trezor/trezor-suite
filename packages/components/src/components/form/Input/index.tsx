@@ -6,6 +6,19 @@ import { Icon } from '../../Icon';
 import { getStateColor, useTheme } from '../../../utils';
 import { useEffect, createRef } from 'react';
 
+const getInputHeight = (variant?: InputVariant) => {
+    switch (variant) {
+        case 'small':
+            return 32;
+        case 'medium':
+            return 42;
+        case 'large':
+            return 48;
+        default:
+            return 48;
+    }
+};
+
 const Wrapper = styled.div<Pick<Props, 'width'>>`
     display: inline-flex;
     flex-direction: column;
@@ -33,7 +46,7 @@ const StyledInput = styled.input<InputProps>`
     outline: none;
     box-sizing: border-box;
     width: 100%;
-    height: ${props => (props.variant === 'small' ? '32px' : '48px')};
+    height: ${props => `${getInputHeight(props.variant)}px`};
     color: ${props => getStateColor(props.state, props.theme)};
 
     &:read-only {

@@ -1,127 +1,92 @@
-import React, { useMemo } from 'react';
-
-import { OnboardingButton, Wrapper } from '@onboarding-components';
+import React, { useState } from 'react';
+import { OnboardingButtonBack, OnboardingStepBox } from '@onboarding-components';
 import { Translation } from '@suite-components';
 import {
-    CheckSeedStep,
-    FirmwareProgressStep,
-    PartiallyDoneStep,
-    DoneStep,
-    ErrorStep,
-    ReconnectInBootloaderStep,
-    ReconnectInNormalStep,
-    NoNewFirmware,
-    OnboardingInitialStep,
     ContinueButton,
     RetryButton,
+    FirmwareInstallation,
+    FirmwareInitial,
+    Fingerprint,
 } from '@firmware-components';
-import { useSelector, useActions } from '@suite-hooks';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import * as firmwareActions from '@suite/actions/firmware/firmwareActions';
+import { useSelector, useFirmware, useOnboarding } from '@suite-hooks';
+import { AcquiredDevice } from '@suite-types';
+import { getFwVersion } from '@suite-utils/device';
 
 const FirmwareStep = () => {
-    const { device, firmware } = useSelector(state => ({
+    const { device } = useSelector(state => ({
         device: state.suite.device,
-        firmware: state.firmware,
     }));
-    const { goToNextStep, goToPreviousStep, resetReducer, firmwareUpdate } = useActions({
-        goToNextStep: onboardingActions.goToNextStep,
-        goToPreviousStep: onboardingActions.goToPreviousStep,
-        resetReducer: firmwareActions.resetReducer,
-        firmwareUpdate: firmwareActions.firmwareUpdate,
-    });
+    const { goToNextStep } = useOnboarding();
+    const { status, error, resetReducer, firmwareUpdate, showFingerprintCheck } = useFirmware();
+    const [cachedDevice, setCachedDevice] = useState<AcquiredDevice>(device as AcquiredDevice);
 
-    const Component = useMemo(() => {
-        // edge case 1 - error
-        if (firmware.error) {
-            return {
-                Body: <ErrorStep.Body />,
-                BottomBar: <RetryButton onClick={firmwareUpdate} />,
-            };
-        }
+    if (showFingerprintCheck && device) {
+        // Some old firmwares ask for verifying firmware fingerprint by dispatching ButtonRequest_FirmwareCheck
+        return (
+            <OnboardingStepBox
+                image="FIRMWARE"
+                heading={<Translation id="TR_CHECK_FINGERPRINT" />}
+                confirmOnDevice={device.features?.major_version === 1 ? 1 : 2}
+            >
+                <Fingerprint device={device} />
+            </OnboardingStepBox>
+        );
+    }
 
-        // // edge case 2 - user has reconnected device that is already up to date
-        if (firmware.status !== 'done' && device?.firmware === 'valid') {
-            return {
-                Body: <NoNewFirmware.Body />,
-                BottomBar: <ContinueButton onClick={() => goToNextStep()} />,
-            };
-        }
-
-        switch (firmware.status) {
-            case 'initial':
-                return {
-                    Body: <OnboardingInitialStep.Body />,
-                    BottomBar: <OnboardingInitialStep.BottomBar />,
-                };
-            case 'check-seed':
-                return {
-                    Body: <CheckSeedStep.Body />,
-                    BottomBar: <CheckSeedStep.BottomBar />,
-                };
-            case 'waiting-for-bootloader':
-                return {
-                    Body: <ReconnectInBootloaderStep.Body />,
-                    BottomBar: <ReconnectInBootloaderStep.BottomBar />,
-                };
-            case 'waiting-for-confirmation':
-            case 'installing':
-            case 'started':
-            case 'wait-for-reboot':
-            case 'unplug':
-                return {
-                    Body: <FirmwareProgressStep.Body />,
-                    BottomBar: null,
-                };
-            case 'reconnect-in-normal':
-                return {
-                    Body: <ReconnectInNormalStep.Body />,
-                    BottomBar: <ReconnectInNormalStep.BottomBar />,
-                };
-            case 'partially-done':
-                return {
-                    Body: <PartiallyDoneStep.Body />,
-                    BottomBar: <ContinueButton onClick={resetReducer} />,
-                };
-            case 'done':
-                return {
-                    Body: <DoneStep.Body />,
-                    BottomBar: <ContinueButton onClick={() => goToNextStep()} />,
-                };
-
-            default:
-                // 'ensure' type completeness
-                throw new Error(`state "${firmware.status}" is not handled here`);
-        }
-    }, [
-        device?.firmware,
-        firmware.error,
-        firmware.status,
-        firmwareUpdate,
-        goToNextStep,
-        resetReducer,
-    ]);
-
-    return (
-        <Wrapper.Step>
-            <Wrapper.StepBody>
-                {Component.Body}
-                <Wrapper.Controls>{Component.BottomBar}</Wrapper.Controls>
-            </Wrapper.StepBody>
-
-            <Wrapper.StepFooter>
-                {['initial', 'error'].includes(firmware.status) && (
-                    <OnboardingButton.Back
-                        onClick={() =>
-                            firmware.status === 'error' ? resetReducer() : goToPreviousStep()
-                        }
-                    >
+    // edge case 1 - Installation failed
+    if (error) {
+        return (
+            <OnboardingStepBox
+                image="FIRMWARE"
+                heading={<Translation id="TR_FW_INSTALLATION_FAILED" />}
+                description={<Translation id="TOAST_GENERIC_ERROR" values={{ error }} />}
+                innerActions={<RetryButton onClick={firmwareUpdate} />}
+                outerActions={
+                    <OnboardingButtonBack onClick={() => resetReducer()}>
                         <Translation id="TR_BACK" />
-                    </OnboardingButton.Back>
-                )}
-            </Wrapper.StepFooter>
-        </Wrapper.Step>
-    );
+                    </OnboardingButtonBack>
+                }
+            />
+        );
+    }
+
+    // // edge case 2 - user has reconnected device that is already up to date
+    if (status !== 'done' && device?.firmware === 'valid') {
+        return (
+            <OnboardingStepBox
+                image="FIRMWARE"
+                heading={<Translation id="TR_FIRMWARE_IS_UP_TO_DATE" />}
+                description={
+                    <Translation
+                        id="TR_FIRMWARE_INSTALLED_TEXT"
+                        values={{ version: getFwVersion(device) }}
+                    />
+                }
+                innerActions={<ContinueButton onClick={() => goToNextStep()} />}
+            />
+        );
+    }
+
+    switch (status) {
+        // check-seed is omitted as it is only relevant in separate fw update flow and it is not used in onboarding since user don't have any seed at that time
+        case 'initial':
+        case 'waiting-for-bootloader': // waiting for user to reconnect in bootloader
+            return (
+                <FirmwareInitial cachedDevice={cachedDevice} setCachedDevice={setCachedDevice} />
+            );
+        case 'waiting-for-confirmation': // waiting for confirming installation on a device
+        case 'started': // called from firmwareUpdate()
+        case 'installing':
+        case 'wait-for-reboot':
+        case 'unplug': // only relevant for T1, TT auto restarts itself
+        case 'reconnect-in-normal': // only relevant for T1, TT auto restarts itself
+        case 'partially-done': // only relevant for T1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
+        case 'done':
+            return <FirmwareInstallation cachedDevice={cachedDevice} />;
+        default:
+            // 'ensure' type completeness
+            throw new Error(`state "${status}" is not handled here`);
+    }
 };
 
 export default FirmwareStep;

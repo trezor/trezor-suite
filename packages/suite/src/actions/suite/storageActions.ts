@@ -247,7 +247,6 @@ export const saveSuiteSettings = () => async (_dispatch: Dispatch, getState: Get
             flags: {
                 initialRun: suite.flags.initialRun,
                 // is not saved at the moment, but probably will be in future. now we always
-                // initialWebRun: suite.flag.initialWebRun,
                 // TODO: maybe spread all flags and set flags that we don't want to save to undefined?
                 discreetModeCompleted: suite.flags.discreetModeCompleted,
                 bech32BannerClosed: suite.flags.bech32BannerClosed,

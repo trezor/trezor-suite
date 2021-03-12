@@ -3,7 +3,6 @@ import { Modal, ModalProps, ConfirmOnDevice } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { TrezorDevice } from '@suite-types';
 import { Fingerprint } from '@firmware-components';
-import { getFormattedFingerprint } from '@firmware-utils';
 
 interface Props extends ModalProps {
     device: TrezorDevice;
@@ -23,10 +22,7 @@ const ConfirmFingerprint = ({ device, ...rest }: Props) => (
         data-test="@suite/modal/confirm-fingerprint-on-device"
         {...rest}
     >
-        <Fingerprint>
-            {/* device.firmwareRelease should be always defined here (this renders upon dispatching ButtonRequest_FirmwareCheck) */}
-            {getFormattedFingerprint(device.firmwareRelease!.release.fingerprint)}
-        </Fingerprint>
+        <Fingerprint device={device} />
     </Modal>
 );
 

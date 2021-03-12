@@ -1,107 +1,153 @@
-import React from 'react';
-import { UI } from 'trezor-connect';
-
-import { Translation, Image } from '@suite-components';
-import { Text, OnboardingButton, Wrapper } from '@onboarding-components';
-import * as onboardingActions from '@onboarding-actions/onboardingActions';
+import React, { useEffect, useState } from 'react';
+import { PinMatrix, Translation } from '@suite-components';
+import {
+    OnboardingButtonCta,
+    OnboardingButtonSkip,
+    SkipStepConfirmation,
+} from '@onboarding-components';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions, useSelector, useOnboarding } from '@suite-hooks';
+import PinStepBox from './PinStepBox';
 
 const SetPinStep = () => {
-    const { goToNextStep, changePin } = useActions({
-        goToNextStep: onboardingActions.goToNextStep,
+    const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
+    const device = useSelector(state => state.suite.device);
+    const modal = useSelector(state => state.modal);
+    const [status, setStatus] = useState<'initial' | 'enter-pin' | 'repeat-pin' | 'success'>(
+        'initial',
+    );
+    const { goToNextStep, showPinMatrix } = useOnboarding();
+
+    const { changePin } = useActions({
         changePin: deviceSettingsActions.changePin,
     });
-    const device = useSelector(state => state.suite.device);
+
+    const onTryAgain = () => {
+        setStatus('initial');
+        changePin({});
+    };
+
+    useEffect(() => {
+        // This is where we detect requests from a device, figure out whether the PIN functionality got enabled,
+        // and set a status of the setup process accordingly
+        if (device?.features) {
+            // enter-pin and repeat-pin" states are set only while working with T1 (TT sends different request ButtonRequest_PinEntry and everything is done in touchscreen).
+            // They are used to show better context-aware UI/texts (Right now it only changes a header from "Set a new PIN" to "Confirm PIN").
+            // As the whole process on TT is done via touchscreen we don't really need to track anything besides 'initial' and 'success' states.
+            if (device.buttonRequests.includes('PinMatrixRequestType_NewFirst')) {
+                if (device.buttonRequests.includes('PinMatrixRequestType_NewSecond')) {
+                    setStatus('repeat-pin');
+                } else {
+                    setStatus('enter-pin');
+                }
+            }
+
+            if (device && device.features.pin_protection) {
+                setStatus('success');
+            }
+        }
+    }, [device]);
 
     if (!device || !device.features) {
         return null;
     }
 
-    const getStatus = () => {
-        if (device.buttonRequests.filter(b => b === UI.REQUEST_PIN).length === 1) {
-            return 'first';
-        }
-        if (device.buttonRequests.filter(b => b === UI.REQUEST_PIN).length === 2) {
-            return 'second';
-        }
-        if (device && device.features.pin_protection) {
-            return 'success';
-        }
-        if (device && !device.features.pin_protection) {
-            return 'initial';
-        }
+    const showPinMismatch =
+        modal.context === '@modal/context-user' && modal.payload.type === 'pin-mismatch'; // Set to true by T1 when user fails to enter same pin, not used at all with TT
 
-        // todo: what if device disconnects?
-        return null;
-    };
+    // First button request that will pop out of the device is "ButtonRequest_ProtectCall" (T1) or "ButtonRequest_Other" (T2), requesting us to confirm enabling PIN
+    // buttonRequests will be cleared on cancelling the confirmation prompt on the device, turning this condition to false.
+    const showConfirmationPrompt = device.buttonRequests.find(
+        b => b === 'ButtonRequest_Other' || b === 'ButtonRequest_ProtectCall',
+    );
 
-    return (
-        <Wrapper.Step data-test="@onboarding/pin">
-            <Wrapper.StepHeading>
-                {getStatus() === 'initial' && <Translation id="TR_PIN_HEADING_INITIAL" />}
-                {getStatus() === 'first' && <Translation id="TR_PIN_HEADING_FIRST" />}
-                {getStatus() === 'second' && <Translation id="TR_PIN_HEADING_REPEAT" />}
-                {getStatus() === 'success' && <Translation id="TR_PIN_HEADING_SUCCESS" />}
-            </Wrapper.StepHeading>
-            <Wrapper.StepBody>
-                {getStatus() === 'initial' && (
-                    <>
-                        <Text>
-                            <Translation id="TR_PIN_SUBHEADING" />
-                        </Text>
+    if (showPinMismatch) {
+        // User entered 2 different PINs, show error and offer to try again
+        // Used only on T1, TT shows pins mismatch error on its display
+        return (
+            <PinStepBox
+                heading={<Translation id="TR_PIN_MISMATCH_HEADING" />}
+                description={<Translation id="TR_PIN_MISMATCH_TEXT" />}
+                data-test="@pin-mismatch"
+                innerActions={
+                    <OnboardingButtonCta
+                        onClick={onTryAgain}
+                        data-test="@pin-mismatch/try-again-button"
+                    >
+                        <Translation id="TR_TRY_AGAIN" />
+                    </OnboardingButtonCta>
+                }
+            />
+        );
+    }
 
-                        <Image
-                            image={device.features.major_version === 1 ? 'PIN_ASK_1' : 'PIN_ASK_2'}
-                        />
-                        <Wrapper.Controls>
-                            <OnboardingButton.Cta
-                                data-test="@onboarding/set-pin-button"
-                                onClick={() => {
-                                    changePin();
-                                }}
-                            >
-                                <Translation id="TR_SET_PIN" />
-                            </OnboardingButton.Cta>
-                        </Wrapper.Controls>
-                    </>
-                )}
-
-                {getStatus() === 'success' && (
-                    <>
-                        <Text>
-                            <Translation id="TR_PIN_SET_SUCCESS" />
-                        </Text>
-                        <Image
-                            image={
-                                device.features.major_version === 1
-                                    ? 'PIN_SUCCESS_1'
-                                    : 'PIN_SUCCESS_2'
-                            }
-                        />
-                        <Wrapper.Controls>
-                            <OnboardingButton.Cta
-                                data-test="@onboarding/pin/continue-button"
-                                onClick={() => goToNextStep()}
-                            >
-                                <Translation id="TR_COMPLETE_SETUP" />
-                            </OnboardingButton.Cta>
-                        </Wrapper.Controls>
-                    </>
-                )}
-            </Wrapper.StepBody>
-            <Wrapper.StepFooter>
-                {getStatus() !== 'success' && (
-                    <OnboardingButton.Back
-                        data-test="@onboarding/skip-button"
-                        icon="CROSS"
+    if (status === 'success') {
+        // Pin successfully set up
+        return (
+            <PinStepBox
+                heading={<Translation id="TR_PIN_HEADING_SUCCESS" />}
+                description={<Translation id="TR_PIN_SET_SUCCESS" />}
+                outerActions={
+                    <OnboardingButtonCta
+                        data-test="@onboarding/pin/continue-button"
                         onClick={() => goToNextStep()}
                     >
-                        <Translation id="TR_SKIP" />
-                    </OnboardingButton.Back>
-                )}
-            </Wrapper.StepFooter>
-        </Wrapper.Step>
+                        <Translation id="TR_CONTINUE" />
+                    </OnboardingButtonCta>
+                }
+            />
+        );
+    }
+
+    // 'initial', 'enter-pin', 'repeat-pin' states
+    return (
+        <>
+            {showSkipConfirmation && (
+                <SkipStepConfirmation
+                    onCancel={() => setShowSkipConfirmation(false)}
+                    variant="pin"
+                />
+            )}
+            <PinStepBox
+                heading={
+                    <>
+                        {status === 'initial' && <Translation id="TR_PIN_HEADING_INITIAL" />}
+                        {status === 'enter-pin' && <Translation id="TR_PIN_HEADING_FIRST" />}
+                        {status === 'repeat-pin' && <Translation id="TR_PIN_HEADING_REPEAT" />}
+                    </>
+                }
+                description={<Translation id="TR_PIN_SUBHEADING" />}
+                innerActions={
+                    // "Create a pin" button to start the process, continue button after the pin is set (as outerAction), no primary CTA during the setup procedure on TT
+                    !showConfirmationPrompt ? (
+                        <OnboardingButtonCta
+                            data-test="@onboarding/set-pin-button"
+                            onClick={() => {
+                                changePin();
+                            }}
+                        >
+                            <Translation id="TR_SET_PIN" />
+                        </OnboardingButtonCta>
+                    ) : undefined
+                }
+                outerActions={
+                    // show skip button only if we are not done yet with setting up the pin (state is other than success state)
+                    // and if confirmation prompt is not active (I guess there is no point showing back btn which can't be clicked because it is under the modal)
+                    !showConfirmationPrompt ? (
+                        <OnboardingButtonSkip
+                            data-test="@onboarding/skip-button"
+                            onClick={() => setShowSkipConfirmation(true)}
+                        >
+                            <Translation id="TR_SKIP" />
+                        </OnboardingButtonSkip>
+                    ) : undefined
+                }
+                confirmOnDevice={showConfirmationPrompt ? device.features.major_version : undefined}
+            >
+                {/* // device requested showing a pin matrix, show the matrix also on "repeat-pin" status until we get fail or success response from the device */}
+                {(showPinMatrix || status === 'repeat-pin') && <PinMatrix device={device} />}
+            </PinStepBox>
+        </>
     );
 };
 

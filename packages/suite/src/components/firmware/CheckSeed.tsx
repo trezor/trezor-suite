@@ -1,45 +1,48 @@
 import React from 'react';
 import styled from 'styled-components';
-
 import { Button, Checkbox } from '@trezor/components';
 import { useDevice, useFirmware } from '@suite-hooks';
 import { Translation } from '@suite-components';
-import { P, H2, WarningImg, SeedImg, ReconnectInNormalStep } from '@firmware-components';
+import { OnboardingStepBox } from '@onboarding-components';
+import { P } from '@firmware-components';
 
 const CheckboxRow = styled.div`
     display: flex;
     flex-direction: row;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
-    width: 380px;
-    padding: 20px 0;
     justify-content: center;
-    margin: 28px auto 0 auto;
 `;
 
-const Body = () => {
+const CheckSeedStep = () => {
     const { device } = useDevice();
-    const { toggleHasSeed, hasSeed } = useFirmware();
+    const { toggleHasSeed, hasSeed, setStatus } = useFirmware();
 
     // unacquired device handled on higher level
     if (!device?.features) return null;
 
-    // ensure that device is connected in requested mode
-    if (device.mode !== 'normal') return <ReconnectInNormalStep.Body />;
-
     // device is not backed up - it is not advisable to do firmware update
     if (device.features.needs_backup || device.features.unfinished_backup) {
         return (
-            <>
-                <WarningImg />
-                <H2>
+            <OnboardingStepBox
+                image="FIRMWARE"
+                heading={
                     <Translation
                         id="TR_DEVICE_LABEL_IS_NOT_BACKED_UP"
                         values={{ deviceLabel: device.label }}
                     />
-                </H2>
-                <P>
-                    <Translation id="TR_FIRMWARE_IS_POTENTIALLY_RISKY" />
-                </P>
+                }
+                description={<Translation id="TR_FIRMWARE_IS_POTENTIALLY_RISKY" />}
+                outerActions={
+                    <Button
+                        onClick={() => setStatus('waiting-for-bootloader')}
+                        data-test="@firmware/confirm-seed-button"
+                        isDisabled={!device?.connected || !hasSeed}
+                    >
+                        <Translation id="TR_CONTINUE" />
+                    </Button>
+                }
+                disableConfirmWrapper
+                nested
+            >
                 <CheckboxRow>
                     <Checkbox
                         isChecked={hasSeed}
@@ -51,20 +54,28 @@ const Body = () => {
                         </P>
                     </Checkbox>
                 </CheckboxRow>
-            </>
+            </OnboardingStepBox>
         );
     }
 
     // expected flow - device is backed up
     return (
-        <>
-            <SeedImg />
-            <H2>
-                <Translation id="TR_SECURITY_CHECKPOINT_GOT_SEED" />
-            </H2>
-            <P>
-                <Translation id="TR_BEFORE_ANY_FURTHER_ACTIONS" />
-            </P>
+        <OnboardingStepBox
+            image="FIRMWARE"
+            heading={<Translation id="TR_SECURITY_CHECKPOINT_GOT_SEED" />}
+            description={<Translation id="TR_BEFORE_ANY_FURTHER_ACTIONS" />}
+            outerActions={
+                <Button
+                    onClick={() => setStatus('waiting-for-bootloader')}
+                    data-test="@firmware/confirm-seed-button"
+                    isDisabled={!device?.connected || !hasSeed}
+                >
+                    <Translation id="TR_CONTINUE" />
+                </Button>
+            }
+            disableConfirmWrapper
+            nested
+        >
             <CheckboxRow>
                 <Checkbox
                     isChecked={hasSeed}
@@ -76,26 +87,8 @@ const Body = () => {
                     </P>
                 </Checkbox>
             </CheckboxRow>
-        </>
+        </OnboardingStepBox>
     );
 };
 
-const BottomBar = () => {
-    const { device } = useDevice();
-    const { hasSeed, setStatus } = useFirmware();
-
-    return (
-        <Button
-            onClick={() => setStatus('waiting-for-bootloader')}
-            data-test="@firmware/confirm-seed-button"
-            isDisabled={!device?.connected || device.mode === 'bootloader' || !hasSeed}
-        >
-            <Translation id="TR_CONTINUE" />
-        </Button>
-    );
-};
-
-export const CheckSeedStep = {
-    Body,
-    BottomBar,
-};
+export { CheckSeedStep };

@@ -1,162 +1,173 @@
 import React from 'react';
-import styled from 'styled-components';
-
-import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
-import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components';
-import { Translation, Loading, Image } from '@suite-components';
+import { OnboardingButtonCta } from '@onboarding-components';
+import { SelectWordCount, SelectRecoveryType, SelectRecoveryWord } from '@recovery-components';
+import { Translation } from '@suite-components';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import * as recoveryActions from '@recovery-actions/recoveryActions';
-import { useActions, useSelector } from '@suite-hooks';
-
-const StyledImage = styled(Image)`
-    flex: 1;
-`;
+import { useActions, useRecovery, useSelector } from '@suite-hooks';
+import RecoveryStepBox from './RecoveryStepBox';
 
 const RecoveryStep = () => {
+    const { goToNextStep } = useActions({
+        goToNextStep: onboardingActions.goToNextStep,
+    });
+
+    const { device } = useSelector(state => ({
+        device: state.suite.device,
+    }));
+
     const {
-        goToNextStep,
-        goToPreviousStep,
+        status,
+        error,
+        wordRequestInputType,
         setWordsCount,
         setAdvancedRecovery,
         recoverDevice,
         setStatus,
         resetReducer,
-    } = useActions({
-        goToNextStep: onboardingActions.goToNextStep,
-        goToPreviousStep: onboardingActions.goToPreviousStep,
-        setWordsCount: recoveryActions.setWordsCount,
-        setAdvancedRecovery: recoveryActions.setAdvancedRecovery,
-        recoverDevice: recoveryActions.recoverDevice,
-        setStatus: recoveryActions.setStatus,
-        resetReducer: recoveryActions.resetReducer,
-    });
-
-    const { recovery, device } = useSelector(state => ({
-        device: state.suite.device,
-        recovery: state.recovery,
-    }));
+    } = useRecovery();
 
     if (!device || !device.features) {
         return null;
     }
 
     const model = device.features.major_version;
-    const handleBack = () => {
-        if (recovery.status === 'select-recovery-type') {
-            return setStatus('initial');
-        }
-        // allow to change recovery settings for T1 in case of error
-        if (recovery.status === 'finished' && recovery.error && model === 1) {
-            return setStatus('initial');
-        }
-        return goToPreviousStep();
-    };
 
-    const isBackButtonVisible = () => {
-        if (recovery.status === 'finished' && recovery.error) {
-            return true;
-        }
-        if (recovery.status !== 'finished' && recovery.status !== 'in-progress') {
-            return true;
-        }
-        return false;
-    };
-
-    return (
-        <Wrapper.Step>
-            <Wrapper.StepHeading>
-                {recovery.status === 'initial' && <Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
-                {recovery.status === 'select-recovery-type' && (
-                    <Translation id="TR_SELECT_RECOVERY_METHOD" />
-                )}
-                {device && device.mode === 'normal' && (
-                    <Translation id="TR_WALLET_RECOVERED_FROM_SEED" />
-                )}
-                {recovery.status === 'finished' && recovery.error && (
-                    <Translation id="TR_RECOVERY_FAILED" />
-                )}
-            </Wrapper.StepHeading>
-            <Wrapper.StepBody>
-                {recovery.status === 'initial' && model === 1 && (
+    if (status === 'initial') {
+        // 1. step where users chooses number of words in case of T1
+        // In case of model T show CTA button to start the process
+        if (model === 1) {
+            // Model 1
+            return (
+                <RecoveryStepBox
+                    heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
+                    description={<Translation id="TR_RECOVER_SUBHEADING" />}
+                >
                     <SelectWordCount
                         onSelect={number => {
                             setWordsCount(number);
                             setStatus('select-recovery-type');
                         }}
                     />
-                )}
+                </RecoveryStepBox>
+            );
+        }
 
-                {recovery.status === 'initial' && model === 2 && (
-                    <>
-                        <Text>
-                            <Translation id="TR_RECOVER_SUBHEADING_MODEL_T" />
-                        </Text>
-                        <StyledImage image="RECOVER_FROM_SEED" width="200px" />
-                        <Wrapper.Controls>
-                            <OnboardingButton.Cta
-                                data-test="@onboarding/recovery/start-button"
-                                onClick={() => {
-                                    recoverDevice();
-                                }}
-                            >
-                                <Translation id="TR_START_RECOVERY" />
-                            </OnboardingButton.Cta>
-                        </Wrapper.Controls>
-                    </>
-                )}
-                {recovery.status === 'select-recovery-type' && (
-                    <>
-                        <SelectRecoveryType
-                            onSelect={(type: boolean) => {
-                                setAdvancedRecovery(type);
-                                recoverDevice();
-                            }}
-                        />
-                    </>
-                )}
-
-                {recovery.status === 'in-progress' && <Loading noBackground />}
-
-                {device && device.mode === 'normal' && (
-                    <>
-                        <StyledImage image="UNI_SUCCESS" />
-                        <Wrapper.Controls>
-                            <OnboardingButton.Cta
-                                data-test="@onboarding/recovery/continue-button"
-                                onClick={() => goToNextStep('set-pin')}
-                            >
-                                <Translation id="TR_CONTINUE" />
-                            </OnboardingButton.Cta>
-                        </Wrapper.Controls>
-                    </>
-                )}
-                {recovery.status === 'finished' && recovery.error && (
-                    <>
-                        <Error error={recovery.error} />
-                        <Wrapper.Controls>
-                            <OnboardingButton.Cta
-                                data-test="@onboarding/recovery/retry-button"
-                                onClick={model === 1 ? resetReducer : recoverDevice}
-                            >
-                                <Translation id="TR_RETRY" />
-                            </OnboardingButton.Cta>
-                        </Wrapper.Controls>
-                    </>
-                )}
-            </Wrapper.StepBody>
-
-            <Wrapper.StepFooter>
-                {isBackButtonVisible() && (
-                    <OnboardingButton.Back
-                        onClick={() => handleBack()}
-                        data-test="@onboarding/recovery/back-button"
+        // Model T
+        return (
+            <RecoveryStepBox
+                heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
+                description={<Translation id="TR_RECOVER_SUBHEADING_MODEL_T" />}
+                innerActions={
+                    <OnboardingButtonCta
+                        data-test="@onboarding/recovery/start-button"
+                        onClick={() => {
+                            recoverDevice();
+                        }}
                     >
-                        <Translation id="TR_BACK" />
-                    </OnboardingButton.Back>
-                )}
-            </Wrapper.StepFooter>
-        </Wrapper.Step>
-    );
+                        <Translation id="TR_START_RECOVERY" />
+                    </OnboardingButtonCta>
+                }
+            />
+        );
+    }
+
+    if (status === 'select-recovery-type') {
+        // 2. step: Standard recovery (user enters recovery seed word by word on host) or Advanced recovery (user types words on a device)
+        return (
+            <RecoveryStepBox
+                heading={<Translation id="TR_SELECT_RECOVERY_METHOD" />}
+                description={<Translation id="TR_RECOVERY_TYPES_DESCRIPTION" />}
+            >
+                <SelectRecoveryType
+                    onSelect={(type: boolean) => {
+                        setAdvancedRecovery(type);
+                        recoverDevice();
+                    }}
+                />
+            </RecoveryStepBox>
+        );
+    }
+
+    if (status === 'waiting-for-confirmation') {
+        // On model 1 we show confirm bubble only while we wait for confirmation that users wants to start the process
+        return (
+            <RecoveryStepBox
+                heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
+                description={
+                    model === 1 ? undefined : <Translation id="TR_RECOVER_SUBHEADING_MODEL_T" />
+                }
+                confirmOnDevice={model}
+            />
+        );
+    }
+
+    if (status === 'in-progress') {
+        const getModel1Description = () => {
+            if (wordRequestInputType === 'plain') {
+                return (
+                    <>
+                        <Translation id="TR_ENTER_SEED_WORDS_INSTRUCTION" />{' '}
+                        <Translation id="TR_RANDOM_SEED_WORDS_DISCLAIMER" />
+                    </>
+                );
+            }
+            if (wordRequestInputType === 6 || wordRequestInputType === 9) {
+                return <Translation id="TR_ADVANCED_RECOVERY_TEXT" />;
+            }
+        };
+        return (
+            <RecoveryStepBox
+                heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
+                description={
+                    model === 1 ? (
+                        getModel1Description()
+                    ) : (
+                        <Translation id="TR_RECOVER_SUBHEADING_MODEL_T" />
+                    )
+                }
+                confirmOnDevice={model}
+            >
+                <SelectRecoveryWord />
+            </RecoveryStepBox>
+        );
+    }
+
+    if (device && device.mode === 'normal') {
+        // Ready to continue to the next step
+        return (
+            <RecoveryStepBox
+                heading={<Translation id="TR_WALLET_RECOVERED_FROM_SEED" />}
+                innerActions={
+                    <OnboardingButtonCta
+                        data-test="@onboarding/recovery/continue-button"
+                        onClick={() => goToNextStep('set-pin')}
+                    >
+                        <Translation id="TR_CONTINUE" />
+                    </OnboardingButtonCta>
+                }
+            />
+        );
+    }
+    if (status === 'finished' && error) {
+        // Recovery finished with error, user is recommended to wipe the device and start over
+        return (
+            <RecoveryStepBox
+                heading={<Translation id="TR_RECOVERY_FAILED" />}
+                description={<Translation id="TR_RECOVERY_ERROR" values={{ error }} />}
+                innerActions={
+                    <OnboardingButtonCta
+                        data-test="@onboarding/recovery/retry-button"
+                        onClick={model === 1 ? resetReducer : recoverDevice}
+                    >
+                        <Translation id="TR_RETRY" />
+                    </OnboardingButtonCta>
+                }
+            />
+        );
+    }
+
+    // We shouldn't get there, but to keep typescript sane let's return null
+    return null;
 };
 
 export default RecoveryStep;

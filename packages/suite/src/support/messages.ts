@@ -1116,6 +1116,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'All',
         id: 'TR_ALL',
     },
+    TR_ONBOARDING_ALLOW_ANALYTICS: {
+        defaultMessage: 'Allow anonymous data storing',
+        id: 'TR_ONBOARDING_ALLOW_ANALYTICS',
+    },
     TR_ALLOW_ANALYTICS: {
         defaultMessage: 'Allow anonymous data storing',
         id: 'TR_ALLOW_ANALYTICS',
@@ -1405,6 +1409,11 @@ const definedMessages = defineMessages({
         description: 'Button to click to contact support',
         id: 'TR_CONTACT_SUPPORT',
     },
+    TR_SECURITY_CHECK_CONTACT_SUPPORT: {
+        defaultMessage: 'Contact support',
+        description: 'Button to click to contact support',
+        id: 'TR_SECURITY_CHECK_CONTACT_SUPPORT',
+    },
     TR_CONTINUE: {
         defaultMessage: 'Continue',
         description: 'Generic continue button',
@@ -1413,6 +1422,10 @@ const definedMessages = defineMessages({
     TR_CONTINUE_SETUP: {
         defaultMessage: 'Continue setup',
         id: 'TR_CONTINUE_SETUP',
+    },
+    TR_ONBOARDING_START_CTA: {
+        defaultMessage: 'Setup Trezor',
+        id: 'TR_ONBOARDING_START_CTA',
     },
     TR_COPY_TO_CLIPBOARD: {
         defaultMessage: 'Copy to clipboard',
@@ -1780,13 +1793,16 @@ const definedMessages = defineMessages({
         id: 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP',
     },
     TR_FINAL_HEADING: {
-        defaultMessage: 'Good job! All done',
+        defaultMessage: 'Setup complete!',
         id: 'TR_FINAL_HEADING',
     },
-    TR_FINAL_SUBHEADING: {
-        defaultMessage:
-            'You did it! Not only your Trezor is initialized and ready but you also increased your security level above the average user by going through all security steps. Good job!',
-        id: 'TR_FINAL_SUBHEADING',
+    TR_ONBOARDING_FINAL_RENAME: {
+        defaultMessage: 'Rename',
+        id: 'TR_ONBOARDING_FINAL_RENAME',
+    },
+    TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN: {
+        defaultMessage: 'Change Homescreen',
+        id: 'TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN',
     },
     TR_FIND_OUT_MORE_INFO: {
         defaultMessage: 'Find out more info',
@@ -1872,6 +1888,14 @@ const definedMessages = defineMessages({
         defaultMessage: 'Skip PIN',
         id: 'TR_SKIP_PIN',
     },
+    TR_SKIP_BACKUP: {
+        defaultMessage: 'Skip Backup',
+        id: 'TR_SKIP_BACKUP',
+    },
+    TR_DONT_SKIP: {
+        defaultMessage: "Don't skip",
+        id: 'TR_DONT_SKIP',
+    },
     TR_HELP_TREZOR_SUITE: {
         defaultMessage: 'Help Trezor Suite get better',
         id: 'TR_HELP_TREZOR_SUITE',
@@ -1888,6 +1912,15 @@ const definedMessages = defineMessages({
     TR_HELP_TREZOR_SUITE_TEXT_2: {
         defaultMessage: 'Trezor Suite does NOT track any balance-related or personal data.',
         id: 'TR_HELP_TREZOR_SUITE_TEXT_2',
+    },
+    TR_ONBOARDING_DATA_COLLECTION_HEADING: {
+        id: 'TR_ONBOARDING_DATA_COLLECTION_HEADING',
+        defaultMessage: 'Anonymous data collection',
+    },
+    TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION: {
+        id: 'TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION',
+        defaultMessage:
+            'All data is anonymous and only for product development purposes. Read more in <a>Terms & Conditions</a>.',
     },
     TR_HIDE_ADVANCED_OPTIONS: {
         defaultMessage: 'Hide advanced options',
@@ -2398,7 +2431,7 @@ const definedMessages = defineMessages({
         id: 'TR_RECONNECT_HEADER',
     },
     TR_RECONNECT_TEXT: {
-        defaultMessage: 'We lost connection with your device. This might mean:',
+        defaultMessage: 'We lost connection with your Trezor',
         id: 'TR_RECONNECT_TEXT',
     },
     TR_RECONNECT_TROUBLESHOOT_BRIDGE: {
@@ -2614,6 +2647,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Skip',
         description: 'Button. Skip one step',
         id: 'TR_SKIP',
+    },
+    TR_SKIP_UPDATE: {
+        defaultMessage: 'Skip Update',
+        id: 'TR_SKIP_UPDATE',
     },
     TR_SKIP_ALL: {
         defaultMessage: 'Skip onboarding',
@@ -4052,6 +4089,10 @@ const definedMessages = defineMessages({
         id: 'TR_FIRMWARE_INSTALL_FAILED_HEADER',
         defaultMessage: 'Firmware installation failed',
     },
+    TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED: {
+        id: 'TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED',
+        defaultMessage: 'Completed',
+    },
     TR_FIRMWARE_IS_UP_TO_DATE: {
         id: 'TR_FIRMWARE_IS_UP_TO_DATE',
         defaultMessage: 'Firmware is up to date',
@@ -4067,6 +4108,18 @@ const definedMessages = defineMessages({
     TR_RECONNECT_IN_BOOTLOADER: {
         id: 'TR_RECONNECT_IN_BOOTLOADER',
         defaultMessage: 'Reconnect your device in bootloader mode',
+    },
+    TR_RECONNECT_IN_BOOTLOADER_SUCCESS: {
+        id: 'TR_RECONNECT_IN_BOOTLOADER_SUCCESS',
+        defaultMessage: 'Device is now ready',
+    },
+    TR_RECONNECT_IN_NORMAL: {
+        id: 'TR_RECONNECT_IN_NORMAL',
+        defaultMessage: 'Reconnect your device',
+    },
+    TR_RECONNECT_IN_NORMAL_SUCCESS: {
+        id: 'TR_RECONNECT_IN_NORMAL_SUCCESS',
+        defaultMessage: 'Device is now ready',
     },
     TR_LEAVE_BOOTLOADER_MODE: {
         id: 'TR_LEAVE_BOOTLOADER_MODE',
@@ -4167,9 +4220,9 @@ const definedMessages = defineMessages({
         id: 'TR_BUY_TREZOR',
         defaultMessage: 'Buy Trezor',
     },
-    TR_TRY_BRIDGE: {
-        id: 'TR_TRY_BRIDGE',
-        defaultMessage: 'Try bridge',
+    TR_DISABLE_WEBUSB_TRY_BRIDGE: {
+        id: 'TR_DISABLE_WEBUSB_TRY_BRIDGE',
+        defaultMessage: 'Disable WebUSB and use Bridge',
         describe:
             'Bridge is a communication deamon that some users will need to download and install. So word bridge should not be translated.',
     },
@@ -4371,6 +4424,19 @@ const definedMessages = defineMessages({
         defaultMessage: 'Terms and conditions',
         description: 'Legal stuff nobody reads.',
     },
+    TR_ONBOARDING_GENERATE_SEED: {
+        id: 'TR_ONBOARDING_GENERATE_SEED',
+        defaultMessage: 'Generate seed',
+        description:
+            'Used for button triggering seed creation (reset device call), user chooses between single seed and shamir',
+    },
+    TR_ONBOARDING_GENERATE_SEED_DESCRIPTION: {
+        id: 'TR_ONBOARDING_GENERATE_SEED_DESCRIPTION',
+        defaultMessage:
+            'This step will generate your seed, which also creates a standard wallet for you.',
+        description:
+            'Used for button triggering seed creation (reset device call), user chooses between single seed and shamir',
+    },
     TR_CREATE_WALLET: {
         id: 'TR_CREATE_WALLET',
         defaultMessage: 'Create wallet',
@@ -4431,9 +4497,20 @@ const definedMessages = defineMessages({
         description:
             'This appears when updating some ancient firmwares. Fingerprint is cryptographic signature of the target firmware.',
     },
-    TR_YOU_MAY_EITHER_UPDATE: {
-        id: 'TR_YOU_MAY_EITHER_UPDATE',
-        defaultMessage: 'You might either update your device now or continue and update it later.',
+    TR_ONBOARDING_NEW_FW_DESCRIPTION: {
+        id: 'TR_ONBOARDING_NEW_FW_DESCRIPTION',
+        defaultMessage:
+            'A new firmware version is available. You can also update your Trezor directly from Suite once you have finished setting up your device.',
+    },
+    TR_FIRMWARE_NEW_FW_DESCRIPTION: {
+        id: 'TR_FIRMWARE_NEW_FW_DESCRIPTION',
+        defaultMessage:
+            'A new firmware version is available. You might either update your device now or continue and update it later.',
+    },
+    TR_FIRMWARE_REINSTALL_FW_DESCRIPTION: {
+        id: 'TR_FIRMWARE_REINSTALL_FW_DESCRIPTION',
+        defaultMessage:
+            'Your device is already updated to latest firmware. You may reinstall the firmware if needed.',
     },
     TR_EXPORT_TO_FILE: {
         id: 'TR_EXPORT_TO_FILE',
@@ -4452,10 +4529,6 @@ const definedMessages = defineMessages({
         id: 'LOG_DESCRIPTION',
         defaultMessage:
             'In case of a communication with our support team, there is a log with a lot of technical info',
-    },
-    TR_IF_YOU_NEVER_HAD_WALLET: {
-        id: 'TR_IF_YOU_NEVER_HAD_WALLET',
-        defaultMessage: 'If you never had any Wallet or want to create fresh one',
     },
     TR_RESTORE_EXISTING_WALLET: {
         id: 'TR_RESTORE_EXISTING_WALLET',
@@ -5960,6 +6033,219 @@ const definedMessages = defineMessages({
     TR_GUIDE_FEEDBACK_ERROR: {
         id: 'TR_GUIDE_FEEDBACK_ERROR',
         defaultMessage: `A server error has occurred. Please try again later.`,
+    },
+    TR_ONBOARDING_STEP_FIRMWARE: {
+        id: 'TR_ONBOARDING_STEP_FIRMWARE',
+        defaultMessage: 'Firmware',
+    },
+    TR_ONBOARDING_STEP_WALLET: {
+        id: 'TR_ONBOARDING_STEP_WALLET',
+        defaultMessage: 'Wallet',
+    },
+    TR_ONBOARDING_STEP_PIN: {
+        id: 'TR_ONBOARDING_STEP_PIN',
+        defaultMessage: 'PIN',
+    },
+    TR_ONBOARDING_STEP_COINS: {
+        id: 'TR_ONBOARDING_STEP_COINS',
+        defaultMessage: 'Coins',
+    },
+    TR_ONBOARDING_CURRENT_VERSION: {
+        id: 'TR_ONBOARDING_CURRENT_VERSION',
+        defaultMessage: 'Current Version',
+    },
+    TR_ONBOARDING_NEW_VERSION: {
+        id: 'TR_ONBOARDING_NEW_VERSION',
+        defaultMessage: 'New Version',
+    },
+    TR_RECOVERY_MATRIX_DISPLAYED_ON_TREZOR: {
+        id: 'TR_RECOVERY_MATRIX_DISPLAYED_ON_TREZOR',
+        defaultMessage: 'The letters are displayed on your Trezor',
+    },
+    TR_PIN_MATRIX_DISPLAYED_ON_TREZOR: {
+        id: 'TR_PIN_MATRIX_DISPLAYED_ON_TREZOR',
+        defaultMessage: 'The numbers are displayed on your Trezor',
+    },
+    TR_DEVICE_CONNECTED: {
+        id: 'TR_DEVICE_CONNECTED',
+        defaultMessage: 'Device connected',
+    },
+    TR_DEVICE_CONNECTED_WRONG_STATE: {
+        id: 'TR_DEVICE_CONNECTED_WRONG_STATE',
+        defaultMessage: 'Device detected in incorrect state',
+    },
+    TR_ONBOARDING_DEVICE_CHECK: {
+        id: 'TR_ONBOARDING_DEVICE_CHECK',
+        defaultMessage: 'Security check',
+        description:
+            'Heading for an onboarding step where we ask the user to verify authenticity of his device',
+    },
+    TR_ONBOARDING_DEVICE_CHECK_1: {
+        id: 'TR_ONBOARDING_DEVICE_CHECK_1',
+        defaultMessage: 'My <strong>hologram</strong> was intact and untampered with.',
+    },
+    TR_ONBOARDING_DEVICE_CHECK_2: {
+        id: 'TR_ONBOARDING_DEVICE_CHECK_2',
+        defaultMessage: 'I bought from the official shop or a trusted reseller.',
+    },
+    TR_ONBOARDING_DEVICE_CHECK_3: {
+        id: 'TR_ONBOARDING_DEVICE_CHECK_3',
+        defaultMessage: 'Package wasn’t tampered with.',
+    },
+    TR_ONBOARDING_DEVICE_CHECK_4: {
+        id: 'TR_ONBOARDING_DEVICE_CHECK_4',
+        description: 'Shown only if device has firmware already installed',
+        defaultMessage: 'It looks like device was used before. Did you set up the device yourself?',
+    },
+    TR_HOLOGRAM_WARNING_BANNER: {
+        defaultMessage: 'Does your hologram looks suspicious? <a>Contact us</a>.',
+        id: 'TR_HOLOGRAM_WARNING_BANNER',
+    },
+    TR_ONBOARDING_COINS_STEP: {
+        id: 'TR_ONBOARDING_COINS_STEP',
+        defaultMessage: 'Activate Coins',
+    },
+    TR_ONBOARDING_COINS_STEP_DESCRIPTION: {
+        id: 'TR_ONBOARDING_COINS_STEP_DESCRIPTION',
+        defaultMessage:
+            'Select coins which you want to enable in Trezor Suite. You can change this settings anytime.',
+    },
+    TR_WHAT_DATA_WE_COLLECT: {
+        id: 'TR_WHAT_DATA_WE_COLLECT',
+        defaultMessage: 'What data we collect?',
+    },
+    TR_ONBOARDING_TROUBLESHOOTING_FAILED: {
+        id: 'TR_ONBOARDING_TROUBLESHOOTING_FAILED',
+        defaultMessage: "Didn't work?",
+        decription:
+            "If troubleshooting steps for connecting a device in Onboarding didn't do the trick there is at the end link to contact a support",
+    },
+    TR_STILL_DONT_SEE_YOUR_TREZOR: {
+        id: 'TR_STILL_DONT_SEE_YOUR_TREZOR',
+        defaultMessage: 'Still don’t see your Trezor?',
+    },
+    TR_ONBOARDING_CUSTOM_BACKEND_HEADING: {
+        id: 'TR_ONBOARDING_CUSTOM_BACKEND_HEADING',
+        defaultMessage: 'Set custom backend',
+    },
+    TR_ONBOARDING_CUSTOM_BACKEND_DESCRIPTION: {
+        id: 'TR_ONBOARDING_CUSTOM_BACKEND_DESCRIPTION',
+        defaultMessage: 'You can set custom backend for ...',
+    },
+    TR_ONBOARDING_TOR_HEADING: {
+        id: 'TR_ONBOARDING_TOR_HEADING',
+        defaultMessage: 'Setup TOR',
+    },
+    TR_ONBOARDING_TOR_DESCRIPTION: {
+        id: 'TR_ONBOARDING_TOR_DESCRIPTION',
+        defaultMessage: 'You can setup TOR ...',
+    },
+    TR_ONBOARDING_ADVANCED: {
+        id: 'TR_ONBOARDING_ADVANCED',
+        defaultMessage: 'Advanced',
+    },
+    TR_ONBOARDING_DOWNLOAD_DESKTOP_APP: {
+        id: 'TR_ONBOARDING_DOWNLOAD_DESKTOP_APP',
+        defaultMessage: 'Download Desktop App',
+    },
+    TR_ONBOARDING_WELCOME_HEADING: {
+        id: 'TR_ONBOARDING_WELCOME_HEADING',
+        defaultMessage: 'Welcome!',
+    },
+    TR_RESTORE_DEFAULT_SETTINGS: {
+        id: 'TR_RESTORE_DEFAULT_SETTINGS',
+        defaultMessage: 'Restore default settings',
+    },
+    TR_DATA_ANALYTICS_CATEGORY_1: {
+        id: 'TR_DATA_ANALYTICS_CATEGORY_1',
+        defaultMessage: 'Category 1',
+    },
+    TR_DATA_ANALYTICS_CATEGORY_1_ITEM_1: {
+        id: 'TR_DATA_ANALYTICS_CATEGORY_1_ITEM_1',
+        defaultMessage: 'Category 1 Item 1',
+    },
+    TR_DATA_ANALYTICS_CATEGORY_2: {
+        id: 'TR_DATA_ANALYTICS_CATEGORY_2',
+        defaultMessage: 'Category 2',
+    },
+    TR_DATA_ANALYTICS_CATEGORY_2_ITEM_1: {
+        id: 'TR_DATA_ANALYTICS_CATEGORY_2_ITEM_1',
+        defaultMessage: 'Category 2 Item 1',
+    },
+    TR_DATA_ANALYTICS_CATEGORY_3: {
+        id: 'TR_DATA_ANALYTICS_CATEGORY_3',
+        defaultMessage: 'Category 3',
+    },
+    TR_DATA_ANALYTICS_CATEGORY_3_ITEM_1: {
+        id: 'TR_DATA_ANALYTICS_CATEGORY_3_ITEM_1',
+        defaultMessage: 'Category 3 Item 1',
+    },
+    TR_TROUBLESHOOTING_TIP_BRIDGE_TITLE: {
+        id: 'TR_TOUBLESHOOTING_TIP_BRIDGE_TITLE',
+        defaultMessage: 'Make sure Trezor Bridge is installed and running',
+    },
+    TR_TROUBLESHOOTING_TIP_BRIDGE_DESCRIPTION: {
+        id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_DESCRIPTION',
+        defaultMessage:
+            '<a>Download Trezor Bridge</a> to enable communication between a browser and your device.',
+    },
+    TR_TROUBLESHOOTING_TIP_CABLE_TITLE: {
+        id: 'TR_TROUBLESHOOTING_TIP_CABLE_TITLE',
+        defaultMessage: 'Try a different cable',
+    },
+    TR_TROUBLESHOOTING_TIP_CABLE_DESCRIPTION: {
+        id: 'TR_TROUBLESHOOTING_TIP_CABLE_DESCRIPTION',
+        defaultMessage:
+            'The cable must be fully inserted. If you have a Model T, the cable should "click" into place.',
+    },
+    TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE: {
+        id: 'TR_TROUBLESHOOTING_TIP_USB_PORT_TITLE',
+        defaultMessage: 'Try a different USB or port',
+    },
+    TR_TROUBLESHOOTING_TIP_USB_PORT_DESCRIPTION: {
+        id: 'TR_TROUBLESHOOTING_TIP_USB_PORT_DESCRIPTION',
+        defaultMessage: 'Connect it directly to computer, no hubs.',
+    },
+    TR_TROUBLESHOOTING_TIP_COMPUTER_TITLE: {
+        id: 'TR_TROUBLESHOOTING_TIP_COMPUTER_TITLE',
+        defaultMessage: 'Try using a different computer, if you can',
+    },
+    TR_TROUBLESHOOTING_TIP_COMPUTER_DESCRIPTION: {
+        id: 'TR_TROUBLESHOOTING_TIP_COMPUTER_DESCRIPTION',
+        defaultMessage: 'With Trezor Bridge installed.',
+    },
+    TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_TITLE: {
+        id: 'TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_TITLE',
+        defaultMessage: 'Try restarting your computer',
+    },
+    TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_DESCRIPTION: {
+        id: 'TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_DESCRIPTION',
+        defaultMessage: 'Just in case',
+    },
+    TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_TITLE: {
+        id: 'TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_TITLE',
+        defaultMessage: 'Seedless setup is not supported by Trezor Suite',
+    },
+    TR_VERIFYING_PIN: {
+        id: 'TR_VERIFYING_PIN',
+        defaultMessage: 'Verifying...',
+    },
+    TR_ONBOARDING_CLICK_TO_CONFIRM: {
+        id: 'TR_ONBOARDING_CLICK_TO_CONFIRM',
+        defaultMessage: 'Click to confirm',
+    },
+    TR_LEARN_ADVANCED_RECOVERY: {
+        id: 'TR_LEARN_ADVANCED_RECOVERY',
+        defaultMessage: 'Learn how to enter letters',
+    },
+    TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_DESCRIPTION: {
+        id: 'TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_DESCRIPTION',
+        defaultMessage:
+            'Devices which are set up in the seedless mode cannot access the Trezor Suite. This is to avoid catastrophic coin loss, in case an inappropriately setup device is used for a wrong purpose.',
+    },
+    TR_DO_YOU_REALLY_WANT_TO_SKIP: {
+        id: 'TR_DO_YOU_REALLY_WANT_TO_SKIP',
+        defaultMessage: 'Do you really want to skip this step?',
     },
 } as const);
 

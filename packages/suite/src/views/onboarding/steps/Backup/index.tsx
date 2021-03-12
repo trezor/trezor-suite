@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-
-import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
+import {
+    OnboardingButtonCta,
+    OnboardingButtonSkip,
+    OptionsWrapper,
+    OnboardingStepBox,
+    SkipStepConfirmation,
+} from '@onboarding-components';
 import { Translation, Image, TrezorLink } from '@suite-components';
-import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
-import { canStart, canContinue } from '@backup-utils';
+import { BackupSeedCards } from '@backup-components';
+import { canContinue } from '@backup-utils';
 import { useSelector, useActions } from '@suite-hooks';
 import { SEED_MANUAL_URL } from '@suite-constants/urls';
-
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as backupActions from '@backup-actions/backupActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -17,11 +21,11 @@ const StyledImage = styled(Image)`
 `;
 
 const BackupStep = () => {
-    const { goToNextStep, backupDevice, goto, closeModalApp } = useActions({
+    const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
+    const { goToNextStep, backupDevice, goto } = useActions({
         goToNextStep: onboardingActions.goToNextStep,
         backupDevice: backupActions.backupDevice,
         goto: routerActions.goto,
-        closeModalApp: routerActions.closeModalApp,
     });
     const { device, backup, locks } = useSelector(state => ({
         device: state.suite.device,
@@ -36,96 +40,111 @@ const BackupStep = () => {
     const { status } = backup;
 
     return (
-        <Wrapper.Step>
-            <Wrapper.StepHeading>
-                {status === 'initial' && <Translation id="TR_CREATE_BACKUP" />}
-                {status === 'finished' && !backup.error && <Translation id="TR_BACKUP_CREATED" />}
-                {status === 'finished' && backup.error && <Translation id="TOAST_BACKUP_FAILED" />}
-            </Wrapper.StepHeading>
-            <Wrapper.StepBody>
-                {status === 'initial' && (
-                    <>
-                        <Text>
-                            <Translation
-                                id="TR_BACKUP_SUBHEADING_1"
-                                values={{
-                                    TR_SEED_MANUAL_LINK: (
-                                        <TrezorLink href={SEED_MANUAL_URL}>
-                                            <Translation id="TR_SEED_MANUAL_LINK" />
-                                        </TrezorLink>
-                                    ),
-                                }}
-                            />
-                        </Text>
+        <>
+            {showSkipConfirmation && (
+                <SkipStepConfirmation
+                    onCancel={() => setShowSkipConfirmation(false)}
+                    variant="backup"
+                />
+            )}
+            {status === 'initial' && (
+                <OnboardingStepBox
+                    image="BACKUP"
+                    heading={<Translation id="TR_CREATE_BACKUP" />}
+                    description={
+                        <Translation
+                            id="TR_BACKUP_SUBHEADING_1"
+                            values={{
+                                TR_SEED_MANUAL_LINK: (
+                                    <TrezorLink href={SEED_MANUAL_URL}>
+                                        <Translation id="TR_SEED_MANUAL_LINK" />
+                                    </TrezorLink>
+                                ),
+                            }}
+                        />
+                    }
+                    innerActions={
+                        <OnboardingButtonCta
+                            data-test="@backup/start-button"
+                            onClick={() => backupDevice()}
+                            isDisabled={!canContinue(backup.userConfirmed, locks)}
+                        >
+                            <Translation id="TR_START_BACKUP" />
+                        </OnboardingButtonCta>
+                    }
+                    outerActions={
+                        <OnboardingButtonSkip
+                            data-test="@onboarding/exit-app-button"
+                            onClick={() => setShowSkipConfirmation(true)}
+                        >
+                            <Translation id="TR_SKIP_BACKUP" />
+                        </OnboardingButtonSkip>
+                    }
+                >
+                    <OptionsWrapper>
+                        <BackupSeedCards />
+                    </OptionsWrapper>
+                </OnboardingStepBox>
+            )}
+            {status === 'in-progress' && (
+                <OnboardingStepBox
+                    image="BACKUP"
+                    heading={<Translation id="TR_CREATE_BACKUP" />}
+                    description={
+                        <Translation
+                            id="TR_BACKUP_SUBHEADING_1"
+                            values={{
+                                TR_SEED_MANUAL_LINK: (
+                                    <TrezorLink href={SEED_MANUAL_URL}>
+                                        <Translation id="TR_SEED_MANUAL_LINK" />
+                                    </TrezorLink>
+                                ),
+                            }}
+                        />
+                    }
+                    confirmOnDevice={device.features.major_version}
+                />
+            )}
 
-                        <PreBackupCheckboxes />
-
-                        <Wrapper.Controls>
-                            <OnboardingButton.Cta
-                                data-test="@backup/start-button"
-                                onClick={() => backupDevice()}
-                                isDisabled={!canStart(backup.userConfirmed, locks)}
-                            >
-                                <Translation id="TR_START_BACKUP" />
-                            </OnboardingButton.Cta>
-                        </Wrapper.Controls>
-                    </>
-                )}
-
-                {status === 'finished' && backup.error && (
-                    <>
-                        <Text>
-                            <Translation id="TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION" />
-                        </Text>
+            {status === 'finished' && !backup.error && (
+                <OnboardingStepBox
+                    image="BACKUP"
+                    heading={<Translation id="TR_BACKUP_CREATED" />}
+                    description={<Translation id="TR_BACKUP_FINISHED_TEXT" />}
+                    innerActions={
+                        <OnboardingButtonCta
+                            data-test="@backup/close-button"
+                            onClick={() => goToNextStep()}
+                            isDisabled={!canContinue(backup.userConfirmed)}
+                        >
+                            <Translation id="TR_BACKUP_FINISHED_BUTTON" />
+                        </OnboardingButtonCta>
+                    }
+                />
+            )}
+            {status === 'finished' && backup.error && (
+                <OnboardingStepBox
+                    image="BACKUP"
+                    heading={<Translation id="TOAST_BACKUP_FAILED" />}
+                    description={
+                        <Translation id="TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION" />
+                    }
+                    innerActions={
+                        <OnboardingButtonCta
+                            onClick={() => {
+                                goto('settings-index');
+                            }}
+                        >
+                            <Translation id="TR_GO_TO_SETTINGS" />
+                        </OnboardingButtonCta>
+                    }
+                >
+                    <OptionsWrapper>
                         <StyledImage image="UNI_ERROR" />
-                        <Wrapper.Controls>
-                            <OnboardingButton.Cta
-                                onClick={() => {
-                                    goto('settings-index');
-                                }}
-                            >
-                                <Translation id="TR_GO_TO_SETTINGS" />
-                            </OnboardingButton.Cta>
-                        </Wrapper.Controls>
-                    </>
-                )}
-
-                {status === 'finished' && !backup.error && (
-                    <>
-                        <Text>
-                            <Translation id="TR_BACKUP_FINISHED_TEXT" />
-                        </Text>
-
-                        <AfterBackupCheckboxes />
-
-                        <Wrapper.Controls>
-                            <OnboardingButton.Cta
-                                data-test="@backup/close-button"
-                                onClick={() => goToNextStep()}
-                                isDisabled={!canContinue(backup.userConfirmed)}
-                            >
-                                <Translation id="TR_BACKUP_FINISHED_BUTTON" />
-                            </OnboardingButton.Cta>
-                        </Wrapper.Controls>
-                    </>
-                )}
-            </Wrapper.StepBody>
-            <Wrapper.StepFooter>
-                {status !== 'in-progress' && (
-                    <OnboardingButton.Back
-                        icon="CROSS"
-                        data-test="@onboarding/exit-app-button"
-                        onClick={() => closeModalApp()}
-                    >
-                        {status === 'finished' ? (
-                            <Translation id="TR_SKIP_SECURITY_PIN" />
-                        ) : (
-                            <Translation id="TR_SKIP_SECURITY" />
-                        )}
-                    </OnboardingButton.Back>
-                )}
-            </Wrapper.StepFooter>
-        </Wrapper.Step>
+                    </OptionsWrapper>
+                </OnboardingStepBox>
+            )}
+        </>
     );
 };
 

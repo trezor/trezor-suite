@@ -167,16 +167,19 @@ const ModalWindow = styled.div<ModalWindowProps>`
         `}
 `;
 
-const Heading = styled(H1)<{
+interface HeadingProps {
     cancelable: boolean;
     showHeaderBorder: boolean;
     showProgressBar: boolean;
     hiddenProgressBar: boolean;
-}>`
+    noHeadingPadding: boolean;
+}
+
+const Heading = styled(H1)<HeadingProps>`
     display: flex;
     align-items: flex-start;
     word-break: break-word;
-    padding: 28px 32px 22px 32px;
+    padding: ${props => (props.noHeadingPadding ? '0px' : '28px 32px 22px 32px')};
     margin-bottom: ${props => (props.showProgressBar ? 0 : '20px')};
 
     border-bottom: ${props =>
@@ -357,6 +360,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     modalPaddingSide?: [string, string, string, string]; // [SM, MD, LG, XL]
     contentPaddingSide?: [string, string, string, string]; // [SM, MD, LG, XL]
     noPadding?: boolean;
+    noHeadingPadding?: boolean;
     noBackground?: boolean;
     onCancel?: () => void;
     showHeaderBorder?: boolean;
@@ -384,6 +388,8 @@ const Modal = ({
     useFixedHeight = false,
     fixedHeight = FIXED_HEIGHT,
     noPadding = false,
+    noHeadingPadding = false,
+    // TODO: get rid of all these padding props bellow. Usage should be simple: Either use default paddings provided by modal, or use noPadding and then do all necessary work in components which will be passed as heading, description, children/content. We cannot keep handling whole universe here for few stupid custom components
     modalPaddingTop = getModalPaddingTop(size, heading, noPadding),
     modalPaddingBottom = getModalPaddingBottom(size, noPadding),
     modalPaddingSide = ZERO_PADDING, // default value is zero padding on sides for Modal container
@@ -439,6 +445,7 @@ const Modal = ({
                     showHeaderBorder={showHeaderBorder}
                     hiddenProgressBar={hiddenProgressBar}
                     showProgressBar={showProgressBarPlaceholder}
+                    noHeadingPadding={noHeadingPadding}
                 >
                     {heading}
                     {cancelable && (

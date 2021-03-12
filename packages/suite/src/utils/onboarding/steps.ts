@@ -1,4 +1,4 @@
-import { AnyStepId, AnyPath, Step } from '@onboarding-types/steps';
+import { AnyStepId, AnyPath, Step } from '@onboarding-types';
 // types types types
 
 export const isStepInPath = (step: Step, path: AnyPath[]) => {

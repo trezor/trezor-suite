@@ -7,8 +7,11 @@ describe('Log', () => {
         cy.task('setupEmu');
         cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
-        cy.prefixedVisit('/settings');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.discoveryShouldFinish();
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@suite/menu/settings-index').click();
     });
 
     it('there is a dropdown menu in settings that opens modal with application logs', () => {
