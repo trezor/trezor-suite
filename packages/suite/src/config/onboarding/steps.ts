@@ -1,4 +1,4 @@
-import { Step } from '@onboarding-types/steps';
+import { Step } from '@onboarding-types';
 
 import * as STEP from '@onboarding-constants/steps';
 

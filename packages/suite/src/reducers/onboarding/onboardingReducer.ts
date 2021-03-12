@@ -5,7 +5,7 @@ import { ONBOARDING } from '@onboarding-actions/constants';
 import * as STEP from '@onboarding-constants/steps';
 import steps from '@onboarding-config/steps';
 import { Action } from '@suite-types';
-import { AnyStepId, AnyPath } from '@onboarding-types/steps';
+import { AnyStepId, AnyPath } from '@onboarding-types';
 
 export interface OnboardingState {
     reducerEnabled: boolean;

@@ -8,7 +8,7 @@ import { Translation } from '@suite-components/Translation';
 import { DeviceRecoveryMode } from '@suite-views';
 import * as STEP from '@onboarding-constants/steps';
 import steps from '@onboarding-config/steps';
-import { Step } from '@onboarding-types/steps';
+import { Step } from '@onboarding-types';
 import Reconnect from './components/Reconnect';
 import IsSameDevice from './components/IsSameDevice';
 import IsNotNewDevice from './components/IsNotNewDevice';

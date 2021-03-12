@@ -1,5 +1,5 @@
 import * as STEP from '@onboarding-constants/steps';
-import { Step } from '@onboarding-types/steps';
+import { Step } from '@onboarding-types';
 import { findNextStep, findPrevStep, isStepInPath } from '../steps';
 
 const welcomeStep: Step = {
