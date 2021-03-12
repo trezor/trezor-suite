@@ -5,6 +5,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import { Translation, Image, Modal } from '@suite-components';
 import { useActions } from '@suite-hooks';
 
+// TODO: unused right now, consider deleting if we really dont need welcome/analytics/security checks as separate route/view
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -33,7 +34,7 @@ const Index = () => {
 
                 <Button
                     data-test="@welcome/continue-button"
-                    onClick={() => goto('suite-analytics')}
+                    // onClick={() => goto('suite-analytics')}
                 >
                     <Translation id="TR_BEGIN" />
                 </Button>
