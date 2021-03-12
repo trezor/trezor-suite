@@ -15,7 +15,6 @@ export const THEME = {
         BG_WHITE: '#ffffff',
         BG_WHITE_ALT: '#ffffff', // used for dropdown menus
         BG_WHITE_ALT_HOVER: '#f4f4f4', // used for dropdown menus
-        BG_BLUE: '#1faaff',
         BG_RED: '#d04949',
         BG_LIGHT_RED: '#F6E2E2',
         BG_TOOLTIP: '#262742',
@@ -23,8 +22,11 @@ export const THEME = {
 
         TYPE_GREEN: '#279503',
         TYPE_ORANGE: '#c19009',
-        TYPE_BLUE: '#197eaa',
+        TYPE_ORANGE_ALT: '#c19009',
+        TYPE_BLUE: '#1d88c5',
+        TYPE_BLUE_ALT: '#1d88c5',
         TYPE_RED: '#cd4949',
+        TYPE_RED_ALT: '#cd4949',
         TYPE_DARK_GREY: '#404040',
         TYPE_LIGHT_GREY: '#808080',
         TYPE_LIGHTER_GREY: '#bdbdbd',
@@ -63,7 +65,6 @@ export const THEME = {
         BG_WHITE: '#242526',
         BG_WHITE_ALT: '#3a3b3c',
         BG_WHITE_ALT_HOVER: '#444546',
-        BG_BLUE: '#197eaa', // used for big app notification (eg. new fw update)
         BG_RED: '#ab2626', // used for big app notification
         BG_LIGHT_RED: '#5a1616', // used for outer glow for disconnected device status dot
         BG_TOOLTIP: '#3a3b3c', // same as STROKE_GREY in dark theme
@@ -71,8 +72,11 @@ export const THEME = {
 
         TYPE_GREEN: '#66ab4e',
         TYPE_ORANGE: '#9b813b',
+        TYPE_ORANGE_ALT: '#eaebed', // used in cta button in banner notification, same color as TYPE_DARK_GREY
         TYPE_BLUE: '#197eaa',
+        TYPE_BLUE_ALT: '#eaebed', // used in cta button in banner notification, same color as TYPE_DARK_GREY
         TYPE_RED: '#c65353',
+        TYPE_RED_ALT: '#eaebed', // used in cta button in banner notification, same color as TYPE_DARK_GREY
         TYPE_DARK_GREY: '#eaebed',
         TYPE_LIGHT_GREY: '#959596',
         TYPE_LIGHTER_GREY: '#bdbdbd',
@@ -113,7 +117,6 @@ export const THEME = {
         BG_WHITE: '#101010',
         BG_WHITE_ALT: '#3a3b3c', // TODO
         BG_WHITE_ALT_HOVER: '#444546', // TODO
-        BG_BLUE: '#197eaa', // used for big app notification (eg. new fw update)
         BG_RED: '#ab2626', // used for big app notification
         BG_LIGHT_RED: '#5a1616', // used for outer glow for disconnected device status dot
         BG_TOOLTIP: '#151524', // todo
@@ -121,8 +124,11 @@ export const THEME = {
 
         TYPE_GREEN: '#6fa95c',
         TYPE_ORANGE: '#9b813b',
+        TYPE_ORANGE_ALT: '#9b813b',
         TYPE_BLUE: '#197eaa',
+        TYPE_BLUE_ALT: '#1d88c5',
         TYPE_RED: '#c65353',
+        TYPE_RED_ALT: '#c65353',
         TYPE_DARK_GREY: '#fafafa',
         TYPE_LIGHT_GREY: '#8e8e8e',
         TYPE_LIGHTER_GREY: '#bdbdbd',

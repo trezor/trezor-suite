@@ -10,9 +10,8 @@ import NoBackup from './NoBackup';
 import FailedBackup from './FailedBackup';
 
 const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
     z-index: 3;
+    background: ${props => props.theme.BG_WHITE};
 `;
 
 const Banners = () => {
