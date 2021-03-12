@@ -85,11 +85,6 @@ describe('router', () => {
                     symbol: 'btc',
                 }),
             ).toEqual('/accounts#/btc/1');
-            expect(
-                getRoute('onboarding-index', {
-                    cancelable: true,
-                }),
-            ).toEqual('/onboarding#/true');
             // route shouldn't have params
             expect(
                 // @ts-ignore: invalid params
@@ -167,18 +162,6 @@ describe('router', () => {
             });
 
             expect(getAppWithParams('/onboarding/')).toEqual({
-                app: 'onboarding',
-                params: undefined,
-                route: findRouteByName('onboarding-index'),
-            });
-
-            expect(getAppWithParams('/onboarding#/true')).toEqual({
-                app: 'onboarding',
-                params: { cancelable: true },
-                route: findRouteByName('onboarding-index'),
-            });
-
-            expect(getAppWithParams('/onboarding#/false')).toEqual({
                 app: 'onboarding',
                 params: undefined,
                 route: findRouteByName('onboarding-index'),

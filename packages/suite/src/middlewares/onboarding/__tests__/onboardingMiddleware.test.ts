@@ -95,7 +95,7 @@ describe('onboardingMiddleware', () => {
                 getInitialState({
                     loaded: true,
                     url: '/onboarding',
-                    pathname: '/',
+                    pathname: '/onboarding',
                     hash: undefined,
                     app: 'onboarding',
                     params: undefined,
@@ -103,8 +103,8 @@ describe('onboardingMiddleware', () => {
                         name: 'onboarding-index',
                         pattern: '/onboarding',
                         app: 'onboarding',
-                        isModal: true,
-                        params: ['cancelable'],
+                        isModal: undefined,
+                        params: undefined,
                     },
                 }),
             );
