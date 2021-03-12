@@ -15,6 +15,8 @@ import Firmware from '@firmware-views';
 import Onboarding from '@onboarding-views';
 import Recovery from '@suite/views/recovery';
 import Backup from '@backup-views';
+import Onboarding from '@onboarding-views';
+
 import {
     Analytics,
     Bridge,
@@ -103,8 +105,7 @@ const getModalApplication = (route: AppState['router']['route']) => {
             return Analytics;
         case 'firmware':
             return Firmware;
-        case 'onboarding':
-            return Onboarding;
+
         case 'bridge':
             return Bridge;
         case 'udev':
@@ -164,6 +165,7 @@ const Preloader = ({ children, hideModals = false }: Props) => {
     }
 
     const hasActionModal = actionModalContext !== '@modal/context-none';
+
     // check if current route is a "modal application" and display it above requested physical route (route in url)
     // pass params to "modal application" and set "cancelable" conditionally
     const ApplicationModal = getModalApplication(router.route);
@@ -194,6 +196,12 @@ const Preloader = ({ children, hideModals = false }: Props) => {
 
     if (!router.loaded || !loaded || !transport) {
         return <InitialLoading />;
+    }
+
+    if (router.route?.app === 'onboarding') {
+        // just let the onboarding view to render, no SuiteLayout involved
+        // return null;
+        return <Onboarding />;
     }
 
     // check route state and display it as not cancelable modal above requested route view
