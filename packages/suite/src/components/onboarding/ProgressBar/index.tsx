@@ -6,7 +6,8 @@ import { useTheme } from '@suite-hooks';
 const ProgressBarWrapper = styled.div`
     display: flex;
     padding: 20px 0;
-    margin: 50px;
+    margin-top: 40px;
+    margin-bottom: 20px;
     width: 100%;
     height: 64px; // prevents jumping in completed state with check mark icon shown
     justify-content: space-between;

@@ -5,12 +5,13 @@ import styled from 'styled-components';
 interface Props {
     trezorModel: 1 | 2;
     height?: string | number;
+    hires?: boolean;
     className?: string;
 }
 
 const Image = styled.img``;
 
-const DeviceImage = ({ trezorModel, height = '100%', className }: Props) => {
+const DeviceImage = ({ trezorModel, height = '100%', hires, className }: Props) => {
     switch (trezorModel) {
         case 1:
             return (
@@ -18,7 +19,16 @@ const DeviceImage = ({ trezorModel, height = '100%', className }: Props) => {
                     className={className}
                     height={height}
                     alt="trezor T1"
-                    src={require(`../../images/trezor/T1.png`)}
+                    src={
+                        hires
+                            ? require(`../../images/trezor/T1_hires.png`)
+                            : require(`../../images/trezor/T1.png`)
+                    }
+                    srcSet={
+                        hires
+                            ? `${require('../../images/trezor/T1_hires.png')} 1x, ${require('../../images/trezor/T1_hires@2x.png')} 2x`
+                            : undefined
+                    }
                 />
             );
         case 2:
@@ -27,7 +37,16 @@ const DeviceImage = ({ trezorModel, height = '100%', className }: Props) => {
                     className={className}
                     height={height}
                     alt="trezor T2"
-                    src={require(`../../images/trezor/T2.png`)}
+                    src={
+                        hires
+                            ? require(`../../images/trezor/T2_hires.png`)
+                            : require(`../../images/trezor/T2.png`)
+                    }
+                    srcSet={
+                        hires
+                            ? `${require('../../images/trezor/T2_hires.png')} 1x, ${require('../../images/trezor/T2_hires@2x.png')} 2x`
+                            : undefined
+                    }
                 />
             );
         // no default

@@ -1,10 +1,14 @@
 import React from 'react';
-import { Button } from '@trezor/components';
+import styled from 'styled-components';
+import { Button, ButtonProps } from '@trezor/components';
 
-interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+const StyledButton = styled(Button)`
+    min-width: 180px;
+`;
+interface Props extends ButtonProps {
     isDisabled?: boolean;
 }
 
-const ButtonCta = (props: Props) => <Button {...props}>{props.children}</Button>;
+const ButtonCta = (props: Props) => <StyledButton {...props}>{props.children}</StyledButton>;
 
 export default ButtonCta;

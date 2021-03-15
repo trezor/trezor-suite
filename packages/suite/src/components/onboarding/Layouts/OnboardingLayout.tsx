@@ -46,6 +46,7 @@ const Content = styled.div`
     align-items: center;
     max-width: ${MAX_WIDTH};
     width: 100%;
+    padding-bottom: 48px;
 `;
 
 interface Props {

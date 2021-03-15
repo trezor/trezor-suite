@@ -25,6 +25,12 @@ const A = styled.a<Props>`
     }
 
     ${props =>
+        props.variant === 'underline' &&
+        css`
+            text-decoration: underline;
+        `}
+
+    ${props =>
         props.variant === 'nostyle' &&
         css`
             color: inherit;
@@ -50,7 +56,7 @@ interface Props {
     onClick?: (event: React.MouseEvent<any>) => void;
     children?: React.ReactNode;
     className?: string;
-    variant?: 'default' | 'nostyle';
+    variant?: 'default' | 'nostyle' | 'underline';
     icon?: IconProps['icon'];
     iconProps?: IconProps;
 }
