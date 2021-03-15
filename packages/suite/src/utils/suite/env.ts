@@ -1,4 +1,4 @@
-import { SuiteThemeVariant } from '@suite-types';
+import { SuiteEnvironmentType, SuiteThemeVariant } from '@suite-types';
 
 /**
  * method does not do much, but still it is useful as we do not
@@ -50,6 +50,21 @@ export const getPlatformLanguage = () => {
 export const isWeb = () => process.env.SUITE_TYPE === 'web';
 
 export const isDesktop = () => process.env.SUITE_TYPE === 'desktop';
+
+export const isMobile = () => process.env.SUITE_TYPE === 'mobile';
+
+export const getEnvironment = (): SuiteEnvironmentType => {
+    if (isWeb()) {
+        return 'web';
+    }
+    if (isDesktop()) {
+        return 'desktop';
+    }
+    if (isMobile()) {
+        return 'mobile';
+    }
+    return undefined;
+};
 
 export const getLocationOrigin = () => {
     return window.location.origin;

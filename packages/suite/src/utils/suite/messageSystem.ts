@@ -3,8 +3,8 @@ import { verify, decode, Algorithm, Signature } from 'jws';
 import * as semver from 'semver';
 import { TransportInfo } from 'trezor-connect';
 import { Network } from '@wallet-types';
-import { TrezorDevice } from '@suite-types';
-import { getUserAgent, isWeb, isDesktop } from '@suite-utils/env';
+import { SuiteEnvironmentType, TrezorDevice } from '@suite-types';
+import { getUserAgent, getEnvironment } from '@suite-utils/env';
 import {
     MessageSystem,
     Notification,
@@ -14,6 +14,7 @@ import {
     Transport,
     Browser,
     Device,
+    Environment,
 } from '@suite-types/messageSystem';
 
 // TODO: use production ready key; move to suite-data?
@@ -84,9 +85,12 @@ const validateBrowserCompatibility = (
 };
 
 const validateEnvironmentCompatibility = (
-    environmentVersionCondition: Version,
+    environmentCondition: Environment,
+    environment: SuiteEnvironmentType,
     suiteVersion: string,
 ) => {
+    const environmentVersionCondition = environmentCondition[environment!];
+
     return semver.satisfies(suiteVersion, normalizeVersion(environmentVersionCondition));
 };
 
@@ -142,7 +146,7 @@ export type Options = {
     device: TrezorDevice | undefined;
 };
 
-export const getValidMessages = (
+export const getCompatibleMessages = (
     messageSystemConfig: MessageSystem | null,
     options: Options,
 ): Notification[] => {
@@ -157,26 +161,22 @@ export const getValidMessages = (
         enabledNetworks,
     };
 
-    const isDesktopEnvironment = isDesktop();
-    const isWebEnvironment = isWeb();
     const ua = Bowser.getParser(getUserAgent());
 
     const osDetail = ua.getOS();
-    const browserDetail = ua.getBrowser();
-
     const currentOsName = osDetail.name?.toLowerCase() || '';
     const currentOsVersion = semver.valid(semver.coerce(osDetail.version)) || '';
 
+    const browserDetail = ua.getBrowser();
     const currentBrowserName = browserDetail.name?.toLowerCase() || '';
     const currentBrowserVersion = semver.valid(semver.coerce(browserDetail.version)) || '';
 
+    const environment = getEnvironment();
     const suiteVersion = semver.valid(semver.coerce(process.env.VERSION)) || '';
 
     return messageSystemConfig.actions
         .filter(action => {
             return action.conditions.some(condition => {
-                let conditionValid = true;
-                // TODO: if conditionValid === false, then it can return immediately
                 const {
                     environment: environmentCondition,
                     os: osCondition,
@@ -186,37 +186,44 @@ export const getValidMessages = (
                     devices: deviceCondition,
                 } = condition;
 
-                conditionValid &&= validateOSCompatibility(
-                    osCondition,
-                    currentOsName,
-                    currentOsVersion,
-                );
+                if (!validateOSCompatibility(osCondition, currentOsName, currentOsVersion)) {
+                    return false;
+                }
 
-                if (isDesktopEnvironment) {
-                    conditionValid &&= validateEnvironmentCompatibility(
-                        environmentCondition.desktop,
+                if (
+                    !validateEnvironmentCompatibility(
+                        environmentCondition,
+                        environment,
                         suiteVersion,
-                    );
-                } else if (isWebEnvironment) {
-                    conditionValid &&= validateEnvironmentCompatibility(
-                        environmentCondition.web,
-                        suiteVersion,
-                    );
+                    )
+                ) {
+                    return false;
+                }
 
-                    conditionValid &&= validateBrowserCompatibility(
+                if (
+                    environment === 'web' &&
+                    !validateBrowserCompatibility(
                         browserCondition,
                         currentBrowserName,
                         currentBrowserVersion,
-                    );
+                    )
+                ) {
+                    return false;
                 }
 
-                validateSettingsCompatibility(settingsCondition, currentSettings);
+                if (!validateSettingsCompatibility(settingsCondition, currentSettings)) {
+                    return false;
+                }
 
-                conditionValid &&= validateTransportCompatibility(transportCondition, transport);
+                if (!validateTransportCompatibility(transportCondition, transport)) {
+                    return false;
+                }
 
-                conditionValid &&= validateDeviceCompatibility(deviceCondition, device);
+                if (!validateDeviceCompatibility(deviceCondition, device)) {
+                    return false;
+                }
 
-                return conditionValid;
+                return true;
             });
         })
         .map(action => action.notification);

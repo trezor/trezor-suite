@@ -13,7 +13,7 @@
                   },
                   {
                      "tor": false,
-                     "darkmode": true
+                     "ltc": true
                   }
                ],
                "os": {
@@ -28,9 +28,9 @@
                   "ios": "13"
                },
                "environment": {
-                  "desktop": "<21.01",
+                  "desktop": "<21.5",
                   "mobile": null,
-                  "web": "<21.01"
+                  "web": "<22"
                },
                "browser": {
                   "firefox": [

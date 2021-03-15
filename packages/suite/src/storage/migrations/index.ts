@@ -189,4 +189,8 @@ export const migrate = async (
             cursor = await cursor.continue();
         }
     }
+
+    if (oldVersion < 22) {
+        db.createObjectStore('messageSystem');
+    }
 };
