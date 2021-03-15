@@ -149,7 +149,7 @@ const Index = ({ children }: Props) => (
                 </FooterList>
             </FooterLinks>
             <FooterCompany>
-                <TrezorLogo type="horizontal" variant="black" width="83px" />
+                <TrezorLogo type="horizontal" width="83px" />
                 <FooterParagraph>
                     <Translation
                         id="TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_PARAGRAPH"

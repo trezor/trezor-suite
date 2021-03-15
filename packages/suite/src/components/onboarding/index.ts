@@ -1,8 +1,9 @@
 import Option from './Option';
+import NeueOption, { OptionsWrapper, OptionWrapper, OptionsDivider } from './NeueOption';
 import Text from './Text';
 
 import ControlsWrapper from './Wrapper/ControlsWrapper';
-import OptionsWrapper from './Wrapper/OptionsWrapper';
+// import OptionsWrapper from './Wrapper/OptionsWrapper';
 import StepBodyWrapper from './Wrapper/StepBodyWrapper';
 import StepFooterWrapper from './Wrapper/StepFooterWrapper';
 import StepHeadingWrapper from './Wrapper/StepHeadingWrapper';
@@ -11,8 +12,9 @@ import StepWrapper from './Wrapper/StepWrapper';
 import ButtonAlt from './Buttons/ButtonAlt';
 import ButtonCta from './Buttons/ButtonCta';
 import ButtonBack from './Buttons/ButtonBack';
+import ButtonSkip from './Buttons/ButtonSkip';
 
-import Box from './Box/Box';
+import Box, { BoxProps } from './Box/Box';
 import ConnectDevicePrompt from './ConnectDevicePrompt';
 import ConnectDevicePromptManager from './ConnectDevicePromptManager';
 import OnboardingLayout from './Layouts/OnboardingLayout';
@@ -26,6 +28,7 @@ const OnboardingButton = {
     Alt: ButtonAlt,
     Cta: ButtonCta,
     Back: ButtonBack,
+    Skip: ButtonSkip,
 };
 
 const Loaders = {
@@ -47,6 +50,10 @@ export {
     Text,
     Wrapper,
     Option,
+    NeueOption,
+    OptionsWrapper,
+    OptionWrapper,
+    OptionsDivider,
     Box,
     ConnectDevicePrompt,
     ConnectDevicePromptManager,
@@ -56,3 +63,4 @@ export {
     TroubleshootingTips,
     Hologram,
 };
+export type { BoxProps };
