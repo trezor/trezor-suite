@@ -17,7 +17,7 @@ interface Props {
     className?: string;
     zIndex?: number;
     animated: boolean;
-    onClick: () => void;
+    onClick?: () => void;
 }
 
 const StyledBackdrop = styled.div<Props>`

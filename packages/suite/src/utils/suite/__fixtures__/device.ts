@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
+import { TrezorDevice } from '@suite/types/suite';
+
 const { getSuiteDevice } = global.JestMocks;
 
 const SUITE_DEVICE = getSuiteDevice();
@@ -512,6 +514,165 @@ const getDeviceInstances = [
     },
 ];
 
+// const parseFirmwareChangelog = [
+//     {
+//         changelog:
+//             '* Replacement transaction signing for replace-by-fee.\n* Support for Output Descriptors export.\n* Show Ypub/Zpub correctly for multisig GetAddress.\n* Show amounts in mBTC, uBTC and sat denominations.',
+//         result: {},
+//     },
+//     {
+//         changelog:
+//             '* Improves the Passphrase feature by showing the entered passphrase on the Trezor screen before opening the wallet.\n* Adds support for Verge (XVG).\n* Drops support for Metaverse (ETP), GINcoin (GIN), Pesetacoin (PTC), and Zel (ZEL).\n* Re-enables spending coins from Bitcoin paths (fixing some compatibility issues with Bitcoin Cash wallets).\n* Fixes smaller issues in the user interface.',
+
+//         result: {},
+//     },
+//     {
+//         changelog:
+//             '* Reintroduces the ability to spend pre-Overwinter (2018) funds on Zcash-like coins.\n* Adds support for multiple change outputs in outgoing transactions.\n* Adds a security check to prevent potential issues with paths used in altcoin transactions.',
+
+//         result: {},
+//     },
+//     { changelog: '* Refactor Bitcoin signing', result: {} },
+// ];
+
+const parseFirmwareChangelog = [
+    {
+        firmwareRelease: {
+            isLatest: true,
+            isNewer: true,
+            isRequired: false,
+            release: {
+                required: false,
+                version: [1, 9, 4],
+                bootloader_version: [1, 8, 0],
+                min_bridge_version: [2, 0, 25],
+                min_firmware_version: [1, 6, 2],
+                min_bootloader_version: [1, 5, 0],
+                url: 'firmware/1/trezor-1.9.4.bin',
+                url_bitcoinonly: 'firmware/1/trezor-1.9.4-bitcoinonly.bin',
+                fingerprint: '867017bd784cc4e9ce6f0875c61ea86f89b19380d54045c34608b85472998000',
+                fingerprint_bitcoinonly:
+                    '3f73dfbcfc48f66c8814f6562524d81888230e0acd1c19b52b6e8772c6c67e7f',
+                notes:
+                    'https://blog.trezor.io/trezor-suite-and-firmware-updates-rbf-and-spending-now-live-c2f69c42d7f7',
+                changelog:
+                    '* Replacement transaction signing for replace-by-fee.\n* Support for Output Descriptors export.\n* Show Ypub/Zpub correctly for multisig GetAddress.\n* Show amounts in mBTC, uBTC and sat denominations.',
+            },
+            changelog: [
+                {
+                    required: false,
+                    version: [1, 9, 4],
+                    bootloader_version: [1, 8, 0],
+                    min_bridge_version: [2, 0, 25],
+                    min_firmware_version: [1, 6, 2],
+                    min_bootloader_version: [1, 5, 0],
+                    url: 'firmware/1/trezor-1.9.4.bin',
+                    url_bitcoinonly: 'firmware/1/trezor-1.9.4-bitcoinonly.bin',
+                    fingerprint: '867017bd784cc4e9ce6f0875c61ea86f89b19380d54045c34608b85472998000',
+                    fingerprint_bitcoinonly:
+                        '3f73dfbcfc48f66c8814f6562524d81888230e0acd1c19b52b6e8772c6c67e7f',
+                    notes:
+                        'https://blog.trezor.io/trezor-suite-and-firmware-updates-rbf-and-spending-now-live-c2f69c42d7f7',
+                    changelog:
+                        '* Replacement transaction signing for replace-by-fee.\n* Support for Output Descriptors export.\n* Show Ypub/Zpub correctly for multisig GetAddress.\n* Show amounts in mBTC, uBTC and sat denominations.',
+                },
+                {
+                    required: false,
+                    version: [1, 9, 3],
+                    bootloader_version: [1, 8, 0],
+                    min_bridge_version: [2, 0, 25],
+                    min_firmware_version: [1, 6, 2],
+                    min_bootloader_version: [1, 5, 0],
+                    url: 'firmware/1/trezor-1.9.3.bin',
+                    url_bitcoinonly: 'firmware/1/trezor-1.9.3-bitcoinonly.bin',
+                    fingerprint: '2589f456559f813d1149be1022e62f2d48fbe28f4d02de933bd888d91035cace',
+                    fingerprint_bitcoinonly:
+                        '76f899d60ffd9685713cb420d017565c05c43aadaf0e62b645a50a8db69afef6',
+                    notes:
+                        'https://blog.trezor.io/firmware-updates-for-trezor-model-t-version-2-3-3-and-trezor-model-one-version-1-9-3-c94f7a3b6fea',
+                    changelog:
+                        '* Improves the Passphrase feature by showing the entered passphrase on the Trezor screen before opening the wallet.\n* Adds support for Verge (XVG).\n* Drops support for Metaverse (ETP), GINcoin (GIN), Pesetacoin (PTC), and Zel (ZEL).\n* Re-enables spending coins from Bitcoin paths (fixing some compatibility issues with Bitcoin Cash wallets).\n* Fixes smaller issues in the user interface.',
+                },
+                {
+                    required: false,
+                    version: [1, 9, 2],
+                    bootloader_version: [1, 8, 0],
+                    min_bridge_version: [2, 0, 25],
+                    min_firmware_version: [1, 6, 2],
+                    min_bootloader_version: [1, 5, 0],
+                    url: 'firmware/1/trezor-1.9.2.bin',
+                    url_bitcoinonly: 'firmware/1/trezor-1.9.2-bitcoinonly.bin',
+                    fingerprint: '45b83acd1330ddfd5567edbae5ff8028df1c48a493f01d47cc5499ee0be9b991',
+                    fingerprint_bitcoinonly:
+                        '2762c0ff78c96e23d1d348330e0a3cdf45d83c8fc8c2d48853b7cb602ddc19bb',
+                    notes:
+                        'https://blog.trezor.io/firmware-updates-for-trezor-model-t-version-2-3-2-and-trezor-model-one-version-1-9-2-f4f9c0f1ed7c',
+                    changelog:
+                        '* Reintroduces the ability to spend pre-Overwinter (2018) funds on Zcash-like coins.\n* Adds support for multiple change outputs in outgoing transactions.\n* Adds a security check to prevent potential issues with paths used in altcoin transactions.',
+                },
+                {
+                    required: false,
+                    version: [1, 9, 1],
+                    bootloader_version: [1, 8, 0],
+                    min_bridge_version: [2, 0, 25],
+                    min_firmware_version: [1, 6, 2],
+                    min_bootloader_version: [1, 5, 0],
+                    url: 'firmware/1/trezor-1.9.1.bin',
+                    url_bitcoinonly: 'firmware/1/trezor-1.9.1-bitcoinonly.bin',
+                    fingerprint: '30cde253c46d4fc705f98634a35d06a494cf2a36824622a9c6a573e07f14292d',
+                    fingerprint_bitcoinonly:
+                        'ee743e3bd1e424ceb45a1d877a5422e7af449706f636c459cdd8bb0d4796cba5',
+                    notes:
+                        'https://blog.trezor.io/details-of-firmware-updates-for-trezor-one-version-1-9-1-and-trezor-model-t-version-2-3-1-1eba8f60f2dd',
+                    changelog: '* Refactor Bitcoin signing',
+                },
+            ],
+        } as TrezorDevice['firmwareRelease'],
+        description: 'Parse firmware changelog ',
+        result: {
+            '1.9.1': {
+                changelog: ['Refactor Bitcoin signing'],
+                notes:
+                    'https://blog.trezor.io/details-of-firmware-updates-for-trezor-one-version-1-9-1-and-trezor-model-t-version-2-3-1-1eba8f60f2dd',
+                url: 'firmware/1/trezor-1.9.1.bin',
+            },
+            '1.9.2': {
+                changelog: [
+                    'Reintroduces the ability to spend pre-Overwinter (2018) funds on Zcash-like coins.',
+                    'Adds support for multiple change outputs in outgoing transactions.',
+                    'Adds a security check to prevent potential issues with paths used in altcoin transactions.',
+                ],
+                notes:
+                    'https://blog.trezor.io/firmware-updates-for-trezor-model-t-version-2-3-2-and-trezor-model-one-version-1-9-2-f4f9c0f1ed7c',
+                url: 'firmware/1/trezor-1.9.2.bin',
+            },
+            '1.9.3': {
+                changelog: [
+                    'Improves the Passphrase feature by showing the entered passphrase on the Trezor screen before opening the wallet.',
+                    'Adds support for Verge (XVG).',
+                    'Drops support for Metaverse (ETP), GINcoin (GIN), Pesetacoin (PTC), and Zel (ZEL).',
+                    'Re-enables spending coins from Bitcoin paths (fixing some compatibility issues with Bitcoin Cash wallets).',
+                    'Fixes smaller issues in the user interface.',
+                ],
+                notes:
+                    'https://blog.trezor.io/firmware-updates-for-trezor-model-t-version-2-3-3-and-trezor-model-one-version-1-9-3-c94f7a3b6fea',
+                url: 'firmware/1/trezor-1.9.3.bin',
+            },
+            '1.9.4': {
+                changelog: [
+                    'Replacement transaction signing for replace-by-fee.',
+                    'Support for Output Descriptors export.',
+                    'Show Ypub/Zpub correctly for multisig GetAddress.',
+                    'Show amounts in mBTC, uBTC and sat denominations.',
+                ],
+                notes:
+                    'https://blog.trezor.io/trezor-suite-and-firmware-updates-rbf-and-spending-now-live-c2f69c42d7f7',
+                url: 'firmware/1/trezor-1.9.4.bin',
+            },
+        },
+    },
+];
+
 export default {
     getStatus,
     isDeviceAccessible,
@@ -526,4 +687,5 @@ export default {
     getFirstDeviceInstance,
     getDeviceInstances,
     isDeviceRemembered,
+    parseFirmwareChangelog,
 };
