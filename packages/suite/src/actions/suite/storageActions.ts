@@ -309,14 +309,14 @@ export const saveMetadata = () => async (_dispatch: Dispatch, getState: GetState
 export const saveMessageSystem = () => async (_dispatch: Dispatch, getState: GetState) => {
     if (!(await isDBAccessible())) return;
 
-    const { dismissedNotifications, config, currentSequence } = getState().messageSystem;
+    const { dismissedMessages, config, currentSequence } = getState().messageSystem;
 
     db.addItem(
         'messageSystem',
         {
             config,
             currentSequence,
-            dismissedNotifications,
+            dismissedMessages,
         },
         'suite',
         true,

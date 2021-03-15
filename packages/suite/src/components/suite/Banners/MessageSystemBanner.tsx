@@ -3,19 +3,19 @@ import * as React from 'react';
 import * as routerActions from '@suite-actions/routerActions';
 import * as messageSystemActions from '@suite-actions/messageSystemActions';
 import { useActions } from '@suite-hooks';
-import { Notification } from '@suite/types/suite/messageSystem';
+import { Message } from '@suite/types/suite/messageSystem';
 import Wrapper from './components/Wrapper';
 
 type Props = {
-    notification: Notification;
+    message: Message;
 };
 
-const MessageSystemBanner = ({ notification }: Props) => {
-    const { cta, variant, id, message, dismissible } = notification;
+const MessageSystemBanner = ({ message }: Props) => {
+    const { cta, variant, id, content, dismissible } = message;
 
     const { goto, dismissNotification } = useActions({
         goto: routerActions.goto,
-        dismissNotification: messageSystemActions.dismissNotification,
+        dismissNotification: messageSystemActions.dismissMessage,
     });
 
     const getActionConfig = () => {
@@ -32,9 +32,9 @@ const MessageSystemBanner = ({ notification }: Props) => {
         }
 
         return {
-            label: label['en-GB'],
+            label: label['en-GB'], // TODO: translation
             onClick: onClick!,
-            'data-test': `@notification/message-system/${id}/cta`,
+            'data-test': `@message-system/${id}/cta`,
         };
     };
 
@@ -43,7 +43,7 @@ const MessageSystemBanner = ({ notification }: Props) => {
 
         return {
             onClick: () => dismissNotification(id, 'banner'),
-            'data-test': `@notification/message-system/${id}/dismiss`,
+            'data-test': `@message-system/${id}/dismiss`,
         };
     };
 
@@ -53,7 +53,7 @@ const MessageSystemBanner = ({ notification }: Props) => {
     return (
         <Wrapper
             variant={variant}
-            body={message['en-GB']}
+            body={content['en-GB']} // TODO: translation
             action={actionConfig}
             dismissal={dismissalConfig}
         />

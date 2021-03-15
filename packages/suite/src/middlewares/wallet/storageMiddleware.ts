@@ -201,7 +201,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             break;
 
         case MESSAGE_SYSTEM.FETCH_SUCCESS_UPDATE:
-        case MESSAGE_SYSTEM.NOTIFICATION_DISMISSED:
+        case MESSAGE_SYSTEM.DISMISS_MESSAGE:
             api.dispatch(storageActions.saveMessageSystem());
             break;
 

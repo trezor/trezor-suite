@@ -1,28 +1,27 @@
 import { getUnixTime } from 'date-fns';
+
 import { MESSAGE_SYSTEM } from '@suite-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
 import { Category, MessageSystem } from '@suite/types/suite/messageSystem';
-import {
-    decodeMessageSystemJwsConfig,
-    verifyMessageSystemJwsConfig,
-} from '@suite/utils/suite/messageSystem';
+import { decodeJws, verifyJws } from '@suite/utils/suite/messageSystem';
 import {
     FETCH_CHECK_INTERVAL,
     FETCH_INTERVAL,
-    MESSAGE_SYSTEM_JWS_CONFIG_URL,
+    MESSAGE_SYSTEM_CONFIG_URL,
 } from './constants/messageSystemConstants';
+import { jwsPublicKey } from '@suite/constants/suite/keys';
 
 export type MessageSystemAction =
     | { type: typeof MESSAGE_SYSTEM.FETCH_SUCCESS }
     | { type: typeof MESSAGE_SYSTEM.FETCH_SUCCESS_UPDATE; payload: MessageSystem }
-    | { type: typeof MESSAGE_SYSTEM.FETCH_FAILURE }
+    | { type: typeof MESSAGE_SYSTEM.FETCH_ERROR }
     | {
-          type: typeof MESSAGE_SYSTEM.SAVE_COMPATIBLE_NOTIFICATIONS;
+          type: typeof MESSAGE_SYSTEM.SAVE_VALID_MESSAGES;
           category: Category;
           payload: string[];
       }
     | {
-          type: typeof MESSAGE_SYSTEM.NOTIFICATION_DISMISSED;
+          type: typeof MESSAGE_SYSTEM.DISMISS_MESSAGE;
           category: Category;
           id: string;
       };
@@ -37,7 +36,7 @@ const fetchSuccessUpdate = (payload: MessageSystem): MessageSystemAction => ({
 });
 
 const fetchFailure = (): MessageSystemAction => ({
-    type: MESSAGE_SYSTEM.FETCH_FAILURE,
+    type: MESSAGE_SYSTEM.FETCH_ERROR,
 });
 
 export const fetchConfig = () => async (dispatch: Dispatch, getState: GetState) => {
@@ -45,60 +44,61 @@ export const fetchConfig = () => async (dispatch: Dispatch, getState: GetState) 
 
     if (getUnixTime(new Date()) + FETCH_INTERVAL >= timestamp) {
         try {
-            const response = await fetch(MESSAGE_SYSTEM_JWS_CONFIG_URL);
-            const jwsConfig = await response.text();
+            const response = await fetch(MESSAGE_SYSTEM_CONFIG_URL);
+            const jws = await response.text();
 
-            const jwsConfigDecoded = decodeMessageSystemJwsConfig(jwsConfig);
+            const decodedJws = decodeJws(jws);
 
-            if (!jwsConfigDecoded) {
-                throw Error('MessageSystem config decoded unsuccessfully');
+            if (!decodedJws) {
+                throw Error('Config decoding failed');
             }
 
-            const { alg } = jwsConfigDecoded?.header;
-            const isAuthenticityValid = verifyMessageSystemJwsConfig(jwsConfig, alg);
+            const { alg } = decodedJws?.header;
+            const isAuthenticityValid = verifyJws(jws, alg, jwsPublicKey);
 
             if (!isAuthenticityValid) {
-                throw Error('MessageSystem config authenticity invalid');
+                throw Error('Config authenticity invalid');
             }
 
-            const payload: MessageSystem = JSON.parse(jwsConfigDecoded.payload);
+            const config: MessageSystem = JSON.parse(decodedJws.payload);
 
-            if (currentSequence < payload.sequence) {
-                dispatch(fetchSuccessUpdate(payload));
-            } else if (currentSequence === payload.sequence) {
+            if (currentSequence < config.sequence) {
+                dispatch(fetchSuccessUpdate(config));
+            } else if (currentSequence === config.sequence) {
                 dispatch(fetchSuccess());
             } else {
-                throw Error('MessageSystem config fetched is older than the current one');
+                throw Error('Fetched config is older than the current one');
             }
         } catch (error) {
-            // TODO: Logger?
             dispatch(fetchFailure());
+
+            console.error('MessageSystem:', error);
         }
     }
 };
 
-let fetchMessageSystemConfigInterval: ReturnType<typeof setInterval>;
+let fetchConfigInterval: ReturnType<typeof setInterval>;
 
 export const init = () => (dispatch: Dispatch, _getState: GetState) => {
     dispatch(fetchConfig());
 
-    if (fetchMessageSystemConfigInterval) {
-        clearInterval(fetchMessageSystemConfigInterval);
+    if (fetchConfigInterval) {
+        clearInterval(fetchConfigInterval);
     }
 
-    fetchMessageSystemConfigInterval = setInterval(() => {
+    fetchConfigInterval = setInterval(() => {
         dispatch(fetchConfig());
     }, FETCH_CHECK_INTERVAL);
 };
 
-export const saveCompatibleNotifications = (payload: string[], category: Category) => ({
-    type: MESSAGE_SYSTEM.SAVE_COMPATIBLE_NOTIFICATIONS,
+export const saveValidMessages = (payload: string[], category: Category) => ({
+    type: MESSAGE_SYSTEM.SAVE_VALID_MESSAGES,
     payload,
     category,
 });
 
-export const dismissNotification = (id: string, category: Category) => ({
-    type: MESSAGE_SYSTEM.NOTIFICATION_DISMISSED,
+export const dismissMessage = (id: string, category: Category) => ({
+    type: MESSAGE_SYSTEM.DISMISS_MESSAGE,
     id,
     category,
 });

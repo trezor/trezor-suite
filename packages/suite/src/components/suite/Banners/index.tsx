@@ -1,15 +1,15 @@
 import * as React from 'react';
 import styled from 'styled-components';
+
 import { isDesktop } from '@suite-utils/env';
 import { useSelector } from '@suite-hooks';
-
+import { Message } from '@suite/types/suite/messageSystem';
 import OnlineStatus from './OnlineStatus';
 import UpdateBridge from './UpdateBridge';
 import UpdateFirmware from './UpdateFirmware';
 import NoBackup from './NoBackup';
 import FailedBackup from './FailedBackup';
 import MessageSystemBanner from './MessageSystemBanner';
-import { Notification } from '@suite/types/suite/messageSystem';
 
 const Wrapper = styled.div`
     z-index: 3;
@@ -20,9 +20,7 @@ const Banners = () => {
     const transport = useSelector(state => state.suite.transport);
     const online = useSelector(state => state.suite.online);
     const device = useSelector(state => state.suite.device);
-    const { compatibleNotifications, dismissedNotifications, config } = useSelector(
-        state => state.messageSystem,
-    );
+    const { validMessages, dismissedMessages, config } = useSelector(state => state.messageSystem);
 
     const showUpdateBridge = () => {
         if (
@@ -35,18 +33,18 @@ const Banners = () => {
         return transport?.outdated;
     };
 
-    const getMessageSystemBanner = (): Notification | null => {
-        const availableNotifications = compatibleNotifications.banner.filter(
-            id => !dismissedNotifications[id]?.banner,
+    const getMessageSystemBanner = (): Message | null => {
+        const nonDismissedValidMessages = validMessages.banner.filter(
+            id => !dismissedMessages[id]?.banner,
         );
 
-        const notifications = config?.actions
-            .filter(({ notification }) => availableNotifications.includes(notification.id))
-            .map(action => action.notification);
+        const messages = config?.actions
+            .filter(({ message }) => nonDismissedValidMessages.includes(message.id))
+            .map(action => action.message);
 
-        if (!notifications?.length) return null;
+        if (!messages?.length) return null;
 
-        return notifications.reduce((prev, current) =>
+        return messages.reduce((prev, current) =>
             prev.priority > current.priority ? prev : current,
         );
     };
@@ -74,7 +72,7 @@ const Banners = () => {
 
     const messageSystemBanner = getMessageSystemBanner();
     if (messageSystemBanner && messageSystemBanner.priority >= priority) {
-        banner = <MessageSystemBanner notification={messageSystemBanner} />;
+        banner = <MessageSystemBanner message={messageSystemBanner} />;
     }
 
     return (

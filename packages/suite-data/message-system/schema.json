@@ -39,7 +39,7 @@
             "type": "object",
             "required": [
                "conditions",
-               "notification"
+               "message"
             ],
             "properties": {
                "conditions": {
@@ -199,8 +199,8 @@
                      "additionalProperties": false
                   }
                },
-               "notification": {
-                  "title": "Notification",
+               "message": {
+                  "title": "Message",
                   "type": "object",
                   "required": [
                      "id",
@@ -209,7 +209,7 @@
                      "dismissible",
                      "variant",
                      "category",
-                     "message"
+                     "content"
                   ],
                   "properties": {
                      "id": {
@@ -248,7 +248,7 @@
                            }
                         ]
                      },
-                     "message": {
+                     "content": {
                         "$ref": "#/definitions/localization"
                      },
                      "cta": {
@@ -347,7 +347,7 @@
       },
       "localization": {
          "title": "Localization",
-         "description": "A multilingual message localization.",
+         "description": "A multilingual text localization.",
          "type": "object",
          "required": [
             "en-GB"

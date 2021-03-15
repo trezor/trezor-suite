@@ -6,7 +6,7 @@ import { Action } from '@suite-types';
 import { MESSAGE_SYSTEM, STORAGE } from '@suite/actions/suite/constants';
 import { MessageSystem } from '@suite/types/suite/messageSystem';
 
-export type NotificationState = {
+export type MessageState = {
     banner: boolean;
     context: boolean;
     modal: boolean;
@@ -17,13 +17,13 @@ export type State = {
     currentSequence: number;
     timestamp: number;
 
-    compatibleNotifications: {
+    validMessages: {
         banner: string[];
         context: string[];
         modal: string[];
     };
-    dismissedNotifications: {
-        [key: string]: NotificationState;
+    dismissedMessages: {
+        [key: string]: MessageState;
     };
 };
 
@@ -32,24 +32,24 @@ const initialState: State = {
     currentSequence: 0,
     timestamp: 0,
 
-    compatibleNotifications: {
+    validMessages: {
         banner: [],
         context: [],
         modal: [],
     },
-    dismissedNotifications: {},
+    dismissedMessages: {},
 };
 
-const getNotificationById = (draft: WritableDraft<State>, id: string): NotificationState => {
-    if (!draft.dismissedNotifications[id]) {
-        draft.dismissedNotifications[id] = { banner: false, context: false, modal: false };
+const getMessageStateById = (draft: WritableDraft<State>, id: string): MessageState => {
+    if (!draft.dismissedMessages[id]) {
+        draft.dismissedMessages[id] = { banner: false, context: false, modal: false };
     }
-    return draft.dismissedNotifications[id];
+    return draft.dismissedMessages[id];
 };
 
 const messageSystemReducer = (state: State = initialState, action: Action): State => {
     return produce(state, draft => {
-        let notification;
+        let messageState;
 
         switch (action.type) {
             case STORAGE.LOADED:
@@ -62,15 +62,16 @@ const messageSystemReducer = (state: State = initialState, action: Action): Stat
                 draft.config = action.payload;
                 draft.currentSequence = action.payload.sequence;
                 break;
-            case MESSAGE_SYSTEM.FETCH_FAILURE:
+            case MESSAGE_SYSTEM.FETCH_ERROR:
                 draft.timestamp = 0;
                 break;
-            case MESSAGE_SYSTEM.SAVE_COMPATIBLE_NOTIFICATIONS:
-                draft.compatibleNotifications[action.category] = action.payload;
+            case MESSAGE_SYSTEM.SAVE_VALID_MESSAGES:
+                draft.validMessages[action.category] = action.payload;
                 break;
-            case MESSAGE_SYSTEM.NOTIFICATION_DISMISSED:
-                notification = getNotificationById(draft, action.id);
-                notification[action.category] = true;
+            case MESSAGE_SYSTEM.DISMISS_MESSAGE:
+                messageState = getMessageStateById(draft, action.id);
+
+                messageState[action.category] = true;
                 break;
             default:
                 break;

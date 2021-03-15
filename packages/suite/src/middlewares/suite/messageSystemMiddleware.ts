@@ -2,10 +2,10 @@ import { MiddlewareAPI } from 'redux';
 import { TRANSPORT, DEVICE } from 'trezor-connect';
 import { MESSAGE_SYSTEM, SUITE } from '@suite-actions/constants';
 import { AppState, Action, Dispatch } from '@suite-types';
-import { getCompatibleMessages, Options } from '@suite-utils/messageSystem';
+import { getValidMessages, Options } from '@suite-utils/messageSystem';
 import { WALLET_SETTINGS } from '@suite/actions/settings/constants';
-import { saveCompatibleNotifications } from '@suite/actions/suite/messageSystemActions';
-import { Category, Notification } from '@suite/types/suite/messageSystem';
+import { saveValidMessages } from '@suite/actions/suite/messageSystemActions';
+import { Category, Message } from '@suite/types/suite/messageSystem';
 
 const messageSystemMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
@@ -32,15 +32,15 @@ const messageSystemMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (nex
             enabledNetworks,
         };
 
-        const notifications = getCompatibleMessages(config, options);
+        const messages = getValidMessages(config, options);
 
-        if (notifications.length) {
+        if (messages.length) {
             const banners: string[] = [];
             const modals: string[] = [];
             const contexts: string[] = [];
 
-            notifications.forEach((notification: Notification) => {
-                let { category: categories } = notification;
+            messages.forEach((message: Message) => {
+                let { category: categories } = message;
 
                 if (typeof categories === 'string') {
                     categories = [categories];
@@ -48,18 +48,18 @@ const messageSystemMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (nex
 
                 categories.forEach((category: Category) => {
                     if (category === 'modal') {
-                        modals.push(notification.id);
+                        modals.push(message.id);
                     } else if (category === 'context') {
-                        contexts.push(notification.id);
+                        contexts.push(message.id);
                     } else if (category === 'banner') {
-                        banners.push(notification.id);
+                        banners.push(message.id);
                     }
                 });
             });
 
-            api.dispatch(saveCompatibleNotifications(banners, 'banner'));
-            api.dispatch(saveCompatibleNotifications(modals, 'modal'));
-            api.dispatch(saveCompatibleNotifications(contexts, 'context'));
+            api.dispatch(saveValidMessages(banners, 'banner'));
+            api.dispatch(saveValidMessages(modals, 'modal'));
+            api.dispatch(saveValidMessages(contexts, 'context'));
         }
     }
 

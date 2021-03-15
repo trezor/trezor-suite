@@ -2,12 +2,13 @@ import Bowser from 'bowser';
 import { verify, decode, Algorithm, Signature } from 'jws';
 import * as semver from 'semver';
 import { TransportInfo } from 'trezor-connect';
+
 import { Network } from '@wallet-types';
 import { SuiteEnvironmentType, TrezorDevice } from '@suite-types';
 import { getUserAgent, getEnvironment } from '@suite-utils/env';
 import {
     MessageSystem,
-    Notification,
+    Message,
     Version,
     OperatingSystem,
     Settings,
@@ -17,21 +18,15 @@ import {
     Environment,
 } from '@suite-types/messageSystem';
 
-// TODO: use production ready key; move to suite-data?
-export const secp256k1PublicKey = `-----BEGIN PUBLIC KEY-----
-MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAE77bZRAszhhlCqJDokcvjlXOPPPRnAOh+
-ZkxZDuo75OAmRZFUJtb3jZQrLRhMa/YwOjUHgSa350GIi5L5oJ59+A==
------END PUBLIC KEY-----
-`;
-
-export const decodeMessageSystemJwsConfig = (jwsConfig: string): Signature | null => {
-    return decode(jwsConfig);
+export const decodeJws = (jws: string): Signature | null => {
+    return decode(jws);
 };
 
-export const verifyMessageSystemJwsConfig = (jwsConfig: string, alg: Algorithm): boolean => {
-    return verify(jwsConfig, alg, secp256k1PublicKey);
+export const verifyJws = (jws: string, alg: Algorithm, key: string): boolean => {
+    return verify(jws, alg, key);
 };
 
+// normalize versions for semver library
 const normalizeVersion = (version: Version): string => {
     if (!version) {
         return '';
@@ -133,7 +128,7 @@ const validateDeviceCompatibility = (
 
         validDevice &&= device.model === model;
         validDevice &&= semver.satisfies(deviceVersion, normalizeVersion(device.firmware));
-        // TODO: Authorized vendors
+        // TODO: authorized vendors
 
         return validDevice;
     });
@@ -146,11 +141,8 @@ export type Options = {
     device: TrezorDevice | undefined;
 };
 
-export const getCompatibleMessages = (
-    messageSystemConfig: MessageSystem | null,
-    options: Options,
-): Notification[] => {
-    if (!messageSystemConfig) {
+export const getValidMessages = (config: MessageSystem | null, options: Options): Message[] => {
+    if (!config) {
         return [];
     }
 
@@ -174,10 +166,10 @@ export const getCompatibleMessages = (
         enabledNetworks,
     };
 
-    return messageSystemConfig.actions
-        .filter(action => action.notification.active)
-        .filter(action => {
-            return action.conditions.some(condition => {
+    return config.actions
+        .filter(action => action.message.active)
+        .filter(action =>
+            action.conditions.some(condition => {
                 const {
                     environment: environmentCondition,
                     os: osCondition,
@@ -225,7 +217,7 @@ export const getCompatibleMessages = (
                 }
 
                 return true;
-            });
-        })
-        .map(action => action.notification);
+            }),
+        )
+        .map(action => action.message);
 };

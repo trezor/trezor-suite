@@ -44,7 +44,7 @@ export interface MessageSystem {
 }
 export interface Action {
     conditions: Condition;
-    notification: Notification;
+    message: Message;
 }
 /**
  * If a setting is not specified, then it can be either true or false. Currently, 'tor' and coin symbols are supported.
@@ -80,20 +80,20 @@ export interface Device {
     firmware: Version;
     vendor: Vendor;
 }
-export interface Notification {
+export interface Message {
     id: string;
     active: boolean;
     priority: number;
     dismissible: boolean;
     variant: Variant;
     category: Category | Category[];
-    message: Localization;
+    content: Localization;
     cta?: CTA;
     modal?: Modal;
     domain?: Domain;
 }
 /**
- * A multilingual message localization.
+ * A multilingual text localization.
  */
 export interface Localization {
     'en-GB': string;
