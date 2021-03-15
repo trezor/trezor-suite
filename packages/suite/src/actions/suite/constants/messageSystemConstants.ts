@@ -1,4 +1,3 @@
-export const FETCH_INIT = '@message-system/fetch-init';
 export const FETCH_SUCCESS = '@message-system/fetch-success';
 export const FETCH_SUCCESS_UPDATE = '@message-system/fetch-success-update';
 export const FETCH_FAILURE = '@message-system/fetch-failure';

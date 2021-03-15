@@ -12,6 +12,7 @@ const messageSystemMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (nex
 ): Action => {
     next(action);
 
+    // All actions below can affect config conditions
     if (
         action.type === SUITE.SELECT_DEVICE ||
         action.type === SUITE.TOR_STATUS ||

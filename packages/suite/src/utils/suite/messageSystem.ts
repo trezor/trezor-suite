@@ -58,9 +58,9 @@ const validateSettingsCompatibility = (
     });
 
     return settingsCondition.some(settingCondition =>
-        Object.entries(settingCondition).every(([key, value]: [string, boolean]) => {
-            return settings[key] === value;
-        }),
+        Object.entries(settingCondition).every(
+            ([key, value]: [string, boolean]) => settings[key] === value,
+        ),
     );
 };
 
@@ -133,7 +133,7 @@ const validateDeviceCompatibility = (
 
         validDevice &&= device.model === model;
         validDevice &&= semver.satisfies(deviceVersion, normalizeVersion(device.firmware));
-        // TODO: vendor
+        // TODO: Authorized vendors
 
         return validDevice;
     });
@@ -156,11 +156,6 @@ export const getCompatibleMessages = (
 
     const { device, transport, tor, enabledNetworks } = options;
 
-    const currentSettings: CurrentSettings = {
-        tor,
-        enabledNetworks,
-    };
-
     const ua = Bowser.getParser(getUserAgent());
 
     const osDetail = ua.getOS();
@@ -174,7 +169,13 @@ export const getCompatibleMessages = (
     const environment = getEnvironment();
     const suiteVersion = semver.valid(semver.coerce(process.env.VERSION)) || '';
 
+    const currentSettings: CurrentSettings = {
+        tor,
+        enabledNetworks,
+    };
+
     return messageSystemConfig.actions
+        .filter(action => action.notification.active)
         .filter(action => {
             return action.conditions.some(condition => {
                 const {

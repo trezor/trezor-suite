@@ -306,25 +306,6 @@ export const saveMetadata = () => async (_dispatch: Dispatch, getState: GetState
     );
 };
 
-export const saveMessageSystemConfig = (payload: MessageSystem) => async (
-    _dispatch: Dispatch,
-    _getState: GetState,
-) => {
-    if (!(await isDBAccessible())) return;
-
-    const { sequence } = payload;
-
-    db.addItem(
-        'messageSystem',
-        {
-            config: payload,
-            currentSequence: sequence,
-        },
-        'suite',
-        true,
-    );
-};
-
 export const saveMessageSystem = () => async (_dispatch: Dispatch, getState: GetState) => {
     if (!(await isDBAccessible())) return;
 
@@ -333,9 +314,9 @@ export const saveMessageSystem = () => async (_dispatch: Dispatch, getState: Get
     db.addItem(
         'messageSystem',
         {
-            dismissedNotifications,
-            config: config!,
+            config,
             currentSequence,
+            dismissedNotifications,
         },
         'suite',
         true,

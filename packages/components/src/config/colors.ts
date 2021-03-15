@@ -22,9 +22,7 @@ export const THEME = {
 
         TYPE_GREEN: '#279503',
         TYPE_ORANGE: '#c19009',
-        TYPE_ORANGE_ALT: '#c19009',
         TYPE_BLUE: '#1d88c5',
-        TYPE_BLUE_ALT: '#1d88c5',
         TYPE_RED: '#cd4949',
         TYPE_RED_ALT: '#cd4949',
         TYPE_DARK_GREY: '#404040',
@@ -72,9 +70,7 @@ export const THEME = {
 
         TYPE_GREEN: '#66ab4e',
         TYPE_ORANGE: '#9b813b',
-        TYPE_ORANGE_ALT: '#eaebed', // used in cta button in banner notification, same color as TYPE_DARK_GREY
         TYPE_BLUE: '#197eaa',
-        TYPE_BLUE_ALT: '#eaebed', // used in cta button in banner notification, same color as TYPE_DARK_GREY
         TYPE_RED: '#c65353',
         TYPE_RED_ALT: '#eaebed', // used in cta button in banner notification, same color as TYPE_DARK_GREY
         TYPE_DARK_GREY: '#eaebed',
@@ -124,9 +120,7 @@ export const THEME = {
 
         TYPE_GREEN: '#6fa95c',
         TYPE_ORANGE: '#9b813b',
-        TYPE_ORANGE_ALT: '#9b813b',
         TYPE_BLUE: '#197eaa',
-        TYPE_BLUE_ALT: '#1d88c5',
         TYPE_RED: '#c65353',
         TYPE_RED_ALT: '#c65353',
         TYPE_DARK_GREY: '#fafafa',

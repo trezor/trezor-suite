@@ -10,6 +10,7 @@ import { Account, Discovery, CoinFiatRates, WalletAccountTransaction } from '@wa
 import { GraphData } from '@wallet-types/graph';
 import { MessageSystem } from '@suite/types/suite/messageSystem';
 import { BuyTrade, ExchangeTrade } from 'invity-api';
+import { NotificationState } from '@suite/reducers/suite/messageSystemReducer';
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -97,7 +98,10 @@ export interface SuiteDBSchema extends DBSchema {
         key: string;
         value: {
             currentSequence: number;
-            config: MessageSystem;
+            config: MessageSystem | null;
+            dismissedNotifications: {
+                [key: string]: NotificationState;
+            };
         };
     };
 }

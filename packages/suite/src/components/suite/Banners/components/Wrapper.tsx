@@ -15,19 +15,6 @@ const getBgColor = (variant: Props['variant'], theme: SuiteThemeColors) => {
     }
 };
 
-const getButtonTextColor = (variant: Props['variant'], theme: SuiteThemeColors) => {
-    switch (variant) {
-        case 'info':
-            return theme.TYPE_BLUE_ALT;
-        case 'warning':
-            return theme.TYPE_ORANGE_ALT;
-        case 'critical':
-            return theme.TYPE_RED_ALT;
-        default:
-            return 'transparent';
-    }
-};
-
 const getIcon = (variant: Props['variant'], theme: SuiteThemeColors) => {
     switch (variant) {
         case 'info':
@@ -80,14 +67,9 @@ const ActionsWrapper = styled.div`
 `;
 
 const ActionButton = styled(Button)<{ color: Props['variant'] }>`
-    color: ${props => getButtonTextColor(props.color, props.theme)};
     height: 24px;
     margin-right: 4px;
     margin-left: 10px;
-
-    &:hover {
-        color: ${props => getButtonTextColor(props.color, props.theme)};
-    }
 `;
 
 const CancelWrapper = styled.div`
