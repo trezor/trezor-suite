@@ -115,3 +115,11 @@ describe('isDeviceRemembered', () => {
         });
     });
 });
+
+describe('parseFirmwareChangelog', () => {
+    fixtures.parseFirmwareChangelog.forEach(f => {
+        it(f.description, () => {
+            expect(utils.parseFirmwareChangelog(f.firmwareRelease)).toEqual(f.result);
+        });
+    });
+});

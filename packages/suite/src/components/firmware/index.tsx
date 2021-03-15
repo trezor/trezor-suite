@@ -9,8 +9,14 @@ export { CheckSeedStep } from './CheckSeed';
 export { FirmwareProgressStep } from './FirmwareProgress';
 export { PartiallyDoneStep } from './PartiallyDone';
 export { DoneStep } from './Done';
+export { ReconnectDevicePrompt } from './ReconnectDevicePrompt';
 export { ReconnectInBootloaderStep } from './ReconnectInBootloader';
 export { ReconnectInNormalStep } from './ReconnectInNormal';
+export { FirmwareOffer } from './FirmwareOffer';
+export { FirmwareInstallation } from './FirmwareInstallation';
+export { OnboardingStepBox } from './OnboardingStepBox';
+export type { OnboardingStepBoxProps } from './OnboardingStepBox';
+export { FirmwareInitial } from './FirmwareInitial';
 
 // exception states components
 export { ErrorStep } from './Error';
