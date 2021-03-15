@@ -1,9 +1,11 @@
 import { MiddlewareAPI } from 'redux';
 import { TRANSPORT, DEVICE } from 'trezor-connect';
-import { MESSAGE_SYSTEM } from '@suite-actions/constants';
+import { MESSAGE_SYSTEM, SUITE } from '@suite-actions/constants';
 import { AppState, Action, Dispatch } from '@suite-types';
-import { getValidMessages, Options } from '@suite-utils/messageSystem';
-import { SUITE } from '@suite-actions/constants';
+import { getCompatibleMessages, Options } from '@suite-utils/messageSystem';
+import { WALLET_SETTINGS } from '@suite/actions/settings/constants';
+import { saveCompatibleNotifications } from '@suite/actions/suite/messageSystemActions';
+import { Category, Notification } from '@suite/types/suite/messageSystem';
 
 const messageSystemMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
@@ -29,9 +31,35 @@ const messageSystemMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (nex
             enabledNetworks,
         };
 
-        const messages = getValidMessages(config, options);
+        const notifications = getCompatibleMessages(config, options);
 
-        // TODO: save valid messages
+        if (notifications.length) {
+            const banners: string[] = [];
+            const modals: string[] = [];
+            const contexts: string[] = [];
+
+            notifications.forEach((notification: Notification) => {
+                let { category: categories } = notification;
+
+                if (typeof categories === 'string') {
+                    categories = [categories];
+                }
+
+                categories.forEach((category: Category) => {
+                    if (category === 'modal') {
+                        modals.push(notification.id);
+                    } else if (category === 'context') {
+                        contexts.push(notification.id);
+                    } else if (category === 'banner') {
+                        banners.push(notification.id);
+                    }
+                });
+            });
+
+            api.dispatch(saveCompatibleNotifications(banners, 'banner'));
+            api.dispatch(saveCompatibleNotifications(modals, 'modal'));
+            api.dispatch(saveCompatibleNotifications(contexts, 'context'));
+        }
     }
 
     return action;

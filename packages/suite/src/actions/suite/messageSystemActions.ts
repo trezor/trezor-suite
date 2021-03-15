@@ -1,7 +1,7 @@
 import { getUnixTime } from 'date-fns';
 import { MESSAGE_SYSTEM } from '@suite-actions/constants';
 import { Dispatch, GetState } from '@suite-types';
-import { MessageSystem } from '@suite/types/suite/messageSystem';
+import { Category, MessageSystem, Notification } from '@suite/types/suite/messageSystem';
 import {
     decodeMessageSystemJwsConfig,
     verifyMessageSystemJwsConfig,
@@ -16,7 +16,17 @@ export type MessageSystemAction =
     | { type: typeof MESSAGE_SYSTEM.FETCH_INIT }
     | { type: typeof MESSAGE_SYSTEM.FETCH_FAILURE }
     | { type: typeof MESSAGE_SYSTEM.FETCH_SUCCESS }
-    | { type: typeof MESSAGE_SYSTEM.FETCH_SUCCESS_UPDATE; payload: MessageSystem };
+    | { type: typeof MESSAGE_SYSTEM.FETCH_SUCCESS_UPDATE; payload: MessageSystem }
+    | {
+          type: typeof MESSAGE_SYSTEM.SAVE_COMPATIBLE_NOTIFICATIONS;
+          category: Category;
+          payload: string[];
+      }
+    | {
+          type: typeof MESSAGE_SYSTEM.NOTIFICATION_DISMISSED;
+          category: Category;
+          id: string;
+      };
 
 // TODO: Do I need to have this action?
 const fetchInit = (): MessageSystemAction => ({
@@ -89,3 +99,15 @@ export const init = () => (dispatch: Dispatch, _getState: GetState) => {
         dispatch(fetchConfig());
     }, FETCH_CHECK_INTERVAL);
 };
+
+export const saveCompatibleNotifications = (messages: string[], category: Category) => ({
+    type: MESSAGE_SYSTEM.SAVE_COMPATIBLE_NOTIFICATIONS,
+    payload: messages,
+    category,
+});
+
+export const dismissNotification = (id: string, category: Category) => ({
+    type: MESSAGE_SYSTEM.NOTIFICATION_DISMISSED,
+    id,
+    category,
+});

@@ -325,6 +325,23 @@ export const saveMessageSystemConfig = (payload: MessageSystem) => async (
     );
 };
 
+export const saveMessageSystem = () => async (_dispatch: Dispatch, getState: GetState) => {
+    if (!(await isDBAccessible())) return;
+
+    const { dismissedNotifications, config, currentSequence } = getState().messageSystem;
+
+    db.addItem(
+        'messageSystem',
+        {
+            dismissedNotifications,
+            config: config!,
+            currentSequence,
+        },
+        'suite',
+        true,
+    );
+};
+
 export const removeDatabase = () => async (dispatch: Dispatch, getState: GetState) => {
     if (!(await isDBAccessible())) return;
 
