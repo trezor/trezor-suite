@@ -12,11 +12,9 @@ import { AppState } from '@suite-types';
 import { useDiscovery, useSelector, useActions } from '@suite-hooks';
 
 import Firmware from '@firmware-views';
-import Onboarding from '@onboarding-views';
 import Recovery from '@suite/views/recovery';
 import Backup from '@backup-views';
 import {
-    Analytics,
     Bridge,
     Udev,
     DeviceAcquire,
@@ -31,7 +29,6 @@ import {
     DeviceRecoveryMode,
     SwitchDevice,
     Version,
-    Welcome,
 } from '@suite-views';
 
 type SuiteAppStateProps = {
@@ -97,13 +94,8 @@ const getSuiteApplicationState = ({
 const getModalApplication = (route: AppState['router']['route']) => {
     if (!route) return;
     switch (route.app) {
-        case 'welcome':
-            return Welcome;
-        case 'analytics':
-            return Analytics;
         case 'firmware':
             return Firmware;
-
         case 'bridge':
             return Bridge;
         case 'udev':

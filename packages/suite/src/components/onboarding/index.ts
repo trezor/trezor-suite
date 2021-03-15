@@ -12,6 +12,11 @@ import ButtonAlt from './Buttons/ButtonAlt';
 import ButtonCta from './Buttons/ButtonCta';
 import ButtonBack from './Buttons/ButtonBack';
 
+import Box from './Box/Box';
+import ConnectDevicePrompt from './ConnectDevicePrompt';
+import WelcomeLayout from './Layouts/WelcomeLayout';
+import OnboardingLayout from './Layouts/OnboardingLayout';
+
 import Dots from './Loaders/Dots';
 
 const OnboardingButton = {
@@ -33,4 +38,14 @@ const Wrapper = {
     Step: StepWrapper,
 };
 
-export { OnboardingButton, Loaders, Text, Wrapper, Option };
+export {
+    OnboardingButton,
+    Loaders,
+    Text,
+    Wrapper,
+    Option,
+    Box,
+    ConnectDevicePrompt,
+    WelcomeLayout,
+    OnboardingLayout,
+};

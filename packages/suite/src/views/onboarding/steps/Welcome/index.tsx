@@ -4,7 +4,7 @@ import { useSpring, Transition, useTransition, config, animated } from 'react-sp
 import { useSelector } from '@suite-hooks';
 import { isWebUSB } from '@suite-utils/transport';
 import { getConnectedDeviceStatus } from '@suite-utils/device';
-import WelcomeLayout from '@onboarding-components/WelcomeLayout';
+import WelcomeLayout from '@onboarding-components/Layouts/WelcomeLayout';
 import ConnectDevicePrompt from '@onboarding-components/ConnectDevicePrompt';
 import NoTransport from './NoTransport';
 import NoDeviceDetected from './NoDeviceDetected';

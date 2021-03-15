@@ -2,12 +2,14 @@ import React from 'react';
 import TrezorConnect from 'trezor-connect';
 import styled from 'styled-components';
 import { Text } from '@onboarding-components';
-import { Button, variables } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { Translation } from '@suite/components/suite';
 import { ConnectedDeviceStatus } from '@onboarding-types';
 
 const Wrapper = styled.div`
     display: flex;
+    flex-direction: column;
+    text-align: center;
 `;
 
 interface Props {
@@ -15,11 +17,11 @@ interface Props {
 }
 const UnexpectedDeviceState = ({ deviceStatus }: Props) => {
     return (
-        <>
+        <Wrapper>
             {deviceStatus === 'unreadable' && (
                 <>
-                    user ocnnected unreadable device, we don't really know what happened show box
-                    with helpful copy + button to disable webusb if relevant
+                    {/* User connected unreadable device
+                    We don't really know what happened, show some generic help and provide link to contact a support */}
                     <Text>
                         <Translation id="TR_YOUR_DEVICE_IS_CONNECTED_BUT_UNREADABLE" />
                     </Text>
@@ -29,20 +31,18 @@ const UnexpectedDeviceState = ({ deviceStatus }: Props) => {
                 </>
             )}
             {deviceStatus === 'in-bootloader' && (
-                <>
-                    bah bootloader, but we need normal mode for now
-                    <Text>
-                        <Translation id="TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER" />
-                    </Text>
-                </>
+                <Text>
+                    {/* User connected the device in bootloader mode, but in order to continue it needs to be in normal mode */}
+                    <Translation id="TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER" />
+                </Text>
             )}
             {deviceStatus === 'seedless' && (
                 <Text>
-                    seedless device, stop onboarding
+                    {/* Seedless devices are not supported by Trezor Suite */}
                     <Translation id="TR_YOUR_DEVICE_IS_SEEDLESS" />
                 </Text>
             )}
-        </>
+        </Wrapper>
     );
 };
 
