@@ -5,7 +5,7 @@ import { Switch, Button, variables } from '@trezor/components';
 import { useAnalytics, useActions } from '@suite-hooks';
 import { Translation } from '@suite-components';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import { Box } from './components';
+import { Box } from '@onboarding-components';
 
 const Wrapper = styled(animated.div)`
     display: flex;
