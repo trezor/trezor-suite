@@ -14,12 +14,13 @@ export default {
     ],
     release: process.env.COMMITHASH,
     environment: process.env.SUITE_TYPE,
-    beforeSend(event, hint) {
+    beforeSend: (event, hint) => {
         const error = hint?.syntheticException;
         if (error?.message?.match(fiatRatesRe)) {
             // discard failed fiat rate fetch on TOR
             event.fingerprint = ['FiatRatesFetchError'];
             return null;
         }
+        return event;
     },
 } as BrowserOptions;
