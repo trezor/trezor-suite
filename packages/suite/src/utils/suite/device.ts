@@ -141,6 +141,11 @@ export const getFwVersion = (device: AcquiredDevice) => {
     return `${features.major_version}.${features.minor_version}.${features.patch_version}`;
 };
 
+export const getFwUpdateVersion = (device: AcquiredDevice) => {
+    const version = device.firmwareRelease?.release.version;
+    return version ? version.join('.') : null;
+};
+
 /**
  * Generate new instance number
  * @param {TrezorDevice[]} devices
@@ -332,4 +337,32 @@ export const isBitcoinOnly = (device: TrezorDevice | Device) => {
 export const getPhysicalDeviceCount = (devices: Device[]) => {
     const uniqueIds = new Set(devices.map(d => d.id));
     return uniqueIds.size;
+};
+
+export const parseFirmwareChangelog = (firmwareRelease: TrezorDevice['firmwareRelease']) => {
+    if (!firmwareRelease?.changelog || firmwareRelease?.changelog?.length === 0) return null;
+    const changelogs = firmwareRelease.changelog;
+
+    // Default changelog format is just a long string where individual changes are separated by "*" symbol.
+
+    return changelogs.map(log => {
+        // get array of individual changes for a given version
+        const parsedChangelogEntries = log.changelog
+            .trim()
+            .split(/\*/g)
+            .map(l => l.trim());
+
+        // The first element of logsArr is an empty array, so get rid of it (but still make sure it's really empty).
+        if (!parsedChangelogEntries[0]) {
+            parsedChangelogEntries.shift();
+        }
+
+        // Get firmware version, convert to string and use it as a key in custom object
+        const versionString = log.version.join('.'); // e.g. [1,9,8] => "1.9.8"
+        return {
+            ...log,
+            changelog: parsedChangelogEntries,
+            versionString,
+        };
+    });
 };
