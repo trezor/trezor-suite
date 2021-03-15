@@ -221,6 +221,7 @@ export type AnalyticsEvent =
     | { type: 'settings/device/goto/backup' }
     | { type: 'settings/device/goto/recovery' }
     | { type: 'settings/device/goto/firmware' }
+    | { type: 'settings/device/goto/safety-checks' }
     | {
           type: 'settings/device/change-pin-protection';
           payload: {

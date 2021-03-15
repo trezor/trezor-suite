@@ -1357,6 +1357,26 @@ const definedMessages = defineMessages({
             'If you forget your passphrase, your wallet is lost for good. There is no way to recover your funds.',
         id: 'TR_DEVICE_SETTINGS_PASSPHRASE_DESC_MORE',
     },
+    TR_SAFETY_CHECKS_TITLE: {
+        defaultMessage:
+            'TODO',
+        id: 'TR_SAFETY_CHECKS_TITLE',
+    },
+    TR_SAFETY_CHECKS_DESC: {
+        defaultMessage:
+            'TODO',
+        id: 'TR_SAFETY_CHECKS_DESC',
+    },
+    TR_SAFETY_CHECKS_STRICT: {
+        defaultMessage:
+            'Strict',
+        id: 'TR_SAFETY_CHECKS_STRICT',
+    },
+    TR_SAFETY_CHECKS_PROMPT: {
+        defaultMessage:
+            'Prompt',
+        id: 'TR_SAFETY_CHECKS_PROMPT',
+    },
     TR_DEVICE_SETTINGS_PASSPHRASE_TITLE: {
         defaultMessage: 'Passphrase',
         id: 'TR_DEVICE_SETTINGS_PASSPHRASE_TITLE',

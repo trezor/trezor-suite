@@ -282,6 +282,41 @@ const Settings = () => {
                         />
                     </ActionColumn>
                 </SectionItem>
+                { /* WTF: `device.features.safety_checks` returns null, when device is not connected! o.O */ }
+                { device.features.safety_checks !== undefined && (
+                    <SectionItem>
+                        <TextColumn
+                            title={<Translation id="TR_SAFETY_CHECKS_TITLE" />}
+                            description={<Translation id="TR_SAFETY_CHECKS_DESC" />}
+                        />
+                        <ActionColumn>
+                            <ActionButton
+                                variant="secondary"
+                                onClick={() => {
+                                    goto('firmware-index', { cancelable: true });
+                                    analytics.report({
+                                        type: 'settings/device/goto/safety-checks',
+                                    });
+                                }}
+                                data-test="@settings/device/safety-checks-button"
+                                isDisabled={isDeviceLocked}
+                            >   
+                                { /* Suite only supports setting `Strict` and/or `PromptTemporarily`.
+                                    Despite that, user can still set safety_checks to `PromptAlways` via command line.
+                                    Consider `PromptAlways` identical to `PromptTemporarily`.*/ }
+                                { /* TODO: why is `device.features.safety_checks` if type `any` and why is 
+                                    import { SafetyCheckLevel } from 'trezor-connect/lib/typescript/trezor/protobuf';
+                                unavailable? */ }
+                                {device.features.safety_checks === 0 && (
+                                    <Translation id="TR_SAFETY_CHECKS_STRICT" />
+                                ) || (
+                                    <Translation id="TR_SAFETY_CHECKS_PROMPT" />
+                                )}
+                                { `${device.features.safety_checks}` }
+                            </ActionButton>
+                        </ActionColumn>
+                    </SectionItem>
+                )}
             </Section>
             <Section title={<Translation id="TR_PERSONALIZATION" />}>
                 <SectionItem>
