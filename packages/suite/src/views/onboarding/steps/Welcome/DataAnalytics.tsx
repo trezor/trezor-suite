@@ -5,6 +5,7 @@ import { Switch, Button, variables } from '@trezor/components';
 import { useAnalytics, useActions } from '@suite-hooks';
 import { Translation } from '@suite-components';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
+import { Box } from './components';
 
 const Wrapper = styled(animated.div)`
     display: flex;
@@ -35,28 +36,30 @@ const DataAnalytics = () => {
     });
 
     return (
-        <Wrapper style={fadeStyles}>
-            <SwitchWrapper>
-                <Switch
-                    data-test="@analytics/toggle-switch"
-                    checked={!!enabled}
-                    onChange={() => {
-                        if (enabled) {
-                            return dispose();
-                        }
-                        enable();
-                    }}
-                />
-                <Label>
-                    <Translation id="TR_ONBOARDING_ALLOW_ANALYTICS" />
-                </Label>
-            </SwitchWrapper>
-            <Button
-                data-test="@onboarding/button-continue"
-                onClick={() => goToSubStep('security-check')}
-            >
-                <Translation id="TR_CONFIRM" />
-            </Button>
+        <Wrapper>
+            <Box style={fadeStyles}>
+                <SwitchWrapper>
+                    <Switch
+                        data-test="@analytics/toggle-switch"
+                        checked={!!enabled}
+                        onChange={() => {
+                            if (enabled) {
+                                return dispose();
+                            }
+                            enable();
+                        }}
+                    />
+                    <Label>
+                        <Translation id="TR_ONBOARDING_ALLOW_ANALYTICS" />
+                    </Label>
+                </SwitchWrapper>
+                <Button
+                    data-test="@onboarding/button-continue"
+                    onClick={() => goToSubStep('security-check')}
+                >
+                    <Translation id="TR_CONFIRM" />
+                </Button>
+            </Box>
         </Wrapper>
     );
 };
