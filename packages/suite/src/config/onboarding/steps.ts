@@ -11,6 +11,18 @@ const steps: Step[] = [
         disallowedDeviceStates: [STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE],
     },
     {
+        id: STEP.ID_FIRMWARE_STEP,
+        disallowedDeviceStates: [
+            STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE,
+            // STEP.DISALLOWED_IS_NOT_SAME_DEVICE,
+            STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE,
+        ],
+        path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW, STEP.PATH_USED],
+        buy: false,
+        help: true,
+        progress: true,
+    },
+    {
         id: STEP.ID_SKIP_STEP,
         buy: true,
         help: false,
@@ -63,18 +75,6 @@ const steps: Step[] = [
         ],
         path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW, STEP.PATH_USED],
         buy: true,
-        help: true,
-        progress: true,
-    },
-    {
-        id: STEP.ID_FIRMWARE_STEP,
-        disallowedDeviceStates: [
-            STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE,
-            // STEP.DISALLOWED_IS_NOT_SAME_DEVICE,
-            STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE,
-        ],
-        path: [STEP.PATH_RECOVERY, STEP.PATH_CREATE, STEP.PATH_NEW, STEP.PATH_USED],
-        buy: false,
         help: true,
         progress: true,
     },

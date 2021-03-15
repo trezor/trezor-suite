@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-import { OnboardingButton, Wrapper } from '@onboarding-components';
+import { OnboardingButton, Wrapper, OnboardingLayout, Box } from '@onboarding-components';
 import { Translation } from '@suite-components';
 import {
     CheckSeedStep,
@@ -103,24 +103,40 @@ const FirmwareStep = () => {
     ]);
 
     return (
-        <Wrapper.Step>
-            <Wrapper.StepBody>
-                {Component.Body}
-                <Wrapper.Controls>{Component.BottomBar}</Wrapper.Controls>
-            </Wrapper.StepBody>
+        <OnboardingLayout>
+            <Box
+                image="RECOVER_FROM_SEED"
+                heading={<Translation id="TR_FIRMWARE_UPDATE" />}
+                description={
+                    <>
+                        Your device is ready to receive the latest full-featured firmware in order
+                        to be used safely. If you are a super BTC fan, feel free to install
+                        Bitcoin-only firmware
+                    </>
+                }
+            >
+                <Wrapper.Step>
+                    <Wrapper.StepBody>
+                        {Component.Body}
+                        <Wrapper.Controls>{Component.BottomBar}</Wrapper.Controls>
+                    </Wrapper.StepBody>
 
-            <Wrapper.StepFooter>
-                {['initial', 'error'].includes(firmware.status) && (
-                    <OnboardingButton.Back
-                        onClick={() =>
-                            firmware.status === 'error' ? resetReducer() : goToPreviousStep()
-                        }
-                    >
-                        <Translation id="TR_BACK" />
-                    </OnboardingButton.Back>
-                )}
-            </Wrapper.StepFooter>
-        </Wrapper.Step>
+                    <Wrapper.StepFooter>
+                        {['initial', 'error'].includes(firmware.status) && (
+                            <OnboardingButton.Back
+                                onClick={() =>
+                                    firmware.status === 'error'
+                                        ? resetReducer()
+                                        : goToPreviousStep()
+                                }
+                            >
+                                <Translation id="TR_BACK" />
+                            </OnboardingButton.Back>
+                        )}
+                    </Wrapper.StepFooter>
+                </Wrapper.Step>
+            </Box>
+        </OnboardingLayout>
     );
 };
 
