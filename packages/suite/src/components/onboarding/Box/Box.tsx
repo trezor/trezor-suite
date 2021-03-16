@@ -15,6 +15,7 @@ const BoxWrapper = styled.div<{ variant?: Props['variant']; withImage?: boolean 
     ${props =>
         props.withImage &&
         css`
+            margin-top: 50px;
             padding-top: 100px;
         `}
 `;
