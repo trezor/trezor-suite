@@ -11,3 +11,4 @@ export { useSelector } from './useSelector';
 export { useLoadingSkeleton } from './useLoadingSkeleton';
 export { useTranslation } from './useTranslation';
 export { useTheme } from './useTheme';
+export { useOnboarding } from './useOnboarding';
