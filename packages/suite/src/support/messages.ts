@@ -5442,6 +5442,22 @@ const definedMessages = defineMessages({
         defaultMessage:
             'It seems you are running multiple instances of the app. If you are using Suite in other window or tab, close it and refresh the app.',
     },
+    TR_ONBOARDING_STEP_FIRMWARE: {
+        id: 'TR_ONBOARDING_STEP_FIRMWARE',
+        defaultMessage: 'Firmware',
+    },
+    TR_ONBOARDING_STEP_WALLET: {
+        id: 'TR_ONBOARDING_STEP_WALLET',
+        defaultMessage: 'Wallet',
+    },
+    TR_ONBOARDING_STEP_PIN: {
+        id: 'TR_ONBOARDING_STEP_PIN',
+        defaultMessage: 'PIN',
+    },
+    TR_ONBOARDING_STEP_COINS: {
+        id: 'TR_ONBOARDING_STEP_COINS',
+        defaultMessage: 'Coins',
+    },
 } as const);
 
 export default definedMessages;

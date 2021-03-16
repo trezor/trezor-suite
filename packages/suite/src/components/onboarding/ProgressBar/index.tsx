@@ -1,62 +1,65 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Icon, variables } from '@trezor/components';
-
-export type ProgressBarStep = {
-    label: string;
-};
+import { useTheme } from '@suite-hooks';
 
 const ProgressBarWrapper = styled.div`
     display: flex;
     padding: 20px 0;
+    margin: 50px;
     width: 100%;
     justify-content: space-between;
     align-items: center;
 `;
 
-const StepWrapper = styled.div`
+const StepWrapper = styled.div<{ active: boolean }>`
     display: flex;
     flex-direction: column;
     padding: 0 20px;
     align-items: center;
     align-self: center;
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    font-size: ${variables.NEUE_FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+
+    ${props =>
+        props.active &&
+        css`
+            color: ${props.theme.TYPE_GREEN};
+        `}
 `;
 
-const IconWrapper = styled.div<{ noBackground?: boolean; active?: boolean }>`
+const IconWrapper = styled.div<{ stepCompleted?: boolean; active?: boolean }>`
     display: flex;
     width: 32px;
     height: 32px;
     background: ${props => props.theme.BG_GREY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.NEUE_FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     align-items: center;
     justify-content: center;
-    padding: 3px 2px 0 0;
     border-radius: 50%;
 
     ${props =>
+        props.stepCompleted &&
+        css`
+            background: ${props => props.theme.BG_LIGHT_GREY};
+        `}
+
+    ${props =>
         props.active &&
-        `
+        css`
             background: ${props.theme.BG_WHITE};
             box-shadow: 0 2px 5px 0 ${props.theme.BOX_SHADOW_BLACK_20};
             color: ${props.theme.TYPE_GREEN};
         `}
 `;
 
-const Label = styled.div<{ active?: boolean }>`
+const Label = styled.div`
     text-align: center;
     margin: 10px 0 0 0;
     display: block;
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.NEUE_FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-
-    ${props =>
-        props.active &&
-        `
-            color: ${props.theme.TYPE_GREEN};
-        `}
 `;
 
 const Divider = styled.div`
@@ -66,37 +69,42 @@ const Divider = styled.div`
 `;
 
 interface Props {
-    steps: ProgressBarStep[];
+    steps: {
+        key: string;
+        label?: React.ReactNode;
+    }[];
     activeStep: number;
 }
 
 const ProgressBar = ({ steps, activeStep }: Props) => {
+    const { theme } = useTheme();
     return (
         <ProgressBarWrapper>
-            {steps.map((step, stepKey) => {
+            {steps.map((step, index) => {
+                const stepCompleted = activeStep > index;
+                const stepActive = index === activeStep;
                 return (
-                    <>
-                        <StepWrapper>
-                            {activeStep > stepKey + 1 ? (
-                                <IconWrapper noBackground>
-                                    <Icon icon="CHECK" />
-                                </IconWrapper>
-                            ) : (
-                                <IconWrapper active={activeStep === stepKey + 1}>
-                                    {stepKey + 1}
-                                </IconWrapper>
-                            )}
-                            <Label active={activeStep === stepKey + 1}>{step.label}</Label>
+                    <React.Fragment key={step.key}>
+                        <StepWrapper active={stepActive}>
+                            <IconWrapper active={stepActive} stepCompleted={stepCompleted}>
+                                {stepCompleted ? (
+                                    <Icon icon="CHECK" color={theme.TYPE_GREEN} />
+                                ) : (
+                                    // TODO: Proper icon instead of emoji for last step
+                                    <>{index === steps.length - 1 ? <>🎉</> : index + 1}</>
+                                )}
+                            </IconWrapper>
+                            <Label>{step.label}</Label>
                         </StepWrapper>
-                        {stepKey < steps.length && <Divider />}
-                    </>
+                        {index < steps.length - 1 && <Divider />}
+                    </React.Fragment>
                 );
             })}
-            <StepWrapper>
+            {/* <StepWrapper active={false}>
                 <IconWrapper>
                     <img src="https://dummyimage.com/32x32&text=success+image" alt="" />
                 </IconWrapper>
-            </StepWrapper>
+            </StepWrapper> */}
         </ProgressBarWrapper>
     );
 };

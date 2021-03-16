@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { H1, TrezorLogo, Button, variables } from '@trezor/components';
+import { TrezorLogo, Button } from '@trezor/components';
 import { TrezorLink, Translation } from '@suite-components';
-import { ProgressBar, ProgressBarStep } from '@onboarding-components/ProgressBar';
+import { ProgressBar } from '@onboarding-components/ProgressBar';
 import styled from 'styled-components';
 import { SUPPORT_URL } from '@suite-constants/urls';
 import { MAX_WIDTH } from '@suite-constants/layout';
@@ -57,26 +57,35 @@ const OnboardingLayout = ({ children }: Props) => {
                         </Button>
                     </TrezorLink>
                 </Header>
-                <ProgressBar
-                    steps={
-                        [
+
+                <Content>
+                    <ProgressBar
+                        steps={[
                             {
-                                label: 'Device Setup',
+                                key: 'fw',
+                                label: <Translation id="TR_ONBOARDING_STEP_FIRMWARE" />,
                             },
                             {
-                                label: 'Wallet',
+                                key: 'wallet',
+                                label: <Translation id="TR_ONBOARDING_STEP_WALLET" />,
                             },
                             {
-                                label: 'PIN',
+                                key: 'pin',
+                                label: <Translation id="TR_ONBOARDING_STEP_PIN" />,
                             },
                             {
-                                label: 'Coins',
+                                key: 'coins',
+                                label: <Translation id="TR_ONBOARDING_STEP_COINS" />,
                             },
-                        ] as ProgressBarStep[]
-                    }
-                    activeStep={2}
-                />
-                <Content>{children}</Content>
+                            {
+                                key: 'final',
+                            },
+                        ]}
+                        // TODO
+                        activeStep={0}
+                    />
+                    {children}
+                </Content>
             </MaxWidth>
         </Wrapper>
     );
