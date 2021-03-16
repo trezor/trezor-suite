@@ -65,7 +65,7 @@ interface Props {
 const Box = ({ heading, description, image, children, variant = 'large' }: Props) => {
     return (
         <BoxWrapper variant={variant} withImage={!!image}>
-            {heading && <Heading withDescription>{!!description}</Heading>}
+            {heading && <Heading withDescription={!!description}>{heading}</Heading>}
             {description && (
                 <Description>
                     <Text>{description}</Text>
