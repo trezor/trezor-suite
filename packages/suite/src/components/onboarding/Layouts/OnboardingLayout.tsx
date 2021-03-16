@@ -2,7 +2,7 @@ import React from 'react';
 
 import { H1, TrezorLogo, Button, variables } from '@trezor/components';
 import { TrezorLink, Translation } from '@suite-components';
-import ProgressBar from '@onboarding-components/ProgressBar';
+import { ProgressBar, ProgressBarStep } from '@onboarding-components/ProgressBar';
 import styled from 'styled-components';
 import { SUPPORT_URL } from '@suite-constants/urls';
 import { MAX_WIDTH } from '@suite-constants/layout';
@@ -57,7 +57,25 @@ const OnboardingLayout = ({ children }: Props) => {
                         </Button>
                     </TrezorLink>
                 </Header>
-                <ProgressBar />
+                <ProgressBar
+                    steps={
+                        [
+                            {
+                                label: 'Device Setup',
+                            },
+                            {
+                                label: 'Wallet',
+                            },
+                            {
+                                label: 'PIN',
+                            },
+                            {
+                                label: 'Coins',
+                            },
+                        ] as ProgressBarStep[]
+                    }
+                    activeStep={2}
+                />
                 <Content>{children}</Content>
             </MaxWidth>
         </Wrapper>
