@@ -88,10 +88,7 @@ const collectedData = [
 
 const DataAnalytics = () => {
     const { enable, dispose, enabled } = useAnalytics();
-    const { goToNextStep, goToSubStep } = useActions({
-        goToNextStep: onboardingActions.goToNextStep,
-        goToSubStep: onboardingActions.goToSubStep,
-    });
+    const { goToSubStep } = useOnboarding();
     const fadeStyles = useSpring({
         config: { ...config.default },
         from: { opacity: 0 },
