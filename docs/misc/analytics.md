@@ -7,7 +7,9 @@ Data is transferred in GET requests encoded in uri.
 
 ## Catalogue of events
 
-Refer to `AnalyticsEvent` type in [analyticsActions.ts](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/src/actions/suite/analyticsActions.ts)
+Refer to `AnalyticsEvent` type in [analyticsActions.ts](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/src/actions/suite/analyticsActions.ts).
+
+For general overview see [documentation in Notion](https://www.notion.so/e19845789ccb47a0baf36d7f8463f196?v=2183c8228ebb4df38f358d1b2744e1b8).
 
 ## Anonymity
 
