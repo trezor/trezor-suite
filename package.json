@@ -1,6 +1,6 @@
 {
     "name": "trezor-suite",
-    "version": "21.3.1",
+    "version": "21.3.2",
     "private": true,
     "repository": "https://github.com/trezor/trezor-suite.git",
     "license": "SEE LICENSE IN LICENSE.md",
