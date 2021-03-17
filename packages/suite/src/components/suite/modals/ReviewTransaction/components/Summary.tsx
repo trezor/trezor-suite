@@ -69,6 +69,8 @@ const AccountWrapper = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     display: flex;
     margin-top: 5px;
+    word-break: normal;
+    overflow-wrap: anywhere;
     & > div {
         margin: 1px 5px 0 0;
         display: block;
