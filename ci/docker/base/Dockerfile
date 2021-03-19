@@ -26,7 +26,7 @@ RUN curl -L https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_
 
 # Final image
 # buster is for debian 10. the same version as firmware team has in its Dockerfile.
-FROM node:12-buster
+FROM node:14-buster
 
 RUN apt-get update && apt-get install -y \
     build-essential \

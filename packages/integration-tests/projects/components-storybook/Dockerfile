@@ -1,4 +1,4 @@
-FROM node:12-buster
+FROM node:14-buster
 
 # setup
 RUN apt-get update

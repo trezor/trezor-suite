@@ -3,7 +3,7 @@
 # of newly created files in docker (entire monorepo is mounted volume) match users default.
 # Otherwise user would run into permission denied problem when trying to rebuild project outside docker.
 
-FROM node:12
+FROM node:14
   
 RUN apt-get update && apt-get -y --no-install-recommends install \
     ca-certificates \
