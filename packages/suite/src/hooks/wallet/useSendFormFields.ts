@@ -11,6 +11,7 @@ import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
 
 type Props = UseFormMethods<FormState> & {
     fiatRates: UseSendFormState['fiatRates'];
+    network: UseSendFormState['network'];
 };
 
 // This hook should be used only as a sub-hook of `useSendForm`
@@ -21,6 +22,7 @@ export const useSendFormFields = ({
     setValue,
     clearErrors,
     fiatRates,
+    network,
 }: Props) => {
     const calculateFiat = useCallback(
         (outputIndex: number, amount?: string) => {
@@ -102,7 +104,10 @@ export const useSendFormFields = ({
     };
 
     const toggleOption = (option: FormOptions) => {
-        if (!isFeatureEnabled('RBF') && option === 'bitcoinRBF') {
+        if (
+            option === 'bitcoinRBF' &&
+            (!isFeatureEnabled('RBF') || !network.features?.includes('rbf'))
+        ) {
             // do not use RBF if disabled
             return;
         }

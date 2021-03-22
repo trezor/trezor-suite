@@ -142,6 +142,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const sendFormUtils = useSendFormFields({
         ...useFormMethods,
         fiatRates: state.fiatRates,
+        network: state.network,
     });
 
     // declare sendFormCompose, sub-hook of useSendForm
