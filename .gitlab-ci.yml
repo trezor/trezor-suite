@@ -1,5 +1,5 @@
 # ! DO NOT set latest here USE custom hash !
-image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base@sha256:94febe6dbcbd7a64a788bae6350601743201d0c57789b2fe4f7d9c91a64a8837
+image: registry.gitlab.com/satoshilabs/trezor/trezor-suite/base@sha256:a11083e6fddc1b10f878b7c23bc282b9545d6d0951e8ecad6ffeecc902aa2766
 
 variables:
   DEV_SERVER_URL: "https://suite.corp.sldev.cz"
