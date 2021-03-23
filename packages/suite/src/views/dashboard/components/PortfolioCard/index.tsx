@@ -76,10 +76,8 @@ const PortfolioCard = React.memo(() => {
         <Section
             heading={
                 <QuestionTooltip
-                    size={18}
                     label="TR_MY_PORTFOLIO"
                     tooltip={showMissingDataTooltip ? 'TR_GRAPH_MISSING_DATA' : undefined}
-                    iconStyle={{ marginBottom: 2, marginLeft: 4 }}
                 />
             }
             actions={

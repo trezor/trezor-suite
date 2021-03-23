@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, Tooltip, TooltipProps, useTheme, variables } from '@trezor/components';
+import { Tooltip, TooltipProps, variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -21,23 +21,16 @@ interface Props {
     tooltipContent?: TooltipProps['content'];
 }
 
-const ColHeader = ({ children, tooltipContent, ...rest }: Props) => {
-    const theme = useTheme();
-    return (
-        <Wrapper {...rest}>
+const ColHeader = ({ children, tooltipContent, ...rest }: Props) => (
+    <Wrapper {...rest}>
+        {tooltipContent ? (
+            <Tooltip maxWidth={285} content={tooltipContent} dashed>
+                <Text>{children}</Text>
+            </Tooltip>
+        ) : (
             <Text>{children}</Text>
-            {tooltipContent && (
-                <Tooltip maxWidth={285} placement="top" content={tooltipContent}>
-                    <Icon
-                        icon="INFO_ACTIVE"
-                        color={theme.TYPE_LIGHT_GREY}
-                        size={16}
-                        useCursorPointer
-                    />
-                </Tooltip>
-            )}
-        </Wrapper>
-    );
-};
+        )}
+    </Wrapper>
+);
 
 export default ColHeader;

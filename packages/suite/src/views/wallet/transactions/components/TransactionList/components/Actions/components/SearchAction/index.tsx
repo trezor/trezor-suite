@@ -131,7 +131,7 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
             }}
             expanded={expanded}
         >
-            <Tooltip placement="top" content={<Translation id="TR_TRANSACTIONS_SEARCH_TOOLTIP" />}>
+            <Tooltip content={<Translation id="TR_TRANSACTIONS_SEARCH_TOOLTIP" />}>
                 <StyledInput
                     expanded={expanded}
                     variant="small"

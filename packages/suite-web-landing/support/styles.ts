@@ -1,4 +1,4 @@
-import { variables, colors, tooltipGlobalStyles } from '@trezor/components';
+import { variables, colors } from '@trezor/components';
 
 export default `
     #__next {
@@ -37,5 +37,4 @@ export default `
     *:after {
         box-sizing: border-box;
     }
-    ${tooltipGlobalStyles}
 `;
