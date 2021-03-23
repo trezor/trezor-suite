@@ -27,6 +27,39 @@ export const passThroughInitialRun = () => {
         .should('not.exist');
 };
 
+export const passThroughBackupShamir = () => {
+    cy.log('Backup button should be disabled until all checkboxes are checked');
+    cy.getTestElement('@backup/start-button').should('be.disabled');
+    cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
+    cy.getTestElement('@backup/start-button').should('be.disabled');
+    cy.getTestElement('@backup/check-item/has-enough-time').click();
+    cy.getTestElement('@backup/start-button').should('be.disabled');
+    cy.getTestElement('@backup/check-item/is-in-private').click();
+    cy.getTestElement('@backup/start-button').should('not.be.disabled');
+
+    cy.log('Create backup on device');
+    cy.getTestElement('@backup/start-button').click();
+    cy.getConfirmActionOnDeviceModal();
+    cy.task('pressYes');
+    cy.wait(1000);  
+    cy.task('pressYes');
+    cy.wait(1000);
+    cy.task('pressYes');
+    cy.wait(1000);
+    cy.task('pressYes');
+    cy.getConfirmActionOnDeviceModal();
+    cy.task('pressYes');
+    cy.wait(1000);
+    cy.task('readAndConfirmMnemonicEmu');
+
+    cy.log('click all after checkboxes and close backup modal');
+    cy.getTestElement('@backup/close-button').should('be.disabled');
+    cy.getTestElement('@backup/check-item/wrote-seed-properly').click();
+    cy.getTestElement('@backup/check-item/made-no-digital-copy').click();
+    cy.getTestElement('@backup/check-item/will-hide-seed').click();
+    cy.getTestElement('@backup/close-button').click();
+};
+
 export const passThroughBackup = () => {
     cy.log('Backup button should be disabled until all checkboxes are checked');
     cy.getTestElement('@backup/start-button').should('be.disabled');
@@ -40,9 +73,10 @@ export const passThroughBackup = () => {
     cy.log('Create backup on device');
     cy.getTestElement('@backup/start-button').click();
     cy.getConfirmActionOnDeviceModal();
-    // cy.task('pressYes');
+    //cy.task('pressYes');
     cy.task('readAndConfirmMnemonicEmu');
 
+    cy.wait(3000);
     cy.log('click all after checkboxes and close backup modal');
     cy.getTestElement('@backup/close-button').should('be.disabled');
     cy.getTestElement('@backup/check-item/wrote-seed-properly').click();
@@ -50,6 +84,32 @@ export const passThroughBackup = () => {
     cy.getTestElement('@backup/check-item/will-hide-seed').click();
     cy.getTestElement('@backup/close-button').click();
 };
+
+export const passThroughSettingsBackup = () => {
+    cy.log('Backup button should be disabled until all checkboxes are checked');
+    cy.getTestElement('@backup/start-button').should('be.disabled');
+    cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
+    cy.getTestElement('@backup/start-button').should('be.disabled');
+    cy.getTestElement('@backup/check-item/has-enough-time').click();
+    cy.getTestElement('@backup/start-button').should('be.disabled');
+    cy.getTestElement('@backup/check-item/is-in-private').click();
+    cy.getTestElement('@backup/start-button').should('not.be.disabled');
+
+    cy.log('Create backup on device');
+    cy.getTestElement('@backup/start-button').click();
+    cy.getConfirmActionOnDeviceModal();
+    //cy.task('pressYes');
+    cy.task('readAndConfirmMnemonicEmu');
+
+    cy.wait(3000);
+    cy.log('click all after checkboxes and close backup modal');
+    cy.getTestElement('@backup/continue-to-pin-button').should('be.disabled');
+    cy.getTestElement('@backup/check-item/wrote-seed-properly').click();
+    cy.getTestElement('@backup/check-item/made-no-digital-copy').click();
+    cy.getTestElement('@backup/check-item/will-hide-seed').click();
+    cy.getTestElement('@backup/continue-to-pin-button').click();
+};
+
 
 export const passThroughInitMetadata = (provider: 'dropbox' | 'google') => {
     cy.getConfirmActionOnDeviceModal();

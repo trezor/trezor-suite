@@ -16,7 +16,9 @@ import {
     toggleDeviceMenu,
     goToOnboarding,
     passThroughInitialRun,
+    passThroughBackupShamir,
     passThroughBackup,
+    passThroughSettingsBackup,
     passThroughInitMetadata,
     passThroughSetPin,
 } from './utils/shortcuts';
@@ -64,6 +66,8 @@ declare global {
             toggleDeviceMenu: () => Chainable<Subject>;
             passThroughInitialRun: () => Chainable<Subject>;
             passThroughBackup: () => Chainable<Subject>;
+            passThroughSettingsBackup: () => Chainable<Subject>;
+            passThroughBackupShamir: () => Chainable<Subject>;
             passThroughSetPin: () => Chainable<Subject>;
             passThroughInitMetadata: (provider: 'dropbox' | 'google') => Chainable<Subject>;
             goToOnboarding: () => Chainable<Subject>;
@@ -106,6 +110,8 @@ Cypress.Commands.add('toggleDeviceMenu', toggleDeviceMenu);
 Cypress.Commands.add('goToOnboarding', goToOnboarding);
 Cypress.Commands.add('passThroughInitialRun', passThroughInitialRun);
 Cypress.Commands.add('passThroughBackup', passThroughBackup);
+Cypress.Commands.add('passThroughSettingsBackup', passThroughSettingsBackup);
+Cypress.Commands.add('passThroughBackupShamir', passThroughBackupShamir);
 Cypress.Commands.add('passThroughInitMetadata', passThroughInitMetadata);
 Cypress.Commands.add('passThroughSetPin', passThroughSetPin);
 // redux

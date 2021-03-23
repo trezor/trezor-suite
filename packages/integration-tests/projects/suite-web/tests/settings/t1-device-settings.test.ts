@@ -3,7 +3,8 @@
 
 describe('Device settings', () => {
     beforeEach(() => {
-        cy.task('startEmu', { version: '1.9.0', wipe: true });
+        cy.task('startEmu', { wipe: true, version: '1.9.0' });
+        cy.task('wipeEmu');
         cy.task('setupEmu', { needs_backup: false });
         cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
@@ -15,17 +16,15 @@ describe('Device settings', () => {
         cy.getTestElement('@settings/device/pin-switch').click({ force: true });
         cy.task('pressYes');
         // todo: add support for pin to trezor-user-env. now I may safely test only wrong pin input
-        // cy.getTestElement('@pin').matchImageSnapshot('first pin input');
         cy.getTestElement('@pin/input/1').click();
 
         cy.getTestElement('@pin/submit-button').click();
         cy.log('enter 2 digits instead of 1 in the first entry. This way pin is always wrong');
         cy.getTestElement('@pin/input/1').click();
-        // cy.getTestElement('@pin').matchImageSnapshot('confirm pin input');
         cy.getTestElement('@pin/input/1').click();
 
         cy.getTestElement('@pin/submit-button').click();
-        cy.getTestElement('@pin-mismatch').matchImageSnapshot();
+        cy.getTestElement('@pin-mismatch');
         cy.getTestElement('@pin-mismatch/try-again-button').click();
         cy.getTestElement('@suite/modal/confirm-action-on-device');
         cy.task('pressYes');

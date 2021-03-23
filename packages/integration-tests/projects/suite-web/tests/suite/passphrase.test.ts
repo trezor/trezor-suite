@@ -78,14 +78,14 @@ describe('Passphrase', () => {
         cy.getTestElement('@passphrase/input').type('abc');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         // confirm - input wrong passphrase
-        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
+        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 20000 }).click();
         cy.getTestElement('@passphrase/input').type('cba');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.getTestElement('@toast/auth-confirm-error/close').click();
         // retry
-        cy.getTestElement('@passphrase-mismatch/retry-button').click();
+        cy.getTestElement('@passphrase-mismatch/retry-button', { timeout: 20000 }).click();
         // confirm again - input correct this time
-        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
+        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 20000 }).click();
         cy.getTestElement('@passphrase/input').type('abc');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.getTestElement('@dashboard/wallet-ready');
@@ -107,7 +107,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@passphrase/input').type('def');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         // confirm
-        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
+        cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 20000 }).click();
         cy.getTestElement('@passphrase/input').type('def');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.getTestElement('@modal').should('not.exist');

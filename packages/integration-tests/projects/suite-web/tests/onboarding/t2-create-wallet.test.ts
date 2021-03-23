@@ -14,11 +14,12 @@ describe('Onboarding - create wallet', () => {
         cy.getTestElement('@onboarding/path-create-button').click();
     });
 
-    it('Success (no shamir capability)', () => {
+    it('Success (no shamir capability, backup and PIN from happy path)', () => {
         cy.getTestElement('@onboarding/path-used-button').click();
         cy.getTestElement('@onboarding/pair-device-step');
 
         cy.task('startEmu', { version: '2.1.4', wipe: true });
+        cy.task('wipeEmu');
 
         cy.getTestElement('@onboarding/button-continue').click();
         cy.getTestElement('@firmware/skip-button').click();
@@ -26,7 +27,7 @@ describe('Onboarding - create wallet', () => {
         cy.log(
             'Note that this firmware does not have Shamir capability so we show only single backup option button',
         );
-        cy.getTestElement('@onboarding/only-backup-option-button').click();
+        cy.getTestElement('@onboarding/create-new-wallet-option-button').click();
         cy.getTestElement('@suite/modal/confirm-action-on-device').should('be.visible');
         cy.task('pressYes');
 
@@ -46,28 +47,82 @@ describe('Onboarding - create wallet', () => {
         cy.getTestElement('@onboarding/final');
     });
 
-    it('Success (Shamir capability)', () => {
+    it('Success (no shamir capability, backup and PIN from settings)', () => {
+        cy.getTestElement('@onboarding/path-used-button').click();
+        cy.getTestElement('@onboarding/pair-device-step');
+
+        cy.task('startEmu', { version: '2.1.4', wipe: true });
+        cy.task('wipeEmu');
+
+        cy.getTestElement('@onboarding/button-continue').click();
+        cy.getTestElement('@firmware/skip-button').click();
+
+        cy.log(
+            'Note that this firmware does not have Shamir capability so we show only single backup option button',
+        );
+        cy.getTestElement('@onboarding/create-new-wallet-option-button').click();
+        cy.getTestElement('@suite/modal/confirm-action-on-device').should('be.visible');
+        cy.task('pressYes');
+
+        cy.getTestElement('@onboarding/exit-app-button').click();
+        cy.log('leaving onboarding now, backup will continue from settings');
+
+        cy.wait(2000);
+
+        cy.getTestElement('@notification/no-backup/button').click();
+        cy.wait(2000);
+
+        cy.passThroughSettingsBackup();
+
+        // Note that cy.passThroughSetPin is not used here. Fw version 2.1.4 does not
+        // display a success screen that needs press_yes
+        cy.wait(2000);
+        cy.task('pressYes') 
+        cy.wait(2000);
+        cy.getTestElement('@suite/modal/confirm-action-on-device');
+        cy.task('inputEmu', '1');
+        cy.wait(2000);
+        cy.task('inputEmu', '1');
+        cy.wait(2000);
+        // latest (2.3.4 at time of writing) needs press_yes here
+    });
+
+    it('Success (Shamir capability no backup)', () => {
         cy.getTestElement('@onboarding/path-used-button').click();
         cy.getTestElement('@onboarding/pair-device-step');
 
         cy.task('startEmu', { wipe: true });
 
+
         cy.getTestElement('@onboarding/button-continue').click();
-        cy.getTestElement('@firmware/continue-button').click();
+        cy.getTestElement('@firmware/skip-button').click();
 
         cy.log(
-            'Note that this firmware does not have Shamir capability so we show only single backup option button',
+            'Note that this firmware has Shamir capability',
         );
-        cy.getTestElement('@onboarding/button-standard-backup').click();
-        cy.getTestElement('@suite/modal/confirm-action-on-device').should('be.visible');
+        cy.getTestElement('@onboarding/button-shamir-backup').click();
         cy.task('pressYes');
+      //  cy.getTestElement('@suite/modal/confirm-action-on-device').should('be.visible');
+        cy.wait(1000); 
+        cy.task('pressYes');
+        cy.wait(1000); 
 
-        cy.getTestElement('@onboarding/continue-to-security-button').click();
+        cy.getTestElement('@onboarding/exit-app-button').click();
 
-        cy.passThroughBackup();
+        // TO DO pass through Shamir backup (add new def for trezor-user-env that will be used here 
+        //  NOTE that passThroughBackup() does not work for Shamir
+        // cy.getTestElement('@onboarding/continue-to-security-button').click();
+        // cy.getTestElement('@backup/check-item/has-enough-time');
+        // cy.getTestElement('@backup/check-item/is-in-private');
+        // cy.getTestElement('@backup/check-item/understands-what-seed-is');
+        // cy.getTestElement('@backup/start-button');
+        // cy.wait(5000);
 
-        cy.passThroughSetPin();
+      
+       // TO DO cy.passThroughBackupShamir();
 
-        cy.getTestElement('@onboarding/final');
+      //  cy.passThroughSetPin();
+
+       // cy.getTestElement('@onboarding/final');
     });
 });

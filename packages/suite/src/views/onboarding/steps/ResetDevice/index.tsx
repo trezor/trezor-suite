@@ -82,6 +82,7 @@ const ResetDeviceStep = () => {
                         />
 
                         <Option
+                            data-test="@onboarding/button-shamir-backup"
                             action={() => {
                                 callActionAndGoToNextStep(
                                     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -104,7 +105,7 @@ const ResetDeviceStep = () => {
                 {!isShamirBackupAvailable() && (
                     <Wrapper.Controls>
                         <OnboardingButton.Cta
-                            data-test="@onboarding/only-backup-option-button"
+                            data-test="@onboarding/create-new-wallet-option-button"
                             onClick={() =>
                                 callActionAndGoToNextStep(resetDevice, STEP.ID_SECURITY_STEP)
                             }
