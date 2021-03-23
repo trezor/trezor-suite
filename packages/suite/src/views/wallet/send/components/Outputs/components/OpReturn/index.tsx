@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useSendFormContext } from '@wallet-hooks';
 import { Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
-import { Textarea, Icon } from '@trezor/components';
+import { Textarea, Icon, Tooltip } from '@trezor/components';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { isHexValid } from '@wallet-utils/validation';
 import { MAX_LENGTH } from '@suite-constants/inputs';
@@ -18,10 +18,6 @@ const Wrapper = styled.div`
 const Label = styled.div`
     display: flex;
     align-items: center;
-`;
-
-const Text = styled.div`
-    padding: 0 4px;
 `;
 
 const Space = styled.div`
@@ -74,10 +70,9 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
                 bottomText={<InputError error={asciiError} />}
                 label={
                     <Label>
-                        <Icon size={16} icon="ASTERISK" />
-                        <Text>
+                        <Tooltip content={<Translation id="OP_RETURN_TOOLTIP" />} dashed>
                             <Translation id="OP_RETURN" />
-                        </Text>
+                        </Tooltip>
                     </Label>
                 }
             />

@@ -4481,7 +4481,8 @@ const definedMessages = defineMessages({
     },
     OP_RETURN_TOOLTIP: {
         id: 'OP_RETURN_TOOLTIP',
-        defaultMessage: 'OP_RETURN_TOOLTIP',
+        defaultMessage:
+            'Script opcode used to mark a transaction output as invalid. Since any outputs with OP_RETURN are provably unspendable, OP_RETURN outputs can be used to burn bitcoins.',
     },
     OP_RETURN_ADD: {
         id: 'OP_RETURN_ADD',
@@ -4491,6 +4492,11 @@ const definedMessages = defineMessages({
     RBF: {
         id: 'RBF',
         defaultMessage: 'RBF',
+    },
+    RBF_TOOLTIP: {
+        id: 'RBF_TOOLTIP',
+        defaultMessage:
+            'Node policy that allows an unconfirmed transaction in a mempool to be replaced with a different transaction that spends at least one of the same inputs and which pays a higher transaction fee.',
     },
     RBF_ON: {
         id: 'RBF_ON',
@@ -4512,6 +4518,10 @@ const definedMessages = defineMessages({
     LOCKTIME_ADD: {
         id: 'LOCKTIME_ADD',
         defaultMessage: 'Add Locktime',
+    },
+    LOCKTIME_ADD_TOOLTIP: {
+        id: 'LOCKTIME_ADD_TOOLTIP',
+        defaultMessage: 'Locktime sets the earliest time a transaction can be mined in to a block.',
     },
     LOCKTIME_DESCRIPTION: {
         id: 'LOCKTIME_DESCRIPTION',
@@ -4563,6 +4573,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Destination tag',
         id: 'DESTINATION_TAG',
     },
+    DESTINATION_TAG_TOOLTIP: {
+        id: 'DESTINATION_TAG_TOOLTIP',
+        defaultMessage:
+            'Destination tag is unique identification codes to identify the receiver of a transaction.',
+    },
     DESTINATION_TAG_EXPLAINED: {
         defaultMessage:
             'Destination tag is an arbitrary number which serves as a unique identifier of your transaction. Some services may require this to process your transaction.',
@@ -4591,6 +4606,10 @@ const definedMessages = defineMessages({
     DATA_ETH_ADD: {
         id: 'DATA_ETH_ADD',
         defaultMessage: 'Add Data',
+    },
+    DATA_ETH_ADD_TOOLTIP: {
+        id: 'DATA_ETH_ADD_TOOLTIP',
+        defaultMessage: 'Transaction data for Ethereum transaction.',
     },
     DATA_NOT_SET: {
         defaultMessage: 'Data not set',
@@ -4643,6 +4662,10 @@ const definedMessages = defineMessages({
         id: 'SEND_RAW_TRANSACTION',
         description: 'Send raw form header',
         defaultMessage: 'Send raw transaction',
+    },
+    SEND_RAW_TRANSACTION_TOOLTIP: {
+        id: 'SEND_RAW_TRANSACTION_TOOLTIP',
+        defaultMessage: 'You can provide all the raw data for your transaction by yourself.',
     },
     SIGN_TRANSACTION: {
         id: 'SIGN_TRANSACTION',
@@ -4700,6 +4723,10 @@ const definedMessages = defineMessages({
     BROADCAST: {
         id: 'BROADCAST',
         defaultMessage: 'Broadcast',
+    },
+    BROADCAST_TOOLTIP: {
+        id: 'BROADCAST_TOOLTIP',
+        defaultMessage: 'Broadcast the transaction to the network.',
     },
     IMPORT_CSV: {
         id: 'IMPORT_CSV',

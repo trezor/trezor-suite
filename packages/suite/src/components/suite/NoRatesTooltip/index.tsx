@@ -27,7 +27,6 @@ const NoRatesTooltip = ({ customText, iconOnly, customTooltip, className, ...pro
             {!iconOnly && <Translation id={customText || 'TR_FIAT_RATES_NOT_AVAILABLE'} />}
             <Tooltip
                 maxWidth={285}
-                placement="top"
                 content={
                     <Translation id={customTooltip || 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP'} />
                 }

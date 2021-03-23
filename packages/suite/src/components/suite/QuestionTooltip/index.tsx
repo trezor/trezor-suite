@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, useTheme, Tooltip } from '@trezor/components';
+import { Tooltip } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { ExtendedMessageDescriptor } from '@suite-types';
 
@@ -16,44 +16,23 @@ const Label = styled.div`
 interface Props {
     label?: JSX.Element | ExtendedMessageDescriptor['id'];
     tooltip?: JSX.Element | ExtendedMessageDescriptor['id'];
-    size?: number;
     className?: string;
-    color?: string;
-    // This is workaround for pixel-perfect alignment of the icon: see https://medium.com/microsoft-design/leading-trim-the-future-of-digital-typesetting-d082d84b202
-    iconStyle?: React.SVGAttributes<HTMLDivElement>['style'];
 }
 
-export const QuestionTooltip = ({
-    label,
-    tooltip,
-    size = 16,
-    color,
-    iconStyle,
-    className,
-}: Props) => {
-    const theme = useTheme();
-    const defaultColor = color ?? theme.TYPE_LIGHT_GREY;
-    return (
-        <Wrapper className={className}>
-            {label && (
-                <Label>{typeof label === 'string' ? <Translation id={label} /> : label}</Label>
-            )}
-            {tooltip && (
+export const QuestionTooltip = ({ label, tooltip, className }: Props) => (
+    <Wrapper className={className}>
+        {label &&
+            (tooltip ? (
                 <Tooltip
-                    placement="top"
                     content={typeof tooltip === 'string' ? <Translation id={tooltip} /> : tooltip}
+                    dashed
                 >
-                    <Icon
-                        useCursorPointer
-                        size={size}
-                        color={defaultColor}
-                        style={iconStyle}
-                        icon="QUESTION"
-                    />
+                    <Label>{typeof label === 'string' ? <Translation id={label} /> : label}</Label>
                 </Tooltip>
-            )}
-        </Wrapper>
-    );
-};
+            ) : (
+                <Label>{typeof label === 'string' ? <Translation id={label} /> : label}</Label>
+            ))}
+    </Wrapper>
+);
 
 export default QuestionTooltip;

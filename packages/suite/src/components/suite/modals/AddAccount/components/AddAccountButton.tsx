@@ -59,7 +59,7 @@ const AddAccountButton = (props: Props) => {
 
     if (tooltip) {
         return (
-            <Tooltip maxWidth={285} placement="top" content={tooltip}>
+            <Tooltip maxWidth={285} content={tooltip}>
                 {addButton}
             </Tooltip>
         );

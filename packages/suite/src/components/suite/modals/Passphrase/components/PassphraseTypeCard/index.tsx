@@ -66,14 +66,14 @@ const ArrowCol = styled(Col)`
     justify-content: center;
 `;
 
-const WalletTitle = styled.div`
+const WalletTitle = styled.div<{ withMargin: boolean }>`
     display: flex;
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: 500;
-    /* margin-bottom: 12px; */
     line-height: 1.5;
     align-items: center;
+    ${props => props.withMargin && `margin-bottom: 5px;`}
 `;
 
 const Description = styled.div<Pick<Props, 'authConfirmation'>>`
@@ -137,10 +137,6 @@ const OnDeviceActionButton = styled(ActionButton)`
         color: ${props => props.theme.TYPE_LIGHT_GREY};
         background: transparent;
     }
-`;
-
-const TooltipIcon = styled(Icon)`
-    margin-left: 4px;
 `;
 
 const Content = styled.div`
@@ -277,20 +273,16 @@ const PassphraseTypeCard = (props: Props) => {
                             )}
                         </IconWrapper>
                         <Col>
-                            <WalletTitle>
-                                {props.title}
-                                {props.type === 'hidden' && (
+                            <WalletTitle withMargin={props.type === 'hidden'}>
+                                {props.type === 'hidden' ? (
                                     <Tooltip
-                                        placement="top"
                                         content={<Translation id="TR_HIDDEN_WALLET_TOOLTIP" />}
+                                        dashed
                                     >
-                                        <TooltipIcon
-                                            useCursorPointer
-                                            size={16}
-                                            color={theme.TYPE_LIGHT_GREY}
-                                            icon="QUESTION_ACTIVE"
-                                        />
+                                        <>{props.title}</>
                                     </Tooltip>
+                                ) : (
+                                    props.title
                                 )}
                             </WalletTitle>
                             <Description>{props.description}</Description>

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button } from '@trezor/components';
+import { Button, Tooltip } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { OnOffSwitcher } from '@wallet-components';
 import { useSendFormContext } from '@wallet-hooks';
@@ -50,31 +50,35 @@ const EthereumOptions = () => {
             )}
             <Left>
                 {!dataEnabled && !tokenValue && (
+                    <Tooltip content={<Translation id="DATA_ETH_ADD_TOOLTIP" />} cursor="pointer">
+                        <StyledButton
+                            variant="tertiary"
+                            icon="DATA"
+                            data-test="send/open-ethereum-data"
+                            onClick={() => {
+                                // open additional form
+                                toggleOption('ethereumData');
+                                composeTransaction();
+                            }}
+                        >
+                            <Translation id="DATA_ETH_ADD" />
+                        </StyledButton>
+                    </Tooltip>
+                )}
+                <Tooltip content={<Translation id="BROADCAST_TOOLTIP" />} cursor="pointer">
                     <StyledButton
                         variant="tertiary"
-                        icon="DATA"
-                        data-test="send/open-ethereum-data"
+                        icon="BROADCAST"
+                        data-test="send/broadcast"
                         onClick={() => {
-                            // open additional form
-                            toggleOption('ethereumData');
+                            toggleOption('broadcast');
                             composeTransaction();
                         }}
                     >
-                        <Translation id="DATA_ETH_ADD" />
+                        <Translation id="BROADCAST" />
+                        <OnOffSwitcher isOn={broadcastEnabled} />
                     </StyledButton>
-                )}
-                <StyledButton
-                    variant="tertiary"
-                    icon="BROADCAST"
-                    data-test="send/broadcast"
-                    onClick={() => {
-                        toggleOption('broadcast');
-                        composeTransaction();
-                    }}
-                >
-                    <Translation id="BROADCAST" />
-                    <OnOffSwitcher isOn={broadcastEnabled} />
-                </StyledButton>
+                </Tooltip>
             </Left>
         </Wrapper>
     );

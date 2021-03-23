@@ -1,49 +1,47 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import React, { ReactNode } from 'react';
-import Tippy, { TippyProps } from '@tippy.js/react';
-import { tippy } from './tippy.style';
-import colors from '../../config/colors';
+import { useSpring, animated } from 'react-spring';
+import Tippy, { TippyProps } from '@tippyjs/react/headless';
+import { Instance, Props as TProps } from 'tippy.js';
+import { transparentize } from 'polished';
 import { Link } from '../typography/Link';
 import { FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
-import { SuiteThemeColors } from '../../support/types';
 
-const tooltipGlobalStyles = css`
-    ${tippy}
-
-    .tippy-tooltip {
-        background: ${props => props.theme.BG_TOOLTIP};
-        color: ${props => props.theme.TYPE_WHITE};
-        font-weight: ${FONT_WEIGHT.MEDIUM};
-        border-radius: 5px;
-        font-size: ${FONT_SIZE.TINY};
-        text-align: left;
-        box-shadow: 0 3px 14px 0 rgba(0, 0, 0, 0.15);
-
-        .tippy-arrow {
-            border: 5px solid transparent;
-        }
-    }
-
-    .tippy-tooltip[data-placement^='top'] > .tippy-arrow {
-        border-top-color: ${props => props.theme.BG_TOOLTIP};
-    }
-
-    .tippy-tooltip[data-placement^='bottom'] > .tippy-arrow {
-        border-bottom-color: ${props => props.theme.BG_TOOLTIP};
-    }
-
-    .tippy-tooltip[data-placement^='left'] > .tippy-arrow {
-        border-left-color: ${props => props.theme.BG_TOOLTIP};
-    }
-
-    .tippy-tooltip[data-placement^='right'] > .tippy-arrow {
-        border-right-color: ${props => props.theme.BG_TOOLTIP};
-    }
-`;
+type Cursor = 'inherit' | 'pointer' | 'help' | 'default';
 
 const Wrapper = styled.div``;
 
-const Content = styled.div``;
+const BoxDefault = styled(animated.div)<{ maxWidth: string | number }>`
+    padding: 4px 5px;
+    background: ${props => props.theme.BG_TOOLTIP};
+    color: ${props => props.theme.TYPE_WHITE};
+    font-weight: ${FONT_WEIGHT.MEDIUM};
+    border-radius: 5px;
+    font-size: ${FONT_SIZE.TINY};
+    text-align: left;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    max-width: ${props => props.maxWidth}px;
+`;
+
+const BoxRich = styled(animated.div)<{ maxWidth: string | number }>`
+    padding: 24px;
+    background: ${props => props.theme.BG_WHITE_ALT};
+    color: ${props => props.theme.TYPE_DARK_GREY};
+    border-radius: 5px;
+    font-size: ${FONT_SIZE.NORMAL};
+    text-align: left;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+    max-width: ${props => props.maxWidth}px;
+`;
+
+const Content = styled.div<{ dashed?: boolean; cursor: Cursor }>`
+    & > * {
+        cursor: ${props => props.cursor};
+        ${props =>
+            props.dashed &&
+            `border-bottom: 1.5px dashed ${transparentize(0.66, props.theme.TYPE_LIGHT_GREY)};`}
+    }
+`;
 
 const ReadMoreLink = styled(Link)`
     padding: 10px 0;
@@ -52,9 +50,13 @@ const ReadMoreLink = styled(Link)`
     display: flex;
 `;
 
-type Props = TippyProps & {
-    children: JSX.Element | JSX.Element[] | string;
+type Props = Omit<TippyProps, 'offset'> & {
+    children: ReactNode | JSX.Element | JSX.Element[] | string;
     readMore?: { link: string; text: ReactNode } | null;
+    rich?: boolean;
+    dashed?: boolean;
+    offset?: number;
+    cursor?: Cursor;
 };
 
 const Tooltip = ({
@@ -62,36 +64,88 @@ const Tooltip = ({
     interactive = true,
     children,
     duration = 150,
-    animation = 'scale',
+    delay = 200,
+    animation = true,
     className,
     readMore = null,
+    rich = false,
+    dashed = false,
+    maxWidth = 400,
+    offset = 10,
+    cursor = 'help',
     content,
     ...rest
-}: Props) => (
-    <Wrapper className={className}>
-        <Tippy
-            zIndex={10070}
-            arrow
-            placement={placement}
-            animation={animation}
-            duration={duration}
-            interactive={interactive}
-            appendTo={() => document.body}
-            content={
-                <>
-                    {content}
-                    {readMore && (
-                        <ReadMoreLink variant="nostyle" href={readMore.link} target="_blank">
-                            {readMore.text}
-                        </ReadMoreLink>
-                    )}
-                </>
-            }
-            {...rest}
-        >
-            <Content>{children}</Content>
-        </Tippy>
-    </Wrapper>
-);
+}: Props) => {
+    const config = { tension: 400, friction: 26, mass: 1 };
+    const animationStartOffset = 20;
+    const getTranslateStyle = () => {
+        if (placement === 'top') return `translate(0px, ${animationStartOffset}px)`;
+        if (placement === 'bottom') return `translate(0px, -${animationStartOffset}px)`;
+        if (placement === 'left') return `translate(${animationStartOffset}px, 0px)`;
+        if (placement === 'right') return `translate(-${animationStartOffset}px, 0px)`;
+        return '';
+    };
+    const initialStyles = { opacity: 0, transform: `scale(0.8) ${getTranslateStyle()}` };
+    const [spring, setSpring] = useSpring(() => initialStyles);
 
-export { Tooltip, TippyProps as TooltipProps, tooltipGlobalStyles };
+    const onMount = () => {
+        setSpring({
+            opacity: 1,
+            transform: 'scale(1) translate(0px, 0px)',
+            onRest: () => {},
+            config,
+        });
+    };
+
+    const onHide = ({ unmount }: Instance<TProps>) => {
+        setSpring({
+            ...initialStyles,
+            onRest: unmount,
+            config: { ...config, clamp: true },
+        });
+    };
+
+    return (
+        <Wrapper className={className}>
+            <Tippy
+                zIndex={10070}
+                placement={placement}
+                animation={animation}
+                onMount={onMount}
+                onHide={onHide}
+                duration={duration}
+                delay={delay}
+                offset={[0, offset]}
+                interactive={interactive}
+                appendTo={() => document.body}
+                {...rest}
+                render={attrs =>
+                    rich ? (
+                        <BoxRich maxWidth={maxWidth} tabIndex={-1} style={spring} {...attrs}>
+                            {content}
+                        </BoxRich>
+                    ) : (
+                        <BoxDefault maxWidth={maxWidth} tabIndex={-1} style={spring} {...attrs}>
+                            {content}
+                            {readMore && (
+                                <ReadMoreLink
+                                    variant="nostyle"
+                                    href={readMore.link}
+                                    target="_blank"
+                                >
+                                    {readMore.text}
+                                </ReadMoreLink>
+                            )}
+                        </BoxDefault>
+                    )
+                }
+            >
+                <Content dashed={dashed} cursor={cursor}>
+                    {children}
+                </Content>
+            </Tippy>
+        </Wrapper>
+    );
+};
+
+export { Tooltip, TippyProps as TooltipProps };

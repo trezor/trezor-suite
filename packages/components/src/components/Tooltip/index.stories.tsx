@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Tooltip } from '../../index';
 import { storiesOf } from '@storybook/react';
-import { select, number, text } from '@storybook/addon-knobs';
+import { select, number, text, boolean } from '@storybook/addon-knobs';
 
 const Center = styled.div`
     display: flex;
@@ -29,7 +29,10 @@ storiesOf('Tooltip', module).add('Tooltip', () => {
         <Center>
             <Tooltip
                 maxWidth={number('Max width', 280)}
+                offset={number('Offset (distance)', 10)}
                 placement={placement}
+                dashed={boolean('Dashed', false)}
+                cursor={select('Cursor', ['help', 'inherit', 'default'], 'help')}
                 content={text('Content', 'Passphrase is an optional feature.')}
             >
                 <span>Text with tooltip</span>

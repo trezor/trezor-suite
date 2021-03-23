@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 - MacOS desktop icon updated
 - Updated account navigation
+- Improved tooltips UI/UX, rich content tooltip support
 
 ### Fixed
 - Discreet mode fixed in Wallet modal and chart hover tooltip

@@ -68,9 +68,8 @@ const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceIns
     return (
         <AddWallet>
             <StyledTooltip
-                enabled={!device.connected}
-                placement="top"
                 content={<Translation id="TR_TO_ACCESS_OTHER_WALLETS" />}
+                cursor="pointer"
             >
                 <StyledButton
                     data-test={

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { OnOffSwitcher } from '@wallet-components';
-import { Button } from '@trezor/components';
+import { Button, Tooltip } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
 import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
 
@@ -73,44 +73,53 @@ const BitcoinOptions = () => {
             <Row>
                 <Left>
                     {!locktimeEnabled && (
-                        <StyledButton
-                            variant="tertiary"
-                            icon="CALENDAR"
-                            onClick={() => {
-                                // open additional form
-                                toggleOption('bitcoinLockTime');
-                                composeTransaction();
-                            }}
+                        <Tooltip
+                            content={<Translation id="LOCKTIME_ADD_TOOLTIP" />}
+                            cursor="pointer"
                         >
-                            <Translation id="LOCKTIME_ADD" />
-                        </StyledButton>
+                            <StyledButton
+                                variant="tertiary"
+                                icon="CALENDAR"
+                                onClick={() => {
+                                    // open additional form
+                                    toggleOption('bitcoinLockTime');
+                                    composeTransaction();
+                                }}
+                            >
+                                <Translation id="LOCKTIME_ADD" />
+                            </StyledButton>
+                        </Tooltip>
                     )}
                     {isFeatureEnabled('RBF') &&
                         network.features?.includes('rbf') &&
                         !locktimeEnabled && (
-                            <StyledButton
-                                variant="tertiary"
-                                icon="RBF"
-                                onClick={() => {
-                                    toggleOption('bitcoinRBF');
-                                    composeTransaction();
-                                }}
-                            >
-                                <Translation id="RBF" />
-                                <OnOffSwitcher isOn={rbfEnabled} />
-                            </StyledButton>
+                            <Tooltip content={<Translation id="RBF_TOOLTIP" />} cursor="pointer">
+                                <StyledButton
+                                    variant="tertiary"
+                                    icon="RBF"
+                                    onClick={() => {
+                                        toggleOption('bitcoinRBF');
+                                        composeTransaction();
+                                    }}
+                                >
+                                    <Translation id="RBF" />
+                                    <OnOffSwitcher isOn={rbfEnabled} />
+                                </StyledButton>
+                            </Tooltip>
                         )}
-                    <StyledButton
-                        variant="tertiary"
-                        icon="BROADCAST"
-                        onClick={() => {
-                            toggleOption('broadcast');
-                            composeTransaction();
-                        }}
-                    >
-                        <Translation id="BROADCAST" />
-                        <OnOffSwitcher isOn={broadcastEnabled} />
-                    </StyledButton>
+                    <Tooltip content={<Translation id="BROADCAST_TOOLTIP" />} cursor="pointer">
+                        <StyledButton
+                            variant="tertiary"
+                            icon="BROADCAST"
+                            onClick={() => {
+                                toggleOption('broadcast');
+                                composeTransaction();
+                            }}
+                        >
+                            <Translation id="BROADCAST" />
+                            <OnOffSwitcher isOn={broadcastEnabled} />
+                        </StyledButton>
+                    </Tooltip>
                 </Left>
                 <Right>
                     <AddRecipientButton

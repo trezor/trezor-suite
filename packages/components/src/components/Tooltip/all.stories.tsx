@@ -11,37 +11,60 @@ const TooltipWrapper = styled.div`
     margin: 5px;
 `;
 
+const RichContentExample = styled.div`
+    text-align: left;
+`;
+
 storiesOf('Tooltip', module).add(
     'All',
     () => (
         <>
             <TooltipWrapper data-test="tooltip-top">
-                <Tooltip content="Tooltip text" visible>
+                <Tooltip content="Tooltip text">
                     <span>Tooltip top</span>
                 </Tooltip>
             </TooltipWrapper>
             <TooltipWrapper data-test="tooltip-bottom">
-                <Tooltip content="Tooltip text" visible placement="bottom">
+                <Tooltip content="Tooltip text" placement="bottom">
                     <span>Tooltip bottom</span>
                 </Tooltip>
             </TooltipWrapper>
             <TooltipWrapper data-test="tooltip-left">
-                <Tooltip content="Tooltip text" visible placement="left">
+                <Tooltip content="Tooltip text" placement="left">
                     <span>Tooltip left</span>
                 </Tooltip>
             </TooltipWrapper>
             <TooltipWrapper data-test="tooltip-right">
-                <Tooltip content="Tooltip text" visible placement="right">
+                <Tooltip content="Tooltip text" placement="right">
                     <span>Tooltip right</span>
                 </Tooltip>
             </TooltipWrapper>
             <TooltipWrapper data-test="tooltip-top">
                 <Tooltip
                     content="Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy"
-                    visible
                     readMore={{ link: 'https://www.trezor.io', text: 'Read more' }}
                 >
                     <span>Tooltip wth read more link</span>
+                </Tooltip>
+            </TooltipWrapper>
+            <TooltipWrapper data-test="tooltip-rich">
+                <Tooltip
+                    rich
+                    content={
+                        <RichContentExample>
+                            <h1>Rich content example</h1>
+                            <p>
+                                Simply dummy text of the printing and typesetting industry. Lorem
+                                Ipsum has been the industry's standard dummy
+                            </p>
+                            <p>
+                                Some more text blah blah blah blah blah blah blah blah blah blah
+                                blah blah blah blah blah blah blah blah blah
+                            </p>
+                        </RichContentExample>
+                    }
+                >
+                    <span>Tooltip wth rich content</span>
                 </Tooltip>
             </TooltipWrapper>
         </>
