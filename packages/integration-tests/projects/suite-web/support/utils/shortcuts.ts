@@ -40,17 +40,7 @@ export const passThroughBackupShamir = () => {
     cy.log('Create backup on device');
     cy.getTestElement('@backup/start-button').click();
     cy.getConfirmActionOnDeviceModal();
-    cy.task('pressYes');
-    cy.wait(1000);  
-    cy.task('pressYes');
-    cy.wait(1000);
-    cy.task('pressYes');
-    cy.wait(1000);
-    cy.task('pressYes');
-    cy.getConfirmActionOnDeviceModal();
-    cy.task('pressYes');
-    cy.wait(1000);
-    cy.task('readAndConfirmMnemonicEmu');
+    cy.task('readAndConfirmMnemonicShamirEmu');
 
     cy.log('click all after checkboxes and close backup modal');
     cy.getTestElement('@backup/close-button').should('be.disabled');
