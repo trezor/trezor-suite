@@ -78,6 +78,17 @@ export type SuiteAction =
           colors: SuiteThemeColors;
       };
 
+export const removeButtonRequests = (device: TrezorDevice | undefined) => ({
+    type: SUITE.ADD_BUTTON_REQUEST,
+    device,
+});
+
+export const addButtonRequest = (device: TrezorDevice | undefined, payload: string) => ({
+    type: SUITE.ADD_BUTTON_REQUEST,
+    device,
+    payload,
+});
+
 export const setDbError = (payload: AppState['suite']['dbError']) => ({
     type: SUITE.SET_DB_ERROR,
     payload,
