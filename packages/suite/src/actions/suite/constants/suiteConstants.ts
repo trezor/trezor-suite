@@ -22,6 +22,7 @@ export const TOR_STATUS = '@suite/tor-status';
 export const ONION_LINKS = '@suite/onion-links';
 export const APP_CHANGED = '@suite/app-changed';
 export const ADD_BUTTON_REQUEST = '@suite/add-button-request';
+export const REMOVE_BUTTON_REQUEST = '@suite/remove-button-request';
 export const SET_PROCESS_MODE = '@suite/set-process-mode';
 export const SET_THEME = '@suite/set-theme';
 export const LOCK_UI = '@suite/lock-ui';
