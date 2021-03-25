@@ -177,31 +177,6 @@ const disconnectDevice = (draft: State, device: Device) => {
             draft.splice(draft.indexOf(d), 1);
         }
     });
-
-    // remove.forEach(d => {
-    //     draft.splice(draft.indexOf(d), 1);
-    // });
-
-    // if (remove.length >)
-
-    // if (affectedDevices.length > 0) {
-    //     // remembered devices shouldn't be removed from reducer
-    //     const rememberedDevices = affectedDevices.filter(
-    //         d => d.features && d.remember,
-    //     ) as AcquiredDevice[];
-    //     // clear draft
-    //     draft.splice(0, draft.length);
-    //     // fill draft with not affected devices
-    //     otherDevices.forEach(d => draft.push(d));
-    //     // fill draft with affected but remembered devices
-    //     rememberedDevices.forEach(d => {
-    //         d.connected = false;
-    //         d.available = false;
-    //         d.status = 'available';
-    //         d.path = '';
-    //         draft.push(d);
-    //     });
-    // }
 };
 
 /**
