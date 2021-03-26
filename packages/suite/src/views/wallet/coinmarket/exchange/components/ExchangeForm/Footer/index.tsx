@@ -3,6 +3,7 @@ import { Button } from '@trezor/components';
 import { Translation } from '@suite-components';
 import styled from 'styled-components';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
+import { CRYPTO_INPUT } from '@suite/types/wallet/coinmarketExchangeForm';
 
 const Wrapper = styled.div`
     display: flex;
@@ -23,7 +24,7 @@ const StyledButton = styled(Button)`
 
 const Footer = () => {
     const { formState, watch, errors, isComposing } = useCoinmarketExchangeFormContext();
-    const hasValues = !!watch('sendCryptoInput') && !!watch('receiveCryptoSelect')?.value;
+    const hasValues = !!watch(CRYPTO_INPUT) && !!watch('receiveCryptoSelect')?.value;
     const formIsValid = Object.keys(errors).length === 0;
 
     return (

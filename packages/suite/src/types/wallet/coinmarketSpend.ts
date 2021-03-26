@@ -1,6 +1,5 @@
 import { AppState } from '@suite-types';
 import { SellProviderInfo } from 'invity-api';
-import { Account, Network } from '@wallet-types';
 
 export interface ComponentProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
@@ -14,10 +13,8 @@ export interface Props extends ComponentProps {
 }
 
 export type SpendContextValues = {
-    account: Account;
     isLoading: boolean;
     noProviders: boolean;
-    network: Network;
     provider?: SellProviderInfo;
     voucherSiteUrl?: string;
     openWindow: (url?: string) => void;

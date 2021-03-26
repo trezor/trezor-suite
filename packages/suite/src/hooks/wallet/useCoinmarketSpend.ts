@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useInvityAPI } from '@wallet-hooks/useCoinmarket';
 import { Props, SpendContextValues } from '@wallet-types/coinmarketSpend';
 import invityAPI from '@suite-services/invityAPI';
@@ -6,37 +6,51 @@ import { SellVoucherTrade } from 'invity-api';
 import { getUnusedAddressFromAccount } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
 import { useActions } from '@suite-hooks';
 import { useTranslation } from '@suite-hooks/useTranslation';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { PrecomposedLevels } from '@wallet-types/sendForm';
+import { FormState } from '@wallet-types/sendForm';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { isDesktop } from '@suite/utils/suite/env';
+import { useCompose } from './form/useCompose';
+import { useForm } from 'react-hook-form';
+import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';
 
 export const SpendContext = createContext<SpendContextValues | null>(null);
 SpendContext.displayName = 'CoinmarketSpendContext';
+
+const useSpendState = ({ selectedAccount, fees }: Props, currentState: boolean) => {
+    // do not calculate if currentState is already set (prevent re-renders)
+    if (selectedAccount.status !== 'loaded' || currentState) return;
+
+    const { account, network } = selectedAccount;
+    const coinFees = fees[account.symbol];
+    const levels = getFeeLevels(account.networkType, coinFees);
+    const feeInfo = { ...coinFees, levels };
+
+    return {
+        account,
+        network,
+        feeInfo,
+        formValues: {
+            ...DEFAULT_VALUES,
+            outputs: [],
+            options: ['broadcast'],
+        } as FormState, // TODO: remove type casting (options string[])
+    };
+};
 
 export const useCoinmarketSpend = (props: Props): SpendContextValues => {
     const { sellInfo } = useInvityAPI();
     const [voucherSiteUrl, setVoucherSiteUrl] = useState<string | undefined>('error');
 
-    const {
-        composeTransaction,
-        saveComposedTransaction,
-        signTransaction,
-        addNotification,
-        setShowLeaveModal,
-    } = useActions({
-        composeTransaction: coinmarketCommonActions.composeTransaction,
-        saveComposedTransaction: coinmarketCommonActions.saveComposedTransaction,
-        signTransaction: coinmarketCommonActions.signTransaction,
+    const { addNotification, setShowLeaveModal } = useActions({
         addNotification: notificationActions.addToast,
         setShowLeaveModal: coinmarketSellActions.setShowLeaveModal,
     });
     const { translationString } = useTranslation();
 
-    const { selectedAccount, language, fees } = props;
-    const { account, network } = selectedAccount;
+    const { selectedAccount, language } = props;
+    const { account } = selectedAccount;
 
     const country = sellInfo?.sellList?.country;
     const isLoading = !sellInfo || !voucherSiteUrl;
@@ -74,54 +88,59 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
         }
     }, [account, country, language, provider]);
 
-    const onSendCrypto = useCallback(
-        async (trade: SellVoucherTrade) => {
-            if (trade.cryptoAmount && trade.destinationAddress && !trade.error) {
+    const [state, setState] = useState<ReturnType<typeof useSpendState>>(undefined);
+    const [trade, setTrade] = useState<SellVoucherTrade | undefined>(undefined);
+
+    // throttle initial state calculation
+    const initState = useSpendState(props, !!state);
+    useEffect(() => {
+        if (!state && initState) {
+            setState(initState);
+        }
+    }, [state, initState]);
+
+    const useFormMethods = useForm<FormState>({ mode: 'onChange', shouldUnregister: false });
+    const { reset, register } = useFormMethods;
+
+    // react-hook-form auto register custom form fields (without HTMLElement)
+    useEffect(() => {
+        register({ name: 'outputs', type: 'custom' });
+        register({ name: 'options', type: 'custom' });
+    }, [register]);
+
+    const { composeRequest, composedLevels, signTransaction } = useCompose({
+        ...useFormMethods,
+        state,
+    });
+
+    // react-hook-form reset, set default values
+    useEffect(() => {
+        reset(state?.formValues);
+    }, [reset, state]);
+
+    // when compose is finished, sign transaction or show compose error
+    useEffect(() => {
+        const sign = async (trade: SellVoucherTrade) => {
+            const success = await signTransaction();
+            if (success) {
+                await invityAPI.confirmVoucherTrade(trade);
+                setShowLeaveModal(false);
+            }
+        };
+        if (composedLevels && trade) {
+            // reset trade so that it is not called multiple times
+            setTrade(undefined);
+            const transactionInfo = composedLevels.normal;
+            if (transactionInfo.type === 'final') {
+                sign(trade);
+            } else {
                 let errorMessage: string | undefined;
-                const selectedFee = 'normal';
-                const coinFees = fees[account.symbol];
-                const levels = getFeeLevels(account.networkType, coinFees);
-                const feeInfo = { ...coinFees, levels };
-                const selectedFeeLevel = feeInfo.levels.find(level => level.label === selectedFee);
-                if (!selectedFeeLevel) return false;
-                const result: PrecomposedLevels | undefined = await composeTransaction({
-                    account,
-                    amount: trade.cryptoAmount.toString(),
-                    feeInfo,
-                    feePerUnit: selectedFeeLevel.feePerUnit,
-                    selectedFee,
-                    feeLimit: selectedFeeLevel.feeLimit || '0',
-                    network,
-                    isMaxActive: false,
-                    address: trade.destinationAddress,
-                    isInvity: true,
-                });
-
-                const transactionInfo = result ? result[selectedFeeLevel.label] : null;
-                if (transactionInfo?.type === 'final') {
-                    saveComposedTransaction(transactionInfo);
-                    const success = await signTransaction({
-                        account,
-                        address: trade.destinationAddress,
-                        destinationTag: undefined,
-                        transactionInfo,
-                        network,
-                        amount: transactionInfo.totalSpent,
-                    });
-                    if (success) {
-                        await invityAPI.confirmVoucherTrade(trade);
-                        setShowLeaveModal(false);
-                    }
-                    return;
-                }
-
                 if (transactionInfo?.type === 'error' && transactionInfo.errorMessage) {
                     errorMessage = translationString(
                         transactionInfo.errorMessage.id,
                         transactionInfo.errorMessage.values as { [key: string]: any },
                     );
                 }
-
                 if (!errorMessage) {
                     errorMessage = 'Cannot create transaction';
                 }
@@ -130,20 +149,17 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
                     error: errorMessage,
                 });
             }
-        },
-        [
-            account,
-            addNotification,
-            composeTransaction,
-            fees,
-            network,
-            saveComposedTransaction,
-            setShowLeaveModal,
-            signTransaction,
-            translationString,
-        ],
-    );
+        }
+    }, [
+        addNotification,
+        composedLevels,
+        setShowLeaveModal,
+        signTransaction,
+        trade,
+        translationString,
+    ]);
 
+    // create listener for messages from the spend partner
     useEffect(() => {
         if (!isLoading && !noProviders) {
             const handleMessage = async (event: MessageEvent) => {
@@ -161,8 +177,31 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
                         });
                     }
 
-                    if (trade.status === 'SEND_CRYPTO' && !trade.error) {
-                        onSendCrypto(trade);
+                    if (
+                        trade.status === 'SEND_CRYPTO' &&
+                        !trade.error &&
+                        trade.cryptoAmount &&
+                        trade.destinationAddress
+                    ) {
+                        // initiate crypto transaction - specify outputs, initiate compose and store trade for later use
+                        setState(prevState => {
+                            if (prevState)
+                                return {
+                                    ...prevState,
+                                    formValues: {
+                                        ...prevState?.formValues,
+                                        outputs: [
+                                            {
+                                                ...DEFAULT_PAYMENT,
+                                                address: trade.destinationAddress || '',
+                                                amount: trade.cryptoAmount?.toString() || '',
+                                            },
+                                        ],
+                                    },
+                                };
+                        });
+                        composeRequest();
+                        setTrade(trade);
                         window.desktopApi?.windowFocus();
                     }
                 }
@@ -182,7 +221,7 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
                 window.removeEventListener('message', handleMessage);
             };
         }
-    }, [account.symbol, isLoading, noProviders, provider, onSendCrypto, addNotification]);
+    }, [account.symbol, isLoading, noProviders, provider, addNotification, composeRequest]);
 
     const openWindow = async (voucherSiteUrl?: string) => {
         const endpointIframe = await window.desktopApi?.getHttpReceiverAddress(`/spend-iframe`);
@@ -199,10 +238,8 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
 
     return {
         openWindow,
-        account,
         isLoading,
         noProviders,
-        network,
         provider,
         voucherSiteUrl,
         setShowLeaveModal,

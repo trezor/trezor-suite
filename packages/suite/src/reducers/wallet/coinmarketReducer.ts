@@ -1,6 +1,5 @@
 import produce from 'immer';
 import { WalletAction, Account } from '@wallet-types';
-import { ReviewTransactionData } from '@wallet-types/transaction';
 import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 
 import {
@@ -21,6 +20,7 @@ import {
 import { STORAGE } from '@suite-actions/constants';
 import { Action as SuiteAction } from '@suite-types';
 import { SellInfo } from '@wallet-actions/coinmarketSellActions';
+import { FeeLevel } from 'trezor-connect';
 
 type CommonTrade = {
     date: string;
@@ -36,6 +36,11 @@ type CommonTrade = {
 export type TradeBuy = CommonTrade & { tradeType: 'buy'; data: BuyTrade };
 export type TradeExchange = CommonTrade & { tradeType: 'exchange'; data: ExchangeTrade };
 export type Trade = TradeExchange | TradeBuy;
+
+export interface ComposedTransactionInfo {
+    composed?: PrecomposedTransactionFinal;
+    selectedFee?: FeeLevel['label'];
+}
 
 interface Buy {
     buyInfo?: BuyInfo;
@@ -72,10 +77,7 @@ interface State {
     buy: Buy;
     exchange: Exchange;
     sell: Sell;
-    transaction: {
-        composed?: PrecomposedTransactionFinal;
-        reviewData?: ReviewTransactionData;
-    };
+    composedTransactionInfo: ComposedTransactionInfo;
     trades: Trade[];
 }
 
@@ -108,7 +110,7 @@ export const initialState = {
         showLeaveModal: false,
         sellInfo: undefined,
     },
-    transaction: {},
+    composedTransactionInfo: {},
     trades: [],
 };
 
@@ -176,11 +178,8 @@ const coinmarketReducer = (
             case COINMARKET_EXCHANGE.SAVE_TRANSACTION_ID:
                 draft.exchange.transactionId = action.transactionId;
                 break;
-            case COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION:
-                draft.transaction.composed = action.composedTransaction;
-                break;
-            case COINMARKET_COMMON.SAVE_TRANSACTION_REVIEW:
-                draft.transaction.reviewData = action.reviewData;
+            case COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION_INFO:
+                draft.composedTransactionInfo = action.info;
                 break;
             case STORAGE.LOADED:
                 return action.payload.wallet.coinmarket;

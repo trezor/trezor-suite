@@ -1,9 +1,8 @@
 import { Input } from '@trezor/components';
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { FIAT } from '@suite-config';
-import useDebounce from 'react-use/lib/useDebounce';
 import { isDecimalsValid, isInteger } from '@wallet-utils/validation';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 import { Translation } from '@suite-components';
@@ -11,10 +10,8 @@ import SendCryptoSelect from './SendCryptoSelect';
 import { InputError } from '@wallet-components';
 import Bignumber from 'bignumber.js';
 import { MAX_LENGTH } from '@suite-constants/inputs';
-import {
-    formatCryptoAmount,
-    invityApiSymbolToSymbol,
-} from '@wallet-utils/coinmarket/coinmarketUtils';
+import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
+import { CRYPTO_INPUT, CRYPTO_TOKEN, FIAT_INPUT } from '@wallet-types/coinmarketExchangeForm';
 
 export const buildCurrencyOptions = () => {
     const result: { value: string; label: string }[] = [];
@@ -38,17 +35,16 @@ const SendCryptoInput = () => {
         network,
         account,
         amountLimits,
-        compose,
-        token,
-        isMax,
-        setMax,
+        composeRequest,
         updateFiatValue,
         getValues,
+        setValue,
     } = useCoinmarketExchangeFormContext();
-    const sendCryptoInput = 'sendCryptoInput';
-    const fiatInput = 'fiatInput';
     const { symbol, tokens } = account;
-    const tokenData = tokens?.find(t => t.symbol === invityApiSymbolToSymbol(token));
+
+    const tokenAddress = getValues(CRYPTO_TOKEN);
+    const tokenData = tokens?.find(t => t.address === tokenAddress);
+
     const formattedAvailableBalance = tokenData
         ? tokenData.balance || '0'
         : formatNetworkAmount(account.availableBalance, account.symbol);
@@ -57,34 +53,23 @@ const SendCryptoInput = () => {
             ? formatNetworkAmount(account.misc.reserve, account.symbol)
             : undefined;
     const decimals = tokenData ? tokenData.decimals : network.decimals;
-    const amount = getValues(sendCryptoInput);
-    useDebounce(
-        () => {
-            // take value at debounce time, the user may type fast
-            const currentAmount = getValues(sendCryptoInput);
-            if (currentAmount && !isMax) {
-                const amountBig = new Bignumber(currentAmount);
-                if (amountBig.gte(0)) {
-                    compose({
-                        setMax: false,
-                        amount: currentAmount,
-                    });
-                }
-            }
-        },
-        333,
-        [amount],
-    );
+    const amount = getValues(CRYPTO_INPUT);
+    useEffect(() => {
+        composeRequest();
+    }, [amount, composeRequest]);
+
+    const error = errors.outputs && errors.outputs[0] ? errors.outputs[0].amount : undefined;
 
     return (
         <StyledInput
             onChange={event => {
                 updateFiatValue(event.target.value);
-                clearErrors(fiatInput);
-                setMax(false);
+                clearErrors(FIAT_INPUT);
+                setValue('setMaxOutputId', undefined);
+                composeRequest();
             }}
-            state={errors[sendCryptoInput] ? 'error' : undefined}
-            name={sendCryptoInput}
+            state={error ? 'error' : undefined}
+            name={CRYPTO_INPUT}
             noTopLabel
             maxLength={MAX_LENGTH.AMOUNT}
             innerRef={register({
@@ -159,7 +144,7 @@ const SendCryptoInput = () => {
                     }
                 },
             })}
-            bottomText={<InputError error={errors[sendCryptoInput]} />}
+            bottomText={<InputError error={error} />}
             innerAddon={<SendCryptoSelect />}
         />
     );

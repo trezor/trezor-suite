@@ -15,7 +15,7 @@ type Props = UseFormMethods<{
     feeInfo?: FeeInfo;
     saveLastUsedFee?: boolean;
     onChange?: (prev?: FeeLevel['label'], current?: FeeLevel['label']) => void;
-    composeRequest?: (field?: string) => void;
+    composeRequest: (field?: string) => void;
     composedLevels?: PrecomposedLevels;
 };
 
@@ -142,7 +142,7 @@ export const useFees = ({
             feePerUnit = '';
             feeLimit = '';
             clearErrors(['feePerUnit', 'feeLimit']);
-            if (composeRequest) composeRequest();
+            composeRequest();
         }
 
         setValue('selectedFee', level);
