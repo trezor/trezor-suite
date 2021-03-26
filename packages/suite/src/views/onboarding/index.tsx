@@ -59,10 +59,17 @@ const Onboarding = (props: Props) => {
             case STEP.ID_FIRMWARE_STEP:
                 // Firmware installation
                 return FirmwareStep;
+            case STEP.ID_CREATE_OR_RECOVER:
+                // Selection between a new seed or seed recovery
+                return CreateOrRecover;
+            case STEP.ID_RESET_DEVICE_STEP:
+                // a) Generating a new seed, selection between single seed or shamir seed (only TT supported)
+                return ResetDeviceStep;
+            case STEP.ID_RECOVERY_STEP:
+                // b) Seed recovery
+                return RecoveryStep;
             case STEP.ID_SKIP_STEP:
                 return SkipStep;
-            case STEP.ID_CREATE_OR_RECOVER:
-                return CreateOrRecover;
             case STEP.ID_NEW_OR_USED:
                 return NewOrUsedStep;
             case STEP.ID_SELECT_DEVICE_STEP:
@@ -71,10 +78,6 @@ const Onboarding = (props: Props) => {
                 return HologramStep;
             case STEP.ID_PAIR_DEVICE_STEP:
                 return PairStep;
-            case STEP.ID_RESET_DEVICE_STEP:
-                return ResetDeviceStep;
-            case STEP.ID_RECOVERY_STEP:
-                return RecoveryStep;
             case STEP.ID_SECURITY_STEP:
                 return SecurityStep;
             case STEP.ID_BACKUP_STEP:

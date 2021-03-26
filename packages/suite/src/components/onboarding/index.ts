@@ -36,6 +36,7 @@ const Loaders = {
 };
 
 const Wrapper = {
+    // TODO: remove what we don't need anymore
     Controls: ControlsWrapper,
     Options: OptionsWrapper,
     StepBody: StepBodyWrapper,
@@ -44,6 +45,7 @@ const Wrapper = {
     Step: StepWrapper,
 };
 
+// TODO: remove what we don't need anymore
 export {
     OnboardingButton,
     Loaders,
