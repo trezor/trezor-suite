@@ -1,6 +1,7 @@
 import { MiddlewareAPI } from 'redux';
 import { SUITE } from '@suite-actions/constants';
 import { AppState, Action, Dispatch } from '@suite-types';
+// import * as ONBOARDING_STEP from '@onboarding-constants/steps';
 import TrezorConnect, { UI } from 'trezor-connect';
 import { addButtonRequest, removeButtonRequests } from '@suite-actions/suiteActions';
 import { ONBOARDING } from '@onboarding-actions/constants';

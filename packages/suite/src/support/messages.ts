@@ -1620,6 +1620,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Skip PIN',
         id: 'TR_SKIP_PIN',
     },
+    TR_SKIP_BACKUP: {
+        defaultMessage: 'Skip Backup',
+        id: 'TR_SKIP_BACKUP',
+    },
     TR_HELP_TREZOR_SUITE: {
         defaultMessage: 'Help Trezor Suite get better',
         id: 'TR_HELP_TREZOR_SUITE',
@@ -4081,6 +4085,19 @@ const definedMessages = defineMessages({
         id: 'TERMS_AND_CONDTIONS',
         defaultMessage: 'Terms and conditions',
         description: 'Legal stuff nobody reads.',
+    },
+    TR_ONBOARDING_GENERATE_SEED: {
+        id: 'TR_ONBOARDING_GENERATE_SEED',
+        defaultMessage: 'Generate seed',
+        description:
+            'Used for button triggering seed creation (reset device call), user chooses between single seed and shamir',
+    },
+    TR_ONBOARDING_GENERATE_SEED_DESCRIPTION: {
+        id: 'TR_ONBOARDING_GENERATE_SEED_DESCRIPTION',
+        defaultMessage:
+            'This step will generate your seed, which also creates a standard wallet for you.',
+        description:
+            'Used for button triggering seed creation (reset device call), user chooses between single seed and shamir',
     },
     TR_CREATE_WALLET: {
         id: 'TR_CREATE_WALLET',
