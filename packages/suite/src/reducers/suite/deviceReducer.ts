@@ -1,11 +1,21 @@
 import produce from 'immer';
-import { Device, DEVICE } from 'trezor-connect';
+import { Device, DEVICE, Features } from 'trezor-connect';
 import { SUITE, STORAGE, METADATA } from '@suite-actions/constants';
 import * as deviceUtils from '@suite-utils/device';
 import { TrezorDevice, AcquiredDevice, Action } from '@suite-types';
 
 type State = TrezorDevice[];
 const initialState: State = [];
+
+// Use the negated form as it better fits the call sites.
+// Export to be testeable.
+// TODO: remove `features.pin_protection` check once fixed in connect.
+/** Returns true if device with given Features is not locked. */
+export const isUnlocked = (features: Features): boolean =>
+    features.pin_protection && typeof features.unlocked === 'boolean'
+        ? features.unlocked
+        : // Older FW (<2.3.2) which doesn't have `unlocked` feature also doesn't have auto-lock and is always unlocked.
+          true;
 
 /**
  * Local utility: set updated fields for device
@@ -48,12 +58,6 @@ const connectDevice = (draft: State, device: Device) => {
     }
 
     const { features } = device;
-    // older FW (< 2.3.2) doesn't have `unlocked` field in Features ALSO doesn't have auto-lock, so it's always true
-    const unlocked =
-        // todo: remove features.pin_protection once fixed in connect
-        features.pin_protection && typeof features.unlocked === 'boolean'
-            ? features.unlocked
-            : true;
     // find affected devices with current "device_id" (acquired only)
     const affectedDevices = draft.filter(d => d.features && d.id === device.id) as AcquiredDevice[];
     // find unacquired device with current "path" (unacquired device will become acquired)
@@ -72,7 +76,7 @@ const connectDevice = (draft: State, device: Device) => {
     // prepare new device
     const newDevice: TrezorDevice = {
         ...device,
-        useEmptyPassphrase: unlocked && !features.passphrase_protection,
+        useEmptyPassphrase: isUnlocked(device.features) && !features.passphrase_protection,
         remember: false,
         connected: true,
         available: true,
@@ -89,7 +93,7 @@ const connectDevice = (draft: State, device: Device) => {
     if (affectedDevices.length > 0) {
         const changedDevices = affectedDevices.map(d => {
             // change availability according to "passphrase_protection" field
-            if (d.instance && unlocked && !features.passphrase_protection) {
+            if (d.instance && isUnlocked(device.features) && !features.passphrase_protection) {
                 return merge(d, { ...device, connected: true, available: false });
             }
             return merge(d, { ...device, connected: true, available: true });
@@ -142,13 +146,11 @@ const changeDevice = (
         // merge incoming device with State
         const changedDevices = affectedDevices.map(d => {
             // change availability according to "passphrase_protection" field
-            // older FW (< 2.3.2) doesn't have `unlocked` field in Features ALSO doesn't have auto-lock, so it's always true
-            const unlocked =
-                // todo: remove features.pin_protection once fixed in connect
-                device.features.pin_protection && typeof device.features.unlocked === 'boolean'
-                    ? device.features.unlocked
-                    : true;
-            if (d.instance && unlocked && !device.features.passphrase_protection) {
+            if (
+                d.instance &&
+                isUnlocked(device.features) &&
+                !device.features.passphrase_protection
+            ) {
                 return merge(d, { ...device, ...extended, available: !d.state });
             }
             return merge(d, { ...device, ...extended, available: true });

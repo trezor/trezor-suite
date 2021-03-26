@@ -1,8 +1,28 @@
-import deviceReducer from '@suite-reducers/deviceReducer';
+import deviceReducer, { isUnlocked } from '@suite-reducers/deviceReducer';
+
 import { Action } from '@suite-types';
+import { getDeviceFeatures } from '@suite/support/tests/setupJest';
 import fixtures from '../__fixtures__/deviceReducer';
 
 type State = ReturnType<typeof deviceReducer>;
+
+describe('isUnlocked', () => {
+    it('missing or false pin_protection signifies unlocked device', () => {
+        expect(isUnlocked(getDeviceFeatures({ pin_protection: undefined }))).toBe(true);
+        expect(isUnlocked(getDeviceFeatures({ pin_protection: false }))).toBe(true);
+    });
+    it('when unlocked is present it is used', () => {
+        expect(isUnlocked(getDeviceFeatures({ unlocked: true, pin_protection: true }))).toBe(true);
+        expect(isUnlocked(getDeviceFeatures({ unlocked: false, pin_protection: true }))).toBe(
+            false,
+        );
+    });
+    it('missing unlocked signifies unlocked device', () => {
+        expect(isUnlocked(getDeviceFeatures({ unlocked: undefined, pin_protection: true }))).toBe(
+            true,
+        );
+    });
+});
 
 describe('DEVICE.CONNECT', () => {
     fixtures.connect.forEach(f => {
