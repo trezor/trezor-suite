@@ -4,7 +4,13 @@ import { Switch, Box, Icon, useTheme, variables } from '@trezor/components';
 import * as accountUtils from '@wallet-utils/accountUtils';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as discoveryActions from '@wallet-actions/discoveryActions';
-import { FormattedNumber, WalletLabeling, Translation, MetadataLabeling } from '@suite-components';
+import {
+    FormattedNumber,
+    WalletLabeling,
+    Translation,
+    MetadataLabeling,
+    HiddenPlaceholder,
+} from '@suite-components';
 import { useAnalytics, useSelector, useActions } from '@suite-hooks';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
 
@@ -148,10 +154,12 @@ const WalletInstance = ({
                         values={{
                             accountsCount,
                             fiatValue: (
-                                <FormattedNumber
-                                    value={instanceBalance.toString()}
-                                    currency={localCurrency}
-                                />
+                                <HiddenPlaceholder>
+                                    <FormattedNumber
+                                        value={instanceBalance.toString()}
+                                        currency={localCurrency}
+                                    />
+                                </HiddenPlaceholder>
                             ),
                         }}
                     />
