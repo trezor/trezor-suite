@@ -8,6 +8,7 @@ import { Account } from '@wallet-types';
 export const getAmountLimits = (quotes: ExchangeTrade[]): AmountLimits | undefined => {
     let min: number | undefined;
     let max: number | undefined;
+    let currency = '';
     // eslint-disable-next-line no-restricted-syntax
     for (const quote of quotes) {
         let noError = true;
@@ -24,9 +25,12 @@ export const getAmountLimits = (quotes: ExchangeTrade[]): AmountLimits | undefin
         if (!quote.error && noError) {
             return;
         }
+        if (!currency && quote.send) {
+            currency = quote.send;
+        }
     }
     if (min || max) {
-        return { currency: quotes[0].send || '', min, max };
+        return { currency, min, max };
     }
 };
 

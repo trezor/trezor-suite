@@ -1,13 +1,8 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable global-require */
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import coinmarketReducer from '@wallet-reducers/coinmarketReducer';
+import coinmarketReducer, { ComposedTransactionInfo } from '@wallet-reducers/coinmarketReducer';
 import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
 import * as coinmarketCommonActions from '../coinmarketCommonActions';
-import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
-import { ComposeTransactionData, ReviewTransactionData } from '@wallet-types/transaction';
-import { COMPOSE_TRANSACTION_FIXTURES } from '../__fixtures__/coinmarketCommonActions/compose';
 import { DEFAULT_STORE } from '../__fixtures__/coinmarketCommonActions/store';
 import { VERIFY_ADDRESS_FIXTURES } from '../__fixtures__/coinmarketCommonActions/verifyAddress';
 import transactionReducer from '@wallet-reducers/transactionReducer';
@@ -131,50 +126,12 @@ describe('Coinmarket Common Actions', () => {
         });
     });
 
-    COMPOSE_TRANSACTION_FIXTURES.forEach(f => {
-        it(f.description, async () => {
-            const store = initStore(getInitialState(f.initialState));
-            require('trezor-connect').setTestFixtures(f.connect);
-
-            const result = await store.dispatch(
-                coinmarketCommonActions.composeTransaction(f.params.data as ComposeTransactionData),
-            );
-            expect(result).toEqual(f.result.value);
-            if (f.result && f.result.actions) {
-                expect(store.getActions()).toMatchObject(f.result.actions);
-            }
-        });
-    });
-
     it('saveComposedTransaction', () => {
         const store = initStore(getInitialState());
 
-        const composed: PrecomposedTransactionFinal = {
-            bytes: 1,
-            fee: '1234',
-            feePerByte: '13',
-            type: 'final',
-            transaction: {
-                inputs: [],
-                outputs: [],
-            },
-            totalSpent: '3333',
-            max: undefined,
-        };
-
-        store.dispatch(coinmarketCommonActions.saveComposedTransaction(composed));
-        expect(store.getState().wallet.coinmarket.transaction.composed).toEqual(composed);
-    });
-
-    it('saveComposedTransaction', () => {
-        const store = initStore(getInitialState());
-
-        const review: ReviewTransactionData = {
-            signedTx: {
-                coin: 'btc',
-                tx: '12211212',
-            },
-            transactionInfo: {
+        const info: ComposedTransactionInfo = {
+            selectedFee: 'normal',
+            composed: {
                 bytes: 1,
                 fee: '1234',
                 feePerByte: '13',
@@ -188,7 +145,7 @@ describe('Coinmarket Common Actions', () => {
             },
         };
 
-        store.dispatch(coinmarketCommonActions.saveTransactionReview(review));
-        expect(store.getState().wallet.coinmarket.transaction.reviewData).toEqual(review);
+        store.dispatch(coinmarketCommonActions.saveComposedTransactionInfo(info));
+        expect(store.getState().wallet.coinmarket.composedTransactionInfo).toEqual(info);
     });
 });

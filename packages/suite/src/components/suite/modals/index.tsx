@@ -27,7 +27,6 @@ import ConfirmAddress from './confirm/Address';
 import ConfirmXpub from './confirm/Xpub';
 import ConfirmNoBackup from './confirm/NoBackup';
 import ReviewTransaction from './ReviewTransaction';
-import CoinmarketReviewTransaction from './CoinmarketReviewTransaction';
 import ImportTransaction from './ImportTransaction';
 import ConfirmUnverifiedAddress from './confirm/UnverifiedAddress';
 import AddAccount from './AddAccount';
@@ -60,9 +59,8 @@ type Props = ReturnType<typeof mapStateToProps> &
 
 // Modals requested byt Device from `trezor-connect`
 const getDeviceContextModal = (props: Props) => {
-    const { modal, device, router } = props;
+    const { modal, device } = props;
     if (modal.context !== MODAL.CONTEXT_DEVICE || !device) return null;
-    const isCoinmarketOffers = router.route?.name.startsWith('wallet-coinmarket');
 
     switch (modal.windowType) {
         // T1 firmware
@@ -90,10 +88,6 @@ const getDeviceContextModal = (props: Props) => {
             return <PassphraseOnDevice device={device} />;
         case 'ButtonRequest_ConfirmOutput':
         case 'ButtonRequest_SignTx': {
-            if (isCoinmarketOffers) {
-                return <CoinmarketReviewTransaction type="sign-transaction" />;
-            }
-
             return <ReviewTransaction type="sign-transaction" />;
         }
         case 'ButtonRequest_FirmwareCheck':
@@ -183,8 +177,6 @@ const getUserContextModal = (props: Props) => {
             return <PassphraseDuplicate device={payload.device} duplicate={payload.duplicate} />;
         case 'review-transaction':
             return <ReviewTransaction {...payload} />;
-        case 'coinmarket-review-transaction':
-            return <CoinmarketReviewTransaction {...payload} />;
         case 'coinmarket-leave-spend':
             return <CoinmarketLeaveSpend {...payload} onCancel={modalActions.onCancel} />;
         case 'coinmarket-buy-terms':

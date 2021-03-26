@@ -5,7 +5,12 @@ import { FeeLevel } from 'trezor-connect';
 import { ExchangeTrade, ExchangeTradeQuoteRequest, ExchangeCoinInfo } from 'invity-api';
 import { CoinmarketExchangeAction, ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
 import { TypedValidationRules } from './form';
-import { FeeInfo, PrecomposedTransactionFinal } from '@wallet-types/sendForm';
+import { FeeInfo, FormState, PrecomposedLevels } from '@wallet-types/sendForm';
+
+export const CRYPTO_INPUT = 'outputs[0].amount';
+export const CRYPTO_TOKEN = 'outputs[0].token';
+export const FIAT_INPUT = 'outputs[0].fiat';
+export const FIAT_CURRENCY = 'outputs[0].currency';
 
 export type Option = { value: string; label: string };
 export type defaultCountryOption = { value: string; label?: string };
@@ -24,16 +29,9 @@ export interface Props extends ComponentProps {
     selectedAccount: Extract<ComponentProps['selectedAccount'], { status: 'loaded' }>;
 }
 
-export type FormState = {
-    sendCryptoInput?: string;
-    sendCryptoSelect: Option;
-    fiatInput?: string;
-    fiatSelect?: Option;
+export type ExchangeFormState = FormState & {
     receiveCryptoSelect: Option;
-    selectedFee: FeeLevel['label'];
-    feePerUnit: string;
-    feeLimit?: string;
-    estimatedFeeLimit?: string;
+    sendCryptoSelect: Option;
 };
 
 export interface AmountLimits {
@@ -42,29 +40,16 @@ export interface AmountLimits {
     max?: number;
 }
 
-export interface ComposeData {
-    setMax?: boolean;
-    address?: string;
-    fillValue?: boolean;
-    amount?: string;
-    feeLevelLabel?: FeeLevel['label'];
-    feePerUnit?: FeeLevel['feePerUnit'];
-    feeLimit?: FeeLevel['feeLimit'];
-    token?: string;
-}
-
-export type ExchangeFormContextValues = Omit<UseFormMethods<FormState>, 'register'> & {
+export type ExchangeFormContextValues = Omit<UseFormMethods<ExchangeFormState>, 'register'> & {
     register: (rules?: TypedValidationRules) => (ref: any) => void;
     onSubmit: () => void;
     account: Account;
     isComposing: boolean;
-    isMax: boolean;
     changeFeeLevel: (level: FeeLevel['label']) => void;
     exchangeInfo?: ExchangeInfo;
     exchangeCoinInfo?: ExchangeCoinInfo[];
     localCurrencyOption: { label: string; value: string };
-    setMax: (isMax: boolean) => void;
-    compose: (data: ComposeData) => void;
+    composeRequest: (field?: string) => void;
     updateFiatCurrency: (selectedCurrency: { value: string; label: string }) => void;
     updateSendCryptoValue: (fiatValue: string, decimals: number) => void;
     saveQuoteRequest: (request: ExchangeTradeQuoteRequest) => CoinmarketExchangeAction;
@@ -78,9 +63,7 @@ export type ExchangeFormContextValues = Omit<UseFormMethods<FormState>, 'registe
         date: string,
     ) => CoinmarketExchangeAction;
     amountLimits?: AmountLimits;
-    transactionInfo: PrecomposedTransactionFinal | null;
-    token: string | undefined;
-    setToken: (token: string | undefined) => void;
+    composedLevels?: PrecomposedLevels;
     fiatRates?: CoinFiatRates;
     setAmountLimits: (limits?: AmountLimits) => void;
     quotesRequest: AppState['wallet']['coinmarket']['exchange']['quotesRequest'];
@@ -89,5 +72,4 @@ export type ExchangeFormContextValues = Omit<UseFormMethods<FormState>, 'registe
     noProviders: boolean;
     network: Network;
     feeInfo: FeeInfo;
-    setIsComposing: (isComposing: boolean) => void;
 };

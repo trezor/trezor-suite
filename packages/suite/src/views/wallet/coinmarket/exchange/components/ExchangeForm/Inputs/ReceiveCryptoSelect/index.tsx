@@ -8,6 +8,8 @@ import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExc
 import { Translation } from '@suite-components';
 import { Account } from '@wallet-types';
 import invityAPI from '@suite-services/invityAPI';
+import { CRYPTO_TOKEN } from '@wallet-types/coinmarketExchangeForm';
+import { symbolToInvityApiSymbol } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -68,7 +70,7 @@ const buildOptions = (
         options: [],
     };
 
-    const symbolToFilter = token || account.symbol;
+    const symbolToFilter = symbolToInvityApiSymbol(token || account.symbol);
 
     const filteredExchangeCoins = exchangeCoinInfo.filter(
         coin => coin.ticker.toLowerCase() !== symbolToFilter,
@@ -112,7 +114,7 @@ const ReceiveCryptoSelect = () => {
         exchangeInfo,
         exchangeCoinInfo,
         account,
-        token,
+        getValues,
     } = useCoinmarketExchangeFormContext();
 
     const customSearch = (
@@ -127,6 +129,9 @@ const ReceiveCryptoSelect = () => {
         }
         return false;
     };
+
+    const tokenAddress = getValues(CRYPTO_TOKEN);
+    const tokenData = account.tokens?.find(t => t.address === tokenAddress);
 
     return (
         <Wrapper>
@@ -144,7 +149,12 @@ const ReceiveCryptoSelect = () => {
                             value={value}
                             isClearable={false}
                             filterOption={customSearch}
-                            options={buildOptions(account, exchangeCoinInfo, exchangeInfo, token)}
+                            options={buildOptions(
+                                account,
+                                exchangeCoinInfo,
+                                exchangeInfo,
+                                tokenData?.symbol,
+                            )}
                             minWidth="70px"
                             noTopLabel
                             formatOptionLabel={(option: any) => {

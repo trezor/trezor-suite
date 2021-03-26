@@ -13,8 +13,9 @@ export const buildOption = (currency: string) => {
 
 export const invityApiSymbolToSymbol = (symbol?: string) => {
     if (!symbol) return 'UNKNOWN';
-    const result = suiteToInvitySymbols.find(s => s.invitySymbol === symbol.toLowerCase());
-    return result ? result.suiteSymbol : symbol;
+    const lowercaseSymbol = symbol.toLowerCase();
+    const result = suiteToInvitySymbols.find(s => s.invitySymbol === lowercaseSymbol);
+    return result ? result.suiteSymbol : lowercaseSymbol;
 };
 
 export const symbolToInvityApiSymbol = (symbol?: string) => {

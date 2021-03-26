@@ -4,6 +4,8 @@ import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 import { getSendCryptoOptions, formatLabel } from '@wallet-utils/coinmarket/exchangeUtils';
+import { CRYPTO_INPUT, FIAT_INPUT, CRYPTO_TOKEN } from '@wallet-types/coinmarketExchangeForm';
+import { invityApiSymbolToSymbol } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
 
 const Option = styled.div`
     display: flex;
@@ -19,19 +21,18 @@ const SendCryptoSelect = () => {
         control,
         setAmountLimits,
         account,
-        setMax,
         setValue,
         exchangeInfo,
-        setToken,
-        compose,
+        composeRequest,
     } = useCoinmarketExchangeFormContext();
-    const sendCryptoSelect = 'sendCryptoSelect';
-    const uppercaseSymbol = account.symbol.toUpperCase();
+
+    const { symbol, tokens } = account;
+    const uppercaseSymbol = symbol.toUpperCase();
 
     return (
         <Controller
             control={control}
-            name={sendCryptoSelect}
+            name="sendCryptoSelect"
             defaultValue={{
                 value: uppercaseSymbol,
                 label: formatLabel(uppercaseSymbol),
@@ -39,24 +40,26 @@ const SendCryptoSelect = () => {
             render={({ onChange, value }) => {
                 return (
                     <Select
-                        onChange={async (selected: any) => {
-                            setMax(false);
+                        onChange={(selected: any) => {
+                            setValue('setMaxOutputId', undefined);
                             onChange(selected);
                             setAmountLimits(undefined);
-                            setValue('sendCryptoInput', '');
-                            setValue('fiatInput', '');
-                            const lowerCaseToken = selected.value.toLowerCase();
-                            if (
-                                lowerCaseToken === 'eth' ||
-                                lowerCaseToken === 'trop' ||
-                                lowerCaseToken === 'etc'
-                            ) {
-                                setToken(undefined);
-                                await compose({ token: undefined });
+                            setValue(CRYPTO_INPUT, '');
+                            setValue(FIAT_INPUT, '');
+                            const token = selected.value;
+                            if (token === 'ETH' || token === 'TROP' || token === 'ETC') {
+                                setValue(CRYPTO_TOKEN, undefined);
+                                // set own account for non ERC20 transaction
+                                setValue('outputs[0].address', account.descriptor);
                             } else {
-                                setToken(lowerCaseToken);
-                                await compose({ token: lowerCaseToken });
+                                // set the address of the token to the output
+                                const symbol = invityApiSymbolToSymbol(token).toLowerCase();
+                                const tokenData = tokens?.find(t => t.symbol === symbol);
+                                setValue(CRYPTO_TOKEN, tokenData?.address);
+                                // set token address for ERC20 transaction to estimate the fees more precisely
+                                setValue('outputs[0].address', tokenData?.address);
                             }
+                            composeRequest();
                         }}
                         formatOptionLabel={(option: any) => {
                             return (
