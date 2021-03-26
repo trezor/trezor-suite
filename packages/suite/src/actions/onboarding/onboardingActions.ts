@@ -114,15 +114,6 @@ const enableOnboardingReducer = (payload: boolean): OnboardingAction => ({
     payload,
 });
 
-const callActionAndGoToNextStep = (action: any, stepId?: AnyStepId) => async (
-    dispatch: Dispatch,
-) => {
-    const result = await action();
-    if (result.success) {
-        dispatch(goToNextStep(stepId));
-    }
-};
-
 export {
     enableOnboardingReducer,
     goToNextStep,
@@ -133,5 +124,4 @@ export {
     addPath,
     removePath,
     resetOnboarding,
-    callActionAndGoToNextStep,
 };

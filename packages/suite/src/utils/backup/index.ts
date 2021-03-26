@@ -12,7 +12,7 @@ export const canStart = (userConfirmed: ConfirmKey[], locks: Lock[]) =>
 /**
  * Utility function used to disable exit button after successful backup
  */
-export const canContinue = (userConfirmed: ConfirmKey[]) =>
+export const canContinue = (userConfirmed: ConfirmKey[], locks?: Lock[]) =>
     (['wrote-seed-properly', 'made-no-digital-copy', 'will-hide-seed'] as const).every(e =>
         userConfirmed.includes(e),
-    );
+    ) && !locks?.includes(SUITE.LOCK_TYPE.DEVICE);
