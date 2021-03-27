@@ -2070,7 +2070,7 @@ const definedMessages = defineMessages({
         id: 'TR_BUY_NETWORK',
     },
     TR_BECH32_BANNER_TITLE: {
-        defaultMessage: 'New BTC default Accounts natively in Trezor Suite!',
+        defaultMessage: 'New default Accounts natively in Trezor Suite!',
         id: 'TR_BECH32_BANNER_TITLE',
     },
     TR_BECH32_BANNER_POINT_1: {
@@ -2801,7 +2801,7 @@ const definedMessages = defineMessages({
     TR_ACCOUNT_DETAILS_TYPE_BECH32: {
         id: 'TR_ACCOUNT_DETAILS_TYPE_BECH32',
         defaultMessage:
-            'Bech32 uses the most modern addresses for smallest transaction fees. Be aware that it may not be compatible with old bitcoin services.',
+            'Bech32 uses the most modern addresses for smallest transaction fees. Be aware that it may not be compatible with old services.',
     },
     TR_ACCOUNT_DETAILS_TYPE_P2SH: {
         id: 'TR_ACCOUNT_DETAILS_TYPE_P2SH',
