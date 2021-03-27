@@ -12,7 +12,7 @@ import {
     WIKI_XPUB_URL,
     WIKI_BECH32_URL,
     WIKI_P2SH_URL,
-    WIKI_P2PHK_URL,
+    WIKI_P2PKH_URL,
 } from '@suite-constants/urls';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
 
@@ -55,7 +55,7 @@ const Details = () => {
     const bip43 = getBip43Shortcut(account.path);
     let accountTypeDesc: ExtendedMessageDescriptor['id'] = 'TR_ACCOUNT_DETAILS_TYPE_P2PKH';
     let accountTypeShortcut: ExtendedMessageDescriptor['id'] = 'TR_ACCOUNT_TYPE_P2PKH';
-    let accountTypeUrl = WIKI_P2PHK_URL;
+    let accountTypeUrl = WIKI_P2PKH_URL;
     if (bip43 === 'bech32') {
         accountTypeDesc = 'TR_ACCOUNT_DETAILS_TYPE_BECH32';
         accountTypeShortcut = 'TR_ACCOUNT_TYPE_BECH32';

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { P } from '@trezor/components';
 import { Network } from '@wallet-types';
 import { Translation, ExternalLink } from '@suite-components';
-import { WIKI_BECH32_URL, WIKI_P2SH_URL, WIKI_P2PHK_URL } from '@suite-constants/urls';
+import { WIKI_BECH32_URL, WIKI_P2SH_URL, WIKI_P2PKH_URL } from '@suite-constants/urls';
 import { getBip43Shortcut } from '@wallet-utils/accountUtils';
 import { ExtendedMessageDescriptor } from '@suite-types';
 
@@ -21,7 +21,7 @@ const NetworkInternal = ({ network, accountTypes }: Props) => {
     if (!accountTypes || accountTypes.length <= 1) return null;
     const bip43 = getBip43Shortcut(network.bip44);
     let accountTypeDesc: ExtendedMessageDescriptor['id'] = 'TR_ACCOUNT_DETAILS_TYPE_P2PKH';
-    let accountTypeUrl = WIKI_P2PHK_URL;
+    let accountTypeUrl = WIKI_P2PKH_URL;
     if (bip43 === 'bech32') {
         accountTypeDesc = 'TR_ACCOUNT_DETAILS_TYPE_BECH32';
         accountTypeUrl = WIKI_BECH32_URL;
