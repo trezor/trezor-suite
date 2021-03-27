@@ -415,9 +415,9 @@ export const getBip43Shortcut = [
         result: 'p2sh',
     },
     {
-        description: 'p2phk',
+        description: 'p2pkh',
         path: "m/44'/0'/0'",
-        result: 'p2phk',
+        result: 'p2pkh',
     },
     {
         description: 'unknown',
