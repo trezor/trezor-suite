@@ -38,7 +38,7 @@ export const isAddressDeprecated = (address: string, symbol: Account['symbol']) 
 };
 
 export const isBech32AddressUppercase = (address: string) => {
-    return /^bc1|tb1/.test(address.toLowerCase()) && /[A-Z]/.test(address);
+    return /^bc1|tb1|ltc1|tltc1/.test(address.toLowerCase()) && /[A-Z]/.test(address);
 };
 
 export const isDecimalsValid = (value: string, decimals: number) => {

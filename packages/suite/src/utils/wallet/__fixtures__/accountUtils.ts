@@ -420,6 +420,21 @@ export const getBip43Shortcut = [
         result: 'p2pkh',
     },
     {
+        description: 'litecoin p2wpkh',
+        path: "m/84'/2'/0'",
+        result: 'bech32',
+    },
+    {
+        description: 'litecoin p2wpkh-nested-in-p2sh',
+        path: "m/49'/2'/0'",
+        result: 'p2sh',
+    },
+    {
+        description: 'litecoin p2pkh',
+        path: "m/44'/2'/0'",
+        result: 'p2pkh',
+    },
+    {
         description: 'unknown',
         path: 'm/',
         result: 'unknown',

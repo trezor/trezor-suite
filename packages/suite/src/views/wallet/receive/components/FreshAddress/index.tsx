@@ -65,14 +65,14 @@ const Overlay = styled.div`
     );
 `;
 
-const TooltipLabel = ({ symbol, isBitcoin }: { symbol: string; isBitcoin: boolean }) => {
+const TooltipLabel = ({ symbol, isBitcoin, accountType }: { symbol: string; isBitcoin: boolean; accountType: string }) => {
     const addressLabel = (
         <AddressLabel>
             <Translation id={isBitcoin ? 'RECEIVE_ADDRESS_FRESH' : 'RECEIVE_ADDRESS'} />
         </AddressLabel>
     );
 
-    if (symbol === 'ltc') {
+    if (symbol === 'ltc' && accountType === 'segwit') {
         // additional tooltip with LTC addresses explanation
         return (
             <QuestionTooltip
@@ -144,7 +144,7 @@ const FreshAddress = ({
     return (
         <StyledCard>
             <AddressContainer>
-                <TooltipLabel isBitcoin={isBitcoin} symbol={account.symbol} />
+                <TooltipLabel isBitcoin={isBitcoin} symbol={account.symbol} accountType={account.accountType} />
                 <FreshAddressWrapper>
                     <Overlay />
                     <StyledFreshAddress>{addressValue}</StyledFreshAddress>
