@@ -530,6 +530,33 @@ const changed = [
         ],
         result: [],
     },
+    {
+        description: `features are not overridden when device is locked`,
+        initialState: [
+            getSuiteDevice(
+                // Reducer doesn't try to merge non-connected devices.
+                // Set `connected` to `true` to overcome that.
+                { connected: true },
+                { safety_checks: 'Strict', unlocked: true },
+            ),
+        ],
+        actions: [
+            {
+                type: DEVICE.CHANGED,
+                payload: getConnectDevice(undefined, {
+                    unlocked: false,
+                    safety_checks: null,
+                }),
+            },
+        ],
+        result: [
+            getSuiteDevice(
+                // Account for the reducer marking device as available when it's locked (or isn't passphrase protected).
+                { connected: true, available: true },
+                { safety_checks: 'Strict', unlocked: false },
+            ),
+        ],
+    },
 ];
 
 const updateTimestamp = [
