@@ -18,5 +18,6 @@
   - [Analytics](misc/analytics.md)
   - [Desktop Logger](misc/desktop_logger.md)
   - [Feature Flags](misc/feature_flags.md)
+  - [Localization](misc/localization.md)
   - [Review Process](misc/review.md)
   - [Notes](misc/notes.md)
