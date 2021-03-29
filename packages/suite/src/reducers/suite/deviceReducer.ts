@@ -27,6 +27,16 @@ const merge = (device: AcquiredDevice, upcoming: Partial<AcquiredDevice>): Trezo
     ...upcoming,
     state: device.state,
     instance: device.instance,
+    features: {
+        // Don't override features if upcoming device is locked.
+        // In such case the features are redacted i.e. all fields are `null`
+        // but we still want to remember what the features are...
+        ...(upcoming.features && isUnlocked(upcoming.features)
+            ? upcoming.features
+            : device.features),
+        // ...except for `unlocked` which should reflect the actual state of the device.
+        unlocked: upcoming.features?.unlocked,
+    },
 });
 
 /**
