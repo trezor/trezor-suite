@@ -1,31 +1,16 @@
 import TrezorConnect, { UI, ButtonRequestMessage } from 'trezor-connect';
-import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import { formatNetworkAmount, formatAmount } from '@wallet-utils/accountUtils';
-import BigNumber from 'bignumber.js';
-import {
-    ComposeTransactionData,
-    ReviewTransactionData,
-    SignTransactionData,
-    SignedTx,
-} from '@wallet-types/transaction';
 import { GetState, Dispatch } from '@suite-types';
-import * as accountActions from '@wallet-actions/accountActions';
 import * as notificationActions from '@suite-actions/notificationActions';
-import * as transactionBitcoinActions from './coinmarketTransactionBitcoinActions';
-import * as transactionEthereumActions from './coinmarketTransactionEthereumActions';
-import * as transactionRippleActions from './coinmarketTransactionRippleActions';
 import * as modalActions from '@suite-actions/modalActions';
-import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 import { COINMARKET_BUY, COINMARKET_EXCHANGE, COINMARKET_COMMON } from '../constants';
 import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { Account } from '@wallet-types';
+import { ComposedTransactionInfo } from '@wallet-reducers/coinmarketReducer';
 
-export type CoinmarketCommonAction =
-    | { type: typeof COINMARKET_COMMON.SAVE_TRANSACTION_REVIEW; reviewData: ReviewTransactionData }
-    | {
-          type: typeof COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION;
-          composedTransaction: PrecomposedTransactionFinal;
-      };
+export type CoinmarketCommonAction = {
+    type: typeof COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION_INFO;
+    info: ComposedTransactionInfo;
+};
 
 export const verifyAddress = (account: Account, inExchange = false) => async (
     dispatch: Dispatch,
@@ -117,130 +102,9 @@ export const verifyAddress = (account: Account, inExchange = false) => async (
     }
 };
 
-export const saveComposedTransaction = (
-    composedTransaction: PrecomposedTransactionFinal,
+export const saveComposedTransactionInfo = (
+    info: ComposedTransactionInfo,
 ): CoinmarketCommonAction => ({
-    type: COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION,
-    composedTransaction,
+    type: COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION_INFO,
+    info,
 });
-
-export const saveTransactionReview = (
-    reviewData: ReviewTransactionData,
-): CoinmarketCommonAction => ({
-    type: COINMARKET_COMMON.SAVE_TRANSACTION_REVIEW,
-    reviewData,
-});
-
-export const composeTransaction = (composeTransactionData: ComposeTransactionData) => (
-    dispatch: Dispatch,
-) => {
-    const {
-        account: { networkType },
-    } = composeTransactionData;
-
-    if (networkType === 'bitcoin') {
-        return dispatch(transactionBitcoinActions.composeTransaction(composeTransactionData));
-    }
-
-    if (networkType === 'ethereum') {
-        return dispatch(transactionEthereumActions.composeTransaction(composeTransactionData));
-    }
-
-    if (networkType === 'ripple') {
-        return dispatch(transactionRippleActions.composeTransaction(composeTransactionData));
-    }
-};
-
-export const signTransaction = (signTransactionData: SignTransactionData) => async (
-    dispatch: Dispatch,
-) => {
-    const { account } = signTransactionData;
-
-    if (!account) return;
-
-    let reviewData: ReviewTransactionData | undefined;
-
-    if (account.networkType === 'bitcoin') {
-        reviewData = await dispatch(transactionBitcoinActions.signTransaction(signTransactionData));
-    }
-
-    if (account.networkType === 'ethereum') {
-        reviewData = await dispatch(
-            transactionEthereumActions.signTransaction(signTransactionData),
-        );
-    }
-
-    if (account.networkType === 'ripple') {
-        reviewData = await dispatch(transactionRippleActions.signTransaction(signTransactionData));
-    }
-
-    if (!reviewData?.signedTx?.tx) return;
-
-    await dispatch(coinmarketCommonActions.saveTransactionReview(reviewData));
-
-    const decision = await dispatch(
-        modalActions.openDeferredModal({ type: 'coinmarket-review-transaction' }),
-    );
-
-    if (decision && reviewData.transactionInfo) {
-        return dispatch(coinmarketCommonActions.pushTransaction(reviewData));
-    }
-};
-
-export const cancelSignTx = (signedTx: SignedTx) => (dispatch: Dispatch) => {
-    if (!signedTx) {
-        TrezorConnect.cancel('tx-cancelled');
-        return;
-    }
-    // otherwise just close modal
-    dispatch(modalActions.onCancel());
-};
-
-export const pushTransaction = (reviewData: ReviewTransactionData) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { account } = getState().wallet.selectedAccount;
-    const { device } = getState().suite;
-    const { signedTx, transactionInfo } = reviewData;
-
-    if (!signedTx || !transactionInfo || !account) return false;
-
-    const sentTx = await TrezorConnect.pushTransaction(signedTx);
-
-    // close modal regardless result
-    dispatch(cancelSignTx(signedTx));
-
-    const { token } = transactionInfo;
-    const spentWithoutFee = !token
-        ? new BigNumber(transactionInfo.totalSpent).minus(transactionInfo.fee).toString()
-        : '0';
-    // get total amount without fee OR token amount
-    const formattedAmount = token
-        ? `${formatAmount(
-              transactionInfo.totalSpent,
-              token.decimals,
-          )} ${token.symbol!.toUpperCase()}`
-        : formatNetworkAmount(spentWithoutFee, account.symbol, true);
-
-    if (sentTx.success) {
-        dispatch(
-            notificationActions.addToast({
-                type: 'tx-sent',
-                formattedAmount,
-                device,
-                descriptor: account.descriptor,
-                symbol: account.symbol,
-                txid: sentTx.payload.txid,
-            }),
-        );
-
-        dispatch(accountActions.fetchAndUpdateAccount(account));
-    } else {
-        dispatch(
-            notificationActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),
-        );
-    }
-
-    return sentTx.success;
-};

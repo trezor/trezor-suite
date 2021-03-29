@@ -69,6 +69,8 @@ const AccountWrapper = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     display: flex;
     margin-top: 5px;
+    word-break: normal;
+    overflow-wrap: anywhere;
     & > div {
         margin: 1px 5px 0 0;
         display: block;
@@ -124,7 +126,7 @@ const LeftDetailsBottom = styled.div`
 
 const ReviewRbfLeftDetailsLineLeft = styled.div`
     display: flex;
-    margin: 0 5px 0 0;
+    margin: 0 5% 0 0;
     width: 50%;
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 
@@ -135,6 +137,8 @@ const ReviewRbfLeftDetailsLineLeft = styled.div`
 `;
 
 const ReviewRbfLeftDetailsLineRight = styled.div<{ color: string; uppercase?: boolean }>`
+    width: 45%;
+    text-align: left;
     color: ${props => props.color};
     font-weight: 500;
     ${({ uppercase }) =>
@@ -211,7 +215,7 @@ const Summary = ({
             </SummaryHead>
             <Separator />
             <LeftDetails>
-                {!!estimateTime && (
+                {estimateTime !== undefined && (
                     <LeftDetailsRow>
                         <ReviewRbfLeftDetailsLineLeft>
                             <Icon size={12} color={theme.TYPE_LIGHT_GREY} icon="CALENDAR" />

@@ -61,10 +61,6 @@ export type UserContextPayload =
           decision: Deferred<boolean>;
       }
     | {
-          type: 'coinmarket-review-transaction';
-          decision: Deferred<boolean>;
-      }
-    | {
           type: 'import-transaction';
           decision: Deferred<{ [key: string]: string }[]>;
       }
@@ -205,7 +201,6 @@ type DeferredModals = Extract<
         type:
             | 'qr-reader'
             | 'review-transaction'
-            | 'coinmarket-review-transaction'
             | 'import-transaction'
             | 'coinmarket-buy-terms'
             | 'coinmarket-exchange-terms';

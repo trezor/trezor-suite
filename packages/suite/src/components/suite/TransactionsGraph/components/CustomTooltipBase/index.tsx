@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Translation, FormattedDate } from '@suite-components';
+import { Translation, FormattedDate, HiddenPlaceholder } from '@suite-components';
 import { TooltipProps } from 'recharts';
 import { getDateWithTimeZone } from '@suite/utils/suite/date';
 import { CommonAggregatedHistory } from '@wallet-types/graph';
@@ -185,16 +185,20 @@ const CustomTooltipBase = (props: Props) => {
                         )}
                         <HighlightedAreaRight>
                             <Row>
-                                <Value>
-                                    <Sign color="#55d92a">+</Sign>
-                                    {props.receivedAmount}
-                                </Value>
+                                <HiddenPlaceholder>
+                                    <Value>
+                                        <Sign color="#55d92a">+</Sign>
+                                        {props.receivedAmount}
+                                    </Value>
+                                </HiddenPlaceholder>
                             </Row>
                             <Row noBottomMargin>
-                                <Value>
-                                    <Sign color="#ff3838">-</Sign>
-                                    {props.sentAmount}
-                                </Value>
+                                <HiddenPlaceholder>
+                                    <Value>
+                                        <Sign color="#ff3838">-</Sign>
+                                        {props.sentAmount}
+                                    </Value>
+                                </HiddenPlaceholder>
                             </Row>
                         </HighlightedAreaRight>
                     </Col>

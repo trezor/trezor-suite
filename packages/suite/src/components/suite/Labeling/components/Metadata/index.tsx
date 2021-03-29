@@ -14,7 +14,9 @@ import { withDropdown } from './withDropdown';
 const LabelDefaultValue = styled.div`
     width: 0;
     display: inline-block;
-    transition: all 0.6s;
+    transition: width 0.6s, visibility 0.3s, opacity 0.3s;
+    visibility: hidden;
+    opacity: 0;
 
     &::before {
         content: ': ';
@@ -75,6 +77,8 @@ const LabelContainer = styled.div`
 
         ${LabelDefaultValue} {
             width: 200px;
+            visibility: visible;
+            opacity: 1;
         }
     }
 `;

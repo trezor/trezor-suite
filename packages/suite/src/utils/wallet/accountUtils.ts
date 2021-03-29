@@ -98,7 +98,7 @@ export const getBip43Shortcut = (path: string) => {
         case `49'`:
             return 'p2sh';
         case `44'`:
-            return 'p2phk';
+            return 'p2pkh';
         default:
             return 'unknown';
     }

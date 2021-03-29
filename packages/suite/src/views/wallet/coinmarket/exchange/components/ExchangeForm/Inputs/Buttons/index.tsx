@@ -3,9 +3,9 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import { Translation } from '@suite-components';
 import styled from 'styled-components';
-import { invityApiSymbolToSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 import { formatLabel } from '@wallet-utils/coinmarket/exchangeUtils';
+import { CRYPTO_INPUT, CRYPTO_TOKEN } from '@wallet-types/coinmarketExchangeForm';
 
 const Wrapper = styled.div`
     display: flex;
@@ -43,19 +43,18 @@ const Button = styled.div`
 
 const Bottom = () => {
     const {
-        compose,
-        token,
+        composeRequest,
         account,
-        setMax,
         network,
+        getValues,
         setValue,
         updateFiatValue,
     } = useCoinmarketExchangeFormContext();
-    const formattedToken = invityApiSymbolToSymbol(token);
-    const tokenData = account.tokens?.find(t => t.symbol === formattedToken);
+    const tokenAddress = getValues(CRYPTO_TOKEN);
+    const tokenData = account.tokens?.find(t => t.address === tokenAddress);
 
     const setRatioAmount = (divisor: number) => {
-        setMax(false);
+        setValue('setMaxOutputId', undefined);
         const amount = tokenData
             ? new BigNumber(tokenData.balance || '0')
                   .dividedBy(divisor)
@@ -65,8 +64,9 @@ const Bottom = () => {
                   .dividedBy(divisor)
                   .decimalPlaces(network.decimals)
                   .toString();
-        setValue('sendCryptoInput', amount);
+        setValue(CRYPTO_INPUT, amount);
         updateFiatValue(amount);
+        composeRequest();
     };
 
     return (
@@ -76,12 +76,9 @@ const Bottom = () => {
                 <Button onClick={() => setRatioAmount(3)}>1/3</Button>
                 <Button onClick={() => setRatioAmount(4)}>1/4</Button>
                 <Button
-                    onClick={async () => {
-                        setMax(true);
-                        await compose({
-                            setMax: true,
-                            fillValue: true,
-                        });
+                    onClick={() => {
+                        setValue('setMaxOutputId', 0);
+                        composeRequest();
                     }}
                 >
                     <Translation id="TR_EXCHANGE_ALL" />

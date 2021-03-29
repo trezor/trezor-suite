@@ -4,10 +4,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## 21.4.0 [to be released 14th April 2021]
 
 ### Added
+- Timerange selector UX/UI improved, ability to pick year/month, date format aligned with Suite
 
 ### Changed
+- MacOS desktop icon updated
 
 ### Fixed
+- Discreet mode fixed in Wallet modal and chart hover tooltip
+- Long account labels in transaction review form
+- Labels incorrectly shortened in Firefox
 
 ## 21.3.1 [10th March 2021]
 

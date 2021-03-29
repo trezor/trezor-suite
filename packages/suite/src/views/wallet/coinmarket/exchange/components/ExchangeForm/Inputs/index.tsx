@@ -1,12 +1,12 @@
 import { Icon, variables, useTheme } from '@trezor/components';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { invityApiSymbolToSymbol } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 import SendCryptoInput from './SendCryptoInput';
 import FiatInput from './FiatInput';
 import ReceiveCryptoSelect from './ReceiveCryptoSelect';
 import Buttons from './Buttons';
+import { CRYPTO_INPUT, CRYPTO_TOKEN } from '@wallet-types/coinmarketExchangeForm';
 
 const Wrapper = styled.div`
     display: flex;
@@ -58,11 +58,17 @@ const Line = styled.div<{ color: string }>`
 
 const Inputs = () => {
     const theme = useTheme();
-    const { trigger, amountLimits, token, account, errors } = useCoinmarketExchangeFormContext();
-    const formattedToken = invityApiSymbolToSymbol(token);
-    const tokenData = account.tokens?.find(t => t.symbol === formattedToken);
+    const {
+        trigger,
+        amountLimits,
+        account,
+        errors,
+        getValues,
+    } = useCoinmarketExchangeFormContext();
+    const tokenAddress = getValues(CRYPTO_TOKEN);
+    const tokenData = account.tokens?.find(t => t.address === tokenAddress);
     useEffect(() => {
-        trigger(['sendCryptoInput']);
+        trigger([CRYPTO_INPUT]);
     }, [amountLimits, trigger]);
 
     return (
@@ -72,7 +78,9 @@ const Inputs = () => {
                     <SendCryptoInput />
                     <Line
                         color={
-                            errors.sendCryptoInput || errors.fiatInput
+                            errors.outputs &&
+                            errors.outputs[0] &&
+                            (errors.outputs[0].amount || errors.outputs[0].fiat)
                                 ? theme.TYPE_RED
                                 : theme.STROKE_GREY
                         }

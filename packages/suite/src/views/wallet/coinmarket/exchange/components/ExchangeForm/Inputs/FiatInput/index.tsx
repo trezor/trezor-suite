@@ -8,6 +8,7 @@ import { Translation } from '@suite-components';
 import FiatSelect from './FiatSelect';
 import BigNumber from 'bignumber.js';
 import { MAX_LENGTH } from '@suite-constants/inputs';
+import { CRYPTO_INPUT, FIAT_INPUT } from '@suite/types/wallet/coinmarketExchangeForm';
 
 const StyledInput = styled(Input)`
     border-left: 0;
@@ -23,27 +24,27 @@ const FiatInput = () => {
         errors,
         trigger,
         updateSendCryptoValue,
-        setMax,
         setValue,
     } = useCoinmarketExchangeFormContext();
-    const fiatInput = 'fiatInput';
+
+    const error = errors.outputs && errors.outputs[0] ? errors.outputs[0].fiat : undefined;
 
     return (
         <StyledInput
             onFocus={() => {
-                trigger([fiatInput]);
+                trigger([FIAT_INPUT]);
             }}
             onChange={event => {
-                setMax(false);
-                if (errors[fiatInput]) {
-                    setValue('sendCryptoInput', '');
+                setValue('setMaxOutputId', undefined);
+                if (error) {
+                    setValue(CRYPTO_INPUT, '');
                 } else {
                     updateSendCryptoValue(event.target.value, network.decimals);
-                    clearErrors(fiatInput);
+                    clearErrors(FIAT_INPUT);
                 }
             }}
-            state={errors[fiatInput] ? 'error' : undefined}
-            name={fiatInput}
+            state={error ? 'error' : undefined}
+            name={FIAT_INPUT}
             noTopLabel
             maxLength={MAX_LENGTH.AMOUNT}
             innerRef={register({
@@ -69,7 +70,7 @@ const FiatInput = () => {
                     }
                 },
             })}
-            bottomText={<InputError error={errors[fiatInput]} />}
+            bottomText={<InputError error={error} />}
             innerAddon={<FiatSelect />}
         />
     );

@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import Fees from '@wallet-components/Fees';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
-import { PrecomposedLevels } from '@wallet-types/sendForm';
 
 const StyledCard = styled.div`
     display: flex;
@@ -21,18 +20,8 @@ const ExchangeFees = () => {
         account,
         changeFeeLevel,
         feeInfo,
-        transactionInfo,
+        composedLevels,
     } = useCoinmarketExchangeFormContext();
-
-    // workaround
-    // exchange hook does not provide whole PrecomposedLevels object
-    // build it from transactionInfo
-    let composedLevels: PrecomposedLevels | undefined;
-    if (transactionInfo) {
-        const selectedFee = getValues('selectedFee');
-        composedLevels = {};
-        composedLevels[selectedFee] = transactionInfo;
-    }
 
     return (
         <StyledCard>
