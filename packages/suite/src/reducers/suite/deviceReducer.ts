@@ -9,10 +9,9 @@ const initialState: State = [];
 
 // Use the negated form as it better fits the call sites.
 // Export to be testeable.
-// TODO: remove `features.pin_protection` check once fixed in connect.
 /** Returns true if device with given Features is not locked. */
 export const isUnlocked = (features: Features): boolean =>
-    features.pin_protection && typeof features.unlocked === 'boolean'
+    typeof features.unlocked === 'boolean'
         ? features.unlocked
         : // Older FW (<2.3.2) which doesn't have `unlocked` feature also doesn't have auto-lock and is always unlocked.
           true;
