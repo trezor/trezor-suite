@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useTheme, Button, variables, Icon } from '@trezor/components';
-import { CoinmarketPaymentType, CoinmarketBuyProviderInfo } from '@wallet-components';
+import { CoinmarketPaymentType, CoinmarketProviderInfo } from '@wallet-components';
 import { QuestionTooltip, Translation } from '@suite-components';
 import { BuyTrade } from 'invity-api';
 import { useCoinmarketBuyOffersContext } from '@wallet-hooks/useCoinmarketBuyOffers';
@@ -231,7 +231,7 @@ const Quote = ({ className, quote, wantCrypto }: Props) => {
                         <Translation id="TR_BUY_PROVIDER" />
                     </Heading>
                     <Value>
-                        <CoinmarketBuyProviderInfo exchange={exchange} providers={providersInfo} />
+                        <CoinmarketProviderInfo exchange={exchange} providers={providersInfo} />
                     </Value>
                 </Column>
                 <Column>

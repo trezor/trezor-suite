@@ -21,21 +21,7 @@ import { STORAGE } from '@suite-actions/constants';
 import { Action as SuiteAction } from '@suite-types';
 import { SellInfo } from '@wallet-actions/coinmarketSellActions';
 import { FeeLevel } from 'trezor-connect';
-
-type CommonTrade = {
-    date: string;
-    key?: string;
-    account: {
-        descriptor: Account['descriptor'];
-        symbol: Account['symbol'];
-        accountType: Account['accountType'];
-        accountIndex: Account['index'];
-    };
-};
-
-export type TradeBuy = CommonTrade & { tradeType: 'buy'; data: BuyTrade };
-export type TradeExchange = CommonTrade & { tradeType: 'exchange'; data: ExchangeTrade };
-export type Trade = TradeExchange | TradeBuy;
+import { Trade } from '@wallet-types/coinmarketCommonTypes';
 
 export interface ComposedTransactionInfo {
     composed?: PrecomposedTransactionFinal;
@@ -150,8 +136,7 @@ const coinmarketReducer = (
             case COINMARKET_BUY.DISPOSE:
                 draft.buy.addressVerified = undefined;
                 break;
-            case COINMARKET_EXCHANGE.SAVE_TRADE:
-            case COINMARKET_BUY.SAVE_TRADE:
+            case COINMARKET_COMMON.SAVE_TRADE:
                 if (action.key) {
                     const trades = state.trades.filter(t => t.key !== action.key);
                     const { type, ...trade } = action;

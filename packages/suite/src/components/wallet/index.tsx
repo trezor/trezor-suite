@@ -12,11 +12,10 @@ import { CoinmarketBuyTopPanel, CoinmarketExchangeTopPanel } from './CoinmarketT
 import CoinmarketProvidedByInvity from './CoinmarketProvidedByInvity';
 import CoinmarketPaymentType from './CoinmarketPaymentType';
 import CoinmarketFooter from './CoinmarketFooter';
-import CoinmarketBuyProviderInfo from './CoinmarketBuyProviderInfo';
 import CoinmarketBuyOfferInfo from './CoinmarketBuyOfferInfo';
 import CoinmarketExchangeOfferInfo from './CoinmarketExchangeOfferInfo';
 import CoinmarketTransactionId from './CoinmarketTransactionId';
-import CoinmarketExchangeProviderInfo from './CoinmarketExchangeProviderInfo';
+import CoinmarketProviderInfo from './CoinmarketProviderInfo';
 import CoinmarketRefreshTime from './CoinmarketRefreshTime';
 
 export {
@@ -29,8 +28,7 @@ export {
     CoinmarketBuyTopPanel,
     CoinmarketExchangeTopPanel,
     CoinmarketFooter,
-    CoinmarketBuyProviderInfo,
-    CoinmarketExchangeProviderInfo,
+    CoinmarketProviderInfo,
     CoinmarketBuyOfferInfo,
     CoinmarketExchangeOfferInfo,
     CoinmarketTransactionId,

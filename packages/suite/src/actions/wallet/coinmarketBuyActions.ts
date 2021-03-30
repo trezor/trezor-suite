@@ -7,7 +7,7 @@ import {
     BuyTradeFormResponse,
 } from 'invity-api';
 import invityAPI from '@suite-services/invityAPI';
-import { COINMARKET_BUY } from './constants';
+import { COINMARKET_BUY, COINMARKET_COMMON } from './constants';
 import { GetState, Dispatch } from '@suite-types';
 import regional from '@wallet-constants/coinmarket/regional';
 import * as modalActions from '@suite-actions/modalActions';
@@ -41,7 +41,7 @@ export type CoinmarketBuyAction =
           alternativeQuotes: BuyTrade[] | undefined;
       }
     | {
-          type: typeof COINMARKET_BUY.SAVE_TRADE;
+          type: typeof COINMARKET_COMMON.SAVE_TRADE;
           date: string;
           key?: string;
           tradeType: 'buy';
@@ -111,7 +111,7 @@ export const saveTrade = (
     account: Account,
     date: string,
 ): CoinmarketBuyAction => ({
-    type: COINMARKET_BUY.SAVE_TRADE,
+    type: COINMARKET_COMMON.SAVE_TRADE,
     tradeType: 'buy',
     key: buyTrade.paymentId,
     date,

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ExchangeTrade } from 'invity-api';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { variables, CoinLogo } from '@trezor/components';
-import { CoinmarketExchangeProviderInfo, CoinmarketTransactionId } from '@wallet-components';
+import { CoinmarketProviderInfo, CoinmarketTransactionId } from '@wallet-components';
 import { Account } from '@wallet-types';
 import { AccountLabeling, Translation } from '@suite-components';
 // hitting issue https://github.com/styled-components/styled-components/issues/213 in unit test when importing directly from @suite-components
@@ -134,7 +134,7 @@ const CoinmarketExchangeOfferInfo = ({
 }: Props) => {
     const { exchange, receiveStringAmount, receive, sendStringAmount, send } = selectedQuote;
     const provider =
-        exchangeInfo?.providerInfos && exchange ? exchangeInfo?.providerInfos[exchange] : null;
+        exchangeInfo?.providerInfos && exchange ? exchangeInfo?.providerInfos[exchange] : undefined;
 
     if (!provider) return null;
 
@@ -213,7 +213,7 @@ const CoinmarketExchangeOfferInfo = ({
                         <Translation id="TR_EXCHANGE_PROVIDER" />
                     </LeftColumn>
                     <RightColumn>
-                        <CoinmarketExchangeProviderInfo
+                        <CoinmarketProviderInfo
                             exchange={exchange}
                             providers={exchangeInfo?.providerInfos}
                         />

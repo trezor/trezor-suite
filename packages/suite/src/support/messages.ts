@@ -191,6 +191,10 @@ const definedMessages = defineMessages({
             'Spend content is fully provided by our partner Bitrefill. You’ll choose your purchase on their website and finish the transaction in Trezor Suite.',
         id: 'TR_SPEND_PROVIDER_CONTENT_WINDOW',
     },
+    TR_SPEND_STATUS_FINISHED: {
+        defaultMessage: 'Finished',
+        id: 'TR_SPEND_STATUS_FINISHED',
+    },
     TR_EXCHANGE_LOADING: {
         defaultMessage: 'Loading',
         id: 'TR_EXCHANGE_LOADING',
@@ -1947,6 +1951,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Go to partner site',
         id: 'TR_SPEND_OPEN_WINDOW',
     },
+    TR_SPEND_TRANS_ID: {
+        defaultMessage: 'Trans. ID:',
+        id: 'TR_SPEND_TRANS_ID',
+    },
     TR_PACKAGING_LINK: {
         defaultMessage: 'here',
         description: 'Part of sentence TR_DID_YOU_PURCHASE. Link to support',
@@ -3513,6 +3521,10 @@ const definedMessages = defineMessages({
     TR_TRADE_EXCHANGES: {
         id: 'TR_TRADE_EXCHANGES',
         defaultMessage: 'exchanges',
+    },
+    TR_TRADE_SPENDS: {
+        id: 'TR_TRADE_SPENDS',
+        defaultMessage: 'spends',
     },
     TR_PAYMENT_METHOD_CREDITCARD: {
         id: 'TR_PAYMENT_METHOD_CREDITCARD',

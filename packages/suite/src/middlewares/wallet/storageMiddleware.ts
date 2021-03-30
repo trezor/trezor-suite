@@ -6,9 +6,8 @@ import {
     TRANSACTION,
     FIAT_RATES,
     GRAPH,
-    COINMARKET_BUY,
     SEND,
-    COINMARKET_EXCHANGE,
+    COINMARKET_COMMON,
 } from '@wallet-actions/constants';
 import * as storageActions from '@suite-actions/storageActions';
 import * as accountUtils from '@wallet-utils/accountUtils';
@@ -157,9 +156,8 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         case SEND.REMOVE_DRAFT:
             storageActions.removeDraft(action.key);
             break;
-
-        case COINMARKET_BUY.SAVE_TRADE:
-            storageActions.saveBuyTrade(
+        case COINMARKET_COMMON.SAVE_TRADE:
+            storageActions.saveCoinmarketTrade(
                 action.data,
                 {
                     descriptor: action.account.descriptor,
@@ -168,19 +166,8 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
                     accountIndex: action.account.accountIndex,
                 },
                 action.date,
-            );
-            break;
-
-        case COINMARKET_EXCHANGE.SAVE_TRADE:
-            storageActions.saveExchangeTrade(
-                action.data,
-                {
-                    descriptor: action.account.descriptor,
-                    symbol: action.account.symbol,
-                    accountType: action.account.accountType,
-                    accountIndex: action.account.accountIndex,
-                },
-                action.date,
+                action.tradeType,
+                action.key,
             );
             break;
 

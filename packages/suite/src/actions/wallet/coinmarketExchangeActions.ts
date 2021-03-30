@@ -8,7 +8,7 @@ import {
     ExchangeCoinInfo,
 } from 'invity-api';
 import invityAPI from '@suite-services/invityAPI';
-import { COINMARKET_EXCHANGE } from './constants';
+import { COINMARKET_EXCHANGE, COINMARKET_COMMON } from './constants';
 import * as modalActions from '@suite-actions/modalActions';
 
 export interface ExchangeInfo {
@@ -33,7 +33,7 @@ export type CoinmarketExchangeAction =
           floatQuotes: ExchangeTrade[];
       }
     | {
-          type: typeof COINMARKET_EXCHANGE.SAVE_TRADE;
+          type: typeof COINMARKET_COMMON.SAVE_TRADE;
           date: string;
           key?: string;
           tradeType: 'exchange';
@@ -123,7 +123,7 @@ export const saveTrade = (
     account: Account,
     date: string,
 ): CoinmarketExchangeAction => ({
-    type: COINMARKET_EXCHANGE.SAVE_TRADE,
+    type: COINMARKET_COMMON.SAVE_TRADE,
     tradeType: 'exchange',
     key: exchangeTrade.orderId,
     date,

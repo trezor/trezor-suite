@@ -1,6 +1,6 @@
 import { AppState } from '@suite-types';
 import { Account } from '@wallet-types';
-import { TradeBuy } from '@wallet-reducers/coinmarketReducer';
+import { TradeBuy } from '@wallet-types/coinmarketCommonTypes';
 
 export interface ComponentProps {
     selectedAccount: AppState['wallet']['selectedAccount'];

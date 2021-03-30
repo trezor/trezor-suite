@@ -5,7 +5,7 @@ import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { variables, CoinLogo } from '@trezor/components';
 import {
     CoinmarketPaymentType,
-    CoinmarketBuyProviderInfo,
+    CoinmarketProviderInfo,
     CoinmarketTransactionId,
 } from '@wallet-components';
 import { Account } from '@wallet-types';
@@ -144,7 +144,7 @@ const CoinmarketBuyOfferInfo = ({ selectedQuote, transactionId, providers, accou
                         <Translation id="TR_BUY_PROVIDER" />
                     </LeftColumn>
                     <RightColumn>
-                        <CoinmarketBuyProviderInfo exchange={exchange} providers={providers} />
+                        <CoinmarketProviderInfo exchange={exchange} providers={providers} />
                     </RightColumn>
                 </Row>
                 <Row>

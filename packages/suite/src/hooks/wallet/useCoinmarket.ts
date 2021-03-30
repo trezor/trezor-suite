@@ -8,7 +8,7 @@ import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 import { Account } from '@wallet-types';
-import { TradeBuy, TradeExchange } from '@wallet-reducers/coinmarketReducer';
+import { TradeBuy, TradeExchange } from '@wallet-types/coinmarketCommonTypes';
 
 export const useInvityAPI = () => {
     const {
