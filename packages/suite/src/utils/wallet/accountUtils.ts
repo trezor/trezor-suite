@@ -77,17 +77,6 @@ export const getTitleForNetwork = (symbol: Account['symbol']) => {
     }
 };
 
-export const getAccountTypeIntl = (accountType: Network['accountType']) => {
-    switch (accountType) {
-        case ACCOUNT_TYPE.SEGWIT:
-            return 'TR_ACCOUNT_TYPE_SEGWIT';
-        case ACCOUNT_TYPE.LEGACY:
-            return 'TR_ACCOUNT_TYPE_LEGACY';
-        default:
-            return 'TR_ACCOUNT_TYPE_NORMAL';
-    }
-};
-
 export const getBip43Shortcut = (path: string) => {
     if (typeof path !== 'string') return 'unknown';
     // https://github.com/bitcoin/bips/blob/master/bip-0043.mediawiki
@@ -102,6 +91,13 @@ export const getBip43Shortcut = (path: string) => {
         default:
             return 'unknown';
     }
+};
+
+export const getAccountTypeIntl = (path: string) => {
+    const bip43 = getBip43Shortcut(path);
+    if (bip43 === 'bech32') return 'TR_ACCOUNT_TYPE_NATIVE_SEGWIT';
+    if (bip43 === 'p2sh') return 'TR_ACCOUNT_TYPE_SEGWIT';
+    return 'TR_ACCOUNT_TYPE_LEGACY';
 };
 
 export const getBip43Intl = (path: string) => {
