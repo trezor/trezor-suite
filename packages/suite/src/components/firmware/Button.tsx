@@ -26,3 +26,9 @@ export const CloseButton = (props: ButtonProps) => (
         <Translation id="TR_CLOSE" />
     </Button>
 );
+
+export const ConfirmButton = (props: ButtonProps) => (
+    <Button {...props}>
+        <Translation id="TR_CONFIRM" />
+    </Button>
+);
