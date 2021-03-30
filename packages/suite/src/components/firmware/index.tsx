@@ -23,7 +23,7 @@ export { Fingerprint } from './Fingerprint';
 export { Buttons } from './Buttons';
 
 // proxy components
-export { RetryButton, ContinueButton, InstallButton, CloseButton } from './Button';
+export { RetryButton, ContinueButton, InstallButton, CloseButton, ConfirmButton } from './Button';
 export {
     InitImg,
     SuccessImg,
