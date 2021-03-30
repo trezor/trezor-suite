@@ -5,7 +5,8 @@
     "project": {
         "identifier": "trezor-suite",
         "filename": "master",
-        "apiKeyEnv": "CROWDIN_API_KEY"
+        "apiKeyEnv": "CROWDIN_API_KEY",
+        "loginEnv": "CROWDIN_LOGIN"
     },
     "languages": ["en"],
     "langToFileNameMap": {

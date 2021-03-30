@@ -9,19 +9,19 @@ const cli = meow(
     `
 Usage
     $ ttm <command>
-    
+
     Options
         --config, -c  Config file
         --version, -v Show ttm version
 
     Commands
-        merge-msgs 
+        merge-msgs
             - merges messages exported by babel-plugin-react-intl to single JSON file
 
         build-csv
             - converts JSON file to CSV
 
-        upload 
+        upload
             - uploads CSV file to Crowdin
 
         build-translations
@@ -88,12 +88,17 @@ const {
 const projectId = config.project.identifier;
 const projectFilename = config.project.filename;
 const apiKey = process.env[config.project.apiKeyEnv];
+const login = process.env[config.project.loginEnv];
 
 if (!apiKey) {
     console.log(`Could not read CrowdIn API key from env variable ${config.project.apiKeyEnv}`);
 }
 
-const crowdin = new Crowdin(projectId, apiKey || '');
+if (!login) {
+    console.log(`Could not read CrowdIn login from env variable ${config.project.loginEnv}`);
+}
+
+const crowdin = new Crowdin(projectId, apiKey || '', login || '');
 
 const mergedJSONFile = path.join(outputDir, `${projectFilename}.json`);
 const mergedCSVFile = path.join(outputDir, `${projectFilename}.csv`);
