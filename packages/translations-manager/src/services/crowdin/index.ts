@@ -16,9 +16,11 @@ interface FormData {
 }
 
 interface QueryString {
-    key: string;
+    key?: string;
     json?: string;
     branch?: string;
+    login?: string;
+    'account-key'?: string;
 }
 
 interface AddFormData extends FormData {
@@ -29,13 +31,27 @@ interface UpdateFormData extends FormData {
     update_option: 'update_as_unapproved';
 }
 
+interface AccessKey {
+    key: string;
+}
+interface AccountKey {
+    login: string;
+    'account-key': string;
+}
+
+type Access = AccessKey | AccountKey;
+
 class Crowdin {
     projectId: string;
-    apiKey: string;
+    access: Access;
 
-    constructor(projectId: string, apiKey: string) {
+    constructor(projectId: string, apiKey: string, login?: string) {
         this.projectId = projectId;
-        this.apiKey = apiKey;
+        if (login) {
+            this.access = { 'account-key': apiKey, login };
+        } else {
+            this.access = { key: apiKey };
+        }
     }
 
     /*
@@ -51,7 +67,7 @@ class Crowdin {
             scheme,
         };
 
-        const qs: QueryString = { key: this.apiKey };
+        const qs: QueryString = { ...this.access };
 
         if (branch) qs.branch = branch;
         const filename = path.parse(filePath).base;
@@ -80,7 +96,7 @@ class Crowdin {
             escape_quotes: '0',
             json: '',
         };
-        const qs: QueryString = { key: this.apiKey };
+        const qs: QueryString = { ...this.access };
         if (branch) qs.branch = branch;
         const filename = path.parse(filePath).base;
         // @ts-ignore
@@ -101,7 +117,7 @@ class Crowdin {
         https://support.crowdin.com/api/export/
     */
     buildTranslations = (branch: string | undefined = undefined) => {
-        const qs: QueryString = { key: this.apiKey, json: '' };
+        const qs: QueryString = { ...this.access, json: '' };
         if (branch) qs.branch = branch;
         return request.get(`https://api.crowdin.com/api/project/${this.projectId}/export`, { qs });
     };
@@ -111,7 +127,7 @@ class Crowdin {
         https://support.crowdin.com/api/download/
     */
     downloadTranslationsZip = (branch: string | undefined = undefined) => {
-        const qs: QueryString = { key: this.apiKey };
+        const qs: QueryString = { ...this.access };
         if (branch) qs.branch = branch;
         return request.get(
             `https://api.crowdin.com/api/project/${this.projectId}/download/all.zip`,
@@ -145,15 +161,13 @@ class Crowdin {
         https://support.crowdin.com/api/add-file/
     */
     createBranch = (branch: string) => {
-        return request.post(
-            `https://api.crowdin.com/api/project/${this.projectId}/add-directory?key=${this.apiKey}`,
-            {
-                qs: {
-                    is_branch: 1,
-                    name: branch,
-                },
+        return request.post(`https://api.crowdin.com/api/project/${this.projectId}/add-directory`, {
+            qs: {
+                ...this.access,
+                is_branch: 1,
+                name: branch,
             },
-        );
+        });
     };
 }
 
