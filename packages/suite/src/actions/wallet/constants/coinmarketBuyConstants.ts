@@ -4,7 +4,6 @@ export const SAVE_TRANSACTION_DETAIL_ID = '@coinmarket-buy/save_transaction_deta
 export const SET_IS_FROM_REDIRECT = '@coinmarket-buy/set_is_from_redirect';
 export const SAVE_QUOTES = '@coinmarket-buy/save_buy_quotes';
 export const VERIFY_ADDRESS = '@coinmarket-buy/verify_address';
-export const SAVE_TRADE = '@coinmarket-buy/save_trade';
 export const SAVE_TRANSACTION_ID = '@coinmarket-buy/save_transaction_id';
 export const SAVE_CACHED_ACCOUNT_INFO = '@coinmarket-buy/save_cached_account_info';
 export const DISPOSE = '@coinmarket-buy/dispose';

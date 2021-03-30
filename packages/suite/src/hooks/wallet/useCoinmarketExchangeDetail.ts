@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react';
 import { Props, ContextValues } from '@wallet-types/coinmarketExchangeDetail';
 import { useWatchExchangeTrade } from '@wallet-hooks/useCoinmarket';
 import { useSelector } from '@suite-hooks';
-import { TradeExchange } from '@wallet-reducers/coinmarketReducer';
+import { TradeExchange } from '@wallet-types/coinmarketCommonTypes';
 import invityAPI from '@suite-services/invityAPI';
 
 export const useCoinmarketExchangeDetail = (props: Props) => {

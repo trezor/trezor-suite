@@ -1,9 +1,10 @@
-import { SellListResponse } from 'invity-api';
+import { SellListResponse, SellProviderInfo } from 'invity-api';
 import invityAPI from '@suite-services/invityAPI';
 import { COINMARKET_SELL } from './constants';
 
 export interface SellInfo {
     sellList?: SellListResponse;
+    providerInfos: { [name: string]: SellProviderInfo };
 }
 
 export type CoinmarketSellAction =
@@ -12,8 +13,15 @@ export type CoinmarketSellAction =
 
 export const loadSellInfo = async (): Promise<SellInfo> => {
     const sellList = await invityAPI.getSellList();
+
+    const providerInfos: { [name: string]: SellProviderInfo } = {};
+    if (sellList?.providers) {
+        sellList.providers.forEach(e => (providerInfos[e.name] = e));
+    }
+
     return {
         sellList,
+        providerInfos,
     };
 };
 

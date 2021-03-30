@@ -7,6 +7,7 @@ import { getUnusedAddressFromAccount } from '@suite/utils/wallet/coinmarket/coin
 import { useActions } from '@suite-hooks';
 import { useTranslation } from '@suite-hooks/useTranslation';
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
+import * as coinmarketSpendActions from '@wallet-actions/coinmarketSpendActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { FormState } from '@wallet-types/sendForm';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
@@ -43,9 +44,10 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
     const { sellInfo } = useInvityAPI();
     const [voucherSiteUrl, setVoucherSiteUrl] = useState<string | undefined>('error');
 
-    const { addNotification, setShowLeaveModal } = useActions({
+    const { addNotification, setShowLeaveModal, saveTrade } = useActions({
         addNotification: notificationActions.addToast,
         setShowLeaveModal: coinmarketSellActions.setShowLeaveModal,
+        saveTrade: coinmarketSpendActions.saveTrade,
     });
     const { translationString } = useTranslation();
 
@@ -124,6 +126,8 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
             const success = await signTransaction();
             if (success) {
                 await invityAPI.confirmVoucherTrade(trade);
+                const date = new Date().toISOString();
+                saveTrade(trade, account, date);
                 setShowLeaveModal(false);
             }
         };
@@ -157,6 +161,8 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
         signTransaction,
         trade,
         translationString,
+        saveTrade,
+        account,
     ]);
 
     // create listener for messages from the spend partner

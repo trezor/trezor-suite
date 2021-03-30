@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { BuyProviderInfo } from 'invity-api';
 import invityApi from '@suite-services/invityAPI';
 
 const Wrapper = styled.div`
@@ -20,7 +19,7 @@ const Bg = styled.div`
 const IconWrapper = styled.div`
     display: flex;
     align-items: center;
-    padding-right: 8px;
+    padding-right: 7px;
 `;
 
 const Icon = styled.img`
@@ -31,6 +30,7 @@ const Text = styled.div`
     display: flex;
     padding-left: 5px;
     align-items: center;
+    font-size: ${variables.FONT_SIZE.SMALL};
     color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
@@ -38,27 +38,31 @@ const Text = styled.div`
 interface Props {
     exchange?: string;
     providers?: {
-        [name: string]: BuyProviderInfo;
+        [name: string]: {
+            logo: string;
+            companyName: string;
+        };
     };
 }
 
-const CoinmarketBuyProviderInfo = ({ exchange, providers }: Props) => {
+const CoinmarketProviderInfo = ({ exchange, providers }: Props) => {
     const provider = providers && exchange ? providers[exchange] : null;
-
     return (
         <Wrapper>
             {!exchange && 'Unknown provider'}
             {!provider && exchange}
             {provider && (
                 <>
-                    <IconWrapper>
-                        <Bg>
-                            <Icon
-                                width="16px"
-                                src={`${invityApi.server}/images/exchange/${provider.logo}`}
-                            />
-                        </Bg>
-                    </IconWrapper>
+                    {provider.logo && (
+                        <IconWrapper>
+                            <Bg>
+                                <Icon
+                                    width="16px"
+                                    src={`${invityApi.server}/images/exchange/${provider.logo}`}
+                                />
+                            </Bg>
+                        </IconWrapper>
+                    )}
                     <Text>{provider.companyName}</Text>
                 </>
             )}
@@ -66,4 +70,4 @@ const CoinmarketBuyProviderInfo = ({ exchange, providers }: Props) => {
     );
 };
 
-export default CoinmarketBuyProviderInfo;
+export default CoinmarketProviderInfo;

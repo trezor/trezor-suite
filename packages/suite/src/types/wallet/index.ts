@@ -3,6 +3,7 @@ import { SignVerifyAction } from '@wallet-actions/signVerifyActions';
 import { CoinmarketBuyAction } from '@wallet-actions/coinmarketBuyActions';
 import { CoinmarketExchangeAction } from '@wallet-actions/coinmarketExchangeActions';
 import { CoinmarketSellAction } from '@wallet-actions/coinmarketSellActions';
+import { CoinMarketSpendAction } from '@wallet-actions/coinmarketSpendActions';
 import { CoinmarketCommonAction } from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import { DiscoveryAction } from '@wallet-actions/discoveryActions';
 import { AccountAction } from '@wallet-actions/accountActions';
@@ -56,6 +57,7 @@ export type WalletAction =
     | SelectedAccountAction
     | CoinmarketExchangeAction
     | CoinmarketBuyAction
+    | CoinMarketSpendAction
     | CoinmarketSellAction
     | CoinmarketCommonAction
     | SendFormAction

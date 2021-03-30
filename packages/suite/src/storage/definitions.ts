@@ -8,7 +8,8 @@ import { AcquiredDevice } from '@suite-types';
 import { MetadataState } from '@suite-types/metadata';
 import { Account, Discovery, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
 import { GraphData } from '@wallet-types/graph';
-import { BuyTrade, ExchangeTrade } from 'invity-api';
+import { TradeType } from '@wallet-types/coinmarketCommonTypes';
+import { BuyTrade, ExchangeTrade, SellVoucherTrade as SpendTrade } from 'invity-api';
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -78,8 +79,8 @@ export interface SuiteDBSchema extends DBSchema {
         value: {
             key?: string;
             date: string;
-            tradeType: 'buy' | 'exchange';
-            data: BuyTrade | ExchangeTrade;
+            tradeType: TradeType;
+            data: BuyTrade | ExchangeTrade | SpendTrade;
             account: {
                 descriptor?: Account['descriptor'];
                 symbol: Account['symbol'];

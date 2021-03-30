@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 import BuyTransaction from './components/BuyTransaction';
 import ExchangeTransaction from './components/ExchangeTransaction';
+import SpendTransaction from './components/SpendTransaction';
 
 const Wrapper = styled.div`
     padding: 64px 0 0 0;
@@ -39,14 +40,19 @@ const TransactionCount = styled.div`
 `;
 
 const AccountTransactions = () => {
-    const { selectedAccount, allTransactions, buyProviders, exchangeProviders } = useSelector(
-        state => ({
-            selectedAccount: state.wallet.selectedAccount,
-            allTransactions: state.wallet.coinmarket.trades,
-            buyProviders: state.wallet.coinmarket.buy.buyInfo?.providerInfos,
-            exchangeProviders: state.wallet.coinmarket.exchange.exchangeInfo?.providerInfos,
-        }),
-    );
+    const {
+        selectedAccount,
+        allTransactions,
+        buyProviders,
+        exchangeProviders,
+        sellProviders,
+    } = useSelector(state => ({
+        selectedAccount: state.wallet.selectedAccount,
+        allTransactions: state.wallet.coinmarket.trades,
+        buyProviders: state.wallet.coinmarket.buy.buyInfo?.providerInfos,
+        exchangeProviders: state.wallet.coinmarket.exchange.exchangeInfo?.providerInfos,
+        sellProviders: state.wallet.coinmarket.sell.sellInfo?.providerInfos,
+    }));
 
     if (selectedAccount.status !== 'loaded') {
         return null;
@@ -65,6 +71,7 @@ const AccountTransactions = () => {
     const exchangeTransactions = sortedAccountTransactions.filter(
         tx => tx.tradeType === 'exchange',
     );
+    const spendTransactions = sortedAccountTransactions.filter(tx => tx.tradeType === 'spend');
 
     return (
         <Wrapper>
@@ -81,7 +88,8 @@ const AccountTransactions = () => {
                             <TransactionCount>
                                 {buyTransactions.length} <Translation id="TR_TRADE_BUYS" /> •{' '}
                                 {exchangeTransactions.length}{' '}
-                                <Translation id="TR_TRADE_EXCHANGES" />
+                                <Translation id="TR_TRADE_EXCHANGES" /> • {spendTransactions.length}{' '}
+                                <Translation id="TR_TRADE_SPENDS" />
                             </TransactionCount>
                         </StyledH2>
                     </Header>
@@ -104,6 +112,15 @@ const AccountTransactions = () => {
                                         key={`${trade.tradeType}-${trade.key}`}
                                         trade={trade}
                                         providers={exchangeProviders}
+                                    />
+                                );
+                            }
+                            if (trade.tradeType === 'spend') {
+                                return (
+                                    <SpendTransaction
+                                        key={`${trade.tradeType}-${trade.key}`}
+                                        trade={trade}
+                                        providers={sellProviders}
                                     />
                                 );
                             }

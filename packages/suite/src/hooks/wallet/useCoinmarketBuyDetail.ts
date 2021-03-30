@@ -3,7 +3,7 @@ import { Props, ContextValues } from '@wallet-types/coinmarketBuyDetail';
 import { useWatchBuyTrade } from '@wallet-hooks/useCoinmarket';
 import { useSelector } from '@suite-hooks';
 import invityAPI from '@suite-services/invityAPI';
-import { TradeBuy } from '@wallet-reducers/coinmarketReducer';
+import { TradeBuy } from '@wallet-types/coinmarketCommonTypes';
 
 export const useCoinmarketBuyDetail = (props: Props) => {
     const { selectedAccount, trades, transactionId } = props;

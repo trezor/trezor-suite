@@ -4,7 +4,7 @@ import { Translation } from '@suite-components';
 import { getStatusMessage as getBuyStatusMessage } from '@wallet-utils/coinmarket/buyUtils';
 import { getStatusMessage as getExchangeStatusMessage } from '@wallet-utils/coinmarket/exchangeUtils';
 import { variables, Icon, useTheme, SuiteThemeColors } from '@trezor/components';
-import { Trade } from '@wallet-reducers/coinmarketReducer';
+import { Trade } from '@wallet-types/coinmarketCommonTypes';
 import { BuyTradeStatus, ExchangeTradeStatus } from 'invity-api';
 
 interface Props {
@@ -91,12 +91,35 @@ const getExchangeTradeData = (status: ExchangeTradeStatus, theme: SuiteThemeColo
     }
 };
 
+const getSpendTradeData = (theme: SuiteThemeColors) => {
+    return {
+        icon: 'CHECK',
+        color: theme.TYPE_GREEN,
+        statusMessageId: 'TR_SPEND_STATUS_FINISHED',
+    } as const;
+};
+
+type StatusData =
+    | ReturnType<typeof getBuyTradeData>
+    | ReturnType<typeof getExchangeTradeData>
+    | ReturnType<typeof getSpendTradeData>;
+
 const Status = ({ trade, className, tradeType }: Props) => {
     const theme = useTheme();
-    const data =
-        tradeType === 'buy'
-            ? getBuyTradeData(trade.status as BuyTradeStatus, theme)
-            : getExchangeTradeData(trade.status as ExchangeTradeStatus, theme);
+    let data: StatusData;
+    switch (tradeType) {
+        case 'buy':
+            data = getBuyTradeData(trade.status as BuyTradeStatus, theme);
+            break;
+        case 'exchange':
+            data = getExchangeTradeData(trade.status as ExchangeTradeStatus, theme);
+            break;
+        case 'spend':
+            data = getSpendTradeData(theme);
+            break;
+        // no default
+    }
+
     return (
         <Wrapper color={data.color} className={className}>
             <StyledIcon color={data.color} size={10} icon={data.icon} />
