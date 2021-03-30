@@ -1,5 +1,8 @@
 # Storage changelog
 
+## 22
+-   added LTC bech32 accounts
+
 ## 21
 -   fix tx.amount for btc sent txs (subtract tx.fee from it), add tx.totalSpent field
 
