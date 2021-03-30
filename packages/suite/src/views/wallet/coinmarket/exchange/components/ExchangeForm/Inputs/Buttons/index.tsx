@@ -5,7 +5,7 @@ import { Translation } from '@suite-components';
 import styled from 'styled-components';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 import { formatLabel } from '@wallet-utils/coinmarket/exchangeUtils';
-import { CRYPTO_INPUT, CRYPTO_TOKEN } from '@wallet-types/coinmarketExchangeForm';
+import { CRYPTO_INPUT, CRYPTO_TOKEN, FIAT_INPUT } from '@wallet-types/coinmarketExchangeForm';
 
 const Wrapper = styled.div`
     display: flex;
@@ -49,6 +49,7 @@ const Bottom = () => {
         getValues,
         setValue,
         updateFiatValue,
+        clearErrors,
     } = useCoinmarketExchangeFormContext();
     const tokenAddress = getValues(CRYPTO_TOKEN);
     const tokenData = account.tokens?.find(t => t.address === tokenAddress);
@@ -66,6 +67,7 @@ const Bottom = () => {
                   .toString();
         setValue(CRYPTO_INPUT, amount);
         updateFiatValue(amount);
+        clearErrors([FIAT_INPUT, CRYPTO_INPUT]);
         composeRequest();
     };
 
@@ -78,6 +80,7 @@ const Bottom = () => {
                 <Button
                     onClick={() => {
                         setValue('setMaxOutputId', 0);
+                        clearErrors([FIAT_INPUT, CRYPTO_INPUT]);
                         composeRequest();
                     }}
                 >

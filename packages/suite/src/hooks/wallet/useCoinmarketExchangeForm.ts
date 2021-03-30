@@ -148,7 +148,9 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
 
     // react-hook-form reset, set default values
     useEffect(() => {
-        reset(state?.formValues);
+        if (state) {
+            reset(state?.formValues);
+        }
     }, [reset, state]);
 
     const { isLoading: isComposing, composeRequest, composedLevels, onFeeLevelChange } = useCompose(
@@ -206,7 +208,10 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
     };
 
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
-    const isLoading = !exchangeInfo?.exchangeList || exchangeInfo?.exchangeList.length === 0;
+    const isLoading =
+        !exchangeInfo?.exchangeList ||
+        exchangeInfo?.exchangeList.length === 0 ||
+        !state?.formValues.outputs[0].address;
     const noProviders =
         exchangeInfo?.exchangeList?.length === 0 || !exchangeInfo?.sellSymbols.has(account.symbol);
 
