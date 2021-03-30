@@ -6,7 +6,7 @@ import { useDevice, useActions, useSelector } from '@suite-hooks';
 import { Translation, Card } from '@suite-components';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import * as modalActions from '@suite-actions/modalActions';
-import { getAccountTypeIntl, getBip43Shortcut } from '@wallet-utils/accountUtils';
+import { getAccountTypeIntl, getBip43Intl } from '@wallet-utils/accountUtils';
 import { ActionColumn, Row, TextColumn, ActionButton } from '@suite-components/Settings';
 import {
     WIKI_XPUB_URL,
@@ -15,6 +15,7 @@ import {
     WIKI_P2PKH_URL,
 } from '@suite-constants/urls';
 import { CARD_PADDING_SIZE } from '@suite-constants/layout';
+import { NETWORKS } from '@wallet-config';
 
 const AccountTypeLabel = styled.div`
     display: flex;
@@ -51,19 +52,24 @@ const Details = () => {
     const { account } = selectedAccount;
     const disabled = !!device.authConfirm;
 
-    const accountTypeName = getAccountTypeIntl(account.accountType);
-    const bip43 = getBip43Shortcut(account.path);
+    // check if all network types
+    const accountTypes =
+        account.networkType === 'bitcoin'
+            ? NETWORKS.filter(n => n.symbol === account.symbol)
+            : undefined;
+    // display type name only if there is more than 1 network type
+    const accountTypeName =
+        accountTypes && accountTypes.length > 1 ? getAccountTypeIntl(account.path) : undefined;
+    const accountTypeShortcut = getBip43Intl(account.path);
+
     let accountTypeDesc: ExtendedMessageDescriptor['id'] = 'TR_ACCOUNT_DETAILS_TYPE_P2PKH';
-    let accountTypeShortcut: ExtendedMessageDescriptor['id'] = 'TR_ACCOUNT_TYPE_P2PKH';
     let accountTypeUrl = WIKI_P2PKH_URL;
-    if (bip43 === 'bech32') {
+    if (accountTypeShortcut === 'TR_ACCOUNT_TYPE_BECH32') {
         accountTypeDesc = 'TR_ACCOUNT_DETAILS_TYPE_BECH32';
-        accountTypeShortcut = 'TR_ACCOUNT_TYPE_BECH32';
         accountTypeUrl = WIKI_BECH32_URL;
     }
-    if (bip43 === 'p2sh') {
+    if (accountTypeShortcut === 'TR_ACCOUNT_TYPE_P2SH') {
         accountTypeDesc = 'TR_ACCOUNT_DETAILS_TYPE_P2SH';
-        accountTypeShortcut = 'TR_ACCOUNT_TYPE_P2SH';
         accountTypeUrl = WIKI_P2SH_URL;
     }
 
@@ -77,9 +83,11 @@ const Details = () => {
                         learnMore={accountTypeUrl}
                     />
                     <AccountTypeLabel>
-                        <P size="small">
-                            <Translation id={accountTypeName} />
-                        </P>
+                        {accountTypeName && (
+                            <P size="small">
+                                <Translation id={accountTypeName} />
+                            </P>
+                        )}
                         <P size="tiny">
                             <Translation id={accountTypeShortcut} />
                         </P>

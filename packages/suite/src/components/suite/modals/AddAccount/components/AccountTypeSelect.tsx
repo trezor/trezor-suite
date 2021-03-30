@@ -23,7 +23,7 @@ const TypeInfo = styled.div`
 const buildAccountTypeOption = (network: Network) =>
     ({
         value: network,
-        label: getAccountTypeIntl(network.accountType),
+        label: network.name,
     } as const);
 
 interface Props {
@@ -35,7 +35,7 @@ type Option = ReturnType<typeof buildAccountTypeOption>;
 
 const formatLabel = (option: Option) => (
     <LabelWrapper>
-        <Translation id={option.label} />
+        <Translation id={getAccountTypeIntl(option.value.bip44)} />
         <TypeInfo>
             <Translation id={getBip43Intl(option.value.bip44)} />
         </TypeInfo>

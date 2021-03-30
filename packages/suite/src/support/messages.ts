@@ -2806,9 +2806,9 @@ const definedMessages = defineMessages({
         id: 'TR_ACCOUNT_DETAILS_XPUB_BUTTON',
         defaultMessage: 'Show public key',
     },
-    TR_ACCOUNT_TYPE_NORMAL: {
-        id: 'TR_ACCOUNT_TYPE_NORMAL',
-        defaultMessage: 'Normal',
+    TR_ACCOUNT_TYPE_NATIVE_SEGWIT: {
+        id: 'TR_ACCOUNT_TYPE_NATIVE_SEGWIT',
+        defaultMessage: 'Native SegWit',
     },
     TR_ACCOUNT_TYPE_SEGWIT: {
         id: 'TR_ACCOUNT_TYPE_SEGWIT',
