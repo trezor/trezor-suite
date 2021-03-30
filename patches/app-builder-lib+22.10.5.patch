@@ -1,8 +1,8 @@
 diff --git a/node_modules/app-builder-lib/out/targets/ArchiveTarget.js b/node_modules/app-builder-lib/out/targets/ArchiveTarget.js
-index 72a59df..9095aad 100644
+index 84c114b..2c156e1 100644
 --- a/node_modules/app-builder-lib/out/targets/ArchiveTarget.js
 +++ b/node_modules/app-builder-lib/out/targets/ArchiveTarget.js
-@@ -120,7 +120,7 @@ class ArchiveTarget extends _core().Target {
+@@ -121,7 +121,7 @@ class ArchiveTarget extends _core().Target {
        await (0, _archive().archive)(format, artifactPath, dirToArchive, archiveOptions);
  
        if (this.isWriteUpdateInfo && format === "zip") {
