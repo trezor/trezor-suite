@@ -18,6 +18,7 @@ import { Input, InputProps } from './components/form/Input';
 import { Textarea, TextareaProps } from './components/form/Textarea';
 import { Select, SelectProps } from './components/form/Select';
 import { Checkbox, CheckboxProps } from './components/form/Checkbox';
+import { RadioButton, RadioButtonProps } from './components/form/RadioButton';
 import { Switch, SwitchProps } from './components/form/Switch';
 import { Icon, IconProps } from './components/Icon';
 import { H1, H2 } from './components/typography/Heading';
@@ -60,6 +61,8 @@ export {
     SelectProps,
     Checkbox,
     CheckboxProps,
+    RadioButton,
+    RadioButtonProps,
     Switch,
     SwitchProps,
     Icon,
