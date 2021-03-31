@@ -28,6 +28,7 @@ const FirmwareInstallation = ({ cachedDevice }: Props) => {
                 />
             )}
             <OnboardingStepBox
+                image="FIRMWARE"
                 heading={<Translation id="TR_INSTALL_FIRMWARE" />}
                 confirmOnDevice={
                     status === 'waiting-for-confirmation'

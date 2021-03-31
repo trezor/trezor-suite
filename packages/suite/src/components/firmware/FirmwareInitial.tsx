@@ -123,6 +123,7 @@ const FirmwareInitial = ({ cachedDevice, setCachedDevice }: Props) => {
                 )}
 
                 <OnboardingStepBox
+                    image="FIRMWARE"
                     heading={content.heading}
                     description={content.description}
                     innerActions={content.innerActions}
