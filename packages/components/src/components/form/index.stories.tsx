@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Input, Textarea, Select, Checkbox, Switch, Button } from '../../index';
+import { Input, Textarea, Select, Checkbox, RadioButton, Switch, Button } from '../../index';
 import { storiesOf } from '@storybook/react';
 import { StoryColumn } from '../../support/Story';
 
@@ -218,6 +218,22 @@ storiesOf('Form', module).add(
                 <Checkbox onClick={() => {}} isChecked data-test="checkbox-checked">
                     Label
                 </Checkbox>
+            </StoryColumn>
+            <StoryColumn maxWidth={200}>
+                <Heading>Radio Buttons</Heading>
+                <SubHeading>Unchecked</SubHeading>
+                <RadioButton onClick={() => {}} value="test1" data-test="radio-button">
+                    Label
+                </RadioButton>
+                <SubHeading>Checked</SubHeading>
+                <RadioButton
+                    onClick={() => {}}
+                    value="test2"
+                    isChecked
+                    data-test="radio-button-checked"
+                >
+                    Label
+                </RadioButton>
             </StoryColumn>
             <StoryColumn maxWidth={200}>
                 <Heading>Select</Heading>

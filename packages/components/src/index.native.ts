@@ -10,6 +10,7 @@ import { Input } from './components/form/Input';
 import { Textarea } from './components/form/Textarea';
 import { Select } from './components/form/Select';
 import { Checkbox } from './components/form/Checkbox';
+import { RadioButton } from './components/form/RadioButton';
 import { Switch } from './components/form/Switch';
 import { Icon } from './components/Icon';
 import { H1, H2 } from './components/typography/Heading';
@@ -41,6 +42,7 @@ export {
     Textarea,
     Select,
     Checkbox,
+    RadioButton,
     Switch,
     Icon,
     H1,
