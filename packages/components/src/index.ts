@@ -24,6 +24,7 @@ import { Icon, IconProps } from './components/Icon';
 import { H1, H2 } from './components/typography/Heading';
 import { P, PProps } from './components/typography/Paragraph';
 import { Link, LinkProps } from './components/typography/Link';
+import { Warning } from './components/Warning';
 import { Box, BoxProps } from './components/others/Box';
 import { Card, CardProps } from './components/others/Card';
 import { SecurityCard, SecurityCardProps } from './components/others/SecurityCard';
@@ -73,6 +74,7 @@ export {
     PProps,
     Link,
     LinkProps,
+    Warning,
     Modal,
     ModalProps,
     CoinLogo,
