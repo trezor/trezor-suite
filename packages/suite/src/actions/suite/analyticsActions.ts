@@ -233,6 +233,12 @@ export type AnalyticsEvent =
           type: 'settings/device/change-pin';
       }
     | { type: 'settings/device/change-label' }
+    | {
+          type: 'settings/device/update-auto-lock';
+          payload: {
+              value: number;
+          };
+      }
     | { type: 'settings/device/goto/background' }
     | {
           type: 'settings/device/change-orientation';

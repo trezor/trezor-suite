@@ -1,7 +1,7 @@
 // @group:settings
 // @retry=2
 
-describe('Device settings', () => {
+describe('T2 - Device settings', () => {
     it('change all possible device settings', () => {
         cy.task('startEmu', { wipe: true, version: '2.1.4' });
         cy.task('setupEmu');
@@ -66,6 +66,19 @@ describe('Device settings', () => {
         cy.getTestElement('@backup');
     });
 
+    it.only('does not show auto-lock select because it is not supported on fw <2.3.5 ', () => {
+        cy.task('startEmu', { wipe: true, version: '2.3.4' });
+        cy.task('setupEmu');
+
+        cy.viewport(1024, 768).resetDb();
+        cy.prefixedVisit('/settings/device');
+        cy.passThroughInitialRun();
+
+        // TODO - add pin to verify it properly
+
+        cy.getTestElement('@settings/auto-lock-select/input').should('not.exist');
+    });
+
     it('wipe device', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
@@ -82,4 +95,5 @@ describe('Device settings', () => {
     });
 
     // TODO: upload custom image
+    // TODO: set auto-lock (needs pin)
 });

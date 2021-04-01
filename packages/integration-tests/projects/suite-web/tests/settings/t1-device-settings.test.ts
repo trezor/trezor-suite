@@ -1,17 +1,15 @@
 // @group:settings
 // @retry=2
 
-describe('Device settings', () => {
-    beforeEach(() => {
-        cy.task('startEmu', { version: '1.9.0', wipe: true });
+describe('T1 - Device settings', () => {
+    it('pin mismatch', () => {
+        cy.task('startEmu', { version: '1.9.4', wipe: true });
         cy.task('setupEmu', { needs_backup: false });
         cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/settings/device');
         cy.passThroughInitialRun();
-    });
 
-    it('t1 - pin mismatch', () => {
         cy.getTestElement('@settings/device/pin-switch').click({ force: true });
         cy.task('pressYes');
         // todo: add support for pin to trezor-user-env. now I may safely test only wrong pin input
@@ -31,7 +29,21 @@ describe('Device settings', () => {
         cy.task('pressYes');
     });
 
-    // TODO: t1 - pin success
-    // TODO: t1 - pin caching immediately after it is set
-    // TODO: t1 - keyboard handling
+    it('does not show auto-lock select because it is not supported on fw <1.9.4', () => {
+        cy.task('startEmu', { version: '1.9.3', wipe: true });
+        cy.task('setupEmu', { needs_backup: false });
+        cy.task('startBridge');
+        cy.viewport(1024, 768).resetDb();
+        cy.prefixedVisit('/settings/device');
+        cy.passThroughInitialRun();
+
+        // TODO - add pin to verify it properly
+
+        cy.getTestElement('@settings/auto-lock-select/input').should('not.exist');
+    });
+
+    // TODO: pin success
+    // TODO: pin caching immediately after it is set
+    // TODO: keyboard handling
+    // TODO: set auto-lock (needs pin)
 });
