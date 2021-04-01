@@ -16,6 +16,7 @@ import { Icon } from './components/Icon';
 import { H1, H2 } from './components/typography/Heading';
 import { P } from './components/typography/Paragraph';
 import { Link } from './components/typography/Link';
+import { Warning } from './components/Warning';
 import { Box } from './components/others/Box';
 import { Card } from './components/others/Card';
 import { SecurityCard } from './components/others/SecurityCard';
@@ -49,6 +50,7 @@ export {
     H2,
     P,
     Link,
+    Warning,
     Modal,
     CoinLogo,
     TrezorLogo,
