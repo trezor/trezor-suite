@@ -1361,6 +1361,44 @@ const definedMessages = defineMessages({
             'If you forget your passphrase, your wallet is lost for good. There is no way to recover your funds.',
         id: 'TR_DEVICE_SETTINGS_PASSPHRASE_DESC_MORE',
     },
+    TR_DEVICE_SETTINGS_SAFETY_CHECKS_TITLE: {
+        defaultMessage: 'Safety checks',
+        id: 'TR_DEVICE_SETTINGS_SAFETY_CHECKS_TITLE',
+    },
+    TR_DEVICE_SETTINGS_SAFETY_CHECKS_DESC: {
+        defaultMessage:
+            'Safety checks protect you from performing non-standard transactions. They can be temporarily disabled in case such a transaction needs to be carried out.',
+        id: 'TR_DEVICE_SETTINGS_SAFETY_CHECKS_DESC',
+    },
+    TR_DEVICE_SETTINGS_SAFETY_CHECKS_BUTTON: {
+        defaultMessage: 'Edit',
+        id: 'TR_DEVICE_SETTINGS_SAFETY_CHECKS_BUTTON',
+    },
+    TR_SAFETY_CHECKS_MODAL_TITLE: {
+        defaultMessage: 'Safety checks',
+        id: 'TR_SAFETY_CHECKS_MODAL_TITLE',
+    },
+    TR_SAFETY_CHECKS_STRICT_LEVEL: {
+        defaultMessage: 'Strict',
+        id: 'TR_SAFETY_CHECKS_STRICT_LEVEL',
+    },
+    TR_SAFETY_CHECKS_STRICT_LEVEL_DESC: {
+        defaultMessage: 'Full Trezor security.',
+        id: 'TR_SAFETY_CHECKS_STRICT_LEVEL_DESC',
+    },
+    TR_SAFETY_CHECKS_PROMPT_LEVEL: {
+        defaultMessage: 'Prompt',
+        id: 'TR_SAFETY_CHECKS_PROMPT_LEVEL',
+    },
+    TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING: {
+        defaultMessage: 'Only enable this if you know what you are doing.',
+        id: 'TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING',
+    },
+    TR_SAFETY_CHECKS_PROMPT_LEVEL_DESC: {
+        defaultMessage:
+            'Allow potentially unsafe actions, such as mismatching coin keys or extreme fees by manually approving them on your Trezor.',
+        id: 'TR_SAFETY_CHECKS_PROMPT_LEVEL_DESC',
+    },
     TR_DEVICE_SETTINGS_PASSPHRASE_TITLE: {
         defaultMessage: 'Passphrase',
         id: 'TR_DEVICE_SETTINGS_PASSPHRASE_TITLE',

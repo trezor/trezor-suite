@@ -39,6 +39,7 @@ import DisconnectDevice from './DisconnectDevice';
 import MetadataProvider from './metadata/MetadataProvider';
 import AdvancedCoinSettings from './AdvancedCoinSettings';
 import AddToken from './AddToken';
+import SafetyChecks from './SafetyChecks';
 
 const mapStateToProps = (state: AppState) => ({
     modal: state.modal,
@@ -211,6 +212,8 @@ const getUserContextModal = (props: Props) => {
             return <AdvancedCoinSettings {...payload} onCancel={modalActions.onCancel} />;
         case 'add-token':
             return <AddToken {...payload} onCancel={modalActions.onCancel} />;
+        case 'safety-checks':
+            return <SafetyChecks onCancel={modalActions.onCancel} />;
         default:
             return null;
     }
