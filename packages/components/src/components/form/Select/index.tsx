@@ -25,8 +25,11 @@ const selectStyle = (
         display: 'flex',
         alignItems: 'center',
         width: '100%',
+        margin: 0,
+        padding: '0 8px',
         color: isClean ? theme.TYPE_LIGHT_GREY : theme.TYPE_DARK_GREY,
-        fontSize: variables.NEUE_FONT_SIZE.NORMAL,
+        fontSize: variables.NEUE_FONT_SIZE.SMALL,
+        fontWeight: variables.FONT_WEIGHT.MEDIUM,
         borderStyle: 'none',
         justifyContent: isClean ? 'flex-end' : 'flex-start',
         '&:hover': {
@@ -94,17 +97,32 @@ const selectStyle = (
     }),
     menuList: (base: Record<string, any>) => ({
         ...base,
-        padding: 0,
         boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.2)',
         background: theme.BG_WHITE_ALT,
         borderRadius: '4px',
+        padding: '8px',
+    }),
+    // textTransform does not work in TS with makeStyles => base: any
+    groupHeading: (base: any) => ({
+        ...base,
+        fontSize: variables.NEUE_FONT_SIZE.TINY,
+        textTransform: 'initial',
+        margin: '8px',
+        padding: 0,
+    }),
+    group: (base: Record<string, any>) => ({
+        ...base,
+        paddingTop: '0px',
+        paddingBottom: '4px',
     }),
     option: (base: Record<string, any>, { isFocused }: { isFocused: boolean }) => ({
         ...base,
         color: theme.TYPE_DARK_GREY,
         background: isFocused ? theme.BG_WHITE_ALT_HOVER : theme.BG_WHITE_ALT,
-        borderRadius: 0,
-        fontSize: variables.NEUE_FONT_SIZE.NORMAL,
+        borderRadius: '5px',
+        padding: '8px',
+        fontSize: variables.NEUE_FONT_SIZE.SMALL,
+        fontWeight: variables.FONT_WEIGHT.MEDIUM,
         '&:hover': {
             cursor: 'pointer',
             background: theme.BG_WHITE_ALT_HOVER,

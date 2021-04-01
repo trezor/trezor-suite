@@ -41,7 +41,7 @@ const FiatSelect = () => {
                         isClearable={false}
                         options={currencyOptions}
                         isDropdownVisible={account.networkType === 'ethereum'}
-                        minWidth="70px"
+                        minWidth="58px"
                         isClean
                         hideTextCursor
                     />

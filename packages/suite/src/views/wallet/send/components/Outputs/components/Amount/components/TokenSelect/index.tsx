@@ -82,7 +82,7 @@ const TokenSelect = ({ output, outputId }: Props) => {
                         hideTextCursor
                         value={options.find(o => o.value === tokenValue)}
                         isClearable={false}
-                        minWidth="45px"
+                        minWidth="58px"
                         isClean
                         onChange={(selected: Option) => {
                             // change selected value

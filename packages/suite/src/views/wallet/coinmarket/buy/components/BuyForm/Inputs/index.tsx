@@ -184,7 +184,7 @@ const Inputs = () => {
                                         isSearchable
                                         value={value}
                                         isClearable={false}
-                                        minWidth="45px"
+                                        minWidth="58px"
                                         isClean
                                         hideTextCursor
                                         onChange={(selected: any) => {
@@ -300,6 +300,7 @@ const Inputs = () => {
                                             onChange(selected);
                                         }}
                                         value={value}
+                                        isSearchable
                                         isClearable={false}
                                         options={getCryptoOptions(
                                             account.symbol,
@@ -309,7 +310,7 @@ const Inputs = () => {
                                         hideTextCursor
                                         isDropdownVisible={account.networkType === 'ethereum'}
                                         isDisabled={account.networkType !== 'ethereum'}
-                                        minWidth="70px"
+                                        minWidth="58px"
                                     />
                                 );
                             }}
