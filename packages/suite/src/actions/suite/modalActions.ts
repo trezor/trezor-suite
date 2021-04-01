@@ -100,6 +100,9 @@ export type UserContextPayload =
       }
     | {
           type: 'add-token';
+      }
+    | {
+          type: 'safety-checks';
       };
 
 export type ModalAction =

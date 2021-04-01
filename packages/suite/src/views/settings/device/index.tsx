@@ -304,6 +304,26 @@ const Settings = () => {
                         />
                     </ActionColumn>
                 </SectionItem>
+                {device.features.safety_checks && (
+                    <SectionItem>
+                        <TextColumn
+                            title={<Translation id="TR_DEVICE_SETTINGS_SAFETY_CHECKS_TITLE" />}
+                            description={<Translation id="TR_DEVICE_SETTINGS_SAFETY_CHECKS_DESC" />}
+                        />
+                        <ActionColumn>
+                            <ActionButton
+                                variant="secondary"
+                                onClick={() => {
+                                    openModal({ type: 'safety-checks' });
+                                }}
+                                data-test="@settings/device/safety-checks-button"
+                                isDisabled={isDeviceLocked}
+                            >
+                                <Translation id="TR_DEVICE_SETTINGS_SAFETY_CHECKS_BUTTON" />
+                            </ActionButton>
+                        </ActionColumn>
+                    </SectionItem>
+                )}
             </Section>
             <Section title={<Translation id="TR_PERSONALIZATION" />}>
                 <SectionItem>

@@ -4,6 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## 21.5.0 [to be released 12th May 2021]
 
 ### Added
+- Safety Checks setting that lets you set the [`safety_checks` Trezor feature](https://wiki.trezor.io/Using_trezorctl_commands_with_Trezor#Safety-checks).
 
 ### Changed
 
