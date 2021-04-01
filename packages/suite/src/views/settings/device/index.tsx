@@ -1,5 +1,6 @@
 import React, { createRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
+
 import { SettingsLayout } from '@settings-components';
 import { Translation } from '@suite-components';
 import {
@@ -9,6 +10,7 @@ import {
     SectionItem,
     Section,
     TextColumn,
+    ActionSelect,
 } from '@suite-components/Settings';
 import {
     DRY_RUN_URL,
@@ -23,6 +25,7 @@ import { variables, Switch } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
+import { formatDurationStrict } from '@suite/utils/suite/date';
 
 const RotationButton = styled(ActionButton)`
     min-width: 81px;
@@ -41,6 +44,32 @@ const HiddenInput = styled.input`
 const Col = styled.div`
     flex-direction: column;
 `;
+
+const buildAutoLockOption = (seconds: number) => ({
+    label: formatDurationStrict(seconds),
+    value: seconds,
+});
+
+// auto lock times in seconds; allowed lock times by device: <1 minute, 6 days>
+const AUTO_LOCK_TIMES = {
+    '1_MINUTE': 60,
+    '10_MINUTES': 60 * 10,
+    '1_HOUR': 60 * 60,
+    '1_DAY': 60 * 60 * 24,
+    '6_DAYS': 60 * 60 * 24 * 6,
+} as const;
+
+const AUTO_LOCK_OPTIONS = {
+    label: <Translation id="TR_DEVICE_SETTINGS_AFTER_DELAY" />,
+    options: Object.values(AUTO_LOCK_TIMES).map(time => buildAutoLockOption(time)),
+} as const;
+
+const DISPLAY_ROTATIONS = [
+    { label: <Translation id="TR_NORTH" />, value: 0 },
+    { label: <Translation id="TR_EAST" />, value: 90 },
+    { label: <Translation id="TR_SOUTH" />, value: 180 },
+    { label: <Translation id="TR_WEST" />, value: 270 },
+] as const;
 
 const Settings = () => {
     const device = useSelector(state => state.suite.device);
@@ -69,13 +98,6 @@ const Settings = () => {
     if (!device?.features) {
         return null;
     }
-
-    const DISPLAY_ROTATIONS = [
-        { label: <Translation id="TR_NORTH" />, value: 0 },
-        { label: <Translation id="TR_EAST" />, value: 90 },
-        { label: <Translation id="TR_SOUTH" />, value: 180 },
-        { label: <Translation id="TR_WEST" />, value: 270 },
-    ] as const;
 
     const { features } = device;
 
@@ -450,6 +472,46 @@ const Settings = () => {
                         </ActionColumn>
                     </SectionItem>
                 )}
+                {device.features.pin_protection &&
+                    typeof device.features.auto_lock_delay_ms === 'number' && (
+                        <SectionItem>
+                            <TextColumn
+                                title={<Translation id="TR_DEVICE_SETTINGS_AUTO_LOCK" />}
+                                description={
+                                    <Translation id="TR_DEVICE_SETTINGS_AUTO_LOCK_SUBHEADING" />
+                                }
+                            />
+                            <ActionColumn>
+                                <ActionSelect
+                                    noTopLabel
+                                    hideTextCursor
+                                    useKeyPressScroll
+                                    placeholder=""
+                                    onChange={(option: { value: number; label: string }) => {
+                                        const value = option.value * 1000;
+
+                                        applySettings({
+                                            auto_lock_delay_ms: value,
+                                        });
+                                        analytics.report({
+                                            type: 'settings/device/update-auto-lock',
+                                            payload: {
+                                                value,
+                                            },
+                                        });
+                                    }}
+                                    options={[AUTO_LOCK_OPTIONS]}
+                                    value={AUTO_LOCK_OPTIONS.options.find(
+                                        option =>
+                                            features.auto_lock_delay_ms &&
+                                            features.auto_lock_delay_ms / 1000 === option.value,
+                                    )}
+                                    isDisabled={isDeviceLocked}
+                                    data-test="@settings/auto-lock-select"
+                                />
+                            </ActionColumn>
+                        </SectionItem>
+                    )}
             </Section>
             <Section title={<Translation id="TR_ADVANCED" />}>
                 <SectionItem>
