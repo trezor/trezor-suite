@@ -33,8 +33,7 @@ const OptionWrapper = styled.div`
 `;
 
 const LogoWrapper = styled.div`
-    padding-left: 8px;
-    padding-right: 6px;
+    padding-right: 8px;
     display: flex;
     align-items: center;
 `;
