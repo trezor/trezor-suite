@@ -18,6 +18,7 @@ import AccountNavigationSticky from './components/AccountNavigationSticky';
 const BalanceWrapper = styled.div`
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
 `;
 
 const Balance = styled(H1)`
