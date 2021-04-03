@@ -291,7 +291,7 @@
 	"TR_BACKUP_RECOVERY_SEED_FAILED_TITLE": "Backup failed",
 	"TR_BACKUP_SEED_CREATED_SUCCESSFULLY": "Backup created",
 	"TR_BACKUP_SEED_IS_ULTIMATE": "Your recovery seed is the key to your wallet and funds. If you lose it, it's gone forever: there is no other way to restore a lost wallet.",
-	"TR_BACKUP_SUBHEADING_1": "Your Trezor will generate a list of words which you need write down. This information is the most important part of securing your Trezor: it is the only offline backup of your Trezor and all wallets associated with it.",
+	"TR_BACKUP_SUBHEADING_1": "Your Trezor will generate a list of words which you need to write down. This information is the most important part of securing your Trezor: it is the only offline backup of your Trezor and all wallets associated with it.",
 	"TR_BACKUP_SUCCESSFUL": "Backup successful\n",
 	"TR_BACKUP_TYPE": "Select type of wallet backup",
 	"TR_BACKUP_YOUR_DEVICE": "Backup your wallet\n",
