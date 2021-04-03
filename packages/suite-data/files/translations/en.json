@@ -851,7 +851,7 @@
 	"TR_NO_FIRMWARE": "Firmware not installed",
 	"TR_NO_FIRMWARE_EXPLAINED": "You need to install firmware before using your device.",
 	"TR_NO_PASSPHRASE_WALLET": "Standard wallet",
-	"TR_NO_SEARCH_RESULTS": "No results for your search criterias",
+	"TR_NO_SEARCH_RESULTS": "No results for your search criterion",
 	"TR_NUMBER_OF_TRANSACTIONS": "Volume",
 	"TR_NUM_ACCOUNTS_FIAT_VALUE": "{accountsCount} {accountsCount, plural, one {account} other {accounts}} • {fiatValue}",
 	"TR_N_TRANSACTIONS": "{value} {value, plural, one {transaction} other {transactions}}",
