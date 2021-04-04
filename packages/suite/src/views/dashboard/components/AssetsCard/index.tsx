@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { NETWORKS } from '@wallet-config';
 import { Section } from '@dashboard-components';
-import Asset, { AssetSkeleton } from './components/Asset';
+import AssetTable, { AssetSkeleton } from './components/AssetTable';
+import AssetGrid from './components/AssetGrid';
 import { Account } from '@wallet-types';
-import { variables, Icon, Button } from '@trezor/components';
+import { variables, Icon, Button, colors } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
 import { useDiscovery, useActions } from '@suite-hooks';
 import { useAccounts } from '@wallet-hooks';
@@ -23,6 +24,11 @@ const InfoMessage = styled.div`
     color: ${props => props.theme.TYPE_RED};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
+`;
+
+const ActionsWrapper = styled.div`
+    display: flex;
+    justify-content: space-around;
 `;
 
 const Header = styled.div`
@@ -49,6 +55,12 @@ const Grid = styled.div`
     grid-template-columns: 2fr 2fr 1fr;
 `;
 
+const GridWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+`;
+
 const StyledAddAccountButton = styled(Button)`
     margin-left: 20px;
 `;
@@ -57,6 +69,8 @@ const AssetsCard = () => {
     const theme = useTheme();
     const { discovery, getDiscoveryStatus } = useDiscovery();
     const { accounts } = useAccounts(discovery);
+    const [isTableMode, setIsTableMode] = useState(true);
+
     const { goto } = useActions({
         goto: routerActions.goto,
     });
@@ -89,62 +103,106 @@ const AssetsCard = () => {
                     </StyledAddAccountButton>
                 </>
             }
+            actions={
+                <ActionsWrapper>
+                    <Icon
+                        icon="TABLE"
+                        onClick={() => setIsTableMode(true)}
+                        color={isTableMode ? colors.BG_GREEN : colors.TYPE_LIGHT_GREY}
+                    />
+                    <Icon
+                        icon="GRID"
+                        onClick={() => setIsTableMode(false)}
+                        color={!isTableMode ? colors.BG_GREEN : colors.TYPE_LIGHT_GREY}
+                    />
+                </ActionsWrapper>
+            }
         >
-            <StyledCard>
-                <AnimatePresence initial={false}>
-                    <Grid>
-                        <Header>
-                            <Translation id="TR_ASSETS" />
-                        </Header>
-                        <Header>
-                            <Translation id="TR_VALUES" />
-                        </Header>
-                        <Header>
-                            <Translation id="TR_EXCHANGE_RATE" />
-                        </Header>
-                        {networks.map((symbol, i) => {
-                            const network = NETWORKS.find(
-                                n => n.symbol === symbol && !n.accountType,
-                            );
-                            if (!network) {
-                                return 'unknown network';
-                            }
+            {!isTableMode && (
+                <GridWrapper>
+                    {networks.map((symbol) => {
+                        const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
+                        if (!network) {
+                            return 'unknown network';
+                        }
 
-                            const assetBalance = assets[symbol].reduce(
-                                (prev, a) => prev.plus(a.formattedBalance),
-                                new BigNumber(0),
-                            );
+                        const assetBalance = assets[symbol].reduce(
+                            (prev, a) => prev.plus(a.formattedBalance),
+                            new BigNumber(0),
+                        );
 
-                            const assetFailed = accounts.find(
-                                f => f.symbol === network.symbol && f.failed,
-                            );
+                        const assetFailed = accounts.find(
+                            f => f.symbol === network.symbol && f.failed,
+                        );
 
-                            return (
-                                <Asset
-                                    key={symbol}
-                                    network={network}
-                                    failed={!!assetFailed}
-                                    cryptoValue={assetBalance.toFixed()}
-                                    isLastRow={i === networks.length - 1}
-                                />
-                            );
-                        })}
-                        {discoveryInProgress && <AssetSkeleton />}
-                    </Grid>
-                </AnimatePresence>
+                        return (
+                            <AssetGrid
+                                key={symbol}
+                                network={network}
+                                failed={!!assetFailed}
+                                cryptoValue={assetBalance.toFixed()}
+                            />
+                        );
+                    })}
+                </GridWrapper>
+            )}
+            {isTableMode && (
+                <StyledCard>
+                    <AnimatePresence initial={false}>
+                        <Grid>
+                            <Header>
+                                <Translation id="TR_ASSETS" />
+                            </Header>
+                            <Header>
+                                <Translation id="TR_VALUES" />
+                            </Header>
+                            <Header>
+                                <Translation id="TR_EXCHANGE_RATE" />
+                            </Header>
+                            {networks.map((symbol, i) => {
+                                const network = NETWORKS.find(
+                                    n => n.symbol === symbol && !n.accountType,
+                                );
+                                if (!network) {
+                                    return 'unknown network';
+                                }
 
-                {isError && (
-                    <InfoMessage>
-                        <Icon
-                            style={{ paddingRight: '4px', paddingBottom: '2px' }}
-                            icon="WARNING"
-                            color={theme.TYPE_RED}
-                            size={14}
-                        />
-                        <Translation id="TR_DASHBOARD_ASSETS_ERROR" />
-                    </InfoMessage>
-                )}
-            </StyledCard>
+                                const assetBalance = assets[symbol].reduce(
+                                    (prev, a) => prev.plus(a.formattedBalance),
+                                    new BigNumber(0),
+                                );
+
+                                const assetFailed = accounts.find(
+                                    f => f.symbol === network.symbol && f.failed,
+                                );
+
+                                return (
+                                    <AssetTable
+                                        key={symbol}
+                                        network={network}
+                                        failed={!!assetFailed}
+                                        cryptoValue={assetBalance.toFixed()}
+                                        isLastRow={i === networks.length - 1}
+                                    />
+                                );
+                            })}
+                            {discoveryInProgress && <AssetSkeleton />}
+                        </Grid>
+                    </AnimatePresence>
+
+                    {isError && (
+                        <InfoMessage>
+                            <Icon
+                                style={{ paddingRight: '4px', paddingBottom: '2px' }}
+                                icon="WARNING"
+                                color={theme.TYPE_RED}
+                                size={14}
+                            />
+                            <Translation id="TR_DASHBOARD_ASSETS_ERROR" />
+                        </InfoMessage>
+                    )}
+                </StyledCard>
+            )}
         </Section>
     );
 };

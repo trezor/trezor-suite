@@ -113,7 +113,7 @@ interface Props {
     isLastRow?: boolean;
 }
 
-const Asset = React.memo(({ network, failed, cryptoValue, isLastRow }: Props) => {
+const AssetTable = React.memo(({ network, failed, cryptoValue, isLastRow }: Props) => {
     const { symbol, name } = network;
     const theme = useTheme();
     const { setCoinFilter, setSearchString } = useAccountSearch();
@@ -193,4 +193,4 @@ export const AssetSkeleton = (props: { animate?: boolean }) => {
     );
 };
 
-export default Asset;
+export default AssetTable;
