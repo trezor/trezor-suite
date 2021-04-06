@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 import { getFeeUnits } from '@wallet-utils/sendFormUtils';
 import { Icon, useTheme, CoinLogo } from '@trezor/components';
 import { Translation, FormattedCryptoAmount } from '@suite-components';
-import { getTitleForNetwork, formatNetworkAmount } from '@wallet-utils/accountUtils';
+import { getTitleForNetwork, formatNetworkAmount, formatAmount } from '@wallet-utils/accountUtils';
 import { Account, Network } from '@wallet-types';
 import { formatDuration } from '@suite-utils/date';
 import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
@@ -171,13 +171,13 @@ const Summary = ({
 }: Props) => {
     const theme = useTheme();
     const { symbol } = account;
-    let amount;
-    if (tx.token) {
-        amount = new BigNumber(tx.totalSpent).toString();
-    } else {
-        amount = new BigNumber(tx.totalSpent).minus(tx.fee).toString();
-    }
+
     const feePerByte = new BigNumber(tx.feePerByte).decimalPlaces(3).toString();
+    const spentWithoutFee = !tx.token ? new BigNumber(tx.totalSpent).minus(tx.fee).toString() : '';
+    const amount = !tx.token
+        ? formatNetworkAmount(spentWithoutFee, symbol)
+        : formatAmount(tx.totalSpent, tx.token.decimals);
+
     const accountLabel = account.metadata.accountLabel ? (
         <span style={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
             {account.metadata.accountLabel}
@@ -203,7 +203,7 @@ const Summary = ({
                     <HeadlineAmount>
                         <FormattedCryptoAmount
                             disableHiddenPlaceholder
-                            value={formatNetworkAmount(amount, symbol)}
+                            value={amount}
                             symbol={tx.token?.symbol ?? symbol}
                         />
                     </HeadlineAmount>
