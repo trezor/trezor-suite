@@ -1,7 +1,15 @@
 # Changelog
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). [YY.MM.MICRO]
 
-## 21.4.0 [to be released 14th April 2021]
+## 21.5.0 [to be released 12th May 2021]
+
+### Added
+
+### Changed
+
+### Fixed
+
+## 21.4.1 [to be released 14th April 2021]
 
 ### Added
 - Timerange selector UX/UI improved, ability to pick year/month, date format aligned with Suite
