@@ -3,6 +3,8 @@ import {
     formatCryptoAmount,
     symbolToInvityApiSymbol,
     getUnusedAddressFromAccount,
+    getCountryLabelParts,
+    mapTestnetSymbol,
 } from '../coinmarketUtils';
 
 describe('coinmarket utils', () => {
@@ -57,5 +59,24 @@ describe('coinmarket utils', () => {
             address: '0x2e0DC981d301cdd443C3987cf19Eb9671CB99ddC',
             path: "m/44'/60'/0'/0/1",
         });
+    });
+
+    it('getCountryLabelParts', () => {
+        expect(getCountryLabelParts('🇨🇿 Czech Republic')).toStrictEqual({
+            flag: '🇨🇿',
+            text: 'Czech Republic',
+        });
+        expect(getCountryLabelParts('aaa')).toStrictEqual({
+            flag: '',
+            text: 'aaa',
+        });
+    });
+
+    it('mapTestnetCryptoCurrency', () => {
+        expect(mapTestnetSymbol('btc')).toStrictEqual('btc');
+        expect(mapTestnetSymbol('eth')).toStrictEqual('eth');
+        expect(mapTestnetSymbol('test')).toStrictEqual('btc');
+        expect(mapTestnetSymbol('trop')).toStrictEqual('eth');
+        expect(mapTestnetSymbol('txrp')).toStrictEqual('xrp');
     });
 });

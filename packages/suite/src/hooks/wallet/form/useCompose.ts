@@ -212,7 +212,7 @@ export const useCompose = ({
     }, [composedLevels, switchToNearestFee]);
 
     // called from the UI, triggers signing process
-    const signTransaction = () => {
+    const signTransaction = async () => {
         const values = getValues();
         const composedTx = composedLevels
             ? composedLevels[values.selectedFee || 'normal']
@@ -220,7 +220,8 @@ export const useCompose = ({
         if (composedTx && composedTx.type === 'final') {
             // sign workflow in Actions:
             // signTransaction > sign[COIN]Transaction > requestPushTransaction (modal with promise decision)
-            return signAction(values, composedTx);
+            const result = await signAction(values, composedTx);
+            return result?.success;
         }
     };
 

@@ -70,7 +70,7 @@
         "@testing-library/user-event": "^12.6.0",
         "@trezor/translations-manager": "^1.0.0",
         "@types/file-saver": "^2.0.1",
-        "@types/invity-api": "^1.0.2",
+        "@types/invity-api": "^1.0.3",
         "@types/pako": "^1.0.1",
         "@types/pdfmake": "^0.1.16",
         "@types/qs": "^6.9.5",

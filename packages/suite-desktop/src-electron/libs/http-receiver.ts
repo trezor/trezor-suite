@@ -20,6 +20,7 @@ interface Events {
     'oauth/response': (response: { [key: string]: string }) => void;
     'oauth/error': (message: string) => void;
     'buy/redirect': (url: string) => void;
+    'sell/redirect': (url: string) => void;
     'spend/message': (event: { data: string | string[]; origin: string | string[] }) => void;
 }
 
@@ -49,6 +50,7 @@ export class HttpReceiver extends EventEmitter {
         this.routes = [
             { pathname: '/oauth', handler: this.oauthHandler },
             { pathname: '/buy-redirect', handler: this.buyHandler },
+            { pathname: '/sell-redirect', handler: this.sellHandler },
             { pathname: '/spend-iframe', handler: this.spendIframeHandler },
             { pathname: '/spend-handle-message', handler: this.spendHandleMessage },
             { pathname: '/buy-post', handler: this.buyPostSubmitHandler },
@@ -172,6 +174,16 @@ export class HttpReceiver extends EventEmitter {
         const { query } = url.parse(request.url, true);
         if (query && query.p) {
             this.emit('buy/redirect', query.p.toString());
+        }
+
+        const template = this.applyTemplate('You may now close this window.');
+        response.end(template);
+    };
+
+    private sellHandler = (request: Request, response: http.ServerResponse) => {
+        const { query } = url.parse(request.url, true);
+        if (query && query.p) {
+            this.emit('sell/redirect', query.p.toString());
         }
 
         const template = this.applyTemplate('You may now close this window.');

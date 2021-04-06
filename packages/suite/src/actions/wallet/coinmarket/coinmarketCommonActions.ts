@@ -6,6 +6,8 @@ import { COINMARKET_BUY, COINMARKET_EXCHANGE, COINMARKET_COMMON } from '../const
 import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { Account } from '@wallet-types';
 import { ComposedTransactionInfo } from '@wallet-reducers/coinmarketReducer';
+import * as suiteActions from '@suite-actions/suiteActions';
+import { submitRequestForm as envSubmitRequestForm, isDesktop } from '@suite-utils/env';
 
 export type CoinmarketCommonAction = {
     type: typeof COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION_INFO;
@@ -108,3 +110,19 @@ export const saveComposedTransactionInfo = (
     type: COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION_INFO,
     info,
 });
+
+export const submitRequestForm = (form?: {
+    formMethod: 'GET' | 'POST' | 'IFRAME';
+    formAction: string;
+    fields: {
+        [key: string]: string;
+    };
+}) => (dispatch: Dispatch, getState: GetState) => {
+    const { device } = getState().suite;
+    if (device && !device.remember && !isDesktop()) {
+        dispatch(suiteActions.rememberDevice(device, true));
+    }
+    if (form) {
+        envSubmitRequestForm(form.formMethod, form.formAction, form.fields);
+    }
+};

@@ -28,15 +28,17 @@ const Icon = styled.img``;
 const Text = styled.div`
     display: flex;
     align-items: center;
+    font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 interface Props {
+    children?: React.ReactNode;
     method?: BuyCryptoPaymentMethod;
 }
 
-const CoinmarketPaymentType = ({ method }: Props) => (
+const CoinmarketPaymentType = ({ children, method }: Props) => (
     <Wrapper>
         {!method && (
             <Text>
@@ -53,8 +55,13 @@ const CoinmarketPaymentType = ({ method }: Props) => (
                         />
                     </Bg>
                 </IconWrapper>
-                {/* temporary solution - payment mehtod name will be returned by API server to be independent on translations */}
-                <Translation id={`TR_PAYMENT_METHOD_${method.toUpperCase()}` as any} />
+                <div>
+                    {/* temporary solution - payment mehtod name will be returned by API server to be independent on translations */}
+                    <Text>
+                        <Translation id={`TR_PAYMENT_METHOD_${method.toUpperCase()}` as any} />
+                    </Text>
+                    {children}
+                </div>
             </>
         )}
     </Wrapper>

@@ -2,7 +2,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import React from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import { Button, variables } from '@trezor/components';
+import { Button, variables, Link } from '@trezor/components';
 import { CoinmarketTransactionId } from '@wallet-components';
 import { useActions } from '@suite-hooks/useActions';
 import { Account } from '@wallet-types';
@@ -34,7 +34,7 @@ const Description = styled.div`
     text-align: center;
 `;
 
-const Link = styled.a`
+const StyledLink = styled(Link)`
     margin-top: 30px;
     margin-bottom: 30px;
 `;
@@ -60,11 +60,11 @@ const PaymentFailed = ({ transactionId, supportUrl, account }: Props) => {
             </Description>
             {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
             {supportUrl && (
-                <Link href={supportUrl} target="_blank">
+                <StyledLink href={supportUrl} target="_blank">
                     <Button variant="tertiary">
                         <Translation id="TR_EXCHANGE_DETAIL_ERROR_SUPPORT" />
                     </Button>
-                </Link>
+                </StyledLink>
             )}
             <Button
                 onClick={() =>

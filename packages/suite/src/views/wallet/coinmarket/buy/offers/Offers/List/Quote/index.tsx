@@ -145,7 +145,7 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
             if (quote.minCrypto && Number(quote.receiveStringAmount) < quote.minCrypto) {
                 return (
                     <Translation
-                        id="TR_BUY_OFFER_ERROR_MINIMUM_CRYPTO"
+                        id="TR_OFFER_ERROR_MINIMUM_CRYPTO"
                         values={{
                             amount: formatCryptoAmount(Number(quote.receiveStringAmount)),
                             min: formatCryptoAmount(quote.minCrypto),
@@ -157,7 +157,7 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
             if (quote.maxCrypto && Number(quote.receiveStringAmount) > quote.maxCrypto) {
                 return (
                     <Translation
-                        id="TR_BUY_OFFER_ERROR_MAXIMUM_CRYPTO"
+                        id="TR_OFFER_ERROR_MAXIMUM_CRYPTO"
                         values={{
                             amount: formatCryptoAmount(Number(quote.receiveStringAmount)),
                             max: formatCryptoAmount(quote.maxCrypto),
@@ -170,7 +170,7 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
             if (quote.minFiat && Number(quote.fiatStringAmount) < quote.minFiat) {
                 return (
                     <Translation
-                        id="TR_BUY_OFFER_ERROR_MINIMUM_FIAT"
+                        id="TR_OFFER_ERROR_MINIMUM_FIAT"
                         values={{
                             amount: quote.fiatStringAmount,
                             min: quote.minFiat,
@@ -182,7 +182,7 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
             if (quote.maxFiat && Number(quote.fiatStringAmount) > quote.maxFiat) {
                 return (
                     <Translation
-                        id="TR_BUY_OFFER_ERROR_MAXIMUM_FIAT"
+                        id="TR_OFFER_ERROR_MAXIMUM_FIAT"
                         values={{
                             amount: quote.fiatStringAmount,
                             max: quote.maxFiat,

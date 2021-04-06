@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import { variables } from '@trezor/components';
+import { variables, Link } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -15,7 +15,7 @@ const Image = styled.img`
     width: 70px;
 `;
 
-const Link = styled.a`
+const StyledLink = styled(Link)`
     display: flex;
     flex: 1;
     padding-top: 1px;
@@ -25,9 +25,9 @@ const Link = styled.a`
 const CoinmarketProvidedByInvity = () => (
     <Wrapper>
         <Translation id="TR_BUY_PROVIDED_BY_INVITY" />
-        <Link href="https://invity.io/" target="_blank">
+        <StyledLink href="https://invity.io/" target="_blank">
             <Image src={resolveStaticPath('/images/svg/invity-logo.svg')} />
-        </Link>
+        </StyledLink>
     </Wrapper>
 );
 

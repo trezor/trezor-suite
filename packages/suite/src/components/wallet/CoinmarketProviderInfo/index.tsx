@@ -30,7 +30,7 @@ const Text = styled.div`
     display: flex;
     padding-left: 5px;
     align-items: center;
-    font-size: ${variables.FONT_SIZE.SMALL};
+    font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${props => props.theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;

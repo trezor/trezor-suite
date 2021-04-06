@@ -59,13 +59,13 @@ const Soon = styled.div`
 const Navigation = () => {
     const items = [
         { route: 'wallet-coinmarket-buy', title: <Translation id="TR_NAV_BUY" />, soon: false },
+        { route: 'wallet-coinmarket-sell', title: <Translation id="TR_NAV_SELL" />, soon: false },
         {
             route: 'wallet-coinmarket-exchange',
             title: <Translation id="TR_NAV_EXCHANGE" />,
             soon: false,
         },
         { route: 'wallet-coinmarket-spend', title: <Translation id="TR_NAV_SPEND" />, soon: false },
-        { route: 'wallet-coinmarket-sell', title: <Translation id="TR_NAV_SELL" />, soon: true },
     ] as const;
 
     const routeName = useSelector(state => state.router.route?.name);

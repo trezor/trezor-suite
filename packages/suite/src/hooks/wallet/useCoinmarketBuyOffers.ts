@@ -48,7 +48,7 @@ export const useOffers = (props: Props) => {
         openCoinmarketBuyConfirmModal: coinmarketBuyActions.openCoinmarketBuyConfirmModal,
         addNotification: notificationActions.addToast,
         saveTransactionDetailId: coinmarketBuyActions.saveTransactionDetailId,
-        submitRequestForm: coinmarketBuyActions.submitRequestForm,
+        submitRequestForm: coinmarketCommonActions.submitRequestForm,
         verifyAddress: coinmarketCommonActions.verifyAddress,
         goto: routerActions.goto,
     });
@@ -107,7 +107,7 @@ export const useOffers = (props: Props) => {
                     const response = await invityAPI.doBuyTrade({ trade: quote, returnUrl });
                     if (response) {
                         if (response.trade.status === 'LOGIN_REQUEST' && response.tradeForm) {
-                            submitRequestForm(response.tradeForm);
+                            submitRequestForm(response.tradeForm.form);
                         } else {
                             const errorMessage = `[doBuyTrade] ${response.trade.status} ${response.trade.error}`;
                             console.log(errorMessage);
@@ -152,7 +152,7 @@ export const useOffers = (props: Props) => {
         } else {
             saveTrade(response.trade, account, new Date().toISOString());
             if (response.tradeForm) {
-                submitRequestForm(response.tradeForm);
+                submitRequestForm(response.tradeForm.form);
             }
             if (isDesktop()) {
                 saveTransactionDetailId(response.trade.paymentId);

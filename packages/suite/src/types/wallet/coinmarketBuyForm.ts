@@ -9,11 +9,7 @@ import {
 } from '@wallet-actions/coinmarketBuyActions';
 import { UseFormMethods } from 'react-hook-form';
 import { TypedValidationRules } from './form';
-import { FlagProps } from '@trezor/components';
-
-export type Option = { value: string; label: string };
-export type CountryOption = { value: FlagProps['country']; label: string };
-export type defaultCountryOption = { value: string; label?: string };
+import { DefaultCountryOption, Option } from './coinmarketCommonTypes';
 
 export interface ComponentProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
@@ -45,7 +41,7 @@ export type BuyFormContextValues = Omit<UseFormMethods<FormState>, 'register'> &
     register: (rules?: TypedValidationRules) => (ref: any) => void; // TODO: ReturnType of UseFormMethods['register'] union
     onSubmit: () => void;
     account: Account;
-    defaultCountry: defaultCountryOption;
+    defaultCountry: DefaultCountryOption;
     defaultCurrency: Option;
     buyInfo?: BuyInfo;
     saveQuoteRequest: typeof saveQuoteRequest;

@@ -2,7 +2,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import React from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
-import { Button, variables } from '@trezor/components';
+import { Button, variables, Link } from '@trezor/components';
 import { CoinmarketTransactionId } from '@wallet-components';
 import { useActions } from '@suite-hooks/useActions';
 import { Account } from '@wallet-types';
@@ -35,7 +35,7 @@ const Description = styled.div`
     text-align: center;
 `;
 
-const Link = styled.a`
+const StyledLink = styled(Link)`
     margin-top: 5px;
     margin-bottom: 20px;
 `;
@@ -62,11 +62,11 @@ const PaymentKYC = ({ transactionId, supportUrl, provider, account }: Props) => 
             </Description>
             {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
             {supportUrl && (
-                <Link href={supportUrl} target="_blank">
+                <StyledLink href={supportUrl} target="_blank">
                     <Button variant="tertiary">
                         <Translation id="TR_EXCHANGE_DETAIL_KYC_SUPPORT" />
                     </Button>
-                </Link>
+                </StyledLink>
             )}
             {provider?.kycUrl && (
                 <Link href={provider?.kycUrl} target="_blank">

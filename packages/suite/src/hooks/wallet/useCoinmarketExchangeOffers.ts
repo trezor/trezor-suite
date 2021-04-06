@@ -1,21 +1,18 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import invityAPI from '@suite-services/invityAPI';
-import { useActions, useSelector, useDevice, useTranslation } from '@suite-hooks';
+import { useActions, useSelector, useDevice } from '@suite-hooks';
 import { useTimer } from '@suite-hooks/useTimeInterval';
 import { ExchangeCoinInfo, ExchangeTrade } from 'invity-api';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
-import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { Account } from '@wallet-types';
 import { Props, ContextValues, ExchangeStep } from '@wallet-types/coinmarketExchangeOffers';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { splitToFixedFloatQuotes } from '@wallet-utils/coinmarket/exchangeUtils';
 import networks from '@wallet-config/networks';
-import { DEFAULT_VALUES, DEFAULT_PAYMENT } from '@wallet-constants/sendForm';
-import { FormState, UseSendFormState } from '@wallet-types/sendForm';
 import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
-import { getFeeLevels } from '@wallet-utils/sendFormUtils';
+import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign ';
 
 const getReceiveAccountSymbol = (
     symbol?: string,
@@ -47,7 +44,7 @@ export const useOffers = (props: Props) => {
     } = props;
 
     const { isLocked } = useDevice();
-    const { account, network } = selectedAccount;
+    const { account } = selectedAccount;
     const [callInProgress, setCallInProgress] = useState<boolean>(isLocked() || false);
     const [selectedQuote, setSelectedQuote] = useState<ExchangeTrade>();
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
@@ -57,41 +54,34 @@ export const useOffers = (props: Props) => {
     const [innerFixedQuotes, setInnerFixedQuotes] = useState<ExchangeTrade[]>(fixedQuotes);
     const [innerFloatQuotes, setInnerFloatQuotes] = useState<ExchangeTrade[]>(floatQuotes);
     const [exchangeStep, setExchangeStep] = useState<ExchangeStep>('RECEIVING_ADDRESS');
-    const { goto } = useActions({ goto: routerActions.goto });
-    const { verifyAddress } = useActions({ verifyAddress: coinmarketCommonActions.verifyAddress });
     const {
+        goto,
         saveTrade,
         openCoinmarketExchangeConfirmModal,
         saveTransactionId,
         addNotification,
-        composeAction,
-        signAction,
+        verifyAddress,
     } = useActions({
+        goto: routerActions.goto,
         saveTrade: coinmarketExchangeActions.saveTrade,
         openCoinmarketExchangeConfirmModal:
             coinmarketExchangeActions.openCoinmarketExchangeConfirmModal,
         saveTransactionId: coinmarketExchangeActions.saveTransactionId,
         addNotification: notificationActions.addToast,
-        composeAction: sendFormActions.composeTransaction,
-        signAction: sendFormActions.signTransaction,
+        verifyAddress: coinmarketCommonActions.verifyAddress,
     });
 
-    const { invityAPIUrl, exchangeCoinInfo, accounts, composed, selectedFee, fees } = useSelector(
-        state => ({
-            invityAPIUrl: state.suite.settings.debug.invityAPIUrl,
-            exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
-            accounts: state.wallet.accounts,
-            composed: state.wallet.coinmarket.composedTransactionInfo.composed,
-            selectedFee: state.wallet.coinmarket.composedTransactionInfo.selectedFee,
-            fees: state.wallet.fees,
-        }),
-    );
+    const { invityAPIUrl, exchangeCoinInfo, accounts } = useSelector(state => ({
+        invityAPIUrl: state.suite.settings.debug.invityAPIUrl,
+        exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
+        accounts: state.wallet.accounts,
+    }));
+
+    const { recomposeAndSign } = useCoinmarketRecomposeAndSign();
 
     if (invityAPIUrl) {
         invityAPI.setInvityAPIServer(invityAPIUrl);
     }
-
-    const { translationString } = useTranslation();
 
     useEffect(() => {
         if (!quotesRequest) {
@@ -204,68 +194,16 @@ export const useOffers = (props: Props) => {
             selectedQuote &&
             selectedQuote.orderId &&
             selectedQuote.sendAddress &&
-            selectedQuote.sendStringAmount &&
-            composed &&
-            composed?.totalSpent
+            selectedQuote.sendStringAmount
         ) {
-            // prepare the fee levels, set custom values from composed
-            // WORKAROUND: sendFormEthereumActions and sendFormRippleActions use form outputs instead of composed transaction data
-            const formValues: FormState = {
-                ...DEFAULT_VALUES,
-                outputs: [
-                    {
-                        ...DEFAULT_PAYMENT,
-                        address: selectedQuote.sendAddress,
-                        amount: selectedQuote.sendStringAmount,
-                        token: composed.token?.address || null,
-                    },
-                ],
-                selectedFee,
-                feePerUnit: composed.feePerByte,
-                feeLimit: composed.feeLimit || '',
-                estimatedFeeLimit: composed.estimatedFeeLimit,
-                options: ['broadcast'],
-                rippleDestinationTag: selectedQuote.partnerPaymentExtraId,
-            };
-
-            // prepare form state for composeAction
-            const coinFees = fees[account.symbol];
-            const levels = getFeeLevels(account.networkType, coinFees);
-            const feeInfo = { ...coinFees, levels };
-            const formState = { account, network, feeInfo };
-
-            // compose transaction again to recalculate fees based on real account values
-            const composedLevels = await composeAction(formValues, formState as UseSendFormState);
-            if (!selectedFee || !composedLevels) {
-                addNotification({
-                    type: 'sign-tx-error',
-                    error: 'Missing level',
-                });
-                return;
-            }
-            const composedToSign = composedLevels[selectedFee];
-
-            if (!composedToSign || composedToSign.type !== 'final') {
-                let errorMessage: string | undefined;
-                if (composedToSign?.type === 'error' && composedToSign.errorMessage) {
-                    errorMessage = translationString(
-                        composedToSign.errorMessage.id,
-                        composedToSign.errorMessage.values as { [key: string]: any },
-                    );
-                }
-                if (!errorMessage) {
-                    errorMessage = 'Cannot create transaction';
-                }
-                addNotification({
-                    type: 'sign-tx-error',
-                    error: errorMessage,
-                });
-                return;
-            }
-
-            const result = await signAction(formValues, composedToSign);
-
-            if (result) {
+            const result = await recomposeAndSign(
+                selectedAccount,
+                selectedQuote.sendAddress,
+                selectedQuote.sendStringAmount,
+                selectedQuote.partnerPaymentExtraId,
+            );
+            // in case of not success, recomposeAndSign shows notification
+            if (result?.success) {
                 await saveTrade(selectedQuote, account, new Date().toISOString());
                 await saveTransactionId(selectedQuote.orderId);
                 goto('wallet-coinmarket-exchange-detail', {

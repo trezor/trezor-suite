@@ -121,7 +121,7 @@ function getQuoteError(quote: ExchangeTrade) {
     if (quote.min && Number(quote.sendStringAmount) < quote.min) {
         return (
             <Translation
-                id="TR_EXCHANGE_OFFER_ERROR_MINIMUM"
+                id="TR_OFFER_ERROR_MINIMUM_CRYPTO"
                 values={{
                     amount: formatCryptoAmount(Number(quote.sendStringAmount)),
                     min: formatCryptoAmount(quote.min),
@@ -133,7 +133,7 @@ function getQuoteError(quote: ExchangeTrade) {
     if (quote.max && quote.max !== 'NONE' && Number(quote.sendStringAmount) > quote.max) {
         return (
             <Translation
-                id="TR_EXCHANGE_OFFER_ERROR_MAXIMUM"
+                id="TR_OFFER_ERROR_MAXIMUM_CRYPTO"
                 values={{
                     amount: formatCryptoAmount(Number(quote.sendStringAmount)),
                     max: formatCryptoAmount(quote.max),

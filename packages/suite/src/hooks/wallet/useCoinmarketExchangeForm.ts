@@ -1,9 +1,7 @@
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import TrezorConnect from 'trezor-connect';
 import { ExchangeTradeQuoteRequest } from 'invity-api';
-import { NETWORKS } from '@wallet-config';
-import { useActions } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import invityAPI from '@suite-services/invityAPI';
 import { toFiatCurrency, fromFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
@@ -21,6 +19,7 @@ import {
     FIAT_INPUT,
     FIAT_CURRENCY,
 } from '@wallet-types/coinmarketExchangeForm';
+import { getComposeAddressPlaceholder } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { getAmountLimits, splitToFixedFloatQuotes } from '@wallet-utils/coinmarket/exchangeUtils';
 import { useFees } from './form/useFees';
 import { useCompose } from './form/useCompose';
@@ -76,52 +75,15 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
 
     const [state, setState] = useState<ReturnType<typeof useExchangeState>>(undefined);
 
+    const { accounts } = useSelector(state => ({
+        accounts: state.wallet.accounts,
+    }));
+
     // throttle initial state calculation
     const initState = useExchangeState(props, !!state);
     useEffect(() => {
-        const getComposeAddressPlaceholder = async () => {
-            // the address is later replaced by the address of the exchange
-            // as a precaution, use user's own address as a placeholder
-            const { networkType } = account;
-            switch (networkType) {
-                case 'bitcoin': {
-                    // use legacy (the most expensive) address for fee calculation
-                    // as we do not know what address type the exchange will use
-                    const legacy =
-                        NETWORKS.find(
-                            network =>
-                                network.symbol === account.symbol &&
-                                network.accountType === 'legacy',
-                        ) ||
-                        NETWORKS.find(
-                            network =>
-                                network.symbol === account.symbol &&
-                                network.accountType === 'segwit',
-                        ) ||
-                        network;
-                    if (legacy && device) {
-                        const result = await TrezorConnect.getAddress({
-                            device,
-                            coin: legacy.symbol,
-                            path: `${legacy.bip44.replace('i', '0')}/0/0`,
-                            useEmptyPassphrase: device.useEmptyPassphrase,
-                            showOnTrezor: false,
-                        });
-                        if (result.success) {
-                            return result.payload.address;
-                        }
-                    }
-                    // as a fallback, use the change address of current account
-                    return account.addresses?.change[0].address;
-                }
-                case 'ethereum':
-                case 'ripple':
-                    return account.descriptor;
-                // no default
-            }
-        };
         const setStateAsync = async (initState: ReturnType<typeof useExchangeState>) => {
-            const address = await getComposeAddressPlaceholder();
+            const address = await getComposeAddressPlaceholder(account, network, device, accounts);
             if (initState && address) {
                 initState.formValues.outputs[0].address = address;
                 setState(initState);
@@ -131,7 +93,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         if (!state && initState) {
             setStateAsync(initState);
         }
-    }, [state, initState, account, network, device]);
+    }, [state, initState, account, network, device, accounts]);
 
     const methods = useForm<ExchangeFormState>({
         mode: 'onChange',

@@ -21,6 +21,12 @@ import {
     SellVoucherTradeQuoteResponse,
     SellVoucherTradeRequest,
     SellVoucherTrade,
+    SellFiatTradeQuoteRequest,
+    SellFiatTrade,
+    SellFiatTradeQuoteResponse,
+    SellFiatTradeRequest,
+    SellFiatTradeResponse,
+    WatchSellTradeResponse,
 } from 'invity-api';
 import { isDesktop } from '@suite-utils/env';
 
@@ -32,7 +38,8 @@ type BodyType =
     | BuyTradeQuoteRequest
     | BuyTradeRequest
     | SellVoucherTradeQuoteRequest
-    | SellVoucherTradeRequest;
+    | SellVoucherTradeRequest
+    | SellFiatTradeRequest;
 
 class InvityAPI {
     unknownCountry = 'unknown';
@@ -65,6 +72,10 @@ class InvityAPI {
     private VOUCHER_QUOTES = '/api/sell/voucher/quotes';
     private VOUCHER_REQUEST_TRADE = '/api/sell/voucher/trade';
     private VOUCHER_CONFIRM_TRADE = '/api/sell/voucher/confirm';
+    private SELL_FIAT_QUOTES = '/api/sell/fiat/quotes';
+    private SELL_FIAT_DO_TRADE = '/api/sell/fiat/trade';
+    private SELL_FIAT_CONFIRM = '/api/sell/fiat/confirm';
+    private SELL_FIAT_WATCH_TRADE = '/api/sell/fiat/watch/{{counter}}';
 
     private static accountDescriptor: string;
     private static apiKey: string;
@@ -331,6 +342,65 @@ class InvityAPI {
         } catch (error) {
             console.log('[confirmVoucherTrade]', error);
             return { error: error.toString(), exchange: trade.exchange };
+        }
+    };
+
+    getSellQuotes = async (params: SellFiatTradeQuoteRequest): Promise<SellFiatTrade[]> => {
+        try {
+            const response: SellFiatTradeQuoteResponse = await this.request(
+                this.SELL_FIAT_QUOTES,
+                params,
+                'POST',
+            );
+            return response;
+        } catch (error) {
+            console.log('[getSellQuotes]', error);
+        }
+        return [];
+    };
+
+    doSellTrade = async (tradeRequest: SellFiatTradeRequest): Promise<SellFiatTradeResponse> => {
+        try {
+            const response: SellFiatTradeResponse = await this.request(
+                this.SELL_FIAT_DO_TRADE,
+                tradeRequest,
+                'POST',
+            );
+            return response;
+        } catch (error) {
+            console.log('[doSellTrade]', error);
+            return { trade: { error: error.toString(), exchange: tradeRequest.trade.exchange } };
+        }
+    };
+
+    doSellConfirm = async (trade: SellFiatTrade): Promise<SellFiatTrade> => {
+        try {
+            const response: SellFiatTrade = await this.request(
+                this.SELL_FIAT_CONFIRM,
+                trade,
+                'POST',
+            );
+            return response;
+        } catch (error) {
+            console.log('[doSellConfirm]', error);
+            return { error: error.toString(), exchange: trade.exchange };
+        }
+    };
+
+    watchSellTrade = async (
+        trade: SellFiatTrade,
+        counter: number,
+    ): Promise<WatchSellTradeResponse> => {
+        try {
+            const response: WatchSellTradeResponse = await this.request(
+                this.SELL_FIAT_WATCH_TRADE.replace('{{counter}}', counter.toString()),
+                trade,
+                'POST',
+            );
+            return response;
+        } catch (error) {
+            console.log('[watchSellFiatTrade]', error);
+            return { error: error.toString() };
         }
     };
 }
