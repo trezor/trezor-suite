@@ -5462,6 +5462,10 @@ const definedMessages = defineMessages({
         defaultMessage:
             'It seems you are running multiple instances of the app. If you are using Suite in other window or tab, close it and refresh the app.',
     },
+    TR_WAIT_FOR_REBOOT_WEBUSB_DESCRIPTION: {
+        id: 'TR_WAIT_FOR_REBOOT_WEBUSB_DESCRIPTION',
+        defaultMessage: 'Please wait for Trezor to reboot and pair the device again.',
+    },
 } as const);
 
 export default definedMessages;
