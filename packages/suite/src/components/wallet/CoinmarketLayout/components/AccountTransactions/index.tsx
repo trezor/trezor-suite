@@ -5,6 +5,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import BuyTransaction from './components/BuyTransaction';
+import SellTransaction from './components/SellTransaction';
 import ExchangeTransaction from './components/ExchangeTransaction';
 import SpendTransaction from './components/SpendTransaction';
 
@@ -72,6 +73,7 @@ const AccountTransactions = () => {
         tx => tx.tradeType === 'exchange',
     );
     const spendTransactions = sortedAccountTransactions.filter(tx => tx.tradeType === 'spend');
+    const sellTransactions = sortedAccountTransactions.filter(tx => tx.tradeType === 'sell');
 
     return (
         <Wrapper>
@@ -87,6 +89,7 @@ const AccountTransactions = () => {
                             <Translation id="TR_BUY_ACCOUNT_TRANSACTIONS" />
                             <TransactionCount>
                                 {buyTransactions.length} <Translation id="TR_TRADE_BUYS" /> •{' '}
+                                {sellTransactions.length} <Translation id="TR_TRADE_SELLS" /> •{' '}
                                 {exchangeTransactions.length}{' '}
                                 <Translation id="TR_TRADE_EXCHANGES" /> • {spendTransactions.length}{' '}
                                 <Translation id="TR_TRADE_SPENDS" />
@@ -102,6 +105,16 @@ const AccountTransactions = () => {
                                         key={`${trade.tradeType}-${trade.key}`}
                                         trade={trade}
                                         providers={buyProviders}
+                                    />
+                                );
+                            }
+                            if (trade.tradeType === 'sell') {
+                                return (
+                                    <SellTransaction
+                                        account={account}
+                                        key={`${trade.tradeType}-${trade.key}`}
+                                        trade={trade}
+                                        providers={sellProviders}
                                     />
                                 );
                             }

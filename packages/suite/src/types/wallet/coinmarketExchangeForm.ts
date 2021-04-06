@@ -6,14 +6,12 @@ import { ExchangeTrade, ExchangeTradeQuoteRequest, ExchangeCoinInfo } from 'invi
 import { CoinmarketExchangeAction, ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
 import { TypedValidationRules } from './form';
 import { FeeInfo, FormState, PrecomposedLevels } from '@wallet-types/sendForm';
+import { Option } from './coinmarketCommonTypes';
 
 export const CRYPTO_INPUT = 'outputs[0].amount';
 export const CRYPTO_TOKEN = 'outputs[0].token';
 export const FIAT_INPUT = 'outputs[0].fiat';
 export const FIAT_CURRENCY = 'outputs[0].currency';
-
-export type Option = { value: string; label: string };
-export type defaultCountryOption = { value: string; label?: string };
 
 export interface ComponentProps {
     selectedAccount: AppState['wallet']['selectedAccount'];

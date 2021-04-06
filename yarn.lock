@@ -4895,10 +4895,10 @@
   resolved "https://registry.yarnpkg.com/@types/http-cache-semantics/-/http-cache-semantics-4.0.0.tgz#9140779736aa2655635ee756e2467d787cfe8a2a"
   integrity sha512-c3Xy026kOF7QOTn00hbIllV1dLR9hG9NkSrLQgCVs8NF6sBU+VGWjD3wLPhmh1TYAc7ugCFsvHYMN4VcBN1U1A==
 
-"@types/invity-api@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@types/invity-api/-/invity-api-1.0.2.tgz#a970f8e981fba208287770e9ace735e59b35c50f"
-  integrity sha512-hFtEv5lfyWxbOq7fDjjtGvoL2eQCIHfeh/Be6OK8JsqtrwK0LDLQGIOcLo8PPU4OWUMNMPXy6HBQV/GGCCZ54g==
+"@types/invity-api@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@types/invity-api/-/invity-api-1.0.3.tgz#2632a0fe35454384f655004fe09363378524b788"
+  integrity sha512-gBBqQBa7FUTgRovMbPu+OFr672gyZYU+0/ahhIscoCCREtN4K4qkk8rqt29ok5yztfWPp0NPdK8vxjz/jFx8/Q==
 
 "@types/is-function@^1.0.0":
   version "1.0.0"

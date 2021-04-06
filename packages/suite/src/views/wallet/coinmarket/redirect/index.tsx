@@ -5,6 +5,7 @@ import { Account } from '@wallet-types';
 import { variables } from '@trezor/components';
 import { useCoinmarketRedirect } from '@wallet-hooks/useCoinmarketRedirect';
 import { Translation } from '@suite-components';
+import { FeeLevel } from 'trezor-connect';
 
 const Wrapper = styled.div`
     display: flex;
@@ -17,7 +18,7 @@ const Wrapper = styled.div`
 `;
 
 const CoinmarketRedirect = () => {
-    const { redirectToOffers, redirectToDetail } = useCoinmarketRedirect();
+    const { redirectToOffers, redirectToDetail, redirectToSellOffers } = useCoinmarketRedirect();
     const router = useSelector(state => state.router);
 
     useEffect(() => {
@@ -26,7 +27,7 @@ const CoinmarketRedirect = () => {
         if (!params) return;
 
         const redirectCommonParams = {
-            routeType: params[0] as 'detail' | 'offers',
+            routeType: params[0] as 'detail' | 'offers' | 'sell-offers',
             symbol: params[1] as Account['symbol'],
             accountType: params[2] as Account['accountType'],
             index: parseInt(params[3], 10),
@@ -43,10 +44,24 @@ const CoinmarketRedirect = () => {
             });
         }
 
+        if (redirectCommonParams.routeType === 'sell-offers') {
+            redirectToSellOffers({
+                ...redirectCommonParams,
+                amountInCrypto: params[4] === 'qc',
+                fiatCurrency: params[6],
+                amount: params[7],
+                cryptoCurrency: params[8],
+                country: params[5],
+                selectedFee: params[9] as FeeLevel['label'],
+                feePerByte: params[10],
+                feeLimit: params[11],
+            });
+        }
+
         if (redirectCommonParams.routeType === 'detail') {
             redirectToDetail({ ...redirectCommonParams, transactionId: params[4] });
         }
-    }, [redirectToOffers, redirectToDetail, router]);
+    }, [redirectToOffers, redirectToDetail, redirectToSellOffers, router]);
 
     return (
         <Wrapper>

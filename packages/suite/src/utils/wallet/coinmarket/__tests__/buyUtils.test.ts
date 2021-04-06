@@ -4,7 +4,6 @@ import {
     processQuotes,
     createQuoteLink,
     getStatusMessage,
-    getCountryLabelParts,
     getCryptoOptions,
     createTxLink,
 } from '../buyUtils';
@@ -117,16 +116,5 @@ describe('coinmarket/buy utils', () => {
                 label: 'GUSD',
             },
         ]);
-    });
-
-    it('getCountryLabelParts', () => {
-        expect(getCountryLabelParts('🇨🇿 Czech Republic')).toStrictEqual({
-            flag: '🇨🇿',
-            text: 'Czech Republic',
-        });
-        expect(getCountryLabelParts('aaa')).toStrictEqual({
-            flag: '',
-            text: 'aaa',
-        });
     });
 });

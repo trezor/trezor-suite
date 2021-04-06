@@ -4,6 +4,7 @@
 import { app, ipcMain } from 'electron';
 
 import { buyRedirectHandler } from '@desktop-electron/libs/buy';
+import { sellRedirectHandler } from '@desktop-electron/libs/sell';
 import { HttpReceiver } from '@desktop-electron/libs/http-receiver';
 
 // External request handler
@@ -22,6 +23,10 @@ const init = ({ mainWindow, src }: Dependencies) => {
 
         httpReceiver.on('buy/redirect', url => {
             buyRedirectHandler(url, mainWindow, src);
+        });
+
+        httpReceiver.on('sell/redirect', url => {
+            sellRedirectHandler(url, mainWindow, src);
         });
 
         httpReceiver.on('spend/message', event => {

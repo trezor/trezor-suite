@@ -8,11 +8,16 @@ import InputError from './InputError';
 import AccountExceptionLayout from './AccountExceptionLayout';
 
 import CoinmarketLayout from './CoinmarketLayout';
-import { CoinmarketBuyTopPanel, CoinmarketExchangeTopPanel } from './CoinmarketTopPanel';
+import {
+    CoinmarketBuyTopPanel,
+    CoinmarketExchangeTopPanel,
+    CoinmarketSellTopPanel,
+} from './CoinmarketTopPanel';
 import CoinmarketProvidedByInvity from './CoinmarketProvidedByInvity';
 import CoinmarketPaymentType from './CoinmarketPaymentType';
 import CoinmarketFooter from './CoinmarketFooter';
 import CoinmarketBuyOfferInfo from './CoinmarketBuyOfferInfo';
+import CoinmarketSellOfferInfo from './CoinmarketSellOfferInfo';
 import CoinmarketExchangeOfferInfo from './CoinmarketExchangeOfferInfo';
 import CoinmarketTransactionId from './CoinmarketTransactionId';
 import CoinmarketProviderInfo from './CoinmarketProviderInfo';
@@ -26,10 +31,12 @@ export {
     CoinBalance,
     CoinmarketLayout,
     CoinmarketBuyTopPanel,
+    CoinmarketSellTopPanel,
     CoinmarketExchangeTopPanel,
     CoinmarketFooter,
     CoinmarketProviderInfo,
     CoinmarketBuyOfferInfo,
+    CoinmarketSellOfferInfo,
     CoinmarketExchangeOfferInfo,
     CoinmarketTransactionId,
     CoinmarketProvidedByInvity,

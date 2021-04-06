@@ -1,12 +1,18 @@
 import reducer, { initialState } from '@wallet-reducers/coinmarketReducer';
 import { TradeBuy, TradeExchange } from '@wallet-types/coinmarketCommonTypes';
 import { STORAGE } from '@suite-actions/constants';
-import { COINMARKET_BUY, COINMARKET_COMMON, COINMARKET_EXCHANGE } from '@wallet-actions/constants';
+import {
+    COINMARKET_BUY,
+    COINMARKET_COMMON,
+    COINMARKET_EXCHANGE,
+    COINMARKET_SELL,
+} from '@wallet-actions/constants';
 import {
     BuyTrade,
     BuyTradeQuoteRequest,
     ExchangeCoinInfo,
     ExchangeTradeQuoteRequest,
+    SellFiatTradeQuoteRequest,
 } from 'invity-api';
 import { BuyInfo } from '@wallet-actions/coinmarketBuyActions';
 import { ExchangeInfo } from '@wallet-actions/coinmarketExchangeActions';
@@ -293,6 +299,45 @@ describe('settings reducer', () => {
         ).toEqual({
             ...initialState,
             trades: [tradeBuy, updatedTradeExchange],
+        });
+    });
+
+    it('COINMARKET_SELL.SET_IS_FROM_REDIRECT', () => {
+        expect(
+            reducer(undefined, {
+                type: COINMARKET_SELL.SET_IS_FROM_REDIRECT,
+                isFromRedirect: true,
+            } as any),
+        ).toEqual({ ...initialState, sell: { ...initialState.sell, isFromRedirect: true } });
+    });
+
+    it('COINMARKET_SELL.SAVE_TRANSACTION_ID', () => {
+        expect(
+            reducer(undefined, {
+                type: COINMARKET_SELL.SAVE_TRANSACTION_ID,
+                transactionId: '1234-1234-1234',
+            } as any),
+        ).toEqual({
+            ...initialState,
+            sell: { ...initialState.sell, transactionId: '1234-1234-1234' },
+        });
+    });
+
+    it('COINMARKET_SELL.SAVE_QUOTE_REQUEST', () => {
+        const request: SellFiatTradeQuoteRequest = {
+            amountInCrypto: true,
+            cryptoCurrency: 'BTC',
+            fiatCurrency: 'EUR',
+            cryptoStringAmount: '1',
+        };
+        expect(
+            reducer(undefined, {
+                type: COINMARKET_SELL.SAVE_QUOTE_REQUEST,
+                request,
+            } as any),
+        ).toEqual({
+            ...initialState,
+            sell: { ...initialState.sell, quotesRequest: request },
         });
     });
 });

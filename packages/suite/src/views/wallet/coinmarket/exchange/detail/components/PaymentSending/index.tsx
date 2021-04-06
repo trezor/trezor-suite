@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, Loader, Button } from '@trezor/components';
+import { variables, Loader, Button, Link } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 
 const Wrapper = styled.div`
@@ -16,7 +16,7 @@ const Title = styled.div`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
-const Link = styled.a`
+const StyledLink = styled(Link)`
     margin-top: 50px;
 `;
 
@@ -31,11 +31,11 @@ const PaymentSending = ({ supportUrl }: Props) => (
             <Translation id="TR_EXCHANGE_DETAIL_SENDING_TITLE" />
         </Title>
         {supportUrl && (
-            <Link href={supportUrl} target="_blank">
+            <StyledLink href={supportUrl} target="_blank">
                 <Button variant="tertiary">
                     <Translation id="TR_EXCHANGE_DETAIL_SENDING_SUPPORT" />
                 </Button>
-            </Link>
+            </StyledLink>
         )}
     </Wrapper>
 );
