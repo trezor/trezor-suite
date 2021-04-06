@@ -99,6 +99,11 @@ const init = async ({ mainWindow, store }: Dependencies) => {
 
         cb({ cancel: false });
     });
+
+    app.on('before-quit', () => {
+        logger.info('tor', 'Stopping (app quit)');
+        tor.stop();
+    });
 };
 
 export default init;
