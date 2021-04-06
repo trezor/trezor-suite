@@ -944,7 +944,7 @@ const definedMessages = defineMessages({
     },
     TR_BACKUP_SUBHEADING_1: {
         defaultMessage:
-            'Backup seed consisting of words is the ultimate key to your Wallet and all the important data. Trezor will generate the seed and you should write it down and store it securely.',
+            'Your Trezor will generate a list of words which you need to write down. This information is the most important part of securing your Trezor: it is the only offline backup of your Trezor and all wallets associated with it.',
         description: 'Explanation what recovery seed is',
         id: 'TR_BACKUP_SUBHEADING_1',
     },
@@ -4939,7 +4939,7 @@ const definedMessages = defineMessages({
     },
     TR_READ_ALL_ON_GITHUB: {
         id: 'TR_READ_ALL_ON_GITHUB',
-        defaultMessage: 'Read all on Github',
+        defaultMessage: 'Read all on GitHub',
     },
     TR_TAKES_N_MINUTES: {
         id: 'TR_TAKES_N_MINUTES',
@@ -5036,7 +5036,7 @@ const definedMessages = defineMessages({
     },
     TR_CHANGELOG_ON_GITHUB: {
         id: 'TR_CHANGELOG_ON_GITHUB',
-        defaultMessage: 'Changelog on Github',
+        defaultMessage: 'Changelog on GitHub',
     },
     TR_UPDATE_MODAL_DOWNLOADING_UPDATE: {
         id: 'TR_UPDATE_MODAL_DOWNLOADING_UPDATE',
@@ -5322,7 +5322,7 @@ const definedMessages = defineMessages({
     },
     TR_NO_SEARCH_RESULTS: {
         id: 'TR_NO_SEARCH_RESULTS',
-        defaultMessage: 'No results for your search criterias',
+        defaultMessage: 'No results for your search criterion',
     },
     TR_TRANSACTIONS_SEARCH_TOOLTIP: {
         id: 'TR_TRANSACTIONS_SEARCH_TOOLTIP',
