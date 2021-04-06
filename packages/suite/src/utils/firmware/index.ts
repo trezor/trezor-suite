@@ -26,12 +26,16 @@ export const getTextForStatus = (status: AppState['firmware']['status']) => {
             return null;
     }
 };
-export const getDescriptionForStatus = (status: AppState['firmware']['status']) => {
+export const getDescriptionForStatus = (
+    status: AppState['firmware']['status'],
+    webUSB?: boolean,
+) => {
     switch (status) {
         case 'started':
         case 'installing':
-        case 'wait-for-reboot':
             return 'TR_DO_NOT_DISCONNECT';
+        case 'wait-for-reboot':
+            return webUSB ? 'TR_WAIT_FOR_REBOOT_WEBUSB_DESCRIPTION' : 'TR_DO_NOT_DISCONNECT';
         default:
             return null;
     }
