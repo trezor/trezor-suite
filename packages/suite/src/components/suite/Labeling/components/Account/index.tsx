@@ -60,13 +60,13 @@ const Account = ({ account }: Props) => {
         const accountDevice = accountUtils.findAccountDevice(accounts[0], devices);
         if (accountDevice) {
             return (
-                <>
+                <span>
                     <WalletLabeling
                         device={accountDevice}
                         useDeviceLabel={!deviceUtils.isSelectedDevice(device, accountDevice)}
                     />{' '}
                     <TabularNums>{accountLabel}</TabularNums>
-                </>
+                </span>
             );
         }
     }
