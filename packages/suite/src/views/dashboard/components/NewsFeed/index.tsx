@@ -4,7 +4,10 @@ import TextTruncate from 'react-text-truncate';
 import { Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
 import { Button, variables } from '@trezor/components';
+import { useSelector } from '@suite-hooks';
 import { useFetchNews } from '@dashboard-hooks/useNews';
+import { toTorUrl } from '@suite-utils/tor';
+import { BLOG_URL } from '@suite-constants/urls';
 
 const Posts = styled.div`
     display: grid;
@@ -86,6 +89,7 @@ interface Props {
 // For that reason, limit maximum posts shown to 9.
 const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
     const [visibleCount, incrementVisibleCount] = useState(3);
+    const isTor = useSelector(state => state.suite.tor);
     const { posts, isError, fetchCount, incrementFetchCount } = useFetchNews();
     const theme = useTheme();
 
@@ -95,7 +99,7 @@ const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
         <Section
             heading={<Translation id="TR_WHATS_NEW" />}
             actions={
-                <MediumLink target="_blank" href="https://blog.trezor.io/">
+                <MediumLink target="_blank" href={isTor ? toTorUrl(BLOG_URL) : BLOG_URL}>
                     <Button isWhite variant="tertiary" icon="MEDIUM">
                         <Translation id="TR_OPEN_IN_MEDIUM" />
                     </Button>
@@ -107,10 +111,10 @@ const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
                     <Post
                         key={item.link}
                         target="_blank"
-                        href={item.link}
+                        href={isTor ? toTorUrl(item.link) : item.link}
                         data-test={`@dashboard/news/post/${index}`}
                     >
-                        <Image src={item.thumbnail} />
+                        <Image src={isTor ? toTorUrl(item.thumbnail) : item.thumbnail} />
                         <Content>
                             <Title>
                                 <TextTruncate
