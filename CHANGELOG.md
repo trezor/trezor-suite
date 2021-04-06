@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Discreet mode fixed in Wallet modal and chart hover tooltip
 - Long account labels in transaction review form
 - Labels incorrectly shortened in Firefox
+- Missing button for pairing WebUSB device in onboarding
 
 ## 21.3.1 [10th March 2021]
 
