@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 - Timerange selector UX/UI improved, ability to pick year/month, date format aligned with Suite
 - Responsive sticky account menu
+- Option to change device auto-lock time
 
 ### Changed
 - MacOS desktop icon updated
@@ -24,6 +25,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Long account labels in transaction review form
 - Labels incorrectly shortened in Firefox
 - Missing button for pairing WebUSB device in onboarding
+- Kill Tor process on app close
+- Formatting of ETH token amount in transaction confirmation dialogue
 
 ## 21.3.1 [10th March 2021]
 
