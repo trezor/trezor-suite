@@ -179,9 +179,10 @@ const Settings = () => {
                         description={
                             <>
                                 <Translation
+                                    data-test = "@fw-version"
                                     id="TR_YOUR_CURRENT_FIRMWARE"
                                     values={{ version: getFwVersion(device) }}
-                                />
+                                                                   />
                                 {isBitcoinOnly(device) && ' (bitcoin-only)'}
                             </>
                         }

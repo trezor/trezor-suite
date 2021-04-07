@@ -68,13 +68,22 @@ describe('Onboarding - create wallet', () => {
         cy.getTestElement('@pin/input/1').click();
         cy.getTestElement('@pin/input/1').click();
         cy.getTestElement('@pin/submit-button').click();
+        cy.wait(5000);
+
         cy.getTestElement('@pin-mismatch');
+        cy.wait(5000);
+
         cy.getTestElement('@pin-mismatch/try-again-button').click();
+        cy.wait(5000);
         cy.task('pressYes');
         cy.wait(5000);
 
         cy.log('Pin matrix appears again');
+        cy.wait(5000);
+
         cy.task('pressYes');
+        cy.wait(5000);
+
         cy.getTestElement('@pin/input/1');
     });
 

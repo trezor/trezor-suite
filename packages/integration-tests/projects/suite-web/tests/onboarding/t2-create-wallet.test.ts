@@ -87,7 +87,7 @@ describe('Onboarding - create wallet', () => {
         // latest (2.3.4 at time of writing) needs press_yes here
     });
 
-    it.only('Success (Shamir capability no backup)', () => {
+    it('Success (Shamir capability no backup)', () => {
         cy.getTestElement('@onboarding/path-used-button').click();
         cy.getTestElement('@onboarding/pair-device-step');
 
@@ -107,19 +107,19 @@ describe('Onboarding - create wallet', () => {
         cy.task('pressYes');
         cy.wait(1000); 
 
-        //cy.getTestElement('@onboarding/exit-app-button').click();
+        cy.getTestElement('@onboarding/exit-app-button').click();
 
         // TO DO pass through Shamir backup (add new def for trezor-user-env that will be used here 
         //  NOTE that passThroughBackup() does not work for Shamir
-         cy.getTestElement('@onboarding/continue-to-security-button').click();
-         //cy.getTestElement('@backup/check-item/has-enough-time');
-         //cy.getTestElement('@backup/check-item/is-in-private');
+        // cy.getTestElement('@onboarding/continue-to-security-button').click();
+        //cy.getTestElement('@backup/check-item/has-enough-time');
+        //cy.getTestElement('@backup/check-item/is-in-private');
         // cy.getTestElement('@backup/check-item/understands-what-seed-is');
         // cy.getTestElement('@backup/start-button');
-         cy.wait(5000);
+        // cy.wait(5000);
 
       
-        cy.passThroughBackupShamir();
+        //cy.passThroughBackupShamir();
 
       //  cy.passThroughSetPin();
 
