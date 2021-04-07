@@ -3,9 +3,9 @@ import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { NETWORKS } from '@wallet-config';
 import { Section } from '@dashboard-components';
-import AssetTable, { AssetSkeleton } from './components/AssetTable';
-import AssetGrid from './components/AssetGrid';
-import { Account } from '@wallet-types';
+import AssetTable, { AssetTableSkeleton } from './components/AssetTable';
+import AssetGrid, { AssetGridSkeleton } from './components/AssetGrid';
+import { Account, Network } from '@wallet-types';
 import { variables, Icon, Button, colors } from '@trezor/components';
 import { Card, Translation } from '@suite-components';
 import { useDiscovery, useActions } from '@suite-hooks';
@@ -65,6 +65,13 @@ const StyledAddAccountButton = styled(Button)`
     margin-left: 20px;
 `;
 
+interface assetType {
+    symbol: string;
+    network: Network;
+    assetBalance: BigNumber;
+    assetFailed: boolean;
+}
+
 const AssetsCard = () => {
     const theme = useTheme();
     const { discovery, getDiscoveryStatus } = useDiscovery();
@@ -83,6 +90,24 @@ const AssetsCard = () => {
         assets[a.symbol].push(a);
     });
     const networks = Object.keys(assets);
+
+    const assetsData: assetType[] = networks
+        .map(symbol => {
+            const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
+            if (!network) {
+                console.error('unknown network');
+                return null;
+            }
+
+            const assetBalance = assets[symbol].reduce(
+                (prev, a) => prev.plus(a.formattedBalance),
+                new BigNumber(0),
+            );
+
+            const assetFailed = accounts.find(f => f.symbol === network.symbol && f.failed);
+            return { symbol, network, assetFailed: !!assetFailed, assetBalance };
+        })
+        .filter(data => data !== null) as assetType[];
 
     const discoveryStatus = getDiscoveryStatus();
     const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
@@ -120,30 +145,17 @@ const AssetsCard = () => {
         >
             {!isTableMode && (
                 <GridWrapper>
-                    {networks.map((symbol) => {
-                        const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
-                        if (!network) {
-                            return 'unknown network';
-                        }
-
-                        const assetBalance = assets[symbol].reduce(
-                            (prev, a) => prev.plus(a.formattedBalance),
-                            new BigNumber(0),
-                        );
-
-                        const assetFailed = accounts.find(
-                            f => f.symbol === network.symbol && f.failed,
-                        );
-
+                    {assetsData.map(asset => {
                         return (
                             <AssetGrid
-                                key={symbol}
-                                network={network}
-                                failed={!!assetFailed}
-                                cryptoValue={assetBalance.toFixed()}
+                                key={asset.symbol}
+                                network={asset.network}
+                                failed={asset.assetFailed}
+                                cryptoValue={asset.assetBalance.toFixed()}
                             />
                         );
                     })}
+                    {discoveryInProgress && <AssetGridSkeleton />}
                 </GridWrapper>
             )}
             {isTableMode && (
@@ -159,34 +171,18 @@ const AssetsCard = () => {
                             <Header>
                                 <Translation id="TR_EXCHANGE_RATE" />
                             </Header>
-                            {networks.map((symbol, i) => {
-                                const network = NETWORKS.find(
-                                    n => n.symbol === symbol && !n.accountType,
-                                );
-                                if (!network) {
-                                    return 'unknown network';
-                                }
-
-                                const assetBalance = assets[symbol].reduce(
-                                    (prev, a) => prev.plus(a.formattedBalance),
-                                    new BigNumber(0),
-                                );
-
-                                const assetFailed = accounts.find(
-                                    f => f.symbol === network.symbol && f.failed,
-                                );
-
+                            {assetsData.map((asset, i) => {
                                 return (
                                     <AssetTable
-                                        key={symbol}
-                                        network={network}
-                                        failed={!!assetFailed}
-                                        cryptoValue={assetBalance.toFixed()}
-                                        isLastRow={i === networks.length - 1}
+                                        key={asset.symbol}
+                                        network={asset.network}
+                                        failed={asset.assetFailed}
+                                        cryptoValue={asset.assetBalance.toFixed()}
+                                        isLastRow={i === assetsData.length - 1}
                                     />
                                 );
                             })}
-                            {discoveryInProgress && <AssetSkeleton />}
+                            {discoveryInProgress && <AssetTableSkeleton />}
                         </Grid>
                     </AnimatePresence>
 
