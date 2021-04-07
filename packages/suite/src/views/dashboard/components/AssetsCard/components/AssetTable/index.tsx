@@ -169,7 +169,7 @@ const AssetTable = React.memo(({ network, failed, cryptoValue, isLastRow }: Prop
     );
 });
 
-export const AssetSkeleton = (props: { animate?: boolean }) => {
+export const AssetTableSkeleton = (props: { animate?: boolean }) => {
     const { shouldAnimate } = useLoadingSkeleton();
     const animate = props.animate ?? shouldAnimate;
     return (
