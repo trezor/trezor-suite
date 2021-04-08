@@ -1,7 +1,7 @@
 import React from 'react';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { Network } from '@wallet-types';
-import { CoinLogo, Icon, variables } from '@trezor/components';
+import { CoinLogo, Icon, variables, useTheme } from '@trezor/components';
 import {
     FiatValue,
     SkeletonCircle,
@@ -59,7 +59,7 @@ const CoinGridWrapper = styled.div`
     margin: 0px 9px 18px 0px;
     padding: 19px 16px 18px 12px;
     border-radius: 6px;
-    background-color: #ffffff;
+    background-color: ${props => props.theme.BG_WHITE};
 `;
 
 const CryptoBalanceWrapper = styled(Col)`
