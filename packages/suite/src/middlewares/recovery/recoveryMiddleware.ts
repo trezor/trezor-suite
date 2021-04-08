@@ -1,7 +1,7 @@
+import { UI } from 'trezor-connect';
 import { MiddlewareAPI } from 'redux';
 import { SUITE } from '@suite-actions/constants';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
-
 import { AppState, Action, Dispatch } from '@suite-types';
 
 const recovery = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
@@ -17,8 +17,13 @@ const recovery = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
     // pass action
     next(action);
 
-    const { locks } = api.getState().suite;
-    const isLocked = locks.includes(SUITE.LOCK_TYPE.DEVICE);
+    const state = api.getState();
+    const isLocked = state.suite.locks.includes(SUITE.LOCK_TYPE.DEVICE);
+
+    if (action.type === UI.REQUEST_WORD && state.recovery.status === 'waiting-for-confirmation') {
+        // Since the device asked for a first word, we can safely assume we've received confirmation from the user
+        api.dispatch(recoveryActions.setStatus('in-progress'));
+    }
 
     if (
         !isLocked &&
