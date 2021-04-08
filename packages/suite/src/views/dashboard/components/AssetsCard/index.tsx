@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { NETWORKS } from '@wallet-config';
@@ -91,21 +91,25 @@ const AssetsCard = () => {
     });
     const networks = Object.keys(assets);
 
-    const assetsData: assetType[] = networks.flatMap(symbol => {
-        const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
-        if (!network) {
-            console.error('unknown network');
-            return [];
-        }
+    const assetsData: assetType[] = useMemo(
+        () =>
+            networks.flatMap(symbol => {
+                const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
+                if (!network) {
+                    console.error('unknown network');
+                    return [];
+                }
 
-        const assetBalance = assets[symbol].reduce(
-            (prev, a) => prev.plus(a.formattedBalance),
-            new BigNumber(0),
-        );
+                const assetBalance = assets[symbol].reduce(
+                    (prev, a) => prev.plus(a.formattedBalance),
+                    new BigNumber(0),
+                );
 
-        const assetFailed = accounts.find(f => f.symbol === network.symbol && f.failed);
-        return [{ symbol, network, assetFailed: !!assetFailed, assetBalance }];
-    });
+                const assetFailed = accounts.find(f => f.symbol === network.symbol && f.failed);
+                return [{ symbol, network, assetFailed: !!assetFailed, assetBalance }];
+            }),
+        [assets, networks],
+    );
 
     const discoveryStatus = getDiscoveryStatus();
     const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
