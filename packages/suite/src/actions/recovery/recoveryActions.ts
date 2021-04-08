@@ -12,6 +12,7 @@ export type SeedInputStatus =
     | 'initial'
     | 'select-word-count'
     | 'select-recovery-type'
+    | 'waiting-for-confirmation'
     | 'in-progress'
     | 'finished';
 
@@ -55,7 +56,12 @@ const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
     if (!device || !device.features) return;
     dispatch(setError(''));
-    dispatch(setStatus('in-progress'));
+
+    if (device.features.major_version === 1) {
+        dispatch(setStatus('waiting-for-confirmation'));
+    } else {
+        dispatch(setStatus('in-progress'));
+    }
 
     const response = await TrezorConnect.recoveryDevice({
         dry_run: true,
@@ -84,7 +90,12 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     const { device } = getState().suite;
     if (!device || !device.features) return;
     dispatch(setError(''));
-    dispatch(setStatus('in-progress'));
+
+    if (device.features.major_version === 1) {
+        dispatch(setStatus('waiting-for-confirmation'));
+    } else {
+        dispatch(setStatus('in-progress'));
+    }
 
     const params: RecoveryDevice = {
         type: advancedRecovery ? 1 : 0,
