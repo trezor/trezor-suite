@@ -15,7 +15,6 @@ const SetPinStep = () => {
 
     const { changePin } = useActions({
         changePin: deviceSettingsActions.changePin,
-        removeButtonRequests: suiteActions.removeButtonRequests,
     });
 
     const onTryAgain = () => {

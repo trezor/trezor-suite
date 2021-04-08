@@ -5,17 +5,13 @@ import { findNextStep, findPrevStep, isStepInPath } from '../steps';
 const welcomeStep: Step = {
     id: STEP.ID_WELCOME_STEP,
     path: [],
-    buy: false,
-    help: false,
-    progress: false,
+    stepGroup: undefined,
 };
 
 const backupStep: Step = {
     id: STEP.ID_BACKUP_STEP,
     path: [],
-    buy: false,
-    help: false,
-    progress: false,
+    stepGroup: 1,
 };
 
 const stepsMock = [welcomeStep, backupStep];

@@ -8,7 +8,6 @@ import PreOnboardingSetup from './components/PreOnboardingSetup';
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    margin-top: 20px;
     /* height: 480px; */
     align-items: center;
     margin-top: 20vh;

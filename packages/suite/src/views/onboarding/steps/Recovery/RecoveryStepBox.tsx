@@ -1,5 +1,5 @@
 import React from 'react';
-import { OnboardingButton, OnboardingLayout } from '@onboarding-components';
+import { OnboardingButton } from '@onboarding-components';
 import { Translation } from '@suite-components';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
