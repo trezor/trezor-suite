@@ -40,7 +40,6 @@ const Text = styled.div`
     margin: 0px 32px;
     text-align: center;
     color: ${props => props.theme.TYPE_DARK_GREY};
-    display: flex;
     font-size: 20px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;

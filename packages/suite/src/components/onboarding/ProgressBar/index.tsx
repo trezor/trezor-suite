@@ -9,7 +9,8 @@ const ProgressBarWrapper = styled.div`
     margin-top: 40px;
     margin-bottom: 20px;
     width: 100%;
-    height: 64px; // prevents jumping in completed state with check mark icon shown
+    /* prevents jumping in completed state with check mark icon shown */
+    height: 64px;
     justify-content: space-between;
     align-items: center;
 `;

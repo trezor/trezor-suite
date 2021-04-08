@@ -360,7 +360,8 @@ export const parseFirmwareChangelog = (firmwareRelease: TrezorDevice['firmwareRe
         // Get firmware version, convert to string and use it as a key in custom object
         const versionString = log.version.join('.'); // e.g. [1,9,8] => "1.9.8"
         return {
-            ...log,
+            url: log.url,
+            notes: log.notes,
             changelog: parsedChangelogEntries,
             versionString,
         };
