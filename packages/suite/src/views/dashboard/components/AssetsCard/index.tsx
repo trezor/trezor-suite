@@ -91,23 +91,21 @@ const AssetsCard = () => {
     });
     const networks = Object.keys(assets);
 
-    const assetsData: assetType[] = networks
-        .map(symbol => {
-            const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
-            if (!network) {
-                console.error('unknown network');
-                return null;
-            }
+    const assetsData: assetType[] = networks.flatMap(symbol => {
+        const network = NETWORKS.find(n => n.symbol === symbol && !n.accountType);
+        if (!network) {
+            console.error('unknown network');
+            return [];
+        }
 
-            const assetBalance = assets[symbol].reduce(
-                (prev, a) => prev.plus(a.formattedBalance),
-                new BigNumber(0),
-            );
+        const assetBalance = assets[symbol].reduce(
+            (prev, a) => prev.plus(a.formattedBalance),
+            new BigNumber(0),
+        );
 
-            const assetFailed = accounts.find(f => f.symbol === network.symbol && f.failed);
-            return { symbol, network, assetFailed: !!assetFailed, assetBalance };
-        })
-        .filter(data => data !== null) as assetType[];
+        const assetFailed = accounts.find(f => f.symbol === network.symbol && f.failed);
+        return [{ symbol, network, assetFailed: !!assetFailed, assetBalance }];
+    });
 
     const discoveryStatus = getDiscoveryStatus();
     const discoveryInProgress = discoveryStatus && discoveryStatus.status === 'loading';
@@ -145,16 +143,14 @@ const AssetsCard = () => {
         >
             {!isTableMode && (
                 <GridWrapper>
-                    {assetsData.map(asset => {
-                        return (
-                            <AssetGrid
-                                key={asset.symbol}
-                                network={asset.network}
-                                failed={asset.assetFailed}
-                                cryptoValue={asset.assetBalance.toFixed()}
-                            />
-                        );
-                    })}
+                    {assetsData.map(asset => (
+                        <AssetGrid
+                            key={asset.symbol}
+                            network={asset.network}
+                            failed={asset.assetFailed}
+                            cryptoValue={asset.assetBalance.toFixed()}
+                        />
+                    ))}
                     {discoveryInProgress && <AssetGridSkeleton />}
                 </GridWrapper>
             )}
@@ -171,17 +167,15 @@ const AssetsCard = () => {
                             <Header>
                                 <Translation id="TR_EXCHANGE_RATE" />
                             </Header>
-                            {assetsData.map((asset, i) => {
-                                return (
-                                    <AssetTable
-                                        key={asset.symbol}
-                                        network={asset.network}
-                                        failed={asset.assetFailed}
-                                        cryptoValue={asset.assetBalance.toFixed()}
-                                        isLastRow={i === assetsData.length - 1}
-                                    />
-                                );
-                            })}
+                            {assetsData.map((asset, i) => (
+                                <AssetTable
+                                    key={asset.symbol}
+                                    network={asset.network}
+                                    failed={asset.assetFailed}
+                                    cryptoValue={asset.assetBalance.toFixed()}
+                                    isLastRow={i === assetsData.length - 1}
+                                />
+                            ))}
                             {discoveryInProgress && <AssetTableSkeleton />}
                         </Grid>
                     </AnimatePresence>
