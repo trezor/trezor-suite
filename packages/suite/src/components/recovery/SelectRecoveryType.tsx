@@ -1,10 +1,6 @@
 import React from 'react';
-
-import { P } from '@trezor/components';
-import { Option, Wrapper } from '@onboarding-components';
-
-import { Translation, TrezorLink } from '@suite-components';
-import { URLS } from '@suite-constants';
+import { NeueOption, OptionsWrapper, OptionsDivider } from '@onboarding-components';
+import { Translation } from '@suite-components';
 
 interface Props {
     onSelect: (number: boolean) => void;
@@ -12,7 +8,7 @@ interface Props {
 
 const SelectRecoveryType = ({ onSelect }: Props) => (
     <>
-        <P size="small">
+        {/* <P size="small">
             <Translation
                 id="TR_RECOVERY_TYPES_DESCRIPTION"
                 values={{
@@ -23,30 +19,28 @@ const SelectRecoveryType = ({ onSelect }: Props) => (
                     ),
                 }}
             />
-        </P>
-        <Wrapper.Options>
-            <Option
-                action={() => {
+        </P> */}
+        <OptionsWrapper>
+            <NeueOption
+                onClick={() => {
                     onSelect(false);
                 }}
-                title={<Translation id="TR_BASIC_RECOVERY" />}
-                text={<Translation id="TR_BASIC_RECOVERY_OPTION" />}
-                button={<Translation id="TR_BASIC_RECOVERY" />}
-                imgSrc="images/svg/recovery-basic.svg"
+                icon="SEED_SINGLE"
+                heading={<Translation id="TR_BASIC_RECOVERY" />}
+                description={<Translation id="TR_BASIC_RECOVERY_OPTION" />}
                 data-test="@recover/select-type/basic"
             />
-
-            <Option
-                action={() => {
+            <OptionsDivider />
+            <NeueOption
+                onClick={() => {
                     onSelect(true);
                 }}
-                title={<Translation id="TR_ADVANCED_RECOVERY" />}
-                text={<Translation id="TR_ADVANCED_RECOVERY_OPTION" />}
-                button={<Translation id="TR_ADVANCED_RECOVERY" />}
-                imgSrc="images/svg/recovery-advanced.svg"
+                icon="SEED_SHAMIR"
+                heading={<Translation id="TR_ADVANCED_RECOVERY" />}
+                description={<Translation id="TR_ADVANCED_RECOVERY_OPTION" />}
                 data-test="@recover/select-type/advanced"
             />
-        </Wrapper.Options>
+        </OptionsWrapper>
     </>
 );
 
