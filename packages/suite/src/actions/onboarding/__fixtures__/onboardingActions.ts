@@ -15,7 +15,7 @@ export default [
         },
         action: () => onboardingActions.goToNextStep(),
         expect: {
-            toMatchObject: { activeStepId: STEP.ID_SKIP_STEP },
+            toMatchObject: { activeStepId: STEP.ID_FIRMWARE_STEP },
         },
     },
     {
@@ -46,12 +46,12 @@ export default [
         description: 'goToPreviousStep',
         initialState: {
             onboarding: {
-                activeStepId: STEP.ID_NEW_OR_USED,
+                activeStepId: STEP.ID_RECOVERY_STEP,
             },
         },
         action: () => onboardingActions.goToPreviousStep(),
         expect: {
-            toMatchObject: { activeStepId: STEP.ID_CREATE_OR_RECOVER },
+            toMatchObject: { activeStepId: STEP.ID_RESET_DEVICE_STEP },
         },
     },
     {

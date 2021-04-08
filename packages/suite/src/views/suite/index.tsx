@@ -1,4 +1,3 @@
-import Analytics from './analytics';
 import Bridge from './bridge';
 import DeviceAcquire from './device-acquire';
 import DeviceBootloader from './device-bootloader';
@@ -13,10 +12,8 @@ import DeviceRecoveryMode from './device-recovery-mode';
 import SwitchDevice from './switch-device';
 import Udev from './udev';
 import Version from './version';
-import Welcome from './welcome';
 
 export {
-    Analytics,
     Bridge,
     DeviceAcquire,
     DeviceBootloader,
@@ -31,5 +28,4 @@ export {
     SwitchDevice,
     Udev,
     Version,
-    Welcome,
 };

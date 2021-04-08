@@ -380,21 +380,21 @@ const addButtonRequest = (
     draft[index].buttonRequests.push(buttonRequest);
 };
 
-const removeButtonRequest = (
-    draft: State,
-    device: TrezorDevice | undefined,
-    buttonRequest: string,
-) => {
-    // only acquired devices
-    if (!device || !device.features) return;
-    const index = deviceUtils.findInstanceIndex(draft, device);
-    if (!draft[index]) return;
-    const btnReqIndex = draft[index].buttonRequests.indexOf(buttonRequest);
-    if (btnReqIndex > -1) {
-        // draft[index].buttonRequests.pop();
-        draft[index].buttonRequests.splice(btnReqIndex, 1);
-    }
-};
+// const removeButtonRequest = (
+//     draft: State,
+//     device: TrezorDevice | undefined,
+//     buttonRequest: string,
+// ) => {
+//     // only acquired devices
+//     if (!device || !device.features) return;
+//     const index = deviceUtils.findInstanceIndex(draft, device);
+//     if (!draft[index]) return;
+//     const btnReqIndex = draft[index].buttonRequests.indexOf(buttonRequest);
+//     if (btnReqIndex > -1) {
+//         // draft[index].buttonRequests.pop();
+//         draft[index].buttonRequests.splice(btnReqIndex, 1);
+//     }
+// };
 
 const setMetadata = (draft: State, state: string, metadata: TrezorDevice['metadata']) => {
     const index = draft.findIndex(d => d.state === state);
@@ -465,9 +465,9 @@ const deviceReducer = (state: State = initialState, action: Action): State =>
             case SUITE.ADD_BUTTON_REQUEST:
                 addButtonRequest(draft, action.device, action.payload);
                 break;
-            case SUITE.REMOVE_BUTTON_REQUEST:
-                removeButtonRequest(draft, action.device, action.payload);
-                break;
+            // case SUITE.REMOVE_BUTTON_REQUEST:
+            //     removeButtonRequest(draft, action.device, action.payload);
+            //     break;
             case METADATA.SET_DEVICE_METADATA:
                 setMetadata(draft, action.payload.deviceState, action.payload.metadata);
                 break;

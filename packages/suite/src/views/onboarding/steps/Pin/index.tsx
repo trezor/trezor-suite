@@ -4,7 +4,6 @@ import { PinMatrix, Translation } from '@suite-components';
 import { OnboardingButton } from '@onboarding-components';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import * as suiteActions from '@suite-actions/suiteActions';
 import { useActions, useSelector } from '@suite-hooks';
 import PinStepBox from './PinStepBox';
 
@@ -14,10 +13,9 @@ const SetPinStep = () => {
     const [status, setStatus] = useState<'initial' | 'enter-pin' | 'repeat-pin' | 'success'>(
         'initial',
     );
-    const { goToNextStep, changePin, removeButtonRequests } = useActions({
+    const { goToNextStep, changePin } = useActions({
         goToNextStep: onboardingActions.goToNextStep,
         changePin: deviceSettingsActions.changePin,
-        removeButtonRequests: suiteActions.removeButtonRequests,
     });
 
     const onTryAgain = () => {

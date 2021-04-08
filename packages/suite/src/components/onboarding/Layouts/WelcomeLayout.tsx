@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { H1, TrezorLogo, Button, variables } from '@trezor/components';
-import { TrezorLink, Translation } from '@suite-components';
+import { TrezorLink } from '@suite-components';
 import styled from 'styled-components';
 import { TREZOR_URL } from '@suite-constants/urls';
 

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 
-import { OnboardingButton, OnboardingLayout } from '@onboarding-components';
+import { OnboardingButton } from '@onboarding-components';
 import { Translation } from '@suite-components';
 import {
     CheckSeedStep,

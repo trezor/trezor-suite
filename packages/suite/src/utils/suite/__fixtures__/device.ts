@@ -629,24 +629,20 @@ const parseFirmwareChangelog = [
             ],
         } as TrezorDevice['firmwareRelease'],
         description: 'Parse firmware changelog ',
-        result: {
-            '1.9.1': {
-                changelog: ['Refactor Bitcoin signing'],
-                notes:
-                    'https://blog.trezor.io/details-of-firmware-updates-for-trezor-one-version-1-9-1-and-trezor-model-t-version-2-3-1-1eba8f60f2dd',
-                url: 'firmware/1/trezor-1.9.1.bin',
-            },
-            '1.9.2': {
+        result: [
+            {
                 changelog: [
-                    'Reintroduces the ability to spend pre-Overwinter (2018) funds on Zcash-like coins.',
-                    'Adds support for multiple change outputs in outgoing transactions.',
-                    'Adds a security check to prevent potential issues with paths used in altcoin transactions.',
+                    'Replacement transaction signing for replace-by-fee.',
+                    'Support for Output Descriptors export.',
+                    'Show Ypub/Zpub correctly for multisig GetAddress.',
+                    'Show amounts in mBTC, uBTC and sat denominations.',
                 ],
                 notes:
-                    'https://blog.trezor.io/firmware-updates-for-trezor-model-t-version-2-3-2-and-trezor-model-one-version-1-9-2-f4f9c0f1ed7c',
-                url: 'firmware/1/trezor-1.9.2.bin',
+                    'https://blog.trezor.io/trezor-suite-and-firmware-updates-rbf-and-spending-now-live-c2f69c42d7f7',
+                url: 'firmware/1/trezor-1.9.4.bin',
+                versionString: '1.9.4',
             },
-            '1.9.3': {
+            {
                 changelog: [
                     'Improves the Passphrase feature by showing the entered passphrase on the Trezor screen before opening the wallet.',
                     'Adds support for Verge (XVG).',
@@ -657,19 +653,27 @@ const parseFirmwareChangelog = [
                 notes:
                     'https://blog.trezor.io/firmware-updates-for-trezor-model-t-version-2-3-3-and-trezor-model-one-version-1-9-3-c94f7a3b6fea',
                 url: 'firmware/1/trezor-1.9.3.bin',
+                versionString: '1.9.3',
             },
-            '1.9.4': {
+            {
                 changelog: [
-                    'Replacement transaction signing for replace-by-fee.',
-                    'Support for Output Descriptors export.',
-                    'Show Ypub/Zpub correctly for multisig GetAddress.',
-                    'Show amounts in mBTC, uBTC and sat denominations.',
+                    'Reintroduces the ability to spend pre-Overwinter (2018) funds on Zcash-like coins.',
+                    'Adds support for multiple change outputs in outgoing transactions.',
+                    'Adds a security check to prevent potential issues with paths used in altcoin transactions.',
                 ],
                 notes:
-                    'https://blog.trezor.io/trezor-suite-and-firmware-updates-rbf-and-spending-now-live-c2f69c42d7f7',
-                url: 'firmware/1/trezor-1.9.4.bin',
+                    'https://blog.trezor.io/firmware-updates-for-trezor-model-t-version-2-3-2-and-trezor-model-one-version-1-9-2-f4f9c0f1ed7c',
+                url: 'firmware/1/trezor-1.9.2.bin',
+                versionString: '1.9.2',
             },
-        },
+            {
+                changelog: ['Refactor Bitcoin signing'],
+                notes:
+                    'https://blog.trezor.io/details-of-firmware-updates-for-trezor-one-version-1-9-1-and-trezor-model-t-version-2-3-1-1eba8f60f2dd',
+                url: 'firmware/1/trezor-1.9.1.bin',
+                versionString: '1.9.1',
+            },
+        ],
     },
 ];
 

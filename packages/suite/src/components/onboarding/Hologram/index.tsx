@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { NotificationCard, Translation, TrezorLink } from '@suite/components/suite';
+import { Translation, TrezorLink } from '@suite/components/suite';
 import HologramAnimation from './HologramAnimation';
 import {
     TREZOR_PACKAGING_URL,

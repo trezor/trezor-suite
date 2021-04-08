@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useSpring, config } from 'react-spring';
-import { H1, Icon, Switch, variables } from '@trezor/components';
+import { H1, Switch, variables } from '@trezor/components';
 import { useAnalytics, useOnboarding } from '@suite-hooks';
 import { Translation, TrezorLink, CollapsibleBox } from '@suite-components';
 import { Box, OnboardingButton } from '@onboarding-components';
@@ -114,7 +114,10 @@ const DataAnalytics = () => {
                     />
                 </Description>
 
-                <CollapsibleBox heading={<Translation id="TR_WHAT_DATA_WE_COLLECT" />}>
+                <CollapsibleBox
+                    variant="small"
+                    heading={<Translation id="TR_WHAT_DATA_WE_COLLECT" />}
+                >
                     <Category>
                         {collectedData.map((category, i) => (
                             // eslint-disable-next-line react/no-array-index-key

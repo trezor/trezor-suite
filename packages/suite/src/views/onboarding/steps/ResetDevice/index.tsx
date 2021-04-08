@@ -3,7 +3,6 @@ import * as STEP from '@onboarding-constants/steps';
 import {
     OnboardingButton,
     NeueOption,
-    OnboardingLayout,
     OptionsWrapper,
     OptionWrapper,
     OptionsDivider,
