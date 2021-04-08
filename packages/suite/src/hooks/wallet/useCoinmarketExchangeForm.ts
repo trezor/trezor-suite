@@ -216,7 +216,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         exchangeInfo?.exchangeList?.length === 0 || !exchangeInfo?.sellSymbols.has(account.symbol);
 
     // sub-hook, FeeLevels handler
-    const { changeFeeLevel } = useFees({
+    const { changeFeeLevel, selectedFee } = useFees({
         defaultValue: 'normal',
         feeInfo,
         onChange: onFeeLevelChange,
@@ -228,8 +228,8 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         if (!composedLevels) return;
         const values = getValues();
         const { setMaxOutputId } = values;
-        const selectedFee = values.selectedFee || 'normal';
-        const composed = composedLevels[selectedFee || 'normal'];
+        const selectedFeeLevel = selectedFee || 'normal';
+        const composed = composedLevels[selectedFeeLevel];
         if (!composed) return;
 
         if (composed.type === 'error') {
@@ -247,7 +247,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
                 updateFiatValue(composed.max);
                 clearErrors(CRYPTO_INPUT);
             }
-            saveComposedTransactionInfo({ selectedFee, composed });
+            saveComposedTransactionInfo({ selectedFee: selectedFeeLevel, composed });
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit);
         }
     }, [
@@ -258,6 +258,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         setError,
         setValue,
         updateFiatValue,
+        selectedFee,
     ]);
 
     const onSubmit = async () => {

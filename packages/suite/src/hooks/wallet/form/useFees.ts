@@ -168,5 +168,6 @@ export const useFees = ({
 
     return {
         changeFeeLevel,
+        selectedFee,
     };
 };
