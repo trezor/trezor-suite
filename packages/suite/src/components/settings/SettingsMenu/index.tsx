@@ -45,7 +45,7 @@ const SettingsMenu = () => {
                 <AppNavigation
                     items={[
                         {
-                            id: 'general',
+                            id: 'settings-index',
                             title: <Translation id="TR_GENERAL" />,
                             position: 'primary',
                             'data-test': '@settings/menu/general',
@@ -55,7 +55,7 @@ const SettingsMenu = () => {
                             },
                         },
                         {
-                            id: 'device',
+                            id: 'settings-device',
                             title: <Translation id="TR_DEVICE" />,
                             position: 'primary',
                             'data-test': '@settings/menu/device',
@@ -65,7 +65,7 @@ const SettingsMenu = () => {
                             },
                         },
                         {
-                            id: 'coins',
+                            id: 'settings-coins',
                             title: <Translation id="TR_COINS" />,
                             position: 'primary',
                             'data-test': '@settings/menu/wallet',

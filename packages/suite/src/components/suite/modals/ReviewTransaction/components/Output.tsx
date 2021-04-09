@@ -75,10 +75,12 @@ const Output = ({ type, state, label, value, value2, symbol, token }: Props) => 
     if (type === 'fee-replace' && value2) {
         outputLines = [
             {
+                id: 'increase-fee-by',
                 label: <Translation id="TR_INCREASE_FEE_BY" />,
                 value: formatNetworkAmount(value, symbol),
             },
             {
+                id: 'increased-fee',
                 label: <Translation id="TR_INCREASED_FEE" />,
                 value: formatNetworkAmount(value2, symbol),
             },
@@ -88,6 +90,7 @@ const Output = ({ type, state, label, value, value2, symbol, token }: Props) => 
     } else {
         outputLines = [
             {
+                id: 'default',
                 label: outputLabel,
                 value: outputValue,
             },
