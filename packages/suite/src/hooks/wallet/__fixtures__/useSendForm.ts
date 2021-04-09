@@ -1077,6 +1077,9 @@ export const signAndPush = [
                     type: '@notification/toast',
                     payload: { type: 'tx-sent', formattedAmount: '1 ETH' }, // BUG ?
                 },
+                {
+                    type: 'mock-redirect',
+                },
             ],
         },
     },
@@ -1127,6 +1130,9 @@ export const signAndPush = [
                 {
                     type: '@notification/toast',
                     payload: { type: 'tx-sent', formattedAmount: '1 XRP' },
+                },
+                {
+                    type: 'mock-redirect',
                 },
             ],
         },
@@ -1297,6 +1303,9 @@ export const signAndPush = [
                             { txid: 'utxoE', amount: '6250000000' },
                         ],
                     },
+                },
+                {
+                    type: 'mock-redirect',
                 },
             ],
         },
