@@ -17,6 +17,12 @@ import { SendContextValues } from '@wallet-types/sendForm';
 import SendIndex from '@wallet-views/send';
 import { useSendFormContext } from '../useSendForm';
 
+jest.mock('@suite-actions/routerActions', () => ({
+    goto: () => {
+        return { type: 'mock-redirect' };
+    },
+}));
+
 jest.mock('react-svg', () => {
     return { ReactSVG: () => 'SVG' };
 });

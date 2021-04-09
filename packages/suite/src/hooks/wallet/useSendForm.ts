@@ -3,6 +3,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { useActions } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
+import * as routerActions from '@suite-actions/routerActions';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';
 import {
     UseSendFormProps,
@@ -81,6 +82,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         getLastUsedFeeLevel,
         setLastUsedFeeLevel,
         signTransaction,
+        goto,
     } = useActions({
         getDraft: sendFormActions.getDraft,
         saveDraft: sendFormActions.saveDraft,
@@ -88,6 +90,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         getLastUsedFeeLevel: walletSettingsActions.getLastUsedFeeLevel,
         setLastUsedFeeLevel: walletSettingsActions.setLastUsedFeeLevel,
         signTransaction: sendFormActions.signTransaction,
+        goto: routerActions.goto,
     });
 
     const { localCurrencyOption } = state;
@@ -223,9 +226,10 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             updateContext({ isLoading: false });
             if (result) {
                 resetContext();
+                goto('wallet-index', undefined, true);
             }
         }
-    }, [getValues, composedLevels, signTransaction, resetContext, updateContext]);
+    }, [getValues, composedLevels, signTransaction, resetContext, updateContext, goto]);
 
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
 
