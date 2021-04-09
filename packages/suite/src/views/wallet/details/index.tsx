@@ -79,7 +79,7 @@ const Details = () => {
 
     return (
         <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount}>
-            <StyledCard title={<Translation id="TR_ACCOUNT_DETAILS_HEADER" />} largePadding>
+            <StyledCard largePadding>
                 <StyledRow>
                     <TextColumn
                         title={<Translation id="TR_ACCOUNT_DETAILS_TYPE_HEADER" />}

@@ -100,6 +100,7 @@ const DotSeparator = styled.div`
 `;
 
 export type OutputElementLine = {
+    id: string;
     label: React.ReactNode;
     value: string;
 };
@@ -142,7 +143,7 @@ const OutputLine = ({
             </OutputLeft>
             <OutputRight>
                 {lines.map(line => (
-                    <OutputRightLine>
+                    <OutputRightLine key={line.id}>
                         <OutputHeadline>
                             <Truncate>{line.label}</Truncate>
                         </OutputHeadline>

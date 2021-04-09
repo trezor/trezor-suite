@@ -16,6 +16,7 @@ const Wrapper = styled.div`
     scrollbar-width: none; /* Firefox */
     justify-content: space-between;
     position: relative;
+    height: 68px;
 
     &::-webkit-scrollbar {
         /* WebKit */
@@ -68,7 +69,7 @@ const StyledNavLink = styled.div<{ active?: boolean }>`
     font-weight: ${FONT_WEIGHT.MEDIUM};
     display: flex;
     align-items: center;
-    padding: 23px 0;
+    padding: 23px 10px;
     white-space: nowrap;
     border-bottom: 2px solid
         ${props => (props.active ? props => props.theme.TYPE_DARK_GREY : 'transparent')};

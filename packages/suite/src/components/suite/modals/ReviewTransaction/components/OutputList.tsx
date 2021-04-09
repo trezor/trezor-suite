@@ -140,6 +140,7 @@ const OutputList = ({
                             <OutputElement
                                 lines={[
                                     {
+                                        id: 'total',
                                         label: <Translation id="TR_TOTAL" />,
                                         value: formatNetworkAmount(
                                             precomposedTx.totalSpent,
