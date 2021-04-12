@@ -10,18 +10,16 @@ const Wrapper = styled.div`
 
 interface Props extends SearchProps, ExportProps {}
 
-const Actions = ({ account, search, setSearch, setSelectedPage }: Props) => {
-    return (
-        <Wrapper>
-            <SearchAction
-                account={account}
-                search={search}
-                setSearch={setSearch}
-                setSelectedPage={setSelectedPage}
-            />
-            <ExportAction account={account} />
-        </Wrapper>
-    );
-};
+const Actions = ({ account, search, setSearch, setSelectedPage }: Props) => (
+    <Wrapper>
+        <SearchAction
+            account={account}
+            search={search}
+            setSearch={setSearch}
+            setSelectedPage={setSelectedPage}
+        />
+        <ExportAction account={account} />
+    </Wrapper>
+);
 
 export default Actions;

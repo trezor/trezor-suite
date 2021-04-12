@@ -14,9 +14,6 @@ module.exports = {
         'plugin:@typescript-eslint/recommended',
         'plugin:import/typescript',
         'prettier',
-        'prettier/babel',
-        'prettier/@typescript-eslint',
-        'prettier/react',
     ],
     settings: {
         react: {

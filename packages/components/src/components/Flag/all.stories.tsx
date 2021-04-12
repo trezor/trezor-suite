@@ -37,17 +37,15 @@ storiesOf('Flags', module).add(
         const flags = Object.keys(FLAGS) as FlagType[];
         return (
             <Wrapper>
-                {flags.map(country => {
-                    return (
-                        <FlagWrapper key={country}>
-                            <Text>{country}</Text>
-                            <Flag
-                                country={country}
-                                data-test={`icon-${country.toLowerCase().replace('_', '-')}`}
-                            />
-                        </FlagWrapper>
-                    );
-                })}
+                {flags.map(country => (
+                    <FlagWrapper key={country}>
+                        <Text>{country}</Text>
+                        <Flag
+                            country={country}
+                            data-test={`icon-${country.toLowerCase().replace('_', '-')}`}
+                        />
+                    </FlagWrapper>
+                ))}
             </Wrapper>
         );
     },

@@ -24,22 +24,20 @@ interface Props {
     supportUrl?: string;
 }
 
-const PaymentSending = ({ supportUrl }: Props) => {
-    return (
-        <Wrapper>
-            <Loader />
-            <Title>
-                <Translation id="TR_EXCHANGE_DETAIL_SENDING_TITLE" />
-            </Title>
-            {supportUrl && (
-                <Link href={supportUrl} target="_blank">
-                    <Button variant="tertiary">
-                        <Translation id="TR_EXCHANGE_DETAIL_SENDING_SUPPORT" />
-                    </Button>
-                </Link>
-            )}
-        </Wrapper>
-    );
-};
+const PaymentSending = ({ supportUrl }: Props) => (
+    <Wrapper>
+        <Loader />
+        <Title>
+            <Translation id="TR_EXCHANGE_DETAIL_SENDING_TITLE" />
+        </Title>
+        {supportUrl && (
+            <Link href={supportUrl} target="_blank">
+                <Button variant="tertiary">
+                    <Translation id="TR_EXCHANGE_DETAIL_SENDING_SUPPORT" />
+                </Button>
+            </Link>
+        )}
+    </Wrapper>
+);
 
 export default PaymentSending;

@@ -38,9 +38,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const PreBackupCheckboxes = ({ toggleCheckboxByKey, backup }: Props) => {
-    const isChecked = (key: backupActions.ConfirmKey) => {
-        return backup.userConfirmed.includes(key);
-    };
+    const isChecked = (key: backupActions.ConfirmKey) => backup.userConfirmed.includes(key);
 
     return (
         <CheckboxWrapper>

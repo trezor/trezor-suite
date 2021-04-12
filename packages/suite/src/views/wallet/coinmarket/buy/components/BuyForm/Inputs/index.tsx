@@ -175,25 +175,23 @@ const Inputs = () => {
                                       }
                                     : defaultCurrency
                             }
-                            render={({ onChange, value }) => {
-                                return (
-                                    <Select
-                                        options={FIAT.currencies
-                                            .filter(c => buyInfo?.supportedFiatCurrencies.has(c))
-                                            .map((currency: string) => buildOption(currency))}
-                                        isSearchable
-                                        value={value}
-                                        isClearable={false}
-                                        minWidth="58px"
-                                        isClean
-                                        hideTextCursor
-                                        onChange={(selected: any) => {
-                                            onChange(selected);
-                                            setAmountLimits(undefined);
-                                        }}
-                                    />
-                                );
-                            }}
+                            render={({ onChange, value }) => (
+                                <Select
+                                    options={FIAT.currencies
+                                        .filter(c => buyInfo?.supportedFiatCurrencies.has(c))
+                                        .map((currency: string) => buildOption(currency))}
+                                    isSearchable
+                                    value={value}
+                                    isClearable={false}
+                                    minWidth="58px"
+                                    isClean
+                                    hideTextCursor
+                                    onChange={(selected: any) => {
+                                        onChange(selected);
+                                        setAmountLimits(undefined);
+                                    }}
+                                />
+                            )}
                         />
                     }
                 />
@@ -293,27 +291,22 @@ const Inputs = () => {
                                           label: uppercaseSymbol,
                                       }
                             }
-                            render={({ onChange, value }) => {
-                                return (
-                                    <Select
-                                        onChange={(selected: any) => {
-                                            onChange(selected);
-                                        }}
-                                        value={value}
-                                        isSearchable
-                                        isClearable={false}
-                                        options={getCryptoOptions(
-                                            account.symbol,
-                                            account.networkType,
-                                        )}
-                                        isClean
-                                        hideTextCursor
-                                        isDropdownVisible={account.networkType === 'ethereum'}
-                                        isDisabled={account.networkType !== 'ethereum'}
-                                        minWidth="58px"
-                                    />
-                                );
-                            }}
+                            render={({ onChange, value }) => (
+                                <Select
+                                    onChange={(selected: any) => {
+                                        onChange(selected);
+                                    }}
+                                    value={value}
+                                    isSearchable
+                                    isClearable={false}
+                                    options={getCryptoOptions(account.symbol, account.networkType)}
+                                    isClean
+                                    hideTextCursor
+                                    isDropdownVisible={account.networkType === 'ethereum'}
+                                    isDisabled={account.networkType !== 'ethereum'}
+                                    minWidth="58px"
+                                />
+                            )}
                         />
                     }
                 />

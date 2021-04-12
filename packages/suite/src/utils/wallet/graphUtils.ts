@@ -26,9 +26,8 @@ type ObjectType<T> = T extends 'account'
 export const isAccountAggregatedHistory = (
     history: AggregatedAccountHistory | AggregatedDashboardHistory,
     type: 'account' | 'dashboard',
-): history is AggregatedAccountHistory => {
-    return (history as AggregatedAccountHistory).sent !== undefined && type === 'account';
-};
+): history is AggregatedAccountHistory =>
+    (history as AggregatedAccountHistory).sent !== undefined && type === 'account';
 
 export const calcFiatValueMap = (
     amount: string,
@@ -138,9 +137,7 @@ export const getMinMaxValueFromData = <TType extends TypeName>(
 
     const minsToCompare = [minSent, minReceived, minBalance]
         .filter(m => !!m)
-        .map(m => {
-            return m!.toNumber();
-        });
+        .map(m => m!.toNumber());
     const minValue = Math.min(...minsToCompare);
     return [minValue, maxValue];
 };
@@ -232,20 +229,15 @@ export const aggregateBalanceHistory = <TType extends TypeName>(
 
     // convert bins from an object indexed by timestamp to an array of bins
     const aggregatedData = Object.keys(groupedByTimestamp)
-        .map(timestamp => {
-            return groupedByTimestamp[timestamp];
-        })
+        .map(timestamp => groupedByTimestamp[timestamp])
         .sort((a, b) => Number(a.time) - Number(b.time)); // sort from older to newer;;
     return aggregatedData;
 };
 
-export const accountGraphDataFilterFn = (d: GraphData, account: Account) => {
-    return (
-        d.account.descriptor === account.descriptor &&
-        d.account.symbol === account.symbol &&
-        d.account.deviceState === account.deviceState
-    );
-};
+export const accountGraphDataFilterFn = (d: GraphData, account: Account) =>
+    d.account.descriptor === account.descriptor &&
+    d.account.symbol === account.symbol &&
+    d.account.deviceState === account.deviceState;
 
 export const deviceGraphDataFilterFn = (d: GraphData, deviceState: string | undefined) => {
     if (!deviceState) return false;

@@ -59,30 +59,29 @@ class CommonDB<TDBStructure> {
         CommonDB.instance = this;
     }
 
-    static isDBAvailable = (): Promise<boolean> => {
+    static isDBAvailable = (): Promise<boolean> =>
         // Firefox doesn't support indexedDB while in incognito mode, but still returns valid window.indexedDB object.
         // https://bugzilla.mozilla.org/show_bug.cgi?id=781982
         // so we need to try accessing the IDB. try/catch around idb.open() does not catch the error (bug in idb?), that's why we use callbacks.
         // this solution calls callback function from within onerror/onsuccess event handlers.
         // For other browsers checking the window.indexedDB should be enough.
-        return Promise.resolve(false);
-        // const isFirefox = navigator && navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-        // return new Promise((resolve, _reject) => {
-        //     if (isFirefox) {
-        //         const r = indexedDB.open('test');
-        //         r.onerror = () => resolve(false);
-        //         r.onsuccess = () => resolve(true);
-        //     } else {
-        //         // @ts-ignore
-        //         const idbAvailable = !!indexedDB || !!window.indexedDB || !!global.indexedDB;
-        //         if (idbAvailable) {
-        //             resolve(true);
-        //         } else {
-        //             resolve(false);
-        //         }
-        //     }
-        // });
-    };
+        Promise.resolve(false);
+    // const isFirefox = navigator && navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+    // return new Promise((resolve, _reject) => {
+    //     if (isFirefox) {
+    //         const r = indexedDB.open('test');
+    //         r.onerror = () => resolve(false);
+    //         r.onsuccess = () => resolve(true);
+    //     } else {
+    //         // @ts-ignore
+    //         const idbAvailable = !!indexedDB || !!window.indexedDB || !!global.indexedDB;
+    //         if (idbAvailable) {
+    //             resolve(true);
+    //         } else {
+    //             resolve(false);
+    //         }
+    //     }
+    // });
 
     isSupported = (): Promise<boolean> => {
         this.supported = false;
@@ -93,10 +92,9 @@ class CommonDB<TDBStructure> {
 
     onChange = (_handler: (event: StorageMessageEvent<TDBStructure>) => any) => {};
 
-    getDB = (): Promise<IDBPDatabase<TDBStructure>> => {
+    getDB = (): Promise<IDBPDatabase<TDBStructure>> =>
         // @ts-ignore
-        return Promise.resolve();
-    };
+        Promise.resolve();
 
     addItem = <
         TStoreName extends StoreNames<TDBStructure>,
@@ -107,10 +105,9 @@ class CommonDB<TDBStructure> {
         _item: TItem,
         _key?: TKey,
         _upsert?: boolean
-    ): Promise<StoreKey<TDBStructure, TStoreName>> => {
+    ): Promise<StoreKey<TDBStructure, TStoreName>> =>
         // @ts-ignore
-        return Promise.resolve();
-    };
+        Promise.resolve();
 
     addItems = <
         TStoreName extends StoreNames<TDBStructure>,
@@ -119,9 +116,7 @@ class CommonDB<TDBStructure> {
         _store: TStoreName,
         _items: TItem[],
         _upsert?: boolean
-    ) => {
-        return Promise.resolve();
-    };
+    ) => Promise.resolve();
 
     getItemByPK = <
         TStoreName extends StoreNames<TDBStructure>,
@@ -129,10 +124,9 @@ class CommonDB<TDBStructure> {
     >(
         _store: TStoreName,
         _primaryKey: TKey
-    ): Promise<StoreValue<TDBStructure, TStoreName> | undefined> => {
+    ): Promise<StoreValue<TDBStructure, TStoreName> | undefined> =>
         // @ts-ignore
-        return Promise.resolve();
-    };
+        Promise.resolve();
 
     getItemByIndex = <
         TStoreName extends StoreNames<TDBStructure>,
@@ -142,9 +136,7 @@ class CommonDB<TDBStructure> {
         _store: TStoreName,
         _indexName: TIndexName,
         _key: TKey
-    ) => {
-        return Promise.resolve();
-    };
+    ) => Promise.resolve();
 
     updateItemByIndex = <
         TStoreName extends StoreNames<TDBStructure>,
@@ -155,9 +147,7 @@ class CommonDB<TDBStructure> {
         _indexName: TIndexName,
         _key: TKey,
         _updateObject: { [key: string]: any }
-    ) => {
-        return Promise.resolve();
-    };
+    ) => Promise.resolve();
 
     removeItemByPK = <
         TStoreName extends StoreNames<TDBStructure>,
@@ -165,9 +155,7 @@ class CommonDB<TDBStructure> {
     >(
         _store: TStoreName,
         _key: TKey
-    ) => {
-        return Promise.resolve();
-    };
+    ) => Promise.resolve();
 
     removeItemByIndex = <
         TStoreName extends StoreNames<TDBStructure>,
@@ -177,9 +165,7 @@ class CommonDB<TDBStructure> {
         _store: TStoreName,
         _indexName: TIndexName,
         _key: TKey
-    ) => {
-        return Promise.resolve();
-    };
+    ) => Promise.resolve();
 
     getItemsExtended = <
         TStoreName extends StoreNames<TDBStructure>,
@@ -188,12 +174,10 @@ class CommonDB<TDBStructure> {
         _store: TStoreName,
         _indexName?: TIndexName,
         _filters?: { key?: any; offset?: number; count?: number; reverse?: boolean }
-    ) => {
-        return (Promise.resolve() as unknown) as Promise<StoreValue<TDBStructure, TStoreName>[]>;
-    };
+    ) => (Promise.resolve() as unknown) as Promise<StoreValue<TDBStructure, TStoreName>[]>;
 
-    getItemsWithKeys = <TStoreName extends StoreNames<TDBStructure>>(_store: TStoreName) => {
-        return (Promise.resolve() as unknown) as Promise<
+    getItemsWithKeys = <TStoreName extends StoreNames<TDBStructure>>(_store: TStoreName) =>
+        (Promise.resolve() as unknown) as Promise<
             {
                 key: unknown extends IndexNames<TDBStructure, TStoreName>
                     ? IndexKey<TDBStructure, TStoreName, IndexNames<TDBStructure, TStoreName>>
@@ -201,19 +185,13 @@ class CommonDB<TDBStructure> {
                 value: StoreValue<TDBStructure, TStoreName>;
             }[]
         >;
-    };
 
-    clearStores = <TStoreName extends StoreNames<TDBStructure>>(_storeNames?: TStoreName[]) => {
-        return Promise.resolve();
-    };
+    clearStores = <TStoreName extends StoreNames<TDBStructure>>(_storeNames?: TStoreName[]) =>
+        Promise.resolve();
 
-    static removeStores = <TDBStructure>(_db: IDBPDatabase<TDBStructure>) => {
-        return Promise.resolve();
-    };
+    static removeStores = <TDBStructure>(_db: IDBPDatabase<TDBStructure>) => Promise.resolve();
 
-    removeDatabase = () => {
-        return Promise.resolve();
-    };
+    removeDatabase = () => Promise.resolve();
 }
 
 export default CommonDB;

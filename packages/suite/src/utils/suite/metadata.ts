@@ -40,8 +40,8 @@ export const deriveFilename = (metadataKey: string) => {
     return firstHalf.toString('hex');
 };
 
-const getRandomIv = (): Promise<Buffer> => {
-    return new Promise((resolve, reject) => {
+const getRandomIv = (): Promise<Buffer> =>
+    new Promise((resolve, reject) => {
         try {
             crypto.randomBytes(CIPHER_IVSIZE, (err, buf) => {
                 if (err) {
@@ -54,7 +54,6 @@ const getRandomIv = (): Promise<Buffer> => {
             reject(err);
         }
     });
-};
 
 export const arrayBufferToBuffer = (ab: ArrayBuffer) => {
     const buffer = Buffer.alloc(ab.byteLength);

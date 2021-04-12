@@ -3,14 +3,12 @@ import thunk from 'redux-thunk';
 import resizeReducer, { State as ResizeState } from '@suite-reducers/resizeReducer';
 import * as resizeActions from '@suite-actions/resizeActions';
 
-export const getInitialState = (state?: ResizeState) => {
-    return {
-        resize: {
-            ...resizeReducer(undefined, { type: 'foo' } as any),
-            ...state,
-        },
-    };
-};
+export const getInitialState = (state?: ResizeState) => ({
+    resize: {
+        ...resizeReducer(undefined, { type: 'foo' } as any),
+        ...state,
+    },
+});
 
 type State = ReturnType<typeof getInitialState>;
 const mockStore = configureStore<State, any>([thunk]);

@@ -31,13 +31,11 @@ const InnerModalWrapper = styled.div`
     height: 100%;
 `;
 
-const mapStateToProps = (state: AppState) => {
-    return {
-        // onboarding reducer
-        activeStepId: state.onboarding.activeStepId,
-        path: state.onboarding.path,
-    };
-};
+const mapStateToProps = (state: AppState) => ({
+    // onboarding reducer
+    activeStepId: state.onboarding.activeStepId,
+    path: state.onboarding.path,
+});
 
 type Props = ReturnType<typeof mapStateToProps> & InjectedModalApplicationProps;
 

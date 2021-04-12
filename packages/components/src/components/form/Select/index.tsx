@@ -173,9 +173,7 @@ interface Option {
 /** Custom Type Guards to check if options are grouped or not */
 const isOptionGrouped = (
     x: OptionsType<Option> | GroupedOptionsType<Option>
-): x is GroupedOptionsType<Option> => {
-    return (x as GroupedOptionsType<Option>)[0]?.options !== undefined;
-};
+): x is GroupedOptionsType<Option> => (x as GroupedOptionsType<Option>)[0]?.options !== undefined;
 
 interface CommonProps extends Omit<SelectProps, 'components' | 'isSearchable'> {
     withDropdownIndicator?: boolean;
@@ -220,30 +218,26 @@ const Select = ({
     const searchedTerm = useRef(''); // string which the user wants to find
 
     // customize control to pass data-test attribute
-    const Control = (controlProps: any) => {
-        return (
-            <components.Control
-                {...controlProps}
-                innerProps={{
-                    ...controlProps.innerProps,
-                    'data-test': `${props['data-test']}/input`,
-                }}
-            />
-        );
-    };
+    const Control = (controlProps: any) => (
+        <components.Control
+            {...controlProps}
+            innerProps={{
+                ...controlProps.innerProps,
+                'data-test': `${props['data-test']}/input`,
+            }}
+        />
+    );
 
     // customize options to pass data-test attribute
-    const Option = (optionProps: any) => {
-        return (
-            <components.Option
-                {...optionProps}
-                innerProps={{
-                    ...optionProps.innerProps,
-                    'data-test': `${props['data-test']}/option/${optionProps.value}`,
-                }}
-            />
-        );
-    };
+    const Option = (optionProps: any) => (
+        <components.Option
+            {...optionProps}
+            innerProps={{
+                ...optionProps.innerProps,
+                'data-test': `${props['data-test']}/option/${optionProps.value}`,
+            }}
+        />
+    );
 
     const findOption = (options: OptionsType<Option>, query: string) => {
         // Option that will be returned

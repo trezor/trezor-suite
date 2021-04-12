@@ -27,25 +27,23 @@ const TrezorLogo = ({
     width = 'auto',
     height = 'auto',
     ...rest
-}: Props) => {
-    return (
-        <SvgWrapper
-            width={typeof width === 'number' ? `${width}px` : width}
-            height={typeof height === 'number' ? `${height}px` : height}
-            {...rest}
-        >
-            <ReactSVG
-                src={LOGOS[type.toUpperCase()]}
-                beforeInjection={svg => {
-                    if (typeof height === 'number') {
-                        svg.setAttribute('height', `${height}px`);
-                    }
-                    svg.setAttribute('fill', variant);
-                }}
-                loading={() => <span className="loading" />}
-            />
-        </SvgWrapper>
-    );
-};
+}: Props) => (
+    <SvgWrapper
+        width={typeof width === 'number' ? `${width}px` : width}
+        height={typeof height === 'number' ? `${height}px` : height}
+        {...rest}
+    >
+        <ReactSVG
+            src={LOGOS[type.toUpperCase()]}
+            beforeInjection={svg => {
+                if (typeof height === 'number') {
+                    svg.setAttribute('height', `${height}px`);
+                }
+                svg.setAttribute('fill', variant);
+            }}
+            loading={() => <span className="loading" />}
+        />
+    </SvgWrapper>
+);
 
 export { TrezorLogo, Props as TrezorLogoProps };

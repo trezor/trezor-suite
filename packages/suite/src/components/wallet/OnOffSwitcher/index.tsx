@@ -27,21 +27,19 @@ interface Props {
     hasEqualSign?: boolean;
 }
 
-const OnOffSwitcher = ({ isOn = true, hasEqualSign = true }: Props) => {
-    return (
-        <Wrapper>
-            {hasEqualSign && <EqualSign> = </EqualSign>}
-            {isOn ? (
-                <On>
-                    <Translation id="TR_ON" />
-                </On>
-            ) : (
-                <Off>
-                    <Translation id="TR_OFF" />
-                </Off>
-            )}
-        </Wrapper>
-    );
-};
+const OnOffSwitcher = ({ isOn = true, hasEqualSign = true }: Props) => (
+    <Wrapper>
+        {hasEqualSign && <EqualSign> = </EqualSign>}
+        {isOn ? (
+            <On>
+                <Translation id="TR_ON" />
+            </On>
+        ) : (
+            <Off>
+                <Translation id="TR_OFF" />
+            </Off>
+        )}
+    </Wrapper>
+);
 
 export default OnOffSwitcher;

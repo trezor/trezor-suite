@@ -172,9 +172,7 @@ jest.mock('../utils/score', () => {
 
     return {
         __esModule: true, // this property makes it work
-        getScore: () => {
-            return score;
-        },
+        getScore: () => score,
         _setScore: (newScore: number | undefined) => {
             score = newScore;
         },

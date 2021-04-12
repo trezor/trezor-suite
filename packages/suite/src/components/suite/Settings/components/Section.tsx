@@ -35,21 +35,17 @@ interface Props {
     description?: string | ReactElement;
 }
 
-const Section = ({ children, title, description, customHeader }: Props) => {
-    return (
-        <Wrapper>
-            <Header>
-                {!title && customHeader}
-                {title && !customHeader && <Title>{title}</Title>}
-                {description && !customHeader && (
-                    <Description size="tiny">{description}</Description>
-                )}
-            </Header>
-            <Content largePadding noVerticalPadding>
-                {children}
-            </Content>
-        </Wrapper>
-    );
-};
+const Section = ({ children, title, description, customHeader }: Props) => (
+    <Wrapper>
+        <Header>
+            {!title && customHeader}
+            {title && !customHeader && <Title>{title}</Title>}
+            {description && !customHeader && <Description size="tiny">{description}</Description>}
+        </Header>
+        <Content largePadding noVerticalPadding>
+            {children}
+        </Content>
+    </Wrapper>
+);
 
 export default Section;

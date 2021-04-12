@@ -101,9 +101,8 @@ const isRequired = (changelog: ReturnType<typeof getChangelog>) => {
     return changelog.some(item => item.required);
 };
 
-const isLatest = (release: Release, latest: Release) => {
-    return versionUtils.isEqual(release.version, latest.version);
-};
+const isLatest = (release: Release, latest: Release) =>
+    versionUtils.isEqual(release.version, latest.version);
 
 interface GetInfoProps {
     features: Features;

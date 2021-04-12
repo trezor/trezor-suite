@@ -154,27 +154,25 @@ export const FeeRow = ({
     isFirst?: boolean;
     isLast?: boolean;
     className?: string;
-}) => {
-    return (
-        <BaseTargetLayout
-            {...baseLayoutProps}
-            addressLabel={<Translation id="FEE" />}
-            amount={
-                <StyledHiddenPlaceholder>
-                    <Sign value="neg" />
-                    {transaction.fee} {transaction.symbol}
-                </StyledHiddenPlaceholder>
-            }
-            fiatAmount={
-                useFiatValues ? (
-                    <FiatValue
-                        amount={transaction.fee}
-                        symbol={transaction.symbol}
-                        source={transaction.rates}
-                        useCustomSource
-                    />
-                ) : undefined
-            }
-        />
-    );
-};
+}) => (
+    <BaseTargetLayout
+        {...baseLayoutProps}
+        addressLabel={<Translation id="FEE" />}
+        amount={
+            <StyledHiddenPlaceholder>
+                <Sign value="neg" />
+                {transaction.fee} {transaction.symbol}
+            </StyledHiddenPlaceholder>
+        }
+        fiatAmount={
+            useFiatValues ? (
+                <FiatValue
+                    amount={transaction.fee}
+                    symbol={transaction.symbol}
+                    source={transaction.rates}
+                    useCustomSource
+                />
+            ) : undefined
+        }
+    />
+);

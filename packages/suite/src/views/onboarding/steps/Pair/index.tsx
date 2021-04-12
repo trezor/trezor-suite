@@ -49,15 +49,12 @@ const PairDeviceStep = () => {
         );
     };
 
-    const isDeviceUnreadable = () => {
-        return device && device.type === 'unreadable';
-    };
+    const isDeviceUnreadable = () => device && device.type === 'unreadable';
 
     const hasTransport = () => transport && transport.type;
 
-    const isDetectingDevice = () => {
-        return Boolean((device && device.features && device.connected) || isDeviceUnreadable());
-    };
+    const isDetectingDevice = () =>
+        Boolean((device && device.features && device.connected) || isDeviceUnreadable());
 
     const getConnectedDeviceStatus = () => {
         if (isInBlWithFwPresent()) return 'in-bootloader';

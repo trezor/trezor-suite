@@ -100,15 +100,13 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
 // used in send/Address component
-export const scanQrRequest = () => (dispatch: Dispatch) => {
-    return dispatch(modalActions.openDeferredModal({ type: 'qr-reader' }));
-};
+export const scanQrRequest = () => (dispatch: Dispatch) =>
+    dispatch(modalActions.openDeferredModal({ type: 'qr-reader' }));
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
 // used in send/Header component
-export const importRequest = () => (dispatch: Dispatch) => {
-    return dispatch(modalActions.openDeferredModal({ type: 'import-transaction' }));
-};
+export const importRequest = () => (dispatch: Dispatch) =>
+    dispatch(modalActions.openDeferredModal({ type: 'import-transaction' }));
 
 // this could be called at any time during signTransaction or pushTransaction process (from ReviewTransaction modal)
 export const cancelSignTx = () => (dispatch: Dispatch, getState: GetState) => {

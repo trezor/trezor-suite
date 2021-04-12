@@ -3,8 +3,10 @@ export interface MessageObject {
     description?: string;
 }
 
-const createRowArray = (masterKey: string, masterValue: MessageObject) => {
-    return [masterKey, masterValue.message, masterValue.description];
-};
+const createRowArray = (masterKey: string, masterValue: MessageObject) => [
+    masterKey,
+    masterValue.message,
+    masterValue.description,
+];
 
 export default createRowArray;

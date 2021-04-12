@@ -1,12 +1,10 @@
 import { VersionArray } from './parse';
 
-export const parse = (versionArr: VersionArray) => {
-    return {
-        major: versionArr[0],
-        minor: versionArr[1],
-        patch: versionArr[2],
-    };
-};
+export const parse = (versionArr: VersionArray) => ({
+    major: versionArr[0],
+    minor: versionArr[1],
+    patch: versionArr[2],
+});
 
 export const toString = (arr: VersionArray) => `${arr[0]}.${arr[1]}.${arr[2]}`;
 

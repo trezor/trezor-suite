@@ -131,36 +131,34 @@ const ConfirmOnDevice = ({
     successText,
     animated,
     animation = 'SLIDE_UP',
-}: Props) => {
-    return (
-        <Wrapper animated={animated} animation={animation}>
-            <Left>
-                <DeviceImage height="34px" trezorModel={trezorModel} />
-            </Left>
-            <Middle>
-                <Title>{title}</Title>
-                {successText && typeof steps === 'number' && activeStep && activeStep > steps && (
-                    <Success>{successText}</Success>
+}: Props) => (
+    <Wrapper animated={animated} animation={animation}>
+        <Left>
+            <DeviceImage height="34px" trezorModel={trezorModel} />
+        </Left>
+        <Middle>
+            <Title>{title}</Title>
+            {successText && typeof steps === 'number' && activeStep && activeStep > steps && (
+                <Success>{successText}</Success>
+            )}
+            {typeof steps === 'number' && activeStep && activeStep <= steps && (
+                <Steps>
+                    {Array.from(Array(steps).keys()).map((s, i) => (
+                        <Step key={s} isActive={isStepActive(i, activeStep)} />
+                    ))}
+                </Steps>
+            )}
+        </Middle>
+        <Right>
+            <CloseWrapper>
+                {onCancel && (
+                    <Close onClick={onCancel}>
+                        <Icon icon="CROSS" size={23} />
+                    </Close>
                 )}
-                {typeof steps === 'number' && activeStep && activeStep <= steps && (
-                    <Steps>
-                        {Array.from(Array(steps).keys()).map((s, i) => (
-                            <Step key={s} isActive={isStepActive(i, activeStep)} />
-                        ))}
-                    </Steps>
-                )}
-            </Middle>
-            <Right>
-                <CloseWrapper>
-                    {onCancel && (
-                        <Close onClick={onCancel}>
-                            <Icon icon="CROSS" size={23} />
-                        </Close>
-                    )}
-                </CloseWrapper>
-            </Right>
-        </Wrapper>
-    );
-};
+            </CloseWrapper>
+        </Right>
+    </Wrapper>
+);
 
 export { ConfirmOnDevice, Props as ConfirmOnDeviceProps };

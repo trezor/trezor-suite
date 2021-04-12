@@ -24,15 +24,10 @@ const getHeight = (model: number) => {
     return T1_HEIGHT;
 };
 
-const range = (length: number) => {
-    return [...Array(length).keys()];
-};
+const range = (length: number) => [...Array(length).keys()];
 
-const byteArrayToHexString = (byteArray: Uint8Array) => {
-    return Array.from(byteArray, byte => {
-        return `0${(byte & 0xff).toString(16)}`.slice(-2);
-    }).join('');
-};
+const byteArrayToHexString = (byteArray: Uint8Array) =>
+    Array.from(byteArray, byte => `0${(byte & 0xff).toString(16)}`.slice(-2)).join('');
 
 const rightPad = (len: number, val: string) => {
     while (val.length < len) {
@@ -113,8 +108,8 @@ const toig = (w: number, h: number, imageData: ImageData) => {
 const toif = (w: number, h: number, imageData: ImageData) => {
     // flat does [[1, 2], [3, 4]] -> [1, 2, 3, 4] here
     const pixels = range(h)
-        .map(row => {
-            return range(w).map(col => {
+        .map(row =>
+            range(w).map(col => {
                 const i = row * w + col;
                 // draw black outside the visible area for smaller image size
                 if (isOutsideCircle(w, row, col)) {
@@ -124,16 +119,12 @@ const toif = (w: number, h: number, imageData: ImageData) => {
                 const g = imageData.data[4 * i + 1];
                 const b = imageData.data[4 * i + 2];
                 return ((r & 0xf8) << 8) | ((g & 0xfc) << 3) | ((b & 0xf8) >> 3);
-            });
-        })
+            }),
+        )
         .flat();
 
     // Uint16Array -> Uint8Array
-    const bytes = pixels
-        .map((p: number) => {
-            return [Math.floor(p / 256), p % 256];
-        })
-        .flat();
+    const bytes = pixels.map((p: number) => [Math.floor(p / 256), p % 256]).flat();
 
     const packed = pako.deflateRaw(bytes, {
         level: 9,
@@ -159,10 +150,9 @@ const toif = (w: number, h: number, imageData: ImageData) => {
 export const fileToDataUrl = (file: File): Promise<string> => {
     const reader = new FileReader();
     return new Promise((resolve, reject) => {
-        reader.onload = e => {
+        reader.onload = e =>
             // @ts-ignore
-            return resolve(e.target.result);
-        };
+            resolve(e.target.result);
         reader.onerror = err => {
             reject(err);
         };
@@ -234,11 +224,10 @@ export const checkImage = (origImage: HTMLImageElement, model: number) => {
     }
 };
 
-export const check = (file: File, model: number) => {
-    return fileToDataUrl(file)
+export const check = (file: File, model: number) =>
+    fileToDataUrl(file)
         .then((url: string) => dataUrlToImage(url))
         .then(image => checkImage(image, model));
-};
 
 export const imageDataToHex = (imageData: ImageData, model: number) => {
     const w = getWidth(model);

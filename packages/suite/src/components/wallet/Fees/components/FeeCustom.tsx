@@ -68,23 +68,21 @@ const StyledButton = styled(Button)`
 `;
 
 // feeLimit error notification button
-const SetDefaultLimit = ({ onClick }: { onClick: () => void }) => {
-    return (
-        <ButtonWrapper>
-            <Translation
-                id="CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED"
-                isNested
-                values={{
-                    button: (
-                        <StyledButton variant="tertiary" onClick={onClick}>
-                            <Translation id="CUSTOM_FEE_LIMIT_USE_RECOMMENDED" />
-                        </StyledButton>
-                    ),
-                }}
-            />
-        </ButtonWrapper>
-    );
-};
+const SetDefaultLimit = ({ onClick }: { onClick: () => void }) => (
+    <ButtonWrapper>
+        <Translation
+            id="CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED"
+            isNested
+            values={{
+                button: (
+                    <StyledButton variant="tertiary" onClick={onClick}>
+                        <Translation id="CUSTOM_FEE_LIMIT_USE_RECOMMENDED" />
+                    </StyledButton>
+                ),
+            }}
+        />
+    </ButtonWrapper>
+);
 
 const FEE_PER_UNIT = 'feePerUnit';
 const FEE_LIMIT = 'feeLimit';

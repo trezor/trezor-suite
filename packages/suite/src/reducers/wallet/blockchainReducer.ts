@@ -79,8 +79,8 @@ const update = (draft: Draft<BlockchainState>, block: BlockchainBlock) => {
     };
 };
 
-const blockchainReducer = (state: BlockchainState = initialState, action: Action) => {
-    return produce(state, draft => {
+const blockchainReducer = (state: BlockchainState = initialState, action: Action) =>
+    produce(state, draft => {
         switch (action.type) {
             case BLOCKCHAIN.CONNECT:
                 connect(draft, action.payload);
@@ -104,6 +104,5 @@ const blockchainReducer = (state: BlockchainState = initialState, action: Action
             // no default
         }
     });
-};
 
 export default blockchainReducer;

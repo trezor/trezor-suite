@@ -29,24 +29,22 @@ const FiatSelect = () => {
             control={control}
             name={FIAT_CURRENCY}
             defaultValue={localCurrencyOption}
-            render={({ onChange, value }) => {
-                return (
-                    <Select
-                        onChange={(selected: any) => {
-                            onChange(selected);
-                            updateFiatCurrency(selected);
-                            setAmountLimits(undefined);
-                        }}
-                        value={value}
-                        isClearable={false}
-                        options={currencyOptions}
-                        isDropdownVisible={account.networkType === 'ethereum'}
-                        minWidth="58px"
-                        isClean
-                        hideTextCursor
-                    />
-                );
-            }}
+            render={({ onChange, value }) => (
+                <Select
+                    onChange={(selected: any) => {
+                        onChange(selected);
+                        updateFiatCurrency(selected);
+                        setAmountLimits(undefined);
+                    }}
+                    value={value}
+                    isClearable={false}
+                    options={currencyOptions}
+                    isDropdownVisible={account.networkType === 'ethereum'}
+                    minWidth="58px"
+                    isClean
+                    hideTextCursor
+                />
+            )}
         />
     );
 };

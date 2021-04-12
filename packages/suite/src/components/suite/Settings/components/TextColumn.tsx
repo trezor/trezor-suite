@@ -32,18 +32,16 @@ const Title = styled.div`
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
-const TextColumn = ({ title, description, learnMore }: TextColumnProps) => {
-    return (
-        <Wrapper>
-            {title && <Title>{title}</Title>}
-            {description && <Description>{description}</Description>}
-            {learnMore && (
-                <ExternalLink href={learnMore} size="tiny">
-                    <Translation id="TR_LEARN_MORE" />
-                </ExternalLink>
-            )}
-        </Wrapper>
-    );
-};
+const TextColumn = ({ title, description, learnMore }: TextColumnProps) => (
+    <Wrapper>
+        {title && <Title>{title}</Title>}
+        {description && <Description>{description}</Description>}
+        {learnMore && (
+            <ExternalLink href={learnMore} size="tiny">
+                <Translation id="TR_LEARN_MORE" />
+            </ExternalLink>
+        )}
+    </Wrapper>
+);
 
 export default TextColumn;

@@ -13,9 +13,7 @@ const excluded = [
 ];
 
 const getUrls = () => {
-    const constantUrls = Object.values(URLS).filter((url: string) => {
-        return !excluded.includes(url);
-    });
+    const constantUrls = Object.values(URLS).filter((url: string) => !excluded.includes(url));
 
     return constantUrls;
 };

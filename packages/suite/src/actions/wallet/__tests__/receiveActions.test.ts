@@ -84,25 +84,23 @@ interface InitialState {
     modal: ModalState;
 }
 
-export const getInitialState = (state: Partial<InitialState> | undefined) => {
-    return {
-        devices: [],
-        suite: {
-            ...suiteReducer(undefined, { type: 'foo' } as any),
-            device: getSuiteDevice({ available: true, connected: true }),
-        },
-        wallet: {
-            receive: receiveReducer([], { type: 'foo' } as any),
-            selectedAccount: {
-                account: {
-                    networkType: 'bitcoin',
-                },
+export const getInitialState = (state: Partial<InitialState> | undefined) => ({
+    devices: [],
+    suite: {
+        ...suiteReducer(undefined, { type: 'foo' } as any),
+        device: getSuiteDevice({ available: true, connected: true }),
+    },
+    wallet: {
+        receive: receiveReducer([], { type: 'foo' } as any),
+        selectedAccount: {
+            account: {
+                networkType: 'bitcoin',
             },
         },
-        modal: modalReducer(undefined, { type: 'foo' } as any),
-        ...state,
-    };
-};
+    },
+    modal: modalReducer(undefined, { type: 'foo' } as any),
+    ...state,
+});
 
 type State = ReturnType<typeof getInitialState>;
 const mockStore = configureStore<State, any>([thunk]);

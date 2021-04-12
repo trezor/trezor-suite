@@ -6,17 +6,15 @@ import { CustomError } from '../../constants/errors';
 import BigNumber from 'bignumber.js';
 
 // export const transformServerInfo = (payload: GetServerInfoResponse) => {
-export const transformServerInfo = (payload: any) => {
-    return {
-        name: 'Ripple',
-        shortcut: 'xrp',
-        testnet: false,
-        version: payload.buildVersion,
-        decimals: 6,
-        blockHeight: payload.validatedLedger.ledgerVersion,
-        blockHash: payload.validatedLedger.hash,
-    };
-};
+export const transformServerInfo = (payload: any) => ({
+    name: 'Ripple',
+    shortcut: 'xrp',
+    testnet: false,
+    version: payload.buildVersion,
+    decimals: 6,
+    blockHeight: payload.validatedLedger.ledgerVersion,
+    blockHash: payload.validatedLedger.hash,
+});
 
 export const transformError = (error: any) => {
     if (error instanceof RippleError) {

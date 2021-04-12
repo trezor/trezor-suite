@@ -257,12 +257,10 @@ class Regional {
     countriesMap = new Map<string, string>(this.countries);
 
     countriesOptions = this.countries
-        .map(([code, name]) => {
-            return {
-                label: name,
-                value: code,
-            };
-        })
+        .map(([code, name]) => ({
+            label: name,
+            value: code,
+        }))
         .sort((c1, c2) => {
             const l1 = c1.label.split(' ')[1];
             const l2 = c2.label.split(' ')[1];

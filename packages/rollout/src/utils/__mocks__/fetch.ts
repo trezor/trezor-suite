@@ -1,3 +1,3 @@
-export const fetchFirmware = jest.fn().mockImplementation(() => {
-    return Promise.resolve(new ArrayBuffer(512));
-});
+export const fetchFirmware = jest
+    .fn()
+    .mockImplementation(() => Promise.resolve(new ArrayBuffer(512)));

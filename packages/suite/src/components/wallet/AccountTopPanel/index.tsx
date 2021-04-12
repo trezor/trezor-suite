@@ -32,22 +32,20 @@ const FiatBalanceWrapper = styled(H2)`
     font-size: ${variables.FONT_SIZE.H2};
 `;
 
-const AccountTopPanelSkeleton = (props: { animate?: boolean }) => {
-    return (
-        <AppNavigationPanel
-            maxWidth="small"
-            title={<SkeletonRectangle width="260px" height="26px" animate={props.animate} />}
-            navigation={<AccountNavigation />}
-        >
-            <Stack margin="6px 0px 0px 0px" childMargin="0px 0px 8px 0px">
-                <SkeletonCircle size="24px" />
-                <Balance noMargin>
-                    <SkeletonRectangle width="160px" height="24px" />
-                </Balance>
-            </Stack>
-        </AppNavigationPanel>
-    );
-};
+const AccountTopPanelSkeleton = (props: { animate?: boolean }) => (
+    <AppNavigationPanel
+        maxWidth="small"
+        title={<SkeletonRectangle width="260px" height="26px" animate={props.animate} />}
+        navigation={<AccountNavigation />}
+    >
+        <Stack margin="6px 0px 0px 0px" childMargin="0px 0px 8px 0px">
+            <SkeletonCircle size="24px" />
+            <Balance noMargin>
+                <SkeletonRectangle width="160px" height="24px" />
+            </Balance>
+        </Stack>
+    </AppNavigationPanel>
+);
 
 const AccountTopPanel = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);

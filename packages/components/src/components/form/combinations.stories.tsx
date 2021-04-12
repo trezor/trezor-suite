@@ -12,23 +12,21 @@ const Wrapper = styled.div`
 
 storiesOf('Form', module).add(
     'Combinations',
-    () => {
-        return (
-            <Wrapper>
-                <SelectBar
-                    label="Fee"
-                    selectedOption="ETH"
-                    options={[
-                        { label: 'ETH', value: 'ETH' },
-                        { label: 'XRP', value: 'XRP' },
-                        { label: 'BCT', value: 'BCT' },
-                        { label: 'UAN', value: 'UAN' },
-                    ]}
-                />
-                <Input noTopLabel variant="small" />
-            </Wrapper>
-        );
-    },
+    () => (
+        <Wrapper>
+            <SelectBar
+                label="Fee"
+                selectedOption="ETH"
+                options={[
+                    { label: 'ETH', value: 'ETH' },
+                    { label: 'XRP', value: 'XRP' },
+                    { label: 'BCT', value: 'BCT' },
+                    { label: 'UAN', value: 'UAN' },
+                ]}
+            />
+            <Input noTopLabel variant="small" />
+        </Wrapper>
+    ),
     {
         options: {
             showPanel: true,

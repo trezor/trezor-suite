@@ -69,9 +69,7 @@ describe('Worker', () => {
 
     it('Worker error (worker factory returns something different than Worker)', async () => {
         try {
-            blockchain.settings.worker = () => {
-                return 1;
-            };
+            blockchain.settings.worker = () => 1;
             await blockchain.connect();
         } catch (error) {
             expect(error.code).toBe('blockchain_link/worker_invalid');
@@ -92,11 +90,9 @@ describe('Worker', () => {
     it('Worker error (handshake timeout)', async () => {
         try {
             blockchain.settings.timeout = 2500;
-            blockchain.settings.worker = () => {
-                return {
-                    postMessage: () => {},
-                };
-            };
+            blockchain.settings.worker = () => ({
+                postMessage: () => {},
+            });
             await blockchain.connect();
         } catch (error) {
             expect(error.code).toBe('blockchain_link/worker_timeout');

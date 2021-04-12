@@ -6,9 +6,7 @@ import { useDevice, useFirmware, useSelector } from '@suite-hooks';
 import { Translation, WebusbButton } from '@suite-components';
 import { isWebUSB } from '@suite-utils/transport';
 
-const Heading = () => {
-    return 'Reconnect device as usual';
-};
+const Heading = () => 'Reconnect device as usual';
 
 const Body = () => {
     const { device } = useDevice();

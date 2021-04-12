@@ -106,13 +106,11 @@ const BottomBar = () => {
 
     if (device.mode === 'bootloader') return null;
 
-    const getPrimaryButtonProps = () => {
-        return {
-            onClick: () => setStatus('waiting-for-bootloader'),
-            children: <Translation id="TR_INSTALL" />,
-            'data-test': '@firmware/get-ready-button',
-        };
-    };
+    const getPrimaryButtonProps = () => ({
+        onClick: () => setStatus('waiting-for-bootloader'),
+        children: <Translation id="TR_INSTALL" />,
+        'data-test': '@firmware/get-ready-button',
+    });
 
     if (device.firmware === 'required') {
         return (

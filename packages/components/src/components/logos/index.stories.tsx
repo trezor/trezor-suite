@@ -39,82 +39,80 @@ const Icon = styled.div`
 
 storiesOf('Logos', module).add(
     'All',
-    () => {
-        return (
-            <>
-                <StoryColumn minWidth={700}>
-                    <WrapperIcons>
-                        {variables.COINS.map((coin: types.CoinType) => (
-                            <Icon>
-                                <CoinName>{coin}</CoinName>
-                                <CoinLogo symbol={coin} data-test={`coin-${coin}`} size={64} />
-                            </Icon>
-                        ))}
-                    </WrapperIcons>
-                </StoryColumn>
-                <StoryColumn minWidth={400}>
-                    <LogoWrapper>
-                        <TrezorLogo
-                            type="horizontal"
-                            variant="black"
-                            width="200px"
-                            data-test="trezor-logo-horizontal-black"
-                        />
-                        <TrezorLogo
-                            type="vertical"
-                            variant="black"
-                            width="120px"
-                            data-test="trezor-logo-vertical-black"
-                        />
-                        <TrezorLogo
-                            type="symbol"
-                            variant="black"
-                            width="50px"
-                            data-test="trezor-logo-symbol-black"
-                        />
-                        <TrezorLogo
-                            type="suite"
-                            variant="black"
-                            width="200px"
-                            data-test="trezor-suite-logo-black"
-                        />
-                        <TrezorLogo
-                            type="suite_compact"
-                            variant="black"
-                            width="200px"
-                            data-test="trezor-suite-compact-logo-black"
-                        />
-                    </LogoWrapper>
-                    <LogoWrapper isDark>
-                        <TrezorLogo
-                            type="horizontal"
-                            variant="white"
-                            width="200px"
-                            data-test="trezor-logo-horizontal-white"
-                        />
-                        <TrezorLogo
-                            type="vertical"
-                            variant="white"
-                            width="120px"
-                            data-test="trezor-logo-vertical-white"
-                        />
-                        <TrezorLogo
-                            type="symbol"
-                            variant="white"
-                            width="50px"
-                            data-test="trezor-logo-symbol-white"
-                        />
-                        <TrezorLogo
-                            type="suite_compact"
-                            variant="white"
-                            width="200px"
-                            data-test="trezor-suite-compact-logo-black"
-                        />
-                    </LogoWrapper>
-                </StoryColumn>
-            </>
-        );
-    },
+    () => (
+        <>
+            <StoryColumn minWidth={700}>
+                <WrapperIcons>
+                    {variables.COINS.map((coin: types.CoinType) => (
+                        <Icon>
+                            <CoinName>{coin}</CoinName>
+                            <CoinLogo symbol={coin} data-test={`coin-${coin}`} size={64} />
+                        </Icon>
+                    ))}
+                </WrapperIcons>
+            </StoryColumn>
+            <StoryColumn minWidth={400}>
+                <LogoWrapper>
+                    <TrezorLogo
+                        type="horizontal"
+                        variant="black"
+                        width="200px"
+                        data-test="trezor-logo-horizontal-black"
+                    />
+                    <TrezorLogo
+                        type="vertical"
+                        variant="black"
+                        width="120px"
+                        data-test="trezor-logo-vertical-black"
+                    />
+                    <TrezorLogo
+                        type="symbol"
+                        variant="black"
+                        width="50px"
+                        data-test="trezor-logo-symbol-black"
+                    />
+                    <TrezorLogo
+                        type="suite"
+                        variant="black"
+                        width="200px"
+                        data-test="trezor-suite-logo-black"
+                    />
+                    <TrezorLogo
+                        type="suite_compact"
+                        variant="black"
+                        width="200px"
+                        data-test="trezor-suite-compact-logo-black"
+                    />
+                </LogoWrapper>
+                <LogoWrapper isDark>
+                    <TrezorLogo
+                        type="horizontal"
+                        variant="white"
+                        width="200px"
+                        data-test="trezor-logo-horizontal-white"
+                    />
+                    <TrezorLogo
+                        type="vertical"
+                        variant="white"
+                        width="120px"
+                        data-test="trezor-logo-vertical-white"
+                    />
+                    <TrezorLogo
+                        type="symbol"
+                        variant="white"
+                        width="50px"
+                        data-test="trezor-logo-symbol-white"
+                    />
+                    <TrezorLogo
+                        type="suite_compact"
+                        variant="white"
+                        width="200px"
+                        data-test="trezor-suite-compact-logo-black"
+                    />
+                </LogoWrapper>
+            </StoryColumn>
+        </>
+    ),
     {
         options: {
             showPanel: false,

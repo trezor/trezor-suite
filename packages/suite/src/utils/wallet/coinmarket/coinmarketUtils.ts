@@ -7,9 +7,10 @@ const suiteToInvitySymbols = [
     },
 ];
 
-export const buildOption = (currency: string) => {
-    return { value: currency, label: currency.toUpperCase() };
-};
+export const buildOption = (currency: string) => ({
+    value: currency,
+    label: currency.toUpperCase(),
+});
 
 export const invityApiSymbolToSymbol = (symbol?: string) => {
     if (!symbol) return 'UNKNOWN';

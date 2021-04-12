@@ -21,13 +21,11 @@ const InputWrapper = styled.div`
     }
 `;
 
-export const ActionInput = (props: InputProps) => {
-    return (
-        <InputWrapper>
-            <Input {...props} />
-        </InputWrapper>
-    );
-};
+export const ActionInput = (props: InputProps) => (
+    <InputWrapper>
+        <Input {...props} />
+    </InputWrapper>
+);
 
 export const ActionSelect = styled(Select)`
     width: 170px;

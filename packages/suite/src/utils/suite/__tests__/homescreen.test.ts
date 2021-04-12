@@ -6,22 +6,22 @@ import * as homescreen from '../homescreen';
 const homescreensPath = '../suite-data/files/images/png/homescreens';
 
 // to simplify assertions of hex return values
-const getHash = (str: string) => {
-    return crypto.createHash('md5').update(str).digest('hex');
-};
+const getHash = (str: string) => crypto.createHash('md5').update(str).digest('hex');
 
-const getMockElementToImageData = (image: HTMLImageElement) => {
-    return (_element: HTMLImageElement, w: number, h: number) => {
-        const canvas = Canvas.createCanvas(w, h);
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(image, 0, 0);
+const getMockElementToImageData = (image: HTMLImageElement) => (
+    _element: HTMLImageElement,
+    w: number,
+    h: number,
+) => {
+    const canvas = Canvas.createCanvas(w, h);
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(image, 0, 0);
 
-        // you can test visually if proper imageData was returned this way:
-        // console.log(`<img src="${canvas.toDataURL()}" />`);
+    // you can test visually if proper imageData was returned this way:
+    // console.log(`<img src="${canvas.toDataURL()}" />`);
 
-        const imageData = ctx.getImageData(0, 0, w, h);
-        return imageData;
-    };
+    const imageData = ctx.getImageData(0, 0, w, h);
+    return imageData;
 };
 const imgHashFixtures = [
     {

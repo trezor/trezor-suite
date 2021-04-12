@@ -1,7 +1,3 @@
-export const getOauthReceiverUrl = () => {
-    return 'todo';
-};
+export const getOauthReceiverUrl = () => 'todo';
 
-export const extractCredentialsFromAuthorizationFlow = (_url: string) => {
-    return 'todo';
-};
+export const extractCredentialsFromAuthorizationFlow = (_url: string) => 'todo';

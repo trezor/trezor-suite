@@ -55,6 +55,4 @@ const logger = createLogger({
 
 const composedEnhancers = compose(applyMiddleware(logger, ...middlewares), ...enhancers);
 
-export const initStore = () => {
-    return createStore(reducers, composedEnhancers);
-};
+export const initStore = () => createStore(reducers, composedEnhancers);

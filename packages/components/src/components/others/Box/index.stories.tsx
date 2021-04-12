@@ -18,21 +18,19 @@ const StyledRow = styled(Box)`
     margin: 10px 0;
 `;
 
-storiesOf('Others', module).add('Box', () => {
-    return (
-        <Wrapper>
-            <StyledRow>
-                <Text>No state</Text>
-            </StyledRow>
-            <StyledRow state="success">
-                <Text>Success</Text>
-            </StyledRow>
-            <StyledRow state="error">
-                <Text>Error</Text>
-            </StyledRow>
-            <StyledRow state="warning">
-                <Text>Warning</Text>
-            </StyledRow>
-        </Wrapper>
-    );
-});
+storiesOf('Others', module).add('Box', () => (
+    <Wrapper>
+        <StyledRow>
+            <Text>No state</Text>
+        </StyledRow>
+        <StyledRow state="success">
+            <Text>Success</Text>
+        </StyledRow>
+        <StyledRow state="error">
+            <Text>Error</Text>
+        </StyledRow>
+        <StyledRow state="warning">
+            <Text>Warning</Text>
+        </StyledRow>
+    </Wrapper>
+));

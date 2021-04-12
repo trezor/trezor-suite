@@ -41,23 +41,20 @@ export type BlockchainAction =
 // sort FeeLevels in reversed order (Low > High)
 // TODO: consider to use same order in trezor-connect to avoid double sorting
 const order: FeeLevel['label'][] = ['low', 'economy', 'normal', 'high'];
-const sortLevels = (levels: FeeLevel[]) => {
-    return levels.sort(
-        (levelA, levelB) => order.indexOf(levelA.label) - order.indexOf(levelB.label),
-    );
-};
+const sortLevels = (levels: FeeLevel[]) =>
+    levels.sort((levelA, levelB) => order.indexOf(levelA.label) - order.indexOf(levelB.label));
 
 export const preloadFeeInfo = () => async (dispatch: Dispatch) => {
     // Fetch default fee levels
     const networks = NETWORKS.filter(n => !n.isHidden && !n.accountType);
-    const promises = networks.map(network => {
-        return TrezorConnect.blockchainEstimateFee({
+    const promises = networks.map(network =>
+        TrezorConnect.blockchainEstimateFee({
             coin: network.symbol,
             request: {
                 feeLevels: 'preloaded',
             },
-        });
-    });
+        }),
+    );
     const levels = await Promise.all(promises);
 
     const partial: Partial<FeeState> = {};
@@ -134,9 +131,8 @@ export const updateFeeInfo = (symbol: string) => async (dispatch: Dispatch, getS
 };
 
 // call TrezorConnect.unsubscribe, it doesn't cost anything and should emit BLOCKCHAIN.CONNECT or BLOCKCHAIN.ERROR event
-export const reconnect = (coin: Network['symbol']) => (_dispatch: Dispatch) => {
-    return TrezorConnect.blockchainUnsubscribeFiatRates({ coin });
-};
+export const reconnect = (coin: Network['symbol']) => (_dispatch: Dispatch) =>
+    TrezorConnect.blockchainUnsubscribeFiatRates({ coin });
 
 // called from WalletMiddleware after ADD/REMOVE_BLOCKBOOK_URL action
 // or from blockchainActions.init
@@ -152,29 +148,29 @@ export const setCustomBackend = (symbol?: string) => (_: Dispatch, getState: Get
     // no custom backends
     if (!coins.length) return;
 
-    const promises = coins.map(coin => {
-        return TrezorConnect.blockchainSetCustomBackend({
+    const promises = coins.map(coin =>
+        TrezorConnect.blockchainSetCustomBackend({
             coin,
             blockchainLink: {
                 type: 'blockbook',
                 url: blockbookUrls.filter(b => b.coin === coin).map(b => b.url),
             },
-        });
-    });
+        }),
+    );
     return Promise.all(promises);
 };
 
 export const clearCustomBackend = (symbol: string | string[]) => () => {
     const coins = typeof symbol === 'string' ? [symbol] : [...new Set(symbol)];
-    const promises = coins.map(coin => {
-        return TrezorConnect.blockchainSetCustomBackend({
+    const promises = coins.map(coin =>
+        TrezorConnect.blockchainSetCustomBackend({
             coin,
             blockchainLink: {
                 type: 'blockbook',
                 url: [],
             },
-        });
-    });
+        }),
+    );
     return Promise.all(promises);
 };
 

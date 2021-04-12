@@ -17,20 +17,18 @@ export const setWinBounds = (winBounds: WinBounds): void => {
     }
 };
 
-export const getUpdateSettings = (): UpdateSettings => {
-    return store.get('updateSettings', { skipVersion: '' });
-};
+export const getUpdateSettings = (): UpdateSettings =>
+    store.get('updateSettings', { skipVersion: '' });
 
 export const setUpdateSettings = (updateSettings: UpdateSettings): void => {
     store.set('updateSettings', updateSettings);
 };
 
-export const getTorSettings = (): TorSettings => {
-    return store.get('torSettings', {
+export const getTorSettings = (): TorSettings =>
+    store.get('torSettings', {
         running: false,
         address: '127.0.0.1:9050',
     });
-};
 
 export const setTorSettings = (torSettings: TorSettings): void => {
     store.set('torSettings', torSettings);

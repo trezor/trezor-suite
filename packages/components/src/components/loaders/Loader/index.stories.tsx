@@ -3,6 +3,6 @@ import { Loader } from '../../../index';
 import { storiesOf } from '@storybook/react';
 import { number } from '@storybook/addon-knobs';
 
-storiesOf('Loaders', module).add('Loader', () => {
-    return <Loader size={number('Size', 50)} strokeWidth={number('Stroke width', 1)} />;
-});
+storiesOf('Loaders', module).add('Loader', () => (
+    <Loader size={number('Size', 50)} strokeWidth={number('Stroke width', 1)} />
+));

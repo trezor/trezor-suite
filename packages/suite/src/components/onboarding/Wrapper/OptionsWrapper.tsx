@@ -14,8 +14,6 @@ const Wrapper = styled.div`
     }
 `;
 
-const OptionsWrapper: React.FunctionComponent = props => {
-    return <Wrapper>{props.children}</Wrapper>;
-};
+const OptionsWrapper: React.FunctionComponent = props => <Wrapper>{props.children}</Wrapper>;
 
 export default OptionsWrapper;

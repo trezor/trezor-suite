@@ -61,29 +61,27 @@ const WordInput = React.memo((props: Props) => {
     const { onSubmit } = props;
     const { translationString } = useTranslation();
 
-    const MemoSelect = React.memo(() => {
-        return (
-            <Select
-                autoFocus
-                isSearchable
-                isClearable={false}
-                controlShouldRenderValue={false}
-                noOptionsMessage={({ inputValue }: { inputValue: string }) =>
-                    translationString('TR_WORD_DOES_NOT_EXIST', { word: inputValue })
-                }
-                onChange={(item: Option) => onSubmit(item.value)}
-                components={{ MenuList }}
-                placeholder={translationString('TR_CHECK_YOUR_DEVICE')}
-                options={options}
-                filterOption={createFilter({
-                    ignoreCase: true,
-                    trim: true,
-                    matchFrom: 'start',
-                })}
-                data-test="@word-input-select"
-            />
-        );
-    });
+    const MemoSelect = React.memo(() => (
+        <Select
+            autoFocus
+            isSearchable
+            isClearable={false}
+            controlShouldRenderValue={false}
+            noOptionsMessage={({ inputValue }: { inputValue: string }) =>
+                translationString('TR_WORD_DOES_NOT_EXIST', { word: inputValue })
+            }
+            onChange={(item: Option) => onSubmit(item.value)}
+            components={{ MenuList }}
+            placeholder={translationString('TR_CHECK_YOUR_DEVICE')}
+            options={options}
+            filterOption={createFilter({
+                ignoreCase: true,
+                trim: true,
+                matchFrom: 'start',
+            })}
+            data-test="@word-input-select"
+        />
+    ));
 
     return (
         <SelectWrapper>

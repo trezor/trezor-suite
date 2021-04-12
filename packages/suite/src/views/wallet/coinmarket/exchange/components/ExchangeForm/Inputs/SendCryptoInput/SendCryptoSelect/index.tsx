@@ -37,49 +37,45 @@ const SendCryptoSelect = () => {
                 value: uppercaseSymbol,
                 label: formatLabel(uppercaseSymbol),
             }}
-            render={({ onChange, value }) => {
-                return (
-                    <Select
-                        onChange={(selected: any) => {
-                            setValue('setMaxOutputId', undefined);
-                            onChange(selected);
-                            setAmountLimits(undefined);
-                            setValue(CRYPTO_INPUT, '');
-                            setValue(FIAT_INPUT, '');
-                            const token = selected.value;
-                            if (token === 'ETH' || token === 'TROP' || token === 'ETC') {
-                                setValue(CRYPTO_TOKEN, undefined);
-                                // set own account for non ERC20 transaction
-                                setValue('outputs[0].address', account.descriptor);
-                            } else {
-                                // set the address of the token to the output
-                                const symbol = invityApiSymbolToSymbol(token).toLowerCase();
-                                const tokenData = tokens?.find(t => t.symbol === symbol);
-                                setValue(CRYPTO_TOKEN, tokenData?.address);
-                                // set token address for ERC20 transaction to estimate the fees more precisely
-                                setValue('outputs[0].address', tokenData?.address);
-                            }
-                            composeRequest();
-                        }}
-                        formatOptionLabel={(option: any) => {
-                            return (
-                                <Option>
-                                    <CoinLogo size={18} symbol={account.symbol} />
-                                    <Label>{formatLabel(option.label)}</Label>
-                                </Option>
-                            );
-                        }}
-                        value={value}
-                        isClearable={false}
-                        options={getSendCryptoOptions(account, exchangeInfo)}
-                        isDropdownVisible={account.networkType === 'ethereum'}
-                        isDisabled={account.networkType !== 'ethereum'}
-                        minWidth="100px"
-                        isClean
-                        hideTextCursor
-                    />
-                );
-            }}
+            render={({ onChange, value }) => (
+                <Select
+                    onChange={(selected: any) => {
+                        setValue('setMaxOutputId', undefined);
+                        onChange(selected);
+                        setAmountLimits(undefined);
+                        setValue(CRYPTO_INPUT, '');
+                        setValue(FIAT_INPUT, '');
+                        const token = selected.value;
+                        if (token === 'ETH' || token === 'TROP' || token === 'ETC') {
+                            setValue(CRYPTO_TOKEN, undefined);
+                            // set own account for non ERC20 transaction
+                            setValue('outputs[0].address', account.descriptor);
+                        } else {
+                            // set the address of the token to the output
+                            const symbol = invityApiSymbolToSymbol(token).toLowerCase();
+                            const tokenData = tokens?.find(t => t.symbol === symbol);
+                            setValue(CRYPTO_TOKEN, tokenData?.address);
+                            // set token address for ERC20 transaction to estimate the fees more precisely
+                            setValue('outputs[0].address', tokenData?.address);
+                        }
+                        composeRequest();
+                    }}
+                    formatOptionLabel={(option: any) => (
+                        <Option>
+                            <CoinLogo size={18} symbol={account.symbol} />
+                            <Label>{formatLabel(option.label)}</Label>
+                        </Option>
+                    )}
+                    value={value}
+                    isClearable={false}
+                    options={getSendCryptoOptions(account, exchangeInfo)}
+                    isDropdownVisible={account.networkType === 'ethereum'}
+                    isDisabled={account.networkType !== 'ethereum'}
+                    minWidth="100px"
+                    isClean
+                    hideTextCursor
+                />
+            )}
         />
     );
 };

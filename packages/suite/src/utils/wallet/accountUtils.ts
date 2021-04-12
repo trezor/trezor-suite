@@ -107,9 +107,8 @@ export const getBip43Intl = (path: string) => {
     return 'TR_ACCOUNT_TYPE_P2PKH';
 };
 
-export const stripNetworkAmount = (amount: string, decimals: number) => {
-    return new BigNumber(amount).toFixed(decimals, 1);
-};
+export const stripNetworkAmount = (amount: string, decimals: number) =>
+    new BigNumber(amount).toFixed(decimals, 1);
 
 export const formatAmount = (amount: string, decimals: number) => {
     try {
@@ -154,8 +153,8 @@ export const formatNetworkAmount = (
     return formatAmount(amount, network.decimals);
 };
 
-export const sortByCoin = (accounts: Account[]) => {
-    return accounts.sort((a, b) => {
+export const sortByCoin = (accounts: Account[]) =>
+    accounts.sort((a, b) => {
         const aIndex = NETWORKS.findIndex(n => {
             const accountType = n.accountType || ACCOUNT_TYPE.NORMAL;
             return accountType === a.accountType && n.symbol === a.symbol;
@@ -167,7 +166,6 @@ export const sortByCoin = (accounts: Account[]) => {
         if (aIndex === bIndex) return a.index - b.index;
         return aIndex - bIndex;
     });
-};
 
 export const findAccountsByDescriptor = (descriptor: string, accounts: Account[]) =>
     accounts.filter(a => a.descriptor === descriptor);
@@ -218,9 +216,7 @@ export const getSelectedAccount = (
     );
 };
 
-export const getNetwork = (symbol: string) => {
-    return NETWORKS.find(c => c.symbol === symbol) || null;
-};
+export const getNetwork = (symbol: string) => NETWORKS.find(c => c.symbol === symbol) || null;
 
 /**
  * Returns a string used as an index to separate txs for given account inside a transactions reducer
@@ -230,9 +226,8 @@ export const getNetwork = (symbol: string) => {
  * @param {string} deviceState
  * @returns {string}
  */
-export const getAccountKey = (descriptor: string, symbol: string, deviceState: string) => {
-    return `${descriptor}-${symbol}-${deviceState}`;
-};
+export const getAccountKey = (descriptor: string, symbol: string, deviceState: string) =>
+    `${descriptor}-${symbol}-${deviceState}`;
 
 export const getAccountTransactions = (
     transactions: TransactionsState['transactions'],
@@ -377,8 +372,8 @@ export const getAccountSpecific = (
 };
 
 // Used in wallet/Menu and Dashboard
-export const getFailedAccounts = (discovery: Discovery): Account[] => {
-    return discovery.failed.map(f => {
+export const getFailedAccounts = (discovery: Discovery): Account[] =>
+    discovery.failed.map(f => {
         const descriptor = `failed:${f.index}:${f.symbol}:${f.accountType}`;
         return {
             failed: true,
@@ -410,15 +405,12 @@ export const getFailedAccounts = (discovery: Discovery): Account[] => {
             ...getAccountSpecific({}, getNetwork(f.symbol)!.networkType),
         };
     });
-};
 
-export const getAccountIdentifier = (account: Account) => {
-    return {
-        descriptor: account.descriptor,
-        symbol: account.symbol,
-        deviceState: account.deviceState,
-    };
-};
+export const getAccountIdentifier = (account: Account) => ({
+    descriptor: account.descriptor,
+    symbol: account.symbol,
+    deviceState: account.deviceState,
+});
 
 export const accountSearchFn = (
     account: Account,

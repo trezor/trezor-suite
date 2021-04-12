@@ -10,9 +10,7 @@ import notificationsReducer from '@suite-reducers/notificationReducer';
 import * as blockchainActions from '../blockchainActions';
 import * as fixtures from '../__fixtures__/blockchainActions';
 
-jest.mock('trezor-connect', () => {
-    return global.JestMocks.getTrezorConnect({});
-});
+jest.mock('trezor-connect', () => global.JestMocks.getTrezorConnect({}));
 const TrezorConnect = require('trezor-connect').default;
 
 type AccountsState = ReturnType<typeof accountsReducer>;
@@ -30,37 +28,35 @@ interface Args {
 export const getInitialState = (
     { accounts, transactions, blockchain, fees, blockbookUrls }: Args = {},
     action: any = { type: 'initial' },
-) => {
-    return {
-        wallet: {
-            accounts: accountsReducer(accounts, action),
-            transactions: transactionReducer(
-                {
-                    transactions: transactions || {},
-                    isLoading: false,
-                    error: null,
-                },
-                action,
-            ),
-            blockchain: {
-                ...blockchainReducer(undefined, action),
-                ...blockchain,
+) => ({
+    wallet: {
+        accounts: accountsReducer(accounts, action),
+        transactions: transactionReducer(
+            {
+                transactions: transactions || {},
+                isLoading: false,
+                error: null,
             },
-            fees: {
-                ...feesReducer(undefined, action),
-                ...fees,
-            },
-            settings: {
-                blockbookUrls: blockbookUrls || [],
-            },
+            action,
+        ),
+        blockchain: {
+            ...blockchainReducer(undefined, action),
+            ...blockchain,
         },
-        notifications: notificationsReducer([], action),
-        devices: [{ state: 'deviceState' }], // device is needed for notification/event
-        suite: {
-            device: { state: 'deviceState' }, // device is needed for notification/event
+        fees: {
+            ...feesReducer(undefined, action),
+            ...fees,
         },
-    };
-};
+        settings: {
+            blockbookUrls: blockbookUrls || [],
+        },
+    },
+    notifications: notificationsReducer([], action),
+    devices: [{ state: 'deviceState' }], // device is needed for notification/event
+    suite: {
+        device: { state: 'deviceState' }, // device is needed for notification/event
+    },
+});
 
 type State = ReturnType<typeof getInitialState>;
 const mockStore = configureStore<State, any>([thunk]);

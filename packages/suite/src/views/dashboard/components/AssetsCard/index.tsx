@@ -145,16 +145,14 @@ const AssetsCard = () => {
         >
             {!isTableMode && (
                 <GridWrapper>
-                    {assetsData.map(asset => {
-                        return (
-                            <AssetGrid
-                                key={asset.symbol}
-                                network={asset.network}
-                                failed={asset.assetFailed}
-                                cryptoValue={asset.assetBalance.toFixed()}
-                            />
-                        );
-                    })}
+                    {assetsData.map(asset => (
+                        <AssetGrid
+                            key={asset.symbol}
+                            network={asset.network}
+                            failed={asset.assetFailed}
+                            cryptoValue={asset.assetBalance.toFixed()}
+                        />
+                    ))}
                     {discoveryInProgress && <AssetGridSkeleton />}
                 </GridWrapper>
             )}
@@ -171,17 +169,15 @@ const AssetsCard = () => {
                             <Header>
                                 <Translation id="TR_EXCHANGE_RATE" />
                             </Header>
-                            {assetsData.map((asset, i) => {
-                                return (
-                                    <AssetTable
-                                        key={asset.symbol}
-                                        network={asset.network}
-                                        failed={asset.assetFailed}
-                                        cryptoValue={asset.assetBalance.toFixed()}
-                                        isLastRow={i === assetsData.length - 1}
-                                    />
-                                );
-                            })}
+                            {assetsData.map((asset, i) => (
+                                <AssetTable
+                                    key={asset.symbol}
+                                    network={asset.network}
+                                    failed={asset.assetFailed}
+                                    cryptoValue={asset.assetBalance.toFixed()}
+                                    isLastRow={i === assetsData.length - 1}
+                                />
+                            ))}
                             {discoveryInProgress && <AssetTableSkeleton />}
                         </Grid>
                     </AnimatePresence>

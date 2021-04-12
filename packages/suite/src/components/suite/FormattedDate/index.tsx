@@ -34,31 +34,27 @@ const defaultTimeFormat = {
     hourCycle: 'h23',
 } as const;
 
-const FormattedDate = (props: Props) => {
-    return (
-        <IntlFormattedDate
-            {...(props.date ? defaultDateFormat : {})}
-            {...(props.time ? defaultTimeFormat : {})}
-            {...props}
-        />
-    );
-};
+const FormattedDate = (props: Props) => (
+    <IntlFormattedDate
+        {...(props.date ? defaultDateFormat : {})}
+        {...(props.time ? defaultTimeFormat : {})}
+        {...props}
+    />
+);
 
 interface BulletProps extends Pick<Props, 'value'> {
     timeLightColor?: boolean;
     className?: string;
 }
 
-export const FormattedDateWithBullet = ({ className, ...props }: BulletProps) => {
-    return (
-        <Timestamp className={className}>
-            <FormattedDate date {...props} />
-            <Bullet>&bull;</Bullet>
-            <HourWrapper timeLightColor={props.timeLightColor}>
-                <FormattedDate time {...props} />
-            </HourWrapper>
-        </Timestamp>
-    );
-};
+export const FormattedDateWithBullet = ({ className, ...props }: BulletProps) => (
+    <Timestamp className={className}>
+        <FormattedDate date {...props} />
+        <Bullet>&bull;</Bullet>
+        <HourWrapper timeLightColor={props.timeLightColor}>
+            <FormattedDate time {...props} />
+        </HourWrapper>
+    </Timestamp>
+);
 
 export default FormattedDate;

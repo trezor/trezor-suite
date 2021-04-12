@@ -218,15 +218,13 @@ interface Props {
     children: React.ReactNode;
 }
 
-const DesktopTitlebarWrapper = (props: Props) => {
-    return (
-        <>
-            <NoSSR>
-                <DesktopTitlebar />
-            </NoSSR>
-            <ContentWrapper>{props.children}</ContentWrapper>
-        </>
-    );
-};
+const DesktopTitlebarWrapper = (props: Props) => (
+    <>
+        <NoSSR>
+            <DesktopTitlebar />
+        </NoSSR>
+        <ContentWrapper>{props.children}</ContentWrapper>
+    </>
+);
 
 export default DesktopTitlebarWrapper;

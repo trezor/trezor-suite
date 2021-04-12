@@ -5,15 +5,13 @@ import selectedAccountReducer from '@wallet-reducers/selectedAccountReducer';
 import { getStateForAction } from '../selectedAccountActions';
 import fixtures from '../__fixtures__/selectedAccountActions';
 
-export const getInitialState = (_settings?: any) => {
-    return {
-        wallet: {
-            selectedAccount: {
-                ...selectedAccountReducer(undefined, { type: 'foo' } as any),
-            },
+export const getInitialState = (_settings?: any) => ({
+    wallet: {
+        selectedAccount: {
+            ...selectedAccountReducer(undefined, { type: 'foo' } as any),
         },
-    };
-};
+    },
+});
 
 type State = ReturnType<typeof getInitialState>;
 const mockStore = configureStore<State, any>([thunk]);

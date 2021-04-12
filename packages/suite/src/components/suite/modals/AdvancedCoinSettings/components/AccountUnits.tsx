@@ -1,6 +1,6 @@
 import React from 'react';
 
-const AccountUnits = () => {
+const AccountUnits = () => (
     // TODO
     /*
     <SectionItem>
@@ -26,7 +26,6 @@ const AccountUnits = () => {
         </ActionColumn>
     </SectionItem>
     */
-    return <div />;
-};
-
+    <div />
+);
 export default AccountUnits;

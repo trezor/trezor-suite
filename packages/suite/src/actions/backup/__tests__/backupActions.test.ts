@@ -13,17 +13,13 @@ import * as backupActions from '@backup-actions/backupActions';
 jest.mock('trezor-connect', () => {
     let fixture: any;
 
-    const backupDevice = () => {
-        return fixture;
-    };
+    const backupDevice = () => fixture;
     const callbacks: { [key: string]: () => any } = {};
 
     return {
         __esModule: true, // this property makes it work
         default: {
-            init: () => {
-                return true;
-            },
+            init: () => true,
             on: (event: string, cb: () => any) => {
                 callbacks[event] = cb;
             },

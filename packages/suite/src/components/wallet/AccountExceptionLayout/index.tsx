@@ -59,26 +59,24 @@ interface Props {
     actionComponent?: JSX.Element;
 }
 
-const AccountExceptionLayout = (props: Props) => {
-    return (
-        <StyledCard>
-            {props.image && <StyledImage image={props.image} />}
-            {props.imageComponent && props.imageComponent}
-            <Title>{props.title}</Title>
-            <Description>{props.description}</Description>
-            {(props.actionComponent || (props.actions && props.actions.length > 0)) && (
-                <>
-                    <Divider />
-                    <Actions>
-                        {props.actions?.map(action => (
-                            <ActionButton {...action} />
-                        ))}
-                        {props.actionComponent && props.actionComponent}
-                    </Actions>
-                </>
-            )}
-        </StyledCard>
-    );
-};
+const AccountExceptionLayout = (props: Props) => (
+    <StyledCard>
+        {props.image && <StyledImage image={props.image} />}
+        {props.imageComponent && props.imageComponent}
+        <Title>{props.title}</Title>
+        <Description>{props.description}</Description>
+        {(props.actionComponent || (props.actions && props.actions.length > 0)) && (
+            <>
+                <Divider />
+                <Actions>
+                    {props.actions?.map(action => (
+                        <ActionButton {...action} />
+                    ))}
+                    {props.actionComponent && props.actionComponent}
+                </Actions>
+            </>
+        )}
+    </StyledCard>
+);
 
 export default AccountExceptionLayout;

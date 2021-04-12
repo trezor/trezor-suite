@@ -7,29 +7,26 @@ interface Props {
     setIsGraphHidden: (value: boolean) => void;
 }
 
-const TransactionSummaryDropdown = (_props: Props) => {
+const TransactionSummaryDropdown = (_props: Props) => (
     // TODO: export transactions to a file
 
-    return (
-        <Dropdown
-            alignMenu="right"
-            offset={16}
-            items={[
-                {
-                    key: 'group1',
-                    label: 'Graph View',
-                    options: [
-                        {
-                            key: 'graphView',
-                            noHover: true,
-                            label: <GraphScaleDropdownItem />,
-                            callback: () => false,
-                        },
-                    ],
-                },
-            ]}
-        />
-    );
-};
-
+    <Dropdown
+        alignMenu="right"
+        offset={16}
+        items={[
+            {
+                key: 'group1',
+                label: 'Graph View',
+                options: [
+                    {
+                        key: 'graphView',
+                        noHover: true,
+                        label: <GraphScaleDropdownItem />,
+                        callback: () => false,
+                    },
+                ],
+            },
+        ]}
+    />
+);
 export default TransactionSummaryDropdown;

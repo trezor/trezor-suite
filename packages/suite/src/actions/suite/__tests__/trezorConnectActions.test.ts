@@ -48,15 +48,13 @@ jest.mock('trezor-connect', () => {
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
-export const getInitialState = (suite?: Partial<SuiteState>, devices?: DevicesState) => {
-    return {
-        suite: {
-            ...suiteReducer(undefined, { type: 'foo' } as any),
-            ...suite,
-        },
-        devices: devices || [],
-    };
-};
+export const getInitialState = (suite?: Partial<SuiteState>, devices?: DevicesState) => ({
+    suite: {
+        ...suiteReducer(undefined, { type: 'foo' } as any),
+        ...suite,
+    },
+    devices: devices || [],
+});
 
 type State = ReturnType<typeof getInitialState>;
 const mockStore = configureStore<State, any>([thunk]);

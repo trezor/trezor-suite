@@ -3,17 +3,15 @@ import { Translation } from '@suite-components';
 import GreyCard from '../GreyCard';
 import WarnHeader from '../WarnHeader';
 
-const NoChange = () => {
-    return (
-        <GreyCard>
-            <WarnHeader>
-                <Translation id="TR_NO_CHANGE_OUTPUT" />
-            </WarnHeader>
-            {/* <select>
+const NoChange = () => (
+    <GreyCard>
+        <WarnHeader>
+            <Translation id="TR_NO_CHANGE_OUTPUT" />
+        </WarnHeader>
+        {/* <select>
                 <option>Add another utxo</option>
             </select> */}
-        </GreyCard>
-    );
-};
+    </GreyCard>
+);
 
 export default NoChange;

@@ -28,9 +28,7 @@ export const setNavigator = (n: FixedNavigationContainerComponent | null) => {
     Navigator = n;
 };
 
-export const getNavigator = () => {
-    return Navigator;
-};
+export const getNavigator = () => Navigator;
 
 // This is needed only because of FixedNavigationContainerComponent (state.nav)
 export const getNavigatorState = () => {

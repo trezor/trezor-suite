@@ -77,8 +77,8 @@ const remove = (draft: State, accounts: Account[]) => {
     updateError(draft);
 };
 
-const graphReducer = (state: State = initialState, action: WalletAction | SuiteAction): State => {
-    return produce(state, draft => {
+const graphReducer = (state: State = initialState, action: WalletAction | SuiteAction): State =>
+    produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOADED:
                 loadFromStorage(draft, action.payload.wallet.graph.data);
@@ -110,6 +110,5 @@ const graphReducer = (state: State = initialState, action: WalletAction | SuiteA
             // no default
         }
     });
-};
 
 export default graphReducer;

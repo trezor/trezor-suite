@@ -32,13 +32,11 @@ const { getSuiteDevice, getWalletAccount, getWalletTransaction } = global.JestMo
 // It is a hacky 'solution' to prevent TSC in suite-native from throwing errors on IDB.
 // Path to the web version is in 'browser' field. Jest loads the lib from the main entry (and that is fine).
 // This essentially replaces the react-native version of the lib with web version.
-jest.mock('@trezor/suite-storage', () => {
-    return {
-        __esModule: true,
-        // eslint-disable-next-line @typescript-eslint/ban-types
-        ...(jest.requireActual('@trezor/suite-storage/lib/web/index') as object), // cast so ts stops complaining
-    };
-});
+jest.mock('@trezor/suite-storage', () => ({
+    __esModule: true,
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    ...(jest.requireActual('@trezor/suite-storage/lib/web/index') as object), // cast so ts stops complaining
+}));
 
 const dev1 = getSuiteDevice({
     state: 'state1',
@@ -160,14 +158,13 @@ const updateStore = (store: mockStoreType) => {
     });
 };
 
-const mockFetch = (data: any) => {
-    return jest.fn().mockImplementation(() =>
+const mockFetch = (data: any) =>
+    jest.fn().mockImplementation(() =>
         Promise.resolve({
             ok: true,
             json: () => data,
         }),
     );
-};
 
 describe('Storage actions', () => {
     // afterEach(async () => {

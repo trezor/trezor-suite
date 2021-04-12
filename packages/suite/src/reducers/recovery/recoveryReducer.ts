@@ -18,8 +18,8 @@ const initialState: RecoveryState = {
     status: 'initial',
 };
 
-const recovery = (state: RecoveryState = initialState, action: Action): RecoveryState => {
-    return produce(state, draft => {
+const recovery = (state: RecoveryState = initialState, action: Action): RecoveryState =>
+    produce(state, draft => {
         switch (action.type) {
             case RECOVERY.SET_WORDS_COUNT:
                 draft.wordsCount = action.payload;
@@ -39,6 +39,5 @@ const recovery = (state: RecoveryState = initialState, action: Action): Recovery
             // no default
         }
     });
-};
 
 export default recovery;

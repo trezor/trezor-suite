@@ -1,8 +1,7 @@
 import React from 'react';
 
-const CustomExplorerUrl = () => {
+const CustomExplorerUrl = () => (
     // TODO
-    return <div />;
-};
-
+    <div />
+);
 export default CustomExplorerUrl;

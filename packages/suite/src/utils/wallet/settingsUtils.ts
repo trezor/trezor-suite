@@ -1,6 +1,4 @@
-export const getLocalCurrency = (localCurrency: string) => {
-    return {
-        value: localCurrency,
-        label: localCurrency.toUpperCase(),
-    };
-};
+export const getLocalCurrency = (localCurrency: string) => ({
+    value: localCurrency,
+    label: localCurrency.toUpperCase(),
+});

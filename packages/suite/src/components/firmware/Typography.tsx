@@ -16,17 +16,13 @@ const StyledP = styled(OrigP)`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
-export const P = (props: Props) => {
-    return (
-        <StyledP size="small" {...props}>
-            {props.children}
-        </StyledP>
-    );
-};
+export const P = (props: Props) => (
+    <StyledP size="small" {...props}>
+        {props.children}
+    </StyledP>
+);
 
-export const H1 = (props: Props) => {
-    return <OrigH1 {...props}>{props.children}</OrigH1>;
-};
+export const H1 = (props: Props) => <OrigH1 {...props}>{props.children}</OrigH1>;
 
 const StyledH2 = styled(OrigH2)<{ isGreen?: boolean }>`
     font-weight: ${FONT_WEIGHT.MEDIUM};
@@ -37,6 +33,4 @@ const StyledH2 = styled(OrigH2)<{ isGreen?: boolean }>`
         `};
 `;
 
-export const H2 = (props: Props & { isGreen?: boolean }) => {
-    return <StyledH2 {...props} />;
-};
+export const H2 = (props: Props & { isGreen?: boolean }) => <StyledH2 {...props} />;

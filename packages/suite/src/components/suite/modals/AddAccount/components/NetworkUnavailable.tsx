@@ -53,17 +53,15 @@ const Description = ({
     }
 };
 
-const NetworkUnavailable = ({ capability, network }: Props) => {
-    return (
-        <Wrapper>
-            <H2>
-                <Header capability={capability} />
-            </H2>
-            <StyledP size="small">
-                <Description capability={capability} networkName={network.name} />
-            </StyledP>
-        </Wrapper>
-    );
-};
+const NetworkUnavailable = ({ capability, network }: Props) => (
+    <Wrapper>
+        <H2>
+            <Header capability={capability} />
+        </H2>
+        <StyledP size="small">
+            <Description capability={capability} networkName={network.name} />
+        </StyledP>
+    </Wrapper>
+);
 
 export default NetworkUnavailable;

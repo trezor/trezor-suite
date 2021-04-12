@@ -10,12 +10,10 @@ interface InitialState {
     analytics?: Partial<AnalyticsState>;
 }
 
-jest.mock('@suite-utils/random', () => {
-    return {
-        __esModule: true, // this property makes it work
-        getAnalyticsRandomId: () => 'very-random',
-    };
-});
+jest.mock('@suite-utils/random', () => ({
+    __esModule: true, // this property makes it work
+    getAnalyticsRandomId: () => 'very-random',
+}));
 
 export const getInitialState = (state: InitialState | undefined) => {
     const analytics = state ? state.analytics : undefined;

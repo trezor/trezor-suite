@@ -197,9 +197,7 @@ const getBundle = (discovery: Discovery) => (_d: Dispatch, getState: GetState): 
                 account =>
                     account.accountType === accountType && account.symbol === configNetwork.symbol,
             )
-            .sort((a, b) => {
-                return b.index - a.index;
-            });
+            .sort((a, b) => b.index - a.index);
 
         // check if requested coin already have an empty account
         const hasEmptyAccount = prevAccounts.find(a => a.empty && !a.visible);

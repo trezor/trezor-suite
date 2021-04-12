@@ -17,18 +17,14 @@ import { Action } from '@suite-types';
 
 const { getSuiteDevice } = global.JestMocks;
 
-jest.mock('next/router', () => {
-    return {
-        __esModule: true, // this property makes it work
-        default: {
-            push: () => {},
-        },
-    };
-});
+jest.mock('next/router', () => ({
+    __esModule: true, // this property makes it work
+    default: {
+        push: () => {},
+    },
+}));
 
-jest.mock('@suite-actions/storageActions', () => {
-    return { __esModule: true };
-});
+jest.mock('@suite-actions/storageActions', () => ({ __esModule: true }));
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
@@ -40,23 +36,21 @@ export const getInitialState = (
     devices?: DevicesState,
     router?: Partial<RouterState>,
     modal?: Partial<ModalState>,
-) => {
-    return {
-        suite: {
-            ...suiteReducer(undefined, { type: 'foo' } as any),
-            ...suite,
-        },
-        devices: devices || [],
-        router: {
-            ...routerReducer(undefined, { type: 'foo' } as any),
-            ...router,
-        },
-        modal: {
-            ...modalReducer(undefined, { type: 'foo' } as any),
-            ...modal,
-        },
-    };
-};
+) => ({
+    suite: {
+        ...suiteReducer(undefined, { type: 'foo' } as any),
+        ...suite,
+    },
+    devices: devices || [],
+    router: {
+        ...routerReducer(undefined, { type: 'foo' } as any),
+        ...router,
+    },
+    modal: {
+        ...modalReducer(undefined, { type: 'foo' } as any),
+        ...modal,
+    },
+});
 
 type State = ReturnType<typeof getInitialState>;
 const middlewares: Middleware<any, any>[] = [thunk, redirectMiddleware, suiteMiddleware];

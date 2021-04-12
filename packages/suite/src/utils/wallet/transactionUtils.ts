@@ -110,20 +110,19 @@ export const findTransaction = (txid: string, transactions: WalletAccountTransac
 export const findTransactions = (
     txid: string,
     transactions: { [key: string]: WalletAccountTransaction[] },
-) => {
-    return Object.keys(transactions).flatMap(key => {
+) =>
+    Object.keys(transactions).flatMap(key => {
         const tx = findTransaction(txid, transactions[key]);
         if (!tx) return [];
         return [{ key, tx }];
     });
-};
 
 // Find chained pending transactions
 export const findChainedTransactions = (
     txid: string,
     transactions: { [key: string]: WalletAccountTransaction[] },
-) => {
-    return Object.keys(transactions).flatMap(key => {
+) =>
+    Object.keys(transactions).flatMap(key => {
         // check if any pending transaction is using the utxo/vin with requested txid
         const txs = transactions[key]
             .filter(isPending)
@@ -149,14 +148,11 @@ export const findChainedTransactions = (
             return res.concat(item);
         }, [] as typeof result);
     });
-};
 
 export const getConfirmations = (
     tx: WalletAccountTransaction | AccountTransaction,
     height: number,
-) => {
-    return tx.blockHeight && tx.blockHeight > 0 ? height - tx.blockHeight + 1 : 0;
-};
+) => (tx.blockHeight && tx.blockHeight > 0 ? height - tx.blockHeight + 1 : 0);
 
 // inner private type, it's pointless to move it outside of this file
 interface Analyze {
@@ -314,9 +310,8 @@ export const isTxUnknown = (transaction: WalletAccountTransaction) => {
     );
 };
 
-export const isTxFailed = (tx: AccountTransaction | WalletAccountTransaction) => {
-    return !isPending(tx) && tx.ethereumSpecific?.status === 0;
-};
+export const isTxFailed = (tx: AccountTransaction | WalletAccountTransaction) =>
+    !isPending(tx) && tx.ethereumSpecific?.status === 0;
 
 export const getFeeRate = (tx: AccountTransaction, decimals?: number) => {
     // calculate fee rate, TODO: add this to blockchain-link tx details
@@ -433,9 +428,8 @@ const getBitcoinRbfParams = (
 export const getRbfParams = (
     tx: AccountTransaction,
     account: Account,
-): WalletAccountTransaction['rbfParams'] => {
-    return getBitcoinRbfParams(tx, account) || getEthereumRbfParams(tx, account);
-};
+): WalletAccountTransaction['rbfParams'] =>
+    getBitcoinRbfParams(tx, account) || getEthereumRbfParams(tx, account);
 
 export const enhanceTransactionDetails = (tx: AccountTransaction, symbol: Account['symbol']) => ({
     ...tx.details,
@@ -487,12 +481,10 @@ export const enhanceTransaction = (
             account.networkType === 'ripple' && tx.blockTime
                 ? tx.blockTime + 946684800
                 : tx.blockTime,
-        tokens: tx.tokens.map(tok => {
-            return {
-                ...tok,
-                amount: formatAmount(tok.amount, tok.decimals),
-            };
-        }),
+        tokens: tx.tokens.map(tok => ({
+            ...tok,
+            amount: formatAmount(tok.amount, tok.decimals),
+        })),
         amount: formatNetworkAmount(tx.amount, account.symbol),
         fee: formatNetworkAmount(tx.fee, account.symbol),
         totalSpent: formatNetworkAmount(tx.totalSpent, account.symbol),
@@ -792,7 +784,6 @@ export const getBlockExplorerUrl = (tx: WalletAccountTransaction) => {
     return `${network!.explorer.tx}${tx.txid}`;
 };
 
-export const isTxFinal = (tx: WalletAccountTransaction, confirmations: number) => {
+export const isTxFinal = (tx: WalletAccountTransaction, confirmations: number) =>
     // checks RBF status
-    return !tx.rbf || confirmations > 0;
-};
+    !tx.rbf || confirmations > 0;

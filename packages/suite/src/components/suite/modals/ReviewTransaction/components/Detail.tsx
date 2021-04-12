@@ -115,9 +115,7 @@ export interface Props {
     onClose: () => void;
 }
 
-const prettify = (json: Record<any, any>) => {
-    return JSON.stringify(json, null, 2);
-};
+const prettify = (json: Record<any, any>) => JSON.stringify(json, null, 2);
 
 const TransactionDetails = ({ tx, txHash, onClose }: Props) => {
     const theme = useTheme();

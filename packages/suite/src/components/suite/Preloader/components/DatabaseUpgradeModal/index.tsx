@@ -12,26 +12,24 @@ interface Props {
     variant: 'blocking' | 'blocked';
 }
 
-const DatabaseUpgradeModal = (props: Props) => {
-    return (
-        <Modal
-            heading={
-                <Translation
-                    id={
-                        props.variant === 'blocked'
-                            ? 'TR_DATABASE_UPGRADE_BLOCKED'
-                            : 'TR_THIS_INSTANCE_IS_BLOCKING'
-                    }
-                />
-            }
-            size="small"
-            description={<Translation id="TR_RUNNING_MULTIPLE_INSTANCES" />}
-        >
-            <ImageWrapper>
-                <Image image="DEVICE_ANOTHER_SESSION" width="250" />
-            </ImageWrapper>
-        </Modal>
-    );
-};
+const DatabaseUpgradeModal = (props: Props) => (
+    <Modal
+        heading={
+            <Translation
+                id={
+                    props.variant === 'blocked'
+                        ? 'TR_DATABASE_UPGRADE_BLOCKED'
+                        : 'TR_THIS_INSTANCE_IS_BLOCKING'
+                }
+            />
+        }
+        size="small"
+        description={<Translation id="TR_RUNNING_MULTIPLE_INSTANCES" />}
+    >
+        <ImageWrapper>
+            <Image image="DEVICE_ANOTHER_SESSION" width="250" />
+        </ImageWrapper>
+    </Modal>
+);
 
 export default DatabaseUpgradeModal;

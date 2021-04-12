@@ -37,9 +37,8 @@ export const isAddressDeprecated = (address: string, symbol: Account['symbol']) 
     }
 };
 
-export const isBech32AddressUppercase = (address: string) => {
-    return /^bc1|tb1|ltc1|tltc1/.test(address.toLowerCase()) && /[A-Z]/.test(address);
-};
+export const isBech32AddressUppercase = (address: string) =>
+    /^bc1|tb1|ltc1|tltc1/.test(address.toLowerCase()) && /[A-Z]/.test(address);
 
 export const isDecimalsValid = (value: string, decimals: number) => {
     const DECIMALS_RE = new RegExp(
@@ -48,10 +47,9 @@ export const isDecimalsValid = (value: string, decimals: number) => {
     return DECIMALS_RE.test(value);
 };
 
-export const isInteger = (value: string) => {
+export const isInteger = (value: string) =>
     // exclude leading zeros
-    return /^(?:[1-9][0-9]*|0)$/.test(value);
-};
+    /^(?:[1-9][0-9]*|0)$/.test(value);
 
 export const isHexValid = (value: string, prefix?: string) => {
     // ethereum data/signedTx may start with prefix

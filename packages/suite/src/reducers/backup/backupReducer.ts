@@ -25,8 +25,8 @@ const handleToggleCheckboxByKey = (draft: BackupState, key: ConfirmKey) => {
     );
 };
 
-const backup = (state: BackupState = initialState, action: Action) => {
-    return produce(state, draft => {
+const backup = (state: BackupState = initialState, action: Action) =>
+    produce(state, draft => {
         switch (action.type) {
             case BACKUP.TOGGLE_CHECKBOX_BY_KEY:
                 handleToggleCheckboxByKey(draft, action.payload);
@@ -43,6 +43,5 @@ const backup = (state: BackupState = initialState, action: Action) => {
             // no default
         }
     });
-};
 
 export default backup;

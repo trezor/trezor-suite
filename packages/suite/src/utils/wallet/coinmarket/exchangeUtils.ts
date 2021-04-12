@@ -56,13 +56,11 @@ export const isQuoteError = (quote: ExchangeTrade): boolean => {
 // return 3 arrays: quotes not in error, quotes with min/max error, quotes with general error
 const splitQuotes = (
     quotes: ExchangeTrade[],
-): [ExchangeTrade[], ExchangeTrade[], ExchangeTrade[]] => {
-    return [
-        quotes.filter(q => !isQuoteError(q)),
-        quotes.filter(q => isQuoteError(q) && !q.error),
-        quotes.filter(q => q.error),
-    ];
-};
+): [ExchangeTrade[], ExchangeTrade[], ExchangeTrade[]] => [
+    quotes.filter(q => !isQuoteError(q)),
+    quotes.filter(q => isQuoteError(q) && !q.error),
+    quotes.filter(q => q.error),
+];
 
 export const splitToFixedFloatQuotes = (
     quotes: ExchangeTrade[],

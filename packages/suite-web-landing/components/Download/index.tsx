@@ -114,9 +114,8 @@ const dropdownItemsData: DropdownItem[] = [
     },
 ];
 
-const getIconForCurrentPlatform = (platform: Platform) => {
-    return dropdownItemsData.find(item => platform === item.platform)!.icon;
-};
+const getIconForCurrentPlatform = (platform: Platform) =>
+    dropdownItemsData.find(item => platform === item.platform)!.icon;
 
 const getInstallerURI = (platform: Platform, version: string) => {
     const extension = dropdownItemsData.find(item => platform === item.platform)!

@@ -44,19 +44,17 @@ export const redactDevice = (device: DeepPartial<Device> | undefined) => {
     };
 };
 
-export const redactTransaction = (transaction: AccountTransaction) => {
-    return {
-        ...transaction,
+export const redactTransaction = (transaction: AccountTransaction) => ({
+    ...transaction,
+    amount: REDACTED_REPLACEMENT,
+    txid: REDACTED_REPLACEMENT,
+    targets: transaction.targets.map(t => ({
+        ...t,
         amount: REDACTED_REPLACEMENT,
-        txid: REDACTED_REPLACEMENT,
-        targets: transaction.targets.map(t => ({
-            ...t,
-            amount: REDACTED_REPLACEMENT,
-            addresses: t.addresses?.map(() => REDACTED_REPLACEMENT),
-        })),
-        details: undefined,
-    };
-};
+        addresses: t.addresses?.map(() => REDACTED_REPLACEMENT),
+    })),
+    details: undefined,
+});
 
 export const redactAction = (action: Action) => {
     let payload;

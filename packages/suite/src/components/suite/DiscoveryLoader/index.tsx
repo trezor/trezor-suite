@@ -12,20 +12,18 @@ const Expand = styled.div`
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
-const DiscoveryLoader = (props: Props) => {
-    return (
-        <Modal
-            size="tiny"
-            heading={<Translation id="TR_COIN_DISCOVERY_IN_PROGRESS" />}
-            description={<Translation id="TR_TO_FIND_YOUR_ACCOUNTS_AND" />}
-            {...props}
-            data-test="@discovery/loader"
-        >
-            <Expand>
-                <Image width={80} height={80} image="SPINNER" />
-            </Expand>
-        </Modal>
-    );
-};
+const DiscoveryLoader = (props: Props) => (
+    <Modal
+        size="tiny"
+        heading={<Translation id="TR_COIN_DISCOVERY_IN_PROGRESS" />}
+        description={<Translation id="TR_TO_FIND_YOUR_ACCOUNTS_AND" />}
+        {...props}
+        data-test="@discovery/loader"
+    >
+        <Expand>
+            <Image width={80} height={80} image="SPINNER" />
+        </Expand>
+    </Modal>
+);
 
 export default DiscoveryLoader;

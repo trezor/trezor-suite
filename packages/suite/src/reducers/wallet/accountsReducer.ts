@@ -102,8 +102,8 @@ const setMetadata = (draft: Account[], account: Account) => {
 const accountsReducer = (
     state: Account[] = initialState,
     action: WalletAction | SuiteAction,
-): Account[] => {
-    return produce(state, draft => {
+): Account[] =>
+    produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOADED:
                 return action.payload.wallet.accounts;
@@ -127,6 +127,5 @@ const accountsReducer = (
             // no default
         }
     });
-};
 
 export default accountsReducer;

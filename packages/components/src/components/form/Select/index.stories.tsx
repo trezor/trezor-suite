@@ -17,12 +17,8 @@ storiesOf('Form', module).add('Select', () => {
     };
 
     const options = Object.keys(values)
-        .filter((k: string) => {
-            return values[k];
-        })
-        .map((k: string) => {
-            return values[k];
-        });
+        .filter((k: string) => values[k])
+        .map((k: string) => values[k]);
 
     const display: any = select(
         'Display',

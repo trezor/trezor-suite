@@ -59,14 +59,12 @@ jest.mock('trezor-connect', () => {
     };
 });
 
-jest.mock('next/router', () => {
-    return {
-        __esModule: true, // this property makes it work
-        default: {
-            back: () => {},
-        },
-    };
-});
+jest.mock('next/router', () => ({
+    __esModule: true, // this property makes it work
+    default: {
+        back: () => {},
+    },
+}));
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
@@ -78,24 +76,22 @@ export const getInitialState = (
     devices?: DevicesState,
     router?: RouterState,
     firmware?: Partial<FirmwareState>,
-) => {
-    return {
-        suite: {
-            ...suiteReducer(undefined, { type: 'foo' } as any),
-            ...suite,
-        },
-        devices: devices || [],
-        router: {
-            ...routerReducer(undefined, { type: 'foo' } as any),
-            ...router,
-        },
-        modal: modalReducer(undefined, { type: 'foo' } as any),
-        firmware: {
-            ...firmwareReducer(undefined, { type: 'foo' } as any),
-            ...firmware,
-        },
-    };
-};
+) => ({
+    suite: {
+        ...suiteReducer(undefined, { type: 'foo' } as any),
+        ...suite,
+    },
+    devices: devices || [],
+    router: {
+        ...routerReducer(undefined, { type: 'foo' } as any),
+        ...router,
+    },
+    modal: modalReducer(undefined, { type: 'foo' } as any),
+    firmware: {
+        ...firmwareReducer(undefined, { type: 'foo' } as any),
+        ...firmware,
+    },
+});
 
 type State = ReturnType<typeof getInitialState>;
 const mockStore = configureStore<State, any>([thunk]);

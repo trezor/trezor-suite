@@ -32,21 +32,16 @@ const IconText = styled.div`
 
 storiesOf('Icons', module).add(
     'All',
-    () => {
-        return (
-            <Wrapper>
-                {variables.ICONS.map((icon: types.IconType) => (
-                    <IconWrapper>
-                        <IconText>{icon}</IconText>
-                        <Icon
-                            icon={icon}
-                            data-test={`icon-${icon.toLowerCase().replace('_', '-')}`}
-                        />
-                    </IconWrapper>
-                ))}
-            </Wrapper>
-        );
-    },
+    () => (
+        <Wrapper>
+            {variables.ICONS.map((icon: types.IconType) => (
+                <IconWrapper>
+                    <IconText>{icon}</IconText>
+                    <Icon icon={icon} data-test={`icon-${icon.toLowerCase().replace('_', '-')}`} />
+                </IconWrapper>
+            ))}
+        </Wrapper>
+    ),
     {
         options: {
             showPanel: false,

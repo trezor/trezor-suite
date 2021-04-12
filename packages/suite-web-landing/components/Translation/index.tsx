@@ -17,8 +17,8 @@ const CustomHelperTooltip = (props: HelperTooltipProps) => {
 };
 
 type TranslationProps = Omit<React.ComponentProps<typeof BaseTranslation>, 'translationTooltip'>;
-const Translation = (props: TranslationProps) => {
-    return <BaseTranslation {...props} translationTooltip={CustomHelperTooltip} />;
-};
+const Translation = (props: TranslationProps) => (
+    <BaseTranslation {...props} translationTooltip={CustomHelperTooltip} />
+);
 
 export default Translation;

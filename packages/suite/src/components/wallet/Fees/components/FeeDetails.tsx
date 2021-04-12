@@ -41,60 +41,54 @@ interface Props {
     transactionInfo?: PrecomposedTransaction;
 }
 
-const BitcoinDetails = ({ networkType, feeInfo, selectedLevel, transactionInfo }: Props) => {
-    return (
-        <Wrapper>
-            <Item>
-                <Label>
-                    <Translation id="ESTIMATED_TIME" />
-                </Label>
-                {formatDuration(feeInfo.blockTime * selectedLevel.blocks * 60)}
-            </Item>
-            <Item>
-                <Label>
-                    <Translation id="TR_FEE_RATE" />
-                </Label>
-                {`${
-                    transactionInfo && transactionInfo.type !== 'error'
-                        ? transactionInfo.feePerByte
-                        : selectedLevel.feePerUnit
-                } ${getFeeUnits(networkType)}`}
-            </Item>
-            {transactionInfo && transactionInfo.type !== 'error' && (
-                <Item>({transactionInfo.bytes} B)</Item>
-            )}
-        </Wrapper>
-    );
-};
+const BitcoinDetails = ({ networkType, feeInfo, selectedLevel, transactionInfo }: Props) => (
+    <Wrapper>
+        <Item>
+            <Label>
+                <Translation id="ESTIMATED_TIME" />
+            </Label>
+            {formatDuration(feeInfo.blockTime * selectedLevel.blocks * 60)}
+        </Item>
+        <Item>
+            <Label>
+                <Translation id="TR_FEE_RATE" />
+            </Label>
+            {`${
+                transactionInfo && transactionInfo.type !== 'error'
+                    ? transactionInfo.feePerByte
+                    : selectedLevel.feePerUnit
+            } ${getFeeUnits(networkType)}`}
+        </Item>
+        {transactionInfo && transactionInfo.type !== 'error' && (
+            <Item>({transactionInfo.bytes} B)</Item>
+        )}
+    </Wrapper>
+);
 
-const EthereumDetails = ({ networkType, selectedLevel, transactionInfo }: Props) => {
-    return (
-        <Wrapper>
-            <Item>
-                <Label>
-                    <Translation id="TR_GAS_LIMIT" />
-                </Label>
-                {transactionInfo && transactionInfo.type !== 'error'
-                    ? transactionInfo.feeLimit
-                    : selectedLevel.feeLimit}
-            </Item>
-            <Item>
-                <Label>
-                    <Translation id="TR_GAS_PRICE" />
-                </Label>
-                {`${selectedLevel.feePerUnit} ${getFeeUnits(networkType)}`}
-            </Item>
-        </Wrapper>
-    );
-};
+const EthereumDetails = ({ networkType, selectedLevel, transactionInfo }: Props) => (
+    <Wrapper>
+        <Item>
+            <Label>
+                <Translation id="TR_GAS_LIMIT" />
+            </Label>
+            {transactionInfo && transactionInfo.type !== 'error'
+                ? transactionInfo.feeLimit
+                : selectedLevel.feeLimit}
+        </Item>
+        <Item>
+            <Label>
+                <Translation id="TR_GAS_PRICE" />
+            </Label>
+            {`${selectedLevel.feePerUnit} ${getFeeUnits(networkType)}`}
+        </Item>
+    </Wrapper>
+);
 
-const RippleDetails = ({ networkType, selectedLevel }: Props) => {
-    return (
-        <Wrapper>
-            <Item>{`${selectedLevel.feePerUnit} ${getFeeUnits(networkType)}`}</Item>
-        </Wrapper>
-    );
-};
+const RippleDetails = ({ networkType, selectedLevel }: Props) => (
+    <Wrapper>
+        <Item>{`${selectedLevel.feePerUnit} ${getFeeUnits(networkType)}`}</Item>
+    </Wrapper>
+);
 
 const FeeDetails = (props: Props) => {
     const { networkType } = props;

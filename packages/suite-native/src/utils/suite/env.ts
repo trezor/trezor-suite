@@ -4,11 +4,10 @@ import { SuiteThemeVariant } from '@suite-types';
 /**
  * override for suite/utils/env - getUserAgent
  */
-export const getUserAgent = () => {
+export const getUserAgent = () =>
     // todo: find a way how to tell userAgent equivalent on mobile
     // https://www.npmjs.com/package/react-native-device-info
-    return 'some mobile device';
-};
+    'some mobile device';
 
 export const isDesktop = () => false;
 export const isWeb = () => false;
@@ -17,36 +16,25 @@ export const isMac = () => false;
 export const isWindows = () => false;
 export const isLinux = () => false;
 
-export const isAndroid = () => {
-    return Platform.OS === 'android';
-};
+export const isAndroid = () => Platform.OS === 'android';
 
-export const getScreenWidth = () => {
+export const getScreenWidth = () =>
     // todo
-    return 1;
-};
+    1;
 
-export const getScreenHeight = () => {
+export const getScreenHeight = () =>
     // todo
-    return 1;
-};
+    1;
 
-export const getPlatform = () => {
-    return 'todo react-native';
-};
+export const getPlatform = () => 'todo react-native';
 
-export const getPlatformLanguage = () => {
-    return 'en';
-};
+export const getPlatformLanguage = () => 'en';
 
-export const getLocationOrigin = () => {
-    return 'implementation of getLocationOrigin in native';
-};
+export const getLocationOrigin = () => 'implementation of getLocationOrigin in native';
 
-export const getLocationHostname = () => {
+export const getLocationHostname = () =>
     // Used in Tor component, value shouldn't matter in RN env
-    return 'rn-localhost';
-};
+    'rn-localhost';
 
 export const submitRequestForm = (
     _formMethod: 'GET' | 'POST' | 'IFRAME',
@@ -54,9 +42,7 @@ export const submitRequestForm = (
     _fields: {
         [key: string]: string;
     },
-) => {
-    return 'implementation of submitRequestForm in native';
-};
+) => 'implementation of submitRequestForm in native';
 
 /**
  * override for suite/utils/env - setOnBeforeUnloadListener
@@ -70,7 +56,6 @@ export const getOSTheme = (): SuiteThemeVariant => {
     return colorScheme === 'dark' ? 'dark' : 'light';
 };
 
-export const getOSVersion = (): any => {
+export const getOSVersion = (): any =>
     // todo
-    return undefined;
-};
+    undefined;

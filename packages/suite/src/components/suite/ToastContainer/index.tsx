@@ -39,16 +39,14 @@ const StyledContainer = styled(BaseToastContainer)`
     }
 `;
 
-const ToastContainer = () => {
-    return (
-        <StyledContainer
-            draggable={false}
-            closeButton={false}
-            hideProgressBar
-            closeOnClick={false}
-            position="top-right"
-        />
-    );
-};
+const ToastContainer = () => (
+    <StyledContainer
+        draggable={false}
+        closeButton={false}
+        hideProgressBar
+        closeOnClick={false}
+        position="top-right"
+    />
+);
 
 export default ToastContainer;

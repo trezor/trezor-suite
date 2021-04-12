@@ -18,9 +18,7 @@ export const formatDuration = (seconds: number) =>
 
 export const formatDurationStrict = (seconds: number) => formatDistanceStrict(0, seconds * 1000);
 
-export const getLocalTimeZone = () => {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone;
-};
+export const getLocalTimeZone = () => Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 export const getDateWithTimeZone = (date: number, timeZone?: string) => {
     try {
@@ -46,12 +44,14 @@ export const calcTicks = (startDate: Date, endDate: Date) => {
 
 export const calcTicksFromData = (data: { time: number }[]) => {
     if (!data || data.length < 1) return [];
-    const startDate = data.reduce((min, current) => {
-        return current.time < min ? current.time : min;
-    }, data[0].time);
-    const endDate = data.reduce((max, current) => {
-        return current.time > max ? current.time : max;
-    }, data[0].time);
+    const startDate = data.reduce(
+        (min, current) => (current.time < min ? current.time : min),
+        data[0].time,
+    );
+    const endDate = data.reduce(
+        (max, current) => (current.time > max ? current.time : max),
+        data[0].time,
+    );
 
     const startUnix = fromUnixTime(startDate);
     const endUnix = fromUnixTime(endDate);

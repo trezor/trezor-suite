@@ -18,23 +18,15 @@ import SendIndex from '@wallet-views/send';
 import { useSendFormContext } from '../useSendForm';
 
 jest.mock('@suite-actions/routerActions', () => ({
-    goto: () => {
-        return { type: 'mock-redirect' };
-    },
+    goto: () => ({ type: 'mock-redirect' }),
 }));
 
-jest.mock('react-svg', () => {
-    return { ReactSVG: () => 'SVG' };
-});
+jest.mock('react-svg', () => ({ ReactSVG: () => 'SVG' }));
 
 // render only Translation['id']
-jest.mock('@suite-components/Translation', () => {
-    return { Translation: ({ id }: any) => id };
-});
+jest.mock('@suite-components/Translation', () => ({ Translation: ({ id }: any) => id }));
 
-jest.mock('trezor-connect', () => {
-    return global.JestMocks.getTrezorConnect({});
-});
+jest.mock('trezor-connect', () => global.JestMocks.getTrezorConnect({}));
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const TrezorConnect = require('trezor-connect').default;
 
@@ -45,25 +37,23 @@ interface Args {
     selectedAccount?: any;
 }
 
-export const getInitialState = ({ send, fees, selectedAccount }: Args = {}) => {
-    return {
-        ...fixtures.DEFAULT_STORE,
-        wallet: {
-            ...fixtures.DEFAULT_STORE.wallet,
-            send: {
-                ...sendFormReducer(undefined, { type: 'foo' } as any),
-                ...send,
-            },
-            fees: {
-                ...fixtures.DEFAULT_STORE.wallet.fees,
-                ...fees,
-            },
-            selectedAccount: selectedAccount ?? fixtures.DEFAULT_STORE.wallet.selectedAccount,
+export const getInitialState = ({ send, fees, selectedAccount }: Args = {}) => ({
+    ...fixtures.DEFAULT_STORE,
+    wallet: {
+        ...fixtures.DEFAULT_STORE.wallet,
+        send: {
+            ...sendFormReducer(undefined, { type: 'foo' } as any),
+            ...send,
         },
-        devices: [],
-        resize: resizeReducer(undefined, { type: 'foo' } as any),
-    };
-};
+        fees: {
+            ...fixtures.DEFAULT_STORE.wallet.fees,
+            ...fees,
+        },
+        selectedAccount: selectedAccount ?? fixtures.DEFAULT_STORE.wallet.selectedAccount,
+    },
+    devices: [],
+    resize: resizeReducer(undefined, { type: 'foo' } as any),
+});
 
 type State = ReturnType<typeof getInitialState>;
 const mockStore = configureStore<State, any>([thunk]);

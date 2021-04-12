@@ -15,22 +15,20 @@ const StyledButton = styled(Button)`
     background: none;
 `;
 
-const Convert = ({ onClick }: any) => {
-    return (
-        <Wrapper>
-            <Translation
-                id="RECIPIENT_FORMAT_UPPERCASE"
-                isNested
-                values={{
-                    convert: (
-                        <StyledButton variant="tertiary" onClick={onClick}>
-                            <Translation id="RECIPIENT_FORMAT_UPPERCASE_CONVERT" />
-                        </StyledButton>
-                    ),
-                }}
-            />
-        </Wrapper>
-    );
-};
+const Convert = ({ onClick }: any) => (
+    <Wrapper>
+        <Translation
+            id="RECIPIENT_FORMAT_UPPERCASE"
+            isNested
+            values={{
+                convert: (
+                    <StyledButton variant="tertiary" onClick={onClick}>
+                        <Translation id="RECIPIENT_FORMAT_UPPERCASE_CONVERT" />
+                    </StyledButton>
+                ),
+            }}
+        />
+    </Wrapper>
+);
 
 export default Convert;

@@ -19,12 +19,10 @@ const Wrapper = styled.div`
     display: flex;
 `;
 
-const MenuSecondary = ({ children }: Props) => {
-    return (
-        <AbsoluteWrapper>
-            <Wrapper>{children}</Wrapper>
-        </AbsoluteWrapper>
-    );
-};
+const MenuSecondary = ({ children }: Props) => (
+    <AbsoluteWrapper>
+        <Wrapper>{children}</Wrapper>
+    </AbsoluteWrapper>
+);
 
 export default MenuSecondary;

@@ -24,22 +24,20 @@ interface Props {
     supportUrl?: string;
 }
 
-const PaymentProcessing = ({ supportUrl }: Props) => {
-    return (
-        <Wrapper>
-            <Loader />
-            <Title>
-                <Translation id="TR_BUY_DETAIL_PENDING_TITLE" />
-            </Title>
-            {supportUrl && (
-                <Link href={supportUrl} target="_blank">
-                    <Button variant="tertiary">
-                        <Translation id="TR_BUY_DETAIL_PENDING_SUPPORT" />
-                    </Button>
-                </Link>
-            )}
-        </Wrapper>
-    );
-};
+const PaymentProcessing = ({ supportUrl }: Props) => (
+    <Wrapper>
+        <Loader />
+        <Title>
+            <Translation id="TR_BUY_DETAIL_PENDING_TITLE" />
+        </Title>
+        {supportUrl && (
+            <Link href={supportUrl} target="_blank">
+                <Button variant="tertiary">
+                    <Translation id="TR_BUY_DETAIL_PENDING_SUPPORT" />
+                </Button>
+            </Link>
+        )}
+    </Wrapper>
+);
 
 export default PaymentProcessing;
