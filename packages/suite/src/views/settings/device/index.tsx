@@ -18,10 +18,10 @@ import {
     PASSPHRASE_URL,
     SEED_MANUAL_URL,
 } from '@suite-constants/urls';
-import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
+import { getFwVersion, isBitcoinOnly, getFwRevision } from '@suite-utils/device';
 import * as homescreen from '@suite-utils/homescreen';
 import { useDevice, useAnalytics, useActions, useSelector } from '@suite-hooks';
-import { variables, Switch } from '@trezor/components';
+import { variables, Switch, Button, Tooltip } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
@@ -44,6 +44,24 @@ const HiddenInput = styled.input`
 const Col = styled.div`
     flex-direction: column;
 `;
+
+const Version = styled.div`
+    span {
+        display: flex;
+        align-items: center;
+    }
+`;
+
+const VersionButton = styled(Button)`
+    padding-left: 1ch;
+`;
+
+const VersionTooltip = styled(Tooltip)`
+    display: inline-flex;
+    margin: 0 2px;
+`;
+
+const VersionLink = styled.a``;
 
 const buildAutoLockOption = (seconds: number) => ({
     label: formatDurationStrict(seconds),
@@ -197,15 +215,31 @@ const Settings = () => {
             <Section title={<Translation id="TR_DEVICE_SECURITY" />}>
                 <SectionItem>
                     <TextColumn
-                        title={<Translation id="TR_FIRMWARE_VERSION" />}
+                        title={<Translation id="TR_SUITE_VERSION" />}
                         description={
-                            <>
+                            <Version>
                                 <Translation
-                                    id="TR_YOUR_CURRENT_FIRMWARE"
-                                    values={{ version: getFwVersion(device) }}
+                                    id="TR_FIRMWARE_VERSION"
+                                    values={{
+                                        version: (
+                                            <VersionTooltip content={getFwRevision(device)|| ''}>
+                                                <VersionLink
+                                                    target="_blank"
+                                                    href={`https://github.com/trezor/trezor-firmware/commit/${getFwRevision(device)}`}
+                                                >
+                                                    <VersionButton
+                                                        variant="tertiary"
+                                                        icon="EXTERNAL_LINK"
+                                                        alignIcon="right"
+                                                    >
+                                                        {getFwVersion(device)}{isBitcoinOnly(device) && ' (bitcoin-only)'}
+                                                    </VersionButton>
+                                                </VersionLink>
+                                            </VersionTooltip>
+                                        ),
+                                    }}
                                 />
-                                {isBitcoinOnly(device) && ' (bitcoin-only)'}
-                            </>
+                            </Version>
                         }
                     />
                     <ActionColumn>

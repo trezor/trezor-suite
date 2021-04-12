@@ -121,6 +121,12 @@ export const getFwVersion = (device: AcquiredDevice) => {
     return `${features.major_version}.${features.minor_version}.${features.patch_version}`;
 };
 
+export const getFwRevision = (device: AcquiredDevice) => {
+    const { features } = device;
+    const rev = Buffer.from(features.revision, 'hex');
+    return rev.toString();
+};
+
 /**
  * Generate new instance number
  * @param {TrezorDevice[]} devices
