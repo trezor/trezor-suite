@@ -6,7 +6,9 @@ export { MESSAGES, RESPONSES };
 export const NETWORKS: {
     RIPPLE: 'ripple';
     BLOCKBOOK: 'blockbook';
+    BLOCKFROST: 'blockfrost';
 } = {
     RIPPLE: 'ripple',
     BLOCKBOOK: 'blockbook',
+    BLOCKFROST: 'blockfrost',
 };

@@ -12,8 +12,11 @@ module.exports = {
         index: [`${SRC}/index.ts`],
     },
     output: {
-        filename: '[name].js',
+        filename: '[name]-[hash].js',
         path: BUILD,
+    },
+    stats: {
+        children: true,
     },
     devServer: {
         static: {

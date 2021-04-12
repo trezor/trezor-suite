@@ -19,7 +19,28 @@ export default {
             error: '-22: TX decode failed',
         },
     ],
-
+    blockfrost: [
+        {
+            description: 'Successful',
+            params: 'A',
+            serverFixtures: [
+                {
+                    method: 'PUSH_TRANSACTION',
+                    response: {
+                        data: {
+                            result: 'blockfrost_push_tx_result',
+                        },
+                    },
+                },
+            ],
+            response: 'blockfrost_push_tx_result',
+        },
+        {
+            description: 'Unsuccessful',
+            params: 'A',
+            error: 'Message not set',
+        },
+    ],
     ripple: [
         {
             description: 'Successful',

@@ -2,6 +2,23 @@ import createServer from '../websocket';
 import workers from './worker';
 import BlockchainLink from '../../src';
 
+const getMethod = (instanceName: string) => {
+    let method: string;
+    switch (instanceName) {
+        case 'blockfrost':
+            method = 'GET_BLOCK';
+            break;
+        case 'ripple':
+            method = 'server_info';
+            break;
+        default:
+            method = 'getBlockHash';
+            break;
+    }
+
+    return method;
+};
+
 workers.forEach(instance => {
     describe(`Connection ${instance.name}`, () => {
         let server: any;
@@ -51,18 +68,13 @@ workers.forEach(instance => {
         });
 
         it('Handle ping (subscription)', async () => {
+            const method = getMethod(instance.name);
             // the only way how to test it is to check if server fixture was called
             // method defined in this fixture is the same which is used in ping function inside the worker
             // server should remove this fixture once called
             server.setFixtures([
-                {
-                    method: instance.name === 'ripple' ? 'server_info' : 'getBlockHash',
-                    response: undefined,
-                },
-                {
-                    method: instance.name === 'ripple' ? 'server_info' : 'getBlockHash',
-                    response: undefined,
-                },
+                { method, response: undefined },
+                { method, response: undefined },
             ]);
             blockchain.settings.pingTimeout = 2500; // ping message will be called 3 sec. after subscription
             await blockchain.subscribe({ type: 'block' });
@@ -71,16 +83,11 @@ workers.forEach(instance => {
         });
 
         it('Handle ping (keepAlive)', async () => {
+            const method = getMethod(instance.name);
             // similar to previous test but this time expect that ping will be called because of "keepAlive" param
             server.setFixtures([
-                {
-                    method: instance.name === 'ripple' ? 'server_info' : 'getBlockHash',
-                    response: undefined,
-                },
-                {
-                    method: instance.name === 'ripple' ? 'server_info' : 'getBlockHash',
-                    response: undefined,
-                },
+                { method, response: undefined },
+                { method, response: undefined },
             ]);
 
             blockchain.settings.pingTimeout = 2500; // ping message will be called 3 sec. after subscription
@@ -93,18 +100,13 @@ workers.forEach(instance => {
         });
 
         it('Ping should not be called and websocket should be disconnected', async () => {
+            const method = getMethod(instance.name);
             // similar to previous test but this time expect that server fixtures will not be removed
             // since ping should not be called because subscription was cancelled and keepAlive is not set
             // after first ping websocket should be disconnected
             server.setFixtures([
-                {
-                    method: instance.name === 'ripple' ? 'server_info' : 'getBlockHash',
-                    response: undefined,
-                },
-                {
-                    method: instance.name === 'ripple' ? 'server_info' : 'getBlockHash',
-                    response: undefined,
-                },
+                { method, response: undefined },
+                { method, response: undefined },
             ]);
 
             const callback = jest.fn();
@@ -141,6 +143,9 @@ workers.forEach(instance => {
         });
 
         it('Connect (only one endpoint is valid)', async () => {
+            // blockfrost has only one valid endpoint
+            if (instance.name === 'blockfrost') return;
+
             blockchain.settings.server = [
                 'gibberish1',
                 'gibberish2',

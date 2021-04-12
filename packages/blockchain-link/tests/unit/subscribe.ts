@@ -33,7 +33,6 @@ workers.forEach(instance => {
 
             fixtures.addresses.forEach(f => {
                 it(f.description, async () => {
-                    // @ts-ignore No index signature
                     const s = await blockchain[f.method](f.params);
                     const subscribedAddresses = server.getAddresses();
                     const subscribed =
@@ -54,7 +53,6 @@ workers.forEach(instance => {
                 it(f.description, async () => {
                     // server.setFixtures(f.server);
                     try {
-                        // @ts-ignore No index signature
                         await blockchain[f.method](f.params);
                     } catch (error) {
                         // expect(error.code).toEqual('blockchain_link/blockbook-websocket');

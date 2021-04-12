@@ -19,7 +19,10 @@
         "javascript"
     ],
     "main": "./lib/index.js",
-    "files": ["lib/", "build/"],
+    "files": [
+        "lib/",
+        "build/"
+    ],
     "types": "lib/index.d.ts",
     "typings": "lib/index.d.ts",
     "browser": {
