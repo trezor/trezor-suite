@@ -1,6 +1,8 @@
 # trezor-link
 
-[![Build Status](https://travis-ci.org/trezor/trezor-link.svg?branch=master)](https://travis-ci.org/trezor/trezor-link) [![gitter](https://badges.gitter.im/trezor/community.svg)](https://gitter.im/trezor/community)
+[![Build Status](https://github.com/trezor/trezor-link/actions/workflows/tests.yml/badge.svg)](https://github.com/trezor/trezor-link/actions/workflows/tests.yml)
+[![NPM](https://img.shields.io/npm/v/trezor-link.svg)](https://www.npmjs.org/package/trezor-link)
+[![gitter](https://badges.gitter.im/trezor/community.svg)](https://gitter.im/trezor/community)
 
 Library for low-level communication with TREZOR.
 
