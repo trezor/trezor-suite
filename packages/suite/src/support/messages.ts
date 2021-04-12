@@ -5578,6 +5578,15 @@ const definedMessages = defineMessages({
         defaultMessage: 'Does your hologram looks suspicious? <a>Contact us</a>.',
         id: 'TR_HOLOGRAM_WARNING_BANNER',
     },
+    TR_ONBOARDING_COINS_STEP: {
+        id: 'TR_ONBOARDING_COINS_STEP',
+        defaultMessage: 'Activate Coins',
+    },
+    TR_ONBOARDING_COINS_STEP_DESCRIPTION: {
+        id: 'TR_ONBOARDING_COINS_STEP_DESCRIPTION',
+        defaultMessage:
+            'We preselected our 3 most popular, for which we’ll create accounts. U can always enable more later.',
+    },
 } as const);
 
 export default definedMessages;

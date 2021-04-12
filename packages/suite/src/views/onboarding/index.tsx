@@ -15,6 +15,7 @@ import RecoveryStep from '@onboarding-views/steps/Recovery';
 import BackupStep from '@onboarding-views/steps/Backup';
 import SecurityStep from '@onboarding-views/steps/Security';
 import SetPinStep from '@onboarding-views/steps/Pin';
+import BasicSettingsStep from '@onboarding-views/steps/BasicSettings';
 import FinalStep from '@onboarding-views/steps/Final';
 import UnexpectedState from '@onboarding-views/unexpected-states';
 
@@ -58,6 +59,9 @@ const Onboarding = () => {
             case STEP.ID_SET_PIN_STEP:
                 // Pin setup
                 return SetPinStep;
+            case STEP.ID_COINS_STEP:
+                // Suite settings
+                return BasicSettingsStep;
             case STEP.ID_FINAL_STEP:
                 return FinalStep;
             default:
@@ -67,7 +71,6 @@ const Onboarding = () => {
     };
 
     const StepComponent = getStepComponent();
-    const stepsInPath = steps.filter(s => s.progress && isStepInPath(s, path));
 
     // TODO global unexpected states
     // TODO Maybe put Onboarding layout here instead of defining it in each step
