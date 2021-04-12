@@ -28,7 +28,7 @@
         "react-truncate": "^2.4.0"
     },
     "devDependencies": {
-        "@babel/core": "^7.12.7",
+        "@babel/core": "^7.13.15",
         "@storybook/addon-actions": "^6.1.14",
         "@storybook/addon-knobs": "^6.1.14",
         "@storybook/addon-links": "^6.1.14",
