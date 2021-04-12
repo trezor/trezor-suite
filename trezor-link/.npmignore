@@ -6,7 +6,7 @@ babel.config.js
 .flowconfig
 .gitignore
 .gitmodules
-.travis.yml
+.github
 
 # Dependency directory
 node_modules
