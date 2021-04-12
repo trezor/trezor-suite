@@ -15,10 +15,8 @@ const Col = styled.div`
     width: 232px;
 `;
 
-export const Buttons: React.FunctionComponent = props => {
-    return (
-        <Row>
-            <Col>{props.children}</Col>
-        </Row>
-    );
-};
+export const Buttons: React.FunctionComponent = props => (
+    <Row>
+        <Col>{props.children}</Col>
+    </Row>
+);

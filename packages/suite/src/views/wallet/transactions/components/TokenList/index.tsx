@@ -143,47 +143,43 @@ const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
             }
         >
             <Wrapper isTestnet={isTestnet} noPadding>
-                {tokens.map(t => {
-                    return (
-                        <Fragment key={t.address}>
-                            <Col isTestnet={isTestnet}>
-                                <TokenNameWrapper>
-                                    <TokenSymbol>{t.symbol}</TokenSymbol>
-                                    <TokenName> - {t.name}</TokenName>
-                                </TokenNameWrapper>
-                            </Col>
+                {tokens.map(t => (
+                    <Fragment key={t.address}>
+                        <Col isTestnet={isTestnet}>
+                            <TokenNameWrapper>
+                                <TokenSymbol>{t.symbol}</TokenSymbol>
+                                <TokenName> - {t.name}</TokenName>
+                            </TokenNameWrapper>
+                        </Col>
+                        <Col isTestnet={isTestnet} justify="right">
+                            <TokenValue>
+                                {t.balance && <CryptoAmount value={t.balance} symbol={t.symbol} />}
+                            </TokenValue>
+                        </Col>
+                        {!isTestnet && (
                             <Col isTestnet={isTestnet} justify="right">
-                                <TokenValue>
-                                    {t.balance && (
-                                        <CryptoAmount value={t.balance} symbol={t.symbol} />
+                                <FiatWrapper>
+                                    {t.balance && t.symbol && (
+                                        <FiatValue
+                                            amount={t.balance}
+                                            symbol={t.symbol}
+                                            tokenAddress={t.address}
+                                        />
                                     )}
-                                </TokenValue>
+                                </FiatWrapper>
                             </Col>
-                            {!isTestnet && (
-                                <Col isTestnet={isTestnet} justify="right">
-                                    <FiatWrapper>
-                                        {t.balance && t.symbol && (
-                                            <FiatValue
-                                                amount={t.balance}
-                                                symbol={t.symbol}
-                                                tokenAddress={t.address}
-                                            />
-                                        )}
-                                    </FiatWrapper>
-                                </Col>
-                            )}
-                            <Col isTestnet={isTestnet} justify="right">
-                                <TrezorLink href={`${explorerUrl}${t.address}`}>
-                                    <Icon
-                                        icon="EXTERNAL_LINK"
-                                        size={16}
-                                        color={theme.TYPE_LIGHT_GREY}
-                                    />
-                                </TrezorLink>
-                            </Col>
-                        </Fragment>
-                    );
-                })}
+                        )}
+                        <Col isTestnet={isTestnet} justify="right">
+                            <TrezorLink href={`${explorerUrl}${t.address}`}>
+                                <Icon
+                                    icon="EXTERNAL_LINK"
+                                    size={16}
+                                    color={theme.TYPE_LIGHT_GREY}
+                                />
+                            </TrezorLink>
+                        </Col>
+                    </Fragment>
+                ))}
             </Wrapper>
             <Divider />
         </Section>

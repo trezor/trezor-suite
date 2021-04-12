@@ -29,9 +29,9 @@ const Tabs = (props: BottomTabBarProps) => {
         });
     };
 
-    const buttons = props.navigation.state.routes.map(r => {
-        return <Button key={r.key} title={r.routeName} onPress={() => onClick(r.routeName)} />;
-    });
+    const buttons = props.navigation.state.routes.map(r => (
+        <Button key={r.key} title={r.routeName} onPress={() => onClick(r.routeName)} />
+    ));
 
     return <View style={styles.container}>{buttons}</View>;
 };

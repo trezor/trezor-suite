@@ -15,28 +15,26 @@ const SectionDark = styled(Section)`
 
 storiesOf('Loaders', module).add(
     'All',
-    () => {
-        return (
-            <>
-                <StoryColumn minWidth={520}>
-                    <H1>Loader</H1>
-                    <Section>
-                        <Loader size={100} strokeWidth={2} data-test="loader-default" />
-                    </Section>
+    () => (
+        <>
+            <StoryColumn minWidth={520}>
+                <H1>Loader</H1>
+                <Section>
+                    <Loader size={100} strokeWidth={2} data-test="loader-default" />
+                </Section>
 
-                    <H1>Loader on dark background</H1>
-                    <SectionDark>
-                        <Loader size={100} strokeWidth={2} data-test="loader-on-dark-background" />
-                    </SectionDark>
+                <H1>Loader on dark background</H1>
+                <SectionDark>
+                    <Loader size={100} strokeWidth={2} data-test="loader-on-dark-background" />
+                </SectionDark>
 
-                    <H1>Small loader</H1>
-                    <Section>
-                        <Loader size={20} strokeWidth={1} data-test="loader-small" />
-                    </Section>
-                </StoryColumn>
-            </>
-        );
-    },
+                <H1>Small loader</H1>
+                <Section>
+                    <Loader size={20} strokeWidth={1} data-test="loader-small" />
+                </Section>
+            </StoryColumn>
+        </>
+    ),
     {
         options: {
             showPanel: false,

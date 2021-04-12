@@ -139,42 +139,38 @@ const ReceiveCryptoSelect = () => {
                 control={control}
                 defaultValue={false}
                 name="receiveCryptoSelect"
-                render={({ onChange, value }) => {
-                    return (
-                        <Select
-                            onChange={(selected: any) => {
-                                onChange(selected);
-                                setAmountLimits(undefined);
-                            }}
-                            value={value}
-                            isClearable={false}
-                            filterOption={customSearch}
-                            options={buildOptions(
-                                account,
-                                exchangeCoinInfo,
-                                exchangeInfo,
-                                tokenData?.symbol,
-                            )}
-                            minWidth="70px"
-                            noTopLabel
-                            formatOptionLabel={(option: any) => {
-                                return (
-                                    <Option>
-                                        <CoinLogo
-                                            src={`${
-                                                invityAPI.server
-                                            }/images/coins/suite/${option.value.toUpperCase()}.svg`}
-                                        />
-                                        <OptionLabel>{option.label}</OptionLabel>
-                                        <OptionName>{option.name}</OptionName>
-                                    </Option>
-                                );
-                            }}
-                            placeholder={<Translation id="TR_TRADE_SELECT_COIN" />}
-                            isSearchable
-                        />
-                    );
-                }}
+                render={({ onChange, value }) => (
+                    <Select
+                        onChange={(selected: any) => {
+                            onChange(selected);
+                            setAmountLimits(undefined);
+                        }}
+                        value={value}
+                        isClearable={false}
+                        filterOption={customSearch}
+                        options={buildOptions(
+                            account,
+                            exchangeCoinInfo,
+                            exchangeInfo,
+                            tokenData?.symbol,
+                        )}
+                        minWidth="70px"
+                        noTopLabel
+                        formatOptionLabel={(option: any) => (
+                            <Option>
+                                <CoinLogo
+                                    src={`${
+                                        invityAPI.server
+                                    }/images/coins/suite/${option.value.toUpperCase()}.svg`}
+                                />
+                                <OptionLabel>{option.label}</OptionLabel>
+                                <OptionName>{option.name}</OptionName>
+                            </Option>
+                        )}
+                        placeholder={<Translation id="TR_TRADE_SELECT_COIN" />}
+                        isSearchable
+                    />
+                )}
             />
         </Wrapper>
     );

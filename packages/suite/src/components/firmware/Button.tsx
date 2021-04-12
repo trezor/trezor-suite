@@ -9,21 +9,17 @@ export const RetryButton = (props: ButtonProps) => (
     </Button>
 );
 
-export const ContinueButton = (props: ButtonProps) => {
-    return (
-        <Button {...props} data-test="@firmware/continue-button">
-            <Translation id="TR_CONTINUE" />
-        </Button>
-    );
-};
+export const ContinueButton = (props: ButtonProps) => (
+    <Button {...props} data-test="@firmware/continue-button">
+        <Translation id="TR_CONTINUE" />
+    </Button>
+);
 
-export const InstallButton = (props: ButtonProps) => {
-    return (
-        <Button {...props} data-test="@firmware/install-button">
-            <Translation id="TR_INSTALL" />
-        </Button>
-    );
-};
+export const InstallButton = (props: ButtonProps) => (
+    <Button {...props} data-test="@firmware/install-button">
+        <Translation id="TR_INSTALL" />
+    </Button>
+);
 
 export const CloseButton = (props: ButtonProps) => (
     <Button {...props}>

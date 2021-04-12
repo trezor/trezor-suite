@@ -20,12 +20,10 @@ const Wrapper = styled.div<{ state: Props['state'] }>`
     ${props => !props.state && css && `padding-left: 20px`}
 `;
 
-const Box = ({ state, children, ...rest }: Props) => {
-    return (
-        <Wrapper state={state} {...rest}>
-            {children}
-        </Wrapper>
-    );
-};
+const Box = ({ state, children, ...rest }: Props) => (
+    <Wrapper state={state} {...rest}>
+        {children}
+    </Wrapper>
+);
 
 export { Box, Props as BoxProps };

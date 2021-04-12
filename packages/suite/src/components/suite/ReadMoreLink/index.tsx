@@ -11,8 +11,8 @@ interface Props {
 
 // common component used in various places
 // displays Translation with TR_LEARN_MORE value (Link) or standalone Link
-export const ReadMoreLink = ({ url, message, linkLabel }: Props) => {
-    return message ? (
+export const ReadMoreLink = ({ url, message, linkLabel }: Props) =>
+    message ? (
         <Translation
             id={message}
             values={{
@@ -28,4 +28,3 @@ export const ReadMoreLink = ({ url, message, linkLabel }: Props) => {
             <Translation id={linkLabel || 'TR_LEARN_MORE'} />
         </TrezorLink>
     );
-};

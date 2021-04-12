@@ -206,16 +206,15 @@ export const getSelectedDevice = (
  * @param {TrezorDevice[]} devices
  * @returns {TrezorDevice[]}
  */
-export const sortByTimestamp = (devices: TrezorDevice[]): TrezorDevice[] => {
+export const sortByTimestamp = (devices: TrezorDevice[]): TrezorDevice[] =>
     // Node.js v11+ changed sort algo https://github.com/nodejs/node/pull/22754#issuecomment-423452575
     // In unit tests some devices have undefined ts
-    return devices.sort((a, b) => {
+    devices.sort((a, b) => {
         if (!a.ts && !b.ts) return 0; // both devices has undefined ts, keep their pos
         if (!b.ts && a.ts) return -1;
         if (!a.ts && b.ts) return 1;
         return b.ts - a.ts;
     });
-};
 
 export const sortByPriority = (a: TrezorDevice, b: TrezorDevice) => {
     // sort by priority:
@@ -285,9 +284,9 @@ export const getDeviceInstances = (
  * @param {TrezorDevice[]} devices
  * @returns {TrezorDevice[]}
  */
-export const getFirstDeviceInstance = (devices: TrezorDevice[]) => {
+export const getFirstDeviceInstance = (devices: TrezorDevice[]) =>
     // filter device instances
-    return devices
+    devices
         .reduce((result, dev) => {
             // unacquired devices always return empty array
             const instances = getDeviceInstances(dev, devices);
@@ -299,7 +298,6 @@ export const getFirstDeviceInstance = (devices: TrezorDevice[]) => {
             return result.concat(instances[0]);
         }, [] as TrezorDevice[])
         .sort(sortByPriority);
-};
 
 export const isBitcoinOnly = (device: TrezorDevice | Device) => {
     const { features } = device;

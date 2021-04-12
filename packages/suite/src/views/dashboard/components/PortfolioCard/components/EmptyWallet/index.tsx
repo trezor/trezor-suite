@@ -52,17 +52,16 @@ const SecurityItem = styled.div`
 
 type Props = React.HTMLAttributes<HTMLDivElement>;
 
-const EmptyWallet = (props: Props) => {
-    return (
-        <Wrapper {...props} data-test="@dashboard/wallet-ready">
-            <StyledImage image="EMPTY_DASHBOARD" />
-            <Content>
-                <Title>
-                    <Translation id="TR_YOUR_WALLET_IS_READY_WHAT" />
-                </Title>
-                <SecurityItem>
-                    <Translation id="TR_ADDITIONAL_SECURITY_FEATURES" />
-                    {/* <InlineButton
+const EmptyWallet = (props: Props) => (
+    <Wrapper {...props} data-test="@dashboard/wallet-ready">
+        <StyledImage image="EMPTY_DASHBOARD" />
+        <Content>
+            <Title>
+                <Translation id="TR_YOUR_WALLET_IS_READY_WHAT" />
+            </Title>
+            <SecurityItem>
+                <Translation id="TR_ADDITIONAL_SECURITY_FEATURES" />
+                {/* <InlineButton
                         variant="tertiary"
                         size="small"
                         icon="ARROW_RIGHT"
@@ -73,8 +72,8 @@ const EmptyWallet = (props: Props) => {
                     >
                         <Translation id="TR_FINISH_ADVANCED_SECURITY" />
                     </InlineButton> */}
-                </SecurityItem>
-                {/* <SecurityItem>
+            </SecurityItem>
+            {/* <SecurityItem>
                     <Translation id="TR_LOOKING_FOR_QUICK_EASY" />
                     <InlineButton
                         variant="tertiary"
@@ -88,9 +87,8 @@ const EmptyWallet = (props: Props) => {
                         Buy BTC
                     </InlineButton>
                 </SecurityItem> */}
-            </Content>
-        </Wrapper>
-    );
-};
+        </Content>
+    </Wrapper>
+);
 
 export default EmptyWallet;

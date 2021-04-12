@@ -4,17 +4,15 @@ import settingsReducer from '@wallet-reducers/settingsReducer';
 import suiteReducer from '@suite-reducers/suiteReducer';
 import fixtures from '../__fixtures__/walletSettings';
 
-export const getInitialState = (settings?: any) => {
-    return {
-        suite: { ...suiteReducer(undefined, { type: 'foo' } as any) },
-        wallet: {
-            settings: {
-                ...settingsReducer(undefined, { type: 'foo' } as any),
-                ...settings,
-            },
+export const getInitialState = (settings?: any) => ({
+    suite: { ...suiteReducer(undefined, { type: 'foo' } as any) },
+    wallet: {
+        settings: {
+            ...settingsReducer(undefined, { type: 'foo' } as any),
+            ...settings,
         },
-    };
-};
+    },
+});
 
 type State = ReturnType<typeof getInitialState>;
 const mockStore = configureStore<State, any>([thunk]);

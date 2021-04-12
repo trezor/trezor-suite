@@ -160,33 +160,31 @@ const analyzeTransactionsExtended = [
 // A little bit crazy test to avoid fixtures duplication
 export const onBlock = analyzeTransactions
     // extend @wallet-utils/__fixtures__/transactionUtils
-    .map((f, i) => {
-        return {
-            description: f.description,
-            connect: [
-                {
-                    history: {
-                        total: 1, // to make sure that "basic" call will catch a difference
-                    },
-                },
-                {
-                    history: {
-                        transactions: f.fresh.slice().map((t: any) => parseTx(t)),
-                    },
-                },
-            ],
-            block: BLOCK,
-            state: {
-                accounts: [DEFAULT_ACCOUNT],
-                transactions: {
-                    'xpub-btc-deviceState': f.known,
+    .map((f, i) => ({
+        description: f.description,
+        connect: [
+            {
+                history: {
+                    total: 1, // to make sure that "basic" call will catch a difference
                 },
             },
-            result: undefined,
-            resultTxs: {},
-            ...analyzeTransactionsExtended[i],
-        };
-    })
+            {
+                history: {
+                    transactions: f.fresh.slice().map((t: any) => parseTx(t)),
+                },
+            },
+        ],
+        block: BLOCK,
+        state: {
+            accounts: [DEFAULT_ACCOUNT],
+            transactions: {
+                'xpub-btc-deviceState': f.known,
+            },
+        },
+        result: undefined,
+        resultTxs: {},
+        ...analyzeTransactionsExtended[i],
+    }))
     // add more test cases
     .concat([
         {

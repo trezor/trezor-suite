@@ -14,23 +14,21 @@ const Wrapper = styled.div`
     margin-top: 160px;
 `;
 
-const ErrorPage = () => {
-    return (
-        <Wrapper>
-            <H1>
-                <Translation id="TR_404_TITLE" />
-            </H1>
-            <P size="tiny">
-                <Translation id="TR_404_DESCRIPTION" />
-            </P>
-            <Image image="404" />
-            <Link variant="nostyle" target="_self" href="/">
-                <Button>
-                    <Translation id="TR_404_GO_TO_DASHBOARD" />
-                </Button>
-            </Link>
-        </Wrapper>
-    );
-};
+const ErrorPage = () => (
+    <Wrapper>
+        <H1>
+            <Translation id="TR_404_TITLE" />
+        </H1>
+        <P size="tiny">
+            <Translation id="TR_404_DESCRIPTION" />
+        </P>
+        <Image image="404" />
+        <Link variant="nostyle" target="_self" href="/">
+            <Button>
+                <Translation id="TR_404_GO_TO_DASHBOARD" />
+            </Button>
+        </Link>
+    </Wrapper>
+);
 
 export default ErrorPage;

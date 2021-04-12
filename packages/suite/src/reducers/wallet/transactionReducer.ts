@@ -129,8 +129,8 @@ const remove = (draft: State, account: Account, txs: WalletAccountTransaction[])
     });
 };
 
-const transactionReducer = (state: State = initialState, action: Action | WalletAction): State => {
-    return produce(state, draft => {
+const transactionReducer = (state: State = initialState, action: Action | WalletAction): State =>
+    produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOADED:
                 return action.payload.wallet.transactions;
@@ -175,6 +175,5 @@ const transactionReducer = (state: State = initialState, action: Action | Wallet
             // no default
         }
     });
-};
 
 export default transactionReducer;

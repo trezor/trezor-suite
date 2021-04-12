@@ -20,8 +20,8 @@ export const initialState: SendState = {
     signedTx: undefined,
 };
 
-const sendFormReducer = (state: SendState = initialState, action: Action): SendState => {
-    return produce(state, draft => {
+const sendFormReducer = (state: SendState = initialState, action: Action): SendState =>
+    produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOADED:
                 return action.payload.wallet.send;
@@ -59,6 +59,5 @@ const sendFormReducer = (state: SendState = initialState, action: Action): SendS
             // no default
         }
     });
-};
 
 export default sendFormReducer;

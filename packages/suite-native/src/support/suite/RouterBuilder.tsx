@@ -72,12 +72,11 @@ const withNavigationOptions = (Component: ScreenComponent) => {
     return Component;
 };
 
-const useDrawerStack = (key: string, customViews: NavigatorViews, screen: ScreenComponent) => {
-    return useDrawer(key, customViews, useStack(key, customViews, screen));
-};
+const useDrawerStack = (key: string, customViews: NavigatorViews, screen: ScreenComponent) =>
+    useDrawer(key, customViews, useStack(key, customViews, screen));
 
-const useTabs = (key: string, customViews: NavigatorViews, config: ScreenConfigMap) => {
-    return useDrawerStack(
+const useTabs = (key: string, customViews: NavigatorViews, config: ScreenConfigMap) =>
+    useDrawerStack(
         key,
         customViews,
         createBottomTabNavigator(config, {
@@ -98,7 +97,6 @@ const useTabs = (key: string, customViews: NavigatorViews, config: ScreenConfigM
             }),
         }),
     );
-};
 
 type NavigatorViews = {
     drawer?: React.ComponentType<any>;

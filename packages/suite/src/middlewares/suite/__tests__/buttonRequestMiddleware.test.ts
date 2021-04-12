@@ -19,13 +19,11 @@ import { Action } from '@suite-types';
 
 const { getSuiteDevice } = global.JestMocks;
 
-jest.mock('@wallet-actions/blockchainActions', () => {
-    return {
-        __esModule: true, // this property makes it work
-        loadFeeInfo: () => ({ type: 'mocked' }),
-        init: () => ({ type: 'mocked' }),
-    };
-});
+jest.mock('@wallet-actions/blockchainActions', () => ({
+    __esModule: true, // this property makes it work
+    loadFeeInfo: () => ({ type: 'mocked' }),
+    init: () => ({ type: 'mocked' }),
+}));
 
 jest.mock('trezor-connect', () => {
     const callbacks: { [key: string]: (e: string) => any } = {};
@@ -37,14 +35,12 @@ jest.mock('trezor-connect', () => {
             on: (event: string, cb: (e: string) => any) => {
                 callbacks[event] = cb;
             },
-            changePin: () => {
-                return {
-                    success: true,
-                    payload: {
-                        message: 'great success',
-                    },
-                };
-            },
+            changePin: () => ({
+                success: true,
+                payload: {
+                    message: 'great success',
+                },
+            }),
         },
         DEVICE: {},
         BLOCKCHAIN: {},
@@ -64,16 +60,14 @@ jest.mock('trezor-connect', () => {
 
 const device = getSuiteDevice();
 
-export const getInitialState = () => {
-    return {
-        router: routerReducer(undefined, { type: 'foo' } as any),
-        suite: {
-            ...suiteReducer(undefined, { type: 'foo' } as any),
-            ...{ device },
-        },
-        devices: [device],
-    };
-};
+export const getInitialState = () => ({
+    router: routerReducer(undefined, { type: 'foo' } as any),
+    suite: {
+        ...suiteReducer(undefined, { type: 'foo' } as any),
+        ...{ device },
+    },
+    devices: [device],
+});
 
 type State = ReturnType<typeof getInitialState>;
 

@@ -67,9 +67,10 @@ const TransactionDetail = (props: Props) => {
     const chainedTxs = isPending(tx)
         ? findChainedTransactions(tx.txid, transactions)
               .filter(t => t.key.indexOf(tx.descriptor) >= 0) // only for this account (this will change)
-              .reduce((result, item) => {
-                  return result.concat(item.txs); // transforming results into array
-              }, [] as WalletAccountTransaction[])
+              .reduce(
+                  (result, item) => result.concat(item.txs), // transforming results into array
+                  [] as WalletAccountTransaction[],
+              )
         : [];
 
     const network = getNetwork(tx.symbol);

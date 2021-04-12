@@ -20,19 +20,17 @@ interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
     size?: number;
 }
 
-const CoinLogo = ({ symbol, className, size = 32, ...rest }: Props) => {
-    return (
-        <SvgWrapper className={className} size={size} {...rest}>
-            <ReactSVG
-                src={COINS[symbol]}
-                beforeInjection={svg => {
-                    svg.setAttribute('width', `${size}px`);
-                    svg.setAttribute('height', `${size}px`);
-                }}
-                loading={() => <span className="loading" />}
-            />
-        </SvgWrapper>
-    );
-};
+const CoinLogo = ({ symbol, className, size = 32, ...rest }: Props) => (
+    <SvgWrapper className={className} size={size} {...rest}>
+        <ReactSVG
+            src={COINS[symbol]}
+            beforeInjection={svg => {
+                svg.setAttribute('width', `${size}px`);
+                svg.setAttribute('height', `${size}px`);
+            }}
+            loading={() => <span className="loading" />}
+        />
+    </SvgWrapper>
+);
 
 export { CoinLogo, Props as CoinLogoProps };

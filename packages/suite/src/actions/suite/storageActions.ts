@@ -75,9 +75,10 @@ export const forgetDevice = (device: TrezorDevice) => async (_: Dispatch, getSta
     if (!(await isDBAccessible())) return;
     if (!device.state) return;
     const accounts = getState().wallet.accounts.filter(a => a.deviceState === device.state);
-    const accountPromises = accounts.reduce((promises, account) => {
-        return promises.concat([removeAccountDraft(account)]);
-    }, [] as Promise<any>[]);
+    const accountPromises = accounts.reduce(
+        (promises, account) => promises.concat([removeAccountDraft(account)]),
+        [] as Promise<any>[],
+    );
     const promises = await Promise.all([
         db.removeItemByPK('devices', device.state),
         db.removeItemByIndex('accounts', 'deviceState', device.state),
@@ -183,12 +184,14 @@ export const rememberDevice = (
         .filter(d => d.deviceState === device.state)
         .map(serializeDiscovery);
 
-    const accountPromises = accounts.reduce((promises, account) => {
-        return promises.concat([
-            dispatch(saveAccountTransactions(account)),
-            dispatch(saveAccountDraft(account)),
-        ]);
-    }, [] as Promise<any>[]);
+    const accountPromises = accounts.reduce(
+        (promises, account) =>
+            promises.concat([
+                dispatch(saveAccountTransactions(account)),
+                dispatch(saveAccountDraft(account)),
+            ]),
+        [] as Promise<any>[],
+    );
 
     try {
         await Promise.all([

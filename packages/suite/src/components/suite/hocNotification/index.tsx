@@ -6,9 +6,9 @@ import withAction from './components/withAction';
 import withTransaction from './components/withTransaction';
 import { ViewProps } from './definitions';
 
-const simple = (View: React.ComponentType<ViewProps>, props: ViewProps) => {
-    return <View key={props.notification.id} {...props} />;
-};
+const simple = (View: React.ComponentType<ViewProps>, props: ViewProps) => (
+    <View key={props.notification.id} {...props} />
+);
 
 /**
  * HOC component for `state.notifications` views

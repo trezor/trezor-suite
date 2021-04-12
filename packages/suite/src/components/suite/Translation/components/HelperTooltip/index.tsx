@@ -25,10 +25,10 @@ export interface Props {
 /**
  * When translationMode is enabled wraps a message with a Tooltip and adds styling to provide visual hint for translators
  */
-const HelperTooltip = (props: Props) => {
+const HelperTooltip = (props: Props) =>
     // don't wrap with tooltip for messages that are nested in another message
     // fixes https://github.com/trezor/trezor-suite/issues/1509
-    return props.translationMode && !props.isNested ? (
+    props.translationMode && !props.isNested ? (
         <Tooltip
             placement="bottom"
             content={
@@ -45,6 +45,4 @@ const HelperTooltip = (props: Props) => {
     ) : (
         props.children
     );
-};
-
 export default HelperTooltip;

@@ -30,9 +30,7 @@ export const findRoute = (url: string) => {
     return routes.find(r => r.pattern === clean);
 };
 
-export const findRouteByName = (name: Route['name']) => {
-    return routes.find(r => r.name === name);
-};
+export const findRouteByName = (name: Route['name']) => routes.find(r => r.name === name);
 
 export const getApp = (url: string) => {
     const route = findRoute(url);

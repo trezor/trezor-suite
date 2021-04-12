@@ -50,9 +50,7 @@ type Props = ReturnType<typeof mapStateToProps> &
 const Log = (props: Props) => {
     const htmlElement = createRef<HTMLPreElement>();
 
-    const prettifyLog = (json: Record<any, any>) => {
-        return JSON.stringify(json, null, 2);
-    };
+    const prettifyLog = (json: Record<any, any>) => JSON.stringify(json, null, 2);
 
     const log = prettifyLog(props.getLog(props.log.excludeBalanceRelated));
 

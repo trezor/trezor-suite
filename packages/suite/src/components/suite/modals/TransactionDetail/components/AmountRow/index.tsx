@@ -45,23 +45,21 @@ const AmountRow = ({
     thirdColumn,
     fourthColumn,
     color = 'light',
-}: Props) => {
-    return (
-        <>
-            <Column textAlign="left" color="light">
-                {firstColumn}
-            </Column>
-            <Column textAlign="left" color={color}>
-                {secondColumn}
-            </Column>
-            <Column textAlign="right" color={color}>
-                {thirdColumn}
-            </Column>
-            <Column textAlign="right" color={color}>
-                {fourthColumn}
-            </Column>
-        </>
-    );
-};
+}: Props) => (
+    <>
+        <Column textAlign="left" color="light">
+            {firstColumn}
+        </Column>
+        <Column textAlign="left" color={color}>
+            {secondColumn}
+        </Column>
+        <Column textAlign="right" color={color}>
+            {thirdColumn}
+        </Column>
+        <Column textAlign="right" color={color}>
+            {fourthColumn}
+        </Column>
+    </>
+);
 
 export default AmountRow;

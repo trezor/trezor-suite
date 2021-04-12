@@ -66,14 +66,13 @@ const Firmware = ({ closeModalApp, resetReducer, firmware, device, modal }: Prop
         ['done', 'partially-done', 'error'],
     ];
 
-    const getCurrentStepIndex = () => {
-        return stepsInProgressBar.findIndex(s => {
+    const getCurrentStepIndex = () =>
+        stepsInProgressBar.findIndex(s => {
             if (Array.isArray(s)) {
                 return s.includes(firmware.status);
             }
             return s === firmware.status;
         });
-    };
 
     // some of the application states can be reused here.
     // some don't make sense handling here as they are handled somewhere up the tree

@@ -8,10 +8,10 @@ export const isStepInPath = (step: Step, path: AnyPath[]) => {
     if (path.length === 0) {
         return true;
     }
-    return path.every((pathMember: AnyPath) => {
+    return path.every((pathMember: AnyPath) =>
         // @ts-ignore
-        return step.path.some((stepPathMember: AnyPath) => stepPathMember === pathMember);
-    });
+        step.path.some((stepPathMember: AnyPath) => stepPathMember === pathMember),
+    );
 };
 
 export const findNextStep = (currentStepId: AnyStepId, steps: Step[]) => {

@@ -6,9 +6,7 @@ import { SuiteThemeVariant } from '@suite-types';
  * overrides only for simple utils and do not need to rewrite entire files
  * for example actions or middlewares
  */
-export const getUserAgent = () => {
-    return navigator.userAgent;
-};
+export const getUserAgent = () => navigator.userAgent;
 
 export const isAndroid = () => {
     if (typeof navigator === 'undefined') return;
@@ -31,33 +29,21 @@ export const isLinux = () => {
     return /Linux/.test(navigator.platform);
 };
 
-export const getScreenWidth = () => {
-    return window.screen.width;
-};
+export const getScreenWidth = () => window.screen.width;
 
-export const getScreenHeight = () => {
-    return window.screen.height;
-};
+export const getScreenHeight = () => window.screen.height;
 
-export const getPlatform = () => {
-    return window.navigator.platform;
-};
+export const getPlatform = () => window.navigator.platform;
 
-export const getPlatformLanguage = () => {
-    return window.navigator.language;
-};
+export const getPlatformLanguage = () => window.navigator.language;
 
 export const isWeb = () => process.env.SUITE_TYPE === 'web';
 
 export const isDesktop = () => process.env.SUITE_TYPE === 'desktop';
 
-export const getLocationOrigin = () => {
-    return window.location.origin;
-};
+export const getLocationOrigin = () => window.location.origin;
 
-export const getLocationHostname = () => {
-    return window.location.hostname;
-};
+export const getLocationHostname = () => window.location.hostname;
 
 export const submitRequestForm = async (
     formMethod: 'GET' | 'POST' | 'IFRAME',
@@ -116,6 +102,4 @@ export const getOSTheme = (): SuiteThemeVariant => {
     return 'light';
 };
 
-export const getOSVersion = () => {
-    return window.desktopApi?.getOSVersion();
-};
+export const getOSVersion = () => window.desktopApi?.getOSVersion();

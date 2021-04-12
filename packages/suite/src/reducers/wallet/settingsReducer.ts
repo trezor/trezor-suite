@@ -24,8 +24,8 @@ export const initialState: State = {
     blockbookUrls: [],
 };
 
-const settingsReducer = (state: State = initialState, action: Action): State => {
-    return produce(state, draft => {
+const settingsReducer = (state: State = initialState, action: Action): State =>
+    produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOADED:
                 return action.payload.wallet.settings;
@@ -72,6 +72,5 @@ const settingsReducer = (state: State = initialState, action: Action): State => 
             // no default
         }
     });
-};
 
 export default settingsReducer;

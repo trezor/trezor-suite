@@ -140,39 +140,35 @@ const Fiat = ({ output, outputId }: Props) => {
                         control={control}
                         name={currencyInputName}
                         defaultValue={currencyValue}
-                        render={({ onChange, value }) => {
-                            return (
-                                <Select
-                                    options={buildCurrencyOptions()}
-                                    value={value}
-                                    isClearable={false}
-                                    isSearchable
-                                    hideTextCursor
-                                    minWidth="58px"
-                                    isClean
-                                    data-test={currencyInputName}
-                                    onChange={(selected: CurrencyOption) => {
-                                        // propagate changes to FormState
-                                        onChange(selected);
-                                        // calculate Amount value
-                                        const rate = getFiatRate(fiatRates, selected.value);
-                                        const amountValue = new BigNumber(
-                                            getDefaultValue(amountInputName, ''),
-                                        );
-                                        if (rate && amountValue && !amountValue.isNaN()) {
-                                            const fiatValueBigNumber = amountValue.multipliedBy(
-                                                rate,
-                                            );
-                                            setValue(inputName, fiatValueBigNumber.toFixed(2), {
-                                                shouldValidate: true,
-                                            });
-                                            // call compose to store draft, precomposedTx should be the same
-                                            composeTransaction(amountInputName);
-                                        }
-                                    }}
-                                />
-                            );
-                        }}
+                        render={({ onChange, value }) => (
+                            <Select
+                                options={buildCurrencyOptions()}
+                                value={value}
+                                isClearable={false}
+                                isSearchable
+                                hideTextCursor
+                                minWidth="58px"
+                                isClean
+                                data-test={currencyInputName}
+                                onChange={(selected: CurrencyOption) => {
+                                    // propagate changes to FormState
+                                    onChange(selected);
+                                    // calculate Amount value
+                                    const rate = getFiatRate(fiatRates, selected.value);
+                                    const amountValue = new BigNumber(
+                                        getDefaultValue(amountInputName, ''),
+                                    );
+                                    if (rate && amountValue && !amountValue.isNaN()) {
+                                        const fiatValueBigNumber = amountValue.multipliedBy(rate);
+                                        setValue(inputName, fiatValueBigNumber.toFixed(2), {
+                                            shouldValidate: true,
+                                        });
+                                        // call compose to store draft, precomposedTx should be the same
+                                        composeTransaction(amountInputName);
+                                    }
+                                }}
+                            />
+                        )}
                     />
                 }
             />

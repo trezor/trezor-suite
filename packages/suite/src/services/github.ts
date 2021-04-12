@@ -30,9 +30,8 @@ const getDeviceInfo = (device?: TrezorDevice) => {
     }`;
 };
 
-const getSuiteInfo = () => {
-    return `${isDesktop() ? 'desktop' : 'web'} ${process.env.VERSION} (${process.env.COMMITHASH})`;
-};
+const getSuiteInfo = () =>
+    `${isDesktop() ? 'desktop' : 'web'} ${process.env.VERSION} (${process.env.COMMITHASH})`;
 
 export const openGithubIssue = (device?: TrezorDevice) => {
     const url = new URL(`${RELEASE_URL}/issues/new`);

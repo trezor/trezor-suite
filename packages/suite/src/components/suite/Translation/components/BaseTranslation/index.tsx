@@ -31,9 +31,8 @@ export interface ExtendedMessageDescriptor extends MessageDescriptor {
 }
 type MsgType = OwnProps & ExtendedMessageDescriptor;
 
-export const isMsgType = (props: MsgType | React.ReactNode): props is MsgType => {
-    return typeof props === 'object' && props !== null && (props as MsgType).id !== undefined;
-};
+export const isMsgType = (props: MsgType | React.ReactNode): props is MsgType =>
+    typeof props === 'object' && props !== null && (props as MsgType).id !== undefined;
 
 const BaseTranslation = (props: MsgType) => {
     const TooltipComponent = props.translationTooltip;

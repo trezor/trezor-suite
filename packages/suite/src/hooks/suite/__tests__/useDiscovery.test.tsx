@@ -8,14 +8,12 @@ import suiteReducer from '@suite-reducers/suiteReducer';
 import { useDiscovery } from '../useDiscovery';
 import { actions } from '../__fixtures__/useDiscovery';
 
-export const getInitialState = (action: any = { type: 'initial' }) => {
-    return {
-        wallet: {
-            discovery: discoveryReducer(undefined, action),
-        },
-        suite: suiteReducer(undefined, action),
-    };
-};
+export const getInitialState = (action: any = { type: 'initial' }) => ({
+    wallet: {
+        discovery: discoveryReducer(undefined, action),
+    },
+    suite: suiteReducer(undefined, action),
+});
 
 type State = ReturnType<typeof getInitialState>;
 const mockStore = configureStore<State, any>([thunk]);

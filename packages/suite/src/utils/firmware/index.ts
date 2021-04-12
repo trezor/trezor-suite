@@ -1,7 +1,7 @@
 import { AppState } from '@suite-types';
 
-export const getFormattedFingerprint = (fingerprint: string) => {
-    return [
+export const getFormattedFingerprint = (fingerprint: string) =>
+    [
         fingerprint.substr(0, 16),
         fingerprint.substr(16, 16),
         fingerprint.substr(32, 16),
@@ -9,7 +9,6 @@ export const getFormattedFingerprint = (fingerprint: string) => {
     ]
         .join('\n')
         .toUpperCase();
-};
 
 export const getTextForStatus = (status: AppState['firmware']['status']) => {
     switch (status) {

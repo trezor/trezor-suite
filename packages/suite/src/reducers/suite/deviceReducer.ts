@@ -13,14 +13,12 @@ const initialState: State = [];
  * @param {Partial<AcquiredDevice>} upcoming
  * @returns {TrezorDevice}
  */
-const merge = (device: AcquiredDevice, upcoming: Partial<AcquiredDevice>): TrezorDevice => {
-    return {
-        ...device,
-        ...upcoming,
-        state: device.state,
-        instance: device.instance,
-    };
-};
+const merge = (device: AcquiredDevice, upcoming: Partial<AcquiredDevice>): TrezorDevice => ({
+    ...device,
+    ...upcoming,
+    state: device.state,
+    instance: device.instance,
+});
 
 /**
  * Action handler: DEVICE.CONNECT + DEVICE.CONNECT_UNACQUIRED
@@ -409,8 +407,8 @@ const updateMetadata = (draft: State, state: string, walletLabel?: string) => {
     metadata.walletLabel = walletLabel;
 };
 
-const deviceReducer = (state: State = initialState, action: Action): State => {
-    return produce(state, draft => {
+const deviceReducer = (state: State = initialState, action: Action): State =>
+    produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOADED:
                 return action.payload.devices;
@@ -464,6 +462,5 @@ const deviceReducer = (state: State = initialState, action: Action): State => {
             // no default
         }
     });
-};
 
 export default deviceReducer;

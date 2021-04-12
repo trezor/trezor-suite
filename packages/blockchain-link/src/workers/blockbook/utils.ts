@@ -19,17 +19,15 @@ import {
 
 import { Utxo } from '../../types/responses';
 
-export const transformServerInfo = (payload: ServerInfo) => {
-    return {
-        name: payload.name,
-        shortcut: payload.shortcut,
-        testnet: payload.testnet,
-        version: payload.version,
-        decimals: payload.decimals,
-        blockHeight: payload.bestHeight,
-        blockHash: payload.bestHash,
-    };
-};
+export const transformServerInfo = (payload: ServerInfo) => ({
+    name: payload.name,
+    shortcut: payload.shortcut,
+    testnet: payload.testnet,
+    version: payload.version,
+    decimals: payload.decimals,
+    blockHeight: payload.bestHeight,
+    blockHash: payload.bestHash,
+});
 
 type Addresses = (Address | string)[] | string;
 
@@ -105,16 +103,14 @@ export const filterTokenTransfers = (
         });
 };
 
-const transformTarget = (target: VinVout, incoming: VinVout[]) => {
-    return {
-        n: target.n || 0,
-        addresses: target.addresses,
-        isAddress: target.isAddress,
-        amount: target.value,
-        coinbase: target.coinbase,
-        isAccountTarget: incoming.includes(target) ? true : undefined,
-    };
-};
+const transformTarget = (target: VinVout, incoming: VinVout[]) => ({
+    n: target.n || 0,
+    addresses: target.addresses,
+    isAddress: target.isAddress,
+    amount: target.value,
+    coinbase: target.coinbase,
+    isAccountTarget: incoming.includes(target) ? true : undefined,
+});
 
 const sumVinVout = (
     vinVout: VinVout[],
@@ -356,8 +352,8 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
     };
 };
 
-export const transformAccountUtxo = (payload: BlockbookAccountUtxo): Utxo[] => {
-    return payload.map(utxo => ({
+export const transformAccountUtxo = (payload: BlockbookAccountUtxo): Utxo[] =>
+    payload.map(utxo => ({
         txid: utxo.txid,
         vout: utxo.vout,
         amount: utxo.value,
@@ -367,4 +363,3 @@ export const transformAccountUtxo = (payload: BlockbookAccountUtxo): Utxo[] => {
         confirmations: utxo.confirmations,
         coinbase: utxo.coinbase,
     }));
-};

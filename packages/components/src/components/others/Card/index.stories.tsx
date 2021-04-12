@@ -17,21 +17,19 @@ const Text = styled.div`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
-storiesOf('Others', module).add('Card', () => {
-    return (
-        <Wrapper>
-            <StyledCard>
-                <Text>basic card</Text>
-            </StyledCard>
-            <StyledCard noPadding>
-                <Text>Card with noPadding</Text>
-            </StyledCard>
-            <StyledCard largePadding>
-                <Text>Card with largePadding</Text>
-            </StyledCard>
-            <StyledCard noVerticalPadding>
-                <Text>Card with noVerticalPadding</Text>
-            </StyledCard>
-        </Wrapper>
-    );
-});
+storiesOf('Others', module).add('Card', () => (
+    <Wrapper>
+        <StyledCard>
+            <Text>basic card</Text>
+        </StyledCard>
+        <StyledCard noPadding>
+            <Text>Card with noPadding</Text>
+        </StyledCard>
+        <StyledCard largePadding>
+            <Text>Card with largePadding</Text>
+        </StyledCard>
+        <StyledCard noVerticalPadding>
+            <Text>Card with noVerticalPadding</Text>
+        </StyledCard>
+    </Wrapper>
+));

@@ -107,13 +107,15 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
 
     const connectState = selectedDevice?.connected;
 
-    useEffect(() => {
-        // clear animation timers on unmount
-        return () => {
-            if (shakeAnimationTimerRef.current) clearTimeout(shakeAnimationTimerRef.current);
-            if (stateAnimationTimerRef.current) clearTimeout(stateAnimationTimerRef.current);
-        };
-    }, []);
+    useEffect(
+        () =>
+            // clear animation timers on unmount
+            () => {
+                if (shakeAnimationTimerRef.current) clearTimeout(shakeAnimationTimerRef.current);
+                if (stateAnimationTimerRef.current) clearTimeout(stateAnimationTimerRef.current);
+            },
+        [],
+    );
 
     useEffect(() => {
         // update previous device count

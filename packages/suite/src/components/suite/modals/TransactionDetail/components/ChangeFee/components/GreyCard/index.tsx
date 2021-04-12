@@ -12,8 +12,6 @@ const Wrapper = styled(Card)`
     margin-top: 12px;
 `;
 
-const GreyCard = (props: { children?: React.ReactNode }) => {
-    return <Wrapper>{props.children}</Wrapper>;
-};
+const GreyCard = (props: { children?: React.ReactNode }) => <Wrapper>{props.children}</Wrapper>;
 
 export default GreyCard;

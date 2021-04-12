@@ -36,30 +36,28 @@ interface Props {
     method?: BuyCryptoPaymentMethod;
 }
 
-const CoinmarketPaymentType = ({ method }: Props) => {
-    return (
-        <Wrapper>
-            {!method && (
-                <Text>
-                    <Translation id="TR_PAYMENT_METHOD_UNKOWN" />
-                </Text>
-            )}
-            {method && (
-                <>
-                    <IconWrapper>
-                        <Bg>
-                            <Icon
-                                width="24px"
-                                src={`${invityApi.server}/images/paymentMethods/suite/${method}.svg`}
-                            />
-                        </Bg>
-                    </IconWrapper>
-                    {/* temporary solution - payment mehtod name will be returned by API server to be independent on translations */}
-                    <Translation id={`TR_PAYMENT_METHOD_${method.toUpperCase()}` as any} />
-                </>
-            )}
-        </Wrapper>
-    );
-};
+const CoinmarketPaymentType = ({ method }: Props) => (
+    <Wrapper>
+        {!method && (
+            <Text>
+                <Translation id="TR_PAYMENT_METHOD_UNKOWN" />
+            </Text>
+        )}
+        {method && (
+            <>
+                <IconWrapper>
+                    <Bg>
+                        <Icon
+                            width="24px"
+                            src={`${invityApi.server}/images/paymentMethods/suite/${method}.svg`}
+                        />
+                    </Bg>
+                </IconWrapper>
+                {/* temporary solution - payment mehtod name will be returned by API server to be independent on translations */}
+                <Translation id={`TR_PAYMENT_METHOD_${method.toUpperCase()}` as any} />
+            </>
+        )}
+    </Wrapper>
+);
 
 export default CoinmarketPaymentType;

@@ -91,13 +91,12 @@ const getExchangeTradeData = (status: ExchangeTradeStatus, theme: SuiteThemeColo
     }
 };
 
-const getSpendTradeData = (theme: SuiteThemeColors) => {
-    return {
+const getSpendTradeData = (theme: SuiteThemeColors) =>
+    ({
         icon: 'CHECK',
         color: theme.TYPE_GREEN,
         statusMessageId: 'TR_SPEND_STATUS_FINISHED',
-    } as const;
-};
+    } as const);
 
 type StatusData =
     | ReturnType<typeof getBuyTradeData>

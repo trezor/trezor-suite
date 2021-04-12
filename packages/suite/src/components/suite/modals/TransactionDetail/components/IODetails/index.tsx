@@ -69,25 +69,23 @@ const IODetails = ({ tx }: Props) => {
                             <Translation id="TR_INPUTS" />
                         </IORowTitle>
 
-                        {tx.details.vin.map(input => {
-                            return (
-                                <IORow key={input.n}>
-                                    {network?.networkType !== 'ethereum' && (
-                                        // don't show input amount in ethereum
-                                        // consider faking it by showing the same value os the output
-                                        <CryptoAmountWrapper>
-                                            <FormattedCryptoAmount
-                                                value={input.value}
-                                                symbol={tx.symbol}
-                                                disableHiddenPlaceholder
-                                            />
-                                            <Circle>&bull;</Circle>
-                                        </CryptoAmountWrapper>
-                                    )}
-                                    <Address>{input.addresses?.map(addr => addr)}</Address>
-                                </IORow>
-                            );
-                        })}
+                        {tx.details.vin.map(input => (
+                            <IORow key={input.n}>
+                                {network?.networkType !== 'ethereum' && (
+                                    // don't show input amount in ethereum
+                                    // consider faking it by showing the same value os the output
+                                    <CryptoAmountWrapper>
+                                        <FormattedCryptoAmount
+                                            value={input.value}
+                                            symbol={tx.symbol}
+                                            disableHiddenPlaceholder
+                                        />
+                                        <Circle>&bull;</Circle>
+                                    </CryptoAmountWrapper>
+                                )}
+                                <Address>{input.addresses?.map(addr => addr)}</Address>
+                            </IORow>
+                        ))}
                     </IOBox>
 
                     <IconWrapper>
@@ -98,20 +96,18 @@ const IODetails = ({ tx }: Props) => {
                         <IORowTitle>
                             <Translation id="TR_OUTPUTS" />
                         </IORowTitle>
-                        {tx.details.vout.map(output => {
-                            return (
-                                <IORow key={output.n}>
-                                    <CryptoAmountWrapper>
-                                        <FormattedCryptoAmount
-                                            value={output.value}
-                                            symbol={tx.symbol}
-                                        />
-                                        <Circle>&bull;</Circle>
-                                    </CryptoAmountWrapper>
-                                    <Address>{output.addresses?.map(addr => addr)}</Address>
-                                </IORow>
-                            );
-                        })}
+                        {tx.details.vout.map(output => (
+                            <IORow key={output.n}>
+                                <CryptoAmountWrapper>
+                                    <FormattedCryptoAmount
+                                        value={output.value}
+                                        symbol={tx.symbol}
+                                    />
+                                    <Circle>&bull;</Circle>
+                                </CryptoAmountWrapper>
+                                <Address>{output.addresses?.map(addr => addr)}</Address>
+                            </IORow>
+                        ))}
                     </IOBox>
                 </IOWrapper>
             )}

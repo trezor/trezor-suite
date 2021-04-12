@@ -17,8 +17,8 @@ export const initialState: State = {
     sessionStart: undefined,
 };
 
-const analyticsReducer = (state: State = initialState, action: Action): State => {
-    return produce(state, draft => {
+const analyticsReducer = (state: State = initialState, action: Action): State =>
+    produce(state, draft => {
         switch (action.type) {
             case ANALYTICS.INIT:
                 draft.enabled = action.payload.enabled;
@@ -35,6 +35,5 @@ const analyticsReducer = (state: State = initialState, action: Action): State =>
             // no default
         }
     });
-};
 
 export default analyticsReducer;

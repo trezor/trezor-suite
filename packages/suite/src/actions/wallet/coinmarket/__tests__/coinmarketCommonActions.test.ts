@@ -7,12 +7,10 @@ import { DEFAULT_STORE } from '../__fixtures__/coinmarketCommonActions/store';
 import { VERIFY_ADDRESS_FIXTURES } from '../__fixtures__/coinmarketCommonActions/verifyAddress';
 import transactionReducer from '@wallet-reducers/transactionReducer';
 
-export const getInitialState = (initial = {}) => {
-    return {
-        ...DEFAULT_STORE,
-        ...initial,
-    };
-};
+export const getInitialState = (initial = {}) => ({
+    ...DEFAULT_STORE,
+    ...initial,
+});
 type State = ReturnType<typeof getInitialState>;
 
 const mockStore = configureStore<State, any>([thunk]);
@@ -79,12 +77,8 @@ jest.mock('trezor-connect', () => {
             ethereumGetAddress: getAddress,
             rippleGetAddress: getAddress,
             // eslint-disable-next-line require-await
-            composeTransaction: jest.fn(async _params => {
-                return getNextFixture();
-            }),
-            blockchainEstimateFee: () => {
-                return getNextFixture();
-            },
+            composeTransaction: jest.fn(async _params => getNextFixture()),
+            blockchainEstimateFee: () => getNextFixture(),
         },
         setTestFixtures: (f: any) => {
             fixture = f;

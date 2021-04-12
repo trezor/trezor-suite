@@ -160,15 +160,14 @@ class Crowdin {
         Creates a new branch in Crowdin service
         https://support.crowdin.com/api/add-file/
     */
-    createBranch = (branch: string) => {
-        return request.post(`https://api.crowdin.com/api/project/${this.projectId}/add-directory`, {
+    createBranch = (branch: string) =>
+        request.post(`https://api.crowdin.com/api/project/${this.projectId}/add-directory`, {
             qs: {
                 ...this.access,
                 is_branch: 1,
                 name: branch,
             },
         });
-    };
 }
 
 export default Crowdin;

@@ -13,36 +13,32 @@ import suiteMiddleware from '@suite-middlewares/suiteMiddleware';
 import routes from '@suite-constants/routes';
 import { Action } from '@suite-types';
 
-jest.mock('next/router', () => {
-    return {
-        __esModule: true, // this property makes it work
-        default: {
-            push: () => {},
-            pathname: '/',
-        },
-    };
-});
+jest.mock('next/router', () => ({
+    __esModule: true, // this property makes it work
+    default: {
+        push: () => {},
+        pathname: '/',
+    },
+}));
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
 
-export const getInitialState = (router?: RouterState, suite?: Partial<SuiteState>) => {
-    return {
-        router: {
-            ...routerReducer(undefined, { type: 'foo' } as any),
-            ...router,
-        },
-        suite: {
-            ...suiteReducer(undefined, { type: 'foo' } as any),
-            ...suite,
-        },
-        modal: modalReducer(undefined, { type: 'foo' } as any),
-        analytics: analyticsReducer(undefined, {
-            type: ANALYTICS.INIT,
-            payload: { instanceId: '1', sessionId: '2', enabled: false, sessionStart: 1 },
-        }),
-    };
-};
+export const getInitialState = (router?: RouterState, suite?: Partial<SuiteState>) => ({
+    router: {
+        ...routerReducer(undefined, { type: 'foo' } as any),
+        ...router,
+    },
+    suite: {
+        ...suiteReducer(undefined, { type: 'foo' } as any),
+        ...suite,
+    },
+    modal: modalReducer(undefined, { type: 'foo' } as any),
+    analytics: analyticsReducer(undefined, {
+        type: ANALYTICS.INIT,
+        payload: { instanceId: '1', sessionId: '2', enabled: false, sessionStart: 1 },
+    }),
+});
 
 type State = ReturnType<typeof getInitialState>;
 

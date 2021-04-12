@@ -39,8 +39,8 @@ const addToStack = (stack: LogEntry[], entry: LogEntry) => {
     }
 };
 
-const logReducer = (state: State = initialState, action: Action): State => {
-    return produce(state, draft => {
+const logReducer = (state: State = initialState, action: Action): State =>
+    produce(state, draft => {
         switch (action.type) {
             case LOG.ADD:
                 // idk what is going on with this type. WTF related to ActionLogEntry
@@ -54,6 +54,5 @@ const logReducer = (state: State = initialState, action: Action): State => {
             // no default
         }
     });
-};
 
 export default logReducer;

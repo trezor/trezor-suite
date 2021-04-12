@@ -50,12 +50,10 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
  * Check if router is not locked
  * Called from `goto`, `onLocationChange` and `back`
  */
-const isRouterUnlocked = () => (_dispatch: Dispatch, _getState: GetState) => {
+const isRouterUnlocked = () => (_dispatch: Dispatch, _getState: GetState) =>
     // const { locks } = getState().suite;
     // return !locks.includes(SUITE.LOCK_TYPE.ROUTER) && !locks.includes(SUITE.LOCK_TYPE.UI);
-    return true;
-};
-
+    true;
 /**
  * Handle changes of Navigation state
  * Called from `@native/support/suite/Router`

@@ -11,25 +11,19 @@ import onboardingMiddlewares from '@onboarding-middlewares';
 
 const middlewares = [...onboardingMiddlewares];
 
-jest.mock('next/router', () => {
-    return {
-        __esModule: true, // this property makes it work
-        default: {
-            push: () => {},
-        },
-    };
-});
+jest.mock('next/router', () => ({
+    __esModule: true, // this property makes it work
+    default: {
+        push: () => {},
+    },
+}));
 
-jest.mock('@trezor/suite-storage', () => {
-    return {
-        __esModule: true, // this property makes it work
-        default: () => {},
-    };
-});
+jest.mock('@trezor/suite-storage', () => ({
+    __esModule: true, // this property makes it work
+    default: () => {},
+}));
 
-jest.mock('@suite-actions/storageActions', () => {
-    return { __esModule: true };
-});
+jest.mock('@suite-actions/storageActions', () => ({ __esModule: true }));
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type RouterState = ReturnType<typeof routerReducer>;
@@ -39,23 +33,21 @@ export const getInitialState = (
     router?: RouterState,
     suite?: Partial<SuiteState>,
     onboarding?: Partial<OnboardingState>,
-) => {
-    return {
-        suite: {
-            ...suiteReducer(undefined, { type: 'foo' } as any),
-            ...suite,
-        },
-        router: {
-            ...routerReducer(undefined, { type: 'foo' } as any),
-            ...router,
-        },
-        onboarding: {
-            ...onboardingReducer(undefined, { type: 'foo' } as any),
-            ...onboarding,
-        },
-        modal: modalReducer(undefined, { type: 'foo' } as any),
-    };
-};
+) => ({
+    suite: {
+        ...suiteReducer(undefined, { type: 'foo' } as any),
+        ...suite,
+    },
+    router: {
+        ...routerReducer(undefined, { type: 'foo' } as any),
+        ...router,
+    },
+    onboarding: {
+        ...onboardingReducer(undefined, { type: 'foo' } as any),
+        ...onboarding,
+    },
+    modal: modalReducer(undefined, { type: 'foo' } as any),
+});
 
 type State = ReturnType<typeof getInitialState>;
 

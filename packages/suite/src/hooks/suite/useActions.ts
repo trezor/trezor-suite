@@ -6,7 +6,5 @@ import { Dispatch } from '@suite-types';
 export const useActions = <M extends ActionCreatorsMapObject<any>>(actions: M) => {
     const dispatch = useDispatch<Dispatch>();
     const ref = useRef(actions);
-    return useMemo(() => {
-        return bindActionCreators(ref.current, dispatch);
-    }, [dispatch, ref]);
+    return useMemo(() => bindActionCreators(ref.current, dispatch), [dispatch, ref]);
 };

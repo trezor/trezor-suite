@@ -73,32 +73,30 @@ const TokenSelect = ({ output, outputId }: Props) => {
             name={tokenInputName}
             data-test={tokenInputName}
             defaultValue={tokenValue}
-            render={({ onChange }) => {
-                return (
-                    <Select
-                        options={options}
-                        isSearchable
-                        isDisabled={options.length === 1} // disable when account has no tokens to choose from
-                        hideTextCursor
-                        value={options.find(o => o.value === tokenValue)}
-                        isClearable={false}
-                        minWidth="58px"
-                        isClean
-                        onChange={(selected: Option) => {
-                            // change selected value
-                            onChange(selected.value);
-                            // clear errors in Amount input
-                            clearErrors(amountInputName);
-                            // remove Amount if isSetMaxActive or ETH data options are enabled
-                            if (isSetMaxActive || dataEnabled) setAmount(outputId, '');
-                            // remove ETH data option
-                            if (dataEnabled) toggleOption('ethereumData');
-                            // compose (could be prevented because of Amount error from re-validation above)
-                            composeTransaction(amountInputName);
-                        }}
-                    />
-                );
-            }}
+            render={({ onChange }) => (
+                <Select
+                    options={options}
+                    isSearchable
+                    isDisabled={options.length === 1} // disable when account has no tokens to choose from
+                    hideTextCursor
+                    value={options.find(o => o.value === tokenValue)}
+                    isClearable={false}
+                    minWidth="58px"
+                    isClean
+                    onChange={(selected: Option) => {
+                        // change selected value
+                        onChange(selected.value);
+                        // clear errors in Amount input
+                        clearErrors(amountInputName);
+                        // remove Amount if isSetMaxActive or ETH data options are enabled
+                        if (isSetMaxActive || dataEnabled) setAmount(outputId, '');
+                        // remove ETH data option
+                        if (dataEnabled) toggleOption('ethereumData');
+                        // compose (could be prevented because of Amount error from re-validation above)
+                        composeTransaction(amountInputName);
+                    }}
+                />
+            )}
         />
     );
 };

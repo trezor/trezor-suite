@@ -59,9 +59,8 @@ const addPath = (path: AnyPath, state: OnboardingState) => {
     return [...state.path];
 };
 
-const removePath = (paths: AnyPath[], state: OnboardingState) => {
-    return state.path.filter(p => !paths.includes(p));
-};
+const removePath = (paths: AnyPath[], state: OnboardingState) =>
+    state.path.filter(p => !paths.includes(p));
 
 const onboarding = (state: OnboardingState = initialState, action: Action) => {
     if (

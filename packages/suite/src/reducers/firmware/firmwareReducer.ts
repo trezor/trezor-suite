@@ -44,8 +44,8 @@ const initialState: FirmwareUpdateState = {
     prevDevice: undefined,
 };
 
-const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Action) => {
-    return produce(state, draft => {
+const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Action) =>
+    produce(state, draft => {
         switch (action.type) {
             case FIRMWARE.SET_UPDATE_STATUS:
                 draft.status = action.payload;
@@ -85,6 +85,5 @@ const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Actio
             // no default
         }
     });
-};
 
 export default firmwareUpdate;

@@ -73,9 +73,8 @@ export const useInvityAPI = () => {
 
 const BuyTradeFinalStatuses: BuyTradeStatus[] = ['SUCCESS', 'ERROR', 'BLOCKED'];
 
-const shouldRefreshBuyTrade = (trade?: TradeBuy) => {
-    return trade && trade.data.status && !BuyTradeFinalStatuses.includes(trade.data.status);
-};
+const shouldRefreshBuyTrade = (trade?: TradeBuy) =>
+    trade && trade.data.status && !BuyTradeFinalStatuses.includes(trade.data.status);
 
 export const useWatchBuyTrade = (account: Account, trade: TradeBuy) => {
     const REFRESH_SECONDS = 30;
@@ -114,9 +113,8 @@ export const useWatchBuyTrade = (account: Account, trade: TradeBuy) => {
 
 export const ExchangeTradeFinalStatuses: ExchangeTradeStatus[] = ['SUCCESS', 'ERROR', 'KYC'];
 
-const shouldRefreshExchangeTrade = (trade?: TradeExchange) => {
-    return trade && trade.data.status && !ExchangeTradeFinalStatuses.includes(trade.data.status);
-};
+const shouldRefreshExchangeTrade = (trade?: TradeExchange) =>
+    trade && trade.data.status && !ExchangeTradeFinalStatuses.includes(trade.data.status);
 
 export const useWatchExchangeTrade = (account: Account, trade: TradeExchange) => {
     const REFRESH_SECONDS = 30;

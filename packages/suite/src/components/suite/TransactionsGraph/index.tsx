@@ -172,11 +172,11 @@ const TransactionsGraph = React.memo((props: Props) => {
                             {props.variant === 'one-asset' && (
                                 <Line
                                     type="linear"
-                                    dataKey={(data: any) => {
-                                        return selectedView === 'log'
+                                    dataKey={(data: any) =>
+                                        selectedView === 'log'
                                             ? Number(props.balanceValueFn(data)) || yDomain[0]
-                                            : Number(props.balanceValueFn(data));
-                                    }}
+                                            : Number(props.balanceValueFn(data))
+                                    }
                                     stroke={theme.TYPE_ORANGE}
                                     dot={false}
                                     activeDot={false}

@@ -70,6 +70,4 @@ if (buildUtils.isDev()) {
 
 const composedEnhancers = compose(applyMiddleware(...middlewares), ...enhancers);
 
-export const initStore = () => {
-    return createStore(rootReducer, composedEnhancers);
-};
+export const initStore = () => createStore(rootReducer, composedEnhancers);

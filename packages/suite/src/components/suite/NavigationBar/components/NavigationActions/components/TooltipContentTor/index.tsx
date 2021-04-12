@@ -53,27 +53,25 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     action: () => void;
 }
 
-const TooltipContentTor = (props: Props) => {
-    return (
-        <Wrapper>
-            {props.active && (
-                <WrapperNotification>
-                    <Notification>
-                        <NotificationOuterCircle />
-                        <NotificationInnerCircle />
-                    </Notification>
-                </WrapperNotification>
-            )}
-            <WrapperRest>
-                <Translation id="TR_TOR" />{' '}
-                {props.active ? <Translation id="TR_ACTIVE" /> : <Translation id="TR_INACTIVE" />} (
-                <NavigationLink onClick={props.action}>
-                    <Translation id="TR_MANAGE" />
-                </NavigationLink>
-                )
-            </WrapperRest>
-        </Wrapper>
-    );
-};
+const TooltipContentTor = (props: Props) => (
+    <Wrapper>
+        {props.active && (
+            <WrapperNotification>
+                <Notification>
+                    <NotificationOuterCircle />
+                    <NotificationInnerCircle />
+                </Notification>
+            </WrapperNotification>
+        )}
+        <WrapperRest>
+            <Translation id="TR_TOR" />{' '}
+            {props.active ? <Translation id="TR_ACTIVE" /> : <Translation id="TR_INACTIVE" />} (
+            <NavigationLink onClick={props.action}>
+                <Translation id="TR_MANAGE" />
+            </NavigationLink>
+            )
+        </WrapperRest>
+    </Wrapper>
+);
 
 export default TooltipContentTor;

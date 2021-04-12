@@ -22,9 +22,8 @@ const ResetDeviceStep = () => {
         return null;
     }
 
-    const isShamirBackupAvailable = () => {
-        return device.features?.capabilities?.includes('Capability_Shamir');
-    };
+    const isShamirBackupAvailable = () =>
+        device.features?.capabilities?.includes('Capability_Shamir');
 
     return (
         <Wrapper.Step>

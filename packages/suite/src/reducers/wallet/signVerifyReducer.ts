@@ -29,8 +29,8 @@ export const initialState: State = {
     errors: [],
 };
 
-const signVerifyReducer = (state: State = initialState, action: WalletAction): State => {
-    return produce(state, draft => {
+const signVerifyReducer = (state: State = initialState, action: WalletAction): State =>
+    produce(state, draft => {
         switch (action.type) {
             case SIGN_VERIFY.SIGN_SUCCESS:
                 draft.signSignature = action.signSignature;
@@ -76,6 +76,5 @@ const signVerifyReducer = (state: State = initialState, action: WalletAction): S
             // no default
         }
     });
-};
 
 export default signVerifyReducer;

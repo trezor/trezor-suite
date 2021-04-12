@@ -25,41 +25,31 @@ export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     ...feat,
 });
 
-const getRelease = (model: 1 | 2) => {
-    return {
-        required: false,
-        version: [model, 0, 0],
-        min_bridge_version: [2, 0, 25],
-        min_firmware_version: [model, 0, 0],
-        min_bootloader_version: [model, 0, 0],
-        url: 'data/firmware/1/trezor-1.8.1.bin',
-        fingerprint: '019e849c1eb285a03a92bbad6d18a328af3b4dc6999722ebb47677b403a4cd16',
-        changelog: '* Fix fault when using the device with no PIN* Fix OMNI transactions parsing',
-    };
-};
+const getRelease = (model: 1 | 2) => ({
+    required: false,
+    version: [model, 0, 0],
+    min_bridge_version: [2, 0, 25],
+    min_firmware_version: [model, 0, 0],
+    min_bootloader_version: [model, 0, 0],
+    url: 'data/firmware/1/trezor-1.8.1.bin',
+    fingerprint: '019e849c1eb285a03a92bbad6d18a328af3b4dc6999722ebb47677b403a4cd16',
+    changelog: '* Fix fault when using the device with no PIN* Fix OMNI transactions parsing',
+});
 
-const getReleaseT1 = (release: any): Release => {
-    return {
-        ...getRelease(1),
-        bootloader_version: [1, 0, 0],
-        ...release,
-    };
-};
+const getReleaseT1 = (release: any): Release => ({
+    ...getRelease(1),
+    bootloader_version: [1, 0, 0],
+    ...release,
+});
 
-const getReleaseT2 = (release: any): Release => {
-    return {
-        ...getRelease(2),
-        ...release,
-    };
-};
+const getReleaseT2 = (release: any): Release => ({
+    ...getRelease(2),
+    ...release,
+});
 
-const getReleasesT1 = (releases: Partial<Release>[]) => {
-    return releases.map(r => getReleaseT1(r));
-};
+const getReleasesT1 = (releases: Partial<Release>[]) => releases.map(r => getReleaseT1(r));
 
-const getReleasesT2 = (releases: Partial<Release>[]) => {
-    return releases.map(r => getReleaseT2(r));
-};
+const getReleasesT2 = (releases: Partial<Release>[]) => releases.map(r => getReleaseT2(r));
 
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace

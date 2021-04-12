@@ -15,8 +15,8 @@ export const initialState: State = {
     searchString: undefined,
 };
 
-const accountSearchReducer = (state: State = initialState, action: Action): State => {
-    return produce(state, draft => {
+const accountSearchReducer = (state: State = initialState, action: Action): State =>
+    produce(state, draft => {
         switch (action.type) {
             case ACCOUNT_SEARCH.SET_SEARCH_STRING:
                 draft.searchString = action.payload;
@@ -37,6 +37,5 @@ const accountSearchReducer = (state: State = initialState, action: Action): Stat
             // no default
         }
     });
-};
 
 export default accountSearchReducer;

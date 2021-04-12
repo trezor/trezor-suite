@@ -21,23 +21,21 @@ export const getInitialState = (
     router?: Partial<RouterState>,
     firmware?: Partial<FirmwareState>,
     suite?: Partial<SuiteState>,
-) => {
-    return {
-        firmware: {
-            ...firmwareReducer(undefined, { type: FIRMWARE.RESET_REDUCER }),
-            ...firmware,
-        },
-        router: {
-            ...routerReducer(undefined, { type: 'foo' } as any),
-            ...router,
-        },
-        suite: {
-            ...suiteReducer(undefined, { type: 'foo' } as any),
-            ...suite,
-        },
-        modal: modalReducer(undefined, { type: 'foo' } as any),
-    };
-};
+) => ({
+    firmware: {
+        ...firmwareReducer(undefined, { type: FIRMWARE.RESET_REDUCER }),
+        ...firmware,
+    },
+    router: {
+        ...routerReducer(undefined, { type: 'foo' } as any),
+        ...router,
+    },
+    suite: {
+        ...suiteReducer(undefined, { type: 'foo' } as any),
+        ...suite,
+    },
+    modal: modalReducer(undefined, { type: 'foo' } as any),
+});
 
 type State = ReturnType<typeof getInitialState>;
 
