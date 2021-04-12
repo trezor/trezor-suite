@@ -26,6 +26,30 @@ const blockbookTx = {
     hex: '02000000010000000000000000000000000000000000000000000000000000000000000000ffffffff2503a4f617041fba365d2f4d696e65642042792048454c4c4f2fffffffffafcb4c0000000000ffffffff0113a05502000000001976a91431938090e8a00edb2a42a8fbcf1a56d99de43bc988ac00000000',
 };
 
+const blockfrostTx = {
+    block: 'e6369fee087d31192016b1659f1c381e9fc4925339278a4eef6f340c96c1947f',
+    block_height: 5040611,
+    slot: 15650536,
+    index: 0,
+    output_amount: [
+        {
+            unit: 'lovelace',
+            quantity: '701374004958',
+        },
+    ],
+    fees: '874781',
+    deposit: '0',
+    size: 16346,
+    invalid_before: null,
+    invalid_hereafter: '15657684',
+    utxo_count: 80,
+    withdrawal_count: 0,
+    delegation_count: 0,
+    stake_cert_count: 0,
+    pool_update_count: 0,
+    pool_retire_count: 0,
+};
+
 const xrpTx = {
     type: 'payment',
     address: 'rB8Ai21NLgz85T9js2fKAVTVEDZnbTn8Eu',
@@ -70,7 +94,6 @@ export default {
             error: 'Transaction not found',
         },
     ],
-
     ripple: [
         {
             description: 'Successful',
@@ -113,6 +136,35 @@ export default {
             description: 'Not found',
             params: '6390FE5EE3B22239B2CA403C32DAFCA613B7FEEE55473A50CB8602CE0FE3EB3F',
             error: '[NotFoundError(Transaction not found)]',
+        },
+    ],
+    blockfrost: [
+        {
+            description: 'Successful',
+            params: '28172ea876c3d1e691284e5179fae2feb3e69d7d41e43f8023dc380115741026',
+            response: {
+                type: 'blockfrost',
+                tx: blockfrostTx,
+            },
+        },
+        {
+            description: 'Not found',
+            serverFixtures: [
+                {
+                    method: 'GET_TRANSACTION',
+                    response: {
+                        data: {
+                            error: {
+                                status_code: 404,
+                                error: 'Not Found',
+                                message: 'The requested component has not been found.',
+                            },
+                        },
+                    },
+                },
+            ],
+            params: 'non_existing_tx',
+            error: 'The requested component has not been found.',
         },
     ],
 };

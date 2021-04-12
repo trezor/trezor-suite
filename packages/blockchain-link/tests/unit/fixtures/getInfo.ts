@@ -50,4 +50,32 @@ export default {
             error: 'RippledError Error msg',
         },
     ],
+    blockfrost: [
+        {
+            description: 'Success',
+            response: {
+                blockHeight: 1,
+                blockHash: 'test_block_hash-hash',
+                decimals: 6,
+                name: 'Blockfrost',
+                shortcut: 'ada',
+                testnet: false,
+                version: '1.4.0',
+            },
+        },
+        {
+            description: 'Error',
+            serverFixtures: [
+                {
+                    method: 'GET_SERVER_INFO',
+                    response: {
+                        data: {
+                            error: { message: 'BlockfrostError Error msg' },
+                        },
+                    },
+                },
+            ],
+            error: 'BlockfrostError Error msg',
+        },
+    ],
 };

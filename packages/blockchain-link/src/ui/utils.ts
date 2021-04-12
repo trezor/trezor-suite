@@ -23,5 +23,6 @@ export const fillValues = (data: any) => {
     setInputValue('estimate-fee-options', JSON.stringify(data.estimateFeeOptions, null, 2));
     setInputValue('get-tx-id', data.txid);
     setInputValue('push-transaction-tx', data.tx);
+    setInputValue('blockhash-number', data.blockNumber);
     setInputValue('subscribe-addresses', data.subscribe);
 };

@@ -22,6 +22,7 @@ workers.forEach(instance => {
             blockchain.dispose();
             await server.close();
         };
+
         beforeAll(setup);
         afterAll(teardown);
 

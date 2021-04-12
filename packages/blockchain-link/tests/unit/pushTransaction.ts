@@ -22,10 +22,10 @@ workers.forEach(instance => {
             blockchain.dispose();
             await server.close();
         };
+
         beforeAll(setup);
         afterAll(teardown);
 
-        // @ts-ignore No index signature
         fixtures[instance.name].forEach(f => {
             it(f.description, async () => {
                 server.setFixtures(f.serverFixtures);

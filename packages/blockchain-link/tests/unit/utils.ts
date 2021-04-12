@@ -1,8 +1,5 @@
-import {
-    filterTargets,
-    filterTokenTransfers,
-    transformTransaction,
-} from '../../src/workers/blockbook/utils';
+import { filterTokenTransfers, transformTransaction } from '../../src/workers/blockbook/utils';
+import { filterTargets } from '../../src/workers/utils';
 
 import fixtures from './fixtures/utils';
 
