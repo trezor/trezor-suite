@@ -65,6 +65,9 @@ const init = ({ mainWindow, store }: Dependencies) => {
     });
 
     autoUpdater.on('update-available', ({ version, releaseDate }) => {
+        // Reset manual check flag
+        isManualCheck = false;
+
         const shouldSkip = updateSettings.skipVersion === version;
         if (shouldSkip) {
             logger.warn('auto-updater', [
@@ -72,6 +75,8 @@ const init = ({ mainWindow, store }: Dependencies) => {
                 `- Update version: ${version}`,
                 `- Skip version: ${updateSettings.skipVersion}`,
             ]);
+
+            mainWindow.webContents.send('update/skip', version);
             return;
         }
 
@@ -83,13 +88,13 @@ const init = ({ mainWindow, store }: Dependencies) => {
         ]);
 
         latestVersion = { version, releaseDate, isManualCheck };
-        mainWindow.webContents.send(`update/${shouldSkip ? 'skip' : 'available'}`, latestVersion);
-
-        // Reset manual check flag
-        isManualCheck = false;
+        mainWindow.webContents.send('update/available', latestVersion);
     });
 
     autoUpdater.on('update-not-available', ({ version, releaseDate }) => {
+        // Reset manual check flag
+        isManualCheck = false;
+
         logger.info('auto-updater', [
             'No new update is available:',
             `- Last version: ${version}`,
@@ -99,9 +104,6 @@ const init = ({ mainWindow, store }: Dependencies) => {
 
         latestVersion = { version, releaseDate, isManualCheck };
         mainWindow.webContents.send('update/not-available', latestVersion);
-
-        // Reset manual check flag
-        isManualCheck = false;
     });
 
     autoUpdater.on('error', err => {
@@ -138,6 +140,7 @@ const init = ({ mainWindow, store }: Dependencies) => {
         logger.info('auto-updater', `Update checking request (manual: ${b2t(isManualCheck)})`);
         autoUpdater.checkForUpdates();
     });
+
     ipcMain.on('update/download', () => {
         logger.info('auto-updater', 'Download requested');
         mainWindow.webContents.send('update/downloading', {
@@ -152,6 +155,7 @@ const init = ({ mainWindow, store }: Dependencies) => {
             .then(() => logger.info('auto-updater', 'Update downloaded'))
             .catch(() => logger.info('auto-updater', 'Update cancelled'));
     });
+
     ipcMain.on('update/install', () => {
         logger.info('auto-updater', 'Installation request');
 
@@ -162,11 +166,13 @@ const init = ({ mainWindow, store }: Dependencies) => {
 
         autoUpdater.quitAndInstall();
     });
+
     ipcMain.on('update/cancel', () => {
         logger.info('auto-updater', 'Cancel update request');
         mainWindow.webContents.send('update/available', latestVersion);
         updateCancellationToken.cancel();
     });
+
     ipcMain.on('update/skip', (_, version) => {
         logger.info('auto-updater', `Skip version (${version}) request`);
         mainWindow.webContents.send('update/skip', version);
