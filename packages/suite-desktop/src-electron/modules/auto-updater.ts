@@ -65,9 +65,6 @@ const init = ({ mainWindow, store }: Dependencies) => {
     });
 
     autoUpdater.on('update-available', ({ version, releaseDate }) => {
-        // Reset manual check flag
-        isManualCheck = false;
-
         const shouldSkip = updateSettings.skipVersion === version;
         if (shouldSkip) {
             logger.warn('auto-updater', [
@@ -89,12 +86,12 @@ const init = ({ mainWindow, store }: Dependencies) => {
 
         latestVersion = { version, releaseDate, isManualCheck };
         mainWindow.webContents.send('update/available', latestVersion);
+
+        // Reset manual check flag
+        isManualCheck = false;
     });
 
     autoUpdater.on('update-not-available', ({ version, releaseDate }) => {
-        // Reset manual check flag
-        isManualCheck = false;
-
         logger.info('auto-updater', [
             'No new update is available:',
             `- Last version: ${version}`,
@@ -104,6 +101,9 @@ const init = ({ mainWindow, store }: Dependencies) => {
 
         latestVersion = { version, releaseDate, isManualCheck };
         mainWindow.webContents.send('update/not-available', latestVersion);
+
+        // Reset manual check flag
+        isManualCheck = false;
     });
 
     autoUpdater.on('error', err => {
