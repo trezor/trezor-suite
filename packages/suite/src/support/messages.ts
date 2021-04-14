@@ -1532,13 +1532,16 @@ const definedMessages = defineMessages({
         id: 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP',
     },
     TR_FINAL_HEADING: {
-        defaultMessage: 'Good job! All done',
+        defaultMessage: 'Setup complete!',
         id: 'TR_FINAL_HEADING',
     },
-    TR_FINAL_SUBHEADING: {
-        defaultMessage:
-            'You did it! Not only your Trezor is initialized and ready but you also increased your security level above the average user by going through all security steps. Good job!',
-        id: 'TR_FINAL_SUBHEADING',
+    TR_ONBOARDING_FINAL_RENAME: {
+        defaultMessage: 'Rename',
+        id: 'TR_ONBOARDING_FINAL_RENAME',
+    },
+    TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN: {
+        defaultMessage: 'Change Homescreen',
+        id: 'TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN',
     },
     TR_FIND_OUT_MORE_INFO: {
         defaultMessage: 'Find out more info',
@@ -5592,7 +5595,7 @@ const definedMessages = defineMessages({
     },
     TR_DEVICE_CONNECTED_WRONG_STATE: {
         id: 'TR_DEVICE_CONNECTED_WRONG_STATE',
-        defaultMessage: 'Device detected, but there is a problem ',
+        defaultMessage: 'Device detected in incorrect state',
     },
     TR_ONBOARDING_DEVICE_CHECK: {
         id: 'TR_ONBOARDING_DEVICE_CHECK',

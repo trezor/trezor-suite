@@ -62,7 +62,9 @@ const HomescreenGallery = ({ device, onConfirm }: Props) => {
                         <BackgroundImageT1
                             key={image}
                             id={image}
-                            onClick={() => setHomescreen(image)}
+                            // 2 eslint rules clashing
+                            // eslint-disable-next-line require-await
+                            onClick={async () => setHomescreen(image)}
                             src={resolveStaticPath(`images/png/homescreens/t1/${image}.png`)}
                         />
                     ))}
@@ -75,7 +77,9 @@ const HomescreenGallery = ({ device, onConfirm }: Props) => {
                             data-test={`@modal/gallery/t2/${image}`}
                             key={image}
                             id={image}
-                            onClick={() => setHomescreen(image)}
+                            // 2 eslint rules clashing
+                            // eslint-disable-next-line require-await
+                            onClick={async () => setHomescreen(image)}
                             src={resolveStaticPath(`images/png/homescreens/t2/${image}.png`)}
                         />
                     ))}

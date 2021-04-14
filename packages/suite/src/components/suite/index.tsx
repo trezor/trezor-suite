@@ -91,5 +91,8 @@ export {
     FormattedDate,
     FormattedDateWithBullet,
     Metadata,
+    HomescreenGallery,
+    PinMatrix,
+    CollapsibleBox,
 };
 export type { ImageProps, ModalProps };
