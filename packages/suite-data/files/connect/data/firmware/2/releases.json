@@ -1,6 +1,18 @@
 [
 	{
 		"required": false,
+		"version": [2, 3, 6],
+		"min_bridge_version": [2, 0, 7],
+		"min_firmware_version": [2, 0, 8],
+		"min_bootloader_version": [2, 0, 0],
+		"url": "data/firmware/2/trezor-2.3.6.bin",
+		"url_bitcoinonly": "data/firmware/2/trezor-2.3.6-bitcoinonly.bin",
+		"fingerprint": "0efa3ba6135caea7693d145d60441eeb46283fe0b8b1fd59a04af33a638ad237",
+		"fingerprint_bitcoinonly": "e2cab40bb4c6ae65417b80ad564b905796038a0f5e6d0f50cead257fdd3a9c2d",
+		"changelog": "* Add compatibility paths for Unchained Capital"
+	},
+	{
+		"required": false,
 		"version": [2, 3, 5],
 		"min_bridge_version": [2, 0, 7],
 		"min_firmware_version": [2, 0, 8],
