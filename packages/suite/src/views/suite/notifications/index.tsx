@@ -1,8 +1,8 @@
+import React, { useContext, useEffect } from 'react';
+import styled from 'styled-components';
+import { variables } from '@trezor/components';
 import { LayoutContext, Notifications, Translation } from '@suite-components';
 import { MAX_WIDTH } from '@suite-constants/layout';
-import { variables } from '@trezor/components';
-import React from 'react';
-import styled from 'styled-components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -23,8 +23,8 @@ const Headline = styled.div`
 `;
 
 const NotificationsView = () => {
-    const { setLayout } = React.useContext(LayoutContext);
-    React.useEffect(() => {
+    const { setLayout } = useContext(LayoutContext);
+    useEffect(() => {
         if (setLayout) setLayout('Notifications', undefined);
     }, [setLayout]);
 
