@@ -1,16 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import styled from 'styled-components';
-
-import { OnboardingButton, Text, Wrapper } from '@onboarding-components';
-import { Translation, Image } from '@suite-components';
+import { OnboardingButton } from '@onboarding-components';
+import { Translation } from '@suite-components';
 import { Dispatch } from '@suite-types';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
-
-const StyledImage = styled(Image)`
-    margin: 20px;
-`;
+import { OnboardingStepBox } from '@suite/components/firmware';
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
     bindActionCreators(
@@ -24,33 +19,27 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
 type Props = ReturnType<typeof mapDispatchToProps>;
 
 const IsSameDevice = ({ resetOnboarding, enableOnboardingReducer }: Props) => (
-    <Wrapper.Step>
-        <Wrapper.StepBody>
-            <StyledImage image="UNI_WARNING" />
-
-            <Wrapper.StepHeading>
-                <Translation id="ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_HEADING" />
-            </Wrapper.StepHeading>
-
-            <Text>
+    <OnboardingStepBox
+        disableConfirmWrapper
+        heading={<Translation id="ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_HEADING" />}
+        description={
+            <>
                 <Translation id="ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P1" />
-            </Text>
-            <Text>
                 <Translation id="ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2" />
-            </Text>
-            <Wrapper.Controls>
-                <OnboardingButton.Alt
-                    onClick={() => {
-                        resetOnboarding();
-                        enableOnboardingReducer(true);
-                    }}
-                    data-test="@onboarding/unexpected-state/is-same/start-over-button"
-                >
-                    <Translation id="TR_START_AGAIN" />
-                </OnboardingButton.Alt>
-            </Wrapper.Controls>
-        </Wrapper.StepBody>
-    </Wrapper.Step>
+            </>
+        }
+        innerActions={
+            <OnboardingButton.Alt
+                onClick={() => {
+                    resetOnboarding();
+                    enableOnboardingReducer(true);
+                }}
+                data-test="@onboarding/unexpected-state/is-same/start-over-button"
+            >
+                <Translation id="TR_START_AGAIN" />
+            </OnboardingButton.Alt>
+        }
+    />
 );
 
 export default connect(null, mapDispatchToProps)(IsSameDevice);

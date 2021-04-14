@@ -1,13 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
-import { Step } from '@onboarding-types';
-import * as STEP from '@onboarding-constants/steps';
-import steps from '@onboarding-config/steps';
-import { isStepInPath } from '@onboarding-utils/steps';
-import { useOnboarding } from '@suite-hooks';
-
+import { WelcomeLayout, OnboardingLayout } from '@onboarding-components';
 import WelcomeStep from '@onboarding-views/steps/Welcome';
-import SkipStep from '@onboarding-views/steps/Skip';
 import CreateOrRecover from '@onboarding-views/steps/CreateOrRecover';
 import FirmwareStep from '@onboarding-views/steps/Firmware';
 import ResetDeviceStep from '@suite/views/onboarding/steps/ResetDevice';
@@ -18,18 +11,11 @@ import SetPinStep from '@onboarding-views/steps/Pin';
 import BasicSettingsStep from '@onboarding-views/steps/BasicSettings';
 import FinalStep from '@onboarding-views/steps/Final';
 import UnexpectedState from '@onboarding-views/unexpected-states';
+import { useOnboarding } from '@suite-hooks';
+import * as STEP from '@onboarding-constants/steps';
 
 const Onboarding = () => {
-    const { activeStepId, path } = useOnboarding();
-
-    const getStep = () => {
-        const lookup = steps.find((step: Step) => step.id === activeStepId);
-        // todo: maybe get rid of this with stricter typescript
-        if (!lookup) {
-            throw new TypeError('step not found by step id. unexpected.');
-        }
-        return lookup;
-    };
+    const { activeStepId } = useOnboarding();
 
     const getStepComponent = () => {
         switch (activeStepId) {
@@ -48,8 +34,6 @@ const Onboarding = () => {
             case STEP.ID_RECOVERY_STEP:
                 // b) Seed recovery
                 return RecoveryStep;
-            case STEP.ID_SKIP_STEP:
-                return SkipStep;
             case STEP.ID_SECURITY_STEP:
                 // Security intro (BACKUP, PIN), option to skip them
                 return SecurityStep;
@@ -71,17 +55,15 @@ const Onboarding = () => {
     };
 
     const StepComponent = getStepComponent();
+    const LayoutComponent = activeStepId === 'welcome' ? WelcomeLayout : OnboardingLayout;
 
     // TODO global unexpected states
-    // TODO Maybe put Onboarding layout here instead of defining it in each step
     return (
-        <>
-            {/* <UnexpectedState> */}
-            {/* {modal && <InnerModalWrapper>{modal}</InnerModalWrapper>} */}
-            {/* {modal} */}
-            <StepComponent />
-            {/* </UnexpectedState> */}
-        </>
+        <LayoutComponent>
+            <UnexpectedState>
+                <StepComponent />
+            </UnexpectedState>
+        </LayoutComponent>
     );
 };
 

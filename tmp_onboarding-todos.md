@@ -3,6 +3,7 @@ TODOs:
 - Fix separate modal flows for backup, recovery, fw update and fix them
 - check-seed step is probably still useful, but maybe it can be handled directly in Firmware update component
 - Welcome screen should be used separately
+- Unexpected stated overhaul
 - Welcome step: 
     - security check, hologram tooltip
 - Firmware step:
