@@ -1,4 +1,11 @@
-import { isAddressValid, isDecimalsValid, isInteger } from '../validation';
+import {
+    isAddressValid,
+    isDecimalsValid,
+    isInteger,
+    isBech32AddressUppercase,
+    isAddressDeprecated,
+    isHexValid,
+} from '../validation';
 
 describe('validation', () => {
     // fixtures from https://github.com/trezor/trezor-address-validator/blob/master/test/wallet_address_validator.js
@@ -106,5 +113,47 @@ describe('validation', () => {
         expect(isInteger('a01')).toBe(false);
         expect(isInteger('0a1')).toBe(false);
         expect(isInteger('01a')).toBe(false);
+    });
+
+    it('isBech32AddressUppercase', () => {
+        expect(isBech32AddressUppercase('')).toBe(false);
+        expect(isBech32AddressUppercase('bc1zw508d6qejxtdg4y5r3zarvaryvg6kdaj')).toBe(false);
+        expect(isBech32AddressUppercase('BC1SW50QA3JX3S')).toBe(true);
+        expect(isBech32AddressUppercase('tb1qkvwu9g3k2pdxewfqr7syz89r3gj557l3uuf9r9')).toBe(false);
+        expect(isBech32AddressUppercase('TB1QKVWU9G3K2PDXEWFQR7SYZ89R3GJ557L3UUF9R9')).toBe(true);
+        expect(isBech32AddressUppercase('ltc1qkzyarpkhdecu5rzeuj78pwpr5sfm798afny4n6')).toBe(false);
+        expect(isBech32AddressUppercase('LTC1QKZYARPKHDECU5RZEUJ78PWPR5SFM798AFNY4N6')).toBe(true);
+        expect(isBech32AddressUppercase('tltc1qkvwu9g3k2pdxewfqr7syz89r3gj557l395tmnv')).toBe(
+            false,
+        );
+        expect(isBech32AddressUppercase('TLTC1QKVWU9G3K2PDXEWFQR7SYZ89R3GJ557L395TMNV')).toBe(true);
+        expect(isBech32AddressUppercase('37VJHKeBA9DHKmTwYE7TWYjwDzo5JTb1sz')).toBe(false); // real btc address contains tb1 string
+        expect(isBech32AddressUppercase('NotValidAddressContainsTb1bc1Ltc1Tltc1')).toBe(false);
+    });
+
+    // https://litecoin-project.github.io/p2sh-convert/
+    // https://cashaddr.bitcoincash.org/
+    it('isAddressDeprecated', () => {
+        expect(isAddressDeprecated('3notValid', 'ltc')).toBe(undefined);
+        expect(isAddressDeprecated('3NP9U8dbNzBcwhChpX8nk4F3Bf2oSucXj1', 'ltc')).toBe(
+            'LTC_ADDRESS_INFO_URL',
+        );
+        expect(isAddressDeprecated('1notValid', 'bch')).toBe(undefined);
+        expect(isAddressDeprecated('12QeMLzSrB8XH8FvEzPMVoRxVAzTr5XM2y', 'bch')).toBe(
+            'BCH_ADDRESS_INFO_URL',
+        );
+    });
+
+    it('isHexValid', () => {
+        expect(isHexValid('')).toBe(false);
+        expect(isHexValid('1')).toBe(false);
+        expect(isHexValid('01')).toBe(true);
+        expect(isHexValid('dead')).toBe(true);
+        expect(isHexValid('N07Hex')).toBe(false);
+        expect(isHexValid('0x0')).toBe(false);
+        expect(isHexValid('0x0', '0x')).toBe(true); // eth hex could be left padded (0x0 === 0x00)
+        expect(isHexValid('0x00', '0x')).toBe(true);
+        expect(isHexValid('0xDeadBeeF', '0x')).toBe(true);
+        expect(isHexValid('0xNotHex', '0x')).toBe(false);
     });
 });
