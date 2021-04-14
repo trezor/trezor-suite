@@ -869,6 +869,15 @@
                     "type": "AmountUnit",
                     "name": "amount_unit",
                     "id": 11
+                },
+                {
+                    "rule": "optional",
+                    "options": {
+                        "default": false
+                    },
+                    "type": "bool",
+                    "name": "decred_staking_ticket",
+                    "id": 12
                 }
             ],
             "enums": [],
@@ -1232,6 +1241,13 @@
                                     "type": "uint32",
                                     "name": "orig_index",
                                     "id": 17
+                                },
+                                {
+                                    "rule": "optional",
+                                    "options": {},
+                                    "type": "DecredStakingSpendType",
+                                    "name": "decred_staking_spend",
+                                    "id": 18
                                 }
                             ],
                             "enums": [],
@@ -1450,6 +1466,13 @@
                     "type": "uint32",
                     "name": "orig_index",
                     "id": 17
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "DecredStakingSpendType",
+                    "name": "decred_staking_spend",
+                    "id": 18
                 }
             ],
             "enums": [],
@@ -2696,6 +2719,30 @@
             "oneofs": {}
         },
         {
+            "name": "CardanoSignedTxChunk",
+            "fields": [
+                {
+                    "rule": "required",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "signed_tx_chunk",
+                    "id": 1
+                }
+            ],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "CardanoSignedTxChunkAck",
+            "fields": [],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
             "name": "CardanoSignedTx",
             "fields": [
                 {
@@ -2706,7 +2753,7 @@
                     "id": 1
                 },
                 {
-                    "rule": "required",
+                    "rule": "optional",
                     "options": {},
                     "type": "bytes",
                     "name": "serialized_tx",
@@ -3362,6 +3409,13 @@
                     "type": "bytes",
                     "name": "session_key",
                     "id": 1
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bytes",
+                    "name": "public_key",
+                    "id": 2
                 }
             ],
             "enums": [],
@@ -3512,6 +3566,13 @@
                     "type": "bool",
                     "name": "wait",
                     "id": 6
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "hold_ms",
+                    "id": 7
                 }
             ],
             "enums": [
@@ -3587,98 +3648,6 @@
             ],
             "enums": [],
             "messages": [],
-            "options": {},
-            "oneofs": {}
-        },
-        {
-            "name": "DebugLinkShowText",
-            "fields": [
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "string",
-                    "name": "header_text",
-                    "id": 1
-                },
-                {
-                    "rule": "repeated",
-                    "options": {},
-                    "type": "DebugLinkShowTextItem",
-                    "name": "body_text",
-                    "id": 2
-                },
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "string",
-                    "name": "header_icon",
-                    "id": 3
-                },
-                {
-                    "rule": "optional",
-                    "options": {},
-                    "type": "string",
-                    "name": "icon_color",
-                    "id": 4
-                }
-            ],
-            "enums": [
-                {
-                    "name": "DebugLinkShowTextStyle",
-                    "values": [
-                        {
-                            "name": "NORMAL",
-                            "id": 0
-                        },
-                        {
-                            "name": "BOLD",
-                            "id": 1
-                        },
-                        {
-                            "name": "MONO",
-                            "id": 2
-                        },
-                        {
-                            "name": "BR",
-                            "id": 4
-                        },
-                        {
-                            "name": "BR_HALF",
-                            "id": 5
-                        },
-                        {
-                            "name": "SET_COLOR",
-                            "id": 6
-                        }
-                    ],
-                    "options": {}
-                }
-            ],
-            "messages": [
-                {
-                    "name": "DebugLinkShowTextItem",
-                    "fields": [
-                        {
-                            "rule": "optional",
-                            "options": {},
-                            "type": "DebugLinkShowTextStyle",
-                            "name": "style",
-                            "id": 1
-                        },
-                        {
-                            "rule": "optional",
-                            "options": {},
-                            "type": "string",
-                            "name": "content",
-                            "id": 2
-                        }
-                    ],
-                    "enums": [],
-                    "messages": [],
-                    "options": {},
-                    "oneofs": {}
-                }
-            ],
             "options": {},
             "oneofs": {}
         },
@@ -6599,6 +6568,14 @@
         },
         {
             "name": "CancelAuthorization",
+            "fields": [],
+            "enums": [],
+            "messages": [],
+            "options": {},
+            "oneofs": {}
+        },
+        {
+            "name": "RebootToBootloader",
             "fields": [],
             "enums": [],
             "messages": [],
@@ -10572,6 +10549,20 @@
             "options": {}
         },
         {
+            "name": "DecredStakingSpendType",
+            "values": [
+                {
+                    "name": "SSGen",
+                    "id": 0
+                },
+                {
+                    "name": "SSRTX",
+                    "id": 1
+                }
+            ],
+            "options": {}
+        },
+        {
             "name": "AmountUnit",
             "values": [
                 {
@@ -10871,6 +10862,10 @@
                     "id": 86
                 },
                 {
+                    "name": "MessageType_RebootToBootloader",
+                    "id": 87
+                },
+                {
                     "name": "MessageType_Deprecated_PassphraseStateRequest",
                     "id": 77
                 },
@@ -11041,10 +11036,6 @@
                 {
                     "name": "MessageType_DebugLinkRecordScreen",
                     "id": 9003
-                },
-                {
-                    "name": "MessageType_DebugLinkShowText",
-                    "id": 9004
                 },
                 {
                     "name": "MessageType_DebugLinkEraseSdCard",
@@ -11265,6 +11256,14 @@
                 {
                     "name": "MessageType_CardanoSignedTx",
                     "id": 310
+                },
+                {
+                    "name": "MessageType_CardanoSignedTxChunk",
+                    "id": 311
+                },
+                {
+                    "name": "MessageType_CardanoSignedTxChunkAck",
+                    "id": 312
                 },
                 {
                     "name": "MessageType_RippleGetAddress",
