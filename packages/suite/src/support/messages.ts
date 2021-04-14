@@ -1494,13 +1494,16 @@ const definedMessages = defineMessages({
         id: 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP',
     },
     TR_FINAL_HEADING: {
-        defaultMessage: 'Good job! All done',
+        defaultMessage: 'Setup complete!',
         id: 'TR_FINAL_HEADING',
     },
-    TR_FINAL_SUBHEADING: {
-        defaultMessage:
-            'You did it! Not only your Trezor is initialized and ready but you also increased your security level above the average user by going through all security steps. Good job!',
-        id: 'TR_FINAL_SUBHEADING',
+    TR_ONBOARDING_FINAL_RENAME: {
+        defaultMessage: 'Rename',
+        id: 'TR_ONBOARDING_FINAL_RENAME',
+    },
+    TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN: {
+        defaultMessage: 'Change Homescreen',
+        id: 'TR_ONBOARDING_FINAL_CHANGE_HOMESCREEN',
     },
     TR_FIND_OUT_MORE_INFO: {
         defaultMessage: 'Find out more info',
@@ -5554,7 +5557,7 @@ const definedMessages = defineMessages({
     },
     TR_DEVICE_CONNECTED_WRONG_STATE: {
         id: 'TR_DEVICE_CONNECTED_WRONG_STATE',
-        defaultMessage: 'Device detected, but there is a problem ',
+        defaultMessage: 'Device detected in incorrect state',
     },
     TR_ONBOARDING_DEVICE_CHECK: {
         id: 'TR_ONBOARDING_DEVICE_CHECK',
@@ -5586,6 +5589,20 @@ const definedMessages = defineMessages({
         id: 'TR_ONBOARDING_COINS_STEP_DESCRIPTION',
         defaultMessage:
             'We preselected our 3 most popular, for which we’ll create accounts. U can always enable more later.',
+    },
+    TR_WHAT_DATA_WE_COLLECT: {
+        id: 'TR_WHAT_DATA_WE_COLLECT',
+        defaultMessage: 'What data we collect?',
+    },
+    TR_ONBOARDING_TROUBLESHOOTING_FAILED: {
+        id: 'TR_ONBOARDING_TROUBLESHOOTING_FAILED',
+        defaultMessage: "Didn't work?",
+        decription:
+            "If troubleshooting steps for connecting a device in Onboarding didn't do the trick there is at the end link to contact a support",
+    },
+    TR_STILL_DONT_SEE_YOUR_TREZOR: {
+        id: 'TR_STILL_DONT_SEE_YOUR_TREZOR',
+        defaultMessage: 'Still don’t see your Trezor?',
     },
 } as const);
 

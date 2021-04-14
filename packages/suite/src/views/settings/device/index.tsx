@@ -18,6 +18,7 @@ import {
     PASSPHRASE_URL,
     SEED_MANUAL_URL,
 } from '@suite-constants/urls';
+import { MAX_LABEL_LENGTH } from '@suite-constants/device';
 import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import * as homescreen from '@suite-utils/homescreen';
 import { useDevice, useAnalytics, useActions, useSelector } from '@suite-hooks';
@@ -86,7 +87,6 @@ const Settings = () => {
     const { isLocked } = useDevice();
     const isDeviceLocked = isLocked();
     const analytics = useAnalytics();
-    const MAX_LABEL_LENGTH = 16;
 
     useEffect(() => {
         if (!device) {
