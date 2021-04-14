@@ -4,6 +4,8 @@
 
 import { app, ipcMain } from 'electron';
 import { autoUpdater, CancellationToken } from 'electron-updater';
+import isDev from 'electron-is-dev';
+
 import { b2t } from '@desktop-electron/libs/utils';
 import { toHumanReadable } from '@suite-utils/file';
 import { isEnabled } from '@suite-utils/features';
@@ -27,7 +29,7 @@ const init = ({ mainWindow, store }: Dependencies) => {
     }
 
     // If APPIMAGE is not set on Linux, the auto updater can't handle that
-    if (process.platform === 'linux' && process.env.APPIMAGE === undefined) {
+    if (process.platform === 'linux' && process.env.APPIMAGE === undefined && !isDev) {
         logger.warn('auto-updater', 'APPIMAGE is not defined, skipping auto updater');
         return;
     }

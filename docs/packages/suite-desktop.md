@@ -30,3 +30,19 @@ Available flags:
 | `--log-path=PATHNAME` | Path for the output file (defaults to home or current working directory) |
 | `--enable-updater` | Enables the auto updater (if disabled in feature flags) |
 | `--disable-updater` | Disables the auto updater (if enabled in feature flags) |
+
+## Mock
+Some libraries are difficult to test in development environments, such as the auto-updater. In order to still allow certain interactions with the feature in developments, libraries can be mocked. 
+
+### How to use mocks?
+- By default, development builds load mocks.
+- Non-development builds can include mocks if the `USE_MOCKS` environment variable is defined.
+
+### How to make a new mock?
+1. Open the suite-desktop build script located at `/packages/suite-desktop/scripts/build.js`.
+2. Add a new entry to the `mocks` object. The key should be the name of the package, exactly as written when imported. The value should be the path to the mock file to point to (located in `/packages/suite-desktop/src-electron/mocks`).
+3. Create the file in `/packages/suite-desktop/src-electron/mocks` and export mocked properties that you have imported across the project.
+
+### Mocked libraries
+#### Auto-Updater
+The auto-updater has been mocked to simulate similar behaviour to the actual library. Unless the commandline parameter `--mock-trigger-updater-after=DELAY` is passed, checking for updates will always return `not-available`. This commandline parameter requires a value, representing a delay in seconds before making the update available. Using `0` as a value will make the update available immediately. For example, if you wish to make an update available after 1 minute, you will use the parameter as follows: `--mock-trigger-updater-after=60`. Note that his parameter is **ONLY** available with mocks enabled.

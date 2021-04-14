@@ -18,10 +18,11 @@ export const MODULES = [
     'bridge',
     'tor',
     'analytics',
+    'auto-updater',
 ];
 
 // Modules only used in prod mode
-export const MODULES_PROD = ['csp', 'file-protocol', 'auto-updater'];
+export const MODULES_PROD = ['csp', 'file-protocol'];
 
 // Modules only used in dev mode
 export const MODULES_DEV = ['dev-tools'];
