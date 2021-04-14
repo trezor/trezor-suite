@@ -20,7 +20,7 @@ const simple = (View: React.ComponentType<ViewProps>, props: ViewProps) => (
 const hocNotification = (notification: NotificationEntry, View: React.ComponentType<ViewProps>) => {
     switch (notification.type) {
         case 'acquire-error':
-            return withAction(View, {
+            return simple(View, {
                 notification,
                 variant: 'error',
                 message: {
@@ -29,11 +29,10 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
                         error: notification.error,
                     },
                 },
-                actionLabel: 'TR_RETRY',
             });
 
         case 'auth-failed':
-            return withAction(View, {
+            return simple(View, {
                 notification,
                 variant: 'error',
                 message: {
@@ -42,11 +41,10 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
                         error: notification.error,
                     },
                 },
-                actionLabel: 'TR_RETRY',
             });
 
         case 'auth-confirm-error':
-            return withAction(View, {
+            return simple(View, {
                 notification,
                 variant: 'error',
                 message: {
@@ -55,11 +53,10 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
                         error: notification.error || { id: 'TOAST_AUTH_CONFIRM_ERROR_DEFAULT' },
                     },
                 },
-                actionLabel: 'TR_RETRY',
             });
 
         case 'discovery-error':
-            return withAction(View, {
+            return simple(View, {
                 notification,
                 variant: 'error',
                 message: {
@@ -68,7 +65,6 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
                         error: notification.error,
                     },
                 },
-                actionLabel: 'TR_RETRY',
             });
 
         case 'backup-failed':
