@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSpring, config, animated } from 'react-spring';
-import { variables, Icon } from '@trezor/components';
+import { variables, Icon, DeviceAnimation } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useTheme } from '@suite-hooks';
 import styled from 'styled-components';
@@ -27,12 +27,6 @@ const Checkmark = styled.div`
     position: absolute;
     top: 10px;
     right: 10px;
-`;
-
-const Img = styled.img`
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
 `;
 
 const Text = styled.div`
@@ -71,7 +65,7 @@ const ConnectDevicePrompt = ({ children, connected, showWarning }: Props) => {
     return (
         <Wrapper style={fadeStyles}>
             <ImageWrapper>
-                <Img />
+                <DeviceAnimation type="CONNECT_TT" />
                 <Checkmark>
                     {connected && !showWarning && (
                         <Icon icon="CHECK_ACTIVE" size={24} color={theme.TYPE_GREEN} />
