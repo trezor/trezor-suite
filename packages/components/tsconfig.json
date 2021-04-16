@@ -20,6 +20,7 @@
         "noImplicitAny": true,
         "strictNullChecks": true,
         "moduleResolution": "node",
+        "resolveJsonModule": true,
         "jsx": "react",
         "outDir": "lib"
     },
