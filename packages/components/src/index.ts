@@ -7,6 +7,7 @@ import { Button, ButtonProps } from './components/buttons/Button';
 import { Flag, FlagProps } from './components/Flag';
 import { ButtonPin, ButtonPinProps } from './components/buttons/Pin';
 import { DeviceImage, DeviceImageProps } from './components/DeviceImage';
+import { DeviceAnimation, DeviceAnimationProps } from './components/DeviceAnimation';
 import {
     Dropdown,
     DropdownRef,
@@ -89,6 +90,8 @@ export {
     ConfirmOnDeviceProps,
     DeviceImage,
     DeviceImageProps,
+    DeviceAnimation,
+    DeviceAnimationProps,
     Box,
     BoxProps,
     Card,
