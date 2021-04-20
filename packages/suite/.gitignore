@@ -1,3 +1,4 @@
 translations/extractedMessages
 translations/*.csv
 translations/master.json
+src/types/suite/messageSystem.ts

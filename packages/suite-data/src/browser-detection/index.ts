@@ -1,4 +1,4 @@
-import * as UAParser from 'ua-parser-js';
+import UAParser from 'ua-parser-js';
 import iconChrome from './images/browser-chrome.png';
 import iconFirefox from './images/browser-firefox.png';
 
