@@ -7,6 +7,8 @@ import { Backdrop, Translation } from '@suite-components';
 const OuterActions = styled.div`
     display: flex;
     margin-top: 40px;
+    width: 100%;
+    justify-content: center;
 `;
 
 const InnerActions = styled.div`
