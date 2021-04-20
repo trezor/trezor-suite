@@ -40,7 +40,7 @@ export const read = async (directory: string, name: string) => {
     }
 };
 
-export const getOSVersion = () => {
+export const getOsType = () => {
     try {
         const platform = os.platform();
         const release = os.release();

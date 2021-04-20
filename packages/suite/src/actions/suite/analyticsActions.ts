@@ -14,7 +14,7 @@ import {
     isWeb,
     setOnBeforeUnloadListener,
     getLocationHostname,
-    getOSVersion,
+    getOsType,
 } from '@suite-utils/env';
 import { setSentryUser } from '@suite-utils/sentry';
 import { State } from '@suite-reducers/analyticsReducer';
@@ -449,10 +449,10 @@ export const init = (loadedState: State, optout: boolean) => async (
         );
     });
 
-    // send OS version if isDesktop
+    // send OS type if isDesktop
     if (isDesktop()) {
         let desktopOSVersion = '';
-        const resp = await getOSVersion();
+        const resp = await getOsType();
         if (resp?.success) {
             desktopOSVersion = `${resp.payload.platform}_${resp.payload.release}`;
         }

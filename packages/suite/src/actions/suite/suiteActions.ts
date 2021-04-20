@@ -4,7 +4,7 @@ import * as deviceUtils from '@suite-utils/device';
 import { addToast } from '@suite-actions/notificationActions';
 import * as modalActions from '@suite-actions/modalActions';
 import * as storageActions from '@suite-actions/storageActions';
-import { getOSTheme } from '@suite-utils/env';
+import { getOsTheme } from '@suite-utils/env';
 import { SUITE, METADATA } from './constants';
 import { LANGUAGES } from '@suite-config';
 import {
@@ -559,7 +559,7 @@ export const setInitialTheme = () => async (dispatch: Dispatch, getState: GetSta
         if (isInitialRun || !storedSettings) {
             // Initial run
             // set initial theme (light/dark) based on OS settings
-            const osThemeVariant = getOSTheme();
+            const osThemeVariant = getOsTheme();
             if (osThemeVariant !== currentThemeVariant) {
                 dispatch(setTheme(osThemeVariant, undefined));
             }

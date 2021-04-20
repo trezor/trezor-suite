@@ -90,5 +90,5 @@ contextBridge.exposeInMainWorld('desktopApi', {
     setTorAddress: (address: string) => ipcRenderer.send('tor/set-address', address),
 
     // Analytics
-    getOSVersion: () => ipcRenderer.invoke('analytics/get-os-version'),
+    getOsType: () => ipcRenderer.invoke('analytics/get-os-type'),
 });
