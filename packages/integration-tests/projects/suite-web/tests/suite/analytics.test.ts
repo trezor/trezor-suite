@@ -5,21 +5,10 @@ import { urlSearchParams } from '../../../../../suite/src/utils/suite/metadata';
 
 type Requests = ReturnType<typeof urlSearchParams>[];
 const requests: Requests = [];
-
-const onBeforeLoad = (requests: Requests) => (win: Window) => {
-    cy.stub(win, 'fetch', function (url, options) {
-        // @ts-ignore
-        win.Math.random = () => 0.4; // to make tests deterministic, this value ensures state YYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
-        if (url.startsWith('https://data.trezor.io/suite/log')) {
-            const params = urlSearchParams(url);
-            requests.push(params);
-        }
-        return fetch(url, options);
-    });
-};
+const instance = new RegExp(/^[A-Za-z0-9]{10,10}$/);
 
 describe('Analytics', () => {
-    beforeEach(function () {
+    beforeEach(() => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         cy.task('stopEmu');
@@ -30,9 +19,12 @@ describe('Analytics', () => {
     it('Analytics should be enabled on initial run, then user may disable it and this option should be respected on subsequent reloads', function () {
         // cy.request('https://data.trezor.io/suite/log/web/develop.log').as('log');
 
-        cy.prefixedVisit('/', {
-            onBeforeLoad: onBeforeLoad(requests),
-        });
+        cy.intercept('GET', 'https://data.trezor.io/suite/log/', req => {
+            const params = urlSearchParams(req.url);
+            requests.push(params);
+        }).as('data-fetch');
+
+        cy.prefixedVisit('/');
 
         // pass through initial run
         cy.getTestElement('@welcome/continue-button').click();
@@ -45,19 +37,18 @@ describe('Analytics', () => {
 
         // NOTE: this will fail on localhost as analytics does not run there
         // assert that only 1 request was fired
+        cy.wait('@data-fetch');
         cy.wrap(requests).its(0).its('c_session_id').as('request0');
         cy.wrap(requests).its(0).should('have.property', 'c_type', 'initial-run-completed');
         cy.wrap(requests).its(0).should('have.property', 'analytics', 'false');
-        cy.wrap(requests).its(0).should('have.property', 'c_instance_id', 'YYYYYYYYYY');
+        cy.wrap(requests).its(0).should('have.property', 'c_instance_id').should('match', instance);
         cy.wrap(requests).its(1).should('equal', undefined);
 
         // important, suite needs time to save initialRun flag into storage
         cy.getTestElement('@suite/loading').should('not.exist');
 
         // go to settings
-        cy.prefixedVisit('/settings', {
-            onBeforeLoad: onBeforeLoad(requests),
-        });
+        cy.prefixedVisit('/settings');
         cy.getTestElement('@modal/connect-device');
         cy.task('startEmu', { wipe: false });
         cy.getTestElement('@modal/connect-device').should('not.exist');
@@ -72,6 +63,7 @@ describe('Analytics', () => {
         cy.log('enable it again, reload and see it remains checked');
         cy.getTestElement('@analytics/toggle-switch').click({ force: true });
         cy.getTestElement('@analytics/toggle-switch').should('be.checked');
+        cy.wait('@data-fetch');
         cy.wrap(requests).its(1).should('have.property', 'c_type', 'analytics/enable');
 
         // change fiat
@@ -81,10 +73,11 @@ describe('Analytics', () => {
         // NOTE: this will fail on localhost as analytics does not run there
         // check that fiat change got logged.
 
+        cy.wait('@data-fetch');
         cy.wrap(requests).its(2).its('c_session_id').as('request1');
         cy.wrap(requests).its(2).should('have.property', 'c_type', 'settings/general/change-fiat');
-        cy.wrap(requests).its(2).should('have.property', 'c_instance_id', 'YYYYYYYYYY');
         cy.wrap(requests).its(2).should('have.property', 'fiat', 'huf');
+        cy.wrap(requests).its(2).should('have.property', 'c_instance_id').should('match', instance);
         // and check that session ids changed after reload;
         cy.get('@request0').then(r0 => {
             cy.get('@request1').then(r1 => {
@@ -94,10 +87,12 @@ describe('Analytics', () => {
 
         // opening device modal
         cy.getTestElement('@menu/switch-device').click();
+        cy.wait('@data-fetch');
         cy.wrap(requests).its(4).should('have.property', 'c_type', 'menu/goto/switch-device');
 
         // adding wallet
         cy.getTestElement('@switch-device/add-wallet-button').click();
+        cy.wait('@data-fetch');
         cy.wrap(requests).its(5).should('have.property', 'c_type', 'switch-device/add-wallet');
     });
 });
