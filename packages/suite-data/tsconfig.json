@@ -8,7 +8,8 @@
         "noImplicitAny": false,
         "preserveSymlinks": true, // ts-node: "Unable to require `.d.ts` file." (https://github.com/TypeStrong/ts-node/issues/797)
         "removeComments": true,
-        "types": ["jest", "node"]
+        "types": ["jest", "node"],
+        "esModuleInterop": true
     },
     "exclude": ["node_modules"]
 }
