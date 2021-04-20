@@ -7,6 +7,7 @@ import { TrezorDevice } from '@suite-types';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 // in-memory implementation of indexedDB
 import 'fake-indexeddb/auto';
+import { MessageSystem, Action } from '@suite/types/suite/messageSystem';
 /**
  * Generate wallet account
  * @param {Partial<Account>} [account]
@@ -343,6 +344,115 @@ const getTrezorConnect = <M>(methods?: M) => {
     };
 };
 
+const getMessageSystemConfig = (
+    root?: Partial<MessageSystem>,
+    action1?: Partial<Action>,
+    action2?: Partial<Action>,
+): MessageSystem => ({
+    version: 1,
+    timestamp: '2021-03-03T03:48:16+00:00',
+    sequence: 1,
+    actions: [
+        {
+            conditions: [
+                {
+                    duration: {
+                        from: '2021-03-01T12:10:00.000Z',
+                        to: '2022-01-31T12:10:00.000Z',
+                    },
+                    os: {
+                        macos: ['10.14', '10.18', '11'],
+                        linux: '<20.04',
+                        windows: '!',
+                        android: '*',
+                        ios: '13',
+                    },
+                    environment: {
+                        desktop: '<21.5',
+                        mobile: '!',
+                        web: '<22',
+                    },
+                    browser: {
+                        firefox: ['82', '83'],
+                        chrome: '*',
+                        chromium: '!',
+                    },
+                    settings: [
+                        {
+                            tor: true,
+                            btc: true,
+                        },
+                        {
+                            tor: false,
+                            ltc: true,
+                        },
+                    ],
+                    transport: {
+                        bridge: ['2.0.30', '2.0.27'],
+                        webusbplugin: '*',
+                    },
+                    devices: [
+                        {
+                            model: 'T',
+                            firmware: '2.1.1',
+                            vendor: 'trezor.io',
+                        },
+                    ],
+                },
+            ],
+            message: {
+                id: '0f3ec64d-c3e4-4787-8106-162f3ac14c34',
+                priority: 10,
+                dismissible: true,
+                variant: 'warning',
+                category: 'banner',
+                content: {
+                    'en-GB': 'New Trezor firmware is available!',
+                },
+                cta: {
+                    action: 'internal-link',
+                    link: 'firmware-index',
+                    label: {
+                        'en-GB': 'Update now',
+                    },
+                },
+            },
+            ...action1,
+        },
+        {
+            conditions: [],
+            message: {
+                id: '5213c64d-c3e4-4787-8106-162f3ac14c34',
+                priority: 8,
+                dismissible: false,
+                variant: 'info',
+                category: ['banner', 'context', 'modal'],
+                content: {
+                    'en-GB': 'New Trezor app is available!',
+                },
+                cta: {
+                    action: 'external-link',
+                    link: 'https://example.com/',
+                    label: {
+                        'en-GB': 'Download now',
+                    },
+                },
+                modal: {
+                    title: {
+                        'en-GB': 'Update now',
+                    },
+                    image: 'https://example.com/example.png',
+                },
+                context: {
+                    domain: ['coins.*.receive', 'coins.btc'],
+                },
+            },
+            ...action2,
+        },
+    ],
+    ...root,
+});
+
 class BroadcastChannel {
     name: string;
     constructor(name: string) {
@@ -372,6 +482,7 @@ declare global {
                 getWalletAccount: typeof getWalletAccount;
                 getWalletTransaction: typeof getWalletTransaction;
                 getTrezorConnect: typeof getTrezorConnect;
+                getMessageSystemConfig: typeof getMessageSystemConfig;
                 intlMock: typeof intlMock;
             };
             BroadcastChannel: typeof BroadcastChannel;
@@ -391,6 +502,7 @@ global.JestMocks = {
     getWalletAccount,
     getWalletTransaction,
     getTrezorConnect,
+    getMessageSystemConfig,
     intlMock,
 };
 

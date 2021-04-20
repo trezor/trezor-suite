@@ -18,6 +18,18 @@ const packageJson = require('./package.json');
 
 const gitRevisionPlugin = new GitRevisionPlugin();
 
+// TODO: After Raf's tschuss-next is merged, move keys to some constants file to avoid duplication in suite-web and suite-desktop package
+// TODO: Do not forget to move process.env.PUBLIC_KEY and process.env.STABLE_CONFIG to new webpack files
+const productionJwsPublicKey =
+    process.env.JWS_PUBLIC_KEY &&
+    `-----BEGIN PUBLIC KEY-----
+${process.env.JWS_PUBLIC_KEY}
+-----END PUBLIC KEY-----`;
+
+const developmentJwsPublicKey = `-----BEGIN PUBLIC KEY-----
+MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEbSUHJlr17+NywPS/w+xMkp3dSD8eWXSuAfFKwonZPe5fL63kISipJC+eJP7Mad0WxgyJoiMsZCV6BZPK2jIFdg==
+-----END PUBLIC KEY-----`;
+
 module.exports = withBundleAnalyzer(
     withOptimizedImages(
         withTranspileModules(
@@ -45,6 +57,10 @@ module.exports = withBundleAnalyzer(
                             'process.env.COMMITHASH': JSON.stringify(
                                 gitRevisionPlugin.commithash(),
                             ),
+                            'process.env.PUBLIC_KEY': JSON.stringify(
+                                productionJwsPublicKey || developmentJwsPublicKey,
+                            ),
+                            'process.env.STABLE_CONFIG': !!productionJwsPublicKey,
                         }),
                     );
                     // google-auth-library dependency does not have out-of-the-box browser support (is primarily aimed at nodejs)
