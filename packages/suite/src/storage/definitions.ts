@@ -1,15 +1,18 @@
-import { StorageUpdateMessage } from '@trezor/suite-storage';
-import { DBSchema } from 'idb';
-import { State as WalletSettings } from '@wallet-reducers/settingsReducer';
-import { SuiteState } from '@suite-reducers/suiteReducer';
-import { State as AnalyticsState } from '@suite-reducers/analyticsReducer';
-import { FormState } from '@wallet-types/sendForm';
-import { AcquiredDevice } from '@suite-types';
-import { MetadataState } from '@suite-types/metadata';
-import { Account, Discovery, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
-import { GraphData } from '@wallet-types/graph';
-import { TradeType } from '@wallet-types/coinmarketCommonTypes';
-import { BuyTrade, ExchangeTrade, SellVoucherTrade as SpendTrade } from 'invity-api';
+import type { BuyTrade, ExchangeTrade, SellVoucherTrade as SpendTrade } from 'invity-api';
+import type { DBSchema } from 'idb';
+
+import type { StorageUpdateMessage } from '@trezor/suite-storage';
+import type { State as WalletSettings } from '@wallet-reducers/settingsReducer';
+import type { SuiteState } from '@suite-reducers/suiteReducer';
+import type { State as AnalyticsState } from '@suite-reducers/analyticsReducer';
+import type { FormState } from '@wallet-types/sendForm';
+import type { AcquiredDevice } from '@suite-types';
+import type { MetadataState } from '@suite-types/metadata';
+import type { Account, Discovery, CoinFiatRates, WalletAccountTransaction } from '@wallet-types';
+import type { GraphData } from '@wallet-types/graph';
+import type { TradeType } from '@wallet-types/coinmarketCommonTypes';
+import type { MessageSystem } from '@suite-types/messageSystem';
+import type { MessageState } from '@suite/reducers/suite/messageSystemReducer';
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -92,6 +95,16 @@ export interface SuiteDBSchema extends DBSchema {
     metadata: {
         key: 'state';
         value: MetadataState;
+    };
+    messageSystem: {
+        key: string;
+        value: {
+            currentSequence: number;
+            config: MessageSystem | null;
+            dismissedMessages: {
+                [key: string]: MessageState;
+            };
+        };
     };
 }
 

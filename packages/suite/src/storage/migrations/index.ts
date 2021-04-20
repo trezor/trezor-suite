@@ -216,4 +216,8 @@ export const migrate = async (
             discovery = await discovery.continue();
         }
     }
+
+    if (oldVersion < 23) {
+        db.createObjectStore('messageSystem');
+    }
 };

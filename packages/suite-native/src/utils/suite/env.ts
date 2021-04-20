@@ -9,14 +9,7 @@ export const getUserAgent = () =>
     // https://www.npmjs.com/package/react-native-device-info
     'some mobile device';
 
-export const isDesktop = () => false;
-export const isWeb = () => false;
-
-export const isMac = () => false;
-export const isWindows = () => false;
-export const isLinux = () => false;
-
-export const isAndroid = () => Platform.OS === 'android';
+export const getProcessPlatform = () => '';
 
 export const getScreenWidth = () =>
     // todo
@@ -35,6 +28,26 @@ export const getLocationOrigin = () => 'implementation of getLocationOrigin in n
 export const getLocationHostname = () =>
     // Used in Tor component, value shouldn't matter in RN env
     'rn-localhost';
+
+export const isMacOs = () => false;
+export const isWindows = () => false;
+export const isLinux = () => false;
+export const isAndroid = () => Platform.OS === 'android';
+export const isIOs = () => Platform.OS === 'ios';
+
+export const getOsName = () => Platform.OS;
+
+export const getOsVersion = () => '';
+
+export const getBrowserName = () => '';
+
+export const getBrowserVersion = () => '';
+
+export const isDesktop = () => false;
+export const isWeb = () => false;
+export const isMobile = () => false;
+
+export const getEnvironment = () => '';
 
 export const submitRequestForm = (
     _formMethod: 'GET' | 'POST' | 'IFRAME',

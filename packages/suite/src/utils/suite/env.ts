@@ -1,49 +1,92 @@
-import { SuiteThemeVariant } from '@suite-types';
+import UAParser from 'ua-parser-js';
 
-/**
- * method does not do much, but still it is useful as we do not
- * have navigator.userAgent in native. This way we may define
- * overrides only for simple utils and do not need to rewrite entire files
- * for example actions or middlewares
- */
-export const getUserAgent = () => navigator.userAgent;
+import type { SuiteThemeVariant, EnvironmentType } from '@suite-types';
 
-export const isAndroid = () => {
-    if (typeof navigator === 'undefined') return;
-    return navigator.appVersion.includes('Android');
+/* This way, we can override simple utils, which helps to polyfill methods which are not available in react-native. */
+export const getUserAgent = () => navigator?.userAgent || '';
+
+export const getPlatform = () => navigator?.platform || '';
+
+export const getPlatformLanguage = () => navigator?.language || '';
+
+export const getAppVersion = () => navigator?.appVersion || '';
+
+/* For usage in Electron (SSR) */
+export const getProcessPlatform = () => process?.platform || '';
+
+export const getScreenWidth = () => window?.screen?.width || 0;
+
+export const getScreenHeight = () => window?.screen?.height || 0;
+
+export const getLocationOrigin = () => window?.location?.origin || '';
+
+export const getLocationHostname = () => window?.location?.hostname || '';
+
+let userAgentParser: UAParser;
+const getUserAgentParser = () => {
+    if (!userAgentParser) {
+        const ua = getUserAgent();
+        userAgentParser = new UAParser(ua);
+    }
+    return userAgentParser;
 };
 
-export const isMac = () => {
-    if (process.platform === 'darwin') return true; // For usage in Electron (SSR)
-    if (typeof navigator === 'undefined') return false;
-    return ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'].includes(navigator.platform);
+export const isMacOs = () => {
+    if (getProcessPlatform() === 'darwin') return true;
+
+    return ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'].includes(getPlatform());
 };
 
 export const isWindows = () => {
-    if (typeof navigator === 'undefined') return;
-    return ['Win32', 'Win64', 'Windows', 'WinCE'].includes(navigator.platform);
+    if (getProcessPlatform() === 'win32') return true;
+
+    return ['Win32', 'Win64', 'Windows', 'WinCE'].includes(getPlatform());
 };
 
 export const isLinux = () => {
-    if (typeof navigator === 'undefined') return;
-    return /Linux/.test(navigator.platform);
+    if (getProcessPlatform() === 'linux') return true;
+
+    return /Linux/.test(getPlatform());
 };
 
-export const getScreenWidth = () => window.screen.width;
+export const isAndroid = () => getAppVersion().includes('Android');
 
-export const getScreenHeight = () => window.screen.height;
+export const isIOs = () => ['iPhone', 'iPad', 'iPod'].includes(getPlatform());
 
-export const getPlatform = () => window.navigator.platform;
+export const getOsName = () => {
+    if (isMacOs()) return 'macos';
+    if (isLinux()) return 'linux';
+    if (isWindows()) return 'windows';
+    if (isAndroid()) return 'android';
+    if (isIOs()) return 'ios';
 
-export const getPlatformLanguage = () => window.navigator.language;
+    return '';
+};
+
+/* Not correct for Linux as there is many different distributions in different versions */
+export const getOsVersion = () => getUserAgentParser().getOS().version || '';
+
+export const getBrowserName = (): string => {
+    const browserName = getUserAgentParser().getBrowser().name;
+
+    return browserName?.toLowerCase() || '';
+};
+
+export const getBrowserVersion = (): string => getUserAgentParser().getBrowser().version || '';
 
 export const isWeb = () => process.env.SUITE_TYPE === 'web';
 
 export const isDesktop = () => process.env.SUITE_TYPE === 'desktop';
 
-export const getLocationOrigin = () => window.location.origin;
+export const isMobile = () => process.env.SUITE_TYPE === 'mobile';
 
-export const getLocationHostname = () => window.location.hostname;
+export const getEnvironment = (): EnvironmentType => {
+    if (isWeb()) return 'web';
+    if (isDesktop()) return 'desktop';
+    if (isMobile()) return 'mobile';
+
+    return '';
+};
 
 export const submitRequestForm = async (
     formMethod: 'GET' | 'POST' | 'IFRAME',

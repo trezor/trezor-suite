@@ -1,8 +1,9 @@
 import SuiteDB, { OnUpgradeFunc } from '@trezor/suite-storage';
-import { SuiteDBSchema } from './definitions';
 import { migrate } from './migrations';
 
-const VERSION = 22; // don't forget to add migration and CHANGELOG when changing versions!
+import type { SuiteDBSchema } from './definitions';
+
+const VERSION = 23; // don't forget to add migration and CHANGELOG when changing versions!
 
 /**
  *  If the object stores don't already exist then creates them.
@@ -72,6 +73,8 @@ const onUpgrade: OnUpgradeFunc<SuiteDBSchema> = async (db, oldVersion, newVersio
 
         // metadata
         db.createObjectStore('metadata');
+
+        db.createObjectStore('messageSystem');
     } else {
         // migrate functions
         await migrate(db, oldVersion, newVersion, transaction);

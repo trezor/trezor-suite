@@ -8,6 +8,7 @@ import resize from './resizeReducer';
 import analytics from './analyticsReducer';
 import metadata from './metadataReducer';
 import desktopUpdate from './desktopUpdateReducer';
+import messageSystem from './messageSystemReducer';
 
 export default {
     suite,
@@ -20,4 +21,5 @@ export default {
     analytics,
     metadata,
     desktopUpdate,
+    messageSystem,
 };
