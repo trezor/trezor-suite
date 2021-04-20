@@ -64,11 +64,9 @@ export const setOnBeforeUnloadListener = (_callback: () => void) => {
     // todo:
 };
 
-export const getOSTheme = (): SuiteThemeVariant => {
+export const getOsTheme = (): SuiteThemeVariant => {
     const colorScheme = Appearance.getColorScheme();
     return colorScheme === 'dark' ? 'dark' : 'light';
 };
 
-export const getOSVersion = (): any =>
-    // todo
-    undefined;
+export const getOsType = (): any => undefined;
