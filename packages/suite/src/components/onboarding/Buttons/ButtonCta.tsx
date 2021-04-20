@@ -4,6 +4,7 @@ import { Button, ButtonProps } from '@trezor/components';
 
 const StyledButton = styled(Button)`
     min-width: 180px;
+    margin: 0 auto;
 `;
 interface Props extends ButtonProps {
     isDisabled?: boolean;
