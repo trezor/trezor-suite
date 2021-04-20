@@ -15,6 +15,8 @@ import ButtonBack from './Buttons/ButtonBack';
 import ButtonSkip from './Buttons/ButtonSkip';
 
 import Box, { BoxProps } from './Box/Box';
+import Coin, { CoinProps } from './Coin/Coin';
+import CoinsGroup from './CoinsGroup/CoinsGroup';
 import ConnectDevicePrompt from './ConnectDevicePrompt';
 import ConnectDevicePromptManager from './ConnectDevicePromptManager';
 import OnboardingLayout from './Layouts/OnboardingLayout';
@@ -57,6 +59,8 @@ export {
     OptionWrapper,
     OptionsDivider,
     Box,
+    Coin,
+    CoinsGroup,
     ConnectDevicePrompt,
     ConnectDevicePromptManager,
     WelcomeLayout,
@@ -65,4 +69,4 @@ export {
     TroubleshootingTips,
     Hologram,
 };
-export type { BoxProps };
+export type { BoxProps, CoinProps };
