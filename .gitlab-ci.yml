@@ -10,6 +10,7 @@ variables:
 
 stages:
   - setup environment
+  - validation
   - prebuild
   - build
   - deploy to dev
@@ -21,7 +22,8 @@ stages:
 
 include:
   - ci/environment.yml
-  - ci/prebuild.yml
+  - ci/validation.yml
+  - ci/packages/suite-data.yml
   - ci/packages/components.yml
   - ci/packages/suite-web.yml
   - ci/packages/suite-desktop.yml

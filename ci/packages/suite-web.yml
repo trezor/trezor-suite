@@ -1,3 +1,7 @@
+.config_sign_stable: &config_sign_stable
+  needs:
+    - msg-system config sign
+
 .run_everything_rules: &run_everything_rules
   refs:
     - develop
@@ -41,6 +45,21 @@ suite-web build stable:
       - releases
       - schedules
       - /^release\//
+  script:
+    - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
+    - yarn build:libs
+    - assetPrefix=/web yarn workspace @trezor/suite-web build
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - packages/suite-web/scripts/s3sync.sh
+      - packages/suite-web/build
+
+suite-web build stable codesign:
+  stage: build
+  <<: *config_sign_stable
+  only:
+    refs:
       - codesign
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
