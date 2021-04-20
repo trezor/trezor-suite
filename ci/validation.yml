@@ -1,26 +1,26 @@
 lint:
-  stage: prebuild
+  stage: validation
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
     - lerna run lint
 
 typescript:
-  stage: prebuild
+  stage: validation
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
     - lerna run type-check
 
 unit tests:
-  stage: prebuild
+  stage: validation
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
     - lerna run --stream test:unit -- --passWithNoTests
 
 yaml lint:
-  stage: prebuild
+  stage: validation
   image: registry.gitlab.com/satoshilabs/trezor/trezor-user-env/trezor-user-env
   script:
     - nix-shell --run "yamllint --version"

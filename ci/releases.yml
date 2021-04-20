@@ -2,7 +2,7 @@
 suite codesign deploy staging-suite:
   stage: deploy to staging
   needs:
-    - suite-web build stable
+    - suite-web build stable codesign
     - suite-desktop build mac codesign
     - suite-desktop build linux codesign
     - suite-desktop build windows codesign
