@@ -6,7 +6,7 @@
         "lint": "yarn lint:styles && yarn lint:js",
         "lint:js": "eslint '**/*{.ts,.tsx}'",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}'",
-        "translations:extract": "yarn -s formatjs extract src/support/messages.ts  --format crowdin > translations/master.json && node ../translations-manager/lib/cli.js build-csv",
+        "translations:extract": "mkdir -p translations && yarn -s formatjs extract src/support/messages.ts  --format crowdin > translations/master.json && node ../translations-manager/lib/cli.js build-csv",
         "translations:upload": "yarn translations:extract && node ../translations-manager/lib/cli.js upload",
         "translations:download": "yarn ttm build-translations && sleep 5 && yarn ttm export-translations",
         "translations:unused": "node ../translations-manager/lib/cli.js find-unused-messages --messages ./translations/master.json --src ./src --src ../suite-web/pages --src ../suite-desktop/pages",
