@@ -280,7 +280,8 @@ const Recovery = ({
                     </>
                 )}
 
-                {recovery.status === 'in-progress' && (
+                {(recovery.status === 'in-progress' ||
+                    recovery.status === 'waiting-for-confirmation') && (
                     <>
                         {!modal && <Loading noBackground />}
                         {modal && (
