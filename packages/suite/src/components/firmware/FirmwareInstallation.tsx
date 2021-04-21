@@ -20,8 +20,8 @@ const FirmwareInstallation = ({ cachedDevice }: Props) => {
 
     return (
         <>
-            {/* Modal to instruct user to disconnect the device and reconnect in normal mode */}
             {(status === 'unplug' || status === 'reconnect-in-normal') && (
+                // Modal to instruct user to disconnect the device and reconnect in normal mode
                 <ReconnectDevicePrompt
                     deviceVersion={cachedDevice?.features?.major_version || 2}
                     requestedMode="normal"
@@ -29,7 +29,13 @@ const FirmwareInstallation = ({ cachedDevice }: Props) => {
             )}
             <OnboardingStepBox
                 image="FIRMWARE"
-                heading={<Translation id="TR_INSTALL_FIRMWARE" />}
+                heading={
+                    status === 'partially-done' ? (
+                        <Translation id="TR_FIRMWARE_PARTIALLY_UPDATED" />
+                    ) : (
+                        <Translation id="TR_INSTALL_FIRMWARE" />
+                    )
+                }
                 confirmOnDevice={
                     status === 'waiting-for-confirmation'
                         ? device?.features?.major_version
@@ -62,7 +68,6 @@ const FirmwareInstallation = ({ cachedDevice }: Props) => {
                     ) : undefined
                 }
             >
-                {console.log('cached Device', cachedDevice)}
                 <FirmwareOffer
                     currentVersion={
                         cachedDevice.firmware !== 'none' ? getFwVersion(cachedDevice) : undefined
@@ -72,7 +77,7 @@ const FirmwareInstallation = ({ cachedDevice }: Props) => {
                 />
 
                 {status !== 'waiting-for-confirmation' && status !== 'started' && (
-                    // Progress bar shown only in 'installing', 'wait-for-reboot', 'unplug', 'reconnect-in-normal', 'done'
+                    // Progress bar shown only in 'installing', 'wait-for-reboot', 'unplug', 'reconnect-in-normal', 'partially-done', 'done'
                     <ProgressBar
                         label={statusText}
                         total={100}
