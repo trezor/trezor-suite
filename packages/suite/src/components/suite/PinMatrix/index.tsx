@@ -71,6 +71,7 @@ const ItemText = styled.div`
     font-size: ${FONT_SIZE.SMALL};
     font-weight: ${FONT_WEIGHT.MEDIUM};
     padding: 26px 0px;
+    text-align: left;
     /* border-bottom: 1px solid #ccc; */
 `;
 
@@ -131,7 +132,6 @@ interface Props {
     invalid?: boolean;
 }
 
-// TODO: implement new design and reused it in separate Pin modal (rendered from suite-components/Modals container)
 const PinMatrix = ({ device, hideExplanation, invalid }: Props) => {
     const [submitted, setSubmitted] = useState(false);
     const { onPinSubmit } = useActions({ onPinSubmit: modalActions.onPinSubmit });
