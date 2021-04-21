@@ -19,7 +19,7 @@ const BodyWrapper = styled.div`
 const ChangesSummary = styled.div`
     width: 100%;
     text-align: left;
-    background-color: ${props => props.theme.BG_LIGHT_GREY};
+    background-color: ${props => props.theme.BG_GREY};
     border-radius: 8px;
     padding: 20px;
     margin: 20px 0;
