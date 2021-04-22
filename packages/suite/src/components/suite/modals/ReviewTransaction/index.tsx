@@ -82,7 +82,7 @@ const ReviewTransaction = ({ decision }: Props) => {
         outputs.push({ type: 'locktime', value: precomposedForm.bitcoinLockTime });
     }
 
-    if (precomposedForm.ethereumDataHex) {
+    if (precomposedForm.ethereumDataHex && !precomposedTx.token) {
         outputs.push({ type: 'data', value: precomposedForm.ethereumDataHex });
     }
 
