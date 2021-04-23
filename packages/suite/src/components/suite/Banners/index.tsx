@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { isDesktop } from '@suite-utils/env';
@@ -9,6 +9,7 @@ import UpdateFirmware from './UpdateFirmware';
 import NoBackup from './NoBackup';
 import FailedBackup from './FailedBackup';
 import MessageSystemBanner from './MessageSystemBanner';
+import SafetyChecksBanner from './SafetyChecks';
 
 import type { Message } from '@suite-types/messageSystem';
 
@@ -22,6 +23,11 @@ const Banners = () => {
     const online = useSelector(state => state.suite.online);
     const device = useSelector(state => state.suite.device);
     const { validMessages, dismissedMessages, config } = useSelector(state => state.messageSystem);
+    // The dismissal doesn't need to outlive the session. Use local state.
+    const [safetyChecksDismissed, setSafetyChecksDismissed] = useState(false);
+    useEffect(() => {
+        setSafetyChecksDismissed(false);
+    }, [device?.features?.safety_checks]);
 
     const showUpdateBridge = () => {
         if (
@@ -58,6 +64,19 @@ const Banners = () => {
     } else if (device?.features?.needs_backup) {
         banner = <NoBackup />;
         priority = 70;
+    } else if (device?.connected && device?.features?.safety_checks === 'PromptAlways') {
+        // PromptAlways could only be set via trezorctl. Warn user unconditionally.
+        banner = <SafetyChecksBanner />;
+        priority = 50;
+    } else if (
+        !safetyChecksDismissed &&
+        device?.connected &&
+        device?.features?.safety_checks === 'PromptTemporarily'
+    ) {
+        // PromptTemporarily was probably set intentionally via Suite and will change back to Strict when Trezor reboots.
+        // Let the user dismiss the warning.
+        banner = <SafetyChecksBanner onDismiss={() => setSafetyChecksDismissed(true)} />;
+        priority = 50;
     } else if (showUpdateBridge()) {
         banner = <UpdateBridge />;
         priority = 30;
