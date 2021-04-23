@@ -1610,6 +1610,14 @@ const definedMessages = defineMessages({
             'Allow potentially unsafe actions, such as mismatching coin keys or extreme fees by manually approving them on your Trezor.',
         id: 'TR_SAFETY_CHECKS_PROMPT_LEVEL_DESC',
     },
+    TR_SAFETY_CHECKS_DISABLED_WARNING: {
+        defaultMessage: 'Safety Checks are disabled.',
+        id: 'TR_SAFETY_CHECKS_DISABLED_WARNING',
+    },
+    TR_SAFETY_CHECKS_BANNER_CHANGE: {
+        defaultMessage: 'Change',
+        id: 'TR_SAFETY_CHECKS_BANNER_CHANGE',
+    },
     TR_DEVICE_SETTINGS_PASSPHRASE_TITLE: {
         defaultMessage: 'Passphrase',
         id: 'TR_DEVICE_SETTINGS_PASSPHRASE_TITLE',
