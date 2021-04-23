@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Post } from './types';
 import parser from 'fast-xml-parser';
-import { MEDIUM_FEED_URL, MEDIUM_CDN_BASE, TREZOR_CDN_BASE } from './config';
+import { MEDIUM_FEED_URL, MEDIUM_CDN_BASE, TREZOR_CDN_BASE, USER_AGENT } from './config';
 import cheerio from 'cheerio';
 
 const replaceCDNLink = (trezorLink?: string) => {
@@ -43,7 +43,7 @@ const fetcher = (
     callback: (statusCode: number, data: string | null, errMessage?: string) => void,
 ) => {
     axios
-        .get(MEDIUM_FEED_URL)
+        .get(MEDIUM_FEED_URL, { headers: { 'User-Agent': USER_AGENT } })
         .then(response => {
             try {
                 const data = parser.parse(response.data, {}, true);
@@ -53,7 +53,7 @@ const fetcher = (
                 callback(500, null, err.message);
             }
         })
-        .catch(error => callback(500, null, error.message));
+        .catch(error => callback(error?.response?.status ?? 500, null, error.message));
 };
 
 export default fetcher;

@@ -22,6 +22,7 @@ app.get('/posts', (req, res) => {
     fetcher(limit, (statusCode, data: string | null, errorMsg) => {
         res.setHeader('Content-Type', 'application/json');
         if (statusCode !== 200) {
+            res.statusCode = statusCode;
             res.end(JSON.stringify({ status: 'error', errorMsg }));
         } else {
             res.end(data);
