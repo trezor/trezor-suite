@@ -39,8 +39,8 @@ const getPosts = (data: any, limit = 5) => {
 };
 
 const fetcher = (
-    limit: number,
     callback: (statusCode: number, data: string | null, errMessage?: string) => void,
+    limit?: number,
 ) => {
     axios
         .get(MEDIUM_FEED_URL, { headers: { 'User-Agent': USER_AGENT } })

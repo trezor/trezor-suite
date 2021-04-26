@@ -11,6 +11,11 @@ const options: cors.CorsOptions = {
     origin: '*',
 };
 
+const invalidLimitRes = JSON.stringify({
+    status: 'error',
+    errorMsg: 'Invalid limit param',
+});
+
 app.use(cors(options));
 
 app.get('/', (_req, res) => {
@@ -18,8 +23,20 @@ app.get('/', (_req, res) => {
 });
 
 app.get('/posts', (req, res) => {
+    let limitCount;
     const { limit } = req.query;
-    fetcher(limit, (statusCode, data: string | null, errorMsg) => {
+
+    if (limit) {
+        if (typeof limit !== 'string') {
+            return res.status(400).end(invalidLimitRes);
+        }
+        limitCount = parseInt(limit, 10);
+        if (Number.isNaN(limitCount)) {
+            return res.status(400).end(invalidLimitRes);
+        }
+    }
+
+    fetcher((statusCode, data: string | null, errorMsg) => {
         res.setHeader('Content-Type', 'application/json');
         if (statusCode !== 200) {
             res.statusCode = statusCode;
@@ -27,7 +44,7 @@ app.get('/posts', (req, res) => {
         } else {
             res.end(data);
         }
-    });
+    }, limitCount);
 });
 
 app.get('/status', (_req, res) => {
