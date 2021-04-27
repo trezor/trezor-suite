@@ -5623,6 +5623,12 @@ const definedMessages = defineMessages({
         id: 'TR_ONBOARDING_DEVICE_CHECK_3',
         defaultMessage: 'Package wasn’t tampered with.',
     },
+    TR_ONBOARDING_DEVICE_CHECK_4: {
+        id: 'TR_ONBOARDING_DEVICE_CHECK_4',
+        description: 'Shown only if device has firmware already installed',
+        defaultMessage:
+            'It looks like devicee was used before. Did you set up the device yourself?',
+    },
     TR_HOLOGRAM_WARNING_BANNER: {
         defaultMessage: 'Does your hologram looks suspicious? <a>Contact us</a>.',
         id: 'TR_HOLOGRAM_WARNING_BANNER',

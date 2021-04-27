@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, Icon, Tooltip, variables } from '@trezor/components';
-import { useOnboarding, useTheme } from '@suite-hooks';
-import { Translation } from '@suite/components/suite';
-import { Box, Hologram } from '@onboarding-components';
+import { Icon, Tooltip, variables } from '@trezor/components';
+import { useOnboarding, useSelector, useTheme } from '@suite-hooks';
+import { Translation, TrezorLink } from '@suite-components';
+import { Box, Hologram, OnboardingButton } from '@onboarding-components';
+import { SUPPORT_URL } from '@suite-constants/urls';
+import { getConnectedDeviceStatus } from '@suite-utils/device';
 
 const Items = styled.div`
     display: flex;
@@ -40,54 +42,81 @@ const Text = styled.div`
     margin-left: 24px;
 `;
 
-const StyledButton = styled(Button)`
-    min-width: 180px;
-    & + & {
-        margin-left: 16px;
-    }
+const StyledButton = styled(OnboardingButton.Cta)`
+    margin-right: 16px;
 `;
+
 const StyledTooltip = styled(Tooltip)`
     display: inline-block;
 `;
-interface Props {
-    initialized: boolean;
-    trezorModel: number;
-}
 
-const SecurityCheck = ({ initialized, trezorModel }: Props) => {
+const SecurityCheck = () => {
     const { goToNextStep, goto } = useOnboarding();
+    const { device } = useSelector(s => ({
+        device: s.suite.device,
+    }));
+
+    const deviceStatus = getConnectedDeviceStatus(device);
+    const initialized = deviceStatus === 'initialized';
+    const firmwareNotInstalled = device?.firmware === 'none';
     const { theme } = useTheme();
-    // TODO: Maybe we could provide separate sets of texts for initialize device?
+
+    const items = [
+        {
+            key: 1,
+            show: firmwareNotInstalled,
+            icon: 'HOLOGRAM',
+            content: (
+                <Translation
+                    id="TR_ONBOARDING_DEVICE_CHECK_1"
+                    values={{
+                        strong: chunks => (
+                            <StyledTooltip
+                                content={
+                                    <Hologram
+                                        trezorModel={device?.features?.major_version === 1 ? 1 : 2}
+                                    />
+                                }
+                            >
+                                <Underline>{chunks}</Underline>
+                            </StyledTooltip>
+                        ),
+                    }}
+                />
+            ),
+        },
+        {
+            key: 2,
+            show: firmwareNotInstalled,
+            icon: 'VERIFIED',
+            content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_2" />,
+        },
+        {
+            key: 3,
+            show: firmwareNotInstalled,
+            icon: 'PACKAGE',
+            content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_3" />,
+        },
+        {
+            // Device was used, shows only when fw installed
+            key: 4,
+            show: !firmwareNotInstalled,
+            icon: 'PACKAGE',
+            content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_4" />,
+        },
+    ] as const;
+
     return (
-        <Box image="PIN" heading={<Translation id="TR_ONBOARDING_DEVICE_CHECK" />}>
+        <Box variant="small" image="PIN" heading={<Translation id="TR_ONBOARDING_DEVICE_CHECK" />}>
             <Items>
-                <Item>
-                    <Icon size={24} icon="HOLOGRAM" color={theme.TYPE_DARK_GREY} />
-                    <Text>
-                        <Translation
-                            id="TR_ONBOARDING_DEVICE_CHECK_1"
-                            values={{
-                                strong: chunks => (
-                                    <StyledTooltip content={<Hologram trezorModel={trezorModel} />}>
-                                        <Underline>{chunks}</Underline>
-                                    </StyledTooltip>
-                                ),
-                            }}
-                        />
-                    </Text>
-                </Item>
-                <Item>
-                    <Icon size={24} icon="VERIFIED" color={theme.TYPE_DARK_GREY} />
-                    <Text>
-                        <Translation id="TR_ONBOARDING_DEVICE_CHECK_2" />
-                    </Text>
-                </Item>
-                <Item>
-                    <Icon size={24} icon="PACKAGE" color={theme.TYPE_DARK_GREY} />
-                    <Text>
-                        <Translation id="TR_ONBOARDING_DEVICE_CHECK_3" />
-                    </Text>
-                </Item>
+                {items
+                    .filter(item => item.show)
+                    .map(item => (
+                        <Item key={item.key}>
+                            <Icon size={24} icon={item.icon} color={theme.TYPE_DARK_GREY} />
+                            <Text>{item.content}</Text>
+                        </Item>
+                    ))}
             </Items>
 
             <Buttons>
@@ -103,7 +132,11 @@ const SecurityCheck = ({ initialized, trezorModel }: Props) => {
                         <Translation id="TR_ONBOARDING_START_CTA" />
                     </StyledButton>
                 )}
-                <StyledButton variant="secondary">velky spatny</StyledButton>
+                <TrezorLink variant="nostyle" href={SUPPORT_URL}>
+                    <OnboardingButton.Cta variant="secondary" fullWidth>
+                        <Translation id="TR_CONTACT_SUPPORT" />
+                    </OnboardingButton.Cta>
+                </TrezorLink>
             </Buttons>
         </Box>
     );
