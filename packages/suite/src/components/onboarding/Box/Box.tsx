@@ -23,7 +23,7 @@ const BoxWrapper = styled(animated.div)<{
     @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
         padding-left: ${props => (props.variant === 'large' ? '40px' : '30px')};
         padding-right: ${props => (props.variant === 'large' ? '40px' : '30px')};
-        padding-bottom: ${props => (props.variant === 'large' ? '40px' : '20px')};
+        padding-bottom: ${props => (props.variant === 'large' && props.expanded ? '40px' : '20px')};
     }
 
     ${props =>
