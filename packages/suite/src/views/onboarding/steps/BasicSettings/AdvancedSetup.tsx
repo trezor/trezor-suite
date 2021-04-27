@@ -53,6 +53,11 @@ const InputLabel = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
+const Buttons = styled.div`
+    display: flex;
+    justify-content: center;
+`;
+
 interface Props {
     networks: Network[];
     children: React.ReactNode;
@@ -163,7 +168,7 @@ const AdvancedSetup = ({ networks, children }: Props) => {
                     </Box>
                 )}
             </Boxes>
-            {children}
+            <Buttons>{children}</Buttons>
         </AdvancedSetupWrapper>
     );
 };
