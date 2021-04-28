@@ -5684,6 +5684,10 @@ const definedMessages = defineMessages({
         id: 'TR_ONBOARDING_WELCOME_HEADING',
         defaultMessage: 'Welcome!',
     },
+    TR_RESTORE_DEFAULT_SETTINGS: {
+        id: 'TR_RESTORE_DEFAULT_SETTINGS',
+        defaultMessage: 'Restore default settings',
+    },
 } as const);
 
 export default definedMessages;

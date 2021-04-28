@@ -11,9 +11,9 @@ import { BlockbookUrl } from '@wallet-types/blockbook';
 const CustomBackendWrapper = styled.div`
     width: 100%;
     display: grid;
-    grid-template-columns: 0.75fr 1fr 1fr;
+    grid-template-columns: 1fr 3fr 0.5fr;
     grid-template-rows: 1fr;
-    gap: 9px 54px;
+    gap: 9px 18px;
     padding: 9px 0 0 0;
     margin: 0 0 12px 0;
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
@@ -52,10 +52,17 @@ const CoinName = styled.div`
 
 const ButtonAdd = styled(Button)`
     height: 48px;
+    & > * {
+        width: 14px;
+    }
 `;
 
 const ButtonRemove = styled(Button)`
     height: 48px;
+    padding: 9px 12px;
+    & > * {
+        width: 14px;
+    }
 `;
 
 const Inputs = styled.div`
@@ -76,7 +83,7 @@ type FormInputs = {
 
 const CustomBackend = ({ network, blockbookUrls, addBlockbookUrl, removeBlockbookUrl }: Props) => {
     const { register, getValues, setValue, watch, errors } = useForm<FormInputs>({
-        mode: 'all',
+        mode: 'onChange',
     });
     const { translationString } = useTranslation();
     const coin = network.symbol;
@@ -108,7 +115,7 @@ const CustomBackend = ({ network, blockbookUrls, addBlockbookUrl, removeBlockboo
                     <InputLineShort key={b.url}>
                         <Input type="text" noTopLabel name={b.url} value={b.url} isDisabled />
                         <ButtonRemove
-                            variant="danger"
+                            variant="tertiary"
                             icon="CROSS"
                             onClick={() => removeBlockbookUrl(b)}
                         />

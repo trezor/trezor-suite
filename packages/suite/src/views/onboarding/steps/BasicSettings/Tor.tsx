@@ -7,7 +7,7 @@ import { useAnalytics } from '@suite-hooks';
 const TorWrapper = styled.div`
     width: 100%;
     display: grid;
-    grid-template-columns: 0.75fr 1fr 1fr;
+    grid-template-columns: 1fr 3fr 0.5fr;
     grid-template-rows: 1fr;
     gap: 9px 54px;
     padding: 9px 0 0 0;

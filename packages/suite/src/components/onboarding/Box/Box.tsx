@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { animated, useSpring } from 'react-spring';
 import Text from '@onboarding-components/Text';
 import { Image, ImageProps, Translation } from '@suite-components';
-import { H1, variables, Icon, Button } from '@trezor/components';
+import { H1, variables, Button } from '@trezor/components';
 import { useTheme } from '@suite-hooks';
 import { useMeasure } from 'react-use';
 
@@ -125,15 +125,13 @@ const CloseButton = styled(Button)`
     right: 16px;
 `;
 
-const IconPlus = styled(Icon)`
-    margin: 0 28px 0 0;
-`;
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
     image?: ImageProps['image'];
     variant?: 'small' | 'large';
     expandable?: boolean;
     expanded?: boolean;
     onToggle?: () => void;
+    expandableIcon?: React.ReactNode;
     heading?: React.ReactNode;
     description?: React.ReactNode;
     children?: React.ReactNode;
@@ -148,6 +146,7 @@ const Box = ({
     variant = 'large',
     expanded = true,
     expandable = false,
+    expandableIcon,
     onToggle = () => undefined,
     ...rest
 }: Props) => {
@@ -178,7 +177,7 @@ const Box = ({
             <BoxWrapperInner>
                 {expandable && !expanded && (
                     <ExpandableBox>
-                        <IconPlus icon="PLUS" size={24} color={theme.TYPE_LIGHT_GREY} />
+                        {expandableIcon}
                         <HeadingExpandable>{heading}</HeadingExpandable>
                         <Tag>
                             <Translation id="TR_ONBOARDING_ADVANCED" />
@@ -189,7 +188,7 @@ const Box = ({
                     <div ref={heightRef}>
                         {expandable && expanded && (
                             <CloseButton variant="tertiary" onClick={() => onToggle()}>
-                                <Translation id="TR_CANCEL" />
+                                <Translation id="TR_CLOSE" />
                             </CloseButton>
                         )}
                         {heading && <Heading withDescription={!!description}>{heading}</Heading>}
