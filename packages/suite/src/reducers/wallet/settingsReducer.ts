@@ -60,8 +60,9 @@ const settingsReducer = (state: State = initialState, action: Action): State =>
 
             case WALLET_SETTINGS.REMOVE_BLOCKBOOK_URL: {
                 const { coin, url } = action.payload;
-                const index = draft.blockbookUrls.findIndex(b => b.coin !== coin && b.url !== url);
-                draft.blockbookUrls.splice(index, 1);
+                draft.blockbookUrls = draft.blockbookUrls.filter(
+                    b => !(b.coin === coin && b.url === url),
+                );
                 break;
             }
 
