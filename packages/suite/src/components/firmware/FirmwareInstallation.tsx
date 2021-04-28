@@ -18,6 +18,15 @@ const FirmwareInstallation = ({ cachedDevice }: Props) => {
     const statusIntlId = getTextForStatus(status);
     const statusText = statusIntlId ? <Translation id={statusIntlId} /> : null;
 
+    const getFakeProgressDuration = () => {
+        if (cachedDevice.firmware === 'none') {
+            // device without fw starts installation without a confirmation
+            return 40; // Perfect for TT, T1 seems a bit faster but still works okay
+        }
+        // Updating from older fw, device asks for confirmation, but sends first info about installation progress somewhat to late
+        return cachedDevice.features.major_version === 1 ? 25 : undefined; // 25s for T1, no fake progress for updating from older fw on T2
+    };
+
     return (
         <>
             {(status === 'unplug' || status === 'reconnect-in-normal') && (
@@ -76,18 +85,19 @@ const FirmwareInstallation = ({ cachedDevice }: Props) => {
                     releaseChangelog={cachedDevice.firmwareRelease}
                 />
 
-                {status !== 'waiting-for-confirmation' && status !== 'started' && (
-                    // Progress bar shown only in 'installing', 'wait-for-reboot', 'unplug', 'reconnect-in-normal', 'partially-done', 'done'
-                    <ProgressBar
-                        label={statusText}
-                        total={100}
-                        current={installingProgress || 0}
-                        maintainCompletedState
-                        fakeProgressDuration={
-                            cachedDevice.features.major_version === 1 ? 25 : undefined
-                        } // fake progress bar for T1 that will animate progress bar for up to 25s of installation
-                    />
-                )}
+                {status !== 'waiting-for-confirmation' &&
+                    (status !== 'started' || cachedDevice.firmware === 'none') && (
+                        // Progress bar shown in 'installing', 'wait-for-reboot', 'unplug', 'reconnect-in-normal', 'partially-done', 'done'
+                        // Also in 'started' if the device has no fw (freshly unpacked device). In this case device won't ask for confirmation
+                        // and starts installation right away. However it doesn't provide an installation progress till way later (we set status to 'installing' only after receiving UI.FIRMWARE_PROGRESS in firmware reducer)
+                        <ProgressBar
+                            label={statusText}
+                            total={100}
+                            current={installingProgress || 0}
+                            maintainCompletedState
+                            fakeProgressDuration={getFakeProgressDuration()} // fake progress bar for T1 and devices without fw that will animate progress bar for up to xy seconds of installation
+                        />
+                    )}
             </OnboardingStepBox>
         </>
     );

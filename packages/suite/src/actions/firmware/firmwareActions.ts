@@ -12,6 +12,7 @@ export type FirmwareAction =
     | { type: typeof FIRMWARE.SET_TARGET_RELEASE; payload: AcquiredDevice['firmwareRelease'] }
     | { type: typeof FIRMWARE.RESET_REDUCER }
     | { type: typeof FIRMWARE.ENABLE_REDUCER; payload: boolean }
+    | { type: typeof FIRMWARE.SET_INTERMEDIARY; payload: boolean }
     | { type: typeof FIRMWARE.SET_ERROR; payload?: string }
     | { type: typeof FIRMWARE.TOGGLE_HAS_SEED };
 
@@ -74,6 +75,7 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
     // update to same variant as is currently installed
     const toBtcOnly = isBitcoinOnly(device);
 
+    const intermediary = !toRelease.isLatest;
     const payload = {
         keepSession: false,
         skipFinalReload: true,
@@ -83,8 +85,12 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
         btcOnly: toBtcOnly,
         version: toRelease.release.version,
         // if we detect latest firmware may not be used right away, we should use intermediary instead
-        intermediary: !toRelease.isLatest,
+        intermediary,
     };
+
+    if (intermediary) {
+        dispatch({ type: FIRMWARE.SET_INTERMEDIARY, payload: true });
+    }
 
     const updateResponse = await TrezorConnect.firmwareUpdate(payload);
 

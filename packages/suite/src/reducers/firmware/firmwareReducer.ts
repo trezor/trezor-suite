@@ -9,6 +9,7 @@ type FirmwareUpdateCommon = {
     hasSeed: boolean;
     targetRelease: AcquiredDevice['firmwareRelease'];
     prevDevice?: Device;
+    intermediaryInstalled: boolean;
 };
 
 export type FirmwareUpdateState =
@@ -42,6 +43,7 @@ const initialState: FirmwareUpdateState = {
     targetRelease: undefined,
     hasSeed: false,
     prevDevice: undefined,
+    intermediaryInstalled: false,
 };
 
 const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Action) =>
@@ -64,6 +66,9 @@ const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Actio
                 break;
             case FIRMWARE.TOGGLE_HAS_SEED:
                 draft.hasSeed = !state.hasSeed;
+                break;
+            case FIRMWARE.SET_INTERMEDIARY:
+                draft.intermediaryInstalled = action.payload;
                 break;
 
             case SUITE.ADD_BUTTON_REQUEST:

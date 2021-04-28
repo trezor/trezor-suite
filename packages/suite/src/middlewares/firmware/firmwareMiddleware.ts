@@ -16,7 +16,7 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
     // pass action
     next(action);
 
-    const { status } = api.getState().firmware;
+    const { status, intermediaryInstalled } = api.getState().firmware;
     switch (action.type) {
         case FIRMWARE.SET_UPDATE_STATUS: {
             const { device } = api.getState().suite;
@@ -52,6 +52,10 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
             // 4. device does not have the latest firmware, proceed with subsequent updated automatically
             // todo: this is a 'client side' implementation. It would be nicer to have it in trezor-connect
             // todo: but this would require reworking the entire TRAKTOR
+
+            console.log('status', status);
+            console.log('intermediaryInstalled', intermediaryInstalled);
+            console.log('action.payload?.mode', action.payload?.mode);
             if (
                 // these 3 conditions cover any device reconnected in bootloader mode (possibly accidentally)
                 status === 'reconnect-in-normal' &&
@@ -59,7 +63,8 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
                 action.payload?.mode === 'bootloader' &&
                 // this one is the key, if reconnected device has firmware which is not latest, proceed with
                 // subsequent updated automatically
-                !action.payload?.firmwareRelease?.isLatest
+                // !action.payload?.firmwareRelease?.isLatest
+                intermediaryInstalled
             ) {
                 api.dispatch(firmwareActions.firmwareUpdate());
                 break;
