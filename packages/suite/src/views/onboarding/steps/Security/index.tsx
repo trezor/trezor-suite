@@ -14,7 +14,7 @@ const SecurityStep = () => {
             description={<Translation id="TR_SECURITY_SUBHEADING" />}
             innerActions={
                 <OnboardingButton.Cta
-                    data-test="@onboarding/continue-to-security-button"
+                    data-test="@onboarding/create-backup-button"
                     onClick={() => {
                         goToNextStep();
                     }}

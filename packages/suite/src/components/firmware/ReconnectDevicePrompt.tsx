@@ -178,7 +178,7 @@ const ReconnectDevicePrompt = ({ deviceVersion, requestedMode }: Props) => {
 
     return (
         <Overlay desktopBorder={isDesktop() && !isMac() ? DESKTOP_WRAPPER_BORDER_WIDTH : undefined}>
-            <Wrapper>
+            <Wrapper data-test={`@firmware/reconnect-device/${requestedMode}`}>
                 <Img />
                 <Content>
                     <Heading>

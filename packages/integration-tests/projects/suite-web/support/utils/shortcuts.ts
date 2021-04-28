@@ -6,22 +6,24 @@ export const toggleDeviceMenu = () => {
 };
 
 export const goToOnboarding = () => {
-    return cy
-        .getTestElement('@welcome/continue-button')
-        .click()
-        .getTestElement('@analytics/go-to-onboarding-button')
-        .click();
+    // return cy
+    //     .getTestElement('@welcome/continue-button')
+    //     .click()
+    //     .getTestElement('@analytics/go-to-onboarding-button')
+    //     .click();
+    
+    // todo: no no no
+    cy.task('startEmu', { version: '2.1.4', wipe: true });
+    cy.getTestElement('@onboarding/continue-button').click();
+    cy.getTestElement('@onboarding/continue-button').click();
+
 };
 
 export const passThroughInitialRun = () => {
     return cy
-        .getTestElement('@welcome/continue-button')
+        .getTestElement('@onboarding/continue-button')
         .click()
-        .getTestElement('@analytics/go-to-onboarding-button')
-        .click()
-        .getTestElement('@onboarding/skip-button')
-        .click()
-        .getTestElement('@onboarding/skip-button')
+        .getTestElement('@onboarding/exit-app-button')
         .click()
         .getTestElement('@suite/loading')
         .should('not.exist');
