@@ -1,6 +1,7 @@
 import reducer, { initialState } from '@wallet-reducers/settingsReducer';
 import { STORAGE } from '@suite-actions/constants';
 import { WALLET_SETTINGS } from '@settings-actions/constants';
+import fixtures from '../__fixtures__/settingsReducer';
 
 describe('settings reducer', () => {
     it('test initial state', () => {
@@ -58,6 +59,66 @@ describe('settings reducer', () => {
         ).toEqual({
             ...initialState,
             enabledNetworks: ['eth'],
+        });
+    });
+
+    it('REMOVE_BLOCKBOOK_URL - valid URL', () => {
+        expect(
+            reducer(fixtures, {
+                type: WALLET_SETTINGS.REMOVE_BLOCKBOOK_URL,
+                payload: {
+                    coin: 'ltc',
+                    url: 'https://ltc1.com',
+                },
+            }),
+        ).toEqual({
+            ...fixtures,
+            blockbookUrls: [
+                {
+                    coin: 'btc',
+                    url: 'https://btc1.com',
+                },
+                {
+                    coin: 'btc',
+                    url: 'https://btc2.com',
+                },
+                {
+                    coin: 'ltc',
+                    url: 'https://ltc2.com',
+                },
+            ],
+        });
+    });
+
+    it('REMOVE_BLOCKBOOK_URL - invalid URL', () => {
+        expect(
+            reducer(fixtures, {
+                type: WALLET_SETTINGS.REMOVE_BLOCKBOOK_URL,
+                payload: {
+                    coin: 'ltc',
+                    url: 'https://not-valid.com',
+                },
+            }),
+        ).toEqual({
+            ...fixtures,
+            blockbookUrls: [
+                {
+                    coin: 'btc',
+                    url: 'https://btc1.com',
+                },
+                {
+                    coin: 'btc',
+                    url: 'https://btc2.com',
+                },
+                {
+                    coin: 'ltc',
+                    url: 'https://ltc1.com',
+                },
+                {
+                    coin: 'ltc',
+                    url: 'https://ltc2.com',
+                },
+            ],
         });
     });
 });

@@ -62,7 +62,7 @@ const CustomBlockbookUrls = ({
     addBlockbookUrl,
     removeBlockbookUrl,
 }: Props) => {
-    const { register, getValues, setValue, errors } = useForm<FormInputs>({
+    const { register, getValues, setValue, watch, errors } = useForm<FormInputs>({
         mode: 'onChange',
     });
     const { translationString } = useTranslation();
@@ -81,6 +81,7 @@ const CustomBlockbookUrls = ({
     };
 
     const urls = blockbookUrls.filter(b => b.coin === coin);
+    const watchAll = watch();
 
     return (
         <Wrapper>
@@ -142,14 +143,16 @@ const CustomBlockbookUrls = ({
                 bottomText={<InputError error={error} />}
             />
 
-            <AddButton
-                variant="tertiary"
-                icon="PLUS"
-                onClick={addUrl}
-                isDisabled={Boolean(error) || inputValue === ''}
-            >
-                <Translation id="TR_ADD_NEW_BLOCKBOOK_BACKEND" />
-            </AddButton>
+            {watchAll && (
+                <AddButton
+                    variant="tertiary"
+                    icon="PLUS"
+                    onClick={addUrl}
+                    isDisabled={Boolean(error) || inputValue === ''}
+                >
+                    <Translation id="TR_ADD_NEW_BLOCKBOOK_BACKEND" />
+                </AddButton>
+            )}
         </Wrapper>
     );
 };
