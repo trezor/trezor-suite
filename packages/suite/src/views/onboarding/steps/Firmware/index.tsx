@@ -8,6 +8,7 @@ import {
     FirmwareInstallation,
     OnboardingStepBox,
     FirmwareInitial,
+    Fingerprint,
 } from '@firmware-components';
 import { useSelector, useFirmware, useOnboarding } from '@suite-hooks';
 import { AcquiredDevice } from '@suite-types';
@@ -18,8 +19,21 @@ const FirmwareStep = () => {
         device: state.suite.device,
     }));
     const { goToNextStep } = useOnboarding();
-    const { status, error, resetReducer, firmwareUpdate } = useFirmware();
+    const { status, error, resetReducer, firmwareUpdate, showFingerprintCheck } = useFirmware();
     const [cachedDevice, setCachedDevice] = useState<AcquiredDevice>(device as AcquiredDevice);
+
+    if (showFingerprintCheck && device) {
+        // Some old firmwares ask for verifying firmware fingerprint by dispatching ButtonRequest_FirmwareCheck
+        return (
+            <OnboardingStepBox
+                image="FIRMWARE"
+                heading={<Translation id="TR_CHECK_FINGERPRINT" />}
+                confirmOnDevice={device.features?.major_version === 1 ? 1 : 2}
+            >
+                <Fingerprint device={device} />
+            </OnboardingStepBox>
+        );
+    }
 
     // edge case 1 - Installation failed
     if (error) {
