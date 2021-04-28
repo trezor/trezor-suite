@@ -24,7 +24,7 @@ const AnimationWrapper = ({
                     initial={collapsed}
                     animate={{
                         height: 'auto',
-                        transitionEnd: { overflow: 'unset', position: 'sticky' },
+                        transitionEnd: { overflow: 'unset' },
                     }}
                     exit={collapsed}
                     onAnimationStart={onAnimationStart}
