@@ -1,21 +1,27 @@
 // @group:onboarding
 // @retry=2
 
-describe('Onboarding - hologram', () => {
+// todo: is there any hologram in der neue onboarding?
+describe.skip('Onboarding - hologram', () => {
     beforeEach(() => {
         cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
+
+        
         cy.goToOnboarding();
-        cy.onboardingShouldLoad();
+        
+        // cy.onboardingShouldLoad();
         // common steps - navigation through onboarding
-        cy.getTestElement('@onboarding/begin-button').click();
-        cy.getTestElement('@onboarding/path-recovery-button').click();
-        cy.getTestElement('@onboarding/path-new-button').click();
+        // cy.getTestElement('@onboarding/begin-button').click();
+        // cy.getTestElement('@onboarding/path-recovery-button').click();
+        // cy.getTestElement('@onboarding/path-new-button').click();
 
     });
 
     it('Hologram, various cases', () => {
+        cy.task('startEmu', { version: '2.1.4', wipe: true });
+
         cy.log('first check if correct video is displayed according to users choice of device');
         cy.getTestElement('@onboarding/option-model-one-path').click();
         cy.getTestElement('@onboarding/hologram/model-1-video');

@@ -6,6 +6,7 @@ import { P, H2, ErrorImg } from '@firmware-components';
 
 const Heading = () => <Translation id="TR_FIRMWARE_INSTALL_FAILED_HEADER" />;
 
+// todo: is this component used??
 const Body = () => {
     const { error } = useFirmware();
     return (

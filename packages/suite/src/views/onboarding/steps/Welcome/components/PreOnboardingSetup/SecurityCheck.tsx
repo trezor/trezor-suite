@@ -128,7 +128,10 @@ const SecurityCheck = () => {
                         <Translation id="TR_GO_TO_SUITE" />
                     </StyledButton>
                 ) : (
-                    <StyledButton onClick={() => goToNextStep()}>
+                    <StyledButton
+                        onClick={() => goToNextStep()}
+                        data-test="@onboarding/continue-button"
+                    >
                         <Translation id="TR_ONBOARDING_START_CTA" />
                     </StyledButton>
                 )}

@@ -3,7 +3,7 @@
 // @group:onboarding
 // @retry=2
 
-describe('Onboarding - steps order', () => {
+describe.skip('Onboarding - steps order', () => {
     before(() => {
         cy.task('startBridge');
     });
