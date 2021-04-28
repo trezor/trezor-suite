@@ -88,10 +88,6 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
         intermediary,
     };
 
-    if (intermediary) {
-        dispatch({ type: FIRMWARE.SET_INTERMEDIARY, payload: true });
-    }
-
     const updateResponse = await TrezorConnect.firmwareUpdate(payload);
 
     console.warn('updateResponse', updateResponse);
@@ -111,6 +107,12 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
 
     if (!updateResponse.success) {
         return dispatch({ type: FIRMWARE.SET_ERROR, payload: updateResponse.payload.error });
+    }
+
+    console.log('payload', payload);
+
+    if (intermediary) {
+        dispatch({ type: FIRMWARE.SET_INTERMEDIARY, payload: true });
     }
 
     // handling case described here: https://github.com/trezor/trezor-suite/issues/2650
