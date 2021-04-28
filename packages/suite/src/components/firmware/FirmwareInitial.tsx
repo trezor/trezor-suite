@@ -55,12 +55,12 @@ const FirmwareInitial = ({ cachedDevice, setCachedDevice }: Props) => {
         content = {
             heading: <Translation id="TR_INSTALL_FIRMWARE" />,
             description: <Translation id="TR_FIRMWARE_SUBHEADING" />,
-            body: (
+            body: cachedDevice.firmwareRelease?.isLatest ? (
                 <FirmwareOffer
                     newVersion={getFwUpdateVersion(cachedDevice)}
                     releaseChangelog={cachedDevice.firmwareRelease}
                 />
-            ),
+            ) : undefined,
             innerActions: <InstallButton onClick={firmwareUpdate} />,
         };
     } else if (device.mode === 'bootloader') {

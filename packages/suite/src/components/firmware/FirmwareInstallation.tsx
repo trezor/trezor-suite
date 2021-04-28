@@ -13,10 +13,25 @@ interface Props {
 }
 const FirmwareInstallation = ({ cachedDevice }: Props) => {
     const { device } = useDevice();
-    const { status, installingProgress, resetReducer, isWebUSB } = useFirmware();
+    const {
+        status,
+        installingProgress,
+        resetReducer,
+        isWebUSB,
+        subsequentInstalling,
+    } = useFirmware();
     const { goToNextStep } = useOnboarding();
     const statusIntlId = getTextForStatus(status);
     const statusText = statusIntlId ? <Translation id={statusIntlId} /> : null;
+
+    const getFakeProgressDuration = () => {
+        if (cachedDevice.firmware === 'none') {
+            // device without fw starts installation without a confirmation and we need to fake progress bar for both devices (UI.FIRMWARE_PROGRESS is sent too late)
+            return cachedDevice.features.major_version === 1 ? 25 : 40; // T1 seems a bit faster
+        }
+        // Updating from older fw, device asks for confirmation, but sends first info about installation progress somewhat to late
+        return cachedDevice.features.major_version === 1 ? 25 : undefined; // 25s for T1, no fake progress for updating from older fw on T2
+    };
 
     return (
         <>
@@ -68,26 +83,35 @@ const FirmwareInstallation = ({ cachedDevice }: Props) => {
                     ) : undefined
                 }
             >
-                <FirmwareOffer
-                    currentVersion={
-                        cachedDevice.firmware !== 'none' ? getFwVersion(cachedDevice) : undefined
-                    }
-                    newVersion={getFwUpdateVersion(cachedDevice)}
-                    releaseChangelog={cachedDevice.firmwareRelease}
-                />
-
-                {status !== 'waiting-for-confirmation' && status !== 'started' && (
-                    // Progress bar shown only in 'installing', 'wait-for-reboot', 'unplug', 'reconnect-in-normal', 'partially-done', 'done'
-                    <ProgressBar
-                        label={statusText}
-                        total={100}
-                        current={installingProgress || 0}
-                        maintainCompletedState
-                        fakeProgressDuration={
-                            cachedDevice.features.major_version === 1 ? 25 : undefined
-                        } // fake progress bar for T1 that will animate progress bar for up to 25s of installation
+                {cachedDevice.firmwareRelease?.isLatest && (
+                    // If the proposed fw update is not latest it means we are gonna install intermediary firmware.
+                    // firmwareRelease will be set to newest release supported by the bootloader. It is fw 1.6.1 for bootloader version 1.4.0,
+                    // which is not the latest fw that will be installed as a subsequent fw update after installation of intermediary fw
+                    // So let's just hide this part of UI in this case.
+                    <FirmwareOffer
+                        currentVersion={
+                            cachedDevice.firmware !== 'none'
+                                ? getFwVersion(cachedDevice)
+                                : undefined
+                        }
+                        newVersion={getFwUpdateVersion(cachedDevice)}
+                        releaseChangelog={cachedDevice.firmwareRelease}
                     />
                 )}
+
+                {status !== 'waiting-for-confirmation' &&
+                    (status !== 'started' || cachedDevice.firmware === 'none') && (
+                        // Progress bar shown in 'installing', 'wait-for-reboot', 'unplug', 'reconnect-in-normal', 'partially-done', 'done'
+                        // Also in 'started' if the device has no fw (freshly unpacked device). In this case device won't ask for confirmation
+                        // and starts installation right away. However it doesn't provide an installation progress till way later (we set status to 'installing' only after receiving UI.FIRMWARE_PROGRESS in firmware reducer)
+                        <ProgressBar
+                            key={subsequentInstalling ? 1 : 0} // will reset the progress after an installation of intermediary fw (subsequent fw update will follow)
+                            label={statusText}
+                            total={100}
+                            current={installingProgress || 0}
+                            fakeProgressDuration={getFakeProgressDuration()} // fake progress bar for T1 and devices without fw that will animate progress bar for up to xy seconds of installation
+                        />
+                    )}
             </OnboardingStepBox>
         </>
     );
