@@ -188,7 +188,9 @@ export const findUnusedMessages = (messagesPath: string, srcs: string[]) => {
         process.exit(0);
     }
 
-    console.log(unused);
+    unused.forEach(u => {
+        console.log(u[0]);
+    });
     console.log(`Achtung achtung!, there is total ${unused.length} unused messages.`);
     process.exit(1);
 };
