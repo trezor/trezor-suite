@@ -7,6 +7,7 @@ import * as modalActions from '@suite-actions/modalActions';
 import { isWebUSB } from '@suite-utils/transport';
 import { Dispatch, GetState } from '@suite-types';
 import { DEVICE } from '@suite-constants';
+import { SUITE } from '@suite-actions/constants';
 
 export const applySettings = (params: ApplySettings) => async (
     dispatch: Dispatch,
@@ -117,6 +118,16 @@ export const resetDevice = (params: ResetDevice = {}) => async (
         ...defaults,
         ...params,
     });
+
+    if (result.success && DEVICE.DEFAULT_PASSPHRASE_PROTECTION) {
+        // We call resetDevice from onboarding (generating new seed)
+        // Uninitialized device has disabled passphrase protection thus useEmptyPassphrase is set to true.
+        // It means that when user finished the onboarding process a standard wallet is automatically
+        // discovered instead of asking for selecting between standard wallet and a passphrase.
+        // This action takes cares of setting useEmptyPassphrase to false (handled by deviceReducer).
+        dispatch({ type: SUITE.UPDATE_PASSPHRASE_MODE, payload: device, hidden: true });
+    }
+
     if (!result.success) {
         dispatch(addToast({ type: 'error', error: result.payload.error }));
     }
