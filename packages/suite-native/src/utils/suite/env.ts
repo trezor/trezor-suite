@@ -1,4 +1,4 @@
-import { Appearance, Platform } from 'react-native';
+import { Appearance, Platform, Dimensions } from 'react-native';
 import { SuiteThemeVariant } from '@suite-types';
 
 /**
@@ -11,13 +11,13 @@ export const getUserAgent = () =>
 
 export const getProcessPlatform = () => '';
 
-export const getScreenWidth = () =>
-    // todo
-    1;
+export const getScreenWidth = () => Dimensions.get('screen').width;
 
-export const getScreenHeight = () =>
-    // todo
-    1;
+export const getScreenHeight = () => Dimensions.get('screen').height;
+
+export const getWindowWidth = () => Dimensions.get('window').width;
+
+export const getWindowHeight = () => Dimensions.get('window').height;
 
 export const getPlatform = () => 'todo react-native';
 

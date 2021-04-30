@@ -18,6 +18,10 @@ export const getScreenWidth = () => window?.screen?.width || 0;
 
 export const getScreenHeight = () => window?.screen?.height || 0;
 
+export const getWindowWidth = () => window?.innerWidth || 0;
+
+export const getWindowHeight = () => window?.innerHeight || 0;
+
 export const getLocationOrigin = () => window?.location?.origin || '';
 
 export const getLocationHostname = () => window?.location?.hostname || '';

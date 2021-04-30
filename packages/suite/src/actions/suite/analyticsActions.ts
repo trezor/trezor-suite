@@ -39,7 +39,7 @@ simple semver for data-analytics part.
 Don't forget to update docs with changelog!
 */
 
-const version = '1.6';
+export const version = '1.8';
 
 export type AnalyticsEvent =
     | {
@@ -69,6 +69,13 @@ export type AnalyticsEvent =
               theme: string;
               // added in 1.6
               suiteVersion: string;
+              // added in 1.8
+              browserName: string;
+              browserVersion: string;
+              osName: string;
+              osVersion: string;
+              windowWidth: number;
+              windowHeight: number;
           };
       }
     | { type: 'transport-type'; payload: { type: string; version: string } }
@@ -182,7 +189,6 @@ export type AnalyticsEvent =
       }
     | { type: 'menu/goto/switch-device' }
     | { type: 'menu/goto/suite-index' }
-    | { type: 'menu/goto/exchange-index' }
     | { type: 'menu/goto/wallet-index' }
     | { type: 'menu/goto/notifications-index' }
     | { type: 'menu/goto/settings-index' }
