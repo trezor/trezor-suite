@@ -42,20 +42,20 @@ On disable, it throws away all metadata related records from memory.`, () => {
                 aesKey: 'c785ef250807166bffc141960c525df97647fcc1bca57f6892ca3742ba86ed8d',
             });
 
-            cy.prefixedVisit('/accounts', {
+            cy.prefixedVisit('/', {
                 onBeforeLoad: (win: Window) => {
                     cy.stub(win, 'open', stubOpen(win));
                     cy.stub(win, 'fetch', rerouteMetadataToMockProvider);
                 },
             });
-
-            cy.passThroughInitialRun();
-
             cy.log(
                 'Wait for discovery to finish. There is "add label" button, but no actual metadata appeared',
             );
-
+            cy.passThroughInitialRun();
             cy.discoveryShouldFinish();
+
+            cy.getTestElement('@suite/menu/wallet-index').click();
+
 
             cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
 

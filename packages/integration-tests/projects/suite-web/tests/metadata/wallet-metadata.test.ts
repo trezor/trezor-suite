@@ -20,7 +20,7 @@ describe('Metadata - wallet labeling', () => {
             cy.task('startBridge');
             cy.task('metadataStartProvider', provider);
 
-            cy.prefixedVisit('/accounts', {
+            cy.prefixedVisit('/', {
                 onBeforeLoad: (win: Window) => {
                     cy.stub(win, 'open', stubOpen(win));
                     cy.stub(win, 'fetch', rerouteMetadataToMockProvider);
@@ -30,6 +30,7 @@ describe('Metadata - wallet labeling', () => {
             cy.passThroughInitialRun();
 
             cy.discoveryShouldFinish();
+            cy.getTestElement('@suite/menu/wallet-index').click();
 
             cy.getTestElement('@menu/switch-device').click();
             cy.getTestElement('@metadata/walletLabel/standard-wallet/add-label-button').click({

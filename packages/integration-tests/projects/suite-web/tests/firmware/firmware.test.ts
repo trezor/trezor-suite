@@ -49,14 +49,17 @@ describe('Firmware', () => {
         cy.getTestElement('@modal/close-button').click();
     });
 
-    it('For latest firmware, update button in device settings should display "Up to date" but still be clickable', () => {
-        // todo: do not reuse device state from previous test
-        cy.task('startEmu', { wipe: false });
+    it.skip('For latest firmware, update button in device settings should display "Up to date" but still be clickable', () => {
+        cy.reload();
+        cy.task('startEmu', { wipe: true });
+        cy.task('setupEmu');
         cy.task('startBridge');
-        cy.prefixedVisit('/settings/device');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.getTestElement('@suite/menu/settings-index').click();
+        cy.getTestElement('@settings/menu/device').click();
         cy.getTestElement('@settings/device/update-button')
-            .should('contain.text', 'Up to date') // TODO: don't depend on actual text on the button, instead each button should have different data-test attr
+            .should('contain.text', 'Up to date') 
             .click();
         cy.getTestElement('@modal/close-button').click();
     });

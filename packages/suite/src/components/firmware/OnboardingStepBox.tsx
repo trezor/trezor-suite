@@ -46,7 +46,8 @@ const OnboardingStepBox = ({
     <>
         <Backdrop show={!!confirmOnDevice} animated zIndex={0} />
         {!disableConfirmWrapper ? (
-            <ConfirmWrapper>
+            // todo: hey why is this file under /firmware path? :D
+            <ConfirmWrapper data-test="@onboarding/confirm-on-device">
                 {typeof confirmOnDevice === 'number' ? (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}

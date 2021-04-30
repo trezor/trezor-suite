@@ -25,7 +25,7 @@ describe('Metadata - Output labeling', () => {
             const sentToMyselfEl =
                 '@metadata/outputLabel/40242836cc07b635569688d12d63041935b86feb2db3fe575be80f2c44e5b4cb-0';
 
-            cy.prefixedVisit('/accounts', {
+            cy.prefixedVisit('/', {
                 onBeforeLoad: (win: Window) => {
                     cy.stub(win, 'open', stubOpen(win));
                     cy.stub(win, 'fetch', rerouteMetadataToMockProvider);
@@ -35,6 +35,7 @@ describe('Metadata - Output labeling', () => {
             cy.passThroughInitialRun();
 
             cy.discoveryShouldFinish();
+            cy.getTestElement('@suite/menu/wallet-index').click();
 
             cy.getTestElement(targetEl1).click({ force: true });
             cy.passThroughInitMetadata(provider);

@@ -8,31 +8,24 @@ describe('Onboarding - recover wallet T2', () => {
         cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
-        cy.goToOnboarding();
-        cy.onboardingShouldLoad();
-        // common steps - navigation through onboarding
-        cy.getTestElement('@onboarding/begin-button').click();
-        cy.getTestElement('@onboarding/path-recovery-button').click();
-        cy.getTestElement('@onboarding/path-used-button').click();
-        cy.getTestElement('@onboarding/pair-device-step').click();
-    });
-    
-    it('Device disconnected during action', () => {
         cy.task('startEmu', { version: '2.1.4', wipe: true });
 
-        cy.getTestElement('@onboarding/button-continue').click();
+        cy.getTestElement('@onboarding/continue-button').click();
+        cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@firmware/skip-button').click();
-        cy.getTestElement('@onboarding/recovery/start-button').click();
-        cy.getTestElement('@suite/modal/confirm-action-on-device');
+        cy.getTestElement('@onboarding/path-recovery-button').click();
+    });
+
+    it('Device disconnected during action', () => {
+        cy.getTestElement('@onboarding/confirm-on-device');
         cy.task('pressYes');
         cy.wait(501);
         cy.task('stopEmu');
-        cy.getTestElement('@onboarding/unexpected-state/reconnect', { timeout: 20000 });
+        cy.getTestElement('@onboarding/connect-device', { timeout: 20000 });
         cy.task('startEmu', { version: '2.1.4', wipe: false });
         cy.log(
             'If device disconnected during call, error page with retry button should appear. Also note, that unlike with T1, retry button initiates recoveryDevice call immediately',
         );
-        cy.getTestElement('@onboarding/recovery/retry-button', { timeout: 10000 });
-        // todo: clicking on retry button causes error, "unexpected message", only in tests, don't know why
+        cy.getTestElement('@onboarding/path-recovery-button', { timeout: 10000 }).click();
     });
 });

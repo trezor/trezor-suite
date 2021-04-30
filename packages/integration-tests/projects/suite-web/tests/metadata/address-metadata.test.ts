@@ -21,7 +21,7 @@ describe('Metadata - address labeling', () => {
             });
             cy.task('startBridge');
             cy.task('metadataStartProvider', provider);
-            cy.prefixedVisit('/accounts', {
+            cy.prefixedVisit('/', {
                 onBeforeLoad: (win: Window) => {
                     cy.stub(win, 'open', stubOpen(win));
                     cy.stub(win, 'fetch', rerouteMetadataToMockProvider);
@@ -29,6 +29,8 @@ describe('Metadata - address labeling', () => {
             });
 
             cy.passThroughInitialRun();
+
+            cy.getTestElement('@suite/menu/wallet-index').click();
 
             cy.discoveryShouldFinish();
 

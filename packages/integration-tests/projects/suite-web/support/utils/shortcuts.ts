@@ -30,26 +30,30 @@ export const passThroughInitialRun = () => {
 };
 
 export const passThroughBackup = () => {
+    // todo: much of commented out code probably stays in standalone backup?
     cy.log('Backup button should be disabled until all checkboxes are checked');
     cy.getTestElement('@backup/start-button').should('be.disabled');
-    cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
-    cy.getTestElement('@backup/start-button').should('be.disabled');
-    cy.getTestElement('@backup/check-item/has-enough-time').click();
-    cy.getTestElement('@backup/start-button').should('be.disabled');
-    cy.getTestElement('@backup/check-item/is-in-private').click();
-    cy.getTestElement('@backup/start-button').should('not.be.disabled');
 
-    cy.log('Create backup on device');
-    cy.getTestElement('@backup/start-button').click();
-    cy.getConfirmActionOnDeviceModal();
-    // cy.task('pressYes');
-    cy.task('readAndConfirmMnemonicEmu');
-
-    cy.log('click all after checkboxes and close backup modal');
-    cy.getTestElement('@backup/close-button').should('be.disabled');
+    // cy.getTestElement('@backup/check-item/understands-what-seed-is').click();
+    // cy.getTestElement('@backup/start-button').should('be.disabled');
+    // cy.getTestElement('@backup/check-item/has-enough-time').click();
+    // cy.getTestElement('@backup/start-button').should('be.disabled');
+    // cy.getTestElement('@backup/check-item/is-in-private').click();
+    // cy.getTestElement('@backup/start-button').should('not.be.disabled');
     cy.getTestElement('@backup/check-item/wrote-seed-properly').click();
     cy.getTestElement('@backup/check-item/made-no-digital-copy').click();
     cy.getTestElement('@backup/check-item/will-hide-seed').click();
+
+    cy.log('Create backup on device');
+    cy.getTestElement('@backup/start-button').click();
+    // cy.getConfirmActionOnDeviceModal();
+    cy.getTestElement('@onboarding/confirm-on-device');
+    cy.task('readAndConfirmMnemonicEmu');
+
+    // cy.log('click all after checkboxes and close backup modal');
+    // cy.getTestElement('@backup/check-item/wrote-seed-properly').click();
+    // cy.getTestElement('@backup/check-item/made-no-digital-copy').click();
+    // cy.getTestElement('@backup/check-item/will-hide-seed').click();
     cy.getTestElement('@backup/close-button').click();
 };
 

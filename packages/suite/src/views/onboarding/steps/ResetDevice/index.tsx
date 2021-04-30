@@ -86,6 +86,7 @@ const ResetDeviceStep = () => {
                             <OptionWrapper>
                                 <NeueOption
                                     icon="SEED_SHAMIR"
+                                    data-test="@onboarding/shamir-backup-option-button"
                                     onClick={async () => {
                                         await onResetDevice({ backup_type: 1 });
                                     }}

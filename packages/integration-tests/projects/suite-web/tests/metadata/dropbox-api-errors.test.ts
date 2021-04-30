@@ -28,15 +28,15 @@ describe('Dropbox api errors', () => {
             },
             aesKey: 'c785ef250807166bffc141960c525df97647fcc1bca57f6892ca3742ba86ed8d',
         });
-        cy.prefixedVisit('/accounts', {
+        cy.prefixedVisit('/', {
             onBeforeLoad: (win: Window) => {
                 cy.stub(win, 'open', stubOpen(win));
                 cy.stub(win, 'fetch', rerouteMetadataToMockProvider);
             },
         });
 
-        cy.passThroughInitialRun();
 
+        cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
 
         cy.getTestElement('@suite/menu/settings-index').click();
