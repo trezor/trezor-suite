@@ -22,6 +22,7 @@ import {
 } from './utils/shortcuts';
 
 const command = require('cypress-image-snapshot/command');
+const { skipOn, onlyOn } = require('@cypress/skip-test');
 
 const prefixedVisit = (route: string, options?: Partial<Cypress.VisitOptions>) => {
     const assetPrefix = Cypress.env('ASSET_PREFIX') || '';
@@ -44,7 +45,7 @@ declare global {
             prefixedVisit: typeof prefixedVisit;
             getConfirmActionOnDeviceModal: typeof getConfirmActionOnDeviceModal;
             resetDb: typeof resetDb;
-            // todo: better types, this is not 100% correct as this fn may get more args from 
+            // todo: better types, this is not 100% correct as this fn may get more args from
             // cypress-image-snapshot lib
             matchImageSnapshot: typeof cy['screenshot'];
             connectDevice: (
@@ -67,6 +68,8 @@ declare global {
             passThroughSetPin: () => Chainable<Subject>;
             passThroughInitMetadata: (provider: 'dropbox' | 'google') => Chainable<Subject>;
             goToOnboarding: () => Chainable<Subject>;
+            skipOn: (nameOrFlag: string | boolean, cb?: () => void) => Cypress.Chainable<any>;
+            onlyOn: (nameOrFlag: string | boolean, cb?: () => void) => Cypress.Chainable<any>;
         }
     }
 }
@@ -84,9 +87,7 @@ if (Cypress.env('SNAPSHOT')) {
         failureThresholdType: 'percent', // percent of image or number of pixels
     });
 } else {
-    Cypress.Commands.add('matchImageSnapshot', () => {
-        return cy.log('skipping image snapshot');
-    });
+    Cypress.Commands.add('matchImageSnapshot', () => cy.log('skipping image snapshot'));
 }
 
 Cypress.Commands.add('prefixedVisit', prefixedVisit);
@@ -110,3 +111,6 @@ Cypress.Commands.add('passThroughInitMetadata', passThroughInitMetadata);
 Cypress.Commands.add('passThroughSetPin', passThroughSetPin);
 // redux
 Cypress.Commands.add('dispatch', dispatch);
+// skip tests conditionally
+Cypress.Commands.add('skipOn', skipOn);
+Cypress.Commands.add('onlyOn', onlyOn);

@@ -56,7 +56,7 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
         device.features.major_version,
         device.features.minor_version,
         device.features.patch_version,
-    ].join();
+    ].join('.');
 
     let fromFwVersion = 'none';
 
@@ -65,7 +65,7 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
             prevDevice.features.major_version,
             prevDevice.features.minor_version,
             prevDevice.features.patch_version,
-        ].join();
+        ].join('.');
     }
 
     // update to same variant as is currently installed

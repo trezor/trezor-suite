@@ -49,6 +49,31 @@ Breaking change should bump major version. Any other change bumps minor version.
 
 ## Changelog
 
+### 1.8
+Added: 
+- settings/device/update-auto-lock
+  - value: string
+- suite-ready
+  - browserName: string
+  - browserVersion: string
+  - osName: string
+  - osVersion: string
+  - windowWidth: number
+  - windowHeight: number
+
+Fixed:
+- suite-ready
+  - suiteVersion
+  - c_instance_id
+  - c_session_id
+- device-update-firmware
+  - fromFwVersion (changed separator to dots from commas)
+  - fromBlVersion (changed separator to dots from commas)
+- analytics/dispose
+
+Removed:
+ - menu/goto/exchange-index
+ 
 ### 1.7
 Added:
 - send-raw-transaction

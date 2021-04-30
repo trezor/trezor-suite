@@ -2,7 +2,7 @@
 
 import { MiddlewareAPI } from 'redux';
 import { TRANSPORT, DEVICE } from 'trezor-connect';
-import { SUITE, STORAGE, ROUTER, ANALYTICS } from '@suite-actions/constants';
+import { SUITE, ROUTER, ANALYTICS } from '@suite-actions/constants';
 import { ACCOUNT } from '@wallet-actions/constants';
 
 import { AppState, Action, Dispatch } from '@suite-types';
@@ -12,6 +12,12 @@ import {
     getScreenHeight,
     getPlatform,
     getPlatformLanguage,
+    getBrowserName,
+    getBrowserVersion,
+    getOsName,
+    getOsVersion,
+    getWindowWidth,
+    getWindowHeight,
 } from '@suite-utils/env';
 import { isBitcoinOnly, getPhysicalDeviceCount } from '@suite-utils/device';
 
@@ -32,39 +38,39 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
     const state = api.getState();
 
     switch (action.type) {
-        case STORAGE.LOADED:
-            {
-                const { enabled } = action.payload.analytics;
-                api.dispatch(
-                    analyticsActions.report(
-                        {
-                            type: 'suite-ready',
-                            payload: {
-                                language: state.suite.settings.language,
-                                enabledNetworks: state.wallet.settings.enabledNetworks,
-                                localCurrency: state.wallet.settings.localCurrency,
-                                discreetMode: state.wallet.settings.discreetMode,
-                                screenWidth: getScreenWidth(),
-                                screenHeight: getScreenHeight(),
-                                platform: getPlatform(),
-                                platformLanguage: getPlatformLanguage(),
-                                tor: state.suite.tor,
-                                rememberedStandardWallets: api
-                                    .getState()
-                                    .devices.filter(d => d.remember && d.useEmptyPassphrase).length,
-                                rememberedHiddenWallets: api
-                                    .getState()
-                                    .devices.filter(d => d.remember && !d.useEmptyPassphrase)
-                                    .length,
-                                theme: state.suite.settings.theme.variant,
-                                suiteVersion: process.env.version || '',
-                            },
-                        },
-                        // force logging if analytics are enabled (may happen that reducers are not yet populated with data from this action)
-                        !!enabled,
-                    ),
-                );
-            }
+        case ANALYTICS.INIT:
+            // reporting can start when analytics is properly initialized
+            api.dispatch(
+                analyticsActions.report({
+                    type: 'suite-ready',
+                    payload: {
+                        language: state.suite.settings.language,
+                        enabledNetworks: state.wallet.settings.enabledNetworks,
+                        localCurrency: state.wallet.settings.localCurrency,
+                        discreetMode: state.wallet.settings.discreetMode,
+                        screenWidth: getScreenWidth(),
+                        screenHeight: getScreenHeight(),
+                        platform: getPlatform(),
+                        platformLanguage: getPlatformLanguage(),
+                        tor: state.suite.tor,
+                        rememberedStandardWallets: api
+                            .getState()
+                            .devices.filter(d => d.remember && d.useEmptyPassphrase).length,
+                        rememberedHiddenWallets: api
+                            .getState()
+                            .devices.filter(d => d.remember && !d.useEmptyPassphrase).length,
+                        theme: state.suite.settings.theme.variant,
+                        suiteVersion: process.env.VERSION || '',
+                        browserName: getBrowserName(),
+                        browserVersion: getBrowserVersion(),
+                        osName: getOsName(),
+                        osVersion: getOsVersion(),
+                        windowWidth: getWindowWidth(),
+                        windowHeight: getWindowHeight(),
+                    },
+                }),
+            );
+
             break;
         case TRANSPORT.START:
             api.dispatch(
@@ -175,7 +181,7 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
             api.dispatch(analyticsActions.report({ type: 'analytics/enable' }));
             break;
         case ANALYTICS.DISPOSE:
-            api.dispatch(analyticsActions.report({ type: 'analytics/dispose' }));
+            api.dispatch(analyticsActions.report({ type: 'analytics/dispose' }, true));
             break;
         case SUITE.AUTH_DEVICE:
             api.dispatch(
