@@ -224,6 +224,13 @@ export const selectDevice = (device?: Device | TrezorDevice) => (
     });
 };
 
+/**
+ * Toggles remembering the given device. I.e. if given device is not remembered it will become remembered
+ * and if it is remembered it will be forgotten.
+ * @param forceRemember can be set to `true` to remember given device regardless if its current state.
+ *
+ * Use `forgetDevice` to forget a device regardless if its current state.
+ */
 export const rememberDevice = (payload: TrezorDevice, forceRemember?: true): SuiteAction => ({
     type: SUITE.REMEMBER_DEVICE,
     payload,
