@@ -16,7 +16,13 @@ describe('Analytics', () => {
         cy.viewport(1024, 768).resetDb();
     });
 
-    it('Analytics should be enabled on initial run, then user may disable it and this option should be respected on subsequent reloads', function () {
+    it('Analytics should be enabled on initial run, then user may disable it and this option should be respected on subsequent reloads', () => {
+        /*
+         * Skip test on localhost as analytics is disabled on location.hostname === "localhost". See getUrl function.
+         * TODO: Build app with test flag, modify getUrl function to return test url and mock this test url.
+         */
+        cy.skipOn('localhost');
+
         // cy.request('https://data.trezor.io/suite/log/web/develop.log').as('log');
 
         cy.intercept('GET', 'https://data.trezor.io/suite/log/', req => {
@@ -35,7 +41,6 @@ describe('Analytics', () => {
         cy.getTestElement('@onboarding/skip-button').click();
         cy.getTestElement('@onboarding/skip-button').click();
 
-        // NOTE: this will fail on localhost as analytics does not run there
         // assert that only 1 request was fired
         cy.wait('@data-fetch');
         cy.wrap(requests).its(0).its('c_session_id').as('request0');
@@ -70,7 +75,6 @@ describe('Analytics', () => {
         cy.getTestElement('@settings/fiat-select/input').click();
         cy.getTestElement('@settings/fiat-select/option/huf').click({ force: true });
 
-        // NOTE: this will fail on localhost as analytics does not run there
         // check that fiat change got logged.
 
         cy.wait('@data-fetch');

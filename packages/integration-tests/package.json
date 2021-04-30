@@ -12,6 +12,7 @@
         "webpack": "^4.44.2"
     },
     "devDependencies": {
+        "@cypress/skip-test": "^2.6.0",
         "@cypress/webpack-preprocessor": "^5.5.0",
         "cypress-image-snapshot": "^4.0.0",
         "shelljs": "^0.8.4",
@@ -19,4 +20,3 @@
         "ws": "^7.4.0"
     }
 }
-
