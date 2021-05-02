@@ -15,9 +15,15 @@
 
 ## Development
 
-Before you start make sure you have downloaded and installed [Node.js LTS](https://nodejs.org/en/download/), [Yarn](https://yarnpkg.com/lang/en/docs/install/) and git.
+Before you start make sure you are using Linux or [WSL](https://docs.microsoft.com/en-gb/windows/wsl/install-win10), have downloaded and installed [Node.js LTS > 14.x](https://nodejs.org/en/download/), [Yarn > 1.2X.XX](https://yarnpkg.com/lang/en/docs/install/) and Git.
 
--   `git clone git@github.com:trezor/trezor-suite.git`
+If you have a [GitHub token](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) replace **GITHUB_TOKEN** with your personal token and clone the repo this way:
+-   `git clone https://GITHUB_TOKEN@github.com/trezor/trezor-suite`
+
+If you have no GitHub token clone the project this way:
+-   `git clone https://github.com/trezor/trezor-suite`
+
+To install project dependencies and build the project:
 -   `yarn && yarn build:libs`
 
 _To set up your dev environment for a native platform (iOS/Android) follow [these additional steps](https://github.com/trezor/trezor-suite/tree/develop/packages/suite-native#development)._
