@@ -39,7 +39,7 @@ Currently used endpoints:
 | beta-wallet.trezor.io        | https://data.trezor.io/suite/log/web/beta.log       |
 | suite.trezor.io              | https://data.trezor.io/suite/log/web/stable.log     |
 | any origin                   | https://data.trezor.io/suite/log/web/develop.log    |
-| desktop                      | https://data.trezor.io/suite/log/desktop/beta.log   |
+| desktop                      | https://data.trezor.io/suite/log/desktop/stable.log   |
 
 ## Versioning
 

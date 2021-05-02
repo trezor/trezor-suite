@@ -355,9 +355,7 @@ const getUrl = () => {
     }
 
     if (isDesktop()) {
-        // currently released desktop version is in beta.
-        return `${base}/desktop/beta.log`;
-        // there is no staging for desktop version
+        return `${base}/desktop/stable.log`;
     }
 
     if (isWeb()) {
@@ -370,7 +368,6 @@ const getUrl = () => {
             case 'suite.trezor.io':
                 return `${base}/web/stable.log`;
             default:
-                // on dev server
                 return `${base}/web/develop.log`;
         }
     }
