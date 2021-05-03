@@ -33,3 +33,6 @@ export const getTorSettings = (): TorSettings =>
 export const setTorSettings = (torSettings: TorSettings): void => {
     store.set('torSettings', torSettings);
 };
+
+/** Deletes all items from the store. */
+export const clear = () => store.clear();

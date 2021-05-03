@@ -56,6 +56,7 @@ declare interface LocalStore {
     setUpdateSettings(updateSettings: UpdateSettings): void;
     getTorSettings(): TorSettings;
     setTorSettings(torSettings: TorSettings): void;
+    clear(): void;
 }
 
 declare type WinBounds = {

@@ -19,6 +19,7 @@ export const MODULES = [
     'tor',
     'analytics',
     'auto-updater',
+    'store',
 ];
 
 // Modules only used in prod mode

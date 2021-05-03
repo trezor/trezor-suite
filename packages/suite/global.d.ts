@@ -40,6 +40,8 @@ export interface DesktopApi {
         | { success: true; payload: { platform: string; release: string } }
         | { success: false; error: string }
     >;
+    // Store
+    clearStore: () => void;
 }
 
 declare global {

@@ -335,6 +335,8 @@ const Settings = () => {
                             onClick={async () => {
                                 removeDatabase();
                                 if (window.desktopApi) {
+                                    // Reset the desktop-specific store.
+                                    window.desktopApi.clearStore();
                                     // relaunch desktop app
                                     window.desktopApi.send('app/restart');
                                 } else {
