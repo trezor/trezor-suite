@@ -91,4 +91,7 @@ contextBridge.exposeInMainWorld('desktopApi', {
 
     // Analytics
     getOsType: () => ipcRenderer.invoke('analytics/get-os-type'),
+
+    // Store
+    clearStore: () => ipcRenderer.send('store/clear'),
 });
