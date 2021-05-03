@@ -22,7 +22,7 @@ export const FETCH_CHECK_INTERVAL = 3600000; // 1 hour in milliseconds
  */
 export const VERSION = 1;
 
-export const CONFIG_URL_REMOTE = process.env.STABLE_CONFIG
+export const CONFIG_URL_REMOTE = process.env.CODESIGN_BUILD
     ? `https://data.trezor.io/config/stable/config.v${VERSION}.jws`
     : `https://data.trezor.io/config/develop/config.v${VERSION}.jws`;
 
