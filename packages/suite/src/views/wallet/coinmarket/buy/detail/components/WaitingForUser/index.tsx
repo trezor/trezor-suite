@@ -4,7 +4,7 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Button, variables } from '@trezor/components';
 import { CoinmarketTransactionId } from '@wallet-components';
 import { Translation } from '@suite-components/Translation';
-import { BuyTrade } from 'invity-api';
+import { BuyTrade, BuyTradeStatus } from 'invity-api';
 import { Account } from '@wallet-types';
 import invityAPI from '@suite-services/invityAPI';
 import { createTxLink } from '@wallet-utils/coinmarket/buyUtils';
@@ -49,9 +49,25 @@ interface Props {
     transactionId?: string;
     trade: BuyTrade;
     account: Account;
+    providerName?: string;
 }
 
-const WaitingForPayment = ({ transactionId, trade, account }: Props) => {
+const getTranslations = (tradeStatus: BuyTradeStatus | undefined) => {
+    if (tradeStatus === 'WAITING_FOR_USER') {
+        return {
+            titleTranslationId: 'TR_BUY_DETAIL_WAITING_FOR_USER_TITLE',
+            descriptionTranslationId: 'TR_BUY_DETAIL_WAITING_FOR_USER_TEXT',
+            buttonTextTranslationId: 'TR_BUY_DETAIL_WAITING_FOR_USER_GATE',
+        } as const;
+    }
+    return {
+        titleTranslationId: 'TR_BUY_DETAIL_SUBMITTED_TITLE',
+        descriptionTranslationId: 'TR_BUY_DETAIL_SUBMITTED_TEXT',
+        buttonTextTranslationId: 'TR_BUY_DETAIL_SUBMITTED_GATE',
+    } as const;
+};
+
+const WaitingForUser = ({ transactionId, trade, account, providerName }: Props) => {
     const [isWorking, setIsWorking] = useState(false);
     const { submitRequestForm } = useActions({
         submitRequestForm: coinmarketCommonActions.submitRequestForm,
@@ -66,18 +82,21 @@ const WaitingForPayment = ({ transactionId, trade, account }: Props) => {
         }
     };
     // const cancelTrade = () => {};
+
+    const translations = getTranslations(trade.status);
+
     return (
         <Wrapper>
             <Image src={resolveStaticPath('/images/svg/coinmarket-waiting.svg')} />
             <Title>
-                <Translation id="TR_BUY_DETAIL_SUBMITTED_TITLE" />
+                <Translation id={translations.titleTranslationId} />
             </Title>
             <Description>
-                <Translation id="TR_BUY_DETAIL_SUBMITTED_TEXT" />
+                <Translation id={translations.descriptionTranslationId} values={{ providerName }} />
             </Description>
             {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
             <PaymentButton onClick={goToPayment} isLoading={isWorking} isDisabled={isWorking}>
-                <Translation id="TR_BUY_DETAIL_SUBMITTED_GATE" />
+                <Translation id={translations.buttonTextTranslationId} />
             </PaymentButton>
             {/* TODO add a possibility in the future to cancel the transaction by the user                
             <CancelButton isWhite variant="tertiary" onClick={cancelTrade}>
@@ -87,4 +106,4 @@ const WaitingForPayment = ({ transactionId, trade, account }: Props) => {
     );
 };
 
-export default WaitingForPayment;
+export default WaitingForUser;

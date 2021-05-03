@@ -841,6 +841,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Pending',
         id: 'TR_BUY_STATUS_PENDING_GO_TO_GATEWAY',
     },
+    TR_BUY_STATUS_ACTION_REQUIRED: {
+        defaultMessage: 'Action required',
+        id: 'TR_BUY_STATUS_ACTION_REQUIRED',
+    },
     TR_BUY_VIEW_DETAILS: {
         defaultMessage: 'View details',
         id: 'TR_BUY_VIEW_DETAILS',
@@ -1005,6 +1009,19 @@ const definedMessages = defineMessages({
     TR_BUY_DETAIL_SUBMITTED_CANCEL: {
         defaultMessage: 'Cancel Transaction',
         id: 'TR_BUY_DETAIL_SUBMITTED_CANCEL',
+    },
+    TR_BUY_DETAIL_WAITING_FOR_USER_TITLE: {
+        defaultMessage: 'Complete your transaction',
+        id: 'TR_BUY_DETAIL_WAITING_FOR_USER_TITLE',
+    },
+    TR_BUY_DETAIL_WAITING_FOR_USER_TEXT: {
+        defaultMessage:
+            '{providerName} needs some final details to finish this transaction. Visit their site to proceed.',
+        id: 'TR_BUY_DETAIL_WAITING_FOR_USER_TEXT',
+    },
+    TR_BUY_DETAIL_WAITING_FOR_USER_GATE: {
+        defaultMessage: "Go to provider's site",
+        id: 'TR_BUY_DETAIL_WAITING_FOR_USER_GATE',
     },
     TR_ADDRESS_MODAL_CHECK_ON_TREZOR_DESC: {
         defaultMessage:
