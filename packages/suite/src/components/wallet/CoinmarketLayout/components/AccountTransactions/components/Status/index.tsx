@@ -33,6 +33,7 @@ const getBuyTradeData = (status: BuyTradeStatus, theme: SuiteThemeColors) => {
     const message = getBuyStatusMessage(status);
     switch (message) {
         case 'TR_BUY_STATUS_PENDING':
+        case 'TR_BUY_STATUS_ACTION_REQUIRED':
             return {
                 icon: 'CLOCK',
                 color: theme.TYPE_ORANGE,

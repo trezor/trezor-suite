@@ -10,7 +10,7 @@ import { useActions } from '@suite-hooks';
 import PaymentFailed from '../components/PaymentFailed';
 import PaymentProcessing from '../components/PaymentProcessing';
 import PaymentSuccessful from '../components/PaymentSuccessful';
-import WaitingForPayment from '../components/WaitingForPayment';
+import WaitingForUser from '../components/WaitingForUser';
 
 const Wrapper = styled.div`
     display: flex;
@@ -50,7 +50,7 @@ const CoinmarketDetail = () => {
     const tradeStatus = trade?.data?.status;
     const showError = tradeStatus === 'ERROR' || tradeStatus === 'BLOCKED';
     const showProcessing = tradeStatus === 'APPROVAL_PENDING';
-    const showWaiting = tradeStatus === 'SUBMITTED';
+    const showWaiting = tradeStatus === 'SUBMITTED' || tradeStatus === 'WAITING_FOR_USER';
     const showSuccess = tradeStatus === 'SUCCESS';
 
     const exchange = trade?.data?.exchange;
@@ -71,10 +71,11 @@ const CoinmarketDetail = () => {
                 )}
                 {showProcessing && <PaymentProcessing />}
                 {showWaiting && (
-                    <WaitingForPayment
+                    <WaitingForUser
                         trade={trade.data}
                         transactionId={trade.key}
                         account={account}
+                        providerName={provider?.companyName}
                     />
                 )}
                 {showSuccess && <PaymentSuccessful account={account} />}

@@ -105,6 +105,8 @@ export const getStatusMessage = (status: BuyTradeStatus) => {
             return 'TR_BUY_STATUS_PENDING';
         case 'SUBMITTED':
             return 'TR_BUY_STATUS_PENDING_GO_TO_GATEWAY';
+        case 'WAITING_FOR_USER':
+            return 'TR_BUY_STATUS_ACTION_REQUIRED';
         case 'BLOCKED':
         case 'ERROR':
             return 'TR_BUY_STATUS_ERROR';
