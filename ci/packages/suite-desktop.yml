@@ -64,6 +64,7 @@ suite-desktop build mac codesign:
   tags:
     - darwin
   variables:
+    IS_CODESIGN_BUILD: "true"
     artifact: ${DESKTOP_APP_NAME}*
     platform: mac
   <<: *build
@@ -98,6 +99,7 @@ suite-desktop build linux codesign:
   tags:
     - darwin
   variables:
+    IS_CODESIGN_BUILD: "true"
     artifact: ${DESKTOP_APP_NAME}*
     platform: linux
   <<: *build
@@ -135,6 +137,7 @@ suite-desktop build windows codesign:
     - darwin
   image: electronuserland/builder:wine
   variables:
+    IS_CODESIGN_BUILD: "true"
     artifact: ${DESKTOP_APP_NAME}*
     platform: win
   <<: *build

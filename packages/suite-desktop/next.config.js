@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+const fs = require('fs');
 const path = require('path');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
     enabled: process.env.ANALYZE === 'true',
@@ -18,17 +19,28 @@ const packageJson = require('./package.json');
 
 const gitRevisionPlugin = new GitRevisionPlugin();
 
-// TODO: After Raf's tschuss-next is merged, move keys to some constants file to avoid duplication in suite-web and suite-desktop package
-// TODO: Do not forget to move process.env.PUBLIC_KEY and process.env.STABLE_CONFIG to new webpack files
-const productionJwsPublicKey =
-    process.env.JWS_PUBLIC_KEY &&
-    `-----BEGIN PUBLIC KEY-----
-${process.env.JWS_PUBLIC_KEY}
------END PUBLIC KEY-----`;
+/* TODO:
+ * After feat/tschuss-next is merged, move development key to constants file or its own file
+ * to avoid duplication in suite-web and suite-desktop package.
+ * Do not forget to move process.env.PUBLIC_KEY and process.env.CODESIGN_BUILD to new webpack files.
+ */
 
-const developmentJwsPublicKey = `-----BEGIN PUBLIC KEY-----
+/* Only CI jobs flagged with "codesign", sign message system config by production private key.
+ * All other branches use development key. */
+const isCodesignBuild = process.env.IS_CODESIGN_BUILD === 'true';
+let JWS_PUBLIC_KEY;
+
+if (isCodesignBuild) {
+    console.log('Bundling production JWS public key.');
+
+    JWS_PUBLIC_KEY = fs.readFileSync(process.env.JWS_PUBLIC_KEY_FILE, 'utf-8');
+} else {
+    console.log('Bundling develop JWS public key.');
+
+    JWS_PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----
 MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEbSUHJlr17+NywPS/w+xMkp3dSD8eWXSuAfFKwonZPe5fL63kISipJC+eJP7Mad0WxgyJoiMsZCV6BZPK2jIFdg==
 -----END PUBLIC KEY-----`;
+}
 
 module.exports = withBundleAnalyzer(
     withOptimizedImages(
@@ -57,10 +69,8 @@ module.exports = withBundleAnalyzer(
                             'process.env.COMMITHASH': JSON.stringify(
                                 gitRevisionPlugin.commithash(),
                             ),
-                            'process.env.PUBLIC_KEY': JSON.stringify(
-                                productionJwsPublicKey || developmentJwsPublicKey,
-                            ),
-                            'process.env.STABLE_CONFIG': !!productionJwsPublicKey,
+                            'process.env.PUBLIC_KEY': JSON.stringify(JWS_PUBLIC_KEY),
+                            'process.env.CODESIGN_BUILD': isCodesignBuild,
                         }),
                     );
                     // google-auth-library dependency does not have out-of-the-box browser support (is primarily aimed at nodejs)

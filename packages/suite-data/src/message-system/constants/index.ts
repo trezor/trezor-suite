@@ -1,3 +1,4 @@
+import * as fs from 'fs-extra';
 import { join, resolve } from 'path';
 
 /*
@@ -20,15 +21,3 @@ export const PACKAGES_ROOT = resolve(PROJECT_ROOT, '../../..');
 
 export const SCHEMA_PATH = join(PROJECT_ROOT, 'schema', SCHEMA_FILENAME);
 export const CONFIG_PATH = join(PROJECT_ROOT, 'config', CONFIG_FILENAME);
-
-const DEV_JWS_PRIVATE_KEY = `-----BEGIN EC PRIVATE KEY-----
-MHQCAQEEINi7lfZE3Y5U9srS58A+AN7Ul7HeBXsHEfzVzijColOkoAcGBSuBBAAKoUQDQgAEbSUHJlr17+NywPS/w+xMkp3dSD8eWXSuAfFKwonZPe5fL63kISipJC+eJP7Mad0WxgyJoiMsZCV6BZPK2jIFdg==
------END EC PRIVATE KEY-----`;
-
-const PROD_JWS_PRIVATE_KEY =
-    process.env.JWS_PRIVATE_KEY &&
-    `-----BEGIN EC PRIVATE KEY-----
-${process.env.JWS_PRIVATE_KEY}
------END EC PRIVATE KEY-----`;
-
-export const JWS_PRIVATE_KEY = PROD_JWS_PRIVATE_KEY || DEV_JWS_PRIVATE_KEY;

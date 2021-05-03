@@ -2,13 +2,24 @@ import * as fs from 'fs-extra';
 import * as jws from 'jws';
 import { join } from 'path';
 
-import {
-    CONFIG_PATH,
-    JWS_PRIVATE_KEY,
-    PACKAGE_ROOT,
-    PROJECT_ROOT,
-    JWS_CONFIG_FILENAME,
-} from '../constants';
+import { CONFIG_PATH, PACKAGE_ROOT, PROJECT_ROOT, JWS_CONFIG_FILENAME } from '../constants';
+
+/* Only CI jobs flagged with "codesign", sign message system config by production private key.
+ * All other branches use development key. */
+const isCodesignBuild = process.env.IS_CODESIGN_BUILD === 'true';
+let JWS_PRIVATE_KEY;
+
+if (isCodesignBuild) {
+    console.log('Signing config using production private key!');
+
+    JWS_PRIVATE_KEY = fs.readFileSync(process.env.JWS_PRIVATE_KEY_FILE!, 'utf-8');
+} else {
+    console.log('Signing config using develop private key!');
+
+    JWS_PRIVATE_KEY = `-----BEGIN EC PRIVATE KEY-----
+MHQCAQEEINi7lfZE3Y5U9srS58A+AN7Ul7HeBXsHEfzVzijColOkoAcGBSuBBAAKoUQDQgAEbSUHJlr17+NywPS/w+xMkp3dSD8eWXSuAfFKwonZPe5fL63kISipJC+eJP7Mad0WxgyJoiMsZCV6BZPK2jIFdg==
+-----END EC PRIVATE KEY-----`;
+}
 
 const getConfigJwsSignature = () => {
     console.log('Creating a JWS signature from the config...');
