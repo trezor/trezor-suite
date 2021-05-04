@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { Network } from '@wallet-types';
 import { CoinLogo, Icon, variables } from '@trezor/components';
 import {
@@ -12,7 +12,7 @@ import {
 import { CoinBalance } from '@wallet-components';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import * as routerActions from '@suite-actions/routerActions';
-import { useActions, useAccountSearch, useLoadingSkeleton } from '@suite-hooks';
+import { useActions, useAccountSearch, useTheme, useLoadingSkeleton } from '@suite-hooks';
 
 const Col = styled.div`
     display: flex;
@@ -59,7 +59,7 @@ const CoinGridWrapper = styled.div`
     margin: 0px 9px 18px 0px;
     padding: 19px 16px 18px 12px;
     border-radius: 6px;
-    background-color: #ffffff;
+    background-color: ${props => props.theme.BG_WHITE};
 `;
 
 const CryptoBalanceWrapper = styled(Col)`
@@ -93,7 +93,7 @@ interface Props {
 
 const AssetGrid = React.memo(({ network, failed, cryptoValue }: Props) => {
     const { symbol, name } = network;
-    const theme = useTheme();
+    const { theme } = useTheme();
     const { setCoinFilter, setSearchString } = useAccountSearch();
 
     const { goto } = useActions({ goto: routerActions.goto });

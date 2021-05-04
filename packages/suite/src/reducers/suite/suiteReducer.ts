@@ -24,6 +24,7 @@ interface Flags {
     bech32BannerClosed: boolean;
     securityStepsHidden: boolean;
     dashboardGraphHidden: boolean;
+    dashboardAssetsGridMode: boolean;
 }
 
 interface SuiteSettings {
@@ -69,6 +70,7 @@ const initialState: SuiteState = {
         bech32BannerClosed: false,
         securityStepsHidden: false,
         dashboardGraphHidden: false,
+        dashboardAssetsGridMode: false,
     },
     settings: {
         theme: {
