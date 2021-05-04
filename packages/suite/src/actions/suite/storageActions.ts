@@ -253,6 +253,7 @@ export const saveSuiteSettings = () => async (_dispatch: Dispatch, getState: Get
                 bech32BannerClosed: suite.flags.bech32BannerClosed,
                 securityStepsHidden: suite.flags.securityStepsHidden,
                 dashboardGraphHidden: suite.flags.dashboardGraphHidden,
+                dashboardAssetsGridMode: suite.flags.dashboardAssetsGridMode,
             },
         },
         'suite',

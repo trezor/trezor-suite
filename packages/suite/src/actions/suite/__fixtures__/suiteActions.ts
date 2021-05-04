@@ -251,6 +251,7 @@ const initialRun = [
                 bech32BannerClosed: false,
                 dashboardGraphHidden: false,
                 securityStepsHidden: false,
+                dashboardAssetsGridMode: false,
             },
         },
     },
