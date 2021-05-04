@@ -3,28 +3,28 @@ import UAParser from 'ua-parser-js';
 import type { SuiteThemeVariant, EnvironmentType } from '@suite-types';
 
 /* This way, we can override simple utils, which helps to polyfill methods which are not available in react-native. */
-export const getUserAgent = () => navigator?.userAgent || '';
+export const getUserAgent = () => window.navigator.userAgent;
 
-export const getPlatform = () => navigator?.platform || '';
+export const getPlatform = () => window.navigator.platform;
 
-export const getPlatformLanguage = () => navigator?.language || '';
+export const getPlatformLanguage = () => window.navigator.language;
 
-export const getAppVersion = () => navigator?.appVersion || '';
+export const getAppVersion = () => window.navigator.appVersion;
+
+export const getScreenWidth = () => window.screen.width;
+
+export const getScreenHeight = () => window.screen.height;
+
+export const getWindowWidth = () => window.innerWidth;
+
+export const getWindowHeight = () => window.innerHeight;
+
+export const getLocationOrigin = () => window.location.origin;
+
+export const getLocationHostname = () => window.location.hostname;
 
 /* For usage in Electron (SSR) */
-export const getProcessPlatform = () => process?.platform || '';
-
-export const getScreenWidth = () => window?.screen?.width || 0;
-
-export const getScreenHeight = () => window?.screen?.height || 0;
-
-export const getWindowWidth = () => window?.innerWidth || 0;
-
-export const getWindowHeight = () => window?.innerHeight || 0;
-
-export const getLocationOrigin = () => window?.location?.origin || '';
-
-export const getLocationHostname = () => window?.location?.hostname || '';
+export const getProcessPlatform = () => process.platform;
 
 let userAgentParser: UAParser;
 const getUserAgentParser = () => {
@@ -37,18 +37,21 @@ const getUserAgentParser = () => {
 
 export const isMacOs = () => {
     if (getProcessPlatform() === 'darwin') return true;
+    if (typeof window === 'undefined') return;
 
     return ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'].includes(getPlatform());
 };
 
 export const isWindows = () => {
     if (getProcessPlatform() === 'win32') return true;
+    if (typeof window === 'undefined') return;
 
     return ['Win32', 'Win64', 'Windows', 'WinCE'].includes(getPlatform());
 };
 
 export const isLinux = () => {
     if (getProcessPlatform() === 'linux') return true;
+    if (typeof window === 'undefined') return;
 
     return /Linux/.test(getPlatform());
 };
