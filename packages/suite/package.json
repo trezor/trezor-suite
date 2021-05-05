@@ -1,6 +1,6 @@
 {
     "name": "@trezor/suite",
-    "version": "21.5.0",
+    "version": "21.6.0",
     "private": true,
     "scripts": {
         "lint": "yarn lint:styles && yarn lint:js",
@@ -18,8 +18,8 @@
     },
     "dependencies": {
         "@trezor/components": "^1.0.0",
-        "@trezor/suite-data": "21.5.0",
-        "@trezor/suite-storage": "21.5.0",
+        "@trezor/suite-data": "21.6.0",
+        "@trezor/suite-storage": "21.6.0",
         "bignumber.js": "^9.0.1",
         "date-fns": "^2.16.1",
         "date-fns-tz": "^1.0.12",
