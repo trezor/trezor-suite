@@ -2,27 +2,18 @@ import fetch from 'node-fetch';
 
 import BaseProcess, { Status } from './BaseProcess';
 
-const defaultTorAddress = '127.0.0.1:9050';
+// 9050 is the default port of the tor process.
+export const DEFAULT_ADDRESS = '127.0.0.1:9050';
 
 class TorProcess extends BaseProcess {
-    adr = defaultTorAddress;
-
     constructor() {
         super('tor', 'tor');
-    }
-
-    get address() {
-        return this.adr;
-    }
-
-    set address(value: string) {
-        this.adr = value;
     }
 
     async status(): Promise<Status> {
         // service
         try {
-            const resp = await fetch(`http://${this.adr}/`);
+            const resp = await fetch(`http://${DEFAULT_ADDRESS}/`);
             if (resp.status === 501 && resp.statusText.startsWith('Tor')) {
                 return {
                     service: true,
@@ -41,11 +32,7 @@ class TorProcess extends BaseProcess {
     }
 
     async start(): Promise<void> {
-        // Only try to start the process if it's the default Tor address.
-        // Otherwise the user might be pointing to a different instance.
-        if (this.adr === defaultTorAddress) {
-            await super.start(['-f', 'torrc']);
-        }
+        await super.start(['-f', 'torrc']);
     }
 }
 
