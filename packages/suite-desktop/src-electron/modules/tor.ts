@@ -1,8 +1,7 @@
 /**
  * Tor feature (toggle, configure)
  */
-import { app, session, ipcMain, IpcMainEvent } from 'electron';
-
+import { app, session, ipcMain } from 'electron';
 import TorProcess, { DEFAULT_ADDRESS } from '@desktop-electron/libs/processes/TorProcess';
 import { b2t } from '@desktop-electron/libs/utils';
 
@@ -59,7 +58,7 @@ const init = async ({ mainWindow, store }: Dependencies) => {
         await toggleTor(start);
     });
 
-    ipcMain.on('tor/set-address', () => async (_: IpcMainEvent, address: string) => {
+    ipcMain.on('tor/set-address', async (_, address: string) => {
         if (torSettings.address !== address) {
             logger.debug('tor', [
                 'Updating address:',
