@@ -3,7 +3,7 @@
  */
 import { app, session, ipcMain, IpcMainEvent } from 'electron';
 
-import TorProcess from '@desktop-electron/libs/processes/TorProcess';
+import TorProcess, { DEFAULT_ADDRESS } from '@desktop-electron/libs/processes/TorProcess';
 import { b2t } from '@desktop-electron/libs/utils';
 
 import { onionDomain } from '../config';
@@ -16,17 +16,21 @@ const init = async ({ mainWindow, store }: Dependencies) => {
     const torSettings = store.getTorSettings();
 
     const toggleTor = async (start: boolean) => {
-        if (start) {
-            if (torSettings.running) {
-                logger.info('tor', 'Restarting');
-                await tor.restart();
+        // Only start/stop the process if address is the default one.
+        // Otherwise the user must run the process themselves.
+        if(torSettings.address === DEFAULT_ADDRESS) {
+            if (start) {
+                if (torSettings.running) {
+                    logger.info('tor', 'Restarting');
+                    await tor.restart();
+                } else {
+                    logger.info('tor', 'Starting');
+                    await tor.start();
+                }
             } else {
-                logger.info('tor', 'Starting');
-                await tor.start();
+                logger.info('tor', 'Stopping');
+                await tor.stop();
             }
-        } else {
-            logger.info('tor', 'Stopping');
-            await tor.stop();
         }
 
         torSettings.running = start;
