@@ -34,7 +34,13 @@ const init = ({ mainWindow, store }: Dependencies) => {
             logger.info('window-control', 'Hiding the app after the main window has been closed');
 
             event.preventDefault();
-            mainWindow.hide();
+            // this is a workaround for black screen issue when trying to close an maximized window
+            if (mainWindow.isFullScreen()) {
+                mainWindow.once('leave-full-screen', () => mainWindow.hide());
+                mainWindow.setFullScreen(false);
+            } else {
+                mainWindow.hide();
+            }
         });
     } else {
         // other platform just kills the app
