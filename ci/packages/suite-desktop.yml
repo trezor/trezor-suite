@@ -1,3 +1,11 @@
+.config_sign_dev: &config_sign_dev
+  needs:
+    - msg-system config sign dev
+
+.config_sign_stable: &config_sign_stable
+  needs:
+    - msg-system config sign stable
+
 .build: &build
   stage: build
   script:
@@ -35,6 +43,7 @@
     - /^run\//
 
 suite-desktop build mac:
+  <<: *config_sign_dev
   only:
     <<: *run_everything_rules
   tags:
@@ -46,6 +55,7 @@ suite-desktop build mac:
   <<: *build_nix
 
 suite-desktop build mac manual:
+  <<: *config_sign_dev
   when: manual
   except:
     <<: *run_everything_rules
@@ -58,6 +68,7 @@ suite-desktop build mac manual:
   <<: *build_nix
 
 suite-desktop build mac codesign:
+  <<: *config_sign_stable
   only:
     refs:
       - codesign
@@ -76,6 +87,7 @@ suite-desktop build mac codesign:
     expire_in: 7 days
 
 suite-desktop build linux:
+  <<: *config_sign_dev
   only:
     <<: *run_everything_rules
   variables:
@@ -84,6 +96,7 @@ suite-desktop build linux:
   <<: *build
 
 suite-desktop build linux manual:
+  <<: *config_sign_dev
   when: manual
   except:
     <<: *run_everything_rules
@@ -93,6 +106,7 @@ suite-desktop build linux manual:
   <<: *build
 
 suite-desktop build linux codesign:
+  <<: *config_sign_stable
   only:
     refs:
       - codesign
@@ -111,6 +125,7 @@ suite-desktop build linux codesign:
     expire_in: 7 days
 
 suite-desktop build windows:
+  <<: *config_sign_dev
   only:
     <<: *run_everything_rules
   image: electronuserland/builder:wine
@@ -120,6 +135,7 @@ suite-desktop build windows:
   <<: *build
 
 suite-desktop build windows manual:
+  <<: *config_sign_dev
   when: manual
   except:
     <<: *run_everything_rules
@@ -130,6 +146,7 @@ suite-desktop build windows manual:
   <<: *build
 
 suite-desktop build windows codesign:
+  <<: *config_sign_stable
   only:
     refs:
       - codesign
