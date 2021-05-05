@@ -69,6 +69,16 @@ declare type UpdateSettings = {
 };
 
 declare type TorSettings = {
+    /**
+     * True when tor should be enabled.
+     * Doesn't necessarily mean that the bundled tor is running
+     * as that depends on the address as well.
+     */
     running: boolean;
+    /**
+     * Address of the tor process through which traffic is routed.
+     * If it's anything other than the default one assume user
+     * wants to use their own tor instance and don't run the bundled one.
+     */
     address: string;
 };
