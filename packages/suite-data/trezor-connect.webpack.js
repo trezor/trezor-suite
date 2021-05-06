@@ -3,7 +3,6 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const RemovePlugin = require('remove-files-webpack-plugin');
 
 const path = require('path');
 
@@ -61,18 +60,6 @@ module.exports = {
             template: HTML_SRC,
             minify: false,
             inject: false,
-        }),
-        new RemovePlugin({
-            after: {
-                test: [
-                    {
-                        folder: `${DIST}/workers`,
-                        method: filePath => {
-                            return filePath.includes('shared-connection-worker.');
-                        },
-                    },
-                ],
-            },
         }),
     ],
 
