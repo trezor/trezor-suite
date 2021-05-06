@@ -1,6 +1,4 @@
 import React from 'react';
-
-import { Button } from '@trezor/components';
 import { isWebUSB } from '@suite-utils/transport';
 import {
     InitImg,
@@ -69,13 +67,7 @@ const BottomBar = () => {
     }
 
     if (!device?.connected && isWebUSB(transport)) {
-        return (
-            <WebusbButton ready>
-                <Button icon="PLUS" variant="tertiary">
-                    <Translation id="TR_CHECK_FOR_DEVICES" />
-                </Button>
-            </WebusbButton>
-        );
+        return <WebusbButton variant="tertiary" />;
     }
 
     return null;

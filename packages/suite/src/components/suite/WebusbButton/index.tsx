@@ -1,73 +1,28 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import { Button, ButtonProps } from '@trezor/components';
+import { Translation } from '@suite-components';
 
-/*
-    This component does a little hack.
-    In case internet connection turns off and react tries to rerender webusb button 
-    the "standard" way, instead of nice button "page was not found" chrome message 
-    will appear (dinosaur). 
-    To go around this, we need to keep a single instance of iframe somewhere, and only
-    turn on and off its visibility. 
-*/
+// TODO: those constants should be exposed by connect
+const filters = [
+    { vendorId: 0x534c, productId: 0x0001 },
+    { vendorId: 0x1209, productId: 0x53c0 },
+    { vendorId: 0x1209, productId: 0x53c1 },
+];
 
-interface Props {
-    ready: boolean; // are all animations finished?
-    children?: React.ReactNode;
-}
-
-const WebusbButton = ({ ready, children }: Props) => {
-    const childRef = React.createRef<HTMLButtonElement>();
-
-    const getOffset = (el: HTMLElement) => {
-        const { top, left, width, height } = el.getBoundingClientRect();
-        return {
-            top: top + window.pageYOffset,
-            left: left + window.pageXOffset,
-            height,
-            width,
-        };
-    };
-
-    useEffect(() => {
-        const moveWebusbIn = () => {
-            // iframe is injected to div.trezor-webusb-button rendered in _app.tsx
-            const iframe = document.getElementsByTagName('iframe')[0];
-            if (!iframe || !childRef.current) return;
-            const { top, left, width, height } = getOffset(childRef.current);
-            iframe.style.top = `${top + 1000}px`;
-            iframe.style.left = `${left}px`;
-            iframe.style.width = `${width}px`;
-            iframe.style.height = `${height}px`;
-            iframe.style.zIndex = '9999999';
-        };
-
-        const moveWebusbOut = () => {
-            const iframe = document.getElementsByTagName('iframe')[0];
-            if (!iframe) return;
-            iframe.style.zIndex = '-1000';
-            iframe.style.top = '-1000px';
-        };
-
-        const onResize = () => {
-            moveWebusbOut();
-            moveWebusbIn();
-        };
-
-        if (ready) {
-            // this setTimeout makes it work. I am not really sure why, or whether it is a good solution (probably not)
-            // but only this way button will move to the correct position.
-            setTimeout(() => moveWebusbIn(), 0);
-            window.addEventListener('resize', onResize);
-            return () => {
-                moveWebusbOut();
-                window.removeEventListener('resize', onResize);
-            };
-        }
-    }, [childRef, ready]);
-
-    if (React.isValidElement(children)) {
-        return React.cloneElement(children, { ref: childRef });
-    }
-    return null;
-};
-
+const WebusbButton = (props: ButtonProps) => (
+    <Button
+        {...props}
+        icon={props.icon || 'PLUS'}
+        onClick={async () => {
+            try {
+                // @ts-ignore navigator.usb not found
+                await navigator.usb.requestDevice({ filters });
+            } catch (error) {
+                // empty
+            }
+        }}
+    >
+        <Translation id="TR_CHECK_FOR_DEVICES" />
+    </Button>
+);
 export default WebusbButton;
