@@ -14,8 +14,9 @@ const StyledActionColumn = styled(ActionColumn)`
 `;
 
 const DebugSettings = () => {
-    const { setTheme, setDebugMode } = useActions({
+    const { setTheme, setDebugMode, dumpReducers } = useActions({
         setTheme: suiteActions.setTheme,
+        dumpReducers: suiteActions.dumpReducers,
         setDebugMode: suiteActions.setDebugMode,
     });
     const { debug, theme } = useSelector(state => ({
@@ -89,6 +90,21 @@ const DebugSettings = () => {
                             }}
                         >
                             Open issue
+                        </Button>
+                    </ActionColumn>
+                </Row>
+                <Row>
+                    <TextColumn
+                        title="Dump all data"
+                        description="Exports all data stored in reducers into a file. Contains all sensitive data. Do not send this file to anyone."
+                    />
+                    <ActionColumn>
+                        <Button
+                            onClick={() => {
+                                dumpReducers();
+                            }}
+                        >
+                            Dump data
                         </Button>
                     </ActionColumn>
                 </Row>

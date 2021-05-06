@@ -1,4 +1,5 @@
 import TrezorConnect, { Device, DEVICE } from 'trezor-connect';
+import { saveAs } from 'file-saver';
 import * as comparisonUtils from '@suite-utils/comparisonUtils';
 import * as deviceUtils from '@suite-utils/device';
 import { addToast } from '@suite-actions/notificationActions';
@@ -77,6 +78,12 @@ export type SuiteAction =
           variant: SuiteThemeVariant;
           colors: SuiteThemeColors;
       };
+
+export const dumpReducers = () => (_dispatch: Dispatch, getState: GetState) => {
+    const b = new Blob([JSON.stringify(getState(), null, 2)], { type: 'text/plain;charset=utf-8' });
+    const timestamp = Math.floor(new Date().getTime() / 1000);
+    saveAs(b, `suite_reducers_${process.env.VERSION}_${timestamp}.json`);
+};
 
 export const setDbError = (payload: AppState['suite']['dbError']) => ({
     type: SUITE.SET_DB_ERROR,
