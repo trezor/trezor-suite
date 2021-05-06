@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { Modal } from '@suite-components';
 import * as deviceUtils from '@suite-utils/device';
@@ -69,11 +68,7 @@ const SwitchDeviceModal = (props: InjectedModalApplicationProps) => {
                     <HeadingActions>
                         {showWebUsb && (
                             <CheckForDevicesWrapper>
-                                <WebusbButton ready>
-                                    <Button icon="SEARCH" variant="tertiary">
-                                        <Translation id="TR_CHECK_FOR_DEVICES" />
-                                    </Button>
-                                </WebusbButton>
+                                <WebusbButton icon="SEARCH" variant="tertiary" />
                             </CheckForDevicesWrapper>
                         )}
                     </HeadingActions>

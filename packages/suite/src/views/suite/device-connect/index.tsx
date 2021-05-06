@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
-import { Link, P, H2, Button } from '@trezor/components';
+import { Link, P, H2 } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import { Translation, WebusbButton, ConnectDeviceImage, Modal } from '@suite-components';
 import HelpBuyIcons from '@suite-components/ProgressBar/components/HelpBuyIcons';
@@ -50,8 +50,6 @@ type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchT
 const Index = (props: Props) => {
     const showWebUsb = isWebUSB(props.transport);
     const showUdev = getLinuxPackage();
-    // we need imageLoaded here so that we can position webusb button properly.
-    const [imageLoaded, setImageLoaded] = useState(false);
 
     return (
         <Modal data-test="@modal/connect-device" centerContent>
@@ -61,17 +59,10 @@ const Index = (props: Props) => {
                     <Translation id="TR_CONNECT_TREZOR" />
                 </H2>
             </Title>
-            <ConnectDeviceImage
-                onLoad={() => setImageLoaded(true)}
-                onError={() => setImageLoaded(true)}
-            />
+            <ConnectDeviceImage />
             {showWebUsb && (
                 <ButtonWrapper>
-                    <WebusbButton ready={imageLoaded}>
-                        <Button icon="PLUS" data-test="@modal/connect-device/webusb-button">
-                            <Translation id="TR_CHECK_FOR_DEVICES" />
-                        </Button>
-                    </WebusbButton>
+                    <WebusbButton data-test="@modal/connect-device/webusb-button" />
                 </ButtonWrapper>
             )}
             {showUdev && (

@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import TrezorConnect from 'trezor-connect';
-import { Button } from '@trezor/components';
 import { OnboardingButton, Text, Wrapper, Loaders } from '@onboarding-components';
 import {
     Translation,
@@ -35,8 +34,6 @@ const PairDeviceStep = () => {
         device: state.suite.device,
         transport: state.suite.transport,
     }));
-
-    const [imageLoaded, setImageLoaded] = useState(false);
 
     const isInBlWithFwPresent = () => {
         if (!device) {
@@ -163,19 +160,12 @@ const PairDeviceStep = () => {
 
                         {!isDetectingDevice() && (
                             <>
-                                <StyledConnectDeviceImage
-                                    onLoad={() => setImageLoaded(true)}
-                                    onError={() => setImageLoaded(true)}
-                                />
+                                <StyledConnectDeviceImage />
                                 {isWebUSB(transport) && (
                                     <>
                                         {!isDeviceUnreadable() && (
                                             <Wrapper.Controls>
-                                                <WebusbButton ready={imageLoaded}>
-                                                    <Button icon="SEARCH">
-                                                        <Translation id="TR_CHECK_FOR_DEVICES" />
-                                                    </Button>
-                                                </WebusbButton>
+                                                <WebusbButton icon="SEARCH" />
                                                 <OnboardingButton.Alt
                                                     data-test="@onboarding/try-bridge-button"
                                                     onClick={() => TrezorConnect.disableWebUSB()}
