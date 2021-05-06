@@ -1,6 +1,6 @@
 import { LogEntry } from '@suite-reducers/logReducer';
 import { Action, Dispatch, GetState } from '@suite-types';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/react';
 import { LOG } from './constants';
 import { redactDevice, redactCustom, redactAction } from '@suite-utils/logUtils';
 

@@ -14,7 +14,7 @@
         "build": "run-s copy-files build:app"
     },
     "dependencies": {
-        "@sentry/browser": "^5.29.2",
+        "@sentry/react": "^5.29.2",
         "@sentry/integrations": "^5.29.2",
         "@trezor/suite": "21.5.0",
         "@zeit/next-workers": "^1.0.0",

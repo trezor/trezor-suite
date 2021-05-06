@@ -1,5 +1,6 @@
 import { CaptureConsole } from '@sentry/integrations';
-import { BrowserOptions } from '@sentry/browser';
+import { Integrations as TracingIntegrations } from '@sentry/tracing';
+import { BrowserOptions } from '@sentry/react';
 import { TOR_DOMAIN } from '@suite-constants/urls';
 
 const fiatRatesRe = new RegExp(`FiatRatesFetchError.*${TOR_DOMAIN}`, 'gmi');
@@ -11,7 +12,9 @@ export default {
         new CaptureConsole({
             levels: ['error'],
         }),
+        new TracingIntegrations.BrowserTracing(),
     ],
+    tracesSampleRate: 1,
     release: process.env.COMMITHASH,
     environment: process.env.SUITE_TYPE,
     beforeSend: (event, hint) => {

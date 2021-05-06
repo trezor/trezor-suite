@@ -3,7 +3,7 @@ import App from 'next/app';
 import dynamic from 'next/dynamic';
 import { Provider as ReduxProvider } from 'react-redux';
 import withRedux from 'next-redux-wrapper';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/react';
 import { initStore } from '@suite/reducers/store';
 import Metadata from '@suite-components/Metadata';
 import Preloader from '@suite-components/Preloader';
@@ -94,4 +94,4 @@ class TrezorSuiteApp extends App<Props> {
     }
 }
 
-export default withRedux(initStore)(TrezorSuiteApp);
+export default Sentry.withProfiler(withRedux(initStore)(TrezorSuiteApp));

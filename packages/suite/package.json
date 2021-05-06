@@ -17,6 +17,7 @@
         "test-health": "jest -c jest.config.health.js"
     },
     "dependencies": {
+        "@sentry/tracing": "^6.3.5",
         "@trezor/components": "^1.0.0",
         "@trezor/suite-data": "21.5.0",
         "@trezor/suite-storage": "21.5.0",

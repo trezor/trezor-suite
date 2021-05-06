@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/react';
 import { connect } from 'react-redux';
 import { AppState } from '@suite/types/suite';
 import { H1, P, Button, variables } from '@trezor/components';
