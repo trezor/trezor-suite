@@ -67,17 +67,6 @@ class TrezorSuiteApp extends App<Props> {
                             <OnlineStatus />
                             <IntlProvider>
                                 <>
-                                    {/*
-                                just because we need make trezor-connect render the iframe
-                            */}
-                                    <div
-                                        className="trezor-webusb-button"
-                                        style={{
-                                            width: '100%',
-                                            position: 'absolute',
-                                            top: '-1000px',
-                                        }}
-                                    />
                                     <Metadata />
                                     <Router />
                                     <ToastContainer />

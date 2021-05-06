@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { getTextForStatus, getDescriptionForStatus } from '@firmware-utils';
 import { Translation, WebusbButton } from '@suite-components';
-import { Button } from '@trezor/components';
 import { Loaders } from '@onboarding-components';
 import { useDevice, useFirmware, useSelector } from '@suite-hooks';
 import { InitImg, P, H2 } from '@firmware-components';
@@ -46,11 +45,7 @@ const Body = () => {
                         // because Suite won't detect restarted device till it is paired again.
                         // That's why after restarting the device we need to allow user to pair it again.
                         <ButtonWrapper>
-                            <WebusbButton ready>
-                                <Button icon="SEARCH" variant="primary">
-                                    <Translation id="TR_CHECK_FOR_DEVICES" />
-                                </Button>
-                            </WebusbButton>
+                            <WebusbButton icon="SEARCH" />
                         </ButtonWrapper>
                     )}
                 </>

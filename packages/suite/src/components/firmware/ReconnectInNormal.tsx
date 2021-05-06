@@ -1,7 +1,5 @@
 import React from 'react';
 import { DisconnectImg, ConnectInNormalImg, P, H2 } from '@firmware-components';
-
-import { Button } from '@trezor/components';
 import { useDevice, useFirmware, useSelector } from '@suite-hooks';
 import { Translation, WebusbButton } from '@suite-components';
 import { isWebUSB } from '@suite-utils/transport';
@@ -70,13 +68,7 @@ const Body = () => {
 const BottomBar = () => {
     const transport = useSelector(state => state.suite.transport);
     if (isWebUSB(transport)) {
-        return (
-            <WebusbButton ready>
-                <Button icon="PLUS" variant="tertiary">
-                    <Translation id="TR_CHECK_FOR_DEVICES" />
-                </Button>
-            </WebusbButton>
-        );
+        return <WebusbButton variant="tertiary" />;
     }
     return null;
 };
