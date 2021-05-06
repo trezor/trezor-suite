@@ -8,10 +8,7 @@ import { SUITE } from '@suite-actions/constants';
 import { lockDevice } from '@suite-actions/suiteActions';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Dispatch, GetState } from '@suite-types';
-import { isDesktop, isWeb } from '@suite-utils/env';
-import { toTorUrl } from '@suite-utils/tor';
-
-const CONNECT_URL = 'https://connect.trezor.io/8/';
+import { isWeb } from '@suite-utils/env';
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     // set event listeners and dispatch as
@@ -63,9 +60,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     });
 
     try {
-        const { tor } = getState().suite;
-        const connectUrl = tor ? toTorUrl(CONNECT_URL) : CONNECT_URL;
-        const connectSrc = isDesktop() ? resolveStaticPath('connect/') : connectUrl;
+        const connectSrc = resolveStaticPath('connect/');
         // 'https://localhost:8088/';
         // 'https://connect.corp.sldev.cz/develop/';
 

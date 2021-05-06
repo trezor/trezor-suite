@@ -7,6 +7,7 @@ export default {
         'browser-detection',
         'oauth',
         'message-system',
+        'connect',
     ],
     desktop: ['fonts', 'images', 'videos', 'translations', 'connect', 'bin', 'message-system'],
     native: ['fonts', 'images', 'videos', 'message-system'],
