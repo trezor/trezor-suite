@@ -91,6 +91,9 @@ const Settings = () => {
     });
 
     // Tor
+    // Default address of the bundled tor process.
+    // Keep in sync with DEFAULT_ADDRESS in suite-desktop's TorProcess.
+    const DEFAULT_ADDRESS = '127.0.0.1:9050';
     const [torAddress, setTorAddress] = useState('');
     useEffect(() => {
         window.desktopApi?.getTorAddress().then(address => setTorAddress(address));
@@ -98,7 +101,10 @@ const Settings = () => {
 
     const saveTorAddress = useCallback(() => {
         // TODO: Validation
-        window.desktopApi!.setTorAddress(torAddress);
+        // Let the user go back to default by clearing the input.
+        // Indicate this to the user by using DEFAULT_ADDRESS as placeholder in the input below.
+        const address = torAddress.length > 0 ? torAddress : DEFAULT_ADDRESS;
+        window.desktopApi!.setTorAddress(address);
     }, [torAddress]);
 
     // Auto Updater
@@ -291,7 +297,7 @@ const Settings = () => {
                                         }
                                         onBlur={saveTorAddress}
                                         data-test="@settings/general/tor-address"
-                                        placeholder="127.0.0.1:9050"
+                                        placeholder={DEFAULT_ADDRESS}
                                     />
                                 </ActionColumn>
                             </SectionItem>
