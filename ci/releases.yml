@@ -32,26 +32,6 @@ suite codesign deploy staging-suite:
   tags:
     - deploy
 
-# Create a GitHub release and append signed binaries
-suite-desktop github release:
-  stage: deploy to production
-  needs:
-    - suite-desktop build mac codesign
-    - suite-desktop build linux codesign
-    - suite-desktop build windows codesign
-  environment:
-    name: ${CI_BUILD_REF_NAME}-staging-suite
-    url: ${STAGING_SUITE_SERVER_URL}
-  before_script: []
-  only:
-    refs:
-      - codesign
-  when: manual
-  script:
-    - release-it --ci --config=ci/release-it.yml --disable-metrics
-  tags:
-    - deploy
-
 release commit messages:
   stage: deploy to staging
   only:
