@@ -37,8 +37,6 @@ increase the `develop` version to `YY.(MM+1).0` indicating we are already brewin
 
 ## Version bumping
 
-Do not use `release-it` to semi-automate the version bumping. It is very aggressive and it may delete/modify some Github releases.
-
 Versions you need to modify manually for now besides all the package.json files:
 
 - packages/suite-native/package.json
