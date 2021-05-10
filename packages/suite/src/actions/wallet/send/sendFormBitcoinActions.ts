@@ -5,7 +5,6 @@ import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { getBitcoinComposeOutputs } from '@wallet-utils/sendFormUtils';
 import {
     ZEC_SIGN_ENHANCEMENT,
-    ZEC_SIGN_ENHANCEMENT_HEARTWOOD,
     BTC_RBF_SEQUENCE,
     BTC_LOCKTIME_SEQUENCE,
 } from '@wallet-constants/sendForm';
@@ -163,7 +162,7 @@ export const signTransaction = (
     formValues: FormState,
     transactionInfo: PrecomposedTransactionFinal,
 ) => async (dispatch: Dispatch, getState: GetState) => {
-    const { selectedAccount, blockchain } = getState().wallet;
+    const { selectedAccount } = getState().wallet;
     const { device } = getState().suite;
     if (
         selectedAccount.status !== 'loaded' ||
@@ -182,13 +181,7 @@ export const signTransaction = (
 
     // enhance signTransaction params for zcash (version_group_id etc.)
     if (account.symbol === 'zec') {
-        // TEMP: remove this after fork
-        if (blockchain.zec.blockHeight >= 1046400) {
-            signEnhancement = ZEC_SIGN_ENHANCEMENT;
-        } else {
-            signEnhancement = ZEC_SIGN_ENHANCEMENT_HEARTWOOD;
-        }
-        // signEnhancement = ZEC_SIGN_ENHANCEMENT;
+        signEnhancement = ZEC_SIGN_ENHANCEMENT;
     }
 
     if (formValues.options.includes('bitcoinRBF')) {
