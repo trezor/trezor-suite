@@ -8,14 +8,6 @@ export const U_INT_32 = 0xffffffff;
 export const ETH_DEFAULT_GAS_PRICE = '1';
 export const ETH_DEFAULT_GAS_LIMIT = '21000';
 
-// todo: remove after zcash canopy fork, block 1046400 on approximately November 18th.
-export const ZEC_SIGN_ENHANCEMENT_HEARTWOOD = {
-    overwintered: true,
-    version: 4,
-    versionGroupId: 0x892f2085,
-    branchId: 0xf5b9230b,
-};
-
 export const ZEC_SIGN_ENHANCEMENT = {
     overwintered: true,
     version: 4,
