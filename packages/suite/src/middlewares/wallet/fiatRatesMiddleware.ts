@@ -31,16 +31,17 @@ const fiatRatesMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
 
             if (account.tokens) {
                 const difference = account.tokens.filter(
-                    t => !prevAccount?.tokens?.find(prevT => prevT.symbol === t.symbol),
+                    token =>
+                        !prevAccount?.tokens?.find(prevToken => prevToken.symbol === token.symbol),
                 );
 
-                difference.forEach(t => {
-                    if (t.symbol) {
+                difference.forEach(token => {
+                    if (token.symbol) {
                         api.dispatch(
                             fiatRatesActions.updateCurrentRates({
-                                symbol: t.symbol,
+                                symbol: token.symbol,
                                 mainNetworkSymbol: account.symbol,
-                                tokenAddress: t.address,
+                                tokenAddress: token.address,
                             }),
                         );
                     }
@@ -51,23 +52,19 @@ const fiatRatesMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: D
         case ACCOUNT.CREATE: {
             // fetch current rates for account's tokens
             const account = action.payload;
-            if (account.tokens) {
-                account.tokens.forEach((t, i) => {
-                    if (t.symbol) {
-                        const s = t.symbol;
-                        // wait 500ms before firing next fetch
-                        setTimeout(() => {
-                            api.dispatch(
-                                fiatRatesActions.updateCurrentRates({
-                                    symbol: s,
-                                    mainNetworkSymbol: account.symbol,
-                                    tokenAddress: t.address,
-                                }),
-                            );
-                        }, i * 500);
-                    }
-                });
-            }
+            account.tokens?.forEach(token => {
+                if (!token.symbol) {
+                    return;
+                }
+                api.dispatch(
+                    fiatRatesActions.updateCurrentRates({
+                        symbol: token.symbol,
+                        mainNetworkSymbol: account.symbol,
+                        tokenAddress: token.address,
+                    }),
+                );
+            });
+
             break;
         }
         case WALLET_SETTINGS.CHANGE_NETWORKS:
