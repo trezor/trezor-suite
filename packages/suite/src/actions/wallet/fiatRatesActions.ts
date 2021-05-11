@@ -280,7 +280,7 @@ export const updateTxsRates = (account: Account, txs: AccountTransaction[]) => a
 ) => {
     if (txs?.length === 0 || isTestnet(account.symbol)) return;
 
-    const timestamps = txs.map(tx => tx.blockTime ?? getBlockbookSafeTime());
+    const timestamps = txs.map(tx => getBlockbookSafeTime(tx.blockTime));
     const response = await TrezorConnect.blockchainGetFiatRatesForTimestamps({
         coin: account.symbol,
         timestamps,

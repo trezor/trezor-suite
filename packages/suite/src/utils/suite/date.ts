@@ -10,6 +10,7 @@ import {
     eachQuarterOfInterval,
     eachMonthOfInterval,
     eachDayOfInterval,
+    differenceInMinutes,
 } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 
@@ -84,14 +85,20 @@ export const calcTicksFromData = (data: { time: number }[]) => {
 };
 
 /**
- * Returns Blockbook-safe current unix timestamp (current time - 3 mins).
- * Little workaround for Blockbook as it doesn't return rates data for too recent timestamps.
+ * Little workaround for Blockbook API for fetching fiat rates for given timestamps (getFiatRatesForTimestamps)
+ * which doesn't return proper response if the timestamp is too recent.
+ * If passed timestamp is older than 3 minutes it is returned without any adjustments.
+ * Otherwise timestamp of 3 minutes ago is returned.
  *
  * @returns
  */
-export const getBlockbookSafeTime = () => {
-    const timestamp = getUnixTime(new Date());
-    return timestamp - 180; // current time - 3 mins
+export const getBlockbookSafeTime = (timestamp?: number) => {
+    const currentTimestamp = getUnixTime(new Date());
+    if (timestamp && differenceInMinutes(currentTimestamp * 1000, timestamp * 1000) > 3) {
+        // timestamp is older than 3 mins, no adjustment needed
+        return timestamp;
+    }
+    return currentTimestamp - 180;
 };
 
 /**
