@@ -4,15 +4,13 @@ import * as walletSettingsActions from '@settings-actions/walletSettingsActions'
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { Translation } from '@suite-components';
-import { Icon, Tooltip, useTheme } from '@trezor/components';
 import { findRouteByName } from '@suite-utils/router';
 import { useActions, useAnalytics, useSelector } from '@suite-hooks';
 import ActionItem from './components/ActionItem';
-import TooltipContentTor from './components/TooltipContentTor';
 import { isDesktop } from '@suite-utils/env';
 import NotificationsDropdown from './components/NotificationsDropdown';
-
-const DESKTOP_LAYOUT_ICONS_MARGIN = '28px';
+import SettingsDropdown from './components/SettingsDropdown';
+import TorDropdown from './components/TorDropdown';
 
 const Wrapper = styled.div`
     display: flex;
@@ -27,50 +25,16 @@ const MobileWrapper = styled.div`
     padding: 0px 16px;
 `;
 
-const ActionsContainer = styled.div<{ desktop: boolean; mobileLayout?: boolean }>`
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
-    ${props =>
-        !props.mobileLayout &&
-        `display: flex;
-        align-items: center;
-        margin-left: ${DESKTOP_LAYOUT_ICONS_MARGIN};
-        border-top: 0;
-    `}
-    ${props =>
-        props.desktop &&
-        !props.mobileLayout &&
-        `
-        margin-left: 22px;
-        margin-right: -17px;
-        padding: 12px 15px;
-        border: 1px solid ${props.theme.STROKE_GREY};
-        border-radius: 10px;
-    `}
+const ActionItemWrapper = styled.div`
+    position: relative;
 `;
 
-const ActionItemTor = styled.div<{ mobileLayout?: boolean }>`
-    ${props =>
-        !props.mobileLayout &&
-        `display: flex;
-        position: relative;
-        align-items: center;
-    `}
-    ${props =>
-        props.mobileLayout &&
-        `border-top: 1px solid ${props.theme.STROKE_GREY};
-    `}
-`;
-
-const ActionItemTorIndicator = styled.div`
-    background: ${props => props.theme.BG_WHITE};
-    display: flex;
-    align-items: center;
-    height: 10px;
-    width: 10px;
-    border-radius: 50%;
-    position: absolute;
-    top: 0;
-    right: 0;
+const Separator = styled.div`
+    border: 1px solid ${props => props.theme.STROKE_GREY};
+    height: 38px;
+    width: 0;
+    margin: 0 10px;
+    opacity: 0.7;
 `;
 
 interface Props {
@@ -82,7 +46,6 @@ type Route = 'settings-index' | 'notifications-index';
 
 const NavigationActions = (props: Props) => {
     const analytics = useAnalytics();
-    const themeColors = useTheme();
     const { activeApp, notifications, discreetMode, tor } = useSelector(state => ({
         activeApp: state.router.app,
         notifications: state.notifications,
@@ -121,6 +84,51 @@ const NavigationActions = (props: Props) => {
 
     return (
         <WrapperComponent>
+            <ActionItem
+                onClick={() => {
+                    analytics.report({
+                        type: 'menu/toggle-discreet',
+                        payload: {
+                            value: !discreetMode,
+                        },
+                    });
+                    setDiscreetMode(!discreetMode);
+                }}
+                isActive={discreetMode}
+                label={<Translation id="TR_DISCREET" />}
+                icon={discreetMode ? 'HIDE' : 'SHOW'}
+                isMobileLayout={props.isMobileLayout}
+            />
+
+            {isDesktop() && (
+                <>
+                    {props.isMobileLayout ? (
+                        <ActionItemWrapper>
+                            <ActionItem
+                                onClick={() => {
+                                    analytics.report({
+                                        type: 'menu/toggle-tor',
+                                        payload: {
+                                            value: !tor,
+                                        },
+                                    });
+                                    window.desktopApi!.toggleTor(!tor);
+                                }}
+                                label={<Translation id="TR_TOR" />}
+                                icon="TOR"
+                                isMobileLayout={props.isMobileLayout}
+                                marginLeft
+                                indicator={tor ? 'check' : undefined}
+                            />
+                        </ActionItemWrapper>
+                    ) : (
+                        <TorDropdown isActive={tor} marginLeft />
+                    )}
+                </>
+            )}
+
+            {!props.isMobileLayout && <Separator />}
+
             {props.isMobileLayout ? (
                 <ActionItem
                     label={<Translation id="TR_NOTIFICATIONS" />}
@@ -128,82 +136,28 @@ const NavigationActions = (props: Props) => {
                     onClick={() => action('notifications-index')}
                     isActive={getIfRouteIsActive('notifications-index')}
                     icon="NOTIFICATION"
-                    withAlertDot={unseenNotifications}
+                    indicator={unseenNotifications ? 'alert' : undefined}
                     isMobileLayout={props.isMobileLayout}
                 />
             ) : (
-                <NotificationsDropdown withAlertDot={unseenNotifications} />
+                <NotificationsDropdown
+                    indicator={unseenNotifications}
+                    isActive={getIfRouteIsActive('notifications-index')}
+                />
             )}
 
-            <ActionItem
-                label={<Translation id="TR_SETTINGS" />}
-                data-test="@suite/menu/settings-index"
-                onClick={() => action('settings-index')}
-                isActive={getIfRouteIsActive('settings-index')}
-                icon="SETTINGS"
-                isMobileLayout={props.isMobileLayout}
-                desktopMarginLeft={DESKTOP_LAYOUT_ICONS_MARGIN}
-            />
-
-            <ActionsContainer desktop={isDesktop()} mobileLayout={props.isMobileLayout}>
+            {props.isMobileLayout ? (
                 <ActionItem
-                    onClick={() => {
-                        analytics.report({
-                            type: 'menu/toggle-discreet',
-                            payload: {
-                                value: !discreetMode,
-                            },
-                        });
-                        setDiscreetMode(!discreetMode);
-                    }}
-                    isActive={discreetMode}
-                    label={<Translation id="TR_DISCREET" />}
-                    icon={discreetMode ? 'HIDE' : 'SHOW'}
+                    label={<Translation id="TR_SETTINGS" />}
+                    data-test="@suite/menu/settings-index"
+                    onClick={() => action('settings-index')}
+                    isActive={getIfRouteIsActive('settings-index')}
+                    icon="SETTINGS"
                     isMobileLayout={props.isMobileLayout}
                 />
-                {isDesktop() && (
-                    <ActionItemTor mobileLayout={props.isMobileLayout}>
-                        <Tooltip
-                            placement="bottom"
-                            content={
-                                <TooltipContentTor
-                                    active={tor}
-                                    action={() => action('settings-index')}
-                                />
-                            }
-                            {...props}
-                        >
-                            <>
-                                <ActionItem
-                                    onClick={() => {
-                                        analytics.report({
-                                            type: 'menu/toggle-tor',
-                                            payload: {
-                                                value: !tor,
-                                            },
-                                        });
-                                        window.desktopApi!.toggleTor(!tor);
-                                    }}
-                                    isActive={tor}
-                                    label={<Translation id="TR_TOR" />}
-                                    icon="TOR"
-                                    isMobileLayout={props.isMobileLayout}
-                                    desktopMarginLeft={DESKTOP_LAYOUT_ICONS_MARGIN}
-                                />
-                                {tor && (
-                                    <ActionItemTorIndicator>
-                                        <Icon
-                                            icon="CHECK"
-                                            size={10}
-                                            color={themeColors.TYPE_GREEN}
-                                        />
-                                    </ActionItemTorIndicator>
-                                )}
-                            </>
-                        </Tooltip>
-                    </ActionItemTor>
-                )}
-            </ActionsContainer>
+            ) : (
+                <SettingsDropdown isActive={getIfRouteIsActive('settings-index')} marginLeft />
+            )}
         </WrapperComponent>
     );
 };

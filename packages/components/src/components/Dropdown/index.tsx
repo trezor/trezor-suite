@@ -4,7 +4,6 @@ import React, {
     useLayoutEffect,
     forwardRef,
     useImperativeHandle,
-    useEffect,
     useCallback,
 } from 'react';
 import ReactDOM from 'react-dom';
@@ -17,16 +16,59 @@ const Wrapper = styled.div<{ absolutePosition: boolean }>`
     position: ${props => (props.absolutePosition ? 'static' : 'relative')};
 `;
 
+const MasterLinkComponent = styled.button<{
+    topMargin?: number;
+    rightMargin?: number;
+}>`
+    border: 0;
+    background: none;
+    position: absolute;
+    top: 15px;
+    right: 10px;
+    font-size: 11px;
+    letter-spacing: 0.4px;
+    color: ${props => props.theme.TYPE_GREEN};
+    font-weight: ${variables.FONT_WEIGHT.BOLD};
+    text-transform: uppercase;
+    display: flex;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+
+    & > * + * {
+        margin-left: 5px;
+    }
+
+    ${props =>
+        props.topMargin &&
+        css`
+            margin-top: ${props.topMargin}px;
+        `}
+
+    ${props =>
+        props.rightMargin &&
+        css`
+            margin-right: calc(${props.rightMargin}px + 5px);
+        `}
+`;
+
+const MasterLinkComponentIcon = styled(Icon)`
+    margin-top: 1px;
+`;
+
 const Menu = styled.ul<MenuProps>`
     display: flex;
     flex-direction: column;
     position: absolute;
-    border-radius: 4px;
     flex: 1;
-    min-width: 140px;
-    box-shadow: 0 1px 2px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
+    min-width: ${props => props.minWidth}px;
+    box-shadow: 0 2px 7px 0 ${props => props.theme.BOX_SHADOW_BLACK_15},
+        0 2px 3px 0 ${props => props.theme.BOX_SHADOW_BLACK_5};
     z-index: 10001;
-    padding: ${props => props.verticalPadding}px 0px;
+    padding: ${props => props.topPadding}px ${props => props.horizontalPadding}px
+        ${props => props.bottomPadding}px;
+    border-radius: 10px;
 
     ${props =>
         props.coords &&
@@ -72,6 +114,17 @@ const Menu = styled.ul<MenuProps>`
             right: 0px;
             top: ${props.menuSize ? `-${props.menuSize[1]}px` : '0px'};
         `};
+
+    ${props =>
+        props.borderRadius &&
+        css`
+            border-radius: ${props.borderRadius}px;
+        `};
+
+    &:hover ${MasterLinkComponent} {
+        opacity: 1;
+        transform: translateX(0);
+    }
 `;
 
 const Group = styled.li`
@@ -84,6 +137,7 @@ const Group = styled.li`
 
 const MenuItem = styled.li<MenuItemProps>`
     display: flex;
+    align-items: center;
     padding: ${props => (!props.item.noPadding ? '8px 16px' : '0px')};
     white-space: nowrap;
     cursor: ${props => (!props.item.isDisabled ? 'pointer' : 'default')};
@@ -91,6 +145,28 @@ const MenuItem = styled.li<MenuItemProps>`
         !props.item.isDisabled ? props.theme.TYPE_DARK_GREY : props.theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    position: relative;
+    transition: all 0.2s ease;
+
+    ${props =>
+        props.item.separatorBefore &&
+        css`
+            margin-top: 17px;
+            &:after {
+                position: absolute;
+                width: calc(100% - 32px);
+                top: -9px;
+                left: 16px;
+                content: '';
+                border-top: 1px solid ${props.theme.STROKE_GREY};
+            }
+        `}
+
+    ${props =>
+        props.item.isRounded &&
+        css`
+            border-radius: 4px;
+        `}
 
     ${props =>
         !props.item.isDisabled &&
@@ -102,8 +178,19 @@ const MenuItem = styled.li<MenuItemProps>`
         `}
 `;
 
-const IconWrapper = styled.div`
+const MenuItemLabel = styled.div`
+    width: 100%;
+`;
+
+const IconLeft = styled.div`
     margin-right: 16px;
+`;
+
+const IconRight = styled.div`
+    margin-left: auto;
+    & > * {
+        margin-left: 16px;
+    }
 `;
 
 interface DropdownMenuItem {
@@ -111,10 +198,13 @@ interface DropdownMenuItem {
     label: React.ReactNode;
     callback?: () => any | Promise<any>;
     icon?: IconProps['icon'] | JSX.Element;
+    iconRight?: IconProps['icon'];
     isDisabled?: boolean;
     isHidden?: boolean;
+    isRounded?: boolean;
     noPadding?: boolean;
     noHover?: boolean;
+    separatorBefore?: boolean;
     'data-test'?: string;
 }
 
@@ -127,12 +217,23 @@ interface GroupedMenuItems {
 interface MenuItemProps {
     item: DropdownMenuItem;
 }
+
+interface MasterLink {
+    label: React.ReactNode;
+    icon: IconProps['icon'];
+    callback?: () => void;
+}
 interface MenuProps {
     alignMenu?: 'left' | 'right' | 'top-left' | 'top-right';
     coords?: Coords;
     menuSize?: Coords;
     offset?: number;
-    verticalPadding?: number;
+    topPadding?: number;
+    bottomPadding?: number;
+    horizontalPadding?: number;
+    borderRadius?: number;
+    minWidth?: number;
+    masterLink?: MasterLink;
 }
 
 interface Props extends MenuProps, React.ButtonHTMLAttributes<HTMLDivElement> {
@@ -146,6 +247,7 @@ interface Props extends MenuProps, React.ButtonHTMLAttributes<HTMLDivElement> {
     offset?: number;
     isDisabled?: boolean;
     appendTo?: HTMLElement;
+    hoverContent?: React.ReactNode;
     onToggle?: (isToggled: boolean) => void;
 }
 
@@ -168,8 +270,13 @@ const Dropdown = forwardRef(
             alignMenu = 'left',
             offset = 10,
             appendTo,
-            verticalPadding = 8,
+            topPadding = 8,
+            bottomPadding = 8,
+            horizontalPadding = 0,
+            minWidth = 140,
             onToggle,
+            hoverContent,
+            masterLink,
             ...rest
         }: Props,
         ref
@@ -283,9 +390,9 @@ const Dropdown = forwardRef(
         const getIconComponent = (item: DropdownMenuItem) => {
             if (item.icon) {
                 return typeof item.icon === 'string' ? (
-                    <IconWrapper>
+                    <IconLeft>
                         <Icon icon={item.icon} size={16} color={theme.TYPE_DARK_GREY} />
-                    </IconWrapper>
+                    </IconLeft>
                 ) : (
                     item.icon
                 );
@@ -300,7 +407,30 @@ const Dropdown = forwardRef(
                 menuSize={menuSize}
                 offset={offset}
                 coords={absolutePosition ? coords : undefined}
+                topPadding={topPadding}
+                bottomPadding={bottomPadding}
+                horizontalPadding={horizontalPadding}
+                minWidth={minWidth}
             >
+                {masterLink && (
+                    <MasterLinkComponent
+                        topMargin={topPadding}
+                        rightMargin={horizontalPadding}
+                        onClick={() => {
+                            if (masterLink.callback) {
+                                masterLink.callback();
+                                setToggled(false);
+                            }
+                        }}
+                    >
+                        <span>{masterLink.label}</span>
+                        <MasterLinkComponentIcon
+                            icon={masterLink.icon}
+                            size={10}
+                            color={theme.TYPE_GREEN}
+                        />
+                    </MasterLinkComponent>
+                )}
                 {visibleItems.map((group, i) => (
                     <React.Fragment key={group.key}>
                         {group.label && <Group>{group.label}</Group>}
@@ -315,7 +445,16 @@ const Dropdown = forwardRef(
                                 item={item}
                             >
                                 {getIconComponent(item)}
-                                {item.label}
+                                <MenuItemLabel>{item.label}</MenuItemLabel>
+                                {item.iconRight && (
+                                    <IconRight>
+                                        <Icon
+                                            icon={item.iconRight}
+                                            size={16}
+                                            color={theme.TYPE_DARK_GREY}
+                                        />
+                                    </IconRight>
+                                )}
                             </MenuItemComponent>
                         ))}
                     </React.Fragment>

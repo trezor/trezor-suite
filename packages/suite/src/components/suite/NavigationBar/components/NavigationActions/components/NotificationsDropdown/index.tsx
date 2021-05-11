@@ -21,18 +21,20 @@ const NotificationsWrapper = styled.div`
 `;
 
 interface Props {
-    withAlertDot: boolean;
+    indicator?: boolean;
+    isActive?: boolean;
     marginLeft?: string;
     marginRight?: string;
 }
 
 const NotificationsDropdown = ({
-    withAlertDot,
+    indicator = false,
+    isActive = false,
     marginLeft = '0px',
     marginRight = '0px',
 }: Props) => {
     // use "opened" state to decide if "active" styles on ActionItem should be applied
-    const [opened, setOpened] = useState(false);
+    const [open, setOpen] = useState(false);
     const dropdownRef = useRef<DropdownRef>();
 
     const { resetUnseen } = useActions({
@@ -42,11 +44,11 @@ const NotificationsDropdown = ({
     const handleToggleChange = useCallback(
         (isToggled: boolean) => {
             if (isToggled) {
-                setOpened(true);
+                setOpen(true);
             } else {
                 // if the dropdown is going to be closed, mark all notifications as seen and "deactivate" ActionItem
                 resetUnseen();
-                setOpened(false);
+                setOpen(false);
             }
         },
         [resetUnseen],
@@ -84,8 +86,9 @@ const NotificationsDropdown = ({
                 <ActionItem
                     label={<Translation id="TR_NOTIFICATIONS" />}
                     icon="NOTIFICATION"
-                    isActive={opened}
-                    withAlertDot={withAlertDot}
+                    isOpen={open}
+                    isActive={isActive}
+                    indicator={indicator ? 'alert' : undefined}
                 />
             </Dropdown>
         </Wrapper>

@@ -39,6 +39,7 @@ describe('Dropbox api errors', () => {
 
         cy.discoveryShouldFinish();
 
+        cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@suite/menu/settings-index').click();
         cy.getTestElement('@settings/metadata-switch').click({ force: true });
 

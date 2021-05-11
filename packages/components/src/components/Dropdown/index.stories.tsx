@@ -1,7 +1,12 @@
 import React from 'react';
+import styled from 'styled-components';
 import { Dropdown } from './index';
 import { storiesOf } from '@storybook/react';
 import { select, number, boolean } from '@storybook/addon-knobs';
+
+const MasterLink = styled.a`
+    color: ${props => props.theme.TYPE_GREEN};
+`;
 
 storiesOf('Dropdown', module).add('Dropdown', () => {
     const alignMenu: any = select(
@@ -15,6 +20,10 @@ storiesOf('Dropdown', module).add('Dropdown', () => {
     );
     const isDisabled = boolean('isDisabled', false);
     const offset = number('offset', 10);
+    const horizontalPadding = number('Horizontal padding', 8);
+    const topPadding = number('Top padding', 8);
+    const bottomPadding = number('Bottom padding', 8);
+    const minWidth = number('Minimum width', 350);
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -22,6 +31,17 @@ storiesOf('Dropdown', module).add('Dropdown', () => {
                 {...(alignMenu ? { alignMenu } : {})}
                 {...(offset ? { offset } : {})}
                 {...(isDisabled ? { isDisabled } : {})}
+                horizontalPadding={horizontalPadding}
+                topPadding={topPadding}
+                bottomPadding={bottomPadding}
+                minWidth={minWidth}
+                masterLink={{
+                    callback: () => {
+                        console.log('navigate somewhere');
+                    },
+                    label: 'some link',
+                    icon: 'ARROW_RIGHT_LONG',
+                }}
                 items={[
                     // {
                     //     options: [
@@ -55,30 +75,52 @@ storiesOf('Dropdown', module).add('Dropdown', () => {
                     },
                     {
                         key: '2',
-                        label: 'Group 2',
+                        label: 'Group 2 - with rounded items',
                         options: [
                             {
                                 key: '1',
                                 label: 'item 3 with very long name',
                                 callback: () => {
-                                    console.log('item 3 clicked');
+                                    console.log('item 1 clicked');
                                 },
+                                isRounded: true,
                             },
                             {
                                 key: '2',
-                                label: 'disabled item',
+                                label: 'disabled item with icon',
                                 callback: () => {
-                                    console.log('disabled item clicked');
+                                    console.log('item 2 clicked - disabled');
                                 },
+                                icon: 'LIGHTBULB',
+                                isRounded: true,
                                 isDisabled: true,
                             },
-
                             {
                                 key: '3',
-                                label: 'item 4',
+                                label: 'disabled item with iconRight',
+                                callback: () => {
+                                    console.log('item 3 clicked - disabled');
+                                },
+                                iconRight: 'ARROW_RIGHT',
+                                isRounded: true,
+                                isDisabled: true,
+                            },
+                            {
+                                key: '4',
+                                label: 'basic item',
                                 callback: () => {
                                     console.log('item 4 clicked');
                                 },
+                                isRounded: true,
+                            },
+                            {
+                                key: '5',
+                                label: 'item with iconRight and separator',
+                                callback: () => {
+                                    console.log('item 5 clicked');
+                                },
+                                iconRight: 'ARROW_RIGHT',
+                                separatorBefore: true,
                             },
                         ],
                     },

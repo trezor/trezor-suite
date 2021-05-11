@@ -40,6 +40,7 @@ describe(`Metadata - switching between cloud providers`, () => {
         cy.getTestElement('@metadata/input').type('dropbox label {enter}');
         cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'dropbox label');
 
+        cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@suite/menu/settings-index').click();
         cy.getTestElement('@settings/metadata/disconnect-provider-button').click();
         cy.getTestElement('@settings/metadata/connect-provider-button').should('be.visible');
