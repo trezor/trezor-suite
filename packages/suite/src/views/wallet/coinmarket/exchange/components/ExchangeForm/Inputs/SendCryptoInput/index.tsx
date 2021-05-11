@@ -21,10 +21,11 @@ export const buildCurrencyOptions = () => {
     return result;
 };
 
-const StyledInput = styled(Input)`
+const StyledInput = styled(Input)<{ isToken: boolean }>`
     border-right: 0;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+    ${props => (!props.isToken ? 'padding-right: 105px' : undefined)}
 `;
 
 const SendCryptoInput = () => {
@@ -72,6 +73,7 @@ const SendCryptoInput = () => {
             name={CRYPTO_INPUT}
             noTopLabel
             maxLength={MAX_LENGTH.AMOUNT}
+            isToken={!!tokenData}
             innerRef={register({
                 validate: (value: string) => {
                     const amountBig = new Bignumber(value);

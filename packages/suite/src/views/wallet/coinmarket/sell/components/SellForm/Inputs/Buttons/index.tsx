@@ -9,10 +9,7 @@ import { CRYPTO_INPUT, FIAT_INPUT } from '@wallet-types/coinmarketSellForm';
 const Wrapper = styled.div`
     display: flex;
     justify-content: space-between;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
-        margin-top: 27px;
-    }
+    width: 100%;
 `;
 
 const Left = styled.div`
