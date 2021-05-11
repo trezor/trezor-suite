@@ -59,6 +59,7 @@ export const COINS: CoinType[] = [
 ];
 
 export const ICONS: IconType[] = [
+    'APP',
     'ARROW_DOWN',
     'ARROW_UP',
     'ARROW_LEFT',
@@ -67,14 +68,17 @@ export const ICONS: IconType[] = [
     'BROADCAST',
     'CHECK',
     'CHECK_ACTIVE',
+    'COIN',
     'COINS',
     'COPY',
     'CROSS',
     'DASHBOARD',
+    'DEVICE',
     'EXCHANGE',
     'INFO',
     'INFO_ACTIVE',
     'LOG',
+    'LIGHTBULB',
     'MENU',
     'MORE',
     'NON_SUITE',

@@ -1,14 +1,27 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useTheme, Icon, IconProps, variables } from '@trezor/components';
 
-const Wrapper = styled.div<Pick<Props, 'isActive' | 'desktopMarginLeft' | 'desktopMarginRight'>>`
+const Wrapper = styled.div<Pick<Props, 'isOpen' | 'marginLeft'>>`
+    width: 45px;
+    height: 45px;
     display: flex;
     position: relative;
     cursor: pointer;
     align-items: center;
-    margin-left: ${props => props.desktopMarginLeft || '0px'};
-    margin-right: ${props => props.desktopMarginRight || '0px'};
+    justify-content: center;
+    border-radius: 8px;
+    ${props => props.marginLeft && `margin-left: 8px`};
+
+    &:hover {
+        background: ${props => props.theme.BG_GREY_OPEN};
+    }
+
+    ${props =>
+        props.isOpen &&
+        css`
+            background: ${props.theme.BG_GREY_OPEN};
+        `}
 `;
 
 const MobileWrapper = styled.div<Pick<Props, 'isActive'>>`
@@ -40,8 +53,8 @@ const Label = styled.span`
 
 const AlertDotWrapper = styled.div`
     position: absolute;
-    top: 0px;
-    right: 2px;
+    top: 10px;
+    right: 10px;
     width: 9px;
     height: 9px;
     border-radius: 50%;
@@ -59,13 +72,25 @@ const AlertDot = styled.div`
     background: ${props => props.theme.TYPE_ORANGE};
 `;
 
+const Indicator = styled.div`
+    background: ${props => props.theme.BG_WHITE};
+    display: flex;
+    align-items: center;
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+`;
+
 interface CommonProps extends Pick<React.HTMLAttributes<HTMLDivElement>, 'onClick'> {
     label: React.ReactNode;
     isActive?: boolean;
-    withAlertDot?: boolean;
+    isOpen?: boolean;
+    indicator?: 'check' | 'alert';
     isMobileLayout?: boolean;
-    desktopMarginLeft?: string;
-    desktopMarginRight?: string;
+    marginLeft?: boolean;
 }
 
 interface CustomIconComponentProps extends CommonProps {
@@ -98,7 +123,7 @@ const ActionItem = React.forwardRef((props: Props, ref: React.Ref<HTMLDivElement
             <MobileWrapper {...props}>
                 <MobileIconWrapper isActive={props.isActive}>
                     {iconComponent}
-                    {props.withAlertDot && (
+                    {props.indicator === 'alert' && (
                         <AlertDotWrapper>
                             <AlertDot />
                         </AlertDotWrapper>
@@ -110,12 +135,17 @@ const ActionItem = React.forwardRef((props: Props, ref: React.Ref<HTMLDivElement
     }
 
     return (
-        <Wrapper isActive={props.isActive} {...props} ref={ref}>
+        <Wrapper isActive={props.isActive} isOpen={props.isOpen} {...props} ref={ref}>
             {iconComponent}
-            {props.withAlertDot && (
+            {props.indicator === 'alert' && (
                 <AlertDotWrapper>
                     <AlertDot />
                 </AlertDotWrapper>
+            )}
+            {props.indicator === 'check' && (
+                <Indicator>
+                    <Icon icon="CHECK" size={10} color={theme.TYPE_GREEN} />
+                </Indicator>
             )}
         </Wrapper>
     );

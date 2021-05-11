@@ -124,7 +124,8 @@ const RangeSelector = (props: Props) => {
             ))}
             <Dropdown
                 ref={dropdownRef}
-                verticalPadding={0}
+                topPadding={0}
+                bottomPadding={0}
                 alignMenu={props.align}
                 items={[
                     {

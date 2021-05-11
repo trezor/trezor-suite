@@ -1112,6 +1112,10 @@ const definedMessages = defineMessages({
         description: 'Shows advanced coin settings',
         id: 'TR_ADVANCED_SETTINGS',
     },
+    TR_ALL: {
+        defaultMessage: 'All',
+        id: 'TR_ALL',
+    },
     TR_ALLOW_ANALYTICS: {
         defaultMessage: 'Allow anonymous data storing',
         id: 'TR_ALLOW_ANALYTICS',
@@ -1153,6 +1157,10 @@ const definedMessages = defineMessages({
     TR_DISCONNECT: {
         defaultMessage: 'Disconnect',
         id: 'TR_DISCONNECT',
+    },
+    TR_DISABLED: {
+        defaultMessage: 'Disabled',
+        id: 'TR_DISABLED',
     },
     TR_BACKEND_DISCONNECTED: {
         defaultMessage: 'Backend is disconnected',
@@ -1980,6 +1988,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Learn more',
         description: 'Link to Trezor wiki.',
         id: 'TR_LEARN_MORE',
+    },
+    TR_LEARN_AND_DISCOVER: {
+        defaultMessage: 'Learn & discover',
+        id: 'TR_LEARN_AND_DISCOVER',
     },
     TR_SEGWIT_ACCOUNTS: {
         defaultMessage: 'Segwit accounts',
