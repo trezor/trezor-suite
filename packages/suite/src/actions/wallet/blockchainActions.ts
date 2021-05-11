@@ -22,7 +22,11 @@ import { BLOCKCHAIN } from './constants';
 
 export type BlockchainAction =
     | {
-          type: typeof BLOCKCHAIN.READY | typeof BLOCKCHAIN.CONNECTED;
+          type: typeof BLOCKCHAIN.READY;
+      }
+    | {
+          type: typeof BLOCKCHAIN.CONNECTED;
+          payload: Network['symbol'];
       }
     | {
           type: typeof BLOCKCHAIN.RECONNECT_TIMEOUT_START;
@@ -271,7 +275,7 @@ export const onConnect = (symbol: string) => async (dispatch: Dispatch, getState
         const promises = accounts.map(a => dispatch(accountActions.fetchAndUpdateAccount(a)));
         await Promise.all(promises);
     }
-    dispatch({ type: BLOCKCHAIN.CONNECTED });
+    dispatch({ type: BLOCKCHAIN.CONNECTED, payload: symbol });
 };
 
 export const onBlockMined = (block: BlockchainBlock) => (
