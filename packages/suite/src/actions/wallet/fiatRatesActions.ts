@@ -1,12 +1,12 @@
 import TrezorConnect, { AccountTransaction, BlockchainFiatRatesUpdate } from 'trezor-connect';
-import { getUnixTime, subWeeks, differenceInSeconds } from 'date-fns';
+import { getUnixTime, subWeeks, differenceInMilliseconds } from 'date-fns';
 import {
     fetchCurrentFiatRates,
     getFiatRatesForTimestamps,
     fetchLastWeekRates,
     fetchCurrentTokenFiatRates,
 } from '@suite/services/coingecko';
-import { isTestnet } from '@wallet-utils/accountUtils';
+import { getAccountTransactions, isTestnet } from '@wallet-utils/accountUtils';
 import { getBlockbookSafeTime } from '@suite-utils/date';
 import { FIAT } from '@suite-config';
 import { NETWORKS } from '@wallet-config';
@@ -50,7 +50,7 @@ export type FiatRatesAction =
       };
 
 // how often should suite check for outdated rates;
-const INTERVAL = 1000 * 60; // 1 min
+const INTERVAL = 1000 * 60 * 2; // 2 mins
 const INTERVAL_LAST_WEEK = 1000 * 60 * 60 * 1; // 1 hour
 // which rates should be considered outdated and updated;
 const MAX_AGE = 1000 * 60 * 10; // 10 mins
@@ -99,7 +99,7 @@ export const updateCurrentRates = (ticker: TickerId, maxAge = MAX_AGE) => async 
 
         // don't fetch if rates is fresh enough
         if (existingRates) {
-            if (differenceInSeconds(new Date(), new Date(existingRates.ts)) < maxAge) {
+            if (differenceInMilliseconds(new Date(), new Date(existingRates.ts)) < maxAge) {
                 return;
             }
         }
@@ -163,7 +163,7 @@ const getStaleTickers = (
         settings: { enabledNetworks },
         blockchain,
     } = getState().wallet;
-    // TODO: FIAT.tickers is useless now
+
     const watchedCoinTickers = FIAT.tickers
         .filter(t => enabledNetworks.includes(t.symbol))
         // use only connected backends
@@ -306,6 +306,26 @@ export const updateTxsRates = (account: Account, txs: AccountTransaction[]) => a
     }
 };
 
+const updateMissingTxRates = (symbol?: Network['symbol']) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const { accounts, transactions } = getState().wallet;
+    accounts.forEach(account => {
+        if (symbol && account.symbol !== symbol) {
+            return;
+        }
+        const accountTxs = getAccountTransactions(transactions.transactions, account);
+        // fetch rates for all txs without 'rates' field
+        dispatch(
+            updateTxsRates(
+                account,
+                accountTxs.filter(tx => !tx.rates),
+            ),
+        );
+    });
+};
+
 export const onUpdateRate = (res: BlockchainFiatRatesUpdate) => (dispatch: Dispatch) => {
     if (!res?.rates) return;
     const symbol = res.coin.shortcut.toLowerCase();
@@ -328,9 +348,10 @@ let lastWeekTimeout: ReturnType<typeof setInterval>;
  * Called from blockchainActions.onConnect
  *
  */
-export const initRates = () => (dispatch: Dispatch) => {
+export const initRates = (symbol: Network['symbol']) => (dispatch: Dispatch) => {
     dispatch(updateStaleRates());
     dispatch(updateLastWeekRates());
+    dispatch(updateMissingTxRates(symbol)); // just to be safe, refetch historical rates for transactions stored without these rates
 
     if (staleRatesTimeout && lastWeekTimeout) {
         clearInterval(staleRatesTimeout);
