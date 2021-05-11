@@ -7,6 +7,7 @@ import FiatInput from './FiatInput';
 import ReceiveCryptoSelect from './ReceiveCryptoSelect';
 import Buttons from './Buttons';
 import { CRYPTO_INPUT, CRYPTO_TOKEN } from '@wallet-types/coinmarketExchangeForm';
+import { useLayoutSize } from '@suite/hooks/suite';
 
 const Wrapper = styled.div`
     display: flex;
@@ -56,6 +57,10 @@ const Line = styled.div<{ color: string }>`
     border: 1px solid ${props => props.color};
 `;
 
+const EmptyDiv = styled.div`
+    width: 100%;
+`;
+
 const Inputs = () => {
     const theme = useTheme();
     const {
@@ -70,6 +75,9 @@ const Inputs = () => {
     useEffect(() => {
         trigger([CRYPTO_INPUT]);
     }, [amountLimits, trigger]);
+
+    const { layoutSize } = useLayoutSize();
+    const isXLargeLayoutSize = layoutSize === 'XLARGE';
 
     return (
         <Wrapper>
@@ -88,13 +96,15 @@ const Inputs = () => {
                     {!tokenData && <FiatInput />}
                 </LeftWrapper>
                 <MiddleWrapper>
+                    {!isXLargeLayoutSize && <Buttons />}
                     <StyledIcon icon="TRANSFER" size={16} />
+                    {!isXLargeLayoutSize && <EmptyDiv />}
                 </MiddleWrapper>
                 <RightWrapper>
                     <ReceiveCryptoSelect />
                 </RightWrapper>
             </Top>
-            <Buttons />
+            {isXLargeLayoutSize && <Buttons />}
         </Wrapper>
     );
 };

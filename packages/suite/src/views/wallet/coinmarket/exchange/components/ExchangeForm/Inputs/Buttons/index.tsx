@@ -10,10 +10,7 @@ import { CRYPTO_INPUT, CRYPTO_TOKEN, FIAT_INPUT } from '@wallet-types/coinmarket
 const Wrapper = styled.div`
     display: flex;
     justify-content: space-between;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
-        margin-top: 27px;
-    }
+    width: 100%;
 `;
 
 const TokenBalance = styled.div`

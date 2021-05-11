@@ -6,6 +6,7 @@ import FiatInput from './FiatInput';
 import { CRYPTO_INPUT, FIAT_INPUT } from '@suite/types/wallet/coinmarketSellForm';
 import CryptoInput from './CryptoInput';
 import Buttons from './Buttons';
+import { useLayoutSize } from '@suite/hooks/suite';
 
 const Wrapper = styled.div`
     display: flex;
@@ -51,6 +52,10 @@ const StyledIcon = styled(Icon)`
     }
 `;
 
+const EmptyDiv = styled.div`
+    width: 100%;
+`;
+
 const Inputs = () => {
     const { errors, trigger, watch } = useCoinmarketSellFormContext();
     const [activeInput, setActiveInput] = useState<typeof FIAT_INPUT | typeof CRYPTO_INPUT>(
@@ -66,6 +71,9 @@ const Inputs = () => {
         trigger([activeInput]);
     }, [activeInput, trigger]);
 
+    const { layoutSize } = useLayoutSize();
+    const isLargeLayoutSize = layoutSize === 'XLARGE' || layoutSize === 'LARGE';
+
     return (
         <Wrapper>
             <Top>
@@ -73,13 +81,15 @@ const Inputs = () => {
                     <CryptoInput activeInput={activeInput} setActiveInput={setActiveInput} />
                 </Left>
                 <Middle>
+                    {!isLargeLayoutSize && <Buttons setActiveInput={setActiveInput} />}
                     <StyledIcon icon="TRANSFER" size={16} />
+                    {!isLargeLayoutSize && <EmptyDiv />}
                 </Middle>
                 <Right>
                     <FiatInput activeInput={activeInput} setActiveInput={setActiveInput} />
                 </Right>
             </Top>
-            <Buttons setActiveInput={setActiveInput} />
+            {isLargeLayoutSize && <Buttons setActiveInput={setActiveInput} />}
         </Wrapper>
     );
 };
