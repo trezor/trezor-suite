@@ -44,8 +44,6 @@ const CustomLabel = styled(Label)`
     padding: 12px 0;
 `;
 
-const LabelText = styled.div``;
-
 const StyledDeviceImage = styled(DeviceImage)`
     padding: 0 10px 0 0;
 `;
@@ -83,6 +81,19 @@ type FormState = {
     extraField?: string;
 };
 
+const getTranslationIds = (type: AccountSelectOption['type'] | undefined) => {
+    if (type === 'NON_SUITE') {
+        return {
+            accountTooltipTranslationId: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP',
+            addressTooltipTranslationId: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP',
+        } as const;
+    }
+    return {
+        accountTooltipTranslationId: 'TR_EXCHANGE_RECEIVE_ACCOUNT_QUESTION_TOOLTIP',
+        addressTooltipTranslationId: 'TR_EXCHANGE_RECEIVE_ADDRESS_QUESTION_TOOLTIP',
+    } as const;
+};
+
 const VerifyAddressComponent = () => {
     const {
         callInProgress,
@@ -115,6 +126,10 @@ const VerifyAddressComponent = () => {
 
     const formErrors = !formState.isValid;
 
+    const { accountTooltipTranslationId, addressTooltipTranslationId } = getTranslationIds(
+        selectedAccountOption?.type,
+    );
+
     return (
         <Wrapper>
             <Heading>
@@ -126,10 +141,10 @@ const VerifyAddressComponent = () => {
             <CardContent>
                 <Row>
                     <CustomLabel>
-                        <LabelText>
-                            <Translation id="TR_EXCHANGE_RECEIVING_ACCOUNT" />
-                        </LabelText>
-                        <StyledQuestionTooltip tooltip="TR_EXCHANGE_RECEIVE_ACCOUNT_QUESTION_TOOLTIP" />
+                        <StyledQuestionTooltip
+                            label="TR_EXCHANGE_RECEIVING_ACCOUNT"
+                            tooltip={accountTooltipTranslationId}
+                        />
                     </CustomLabel>
                     <ReceiveOptions
                         selectedAccountOption={selectedAccountOption}
@@ -141,8 +156,10 @@ const VerifyAddressComponent = () => {
                     <Input
                         label={
                             <Label>
-                                <Translation id="TR_EXCHANGE_RECEIVING_ADDRESS" />
-                                <StyledQuestionTooltip tooltip="TR_EXCHANGE_RECEIVE_ADDRESS_QUESTION_TOOLTIP" />
+                                <StyledQuestionTooltip
+                                    label="TR_EXCHANGE_RECEIVING_ADDRESS"
+                                    tooltip={addressTooltipTranslationId}
+                                />
                             </Label>
                         }
                         variant="small"
