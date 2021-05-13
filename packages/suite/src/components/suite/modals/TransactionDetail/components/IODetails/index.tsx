@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Icon, useTheme, variables } from '@trezor/components';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import { getNetwork } from '@wallet-utils/accountUtils';
-import { FormattedCryptoAmount, Translation } from '@suite-components';
+import { FormattedCryptoAmount, HiddenPlaceholder, Translation } from '@suite-components';
 
 const Wrapper = styled.div`
     text-align: left;
@@ -40,7 +40,7 @@ const CryptoAmountWrapper = styled.div`
     flex: 0 0 auto;
 `;
 
-const Address = styled.div`
+const Address = styled(props => <HiddenPlaceholder {...props} />)`
     text-overflow: ellipsis;
     overflow: hidden;
 `;
@@ -78,12 +78,11 @@ const IODetails = ({ tx }: Props) => {
                                         <FormattedCryptoAmount
                                             value={input.value}
                                             symbol={tx.symbol}
-                                            disableHiddenPlaceholder
                                         />
                                         <Circle>&bull;</Circle>
                                     </CryptoAmountWrapper>
                                 )}
-                                <Address>{input.addresses?.map(addr => addr)}</Address>
+                                <Address>{input.addresses}</Address>
                             </IORow>
                         ))}
                     </IOBox>
@@ -105,7 +104,7 @@ const IODetails = ({ tx }: Props) => {
                                     />
                                     <Circle>&bull;</Circle>
                                 </CryptoAmountWrapper>
-                                <Address>{output.addresses?.map(addr => addr)}</Address>
+                                <Address>{output.addresses}</Address>
                             </IORow>
                         ))}
                     </IOBox>
