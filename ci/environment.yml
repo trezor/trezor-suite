@@ -19,9 +19,3 @@ install:
   stage: setup environment
   script:
     - ci/scripts/check_lockfile.sh
-
-clear_cache:
-  stage: setup environment
-  when: manual
-  script:
-    - rm -rf .yarn node_modules packages/**/node_modules packages/*/lib packages/*/build packages/*/dist
