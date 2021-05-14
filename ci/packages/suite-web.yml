@@ -28,6 +28,7 @@ suite-web build dev:
       - packages/suite-web/build
 
 # to be removed after beta-wallet is officially killed
+
 suite-web build beta:
   stage: build
   <<: *config_sign_dev
@@ -122,6 +123,8 @@ suite-web deploy dev:
     # when debugging or developing tests it does not make sense to have retries,
     # in other cases retries are useful to avoid occasional failures due to flaky tests
     ALLOW_RETRY: 1
+  before_script:
+    - docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD
   script:
     - yarn install --pure-lockfile --cache-folder .yarn --prefer-offline
     - docker-compose pull
