@@ -7,6 +7,7 @@ export default {
             },
             visible: {
                 height: 'auto',
+                transitionEnd: { overflow: 'unset' }, // overflow needs to be unset after animation
             },
         },
         initial: 'initial',

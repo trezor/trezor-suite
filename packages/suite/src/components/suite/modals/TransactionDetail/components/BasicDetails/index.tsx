@@ -62,14 +62,14 @@ const Grid = styled.div<{ showRbfCols?: boolean }>`
     display: grid;
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
     grid-gap: 12px;
-    grid-template-columns: 100px 2fr 80px 3fr; /* title value title value */
+    grid-template-columns: 100px minmax(0, 2fr) 80px minmax(0, 3fr); /* title value title value */
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding: 28px 6px 10px 6px;
     text-align: left;
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        grid-template-columns: 110px 1fr;
+        grid-template-columns: 110px minmax(0, 1fr);
     }
 `;
 
@@ -92,6 +92,7 @@ const Value = styled.div`
 
 const TxidValue = styled(Value)`
     padding-right: 32px;
+    overflow: visible;
 `;
 
 const IconWrapper = styled.div`
