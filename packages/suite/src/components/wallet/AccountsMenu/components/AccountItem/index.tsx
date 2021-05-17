@@ -59,7 +59,7 @@ const AccountName = styled.div`
     text-overflow: ellipsis;
     white-space: nowrap;
     font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     color: ${props => props.theme.TYPE_DARK_GREY};
     line-height: 1.5;
     font-variant-numeric: tabular-nums;
@@ -68,7 +68,7 @@ const AccountName = styled.div`
 const Balance = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     line-height: 1.57;
 `;
 
