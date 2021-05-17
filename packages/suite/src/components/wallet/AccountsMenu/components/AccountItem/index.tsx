@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 import { CoinLogo, variables } from '@trezor/components';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
 import { Translation, FiatValue } from '@suite-components';
 import { SkeletonCircle, SkeletonRectangle, Stack } from '@suite-components/Skeleton';
@@ -9,28 +9,35 @@ import { CoinBalance } from '@wallet-components';
 import { Account } from '@wallet-types';
 import * as routerActions from '@suite-actions/routerActions';
 
+const activeClassName = 'selected';
+interface WrapperProps {
+    selected: boolean;
+    type: string;
+}
+
 // position: inherit - get position from parent (AccountGroup), it will be set after animation ends
 // sticky top: 34, sticky header
-const Wrapper = styled.div<{ selected: boolean; type: string }>`
-    /* padding: 2px 0px 2px 0px; */
+const Wrapper = styled.div.attrs((props: WrapperProps) => ({
+    className: props.selected ? activeClassName : '',
+}))<WrapperProps>`
     display: flex;
     flex-direction: column;
     &:first-of-type {
         padding-top: 0;
     }
-    ${props =>
-        props.selected &&
-        css`
-            border-radius: 4px;
-            background: ${props => props.theme.BG_GREY_ALT};
-            position: inherit;
-            top: ${props.type !== 'normal'
+    &:hover,
+    &.${activeClassName} {
+        border-radius: 4px;
+        background: ${props => props.theme.BG_GREY_ALT};
+        position: inherit;
+        top: ${props =>
+            props.type !== 'normal'
                 ? '50px'
                 : '0px'}; /* when scrolling keep some space above to fit account group (50px is the height of acc group container)  */
-            bottom: 0px;
-            z-index: 1;
-            padding: 0px;
-        `}
+        bottom: 0px;
+        z-index: 1;
+        padding: 0px;
+    }
 `;
 
 const Left = styled.div`
