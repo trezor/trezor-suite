@@ -2,11 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { LayoutContext } from '@suite-components';
 import { SettingsMenu } from '@settings-components';
+import { variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
+    max-width: ${variables.SCREEN_SIZE.MD};
 `;
 
 type Props = {

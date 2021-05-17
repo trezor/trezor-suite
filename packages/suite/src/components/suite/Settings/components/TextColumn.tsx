@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { Translation, ExternalLink } from '@suite-components';
+import { Translation, TrezorLink } from '@suite-components';
+import { Button } from '@trezor/components';
 
 interface TextColumnProps {
     title?: React.ReactNode;
@@ -15,6 +16,11 @@ const Wrapper = styled.div`
     flex-direction: column;
     text-align: left;
     margin-right: 16px;
+    max-width: 500px;
+`;
+
+const LearnMoreButton = styled(Button)`
+    max-width: fit-content;
 `;
 
 const Description = styled.div`
@@ -37,9 +43,11 @@ const TextColumn = ({ title, description, learnMore }: TextColumnProps) => (
         {title && <Title>{title}</Title>}
         {description && <Description>{description}</Description>}
         {learnMore && (
-            <ExternalLink href={learnMore} size="tiny">
-                <Translation id="TR_LEARN_MORE" />
-            </ExternalLink>
+            <TrezorLink href={learnMore}>
+                <LearnMoreButton variant="tertiary">
+                    <Translation id="TR_LEARN_MORE" />
+                </LearnMoreButton>
+            </TrezorLink>
         )}
     </Wrapper>
 );
