@@ -49,6 +49,7 @@ const MenuHeader = styled.div<{ isMobileLayout?: boolean }>`
 const Row = styled.div`
     display: flex;
     justify-content: space-between;
+    align-items: center;
 `;
 
 const AddAccountButtonWrapper = styled.div`

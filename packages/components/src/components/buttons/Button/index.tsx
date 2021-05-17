@@ -6,12 +6,12 @@ import { variables } from '../../../config';
 import { useTheme } from '../../../utils';
 import FluidSpinner from '../../loaders/FluidSpinner';
 
-const getPadding = (variant: ButtonVariant) => {
+const getPadding = (variant: ButtonVariant, hasLabel: boolean) => {
     if (variant === 'tertiary') {
         return '4px 6px';
     }
 
-    return '9px 12px';
+    return hasLabel ? '9px 12px' : '8px';
 };
 
 const getIconColor = (variant: ButtonVariant, isDisabled: boolean, theme: SuiteThemeColors) => {
@@ -29,6 +29,15 @@ const getIconColor = (variant: ButtonVariant, isDisabled: boolean, theme: SuiteT
     }
 };
 
+const getIconSize = (variant: ButtonVariant, hasLabel: boolean) => {
+    switch (variant) {
+        case 'tertiary':
+            return 12;
+        default:
+            return hasLabel ? 14 : 16;
+    }
+};
+
 const getFontSize = (variant: ButtonVariant) => {
     if (variant === 'tertiary') {
         return variables.FONT_SIZE.TINY;
@@ -39,6 +48,7 @@ const getFontSize = (variant: ButtonVariant) => {
 
 interface WrapperProps {
     variant: ButtonVariant;
+    hasLabel: boolean;
     isDisabled: boolean;
     isWhite: boolean;
     fullWidth: boolean;
@@ -57,7 +67,7 @@ const Wrapper = styled.button<WrapperProps>`
     font-size: ${props => getFontSize(props.variant)};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     outline: none;
-    padding: ${props => getPadding(props.variant)};
+    padding: ${props => getPadding(props.variant, props.hasLabel)};
 
     ${props =>
         props.variant === 'primary' &&
@@ -188,7 +198,6 @@ const IconWrapper = styled.div<IconWrapperProps>`
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: ButtonVariant;
-    additionalClassName?: string;
     icon?: IconType;
     isDisabled?: boolean;
     isLoading?: boolean;
@@ -202,10 +211,8 @@ const Button = React.forwardRef(
     (
         {
             children,
-            className,
             variant = 'primary',
             icon,
-            additionalClassName,
             color,
             fullWidth = false,
             isWhite = false,
@@ -218,27 +225,25 @@ const Button = React.forwardRef(
         ref?: React.Ref<HTMLButtonElement>
     ) => {
         const theme = useTheme();
-        const newClassName = additionalClassName
-            ? `${className} ${additionalClassName}`
-            : className;
+        const hasLabel = !!children;
         const IconComponent = icon ? (
-            <IconWrapper alignIcon={alignIcon} variant={variant} hasLabel={!!children}>
+            <IconWrapper alignIcon={alignIcon} variant={variant} hasLabel={hasLabel}>
                 <Icon
                     icon={icon}
-                    size={variant === 'tertiary' ? 12 : 14}
+                    size={getIconSize(variant, hasLabel)}
                     color={color || getIconColor(variant, isDisabled, theme)}
                 />
             </IconWrapper>
         ) : null;
         const Loader = (
-            <IconWrapper alignIcon={alignIcon} hasLabel={!!children}>
+            <IconWrapper alignIcon={alignIcon} hasLabel={hasLabel}>
                 <FluidSpinner size={10} color={color} />
             </IconWrapper>
         );
         return (
             <Wrapper
-                className={newClassName}
                 variant={variant}
+                hasLabel={hasLabel}
                 onChange={onChange}
                 isDisabled={isDisabled}
                 isWhite={isWhite}
