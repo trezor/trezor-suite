@@ -53,7 +53,6 @@ storiesOf('Buttons', module).add('Button', () => {
             {...(isLoading ? { isLoading } : {})}
             {...(variant ? { variant } : {})}
             {...(size ? { size } : {})}
-            {...(size ? { size } : {})}
             {...(icon ? { icon } : {})}
             {...(icon && alignIcon !== 'left' ? { alignIcon } : {})}
             {...(fullWidth ? { fullWidth } : {})}

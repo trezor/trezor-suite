@@ -53,7 +53,7 @@ const AddAccountButton = ({ device, isDisabled, noButtonLabel, closeMenu, ...res
                     : undefined
             }
             icon="PLUS"
-            variant="tertiary"
+            variant="secondary"
             isDisabled={addAccountDisabled || isDisabled}
             {...rest}
         >

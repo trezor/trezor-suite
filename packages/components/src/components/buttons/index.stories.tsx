@@ -60,6 +60,14 @@ storiesOf('Buttons', module).add(
                         {variant[0].toUpperCase()}
                         {variant.slice(1)} disabled
                     </Button>
+                    <Button
+                        variant={variant}
+                        data-test={`button-${variant}`}
+                        icon="PLUS"
+                        onClick={() => {
+                            console.log('click');
+                        }}
+                    />
                 </StoryColumn>
             ))}
         </>
