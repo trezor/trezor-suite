@@ -7,7 +7,7 @@
         "type-check:watch": "yarn type-check -- --watch",
         "lint": "eslint . --ext .tsx,.ts",
         "copy-files": "yarn workspace @trezor/suite-data copy-static-files",
-        "dev": "yarn workspace @trezor/suite-data copy-static-files && next",
+        "dev": "yarn workspace @trezor/suite-data copy-static-files && next -p 8000",
         "cert": "sh ./scripts/gencert.sh",
         "dev:https": "yarn workspace @trezor/suite-data copy-static-files && node ./scripts/httpsServer.js",
         "build:app": "next build && next export -o build",
