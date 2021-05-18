@@ -39,6 +39,15 @@ const AccountNavigation = (props: Props) => {
             isHidden: () => account?.networkType !== 'bitcoin',
         },
         {
+            id: 'wallet-tokens',
+            callback: () => {
+                goto('wallet-tokens', undefined, true);
+            },
+            title: <Translation id="TR_NAV_TOKENS" />,
+            position: 'primary',
+            isHidden: () => account?.networkType !== 'ethereum',
+        },
+        {
             id: 'wallet-send',
             callback: () => {
                 goto('wallet-send', undefined, true);
