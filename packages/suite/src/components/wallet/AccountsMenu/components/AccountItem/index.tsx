@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useCallback, useMemo } from 'react';
 import { CoinLogo, variables } from '@trezor/components';
 import styled from 'styled-components';
 import { getTitleForNetwork } from '@wallet-utils/accountUtils';
@@ -8,6 +8,7 @@ import { useLoadingSkeleton, useActions } from '@suite-hooks';
 import { CoinBalance } from '@wallet-components';
 import { Account } from '@wallet-types';
 import * as routerActions from '@suite-actions/routerActions';
+import { TokensCount } from './TokensCount';
 
 const activeClassName = 'selected';
 interface WrapperProps {
@@ -55,7 +56,7 @@ const Right = styled.div`
 
 const Row = styled.div`
     display: flex;
-    align-items: center;
+    align-items: baseline;
     text-overflow: ellipsis;
     white-space: nowrap;
 `;
@@ -106,6 +107,24 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
     });
     const { account, selected, closeMenu } = props;
 
+    const accountRouteParams = useMemo(
+        () => ({
+            symbol: account.symbol,
+            accountIndex: account.index,
+            accountType: account.accountType,
+        }),
+        [account],
+    );
+
+    const handleClickOnTokens = useCallback<React.MouseEventHandler<HTMLButtonElement>>(
+        event => {
+            event.stopPropagation();
+            closeMenu();
+            goto('wallet-tokens', accountRouteParams);
+        },
+        [accountRouteParams, closeMenu, goto],
+    );
+
     const dataTestKey = `@account-menu/${account.symbol}/${account.accountType}/${account.index}`;
 
     const DefaultLabel = () => (
@@ -128,11 +147,7 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
             <AccountHeader
                 onClick={() => {
                     closeMenu();
-                    goto('wallet-index', {
-                        symbol: account.symbol,
-                        accountIndex: account.index,
-                        accountType: account.accountType,
-                    });
+                    goto('wallet-index', accountRouteParams);
                 }}
                 data-test={dataTestKey}
             >
@@ -147,6 +162,12 @@ const AccountItem = forwardRef((props: Props, ref: React.Ref<HTMLDivElement>) =>
                         <Balance>
                             <CoinBalance value={account.formattedBalance} symbol={account.symbol} />
                         </Balance>
+                        {account.networkType === 'ethereum' && !!account.tokens?.length && (
+                            <TokensCount
+                                count={account.tokens.length}
+                                onClick={handleClickOnTokens}
+                            />
+                        )}
                     </Row>
                     <Row>
                         <FiatValue
