@@ -45,6 +45,7 @@
         "@babel/preset-env": "^7.13.15",
         "@babel/preset-react": "^7.13.13",
         "@babel/preset-typescript": "^7.13.0",
+        "@release-it/bumper": "2.0.0",
         "@types/jest": "^26.0.20",
         "@typescript-eslint/eslint-plugin": "^4.21.0",
         "@typescript-eslint/parser": "^4.21.0",
@@ -73,7 +74,5 @@
         "ts-jest": "^26.4.4",
         "typescript": "^4.1.3"
     },
-    "dependencies": {
-        "@release-it/bumper": "release-it/bumper"
-    }
+    "dependencies": {}
 }

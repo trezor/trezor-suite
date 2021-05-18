@@ -3911,9 +3911,10 @@
     hoist-non-react-statics "^3.3.2"
     react-native-safe-area-view "^0.14.9"
 
-"@release-it/bumper@release-it/bumper":
+"@release-it/bumper@2.0.0":
   version "2.0.0"
-  resolved "https://codeload.github.com/release-it/bumper/tar.gz/1aca8bcc04ae8078b00bf626ef8d283dd1b6a773"
+  resolved "https://registry.yarnpkg.com/@release-it/bumper/-/bumper-2.0.0.tgz#d6894d0f2a268dd48eb9698c6c2754e100d94674"
+  integrity sha512-r8JeyuQfonY9g9CJjBcG1PrGZmpHIccbDb3TFyfTPknxFHVanE2gMGYijncE259zZ/oCo+u9fRpx0WkiRJxhtw==
   dependencies:
     "@iarna/toml" "^2.2.5"
     detect-indent "^6.0.0"
