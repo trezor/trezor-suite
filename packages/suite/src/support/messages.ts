@@ -4582,6 +4582,10 @@ const definedMessages = defineMessages({
         id: 'TR_TOKENS',
         defaultMessage: 'Tokens',
     },
+    TR_TOKENS_COUNT: {
+        id: 'TR_TOKENS_COUNT',
+        defaultMessage: '{count} {count, plural, one {token} other {tokens}}',
+    },
     TR_TOKENS_ADD: {
         id: 'TR_TOKENS_ADD',
         defaultMessage: 'Add token',

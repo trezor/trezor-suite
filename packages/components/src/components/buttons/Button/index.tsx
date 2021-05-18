@@ -199,6 +199,7 @@ const IconWrapper = styled.div<IconWrapperProps>`
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: ButtonVariant;
     icon?: IconType;
+    size?: number;
     isDisabled?: boolean;
     isLoading?: boolean;
     isWhite?: boolean;
@@ -213,6 +214,7 @@ const Button = React.forwardRef(
             children,
             variant = 'primary',
             icon,
+            size,
             color,
             fullWidth = false,
             isWhite = false,
@@ -230,7 +232,7 @@ const Button = React.forwardRef(
             <IconWrapper alignIcon={alignIcon} variant={variant} hasLabel={hasLabel}>
                 <Icon
                     icon={icon}
-                    size={getIconSize(variant, hasLabel)}
+                    size={size || getIconSize(variant, hasLabel)}
                     color={color || getIconColor(variant, isDisabled, theme)}
                 />
             </IconWrapper>
