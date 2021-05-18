@@ -1,12 +1,11 @@
 import React from 'react';
 import { WalletLayout } from '@wallet-components';
-import { getAccountTransactions, isTestnet } from '@wallet-utils/accountUtils';
+import { getAccountTransactions } from '@wallet-utils/accountUtils';
 import { useSelector } from '@suite-hooks';
 import { AppState } from '@suite-types';
 
 import NoTransactions from './components/NoTransactions';
 import AccountEmpty from './components/AccountEmpty';
-import TokenList from './components/TokenList';
 import TransactionList from './components/TransactionList';
 import TransactionSummary from './components/TransactionSummary';
 
@@ -18,19 +17,12 @@ interface ContentProps {
 
 const Content = ({ selectedAccount, showSummary, children }: ContentProps) => {
     if (selectedAccount.status !== 'loaded') return null;
-    const { account, network } = selectedAccount;
+    const { account } = selectedAccount;
 
     return (
         <WalletLayout title="TR_NAV_TRANSACTIONS" account={selectedAccount}>
             {showSummary && account.networkType !== 'ripple' && (
                 <TransactionSummary account={account} />
-            )}
-            {account.networkType === 'ethereum' && (
-                <TokenList
-                    isTestnet={isTestnet(account.symbol)}
-                    explorerUrl={network.explorer.account}
-                    tokens={account.tokens}
-                />
             )}
             {children}
         </WalletLayout>

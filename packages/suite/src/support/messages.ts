@@ -2070,6 +2070,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Account details',
         id: 'TR_NAV_DETAILS',
     },
+    TR_NAV_TOKENS: {
+        defaultMessage: 'Tokens',
+        id: 'TR_NAV_TOKENS',
+    },
     TR_NAV_SIGN_AND_VERIFY: {
         defaultMessage: 'Sign & Verify',
         description:
@@ -4581,6 +4585,10 @@ const definedMessages = defineMessages({
     TR_TOKENS_ADD: {
         id: 'TR_TOKENS_ADD',
         defaultMessage: 'Add token',
+    },
+    TR_TOKENS_EMPTY: {
+        id: 'TR_TOKENS_EMPTY',
+        defaultMessage: 'No tokens... yet.',
     },
     TR_ADD_TOKEN_TITLE: {
         id: 'TR_ADD_TOKEN_TITLE',
