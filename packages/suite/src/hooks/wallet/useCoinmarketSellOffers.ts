@@ -126,6 +126,9 @@ export const useOffers = (props: Props) => {
         });
     };
 
+    const needToRegisterOrVerifyBankAccount = (quote: SellFiatTrade) =>
+        !!quote.quoteId && !(quote.bankAccounts && quote.bankAccounts.some(b => b.verified));
+
     const selectQuote = async (quote: SellFiatTrade) => {
         const provider =
             sellInfo?.providerInfos && quote.exchange
@@ -135,7 +138,7 @@ export const useOffers = (props: Props) => {
             const result = await openCoinmarketSellConfirmModal(provider?.companyName);
             if (result) {
                 // empty quoteId means the partner requests login first, requestTrade to get login screen
-                if (!quote.quoteId) {
+                if (!quote.quoteId || needToRegisterOrVerifyBankAccount(quote)) {
                     doSellTrade(quote);
                 } else {
                     setSelectedQuote(quote);
@@ -224,6 +227,7 @@ export const useOffers = (props: Props) => {
         REFETCH_INTERVAL_IN_SECONDS,
         timer,
         sellInfo,
+        needToRegisterOrVerifyBankAccount,
     };
 };
 
