@@ -26,12 +26,13 @@ const AmountWrapper = styled.div`
     font-size: ${variables.NEUE_FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     align-items: center;
-    overflow-x: auto; /* allow x-axis scrolling: useful on small screens when fiat amount is displayed */
+    overflow: visible;
     word-break: break-all;
 
     @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         /* decrease the width of the first (title) column on small screen */
         grid-template-columns: 90px minmax(110px, auto) minmax(100px, auto) minmax(100px, auto);
+        overflow-x: auto;
     }
 `;
 
