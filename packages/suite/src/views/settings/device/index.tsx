@@ -19,7 +19,7 @@ import {
     SEED_MANUAL_URL,
     FIRMWARE_COMMIT_URL,
 } from '@suite-constants/urls';
-import { getFwVersion, isBitcoinOnly, getFwRevision } from '@suite-utils/device';
+import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import * as homescreen from '@suite-utils/homescreen';
 import { useDevice, useAnalytics, useActions, useSelector } from '@suite-hooks';
 import { variables, Switch, Button, Tooltip } from '@trezor/components';
@@ -119,8 +119,7 @@ const Settings = () => {
     }
 
     const { features } = device;
-
-    const revision = getFwRevision(device);
+    const { revision } = features;
 
     const onUploadHomescreen = async (files: FileList | null) => {
         if (!files || !files.length) return;
@@ -225,15 +224,18 @@ const Settings = () => {
                                     id="TR_YOUR_CURRENT_FIRMWARE"
                                     values={{
                                         version: (
-                                            <VersionTooltip content={revision}>
+                                            <VersionTooltip content={revision} disabled={!revision}>
                                                 <VersionLink
                                                     target="_blank"
                                                     href={FIRMWARE_COMMIT_URL + revision}
                                                 >
                                                     <VersionButton
                                                         variant="tertiary"
-                                                        icon="EXTERNAL_LINK"
+                                                        icon={
+                                                            revision ? 'EXTERNAL_LINK' : undefined
+                                                        }
                                                         alignIcon="right"
+                                                        disabled={!revision}
                                                     >
                                                         {getFwVersion(device)}
                                                         {isBitcoinOnly(device) && ' (bitcoin-only)'}
