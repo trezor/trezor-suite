@@ -631,6 +631,10 @@ const definedMessages = defineMessages({
         id: 'TR_SELL_GET_THIS_OFFER',
         defaultMessage: 'Get this Offer',
     },
+    TR_SELL_REGISTER: {
+        id: 'TR_SELL_REGISTER',
+        defaultMessage: 'Register',
+    },
     TR_SELL_PROVIDER: {
         defaultMessage: 'provider',
         id: 'TR_SELL_PROVIDER',

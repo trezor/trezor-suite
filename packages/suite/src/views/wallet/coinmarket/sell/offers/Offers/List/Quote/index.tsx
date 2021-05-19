@@ -205,7 +205,11 @@ export function getQuoteError(quote: SellFiatTrade, amountInCrypto: boolean) {
 
 const Quote = ({ className, quote, amountInCrypto }: Props) => {
     const theme = useTheme();
-    const { selectQuote, sellInfo } = useCoinmarketSellOffersContext();
+    const {
+        selectQuote,
+        sellInfo,
+        needToRegisterOrVerifyBankAccount,
+    } = useCoinmarketSellOffersContext();
     // TODO - tags are not yet fully supported by the API server
     // in the future will be taken from quote.tags, will need some algorithm to evaluate them and show only one
     const hasTag = false;
@@ -230,7 +234,13 @@ const Quote = ({ className, quote, amountInCrypto }: Props) => {
                 )}
                 <Right>
                     <StyledButton isDisabled={!!quote.error} onClick={() => selectQuote(quote)}>
-                        <Translation id="TR_SELL_GET_THIS_OFFER" />
+                        <Translation
+                            id={
+                                needToRegisterOrVerifyBankAccount(quote)
+                                    ? 'TR_SELL_REGISTER'
+                                    : 'TR_SELL_GET_THIS_OFFER'
+                            }
+                        />
                     </StyledButton>
                 </Right>
             </Main>

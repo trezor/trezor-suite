@@ -38,4 +38,5 @@ export type ContextValues = {
     sendTransaction: () => void;
     REFETCH_INTERVAL_IN_SECONDS: number;
     timer: Timer;
+    needToRegisterOrVerifyBankAccount: (quote: SellFiatTrade) => boolean;
 };
