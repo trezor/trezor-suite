@@ -47,7 +47,10 @@ Object.entries(config).forEach(([project, paths]) => {
         const from = join(resolve(__dirname), 'files', path);
         const to = join(destination, 'static', path);
         fs.copy(from, to, err => {
-            if (err) return console.error(err);
+            if (err) {
+                console.error(err);
+                process.exit(1);
+            }
             console.log('copied', from, to);
         });
     })
