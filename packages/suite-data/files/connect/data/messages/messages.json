@@ -2358,16 +2358,16 @@
                 {
                     "rule": "optional",
                     "options": {},
-                    "type": "bytes",
-                    "name": "metadata",
-                    "id": 11
+                    "type": "uint64",
+                    "name": "validity_interval_start",
+                    "id": 12
                 },
                 {
                     "rule": "optional",
                     "options": {},
-                    "type": "uint64",
-                    "name": "validity_interval_start",
-                    "id": 12
+                    "type": "CardanoTxAuxiliaryDataType",
+                    "name": "auxiliary_data",
+                    "id": 13
                 }
             ],
             "enums": [],
@@ -2706,6 +2706,66 @@
                             "options": {},
                             "type": "uint64",
                             "name": "amount",
+                            "id": 2
+                        }
+                    ],
+                    "enums": [],
+                    "messages": [],
+                    "options": {},
+                    "oneofs": {}
+                },
+                {
+                    "name": "CardanoCatalystRegistrationParametersType",
+                    "fields": [
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "bytes",
+                            "name": "voting_public_key",
+                            "id": 1
+                        },
+                        {
+                            "rule": "repeated",
+                            "options": {},
+                            "type": "uint32",
+                            "name": "staking_path",
+                            "id": 2
+                        },
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "CardanoAddressParametersType",
+                            "name": "reward_address_parameters",
+                            "id": 3
+                        },
+                        {
+                            "rule": "required",
+                            "options": {},
+                            "type": "uint64",
+                            "name": "nonce",
+                            "id": 4
+                        }
+                    ],
+                    "enums": [],
+                    "messages": [],
+                    "options": {},
+                    "oneofs": {}
+                },
+                {
+                    "name": "CardanoTxAuxiliaryDataType",
+                    "fields": [
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "bytes",
+                            "name": "blob",
+                            "id": 1
+                        },
+                        {
+                            "rule": "optional",
+                            "options": {},
+                            "type": "CardanoCatalystRegistrationParametersType",
+                            "name": "catalyst_registration_parameters",
                             "id": 2
                         }
                     ],

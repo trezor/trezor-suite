@@ -10,7 +10,7 @@
 		"url_bitcoinonly": "data/firmware/1/trezor-1.10.0-bitcoinonly.bin",
 		"fingerprint": "595ba3e8e887cba185e03098f9538e18164f72f9fc82445e691abcd03e5cf0a4",
 		"fingerprint_bitcoinonly": "20a4068c34ff6dd7d8c510350409376cf7ea744ba668fdcf16da8f1d81fed289",
-		"notes": "TODO",
+		"notes": "https://blog.trezor.io/trezor-firmware-updates-may-2021-b11f6d52a65b",
 		"changelog": "* Bootloader 1.10.0.\n* Allow decreasing the output value in RBF transactions.\n* Support long PIN of up to 50 digits.\n* Display nLockTime in human-readable form."
 	},
 	{
