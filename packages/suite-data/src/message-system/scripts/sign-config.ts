@@ -38,11 +38,9 @@ const getConfigJwsSignature = () => {
 };
 
 const saveConfigJwsSignature = jwsConfig => {
-    fs.outputFileSync(
-        join(PACKAGE_ROOT, 'files', 'message-system', JWS_CONFIG_FILENAME),
-        jwsConfig,
-    );
-    console.log(`JWS signature saved to ${join(PROJECT_ROOT, 'config', JWS_CONFIG_FILENAME)}!`);
+    const destination = join(PACKAGE_ROOT, 'files', 'message-system', JWS_CONFIG_FILENAME);
+    fs.outputFileSync(destination, jwsConfig);
+    console.log(`JWS signature saved to ${destination}!`);
 };
 
 const jwsConfig = getConfigJwsSignature();
