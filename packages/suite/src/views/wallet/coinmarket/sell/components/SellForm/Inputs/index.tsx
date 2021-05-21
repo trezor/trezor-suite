@@ -1,12 +1,13 @@
 import { Icon, variables } from '@trezor/components';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useCoinmarketSellFormContext } from '@wallet-hooks/useCoinmarketSellForm';
 import styled from 'styled-components';
 import FiatInput from './FiatInput';
 import { CRYPTO_INPUT, FIAT_INPUT } from '@suite/types/wallet/coinmarketSellForm';
 import CryptoInput from './CryptoInput';
-import Buttons from './Buttons';
 import { useLayoutSize } from '@suite/hooks/suite';
+import FractionButtons from '@suite/components/wallet/CoinMarketFractionButtons';
+import BigNumber from 'bignumber.js';
 
 const Wrapper = styled.div`
     display: flex;
@@ -57,7 +58,17 @@ const EmptyDiv = styled.div`
 `;
 
 const Inputs = () => {
-    const { errors, trigger, watch } = useCoinmarketSellFormContext();
+    const {
+        errors,
+        trigger,
+        watch,
+        composeRequest,
+        account,
+        network,
+        setValue,
+        clearErrors,
+        onCryptoAmountChange,
+    } = useCoinmarketSellFormContext();
     const [activeInput, setActiveInput] = useState<typeof FIAT_INPUT | typeof CRYPTO_INPUT>(
         FIAT_INPUT,
     );
@@ -74,6 +85,30 @@ const Inputs = () => {
     const { layoutSize } = useLayoutSize();
     const isLargeLayoutSize = layoutSize === 'XLARGE' || layoutSize === 'LARGE';
 
+    const setRatioAmount = useCallback(
+        (divisor: number) => {
+            const amount = new BigNumber(account.formattedBalance)
+                .dividedBy(divisor)
+                .decimalPlaces(network.decimals)
+                .toString();
+            setValue(CRYPTO_INPUT, amount);
+            clearErrors([CRYPTO_INPUT]);
+            setActiveInput(CRYPTO_INPUT);
+            onCryptoAmountChange(amount);
+        },
+        [account.formattedBalance, clearErrors, network.decimals, onCryptoAmountChange, setValue],
+    );
+
+    const setAllAmount = useCallback(() => {
+        setValue('setMaxOutputId', 0);
+        setValue(FIAT_INPUT, '');
+        clearErrors([FIAT_INPUT, CRYPTO_INPUT]);
+        setActiveInput(CRYPTO_INPUT);
+        composeRequest(CRYPTO_INPUT);
+    }, [clearErrors, composeRequest, setValue]);
+
+    const isBalanceZero = new BigNumber(account.formattedBalance).isZero();
+
     return (
         <Wrapper>
             <Top>
@@ -81,7 +116,13 @@ const Inputs = () => {
                     <CryptoInput activeInput={activeInput} setActiveInput={setActiveInput} />
                 </Left>
                 <Middle>
-                    {!isLargeLayoutSize && <Buttons setActiveInput={setActiveInput} />}
+                    {!isLargeLayoutSize && (
+                        <FractionButtons
+                            disabled={isBalanceZero}
+                            onFractionClick={setRatioAmount}
+                            onAllClick={setAllAmount}
+                        />
+                    )}
                     <StyledIcon icon="TRANSFER" size={16} />
                     {!isLargeLayoutSize && <EmptyDiv />}
                 </Middle>
@@ -89,7 +130,13 @@ const Inputs = () => {
                     <FiatInput activeInput={activeInput} setActiveInput={setActiveInput} />
                 </Right>
             </Top>
-            {isLargeLayoutSize && <Buttons setActiveInput={setActiveInput} />}
+            {isLargeLayoutSize && (
+                <FractionButtons
+                    disabled={isBalanceZero}
+                    onFractionClick={setRatioAmount}
+                    onAllClick={setAllAmount}
+                />
+            )}
         </Wrapper>
     );
 };

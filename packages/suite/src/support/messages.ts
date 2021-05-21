@@ -174,6 +174,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Redirecting ...',
         id: 'TR_TRADE_REDIRECTING',
     },
+    TR_FRACTION_BUTTONS_ALL: {
+        defaultMessage: 'All',
+        id: 'TR_FRACTION_BUTTONS_ALL',
+    },
     TR_SPEND_LOADING: {
         defaultMessage: 'Loading',
         id: 'TR_SPEND_LOADING',
@@ -573,10 +577,6 @@ const definedMessages = defineMessages({
     TR_SELL_VALIDATION_ERROR_MAXIMUM_FIAT: {
         defaultMessage: 'Maximum is {maximum} {currency}',
         id: 'TR_SELL_VALIDATION_ERROR_MAXIMUM_FIAT',
-    },
-    TR_SELL_ALL: {
-        defaultMessage: 'All',
-        id: 'TR_SELL_ALL',
     },
     TR_SELL_FOR_YOUR_SAFETY: {
         defaultMessage: 'For your safety',
@@ -1425,10 +1425,6 @@ const definedMessages = defineMessages({
     TR_CURRENCY: {
         defaultMessage: 'Currency',
         id: 'TR_CURRENCY',
-    },
-    TR_EXCHANGE_ALL: {
-        defaultMessage: 'All',
-        id: 'TR_EXCHANGE_ALL',
     },
     TR_DEACTIVATE_ALL: {
         defaultMessage: 'Deactivate all',
