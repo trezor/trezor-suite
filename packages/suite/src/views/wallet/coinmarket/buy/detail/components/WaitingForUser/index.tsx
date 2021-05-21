@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Button, variables } from '@trezor/components';
-import { CoinmarketTransactionId } from '@wallet-components';
 import { Translation } from '@suite-components/Translation';
 import { BuyTrade, BuyTradeStatus } from 'invity-api';
 import { Account } from '@wallet-types';
@@ -46,7 +45,6 @@ const PaymentButton = styled(Button)`
 `;
 
 interface Props {
-    transactionId?: string;
     trade: BuyTrade;
     account: Account;
     providerName?: string;
@@ -67,7 +65,7 @@ const getTranslations = (tradeStatus: BuyTradeStatus | undefined) => {
     } as const;
 };
 
-const WaitingForUser = ({ transactionId, trade, account, providerName }: Props) => {
+const WaitingForUser = ({ trade, account, providerName }: Props) => {
     const [isWorking, setIsWorking] = useState(false);
     const { submitRequestForm } = useActions({
         submitRequestForm: coinmarketCommonActions.submitRequestForm,
@@ -94,7 +92,6 @@ const WaitingForUser = ({ transactionId, trade, account, providerName }: Props) 
             <Description>
                 <Translation id={translations.descriptionTranslationId} values={{ providerName }} />
             </Description>
-            {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
             <PaymentButton onClick={goToPayment} isLoading={isWorking} isDisabled={isWorking}>
                 <Translation id={translations.buttonTextTranslationId} />
             </PaymentButton>
