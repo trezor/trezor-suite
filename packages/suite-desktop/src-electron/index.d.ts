@@ -1,3 +1,6 @@
+// Include suite globals (as some dependencies from @suite can rely on them)
+/// <reference path="../../suite/global.d.ts" />
+
 // Globals
 declare namespace NodeJS {
     export interface Global {

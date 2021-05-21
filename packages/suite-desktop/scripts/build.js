@@ -11,10 +11,14 @@ const electronSource = path.join(__dirname, '..', 'src-electron');
 const isDev = NODE_ENV !== 'production';
 const useMocks = USE_MOCKS === 'true' || (isDev && USE_MOCKS !== 'false');
 
+// Get git revision
 const gitRevision = child_process.execSync('git rev-parse HEAD').toString().trim();
+
+// Get all modules (used as entry points)
 const modulePath = path.join(electronSource, 'modules');
 const modules = glob.sync(`${modulePath}/**/*.ts`).map(m => `modules${m.replace(modulePath, '')}`);
 
+// Prepare mock plugin with files from the mocks folder
 const mockPath = path.join(electronSource, 'mocks');
 const mocks = glob
     .sync(`${mockPath}/**/*.ts`)
@@ -29,8 +33,13 @@ const mockPlugin = {
     },
 };
 
-console.log('[Electron Build] Starting...');
+// Read signature public key
+const keyPath = path.join(__dirname, 'app-key.asc');
+const appKey = fs.readFileSync(keyPath, 'utf-8');
+
+// Start build
 const hrstart = process.hrtime();
+console.log('[Electron Build] Starting...');
 build({
     entryPoints: ['app.ts', 'preload.ts', ...modules].map(f => path.join(electronSource, f)),
     platform: 'node',
@@ -46,7 +55,9 @@ build({
     outdir: path.join(__dirname, '..', 'dist'),
     define: {
         'process.env.COMMITHASH': JSON.stringify(gitRevision),
+        'process.env.APP_PUBKEY': JSON.stringify(appKey),
     },
+    inject: [path.join(__dirname, 'build-inject.js')],
     plugins: useMocks ? [mockPlugin] : [],
 })
     .then(() => {

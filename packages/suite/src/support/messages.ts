@@ -4057,6 +4057,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Downloading',
         description: 'Indicating that app is downloading data from external source',
     },
+    TR_VERIFYING_SIGNATURE: {
+        id: 'TR_VERIFYING_SIGNATURE',
+        defaultMessage: 'Verifying signature',
+        description: 'Indicating that app is verifying the signature of a file',
+    },
     TR_FULL_LABEL: {
         id: 'TR_FULL_LABEL',
         defaultMessage: 'Full-featured',

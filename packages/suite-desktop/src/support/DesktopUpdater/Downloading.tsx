@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { Button, H2, variables } from '@trezor/components';
@@ -43,11 +43,18 @@ const Text = styled(H2)`
 
 interface Props {
     hideWindow: () => void;
-    progress?: UpdateProgress;
+    progress?: Partial<UpdateProgress>;
 }
+
+const ellipsisArray = new Array(3).fill('.');
 
 const Downloading = ({ hideWindow, progress }: Props) => {
     const cancelUpdate = useCallback(() => window.desktopApi!.cancelUpdate(), []);
+    const [step, setStep] = useState(0);
+    useEffect(() => {
+        const timer = setTimeout(() => setStep(step > 2 ? 0 : step + 1), 300);
+        return () => clearTimeout(timer);
+    }, [step]);
 
     return (
         <Modal
@@ -65,13 +72,24 @@ const Downloading = ({ hideWindow, progress }: Props) => {
             onCancel={hideWindow}
         >
             <DownloadWrapper>
-                <Text>
-                    <Translation id="TR_DOWNLOADING" />
-                </Text>
-                <DownloadProgress>
-                    <ReceivedData>{toHumanReadable(progress?.transferred || 0)}</ReceivedData>/
-                    <TotalData>{toHumanReadable(progress?.total || 0)}</TotalData>
-                </DownloadProgress>
+                {progress?.verifying ? (
+                    <Text>
+                        <Translation id="TR_VERIFYING_SIGNATURE" />
+                        {ellipsisArray.filter((_, k) => k < step)}
+                    </Text>
+                ) : (
+                    <>
+                        <Text>
+                            <Translation id="TR_DOWNLOADING" />
+                        </Text>
+                        <DownloadProgress>
+                            <ReceivedData>
+                                {toHumanReadable(progress?.transferred || 0)}
+                            </ReceivedData>
+                            /<TotalData>{toHumanReadable(progress?.total || 0)}</TotalData>
+                        </DownloadProgress>
+                    </>
+                )}
             </DownloadWrapper>
         </Modal>
     );

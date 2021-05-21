@@ -22,7 +22,7 @@ export interface State {
     enabled: boolean;
     state: 'checking' | 'available' | 'not-available' | 'downloading' | 'ready';
     skip?: string;
-    progress?: UpdateProgress;
+    progress?: Partial<UpdateProgress>;
     latest?: UpdateInfo;
     window: UpdateWindow;
 }
