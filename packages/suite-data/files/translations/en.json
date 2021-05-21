@@ -564,7 +564,6 @@
 	"TR_ENTER_SEED_WORDS_INSTRUCTION": "Enter the words from your seed here in the order displayed on your device. ",
 	"TR_EXCHANGE": "Exchange",
 	"TR_EXCHANGE_AGAIN": "Exchange again",
-	"TR_EXCHANGE_ALL": "All",
 	"TR_EXCHANGE_BUY": "For",
 	"TR_EXCHANGE_CONFIRM": "Confirm",
 	"TR_EXCHANGE_CONFIRMED_ON_TREZOR": "Confirmed on Trezor",
