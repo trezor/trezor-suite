@@ -1,8 +1,10 @@
 import produce from 'immer';
-import { UI, DEVICE, Device } from 'trezor-connect';
+import { UI, Device } from 'trezor-connect';
+
 import { FIRMWARE } from '@firmware-actions/constants';
 import { SUITE } from '@suite-actions/constants';
-import { Action, AcquiredDevice } from '@suite-types';
+
+import type { Action, AcquiredDevice } from '@suite-types';
 
 type FirmwareUpdateCommon = {
     installingProgress?: number;
@@ -65,7 +67,6 @@ const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Actio
             case FIRMWARE.TOGGLE_HAS_SEED:
                 draft.hasSeed = !state.hasSeed;
                 break;
-
             case SUITE.ADD_BUTTON_REQUEST:
                 if (action.payload === 'ButtonRequest_FirmwareUpdate') {
                     draft.status = 'waiting-for-confirmation';
@@ -75,11 +76,11 @@ const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Actio
                 draft.installingProgress = action.payload.progress;
                 draft.status = 'installing';
                 break;
-            case FIRMWARE.RESET_REDUCER:
-                return initialState;
-            case DEVICE.DISCONNECT:
+            case FIRMWARE.REMEMBER_PREVIOUS_DEVICE:
                 draft.prevDevice = action.payload;
                 break;
+            case FIRMWARE.RESET_REDUCER:
+                return initialState;
             default:
 
             // no default
