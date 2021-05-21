@@ -46,9 +46,9 @@ describe('Find firmware info for: ', () => {
         expect(withBinary).toMatchObject({ release: { version: [1, 6, 3] } });
     });
 
-    it('bootloader 1.5.1 -> firmware version 1.9.3', async () => {
+    it('bootloader 1.5.1 -> firmware version 1.10.0', async () => {
         // currently, this is expected to fail after there is new firmware update, since the last version is hardcoded
-        const targetVersion = [1, 9, 4] as VersionArray;
+        const targetVersion = [1, 10, 0] as VersionArray;
         const info = getInfo({
             features: getDeviceFeatures({
                 bootloader_mode: true,
@@ -72,48 +72,6 @@ describe('Find firmware info for: ', () => {
             }),
             version: targetVersion,
             releases: RELEASES_T1,
-            baseUrl: BASE_URL,
-            baseUrlBeta: BETA_BASE_URL,
-        });
-        expect(withBinary).toMatchObject({ release: { version: targetVersion } });
-    });
-
-    // todo: beta-wallet.trezor.io no longer receives updates? migrating to data.trezor.io
-    it.skip('bootloader 2.0.0 -> firmware version 2.3.5 (latest). And beta channel', async () => {
-        // currently, this is expected to fail after there is new firmware update, since the last version is hardcoded
-        const targetVersion = [2, 3, 5] as VersionArray;
-
-        // just add beta channel to all. lets get some coverage
-        const RELEASES_T2_BETA_CHANNEL = RELEASES_T2.map(r => ({ ...r, channel: 'beta' }));
-        const info = getInfo({
-            features: getDeviceFeatures({
-                bootloader_mode: true,
-                major_version: 2,
-                minor_version: 0,
-                patch_version: 0,
-                fw_major: null,
-                fw_minor: null,
-                fw_patch: null,
-                firmware_present: false,
-            }),
-            releases: RELEASES_T2_BETA_CHANNEL,
-        });
-        expect(info).toMatchObject({ release: { version: targetVersion } });
-
-        // validate that with binary returns the same firmware
-        const withBinary = await getBinary({
-            features: getDeviceFeatures({
-                bootloader_mode: true,
-                major_version: 2,
-                minor_version: 0,
-                patch_version: 0,
-                fw_major: null,
-                fw_minor: null,
-                fw_patch: null,
-                firmware_present: false,
-            }),
-            version: targetVersion,
-            releases: RELEASES_T2_BETA_CHANNEL,
             baseUrl: BASE_URL,
             baseUrlBeta: BETA_BASE_URL,
         });
