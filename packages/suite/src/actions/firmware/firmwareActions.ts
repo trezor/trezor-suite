@@ -1,8 +1,10 @@
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect, { Device } from 'trezor-connect';
+
 import { FIRMWARE } from '@firmware-actions/constants';
-import { Dispatch, GetState, AppState, AcquiredDevice } from '@suite-types';
 import * as analyticsActions from '@suite-actions/analyticsActions';
 import { isBitcoinOnly } from '@suite-utils/device';
+
+import type { Dispatch, GetState, AppState, AcquiredDevice } from '@suite-types';
 
 export type FirmwareAction =
     | {
@@ -13,7 +15,8 @@ export type FirmwareAction =
     | { type: typeof FIRMWARE.RESET_REDUCER }
     | { type: typeof FIRMWARE.ENABLE_REDUCER; payload: boolean }
     | { type: typeof FIRMWARE.SET_ERROR; payload?: string }
-    | { type: typeof FIRMWARE.TOGGLE_HAS_SEED };
+    | { type: typeof FIRMWARE.TOGGLE_HAS_SEED }
+    | { type: typeof FIRMWARE.REMEMBER_PREVIOUS_DEVICE; payload: Device };
 
 export const resetReducer = (): FirmwareAction => ({
     type: FIRMWARE.RESET_REDUCER,
@@ -68,8 +71,8 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
         ].join('.');
     }
 
-    // update to same variant as is currently installed
-    const toBtcOnly = isBitcoinOnly(device);
+    // update to same variant as is currently installed or to the regular one if device does not have any fw (new/wiped device)
+    const isBtcOnlyFirmware = !prevDevice ? false : isBitcoinOnly(prevDevice);
 
     const payload = {
         keepSession: false,
@@ -77,7 +80,7 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
         device: {
             path: device.path,
         },
-        btcOnly: toBtcOnly,
+        btcOnly: isBtcOnlyFirmware,
         version: toFwVersion,
     };
 
@@ -90,7 +93,7 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
                 fromFwVersion,
                 fromBlVersion,
                 toFwVersion: toFwVersion.join('.'),
-                toBtcOnly,
+                toBtcOnly: isBtcOnlyFirmware,
                 error: !updateResponse.success ? updateResponse.payload.error : '',
             },
         }),
@@ -116,4 +119,9 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
 
 export const toggleHasSeed = (): FirmwareAction => ({
     type: FIRMWARE.TOGGLE_HAS_SEED,
+});
+
+export const rememberPreviousDevice = (device: Device) => ({
+    type: FIRMWARE.REMEMBER_PREVIOUS_DEVICE,
+    payload: device,
 });

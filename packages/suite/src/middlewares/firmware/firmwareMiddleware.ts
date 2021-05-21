@@ -1,5 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import TrezorConnect from 'trezor-connect';
+import TrezorConnect, { DEVICE } from 'trezor-connect';
 
 import { SUITE } from '@suite-actions/constants';
 import * as firmwareActions from '@firmware-actions/firmwareActions';
@@ -11,7 +11,7 @@ import { FIRMWARE } from '@suite/actions/firmware/constants';
 const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
     action: Action,
 ): Action => {
-    const prevApp = api.getState().router.app;
+    const { app: prevApp } = api.getState().router;
 
     // pass action
     next(action);
@@ -87,6 +87,16 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
             // entering firmware update context is not handled here. In onboarding device may not be connected
             // in the beginning, so remember happens after firmware.status is changed to check-seed or waiting-for-bootloader, see^^
 
+            break;
+        case DEVICE.DISCONNECT:
+            // we want to store data about previous device only in firmware update modal
+            // we need to do this because device in bootloader mode misses some features attributes required for updating logic
+            // if user disconnects device to connect it in bootloader mode, it opens "device disconnected" modal
+            // so prevApp is equal to firmware, moreover we do not want to do it if device was already in bootloader
+            // as this can happen only if user disconnected the device again after already being in bootloader mode
+            if (prevApp === 'firmware' && action.payload.mode !== 'bootloader') {
+                api.dispatch(firmwareActions.rememberPreviousDevice(action.payload));
+            }
             break;
         default:
     }
