@@ -15,6 +15,7 @@ export type UpdateProgress = {
     transferred: number;
     percent: number;
     bytesPerSecond: number;
+    verifying: boolean;
 };
 
 export type UpdateWindow = 'maximized' | 'minimized' | 'hidden';

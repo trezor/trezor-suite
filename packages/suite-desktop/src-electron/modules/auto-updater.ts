@@ -2,11 +2,13 @@
  * Auto Updater feature (notify, download, install)
  */
 
+import { unlinkSync } from 'fs';
 import { app, ipcMain } from 'electron';
-import { autoUpdater, CancellationToken } from 'electron-updater';
+import { autoUpdater, CancellationToken, UpdateInfo } from 'electron-updater';
 import isDev from 'electron-is-dev';
 
 import { b2t } from '@desktop-electron/libs/utils';
+import { verifySignature } from '@desktop-electron/libs/update-checker';
 import { toHumanReadable } from '@suite-utils/file';
 import { isEnabled } from '@suite-utils/features';
 
@@ -40,7 +42,7 @@ const init = ({ mainWindow, store }: Dependencies) => {
     });
 
     let isManualCheck = false;
-    let latestVersion = {};
+    let latestVersion: Partial<UpdateInfo> = {};
     let updateCancellationToken: CancellationToken;
     const updateSettings = store.getUpdateSettings();
 
@@ -66,7 +68,9 @@ const init = ({ mainWindow, store }: Dependencies) => {
         mainWindow.webContents.send('update/checking');
     });
 
-    autoUpdater.on('update-available', ({ version, releaseDate }) => {
+    autoUpdater.on('update-available', updateInfo => {
+        const { version, releaseDate, files } = updateInfo;
+
         const shouldSkip = updateSettings.skipVersion === version;
         if (shouldSkip) {
             logger.warn('auto-updater', [
@@ -86,8 +90,8 @@ const init = ({ mainWindow, store }: Dependencies) => {
             `- Manual check: ${b2t(isManualCheck)}`,
         ]);
 
-        latestVersion = { version, releaseDate, isManualCheck };
-        mainWindow.webContents.send('update/available', latestVersion);
+        latestVersion = { version, releaseDate, files };
+        mainWindow.webContents.send('update/available', { ...latestVersion, isManualCheck });
 
         // Reset manual check flag
         isManualCheck = false;
@@ -101,8 +105,8 @@ const init = ({ mainWindow, store }: Dependencies) => {
             `- Manual check: ${b2t(isManualCheck)}`,
         ]);
 
-        latestVersion = { version, releaseDate, isManualCheck };
-        mainWindow.webContents.send('update/not-available', latestVersion);
+        latestVersion = { version, releaseDate };
+        mainWindow.webContents.send('update/not-available', { ...latestVersion, isManualCheck });
 
         // Reset manual check flag
         isManualCheck = false;
@@ -123,14 +127,36 @@ const init = ({ mainWindow, store }: Dependencies) => {
         mainWindow.webContents.send('update/downloading', { ...progressObj });
     });
 
-    autoUpdater.on('update-downloaded', ({ version, releaseDate, downloadedFile }) => {
+    autoUpdater.on('update-downloaded', (info: any) => {
+        const { version, releaseDate, downloadedFile } = info;
+
         logger.info('auto-updater', [
             'Update downloaded:',
             `- Last version: ${version}`,
             `- Last release date: ${releaseDate}`,
             `- Downloaded file: ${downloadedFile}`,
         ]);
-        mainWindow.webContents.send('update/downloaded', { version, releaseDate, downloadedFile });
+
+        mainWindow.webContents.send('update/downloading', { verifying: true });
+
+        verifySignature(version, downloadedFile)
+            .then(() => {
+                logger.info('auto-updater', 'Signature of update is valid');
+
+                mainWindow.webContents.send('update/downloaded', {
+                    version,
+                    releaseDate,
+                    downloadedFile,
+                });
+            })
+            .catch(err => {
+                logger.error('auto-updater', `Signature check failed: ${err.message}`);
+
+                mainWindow.webContents.send('update/error', err);
+
+                // Delete file so we are sure it's not accidentally installed
+                unlinkSync(downloadedFile);
+            });
     });
 
     ipcMain.on('update/check', (_, isManual?: boolean) => {
@@ -145,12 +171,14 @@ const init = ({ mainWindow, store }: Dependencies) => {
 
     ipcMain.on('update/download', () => {
         logger.info('auto-updater', 'Download requested');
+
         mainWindow.webContents.send('update/downloading', {
             percent: 0,
             bytesPerSecond: 0,
             total: 0,
             transferred: 0,
         });
+
         updateCancellationToken = new CancellationToken();
         autoUpdater
             .downloadUpdate(updateCancellationToken)

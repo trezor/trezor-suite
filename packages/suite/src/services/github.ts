@@ -1,6 +1,8 @@
 import { getFwVersion, isBitcoinOnly, getVersion } from '@suite-utils/device';
 import { isDesktop, getUserAgent, getScreenWidth, getScreenHeight } from '@suite-utils/env';
-import { TrezorDevice } from '@suite-types';
+
+import type { ReleaseInfo } from '@suite-types/github';
+import type { TrezorDevice } from '@suite-types';
 
 const REPO_INFO = {
     owner: 'trezor',
@@ -16,9 +18,9 @@ export const getReleaseNotes = async (version?: string) => {
 
     const url = `https://api.github.com/repos/${REPO_INFO.owner}/${REPO_INFO.repo}/releases/tags/v${version}`;
     const response = await fetch(url);
-    const release = response.json();
+    const release = await response.json();
 
-    return release;
+    return release as ReleaseInfo;
 };
 
 const getDeviceInfo = (device?: TrezorDevice) => {

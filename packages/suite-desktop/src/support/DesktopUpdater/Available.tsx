@@ -109,7 +109,7 @@ const Available = ({ hideWindow, latest }: Props) => {
                 }
 
                 const release = await getReleaseNotes(version);
-                notes = release.body;
+                notes = release?.body;
             } finally {
                 setReleaseNotes({
                     loading: false,
