@@ -3,7 +3,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { Button, variables, Link } from '@trezor/components';
-import { CoinmarketTransactionId } from '@wallet-components';
 import { useActions } from '@suite-hooks/useActions';
 import { Account } from '@wallet-types';
 import { Translation } from '@suite-components/Translation';
@@ -43,12 +42,11 @@ const StyledButton = styled(Button)`
 `;
 
 interface Props {
-    transactionId?: string;
     supportUrl?: string;
     account: Account;
 }
 
-const PaymentFailed = ({ transactionId, supportUrl, account }: Props) => {
+const PaymentFailed = ({ supportUrl, account }: Props) => {
     const { goto } = useActions({
         goto: routerActions.goto,
     });
@@ -61,7 +59,6 @@ const PaymentFailed = ({ transactionId, supportUrl, account }: Props) => {
             <Description>
                 <Translation id="TR_BUY_DETAIL_ERROR_TEXT" />
             </Description>
-            {transactionId && <CoinmarketTransactionId transactionId={transactionId} />}
             {supportUrl && (
                 <StyledLink href={supportUrl} target="_blank">
                     <Button variant="tertiary">

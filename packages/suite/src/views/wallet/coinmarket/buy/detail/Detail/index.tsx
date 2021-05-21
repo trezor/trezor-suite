@@ -62,18 +62,11 @@ const CoinmarketDetail = () => {
     return (
         <Wrapper>
             <StyledCard>
-                {showError && (
-                    <PaymentFailed
-                        account={account}
-                        transactionId={trade.key}
-                        supportUrl={supportUrl}
-                    />
-                )}
+                {showError && <PaymentFailed account={account} supportUrl={supportUrl} />}
                 {showProcessing && <PaymentProcessing />}
                 {showWaiting && (
                     <WaitingForUser
                         trade={trade.data}
-                        transactionId={trade.key}
                         account={account}
                         providerName={provider?.companyName}
                     />
