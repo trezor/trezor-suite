@@ -35,7 +35,7 @@ const merge = (device: AcquiredDevice, upcoming: Partial<AcquiredDevice>): Trezo
             ? upcoming.features
             : device.features),
         // ...except for `unlocked` which should reflect the actual state of the device.
-        unlocked: upcoming.features?.unlocked,
+        unlocked: !!upcoming.features?.unlocked,
     },
 });
 

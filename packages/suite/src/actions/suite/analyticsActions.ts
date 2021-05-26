@@ -5,7 +5,7 @@
  */
 
 import { ANALYTICS } from '@suite-actions/constants';
-import { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
+import { Dispatch, GetState, AppState } from '@suite-types';
 import { getAnalyticsRandomId } from '@suite-utils/random';
 import { encodeDataToQueryString } from '@suite-utils/analytics';
 import { Account } from '@wallet-types';
@@ -18,6 +18,7 @@ import {
 } from '@suite-utils/env';
 import { setSentryUser } from '@suite-utils/sentry';
 import { State } from '@suite-reducers/analyticsReducer';
+import { DeviceMode } from 'trezor-connect';
 
 export type AnalyticsAction =
     | { type: typeof ANALYTICS.ENABLE }
@@ -81,17 +82,17 @@ export type AnalyticsEvent =
     | { type: 'transport-type'; payload: { type: string; version: string } }
     | {
           /**
-        device-connect
-        is logged when user connects device
-        - if device is not in bootloader, some of its features are logged 
-        */
+      device-connect
+      is logged when user connects device
+      - if device is not in bootloader, some of its features are logged 
+      */
           type: 'device-connect';
           payload: {
-              mode: TrezorDevice['mode'];
+              mode?: DeviceMode;
               firmware: string;
-              pin_protection: boolean;
-              passphrase_protection: boolean;
-              totalInstances: number;
+              pin_protection: boolean | null;
+              passphrase_protection: boolean | null;
+              totalInstances: number | null;
               backup_type: string;
               // added in 1.6
               isBitcoinOnly: boolean;
@@ -232,7 +233,7 @@ export type AnalyticsEvent =
     | {
           type: 'settings/device/change-pin-protection';
           payload: {
-              remove: boolean;
+              remove: boolean | null;
           };
       }
     | {
