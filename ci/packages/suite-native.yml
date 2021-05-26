@@ -1,5 +1,5 @@
 suite-native build android:
-  image: reactnativecommunity/react-native-android
+  image: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/reactnativecommunity/react-native-android
   stage: build
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline

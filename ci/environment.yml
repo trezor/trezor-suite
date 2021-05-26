@@ -6,7 +6,7 @@ build & push image:
   variables:
     DOCKER_TLS_CERTDIR: ''
     CONTAINER_NAME: "$CI_REGISTRY/satoshilabs/trezor/trezor-suite/base"
-  image: docker
+  image: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/docker
   services:
     - docker:dind
   script:
