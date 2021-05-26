@@ -1,5 +1,7 @@
 # Base
-FROM debian:buster-slim as base
+## Use a proxy or fallback to no proxy at all (direct access to Docker Hub).
+ARG CI_DOCKER_PROXY=""
+FROM ${CI_DOCKER_PROXY}debian:buster-slim as base
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -26,7 +28,7 @@ RUN curl -L https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_
 
 # Final image
 # buster is for debian 10. the same version as firmware team has in its Dockerfile.
-FROM node:14-buster
+FROM ${CI_DOCKER_PROXY}node:14-buster
 
 RUN apt-get update && apt-get install -y \
     build-essential \
