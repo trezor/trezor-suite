@@ -131,7 +131,12 @@ const Backup = (props: Props) => {
         Edge case, user disconnected the device he was doing backup initially with and connected another device
         with backup finished or failed. Either way, there is no way.
     */
-    if (backup.status !== 'finished' && !backup.error && device.features.needs_backup === false) {
+    if (
+        backup.status !== 'finished' &&
+        !backup.error &&
+        device.features.needs_backup === false &&
+        device.features.unfinished_backup !== null
+    ) {
         return (
             <Modal
                 useFixedHeight

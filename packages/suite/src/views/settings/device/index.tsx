@@ -158,7 +158,7 @@ const Settings = () => {
                                 isDisabled={
                                     isDeviceLocked ||
                                     !features.needs_backup ||
-                                    features.unfinished_backup
+                                    !!features.unfinished_backup
                                 }
                             >
                                 {features.needs_backup && <Translation id="TR_CREATE_BACKUP" />}
@@ -203,8 +203,8 @@ const Settings = () => {
                                 }}
                                 isDisabled={
                                     isDeviceLocked ||
-                                    features.needs_backup ||
-                                    features.unfinished_backup
+                                    !!features.needs_backup ||
+                                    !!features.unfinished_backup
                                 }
                                 variant="secondary"
                             >
@@ -278,7 +278,7 @@ const Settings = () => {
                         <Switch
                             checked={!!features.pin_protection}
                             onChange={() => {
-                                changePin({ remove: features.pin_protection });
+                                changePin({ remove: !!features.pin_protection });
                                 analytics.report({
                                     type: 'settings/device/change-pin-protection',
                                     payload: {
