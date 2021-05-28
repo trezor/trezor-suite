@@ -12,6 +12,7 @@ const config = {
         'bin',
         'connect',
         'fonts',
+        'guide',
         'images',
         'message-system',
         'translations',
@@ -19,6 +20,7 @@ const config = {
     ],
     'suite-native': [
         'fonts',
+        'guide',
         'images',
         'message-system',
         'videos',
@@ -27,6 +29,7 @@ const config = {
         'browser-detection',
         'connect',
         'fonts',
+        'guide',
         'images',
         'message-system',
         'oauth',
