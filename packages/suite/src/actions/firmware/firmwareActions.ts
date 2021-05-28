@@ -111,10 +111,12 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
     }
 
     // model 1
-    // ask user to unplug device (see firmwareMiddleware)
+    // ask user to unplug device if BL < 1.10.0 (see firmwareMiddleware), BL starting with 1.10.0 will automatically restart itself just like on model T
     // model 2 without pin
     // ask user to wait until device reboots
-    dispatch(setStatus(model === 1 ? 'unplug' : 'wait-for-reboot'));
+    dispatch(
+        setStatus(model === 1 && device.features.minor_version < 10 ? 'unplug' : 'wait-for-reboot'),
+    );
 };
 
 export const toggleHasSeed = (): FirmwareAction => ({
