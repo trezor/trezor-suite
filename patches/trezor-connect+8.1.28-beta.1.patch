@@ -1,0 +1,26 @@
+diff --git a/node_modules/trezor-connect/lib/types/trezor/protobuf.js.flow b/node_modules/trezor-connect/lib/types/trezor/protobuf.js.flow
+index 0c64934..bc18dfc 100644
+--- a/node_modules/trezor-connect/lib/types/trezor/protobuf.js.flow
++++ b/node_modules/trezor-connect/lib/types/trezor/protobuf.js.flow
+@@ -1367,7 +1367,7 @@ export type Features = {
+     revision: string | null,
+     bootloader_hash: string | null,
+     imported: boolean | null,
+-    unlocked: boolean,
++    unlocked: boolean | null,
+     firmware_present: boolean | null,
+     needs_backup: boolean | null,
+     flags: number | null,
+diff --git a/node_modules/trezor-connect/lib/typescript/trezor/protobuf.d.ts b/node_modules/trezor-connect/lib/typescript/trezor/protobuf.d.ts
+index 41bc045..e341ce6 100644
+--- a/node_modules/trezor-connect/lib/typescript/trezor/protobuf.d.ts
++++ b/node_modules/trezor-connect/lib/typescript/trezor/protobuf.d.ts
+@@ -1345,7 +1345,7 @@ export type Features = {
+     revision: string | null;
+     bootloader_hash: string | null;
+     imported: boolean | null;
+-    unlocked: boolean;
++    unlocked: boolean | null;
+     firmware_present: boolean | null;
+     needs_backup: boolean | null;
+     flags: number | null;
