@@ -61,6 +61,7 @@ const WalletLayout = ({ showEmptyHeaderPlaceholder = false, title, children, acc
             <Wrapper>
                 <AccountMode mode={account.mode} />
                 <AccountAnnouncement selectedAccount={account} />
+                <EmptyHeaderPlaceholder />
                 <Exception account={account} />
             </Wrapper>
         );

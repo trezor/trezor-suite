@@ -78,7 +78,11 @@ const Details = () => {
     }
 
     return (
-        <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount}>
+        <WalletLayout
+            title="TR_ACCOUNT_DETAILS_HEADER"
+            account={selectedAccount}
+            showEmptyHeaderPlaceholder
+        >
             <StyledCard largePadding>
                 <StyledRow>
                     <TextColumn
