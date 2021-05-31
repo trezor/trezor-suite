@@ -33,6 +33,7 @@
         "is-website-vulnerable": "^1.14.6",
         "next-optimized-images": "^2.6.2",
         "next-transpile-modules": "^4.1.0",
+        "raw-loader": "^4.0.2",
         "ts-loader": "^8.0.14"
     }
 }

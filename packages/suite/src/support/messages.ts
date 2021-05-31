@@ -1486,6 +1486,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Device {deviceLabel} is not backed up',
         id: 'TR_DEVICE_LABEL_IS_NOT_BACKED_UP',
     },
+    TR_DEVICE_NOT_CONNECTED: {
+        defaultMessage: 'Device not connected',
+        id: 'TR_DEVICE_NOT_CONNECTED',
+    },
     TR_DEVICE_LABEL_IS_NOT_CONNECTED: {
         defaultMessage: 'Device {deviceLabel} is not connected',
         id: 'TR_DEVICE_LABEL_IS_NOT_CONNECTED',
@@ -1791,6 +1795,10 @@ const definedMessages = defineMessages({
     TR_FINISH_ADVANCED_SECURITY: {
         defaultMessage: 'Finish advanced security',
         id: 'TR_FINISH_ADVANCED_SECURITY',
+    },
+    TR_FIRMWARE: {
+        defaultMessage: 'Firmware',
+        id: 'TR_FIRMWARE',
     },
     TR_FIRMWARE_UPDATE: {
         defaultMessage: 'Firmware update',
@@ -4208,6 +4216,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Localization',
         description: 'Used as language localization (translation of the application)',
     },
+    TR_APP: {
+        id: 'TR_APP',
+        defaultMessage: 'App',
+        description: 'Application shorthand name',
+    },
     TR_APPLICATION: {
         id: 'TR_APPLICATION',
         defaultMessage: 'Application',
@@ -5802,6 +5815,102 @@ const definedMessages = defineMessages({
     TR_WAIT_FOR_REBOOT_WEBUSB_DESCRIPTION: {
         id: 'TR_WAIT_FOR_REBOOT_WEBUSB_DESCRIPTION',
         defaultMessage: 'Please wait for Trezor to reboot and pair the device again.',
+    },
+    TR_BUG: {
+        id: 'TR_BUG',
+        defaultMessage: 'Bug',
+    },
+    TR_SUGGESTION: {
+        id: 'TR_SUGGESTION',
+        defaultMessage: 'Suggestion',
+    },
+    TR_GUIDE_BUG_LABEL: {
+        id: 'TR_GUIDE_BUG_LABEL',
+        defaultMessage: 'Report a faulty behaviour',
+    },
+    TR_GUIDE_SUGGESTION_LABEL: {
+        id: 'TR_GUIDE_SUGGESTION_LABEL',
+        defaultMessage: 'Request a new feature',
+    },
+    TR_GUIDE_FEEDACK_OR_SUGGESTION: {
+        id: 'TR_GUIDE_FEEDACK_OR_SUGGESTION',
+        defaultMessage: 'Feedback or Suggestion',
+    },
+    TR_GUIDE_CATEGORIES: {
+        id: 'TR_GUIDE_CATEGORIES',
+        defaultMessage: 'Categories',
+    },
+    TR_GUIDE_CATEGORY_CRYPTO_BASICS: {
+        id: 'TR_GUIDE_CATEGORY_CRYPTO_BASICS',
+        defaultMessage: 'Crypto basics',
+    },
+    TR_GUIDE_CATEGORY_TREZOR_SUITE: {
+        id: 'TR_GUIDE_CATEGORY_TREZOR_SUITE',
+        defaultMessage: 'Trezor Suite',
+    },
+    TR_GUIDE_CATEGORY_TREZOR: {
+        id: 'TR_GUIDE_CATEGORY_TREZOR',
+        defaultMessage: 'Trezor',
+    },
+    TR_GUIDE_CATEGORY_CURRENCIES: {
+        id: 'TR_GUIDE_CATEGORY_CURRENCIES',
+        defaultMessage: 'Currencies',
+    },
+    TR_GUIDE_CATEGORY_DICTIONARY: {
+        id: 'TR_GUIDE_CATEGORY_DICTIONARY',
+        defaultMessage: 'Dictionary',
+    },
+    TR_GUIDE_ARTICLES: {
+        id: 'TR_GUIDE_ARTICLES',
+        defaultMessage: 'Articles',
+    },
+    TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER: {
+        id: 'TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER',
+        defaultMessage: 'Learn & Discover',
+    },
+    TR_GUIDE_VIEW_HEADLINE_HELP_US_IMPROVE: {
+        id: 'TR_GUIDE_VIEW_HEADLINE_HELP_US_IMPROVE',
+        defaultMessage: 'Help us improve',
+    },
+    TR_GUIDE_VIEW_HEADLINE_REPORT_BUG: {
+        id: 'TR_GUIDE_VIEW_HEADLINE_REPORT_BUG',
+        defaultMessage: 'Report a bug',
+    },
+    TR_GUIDE_VIEW_HEADLINE_SUGGEST: {
+        id: 'TR_GUIDE_VIEW_HEADLINE_SUGGEST',
+        defaultMessage: 'Suggestion',
+    },
+    TR_GUIDE_FEEDBACK_CATEGORY_HEADLINE: {
+        id: 'TR_GUIDE_FEEDBACK_CATEGORY_HEADLINE',
+        defaultMessage: `What's the category?`,
+    },
+    TR_GUIDE_FEEDBACK_BUG_TEXT_HEADLINE: {
+        id: 'TR_GUIDE_FEEDBACK_BUG_TEXT_HEADLINE',
+        defaultMessage: `What's the issue?`,
+    },
+    TR_GUIDE_FEEDBACK_RATING_HEADLINE: {
+        id: 'TR_GUIDE_FEEDBACK_RATING_HEADLINE',
+        defaultMessage: `Enjoying Suite?`,
+    },
+    TR_GUIDE_FEEDBACK_SUGGESTION_TEXT_HEADLINE: {
+        id: 'TR_GUIDE_FEEDBACK_SUGGESTION_TEXT_HEADLINE',
+        defaultMessage: `How can we improve?`,
+    },
+    TR_GUIDE_FEEDBACK_SEND_REPORT: {
+        id: 'TR_GUIDE_FEEDBACK_SEND_REPORT',
+        defaultMessage: `Send report`,
+    },
+    TR_GUIDE_FEEDBACK_BROWSER_INFO_NOTICE: {
+        id: 'TR_GUIDE_FEEDBACK_BROWSER_INFO_NOTICE',
+        defaultMessage: `Your browser info will be shared anonymously`,
+    },
+    TR_GUIDE_FEEDBACK_SENT: {
+        id: 'TR_GUIDE_FEEDBACK_SENT',
+        defaultMessage: `The message has been sent. Thank you!`,
+    },
+    TR_GUIDE_FEEDBACK_ERROR: {
+        id: 'TR_GUIDE_FEEDBACK_ERROR',
+        defaultMessage: `A server error has occurred. Please try again later.`,
     },
 } as const);
 

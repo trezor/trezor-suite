@@ -31,6 +31,7 @@ import type { ObjectValues } from '@suite/types/utils';
 import type { SUITE } from '@suite-actions/constants';
 import type { PROCESS_MODE } from '@suite-middlewares/actionBlockerMiddleware';
 import type { MessageSystemAction } from '@suite-actions/messageSystemActions';
+import type { GuideAction } from '@suite-actions/guideActions';
 
 // reexport
 export type { ExtendedMessageDescriptor } from '@suite-components/Translation/components/BaseTranslation';
@@ -59,7 +60,8 @@ export type Action =
     | RecoveryAction
     | WalletSettingsAction
     | DesktopUpdateAction
-    | MessageSystemAction;
+    | MessageSystemAction
+    | GuideAction;
 
 // export type Dispatch = ReduxDispatch<Action>;
 // export type Dispatch = ThunkDispatch<AppState, any, Action>;

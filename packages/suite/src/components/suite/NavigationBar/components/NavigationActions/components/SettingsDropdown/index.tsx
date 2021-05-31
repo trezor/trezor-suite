@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import ActionItem from '../ActionItem';
 import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
+import * as guideActions from '@suite-actions/guideActions';
 
 const Wrapper = styled.div<Pick<Props, 'marginLeft'>>`
     ${props => props.marginLeft && `margin-left: 8px`};
@@ -20,8 +21,9 @@ const SettingsDropdown = (props: Props) => {
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<DropdownRef>();
 
-    const { goto } = useActions({
+    const { goto, openGuide } = useActions({
         goto: routerActions.goto,
+        openGuide: guideActions.open,
     });
 
     return (
@@ -73,6 +75,22 @@ const SettingsDropdown = (props: Props) => {
                                 },
                                 isRounded: true,
                                 'data-test': '@suite/menu/settings-coins',
+                            },
+                        ],
+                    },
+                    {
+                        key: 'guide',
+                        options: [
+                            {
+                                key: '4',
+                                label: <Translation id="TR_LEARN_AND_DISCOVER" />,
+                                icon: 'LIGHTBULB',
+                                iconRight: 'ARROW_RIGHT',
+                                callback: () => {
+                                    openGuide();
+                                },
+                                isRounded: true,
+                                separatorBefore: true,
                             },
                         ],
                     },

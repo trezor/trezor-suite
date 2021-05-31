@@ -70,6 +70,15 @@ module.exports = withOptimizedImages(
                             'process.env.CODESIGN_BUILD': isCodesignBuild,
                         }),
                     );
+                    config.module.rules.push({
+                        test: /\.md/,
+                        use: [
+                            options.defaultLoaders.babel,
+                            {
+                                loader: 'raw-loader',
+                            },
+                        ],
+                    });
                     // google-auth-library dependency does not have out-of-the-box browser support (is primarily aimed at nodejs)
                     // so we need to do this to make it work (at the time of writing this)
                     config.node.fs = 'empty';

@@ -8,7 +8,7 @@ import { FEEDBACK_FORM, SUPPORT_URL } from '@suite-constants/urls';
 const Wrapper = styled.div`
     display: flex;
     position: fixed;
-    z-index: 10;
+    z-index: ${variables.Z_INDEX.BETA_BADGE};
     bottom: 18px;
     right: 18px;
 `;

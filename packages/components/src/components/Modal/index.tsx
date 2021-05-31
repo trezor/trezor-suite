@@ -32,10 +32,13 @@ const FIXED_WIDTH_SMALL: [string, string, string, string] = ['100vw', '90vw', '6
 const FIXED_WIDTH_TINY: [string, string, string, string] = ['360px', '360px', '360px', '360px'];
 const FIXED_HEIGHT: [string, string, string, string] = ['90vh', '90vh', '620px', '620px'];
 
-const ModalOverlay = styled.div<{ desktopBorder?: string }>`
+const ModalOverlay = styled.div<{ desktopBorder?: string; guidePanelSize: string }>`
     position: fixed;
     z-index: 10000;
-    width: ${props => (props.desktopBorder ? `calc(100% - (${props.desktopBorder} * 2))` : '100%')};
+    width: ${props =>
+        props.desktopBorder
+            ? `calc(100% - (${props.desktopBorder} * 2) - ${props.guidePanelSize})`
+            : `calc(100% - ${props.guidePanelSize})`};
     height: ${props => (props.desktopBorder ? `calc(100% - ${props.desktopBorder})` : '100%')};
     top: 0px;
     left: ${props => props.desktopBorder || 0};
@@ -362,6 +365,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     currentProgressBarStep?: number;
     centerContent?: boolean;
     desktopBorder?: string;
+    guideOpen?: boolean;
 }
 
 const Modal = ({
@@ -390,6 +394,7 @@ const Modal = ({
     currentProgressBarStep,
     centerContent = false,
     desktopBorder,
+    guideOpen = false,
     ...rest
 }: Props) => {
     const escPressed = useKeyPress('Escape');
@@ -471,6 +476,7 @@ const Modal = ({
     return (
         <ModalOverlay
             desktopBorder={desktopBorder}
+            guidePanelSize={guideOpen ? variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH : '0px'}
             data-test="@modal"
             onClick={() => {
                 if (cancelable && onCancel) {
