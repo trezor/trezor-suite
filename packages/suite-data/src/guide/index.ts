@@ -5,6 +5,8 @@ import { TMP, GITBOOK_SOURCE, GITBOOK_REVISION, DESTINATION, ASSETS_DIR } from '
 import { Parser } from './parser';
 import { transform } from './transformer';
 
+// See /docs/misc/guide.md for documentation of this script.
+
 /** Ensures the given directory exists and prunes its contents. */
 const pruneDirectory = (path: string) => {
     fs.removeSync(path);

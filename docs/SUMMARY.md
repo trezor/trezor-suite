@@ -25,4 +25,5 @@
   - [Localization](misc/localization.md)
   - [Review Process](misc/review.md)
   - [Notes](misc/notes.md)
-  - [Message System](misc/message_system.md))
+  - [Message System](misc/message_system.md)
+  - [Suite Guide](misc/guide.md)
