@@ -125,7 +125,7 @@ const routes = [
     {
         name: 'coinmarket-buy-detail',
         pattern: 'accounts/coinmarket/buy/detail',
-        app: 'walletParams',
+        app: 'wallet',
         params: walletParams,
     },
     {
