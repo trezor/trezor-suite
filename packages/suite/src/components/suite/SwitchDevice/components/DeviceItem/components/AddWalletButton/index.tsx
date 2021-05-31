@@ -34,7 +34,7 @@ interface Props {
     device: TrezorDevice;
     instances: AcquiredDevice[];
     addDeviceInstance: (instance: TrezorDevice) => Promise<void>;
-    selectDeviceInstance: (instance: TrezorDevice) => Promise<void>;
+    selectDeviceInstance: (instance: TrezorDevice) => void;
 }
 
 const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceInstance }: Props) => {
