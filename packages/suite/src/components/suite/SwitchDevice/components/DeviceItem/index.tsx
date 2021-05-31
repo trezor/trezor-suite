@@ -133,25 +133,35 @@ const DeviceItem = ({ device, instances, closeModalApp, backgroundRoute }: Props
     const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
     const isUnknown = device.type !== 'acquired';
     const isSelected = deviceUtils.isSelectedDevice(selectedDevice, device);
-    const isWalletContext =
-        backgroundRoute &&
-        (backgroundRoute.app === 'wallet' || backgroundRoute.app === 'dashboard');
     const instancesWithState = instances.filter(i => i.state);
 
-    const selectDeviceInstance = async (instance: Props['device']) => {
-        selectDevice(instance);
-        if (!isWalletContext) {
+    const handleRedirection = async () => {
+        // Preserve route for dashboard or wallet context only. Redirect from other routes to dashboard index.
+        const isWalletOrDashboardContext =
+            backgroundRoute && ['wallet', 'dashboard'].includes(backgroundRoute.app);
+        if (!isWalletOrDashboardContext) {
             await goto('suite-index');
         }
-        closeModalApp(!isWalletContext);
+
+        // Subpaths of wallet are not available to all account types (e.g. Tokens tab not available to BTC accounts).
+        const isWalletSubpath =
+            backgroundRoute?.app === 'wallet' && backgroundRoute?.name !== 'wallet-index';
+        if (isWalletSubpath) {
+            await goto('wallet-index');
+        }
+
+        const preserveParams = false;
+        closeModalApp(preserveParams);
+    };
+
+    const selectDeviceInstance = (instance: Props['device']) => {
+        selectDevice(instance);
+        handleRedirection();
     };
 
     const addDeviceInstance = async (instance: Props['device']) => {
         await createDeviceInstance(instance);
-        if (!isWalletContext) {
-            await goto('suite-index');
-        }
-        closeModalApp(!isWalletContext);
+        handleRedirection();
     };
 
     const onSolveIssueClick = () => {
