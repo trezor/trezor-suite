@@ -17,7 +17,7 @@ const Content: React.FC<ContentProps> = ({ selectedAccount, children }) => {
     const { account, network } = selectedAccount;
 
     return (
-        <WalletLayout title="TR_TOKENS" account={selectedAccount}>
+        <WalletLayout title="TR_TOKENS" account={selectedAccount} showEmptyHeaderPlaceholder>
             {account.networkType === 'ethereum' && (
                 <TokenList
                     isTestnet={isTestnet(account.symbol)}
