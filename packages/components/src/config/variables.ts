@@ -8,6 +8,18 @@ export const SCREEN_SIZE = {
     XL: '1200px', // extra Large laptops/desktops
 } as const;
 
+export const LAYOUT_SIZE = {
+    GUIDE_PANEL_WIDTH: '350px',
+} as const;
+
+export const Z_INDEX = {
+    MODAL: 10000,
+    NAVIGATION_BAR: 30,
+    GUIDE_PANEL: 15,
+    BETA_BADGE: 13,
+    GUIDE_BUTTON: 10,
+} as const;
+
 export const FONT_SIZE = {
     BIG: '18px',
     NORMAL: '16px',
@@ -63,8 +75,11 @@ export const ICONS: IconType[] = [
     'ARROW_DOWN',
     'ARROW_UP',
     'ARROW_LEFT',
+    'ARROW_LEFT_LONG',
     'ARROW_RIGHT',
     'ARROW_RIGHT_LONG',
+    'ARTICLE',
+    'ATTACHMENT',
     'BROADCAST',
     'CHECK',
     'CHECK_ACTIVE',

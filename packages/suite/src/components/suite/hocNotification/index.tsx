@@ -293,6 +293,20 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
                 message: 'TR_ADD_TOKEN_TOAST_SUCCESS',
             });
 
+        case 'user-feedback-send-success':
+            return simple(View, {
+                notification,
+                variant: 'success',
+                message: 'TR_GUIDE_FEEDBACK_SENT',
+            });
+
+        case 'user-feedback-send-error':
+            return simple(View, {
+                notification,
+                variant: 'error',
+                message: 'TR_GUIDE_FEEDBACK_ERROR',
+            });
+
         // Events:
         case DEVICE.CONNECT:
             return withAction(View, {

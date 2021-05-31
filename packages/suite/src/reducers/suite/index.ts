@@ -9,6 +9,7 @@ import analytics from './analyticsReducer';
 import metadata from './metadataReducer';
 import desktopUpdate from './desktopUpdateReducer';
 import messageSystem from './messageSystemReducer';
+import guide from './guideReducer';
 
 export default {
     suite,
@@ -22,4 +23,5 @@ export default {
     metadata,
     desktopUpdate,
     messageSystem,
+    guide,
 };

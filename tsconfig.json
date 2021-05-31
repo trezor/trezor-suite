@@ -208,6 +208,9 @@
             "@firmware-hooks": ["./packages/suite/src/hooks/firmware/index"],
             "@firmware-services/*": ["./packages/suite/src/services/firmware/*"],
             "@firmware-services": ["./packages/suite/src/services/firmware/index"],
+            // guide
+            "@guide-components": ["./packages/suite/src/components/guide/index"],
+            "@guide-views": ["./packages/suite/src/views/guide/index"],
             // portfolio
             "@portfolio-components/*": ["./packages/suite/src/components/portfolio/*"],
             "@portfolio-components": ["./packages/suite/src/components/portfolio/index"],

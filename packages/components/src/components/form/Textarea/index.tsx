@@ -18,16 +18,18 @@ interface StyledTextareaProps extends BaseTextareaProps {
     width?: any;
     state?: InputState;
     monospace?: boolean;
+    borderWidth?: number;
+    borderRadius?: number;
 }
 
 const StyledTextarea = styled.textarea<StyledTextareaProps>`
     width: ${props => (props.width ? `${props.width}px` : '100%')};
     padding: 10px;
     box-sizing: border-box;
-    border: solid 2px
+    border: solid ${props => props.borderWidth}px
         ${props =>
             props.state ? getStateColor(props.state, props.theme) : props.theme.STROKE_GREY};
-    border-radius: 4px;
+    border-radius: ${props => props.borderRadius}px;
     resize: none;
     outline: none;
     font-family: ${variables.FONT_FAMILY.TTHOVES};
@@ -133,6 +135,8 @@ interface Props extends StyledTextareaProps {
     monospace?: boolean;
     noTopLabel?: boolean;
     noError?: boolean;
+    borderWidth?: number;
+    borderRadius?: number;
 }
 
 const Textarea = ({
@@ -152,6 +156,8 @@ const Textarea = ({
     noTopLabel,
     labelRight,
     noError,
+    borderWidth = 2,
+    borderRadius = 4,
     ...rest
 }: Props) => {
     const [isHovered, setIsHovered] = React.useState(false);
@@ -183,6 +189,8 @@ const Textarea = ({
                 rows={rows}
                 ref={innerRef}
                 monospace={monospace}
+                borderWidth={borderWidth}
+                borderRadius={borderRadius}
                 {...rest}
             />
             <TooltipAction action={tooltipAction}>

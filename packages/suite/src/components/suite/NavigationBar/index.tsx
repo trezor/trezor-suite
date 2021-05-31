@@ -3,7 +3,7 @@ import DeviceSelector from './components/DeviceSelector';
 import MainNavigation from './components/MainNavigation';
 import NavigationActions from './components/NavigationActions';
 import styled from 'styled-components';
-import { Icon, useTheme } from '@trezor/components';
+import { Icon, useTheme, variables } from '@trezor/components';
 import { useLayoutSize } from '@suite-hooks';
 
 const StyledDeviceSelector = styled(DeviceSelector)``;
@@ -13,7 +13,7 @@ const StyledNavigationBar = styled.div<{ isMobileLayout: boolean }>`
     width: 100%;
     min-height: 80px;
     flex: 0;
-    z-index: 3;
+    z-index: ${variables.Z_INDEX.NAVIGATION_BAR};
     padding: ${props => (!props.isMobileLayout ? '6px 32px 6px 8px' : '6px 8px')};
     align-items: center;
     background: ${props => props.theme.BG_WHITE};
