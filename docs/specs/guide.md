@@ -72,7 +72,7 @@ Traverse the content of English group/locale and build an in-memory tree of cate
             // A page holding an actual content which is reachable by its id.
             {
                 type: 'page',
-                id: 'suite-guide/example-top-level-page-title',
+                id: 'suite-guide/example-top-level-page-title.md',
                 locales: ['en', 'cs'],
                 title: {
                     en: 'Example top-level page title',
@@ -92,7 +92,7 @@ Traverse the content of English group/locale and build an in-memory tree of cate
                     // A page only available in english.
                     {
                         type: 'page',
-                        id: 'suite-guide/example-category-title/example-page-title',
+                        id: 'suite-guide/example-category-title/example-page-title.md',
                         locales: ['en'],
                         title: {
                             en: 'Example top-level page title',
@@ -104,13 +104,12 @@ Traverse the content of English group/locale and build an in-memory tree of cate
     }
 }
 ```
-2. **Transpilation:** Take the indexed MD files and transpile them to HTML. Doing this at build time saves us from fetching and running markdown compiler in runtime.
-3. **Sanitisation**: Sanitise the generated HTML of any content potentially vulnerable to XSS. Although the content should be managed by trusted editors better be safe than sorry.
-4. **Bundling**: Take the JSON index, sanitised HTML files and assets and expose them in the `/public` directory of the Suite app. From there it's easy to use them to render the UI.
+2. **Cleaning:** GitBook sometimes adds a yaml front-matter to the MD files. Strip it away.
+3. **Bundling**: Take the JSON index, cleaned MD files and assets and expose them in the `/public` directory of the Suite app. From there it's easy to use them to render the UI.
 
 #### Usage
 
-On run time, fetch the JSON index and render UI according to it. When displaying any given page first check if it's available in current locale or fallback to english. Then, fetch the html from the page's path prepended by the locale and mount it into the DOM. Apply styles to visually blend the content into the rest of the app.
+On run time, fetch the JSON index and render UI according to it. When displaying any given page first check if it's available in current locale or fallback to english. Then, fetch the markdown from the page's path prepended by the locale and mount it into the DOM using the `react-markdown` component. Apply styles to visually blend the content into the rest of the app.
 
 ## Future Work
 
