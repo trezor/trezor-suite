@@ -33,14 +33,9 @@ export type AnalyticsAction =
           };
       };
 
-/**
-simple semver for data-analytics part.
-<breaking-change>.<analytics-extended>
-
-Don't forget to update docs with changelog!
-*/
-
-export const version = '1.8';
+// Don't forget to update docs with changelog!
+// <breaking-change>.<analytics-extended>
+export const version = '1.9';
 
 export type AnalyticsEvent =
     | {
@@ -77,6 +72,8 @@ export type AnalyticsEvent =
               osVersion: string;
               windowWidth: number;
               windowHeight: number;
+              // added in 1.9
+              platformLanguages: string;
           };
       }
     | { type: 'transport-type'; payload: { type: string; version: string } }
@@ -98,6 +95,9 @@ export type AnalyticsEvent =
               isBitcoinOnly: boolean;
               // added in 1.7
               totalDevices: number;
+              // added in 1.9
+              language: string | null;
+              model: string;
           };
       }
     | {
@@ -175,6 +175,12 @@ export type AnalyticsEvent =
               symbol: string;
           };
       }
+    | {
+          type: 'accounts/empty-account/receive';
+          payload: {
+              symbol: string;
+          };
+      }
     | { type: 'dashboard/security-card/create-backup' }
     | { type: 'dashboard/security-card/seed-link' }
     | { type: 'dashboard/security-card/set-pin' }
@@ -192,12 +198,31 @@ export type AnalyticsEvent =
     | { type: 'menu/goto/suite-index' }
     | { type: 'menu/goto/wallet-index' }
     | { type: 'menu/goto/notifications-index' }
+    | {
+          type: 'menu/notifications/toggle';
+          payload: {
+              value: boolean;
+          };
+      }
     | { type: 'menu/goto/settings-index' }
+    | {
+          type: 'menu/settings/toggle';
+          payload: {
+              value: boolean;
+          };
+      }
+    | {
+          type: 'menu/settings/dropdown';
+          payload: { option: 'all' | 'general' | 'device' | 'coins' };
+      }
     | {
           type: 'menu/toggle-discreet';
           payload: {
               value: boolean;
           };
+      }
+    | {
+          type: 'menu/goto/tor';
       }
     | {
           type: 'menu/toggle-tor';
@@ -246,7 +271,24 @@ export type AnalyticsEvent =
               value: number;
           };
       }
-    | { type: 'settings/device/goto/background' }
+    | {
+          type: 'settings/device/goto/background';
+          payload: {
+              // added in 1.9
+              custom: boolean;
+          };
+      }
+    | {
+          type: 'settings/device/background';
+          payload: {
+              // added in 1.9
+              image?: string;
+              format?: string;
+              size?: number;
+              resolutionWidth?: number;
+              resolutionHeight?: number;
+          };
+      }
     | {
           type: 'settings/device/change-orientation';
           payload: {
@@ -321,14 +363,18 @@ export type AnalyticsEvent =
     | {
           type: 'transaction-created';
           payload: {
-              action: 'sent' | 'copied' | 'downloaded';
+              // added in 1.9
+              action: 'sent' | 'copied' | 'downloaded' | 'replaced';
               symbol: Account['symbol'];
-              broadcast: boolean;
+              tokens: string;
               outputsCount: number;
+              broadcast: boolean;
               bitcoinRbf: boolean;
               bitcoinLockTime: boolean;
               ethereumData: boolean;
-              tokenSent: boolean;
+              ethereumNonce: boolean;
+              rippleDestinationTag: boolean;
+              selectedFee: string;
           };
       }
     | {
@@ -336,6 +382,8 @@ export type AnalyticsEvent =
           payload: {
               networkSymbol: Account['symbol'];
               addedNth: number; // if the user added 1st, 2nd,... token in his account
+              // added in 1.9
+              token: string;
           };
       }
     | {

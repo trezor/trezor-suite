@@ -131,11 +131,13 @@ const AddToken = (props: Props) => {
                         if (tokenInfo) {
                             addToken(account, tokenInfo);
                             props.onCancel();
+
                             analytics.report({
                                 type: 'add-token',
                                 payload: {
                                     networkSymbol: account.symbol,
                                     addedNth: account.tokens ? account.tokens.length + 1 : 0,
+                                    token: tokenInfo[0]?.symbol?.toLowerCase() || '',
                                 },
                             });
                         }

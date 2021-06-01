@@ -3,7 +3,7 @@ import { Dropdown, DropdownRef } from '@trezor/components';
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import ActionItem from '../ActionItem';
-import { useActions } from '@suite-hooks';
+import { useActions, useAnalytics } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 
 const Wrapper = styled.div<Pick<Props, 'marginLeft'>>`
@@ -17,6 +17,16 @@ interface Props {
 }
 
 const SettingsDropdown = (props: Props) => {
+    const analytics = useAnalytics();
+    const reportDropdownEvent = (option: 'all' | 'general' | 'device' | 'coins') => {
+        analytics.report({
+            type: 'menu/settings/dropdown',
+            payload: {
+                option,
+            },
+        });
+    };
+
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<DropdownRef>();
 
@@ -27,7 +37,13 @@ const SettingsDropdown = (props: Props) => {
     return (
         <Wrapper {...props}>
             <Dropdown
-                onToggle={() => setOpen(!open)}
+                onToggle={() => {
+                    setOpen(!open);
+                    analytics.report({
+                        type: 'menu/settings/toggle',
+                        payload: { value: !open },
+                    });
+                }}
                 ref={dropdownRef}
                 alignMenu="right"
                 offset={34}
@@ -35,7 +51,10 @@ const SettingsDropdown = (props: Props) => {
                 topPadding={0}
                 minWidth={230}
                 masterLink={{
-                    callback: () => goto('settings-index'),
+                    callback: () => {
+                        goto('settings-index');
+                        reportDropdownEvent('all');
+                    },
                     label: <Translation id="TR_ALL" />,
                     icon: 'ARROW_RIGHT_LONG',
                 }}
@@ -50,6 +69,7 @@ const SettingsDropdown = (props: Props) => {
                                 icon: 'APP',
                                 callback: () => {
                                     goto('settings-index');
+                                    reportDropdownEvent('general');
                                 },
                                 isRounded: true,
                                 'data-test': '@suite/menu/settings-index',
@@ -60,6 +80,7 @@ const SettingsDropdown = (props: Props) => {
                                 icon: 'DEVICE',
                                 callback: () => {
                                     goto('settings-device');
+                                    reportDropdownEvent('device');
                                 },
                                 isRounded: true,
                                 'data-test': '@suite/menu/settings-device',
@@ -70,6 +91,7 @@ const SettingsDropdown = (props: Props) => {
                                 icon: 'COINS',
                                 callback: () => {
                                     goto('settings-coins');
+                                    reportDropdownEvent('coins');
                                 },
                                 isRounded: true,
                                 'data-test': '@suite/menu/settings-coins',

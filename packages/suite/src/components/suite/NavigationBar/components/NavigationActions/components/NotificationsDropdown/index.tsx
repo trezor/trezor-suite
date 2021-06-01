@@ -3,7 +3,7 @@ import { Dropdown, DropdownRef, variables } from '@trezor/components';
 import React, { useRef, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import ActionItem from '../ActionItem';
-import { useActions } from '@suite-hooks';
+import { useActions, useAnalytics } from '@suite-hooks';
 import * as notificationActions from '@suite-actions/notificationActions';
 
 const Wrapper = styled.div<Pick<Props, 'marginLeft' | 'marginRight'>>`
@@ -33,6 +33,8 @@ const NotificationsDropdown = ({
     marginLeft = '0px',
     marginRight = '0px',
 }: Props) => {
+    const analytics = useAnalytics();
+
     // use "opened" state to decide if "active" styles on ActionItem should be applied
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<DropdownRef>();
@@ -50,8 +52,15 @@ const NotificationsDropdown = ({
                 resetUnseen();
                 setOpen(false);
             }
+
+            analytics.report({
+                type: 'menu/notifications/toggle',
+                payload: {
+                    value: isToggled,
+                },
+            });
         },
-        [resetUnseen],
+        [resetUnseen, analytics],
     );
 
     return (

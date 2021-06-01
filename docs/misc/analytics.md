@@ -49,6 +49,54 @@ Breaking change should bump major version. Any other change bumps minor version.
 
 ## Changelog
 
+### 1.9
+Changed:
+- use `stable.log` for codesign builds and `develop.log` otherwise
+- `suite-ready` is now also tracked on initial run
+
+Added:
+- suite-ready
+  - platformLanguages: string
+- device-connect
+  - language: string
+  - model: string
+- settings/device/goto/background
+  - custom: boolean
+- settings/device/background  
+  - image: string | undefined (gallery image)
+  - format: string | undefined (custom image)
+  - size: number | undefined (custom image)
+  - resolutionWidth: number | undefined (custom image)
+  - resolutionHeight: number | undefined (custom image)
+- add-token
+  - token: string
+- transaction-created
+  - action: 'sent' | 'copied' | 'downloaded' | 'replace'
+  - symbol: string
+  - tokens: string
+  - outputsCount: number
+  - broadcast: boolean
+  - bitcoinRbf: boolean
+  - bitcoinLockTime: boolean
+  - ethereumData: boolean
+  - rippleDestinationTag: boolean
+  - ethereumNonce: boolean
+  - selectedFee: string
+- menu/notifications/toggle
+  - value: boolean
+- menu/settings/toggle
+  - value: boolean
+- menu/settings/dropdown
+  - option: 'all' | 'general' | 'device' | 'coins'
+- menu/goto/tor
+- accounts/empty-account/receive
+
+Fixed:
+- device-update-firmware
+  - toBtcOnly
+- accounts/empty-account/buy
+  - symbol (lowercase instead of uppercase)
+
 ### 1.8
 Added: 
 - settings/device/update-auto-lock
@@ -72,8 +120,10 @@ Fixed:
 - analytics/dispose
 
 Removed:
- - menu/goto/exchange-index
+- menu/goto/exchange-index
  
+Changed:
+- `desktop` build is now tracked to `stable.log` instead of `beta.log`
 ### 1.7
 Added:
 - send-raw-transaction

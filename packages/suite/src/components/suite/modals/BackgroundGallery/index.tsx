@@ -7,7 +7,7 @@ import { resolveStaticPath } from '@suite-utils/nextjs';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { elementToHomescreen } from '@suite-utils/homescreen';
 import { AcquiredDevice } from '@suite-types';
-import { useActions } from '@suite-hooks';
+import { useActions, useAnalytics } from '@suite-hooks';
 
 type AnyImageName = typeof homescreensT1[number] | typeof homescreensT2[number];
 
@@ -39,6 +39,7 @@ type Props = {
 
 const BackgroundGallery = ({ device, onCancel }: Props) => {
     const { applySettings } = useActions({ applySettings: deviceSettingsActions.applySettings });
+    const analytics = useAnalytics();
 
     const setHomescreen = (image: AnyImageName) => {
         const element = document.getElementById(image);
@@ -61,7 +62,16 @@ const BackgroundGallery = ({ device, onCancel }: Props) => {
                         <BackgroundImageT1
                             key={image}
                             id={image}
-                            onClick={() => setHomescreen(image)}
+                            onClick={() => {
+                                setHomescreen(image);
+
+                                analytics.report({
+                                    type: 'settings/device/background',
+                                    payload: {
+                                        image,
+                                    },
+                                });
+                            }}
                             src={resolveStaticPath(`images/png/homescreens/t1/${image}.png`)}
                         />
                     ))}
@@ -74,7 +84,16 @@ const BackgroundGallery = ({ device, onCancel }: Props) => {
                             data-test={`@modal/gallery/t2/${image}`}
                             key={image}
                             id={image}
-                            onClick={() => setHomescreen(image)}
+                            onClick={() => {
+                                setHomescreen(image);
+
+                                analytics.report({
+                                    type: 'settings/device/background',
+                                    payload: {
+                                        image,
+                                    },
+                                });
+                            }}
                             src={resolveStaticPath(`images/png/homescreens/t2/${image}.png`)}
                         />
                     ))}

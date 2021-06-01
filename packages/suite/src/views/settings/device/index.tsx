@@ -123,8 +123,21 @@ const Settings = () => {
 
     const onUploadHomescreen = async (files: FileList | null) => {
         if (!files || !files.length) return;
-        const dataUrl = await homescreen.fileToDataUrl(files[0]);
+        const image = files[0];
+        const dataUrl = await homescreen.fileToDataUrl(image);
+
         setCustomHomescreen(dataUrl);
+
+        const imageResolution = await homescreen.getImageResolution(dataUrl);
+        analytics.report({
+            type: 'settings/device/background',
+            payload: {
+                format: image.type,
+                size: image.size,
+                resolutionWidth: imageResolution.width,
+                resolutionHeight: imageResolution.height,
+            },
+        });
     };
 
     const onSelectCustomHomescreen = async () => {
@@ -434,6 +447,10 @@ const Settings = () => {
                                 onClick={() => {
                                     if (fileInputElement.current) {
                                         fileInputElement.current.click();
+                                        analytics.report({
+                                            type: 'settings/device/goto/background',
+                                            payload: { custom: true },
+                                        });
                                     }
                                 }}
                                 isDisabled={isDeviceLocked}
@@ -451,6 +468,7 @@ const Settings = () => {
                                 });
                                 analytics.report({
                                     type: 'settings/device/goto/background',
+                                    payload: { custom: false },
                                 });
                             }}
                             isDisabled={isDeviceLocked}
