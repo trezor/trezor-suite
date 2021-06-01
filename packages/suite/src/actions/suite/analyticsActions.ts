@@ -11,10 +11,10 @@ import { encodeDataToQueryString } from '@suite-utils/analytics';
 import { Account } from '@wallet-types';
 import {
     isDesktop,
-    isWeb,
     setOnBeforeUnloadListener,
     getLocationHostname,
     getOsType,
+    getEnvironment,
 } from '@suite-utils/env';
 import { setSentryUser } from '@suite-utils/sentry';
 import { State } from '@suite-reducers/analyticsReducer';
@@ -394,32 +394,21 @@ export type AnalyticsEvent =
       };
 
 const getUrl = () => {
-    const base = 'https://data.trezor.io/suite/log';
-
     const hostname = getLocationHostname();
+    const environment = getEnvironment();
 
-    // this is true for both web and desktop dev server
+    const base = `https://data.trezor.io/suite/log/${environment}`;
+
+    if (process.env.CODESIGN_BUILD) {
+        return `${base}/stable.log`;
+    }
+
+    // no reporting on localhost
     if (hostname === 'localhost') {
-        return; // no reporting on dev
+        return;
     }
 
-    if (isDesktop()) {
-        return `${base}/desktop/stable.log`;
-    }
-
-    if (isWeb()) {
-        /* istanbul ignore next */
-        switch (hostname) {
-            case 'staging-suite.trezor.io':
-                return `${base}/web/staging.log`;
-            case 'beta-wallet.trezor.io':
-                return `${base}/web/beta.log`;
-            case 'suite.trezor.io':
-                return `${base}/web/stable.log`;
-            default:
-                return `${base}/web/develop.log`;
-        }
-    }
+    return `${base}/develop.log`;
 };
 
 export const report = (data: AnalyticsEvent, force = false) => (
@@ -427,8 +416,9 @@ export const report = (data: AnalyticsEvent, force = false) => (
     getState: GetState,
 ) => {
     const url = getUrl();
+
+    // no reporting on localhost
     if (!url) {
-        // this is for local dev
         return;
     }
 
