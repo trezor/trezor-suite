@@ -23,12 +23,6 @@ const StyledCard = styled(Card)`
     padding: 32px 42px;
 `;
 
-const IconWrapper = styled.div`
-    display: flex;
-    padding: 8px 12px 8px 12px; /* custom padding to solve jumping content */
-    justify-content: flex-end;
-`;
-
 const ButtonWrapper = styled.div`
     display: flex;
     margin: 25px 0;
@@ -61,9 +55,6 @@ const Raw = ({ network }: { network: Network }) => {
 
     return (
         <Wrapper>
-            <IconWrapper>
-                <Icon size={20} icon="CROSS" onClick={() => sendRaw(false)} />
-            </IconWrapper>
             <StyledCard>
                 <Textarea
                     state={inputState}
@@ -89,6 +80,7 @@ const Raw = ({ network }: { network: Network }) => {
                             <Translation id="SEND_RAW_TRANSACTION" />
                         </Tooltip>
                     }
+                    labelRight={<Icon size={20} icon="CROSS" onClick={() => sendRaw(false)} />}
                 />
             </StyledCard>
             <ButtonWrapper>
