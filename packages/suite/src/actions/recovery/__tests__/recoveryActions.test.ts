@@ -25,14 +25,18 @@ export const getInitialState = (custom?: any): any => ({
         device: {
             features: {
                 // eslint-disable-next-line
-                    major_version: 2,
+                major_version: 2,
             },
         },
+        flags: {},
         locks: [],
     },
     recovery: {
         ...recoveryReducer(undefined, {} as Action),
         ...custom,
+    },
+    analytics: {
+        enabled: false,
     },
 });
 
