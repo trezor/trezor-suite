@@ -1,24 +1,31 @@
 # Analytics
 
-Suite collects anonymous data on how user interacts with the application. This feature is by default "on". User has to opt-out either on analytics screen that follows 
-after welcome screen (if starting Suite for the first time) or by unchecking switch in settings.
+Both web and desktop Suite applications collect anonymous data about how a user interacts with them. Analytics is not mandatory and not all users have it enabled, as it can be opt-out during the onboarding process or later in the settings in the general tab. However, by default, it is enabled in the onboarding process and if the user does not opt-out, the application starts to track his interactions immediately after the onboarding process is completed.
 
-Data is transferred in GET requests encoded in uri.
+## Anonymous data:
 
-## Catalogue of events
-
-Refer to `AnalyticsEvent` type in [analyticsActions.ts](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/src/actions/suite/analyticsActions.ts).
-
-For general overview see [documentation in Notion](https://www.notion.so/e19845789ccb47a0baf36d7f8463f196?v=2183c8228ebb4df38f358d1b2744e1b8).
-
-## Anonymity
-
-Suite should never collect:
+Collected data have to be anonymous. This means that Suite should never track any data leaking information about a device or a user.
 
 - device id
-- any fingerprinting
+- public keys
+- transaction id
+- ... any other fingerprinting
 
-## Data endpoints
+## Tracking process
+
+Data about interactions are transferred in GET HTTP requests encoded in URI.
+
+Data from **production** builds (codesign branch) are sent to:
+
+- Desktop build: https://data.trezor.io/suite/log/desktop/stable.log
+- Web build: https://data.trezor.io/suite/log/web/stable.log
+  
+Data from **development** builds are sent to:
+
+- Desktop build: https://data.trezor.io/suite/log/desktop/develop.log
+- Web build: https://data.trezor.io/suite/log/web/develop.log
+  
+Data from localhost are not currently tracked anywhere. 
 
 List of available configured endpoints:
 
@@ -31,22 +38,55 @@ List of available configured endpoints:
     https://data.trezor.io/suite/log    /web       /develop     .log
     https://data.trezor.io/suite/log    /web       /stable      .log
 
-Currently used endpoints:
+Example URI:
 
-| env                          | Are                                                 |
-| ---------------------------- |--------------------------------------------------   |
-| staging-suite.trezor.io      | https://data.trezor.io/suite/log/web/staging.log    |
-| beta-wallet.trezor.io        | https://data.trezor.io/suite/log/web/beta.log       |
-| suite.trezor.io              | https://data.trezor.io/suite/log/web/stable.log     |
-| any origin                   | https://data.trezor.io/suite/log/web/develop.log    |
-| desktop                      | https://data.trezor.io/suite/log/desktop/stable.log   |
+`https://data.trezor.io/suite/log/web/stable.log?c_v=1.8&c_type=transport-type&c_commit=4d09d88476dab2e6b2fbfb833b749e9ac62251c2&c_instance_id=qlT0xL2XKV&c_session_id=FZjilOYQic&type=bridge&version=2.0.30`
+
+Which tracks:
+```
+{
+  c_v: '1.9',
+  c_type: 'transport-type',
+  c_commit: '4d09d88476dab2e6b2fbfb833b749e9ac62251c2',
+  c_instance_id: 'qlT0xL2XKV',
+  c_session_id: 'FZjilOYQic',
+  type: 'bridge',
+  version: '2.0.30'
+}
+```
+
+Attributes which are always tracked:
+
+- **c_v**: version of analytics
+- **c_type**: type of tracked event
+- **c_commit**: current revision of app
+- **c_instance_id**: until user does not wipe storage, the id is still same
+- **c_session_id**: id changed on every launch of app
+  
+Other attributes are connected to a specific type of events.
+
+Specific events can be found in project in [analyticsActions.ts](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/src/actions/suite/analyticsActions.ts) file and also in [company Notion](https://www.notion.so/satoshilabs/Data-analytics-938aeb2e289f4ca18f31b1c02ab782cb) where implemented events with expected attributes and other notes related to analytics can be found.
 
 ## Versioning
 
-Whenever there shall be a change in `AnalyticsEvent` type `version` variable in [analyticsActions.ts](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/src/actions/suite/analyticsActions.ts) 
+Whenever there shall be a change in `AnalyticsEvent`, `version` variable in [analyticsActions.ts](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/src/actions/suite/analyticsActions.ts) 
 should be bumped. Please follow simple semver versioning in format `<breaking-change>.<analytics-extended>`.
 Breaking change should bump major version. Any other change bumps minor version.
 
+## How does analytics work?
+1. User with enabled analytics interacts with the application
+2. Events are sent to specific endpoints
+3. Collected data are parsed and analysed (can be seen in Keboola)
+4. Charts and metrics are created (in Tableau)
+5. We know how to improve the application
+
+## How to check that events are tracked?
+
+1. **Option**: Open DevTools, navigate to **Network tab**, filter traffic by `.log` and check the **Query String Parameters** section
+2. **Option**: Get access to Keboola
+3. **Option**: Create a modified build of app with an analytics server URL pointing to your server
+4. **Option**: Edit NAT to resolve requests to `https://data.trezor.io/suite/log/web/stable.log` to your local server 
+   
 ## Changelog
 
 ### 1.9
