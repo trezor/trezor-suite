@@ -38,6 +38,10 @@ const StyledRow = styled(Row)`
     padding-top: 0;
 `;
 
+const StyledRowBottom = styled(Row)`
+    padding-bottom: 0;
+`;
+
 const NoWrap = styled.span`
     white-space: nowrap;
 `;
@@ -103,7 +107,7 @@ const Details = () => {
                         </P>
                     </AccountTypeLabel>
                 </StyledRow>
-                <Row>
+                <StyledRowBottom>
                     <TextColumn
                         title={<Translation id="TR_ACCOUNT_DETAILS_XPUB_HEADER" />}
                         description={<Translation id="TR_ACCOUNT_DETAILS_XPUB" />}
@@ -130,7 +134,7 @@ const Details = () => {
                             <Translation id="TR_ACCOUNT_DETAILS_XPUB_BUTTON" />
                         </ActionButton>
                     </ActionColumn>
-                </Row>
+                </StyledRowBottom>
             </StyledCard>
         </WalletLayout>
     );

@@ -40,6 +40,7 @@ import { Truncate } from './components/Truncate';
 import { SelectBar, SelectBarProps } from './components/form/SelectBar';
 import { ThemeProvider, ThemeContext } from './support/ThemeProvider';
 import * as types from './support/types';
+import { HoverAnimation } from './components/HoverAnimation';
 
 export {
     colors,
@@ -108,4 +109,5 @@ export {
     SuiteThemeColors,
     ThemeProvider,
     ThemeContext,
+    HoverAnimation,
 };

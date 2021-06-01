@@ -1,7 +1,7 @@
 import React from 'react';
 import { findRouteByName } from '@suite-utils/router';
 import styled, { css } from 'styled-components';
-import { variables } from '@trezor/components';
+import { variables, HoverAnimation } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { MAIN_MENU_ITEMS } from '@suite-constants/menu';
 import { useAnalytics, useActions, useSelector, useAccountSearch } from '@suite-hooks';
@@ -152,9 +152,11 @@ const MainNavigation = (props: Props) => {
                         isDisabled={isDisabled}
                     >
                         <ItemTitleWrapper>
-                            <ItemTitle isActive={isActive} isDisabled={isDisabled}>
-                                <Translation id={translationId} />
-                            </ItemTitle>
+                            <HoverAnimation>
+                                <ItemTitle isActive={isActive} isDisabled={isDisabled}>
+                                    <Translation id={translationId} />
+                                </ItemTitle>
+                            </HoverAnimation>
                             {/* if the button is disabled, display "SOON" badge */}
                             {isDisabled && <NewBadge>soon</NewBadge>}
                         </ItemTitleWrapper>

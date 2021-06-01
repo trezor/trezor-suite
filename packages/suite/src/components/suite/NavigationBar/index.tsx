@@ -19,7 +19,7 @@ const StyledNavigationBar = styled.div<{ isMobileLayout: boolean }>`
     background: ${props => props.theme.BG_WHITE};
     border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 
-    &:hover ${StyledDeviceSelector} {
+    &${StyledDeviceSelector}:hover {
         /* apply same device selector's hover styles on hover anywhere in navigation panel */
         border-radius: 4px;
         box-shadow: 0 1px 2px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
