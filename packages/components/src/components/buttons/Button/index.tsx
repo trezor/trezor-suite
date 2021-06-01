@@ -5,6 +5,7 @@ import { IconType, ButtonVariant, SuiteThemeColors } from '../../../support/type
 import { variables } from '../../../config';
 import { useTheme } from '../../../utils';
 import FluidSpinner from '../../loaders/FluidSpinner';
+import { darken } from 'polished';
 
 const getPadding = (variant: ButtonVariant, hasLabel: boolean) => {
     if (variant === 'tertiary') {
@@ -112,6 +113,8 @@ const Wrapper = styled.button<WrapperProps>`
             &:active,
             &:focus {
                 color: ${props => props.theme.TYPE_DARK_GREY};
+                background: ${props =>
+                    darken(props.theme.HOVER_DARKEN_FILTER, props.theme.BG_GREY_ALT)};
             }
         `};
 
@@ -180,7 +183,7 @@ const IconWrapper = styled.div<IconWrapperProps>`
         css`
             margin: 0 0 0 8px;
         `}
-    
+
     ${props =>
         props.variant === 'tertiary' &&
         props.hasLabel &&

@@ -1,6 +1,14 @@
 import React, { useRef, useLayoutEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { variables, IconProps, useTheme, Button, Icon, Dropdown } from '@trezor/components';
+import {
+    variables,
+    IconProps,
+    useTheme,
+    Button,
+    Icon,
+    Dropdown,
+    HoverAnimation,
+} from '@trezor/components';
 import { AccountFormCloseButton } from '@suite-components';
 import { useInViewProp } from '../AppNavigationPanel';
 import { useSelector } from '@suite-hooks';
@@ -149,9 +157,10 @@ const StyledNavLink = styled.div<{ active?: boolean }>`
         margin-right: ${SECONDARY_MENU_BUTTON_MARGIN};
         margin-left: 10px;
     }
+    position: relative;
 `;
 
-const InnerWrap = styled.div<{ settingsWrapper?: boolean }>`
+const InnerWrap = styled.div`
     width: 100%;
     height: 71px;
     display: flex;
@@ -160,14 +169,6 @@ const InnerWrap = styled.div<{ settingsWrapper?: boolean }>`
     padding: 0 16px;
     border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
     background: ${props => props.theme.BG_LIGHT_GREY};
-    ${props =>
-        props.settingsWrapper &&
-        css`
-            height: 52px;
-            & ${StyledNavLink} {
-                padding: 13px 0;
-            }
-        `};
 `;
 
 const IconWrapper = styled.div`
@@ -176,6 +177,10 @@ const IconWrapper = styled.div`
 
 const Text = styled.div`
     position: relative;
+`;
+
+const StyledIcon = styled(Icon)`
+    margin-right: 10px;
 `;
 
 const StyledDropdown = styled(Dropdown)`
@@ -275,7 +280,7 @@ const AppNavigation = ({ items, primaryContent, maxWidth }: Props) => {
                     </MenuHolder>
                 </InnerWrap>
             ) : (
-                <InnerWrap settingsWrapper={routeName && routeName.startsWith('settings')}>
+                <InnerWrap>
                     <KeepWidth border={!sticky}>
                         <Primary ref={primary}>
                             {primaryContent ||
@@ -291,21 +296,23 @@ const AppNavigation = ({ items, primaryContent, maxWidth }: Props) => {
                                                 'data-test': item['data-test'],
                                             })}
                                         >
-                                            {item.icon && (
-                                                <IconWrapper>
-                                                    <Icon
-                                                        size={18}
-                                                        icon={item.icon}
-                                                        color={
-                                                            active
-                                                                ? theme.TYPE_DARK_GREY
-                                                                : undefined
-                                                        }
-                                                    />
-                                                </IconWrapper>
-                                            )}
+                                            <HoverAnimation>
+                                                {item.icon && (
+                                                    <IconWrapper>
+                                                        <StyledIcon
+                                                            size={18}
+                                                            icon={item.icon}
+                                                            color={
+                                                                active
+                                                                    ? theme.TYPE_DARK_GREY
+                                                                    : undefined
+                                                            }
+                                                        />
+                                                    </IconWrapper>
+                                                )}
 
-                                            <Text>{title}</Text>
+                                                <Text>{title}</Text>
+                                            </HoverAnimation>
                                         </StyledNavLink>
                                     );
                                 })}

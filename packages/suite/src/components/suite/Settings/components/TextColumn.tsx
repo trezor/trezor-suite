@@ -44,7 +44,7 @@ const TextColumn = ({ title, description, learnMore }: TextColumnProps) => (
         {title && <Title>{title}</Title>}
         {description && <Description>{description}</Description>}
         {learnMore && (
-            <TrezorLink href={learnMore}>
+            <TrezorLink variant="nostyle" href={learnMore}>
                 <LearnMoreButton variant="tertiary">
                     <Translation id="TR_LEARN_MORE" />
                 </LearnMoreButton>

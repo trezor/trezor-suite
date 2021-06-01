@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { useTheme, Icon, IconProps, variables } from '@trezor/components';
+import { useTheme, Icon, IconProps, variables, HoverAnimation } from '@trezor/components';
 
 const Wrapper = styled.div<Pick<Props, 'isOpen' | 'marginLeft'>>`
     width: 45px;
@@ -12,10 +12,8 @@ const Wrapper = styled.div<Pick<Props, 'isOpen' | 'marginLeft'>>`
     justify-content: center;
     border-radius: 8px;
     ${props => props.marginLeft && `margin-left: 8px`};
-
-    &:hover {
-        background: ${props => props.theme.BG_GREY_OPEN};
-    }
+    transition: ${props =>
+        `background ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
 
     ${props =>
         props.isOpen &&
@@ -136,17 +134,19 @@ const ActionItem = React.forwardRef((props: Props, ref: React.Ref<HTMLDivElement
 
     return (
         <Wrapper isActive={props.isActive} isOpen={props.isOpen} {...props} ref={ref}>
-            {iconComponent}
-            {props.indicator === 'alert' && (
-                <AlertDotWrapper>
-                    <AlertDot />
-                </AlertDotWrapper>
-            )}
-            {props.indicator === 'check' && (
-                <Indicator>
-                    <Icon icon="CHECK" size={10} color={theme.TYPE_GREEN} />
-                </Indicator>
-            )}
+            <HoverAnimation>
+                {iconComponent}
+                {props.indicator === 'alert' && (
+                    <AlertDotWrapper>
+                        <AlertDot />
+                    </AlertDotWrapper>
+                )}
+                {props.indicator === 'check' && (
+                    <Indicator>
+                        <Icon icon="CHECK" size={10} color={theme.TYPE_GREEN} />
+                    </Indicator>
+                )}
+            </HoverAnimation>
         </Wrapper>
     );
 });
