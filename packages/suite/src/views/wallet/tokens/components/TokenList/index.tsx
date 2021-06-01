@@ -30,7 +30,6 @@ const Col = styled.div<ColProps>`
     color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
-    overflow: hidden;
 
     &:nth-child(${props => (props.isTestnet ? '-n + 3' : '-n + 4')}) {
         /* first row */
@@ -51,6 +50,10 @@ const Col = styled.div<ColProps>`
             padding-left: 14px;
             padding-right: 14px;
         `}
+`;
+
+const ColWithoutOverflow = styled(Col)`
+    overflow: hidden;
 `;
 
 const TokenNameWrapper = styled.div`
@@ -77,7 +80,6 @@ const TokenValue = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${props => props.theme.TYPE_DARK_GREY};
     white-space: nowrap;
-    overflow: hidden;
 `;
 
 const FiatWrapper = styled.div`
@@ -105,12 +107,12 @@ const TokenList = ({ tokens, explorerUrl, isTestnet }: Props) => {
         <Wrapper isTestnet={isTestnet} noPadding>
             {tokens.map(t => (
                 <Fragment key={t.address}>
-                    <Col isTestnet={isTestnet}>
+                    <ColWithoutOverflow isTestnet={isTestnet}>
                         <TokenNameWrapper>
                             <TokenSymbol>{t.symbol}</TokenSymbol>
                             <TokenName> - {t.name}</TokenName>
                         </TokenNameWrapper>
-                    </Col>
+                    </ColWithoutOverflow>
                     <Col isTestnet={isTestnet} justify="right">
                         <TokenValue>
                             {t.balance && <CryptoAmount value={t.balance} symbol={t.symbol} />}
