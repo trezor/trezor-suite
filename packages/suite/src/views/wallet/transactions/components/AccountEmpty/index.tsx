@@ -102,6 +102,12 @@ const AccountEmpty = (props: Props) => {
                         variant="secondary"
                         onClick={() => {
                             goto('wallet-receive', undefined, true);
+                            analytics.report({
+                                type: 'accounts/empty-account/receive',
+                                payload: {
+                                    symbol: networkSymbol.toLowerCase(),
+                                },
+                            });
                         }}
                     >
                         <Translation id="TR_RECEIVE_NETWORK" values={{ network: networkSymbol }} />
@@ -113,7 +119,7 @@ const AccountEmpty = (props: Props) => {
                             analytics.report({
                                 type: 'accounts/empty-account/buy',
                                 payload: {
-                                    symbol: networkSymbol,
+                                    symbol: networkSymbol.toLowerCase(),
                                 },
                             });
                         }}

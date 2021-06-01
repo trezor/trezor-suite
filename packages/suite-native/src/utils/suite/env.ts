@@ -23,6 +23,8 @@ export const getPlatform = () => 'todo react-native';
 
 export const getPlatformLanguage = () => 'en';
 
+export const getPlatformLanguages = () => ['en'];
+
 export const getLocationOrigin = () => 'implementation of getLocationOrigin in native';
 
 export const getLocationHostname = () =>

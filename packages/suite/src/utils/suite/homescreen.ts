@@ -256,3 +256,14 @@ export const elementToHomescreen = (
     removeCanvas();
     return hex;
 };
+
+export const getImageResolution = (url: string): Promise<{ width: number; height: number }> =>
+    new Promise(resolve => {
+        const img = new Image();
+        img.src = url;
+        img.onload = () =>
+            resolve({
+                width: img.width,
+                height: img.height,
+            });
+    });

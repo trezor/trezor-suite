@@ -9,6 +9,8 @@ export const getPlatform = () => window.navigator.platform;
 
 export const getPlatformLanguage = () => window.navigator.language;
 
+export const getPlatformLanguages = () => window.navigator.languages;
+
 export const getAppVersion = () => window.navigator.appVersion;
 
 export const getScreenWidth = () => window.screen.width;

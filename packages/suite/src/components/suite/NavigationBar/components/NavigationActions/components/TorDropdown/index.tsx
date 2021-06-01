@@ -3,7 +3,7 @@ import { Dropdown, DropdownRef, Icon, useTheme, variables } from '@trezor/compon
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import ActionItem from '../ActionItem';
-import { useActions } from '@suite-hooks';
+import { useActions, useAnalytics } from '@suite-hooks';
 import { transparentize } from 'polished';
 import * as routerActions from '@suite-actions/routerActions';
 
@@ -81,6 +81,8 @@ interface Props {
 }
 
 const TorDropdown = (props: Props) => {
+    const analytics = useAnalytics();
+
     const [open, setOpen] = useState(false);
     const [torAddress, setTorAddress] = useState('');
     const dropdownRef = useRef<DropdownRef>();
@@ -95,7 +97,15 @@ const TorDropdown = (props: Props) => {
     return (
         <Wrapper {...props}>
             <Dropdown
-                onToggle={() => setOpen(!open)}
+                onToggle={() => {
+                    setOpen(!open);
+                    analytics.report({
+                        type: 'menu/toggle-tor',
+                        payload: {
+                            value: !open,
+                        },
+                    });
+                }}
                 ref={dropdownRef}
                 alignMenu="right"
                 offset={34}
@@ -110,7 +120,12 @@ const TorDropdown = (props: Props) => {
                             {
                                 key: 'torStatus',
                                 label: (
-                                    <TorStatus onClick={() => goto('settings-index')}>
+                                    <TorStatus
+                                        onClick={() => {
+                                            goto('settings-index');
+                                            analytics.report({ type: 'menu/goto/tor' });
+                                        }}
+                                    >
                                         <Indicator isActive={props.isActive} />
                                         <Details>
                                             <Label>

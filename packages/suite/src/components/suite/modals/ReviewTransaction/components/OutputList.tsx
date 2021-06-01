@@ -5,7 +5,7 @@ import { Translation } from '@suite-components';
 import { formatNetworkAmount, isTestnet } from '@wallet-utils/accountUtils';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { copyToClipboard, download } from '@suite-utils/dom';
-import { useActions } from '@suite-hooks';
+import { useActions, useAnalytics } from '@suite-hooks';
 import Output, { OutputProps } from './Output';
 import OutputElement from './OutputElement';
 import Detail from './Detail';
@@ -109,6 +109,33 @@ const OutputList = ({
         return undefined;
     };
 
+    const analytics = useAnalytics();
+    const reportTransactionCreatedEvent = (
+        action: 'sent' | 'copied' | 'downloaded' | 'replaced',
+    ) => {
+        const { options, selectedFee } = precomposedForm;
+
+        analytics.report({
+            type: 'transaction-created',
+            payload: {
+                action,
+                symbol,
+                tokens: outputs
+                    .filter(output => output.token?.symbol)
+                    .map(output => output.token?.symbol)
+                    .join(','),
+                outputsCount: precomposedForm.outputs.length,
+                broadcast: options.includes('broadcast'),
+                bitcoinRbf: !!options.includes('bitcoinRBF'),
+                bitcoinLockTime: !!options.includes('bitcoinLockTime'),
+                ethereumData: !!options.includes('ethereumData'),
+                rippleDestinationTag: !!options.includes('rippleDestinationTag'),
+                ethereumNonce: !!options.includes('ethereumNonce'),
+                selectedFee: selectedFee || '',
+            },
+        });
+    };
+
     const htmlElement = createRef<HTMLDivElement>();
     const { addNotification } = useActions({
         addNotification: notificationActions.addToast,
@@ -160,7 +187,12 @@ const OutputList = ({
                         <StyledButton
                             isDisabled={!signedTx}
                             onClick={() => {
-                                if (decision) decision.resolve(true);
+                                if (decision) {
+                                    decision.resolve(true);
+
+                                    const analyticsAction = isRbfAction ? 'replaced' : 'sent';
+                                    reportTransactionCreatedEvent(analyticsAction);
+                                }
                             }}
                         >
                             {isRbfAction ? (
@@ -181,6 +213,8 @@ const OutputList = ({
                                     if (typeof result !== 'string') {
                                         addNotification({ type: 'copy-to-clipboard' });
                                     }
+
+                                    reportTransactionCreatedEvent('copied');
                                 }}
                             >
                                 <Translation id="COPY_TRANSACTION_TO_CLIPBOARD" />
@@ -188,7 +222,11 @@ const OutputList = ({
                             <StyledButton
                                 variant="secondary"
                                 isDisabled={!signedTx}
-                                onClick={() => download(signedTx!.tx, 'signed-transaction.txt')}
+                                onClick={() => {
+                                    download(signedTx!.tx, 'signed-transaction.txt');
+
+                                    reportTransactionCreatedEvent('downloaded');
+                                }}
                             >
                                 <Translation id="DOWNLOAD_TRANSACTION" />
                             </StyledButton>

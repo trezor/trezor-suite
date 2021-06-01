@@ -18,6 +18,7 @@ import {
     getOsVersion,
     getWindowWidth,
     getWindowHeight,
+    getPlatformLanguages,
 } from '@suite-utils/env';
 import { isBitcoinOnly, getPhysicalDeviceCount } from '@suite-utils/device';
 import { setSentryUser, unsetSentryUser } from '@suite/utils/suite/sentry';
@@ -34,6 +35,7 @@ const reportSuiteReadyAction = (state: AppState) =>
             screenHeight: getScreenHeight(),
             platform: getPlatform(),
             platformLanguage: getPlatformLanguage(),
+            platformLanguages: getPlatformLanguages().join(','),
             tor: state.suite.tor,
             rememberedStandardWallets: state.devices.filter(d => d.remember && d.useEmptyPassphrase)
                 .length,
@@ -96,9 +98,11 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                             backup_type: features.backup_type || 'Bip39',
                             pin_protection: features.pin_protection,
                             passphrase_protection: features.passphrase_protection,
-                            totalInstances: api.getState().devices.length,
+                            totalInstances: state.devices.length,
                             isBitcoinOnly: isBtcOnly,
-                            totalDevices: getPhysicalDeviceCount(api.getState().devices),
+                            totalDevices: getPhysicalDeviceCount(state.devices),
+                            language: features.language,
+                            model: features.model,
                         },
                     }),
                 );
