@@ -7,7 +7,6 @@ import * as modalActions from '@suite-actions/modalActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { SUPPORT_URL } from '@suite-constants/urls';
-import { variables } from '@trezor/components';
 
 const StyledLink = styled(ExternalLink)`
     padding: 10px 16px;
@@ -27,7 +26,7 @@ const SettingsMenu = () => {
 
     return (
         <AppNavigationPanel
-            maxWidth={variables.SCREEN_SIZE.MD}
+            maxWidth="small"
             title={
                 <span
                     aria-hidden="true"
