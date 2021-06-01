@@ -2,7 +2,7 @@ import TrezorConnect, { Device } from 'trezor-connect';
 
 import { FIRMWARE } from '@firmware-actions/constants';
 import * as analyticsActions from '@suite-actions/analyticsActions';
-import { isBitcoinOnly } from '@suite-utils/device';
+import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 
 import type { Dispatch, GetState, AppState, AcquiredDevice } from '@suite-types';
 
@@ -53,23 +53,16 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
 
     const model = device.features.major_version;
 
+    let fromFwVersion = 'none';
+    if (prevDevice && prevDevice.features && prevDevice.firmware !== 'none') {
+        fromFwVersion = getFwVersion(prevDevice);
+    }
+
     // for update (in firmware modal) target release is set. otherwise use device.firmwareRelease
     const toFwVersion = targetRelease?.release?.version || device.firmwareRelease!.release.version;
-    const fromBlVersion = [
-        device.features.major_version,
-        device.features.minor_version,
-        device.features.patch_version,
-    ].join('.');
 
-    let fromFwVersion = 'none';
-
-    if (prevDevice?.features && prevDevice?.firmware !== 'none') {
-        fromFwVersion = [
-            prevDevice.features.major_version,
-            prevDevice.features.minor_version,
-            prevDevice.features.patch_version,
-        ].join('.');
-    }
+    // device in bootloader mode have bootloader version in attributes used for fw version in non-bootloader mode
+    const fromBlVersion = getFwVersion(device);
 
     // update to same variant as is currently installed or to the regular one if device does not have any fw (new/wiped device)
     const isBtcOnlyFirmware = !prevDevice ? false : isBitcoinOnly(prevDevice);

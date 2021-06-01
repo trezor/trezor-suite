@@ -1,4 +1,4 @@
-import { Device } from 'trezor-connect';
+import { Device, KnownDevice } from 'trezor-connect';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
 
 export const getStatus = (device: TrezorDevice): string => {
@@ -116,7 +116,7 @@ export const getVersion = (device: TrezorDevice) => {
     return features && features.major_version > 1 ? 'T' : 'One';
 };
 
-export const getFwVersion = (device: AcquiredDevice) => {
+export const getFwVersion = (device: KnownDevice) => {
     const { features } = device;
     return `${features.major_version}.${features.minor_version}.${features.patch_version}`;
 };

@@ -61,6 +61,7 @@ const NavigationActions = (props: Props) => {
 
     const WrapperComponent = props.isMobileLayout ? MobileWrapper : Wrapper;
 
+    // used only in mobile layout
     const gotoWithReport = (routeName: Route) => {
         if (routeName === 'notifications-index') {
             analytics.report({ type: 'menu/goto/notifications-index' });

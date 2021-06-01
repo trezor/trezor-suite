@@ -45,11 +45,11 @@ export const version = '1.8';
 export type AnalyticsEvent =
     | {
           /**
-        suite-ready
-        Triggers on application start. Logs part of suite setup that might have been loaded from storage
-        but it might also be suite default setup that is loaded when suite starts for the first time.
-        IMPORTANT: skipped if user opens suite for the first time. In such case, the first log will be 'initial-run-completed'
-        */
+         suite-ready
+         Triggers on application start. Logs part of suite setup that might have been loaded from storage
+         but it might also be suite default setup that is loaded when suite starts for the first time.
+         IMPORTANT: skipped if user opens suite for the first time. In such case, the first log will be 'initial-run-completed'
+         */
           type: 'suite-ready';
           payload: {
               language: AppState['suite']['settings']['language'];
@@ -82,10 +82,10 @@ export type AnalyticsEvent =
     | { type: 'transport-type'; payload: { type: string; version: string } }
     | {
           /**
-      device-connect
-      is logged when user connects device
-      - if device is not in bootloader, some of its features are logged 
-      */
+         device-connect
+         is logged when user connects device
+         - if device is not in bootloader, some of its features are logged
+         */
           type: 'device-connect';
           payload: {
               mode?: DeviceMode;
@@ -110,9 +110,9 @@ export type AnalyticsEvent =
       }
     | {
           /**
-        device-update-firmware
-        is log after firmware update call to device is finished. 
-        */
+         device-update-firmware
+         is log after firmware update call to device is finished.
+         */
           type: 'device-update-firmware';
           payload: {
               /** version of bootloader before update started. */
@@ -129,10 +129,10 @@ export type AnalyticsEvent =
       }
     | {
           /**
-        initial-run-completed
-        when new installation of trezor suite starts it is in initial-run mode which means that some additional screens appear (welcome, analytics, onboarding)
-        it is completed either by going trough onboarding or skipping it. once completed event is registered, we log some data connected up to this point     
-         */
+         initial-run-completed
+         when new installation of trezor suite starts it is in initial-run mode which means that some additional screens appear (welcome, analytics, onboarding)
+         it is completed either by going trough onboarding or skipping it. once completed event is registered, we log some data connected up to this point
+          */
           type: 'initial-run-completed';
           payload: {
               analytics: false;
@@ -153,10 +153,10 @@ export type AnalyticsEvent =
       }
     | {
           /**
-        account-create
-        logged either automatically upon each suite start as default switched on accounts are loaded
-        or when user adds account manually 
-        */
+         account-create
+         logged either automatically upon each suite start as default switched on accounts are loaded
+         or when user adds account manually
+         */
           type: 'account-create';
           payload: {
               /** normal, segwit, legacy */
@@ -391,11 +391,13 @@ export const report = (data: AnalyticsEvent, force = false) => (
     if (initialRun) {
         return;
     }
-    // the only case we want to override users 'do not log' choice is when we
-    // want to log that user did not give consent to logging.
+
+    // The only case we want to override users 'do not log' choice is
+    // when we want to log that user did not give consent to logging.
     if (!enabled && !force) {
         return;
     }
+
     const qs = encodeDataToQueryString(data, { sessionId, instanceId, version });
 
     try {
@@ -403,7 +405,7 @@ export const report = (data: AnalyticsEvent, force = false) => (
             method: 'GET',
         });
     } catch (err) {
-        // do nothing, just log error for sentry
+        // do nothing, just log error to sentry
         console.error('failed to log analytics', err);
     }
 };

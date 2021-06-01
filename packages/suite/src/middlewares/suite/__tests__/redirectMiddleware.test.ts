@@ -50,6 +50,7 @@ export const getInitialState = (
         ...modalReducer(undefined, { type: 'foo' } as any),
         ...modal,
     },
+    messageSystem: {},
 });
 
 type State = ReturnType<typeof getInitialState>;
