@@ -111,6 +111,9 @@ describe('Passphrase', () => {
         cy.getTestElement('@passphrase/input').type('def');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.getTestElement('@modal').should('not.exist');
+        // go to receive
+        cy.wait(1000);
+        cy.getTestElement('@wallet/menu/wallet-receive').click({ timeout: 10000 });
         // click reveal address
         // no address should be in table yet
         cy.getTestElement('@wallet/receive/used-address/0').should('not.exist');
@@ -126,6 +129,9 @@ describe('Passphrase', () => {
         // now go back to the 1st wallet
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@switch-device/wallet-on-index/1').click();
+        // go to receive
+        cy.wait(1000);
+        cy.getTestElement('@wallet/menu/wallet-receive').click({ timeout: 10000 });
         // reveal 0 address again
         // no address should be in table yet
         cy.getTestElement('@wallet/receive/used-address/0').should('not.exist');
