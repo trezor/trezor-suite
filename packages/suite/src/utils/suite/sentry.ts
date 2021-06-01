@@ -5,3 +5,9 @@ export const setSentryUser = (instanceId: string) => {
         scope.setUser({ id: instanceId });
     });
 };
+
+export const unsetSentryUser = () => {
+    Sentry.configureScope(scope => {
+        scope.setUser(null);
+    });
+};
