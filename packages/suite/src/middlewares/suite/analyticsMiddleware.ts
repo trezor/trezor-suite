@@ -20,6 +20,35 @@ import {
     getWindowHeight,
 } from '@suite-utils/env';
 import { isBitcoinOnly, getPhysicalDeviceCount } from '@suite-utils/device';
+import { setSentryUser, unsetSentryUser } from '@suite/utils/suite/sentry';
+
+const reportSuiteReadyAction = (state: AppState) =>
+    analyticsActions.report({
+        type: 'suite-ready',
+        payload: {
+            language: state.suite.settings.language,
+            enabledNetworks: state.wallet.settings.enabledNetworks,
+            localCurrency: state.wallet.settings.localCurrency,
+            discreetMode: state.wallet.settings.discreetMode,
+            screenWidth: getScreenWidth(),
+            screenHeight: getScreenHeight(),
+            platform: getPlatform(),
+            platformLanguage: getPlatformLanguage(),
+            tor: state.suite.tor,
+            rememberedStandardWallets: state.devices.filter(d => d.remember && d.useEmptyPassphrase)
+                .length,
+            rememberedHiddenWallets: state.devices.filter(d => d.remember && !d.useEmptyPassphrase)
+                .length,
+            theme: state.suite.settings.theme.variant,
+            suiteVersion: process.env.VERSION || '',
+            browserName: getBrowserName(),
+            browserVersion: getBrowserVersion(),
+            osName: getOsName(),
+            osVersion: getOsVersion(),
+            windowWidth: getWindowWidth(),
+            windowHeight: getWindowHeight(),
+        },
+    });
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:
@@ -40,36 +69,7 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
     switch (action.type) {
         case ANALYTICS.INIT:
             // reporting can start when analytics is properly initialized
-            api.dispatch(
-                analyticsActions.report({
-                    type: 'suite-ready',
-                    payload: {
-                        language: state.suite.settings.language,
-                        enabledNetworks: state.wallet.settings.enabledNetworks,
-                        localCurrency: state.wallet.settings.localCurrency,
-                        discreetMode: state.wallet.settings.discreetMode,
-                        screenWidth: getScreenWidth(),
-                        screenHeight: getScreenHeight(),
-                        platform: getPlatform(),
-                        platformLanguage: getPlatformLanguage(),
-                        tor: state.suite.tor,
-                        rememberedStandardWallets: api
-                            .getState()
-                            .devices.filter(d => d.remember && d.useEmptyPassphrase).length,
-                        rememberedHiddenWallets: api
-                            .getState()
-                            .devices.filter(d => d.remember && !d.useEmptyPassphrase).length,
-                        theme: state.suite.settings.theme.variant,
-                        suiteVersion: process.env.VERSION || '',
-                        browserName: getBrowserName(),
-                        browserVersion: getBrowserVersion(),
-                        osName: getOsName(),
-                        osVersion: getOsVersion(),
-                        windowWidth: getWindowWidth(),
-                        windowHeight: getWindowHeight(),
-                    },
-                }),
-            );
+            api.dispatch(reportSuiteReadyAction(state));
 
             break;
         case TRANSPORT.START:
@@ -121,20 +121,20 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
             // here we are reporting some information of user after he finishes initialRun
             if (action.key === 'initialRun' && action.value === false) {
                 if (state.analytics.enabled) {
+                    // suite-ready event was not reported before because analytics was not yet enabled
+                    api.dispatch(reportSuiteReadyAction(state));
+
                     api.dispatch(
-                        analyticsActions.report(
-                            {
-                                type: 'initial-run-completed',
-                                payload: {
-                                    analytics: true,
-                                    createSeed: state.onboarding.path.includes('create'),
-                                    recoverSeed: state.onboarding.path.includes('recovery'),
-                                    newDevice: state.onboarding.path.includes('new'),
-                                    usedDevice: state.onboarding.path.includes('used'),
-                                },
+                        analyticsActions.report({
+                            type: 'initial-run-completed',
+                            payload: {
+                                analytics: true,
+                                createSeed: state.onboarding.path.includes('create'),
+                                recoverSeed: state.onboarding.path.includes('recovery'),
+                                newDevice: state.onboarding.path.includes('new'),
+                                usedDevice: state.onboarding.path.includes('used'),
                             },
-                            false,
-                        ),
+                        }),
                     );
                 } else {
                     api.dispatch(
@@ -150,6 +150,7 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
                     );
                 }
             }
+
             break;
         case ACCOUNT.CREATE: {
             const { tokens } = action.payload;
@@ -179,9 +180,13 @@ const analytics = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =
             break;
         case ANALYTICS.ENABLE:
             api.dispatch(analyticsActions.report({ type: 'analytics/enable' }));
+            if (state.analytics.instanceId) {
+                setSentryUser(state.analytics.instanceId);
+            }
             break;
         case ANALYTICS.DISPOSE:
             api.dispatch(analyticsActions.report({ type: 'analytics/dispose' }, true));
+            unsetSentryUser();
             break;
         case SUITE.AUTH_DEVICE:
             api.dispatch(
