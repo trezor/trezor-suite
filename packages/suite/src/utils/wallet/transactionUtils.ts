@@ -380,36 +380,48 @@ const getBitcoinRbfParams = (
         const addr = allAddresses.find(a => input.addresses?.includes(a.address));
         if (!addr) return []; // skip utxo, TODO: set some error? is it even possible?
         // re-create utxo from the input
-        return [
-            {
-                amount: input.value!,
-                txid: input.txid!,
-                vout: input.vout || 0,
-                address: addr!.address,
-                path: addr!.path,
-                blockHeight: 0,
-                confirmations: 0,
-            },
-        ];
+        return {
+            amount: input.value!,
+            txid: input.txid!,
+            vout: input.vout || 0,
+            address: addr!.address,
+            path: addr!.path,
+            blockHeight: 0,
+            confirmations: 0,
+            required: true,
+        };
     });
     // find change address and output
     let changeAddress: AccountAddress | undefined;
     const outputs: RbfTransactionParams['outputs'] = [];
     vout.forEach(output => {
-        const changeOutput = changeAddresses.find(a => output.addresses?.includes(a.address));
-        outputs.push({
-            type: changeOutput ? 'change' : 'payment',
-            address: output.addresses![0],
-            amount: output.value!,
-            formattedAmount: formatNetworkAmount(output.value!, account.symbol),
-        });
-        if (changeOutput) {
-            changeAddress = changeOutput;
+        if (!output.isAddress) {
+            // TODO: this should be done in trezor-connect, blockchain-link or even blockbook
+            // blockbook sends output.hex as scriptPubKey with additional prefix where: 6a - OP_RETURN and XX - data len. this field should be parsed by @trezor/utxo-lib
+            // blockbook sends ascii data in output.address[0] field in format: "OP_RETURN (ASCII-VALUE)". as a workaround we are extracting ascii data from here
+            const dataAscii = output.addresses![0].match(/^OP_RETURN \((.*)\)/)?.pop(); // strip ASCII data from brackets
+            if (dataAscii) {
+                outputs.push({
+                    type: 'opreturn',
+                    dataHex: Buffer.from(dataAscii, 'ascii').toString('hex'),
+                    dataAscii,
+                });
+            }
+        } else {
+            const changeOutput = changeAddresses.find(a => output.addresses?.includes(a.address));
+            outputs.push({
+                type: changeOutput ? 'change' : 'payment',
+                address: output.addresses![0],
+                amount: output.value!,
+                formattedAmount: formatNetworkAmount(output.value!, account.symbol),
+            });
+            if (changeOutput) {
+                changeAddress = changeOutput;
+            }
         }
     });
 
-    // TODO: implement possibility to add another utxo (sign totally different transaction)
-    if (!utxo.length || !outputs.length) return;
+    if (!utxo.length || !outputs.length || outputs.length !== vout.length) return;
 
     // calculate fee rate, TODO: add this to blockchain-link tx details
     const feeRate = getFeeRate(tx);

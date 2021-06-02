@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useSelector } from '@suite-hooks';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { networkAmountToSatoshi } from '@wallet-utils/accountUtils';
-import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';
+import { DEFAULT_PAYMENT, DEFAULT_OPRETURN, DEFAULT_VALUES } from '@wallet-constants/sendForm';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { FormState, FeeInfo } from '@wallet-types/sendForm';
 import { useFees } from './form/useFees';
@@ -87,14 +87,19 @@ const useRbfState = ({ tx, finalize, chainedTxs }: Props, currentState: boolean)
     // transform original outputs
     const outputs = tx.rbfParams.outputs.flatMap(o => {
         if (o.type === 'change') return [];
-        return [
-            {
-                ...DEFAULT_PAYMENT,
-                address: o.address,
-                amount: o.formattedAmount,
-                token: o.token,
-            },
-        ];
+        if (o.type === 'opreturn') {
+            return {
+                ...DEFAULT_OPRETURN,
+                dataHex: o.dataHex,
+                dataAscii: o.dataAscii,
+            };
+        }
+        return {
+            ...DEFAULT_PAYMENT,
+            address: o.address,
+            amount: o.formattedAmount,
+            token: o.token,
+        };
     });
 
     let { baseFee } = tx.rbfParams;

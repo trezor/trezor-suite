@@ -12,13 +12,20 @@ import { TimestampedRates } from '@wallet-types/fiatRates';
 export interface RbfTransactionParams {
     txid: string;
     utxo: AccountUtxo[]; // original utxo used by this transaction
-    outputs: {
-        type: 'payment' | 'change';
-        address: string;
-        amount: string;
-        formattedAmount: string;
-        token?: string;
-    }[];
+    outputs: Array<
+        | {
+              type: 'payment' | 'change';
+              address: string;
+              amount: string;
+              formattedAmount: string;
+              token?: string;
+          }
+        | {
+              type: 'opreturn';
+              dataHex: string;
+              dataAscii: string;
+          }
+    >;
     changeAddress?: AccountAddress; // original change address
     feeRate: string; // original fee rate
     baseFee: number; // original fee
