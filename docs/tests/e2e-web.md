@@ -13,10 +13,10 @@ _Note: All paths below are relative to the root of trezor-suite repository._
 2. Run `docker/docker-suite-install.sh`.
 3. Run `docker/docker-suite-test.sh`.
     - A Cypress window should open.
-    - Wait until the project is built (a warning about "http://localhost:3000/ is not available", should disappear on the retry button click).
+    - Wait until the project is built (a warning about "http://localhost:8000/ is not available", should disappear on the retry button click).
 4. Start a test by clicking its name in the Cypress window.
     - It should open a browser window.
-    - If the Suite web app is not loading even after two retries. Stop tests, open a new tab, navigate to http://localhost:3000/, refresh the page until the app is loaded. Close the tab and run tests again.
+    - If the Suite web app is not loading even after two retries. Stop tests, open a new tab, navigate to http://localhost:8000/, refresh the page until the app is loaded. Close the tab and run tests again.
 
 ### On MacOS
 As of now M1 Macs aren't supported. See [this issue](https://github.com/trezor/trezor-suite/issues/3616) for detailed information.
@@ -34,14 +34,14 @@ As of now M1 Macs aren't supported. See [this issue](https://github.com/trezor/t
 4. Run Docker and go to Preferences -> Resources -> Advanced and increase RAM to at least 4GB. Otherwise, the app during tests does not even load.
 5. In terminal window run `docker/docker-suite-install.sh`
 6. In the terminal window, set two environment variables:
-    - `` export HOSTNAME=`hostname\` ``
+    - `` export HOSTNAME=`hostname` ``
     - `export DISPLAY=${HOSTNAME}:0`
 7. In terminal window run `docker/docker-suite-test.sh`
     - A Cypress window should open.
-    - Wait until the project is built (a warning about "http://localhost:3000/ is not available", should disappear on the retry button click).
+    - Wait until the project is built (a warning about "http://localhost:8000/ is not available", should disappear on the retry button click).
 8. Start a test by clicking its name in the Cypress window.
     - It should open a browser window.
-    - If the Suite web app is not loading even after two retries. Stop tests, open a new tab, navigate to http://localhost:3000/, refresh the page until the app is loaded. Close the tab and run tests again.
+    - If the Suite web app is not loading even after two retries. Stop tests, open a new tab, navigate to http://localhost:8000/, refresh the page until the app is loaded. Close the tab and run tests again.
 
 #### Troubleshooting
 - `[...ERROR:browser_main_loop.cc(1434)] Unable to open X display.`
