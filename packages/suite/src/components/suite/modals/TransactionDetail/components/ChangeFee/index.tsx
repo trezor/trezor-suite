@@ -6,7 +6,7 @@ import { useRbf, RbfContext, Props } from '@wallet-hooks/useRbfForm';
 import { getFeeUnits } from '@wallet-utils/sendFormUtils';
 import Fees from './components/Fees';
 import AffectedTransactions from './components/AffectedTransactions';
-import NoChange from './components/NoChange';
+import DecreasedOutputs from './components/DecreasedOutputs';
 import ReplaceButton from './components/ReplaceButton';
 
 const Wrapper = styled.div`
@@ -104,54 +104,45 @@ const ChangeFee = (props: Props & { showChained: () => void }) => {
     const { networkType } = contextValues.account;
     const feeRate =
         networkType === 'bitcoin' ? `${tx.rbfParams?.feeRate} ${getFeeUnits(networkType)}` : null;
-    const hasChangeAddress = tx.rbfParams?.changeAddress || networkType !== 'bitcoin';
 
     return (
         <RbfContext.Provider value={contextValues}>
             <Wrapper>
-                {hasChangeAddress ? (
-                    <Box>
-                        <Inner>
-                            <Title>
-                                <Translation id="TR_CURRENT_FEE" />
-                            </Title>
-                            <Content>
-                                <RateWrapper>
-                                    <Rate>{feeRate}</Rate>
-                                    <Amount>
-                                        <StyledCryptoAmount>
-                                            <FormattedCryptoAmount
-                                                value={tx.fee}
+                <Box>
+                    <Inner>
+                        <Title>
+                            <Translation id="TR_CURRENT_FEE" />
+                        </Title>
+                        <Content>
+                            <RateWrapper>
+                                <Rate>{feeRate}</Rate>
+                                <Amount>
+                                    <StyledCryptoAmount>
+                                        <FormattedCryptoAmount value={tx.fee} symbol={tx.symbol} />
+                                    </StyledCryptoAmount>
+                                    {tx.rates && (
+                                        <StyledFiatValue>
+                                            <FiatValue
+                                                amount={tx.amount}
                                                 symbol={tx.symbol}
+                                                source={tx.rates}
+                                                useCustomSource
                                             />
-                                        </StyledCryptoAmount>
-                                        {tx.rates && (
-                                            <StyledFiatValue>
-                                                <FiatValue
-                                                    amount={tx.amount}
-                                                    symbol={tx.symbol}
-                                                    source={tx.rates}
-                                                    useCustomSource
-                                                />
-                                            </StyledFiatValue>
-                                        )}
-                                    </Amount>
-                                </RateWrapper>
-                            </Content>
-                        </Inner>
-                        <Inner>
-                            <Fees />
-                        </Inner>
-                        {contextValues.chainedTxs.length > 0 && (
-                            <AffectedTransactions showChained={props.showChained} />
-                        )}
-                    </Box>
-                ) : (
-                    <Box>
-                        <NoChange />
-                    </Box>
-                )}
-                {props.finalize && hasChangeAddress && (
+                                        </StyledFiatValue>
+                                    )}
+                                </Amount>
+                            </RateWrapper>
+                        </Content>
+                    </Inner>
+                    <Inner>
+                        <Fees />
+                    </Inner>
+                    <DecreasedOutputs />
+                    {contextValues.chainedTxs.length > 0 && (
+                        <AffectedTransactions showChained={props.showChained} />
+                    )}
+                </Box>
+                {props.finalize && (
                     <FinalizeWarning>
                         <InfoIcon icon="INFO_ACTIVE" size={16} />
                         <Translation

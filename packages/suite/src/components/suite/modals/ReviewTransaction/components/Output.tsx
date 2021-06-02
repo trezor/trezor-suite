@@ -17,17 +17,24 @@ export type OutputProps =
           token?: TokenInfo;
       }
     | {
-          type:
-              | 'opreturn'
-              | 'data'
-              | 'locktime'
-              | 'fee'
-              | 'destination-tag'
-              | 'txid'
-              | 'fee-replace';
+          type: 'opreturn' | 'data' | 'locktime' | 'fee' | 'destination-tag' | 'txid';
           label?: string;
           value: string;
           value2?: string;
+          token?: undefined;
+      }
+    | {
+          type: 'fee-replace';
+          label?: undefined;
+          value: string;
+          value2: string;
+          token?: undefined;
+      }
+    | {
+          type: 'reduce-output';
+          label: string;
+          value: string;
+          value2: string;
           token?: undefined;
       };
 
@@ -36,7 +43,8 @@ export type Props = OutputProps & {
     symbol: Network['symbol'];
 };
 
-const Output = ({ type, state, label, value, value2, symbol, token }: Props) => {
+const Output = (props: Props) => {
+    const { type, state, label, value, symbol, token } = props;
     let outputLabel: React.ReactNode = label;
 
     if (type === 'opreturn') {
@@ -72,7 +80,7 @@ const Output = ({ type, state, label, value, value2, symbol, token }: Props) => 
 
     let outputLines: OutputElementLine[];
 
-    if (type === 'fee-replace' && value2) {
+    if (props.type === 'fee-replace') {
         outputLines = [
             {
                 id: 'increase-fee-by',
@@ -82,7 +90,28 @@ const Output = ({ type, state, label, value, value2, symbol, token }: Props) => 
             {
                 id: 'increased-fee',
                 label: <Translation id="TR_INCREASED_FEE" />,
-                value: formatNetworkAmount(value2, symbol),
+                value: formatNetworkAmount(props.value2, symbol),
+            },
+        ];
+        outputSymbol = symbol;
+        fiatVisible = !isTestnet(symbol);
+    } else if (props.type === 'reduce-output') {
+        outputLines = [
+            {
+                id: 'decrease-address',
+                label: <Translation id="TR_ADDRESS" />,
+                value: props.label,
+                plainValue: true,
+            },
+            {
+                id: 'decrease-by',
+                label: <Translation id="TR_DECREASE_AMOUNT_BY" />,
+                value: formatNetworkAmount(value, symbol),
+            },
+            {
+                id: 'decreased-amount',
+                label: <Translation id="TR_DECREASED_AMOUNT" />,
+                value: formatNetworkAmount(props.value2, symbol),
             },
         ];
         outputSymbol = symbol;

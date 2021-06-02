@@ -874,7 +874,6 @@
 	"TR_NORTH": "North",
 	"TR_NOTIFICATIONS": "Activity",
 	"TR_NO_ACCOUNT_FOUND": "No account matches the criteria",
-	"TR_NO_CHANGE_OUTPUT": "This transaction doesn't contain a change output and cannot be replaced.",
 	"TR_NO_DEVICE": "No device",
 	"TR_NO_DEVICE_CONNECTED": "No device connected",
 	"TR_NO_FIRMWARE": "Firmware not installed",

@@ -70,8 +70,7 @@ const useRbfState = ({ tx, finalize, chainedTxs }: Props, currentState: boolean)
     // override Account data
     const rbfAccount = {
         ...account,
-        // use only utxo from original tx
-        utxo: tx.rbfParams.utxo,
+        utxo: tx.rbfParams.utxo.concat(account.utxo!),
         // make sure that the exact same change output will be picked by trezor-connect > hd-wallet during the tx compose process
         // fallback to default if change address is not present
         addresses: account.addresses
@@ -152,6 +151,7 @@ export const useRbf = (props: Props) => {
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
         register({ name: 'outputs', type: 'custom' });
+        register({ name: 'setMaxOutputId', type: 'custom' });
         register({ name: 'options', type: 'custom' });
     }, [register]);
 
@@ -199,6 +199,25 @@ export const useRbf = (props: Props) => {
     // ts requires at least account field to be present (validated by context type)
     const ctxState = state ? { ...state } : { account: undefined };
 
+    // If automatically composed transaction throws NOT-ENOUGH-FUNDS error
+    // try again with decreased output (use set-max calculation on the first possible output)
+    useEffect(() => {
+        if (ctxState.account?.networkType !== 'bitcoin' || !composedLevels) return;
+        const { selectedFee, setMaxOutputId, outputs } = getValues();
+        const tx = composedLevels[selectedFee || 'normal'];
+        if (
+            tx.type === 'error' &&
+            tx.error === 'NOT-ENOUGH-FUNDS' &&
+            typeof setMaxOutputId !== 'number'
+        ) {
+            setValue(
+                'setMaxOutputId',
+                outputs.findIndex(o => o.type === 'payment'),
+            );
+            composeRequest();
+        }
+    }, [ctxState.account, composedLevels, composeRequest, getValues, setValue]);
+
     return {
         ...ctxState,
         isLoading,
@@ -208,6 +227,7 @@ export const useRbf = (props: Props) => {
         getValues,
         composedLevels,
         changeFeeLevel,
+        composeRequest,
         signTransaction,
     };
 };

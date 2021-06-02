@@ -5800,6 +5800,22 @@ const definedMessages = defineMessages({
         id: 'TR_INCREASED_FEE',
         defaultMessage: 'New transaction fee',
     },
+    TR_DECREASE_TX: {
+        id: 'TR_DECREASE_TX',
+        defaultMessage: 'No funds left for fee. Final amount needs to be reduced to bump fee.',
+    },
+    TR_REDUCE_FROM: {
+        id: 'TR_REDUCE_FROM',
+        defaultMessage: 'Reduce from {value}',
+    },
+    TR_DECREASE_AMOUNT_BY: {
+        id: 'TR_DECREASE_AMOUNT_BY',
+        defaultMessage: 'Decrease amount by',
+    },
+    TR_DECREASED_AMOUNT: {
+        id: 'TR_DECREASED_AMOUNT',
+        defaultMessage: 'New amount',
+    },
     TR_FEE_RATE: {
         id: 'TR_FEE_RATE',
         defaultMessage: 'Fee rate',
@@ -5874,10 +5890,6 @@ const definedMessages = defineMessages({
     TR_PAGINATION_OLDER: {
         id: 'TR_PAGINATION_OLDER',
         defaultMessage: 'Older',
-    },
-    TR_NO_CHANGE_OUTPUT: {
-        id: 'TR_NO_CHANGE_OUTPUT',
-        defaultMessage: "This transaction doesn't contain a change output and cannot be replaced.",
     },
     TR_RBF_COL: {
         id: 'TR_RBF_COL',

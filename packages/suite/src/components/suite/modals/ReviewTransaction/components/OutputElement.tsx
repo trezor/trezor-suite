@@ -37,10 +37,10 @@ const OutputLeft = styled.div`
     flex-direction: column;
 `;
 
-const DualIndicatorWrapper = styled.div`
+const MultiIndicatorWrapper = styled.div<{ linesCount: number }>`
     display: flex;
     align-self: flex-start;
-    height: 80px;
+    height: ${props => props.linesCount * 80}px;
     align-items: center;
     position: relative;
     z-index: 1;
@@ -103,10 +103,11 @@ export type OutputElementLine = {
     id: string;
     label: React.ReactNode;
     value: string;
+    plainValue?: boolean;
 };
 
 export type Props = {
-    indicator?: any;
+    indicator?: JSX.Element;
     lines: OutputElementLine[];
     cryptoSymbol?: string;
     fiatSymbol: Network['symbol'];
@@ -120,7 +121,7 @@ const TruncateWrapper = ({
 }: {
     condition: boolean;
     children?: React.ReactNode;
-}): JSX.Element => (condition ? <Truncate>{children}</Truncate> : <>{children}</>);
+}) => (condition ? <Truncate>{children}</Truncate> : <>{children}</>);
 
 const OutputLine = ({
     indicator,
@@ -133,7 +134,9 @@ const OutputLine = ({
     <OutputWrapper>
         <OutputLeft>
             {lines.length > 1 ? (
-                <DualIndicatorWrapper>{indicator}</DualIndicatorWrapper>
+                <MultiIndicatorWrapper linesCount={lines.length - 1}>
+                    {indicator}
+                </MultiIndicatorWrapper>
             ) : (
                 <>{indicator}</>
             )}
@@ -147,11 +150,15 @@ const OutputLine = ({
                     <OutputValue>
                         <TruncateWrapper condition={hasExpansion}>
                             <OutputValueWrapper>
-                                <FormattedCryptoAmount
-                                    disableHiddenPlaceholder
-                                    value={line.value}
-                                    symbol={cryptoSymbol}
-                                />
+                                {line.plainValue ? (
+                                    line.value
+                                ) : (
+                                    <FormattedCryptoAmount
+                                        disableHiddenPlaceholder
+                                        value={line.value}
+                                        symbol={cryptoSymbol}
+                                    />
+                                )}
                             </OutputValueWrapper>
                             {fiatVisible && (
                                 <>
