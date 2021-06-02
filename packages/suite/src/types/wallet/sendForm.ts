@@ -96,6 +96,7 @@ export type PrecomposedTransactionFinal = Extract<PrecomposedTransactionBase, { 
     token?: TokenInfo;
     rbf?: boolean;
     prevTxid?: string;
+    useNativeRbf?: boolean;
 };
 
 export type PrecomposedTransaction =
@@ -132,7 +133,6 @@ export type UseSendFormState = {
     isDirty: boolean;
     composedLevels?: PrecomposedLevels;
     online: boolean;
-    utxo?: Account['utxo'];
 };
 
 // strongly typed UseFormMethods.getValues with fallback value

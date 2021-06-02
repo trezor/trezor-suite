@@ -426,7 +426,7 @@ const getBitcoinRbfParams = (
     // calculate fee rate, TODO: add this to blockchain-link tx details
     const feeRate = getFeeRate(tx);
 
-    // TODO: get other params, like opreturn or locktime? change etc.
+    // TODO: get other params, like locktime etc.
     return {
         txid: tx.txid,
         utxo,

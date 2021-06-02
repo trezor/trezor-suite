@@ -200,16 +200,38 @@ export const signTransaction = (
 
     if (!device || !account) return;
 
+    // native RBF is available since FW 1.9.4/2.3.5
+    const nativeRbfAvailable =
+        account.networkType === 'bitcoin' &&
+        formValues.rbfParams &&
+        !device.unavailableCapabilities?.replaceTransaction;
+    // decrease output is available since FW 1.10.0/2.4.0
+    const decreaseOutputAvailable =
+        account.networkType === 'bitcoin' &&
+        formValues.rbfParams &&
+        !device.unavailableCapabilities?.decreaseOutput;
+    const hasDecreasedOutput =
+        formValues.rbfParams && typeof formValues.setMaxOutputId === 'number';
+    // in case where native RBF is NOT available fallback to "legacy" way of signing (regular signing):
+    // - do not enhance inputs/outputs in signFormBitcoinActions
+    // - do not display "rbf mode" in ReviewTransaction modal
+    const useNativeRbf =
+        (!hasDecreasedOutput && nativeRbfAvailable) ||
+        (hasDecreasedOutput && decreaseOutputAvailable);
+
+    const enhancedTxInfo = {
+        ...transactionInfo,
+        rbf: formValues.options.includes('bitcoinRBF'),
+        prevTxid: formValues.rbfParams ? formValues.rbfParams.txid : undefined,
+        useNativeRbf,
+    };
+
     // store formValues and transactionInfo in send reducer to be used by ReviewTransaction modal
     dispatch({
         type: SEND.REQUEST_SIGN_TRANSACTION,
         payload: {
             formValues,
-            transactionInfo: {
-                ...transactionInfo,
-                rbf: formValues.options.includes('bitcoinRBF'),
-                prevTxid: formValues.rbfParams ? formValues.rbfParams.txid : undefined,
-            },
+            transactionInfo: enhancedTxInfo,
         },
     });
 
@@ -222,17 +244,17 @@ export const signTransaction = (
     let serializedTx: string | undefined;
     if (account.networkType === 'bitcoin') {
         serializedTx = await dispatch(
-            sendFormBitcoinActions.signTransaction(formValues, transactionInfo),
+            sendFormBitcoinActions.signTransaction(formValues, enhancedTxInfo),
         );
     }
     if (account.networkType === 'ethereum') {
         serializedTx = await dispatch(
-            sendFormEthereumActions.signTransaction(formValues, transactionInfo),
+            sendFormEthereumActions.signTransaction(formValues, enhancedTxInfo),
         );
     }
     if (account.networkType === 'ripple') {
         serializedTx = await dispatch(
-            sendFormRippleActions.signTransaction(formValues, transactionInfo),
+            sendFormRippleActions.signTransaction(formValues, enhancedTxInfo),
         );
     }
 

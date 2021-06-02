@@ -47,19 +47,27 @@ export const composeTransaction = (formValues: FormState, formState: UseSendForm
         });
     }
 
+    let sequence = 0;
+    if (formValues.options.includes('bitcoinRBF')) {
+        // RBF is set, add sequence to inputs
+        sequence = BTC_RBF_SEQUENCE;
+    } else if (formValues.bitcoinLockTime) {
+        // locktime is set, add sequence to inputs
+        sequence = BTC_LOCKTIME_SEQUENCE;
+    }
+
     const baseFee = formValues.rbfParams ? formValues.rbfParams.baseFee : 0;
     const params = {
         account: {
             path: account.path,
             addresses: account.addresses,
-            // it is technically possible to have utxo with amount '0' see: https://tbtc1.trezor.io/tx/352873fe6cd5a83ca4b02737848d7d839aab864b8223c5ba7150ae35c22f4e38
-            // however they should be excluded to avoid increase fee
-            // TODO: this should be fixed in TrezorConnect + hd-wallet.composeTx? (connect throws: 'Segwit output without amount' error)
-            utxo: formState.utxo || account.utxo.filter(input => input.amount !== '0'),
+            utxo: account.utxo,
         },
         feeLevels: predefinedLevels,
         baseFee,
+        sequence,
         outputs: composeOutputs,
+        skipPermutation: baseFee > 0,
         coin: account.symbol,
     };
 
@@ -176,59 +184,36 @@ export const signTransaction = (
     const { account } = selectedAccount;
     const { transaction } = transactionInfo;
 
-    let sequence: number | undefined;
     let signEnhancement: Partial<SignTransaction> = {};
-
     // enhance signTransaction params for zcash (version_group_id etc.)
     if (account.symbol === 'zec') {
         signEnhancement = ZEC_SIGN_ENHANCEMENT;
     }
 
-    if (formValues.options.includes('bitcoinRBF')) {
-        // RBF is set, add sequence to inputs
-        sequence = BTC_RBF_SEQUENCE;
-    } else if (formValues.bitcoinLockTime) {
-        // locktime is set, add sequence to inputs and add enhancement params
-        sequence = BTC_LOCKTIME_SEQUENCE;
+    if (formValues.bitcoinLockTime) {
         signEnhancement.locktime = new BigNumber(formValues.bitcoinLockTime).toNumber();
     }
 
-    // update inputs
-    // TODO: 0 amounts should be excluded together with "exclude dustLimit" feature and "utxo picker" feature in composeTransaction (above)
-    const prevTxid = formValues.rbfParams ? formValues.rbfParams.txid : undefined;
-    const inputs = transaction.inputs
-        .map((input, index) => ({
-            ...input,
-            sequence,
-            orig_index: prevTxid ? index : undefined,
-            orig_hash: prevTxid,
-        }))
-        .filter(input => input.amount !== '0'); // remove '0' amounts
-    inputs.forEach(input => {
-        if (!input.sequence) delete input.sequence; // remove undefined sequence
-    });
-
-    let { outputs } = transaction;
-
-    // outputs may be sorted in different order (see hd-wallet buildTx permutations)
-    // restore original tx order before signing replacement transaction
-    if (formValues.rbfParams) {
-        const origOutputs = formValues.rbfParams.outputs;
-        outputs = origOutputs.flatMap((prevOutput, index) => {
-            const output =
-                prevOutput.type === 'change'
-                    ? outputs.find(o => o.address_n)
-                    : outputs.find(
-                          o => o.address === prevOutput.address && o.amount === prevOutput.amount,
-                      );
-            if (!output) return []; // it's possible. example: new tx without change output
-            return [
-                {
-                    ...output,
-                    orig_index: index,
-                    orig_hash: prevTxid,
-                },
-            ];
+    if (formValues.rbfParams && transactionInfo.useNativeRbf) {
+        const { txid, utxo, outputs } = formValues.rbfParams;
+        // override inputs and outputs of precomposed transaction
+        // NOTE: RBF inputs/outputs required are to be in the same exact order as in original tx (covered by TrezorConnect.composeTransaction.skipPermutation param)
+        // possible variations:
+        // it's possible to add new utxo not related to the original tx at the end of the list
+        // it's possible to add change output if it not exists in original tx AND new utxo was added
+        // it's possible to remove original change output completely (give up all as a fee)
+        // it's possible to decrease external output in favour of fee
+        signEnhancement.inputs = transaction.inputs.map((input, i) => {
+            if (utxo[i]) {
+                return { ...input, orig_index: i, orig_hash: txid };
+            }
+            return input;
+        });
+        signEnhancement.outputs = transaction.outputs.map((output, i) => {
+            if (outputs[i]) {
+                return { ...output, orig_index: i, orig_hash: txid };
+            }
+            return output;
         });
     }
 
@@ -239,8 +224,8 @@ export const signTransaction = (
             state: device.state,
         },
         useEmptyPassphrase: device.useEmptyPassphrase,
-        inputs,
-        outputs,
+        inputs: transaction.inputs,
+        outputs: transaction.outputs,
         account: {
             addresses: account.addresses!,
         },
