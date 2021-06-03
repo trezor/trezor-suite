@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@trezor/components';
 
 import { Translation } from '@suite-components';
-import { getFwVersion } from '@suite-utils/device';
+import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import { useDevice, useFirmware, useActions } from '@suite-hooks';
 import {
     P,
@@ -55,7 +55,9 @@ const Body = () => {
                     <Translation
                         id="TR_FIRMWARE_INSTALLED_TEXT"
                         values={{
-                            version: getFwVersion(device),
+                            version: `${getFwVersion(device)}${
+                                isBitcoinOnly(device) ? ' (bitcoin-only)' : ''
+                            }`,
                         }}
                     />
                 </P>
@@ -75,7 +77,9 @@ const Body = () => {
                     <Translation
                         id="TR_FIRMWARE_INSTALLED_TEXT"
                         values={{
-                            version: getFwVersion(device),
+                            version: `${getFwVersion(device)}${
+                                isBitcoinOnly(device) ? ' (bitcoin-only)' : ''
+                            }`,
                         }}
                     />
                 </P>

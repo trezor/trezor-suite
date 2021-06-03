@@ -89,12 +89,16 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
 
             break;
         case DEVICE.DISCONNECT:
-            // we want to store data about previous device only in firmware update modal
+            // we want to store data about previous device only in firmware update modal which is located in "firmware" and "onboarding" apps
             // we need to do this because device in bootloader mode misses some features attributes required for updating logic
             // if user disconnects device to connect it in bootloader mode, it opens "device disconnected" modal
-            // so prevApp is equal to firmware, moreover we do not want to do it if device was already in bootloader
+            // so prevApp is equal to "firmware" in case the update process started in settings or "onboarding" in case of onboarding
+            // moreover we do not want to do it if device was already in bootloader
             // as this can happen only if user disconnected the device again after already being in bootloader mode
-            if (prevApp === 'firmware' && action.payload.mode !== 'bootloader') {
+            if (
+                (prevApp === 'firmware' || prevApp === 'onboarding') &&
+                action.payload.mode !== 'bootloader'
+            ) {
                 api.dispatch(firmwareActions.rememberPreviousDevice(action.payload));
             }
             break;

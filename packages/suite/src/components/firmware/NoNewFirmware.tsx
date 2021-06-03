@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { CHANGELOG_URL } from '@suite-constants/urls';
-import { getFwVersion } from '@suite-utils/device';
+import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import { useDevice } from '@suite-hooks';
 import { P, H2, SuccessImg } from '@firmware-components';
 import { Translation, ExternalLink } from '@suite-components';
@@ -22,7 +22,11 @@ const Body = () => {
             <P>
                 <Translation
                     id="TR_FIRMWARE_INSTALLED_TEXT"
-                    values={{ version: getFwVersion(device) }}
+                    values={{
+                        version: `${getFwVersion(device)}${
+                            isBitcoinOnly(device) ? ' (bitcoin-only)' : ''
+                        }`,
+                    }}
                 />{' '}
                 <ExternalLink size="small" href={CHANGELOG_URL}>
                     <Translation id="TR_WHATS_NEW_FIRMWARE" />
