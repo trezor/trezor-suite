@@ -3912,6 +3912,50 @@ const definedMessages = defineMessages({
         id: 'TR_PAYMENT_METHOD_TEN31SEPA',
         defaultMessage: 'TEN31 SEPA',
     },
+    TR_PAYMENT_METHOD_ACH: {
+        id: 'TR_PAYMENT_METHOD_ACH',
+        defaultMessage: 'ACH',
+    },
+    TR_PAYMENT_METHOD_PAYNOW: {
+        id: 'TR_PAYMENT_METHOD_PAYNOW',
+        defaultMessage: 'PayNow',
+    },
+    TR_PAYMENT_METHOD_FPS: {
+        id: 'TR_PAYMENT_METHOD_FPS',
+        defaultMessage: 'FPS',
+    },
+    TR_PAYMENT_METHOD_PROMPTPAY: {
+        id: 'TR_PAYMENT_METHOD_PROMPTPAY',
+        defaultMessage: 'Prompt Pay',
+    },
+    TR_PAYMENT_METHOD_INSTAPAY: {
+        id: 'TR_PAYMENT_METHOD_INSTAPAY',
+        defaultMessage: 'InstaPay',
+    },
+    TR_PAYMENT_METHOD_UPI: {
+        id: 'TR_PAYMENT_METHOD_UPI',
+        defaultMessage: 'UPI',
+    },
+    TR_PAYMENT_METHOD_GOJEKID: {
+        id: 'TR_PAYMENT_METHOD_GOJEKID',
+        defaultMessage: 'GoJek',
+    },
+    TR_PAYMENT_METHOD_VIETTELPAY: {
+        id: 'TR_PAYMENT_METHOD_VIETTELPAY',
+        defaultMessage: 'Viettel Pay',
+    },
+    TR_PAYMENT_METHOD_DUITNOW: {
+        id: 'TR_PAYMENT_METHOD_DUITNOW',
+        defaultMessage: 'DuitNow',
+    },
+    TR_PAYMENT_METHOD_PAYID: {
+        id: 'TR_PAYMENT_METHOD_PAYID',
+        defaultMessage: 'PayID',
+    },
+    TR_PAYMENT_METHOD_NZBANKTRANSFER: {
+        id: 'TR_PAYMENT_METHOD_NZBANKTRANSFER',
+        defaultMessage: 'NZ Bank Transfer',
+    },
     TR_OFFER_FEE_INFO: {
         id: 'TR_OFFER_FEE_INFO',
         defaultMessage: 'TR_OFFER_FEE_INFO',
