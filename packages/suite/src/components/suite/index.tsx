@@ -33,7 +33,6 @@ import AddAccountButton from './AddAccountButton';
 import ToastContainer from './ToastContainer';
 import TrezorLink from './TrezorLink';
 import { ReadMoreLink } from './ReadMoreLink';
-import BetaBadge from './BetaBadge';
 import { Modal, ModalProps } from './Modal';
 import { SkeletonRectangle, SkeletonCircle } from './Skeleton';
 import Notifications from './Notifications';
@@ -78,7 +77,6 @@ export {
     Sign,
     AddAccountButton,
     ReadMoreLink,
-    BetaBadge,
     ToastContainer,
     TrezorLink,
     Modal,

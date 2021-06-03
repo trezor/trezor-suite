@@ -9,8 +9,8 @@ const Wrapper = styled.button`
     align-items: center;
     position: fixed;
     z-index: ${variables.Z_INDEX.GUIDE_BUTTON};
-    bottom: 87px;
-    right: 37px;
+    bottom: 18px;
+    right: 18px;
     width: 40px;
     height: 40px;
     border-radius: 50%;
