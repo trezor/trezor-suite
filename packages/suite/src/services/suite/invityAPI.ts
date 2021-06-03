@@ -88,6 +88,10 @@ class InvityAPI {
         return InvityAPI.apiKey;
     }
 
+    getCurrentAccountDescriptor() {
+        return InvityAPI.accountDescriptor;
+    }
+
     createInvityAPIKey(accountDescriptor: string) {
         if (accountDescriptor !== InvityAPI.accountDescriptor) {
             const hash = createHash('sha256');

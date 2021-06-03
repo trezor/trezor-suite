@@ -7,7 +7,6 @@ import regional from '@wallet-constants/coinmarket/regional';
 import { fromFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { FormState } from '@wallet-types/sendForm';
-import { useInvityAPI } from '@wallet-hooks/useCoinmarket';
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -59,7 +58,24 @@ const useSellState = ({ selectedAccount, fees }: Props, currentState: boolean) =
 };
 
 export const useCoinmarketSellForm = (props: Props): SellFormContextValues => {
-    const { sellInfo } = useInvityAPI();
+    const {
+        saveQuoteRequest,
+        saveQuotes,
+        saveTrade,
+        saveComposedTransactionInfo,
+        goto,
+        loadInvityData,
+    } = useActions({
+        saveQuoteRequest: coinmarketSellActions.saveQuoteRequest,
+        saveQuotes: coinmarketSellActions.saveQuotes,
+        saveTrade: coinmarketSellActions.saveTrade,
+        saveComposedTransactionInfo: coinmarketCommonActions.saveComposedTransactionInfo,
+        goto: routerActions.goto,
+        loadInvityData: coinmarketCommonActions.loadInvityData,
+    });
+
+    loadInvityData();
+
     const {
         selectedAccount,
         quotesRequest,
@@ -81,8 +97,9 @@ export const useCoinmarketSellForm = (props: Props): SellFormContextValues => {
 
     const [state, setState] = useState<ReturnType<typeof useSellState>>(undefined);
 
-    const { accounts } = useSelector(state => ({
+    const { accounts, sellInfo } = useSelector(state => ({
         accounts: state.wallet.accounts,
+        sellInfo: state.wallet.coinmarket.sell.sellInfo,
     }));
 
     // throttle initial state calculation
@@ -130,19 +147,6 @@ export const useCoinmarketSellForm = (props: Props): SellFormContextValues => {
     );
 
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
-    const {
-        saveQuoteRequest,
-        saveQuotes,
-        saveTrade,
-        saveComposedTransactionInfo,
-        goto,
-    } = useActions({
-        saveQuoteRequest: coinmarketSellActions.saveQuoteRequest,
-        saveQuotes: coinmarketSellActions.saveQuotes,
-        saveTrade: coinmarketSellActions.saveTrade,
-        saveComposedTransactionInfo: coinmarketCommonActions.saveComposedTransactionInfo,
-        goto: routerActions.goto,
-    });
 
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
     const isLoading = !sellInfo?.sellList || !state?.formValues.outputs[0].address;
