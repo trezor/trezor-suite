@@ -25,14 +25,14 @@ describe('Safety Checks Settings', () => {
         cy.getTestElement('@settings/device/safety-checks-button').click();
 
         // There should be two radio buttons, one checked and one not.
-        cy.getTestElement('@radio-button').should('have.length', 2);
-        cy.get('[data-test="@radio-button"][data-checked="true"]').should('have.length', 1);
-        cy.get('[data-test="@radio-button"][data-checked="false"]').should('have.length', 1);
+        cy.get('[data-test*="@radio-button"]').should('have.length', 2);
+        cy.get('[data-test*="@radio-button"][data-checked="true"]').should('have.length', 1);
+        cy.get('[data-test*="@radio-button"][data-checked="false"]').should('have.length', 1);
 
-        cy.get('[data-test="@radio-button"][data-checked="false"]').click();
+        cy.get('[data-test*="@radio-button"][data-checked="false"]').click();
         // After switching the value, there should still be one checked and one unchecked.
-        cy.get('[data-test="@radio-button"][data-checked="true"]').should('have.length', 1);
-        cy.get('[data-test="@radio-button"][data-checked="false"]').should('have.length', 1);
+        cy.get('[data-test*="@radio-button"][data-checked="true"]').should('have.length', 1);
+        cy.get('[data-test*="@radio-button"][data-checked="false"]').should('have.length', 1);
     });
 
     it('Apply button is enabled only when value is changed', () => {
@@ -40,7 +40,7 @@ describe('Safety Checks Settings', () => {
         cy.getTestElement('@settings/device/safety-checks-button').click();
 
         cy.getTestElement('@safety-checks-apply').should('have.attr', 'disabled');
-        cy.get('[data-test="@radio-button"][data-checked="false"]').click();
+        cy.get('[data-test*="@radio-button"][data-checked="false"]').click();
         cy.getTestElement('@safety-checks-apply').should('not.have.attr', 'disabled');
     });
 
@@ -48,17 +48,17 @@ describe('Safety Checks Settings', () => {
         cy.getTestElement('@settings/device/safety-checks-button').click();
         // Don't assume the device is set to any particular value.
         // Just switch to the one that is not currently checked.
-        cy.get('[data-test="@radio-button"][data-checked="false"]')
+        cy.get('[data-test*="@radio-button"][data-checked="false"]')
             .click()
             .then(b => {
-                const targetValue = b.attr('value');
+                const targetValue = b.attr('data-test');
                 console.log(`Changing safety_checks to ${targetValue})`);
                 cy.getTestElement('@safety-checks-apply').click();
                 cy.getTestElement('@suite/modal/confirm-action-on-device');
                 cy.task('pressYes');
 
                 cy.getTestElement('@settings/device/safety-checks-button').click();
-                cy.get(`[data-test="@radio-button"][value="${targetValue}"]`)
+                cy.get(`[data-test="${targetValue}"]`)
                     .invoke('attr', 'data-checked')
                     .should('eq', 'true');
             });

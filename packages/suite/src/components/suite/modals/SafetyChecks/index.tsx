@@ -64,9 +64,9 @@ const SafetyChecks = (props: ModalProps) => {
         >
             <OptionsWrapper>
                 <RadioButton
-                    value="Strict"
                     isChecked={level === 'Strict'}
                     onClick={() => setLevel('Strict')}
+                    data-test="@radio-button-strict"
                 >
                     <RadioButtonInner>
                         <H2>
@@ -78,10 +78,10 @@ const SafetyChecks = (props: ModalProps) => {
                     </RadioButtonInner>
                 </RadioButton>
                 <RadioButton
-                    value="PromptTemporarily"
                     // For the purpose of this modal consider `PromptAlways` as identical to `PromptTemporarily`.
                     isChecked={level === 'PromptTemporarily' || level === 'PromptAlways'}
                     onClick={() => setLevel('PromptTemporarily')}
+                    data-test="@radio-button-prompt"
                 >
                     <RadioButtonInner>
                         <H2>
