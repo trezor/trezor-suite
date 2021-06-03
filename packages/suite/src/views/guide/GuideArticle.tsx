@@ -69,7 +69,7 @@ const GuideArticle = () => {
     useEffect(() => {
         const loadMarkdown = async () => {
             const file = await import(
-                `@trezor/suite-data/files/guide/en/trezor-suite/${article}.md`
+                `@trezor/suite-data/files/guide-temp/en/trezor-suite/${article}.md`
             );
             const md = await file.default;
             setMarkdown(md);
