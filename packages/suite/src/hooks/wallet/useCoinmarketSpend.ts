@@ -1,10 +1,9 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { useInvityAPI } from '@wallet-hooks/useCoinmarket';
 import { Props, SpendContextValues } from '@wallet-types/coinmarketSpend';
 import invityAPI from '@suite-services/invityAPI';
 import { SellVoucherTrade } from 'invity-api';
 import { getUnusedAddressFromAccount } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
-import { useActions } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import { useTranslation } from '@suite-hooks/useTranslation';
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 import * as coinmarketSpendActions from '@wallet-actions/coinmarketSpendActions';
@@ -41,7 +40,6 @@ const useSpendState = ({ selectedAccount, fees }: Props, currentState: boolean) 
 };
 
 export const useCoinmarketSpend = (props: Props): SpendContextValues => {
-    const { sellInfo } = useInvityAPI();
     const [voucherSiteUrl, setVoucherSiteUrl] = useState<string | undefined>('error');
 
     const { addNotification, setShowLeaveModal, saveTrade } = useActions({
@@ -53,7 +51,9 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
 
     const { selectedAccount, language } = props;
     const { account } = selectedAccount;
-
+    const { sellInfo } = useSelector(state => ({
+        sellInfo: state.wallet.coinmarket.sell.sellInfo,
+    }));
     const country = sellInfo?.sellList?.country;
     const isLoading = !sellInfo || !voucherSiteUrl;
     const provider = sellInfo?.sellList?.providers.filter(p => p.type === 'Voucher')[0];

@@ -2,74 +2,13 @@ import { useEffect, useState } from 'react';
 import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 import useUnmount from 'react-use/lib/useUnmount';
 import useTimeoutFn from 'react-use/lib/useTimeoutFn';
-import { useSelector, useActions } from '@suite-hooks';
+import { useActions } from '@suite-hooks';
 import invityAPI from '@suite-services/invityAPI';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 import { Account } from '@wallet-types';
 import { TradeBuy, TradeSell, TradeExchange } from '@wallet-types/coinmarketCommonTypes';
-
-export const useInvityAPI = () => {
-    const {
-        selectedAccount,
-        buyInfo,
-        exchangeInfo,
-        sellInfo,
-        invityAPIUrl,
-        exchangeCoinInfo,
-    } = useSelector(state => ({
-        selectedAccount: state.wallet.selectedAccount,
-        buyInfo: state.wallet.coinmarket.buy.buyInfo,
-        exchangeInfo: state.wallet.coinmarket.exchange.exchangeInfo,
-        sellInfo: state.wallet.coinmarket.sell.sellInfo,
-        invityAPIUrl: state.suite.settings.debug.invityAPIUrl,
-        exchangeCoinInfo: state.wallet.coinmarket.exchange.exchangeCoinInfo,
-    }));
-
-    const { saveBuyInfo, saveExchangeInfo, saveExchangeCoinInfo, saveSellInfo } = useActions({
-        saveBuyInfo: coinmarketBuyActions.saveBuyInfo,
-        saveExchangeInfo: coinmarketExchangeActions.saveExchangeInfo,
-        saveExchangeCoinInfo: coinmarketExchangeActions.saveExchangeCoinInfo,
-        saveSellInfo: coinmarketSellActions.saveSellInfo,
-    });
-
-    if (selectedAccount.status === 'loaded') {
-        if (invityAPIUrl) {
-            invityAPI.setInvityAPIServer(invityAPIUrl);
-        }
-
-        invityAPI.createInvityAPIKey(selectedAccount.account?.descriptor);
-
-        if (!buyInfo?.buyInfo) {
-            coinmarketBuyActions.loadBuyInfo().then(buyInfo => {
-                saveBuyInfo(buyInfo);
-            });
-        }
-
-        if (!exchangeInfo) {
-            coinmarketExchangeActions
-                .loadExchangeInfo()
-                .then(([exchangeInfo, exchangeCoinInfo]) => {
-                    saveExchangeInfo(exchangeInfo);
-                    saveExchangeCoinInfo(exchangeCoinInfo);
-                });
-        }
-
-        if (!sellInfo) {
-            coinmarketSellActions.loadSellInfo().then(sellInfo => {
-                saveSellInfo(sellInfo);
-            });
-        }
-    }
-
-    return {
-        buyInfo,
-        exchangeInfo,
-        exchangeCoinInfo,
-        sellInfo,
-    };
-};
 
 const BuyTradeFinalStatuses: BuyTradeStatus[] = ['SUCCESS', 'ERROR', 'BLOCKED'];
 

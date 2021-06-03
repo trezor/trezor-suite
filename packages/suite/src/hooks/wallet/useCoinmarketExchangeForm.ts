@@ -6,7 +6,6 @@ import invityAPI from '@suite-services/invityAPI';
 import { toFiatCurrency, fromFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { FormState } from '@wallet-types/sendForm';
-import { useInvityAPI } from '@wallet-hooks/useCoinmarket';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -54,7 +53,24 @@ const useExchangeState = ({ selectedAccount, fees }: Props, currentState: boolea
 };
 
 export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValues => {
-    const { exchangeInfo } = useInvityAPI();
+    const {
+        saveQuoteRequest,
+        saveQuotes,
+        saveTrade,
+        saveComposedTransactionInfo,
+        goto,
+        loadInvityData,
+    } = useActions({
+        saveQuoteRequest: coinmarketExchangeActions.saveQuoteRequest,
+        saveQuotes: coinmarketExchangeActions.saveQuotes,
+        saveTrade: coinmarketExchangeActions.saveTrade,
+        saveComposedTransactionInfo: coinmarketCommonActions.saveComposedTransactionInfo,
+        goto: routerActions.goto,
+        loadInvityData: coinmarketCommonActions.loadInvityData,
+    });
+
+    loadInvityData();
+
     const {
         selectedAccount,
         quotesRequest,
@@ -75,8 +91,9 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
 
     const [state, setState] = useState<ReturnType<typeof useExchangeState>>(undefined);
 
-    const { accounts } = useSelector(state => ({
+    const { accounts, exchangeInfo } = useSelector(state => ({
         accounts: state.wallet.accounts,
+        exchangeInfo: state.wallet.coinmarket.exchange.exchangeInfo,
     }));
 
     // throttle initial state calculation
@@ -123,19 +140,6 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
     );
 
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
-    const {
-        saveQuoteRequest,
-        saveQuotes,
-        saveTrade,
-        saveComposedTransactionInfo,
-        goto,
-    } = useActions({
-        saveQuoteRequest: coinmarketExchangeActions.saveQuoteRequest,
-        saveQuotes: coinmarketExchangeActions.saveQuotes,
-        saveTrade: coinmarketExchangeActions.saveTrade,
-        saveComposedTransactionInfo: coinmarketCommonActions.saveComposedTransactionInfo,
-        goto: routerActions.goto,
-    });
 
     const updateFiatValue = useCallback(
         (amount: string) => {

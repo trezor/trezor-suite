@@ -75,6 +75,8 @@ interface State {
     sell: Sell;
     composedTransactionInfo: ComposedTransactionInfo;
     trades: Trade[];
+    isLoading: boolean;
+    lastLoadedTimestamp: number;
 }
 
 export const initialState = {
@@ -113,6 +115,8 @@ export const initialState = {
     },
     composedTransactionInfo: {},
     trades: [],
+    isLoading: false,
+    lastLoadedTimestamp: 0,
 };
 
 const coinmarketReducer = (
@@ -201,6 +205,10 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_SELL.SAVE_TRANSACTION_ID:
                 draft.sell.transactionId = action.transactionId;
+                break;
+            case COINMARKET_COMMON.SET_LOADING:
+                draft.isLoading = action.isLoading;
+                draft.lastLoadedTimestamp = action.lastLoadedTimestamp;
                 break;
             // no default
         }

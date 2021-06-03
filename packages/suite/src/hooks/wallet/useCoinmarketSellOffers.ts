@@ -9,15 +9,12 @@ import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { Props, ContextValues, SellStep } from '@wallet-types/coinmarketSellOffers';
 import * as notificationActions from '@suite-actions/notificationActions';
-import { useInvityAPI } from '@wallet-hooks/useCoinmarket';
 import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign ';
 
 export const useOffers = (props: Props) => {
     const timer = useTimer();
     const REFETCH_INTERVAL_IN_SECONDS = 30;
     const { selectedAccount, quotesRequest, alternativeQuotes, quotes, device } = props;
-
-    const { sellInfo } = useInvityAPI();
 
     const { account } = selectedAccount;
     const { isLocked } = useDevice();
@@ -36,6 +33,7 @@ export const useOffers = (props: Props) => {
         saveTransactionId,
         submitRequestForm,
         goto,
+        loadInvityData,
     } = useActions({
         saveTrade: coinmarketSellActions.saveTrade,
         setIsFromRedirect: coinmarketSellActions.setIsFromRedirect,
@@ -44,11 +42,15 @@ export const useOffers = (props: Props) => {
         saveTransactionId: coinmarketSellActions.saveTransactionId,
         submitRequestForm: coinmarketCommonActions.submitRequestForm,
         goto: routerActions.goto,
+        loadInvityData: coinmarketCommonActions.loadInvityData,
     });
 
-    const { invityAPIUrl, isFromRedirect } = useSelector(state => ({
+    loadInvityData();
+
+    const { invityAPIUrl, isFromRedirect, sellInfo } = useSelector(state => ({
         invityAPIUrl: state.suite.settings.debug.invityAPIUrl,
         isFromRedirect: state.wallet.coinmarket.sell.isFromRedirect,
+        sellInfo: state.wallet.coinmarket.sell.sellInfo,
     }));
     if (invityAPIUrl) {
         invityAPI.setInvityAPIServer(invityAPIUrl);

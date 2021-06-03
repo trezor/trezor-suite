@@ -1,8 +1,8 @@
 import { createContext, useContext, useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useInvityAPI } from '@wallet-hooks/useCoinmarket';
+import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
-import { useActions } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
 import regional from '@wallet-constants/coinmarket/regional';
 import { BuyTradeQuoteRequest } from 'invity-api';
@@ -20,19 +20,29 @@ export const BuyFormContext = createContext<BuyFormContextValues | null>(null);
 BuyFormContext.displayName = 'CoinmarketBuyContext';
 
 export const useCoinmarketBuyForm = (props: Props): BuyFormContextValues => {
-    const { selectedAccount, cachedAccountInfo, quotesRequest } = props;
-    const { buyInfo } = useInvityAPI();
-    const { account, network } = selectedAccount;
-    const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
-    const methods = useForm<FormState>({ mode: 'onChange' });
-
-    const { saveQuoteRequest, saveQuotes, saveCachedAccountInfo, saveTrade, goto } = useActions({
+    const {
+        saveQuoteRequest,
+        saveQuotes,
+        saveCachedAccountInfo,
+        saveTrade,
+        goto,
+        loadInvityData,
+    } = useActions({
         saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
         saveQuotes: coinmarketBuyActions.saveQuotes,
         saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
         saveTrade: coinmarketBuyActions.saveTrade,
         goto: routerActions.goto,
+        loadInvityData: coinmarketCommonActions.loadInvityData,
     });
+
+    loadInvityData();
+
+    const { selectedAccount, cachedAccountInfo, quotesRequest } = props;
+    const { buyInfo } = useSelector(state => ({ buyInfo: state.wallet.coinmarket.buy.buyInfo }));
+    const { account, network } = selectedAccount;
+    const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
+    const methods = useForm<FormState>({ mode: 'onChange' });
 
     const { register } = methods;
 

@@ -9,10 +9,19 @@ import { ComposedTransactionInfo } from '@wallet-reducers/coinmarketReducer';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { submitRequestForm as envSubmitRequestForm, isDesktop } from '@suite-utils/env';
 
-export type CoinmarketCommonAction = {
-    type: typeof COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION_INFO;
-    info: ComposedTransactionInfo;
-};
+export type CoinmarketCommonAction =
+    | {
+          type: typeof COINMARKET_COMMON.SAVE_COMPOSED_TRANSACTION_INFO;
+          info: ComposedTransactionInfo;
+      }
+    | {
+          type: typeof COINMARKET_COMMON.SET_LOADING;
+          isLoading: boolean;
+          lastLoadedTimestamp: number;
+      }
+    | {
+          type: typeof COINMARKET_COMMON.LOAD_DATA;
+      };
 
 export const verifyAddress = (account: Account, inExchange = false) => async (
     dispatch: Dispatch,
@@ -126,3 +135,13 @@ export const submitRequestForm = (form?: {
         envSubmitRequestForm(form.formMethod, form.formAction, form.fields);
     }
 };
+
+export const setLoading = (isLoading: boolean, lastLoadedTimestamp?: number) => ({
+    type: COINMARKET_COMMON.SET_LOADING,
+    isLoading,
+    ...(lastLoadedTimestamp && { lastLoadedTimestamp }),
+});
+
+export const loadInvityData = () => ({
+    type: COINMARKET_COMMON.LOAD_DATA,
+});
