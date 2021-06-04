@@ -19,7 +19,6 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
                 break;
             case METADATA.DISABLE:
                 draft.enabled = false;
-                draft.provider = undefined;
                 break;
             case METADATA.SET_PROVIDER:
                 draft.provider = action.payload;
