@@ -4,8 +4,8 @@
 
 /packages/blockchain-link @szymonlesisz
 
-/packages/components @slowbackspace
-/packages/components-storybook @slowbackspace
+/packages/components @slowbackspace @pingpwned
+/packages/components-storybook @slowbackspace @pingpwned
 /packages/components-storybook-native @matejkriz
 
 /packages/integration-tests @vdovhanych @mroz22
