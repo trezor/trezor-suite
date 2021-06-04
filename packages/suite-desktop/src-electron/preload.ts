@@ -71,6 +71,7 @@ contextBridge.exposeInMainWorld('desktopApi', {
     windowMinimize: () => ipcRenderer.send('window/minimize'),
     windowMaximize: () => ipcRenderer.send('window/maximize'),
     windowUnmaximize: () => ipcRenderer.send('window/unmaximize'),
+    windowExpand: () => ipcRenderer.send('window/expand'),
 
     // Client
     clientReady: () => ipcRenderer.send('client/ready'),

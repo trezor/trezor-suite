@@ -18,6 +18,7 @@ export interface DesktopApi {
     windowFocus: () => void;
     windowMaximize: () => void;
     windowUnmaximize: () => void;
+    windowExpand: () => void;
     // Client controls
     clientReady: () => void;
     // Metadata

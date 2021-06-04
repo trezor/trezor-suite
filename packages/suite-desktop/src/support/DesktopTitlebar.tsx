@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { MouseEvent, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import NoSSR from '@suite-support/NoSSR';
 import { DESKTOP_TITLEBAR_HEIGHT, DESKTOP_WRAPPER_BORDER_WIDTH } from '@suite-constants/layout';
@@ -152,8 +152,15 @@ const DesktopTitlebar = () => {
     const iconColor = isMac ? colors.TYPE_DARK_GREY : colors.TYPE_LIGHT_GREY;
     const isMinimizedDisabled = isMac && maximized;
 
+    const onClickTitlebar = (e: MouseEvent) => {
+        // handle doubleclick and only on Mac (other platforms works out of the box)
+        if (isMac && e.detail === 2) {
+            window.desktopApi!.windowExpand();
+        }
+    };
+
     return (
-        <Titlebar>
+        <Titlebar onClick={onClickTitlebar}>
             <Drag />
             <Actions isMac={isMac} isDisabled={isMinimizedDisabled} isActive={active}>
                 <ActionClose
