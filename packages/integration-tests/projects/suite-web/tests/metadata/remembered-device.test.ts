@@ -64,6 +64,7 @@ On disable, it throws away all metadata related records from memory.`, () => {
             cy.getTestElement('@settings/metadata-switch').click({ force: true });
             cy.passThroughInitMetadata(f.provider);
 
+
             cy.log(
                 'Now metadata is enabled, go to accounts and see what we got loaded from provider',
             );
@@ -110,9 +111,10 @@ On disable, it throws away all metadata related records from memory.`, () => {
                 force: true,
             });
             cy.log(
-                'disabling metadata removed also all keys, so metadata init flow takes all steps now',
+                'disabling metadata removed also all keys, so metadata init flow takes all steps now expect for providers, these stay connected',
             );
-            cy.passThroughInitMetadata(f.provider);
+            cy.getConfirmActionOnDeviceModal();
+            cy.task('pressYes');
 
             // device saved, disconnect provider
             cy.getTestElement('@menu/switch-device').click();
