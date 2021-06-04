@@ -69,12 +69,6 @@ RUN \
     apt-get install -y dbus-x11 google-chrome-stable google-chrome-beta && \
     rm -rf /var/lib/apt/lists/*
 
-# install GitHub-cli
-RUN \
-    wget -q https://github.com/cli/cli/releases/download/v1.10.2/gh_1.10.2_linux_amd64.deb && \
-    dpkg -i gh_1.10.2_linux_amd64.deb && \
-    rm gh_1.10.2_linux_amd64.deb
-
 # "fake" dbus address to prevent errors
 # https://github.com/SeleniumHQ/docker-selenium/issues/87
 ENV DBUS_SESSION_BUS_ADDRESS=/dev/null
