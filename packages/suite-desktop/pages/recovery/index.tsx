@@ -1,3 +1,3 @@
-import Page from '@recovery-views';
-
-export default Page;
+// This route will be displayed by Preloader
+const Recovery = () => null;
+export default Recovery;
