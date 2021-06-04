@@ -1,31 +1,27 @@
-/ci @keraf @mroz22
+/ci @vdovhanych @mroz22
 
-/docker @mroz22
+/docker @vdovhanych @mroz22
 
-/packages/blockchain-link @szymonlesisz @keraf
+/packages/blockchain-link @szymonlesisz
 
-/packages/components @keraf @slowbackspace @robertbrada
-/packages/components-storybook @keraf @slowbackspace @robertbrada
-/packages/components-storybook-native @keraf @slowbackspace @robertbrada
+/packages/components @slowbackspace
+/packages/components-storybook @slowbackspace
+/packages/components-storybook-native @matejkriz
 
-/packages/integration-tests @mroz22
+/packages/integration-tests @vdovhanych @mroz22
 
-/packages/landing-page @keraf @robertbrada
+/packages/rollout @mroz22 @goodhoko
 
-/packages/news-api @keraf
+/packages/suite @szymonlesisz @tomasklim @mroz22
 
-/packages/rollout @mroz22
+/packages/suite-data @tomasklim @goodhoko
 
-/packages/suite @szymonlesisz @keraf @mroz22 @slowbackspace @robertbrada
+/packages/suite-desktop @tomasklim @szymonlesisz
 
-/packages/suite-data @keraf
+/packages/suite-native @matejkriz
 
-/packages/suite-desktop @keraf @szymonlesisz
+/packages/suite-storage @goodhoko
 
-/packages/suite-native @slowbackspace @szymonlesisz @keraf
+/packages/suite-web @mroz22 @tomasklim
 
-/packages/suite-storage @slowbackspace @keraf
-
-/packages/suite-web @keraf @slowbackspace @mroz22 @robertbrada
-
-/packages/translations-manager @slowbackspace
+/packages/translations-manager @tomasklim @goodhoko
