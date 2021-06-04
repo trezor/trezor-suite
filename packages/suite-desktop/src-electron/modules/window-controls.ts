@@ -114,6 +114,13 @@ const init = ({ mainWindow, store }: Dependencies) => {
             mainWindow.unmaximize();
         }
     });
+    ipcMain.on('window/expand', () => {
+        logger.debug('window-control', 'Expand requested');
+        if (mainWindow.isMaximized()) {
+            return mainWindow.unmaximize();
+        }
+        mainWindow.maximize();
+    });
     ipcMain.on('window/focus', () => {
         logger.debug('window-control', 'Focus requested');
         app.focus({ steal: true });
