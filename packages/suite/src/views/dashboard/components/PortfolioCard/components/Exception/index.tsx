@@ -50,7 +50,6 @@ interface CTA {
     variant?: React.ComponentProps<typeof Button>['variant'];
     action: () => void;
     icon?: IconProps['icon'];
-    //  testId?: string;
 }
 
 interface ContainerProps {
@@ -67,7 +66,6 @@ const Container = ({ title, description, cta, dataTestBase }: ContainerProps) =>
     return (
         <Wrapper data-test={`@exception/${dataTestBase}`}>
             <Title>
-                {' '}
                 <Translation id={title} />
             </Title>
             <Description>
@@ -135,7 +133,6 @@ const Exception = ({ exception, discovery }: Props) => {
                     description="TR_AUTH_CONFIRM_FAILED_DESC"
                     cta={{
                         action: () => dispatch(suiteActions.authConfirm()),
-                        // testId: '@passphrase-mismatch/retry-button',
                     }}
                     dataTestBase={exception.type}
                 />

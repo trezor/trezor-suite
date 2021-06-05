@@ -88,7 +88,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.getTestElement('@toast/auth-confirm-error/close').click();
         // retry
-        cy.getTestElement('@passphrase-mismatch/retry-button').click();
+        cy.getTestElement('@exception/auth-confirm-failed/primary-button').click();
         // confirm again - input correct this time
         cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
         cy.getTestElement('@passphrase/input').type('abc');
