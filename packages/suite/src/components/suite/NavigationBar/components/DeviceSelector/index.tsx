@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { variables, DeviceImage } from '@trezor/components';
-import { SHAKE } from '@suite-support/styles/animations';
 import { WalletLabeling } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
 import * as routerActions from '@suite-actions/routerActions';
@@ -24,15 +23,6 @@ const Wrapper = styled.div<{ triggerAnim?: boolean }>`
         border-radius: 4px;
         box-shadow: 0 1px 2px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
     }
-
-    ${props =>
-        props.triggerAnim &&
-        css`
-            animation: ${SHAKE} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-            transform: translate3d(0, 0, 0);
-            backface-visibility: hidden; /* used for hardware acceleration */
-            perspective: 1000px; /* used for hardware acceleration */
-        `}
 `;
 
 const DeviceLabel = styled.div`
