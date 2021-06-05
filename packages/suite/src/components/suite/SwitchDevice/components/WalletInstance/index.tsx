@@ -129,9 +129,7 @@ const WalletInstance = ({
                                 payload={{
                                     type: 'walletLabel',
                                     deviceState: instance.state,
-                                    defaultValue: instance.useEmptyPassphrase
-                                        ? 'standard-wallet'
-                                        : `hidden-wallet-${instance.walletNumber}`,
+                                    defaultValue: instance.state,
                                     value:
                                         instance?.metadata.status === 'enabled'
                                             ? instance.metadata.walletLabel
