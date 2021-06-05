@@ -5,6 +5,12 @@ import { rerouteMetadataToMockProvider, stubOpen } from '../../stubs/metadata';
 
 const providers = ['google', 'dropbox'] as const;
 
+const mnemonic = 'all all all all all all all all all all all all';
+// state corresponding to all seed
+const standardWalletState = 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@355C817510C0EABF2F147145:undefined';
+// state corresponding to "wallet for drugs"
+const firstHiddenWalletState = 'myBrmyzvN5Wa4oeYrL7t8EYU1Ch5Q6vp47@355C817510C0EABF2F147145:1';
+
 describe('Metadata - wallet labeling', () => {
     beforeEach(() => {
         cy.viewport(1024, 768).resetDb();
@@ -15,7 +21,7 @@ describe('Metadata - wallet labeling', () => {
             // prepare test
             cy.task('startEmu', { wipe: true, version: '2.3.1' });
             cy.task('setupEmu', {
-                mnemonic: 'all all all all all all all all all all all all',
+                mnemonic,
             });
             cy.task('startBridge');
             cy.task('metadataStartProvider', provider);
@@ -33,17 +39,14 @@ describe('Metadata - wallet labeling', () => {
             cy.getTestElement('@suite/menu/wallet-index').click();
 
             cy.getTestElement('@menu/switch-device').click();
-            cy.getTestElement('@metadata/walletLabel/standard-wallet/add-label-button').click({
+            cy.getTestElement(`@metadata/walletLabel/${standardWalletState}/add-label-button`).click({
                 force: true,
             });
             cy.passThroughInitMetadata(provider);
-
             cy.getTestElement('@metadata/input').type('label for standard wallet{enter}');
-            cy.getTestElement('@metadata/walletLabel/standard-wallet/renamed-label-button').should(
-                'not.exist',
-            );
+
             cy.wait(2001);
-            cy.getTestElement('@metadata/walletLabel/standard-wallet/edit-label-button').click({
+            cy.getTestElement(`@metadata/walletLabel/${standardWalletState}/edit-label-button`).click({
                 force: true,
             });
             cy.getTestElement('@metadata/input').clear().type('wallet for drugs{enter}');
@@ -68,17 +71,17 @@ describe('Metadata - wallet labeling', () => {
             cy.getConfirmActionOnDeviceModal();
             cy.task('pressYes');
             cy.getTestElement('@menu/switch-device').click();
-            cy.getTestElement('@metadata/walletLabel/standard-wallet').should(
+            cy.getTestElement(`@metadata/walletLabel/${standardWalletState}`).should(
                 'contain',
                 'wallet for drugs',
             );
 
             // focus lock? :(
-            cy.getTestElement('@metadata/walletLabel/hidden-wallet-1/add-label-button').click({
+            cy.getTestElement(`@metadata/walletLabel/${firstHiddenWalletState}/add-label-button`).click({
                 force: true,
             });
             cy.getTestElement('@metadata/input').type('wallet not for drugs{enter}');
-            cy.getTestElement('@metadata/walletLabel/hidden-wallet-1').should(
+            cy.getTestElement(`@metadata/walletLabel/${firstHiddenWalletState}`).should(
                 'contain',
                 'wallet not for drugs',
             );
