@@ -1,7 +1,0 @@
-# stylelint does not accept re-exporting types (export type { A } from 'b'). throws Unexpected token error
-# files below doesn't contains any styles so it's safe to ignore them
-
-src/components/suite/index.tsx
-src/components/suite/Modal/index.tsx
-src/types/suite/index.ts
-src/types/wallet/index.ts

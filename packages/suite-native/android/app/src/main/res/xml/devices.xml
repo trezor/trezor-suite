@@ -1,8 +1,0 @@
-<resources>
-    <!-- TREZOR v1: VID 0x534c PID 0x0001  -->
-    <usb-device vendor-id="21324" product-id="1" />
-    <!-- TREZOR v2: VID 0x1209 PID 0x53c0  -->
-    <usb-device vendor-id="4617" product-id="21440" />
-    <!-- TREZOR v2: VID 0x1209 PID 0x53c1  -->
-    <usb-device vendor-id="4617" product-id="21441" />
-</resources>

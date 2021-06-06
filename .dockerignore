@@ -1,7 +1,0 @@
-packages/**/node_modules
-packages/blockchain-link
-packages/suite-desktop
-packages/suite-native
-packages/translations-manager
-node_modules
-.git
