@@ -222,16 +222,11 @@ storiesOf('Form', module).add(
             <StoryColumn maxWidth={200}>
                 <Heading>Radio Buttons</Heading>
                 <SubHeading>Unchecked</SubHeading>
-                <RadioButton onClick={() => {}} value="test1" data-test="radio-button">
+                <RadioButton onClick={() => {}} data-test="radio-button">
                     Label
                 </RadioButton>
                 <SubHeading>Checked</SubHeading>
-                <RadioButton
-                    onClick={() => {}}
-                    value="test2"
-                    isChecked
-                    data-test="radio-button-checked"
-                >
+                <RadioButton onClick={() => {}} isChecked data-test="radio-button-checked">
                     Label
                 </RadioButton>
             </StoryColumn>

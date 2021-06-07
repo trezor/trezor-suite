@@ -54,7 +54,6 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     onClick: (
         event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement> | null
     ) => any;
-    value: string;
     isChecked?: boolean;
 }
 
@@ -70,7 +69,6 @@ const RadioButton = ({ isChecked, children, onClick, ...rest }: Props) => (
         onKeyUp={event => handleKeyboard(event, onClick)}
         tabIndex={0}
         data-checked={isChecked}
-        data-test="@radio-button"
         {...rest}
     >
         <RadioIcon isChecked={isChecked} />
