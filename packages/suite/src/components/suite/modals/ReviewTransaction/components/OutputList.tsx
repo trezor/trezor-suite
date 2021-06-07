@@ -9,7 +9,7 @@ import { useActions, useAnalytics } from '@suite-hooks';
 import Output, { OutputProps } from './Output';
 import OutputElement from './OutputElement';
 import Detail from './Detail';
-import { Props as IndicatorProps } from './Indicator';
+import Indicator, { Props as IndicatorProps } from './Indicator';
 import { Account } from '@wallet-types';
 import { FormState, PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 
@@ -165,6 +165,9 @@ const OutputList = ({
                         })}
                         {!precomposedTx.token && (
                             <OutputElement
+                                indicator={
+                                    <Indicator state={signedTx ? 'success' : undefined} size={16} />
+                                }
                                 lines={[
                                     {
                                         id: 'total',
