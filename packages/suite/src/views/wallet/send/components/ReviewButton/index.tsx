@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { Button } from '@trezor/components';
 import { useDevice } from '@suite-hooks';
@@ -35,6 +35,7 @@ const ReviewButton = () => {
         online,
         isLoading,
         signTransaction,
+        validateTransaction,
         getValues,
         getDefaultValue,
         composedLevels,
@@ -43,21 +44,26 @@ const ReviewButton = () => {
     const values = getValues();
     const broadcastEnabled = getDefaultValue('options', []).includes('broadcast');
     const composedTx = composedLevels ? composedLevels[values.selectedFee || 'normal'] : undefined;
+
     const isDisabled =
+        isLoading ||
         !composedTx ||
         composedTx.type !== 'final' ||
         isLocked() ||
         (device && !device.available) ||
         !online;
 
+    const onSubmit = useCallback(() => {
+        if (!isDisabled) {
+            return signTransaction();
+        }
+        return validateTransaction();
+    }, [isDisabled, signTransaction, validateTransaction]);
+
     return (
         <Wrapper>
             <Row>
-                <ButtonReview
-                    data-test="@send/review-button"
-                    isDisabled={isDisabled || isLoading}
-                    onClick={signTransaction}
-                >
+                <ButtonReview data-test="@send/review-button" onClick={onSubmit}>
                     {broadcastEnabled ? (
                         <Translation id="REVIEW_AND_SEND_TRANSACTION" />
                     ) : (

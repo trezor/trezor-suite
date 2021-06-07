@@ -155,6 +155,7 @@ export type SendContextValues = Omit<UseFormMethods<FormState>, 'register'> &
         composeTransaction: (field?: string) => void;
         loadTransaction: () => Promise<void>;
         signTransaction: () => void;
+        validateTransaction: () => void;
         // useSendFormFields utils:
         calculateFiat: (outputIndex: number, amount?: string) => void;
         setAmount: (outputIndex: number, amount: string) => void;
