@@ -1,4 +1,4 @@
-import { AccountTransaction } from 'trezor-connect';
+import { AccountTransaction, TransactionTarget } from 'trezor-connect';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { TDocumentDefinitions } from 'pdfmake/interfaces';
@@ -7,11 +7,15 @@ import { trezorLogo } from '@suite-constants/b64images';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
+type AccountTransactionForExports = Omit<AccountTransaction, 'targets'> & {
+    targets: (TransactionTarget & { metadataLabel?: string })[];
+};
+
 type Data = {
     coin: Network['symbol'];
     accountName: string;
     type: 'csv' | 'pdf' | 'json';
-    transactions: AccountTransaction[];
+    transactions: AccountTransactionForExports[];
 };
 
 type Field = { [key: string]: string };
@@ -66,7 +70,9 @@ const prepareContent = (data: Data) => {
         } else {
             addresses = t.targets.map(target => {
                 if (target?.addresses?.length && target?.amount) {
-                    return `${target.addresses[0]} (${target.amount})`;
+                    return `${target.addresses[0]} (${target.amount}) ${
+                        target.metadataLabel ? `- ${target.metadataLabel}` : ''
+                    }`;
                 }
 
                 return null;

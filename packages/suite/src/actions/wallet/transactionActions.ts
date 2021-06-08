@@ -196,7 +196,14 @@ export const exportTransactions = (
     const transactions = getAccountTransactions(
         getState().wallet.transactions.transactions,
         account,
-    );
+        // add metadata directly to transactions
+    ).map(transaction => ({
+        ...transaction,
+        targets: transaction.targets.map((target, index) => ({
+            ...target,
+            metadataLabel: account.metadata?.outputLabels?.[transaction.txid]?.[index],
+        })),
+    }));
 
     // Prepare data in right format
     const data = await formatData({
