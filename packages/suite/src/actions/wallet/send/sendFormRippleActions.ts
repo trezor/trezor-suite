@@ -68,6 +68,7 @@ const calculate = (
             // compatibility with BTC PrecomposedTransaction from trezor-connect
             transaction: {
                 inputs: [],
+                outputsPermutation: [0],
                 outputs: [
                     {
                         address: output.address,
