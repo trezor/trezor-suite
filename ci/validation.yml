@@ -25,3 +25,8 @@ yaml lint:
   script:
     - nix-shell --run "yamllint --version"
     - nix-shell --run "yamllint . && echo 'Success!'"
+
+msg-system config validation:
+  stage: validation
+  script:
+    - yarn workspace @trezor/suite-data msg-system-validate-config

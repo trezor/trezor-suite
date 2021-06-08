@@ -1,0 +1,105 @@
+# Config
+.run_everything_rules: &run_everything_rules
+  refs:
+    - develop
+    - releases
+    - schedules
+    - /^release\//
+
+# Suite web deploy to dev
+suite-web deploy dev:
+  stage: deploy to dev
+  variables:
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web/${CI_BUILD_REF_NAME}
+  needs:
+    - suite-web-landing build dev
+    - suite-web build dev
+  environment:
+    name: ${CI_BUILD_REF_NAME}
+    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+  before_script: []
+  script:
+    - mkdir -p ${DEPLOY_DIRECTORY}/web
+    - rsync --delete -va packages/suite-web-landing/build/ "${DEPLOY_DIRECTORY}/"
+    - rsync --delete -va packages/suite-web/build/ "${DEPLOY_DIRECTORY}/web/"
+  tags:
+    - deploy
+
+# Suite web landing deploy to dev
+suite-web-landing deploy dev:
+  stage: deploy to dev
+  variables:
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-web-landing/${CI_BUILD_REF_NAME}
+  needs:
+    - suite-web-landing build dev
+  environment:
+    name: ${CI_BUILD_REF_NAME}
+    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+  before_script: []
+  script:
+    - mkdir -p ${DEPLOY_DIRECTORY}
+    - rsync --delete -va packages/suite-web-landing/build/ "${DEPLOY_DIRECTORY}/"
+  tags:
+    - deploy
+
+# Suite web landing-page deploy to dev
+landing-page deploy dev:
+  stage: deploy to dev
+  variables:
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/landing-page/${CI_BUILD_REF_NAME}
+  needs:
+    - landing-page build dev
+  environment:
+    name: ${CI_BUILD_REF_NAME}
+    url: $BASE_REVIEW_URL/${CI_BUILD_REF_NAME}
+  before_script: []
+  script:
+    - mkdir -p ${DEPLOY_DIRECTORY}
+    - rsync --delete -va packages/landing-page/build/ "${DEPLOY_DIRECTORY}/"
+  tags:
+    - deploy
+
+## to be removed after beta-wallet is officially killed
+landing-page deploy staging-wallet:
+  stage: deploy to staging
+  only:
+    <<: *run_everything_rules
+  needs:
+    - landing-page build beta
+  environment:
+    name: ${CI_BUILD_REF_NAME}-staging-wallet
+    url: ${STAGING_WALLET_SERVER_URL}
+  before_script: []
+  when: manual
+  script:
+    - source ${STAGING_WALLET_DEPLOY_KEYFILE}
+    - cd packages/landing-page
+    - ./scripts/s3sync.sh staging-wallet
+  tags:
+    - deploy
+
+# Suite desktop deploy to dev and production
+suite-desktop deploy dev:
+  stage: deploy to dev
+  only:
+    <<: *run_everything_rules
+  variables:
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-desktop/${CI_BUILD_REF_NAME}
+  script:
+    - mkdir -p ${DEPLOY_DIRECTORY}
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.AppImage "${DEPLOY_DIRECTORY}/" || :'
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.dmg "${DEPLOY_DIRECTORY}/" || :'
+    - 'rsync --delete -va "${DESKTOP_APP_NAME}"-*.exe "${DEPLOY_DIRECTORY}/" || :'
+  tags:
+    - deploy
+
+# Suite native deploy to dev
+suite-native deploy dev:
+  stage: deploy to dev
+  variables:
+    DEPLOY_DIRECTORY: ${DEPLOY_BASE_DIR}/suite-native/${CI_BUILD_REF_NAME}
+  script:
+    - mkdir -p ${DEPLOY_DIRECTORY}
+    - rsync --delete -va app-release.apk "${DEPLOY_DIRECTORY}/"
+  tags:
+    - deploy

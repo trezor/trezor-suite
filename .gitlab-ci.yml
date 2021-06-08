@@ -23,14 +23,11 @@ stages:
 include:
   - ci/environment.yml
   - ci/validation.yml
-  - ci/packages/suite-data.yml
-  - ci/packages/components.yml
-  - ci/packages/suite-web.yml
-  - ci/packages/suite-desktop.yml
-  - ci/packages/suite-native.yml
-  - ci/packages/rollout.yml
-  - ci/packages/landing-page.yml
-  - ci/packages/suite-web-landing.yml
-  # to be run only on scheduled pipelines
+  - ci/prebuild.yml
+  - ci/components.yml
+  - ci/build.yml
+  - ci/deploy.yml
+  - ci/test.yml
   - ci/releases.yml
+  # to be run only on scheduled pipelines
   - ci/schedules.yml
