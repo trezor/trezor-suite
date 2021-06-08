@@ -1,6 +1,7 @@
 {
     "name": "@trezor/suite-data",
     "version": "21.9.0",
+    "private": true,
     "author": "Trezor <info@trezor.io>",
     "keywords": [
         "Trezor",
