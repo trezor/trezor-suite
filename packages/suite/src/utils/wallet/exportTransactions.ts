@@ -103,7 +103,22 @@ const prepareCsv = (fields: Field, content: any[]) => {
         line = [];
 
         fieldKeys.forEach(k => {
-            line.push(c[k]);
+            let cell = c[k];
+
+            // https://www.ietf.org/rfc/rfc4180.txt
+            /*
+             Fields containing line breaks (CRLF), double quotes, and commas
+             should be enclosed in double-quotes.  For example:
+
+               "aaa","b CRLF
+               bb","ccc" CRLF
+               zzz,yyy,xxx
+            */
+            if (cell.includes(',') || cell.includes('"')) {
+                cell = `"${cell}"`;
+            }
+
+            line.push(cell);
         });
 
         lines.push(line.join(CSV_SEPARATOR));
