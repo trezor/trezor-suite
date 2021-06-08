@@ -25,4 +25,4 @@ clear_cache:
   stage: setup environment
   when: manual
   script:
-    - rm -rf .yarn node_modules packages/**/node_modules packages/*/lib packages/*/build packages/*/dist
+    - rm -rf .yarn .yarn-nix node_modules packages/**/node_modules packages/*/lib packages/*/build packages/*/dist
