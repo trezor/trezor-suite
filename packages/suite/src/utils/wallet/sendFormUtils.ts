@@ -161,13 +161,19 @@ export const getFeeLevels = (networkType: Network['networkType'], feeInfo: FeeIn
 
     if (networkType === 'ethereum') {
         // convert wei to gwei and floor value to avoid decimals
-        return levels.map(level => ({
-            ...level,
-            feePerUnit: new BigNumber(fromWei(level.feePerUnit, 'gwei'))
-                .integerValue(BigNumber.ROUND_FLOOR)
-                .toString(),
-            feeLimit: level.feeLimit,
-        }));
+        return levels.map(level => {
+            const gwei = new BigNumber(fromWei(level.feePerUnit, 'gwei'));
+            // blockbook/geth may return 0 in feePerUnit. if this happens set at least minFee
+            const feePerUnit =
+                level.label !== 'custom' && gwei.lt(feeInfo.minFee)
+                    ? feeInfo.minFee.toString()
+                    : gwei.integerValue(BigNumber.ROUND_FLOOR).toString();
+            return {
+                ...level,
+                feePerUnit,
+                feeLimit: level.feeLimit,
+            };
+        });
     }
 
     return levels;
