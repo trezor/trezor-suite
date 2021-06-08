@@ -1,8 +1,4 @@
-msg-system config validation:
-  stage: validation
-  script:
-    - yarn workspace @trezor/suite-data msg-system-validate-config
-
+# Message system config prebuild
 msg-system config sign dev:
   stage: prebuild
   script:

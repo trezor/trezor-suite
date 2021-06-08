@@ -12,7 +12,7 @@ build & push image:
     - docker:dind
   script:
     - docker pull $CONTAINER_NAME:latest || true
-    - docker build --build-arg CI_DOCKER_PROXY="$CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/" --no-cache --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest ./ci/docker/base
+    - docker build --build-arg CI_DOCKER_PROXY="$CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/" --no-cache --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest ./docker/ci-base
     - docker push $CONTAINER_NAME:$CI_COMMIT_SHA
     - docker push $CONTAINER_NAME:latest
 

@@ -32,6 +32,18 @@ suite codesign deploy staging-suite:
   tags:
     - deploy
 
+# Publish suite desktop to production
+
+suite-desktop publish prod:
+  stage: deploy to production
+  only:
+    refs:
+      - releases
+  script:
+    - cd packages/suite-desktop
+    - yarn publish
+
+
 # Create a GitHub release and append signed binaries
 suite-desktop github release:
   stage: deploy to production
