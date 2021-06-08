@@ -5,13 +5,14 @@ import { CoinmarketProvidedByInvity } from '@wallet-components';
 import { useOnClickOutside } from '@suite-utils/dom';
 import { Translation } from '@suite-components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
+import { URLS } from '@suite-constants';
 
 const Wrapper = styled.div`
     display: flex;
     width: 100%;
     flex: 1;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
     padding-top: 20px;
     margin-top: 60px;
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
@@ -88,6 +89,11 @@ const Toggle = styled.div`
     cursor: pointer;
 `;
 
+const VerticalDivider = styled.div`
+    border-left: 1px solid ${props => props.theme.TYPE_LIGHT_GREY};
+    margin: 0 8px;
+`;
+
 const CoinmarketFooter = () => {
     const [toggled, setToggled] = useState(false);
     const menuRef = useRef<any>(null);
@@ -109,12 +115,12 @@ const CoinmarketFooter = () => {
                     <FooterBox ref={menuRef}>
                         <Header>
                             <BoxLeft>
-                                <StyledLink href="https://invity.io/" target="_blank">
+                                <StyledLink href="https://invity.io/">
                                     <Image src={resolveStaticPath('/images/svg/invity-logo.svg')} />
                                 </StyledLink>
                             </BoxLeft>
                             <BoxRight>
-                                <Link href="https://invity.io/" target="_blank">
+                                <Link href="https://invity.io/">
                                     <Button variant="tertiary">invity.io</Button>
                                 </Link>
                                 <IconWrapper onClick={() => setToggled(false)}>
@@ -130,6 +136,10 @@ const CoinmarketFooter = () => {
                         </Text>
                     </FooterBox>
                 )}
+                <Link href={URLS.TOS_INVITY_URL} variant="nostyle">
+                    <Translation id="TR_TERMS_OF_USE_INVITY" />
+                </Link>
+                <VerticalDivider />
                 <Toggle ref={toggleRef} onClick={() => setToggled(true)}>
                     <Translation id="TR_BUY_LEARN_MORE" />
                 </Toggle>

@@ -897,6 +897,10 @@ const definedMessages = defineMessages({
             'The chosen amount of {currency} {amount} is higher than the accepted maximum of {currency} {max}.',
         id: 'TR_OFFER_ERROR_MAXIMUM_FIAT',
     },
+    TR_TERMS_OF_USE_INVITY: {
+        defaultMessage: 'Terms of Use',
+        id: 'TR_TERMS_OF_USE_INVITY',
+    },
     TR_BUY_LOADING: {
         defaultMessage: 'Loading',
         id: 'TR_BUY_LOADING',

@@ -15,6 +15,7 @@ export const DRY_RUN_URL = 'https://wiki.trezor.io/User_manual:Dry-run_recovery'
 export const PASSPHRASE_URL = 'https://wiki.trezor.io/Passphrase';
 export const USER_MANUAL_URL = 'https://wiki.trezor.io/User_manual';
 export const TOS_URL = 'https://data.trezor.io/legal/wallet-terms.pdf';
+export const TOS_INVITY_URL = 'https://data.trezor.io/legal/invity-terms-of-use.pdf';
 export const SEED_MANUAL_URL = 'https://wiki.trezor.io/Recovery_seed';
 export const PHISHING_URL =
     'https://blog.trezor.io/phishing-attacks-used-to-steal-your-coins-recommended-reading-a39c0679c55d';
