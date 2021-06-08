@@ -35,7 +35,7 @@ Trezor Suite includes many simple and advanced features. To learn more about how
     - Tor
     - Locktime
 - Other resources
-    - Supported cryptocurrencies
-    - Trezor Wiki
-    - Trezor.io
-    - Satoshilabs.com
+    - [Supported cryptocurrencies](https://trezor.io/coins/)
+    - [Trezor Wiki](https://wiki.trezor.io/)
+    - [Trezor.io](https://trezor.io/)
+    - [Satoshilabs.com](https://satoshilabs.com/)
