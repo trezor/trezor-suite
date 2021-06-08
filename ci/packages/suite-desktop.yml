@@ -25,7 +25,7 @@
 .build_nix: &build_nix
   script: # override build script to use nix-shell instead
     - nix-shell --run "git lfs pull"
-    - nix-shell --run "yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline"
+    - nix-shell --run "yarn install --frozen-lockfile --cache-folder .yarn-nix --prefer-offline"
     - nix-shell --run "yarn build:libs"
     - nix-shell --run "yarn workspace @trezor/suite-data copy-static-files"
     - nix-shell --run "yarn workspace @trezor/suite-desktop build:${platform}"

@@ -75,7 +75,7 @@ suite-web build stable codesign:
     IS_CODESIGN_BUILD: "true"
   script:
     - nix-shell --run "git lfs pull"
-    - nix-shell --run "yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline"
+    - nix-shell --run "yarn install --frozen-lockfile --cache-folder .yarn-nix --prefer-offline"
     - nix-shell --run "yarn build:libs"
     - nix-shell --run "assetPrefix=/web yarn workspace @trezor/suite-web build"
   artifacts:
