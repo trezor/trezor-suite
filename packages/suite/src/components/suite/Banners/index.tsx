@@ -13,8 +13,8 @@ import SafetyChecksBanner from './SafetyChecks';
 
 import type { Message } from '@suite-types/messageSystem';
 
-const Wrapper = styled.div`
-    z-index: 3;
+const Wrapper = styled.div<{ onTop?: boolean }>`
+    z-index: ${props => (props.onTop ? '10001' : '3')};
     background: ${props => props.theme.BG_WHITE};
 `;
 
@@ -90,16 +90,23 @@ const Banners = () => {
         priority = 10;
     }
 
-    if (messageSystemBanner && messageSystemBanner.priority >= priority) {
-        banner = <MessageSystemBanner message={messageSystemBanner} />;
-    }
+    // message system banners should always be visible in the app even if app body is blurred
+    const useMessageSystemBanner = messageSystemBanner && messageSystemBanner.priority >= priority;
 
     return (
-        <Wrapper>
-            <OnlineStatus isOnline={online} />
-            {banner}
-            {/* TODO: add Pin not set */}
-        </Wrapper>
+        <>
+            {useMessageSystemBanner && (
+                <Wrapper onTop>
+                    {/* @ts-ignore - fix ts which thinks that "messageSystemBanner" can be null */}
+                    <MessageSystemBanner message={messageSystemBanner} />
+                </Wrapper>
+            )}
+            <Wrapper>
+                <OnlineStatus isOnline={online} />
+                {!useMessageSystemBanner && banner}
+                {/* TODO: add Pin not set */}
+            </Wrapper>
+        </>
     );
 };
 
