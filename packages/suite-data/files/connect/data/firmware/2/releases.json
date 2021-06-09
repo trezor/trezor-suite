@@ -1,6 +1,19 @@
 [
 	{
 		"required": false,
+		"version": [2, 4, 0],
+		"min_bridge_version": [2, 0, 7],
+		"min_firmware_version": [2, 0, 8],
+		"min_bootloader_version": [2, 0, 0],
+		"url": "data/firmware/2/trezor-2.4.0.bin",
+		"url_bitcoinonly": "data/firmware/2/trezor-2.4.0-bitcoinonly.bin",
+		"fingerprint": "d90265ee6d7d499c7d938b5322f71f27042da8a6fdaed54c224d31b65e868def",
+		"fingerprint_bitcoinonly": "89c91287ab7a9cd3ec246b6822a0d04b7d40401abef706cccafbb7b98bd6a3d7",
+		"notes": "https://blog.trezor.io/trezor-suite-and-firmware-updates-june-2021-c70aba9f0e3f",
+		"changelog": "* Locking the device by holding finger on the homescreen.\n* Support PIN of unlimited length.\n* Allow decreasing the output value in RBF transactions.\n* Reduce memory fragmentation.\n* Update FIDO icons.\n* Improve wording when showing multisig XPUBs."
+	},
+	{
+		"required": false,
 		"version": [2, 3, 6],
 		"min_bridge_version": [2, 0, 7],
 		"min_firmware_version": [2, 0, 8],
