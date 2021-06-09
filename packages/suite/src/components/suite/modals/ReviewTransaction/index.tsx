@@ -134,7 +134,10 @@ const ReviewTransaction = ({ decision }: Props) => {
                     trezorModel={device.features?.major_version === 1 ? 1 : 2}
                     successText={<Translation id="TR_CONFIRMED_TX" />}
                     animated
-                    onCancel={cancelSignTx}
+                    onCancel={() => {
+                        cancelSignTx();
+                        if (decision) decision.resolve(false);
+                    }}
                 />
             }
         >
