@@ -1,6 +1,51 @@
 {
     "version": 1,
-    "timestamp": "2021-05-01T00:00:00+00:00",
-    "sequence": 1,
-    "actions": []
+    "timestamp": "2021-06-09T12:00:00+00:00",
+    "sequence": 2,
+    "actions": [
+        {
+            "conditions": [
+                {
+                    "os": {
+                        "macos": "*",
+                        "linux": "!",
+                        "windows": "!",
+                        "android": "!",
+                        "ios": "!"
+                    },
+                    "environment": {
+                        "desktop": "!",
+                        "mobile": "!",
+                        "web": "*"
+                    },
+                    "browser": {
+                        "firefox": "!",
+                        "chrome": "91",
+                        "chromium": "91"
+                    },
+                    "transport": {
+                        "bridge": "!",
+                        "webusbplugin": "*"
+                    }
+                }
+            ],
+            "message": {
+                "id": "0f3ec64d-c3e4-4787-8106-162f3ac14c34",
+                "priority": 91,
+                "dismissible": true,
+                "variant": "critical",
+                "category": "banner",
+                "content": {
+                    "en-GB": "To be able to use the application in the current version of your browser, please install Trezor Bridge."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "suite-bridge",
+                    "label": {
+                        "en-GB": "Install now"
+                    }
+                }
+            }
+        }
+    ]
 }
