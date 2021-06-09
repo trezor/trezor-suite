@@ -129,8 +129,11 @@ const getInstallerSignatureURI = (platform: Platform, version: string) => {
 };
 
 const Index = () => {
-    const version: string = process.env.VERSION ? normalizeVersion(process.env.VERSION) : '';
+    let version: string = process.env.VERSION ? normalizeVersion(process.env.VERSION) : '';
     const [platform, setPlatform] = useState<Platform>('linux-x86_64');
+    if (platform.includes('win')) {
+        version = '21.5.1';
+    }
     const dropdownItems = dropdownItemsData.map(item => ({
         key: 'items',
         options: [
