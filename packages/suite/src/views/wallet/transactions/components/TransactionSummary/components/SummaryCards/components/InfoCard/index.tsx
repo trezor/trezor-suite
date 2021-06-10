@@ -47,7 +47,6 @@ const SecondaryValueWrapper = styled.div`
     font-variant-numeric: tabular-nums;
     /* margin-left: 1ch; */
     line-height: 1.57;
-    white-space: nowrap;
 `;
 
 const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`

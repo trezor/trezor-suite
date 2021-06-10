@@ -90,7 +90,7 @@ type Props = ReturnType<typeof mapStateToProps> & {
     children?: React.ReactNode;
 };
 
-interface BodyProps {
+interface MobileBodyProps {
     url: string;
     menu?: React.ReactNode;
     appMenu?: React.ReactNode;
@@ -100,9 +100,14 @@ interface BodyProps {
     children?: React.ReactNode;
 }
 
+interface NormalBodyProps extends MobileBodyProps {
+    isMenuInline: boolean;
+}
+
 interface LayoutContextI {
     title?: string;
     menu?: React.ReactNode;
+    isMenuInline?: boolean;
     appMenu?: React.ReactNode;
     setLayout?: (title?: string, menu?: React.ReactNode, appMenu?: React.ReactNode) => void;
 }
@@ -110,11 +115,12 @@ interface LayoutContextI {
 export const LayoutContext = createContext<LayoutContextI>({
     title: undefined,
     menu: undefined,
+    isMenuInline: undefined,
     appMenu: undefined,
     setLayout: undefined,
 });
 
-type ScrollAppWrapperProps = Pick<BodyProps, 'url' | 'children'>;
+type ScrollAppWrapperProps = Pick<MobileBodyProps, 'url' | 'children'>;
 // ScrollAppWrapper is mandatory to reset AppWrapper scroll position on url change, fix: issue #1658
 const ScrollAppWrapper = ({ url, children }: ScrollAppWrapperProps) => {
     const ref = React.useRef<HTMLDivElement>(null);
@@ -126,11 +132,12 @@ const ScrollAppWrapper = ({ url, children }: ScrollAppWrapperProps) => {
     return <AppWrapper ref={ref}>{children}</AppWrapper>;
 };
 
-const BodyWide = ({ url, menu, appMenu, children, guideOpen }: BodyProps) => (
+const BodyNormal = ({ url, menu, appMenu, children, guideOpen, isMenuInline }: NormalBodyProps) => (
     <Body>
         <Columns>
-            {menu && !guideOpen && <MenuSecondary>{menu}</MenuSecondary>}
+            {!isMenuInline && menu && <MenuSecondary>{menu}</MenuSecondary>}
             <ScrollAppWrapper url={url}>
+                {isMenuInline && menu}
                 {appMenu}
                 <DefaultPaddings>
                     <MaxWidthWrapper>{children}</MaxWidthWrapper>
@@ -141,8 +148,7 @@ const BodyWide = ({ url, menu, appMenu, children, guideOpen }: BodyProps) => (
     </Body>
 );
 
-/** Displays menu inlined in body and hides guide. */
-const BodyMobile = ({ url, menu, appMenu, children }: BodyProps) => (
+const BodyMobile = ({ url, menu, appMenu, children }: MobileBodyProps) => (
     <Body>
         <Columns>
             <ScrollAppWrapper url={url}>
@@ -157,7 +163,7 @@ const BodyMobile = ({ url, menu, appMenu, children }: BodyProps) => (
 type SuiteLayoutProps = Omit<Props, 'menu' | 'appMenu'>;
 const SuiteLayout = (props: SuiteLayoutProps) => {
     // TODO: if (props.layoutSize === 'UNAVAILABLE') return <SmallLayout />;
-    const { isMobileLayout } = useLayoutSize();
+    const { isMobileLayout, layoutSize } = useLayoutSize();
     const { guideOpen } = useSelector(state => ({
         guideOpen: state.guide.open,
     }));
@@ -166,6 +172,14 @@ const SuiteLayout = (props: SuiteLayoutProps) => {
     });
     const [title, setTitle] = useState<string | undefined>(undefined);
     const [menu, setMenu] = useState<any>(undefined);
+    // There are three layout configurations WRT the guide and menu:
+    // - On XLARGE viewports menu, body and guide are displayed in three columns.
+    // - On viewports wider than mobile but smaller than XLARGE body and menu are
+    //   are displayed in two columns unless guide is open. In such case, it takes
+    //   its own column and menu is inlined on top of body.
+    // - On mobile viewports the guide is simply hidden and menu is inlined on top
+    //   of body constantly.
+    const isMenuInline = isMobileLayout || (layoutSize !== 'XLARGE' && guideOpen);
     const [appMenu, setAppMenu] = useState<any>(undefined);
     const setLayout = React.useCallback<NonNullable<LayoutContextI['setLayout']>>(
         (newTitle, newMenu, newAppMenu) => {
@@ -182,16 +196,17 @@ const SuiteLayout = (props: SuiteLayoutProps) => {
             <SuiteBanners />
             <DiscoveryProgress />
             <NavigationBar />
-            <LayoutContext.Provider value={{ title, menu, setLayout }}>
+            <LayoutContext.Provider value={{ title, menu, isMenuInline, setLayout }}>
                 {!isMobileLayout && (
-                    <BodyWide
+                    <BodyNormal
                         menu={menu}
                         appMenu={appMenu}
                         url={props.router.url}
                         guideOpen={guideOpen}
+                        isMenuInline={isMenuInline}
                     >
                         {props.children}
-                    </BodyWide>
+                    </BodyNormal>
                 )}
                 {isMobileLayout && (
                     <BodyMobile menu={menu} appMenu={appMenu} url={props.router.url}>
