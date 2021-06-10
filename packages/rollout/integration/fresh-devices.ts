@@ -48,7 +48,7 @@ describe('Find firmware info for: ', () => {
 
     it('bootloader 1.5.1 -> firmware version 1.10.0', async () => {
         // currently, this is expected to fail after there is new firmware update, since the last version is hardcoded
-        const targetVersion = [1, 10, 0] as VersionArray;
+        const targetVersion = [1, 10, 1] as VersionArray;
         const info = getInfo({
             features: getDeviceFeatures({
                 bootloader_mode: true,
