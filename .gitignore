@@ -27,6 +27,7 @@ logs
 
 coverage
 
+.attic
 .env*
 !.env.dev
 dist
