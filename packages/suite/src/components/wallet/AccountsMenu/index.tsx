@@ -1,9 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
+import { useDiscovery, useAccountSearch } from '@suite-hooks';
 import { H2, variables, useTheme, Icon, scrollbarStyles } from '@trezor/components';
-import { Translation, AddAccountButton } from '@suite-components';
-import { useDiscovery, useLayoutSize, useAccountSearch } from '@suite-hooks';
+import { Translation, AddAccountButton, LayoutContext } from '@suite-components';
+
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@wallet-utils/accountUtils';
 import { AppState } from '@suite-types';
 import { Account } from '@wallet-types';
@@ -12,20 +13,20 @@ import AccountSearchBox from './components/AccountSearchBox';
 import AccountGroup from './components/AccountGroup';
 import AccountItem, { SkeletonAccountItem } from './components/AccountItem';
 
-const Wrapper = styled.div<{ isMobileLayout?: boolean }>`
+const Wrapper = styled.div<{ isInline?: boolean }>`
     display: flex;
     flex-direction: column;
     z-index: 4; /*  higher than accounts list to prevent box-shadow overflow */
     width: 100%;
 
     ${props =>
-        !props.isMobileLayout &&
+        !props.isInline &&
         css`
             overflow: auto;
         `}
 `;
 
-const MenuHeader = styled.div<{ isMobileLayout?: boolean }>`
+const MenuHeader = styled.div<{ isInline?: boolean }>`
     display: flex;
     flex-direction: column;
     /* justify-content: center; */
@@ -33,13 +34,13 @@ const MenuHeader = styled.div<{ isMobileLayout?: boolean }>`
     border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 
     ${props =>
-        props.isMobileLayout &&
+        props.isInline &&
         css`
             padding: 12px 16px;
         `}
 
     ${props =>
-        !props.isMobileLayout &&
+        !props.isInline &&
         css`
             padding: 20px 16px 8px 16px;
             margin-bottom: 8px;
@@ -69,11 +70,11 @@ const Search = styled.div`
     margin-bottom: 8px;
 `;
 
-const Heading = styled(H2)<{ isMobileLayout?: boolean }>`
+const Heading = styled(H2)<{ isInline?: boolean }>`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${props => props.theme.TYPE_DARK_GREY};
     ${props =>
-        props.isMobileLayout &&
+        props.isInline &&
         css`
             font-size: 18px;
         `}
@@ -134,7 +135,7 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
     const theme = useTheme();
     const { discovery, getDiscoveryStatus } = useDiscovery();
     const { params } = selectedAccount;
-    const { isMobileLayout } = useLayoutSize();
+    const { isMenuInline } = React.useContext(LayoutContext);
     const [isExpanded, setIsExpanded] = useState(false);
     const [animatedIcon, setAnimatedIcon] = useState(false);
     const { coinFilter, searchString } = useAccountSearch();
@@ -149,15 +150,15 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
     if (!device || !discovery) {
         // TODO: default empty state while retrieving data from the device
         return (
-            <Wrapper isMobileLayout={isMobileLayout}>
+            <Wrapper isInline={isMenuInline}>
                 <Scroll>
-                    <MenuHeader isMobileLayout={isMobileLayout}>
-                        <Heading noMargin isMobileLayout={isMobileLayout}>
+                    <MenuHeader isInline={isMenuInline}>
+                        <Heading noMargin isInline={isMenuInline}>
                             <Translation id="TR_MY_ACCOUNTS" />
                         </Heading>
-                        <AccountSearchBox isMobile={isMobileLayout} />
+                        <AccountSearchBox isMobile={isMenuInline} />
                     </MenuHeader>
-                    {!isMobileLayout && <SkeletonAccountItem />}
+                    {!isMenuInline && <SkeletonAccountItem />}
                 </Scroll>
             </Wrapper>
         );
@@ -240,21 +241,21 @@ const AccountsMenu = ({ device, accounts, selectedAccount }: Props) => {
             </NoResults>
         );
 
-    if (isMobileLayout) {
+    if (isMenuInline) {
         return (
             <>
-                <Wrapper isMobileLayout={isMobileLayout}>
+                <Wrapper isInline={isMenuInline}>
                     <MenuHeader
-                        isMobileLayout={isMobileLayout}
+                        isInline={isMenuInline}
                         onClick={() => {
-                            if (isMobileLayout) {
+                            if (isMenuInline) {
                                 setIsExpanded(!isExpanded);
                                 setAnimatedIcon(true);
                             }
                         }}
                     >
                         <Row>
-                            <Heading noMargin isMobileLayout={isMobileLayout}>
+                            <Heading noMargin isInline={isMenuInline}>
                                 <Translation id="TR_MY_ACCOUNTS" />
                             </Heading>
                             <Icon

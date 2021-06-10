@@ -29,6 +29,10 @@ interface Props {
     className?: string;
 }
 
+const DateWrapper = styled.span`
+    white-space: nowrap;
+`;
+
 const SummaryCards = ({
     selectedRange,
     data,
@@ -65,8 +69,12 @@ const SummaryCards = ({
                 secondaryValue={
                     fromTimestamp && toTimestamp ? (
                         <>
-                            <FormattedDate value={fromTimestamp * 1000} date /> -{' '}
-                            <FormattedDate value={toTimestamp * 1000} date />
+                            <DateWrapper>
+                                <FormattedDate value={fromTimestamp * 1000} date /> -
+                            </DateWrapper>{' '}
+                            <DateWrapper>
+                                <FormattedDate value={toTimestamp * 1000} date />
+                            </DateWrapper>
                         </>
                     ) : null
                 }
