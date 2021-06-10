@@ -38,21 +38,22 @@ const ReviewTransaction = ({ decision }: Props) => {
         return null;
 
     const { networkType } = selectedAccount.account;
+    const isRbfAction = !!precomposedTx.prevTxid;
     const rbfAvailable =
         networkType === 'bitcoin' &&
-        precomposedTx.prevTxid &&
+        isRbfAction &&
         !device.unavailableCapabilities?.replaceTransaction;
 
     const outputs: OutputProps[] = [];
-    if (precomposedTx.prevTxid && rbfAvailable) {
+    if (rbfAvailable) {
         // calculate fee difference
         const diff = new BigNumber(precomposedTx.fee)
-            .minus(precomposedForm.rbfParams?.baseFee || 0)
+            .minus(precomposedForm.rbfParams!.baseFee)
             .toFixed();
         outputs.push(
             {
                 type: 'txid',
-                value: precomposedTx.prevTxid,
+                value: precomposedTx.prevTxid!,
             },
             {
                 type: 'fee-replace',
@@ -107,12 +108,7 @@ const ReviewTransaction = ({ decision }: Props) => {
         r => r === 'ButtonRequest_ConfirmOutput' || r === 'ButtonRequest_SignTx',
     );
 
-    // changing fee rate using RBF
-    const isRbfAction =
-        precomposedForm.rbfParams &&
-        parseInt(precomposedForm.rbfParams.feeRate, 10) < parseInt(precomposedTx.feePerByte, 10);
-
-    // get estimate minig time
+    // get estimate mining time
     let estimateTime;
     const selected = fees[selectedAccount.account.symbol];
     const matchedFeeLevel = selected.levels.find(
@@ -153,7 +149,6 @@ const ReviewTransaction = ({ decision }: Props) => {
                     onDetailsClick={() => setDetailsOpen(!detailsOpen)}
                 />
                 <OutputList
-                    activeStep={signedTx ? outputs.length + 1 : buttonRequests.length}
                     account={selectedAccount.account}
                     precomposedForm={precomposedForm}
                     precomposedTx={precomposedTx}
