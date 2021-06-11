@@ -36,6 +36,7 @@ const Wrapper = styled.div<{ variant: Props['variant'] }>`
     border-radius: 10px;
     margin: 6px 6px 4px;
     line-height: 1.5;
+    align-items: center;
 `;
 
 const IconWrapper = styled.div`
