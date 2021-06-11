@@ -29,6 +29,10 @@ const StyledReactSwitch = styled(({ isSmall, ...rest }) => <ReactSwitch {...rest
     }
 `;
 
+const Wrapper = styled.div`
+    display: flex;
+`;
+
 interface Props extends ReactSwitchProps {
     onChange: (checked: boolean) => any;
     isDisabled?: boolean;
@@ -36,32 +40,15 @@ interface Props extends ReactSwitchProps {
     dataTest?: string;
 }
 
-interface StateProps {
-    checked: boolean;
-}
-
-const Wrapper = styled.div`
-    display: flex;
-`;
-
 const Switch = ({ onChange, isDisabled, isSmall, dataTest, checked, ...rest }: Props) => {
     const theme = useTheme();
-    const [isChecked, setIsChecked] = useState<StateProps['checked']>(false);
-    const handleChange = (checked: boolean) => {
-        onChange(checked);
-        setIsChecked(checked);
-    };
-
-    useEffect(() => {
-        setIsChecked(checked);
-    }, [checked]);
 
     return (
         <Wrapper data-test={dataTest}>
             <StyledReactSwitch
-                checked={isChecked}
+                checked={checked}
                 disabled={isDisabled}
-                onChange={handleChange}
+                onChange={onChange}
                 onColor={theme.BG_GREEN}
                 checkedIcon={false}
                 uncheckedIcon={false}
