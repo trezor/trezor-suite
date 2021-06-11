@@ -141,7 +141,8 @@ const BodyWide = ({ url, menu, appMenu, children, guideOpen }: BodyProps) => (
     </Body>
 );
 
-const BodyNarrow = ({ url, menu, appMenu, children }: BodyProps) => (
+/** Displays menu inlined in body and hides guide. */
+const BodyMobile = ({ url, menu, appMenu, children }: BodyProps) => (
     <Body>
         <Columns>
             <ScrollAppWrapper url={url}>
@@ -193,9 +194,9 @@ const SuiteLayout = (props: SuiteLayoutProps) => {
                     </BodyWide>
                 )}
                 {isMobileLayout && (
-                    <BodyNarrow menu={menu} appMenu={appMenu} url={props.router.url}>
+                    <BodyMobile menu={menu} appMenu={appMenu} url={props.router.url}>
                         {props.children}
-                    </BodyNarrow>
+                    </BodyMobile>
                 )}
             </LayoutContext.Provider>
             {!isMobileLayout && <GuideButton onClick={openGuide} />}
