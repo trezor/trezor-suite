@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ToastContainer as BaseToastContainer } from 'react-toastify';
+import { ToastContainer as BaseToastContainer, Slide } from 'react-toastify';
 
 const StyledContainer = styled(BaseToastContainer)`
     /* Default classes used by react-toastify,
@@ -46,6 +46,7 @@ const ToastContainer = () => (
         hideProgressBar
         closeOnClick={false}
         position="top-right"
+        transition={Slide}
     />
 );
 
