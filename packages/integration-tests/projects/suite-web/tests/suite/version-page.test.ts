@@ -1,6 +1,6 @@
 // @group:suite
 // @retry=2
-import { version } from '../../../../../../package.json';
+import { suiteVersion } from '../../../../../suite/package.json';
 
 describe('There is a hidden route (not accessible in UI)', () => {
     beforeEach(() => {
@@ -9,7 +9,7 @@ describe('There is a hidden route (not accessible in UI)', () => {
 
     it('/version', () => {
         cy.prefixedVisit('/version');
-        cy.getTestElement('@version/number').should('contain', version);
+        cy.getTestElement('@version/number').should('contain', suiteVersion);
         cy.getTestElement('@version').matchImageSnapshot({
             blackout: ['[data-test="@version/commit-hash-link"]'],
         });

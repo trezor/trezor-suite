@@ -6,7 +6,8 @@ const withTranspileModules = require('next-transpile-modules')([
 ]);
 const withOptimizedImages = require('next-optimized-images');
 const withVideos = require('next-videos');
-const packageJson = require('./package.json');
+// Get Suite App version from the Suite package.json
+const packageJson = require('../suite/package.json');
 
 module.exports = withTranspileModules(
     withVideos(
@@ -24,7 +25,7 @@ module.exports = withTranspileModules(
             webpack: (config, options) => {
                 config.plugins.push(
                     new webpack.DefinePlugin({
-                        'process.env.VERSION': JSON.stringify(packageJson.version),
+                        'process.env.VERSION': JSON.stringify(packageJson.suiteVersion),
                     }),
                 );
 

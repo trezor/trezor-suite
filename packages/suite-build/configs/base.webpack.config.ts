@@ -16,10 +16,13 @@ import {
 import { getRevision } from '../utils/git';
 import JWS_PUBLIC_KEY from '../utils/codesign';
 import { getPathForProject } from '../utils/path';
-import { version } from '../../suite-desktop/package.json';
+// Get Suite App version from the Suite package.json
+import { suiteVersion } from '../../suite/package.json';
 
 const gitRevision = getRevision();
-const sentryRelease = `${version}.${project}${isCodesignBuild ? '.codesign' : ''}.${gitRevision}`;
+const sentryRelease = `${suiteVersion}.${project}${
+    isCodesignBuild ? '.codesign' : ''
+}.${gitRevision}`;
 
 const config: webpack.Configuration = {
     mode: 'production',
@@ -145,7 +148,7 @@ const config: webpack.Configuration = {
         new webpack.DefinePlugin({
             'process.browser': true,
             'process.env.SUITE_TYPE': JSON.stringify(project),
-            'process.env.VERSION': JSON.stringify(version),
+            'process.env.VERSION': JSON.stringify(suiteVersion),
             'process.env.COMMITHASH': JSON.stringify(gitRevision),
             'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
             'process.env.PUBLIC_KEY': JSON.stringify(JWS_PUBLIC_KEY),

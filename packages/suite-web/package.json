@@ -1,6 +1,6 @@
 {
     "name": "@trezor/suite-web",
-    "version": "21.9.0",
+    "version": "1.0.0",
     "private": true,
     "scripts": {
         "type-check": "tsc --project tsconfig.json",
@@ -16,7 +16,7 @@
     "dependencies": {
         "@sentry/browser": "^6.10.0",
         "@sentry/integrations": "^6.10.0",
-        "@trezor/suite": "21.9.0",
+        "@trezor/suite": "1.0.0",
         "worker-loader": "^3.0.7",
         "react-helmet": "^6.1.0",
         "react-redux": "^7.2.2",

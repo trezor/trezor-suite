@@ -1,6 +1,7 @@
 {
     "name": "@trezor/suite",
-    "version": "21.9.0",
+    "suiteVersion": "21.9.0",
+    "version": "1.0.0",
     "private": true,
     "scripts": {
         "lint": "yarn lint:styles && yarn lint:js",
@@ -17,9 +18,9 @@
         "test-health": "jest -c jest.config.health.js"
     },
     "dependencies": {
-        "@trezor/components": "^1.0.0",
-        "@trezor/suite-data": "21.9.0",
-        "@trezor/suite-storage": "21.9.0",
+        "@trezor/components": "1.0.0",
+        "@trezor/suite-data": "1.0.0",
+        "@trezor/suite-storage": "1.0.0",
         "bignumber.js": "^9.0.1",
         "date-fns": "^2.16.1",
         "date-fns-tz": "^1.0.12",
