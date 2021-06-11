@@ -42,7 +42,7 @@ const FeedbackButtonRightIcon = styled(Icon)`
 `;
 
 const Section = styled.section`
-    padding: 48px 0 0 0;
+    padding: 8px 0 0 0;
 `;
 
 const SectionHeading = styled.h3`
