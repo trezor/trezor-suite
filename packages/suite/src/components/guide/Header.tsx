@@ -7,7 +7,7 @@ import { Icon, variables, useTheme } from '@trezor/components';
 const HeaderWrapper = styled.div<{ noLabel?: boolean }>`
     display: flex;
     align-items: center;
-    padding: 22px 22px 27px 22px;
+    padding: 20px 22px 20px 22px;
     ${props =>
         props.noLabel &&
         css`
