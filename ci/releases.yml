@@ -49,7 +49,7 @@ suite-desktop github release:
   when: manual
   script:
     - gh config set prompt disabled
-    - VERSION=$(jq -r .version packages/suite-desktop/package.json)
+    - VERSION=$(jq -r .suiteVersion packages/suite/package.json)
     - gh release create --repo trezor/trezor-suite --draft v${VERSION}  --title "v${VERSION}" ./Trezor-Suite* latest*
   tags:
     - deploy
