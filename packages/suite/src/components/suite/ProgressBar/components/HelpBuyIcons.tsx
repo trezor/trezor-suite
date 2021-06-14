@@ -25,7 +25,7 @@ const BuyButton = () => (
 );
 
 const HelpButton = () => (
-    <TrezorLink variant="nostyle" href={URLS.SUPPORT_URL}>
+    <TrezorLink variant="nostyle" href={URLS.WALLET_ACCESS_URL}>
         <Button variant="tertiary" icon="SUPPORT" style={{ backgroundColor: 'initial' }}>
             <Translation id="TR_HELP" />
         </Button>
