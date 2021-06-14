@@ -5,21 +5,24 @@ import { useTheme } from '@suite-hooks';
 import { Network } from '@wallet-types';
 
 const CoinWrapper = styled.button<{ selected: boolean; disabled: boolean }>`
-    &,
+    display: flex;
+    justify-items: flex-start;
+    align-items: center;
+    padding: 0 15px;
+    border: 1.5px solid ${props => props.theme.BG_GREY};
+    background: ${props => props.theme.BG_GREY};
+    border-radius: 9999px;
+    margin: 0 13px 18px 0;
+    height: 47px;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${props => props.theme.TYPE_DARK_GREY};
+    cursor: pointer;
+    transition: 0.3s ease;
+
     &:disabled {
-        display: flex;
-        justify-items: flex-start;
-        align-items: center;
-        padding: 0 15px;
-        border: 1.5px solid ${props => props.theme.BG_GREY};
+        cursor: not-allowed;
+        opacity: 0.5;
         background: ${props => props.theme.BG_GREY};
-        border-radius: 9999px;
-        margin: 0 13px 18px 0;
-        height: 47px;
-        font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-        color: ${props => props.theme.TYPE_DARK_GREY};
-        cursor: pointer;
-        transition: 0.3s ease;
     }
     ${props =>
         props.disabled &&
@@ -92,4 +95,3 @@ const Coin = ({ symbol, name, selected = false, disabled = false, ...props }: Pr
 };
 
 export default Coin;
-export type { Props as CoinProps };

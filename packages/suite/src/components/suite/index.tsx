@@ -48,6 +48,8 @@ import DeviceMatrixExplanation from './DeviceMatrixExplanation';
 import AccountFormCloseButton from './AccountFormCloseButton';
 import TroubleshootingTips from './TroubleshootingTips';
 import ConnectDevicePrompt from './ConnectDevicePrompt';
+import Coin from './Coin';
+import CoinsGroup from './CoinsGroup';
 
 export {
     Backdrop,
@@ -104,5 +106,7 @@ export {
     AccountFormCloseButton,
     TroubleshootingTips,
     ConnectDevicePrompt,
+    Coin,
+    CoinsGroup,
 };
 export type { ImageProps, ModalProps };
