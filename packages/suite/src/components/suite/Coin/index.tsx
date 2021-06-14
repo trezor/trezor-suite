@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { variables, CoinLogo, Icon } from '@trezor/components';
 import { useTheme } from '@suite-hooks';
 import { Network } from '@wallet-types';
@@ -9,8 +9,8 @@ const CoinWrapper = styled.button<{ selected: boolean; disabled: boolean }>`
     justify-items: flex-start;
     align-items: center;
     padding: 0 15px;
-    border: 1.5px solid ${props => props.theme.BG_GREY};
-    background: ${props => props.theme.BG_GREY};
+    border: 1.5px solid ${props => props.theme.STROKE_GREY};
+    background: ${props => props.theme.BG_WHITE};
     border-radius: 9999px;
     margin: 0 13px 18px 0;
     height: 47px;
@@ -25,23 +25,11 @@ const CoinWrapper = styled.button<{ selected: boolean; disabled: boolean }>`
         background: ${props => props.theme.BG_GREY};
     }
     ${props =>
-        props.disabled &&
-        `
-        &,
-        &:disabled {
-            cursor: not-allowed;
-            opacity: 0.5;
-        }
-    `}
-    ${props =>
         props.selected &&
         !props.disabled &&
-        `
-        & {
-            border-color: ${props.theme.TYPE_GREEN};
-            background: ${props.theme.BG_WHITE};
-        }
-    `}
+        css`
+            border-color: ${props.theme.BG_GREEN};
+        `}
 `;
 
 const ImageWrapper = styled.div`
@@ -65,8 +53,8 @@ const Check = styled.div<{ visible: boolean }>`
     width: 12px;
     height: 12px;
     position: absolute;
-    top: 0;
-    right: 0;
+    top: -2px;
+    right: -2px;
     opacity: 0;
     transition: opacity 0.3s ease;
     ${props => props.visible && `opacity: 1`}
