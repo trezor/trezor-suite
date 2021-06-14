@@ -1,6 +1,6 @@
 {
     "name": "@trezor/landing-page",
-    "version": "21.7.0",
+    "version": "21.6.2",
     "private": true,
     "scripts": {
         "type-check": "tsc --project tsconfig.json",
