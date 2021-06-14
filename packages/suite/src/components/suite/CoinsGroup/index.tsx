@@ -1,10 +1,10 @@
 import React from 'react';
 import { variables, Tooltip } from '@trezor/components';
-import { Coin } from '@onboarding-components';
 import styled from 'styled-components';
 import { UnavailableCapability } from 'trezor-connect';
 import { Network } from '@wallet-types';
-import { Translation } from '@suite-components';
+import { TrezorDevice } from '@suite-types';
+import { Coin, Translation } from '@suite-components';
 import { isBitcoinOnly } from '@suite-utils/device';
 import { useDevice } from '@suite-hooks';
 
@@ -27,7 +27,7 @@ const Coins = styled.div`
 `;
 
 interface UnavailableMessageProps {
-    type: UnavailableCapability;
+    type?: UnavailableCapability;
     deviceVersion: number;
     isBtcOnly: boolean;
 }
@@ -55,7 +55,7 @@ interface Props {
     networks: Network[];
     enabledNetworks: Network['symbol'][];
     testnet: boolean;
-    unavailableCapabilities: { [key: string]: UnavailableCapability };
+    unavailableCapabilities: TrezorDevice['unavailableCapabilities'];
 }
 
 const CoinsGroup = ({
@@ -85,17 +85,18 @@ const CoinsGroup = ({
             </Count>
             <Coins>
                 {networks.map(network => {
-                    const isDisabled = !!unavailableCapabilities[network.symbol] || isDeviceLocked;
+                    const isDisabled =
+                        !!unavailableCapabilities?.[network.symbol] || isDeviceLocked;
                     if (isDisabled) {
                         return (
                             <Tooltip
-                                key={network.symbol}
+                                key={`${network.symbol}_${network.accountType}`}
                                 placement="top"
                                 content={
                                     <UnavailableMessage
                                         deviceVersion={deviceVersion}
                                         isBtcOnly={isBtcOnly}
-                                        type={unavailableCapabilities[network.symbol]}
+                                        type={unavailableCapabilities?.[network.symbol]}
                                     />
                                 }
                             >

@@ -7,8 +7,6 @@ import OnboardingButtonBack from './Buttons/ButtonBack';
 import OnboardingButtonSkip from './Buttons/ButtonSkip';
 
 import Box, { BoxProps } from './Box/Box';
-import Coin, { CoinProps } from './Coin/Coin';
-import CoinsGroup from './CoinsGroup/CoinsGroup';
 import ConnectDevicePromptManager from './ConnectDevicePromptManager';
 import OnboardingLayout from './Layouts/OnboardingLayout';
 import ProgressBar from './ProgressBar';
@@ -28,8 +26,6 @@ export {
     OptionWrapper,
     OptionsDivider,
     Box,
-    Coin,
-    CoinsGroup,
     ConnectDevicePromptManager,
     OnboardingLayout,
     ProgressBar,
@@ -38,4 +34,4 @@ export {
     OnboardingStepBox,
     SkipStepConfirmation,
 };
-export type { BoxProps, CoinProps, DeviceAnimationType, OnboardingStepBoxProps };
+export type { BoxProps, DeviceAnimationType, OnboardingStepBoxProps };

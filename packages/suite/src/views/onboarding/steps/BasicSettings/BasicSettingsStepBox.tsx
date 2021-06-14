@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import { useActions } from '@suite-hooks';
-import { CoinsGroup, OnboardingStepBox, OnboardingStepBoxProps } from '@onboarding-components';
+import { OnboardingStepBox, OnboardingStepBoxProps } from '@onboarding-components';
+import { CoinsGroup } from '@suite-components';
 import styled from 'styled-components';
 import { Network } from '@wallet-types';
 import { UnavailableCapability } from 'trezor-connect';
