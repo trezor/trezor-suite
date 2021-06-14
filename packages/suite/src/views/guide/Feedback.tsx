@@ -81,10 +81,7 @@ const RatingItem = styled.button<{ selected?: boolean }>`
     border: 1px solid ${props => props.theme.STROKE_GREY};
     cursor: pointer;
     font-size: 30px;
-
-    &:hover {
-        background: ${props => props.theme.STROKE_GREY};
-    }
+    background-color: inherit;
 
     ${props =>
         props.selected &&
