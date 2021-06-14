@@ -1,9 +1,9 @@
 import React from 'react';
 import { Translation } from '@suite-components';
 import * as guideActions from '@suite-actions/guideActions';
-import { useActions, useDevice } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import styled from 'styled-components';
-import { variables } from '@trezor/components';
+import { Icon, variables } from '@trezor/components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { getFwVersion } from '@suite-utils/device';
 import { ViewWrapper, Header, Content } from '@guide-components';
@@ -34,7 +34,14 @@ const FeedbackButtonImage = styled.img`
     display: block;
 `;
 
-const DetailItem = styled.div``;
+const DetailItem = styled.div`
+    display: inline-flex;
+    align-items: center;
+`;
+
+const StyledIcon = styled(Icon)`
+    padding: 0 6px;
+`;
 
 const Label = styled.div`
     padding: 0 0 0 15px;
@@ -57,7 +64,14 @@ const FeedbackTypeSelection = () => {
     const { setView } = useActions({
         setView: guideActions.setView,
     });
-    const { device } = useDevice();
+    const { desktopUpdate, device } = useSelector(state => ({
+        desktopUpdate: state.desktopUpdate,
+        device: state.suite.device,
+    }));
+
+    const appUpToDate = !desktopUpdate?.enabled || desktopUpdate?.state === 'not-available';
+
+    const firmwareUpToDate = device?.firmware === 'valid';
     const firmwareVersion = device?.features ? (
         getFwVersion(device)
     ) : (
@@ -105,10 +119,28 @@ const FeedbackTypeSelection = () => {
                 </FeedbackTypeButton>
                 <Details>
                     <DetailItem>
-                        <Translation id="TR_APP" />: {process.env.VERSION}
+                        <Translation id="TR_APP" />
+                        :&nbsp;
+                        {appUpToDate ? (
+                            <>
+                                <StyledIcon icon="CHECK" size={10} />
+                                <Translation id="TR_UP_TO_DATE" />
+                            </>
+                        ) : (
+                            process.env.VERSION
+                        )}
                     </DetailItem>
                     <DetailItem>
-                        <Translation id="TR_FIRMWARE" />: {firmwareVersion}
+                        <Translation id="TR_FIRMWARE" />
+                        :&nbsp;
+                        {firmwareUpToDate ? (
+                            <>
+                                <StyledIcon icon="CHECK" size={10} />
+                                <Translation id="TR_UP_TO_DATE" />
+                            </>
+                        ) : (
+                            firmwareVersion
+                        )}
                     </DetailItem>
                 </Details>
             </Content>
