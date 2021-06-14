@@ -4,6 +4,7 @@ export const CHANGELOG_MARKDOWN_URL =
 export const TREZOR_URL = 'https://trezor.io';
 export const TREZOR_COINS_URL = 'https://trezor.io/coins/';
 export const SUPPORT_URL = 'https://trezor.io/support/';
+export const WALLET_ACCESS_URL = 'https://trezor.io/support/technical/i-cannot-access-the-wallet/';
 export const WIKI_URL = 'https://wiki.trezor.io/';
 export const BLOG_URL = 'https://blog.trezor.io/';
 export const SHOP_URL = 'https://shop.trezor.io/';
