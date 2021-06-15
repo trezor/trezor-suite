@@ -28,6 +28,7 @@ import { getAmountLimits, processQuotes } from '@wallet-utils/coinmarket/sellUti
 import { useFees } from './form/useFees';
 import { useCompose } from './form/useCompose';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';
+import { useShowConnectAndUnlockDeviceModal } from './useShowConnectAndUnlockDeviceModal';
 
 export const SellFormContext = createContext<SellFormContextValues | null>(null);
 SellFormContext.displayName = 'CoinmarketSellContext';
@@ -149,7 +150,9 @@ export const useCoinmarketSellForm = (props: Props): SellFormContextValues => {
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
 
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
-    const isLoading = !sellInfo?.sellList || !state?.formValues.outputs[0].address;
+    const isDeviceConnected = !!device?.connected;
+    const isLoading =
+        !sellInfo?.sellList || (!state?.formValues.outputs[0].address && isDeviceConnected);
     const noProviders =
         sellInfo?.sellList?.providers.length === 0 ||
         !sellInfo?.supportedCryptoCurrencies.has(account.symbol);
@@ -245,6 +248,11 @@ export const useCoinmarketSellForm = (props: Props): SellFormContextValues => {
         selectedFee,
     ]);
 
+    const {
+        showConnectAndUnlockDeviceModal,
+        setShowConnectAndUnlockDeviceModal,
+    } = useShowConnectAndUnlockDeviceModal(isDeviceConnected);
+
     const onSubmit = async () => {
         const formValues = getValues();
         const fiatStringAmount = formValues.fiatInput;
@@ -277,6 +285,8 @@ export const useCoinmarketSellForm = (props: Props): SellFormContextValues => {
         }
     };
 
+    const canShowOffers = !!state?.formValues?.outputs[0]?.address;
+
     return {
         ...methods,
         account,
@@ -304,6 +314,9 @@ export const useCoinmarketSellForm = (props: Props): SellFormContextValues => {
         network,
         onCryptoAmountChange,
         onFiatAmountChange,
+        canShowOffers,
+        showConnectAndUnlockDeviceModal,
+        setShowConnectAndUnlockDeviceModal,
     };
 };
 

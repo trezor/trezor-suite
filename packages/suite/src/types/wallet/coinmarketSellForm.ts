@@ -73,4 +73,7 @@ export type SellFormContextValues = Omit<UseFormMethods<SellFormState>, 'registe
     feeInfo: FeeInfo;
     onCryptoAmountChange: (amount: string) => void;
     onFiatAmountChange: (amount: string) => void;
+    canShowOffers: boolean;
+    showConnectAndUnlockDeviceModal: boolean;
+    setShowConnectAndUnlockDeviceModal: (show: boolean) => void;
 };

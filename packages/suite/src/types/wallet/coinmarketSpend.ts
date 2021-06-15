@@ -19,4 +19,6 @@ export type SpendContextValues = {
     voucherSiteUrl?: string;
     openWindow: (url?: string) => void;
     setShowLeaveModal: (showLeaveModal: boolean) => void;
+    showConnectAndUnlockDeviceModal: boolean;
+    setShowConnectAndUnlockDeviceModal: (show: boolean) => void;
 };

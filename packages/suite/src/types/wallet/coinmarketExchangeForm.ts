@@ -70,4 +70,7 @@ export type ExchangeFormContextValues = Omit<UseFormMethods<ExchangeFormState>, 
     noProviders: boolean;
     network: Network;
     feeInfo: FeeInfo;
+    canCompareOffers: boolean;
+    showConnectAndUnlockDeviceModal: boolean;
+    setShowConnectAndUnlockDeviceModal: (show: boolean) => void;
 };

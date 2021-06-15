@@ -1403,6 +1403,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Connection Status',
         id: 'TR_CONNECTION_STATUS',
     },
+    TR_CONNECT_AND_UNLOCK: {
+        defaultMessage: 'Connect & Unlock your Trezor to continue',
+        id: 'TR_CONNECTION_STATUS',
+    },
     TR_CONTACT_OUR_SUPPORT_LINK: {
         defaultMessage: 'contact our support',
         description: 'Part of sentence TR_DID_YOU_PURCHASE. Link to support',

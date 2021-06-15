@@ -84,12 +84,20 @@ const Footer = () => {
         defaultCountry,
         quotesRequest,
         isComposing,
+        canShowOffers,
     } = useCoinmarketSellFormContext();
     const countrySelect = 'countrySelect';
     const hasValues =
         (watch('fiatInput') || watch('cryptoInput')) && !!watch('fiatCurrencySelect').value;
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
+
+    const isShowOffersButtonDisabled = !(
+        canShowOffers &&
+        formIsValid &&
+        hasValues &&
+        !formState.isSubmitting
+    );
 
     return (
         <Wrapper>
@@ -144,7 +152,7 @@ const Footer = () => {
             </Left>
             <Right>
                 <StyledButton
-                    isDisabled={!(formIsValid && hasValues) || formState.isSubmitting}
+                    isDisabled={isShowOffersButtonDisabled}
                     isLoading={formState.isSubmitting || isComposing}
                     type="submit"
                 >

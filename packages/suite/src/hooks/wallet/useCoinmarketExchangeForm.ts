@@ -23,6 +23,7 @@ import { getAmountLimits, splitToFixedFloatQuotes } from '@wallet-utils/coinmark
 import { useFees } from './form/useFees';
 import { useCompose } from './form/useCompose';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';
+import { useShowConnectAndUnlockDeviceModal } from './useShowConnectAndUnlockDeviceModal';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';
@@ -174,10 +175,12 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
     };
 
     const typedRegister = useCallback(<T>(rules?: T) => register(rules), [register]);
+    const isDeviceConnected = !!device?.connected;
     const isLoading =
         !exchangeInfo?.exchangeList ||
         exchangeInfo?.exchangeList.length === 0 ||
-        !state?.formValues.outputs[0].address;
+        (!state?.formValues.outputs[0].address && isDeviceConnected);
+
     const noProviders =
         exchangeInfo?.exchangeList?.length === 0 || !exchangeInfo?.sellSymbols.has(account.symbol);
 
@@ -227,6 +230,11 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         selectedFee,
     ]);
 
+    const {
+        showConnectAndUnlockDeviceModal,
+        setShowConnectAndUnlockDeviceModal,
+    } = useShowConnectAndUnlockDeviceModal(isDeviceConnected);
+
     const onSubmit = async () => {
         const formValues = getValues();
         const sendStringAmount = formValues.outputs[0].amount || '';
@@ -255,6 +263,8 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         }
     };
 
+    const canCompareOffers = !!state?.formValues?.outputs[0]?.address;
+
     return {
         ...methods,
         account,
@@ -281,6 +291,9 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         isLoading,
         noProviders,
         network,
+        canCompareOffers,
+        showConnectAndUnlockDeviceModal,
+        setShowConnectAndUnlockDeviceModal,
     };
 };
 

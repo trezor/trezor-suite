@@ -19,19 +19,31 @@ const Center = styled.div`
 
 const StyledButton = styled(Button)`
     min-width: 200px;
-    margin-left: 20px;
 `;
 
 const Footer = () => {
-    const { formState, watch, errors, isComposing } = useCoinmarketExchangeFormContext();
+    const {
+        formState,
+        watch,
+        errors,
+        isComposing,
+        canCompareOffers,
+    } = useCoinmarketExchangeFormContext();
     const hasValues = !!watch(CRYPTO_INPUT) && !!watch('receiveCryptoSelect')?.value;
     const formIsValid = Object.keys(errors).length === 0;
+
+    const isCompareOffersButtonDisabled = !(
+        canCompareOffers &&
+        formIsValid &&
+        hasValues &&
+        !formState.isSubmitting
+    );
 
     return (
         <Wrapper>
             <Center>
                 <StyledButton
-                    isDisabled={!(formIsValid && hasValues) || formState.isSubmitting}
+                    isDisabled={isCompareOffersButtonDisabled}
                     isLoading={formState.isSubmitting || isComposing}
                     type="submit"
                 >

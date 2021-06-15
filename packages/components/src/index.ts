@@ -29,6 +29,7 @@ import { Box, BoxProps } from './components/others/Box';
 import { Card, CardProps } from './components/others/Card';
 import { SecurityCard, SecurityCardProps } from './components/others/SecurityCard';
 import { ConfirmOnDevice, ConfirmOnDeviceProps } from './components/prompts/ConfirmOnDevice';
+import { ModalOverlay, ModalOverlayProps } from './components/ModalOverlay';
 import { Modal, ModalProps } from './components/Modal';
 import { CoinLogo, CoinLogoProps } from './components/logos/CoinLogo';
 import { TrezorLogo, TrezorLogoProps } from './components/logos/TrezorLogo';
@@ -75,6 +76,8 @@ export {
     Link,
     LinkProps,
     Warning,
+    ModalOverlay,
+    ModalOverlayProps,
     Modal,
     ModalProps,
     CoinLogo,
