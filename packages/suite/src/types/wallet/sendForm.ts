@@ -89,15 +89,29 @@ export type PrecomposedTransactionNonFinal = Extract<
     token?: TokenInfo;
 };
 
-export type PrecomposedTransactionFinal = Extract<PrecomposedTransactionBase, { type: 'final' }> & {
+// base of PrecomposedTransactionFinal
+type TxFinal = Extract<PrecomposedTransactionBase, { type: 'final' }> & {
     max: string | undefined;
     feeLimit?: string;
     estimatedFeeLimit?: string;
     token?: TokenInfo;
     rbf?: boolean;
-    prevTxid?: string;
-    useNativeRbf?: boolean;
 };
+
+// strict distinction between normal and RBF type
+export type PrecomposedTransactionFinal =
+    | (TxFinal & {
+          prevTxid?: typeof undefined;
+          feeDifference?: typeof undefined;
+          useNativeRbf?: typeof undefined;
+          useDecreaseOutput?: typeof undefined;
+      })
+    | (TxFinal & {
+          prevTxid: string;
+          feeDifference: string;
+          useNativeRbf: boolean;
+          useDecreaseOutput: boolean;
+      });
 
 export type PrecomposedTransaction =
     | PrecomposedTransactionError

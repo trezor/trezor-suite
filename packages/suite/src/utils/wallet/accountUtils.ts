@@ -3,6 +3,7 @@ import { AccountInfo, AccountAddress, PrecomposedTransaction } from 'trezor-conn
 import BigNumber from 'bignumber.js';
 import { ACCOUNT_TYPE } from '@wallet-constants/account';
 import { Account, Network, CoinFiatRates, WalletParams, Discovery } from '@wallet-types';
+import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 import { AppState } from '@suite-types';
 import { NETWORKS } from '@wallet-config';
 import { toFiatCurrency } from './fiatConverterUtils';
@@ -517,53 +518,41 @@ export const getUtxoFromSignedTransaction = (
 
 // update account before BLOCKCHAIN.NOTIFICATION or BLOCKCHAIN.BLOCK events
 // solves race condition between pushing transaction and received notification
-export const getPendingAccount = (account: Account, tx: PrecomposedTransaction, txid: string) => {
-    if (tx.type !== 'final') return;
+export const getPendingAccount = (
+    account: Account,
+    tx: PrecomposedTransactionFinal,
+    txid: string,
+) => {
+    // TODO: implement ETH
+    if (tx.type !== 'final' || account.networkType !== 'bitcoin' || tx.useDecreaseOutput) return; // do not change user balance if tx output was decreased. balance is still the same: 0
 
     // calculate availableBalance
-    let availableBalanceBig = new BigNumber(account.availableBalance).minus(tx.totalSpent);
+    let availableBalanceBig = new BigNumber(account.availableBalance).minus(
+        tx.feeDifference || tx.totalSpent,
+    );
     // get utxo
-    const utxo = getUtxoFromSignedTransaction(account, tx, txid);
+    const utxo = getUtxoFromSignedTransaction(account, tx, txid, tx.prevTxid);
 
-    // join all account addresses
-    const addresses = account.addresses
-        ? account.addresses.unused.concat(account.addresses.used).concat(account.addresses.change)
-        : [];
+    if (!tx.prevTxid) {
+        // join all account addresses
+        const addresses = account.addresses
+            ? account.addresses.unused
+                  .concat(account.addresses.used)
+                  .concat(account.addresses.change)
+            : [];
 
-    tx.transaction.outputs.forEach(output => {
-        if (output.address) {
-            // find self address
-            if (addresses.find(a => a.address === output.address)) {
-                // append self outputs to balance
-                availableBalanceBig = availableBalanceBig.plus(output.amount);
+        tx.transaction.outputs.forEach(output => {
+            if (output.address) {
+                // find self address
+                if (addresses.find(a => a.address === output.address)) {
+                    // append self outputs to balance
+                    availableBalanceBig = availableBalanceBig.plus(output.amount);
+                }
             }
-        }
-    });
+        });
+    }
 
     const availableBalance = availableBalanceBig.toString();
-
-    return {
-        ...account,
-        availableBalance,
-        formattedBalance: formatNetworkAmount(availableBalance, account.symbol),
-        utxo,
-    };
-};
-
-// update account before BLOCKCHAIN.NOTIFICATION or BLOCKCHAIN.BLOCK events
-// solves race condition between pushing transaction and received notification
-export const getRbfPendingAccount = (
-    account: Account,
-    tx: PrecomposedTransaction,
-    prevTxid: string,
-    newTxid: string,
-    feeDiff: number,
-) => {
-    if (tx.type !== 'final') return;
-    // calculate availableBalance
-    const availableBalance = new BigNumber(account.availableBalance).minus(feeDiff).toString();
-    // get utxo
-    const utxo = getUtxoFromSignedTransaction(account, tx, newTxid, prevTxid);
 
     return {
         ...account,

@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import BigNumber from 'bignumber.js';
 import { ConfirmOnDevice } from '@trezor/components';
 import { Translation, Modal } from '@suite-components';
 import { useDevice, useActions, useSelector } from '@suite-hooks';
@@ -45,10 +44,6 @@ const ReviewTransaction = ({ decision }: Props) => {
 
     const outputs: OutputProps[] = [];
     if (precomposedTx.useNativeRbf) {
-        // calculate fee difference
-        const diff = new BigNumber(precomposedTx.fee)
-            .minus(precomposedForm.rbfParams!.baseFee)
-            .toFixed();
         outputs.push(
             {
                 type: 'txid',
@@ -56,7 +51,7 @@ const ReviewTransaction = ({ decision }: Props) => {
             },
             {
                 type: 'fee-replace',
-                value: diff,
+                value: precomposedTx.feeDifference,
                 value2: precomposedTx.fee,
             },
         );
@@ -66,7 +61,7 @@ const ReviewTransaction = ({ decision }: Props) => {
             outputs.splice(1, 0, {
                 type: 'reduce-output',
                 label: precomposedTx.transaction.outputs[decreaseOutputId].address!,
-                value: diff,
+                value: precomposedTx.feeDifference,
                 value2: precomposedTx.transaction.outputs[decreaseOutputId].amount!,
             });
         }
