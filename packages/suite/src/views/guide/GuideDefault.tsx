@@ -37,14 +37,10 @@ const FeedbackButton = styled.button`
 `;
 
 const FeedbackButtonLabel = styled.div`
-    padding: 0 15px;
+    padding: 0 9px;
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     width: 100%;
-`;
-
-const FeedbackButtonLeftIcon = styled(Icon)`
-    margin-top: -2px;
 `;
 
 const FeedbackButtonRightIcon = styled(Icon)`
@@ -138,11 +134,7 @@ const GuideDefault = (props: any) => {
             </Content>
             <FeedbackLinkWrapper onClick={() => setView('FEEDBACK_TYPE_SELECTION')}>
                 <FeedbackButton>
-                    <FeedbackButtonLeftIcon
-                        icon="LIGHTBULB"
-                        size={14}
-                        color={theme.TYPE_LIGHT_GREY}
-                    />
+                    <Icon icon="FEEDBACK" size={16} color={theme.TYPE_LIGHT_GREY} />
                     <FeedbackButtonLabel>
                         <Translation id="TR_GUIDE_FEEDACK_OR_SUGGESTION" />
                     </FeedbackButtonLabel>
