@@ -299,6 +299,8 @@ suite-desktop build windows codesign:
 suite-native build android:
   image: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/reactnativecommunity/react-native-android
   stage: build
+  only:
+    <<: *run_everything_rules
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
