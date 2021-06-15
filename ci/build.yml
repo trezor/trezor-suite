@@ -27,23 +27,6 @@ suite-web build dev:
     paths:
       - packages/suite-web/build
 
-## to be removed after beta-wallet is officially killed
-
-suite-web build beta:
-  stage: build
-  <<: *config_sign_dev
-  only:
-    <<: *run_everything_rules
-  script:
-    - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
-    - yarn build:libs
-    - assetPrefix=/wallet/web yarn workspace @trezor/suite-web build
-  artifacts:
-    expire_in: 7 days
-    paths:
-      - packages/suite-web/scripts/s3sync.sh
-      - packages/suite-web/build
-
 suite-web build stable:
   stage: build
   <<: *config_sign_dev
@@ -117,32 +100,6 @@ suite-web-landing build stable:
       - packages/suite-web-landing/scripts/s3sync.sh
       - packages/suite-web-landing/build
 
-# Suite web landing-page build
-landing-page build dev:
-  stage: build
-  script:
-    - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
-    - yarn build:libs
-    - assetPrefix=/landing-page/${CI_BUILD_REF_NAME} yarn workspace @trezor/landing-page build
-  artifacts:
-    expire_in: 7 days
-    paths:
-      - packages/landing-page/build
-
-landing-page build beta:
-  stage: build
-  only:
-    <<: *run_everything_rules
-  script:
-    - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
-    - yarn build:libs
-    - yarn workspace @trezor/landing-page build
-  artifacts:
-    expire_in: 7 days
-    paths:
-      - packages/landing-page/scripts/s3sync.sh
-      - packages/landing-page/build
-
 # Suite desktop build
 .build: &build
   stage: build
@@ -172,6 +129,7 @@ landing-page build beta:
     - mv packages/suite-desktop/build-electron/* .
     - more latest*.yml | cat
 
+## Suite desktop macOS app
 suite-desktop build mac:
   <<: *config_sign_dev
   only:
@@ -216,6 +174,7 @@ suite-desktop build mac codesign:
       - latest*.yml
     expire_in: 7 days
 
+## Suite desktop Linux app
 suite-desktop build linux:
   <<: *config_sign_dev
   only:
@@ -254,6 +213,7 @@ suite-desktop build linux codesign:
       - latest*.yml
     expire_in: 7 days
 
+## Suite desktop Windows app
 suite-desktop build windows:
   <<: *config_sign_dev
   only:
@@ -296,6 +256,8 @@ suite-desktop build windows codesign:
     expire_in: 7 days
 
 # Suite native build
+
+## Suite mobile Android app
 suite-native build android:
   image: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/reactnativecommunity/react-native-android
   stage: build
