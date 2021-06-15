@@ -157,28 +157,23 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
             }),
         );
 
-        if (account.networkType === 'bitcoin') {
+        if (precomposedTx.prevTxid) {
             // notification from the backend may be delayed.
-            // temporary calculate pending balance and utxo until the real account update occurs
-            // this will prevent from double spending already used utxo
-            if (precomposedTx.prevTxid) {
-                dispatch(
-                    transactionActions.replaceTransaction(
-                        account,
-                        precomposedTx,
-                        precomposedTx.prevTxid,
-                        txid,
-                        precomposedTx.rbf,
-                    ),
-                );
-            } else {
-                const pendingAccount = getPendingAccount(account, precomposedTx, txid);
-                if (pendingAccount) {
-                    // update account
-                    dispatch(accountActions.updateAccount(pendingAccount));
-                }
-            }
-        } else {
+            // modify affected transaction(s) in the reducer until the real account update occurs.
+            // this will update transaction details (like time, fee etc.)
+            dispatch(transactionActions.replaceTransaction(account, precomposedTx, txid));
+        }
+
+        // notification from the backend may be delayed.
+        // modify affected account balance.
+        // TODO: make it work with ETH accounts
+        const pendingAccount = getPendingAccount(account, precomposedTx, txid);
+        if (pendingAccount) {
+            // update account
+            dispatch(accountActions.updateAccount(pendingAccount));
+        }
+
+        if (account.networkType !== 'bitcoin') {
             dispatch(accountActions.fetchAndUpdateAccount(account));
         }
     } else {
@@ -219,12 +214,19 @@ export const signTransaction = (
         (!hasDecreasedOutput && nativeRbfAvailable) ||
         (hasDecreasedOutput && decreaseOutputAvailable);
 
-    const enhancedTxInfo = {
+    const enhancedTxInfo: PrecomposedTransactionFinal = {
         ...transactionInfo,
         rbf: formValues.options.includes('bitcoinRBF'),
-        prevTxid: formValues.rbfParams ? formValues.rbfParams.txid : undefined,
-        useNativeRbf,
     };
+
+    if (formValues.rbfParams) {
+        enhancedTxInfo.prevTxid = formValues.rbfParams.txid;
+        enhancedTxInfo.feeDifference = new BigNumber(transactionInfo.fee)
+            .minus(formValues.rbfParams.baseFee)
+            .toFixed();
+        enhancedTxInfo.useNativeRbf = useNativeRbf;
+        enhancedTxInfo.useDecreaseOutput = hasDecreasedOutput;
+    }
 
     // store formValues and transactionInfo in send reducer to be used by ReviewTransaction modal
     dispatch({

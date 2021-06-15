@@ -1,16 +1,13 @@
-import TrezorConnect, { AccountTransaction, PrecomposedTransaction } from 'trezor-connect';
+import TrezorConnect, { AccountTransaction } from 'trezor-connect';
 import { saveAs } from 'file-saver';
-import {
-    getAccountTransactions,
-    formatNetworkAmount,
-    getRbfPendingAccount,
-} from '@wallet-utils/accountUtils';
+import { getAccountTransactions, formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { enhanceTransaction, findTransactions } from '@wallet-utils/transactionUtils';
 import * as accountActions from '@wallet-actions/accountActions';
 import { TRANSACTION } from '@wallet-actions/constants';
 import { SETTINGS } from '@suite-config';
 import { Account, WalletAccountTransaction } from '@wallet-types';
 import { Dispatch, GetState } from '@suite-types';
+import { PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 import { formatData } from '@wallet-utils/exportTransactions';
 
 export type TransactionAction =
@@ -67,38 +64,44 @@ export const remove = (account: Account, txs: WalletAccountTransaction[]): Trans
     txs,
 });
 
+/**
+ * Replace existing transaction in the reducer.
+ * There might be multiple occurrences of the same transaction assigned to multiple accounts in the storage:
+ * sender account and receiver account(s)
+ *
+ * @param {Account} account
+ * @param {PrecomposedTransactionFinal} tx
+ * @param {string} newTxid
+ */
 export const replaceTransaction = (
     account: Account,
-    tx: PrecomposedTransaction,
-    prevTxid: string,
+    tx: PrecomposedTransactionFinal,
     newTxid: string,
-    rbf?: boolean,
 ) => (dispatch: Dispatch, getState: GetState) => {
-    if (tx.type !== 'final') return;
+    if (!tx.prevTxid) return; // ignore if it's not replacement tx
 
     // find all transactions to replace, they may be related to another account
-    const transactions = findTransactions(prevTxid, getState().wallet.transactions.transactions);
+    const transactions = findTransactions(tx.prevTxid, getState().wallet.transactions.transactions);
     const newFee = formatNetworkAmount(tx.fee, account.symbol);
     const newBaseFee = parseInt(tx.fee, 10);
-    let feeDifference = 0;
 
     // prepare replace actions for txs
     const actions = transactions.map(t => {
         const action = {
             type: TRANSACTION.REPLACE,
             key: t.key,
-            txid: prevTxid,
+            txid: tx.prevTxid,
             tx: {
                 ...t.tx,
                 txid: newTxid,
                 fee: newFee,
-                rbf: !!rbf,
+                rbf: !!tx.rbf,
                 blockTime: Math.round(new Date().getTime() / 1000),
                 // TODO: details: {}, is it worth it?
             },
         };
         // finalized and recv tx shouldn't have rbfParams
-        if (!rbf || t.tx.type === 'recv') {
+        if (!tx.rbf || t.tx.type === 'recv') {
             delete action.tx.rbfParams;
             return action;
         }
@@ -108,8 +111,6 @@ export const replaceTransaction = (
         }
         // update tx rbfParams
         if (action.tx.rbfParams) {
-            // balance is reduced only by fee differences
-            feeDifference = newBaseFee - action.tx.rbfParams.baseFee;
             action.tx.rbfParams = {
                 ...action.tx.rbfParams,
                 txid: newTxid,
@@ -121,12 +122,6 @@ export const replaceTransaction = (
     });
     // dispatch replace actions
     actions.forEach(a => dispatch(a));
-
-    // calculate new account balance and utxo
-    const newAccount = getRbfPendingAccount(account, tx, prevTxid, newTxid, feeDifference);
-    if (newAccount) {
-        dispatch(accountActions.updateAccount(newAccount));
-    }
 };
 
 export const fetchTransactions = (
