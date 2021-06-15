@@ -68,6 +68,8 @@ const Wrapper = styled.button<WrapperProps>`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     outline: none;
     padding: ${props => getPadding(props.variant, props.hasLabel)};
+    transition: ${props =>
+        `background ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
 
     ${props =>
         props.variant === 'primary' &&

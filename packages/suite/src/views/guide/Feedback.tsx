@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { Translation } from '@suite-components';
 import { useActions, useDevice } from '@suite-hooks';
-import { Textarea, Select, variables } from '@trezor/components';
+import { Textarea, Select, variables, Button } from '@trezor/components';
 import * as guideActions from '@suite-actions/guideActions';
 import { ViewWrapper, Header, Content } from '@guide-components';
 import { Rating, Category, FeedbackType, UserData } from '@suite-types/guide';
@@ -24,7 +24,7 @@ const Headline = styled.div`
     width: 100%;
 `;
 
-const Submit = styled.button`
+const Submit = styled(Button)`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     text-align: center;

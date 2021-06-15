@@ -1,8 +1,10 @@
 import React from 'react';
+import { darken } from 'polished';
+import styled from 'styled-components';
+
 import { Translation } from '@suite-components';
 import * as guideActions from '@suite-actions/guideActions';
 import { useActions, useSelector } from '@suite-hooks';
-import styled from 'styled-components';
 import { Icon, variables } from '@trezor/components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { getFwVersion } from '@suite-utils/device';
@@ -14,11 +16,18 @@ const FeedbackTypeButton = styled.button`
     cursor: pointer;
     border-radius: 8px;
     width: 100%;
-    background: ${props => props.theme.BG_GREY};
     margin: 0 0 10px;
     display: flex;
     align-items: center;
     padding: 10px 13px;
+    background: ${props => props.theme.BG_GREY_ALT};
+
+    transition: ${props =>
+        `background ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
+
+    &:hover {
+        background: ${props => darken(props.theme.HOVER_DARKEN_FILTER, props.theme.BG_GREY_ALT)};
+    }
 `;
 
 const Details = styled.div`

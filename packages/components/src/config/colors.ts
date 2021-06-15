@@ -52,6 +52,10 @@ export const THEME = {
         BOX_SHADOW_BLACK_20: 'rgba(0, 0, 0, 0.2)',
         BOX_SHADOW_MODAL: 'rgba(77, 77, 77, 0.2)',
         BOX_SHADOW_OPTION_CARD: 'rgba(77, 77, 77, 0.12)',
+
+        HOVER_DARKEN_FILTER: 0.04,
+        HOVER_TRANSITION_TIME: '150ms',
+        HOVER_TRANSITION_EFFECT: 'ease-out',
     },
     dark: {
         THEME: 'dark',
@@ -104,6 +108,10 @@ export const THEME = {
         BOX_SHADOW_MODAL: 'rgba(0, 0, 0, 0.5)', // shadow around modal
         BOX_SHADOW_OPTION_CARD: 'rgba(0, 0, 0, 0.2)', // shadow around Options card in onboarding
         IMAGE_FILTER: 'brightness(0.8) contrast(1.2) saturate(1.2)',
+
+        HOVER_DARKEN_FILTER: -0.04,
+        HOVER_TRANSITION_TIME: '150ms',
+        HOVER_TRANSITION_EFFECT: 'ease-out',
     },
     // black theme is not used currently, but will be in the future
     black: {
@@ -157,6 +165,10 @@ export const THEME = {
         BOX_SHADOW_MODAL: 'rgba(0, 0, 0, 0.5)', // shadow around modal
         BOX_SHADOW_OPTION_CARD: 'rgba(0, 0, 0, 0.2)', // shadow around Options card in onboarding
         IMAGE_FILTER: 'brightness(0.8) contrast(1.2) saturate(1.2)',
+
+        HOVER_DARKEN_FILTER: -0.04,
+        HOVER_TRANSITION_TIME: '150ms',
+        HOVER_TRANSITION_EFFECT: 'ease-out',
     },
 } as const;
 

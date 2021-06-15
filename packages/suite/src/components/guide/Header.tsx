@@ -1,7 +1,9 @@
 import React from 'react';
+import styled, { css } from 'styled-components';
+import { darken } from 'polished';
+
 import * as guideActions from '@suite-actions/guideActions';
 import { useActions } from '@suite-hooks';
-import styled, { css } from 'styled-components';
 import { Icon, variables, useTheme } from '@trezor/components';
 
 const HeaderWrapper = styled.div<{ noLabel?: boolean }>`
@@ -39,6 +41,22 @@ const Label = styled.div`
     width: 100%;
 `;
 
+const StyledIcon = styled(Icon)`
+    width: 40px;
+    height: 40px;
+    flex-grow: 0;
+    padding: 8px;
+    border-radius: 6px;
+    margin: 0 -8px;
+    background: ${props => props.theme.BG_WHITE};
+    transition: ${props =>
+        `background ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
+
+    &:hover {
+        background: ${props => darken(props.theme.HOVER_DARKEN_FILTER, props.theme.BG_WHITE)};
+    }
+`;
+
 interface Props {
     back?: () => void;
     label?: string | JSX.Element;
@@ -55,14 +73,18 @@ const Header = ({ back, label }: Props) => {
             {back && (
                 <>
                     <ActionButton onClick={back}>
-                        <Icon icon="ARROW_LEFT_LONG" size={24} color={theme.TYPE_LIGHT_GREY} />
+                        <StyledIcon
+                            icon="ARROW_LEFT_LONG"
+                            size={24}
+                            color={theme.TYPE_LIGHT_GREY}
+                        />
                     </ActionButton>
                     {label && <Label>{label}</Label>}
                 </>
             )}
             {!back && label && <MainLabel>{label}</MainLabel>}
             <ActionButton onClick={close}>
-                <Icon icon="CROSS" size={24} color={theme.TYPE_LIGHT_GREY} />
+                <StyledIcon icon="CROSS" size={24} color={theme.TYPE_LIGHT_GREY} />
             </ActionButton>
         </HeaderWrapper>
     );
