@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
-import { Icon, variables } from '@trezor/components';
 import { animated, useSpring } from 'react-spring';
 import { useMeasure } from 'react-use';
+
+import { Icon, variables } from '@trezor/components';
 
 const Wrapper = styled.div<Pick<Props, 'variant'>>`
     display: flex;

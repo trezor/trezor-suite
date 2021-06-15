@@ -1,13 +1,16 @@
 import React from 'react';
+import { darken } from 'polished';
+import styled from 'styled-components';
+
 import { Translation } from '@suite-components';
 import * as guideActions from '@suite-actions/guideActions';
 import { useActions } from '@suite-hooks';
-import styled from 'styled-components';
 import { Icon, variables, useTheme } from '@trezor/components';
 import { Header, Content, ViewWrapper } from '@guide-components';
 
 const FeedbackLinkWrapper = styled.div`
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    padding: 11px 14px;
 `;
 
 const FeedbackButton = styled.button`
@@ -15,11 +18,18 @@ const FeedbackButton = styled.button`
     align-items: center;
     width: 100%;
     border: 0;
-    background: none;
+    border-radius: 4px;
     cursor: pointer;
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     text-align: left;
-    padding: 22px;
+    padding: 11px;
+    background: none;
+    transition: ${props =>
+        `background ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
+
+    &:hover {
+        background: ${props => darken(props.theme.HOVER_DARKEN_FILTER, props.theme.BG_WHITE)};
+    }
 
     &:last-child {
         left: auto;
@@ -67,6 +77,12 @@ const Article = styled.button`
     text-align: left;
     margin-bottom: 10px;
     cursor: pointer;
+    transition: ${props =>
+        `background ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
+
+    &:hover {
+        background: ${props => darken(props.theme.HOVER_DARKEN_FILTER, props.theme.BG_WHITE)};
+    }
 `;
 
 const ArticleIcon = styled(Icon)`
