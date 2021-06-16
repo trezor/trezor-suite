@@ -29,7 +29,7 @@ storiesOf('Form', module).add(
     ),
     {
         options: {
-            showPanel: true,
+            showPanel: false,
         },
     }
 );
