@@ -5,16 +5,17 @@ import * as routerActions from '@suite-actions/routerActions';
 import { AppState, Action, Dispatch, TrezorDevice } from '@suite-types';
 
 const handleDeviceRedirect = async (dispatch: Dispatch, state: AppState, device?: TrezorDevice) => {
-    // no device, no redirect
-    if (!device || !device.features) {
-        return;
-    }
-
     const { devices } = state;
+
+    // user disconnected the last device. display onboarding view which handles connecting of the
+    // first device nicely
+    if (!device && devices.length === 0) {
+        await dispatch(routerActions.goto('onboarding-index'));
+    }
 
     // more then one device is connected, user might be working with previously connected device.
     // redirect is not desirable here
-    if (devices.length > 1) {
+    if (devices.length > 1 || !device?.features) {
         return;
     }
 
@@ -40,6 +41,7 @@ const handleDeviceRedirect = async (dispatch: Dispatch, state: AppState, device?
         await dispatch(routerActions.goto(state.router.route.name));
     }
 };
+
 /**
  * Middleware containing all redirection logic
  */

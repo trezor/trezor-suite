@@ -10,7 +10,6 @@ import * as routerActions from '@suite-actions/routerActions';
 import DatabaseUpgradeModal from './components/DatabaseUpgradeModal';
 import { AppState } from '@suite-types';
 import { useDiscovery, useSelector, useActions } from '@suite-hooks';
-
 import Firmware from '@firmware-views';
 import Recovery from '@suite/views/recovery';
 import Backup from '@backup-views';
@@ -59,6 +58,7 @@ const getSuiteApplicationState = ({
     // no transport available
     if (transport && !transport.type) return Bridge;
 
+    // todo: when there is no last device. user gets redirected to onboarding. so this has become obsolete now
     // no device available
     if (!device) return DeviceConnect;
 
@@ -203,6 +203,7 @@ const Preloader = ({ children, hideModals = false }: Props) => {
         getDiscoveryStatus,
         router,
     });
+
     if (!hideModals && ApplicationStateModal) {
         return (
             <>
