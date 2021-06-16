@@ -1,19 +1,23 @@
-import React, { useState } from 'react';
-import { Switch } from '../../../index';
-import { storiesOf } from '@storybook/react';
-import { boolean } from '@storybook/addon-knobs';
+import React from 'react';
+import { useArgs } from '@storybook/client-api';
 
-storiesOf('Form', module).add('Switch', () => {
-    const [isChecked, setIsChecked] = useState(false);
-    const isSmall = boolean('Small', false);
-    const isDisabled = boolean('Disabled', false);
+import { Switch } from '.';
+
+export default {
+    title: 'Form/Switch',
+    args: { isSmall: false, isDisabled: false, isChecked: false },
+};
+
+export const Basic = ({ ...args }) => {
+    const [{ isChecked }, updateArgs] = useArgs();
+    const handleIsChecked = () => updateArgs({ isChecked: !isChecked });
 
     return (
         <Switch
-            onChange={setIsChecked}
+            onChange={handleIsChecked}
             checked={isChecked}
-            isSmall={isSmall}
-            isDisabled={isDisabled}
+            isSmall={args.isSmall}
+            isDisabled={args.isDisabled}
         />
     );
-});
+};

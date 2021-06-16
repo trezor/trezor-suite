@@ -1,42 +1,60 @@
-import React, { useState } from 'react';
-import { Textarea } from '../../../index';
-import { storiesOf } from '@storybook/react';
-import { text, boolean, select, number } from '@storybook/addon-knobs';
+import React from 'react';
+import { useArgs } from '@storybook/client-api';
 
-storiesOf('Form', module).add('Textarea', () => {
-    const [value, setValue] = useState('Textarea value');
+import { Textarea } from '.';
 
-    const state: any = select(
-        'State',
-        {
-            None: null,
-            Success: 'success',
-            Warning: 'warning',
-            Error: 'error',
+export default {
+    title: 'Form/Textarea',
+    args: {
+        value: 'Textarea',
+        label: 'Label',
+        bottomText: '',
+        placeholder: '',
+        disabled: false,
+        monospace: false,
+        state: null,
+        rows: 5,
+    },
+    argTypes: {
+        state: {
+            control: {
+                options: {
+                    'None (default)': null,
+                    Success: 'success',
+                    Warning: 'warning',
+                    Error: 'error',
+                },
+                type: 'radio',
+            },
         },
-        null
-    );
-    const bottomText: string = text('Bottom text', '');
-    const placeholder: string = text('Placeholder', '');
-    const disabled = boolean('Disabled', false);
-    const monospace = boolean('Monospace', false);
-    const rows = number('Rows', 5, {
-        min: 1,
-        max: 30,
-        range: true,
-        step: 1,
-    });
+        rows: {
+            control: {
+                min: 1,
+                max: 30,
+                step: 1,
+                type: 'range',
+            },
+        },
+    },
+};
+
+export const Basic = ({ ...args }) => {
+    const [{ value }, updateArgs] = useArgs();
+    const handleValue = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        updateArgs({ value: e.target.value });
+    };
 
     return (
         <Textarea
-            disabled={disabled}
-            state={state}
-            bottomText={bottomText}
-            placeholder={placeholder}
-            monospace={monospace}
-            rows={rows}
+            disabled={args.disabled}
+            state={args.state}
+            label={args.label}
+            bottomText={args.bottomText}
+            placeholder={args.placeholder}
+            monospace={args.monospace}
+            rows={args.rows}
             value={value}
-            onChange={e => setValue(e.target.value)}
+            onChange={handleValue}
         />
     );
-});
+};

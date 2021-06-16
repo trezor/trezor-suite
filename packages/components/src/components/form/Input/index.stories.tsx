@@ -1,50 +1,58 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useArgs } from '@storybook/client-api';
 
-import { boolean, select, text } from '@storybook/addon-knobs';
-import { storiesOf } from '@storybook/react';
-import { Button, Input } from '../../..';
+import { Input } from '.';
 
-storiesOf('Form', module).add('Input', () => {
-    const [value, setValue] = useState('Input value');
-
-    const state: any = select(
-        'State',
-        {
-            None: null,
-            Success: 'success',
-            Warning: 'warning',
-            Error: 'error',
+export default {
+    title: 'Form/Input',
+    args: {
+        value: 'Input',
+        label: 'Label',
+        bottomText: '',
+        placeholder: '',
+        disabled: false,
+        monospace: false,
+        state: null,
+        variant: null,
+    },
+    argTypes: {
+        state: {
+            control: {
+                options: {
+                    'None (default)': null,
+                    Success: 'success',
+                    Warning: 'warning',
+                    Error: 'error',
+                },
+                type: 'radio',
+            },
         },
-        null
-    );
-    const variant: any = select(
-        'Variant',
-        {
-            'Default (large)': null,
-            Small: 'small',
+        variant: {
+            control: {
+                options: { 'Large (default)': null, Small: 'small' },
+                type: 'radio',
+            },
         },
-        null
-    );
+    },
+};
 
-    const label: string = text('Label', 'Label');
-    const labelAddon = <Button variant="tertiary">Label Addon</Button>;
-    const bottomText: string = text('Bottom text', '');
-    const placeholder: string = text('Placeholder', '');
-    const disabled = boolean('Disabled', false);
-    const monospace = boolean('Monospace', false);
+export const Basic = ({ ...args }) => {
+    const [{ value }, updateArgs] = useArgs();
+    const handleValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+        updateArgs({ value: e.target.value });
+    };
 
     return (
         <Input
-            disabled={disabled}
-            state={state}
-            variant={variant}
-            label={label}
-            labelAddon={labelAddon}
-            bottomText={bottomText}
-            placeholder={placeholder}
-            monospace={monospace}
+            disabled={args.disabled}
+            state={args.state}
+            variant={args.variant}
+            label={args.label}
+            bottomText={args.bottomText}
+            placeholder={args.placeholder}
+            monospace={args.monospace}
             value={value}
-            onChange={e => setValue(e.target.value)}
+            onChange={handleValue}
         />
     );
-});
+};
