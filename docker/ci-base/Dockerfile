@@ -32,7 +32,7 @@ FROM ${CI_DOCKER_PROXY}node:14-buster
 
 RUN apt-get update && apt-get install -y \
     build-essential \
-    # required by cypress
+    # required by cypress and node
     xvfb \
     libgtk2.0-0 \
     libnotify-dev \
@@ -40,6 +40,11 @@ RUN apt-get update && apt-get install -y \
     libnss3 \
     libxss1 \
     libasound2 \
+    libcairo2-dev \
+    libpango1.0-dev \
+    libjpeg-dev \
+    libgif-dev \
+    librsvg2-dev \
     # required by core/emulator
     scons \
     libsdl2-dev \
@@ -48,7 +53,6 @@ RUN apt-get update && apt-get install -y \
     zip \
     jq \
     rsync
-
 
 RUN apt-get install -y \
     python3-dev \
