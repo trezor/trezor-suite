@@ -1,46 +1,62 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useArgs } from '@storybook/client-api';
+
 import { Select } from '.';
-import { storiesOf } from '@storybook/react';
-import { boolean, select } from '@storybook/addon-knobs';
 
-storiesOf('Form', module).add('Select', () => {
-    const [value, setValue] = useState(null);
+const values: any = {
+    'None (default)': null,
+    Low: { label: 'low', value: 'low' },
+    Medium: { label: 'medium', value: 'medium' },
+    High: { label: 'high', value: 'high' },
+    Custom: { label: 'custom', value: 'custom' },
+};
 
-    const isSearchable = boolean('Searchable', false);
-    const isClearable = boolean('Clearable', false);
-    const isClean = boolean('IsClean', false);
-    const isDisabled = boolean('Disabled', false);
-    const withDropdownIndicator = boolean('withDropdownIndicator', true);
-    const variant: any = select(
-        'Variant',
-        {
-            'Default (large)': null,
-            Small: 'small',
+const options = Object.keys(values)
+    .filter((k: string) => values[k])
+    .map((k: string) => values[k]);
+
+export default {
+    title: 'Form/Select',
+    argTypes: {
+        option: {
+            control: {
+                disable: true,
+            },
         },
-        null
-    );
+        variant: {
+            control: {
+                options: { 'Large (default)': null, Small: 'small' },
+                type: 'radio',
+            },
+        },
+    },
+    args: {
+        option: 'low',
+        variant: null,
+        isSearchable: false,
+        isClearable: false,
+        isClean: false,
+        isDisabled: false,
+        withDropdownIndicator: true,
+    },
+};
 
-    const values: any = {
-        None: null,
-        Hello: { value: 'hello', label: 'Hello' },
-        World: { value: 'world', label: 'World' },
-    };
+export const Basic = ({ ...args }) => {
+    const [{ option }, updateArgs] = useArgs();
+    const setOption = (option: { label: string; value: 'string' }) => updateArgs({ option });
 
-    const options = Object.keys(values)
-        .filter((k: string) => values[k])
-        .map((k: string) => values[k]);
-
+    console.log(option);
     return (
         <Select
-            isSearchable={isSearchable}
-            isClearable={isClearable}
-            isClean={isClean}
-            isDisabled={isDisabled}
-            withDropdownIndicator={withDropdownIndicator}
-            variant={variant}
-            value={value}
-            onChange={setValue}
+            isSearchable={args.isSearchable}
+            isClearable={args.isClearable}
+            isClean={args.isClean}
+            isDisabled={args.isDisabled}
+            withDropdownIndicator={args.withDropdownIndicator}
+            variant={args.variant}
+            value={option}
+            onChange={setOption}
             options={options}
         />
     );
-});
+};
