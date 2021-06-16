@@ -9,7 +9,7 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import * as deviceUtils from '@suite-utils/device';
 import DeviceStatus from './components/DeviceStatus';
 
-const Wrapper = styled.div<{ triggerAnim?: boolean }>`
+const Wrapper = styled.div`
     display: flex;
     position: relative;
     width: 288px;
@@ -84,7 +84,6 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
     });
 
     const [localCount, setLocalCount] = useState<number | null>(null);
-    const [triggerAnim, setTriggerAnim] = useState(false);
     const [showTextStatus, setShowTextStatus] = useState(false);
 
     const countChanged = localCount && localCount !== deviceCount;
@@ -142,7 +141,6 @@ const DeviceSelector = (props: React.HTMLAttributes<HTMLDivElement>) => {
                     cancelable: true,
                 }) && analytics.report({ type: 'menu/goto/switch-device' })
             }
-            triggerAnim={triggerAnim}
             {...props}
         >
             {selectedDevice && (
