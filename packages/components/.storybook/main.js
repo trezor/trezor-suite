@@ -6,8 +6,9 @@ module.exports = {
     },
     addons: [
         '@storybook/addon-links',
-        '@storybook/addon-knobs',
+        '@storybook/addon-knobs', // DEPRECATED
         '@storybook/addon-viewport',
+        '@storybook/addon-controls',
     ],
     typescript: {
         check: false,
@@ -15,5 +16,5 @@ module.exports = {
         // reactDocgenTypescriptOptions: {
         //   propFilter: (prop) => ['label', 'disabled'].includes(prop.name),
         // },
-      },
+    },
 };
