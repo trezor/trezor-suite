@@ -1,13 +1,17 @@
-import React from 'react';
-import { Checkbox } from '.';
+import React, { useState } from 'react';
+import { text } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
-import { text, boolean } from '@storybook/addon-knobs';
+
+import { Checkbox } from '.';
 
 storiesOf('Form', module).add('Checkbox', () => {
-    const isChecked = boolean('Checked', false);
+    const [isChecked, setIsChecked] = useState(false);
+
+    const label = text('Label', 'Checkbox');
+
     return (
-        <Checkbox onClick={() => {}} {...(isChecked ? { isChecked } : {})}>
-            {text('Label', 'Checkbox')}
+        <Checkbox isChecked={isChecked} onClick={() => setIsChecked(!isChecked)}>
+            {label}
         </Checkbox>
     );
 });

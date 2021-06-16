@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Textarea } from '../../../index';
 import { storiesOf } from '@storybook/react';
 import { text, boolean, select, number } from '@storybook/addon-knobs';
 
 storiesOf('Form', module).add('Textarea', () => {
-    const value: any = text('Value', 'Input value');
+    const [value, setValue] = useState('Textarea value');
+
     const state: any = select(
         'State',
         {
@@ -15,17 +16,6 @@ storiesOf('Form', module).add('Textarea', () => {
         },
         null
     );
-    const display: any = select(
-        'Display',
-        {
-            'Default (normal)': null,
-            Short: 'short',
-            Block: 'block',
-        },
-        null
-    );
-
-    const topLabel: string = text('Top label', '');
     const bottomText: string = text('Bottom text', '');
     const placeholder: string = text('Placeholder', '');
     const disabled = boolean('Disabled', false);
@@ -39,15 +29,14 @@ storiesOf('Form', module).add('Textarea', () => {
 
     return (
         <Textarea
-            {...(disabled ? { disabled } : {})}
-            {...(state ? { state } : {})}
-            {...(display ? { display } : {})}
-            {...(topLabel ? { topLabel } : {})}
-            {...(bottomText ? { bottomText } : {})}
-            {...(placeholder ? { placeholder } : {})}
-            {...(rows !== 5 ? { rows } : {})}
-            {...(monospace ? { monospace } : {})}
+            disabled={disabled}
+            state={state}
+            bottomText={bottomText}
+            placeholder={placeholder}
+            monospace={monospace}
+            rows={rows}
             value={value}
+            onChange={e => setValue(e.target.value)}
         />
     );
 });

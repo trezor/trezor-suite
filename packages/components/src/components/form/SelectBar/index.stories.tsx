@@ -1,8 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
 import { SelectBar } from './index';
 import { storiesOf } from '@storybook/react';
-import { StoryColumn } from '../../../support/Story';
 
 storiesOf('Form', module).add(
     'Select Bar',
