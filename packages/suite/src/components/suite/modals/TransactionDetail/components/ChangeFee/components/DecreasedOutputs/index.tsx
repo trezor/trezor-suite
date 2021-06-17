@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Icon, variables, RadioButton } from '@trezor/components';
-import { Translation, FormattedCryptoAmount } from '@suite-components';
+import { Translation, FormattedCryptoAmount, HiddenPlaceholder } from '@suite-components';
 import { ANIMATION } from '@suite-config';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
 import { useRbfContext } from '@wallet-hooks/useRbfForm';
@@ -78,7 +78,6 @@ const DecreasedOutputs = () => {
                 <ReducedAmount>
                     <ArrowIcon icon="ARROW_RIGHT_LONG" />
                     <FormattedCryptoAmount
-                        disableHiddenPlaceholder
                         value={formatNetworkAmount(
                             precomposedTx.transaction.outputs[setMaxOutputId].amount,
                             account.symbol,
@@ -124,7 +123,6 @@ const DecreasedOutputs = () => {
                                                 values={{
                                                     value: (
                                                         <FormattedCryptoAmount
-                                                            disableHiddenPlaceholder
                                                             value={o.amount}
                                                             symbol={account.symbol}
                                                         />
@@ -134,7 +132,7 @@ const DecreasedOutputs = () => {
                                             {isChecked && reducedAmount}
                                         </OutputLabel>
                                         <OutputAddress isChecked={isChecked}>
-                                            {o.address}
+                                            <HiddenPlaceholder>{o.address}</HiddenPlaceholder>
                                         </OutputAddress>
                                     </OutputInner>
                                 </Output>
