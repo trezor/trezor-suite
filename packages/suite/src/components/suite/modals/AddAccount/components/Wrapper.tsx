@@ -1,12 +1,12 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
-import { Icon, P, variables } from '@trezor/components';
-import { FADE_IN } from '@trezor/components/lib/config/animations';
-
-import { CoinsList, Translation, Modal } from '@suite-components';
+import styled from 'styled-components';
+import { P, variables } from '@trezor/components';
+import { Translation, Modal } from '@suite-components';
 import { Network } from '@wallet-types';
 import { TrezorDevice } from '@suite-types';
 import AccountTypeSelect from './AccountTypeSelect';
+import AddAccount from './AddAccount';
+import EnableNetwork from './EnableNetwork';
 
 const StyledModal = styled(props => <Modal {...props} />)`
     min-height: 550px;
@@ -18,30 +18,10 @@ const Actions = styled.div`
     justify-content: center;
 `;
 
-const SelectCoin = styled.div<{ disabled: boolean }>`
-    display: flex;
-    justify-content: flex-start;
-    align-self: flex-start;
-    align-items: center;
-    text-align: left;
-    ${({ disabled }) =>
-        disabled
-            ? ''
-            : css`
-                  cursor: pointer;
-              `}
-`;
-
 const Title = styled(P)`
     margin-right: 9px;
     padding: 14px 0%;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const IconAnimated = styled(Icon)`
-    @media (prefers-reduced-motion: no-preference) {
-        animation: ${FADE_IN} ease 0.3s;
-    }
 `;
 
 const Expander = styled.div`
@@ -57,7 +37,8 @@ type Props = {
     disabledMainnetNetworks: Network[];
     disabledTestnetNetworks: Network[];
     accountTypes?: Network[];
-    onSelectNetwork: (network?: Network) => void;
+    handleNetworkSelection: (symbol?: Network['symbol']) => void;
+    handleAccountTypeSelection: (network?: Network) => void;
     onCancel: () => void;
     children?: JSX.Element;
     actionButton?: JSX.Element;
@@ -75,23 +56,11 @@ const Wrapper = ({
     disabledMainnetNetworks,
     disabledTestnetNetworks,
     onCancel,
-    onSelectNetwork,
+    handleNetworkSelection,
+    handleAccountTypeSelection,
     unavailableCapabilities,
 }: Props) => {
-    const networkCanChange = network && !networkPinned;
-
-    const handleNetworkSelection = (networksList: Network[]) => (symbol: Network['symbol']) => {
-        const selectedNetwork = networksList.find(n => n.symbol === symbol);
-        if (selectedNetwork && !networkPinned) {
-            onSelectNetwork(selectedNetwork);
-        }
-    };
-    const resetNetworkSelection = () => {
-        if (networkCanChange) {
-            onSelectNetwork();
-        }
-    };
-
+    const networkCanChange = !!network && networkEnabled && !networkPinned;
     const selectedNetworks = network ? [network.symbol] : [];
 
     return (
@@ -100,35 +69,21 @@ const Wrapper = ({
             onCancel={onCancel}
             heading={<Translation id="MODAL_ADD_ACCOUNT_TITLE" />}
         >
-            <SelectCoin onClick={resetNetworkSelection} disabled={!networkCanChange}>
-                <Title>
-                    <Translation id="TR_SELECT_COIN" />
-                </Title>
-                {networkCanChange && <IconAnimated icon="PENCIL" size={12} useCursorPointer />}
-            </SelectCoin>
-            <CoinsList
-                onToggleFn={handleNetworkSelection(enabledNetworks)}
+            <AddAccount
                 networks={network && networkEnabled ? [network] : enabledNetworks}
+                networkCanChange={networkCanChange}
                 selectedNetworks={selectedNetworks}
                 unavailableCapabilities={unavailableCapabilities}
+                handleNetworkSelection={handleNetworkSelection}
             />
             {!networkEnabled && (
-                <>
-                    <Title>inactive</Title>
-                    <CoinsList
-                        onToggleFn={handleNetworkSelection(disabledMainnetNetworks)}
-                        networks={disabledMainnetNetworks}
-                        selectedNetworks={selectedNetworks}
-                        unavailableCapabilities={unavailableCapabilities}
-                    />
-                    <Title>testnet</Title>
-                    <CoinsList
-                        onToggleFn={handleNetworkSelection(disabledTestnetNetworks)}
-                        networks={disabledTestnetNetworks}
-                        selectedNetworks={selectedNetworks}
-                        unavailableCapabilities={unavailableCapabilities}
-                    />
-                </>
+                <EnableNetwork
+                    networks={disabledMainnetNetworks}
+                    testnetNetworks={disabledTestnetNetworks}
+                    selectedNetworks={selectedNetworks}
+                    unavailableCapabilities={unavailableCapabilities}
+                    handleNetworkSelection={handleNetworkSelection}
+                />
             )}
             {accountTypes && accountTypes?.length > 1 && (
                 <>
@@ -138,7 +93,7 @@ const Wrapper = ({
                     <AccountTypeSelect
                         network={network}
                         accountTypes={accountTypes}
-                        onSelectAccountType={onSelectNetwork}
+                        onSelectAccountType={handleAccountTypeSelection}
                     />
                 </>
             )}

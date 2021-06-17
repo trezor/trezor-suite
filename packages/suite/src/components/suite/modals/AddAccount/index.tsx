@@ -45,6 +45,7 @@ const AddAccount = (props: Props) => {
     // applied only when changing account in coinmarket exchange receive options context so far
     const preselectedNetwork =
         props.symbol && internalNetworks.find(n => n.symbol === props.symbol);
+    const networkPinned = !!props.symbol;
 
     const [network, setNetwork] = useState<Network | undefined>(preselectedNetwork);
 
@@ -58,15 +59,27 @@ const AddAccount = (props: Props) => {
         network => !network?.testnet,
     );
 
+    const handleNetworkSelection = (symbol?: Network['symbol']) => {
+        if (symbol) {
+            const selectedNetwork = NETWORKS.find(n => n.symbol === symbol);
+            if (selectedNetwork && !networkPinned) {
+                setNetwork(selectedNetwork);
+            }
+        } else {
+            setNetwork(undefined);
+        }
+    };
+
     // Common props for Wrapper
     const wrapperProps = {
         network,
         networkEnabled,
-        networkPinned: !!props.symbol,
+        networkPinned,
         enabledNetworks,
         disabledMainnetNetworks,
         disabledTestnetNetworks,
-        onSelectNetwork: setNetwork,
+        handleNetworkSelection,
+        handleAccountTypeSelection: setNetwork,
         onCancel: props.onCancel,
         unavailableCapabilities,
     };
