@@ -118,18 +118,19 @@ const ChangeFee = (props: Props & { showChained: () => void }) => {
                                 <Rate>{feeRate}</Rate>
                                 <Amount>
                                     <StyledCryptoAmount>
-                                        <FormattedCryptoAmount value={tx.fee} symbol={tx.symbol} />
+                                        <FormattedCryptoAmount
+                                            disableHiddenPlaceholder
+                                            value={tx.fee}
+                                            symbol={tx.symbol}
+                                        />
                                     </StyledCryptoAmount>
-                                    {tx.rates && (
-                                        <StyledFiatValue>
-                                            <FiatValue
-                                                amount={tx.amount}
-                                                symbol={tx.symbol}
-                                                source={tx.rates}
-                                                useCustomSource
-                                            />
-                                        </StyledFiatValue>
-                                    )}
+                                    <StyledFiatValue>
+                                        <FiatValue
+                                            disableHiddenPlaceholder
+                                            amount={tx.fee}
+                                            symbol={tx.symbol}
+                                        />
+                                    </StyledFiatValue>
                                 </Amount>
                             </RateWrapper>
                         </Content>
