@@ -181,6 +181,7 @@ export const ICONS: IconType[] = [
     'PACKAGE',
     'VERIFIED',
     'ANCHOR',
+    'PENCIL',
     'PENCIL_LINE',
     'KEY',
 ];
