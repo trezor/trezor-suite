@@ -13,6 +13,7 @@ import * as COINMARKET_EXCHANGE from './coinmarketExchangeConstants';
 import * as COINMARKET_SELL from './coinmarketSellConstants';
 import * as COINMARKET_COMMON from './coinmarketCommonConstants';
 import * as ACCOUNT_SEARCH from './accountSearch';
+import * as FORM_DRAFT from './formDraftConstants';
 
 export {
     BLOCKCHAIN,
@@ -30,4 +31,5 @@ export {
     COINMARKET_SELL,
     COINMARKET_COMMON,
     ACCOUNT_SEARCH,
+    FORM_DRAFT,
 };

@@ -1,5 +1,8 @@
 # Storage changelog
 
+## 24
+-   added form drafts
+
 ## 22
 -   added LTC bech32 accounts
 

@@ -13,6 +13,7 @@ import type { GraphData } from '@wallet-types/graph';
 import type { TradeType } from '@wallet-types/coinmarketCommonTypes';
 import type { MessageSystem } from '@suite-types/messageSystem';
 import type { MessageState } from '@suite/reducers/suite/messageSystemReducer';
+import type { FormDraft } from '@wallet-types/form';
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -105,6 +106,10 @@ export interface SuiteDBSchema extends DBSchema {
                 [key: string]: MessageState;
             };
         };
+    };
+    formDrafts: {
+        key: string;
+        value: FormDraft;
     };
 }
 
