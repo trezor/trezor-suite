@@ -13,7 +13,8 @@
             "packages/*"
         ],
         "nohoist": [
-            "**/babel-jest"
+            "**/babel-jest",
+            "@trezor/transport/**"
         ]
     },
     "scripts": {
