@@ -43,3 +43,12 @@ export const SLIDE_DOWN = keyframes`
         opacity: 0;
     }
 `;
+
+export const FADE_IN = keyframes`
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+`;

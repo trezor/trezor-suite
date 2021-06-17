@@ -113,6 +113,7 @@ export const ICONS = {
     PACKAGE: require('../../images/icons/package.svg'),
     VERIFIED: require('../../images/icons/verified.svg'),
     ANCHOR: require('../../images/icons/anchor.svg'),
+    PENCIL: require('../../images/icons/pencil.svg'),
     PENCIL_LINE: require('../../images/icons/pencil-line.svg'),
     KEY: require('../../images/icons/key.svg'),
 };
