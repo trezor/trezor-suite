@@ -1,2 +1,13 @@
-export const range = (start: number, end: number) =>
-    [...new Array(end - start + 1).keys()].map((_, index) => start + index);
+/**
+ *
+ * @param array Array to be divided into two parts.
+ * @param condition Condition for inclusion in the first part.
+ * @returns Array of two arrays - the items in the first array satisfy the condition and the rest is in the second array. Preserving original order.
+ */
+export function partition<T = []>(array: T[], condition: (elem: T) => boolean): [T[], T[]] {
+    return array.reduce(
+        ([pass, fail], elem) =>
+            condition(elem) ? [[...pass, elem], fail] : [pass, [...fail, elem]],
+        [[], []] as [T[], T[]],
+    );
+}
