@@ -1,14 +1,16 @@
 import React from 'react';
-import styled from 'styled-components';
-import { variables } from '@trezor/components';
-import { Translation, ExternalLink, Modal } from '@suite-components';
+import styled, { css } from 'styled-components';
+import { Icon, P, variables } from '@trezor/components';
+import { FADE_IN } from '@trezor/components/lib/config/animations';
+
+import { CoinsList, Translation, Modal } from '@suite-components';
 import { Network } from '@wallet-types';
-import NetworkSelect from './NetworkSelect';
+import { TrezorDevice } from '@suite-types';
 import AccountTypeSelect from './AccountTypeSelect';
-import { TREZOR_COINS_URL } from '@suite-constants/urls';
 
 const StyledModal = styled(props => <Modal {...props} />)`
     min-height: 550px;
+    text-align: left;
 `;
 
 const Actions = styled.div`
@@ -16,17 +18,30 @@ const Actions = styled.div`
     justify-content: center;
 `;
 
-const Row = styled.div`
+const SelectCoin = styled.div<{ disabled: boolean }>`
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
+    align-self: flex-start;
     align-items: center;
-    padding: 20px 0px;
+    text-align: left;
+    ${({ disabled }) =>
+        disabled
+            ? ''
+            : css`
+                  cursor: pointer;
+              `}
 `;
 
-const RowTitle = styled.div`
-    display: flex;
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
+const Title = styled(P)`
+    margin-right: 9px;
+    padding: 14px 0%;
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
+const IconAnimated = styled(Icon)`
+    @media (prefers-reduced-motion: no-preference) {
+        animation: ${FADE_IN} ease 0.3s;
+    }
 `;
 
 const Expander = styled.div`
@@ -35,66 +50,106 @@ const Expander = styled.div`
 `;
 
 type Props = {
-    selectedNetwork: Network;
-    internalNetworks: Network[];
-    selectedAccountType?: Network;
+    network?: Network;
+    networkEnabled: boolean;
+    networkPinned?: boolean;
+    enabledNetworks: Network[];
+    disabledMainnetNetworks: Network[];
+    disabledTestnetNetworks: Network[];
     accountTypes?: Network[];
-    onSelectNetwork: (network: Network) => void;
-    onSelectAccountType: (network: Network) => void;
+    onSelectNetwork: (network?: Network) => void;
     onCancel: () => void;
     children?: JSX.Element;
     actionButton?: JSX.Element;
-    pinNetwork?: boolean;
+    unavailableCapabilities: TrezorDevice['unavailableCapabilities'];
 };
 
-const Wrapper = (props: Props) => (
-    <StyledModal
-        cancelable
-        onCancel={props.onCancel}
-        heading={<Translation id="MODAL_ADD_ACCOUNT_TITLE" />}
-        description={
-            <Translation
-                id="MODAL_ADD_ACCOUNT_DESC"
-                values={{
-                    trezorCoinsUrl: (
-                        <ExternalLink size="small" href={TREZOR_COINS_URL}>
-                            <Translation id="TR_LEARN_MORE" />
-                        </ExternalLink>
-                    ),
-                }}
-            />
+const Wrapper = ({
+    network,
+    networkEnabled,
+    networkPinned,
+    accountTypes,
+    actionButton,
+    children,
+    enabledNetworks,
+    disabledMainnetNetworks,
+    disabledTestnetNetworks,
+    onCancel,
+    onSelectNetwork,
+    unavailableCapabilities,
+}: Props) => {
+    const networkCanChange = network && !networkPinned;
+
+    const handleNetworkSelection = (networksList: Network[]) => (symbol: Network['symbol']) => {
+        const selectedNetwork = networksList.find(n => n.symbol === symbol);
+        if (selectedNetwork && !networkPinned) {
+            onSelectNetwork(selectedNetwork);
         }
-    >
-        <Row>
-            <RowTitle>
-                <Translation id="TR_CRYPTOCURRENCY" />
-            </RowTitle>
-            <NetworkSelect
-                network={props.selectedNetwork}
-                internalNetworks={props.internalNetworks}
-                setSelectedNetwork={props.onSelectNetwork}
-                isDisabled={props.pinNetwork}
+    };
+    const resetNetworkSelection = () => {
+        if (networkCanChange) {
+            onSelectNetwork();
+        }
+    };
+
+    const selectedNetworks = network ? [network.symbol] : [];
+
+    return (
+        <StyledModal
+            cancelable
+            onCancel={onCancel}
+            heading={<Translation id="MODAL_ADD_ACCOUNT_TITLE" />}
+        >
+            <SelectCoin onClick={resetNetworkSelection} disabled={!networkCanChange}>
+                <Title>
+                    <Translation id="TR_SELECT_COIN" />
+                </Title>
+                {networkCanChange && <IconAnimated icon="PENCIL" size={12} useCursorPointer />}
+            </SelectCoin>
+            <CoinsList
+                onToggleFn={handleNetworkSelection(enabledNetworks)}
+                networks={network && networkEnabled ? [network] : enabledNetworks}
+                selectedNetworks={selectedNetworks}
+                unavailableCapabilities={unavailableCapabilities}
             />
-        </Row>
-        {props.accountTypes && props.accountTypes.length > 1 && (
-            <Row>
-                <RowTitle>
-                    <Translation id="TR_ACCOUNT_TYPE" />
-                </RowTitle>
-                <AccountTypeSelect
-                    network={props.selectedAccountType}
-                    accountTypes={props.accountTypes}
-                    onSelectAccountType={props.onSelectAccountType}
-                />
-            </Row>
-        )}
+            {!networkEnabled && (
+                <>
+                    <Title>inactive</Title>
+                    <CoinsList
+                        onToggleFn={handleNetworkSelection(disabledMainnetNetworks)}
+                        networks={disabledMainnetNetworks}
+                        selectedNetworks={selectedNetworks}
+                        unavailableCapabilities={unavailableCapabilities}
+                    />
+                    <Title>testnet</Title>
+                    <CoinsList
+                        onToggleFn={handleNetworkSelection(disabledTestnetNetworks)}
+                        networks={disabledTestnetNetworks}
+                        selectedNetworks={selectedNetworks}
+                        unavailableCapabilities={unavailableCapabilities}
+                    />
+                </>
+            )}
+            {accountTypes && accountTypes?.length > 1 && (
+                <>
+                    <Title>
+                        <Translation id="TR_ACCOUNT_TYPE" />
+                    </Title>
+                    <AccountTypeSelect
+                        network={network}
+                        accountTypes={accountTypes}
+                        onSelectAccountType={onSelectNetwork}
+                    />
+                </>
+            )}
 
-        {props.children}
+            {children}
 
-        <Expander />
+            <Expander />
 
-        <Actions>{props.actionButton}</Actions>
-    </StyledModal>
-);
+            <Actions>{actionButton}</Actions>
+        </StyledModal>
+    );
+};
 
 export default Wrapper;

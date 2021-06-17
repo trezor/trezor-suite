@@ -8,6 +8,7 @@ import { useSelector, useActions } from '@suite-hooks';
 import * as accountActions from '@wallet-actions/accountActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as routerActions from '@suite-actions/routerActions';
+import { partition } from '@suite-utils/array';
 
 import NetworkUnavailable from './components/NetworkUnavailable';
 import NetworkInternal from './components/NetworkInternal';
@@ -27,11 +28,10 @@ const AddAccount = (props: Props) => {
         changeCoinVisibility: walletSettingsActions.changeCoinVisibility,
         goto: routerActions.goto,
     });
-    const { app, accounts, enabledNetworks, selectedAccount } = useSelector(state => ({
+    const { app, accounts, enabledNetworks: enabledNetworksSymbols } = useSelector(state => ({
         app: state.router.app,
         accounts: state.wallet.accounts,
         enabledNetworks: state.wallet.settings.enabledNetworks,
-        selectedAccount: state.wallet.selectedAccount,
     }));
 
     // Collect all Networks without "accountType" (normal)
@@ -42,41 +42,48 @@ const AddAccount = (props: Props) => {
         ? props.device.unavailableCapabilities
         : {};
 
-    // if symbol is passed in the props, preselect it and pin it (do not allow the user to change it)
-    // otherwise default value is currently selected network or first network item on the list (btc)
-    const symbol = props.symbol ? props.symbol : selectedAccount.account?.symbol;
-    const preselectedNetwork = symbol
-        ? (internalNetworks.find(n => n.symbol === symbol) as Network)
-        : internalNetworks[0];
+    // applied only when changing account in coinmarket exchange receive options context so far
+    const preselectedNetwork =
+        props.symbol && internalNetworks.find(n => n.symbol === props.symbol);
 
-    const [network, setNetwork] = useState<Network>(preselectedNetwork);
-    const [accountType, setAccountType] = useState<Network | undefined>(undefined);
+    const [network, setNetwork] = useState<Network | undefined>(preselectedNetwork);
+
+    const networkEnabled = !!network && enabledNetworksSymbols.includes(network.symbol);
+
+    const [enabledNetworks, disabledNetworks] = partition(internalNetworks, network =>
+        enabledNetworksSymbols.includes(network.symbol),
+    );
+    const [disabledMainnetNetworks, disabledTestnetNetworks] = partition(
+        disabledNetworks,
+        network => !network?.testnet,
+    );
 
     // Common props for Wrapper
     const wrapperProps = {
-        selectedNetwork: network,
-        internalNetworks,
-        onSelectNetwork: (network: Network) => {
-            setNetwork(network);
-            setAccountType(undefined);
-        },
-        onSelectAccountType: setAccountType,
+        network,
+        networkEnabled,
+        networkPinned: !!props.symbol,
+        enabledNetworks,
+        disabledMainnetNetworks,
+        disabledTestnetNetworks,
+        onSelectNetwork: setNetwork,
         onCancel: props.onCancel,
+        unavailableCapabilities,
     };
 
     // Check device capabilities
     // Display: unavailable network
-    const capability = unavailableCapabilities[network.symbol];
-    if (capability) {
+    const unavailableCapability = network && unavailableCapabilities[network.symbol];
+    if (network && unavailableCapability) {
         return (
             <Wrapper {...wrapperProps}>
-                <NetworkUnavailable capability={capability} network={network} />
+                <NetworkUnavailable capability={unavailableCapability} network={network} />
             </Wrapper>
         );
     }
 
     // Display: Network is not enabled in settings
-    if (!enabledNetworks.includes(network.symbol)) {
+    if (network && !networkEnabled) {
         const onEnableNetwork = () => {
             props.onCancel();
             changeCoinVisibility(network.symbol, true);
@@ -101,24 +108,25 @@ const AddAccount = (props: Props) => {
                         />
                     </Button>
                 }
-                pinNetwork={!!props.symbol}
             />
         );
     }
 
     // Collect all empty accounts related to selected device and selected accountType
-    const currentType = (accountType ? accountType.accountType : undefined) || 'normal';
-    const emptyAccounts = accounts.filter(
-        a =>
-            a.deviceState === props.device.state &&
-            a.symbol === network.symbol &&
-            a.accountType === currentType &&
-            a.empty,
-    );
+    const currentType = network?.accountType ?? 'normal';
+    const emptyAccounts =
+        network &&
+        accounts.filter(
+            a =>
+                a.deviceState === props.device.state &&
+                a.symbol === network.symbol &&
+                a.accountType === currentType &&
+                a.empty,
+        );
 
     // Collect possible accountTypes
     const accountTypes =
-        network.networkType === 'bitcoin'
+        network?.networkType === 'bitcoin'
             ? NETWORKS.filter(n => n.symbol === network.symbol)
             : undefined;
 
@@ -139,18 +147,19 @@ const AddAccount = (props: Props) => {
     return (
         <Wrapper
             {...wrapperProps}
-            selectedAccountType={accountType}
             accountTypes={accountTypes}
             actionButton={
-                <AddAccountButton
-                    network={network}
-                    accounts={emptyAccounts}
-                    onEnableAccount={onEnableAccount}
-                />
+                network &&
+                emptyAccounts && (
+                    <AddAccountButton
+                        network={network}
+                        accounts={emptyAccounts}
+                        onEnableAccount={onEnableAccount}
+                    />
+                )
             }
-            pinNetwork={!!props.symbol}
         >
-            <NetworkInternal network={accountType || network} accountTypes={accountTypes} />
+            {network && <NetworkInternal network={network} accountTypes={accountTypes} />}
         </Wrapper>
     );
 };

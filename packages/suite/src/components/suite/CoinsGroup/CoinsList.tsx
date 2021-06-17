@@ -41,11 +41,11 @@ const UnavailableMessage = ({ type, deviceVersion, isBtcOnly }: UnavailableMessa
 interface Props {
     onToggleFn: (symbol: Network['symbol'], visible: boolean) => void;
     networks: Network[];
-    enabledNetworks: Network['symbol'][];
+    selectedNetworks: Network['symbol'][];
     unavailableCapabilities: TrezorDevice['unavailableCapabilities'];
 }
 
-const CoinsList = ({ onToggleFn, networks, enabledNetworks, unavailableCapabilities }: Props) => {
+const CoinsList = ({ onToggleFn, networks, selectedNetworks, unavailableCapabilities }: Props) => {
     const { device, isLocked } = useDevice();
     if (!device) return null;
 
@@ -73,7 +73,7 @@ const CoinsList = ({ onToggleFn, networks, enabledNetworks, unavailableCapabilit
                                 key={network.symbol}
                                 symbol={network.symbol}
                                 name={network.name}
-                                selected={enabledNetworks.includes(network.symbol)}
+                                selected={selectedNetworks.includes(network.symbol)}
                                 disabled
                             />
                         </Tooltip>
@@ -84,9 +84,9 @@ const CoinsList = ({ onToggleFn, networks, enabledNetworks, unavailableCapabilit
                         key={network.symbol}
                         symbol={network.symbol}
                         name={network.name}
-                        selected={enabledNetworks.includes(network.symbol)}
+                        selected={selectedNetworks.includes(network.symbol)}
                         onClick={() =>
-                            onToggleFn(network.symbol, !enabledNetworks.includes(network.symbol))
+                            onToggleFn(network.symbol, !selectedNetworks.includes(network.symbol))
                         }
                     />
                 );
