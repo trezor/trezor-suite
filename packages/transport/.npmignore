@@ -1,0 +1,30 @@
+# Sources
+src
+babel.config.js
+.eslintrc
+.eslintignore
+.flowconfig
+.gitignore
+.gitmodules
+.github
+
+# Dependency directory
+node_modules
+yarn.lock
+
+# OSX
+.DS_Store
+
+# Editors
+.editorconfig
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
+*.swp
+.nix_bash_history
+
+# Logs
+logs
+*.log
+.yarnclean
