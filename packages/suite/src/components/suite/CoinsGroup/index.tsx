@@ -39,7 +39,7 @@ const CoinsGroup = ({
         <CoinsList
             onToggleFn={onToggleFn}
             networks={networks}
-            enabledNetworks={enabledNetworks}
+            selectedNetworks={enabledNetworks}
             unavailableCapabilities={unavailableCapabilities}
         />
     </CoinsGroupWrapper>

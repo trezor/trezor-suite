@@ -3575,6 +3575,14 @@ const definedMessages = defineMessages({
         id: 'TR_CRYPTOCURRENCY',
         defaultMessage: 'Cryptocurrency',
     },
+    TR_SELECT_COIN: {
+        id: 'TR_SELECT_COIN',
+        defaultMessage: 'Select coin',
+    },
+    TR_ACTIVATE_COINS: {
+        id: 'TR_ACTIVATE_COINS',
+        defaultMessage: 'Activate more coins',
+    },
     TR_COIN_SETTINGS: {
         id: 'TR_COIN_SETTINGS',
         defaultMessage: 'Coin settings',
