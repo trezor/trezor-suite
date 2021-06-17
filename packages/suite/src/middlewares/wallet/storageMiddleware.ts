@@ -9,6 +9,7 @@ import {
     GRAPH,
     SEND,
     COINMARKET_COMMON,
+    FORM_DRAFT,
 } from '@wallet-actions/constants';
 import * as storageActions from '@suite-actions/storageActions';
 import * as accountUtils from '@wallet-utils/accountUtils';
@@ -16,6 +17,7 @@ import { SUITE, ANALYTICS, METADATA, MESSAGE_SYSTEM } from '@suite-actions/const
 import { getDiscovery } from '@wallet-actions/discoveryActions';
 import { isDeviceRemembered } from '@suite-utils/device';
 import { serializeDiscovery } from '@suite-utils/storage';
+import { FormDraftPrefixKeyValues } from '@wallet-constants/formDraft';
 
 import type { AppState, Action as SuiteAction, Dispatch } from '@suite-types';
 import type { WalletAction } from '@wallet-types';
@@ -54,6 +56,9 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
 
         case ACCOUNT.REMOVE: {
             action.payload.forEach(account => {
+                FormDraftPrefixKeyValues.map(prefix =>
+                    storageActions.removeAccountFormDraft(prefix, account.key),
+                );
                 storageActions.removeAccountDraft(account);
                 storageActions.removeAccountTransactions(account);
                 storageActions.removeAccountGraph(account);
@@ -192,6 +197,18 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
         case MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE:
         case MESSAGE_SYSTEM.DISMISS_MESSAGE:
             api.dispatch(storageActions.saveMessageSystem());
+            break;
+
+        case FORM_DRAFT.STORE_DRAFT: {
+            const { device } = api.getState().suite;
+            // save drafts for remembered device
+            if (isDeviceRemembered(device)) {
+                storageActions.saveFormDraft(action.key, action.formDraft);
+            }
+            break;
+        }
+        case FORM_DRAFT.REMOVE_DRAFT:
+            storageActions.removeFormDraft(action.key);
             break;
 
         default:

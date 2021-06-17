@@ -4,6 +4,8 @@ import * as notificationActions from '@suite-actions/notificationActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { serializeDiscovery, serializeDevice } from '@suite-utils/storage';
 import { deviceGraphDataFilterFn } from '@wallet-utils/graphUtils';
+import { getFormDraftKey } from '@wallet-utils/formDraftUtils';
+import { FormDraftPrefixKeyValues } from '@wallet-constants/formDraft';
 import { STORAGE } from './constants';
 
 import type { Dispatch, GetState, AppState, TrezorDevice } from '@suite-types';
@@ -12,6 +14,7 @@ import type { GraphData } from '@wallet-types/graph';
 import type { Discovery } from '@wallet-reducers/discoveryReducer';
 import type { FormState } from '@wallet-types/sendForm';
 import type { Trade, TradeType } from '@wallet-types/coinmarketCommonTypes';
+import type { FormDraft, FormDraftKeyPrefix } from '@wallet-types/form';
 
 export type StorageAction =
     | { type: typeof STORAGE.LOAD }
@@ -51,6 +54,34 @@ export const removeAccountDraft = async (account: Account) => {
 
 // send form drafts end
 
+export const saveFormDraft = async (key: string, draft: FormDraft) => {
+    if (!(await isDBAccessible())) return;
+    return db.addItem('formDrafts', draft, key, true);
+};
+
+export const removeFormDraft = async (key: string) => {
+    if (!(await isDBAccessible())) return;
+    return db.removeItemByPK('formDrafts', key);
+};
+
+export const saveAccountFormDraft = (prefix: FormDraftKeyPrefix, accountKey: string) => async (
+    _: Dispatch,
+    getState: GetState,
+) => {
+    if (!(await isDBAccessible())) return;
+
+    const { formDrafts } = getState().wallet;
+
+    const formDraftKey = getFormDraftKey(prefix, accountKey);
+    const formDraft = formDrafts[formDraftKey];
+    return formDraft ? db.addItem('formDrafts', formDraft, formDraftKey, true) : undefined;
+};
+
+export const removeAccountFormDraft = async (prefix: FormDraftKeyPrefix, accountKey: string) => {
+    if (!(await isDBAccessible())) return;
+    return db.removeItemByPK('formDrafts', getFormDraftKey(prefix, accountKey));
+};
+
 export const saveDevice = async (device: TrezorDevice, forceRemember?: true) => {
     if (!(await isDBAccessible())) return;
     if (!device || !device.features || !device.state) return;
@@ -76,7 +107,11 @@ export const forgetDevice = (device: TrezorDevice) => async (_: Dispatch, getSta
     if (!device.state) return;
     const accounts = getState().wallet.accounts.filter(a => a.deviceState === device.state);
     const accountPromises = accounts.reduce(
-        (promises, account) => promises.concat([removeAccountDraft(account)]),
+        (promises, account) =>
+            promises.concat(
+                [removeAccountDraft(account)],
+                FormDraftPrefixKeyValues.map(prefix => removeAccountFormDraft(prefix, account.key)),
+            ),
         [] as Promise<void>[],
     );
     const promises = await Promise.all([
@@ -186,11 +221,13 @@ export const rememberDevice = (
 
     const accountPromises = accounts.reduce(
         (promises, account) =>
-            promises.concat([
-                dispatch(saveAccountTransactions(account)),
-                dispatch(saveAccountDraft(account)),
-            ]),
-        [] as Promise<void | string | undefined>[],
+            promises.concat(
+                [dispatch(saveAccountTransactions(account)), dispatch(saveAccountDraft(account))],
+                FormDraftPrefixKeyValues.map(prefix =>
+                    dispatch(saveAccountFormDraft(prefix, account.key)),
+                ),
+            ),
+        [] as Promise<void | string | undefined | IDBValidKey>[],
     );
 
     try {
@@ -370,6 +407,12 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
             drafts[item.key] = item.value;
         });
 
+        const dbFormDrafts = await db.getItemsWithKeys('formDrafts');
+        const stateFormDrafts: AppState['wallet']['formDrafts'] = {};
+        dbFormDrafts.forEach(item => {
+            stateFormDrafts[item.key] = item.value;
+        });
+
         dispatch({
             type: STORAGE.LOADED,
             payload: {
@@ -416,6 +459,10 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                     send: {
                         ...initialState.wallet.send,
                         drafts,
+                    },
+                    formDrafts: {
+                        ...initialState.wallet.formDrafts,
+                        ...stateFormDrafts,
                     },
                 },
                 analytics: { ...initialState.analytics, ...analytics },

@@ -220,4 +220,8 @@ export const migrate = async (
     if (oldVersion < 23) {
         db.createObjectStore('messageSystem');
     }
+
+    if (oldVersion < 24) {
+        db.createObjectStore('formDrafts');
+    }
 };

@@ -1,6 +1,7 @@
 import { ReactElement } from 'react';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import { FieldError } from 'react-hook-form';
+import { FormDraftPrefixKeyValues } from '@wallet-constants/formDraft';
 
 // strongly typed UseFormMethods.register
 export interface TypedValidationRules {
@@ -20,3 +21,6 @@ export type TypedFieldError =
           type: string;
           message?: ExtendedMessageDescriptor['id'] | ExtendedMessageDescriptor | ReactElement;
       };
+
+export type FormDraftKeyPrefix = typeof FormDraftPrefixKeyValues[number];
+export type FormDraft = Record<string, any>;
