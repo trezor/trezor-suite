@@ -56,10 +56,11 @@ const CoinsList = ({ onToggleFn, networks, selectedNetworks, unavailableCapabili
         <Wrapper>
             {networks.map(network => {
                 const isDisabled = !!unavailableCapabilities?.[network.symbol] || isDeviceLocked;
+                const key = `${network.symbol}_${network.accountType}`;
                 if (isDisabled) {
                     return (
                         <Tooltip
-                            key={`${network.symbol}_${network.accountType}`}
+                            key={key}
                             placement="top"
                             content={
                                 <UnavailableMessage
@@ -70,9 +71,9 @@ const CoinsList = ({ onToggleFn, networks, selectedNetworks, unavailableCapabili
                             }
                         >
                             <Coin
-                                key={network.symbol}
                                 symbol={network.symbol}
                                 name={network.name}
+                                label={network.label}
                                 selected={selectedNetworks.includes(network.symbol)}
                                 disabled
                             />
@@ -81,9 +82,10 @@ const CoinsList = ({ onToggleFn, networks, selectedNetworks, unavailableCapabili
                 }
                 return (
                     <Coin
-                        key={network.symbol}
+                        key={key}
                         symbol={network.symbol}
                         name={network.name}
+                        label={network.label}
                         selected={selectedNetworks.includes(network.symbol)}
                         onClick={() =>
                             onToggleFn(network.symbol, !selectedNetworks.includes(network.symbol))

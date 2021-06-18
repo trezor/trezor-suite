@@ -2185,6 +2185,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Ethereum',
         id: 'TR_NETWORK_ETHEREUM',
     },
+    TR_NETWORK_ETHEREUM_LABEL: {
+        defaultMessage: 'inc. ERC-20 tokens',
+        id: 'TR_NETWORK_ETHEREUM_LABEL',
+    },
     TR_NETWORK_ETHEREUM_CLASSIC: {
         defaultMessage: 'Ethereum Classic',
         id: 'TR_NETWORK_ETHEREUM_CLASSIC',
@@ -2751,6 +2755,10 @@ const definedMessages = defineMessages({
         defaultMessage:
             "Testnet coins don't have any value but you still may use them to learn and experiment.",
         id: 'TR_TESTNET_COINS_EXPLAINED',
+    },
+    TR_TESTNET_COINS_LABEL: {
+        defaultMessage: 'TEST COIN',
+        id: 'TR_TESTNET_COINS_LABEL',
     },
     TR_THE_PIN_LAYOUT_IS_DISPLAYED: {
         defaultMessage: 'The PIN layout is displayed on your Trezor.',
