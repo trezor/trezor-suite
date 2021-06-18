@@ -1,5 +1,5 @@
 import React, { useRef, useLayoutEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { variables, IconProps, useTheme, Button, Icon, Dropdown } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { useSelector, useActions } from '@suite-hooks';
@@ -10,7 +10,7 @@ const { FONT_WEIGHT, FONT_SIZE } = variables;
 
 const SECONDARY_MENU_BUTTON_MARGIN = '12px';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ settingsWrapper: boolean | undefined }>`
     display: flex;
     width: 100%;
     scrollbar-width: none; /* Firefox */
@@ -23,6 +23,12 @@ const Wrapper = styled.div`
         width: 0;
         height: 0;
     }
+
+    ${props =>
+        props.settingsWrapper &&
+        css`
+            height: 52px;
+        `};
 `;
 
 const Primary = styled.div`
@@ -70,10 +76,15 @@ const StyledNavLink = styled.div<{ active?: boolean }>`
     display: flex;
     align-items: center;
     padding: 23px 10px;
+    padding-right: 0;
     white-space: nowrap;
     border-bottom: 2px solid
         ${props => (props.active ? props => props.theme.TYPE_DARK_GREY : 'transparent')};
     margin-right: 40px;
+    &:first-child {
+        padding-left: 0;
+        margin-left: 5px;
+    }
     &:last-child {
         margin-right: ${SECONDARY_MENU_BUTTON_MARGIN};
     }
@@ -189,7 +200,7 @@ const AppNavigation = ({ items, primaryContent }: Props) => {
     const itemsSecondaryWithoutExtra = itemsSecondary.filter(item => !item.extra);
 
     return (
-        <Wrapper ref={wrapper}>
+        <Wrapper ref={wrapper} settingsWrapper={routeName && routeName.startsWith('settings')}>
             {routeName && isSubsection(routeName) ? (
                 <Primary>
                     <StyledBackLink onClick={() => goto('wallet-index', undefined, true)}>

@@ -8,13 +8,13 @@ const Wrapper = styled.div`
 `;
 
 const Header = styled.div`
-    padding: 12px;
-    margin-bottom: 4px;
+    padding: 4px 12px 12px 0;
+    margin-bottom: 12px;
 `;
 
 const Title = styled.div`
     font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
     text-transform: uppercase;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
