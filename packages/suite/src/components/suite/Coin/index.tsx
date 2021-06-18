@@ -1,7 +1,9 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { variables, CoinLogo, Icon } from '@trezor/components';
+import { Translation } from '@suite-components';
 import { useTheme } from '@suite-hooks';
+import { ExtendedMessageDescriptor } from '@suite-types';
 import { Network } from '@wallet-types';
 
 const CoinWrapper = styled.button<{ selected: boolean; disabled: boolean }>`
@@ -14,7 +16,7 @@ const CoinWrapper = styled.button<{ selected: boolean; disabled: boolean }>`
     border-radius: 9999px;
     margin: 0 13px 18px 0;
     height: 47px;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     color: ${props => props.theme.TYPE_DARK_GREY};
     cursor: pointer;
     transition: 0.3s ease;
@@ -44,6 +46,25 @@ const Name = styled.div`
     margin-top: 1px;
 `;
 
+const NameWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+`;
+
+const NameLabeled = styled.div`
+    font-size: ${variables.FONT_SIZE.SMALL};
+    line-height: 0.86;
+    margin-bottom: 3px;
+`;
+
+const Label = styled.div`
+    font-size: ${variables.FONT_SIZE.TINY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    line-height: 0.75;
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+`;
+
 const Check = styled.div<{ visible: boolean }>`
     display: flex;
     align-items: center;
@@ -63,11 +84,12 @@ const Check = styled.div<{ visible: boolean }>`
 interface Props extends React.HTMLAttributes<HTMLButtonElement> {
     symbol: Network['symbol'];
     name: Network['name'];
+    label?: ExtendedMessageDescriptor['id'];
     selected: boolean;
     disabled?: boolean;
 }
 
-const Coin = ({ symbol, name, selected = false, disabled = false, ...props }: Props) => {
+const Coin = ({ symbol, name, label, selected = false, disabled = false, ...props }: Props) => {
     const { theme } = useTheme();
     return (
         <CoinWrapper selected={selected} disabled={disabled} {...props}>
@@ -77,7 +99,16 @@ const Coin = ({ symbol, name, selected = false, disabled = false, ...props }: Pr
                     <Icon size={8} color={theme.TYPE_WHITE} icon="CHECK" />
                 </Check>
             </ImageWrapper>
-            <Name>{name}</Name>
+            {label ? (
+                <NameWrapper>
+                    <NameLabeled>{name}</NameLabeled>
+                    <Label>
+                        <Translation id={label} />
+                    </Label>
+                </NameWrapper>
+            ) : (
+                <Name>{name}</Name>
+            )}
         </CoinWrapper>
     );
 };
