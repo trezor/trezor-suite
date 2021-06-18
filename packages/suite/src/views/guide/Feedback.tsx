@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import { Translation } from '@suite-components';
+import { CollapsibleBox, Translation } from '@suite-components';
 import { useActions, useDevice } from '@suite-hooks';
 import { Textarea, Select, variables, Button } from '@trezor/components';
 import * as guideActions from '@suite-actions/guideActions';
@@ -34,7 +34,7 @@ const Submit = styled(Button)`
     border: none;
     padding: 10px;
     width: 100%;
-    margin: 0 0 20px;
+    margin: 0 0 13px;
     cursor: pointer;
 `;
 
@@ -44,16 +44,6 @@ const SelectWrapper = styled.div`
 
 const TextareaWrapper = styled.div`
     position: relative;
-`;
-
-const FeedbackInfoNotice = styled.small`
-    display: block;
-    font-size: 10px;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    text-align: center;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
-    padding: 0 0 8px;
-    width: 100%;
 `;
 
 const CharacterCount = styled.div`
@@ -93,6 +83,17 @@ const RatingItem = styled.button<{ selected?: boolean }>`
                 background: ${props.theme.BG_GREEN};
             }
         `};
+`;
+
+const AnonymousDataList = styled.ul`
+    margin-left: 20px;
+`;
+
+const AnonymousDataItem = styled.li`
+    margin-bottom: 4px;
+    font-size: ${variables.FONT_SIZE.SMALL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 type RatingItem = {
@@ -277,9 +278,26 @@ const Feedback = ({ type }: Props) => {
                     <Translation id="TR_GUIDE_FEEDBACK_SEND_REPORT" />
                 </Submit>
 
-                <FeedbackInfoNotice>
-                    <Translation id="TR_GUIDE_FEEDBACK_BROWSER_INFO_NOTICE" />
-                </FeedbackInfoNotice>
+                <CollapsibleBox
+                    heading={<Translation id="TR_GUIDE_FEEDBACK_SYSTEM_INFO_NOTICE" />}
+                    headerJustifyContent="center"
+                    variant="tiny"
+                >
+                    <AnonymousDataList>
+                        <AnonymousDataItem>
+                            <Translation id="TR_FEEDBACK_ANALYTICS_ITEM_OS" />
+                        </AnonymousDataItem>
+                        <AnonymousDataItem>
+                            <Translation id="TR_FEEDBACK_ANALYTICS_ITEM_BROWSER" />
+                        </AnonymousDataItem>
+                        <AnonymousDataItem>
+                            <Translation id="TR_FEEDBACK_ANALYTICS_ITEM_FW" />
+                        </AnonymousDataItem>
+                        <AnonymousDataItem>
+                            <Translation id="TR_FEEDBACK_ANALYTICS_ITEM_APP" />
+                        </AnonymousDataItem>
+                    </AnonymousDataList>
+                </CollapsibleBox>
             </Content>
         </ViewWrapper>
     );

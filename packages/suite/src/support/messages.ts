@@ -5386,6 +5386,22 @@ const definedMessages = defineMessages({
         id: 'TR_GIVE_FEEDBACK',
         defaultMessage: 'Give Feedback',
     },
+    TR_FEEDBACK_ANALYTICS_ITEM_OS: {
+        id: 'TR_FEEDBACK_ANALYTICS_ITEM_OS',
+        defaultMessage: 'Operating system',
+    },
+    TR_FEEDBACK_ANALYTICS_ITEM_BROWSER: {
+        id: 'TR_FEEDBACK_ANALYTICS_ITEM_BROWSER',
+        defaultMessage: 'Browser',
+    },
+    TR_FEEDBACK_ANALYTICS_ITEM_FW: {
+        id: 'TR_FEEDBACK_ANALYTICS_ITEM_FW',
+        defaultMessage: 'Device firmware version',
+    },
+    TR_FEEDBACK_ANALYTICS_ITEM_APP: {
+        id: 'TR_FEEDBACK_ANALYTICS_ITEM_APP',
+        defaultMessage: 'Suite version',
+    },
     FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC: {
         id: 'FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC',
         defaultMessage: 'Yes, I do!',
@@ -6044,9 +6060,9 @@ const definedMessages = defineMessages({
         id: 'TR_GUIDE_FEEDBACK_SEND_REPORT',
         defaultMessage: `Send report`,
     },
-    TR_GUIDE_FEEDBACK_BROWSER_INFO_NOTICE: {
-        id: 'TR_GUIDE_FEEDBACK_BROWSER_INFO_NOTICE',
-        defaultMessage: `Your browser info will be shared anonymously`,
+    TR_GUIDE_FEEDBACK_SYSTEM_INFO_NOTICE: {
+        id: 'TR_GUIDE_FEEDBACK_SYSTEM_INFO_NOTICE',
+        defaultMessage: `Your basic system info will be shared anonymously`,
     },
     TR_GUIDE_FEEDBACK_SENT: {
         id: 'TR_GUIDE_FEEDBACK_SENT',
