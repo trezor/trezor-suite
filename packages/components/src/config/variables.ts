@@ -31,6 +31,7 @@ export const FONT_SIZE = {
 } as const;
 
 export const NEUE_FONT_SIZE = {
+    NANO: '10px',
     TINY: '12px',
     SMALL: '14px',
     NORMAL: '16px',
