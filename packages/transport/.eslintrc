@@ -1,4 +1,6 @@
 {
+  // TODO: Use mono-repo wide rules in @trezor/transport and then remove this.
+  "root": true,
   "parserOptions": {
     "ecmaVersion": 6,
     "ecmaFeatures": {
