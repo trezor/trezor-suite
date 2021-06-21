@@ -47,7 +47,7 @@ const FirmwareInitial = ({ cachedDevice, setCachedDevice, standaloneFwUpdate }: 
             // we never store state of the device while it is in bootloader, we want just "normal" mode
             setCachedDevice(liveDevice);
         }
-    }, [cachedDevice.id, liveDevice, setCachedDevice]);
+    }, [cachedDevice?.id, liveDevice, setCachedDevice]);
 
     // User is following instructions for disconnecting/reconnecting a device in bootloader mode; We'll use cached version of the device
     const device = status === 'waiting-for-bootloader' ? cachedDevice : liveDevice;
