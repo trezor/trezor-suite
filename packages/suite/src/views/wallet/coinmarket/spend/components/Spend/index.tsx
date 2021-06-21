@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Icon, variables, Button } from '@trezor/components';
-import { ConnectAndUnlockDeviceModal, Translation } from '@suite-components';
+import { Translation } from '@suite-components';
 import { isDesktop } from '@suite-utils/env';
 import { useCoinmarketSpendContext } from '@wallet-hooks/useCoinmarketSpend';
 
@@ -79,8 +79,6 @@ const CoinmarketSpend = () => {
         voucherSiteUrl,
         openWindow,
         setShowLeaveModal,
-        showConnectAndUnlockDeviceModal,
-        setShowConnectAndUnlockDeviceModal,
     } = useCoinmarketSpendContext();
     const showIframe = !isDesktop();
 
@@ -145,11 +143,6 @@ const CoinmarketSpend = () => {
                         </WebContent>
                     )}
                 </Vouchers>
-            )}
-            {showConnectAndUnlockDeviceModal && (
-                <ConnectAndUnlockDeviceModal
-                    onClose={() => setShowConnectAndUnlockDeviceModal(false)}
-                />
             )}
         </Wrapper>
     );

@@ -4,8 +4,9 @@ import { useSelector } from '@suite-hooks';
 import { Props } from '@wallet-types/coinmarketSpend';
 import Spend from './components/Spend';
 import { useCoinmarketSpend, SpendContext } from '@wallet-hooks/useCoinmarketSpend';
+import withDeviceConnected from '@wallet-views/coinmarket/hoc/withDeviceConnected';
 
-const SpendLoaded = (props: Props) => {
+const SpendLoaded = withDeviceConnected((props: Props) => {
     const { selectedAccount } = props;
     const coinmarketSpendContextValues = useCoinmarketSpend({
         ...props,
@@ -19,7 +20,7 @@ const SpendLoaded = (props: Props) => {
             </SpendContext.Provider>
         </CoinmarketLayout>
     );
-};
+});
 
 const CoinmarketSpend = () => {
     const props = useSelector(state => ({

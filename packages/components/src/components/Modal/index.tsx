@@ -7,7 +7,6 @@ import { Icon } from '../Icon';
 import { scrollbarStyles } from '../Scrollbar';
 import { H1 } from '../typography/Heading';
 import { variables } from '../../config';
-import { ModalOverlay } from '../ModalOverlay';
 
 // each item in array corresponds to a screen size  [SM, MD, LG, XL]
 const ZERO_PADDING: [string, string, string, string] = ['0px', '0px', '0px', '0px'];
@@ -32,6 +31,25 @@ const FIXED_WIDTH: [string, string, string, string] = ['100vw', '90vw', '720px',
 const FIXED_WIDTH_SMALL: [string, string, string, string] = ['100vw', '90vw', '600px', '600px'];
 const FIXED_WIDTH_TINY: [string, string, string, string] = ['360px', '360px', '360px', '360px'];
 const FIXED_HEIGHT: [string, string, string, string] = ['90vh', '90vh', '620px', '620px'];
+
+const ModalOverlay = styled.div<{ desktopBorder?: string; guidePanelSize: string }>`
+    position: fixed;
+    z-index: 10000;
+    width: ${props =>
+        props.desktopBorder
+            ? `calc(100% - (${props.desktopBorder} * 2) - ${props.guidePanelSize})`
+            : `calc(100% - ${props.guidePanelSize})`};
+    height: ${props => (props.desktopBorder ? `calc(100% - ${props.desktopBorder})` : '100%')};
+    top: 0px;
+    left: ${props => props.desktopBorder || 0};
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto;
+    justify-content: center;
+`;
 
 const Header = styled.div`
     margin-bottom: 25px;

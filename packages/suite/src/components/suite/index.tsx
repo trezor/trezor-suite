@@ -42,7 +42,6 @@ import HomescreenGallery from './HomescreenGallery';
 import PinMatrix from './PinMatrix';
 import CollapsibleBox from './CollapsibleBox';
 import DeviceMatrixExplanation from './DeviceMatrixExplanation';
-import ConnectAndUnlockDeviceModal from './ConnectAndUnlockDeviceModal';
 
 export {
     Backdrop,
@@ -95,6 +94,5 @@ export {
     PinMatrix,
     CollapsibleBox,
     DeviceMatrixExplanation,
-    ConnectAndUnlockDeviceModal,
 };
 export type { ImageProps, ModalProps };

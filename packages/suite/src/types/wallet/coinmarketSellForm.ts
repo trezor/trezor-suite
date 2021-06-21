@@ -7,6 +7,7 @@ import { CoinmarketSellAction, SellInfo } from '@wallet-actions/coinmarketSellAc
 import { TypedValidationRules } from './form';
 import { FeeInfo, FormState, PrecomposedLevels } from '@wallet-types/sendForm';
 import { Option, DefaultCountryOption } from './coinmarketCommonTypes';
+import { WithDeviceConnectedProps } from '@wallet-views/coinmarket/hoc/withDeviceConnected';
 
 export const OUTPUT_AMOUNT = 'outputs[0].amount';
 export const FIAT_INPUT = 'fiatInput';
@@ -24,7 +25,7 @@ export interface ComponentProps {
     exchangeCoinInfo: AppState['wallet']['coinmarket']['exchange']['exchangeCoinInfo'];
 }
 
-export interface Props extends ComponentProps {
+export interface Props extends ComponentProps, WithDeviceConnectedProps {
     selectedAccount: Extract<ComponentProps['selectedAccount'], { status: 'loaded' }>;
 }
 
@@ -73,7 +74,4 @@ export type SellFormContextValues = Omit<UseFormMethods<SellFormState>, 'registe
     feeInfo: FeeInfo;
     onCryptoAmountChange: (amount: string) => void;
     onFiatAmountChange: (amount: string) => void;
-    canShowOffers: boolean;
-    showConnectAndUnlockDeviceModal: boolean;
-    setShowConnectAndUnlockDeviceModal: (show: boolean) => void;
 };

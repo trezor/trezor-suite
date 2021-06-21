@@ -21,7 +21,6 @@ import { Box } from './components/others/Box';
 import { Card } from './components/others/Card';
 import { SecurityCard } from './components/others/SecurityCard';
 import { ConfirmOnDevice } from './components/prompts/ConfirmOnDevice';
-import { ModalOverlay } from './components/ModalOverlay';
 import { Modal } from './components/Modal';
 import { CoinLogo } from './components/logos/CoinLogo';
 import { TrezorLogo } from './components/logos/TrezorLogo';
@@ -52,7 +51,6 @@ export {
     P,
     Link,
     Warning,
-    ModalOverlay,
     Modal,
     CoinLogo,
     TrezorLogo,

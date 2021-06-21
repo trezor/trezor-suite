@@ -1,5 +1,6 @@
 import { AppState } from '@suite-types';
 import { SellProviderInfo } from 'invity-api';
+import { WithDeviceConnectedProps } from '@wallet-views/coinmarket/hoc/withDeviceConnected';
 
 export interface ComponentProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
@@ -8,7 +9,7 @@ export interface ComponentProps {
     fees: AppState['wallet']['fees'];
 }
 
-export interface Props extends ComponentProps {
+export interface Props extends ComponentProps, WithDeviceConnectedProps {
     selectedAccount: Extract<ComponentProps['selectedAccount'], { status: 'loaded' }>;
 }
 
@@ -19,6 +20,4 @@ export type SpendContextValues = {
     voucherSiteUrl?: string;
     openWindow: (url?: string) => void;
     setShowLeaveModal: (showLeaveModal: boolean) => void;
-    showConnectAndUnlockDeviceModal: boolean;
-    setShowConnectAndUnlockDeviceModal: (show: boolean) => void;
 };

@@ -7,8 +7,9 @@ import {
     useCoinmarketExchangeForm,
     ExchangeFormContext,
 } from '@wallet-hooks/useCoinmarketExchangeForm';
+import withDeviceConnected from '@wallet-views/coinmarket/hoc/withDeviceConnected';
 
-const CoinmarketExchangeLoaded = (props: Props) => {
+const CoinmarketExchangeLoaded = withDeviceConnected((props: Props) => {
     const { selectedAccount } = props;
     const coinmarketExchangeContextValues = useCoinmarketExchangeForm({
         ...props,
@@ -22,7 +23,7 @@ const CoinmarketExchangeLoaded = (props: Props) => {
             </ExchangeFormContext.Provider>
         </CoinmarketLayout>
     );
-};
+});
 
 const CoinmarketExchange = () => {
     const props = useSelector(state => ({

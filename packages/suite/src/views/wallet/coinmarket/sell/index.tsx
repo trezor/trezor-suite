@@ -4,8 +4,9 @@ import { useSelector } from '@suite-hooks';
 import { Props } from '@wallet-types/coinmarketSellForm';
 import SellForm from './components/SellForm';
 import { useCoinmarketSellForm, SellFormContext } from '@wallet-hooks/useCoinmarketSellForm';
+import withDeviceConnected from '@wallet-views/coinmarket/hoc/withDeviceConnected';
 
-const CoinmarketSellLoaded = (props: Props) => {
+const CoinmarketSellLoaded = withDeviceConnected((props: Props) => {
     const coinmarketSellContextValues = useCoinmarketSellForm(props);
 
     return (
@@ -15,7 +16,7 @@ const CoinmarketSellLoaded = (props: Props) => {
             </SellFormContext.Provider>
         </CoinmarketLayout>
     );
-};
+});
 
 const CoinmarketSell = () => {
     const props = useSelector(state => ({

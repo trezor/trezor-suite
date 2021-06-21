@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { ConnectAndUnlockDeviceModal, Translation } from '@suite-components';
+import { Translation } from '@suite-components';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 
 import Inputs from './Inputs';
@@ -37,14 +37,7 @@ const NoProviders = styled.div`
 `;
 
 const CoinmarketExchangeForm = () => {
-    const {
-        onSubmit,
-        handleSubmit,
-        isLoading,
-        noProviders,
-        showConnectAndUnlockDeviceModal,
-        setShowConnectAndUnlockDeviceModal,
-    } = useCoinmarketExchangeFormContext();
+    const { onSubmit, handleSubmit, isLoading, noProviders } = useCoinmarketExchangeFormContext();
 
     return (
         <Wrapper>
@@ -66,11 +59,6 @@ const CoinmarketExchangeForm = () => {
                     </FeesWrapper>
                     <Footer />
                 </Form>
-            )}
-            {showConnectAndUnlockDeviceModal && (
-                <ConnectAndUnlockDeviceModal
-                    onClose={() => setShowConnectAndUnlockDeviceModal(false)}
-                />
             )}
         </Wrapper>
     );

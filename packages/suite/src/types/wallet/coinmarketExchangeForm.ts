@@ -7,6 +7,7 @@ import { CoinmarketExchangeAction, ExchangeInfo } from '@wallet-actions/coinmark
 import { TypedValidationRules } from './form';
 import { FeeInfo, FormState, PrecomposedLevels } from '@wallet-types/sendForm';
 import { Option } from './coinmarketCommonTypes';
+import { WithDeviceConnectedProps } from '@wallet-views/coinmarket/hoc/withDeviceConnected';
 
 export const CRYPTO_INPUT = 'outputs[0].amount';
 export const CRYPTO_TOKEN = 'outputs[0].token';
@@ -23,7 +24,7 @@ export interface ComponentProps {
     exchangeCoinInfo: AppState['wallet']['coinmarket']['exchange']['exchangeCoinInfo'];
 }
 
-export interface Props extends ComponentProps {
+export interface Props extends ComponentProps, WithDeviceConnectedProps {
     selectedAccount: Extract<ComponentProps['selectedAccount'], { status: 'loaded' }>;
 }
 
@@ -70,7 +71,4 @@ export type ExchangeFormContextValues = Omit<UseFormMethods<ExchangeFormState>, 
     noProviders: boolean;
     network: Network;
     feeInfo: FeeInfo;
-    canCompareOffers: boolean;
-    showConnectAndUnlockDeviceModal: boolean;
-    setShowConnectAndUnlockDeviceModal: (show: boolean) => void;
 };

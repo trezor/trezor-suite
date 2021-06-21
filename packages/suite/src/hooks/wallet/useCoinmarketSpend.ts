@@ -14,7 +14,6 @@ import { isDesktop } from '@suite/utils/suite/env';
 import { useCompose } from './form/useCompose';
 import { useForm } from 'react-hook-form';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';
-import { useShowConnectAndUnlockDeviceModal } from './useShowConnectAndUnlockDeviceModal';
 
 export const SpendContext = createContext<SpendContextValues | null>(null);
 SpendContext.displayName = 'CoinmarketSpendContext';
@@ -50,7 +49,7 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
     });
     const { translationString } = useTranslation();
 
-    const { selectedAccount, language, device } = props;
+    const { selectedAccount, language } = props;
     const { account } = selectedAccount;
     const { sellInfo } = useSelector(state => ({
         sellInfo: state.wallet.coinmarket.sell.sellInfo,
@@ -243,12 +242,6 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
         }
     };
 
-    const isDeviceConnected = !!device?.connected;
-    const {
-        showConnectAndUnlockDeviceModal,
-        setShowConnectAndUnlockDeviceModal,
-    } = useShowConnectAndUnlockDeviceModal(isDeviceConnected);
-
     return {
         openWindow,
         isLoading,
@@ -256,8 +249,6 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
         provider,
         voucherSiteUrl,
         setShowLeaveModal,
-        showConnectAndUnlockDeviceModal,
-        setShowConnectAndUnlockDeviceModal,
     };
 };
 
