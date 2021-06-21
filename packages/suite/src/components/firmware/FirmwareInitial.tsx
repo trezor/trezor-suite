@@ -10,11 +10,11 @@ import { getFwUpdateVersion, getFwVersion } from '@suite-utils/device';
 import { useDevice, useFirmware, useActions } from '@suite-hooks';
 import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from '@firmware-components';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
-import { AcquiredDevice } from '@suite/types/suite';
+import { TrezorDevice } from '@suite/types/suite';
 
 interface Props {
-    cachedDevice: AcquiredDevice;
-    setCachedDevice: React.Dispatch<React.SetStateAction<AcquiredDevice>>;
+    cachedDevice?: TrezorDevice;
+    setCachedDevice: React.Dispatch<React.SetStateAction<TrezorDevice | undefined>>;
     // This component is shared between Onboarding flow and standalone fw update modal with few minor UI changes
     // If it is set to true, then you know it is being rendered in standalone fw update modal
     standaloneFwUpdate?: boolean;
@@ -68,7 +68,7 @@ const FirmwareInitial = ({ cachedDevice, setCachedDevice, standaloneFwUpdate }: 
         content = {
             heading: <Translation id="TR_INSTALL_FIRMWARE" />,
             description: <Translation id="TR_FIRMWARE_SUBHEADING" />,
-            body: cachedDevice.firmwareRelease?.isLatest ? (
+            body: cachedDevice?.firmwareRelease?.isLatest ? (
                 <FirmwareOffer
                     newVersion={getFwUpdateVersion(cachedDevice)}
                     releaseChangelog={cachedDevice.firmwareRelease}
