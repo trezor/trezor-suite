@@ -7,11 +7,11 @@ import { useActions, useDevice, useFirmware, useOnboarding } from '@suite-hooks'
 import { FirmwareOffer, ReconnectDevicePrompt } from '@firmware-components';
 import { OnboardingStepBox } from '@onboarding-components';
 import { getFwUpdateVersion, getFwVersion } from '@suite-utils/device';
-import { AcquiredDevice } from '@suite-types';
+import { TrezorDevice } from '@suite-types';
 import ProgressBar from './ProgressBar';
 
 interface Props {
-    cachedDevice: AcquiredDevice;
+    cachedDevice?: TrezorDevice;
     // This component is shared between Onboarding flow and standalone fw update modal with few minor UI changes
     // If it is set to true, then you know it is being rendered in standalone fw update modal
     standaloneFwUpdate?: boolean;
@@ -47,12 +47,12 @@ const FirmwareInstallation = ({ cachedDevice, standaloneFwUpdate }: Props) => {
     };
 
     const getFakeProgressDuration = () => {
-        if (cachedDevice.firmware === 'none') {
+        if (cachedDevice?.firmware === 'none') {
             // device without fw starts installation without a confirmation and we need to fake progress bar for both devices (UI.FIRMWARE_PROGRESS is sent too late)
             return cachedDevice.features.major_version === 1 ? 25 : 40; // T1 seems a bit faster
         }
         // Updating from older fw, device asks for confirmation, but sends first info about installation progress somewhat to late
-        return cachedDevice.features.major_version === 1 ? 25 : undefined; // 25s for T1, no fake progress for updating from older fw on T2
+        return cachedDevice?.features?.major_version === 1 ? 25 : undefined; // 25s for T1, no fake progress for updating from older fw on T2
     };
 
     return (
@@ -102,7 +102,7 @@ const FirmwareInstallation = ({ cachedDevice, standaloneFwUpdate }: Props) => {
                 nested={!!standaloneFwUpdate}
                 disableConfirmWrapper={!!standaloneFwUpdate}
             >
-                {cachedDevice.firmwareRelease?.isLatest && (
+                {cachedDevice?.firmwareRelease?.isLatest && (
                     // If the proposed fw update is not latest it means we are gonna install intermediary firmware.
                     // firmwareRelease will be set to newest release supported by the bootloader. It is fw 1.6.1 for bootloader version 1.4.0,
                     // which is not the latest fw that will be installed as a subsequent fw update after installation of intermediary fw
@@ -119,7 +119,7 @@ const FirmwareInstallation = ({ cachedDevice, standaloneFwUpdate }: Props) => {
                 )}
 
                 {status !== 'waiting-for-confirmation' &&
-                    (status !== 'started' || cachedDevice.firmware === 'none') && (
+                    (status !== 'started' || cachedDevice?.firmware === 'none') && (
                         // Progress bar shown in 'installing', 'wait-for-reboot', 'unplug', 'reconnect-in-normal', 'partially-done', 'done'
                         // Also in 'started' if the device has no fw (freshly unpacked device). In this case device won't ask for confirmation
                         // and starts installation right away. However it doesn't provide an installation progress till way later (we set status to 'installing' only after receiving UI.FIRMWARE_PROGRESS in firmware reducer)

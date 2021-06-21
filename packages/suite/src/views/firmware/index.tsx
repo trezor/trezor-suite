@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import * as routerActions from '@suite-actions/routerActions';
-import { AcquiredDevice } from '@suite-types';
+import { TrezorDevice } from '@suite-types';
 import {
     CheckSeedStep,
     CloseButton,
@@ -49,7 +49,7 @@ const Firmware = () => {
         resetReducer();
     };
 
-    const [cachedDevice, setCachedDevice] = useState<AcquiredDevice>(device as AcquiredDevice);
+    const [cachedDevice, setCachedDevice] = useState<TrezorDevice | undefined>(device);
 
     // some of the application states can be reused here.
     // some don't make sense handling here as they are handled somewhere up the tree
