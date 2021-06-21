@@ -9,7 +9,7 @@ import {
     Fingerprint,
 } from '@firmware-components';
 import { useSelector, useFirmware, useOnboarding } from '@suite-hooks';
-import { AcquiredDevice } from '@suite-types';
+import { TrezorDevice } from '@suite-types';
 import { getFwVersion } from '@suite-utils/device';
 
 const FirmwareStep = () => {
@@ -18,7 +18,7 @@ const FirmwareStep = () => {
     }));
     const { goToNextStep } = useOnboarding();
     const { status, error, resetReducer, firmwareUpdate, showFingerprintCheck } = useFirmware();
-    const [cachedDevice, setCachedDevice] = useState<AcquiredDevice>(device as AcquiredDevice);
+    const [cachedDevice, setCachedDevice] = useState<TrezorDevice | undefined>(device);
 
     if (showFingerprintCheck && device) {
         // Some old firmwares ask for verifying firmware fingerprint by dispatching ButtonRequest_FirmwareCheck
