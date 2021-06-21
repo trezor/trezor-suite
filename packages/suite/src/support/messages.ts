@@ -443,15 +443,16 @@ const definedMessages = defineMessages({
     },
     TR_EXCHANGE_RECEIVE_ACCOUNT_QUESTION_TOOLTIP: {
         id: 'TR_EXCHANGE_RECEIVE_ACCOUNT_QUESTION_TOOLTIP',
-        defaultMessage: 'TR_EXCHANGE_RECEIVE_ACCOUNT_QUESTION_TOOLTIP',
+        defaultMessage:
+            "This is the account within your wallet where you'll find your coins once the transaction is finished.",
     },
     TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP: {
         id: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP',
-        defaultMessage: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP',
+        defaultMessage: 'Receiving account is outside of Suite.',
     },
     TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP: {
         id: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP',
-        defaultMessage: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP',
+        defaultMessage: 'This is the specific alphanumeric address that will receive your coins.',
     },
     TR_EXCHANGE_SELECT_RECEIVE_ACCOUNT: {
         id: 'TR_EXCHANGE_SELECT_RECEIVE_ACCOUNT',
@@ -475,7 +476,8 @@ const definedMessages = defineMessages({
     },
     TR_EXCHANGE_RECEIVE_ADDRESS_QUESTION_TOOLTIP: {
         id: 'TR_EXCHANGE_RECEIVE_ADDRESS_QUESTION_TOOLTIP',
-        defaultMessage: 'TR_EXCHANGE_RECEIVE_ADDRESS_QUESTION_TOOLTIP',
+        defaultMessage:
+            'This is the specific alphanumeric address that will receive your coins. Verify this address on your Trezor.',
     },
     TR_EXCHANGE_EXTRA_FIELD: {
         defaultMessage: '{extraFieldName}',
