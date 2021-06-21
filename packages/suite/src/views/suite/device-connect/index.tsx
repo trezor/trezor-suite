@@ -45,14 +45,23 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
         dispatch,
     );
 
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type Props = ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps> & {
+        cancelable?: boolean;
+        onCancel?: () => void;
+    };
 
 const Index = (props: Props) => {
     const showWebUsb = isWebUSB(props.transport);
     const showUdev = getLinuxPackage();
 
     return (
-        <Modal data-test="@modal/connect-device" centerContent>
+        <Modal
+            data-test="@modal/connect-device"
+            centerContent
+            cancelable={props.cancelable}
+            onCancel={props.onCancel}
+        >
             <HelpBuyIcons showBuy showHelp />
             <Title>
                 <H2>
