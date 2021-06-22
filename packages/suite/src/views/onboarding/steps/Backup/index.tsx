@@ -139,7 +139,7 @@ const BackupStep = () => {
                         </OnboardingButtonCta>
                     }
                 >
-                    <OptionsWrapper>
+                    <OptionsWrapper fullWidth={false}>
                         <StyledImage image="UNI_ERROR" />
                     </OptionsWrapper>
                 </OnboardingStepBox>
