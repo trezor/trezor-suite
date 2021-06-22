@@ -15,8 +15,7 @@ import type { Trade, TradeType } from '@wallet-types/coinmarketCommonTypes';
 
 export type StorageAction =
     | { type: typeof STORAGE.LOAD }
-    | { type: typeof STORAGE.LOADED; payload: AppState }
-    | { type: typeof STORAGE.ERROR; error: any };
+    | { type: typeof STORAGE.LOADED; payload: AppState };
 
 const isDBAccessible = async () => {
     const isSupported = await db.isSupported();
@@ -78,7 +77,7 @@ export const forgetDevice = (device: TrezorDevice) => async (_: Dispatch, getSta
     const accounts = getState().wallet.accounts.filter(a => a.deviceState === device.state);
     const accountPromises = accounts.reduce(
         (promises, account) => promises.concat([removeAccountDraft(account)]),
-        [] as Promise<any>[],
+        [] as Promise<void>[],
     );
     const promises = await Promise.all([
         db.removeItemByPK('devices', device.state),
@@ -191,7 +190,7 @@ export const rememberDevice = (
                 dispatch(saveAccountTransactions(account)),
                 dispatch(saveAccountDraft(account)),
             ]),
-        [] as Promise<any>[],
+        [] as Promise<void | string | undefined>[],
     );
 
     try {
