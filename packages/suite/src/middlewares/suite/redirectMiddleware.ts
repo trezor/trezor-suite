@@ -58,7 +58,7 @@ const redirect = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
             !action.payload &&
             api.getState().router.app === 'switch-device'
         ) {
-            api.dispatch(routerActions.closeModalApp());
+            await api.dispatch(routerActions.closeModalApp());
         }
         return action;
     }
