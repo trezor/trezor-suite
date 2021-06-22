@@ -52,7 +52,7 @@ const getDefaultMessage = (connected: boolean, showWarning: boolean) => {
     }
     return 'TR_CONNECT_YOUR_DEVICE';
 };
-const ConnectDevicePrompt = ({ children, connected, showWarning }: Props) => {
+const ConnectDevicePrompt = ({ children, connected, showWarning, precondition }: Props) => {
     const { theme } = useTheme();
     const { device } = useDevice();
     const fadeStyles = useSpring({
@@ -87,6 +87,9 @@ const ConnectDevicePrompt = ({ children, connected, showWarning }: Props) => {
             </ImageWrapper>
             <Text>
                 {children || <Translation id={getDefaultMessage(connected, showWarning)} />}
+            </Text>
+            <Text>
+                {precondition}
             </Text>
         </Wrapper>
     );

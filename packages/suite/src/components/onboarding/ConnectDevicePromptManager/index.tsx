@@ -20,14 +20,15 @@ interface Props {
     children?: React.ReactNode;
 }
 
+/**
+ *  Renders children only if device is connected and in normal mode
+ *  Handles all connection-related problems and displays appropriate UI to inform user
+ *  Handled cases:
+ *  1. transport layer (bridge/webusb) not available
+ *  2. Device not detected
+ *  3. Device in unexpected state (unreadable, seedless, in bootloader)
+ */
 const ConnectDevicePromptManager = ({ device, children }: Props) => {
-    // Renders children only if device is connected and in normal mode
-    // Handles all connection-related problems and displays appropriate UI to inform user
-    // Handled cases:
-    // 1. transport layer (bridge/webusb) not available
-    // 2. Device not detected
-    // 3. Device in unexpected state (unreadable, seedless, in bootloader)
-
     const { transport } = useSelector(state => ({
         transport: state.suite.transport,
     }));

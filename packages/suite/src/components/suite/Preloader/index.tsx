@@ -31,6 +31,7 @@ import {
     SwitchDevice,
     Version,
 } from '@suite-views';
+import { ConnectDevicePrompt, WelcomeLayout } from '@suite/components/onboarding';
 
 type SuiteAppStateProps = {
     loaded: boolean;
@@ -60,7 +61,7 @@ const getSuiteApplicationState = ({
 
     // todo: when there is no last device. user gets redirected to onboarding. so this has become obsolete now
     // no device available
-    if (!device) return DeviceConnect;
+    if (!device) return () => <ConnectDevicePrompt connected={false} showWarning={false} />;
 
     // device features cannot be read, device is probably used in another window
     if (device.type === 'unacquired') return DeviceAcquire;
@@ -76,7 +77,7 @@ const getSuiteApplicationState = ({
     if (device.features.recovery_mode) return DeviceRecoveryMode;
 
     // device is not initialized
-    if (device.mode === 'initialize') return DeviceInitialize;
+    // if (device.mode === 'initialize') return DeviceInitialize;
 
     // device is in bootloader mode
     if (device.mode === 'bootloader')
@@ -86,12 +87,32 @@ const getSuiteApplicationState = ({
     if (device.firmware === 'required') return DeviceUpdateRequired;
 
     // device in seedless mode
-    if (device.mode === 'seedless') return DeviceSeedless;
+    // if (device.mode === 'seedless') return DeviceSeedless;
 
     // account discovery in progress and didn't find any used account yet
     const authConfirmation = getDiscoveryStatus();
     if (authConfirmation?.type === 'auth-confirm') return DiscoveryLoader;
 };
+
+
+/**
+ * Returns information about reason that is blocking user from interacting with Suite
+ */
+const getInteractionPreconditions = ({ device, transport }: Pick<SuiteAppStateProps, 'device' | 'transport'>) => {
+    if (transport && !transport.type) {
+        return 'bridge';
+    }
+    if (!device) {
+        return 'unconnected';
+    }
+    if (device.type !== 'acquired') {
+        return device.type
+    }
+    if (device.mode !== 'normal') {
+        return device.mode
+    }
+
+}
 
 const getModalApplication = (route: AppState['router']['route']) => {
     if (!route) return;
@@ -195,6 +216,16 @@ const Preloader = ({ children, hideModals = false }: Props) => {
         return <Onboarding />;
     }
 
+    // if (!device) return (<ConnectDevicePrompt connected={false} showWarning={false} />);
+    const precondition = getInteractionPreconditions({ transport, device })
+
+    if (precondition) {
+        return (
+            <WelcomeLayout >
+                <ConnectDevicePrompt connected={false} showWarning precondition={precondition} />
+            </WelcomeLayout>
+        )
+    }
     // check route state and display it as not cancelable modal above requested route view
     const ApplicationStateModal = getSuiteApplicationState({
         loaded,

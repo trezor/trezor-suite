@@ -10,7 +10,7 @@ const handleDeviceRedirect = async (dispatch: Dispatch, state: AppState, device?
     // user disconnected the last device. display onboarding view which handles connecting of the
     // first device nicely
     if (!device && devices.length === 0) {
-        await dispatch(routerActions.goto('onboarding-index'));
+        // await dispatch(routerActions.goto('onboarding-index'));
     }
 
     // more then one device is connected, user might be working with previously connected device.
