@@ -62,11 +62,16 @@ const eventsMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Disp
         }
     }
 
-    if (action.type === DEVICE.DISCONNECT) {
+    if (action.type === DEVICE.DISCONNECT || action.type === SUITE.FORGET_DEVICE) {
         // remove notifications associated with disconnected device
         // api.dispatch(addEvent({ type: 'disconnected-device' }));
         const { notifications } = api.getState();
-        const affectedDevices = prevState.devices.filter(d => d.path === action.payload.path);
+        const affectedDevices =
+            action.type === SUITE.FORGET_DEVICE
+                ? prevState.devices.filter(
+                      d => d.path === action.payload.path && d.instance === action.payload.instance,
+                  )
+                : prevState.devices.filter(d => d.path === action.payload.path);
         affectedDevices.forEach(d => {
             if (!d.remember) {
                 const toRemove = notifications.filter(n =>
