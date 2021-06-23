@@ -103,12 +103,14 @@ class BlockchainLink extends EventEmitter {
         });
     }
 
+    /** Get general information about the network, like current block-height, name, smallest possible division, etc. */
     getInfo(): Promise<ResponseTypes.GetInfo['payload']> {
         return this.sendMessage({
             type: MESSAGES.GET_INFO,
         });
     }
 
+    /** Get hash of a block of given height. */
     getBlockHash(
         payload: MessageTypes.GetBlockHash['payload']
     ): Promise<ResponseTypes.GetBlockHash['payload']> {
@@ -118,6 +120,7 @@ class BlockchainLink extends EventEmitter {
         });
     }
 
+    /** Get info about an account, eg. derived addresses, balance, transaction history etc. */
     getAccountInfo(
         payload: MessageTypes.GetAccountInfo['payload']
     ): Promise<ResponseTypes.GetAccountInfo['payload']> {
@@ -127,6 +130,7 @@ class BlockchainLink extends EventEmitter {
         });
     }
 
+    /** Get unspent inputs for given account. Works only for bitcoin(like) networks. */
     getAccountUtxo(
         payload: MessageTypes.GetAccountUtxo['payload']
     ): Promise<ResponseTypes.GetAccountUtxo['payload']> {
@@ -136,6 +140,11 @@ class BlockchainLink extends EventEmitter {
         });
     }
 
+    /**
+     * Get info about a given transaction.
+     * Return value of this method is not identical across networks.
+     * this method exposes raw response from the BE.
+     */
     getTransaction(
         payload: MessageTypes.GetTransaction['payload']
     ): Promise<ResponseTypes.GetTransaction['payload']> {
@@ -145,6 +154,10 @@ class BlockchainLink extends EventEmitter {
         });
     }
 
+    /**
+     * Get historical progression of given account's balance
+     * Used for rendering a graph in Suite's dashboard.
+     */
     getAccountBalanceHistory(
         payload: MessageTypes.GetAccountBalanceHistory['payload']
     ): Promise<ResponseTypes.GetAccountBalanceHistory['payload']> {
@@ -163,6 +176,7 @@ class BlockchainLink extends EventEmitter {
         });
     }
 
+    /** Get historical fiat rates. Only some backends support this. */
     getFiatRatesForTimestamps(
         payload: MessageTypes.GetFiatRatesForTimestamps['payload']
     ): Promise<ResponseTypes.GetFiatRatesForTimestamps['payload']> {
@@ -172,6 +186,7 @@ class BlockchainLink extends EventEmitter {
         });
     }
 
+    /** Get fiat currencies for which rates are available. */
     getFiatRatesTickersList(
         payload: MessageTypes.GetFiatRatesTickersList['payload']
     ): Promise<ResponseTypes.GetFiatRatesTickersList['payload']> {
@@ -181,6 +196,7 @@ class BlockchainLink extends EventEmitter {
         });
     }
 
+    /** Get ‘recommended’ fee value inferred from current traffic in the network. */
     estimateFee(
         payload: MessageTypes.EstimateFee['payload']
     ): Promise<ResponseTypes.EstimateFee['payload']> {
@@ -190,6 +206,15 @@ class BlockchainLink extends EventEmitter {
         });
     }
 
+    /**
+     * Subscribe for live changes in
+     * - blockchain i.e new blocks mined.
+     * - accounts, addresses i.e. new transactions broadcasted or mined.
+     * - fiatRates
+     * - connection to BE (CONNECT, DISCONNECT)
+     *
+     * Handling subscription state is left to the user. Hence the purpose of CONNECT and DISCONNECT notifications.
+     */
     subscribe(
         payload: MessageTypes.Subscribe['payload']
     ): Promise<ResponseTypes.Subscribe['payload']> {
@@ -199,6 +224,7 @@ class BlockchainLink extends EventEmitter {
         });
     }
 
+    /** Discard a subscription. */
     unsubscribe(
         payload: MessageTypes.Unsubscribe['payload']
     ): Promise<ResponseTypes.Unsubscribe['payload']> {
@@ -208,6 +234,7 @@ class BlockchainLink extends EventEmitter {
         });
     }
 
+    /** Broadcast a transaction to the network. */
     pushTransaction(
         payload: MessageTypes.PushTransaction['payload']
     ): Promise<ResponseTypes.PushTransaction['payload']> {
@@ -226,7 +253,6 @@ class BlockchainLink extends EventEmitter {
     }
 
     // worker messages handler
-
     onMessage: (event: { data: ResponseTypes.Response }) => void = event => {
         if (!event.data) return;
         const { data } = event;
