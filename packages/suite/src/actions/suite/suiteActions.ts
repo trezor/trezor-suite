@@ -357,6 +357,23 @@ export const handleDeviceDisconnect = (device: Device) => (
 };
 
 /**
+ * Triggered by `trezor-connect DEVICE_EVENT` via suiteMiddleware
+ * Remove all data related to all instances of disconnected device if they are not remembered
+ * @param {Device} device
+ */
+export const forgetDisconnectedDevices = (device: Device) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
+    const deviceInstances = getState().devices.filter(d => d.id === device.id);
+    deviceInstances.forEach(d => {
+        if (d.features && !d.remember) {
+            dispatch(forgetDevice(d));
+        }
+    });
+};
+
+/**
  * list of actions which has influence on `device` field inside `suite` reducer
  * all other actions should be ignored
  */
