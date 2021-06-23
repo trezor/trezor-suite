@@ -623,6 +623,71 @@ const handleDeviceDisconnect = [
     },
 ];
 
+const forgetDisconnectedDevices = [
+    {
+        description: `no affected devices (unacquired)`,
+        state: {
+            suite: {
+                device: SUITE_DEVICE_UNACQUIRED,
+            },
+            devices: [SUITE_DEVICE_UNACQUIRED],
+        },
+        device: getConnectDevice({
+            path: '2',
+        }),
+        result: [],
+    },
+    {
+        description: `no remembered devices, all affected`,
+        state: {
+            suite: {
+                device: SUITE_DEVICE,
+            },
+            devices: [
+                SUITE_DEVICE,
+                getSuiteDevice({
+                    path: '1',
+                    instance: 1,
+                }),
+            ],
+        },
+        device: CONNECT_DEVICE,
+        result: [
+            { path: '1', instance: undefined },
+            { path: '1', instance: 1 },
+        ],
+    },
+    {
+        description: `mix of affected and unaffected devices`,
+        state: {
+            suite: {
+                device: SUITE_DEVICE,
+            },
+            devices: [
+                SUITE_DEVICE,
+                getSuiteDevice({
+                    path: '1',
+                    instance: 1,
+                }),
+                getSuiteDevice({
+                    path: '1',
+                    instance: 2,
+                    remember: true,
+                }),
+                getSuiteDevice({
+                    path: '2',
+                    id: 'device-id-2',
+                }),
+            ],
+        },
+        device: CONNECT_DEVICE,
+        result: [
+            { path: '1', instance: undefined },
+            { path: '1', instance: 1 },
+        ],
+    },
+];
+
 const observeSelectedDevice = [
     {
         description: `ignored action`,
@@ -1024,6 +1089,7 @@ export default {
     selectDevice,
     handleDeviceConnect,
     handleDeviceDisconnect,
+    forgetDisconnectedDevices,
     observeSelectedDevice,
     acquireDevice,
     authorizeDevice,

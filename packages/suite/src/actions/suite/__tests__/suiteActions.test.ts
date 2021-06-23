@@ -185,6 +185,19 @@ describe('Suite Actions', () => {
         });
     });
 
+    fixtures.forgetDisconnectedDevices.forEach(f => {
+        it(`forgetDisconnectedDevices: ${f.description}`, () => {
+            const state = getInitialState(f.state.suite, f.state.devices);
+            const store = initStore(state);
+            store.dispatch(suiteActions.forgetDisconnectedDevices(f.device));
+            const actions = store.getActions();
+            expect(actions.length).toEqual(f.result.length);
+            actions.forEach((a, i) => {
+                expect(a.payload).toMatchObject(f.result[i]);
+            });
+        });
+    });
+
     fixtures.observeSelectedDevice.forEach(f => {
         it(`observeSelectedDevice: ${f.description}`, () => {
             const state = getInitialState(f.state.suite, f.state.devices);
