@@ -1,5 +1,6 @@
 import React from 'react';
-import { WelcomeLayout, OnboardingLayout } from '@onboarding-components';
+import { OnboardingLayout } from '@onboarding-components';
+import { WelcomeLayout } from '@suite-components';
 import WelcomeStep from '@onboarding-views/steps/Welcome';
 import CreateOrRecover from '@onboarding-views/steps/CreateOrRecover';
 import FirmwareStep from '@onboarding-views/steps/Firmware';

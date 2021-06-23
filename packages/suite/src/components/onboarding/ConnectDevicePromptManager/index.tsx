@@ -41,6 +41,9 @@ const ConnectDevicePromptManager = ({ device, children }: Props) => {
         : false;
 
     let content: JSX.Element | null = null;
+    
+    // todo: move to some hook or something
+    
     if (!transport?.type) {
         // No transport layer available to communicate with the device => we should offer downloading the Bridge. (Eg. firefox user without bridge installed)
         // It shouldn't happen in Chrome and desktop app as bridge is built-in and there should be WebUSB as a fallback

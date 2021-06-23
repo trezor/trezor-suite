@@ -12,11 +12,10 @@ import CoinsGroup from './CoinsGroup/CoinsGroup';
 import ConnectDevicePrompt from './ConnectDevicePrompt';
 import ConnectDevicePromptManager from './ConnectDevicePromptManager';
 import OnboardingLayout from './Layouts/OnboardingLayout';
-import WelcomeLayout from './Layouts/WelcomeLayout';
 import ProgressBar from './ProgressBar';
 import Hologram from './Hologram';
 import DeviceAnimation, { DeviceAnimationType } from './DeviceAnimation';
-import TroubleshootingTips from './TroubleshootingTips';
+import TroubleshootingTips from '../suite/TroubleshootingTips';
 import OnboardingStepBox, { OnboardingStepBoxProps } from './OnboardingStepBox';
 import SkipStepConfirmation from './SkipStepConfirmation';
 
@@ -35,7 +34,6 @@ export {
     CoinsGroup,
     ConnectDevicePrompt,
     ConnectDevicePromptManager,
-    WelcomeLayout,
     OnboardingLayout,
     ProgressBar,
     TroubleshootingTips,

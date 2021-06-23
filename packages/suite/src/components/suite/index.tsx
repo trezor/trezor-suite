@@ -7,6 +7,8 @@ import ExternalLink from './ExternalLink';
 import Preloader from './Preloader';
 import FormattedNumber from './FormattedNumber';
 import SuiteLayout, { LayoutContext } from './SuiteLayout';
+import WelcomeLayout from './WelcomeLayout';
+
 import Card from './Card';
 import NotificationCard from './NotificationCard';
 import PinInput from './PinInput';
@@ -21,6 +23,8 @@ import { HiddenPlaceholder } from './HiddenPlaceholder';
 import QrCode from './QrCode';
 import { QuestionTooltip } from './QuestionTooltip';
 import TransactionsGraph from './TransactionsGraph';
+
+// todo:
 import DeviceInvalidModeLayout from './DeviceInvalidModeLayout';
 import AppNavigationPanel from './AppNavigationPanel';
 import AppNavigation from './AppNavigation';
@@ -51,6 +55,7 @@ export {
     ExternalLink,
     Preloader,
     FormattedNumber,
+    WelcomeLayout,
     SuiteLayout,
     LayoutContext,
     Card,

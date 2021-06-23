@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { TroubleshootingTips } from '@onboarding-components';
 import { Translation } from '@suite-components/Translation';
-import { ConnectedDeviceStatus } from '@onboarding-types';
+
 import {
     TROUBLESHOOTING_TIP_BRIDGE,
     TROUBLESHOOTING_TIP_USB,
@@ -15,7 +15,7 @@ const Wrapper = styled.div`
 `;
 
 interface Props {
-    deviceStatus: ConnectedDeviceStatus;
+    deviceStatus: 'unreadable' | 'bootloader' | 'seedless';
     trezorModel?: number;
 }
 
@@ -33,10 +33,10 @@ const UnexpectedDeviceState = ({ deviceStatus, trezorModel }: Props) => (
                         TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
                     ]}
                 />
-
+                
                 {/* <Button onClick={() => TrezorConnect.disableWebUSB()}>
-                        <Translation id="TR_TRY_BRIDGE" />
-                    </Button> */}
+                    <Translation id="TR_TRY_BRIDGE" />
+                </Button> */}
             </>
         )}
         {deviceStatus === 'bootloader' && (

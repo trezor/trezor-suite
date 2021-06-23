@@ -60,7 +60,6 @@ const Content = styled.div`
     background-attachment: local;
     background-size: 570px 570px;
     color: ${props => props.theme.TYPE_DARK_GREY};
-    /* justify-content: center; */
     align-items: center;
     overflow-y: auto;
 `;

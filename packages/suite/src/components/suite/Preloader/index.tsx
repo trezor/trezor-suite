@@ -2,18 +2,22 @@ import React, { useEffect } from 'react';
 import FocusLock from 'react-focus-lock';
 import { SUITE } from '@suite-actions/constants';
 import Loading from '@suite-components/Loading';
-import { SuiteLayout } from '@suite-components';
+import { SuiteLayout, WelcomeLayout } from '@suite-components';
 import InitialLoading from './components/InitialLoading';
 import DiscoveryLoader from '@suite-components/DiscoveryLoader';
 import Modals from '@suite-components/modals';
+// todo: 
 import * as routerActions from '@suite-actions/routerActions';
 import DatabaseUpgradeModal from './components/DatabaseUpgradeModal';
+import PrerequisitesGuide from '../PrerequisitesGuide';
 import { AppState } from '@suite-types';
 import { useDiscovery, useSelector, useActions } from '@suite-hooks';
 import Firmware from '@firmware-views';
 import Recovery from '@suite/views/recovery';
 import Backup from '@backup-views';
 import Onboarding from '@onboarding-views';
+import { getPrerequisites } from '@suite/utils/suite/prerequisites';
+
 
 import {
     Bridge,
@@ -31,7 +35,6 @@ import {
     SwitchDevice,
     Version,
 } from '@suite-views';
-import { ConnectDevicePrompt, WelcomeLayout } from '@suite/components/onboarding';
 
 type SuiteAppStateProps = {
     loaded: boolean;
@@ -43,8 +46,6 @@ type SuiteAppStateProps = {
 
 const getSuiteApplicationState = ({
     router,
-    loaded,
-    transport,
     device,
     getDiscoveryStatus,
 }: SuiteAppStateProps) => {
@@ -53,66 +54,13 @@ const getSuiteApplicationState = ({
     // appears and we do not want to show anything above it.
     if (router.app === 'unknown') return;
 
-    // display Loader wrapped in modal above requested route to keep "modal" flow continuity
-    if (!loaded || !transport) return Loading;
-
-    // no transport available
-    if (transport && !transport.type) return Bridge;
-
-    // todo: when there is no last device. user gets redirected to onboarding. so this has become obsolete now
-    // no device available
-    if (!device) return () => <ConnectDevicePrompt connected={false} showWarning={false} />;
-
-    // device features cannot be read, device is probably used in another window
-    if (device.type === 'unacquired') return DeviceAcquire;
-
-    // Webusb unreadable device (HID)
-    if (device.type === 'unreadable') return DeviceUnreadable;
-
-    // device features unknown (this shouldn't happened tho)
-    if (!device.features) return DeviceUnknown;
-
-    // similar to initialize, there is no seed in device
-    // difference is it is in recovery mode.
-    if (device.features.recovery_mode) return DeviceRecoveryMode;
-
-    // device is not initialized
-    // if (device.mode === 'initialize') return DeviceInitialize;
-
-    // device is in bootloader mode
-    if (device.mode === 'bootloader')
-        return device.features.firmware_present ? DeviceBootloader : DeviceNoFirmware;
-
-    // device firmware update required
-    if (device.firmware === 'required') return DeviceUpdateRequired;
-
-    // device in seedless mode
-    // if (device.mode === 'seedless') return DeviceSeedless;
+    // todo: still needed?
+    if (device?.features?.recovery_mode) return DeviceRecoveryMode;
 
     // account discovery in progress and didn't find any used account yet
     const authConfirmation = getDiscoveryStatus();
     if (authConfirmation?.type === 'auth-confirm') return DiscoveryLoader;
 };
-
-
-/**
- * Returns information about reason that is blocking user from interacting with Suite
- */
-const getInteractionPreconditions = ({ device, transport }: Pick<SuiteAppStateProps, 'device' | 'transport'>) => {
-    if (transport && !transport.type) {
-        return 'bridge';
-    }
-    if (!device) {
-        return 'unconnected';
-    }
-    if (device.type !== 'acquired') {
-        return device.type
-    }
-    if (device.mode !== 'normal') {
-        return device.mode
-    }
-
-}
 
 const getModalApplication = (route: AppState['router']['route']) => {
     if (!route) return;
@@ -186,7 +134,8 @@ const Preloader = ({ children, hideModals = false }: Props) => {
         const cancelable = router.params
             ? Object.prototype.hasOwnProperty.call(router.params, 'cancelable')
             : false;
-        return (
+        
+            return (
             <>
                 <FocusLock autoFocus={false}>
                     <ApplicationModal
@@ -216,16 +165,16 @@ const Preloader = ({ children, hideModals = false }: Props) => {
         return <Onboarding />;
     }
 
-    // if (!device) return (<ConnectDevicePrompt connected={false} showWarning={false} />);
-    const precondition = getInteractionPreconditions({ transport, device })
+    const prerequisite = getPrerequisites({ transport, device })
 
-    if (precondition) {
+    if (prerequisite) {
         return (
-            <WelcomeLayout >
-                <ConnectDevicePrompt connected={false} showWarning precondition={precondition} />
+            <WelcomeLayout>
+                <PrerequisitesGuide device={device} transport={transport} precondition={prerequisite} />
             </WelcomeLayout>
         )
     }
+
     // check route state and display it as not cancelable modal above requested route view
     const ApplicationStateModal = getSuiteApplicationState({
         loaded,

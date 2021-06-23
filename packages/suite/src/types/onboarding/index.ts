@@ -1,12 +1,5 @@
 import * as STEP from '@onboarding-constants/steps';
 
-export type ConnectedDeviceStatus =
-    | 'unreadable'
-    | 'in-bootloader'
-    | 'seedless'
-    | 'initialized'
-    | 'ok';
-
 export interface Step {
     id: AnyStepId;
     stepGroup: number | undefined;
