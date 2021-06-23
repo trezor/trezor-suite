@@ -40,7 +40,7 @@ const firmware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
                 // This would save us from huge headache with hacky solutions like trying to remember a device before the update process
                 // in exchange for just a slightly worse UX for users which have multiple connected devices (there will not be many of them)
                 if (!device.remember) {
-                    api.dispatch(suiteActions.rememberDevice(device, true));
+                    api.dispatch(suiteActions.toggleRememberDevice(device, true));
                 }
             }
 

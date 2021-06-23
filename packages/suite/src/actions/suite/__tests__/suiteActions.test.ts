@@ -292,7 +292,7 @@ describe('Suite Actions', () => {
     // just for coverage
     it('misc', () => {
         const SUITE_DEVICE = getSuiteDevice({ path: '1' });
-        expect(suiteActions.rememberDevice(SUITE_DEVICE)).toMatchObject({
+        expect(suiteActions.toggleRememberDevice(SUITE_DEVICE)).toMatchObject({
             type: SUITE.REMEMBER_DEVICE,
         });
         expect(suiteActions.forgetDevice(SUITE_DEVICE)).toMatchObject({
