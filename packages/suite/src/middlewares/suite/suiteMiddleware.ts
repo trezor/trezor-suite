@@ -45,7 +45,7 @@ const suite = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => as
                     d => d.forceRemember && d.remember,
                 );
                 forcedDevices.forEach(d => {
-                    api.dispatch(suiteActions.rememberDevice(d));
+                    api.dispatch(suiteActions.toggleRememberDevice(d));
                 });
                 api.dispatch(
                     suiteActions.selectDevice(

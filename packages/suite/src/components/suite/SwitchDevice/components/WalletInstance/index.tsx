@@ -84,8 +84,8 @@ const WalletInstance = ({
     index,
     ...rest
 }: Props) => {
-    const { rememberDevice, forgetDevice, getDiscovery } = useActions({
-        rememberDevice: suiteActions.rememberDevice,
+    const { toggleRememberDevice, forgetDevice, getDiscovery } = useActions({
+        toggleRememberDevice: suiteActions.toggleRememberDevice,
         forgetDevice: suiteActions.forgetDevice,
         getDiscovery: discoveryActions.getDiscovery,
     });
@@ -169,7 +169,7 @@ const WalletInstance = ({
                         <Switch
                             checked={!!instance.remember}
                             onChange={() => {
-                                rememberDevice(instance);
+                                toggleRememberDevice(instance);
                                 analytics.report({
                                     type: instance.remember
                                         ? 'switch-device/forget'
