@@ -37,10 +37,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             );
             break;
 
-        case SUITE.FORGET_DEVICE:
-            api.dispatch(storageActions.forgetDevice(action.payload));
-            break;
-
         case ACCOUNT.CREATE:
         case ACCOUNT.CHANGE_VISIBILITY:
         case ACCOUNT.UPDATE: {
@@ -54,9 +50,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
 
         case ACCOUNT.REMOVE: {
             action.payload.forEach(account => {
-                storageActions.removeAccount(account);
+                storageActions.removeAccountDraft(account);
                 storageActions.removeAccountTransactions(account);
                 storageActions.removeAccountGraph(account);
+                storageActions.removeAccount(account);
             });
             break;
         }
