@@ -10,6 +10,8 @@ import { isDesktop, isMacOs } from '@suite-utils/env';
 import { DESKTOP_WRAPPER_BORDER_WIDTH } from '@suite-constants/layout';
 import { getDeviceModel, getFwVersion } from '@suite/utils/suite/device';
 
+import type { TrezorDevice } from '@suite/types/suite';
+
 const Wrapper = styled.div`
     display: flex;
     flex: 1;
@@ -147,11 +149,11 @@ const getTextForMode = (requestedMode: 'bootloader' | 'normal', deviceVersion: n
     return text[requestedMode];
 };
 interface Props {
-    deviceVersion: number;
+    expectedDevice?: TrezorDevice;
     requestedMode: 'bootloader' | 'normal';
 }
 
-const ReconnectDevicePrompt = ({ deviceVersion, requestedMode }: Props) => {
+const ReconnectDevicePrompt = ({ expectedDevice, requestedMode }: Props) => {
     const { device } = useDevice();
     const { firmwareUpdate, isWebUSB } = useFirmware();
     // local state to track if the user actually unplugged the device. Otherwise if the device is
@@ -189,12 +191,13 @@ const ReconnectDevicePrompt = ({ deviceVersion, requestedMode }: Props) => {
         ) : undefined;
 
     // T1 bootloader before firmware version 1.8.0 can only be invoked by holding both buttons
-    const firmwareVersion = device?.features ? getFwVersion(device) : '';
+    const deviceFwVersion = device?.features ? getFwVersion(device) : '';
+    const deviceModel = device?.features ? getDeviceModel(device) : 'T';
     let animationType: DeviceAnimationType = 'BOOTLOADER';
     if (
-        animationVersion === '1' &&
-        semver.valid(firmwareVersion) &&
-        semver.satisfies(firmwareVersion, '<1.8.0')
+        deviceModel === '1' &&
+        semver.valid(deviceFwVersion) &&
+        semver.satisfies(deviceFwVersion, '<1.8.0')
     ) {
         animationType = 'BOOTLOADER_TWO_BUTTONS';
     }
@@ -208,7 +211,7 @@ const ReconnectDevicePrompt = ({ deviceVersion, requestedMode }: Props) => {
                     type={animationType}
                     size={200}
                     shape="ROUNDED"
-                    version={animationVersion}
+                    device={expectedDevice}
                     loop
                 />
                 <Content>

@@ -59,10 +59,7 @@ const FirmwareInstallation = ({ cachedDevice, standaloneFwUpdate }: Props) => {
         <>
             {(status === 'unplug' || status === 'reconnect-in-normal') && (
                 // Modal to instruct user to disconnect the device and reconnect in normal mode
-                <ReconnectDevicePrompt
-                    deviceVersion={cachedDevice?.features?.major_version || 2}
-                    requestedMode="normal"
-                />
+                <ReconnectDevicePrompt expectedDevice={cachedDevice} requestedMode="normal" />
             )}
             <OnboardingStepBox
                 image="FIRMWARE"
