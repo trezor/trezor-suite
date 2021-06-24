@@ -89,7 +89,6 @@ declare global {
             RELEASES_T1: string;
             RELEASES_T2: string;
             BASE_FW_URL: string;
-            BETA_BASE_FW_URL: string;
         }
     }
 }

@@ -7,7 +7,6 @@ const { getDeviceFeatures } = global.JestMocks;
 const RELEASES_T2 = JSON.parse(process.env.RELEASES_T2);
 const RELEASES_T1 = JSON.parse(process.env.RELEASES_T1);
 const BASE_URL = process.env.BASE_FW_URL;
-const BETA_BASE_URL = process.env.BETA_BASE_FW_URL;
 
 describe('getBinary() modifications of fw', () => {
     it('firmware installed on bootloader 1.8.0 should be return modified', async () => {
@@ -40,7 +39,6 @@ describe('getBinary() modifications of fw', () => {
             version: info?.release.version,
             releases: RELEASES_T1,
             baseUrl: BASE_URL,
-            baseUrlBeta: BETA_BASE_URL,
         });
 
         // for cross-check, download again original fw and see if it was sliced
@@ -88,7 +86,6 @@ describe('getBinary() modifications of fw', () => {
             releases: RELEASES_T1,
             baseUrl: BASE_URL,
             version: info.release.version,
-            baseUrlBeta: BETA_BASE_URL,
         });
 
         // for cross-check, download again original fw and see if it was sliced
@@ -137,7 +134,6 @@ describe('getBinary() modifications of fw', () => {
             releases: RELEASES_T2,
             baseUrl: BASE_URL,
             version: info.release.version,
-            baseUrlBeta: BETA_BASE_URL,
         });
 
         // for cross-check, download again original fw and see if it was sliced
