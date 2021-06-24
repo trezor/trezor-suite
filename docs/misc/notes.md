@@ -80,12 +80,6 @@ Server needs to be running on https in order to have access to `navigator.usb` f
 
 `yarn`
 
-## Landing page release
-
-1. `yarn workspace @trezor/landing-page build`
-2. `cd packages/landing-page`
-3. `./scripts/s3sync.sh stage beta`
-
 ## Suite web release
 
 1. `assetPrefix=/wallet yarn workspace @trezor/suite-web build`
