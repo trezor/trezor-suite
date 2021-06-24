@@ -25,42 +25,43 @@ const routes = [
         name: 'suite-version',
         pattern: '/version',
         app: 'version',
-        isModal: true,
+        isForegroundApp: true,
         params: modalAppParams,
     },
     {
         name: 'suite-bridge',
         pattern: '/bridge',
         app: 'bridge',
-        isModal: true,
+        isForegroundApp: true,
         params: modalAppParams,
     },
     {
         name: 'suite-udev',
         pattern: '/udev',
         app: 'udev',
-        isModal: true,
+        isForegroundApp: true,
         params: modalAppParams,
     },
     {
         name: 'suite-log',
         pattern: '/log',
         app: 'log',
-        isModal: true,
+        isForegroundApp: true,
         params: modalAppParams,
     },
     {
         name: 'suite-switch-device',
         pattern: '/switch-device',
         app: 'switch-device',
-        isModal: true,
+        isForegroundApp: true,
         params: modalAppParams,
     },
     {
         name: 'onboarding-index',
         pattern: '/onboarding',
         app: 'onboarding',
-        isModal: true, // used to prevent url change
+        isForegroundApp: true,
+        isFullscreenApp: true,
     },
     {
         name: 'settings-index',
@@ -87,21 +88,21 @@ const routes = [
         name: 'recovery-index',
         pattern: '/recovery',
         app: 'recovery',
-        isModal: true,
+        isForegroundApp: true,
         params: modalAppParams,
     },
     {
         name: 'backup-index',
         pattern: '/backup',
         app: 'backup',
-        isModal: true,
+        isForegroundApp: true,
         params: modalAppParams,
     },
     {
         name: 'firmware-index',
         pattern: '/firmware',
         app: 'firmware',
-        isModal: true,
+        isForegroundApp: true,
         params: modalAppParams,
     },
     {
@@ -223,7 +224,11 @@ const routes = [
     },
 ] as const;
 
-type RouteKeys = keyof ArrayElement<typeof routes> | 'isModal' | 'params';
+type RouteKeys =
+    | keyof ArrayElement<typeof routes>
+    | 'isForegroundApp'
+    | 'isFullscreenApp'
+    | 'params';
 export type Route = ArrayElement<ConstWithOptionalFields<typeof routes, RouteKeys>>;
 
 type RouteParamsTypes = {
