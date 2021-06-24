@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import compareVersions from 'compare-versions';
+import * as semver from 'semver';
+
 import { H1, Button, variables } from '@trezor/components';
 import { Translation, WebusbButton } from '@suite-components';
 import { DeviceAnimation, DeviceAnimationType } from '@onboarding-components';
 import { useDevice, useFirmware } from '@suite-hooks';
 import { isDesktop, isMacOs } from '@suite-utils/env';
 import { DESKTOP_WRAPPER_BORDER_WIDTH } from '@suite-constants/layout';
+import { getDeviceModel, getFwVersion } from '@suite/utils/suite/device';
 
 const Wrapper = styled.div`
     display: flex;
@@ -187,13 +189,12 @@ const ReconnectDevicePrompt = ({ deviceVersion, requestedMode }: Props) => {
         ) : undefined;
 
     // T1 bootloader before firmware version 1.8.0 can only be invoked by holding both buttons
-    const animationVersion = deviceVersion === 1 ? '1' : 'T';
-    const firmwareSemver = `${device?.features?.major_version}.${device?.features?.minor_version}.${device?.features?.patch_version}`;
+    const firmwareVersion = device?.features ? getFwVersion(device) : '';
     let animationType: DeviceAnimationType = 'BOOTLOADER';
     if (
         animationVersion === '1' &&
-        compareVersions.validate(firmwareSemver) &&
-        compareVersions.compare(firmwareSemver, '1.8.0', '<')
+        semver.valid(firmwareVersion) &&
+        semver.satisfies(firmwareVersion, '<1.8.0')
     ) {
         animationType = 'BOOTLOADER_TWO_BUTTONS';
     }

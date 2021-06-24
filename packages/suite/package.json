@@ -21,7 +21,6 @@
         "@trezor/suite-data": "21.7.0",
         "@trezor/suite-storage": "21.7.0",
         "bignumber.js": "^9.0.1",
-        "compare-versions": "^3.6.0",
         "date-fns": "^2.16.1",
         "date-fns-tz": "^1.0.12",
         "dropbox": "5.1.0",
