@@ -80,7 +80,7 @@ export const goto = (
 
     const url = getRoute(routeName, params);
     const route = findRouteByName(routeName);
-    if (route && route.isModal) {
+    if (route && route.isForegroundApp) {
         dispatch(onLocationChange(url));
         dispatch(suiteActions.lockRouter(true));
         return;
@@ -112,7 +112,7 @@ export const closeModalApp = (preserveParams = true) => async (dispatch: Dispatc
 
     // if user enters route of modal app manually, back would redirect him again to the same route and he would remain stuck
     // so we need a fallback to suite-index
-    if (route && route.isModal) {
+    if (route && route.isForegroundApp) {
         return dispatch(goto('suite-index'));
     }
 
@@ -132,7 +132,7 @@ export const initialRedirection = () => async (dispatch: Dispatch, getState: Get
     const route = findRoute(Router.pathname + window.location.hash);
     const { initialRun } = getState().suite.flags;
 
-    if (route && route.isModal) {
+    if (route && route.isForegroundApp) {
         await dispatch(goto(route.name));
     } else if (route && initialRun) {
         // only do initial redirection of route is valid
