@@ -51,7 +51,6 @@ const FirmwareInitial = ({ cachedDevice, setCachedDevice, standaloneFwUpdate }: 
 
     // User is following instructions for disconnecting/reconnecting a device in bootloader mode; We'll use cached version of the device
     const device = status === 'waiting-for-bootloader' ? cachedDevice : liveDevice;
-    const expectedModel = device?.features?.major_version || 2;
 
     let content;
 
@@ -136,10 +135,7 @@ const FirmwareInitial = ({ cachedDevice, setCachedDevice, standaloneFwUpdate }: 
             <>
                 {/* Modal above a fw update offer. Instructs user to reconnect the device in bootloader */}
                 {status === 'waiting-for-bootloader' && (
-                    <ReconnectDevicePrompt
-                        deviceVersion={expectedModel}
-                        requestedMode="bootloader"
-                    />
+                    <ReconnectDevicePrompt expectedDevice={device} requestedMode="bootloader" />
                 )}
 
                 <OnboardingStepBox

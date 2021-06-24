@@ -145,7 +145,7 @@ const FinalStep = () => {
         >
             <Wrapper>
                 <DeviceImageWrapper>
-                    <DeviceAnimation type="SUCCESS" version={device?.features?.model} size={400} />
+                    <DeviceAnimation type="SUCCESS" size={400} device={device} />
                 </DeviceImageWrapper>
                 <Content>
                     <Heading>

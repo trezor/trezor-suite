@@ -89,10 +89,7 @@ const SecurityCheck = () => {
                     id="TR_ONBOARDING_DEVICE_CHECK_1"
                     values={{
                         strong: chunks => (
-                            <StyledTooltip
-                                rich
-                                content={<Hologram trezorModel={device?.features?.model} />}
-                            >
+                            <StyledTooltip rich content={<Hologram device={device} />}>
                                 <Underline>{chunks}</Underline>
                             </StyledTooltip>
                         ),

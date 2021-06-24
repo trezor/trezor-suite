@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import { variables } from '@trezor/components';
 import { DeviceAnimation } from '@onboarding-components';
 import { Translation, TrezorLink } from '@suite/components/suite';
@@ -8,6 +9,8 @@ import {
     TREZOR_RESELLERS_URL,
     SUPPORT_URL,
 } from '@suite/constants/suite/urls';
+
+import type { TrezorDevice } from '@suite/types/suite';
 
 const Wrapper = styled.div`
     display: flex;
@@ -41,10 +44,11 @@ const Warning = styled.div`
     background: ${props => props.theme.BG_LIGHT_GREY};
 `;
 
-interface Props {
-    trezorModel?: string;
+interface HologramProps {
+    device?: TrezorDevice;
 }
-const Hologram = ({ trezorModel }: Props) => (
+
+const Hologram = ({ device }: HologramProps) => (
     <Wrapper>
         <HologramHeading>
             <Translation id="TR_HOLOGRAM_STEP_HEADING" />
@@ -55,7 +59,7 @@ const Hologram = ({ trezorModel }: Props) => (
         </HologramSubHeading>
 
         <AnimationWrapper>
-            <DeviceAnimation type="HOLOGRAM" version={trezorModel} shape="ROUNDED-SMALL" loop />
+            <DeviceAnimation type="HOLOGRAM" shape="ROUNDED-SMALL" loop device={device} />
         </AnimationWrapper>
 
         <Warning>
