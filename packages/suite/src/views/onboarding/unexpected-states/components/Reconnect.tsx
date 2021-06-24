@@ -1,6 +1,5 @@
 import React from 'react';
-import { Translation } from '@suite-components/Translation';
-import { TroubleshootingTips } from '@onboarding-components';
+import { Translation, TroubleshootingTips } from '@suite-components';
 
 interface Props {
     showWebUsb: boolean;
