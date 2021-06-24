@@ -7,10 +7,7 @@ interface PrerequisitesInput {
     transport?: Partial<TransportInfo>;
 }
 
-/**
- * Returns information about reason that is blocking user from interacting with Suite
- */
-export const getPrerequisites = ({ router, device, transport }: PrerequisitesInput) => {
+const getPrerequisiteName = ({ router, device, transport }: PrerequisitesInput) => {
     if (!router || router.app === 'unknown') return;
 
     // no transport available
@@ -50,4 +47,31 @@ export const getPrerequisites = ({ router, device, transport }: PrerequisitesInp
     // if (authConfirmation?.type === 'auth-confirm') return DiscoveryLoader;
 };
 
-export type PrerequisiteType = ReturnType<typeof getPrerequisites>;
+const getExcludedPrerequisites = (router: PrerequisitesInput['router']) => {
+    if (router.app === 'onboarding') {
+        return ['device-initialize'];
+    }
+    return [];
+};
+
+/**
+ * Returns information about reason that is blocking user from interacting with Suite
+ */
+export const getPrerequisites = ({ router, device, transport }: PrerequisitesInput) => {
+    const excluded = getExcludedPrerequisites(router);
+
+    const prerequisite = getPrerequisiteName({ router, device, transport });
+
+    if (typeof prerequisite === 'undefined') return;
+
+    if (excluded.includes(prerequisite)) {
+        return undefined;
+    }
+
+    return prerequisite;
+};
+
+// distributive conditional types to the rescue!
+type DefinedUnionMember<T> = T extends string ? T : never;
+
+export type PrerequisiteType = DefinedUnionMember<ReturnType<typeof getPrerequisites>>;

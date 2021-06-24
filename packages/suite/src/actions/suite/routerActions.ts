@@ -56,6 +56,7 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
     const unlocked = dispatch(onBeforePopState());
     if (!unlocked) return;
     const { router } = getState();
+
     if (router.pathname === url) return null;
     // TODO: check if the view is not locked by the device request
 
@@ -80,6 +81,10 @@ export const goto = (
 
     const url = getRoute(routeName, params);
     const route = findRouteByName(routeName);
+
+    console.log('route', route);
+    console.log('url', url);
+
     if (route && route.isModal) {
         dispatch(onLocationChange(url));
         dispatch(suiteActions.lockRouter(true));

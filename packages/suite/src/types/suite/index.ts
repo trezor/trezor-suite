@@ -106,7 +106,7 @@ export type InjectedModalApplicationProps = {
     onCancel: () => void;
     closeModalApp: (preserveParams?: boolean) => void;
     getBackgroundRoute: () => Route | typeof undefined;
-    prerequisite: PrerequisiteType;
+    prerequisite?: PrerequisiteType;
 };
 
 export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error';

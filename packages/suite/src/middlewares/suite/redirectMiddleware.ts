@@ -5,20 +5,20 @@ import * as routerActions from '@suite-actions/routerActions';
 import { AppState, Action, Dispatch, TrezorDevice } from '@suite-types';
 
 const handleDeviceRedirect = async (dispatch: Dispatch, state: AppState, device?: TrezorDevice) => {
-    const { devices } = state;
-
-    // user disconnected the last device. display onboarding view which handles connecting of the
-    // first device nicely
-    if (!device && devices.length === 0) {
-        // await dispatch(routerActions.goto('onboarding-index'));
-    }
-
-    // more then one device is connected, user might be working with previously connected device.
-    // redirect is not desirable here
-    if (devices.length > 1 || !device?.features) {
+    // no device, no redirect
+    if (!device || !device.features) {
         return;
     }
 
+    const { devices } = state;
+
+    // more then one device is connected, user might be working with previously connected device.
+    // redirect is not desirable here
+    if (devices.length > 1) {
+        return;
+    }
+
+    console.log('device', device);
     // device is not initialized, redirect to onboarding
     if (device.mode === 'initialize') {
         await dispatch(routerActions.goto('onboarding-index'));
@@ -41,7 +41,6 @@ const handleDeviceRedirect = async (dispatch: Dispatch, state: AppState, device?
         await dispatch(routerActions.goto(state.router.route.name));
     }
 };
-
 /**
  * Middleware containing all redirection logic
  */
@@ -58,12 +57,13 @@ const redirect = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
             !action.payload &&
             api.getState().router.app === 'switch-device'
         ) {
-            await api.dispatch(routerActions.closeModalApp());
+            api.dispatch(routerActions.closeModalApp());
         }
         return action;
     }
 
     switch (action.type) {
+        // todo: this will not get call after acquiring device!
         case SUITE.SELECT_DEVICE:
             await handleDeviceRedirect(api.dispatch, api.getState(), action.payload);
             break;

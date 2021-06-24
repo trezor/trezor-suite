@@ -1,7 +1,9 @@
 import React from 'react';
 import { useSpring, config, animated } from 'react-spring';
 import styled from 'styled-components';
-import { Translation, TroubleshootingTips } from '@suite-components';
+
+import { Translation, TroubleshootingTips /* WebusbButton */ } from '@suite-components';
+
 import {
     TROUBLESHOOTING_TIP_BRIDGE,
     TROUBLESHOOTING_TIP_CABLE,
@@ -16,7 +18,7 @@ const Wrapper = styled(animated.div)`
 interface Props {
     offerWebUsb: boolean;
 }
-const NoDeviceDetected = ({ offerWebUsb }: Props) => {
+const DeviceConnect = ({ offerWebUsb }: Props) => {
     const fadeStyles = useSpring({
         config: { ...config.default },
         delay: 1000,
@@ -44,4 +46,4 @@ const NoDeviceDetected = ({ offerWebUsb }: Props) => {
     );
 };
 
-export default NoDeviceDetected;
+export default DeviceConnect;

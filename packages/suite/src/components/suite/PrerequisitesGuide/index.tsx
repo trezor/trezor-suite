@@ -5,12 +5,16 @@ import { ConnectDevicePrompt } from '@onboarding-components';
 import { isWebUSB } from '@suite-utils/transport';
 import { getStatus, deviceNeedsAttention } from '@suite-utils/device';
 import { useSelector } from '@suite-hooks';
-
-import NoDeviceDetected from './components/NoDeviceDetected';
-import NoTransport from './components/NoTransport';
-import UnexpectedDeviceState from './components/UnexpectedDeviceState';
-
 import type { PrerequisiteType } from '@suite-types';
+
+import DeviceConnect from './components/DeviceConnect';
+import Transport from './components/Transport';
+import DeviceUnreadable from './components/DeviceUnreadable';
+import DeviceBootloader from './components/DeviceBootloader';
+import DeviceSeedless from './components/DeviceSeedless';
+import DeviceInitialize from './components/DeviceInitialize';
+import DeviceAcquire from './components/DeviceAcquire';
+import DeviceUnknown from './components/DeviceUnknown';
 
 const Wrapper = styled.div`
     display: flex;
@@ -45,22 +49,21 @@ const PrerequisitesGuide = ({ prerequisite }: Props) => {
             {(() => {
                 switch (prerequisite) {
                     case 'transport-bridge':
-                        return <NoTransport />;
+                        return <Transport />;
                     case 'device-disconnected':
-                        return <NoDeviceDetected offerWebUsb={isWebUSB(transport)} />;
+                        return <DeviceConnect offerWebUsb={isWebUSB(transport)} />;
                     case 'device-bootloader':
+                        return <DeviceBootloader />;
                     case 'device-seedless':
+                        return <DeviceSeedless />;
                     case 'device-unreadable':
-                        return <UnexpectedDeviceState state={prerequisite} />;
+                        return <DeviceUnreadable />;
                     case 'device-unacquired':
-                        // todo:
-                        return 'unacquired, should we render button directly here?';
+                        return <DeviceAcquire />;
                     case 'device-unknown':
-                        // todo:
-                        return 'device unknown, should not happen';
+                        return <DeviceUnknown />;
                     case 'device-initialize':
-                        // todo:
-                        return 'not initialized. redirect to onboarding should have happend?';
+                        return <DeviceInitialize />;
 
                     default:
                         return prerequisite;

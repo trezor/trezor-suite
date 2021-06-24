@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Translation, TrezorLink, WebusbButton } from '@suite-components';
+import { Translation, TrezorLink } from '@suite-components';
 import CollapsibleBox from '@suite-components/CollapsibleBox'; // build fails due if imported from suite-components
 import { variables, Button } from '@trezor/components';
 import { SUPPORT_URL } from '@suite-constants/urls';
@@ -76,14 +76,15 @@ interface Item {
 
 interface Props {
     label: React.ReactNode;
+    cta?: React.ReactNode;
     items: Item[];
     offerWebUsb?: boolean;
 }
 
-const TroubleshootingTips = ({ label, items, offerWebUsb }: Props) => (
+const TroubleshootingTips = ({ label, items, cta, offerWebUsb }: Props) => (
     <WhiteCollapsibleBox
         variant="large"
-        heading={offerWebUsb ? <WebusbButton icon="SEARCH" /> : undefined}
+        heading={cta}
         iconLabel={label}
         noContentPadding
         data-test="@onboarding/expand-troubleshooting-tips"
