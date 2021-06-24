@@ -26,10 +26,6 @@ if [ "x$1" == "xstaging-wallet" ]; then
     BUCKET=stage.mytrezor.com
     DISTRIBUTION_ID=E24M0QWO692FQL
     DESTDIR=/wallet/web
-elif [ "x$1" == "xbeta-wallet" ]; then
-    BUCKET=beta.mytrezor.com
-    DISTRIBUTION_ID=E1PONNHWUNCQ9M
-    DESTDIR=/wallet/web
 elif [ "x$1" == "xstaging-suite" ]; then
     BUCKET=staging-suite.trezor.io
     DISTRIBUTION_ID=E232X8775ST76R
@@ -44,7 +40,7 @@ fi
 
 echo "sync $SOURCE with $BUCKET"
 
-if [ "x$1" == "xbeta-wallet" ] || [ "x$1" == "xsuite" ]; then
+if [ "x$1" == "xsuite" ]; then
     confirm
 fi
 

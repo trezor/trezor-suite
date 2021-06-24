@@ -11,7 +11,6 @@ const { getDeviceFeatures } = global.JestMocks;
 
 const RELEASES_T1 = JSON.parse(process.env.RELEASES_T1) as Release[];
 const { BASE_FW_URL } = process.env;
-const BETA_BASE_URL = process.env.BETA_BASE_FW_URL;
 
 describe('Testing if getInfo and getBinary return same result when first called in firmware mode and later in bootloader', () => {
     it('firmware version 1.6.0 (bootloader 1.4.0)', async () => {
@@ -41,7 +40,6 @@ describe('Testing if getInfo and getBinary return same result when first called 
             }),
             releases: RELEASES_T1,
             baseUrl: BASE_FW_URL,
-            baseUrlBeta: BETA_BASE_URL,
             version: [1, 6, 3],
         });
         expect(withBinary).toMatchObject({ release: { version: [1, 6, 3] } });
@@ -74,7 +72,6 @@ describe('Testing if getInfo and getBinary return same result when first called 
             version: targetVersion,
             releases: RELEASES_T1,
             baseUrl: BASE_FW_URL,
-            baseUrlBeta: BETA_BASE_URL,
         });
         expect(withBinary).toMatchObject({ release: { version: targetVersion } });
     });

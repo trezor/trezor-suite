@@ -4,7 +4,6 @@ const { getDeviceFeatures } = global.JestMocks;
 
 const RELEASES_T1 = JSON.parse(process.env.RELEASES_T1);
 const BASE_URL = process.env.BASE_FW_URL;
-const BETA_BASE_URL = process.env.BETA_BASE_FW_URL;
 
 describe('getBinary()', () => {
     it('version sent in version param does not have its counterpart in releases list', async () => {
@@ -23,7 +22,6 @@ describe('getBinary()', () => {
                 version: [1, 999, 9],
                 releases: RELEASES_T1,
                 baseUrl: BASE_URL,
-                baseUrlBeta: BETA_BASE_URL,
             })
         ).rejects.toThrow('no firmware found for this device');
     });
@@ -43,7 +41,6 @@ describe('getBinary()', () => {
             version: RELEASES_T1[0].version, // last version
             releases: RELEASES_T1,
             baseUrl: BASE_URL,
-            baseUrlBeta: BETA_BASE_URL,
             btcOnly: true,
         });
         expect(result).toBeDefined();
@@ -65,7 +62,6 @@ describe('getBinary()', () => {
                 version: [1, 8, 2],
                 releases: RELEASES_T1,
                 baseUrl: BASE_URL,
-                baseUrlBeta: BETA_BASE_URL,
                 btcOnly: true,
             })
         ).rejects.toThrow('firmware version 1,8,2 does not exist in btc only variant');
@@ -89,7 +85,6 @@ describe('getBinary()', () => {
                 version: [1, 8, 2],
                 releases: RELEASES_T1,
                 baseUrl: BASE_URL,
-                baseUrlBeta: BETA_BASE_URL,
             })
         ).rejects.toThrow(
             'version provided as param does not match firmware version found by features in bootloader'
@@ -112,7 +107,6 @@ describe('getBinary()', () => {
                 version: RELEASES_T1[0].version, // last version
                 releases: RELEASES_T1,
                 baseUrl: BASE_URL,
-                baseUrlBeta: BETA_BASE_URL,
             })
         );
         expect(result).toBeDefined();
