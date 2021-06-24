@@ -4629,9 +4629,13 @@ const definedMessages = defineMessages({
         id: 'TR_LANDING_CONTINUE',
         defaultMessage: 'Continue in browser',
     },
+    TR_HOLD_BOTH_BUTTONS: {
+        id: 'TR_HOLD_BOTH_BUTTONS',
+        defaultMessage: 'Hold both buttons while connecting device',
+    },
     TR_HOLD_LEFT_BUTTON: {
         id: 'TR_HOLD_LEFT_BUTTON',
-        defaultMessage: 'Hold left or both buttons while connecting device',
+        defaultMessage: 'Hold left button while connecting device',
     },
     BACKUP_BACKUP_ALREADY_FINISHED_HEADING: {
         id: 'BACKUP_BACKUP_ALREADY_FINISHED',
