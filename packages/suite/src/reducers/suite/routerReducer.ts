@@ -1,16 +1,16 @@
-import { RouterAppWithParams } from '@suite-constants/routes';
 import { ROUTER } from '@suite-actions/constants';
 import { getAppWithParams } from '@suite-utils/router';
-import { Action } from '@suite-types';
+import type { RouterAppWithParams } from '@suite-constants/routes';
+import type { Action } from '@suite-types';
 
-type State = {
+type RouterState = {
     loaded: boolean;
     url: string;
     pathname: string;
     hash?: string;
 } & RouterAppWithParams;
 
-const initialState: State = {
+const initialState: RouterState = {
     loaded: false,
     url: '/',
     pathname: '/',
@@ -30,7 +30,7 @@ const onLocationChange = (url: string) => {
     };
 };
 
-const routerReducer = (state: State = initialState, action: Action): State => {
+const routerReducer = (state: RouterState = initialState, action: Action): RouterState => {
     switch (action.type) {
         case ROUTER.LOCATION_CHANGE:
             return onLocationChange(action.url);
