@@ -95,6 +95,7 @@ describe('suite middleware', () => {
                         pattern: '/onboarding',
                         app: 'onboarding',
                         isModal: true,
+                        isFullscreen: true,
                         params: undefined,
                     },
                 }),

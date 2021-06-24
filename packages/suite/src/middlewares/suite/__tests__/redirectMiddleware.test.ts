@@ -127,6 +127,7 @@ describe('redirectMiddleware', () => {
                             app: 'wallet',
                             params: ['symbol', 'accountIndex', 'accountType'],
                             isModal: undefined,
+                            isFullscreen: undefined,
                         },
                     },
                 ),

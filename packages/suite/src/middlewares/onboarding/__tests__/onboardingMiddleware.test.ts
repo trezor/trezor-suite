@@ -104,6 +104,7 @@ describe('onboardingMiddleware', () => {
                         pattern: '/onboarding',
                         app: 'onboarding',
                         isModal: true,
+                        isFullscreen: true,
                         params: undefined,
                     },
                 }),

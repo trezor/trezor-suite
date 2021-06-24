@@ -60,7 +60,8 @@ const routes = [
         name: 'onboarding-index',
         pattern: '/onboarding',
         app: 'onboarding',
-        isModal: true, // used to prevent url change
+        isModal: true,
+        isFullscreen: true,
     },
     {
         name: 'settings-index',
@@ -223,7 +224,7 @@ const routes = [
     },
 ] as const;
 
-type RouteKeys = keyof ArrayElement<typeof routes> | 'isModal' | 'params';
+type RouteKeys = keyof ArrayElement<typeof routes> | 'isModal' | 'params' | 'isFullscreen';
 export type Route = ArrayElement<ConstWithOptionalFields<typeof routes, RouteKeys>>;
 
 type RouteParamsTypes = {
