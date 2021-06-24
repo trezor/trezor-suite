@@ -1,4 +1,4 @@
-import { getFwVersion, isBitcoinOnly, getVersion } from '@suite-utils/device';
+import { getFwVersion, isBitcoinOnly, getDeviceModel } from '@suite-utils/device';
 import { isDesktop, getUserAgent, getScreenWidth, getScreenHeight } from '@suite-utils/env';
 
 import type { ReleaseInfo } from '@suite-types/github';
@@ -27,7 +27,7 @@ const getDeviceInfo = (device?: TrezorDevice) => {
     if (!device?.features) {
         return '';
     }
-    return `model ${getVersion(device)} ${getFwVersion(device)} ${
+    return `model ${getDeviceModel(device)} ${getFwVersion(device)} ${
         isBitcoinOnly(device) ? 'Bitcoin only' : 'regular'
     }`;
 };
