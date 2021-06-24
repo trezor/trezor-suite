@@ -7,7 +7,7 @@ import {
     TROUBLESHOOTING_TIP_CABLE,
     TROUBLESHOOTING_TIP_USB,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
-} from '@suite/components/suite/TroubleshootingTips/tips';
+} from '@suite-components/TroubleshootingTips/tips';
 
 const Wrapper = styled(animated.div)`
     display: flex;

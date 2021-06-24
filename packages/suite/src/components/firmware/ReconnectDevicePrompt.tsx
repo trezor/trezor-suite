@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import compareVersions from 'compare-versions';
 import { H1, Button, variables } from '@trezor/components';
 import { Translation, WebusbButton } from '@suite-components';
-import { DeviceAnimation, DeviceAnimationType } from '@onboarding-components';
+import DeviceAnimation, { DeviceAnimationType } from '@onboarding-components/DeviceAnimation';
 import { useDevice, useFirmware } from '@suite-hooks';
 import { isDesktop, isMacOs } from '@suite-utils/env';
 import { DESKTOP_WRAPPER_BORDER_WIDTH } from '@suite-constants/layout';

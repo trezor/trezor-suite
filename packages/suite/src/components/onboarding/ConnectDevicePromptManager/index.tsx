@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useSelector } from '@suite-hooks';
-import { isWebUSB } from '@suite-utils/transport';
-import { getConnectedDeviceStatus } from '@suite-utils/device';
 import { ConnectDevicePrompt } from '@onboarding-components';
 import NoTransport from './components/NoTransport';
 import NoDeviceDetected from './components/NoDeviceDetected';
 import UnexpectedDeviceState from './components/UnexpectedDeviceState';
-import { TrezorDevice } from '@suite-types';
+import { isWebUSB } from '@suite-utils/transport';
+import { getConnectedDeviceStatus } from '@suite-utils/device';
+import type { TrezorDevice } from '@suite-types';
 
 const Wrapper = styled.div`
     display: flex;

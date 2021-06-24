@@ -4,7 +4,7 @@ import { Translation, TroubleshootingTips } from '@suite-components';
 import {
     TROUBLESHOOTING_TIP_BRIDGE,
     TROUBLESHOOTING_TIP_RESTART_COMPUTER,
-} from '@suite/components/suite/TroubleshootingTips/tips';
+} from '@suite-components/TroubleshootingTips/tips';
 
 const Wrapper = styled.div`
     display: flex;

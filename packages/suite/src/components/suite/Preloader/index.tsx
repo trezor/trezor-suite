@@ -16,7 +16,7 @@ import Firmware from '@firmware-views';
 import Recovery from '@suite/views/recovery';
 import Backup from '@backup-views';
 import Onboarding from '@onboarding-views';
-import { getPrerequisites } from '@suite/utils/suite/prerequisites';
+import { getPrerequisites } from '@suite-utils/prerequisites';
 
 import {
     Bridge,

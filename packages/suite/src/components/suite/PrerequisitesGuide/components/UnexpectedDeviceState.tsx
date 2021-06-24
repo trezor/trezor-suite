@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-
 import { Translation, TroubleshootingTips } from '@suite-components';
-
 import {
     TROUBLESHOOTING_TIP_BRIDGE,
     TROUBLESHOOTING_TIP_USB,

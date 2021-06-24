@@ -1,14 +1,13 @@
 import React from 'react';
 import { useSpring, config, animated } from 'react-spring';
 import styled from 'styled-components';
-import { TroubleshootingTips } from '@onboarding-components';
-import { Translation } from '@suite-components/Translation';
+import { Translation, TroubleshootingTips } from '@suite-components';
 import {
     TROUBLESHOOTING_TIP_BRIDGE,
     TROUBLESHOOTING_TIP_CABLE,
     TROUBLESHOOTING_TIP_USB,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
-} from '@suite/components/suite/TroubleshootingTips/tips';
+} from '@suite-components/TroubleshootingTips/tips';
 
 const Wrapper = styled(animated.div)`
     display: flex;
