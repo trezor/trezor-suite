@@ -24,16 +24,20 @@ const NoDeviceDetected = ({ offerWebUsb }: Props) => {
         to: { opacity: 1 },
     });
 
+    const items = offerWebUsb
+        ? [TROUBLESHOOTING_TIP_USB, TROUBLESHOOTING_TIP_CABLE, TROUBLESHOOTING_TIP_BRIDGE]
+        : [
+              TROUBLESHOOTING_TIP_BRIDGE,
+              TROUBLESHOOTING_TIP_CABLE,
+              TROUBLESHOOTING_TIP_USB,
+              TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
+          ];
+
     return (
         <Wrapper style={fadeStyles}>
             <TroubleshootingTips
                 label={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
-                items={[
-                    TROUBLESHOOTING_TIP_BRIDGE,
-                    TROUBLESHOOTING_TIP_CABLE,
-                    TROUBLESHOOTING_TIP_USB,
-                    TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
-                ]}
+                items={items}
                 offerWebUsb={offerWebUsb}
             />
         </Wrapper>

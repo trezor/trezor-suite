@@ -61,9 +61,11 @@ const getSuiteApplicationState = ({ router, device, getDiscoveryStatus }: SuiteA
     if (authConfirmation?.type === 'auth-confirm') return DiscoveryLoader;
 };
 
-const getModalApplication = (route: AppState['router']['route']) => {
+const getForegroundApplication = (route: AppState['router']['route']) => {
     if (!route) return;
     switch (route.app) {
+        case 'onboarding':
+            return Onboarding;
         case 'firmware':
             return Firmware;
         case 'bridge':
@@ -88,8 +90,10 @@ interface Props {
     hideModals?: boolean;
 }
 
+// Preloader is a top level wrapper used in _app.tsx.
+// Decides which content should be displayed basing on route and prerequisites.
 const Preloader = ({ children, hideModals = false }: Props) => {
-    const actions = useActions({
+    const { suiteInit, ...actions } = useActions({
         suiteInit: () => ({ type: SUITE.INIT } as const),
         goto: routerActions.goto,
         closeModalApp: routerActions.closeModalApp,
@@ -112,9 +116,9 @@ const Preloader = ({ children, hideModals = false }: Props) => {
 
     useEffect(() => {
         if (!loading && !loaded && !error && !dbError) {
-            actions.suiteInit();
+            suiteInit();
         }
-    }, [loaded, loading, error, actions, dbError]);
+    }, [loaded, loading, error, dbError, suiteInit]);
 
     if (error) {
         // trezor-connect initialization failed
@@ -126,26 +130,31 @@ const Preloader = ({ children, hideModals = false }: Props) => {
 
     const hasActionModal = actionModalContext !== '@modal/context-none';
 
-    // check if current route is a "modal application" and display it above requested physical route (route in url)
-    // pass params to "modal application" and set "cancelable" conditionally
-    const ApplicationModal = getModalApplication(router.route);
-    if (!hideModals && ApplicationModal) {
+    // check prerequisites for requested app
+    const prerequisite = getPrerequisites({ router, transport, device });
+
+    // check if current route is a "foreground application" marked as isModal in router config
+    // display it above requested physical route (route in url) or as fullscreen app
+    // pass common params to "foreground application", every app is dealing with "prerequisites" on they own.
+    const ForegroundApplication = getForegroundApplication(router.route);
+
+    if (!hideModals && ForegroundApplication) {
         const cancelable = router.params
             ? Object.prototype.hasOwnProperty.call(router.params, 'cancelable')
             : false;
+        const isFullscreen = router.route?.isFullscreen;
 
         return (
             <>
-                <FocusLock autoFocus={false}>
-                    <ApplicationModal
-                        cancelable={cancelable}
-                        onCancel={actions.closeModalApp}
-                        closeModalApp={actions.closeModalApp}
-                        getBackgroundRoute={actions.getBackgroundRoute}
-                        modal={hasActionModal ? <Modals background={false} /> : null}
-                    />
-                </FocusLock>
-                <SuiteLayout>{children}</SuiteLayout>
+                <ForegroundApplication
+                    cancelable={cancelable}
+                    onCancel={actions.closeModalApp}
+                    closeModalApp={actions.closeModalApp}
+                    getBackgroundRoute={actions.getBackgroundRoute}
+                    modal={hasActionModal ? <Modals background={false} /> : null}
+                    prerequisite={prerequisite}
+                />
+                {!isFullscreen && <SuiteLayout>{children}</SuiteLayout>}
             </>
         );
     }
@@ -159,21 +168,11 @@ const Preloader = ({ children, hideModals = false }: Props) => {
         return <InitialLoading />;
     }
 
-    if (router.route?.app === 'onboarding') {
-        // just let the onboarding view to render, no SuiteLayout involved
-        return <Onboarding />;
-    }
-
-    const prerequisite = getPrerequisites({ transport, device });
-
+    // display prerequisite for "regular" fullscreen application
     if (prerequisite) {
         return (
             <WelcomeLayout>
-                <PrerequisitesGuide
-                    device={device}
-                    // transport={transport}
-                    precondition={prerequisite}
-                />
+                <PrerequisitesGuide prerequisite={prerequisite} />
             </WelcomeLayout>
         );
     }

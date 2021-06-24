@@ -1,7 +1,8 @@
-import { TrezorDevice } from '@suite/types/suite';
-import { TransportInfo } from 'trezor-connect';
+import type { TransportInfo } from 'trezor-connect';
+import type { TrezorDevice, AppState } from '@suite-types';
 
 interface PrerequisitesInput {
+    router: AppState['router'];
     device?: TrezorDevice;
     transport?: Partial<TransportInfo>;
 }
@@ -9,8 +10,8 @@ interface PrerequisitesInput {
 /**
  * Returns information about reason that is blocking user from interacting with Suite
  */
-export const getPrerequisites = ({ device, transport }: PrerequisitesInput) => {
-    // if (router.app === 'unknown') return;
+export const getPrerequisites = ({ router, device, transport }: PrerequisitesInput) => {
+    if (!router || router.app === 'unknown') return;
 
     // no transport available
     if (transport && !transport.type) return 'transport-bridge';
@@ -48,3 +49,5 @@ export const getPrerequisites = ({ device, transport }: PrerequisitesInput) => {
     // const authConfirmation = getDiscoveryStatus();
     // if (authConfirmation?.type === 'auth-confirm') return DiscoveryLoader;
 };
+
+export type PrerequisiteType = ReturnType<typeof getPrerequisites>;

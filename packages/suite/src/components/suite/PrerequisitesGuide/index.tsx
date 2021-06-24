@@ -1,17 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
-
-import { TrezorDevice } from '@suite/types/suite';
-// import { TransportInfo } from 'trezor-connect';
 import { variables } from '@trezor/components';
-
 import { ConnectDevicePrompt } from '@onboarding-components';
-import { getPrerequisites } from '@suite-utils/prerequisites';
+import { isWebUSB } from '@suite-utils/transport';
 import { getStatus, deviceNeedsAttention } from '@suite-utils/device';
+import { useSelector } from '@suite-hooks';
 
 import NoDeviceDetected from './components/NoDeviceDetected';
 import NoTransport from './components/NoTransport';
 import UnexpectedDeviceState from './components/UnexpectedDeviceState';
+
+import type { PrerequisiteType } from '@suite-types';
 
 const Wrapper = styled.div`
     display: flex;
@@ -28,20 +27,15 @@ const Wrapper = styled.div`
 `;
 
 interface Props {
-    device?: TrezorDevice;
-    // transport: Partial<TransportInfo>;
-    precondition: ReturnType<typeof getPrerequisites>;
+    prerequisite: PrerequisiteType;
 }
 
 // aka former "ConnectDevicePromptManager" from onboarding but extended
-const PrerequisitesGuide = (props: Props) => {
-    const {
-        device,
-        // transport,
-        // todo: we wil see if we need to have this as param or not, maybe onboarding will be the same
-        precondition,
-    } = props;
-
+const PrerequisitesGuide = ({ prerequisite }: Props) => {
+    const { device, transport } = useSelector(state => ({
+        device: state.suite.device,
+        transport: state.suite.transport,
+    }));
     return (
         <Wrapper>
             <ConnectDevicePrompt
@@ -49,15 +43,15 @@ const PrerequisitesGuide = (props: Props) => {
                 showWarning={!!(device && deviceNeedsAttention(getStatus(device)))}
             />
             {(() => {
-                switch (precondition) {
+                switch (prerequisite) {
                     case 'transport-bridge':
                         return <NoTransport />;
                     case 'device-disconnected':
-                        return <NoDeviceDetected offerWebUsb={false} />;
+                        return <NoDeviceDetected offerWebUsb={isWebUSB(transport)} />;
                     case 'device-bootloader':
                     case 'device-seedless':
                     case 'device-unreadable':
-                        return <UnexpectedDeviceState state={precondition} />;
+                        return <UnexpectedDeviceState state={prerequisite} />;
                     case 'device-unacquired':
                         // todo:
                         return 'unacquired, should we render button directly here?';
@@ -69,7 +63,7 @@ const PrerequisitesGuide = (props: Props) => {
                         return 'not initialized. redirect to onboarding should have happend?';
 
                     default:
-                        return precondition;
+                        return prerequisite;
                 }
             })()}
         </Wrapper>

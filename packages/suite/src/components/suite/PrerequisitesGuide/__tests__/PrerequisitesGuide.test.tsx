@@ -60,7 +60,7 @@ describe('PrerequisitesGuide component', () => {
         const store = initStore(getInitialState());
         const { unmount } = renderWithProviders(
             store,
-            <PrerequisitesGuide precondition="transport-bridge" />,
+            <PrerequisitesGuide prerequisite="transport-bridge" />,
         );
         expect(findByTestId('@onboarding/connect-device')).not.toBeNull();
         expect(findByTestId('TR_TREZOR_BRIDGE_IS_NOT_RUNNING')).not.toBeNull();
@@ -72,7 +72,7 @@ describe('PrerequisitesGuide component', () => {
         const store = initStore(getInitialState());
         const { unmount } = renderWithProviders(
             store,
-            <PrerequisitesGuide precondition="device-disconnected" />,
+            <PrerequisitesGuide prerequisite="device-disconnected" />,
         );
 
         expect(findByTestId('@onboarding/connect-device')).not.toBeNull();
@@ -93,7 +93,7 @@ describe('PrerequisitesGuide component', () => {
         const store = initStore(getInitialState());
         const { unmount } = renderWithProviders(
             store,
-            <PrerequisitesGuide precondition="device-bootloader" />,
+            <PrerequisitesGuide prerequisite="device-bootloader" />,
         );
 
         expect(findByTestId('@onboarding/connect-device')).not.toBeNull();
@@ -184,7 +184,7 @@ describe('PrerequisitesGuide component', () => {
         const store = initStore(getInitialState());
         const { unmount } = renderWithProviders(
             store,
-            <PrerequisitesGuide precondition="device-unreadable" />,
+            <PrerequisitesGuide prerequisite="device-unreadable" />,
         );
 
         expect(findByTestId('@onboarding/connect-device')).not.toBeNull();
@@ -197,7 +197,7 @@ describe('PrerequisitesGuide component', () => {
         const store = initStore(getInitialState());
         const { unmount } = renderWithProviders(
             store,
-            <PrerequisitesGuide precondition="device-seedless" />,
+            <PrerequisitesGuide prerequisite="device-seedless" />,
         );
 
         expect(findByTestId('@onboarding/connect-device')).not.toBeNull();
