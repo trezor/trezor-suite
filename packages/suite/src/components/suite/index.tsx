@@ -5,6 +5,7 @@ import Image, { Props as ImageProps } from './images/Image';
 import CheckItem from './CheckItem';
 import ExternalLink from './ExternalLink';
 import Preloader from './Preloader';
+import PrerequisitesGuide from './PrerequisitesGuide';
 import FormattedNumber from './FormattedNumber';
 import SuiteLayout, { LayoutContext } from './SuiteLayout';
 import WelcomeLayout from './WelcomeLayout';
@@ -46,6 +47,7 @@ import HomescreenGallery from './HomescreenGallery';
 import PinMatrix from './PinMatrix';
 import CollapsibleBox from './CollapsibleBox';
 import DeviceMatrixExplanation from './DeviceMatrixExplanation';
+import TroubleshootingTips from './TroubleshootingTips';
 
 export {
     Backdrop,
@@ -54,6 +56,7 @@ export {
     DeviceInvalidModeLayout,
     ExternalLink,
     Preloader,
+    PrerequisitesGuide,
     FormattedNumber,
     WelcomeLayout,
     SuiteLayout,
@@ -99,5 +102,6 @@ export {
     PinMatrix,
     CollapsibleBox,
     DeviceMatrixExplanation,
+    TroubleshootingTips,
 };
 export type { ImageProps, ModalProps };

@@ -61,6 +61,7 @@ const Onboarding = () => {
     // TODO global unexpected states
     return (
         <LayoutComponent>
+            onboarding
             <UnexpectedState>
                 <StepComponent />
             </UnexpectedState>

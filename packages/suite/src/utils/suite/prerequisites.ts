@@ -1,9 +1,9 @@
-import { TrezorDevice } from "@suite/types/suite";
-import { TransportInfo } from "trezor-connect";
+import { TrezorDevice } from '@suite/types/suite';
+import { TransportInfo } from 'trezor-connect';
 
 interface PrerequisitesInput {
     device?: TrezorDevice;
-    transport?: TransportInfo;
+    transport?: Partial<TransportInfo>;
 }
 
 /**
@@ -47,4 +47,4 @@ export const getPrerequisites = ({ device, transport }: PrerequisitesInput) => {
     // account discovery in progress and didn't find any used account yet
     // const authConfirmation = getDiscoveryStatus();
     // if (authConfirmation?.type === 'auth-confirm') return DiscoveryLoader;
-}
+};

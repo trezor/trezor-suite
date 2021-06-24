@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { TroubleshootingTips } from '@onboarding-components';
 import { Translation } from '@suite-components/Translation';
-import { ConnectedDeviceStatus } from '@onboarding-types';
 import {
     TROUBLESHOOTING_TIP_BRIDGE,
     TROUBLESHOOTING_TIP_USB,
@@ -14,8 +13,9 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
+// todo: remove in favour of suite-components
 interface Props {
-    deviceStatus: ConnectedDeviceStatus;
+    deviceStatus: any;
     trezorModel?: number;
 }
 

@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import FocusLock from 'react-focus-lock';
 import { SUITE } from '@suite-actions/constants';
-import Loading from '@suite-components/Loading';
+// import Loading from '@suite-components/Loading';
 import { SuiteLayout, WelcomeLayout } from '@suite-components';
 import InitialLoading from './components/InitialLoading';
 import DiscoveryLoader from '@suite-components/DiscoveryLoader';
 import Modals from '@suite-components/modals';
-// todo: 
+// todo:
 import * as routerActions from '@suite-actions/routerActions';
 import DatabaseUpgradeModal from './components/DatabaseUpgradeModal';
 import PrerequisitesGuide from '../PrerequisitesGuide';
@@ -18,22 +18,22 @@ import Backup from '@backup-views';
 import Onboarding from '@onboarding-views';
 import { getPrerequisites } from '@suite/utils/suite/prerequisites';
 
-
 import {
     Bridge,
     Udev,
-    DeviceAcquire,
-    DeviceBootloader,
-    DeviceConnect,
-    DeviceInitialize,
-    DeviceNoFirmware,
-    DeviceSeedless,
-    DeviceUnknown,
-    DeviceUnreadable,
-    DeviceUpdateRequired,
+    // DeviceAcquire,
+    // DeviceBootloader,
+    // DeviceConnect,
+    // DeviceInitialize,
+    // DeviceNoFirmware,
+    // DeviceSeedless,
+    // DeviceUnknown,
+    // DeviceUnreadable,
+    // DeviceUpdateRequired,
     DeviceRecoveryMode,
     SwitchDevice,
     Version,
+    DeviceAcquire,
 } from '@suite-views';
 
 type SuiteAppStateProps = {
@@ -44,15 +44,14 @@ type SuiteAppStateProps = {
     getDiscoveryStatus: ReturnType<typeof useDiscovery>['getDiscoveryStatus'];
 };
 
-const getSuiteApplicationState = ({
-    router,
-    device,
-    getDiscoveryStatus,
-}: SuiteAppStateProps) => {
+// todo: these might make sense or maybe not.
+const getSuiteApplicationState = ({ router, device, getDiscoveryStatus }: SuiteAppStateProps) => {
     // if router app is unknown, it means user either entered wrong link into navigation bar
     // or clicked a broken internal link somewhere in suite. In that case 404 page
     // appears and we do not want to show anything above it.
     if (router.app === 'unknown') return;
+
+    if (device?.type === 'unacquired') return DeviceAcquire;
 
     // todo: still needed?
     if (device?.features?.recovery_mode) return DeviceRecoveryMode;
@@ -134,8 +133,8 @@ const Preloader = ({ children, hideModals = false }: Props) => {
         const cancelable = router.params
             ? Object.prototype.hasOwnProperty.call(router.params, 'cancelable')
             : false;
-        
-            return (
+
+        return (
             <>
                 <FocusLock autoFocus={false}>
                     <ApplicationModal
@@ -165,14 +164,18 @@ const Preloader = ({ children, hideModals = false }: Props) => {
         return <Onboarding />;
     }
 
-    const prerequisite = getPrerequisites({ transport, device })
+    const prerequisite = getPrerequisites({ transport, device });
 
     if (prerequisite) {
         return (
             <WelcomeLayout>
-                <PrerequisitesGuide device={device} transport={transport} precondition={prerequisite} />
+                <PrerequisitesGuide
+                    device={device}
+                    // transport={transport}
+                    precondition={prerequisite}
+                />
             </WelcomeLayout>
-        )
+        );
     }
 
     // check route state and display it as not cancelable modal above requested route view

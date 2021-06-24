@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { TroubleshootingTips } from '@onboarding-components';
-import { Translation } from '@suite-components/Translation';
+
+import { Translation, TroubleshootingTips } from '@suite-components';
 
 import {
     TROUBLESHOOTING_TIP_BRIDGE,
     TROUBLESHOOTING_TIP_USB,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
-} from '@suite/components/suite/TroubleshootingTips/tips';
+} from '@suite-components/TroubleshootingTips/tips';
 
 const Wrapper = styled.div`
     display: flex;
@@ -15,13 +15,13 @@ const Wrapper = styled.div`
 `;
 
 interface Props {
-    deviceStatus: 'unreadable' | 'bootloader' | 'seedless';
+    state: 'device-unreadable' | 'device-bootloader' | 'device-seedless';
     trezorModel?: number;
 }
 
-const UnexpectedDeviceState = ({ deviceStatus, trezorModel }: Props) => (
+const UnexpectedDeviceState = ({ state, trezorModel }: Props) => (
     <Wrapper>
-        {deviceStatus === 'unreadable' && (
+        {state === 'device-unreadable' && (
             // User connected unreadable device
             // We don't really know what happened, show some generic help and provide link to contact a support
             <>
@@ -33,13 +33,13 @@ const UnexpectedDeviceState = ({ deviceStatus, trezorModel }: Props) => (
                         TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
                     ]}
                 />
-                
+
                 {/* <Button onClick={() => TrezorConnect.disableWebUSB()}>
                     <Translation id="TR_TRY_BRIDGE" />
                 </Button> */}
             </>
         )}
-        {deviceStatus === 'bootloader' && (
+        {state === 'device-bootloader' && (
             // User connected the device in bootloader mode, but in order to continue it needs to be in normal mode
             <TroubleshootingTips
                 label={<Translation id="TR_DEVICE_IN_BOOTLOADER" />}
@@ -57,7 +57,7 @@ const UnexpectedDeviceState = ({ deviceStatus, trezorModel }: Props) => (
                 ]}
             />
         )}
-        {deviceStatus === 'seedless' && (
+        {state === 'device-seedless' && (
             // Seedless devices are not supported by Trezor Suite
             <TroubleshootingTips
                 label={<Translation id="TR_YOUR_DEVICE_IS_SEEDLESS" />}

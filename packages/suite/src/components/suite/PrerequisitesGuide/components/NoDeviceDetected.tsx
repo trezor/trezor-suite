@@ -1,8 +1,7 @@
 import React from 'react';
 import { useSpring, config, animated } from 'react-spring';
 import styled from 'styled-components';
-import { TroubleshootingTips } from '@onboarding-components';
-import { Translation } from '@suite-components/Translation';
+import { Translation, TroubleshootingTips } from '@suite-components';
 import {
     TROUBLESHOOTING_TIP_BRIDGE,
     TROUBLESHOOTING_TIP_CABLE,
