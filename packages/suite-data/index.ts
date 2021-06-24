@@ -3,11 +3,6 @@ import * as rm from 'rimraf';
 import { resolve, join } from 'path';
 
 const config = {
-    'landing-page': [
-        'fonts',
-        'images/icons/favicon',
-        'images/landing',
-    ],
     'suite-desktop': [
         'bin',
         'connect',

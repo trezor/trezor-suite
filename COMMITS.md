@@ -16,7 +16,7 @@ Use this git hook to auto-check your commit messages. Save the following snippet
 
 ```
 #!/bin/sh
-if ! grep -qE "^(build|ci|docs|feat|fix|perf|refactor|style|test|chore|revert)(\((blockchain-link|components|components-storybook|integration-tests|landing-page|news-api|rollout|suite|suite-data|suite-desktop|suite-native|suite-onboarding|suite-storage|suite-web|translations-manager)\))?: " "$1" ; then
+if ! grep -qE "^(build|ci|docs|feat|fix|perf|refactor|style|test|chore|revert)(\((blockchain-link|components|components-storybook|integration-tests|news-api|rollout|suite|suite-data|suite-desktop|suite-native|suite-onboarding|suite-storage|suite-web|translations-manager)\))?: " "$1" ; then
   echo "Conventional Commits validation failed"
   exit 1
 fi

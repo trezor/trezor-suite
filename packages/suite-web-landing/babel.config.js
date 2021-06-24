@@ -8,8 +8,6 @@ module.exports = api => {
                 alias: {
                     '^@suite-web-landing-components/(.+)': '../../packages/suite-web-landing/components/\\1/\\2',
                     '^@suite-web-landing-components': '../../packages/suite-web-landing/components/\\1/index',
-                    '^@landing-components/(.+)': '../../packages/landing-page/components/\\1/\\2',
-                    '^@landing-components': '../../packages/landing-page/components/\\1/index',
                     '^@(.+)-components/(.+)': '../../packages/suite/src/components/\\1/\\2',
                     '^@(.+)-config/(.+)': '../../packages/suite/src/config/\\1/\\2',
                     '^@(.+)-config': '../../packages/suite/src/config/\\1/index',

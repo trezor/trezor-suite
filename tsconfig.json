@@ -287,8 +287,6 @@
             "@backup-hooks": ["./packages/suite/src/hooks/backup/index"],
             "@backup-services/*": ["./packages/suite/src/services/backup/*"],
             "@backup-services": ["./packages/suite/src/services/backup/index"],
-            // landing
-            "@landing-components/*": ["./packages/landing-page/components/*"],
             // suite-web-landing
             "@suite-web-landing-components/*": ["./packages/suite-web-landing/components/*"],
             // web workers
