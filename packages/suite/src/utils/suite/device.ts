@@ -131,9 +131,9 @@ export const isSelectedDevice = (selected?: TrezorDevice | Device, device?: Trez
     return selected.id === device.id;
 };
 
-export const getVersion = (device: TrezorDevice) => {
+export const getDeviceModel = (device: TrezorDevice) => {
     const { features } = device;
-    return features && features.major_version > 1 ? 'T' : 'One';
+    return features && features.major_version > 1 ? 'T' : '1';
 };
 
 export const getFwVersion = (device: KnownDevice) => {

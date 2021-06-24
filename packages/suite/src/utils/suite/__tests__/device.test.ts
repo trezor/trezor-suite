@@ -41,7 +41,7 @@ describe('isSelectedInstance', () => {
 describe('getVersion', () => {
     fixtures.getVersion.forEach(f => {
         it(f.description, () => {
-            const instance = utils.getVersion(f.device);
+            const instance = utils.getDeviceModel(f.device);
             expect(instance).toEqual(f.result);
         });
     });

@@ -172,12 +172,12 @@ const getVersion = [
     {
         description: `model One`,
         device: getSuiteDevice(undefined, { major_version: 1 }),
-        result: 'One',
+        result: '1',
     },
     {
         description: `model One (no features)`,
         device: getSuiteDevice({ type: 'unacquired' }),
-        result: 'One',
+        result: '1',
     },
 ];
 
