@@ -95,14 +95,14 @@ export const goto = (routeName: Route['name'], params?: RouteParams, _preservePa
     if (!unlocked) return;
 
     const requestedRoute = findRouteByName(routeName);
-    const isModal = requestedRoute && requestedRoute.isModal;
+    const isForegroundApp = requestedRoute && requestedRoute.isForegroundApp;
 
     const pathname = getRoute(routeName);
     const navigatorRoute = getActiveRoute(state);
     const currentApp = getAppWithParams(navigatorRoute.routeName);
     const nextApp = getAppWithParams(pathname);
 
-    if (isModal) {
+    if (isForegroundApp) {
         // Application modals (Onboarding, FW Update, Backup, Select Device...)
         // display as a second child on top of root stack
         navigator.dispatch(
