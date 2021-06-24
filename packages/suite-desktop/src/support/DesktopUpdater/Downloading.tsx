@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { Button, H2, variables } from '@trezor/components';
+import { H2, variables } from '@trezor/components';
 import { Translation, Modal } from '@suite-components';
 import { Row } from './styles';
 
@@ -12,10 +12,6 @@ const ModalHeadingWrapper = styled.div`
     display: flex;
     width: 100%;
     justify-content: space-between;
-`;
-
-const MinimizeButton = styled(Button)`
-    align-self: center;
 `;
 
 const DownloadWrapper = styled(Row)`
@@ -49,7 +45,6 @@ interface Props {
 const ellipsisArray = new Array(3).fill('.');
 
 const Downloading = ({ hideWindow, progress }: Props) => {
-    const cancelUpdate = useCallback(() => window.desktopApi!.cancelUpdate(), []);
     const [step, setStep] = useState(0);
     useEffect(() => {
         const timer = setTimeout(() => setStep(step > 2 ? 0 : step + 1), 300);
@@ -61,9 +56,6 @@ const Downloading = ({ hideWindow, progress }: Props) => {
             heading={
                 <ModalHeadingWrapper>
                     <Translation id="TR_UPDATE_MODAL_DOWNLOADING_UPDATE" />
-                    <MinimizeButton onClick={cancelUpdate} variant="tertiary" icon="CROSS">
-                        <Translation id="TR_CANCEL" />
-                    </MinimizeButton>
                 </ModalHeadingWrapper>
             }
             currentProgressBarStep={progress?.percent || 0}
