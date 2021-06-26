@@ -38,7 +38,12 @@ const DeviceUpdateRequired = () => {
                 <TroubleshootingTips
                     label={<Translation id="FW_CAPABILITY_UPDATE_REQUIRED" />}
                     cta={
-                        <Button onClick={() => goto('firmware-index')}>
+                        <Button
+                            onClick={e => {
+                                e.stopPropagation();
+                                goto('firmware-index');
+                            }}
+                        >
                             <Translation id="TR_SEE_DETAILS" />
                         </Button>
                     }

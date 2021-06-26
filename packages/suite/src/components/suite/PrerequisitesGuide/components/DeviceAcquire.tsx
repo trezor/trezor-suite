@@ -44,7 +44,13 @@ const DeviceAcquire = () => {
                 <TroubleshootingTips
                     label={<Translation id="TR_ACQUIRE_DEVICE_TITLE" />}
                     cta={
-                        <Button isLoading={isLocked()} onClick={() => acquireDevice()}>
+                        <Button
+                            isLoading={isLocked()}
+                            onClick={e => {
+                                e.stopPropagation();
+                                acquireDevice();
+                            }}
+                        >
                             <Translation id="TR_ACQUIRE_DEVICE" />
                         </Button>
                     }

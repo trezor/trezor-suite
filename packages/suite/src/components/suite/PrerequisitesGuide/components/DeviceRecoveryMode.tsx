@@ -80,7 +80,13 @@ const DeviceRecoveryMode = () => {
                 <TroubleshootingTips
                     label={<Translation id="TR_DEVICE_IN_RECOVERY_MODE" />}
                     cta={
-                        <Button isDisabled={isLocked()} onClick={rerun}>
+                        <Button
+                            isDisabled={isLocked()}
+                            onClick={e => {
+                                e.stopPropagation();
+                                rerun();
+                            }}
+                        >
                             <Translation id="TR_CONTINUE" />
                         </Button>
                     }

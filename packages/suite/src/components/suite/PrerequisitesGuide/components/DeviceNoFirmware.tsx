@@ -39,7 +39,12 @@ const DeviceNoFirmware = () => {
                 <TroubleshootingTips
                     label={<Translation id="TR_NO_FIRMWARE" />}
                     cta={
-                        <Button onClick={() => goto('onboarding-index')}>
+                        <Button
+                            onClick={e => {
+                                e.stopPropagation();
+                                goto('onboarding-index');
+                            }}
+                        >
                             <Translation id="TR_GO_TO_ONBOARDING" />
                         </Button>
                     }
