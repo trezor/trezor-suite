@@ -44,7 +44,9 @@ describe('Bridge page', () => {
         cy.getTestElement('@connect-device-prompt');
 
         // linux platforms show udev rules link also
-        cy.getTestElement('@modal/connect-device/goto/suite-udev').click();
+        // todo: rename @onboarding/expand-troubleshooting-tips as it is in suite now
+        cy.getTestElement('@onboarding/expand-troubleshooting-tips').click();
+        cy.getTestElement('@goto/udev').click();
         cy.getTestElement('@modal/udev').matchImageSnapshot('udev rules modal');
 
         // udev rules modal is closable via close button

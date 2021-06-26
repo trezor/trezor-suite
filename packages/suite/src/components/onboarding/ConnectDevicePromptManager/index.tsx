@@ -1,4 +1,4 @@
-// todo: at this moment this is used only in Firmware effectively being the 3rd level of 
+// todo: at this moment this is used only in Firmware effectively being the 3rd level of
 // prerequisites management (1st level Preloader, 2nd level Onboarding - UnexpectedStates, 3rd level Firmware)
 // I think that with some effort this could be also removed and optimized
 

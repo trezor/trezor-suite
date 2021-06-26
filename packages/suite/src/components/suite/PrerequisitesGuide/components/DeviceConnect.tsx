@@ -9,6 +9,7 @@ import {
     TROUBLESHOOTING_TIP_CABLE,
     TROUBLESHOOTING_TIP_USB,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
+    TROUBLESHOOTING_TIP_UDEV,
 } from '@suite-components/TroubleshootingTips/tips';
 
 const Wrapper = styled(animated.div)`
@@ -18,6 +19,7 @@ const Wrapper = styled(animated.div)`
 interface Props {
     offerWebUsb: boolean;
 }
+
 const DeviceConnect = ({ offerWebUsb }: Props) => {
     const fadeStyles = useSpring({
         config: { ...config.default },
@@ -26,13 +28,22 @@ const DeviceConnect = ({ offerWebUsb }: Props) => {
         to: { opacity: 1 },
     });
 
+    // todo: udev only on linux
+    // todo: does bridge tip make sense if we know bridge is already running?
+
     const items = offerWebUsb
-        ? [TROUBLESHOOTING_TIP_USB, TROUBLESHOOTING_TIP_CABLE, TROUBLESHOOTING_TIP_BRIDGE]
+        ? [
+              TROUBLESHOOTING_TIP_USB,
+              TROUBLESHOOTING_TIP_CABLE,
+              TROUBLESHOOTING_TIP_BRIDGE,
+              TROUBLESHOOTING_TIP_UDEV,
+          ]
         : [
               TROUBLESHOOTING_TIP_BRIDGE,
               TROUBLESHOOTING_TIP_CABLE,
               TROUBLESHOOTING_TIP_USB,
               TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
+              TROUBLESHOOTING_TIP_UDEV,
           ];
 
     return (
