@@ -1,3 +1,5 @@
+// todo: remove
+
 import React from 'react';
 import styled from 'styled-components';
 import { H2, Button } from '@trezor/components';

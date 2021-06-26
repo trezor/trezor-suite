@@ -54,29 +54,48 @@
 
 import React from 'react';
 import styled from 'styled-components';
-
-import { TroubleshootingTips } from '@suite-components';
+import { Button } from '@trezor/components';
+import { Translation, TroubleshootingTips } from '@suite-components';
+import * as recoveryActions from '@recovery-actions/recoveryActions';
+import { useDevice, useSelector, useActions } from '@suite-hooks';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
 `;
 
-const DeviceNoFirmware = () => (
-    <Wrapper>
-        <>
-            <TroubleshootingTips
-                label="Recovery mode"
-                items={[
-                    {
-                        key: 'recovery-mode',
-                        heading: '',
-                        description: '',
-                    },
-                ]}
-            />
-        </>
-    </Wrapper>
-);
+const DeviceRecoveryMode = () => {
+    const recovery = useSelector(state => state.recovery);
+    const { rerun } = useActions({ rerun: recoveryActions.rerun });
 
-export default DeviceNoFirmware;
+    const { isLocked } = useDevice();
+
+    if (recovery.status === 'in-progress') {
+        return 'recovery mode';
+    }
+
+    return (
+        <Wrapper>
+            <>
+                <TroubleshootingTips
+                    label={<Translation id="TR_DEVICE_IN_RECOVERY_MODE" />}
+                    cta={
+                        <Button isDisabled={isLocked()} onClick={rerun}>
+                            <Translation id="TR_CONTINUE" />
+                        </Button>
+                    }
+                    items={[
+                        {
+                            key: 'recovery-mode',
+                            heading: <Translation id="TR_DEVICE_IN_RECOVERY_MODE" />,
+                            description:
+                                'This device is in recovery mode. Click the button to continue.',
+                        },
+                    ]}
+                />
+            </>
+        </Wrapper>
+    );
+};
+
+export default DeviceRecoveryMode;

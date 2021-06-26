@@ -33,7 +33,7 @@ describe('Recovery - dry run', () => {
         cy.wait(501);
         cy.task('stopEmu');
         cy.getTestElement('@recovery/close-button', { timeout: 30000 }).click();
-        cy.getTestElement('@modal/connect-device');
+        cy.getTestElement('@connect-device-prompt');
         cy.task('startEmu', { wipe: false, version: '2.3.1' });
         cy.getTestElement('@suite/modal/confirm-action-on-device', { timeout: 20000 });
         cy.task('pressYes');

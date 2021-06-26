@@ -53,7 +53,9 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         if (!original) return;
         (TrezorConnect[key] as any) = async (params: any) => {
             dispatch(lockDevice(true));
+            console.log('call ', key);
             const result = await original(params);
+            console.log('result', result);
             dispatch(lockDevice(false));
             return result;
         };

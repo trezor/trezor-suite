@@ -64,7 +64,8 @@ const PrerequisitesGuide = ({ prerequisite }: Props) => {
                         return <DeviceUnknown />;
                     case 'device-initialize':
                         return <DeviceInitialize />;
-
+                    case 'device-recovery-mode':
+                        return '';
                     default:
                         return prerequisite;
                 }

@@ -11,6 +11,7 @@ const getPrerequisiteName = ({ router, device, transport }: PrerequisitesInput) 
     if (!router || router.app === 'unknown') return;
 
     // no transport available
+    // todo: is transport-bridge good name? other prerequisites denote to the problem. this ones denotes to the solution
     if (transport && !transport.type) return 'transport-bridge';
 
     if (!device) return 'device-disconnected';
@@ -26,6 +27,7 @@ const getPrerequisiteName = ({ router, device, transport }: PrerequisitesInput) 
 
     // similar to initialize, there is no seed in device
     // difference is it is in recovery mode.
+    // todo: this could be added to trezor-connect to device.mode I think.
     if (device.features.recovery_mode) return 'device-recovery-mode';
 
     // device is not initialized

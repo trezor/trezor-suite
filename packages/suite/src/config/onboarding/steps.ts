@@ -5,7 +5,7 @@ const commonPrerequisites = [
     'transport-bridge',
     'device-bootloader',
     // 'device-initialize',
-    'device-recovery-mode',
+    // 'device-recovery-mode',
     'device-seedless',
     'device-unacquired',
     'device-unknown',

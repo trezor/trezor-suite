@@ -33,8 +33,6 @@ interface Props {
  * This component handles unexpected device states across various steps in the onboarding.
  */
 const UnexpectedState = ({ children, prerequisite }: Props) => {
-    console.log('unexpected state prerequisite', prerequisite);
-
     const { device } = useSelector(s => s.suite);
     const { /* prevDevice , */ activeStepId, showPinMatrix } = useOnboarding();
     const activeStep = steps.find(s => s.id === activeStepId);
