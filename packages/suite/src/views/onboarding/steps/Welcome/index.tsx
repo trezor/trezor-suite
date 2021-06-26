@@ -18,7 +18,7 @@ const Wrapper = styled.div`
 `;
 
 const WelcomeStep = () => (
-    <Wrapper>
+    <Wrapper data-test="@onboarding/welcome">
         <PreOnboardingSetup />
     </Wrapper>
 );

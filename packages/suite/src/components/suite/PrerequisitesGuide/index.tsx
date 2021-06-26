@@ -34,6 +34,9 @@ interface Props {
     prerequisite: PrerequisiteType;
 }
 
+// todo: what if there are multiple devices connected, one of them (the selected one) with some prerequisite
+// and other ready to work with? should it be possible to switch to another device?
+
 // aka former "ConnectDevicePromptManager" from onboarding but extended
 const PrerequisitesGuide = ({ prerequisite }: Props) => {
     const { device, transport } = useSelector(state => ({
