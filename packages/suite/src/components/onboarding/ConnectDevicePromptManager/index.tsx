@@ -1,13 +1,19 @@
+// todo: at this moment this is used only in Firmware effectively being the 3rd level of 
+// prerequisites management (1st level Preloader, 2nd level Onboarding - UnexpectedStates, 3rd level Firmware)
+// I think that with some effort this could be also removed and optimized
+
 import React from 'react';
 import styled from 'styled-components';
 import { useSelector } from '@suite-hooks';
-import { ConnectDevicePrompt } from '@onboarding-components';
-import NoTransport from './components/NoTransport';
-import NoDeviceDetected from './components/NoDeviceDetected';
-import UnexpectedDeviceState from './components/UnexpectedDeviceState';
+import { ConnectDevicePrompt } from '@suite-components';
 import { isWebUSB } from '@suite-utils/transport';
 import { getConnectedDeviceStatus } from '@suite-utils/device';
 import type { TrezorDevice } from '@suite-types';
+
+// todo: these should be replaced
+import NoTransport from './components/NoTransport';
+import NoDeviceDetected from './components/NoDeviceDetected';
+import UnexpectedDeviceState from './components/UnexpectedDeviceState';
 
 const Wrapper = styled.div`
     display: flex;

@@ -40,8 +40,8 @@ describe('Bridge page', () => {
         // user may exit bridge page and use webusb
         cy.getTestElement('@bridge/goto/wallet-index').click();
 
-        // connect device modal with webusb enabled appears
-        cy.getTestElement('@modal/connect-device');
+        // connect device prompt with webusb enabled appears
+        cy.getTestElement('@connect-device-prompt');
 
         // linux platforms show udev rules link also
         cy.getTestElement('@modal/connect-device/goto/suite-udev').click();

@@ -26,7 +26,7 @@ const getPrerequisiteName = ({ router, device, transport }: PrerequisitesInput) 
 
     // similar to initialize, there is no seed in device
     // difference is it is in recovery mode.
-    // if (device.features.recovery_mode) return DeviceRecoveryMode;
+    if (device.features.recovery_mode) return 'device-recovery-mode';
 
     // device is not initialized
     // todo: should not happen and redirect to onboarding instead?
@@ -47,9 +47,12 @@ const getPrerequisiteName = ({ router, device, transport }: PrerequisitesInput) 
     // if (authConfirmation?.type === 'auth-confirm') return DiscoveryLoader;
 };
 
-const getExcludedPrerequisites = (router: PrerequisitesInput['router']) => {
+const getExcludedPrerequisites = (router: PrerequisitesInput['router']): PrerequisiteType[] => {
     if (router.app === 'onboarding') {
-        return ['device-initialize'];
+        return [
+            // 'device-initialize',
+            // 'device-disconnected'
+        ];
     }
     return [];
 };
@@ -74,4 +77,4 @@ export const getPrerequisites = ({ router, device, transport }: PrerequisitesInp
 // distributive conditional types to the rescue!
 type DefinedUnionMember<T> = T extends string ? T : never;
 
-export type PrerequisiteType = DefinedUnionMember<ReturnType<typeof getPrerequisites>>;
+export type PrerequisiteType = DefinedUnionMember<ReturnType<typeof getPrerequisiteName>>;

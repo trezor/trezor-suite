@@ -1,12 +1,15 @@
 import * as STEP from '@onboarding-constants/steps';
+import { PrerequisiteType } from '@suite/utils/suite/prerequisites';
 
 export interface Step {
     id: AnyStepId;
     stepGroup: number | undefined;
     disallowedDeviceStates?: AnyStepDisallowedState[];
+    prerequisites?: PrerequisiteType[];
     path?: AnyPath[];
 }
 
+// todo: remove, improve typing
 export type AnyStepId =
     | typeof STEP.ID_WELCOME_STEP
     | typeof STEP.ID_CREATE_OR_RECOVER
@@ -19,6 +22,7 @@ export type AnyStepId =
     | typeof STEP.ID_RECOVERY_STEP
     | typeof STEP.ID_COINS_STEP;
 
+// todo remove probably
 export type AnyStepDisallowedState =
     | typeof STEP.DISALLOWED_DEVICE_IS_IN_BOOTLOADER
     | typeof STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED

@@ -62,7 +62,7 @@ describe('PrerequisitesGuide component', () => {
             store,
             <PrerequisitesGuide prerequisite="transport-bridge" />,
         );
-        expect(findByTestId('@onboarding/connect-device')).not.toBeNull();
+        expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         expect(findByTestId('TR_TREZOR_BRIDGE_IS_NOT_RUNNING')).not.toBeNull();
 
         unmount();
@@ -75,7 +75,7 @@ describe('PrerequisitesGuide component', () => {
             <PrerequisitesGuide prerequisite="device-disconnected" />,
         );
 
-        expect(findByTestId('@onboarding/connect-device')).not.toBeNull();
+        expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         expect(findByTestId('TR_STILL_DONT_SEE_YOUR_TREZOR')).not.toBeNull();
 
         unmount();
@@ -96,7 +96,7 @@ describe('PrerequisitesGuide component', () => {
             <PrerequisitesGuide prerequisite="device-bootloader" />,
         );
 
-        expect(findByTestId('@onboarding/connect-device')).not.toBeNull();
+        expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         expect(findByTestId('TR_DEVICE_IN_BOOTLOADER')).not.toBeNull();
 
         unmount();
@@ -109,7 +109,7 @@ describe('PrerequisitesGuide component', () => {
     //         <PrerequisitesGuide precondition="device-bootloader" />,
     //     );
 
-    //     expect(findByTestId('@onboarding/connect-device')).not.toBeNull();
+    //     expect(findByTestId('@connect-device-prompt')).not.toBeNull();
     //     expect(findByTestId('TR_DEVICE_IN_BOOTLOADER')).not.toBeNull();
 
     //     unmount();
@@ -122,7 +122,7 @@ describe('PrerequisitesGuide component', () => {
     //         <PrerequisitesGuide precondition="device-bootloader" />,
     //     );
 
-    //     expect(findByTestId('@onboarding/connect-device')).not.toBeNull();
+    //     expect(findByTestId('@connect-device-prompt')).not.toBeNull();
     //     expect(findByTestId('TR_DEVICE_IN_BOOTLOADER')).not.toBeNull();
 
     //     unmount();
@@ -135,7 +135,7 @@ describe('PrerequisitesGuide component', () => {
     //         <PrerequisitesGuide precondition="device-bootloader" />,
     //     );
 
-    //     expect(findByTestId('@onboarding/connect-device')).not.toBeNull();
+    //     expect(findByTestId('@connect-device-prompt')).not.toBeNull();
     //     expect(findByTestId('TR_DEVICE_IN_BOOTLOADER')).not.toBeNull();
 
     //     unmount();
@@ -148,7 +148,7 @@ describe('PrerequisitesGuide component', () => {
     //         <PrerequisitesGuide precondition="device-bootloader" />,
     //     );
 
-    //     expect(findByTestId('@onboarding/connect-device')).not.toBeNull();
+    //     expect(findByTestId('@connect-device-prompt')).not.toBeNull();
     //     expect(findByTestId('TR_DEVICE_IN_BOOTLOADER')).not.toBeNull();
 
     //     unmount();
@@ -161,7 +161,7 @@ describe('PrerequisitesGuide component', () => {
     //         <PrerequisitesGuide precondition="device-bootloader" />,
     //     );
 
-    //     expect(findByTestId('@onboarding/connect-device')).not.toBeNull();
+    //     expect(findByTestId('@connect-device-prompt')).not.toBeNull();
     //     expect(findByTestId('TR_DEVICE_IN_BOOTLOADER')).not.toBeNull();
 
     //     unmount();
@@ -174,7 +174,7 @@ describe('PrerequisitesGuide component', () => {
     //         <PrerequisitesGuide precondition="device-bootloader" />,
     //     );
 
-    //     expect(findByTestId('@onboarding/connect-device')).not.toBeNull();
+    //     expect(findByTestId('@connect-device-prompt')).not.toBeNull();
     //     expect(findByTestId('TR_DEVICE_IN_BOOTLOADER')).not.toBeNull();
 
     //     unmount();
@@ -187,7 +187,7 @@ describe('PrerequisitesGuide component', () => {
             <PrerequisitesGuide prerequisite="device-unreadable" />,
         );
 
-        expect(findByTestId('@onboarding/connect-device')).not.toBeNull();
+        expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         expect(findByTestId('TR_YOUR_DEVICE_IS_CONNECTED_BUT_UNREADABLE')).not.toBeNull();
 
         unmount();
@@ -200,7 +200,7 @@ describe('PrerequisitesGuide component', () => {
             <PrerequisitesGuide prerequisite="device-seedless" />,
         );
 
-        expect(findByTestId('@onboarding/connect-device')).not.toBeNull();
+        expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         expect(findByTestId('TR_YOUR_DEVICE_IS_SEEDLESS')).not.toBeNull();
 
         unmount();

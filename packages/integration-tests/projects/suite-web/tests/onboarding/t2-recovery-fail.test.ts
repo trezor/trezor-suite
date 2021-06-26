@@ -21,7 +21,7 @@ describe('Onboarding - recover wallet T2', () => {
         cy.task('pressYes');
         cy.wait(501);
         cy.task('stopEmu');
-        cy.getTestElement('@onboarding/connect-device', { timeout: 20000 });
+        cy.getTestElement('@connect-device-prompt', { timeout: 20000 });
         cy.task('startEmu', { version: '2.1.4', wipe: false });
         cy.log(
             'If device disconnected during call, error page with retry button should appear. Also note, that unlike with T1, retry button initiates recoveryDevice call immediately',

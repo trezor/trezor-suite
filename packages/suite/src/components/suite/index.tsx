@@ -48,6 +48,7 @@ import PinMatrix from './PinMatrix';
 import CollapsibleBox from './CollapsibleBox';
 import DeviceMatrixExplanation from './DeviceMatrixExplanation';
 import TroubleshootingTips from './TroubleshootingTips';
+import ConnectDevicePrompt from './ConnectDevicePrompt';
 
 export {
     Backdrop,
@@ -103,5 +104,6 @@ export {
     CollapsibleBox,
     DeviceMatrixExplanation,
     TroubleshootingTips,
+    ConnectDevicePrompt,
 };
 export type { ImageProps, ModalProps };

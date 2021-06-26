@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import { ConnectDevicePrompt } from '@onboarding-components';
+import { ConnectDevicePrompt } from '@suite-components';
 import { isWebUSB } from '@suite-utils/transport';
 import { getStatus, deviceNeedsAttention } from '@suite-utils/device';
 import { useSelector } from '@suite-hooks';

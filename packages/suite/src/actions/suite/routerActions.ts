@@ -82,9 +82,6 @@ export const goto = (
     const url = getRoute(routeName, params);
     const route = findRouteByName(routeName);
 
-    console.log('route', route);
-    console.log('url', url);
-
     if (route && route.isModal) {
         dispatch(onLocationChange(url));
         dispatch(suiteActions.lockRouter(true));

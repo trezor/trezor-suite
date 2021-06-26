@@ -9,7 +9,6 @@ import OnboardingButtonSkip from './Buttons/ButtonSkip';
 import Box, { BoxProps } from './Box/Box';
 import Coin, { CoinProps } from './Coin/Coin';
 import CoinsGroup from './CoinsGroup/CoinsGroup';
-import ConnectDevicePrompt from './ConnectDevicePrompt';
 import ConnectDevicePromptManager from './ConnectDevicePromptManager';
 import OnboardingLayout from './Layouts/OnboardingLayout';
 import ProgressBar from './ProgressBar';
@@ -31,7 +30,6 @@ export {
     Box,
     Coin,
     CoinsGroup,
-    ConnectDevicePrompt,
     ConnectDevicePromptManager,
     OnboardingLayout,
     ProgressBar,
