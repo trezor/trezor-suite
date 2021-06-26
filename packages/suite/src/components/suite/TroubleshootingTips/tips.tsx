@@ -1,7 +1,6 @@
 import React from 'react';
 import TrezorLink from '@suite-components/TrezorLink';
 import { Translation } from '@suite-components/Translation';
-import { SUITE_BRIDGE_URL } from '@suite-constants/urls';
 import { isWeb } from '@suite-utils/env';
 import { useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
@@ -14,7 +13,7 @@ const UdevDescription = () => {
 
     return (
         <>
-            Try installing
+            Try installing{' '}
             <TrezorLink
                 onClick={() => goto('suite-udev')}
                 variant="underline"
@@ -22,28 +21,35 @@ const UdevDescription = () => {
                 data-test="@goto/udev"
             >
                 Udev rules
-            </TrezorLink>
+            </TrezorLink>{' '}
             Make sure to first download them to desktop before opening.
         </>
+    );
+};
+
+const BridgeDescription = () => {
+    const { goto } = useActions({
+        goto: routerActions.goto,
+    });
+
+    return (
+        <Translation
+            id="TR_TROUBLESHOOTING_TIP_BRIDGE_DESCRIPTION"
+            values={{
+                a: chunks => (
+                    <TrezorLink variant="underline" onClick={() => goto('suite-bridge')}>
+                        {chunks}
+                    </TrezorLink>
+                ),
+            }}
+        />
     );
 };
 
 export const TROUBLESHOOTING_TIP_BRIDGE = {
     key: 'bridge',
     heading: <Translation id="TR_TROUBLESHOOTING_TIP_BRIDGE_TITLE" />,
-    description: (
-        <Translation
-            id="TR_TROUBLESHOOTING_TIP_BRIDGE_DESCRIPTION"
-            values={{
-                a: chunks => (
-                    // todo: hm does not feel good to use this constant
-                    <TrezorLink variant="underline" href={SUITE_BRIDGE_URL}>
-                        {chunks}
-                    </TrezorLink>
-                ),
-            }}
-        />
-    ),
+    description: <BridgeDescription />,
     hide: !isWeb(),
 };
 
