@@ -1,38 +1,99 @@
 import React, { useRef, useLayoutEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { variables, IconProps, useTheme, Button, Icon, Dropdown } from '@trezor/components';
-import { Translation } from '@suite-components';
-import { useSelector, useActions } from '@suite-hooks';
-import * as routerActions from '@suite-actions/routerActions';
+import { AccountFormCloseButton } from '@suite-components';
+import { useInViewProp } from '../AppNavigationPanel';
+import { useSelector } from '@suite-hooks';
 import { Route } from '@suite-types';
+import AccountStickyContent from '../AccountStickyContent';
+import { MAX_WIDTH, MAX_WIDTH_WALLET_CONTENT } from '@suite-constants/layout';
 
 const { FONT_WEIGHT, FONT_SIZE } = variables;
 
 const SECONDARY_MENU_BUTTON_MARGIN = '12px';
 
-const Wrapper = styled.div<{ settingsWrapper: boolean | undefined }>`
-    display: flex;
+const Wrapper = styled.div<{ value: boolean; subRoute: boolean | undefined }>`
     width: 100%;
-    scrollbar-width: none; /* Firefox */
+    z-index: 2;
+    display: flex;
+    background: ${props => props.theme.BG_LIGHT_GREY};
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 0;
+
+    ${props =>
+        props.subRoute &&
+        props.value &&
+        css`
+            transform: translate(0, -71px);
+        `}
+
+    ${props =>
+        props.subRoute &&
+        !props.value &&
+        css`
+            transition: all 0.3s ease 0s;
+            transform: translate(0, 0);
+        `}
+
+    ${props =>
+        !props.subRoute &&
+        props.value &&
+        css`
+            transform: translate(0px, -71px);
+            margin-top: 71px;
+        `}
+
+    ${props =>
+        !props.subRoute &&
+        !props.value &&
+        css`
+            transition: all 0.3s ease 0s;
+            transform: translate(0, 0);
+            margin-bottom: 70px;
+        `}
+`;
+
+const MenuHolder = styled.div<{
+    maxWidth: string | undefined;
+}>`
+    display: flex;
+    align-items: center;
     justify-content: space-between;
-    position: relative;
+    width: 100%;
+    max-width: ${props => (props.maxWidth === 'default' ? MAX_WIDTH : MAX_WIDTH_WALLET_CONTENT)};
     height: 68px;
+    scrollbar-width: none; /* Firefox */
+    position: relative;
+    border-top: none;
+    transition: all 0.3s ease;
 
     &::-webkit-scrollbar {
         /* WebKit */
         width: 0;
         height: 0;
     }
+`;
 
-    ${props =>
-        props.settingsWrapper &&
-        css`
-            height: 52px;
-        `};
+const KeepWidth = styled.div<{ maxWidth?: string; border: boolean }>`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: ${props => props.theme.BG_LIGHT_GREY};
+    width: 100%;
+    max-width: ${props => (props.maxWidth === 'default' ? MAX_WIDTH : MAX_WIDTH_WALLET_CONTENT)};
+    border-top: 1px solid ${props => props.theme.STROKE_GREY};
 `;
 
 const Primary = styled.div`
     display: flex;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: center;
 `;
 
 const Secondary = styled.div`
@@ -43,7 +104,7 @@ const Secondary = styled.div`
 const SecondaryMenu = styled.div<{ visible: boolean }>`
     display: flex;
     align-items: center;
-    ${props => !props.visible && `opacity: 0;`}
+    ${props => !props.visible && `display: none;`}
     & > * + * {
         margin-left: ${SECONDARY_MENU_BUTTON_MARGIN};
     }
@@ -51,8 +112,8 @@ const SecondaryMenu = styled.div<{ visible: boolean }>`
 
 const SecondaryMenuCondensed = styled.div`
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 1px;
+    right: 24px;
     z-index: 3;
     background: ${props => props.theme.BG_WHITE};
     background: linear-gradient(
@@ -61,8 +122,8 @@ const SecondaryMenuCondensed = styled.div`
         ${props => props.theme.BG_WHITE} 10%,
         ${props => props.theme.BG_WHITE} 100%
     );
-    height: 100%;
-    width: 70px;
+    height: 68px;
+    width: 62px;
     margin: 0 -33px 0;
     padding: 20px 25px 0 13px;
 `;
@@ -75,42 +136,46 @@ const StyledNavLink = styled.div<{ active?: boolean }>`
     font-weight: ${FONT_WEIGHT.MEDIUM};
     display: flex;
     align-items: center;
-    padding: 23px 10px;
-    padding-right: 0;
+    padding: 23px 0;
     white-space: nowrap;
     border-bottom: 2px solid
         ${props => (props.active ? props => props.theme.TYPE_DARK_GREY : 'transparent')};
     margin-right: 40px;
+
     &:first-child {
-        padding-left: 0;
         margin-left: 5px;
     }
     &:last-child {
         margin-right: ${SECONDARY_MENU_BUTTON_MARGIN};
+        margin-left: 10px;
     }
+`;
+
+const InnerWrap = styled.div<{ settingsWrapper?: boolean }>`
+    width: 100%;
+    height: 71px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    padding: 0 16px;
+    border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+    background: ${props => props.theme.BG_LIGHT_GREY};
+    ${props =>
+        props.settingsWrapper &&
+        css`
+            height: 52px;
+            & ${StyledNavLink} {
+                padding: 13px 0;
+            }
+        `};
 `;
 
 const IconWrapper = styled.div`
     margin-right: 10px;
 `;
 
-const StyledBackLink = styled.div`
-    cursor: pointer;
-    font-size: ${FONT_SIZE.SMALL};
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    font-weight: ${FONT_WEIGHT.MEDIUM};
-    display: flex;
-    align-items: center;
-    padding: 23px 0 25px;
-    white-space: nowrap;
-`;
-
 const Text = styled.div`
     position: relative;
-`;
-
-const StyledIcon = styled(Icon)`
-    margin-right: 10px;
 `;
 
 const StyledDropdown = styled(Dropdown)`
@@ -146,6 +211,7 @@ export type AppNavigationItem = {
 interface Props {
     items: AppNavigationItem[];
     primaryContent?: React.ReactNode;
+    maxWidth?: 'small' | 'default';
 }
 interface MenuWidths {
     primary: number;
@@ -166,7 +232,7 @@ const isSubsection = (routeName: Route['name']): boolean =>
 const isSecondaryMenuOverflown = ({ primary, secondary, wrapper }: MenuWidths) =>
     primary + secondary >= wrapper;
 
-const AppNavigation = ({ items, primaryContent }: Props) => {
+const AppNavigation = ({ items, primaryContent, maxWidth }: Props) => {
     const theme = useTheme();
     const [condensedSecondaryMenuVisible, setCondensedSecondaryMenuVisible] = useState<boolean>(
         false,
@@ -178,9 +244,6 @@ const AppNavigation = ({ items, primaryContent }: Props) => {
         routeName: state.router.route?.name,
         screenWidth: state.resize.screenWidth,
     }));
-    const { goto } = useActions({
-        goto: routerActions.goto,
-    });
 
     useLayoutEffect(() => {
         if (primary.current && secondary.current && wrapper.current) {
@@ -199,117 +262,126 @@ const AppNavigation = ({ items, primaryContent }: Props) => {
     const itemsSecondaryWithExtra = itemsSecondary.filter(item => item.extra);
     const itemsSecondaryWithoutExtra = itemsSecondary.filter(item => !item.extra);
 
-    return (
-        <Wrapper ref={wrapper} settingsWrapper={routeName && routeName.startsWith('settings')}>
-            {routeName && isSubsection(routeName) ? (
-                <Primary>
-                    <StyledBackLink onClick={() => goto('wallet-index', undefined, true)}>
-                        <StyledIcon icon="ARROW_LEFT" size={16} />
-                        <Translation id="TR_BACK" />
-                    </StyledBackLink>
-                </Primary>
-            ) : (
-                <>
-                    <Primary ref={primary}>
-                        {primaryContent ||
-                            itemsPrimary.map(item => {
-                                const { id, title } = item;
-                                const active = isRouteActive(routeName, id);
-                                return (
-                                    <StyledNavLink
-                                        key={id}
-                                        active={active}
-                                        onClick={item.callback}
-                                        {...(item['data-test'] && {
-                                            'data-test': item['data-test'],
-                                        })}
-                                    >
-                                        {item.icon && (
-                                            <IconWrapper>
-                                                <Icon
-                                                    size={18}
-                                                    icon={item.icon}
-                                                    color={
-                                                        active ? theme.TYPE_DARK_GREY : undefined
-                                                    }
-                                                />
-                                            </IconWrapper>
-                                        )}
+    const sticky = useInViewProp();
+    const selectedAccount = useSelector(state => state.wallet.selectedAccount.account);
 
-                                        <Text>{title}</Text>
-                                    </StyledNavLink>
-                                );
-                            })}
-                    </Primary>
-                    <Secondary ref={secondary}>
-                        {condensedSecondaryMenuVisible && (
-                            <SecondaryMenuCondensed>
-                                <Dropdown
-                                    alignMenu="right"
-                                    offset={8}
-                                    items={[
-                                        {
-                                            key: 'all',
-                                            options: itemsSecondary.map(item => {
-                                                const { id, title } = item;
-                                                return {
-                                                    key: id,
-                                                    callback: () => {
-                                                        item.callback();
-                                                        return true;
-                                                    },
-                                                    label: title,
-                                                };
-                                            }),
-                                        },
-                                    ]}
-                                />
-                            </SecondaryMenuCondensed>
-                        )}
-                        <SecondaryMenu visible={!condensedSecondaryMenuVisible}>
-                            {itemsSecondaryWithoutExtra.map(item => {
-                                const { id, title } = item;
-                                return (
-                                    <StyledButton
-                                        key={id}
-                                        variant={
-                                            id === 'wallet-coinmarket-buy' ? 'primary' : 'secondary'
-                                        }
-                                        onClick={item.callback}
-                                        {...(item['data-test'] && {
-                                            'data-test': item['data-test'],
-                                        })}
-                                        isDisabled={condensedSecondaryMenuVisible}
-                                    >
-                                        <Text>{title}</Text>
-                                    </StyledButton>
-                                );
-                            })}
-                            {itemsSecondaryWithExtra.length ? (
-                                <StyledDropdown
-                                    alignMenu="right"
-                                    offset={5}
-                                    items={[
-                                        {
-                                            key: 'extra',
-                                            options: itemsSecondaryWithExtra.map(item => {
-                                                const { id, title } = item;
-                                                return {
-                                                    key: id,
-                                                    callback: () => {
-                                                        item.callback();
-                                                        return true;
-                                                    },
-                                                    label: title,
-                                                };
-                                            }),
-                                        },
-                                    ]}
-                                />
-                            ) : undefined}
-                        </SecondaryMenu>
-                    </Secondary>
-                </>
+    return (
+        <Wrapper ref={wrapper} value={sticky} subRoute={routeName && isSubsection(routeName)}>
+            {routeName && isSubsection(routeName) ? (
+                <InnerWrap>
+                    <MenuHolder maxWidth={maxWidth}>
+                        <AccountStickyContent routeName={routeName} account={selectedAccount} />
+                        <AccountFormCloseButton />
+                    </MenuHolder>
+                </InnerWrap>
+            ) : (
+                <InnerWrap settingsWrapper={routeName && routeName.startsWith('settings')}>
+                    <KeepWidth border={!sticky}>
+                        <Primary ref={primary}>
+                            {primaryContent ||
+                                itemsPrimary.map(item => {
+                                    const { id, title } = item;
+                                    const active = isRouteActive(routeName, id);
+                                    return (
+                                        <StyledNavLink
+                                            key={id}
+                                            active={active}
+                                            onClick={item.callback}
+                                            {...(item['data-test'] && {
+                                                'data-test': item['data-test'],
+                                            })}
+                                        >
+                                            {item.icon && (
+                                                <IconWrapper>
+                                                    <Icon
+                                                        size={18}
+                                                        icon={item.icon}
+                                                        color={
+                                                            active
+                                                                ? theme.TYPE_DARK_GREY
+                                                                : undefined
+                                                        }
+                                                    />
+                                                </IconWrapper>
+                                            )}
+
+                                            <Text>{title}</Text>
+                                        </StyledNavLink>
+                                    );
+                                })}
+                        </Primary>
+                        <Secondary ref={secondary}>
+                            {condensedSecondaryMenuVisible && (
+                                <SecondaryMenuCondensed>
+                                    <Dropdown
+                                        alignMenu="right"
+                                        offset={8}
+                                        items={[
+                                            {
+                                                key: 'all',
+                                                options: itemsSecondary.map(item => {
+                                                    const { id, title } = item;
+                                                    return {
+                                                        key: id,
+                                                        callback: () => {
+                                                            item.callback();
+                                                            return true;
+                                                        },
+                                                        label: title,
+                                                    };
+                                                }),
+                                            },
+                                        ]}
+                                    />
+                                </SecondaryMenuCondensed>
+                            )}
+                            <SecondaryMenu visible={!condensedSecondaryMenuVisible}>
+                                {itemsSecondaryWithoutExtra.map(item => {
+                                    const { id, title } = item;
+                                    return (
+                                        <StyledButton
+                                            key={id}
+                                            variant={
+                                                id === 'wallet-coinmarket-buy'
+                                                    ? 'primary'
+                                                    : 'secondary'
+                                            }
+                                            onClick={item.callback}
+                                            {...(item['data-test'] && {
+                                                'data-test': item['data-test'],
+                                            })}
+                                            isDisabled={condensedSecondaryMenuVisible}
+                                        >
+                                            <Text>{title}</Text>
+                                        </StyledButton>
+                                    );
+                                })}
+                                {itemsSecondaryWithExtra.length ? (
+                                    <StyledDropdown
+                                        alignMenu="right"
+                                        offset={5}
+                                        items={[
+                                            {
+                                                key: 'extra',
+                                                options: itemsSecondaryWithExtra.map(item => {
+                                                    const { id, title } = item;
+                                                    return {
+                                                        key: id,
+                                                        callback: () => {
+                                                            item.callback();
+                                                            return true;
+                                                        },
+                                                        label: title,
+                                                    };
+                                                }),
+                                            },
+                                        ]}
+                                    />
+                                ) : undefined}
+                            </SecondaryMenu>
+                        </Secondary>
+                    </KeepWidth>
+                </InnerWrap>
             )}
         </Wrapper>
     );

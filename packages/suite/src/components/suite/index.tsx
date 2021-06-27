@@ -45,6 +45,7 @@ import HomescreenGallery from './HomescreenGallery';
 import PinMatrix from './PinMatrix';
 import CollapsibleBox from './CollapsibleBox';
 import DeviceMatrixExplanation from './DeviceMatrixExplanation';
+import AccountFormCloseButton from './AccountFormCloseButton';
 import TroubleshootingTips from './TroubleshootingTips';
 import ConnectDevicePrompt from './ConnectDevicePrompt';
 
@@ -100,6 +101,7 @@ export {
     PinMatrix,
     CollapsibleBox,
     DeviceMatrixExplanation,
+    AccountFormCloseButton,
     TroubleshootingTips,
     ConnectDevicePrompt,
 };
