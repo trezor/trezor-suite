@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables, Dropdown } from '@trezor/components';
-import { Translation } from '@suite-components';
+import { variables, Dropdown, H2 } from '@trezor/components';
+import { Translation, AccountFormCloseButton } from '@suite-components';
 import { useActions } from '@suite-hooks';
 import { useSendFormContext } from '@wallet-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
@@ -9,17 +9,13 @@ import Clear from './components/Clear';
 
 const Wrapper = styled.div`
     display: flex;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 `;
 
 const HeaderLeft = styled.div`
     display: flex;
     flex: 1;
     align-items: center;
-    font-size: ${variables.FONT_SIZE.TINY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    text-transform: uppercase;
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const HeaderRight = styled.div`
@@ -27,6 +23,13 @@ const HeaderRight = styled.div`
     align-items: center;
     justify-content: flex-end;
     flex: 1;
+`;
+
+const StyledTitle = styled(H2)`
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    text-transform: capitalize;
+    color: ${props => props.theme.TYPE_DARK_GREY};
+    padding-top: 10px;
 `;
 
 const Header = () => {
@@ -72,7 +75,11 @@ const Header = () => {
 
     return (
         <Wrapper>
-            <HeaderLeft />
+            <HeaderLeft>
+                <StyledTitle>
+                    <Translation id="TR_NAV_SEND" />
+                </StyledTitle>
+            </HeaderLeft>
             <HeaderRight>
                 <Clear />
                 <Dropdown
@@ -85,6 +92,7 @@ const Header = () => {
                         },
                     ]}
                 />
+                <AccountFormCloseButton />
             </HeaderRight>
         </Wrapper>
     );

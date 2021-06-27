@@ -43,6 +43,7 @@ const SettingsMenu = () => {
             }
             navigation={
                 <AppNavigation
+                    maxWidth="default"
                     items={[
                         {
                             id: 'settings-index',
