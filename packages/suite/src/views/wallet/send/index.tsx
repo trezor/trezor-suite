@@ -26,7 +26,15 @@ const StyledCard = styled(Card)`
 // children are only for test purposes, this prop is not available in regular build
 const SendLoaded: React.FC<UseSendFormProps> = ({ children, ...props }) => {
     const sendContextValues = useSendForm(props);
-    return (
+
+    return props.sendRaw ? (
+        <WalletLayout title="TR_NAV_SEND" account={props.selectedAccount}>
+            <SendContext.Provider value={sendContextValues}>
+                <Header />
+            </SendContext.Provider>
+            <Raw network={props.selectedAccount.network} />
+        </WalletLayout>
+    ) : (
         <WalletLayout title="TR_NAV_SEND" account={props.selectedAccount}>
             <SendContext.Provider value={sendContextValues}>
                 <StyledCard customHeader={<Header />}>
@@ -56,14 +64,6 @@ const Send: React.FC = ({ children }) => {
 
     if (selectedAccount.status !== 'loaded') {
         return <WalletLayout title="TR_NAV_SEND" account={selectedAccount} />;
-    }
-
-    if (props.sendRaw) {
-        return (
-            <WalletLayout title="TR_NAV_SEND" account={selectedAccount}>
-                <Raw network={selectedAccount.network} />
-            </WalletLayout>
-        );
     }
 
     /* children are only for test purposes, this prop is not available in regular build */

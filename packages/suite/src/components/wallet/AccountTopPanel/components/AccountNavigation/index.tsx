@@ -19,6 +19,7 @@ const AccountNavigation = (props: Props) => {
         goto: routerActions.goto,
         openModal: modalActions.openModal,
     });
+
     const ITEMS: AppNavigationItem[] = [
         {
             id: 'wallet-index',
