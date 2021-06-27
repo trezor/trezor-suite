@@ -6,6 +6,23 @@ import FreshAddress from './components/FreshAddress';
 import UsedAddresses from './components/UsedAddresses';
 import { isPending } from '@wallet-utils/transactionUtils';
 import { getAccountTransactions } from '@wallet-utils/accountUtils';
+import { variables } from '@trezor/components';
+import styled from 'styled-components';
+import { Translation, AccountFormCloseButton } from '@suite-components';
+
+const StyledTitle = styled.h2`
+    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    text-transform: capitalize;
+    color: ${props => props.theme.TYPE_DARK_GREY};
+`;
+
+const LayoutNavWrap = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+    margin-bottom: 32px;
+`;
 
 const Receive = () => {
     const { selectedAccount, receive, device, transactions } = useSelector(state => ({
@@ -35,7 +52,13 @@ const Receive = () => {
     );
 
     return (
-        <WalletLayout title="TR_NAV_RECEIVE" account={selectedAccount} showEmptyHeaderPlaceholder>
+        <WalletLayout title="TR_NAV_RECEIVE" account={selectedAccount}>
+            <LayoutNavWrap>
+                <StyledTitle>
+                    <Translation id="TR_NAV_RECEIVE" />
+                </StyledTitle>
+                <AccountFormCloseButton />
+            </LayoutNavWrap>
             <FreshAddress
                 account={account}
                 addresses={receive}

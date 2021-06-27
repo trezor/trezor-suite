@@ -13,7 +13,6 @@ import { Stack, SkeletonCircle, SkeletonRectangle } from '@suite-components/Skel
 import { useSelector } from '@suite-hooks';
 import { isTestnet } from '@wallet-utils/accountUtils';
 import AccountNavigation from './components/AccountNavigation';
-import AccountNavigationSticky from './components/AccountNavigationSticky';
 
 const BalanceWrapper = styled.div`
     display: flex;
@@ -69,7 +68,6 @@ const AccountTopPanel = () => {
                     }}
                 />
             }
-            navigationSticky={<AccountNavigationSticky account={account} />}
             navigation={<AccountNavigation account={account} />}
             ticker={!isTestnet(symbol) ? <Ticker symbol={symbol} tooltipPos="bottom" /> : undefined}
         >

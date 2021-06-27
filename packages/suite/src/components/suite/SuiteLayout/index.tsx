@@ -60,6 +60,10 @@ const AppWrapper = styled.div`
     align-items: center;
     position: relative;
 
+    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+        overflow-x: hidden;
+    }
+
     ${scrollbarStyles}
 `;
 
