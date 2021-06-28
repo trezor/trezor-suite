@@ -19,6 +19,7 @@ export const encodeDataToQueryString = (event: AnalyticsEvent, common: Common) =
         c_commit: process.env.COMMITHASH,
         c_instance_id: instanceId,
         c_session_id: sessionId,
+        c_timestamp: Date.now(),
         // eslint-enable @typescript-eslint/naming-convention
     });
 

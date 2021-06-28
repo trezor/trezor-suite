@@ -6,6 +6,7 @@ import { urlSearchParams } from '../../../../../suite/src/utils/suite/metadata';
 type Requests = ReturnType<typeof urlSearchParams>[];
 const requests: Requests = [];
 const instance = new RegExp(/^[A-Za-z0-9]{10,10}$/);
+const timestamp = new RegExp(/^[0-9]{13,16}$/);
 
 describe('Analytics', () => {
     beforeEach(() => {
@@ -42,6 +43,11 @@ describe('Analytics', () => {
         cy.wait('@data-fetch');
         cy.wrap(requests).its(0).its('c_session_id').as('request0');
         cy.wrap(requests).its(0).should('have.property', 'c_type', 'initial-run-completed');
+        cy.wrap(requests)
+            .its(0)
+            .should('have.property', 'c_timestamp')
+            .should('match', timestamp)
+            .as('timestamp0');
         cy.wrap(requests).its(0).should('have.property', 'analytics', 'false');
         cy.wrap(requests).its(1).should('equal', undefined);
 
@@ -68,6 +74,17 @@ describe('Analytics', () => {
         cy.getTestElement('@analytics/toggle-switch').should('be.checked');
         cy.wait('@data-fetch');
         cy.wrap(requests).its(1).should('have.property', 'c_type', 'analytics/enable');
+        cy.wrap(requests)
+            .its(1)
+            .should('have.property', 'c_timestamp')
+            .should('match', timestamp)
+            .as('timestamp1');
+        // check that timestamp changes between requests
+        cy.get('@timestamp0').then(t0 => {
+            cy.get('@timestamp1').then(t1 => {
+                expect(t1).not.to.equal(t0);
+            });
+        });
 
         // change fiat
         cy.getTestElement('@settings/fiat-select/input').click();

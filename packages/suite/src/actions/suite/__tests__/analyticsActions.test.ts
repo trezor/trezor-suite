@@ -74,6 +74,9 @@ describe('Analytics Actions', () => {
     });
 
     it('analyticsActions.report() - should report if enabled (desktop)', () => {
+        const timestamp = new Date().getTime();
+        jest.spyOn(Date, 'now').mockImplementation(() => timestamp);
+
         const env = process.env.SUITE_TYPE;
         process.env.SUITE_TYPE = 'desktop';
         const state = getInitialState({
@@ -83,13 +86,16 @@ describe('Analytics Actions', () => {
         store.dispatch(analyticsActions.report({ type: 'switch-device/eject' }));
         expect(global.fetch).toHaveBeenNthCalledWith(
             1,
-            `https://data.trezor.io/suite/log/desktop/develop.log?c_v=${analyticsActions.version}&c_type=switch-device%2Feject&c_instance_id=1&c_session_id=very-random`,
+            `https://data.trezor.io/suite/log/desktop/develop.log?c_v=${analyticsActions.version}&c_type=switch-device%2Feject&c_instance_id=1&c_session_id=very-random&c_timestamp=${timestamp}`,
             { method: 'GET' },
         );
         process.env.SUITE_TYPE = env;
     });
 
     it('analyticsActions.report() - should report if enabled (web)', () => {
+        const timestamp = new Date().getTime();
+        jest.spyOn(Date, 'now').mockImplementation(() => timestamp);
+
         const env = process.env.SUITE_TYPE;
         process.env.SUITE_TYPE = 'web';
         const state = getInitialState({
@@ -99,7 +105,7 @@ describe('Analytics Actions', () => {
         store.dispatch(analyticsActions.report({ type: 'switch-device/eject' }));
         expect(global.fetch).toHaveBeenNthCalledWith(
             1,
-            `https://data.trezor.io/suite/log/web/develop.log?c_v=${analyticsActions.version}&c_type=switch-device%2Feject&c_instance_id=1&c_session_id=very-random`,
+            `https://data.trezor.io/suite/log/web/develop.log?c_v=${analyticsActions.version}&c_type=switch-device%2Feject&c_instance_id=1&c_session_id=very-random&c_timestamp=${timestamp}`,
             { method: 'GET' },
         );
         process.env.SUITE_TYPE = env;
