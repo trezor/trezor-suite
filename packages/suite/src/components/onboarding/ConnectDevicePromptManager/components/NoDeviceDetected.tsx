@@ -1,14 +1,16 @@
 import React from 'react';
 import { useSpring, config, animated } from 'react-spring';
 import styled from 'styled-components';
-import { TroubleshootingTips } from '@onboarding-components';
 import { Translation } from '@suite-components/Translation';
+import { TroubleshootingTips } from '@suite-components';
 import {
-    TROUBLESHOOTING_TIP_BRIDGE,
+    TROUBLESHOOTING_TIP_BRIDGE_STATUS,
+    TROUBLESHOOTING_TIP_BRIDGE_INSTALL,
+    TROUBLESHOOTING_TIP_UDEV,
     TROUBLESHOOTING_TIP_CABLE,
     TROUBLESHOOTING_TIP_USB,
     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
-} from '@onboarding-components/TroubleshootingTips/tips';
+} from '@suite-components/TroubleshootingTips/tips';
 
 const Wrapper = styled(animated.div)`
     display: flex;
@@ -30,7 +32,9 @@ const NoDeviceDetected = ({ offerWebUsb }: Props) => {
             <TroubleshootingTips
                 label={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
                 items={[
-                    TROUBLESHOOTING_TIP_BRIDGE,
+                    TROUBLESHOOTING_TIP_BRIDGE_STATUS,
+                    TROUBLESHOOTING_TIP_BRIDGE_INSTALL,
+                    TROUBLESHOOTING_TIP_UDEV,
                     TROUBLESHOOTING_TIP_CABLE,
                     TROUBLESHOOTING_TIP_USB,
                     TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,

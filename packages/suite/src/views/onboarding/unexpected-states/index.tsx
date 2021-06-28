@@ -1,95 +1,63 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { Translation, PinMatrix } from '@suite-components';
-import * as STEP from '@onboarding-constants/steps';
-import steps from '@onboarding-config/steps';
-import { Step } from '@onboarding-types';
-import Reconnect from './components/Reconnect';
-import IsSameDevice from './components/IsSameDevice';
-import DeviceIsUsedHere from './components/DeviceIsUsedHere';
-import { isWebUSB } from '@suite-utils/transport';
+import { Translation, PinMatrix, PrerequisitesGuide } from '@suite-components';
+import { PrerequisiteType } from '@suite-types';
 import { useOnboarding, useSelector } from '@suite-hooks';
-import { ConnectDevicePrompt, OnboardingStepBox } from '@suite/components/onboarding';
+import { OnboardingStepBox } from '@onboarding-components';
+import steps from '@onboarding-config/steps';
+
+import IsSameDevice from './components/IsSameDevice';
 
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
     flex-direction: column;
-    margin-top: 40px;
 `;
 
-const IsInBootloader = () => (
-    <OnboardingStepBox
-        disableConfirmWrapper
-        description={<Translation id="TR_CONNECTED_DEVICE_IS_IN_BOOTLOADER" />}
-    />
-);
+interface Props {
+    children: JSX.Element;
+    prerequisite?: PrerequisiteType;
+    prerequisitesGuidePadded?: boolean;
+}
 
-const UnexpectedState = ({ children }: { children: JSX.Element }) => {
-    const { device, transport } = useSelector(s => s.suite);
+/**
+ * This component handles unexpected device states across various steps in the onboarding.
+ */
+const UnexpectedState = ({ children, prerequisite, prerequisitesGuidePadded }: Props) => {
+    const { device } = useSelector(s => s.suite);
     const { prevDevice, activeStepId, showPinMatrix } = useOnboarding();
     const activeStep = steps.find(s => s.id === activeStepId);
-    const isNotSameDevice = () => {
-        const prevDeviceId = prevDevice && prevDevice.features && prevDevice.id;
+
+    const isNotSameDevice = useMemo(() => {
+        const prevDeviceId = prevDevice?.id;
         // if no device was connected before, assume it is same device
         if (!prevDeviceId) {
             return false;
         }
-        const deviceId = device && device.features && device.id;
+        const deviceId = device?.id;
         if (!deviceId) {
+            // we don't know
             return null;
         }
         return deviceId !== prevDeviceId;
-    };
+    }, [prevDevice, device]);
 
-    if (!activeStep) {
-        return null;
-    }
+    const UnexpectedStateComponent = useMemo(() => {
+        if (!activeStep?.prerequisites) return null;
 
-    const isStepDisallowed = (state: Required<Step>['disallowedDeviceStates'][number]) => {
-        switch (state) {
-            case STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED:
-                return !device;
-            case STEP.DISALLOWED_IS_NOT_SAME_DEVICE:
-                return isNotSameDevice();
-            case STEP.DISALLOWED_DEVICE_IS_IN_BOOTLOADER:
-                return device?.features && device.mode === 'bootloader';
-            case STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE:
-                return device?.type === 'unacquired';
-            case STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE:
-                return device?.features?.recovery_mode;
-            default:
-                return null;
+        // there may be specif onboarding prerequisites
+        if (activeStep?.prerequisites.includes('device-different') && isNotSameDevice) {
+            // in case we can 100% detect that user reconnected different device than he had previously connected
+            return <IsSameDevice />;
         }
-    };
 
-    const disallowedState = activeStep?.disallowedDeviceStates?.find(state =>
-        isStepDisallowed(state),
-    );
-
-    const getUnexpectedStateComponent = () => {
-        switch (disallowedState) {
-            case STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED:
-                return <Reconnect showWebUsb={isWebUSB(transport)} />;
-            case STEP.DISALLOWED_IS_NOT_SAME_DEVICE:
-                return <IsSameDevice />;
-            case STEP.DISALLOWED_DEVICE_IS_IN_BOOTLOADER:
-                return <IsInBootloader />;
-            case STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE:
-                return <DeviceIsUsedHere />;
-            case STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE:
-                // I don't know how this case could be triggered (and right now I don't believe it can be), thus design is ugly.
-                // To whoever find this in the future and will need to implement proper design, I am sorry.
-                return (
-                    <OnboardingStepBox
-                        disableConfirmWrapper
-                        heading={<Translation id="TR_DEVICE_IN_RECOVERY_MODE" />}
-                    />
-                );
-            default:
-                return null;
+        // otherwise handle common prerequisite which are determined and passed as prop from Preloader component
+        if (prerequisite && activeStep?.prerequisites?.includes(prerequisite)) {
+            return (
+                <PrerequisitesGuide prerequisite={prerequisite} padded={prerequisitesGuidePadded} />
+            );
         }
-    };
+    }, [activeStep, prerequisite, isNotSameDevice, prerequisitesGuidePadded]);
 
     const getPinComponent = () => {
         // After the PIN is set it may happen that it takes too long for an user to finish the onboarding process.
@@ -102,8 +70,11 @@ const UnexpectedState = ({ children }: { children: JSX.Element }) => {
         }
     };
 
+    if (!activeStep) {
+        return null;
+    }
+
     const pinComponent = getPinComponent();
-    const unexpectedState = getUnexpectedStateComponent();
     if (pinComponent) {
         return (
             <OnboardingStepBox
@@ -114,18 +85,10 @@ const UnexpectedState = ({ children }: { children: JSX.Element }) => {
             </OnboardingStepBox>
         );
     }
-    if (unexpectedState) {
-        return (
-            <Wrapper>
-                <ConnectDevicePrompt connected={!!device?.connected} showWarning>
-                    {disallowedState === 'device-is-not-connected' ? (
-                        <Translation id="TR_RECONNECT_HEADER" />
-                    ) : undefined}
-                </ConnectDevicePrompt>
-                {unexpectedState}
-            </Wrapper>
-        );
+    if (UnexpectedStateComponent) {
+        return <Wrapper>{UnexpectedStateComponent}</Wrapper>;
     }
+
     return children;
 };
 

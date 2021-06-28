@@ -57,7 +57,7 @@ const FirmwareInitial = ({ cachedDevice, setCachedDevice, standaloneFwUpdate }: 
     if (!device?.connected || !device?.features) {
         // Most users won't see this as they should come here with a connected device.
         // This is just for people who want to shoot themselves in the foot and disconnect the device before proceeding with fw update flow
-        // Be aware that disconnection after fw installation () is completed is fineand won't be caught by this, because device variable will point to cached device
+        // Be aware that disconnection after fw installation () is completed is fine and won't be caught by this, because device variable will point to cached device
         return <ConnectDevicePromptManager device={device} />;
     }
 

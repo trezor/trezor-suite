@@ -9,7 +9,6 @@ export const WIKI_URL = 'https://wiki.trezor.io/';
 export const BLOG_URL = 'https://blog.trezor.io/';
 export const SHOP_URL = 'https://shop.trezor.io/';
 export const SUITE_URL = 'https://suite.trezor.io';
-export const SUITE_BRIDGE_URL = 'https://suite.trezor.io/web/bridge/';
 export const TREZOR_DATA_URL = 'https://wallet.trezor.io/data/';
 export const PIN_MANUAL_URL = 'https://wiki.trezor.io/User_manual:Entering_PIN';
 export const DRY_RUN_URL = 'https://wiki.trezor.io/User_manual:Dry-run_recovery';

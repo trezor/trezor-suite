@@ -68,7 +68,7 @@ const ConnectDevicePrompt = ({ children, connected, showWarning }: Props) => {
     });
 
     return (
-        <Wrapper style={fadeStyles} data-test="@onboarding/connect-device">
+        <Wrapper style={fadeStyles} data-test="@connect-device-prompt">
             <ImageWrapper>
                 <DeviceAnimation
                     type="CONNECT"

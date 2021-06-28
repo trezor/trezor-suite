@@ -1,3 +1,5 @@
+// TODO: remove whole file, replaced by @suite-components/PrerequisitesGuide/components/DeviceAcquire
+
 import React from 'react';
 import { useDevice, useActions } from '@suite-hooks';
 import * as suiteActions from '@suite-actions/suiteActions';

@@ -3,7 +3,7 @@ import { TrezorDevice, AcquiredDevice } from '@suite-types';
 
 /**
  * Used in Welcome step in Onboarding
- * Status 'ok' or 'initialized' is what we expect, 'in-bootloader', 'seedless' and 'unreadable' are no go
+ * Status 'ok' or 'initialized' is what we expect, 'bootloader', 'seedless' and 'unreadable' are no go
  *
  * @param {(TrezorDevice | undefined)} device
  * @returns
@@ -14,14 +14,14 @@ export const getConnectedDeviceStatus = (device: TrezorDevice | undefined) => {
     const isInBlWithFwPresent =
         device.mode === 'bootloader' && device.features?.firmware_present === true;
 
-    if (isInBlWithFwPresent) return 'in-bootloader';
+    if (isInBlWithFwPresent) return 'bootloader';
     if (device.features?.initialized) return 'initialized';
     if (device.features?.no_backup) return 'seedless';
     if (device.type === 'unreadable') return 'unreadable';
     return 'ok';
 };
 
-export const getStatus = (device: TrezorDevice): string => {
+export const getStatus = (device: TrezorDevice) => {
     if (device.type === 'acquired') {
         if (!device.connected) {
             return 'disconnected';
@@ -62,7 +62,7 @@ export const getStatus = (device: TrezorDevice): string => {
     return 'unknown';
 };
 
-export const deviceNeedsAttention = (deviceStatus: string): boolean => {
+export const deviceNeedsAttention = (deviceStatus: ReturnType<typeof getStatus>) => {
     switch (deviceStatus) {
         // case 'firmware-recommended':
         // case 'unavailable': // this case is already solved in Account view @wallet-components/AccountMode/DeviceUnavailable
@@ -80,7 +80,7 @@ export const deviceNeedsAttention = (deviceStatus: string): boolean => {
     }
 };
 
-export const getDeviceNeedsAttentionMessage = (deviceStatus: string) => {
+export const getDeviceNeedsAttentionMessage = (deviceStatus: ReturnType<typeof getStatus>) => {
     switch (deviceStatus) {
         // case 'firmware-recommended':
         case 'bootloader':

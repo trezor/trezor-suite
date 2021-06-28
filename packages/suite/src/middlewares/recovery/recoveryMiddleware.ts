@@ -17,21 +17,26 @@ const recovery = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
     // pass action
     next(action);
 
-    const state = api.getState();
-    const isLocked = state.suite.locks.includes(SUITE.LOCK_TYPE.DEVICE);
+    const { recovery } = api.getState();
 
-    if (action.type === UI.REQUEST_WORD && state.recovery.status === 'waiting-for-confirmation') {
+    if (action.type === UI.REQUEST_WORD && recovery.status === 'waiting-for-confirmation') {
         // Since the device asked for a first word, we can safely assume we've received confirmation from the user
         api.dispatch(recoveryActions.setStatus('in-progress'));
     }
 
-    if (
-        !isLocked &&
-        action.type === SUITE.UPDATE_SELECTED_DEVICE &&
-        action.payload &&
-        action.payload.features?.recovery_mode
-    ) {
-        api.dispatch(recoveryActions.rerun());
+    if (action.type === SUITE.UPDATE_SELECTED_DEVICE) {
+        if (
+            // isLocked is not reliable in case we connect unacquired device. isLocked is turned to false AFTER
+            // UPDATE_SELECTED_DEVICE is emitted
+            // !isLocked &&
+            action.type === SUITE.UPDATE_SELECTED_DEVICE &&
+            // device is reported in recovery mode
+            action.payload?.features?.recovery_mode &&
+            // and suite is not in recovery mode yet
+            recovery.status !== 'in-progress'
+        ) {
+            api.dispatch(recoveryActions.rerun());
+        }
     }
 
     return action;

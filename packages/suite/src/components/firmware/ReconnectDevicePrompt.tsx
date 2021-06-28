@@ -4,7 +4,7 @@ import * as semver from 'semver';
 
 import { H1, Button, variables } from '@trezor/components';
 import { Translation, WebusbButton } from '@suite-components';
-import { DeviceAnimation } from '@onboarding-components';
+import DeviceAnimation from '@onboarding-components/DeviceAnimation';
 import { useDevice, useFirmware } from '@suite-hooks';
 import { isDesktop, isMacOs } from '@suite-utils/env';
 import { DESKTOP_WRAPPER_BORDER_WIDTH } from '@suite-constants/layout';

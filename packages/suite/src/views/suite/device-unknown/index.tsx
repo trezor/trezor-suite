@@ -1,3 +1,5 @@
+// TODO: remove whole file, replaced by @suite-components/PrerequisitesGuide/components/DeviceUnknown
+
 import React from 'react';
 import { DeviceInvalidModeLayout, Translation } from '@suite-components';
 

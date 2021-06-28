@@ -1,3 +1,5 @@
+// TODO: remove whole file, replaced by @suite-components/PrerequisitesGuide/components/DeviceInitialize
+
 import React from 'react';
 import * as routerActions from '@suite-actions/routerActions';
 import { Button } from '@trezor/components';
