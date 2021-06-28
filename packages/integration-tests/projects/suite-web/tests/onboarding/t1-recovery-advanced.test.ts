@@ -38,7 +38,7 @@ describe('Onboarding - recover wallet T1', () => {
         );
         cy.wait(501);
         cy.task('stopEmu');
-        cy.getTestElement('@onboarding/connect-device', { timeout: 20000 });
+        cy.getTestElement('@connect-device-prompt', { timeout: 20000 });
         cy.task('startEmu', { version: '1.9.0' });
 
         cy.getTestElement('@onboarding/recovery/retry-button').click();

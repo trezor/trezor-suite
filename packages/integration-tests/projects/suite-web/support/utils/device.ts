@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-// @ts-ignore
+
 import { DEVICE, Features, Device } from 'trezor-connect';
 import {
     getConnectDevice,
@@ -13,18 +13,17 @@ import {
  * @param features
  */
 
-export const connectDevice = (device?: Partial<Device>, features?: Partial<Features>) => {
-    return cy
+export const connectDevice = (device?: Partial<Device>, features?: Partial<Features>) =>
+    cy
         .window()
         .its('store')
         .invoke('dispatch', {
             type: DEVICE.CONNECT,
             payload: getConnectDevice(device, getDeviceFeatures(features)),
         });
-};
 
-export const connectBootloaderDevice = (path: string) => {
-    return cy
+export const connectBootloaderDevice = (path: string) =>
+    cy
         .window()
         .its('store')
         .invoke('dispatch', {
@@ -74,7 +73,6 @@ export const connectBootloaderDevice = (path: string) => {
                 useEmptyPassphrase: true,
             },
         });
-};
 /**
  * Helper method to dispatch DEVICE.CHANGED action.
  *
