@@ -5,7 +5,7 @@ import Text from '@onboarding-components/Text';
 import { Image, ImageProps, Translation } from '@suite-components';
 import { H1, variables, Button } from '@trezor/components';
 import { useTheme } from '@suite-hooks';
-import { useMeasure } from 'react-use';
+import useMeasure from 'react-use/lib/useMeasure';
 
 const BoxWrapper = styled(
     ({ variant, withImage, disablePadding, expanded, expandable, nested, ...rest }) => (
