@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { isDesktop } from '@suite-utils/env';
 import { useSelector } from '@suite-hooks';
+import { useMessageSystem } from '@suite-hooks/useMessageSystem';
 import OnlineStatus from './OnlineStatus';
 import UpdateBridge from './UpdateBridge';
 import UpdateFirmware from './UpdateFirmware';
@@ -11,18 +12,20 @@ import FailedBackup from './FailedBackup';
 import MessageSystemBanner from './MessageSystemBanner';
 import SafetyChecksBanner from './SafetyChecks';
 
-import type { Message } from '@suite-types/messageSystem';
-
 const Wrapper = styled.div<{ onTop?: boolean }>`
     z-index: ${props => (props.onTop ? '10001' : '3')};
     background: ${props => props.theme.BG_WHITE};
 `;
 
 const Banners = () => {
-    const transport = useSelector(state => state.suite.transport);
-    const online = useSelector(state => state.suite.online);
-    const device = useSelector(state => state.suite.device);
-    const { validMessages, dismissedMessages, config } = useSelector(state => state.messageSystem);
+    const { transport, device, online } = useSelector(state => ({
+        transport: state.suite.transport,
+        device: state.suite.device,
+        online: state.suite.online,
+    }));
+
+    const { banner: messageSystemBanner } = useMessageSystem();
+
     // The dismissal doesn't need to outlive the session. Use local state.
     const [safetyChecksDismissed, setSafetyChecksDismissed] = useState(false);
     useEffect(() => {
@@ -39,22 +42,6 @@ const Banners = () => {
         }
         return transport?.outdated;
     };
-
-    const messageSystemBanner = useMemo((): Message | null => {
-        const nonDismissedValidMessages = validMessages.banner.filter(
-            id => !dismissedMessages[id]?.banner,
-        );
-
-        const messages = config?.actions
-            .filter(({ message }) => nonDismissedValidMessages.includes(message.id))
-            .map(action => action.message);
-
-        if (!messages?.length) return null;
-
-        return messages.reduce((prev, current) =>
-            prev.priority > current.priority ? prev : current,
-        );
-    }, [validMessages, dismissedMessages, config]);
 
     let banner;
     let priority = 0;
