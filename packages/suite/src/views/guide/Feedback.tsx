@@ -2,8 +2,8 @@ import React, { useCallback, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
 import { CollapsibleBox, Translation } from '@suite-components';
-import { useActions, useAnalytics, useDevice } from '@suite-hooks';
 import { Textarea, Select, variables, Button } from '@trezor/components';
+import { useActions, useAnalytics, useDevice, useSelector } from '@suite-hooks';
 import * as guideActions from '@suite-actions/guideActions';
 import { ViewWrapper, Header, Content } from '@guide-components';
 import { Rating, Category, FeedbackType, UserData } from '@suite-types/guide';
@@ -130,6 +130,15 @@ const ratingOptions: RatingItem[] = [
     },
 ];
 
+type FeedbackCategory = {
+    [key in Category]: React.ReactNode;
+};
+
+type FeedbackCategoryOption = {
+    label: React.ReactNode;
+    value: Category;
+};
+
 const Feedback = ({ type }: Props) => {
     const analytics = useAnalytics();
 
@@ -138,6 +147,8 @@ const Feedback = ({ type }: Props) => {
         setView: guideActions.setView,
         sendFeedback: guideActions.sendFeedback,
     });
+
+    const router = useSelector(state => state.router);
     const [description, setDescription] = React.useState('');
     const [rating, setRating] = React.useState<RatingItem>();
     const [category, setCategory] = React.useState<Category>('dashboard');
@@ -202,6 +213,45 @@ const Feedback = ({ type }: Props) => {
         rating?.id,
     ]);
 
+    const feedbackCategories: FeedbackCategory = {
+        dashboard: <Translation id="TR_FEEDBACK_CATEGORY_DASHBOARD" />,
+        account: <Translation id="TR_FEEDBACK_CATEGORY_ACCOUNT" />,
+        settings: <Translation id="TR_FEEDBACK_CATEGORY_SETTINGS" />,
+        send: <Translation id="TR_FEEDBACK_CATEGORY_SEND" />,
+        receive: <Translation id="TR_FEEDBACK_CATEGORY_RECEIVE" />,
+        trade: <Translation id="TR_FEEDBACK_CATEGORY_TRADE" />,
+        other: <Translation id="TR_FEEDBACK_CATEGORY_OTHER" />,
+    };
+
+    // Router apps does not match 1:1 to Feedback Categories
+    const getDefaultCategory = (): FeedbackCategoryOption | undefined => {
+        const { app, route } = router;
+        const routePattern = route?.pattern || '';
+
+        if (routePattern.startsWith('/accounts/coinmarket')) {
+            return { value: 'trade', label: feedbackCategories.trade };
+        }
+        if (routePattern.startsWith('/accounts/send')) {
+            return { value: 'send', label: feedbackCategories.send };
+        }
+        if (routePattern.startsWith('/accounts/receive')) {
+            return { value: 'receive', label: feedbackCategories.receive };
+        }
+
+        switch (app) {
+            case 'dashboard':
+                return { value: 'dashboard', label: feedbackCategories.dashboard };
+            case 'wallet':
+                return { value: 'account', label: feedbackCategories.account };
+            case 'settings':
+                return { value: 'settings', label: feedbackCategories.settings };
+            default:
+                return undefined;
+        }
+    };
+
+    const defaultCategory = getDefaultCategory();
+
     return (
         <ViewWrapper>
             <Header
@@ -223,20 +273,20 @@ const Feedback = ({ type }: Props) => {
                         <SelectWrapper>
                             <Select
                                 isSearchable={false}
-                                defaultValue={{ label: 'Dashboard', value: 'dashboard' }}
-                                options={[
-                                    { label: 'Dashboard', value: 'dashboard' },
-                                    { label: 'Accounts', value: 'account' },
-                                    { label: 'Settings', value: 'settings' },
-                                    { label: 'Send', value: 'send' },
-                                    { label: 'Receive', value: 'receive' },
-                                    { label: 'Trade', value: 'trade' },
-                                    { label: 'Other', value: 'other' },
-                                ]}
+                                defaultValue={defaultCategory}
+                                options={Object.entries(feedbackCategories).map(
+                                    ([value, label]) => ({
+                                        value,
+                                        label,
+                                    }),
+                                )}
                                 borderWidth={1}
                                 borderRadius={8}
-                                onChange={(option: { value: Category; label: string }) =>
+                                onChange={(option: FeedbackCategoryOption) =>
                                     setCategory(option.value)
+                                }
+                                placeholder={
+                                    <Translation id="TR_FEEDBACK_CATEGORY_SELECT_PLACEHOLDER" />
                                 }
                                 noTopLabel
                             />

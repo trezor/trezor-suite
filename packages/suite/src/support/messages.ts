@@ -5402,6 +5402,38 @@ const definedMessages = defineMessages({
         id: 'TR_FEEDBACK_ANALYTICS_ITEM_APP',
         defaultMessage: 'Suite version',
     },
+    TR_FEEDBACK_CATEGORY_SELECT_PLACEHOLDER: {
+        id: 'TR_FEEDBACK_CATEGORY_SELECT_PLACEHOLDER',
+        defaultMessage: 'Select category...',
+    },
+    TR_FEEDBACK_CATEGORY_DASHBOARD: {
+        id: 'TR_FEEDBACK_CATEGORY_DASHBOARD',
+        defaultMessage: 'Dashboard',
+    },
+    TR_FEEDBACK_CATEGORY_ACCOUNT: {
+        id: 'TR_FEEDBACK_CATEGORY_ACCOUNT',
+        defaultMessage: 'Account',
+    },
+    TR_FEEDBACK_CATEGORY_SETTINGS: {
+        id: 'TR_FEEDBACK_CATEGORY_SETTINGS',
+        defaultMessage: 'Settings',
+    },
+    TR_FEEDBACK_CATEGORY_SEND: {
+        id: 'TR_FEEDBACK_CATEGORY_SEND',
+        defaultMessage: 'Send',
+    },
+    TR_FEEDBACK_CATEGORY_RECEIVE: {
+        id: 'TR_FEEDBACK_CATEGORY_RECEIVE',
+        defaultMessage: 'Receive',
+    },
+    TR_FEEDBACK_CATEGORY_TRADE: {
+        id: 'TR_FEEDBACK_CATEGORY_TRADE',
+        defaultMessage: 'Trade',
+    },
+    TR_FEEDBACK_CATEGORY_OTHER: {
+        id: 'TR_FEEDBACK_CATEGORY_OTHER',
+        defaultMessage: 'Other',
+    },
     FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC: {
         id: 'FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC',
         defaultMessage: 'Yes, I do!',
