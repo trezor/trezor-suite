@@ -10,7 +10,7 @@ import MenuSecondary from '@suite-components/MenuSecondary';
 import { MAX_WIDTH, DESKTOP_TITLEBAR_HEIGHT } from '@suite-constants/layout';
 import { DiscoveryProgress } from '@wallet-components';
 import NavigationBar from '../NavigationBar';
-import { useLayoutSize, useSelector, useActions } from '@suite-hooks';
+import { useLayoutSize, useSelector, useActions, useAnalytics } from '@suite-hooks';
 import { isDesktop } from '@suite-utils/env';
 import * as guideActions from '@suite-actions/guideActions';
 
@@ -162,6 +162,8 @@ const BodyMobile = ({ url, menu, appMenu, children }: MobileBodyProps) => (
 
 type SuiteLayoutProps = Omit<Props, 'menu' | 'appMenu'>;
 const SuiteLayout = (props: SuiteLayoutProps) => {
+    const analytics = useAnalytics();
+
     // TODO: if (props.layoutSize === 'UNAVAILABLE') return <SmallLayout />;
     const { isMobileLayout, layoutSize } = useLayoutSize();
     const { guideOpen } = useSelector(state => ({
@@ -214,7 +216,16 @@ const SuiteLayout = (props: SuiteLayoutProps) => {
                     </BodyMobile>
                 )}
             </LayoutContext.Provider>
-            {!isMobileLayout && <GuideButton onClick={openGuide} />}
+            {!isMobileLayout && (
+                <GuideButton
+                    onClick={() => {
+                        openGuide();
+                        analytics.report({
+                            type: 'menu/guide',
+                        });
+                    }}
+                />
+            )}
         </PageWrapper>
     );
 };

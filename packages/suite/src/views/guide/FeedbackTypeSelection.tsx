@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite-components';
 import * as guideActions from '@suite-actions/guideActions';
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions, useAnalytics, useSelector } from '@suite-hooks';
 import { Icon, variables } from '@trezor/components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 import { getFwVersion } from '@suite-utils/device';
@@ -70,6 +70,7 @@ const LabelSubheadline = styled.div`
 `;
 
 const FeedbackTypeSelection = () => {
+    const analytics = useAnalytics();
     const { setView } = useActions({
         setView: guideActions.setView,
     });
@@ -94,7 +95,15 @@ const FeedbackTypeSelection = () => {
                 label={<Translation id="TR_GUIDE_VIEW_HEADLINE_HELP_US_IMPROVE" />}
             />
             <Content>
-                <FeedbackTypeButton onClick={() => setView('FEEDBACK_BUG')}>
+                <FeedbackTypeButton
+                    onClick={() => {
+                        setView('FEEDBACK_BUG');
+                        analytics.report({
+                            type: 'guide/feedback/navigation',
+                            payload: { type: 'bug' },
+                        });
+                    }}
+                >
                     <FeedbackButtonImage
                         src={resolveStaticPath('images/suite/3d/recovery.png')}
                         width="48"
@@ -110,7 +119,15 @@ const FeedbackTypeSelection = () => {
                         </LabelSubheadline>
                     </Label>
                 </FeedbackTypeButton>
-                <FeedbackTypeButton onClick={() => setView('FEEDBACK_SUGGESTION')}>
+                <FeedbackTypeButton
+                    onClick={() => {
+                        setView('FEEDBACK_SUGGESTION');
+                        analytics.report({
+                            type: 'guide/feedback/navigation',
+                            payload: { type: 'suggestion' },
+                        });
+                    }}
+                >
                     <FeedbackButtonImage
                         src={resolveStaticPath('images/suite/3d/understand.png')}
                         width="48"

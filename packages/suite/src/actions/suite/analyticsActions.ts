@@ -35,7 +35,7 @@ export type AnalyticsAction =
 
 // Don't forget to update docs with changelog!
 // <breaking-change>.<analytics-extended>
-export const version = '1.10';
+export const version = '1.11';
 
 export type AnalyticsEvent =
     | {
@@ -210,7 +210,7 @@ export type AnalyticsEvent =
       }
     | {
           type: 'menu/settings/dropdown';
-          payload: { option: 'all' | 'general' | 'device' | 'coins' };
+          payload: { option: 'all' | 'general' | 'device' | 'coins' | 'guide' };
       }
     | {
           type: 'menu/toggle-discreet';
@@ -231,6 +231,27 @@ export type AnalyticsEvent =
           type: 'menu/toggle-onion-links';
           payload: {
               value: boolean;
+          };
+      }
+    | {
+          type: 'menu/guide';
+      }
+    | {
+          type: 'guide/header/navigation';
+          payload: {
+              type: 'back' | 'close';
+          };
+      }
+    | {
+          type: 'guide/feedback/navigation';
+          payload: {
+              type: 'overview' | 'bug' | 'suggestion';
+          };
+      }
+    | {
+          type: 'guide/feedback/submit';
+          payload: {
+              type: 'bug' | 'suggestion';
           };
       }
     | {

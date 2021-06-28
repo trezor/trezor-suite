@@ -19,7 +19,7 @@ interface Props {
 
 const SettingsDropdown = (props: Props) => {
     const analytics = useAnalytics();
-    const reportDropdownEvent = (option: 'all' | 'general' | 'device' | 'coins') => {
+    const reportDropdownEvent = (option: 'all' | 'general' | 'device' | 'coins' | 'guide') => {
         analytics.report({
             type: 'menu/settings/dropdown',
             payload: {
@@ -110,6 +110,7 @@ const SettingsDropdown = (props: Props) => {
                                 iconRight: 'ARROW_RIGHT',
                                 callback: () => {
                                     openGuide();
+                                    reportDropdownEvent('guide');
                                 },
                                 isRounded: true,
                                 separatorBefore: true,
