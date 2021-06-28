@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Props } from '@wallet-types/coinmarketSellOffers';
 import { CoinmarketSellOffersContext, useOffers } from '@wallet-hooks/useCoinmarketSellOffers';
 import Offers from './Offers';
+import withDeviceConnected from '@wallet-views/coinmarket/hoc/withDeviceConnected';
 
 const Wrapper = styled.div`
     display: flex;
@@ -12,7 +13,7 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const OffersIndexLoaded = (props: Props) => {
+const OffersIndexLoaded = withDeviceConnected((props: Props) => {
     const coinmarketOffersValues = useOffers(props);
 
     return (
@@ -22,7 +23,7 @@ const OffersIndexLoaded = (props: Props) => {
             </Wrapper>
         </CoinmarketSellOffersContext.Provider>
     );
-};
+});
 
 const OffersIndex = () => {
     const props = useSelector(state => ({

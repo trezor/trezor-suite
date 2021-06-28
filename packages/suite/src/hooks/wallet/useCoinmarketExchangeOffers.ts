@@ -41,9 +41,11 @@ export const useOffers = (props: Props) => {
         exchangeInfo,
         device,
         addressVerified,
+        setIsDeviceConnectVisible,
     } = props;
 
     const { isLocked } = useDevice();
+    const isDeviceConnected = !!device?.connected;
     const { account } = selectedAccount;
     const [callInProgress, setCallInProgress] = useState<boolean>(isLocked() || false);
     const [selectedQuote, setSelectedQuote] = useState<ExchangeTrade>();
@@ -119,6 +121,10 @@ export const useOffers = (props: Props) => {
     });
 
     const selectQuote = async (quote: ExchangeTrade) => {
+        if (!isDeviceConnected) {
+            setIsDeviceConnectVisible(true);
+            return false;
+        }
         const provider =
             exchangeInfo?.providerInfos && quote.exchange
                 ? exchangeInfo?.providerInfos[quote.exchange]

@@ -31,6 +31,10 @@ const BridgeWrapper = styled.div`
     justify-content: center;
 `;
 
+const EmptyFullWidthDiv = styled.div`
+    width: 100%;
+`;
+
 const StyledLink = styled(Link)``;
 
 const mapStateToProps = (state: AppState) => ({
@@ -61,6 +65,7 @@ const Index = (props: Props) => {
             centerContent
             cancelable={props.cancelable}
             onCancel={props.onCancel}
+            heading={<EmptyFullWidthDiv />}
         >
             <HelpBuyIcons showBuy showHelp />
             <Title>

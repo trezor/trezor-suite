@@ -23,10 +23,12 @@ export const useOffers = (props: Props) => {
         device,
         addressVerified,
         isFromRedirect,
+        setIsDeviceConnectVisible,
     } = props;
 
     const { account } = selectedAccount;
     const { isLocked } = useDevice();
+    const isDeviceConnected = !!device?.connected;
     const [callInProgress, setCallInProgress] = useState<boolean>(isLocked || false);
     const [selectedQuote, setSelectedQuote] = useState<BuyTrade>();
     const [innerQuotes, setInnerQuotes] = useState<BuyTrade[]>(quotes);
@@ -97,6 +99,10 @@ export const useOffers = (props: Props) => {
     });
 
     const selectQuote = async (quote: BuyTrade) => {
+        if (!isDeviceConnected) {
+            setIsDeviceConnectVisible(true);
+            return false;
+        }
         const provider = providersInfo && quote.exchange ? providersInfo[quote.exchange] : null;
         if (quotesRequest) {
             const result = await openCoinmarketBuyConfirmModal(provider?.companyName);

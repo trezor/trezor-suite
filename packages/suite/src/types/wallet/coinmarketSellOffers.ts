@@ -3,6 +3,7 @@ import { Account } from '@wallet-types';
 import { BankAccount, SellFiatTrade } from 'invity-api';
 import { Timer } from '@suite-hooks/useTimeInterval';
 import { CoinmarketSellAction, SellInfo } from '@wallet-actions/coinmarketSellActions';
+import { WithDeviceConnectedProps } from '@wallet-views/coinmarket/hoc/withDeviceConnected';
 
 export interface ComponentProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
@@ -13,7 +14,7 @@ export interface ComponentProps {
     sellInfo?: SellInfo;
 }
 
-export interface Props extends ComponentProps {
+export interface Props extends ComponentProps, WithDeviceConnectedProps {
     selectedAccount: Extract<AppState['wallet']['selectedAccount'], { status: 'loaded' }>;
 }
 

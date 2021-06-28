@@ -2,7 +2,7 @@ import { createContext, useContext, useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions, useDevice, useSelector } from '@suite-hooks';
 import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
 import regional from '@wallet-constants/coinmarket/regional';
 import { BuyTradeQuoteRequest } from 'invity-api';
@@ -38,7 +38,9 @@ export const useCoinmarketBuyForm = (props: Props): BuyFormContextValues => {
 
     loadInvityData();
 
-    const { selectedAccount, cachedAccountInfo, quotesRequest } = props;
+    const { device } = useDevice();
+    const isDeviceConnected = !!device?.connected;
+    const { selectedAccount, cachedAccountInfo, quotesRequest, setIsDeviceConnectVisible } = props;
     const { buyInfo } = useSelector(state => ({ buyInfo: state.wallet.coinmarket.buy.buyInfo }));
     const { account, network } = selectedAccount;
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
@@ -47,6 +49,10 @@ export const useCoinmarketBuyForm = (props: Props): BuyFormContextValues => {
     const { register } = methods;
 
     const onSubmit = async () => {
+        if (!isDeviceConnected) {
+            setIsDeviceConnectVisible(true);
+            return false;
+        }
         const formValues = methods.getValues();
         const fiatStringAmount = formValues.fiatInput;
         const cryptoStringAmount = formValues.cryptoInput;

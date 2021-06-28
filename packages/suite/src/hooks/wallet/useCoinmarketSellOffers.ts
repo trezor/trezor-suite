@@ -14,10 +14,18 @@ import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign '
 export const useOffers = (props: Props) => {
     const timer = useTimer();
     const REFETCH_INTERVAL_IN_SECONDS = 30;
-    const { selectedAccount, quotesRequest, alternativeQuotes, quotes, device } = props;
+    const {
+        selectedAccount,
+        quotesRequest,
+        alternativeQuotes,
+        quotes,
+        device,
+        setIsDeviceConnectVisible,
+    } = props;
 
     const { account } = selectedAccount;
     const { isLocked } = useDevice();
+    const isDeviceConnected = !!device?.connected;
     const [callInProgress, setCallInProgress] = useState<boolean>(isLocked || false);
     const [selectedQuote, setSelectedQuote] = useState<SellFiatTrade>();
     const [innerQuotes, setInnerQuotes] = useState<SellFiatTrade[]>(quotes);
@@ -132,6 +140,10 @@ export const useOffers = (props: Props) => {
         !!quote.quoteId && !(quote.bankAccounts && quote.bankAccounts.some(b => b.verified));
 
     const selectQuote = async (quote: SellFiatTrade) => {
+        if (!isDeviceConnected) {
+            setIsDeviceConnectVisible(true);
+            return false;
+        }
         const provider =
             sellInfo?.providerInfos && quote.exchange
                 ? sellInfo.providerInfos[quote.exchange]
