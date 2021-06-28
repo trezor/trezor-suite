@@ -89,7 +89,9 @@ const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
 const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     const { advancedRecovery, wordsCount } = getState().recovery;
     const { device } = getState().suite;
-    if (!device || !device.features) return;
+    if (!device?.features) {
+        return;
+    }
     dispatch(setError(''));
 
     if (device.features.major_version === 1) {
@@ -136,9 +138,11 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
 // In such case, we need to call again the call that brought device into recovery mode (either proper recovery
 // or seed check). This way, communication is renewed and host starts receiving messages from device again.
 const rerun = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { device } = getState().suite;
-
-    if (!device || !device.features) return;
+    const { suite, router } = getState();
+    const { device } = suite;
+    if (!device?.features) {
+        return;
+    }
 
     dispatch(setStatus('in-progress'));
 
@@ -163,6 +167,9 @@ const rerun = () => async (dispatch: Dispatch, getState: GetState) => {
     }
 
     if (!features.initialized) {
+        if (router.app !== 'onboarding') {
+            dispatch(routerActions.goto('onboarding-index'));
+        }
         dispatch(onboardingActions.goToStep('recovery'));
         dispatch(onboardingActions.addPath('recovery'));
         dispatch(recoverDevice());

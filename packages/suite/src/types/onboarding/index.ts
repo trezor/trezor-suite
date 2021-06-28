@@ -1,19 +1,14 @@
 import * as STEP from '@onboarding-constants/steps';
-
-export type ConnectedDeviceStatus =
-    | 'unreadable'
-    | 'in-bootloader'
-    | 'seedless'
-    | 'initialized'
-    | 'ok';
+import { PrerequisiteType } from '@suite/utils/suite/prerequisites';
 
 export interface Step {
     id: AnyStepId;
     stepGroup: number | undefined;
-    disallowedDeviceStates?: AnyStepDisallowedState[];
+    prerequisites?: (PrerequisiteType | 'device-different')[];
     path?: AnyPath[];
 }
 
+// todo: remove, improve typing
 export type AnyStepId =
     | typeof STEP.ID_WELCOME_STEP
     | typeof STEP.ID_CREATE_OR_RECOVER
@@ -25,13 +20,5 @@ export type AnyStepId =
     | typeof STEP.ID_RESET_DEVICE_STEP
     | typeof STEP.ID_RECOVERY_STEP
     | typeof STEP.ID_COINS_STEP;
-
-export type AnyStepDisallowedState =
-    | typeof STEP.DISALLOWED_DEVICE_IS_IN_BOOTLOADER
-    | typeof STEP.DISALLOWED_DEVICE_IS_NOT_CONNECTED
-    | typeof STEP.DISALLOWED_DEVICE_IS_NOT_USED_HERE
-    // | typeof STEP.DISALLOWED_DEVICE_IS_NOT_NEW_DEVICE
-    | typeof STEP.DISALLOWED_DEVICE_IS_IN_RECOVERY_MODE
-    | typeof STEP.DISALLOWED_IS_NOT_SAME_DEVICE;
 
 export type AnyPath = typeof STEP.PATH_CREATE | typeof STEP.PATH_RECOVERY;

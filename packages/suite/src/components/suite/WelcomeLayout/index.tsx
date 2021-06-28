@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { H1, TrezorLogo, Button, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
+import { useMessageSystem } from '@suite-hooks/useMessageSystem';
+import MessageSystemBanner from '@suite-components/Banners/MessageSystemBanner';
 import TrezorLink from '@suite-components/TrezorLink';
 import { isWeb } from '@suite-utils/env';
 import { TREZOR_URL, SUITE_URL } from '@suite-constants/urls';
@@ -60,7 +62,6 @@ const Content = styled.div`
     background-attachment: local;
     background-size: 570px 570px;
     color: ${props => props.theme.TYPE_DARK_GREY};
-    /* justify-content: center; */
     align-items: center;
     overflow-y: auto;
 `;
@@ -69,37 +70,53 @@ const StyledTrezorLink = styled(TrezorLink)`
     margin-right: 14px;
 `;
 
+const BannerWrapper = styled.div`
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+`;
+
 interface Props {
     children: React.ReactNode;
 }
 
-const WelcomeLayout = ({ children }: Props) => (
-    <Wrapper>
-        <Welcome>
-            <Expander>
-                <TrezorLogo type="suite" width="128px" />
-                <WelcomeTitle>
-                    <Translation id="TR_ONBOARDING_WELCOME_HEADING" />
-                </WelcomeTitle>
-            </Expander>
-            <Bottom>
-                {isWeb() && (
-                    <StyledTrezorLink size="small" variant="nostyle" href={SUITE_URL}>
+// WelcomeLayout is a top-level wrapper similar to @suite-components/SuiteLayout
+// used in Preloader and Onboarding
+const WelcomeLayout = ({ children }: Props) => {
+    const { banner } = useMessageSystem();
+    return (
+        <Wrapper>
+            {banner && (
+                <BannerWrapper>
+                    <MessageSystemBanner message={banner} />
+                </BannerWrapper>
+            )}
+            <Welcome>
+                <Expander>
+                    <TrezorLogo type="suite" width="128px" />
+                    <WelcomeTitle>
+                        <Translation id="TR_ONBOARDING_WELCOME_HEADING" />
+                    </WelcomeTitle>
+                </Expander>
+                <Bottom>
+                    {isWeb() && (
+                        <StyledTrezorLink size="small" variant="nostyle" href={SUITE_URL}>
+                            <Button variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
+                                <Translation id="TR_ONBOARDING_DOWNLOAD_DESKTOP_APP" />
+                            </Button>
+                        </StyledTrezorLink>
+                    )}
+                    <TrezorLink size="small" variant="nostyle" href={TREZOR_URL}>
                         <Button variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
-                            <Translation id="TR_ONBOARDING_DOWNLOAD_DESKTOP_APP" />
+                            trezor.io
                         </Button>
-                    </StyledTrezorLink>
-                )}
-                <TrezorLink size="small" variant="nostyle" href={TREZOR_URL}>
-                    <Button variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
-                        trezor.io
-                    </Button>
-                </TrezorLink>
-            </Bottom>
-        </Welcome>
+                    </TrezorLink>
+                </Bottom>
+            </Welcome>
 
-        <Content>{children}</Content>
-    </Wrapper>
-);
+            <Content>{children}</Content>
+        </Wrapper>
+    );
+};
 
 export default WelcomeLayout;

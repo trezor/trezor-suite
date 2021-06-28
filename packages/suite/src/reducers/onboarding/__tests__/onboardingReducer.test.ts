@@ -14,7 +14,8 @@ const getInitialState = (state?: Partial<State>): State => ({
     ...state,
 });
 
-describe('onboarding reducer', () => {
+// todo: remove
+describe.skip('onboarding reducer', () => {
     describe('DEVICE.DISCONNECT', () => {
         it('should not change state if current step does not care about prevDevice (initial state step does not care)', () => {
             const state = onboardingReducer(

@@ -62,6 +62,7 @@ const redirect = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) =>
     }
 
     switch (action.type) {
+        // todo: this will not get call after acquiring device!
         case SUITE.SELECT_DEVICE:
             await handleDeviceRedirect(api.dispatch, api.getState(), action.payload);
             break;

@@ -3,7 +3,6 @@ import { DEVICE, Device } from 'trezor-connect';
 
 import { ONBOARDING } from '@onboarding-actions/constants';
 import * as STEP from '@onboarding-constants/steps';
-import steps from '@onboarding-config/steps';
 import { Action } from '@suite-types';
 import { AnyStepId, AnyPath } from '@onboarding-types';
 
@@ -25,29 +24,6 @@ const initialState: OnboardingState = {
     activeStepId: STEP.ID_WELCOME_STEP,
     activeSubStep: null,
     path: [],
-};
-
-const setPrevDevice = (state: OnboardingState, device: Device) => {
-    // dont set prevDevice if we are in steps that dont care about it.
-    const activeStep = steps.find(s => s.id === state.activeStepId);
-    if (
-        !activeStep ||
-        !activeStep.disallowedDeviceStates ||
-        !activeStep.disallowedDeviceStates.includes(STEP.DISALLOWED_IS_NOT_SAME_DEVICE)
-    ) {
-        return null;
-    }
-    // ts.
-    if (!device.features) {
-        return null;
-    }
-    if (!state.prevDevice || !state.prevDevice.features) {
-        return device;
-    }
-    if (state.prevDevice.id !== device.id) {
-        return state.prevDevice;
-    }
-    return device;
 };
 
 const addPath = (path: AnyPath, state: OnboardingState) => {
@@ -87,7 +63,7 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
                 draft.path = removePath(action.payload, state);
                 break;
             case DEVICE.DISCONNECT:
-                draft.prevDevice = setPrevDevice(state, action.payload);
+                draft.prevDevice = action.payload;
                 break;
             case ONBOARDING.RESET_ONBOARDING:
                 return initialState;
