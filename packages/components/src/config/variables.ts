@@ -9,6 +9,7 @@ export const SCREEN_SIZE = {
 } as const;
 
 export const LAYOUT_SIZE = {
+    MENU_SECONDARY_WIDTH: '300px',
     GUIDE_PANEL_WIDTH: '350px',
 } as const;
 

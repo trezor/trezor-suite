@@ -1,5 +1,5 @@
 import React, { useState, createContext } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { useHotkeys } from 'react-hotkeys-hook';
 
@@ -29,15 +29,24 @@ const Body = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
-    overflow: auto;
+    overflow-y: hidden;
+    overflow-x: hidden;
 `;
 
 // AppWrapper and MenuSecondary creates own scrollbars independently
-const Columns = styled.div`
+const Columns = styled.div<{ guideOpen?: boolean }>`
     display: flex;
     flex-direction: row;
     flex: 1 0 100%;
     overflow: auto;
+    padding: 0;
+    transition: all 0.3s ease;
+
+    ${props =>
+        props.guideOpen &&
+        css`
+            padding: 0 ${variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH} 0 0;
+        `}
 `;
 
 const AppWrapper = styled.div`
@@ -77,11 +86,22 @@ const DefaultPaddings = styled.div`
     }
 `;
 
-const StyledGuidePanel = styled(GuidePanel)`
+const StyledGuidePanel = styled(GuidePanel)<{ open?: boolean }>`
     height: 100%;
     width: ${variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH};
     flex: 0 0 ${variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH};
     z-index: ${variables.Z_INDEX.GUIDE_PANEL};
+    border-left: 1px solid ${props => props.theme.STROKE_GREY};
+    position: absolute;
+    right: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+
+    ${props =>
+        props.open &&
+        css`
+            transform: translateX(0);
+        `}
 `;
 
 const mapStateToProps = (state: AppState) => ({
@@ -136,7 +156,7 @@ const ScrollAppWrapper = ({ url, children }: ScrollAppWrapperProps) => {
 
 const BodyNormal = ({ url, menu, appMenu, children, guideOpen, isMenuInline }: NormalBodyProps) => (
     <Body>
-        <Columns>
+        <Columns guideOpen={guideOpen}>
             {!isMenuInline && menu && <MenuSecondary>{menu}</MenuSecondary>}
             <ScrollAppWrapper url={url}>
                 {isMenuInline && menu}
@@ -145,7 +165,7 @@ const BodyNormal = ({ url, menu, appMenu, children, guideOpen, isMenuInline }: N
                     <MaxWidthWrapper>{children}</MaxWidthWrapper>
                 </DefaultPaddings>
             </ScrollAppWrapper>
-            {guideOpen && <StyledGuidePanel />}
+            <StyledGuidePanel open={guideOpen} />
         </Columns>
     </Body>
 );

@@ -92,6 +92,7 @@ const ArticleLabel = styled.div`
     color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
+// TODO: if something has to be fetched on render of this component, make sure that it is fetched after guide is opened by a user
 const GuideDefault = (props: any) => {
     const analytics = useAnalytics();
     const theme = useTheme();
