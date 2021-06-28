@@ -1,6 +1,8 @@
 import React, { useState, createContext } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { useHotkeys } from 'react-hotkeys-hook';
+
 import { variables, scrollbarStyles } from '@trezor/components';
 import SuiteBanners from '@suite-components/Banners';
 import { AppState } from '@suite-types';
@@ -169,9 +171,24 @@ const SuiteLayout = (props: SuiteLayoutProps) => {
     const { guideOpen } = useSelector(state => ({
         guideOpen: state.guide.open,
     }));
-    const { openGuide } = useActions({
+    const { openGuide, closeGuide } = useActions({
         openGuide: guideActions.open,
+        closeGuide: guideActions.close,
     });
+    useHotkeys(
+        'f1,esc',
+        e => {
+            e.preventDefault();
+            if (guideOpen) {
+                closeGuide();
+            }
+            if (!guideOpen && e.key.toLowerCase() === 'f1') {
+                openGuide();
+            }
+        },
+        [guideOpen, closeGuide, openGuide],
+    );
+
     const [title, setTitle] = useState<string | undefined>(undefined);
     const [menu, setMenu] = useState<any>(undefined);
     // There are three layout configurations WRT the guide and menu:
