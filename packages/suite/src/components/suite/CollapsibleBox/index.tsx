@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { animated, useSpring } from 'react-spring';
-import { useMeasure } from 'react-use';
+import useMeasure from 'react-use/lib/useMeasure';
 
 import { Icon, variables } from '@trezor/components';
 
@@ -83,28 +83,30 @@ const Heading = styled.span<Pick<Props, 'variant'>>`
         `}
 `;
 
-const Content = styled(animated.div)<Pick<Props, 'noContentPadding' | 'variant'>>`
+// DOM elements should not contain camelCase attributes (noContentPadding prop renamed to snake-case no-content-padding)
+// DOM attributes should not be boolean values (noContentPadding prop converted to string)
+const Content = styled(animated.div)<{ variant: Props['variant']; 'no-content-padding': string }>`
     display: flex;
     flex-direction: column;
     overflow: hidden;
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
 
     ${props =>
-        !props.noContentPadding &&
+        props['no-content-padding'] === 'false' &&
         props.variant === 'tiny' &&
         css`
             padding: 15px 16px;
         `}
 
     ${props =>
-        !props.noContentPadding &&
+        props['no-content-padding'] === 'false' &&
         props.variant === 'small' &&
         css`
             padding: 20px 16px;
         `}
 
     ${props =>
-        !props.noContentPadding &&
+        props['no-content-padding'] === 'false' &&
         props.variant === 'large' &&
         css`
             padding: 20px 30px;
@@ -164,7 +166,7 @@ const CollapsibleBox = ({
             </Header>
             <animated.div style={{ ...slideInStyles, overflow: 'hidden' }}>
                 <animated.div ref={heightRef} style={{ overflow: 'hidden' }}>
-                    <Content variant={variant} noContentPadding={noContentPadding}>
+                    <Content variant={variant} no-content-padding={(!!noContentPadding).toString()}>
                         {children}
                     </Content>
                 </animated.div>
