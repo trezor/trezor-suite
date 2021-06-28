@@ -24,7 +24,7 @@ interface StyledTextareaProps extends BaseTextareaProps {
 
 const StyledTextarea = styled.textarea<StyledTextareaProps>`
     width: ${props => (props.width ? `${props.width}px` : '100%')};
-    padding: 10px;
+    padding: 14px 16px;
     box-sizing: border-box;
     border: solid ${props => props.borderWidth}px
         ${props =>
