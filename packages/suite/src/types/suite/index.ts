@@ -32,12 +32,14 @@ import type { SUITE } from '@suite-actions/constants';
 import type { PROCESS_MODE } from '@suite-middlewares/actionBlockerMiddleware';
 import type { MessageSystemAction } from '@suite-actions/messageSystemActions';
 import type { GuideAction } from '@suite-actions/guideActions';
+import type { PrerequisiteType } from '@suite-utils/prerequisites';
 
 // reexport
 export type { ExtendedMessageDescriptor } from '@suite-components/Translation/components/BaseTranslation';
 export type { AppState } from '@suite/reducers/store';
 export type { Route } from '@suite-constants/routes';
 export type { SuiteThemeColors } from '@trezor/components';
+export type { PrerequisiteType } from '@suite-utils/prerequisites';
 
 type TrezorConnectEvents = TransportEvent | UiEvent | DeviceEvent | BlockchainEvent;
 
@@ -104,6 +106,7 @@ export type InjectedModalApplicationProps = {
     onCancel: () => void;
     closeModalApp: (preserveParams?: boolean) => void;
     getBackgroundRoute: () => Route | typeof undefined;
+    prerequisite?: PrerequisiteType;
 };
 
 export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error';
