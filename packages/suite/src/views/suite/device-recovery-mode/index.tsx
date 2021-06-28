@@ -1,3 +1,5 @@
+// TODO: remove whole file, replaced by @suite-components/PrerequisitesGuide/components/DeviceRecoveryMode
+
 import React from 'react';
 import styled from 'styled-components';
 import { H2, Button } from '@trezor/components';

@@ -1,11 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { TroubleshootingTips } from '@onboarding-components';
-import { Translation } from '@suite-components';
+import { Translation } from '@suite-components/Translation';
+import { TroubleshootingTips } from '@suite-components';
 import {
-    TROUBLESHOOTING_TIP_BRIDGE,
+    TROUBLESHOOTING_TIP_BRIDGE_STATUS,
+    TROUBLESHOOTING_TIP_BRIDGE_INSTALL,
+    TROUBLESHOOTING_TIP_UDEV,
     TROUBLESHOOTING_TIP_RESTART_COMPUTER,
-} from '@onboarding-components/TroubleshootingTips/tips';
+} from '@suite-components/TroubleshootingTips/tips';
 
 const Wrapper = styled.div`
     display: flex;
@@ -18,7 +20,12 @@ const NoTransport = () => (
     <Wrapper>
         <TroubleshootingTips
             label={<Translation id="TR_TREZOR_BRIDGE_IS_NOT_RUNNING" />}
-            items={[TROUBLESHOOTING_TIP_BRIDGE, TROUBLESHOOTING_TIP_RESTART_COMPUTER]}
+            items={[
+                TROUBLESHOOTING_TIP_BRIDGE_STATUS,
+                TROUBLESHOOTING_TIP_BRIDGE_INSTALL,
+                TROUBLESHOOTING_TIP_UDEV,
+                TROUBLESHOOTING_TIP_RESTART_COMPUTER,
+            ]}
         />
     </Wrapper>
 );

@@ -1,22 +1,22 @@
 import React from 'react';
 import styled from 'styled-components';
-import { TroubleshootingTips } from '@onboarding-components';
-import { Translation } from '@suite-components/Translation';
-import { ConnectedDeviceStatus } from '@onboarding-types';
+import { Translation, TroubleshootingTips } from '@suite-components';
 import {
-    TROUBLESHOOTING_TIP_BRIDGE,
-    TROUBLESHOOTING_TIP_USB,
-    TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
-} from '@onboarding-components/TroubleshootingTips/tips';
+    TROUBLESHOOTING_TIP_BRIDGE_STATUS,
+    TROUBLESHOOTING_TIP_BRIDGE_INSTALL,
+} from '@suite-components/TroubleshootingTips/tips';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
 `;
+
+// todo: remove in favour of suite-components
 interface Props {
-    deviceStatus: ConnectedDeviceStatus;
+    deviceStatus: any;
     trezorModel?: number;
 }
+
 const UnexpectedDeviceState = ({ deviceStatus, trezorModel }: Props) => (
     <Wrapper>
         {deviceStatus === 'unreadable' && (
@@ -25,11 +25,7 @@ const UnexpectedDeviceState = ({ deviceStatus, trezorModel }: Props) => (
             <>
                 <TroubleshootingTips
                     label={<Translation id="TR_YOUR_DEVICE_IS_CONNECTED_BUT_UNREADABLE" />}
-                    items={[
-                        TROUBLESHOOTING_TIP_BRIDGE,
-                        TROUBLESHOOTING_TIP_USB,
-                        TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER,
-                    ]}
+                    items={[TROUBLESHOOTING_TIP_BRIDGE_STATUS, TROUBLESHOOTING_TIP_BRIDGE_INSTALL]}
                 />
 
                 {/* <Button onClick={() => TrezorConnect.disableWebUSB()}>
@@ -37,7 +33,7 @@ const UnexpectedDeviceState = ({ deviceStatus, trezorModel }: Props) => (
                     </Button> */}
             </>
         )}
-        {deviceStatus === 'in-bootloader' && (
+        {deviceStatus === 'bootloader' && (
             // User connected the device in bootloader mode, but in order to continue it needs to be in normal mode
             <TroubleshootingTips
                 label={<Translation id="TR_DEVICE_IN_BOOTLOADER" />}
