@@ -1,3 +1,4 @@
+import { variables } from '@trezor/components';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -6,7 +7,7 @@ interface Props {
 }
 
 const AbsoluteWrapper = styled.aside`
-    width: 300px;
+    width: ${variables.LAYOUT_SIZE.MENU_SECONDARY_WIDTH};
     flex: 0 0 auto;
     background: ${props => props.theme.BG_WHITE};
     border-right: 1px solid ${props => props.theme.STROKE_GREY};
