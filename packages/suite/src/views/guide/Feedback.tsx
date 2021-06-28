@@ -331,7 +331,14 @@ const Feedback = ({ type }: Props) => {
                     </CharacterCount>
                 </TextareaWrapper>
 
-                <Submit onClick={onSubmit}>
+                <Submit
+                    onClick={onSubmit}
+                    isDisabled={
+                        description.length === 0 ||
+                        (type === 'SUGGESTION' && rating === undefined) ||
+                        (type === 'BUG' && category === undefined)
+                    }
+                >
                     <Translation id="TR_GUIDE_FEEDBACK_SEND_REPORT" />
                 </Submit>
 
