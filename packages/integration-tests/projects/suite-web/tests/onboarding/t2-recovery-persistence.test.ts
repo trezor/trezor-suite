@@ -70,7 +70,7 @@ describe('Onboarding - T2 in recovery mode', () => {
 
         // disconnect device, reload application
         cy.task('stopEmu');
-        cy.getTestElement('@onboarding/connect-device', { timeout: 20000 });
+        cy.getTestElement('@connect-device-prompt', { timeout: 20000 });
         cy.wait(501);
         cy.resetDb();
         cy.reload();
@@ -110,7 +110,7 @@ describe('Onboarding - T2 in recovery mode', () => {
         cy.wait(501);
         cy.task('stopEmu');
         cy.wait(1000);
-        cy.getTestElement('@onboarding/connect-device', { timeout: 30000 });
+        cy.getTestElement('@connect-device-prompt', { timeout: 30000 });
         cy.task('startEmu', { version: '2.3.1', wipe: false });
         cy.getTestElement('@onboarding/confirm-on-device');
         cy.wait(1000);
