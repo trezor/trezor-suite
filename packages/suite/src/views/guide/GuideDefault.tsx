@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite-components';
 import * as guideActions from '@suite-actions/guideActions';
-import { useActions } from '@suite-hooks';
+import { useActions, useAnalytics } from '@suite-hooks';
 import { Icon, variables, useTheme } from '@trezor/components';
 import { Header, Content, ViewWrapper } from '@guide-components';
 
@@ -93,6 +93,7 @@ const ArticleLabel = styled.div`
 `;
 
 const GuideDefault = (props: any) => {
+    const analytics = useAnalytics();
     const theme = useTheme();
     const { setView, openArticle } = useActions({
         setView: guideActions.setView,
@@ -109,6 +110,7 @@ const GuideDefault = (props: any) => {
                     </SectionHeading>
                     <Articles>
                         {/* TODO: replace hardcoded articles with dynamic loading of markdown files after PR #3811 is merged */}
+                        {/* TODO: analytics guide/article or category... */}
                         <Article onClick={() => openArticle('send')}>
                             <ArticleIcon icon="ARTICLE" size={20} color={theme.TYPE_LIGHT_GREY} />
                             <ArticleLabel>Send</ArticleLabel>
@@ -132,7 +134,15 @@ const GuideDefault = (props: any) => {
                     </Articles>
                 </Section>
             </Content>
-            <FeedbackLinkWrapper onClick={() => setView('FEEDBACK_TYPE_SELECTION')}>
+            <FeedbackLinkWrapper
+                onClick={() => {
+                    setView('FEEDBACK_TYPE_SELECTION');
+                    analytics.report({
+                        type: 'guide/feedback/navigation',
+                        payload: { type: 'overview' },
+                    });
+                }}
+            >
                 <FeedbackButton>
                     <Icon icon="FEEDBACK" size={16} color={theme.TYPE_LIGHT_GREY} />
                     <FeedbackButtonLabel>

@@ -88,8 +88,26 @@ Breaking change should bump major version. Any other change bumps minor version.
 4. **Option**: Edit NAT to resolve requests to `https://data.trezor.io/suite/log/web/stable.log` to your local server 
    
 ## Changelog
+### 1.11
+Added:
+- menu/settings/dropdown
+  - option: 'guide' (+ old ones)
+- menu/guide
+- guide/feedback/navigation
+  - type: 'overview' | 'bug' | 'suggestion'
+- guide/feedback/submit
+  - type: 'bug' | 'suggestion'
+- guide/header/navigation
+  - type: 'back' | 'close'
+- guide/report
+  - type: 'overview' | 'bug' | 'suggestion'
+
+
 ### 1.10
-- removed newDevice, usedDevice from initial-run-completed
+Removed:
+- initial-run-completed
+  - newDevice
+  - usedDevice
 
 ### 1.9
 Changed:

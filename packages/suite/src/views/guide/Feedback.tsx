@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect } from 'react';
 import styled, { css } from 'styled-components';
+
 import { CollapsibleBox, Translation } from '@suite-components';
-import { useActions, useDevice } from '@suite-hooks';
+import { useActions, useAnalytics, useDevice } from '@suite-hooks';
 import { Textarea, Select, variables, Button } from '@trezor/components';
 import * as guideActions from '@suite-actions/guideActions';
 import { ViewWrapper, Header, Content } from '@guide-components';
@@ -130,6 +131,8 @@ const ratingOptions: RatingItem[] = [
 ];
 
 const Feedback = ({ type }: Props) => {
+    const analytics = useAnalytics();
+
     const { device } = useDevice();
     const { setView, sendFeedback } = useActions({
         setView: guideActions.setView,
@@ -183,7 +186,21 @@ const Feedback = ({ type }: Props) => {
             });
         }
         setView('GUIDE_DEFAULT');
-    }, [device, firmwareType, type, setView, sendFeedback, description, category, rating?.id]);
+        analytics.report({
+            type: 'guide/feedback/submit',
+            payload: { type: type === 'BUG' ? 'bug' : 'suggestion' },
+        });
+    }, [
+        analytics,
+        device,
+        firmwareType,
+        type,
+        setView,
+        sendFeedback,
+        description,
+        category,
+        rating?.id,
+    ]);
 
     return (
         <ViewWrapper>

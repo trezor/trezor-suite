@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { darken } from 'polished';
 
 import * as guideActions from '@suite-actions/guideActions';
-import { useActions } from '@suite-hooks';
+import { useActions, useAnalytics } from '@suite-hooks';
 import { Icon, variables, useTheme } from '@trezor/components';
 
 const HeaderWrapper = styled.div<{ noLabel?: boolean }>`
@@ -64,6 +64,8 @@ interface Props {
 
 const Header = ({ back, label }: Props) => {
     const theme = useTheme();
+    const analytics = useAnalytics();
+
     const { close } = useActions({
         close: guideActions.close,
     });
@@ -72,7 +74,17 @@ const Header = ({ back, label }: Props) => {
         <HeaderWrapper noLabel={!label}>
             {back && (
                 <>
-                    <ActionButton onClick={back}>
+                    <ActionButton
+                        onClick={() => {
+                            back();
+                            analytics.report({
+                                type: 'guide/header/navigation',
+                                payload: {
+                                    type: 'back',
+                                },
+                            });
+                        }}
+                    >
                         <StyledIcon
                             icon="ARROW_LEFT_LONG"
                             size={24}
@@ -83,7 +95,17 @@ const Header = ({ back, label }: Props) => {
                 </>
             )}
             {!back && label && <MainLabel>{label}</MainLabel>}
-            <ActionButton onClick={close}>
+            <ActionButton
+                onClick={() => {
+                    close();
+                    analytics.report({
+                        type: 'guide/header/navigation',
+                        payload: {
+                            type: 'close',
+                        },
+                    });
+                }}
+            >
                 <StyledIcon icon="CROSS" size={24} color={theme.TYPE_LIGHT_GREY} />
             </ActionButton>
         </HeaderWrapper>
