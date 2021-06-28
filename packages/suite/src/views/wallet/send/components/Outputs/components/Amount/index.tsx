@@ -41,7 +41,6 @@ const Left = styled.div`
     position: relative; /* for TokenBalance positioning */
     display: flex;
     flex: 1;
-    min-width: 260px;
 `;
 
 const TokenBalance = styled.div`
@@ -72,7 +71,6 @@ const TransferIconWrapper = styled.div`
 const Right = styled.div`
     display: flex;
     flex: 1;
-    min-width: 260px;
     align-items: flex-start;
 `;
 
