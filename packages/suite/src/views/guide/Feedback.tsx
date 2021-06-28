@@ -26,17 +26,8 @@ const Headline = styled.div`
 `;
 
 const Submit = styled(Button)`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    text-align: center;
-    color: ${props => props.theme.TYPE_WHITE};
-    background: ${props => props.theme.BG_GREEN};
-    border-radius: 8px;
-    border: none;
-    padding: 10px;
     width: 100%;
-    margin: 0 0 13px;
-    cursor: pointer;
+    margin: 0 0 20px;
 `;
 
 const SelectWrapper = styled.div`
