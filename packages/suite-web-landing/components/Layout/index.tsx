@@ -129,7 +129,7 @@ const Index = ({ children }: Props) => (
                     <FooterHeadline>
                         <Translation id="TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_1" />
                     </FooterHeadline>
-                    <FooterLink href="https://satoshilabs.typeform.com/to/Dqb71wm1">
+                    <FooterLink href="https://satoshilabs.typeform.com/to/BNMEfPun">
                         <Translation id="TR_SUITE_WEB_LANDING_FOOTER_FEEDBACK" />
                     </FooterLink>
                     <FooterLink href="https://blog.trezor.io/join-the-trezor-beta-testers-community-b19761f4960a">
