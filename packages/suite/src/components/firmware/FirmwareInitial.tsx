@@ -20,7 +20,15 @@ interface Props {
     standaloneFwUpdate?: boolean;
 }
 
-const getDescription = (required: boolean, standaloneFwUpdate: boolean, reinstall: boolean) => {
+const getDescription = ({
+    required,
+    standaloneFwUpdate,
+    reinstall,
+}: {
+    required: boolean;
+    standaloneFwUpdate: boolean;
+    reinstall: boolean;
+}) => {
     if (required) return 'TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED';
 
     if (standaloneFwUpdate) {
@@ -31,7 +39,7 @@ const getDescription = (required: boolean, standaloneFwUpdate: boolean, reinstal
     return 'TR_ONBOARDING_NEW_FW_DESCRIPTION';
 };
 
-const FirmwareInitial = ({ cachedDevice, setCachedDevice, standaloneFwUpdate }: Props) => {
+const FirmwareInitial = ({ cachedDevice, setCachedDevice, standaloneFwUpdate = false }: Props) => {
     const { device: liveDevice } = useDevice();
     const { setStatus, firmwareUpdate, status } = useFirmware();
     const { goToNextStep } = useActions({
@@ -89,11 +97,19 @@ const FirmwareInitial = ({ cachedDevice, setCachedDevice, standaloneFwUpdate }: 
             heading: <Translation id="TR_INSTALL_FIRMWARE" />,
             description: (
                 <Translation
-                    id={getDescription(
-                        device.firmware === 'required',
-                        !!standaloneFwUpdate,
-                        !!device.firmwareRelease?.isLatest,
-                    )}
+                    id={getDescription({
+                        /**
+                         * `device.firmware` is status of the firmware currently installed on the device.
+                         *  available values: 'valid' | 'outdated' | 'required' | 'unknown' | 'none'
+                         *
+                         *  `device.firmwareRelease` on the other hand contains latest available firmware to update to
+                         *   (it is whatever returns getInfo() method from trezor-rollout)
+                         *   so it should not be used here.
+                         */
+                        required: device.firmware === 'required',
+                        standaloneFwUpdate,
+                        reinstall: device.firmware === 'valid',
+                    })}
                 />
             ),
             body: (
