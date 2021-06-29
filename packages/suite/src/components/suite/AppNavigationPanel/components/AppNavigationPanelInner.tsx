@@ -9,6 +9,7 @@ const Wrapper = styled.div`
     justify-content: center;
     background: ${props => props.theme.BG_LIGHT_GREY};
     padding: 24px 32px 0px 32px;
+
     z-index: 3;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
@@ -77,7 +78,7 @@ const AppNavigationPanelInner = React.forwardRef<HTMLDivElement, Props>((props, 
                             {props.dropdown}
                         </Aside>
                     </TitleRow>
-                    <Row>{props.children}</Row>
+                    {props.children && <Row>{props.children}</Row>}
                 </BasicInfo>
             </Content>
         </Wrapper>

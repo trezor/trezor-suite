@@ -91,7 +91,7 @@ const ExpandedMobileWrapper = styled.div`
     position: absolute;
     flex-direction: column;
     background: ${props => props.theme.BG_WHITE};
-    z-index: 3;
+    z-index: 4;
     width: 100%;
     max-height: 80vh;
     overflow-y: auto;
