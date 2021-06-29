@@ -103,6 +103,42 @@ const isRequired = (changelog: ReturnType<typeof getChangelog>) => {
 const isEqual = (release: Release, latest: Release) =>
     versionUtils.isEqual(release.version, latest.version);
 
+const getReleasesByScore = (releases: Release[], deviceId: string | null) => {
+    if (!deviceId) {
+        return releases;
+    }
+
+    const score = getScore(deviceId);
+    return releases.filter(item => !item.rollout || item.rollout >= score);
+};
+
+const filterByFirmware = (releases: Release[], features: ParsedFeatures) => {
+    const { major_version, fw_major, fw_minor, fw_patch } = features;
+
+    if (major_version === 2 && fw_major !== null && fw_minor !== null && fw_patch !== null) {
+        // in bootloader, model T knows its firmware, so we still may filter "by firmware".
+        return filterSafeListByFirmware(releases, [fw_major, fw_minor, fw_patch]);
+    }
+    // model one does not know its firmware, we need to filter by bootloader. this has the consequence
+    // that we do not know if the version we find in the end is newer than the actual installed version
+    return releases;
+};
+
+const getSafeReleases = (releases: Release[], features: ParsedFeatures) => {
+    const { bootloader_mode, major_version, minor_version, patch_version } = features;
+
+    if (bootloader_mode) {
+        const filteredByFirmware = filterByFirmware(releases, features);
+
+        return filterSafeListByBootloader(filteredByFirmware, [
+            major_version,
+            minor_version,
+            patch_version,
+        ]);
+    }
+    // in other cases (not in bootloader) we may filter by firmware
+    return filterSafeListByFirmware(releases, [major_version, minor_version, patch_version]);
+};
 interface GetInfoProps {
     features: Features;
     releases: Release[];
@@ -115,80 +151,25 @@ interface GetInfoProps {
  */
 export const getInfo = ({ features, releases }: GetInfoProps) => {
     const parsedFeatures = parseFeatures(features);
-    let parsedReleases = parseReleases(releases);
+    const parsedReleases = parseReleases(releases);
 
-    let score = 0; // just because of ts
-
-    /* istanbul ignore next */
-    if (features.device_id) {
-        score = getScore(features.device_id);
-    }
-    const {
-        bootloader_mode,
-        major_version,
-        minor_version,
-        patch_version,
-        fw_major,
-        fw_minor,
-        fw_patch,
-    } = parsedFeatures;
-
-    if (score) {
-        parsedReleases = parsedReleases.filter(item => {
-            if (!item.rollout) return true;
-            return item.rollout >= score;
-        });
-    }
-
-    const latest = parsedReleases[0];
-
-    if (major_version === 2 && bootloader_mode) {
-        // sorry for this if, I did not figure out how to narrow types properly
-        if (fw_major !== null && fw_minor !== null && fw_patch !== null) {
-            // in bootloader, model T knows its firmware, so we still may filter "by firmware".
-            parsedReleases = filterSafeListByFirmware(parsedReleases, [
-                fw_major,
-                fw_minor,
-                fw_patch,
-            ]);
-        }
-        parsedReleases = filterSafeListByBootloader(parsedReleases, [
-            major_version,
-            minor_version,
-            patch_version,
-        ]);
-    } else if (major_version === 1 && bootloader_mode) {
-        // model one does not know its firmware, we need to filter by bootloader. this has the consequence
-        // that we do not know if the version we find in the end is newer than the actual installed version
-        parsedReleases = filterSafeListByBootloader(parsedReleases, [
-            major_version,
-            minor_version,
-            patch_version,
-        ]);
-    } else {
-        // in other cases (not in bootloader) we may filter by firmware
-        parsedReleases = filterSafeListByFirmware(parsedReleases, [
-            major_version,
-            minor_version,
-            patch_version,
-        ]);
-    }
-
-    if (!parsedReleases.length) {
+    const rollouts = getReleasesByScore(parsedReleases, parsedFeatures.device_id);
+    if (!rollouts.length) {
         // no new firmware
         return null;
     }
+    const latest = rollouts[0];
+    const changelog = getChangelog(rollouts, parsedFeatures);
 
-    const isLatest = isEqual(parsedReleases[0], latest);
-    const changelog = getChangelog(parsedReleases, parsedFeatures);
+    const latestSafe = getSafeReleases(rollouts, parsedFeatures)[0];
 
     return {
         changelog,
-        release: parsedReleases[0],
-        isLatest,
-        latest,
+        release: latest,
+        latestSafe,
+        isSafe: !!latestSafe && isEqual(latestSafe, latest),
         isRequired: isRequired(changelog),
-        isNewer: isNewer(parsedReleases[0], parsedFeatures),
+        isNewer: isNewer(latest, parsedFeatures),
     };
 };
 
@@ -227,7 +208,7 @@ export const getBinary = async ({
         }
     } else {
         const fw = await fetchFirmware(`${baseUrl}/firmware/1/trezor-inter-1.10.0.bin`);
-        return { binary: modifyFirmware({ fw, features: parsedFeatures }) };
+        return { ...infoByBootloader, binary: modifyFirmware({ fw, features: parsedFeatures }) };
     }
 
     if (btcOnly && !releaseByFirmware.url_bitcoinonly) {

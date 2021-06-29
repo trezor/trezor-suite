@@ -30,12 +30,12 @@ const fixtures = [
         ]),
         result: {
             changelog: [{ version: [1, 0, 0] }],
-            release: {
+            latestSafe: {
                 version: [1, 0, 0],
                 min_bootloader_version: [1, 0, 0],
                 bootloader_version: [1, 1, 0],
             },
-            isLatest: false,
+            isSafe: false,
             isRequired: false,
             isNewer: null,
         },
@@ -97,7 +97,8 @@ const fixtures = [
         ]),
         result: {
             release: { version: [1, 4, 0] },
-            isLatest: true,
+            latestSafe: { version: [1, 4, 0] },
+            isSafe: true,
             isRequired: false,
         },
     },
@@ -135,8 +136,8 @@ const fixtures = [
             },
         ]),
         result: {
-            release: { version: [2, 2, 0] },
-            isLatest: false,
+            latestSafe: { version: [2, 2, 0] },
+            isSafe: false,
             isRequired: false,
         },
     },

@@ -517,7 +517,7 @@ const getDeviceInstances = [
 const parseFirmwareChangelog = [
     {
         firmwareRelease: {
-            isLatest: true,
+            isSafe: true,
             isNewer: true,
             isRequired: false,
             release: {

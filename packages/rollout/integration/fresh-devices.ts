@@ -27,7 +27,11 @@ describe('Find firmware info for: ', () => {
             }),
             releases: RELEASES_T1,
         });
-        expect(info).toMatchObject({ release: { version: [1, 6, 3] } });
+        expect(info).toMatchObject({
+            release: { version: RELEASES_T1[0].version },
+            latestSafe: { version: [1, 6, 3] },
+            isSafe: false,
+        });
 
         // validate that with binary returns the same firmware
         const withBinary = await getBinary({
@@ -42,7 +46,10 @@ describe('Find firmware info for: ', () => {
             releases: RELEASES_T1,
             baseUrl: BASE_URL,
         });
-        expect(withBinary).toMatchObject({ release: { version: [1, 6, 3] } });
+        expect(withBinary).toMatchObject({
+            release: { version: RELEASES_T1[0].version },
+            latestSafe: { version: [1, 6, 3] },
+        });
     });
 
     it('bootloader 1.5.1 -> firmware version 1.10.0+', async () => {

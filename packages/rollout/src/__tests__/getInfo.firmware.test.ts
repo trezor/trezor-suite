@@ -58,7 +58,8 @@ const fixtures = [
         ]),
         result: {
             release: { version: [2, 2, 0] },
-            isLatest: true,
+            latestSafe: { version: [2, 2, 0] },
+            isSafe: true,
             isRequired: false,
             isNewer: true,
         },
@@ -99,8 +100,9 @@ const fixtures = [
         ]),
         result: {
             release: { version: [2, 3, 0] },
+            latestSafe: { version: [2, 3, 0] },
             isRequired: false,
-            isLatest: true,
+            isSafe: true,
             isNewer: true,
         },
     },

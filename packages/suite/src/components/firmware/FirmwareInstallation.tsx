@@ -24,8 +24,13 @@ const FirmwareInstallation = ({
     onSuccess,
 }: Props) => {
     const { device } = useDevice();
-    const { status, installingProgress, resetReducer, isWebUSB, subsequentInstalling } =
-        useFirmware();
+    const {
+        status,
+        installingProgress,
+        resetReducer,
+        isWebUSB,
+        subsequentInstalling,
+    } = useFirmware();
 
     const statusIntlId = getTextForStatus(status);
     const statusText = statusIntlId ? <Translation id={statusIntlId} /> : null;

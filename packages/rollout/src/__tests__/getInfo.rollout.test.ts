@@ -57,10 +57,10 @@ const fixtures = [
         ]),
         score: 0.5,
         result: {
-            release: {
+            latestSafe: {
                 version: [2, 0, 0],
             },
-            isLatest: true,
+            isSafe: false,
         },
     },
     {

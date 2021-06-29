@@ -28,10 +28,10 @@ describe('getInfo() for fresh device', () => {
             ]),
         });
         expect(result).toMatchObject({
-            release: {
+            latestSafe: {
                 version: [1, 1, 0],
             },
-            isLatest: false,
+            isSafe: false,
             isRequired: false,
         });
     });
@@ -64,10 +64,10 @@ describe('getInfo() for fresh device', () => {
             ]),
         });
         expect(result).toMatchObject({
-            release: {
+            latestSafe: {
                 version: [2, 1, 0],
             },
-            isLatest: false,
+            isSafe: false,
             isRequired: false,
         });
     });
