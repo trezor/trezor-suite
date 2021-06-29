@@ -3,9 +3,6 @@ coverage
 tests
 __tests__
 __mocks__
-e2e
-setupJest.d.ts
-start-e2e.d.ts
 jest*
 .rpt2_cache
 .eslintignore
@@ -14,21 +11,15 @@ jest*
 .gilab-ci.yml
 .prettierignore
 .prettierrc
-babel.config.js
 jest.config.integration.js
-jest.config.unit.js
-tsconfig.workers.json
 tsconfig.lib.json
 tsconfig.json
 setupJest.ts
-start-e2e.ts
-setupJest.js
-start-e2e.js
+start-integration.ts
 
 # Source files
 src
-webpack
-scripts
+integration
 docs
 
 # Editors

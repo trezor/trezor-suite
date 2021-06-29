@@ -1,3 +1,5 @@
+# 1.1.0
+- always provide latest release together with safe release
 # 1.0.8
 - bump intermediary fw
 # 1.0.7

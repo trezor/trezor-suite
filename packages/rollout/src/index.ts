@@ -93,7 +93,7 @@ const isRequired = (changelog: ReturnType<typeof getChangelog>) => {
     return changelog.some(item => item.required);
 };
 
-const isLatest = (release: Release, latest: Release) =>
+const isEqual = (release: Release, latest: Release) =>
     versionUtils.isEqual(release.version, latest.version);
 
 interface GetInfoProps {
@@ -125,7 +125,6 @@ export const getInfo = ({ features, releases }: GetInfoProps) => {
         fw_minor,
         fw_patch,
     } = parsedFeatures;
-    const latest = parsedReleases[0];
 
     if (score) {
         parsedReleases = parsedReleases.filter(item => {
@@ -133,6 +132,8 @@ export const getInfo = ({ features, releases }: GetInfoProps) => {
             return item.rollout >= score;
         });
     }
+
+    const latest = parsedReleases[0];
 
     if (major_version === 2 && bootloader_mode) {
         // sorry for this if, I did not figure out how to narrow types properly
@@ -171,12 +172,14 @@ export const getInfo = ({ features, releases }: GetInfoProps) => {
         return null;
     }
 
+    const isLatest = isEqual(parsedReleases[0], latest);
     const changelog = getChangelog(parsedReleases, parsedFeatures);
 
     return {
         changelog,
         release: parsedReleases[0],
-        isLatest: isLatest(parsedReleases[0], latest),
+        isLatest,
+        latest,
         isRequired: isRequired(changelog),
         isNewer: isNewer(parsedReleases[0], parsedFeatures),
     };
