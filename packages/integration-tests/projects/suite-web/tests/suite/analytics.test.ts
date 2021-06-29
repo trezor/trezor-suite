@@ -87,7 +87,7 @@ describe('Analytics', () => {
         });
 
         // change fiat
-        cy.getTestElement('@settings/fiat-select/input').click();
+        cy.getTestElement('@settings/fiat-select/input').click({ force: true });
         cy.getTestElement('@settings/fiat-select/option/huf').click({ force: true });
 
         // check that fiat change got logged.

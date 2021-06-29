@@ -29,6 +29,7 @@ describe('safety_checks Warning For PromptTemporarily', () => {
         // Start in the device settings to easily open safety_checks setting modal.
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.discoveryShouldFinish();
         cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@suite/menu/settings-index').click();
         cy.getTestElement('@settings/menu/device').click();
@@ -36,7 +37,9 @@ describe('safety_checks Warning For PromptTemporarily', () => {
         // Set safety_checks to `PromptTemporarily'.
         // TODO: do this via the `applySetting` task once https://github.com/trezor/trezor-user-env/issues/54
         // is resolved.
-        cy.getTestElement('@settings/device/safety-checks-button').click();
+        cy.getTestElement('@settings/device/safety-checks-button').click({
+            scrollBehavior: 'bottom',
+        });
         cy.get(`[data-test="@radio-button-prompt"]`).click();
         cy.getTestElement('@safety-checks-apply').click();
         cy.task('pressYes');
@@ -60,7 +63,9 @@ describe('safety_checks Warning For PromptTemporarily', () => {
 
     it('Warning disappears when safety_checks are set to strict', () => {
         // Open the safety_checks setting modal and change safety_checks to Strict.
-        cy.getTestElement('@settings/device/safety-checks-button').click();
+        cy.getTestElement('@settings/device/safety-checks-button').click({
+            scrollBehavior: 'bottom',
+        });
         cy.get('[data-test="@radio-button-strict"]').click();
         cy.getTestElement('@safety-checks-apply').click();
         cy.task('pressYes');
@@ -72,14 +77,18 @@ describe('safety_checks Warning For PromptTemporarily', () => {
         // Dismiss the warning.
         cy.getTestElement('@banner/safety-checks/dismiss').click();
         // Open the safety_checks setting modal and change safety_checks to Strict.
-        cy.getTestElement('@settings/device/safety-checks-button').click();
+        cy.getTestElement('@settings/device/safety-checks-button').click({
+            scrollBehavior: 'bottom',
+        });
         cy.get('[data-test="@radio-button-strict"]').click();
         cy.getTestElement('@safety-checks-apply').click();
         cy.task('pressYes');
         // Assert the warning is gone.
         cy.getTestElement('@banner/safety-checks/button').should('not.exist');
         // Set safety_checks back to PromptTemporarily
-        cy.getTestElement('@settings/device/safety-checks-button').click();
+        cy.getTestElement('@settings/device/safety-checks-button').click({
+            scrollBehavior: 'bottom',
+        });
         cy.get(`[data-test="@radio-button-prompt"]`).click();
         cy.getTestElement('@safety-checks-apply').click();
         cy.task('pressYes');
