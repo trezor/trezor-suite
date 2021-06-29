@@ -46,6 +46,7 @@ const Wrapper = styled.div<{ value: boolean; subRoute: boolean | undefined }>`
         css`
             transform: translate(0px, -71px);
             margin-top: 71px;
+            height: 0px;
         `}
 
     ${props =>
@@ -86,12 +87,11 @@ const KeepWidth = styled.div<{ maxWidth?: string; border: boolean }>`
     background: ${props => props.theme.BG_LIGHT_GREY};
     width: 100%;
     max-width: ${props => (props.maxWidth === 'default' ? MAX_WIDTH : MAX_WIDTH_WALLET_CONTENT)};
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
+    ${props => !props.border && `border-top: 1px solid ${props.theme.STROKE_GREY};`}
 `;
 
 const Primary = styled.div`
     display: flex;
-    width: 100%;
     justify-content: flex-start;
     align-items: center;
 `;
