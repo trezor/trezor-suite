@@ -286,7 +286,6 @@ export const createDeviceInstance = (device: TrezorDevice, useEmptyPassphrase = 
             ...device,
             useEmptyPassphrase,
             instance: deviceUtils.getNewInstanceNumber(getState().devices, device),
-            walletNumber: deviceUtils.getNewWalletNumber(getState().devices, device),
         },
     });
 };

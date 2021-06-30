@@ -69,7 +69,7 @@ const Passphrase = (props: Props) => {
 
     const onSubmit = (value: string, passphraseOnDevice?: boolean) => {
         setSubmitted(true);
-        props.onPassphraseSubmit(value, !!passphraseOnDevice, !!hasEmptyPassphraseWallet);
+        props.onPassphraseSubmit(value, !!passphraseOnDevice);
     };
 
     const onRecreate = () => {
