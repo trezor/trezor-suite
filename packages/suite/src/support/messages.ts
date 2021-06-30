@@ -4838,12 +4838,12 @@ const definedMessages = defineMessages({
         id: 'RECIPIENT_FORMAT_DEPRECATED',
     },
     RECIPIENT_FORMAT_UPPERCASE: {
-        defaultMessage: 'Unsupported address format. {convert}',
+        defaultMessage: 'Unsupported address format. <a>Convert to lowercase</a>',
         id: 'RECIPIENT_FORMAT_UPPERCASE',
     },
-    RECIPIENT_FORMAT_UPPERCASE_CONVERT: {
-        defaultMessage: 'Convert to lowercase',
-        id: 'RECIPIENT_FORMAT_UPPERCASE_CONVERT',
+    RECIPIENT_FORMAT_CHECKSUM: {
+        defaultMessage: 'Address is not valid. <a>Convert to checksum address</a>',
+        id: 'RECIPIENT_FORMAT_CHECKSUM',
     },
     RECIPIENT_CANNOT_SEND_TO_MYSELF: {
         defaultMessage: 'Cannot send to myself',

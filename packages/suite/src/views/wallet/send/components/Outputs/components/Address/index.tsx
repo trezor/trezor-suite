@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { isValidChecksumAddress, toChecksumAddress } from 'ethereumjs-util/dist/account';
 import { Input, useTheme, variables, Icon, Button } from '@trezor/components';
 import { AddressLabeling, Translation, ReadMoreLink } from '@suite-components';
 import { InputError } from '@wallet-components';
@@ -159,6 +160,7 @@ const Address = ({ output, outputId, outputsCount }: Props) => {
                     if (networkType === 'bitcoin' && isBech32AddressUppercase(value)) {
                         return (
                             <ConvertAddress
+                                label="RECIPIENT_FORMAT_UPPERCASE"
                                 onClick={() => {
                                     setValue(inputName, value.toLowerCase(), {
                                         shouldValidate: true,
@@ -167,6 +169,20 @@ const Address = ({ output, outputId, outputsCount }: Props) => {
                             />
                         );
                     }
+                    // eth addresses are valid without checksum but Trezor displays them as checksummed
+                    if (networkType === 'ethereum' && !isValidChecksumAddress(value)) {
+                        return (
+                            <ConvertAddress
+                                label="RECIPIENT_FORMAT_CHECKSUM"
+                                onClick={() => {
+                                    setValue(inputName, toChecksumAddress(value), {
+                                        shouldValidate: true,
+                                    });
+                                }}
+                            />
+                        );
+                    }
+
                     if (networkType === 'ripple' && value === descriptor) {
                         return 'RECIPIENT_CANNOT_SEND_TO_MYSELF';
                     }

@@ -1,29 +1,34 @@
 import React from 'react';
 import styled from 'styled-components';
-
-import { Translation } from '@suite-components';
 import { Button } from '@trezor/components';
+import { Translation } from '@suite-components/Translation';
+import type { ExtendedMessageDescriptor } from '@suite-types';
 
 const Wrapper = styled.div`
     display: flex;
-    justify-content: space-between;
+    align-items: center;
 `;
 
 const StyledButton = styled(Button)`
-    margin-right: 8px;
+    margin-left: 8px;
     padding: 0;
     background: none;
 `;
 
-const Convert = ({ onClick }: any) => (
+interface Props {
+    label: ExtendedMessageDescriptor['id'];
+    onClick: () => void;
+}
+
+const Convert = ({ label, onClick }: Props) => (
     <Wrapper>
         <Translation
-            id="RECIPIENT_FORMAT_UPPERCASE"
+            id={label}
             isNested
             values={{
-                convert: (
+                a: chunks => (
                     <StyledButton variant="tertiary" onClick={onClick}>
-                        <Translation id="RECIPIENT_FORMAT_UPPERCASE_CONVERT" />
+                        {chunks}
                     </StyledButton>
                 ),
             }}
