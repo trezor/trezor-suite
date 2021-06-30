@@ -121,10 +121,7 @@ const ratingOptions: RatingItem[] = [
     },
 ];
 
-type FeedbackCategory = {
-    [key in Category]: React.ReactNode;
-};
-
+/** A format compatible with React Select component. */
 type FeedbackCategoryOption = {
     label: React.ReactNode;
     value: Category;
@@ -142,7 +139,49 @@ const Feedback = ({ type }: Props) => {
     const router = useSelector(state => state.router);
     const [description, setDescription] = React.useState('');
     const [rating, setRating] = React.useState<RatingItem>();
-    const [category, setCategory] = React.useState<Category>('dashboard');
+
+    const feedbackCategories: { [key in Category]: React.ReactNode } = {
+        dashboard: <Translation id="TR_FEEDBACK_CATEGORY_DASHBOARD" />,
+        account: <Translation id="TR_FEEDBACK_CATEGORY_ACCOUNT" />,
+        settings: <Translation id="TR_FEEDBACK_CATEGORY_SETTINGS" />,
+        send: <Translation id="TR_FEEDBACK_CATEGORY_SEND" />,
+        receive: <Translation id="TR_FEEDBACK_CATEGORY_RECEIVE" />,
+        trade: <Translation id="TR_FEEDBACK_CATEGORY_TRADE" />,
+        other: <Translation id="TR_FEEDBACK_CATEGORY_OTHER" />,
+    };
+
+    // Router apps does not match 1:1 to Feedback Categories
+    const getDefaultCategory = (): Category | undefined => {
+        const { app, route } = router;
+        const routePattern = route?.pattern || '';
+
+        if (routePattern.startsWith('/accounts/coinmarket')) {
+            return 'trade';
+        }
+        if (routePattern.startsWith('/accounts/send')) {
+            return 'send';
+        }
+        if (routePattern.startsWith('/accounts/receive')) {
+            return 'receive';
+        }
+
+        switch (app) {
+            case 'dashboard':
+                return 'dashboard';
+            case 'wallet':
+                return 'account';
+            case 'settings':
+                return 'settings';
+            default:
+                return undefined;
+        }
+    };
+    const [category, setCategory] = React.useState(getDefaultCategory());
+
+    const categoryToOption = (category: Category): FeedbackCategoryOption => ({
+        value: category,
+        label: feedbackCategories[category],
+    });
 
     useEffect(() => {
         if (description.length >= MESSAGE_CHARACTER_LIMIT) {
@@ -173,7 +212,9 @@ const Feedback = ({ type }: Props) => {
                 type: 'BUG',
                 payload: {
                     description,
-                    category,
+                    // By the time of submission a category must be selected.
+                    // Otherwise the submit button would be disabled.
+                    category: category!,
                     ...userData,
                 },
             });
@@ -204,45 +245,6 @@ const Feedback = ({ type }: Props) => {
         rating?.id,
     ]);
 
-    const feedbackCategories: FeedbackCategory = {
-        dashboard: <Translation id="TR_FEEDBACK_CATEGORY_DASHBOARD" />,
-        account: <Translation id="TR_FEEDBACK_CATEGORY_ACCOUNT" />,
-        settings: <Translation id="TR_FEEDBACK_CATEGORY_SETTINGS" />,
-        send: <Translation id="TR_FEEDBACK_CATEGORY_SEND" />,
-        receive: <Translation id="TR_FEEDBACK_CATEGORY_RECEIVE" />,
-        trade: <Translation id="TR_FEEDBACK_CATEGORY_TRADE" />,
-        other: <Translation id="TR_FEEDBACK_CATEGORY_OTHER" />,
-    };
-
-    // Router apps does not match 1:1 to Feedback Categories
-    const getDefaultCategory = (): FeedbackCategoryOption | undefined => {
-        const { app, route } = router;
-        const routePattern = route?.pattern || '';
-
-        if (routePattern.startsWith('/accounts/coinmarket')) {
-            return { value: 'trade', label: feedbackCategories.trade };
-        }
-        if (routePattern.startsWith('/accounts/send')) {
-            return { value: 'send', label: feedbackCategories.send };
-        }
-        if (routePattern.startsWith('/accounts/receive')) {
-            return { value: 'receive', label: feedbackCategories.receive };
-        }
-
-        switch (app) {
-            case 'dashboard':
-                return { value: 'dashboard', label: feedbackCategories.dashboard };
-            case 'wallet':
-                return { value: 'account', label: feedbackCategories.account };
-            case 'settings':
-                return { value: 'settings', label: feedbackCategories.settings };
-            default:
-                return undefined;
-        }
-    };
-
-    const defaultCategory = getDefaultCategory();
-
     return (
         <ViewWrapper>
             <Header
@@ -264,12 +266,9 @@ const Feedback = ({ type }: Props) => {
                         <SelectWrapper>
                             <Select
                                 isSearchable={false}
-                                defaultValue={defaultCategory}
-                                options={Object.entries(feedbackCategories).map(
-                                    ([value, label]) => ({
-                                        value,
-                                        label,
-                                    }),
+                                defaultValue={category && categoryToOption(category)}
+                                options={Object.keys(feedbackCategories).map(category =>
+                                    categoryToOption(category as Category),
                                 )}
                                 borderWidth={1}
                                 borderRadius={8}
