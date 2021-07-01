@@ -26,24 +26,24 @@ import {
 const features = [
     {
         id: 1,
-        headline: <Translation id="TR_SUITE_WEB_LANDING_FEATURES_1_HEADLINE" />,
-        text: <Translation id="TR_SUITE_WEB_LANDING_FEATURES_1_TEXT" />,
+        headline: <Translation id="TR_SUITE_WEB_LANDING_START_FEATURES_1_HEADLINE" />,
+        text: <Translation id="TR_SUITE_WEB_LANDING_START_FEATURES_1_TEXT" />,
         backgroundPosition: 'bottom right',
         backgroundSize: '616px auto',
         soon: false,
     },
     {
         id: 2,
-        headline: <Translation id="TR_SUITE_WEB_LANDING_FEATURES_2_HEADLINE" />,
-        text: <Translation id="TR_SUITE_WEB_LANDING_FEATURES_2_TEXT" />,
+        headline: <Translation id="TR_SUITE_WEB_LANDING_START_FEATURES_2_HEADLINE" />,
+        text: <Translation id="TR_SUITE_WEB_LANDING_START_FEATURES_2_TEXT" />,
         backgroundPosition: 'center left',
         backgroundSize: '489px auto',
         soon: false,
     },
     {
         id: 3,
-        headline: <Translation id="TR_SUITE_WEB_LANDING_FEATURES_3_HEADLINE" />,
-        text: <Translation id="TR_SUITE_WEB_LANDING_FEATURES_3_TEXT" />,
+        headline: <Translation id="TR_SUITE_WEB_LANDING_START_FEATURES_3_HEADLINE" />,
+        text: <Translation id="TR_SUITE_WEB_LANDING_START_FEATURES_3_TEXT" />,
         backgroundSize: '500px auto',
         soon: false,
     },
@@ -66,7 +66,7 @@ const Index = () => {
                             <Fade direction="up" delay={500} triggerOnce>
                                 <StyledHeadline>
                                     <Translation
-                                        id="TR_SUITE_WEB_LANDING_HEADLINE"
+                                        id="TR_SUITE_WEB_LANDING_START_HEADLINE"
                                         values={{
                                             em: chunks => <em>{chunks}</em>,
                                             lineBreak: <br />,
@@ -76,7 +76,7 @@ const Index = () => {
                             </Fade>
                             <Fade delay={1500} triggerOnce>
                                 <StyledSubheadline>
-                                    <Translation id="TR_SUITE_WEB_LANDING_SUB_HEADLINE" />
+                                    <Translation id="TR_SUITE_WEB_LANDING_START_SUB_HEADLINE" />
                                 </StyledSubheadline>
                             </Fade>
                             <DownloadWrapper>
@@ -102,7 +102,7 @@ const Index = () => {
                                 >
                                     {item.soon && (
                                         <StyledSoon>
-                                            <Translation id="TR_SUITE_WEB_LANDING_SUB_SOON" />
+                                            <Translation id="TR_SUITE_WEB_LANDING_START_SUB_SOON" />
                                         </StyledSoon>
                                     )}
                                     <StyledH1>{item.headline}</StyledH1>
@@ -113,7 +113,7 @@ const Index = () => {
                         <StyledCta>
                             <StyledHeadline size={44}>
                                 <Translation
-                                    id="TR_SUITE_WEB_LANDING_BOTTOM_HEADLINE"
+                                    id="TR_SUITE_WEB_LANDING_START_BOTTOM_HEADLINE"
                                     values={{
                                         em: chunks => <em>{chunks}</em>,
                                         lineBreak: <br />,
