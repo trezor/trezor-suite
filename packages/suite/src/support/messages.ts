@@ -6373,6 +6373,19 @@ const definedMessages = defineMessages({
         id: 'TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_DESCRIPTION',
         defaultMessage: 'Just in case',
     },
+    TR_TROUBLESHOOTING_UNREADABLE_WEBUSB: {
+        id: 'TR_TROUBLESHOOTING_UNREADABLE_WEBUSB',
+        defaultMessage:
+            'Your device is connected properly, but your internet browser can not communicate with it at the moment. You will need to install Trezor Bridge.',
+    },
+    TR_TROUBLESHOOTING_UNREADABLE_UDEV: {
+        id: 'TR_TROUBLESHOOTING_UNREADABLE_UDEV',
+        defaultMessage: 'Missing udev rules',
+    },
+    TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN: {
+        id: 'TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN',
+        defaultMessage: 'Unexpected state: {error}',
+    },
     TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_TITLE: {
         id: 'TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_TITLE',
         defaultMessage: 'Seedless setup is not supported by Trezor Suite',
