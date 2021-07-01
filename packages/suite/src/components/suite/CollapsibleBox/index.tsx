@@ -155,7 +155,7 @@ const CollapsibleBox = ({
             >
                 <Heading variant={variant}>{heading ?? iconLabel}</Heading>
                 <IconWrapper headerJustifyContent={headerJustifyContent}>
-                    {iconLabel && <IconLabel>{iconLabel}</IconLabel>}
+                    {heading && iconLabel && <IconLabel>{iconLabel}</IconLabel>}
                     <Icon
                         icon="ARROW_DOWN"
                         size={variant === 'tiny' ? 12 : 20}
