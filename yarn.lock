@@ -4753,14 +4753,6 @@
   dependencies:
     tippy.js "^6.3.1"
 
-"@trezor/rollout@1.0.8":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@trezor/rollout/-/rollout-1.0.8.tgz#9e4440a4c907c1280899f4fdf9657ef39f72cdf3"
-  integrity sha512-nEXzvGOHfXRI89rbvfeAHLRj5mN0EcF/I7HcZaZiQ2xWEjXhjUEyhTyw5PU8oruPUtyRnVVYwpKvzk0xB5I0Mw==
-  dependencies:
-    cross-fetch "^3.0.6"
-    runtypes "^5.0.1"
-
 "@trezor/utxo-lib@0.1.2", "@trezor/utxo-lib@^0.1.2":
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/@trezor/utxo-lib/-/utxo-lib-0.1.2.tgz#19319a424b0d0c648b0df456f1849eb08697fb44"
@@ -23436,14 +23428,14 @@ trezor-address-validator@^0.3.22:
     jssha "2.3.1"
     lodash "^4.17.15"
 
-trezor-connect@8.1.28-beta.3:
-  version "8.1.28-beta.3"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.28-beta.3.tgz#49495e664505acbec8b0a354842cdd1d2b398e9b"
-  integrity sha512-7xYeHgZw+V5aEuQQwruJe53q0JrxAPTVknw+lrYnsczulYo76KZJZpLbtXXBG3oSuS/XbssKhezWN6a1IEDFGA==
+trezor-connect@8.1.29-beta.2:
+  version "8.1.29-beta.2"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.29-beta.2.tgz#f75a49878faa03a60cdc6ffa5fd48836e1c2fd49"
+  integrity sha512-Wgv9Q3LGVuIMq5SWjP0z+z5yMsrEFUYtosGfFCBELY07rSsXd06SWmJk1aCiLwRfiwmJJXwzMQBsFbNQYKgiig==
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@trezor/blockchain-link" "^1.0.17"
-    "@trezor/rollout" "1.0.8"
+    "@trezor/rollout" "1.1.0"
     "@trezor/utxo-lib" "^0.1.2"
     bchaddrjs "^0.5.2"
     bignumber.js "^9.0.1"

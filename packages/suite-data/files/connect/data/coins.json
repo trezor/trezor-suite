@@ -4,13 +4,16 @@
             "address_type": 0,
             "address_type_p2sh": 5,
             "bech32_prefix": "bc",
-            "blockbook": [
-                "https://btc1.trezor.io",
-                "https://btc2.trezor.io",
-                "https://btc3.trezor.io",
-                "https://btc4.trezor.io",
-                "https://btc5.trezor.io"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://btc1.trezor.io",
+                    "https://btc2.trezor.io",
+                    "https://btc3.trezor.io",
+                    "https://btc4.trezor.io",
+                    "https://btc5.trezor.io"
+                ]
+            },
             "blocktime_seconds": 600,
             "cashaddr_prefix": null,
             "coin_label": "Bitcoin",
@@ -42,13 +45,15 @@
             "slip44": 0,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.5.2",
-                "trezor2": "2.0.5",
-                "webwallet": true
+                "trezor2": "2.0.5"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": 44728019,
+            "xpub_magic_multisig_segwit_p2sh": 43365439,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 77429938
         },
@@ -56,10 +61,13 @@
             "address_type": 111,
             "address_type_p2sh": 196,
             "bech32_prefix": "tb",
-            "blockbook": [
-                "https://tbtc1.trezor.io",
-                "https://tbtc2.trezor.io"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://tbtc1.trezor.io",
+                    "https://tbtc2.trezor.io"
+                ]
+            },
             "blocktime_seconds": 600,
             "cashaddr_prefix": null,
             "coin_label": "Testnet",
@@ -88,13 +96,15 @@
             "slip44": 1,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.5.2",
-                "trezor2": "2.0.5",
-                "webwallet": true
+                "trezor2": "2.0.5"
             },
             "timestamp": false,
             "xprv_magic": 70615956,
             "xpub_magic": 70617039,
+            "xpub_magic_multisig_segwit_native": 39277699,
+            "xpub_magic_multisig_segwit_p2sh": 37915119,
             "xpub_magic_segwit_native": 73342198,
             "xpub_magic_segwit_p2sh": 71979618
         },
@@ -102,7 +112,7 @@
             "address_type": 53,
             "address_type_p2sh": 55,
             "bech32_prefix": "acm",
-            "blockbook": [],
+            "blockchain_link": null,
             "blocktime_seconds": 150,
             "cashaddr_prefix": null,
             "coin_label": "Actinium",
@@ -121,7 +131,7 @@
             "fork_id": null,
             "hash_genesis_block": "28d77872e23714562f49a1be792c276623c1bbe3fdcf21b6035cfde78b00b824",
             "max_address_length": 34,
-            "maxfee_kb": 40000000,
+            "maxfee_kb": 320000000000,
             "min_address_length": 27,
             "minfee_kb": 100000,
             "name": "Actinium",
@@ -131,13 +141,15 @@
             "slip44": 228,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.7.2",
-                "trezor2": "2.0.10",
-                "webwallet": true
+                "trezor2": "2.0.10"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": 76067358,
+            "xpub_magic_multisig_segwit_p2sh": 76067358,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 77429938
         },
@@ -145,7 +157,7 @@
             "address_type": 55,
             "address_type_p2sh": 16,
             "bech32_prefix": null,
-            "blockbook": [],
+            "blockchain_link": null,
             "blocktime_seconds": 150,
             "cashaddr_prefix": null,
             "coin_label": "Axe",
@@ -164,7 +176,7 @@
             "fork_id": null,
             "hash_genesis_block": "00000c33631ca6f2f61368991ce2dc03306b5bb50bf7cede5cfbba6db38e52e6",
             "max_address_length": 34,
-            "maxfee_kb": 100000,
+            "maxfee_kb": 21000000000,
             "min_address_length": 27,
             "minfee_kb": 1000,
             "name": "Axe",
@@ -174,13 +186,15 @@
             "slip44": 4242,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.7.3",
-                "trezor2": "2.0.11",
-                "webwallet": false
+                "trezor2": "2.0.11"
             },
             "timestamp": false,
             "xprv_magic": 50221816,
             "xpub_magic": 50221772,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -188,9 +202,12 @@
             "address_type": 81,
             "address_type_p2sh": 5,
             "bech32_prefix": "bz",
-            "blockbook": [
-                "https://zny.blockbook.ovh"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://zny.blockbook.ovh"
+                ]
+            },
             "blocktime_seconds": 90,
             "cashaddr_prefix": null,
             "coin_label": "BitZeny",
@@ -209,7 +226,7 @@
             "fork_id": null,
             "hash_genesis_block": "000009f7e55e9e3b4781e22bd87a7cfa4acada9e4340d43ca738bf4e9fb8f5ce",
             "max_address_length": 34,
-            "maxfee_kb": 1000000,
+            "maxfee_kb": 1600000000000,
             "min_address_length": 27,
             "minfee_kb": 1000,
             "name": "BitZeny",
@@ -219,13 +236,15 @@
             "slip44": 123,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.8.2",
-                "trezor2": "2.1.1",
-                "webwallet": false
+                "trezor2": "2.1.1"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": 76067358,
+            "xpub_magic_multisig_segwit_p2sh": 76067358,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 77429938
         },
@@ -233,13 +252,16 @@
             "address_type": 0,
             "address_type_p2sh": 5,
             "bech32_prefix": null,
-            "blockbook": [
-                "https://bch1.trezor.io",
-                "https://bch2.trezor.io",
-                "https://bch3.trezor.io",
-                "https://bch4.trezor.io",
-                "https://bch5.trezor.io"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://bch1.trezor.io",
+                    "https://bch2.trezor.io",
+                    "https://bch3.trezor.io",
+                    "https://bch4.trezor.io",
+                    "https://bch5.trezor.io"
+                ]
+            },
             "blocktime_seconds": 600,
             "cashaddr_prefix": "bitcoincash",
             "coin_label": "Bitcoin Cash",
@@ -261,7 +283,7 @@
             "fork_id": 0,
             "hash_genesis_block": "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f",
             "max_address_length": 34,
-            "maxfee_kb": 500000,
+            "maxfee_kb": 14000000,
             "min_address_length": 27,
             "minfee_kb": 1000,
             "name": "Bitcoin Cash",
@@ -271,13 +293,15 @@
             "slip44": 145,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": true
+                "trezor2": "2.0.7"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -285,7 +309,7 @@
             "address_type": 111,
             "address_type_p2sh": 196,
             "bech32_prefix": null,
-            "blockbook": [],
+            "blockchain_link": null,
             "blocktime_seconds": 600,
             "cashaddr_prefix": "bchtest",
             "coin_label": "Bitcoin Cash Testnet",
@@ -314,13 +338,15 @@
             "slip44": 1,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
+                "trezor2": "2.0.7"
             },
             "timestamp": false,
             "xprv_magic": 70615956,
             "xpub_magic": 70617039,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -328,13 +354,16 @@
             "address_type": 38,
             "address_type_p2sh": 23,
             "bech32_prefix": "btg",
-            "blockbook": [
-                "https://btg1.trezor.io",
-                "https://btg2.trezor.io",
-                "https://btg3.trezor.io",
-                "https://btg4.trezor.io",
-                "https://btg5.trezor.io"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://btg1.trezor.io",
+                    "https://btg2.trezor.io",
+                    "https://btg3.trezor.io",
+                    "https://btg4.trezor.io",
+                    "https://btg5.trezor.io"
+                ]
+            },
             "blocktime_seconds": 600,
             "cashaddr_prefix": null,
             "coin_label": "Bitcoin Gold",
@@ -356,7 +385,7 @@
             "fork_id": 79,
             "hash_genesis_block": "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f",
             "max_address_length": 34,
-            "maxfee_kb": 500000,
+            "maxfee_kb": 380000000,
             "min_address_length": 27,
             "minfee_kb": 1000,
             "name": "Bitcoin Gold",
@@ -366,13 +395,15 @@
             "slip44": 156,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": true
+                "trezor2": "2.0.7"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": 76067358,
+            "xpub_magic_multisig_segwit_p2sh": 76067358,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 77429938
         },
@@ -380,7 +411,7 @@
             "address_type": 111,
             "address_type_p2sh": 196,
             "bech32_prefix": "tbtg",
-            "blockbook": [],
+            "blockchain_link": null,
             "blocktime_seconds": 600,
             "cashaddr_prefix": null,
             "coin_label": "Bitcoin Gold Testnet",
@@ -412,13 +443,15 @@
             "slip44": 156,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.7.1",
-                "trezor2": "2.0.8",
-                "webwallet": false
+                "trezor2": "2.0.8"
             },
             "timestamp": false,
             "xprv_magic": 70615956,
             "xpub_magic": 70617039,
+            "xpub_magic_multisig_segwit_native": 70617039,
+            "xpub_magic_multisig_segwit_p2sh": 70617039,
             "xpub_magic_segwit_native": 73342198,
             "xpub_magic_segwit_p2sh": 71979618
         },
@@ -426,7 +459,7 @@
             "address_type": 4901,
             "address_type_p2sh": 5039,
             "bech32_prefix": null,
-            "blockbook": [],
+            "blockchain_link": null,
             "blocktime_seconds": 150,
             "cashaddr_prefix": null,
             "coin_label": "Bitcoin Private",
@@ -445,7 +478,7 @@
             "fork_id": 42,
             "hash_genesis_block": "0007104ccda289427919efc39dc9e4d499804b7bebc22df55f8b834301260602",
             "max_address_length": 95,
-            "maxfee_kb": 1000000,
+            "maxfee_kb": 32000000000,
             "min_address_length": 35,
             "minfee_kb": 1000,
             "name": "Bitcoin Private",
@@ -455,13 +488,15 @@
             "slip44": 183,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": true
+                "trezor2": "2.0.7"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -469,10 +504,13 @@
             "address_type": 61,
             "address_type_p2sh": 123,
             "bech32_prefix": null,
-            "blockbook": [
-                "https://blockbook1.bitcoinrh.org",
-                "https://blockbook2.bitcoinrh.org"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://blockbook1.bitcoinrh.org",
+                    "https://blockbook2.bitcoinrh.org"
+                ]
+            },
             "blocktime_seconds": 600,
             "cashaddr_prefix": null,
             "coin_label": "Bitcoin Rhodium",
@@ -494,7 +532,7 @@
             "fork_id": null,
             "hash_genesis_block": "baff5bfd9dc43fb672d003ec20fd21428f9282ca46bfa1730d73e1f2c75f5fdd",
             "max_address_length": 34,
-            "maxfee_kb": 2000000,
+            "maxfee_kb": 1000000000,
             "min_address_length": 27,
             "minfee_kb": 1000,
             "name": "Bitcoin Rhodium",
@@ -504,13 +542,15 @@
             "slip44": 10291,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.8.2",
-                "trezor2": "2.1.1",
-                "webwallet": false
+                "trezor2": "2.1.1"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -518,7 +558,7 @@
             "address_type": 3,
             "address_type_p2sh": 125,
             "bech32_prefix": "btx",
-            "blockbook": [],
+            "blockchain_link": null,
             "blocktime_seconds": 150,
             "cashaddr_prefix": null,
             "coin_label": "Bitcore",
@@ -537,7 +577,7 @@
             "fork_id": null,
             "hash_genesis_block": "604148281e5c4b7f2487e5d03cd60d8e6f69411d613f6448034508cea52e9574",
             "max_address_length": 34,
-            "maxfee_kb": 2000000,
+            "maxfee_kb": 14000000000,
             "min_address_length": 27,
             "minfee_kb": 1000,
             "name": "Bitcore",
@@ -547,13 +587,15 @@
             "slip44": 160,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.7.1",
-                "trezor2": "2.0.8",
-                "webwallet": false
+                "trezor2": "2.0.8"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": 76067358,
+            "xpub_magic_multisig_segwit_p2sh": 76067358,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 77429938
         },
@@ -561,13 +603,16 @@
             "address_type": 76,
             "address_type_p2sh": 16,
             "bech32_prefix": null,
-            "blockbook": [
-                "https://dash1.trezor.io",
-                "https://dash2.trezor.io",
-                "https://dash3.trezor.io",
-                "https://dash4.trezor.io",
-                "https://dash5.trezor.io"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://dash1.trezor.io",
+                    "https://dash2.trezor.io",
+                    "https://dash3.trezor.io",
+                    "https://dash4.trezor.io",
+                    "https://dash5.trezor.io"
+                ]
+            },
             "blocktime_seconds": 150,
             "cashaddr_prefix": null,
             "coin_label": "Dash",
@@ -586,7 +631,7 @@
             "fork_id": null,
             "hash_genesis_block": "00000ffd590b1485b3caadc19b22e6379c733355108f107a430458cdf3407ab6",
             "max_address_length": 34,
-            "maxfee_kb": 100000,
+            "maxfee_kb": 45000000,
             "min_address_length": 27,
             "minfee_kb": 1000,
             "name": "Dash",
@@ -596,13 +641,15 @@
             "slip44": 5,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.5.2",
-                "trezor2": "2.0.5",
-                "webwallet": true
+                "trezor2": "2.0.5"
             },
             "timestamp": false,
             "xprv_magic": 50221816,
             "xpub_magic": 50221772,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -610,7 +657,7 @@
             "address_type": 140,
             "address_type_p2sh": 19,
             "bech32_prefix": null,
-            "blockbook": [],
+            "blockchain_link": null,
             "blocktime_seconds": 150,
             "cashaddr_prefix": null,
             "coin_label": "Dash Testnet",
@@ -639,13 +686,15 @@
             "slip44": 1,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.8",
-                "webwallet": false
+                "trezor2": "2.0.8"
             },
             "timestamp": false,
             "xprv_magic": 70615956,
             "xpub_magic": 70617039,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -653,10 +702,13 @@
             "address_type": 30,
             "address_type_p2sh": 63,
             "bech32_prefix": "dgb",
-            "blockbook": [
-                "https://dgb1.trezor.io",
-                "https://dgb2.trezor.io"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://dgb1.trezor.io",
+                    "https://dgb2.trezor.io"
+                ]
+            },
             "blocktime_seconds": 15,
             "cashaddr_prefix": null,
             "coin_label": "DigiByte",
@@ -678,7 +730,7 @@
             "fork_id": null,
             "hash_genesis_block": "7497ea1b465eb39f1c8f507bc877078fe016d6fcb6dfad3a64c98dcc6e1e8496",
             "max_address_length": 34,
-            "maxfee_kb": 500000,
+            "maxfee_kb": 130000000000,
             "min_address_length": 27,
             "minfee_kb": 1000,
             "name": "DigiByte",
@@ -688,13 +740,15 @@
             "slip44": 20,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.6.3",
-                "trezor2": "2.0.7",
-                "webwallet": true
+                "trezor2": "2.0.7"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": 76067358,
+            "xpub_magic_multisig_segwit_p2sh": 76067358,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 77429938
         },
@@ -702,13 +756,16 @@
             "address_type": 30,
             "address_type_p2sh": 22,
             "bech32_prefix": null,
-            "blockbook": [
-                "https://doge1.trezor.io",
-                "https://doge2.trezor.io",
-                "https://doge3.trezor.io",
-                "https://doge4.trezor.io",
-                "https://doge5.trezor.io"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://doge1.trezor.io",
+                    "https://doge2.trezor.io",
+                    "https://doge3.trezor.io",
+                    "https://doge4.trezor.io",
+                    "https://doge5.trezor.io"
+                ]
+            },
             "blocktime_seconds": 60,
             "cashaddr_prefix": null,
             "coin_label": "Dogecoin",
@@ -727,7 +784,7 @@
             "fork_id": null,
             "hash_genesis_block": "1a91e3dace36e2be3bf030a65679fe821aa1d6ef92e7c9902eb318182c355691",
             "max_address_length": 34,
-            "maxfee_kb": 1000000000,
+            "maxfee_kb": 1200000000000,
             "min_address_length": 27,
             "minfee_kb": 100000000,
             "name": "Dogecoin",
@@ -737,13 +794,15 @@
             "slip44": 3,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.5.2",
-                "trezor2": "2.0.5",
-                "webwallet": true
+                "trezor2": "2.0.5"
             },
             "timestamp": false,
             "xprv_magic": 49988504,
             "xpub_magic": 49990397,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -751,7 +810,7 @@
             "address_type": 14,
             "address_type_p2sh": 5,
             "bech32_prefix": "fc",
-            "blockbook": [],
+            "blockchain_link": null,
             "blocktime_seconds": 60,
             "cashaddr_prefix": null,
             "coin_label": "Feathercoin",
@@ -770,7 +829,7 @@
             "fork_id": null,
             "hash_genesis_block": "12a765e31ffd4059bada1e25190f6e98c99d9714d334efa41a195a7e7e04bfe2",
             "max_address_length": 34,
-            "maxfee_kb": 40000000,
+            "maxfee_kb": 390000000000,
             "min_address_length": 27,
             "minfee_kb": 1000,
             "name": "Feathercoin",
@@ -780,13 +839,15 @@
             "slip44": 8,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.7.1",
-                "trezor2": "2.0.8",
-                "webwallet": false
+                "trezor2": "2.0.8"
             },
             "timestamp": false,
             "xprv_magic": 76077806,
             "xpub_magic": 76069926,
+            "xpub_magic_multisig_segwit_native": 76069926,
+            "xpub_magic_multisig_segwit_p2sh": 76069926,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 77429938
         },
@@ -794,7 +855,7 @@
             "address_type": 35,
             "address_type_p2sh": 94,
             "bech32_prefix": "flo",
-            "blockbook": [],
+            "blockchain_link": null,
             "blocktime_seconds": 40,
             "cashaddr_prefix": null,
             "coin_label": "Flo",
@@ -808,12 +869,12 @@
                 "Normal": 1000
             },
             "dust_limit": 546,
-            "extra_data": false,
+            "extra_data": true,
             "force_bip143": false,
             "fork_id": null,
             "hash_genesis_block": "09c7781c9df90708e278c35d38ea5c9041d7ecfcdd1c56ba67274b7cff3e1cea",
             "max_address_length": 34,
-            "maxfee_kb": 40000000,
+            "maxfee_kb": 78000000000,
             "min_address_length": 27,
             "minfee_kb": 100000,
             "name": "Flo",
@@ -823,13 +884,15 @@
             "slip44": 216,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.7.2",
-                "trezor2": "2.0.11",
-                "webwallet": false
+                "trezor2": "2.0.11"
             },
             "timestamp": false,
             "xprv_magic": 15264107,
             "xpub_magic": 1526049,
+            "xpub_magic_multisig_segwit_native": 1526049,
+            "xpub_magic_multisig_segwit_p2sh": 1526049,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 28471030
         },
@@ -837,9 +900,12 @@
             "address_type": 36,
             "address_type_p2sh": 16,
             "bech32_prefix": "fc",
-            "blockbook": [
-                "https://explorer.fujicoin.org"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://explorer.fujicoin.org"
+                ]
+            },
             "blocktime_seconds": 60,
             "cashaddr_prefix": null,
             "coin_label": "Fujicoin",
@@ -861,7 +927,7 @@
             "fork_id": null,
             "hash_genesis_block": "adb6d9cfd74075e7f91608add4bd2a2ea636f70856183086842667a1597714a0",
             "max_address_length": 34,
-            "maxfee_kb": 1000000000,
+            "maxfee_kb": 35000000000000,
             "min_address_length": 27,
             "minfee_kb": 10000000,
             "name": "Fujicoin",
@@ -871,68 +937,28 @@
             "slip44": 75,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.6.1",
-                "trezor2": "2.0.5",
-                "webwallet": true
+                "trezor2": "2.0.5"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": 76066276,
+            "xpub_magic_multisig_segwit_p2sh": 76066276,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 77429938
         },
         {
             "address_type": 38,
-            "address_type_p2sh": 10,
-            "bech32_prefix": null,
-            "blockbook": [
-                "https://blockbook.gincoin.io"
-            ],
-            "blocktime_seconds": 120,
-            "cashaddr_prefix": null,
-            "coin_label": "GIN",
-            "coin_name": "Gincoin",
-            "coin_shortcut": "GIN",
-            "consensus_branch_id": null,
-            "curve_name": "secp256k1",
-            "decimals": 8,
-            "decred": false,
-            "default_fee_b": {
-                "Normal": 10
-            },
-            "dust_limit": 5460,
-            "extra_data": false,
-            "force_bip143": false,
-            "fork_id": null,
-            "hash_genesis_block": "00000cd6bde619b2c3b23ad2e384328a450a37fa28731debf748c3b17f91f97d",
-            "max_address_length": 34,
-            "maxfee_kb": 100000,
-            "min_address_length": 27,
-            "minfee_kb": 1000,
-            "name": "GIN",
-            "segwit": false,
-            "shortcut": "GIN",
-            "signed_message_header": "DarkCoin Signed Message:\n",
-            "slip44": 2000,
-            "support": {
-                "connect": true,
-                "trezor1": "1.7.2",
-                "trezor2": "2.0.11",
-                "webwallet": false
-            },
-            "timestamp": false,
-            "xprv_magic": 50221816,
-            "xpub_magic": 50221772,
-            "xpub_magic_segwit_native": null,
-            "xpub_magic_segwit_p2sh": null
-        },
-        {
-            "address_type": 38,
             "address_type_p2sh": 62,
             "bech32_prefix": "game",
-            "blockbook": [
-                "https://blockbook.gamecredits.network"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://blockbook.gamecredits.network"
+                ]
+            },
             "blocktime_seconds": 90,
             "cashaddr_prefix": null,
             "coin_label": "GameCredits",
@@ -951,7 +977,7 @@
             "fork_id": null,
             "hash_genesis_block": "91ec5f25ee9a0ffa1af7d4da4db9a552228dd2dc77cdb15b738be4e1f55f30ee",
             "max_address_length": 34,
-            "maxfee_kb": 5000000,
+            "maxfee_kb": 53000000000,
             "min_address_length": 27,
             "minfee_kb": 100000,
             "name": "GameCredits",
@@ -961,13 +987,15 @@
             "slip44": 101,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.7.1",
-                "trezor2": "2.0.8",
-                "webwallet": false
+                "trezor2": "2.0.8"
             },
             "timestamp": false,
             "xprv_magic": 27108450,
             "xpub_magic": 27106558,
+            "xpub_magic_multisig_segwit_native": 27108450,
+            "xpub_magic_multisig_segwit_p2sh": 27108450,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 28471030
         },
@@ -975,7 +1003,7 @@
             "address_type": 60,
             "address_type_p2sh": 85,
             "bech32_prefix": null,
-            "blockbook": [],
+            "blockchain_link": null,
             "blocktime_seconds": 60,
             "cashaddr_prefix": null,
             "coin_label": "Komodo",
@@ -999,7 +1027,7 @@
             "fork_id": null,
             "hash_genesis_block": "027e3758c3a65b12aa1046462b486d0a63bfa1beae327897f56c5cfb7daaae71",
             "max_address_length": 34,
-            "maxfee_kb": 1000000,
+            "maxfee_kb": 4800000000,
             "min_address_length": 27,
             "minfee_kb": 1000,
             "name": "Komodo",
@@ -1009,13 +1037,15 @@
             "slip44": 141,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.8.0",
-                "trezor2": "2.0.11",
-                "webwallet": false
+                "trezor2": "2.0.11"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -1023,9 +1053,12 @@
             "address_type": 6198,
             "address_type_p2sh": 6203,
             "bech32_prefix": null,
-            "blockbook": [
-                "https://blockbook.kotocoin.info"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://blockbook.kotocoin.info"
+                ]
+            },
             "blocktime_seconds": 60,
             "cashaddr_prefix": null,
             "coin_label": "Koto",
@@ -1059,13 +1092,15 @@
             "slip44": 510,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.7.1",
-                "trezor2": "2.0.8",
-                "webwallet": true
+                "trezor2": "2.0.8"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -1073,13 +1108,16 @@
             "address_type": 48,
             "address_type_p2sh": 50,
             "bech32_prefix": "ltc",
-            "blockbook": [
-                "https://ltc1.trezor.io",
-                "https://ltc2.trezor.io",
-                "https://ltc3.trezor.io",
-                "https://ltc4.trezor.io",
-                "https://ltc5.trezor.io"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://ltc1.trezor.io",
+                    "https://ltc2.trezor.io",
+                    "https://ltc3.trezor.io",
+                    "https://ltc4.trezor.io",
+                    "https://ltc5.trezor.io"
+                ]
+            },
             "blocktime_seconds": 150,
             "cashaddr_prefix": null,
             "coin_label": "Litecoin",
@@ -1098,7 +1136,7 @@
             "fork_id": null,
             "hash_genesis_block": "12a765e31ffd4059bada1e25190f6e98c99d9714d334efa41a195a7e7e04bfe2",
             "max_address_length": 34,
-            "maxfee_kb": 40000000,
+            "maxfee_kb": 67000000,
             "min_address_length": 27,
             "minfee_kb": 1000,
             "name": "Litecoin",
@@ -1108,13 +1146,15 @@
             "slip44": 2,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.5.2",
-                "trezor2": "2.0.5",
-                "webwallet": true
+                "trezor2": "2.0.5"
             },
             "timestamp": false,
             "xprv_magic": 27106558,
             "xpub_magic": 27108450,
+            "xpub_magic_multisig_segwit_native": 27108450,
+            "xpub_magic_multisig_segwit_p2sh": 27108450,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 28471030
         },
@@ -1122,7 +1162,7 @@
             "address_type": 111,
             "address_type_p2sh": 58,
             "bech32_prefix": "tltc",
-            "blockbook": [],
+            "blockchain_link": null,
             "blocktime_seconds": 150,
             "cashaddr_prefix": null,
             "coin_label": "Litecoin Testnet",
@@ -1151,13 +1191,15 @@
             "slip44": 1,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": true
+                "trezor2": "2.0.7"
             },
             "timestamp": false,
             "xprv_magic": 70615956,
             "xpub_magic": 70617039,
+            "xpub_magic_multisig_segwit_native": 70617039,
+            "xpub_magic_multisig_segwit_p2sh": 70617039,
             "xpub_magic_segwit_native": 73342198,
             "xpub_magic_segwit_p2sh": 71979618
         },
@@ -1165,9 +1207,12 @@
             "address_type": 50,
             "address_type_p2sh": 55,
             "bech32_prefix": "mona",
-            "blockbook": [
-                "https://blockbook.electrum-mona.org"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://blockbook.electrum-mona.org"
+                ]
+            },
             "blocktime_seconds": 90,
             "cashaddr_prefix": null,
             "coin_label": "Monacoin",
@@ -1186,7 +1231,7 @@
             "fork_id": null,
             "hash_genesis_block": "ff9f1c0116d19de7c9963845e129f9ed1bfc0b376eb54fd7afa42e0d418c8bb6",
             "max_address_length": 34,
-            "maxfee_kb": 5000000,
+            "maxfee_kb": 2100000000,
             "min_address_length": 27,
             "minfee_kb": 100000,
             "name": "Monacoin",
@@ -1196,13 +1241,15 @@
             "slip44": 22,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.6.0",
-                "trezor2": "2.0.5",
-                "webwallet": true
+                "trezor2": "2.0.5"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": 76067358,
+            "xpub_magic_multisig_segwit_p2sh": 76067358,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 77429938
         },
@@ -1210,9 +1257,12 @@
             "address_type": 16,
             "address_type_p2sh": 76,
             "bech32_prefix": null,
-            "blockbook": [
-                "https://blockbook.monetaryunit.org"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://blockbook.monetaryunit.org"
+                ]
+            },
             "blocktime_seconds": 40,
             "cashaddr_prefix": null,
             "coin_label": "MonetaryUnit",
@@ -1231,7 +1281,7 @@
             "fork_id": null,
             "hash_genesis_block": "0b58ed450b3819ca54ab0054c4d220ca4f887d21c9e55d2a333173adf76d987f",
             "max_address_length": 34,
-            "maxfee_kb": 100000,
+            "maxfee_kb": 600000000000,
             "min_address_length": 27,
             "minfee_kb": 1000,
             "name": "MonetaryUnit",
@@ -1241,13 +1291,15 @@
             "slip44": 31,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.7.1",
-                "trezor2": "2.0.8",
-                "webwallet": true
+                "trezor2": "2.0.8"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -1255,7 +1307,7 @@
             "address_type": 38,
             "address_type_p2sh": 53,
             "bech32_prefix": "nix",
-            "blockbook": [],
+            "blockchain_link": null,
             "blocktime_seconds": 120,
             "cashaddr_prefix": null,
             "coin_label": "NIX",
@@ -1274,7 +1326,7 @@
             "fork_id": null,
             "hash_genesis_block": "dd28ad86def767c3cfc34267a950d871fc7462bc57ea4a929fc3596d9b598e41",
             "max_address_length": 34,
-            "maxfee_kb": 40000000,
+            "maxfee_kb": 30000000000,
             "min_address_length": 27,
             "minfee_kb": 0,
             "name": "NIX",
@@ -1284,13 +1336,15 @@
             "slip44": 400,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.7.2",
-                "trezor2": "2.0.11",
-                "webwallet": false
+                "trezor2": "2.0.11"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": 76067358,
+            "xpub_magic_multisig_segwit_p2sh": 76067358,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 77429938
         },
@@ -1298,10 +1352,13 @@
             "address_type": 52,
             "address_type_p2sh": 5,
             "bech32_prefix": null,
-            "blockbook": [
-                "https://nmc1.trezor.io",
-                "https://nmc2.trezor.io"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://nmc1.trezor.io",
+                    "https://nmc2.trezor.io"
+                ]
+            },
             "blocktime_seconds": 600,
             "cashaddr_prefix": null,
             "coin_label": "Namecoin",
@@ -1320,7 +1377,7 @@
             "fork_id": null,
             "hash_genesis_block": "000000000062b72c5e2ceb45fbc8587e807c155b0da735e6483dfba2f0a9c770",
             "max_address_length": 34,
-            "maxfee_kb": 10000000,
+            "maxfee_kb": 8700000000,
             "min_address_length": 27,
             "minfee_kb": 100000,
             "name": "Namecoin",
@@ -1330,103 +1387,15 @@
             "slip44": 7,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.5.2",
-                "trezor2": "2.0.5",
-                "webwallet": true
+                "trezor2": "2.0.5"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
-            "xpub_magic_segwit_native": null,
-            "xpub_magic_segwit_p2sh": null
-        },
-        {
-            "address_type": 30,
-            "address_type_p2sh": 13,
-            "bech32_prefix": null,
-            "blockbook": [
-                "https://blockbook.pivx.link"
-            ],
-            "blocktime_seconds": 60,
-            "cashaddr_prefix": null,
-            "coin_label": "PIVX",
-            "coin_name": "PIVX",
-            "coin_shortcut": "PIVX",
-            "consensus_branch_id": null,
-            "curve_name": "secp256k1",
-            "decimals": 8,
-            "decred": false,
-            "default_fee_b": {
-                "Normal": 10
-            },
-            "dust_limit": 546,
-            "extra_data": false,
-            "force_bip143": false,
-            "fork_id": null,
-            "hash_genesis_block": "0000041e482b9b9691d98eefb48473405c0b8ec31b76df3797c74a78680ef818",
-            "max_address_length": 34,
-            "maxfee_kb": 100000,
-            "min_address_length": 27,
-            "minfee_kb": 100,
-            "name": "PIVX",
-            "segwit": false,
-            "shortcut": "PIVX",
-            "signed_message_header": "DarkNet Signed Message:\n",
-            "slip44": 119,
-            "support": {
-                "connect": true,
-                "trezor1": "1.8.0",
-                "trezor2": "2.0.11",
-                "webwallet": false
-            },
-            "timestamp": false,
-            "xprv_magic": 35729707,
-            "xpub_magic": 36513075,
-            "xpub_magic_segwit_native": null,
-            "xpub_magic_segwit_p2sh": null
-        },
-        {
-            "address_type": 139,
-            "address_type_p2sh": 19,
-            "bech32_prefix": null,
-            "blockbook": [
-                "https://blockbook-testnet.pivx.link"
-            ],
-            "blocktime_seconds": 60,
-            "cashaddr_prefix": null,
-            "coin_label": "PIVX Testnet",
-            "coin_name": "PIVX Testnet",
-            "coin_shortcut": "tPIVX",
-            "consensus_branch_id": null,
-            "curve_name": "secp256k1",
-            "decimals": 8,
-            "decred": false,
-            "default_fee_b": {
-                "Normal": 10
-            },
-            "dust_limit": 54600,
-            "extra_data": false,
-            "force_bip143": false,
-            "fork_id": null,
-            "hash_genesis_block": "0000041e482b9b9691d98eefb48473405c0b8ec31b76df3797c74a78680ef818",
-            "max_address_length": 34,
-            "maxfee_kb": 100000,
-            "min_address_length": 27,
-            "minfee_kb": 100,
-            "name": "PIVX Testnet",
-            "segwit": false,
-            "shortcut": "tPIVX",
-            "signed_message_header": "DarkNet Signed Message:\n",
-            "slip44": 1,
-            "support": {
-                "connect": true,
-                "trezor1": "1.8.0",
-                "trezor2": "2.0.11",
-                "webwallet": false
-            },
-            "timestamp": false,
-            "xprv_magic": 981489719,
-            "xpub_magic": 981492128,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -1434,9 +1403,12 @@
             "address_type": 55,
             "address_type_p2sh": 117,
             "bech32_prefix": "pc",
-            "blockbook": [
-                "https://blockbook.peercoin.net"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://blockbook.peercoin.net"
+                ]
+            },
             "blocktime_seconds": 600,
             "cashaddr_prefix": null,
             "coin_label": "Peercoin",
@@ -1455,7 +1427,7 @@
             "fork_id": null,
             "hash_genesis_block": "0000000032fe677166d54963b62a4677d8957e87c508eaa4fd7eb1c880cd27e3",
             "max_address_length": 34,
-            "maxfee_kb": 2000000,
+            "maxfee_kb": 13000000000,
             "min_address_length": 27,
             "minfee_kb": 10000,
             "name": "Peercoin",
@@ -1465,13 +1437,15 @@
             "slip44": 6,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.8.4",
-                "trezor2": "2.1.9",
-                "webwallet": true
+                "trezor2": "2.1.9"
             },
             "timestamp": true,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": 76067358,
+            "xpub_magic_multisig_segwit_p2sh": 76067358,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 77429938
         },
@@ -1479,9 +1453,12 @@
             "address_type": 111,
             "address_type_p2sh": 196,
             "bech32_prefix": "tpc",
-            "blockbook": [
-                "https://tblockbook.peercoin.net"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://tblockbook.peercoin.net"
+                ]
+            },
             "blocktime_seconds": 600,
             "cashaddr_prefix": null,
             "coin_label": "Peercoin Testnet",
@@ -1510,66 +1487,28 @@
             "slip44": 1,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.8.4",
-                "trezor2": "2.1.9",
-                "webwallet": true
+                "trezor2": "2.1.9"
             },
             "timestamp": true,
             "xprv_magic": 70615956,
             "xpub_magic": 70617039,
+            "xpub_magic_multisig_segwit_native": 70617039,
+            "xpub_magic_multisig_segwit_p2sh": 70617039,
             "xpub_magic_segwit_native": 73342198,
             "xpub_magic_segwit_p2sh": 71979618
-        },
-        {
-            "address_type": 47,
-            "address_type_p2sh": 22,
-            "bech32_prefix": null,
-            "blockbook": [],
-            "blocktime_seconds": 60,
-            "cashaddr_prefix": null,
-            "coin_label": "Pesetacoin",
-            "coin_name": "Pesetacoin",
-            "coin_shortcut": "PTC",
-            "consensus_branch_id": null,
-            "curve_name": "secp256k1",
-            "decimals": 8,
-            "decred": false,
-            "default_fee_b": {
-                "Normal": 10
-            },
-            "dust_limit": 10000000,
-            "extra_data": false,
-            "force_bip143": false,
-            "fork_id": null,
-            "hash_genesis_block": "edfe5830b53251bfff733600b1cd5c192e761c011b055f07924634818c906438",
-            "max_address_length": 34,
-            "maxfee_kb": 1000000000,
-            "min_address_length": 27,
-            "minfee_kb": 1000,
-            "name": "Pesetacoin",
-            "segwit": false,
-            "shortcut": "PTC",
-            "signed_message_header": "Pesetacoin Signed Message:\n",
-            "slip44": 109,
-            "support": {
-                "connect": true,
-                "trezor1": "1.7.1",
-                "trezor2": "2.0.8",
-                "webwallet": false
-            },
-            "timestamp": false,
-            "xprv_magic": 76079604,
-            "xpub_magic": 76071982,
-            "xpub_magic_segwit_native": null,
-            "xpub_magic_segwit_p2sh": null
         },
         {
             "address_type": 55,
             "address_type_p2sh": 56,
             "bech32_prefix": null,
-            "blockbook": [
-                "https://blockbook.polispay.org"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://blockbook.polispay.org"
+                ]
+            },
             "blocktime_seconds": 120,
             "cashaddr_prefix": null,
             "coin_label": "Polis",
@@ -1588,7 +1527,7 @@
             "fork_id": null,
             "hash_genesis_block": "000009701eb781a8113b1af1d814e2f060f6408a2c990db291bc5108a1345c1e",
             "max_address_length": 34,
-            "maxfee_kb": 100000,
+            "maxfee_kb": 4900000000,
             "min_address_length": 27,
             "minfee_kb": 1000,
             "name": "Polis",
@@ -1598,13 +1537,15 @@
             "slip44": 1997,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.8.2",
-                "trezor2": "2.1.1",
-                "webwallet": false
+                "trezor2": "2.1.1"
             },
             "timestamp": false,
             "xprv_magic": 65165637,
             "xpub_magic": 65166718,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -1612,7 +1553,7 @@
             "address_type": 23,
             "address_type_p2sh": 83,
             "bech32_prefix": null,
-            "blockbook": [],
+            "blockchain_link": null,
             "blocktime_seconds": 60,
             "cashaddr_prefix": null,
             "coin_label": "Primecoin",
@@ -1631,7 +1572,7 @@
             "fork_id": null,
             "hash_genesis_block": "963d17ba4dc753138078a2f56afb3af9674e2546822badff26837db9a0152106",
             "max_address_length": 35,
-            "maxfee_kb": 1000000,
+            "maxfee_kb": 89000000000,
             "min_address_length": 26,
             "minfee_kb": 1000,
             "name": "Primecoin",
@@ -1641,13 +1582,15 @@
             "slip44": 24,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.8.0",
-                "trezor2": "2.0.11",
-                "webwallet": false
+                "trezor2": "2.0.11"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -1655,9 +1598,12 @@
             "address_type": 60,
             "address_type_p2sh": 122,
             "bech32_prefix": null,
-            "blockbook": [
-                "https://blockbook.ravencoin.org"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://blockbook.ravencoin.org"
+                ]
+            },
             "blocktime_seconds": 60,
             "cashaddr_prefix": null,
             "coin_label": "Ravencoin",
@@ -1676,7 +1622,7 @@
             "fork_id": null,
             "hash_genesis_block": "0000006b444bc2f2ffe627be9d9e7e7a0730000870ef6eb6da46c8eae389df90",
             "max_address_length": 34,
-            "maxfee_kb": 2000000,
+            "maxfee_kb": 170000000000,
             "min_address_length": 27,
             "minfee_kb": 1000,
             "name": "Ravencoin",
@@ -1686,13 +1632,15 @@
             "slip44": 175,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.7.2",
-                "trezor2": "2.0.10",
-                "webwallet": true
+                "trezor2": "2.0.10"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -1700,9 +1648,12 @@
             "address_type": 25,
             "address_type_p2sh": 105,
             "bech32_prefix": null,
-            "blockbook": [
-                "https://blockbook.ritocoin.org"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://blockbook.ritocoin.org"
+                ]
+            },
             "blocktime_seconds": 60,
             "cashaddr_prefix": null,
             "coin_label": "Ritocoin",
@@ -1721,7 +1672,7 @@
             "fork_id": null,
             "hash_genesis_block": "00000075e344bdf1c0e433f453764b1830a7aa19b2a5213e707502a22b779c1b",
             "max_address_length": 34,
-            "maxfee_kb": 2000000,
+            "maxfee_kb": 39000000000000,
             "min_address_length": 27,
             "minfee_kb": 1000,
             "name": "Ritocoin",
@@ -1731,13 +1682,15 @@
             "slip44": 19169,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.8.2",
-                "trezor2": "2.1.1",
-                "webwallet": false
+                "trezor2": "2.1.1"
             },
             "timestamp": false,
             "xprv_magic": 87326380,
             "xpub_magic": 87353290,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -1745,7 +1698,7 @@
             "address_type": 76,
             "address_type_p2sh": 16,
             "bech32_prefix": "xc",
-            "blockbook": [],
+            "blockchain_link": null,
             "blocktime_seconds": 60,
             "cashaddr_prefix": null,
             "coin_label": "Stakenet",
@@ -1762,12 +1715,12 @@
                 "Normal": 140
             },
             "dust_limit": 1000,
-            "extra_data": false,
+            "extra_data": true,
             "force_bip143": false,
             "fork_id": null,
             "hash_genesis_block": "00000c822abdbb23e28f79a49d29b41429737c6c7e15df40d1b1f1b35907ae34",
             "max_address_length": 47,
-            "maxfee_kb": 2000000,
+            "maxfee_kb": 11000000000,
             "min_address_length": 27,
             "minfee_kb": 1000,
             "name": "Stakenet",
@@ -1777,13 +1730,68 @@
             "slip44": 199,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.8.0",
-                "trezor2": "2.0.11",
-                "webwallet": false
+                "trezor2": "2.0.11"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": 76067358,
+            "xpub_magic_multisig_segwit_p2sh": 76067358,
+            "xpub_magic_segwit_native": 78792518,
+            "xpub_magic_segwit_p2sh": 77429938
+        },
+        {
+            "address_type": 63,
+            "address_type_p2sh": 5,
+            "bech32_prefix": "sys",
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://sys1.bcfn.ca"
+                ]
+            },
+            "blocktime_seconds": 60,
+            "cashaddr_prefix": null,
+            "coin_label": "Syscoin",
+            "coin_name": "Syscoin",
+            "coin_shortcut": "SYS",
+            "consensus_branch_id": null,
+            "curve_name": "secp256k1",
+            "decimals": 8,
+            "decred": false,
+            "default_fee_b": {
+                "Economy": 700,
+                "High": 2000,
+                "Low": 100,
+                "Normal": 1400
+            },
+            "dust_limit": 1820,
+            "extra_data": false,
+            "force_bip143": false,
+            "fork_id": null,
+            "hash_genesis_block": "0000022642db0346b6e01c2a397471f4f12e65d4f4251ec96c1f85367a61a7ab",
+            "max_address_length": 34,
+            "maxfee_kb": 42000000000,
+            "min_address_length": 27,
+            "minfee_kb": 10000,
+            "name": "Syscoin",
+            "segwit": true,
+            "shortcut": "SYS",
+            "signed_message_header": "Syscoin Signed Message:\n",
+            "slip44": 57,
+            "support": {
+                "connect": true,
+                "suite": false,
+                "trezor1": "1.8.4",
+                "trezor2": "2.1.8"
+            },
+            "timestamp": false,
+            "xprv_magic": 76066276,
+            "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": 76067358,
+            "xpub_magic_multisig_segwit_p2sh": 76067358,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 77429938
         },
@@ -1791,10 +1799,13 @@
             "address_type": 130,
             "address_type_p2sh": 30,
             "bech32_prefix": null,
-            "blockbook": [
-                "https://blockbook.flurbo.xyz",
-                "https://blockbook.unobtanium.uno"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://blockbook.flurbo.xyz",
+                    "https://blockbook.unobtanium.uno"
+                ]
+            },
             "blocktime_seconds": 30,
             "cashaddr_prefix": null,
             "coin_label": "Unobtanium",
@@ -1816,7 +1827,7 @@
             "fork_id": null,
             "hash_genesis_block": "000004c2fc5fffb810dccc197d603690099a68305232e552d96ccbe8e2c52b75",
             "max_address_length": 34,
-            "maxfee_kb": 2000000,
+            "maxfee_kb": 53000000,
             "min_address_length": 27,
             "minfee_kb": 1000,
             "name": "Unobtanium",
@@ -1826,13 +1837,15 @@
             "slip44": 92,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.8.4",
-                "trezor2": "2.1.6",
-                "webwallet": false
+                "trezor2": "2.1.6"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -1840,7 +1853,7 @@
             "address_type": 30,
             "address_type_p2sh": 33,
             "bech32_prefix": null,
-            "blockbook": [],
+            "blockchain_link": null,
             "blocktime_seconds": 30,
             "cashaddr_prefix": null,
             "coin_label": "Verge",
@@ -1859,7 +1872,7 @@
             "fork_id": null,
             "hash_genesis_block": "00000fc63692467faeb20cdb3b53200dc601d75bdfa1001463304cc790d77278",
             "max_address_length": 34,
-            "maxfee_kb": 10000000,
+            "maxfee_kb": 550000000000,
             "min_address_length": 27,
             "minfee_kb": 1000000,
             "name": "Verge",
@@ -1869,13 +1882,15 @@
             "slip44": 77,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.9.3",
-                "trezor2": "2.3.3",
-                "webwallet": false
+                "trezor2": "2.3.3"
             },
             "timestamp": true,
             "xprv_magic": 35729707,
             "xpub_magic": 36513075,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -1883,13 +1898,16 @@
             "address_type": 71,
             "address_type_p2sh": 5,
             "bech32_prefix": "vtc",
-            "blockbook": [
-                "https://vtc1.trezor.io",
-                "https://vtc2.trezor.io",
-                "https://vtc3.trezor.io",
-                "https://vtc4.trezor.io",
-                "https://vtc5.trezor.io"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://vtc1.trezor.io",
+                    "https://vtc2.trezor.io",
+                    "https://vtc3.trezor.io",
+                    "https://vtc4.trezor.io",
+                    "https://vtc5.trezor.io"
+                ]
+            },
             "blocktime_seconds": 150,
             "cashaddr_prefix": null,
             "coin_label": "Vertcoin",
@@ -1908,7 +1926,7 @@
             "fork_id": null,
             "hash_genesis_block": "4d96a915f49d40b1e5c2844d1ee2dccb90013a990ccea12c492d22110489f0c4",
             "max_address_length": 34,
-            "maxfee_kb": 40000000,
+            "maxfee_kb": 13000000000,
             "min_address_length": 27,
             "minfee_kb": 100000,
             "name": "Vertcoin",
@@ -1918,13 +1936,15 @@
             "slip44": 28,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.6.1",
-                "trezor2": "2.0.5",
-                "webwallet": true
+                "trezor2": "2.0.5"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": 76067358,
+            "xpub_magic_multisig_segwit_p2sh": 76067358,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 77429938
         },
@@ -1932,7 +1952,7 @@
             "address_type": 71,
             "address_type_p2sh": 33,
             "bech32_prefix": "via",
-            "blockbook": [],
+            "blockchain_link": null,
             "blocktime_seconds": 24,
             "cashaddr_prefix": null,
             "coin_label": "Viacoin",
@@ -1954,7 +1974,7 @@
             "fork_id": null,
             "hash_genesis_block": "4e9b54001f9976049830128ec0331515eaabe35a70970d79971da1539a400ba1",
             "max_address_length": 34,
-            "maxfee_kb": 40000000,
+            "maxfee_kb": 14000000000,
             "min_address_length": 27,
             "minfee_kb": 1000,
             "name": "Viacoin",
@@ -1964,13 +1984,15 @@
             "slip44": 14,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": true
+                "trezor2": "2.0.7"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": 76067358,
+            "xpub_magic_multisig_segwit_p2sh": 76067358,
             "xpub_magic_segwit_native": 78792518,
             "xpub_magic_segwit_p2sh": 77429938
         },
@@ -1978,9 +2000,12 @@
             "address_type": 142,
             "address_type_p2sh": 145,
             "bech32_prefix": null,
-            "blockbook": [
-                "https://blockbook.zcore.cash"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://blockbook.zcore.cash"
+                ]
+            },
             "blocktime_seconds": 120,
             "cashaddr_prefix": null,
             "coin_label": "ZCore",
@@ -1999,7 +2024,7 @@
             "fork_id": null,
             "hash_genesis_block": "695b79c8c234b45b2eeb4722f33373e471c9b686ff78efeb39da95f824a9f81b",
             "max_address_length": 95,
-            "maxfee_kb": 1000000,
+            "maxfee_kb": 170000000000,
             "min_address_length": 34,
             "minfee_kb": 1000,
             "name": "ZCore",
@@ -2009,13 +2034,15 @@
             "slip44": 428,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.8.4",
-                "trezor2": "2.1.7",
-                "webwallet": true
+                "trezor2": "2.1.7"
             },
             "timestamp": false,
             "xprv_magic": 78791432,
             "xpub_magic": 78792518,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -2023,13 +2050,16 @@
             "address_type": 7352,
             "address_type_p2sh": 7357,
             "bech32_prefix": null,
-            "blockbook": [
-                "https://zec1.trezor.io",
-                "https://zec2.trezor.io",
-                "https://zec3.trezor.io",
-                "https://zec4.trezor.io",
-                "https://zec5.trezor.io"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://zec1.trezor.io",
+                    "https://zec2.trezor.io",
+                    "https://zec3.trezor.io",
+                    "https://zec4.trezor.io",
+                    "https://zec5.trezor.io"
+                ]
+            },
             "blocktime_seconds": 150,
             "cashaddr_prefix": null,
             "coin_label": "Zcash",
@@ -2053,7 +2083,7 @@
             "fork_id": null,
             "hash_genesis_block": "00040fe8ec8471911baa1db1266ea15dd06b4a8a5c453883c000b031973dce08",
             "max_address_length": 95,
-            "maxfee_kb": 1000000,
+            "maxfee_kb": 51000000,
             "min_address_length": 35,
             "minfee_kb": 1000,
             "name": "Zcash",
@@ -2063,13 +2093,15 @@
             "slip44": 133,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.8.1",
-                "trezor2": "2.1.1",
-                "webwallet": true
+                "trezor2": "2.1.1"
             },
             "timestamp": false,
             "xprv_magic": 76066276,
             "xpub_magic": 76067358,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         },
@@ -2077,7 +2109,7 @@
             "address_type": 7461,
             "address_type_p2sh": 7354,
             "bech32_prefix": null,
-            "blockbook": [],
+            "blockchain_link": null,
             "blocktime_seconds": 150,
             "cashaddr_prefix": null,
             "coin_label": "Zcash Testnet",
@@ -2111,105 +2143,15 @@
             "slip44": 1,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.8.1",
-                "trezor2": "2.1.1",
-                "webwallet": true
+                "trezor2": "2.1.1"
             },
             "timestamp": false,
             "xprv_magic": 70615956,
             "xpub_magic": 70617039,
-            "xpub_magic_segwit_native": null,
-            "xpub_magic_segwit_p2sh": null
-        },
-        {
-            "address_type": 82,
-            "address_type_p2sh": 7,
-            "bech32_prefix": null,
-            "blockbook": [],
-            "blocktime_seconds": 600,
-            "cashaddr_prefix": null,
-            "coin_label": "Zcoin",
-            "coin_name": "Zcoin",
-            "coin_shortcut": "XZC",
-            "consensus_branch_id": null,
-            "curve_name": "secp256k1",
-            "decimals": 8,
-            "decred": false,
-            "default_fee_b": {
-                "Economy": 10,
-                "High": 200,
-                "Low": 1,
-                "Normal": 100
-            },
-            "dust_limit": 546,
-            "extra_data": true,
-            "force_bip143": false,
-            "fork_id": null,
-            "hash_genesis_block": "4381deb85b1b2c9843c222944b616d997516dcbd6a964e1eaf0def0830695233",
-            "max_address_length": 34,
-            "maxfee_kb": 1000000,
-            "min_address_length": 27,
-            "minfee_kb": 0,
-            "name": "Zcoin",
-            "segwit": false,
-            "shortcut": "XZC",
-            "signed_message_header": "Zcoin Signed Message:\n",
-            "slip44": 136,
-            "support": {
-                "connect": true,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": true
-            },
-            "timestamp": false,
-            "xprv_magic": 76066276,
-            "xpub_magic": 76067358,
-            "xpub_magic_segwit_native": null,
-            "xpub_magic_segwit_p2sh": null
-        },
-        {
-            "address_type": 65,
-            "address_type_p2sh": 178,
-            "bech32_prefix": null,
-            "blockbook": [],
-            "blocktime_seconds": 600,
-            "cashaddr_prefix": null,
-            "coin_label": "Zcoin Testnet",
-            "coin_name": "Zcoin Testnet",
-            "coin_shortcut": "tXZC",
-            "consensus_branch_id": null,
-            "curve_name": "secp256k1",
-            "decimals": 8,
-            "decred": false,
-            "default_fee_b": {
-                "Economy": 10,
-                "High": 200,
-                "Low": 1,
-                "Normal": 100
-            },
-            "dust_limit": 546,
-            "extra_data": true,
-            "force_bip143": false,
-            "fork_id": null,
-            "hash_genesis_block": "7ac038c193c2158c428c59f9ae0c02a07115141c6e9dc244ae96132e99b4e642",
-            "max_address_length": 35,
-            "maxfee_kb": 1000000,
-            "min_address_length": 27,
-            "minfee_kb": 0,
-            "name": "Zcoin Testnet",
-            "segwit": false,
-            "shortcut": "tXZC",
-            "signed_message_header": "Zcoin Signed Message:\n",
-            "slip44": 1,
-            "support": {
-                "connect": true,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
-            },
-            "timestamp": false,
-            "xprv_magic": 70615956,
-            "xpub_magic": 70617039,
+            "xpub_magic_multisig_segwit_native": null,
+            "xpub_magic_multisig_segwit_p2sh": null,
             "xpub_magic_segwit_native": null,
             "xpub_magic_segwit_p2sh": null
         }
@@ -2217,10 +2159,13 @@
     "erc20": [],
     "eth": [
         {
-            "blockbook": [
-                "https://eth1.trezor.io",
-                "https://eth2.trezor.io"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://eth1.trezor.io",
+                    "https://eth2.trezor.io"
+                ]
+            },
             "chain": "eth",
             "chain_id": 1,
             "name": "Ethereum",
@@ -2229,33 +2174,36 @@
             "slip44": 60,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": true
+                "trezor2": "2.0.7"
             },
-            "url": "https://www.ethereum.org"
+            "url": "https://ethereum.org"
         },
         {
-            "blockbook": [],
+            "blockchain_link": null,
             "chain": "exp",
             "chain_id": 2,
-            "name": "Expanse",
+            "name": "Expanse Network",
             "rskip60": false,
             "shortcut": "EXP",
             "slip44": 40,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
+                "trezor2": "2.0.7"
             },
             "url": "https://expanse.tech"
         },
         {
-            "blockbook": [
-                "https://ropsten1.trezor.io",
-                "https://ropsten2.trezor.io"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://ropsten1.trezor.io",
+                    "https://ropsten2.trezor.io"
+                ]
+            },
             "chain": "rop",
             "chain_id": 3,
             "name": "Ethereum Testnet Ropsten",
@@ -2264,14 +2212,14 @@
             "slip44": 1,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
+                "trezor2": "2.0.7"
             },
-            "url": "https://www.ethereum.org"
+            "url": "https://github.com/ethereum/ropsten"
         },
         {
-            "blockbook": [],
+            "blockchain_link": null,
             "chain": "rin",
             "chain_id": 4,
             "name": "Ethereum Testnet Rinkeby",
@@ -2280,46 +2228,30 @@
             "slip44": 1,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
+                "trezor2": "2.0.7"
             },
-            "url": "https://rinkeby.io"
+            "url": "https://www.rinkeby.io"
         },
         {
-            "blockbook": [],
+            "blockchain_link": null,
             "chain": "ubq",
             "chain_id": 8,
-            "name": "Ubiq",
+            "name": "Ubiq Network",
             "rskip60": false,
             "shortcut": "UBQ",
             "slip44": 108,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
+                "trezor2": "2.0.7"
             },
             "url": "https://ubiqsmart.com"
         },
         {
-            "blockbook": [],
-            "chain": "etsc",
-            "chain_id": 28,
-            "name": "Ethereum Social",
-            "rskip60": false,
-            "shortcut": "ETSC",
-            "slip44": 1128,
-            "support": {
-                "connect": true,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
-            },
-            "url": "https://ethereumsocial.kr"
-        },
-        {
-            "blockbook": [],
+            "blockchain_link": null,
             "chain": "rsk",
             "chain_id": 30,
             "name": "RSK",
@@ -2328,30 +2260,30 @@
             "slip44": 137,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
+                "trezor2": "2.0.7"
             },
-            "url": "https://www.rsk.co"
+            "url": "https://rsk.co"
         },
         {
-            "blockbook": [],
+            "blockchain_link": null,
             "chain": "trsk",
             "chain_id": 31,
             "name": "RSK Testnet",
-            "rskip60": true,
+            "rskip60": false,
             "shortcut": "tRBTC",
-            "slip44": 37310,
+            "slip44": 1,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
+                "trezor2": "2.0.7"
             },
-            "url": "https://www.rsk.co"
+            "url": "https://rsk.co"
         },
         {
-            "blockbook": [],
+            "blockchain_link": null,
             "chain": "kov",
             "chain_id": 42,
             "name": "Ethereum Testnet Kovan",
@@ -2360,14 +2292,14 @@
             "slip44": 1,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
+                "trezor2": "2.0.7"
             },
-            "url": "https://www.ethereum.org"
+            "url": "https://kovan-testnet.github.io/website"
         },
         {
-            "blockbook": [],
+            "blockchain_link": null,
             "chain": "go",
             "chain_id": 60,
             "name": "GoChain",
@@ -2376,17 +2308,20 @@
             "slip44": 6060,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
+                "trezor2": "2.0.7"
             },
             "url": "https://gochain.io"
         },
         {
-            "blockbook": [
-                "https://etc1.trezor.io",
-                "https://etc2.trezor.io"
-            ],
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": [
+                    "https://etc1.trezor.io",
+                    "https://etc2.trezor.io"
+                ]
+            },
             "chain": "etc",
             "chain_id": 61,
             "name": "Ethereum Classic",
@@ -2395,30 +2330,14 @@
             "slip44": 61,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": true
+                "trezor2": "2.0.7"
             },
-            "url": "https://ethereumclassic.github.io"
+            "url": "https://ethereumclassic.org"
         },
         {
-            "blockbook": [],
-            "chain": "tetc",
-            "chain_id": 62,
-            "name": "Ethereum Classic Testnet",
-            "rskip60": false,
-            "shortcut": "tETC",
-            "slip44": 1,
-            "support": {
-                "connect": true,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
-            },
-            "url": "https://ethereumclassic.github.io"
-        },
-        {
-            "blockbook": [],
+            "blockchain_link": null,
             "chain": "ella",
             "chain_id": 64,
             "name": "Ellaism",
@@ -2427,14 +2346,14 @@
             "slip44": 163,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
+                "trezor2": "2.0.7"
             },
             "url": "https://ellaism.org"
         },
         {
-            "blockbook": [],
+            "blockchain_link": null,
             "chain": "mix",
             "chain_id": 76,
             "name": "Mix",
@@ -2443,30 +2362,14 @@
             "slip44": 76,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.7.2",
-                "trezor2": "2.0.10",
-                "webwallet": false
+                "trezor2": "2.0.10"
             },
-            "url": "https://www.mix-blockchain.org"
+            "url": "https://mix-blockchain.org"
         },
         {
-            "blockbook": [],
-            "chain": "ere",
-            "chain_id": 466,
-            "name": "EtherCore",
-            "rskip60": false,
-            "shortcut": "ERE",
-            "slip44": 466,
-            "support": {
-                "connect": true,
-                "trezor1": "1.8.4",
-                "trezor2": "2.2.2",
-                "webwallet": false
-            },
-            "url": "https://ethercore.org"
-        },
-        {
-            "blockbook": [],
+            "blockchain_link": null,
             "chain": "clo",
             "chain_id": 820,
             "name": "Callisto",
@@ -2475,30 +2378,14 @@
             "slip44": 820,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
+                "trezor2": "2.0.7"
             },
             "url": "https://callisto.network"
         },
         {
-            "blockbook": [],
-            "chain": "ath",
-            "chain_id": 1620,
-            "name": "Atheios",
-            "rskip60": false,
-            "shortcut": "ATH",
-            "slip44": 1620,
-            "support": {
-                "connect": true,
-                "trezor1": "1.6.3",
-                "trezor2": "2.0.8",
-                "webwallet": false
-            },
-            "url": "https://atheios.com"
-        },
-        {
-            "blockbook": [],
+            "blockchain_link": null,
             "chain": "egem",
             "chain_id": 1987,
             "name": "EtherGem",
@@ -2507,46 +2394,14 @@
             "slip44": 1987,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
+                "trezor2": "2.0.7"
             },
             "url": "https://egem.io"
         },
         {
-            "blockbook": [],
-            "chain": "eosc",
-            "chain_id": 2018,
-            "name": "EOS Classic",
-            "rskip60": false,
-            "shortcut": "EOSC",
-            "slip44": 2018,
-            "support": {
-                "connect": true,
-                "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
-            },
-            "url": "https://eos-classic.io"
-        },
-        {
-            "blockbook": [],
-            "chain": "reosc",
-            "chain_id": 2894,
-            "name": "REOSC Ecosystem",
-            "rskip60": false,
-            "shortcut": "REOSC",
-            "slip44": 2894,
-            "support": {
-                "connect": true,
-                "trezor1": "1.7.2",
-                "trezor2": "2.0.11",
-                "webwallet": false
-            },
-            "url": "https://reosc.io"
-        },
-        {
-            "blockbook": [],
+            "blockchain_link": null,
             "chain": "esn",
             "chain_id": 31102,
             "name": "Ethersocial Network",
@@ -2555,31 +2410,15 @@
             "slip44": 31102,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.3",
-                "trezor2": "2.0.8",
-                "webwallet": false
+                "trezor2": "2.0.8"
             },
             "url": "https://ethersocial.org"
         },
         {
-            "blockbook": [],
-            "chain": "teo",
-            "chain_id": 33416,
-            "name": "Trust ETH reOrigin",
-            "rskip60": false,
-            "shortcut": "TEO",
-            "slip44": 33416,
-            "support": {
-                "connect": true,
-                "trezor1": "1.8.2",
-                "trezor2": "2.1.1",
-                "webwallet": false
-            },
-            "url": "https://tao.foundation"
-        },
-        {
-            "blockbook": [],
-            "chain": "akroma",
+            "blockchain_link": null,
+            "chain": "aka",
             "chain_id": 200625,
             "name": "Akroma",
             "rskip60": false,
@@ -2587,14 +2426,14 @@
             "slip44": 200625,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.3",
-                "trezor2": "2.0.8",
-                "webwallet": false
+                "trezor2": "2.0.8"
             },
             "url": "https://akroma.io"
         },
         {
-            "blockbook": [],
+            "blockchain_link": null,
             "chain": "etho",
             "chain_id": 1313114,
             "name": "Ether-1",
@@ -2603,14 +2442,14 @@
             "slip44": 1313114,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.3",
-                "trezor2": "2.0.8",
-                "webwallet": false
+                "trezor2": "2.0.8"
             },
             "url": "https://ether1.org"
         },
         {
-            "blockbook": [],
+            "blockchain_link": null,
             "chain": "music",
             "chain_id": 7762959,
             "name": "Musicoin",
@@ -2619,14 +2458,14 @@
             "slip44": 184,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.3",
-                "trezor2": "2.0.8",
-                "webwallet": false
+                "trezor2": "2.0.8"
             },
-            "url": "https://musicoin.org"
+            "url": "https://musicoin.tw"
         },
         {
-            "blockbook": [],
+            "blockchain_link": null,
             "chain": "pirl",
             "chain_id": 3125659152,
             "name": "Pirl",
@@ -2635,9 +2474,9 @@
             "slip44": 164,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.3",
-                "trezor2": "2.0.8",
-                "webwallet": false
+                "trezor2": "2.0.8"
             },
             "url": "https://pirl.io"
         }
@@ -2652,9 +2491,9 @@
             "slip44": 1815,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": false,
-                "trezor2": "2.0.8",
-                "webwallet": false
+                "trezor2": "2.0.8"
             }
         },
         {
@@ -2666,9 +2505,9 @@
             "slip44": 714,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": false,
-                "trezor2": "2.1.5",
-                "webwallet": false
+                "trezor2": "2.1.5"
             }
         },
         {
@@ -2680,9 +2519,9 @@
             "slip44": 194,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": false,
-                "trezor2": "2.1.1",
-                "webwallet": false
+                "trezor2": "2.1.1"
             }
         },
         {
@@ -2694,9 +2533,9 @@
             "slip44": 134,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.7.1",
-                "trezor2": "2.0.7",
-                "webwallet": false
+                "trezor2": "2.0.7"
             }
         },
         {
@@ -2713,9 +2552,9 @@
             "slip44": 1,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": false,
-                "trezor2": "2.0.8",
-                "webwallet": false
+                "trezor2": "2.0.8"
             }
         },
         {
@@ -2727,9 +2566,9 @@
             "slip44": 148,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.7.1",
-                "trezor2": "2.0.8",
-                "webwallet": false
+                "trezor2": "2.0.8"
             }
         },
         {
@@ -2748,9 +2587,9 @@
             "slip44": 144,
             "support": {
                 "connect": true,
+                "suite": true,
                 "trezor1": false,
-                "trezor2": "2.0.8",
-                "webwallet": false
+                "trezor2": "2.0.8"
             }
         },
         {
@@ -2762,14 +2601,15 @@
             "slip44": 1729,
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": false,
-                "trezor2": "2.0.8",
-                "webwallet": false
+                "trezor2": "2.0.8"
             }
         }
     ],
     "nem": [
         {
+            "blockchain_link": null,
             "divisibility": 6,
             "mosaic": "xem",
             "name": "NEM",
@@ -2777,13 +2617,14 @@
             "shortcut": "XEM",
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
+                "trezor2": "2.0.7"
             },
             "ticker": "XEM"
         },
         {
+            "blockchain_link": null,
             "divisibility": 6,
             "fee": 10,
             "levy": "MosaicLevy_Percentile",
@@ -2798,13 +2639,14 @@
             "shortcut": "DIM",
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
+                "trezor2": "2.0.7"
             },
             "ticker": "DIM"
         },
         {
+            "blockchain_link": null,
             "divisibility": 6,
             "mosaic": "token",
             "name": "DIM TOKEN",
@@ -2815,13 +2657,14 @@
             "shortcut": "DIMTOK",
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
+                "trezor2": "2.0.7"
             },
             "ticker": "DIMTOK"
         },
         {
+            "blockchain_link": null,
             "divisibility": 0,
             "mosaic": "breeze-token",
             "name": "Breeze Token",
@@ -2832,13 +2675,14 @@
             "shortcut": "BREEZE",
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
+                "trezor2": "2.0.7"
             },
             "ticker": "BREEZE"
         },
         {
+            "blockchain_link": null,
             "divisibility": 0,
             "mosaic": "heart",
             "name": "PacNEM Game Credits",
@@ -2849,13 +2693,14 @@
             "shortcut": "PAC:HRT",
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
+                "trezor2": "2.0.7"
             },
             "ticker": "PAC:HRT"
         },
         {
+            "blockchain_link": null,
             "divisibility": 6,
             "fee": 100,
             "levy": "MosaicLevy_Percentile",
@@ -2870,9 +2715,9 @@
             "shortcut": "PAC:CHS",
             "support": {
                 "connect": true,
+                "suite": false,
                 "trezor1": "1.6.2",
-                "trezor2": "2.0.7",
-                "webwallet": false
+                "trezor2": "2.0.7"
             },
             "ticker": "PAC:CHS"
         }
