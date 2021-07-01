@@ -8,7 +8,7 @@ interface Props {
 
 const PrerequisiteScreen = ({ prerequisite }: Props) => (
     <WelcomeLayout>
-        <PrerequisitesGuide prerequisite={prerequisite} padded />
+        <PrerequisitesGuide prerequisite={prerequisite} padded allowSwitchDevice />
     </WelcomeLayout>
 );
 

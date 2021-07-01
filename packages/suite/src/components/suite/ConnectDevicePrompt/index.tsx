@@ -2,10 +2,11 @@ import React from 'react';
 import { useSpring, config, animated } from 'react-spring';
 import styled from 'styled-components';
 
-import { variables, Icon } from '@trezor/components';
+import { variables, Icon, Button } from '@trezor/components';
 import { DeviceAnimation } from '@onboarding-components';
 import { Translation } from '@suite-components';
-import { useDevice, useTheme } from '@suite-hooks';
+import { useDevice, useTheme, useActions } from '@suite-hooks';
+import * as routerActions from '@suite-actions/routerActions';
 
 const Wrapper = styled(animated.div)`
     display: flex;
@@ -34,17 +35,23 @@ const Checkmark = styled.div`
 
 const Text = styled.div`
     display: flex;
+    flex-direction: column;
     margin: 0px 32px;
     text-align: center;
     color: ${props => props.theme.TYPE_DARK_GREY};
     font-size: 20px;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+
+    button {
+        margin-top: 10px;
+    }
 `;
 
 interface Props {
     children?: React.ReactNode;
     connected: boolean;
     showWarning: boolean;
+    allowSwitchDevice?: boolean;
 }
 
 const getDefaultMessage = (connected: boolean, showWarning: boolean) => {
@@ -53,9 +60,12 @@ const getDefaultMessage = (connected: boolean, showWarning: boolean) => {
     }
     return 'TR_CONNECT_YOUR_DEVICE';
 };
-const ConnectDevicePrompt = ({ children, connected, showWarning }: Props) => {
+const ConnectDevicePrompt = ({ children, connected, showWarning, allowSwitchDevice }: Props) => {
     const { theme } = useTheme();
     const { device } = useDevice();
+    const { goto } = useActions({
+        goto: routerActions.goto,
+    });
     const fadeStyles = useSpring({
         config: config.default,
         transform: 'translate(0px, 0px)',
@@ -88,6 +98,14 @@ const ConnectDevicePrompt = ({ children, connected, showWarning }: Props) => {
             </ImageWrapper>
             <Text>
                 {children || <Translation id={getDefaultMessage(connected, showWarning)} />}
+                {allowSwitchDevice && (
+                    <Button
+                        variant="tertiary"
+                        onClick={() => goto('suite-switch-device', { cancelable: true })}
+                    >
+                        <Translation id="TR_SWITCH_DEVICE" />
+                    </Button>
+                )}
             </Text>
         </Wrapper>
     );
