@@ -197,19 +197,53 @@ describe('Preloader component', () => {
         unmount();
     });
 
-    it('Unreadable device', () => {
+    it('Unreadable device: webusb HID', () => {
         const store = initStore(
             getInitialState({
                 suite: {
-                    transport: { type: 'bridge' },
-                    device: { type: 'unreadable' },
+                    transport: { type: 'WebUsbPlugin' },
+                    device: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
                 },
             }),
         );
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
-        expect(findByTestId(/TR_YOUR_DEVICE_IS_CONNECTED_BUT_UNREADABLE/)).not.toBeNull();
+        expect(findByTestId('@connect-device-prompt/unreadable-hid')).not.toBeNull();
+
+        unmount();
+    });
+
+    it('Unreadable device: missing udev', () => {
+        const store = initStore(
+            getInitialState({
+                suite: {
+                    transport: { type: 'bridge' },
+                    device: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
+                },
+            }),
+        );
+        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+
+        expect(findByTestId('@connect-device-prompt')).not.toBeNull();
+        expect(findByTestId('@connect-device-prompt/unreadable-udev')).not.toBeNull();
+
+        unmount();
+    });
+
+    it('Unreadable device: unknown error', () => {
+        const store = initStore(
+            getInitialState({
+                suite: {
+                    transport: { type: 'bridge' },
+                    device: { type: 'unreadable', error: 'Unexpected error' },
+                },
+            }),
+        );
+        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+
+        expect(findByTestId('@connect-device-prompt')).not.toBeNull();
+        expect(findByTestId('@connect-device-prompt/unreadable-unknown')).not.toBeNull();
 
         unmount();
     });
