@@ -5793,6 +5793,49 @@ const definedMessages = defineMessages({
         id: 'TR_SUITE_WEB_LANDING_HOW_TO_VERIFY',
         defaultMessage: 'How to verify and run on Linux',
     },
+    TR_SUITE_WEB_LANDING_START_FEATURES_1_HEADLINE: {
+        id: 'TR_SUITE_WEB_LANDING_START_FEATURES_1_HEADLINE',
+        defaultMessage: 'Desktop app',
+    },
+    TR_SUITE_WEB_LANDING_START_FEATURES_1_TEXT: {
+        id: 'TR_SUITE_WEB_LANDING_START_FEATURES_1_TEXT',
+        defaultMessage:
+            'Enhanced security and privacy, new design and improved performance, all in one software suite.',
+    },
+    TR_SUITE_WEB_LANDING_START_FEATURES_2_HEADLINE: {
+        id: 'TR_SUITE_WEB_LANDING_START_FEATURES_2_HEADLINE',
+        defaultMessage: 'Buy and exchange crypto',
+    },
+    TR_SUITE_WEB_LANDING_START_FEATURES_2_TEXT: {
+        id: 'TR_SUITE_WEB_LANDING_START_FEATURES_2_TEXT',
+        defaultMessage:
+            "Compare competitive rates, buy and exchange coins within Trezor's secure environment. Powered by +Invity.",
+    },
+    TR_SUITE_WEB_LANDING_START_FEATURES_3_HEADLINE: {
+        id: 'TR_SUITE_WEB_LANDING_START_FEATURES_3_HEADLINE',
+        defaultMessage: 'Native altcoin support',
+    },
+    TR_SUITE_WEB_LANDING_START_FEATURES_3_TEXT: {
+        id: 'TR_SUITE_WEB_LANDING_START_FEATURES_3_TEXT',
+        defaultMessage: 'ETH, XRP, ETC and more now supported \ndirectly through the app.',
+    },
+    TR_SUITE_WEB_LANDING_START_HEADLINE: {
+        id: 'TR_SUITE_WEB_LANDING_START_HEADLINE',
+        defaultMessage: 'Managing crypto just got{lineBreak}<em>safer and easier</em>',
+    },
+    TR_SUITE_WEB_LANDING_START_SUB_HEADLINE: {
+        id: 'TR_SUITE_WEB_LANDING_START_SUB_HEADLINE',
+        defaultMessage: 'Take control of your Trezor with our desktop & browser app.',
+    },
+    TR_SUITE_WEB_LANDING_START_SUB_SOON: {
+        id: 'TR_SUITE_WEB_LANDING_START_SUB_SOON',
+        defaultMessage: 'Soon',
+    },
+    TR_SUITE_WEB_LANDING_START_BOTTOM_HEADLINE: {
+        id: 'TR_SUITE_WEB_LANDING_START_BOTTOM_HEADLINE',
+        defaultMessage:
+            'Dozens of <em>brand-new features</em> to discover.{lineBreak}Try Suite now.',
+    },
     TR_DARK_MODE: {
         id: 'TR_DARK_MODE',
         defaultMessage: 'Dark mode',
