@@ -84,6 +84,7 @@ interface Common {
     id: number; // programmer provided, might be used to find and close notification programmatically
     device?: TrezorDevice; // used to close notifications for device
     closed?: boolean;
+    error?: string;
 }
 
 export type EventPayload = (

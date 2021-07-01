@@ -172,7 +172,7 @@
 	"TOAST_ACQUIRE_ERROR": "Acquire error {error}",
 	"TOAST_AUTH_CONFIRM_ERROR": "Passphrase confirmation error: {error}",
 	"TOAST_AUTH_CONFIRM_ERROR_DEFAULT": "Invalid passphrase",
-	"TOAST_AUTH_FAILED": "Authorization error: {error}",
+	"TOAST_AUTH_FAILED": "Authorization error {error}",
 	"TOAST_AUTO_UPDATER_ERROR": "Auto updater error ({state})",
 	"TOAST_AUTO_UPDATER_NO_NEW": "No new updates available.",
 	"TOAST_BACKUP_FAILED": "Backup failed",

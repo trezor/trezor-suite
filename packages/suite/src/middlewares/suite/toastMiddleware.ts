@@ -25,7 +25,13 @@ const toastMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispa
 
     if (action.type === NOTIFICATION.TOAST) {
         // TODO: set custom timeout
-        const { payload } = action;
+        const payload = { ...action.payload };
+        // assetType error is returned by trezor-connect
+        // we don't want to show this generic message in toast however the whole message is useful for logging
+        // redact error message to empty string
+        if (payload.error && payload.error.indexOf('assetType:') >= 0) {
+            payload.error = '';
+        }
         toast(hocNotification(payload, ToastNotification), {
             toastId: payload.id,
             onClose: () => api.dispatch(close(payload.id)),
