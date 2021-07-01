@@ -3210,7 +3210,7 @@ const definedMessages = defineMessages({
     },
     TOAST_AUTH_FAILED: {
         id: 'TOAST_AUTH_FAILED',
-        defaultMessage: 'Authorization error: {error}',
+        defaultMessage: 'Authorization error {error}',
     },
     TOAST_AUTH_CONFIRM_ERROR: {
         id: 'TOAST_AUTH_CONFIRM_ERROR',
