@@ -6080,26 +6080,9 @@ const definedMessages = defineMessages({
         id: 'TR_GUIDE_CATEGORIES',
         defaultMessage: 'Categories',
     },
-    TR_GUIDE_CATEGORY_CRYPTO_BASICS: {
-        id: 'TR_GUIDE_CATEGORY_CRYPTO_BASICS',
-        defaultMessage: 'Crypto basics',
-    },
-    TR_GUIDE_CATEGORY_TREZOR_SUITE: {
-        id: 'TR_GUIDE_CATEGORY_TREZOR_SUITE',
-        defaultMessage: 'Trezor Suite',
-    },
-    TR_GUIDE_CATEGORY_TREZOR: {
-        id: 'TR_GUIDE_CATEGORY_TREZOR',
-        defaultMessage: 'Trezor',
-    },
-    TR_GUIDE_CATEGORY_CURRENCIES: {
-        id: 'TR_GUIDE_CATEGORY_CURRENCIES',
-        defaultMessage: 'Currencies',
-    },
-    TR_GUIDE_CATEGORY_DICTIONARY: {
-        id: 'TR_GUIDE_CATEGORY_DICTIONARY',
-        defaultMessage: 'Dictionary',
-    },
+    TR_GUIDE_PAGES: {
+        id: 'TR_GUIDE_PAGES',
+        defaultMessage: 'Pages',
     TR_GUIDE_ARTICLES: {
         id: 'TR_GUIDE_ARTICLES',
         defaultMessage: 'Articles',
