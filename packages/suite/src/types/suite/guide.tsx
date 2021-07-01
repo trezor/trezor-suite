@@ -1,7 +1,9 @@
 /* eslint-disable camelcase */
+import { Page, Category, Node } from '@trezor/suite-data/src/guide/parser';
+
 import type { EnvironmentType } from '@suite-types';
 
-export type GuideView = 'GUIDE_DEFAULT' | 'GUIDE_CATEGORY' | 'GUIDE_ARTICLE';
+export type GuideView = 'GUIDE_DEFAULT' | 'GUIDE_CATEGORY' | 'GUIDE_PAGE';
 
 export type FeedbackView = 'FEEDBACK_TYPE_SELECTION' | 'FEEDBACK_BUG' | 'FEEDBACK_SUGGESTION';
 
@@ -54,3 +56,5 @@ export type FeedbackSuggestion = {
 };
 
 export type Feedback = FeedbackBug | FeedbackSuggestion;
+
+export type { Page, Category, Node };

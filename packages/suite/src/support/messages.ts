@@ -6064,6 +6064,10 @@ const definedMessages = defineMessages({
         id: 'TR_SUGGESTION',
         defaultMessage: 'Suggestion',
     },
+    TR_GUIDE_DASHBOARD: {
+        id: 'TR_GUIDE_DASHBOARD',
+        defaultMessage: 'Dashboard',
+    },
     TR_GUIDE_BUG_LABEL: {
         id: 'TR_GUIDE_BUG_LABEL',
         defaultMessage: 'Report a faulty behaviour',
@@ -6080,9 +6084,6 @@ const definedMessages = defineMessages({
         id: 'TR_GUIDE_CATEGORIES',
         defaultMessage: 'Categories',
     },
-    TR_GUIDE_PAGES: {
-        id: 'TR_GUIDE_PAGES',
-        defaultMessage: 'Pages',
     TR_GUIDE_ARTICLES: {
         id: 'TR_GUIDE_ARTICLES',
         defaultMessage: 'Articles',
