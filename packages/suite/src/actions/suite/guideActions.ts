@@ -1,14 +1,18 @@
 import qs from 'qs';
+
 import { GUIDE } from './constants';
-import type { ActiveView, Feedback, FeedbackType } from '@suite-types/guide';
 import { Dispatch } from '@suite-types';
 import { addToast } from '@suite-actions/notificationActions';
+
+import type { ActiveView, Feedback, FeedbackType, Category, Node } from '@suite-types/guide';
 
 export type GuideAction =
     | { type: typeof GUIDE.OPEN }
     | { type: typeof GUIDE.CLOSE }
+    | { type: typeof GUIDE.SET_INDEX_NODE; payload: Category }
     | { type: typeof GUIDE.SET_VIEW; payload: ActiveView }
-    | { type: typeof GUIDE.OPEN_ARTICLE; payload: string };
+    | { type: typeof GUIDE.UNSET_NODE }
+    | { type: typeof GUIDE.OPEN_NODE; payload: Node };
 
 export const open = () => ({
     type: GUIDE.OPEN,
@@ -18,15 +22,32 @@ export const close = () => ({
     type: GUIDE.CLOSE,
 });
 
-export const setView = (payload: ActiveView) => ({
-    type: GUIDE.SET_VIEW,
+export const setIndexNode = (payload: Category) => ({
+    type: GUIDE.SET_INDEX_NODE,
     payload,
 });
 
-export const openArticle = (payload: string) => (dispatch: Dispatch) => {
-    dispatch(setView('GUIDE_ARTICLE'));
+export const unsetNode = () => ({
+    type: GUIDE.UNSET_NODE,
+});
+
+export const setView = (payload: ActiveView) => (dispatch: Dispatch) => {
+    if (payload !== 'GUIDE_PAGE' && payload !== 'GUIDE_CATEGORY') {
+        dispatch(unsetNode());
+    }
+
+    dispatch({ type: GUIDE.SET_VIEW, payload });
+};
+
+export const openNode = (payload: Node) => (dispatch: Dispatch) => {
+    if (payload.type === 'page') {
+        dispatch(setView('GUIDE_PAGE'));
+    } else {
+        dispatch(setView('GUIDE_CATEGORY'));
+    }
+
     dispatch({
-        type: GUIDE.OPEN_ARTICLE,
+        type: GUIDE.OPEN_NODE,
         payload,
     });
 };

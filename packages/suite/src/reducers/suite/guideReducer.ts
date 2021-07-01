@@ -1,18 +1,22 @@
 import produce from 'immer';
+
 import { Action } from '@suite-types';
 import { GUIDE } from '@suite-actions/constants';
-import type { ActiveView } from '@suite-types/guide';
+
+import type { ActiveView, Category, Node } from '@suite-types/guide';
 
 export interface State {
     open: boolean;
     view: ActiveView;
-    article: string | null;
+    indexNode: Category | null;
+    currentNode: Node | null;
 }
 
 export const initialState: State = {
     open: false,
     view: 'GUIDE_DEFAULT',
-    article: null,
+    indexNode: null,
+    currentNode: null,
 };
 
 const guideReducer = (state: State = initialState, action: Action): State =>
@@ -28,8 +32,14 @@ const guideReducer = (state: State = initialState, action: Action): State =>
             case GUIDE.SET_VIEW:
                 draft.view = action.payload;
                 break;
-            case GUIDE.OPEN_ARTICLE:
-                draft.article = action.payload;
+            case GUIDE.SET_INDEX_NODE:
+                draft.indexNode = action.payload;
+                break;
+            case GUIDE.UNSET_NODE:
+                draft.currentNode = null;
+                break;
+            case GUIDE.OPEN_NODE:
+                draft.currentNode = action.payload;
                 break;
             default:
                 return state;

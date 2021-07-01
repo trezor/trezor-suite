@@ -6,7 +6,7 @@ import { Translation } from '@suite-components';
 import * as guideActions from '@suite-actions/guideActions';
 import { useActions, useAnalytics, useSelector } from '@suite-hooks';
 import { Icon, variables, useTheme } from '@trezor/components';
-import { Header, Content, ViewWrapper } from '@guide-components';
+import { Header, Content, ViewWrapper, GuideCategories } from '@guide-components';
 
 const FeedbackLinkWrapper = styled.div`
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
@@ -54,14 +54,19 @@ const GuideDefault = (props: any) => {
     const { setView } = useActions({
         setView: guideActions.setView,
     });
-    const { index } = useSelector(state => ({
-        index: state.guide.index,
+    const { indexNode } = useSelector(state => ({
+        indexNode: state.guide.indexNode,
     }));
 
     return (
         <ViewWrapper {...props}>
             <Header label={<Translation id="TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER" />} />
-            <Content></Content>
+            <Content>
+                <GuideCategories
+                    node={indexNode}
+                    label={<Translation id="TR_GUIDE_CATEGORIES" />}
+                />
+            </Content>
             <FeedbackLinkWrapper
                 onClick={() => {
                     setView('FEEDBACK_TYPE_SELECTION');
