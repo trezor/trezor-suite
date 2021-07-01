@@ -42,6 +42,11 @@ export const findAncestorNodes = (node: Node, root: Category): Node[] => {
             .filter(id => id !== '/')
             .map(id => getNodeById(id, root))
             // omit not-existing nodes
-            .filter((ancestorNode): ancestorNode is Node => !!ancestorNode)
+            .filter((ancestorNode): ancestorNode is Node => {
+                if (ancestorNode === undefined) {
+                    throw Error(`Ancestor node of '${node.id}' node was not found!`);
+                }
+                return true;
+            })
     );
 };
