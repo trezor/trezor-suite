@@ -7,6 +7,7 @@ import type {
     BlockchainEvent,
     KnownDevice,
     UnknownDevice as UnknownDeviceBase,
+    UnreadableDevice as UnreadableDeviceBase,
 } from 'trezor-connect';
 import type { RouterAction } from '@suite-actions/routerActions';
 import type { Route } from '@suite-constants/routes';
@@ -94,7 +95,9 @@ export type AcquiredDevice = KnownDevice & ExtendedDevice;
 
 export type UnknownDevice = UnknownDeviceBase & ExtendedDevice;
 
-export type TrezorDevice = AcquiredDevice | UnknownDevice;
+export type UnreadableDevice = UnreadableDeviceBase & ExtendedDevice;
+
+export type TrezorDevice = AcquiredDevice | UnknownDevice | UnreadableDevice;
 
 export type Store = ReduxStore<AppState, Action>;
 

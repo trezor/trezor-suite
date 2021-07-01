@@ -67,6 +67,16 @@ export const getFirmwareRelease = (): NonNullable<Device['firmwareRelease']> => 
         fingerprint: '019e849c1eb285a03a92bbad6d18a328af3b4dc6999722ebb47677b403a4cd16',
         changelog: '* Fix fault when using the device with no PIN* Fix OMNI transactions parsing',
     },
+    latest: {
+        required: false,
+        version: [2, 0, 0],
+        min_bridge_version: [2, 0, 25],
+        min_firmware_version: [2, 0, 0],
+        min_bootloader_version: [2, 0, 0],
+        url: 'data/firmware/1/trezor-1.8.1.bin',
+        fingerprint: '019e849c1eb285a03a92bbad6d18a328af3b4dc6999722ebb47677b403a4cd16',
+        changelog: '* Fix fault when using the device with no PIN* Fix OMNI transactions parsing',
+    },
 });
 
 /**
@@ -129,7 +139,7 @@ export const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>
             path: dev && dev.path ? dev.path : '1',
             label: dev && dev.label ? dev.label : 'My Trezor',
             features: undefined,
-        };
+        } as Device;
     }
 
     const features = getDeviceFeatures(feat);
@@ -146,7 +156,7 @@ export const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>
         unavailableCapabilities: {},
         ...dev,
         type: 'acquired',
-    };
+    } as Device;
 };
 
 /**
@@ -170,7 +180,7 @@ const getSuiteDevice = (dev?: Partial<TrezorDevice>, feat?: Partial<Features>): 
             metadata: { status: 'disabled' },
             ...dev,
             ...device,
-        };
+        } as TrezorDevice;
     }
     return device as TrezorDevice;
 };
