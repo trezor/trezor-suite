@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { darken } from 'polished';
 
 import { Icon, variables, useTheme } from '@trezor/components';
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions, useSelector, useAnalytics } from '@suite-hooks';
 import * as guideActions from '@suite-actions/guideActions';
 import { Node } from '@suite-types/guide';
 import { getNodeTitle } from '@suite-utils/guide';
@@ -55,6 +55,7 @@ type GuideNodeProps = {
 
 const GuideNode = ({ node }: GuideNodeProps) => {
     const theme = useTheme();
+    const analytics = useAnalytics();
 
     const { openNode } = useActions({
         setView: guideActions.setView,
@@ -64,11 +65,22 @@ const GuideNode = ({ node }: GuideNodeProps) => {
         language: state.suite.settings.language,
     }));
 
+    const navigateToNode = (node: Node) => {
+        openNode(node);
+        analytics.report({
+            type: 'guide/node/navigation',
+            payload: {
+                type: node.type,
+                id: node.id,
+            },
+        });
+    };
+
     const label = <Label>{getNodeTitle(node, language)}</Label>;
 
     if (node.type === 'page') {
         return (
-            <PageNodeButton onClick={() => openNode(node)}>
+            <PageNodeButton onClick={() => navigateToNode(node)}>
                 <PageNodeButtonIcon icon="ARTICLE" size={20} color={theme.TYPE_LIGHT_GREY} />
                 {label}
             </PageNodeButton>
@@ -76,7 +88,9 @@ const GuideNode = ({ node }: GuideNodeProps) => {
     }
 
     if (node.type === 'category') {
-        return <CategoryButtonNode onClick={() => openNode(node)}>{label}</CategoryButtonNode>;
+        return (
+            <CategoryButtonNode onClick={() => navigateToNode(node)}>{label}</CategoryButtonNode>
+        );
     }
 
     return null;

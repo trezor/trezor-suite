@@ -239,7 +239,15 @@ export type AnalyticsEvent =
     | {
           type: 'guide/header/navigation';
           payload: {
-              type: 'back' | 'close';
+              type: 'back' | 'close' | 'category';
+              id?: string;
+          };
+      }
+    | {
+          type: 'guide/node/navigation';
+          payload: {
+              type: 'page' | 'category';
+              id: string;
           };
       }
     | {

@@ -2,11 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { darken } from 'polished';
 
-import { useActions, useSelector } from '@suite-hooks';
+import { useActions, useSelector, useAnalytics } from '@suite-hooks';
 import * as guideActions from '@suite-actions/guideActions';
 import { variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { findAncestorNodes, getNodeTitle } from '@suite-utils/guide';
+
+import type { Category } from '@suite-types/guide';
 
 const BreadcrumbWrapper = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -39,6 +41,8 @@ const CategoryLink = styled.a`
 `;
 
 const HeaderBreadcrumb = () => {
+    const analytics = useAnalytics();
+
     const { language, indexNode, currentNode } = useSelector(state => ({
         language: state.suite.settings.language,
         indexNode: state.guide.indexNode,
@@ -67,6 +71,28 @@ const HeaderBreadcrumb = () => {
 
     if (!parentNodes.length) return fallbackBreadcrumb;
 
+    const navigateToCategory = (node: Category) => {
+        openNode(node);
+        analytics.report({
+            type: 'guide/header/navigation',
+            payload: {
+                type: 'category',
+                id: node.id,
+            },
+        });
+    };
+
+    const navigateToGuideDashboard = () => {
+        setView('GUIDE_DEFAULT');
+        analytics.report({
+            type: 'guide/header/navigation',
+            payload: {
+                type: 'category',
+                id: '/',
+            },
+        });
+    };
+
     // If page is part of level 1 category, breadcrumb should consist of Dashboard / Category Level 1
     // If page is part of level 2 category, breadcrumb should consist of Category Level 1 / Category Level 2
     const parentNode = parentNodes.pop();
@@ -77,9 +103,9 @@ const HeaderBreadcrumb = () => {
             <PreviousCategoryLink
                 onClick={() => {
                     if (grandParentNode) {
-                        openNode(grandParentNode);
+                        navigateToCategory(grandParentNode);
                     } else {
-                        setView('GUIDE_DEFAULT');
+                        navigateToGuideDashboard();
                     }
                 }}
             >
@@ -93,9 +119,9 @@ const HeaderBreadcrumb = () => {
             <CategoryLink
                 onClick={() => {
                     if (grandParentNode) {
-                        openNode(grandParentNode);
+                        navigateToCategory(grandParentNode);
                     } else if (parentNode) {
-                        openNode(parentNode);
+                        navigateToCategory(parentNode);
                     }
                 }}
             >
