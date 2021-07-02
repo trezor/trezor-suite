@@ -27,7 +27,7 @@ const Wrapper = styled.button`
 
 const GuideButton = (props: ButtonHTMLAttributes<HTMLButtonElement>) => (
     <Wrapper {...props}>
-        <img src={resolveStaticPath('/images/suite/lamp.png')} width="15" height="27" alt="" />
+        <img src={resolveStaticPath('/images/suite/lightbulb.svg')} width="18" height="18" alt="" />
     </Wrapper>
 );
 
