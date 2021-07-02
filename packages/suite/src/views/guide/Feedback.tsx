@@ -6,7 +6,7 @@ import { Textarea, Select, variables, Button } from '@trezor/components';
 import { useActions, useAnalytics, useDevice, useSelector } from '@suite-hooks';
 import * as guideActions from '@suite-actions/guideActions';
 import { ViewWrapper, Header, Content } from '@guide-components';
-import { Rating, Category, FeedbackType, UserData } from '@suite-types/guide';
+import { Rating, FeedbackCategory, FeedbackType, UserData } from '@suite-types/guide';
 import {
     getUserAgent,
     getEnvironment,
@@ -124,7 +124,7 @@ const ratingOptions: RatingItem[] = [
 /** A format compatible with React Select component. */
 type FeedbackCategoryOption = {
     label: React.ReactNode;
-    value: Category;
+    value: FeedbackCategory;
 };
 
 const Feedback = ({ type }: Props) => {
@@ -140,7 +140,7 @@ const Feedback = ({ type }: Props) => {
     const [description, setDescription] = React.useState('');
     const [rating, setRating] = React.useState<RatingItem>();
 
-    const feedbackCategories: { [key in Category]: React.ReactNode } = {
+    const feedbackCategories: { [key in FeedbackCategory]: React.ReactNode } = {
         dashboard: <Translation id="TR_FEEDBACK_CATEGORY_DASHBOARD" />,
         account: <Translation id="TR_FEEDBACK_CATEGORY_ACCOUNT" />,
         settings: <Translation id="TR_FEEDBACK_CATEGORY_SETTINGS" />,
@@ -151,7 +151,7 @@ const Feedback = ({ type }: Props) => {
     };
 
     // Router apps does not match 1:1 to Feedback Categories
-    const getDefaultCategory = (): Category | undefined => {
+    const getDefaultCategory = (): FeedbackCategory | undefined => {
         const { app, route } = router;
         const routePattern = route?.pattern || '';
 
@@ -178,7 +178,7 @@ const Feedback = ({ type }: Props) => {
     };
     const [category, setCategory] = React.useState(getDefaultCategory());
 
-    const categoryToOption = (category: Category): FeedbackCategoryOption => ({
+    const categoryToOption = (category: FeedbackCategory): FeedbackCategoryOption => ({
         value: category,
         label: feedbackCategories[category],
     });
@@ -268,7 +268,7 @@ const Feedback = ({ type }: Props) => {
                                 isSearchable={false}
                                 defaultValue={category && categoryToOption(category)}
                                 options={Object.keys(feedbackCategories).map(category =>
-                                    categoryToOption(category as Category),
+                                    categoryToOption(category as FeedbackCategory),
                                 )}
                                 borderWidth={1}
                                 borderRadius={8}

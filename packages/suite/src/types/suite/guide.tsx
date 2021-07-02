@@ -9,7 +9,7 @@ export type FeedbackView = 'FEEDBACK_TYPE_SELECTION' | 'FEEDBACK_BUG' | 'FEEDBAC
 
 export type ActiveView = GuideView | FeedbackView;
 
-export type Category =
+export type FeedbackCategory =
     | 'dashboard'
     | 'account'
     | 'settings'
@@ -37,7 +37,7 @@ export interface UserData {
 
 export interface PayloadBug extends UserData {
     description: string;
-    category: Category;
+    category: FeedbackCategory;
 }
 
 export interface PayloadSuggestion extends UserData {
