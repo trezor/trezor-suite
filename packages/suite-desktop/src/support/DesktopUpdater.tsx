@@ -20,6 +20,7 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
         ready,
         skip,
         error,
+        newVersionFirstRun,
         setUpdateWindow,
     } = useActions({
         enable: desktopUpdateActions.enable,
@@ -31,6 +32,7 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
         skip: desktopUpdateActions.skip,
         error: desktopUpdateActions.error,
         setUpdateWindow: desktopUpdateActions.setUpdateWindow,
+        newVersionFirstRun: desktopUpdateActions.newVersionFirstRun,
     });
     const desktopUpdate = useSelector(state => state.desktopUpdate);
 
@@ -39,7 +41,6 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
             window.desktopApi!.on('update/enable', enable);
             return;
         }
-
         window.desktopApi!.on('update/checking', checking);
         window.desktopApi!.on('update/available', available);
         window.desktopApi!.on('update/not-available', notAvailable);
@@ -47,6 +48,7 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
         window.desktopApi!.on('update/downloaded', ready);
         window.desktopApi!.on('update/downloading', downloading);
         window.desktopApi!.on('update/error', error);
+        window.desktopApi!.on('update/new-version-first-run', newVersionFirstRun);
 
         // Initial check for updates
         window.desktopApi!.checkForUpdates();
@@ -60,8 +62,9 @@ const DesktopUpdater = ({ setIsUpdateVisible }: Props) => {
         ready,
         skip,
         error,
-        desktopUpdate.enabled,
         enable,
+        newVersionFirstRun,
+        desktopUpdate.enabled,
     ]);
 
     const hideWindow = useCallback(() => setUpdateWindow('hidden'), [setUpdateWindow]);

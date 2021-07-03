@@ -3292,6 +3292,10 @@ const definedMessages = defineMessages({
         id: 'TOAST_AUTO_UPDATER_NO_NEW',
         defaultMessage: 'No new updates available.',
     },
+    TOAST_AUTO_UPDATER_NEW_VERSION_FIRST_RUN: {
+        id: 'TOAST_AUTO_UPDATER_NEW_VERSION_FIRST_RUN',
+        defaultMessage: 'New version ({version}) installed successfully.',
+    },
     TOAST_GENERIC_ERROR: {
         id: 'TOAST_GENERIC_ERROR',
         defaultMessage: 'Error: {error}',
