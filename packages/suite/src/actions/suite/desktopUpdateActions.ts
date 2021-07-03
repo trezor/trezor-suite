@@ -68,3 +68,7 @@ export const setUpdateWindow = (win: UpdateWindow): DesktopUpdateAction => ({
     type: DESKTOP_UPDATE.WINDOW,
     payload: win,
 });
+
+export const newVersionFirstRun = (version: string) => (dispatch: Dispatch) => {
+    dispatch(addToast({ type: 'auto-updater-new-version-first-run', version }));
+};

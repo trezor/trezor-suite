@@ -286,6 +286,18 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
                 message: 'TOAST_AUTO_UPDATER_NO_NEW',
             });
 
+        case 'auto-updater-new-version-first-run':
+            return simple(View, {
+                notification,
+                variant: 'info',
+                message: {
+                    id: 'TOAST_AUTO_UPDATER_NEW_VERSION_FIRST_RUN',
+                    values: {
+                        version: notification.version,
+                    },
+                },
+            });
+
         case 'add-token-success':
             return simple(View, {
                 notification,

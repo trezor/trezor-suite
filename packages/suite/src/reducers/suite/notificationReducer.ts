@@ -75,6 +75,10 @@ export type ToastPayload = (
           type: 'auto-updater-no-new';
       }
     | {
+          type: 'auto-updater-new-version-first-run';
+          version: string;
+      }
+    | {
           type: 'user-feedback-send-success' | 'user-feedback-send-error';
       }
 ) &

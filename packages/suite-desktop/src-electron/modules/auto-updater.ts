@@ -24,7 +24,6 @@ const preReleaseFlag = app.commandLine.hasSwitch('pre-release');
 
 const init = ({ mainWindow, store }: Dependencies) => {
     const { logger } = global;
-
     if (!isEnabled('DESKTOP_AUTO_UPDATER') && !enableUpdater) {
         logger.info('auto-updater', 'Disabled via feature flag');
         return;
@@ -41,9 +40,24 @@ const init = ({ mainWindow, store }: Dependencies) => {
         return;
     }
 
+    const updateSettings = store.getUpdateSettings();
+
     // Enable feature on FE once it's ready
     mainWindow.webContents.on('did-finish-load', () => {
         mainWindow.webContents.send('update/enable');
+
+        // if there is preUpdateVersion in store (it doesn't have to be there as it was added in later versions)
+        // and if it does not match current application version it means that application got updated and the new version
+        // is run for the first time.
+        const { preUpdateVersion } = updateSettings;
+        const currentVersion = app.getVersion();
+        logger.debug(
+            'auto-updater',
+            `version of application before this launch: ${preUpdateVersion}, current app version: ${currentVersion}`,
+        );
+        if (preUpdateVersion && preUpdateVersion !== currentVersion) {
+            mainWindow.webContents.send('update/new-version-first-run', currentVersion);
+        }
     });
 
     let isManualCheck = false;
@@ -51,7 +65,6 @@ const init = ({ mainWindow, store }: Dependencies) => {
     let updateCancellationToken: CancellationToken;
     let shouldInstallUpdateOnQuit = false;
 
-    const updateSettings = store.getUpdateSettings();
     // Prevent downloading an update unless user explicitly asks for it.
     autoUpdater.autoDownload = false;
     // Manually force install based on `shouldInstallUpdateOnQuit` var instead to have more control over the process.
