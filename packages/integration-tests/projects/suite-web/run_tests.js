@@ -7,7 +7,6 @@ const cypress = require('cypress');
 const shell = require('shelljs');
 const { argv } = require('yargs');
 const fetch = require('node-fetch');
-const path = require('path');
 const fs = require('fs');
 
 const TEST_DIR = './packages/integration-tests/projects/suite-web';
@@ -59,7 +58,6 @@ async function runTests() {
         CI_JOB_ID,
         CI_COMMIT_MESSAGE,
         CI_COMMIT_SHA,
-        // CI_RUNNER_ID,
         CI_RUNNER_DESCRIPTION,
         CYPRESS_updateSnapshots,
     } = process.env;
@@ -139,7 +137,7 @@ async function runTests() {
                 // eslint-disable-next-line no-await-in-loop
                 const runResult = await cypress.run({
                     browser: BROWSER,
-                    // headless,
+                    // headless: true,
                     headed: true,
                     spec,
                     config,
@@ -183,7 +181,7 @@ async function runTests() {
                 // log either success or retried (success after retry)
                 log.records[testFileName] = testRunNumber === 1 ? 'success' : 'retried';
                 console.log(
-                    `[run_tests.js] test ${testFileName} finished as successful after ${allowedRuns} run(s)`,
+                    `[run_tests.js] test ${testFileName} finished as successful after ${testRunNumber} run(s) (of ${allowedRuns})`,
                 );
                 break;
             } catch (err) {

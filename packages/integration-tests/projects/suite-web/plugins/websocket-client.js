@@ -5,8 +5,8 @@ const { EventEmitter } = require('events');
 const NOT_INITIALIZED = new Error('websocket_not_initialized');
 
 const createDeferred = id => {
-    let localResolve = t => () => {};
-    let localReject = e => () => {};
+    let localResolve = t => () => { };
+    let localReject = e => () => { };
 
     const promise = new Promise((resolve, reject) => {
         localResolve = resolve;
@@ -33,15 +33,19 @@ class Controller extends EventEmitter {
         this.messageID = 0;
         this.messages = [];
         this.subscriptions = [];
-        this.setMaxListeners(Infinity);
-        this.options = options;
+        // this.setMaxListeners(Infinity);
+        this.options = {
+            pingTimeout: DEFAULT_PING_TIMEOUT,
+            timeout: DEFAULT_TIMEOUT,
+            ...options
+        };
     }
 
     setConnectionTimeout() {
         this.clearConnectionTimeout();
         this.connectionTimeout = setTimeout(
             this.onTimeout.bind(this),
-            this.options.timeout || DEFAULT_TIMEOUT,
+            this.options.timeout,
         );
     }
 
@@ -58,11 +62,12 @@ class Controller extends EventEmitter {
         }
         this.pingTimeout = setTimeout(
             this.onPing.bind(this),
-            this.options.pingTimeout || DEFAULT_PING_TIMEOUT,
+            this.options.pingTimeout,
         );
     }
 
     onTimeout() {
+        console.log('[ws]: onTimeout')
         const { ws } = this;
         if (!ws) return;
         if (ws.listenerCount('open') > 0) {
@@ -70,6 +75,7 @@ class Controller extends EventEmitter {
             try {
                 ws.close();
             } catch (error) {
+                console.log('[ws]: onTimeout close err', err.message);
                 // empty
             }
         } else {
@@ -79,14 +85,18 @@ class Controller extends EventEmitter {
     }
 
     async onPing() {
+        console.log('[ws]: onPing')
+
         // make sure that connection is alive if there are subscriptions
         if (this.ws && this.isConnected()) {
             if (this.subscriptions.length > 0 || this.options.keepAlive) {
+                console.log('[ws]: getBlockHash. This cant work!')
                 await this.getBlockHash(0);
             } else {
                 try {
                     this.ws.close();
                 } catch (error) {
+                    console.log('[ws]: onPing close error', err.message)
                     // empty
                 }
             }
@@ -113,12 +123,14 @@ class Controller extends EventEmitter {
 
         this.setConnectionTimeout();
         this.setPingTimeout();
-
+        console.log('[ws]: sending', req);
         ws.send(JSON.stringify(req));
+
         return dfd.promise;
     }
 
     onmessage(message) {
+        console.log('[ws]: onmessage', message);
         try {
             const resp = JSON.parse(message);
             const { id, success } = resp;
@@ -134,6 +146,8 @@ class Controller extends EventEmitter {
                 this.messages.splice(this.messages.indexOf(dfd), 1);
             }
         } catch (error) {
+            // this can indeed happen
+            console.log('[ws]: error', error.message)
             // empty
         }
 
@@ -167,11 +181,14 @@ class Controller extends EventEmitter {
 
         // initialize connection
         const ws = new WebSocket(url);
+
         ws.once('error', error => {
+            console.log('[ws]: ws once error', error.message);
+
             this.dispose();
-            console.log(error);
             dfd.reject(new Error('websocket_runtime_error: ', error.message));
         });
+
         ws.on('open', () => {
             this.init();
             dfd.resolve();
@@ -196,16 +213,29 @@ class Controller extends EventEmitter {
         ws.on('error', this.onError.bind(this));
         ws.on('message', this.onmessage.bind(this));
         ws.on('close', () => {
+            console.log('[ws]: close');
             this.emit('disconnected');
             this.dispose();
         });
+        ws.on('ping', () => {
+            console.log('[ws]: ping');
+        })
+        ws.on('pong', () => {
+            console.log('[ws]: pong');
+        })
+        ws.on('unexpected-response', () => {
+            console.log('[ws]: unexpected-response');
+        })
+        ws.on('upgrade', () => {
+            console.log('[ws]: upgrade');
+        })
     }
 
     disconnect() {
         if (this.ws) {
             this.ws.close();
         }
-        // this.dispose();
+        this.dispose();
     }
 
     isConnected() {

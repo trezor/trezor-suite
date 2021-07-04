@@ -33,6 +33,7 @@ const prefixedVisit = (route: string, options?: Partial<Cypress.VisitOptions>) =
 beforeEach(() => {
     const suiteName = (Cypress as any).mocha.getRunner().suite.ctx.currentTest.parent.title;
     const testName = (Cypress as any).mocha.getRunner().suite.ctx.currentTest.title;
+    cy.task('trezorUserEnvConnect');
     cy.task('logTestDetails', `New test case: ${suiteName} - ${testName}`);
 
     cy.intercept('POST', 'http://127.0.0.1:21325/', req => {
@@ -43,6 +44,9 @@ beforeEach(() => {
     cy.task('stopEmu');
 });
 
+afterEach(() => {
+    cy.task('trezorUserEnvDisconnect');
+});
 declare global {
     namespace Cypress {
         interface Chainable<Subject> {

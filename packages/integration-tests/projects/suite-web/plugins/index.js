@@ -13,6 +13,7 @@ import * as metadataUtils from '../../../../suite/src/utils/suite/metadata';
 const webpackPreprocessor = require('@cypress/webpack-preprocessor');
 
 const controller = new Controller({ url: 'ws://localhost:9001/' });
+
 module.exports = on => {
     // make ts possible start
     const options = {
@@ -38,7 +39,9 @@ module.exports = on => {
     });
 
     on('task', {
+        
         metadataStartProvider: async provider => {
+            console.log('node: metadataStartProvider');
             switch (provider) {
                 case 'dropbox':
                     await dropboxMock.start();
@@ -48,6 +51,7 @@ module.exports = on => {
             return null;
         },
         metadataStopProvider: async provider => {
+            console.log('node: metadataStopProvider');
             switch (provider) {
                 case 'dropbox':
                     dropboxMock.stop();
@@ -57,6 +61,7 @@ module.exports = on => {
             return null;
         },
         metadataSetFileContent: async ({ provider, file, content, aesKey }) => {
+            console.log('node: metadataSetFileContent');
             const encrypted = await metadataUtils.encrypt(content, aesKey);
             switch (provider) {
                 case 'dropbox':
@@ -68,6 +73,7 @@ module.exports = on => {
             return null;
         },
         metadataSetNextResponse: ({ provider, status, body }) => {
+            console.log('node: metadataSetNextResponse');
             switch (provider) {
                 case 'dropbox':
                     dropboxMock.nextResponse = { status, body };
@@ -79,6 +85,7 @@ module.exports = on => {
             return null;
         },
         metadataGetRequests: ({ provider }) => {
+            console.log('node: metadataSetNextResponse');
             switch (provider) {
                 case 'dropbox':
                     return dropboxMock.requests;
@@ -86,19 +93,30 @@ module.exports = on => {
                     return googleMock.requests;
             }
         },
-        startBridge: async version => {
+        trezorUserEnvConnect: async () => {
+            console.log('node: trezorUserEnvConnect')
             await controller.connect();
+            console.log('node: trezorUserEnvConnect connected')
+            return null;
+        },
+        trezorUserEnvDisconnect: async () => {
+            console.log('node: trezorUserEnvDisconnect')
+            await controller.disconnect();
+            console.log('node: trezorUserEnvDisconnect disconnected')
+            return null;
+        },
+        startBridge: async version => {
+            console.log('node: startBridge')
             await controller.send({ type: 'bridge-start', version });
-            controller.disconnect();
             return null;
         },
         stopBridge: async () => {
-            await controller.connect();
-            const response = await controller.send({ type: 'bridge-stop' });
-            controller.disconnect();
+            console.log('node: stopBridge');
+            await controller.send({ type: 'bridge-stop' });
             return null;
         },
         setupEmu: async options => {
+            console.log('node: setupEmu');
             const defaults = {
                 // some random empty seed. most of the test don't need any account history so it is better not to slow them down with all all seed
                 mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
@@ -107,19 +125,17 @@ module.exports = on => {
                 label: 'My Trevor',
                 needs_backup: false,
             };
-
-            await controller.connect();
+            
             // before setup, stop bridge and start it again after it. it has no performance hit
             // and avoids 'wrong previous session' errors from bridge. actual setup is done
             // through udp transport if bridge transport is not available
-            await controller.send({ type: 'bridge-stop' });
+            // await controller.send({ type: 'bridge-stop' });
             await controller.send({
                 type: 'emulator-setup',
                 ...defaults,
                 ...options,
             });
-            await controller.send({ type: 'bridge-start' });
-            controller.disconnect();
+            // await controller.send({ type: 'bridge-start' });
             return null;
         },
         /**
@@ -129,93 +145,80 @@ module.exports = on => {
          * shall be emulator wiped before start? defaults to true
          */
         startEmu: async arg => {
-            await controller.connect();
+            console.log('node: startEmu');
             await controller.send({
                 type: 'emulator-start',
                 ...arg,
             });
-            controller.disconnect();
             return null;
         },
         stopEmu: async () => {
-            await controller.connect();
+            console.log('node: stopEmu')
             await controller.send({ type: 'emulator-stop' });
-            controller.disconnect();
             return null;
         },
         wipeEmu: async () => {
-            await controller.connect();
+            console.log('node: wipeEmu')
             await controller.send({ type: 'emulator-wipe' });
-            controller.disconnect();
             return null;
         },
         pressYes: async () => {
-            await controller.connect();
+            console.log('node: pressYes')
             await controller.send({ type: 'emulator-press-yes' });
-            controller.disconnect();
             return null;
         },
         pressNo: async () => {
-            await controller.connect();
+            console.log('node: pressNo')
             await controller.send({ type: 'emulator-press-no' });
-            controller.disconnect();
             return null;
         },
         swipeEmu: async direction => {
-            await controller.connect();
+            console.log('node: swipeEmu')
             await controller.send({ type: 'emulator-swipe', direction });
-            controller.disconnect();
             return null;
         },
         inputEmu: async value => {
-            await controller.connect();
+            console.log('node: inputEmu')
             await controller.send({ type: 'emulator-input', value });
-            controller.disconnect();
             return null;
         },
         clickEmu: async options => {
-            await controller.connect();
             await controller.send({ type: 'emulator-click', ...options });
-            controller.disconnect();
             return null;
         },
         resetDevice: async options => {
-            await controller.connect();
+            console.log('node: resetDevice')
             await controller.send({ type: 'emulator-reset-device', ...options });
-            controller.disconnect();
             return null;
         },
         readAndConfirmMnemonicEmu: async () => {
-            await controller.connect();
+            console.log('node: readAndConfirmMnemonicEmu')
             await controller.send({ type: 'emulator-read-and-confirm-mnemonic' });
-            controller.disconnect();
             return null;
         },
         readAndConfirmShamirMnemonicEmu: async options => {
-            await controller.connect();
             await controller.send({ type: 'emulator-read-and-confirm-shamir-mnemonic', ...options});
-            controller.disconnect();
             return null;
         },
         applySettings: async options => {
-            await controller.connect();
+            console.log('node: applySettings');
+            const defaults = {
+                passphrase_always_on_device: false,
+            };
             await controller.send({
                 type: 'emulator-apply-settings',
+                ...defaults,
                 ...options,
             });
-            controller.disconnect();
             return null;
         },
         selectNumOfWordsEmu: async num => {
-            await controller.connect();
+            console.log('node: selectNumOfWordsEmu')
             await controller.send({ type: 'select-num-of-words', num });
-            controller.disconnect();
             return null;
         },
         logTestDetails: async text => {
-            await controller.connect();
             await controller.send({ type: 'log', text });
-            controller.disconnect();
             return null;
         },
     });

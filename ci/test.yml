@@ -1,8 +1,8 @@
 # e2e tests
 .e2e web:
   stage: integration testing
-  needs:
-    - suite-web deploy dev
+  # needs:
+  #   - suite-web deploy dev
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
     COMPOSE_FILE: ./docker/docker-compose.suite-ci.yml
@@ -15,7 +15,7 @@
     TRACK_SUITE_URL: https://track-suite.herokuapp.com
     ## when debugging or developing tests it does not make sense to have retries,
     ## in other cases retries are useful to avoid occasional failures due to flaky tests
-    ALLOW_RETRY: 1
+    ALLOW_RETRY: 0
   before_script:
     - docker login $CI_DEPENDENCY_PROXY_SERVER -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD
   script:
@@ -71,7 +71,7 @@ e2e web metadata:
 
 # TODO: should there be one job updating all? not sure
 e2e web suite snapshots:
-  when: manual
+  # when: manual
   extends: .e2e web
   variables:
     CYPRESS_SNAPSHOT: 1

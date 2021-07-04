@@ -31,6 +31,10 @@ describe('T1 - Device settings', () => {
         cy.getTestElement('@pin-mismatch/try-again-button').click();
         cy.getTestElement('@suite/modal/confirm-action-on-device');
         cy.task('pressYes');
+        cy.getTestElement('@modal/pin');
+        cy.task('stopEmu');
+        cy.getTestElement('@connect-device-prompt');
+
     });
 
     it('does not show auto-lock select because it is not supported on fw <1.9.4', () => {

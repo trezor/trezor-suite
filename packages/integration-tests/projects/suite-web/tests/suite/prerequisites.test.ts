@@ -33,7 +33,7 @@ describe('prerequisites = test various types of devices connecting to the applic
         },
         {
             desc: 'device-disconnected',
-            mockDevice: () => {},
+            mockDevice: () => { },
         },
         {
             desc: 'device-bootloader',
@@ -42,9 +42,10 @@ describe('prerequisites = test various types of devices connecting to the applic
     ];
 
     fixtures.forEach(f => {
-        it(f.desc, () => {
+        it.only(f.desc, () => {
             f.mockDevice();
             cy.getTestElement('@onboarding/expand-troubleshooting-tips').click();
+            cy.getTestElement('@collapsible-box/animated').should('have.css', 'opacity', '1');
             cy.matchImageSnapshot(f.desc);
         });
     });

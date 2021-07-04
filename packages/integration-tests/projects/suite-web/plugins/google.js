@@ -155,12 +155,18 @@ class GoogleMock {
         console.log('[mockGoogleDrive]: start');
 
         return new Promise((resolve, reject) => {
-            this.app.listen(port, server => {
+            this.server = this.app.listen(port, err => {
+                if (err) return;
                 console.log(`[mockGoogleDrive] listening at http://localhost:${port}`);
                 this.running = true;
-                this.server = server;
-                resolve();
             });
+
+            this.server.on('error', (e) => {
+                this.running = false;
+                console.log('[mockGoogleDrive]: start error', e.message)
+            })
+
+            resolve();
         });
     }
 

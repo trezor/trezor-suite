@@ -1,7 +1,9 @@
 // @group:onboarding
 // @retry=2
 
-describe('Onboarding - create wallet', () => {
+// todo: this has become too flaky..., there is some problem when working with t1 emu
+
+describe.skip('Onboarding - create wallet', () => {
     beforeEach(() => {
         cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
