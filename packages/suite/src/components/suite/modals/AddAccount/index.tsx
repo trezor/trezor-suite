@@ -67,13 +67,15 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
     const networkPinned = !!symbol;
     const preselectedNetwork = symbol && internalNetworks.find(n => n.symbol === symbol);
 
-    const [network, setNetwork] = useState<Network | undefined>(preselectedNetwork);
+    const [selectedNetwork, selectNetwork] = useState<Network | undefined>(preselectedNetwork);
 
-    const networkEnabled = !!network && enabledNetworksSymbols.includes(network.symbol);
+    const selectedNetworkEnabled =
+        !!selectedNetwork && enabledNetworksSymbols.includes(selectedNetwork.symbol);
 
     // Check device capabilities
     // Display: unavailable network
-    const unavailableCapability = network && unavailableCapabilities[network.symbol];
+    const unavailableCapability =
+        selectedNetwork && unavailableCapabilities[selectedNetwork.symbol];
 
     const [enabledNetworks, disabledNetworks] = partition(internalNetworks, network =>
         enabledNetworksSymbols.includes(network.symbol),
@@ -87,21 +89,21 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
         if (symbol) {
             const selectedNetwork = NETWORKS.find(n => n.symbol === symbol);
             if (selectedNetwork && !networkPinned) {
-                setNetwork(selectedNetwork);
+                selectNetwork(selectedNetwork);
             }
         } else {
-            setNetwork(undefined);
+            selectNetwork(undefined);
         }
     };
 
     const onEnableNetwork = () => {
         onCancel();
-        if (network) {
-            changeCoinVisibility(network.symbol, true);
+        if (selectedNetwork) {
+            changeCoinVisibility(selectedNetwork.symbol, true);
             if (app === 'wallet' && !noRedirect) {
                 // redirect to account only if added from "wallet" app
                 goto('wallet-index', {
-                    symbol: network.symbol,
+                    symbol: selectedNetwork.symbol,
                     accountIndex: 0,
                     accountType: 'normal',
                 });
@@ -110,12 +112,12 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
     };
 
     // Collect all empty accounts related to selected device and selected accountType
-    const currentType = network?.accountType ?? 'normal';
-    const emptyAccounts = network
+    const currentType = selectedNetwork?.accountType ?? 'normal';
+    const emptyAccounts = selectedNetwork
         ? accounts.filter(
               a =>
                   a.deviceState === device.state &&
-                  a.symbol === network.symbol &&
+                  a.symbol === selectedNetwork.symbol &&
                   a.accountType === currentType &&
                   a.empty,
           )
@@ -123,8 +125,8 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
 
     // Collect possible accountTypes
     const accountTypes =
-        networkEnabled && network?.networkType === 'bitcoin'
-            ? NETWORKS.filter(n => n.symbol === network.symbol)
+        selectedNetworkEnabled && selectedNetwork?.networkType === 'bitcoin'
+            ? NETWORKS.filter(n => n.symbol === selectedNetwork.symbol)
             : undefined;
 
     const onEnableAccount = (account: Account) => {
@@ -140,7 +142,7 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
         }
     };
 
-    const selectedNetworks = network ? [network.symbol] : [];
+    const selectedNetworks = selectedNetwork ? [selectedNetwork.symbol] : [];
 
     return (
         <StyledModal
@@ -149,13 +151,15 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
             heading={<Translation id="MODAL_ADD_ACCOUNT_TITLE" />}
         >
             <AddAccount
-                networks={network && networkEnabled ? [network] : enabledNetworks}
-                networkCanChange={!!network && networkEnabled && !networkPinned}
+                networks={
+                    selectedNetwork && selectedNetworkEnabled ? [selectedNetwork] : enabledNetworks
+                }
+                networkCanChange={!!selectedNetwork && selectedNetworkEnabled && !networkPinned}
                 selectedNetworks={selectedNetworks}
                 unavailableCapabilities={unavailableCapabilities}
                 handleNetworkSelection={handleNetworkSelection}
             />
-            {!networkEnabled && (
+            {!selectedNetworkEnabled && (
                 <EnableNetwork
                     networks={disabledMainnetNetworks}
                     testnetNetworks={disabledTestnetNetworks}
@@ -164,7 +168,7 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
                     handleNetworkSelection={handleNetworkSelection}
                 />
             )}
-            {network && (
+            {selectedNetwork && (
                 <>
                     {accountTypes && accountTypes?.length > 1 && (
                         <>
@@ -172,25 +176,28 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
                                 <Translation id="TR_ACCOUNT_TYPE" />
                             </Title>
                             <AccountTypeSelect
-                                network={network}
+                                network={selectedNetwork}
                                 accountTypes={accountTypes}
-                                onSelectAccountType={setNetwork}
+                                onSelectAccountType={selectNetwork}
                             />
                         </>
                     )}
 
                     {unavailableCapability ? (
-                        <NetworkUnavailable capability={unavailableCapability} network={network} />
+                        <NetworkUnavailable
+                            capability={unavailableCapability}
+                            network={selectedNetwork}
+                        />
                     ) : (
-                        <NetworkInternal network={network} accountTypes={accountTypes} />
+                        <NetworkInternal network={selectedNetwork} accountTypes={accountTypes} />
                     )}
 
                     <Expander />
 
                     <Actions>
-                        {networkEnabled ? (
+                        {selectedNetworkEnabled ? (
                             <AddAccountButton
-                                network={network}
+                                network={selectedNetwork}
                                 accounts={emptyAccounts}
                                 onEnableAccount={onEnableAccount}
                             />
@@ -198,7 +205,7 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
                             <Button variant="primary" onClick={onEnableNetwork}>
                                 <Translation
                                     id="TR_ENABLE_NETWORK_BUTTON"
-                                    values={{ networkName: network.name }}
+                                    values={{ networkName: selectedNetwork.name }}
                                 />
                             </Button>
                         )}
