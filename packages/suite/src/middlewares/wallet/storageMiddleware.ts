@@ -37,6 +37,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dis
             );
             break;
 
+        case SUITE.FORGET_DEVICE:
+            api.dispatch(storageActions.forgetDevice(action.payload));
+            break;
+
         case ACCOUNT.CREATE:
         case ACCOUNT.CHANGE_VISIBILITY:
         case ACCOUNT.UPDATE: {

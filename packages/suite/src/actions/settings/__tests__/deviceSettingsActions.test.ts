@@ -5,47 +5,99 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import fixtures from '../__fixtures__/deviceSettings';
+import suiteReducer from '@suite-reducers/suiteReducer';
+import deviceReducer from '@suite-reducers/deviceReducer';
 
 const { getSuiteDevice } = global.JestMocks;
 
 jest.mock('trezor-connect', () => {
-    let fixture: any;
+    let fixture: { success: boolean; payload: any };
+    let deviceChangeEvent = () => {};
 
     return {
         __esModule: true, // this property makes it work
         default: {
             blockchainSetCustomBackend: () => {},
-            applySettings: () => Promise.resolve(fixture),
-            wipeDevice: () => Promise.resolve(fixture),
-            changePin: () => Promise.resolve(fixture),
+            applySettings: () =>
+                new Promise(resolve => {
+                    deviceChangeEvent();
+                    resolve(fixture);
+                }),
+            wipeDevice: () =>
+                new Promise(resolve => {
+                    deviceChangeEvent();
+                    resolve(fixture);
+                }),
+            changePin: () =>
+                new Promise(resolve => {
+                    deviceChangeEvent();
+                    resolve(fixture);
+                }),
         },
-        setTestFixtures: (f: any) => {
+        setTestFixtures: (f: typeof fixture) => {
             fixture = f;
+        },
+        setDeviceChangeEvent: (event: typeof deviceChangeEvent) => {
+            deviceChangeEvent = event;
         },
         DEVICE: {
             CHANGED: 'device-changed',
         },
+        TRANSPORT: {},
+        BLOCKCHAIN: {},
     };
 });
 
-export const getInitialState = (): any => {
-    const device = getSuiteDevice();
-    return {
-        suite: { device },
-        devices: [device],
-    };
+const DEVICE = getSuiteDevice({ path: '1', connected: true });
+
+type State = {
+    suite: ReturnType<typeof suiteReducer>;
+    devices: ReturnType<typeof deviceReducer>;
 };
-const mockStore = configureStore<ReturnType<typeof getInitialState>, any>([thunk]);
+
+export const getInitialState = (state: Partial<State> = {}) => ({
+    suite: {
+        ...suiteReducer(undefined, { type: '@suite/init' }),
+        device: DEVICE,
+    },
+    devices: state.devices ?? [DEVICE],
+});
+
+const mockStore = configureStore<State, any>([thunk]);
+
+const initStore = (state: State) => {
+    const store = mockStore(state);
+    store.subscribe(() => {
+        const action = store.getActions().pop();
+        const { suite, devices } = store.getState();
+        // process action in reducers
+        store.getState().suite = suiteReducer(suite, action);
+        store.getState().devices = deviceReducer(devices, action);
+        // add action back to stack
+        store.getActions().push(action);
+    });
+    return store;
+};
 
 describe('DeviceSettings Actions', () => {
     fixtures.forEach(f => {
         it(f.description, async () => {
+            const store = initStore(getInitialState(f.initialState));
             if (f.mocks) {
                 require('trezor-connect').setTestFixtures(f.mocks);
             }
+            // wipe device tests require "device-change" event from "trezor-connect"
+            // this action have influence on reducers and forget device process
+            if (f.deviceChange) {
+                require('trezor-connect').setDeviceChangeEvent(() => {
+                    store.dispatch({ type: 'device-changed', payload: f.deviceChange });
+                    store.dispatch({
+                        type: '@suite/update-selected-device',
+                        payload: f.deviceChange,
+                    });
+                });
+            }
 
-            const state = getInitialState();
-            const store = mockStore(state);
             await store.dispatch(f.action());
 
             if (f.result) {
