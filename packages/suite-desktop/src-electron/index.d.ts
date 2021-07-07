@@ -69,7 +69,7 @@ declare type WinBounds = {
 
 declare type UpdateSettings = {
     skipVersion: string;
-    preUpdateVersion?: string;
+    savedCurrentVersion?: string;
 };
 
 declare type TorSettings = {
