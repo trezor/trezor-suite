@@ -1,6 +1,20 @@
 [
 	{
 		"required": false,
+		"version": [1, 10, 2],
+		"bootloader_version": [1, 10, 0],
+		"min_bridge_version": [2, 0, 25],
+		"min_firmware_version": [1, 6, 2],
+		"min_bootloader_version": [1, 5, 0],
+		"url": "data/firmware/1/trezor-1.10.2.bin",
+		"url_bitcoinonly": "data/firmware/1/trezor-1.10.2-bitcoinonly.bin",
+		"fingerprint": "f8ebf48ae37968651489ef3d530161e5a4649d5a87dced94bc4c59040fdeb728",
+		"fingerprint_bitcoinonly": "1502e694ab519ed573e8770c69bfac042b4d2b56f81e9dcf0482de9fda88d527",
+		"notes": "https://blog.trezor.io/trezor-suite-launches-8958c1d37d33",
+		"changelog": "* Security improvements."
+	},
+	{
+		"required": false,
 		"version": [1, 10, 1],
 		"bootloader_version": [1, 10, 0],
 		"min_bridge_version": [2, 0, 25],

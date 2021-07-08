@@ -1,6 +1,19 @@
 [
 	{
 		"required": false,
+		"version": [2, 4, 1],
+		"min_bridge_version": [2, 0, 7],
+		"min_firmware_version": [2, 0, 8],
+		"min_bootloader_version": [2, 0, 0],
+		"url": "data/firmware/2/trezor-2.4.1.bin",
+		"url_bitcoinonly": "data/firmware/2/trezor-2.4.1-bitcoinonly.bin",
+		"fingerprint": "89870915191afbb037ed3e1a1d2a216b6c5d931677a23a0f19a722006ed8f18c",
+		"fingerprint_bitcoinonly": "5f57586629b44906b02135b3d9012dd85ea16b508fc828bd5ffd26865aa99b7b",
+		"notes": "https://blog.trezor.io/trezor-suite-launches-8958c1d37d33",
+		"changelog": "* Security and major perfomance improvements.\n* Cardano fixes.\n* Fix red screen on shutdown."
+	},
+	{
+		"required": false,
 		"version": [2, 4, 0],
 		"min_bridge_version": [2, 0, 7],
 		"min_firmware_version": [2, 0, 8],
