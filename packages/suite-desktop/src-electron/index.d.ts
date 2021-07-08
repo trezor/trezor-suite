@@ -69,7 +69,13 @@ declare type WinBounds = {
 
 declare type UpdateSettings = {
     skipVersion: string;
-    preUpdateVersion?: string;
+    // saving application version gives us ability to tell whether app got updated or not.
+    /**
+     * Duplicates and persists `app.getVersion()` most of the time except the first app start after an update.
+     * In that case it's used to detect an update to display a success notification to the user.
+     * Use `app.getVersion()` to get the current version of the app.
+     */
+    savedCurrentVersion?: string;
 };
 
 declare type TorSettings = {
