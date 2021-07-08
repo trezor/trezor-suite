@@ -1600,6 +1600,19 @@ const definedMessages = defineMessages({
         defaultMessage: 'Wipe device',
         id: 'TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE',
     },
+    TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_BUTTON: {
+        defaultMessage: 'Install firmware',
+        id: 'TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_BUTTON',
+    },
+    TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE: {
+        defaultMessage: 'Install custom firmware',
+        id: 'TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE',
+    },
+    TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION: {
+        defaultMessage:
+            'It is possible to install custom firmware for your Trezor device if needed. Installing custom firmware will erase its memory and may make it unusable. Never use this process unless you really know what you are doing.',
+        id: 'TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION',
+    },
     TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL: {
         defaultMessage: 'Edit Label',
         id: 'TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL',

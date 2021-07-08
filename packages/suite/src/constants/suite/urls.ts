@@ -52,6 +52,7 @@ export const WIKI_ADVANCED_RECOVERY = 'https://wiki.trezor.io/User_manual:Advanc
 export const WIKI_UDEV_RULES = 'https://wiki.trezor.io/Udev_rules';
 export const WIKI_TOR = 'https://wiki.trezor.io/Glossary:Tor';
 export const WIKI_HOW_TO_RUN = 'https://wiki.trezor.io/Apps:Trezor_Suite#How_to_run';
+export const WIKI_FW_DOWNGRADE = 'https://wiki.trezor.io/Firmware_downgrade';
 export const FEEDBACK_FORM = 'https://satoshilabs.typeform.com/to/Dqb71wm1';
 export const FIRMWARE_COMMIT_URL = 'https://github.com/trezor/trezor-firmware/commit/';
 
