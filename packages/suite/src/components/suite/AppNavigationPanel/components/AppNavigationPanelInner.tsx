@@ -64,12 +64,11 @@ interface Props {
     maxWidth: 'small' | 'default';
     children?: React.ReactNode;
     navigation?: React.ReactNode;
-    refer: React.Ref<HTMLDivElement>;
 }
 
-const AppNavigationPanelInner = (props: Props) => (
+const AppNavigationPanelInner = React.forwardRef<HTMLDivElement, Props>((props, ref) => (
     <>
-        <Wrapper ref={props.refer}>
+        <Wrapper ref={ref}>
             <Content maxWidth={props.maxWidth}>
                 <BasicInfo>
                     <TitleRow>
@@ -86,6 +85,6 @@ const AppNavigationPanelInner = (props: Props) => (
         {props.navigation}
         <Delimeter />
     </>
-);
+));
 
 export default AppNavigationPanelInner;

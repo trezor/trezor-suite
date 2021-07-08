@@ -33,7 +33,7 @@ const AppNavigationPanel = (props: Props) => {
 
     return (
         <AppNavigationPanelInner
-            refer={ref}
+            ref={ref}
             title={props.title}
             ticker={props.ticker}
             dropdown={props.dropdown}
