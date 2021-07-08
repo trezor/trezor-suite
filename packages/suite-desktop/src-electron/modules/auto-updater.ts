@@ -46,18 +46,24 @@ const init = ({ mainWindow, store }: Dependencies) => {
     mainWindow.webContents.on('did-finish-load', () => {
         mainWindow.webContents.send('update/enable');
 
-        // if there is preUpdateVersion in store (it doesn't have to be there as it was added in later versions)
+        // if there is savedCurrentVersion in store (it doesn't have to be there as it was added in later versions)
         // and if it does not match current application version it means that application got updated and the new version
         // is run for the first time.
-        const { preUpdateVersion } = updateSettings;
+        const updateSettings = store.getUpdateSettings();
+        const { savedCurrentVersion } = updateSettings;
         const currentVersion = app.getVersion();
         logger.debug(
             'auto-updater',
-            `version of application before this launch: ${preUpdateVersion}, current app version: ${currentVersion}`,
+            `version of application before this launch: ${savedCurrentVersion}, current app version: ${currentVersion}`,
         );
-        if (preUpdateVersion && preUpdateVersion !== currentVersion) {
+        if (savedCurrentVersion && savedCurrentVersion !== currentVersion) {
             mainWindow.webContents.send('update/new-version-first-run', currentVersion);
         }
+        // save current app version so that after app is relaunched we can show info about transition to the new version
+        store.setUpdateSettings({
+            ...updateSettings,
+            savedCurrentVersion: app.getVersion(),
+        });
     });
 
     let isManualCheck = false;
@@ -201,12 +207,6 @@ const init = ({ mainWindow, store }: Dependencies) => {
                     'auto-updater',
                     `Is configured to auto update after app quit ${shouldInstallUpdateOnQuit}`,
                 );
-
-                // save current app version so that after app is relaunched we can show info about transition to the new version
-                store.setUpdateSettings({
-                    ...store.getUpdateSettings(),
-                    preUpdateVersion: app.getVersion(),
-                });
             });
     });
 
