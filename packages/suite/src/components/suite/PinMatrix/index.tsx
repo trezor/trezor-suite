@@ -39,11 +39,12 @@ const PinMatrix = ({ device, hideExplanation, invalid }: Props) => {
 
     useEffect(() => {
         if (
+            pinRequestType.code &&
             [
                 'PinMatrixRequestType_NewFirst',
                 'PinMatrixRequestType_NewSecond',
                 'PinMatrixRequestType_Current',
-            ].includes(pinRequestType)
+            ].includes(pinRequestType.code)
         ) {
             setSubmitted(false);
         }

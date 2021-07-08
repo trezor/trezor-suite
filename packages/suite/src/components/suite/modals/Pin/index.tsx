@@ -13,7 +13,8 @@ type Props = OwnProps;
 
 const Pin = ({ device, cancelable, noBackground, noPadding, ...rest }: Props) => {
     const pinRequestType = device.buttonRequests[device.buttonRequests.length - 1];
-    const invalidCounter = device.buttonRequests.filter(r => r === 'ui-invalid_pin').length || 0;
+    const invalidCounter =
+        device.buttonRequests.filter(r => r.code === 'ui-invalid_pin').length || 0;
 
     if (!device.features) return null;
 
@@ -21,9 +22,11 @@ const Pin = ({ device, cancelable, noBackground, noPadding, ...rest }: Props) =>
     // 1) and 2) - Setting a new pin: 1 entry, 2nd (confirmation) entry
     // 3) Invalid pin (It doesn't seem to work anymore) instead separate PinMismatch modal is shown
     const isExtended =
-        ['PinMatrixRequestType_NewFirst', 'PinMatrixRequestType_NewSecond'].includes(
-            pinRequestType,
-        ) || invalidCounter > 0;
+        (pinRequestType.code &&
+            ['PinMatrixRequestType_NewFirst', 'PinMatrixRequestType_NewSecond'].includes(
+                pinRequestType.code,
+            )) ||
+        invalidCounter > 0;
 
     return (
         <Modal

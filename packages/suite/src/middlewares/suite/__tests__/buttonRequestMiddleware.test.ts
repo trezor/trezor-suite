@@ -107,9 +107,17 @@ describe('buttonRequest middleware', () => {
             { type: 'mocked' }, // we don't care about this one, it is from middleware flow
             { type: SUITE.LOCK_DEVICE, payload: true },
             { type: UI.REQUEST_BUTTON, payload: { code: 'ButtonRequest_ProtectCall' } },
-            { type: SUITE.ADD_BUTTON_REQUEST, payload: 'ButtonRequest_ProtectCall', device },
+            {
+                type: SUITE.ADD_BUTTON_REQUEST,
+                payload: { code: 'ButtonRequest_ProtectCall' },
+                device,
+            },
             { type: UI.REQUEST_PIN, payload: { type: 'PinMatrixRequestType_NewFirst', device } },
-            { type: SUITE.ADD_BUTTON_REQUEST, payload: 'PinMatrixRequestType_NewFirst', device },
+            {
+                type: SUITE.ADD_BUTTON_REQUEST,
+                payload: { code: 'PinMatrixRequestType_NewFirst' },
+                device,
+            },
             { type: SUITE.LOCK_DEVICE, payload: false },
             { type: SUITE.ADD_BUTTON_REQUEST, device },
         ]);

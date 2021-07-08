@@ -30,7 +30,7 @@ const ResetDeviceStep = () => {
     const isShamirBackupAvailable = device.features?.capabilities?.includes('Capability_Shamir');
     const isWaitingForConfirmation =
         device.buttonRequests.some(
-            r => r === 'ButtonRequest_ResetDevice' || r === 'ButtonRequest_ProtectCall',
+            r => r.code === 'ButtonRequest_ResetDevice' || r.code === 'ButtonRequest_ProtectCall',
         ) && !submitted; // ButtonRequest_ResetDevice is for TT, ButtonRequest_ProtectCall for T1
 
     // eslint-disable-next-line camelcase
