@@ -34,8 +34,9 @@ const SetPinStep = () => {
             // enter-pin and repeat-pin" states are set only while working with T1 (TT sends different request ButtonRequest_PinEntry and everything is done in touchscreen).
             // They are used to show better context-aware UI/texts (Right now it only changes a header from "Set a new PIN" to "Confirm PIN").
             // As the whole process on TT is done via touchscreen we don't really need to track anything besides 'initial' and 'success' states.
-            if (device.buttonRequests.includes('PinMatrixRequestType_NewFirst')) {
-                if (device.buttonRequests.includes('PinMatrixRequestType_NewSecond')) {
+            const buttonRequests = device.buttonRequests.map(r => r.code);
+            if (buttonRequests.includes('PinMatrixRequestType_NewFirst')) {
+                if (buttonRequests.includes('PinMatrixRequestType_NewSecond')) {
                     setStatus('repeat-pin');
                 } else {
                     setStatus('enter-pin');
@@ -58,7 +59,7 @@ const SetPinStep = () => {
     // First button request that will pop out of the device is "ButtonRequest_ProtectCall" (T1) or "ButtonRequest_Other" (T2), requesting us to confirm enabling PIN
     // buttonRequests will be cleared on cancelling the confirmation prompt on the device, turning this condition to false.
     const showConfirmationPrompt = device.buttonRequests.find(
-        b => b === 'ButtonRequest_Other' || b === 'ButtonRequest_ProtectCall',
+        b => b.code === 'ButtonRequest_Other' || b.code === 'ButtonRequest_ProtectCall',
     );
 
     if (showPinMismatch) {

@@ -88,7 +88,7 @@ const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Actio
                 break;
 
             case SUITE.ADD_BUTTON_REQUEST:
-                if (action.payload === 'ButtonRequest_FirmwareUpdate') {
+                if (action.payload?.code === 'ButtonRequest_FirmwareUpdate') {
                     draft.status = 'waiting-for-confirmation';
                 }
                 break;

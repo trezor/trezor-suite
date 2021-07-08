@@ -16,7 +16,7 @@ Each `device` object inside has its `buttonRequests` array which gets populated 
 It is used, for example, by firmware update flow for setting correct `firmware.status` after device requested confirmation on the device:
 ```js
 case SUITE.ADD_BUTTON_REQUEST:
-      if (action.payload === 'ButtonRequest_FirmwareUpdate') {
+      if (action.payload.code === 'ButtonRequest_FirmwareUpdate') {
           draft.status = 'waiting-for-confirmation';
       }
 ```

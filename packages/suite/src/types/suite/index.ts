@@ -5,6 +5,8 @@ import type {
     DeviceEvent,
     TransportEvent,
     BlockchainEvent,
+    ButtonRequestMessage,
+    DeviceMessage,
     KnownDevice,
     UnknownDevice as UnknownDeviceBase,
     UnreadableDevice as UnreadableDeviceBase,
@@ -74,6 +76,20 @@ export interface Dispatch extends ThunkDispatch<AppState, any, Action> {
 }
 export type GetState = () => AppState;
 
+// Extend original ButtonRequestMessage from trezor-connect
+// suite (deviceReducer) stores them in slightly different shape:
+// - device field from trezor-connect is excluded
+// - code field (ButtonRequestType) is extended/combined with PinMatrixRequestType and WordRequestType (from DeviceMessage)
+// - code field also uses two custom ButtonRequests - 'ui-request_pin' and 'ui-invalid_pin' (TODO: it shouldn't)
+
+export type ButtonRequest = Omit<ButtonRequestMessage['payload'], 'device' | 'code'> & {
+    code?:
+        | 'ui-request_pin'
+        | 'ui-invalid_pin'
+        | NonNullable<ButtonRequestMessage['payload']['code']>
+        | NonNullable<DeviceMessage['payload']['type']>;
+};
+
 export interface ExtendedDevice {
     useEmptyPassphrase: boolean;
     passphraseOnDevice?: boolean;
@@ -85,7 +101,7 @@ export interface ExtendedDevice {
     authFailed?: boolean; // device cannot be used because authorization process failed
     instance?: number;
     ts: number;
-    buttonRequests: string[];
+    buttonRequests: ButtonRequest[];
     metadata: DeviceMetadata;
     processMode?: keyof typeof PROCESS_MODE;
     walletNumber?: number; // number of hidden wallet intended to be used in UI

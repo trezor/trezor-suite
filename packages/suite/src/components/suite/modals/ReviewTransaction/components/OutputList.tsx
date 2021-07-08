@@ -10,8 +10,9 @@ import Detail from './Detail';
 import Indicator from './Indicator';
 import Output, { OutputProps } from './Output';
 import OutputElement from './OutputElement';
-import { Account } from '@wallet-types';
-import { FormState, PrecomposedTransactionFinal } from '@wallet-types/sendForm';
+import type { ButtonRequest } from '@suite-types';
+import type { Account } from '@wallet-types';
+import type { FormState, PrecomposedTransactionFinal } from '@wallet-types/sendForm';
 
 const Content = styled.div`
     display: flex;
@@ -72,7 +73,7 @@ interface Props {
     decision?: { resolve: (success: boolean) => void }; // dfd
     detailsOpen: boolean;
     outputs: OutputProps[];
-    buttonRequests: string[];
+    buttonRequests: ButtonRequest[];
     isRbfAction: boolean;
     toggleDetails: () => void;
 }

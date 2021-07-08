@@ -109,7 +109,7 @@ const ReviewTransaction = ({ decision }: Props) => {
 
     // omit other button requests (like passphrase)
     const buttonRequests = device.buttonRequests.filter(
-        r => r === 'ButtonRequest_ConfirmOutput' || r === 'ButtonRequest_SignTx',
+        r => r.code === 'ButtonRequest_ConfirmOutput' || r.code === 'ButtonRequest_SignTx',
     );
 
     // NOTE: T1 edge-case
@@ -118,7 +118,7 @@ const ReviewTransaction = ({ decision }: Props) => {
     if (
         typeof decreaseOutputId === 'number' &&
         device.features?.major_version === 1 &&
-        buttonRequests.filter(r => r === 'ButtonRequest_ConfirmOutput').length > 1
+        buttonRequests.filter(r => r.code === 'ButtonRequest_ConfirmOutput').length > 1
     ) {
         buttonRequests.splice(-1, 1);
     }

@@ -7,16 +7,17 @@ import * as storageActions from '@suite-actions/storageActions';
 import { getOsTheme } from '@suite-utils/env';
 import { SUITE, METADATA } from './constants';
 import type { Locale } from '@suite-config/languages';
-import {
+import type {
     Action,
     Dispatch,
     GetState,
     TrezorDevice,
+    ButtonRequest,
     AppState,
     SuiteThemeVariant,
     SuiteThemeColors,
 } from '@suite-types';
-import { DebugModeOptions } from '@suite-reducers/suiteReducer';
+import type { DebugModeOptions } from '@suite-reducers/suiteReducer';
 
 export type SuiteAction =
     | { type: typeof SUITE.INIT }
@@ -65,7 +66,7 @@ export type SuiteAction =
     | {
           type: typeof SUITE.ADD_BUTTON_REQUEST;
           device: TrezorDevice | undefined;
-          payload?: string;
+          payload?: ButtonRequest;
       }
     | {
           type: typeof SUITE.SET_PROCESS_MODE;
@@ -83,7 +84,7 @@ export const removeButtonRequests = (device: TrezorDevice | undefined) => ({
     device,
 });
 
-export const addButtonRequest = (device: TrezorDevice | undefined, payload: string) => ({
+export const addButtonRequest = (device: TrezorDevice | undefined, payload: ButtonRequest) => ({
     type: SUITE.ADD_BUTTON_REQUEST,
     device,
     payload,
