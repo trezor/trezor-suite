@@ -58,10 +58,6 @@ const init = ({ mainWindow, store }: Dependencies) => {
         );
         if (savedCurrentVersion && savedCurrentVersion !== currentVersion) {
             mainWindow.webContents.send('update/new-version-first-run', currentVersion);
-            store.setUpdateSettings({
-                ...updateSettings,
-                savedCurrentVersion: currentVersion,
-            });
         }
         // save current app version so that after app is relaunched we can show info about transition to the new version
         store.setUpdateSettings({

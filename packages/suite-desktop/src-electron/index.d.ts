@@ -69,6 +69,7 @@ declare type WinBounds = {
 
 declare type UpdateSettings = {
     skipVersion: string;
+    // saving application version gives us ability to tell whether app got updated or not.
     savedCurrentVersion?: string;
 };
 
