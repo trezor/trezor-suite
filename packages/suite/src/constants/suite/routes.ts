@@ -106,6 +106,13 @@ const routes = [
         params: modalAppParams,
     },
     {
+        name: 'firmware-custom',
+        pattern: '/firmware-custom',
+        app: 'firmware-custom',
+        isForegroundApp: true,
+        params: modalAppParams,
+    },
+    {
         name: 'wallet-index',
         pattern: '/accounts',
         app: 'wallet',

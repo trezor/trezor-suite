@@ -9,6 +9,7 @@ import DatabaseUpgradeModal from './components/DatabaseUpgradeModal';
 import PrerequisiteScreen from './components/PrerequisiteScreen';
 import { useDiscovery, useSelector, useActions } from '@suite-hooks';
 import Firmware from '@firmware-views';
+import FirmwareCustom from '@firmware-views/FirmwareCustom';
 import Recovery from '@recovery-views';
 import Backup from '@backup-views';
 import Onboarding from '@onboarding-views';
@@ -24,6 +25,8 @@ const getForegroundApplication = (route: AppState['router']['route']) => {
             return Onboarding;
         case 'firmware':
             return Firmware;
+        case 'firmware-custom':
+            return FirmwareCustom;
         case 'bridge':
             return Bridge;
         case 'udev':
