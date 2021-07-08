@@ -5292,6 +5292,26 @@ const definedMessages = defineMessages({
         id: 'TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED',
         defaultMessage: 'The backend is already added',
     },
+    TR_CUSTOM_FIRMWARE_BUTTON_DOWNLOAD: {
+        id: 'TR_CUSTOM_FIRMWARE_BUTTON_DOWNLOAD',
+        defaultMessage: 'Download on Trezor.io',
+    },
+    TR_CUSTOM_FIRMWARE_BUTTON_INSTALL: {
+        id: 'TR_CUSTOM_FIRMWARE_BUTTON_INSTALL',
+        defaultMessage: 'Install firmware',
+    },
+    TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD: {
+        id: 'TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD',
+        defaultMessage: 'Select a compatible firmware',
+    },
+    TR_CUSTOM_FIRMWARE_TITLE_INSTALL: {
+        id: 'TR_CUSTOM_FIRMWARE_TITLE_INSTALL',
+        defaultMessage: 'Install firmware',
+    },
+    TR_CUSTOM_FIRMWARE_TITLE_UPLOAD: {
+        id: 'TR_CUSTOM_FIRMWARE_TITLE_UPLOAD',
+        defaultMessage: 'Upload that firmware',
+    },
     SETTINGS_ADV_COIN_CONN_INFO_TITLE: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_TITLE',
         defaultMessage: 'Connection Info',
