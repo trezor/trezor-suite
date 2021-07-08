@@ -18,6 +18,7 @@ import {
     PASSPHRASE_URL,
     SEED_MANUAL_URL,
     FIRMWARE_COMMIT_URL,
+    WIKI_FW_DOWNGRADE,
 } from '@suite-constants/urls';
 import { MAX_LABEL_LENGTH } from '@suite-constants/device';
 import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
@@ -612,6 +613,27 @@ const Settings = () => {
                             data-test="@settings/device/open-wipe-modal-button"
                         >
                             <Translation id="TR_DEVICE_SETTINGS_BUTTON_WIPE_DEVICE" />
+                        </ActionButton>
+                    </ActionColumn>
+                </SectionItem>
+                <SectionItem>
+                    <TextColumn
+                        title={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE" />}
+                        description={
+                            <Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION" />
+                        }
+                        learnMore={WIKI_FW_DOWNGRADE}
+                    />
+                    <ActionColumn>
+                        <ActionButton
+                            onClick={() => {
+                                goto('firmware-custom', { cancelable: true });
+                            }}
+                            variant="danger"
+                            isDisabled={isDeviceLocked}
+                            data-test="@settings/device/custom-firmware-modal-button"
+                        >
+                            <Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_BUTTON" />
                         </ActionButton>
                     </ActionColumn>
                 </SectionItem>
