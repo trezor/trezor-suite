@@ -69,6 +69,7 @@ interface Props {
 const AppNavigationPanelInner = React.forwardRef<HTMLDivElement, Props>((props, ref) => (
     <>
         <Wrapper ref={ref}>
+
             <Content maxWidth={props.maxWidth}>
                 <BasicInfo>
                     <TitleRow>
@@ -78,7 +79,7 @@ const AppNavigationPanelInner = React.forwardRef<HTMLDivElement, Props>((props, 
                             {props.dropdown}
                         </Aside>
                     </TitleRow>
-                    <Row>{props.children}</Row>
+                    {props.children && <Row>{props.children}</Row>}
                 </BasicInfo>
             </Content>
         </Wrapper>

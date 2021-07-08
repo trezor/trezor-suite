@@ -71,14 +71,17 @@ export class Parser {
         // In GitBook a title is edited in a dedicated field
         // and its content is added to the markdown file as level-1 heading.
         // Find the line that starts with a single hash.
-        const title = doc
-            .toString()
-            .match(/^# (.+$)/m)?.[1]
-            .trim();
-        if (title === undefined) {
+        // Remove all backslashes in title which escape special characters in markdown syntax.
+
+        try {
+            return doc
+                .toString()
+                .match(/^# (.+$)/m)![1]
+                .replace(/[\\]/g, '')
+                .trim();
+        } catch (e) {
             throw new Error(`Could not parse title from ${path}.`);
         }
-        return title;
     }
 
     /** Converts given path to locale- and environment-agnostic id. */

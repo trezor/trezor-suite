@@ -101,9 +101,13 @@ Added:
 - guide/feedback/submit
   - type: 'bug' | 'suggestion'
 - guide/header/navigation
-  - type: 'back' | 'close'
+  - type: 'back' | 'close' | 'category'
+  - id?: string
 - guide/report
   - type: 'overview' | 'bug' | 'suggestion'
+- guide/node/navigation
+  - type: 'category' | 'page'
+  - id: string
 
 ### 1.10
 Removed:

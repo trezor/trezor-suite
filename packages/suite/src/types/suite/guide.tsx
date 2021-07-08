@@ -1,13 +1,15 @@
 /* eslint-disable camelcase */
+import { Page, Category, Node } from '@trezor/suite-data/src/guide/parser';
+
 import type { EnvironmentType } from '@suite-types';
 
-export type GuideView = 'GUIDE_DEFAULT' | 'GUIDE_CATEGORY' | 'GUIDE_ARTICLE';
+export type GuideView = 'GUIDE_DEFAULT' | 'GUIDE_CATEGORY' | 'GUIDE_PAGE';
 
 export type FeedbackView = 'FEEDBACK_TYPE_SELECTION' | 'FEEDBACK_BUG' | 'FEEDBACK_SUGGESTION';
 
 export type ActiveView = GuideView | FeedbackView;
 
-export type Category =
+export type FeedbackCategory =
     | 'dashboard'
     | 'account'
     | 'settings'
@@ -35,7 +37,7 @@ export interface UserData {
 
 export interface PayloadBug extends UserData {
     description: string;
-    category: Category;
+    category: FeedbackCategory;
 }
 
 export interface PayloadSuggestion extends UserData {
@@ -54,3 +56,5 @@ export type FeedbackSuggestion = {
 };
 
 export type Feedback = FeedbackBug | FeedbackSuggestion;
+
+export type { Page, Category, Node };

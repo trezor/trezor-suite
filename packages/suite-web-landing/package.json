@@ -1,6 +1,6 @@
 {
     "name": "@trezor/suite-web-landing",
-    "version": "21.7.0",
+    "version": "21.8.0",
     "private": true,
     "scripts": {
         "type-check": "tsc --project tsconfig.json",

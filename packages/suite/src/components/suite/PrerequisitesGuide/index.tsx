@@ -50,6 +50,7 @@ const PrerequisitesGuide = ({ prerequisite, padded, allowSwitchDevice }: Props) 
         devices: state.devices.length,
         transport: state.suite.transport,
     }));
+    const webusb = isWebUSB(transport);
 
     return (
         <Wrapper padded={padded}>
@@ -67,11 +68,11 @@ const PrerequisitesGuide = ({ prerequisite, padded, allowSwitchDevice }: Props) 
                     case 'transport-bridge':
                         return <Transport />;
                     case 'device-disconnected':
-                        return <DeviceConnect offerWebUsb={isWebUSB(transport)} />;
+                        return <DeviceConnect webusb={webusb} />;
                     case 'device-unacquired':
                         return <DeviceAcquire />;
                     case 'device-unreadable':
-                        return <DeviceUnreadable />;
+                        return <DeviceUnreadable device={device} webusb={webusb} />;
                     case 'device-unknown':
                         return <DeviceUnknown />;
                     case 'device-seedless':

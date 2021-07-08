@@ -21,6 +21,7 @@ const validChannels = [
     'update/downloading',
     'update/downloaded',
     'update/skip',
+    'update/new-version-first-run',
 
     // invity
     'buy-receiver',

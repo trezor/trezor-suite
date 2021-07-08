@@ -1,6 +1,7 @@
 import React, { ButtonHTMLAttributes } from 'react';
-import { variables } from '@trezor/components';
 import styled from 'styled-components';
+
+import { variables } from '@trezor/components';
 import { resolveStaticPath } from '@suite-utils/nextjs';
 
 const Wrapper = styled.button`

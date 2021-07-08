@@ -4,7 +4,12 @@
 
 import { unlinkSync } from 'fs';
 import { app, ipcMain } from 'electron';
-import { autoUpdater, CancellationToken, UpdateInfo } from 'electron-updater';
+import {
+    autoUpdater,
+    CancellationToken,
+    UpdateInfo,
+    UpdateDownloadedEvent,
+} from 'electron-updater';
 import isDev from 'electron-is-dev';
 
 import { b2t } from '@desktop-electron/libs/utils';
@@ -19,7 +24,6 @@ const preReleaseFlag = app.commandLine.hasSwitch('pre-release');
 
 const init = ({ mainWindow, store }: Dependencies) => {
     const { logger } = global;
-
     if (!isEnabled('DESKTOP_AUTO_UPDATER') && !enableUpdater) {
         logger.info('auto-updater', 'Disabled via feature flag');
         return;
@@ -36,20 +40,49 @@ const init = ({ mainWindow, store }: Dependencies) => {
         return;
     }
 
+    const updateSettings = store.getUpdateSettings();
+
     // Enable feature on FE once it's ready
     mainWindow.webContents.on('did-finish-load', () => {
         mainWindow.webContents.send('update/enable');
+
+        // if there is preUpdateVersion in store (it doesn't have to be there as it was added in later versions)
+        // and if it does not match current application version it means that application got updated and the new version
+        // is run for the first time.
+        const { preUpdateVersion } = updateSettings;
+        const currentVersion = app.getVersion();
+        logger.debug(
+            'auto-updater',
+            `version of application before this launch: ${preUpdateVersion}, current app version: ${currentVersion}`,
+        );
+        if (preUpdateVersion && preUpdateVersion !== currentVersion) {
+            mainWindow.webContents.send('update/new-version-first-run', currentVersion);
+        }
     });
 
     let isManualCheck = false;
     let latestVersion: Partial<UpdateInfo> = {};
     let updateCancellationToken: CancellationToken;
-    const updateSettings = store.getUpdateSettings();
+    let shouldInstallUpdateOnQuit = false;
 
+    // Prevent downloading an update unless user explicitly asks for it.
     autoUpdater.autoDownload = false;
-    autoUpdater.autoInstallOnAppQuit = true;
+    // Manually force install based on `shouldInstallUpdateOnQuit` var instead to have more control over the process.
+    // This is useful for cases when we want to cancel update after it has started. It seems to work in the current version
+    // of electron-updater only until update-downloaded event is emitted.
+    autoUpdater.autoInstallOnAppQuit = false;
+
     autoUpdater.allowPrerelease = preReleaseFlag;
     autoUpdater.logger = null;
+
+    const quitAndInstall = () => {
+        // Removing listeners & closing window (https://github.com/electron-userland/electron-builder/issues/1604)
+        app.removeAllListeners('window-all-closed');
+        mainWindow.removeAllListeners('close');
+        mainWindow.close();
+
+        autoUpdater.quitAndInstall();
+    };
 
     logger.info('auto-updater', `Is looking for pre-releases? (${b2t(preReleaseFlag)})`);
 
@@ -127,7 +160,7 @@ const init = ({ mainWindow, store }: Dependencies) => {
         mainWindow.webContents.send('update/downloading', { ...progressObj });
     });
 
-    autoUpdater.on('update-downloaded', (info: any) => {
+    autoUpdater.on('update-downloaded', (info: UpdateDownloadedEvent) => {
         const { version, releaseDate, downloadedFile } = info;
 
         logger.info('auto-updater', [
@@ -148,15 +181,37 @@ const init = ({ mainWindow, store }: Dependencies) => {
                     releaseDate,
                     downloadedFile,
                 });
+
+                shouldInstallUpdateOnQuit = true;
             })
             .catch(err => {
                 logger.error('auto-updater', `Signature check failed: ${err.message}`);
 
                 mainWindow.webContents.send('update/error', err);
 
+                logger.info('auto-updater', `Unlink downloaded file ${downloadedFile}`);
+
                 // Delete file so we are sure it's not accidentally installed
                 unlinkSync(downloadedFile);
+
+                shouldInstallUpdateOnQuit = false;
+            })
+            .finally(() => {
+                logger.info(
+                    'auto-updater',
+                    `Is configured to auto update after app quit ${shouldInstallUpdateOnQuit}`,
+                );
+
+                // save current app version so that after app is relaunched we can show info about transition to the new version
+                store.setUpdateSettings({
+                    ...store.getUpdateSettings(),
+                    preUpdateVersion: app.getVersion(),
+                });
             });
+    });
+
+    autoUpdater.on('before-quit-for-update', () => {
+        logger.info('auto-updater', 'before-quit-for-update event');
     });
 
     ipcMain.on('update/check', (_, isManual?: boolean) => {
@@ -183,18 +238,15 @@ const init = ({ mainWindow, store }: Dependencies) => {
         autoUpdater
             .downloadUpdate(updateCancellationToken)
             .then(() => logger.info('auto-updater', 'Update downloaded'))
-            .catch(() => logger.info('auto-updater', 'Update cancelled'));
+            .catch(() => {
+                logger.info('auto-updater', 'Update cancelled');
+            });
     });
 
     ipcMain.on('update/install', () => {
         logger.info('auto-updater', 'Installation request');
 
-        // Removing listeners & closing window (https://github.com/electron-userland/electron-builder/issues/1604)
-        app.removeAllListeners('window-all-closed');
-        mainWindow.removeAllListeners('close');
-        mainWindow.close();
-
-        autoUpdater.quitAndInstall();
+        quitAndInstall();
     });
 
     ipcMain.on('update/cancel', () => {
@@ -207,6 +259,12 @@ const init = ({ mainWindow, store }: Dependencies) => {
         logger.info('auto-updater', `Skip version (${version}) request`);
         mainWindow.webContents.send('update/skip', version);
         setSkipVersion(version);
+    });
+
+    app.on('before-quit', () => {
+        if (shouldInstallUpdateOnQuit) {
+            quitAndInstall();
+        }
     });
 };
 

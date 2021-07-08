@@ -144,39 +144,21 @@ export const onPinCancel = () => {
  * @param {boolean} passphraseOnDevice
  * @param {boolean} hasEmptyPassphraseWallet
  */
-export const onPassphraseSubmit = (
-    value: string,
-    passphraseOnDevice: boolean,
-    hasEmptyPassphraseWallet: boolean,
-) => (dispatch: Dispatch, getState: GetState) => {
+export const onPassphraseSubmit = (value: string, passphraseOnDevice: boolean) => (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     const { device } = getState().suite;
     if (!device) return;
 
-    // update wallet type only on certain conditions
-    const update =
-        !hasEmptyPassphraseWallet &&
-        !passphraseOnDevice &&
-        !device.authConfirm &&
-        !device.state &&
-        value === '';
-
-    if (update) {
-        // set standard wallet type if passphrase is blank
-        dispatch({
-            type: SUITE.UPDATE_PASSPHRASE_MODE,
-            payload: device,
-            hidden: false,
-        });
-    }
-
-    if (passphraseOnDevice) {
-        dispatch({
-            type: SUITE.UPDATE_PASSPHRASE_MODE,
-            payload: device,
-            hidden: true,
-            alwaysOnDevice: true,
-        });
-    }
+    const hidden = passphraseOnDevice || value;
+    // call SUITE.UPDATE_PASSPHRASE_MODE action to set or remove walletNumber
+    dispatch({
+        type: SUITE.UPDATE_PASSPHRASE_MODE,
+        payload: device,
+        hidden,
+        alwaysOnDevice: passphraseOnDevice,
+    });
 
     TrezorConnect.uiResponse({
         type: UI.RECEIVE_PASSPHRASE,

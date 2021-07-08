@@ -3292,6 +3292,10 @@ const definedMessages = defineMessages({
         id: 'TOAST_AUTO_UPDATER_NO_NEW',
         defaultMessage: 'No new updates available.',
     },
+    TOAST_AUTO_UPDATER_NEW_VERSION_FIRST_RUN: {
+        id: 'TOAST_AUTO_UPDATER_NEW_VERSION_FIRST_RUN',
+        defaultMessage: 'New version ({version}) installed successfully.',
+    },
     TOAST_GENERIC_ERROR: {
         id: 'TOAST_GENERIC_ERROR',
         defaultMessage: 'Error: {error}',
@@ -6064,6 +6068,10 @@ const definedMessages = defineMessages({
         id: 'TR_SUGGESTION',
         defaultMessage: 'Suggestion',
     },
+    TR_GUIDE_DASHBOARD: {
+        id: 'TR_GUIDE_DASHBOARD',
+        defaultMessage: 'Dashboard',
+    },
     TR_GUIDE_BUG_LABEL: {
         id: 'TR_GUIDE_BUG_LABEL',
         defaultMessage: 'Report a faulty behaviour',
@@ -6079,26 +6087,6 @@ const definedMessages = defineMessages({
     TR_GUIDE_CATEGORIES: {
         id: 'TR_GUIDE_CATEGORIES',
         defaultMessage: 'Categories',
-    },
-    TR_GUIDE_CATEGORY_CRYPTO_BASICS: {
-        id: 'TR_GUIDE_CATEGORY_CRYPTO_BASICS',
-        defaultMessage: 'Crypto basics',
-    },
-    TR_GUIDE_CATEGORY_TREZOR_SUITE: {
-        id: 'TR_GUIDE_CATEGORY_TREZOR_SUITE',
-        defaultMessage: 'Trezor Suite',
-    },
-    TR_GUIDE_CATEGORY_TREZOR: {
-        id: 'TR_GUIDE_CATEGORY_TREZOR',
-        defaultMessage: 'Trezor',
-    },
-    TR_GUIDE_CATEGORY_CURRENCIES: {
-        id: 'TR_GUIDE_CATEGORY_CURRENCIES',
-        defaultMessage: 'Currencies',
-    },
-    TR_GUIDE_CATEGORY_DICTIONARY: {
-        id: 'TR_GUIDE_CATEGORY_DICTIONARY',
-        defaultMessage: 'Dictionary',
     },
     TR_GUIDE_ARTICLES: {
         id: 'TR_GUIDE_ARTICLES',
@@ -6372,6 +6360,19 @@ const definedMessages = defineMessages({
     TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_DESCRIPTION: {
         id: 'TR_TROUBLESHOOTING_TIP_RESTART_COMPUTER_DESCRIPTION',
         defaultMessage: 'Just in case',
+    },
+    TR_TROUBLESHOOTING_UNREADABLE_WEBUSB: {
+        id: 'TR_TROUBLESHOOTING_UNREADABLE_WEBUSB',
+        defaultMessage:
+            'Your device is connected properly, but your internet browser can not communicate with it at the moment. You will need to install Trezor Bridge.',
+    },
+    TR_TROUBLESHOOTING_UNREADABLE_UDEV: {
+        id: 'TR_TROUBLESHOOTING_UNREADABLE_UDEV',
+        defaultMessage: 'Missing udev rules',
+    },
+    TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN: {
+        id: 'TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN',
+        defaultMessage: 'Unexpected state: {error}',
     },
     TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_TITLE: {
         id: 'TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_TITLE',

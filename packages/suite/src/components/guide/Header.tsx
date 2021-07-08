@@ -5,11 +5,12 @@ import { darken } from 'polished';
 import * as guideActions from '@suite-actions/guideActions';
 import { useActions, useAnalytics } from '@suite-hooks';
 import { Icon, variables, useTheme } from '@trezor/components';
+import { HeaderBreadcrumb } from '@guide-components';
 
 const HeaderWrapper = styled.div<{ noLabel?: boolean }>`
     display: flex;
     align-items: center;
-    padding: 20px 22px 20px 22px;
+    padding: 12px 22px;
     ${props =>
         props.noLabel &&
         css`
@@ -60,9 +61,10 @@ const StyledIcon = styled(Icon)`
 interface Props {
     back?: () => void;
     label?: string | JSX.Element;
+    useBreadcrumb?: boolean;
 }
 
-const Header = ({ back, label }: Props) => {
+const Header = ({ back, label, useBreadcrumb }: Props) => {
     const theme = useTheme();
     const analytics = useAnalytics();
 
@@ -72,7 +74,7 @@ const Header = ({ back, label }: Props) => {
 
     return (
         <HeaderWrapper noLabel={!label}>
-            {back && (
+            {!useBreadcrumb && back && (
                 <>
                     <ActionButton
                         onClick={() => {
@@ -94,7 +96,10 @@ const Header = ({ back, label }: Props) => {
                     {label && <Label>{label}</Label>}
                 </>
             )}
-            {!back && label && <MainLabel>{label}</MainLabel>}
+            {!useBreadcrumb && !back && label && <MainLabel>{label}</MainLabel>}
+
+            {useBreadcrumb && <HeaderBreadcrumb />}
+
             <ActionButton
                 onClick={() => {
                     close();

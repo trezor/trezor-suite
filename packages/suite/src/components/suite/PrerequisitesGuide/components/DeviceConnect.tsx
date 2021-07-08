@@ -18,10 +18,10 @@ const Wrapper = styled(animated.div)`
 `;
 
 interface Props {
-    offerWebUsb: boolean;
+    webusb: boolean;
 }
 
-const DeviceConnect = ({ offerWebUsb }: Props) => {
+const DeviceConnect = ({ webusb }: Props) => {
     const fadeStyles = useSpring({
         config: { ...config.default },
         delay: 1000,
@@ -29,7 +29,7 @@ const DeviceConnect = ({ offerWebUsb }: Props) => {
         to: { opacity: 1 },
     });
 
-    const items = offerWebUsb
+    const items = webusb
         ? [
               TROUBLESHOOTING_TIP_UDEV,
               TROUBLESHOOTING_TIP_CABLE,
@@ -49,8 +49,8 @@ const DeviceConnect = ({ offerWebUsb }: Props) => {
             <TroubleshootingTips
                 label={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
                 items={items}
-                offerWebUsb={offerWebUsb}
-                cta={offerWebUsb ? <WebusbButton icon="SEARCH" /> : undefined}
+                offerWebUsb={webusb}
+                cta={webusb ? <WebusbButton icon="SEARCH" /> : undefined}
             />
         </Wrapper>
     );

@@ -57,6 +57,9 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
     const { device, transport } = getState().suite;
     if (!device) return;
 
+    // collect devices with old "device.id" to be removed (see description below)
+    const deviceInstances = deviceUtils.getDeviceInstances(device, getState().devices);
+
     const result = await TrezorConnect.wipeDevice({
         device: {
             path: device.path,
@@ -64,17 +67,16 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
     });
 
     if (result.success) {
-        // Wiping a device triggers device.id change and this change is propagated to device reducer.
-        // We need to retrieve device object after the wipe process, otherwise the device won't "deleted"
-        // from device reducer on SUITE.FORGET_DEVICE because passed device.id would be different from what's inside the reducer.
+        // Wiping a device triggers device.id change and this change is propagated to device reducer via trezor-connect DEVICE.CHANGE event.
+        // Accounts data are related to the old device.id in order to properly clear reducers and indexed db
+        // we need to retrieve device objects BEFORE and AFTER the wipe process.
+        // and call SUITE.FORGET_DEVICE on ALL devices (with old and new device.id)
         const state = getState();
         const newDevice = state.suite.device;
-        if (newDevice) {
-            const deviceInstances = deviceUtils.getDeviceInstances(newDevice, state.devices);
-            deviceInstances.forEach(d => {
-                dispatch(suiteActions.forgetDevice(d));
-            });
-        }
+        deviceInstances.push(...deviceUtils.getDeviceInstances(newDevice!, state.devices));
+        deviceInstances.forEach(d => {
+            dispatch(suiteActions.forgetDevice(d));
+        });
         dispatch(addToast({ type: 'device-wiped' }));
         // special case with webusb. device after wipe changes device_id. with webusb transport, device_id is used as path
         // and thus as descriptor for webusb. So, after device is wiped, in the transport layer, device is still paired

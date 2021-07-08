@@ -226,8 +226,13 @@ const changePassphraseMode = (
     // update fields
     draft[index].useEmptyPassphrase = !hidden;
     draft[index].passphraseOnDevice = alwaysOnDevice;
-    // draft[index].instance = undefined;
     draft[index].ts = new Date().getTime();
+    if (hidden && typeof draft[index].walletNumber !== 'number') {
+        draft[index].walletNumber = deviceUtils.getNewWalletNumber(draft, draft[index]);
+    }
+    if (!hidden && typeof draft[index].walletNumber === 'number') {
+        delete draft[index].walletNumber;
+    }
 };
 
 /**
@@ -276,10 +281,6 @@ const authConfirm = (draft: State, device: TrezorDevice, success: boolean) => {
     // update state
     draft[index].authConfirm = !success;
     draft[index].available = success;
-
-    if (!draft[index].walletNumber) {
-        draft[index].walletNumber = deviceUtils.getNewWalletNumber(draft, draft[index]);
-    }
 };
 
 /**
@@ -296,6 +297,7 @@ const createInstance = (draft: State, device: TrezorDevice) => {
         passphraseOnDevice: false,
         remember: false,
         state: undefined,
+        walletNumber: undefined,
         authConfirm: false,
         ts: new Date().getTime(),
         buttonRequests: [],
@@ -339,6 +341,7 @@ const forget = (draft: State, device: TrezorDevice) => {
     if (device.connected && others.length < 1) {
         // do not forget the last instance, just reset state
         draft[index].state = undefined;
+        draft[index].walletNumber = undefined;
         draft[index].useEmptyPassphrase = !device.features.passphrase_protection;
         draft[index].passphraseOnDevice = false;
         // set remember to false to make it disappear after device is disconnected
