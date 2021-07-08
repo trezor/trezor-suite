@@ -2751,6 +2751,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'Testnet coins',
         id: 'TR_TESTNET_COINS',
     },
+    TR_TESTNET_COINS_DESCRIPTION: {
+        defaultMessage: 'These coins are used only for testing and hold no value.',
+        id: 'TR_TESTNET_COINS_DESCRIPTION',
+    },
     TR_TESTNET_COINS_EXPLAINED: {
         defaultMessage:
             "Testnet coins don't have any value but you still may use them to learn and experiment.",
