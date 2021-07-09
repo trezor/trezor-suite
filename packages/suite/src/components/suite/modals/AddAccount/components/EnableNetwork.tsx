@@ -56,7 +56,7 @@ type Props = {
     handleNetworkSelection: (symbol?: Network['symbol']) => void;
 };
 
-const EnableNetwork = ({
+export const EnableNetwork = ({
     networks,
     testnetNetworks,
     selectedNetworks,
@@ -109,5 +109,3 @@ const EnableNetwork = ({
         </MoreCoins>
     );
 };
-
-export default EnableNetwork;

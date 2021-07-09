@@ -42,7 +42,7 @@ const formatLabel = (option: Option) => (
     </LabelWrapper>
 );
 
-const AccountTypeSelect = (props: Props) => {
+export const AccountTypeSelect = (props: Props) => {
     const options = props.accountTypes.map(t => buildAccountTypeOption(t));
     return (
         <Select
@@ -56,5 +56,3 @@ const AccountTypeSelect = (props: Props) => {
         />
     );
 };
-
-export default AccountTypeSelect;

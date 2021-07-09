@@ -53,7 +53,7 @@ const Description = ({
     }
 };
 
-const NetworkUnavailable = ({ capability, network }: Props) => (
+export const NetworkUnavailable = ({ capability, network }: Props) => (
     <Wrapper>
         <H2>
             <Header capability={capability} />
@@ -63,5 +63,3 @@ const NetworkUnavailable = ({ capability, network }: Props) => (
         </StyledP>
     </Wrapper>
 );
-
-export default NetworkUnavailable;

@@ -11,12 +11,12 @@ import * as walletSettingsActions from '@settings-actions/walletSettingsActions'
 import * as routerActions from '@suite-actions/routerActions';
 import { partition } from '@suite-utils/array';
 
-import AccountTypeSelect from './components/AccountTypeSelect';
-import AddAccount from './components/AddAccount';
-import EnableNetwork from './components/EnableNetwork';
-import NetworkUnavailable from './components/NetworkUnavailable';
-import NetworkInternal from './components/NetworkInternal';
-import AddAccountButton from './components/AddAccountButton';
+import { AccountTypeSelect } from './components/AccountTypeSelect';
+import { AddAccount } from './components/AddAccount';
+import { EnableNetwork } from './components/EnableNetwork';
+import { NetworkUnavailable } from './components/NetworkUnavailable';
+import { NetworkInternal } from './components/NetworkInternal';
+import { AddAccountButton } from './components/AddAccountButton';
 
 const StyledModal = styled(props => <Modal {...props} />)`
     min-height: 550px;
@@ -197,8 +197,7 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
                     <Actions>
                         {selectedNetworkEnabled ? (
                             <AddAccountButton
-                                network={selectedNetwork}
-                                accounts={emptyAccounts}
+                                emptyAccounts={emptyAccounts}
                                 onEnableAccount={onEnableAccount}
                             />
                         ) : (
