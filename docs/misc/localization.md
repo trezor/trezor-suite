@@ -122,3 +122,25 @@ To download new translations from Crowdin:
 yarn workspace @trezor/suite translations:download
 ```
 and then open a PR with updated language files.
+
+
+## Workflow for regular Crowdin Synchronization
+
+```bash
+BRANCH_NAME=feat/crowdin-sync
+
+git checkout develop
+git pull
+git checkout -b $BRANCH_NAME
+
+# Upload first to sync the key set.
+yarn workspace @trezor/suite translations:upload
+# Download second to fetch values for all keys.
+yarn workspace @trezor/suite translations:download
+
+git add packages/suite-data/files/translations
+git commit -m 'feat(translations): Sync with Crowdin'
+git push origin $BRANCH_NAME
+```
+
+Plus creating, reviewing and merging the PR.
