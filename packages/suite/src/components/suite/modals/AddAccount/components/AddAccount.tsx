@@ -41,7 +41,7 @@ type Props = {
     unavailableCapabilities: TrezorDevice['unavailableCapabilities'];
 };
 
-const AddAccount = ({
+export const AddAccount = ({
     networks,
     networkCanChange,
     selectedNetworks,
@@ -71,5 +71,3 @@ const AddAccount = ({
         </>
     );
 };
-
-export default AddAccount;
