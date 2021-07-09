@@ -15,10 +15,26 @@ const ImportTransaction = ({ onCancel, decision }: Props) => {
     // const [mode, setMode] = useState<'upload' | 'form'>('upload'); // TODO: upload or textarea form? (fallback for upload)
     const [delimiter, setDelimiter] = useState<string | undefined>(undefined);
 
-    const onUploadSuccess = (data: string) => {
-        const parsed = parseCSV(data, ['address', 'amount', 'currency', 'label'], delimiter);
-        decision.resolve(parsed);
-        onCancel();
+    const onCsvSelect = (file: File, setError: (msg: string) => void) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            if (typeof reader.result !== 'string') {
+                setError('empty');
+                return;
+            }
+            const parsed = parseCSV(
+                reader.result,
+                ['address', 'amount', 'currency', 'label'],
+                delimiter,
+            );
+            decision.resolve(parsed);
+            onCancel();
+        };
+        reader.onerror = () => {
+            setError(reader.error!.message);
+            reader.abort();
+        };
+        reader.readAsText(file);
     };
 
     return (
@@ -28,7 +44,7 @@ const ImportTransaction = ({ onCancel, decision }: Props) => {
             heading={<Translation id="TR_IMPORT_CSV_MODAL_TITLE" />}
         >
             <ExampleCSV />
-            <DropZone accept="text/csv" onSuccess={onUploadSuccess} />
+            <DropZone accept="text/csv" onSelect={onCsvSelect} />
             <DelimiterForm value={delimiter} onChange={setDelimiter} />
         </Modal>
     );
