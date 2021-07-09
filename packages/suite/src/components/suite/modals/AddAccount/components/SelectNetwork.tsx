@@ -7,7 +7,7 @@ import { CoinsList, Translation } from '@suite-components';
 import { Network } from '@wallet-types';
 import { TrezorDevice } from '@suite-types';
 
-const SelectCoin = styled.div<{ disabled: boolean }>`
+const Header = styled.div<{ disabled: boolean }>`
     display: flex;
     justify-content: flex-start;
     align-self: flex-start;
@@ -41,7 +41,7 @@ type Props = {
     unavailableCapabilities: TrezorDevice['unavailableCapabilities'];
 };
 
-export const AddAccount = ({
+export const SelectNetwork = ({
     networks,
     networkCanChange,
     selectedNetworks,
@@ -56,12 +56,12 @@ export const AddAccount = ({
 
     return (
         <>
-            <SelectCoin onClick={resetNetworkSelection} disabled={!networkCanChange}>
+            <Header onClick={resetNetworkSelection} disabled={!networkCanChange}>
                 <Title>
                     <Translation id="TR_SELECT_COIN" />
                 </Title>
                 {networkCanChange && <IconAnimated icon="PENCIL" size={12} useCursorPointer />}
-            </SelectCoin>
+            </Header>
             <CoinsList
                 onToggleFn={handleNetworkSelection}
                 networks={networks}

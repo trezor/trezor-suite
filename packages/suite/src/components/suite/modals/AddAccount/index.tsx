@@ -12,7 +12,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import { partition } from '@suite-utils/array';
 
 import { AccountTypeSelect } from './components/AccountTypeSelect';
-import { AddAccount } from './components/AddAccount';
+import { SelectNetwork } from './components/SelectNetwork';
 import { EnableNetwork } from './components/EnableNetwork';
 import { AddAccountButton } from './components/AddAccountButton';
 
@@ -139,7 +139,7 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
             onCancel={onCancel}
             heading={<Translation id="MODAL_ADD_ACCOUNT_TITLE" />}
         >
-            <AddAccount
+            <SelectNetwork
                 networks={
                     selectedNetwork && selectedNetworkEnabled ? [selectedNetwork] : enabledNetworks
                 }
