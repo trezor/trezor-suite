@@ -4,11 +4,11 @@ import { P, Icon } from '@trezor/components';
 import { Translation } from '@suite-components';
 
 interface Props {
-    accept: 'text/csv' | 'image/*';
-    onSuccess: (data: string) => void;
+    accept: 'text/csv' | 'image/*' | 'application/octet-stream';
+    onSelect: (data: File, setError: (msg: string) => void) => void;
 }
 
-export const useDropZone = ({ accept, onSuccess }: Props) => {
+export const useDropZone = ({ accept, onSelect }: Props) => {
     const available = useRef(window.File && window.FileReader && window.FileList && window.Blob);
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
@@ -20,25 +20,9 @@ export const useDropZone = ({ accept, onSuccess }: Props) => {
                 setError('file-type');
                 return;
             }
-            const reader = new FileReader();
-            reader.onload = () => {
-                if (typeof reader.result !== 'string') {
-                    setError('empty');
-                    return;
-                }
-                onSuccess(reader.result);
-            };
-            reader.onerror = () => {
-                setError(reader.error!.message);
-                reader.abort();
-            };
-            if (accept === 'text/csv') {
-                reader.readAsText(file);
-            } else {
-                reader.readAsDataURL(file);
-            }
+            onSelect(file, setError);
         },
-        [accept, onSuccess],
+        [accept, onSelect],
     );
 
     const onClick = useCallback(() => {
