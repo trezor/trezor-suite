@@ -4,6 +4,7 @@ import { Select, variables } from '@trezor/components';
 import { Translation } from '@suite-components/Translation';
 import { Network } from '@wallet-types';
 import { getAccountTypeIntl, getBip43Intl } from '@wallet-utils/accountUtils';
+import { AccountTypeDescription } from './AccountTypeDescription';
 
 const LabelWrapper = styled.div`
     display: flex;
@@ -27,7 +28,7 @@ const buildAccountTypeOption = (network: Network) =>
     } as const);
 
 interface Props {
-    network?: Network;
+    network: Network;
     accountTypes: Network[];
     onSelectAccountType: (network: Network) => void;
 }
@@ -42,17 +43,20 @@ const formatLabel = (option: Option) => (
     </LabelWrapper>
 );
 
-export const AccountTypeSelect = (props: Props) => {
-    const options = props.accountTypes.map(t => buildAccountTypeOption(t));
+export const AccountTypeSelect = ({ network, accountTypes, onSelectAccountType }: Props) => {
+    const options = accountTypes.map(buildAccountTypeOption);
     return (
-        <Select
-            isSearchable={false}
-            isClearable={false}
-            width={250}
-            value={buildAccountTypeOption(props.network || props.accountTypes[0])}
-            options={options}
-            formatOptionLabel={formatLabel}
-            onChange={(option: Option) => props.onSelectAccountType(option.value)}
-        />
+        <>
+            <Select
+                label={<Translation id="TR_ACCOUNT_TYPE" />}
+                isSearchable={false}
+                isClearable={false}
+                value={buildAccountTypeOption(network || accountTypes[0])}
+                options={options}
+                formatOptionLabel={formatLabel}
+                onChange={(option: Option) => onSelectAccountType(option.value)}
+            />
+            <AccountTypeDescription network={network} accountTypes={accountTypes} />
+        </>
     );
 };

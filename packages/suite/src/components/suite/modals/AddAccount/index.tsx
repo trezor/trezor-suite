@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Button, P, variables } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { Translation, Modal } from '@suite-components';
 import { NETWORKS } from '@wallet-config';
 import { Account, Network } from '@wallet-types';
@@ -14,8 +14,6 @@ import { partition } from '@suite-utils/array';
 import { AccountTypeSelect } from './components/AccountTypeSelect';
 import { AddAccount } from './components/AddAccount';
 import { EnableNetwork } from './components/EnableNetwork';
-import { NetworkUnavailable } from './components/NetworkUnavailable';
-import { NetworkInternal } from './components/NetworkInternal';
 import { AddAccountButton } from './components/AddAccountButton';
 
 const StyledModal = styled(props => <Modal {...props} />)`
@@ -26,12 +24,7 @@ const StyledModal = styled(props => <Modal {...props} />)`
 const Actions = styled.div`
     display: flex;
     justify-content: center;
-`;
-
-const Title = styled(P)`
-    margin-right: 9px;
-    padding: 14px 0%;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    padding-top: 24px;
 `;
 
 const Expander = styled.div`
@@ -72,14 +65,10 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
     const selectedNetworkEnabled =
         !!selectedNetwork && enabledNetworksSymbols.includes(selectedNetwork.symbol);
 
-    // Check device capabilities
-    // Display: unavailable network
-    const unavailableCapability =
-        selectedNetwork && unavailableCapabilities[selectedNetwork.symbol];
-
     const [enabledNetworks, disabledNetworks] = partition(internalNetworks, network =>
         enabledNetworksSymbols.includes(network.symbol),
     );
+
     const [disabledMainnetNetworks, disabledTestnetNetworks] = partition(
         disabledNetworks,
         network => !network?.testnet,
@@ -171,25 +160,11 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
             {selectedNetwork && (
                 <>
                     {accountTypes && accountTypes?.length > 1 && (
-                        <>
-                            <Title>
-                                <Translation id="TR_ACCOUNT_TYPE" />
-                            </Title>
-                            <AccountTypeSelect
-                                network={selectedNetwork}
-                                accountTypes={accountTypes}
-                                onSelectAccountType={selectNetwork}
-                            />
-                        </>
-                    )}
-
-                    {unavailableCapability ? (
-                        <NetworkUnavailable
-                            capability={unavailableCapability}
+                        <AccountTypeSelect
                             network={selectedNetwork}
+                            accountTypes={accountTypes}
+                            onSelectAccountType={selectNetwork}
                         />
-                    ) : (
-                        <NetworkInternal network={selectedNetwork} accountTypes={accountTypes} />
                     )}
 
                     <Expander />
