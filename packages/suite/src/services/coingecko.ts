@@ -51,26 +51,17 @@ class RateLimiter {
 
 const rateLimiter = new RateLimiter(1000);
 
-class FiatRatesFetchError extends Error {
-    constructor(message: string) {
-        super(message);
-        this.name = 'FiatRatesFetchError';
-        // Maintains proper stack trace for where our error was thrown (only available on V8)
-        if (Error.captureStackTrace) {
-            Error.captureStackTrace(this, FiatRatesFetchError);
-        }
-    }
-}
-
 const fetchCoinGecko = async (url: string) => {
     try {
         const res = await rateLimiter.limit(() => fetch(url));
         if (!res.ok) {
-            throw new FiatRatesFetchError(`${res.status}: ${url}`);
+            console.warn(`Fiat rates failed to fetch: ${res.status}`);
+            return;
         }
         return res.json();
     } catch (error) {
-        throw new FiatRatesFetchError(`Failed to fetch: ${url}`);
+        // Do not report to Sentry to save the issues count limit.
+        console.warn(error);
     }
 };
 
