@@ -8,6 +8,7 @@ import { Button, useTheme, variables, Input, Tooltip, Checkbox, Icon } from '@tr
 import { Translation } from '@suite-components/Translation';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { countBytesInString } from '@suite-utils/string';
+import { OpenGuideFromTooltip } from '@suite-views/guide';
 
 const PasswordStrengthIndicator = dynamic(
     () => import('@suite-components/PasswordStrengthIndicator'),
@@ -276,7 +277,12 @@ const PassphraseTypeCard = (props: Props) => {
                             <WalletTitle withMargin={props.type === 'hidden'}>
                                 {props.type === 'hidden' ? (
                                     <Tooltip
-                                        content={<Translation id="TR_HIDDEN_WALLET_TOOLTIP" />}
+                                        content={
+                                            <>
+                                                <Translation id="TR_HIDDEN_WALLET_TOOLTIP" />
+                                                <OpenGuideFromTooltip id="/security/passphrase.md" />
+                                            </>
+                                        }
                                         dashed
                                     >
                                         <>{props.title}</>

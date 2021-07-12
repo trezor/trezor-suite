@@ -19,13 +19,13 @@ Data from **production** builds (codesign branch) are sent to:
 
 - Desktop build: https://data.trezor.io/suite/log/desktop/stable.log
 - Web build: https://data.trezor.io/suite/log/web/stable.log
-  
+
 Data from **development** builds are sent to:
 
 - Desktop build: https://data.trezor.io/suite/log/desktop/develop.log
 - Web build: https://data.trezor.io/suite/log/web/develop.log
-  
-Data from localhost are not currently tracked anywhere. 
+
+Data from localhost are not currently tracked anywhere.
 
 List of available configured endpoints:
 
@@ -64,7 +64,7 @@ Attributes which are always tracked:
 - **c_instance_id**: until user does not wipe storage, the id is still same
 - **c_session_id**: id changed on every launch of app
 - **c_timestamp**: time in ms when event is created
-  
+
 Other attributes are connected to a specific type of events.
 
 Specific events can be found in `analyticsActions.ts` file and also in [company Notion](https://www.notion.so/satoshilabs/Data-analytics-938aeb2e289f4ca18f31b1c02ab782cb) where implemented events with expected attributes and other notes related to analytics can be found.
@@ -73,7 +73,7 @@ Specific events can be found in `analyticsActions.ts` file and also in [company 
 In case a new event has to be added or an old one has to be modified, please follow the following subsections.
 
 ### What to track
-Navigation between pages is not required to be tracked as it is tracked automatically by `router/location-change` event. However, a case when it is good to track it is when a user can get to the same location using different methods (e.g. two different buttons on the same page). All other user actions without sensitive info can be tracked. If you are in doubt, please contact our analyst. 
+Navigation between pages is not required to be tracked as it is tracked automatically by `router/location-change` event. However, a case when it is good to track it is when a user can get to the same location using different methods (e.g. two different buttons on the same page). All other user actions without sensitive info can be tracked. If you are in doubt, please contact our analyst.
 
 ### Type declaration
 All events and their properties should be declared in `AnalyticsEvent` type in `analyticsActions.ts` file.
@@ -95,7 +95,7 @@ analytics.report({
 Breaking change should bump major version. Any other change bumps minor version.
 
 ### Changelog
-Add a record of change to [Changelog](#Changelog) section in this file. Please use a format of previous records. 
+Add a record of change to [Changelog](#Changelog) section in this file. Please use a format of previous records.
 
 ### Notion
 Add event to the analytics overview in the [company Notion](https://www.notion.so/satoshilabs/Data-analytics-938aeb2e289f4ca18f31b1c02ab782cb)
@@ -112,13 +112,17 @@ Add event to the analytics overview in the [company Notion](https://www.notion.s
 1. **Option**: Open DevTools, navigate to **Network tab**, filter traffic by `.log` and check the **Query String Parameters** section
 2. **Option**: Get access to Keboola
 3. **Option**: Create a modified build of app with an analytics server URL pointing to your server
-4. **Option**: Edit NAT to resolve requests to `https://data.trezor.io/suite/log/web/stable.log` to your local server 
-   
+4. **Option**: Edit NAT to resolve requests to `https://data.trezor.io/suite/log/web/stable.log` to your local server
+
 ## Changelog
 ### 1.12
 Changed:
 - device-update-firmware
   - toFwVersion and toBtcOnly made optional as we don't know them when installing custom firmware
+
+Added:
+- guide/tooltip-link/navigation
+  - id: string
 
 ### 1.11
 Added:
@@ -194,7 +198,7 @@ Fixed:
   - symbol (lowercase instead of uppercase)
 
 ### 1.8
-Added: 
+Added:
 - settings/device/update-auto-lock
   - value: string
 - suite-ready
@@ -217,26 +221,26 @@ Fixed:
 
 Removed:
 - menu/goto/exchange-index
- 
+
 Changed:
 - `desktop` build is now tracked to `stable.log` instead of `beta.log`
 ### 1.7
 Added:
 - send-raw-transaction
-  - networkSymbol: string 
+  - networkSymbol: string
 - device-connect
   - totalDevices: number
-  
+
 ### 1.6
 Added:
 - suite-ready
-  - suiteVersion: string | "" 
+  - suiteVersion: string | ""
 - device-connect
   - isBitcoinOnly: boolean
 - desktop-init
   - desktopOSVersion: string | "" (in format: {platform}_{release})
 - accounts/empty-account/buy
-  - symbol: string 
+  - symbol: string
 - account-create
   - tokensCount: number
 - transaction-created
@@ -251,7 +255,7 @@ Added:
 - add-token
   - networkSymbol: string
   - addedNth: number
-  
+
 ### 1.5
 Added:
 - suite-ready
@@ -294,4 +298,4 @@ Added:
   - totalInstances
 
 ### 1.0
-- initial version 
+- initial version

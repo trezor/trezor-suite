@@ -13,3 +13,4 @@ export { useTranslation } from './useTranslation';
 export { useTheme } from './useTheme';
 export { useOnboarding } from './useOnboarding';
 export { useRecovery } from './useRecovery';
+export { useGuide } from './useGuide';
