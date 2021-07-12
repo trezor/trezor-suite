@@ -263,6 +263,12 @@ export type AnalyticsEvent =
           };
       }
     | {
+          type: 'guide/tooltip-link/navigation';
+          payload: {
+              id: string;
+          };
+      }
+    | {
           type: 'wallet/add-account';
           payload: {
               /** normal, segwit, legacy */

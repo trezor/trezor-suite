@@ -9,6 +9,7 @@ import { TrezorDevice, AcquiredDevice, InjectedModalApplicationProps } from '@su
 import { useSelector, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
+import { OpenGuideFromTooltip } from '@suite-views/guide';
 
 import WalletInstance from '../WalletInstance';
 import ColHeader from './components/ColHeader';
@@ -244,14 +245,20 @@ const DeviceItem = ({ device, instances, closeModalApp, backgroundRoute }: Props
                                         </WalletsCount>
                                         <ColRememberHeader
                                             tooltipContent={
-                                                <Translation id="TR_REMEMBER_ALLOWS_YOU_TO" />
+                                                <>
+                                                    <Translation id="TR_REMEMBER_ALLOWS_YOU_TO" />
+                                                    <OpenGuideFromTooltip id="/privacy/remember-and-eject.md" />
+                                                </>
                                             }
                                         >
                                             <Translation id="TR_REMEMBER_HEADING" />
                                         </ColRememberHeader>
                                         <ColEjectHeader
                                             tooltipContent={
-                                                <Translation id="TR_EJECT_WALLET_EXPLANATION" />
+                                                <>
+                                                    <Translation id="TR_EJECT_WALLET_EXPLANATION" />
+                                                    <OpenGuideFromTooltip id="/privacy/remember-and-eject.md" />
+                                                </>
                                             }
                                         >
                                             <Translation id="TR_EJECT_HEADING" />
