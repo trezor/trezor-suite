@@ -4,7 +4,6 @@ import styled, { css } from 'styled-components';
 import { useKeyPress, useTheme } from '../../utils/hooks';
 
 import { Icon } from '../Icon';
-import { scrollbarStyles } from '../Scrollbar';
 import { H1 } from '../typography/Heading';
 import { variables } from '../../config';
 
@@ -260,8 +259,6 @@ const Content = styled(SidePaddingWrapper)<{ centerContent: boolean }>`
     width: 100%;
     height: 100%;
     overflow-y: auto;
-
-    ${scrollbarStyles}
 
     /* center the content if props.centerContent selected. For example useful for centering nested modals */
     ${props =>

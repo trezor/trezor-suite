@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { useDiscovery, useAccountSearch } from '@suite-hooks';
-import { H2, variables, useTheme, Icon, scrollbarStyles } from '@trezor/components';
+import { H2, variables, useTheme, Icon } from '@trezor/components';
 import { Translation, AddAccountButton, LayoutContext } from '@suite-components';
 
 import { sortByCoin, getFailedAccounts, accountSearchFn } from '@wallet-utils/accountUtils';
@@ -100,8 +100,6 @@ const ExpandedMobileWrapper = styled.div`
     border-bottom-right-radius: 4px;
     padding: 0px 16px;
     padding-bottom: 16px;
-
-    ${scrollbarStyles}
 `;
 
 const Scroll = styled.div`
@@ -109,8 +107,6 @@ const Scroll = styled.div`
     overflow-y: auto;
     overflow-x: hidden;
     padding: 0px 8px;
-
-    ${scrollbarStyles}
 `;
 
 const NoResults = styled.div`
