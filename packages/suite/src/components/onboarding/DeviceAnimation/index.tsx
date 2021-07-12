@@ -75,7 +75,7 @@ const DeviceAnimation = ({ size, type, loop = false, shape, device, ...props }: 
     const hologramRef = useRef<HTMLVideoElement>(null);
 
     // if device features are not available, use T model animations
-    const deviceModel = device?.features ? getDeviceModel(device) : 'T';
+    const deviceModel = device?.features && getDeviceModel(device) === '1' ? '1' : 't';
 
     // T1 bootloader before firmware version 1.8.0 can only be invoked by holding both buttons
     const deviceFwVersion = device?.features ? getFwVersion(device) : '';
