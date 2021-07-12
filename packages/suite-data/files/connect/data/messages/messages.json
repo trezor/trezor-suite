@@ -1726,7 +1726,8 @@
                 }
             ],
             "options": {
-                "(wire_type)": 22
+                "(wire_type)": 22,
+                "(include_in_bitcoin_only)": true
             },
             "oneofs": {}
         },
@@ -1761,7 +1762,8 @@
                 }
             ],
             "options": {
-                "(wire_type)": 22
+                "(wire_type)": 22,
+                "(include_in_bitcoin_only)": true
             },
             "oneofs": {}
         },
@@ -1779,7 +1781,8 @@
             "enums": [],
             "messages": [],
             "options": {
-                "(wire_type)": 22
+                "(wire_type)": 22,
+                "(include_in_bitcoin_only)": true
             },
             "oneofs": {}
         },
@@ -1814,7 +1817,8 @@
                 }
             ],
             "options": {
-                "(wire_type)": 22
+                "(wire_type)": 22,
+                "(include_in_bitcoin_only)": true
             },
             "oneofs": {}
         },
@@ -1849,7 +1853,8 @@
                 }
             ],
             "options": {
-                "(wire_type)": 22
+                "(wire_type)": 22,
+                "(include_in_bitcoin_only)": true
             },
             "oneofs": {}
         },
@@ -1884,7 +1889,8 @@
                 }
             ],
             "options": {
-                "(wire_type)": 22
+                "(wire_type)": 22,
+                "(include_in_bitcoin_only)": true
             },
             "oneofs": {}
         },
@@ -1996,7 +2002,9 @@
                 },
                 {
                     "rule": "optional",
-                    "options": {},
+                    "options": {
+                        "default": 0
+                    },
                     "type": "uint32",
                     "name": "fee_per_anonymity",
                     "id": 3
@@ -2942,6 +2950,20 @@
                     "type": "ButtonRequestType",
                     "name": "code",
                     "id": 1
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "pages",
+                    "id": 2
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "uint32",
+                    "name": "page_number",
+                    "id": 3
                 }
             ],
             "enums": [
@@ -3824,7 +3846,7 @@
                 {
                     "rule": "optional",
                     "options": {},
-                    "type": "uint32",
+                    "type": "BackupType",
                     "name": "mnemonic_type",
                     "id": 12
                 },
@@ -5990,7 +6012,9 @@
                             "id": 17
                         }
                     ],
-                    "options": {}
+                    "options": {
+                        "(has_bitcoin_only_values)": true
+                    }
                 }
             ],
             "messages": [],
@@ -8939,6 +8963,25 @@
                     "type": "bool",
                     "name": "wire_no_fsm",
                     "id": 50008
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "bitcoin_only",
+                    "id": 60000
+                }
+            ]
+        },
+        {
+            "ref": "google.protobuf.EnumOptions",
+            "fields": [
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "has_bitcoin_only_values",
+                    "id": 51001
                 }
             ]
         },
@@ -8950,14 +8993,21 @@
                     "options": {},
                     "type": "bool",
                     "name": "unstable",
-                    "id": 50001
+                    "id": 52001
                 },
                 {
                     "rule": "optional",
                     "options": {},
                     "type": "uint32",
                     "name": "wire_type",
-                    "id": 50002
+                    "id": 52002
+                },
+                {
+                    "rule": "optional",
+                    "options": {},
+                    "type": "bool",
+                    "name": "include_in_bitcoin_only",
+                    "id": 60000
                 }
             ]
         },
@@ -8969,7 +9019,7 @@
                     "options": {},
                     "type": "bool",
                     "name": "experimental",
-                    "id": 52001
+                    "id": 53001
                 }
             ]
         },
@@ -10886,20 +10936,8 @@
                     "id": 55
                 },
                 {
-                    "name": "MessageType_SetU2FCounter",
-                    "id": 63
-                },
-                {
                     "name": "MessageType_SdProtect",
                     "id": 79
-                },
-                {
-                    "name": "MessageType_GetNextU2FCounter",
-                    "id": 80
-                },
-                {
-                    "name": "MessageType_NextU2FCounter",
-                    "id": 81
                 },
                 {
                     "name": "MessageType_ChangeWipeCode",
@@ -10924,6 +10962,18 @@
                 {
                     "name": "MessageType_RebootToBootloader",
                     "id": 87
+                },
+                {
+                    "name": "MessageType_SetU2FCounter",
+                    "id": 63
+                },
+                {
+                    "name": "MessageType_GetNextU2FCounter",
+                    "id": 80
+                },
+                {
+                    "name": "MessageType_NextU2FCounter",
+                    "id": 81
                 },
                 {
                     "name": "MessageType_Deprecated_PassphraseStateRequest",
@@ -11574,7 +11624,9 @@
                     "id": 803
                 }
             ],
-            "options": {}
+            "options": {
+                "(has_bitcoin_only_values)": true
+            }
         }
     ],
     "imports": [],

@@ -45,7 +45,7 @@ const buttonRequest = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatc
             );
             break;
         case UI.REQUEST_BUTTON:
-            api.dispatch(addButtonRequest(api.getState().suite.device, action.payload.code));
+            api.dispatch(addButtonRequest(api.getState().suite.device, action.payload.code!));
             break;
         case SUITE.LOCK_DEVICE:
             if (!action.payload) {
