@@ -2189,6 +2189,10 @@ const definedMessages = defineMessages({
         defaultMessage: 'inc. ERC-20 tokens',
         id: 'TR_NETWORK_ETHEREUM_LABEL',
     },
+    TR_NETWORK_ETHEREUM_TOOLTIP: {
+        defaultMessage: 'Supported tokens',
+        id: 'TR_NETWORK_ETHEREUM_TOOLTIP',
+    },
     TR_NETWORK_ETHEREUM_CLASSIC: {
         defaultMessage: 'Ethereum Classic',
         id: 'TR_NETWORK_ETHEREUM_CLASSIC',

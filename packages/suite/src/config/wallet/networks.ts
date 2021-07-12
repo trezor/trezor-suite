@@ -101,6 +101,7 @@ const networks = [
         },
         features: ['sign-verify'],
         label: 'TR_NETWORK_ETHEREUM_LABEL',
+        tooltip: 'TR_NETWORK_ETHEREUM_TOOLTIP',
     },
     {
         name: 'Ethereum Classic',
@@ -360,6 +361,7 @@ type Network = {
     hasSignVerify?: boolean;
     features?: string[];
     label?: ExtendedMessageDescriptor['id'];
+    tooltip?: ExtendedMessageDescriptor['id'];
 } & ArrayElement<typeof networks>;
 
 export default [...networks] as Network[];
