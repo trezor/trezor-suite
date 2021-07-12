@@ -6,13 +6,15 @@ import { Translation } from '@suite-components';
 interface Props {
     accept: 'text/csv' | 'image/*' | 'application/octet-stream';
     onSelect: (data: File, setError: (msg: string) => void) => void;
+    className?: string;
 }
 
-export const useDropZone = ({ accept, onSelect }: Props) => {
+export const useDropZone = ({ accept, onSelect, className }: Props) => {
     const available = useRef(window.File && window.FileReader && window.FileList && window.Blob);
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
     const [error, setError] = useState<string | undefined>(undefined);
+    const [filename, setFilename] = useState<string>();
 
     const readFileContent = useCallback(
         (file: File) => {
@@ -20,6 +22,7 @@ export const useDropZone = ({ accept, onSelect }: Props) => {
                 setError('file-type');
                 return;
             }
+            setFilename(file.name);
             onSelect(file, setError);
         },
         [accept, onSelect],
@@ -72,8 +75,9 @@ export const useDropZone = ({ accept, onSelect }: Props) => {
             onDragLeave: prevent,
             onDrop,
             ref: wrapperRef,
+            className,
         }),
-        [onClick, prevent, onDrop],
+        [onClick, prevent, onDrop, className],
     );
 
     const getInputProps = useMemo(
@@ -93,6 +97,7 @@ export const useDropZone = ({ accept, onSelect }: Props) => {
     return {
         available: available.current,
         error,
+        filename,
         getWrapperProps,
         getInputProps,
     };
@@ -128,14 +133,14 @@ const Label = styled.div`
 `;
 
 export const DropZone = (props: Props) => {
-    const { getWrapperProps, getInputProps, error } = useDropZone(props);
+    const { getWrapperProps, getInputProps, error, filename } = useDropZone(props);
 
     return (
         <Wrapper {...getWrapperProps()}>
             <StyledInput {...getInputProps()} />
             <Label>
                 <StyledIcon icon="CSV" />
-                <Translation id="TR_DROPZONE" />
+                {filename || <Translation id="TR_DROPZONE" />}
             </Label>
             {error && (
                 <P>
