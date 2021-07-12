@@ -1,9 +1,13 @@
+import * as React from 'react';
+
 import animations from './animations';
 import { notifications } from './notifications';
-import { variables, SuiteThemeColors, scrollbarStyles } from '@trezor/components';
+import { variables, SuiteThemeColors } from '@trezor/components';
 import { createGlobalStyle } from 'styled-components';
+import { SuiteThemeVariant } from '@suite/types/suite';
+import { useTheme } from '@suite-hooks';
 
-const globalStyles = createGlobalStyle<{ theme: SuiteThemeColors }>`
+const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors; themeVariant: SuiteThemeVariant }>`
     #__next {
         display: flex;
         flex-direction: column;
@@ -43,9 +47,18 @@ const globalStyles = createGlobalStyle<{ theme: SuiteThemeColors }>`
         box-sizing: border-box;
     }
 
+    :root {
+        color-scheme: ${props => (props.themeVariant === 'light' ? 'light' : 'dark')};
+    }
+
     ${animations}
     ${notifications}
-    ${scrollbarStyles}
 `;
 
-export default globalStyles;
+const GlobalStyleProvider = () => {
+    const { theme, themeVariant } = useTheme();
+
+    return <GlobalStyle theme={theme} themeVariant={themeVariant} />;
+};
+
+export default GlobalStyleProvider;

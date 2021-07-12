@@ -8,7 +8,6 @@ import ReactSelect, {
 import styled, { css } from 'styled-components';
 import { variables } from '../../../config';
 import { useTheme } from '../../../utils';
-import { scrollbarStyles } from '../../Scrollbar';
 import { InputVariant, SuiteThemeColors } from '../../../support/types';
 
 const selectStyle = (
@@ -163,9 +162,6 @@ const Wrapper = styled.div<Props>`
     .react-select__single-value {
         position: static;
         transform: none;
-    }
-    .react-select__menu-list {
-        ${scrollbarStyles}
     }
 `;
 

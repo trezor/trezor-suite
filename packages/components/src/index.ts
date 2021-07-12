@@ -35,7 +35,6 @@ import { TrezorLogo, TrezorLogoProps } from './components/logos/TrezorLogo';
 import { Loader, LoaderProps } from './components/loaders/Loader';
 import { Tooltip, TooltipProps } from './components/Tooltip';
 import { TooltipConditional } from './components/Tooltip/TooltipConditional';
-import { scrollbarStyles } from './components/Scrollbar';
 import { Timerange, TimerangeProps } from './components/Timerange';
 import { Truncate } from './components/Truncate';
 import { SelectBar, SelectBarProps } from './components/form/SelectBar';
@@ -107,7 +106,6 @@ export {
     FlagProps,
     useTheme,
     SuiteThemeColors,
-    scrollbarStyles,
     ThemeProvider,
     ThemeContext,
 };

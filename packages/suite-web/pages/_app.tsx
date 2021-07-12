@@ -14,6 +14,7 @@ import OnlineStatus from '@suite-support/OnlineStatus';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
 import Router from '@suite-support/Router';
 import ThemeProvider from '@suite-support/ThemeProvider';
+import GlobalStyleProvider from '@suite-support/styles/GlobalStyleProvider';
 
 import { isDev } from '@suite-utils/build';
 import TrezorConnect from 'trezor-connect';
@@ -21,7 +22,6 @@ import { SENTRY_CONFIG } from '@suite-config';
 import { Store } from '@suite-types';
 import ImagesPreloader from '../support/ImagesPreloader';
 import { CypressExportStore } from '../support/CypressExportStore';
-import GlobalStyles from '@suite-support/styles/global';
 
 const Tor = dynamic(() => import('@suite-support/Tor'), { ssr: false });
 
@@ -60,7 +60,7 @@ class TrezorSuiteApp extends App<Props> {
                 <CypressExportStore store={store} />
                 <ReduxProvider store={store}>
                     <ThemeProvider>
-                        <GlobalStyles />
+                        <GlobalStyleProvider />
                         <ErrorBoundary>
                             <Resize />
                             <Tor />

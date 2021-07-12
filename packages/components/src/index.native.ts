@@ -26,7 +26,6 @@ import { CoinLogo } from './components/logos/CoinLogo';
 import { TrezorLogo } from './components/logos/TrezorLogo';
 import { Loader } from './components/loaders/Loader';
 import { Tooltip } from './components/Tooltip';
-import { scrollbarStyles } from './components/Scrollbar';
 import { Timerange } from './components/Timerange';
 import { SelectBar } from './components/form/SelectBar';
 import { ThemeProvider, ThemeContext } from './support/ThemeProvider';
@@ -66,7 +65,6 @@ export {
     SelectBar,
     useTheme,
     SuiteThemeColors,
-    scrollbarStyles,
     ThemeProvider,
     ThemeContext,
 };
