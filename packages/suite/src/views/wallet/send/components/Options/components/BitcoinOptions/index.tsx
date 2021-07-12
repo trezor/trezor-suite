@@ -5,7 +5,7 @@ import { OnOffSwitcher } from '@wallet-components';
 import { Button, Tooltip } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
 import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
-
+import { OpenGuideFromTooltip } from '@suite-views/guide';
 import Locktime from './components/Locktime';
 
 const Wrapper = styled.div`
@@ -74,7 +74,12 @@ const BitcoinOptions = () => {
                 <Left>
                     {!locktimeEnabled && (
                         <Tooltip
-                            content={<Translation id="LOCKTIME_ADD_TOOLTIP" />}
+                            content={
+                                <>
+                                    <Translation id="LOCKTIME_ADD_TOOLTIP" />
+                                    <OpenGuideFromTooltip id="/suite-basics/send/locktime.md" />
+                                </>
+                            }
                             cursor="pointer"
                         >
                             <StyledButton
@@ -93,7 +98,15 @@ const BitcoinOptions = () => {
                     {isFeatureEnabled('RBF') &&
                         network.features?.includes('rbf') &&
                         !locktimeEnabled && (
-                            <Tooltip content={<Translation id="RBF_TOOLTIP" />} cursor="pointer">
+                            <Tooltip
+                                content={
+                                    <>
+                                        <Translation id="RBF_TOOLTIP" />
+                                        <OpenGuideFromTooltip id="/suite-basics/send/rbf-replace-by-fee.md" />
+                                    </>
+                                }
+                                cursor="pointer"
+                            >
                                 <StyledButton
                                     variant="tertiary"
                                     icon="RBF"
