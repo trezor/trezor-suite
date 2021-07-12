@@ -18,6 +18,7 @@ interface Props {
     // This component is shared between Onboarding flow and standalone fw update modal with few minor UI changes
     // If it is set to true, then you know it is being rendered in standalone fw update modal
     standaloneFwUpdate?: boolean;
+    onInstall: () => void;
 }
 
 const getDescription = ({
@@ -39,9 +40,14 @@ const getDescription = ({
     return 'TR_ONBOARDING_NEW_FW_DESCRIPTION';
 };
 
-const FirmwareInitial = ({ cachedDevice, setCachedDevice, standaloneFwUpdate = false }: Props) => {
+const FirmwareInitial = ({
+    cachedDevice,
+    setCachedDevice,
+    onInstall,
+    standaloneFwUpdate = false,
+}: Props) => {
     const { device: liveDevice } = useDevice();
-    const { setStatus, firmwareUpdate, status } = useFirmware();
+    const { setStatus, status } = useFirmware();
     const { goToNextStep } = useActions({
         goToNextStep: onboardingActions.goToNextStep,
     });
@@ -81,7 +87,7 @@ const FirmwareInitial = ({ cachedDevice, setCachedDevice, standaloneFwUpdate = f
                     releaseChangelog={cachedDevice.firmwareRelease}
                 />
             ) : undefined,
-            innerActions: <InstallButton onClick={firmwareUpdate} />,
+            innerActions: <InstallButton onClick={onInstall} />,
         };
     } else if (device.mode === 'bootloader') {
         // We can check if device.mode is bootloader only after checking that firmware !== none (condition above)
@@ -151,7 +157,11 @@ const FirmwareInitial = ({ cachedDevice, setCachedDevice, standaloneFwUpdate = f
             <>
                 {/* Modal above a fw update offer. Instructs user to reconnect the device in bootloader */}
                 {status === 'waiting-for-bootloader' && (
-                    <ReconnectDevicePrompt expectedDevice={device} requestedMode="bootloader" />
+                    <ReconnectDevicePrompt
+                        expectedDevice={device}
+                        requestedMode="bootloader"
+                        onSuccess={onInstall}
+                    />
                 )}
 
                 <OnboardingStepBox

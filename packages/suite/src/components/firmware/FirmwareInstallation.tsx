@@ -1,9 +1,8 @@
 import React from 'react';
 import { Button } from '@trezor/components';
-import * as routerActions from '@suite-actions/routerActions';
 import { getTextForStatus } from '@firmware-utils';
 import { Translation, WebusbButton } from '@suite-components';
-import { useActions, useDevice, useFirmware, useOnboarding } from '@suite-hooks';
+import { useDevice, useFirmware } from '@suite-hooks';
 import { FirmwareOffer, ReconnectDevicePrompt } from '@firmware-components';
 import { OnboardingStepBox } from '@onboarding-components';
 import { getFwUpdateVersion, getFwVersion } from '@suite-utils/device';
@@ -15,8 +14,9 @@ interface Props {
     // This component is shared between Onboarding flow and standalone fw update modal with few minor UI changes
     // If it is set to true, then you know it is being rendered in standalone fw update modal
     standaloneFwUpdate?: boolean;
+    onSuccess: () => void;
 }
-const FirmwareInstallation = ({ cachedDevice, standaloneFwUpdate }: Props) => {
+const FirmwareInstallation = ({ cachedDevice, standaloneFwUpdate, onSuccess }: Props) => {
     const { device } = useDevice();
     const {
         status,
@@ -25,22 +25,13 @@ const FirmwareInstallation = ({ cachedDevice, standaloneFwUpdate }: Props) => {
         isWebUSB,
         subsequentInstalling,
     } = useFirmware();
-    const { closeModalApp } = useActions({
-        closeModalApp: routerActions.closeModalApp,
-    });
-    const { goToNextStep } = useOnboarding();
+
     const statusIntlId = getTextForStatus(status);
     const statusText = statusIntlId ? <Translation id={statusIntlId} /> : null;
 
     const getContinueAction = () => {
         if (status === 'done') {
-            // close standalone fw update modal and reset reducer
-            if (standaloneFwUpdate) {
-                closeModalApp();
-                resetReducer();
-            } else {
-                goToNextStep();
-            }
+            onSuccess();
         } else {
             resetReducer();
         }

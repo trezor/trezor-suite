@@ -72,7 +72,11 @@ const FirmwareStep = () => {
         case 'initial':
         case 'waiting-for-bootloader': // waiting for user to reconnect in bootloader
             return (
-                <FirmwareInitial cachedDevice={cachedDevice} setCachedDevice={setCachedDevice} />
+                <FirmwareInitial
+                    cachedDevice={cachedDevice}
+                    setCachedDevice={setCachedDevice}
+                    onInstall={firmwareUpdate}
+                />
             );
         case 'waiting-for-confirmation': // waiting for confirming installation on a device
         case 'started': // called from firmwareUpdate()
@@ -82,7 +86,7 @@ const FirmwareStep = () => {
         case 'reconnect-in-normal': // only relevant for T1, TT auto restarts itself
         case 'partially-done': // only relevant for T1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
         case 'done':
-            return <FirmwareInstallation cachedDevice={cachedDevice} />;
+            return <FirmwareInstallation cachedDevice={cachedDevice} onSuccess={goToNextStep} />;
         default:
             // 'ensure' type completeness
             throw new Error(`state "${status}" is not handled here`);

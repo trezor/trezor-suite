@@ -161,11 +161,12 @@ const getTextForMode = (requestedMode: 'bootloader' | 'normal', device?: TrezorD
 interface Props {
     expectedDevice?: TrezorDevice;
     requestedMode: 'bootloader' | 'normal';
+    onSuccess?: () => void;
 }
 
-const ReconnectDevicePrompt = ({ expectedDevice, requestedMode }: Props) => {
+const ReconnectDevicePrompt = ({ expectedDevice, requestedMode, onSuccess }: Props) => {
     const { device } = useDevice();
-    const { firmwareUpdate, isWebUSB } = useFirmware();
+    const { isWebUSB } = useFirmware();
     // local state to track if the user actually unplugged the device. Otherwise if the device is
     // in bootloader and we prompt user to reconnect again in bootloader we would immediately render success state
     const [wasUnplugged, setWasUnplugged] = useState(false);
@@ -194,8 +195,8 @@ const ReconnectDevicePrompt = ({ expectedDevice, requestedMode }: Props) => {
         requestedMode === 'bootloader' ? reconnectedInBootloader : reconnectedInNormal;
 
     const successAction =
-        requestedMode === 'bootloader' ? (
-            <Button onClick={firmwareUpdate} data-test="@firmware/install-button">
+        requestedMode === 'bootloader' && onSuccess ? (
+            <Button onClick={onSuccess} data-test="@firmware/install-button">
                 <Translation id="TR_INSTALL" />
             </Button>
         ) : undefined;
