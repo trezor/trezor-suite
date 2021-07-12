@@ -76,9 +76,14 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
 
     const handleNetworkSelection = (symbol?: Network['symbol']) => {
         if (symbol) {
-            const selectedNetwork = NETWORKS.find(n => n.symbol === symbol);
-            if (selectedNetwork && !networkPinned) {
-                selectNetwork(selectedNetwork);
+            const networkToSelect = NETWORKS.find(n => n.symbol === symbol);
+
+            // To prevent account type selection reset
+            const alreadySelected =
+                !!networkToSelect && networkToSelect?.symbol === selectedNetwork?.symbol;
+
+            if (networkToSelect && !networkPinned && !alreadySelected) {
+                selectNetwork(networkToSelect);
             }
         } else {
             selectNetwork(undefined);
