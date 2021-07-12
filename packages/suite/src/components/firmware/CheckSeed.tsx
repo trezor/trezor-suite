@@ -12,61 +12,45 @@ const CheckboxRow = styled.div`
     justify-content: center;
 `;
 
-const CheckSeedStep = () => {
+type Props = {
+    onSuccess: () => void;
+};
+
+const CheckSeedStep = ({ onSuccess }: Props) => {
     const { device } = useDevice();
-    const { toggleHasSeed, hasSeed, setStatus } = useFirmware();
+    const { toggleHasSeed, hasSeed } = useFirmware();
 
     // unacquired device handled on higher level
     if (!device?.features) return null;
 
     // device is not backed up - it is not advisable to do firmware update
-    if (device.features.needs_backup || device.features.unfinished_backup) {
-        return (
-            <OnboardingStepBox
-                image="FIRMWARE"
-                heading={
-                    <Translation
-                        id="TR_DEVICE_LABEL_IS_NOT_BACKED_UP"
-                        values={{ deviceLabel: device.label }}
-                    />
-                }
-                description={<Translation id="TR_FIRMWARE_IS_POTENTIALLY_RISKY" />}
-                outerActions={
-                    <Button
-                        onClick={() => setStatus('waiting-for-bootloader')}
-                        data-test="@firmware/confirm-seed-button"
-                        isDisabled={!device?.connected || !hasSeed}
-                    >
-                        <Translation id="TR_CONTINUE" />
-                    </Button>
-                }
-                disableConfirmWrapper
-                nested
-            >
-                <CheckboxRow>
-                    <Checkbox
-                        isChecked={hasSeed}
-                        onClick={toggleHasSeed}
-                        data-test="@firmware/confirm-seed-checkbox"
-                    >
-                        <P>
-                            <Translation id="FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC" />
-                        </P>
-                    </Checkbox>
-                </CheckboxRow>
-            </OnboardingStepBox>
-        );
-    }
-
     // expected flow - device is backed up
+    const isBackedUp = !device.features.needs_backup && !device.features.unfinished_backup;
+    const { heading, description, checkbox } = !isBackedUp
+        ? {
+              heading: (
+                  <Translation
+                      id="TR_DEVICE_LABEL_IS_NOT_BACKED_UP"
+                      values={{ deviceLabel: device.label }}
+                  />
+              ),
+              description: <Translation id="TR_FIRMWARE_IS_POTENTIALLY_RISKY" />,
+              checkbox: <Translation id="FIRMWARE_USER_TAKES_RESPONSIBILITY_CHECKBOX_DESC" />,
+          }
+        : {
+              heading: <Translation id="TR_SECURITY_CHECKPOINT_GOT_SEED" />,
+              description: <Translation id="TR_BEFORE_ANY_FURTHER_ACTIONS" />,
+              checkbox: <Translation id="FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC" />,
+          };
+
     return (
         <OnboardingStepBox
             image="FIRMWARE"
-            heading={<Translation id="TR_SECURITY_CHECKPOINT_GOT_SEED" />}
-            description={<Translation id="TR_BEFORE_ANY_FURTHER_ACTIONS" />}
+            heading={heading}
+            description={description}
             outerActions={
                 <Button
-                    onClick={() => setStatus('waiting-for-bootloader')}
+                    onClick={onSuccess}
                     data-test="@firmware/confirm-seed-button"
                     isDisabled={!device?.connected || !hasSeed}
                 >
@@ -82,9 +66,7 @@ const CheckSeedStep = () => {
                     onClick={toggleHasSeed}
                     data-test="@firmware/confirm-seed-checkbox"
                 >
-                    <P>
-                        <Translation id="FIRMWARE_USER_HAS_SEED_CHECKBOX_DESC" />
-                    </P>
+                    <P>{checkbox}</P>
                 </Checkbox>
             </CheckboxRow>
         </OnboardingStepBox>
