@@ -4,11 +4,6 @@ import { Account } from '@wallet-types';
 import { Translation } from '@suite-components';
 import { useAnalytics, useAccountSearch } from '@suite-hooks';
 
-interface Props {
-    emptyAccounts: Account[];
-    onEnableAccount: (account: Account) => void;
-}
-
 const verifyAvailibility = ({
     emptyAccounts,
     account,
@@ -65,6 +60,11 @@ const AddButton = ({ account, isDisabled, onEnableAccount }: ButtonProps) => {
         </Button>
     );
 };
+
+interface Props {
+    emptyAccounts: Account[];
+    onEnableAccount: (account: Account) => void;
+}
 
 export const AddAccountButton = ({ emptyAccounts, onEnableAccount }: Props) => {
     if (emptyAccounts.length === 0) return null;

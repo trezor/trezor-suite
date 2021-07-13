@@ -51,7 +51,7 @@ const BackgroundWrapper = styled.div<{ isExpanded: boolean }>`
     margin-right: auto;
 `;
 
-const Wrapper = styled(motion.div)`
+const Content = styled(motion.div).attrs(() => ({ ...contentAnimation }))`
     padding-top: 16px;
 `;
 
@@ -97,12 +97,6 @@ const StyledIcon = styled(Icon)`
     padding-right: 15px;
 `;
 
-interface Props {
-    children: React.ReactNode;
-}
-
-const Content = ({ children }: Props) => <Wrapper {...contentAnimation}>{children}</Wrapper>;
-
 const Header = ({
     isExpanded,
     setExpanded,
@@ -139,6 +133,10 @@ const Header = ({
         </HeaderWrapper>
     );
 };
+
+interface Props {
+    children: React.ReactNode;
+}
 
 export const MoreCoins = ({ children }: Props) => {
     const [isExpanded, setExpanded] = useState(false);
