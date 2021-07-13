@@ -6,7 +6,6 @@ import {
     OnboardingButtonSkip,
 } from '@onboarding-components';
 import { Translation } from '@suite-components';
-import { getFwUpdateVersion, getFwVersion } from '@suite-utils/device';
 import { useDevice, useFirmware, useActions } from '@suite-hooks';
 import { ReconnectDevicePrompt, InstallButton, FirmwareOffer } from '@firmware-components';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
@@ -82,10 +81,7 @@ const FirmwareInitial = ({
             heading: <Translation id="TR_INSTALL_FIRMWARE" />,
             description: <Translation id="TR_FIRMWARE_SUBHEADING" />,
             body: cachedDevice?.firmwareRelease ? (
-                <FirmwareOffer
-                    newVersion={getFwUpdateVersion(cachedDevice)}
-                    releaseChangelog={cachedDevice.firmwareRelease}
-                />
+                <FirmwareOffer device={cachedDevice} />
             ) : undefined,
             innerActions: <InstallButton onClick={onInstall} />,
         };
@@ -118,13 +114,7 @@ const FirmwareInitial = ({
                     })}
                 />
             ),
-            body: (
-                <FirmwareOffer
-                    currentVersion={getFwVersion(device)}
-                    newVersion={getFwUpdateVersion(device)}
-                    releaseChangelog={device?.firmwareRelease}
-                />
-            ),
+            body: <FirmwareOffer device={device} />,
             innerActions: (
                 <Button
                     onClick={() =>

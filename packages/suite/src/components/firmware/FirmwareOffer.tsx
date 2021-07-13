@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, Icon, Tooltip, variables } from '@trezor/components';
 import { Translation, TrezorLink } from '@suite-components';
-import { parseFirmwareChangelog } from '@suite-utils/device';
-import { TrezorDevice } from '@suite-types';
+import { getFwUpdateVersion, getFwVersion, parseFirmwareChangelog } from '@suite-utils/device';
+import { AcquiredDevice } from '@suite-types';
 import { CHANGELOG_URL } from '@suite-constants/urls';
 
 const FwVersionWrapper = styled.div`
@@ -81,13 +81,13 @@ const ChangesUl = styled.ul`
 `;
 
 interface Props {
-    currentVersion?: string;
-    newVersion: string | null;
-    releaseChangelog: TrezorDevice['firmwareRelease'];
+    device: AcquiredDevice;
 }
 
-const FirmwareOffer = ({ currentVersion, newVersion, releaseChangelog }: Props) => {
-    const parsedChangelog = parseFirmwareChangelog(releaseChangelog);
+const FirmwareOffer = ({ device }: Props) => {
+    const currentVersion = device.firmware !== 'none' ? getFwVersion(device) : undefined;
+    const newVersion = getFwUpdateVersion(device);
+    const parsedChangelog = parseFirmwareChangelog(device.firmwareRelease);
     return (
         <FwVersionWrapper>
             {currentVersion && (

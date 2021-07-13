@@ -5,7 +5,6 @@ import { Translation, WebusbButton } from '@suite-components';
 import { useDevice, useFirmware } from '@suite-hooks';
 import { FirmwareOffer, ReconnectDevicePrompt } from '@firmware-components';
 import { OnboardingStepBox } from '@onboarding-components';
-import { getFwUpdateVersion, getFwVersion } from '@suite-utils/device';
 import { TrezorDevice } from '@suite-types';
 import ProgressBar from './ProgressBar';
 
@@ -90,17 +89,7 @@ const FirmwareInstallation = ({ cachedDevice, standaloneFwUpdate, onSuccess }: P
                 nested={!!standaloneFwUpdate}
                 disableConfirmWrapper={!!standaloneFwUpdate}
             >
-                {cachedDevice?.firmwareRelease && (
-                    <FirmwareOffer
-                        currentVersion={
-                            cachedDevice.firmware !== 'none'
-                                ? getFwVersion(cachedDevice)
-                                : undefined
-                        }
-                        newVersion={getFwUpdateVersion(cachedDevice)}
-                        releaseChangelog={cachedDevice.firmwareRelease}
-                    />
-                )}
+                {cachedDevice?.firmwareRelease && <FirmwareOffer device={cachedDevice} />}
 
                 {status !== 'waiting-for-confirmation' &&
                     (status !== 'started' || cachedDevice?.firmware === 'none') && (
