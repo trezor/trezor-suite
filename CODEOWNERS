@@ -10,18 +10,18 @@
 
 /packages/integration-tests @vdovhanych @mroz22
 
-/packages/rollout @mroz22 @goodhoko
+/packages/rollout @mroz22
 
 /packages/suite @szymonlesisz @tomasklim @mroz22
 
-/packages/suite-data @tomasklim @goodhoko
+/packages/suite-data @tomasklim
 
 /packages/suite-desktop @tomasklim @szymonlesisz
 
 /packages/suite-native @matejkriz
 
-/packages/suite-storage @goodhoko
+/packages/suite-storage
 
 /packages/suite-web @mroz22 @tomasklim
 
-/packages/translations-manager @tomasklim @goodhoko
+/packages/translations-manager @tomasklim
