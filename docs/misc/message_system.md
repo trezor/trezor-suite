@@ -61,12 +61,12 @@ To ensure the authenticity of a configuration file, JSON Web Signatures are used
 #### Signing
 
 - Signing of the configuration file is performed in CI job in `prebuild` phase.
-- The result is uploaded to `https://data.trezor.io/config/$environment/config.vX.json` and saved into `suite-data/files/message-system` to be bundled with application. For example, on localhost, the config is available at `http://localhost:8000/static/message-system/config.vX.jws`.
+- The result is saved into `suite-data/files/message-system` to be bundled with application and manually uploaded to `https://data.trezor.io/config/$environment/config.vX.json` (*TODO* Finish automatic upload of configs to S3). For example, on localhost, the config is available at `http://localhost:8000/static/message-system/config.vX.jws`.
 - It can be run manually by `yarn workspace @trezor/suite-data msg-system-sign-config` script in suite-data. The resulting JWS is stored in `packages/suite-data/files/message-system/` [folder](https://github.com/trezor/trezor-suite/tree/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-data/files) in `config.vX.jws` file. 
 - Development public and private keys are baked into project structure. For production environment, these keys are replaced by CI job by production keys. This production CI job is activated on `codesign` branches.
-- Development private key can be found in `suite-data/src/message-system/scripts/sign-config.ts` [file](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-data/src/message-system/scripts/sign-config.ts), the public key can be found in `suite-web` and `suite-desktop` in `next.config.js` files ([web](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-web/next.config.js), [desktop](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-desktop/next.config.js)). *Change when tschuss-next is merged*
+- Development private key can be found in `suite-data/src/message-system/scripts/sign-config.ts` [file](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-data/src/message-system/scripts/sign-config.ts), the public key can be found in `suite-web` and `suite-desktop` in `next.config.js` files ([web](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-web/next.config.js), [desktop](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-desktop/next.config.js)). *Change when feat/tschuss-next PR is merged*
 
-### Versioning
+### Versioning of implementation
 
 If changes made to the message system are incompatible with the previous version, the version number should be bumped in `messageSystemConstants.ts` [file](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite/src/actions/suite/constants/messageSystemConstants.ts) in `suite` package as well as in suite-data package in `message-system/constants` [file](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-data/src/message-system/constants/index.ts). Also in `ci/packages/suite-data.yml` [file](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/ci/packages/suite-data.yml).
 
@@ -235,6 +235,12 @@ Structure of config, types and optionality of specific keys can be found in the 
 }
 ```
 
+#### How to update
+
+When updating message system config, sequence number must always be higher than the previous one. Once released config cannot be rolled back to the previous one with lower sequence number. A new one with higher sequence number has to be created. 
+
+Information about updated config has to be sent to @tsusanka, who will manually upload it to S3 bucket. *TODO* Updated config will be automatically uploaded by CI job to the correspondent S3 bucket based on the current branch.
+
 #### Priorities of messages
 
 Based on the priority of the message, the message is displayed to the user. 0 is the lowest priority, 100 is the highest priority.
@@ -248,3 +254,7 @@ Unfortunately, it is not possible to target specific distributions and versions 
 1. Config is fetched on load of application and is stored in Redux state. To be persisted between sessions, is is mirrored into IndexDB.
 2. Conditions of config are evaluated on specific Redux actions. See `messageSystemMiddleware.ts` [file](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite/src/middlewares/suite/messageSystemMiddleware.ts).
 3. If conditions of message satisfies user's stack, the message is accordingly propagated. If it is dismissible, its id is saved to Redux state (IndexDB) on close, to avoid displaying next time.
+
+### Followup
+
+Ideas and non-critical bugs can be added to the followup [issue](https://github.com/trezor/trezor-suite/issues/3693).
