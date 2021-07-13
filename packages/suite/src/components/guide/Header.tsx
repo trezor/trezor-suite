@@ -1,16 +1,30 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled, { css } from 'styled-components';
-import { darken } from 'polished';
+import { darken, transparentize } from 'polished';
 
 import * as guideActions from '@suite-actions/guideActions';
 import { useActions, useAnalytics } from '@suite-hooks';
 import { Icon, variables, useTheme } from '@trezor/components';
-import { HeaderBreadcrumb } from '@guide-components';
+import { HeaderBreadcrumb, ContentScrolledContext } from '@guide-components';
 
-const HeaderWrapper = styled.div<{ noLabel?: boolean }>`
+const HeaderWrapper = styled.div<{ noLabel?: boolean; isScrolled: boolean }>`
     display: flex;
     align-items: center;
     padding: 12px 22px;
+    position: sticky;
+    top: 0;
+    background-color: inherit;
+    box-shadow: none;
+    border-bottom: 1px solid transparent;
+    transition: all 0.5s ease;
+
+    ${props =>
+        props.isScrolled &&
+        css`
+            box-shadow: 0px 9px 27px 0px ${props => transparentize(0.5, props.theme.STROKE_GREY)};
+            border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
+        `}
+
     ${props =>
         props.noLabel &&
         css`
@@ -68,12 +82,14 @@ const Header = ({ back, label, useBreadcrumb }: Props) => {
     const theme = useTheme();
     const analytics = useAnalytics();
 
+    const isScrolled = useContext(ContentScrolledContext);
+
     const { close } = useActions({
         close: guideActions.close,
     });
 
     return (
-        <HeaderWrapper noLabel={!label}>
+        <HeaderWrapper noLabel={!label} isScrolled={isScrolled}>
             {!useBreadcrumb && back && (
                 <>
                     <ActionButton

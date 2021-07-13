@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 
 const ViewWrapper = styled.div`
     height: 100%;
-    overflow-y: auto;
+    display: flex;
 `;
 
 type GuidePanelProps = {
