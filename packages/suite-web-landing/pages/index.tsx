@@ -49,6 +49,8 @@ const features = [
     },
 ];
 
+const pathToApp = './web';
+
 const Index = () => {
     const [translationMode, setTranslationMode] = useState(false);
 
@@ -60,7 +62,7 @@ const Index = () => {
                         'images/suite-web-landing/meta.png',
                     )}`}
                 />
-                <Layout>
+                <Layout pathToApp={pathToApp}>
                     <Wrapper>
                         <StyledHeroCta>
                             <Fade direction="up" delay={500} triggerOnce>
@@ -81,7 +83,7 @@ const Index = () => {
                             </Fade>
                             <DownloadWrapper>
                                 <Fade delay={2000} triggerOnce>
-                                    <Download />
+                                    <Download pathToApp={pathToApp} />
                                 </Fade>
                             </DownloadWrapper>
                         </StyledHeroCta>
@@ -121,7 +123,7 @@ const Index = () => {
                                 />
                             </StyledHeadline>
                             <DownloadWrapper>
-                                <Download />
+                                <Download pathToApp={pathToApp} />
                             </DownloadWrapper>
                         </StyledCta>
                     </Wrapper>
