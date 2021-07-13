@@ -7,11 +7,6 @@ import { WIKI_BECH32_URL, WIKI_P2SH_URL, WIKI_P2PKH_URL } from '@suite-constants
 import { getBip43Shortcut } from '@wallet-utils/accountUtils';
 import { ExtendedMessageDescriptor } from '@suite-types';
 
-interface Props {
-    network: Network;
-    accountTypes?: Network[];
-}
-
 const Info = styled(P)`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
     margin: 20px 0;
@@ -42,6 +37,11 @@ const selectDescription = (network: Network): Description => {
             };
     }
 };
+
+interface Props {
+    network: Network;
+    accountTypes?: Network[];
+}
 
 export const AccountTypeDescription = ({ network, accountTypes }: Props) => {
     if (!accountTypes || accountTypes.length <= 1) return null;

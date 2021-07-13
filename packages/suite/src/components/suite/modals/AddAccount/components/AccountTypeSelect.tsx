@@ -27,11 +27,6 @@ const buildAccountTypeOption = (network: Network) =>
         label: network.name,
     } as const);
 
-interface Props {
-    network: Network;
-    accountTypes: Network[];
-    onSelectAccountType: (network: Network) => void;
-}
 type Option = ReturnType<typeof buildAccountTypeOption>;
 
 const formatLabel = (option: Option) => (
@@ -42,6 +37,12 @@ const formatLabel = (option: Option) => (
         </TypeInfo>
     </LabelWrapper>
 );
+
+interface Props {
+    network: Network;
+    accountTypes: Network[];
+    onSelectAccountType: (network: Network) => void;
+}
 
 export const AccountTypeSelect = ({ network, accountTypes, onSelectAccountType }: Props) => {
     const options = accountTypes.map(buildAccountTypeOption);
