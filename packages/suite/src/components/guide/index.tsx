@@ -4,7 +4,7 @@ import GuidePanel from './GuidePanel';
 import Header from './Header';
 import HeaderBreadcrumb from './HeaderBreadcrumb';
 import GuideNode from './GuideNode';
-import ViewWrapper from './ViewWrapper';
+import ViewWrapper, { ContentScrolledContext } from './ViewWrapper';
 import GuideCategories from './GuideCategories';
 
 export {
@@ -16,4 +16,5 @@ export {
     GuideNode,
     ViewWrapper,
     GuideCategories,
+    ContentScrolledContext,
 };
