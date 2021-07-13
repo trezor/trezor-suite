@@ -105,9 +105,10 @@ const FooterParagraph = styled.p`
 
 interface Props {
     children: ReactNode;
+    pathToApp: string;
 }
 
-const Index = ({ children }: Props) => (
+const Index = ({ children, pathToApp }: Props) => (
     <Layout>
         <Header>
             <StyledTrezorLogo type="suite" width={185} />
@@ -117,7 +118,7 @@ const Index = ({ children }: Props) => (
                 alignIcon="right"
                 color={colors.TYPE_DARK_GREY}
             >
-                <Link variant="nostyle" href="./web">
+                <Link variant="nostyle" href={pathToApp}>
                     <Translation id="TR_SUITE_WEB_LANDING_SUITE_ON_WEB" />
                 </Link>
             </Button>
