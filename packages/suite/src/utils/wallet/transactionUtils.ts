@@ -102,7 +102,7 @@ export const parseKey = (key: string) => {
 };
 
 export const isPending = (tx: WalletAccountTransaction | AccountTransaction) =>
-    !tx.blockHeight || tx.blockHeight < 0;
+    !!tx && (!tx.blockHeight || tx.blockHeight < 0);
 
 export const findTransaction = (txid: string, transactions: WalletAccountTransaction[]) =>
     transactions.find(t => t && t.txid === txid);
