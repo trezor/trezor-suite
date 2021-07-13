@@ -1,44 +1,6 @@
 {
     "version": 1,
-    "timestamp": "2021-06-11T12:00:00+00:00",
-    "sequence": 2,
-    "actions": [
-        {
-            "conditions": [
-                {
-                    "os": {
-                        "macos": "*",
-                        "linux": "!",
-                        "windows": "!",
-                        "android": "!",
-                        "ios": "!"
-                    },
-                    "environment": {
-                        "desktop": "!",
-                        "mobile": "!",
-                        "web": ">=21.6.2"
-                    },
-                    "browser": {
-                        "firefox": "!",
-                        "chrome": "91",
-                        "chromium": "91"
-                    },
-                    "transport": {
-                        "bridge": "!",
-                        "webusbplugin": "*"
-                    }
-                }
-            ],
-            "message": {
-                "id": "0f3ec64d-c3e4-4787-8106-162f3ac14c34",
-                "priority": 91,
-                "dismissible": true,
-                "variant": "critical",
-                "category": "banner",
-                "content": {
-                    "en-GB": "There is a connectivity issue in WebUSB for Chrome 91 on macOS. Please install Suite for Desktop or upgrade your browser."
-                }
-            }
-        }
-    ]
+    "timestamp": "2021-07-131T11:20:00+00:00",
+    "sequence": 3,
+    "actions": []
 }
