@@ -117,18 +117,25 @@ const dropdownItemsData: DropdownItem[] = [
 const getIconForCurrentPlatform = (platform: Platform) =>
     dropdownItemsData.find(item => platform === item.platform)!.icon;
 
-const getInstallerURI = (platform: Platform, version: string) => {
+interface GetURIProps {
+    platform: Platform;
+    version: string;
+    pathToApp: string;
+}
+const getInstallerURI = ({ platform, version, pathToApp }: GetURIProps) => {
     const extension = dropdownItemsData.find(item => platform === item.platform)!
         .installerExtension;
-    return encodeURI(`./web/static/desktop/Trezor-Suite-${version}-${platform}.${extension}`);
+    return encodeURI(
+        `${pathToApp}/static/desktop/Trezor-Suite-${version}-${platform}.${extension}`,
+    );
 };
 
-const getInstallerSignatureURI = (platform: Platform, version: string) => {
-    const installerURI = getInstallerURI(platform, version);
+const getInstallerSignatureURI = (props: GetURIProps) => {
+    const installerURI = getInstallerURI(props);
     return encodeURI(`${installerURI}.asc`);
 };
 
-const Index = () => {
+const Index = ({ pathToApp }: { pathToApp: string }) => {
     const version: string = process.env.VERSION ? normalizeVersion(process.env.VERSION) : '';
     const [platform, setPlatform] = useState<Platform>('linux-x86_64');
     const dropdownItems = dropdownItemsData.map(item => ({
@@ -162,7 +169,10 @@ const Index = () => {
                     </StyledDropdownButton>
                 </StyledDropdown>
                 <StyledDownloadButton>
-                    <Link variant="nostyle" href={getInstallerURI(platform, version)}>
+                    <Link
+                        variant="nostyle"
+                        href={getInstallerURI({ platform, version, pathToApp })}
+                    >
                         <Translation id="TR_SUITE_WEB_LANDING_DOWNLOAD_DESKTOP" />
                     </Link>
                 </StyledDownloadButton>
@@ -175,7 +185,7 @@ const Index = () => {
                     <Item>
                         <StyledLink
                             variant="nostyle"
-                            href={getInstallerSignatureURI(platform, version)}
+                            href={getInstallerSignatureURI({ platform, version, pathToApp })}
                         >
                             <Translation id="TR_SUITE_WEB_LANDING_SIGNATURE" />
                         </StyledLink>
