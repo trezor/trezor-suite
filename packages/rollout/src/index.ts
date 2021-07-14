@@ -10,7 +10,7 @@ type ParsedFeatures = ReturnType<typeof parseFeatures>;
 /**
  * Returns firmware binary after necessary modifications. Should be ok to install.
  */
-const modifyFirmware = ({ fw, features }: { fw: ArrayBuffer; features: ParsedFeatures }) => {
+export const modifyFirmware = ({ fw, features }: { fw: ArrayBuffer; features: ParsedFeatures }) => {
     // ---------------------
     // Model T modifications
     // ---------------------
@@ -31,7 +31,14 @@ const modifyFirmware = ({ fw, features }: { fw: ArrayBuffer; features: ParsedFea
             [1, 8, 0]
         )
     ) {
-        return fw.slice(256);
+        const fwView = new Uint8Array(fw);
+        // this condition was added in order to upload firmware process being equivalent as in trezorlib python code
+        if (
+            String.fromCharCode(...Array.from(fwView.slice(0, 4))) === 'TRZR' &&
+            String.fromCharCode(...Array.from(fwView.slice(256, 260))) === 'TRZF'
+        ) {
+            return fw.slice(256);
+        }
     }
     return fw;
 };
