@@ -7,6 +7,7 @@
 
 import { getInfo, getBinary } from '../src';
 import { Release, VersionArray } from '../src/utils/parse';
+import { isNewerOrEqual } from '../src/utils/version';
 
 const { getDeviceFeatures } = global.JestMocks;
 
@@ -44,9 +45,7 @@ describe('Find firmware info for: ', () => {
         expect(withBinary).toMatchObject({ release: { version: [1, 6, 3] } });
     });
 
-    it('bootloader 1.5.1 -> firmware version 1.10.0', async () => {
-        // currently, this is expected to fail after there is new firmware update, since the last version is hardcoded
-        const targetVersion = [1, 10, 1] as VersionArray;
+    it('bootloader 1.5.1 -> firmware version 1.10.0+', async () => {
         const info = getInfo({
             features: getDeviceFeatures({
                 bootloader_mode: true,
@@ -57,7 +56,9 @@ describe('Find firmware info for: ', () => {
             }),
             releases: RELEASES_T1,
         });
-        expect(info).toMatchObject({ release: { version: targetVersion } });
+
+        const targetVersion = info!.release.version;
+        expect(isNewerOrEqual(targetVersion, [1, 10, 0])).toBe(true);
 
         // validate that with binary returns the same firmware
         const withBinary = await getBinary({
