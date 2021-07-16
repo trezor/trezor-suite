@@ -25,6 +25,7 @@
     - sleep 5
     - docker-compose run test-run
   after_script:
+    - docker cp ${CI_JOB_ID}_trezor-user-env-unix_1:/trezor-user-env/logs/debugging.log .
     - docker-compose down
     - docker network prune -f
   artifacts:
@@ -35,6 +36,7 @@
       - ./packages/integration-tests/projects/suite-web/screenshots
       - ./packages/integration-tests/projects/suite-web/videos
       - download-snapshots.sh
+      - debugging.log
 
 e2e web suite:
   extends: .e2e web
