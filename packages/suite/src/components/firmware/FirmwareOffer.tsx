@@ -82,12 +82,17 @@ const ChangesUl = styled.ul`
 
 interface Props {
     device: AcquiredDevice;
+    customFirmware?: boolean;
 }
 
-const FirmwareOffer = ({ device }: Props) => {
+const FirmwareOffer = ({ device, customFirmware }: Props) => {
     const currentVersion = device.firmware !== 'none' ? getFwVersion(device) : undefined;
-    const newVersion = getFwUpdateVersion(device);
-    const parsedChangelog = parseFirmwareChangelog(device.firmwareRelease);
+    const newVersion = customFirmware ? (
+        <Translation id="TR_CUSTOM_FIRMWARE_VERSION" />
+    ) : (
+        getFwUpdateVersion(device)
+    );
+    const parsedChangelog = !customFirmware && parseFirmwareChangelog(device.firmwareRelease);
     return (
         <FwVersionWrapper>
             {currentVersion && (
