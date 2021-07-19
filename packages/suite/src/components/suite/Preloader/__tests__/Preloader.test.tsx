@@ -2,6 +2,7 @@ import React from 'react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProviders, findByTestId } from '@suite/support/tests/hooksHelper';
+import * as env from '@suite-utils/env';
 import Preloader from '..';
 
 // react-svg will not work
@@ -214,7 +215,9 @@ describe('Preloader component', () => {
         unmount();
     });
 
-    it('Unreadable device: missing udev', () => {
+    it('Unreadable device: missing udev on Linux', () => {
+        jest.spyOn(env, 'isLinux').mockImplementation(() => true);
+
         const store = initStore(
             getInitialState({
                 suite: {
@@ -227,6 +230,25 @@ describe('Preloader component', () => {
 
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
         expect(findByTestId('@connect-device-prompt/unreadable-udev')).not.toBeNull();
+
+        unmount();
+    });
+
+    it('Unreadable device: missing udev on non-Linux os (should never happen)', () => {
+        jest.spyOn(env, 'isLinux').mockImplementation(() => false);
+
+        const store = initStore(
+            getInitialState({
+                suite: {
+                    transport: { type: 'bridge' },
+                    device: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
+                },
+            }),
+        );
+        const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
+
+        expect(findByTestId('@connect-device-prompt')).not.toBeNull();
+        expect(findByTestId('@connect-device-prompt/unreadable-unknown')).not.toBeNull();
 
         unmount();
     });
