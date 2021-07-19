@@ -24,7 +24,6 @@
         "styled-components": "5.1.1"
     },
     "devDependencies": {
-        "@trezor/suite-build": "21.6.0",
         "@types/react": "^17.0.0",
         "@types/react-dom": "^17.0.0",
         "@types/react-helmet": "^6.1.0",
