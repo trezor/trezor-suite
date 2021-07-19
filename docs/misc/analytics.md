@@ -115,6 +115,11 @@ Add event to the analytics overview in the [company Notion](https://www.notion.s
 4. **Option**: Edit NAT to resolve requests to `https://data.trezor.io/suite/log/web/stable.log` to your local server 
    
 ## Changelog
+### 1.12
+Changed:
+- device-update-firmware
+  - toFwVersion and toBtcOnly made optional as we don't know them when installing custom firmware
+
 ### 1.11
 Added:
 - c_timestamp: number (time of created in ms sent with every event)
