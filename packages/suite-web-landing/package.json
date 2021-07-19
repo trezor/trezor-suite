@@ -28,6 +28,7 @@
         "git-revision-webpack-plugin": "^3.0.6",
         "next-optimized-images": "^2.6.2",
         "next-transpile-modules": "^4.1.0",
+        "next-videos": "^1.4.0",
         "ts-loader": "^8.0.14",
         "url-loader": "^4.1.1",
         "webpack": "^4.44.2"
