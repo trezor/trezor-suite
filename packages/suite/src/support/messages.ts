@@ -129,6 +129,11 @@ const definedMessages = defineMessages({
             'If closing tabs and refreshing this page didn’t help, try reconnecting your Trezor.',
         id: 'TR_RECONNECT_DEVICE_DESCRIPTION',
     },
+    TR_RECONNECT_DEVICE_DESCRIPTION_DESKTOP: {
+        defaultMessage:
+            'If closing tabs and reopening the Trezor Suite app didn’t help, try reconnecting your Trezor.',
+        id: 'TR_RECONNECT_DEVICE_DESCRIPTION_DESKTOP',
+    },
     TR_ACQUIRE_DEVICE_TITLE: {
         defaultMessage: 'Another session is running',
         id: 'TR_ACQUIRE_DEVICE_TITLE',
@@ -6351,6 +6356,11 @@ const definedMessages = defineMessages({
     TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION: {
         defaultMessage: 'After closing other tabs and windows, try refreshing this page.',
         id: 'TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION',
+    },
+    TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION_DESKTOP: {
+        defaultMessage:
+            'After closing other browser tabs and windows, try quitting and reopening the Trezor Suite app.',
+        id: 'TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION_DESKTOP',
     },
     TR_TROUBLESHOOTING_TIP_CABLE_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_CABLE_TITLE',
