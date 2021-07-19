@@ -76,8 +76,10 @@ export const goto = (routeName: Route['name'], params?: RouteParams, preservePar
     const unlocked = dispatch(onBeforePopState());
     if (!unlocked) return;
 
-    const url = getRoute(routeName, params);
-    if (url === getState().router.url) return;
+    const urlBase = getRoute(routeName, params);
+    if (urlBase === getState().router.url) return;
+
+    const url = `${urlBase}${preserveParams ? history.location.hash : ''}`;
 
     const route = findRouteByName(routeName);
     if (route && route.isForegroundApp) {
@@ -86,12 +88,8 @@ export const goto = (routeName: Route['name'], params?: RouteParams, preservePar
         return;
     }
 
-    if (preserveParams) {
-        const { hash } = history.location;
-        history.push(getPrefixedURL(url) + hash);
-    } else {
-        history.push(getPrefixedURL(url));
-    }
+    dispatch(onLocationChange(url));
+    history.push(getPrefixedURL(url));
 };
 
 /**
