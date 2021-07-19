@@ -1,7 +1,9 @@
+import { PromiseType } from 'react-use/lib/util';
+
 import TrezorConnect, { Device } from 'trezor-connect';
 
 import { FIRMWARE } from '@firmware-actions/constants';
-import * as analyticsActions from '@suite-actions/analyticsActions';
+import { report, AnalyticsEvent } from '@suite-actions/analyticsActions';
 import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 
 import type { Dispatch, GetState, AppState, AcquiredDevice } from '@suite-types';
@@ -33,7 +35,15 @@ export const setTargetRelease = (payload: AcquiredDevice['firmwareRelease']): Fi
     payload,
 });
 
-export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetState) => {
+/**
+ * This action will install firmware from the given binary, or the latest
+ * possible firmware if the given binary is undefined. The function is not
+ * directly exported due to type safety.
+ */
+const firmwareInstall = (fwBinary?: ArrayBuffer) => async (
+    dispatch: Dispatch,
+    getState: GetState,
+) => {
     const { device } = getState().suite;
     const { targetRelease, prevDevice } = getState().firmware;
 
@@ -54,62 +64,83 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
 
     const model = device.features.major_version;
 
-    let fromFwVersion = 'none';
-    if (prevDevice && prevDevice.features && prevDevice.firmware !== 'none') {
-        fromFwVersion = getFwVersion(prevDevice);
-    }
-
-    // for update (in firmware modal) target release is set. otherwise use device.firmwareRelease
-    const toRelease = targetRelease || device.firmwareRelease;
-
-    if (!toRelease) return;
+    const fromFwVersion =
+        prevDevice && prevDevice.features && prevDevice.firmware !== 'none'
+            ? getFwVersion(prevDevice)
+            : 'none';
 
     // device in bootloader mode have bootloader version in attributes used for fw version in non-bootloader mode
     const fromBlVersion = getFwVersion(device);
 
-    // update to same variant as is currently installed or to the regular one if device does not have any fw (new/wiped device)
-    const isBtcOnlyFirmware = !prevDevice ? false : isBitcoinOnly(prevDevice);
+    let updateResponse: PromiseType<ReturnType<typeof TrezorConnect.firmwareUpdate>>;
+    let analyticsPayload: Partial<
+        Extract<AnalyticsEvent, { type: 'device-update-firmware' }>['payload']
+    >;
 
-    const intermediary = !toRelease.isLatest;
-    if (intermediary) {
-        console.warn('Cannot install latest firmware. Will install intermediary fw instead.');
+    if (fwBinary) {
+        console.warn(`Installing custom firmware`);
+
+        analyticsPayload = {};
+        updateResponse = await TrezorConnect.firmwareUpdate({
+            keepSession: false,
+            skipFinalReload: true,
+            device: {
+                path: device.path,
+            },
+            binary: fwBinary,
+        });
     } else {
-        console.warn(`Installing firmware ${toRelease.release.version}`);
+        // for update (in firmware modal) target release is set. otherwise use device.firmwareRelease
+        const toRelease = targetRelease || device.firmwareRelease;
+
+        if (!toRelease) return;
+
+        // update to same variant as is currently installed or to the regular one if device does not have any fw (new/wiped device)
+        const isBtcOnlyFirmware = !prevDevice ? false : isBitcoinOnly(prevDevice);
+
+        const intermediary = !toRelease.isLatest;
+        if (intermediary) {
+            console.warn('Cannot install latest firmware. Will install intermediary fw instead.');
+        } else {
+            console.warn(`Installing firmware ${toRelease.release.version}`);
+        }
+
+        analyticsPayload = {
+            toFwVersion: toRelease.release.version.join('.'),
+            toBtcOnly: isBtcOnlyFirmware,
+        };
+
+        updateResponse = await TrezorConnect.firmwareUpdate({
+            keepSession: false,
+            skipFinalReload: true,
+            device: {
+                path: device.path,
+            },
+            btcOnly: isBtcOnlyFirmware,
+            version: toRelease.release.version,
+            // if we detect latest firmware may not be used right away, we should use intermediary instead
+            intermediary,
+        });
+
+        if (updateResponse.success && intermediary) {
+            dispatch({ type: FIRMWARE.SET_INTERMEDIARY_INSTALLED, payload: true });
+        }
     }
 
-    const payload = {
-        keepSession: false,
-        skipFinalReload: true,
-        device: {
-            path: device.path,
-        },
-        btcOnly: isBtcOnlyFirmware,
-        version: toRelease.release.version,
-        // if we detect latest firmware may not be used right away, we should use intermediary instead
-        intermediary,
-    };
-
-    const updateResponse = await TrezorConnect.firmwareUpdate(payload);
-
     dispatch(
-        analyticsActions.report({
+        report({
             type: 'device-update-firmware',
             payload: {
                 fromFwVersion,
                 fromBlVersion,
-                toFwVersion: toRelease.release.version.join('.'),
-                toBtcOnly: isBtcOnlyFirmware,
                 error: !updateResponse.success ? updateResponse.payload.error : '',
+                ...analyticsPayload,
             },
         }),
     );
 
     if (!updateResponse.success) {
         return dispatch({ type: FIRMWARE.SET_ERROR, payload: updateResponse.payload.error });
-    }
-
-    if (intermediary) {
-        dispatch({ type: FIRMWARE.SET_INTERMEDIARY_INSTALLED, payload: true });
     }
 
     // handling case described here: https://github.com/trezor/trezor-suite/issues/2650
@@ -127,6 +158,10 @@ export const firmwareUpdate = () => async (dispatch: Dispatch, getState: GetStat
         setStatus(model === 1 && device.features.minor_version < 10 ? 'unplug' : 'wait-for-reboot'),
     );
 };
+
+export const firmwareUpdate = () => firmwareInstall();
+
+export const firmwareCustom = (fwBinary: ArrayBuffer) => firmwareInstall(fwBinary);
 
 export const toggleHasSeed = (): FirmwareAction => ({
     type: FIRMWARE.TOGGLE_HAS_SEED,

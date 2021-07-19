@@ -35,7 +35,7 @@ export type AnalyticsAction =
 
 // Don't forget to update docs with changelog!
 // <breaking-change>.<analytics-extended>
-export const version = '1.11';
+export const version = '1.12';
 
 export type AnalyticsEvent =
     | {
@@ -119,10 +119,10 @@ export type AnalyticsEvent =
               fromBlVersion: string;
               /** version of firmware before update started. */
               fromFwVersion: string;
-              /** version of the new firmware e.g 1.2.3 */
-              toFwVersion: string;
-              /** is new firmware bitcoin only variant? */
-              toBtcOnly: boolean;
+              /** version of the new firmware e.g 1.2.3, or omitted when installing custom fw */
+              toFwVersion?: string;
+              /** is new firmware bitcoin only variant?, or omitted when installing custom fw */
+              toBtcOnly?: boolean;
               /** if finished with error, field error contains error string, otherwise is empty */
               error: string;
           };
