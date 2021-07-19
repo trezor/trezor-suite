@@ -1,98 +1,153 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Button, colors } from '@trezor/components';
-import { useActions } from '@suite-hooks';
+import { ConfirmOnDevice } from '@trezor/components';
+import { useActions, useDevice, useFirmware } from '@suite-hooks';
 import { Translation, Modal } from '@suite-components';
-import { DropZone } from '@suite-components/DropZone';
+import { DeviceAcquire, DeviceUnknown, DeviceUnreadable } from '@suite-views';
 import * as routerActions from '@suite-actions/routerActions';
+import { TrezorDevice } from '@suite/types/suite';
+import { FirmwareInstallation, CloseButton } from '@firmware-components';
+import { ConnectDevicePromptManager, OnboardingStepBox } from '@suite/components/onboarding';
+import { useCachedDevice } from '@suite/hooks/firmware/useCachedDevice';
+import {
+    CheckSeedStep,
+    ReconnectDevicePrompt,
+    SelectCustomFirmware,
+} from '@suite/components/firmware';
 
-const StepContainer = styled.div`
-    display: flex;
-    &:not(:first-child) {
-        margin-top: 60px;
-    }
-`;
-
-const StepTitle = styled.h2`
-    font-weight: 500;
-    font-size: 20px;
-    line-height: 40px;
+const ModalContent = styled.div`
     text-align: left;
-    color: ${colors.TYPE_DARK_GREY};
-    flex-grow: 0;
-    margin-bottom: 8px;
 `;
-
-const StepContent = styled.div`
-    margin-left: 26px;
-    & > .Firmware__InstallButton {
-        min-width: 232px;
-    }
-    & > div {
-        min-height: 96px;
-    }
-`;
-
-const StepOrder = styled.div`
-    font-size: 14px;
-    font-weight: 600;
-    color: ${colors.TYPE_GREEN};
-    border: solid 1px ${colors.STROKE_GREY};
-    border-radius: 100%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`;
-
-type StepProps = {
-    order: string;
-    title: React.ReactNode;
-};
-
-const Step: React.FC<StepProps> = ({ order, title, children }) => (
-    <StepContainer>
-        <StepOrder>{order}</StepOrder>
-        <StepContent>
-            <StepTitle>{title}</StepTitle>
-            {children}
-        </StepContent>
-    </StepContainer>
-);
 
 const FirmwareCustom = () => {
+    const { setStatus, firmwareCustom, resetReducer, status, error } = useFirmware();
+    const { device: liveDevice } = useDevice();
+    const cachedDevice = useCachedDevice(liveDevice);
+    const [firmwareBinary, setFirmwareBinary] = useState<ArrayBuffer>();
+
     const { closeModalApp } = useActions({
         closeModalApp: routerActions.closeModalApp,
     });
 
-    const onCancel = () => {
-        closeModalApp();
+    const onFirmwareSelected = (fw: ArrayBuffer) => {
+        setFirmwareBinary(fw);
+        // if there is no firmware installed, check-seed and waiting-for-bootloader steps could be skipped
+        if (liveDevice?.firmware === 'none') {
+            firmwareCustom(fw);
+        } else {
+            setStatus('check-seed');
+        }
     };
 
+    const onSeedChecked = () => {
+        setStatus('waiting-for-bootloader');
+    };
+
+    const onInstall = () => {
+        if (firmwareBinary) {
+            firmwareCustom(firmwareBinary);
+        }
+    };
+
+    const onClose = () => {
+        closeModalApp();
+        resetReducer();
+    };
+
+    const shouldDisplayConnectPrompt = (device?: TrezorDevice) =>
+        !device?.connected ||
+        !device?.features ||
+        (device.firmware !== 'none' && device.mode === 'bootloader');
+
+    const isCancelable = [
+        'initial',
+        'check-seed',
+        'done',
+        'partially-done',
+        'waiting-for-bootloader',
+        'error',
+    ].includes(status);
+
+    if (liveDevice?.type === 'unacquired') return <DeviceAcquire />;
+    if (liveDevice?.type === 'unreadable') return <DeviceUnreadable />;
+    if (liveDevice && !liveDevice.features) return <DeviceUnknown />;
     return (
         <Modal
-            cancelable
-            onCancel={onCancel}
+            cancelable={isCancelable}
+            onCancel={onClose}
             heading={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE" />}
+            header={
+                status === 'waiting-for-confirmation' && (
+                    <ConfirmOnDevice
+                        title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
+                        trezorModel={liveDevice?.features?.major_version === 1 ? 1 : 2}
+                        animated
+                    />
+                )
+            }
             fixedWidth={['100vw', '90vw', '620px', '620px']}
             data-test="@firmware-custom"
         >
-            <div>
-                <Step order="1" title={<Translation id="TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD" />}>
-                    <Button variant="tertiary" icon="EXTERNAL_LINK" alignIcon="right">
-                        <Translation id="TR_CUSTOM_FIRMWARE_BUTTON_DOWNLOAD" />
-                    </Button>
-                </Step>
-                <Step order="2" title={<Translation id="TR_CUSTOM_FIRMWARE_TITLE_UPLOAD" />}>
-                    <DropZone accept="text/csv" onSuccess={() => {}} />
-                </Step>
-                <Step order="3" title={<Translation id="TR_CUSTOM_FIRMWARE_TITLE_INSTALL" />}>
-                    <Button variant="primary" className="Firmware__InstallButton">
-                        <Translation id="TR_CUSTOM_FIRMWARE_BUTTON_INSTALL" />
-                    </Button>
-                </Step>
-            </div>
+            <ModalContent>
+                {(() => {
+                    if (error) {
+                        return (
+                            <OnboardingStepBox
+                                image="FIRMWARE"
+                                heading={<Translation id="TR_FW_INSTALLATION_FAILED" />}
+                                description={
+                                    <Translation id="TOAST_GENERIC_ERROR" values={{ error }} />
+                                }
+                                innerActions={
+                                    <CloseButton onClick={onClose}>
+                                        <Translation id="TR_BACK" />
+                                    </CloseButton>
+                                }
+                                nested
+                            />
+                        );
+                    }
+                    switch (status) {
+                        case 'initial':
+                            return shouldDisplayConnectPrompt(liveDevice) ? (
+                                <ConnectDevicePromptManager device={liveDevice} />
+                            ) : (
+                                <SelectCustomFirmware onSuccess={onFirmwareSelected} />
+                            );
+                        case 'check-seed':
+                            return <CheckSeedStep onSuccess={onSeedChecked} />;
+                        case 'waiting-for-bootloader':
+                            return shouldDisplayConnectPrompt(cachedDevice) ? (
+                                <ConnectDevicePromptManager device={cachedDevice} />
+                            ) : (
+                                <ReconnectDevicePrompt
+                                    expectedDevice={cachedDevice}
+                                    requestedMode="bootloader"
+                                    onSuccess={onInstall}
+                                />
+                            );
+                        case 'waiting-for-confirmation': // waiting for confirming installation on a device
+                        case 'started': // called from firmwareUpdate()
+                        case 'installing':
+                        case 'wait-for-reboot':
+                        case 'unplug': // only relevant for T1, TT auto restarts itself
+                        case 'reconnect-in-normal': // only relevant for T1, TT auto restarts itself
+                        case 'partially-done': // only relevant for T1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
+                        case 'done':
+                            return (
+                                <FirmwareInstallation
+                                    cachedDevice={cachedDevice}
+                                    standaloneFwUpdate
+                                    customFirmware
+                                    onSuccess={onClose}
+                                />
+                            );
+                        default:
+                            // 'ensure' type completeness
+                            throw new Error(`state "${status}" is not handled here`);
+                    }
+                })()}
+            </ModalContent>
         </Modal>
     );
 };

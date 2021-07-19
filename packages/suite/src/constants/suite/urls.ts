@@ -55,6 +55,8 @@ export const WIKI_HOW_TO_RUN = 'https://wiki.trezor.io/Apps:Trezor_Suite#How_to_
 export const WIKI_FW_DOWNGRADE = 'https://wiki.trezor.io/Firmware_downgrade';
 export const FEEDBACK_FORM = 'https://satoshilabs.typeform.com/to/Dqb71wm1';
 export const FIRMWARE_COMMIT_URL = 'https://github.com/trezor/trezor-firmware/commit/';
+export const FIRMWARE_BINARIES_URL =
+    'https://github.com/trezor/webwallet-data/tree/master/firmware';
 
 // Tor domain
 export const TOR_DOMAIN = 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion';

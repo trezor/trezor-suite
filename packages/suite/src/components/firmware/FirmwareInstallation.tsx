@@ -13,9 +13,16 @@ interface Props {
     // This component is shared between Onboarding flow and standalone fw update modal with few minor UI changes
     // If it is set to true, then you know it is being rendered in standalone fw update modal
     standaloneFwUpdate?: boolean;
+    // If true, information about new version is not shown, because we don't know anything about it
+    customFirmware?: boolean;
     onSuccess: () => void;
 }
-const FirmwareInstallation = ({ cachedDevice, standaloneFwUpdate, onSuccess }: Props) => {
+const FirmwareInstallation = ({
+    cachedDevice,
+    standaloneFwUpdate,
+    customFirmware,
+    onSuccess,
+}: Props) => {
     const { device } = useDevice();
     const {
         status,
@@ -89,7 +96,9 @@ const FirmwareInstallation = ({ cachedDevice, standaloneFwUpdate, onSuccess }: P
                 nested={!!standaloneFwUpdate}
                 disableConfirmWrapper={!!standaloneFwUpdate}
             >
-                {cachedDevice?.firmwareRelease && <FirmwareOffer device={cachedDevice} />}
+                {cachedDevice?.firmwareRelease && (
+                    <FirmwareOffer device={cachedDevice} customFirmware={customFirmware} />
+                )}
 
                 {status !== 'waiting-for-confirmation' &&
                     (status !== 'started' || cachedDevice?.firmware === 'none') && (
