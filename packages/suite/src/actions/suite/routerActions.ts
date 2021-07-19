@@ -78,10 +78,10 @@ export const goto = (routeName: Route['name'], params?: RouteParams, preservePar
 
     const url = getRoute(routeName, params);
     if (url === getState().router.url) return;
+    dispatch(onLocationChange(url));
 
     const route = findRouteByName(routeName);
     if (route && route.isForegroundApp) {
-        dispatch(onLocationChange(url));
         dispatch(suiteActions.lockRouter(true));
         return;
     }
