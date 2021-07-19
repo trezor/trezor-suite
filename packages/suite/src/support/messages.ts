@@ -5312,6 +5312,10 @@ const definedMessages = defineMessages({
         id: 'TR_CUSTOM_FIRMWARE_TITLE_UPLOAD',
         defaultMessage: 'Upload that firmware',
     },
+    TR_CUSTOM_FIRMWARE_VERSION: {
+        id: 'TR_CUSTOM_FIRMWARE_VERSION',
+        defaultMessage: 'custom',
+    },
     SETTINGS_ADV_COIN_CONN_INFO_TITLE: {
         id: 'SETTINGS_ADV_COIN_CONN_INFO_TITLE',
         defaultMessage: 'Connection Info',
