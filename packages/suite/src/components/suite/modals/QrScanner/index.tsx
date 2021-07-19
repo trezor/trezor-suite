@@ -1,10 +1,10 @@
 import React, { lazy, Suspense, useState } from 'react';
 import styled from 'styled-components';
 
-import { ExternalLink, Translation, Modal } from '@suite-components';
+import { ExternalLink, Translation, Modal, BundleLoader } from '@suite-components';
 import * as URLS from '@suite-constants/urls';
 import { parseUri } from '@suite-utils/parseUri';
-import { Icon, colors, P, Loader } from '@trezor/components';
+import { Icon, colors, P } from '@trezor/components';
 import { UserContextPayload } from '@suite-actions/modalActions';
 
 const QrReader = lazy(() => import(/* webpackChunkName: "react-qr-reader" */ 'react-qr-reader'));
@@ -146,7 +146,7 @@ const QrScanner = ({ onCancel, decision }: Props) => {
 
             {!error && (
                 <CameraPlaceholderWrapper show={readerLoaded}>
-                    <Suspense fallback={<Loader size={64} />}>
+                    <Suspense fallback={<BundleLoader />}>
                         <QrReader
                             delay={500}
                             onError={handleError}

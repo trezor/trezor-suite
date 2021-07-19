@@ -1,8 +1,8 @@
 import React, { lazy, memo, Suspense } from 'react';
 import { Switch, Route } from 'react-router-dom';
-import { Loader } from '@trezor/components';
 
 import routes from '@suite-constants/routes';
+import { BundleLoader } from '@suite-components';
 
 const components: { [key: string]: React.LazyExoticComponent<any> } = {
     'suite-index': lazy(() => import('@dashboard-views')),
@@ -40,7 +40,7 @@ const components: { [key: string]: React.LazyExoticComponent<any> } = {
 };
 
 const AppRouter = () => (
-    <Suspense fallback={<Loader size={64} />}>
+    <Suspense fallback={<BundleLoader />}>
         <Switch>
             {routes.map(route => (
                 <Route
