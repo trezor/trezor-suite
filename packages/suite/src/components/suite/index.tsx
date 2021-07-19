@@ -17,6 +17,7 @@ import WordInput from './WordInput';
 import WordInputAdvanced from './WordInputAdvanced';
 import ProgressBar from './ProgressBar';
 import Loading from './Loading';
+import BundleLoader from './BundleLoader';
 import FiatValue from './FiatValue';
 import WebusbButton from './WebusbButton';
 import { HiddenPlaceholder } from './HiddenPlaceholder';
@@ -73,6 +74,7 @@ export {
     WordInputAdvanced,
     ProgressBar,
     Loading,
+    BundleLoader,
     WebusbButton,
     HiddenPlaceholder,
     QrCode,
