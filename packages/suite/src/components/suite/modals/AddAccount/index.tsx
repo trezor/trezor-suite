@@ -68,6 +68,7 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
     const [enabledNetworks, disabledNetworks] = partition(internalNetworks, network =>
         enabledNetworksSymbols.includes(network.symbol),
     );
+    const hasDisabledNetworks = !!disabledNetworks?.length;
 
     const [disabledMainnetNetworks, disabledTestnetNetworks] = partition(
         disabledNetworks,
@@ -153,7 +154,7 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
                 unavailableCapabilities={unavailableCapabilities}
                 handleNetworkSelection={handleNetworkSelection}
             />
-            {!selectedNetworkEnabled && (
+            {!selectedNetworkEnabled && hasDisabledNetworks && (
                 <EnableNetwork
                     networks={disabledMainnetNetworks}
                     testnetNetworks={disabledTestnetNetworks}
