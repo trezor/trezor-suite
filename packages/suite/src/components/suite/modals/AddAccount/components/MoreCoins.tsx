@@ -32,9 +32,11 @@ const triggerAnimation = {
     variants: {
         initial: {
             opacity: 0,
+            width: 0,
         },
         visible: {
             opacity: 1,
+            width: 'auto',
         },
     },
     initial: 'initial',
@@ -49,9 +51,10 @@ const BackgroundWrapper = styled.div<{ isExpanded: boolean }>`
     transition: all ${animationDuration}s ease-in-out;
     padding: ${({ isExpanded }) => (isExpanded ? '16px' : '10px 16px')};
     margin-right: auto;
+    min-width: ${({ isExpanded }) => (isExpanded ? '100%' : 0)};
 `;
 
-const Content = styled(motion.div).attrs(() => ({ ...contentAnimation }))`
+const ContentWrapper = styled.div`
     padding-top: 16px;
 `;
 
@@ -81,6 +84,12 @@ const HeaderWrapper = styled.div`
     display: flex;
 `;
 
+const PlusIconWrapper: React.FC = props => <motion.div {...triggerAnimation} {...props} />;
+
+const StyledIcon = styled(Icon)`
+    padding-right: 15px;
+`;
+
 const Label = styled(
     ({ isExpanded, ...rest }: { isExpanded: boolean; children: React.ReactNode }) => (
         <P
@@ -91,10 +100,7 @@ const Label = styled(
     ),
 )`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
-`;
-
-const StyledIcon = styled(Icon)`
-    padding-right: 15px;
+    transition: all ${animationDuration}s ease-in-out;
 `;
 
 const Header = ({
@@ -113,7 +119,13 @@ const Header = ({
                     setExpanded(true);
                 }}
             >
-                {!isExpanded && <StyledIcon icon="PLUS" size={24} color={theme.TYPE_DARK_GREY} />}
+                <AnimatePresence initial={false}>
+                    {!isExpanded && (
+                        <PlusIconWrapper>
+                            <StyledIcon icon="PLUS" size={24} color={theme.TYPE_DARK_GREY} />
+                        </PlusIconWrapper>
+                    )}
+                </AnimatePresence>
                 <Label isExpanded={isExpanded}>
                     <Translation id="TR_ACTIVATE_COINS" />
                 </Label>
@@ -134,6 +146,12 @@ const Header = ({
     );
 };
 
+const Content: React.FC = ({ children }) => (
+    <motion.div {...contentAnimation}>
+        <ContentWrapper>{children}</ContentWrapper>
+    </motion.div>
+);
+
 interface Props {
     children: React.ReactNode;
 }
@@ -143,9 +161,7 @@ export const MoreCoins = ({ children }: Props) => {
     return (
         <BackgroundWrapper isExpanded={isExpanded}>
             <Header setExpanded={setExpanded} isExpanded={isExpanded} />
-            <AnimatePresence initial={false}>
-                {isExpanded && <Content>{children}</Content>}
-            </AnimatePresence>
+            <AnimatePresence>{isExpanded && <Content>{children}</Content>}</AnimatePresence>
         </BackgroundWrapper>
     );
 };

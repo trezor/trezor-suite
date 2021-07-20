@@ -65,6 +65,7 @@ export const EnableNetwork = ({
 }: Props) => {
     const theme = useTheme();
     const [isTestnetVisible, setTestnetVisible] = useState(false);
+    const hasTestnetNetworks = !!testnetNetworks?.length;
 
     return (
         <MoreCoins>
@@ -74,38 +75,46 @@ export const EnableNetwork = ({
                 selectedNetworks={selectedNetworks}
                 unavailableCapabilities={unavailableCapabilities}
             />
-            <TestnetCoinsTrigger
-                onClick={() => {
-                    setTestnetVisible(!isTestnetVisible);
-                }}
-            >
-                <Label isTestnetVisible={isTestnetVisible}>
-                    <Translation id="TR_TESTNET_COINS" />
-                </Label>
-                <Icon
-                    canAnimate
-                    isActive={isTestnetVisible}
-                    size={16}
-                    color={theme.TYPE_LIGHT_GREY}
-                    icon="ARROW_DOWN"
-                />
-            </TestnetCoinsTrigger>
-            <AnimatePresence initial={false}>
-                {isTestnetVisible && (
-                    <TestnetCoinsWrapper>
-                        <TestnetCoinsDescription>
-                            <StyledIcon size={12} color={theme.TYPE_LIGHT_GREY} icon="INFO" />
-                            <Translation id="TR_TESTNET_COINS_DESCRIPTION" />
-                        </TestnetCoinsDescription>
-                        <CoinsList
-                            onToggleFn={handleNetworkSelection}
-                            networks={testnetNetworks}
-                            selectedNetworks={selectedNetworks}
-                            unavailableCapabilities={unavailableCapabilities}
+            {hasTestnetNetworks && (
+                <>
+                    <TestnetCoinsTrigger
+                        onClick={() => {
+                            setTestnetVisible(!isTestnetVisible);
+                        }}
+                    >
+                        <Label isTestnetVisible={isTestnetVisible}>
+                            <Translation id="TR_TESTNET_COINS" />
+                        </Label>
+                        <Icon
+                            canAnimate
+                            isActive={isTestnetVisible}
+                            size={16}
+                            color={theme.TYPE_LIGHT_GREY}
+                            icon="ARROW_DOWN"
                         />
-                    </TestnetCoinsWrapper>
-                )}
-            </AnimatePresence>
+                    </TestnetCoinsTrigger>
+                    <AnimatePresence>
+                        {isTestnetVisible && (
+                            <TestnetCoinsWrapper>
+                                <TestnetCoinsDescription>
+                                    <StyledIcon
+                                        size={12}
+                                        color={theme.TYPE_LIGHT_GREY}
+                                        icon="INFO"
+                                    />
+                                    <Translation id="TR_TESTNET_COINS_DESCRIPTION" />
+                                </TestnetCoinsDescription>
+                                <CoinsList
+                                    onToggleFn={handleNetworkSelection}
+                                    networks={testnetNetworks}
+                                    selectedNetworks={selectedNetworks}
+                                    unavailableCapabilities={unavailableCapabilities}
+                                />
+                            </TestnetCoinsWrapper>
+                        )}
+                    </AnimatePresence>
+                </>
+            )}
         </MoreCoins>
     );
 };
