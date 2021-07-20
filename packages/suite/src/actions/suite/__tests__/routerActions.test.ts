@@ -84,12 +84,6 @@ describe('Suite Actions', () => {
             const state = getInitialState(f.state as InitialState);
             const store = initStore(state);
             // eslint-disable-next-line global-require
-            require('@suite/support/history').default.listen((location: any) => {
-                store.dispatch(
-                    routerActions.onLocationChange(`${location.pathname}${location.hash}`),
-                );
-            });
-            // eslint-disable-next-line global-require
             require('@suite/support/history').default.location.hash = `#${f.hash}`;
             store.dispatch(routerActions.goto(f.url as any, undefined, f.preserveHash));
             if (f.result) {
