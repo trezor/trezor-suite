@@ -56,12 +56,16 @@ interface Props {
 const Bech32Banner = (props: Props) => {
     const theme = useTheme();
     return (
-        <StyledCard data-test="@accounts/new/modal">
+        <StyledCard data-test="@accounts/empty-account/default-native-account">
             <Heading>
                 <Title>
                     <Translation id="TR_BECH32_BANNER_TITLE" />
                 </Title>
-                <Button data-test="@accounts/new/default-native-account" variant="tertiary" onClick={props.onClose}>
+                <Button
+                    data-test="@accounts/empty-account/default-native-account/close"
+                    variant="tertiary"
+                    onClick={props.onClose}
+                >
                     <Translation id="TR_GOT_IT" />
                 </Button>
             </Heading>

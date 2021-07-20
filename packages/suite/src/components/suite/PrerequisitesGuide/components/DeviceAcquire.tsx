@@ -24,7 +24,7 @@ const DeviceAcquire = () => {
                 label={<Translation id="TR_ACQUIRE_DEVICE_TITLE" />}
                 cta={
                     <Button
-                        data-test="@omboarding-device-acquire"
+                        data-test="@device-acquire"
                         isLoading={isLocked()}
                         onClick={e => {
                             e.stopPropagation();
