@@ -8,6 +8,7 @@ module.exports = {
         path: path.resolve(__dirname, 'files/browser-detection'),
         filename: 'index.js',
     },
+    devtool: 'source-map',
     module: {
         rules: [
             {
