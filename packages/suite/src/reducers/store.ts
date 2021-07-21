@@ -57,16 +57,16 @@ if (buildUtils.isDev()) {
         collapsed: true,
     });
     middlewares.push(logger);
-
-    /* eslint-disable no-underscore-dangle */
-    if (
-        typeof window !== 'undefined' &&
-        typeof window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ === 'function'
-    ) {
-        enhancers.push(window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__());
-    }
-    /* eslint-enable no-underscore-dangle */
 }
+
+/* eslint-disable no-underscore-dangle */
+if (
+    typeof window !== 'undefined' &&
+    typeof window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ === 'function'
+) {
+    enhancers.push(window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__());
+}
+/* eslint-enable no-underscore-dangle */
 
 const composedEnhancers = compose(applyMiddleware(...middlewares), ...enhancers);
 
