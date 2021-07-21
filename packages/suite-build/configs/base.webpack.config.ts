@@ -1,14 +1,25 @@
+import path from 'path';
 import webpack from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import TerserPlugin from 'terser-webpack-plugin';
+import SentryWebpackPlugin from '@sentry/webpack-plugin';
 
 import alias from '../utils/alias';
-import { assetPrefix, project, isDev, isAnalyzing, isCodesignBuild } from '../utils/env';
+import {
+    assetPrefix,
+    project,
+    isDev,
+    isAnalyzing,
+    isCodesignBuild,
+    sentryAuthToken,
+} from '../utils/env';
 import { getRevision } from '../utils/git';
 import JWS_PUBLIC_KEY from '../utils/codesign';
+import { getPathForProject } from '../utils/path';
 import { version } from '../../suite-desktop/package.json';
 
 const gitRevision = getRevision();
+const sentryRelease = `${version}.${project}${isCodesignBuild ? '.codesign' : ''}.${gitRevision}`;
 
 const config: webpack.Configuration = {
     mode: 'production',
@@ -139,6 +150,7 @@ const config: webpack.Configuration = {
             'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
             'process.env.PUBLIC_KEY': JSON.stringify(JWS_PUBLIC_KEY),
             'process.env.CODESIGN_BUILD': isCodesignBuild,
+            'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
         }),
         new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer'],
@@ -150,6 +162,20 @@ const config: webpack.Configuration = {
                   new BundleAnalyzerPlugin({
                       openAnalyzer: true,
                       analyzerMode: isDev ? 'server' : 'static',
+                  }),
+              ]
+            : []),
+        // @ts-ignore - @sentry/webpack-plugin types depends on @types/webpack@4
+        ...(!isDev && sentryAuthToken
+            ? [
+                  new SentryWebpackPlugin({
+                      authToken: sentryAuthToken,
+                      org: 'satoshilabs',
+                      project: 'trezor-suite',
+                      release: sentryRelease,
+                      include: path.join(getPathForProject(project), 'build'),
+                      ignore: ['static/connect'], // connect does not contain source maps for now
+                      cleanArtifacts: true,
                   }),
               ]
             : []),
