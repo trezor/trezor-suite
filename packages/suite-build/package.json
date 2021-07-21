@@ -47,6 +47,7 @@
         "worker-loader": "^3.0.8"
     },
     "devDependencies": {
+        "@sentry/webpack-plugin": "^1.16.0",
         "@types/copy-webpack-plugin": "^6.4.1",
         "@types/webpack": "^5.0.0",
         "@types/webpack-bundle-analyzer": "^3.9.2",

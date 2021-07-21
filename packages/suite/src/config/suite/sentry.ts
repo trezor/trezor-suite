@@ -10,6 +10,6 @@ export default {
             levels: ['error'],
         }),
     ],
-    release: process.env.COMMITHASH,
+    release: process.env.SENTRY_RELEASE,
     environment: process.env.SUITE_TYPE,
 } as BrowserOptions;
