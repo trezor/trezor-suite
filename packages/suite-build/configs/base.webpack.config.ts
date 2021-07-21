@@ -13,7 +13,7 @@ const gitRevision = getRevision();
 const config: webpack.Configuration = {
     mode: 'production',
     target: 'browserslist',
-    devtool: false,
+    devtool: 'source-map',
     output: {
         publicPath: `${assetPrefix}/`,
         filename: 'js/[name].[contenthash:8].js',
