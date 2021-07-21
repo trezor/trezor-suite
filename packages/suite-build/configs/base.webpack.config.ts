@@ -5,8 +5,7 @@ import alias from '../utils/alias';
 import { assetPrefix, project, isDev, isAnalyzing, isCodesignBuild } from '../utils/env';
 import { getRevision } from '../utils/git';
 import JWS_PUBLIC_KEY from '../utils/codesign';
-
-import pkgFile from '../../suite-desktop/package.json';
+import { version } from '../../suite-desktop/package.json';
 
 const gitRevision = getRevision();
 
@@ -130,7 +129,7 @@ const config: webpack.Configuration = {
             'process.browser': true,
             'process.env': JSON.stringify(process.env),
             'process.env.SUITE_TYPE': JSON.stringify(project),
-            'process.env.VERSION': JSON.stringify(pkgFile.version),
+            'process.env.VERSION': JSON.stringify(version),
             'process.env.COMMITHASH': JSON.stringify(gitRevision),
             'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
             'process.env.PUBLIC_KEY': JSON.stringify(JWS_PUBLIC_KEY),
