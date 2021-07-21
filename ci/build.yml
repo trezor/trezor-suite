@@ -21,7 +21,7 @@ suite-web build dev:
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
-    - assetPrefix=/suite-web/${CI_BUILD_REF_NAME}/web yarn workspace @trezor/suite-web build
+    - ASSET_PREFIX=/suite-web/${CI_BUILD_REF_NAME}/web yarn workspace @trezor/suite-web build
   artifacts:
     expire_in: 7 days
     paths:
@@ -39,7 +39,7 @@ suite-web build stable:
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
-    - assetPrefix=/web yarn workspace @trezor/suite-web build
+    - ASSET_PREFIX=/web yarn workspace @trezor/suite-web build
   artifacts:
     expire_in: 7 days
     paths:
@@ -60,7 +60,7 @@ suite-web build stable codesign:
     - nix-shell --run "git lfs pull"
     - nix-shell --run "yarn install --frozen-lockfile --cache-folder .yarn-nix --prefer-offline"
     - nix-shell --run "yarn build:libs"
-    - nix-shell --run "assetPrefix=/web yarn workspace @trezor/suite-web build"
+    - nix-shell --run "ASSET_PREFIX=/web yarn workspace @trezor/suite-web build"
   artifacts:
     expire_in: 7 days
     paths:
@@ -75,7 +75,7 @@ suite-web-landing build dev:
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
-    - assetPrefix=/suite-web-landing/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web-landing build
+    - ASSET_PREFIX=/suite-web-landing/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web-landing build
   artifacts:
     expire_in: 7 days
     paths:
