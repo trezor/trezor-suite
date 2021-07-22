@@ -16,6 +16,10 @@ const ImportTransaction = ({ onCancel, decision }: Props) => {
     const [delimiter, setDelimiter] = useState<string | undefined>(undefined);
 
     const onCsvSelect = (file: File, setError: (msg: string) => void) => {
+        if (file?.type !== 'text/csv') {
+            setError('file-type');
+            return;
+        }
         const reader = new FileReader();
         reader.onload = () => {
             if (typeof reader.result !== 'string') {
@@ -44,7 +48,7 @@ const ImportTransaction = ({ onCancel, decision }: Props) => {
             heading={<Translation id="TR_IMPORT_CSV_MODAL_TITLE" />}
         >
             <ExampleCSV />
-            <DropZone accept="text/csv" onSelect={onCsvSelect} />
+            <DropZone accept=".csv,text/csv" icon="CSV" onSelect={onCsvSelect} />
             <DelimiterForm value={delimiter} onChange={setDelimiter} />
         </Modal>
     );

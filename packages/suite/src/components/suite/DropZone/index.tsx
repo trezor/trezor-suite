@@ -2,9 +2,14 @@ import React, { useRef, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { P, Icon } from '@trezor/components';
 import { Translation } from '@suite-components';
+import { IconType } from '@trezor/components/src/support/types';
 
 interface Props {
-    accept: 'text/csv' | 'image/*' | 'application/octet-stream';
+    // 'accept' attribute for underlying HTML file input
+    accept?: string;
+    // icon displayed inside Dropzone
+    icon?: IconType;
+    // function which is called after the file is selected
     onSelect: (data: File, setError: (msg: string) => void) => void;
     className?: string;
 }
@@ -17,15 +22,17 @@ export const useDropZone = ({ accept, onSelect, className }: Props) => {
     const [filename, setFilename] = useState<string>();
 
     const readFileContent = useCallback(
-        (file: File) => {
-            if (!file || file.type !== accept) {
-                setError('file-type');
+        (file?: File) => {
+            if (!file) {
+                setFilename(undefined);
+                setError('empty');
                 return;
             }
+            setError(undefined);
             setFilename(file.name);
             onSelect(file, setError);
         },
-        [accept, onSelect],
+        [onSelect],
     );
 
     const onClick = useCallback(() => {
@@ -39,9 +46,20 @@ export const useDropZone = ({ accept, onSelect, className }: Props) => {
         event.preventDefault();
     }, []);
 
+    const onDragEnter = useCallback(event => {
+        event.preventDefault();
+        event.currentTarget?.classList?.add('dragging');
+    }, []);
+
+    const onDragLeave = useCallback(event => {
+        event.preventDefault();
+        event.currentTarget?.classList?.remove('dragging');
+    }, []);
+
     const onDrop = useCallback(
         (event: React.DragEvent) => {
             event.preventDefault();
+            event.currentTarget?.classList?.remove('dragging');
             if (event.dataTransfer) {
                 readFileContent(event.dataTransfer.files[0]);
             } else {
@@ -70,14 +88,14 @@ export const useDropZone = ({ accept, onSelect, className }: Props) => {
     const getWrapperProps = useMemo(
         () => () => ({
             onClick,
-            onDragEnter: prevent,
+            onDragEnter,
             onDragOver: prevent,
-            onDragLeave: prevent,
+            onDragLeave,
             onDrop,
             ref: wrapperRef,
             className,
         }),
-        [onClick, prevent, onDrop, className],
+        [onClick, prevent, onDrop, className, onDragEnter, onDragLeave],
     );
 
     const getInputProps = useMemo(
@@ -114,8 +132,12 @@ const Wrapper = styled.div`
     cursor: pointer;
     min-height: 300px;
     transition: background-color 0.3s;
-    &:hover {
+    &:hover,
+    &.dragging {
         background: ${props => props.theme.BG_GREY};
+    }
+    * {
+        pointer-events: none;
     }
 `;
 
@@ -139,7 +161,7 @@ export const DropZone = (props: Props) => {
         <Wrapper {...getWrapperProps()}>
             <StyledInput {...getInputProps()} />
             <Label>
-                <StyledIcon icon="CSV" />
+                <StyledIcon icon={props.icon || 'BINARY'} />
                 {filename || <Translation id="TR_DROPZONE" />}
             </Label>
             {error && (
