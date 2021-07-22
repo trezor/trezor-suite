@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useFirmware } from '@suite-hooks';
-import { TrezorDevice } from '@suite/types/suite';
+import type { TrezorDevice } from '@suite-types';
 
 /**
  * Device caching logic, should be equivalent to the one in suite/src/components/firmware/FirmwareInitial.tsx.
