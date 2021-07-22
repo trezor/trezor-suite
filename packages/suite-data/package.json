@@ -9,8 +9,8 @@
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "Trezor data",
     "scripts": {
-        "build:lib": "yarn browser-detection && yarn msg-system-types && yarn guide-pull-content",
-        "browser-detection": "webpack --config ./browser-detection.webpack.js",
+        "build:lib": "yarn msg-system-types && yarn guide-pull-content",
+        "build:connect": "rimraf ./files/connect && webpack --config ./trezor-connect.webpack.js",
         "copy-static-files": "ts-node ./index.ts",
         "test-same-svgs": "ts-node ./test/test-same-svgs.ts",
         "msg-system-types": "ts-node ./src/message-system/scripts/generate-types.ts",
