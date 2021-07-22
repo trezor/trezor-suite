@@ -17,7 +17,7 @@ const StepTitle = styled.h2`
     font-size: ${variables.NEUE_FONT_SIZE.H2};
     line-height: 40px;
     text-align: left;
-    color: ${colors.TYPE_DARK_GREY};
+    color: ${props => props.theme.TYPE_DARK_GREY};
     flex-grow: 0;
     margin-bottom: 8px;
 `;
@@ -33,7 +33,7 @@ const StepOrder = styled.div`
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     font-variant-numeric: tabular-nums;
     color: ${colors.TYPE_GREEN};
-    border: solid 1px ${colors.STROKE_GREY};
+    border: solid 1px ${props => props.theme.STROKE_GREY};
     border-radius: 100%;
     width: 40px;
     height: 40px;
@@ -69,7 +69,11 @@ const Step: React.FC<StepProps> = ({ order, title, children }) => (
 export const SelectCustomFirmware = ({ onSuccess }: { onSuccess: (fw: ArrayBuffer) => void }) => {
     const [firmwareBinary, setFirmwareBinary] = useState<ArrayBuffer>();
 
-    const onFirmwareUpload = (firmware: File) => {
+    const onFirmwareUpload = (firmware: File, setError: (msg: string) => void) => {
+        if (!firmware?.name?.endsWith('.bin')) {
+            setError('file-type');
+            return;
+        }
         firmware.arrayBuffer().then(setFirmwareBinary);
     };
 
@@ -83,7 +87,7 @@ export const SelectCustomFirmware = ({ onSuccess }: { onSuccess: (fw: ArrayBuffe
                 </TrezorLink>
             </Step>
             <Step order="2" title={<Translation id="TR_CUSTOM_FIRMWARE_TITLE_UPLOAD" />}>
-                <StyledDropZone accept="application/octet-stream" onSelect={onFirmwareUpload} />
+                <StyledDropZone accept=".bin" icon="BINARY" onSelect={onFirmwareUpload} />
             </Step>
             <Step order="3" title={<Translation id="TR_CUSTOM_FIRMWARE_TITLE_INSTALL" />}>
                 <StyledInstallButton
