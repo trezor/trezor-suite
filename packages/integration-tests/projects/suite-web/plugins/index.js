@@ -204,5 +204,11 @@ module.exports = on => {
             controller.disconnect();
             return null;
         },
+        logTestDetails: async text => {
+            await controller.connect();
+            await controller.send({ type: 'log', text });
+            controller.disconnect();
+            return null;
+        },
     });
 };
