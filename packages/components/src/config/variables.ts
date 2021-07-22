@@ -152,6 +152,8 @@ export const ICONS: IconType[] = [
     'CALENDAR',
     'PDF',
     'CSV',
+    'BINARY',
+    'IMAGE',
     'MEDIUM',
     'TAG',
     'GAS',
