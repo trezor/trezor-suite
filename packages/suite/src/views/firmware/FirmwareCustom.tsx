@@ -5,15 +5,16 @@ import { useActions, useDevice, useFirmware } from '@suite-hooks';
 import { Translation, Modal } from '@suite-components';
 import { DeviceAcquire, DeviceUnknown, DeviceUnreadable } from '@suite-views';
 import * as routerActions from '@suite-actions/routerActions';
-import { TrezorDevice } from '@suite/types/suite';
-import { FirmwareInstallation, CloseButton } from '@firmware-components';
-import { ConnectDevicePromptManager, OnboardingStepBox } from '@suite/components/onboarding';
-import { useCachedDevice } from '@suite/hooks/firmware/useCachedDevice';
+import type { TrezorDevice } from '@suite-types';
+import { ConnectDevicePromptManager, OnboardingStepBox } from '@onboarding-components';
+import { useCachedDevice } from '@firmware-hooks/useCachedDevice';
 import {
+    FirmwareInstallation,
+    CloseButton,
     CheckSeedStep,
     ReconnectDevicePrompt,
     SelectCustomFirmware,
-} from '@suite/components/firmware';
+} from '@firmware-components';
 
 const ModalContent = styled.div`
     text-align: left;

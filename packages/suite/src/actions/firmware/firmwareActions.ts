@@ -1,4 +1,4 @@
-import { PromiseType } from 'react-use/lib/util';
+import type { PromiseType } from 'react-use/lib/util';
 
 import TrezorConnect, { Device } from 'trezor-connect';
 
