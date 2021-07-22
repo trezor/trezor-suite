@@ -11,7 +11,7 @@ export const goToOnboarding = () => {
     //     .click()
     //     .getTestElement('@analytics/go-to-onboarding-button')
     //     .click();
-    
+
     // todo: no no no
     cy.task('startEmu', { version: '2.1.4', wipe: true });
     cy.getTestElement('@onboarding/continue-button').click();
@@ -54,6 +54,22 @@ export const passThroughBackup = () => {
     // cy.getTestElement('@backup/check-item/wrote-seed-properly').click();
     // cy.getTestElement('@backup/check-item/made-no-digital-copy').click();
     // cy.getTestElement('@backup/check-item/will-hide-seed').click();
+    cy.getTestElement('@backup/close-button').click();
+};
+
+export const passThroughBackupShamir = (shares: number, threshold: number) => {
+    cy.log('Backup button should be disabled until all checkboxes are checked');
+    cy.getTestElement('@backup/start-button').should('be.disabled');
+
+    cy.getTestElement('@backup/check-item/wrote-seed-properly').click();
+    cy.getTestElement('@backup/check-item/made-no-digital-copy').click();
+    cy.getTestElement('@backup/check-item/will-hide-seed').click();
+
+    cy.log('Create Shamir backup on device');
+    cy.getTestElement('@backup/start-button').click();
+    cy.getTestElement('@onboarding/confirm-on-device');
+    cy.task('readAndConfirmShamirMnemonicEmu', { shares, threshold });
+
     cy.getTestElement('@backup/close-button').click();
 };
 
