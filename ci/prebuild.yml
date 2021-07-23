@@ -3,7 +3,6 @@ msg-system config sign dev:
   stage: prebuild
   script:
     - yarn workspace @trezor/suite-data msg-system-sign-config
-    # - aws s3 cp packages/suite-data/files/message-system/config.v1.jws s3://data.trezor.io/config/develop/config.v1.jws
   artifacts:
     expire_in: 7 days
     paths:
@@ -22,7 +21,6 @@ msg-system config sign stable:
     - nix-shell --run "git lfs pull"
     - nix-shell --run "yarn install --frozen-lockfile --cache-folder .yarn-nix --prefer-offline"
     - nix-shell --run "yarn workspace @trezor/suite-data msg-system-sign-config"
-    # - aws s3 cp packages/suite-data/files/message-system/config.v1.jws s3://data.trezor.io/config/stable/config.v1.jws
   artifacts:
     expire_in: 7 days
     paths:
