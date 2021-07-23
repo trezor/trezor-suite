@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 import * as semver from 'semver';
 
-import { H1, Button, variables } from '@trezor/components';
+import { H1, Button, ConfirmOnDevice, variables } from '@trezor/components';
 import { Translation, WebusbButton } from '@suite-components';
+import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import DeviceAnimation from '@onboarding-components/DeviceAnimation';
 import { useDevice, useFirmware } from '@suite-hooks';
 import { isDesktop, isMacOs } from '@suite-utils/env';
@@ -11,10 +12,15 @@ import { DESKTOP_WRAPPER_BORDER_WIDTH } from '@suite-constants/layout';
 import { getDeviceModel, getFwVersion } from '@suite/utils/suite/device';
 
 import type { TrezorDevice } from '@suite/types/suite';
+import {
+    useRebootRequest,
+    RebootRequestedMode,
+    RebootPhase,
+    RebootMethod,
+} from '@firmware-hooks/useRebootRequest';
 
 const Wrapper = styled.div`
     display: flex;
-    flex: 1;
     padding: 24px;
     box-shadow: 0 2px 5px 0 ${props => props.theme.BOX_SHADOW_BLACK_20};
     background: ${props => props.theme.BG_WHITE};
@@ -35,6 +41,7 @@ const Overlay = styled.div<{ desktopBorder?: string }>`
     align-items: center;
     overflow: auto;
     justify-content: center;
+    flex-direction: column;
 `;
 
 const Content = styled.div`
@@ -100,146 +107,171 @@ const StyledDeviceAnimation = styled(DeviceAnimation)`
     height: 200px;
 `;
 
+const StyledConfirmImage = styled(DeviceConfirmImage)`
+    flex: 0 0 200px;
+    width: 200px;
+    height: 200px;
+`;
+
 const Heading = styled(H1)`
     margin-bottom: 16px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
 `;
 
-const getTextForMode = (requestedMode: 'bootloader' | 'normal', device?: TrezorDevice) => {
+const StyledWebusbButton = styled(WebusbButton)`
+    margin-top: 24px;
+`;
+
+const ConfirmOnDeviceHeader = styled.div`
+    margin-bottom: 25px;
+`;
+
+const HeadingText = ({
+    requestedMode,
+    phase,
+}: {
+    requestedMode: RebootRequestedMode;
+    phase: RebootPhase;
+}) => {
+    if (requestedMode === 'bootloader') {
+        return phase === 'done' ? (
+            <Translation id="TR_RECONNECT_IN_BOOTLOADER_SUCCESS" />
+        ) : (
+            <Translation id="TR_RECONNECT_IN_BOOTLOADER" />
+        );
+    }
+    return phase === 'done' ? (
+        <Translation id="TR_RECONNECT_IN_NORMAL_SUCCESS" />
+    ) : (
+        <Translation id="TR_RECONNECT_IN_NORMAL" />
+    );
+};
+
+const ReconnectLabel = ({
+    requestedMode,
+    device,
+}: {
+    requestedMode: RebootRequestedMode;
+    device?: TrezorDevice;
+}) => {
     const deviceFwVersion = device?.features ? getFwVersion(device) : '';
     const deviceModel = device?.features ? getDeviceModel(device) : 'T';
-
-    const text = {
-        bootloader: {
-            headingStart: <Translation id="TR_RECONNECT_IN_BOOTLOADER" />,
-            headingSuccess: <Translation id="TR_RECONNECT_IN_BOOTLOADER_SUCCESS" />,
-            steps: [
-                {
-                    dataTest: '@firmware/disconnect-message',
-                    label: <Translation id="TR_DISCONNECT_YOUR_DEVICE" />,
-                },
-                {
-                    dataTest: '@firmware/connect-in-bootloader-message',
-                    label:
-                        // eslint-disable-next-line no-nested-ternary
-                        deviceModel === '1' ? (
-                            semver.valid(deviceFwVersion) &&
-                            semver.satisfies(deviceFwVersion, '<1.8.0') ? (
-                                <Translation id="TR_HOLD_BOTH_BUTTONS" />
-                            ) : (
-                                <Translation id="TR_HOLD_LEFT_BUTTON" />
-                            )
-                        ) : (
-                            <Translation id="TR_SWIPE_YOUR_FINGERS" />
-                        ),
-                },
-            ],
-        },
-        normal: {
-            headingStart: <Translation id="TR_RECONNECT_IN_NORMAL" />,
-            headingSuccess: <Translation id="TR_RECONNECT_IN_NORMAL_SUCCESS" />,
-            steps: [
-                {
-                    dataTest: '@firmware/disconnect-message',
-                    label: <Translation id="TR_DISCONNECT_YOUR_DEVICE" />,
-                },
-                {
-                    dataTest: '@firmware/connect-in-normal-message',
-                    label:
-                        deviceModel === '1' ? (
-                            <Translation id="FIRMWARE_CONNECT_IN_NORMAL_MODEL_1" />
-                        ) : (
-                            <Translation id="FIRMWARE_CONNECT_IN_NORMAL_MODEL_2" />
-                        ),
-                },
-            ],
-        },
-    };
-
-    return text[requestedMode];
+    if (requestedMode === 'bootloader') {
+        if (deviceModel === '1') {
+            return semver.valid(deviceFwVersion) && semver.satisfies(deviceFwVersion, '<1.8.0') ? (
+                <Translation id="TR_HOLD_BOTH_BUTTONS" />
+            ) : (
+                <Translation id="TR_HOLD_LEFT_BUTTON" />
+            );
+        }
+        return <Translation id="TR_SWIPE_YOUR_FINGERS" />;
+    }
+    return deviceModel === '1' ? (
+        <Translation id="FIRMWARE_CONNECT_IN_NORMAL_MODEL_1" />
+    ) : (
+        <Translation id="FIRMWARE_CONNECT_IN_NORMAL_MODEL_2" />
+    );
 };
+
+const ReconnectStep: React.FC<{
+    order?: number;
+    active: boolean;
+    dataTest: string;
+}> = ({ order, active, dataTest, children }) => (
+    <BulletPointWrapper>
+        {order && <BulletPointNumber active={active}>{order}</BulletPointNumber>}
+        <BulletPointText active={active} data-test={active ? dataTest : undefined}>
+            {children}
+        </BulletPointText>
+    </BulletPointWrapper>
+);
+
+const RebootDeviceGraphics = ({
+    device,
+    method,
+}: {
+    device?: TrezorDevice;
+    method: RebootMethod;
+}) => {
+    if (method === 'automatic') return device ? <StyledConfirmImage device={device} /> : null;
+    return (
+        <StyledDeviceAnimation type="BOOTLOADER" size={200} shape="ROUNDED" device={device} loop />
+    );
+};
+
 interface Props {
     expectedDevice?: TrezorDevice;
-    requestedMode: 'bootloader' | 'normal';
+    requestedMode: RebootRequestedMode;
     onSuccess?: () => void;
 }
 
 const ReconnectDevicePrompt = ({ expectedDevice, requestedMode, onSuccess }: Props) => {
     const { device } = useDevice();
     const { isWebUSB } = useFirmware();
-    // local state to track if the user actually unplugged the device. Otherwise if the device is
-    // in bootloader and we prompt user to reconnect again in bootloader we would immediately render success state
-    const [wasUnplugged, setWasUnplugged] = useState(false);
-    const isDeviceConnected = !!device?.connected;
-
-    useEffect(() => {
-        if (!isDeviceConnected) {
-            setWasUnplugged(true);
-        }
-    }, [isDeviceConnected]);
-
-    const activeStep = device?.connected ? 0 : 1; // 0: disconnect device, 1: instructions to reconnect in bootloader
-    const showWebUSB = !device?.connected && isWebUSB;
-    const isStepActive = (num: number) => activeStep === num;
-    const text = getTextForMode(requestedMode, device);
-
-    // Either the device is connect and in bl mode OR
-    // special case where device isn't reporting bootloader mode, but it is already in it.
-    const reconnectedInBootloader =
-        device?.connected &&
-        (device?.mode === 'bootloader' || device?.features?.firmware_present !== null) &&
-        wasUnplugged;
-
-    const reconnectedInNormal = device?.connected && device?.mode === 'normal' && wasUnplugged;
-    const reconnectedInRequestedMode =
-        requestedMode === 'bootloader' ? reconnectedInBootloader : reconnectedInNormal;
-
-    const successAction =
-        requestedMode === 'bootloader' && onSuccess ? (
-            <Button onClick={onSuccess} data-test="@firmware/install-button">
-                <Translation id="TR_INSTALL" />
-            </Button>
-        ) : undefined;
+    const { rebootPhase, rebootMethod } = useRebootRequest(device, requestedMode);
 
     return (
         <Overlay
             desktopBorder={isDesktop() && !isMacOs() ? DESKTOP_WRAPPER_BORDER_WIDTH : undefined}
         >
+            {rebootMethod === 'automatic' && (
+                <ConfirmOnDeviceHeader>
+                    <ConfirmOnDevice
+                        title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
+                        trezorModel={device?.features?.major_version === 1 ? 1 : 2}
+                        animated
+                        animation={rebootPhase !== 'wait-for-confirm' ? 'SLIDE_DOWN' : 'SLIDE_UP'}
+                    />
+                </ConfirmOnDeviceHeader>
+            )}
             <Wrapper data-test={`@firmware/reconnect-device/${requestedMode}`}>
-                <StyledDeviceAnimation
-                    type="BOOTLOADER"
-                    size={200}
-                    shape="ROUNDED"
-                    device={expectedDevice}
-                    loop
-                />
+                <RebootDeviceGraphics device={expectedDevice} method={rebootMethod} />
                 <Content>
                     <Heading>
-                        {!reconnectedInRequestedMode ? text.headingStart : text.headingSuccess}
+                        <HeadingText requestedMode={requestedMode} phase={rebootPhase} />
                     </Heading>
-                    {!reconnectedInRequestedMode ? (
-                        text.steps.map((step, i) => (
-                            // static array, using index as a key is fine
-                            // eslint-disable-next-line react/no-array-index-key
-                            <React.Fragment key={i}>
-                                {/* First step asks for disconnecting a device */}
-                                {/* Second step reconnect in normal mode or bootloader */}
-                                <BulletPointWrapper>
-                                    <BulletPointNumber active={isStepActive(i)}>
-                                        {i + 1}
-                                    </BulletPointNumber>
-                                    <BulletPointText
-                                        active={isStepActive(i)}
-                                        data-test={isStepActive(i) ? step.dataTest : undefined}
+                    {rebootPhase !== 'done' ? (
+                        <>
+                            {rebootMethod === 'automatic' ? (
+                                <ReconnectStep active dataTest="@firmware/confirm-reboot-message">
+                                    <Translation
+                                        id="TR_CONFIRM_ACTION_ON_YOUR"
+                                        values={{ deviceLabel: expectedDevice?.label }}
+                                    />
+                                </ReconnectStep>
+                            ) : (
+                                <>
+                                    {/* First step asks for disconnecting a device */}
+                                    <ReconnectStep
+                                        order={1}
+                                        active={rebootPhase !== 'disconnected'}
+                                        dataTest="@firmware/disconnect-message"
                                     >
-                                        {step.label}
-                                    </BulletPointText>
-                                </BulletPointWrapper>
-                                {isStepActive(2) && showWebUSB && <WebusbButton />}
-                            </React.Fragment>
-                        ))
+                                        <Translation id="TR_DISCONNECT_YOUR_DEVICE" />
+                                    </ReconnectStep>
+                                    {/* Second step reconnect in normal mode or bootloader */}
+                                    <ReconnectStep
+                                        order={2}
+                                        active={rebootPhase === 'disconnected'}
+                                        dataTest={`@firmware/connect-in-${requestedMode}-message`}
+                                    >
+                                        <ReconnectLabel
+                                            requestedMode={requestedMode}
+                                            device={device}
+                                        />
+                                    </ReconnectStep>
+                                </>
+                            )}
+                            {rebootPhase === 'disconnected' && isWebUSB && <StyledWebusbButton />}
+                        </>
                     ) : (
-                        <Bottom>{successAction}</Bottom>
+                        <Bottom>
+                            {requestedMode === 'bootloader' && (
+                                <Button onClick={onSuccess} data-test="@firmware/install-button">
+                                    <Translation id="TR_INSTALL" />
+                                </Button>
+                            )}
+                        </Bottom>
                     )}
                 </Content>
             </Wrapper>
