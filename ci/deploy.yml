@@ -69,3 +69,14 @@ suite-native deploy dev:
     - rsync --delete -va app-release.apk "${DEPLOY_DIRECTORY}/"
   tags:
     - deploy
+
+# Messaging system deploy to dev
+msg-system deploy dev:
+  stage: deploy to dev
+  needs:
+    - "msg-system config sign dev"
+  when: manual
+  tags:
+    - deploy
+  script:
+    - aws s3 cp packages/suite-data/files/message-system/config.v1.jws s3://data.trezor.io/config/develop/config.v1.jws

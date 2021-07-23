@@ -61,3 +61,17 @@ release commit messages:
       - /^release\//
   script:
     - ci/scripts/check_release_commit_messages.sh
+
+# Messaging system deploy to production
+msg-system codesign deploy:
+  stage: deploy to production
+  when: manual
+  needs:
+    - "msg-system config sign stable"
+  only:
+    refs:
+      - codesign
+  tags:
+    - deploy
+  script:
+    - aws s3 cp packages/suite-data/files/message-system/config.v1.jws s3://data.trezor.io/config/stable/config.v1.jws
