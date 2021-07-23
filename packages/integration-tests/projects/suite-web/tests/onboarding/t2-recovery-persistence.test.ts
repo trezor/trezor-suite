@@ -62,7 +62,7 @@ describe('Onboarding - T2 in recovery mode', () => {
     });
 
     it('Initial run with device that is already in recovery mode', () => {
-        // start recovery with some device 
+        // start recovery with some device
         cy.getTestElement('@onboarding/recovery/start-button').click();
         cy.getTestElement('@onboarding/confirm-on-device');
         cy.task('pressYes');
@@ -93,7 +93,6 @@ describe('Onboarding - T2 in recovery mode', () => {
         4. enter second shamir share
         5. recovery is finished
     `, () => {
-        
         cy.getTestElement('@onboarding/recovery/start-button').click();
         cy.getTestElement('@onboarding/confirm-on-device');
         cy.task('pressYes');

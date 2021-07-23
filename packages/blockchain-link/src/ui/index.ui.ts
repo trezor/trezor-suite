@@ -26,17 +26,11 @@ const handleClick = (event: MouseEvent) => {
 
     switch (target.id) {
         case 'disconnect':
-            blockchain
-                .disconnect()
-                .then(onResponse)
-                .catch(onError);
+            blockchain.disconnect().then(onResponse).catch(onError);
             break;
 
         case 'get-info':
-            blockchain
-                .getInfo()
-                .then(onResponse)
-                .catch(onError);
+            blockchain.getInfo().then(onResponse).catch(onError);
             break;
 
         case 'get-account-info': {
@@ -47,10 +41,7 @@ const handleClick = (event: MouseEvent) => {
                     details: getInputValue('get-account-info-mode') || 'basic',
                     ...options,
                 };
-                blockchain
-                    .getAccountInfo(payload)
-                    .then(onResponse)
-                    .catch(onError);
+                blockchain.getAccountInfo(payload).then(onResponse).catch(onError);
             } catch (error) {
                 onError(error);
             }
@@ -83,10 +74,7 @@ const handleClick = (event: MouseEvent) => {
 
         case 'estimate-fee': {
             const options: any = JSON.parse(getInputValue('estimate-fee-options'));
-            blockchain
-                .estimateFee(options)
-                .then(onResponse)
-                .catch(onError);
+            blockchain.estimateFee(options).then(onResponse).catch(onError);
             break;
         }
         case 'push-transaction':

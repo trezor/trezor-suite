@@ -11,12 +11,11 @@ export const goToOnboarding = () => {
     //     .click()
     //     .getTestElement('@analytics/go-to-onboarding-button')
     //     .click();
-    
+
     // todo: no no no
     cy.task('startEmu', { version: '2.1.4', wipe: true });
     cy.getTestElement('@onboarding/continue-button').click();
     cy.getTestElement('@onboarding/continue-button').click();
-
 };
 
 export const passThroughInitialRun = () => {
@@ -72,5 +71,4 @@ export const passThroughSetPin = () => {
     cy.task('inputEmu', '1');
     cy.task('pressYes');
     cy.getTestElement('@onboarding/pin/continue-button').click();
-
 };

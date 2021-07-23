@@ -20,7 +20,7 @@ describe('Onboarding - recover wallet T1', () => {
 
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/continue-button').click();
-        cy.getTestElement("@firmware/skip-button").click();
+        cy.getTestElement('@firmware/skip-button').click();
         cy.getTestElement('@onboarding/path-recovery-button').click();
 
         // cy.getTestElement('@onboarding/button-continue').click();
@@ -47,7 +47,7 @@ describe('Onboarding - recover wallet T1', () => {
 
         cy.task('pressYes');
         cy.getTestElement('@word-input-select/input');
-        
+
         // todo: finish reading from device. needs support in trezor-user-env
     });
 });

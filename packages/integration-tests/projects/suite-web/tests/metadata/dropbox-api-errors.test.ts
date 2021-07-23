@@ -35,7 +35,6 @@ describe('Dropbox api errors', () => {
             },
         });
 
-
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
 

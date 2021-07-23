@@ -116,7 +116,7 @@ describe('Worker', () => {
                     setTimeout(() => {
                         // @ts-ignore
                         self.onerror(new Error('runtime error'));
-                    }, 1000)
+                    }, 1000);
                     /* eslint-enable */
                 });
             };

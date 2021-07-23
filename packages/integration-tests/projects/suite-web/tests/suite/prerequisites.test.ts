@@ -1,13 +1,12 @@
-import { PrerequisiteType } from "@suite/types/suite";
+import { PrerequisiteType } from '@suite/types/suite';
 
 type Fixture = {
     desc: PrerequisiteType;
     mockDevice: any;
-}
+};
 
 describe('prerequisites = test various types of devices connecting to the application', () => {
     beforeEach(() => {
-
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
 
@@ -19,23 +18,27 @@ describe('prerequisites = test various types of devices connecting to the applic
         {
             desc: 'device-seedless',
             mockDevice: () => cy.connectDevice({ mode: 'seedless' }),
-        }, {
+        },
+        {
             desc: 'device-unacquired',
             mockDevice: () => cy.connectDevice({ type: 'unacquired' }),
-        }, {
+        },
+        {
             desc: 'device-unreadable',
             mockDevice: () => cy.connectDevice({ type: 'unreadable' }),
-        }, {
+        },
+        {
             desc: 'device-unknown',
-            mockDevice: () => cy.connectDevice({ features: undefined })
-        }, {
+            mockDevice: () => cy.connectDevice({ features: undefined }),
+        },
+        {
             desc: 'device-disconnected',
-            mockDevice: () => { },
+            mockDevice: () => {},
         },
         {
             desc: 'device-bootloader',
             mockDevice: () => cy.connectBootloaderDevice('1'),
-        }
+        },
     ];
 
     fixtures.forEach(f => {
@@ -43,8 +46,8 @@ describe('prerequisites = test various types of devices connecting to the applic
             f.mockDevice();
             cy.getTestElement('@onboarding/expand-troubleshooting-tips').click();
             cy.matchImageSnapshot(f.desc);
-        })
-    })
+        });
+    });
 
     describe('should redirect to onboarding', () => {
         it('to welcome step', () => {
@@ -53,5 +56,5 @@ describe('prerequisites = test various types of devices connecting to the applic
         });
 
         // device-recover-mode is tested elsewhere with full-fledged emulator
-    })
-})
+    });
+});

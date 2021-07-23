@@ -8,15 +8,13 @@ describe('Onboarding - create wallet', () => {
         cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
-
     });
 
     it('Success (no shamir capability)', () => {
-
         cy.task('startEmu', { version: '2.1.4', wipe: true });
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/continue-button').click();
-        cy.getTestElement("@firmware/skip-button").click();
+        cy.getTestElement('@firmware/skip-button').click();
         cy.getTestElement('@onboarding/path-create-button').click();
         cy.log(
             'Note that this firmware does not have Shamir capability so we show only single backup option button',
@@ -43,7 +41,7 @@ describe('Onboarding - create wallet', () => {
         cy.task('startEmu', { version: '2.3.4', wipe: true });
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/continue-button').click();
-        cy.getTestElement("@firmware/skip-button").click();
+        cy.getTestElement('@firmware/skip-button').click();
         cy.getTestElement('@onboarding/path-create-button').click();
 
         cy.log(
