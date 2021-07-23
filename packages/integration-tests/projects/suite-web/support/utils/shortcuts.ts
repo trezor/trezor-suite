@@ -1,9 +1,7 @@
 /**
  * Shortcut to click device menu
  */
-export const toggleDeviceMenu = () => {
-    return cy.getTestElement('@menu/switch-device').click();
-};
+export const toggleDeviceMenu = () => cy.getTestElement('@menu/switch-device').click();
 
 export const goToOnboarding = () => {
     // return cy
@@ -18,15 +16,14 @@ export const goToOnboarding = () => {
     cy.getTestElement('@onboarding/continue-button').click();
 };
 
-export const passThroughInitialRun = () => {
-    return cy
+export const passThroughInitialRun = () =>
+    cy
         .getTestElement('@onboarding/continue-button')
         .click()
         .getTestElement('@onboarding/exit-app-button')
         .click()
         .getTestElement('@suite/loading')
         .should('not.exist');
-};
 
 export const passThroughBackup = () => {
     // todo: much of commented out code probably stays in standalone backup?
