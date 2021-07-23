@@ -59,7 +59,7 @@
         "semver": "^7.3.4",
         "styled-components": "5.1.1",
         "trezor-address-validator": "^0.3.22",
-        "trezor-connect": "8.1.29-beta.3",
+        "trezor-connect": "8.1.29-extended",
         "ua-parser-js": "^0.7.27",
         "uuid": "^8.3.2",
         "web3-utils": "^1.2.6",
