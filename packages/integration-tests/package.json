@@ -4,7 +4,8 @@
     "private": true,
     "scripts": {
         "test:components-storybook": "npx cypress run --project ./projects/components-storybook",
-        "test:components-storybook:local": "CYPRESS_baseUrl='http://192.168.88.252:9001' npx cypress open --project ./projects/components-storybook"
+        "test:components-storybook:local": "CYPRESS_baseUrl='http://192.168.88.252:9001' npx cypress open --project ./projects/components-storybook",
+        "lint": "eslint '**/*{.ts,.tsx}'"
     },
     "dependencies": {
         "cypress": "6.4.0",
