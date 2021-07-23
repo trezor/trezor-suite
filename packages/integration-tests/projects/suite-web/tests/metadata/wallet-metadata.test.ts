@@ -97,7 +97,7 @@ describe('Metadata - wallet labeling', () => {
                 .then(state => {
                     console.log(state);
                     const errors = state.notifications.filter(n => n.type === 'error');
-                    expect(errors).to.be.empty;
+                    return expect(errors).to.be.empty;
                 });
         });
     });
