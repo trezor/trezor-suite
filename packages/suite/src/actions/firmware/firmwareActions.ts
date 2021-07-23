@@ -7,6 +7,7 @@ import { report, AnalyticsEvent } from '@suite-actions/analyticsActions';
 import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 
 import type { Dispatch, GetState, AppState, AcquiredDevice } from '@suite-types';
+import { addToast } from '@suite-actions/notificationActions';
 
 export type FirmwareAction =
     | {
@@ -171,3 +172,21 @@ export const rememberPreviousDevice = (device: Device) => ({
     type: FIRMWARE.REMEMBER_PREVIOUS_DEVICE,
     payload: device,
 });
+
+export const rebootToBootloader = () => async (dispatch: Dispatch, getState: GetState) => {
+    const { device } = getState().suite;
+
+    if (!device) return;
+
+    const response = await TrezorConnect.rebootToBootloader({
+        device: {
+            path: device.path,
+        },
+    });
+
+    if (!response.success) {
+        dispatch(addToast({ type: 'error', error: response.payload.error }));
+    }
+
+    return response;
+};
