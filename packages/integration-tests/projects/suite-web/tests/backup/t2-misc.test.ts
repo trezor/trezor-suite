@@ -3,7 +3,7 @@
 
 describe('Backup', () => {
     beforeEach(() => {
-        cy.task('startEmu', { wipe: true });
+        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
         cy.task('setupEmu', { needs_backup: true });
         cy.task('startBridge');
 
@@ -39,7 +39,7 @@ describe('Backup', () => {
         cy.getTestElement('@backup/no-device', { timeout: 20000 });
         cy.task('stopBridge');
         // latest (2.3.1 at the time of writing this) has default behavior needs_backup false
-        cy.task('startEmu', { wipe: true });
+        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
         cy.task('setupEmu');
         // noticed that it failed here times: 1
         cy.getTestElement('@backup/already-finished-message');

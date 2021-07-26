@@ -5,10 +5,7 @@
 
 describe('Onboarding - recover wallet T1', () => {
     beforeEach(() => {
-        // wipe: true does not work in trezor-user-env with model 1 at the moment
-        cy.task('startEmu', { version: '1.9.0' });
-        cy.task('wipeEmu');
-        cy.task('stopEmu');
+        cy.task('startEmu', { version: Cypress.env('emuVersionT1'), wipe: true });
         cy.task('startBridge');
 
         cy.viewport(1024, 768).resetDb();
@@ -16,15 +13,13 @@ describe('Onboarding - recover wallet T1', () => {
     });
 
     it('Incomplete run of advanced recovery', () => {
-        cy.task('startEmu', { version: '1.9.0' });
-
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/continue-button').click();
-        cy.getTestElement("@firmware/skip-button").click();
+        cy.getTestElement("@firmware/continue-button").click();
         cy.getTestElement('@onboarding/path-recovery-button').click();
 
         // cy.getTestElement('@onboarding/button-continue').click();
-        // cy.getTestElement('@firmware/skip-button').click();
+        // cy.getTestElement('@firmware/continue-button').click();
         cy.getTestElement('@recover/select-count/24').click();
         cy.getTestElement('@recover/select-type/advanced').click();
         cy.task('pressYes');
@@ -39,7 +34,7 @@ describe('Onboarding - recover wallet T1', () => {
         cy.wait(501);
         cy.task('stopEmu');
         cy.getTestElement('@connect-device-prompt', { timeout: 20000 });
-        cy.task('startEmu', { version: '1.9.0' });
+        cy.task('startEmu', { version: Cypress.env('emuVersionT1') });
 
         cy.getTestElement('@onboarding/recovery/retry-button').click();
         cy.getTestElement('@recover/select-count/12').click();
@@ -47,7 +42,7 @@ describe('Onboarding - recover wallet T1', () => {
 
         cy.task('pressYes');
         cy.getTestElement('@word-input-select/input');
-        
+
         // todo: finish reading from device. needs support in trezor-user-env
     });
 });

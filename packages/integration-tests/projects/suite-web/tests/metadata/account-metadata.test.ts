@@ -18,7 +18,7 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
     fixtures.forEach(f => {
         it(f.provider, () => {
             // prepare test
-            cy.task('startEmu', { wipe: true });
+            cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
             cy.task('setupEmu', {
                 mnemonic: 'all all all all all all all all all all all all',
             });
@@ -37,7 +37,7 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             cy.discoveryShouldFinish();
 
             cy.getTestElement('@suite/menu/wallet-index').click();
-            
+
             cy.log(
                 'Default label is "Bitcoin #1". Clicking it in accounts menu is not possible. User can click on label in accounts sections. This triggers metadata flow',
             );

@@ -51,18 +51,18 @@ const shareTwoOfThree = [
 describe('Onboarding - T2 in recovery mode', () => {
     beforeEach(() => {
         cy.task('startBridge');
-        cy.task('startEmu', { version: '2.3.1', wipe: true });
+        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
         cy.resetDb();
         cy.viewport(1024, 768);
         cy.prefixedVisit('/');
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/continue-button').click();
-        cy.getTestElement('@firmware/skip-button').click();
+        cy.getTestElement('@firmware/continue-button').click();
         cy.getTestElement('@onboarding/path-recovery-button').click();
     });
 
     it('Initial run with device that is already in recovery mode', () => {
-        // start recovery with some device 
+        // start recovery with some device
         cy.getTestElement('@onboarding/recovery/start-button').click();
         cy.getTestElement('@onboarding/confirm-on-device');
         cy.task('pressYes');
@@ -76,7 +76,7 @@ describe('Onboarding - T2 in recovery mode', () => {
         cy.reload();
 
         // now suite has reloaded. database is wiped.
-        cy.task('startEmu', { version: '2.3.1', wipe: false });
+        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: false });
         // recovery device persisted reload
         cy.getTestElement('@onboarding/confirm-on-device');
         cy.wait(1000);
@@ -93,7 +93,7 @@ describe('Onboarding - T2 in recovery mode', () => {
         4. enter second shamir share
         5. recovery is finished
     `, () => {
-        
+
         cy.getTestElement('@onboarding/recovery/start-button').click();
         cy.getTestElement('@onboarding/confirm-on-device');
         cy.task('pressYes');
@@ -111,7 +111,7 @@ describe('Onboarding - T2 in recovery mode', () => {
         cy.task('stopEmu');
         cy.wait(1000);
         cy.getTestElement('@connect-device-prompt', { timeout: 30000 });
-        cy.task('startEmu', { version: '2.3.1', wipe: false });
+        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: false });
         cy.getTestElement('@onboarding/confirm-on-device');
         cy.wait(1000);
         cy.task('pressYes');

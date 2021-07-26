@@ -19,7 +19,7 @@ describe('Metadata - wallet labeling', () => {
     providers.forEach(provider => {
         it(provider, () => {
             // prepare test
-            cy.task('startEmu', { wipe: true, version: '2.3.1' });
+            cy.task('startEmu', { wipe: true, version: Cypress.env('emuVersionT2') });
             cy.task('setupEmu', {
                 mnemonic,
             });
@@ -57,8 +57,12 @@ describe('Metadata - wallet labeling', () => {
             cy.getTestElement('@passphrase/input').type('abc');
             cy.getTestElement('@passphrase/hidden/submit-button').click();
             cy.getTestElement('@passphrase/input').should('not.exist');
+            cy.task('pressYes');
+            cy.task('pressYes');
 
             cy.getTestElement('@passphrase/input', { timeout: 30000 }).type('abc');
+            cy.task('pressYes');
+            cy.task('pressYes');
 
             cy.getTestElement('@passphrase/confirm-checkbox').click();
             cy.getTestElement('@passphrase/hidden/submit-button').click();
@@ -71,6 +75,7 @@ describe('Metadata - wallet labeling', () => {
             cy.getConfirmActionOnDeviceModal();
             cy.task('pressYes');
             cy.getTestElement('@menu/switch-device').click();
+            cy.task('pressYes');
             cy.getTestElement(`@metadata/walletLabel/${standardWalletState}`).should(
                 'contain',
                 'wallet for drugs',

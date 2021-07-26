@@ -9,5 +9,9 @@
     "video": true,
     "trashAssetsBeforeRuns": true,
     "chromeWebSecurity": false,
-    "experimentalFetchPolyfill": true
+    "experimentalFetchPolyfill": true,
+    "env": {
+        "emuVersionT1": "1-master",
+        "emuVersionT2": "2-master"
+    }
 }

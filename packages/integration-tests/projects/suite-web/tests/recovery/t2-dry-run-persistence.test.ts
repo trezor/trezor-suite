@@ -5,7 +5,7 @@
 
 describe('Recovery - dry run', () => {
     beforeEach(() => {
-        cy.task('startEmu', { wipe: true, version: '2.3.1' });
+        cy.task('startEmu', { wipe: true, version: Cypress.env('emuVersionT2') });
         cy.task('setupEmu', {
             mnemonic: 'all all all all all all all all all all all all',
         });
@@ -13,7 +13,9 @@ describe('Recovery - dry run', () => {
         cy.viewport(1024, 768).resetDb();
     });
 
-    it('Communication between device and application is automatically established whenever app detects device in recovery mode', () => {
+    // Test case skipped because it was unstable
+    // See the issue for more details - https://github.com/trezor/trezor-suite/issues/4128
+    it.skip('Communication between device and application is automatically established whenever app detects device in recovery mode', () => {
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
         cy.getTestElement('@suite/menu/settings').click();
@@ -34,7 +36,7 @@ describe('Recovery - dry run', () => {
         cy.task('stopEmu');
         cy.getTestElement('@recovery/close-button', { timeout: 30000 }).click();
         cy.getTestElement('@connect-device-prompt');
-        cy.task('startEmu', { wipe: false, version: '2.3.1' });
+        cy.task('startEmu', { wipe: false, version: Cypress.env('emuVersionT2') });
         cy.getTestElement('@suite/modal/confirm-action-on-device', { timeout: 20000 });
         cy.task('pressYes');
         cy.log('At this moment, communication with device should be re-established');
@@ -54,18 +56,9 @@ describe('Recovery - dry run', () => {
         cy.task('pressYes');
         cy.log('Communication established, now finish the seed check process');
 
-        cy.task('inputEmu', 'all');
-        cy.task('inputEmu', 'all');
-        cy.task('inputEmu', 'all');
-        cy.task('inputEmu', 'all');
-        cy.task('inputEmu', 'all');
-        cy.task('inputEmu', 'all');
-        cy.task('inputEmu', 'all');
-        cy.task('inputEmu', 'all');
-        cy.task('inputEmu', 'all');
-        cy.task('inputEmu', 'all');
-        cy.task('inputEmu', 'all');
-        cy.task('inputEmu', 'all');
+        for (let i = 0; i < 12; i++) {
+            cy.task('inputEmu', 'all');
+        }
         cy.task('pressYes');
 
         cy.getTestElement('@recovery/success-title');

@@ -173,6 +173,12 @@ module.exports = on => {
             controller.disconnect();
             return null;
         },
+        clickEmu: async options => {
+            await controller.connect();
+            await controller.send({ type: 'emulator-click', ...options });
+            controller.disconnect();
+            return null;
+        },
         resetDevice: async options => {
             await controller.connect();
             await controller.send({ type: 'emulator-reset-device', ...options });
@@ -192,13 +198,9 @@ module.exports = on => {
             return null;
         },
         applySettings: async options => {
-            const defaults = {
-                passphrase_always_on_device: false,
-            };
             await controller.connect();
             await controller.send({
                 type: 'emulator-apply-settings',
-                ...defaults,
                 ...options,
             });
             controller.disconnect();

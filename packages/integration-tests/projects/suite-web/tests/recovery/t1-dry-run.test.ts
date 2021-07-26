@@ -4,7 +4,7 @@
 
 describe.skip('Recovery - dry run', () => {
     beforeEach(() => {
-        cy.task('startEmu', { version: '1.9.0', wipe: true });
+        cy.task('startEmu', { version: Cypress.env('emuVersionT1'), wipe: true });
         cy.wait(2000);
         cy.task('setupEmu', { needs_backup: false });
         cy.task('startBridge');

@@ -10,7 +10,7 @@ const timestamp = new RegExp(/^[0-9]{13,16}$/);
 
 describe('Analytics', () => {
     beforeEach(() => {
-        cy.task('startEmu', { wipe: true });
+        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
         cy.task('setupEmu');
         cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();

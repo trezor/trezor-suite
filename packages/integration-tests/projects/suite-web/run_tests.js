@@ -122,6 +122,10 @@ async function runTests() {
             chromeWebSecurity: false,
             trashAssetsBeforeRuns: false,
             defaultCommandTimeout: 15000,
+            env: {
+                emuVersionT1: '1-master',
+                emuVersionT2: '2-master'
+            }
         };
 
         if (userAgent) {
@@ -214,7 +218,7 @@ async function runTests() {
             if [ $diff_pre -gt 0 ]
             then
               echo "You have unstaged changes."
-              exit 1 
+              exit 1
             fi
             mkdir tmp
             cd tmp
@@ -228,12 +232,12 @@ async function runTests() {
             if [ $diff_after -eq 0 ]
             then
               echo "There are no new snapshots."
-              exit 0 
+              exit 0
             fi
             git add .
             git commit -m "e2e${stage ? `(${stage}):` : ':'} update snapshots"
             git log -n 2
-            echo "You may now push your changes."  
+            echo "You may now push your changes."
         `;
 
         console.log('Generated script to update files locally');
@@ -242,9 +246,9 @@ async function runTests() {
         console.log(`
         EXECUTE ^^ SCRIPT TO UPDATE SNAPSHOTS THAT CHANGED LOCALLY
         *******************************************************************
-                                                                           
-        curl ${CI_JOB_URL}/artifacts/raw/download-snapshots.sh | bash  
-                                                                           
+
+        curl ${CI_JOB_URL}/artifacts/raw/download-snapshots.sh | bash
+
         *******************************************************************
         `);
 

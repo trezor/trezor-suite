@@ -11,9 +11,8 @@ describe('Suite switch wallet modal', () => {
     });
 
     it('passphrase_protection: false', () => {
-        cy.task('startEmu', { wipe: true, version: '2.3.1' });
+        cy.task('startEmu', { wipe: true, version: Cypress.env('emuVersionT2') });
         cy.task('setupEmu', { passphrase_protection: false });
-        cy.task('applySettings', { passphrase_always_on_device: false });
 
         cy.prefixedVisit('/');
 
@@ -41,11 +40,20 @@ describe('Suite switch wallet modal', () => {
         cy.getTestElement('@suite/modal/confirm-action-on-device');
         cy.task('pressYes');
 
-        cy.getTestElement('@passphrase/input').type('taxation is theft{enter}');
+        const passphaseToType = 'taxation is theft{enter}';
+        cy.getTestElement('@passphrase/input').type(passphaseToType);
+
+        cy.task('pressYes');
+        cy.task('pressYes');
+
         cy.getTestElement('@modal');
-        cy.getTestElement('@passphrase/input', { timeout: 10000 }).type('taxation is theft{enter}');
+        cy.getTestElement('@passphrase/input', { timeout: 10000 }).type(passphaseToType);
         cy.getTestElement('@passphrase/confirm-checkbox').click();
         cy.getTestElement('@passphrase/hidden/submit-button').click();
+
+        cy.task('pressYes');
+        cy.task('pressYes');
+
         cy.getTestElement('@modal').should('not.exist');
 
         cy.getTestElement('@menu/switch-device').should(

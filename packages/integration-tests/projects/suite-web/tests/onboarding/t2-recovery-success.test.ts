@@ -9,12 +9,10 @@ describe('Onboarding - recover wallet T2', () => {
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
 
-        // using 2.1.4 firmware here. I don't know how to click on final screen after
-        // recovery is finished on 2.3.1 atm
-        cy.task('startEmu', { version: '2.1.4', wipe: true });
+        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/continue-button').click();
-        cy.getTestElement('@firmware/skip-button').click();
+        cy.getTestElement('@firmware/continue-button').click();
         cy.getTestElement('@onboarding/path-recovery-button').click();
     });
 
@@ -30,11 +28,12 @@ describe('Onboarding - recover wallet T2', () => {
         cy.task('pressYes');
         cy.wait(1000);
 
-        for (let i = 0; i <= 12; i++) {
+        for (let i = 0; i < 12; i++) {
             cy.task('inputEmu', 'all');
         }
 
-        // this does nothing with 2.3.1
+        // pressing the final Continue button
+        cy.wait(1000);
         cy.task('pressYes');
 
         // pin is tested in create path, so here we test 'skipping' path instead

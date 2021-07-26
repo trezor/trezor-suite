@@ -15,7 +15,7 @@ describe('Metadata - address labeling', () => {
     providers.forEach(provider => {
         it(provider, () => {
             // prepare test
-            cy.task('startEmu', { wipe: true });
+            cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
             cy.task('setupEmu', {
                 mnemonic: 'all all all all all all all all all all all all',
             });
