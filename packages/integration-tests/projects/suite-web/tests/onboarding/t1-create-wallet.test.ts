@@ -9,17 +9,17 @@ describe('Onboarding - create wallet', () => {
     });
 
     it('Success (basic)', () => {
-        cy.task('startEmu', { version: '1.9.0', wipe: true });
+        cy.task('startEmu', { version: Cypress.env('emuVersionT1'), wipe: true });
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/continue-button').click();
-        cy.getTestElement('@firmware/skip-button').click();
+        cy.getTestElement('@firmware/continue-button').click();
 
         cy.getTestElement('@onboarding/path-create-button').click();
         cy.getTestElement('@onboarding/only-backup-option-button').click();
 
         // todo: this sometimes fails with "device disconnected during action";
         // todo: adding huge wait here and see if it does something
-        cy.wait(5000);
+        cy.wait(1000);
 
         cy.task('pressYes');
 
@@ -46,6 +46,7 @@ describe('Onboarding - create wallet', () => {
 
         cy.log('Lets set PIN');
         cy.getTestElement('@onboarding/set-pin-button').click();
+        cy.wait(1000);
         cy.task('pressYes');
 
         cy.log('PIN mismatch for now will be enough');

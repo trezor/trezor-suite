@@ -10,7 +10,7 @@ describe(`Metadata - switching between cloud providers`, () => {
 
     it('Start with one and switch to another', () => {
         // prepare test
-        cy.task('startEmu', { wipe: true });
+        cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
         cy.task('setupEmu', {
             mnemonic: 'all all all all all all all all all all all all',
         });

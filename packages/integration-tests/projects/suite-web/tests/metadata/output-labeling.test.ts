@@ -15,7 +15,7 @@ describe('Metadata - Output labeling', () => {
             const targetEl1 =
                 '@metadata/outputLabel/9f472739fa7034dfb9736fa4d98915f2e8ddf70a86ee5e0a9ac0634f8c1d0007-0/add-label-button';
             // prepare test
-            cy.task('startEmu', { wipe: true });
+            cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
             cy.task('setupEmu', {
                 mnemonic: 'all all all all all all all all all all all all',
             });

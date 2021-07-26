@@ -27,7 +27,7 @@ describe('Metadata - suite is watching cloud provider and syncs periodically', (
     fixtures.forEach(f => {
         it(`${f.provider}-${f.desc}`, () => {
             // prepare test
-            cy.task('startEmu', { wipe: true });
+            cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
             cy.task('setupEmu', {
                 mnemonic: 'all all all all all all all all all all all all',
             });

@@ -3,7 +3,7 @@
 
 describe('T1 - Device settings', () => {
     it('pin mismatch', () => {
-        cy.task('startEmu', { version: '1.9.4', wipe: true });
+        cy.task('startEmu', { version: Cypress.env('emuVersionT1'), wipe: true });
         cy.task('setupEmu', { needs_backup: false });
         cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();

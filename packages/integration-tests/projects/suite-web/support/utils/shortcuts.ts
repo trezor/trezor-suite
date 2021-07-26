@@ -13,7 +13,7 @@ export const goToOnboarding = () => {
     //     .click();
 
     // todo: no no no
-    cy.task('startEmu', { version: '2.1.4', wipe: true });
+    cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
     cy.getTestElement('@onboarding/continue-button').click();
     cy.getTestElement('@onboarding/continue-button').click();
 

@@ -3,7 +3,7 @@
 
 describe('Passphrase', () => {
     beforeEach(() => {
-        cy.task('startEmu', { wipe: true, version: '2.3.1' });
+        cy.task('startEmu', { wipe: true, version: Cypress.env('emuVersionT2') });
         cy.task('setupEmu', { passphrase_protection: true });
         cy.task('startBridge');
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -15,6 +15,10 @@ describe('Passphrase', () => {
     });
 
     it('hidden wallet numbering', () => {
+        const passphraseOne = 'taxation is theft{enter}';
+        const passphraseTwo = 'meow{enter}';
+        const passphraseThree = 'abc{enter}';
+
         cy.getTestElement('@passphrase-type/standard').click();
         cy.getTestElement('@dashboard/loading', { timeout: 30000 });
         cy.getTestElement('@dashboard/loading', { timeout: 30000 }).should('not.exist');
@@ -22,16 +26,32 @@ describe('Passphrase', () => {
         // create standard and two hidden wallets
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
-        cy.getTestElement('@passphrase/input').type('taxation is theft{enter}');
+        cy.getTestElement('@passphrase/input').type(passphraseOne);
+
+        cy.task('pressYes');
+        cy.task('pressYes');
+
         cy.getTestElement('@passphrase/input', { timeout: 10000 }).type('taxation is theft');
         cy.getTestElement('@passphrase/confirm-checkbox').click();
         cy.getTestElement('@passphrase/hidden/submit-button').click();
+
+        cy.task('pressYes');
+        cy.task('pressYes');
+
         cy.getTestElement('@dashboard/loading').should('not.exist');
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
-        cy.getTestElement('@passphrase/input').type('meow{enter}');
+        cy.getTestElement('@passphrase/input').type(passphraseTwo);
+
+        cy.task('pressYes');
+        cy.task('pressYes');
+
         cy.getTestElement('@passphrase/confirm-checkbox').click();
-        cy.getTestElement('@passphrase/input').type('meow{enter}');
+        cy.getTestElement('@passphrase/input').type(passphraseTwo);
+
+        cy.task('pressYes');
+        cy.task('pressYes');
+
         cy.getTestElement('@dashboard/loading').should('not.exist');
 
         // assert that wallet labels are correct
@@ -51,9 +71,17 @@ describe('Passphrase', () => {
         cy.getTestElement('@dashboard/loading', { timeout: 30000 }).should('not.exist');
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
-        cy.getTestElement('@passphrase/input').type('abc{enter}');
+        cy.getTestElement('@passphrase/input').type(passphraseThree);
+
+        cy.task('pressYes');
+        cy.task('pressYes');
+
         cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
-        cy.getTestElement('@passphrase/input').type('abc{enter}');
+        cy.getTestElement('@passphrase/input').type(passphraseThree);
+
+        cy.task('pressYes');
+        cy.task('pressYes');
+
         cy.getTestElement('@dashboard/loading').should('not.exist');
 
         // assert that wallet labels are correct
@@ -65,12 +93,22 @@ describe('Passphrase', () => {
 
     // https://github.com/trezor/trezor-suite/issues/3133
     it('when user adds hidden wallet first (no pre-existing standard wallet)', () => {
+        const passphrase = 'abc{enter}';
+
         cy.getTestElement('@passphrase-type/hidden').click();
-        cy.getTestElement('@passphrase/input').type('abc{enter}');
+        cy.getTestElement('@passphrase/input').type(passphrase);
+
+        cy.task('pressYes');
+        cy.task('pressYes');
+
         cy.getTestElement('@modal');
-        cy.getTestElement('@passphrase/input', { timeout: 10000 }).type('abc');
+        cy.getTestElement('@passphrase/input', { timeout: 10000 }).type(passphrase);
         cy.getTestElement('@passphrase/confirm-checkbox').click();
         cy.getTestElement('@passphrase/hidden/submit-button').click();
+
+        cy.task('pressYes');
+        cy.task('pressYes');
+
         cy.getTestElement('@modal').should('not.exist');
         cy.getTestElement('@menu/switch-device').should('contain', 'Hidden wallet #1');
     });

@@ -8,12 +8,9 @@ describe('Passphrase', () => {
     beforeEach(() => {
         // note that versions before 2.3.1 don't have passphrase caching, this means that returning
         // back to passphrase that was used before in the session would require to type the passphrase again
-        cy.task('startEmu', { wipe: true, version: '2.3.1' });
+        cy.task('startEmu', { wipe: true, version: Cypress.env('emuVersionT2') });
         cy.task('setupEmu', { mnemonic: 'all all all all all all all all all all all all' });
         cy.task('startBridge');
-
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        cy.task('applySettings', { passphrase_always_on_device: false });
 
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
@@ -77,9 +74,17 @@ describe('Passphrase', () => {
         // first input
         cy.getTestElement('@passphrase/input').type('abc');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
+
+        cy.task('pressYes');
+        cy.task('pressYes');
+
         // confirm - input wrong passphrase
         cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
         cy.getTestElement('@passphrase/input').type('cba');
+
+        cy.task('pressYes');
+        cy.task('pressYes');
+
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.getTestElement('@toast/auth-confirm-error/close').click();
         // retry
@@ -88,6 +93,10 @@ describe('Passphrase', () => {
         cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
         cy.getTestElement('@passphrase/input').type('abc');
         cy.getTestElement('@passphrase/hidden/submit-button').click();
+
+        cy.task('pressYes');
+        cy.task('pressYes');
+
         cy.getTestElement('@dashboard/wallet-ready');
         // go to wallet
         cy.getTestElement('@suite/menu/wallet-index').click();
@@ -105,10 +114,18 @@ describe('Passphrase', () => {
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
         cy.getTestElement('@passphrase/input').type('def');
+
+        cy.task('pressYes');
+        cy.task('pressYes');
+
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         // confirm
         cy.getTestElement('@passphrase/confirm-checkbox', { timeout: 10000 }).click();
         cy.getTestElement('@passphrase/input').type('def');
+
+        cy.task('pressYes');
+        cy.task('pressYes');
+
         cy.getTestElement('@passphrase/hidden/submit-button').click();
         cy.getTestElement('@modal').should('not.exist');
         // go to receive
