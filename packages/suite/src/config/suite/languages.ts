@@ -4,7 +4,7 @@ export default [
     // { code: 'cs', name: 'Česky', en: 'Czech' },
     // { code: 'de', name: 'Deutsch', en: 'German' },
     // { code: 'el', name: 'Ελληνικά', en: 'Greek' },
-    // { code: 'es', name: 'Español', en: 'Spanish' },
+    { code: 'es', name: 'Español', en: 'Spanish' },
     // { code: 'fr', name: 'Français', en: 'French' },
     // { code: 'id', name: 'Bahasa Indonesia', en: 'Indonesian' },
     // { code: 'it', name: 'Italiano', en: 'Italian' },
