@@ -6,10 +6,10 @@ import { Translation } from '@suite-components';
 import * as deviceUtils from '@suite-utils/device';
 import { ANIMATION } from '@suite-config';
 import { TrezorDevice, AcquiredDevice, InjectedModalApplicationProps } from '@suite-types';
-import { useSelector, useActions } from '@suite-hooks';
+import { useSelector, useActions, useGuide } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
-import { OpenGuideFromTooltip } from '@suite-views/guide';
+import { OpenGuideFromTooltip } from '@guide-views';
 
 import WalletInstance from '../WalletInstance';
 import ColHeader from './components/ColHeader';
@@ -130,6 +130,8 @@ const DeviceItem = ({ device, instances, closeModalApp, backgroundRoute }: Props
     const [isExpanded, setIsExpanded] = useState(true);
     const [animateArrow, setAnimateArrow] = useState(false);
 
+    const { openNodeById } = useGuide();
+
     const deviceStatus = deviceUtils.getStatus(device);
     const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
     const isUnknown = device.type !== 'acquired';
@@ -244,20 +246,34 @@ const DeviceItem = ({ device, instances, closeModalApp, backgroundRoute }: Props
                                             />
                                         </WalletsCount>
                                         <ColRememberHeader
+                                            tooltipOpenGuide={{
+                                                node: (
+                                                    <OpenGuideFromTooltip
+                                                        id="/privacy/remember-and-eject.md"
+                                                        openNodeById={openNodeById}
+                                                    />
+                                                ),
+                                            }}
                                             tooltipContent={
                                                 <>
                                                     <Translation id="TR_REMEMBER_ALLOWS_YOU_TO" />
-                                                    <OpenGuideFromTooltip id="/privacy/remember-and-eject.md" />
                                                 </>
                                             }
                                         >
                                             <Translation id="TR_REMEMBER_HEADING" />
                                         </ColRememberHeader>
                                         <ColEjectHeader
+                                            tooltipOpenGuide={{
+                                                node: (
+                                                    <OpenGuideFromTooltip
+                                                        id="/privacy/remember-and-eject.md"
+                                                        openNodeById={openNodeById}
+                                                    />
+                                                ),
+                                            }}
                                             tooltipContent={
                                                 <>
                                                     <Translation id="TR_EJECT_WALLET_EXPLANATION" />
-                                                    <OpenGuideFromTooltip id="/privacy/remember-and-eject.md" />
                                                 </>
                                             }
                                         >

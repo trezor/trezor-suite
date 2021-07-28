@@ -5,22 +5,67 @@ import Tippy, { TippyProps } from '@tippyjs/react/headless';
 import { Instance, Props as TProps } from 'tippy.js';
 import { transparentize } from 'polished';
 import { Link } from '../typography/Link';
+import { Icon } from '../Icon';
+import { Fade } from 'react-awesome-reveal';
+
 import { FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
 
 type Cursor = 'inherit' | 'pointer' | 'help' | 'default';
 
 const Wrapper = styled.div``;
 
+const OpenGuideInner = styled.span`
+    float: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    transition: all 0.3s ease-in-out;
+    width: 61px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+`;
+
+const StyledText = styled.span`
+    display: none;
+    color: ${props => props.theme.TYPE_ORANGE};
+    font-weight: 500;
+`;
+
+const StyledIconWrap = styled.span`
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease-in-out;
+    border-radius: 50%;
+    background-color: ${props => transparentize(0.85, props.theme.TYPE_ORANGE)};
+`;
+
 const BoxDefault = styled(animated.div)<{ maxWidth: string | number }>`
-    padding: 4px 5px;
+    padding: 8px;
     background: ${props => props.theme.BG_TOOLTIP};
     color: ${props => props.theme.TYPE_WHITE};
     font-weight: ${FONT_WEIGHT.MEDIUM};
-    border-radius: 5px;
+    border-radius: 10px;
     font-size: ${FONT_SIZE.TINY};
     text-align: left;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
     max-width: ${props => props.maxWidth}px;
+    &:hover ${OpenGuideInner} {
+        width: 61px;
+        border-radius: 26px;
+        margin-left: 0;
+        background-color: ${props => transparentize(0.85, props.theme.TYPE_ORANGE)};
+    }
+    &:hover ${StyledText} {
+        display: flex;
+    }
+    &:hover ${StyledIconWrap} {
+        background-color: transparent;
+    }
 `;
 
 const BoxRich = styled(animated.div)<{ maxWidth: string | number }>`
@@ -50,6 +95,23 @@ const ReadMoreLink = styled(Link)`
     display: flex;
 `;
 
+const StyledTooltipTitle = styled.span`
+    display: inline-flex;
+    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    font-size: ${FONT_SIZE.SMALL};
+    font-weight: ${FONT_WEIGHT.MEDIUM};
+    margin-bottom: 8px;
+`;
+
+const StyledContent = styled.p`
+    font-size: ${FONT_SIZE.TINY};
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.5;
+    letter-spacing: normal;
+    text-align: left;
+`;
+
 type Props = Omit<TippyProps, 'offset'> & {
     children: ReactNode | JSX.Element | JSX.Element[] | string;
     readMore?: { link: string; text: ReactNode } | null;
@@ -57,6 +119,8 @@ type Props = Omit<TippyProps, 'offset'> & {
     dashed?: boolean;
     offset?: number;
     cursor?: Cursor;
+    openGuide?: { node: React.ReactElement } | null;
+    title?: React.ReactElement;
 };
 
 const Tooltip = ({
@@ -74,6 +138,8 @@ const Tooltip = ({
     offset = 10,
     cursor = 'help',
     content,
+    openGuide,
+    title,
     ...rest
 }: Props) => {
     const config = { tension: 400, friction: 26, mass: 1 };
@@ -122,11 +188,26 @@ const Tooltip = ({
                 render={attrs =>
                     rich ? (
                         <BoxRich maxWidth={maxWidth} tabIndex={-1} style={spring} {...attrs}>
-                            {content}
+                            {title && <StyledTooltipTitle>{title}</StyledTooltipTitle>}
+                            <StyledContent>{content}</StyledContent>
                         </BoxRich>
                     ) : (
                         <BoxDefault maxWidth={maxWidth} tabIndex={-1} style={spring} {...attrs}>
-                            {content}
+                            {title && <StyledTooltipTitle>{title}</StyledTooltipTitle>}
+                            {openGuide && (
+                                <OpenGuideInner>
+                                    <StyledText>
+                                        <Fade direction="right" duration={300}>
+                                            Learn
+                                        </Fade>
+                                    </StyledText>
+                                    <StyledIconWrap>
+                                        <Icon size={12} color="#c19009" icon="LIGHTBULB" />
+                                    </StyledIconWrap>
+                                    {openGuide.node}
+                                </OpenGuideInner>
+                            )}
+                            <StyledContent>{content}</StyledContent>
                             {readMore && (
                                 <ReadMoreLink
                                     variant="nostyle"

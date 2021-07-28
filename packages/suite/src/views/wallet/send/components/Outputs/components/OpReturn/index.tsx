@@ -6,8 +6,9 @@ import { InputError } from '@wallet-components';
 import { Textarea, Icon, Tooltip } from '@trezor/components';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { isHexValid } from '@wallet-utils/validation';
-import { OpenGuideFromTooltip } from '@suite-views/guide';
+import { OpenGuideFromTooltip } from '@guide-views';
 import { MAX_LENGTH } from '@suite-constants/inputs';
+import { useGuide } from '@suite-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -37,6 +38,8 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
         composeTransaction,
         removeOpReturn,
     } = useSendFormContext();
+
+    const { openNodeById } = useGuide();
 
     const inputAsciiName = `outputs[${outputId}].dataAscii`;
     const inputHexName = `outputs[${outputId}].dataHex`;
@@ -72,10 +75,17 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
                 label={
                     <Label>
                         <Tooltip
+                            openGuide={{
+                                node: (
+                                    <OpenGuideFromTooltip
+                                        id="/suite-basics/send/op_return.md"
+                                        openNodeById={openNodeById}
+                                    />
+                                ),
+                            }}
                             content={
                                 <>
                                     <Translation id="OP_RETURN_TOOLTIP" />
-                                    <OpenGuideFromTooltip id="/suite-basics/send/op_return.md" />
                                 </>
                             }
                             dashed

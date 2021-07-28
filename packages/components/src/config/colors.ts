@@ -20,7 +20,8 @@ export const THEME = {
         BG_WHITE_ALT_HOVER: '#f4f4f4', // used for dropdown menus
         BG_RED: '#d04949',
         BG_LIGHT_RED: '#F6E2E2',
-        BG_TOOLTIP: '#262742',
+        BG_TOOLTIP: '#212223',
+        BG_TOOLTIP_BORDER: '#3a3b3c',
         BG_ICON: 'transparent',
 
         TYPE_GREEN: '#279503',
