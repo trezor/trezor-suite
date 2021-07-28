@@ -4,12 +4,12 @@ import { useForm } from 'react-hook-form';
 import { Card, Translation } from '@suite-components';
 import { InputError } from '@wallet-components';
 import { Textarea, Button, Icon, Tooltip } from '@trezor/components';
-import { useActions, useAnalytics } from '@suite-hooks';
+import { useActions, useAnalytics, useGuide } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import { getInputState } from '@wallet-utils/sendFormUtils';
 import { isHexValid } from '@wallet-utils/validation';
 import { Network } from '@wallet-types';
-import { OpenGuideFromTooltip } from '@suite-views/guide';
+import { OpenGuideFromTooltip } from '@guide-views';
 
 const Wrapper = styled.div`
     /* display: flex;
@@ -49,6 +49,8 @@ const Raw = ({ network }: { network: Network }) => {
         pushRawTransaction: sendFormActions.pushRawTransaction,
     });
 
+    const { openNodeById } = useGuide();
+
     const inputName = 'rawTx';
     const inputValue = getValues(inputName) || '';
     const error = errors[inputName];
@@ -78,12 +80,15 @@ const Raw = ({ network }: { network: Network }) => {
                     bottomText={<InputError error={error} />}
                     label={
                         <Tooltip
-                            content={
-                                <>
-                                    <Translation id="SEND_RAW_TRANSACTION_TOOLTIP" />
-                                    <OpenGuideFromTooltip id="/suite-basics/send/send-raw.md" />
-                                </>
-                            }
+                            openGuide={{
+                                node: (
+                                    <OpenGuideFromTooltip
+                                        id="/suite-basics/send/send-raw.md"
+                                        openNodeById={openNodeById}
+                                    />
+                                ),
+                            }}
+                            content={<Translation id="SEND_RAW_TRANSACTION_TOOLTIP" />}
                             dashed
                         >
                             <Translation id="SEND_RAW_TRANSACTION" />
