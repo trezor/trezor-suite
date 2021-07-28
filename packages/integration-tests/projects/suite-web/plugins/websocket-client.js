@@ -21,7 +21,10 @@ const createDeferred = id => {
     };
 };
 
-const DEFAULT_TIMEOUT = 20 * 1000;
+// Making the timeout high because the controller in trezor-user-env
+// must synchronously run actions on emulator and they may take a long time
+// (for example in case of Shamir backup)
+const DEFAULT_TIMEOUT = 5 * 60 * 1000;
 const DEFAULT_PING_TIMEOUT = 50 * 1000;
 
 class Controller extends EventEmitter {
