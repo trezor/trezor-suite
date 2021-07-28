@@ -53,6 +53,7 @@ export const getInitialState = ({ send, fees, selectedAccount }: Args = {}) => (
     },
     devices: [],
     resize: resizeReducer(undefined, { type: 'foo' } as any),
+    guide: {},
 });
 
 type State = ReturnType<typeof getInitialState>;

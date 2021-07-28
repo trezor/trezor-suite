@@ -5,8 +5,9 @@ import { OnOffSwitcher } from '@wallet-components';
 import { Button, Tooltip } from '@trezor/components';
 import { useSendFormContext } from '@wallet-hooks';
 import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
-import { OpenGuideFromTooltip } from '@suite-views/guide';
+import { OpenGuideFromTooltip } from '@guide-views';
 import Locktime from './components/Locktime';
+import { useGuide } from '@suite-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -50,6 +51,8 @@ const BitcoinOptions = () => {
         resetDefaultValue,
     } = useSendFormContext();
 
+    const { openNodeById } = useGuide();
+
     const options = getDefaultValue('options', []);
     const locktimeEnabled = options.includes('bitcoinLockTime');
     const rbfEnabled = options.includes('bitcoinRBF');
@@ -74,12 +77,15 @@ const BitcoinOptions = () => {
                 <Left>
                     {!locktimeEnabled && (
                         <Tooltip
-                            content={
-                                <>
-                                    <Translation id="LOCKTIME_ADD_TOOLTIP" />
-                                    <OpenGuideFromTooltip id="/suite-basics/send/locktime.md" />
-                                </>
-                            }
+                            openGuide={{
+                                node: (
+                                    <OpenGuideFromTooltip
+                                        id="/suite-basics/send/locktime.md"
+                                        openNodeById={openNodeById}
+                                    />
+                                ),
+                            }}
+                            content={<Translation id="LOCKTIME_ADD_TOOLTIP" />}
                             cursor="pointer"
                         >
                             <StyledButton
@@ -99,12 +105,15 @@ const BitcoinOptions = () => {
                         network.features?.includes('rbf') &&
                         !locktimeEnabled && (
                             <Tooltip
-                                content={
-                                    <>
-                                        <Translation id="RBF_TOOLTIP" />
-                                        <OpenGuideFromTooltip id="/suite-basics/send/rbf-replace-by-fee.md" />
-                                    </>
-                                }
+                                openGuide={{
+                                    node: (
+                                        <OpenGuideFromTooltip
+                                            id="/suite-basics/send/rbf-replace-by-fee.md"
+                                            openNodeById={openNodeById}
+                                        />
+                                    ),
+                                }}
+                                content={<Translation id="RBF_TOOLTIP" />}
                                 cursor="pointer"
                             >
                                 <StyledButton

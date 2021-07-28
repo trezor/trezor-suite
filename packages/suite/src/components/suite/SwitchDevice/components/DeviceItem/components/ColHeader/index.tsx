@@ -19,12 +19,13 @@ const Text = styled.span`
 interface Props {
     children?: React.ReactNode;
     tooltipContent?: TooltipProps['content'];
+    tooltipOpenGuide?: { node: React.ReactElement };
 }
 
-const ColHeader = ({ children, tooltipContent, ...rest }: Props) => (
+const ColHeader = ({ children, tooltipContent, tooltipOpenGuide, ...rest }: Props) => (
     <Wrapper {...rest}>
         {tooltipContent ? (
-            <Tooltip maxWidth={285} content={tooltipContent} dashed>
+            <Tooltip maxWidth={285} content={tooltipContent} openGuide={tooltipOpenGuide} dashed>
                 <Text>{children}</Text>
             </Tooltip>
         ) : (
