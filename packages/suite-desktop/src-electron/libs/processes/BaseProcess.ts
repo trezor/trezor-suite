@@ -31,7 +31,7 @@ abstract class BaseProcess {
     processName: string;
     options: Options;
     startupThrottle: ReturnType<typeof setTimeout> | null;
-    supportedSystems = ['linux-arm64', 'linux-x64', 'mac-x64', 'win-x64'];
+    supportedSystems = ['linux-arm64', 'linux-x64', 'mac-arm64', 'mac-x64', 'win-x64'];
     stopped = false;
     logger: ILogger;
     logTopic: string;
