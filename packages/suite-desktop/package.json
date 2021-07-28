@@ -16,7 +16,7 @@
         "build:ui": "rimraf ./build && yarn workspace @trezor/suite-build run build:desktop",
         "build:app": "cross-env NODE_ENV=production rimraf ./dist && node scripts/build.js",
         "build:app:linux": "yarn build:app && electron-builder --linux --x64 --arm64 -p never",
-        "build:app:mac": "yarn build:app && electron-builder --mac --x64 -p never",
+        "build:app:mac": "yarn build:app && electron-builder --mac --x64 --arm64 -p never",
         "build:app:win": "yarn build:app && electron-builder --win --x64 -p never",
         "build:linux": "yarn clean && yarn build:ui && yarn build:app:linux",
         "build:mac": "yarn clean && yarn build:ui && yarn build:app:mac",
