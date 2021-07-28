@@ -95,6 +95,12 @@ const dropdownItemsData: DropdownItem[] = [
         installerExtension: 'dmg',
     },
     {
+        platform: 'mac-arm64',
+        label: <Translation id="TR_SUITE_WEB_LANDING_MACOS_ARM64_LABEL" />,
+        icon: 'OS_MAC',
+        installerExtension: 'dmg',
+    },
+    {
         platform: 'win',
         label: <Translation id="TR_SUITE_WEB_LANDING_WINDOWS_LABEL" />,
         icon: 'OS_WINDOWS',
