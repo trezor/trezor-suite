@@ -6,7 +6,7 @@ import * as modalActions from '@suite-actions/modalActions';
 import * as storageActions from '@suite-actions/storageActions';
 import { getOsTheme } from '@suite-utils/env';
 import { SUITE, METADATA } from './constants';
-import { LANGUAGES } from '@suite-config';
+import type { Locale } from '@suite-config/languages';
 import {
     Action,
     Dispatch,
@@ -46,7 +46,7 @@ export type SuiteAction =
       }
     | {
           type: typeof SUITE.SET_LANGUAGE;
-          locale: typeof LANGUAGES[number]['code'];
+          locale: Locale;
           messages: { [key: string]: string };
       }
     | { type: typeof SUITE.SET_DEBUG_MODE; payload: Partial<DebugModeOptions> }

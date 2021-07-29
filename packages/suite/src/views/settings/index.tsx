@@ -14,6 +14,7 @@ import {
     TextColumn,
 } from '@suite-components/Settings';
 import { FIAT, LANGUAGES } from '@suite-config';
+import type { Locale } from '@suite-config/languages';
 import { useAnalytics, useDevice, useSelector, useActions } from '@suite-hooks';
 import { Button, Tooltip, Switch } from '@trezor/components';
 import { capitalizeFirstLetter } from '@suite-utils/string';
@@ -124,14 +125,12 @@ const Settings = () => {
                             noTopLabel
                             value={{
                                 value: language,
-                                label: LANGUAGES.find(l => l.code === language)!.name,
+                                label: LANGUAGES[language].name,
                             }}
-                            isDisabled={LANGUAGES.length <= 1}
-                            options={LANGUAGES.map(l => ({ value: l.code, label: l.name }))}
-                            onChange={(option: {
-                                value: typeof LANGUAGES[number]['code'];
-                                label: typeof LANGUAGES[number]['name'];
-                            }) => {
+                            options={Object.entries(LANGUAGES)
+                                .filter(([, l]) => l.complete)
+                                .map(([value, { name }]) => ({ value, label: name }))}
+                            onChange={(option: { value: Locale; label: string }) => {
                                 fetchLocale(option.value);
                                 analytics.report({
                                     type: 'settings/general/change-language',

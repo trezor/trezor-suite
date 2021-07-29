@@ -25,24 +25,27 @@ export interface Props {
 /**
  * When translationMode is enabled wraps a message with a Tooltip and adds styling to provide visual hint for translators
  */
-const HelperTooltip = (props: Props) =>
+const HelperTooltip = ({ messageId, isNested, language, translationMode, children }: Props) => {
+    const locale = language?.replace('-', '') || 'en';
     // don't wrap with tooltip for messages that are nested in another message
     // fixes https://github.com/trezor/trezor-suite/issues/1509
-    props.translationMode && !props.isNested ? (
+    return translationMode && !isNested ? (
         <Tooltip
             placement="bottom"
             content={
                 <StyledLink
                     variant="nostyle"
-                    href={`https://crowdin.com/translate/trezor-suite/99/en-${props.language}#q=${props.messageId}`}
+                    href={`https://crowdin.com/translate/trezor-suite/99/en-${locale}#q=${messageId}`}
                 >
-                    {props.messageId}
+                    {messageId}
                 </StyledLink>
             }
         >
-            <MessageWrapper>{props.children}</MessageWrapper>
+            <MessageWrapper>{children}</MessageWrapper>
         </Tooltip>
     ) : (
-        props.children
+        children
     );
+};
+
 export default HelperTooltip;
