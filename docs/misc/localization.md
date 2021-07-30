@@ -3,9 +3,9 @@
 Suite uses [react-intl](https://github.com/formatjs/formatjs) package for all in-app localization needs.
 Definitions of all messages are stored in [messages.ts](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/src/support/messages.ts).
 
-To allow non-developers to edit these messages through user-friendly interface, we upload them to [Crowdin](https://crowdin.com/project/trezor-suite) via [trezor-translations-manager](https://github.com/trezor/trezor-suite/tree/develop/packages/translations-manager) (TTM) which takes care of conversion to CSV file format before the upload. *Be aware that TTM is rather legacy project and most likely could be replaced with `formatjs` cli.*
+To allow non-developers to edit these messages through user-friendly interface, we upload them to [Crowdin](https://crowdin.com/project/trezor-suite) via their [CLI](https://github.com/crowdin/crowdin-cli).
 
-After strings have been translated we use TTM again to download the messages and generate language json files. They are automatically copied to [suite-data package](https://github.com/trezor/trezor-suite/tree/develop/packages/suite-data/files/translations).
+After strings have been translated we use Crowdin CLI again to download the translated json files to [suite-data package](https://github.com/trezor/trezor-suite/tree/develop/packages/suite-data/files/translations).
 To finish the process these files need to be commited to the repository.
 
 ## Message definitions
@@ -105,19 +105,31 @@ After enabling it each string, which is rendered via `Translation` component, is
 To join the ranks of translators follow [Crowdin contributions](https://www.notion.so/Crowdin-contributions-c6b56ef6a0424de8b4d8ce9190bdcd19) guide.
 
 ## Synchronization with Crowdin
-All work is done via [trezor-translations-manager](https://github.com/trezor/trezor-suite/tree/develop/packages/translations-manager) with time-saving shortcuts defined in [package.json scripts](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/package.json#L5) section. In order to work with Suite project in Crowdin you need to set environment variables:
-- `CROWDIN_LOGIN` which is your username set in [profile page](https://crowdin.com/settings#account)
-- `CROWDIN_API_KEY` which can be generated in [account settings](https://crowdin.com/settings#api-key). 
+All work could be done with shortcuts defined in [package.json scripts](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/package.json#L5) section. In order to interact with Crowdin you need to ask the project owner for access token and either store it in your `$HOME/.crowdin.yml` file:
+```yaml
+"api_token": xxxx
+```
+or, alternatively, add it as an option for each called script:
+```
+yarn workspace @trezor/suite translations:download --token xxxx
+```
 
-*As of now TTM works with Crowdin API v1. For more insights on TTM I recommend checking its superb documentation.*
+### Extract
+To extract message definitions from Suite into `master.json` file run:
+```bash
+yarn workspace @trezor/suite translations:extract
+```
+The newly created `master.json` file is generated from `messages.ts` and serves only as a base for translations in Crowdin, therefore it is not commited into Git repository.
 
-To upload message definitions from Suite to Crowdin run:
+### Upload
+To upload extracted `master.json` file with updated message definitions from Suite to Crowdin run:
 ```bash
 yarn workspace @trezor/suite translations:upload
 ```
 You can even do that from your branch with messages that are not yet merged in develop branch, just be sure you have rebased your branch on latest develop before doing so. This process replaces all definitions in Crowdin, meaning if your branch is missing some definitions, that are already in develop branch and uploaded in Crowdin, they will be removed.
 
-To download new translations from Crowdin:
+### Download
+To download new translations from Crowdin run:
 ```bash
 yarn workspace @trezor/suite translations:download
 ```
@@ -133,9 +145,11 @@ git checkout develop
 git pull
 git checkout -b $BRANCH_NAME
 
-# Upload first to sync the key set.
+# Extract message definitions from Suite
+yarn workspace @trezor/suite translations:extract
+# Upload to sync the key set.
 yarn workspace @trezor/suite translations:upload
-# Download second to fetch values for all keys.
+# Download to fetch values for all keys.
 yarn workspace @trezor/suite translations:download
 
 git add packages/suite-data/files/translations

@@ -2122,6 +2122,13 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@crowdin/cli@^3.6.5":
+  version "3.6.5"
+  resolved "https://registry.yarnpkg.com/@crowdin/cli/-/cli-3.6.5.tgz#8aa0e8cc2af14ce9998b075e6f3e2eb475e1de86"
+  integrity sha512-M+tj81GdAb1i9upLpT45s4h/weBLTxQ+MpJv+cQEkUwPT5Dn5vWb/fSXqmS3mzPKyuHr/+x2JLqdf97Y385FQA==
+  dependencies:
+    shelljs "^0.8.4"
+
 "@cypress/listr-verbose-renderer@^0.4.1":
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@cypress/listr-verbose-renderer/-/listr-verbose-renderer-0.4.1.tgz#a77492f4b11dcc7c446a34b3e28721afd33c642a"

@@ -24,6 +24,7 @@ in
       nodejs
       yarn
       SuitePython
+      jre
     ] ++ lib.optionals stdenv.isLinux [
       pkg-config
       python2                                                     # older node-gyp still requires python2.x
