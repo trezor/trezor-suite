@@ -20,6 +20,7 @@ const Wrapper = styled.div<{ size?: string }>`
             `all ${props.theme.HOVER_TRANSITION_TIME} ${props.theme.HOVER_TRANSITION_EFFECT}`};
 
         background-color: transparent;
+        pointer-events: none;
     }
 
     &:hover,

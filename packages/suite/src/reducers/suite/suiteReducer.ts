@@ -5,6 +5,7 @@ import { DISCOVERY } from '@wallet-actions/constants';
 import { Action, TrezorDevice, Lock, SuiteThemeVariant, SuiteThemeColors } from '@suite-types';
 import type { Locale } from '@suite-config/languages';
 import { isWeb } from '@suite-utils/env';
+import { ensureLocale } from '@suite-utils/translation';
 
 export interface DebugModeOptions {
     translationMode: boolean;
@@ -73,7 +74,7 @@ const initialState: SuiteState = {
         theme: {
             variant: 'light',
         },
-        language: 'en',
+        language: ensureLocale('en'),
         torOnionLinks: isWeb(),
         debug: {
             invityAPIUrl: undefined,
