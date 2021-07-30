@@ -3,18 +3,20 @@ import { SUITE } from '@suite-actions/constants';
 import { Dispatch } from '@suite-types';
 import type { Locale } from '@suite-config/languages';
 import enLocale from '@trezor/suite-data/files/translations/en.json';
+import { ensureLocale } from '@suite-utils/translation';
 
 export const fetchLocale = (locale: Locale) => async (dispatch: Dispatch) => {
+    const loc = ensureLocale(locale);
     const localeOverride: { [key: string]: string } =
-        locale === 'en'
+        loc === 'en'
             ? {}
-            : await fetch(resolveStaticPath(`translations/${locale}.json`))
+            : await fetch(resolveStaticPath(`translations/${loc}.json`))
                   .then(res => (res.ok ? res.json() : Promise.reject()))
                   .catch(() => ({}));
 
     dispatch({
         type: SUITE.SET_LANGUAGE,
-        locale,
+        locale: loc,
         messages: { ...enLocale, ...localeOverride },
     });
 };

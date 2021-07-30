@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { isDesktop } from '@suite-utils/env';
+import { isTranslationMode } from '@suite-utils/translation';
 import { useSelector } from '@suite-hooks';
 import { useMessageSystem } from '@suite-hooks/useMessageSystem';
 import OnlineStatus from './OnlineStatus';
@@ -11,6 +12,7 @@ import NoBackup from './NoBackup';
 import FailedBackup from './FailedBackup';
 import MessageSystemBanner from './MessageSystemBanner';
 import SafetyChecksBanner from './SafetyChecks';
+import TranslationMode from './TranslationMode';
 
 const Wrapper = styled.div<{ onTop?: boolean }>`
     z-index: ${props => (props.onTop ? '10001' : '3')};
@@ -89,6 +91,7 @@ const Banners = () => {
                 </Wrapper>
             )}
             <Wrapper>
+                {isTranslationMode() && <TranslationMode />}
                 <OnlineStatus isOnline={online} />
                 {!useMessageSystemBanner && banner}
                 {/* TODO: add Pin not set */}
