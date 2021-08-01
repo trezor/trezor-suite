@@ -29,7 +29,7 @@ class BridgeProcess extends BaseProcess {
                 }
             }
         } catch (err) {
-            this.logger.error(this.logTopic, `Status error: ${err.message}`);
+            this.logger.debug(this.logTopic, `Status error: ${err.message}`);
         }
 
         // process
