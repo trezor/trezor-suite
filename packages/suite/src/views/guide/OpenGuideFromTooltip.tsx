@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const OpenGuideWrap = styled.a`
+const OpenGuideLink = styled.a`
     position: absolute;
     top: 0;
     left: 0;
@@ -15,8 +15,8 @@ type OpenGuideFromTooltipProps = {
     openNodeById: (id: string) => void;
 };
 
-const OpenGuideFromTooltip = ({ id, openNodeById }: OpenGuideFromTooltipProps) => (
-    <OpenGuideWrap onClick={() => openNodeById(id)} />
-);
+const OpenGuideFromTooltip = ({ id, openNodeById }: OpenGuideFromTooltipProps) => {
+    return <OpenGuideLink onClick={() => openNodeById(id)} />;
+};
 
 export default OpenGuideFromTooltip;
