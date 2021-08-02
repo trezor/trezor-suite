@@ -2050,6 +2050,11 @@ const definedMessages = defineMessages({
         defaultMessage: 'Language',
         id: 'TR_LANGUAGE',
     },
+    TR_LEARN: {
+        defaultMessage: 'Learn',
+        description: 'Link to Suite Guide.',
+        id: 'TR_LEARN',
+    },
     TR_LEARN_MORE: {
         defaultMessage: 'Learn more',
         description: 'Link to Trezor wiki.',

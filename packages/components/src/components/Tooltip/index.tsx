@@ -5,8 +5,6 @@ import Tippy, { TippyProps } from '@tippyjs/react/headless';
 import { Instance, Props as TProps } from 'tippy.js';
 import { transparentize } from 'polished';
 import { Link } from '../typography/Link';
-import { Icon } from '../Icon';
-import { Fade } from 'react-awesome-reveal';
 
 import { FONT_SIZE, FONT_WEIGHT } from '../../config/variables';
 
@@ -20,28 +18,14 @@ const OpenGuideInner = styled.span`
     align-items: center;
     justify-content: flex-end;
     transition: all 0.3s ease-in-out;
-    width: 61px;
+    width: auto;
+    min-width: 61px;
+    padding-left: 8px;
+    margin-left: 8px;
     height: 20px;
     border-radius: 50%;
     cursor: pointer;
     position: relative;
-`;
-
-const StyledText = styled.span`
-    display: none;
-    color: ${props => props.theme.TYPE_ORANGE};
-    font-weight: 500;
-`;
-
-const StyledIconWrap = styled.span`
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease-in-out;
-    border-radius: 50%;
-    background-color: ${props => transparentize(0.85, props.theme.TYPE_ORANGE)};
 `;
 
 const BoxDefault = styled(animated.div)<{ maxWidth: string | number }>`
@@ -55,16 +39,14 @@ const BoxDefault = styled(animated.div)<{ maxWidth: string | number }>`
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
     max-width: ${props => props.maxWidth}px;
     &:hover ${OpenGuideInner} {
-        width: 61px;
         border-radius: 26px;
-        margin-left: 0;
         background-color: ${props => transparentize(0.85, props.theme.TYPE_ORANGE)};
-    }
-    &:hover ${StyledText} {
-        display: flex;
-    }
-    &:hover ${StyledIconWrap} {
-        background-color: transparent;
+        & > a span:first-child {
+            display: flex;
+        }
+        & > a span:last-child {
+            background-color: transparent;
+        }
     }
 `;
 
@@ -194,19 +176,7 @@ const Tooltip = ({
                     ) : (
                         <BoxDefault maxWidth={maxWidth} tabIndex={-1} style={spring} {...attrs}>
                             {title && <StyledTooltipTitle>{title}</StyledTooltipTitle>}
-                            {openGuide && (
-                                <OpenGuideInner>
-                                    <StyledText>
-                                        <Fade direction="right" duration={300}>
-                                            Learn
-                                        </Fade>
-                                    </StyledText>
-                                    <StyledIconWrap>
-                                        <Icon size={12} color="#c19009" icon="LIGHTBULB" />
-                                    </StyledIconWrap>
-                                    {openGuide.node}
-                                </OpenGuideInner>
-                            )}
+                            {openGuide && <OpenGuideInner>{openGuide.node}</OpenGuideInner>}
                             <StyledContent>{content}</StyledContent>
                             {readMore && (
                                 <ReadMoreLink

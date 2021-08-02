@@ -8,7 +8,6 @@ import { getInputState } from '@wallet-utils/sendFormUtils';
 import { isHexValid } from '@wallet-utils/validation';
 import { OpenGuideFromTooltip } from '@guide-views';
 import { MAX_LENGTH } from '@suite-constants/inputs';
-import { useGuide } from '@suite-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -38,8 +37,6 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
         composeTransaction,
         removeOpReturn,
     } = useSendFormContext();
-
-    const { openNodeById } = useGuide();
 
     const inputAsciiName = `outputs[${outputId}].dataAscii`;
     const inputHexName = `outputs[${outputId}].dataHex`;
@@ -76,12 +73,7 @@ const OpReturn = ({ outputId }: { outputId: number }) => {
                     <Label>
                         <Tooltip
                             openGuide={{
-                                node: (
-                                    <OpenGuideFromTooltip
-                                        id="/suite-basics/send/op_return.md"
-                                        openNodeById={openNodeById}
-                                    />
-                                ),
+                                node: <OpenGuideFromTooltip id="/suite-basics/send/op_return.md" />,
                             }}
                             content={<Translation id="OP_RETURN_TOOLTIP" />}
                             dashed

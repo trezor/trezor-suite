@@ -6,7 +6,7 @@ import { Translation } from '@suite-components';
 import * as deviceUtils from '@suite-utils/device';
 import { ANIMATION } from '@suite-config';
 import { TrezorDevice, AcquiredDevice, InjectedModalApplicationProps } from '@suite-types';
-import { useSelector, useActions, useGuide } from '@suite-hooks';
+import { useSelector, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import { OpenGuideFromTooltip } from '@guide-views';
@@ -130,8 +130,6 @@ const DeviceItem = ({ device, instances, closeModalApp, backgroundRoute }: Props
     const [isExpanded, setIsExpanded] = useState(true);
     const [animateArrow, setAnimateArrow] = useState(false);
 
-    const { openNodeById } = useGuide();
-
     const deviceStatus = deviceUtils.getStatus(device);
     const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
     const isUnknown = device.type !== 'acquired';
@@ -248,10 +246,7 @@ const DeviceItem = ({ device, instances, closeModalApp, backgroundRoute }: Props
                                         <ColRememberHeader
                                             tooltipOpenGuide={{
                                                 node: (
-                                                    <OpenGuideFromTooltip
-                                                        id="/privacy/remember-and-eject.md"
-                                                        openNodeById={openNodeById}
-                                                    />
+                                                    <OpenGuideFromTooltip id="/privacy/remember-and-eject.md" />
                                                 ),
                                             }}
                                             tooltipContent={
@@ -263,10 +258,7 @@ const DeviceItem = ({ device, instances, closeModalApp, backgroundRoute }: Props
                                         <ColEjectHeader
                                             tooltipOpenGuide={{
                                                 node: (
-                                                    <OpenGuideFromTooltip
-                                                        id="/privacy/remember-and-eject.md"
-                                                        openNodeById={openNodeById}
-                                                    />
+                                                    <OpenGuideFromTooltip id="/privacy/remember-and-eject.md" />
                                                 ),
                                             }}
                                             tooltipContent={
