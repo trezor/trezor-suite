@@ -14,7 +14,7 @@ const SECONDARY_MENU_BUTTON_MARGIN = '12px';
 
 const Wrapper = styled.div<{ value: boolean; subRoute: boolean | undefined }>`
     width: 100%;
-    z-index: 2;
+    z-index: 3;
     display: flex;
     background: ${props => props.theme.BG_LIGHT_GREY};
     justify-content: center;

@@ -65,7 +65,7 @@ const Menu = styled.ul<MenuProps>`
     min-width: ${props => props.minWidth}px;
     box-shadow: 0 2px 7px 0 ${props => props.theme.BOX_SHADOW_BLACK_15},
         0 2px 3px 0 ${props => props.theme.BOX_SHADOW_BLACK_5};
-    z-index: 10001;
+    z-index: 2;
     padding: ${props => props.topPadding}px ${props => props.horizontalPadding}px
         ${props => props.bottomPadding}px;
     border-radius: 10px;
