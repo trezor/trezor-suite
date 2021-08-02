@@ -2,11 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, Switch, Select, THEME, SuiteThemeColors } from '@trezor/components';
 import { SettingsLayout } from '@settings-components';
-import { ActionColumn, Row, Section, TextColumn } from '@suite-components/Settings';
+import { ActionColumn, ActionSelect, Row, Section, TextColumn } from '@suite-components/Settings';
 import * as suiteActions from '@suite-actions/suiteActions';
+import * as languageActions from '@settings-actions/languageActions';
 import { useDevice, useSelector, useActions } from '@suite-hooks';
 import { openGithubIssue } from '@suite/services/github';
-
+import { LANGUAGES } from '@suite-config';
+import type { Locale } from '@suite-config/languages';
 import invityAPI from '@suite-services/invityAPI';
 
 const StyledActionColumn = styled(ActionColumn)`
@@ -14,13 +16,15 @@ const StyledActionColumn = styled(ActionColumn)`
 `;
 
 const DebugSettings = () => {
-    const { setTheme, setDebugMode } = useActions({
+    const { setTheme, setDebugMode, fetchLocale } = useActions({
         setTheme: suiteActions.setTheme,
         setDebugMode: suiteActions.setDebugMode,
+        fetchLocale: languageActions.fetchLocale,
     });
-    const { debug, theme } = useSelector(state => ({
+    const { debug, theme, language } = useSelector(state => ({
         debug: state.suite.settings.debug,
         theme: state.suite.settings.theme,
+        language: state.suite.settings.language,
     }));
     const invityApiServerOptions = [
         {
@@ -55,9 +59,37 @@ const DebugSettings = () => {
                                 setDebugMode({
                                     translationMode: !debug.translationMode,
                                 });
+                                if (debug.translationMode && !LANGUAGES[language].complete) {
+                                    fetchLocale('en');
+                                }
                             }}
                         />
                     </ActionColumn>
+                </Row>
+                <Row>
+                    <TextColumn
+                        title="Translation mode language"
+                        description="Set target language for translation mode."
+                    />
+                    <StyledActionColumn>
+                        <ActionSelect
+                            hideTextCursor
+                            useKeyPressScroll
+                            noTopLabel
+                            isDisabled={!debug.translationMode}
+                            value={{
+                                value: language,
+                                label: LANGUAGES[language].name,
+                            }}
+                            options={Object.entries(LANGUAGES).map(([value, { name }]) => ({
+                                value,
+                                label: name,
+                            }))}
+                            onChange={(option: { value: Locale; label: string }) => {
+                                fetchLocale(option.value);
+                            }}
+                        />
+                    </StyledActionColumn>
                 </Row>
             </Section>
             <Section title="Debug">

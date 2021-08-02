@@ -3,7 +3,7 @@ import { TRANSPORT, TransportInfo } from 'trezor-connect';
 import { SUITE, STORAGE } from '@suite-actions/constants';
 import { DISCOVERY } from '@wallet-actions/constants';
 import { Action, TrezorDevice, Lock, SuiteThemeVariant, SuiteThemeColors } from '@suite-types';
-import { LANGUAGES } from '@suite-config';
+import type { Locale } from '@suite-config/languages';
 import { isWeb } from '@suite-utils/env';
 
 export interface DebugModeOptions {
@@ -31,7 +31,7 @@ interface SuiteSettings {
         variant: SuiteThemeVariant;
         colors?: SuiteThemeColors;
     };
-    language: typeof LANGUAGES[number]['code'];
+    language: Locale;
     torOnionLinks: boolean;
     debug: DebugModeOptions;
 }
