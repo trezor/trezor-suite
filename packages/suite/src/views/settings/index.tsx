@@ -126,7 +126,7 @@ const Settings = () => {
                                 value: language,
                                 label: LANGUAGES.find(l => l.code === language)!.name,
                             }}
-                            isDisabled
+                            isDisabled={LANGUAGES.length <= 1}
                             options={LANGUAGES.map(l => ({ value: l.code, label: l.name }))}
                             onChange={(option: {
                                 value: typeof LANGUAGES[number]['code'];
