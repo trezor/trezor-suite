@@ -10,7 +10,7 @@ const Wrapper = styled.div`
     background: ${props => props.theme.BG_LIGHT_GREY};
     padding: 24px 32px 0px 32px;
 
-    z-index: 3;
+    z-index: 4;
 
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         padding: 24px 16px 0px 16px;
