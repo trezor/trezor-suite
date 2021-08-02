@@ -7,7 +7,6 @@ import { useSendFormContext } from '@wallet-hooks';
 import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
 import { OpenGuideFromTooltip } from '@guide-views';
 import Locktime from './components/Locktime';
-import { useGuide } from '@suite-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -51,8 +50,6 @@ const BitcoinOptions = () => {
         resetDefaultValue,
     } = useSendFormContext();
 
-    const { openNodeById } = useGuide();
-
     const options = getDefaultValue('options', []);
     const locktimeEnabled = options.includes('bitcoinLockTime');
     const rbfEnabled = options.includes('bitcoinRBF');
@@ -78,12 +75,7 @@ const BitcoinOptions = () => {
                     {!locktimeEnabled && (
                         <Tooltip
                             openGuide={{
-                                node: (
-                                    <OpenGuideFromTooltip
-                                        id="/suite-basics/send/locktime.md"
-                                        openNodeById={openNodeById}
-                                    />
-                                ),
+                                node: <OpenGuideFromTooltip id="/suite-basics/send/locktime.md" />,
                             }}
                             content={<Translation id="LOCKTIME_ADD_TOOLTIP" />}
                             cursor="pointer"
@@ -107,10 +99,7 @@ const BitcoinOptions = () => {
                             <Tooltip
                                 openGuide={{
                                     node: (
-                                        <OpenGuideFromTooltip
-                                            id="/suite-basics/send/rbf-replace-by-fee.md"
-                                            openNodeById={openNodeById}
-                                        />
+                                        <OpenGuideFromTooltip id="/suite-basics/send/rbf-replace-by-fee.md" />
                                     ),
                                 }}
                                 content={<Translation id="RBF_TOOLTIP" />}

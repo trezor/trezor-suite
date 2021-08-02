@@ -9,7 +9,6 @@ import { Translation } from '@suite-components/Translation';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { countBytesInString } from '@suite-utils/string';
 import { OpenGuideFromTooltip } from '@guide-views';
-import { useGuide } from '@suite-hooks';
 
 const PasswordStrengthIndicator = dynamic(
     () => import('@suite-components/PasswordStrengthIndicator'),
@@ -181,8 +180,6 @@ const PassphraseTypeCard = (props: Props) => {
     const ref = useRef<HTMLInputElement>(null);
     const caretRef = useRef<number>(0);
 
-    const { openNodeById } = useGuide();
-
     const isTooLong = countBytesInString(value) > MAX_LENGTH.PASSPHRASE;
 
     const submit = (value: string, passphraseOnDevice?: boolean) => {
@@ -283,10 +280,7 @@ const PassphraseTypeCard = (props: Props) => {
                                         title={<Translation id="TR_WHAT_IS_PASSPHRASE" />}
                                         openGuide={{
                                             node: (
-                                                <OpenGuideFromTooltip
-                                                    id="/security/passphrase.md"
-                                                    openNodeById={openNodeById}
-                                                />
+                                                <OpenGuideFromTooltip id="/security/passphrase.md" />
                                             ),
                                         }}
                                         content={<Translation id="TR_HIDDEN_WALLET_TOOLTIP" />}
