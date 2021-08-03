@@ -1,11 +1,11 @@
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { ExchangeTradeQuoteRequest } from 'invity-api';
+import { isChanged } from '@suite-utils/comparisonUtils';
 import { useActions, useSelector } from '@suite-hooks';
 import invityAPI from '@suite-services/invityAPI';
 import { toFiatCurrency, fromFiatCurrency } from '@wallet-utils/fiatConverterUtils';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
-import { FormState } from '@wallet-types/sendForm';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as routerActions from '@suite-actions/routerActions';
@@ -22,12 +22,18 @@ import { getComposeAddressPlaceholder } from '@wallet-utils/coinmarket/coinmarke
 import { getAmountLimits, splitToFixedFloatQuotes } from '@wallet-utils/coinmarket/exchangeUtils';
 import { useFees } from './form/useFees';
 import { useCompose } from './form/useCompose';
-import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';
+import { useFormDraft } from '@wallet-hooks/useFormDraft';
+import useDebounce from 'react-use/lib/useDebounce';
+import { useCoinmarketExchangeFormDefaultValues } from './useCoinmarketExchangeFormDefaultValues';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';
 
-const useExchangeState = ({ selectedAccount, fees }: Props, currentState: boolean) => {
+const useExchangeState = (
+    { selectedAccount, fees }: Props,
+    currentState: boolean,
+    defaultFormValues?: ExchangeFormState,
+) => {
     // do not calculate if currentState is already set (prevent re-renders)
     if (selectedAccount.status !== 'loaded' || currentState) return;
 
@@ -40,15 +46,7 @@ const useExchangeState = ({ selectedAccount, fees }: Props, currentState: boolea
         account,
         network,
         feeInfo,
-        formValues: {
-            ...DEFAULT_VALUES,
-            outputs: [
-                {
-                    ...DEFAULT_PAYMENT,
-                },
-            ],
-            options: ['broadcast'],
-        } as FormState, // TODO: remove type casting (options string[])
+        formValues: defaultFormValues,
     };
 };
 
@@ -87,7 +85,6 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
     const fiatRates = fiat.coins.find(item => item.symbol === symbol);
-    const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
 
     const [state, setState] = useState<ReturnType<typeof useExchangeState>>(undefined);
 
@@ -96,12 +93,25 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         exchangeInfo: state.wallet.coinmarket.exchange.exchangeInfo,
     }));
 
+    const { getDraft, saveDraft, removeDraft } = useFormDraft<ExchangeFormState>(
+        'coinmarket-exchange',
+    );
+    const draft = getDraft(account.key);
+    const isDraft = !!draft;
+
+    const { defaultCurrency, defaultValues } = useCoinmarketExchangeFormDefaultValues(
+        account.symbol,
+        localCurrency,
+        exchangeInfo,
+        state?.formValues?.outputs[0].address,
+    );
+
     // throttle initial state calculation
-    const initState = useExchangeState(props, !!state);
+    const initState = useExchangeState(props, !!state, defaultValues);
     useEffect(() => {
         const setStateAsync = async (initState: ReturnType<typeof useExchangeState>) => {
             const address = await getComposeAddressPlaceholder(account, network, device, accounts);
-            if (initState && address) {
+            if (initState?.formValues && address) {
                 initState.formValues.outputs[0].address = address;
                 setState(initState);
             }
@@ -115,9 +125,37 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
     const methods = useForm<ExchangeFormState>({
         mode: 'onChange',
         shouldUnregister: false, // NOTE: tracking custom fee inputs
-        defaultValues: { selectedFee: 'normal', feePerUnit: '', feeLimit: '' },
+        defaultValues: isDraft ? draft : defaultValues,
     });
-    const { reset, register, setValue, getValues, setError, clearErrors } = methods;
+    const {
+        reset,
+        register,
+        setValue,
+        getValues,
+        setError,
+        clearErrors,
+        formState,
+        errors,
+        control,
+    } = methods;
+
+    const values = useWatch<ExchangeFormState>({ control });
+
+    useDebounce(
+        () => {
+            if (formState.isDirty && !formState.isValidating && Object.keys(errors).length === 0) {
+                saveDraft(account.key, values as ExchangeFormState);
+            }
+        },
+        200,
+        [errors, saveDraft, account.key, values, formState],
+    );
+
+    useEffect(() => {
+        if (!isChanged(defaultValues, values)) {
+            removeDraft(account.key);
+        }
+    }, [defaultValues, values, removeDraft, account.key]);
 
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
@@ -127,10 +165,10 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
 
     // react-hook-form reset, set default values
     useEffect(() => {
-        if (state) {
-            reset(state?.formValues);
+        if (!isDraft && defaultValues) {
+            reset(defaultValues);
         }
-    }, [reset, state]);
+    }, [reset, isDraft, defaultValues]);
 
     const { isLoading: isComposing, composeRequest, composedLevels, onFeeLevelChange } = useCompose(
         {
@@ -177,7 +215,8 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
     const isLoading =
         !exchangeInfo?.exchangeList ||
         exchangeInfo?.exchangeList.length === 0 ||
-        !state?.formValues.outputs[0].address;
+        !state?.formValues?.outputs[0].address;
+
     const noProviders =
         exchangeInfo?.exchangeList?.length === 0 || !exchangeInfo?.sellSymbols.has(account.symbol);
 
@@ -230,30 +269,38 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
     const onSubmit = async () => {
         const formValues = getValues();
         const sendStringAmount = formValues.outputs[0].amount || '';
-        const send = formValues.sendCryptoSelect.value;
-        const receive = formValues.receiveCryptoSelect.value;
-        const request: ExchangeTradeQuoteRequest = {
-            receive,
-            send,
-            sendStringAmount,
-        };
+        const send = formValues.sendCryptoSelect.value.toUpperCase();
+        if (formValues.receiveCryptoSelect) {
+            const receive = formValues.receiveCryptoSelect.value;
+            const request: ExchangeTradeQuoteRequest = {
+                receive,
+                send,
+                sendStringAmount,
+            };
 
-        saveQuoteRequest(request);
-        const allQuotes = await invityAPI.getExchangeQuotes(request);
-        const limits = getAmountLimits(allQuotes);
+            saveQuoteRequest(request);
+            const allQuotes = await invityAPI.getExchangeQuotes(request);
+            const limits = getAmountLimits(allQuotes);
 
-        if (limits) {
-            setAmountLimits(limits);
-        } else {
-            const [fixedQuotes, floatQuotes] = splitToFixedFloatQuotes(allQuotes, exchangeInfo);
-            saveQuotes(fixedQuotes, floatQuotes);
-            goto('wallet-coinmarket-exchange-offers', {
-                symbol: account.symbol,
-                accountIndex: account.index,
-                accountType: account.accountType,
-            });
+            if (limits) {
+                setAmountLimits(limits);
+            } else {
+                const [fixedQuotes, floatQuotes] = splitToFixedFloatQuotes(allQuotes, exchangeInfo);
+                saveQuotes(fixedQuotes, floatQuotes);
+                goto('wallet-coinmarket-exchange-offers', {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                });
+            }
         }
     };
+
+    const handleClearFormButtonClick = useCallback(() => {
+        removeDraft(account.key);
+        reset(defaultValues);
+        composeRequest();
+    }, [removeDraft, account.key, reset, defaultValues, composeRequest]);
 
     return {
         ...methods,
@@ -267,7 +314,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         saveQuotes,
         quotesRequest,
         composedLevels,
-        localCurrencyOption,
+        defaultCurrency,
         exchangeCoinInfo,
         updateFiatCurrency,
         updateSendCryptoValue,
@@ -281,6 +328,10 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         isLoading,
         noProviders,
         network,
+        removeDraft,
+        formState,
+        handleClearFormButtonClick,
+        isDraft,
     };
 };
 

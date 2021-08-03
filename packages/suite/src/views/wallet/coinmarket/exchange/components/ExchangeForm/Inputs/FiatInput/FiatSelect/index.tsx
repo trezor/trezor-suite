@@ -20,7 +20,7 @@ const FiatSelect = () => {
         setAmountLimits,
         account,
         updateFiatCurrency,
-        localCurrencyOption,
+        defaultCurrency,
     } = useCoinmarketExchangeFormContext();
     const currencyOptions = buildCurrencyOptions();
 
@@ -28,7 +28,7 @@ const FiatSelect = () => {
         <Controller
             control={control}
             name={FIAT_CURRENCY}
-            defaultValue={localCurrencyOption}
+            defaultValue={defaultCurrency}
             render={({ onChange, value }) => (
                 <Select
                     onChange={(selected: any) => {

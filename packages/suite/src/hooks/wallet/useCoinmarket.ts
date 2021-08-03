@@ -9,6 +9,7 @@ import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeAc
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 import { Account } from '@wallet-types';
 import { TradeBuy, TradeSell, TradeExchange } from '@wallet-types/coinmarketCommonTypes';
+import { useFormDraft } from '@wallet-hooks/useFormDraft';
 
 const BuyTradeFinalStatuses: BuyTradeStatus[] = ['SUCCESS', 'ERROR', 'BLOCKED'];
 
@@ -30,6 +31,8 @@ export const useWatchBuyTrade = (account: Account, trade: TradeBuy) => {
         cancelRefresh();
     });
 
+    const { removeDraft } = useFormDraft('coinmarket-buy');
+
     useEffect(() => {
         if (trade && shouldRefreshBuyTrade(trade)) {
             cancelRefresh();
@@ -44,10 +47,13 @@ export const useWatchBuyTrade = (account: Account, trade: TradeBuy) => {
                     };
                     saveTrade(tradeData, account, newDate);
                 }
+                if (response.status && BuyTradeFinalStatuses.includes(response.status)) {
+                    removeDraft(account.key);
+                }
             });
             resetRefresh();
         }
-    }, [account, cancelRefresh, refreshCount, resetRefresh, saveTrade, trade]);
+    }, [account, cancelRefresh, refreshCount, removeDraft, resetRefresh, saveTrade, trade]);
 };
 
 export const ExchangeTradeFinalStatuses: ExchangeTradeStatus[] = ['SUCCESS', 'ERROR', 'KYC'];
@@ -70,6 +76,8 @@ export const useWatchExchangeTrade = (account: Account, trade: TradeExchange) =>
         cancelRefresh();
     });
 
+    const { removeDraft } = useFormDraft('coinmarket-exchange');
+
     useEffect(() => {
         if (trade && shouldRefreshExchangeTrade(trade)) {
             cancelRefresh();
@@ -84,10 +92,13 @@ export const useWatchExchangeTrade = (account: Account, trade: TradeExchange) =>
                     };
                     saveTrade(tradeData, account, newDate);
                 }
+                if (response.status && ExchangeTradeFinalStatuses.includes(response.status)) {
+                    removeDraft(account.key);
+                }
             });
             resetRefresh();
         }
-    }, [account, cancelRefresh, refreshCount, resetRefresh, saveTrade, trade]);
+    }, [account, cancelRefresh, refreshCount, removeDraft, resetRefresh, saveTrade, trade]);
 };
 
 export const SellFiatTradeFinalStatuses: SellTradeStatus[] = [
@@ -116,6 +127,8 @@ export const useWatchSellTrade = (account: Account, trade: TradeSell) => {
         cancelRefresh();
     });
 
+    const { removeDraft } = useFormDraft('coinmarket-sell');
+
     useEffect(() => {
         if (trade && shouldRefreshSellTrade(trade)) {
             cancelRefresh();
@@ -129,9 +142,12 @@ export const useWatchSellTrade = (account: Account, trade: TradeSell) => {
                         error: response.error,
                     };
                     saveTrade(tradeData, account, newDate);
+                    if (response.status && SellFiatTradeFinalStatuses.includes(response.status)) {
+                        removeDraft(account.key);
+                    }
                 }
             });
             resetRefresh();
         }
-    }, [account, cancelRefresh, refreshCount, resetRefresh, saveTrade, trade]);
+    }, [account, cancelRefresh, refreshCount, removeDraft, resetRefresh, saveTrade, trade]);
 };

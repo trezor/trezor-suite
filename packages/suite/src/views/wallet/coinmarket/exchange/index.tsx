@@ -14,9 +14,15 @@ const CoinmarketExchangeLoaded = (props: Props) => {
         ...props,
         selectedAccount,
     });
-
+    const {
+        isDraft,
+        formState: { isDirty },
+        handleClearFormButtonClick,
+    } = coinmarketExchangeContextValues;
     return (
-        <CoinmarketLayout>
+        <CoinmarketLayout
+            onClearFormButtonClick={isDirty || isDraft ? handleClearFormButtonClick : undefined}
+        >
             <ExchangeFormContext.Provider value={coinmarketExchangeContextValues}>
                 <ExchangeForm />
             </ExchangeFormContext.Provider>

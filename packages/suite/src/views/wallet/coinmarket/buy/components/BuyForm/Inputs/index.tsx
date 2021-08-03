@@ -55,7 +55,6 @@ const Inputs = () => {
         register,
         errors,
         trigger,
-        watch,
         account,
         network,
         control,
@@ -66,8 +65,7 @@ const Inputs = () => {
         buyInfo,
         setAmountLimits,
         defaultCurrency,
-        accountHasCachedRequest,
-        quotesRequest,
+        cryptoInputValue,
     } = useCoinmarketBuyFormContext();
     const { symbol } = account;
     const uppercaseSymbol = symbol.toUpperCase();
@@ -77,7 +75,7 @@ const Inputs = () => {
     const cryptoSelect = 'cryptoSelect';
     const [activeInput, setActiveInput] = useState<'fiatInput' | 'cryptoInput'>(fiatInput);
     // if cryptoInput has a valid value, set it as the activeInput
-    if (watch('cryptoInput') && !errors[cryptoInput] && activeInput === fiatInput) {
+    if (cryptoInputValue && !errors[cryptoInput] && activeInput === fiatInput) {
         setActiveInput(cryptoInput);
     }
 
@@ -90,11 +88,6 @@ const Inputs = () => {
             <Left>
                 <Input
                     noTopLabel
-                    defaultValue={
-                        accountHasCachedRequest && quotesRequest
-                            ? quotesRequest.fiatStringAmount
-                            : ''
-                    }
                     innerRef={register({
                         validate: (value: string) => {
                             if (activeInput === fiatInput) {
@@ -167,14 +160,7 @@ const Inputs = () => {
                         <Controller
                             control={control}
                             name={currencySelect}
-                            defaultValue={
-                                accountHasCachedRequest && quotesRequest?.fiatCurrency
-                                    ? {
-                                          label: quotesRequest.fiatCurrency.toUpperCase(),
-                                          value: quotesRequest.fiatCurrency.toUpperCase(),
-                                      }
-                                    : defaultCurrency
-                            }
+                            defaultValue={defaultCurrency}
                             render={({ onChange, value }) => (
                                 <Select
                                     options={FIAT.currencies
@@ -208,11 +194,6 @@ const Inputs = () => {
                         setValue(fiatInput, '');
                         clearErrors(fiatInput);
                     }}
-                    defaultValue={
-                        accountHasCachedRequest && quotesRequest
-                            ? quotesRequest.cryptoStringAmount
-                            : ''
-                    }
                     state={errors[cryptoInput] ? 'error' : undefined}
                     name={cryptoInput}
                     noTopLabel
@@ -280,17 +261,10 @@ const Inputs = () => {
                         <Controller
                             control={control}
                             name={cryptoSelect}
-                            defaultValue={
-                                accountHasCachedRequest && quotesRequest?.receiveCurrency
-                                    ? {
-                                          label: quotesRequest.receiveCurrency.toUpperCase(),
-                                          value: quotesRequest.receiveCurrency.toUpperCase(),
-                                      }
-                                    : {
-                                          value: uppercaseSymbol,
-                                          label: uppercaseSymbol,
-                                      }
-                            }
+                            defaultValue={{
+                                value: uppercaseSymbol,
+                                label: uppercaseSymbol,
+                            }}
                             render={({ onChange, value }) => (
                                 <Select
                                     onChange={(selected: any) => {

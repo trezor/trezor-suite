@@ -66,7 +66,7 @@ const SendCryptoInput = () => {
             onChange={event => {
                 updateFiatValue(event.target.value);
                 clearErrors(FIAT_INPUT);
-                setValue('setMaxOutputId', undefined);
+                setValue('setMaxOutputId', undefined, { shouldDirty: true });
                 composeRequest();
             }}
             state={error ? 'error' : undefined}

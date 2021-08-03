@@ -8,16 +8,20 @@ import BuyForm from './components/BuyForm';
 
 const mapStateToProps = (state: AppState): ComponentProps => ({
     selectedAccount: state.wallet.selectedAccount,
-    quotesRequest: state.wallet.coinmarket.buy.quotesRequest,
-    cachedAccountInfo: state.wallet.coinmarket.buy.cachedAccountInfo,
 });
 
 const CoinmarketBuyLoaded = (props: Props) => {
     const { selectedAccount } = props;
     const coinmarketBuyContextValues = useCoinmarketBuyForm({ ...props, selectedAccount });
-
+    const {
+        isDraft,
+        formState: { isDirty },
+        handleClearFormButtonClick,
+    } = coinmarketBuyContextValues;
     return (
-        <CoinmarketLayout>
+        <CoinmarketLayout
+            onClearFormButtonClick={isDirty || isDraft ? handleClearFormButtonClick : undefined}
+        >
             <BuyFormContext.Provider value={coinmarketBuyContextValues}>
                 <BuyForm />
             </BuyFormContext.Provider>

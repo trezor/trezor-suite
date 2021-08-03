@@ -7,9 +7,15 @@ import { useCoinmarketSellForm, SellFormContext } from '@wallet-hooks/useCoinmar
 
 const CoinmarketSellLoaded = (props: Props) => {
     const coinmarketSellContextValues = useCoinmarketSellForm(props);
-
+    const {
+        isDraft,
+        formState: { isDirty },
+        handleClearFormButtonClick,
+    } = coinmarketSellContextValues;
     return (
-        <CoinmarketLayout>
+        <CoinmarketLayout
+            onClearFormButtonClick={isDirty || isDraft ? handleClearFormButtonClick : undefined}
+        >
             <SellFormContext.Provider value={coinmarketSellContextValues}>
                 <SellForm />
             </SellFormContext.Provider>
