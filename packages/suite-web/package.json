@@ -1,6 +1,6 @@
 {
     "name": "@trezor/suite-web",
-    "version": "21.8.0",
+    "version": "21.8.1",
     "private": true,
     "scripts": {
         "type-check": "tsc --project tsconfig.json",
@@ -16,7 +16,7 @@
     "dependencies": {
         "@sentry/browser": "^6.10.0",
         "@sentry/integrations": "^6.10.0",
-        "@trezor/suite": "21.8.0",
+        "@trezor/suite": "21.8.1",
         "@zeit/next-workers": "^1.0.0",
         "next": "^10.0.5",
         "next-redux-wrapper": "^5.0.0",
