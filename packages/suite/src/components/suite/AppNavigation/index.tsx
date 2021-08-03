@@ -38,6 +38,7 @@ const Wrapper = styled.div<{ value: boolean; subRoute: boolean | undefined }>`
         css`
             transition: all 0.3s ease 0s;
             transform: translate(0, 0);
+            z-index: 5;
         `}
 
     ${props =>
@@ -56,6 +57,7 @@ const Wrapper = styled.div<{ value: boolean; subRoute: boolean | undefined }>`
             transition: all 0.3s ease 0s;
             transform: translate(0, 0);
             margin-bottom: 70px;
+            z-index: 5;
         `}
 `;
 
