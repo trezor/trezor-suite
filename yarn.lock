@@ -23526,10 +23526,10 @@ trezor-address-validator@^0.3.22:
     jssha "2.3.1"
     lodash "^4.17.15"
 
-trezor-connect@8.1.29-extended:
-  version "8.1.29-extended"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.29-extended.tgz#008ce6f8aa0b78e61d49dc2b02a8ba2d72becbb3"
-  integrity sha512-3xCSMpGz804v52SS0WoP95a1pTi26csnpvMmvb8R+2abFJi1v99+uId3ESuqDxCCraB+Z22FyZeP5qDEc4OneQ==
+trezor-connect@8.1.30-beta.1:
+  version "8.1.30-beta.1"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.30-beta.1.tgz#a251c0a826aeb0ac27f5ef8ab0f86e4f1c194a7e"
+  integrity sha512-nblNLHhGHG8i983rdbSk7i/KecNUY2s1DTHR3yMMwjOfi/PgBYoJVLaH2uR7TFXzYFVW0xAH2WPo/TxP1J1IMg==
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@trezor/blockchain-link" "^1.0.17"
