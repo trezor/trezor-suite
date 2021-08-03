@@ -137,7 +137,6 @@ const ReceiveCryptoSelect = () => {
         <Wrapper>
             <Controller
                 control={control}
-                defaultValue={false}
                 name="receiveCryptoSelect"
                 render={({ onChange, value }) => (
                     <Select

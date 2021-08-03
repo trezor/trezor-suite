@@ -1,5 +1,5 @@
 import { AppState } from '@suite-types';
-import { UseFormMethods } from 'react-hook-form';
+import { UseFormMethods, FormState as ReactHookFormState } from 'react-hook-form';
 import { Account, Network, CoinFiatRates } from '@wallet-types';
 import { FeeLevel } from 'trezor-connect';
 import { ExchangeTrade, ExchangeTradeQuoteRequest, ExchangeCoinInfo } from 'invity-api';
@@ -28,7 +28,8 @@ export interface Props extends ComponentProps {
 }
 
 export type ExchangeFormState = FormState & {
-    receiveCryptoSelect: Option;
+    // NOTE: react-select value type cannot be undefined, but at least null works
+    receiveCryptoSelect: Option | null;
     sendCryptoSelect: Option;
 };
 
@@ -46,7 +47,7 @@ export type ExchangeFormContextValues = Omit<UseFormMethods<ExchangeFormState>, 
     changeFeeLevel: (level: FeeLevel['label']) => void;
     exchangeInfo?: ExchangeInfo;
     exchangeCoinInfo?: ExchangeCoinInfo[];
-    localCurrencyOption: { label: string; value: string };
+    defaultCurrency: Option;
     composeRequest: (field?: string) => void;
     updateFiatCurrency: (selectedCurrency: { value: string; label: string }) => void;
     updateSendCryptoValue: (fiatValue: string, decimals: number) => void;
@@ -70,4 +71,8 @@ export type ExchangeFormContextValues = Omit<UseFormMethods<ExchangeFormState>, 
     noProviders: boolean;
     network: Network;
     feeInfo: FeeInfo;
+    removeDraft: (key: string) => void;
+    formState: ReactHookFormState<ExchangeFormState>;
+    handleClearFormButtonClick: () => void;
+    isDraft: boolean;
 };

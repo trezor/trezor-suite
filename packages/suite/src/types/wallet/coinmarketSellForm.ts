@@ -1,5 +1,5 @@
 import { AppState } from '@suite-types';
-import { UseFormMethods } from 'react-hook-form';
+import { UseFormMethods, FormState as ReactHookFormState } from 'react-hook-form';
 import { Account, Network, CoinFiatRates } from '@wallet-types';
 import { FeeLevel } from 'trezor-connect';
 import { SellFiatTrade, SellFiatTradeQuoteRequest, ExchangeCoinInfo } from 'invity-api';
@@ -73,4 +73,7 @@ export type SellFormContextValues = Omit<UseFormMethods<SellFormState>, 'registe
     feeInfo: FeeInfo;
     onCryptoAmountChange: (amount: string) => void;
     onFiatAmountChange: (amount: string) => void;
+    handleClearFormButtonClick: () => void;
+    formState: ReactHookFormState<FormState>;
+    isDraft: boolean;
 };

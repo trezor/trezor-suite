@@ -1,20 +1,12 @@
 import { AppState } from '@suite-types';
 import { Account, Network } from '@wallet-types';
-import {
-    BuyInfo,
-    saveQuoteRequest,
-    saveQuotes,
-    saveTrade,
-    saveCachedAccountInfo,
-} from '@wallet-actions/coinmarketBuyActions';
-import { UseFormMethods } from 'react-hook-form';
+import { BuyInfo, saveQuotes, saveTrade } from '@wallet-actions/coinmarketBuyActions';
+import { UseFormMethods, FormState as ReactHookFormState } from 'react-hook-form';
 import { TypedValidationRules } from './form';
 import { DefaultCountryOption, Option } from './coinmarketCommonTypes';
 
 export interface ComponentProps {
     selectedAccount: AppState['wallet']['selectedAccount'];
-    quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
-    cachedAccountInfo: AppState['wallet']['coinmarket']['buy']['cachedAccountInfo'];
 }
 
 export interface Props extends ComponentProps {
@@ -44,16 +36,16 @@ export type BuyFormContextValues = Omit<UseFormMethods<FormState>, 'register'> &
     defaultCountry: DefaultCountryOption;
     defaultCurrency: Option;
     buyInfo?: BuyInfo;
-    saveQuoteRequest: typeof saveQuoteRequest;
     saveQuotes: typeof saveQuotes;
-    saveCachedAccountInfo: typeof saveCachedAccountInfo;
     saveTrade: typeof saveTrade;
     amountLimits?: AmountLimits;
     setAmountLimits: (limits?: AmountLimits) => void;
-    accountHasCachedRequest: boolean;
-    cachedAccountInfo: AppState['wallet']['coinmarket']['buy']['cachedAccountInfo'];
-    quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
     isLoading: boolean;
     noProviders: boolean;
     network: Network;
+    cryptoInputValue?: string;
+    removeDraft: (key: string) => void;
+    formState: ReactHookFormState<FormState>;
+    isDraft: boolean;
+    handleClearFormButtonClick: () => void;
 };

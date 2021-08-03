@@ -91,7 +91,7 @@ const Inputs = () => {
                 .dividedBy(divisor)
                 .decimalPlaces(network.decimals)
                 .toString();
-            setValue(CRYPTO_INPUT, amount);
+            setValue(CRYPTO_INPUT, amount, { shouldDirty: true });
             clearErrors([CRYPTO_INPUT]);
             setActiveInput(CRYPTO_INPUT);
             onCryptoAmountChange(amount);
@@ -100,8 +100,8 @@ const Inputs = () => {
     );
 
     const setAllAmount = useCallback(() => {
-        setValue('setMaxOutputId', 0);
-        setValue(FIAT_INPUT, '');
+        setValue('setMaxOutputId', 0, { shouldDirty: true });
+        setValue(FIAT_INPUT, '', { shouldDirty: true });
         clearErrors([FIAT_INPUT, CRYPTO_INPUT]);
         setActiveInput(CRYPTO_INPUT);
         composeRequest(CRYPTO_INPUT);

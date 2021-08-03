@@ -1,5 +1,5 @@
 import { WalletLayout, CoinmarketFooter } from '@wallet-components';
-import { variables, Card } from '@trezor/components';
+import { variables, Card, Button } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
@@ -24,21 +24,44 @@ const LayoutNavWrap = styled.div`
     margin-bottom: 32px;
 `;
 
+const HeaderLeft = styled.div`
+    display: flex;
+    flex: 1;
+    align-items: center;
+`;
+
+const HeaderRight = styled.div`
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: flex-end;
+`;
+
 const BottomContent = styled.div``;
 
 interface Props {
     children: ReactNode;
+    onClearFormButtonClick?: () => void;
 }
 
-const CoinmarketLayout = ({ children }: Props) => {
+const CoinmarketLayout = ({ children, onClearFormButtonClick }: Props) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     return (
         <WalletLayout title="TR_NAV_TRADE" account={selectedAccount}>
             <LayoutNavWrap>
-                <StyledTitle>
-                    <Translation id="TR_NAV_TRADE" />
-                </StyledTitle>
-                <AccountFormCloseButton />
+                <HeaderLeft>
+                    <StyledTitle>
+                        <Translation id="TR_NAV_TRADE" />
+                    </StyledTitle>
+                </HeaderLeft>
+                <HeaderRight>
+                    {onClearFormButtonClick && (
+                        <Button type="button" variant="tertiary" onClick={onClearFormButtonClick}>
+                            <Translation id="TR_CLEAR_ALL" />
+                        </Button>
+                    )}
+                    <AccountFormCloseButton />
+                </HeaderRight>
             </LayoutNavWrap>
             <Card noPadding>
                 <Navigation />
