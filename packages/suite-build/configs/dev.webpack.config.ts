@@ -26,6 +26,7 @@ const config: webpack.Configuration = {
             progress: 'minimal',
             // @ts-ignore - Property doesn't exist in types but works
             ramdisk: false,
+            historyFallback: true,
         }),
         new ReactRefreshWebpackPlugin({
             overlay: false,
