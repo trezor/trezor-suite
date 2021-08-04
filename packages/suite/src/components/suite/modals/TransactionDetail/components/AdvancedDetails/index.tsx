@@ -41,9 +41,10 @@ interface Props {
     network: Network;
     tx: WalletAccountTransaction;
     chainedTxs: WalletAccountTransaction[];
+    explorerUrl: string;
 }
 
-const AdvancedDetails = ({ defaultTab, network, tx, chainedTxs }: Props) => {
+const AdvancedDetails = ({ defaultTab, network, tx, chainedTxs, explorerUrl }: Props) => {
     const [selectedTab, setSelectedTab] = useState<TabID>(defaultTab ?? 'amount');
 
     let content: JSX.Element | undefined;
@@ -52,7 +53,7 @@ const AdvancedDetails = ({ defaultTab, network, tx, chainedTxs }: Props) => {
     } else if (selectedTab === 'io' && network.networkType !== 'ripple') {
         content = <IODetails tx={tx} />;
     } else if (selectedTab === 'chained' && chainedTxs.length > 0) {
-        content = <ChainedTxs txs={chainedTxs} />;
+        content = <ChainedTxs txs={chainedTxs} explorerUrl={explorerUrl} />;
     }
 
     return (

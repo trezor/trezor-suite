@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import TrezorLink from '@suite-components/TrezorLink';
 import { WalletAccountTransaction } from '@wallet-reducers/transactionReducer';
 import TransactionItem from '@wallet-components/TransactionItem';
-import { getBlockExplorerUrl } from '@wallet-utils/transactionUtils';
 
 const Wrapper = styled.div`
     text-align: left;
@@ -16,12 +15,13 @@ const StyledTrezorLink = styled(TrezorLink)`
 
 interface Props {
     txs: WalletAccountTransaction[];
+    explorerUrl: string;
 }
 
-const ChainedTxs = ({ txs }: Props) => (
+const ChainedTxs = ({ txs, explorerUrl }: Props) => (
     <Wrapper>
         {txs.map(tx => (
-            <StyledTrezorLink href={getBlockExplorerUrl(tx)} variant="nostyle">
+            <StyledTrezorLink href={`${explorerUrl}${tx.txid}`} variant="nostyle">
                 <TransactionItem
                     key={tx.txid}
                     transaction={tx}

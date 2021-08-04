@@ -5,7 +5,7 @@ import { Account, WalletAccountTransaction, RbfTransactionParams } from '@wallet
 import { AccountMetadata } from '@suite-types/metadata';
 import { getDateWithTimeZone } from '../suite/date';
 import { toFiatCurrency } from './fiatConverterUtils';
-import { formatAmount, formatNetworkAmount, amountToSatoshi, getNetwork } from './accountUtils';
+import { formatAmount, formatNetworkAmount, amountToSatoshi } from './accountUtils';
 
 export const sortByBlockHeight = (a: WalletAccountTransaction, b: WalletAccountTransaction) => {
     // if both are missing the blockHeight don't change their order
@@ -789,11 +789,6 @@ export const advancedSearchTransactions = (
     ]);
 
     return transactions.filter(t => filteredTxIDs.has(t.txid));
-};
-
-export const getBlockExplorerUrl = (tx: WalletAccountTransaction) => {
-    const network = getNetwork(tx.symbol);
-    return `${network!.explorer.tx}${tx.txid}`;
 };
 
 export const isTxFinal = (tx: WalletAccountTransaction, confirmations: number) =>
