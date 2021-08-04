@@ -90,7 +90,12 @@ const TransactionDetail = (props: Props) => {
             heading={<Translation id="TR_TRANSACTION_DETAILS" />}
         >
             <Wrapper>
-                <BasicDetails tx={tx} network={network!} confirmations={confirmations} />
+                <BasicDetails
+                    explorerUrl={blockchain.explorer.tx}
+                    tx={tx}
+                    network={network!}
+                    confirmations={confirmations}
+                />
                 <SectionActions>
                     {tx.rbfParams && (
                         <>
@@ -165,6 +170,7 @@ const TransactionDetail = (props: Props) => {
                     />
                 ) : (
                     <AdvancedDetails
+                        explorerUrl={blockchain.explorer.tx}
                         defaultTab={tab}
                         network={network!}
                         tx={tx}

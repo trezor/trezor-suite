@@ -9,12 +9,7 @@ import {
 } from '@suite-components';
 import { getDateWithTimeZone } from '@suite-utils/date';
 import { WalletAccountTransaction, Network } from '@wallet-types';
-import {
-    getFeeRate,
-    getBlockExplorerUrl,
-    isTxFinal,
-    getTxIcon,
-} from '@wallet-utils/transactionUtils';
+import { getFeeRate, isTxFinal, getTxIcon } from '@wallet-utils/transactionUtils';
 import { getFeeUnits } from '@wallet-utils/sendFormUtils';
 
 const Wrapper = styled.div`
@@ -172,6 +167,7 @@ interface Props {
     tx: WalletAccountTransaction;
     network: Network;
     confirmations: number;
+    explorerUrl: string;
 }
 
 const getHumanReadableTxType = (tx: WalletAccountTransaction) => {
@@ -189,13 +185,12 @@ const getHumanReadableTxType = (tx: WalletAccountTransaction) => {
     }
 };
 
-const BasicDetails = ({ tx, confirmations, network }: Props) => {
+const BasicDetails = ({ tx, confirmations, network, explorerUrl }: Props) => {
     const theme = useTheme();
     const isConfirmed = confirmations > 0;
     const transactionStatus = getHumanReadableTxType(tx);
     const tokenSymbol = tx.tokens.length > 0 ? tx.tokens[0].symbol : undefined;
     const assetSymbol = tokenSymbol ? tokenSymbol.toUpperCase() : tx.symbol.toUpperCase();
-    const explorerUrl = getBlockExplorerUrl(tx);
     const isFinal = isTxFinal(tx, confirmations);
 
     return (
@@ -277,7 +272,7 @@ const BasicDetails = ({ tx, confirmations, network }: Props) => {
                 </Title>
                 <TxidValue>
                     <TransactionId>{tx.txid}</TransactionId>
-                    <TrezorLink size="tiny" variant="nostyle" href={explorerUrl}>
+                    <TrezorLink size="tiny" variant="nostyle" href={`${explorerUrl}${tx.txid}`}>
                         <Tooltip content={<Translation id="TR_OPEN_IN_BLOCK_EXPLORER" />}>
                             <LinkIcon size={12} color={theme.TYPE_DARK_GREY} icon="EXTERNAL_LINK" />
                         </Tooltip>
