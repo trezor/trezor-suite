@@ -4167,6 +4167,10 @@ const definedMessages = defineMessages({
         id: 'TR_NO_DEVICE_CONNECTED',
         defaultMessage: 'No device connected',
     },
+    TR_REBOOT_INTO_BOOTLOADER: {
+        id: 'TR_REBOOT_INTO_BOOTLOADER',
+        defaultMessage: 'Reboot your Trezor into bootloader mode',
+    },
     TR_RECONNECT_IN_BOOTLOADER: {
         id: 'TR_RECONNECT_IN_BOOTLOADER',
         defaultMessage: 'Reconnect your device in bootloader mode',

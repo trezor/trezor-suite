@@ -129,13 +129,16 @@ const ConfirmOnDeviceHeader = styled.div`
 const HeadingText = ({
     requestedMode,
     phase,
+    method,
 }: {
     requestedMode: RebootRequestedMode;
     phase: RebootPhase;
+    method: RebootMethod;
 }) => {
     if (requestedMode === 'bootloader') {
-        return phase === 'done' ? (
-            <Translation id="TR_RECONNECT_IN_BOOTLOADER_SUCCESS" />
+        if (phase === 'done') return <Translation id="TR_RECONNECT_IN_BOOTLOADER_SUCCESS" />;
+        return method === 'automatic' ? (
+            <Translation id="TR_REBOOT_INTO_BOOTLOADER" />
         ) : (
             <Translation id="TR_RECONNECT_IN_BOOTLOADER" />
         );
@@ -228,7 +231,11 @@ const ReconnectDevicePrompt = ({ expectedDevice, requestedMode, onSuccess }: Pro
                 <RebootDeviceGraphics device={expectedDevice} method={rebootMethod} />
                 <Content>
                     <Heading>
-                        <HeadingText requestedMode={requestedMode} phase={rebootPhase} />
+                        <HeadingText
+                            requestedMode={requestedMode}
+                            phase={rebootPhase}
+                            method={rebootMethod}
+                        />
                     </Heading>
                     {rebootPhase !== 'done' ? (
                         <>
