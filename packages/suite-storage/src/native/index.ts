@@ -13,8 +13,9 @@ export type OnUpgradeFunc<TDBStructure> = (
     db: IDBPDatabase<TDBStructure>,
     oldVersion: number,
     newVersion: number | null,
-    transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[]>
+    transaction: IDBPTransaction<TDBStructure, StoreNames<TDBStructure>[], 'versionchange'>
 ) => Promise<void>;
+
 class CommonDB<TDBStructure> {
     private static instance: CommonDB<any>;
     dbName!: string;

@@ -1,28 +1,17 @@
-import { app, shell, Menu, MenuItem } from 'electron';
+import { app, shell, Menu, MenuItemConstructorOptions } from 'electron';
 
 const isMac = process.platform === 'darwin';
 
-// @ts-ignore should be fine https://www.electronjs.org/docs/api/menu#main-process
+// original MenuItemConstructorOptions is too complex for our purpose.
+// submenu field may be an object or array of objects.
+// override submenu field and use array only
+type MenuItem = Omit<MenuItemConstructorOptions, 'submenu'> & {
+    submenu: MenuItemConstructorOptions[];
+};
+
 const mainMenuTemplate: MenuItem[] = [
     // { role: 'appMenu' }
-    ...(isMac
-        ? [
-              {
-                  label: app.name,
-                  submenu: [
-                      { role: 'about' },
-                      { type: 'separator' },
-                      { role: 'services' },
-                      { type: 'separator' },
-                      { role: 'hide' },
-                      { role: 'hideothers' },
-                      { role: 'unhide' },
-                      { type: 'separator' },
-                      { role: 'quit' },
-                  ],
-              },
-          ]
-        : []),
+    // "App menu" for macOS conditionally added below
     // { role: 'fileMenu' }
     {
         label: 'File',
@@ -38,18 +27,7 @@ const mainMenuTemplate: MenuItem[] = [
             { role: 'cut' },
             { role: 'copy' },
             { role: 'paste' },
-            ...(isMac
-                ? [
-                      { role: 'pasteAndMatchStyle' },
-                      { role: 'delete' },
-                      { role: 'selectAll' },
-                      { type: 'separator' },
-                      {
-                          label: 'Speech',
-                          submenu: [{ role: 'startspeaking' }, { role: 'stopspeaking' }],
-                      },
-                  ]
-                : [{ role: 'delete' }, { type: 'separator' }, { role: 'selectAll' }]),
+            // extended below
         ],
     },
     // { role: 'viewMenu' }
@@ -57,12 +35,12 @@ const mainMenuTemplate: MenuItem[] = [
         label: 'View',
         submenu: [
             { role: 'reload' },
-            { role: 'forcereload' },
-            { role: 'toggledevtools' },
+            { role: 'forceReload' },
+            { role: 'toggleDevTools' },
             { type: 'separator' },
-            { role: 'resetzoom' },
-            { role: 'zoomin' },
-            { role: 'zoomout' },
+            { role: 'resetZoom' },
+            { role: 'zoomIn' },
+            { role: 'zoomOut' },
             { type: 'separator' },
             { role: 'togglefullscreen' },
         ],
@@ -70,31 +48,64 @@ const mainMenuTemplate: MenuItem[] = [
     // { role: 'windowMenu' }
     {
         label: 'Window',
-        submenu: [
-            { role: 'minimize' },
-            { role: 'zoom' },
-            ...(isMac
-                ? [
-                      { type: 'separator' },
-                      { role: 'front' },
-                      { type: 'separator' },
-                      { role: 'window' },
-                  ]
-                : [{ role: 'close' }]),
-        ],
+        submenu: [{ role: 'minimize' }, { role: 'zoom' }],
+        // extended below
     },
     {
         role: 'help',
         submenu: [
             {
                 label: 'Learn More',
-                click: async () => {
-                    await shell.openExternal('https://trezor.io/');
-                },
+                click: () => shell.openExternal('https://trezor.io/'),
             },
         ],
     },
 ];
+
+if (isMac) {
+    // Extend "Edit"
+    mainMenuTemplate[1].submenu.push(
+        { role: 'pasteAndMatchStyle' },
+        { role: 'delete' },
+        { role: 'selectAll' },
+        { type: 'separator' },
+        {
+            label: 'Speech',
+            submenu: [{ role: 'startSpeaking' }, { role: 'stopSpeaking' }],
+        },
+    );
+    // Extend "Window"
+    mainMenuTemplate[3].submenu.push(
+        { type: 'separator' },
+        { role: 'front' },
+        { type: 'separator' },
+        { role: 'window' },
+    );
+    // Append "App menu"
+    mainMenuTemplate.unshift({
+        label: app.name,
+        submenu: [
+            { role: 'about' },
+            { type: 'separator' },
+            { role: 'services' },
+            { type: 'separator' },
+            { role: 'hide' },
+            { role: 'hideOthers' },
+            { role: 'unhide' },
+            { type: 'separator' },
+            { role: 'quit' },
+        ],
+    });
+} else {
+    // Extend "Edit"
+    mainMenuTemplate[1].submenu.push(
+        { role: 'delete' },
+        { type: 'separator' },
+        { role: 'selectAll' },
+    );
+    // Extend "Window"
+    mainMenuTemplate[3].submenu.push({ role: 'close' });
+}
 
 // for those wondering why is this a function, it is because otherwise app.name used in the template has incorrect value @trezor/suite-desktop instead of "Trezor Suite"
 export const buildMainMenu = () => Menu.buildFromTemplate(mainMenuTemplate);

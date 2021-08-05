@@ -26,7 +26,7 @@ const defaultDateFormat = {
     year: 'numeric',
     month: 'short',
     day: '2-digit',
-};
+} as const;
 
 const defaultTimeFormat = {
     hour: 'numeric',
