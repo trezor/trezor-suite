@@ -151,14 +151,15 @@ export const onPassphraseSubmit = (value: string, passphraseOnDevice: boolean) =
     const { device } = getState().suite;
     if (!device) return;
 
-    const hidden = passphraseOnDevice || value;
-    // call SUITE.UPDATE_PASSPHRASE_MODE action to set or remove walletNumber
-    dispatch({
-        type: SUITE.UPDATE_PASSPHRASE_MODE,
-        payload: device,
-        hidden,
-        alwaysOnDevice: passphraseOnDevice,
-    });
+    if (!device.state) {
+        // call SUITE.UPDATE_PASSPHRASE_MODE action to set or remove walletNumber
+        dispatch({
+            type: SUITE.UPDATE_PASSPHRASE_MODE,
+            payload: device,
+            hidden: passphraseOnDevice || value,
+            alwaysOnDevice: passphraseOnDevice,
+        });
+    }
 
     TrezorConnect.uiResponse({
         type: UI.RECEIVE_PASSPHRASE,
