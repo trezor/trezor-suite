@@ -20,7 +20,7 @@
     "browser": "./lib/web/index.js",
     "dependencies": {
         "broadcast-channel": "^3.0.5",
-        "idb": "^5.0.4"
+        "idb": "^6.1.2"
     },
     "devDependencies": {}
 }

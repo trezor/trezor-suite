@@ -43,7 +43,7 @@ const dateTimeFormat = {
     year: 'numeric',
     month: 'numeric',
     day: 'numeric',
-};
+} as const;
 
 const loadPdfMake = async () => {
     const pdfMake = await import(/* webpackChunkName: "pdfMake" */ 'pdfmake/build/pdfmake');
