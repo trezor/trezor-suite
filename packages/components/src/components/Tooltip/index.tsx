@@ -85,7 +85,7 @@ const StyledTooltipTitle = styled.span`
     margin-bottom: 8px;
 `;
 
-const StyledContent = styled.p`
+const StyledContent = styled.div`
     font-size: ${FONT_SIZE.TINY};
     font-stretch: normal;
     font-style: normal;
