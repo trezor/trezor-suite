@@ -28,7 +28,7 @@ const OpenGuideInner = styled.span`
     position: relative;
 `;
 
-const BoxDefault = styled(animated.div)<{ maxWidth: string | number }>`
+const BoxDefault = styled(animated.div)<{ $maxWidth: string | number }>`
     padding: 8px;
     background: ${props => props.theme.BG_TOOLTIP};
     color: ${props => props.theme.TYPE_WHITE};
@@ -37,7 +37,7 @@ const BoxDefault = styled(animated.div)<{ maxWidth: string | number }>`
     font-size: ${FONT_SIZE.TINY};
     text-align: left;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-    max-width: ${props => props.maxWidth}px;
+    max-width: ${props => props.$maxWidth}px;
     &:hover ${OpenGuideInner} {
         border-radius: 26px;
         background-color: ${props => transparentize(0.85, props.theme.TYPE_ORANGE)};
@@ -50,7 +50,7 @@ const BoxDefault = styled(animated.div)<{ maxWidth: string | number }>`
     }
 `;
 
-const BoxRich = styled(animated.div)<{ maxWidth: string | number }>`
+const BoxRich = styled(animated.div)<{ $maxWidth: string | number }>`
     padding: 24px;
     background: ${props => props.theme.BG_WHITE_ALT};
     color: ${props => props.theme.TYPE_DARK_GREY};
@@ -58,7 +58,7 @@ const BoxRich = styled(animated.div)<{ maxWidth: string | number }>`
     font-size: ${FONT_SIZE.NORMAL};
     text-align: left;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
-    max-width: ${props => props.maxWidth}px;
+    max-width: ${props => props.$maxWidth}px;
 `;
 
 const Content = styled.div<{ dashed?: boolean; cursor: Cursor }>`
@@ -169,12 +169,12 @@ const Tooltip = ({
                 {...rest}
                 render={attrs =>
                     rich ? (
-                        <BoxRich maxWidth={maxWidth} tabIndex={-1} style={spring} {...attrs}>
+                        <BoxRich $maxWidth={maxWidth} tabIndex={-1} style={spring} {...attrs}>
                             {title && <StyledTooltipTitle>{title}</StyledTooltipTitle>}
                             <StyledContent>{content}</StyledContent>
                         </BoxRich>
                     ) : (
-                        <BoxDefault maxWidth={maxWidth} tabIndex={-1} style={spring} {...attrs}>
+                        <BoxDefault $maxWidth={maxWidth} tabIndex={-1} style={spring} {...attrs}>
                             {title && <StyledTooltipTitle>{title}</StyledTooltipTitle>}
                             {openGuide && <OpenGuideInner>{openGuide.node}</OpenGuideInner>}
                             <StyledContent>{content}</StyledContent>
