@@ -83,30 +83,28 @@ const Heading = styled.span<Pick<Props, 'variant'>>`
         `}
 `;
 
-// DOM elements should not contain camelCase attributes (noContentPadding prop renamed to snake-case no-content-padding)
-// DOM attributes should not be boolean values (noContentPadding prop converted to string)
-const Content = styled(animated.div)<{ variant: Props['variant']; 'no-content-padding': string }>`
+const Content = styled(animated.div)<{ variant: Props['variant']; $noContentPadding?: boolean }>`
     display: flex;
     flex-direction: column;
     overflow: hidden;
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
 
     ${props =>
-        props['no-content-padding'] === 'false' &&
+        !props.$noContentPadding &&
         props.variant === 'tiny' &&
         css`
             padding: 15px 16px;
         `}
 
     ${props =>
-        props['no-content-padding'] === 'false' &&
+        !props.$noContentPadding &&
         props.variant === 'small' &&
         css`
             padding: 20px 16px;
         `}
 
     ${props =>
-        props['no-content-padding'] === 'false' &&
+        !props.$noContentPadding &&
         props.variant === 'large' &&
         css`
             padding: 20px 30px;
@@ -166,7 +164,7 @@ const CollapsibleBox = ({
             </Header>
             <animated.div style={{ ...slideInStyles, overflow: 'hidden' }}>
                 <animated.div ref={heightRef} style={{ overflow: 'hidden' }}>
-                    <Content variant={variant} no-content-padding={(!!noContentPadding).toString()}>
+                    <Content variant={variant} $noContentPadding={noContentPadding}>
                         {children}
                     </Content>
                 </animated.div>
