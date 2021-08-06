@@ -3,18 +3,18 @@
     "version": "21.8.0",
     "author": "Trezor <info@trezor.io>",
     "private": true,
-    "keywords": [
-        "Trezor",
-        "suite-build"
-    ],
+    "keywords": ["Trezor", "suite-build"],
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "trezor suite build",
     "scripts": {
         "patch": "yarn patch-package",
         "base": "TS_NODE_PROJECT=\"tsconfig.json\" wp --config ./webpack.config.ts",
         "web": "PROJECT=web yarn run base",
+        "landing": "PROJECT=landing yarn run base",
+        "dev:landing": "yarn run landing",
         "dev:web": "yarn run web",
         "build:web": "NODE_ENV=production yarn run web",
+        "build:landing": "NODE_ENV=production yarn run landing",
         "desktop": "PROJECT=desktop yarn run base",
         "dev:desktop": "yarn run desktop",
         "build:desktop": "NODE_ENV=production yarn run desktop",

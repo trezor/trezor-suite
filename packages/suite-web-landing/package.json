@@ -7,28 +7,25 @@
         "type-check:watch": "yarn type-check -- --watch",
         "lint": "eslint . --ext .tsx,.ts",
         "copy-files": "yarn workspace @trezor/suite-data copy-static-files",
-        "dev": "yarn workspace @trezor/suite-data copy-static-files && next",
-        "build:app": "next build && next export -o build",
-        "build": "run-s copy-files build:app"
+        "dev": "rimraf ./build && yarn workspace @trezor/suite-build run dev:landing",
+        "build": "rimraf ./build && yarn workspace @trezor/suite-build run build:landing"
     },
     "dependencies": {
         "@trezor/components": "1.0.0",
-        "next": "^10.0.5",
-        "polished": "^4.0.5",
-        "react": "17.0.1",
-        "react-awesome-reveal": "^3.5.2",
-        "react-dom": "17.0.1",
-        "react-intl": "^5.10.19"
+        "@sentry/browser": "^6.10.0",
+        "@sentry/integrations": "^6.10.0",
+        "worker-loader": "^3.0.7",
+        "styled-components": "5.1.1",
+        "react-helmet": "^6.1.0",
+        "react-router-dom": "^5.2.0"
     },
     "devDependencies": {
         "@types/react": "^17.0.0",
         "@types/react-dom": "^17.0.0",
+        "@types/react-helmet": "^6.1.0",
         "@types/react-redux": "^7.1.7",
-        "babel-plugin-styled-components": "1.12.0",
-        "next-optimized-images": "^2.6.2",
-        "next-transpile-modules": "^4.1.0",
-        "next-videos": "^1.4.0",
-        "ts-loader": "^8.0.14",
-        "webpack": "^4.44.2"
+        "is-website-vulnerable": "^1.14.6",
+        "@types/react-router": "^5.1.11",
+        "@types/react-router-dom": "^5.1.7"
     }
 }

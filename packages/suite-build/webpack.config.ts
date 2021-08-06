@@ -8,6 +8,7 @@ import base from './configs/base.webpack.config';
 import dev from './configs/dev.webpack.config';
 import web from './configs/web.webpack.config';
 import desktop from './configs/desktop.webpack.config';
+import landing from './configs/landing.webpack.config';
 
 const configs = [base];
 if (isDev) {
@@ -20,6 +21,9 @@ switch (project) {
         break;
     case 'desktop':
         configs.push(desktop);
+        break;
+    case 'landing':
+        configs.push(landing);
         break;
     // no default
 }

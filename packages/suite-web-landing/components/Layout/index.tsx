@@ -9,6 +9,7 @@ const Layout = styled.div`
     margin: 0 auto;
     padding: 0 20px;
     background: ${colors.BG_WHITE};
+    overflow-y: scroll;
 `;
 
 const Header = styled.header`

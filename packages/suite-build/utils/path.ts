@@ -10,6 +10,8 @@ export const getPathForProject = (project: Project) => {
             return path.join(basePath, 'suite-web');
         case 'desktop':
             return path.join(basePath, 'suite-desktop');
+        case 'landing':
+            return path.join(basePath, 'suite-web-landing');
         default:
             return '';
     }

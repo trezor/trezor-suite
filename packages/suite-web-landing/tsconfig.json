@@ -1,7 +1,13 @@
 {
     "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "jsx": "preserve",
+        "plugins": [
+            {
+                "name": "typescript-styled-plugin",
+                "tags": ["styled", "css", "sty"]
+            }
+        ],
+        "jsx": "react",
         "moduleResolution": "node",
         "sourceMap": true,
         "lib": ["dom", "es2019", "esnext.asynciterable"],
@@ -10,6 +16,6 @@
         "resolveJsonModule": true,
         "isolatedModules": true
     },
-    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+    "include": ["global.d.ts", "**/*.ts", "**/*.tsx"],
     "exclude": ["test/**/*.*"]
 }
