@@ -1,0 +1,20 @@
+.build: &build
+  image: docker
+  variables:
+    CONTAINER_NAME: "$CI_REGISTRY/satoshilabs/trezor/trezor-suite/trezor-suite-e2e"
+  services:
+    - docker:dind
+  before_script:
+    - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+
+build and push image:
+  stage: build
+  <<: *build
+  only:
+    - schedules  # nightly build
+    - master
+    - /^run\//
+  script:
+    - docker build --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest -f docker/e2e-tests/Dockerfile .
+    - docker push $CONTAINER_NAME:$CI_COMMIT_SHA
+    - docker push $CONTAINER_NAME:latest

@@ -26,6 +26,7 @@ include:
   - ci/prebuild.yml
   - ci/components.yml
   - ci/build.yml
+  - ci/build-e2e.yml
   - ci/deploy.yml
   - ci/test.yml
   - ci/releases.yml
