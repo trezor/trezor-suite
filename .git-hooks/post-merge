@@ -2,7 +2,7 @@
 
 # check whether there was a change to libs that need to be built
 
-for path in "packages/components" "packages/rollout" "packages/blockchain-link" "packages/suite-storage" "packages/translations-manager"
+for path in "packages/components" "packages/rollout" "packages/blockchain-link" "packages/suite-storage"
 do
     diff="$(git diff HEAD^ --name-only --diff-filter=ACMR "$path")"
     if [ ! -z "$diff" ]

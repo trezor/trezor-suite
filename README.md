@@ -10,7 +10,6 @@
 | components           | [components](./packages/components), [storybook native](./packages/components-storybook-native)                                                                                                   |
 | rollout              | [rollout](./packages/rollout)                                                                                                                                                                     |
 | blockchain-link      | [blockchain-link](./packages/blockchain-link)                                                                                                                                                     |
-| translations-manager | [translations-manager](./packages/translations-manager)                                                                                                                                           |
 | integration-tests    | [integration-tests](./packages/integration-tests)                                                                                                                                                 |
 
 ## Development
