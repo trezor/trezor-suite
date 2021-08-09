@@ -1,4 +1,5 @@
 import { app, shell, Menu, MenuItemConstructorOptions } from 'electron';
+import isDev from 'electron-is-dev';
 
 const isMac = process.platform === 'darwin';
 
@@ -61,6 +62,11 @@ const mainMenuTemplate: MenuItem[] = [
         ],
     },
 ];
+
+if (!isDev) {
+    // remove toggleDevTools from "View"
+    mainMenuTemplate[2].submenu.splice(2, 1);
+}
 
 if (isMac) {
     // Extend "Edit"
