@@ -31,6 +31,10 @@ const prefixedVisit = (route: string, options?: Partial<Cypress.VisitOptions>) =
 };
 
 beforeEach(() => {
+    const suiteName = (Cypress as any).mocha.getRunner().suite.ctx.currentTest.parent.title;
+    const testName = (Cypress as any).mocha.getRunner().suite.ctx.currentTest.title;
+    cy.task('logTestDetails', `New test case: ${suiteName} - ${testName}`);
+
     cy.intercept('POST', 'http://127.0.0.1:21325/', req => {
         req.url = req.url.replace('21325', '21326');
     });
