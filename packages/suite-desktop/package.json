@@ -132,6 +132,10 @@
                 {
                     "from": "build/static/bin/tor/linux-${arch}",
                     "to": "bin/tor"
+                },
+                {
+                    "from": "build/static/bin/udev",
+                    "to": "bin/udev"
                 }
             ],
             "icon": "build/static/images/icons/512x512.png",

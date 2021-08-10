@@ -22,6 +22,7 @@ export const MODULES = [
     'analytics',
     'auto-updater',
     'store',
+    'udev-install',
 ];
 
 // Modules only used in prod mode

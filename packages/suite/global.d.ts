@@ -43,6 +43,8 @@ export interface DesktopApi {
     >;
     // Store
     clearStore: () => void;
+    // Udev rules
+    installUdevRules: () => Promise<{ success: true } | { success: false; error: string }>;
 }
 
 declare global {

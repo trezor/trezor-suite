@@ -33,6 +33,9 @@ const validChannels = [
 
     // tor
     'tor/status',
+
+    // udev
+    'udev/install',
 ];
 
 contextBridge.exposeInMainWorld('desktopApi', {
@@ -96,4 +99,7 @@ contextBridge.exposeInMainWorld('desktopApi', {
 
     // Store
     clearStore: () => ipcRenderer.send('store/clear'),
+
+    // Udev rules
+    installUdevRules: () => ipcRenderer.invoke('udev/install'),
 });
