@@ -304,7 +304,7 @@ describe('Suite Actions', () => {
         expect(suiteActions.forgetDevice(SUITE_DEVICE)).toMatchObject({
             type: SUITE.FORGET_DEVICE,
         });
-        expect(suiteActions.setDebugMode({ translationMode: true })).toMatchObject({
+        expect(suiteActions.setDebugMode({ showDebugMenu: true })).toMatchObject({
             type: SUITE.SET_DEBUG_MODE,
         });
     });
