@@ -80,3 +80,50 @@ msg-system deploy dev:
     - deploy
   script:
     - aws s3 cp packages/suite-data/files/message-system/config.v1.jws s3://data.trezor.io/config/develop/config.v1.jws
+
+# npm packages deploy to npm registry
+.npm_deploy_rules: &npm_deploy_rules
+  stage: deploy to dev
+  when: manual
+  tags:
+    - deploy
+  before_script:
+    - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+  after_script:
+    - rm ~/.npmrc
+
+beta blockchain-link deploy npm:
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/blockchain-link && npm publish --tag beta"
+
+beta components deploy npm:
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/components && npm publish --tag beta"
+
+beta rollout deploy npm:
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/rollout && npm publish --tag beta"
+
+blockchain-link deploy npm:
+  only:
+    <<: *run_everything_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/blockchain-link && npm publish"
+
+components deploy npm:
+  only:
+    <<: *run_everything_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/components && npm publish"
+
+rollout deploy npm:
+  only:
+    <<: *run_everything_rules
+  <<: *npm_deploy_rules
+  script:
+    - nix-shell --run "yarn && cd ./packages/rollout && npm publish"
