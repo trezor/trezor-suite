@@ -8,7 +8,6 @@ import { isWeb } from '@suite-utils/env';
 import { ensureLocale } from '@suite-utils/translation';
 
 export interface DebugModeOptions {
-    translationMode: boolean;
     invityAPIUrl?: string;
     showDebugMenu: boolean;
     bridgeDevMode: boolean;
@@ -79,7 +78,6 @@ const initialState: SuiteState = {
         debug: {
             invityAPIUrl: undefined,
             showDebugMenu: false,
-            translationMode: false,
             bridgeDevMode: false,
         },
     },
