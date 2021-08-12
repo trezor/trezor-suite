@@ -7,8 +7,8 @@ import ReactSelect, {
 } from 'react-select';
 import styled, { css } from 'styled-components';
 import { variables } from '../../../config';
-import { useTheme } from '../../../utils';
-import { InputVariant, SuiteThemeColors } from '../../../support/types';
+import { getStateColor, useTheme } from '../../../utils';
+import { InputVariant, InputState, SuiteThemeColors } from '../../../support/types';
 
 const selectStyle = (
     isSearchable: boolean,
@@ -19,7 +19,8 @@ const selectStyle = (
     minWidth: string,
     borderRadius: number,
     borderWidth: number,
-    theme: SuiteThemeColors
+    theme: SuiteThemeColors,
+    selectState?: InputState
 ) => ({
     singleValue: (base: Record<string, any>) => ({
         ...base,
@@ -42,6 +43,7 @@ const selectStyle = (
         { isDisabled, isFocused }: { isDisabled: boolean; isFocused: boolean }
     ) => {
         let height = variant === 'small' ? '36px' : '48px';
+        const borderColor = selectState ? getStateColor(selectState, theme) : theme.STROKE_GREY;
         if (isClean) height = '22px';
         return {
             ...base,
@@ -51,7 +53,7 @@ const selectStyle = (
             height,
             borderRadius: `${borderRadius}px`,
             borderWidth: `${borderWidth}px`,
-            borderColor: theme.STROKE_GREY,
+            borderColor,
             borderStyle: isClean ? 'none' : 'solid',
             backgroundColor: 'transparent',
             boxShadow: 'none',
@@ -59,7 +61,7 @@ const selectStyle = (
                 cursor: 'pointer',
                 borderRadius: `${borderRadius}px`,
                 borderWidth: `${borderWidth}px`,
-                borderColor: theme.STROKE_GREY,
+                borderColor,
             },
         };
     },
@@ -190,6 +192,7 @@ interface CommonProps extends Omit<SelectProps, 'components' | 'isSearchable'> {
     minWidth?: string;
     borderWidth?: number;
     borderRadius?: number;
+    state?: InputState;
 }
 
 // Make sure isSearchable can't be defined if useKeyPressScroll===true
@@ -215,6 +218,7 @@ const Select = ({
     minWidth = 'initial',
     borderWidth = 2,
     borderRadius = 4,
+    state,
     ...props
 }: Props) => {
     const selectRef: React.RefObject<ReactSelect<Option>> | null | undefined = useRef(null);
@@ -384,7 +388,8 @@ const Select = ({
                     minWidth,
                     borderRadius,
                     borderWidth,
-                    theme
+                    theme,
+                    state
                 )}
                 isSearchable={isSearchable}
                 {...props}

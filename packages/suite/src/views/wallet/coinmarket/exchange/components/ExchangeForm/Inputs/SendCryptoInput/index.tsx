@@ -12,6 +12,7 @@ import Bignumber from 'bignumber.js';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { CRYPTO_INPUT, CRYPTO_TOKEN, FIAT_INPUT } from '@wallet-types/coinmarketExchangeForm';
+import { getInputState } from '@suite/utils/wallet/sendFormUtils';
 
 export const buildCurrencyOptions = () => {
     const result: { value: string; label: string }[] = [];
@@ -22,10 +23,13 @@ export const buildCurrencyOptions = () => {
 };
 
 const StyledInput = styled(Input)<{ isToken: boolean }>`
-    border-right: 0;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    ${props => (!props.isToken ? 'padding-right: 105px' : undefined)}
+    ${props =>
+        !props.isToken && {
+            'border-right': 0,
+            'border-top-right-radius': 0,
+            'border-bottom-right-radius': 0,
+            'padding-right': '105px',
+        }}
 `;
 
 const SendCryptoInput = () => {
@@ -54,12 +58,16 @@ const SendCryptoInput = () => {
             ? formatNetworkAmount(account.misc.reserve, account.symbol)
             : undefined;
     const decimals = tokenData ? tokenData.decimals : network.decimals;
-    const amount = getValues(CRYPTO_INPUT);
+
+    const { outputs } = getValues();
+    const amount = outputs?.[0]?.amount;
+
     useEffect(() => {
         composeRequest();
     }, [amount, composeRequest]);
 
-    const error = errors.outputs && errors.outputs[0] ? errors.outputs[0].amount : undefined;
+    const amountError = errors.outputs?.[0]?.amount;
+    const fiatError = errors.outputs?.[0]?.fiat;
 
     return (
         <StyledInput
@@ -69,7 +77,7 @@ const SendCryptoInput = () => {
                 setValue('setMaxOutputId', undefined, { shouldDirty: true });
                 composeRequest();
             }}
-            state={error ? 'error' : undefined}
+            state={getInputState(amountError || fiatError, amount)}
             name={CRYPTO_INPUT}
             noTopLabel
             maxLength={MAX_LENGTH.AMOUNT}
@@ -146,7 +154,7 @@ const SendCryptoInput = () => {
                     }
                 },
             })}
-            bottomText={<InputError error={error} />}
+            bottomText={<InputError error={amountError} />}
             innerAddon={<SendCryptoSelect />}
         />
     );

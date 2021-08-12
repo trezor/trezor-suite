@@ -1,5 +1,5 @@
 import { Icon, variables } from '@trezor/components';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useCoinmarketSellFormContext } from '@wallet-hooks/useCoinmarketSellForm';
 import styled from 'styled-components';
 import FiatInput from './FiatInput';
@@ -68,10 +68,9 @@ const Inputs = () => {
         setValue,
         clearErrors,
         onCryptoAmountChange,
+        activeInput,
+        setActiveInput,
     } = useCoinmarketSellFormContext();
-    const [activeInput, setActiveInput] = useState<typeof FIAT_INPUT | typeof CRYPTO_INPUT>(
-        FIAT_INPUT,
-    );
 
     // if FIAT_INPUT has a valid value, set it as the activeInput
     if (watch(FIAT_INPUT) && !errors[FIAT_INPUT] && activeInput === CRYPTO_INPUT) {
@@ -96,7 +95,14 @@ const Inputs = () => {
             setActiveInput(CRYPTO_INPUT);
             onCryptoAmountChange(amount);
         },
-        [account.formattedBalance, clearErrors, network.decimals, onCryptoAmountChange, setValue],
+        [
+            account.formattedBalance,
+            clearErrors,
+            network.decimals,
+            onCryptoAmountChange,
+            setActiveInput,
+            setValue,
+        ],
     );
 
     const setAllAmount = useCallback(() => {
@@ -106,7 +112,7 @@ const Inputs = () => {
         clearErrors([FIAT_INPUT, CRYPTO_INPUT]);
         setActiveInput(CRYPTO_INPUT);
         composeRequest(CRYPTO_INPUT);
-    }, [clearErrors, composeRequest, setValue]);
+    }, [clearErrors, composeRequest, setActiveInput, setValue]);
 
     const isBalanceZero = new BigNumber(account.formattedBalance).isZero();
 

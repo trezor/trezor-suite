@@ -13,6 +13,7 @@ import {
     CRYPTO_INPUT,
     FIAT_INPUT,
 } from '@suite/types/wallet/coinmarketSellForm';
+import { getInputState } from '@suite/utils/wallet/sendFormUtils';
 
 interface Props {
     activeInput: typeof FIAT_INPUT | typeof CRYPTO_INPUT;
@@ -38,6 +39,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
         formState,
         amountLimits,
         onCryptoAmountChange,
+        getValues,
     } = useCoinmarketSellFormContext();
 
     const uppercaseSymbol = account.symbol.toUpperCase();
@@ -45,6 +47,8 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
         value: uppercaseSymbol,
         label: uppercaseSymbol,
     };
+
+    const cryptoInputValue = getValues(CRYPTO_INPUT);
 
     return (
         <Input
@@ -56,7 +60,7 @@ const CryptoInput = ({ activeInput, setActiveInput }: Props) => {
                 onCryptoAmountChange(event.target.value);
             }}
             defaultValue=""
-            state={errors[CRYPTO_INPUT] ? 'error' : undefined}
+            state={getInputState(errors.cryptoInput, cryptoInputValue)}
             name={CRYPTO_INPUT}
             noTopLabel
             maxLength={MAX_LENGTH.AMOUNT}

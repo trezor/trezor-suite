@@ -14,6 +14,7 @@ import {
     FIAT_CURRENCY_SELECT,
     FIAT_INPUT,
 } from '@suite/types/wallet/coinmarketSellForm';
+import { getInputState } from '@suite/utils/wallet/sendFormUtils';
 
 interface Props {
     activeInput: typeof FIAT_INPUT | typeof CRYPTO_INPUT;
@@ -32,7 +33,10 @@ const FiatInput = ({ activeInput, setActiveInput }: Props) => {
         defaultCurrency,
         quotesRequest,
         onFiatAmountChange,
+        getValues,
     } = useCoinmarketSellFormContext();
+
+    const fiatInputValue = getValues(FIAT_INPUT);
 
     return (
         <Input
@@ -101,7 +105,7 @@ const FiatInput = ({ activeInput, setActiveInput }: Props) => {
                 setActiveInput(FIAT_INPUT);
                 onFiatAmountChange(event.target.value);
             }}
-            state={errors[FIAT_INPUT] ? 'error' : undefined}
+            state={getInputState(errors.fiatInput, fiatInputValue)}
             name={FIAT_INPUT}
             maxLength={MAX_LENGTH.AMOUNT}
             bottomText={<InputError error={errors[FIAT_INPUT]} />}
