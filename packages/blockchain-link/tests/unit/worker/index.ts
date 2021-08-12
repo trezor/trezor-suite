@@ -34,7 +34,7 @@ class MyWorker {
 }
 
 const rippleWorkerFactory = () => {
-    require('../../../src/workers/ripple/index.ts'); // eslint-disable-line global-require
+    require('../../../src/workers/ripple'); // eslint-disable-line global-require
     setTimeout(() => {
         global.postMessage({ id: -1, type: 'm_handshake' });
     }, 1);
@@ -42,7 +42,7 @@ const rippleWorkerFactory = () => {
 };
 
 const blockbookWorkerFactory = () => {
-    require('../../../src/workers/blockbook/index.ts'); // eslint-disable-line global-require
+    require('../../../src/workers/blockbook'); // eslint-disable-line global-require
     setTimeout(() => {
         global.postMessage({ id: -1, type: 'm_handshake' });
     }, 1);

@@ -42,9 +42,10 @@ const Pagination = ({
 }: Props) => {
     const showPrevious = currentPage > 1;
     // array of int used for creating all page buttons
-    const calculatedPages = useMemo(() => [...Array(totalPages)].map((_p, i) => i + 1), [
-        totalPages,
-    ]);
+    const calculatedPages = useMemo(
+        () => [...Array(totalPages)].map((_p, i) => i + 1),
+        [totalPages],
+    );
 
     if (!hasPages) {
         return (

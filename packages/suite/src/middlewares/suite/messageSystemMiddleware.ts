@@ -19,53 +19,54 @@ const actions = [
     DEVICE.CHANGED,
 ];
 
-const messageSystemMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
-    action: Action,
-): Action => {
-    next(action);
+const messageSystemMiddleware =
+    (api: MiddlewareAPI<Dispatch, AppState>) =>
+    (next: Dispatch) =>
+    (action: Action): Action => {
+        next(action);
 
-    if (actions.includes(action.type)) {
-        const { config } = api.getState().messageSystem;
-        const { device, transport, tor } = api.getState().suite;
-        const { enabledNetworks } = api.getState().wallet.settings;
+        if (actions.includes(action.type)) {
+            const { config } = api.getState().messageSystem;
+            const { device, transport, tor } = api.getState().suite;
+            const { enabledNetworks } = api.getState().wallet.settings;
 
-        const messages = getValidMessages(config, {
-            device,
-            transport,
-            settings: {
-                tor,
-                enabledNetworks,
-            },
-        });
-
-        const banners: string[] = [];
-        const modals: string[] = [];
-        const contexts: string[] = [];
-
-        messages.forEach(message => {
-            let { category: categories } = message;
-
-            if (typeof categories === 'string') {
-                categories = [categories];
-            }
-
-            categories.forEach(category => {
-                if (category === 'banner') {
-                    banners.push(message.id);
-                } else if (category === 'modal') {
-                    modals.push(message.id);
-                } else if (category === 'context') {
-                    contexts.push(message.id);
-                }
+            const messages = getValidMessages(config, {
+                device,
+                transport,
+                settings: {
+                    tor,
+                    enabledNetworks,
+                },
             });
-        });
 
-        api.dispatch(saveValidMessages(banners, 'banner'));
-        api.dispatch(saveValidMessages(modals, 'modal'));
-        api.dispatch(saveValidMessages(contexts, 'context'));
-    }
+            const banners: string[] = [];
+            const modals: string[] = [];
+            const contexts: string[] = [];
 
-    return action;
-};
+            messages.forEach(message => {
+                let { category: categories } = message;
+
+                if (typeof categories === 'string') {
+                    categories = [categories];
+                }
+
+                categories.forEach(category => {
+                    if (category === 'banner') {
+                        banners.push(message.id);
+                    } else if (category === 'modal') {
+                        modals.push(message.id);
+                    } else if (category === 'context') {
+                        contexts.push(message.id);
+                    }
+                });
+            });
+
+            api.dispatch(saveValidMessages(banners, 'banner'));
+            api.dispatch(saveValidMessages(modals, 'modal'));
+            api.dispatch(saveValidMessages(contexts, 'context'));
+        }
+
+        return action;
+    };
 
 export default messageSystemMiddleware;

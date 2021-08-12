@@ -241,9 +241,8 @@ const isSecondaryMenuOverflown = ({ primary, secondary, wrapper }: MenuWidths) =
 
 const AppNavigation = ({ items, primaryContent, maxWidth }: Props) => {
     const theme = useTheme();
-    const [condensedSecondaryMenuVisible, setCondensedSecondaryMenuVisible] = useState<boolean>(
-        false,
-    );
+    const [condensedSecondaryMenuVisible, setCondensedSecondaryMenuVisible] =
+        useState<boolean>(false);
     const wrapper = useRef<HTMLDivElement>(null);
     const primary = useRef<HTMLDivElement>(null);
     const secondary = useRef<HTMLDivElement>(null);

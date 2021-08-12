@@ -73,13 +73,8 @@ const Left = styled.div`
 const Right = styled.div``;
 
 const CoinmarketSpend = () => {
-    const {
-        isLoading,
-        noProviders,
-        voucherSiteUrl,
-        openWindow,
-        setShowLeaveModal,
-    } = useCoinmarketSpendContext();
+    const { isLoading, noProviders, voucherSiteUrl, openWindow, setShowLeaveModal } =
+        useCoinmarketSpendContext();
     const showIframe = !isDesktop();
 
     return (

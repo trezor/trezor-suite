@@ -43,13 +43,8 @@ const StyledButton = styled(Button)`
 `;
 
 const SendTransactionComponent = () => {
-    const {
-        account,
-        callInProgress,
-        selectedQuote,
-        sellInfo,
-        sendTransaction,
-    } = useCoinmarketSellOffersContext();
+    const { account, callInProgress, selectedQuote, sellInfo, sendTransaction } =
+        useCoinmarketSellOffersContext();
     if (!selectedQuote || !selectedQuote.exchange) return null;
     const { exchange, destinationAddress } = selectedQuote;
     const providerName = sellInfo?.providerInfos[exchange]?.companyName || exchange;

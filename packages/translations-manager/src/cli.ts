@@ -76,13 +76,8 @@ if (!configFilePath) {
 
 // Parse configuration file
 const config = JSON.parse(fs.readFileSync(configFilePath, 'utf8'));
-const {
-    languages,
-    outputDir,
-    localesOutputDir,
-    extractedMessagesFilePattern,
-    langToFileNameMap,
-} = config;
+const { languages, outputDir, localesOutputDir, extractedMessagesFilePattern, langToFileNameMap } =
+    config;
 
 // Crowdin API key should be stored in an env variable which name is specified in the config 'apiKeyEnv' field
 const projectId = config.project.identifier;

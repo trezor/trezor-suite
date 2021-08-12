@@ -31,14 +31,8 @@ const Row = styled.div`
 
 const ReviewButton = () => {
     const { device, isLocked } = useDevice();
-    const {
-        online,
-        isLoading,
-        signTransaction,
-        getValues,
-        getDefaultValue,
-        composedLevels,
-    } = useSendFormContext();
+    const { online, isLoading, signTransaction, getValues, getDefaultValue, composedLevels } =
+        useSendFormContext();
 
     const values = getValues();
     const broadcastEnabled = getDefaultValue('options', []).includes('broadcast');

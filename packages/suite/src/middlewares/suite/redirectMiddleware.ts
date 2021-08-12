@@ -43,36 +43,37 @@ const handleDeviceRedirect = async (dispatch: Dispatch, state: AppState, device?
 /**
  * Middleware containing all redirection logic
  */
-const redirect = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => async (
-    action: Action,
-): Promise<Action> => {
-    const { locks } = api.getState().suite;
+const redirect =
+    (api: MiddlewareAPI<Dispatch, AppState>) =>
+    (next: Dispatch) =>
+    async (action: Action): Promise<Action> => {
+        const { locks } = api.getState().suite;
 
-    if (locks.includes(SUITE.LOCK_TYPE.ROUTER)) {
-        next(action);
-        // router is locked, no redirect except for switch-device modal app
-        if (
-            action.type === SUITE.SELECT_DEVICE &&
-            !action.payload &&
-            api.getState().router.app === 'switch-device'
-        ) {
-            api.dispatch(routerActions.closeModalApp());
+        if (locks.includes(SUITE.LOCK_TYPE.ROUTER)) {
+            next(action);
+            // router is locked, no redirect except for switch-device modal app
+            if (
+                action.type === SUITE.SELECT_DEVICE &&
+                !action.payload &&
+                api.getState().router.app === 'switch-device'
+            ) {
+                api.dispatch(routerActions.closeModalApp());
+            }
+            return action;
         }
+
+        switch (action.type) {
+            // todo: this will not get call after acquiring device!
+            case SUITE.SELECT_DEVICE:
+                await handleDeviceRedirect(api.dispatch, api.getState(), action.payload);
+                break;
+            default:
+                break;
+        }
+
+        next(action);
+
         return action;
-    }
-
-    switch (action.type) {
-        // todo: this will not get call after acquiring device!
-        case SUITE.SELECT_DEVICE:
-            await handleDeviceRedirect(api.dispatch, api.getState(), action.payload);
-            break;
-        default:
-            break;
-    }
-
-    next(action);
-
-    return action;
-};
+    };
 
 export default redirect;

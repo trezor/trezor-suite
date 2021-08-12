@@ -15,13 +15,8 @@ export const buildCurrencyOptions = () => {
 };
 
 const FiatSelect = () => {
-    const {
-        control,
-        setAmountLimits,
-        account,
-        updateFiatCurrency,
-        defaultCurrency,
-    } = useCoinmarketExchangeFormContext();
+    const { control, setAmountLimits, account, updateFiatCurrency, defaultCurrency } =
+        useCoinmarketExchangeFormContext();
     const currencyOptions = buildCurrencyOptions();
 
     return (

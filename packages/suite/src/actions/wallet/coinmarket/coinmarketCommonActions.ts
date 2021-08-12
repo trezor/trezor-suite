@@ -23,95 +23,96 @@ export type CoinmarketCommonAction =
           type: typeof COINMARKET_COMMON.LOAD_DATA;
       };
 
-export const verifyAddress = (account: Account, inExchange = false) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { device } = getState().suite;
-    if (!device || !account) return;
-    const { path, address } = getUnusedAddressFromAccount(account);
-    if (!path || !address) return;
+export const verifyAddress =
+    (account: Account, inExchange = false) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        const { device } = getState().suite;
+        if (!device || !account) return;
+        const { path, address } = getUnusedAddressFromAccount(account);
+        if (!path || !address) return;
 
-    const { networkType, symbol } = account;
-    const { useEmptyPassphrase, connected, available } = device;
+        const { networkType, symbol } = account;
+        const { useEmptyPassphrase, connected, available } = device;
 
-    const modalPayload = {
-        device,
-        address,
-        networkType,
-        symbol,
-        addressPath: path,
-    };
+        const modalPayload = {
+            device,
+            address,
+            networkType,
+            symbol,
+            addressPath: path,
+        };
 
-    // Show warning when device is not connected
-    if (!connected || !available) {
-        dispatch(
-            modalActions.openModal({
-                type: 'unverified-address',
-                ...modalPayload,
-            }),
-        );
-        return;
-    }
+        // Show warning when device is not connected
+        if (!connected || !available) {
+            dispatch(
+                modalActions.openModal({
+                    type: 'unverified-address',
+                    ...modalPayload,
+                }),
+            );
+            return;
+        }
 
-    const params = {
-        device,
-        path,
-        useEmptyPassphrase,
-        coin: account.symbol,
-    };
+        const params = {
+            device,
+            path,
+            useEmptyPassphrase,
+            coin: account.symbol,
+        };
 
-    // catch button request and open modal
-    const buttonRequestHandler = (event: ButtonRequestMessage['payload']) => {
-        if (!event || event.code !== 'ButtonRequest_Address') return;
-        dispatch(
-            modalActions.openModal({
-                type: 'address',
-                ...modalPayload,
-            }),
-        );
-    };
+        // catch button request and open modal
+        const buttonRequestHandler = (event: ButtonRequestMessage['payload']) => {
+            if (!event || event.code !== 'ButtonRequest_Address') return;
+            dispatch(
+                modalActions.openModal({
+                    type: 'address',
+                    ...modalPayload,
+                }),
+            );
+        };
 
-    let fn;
-    switch (networkType) {
-        case 'ethereum':
-            fn = TrezorConnect.ethereumGetAddress;
-            break;
-        case 'ripple':
-            fn = TrezorConnect.rippleGetAddress;
-            break;
-        case 'bitcoin':
-            fn = TrezorConnect.getAddress;
-            break;
-        default:
-            fn = () => ({
-                success: false,
-                payload: { error: 'Method for getAddress not defined', code: undefined },
+        let fn;
+        switch (networkType) {
+            case 'ethereum':
+                fn = TrezorConnect.ethereumGetAddress;
+                break;
+            case 'ripple':
+                fn = TrezorConnect.rippleGetAddress;
+                break;
+            case 'bitcoin':
+                fn = TrezorConnect.getAddress;
+                break;
+            default:
+                fn = () => ({
+                    success: false,
+                    payload: { error: 'Method for getAddress not defined', code: undefined },
+                });
+                break;
+        }
+
+        TrezorConnect.on(UI.REQUEST_BUTTON, buttonRequestHandler);
+        const response = await fn(params);
+        TrezorConnect.off(UI.REQUEST_BUTTON, buttonRequestHandler);
+
+        if (response.success) {
+            dispatch({
+                type: inExchange
+                    ? COINMARKET_EXCHANGE.VERIFY_ADDRESS
+                    : COINMARKET_BUY.VERIFY_ADDRESS,
+                addressVerified: address,
             });
-            break;
-    }
+        } else {
+            // special case: device no-backup permissions not granted
+            if (response.payload.code === 'Method_PermissionsNotGranted') return;
 
-    TrezorConnect.on(UI.REQUEST_BUTTON, buttonRequestHandler);
-    const response = await fn(params);
-    TrezorConnect.off(UI.REQUEST_BUTTON, buttonRequestHandler);
-
-    if (response.success) {
-        dispatch({
-            type: inExchange ? COINMARKET_EXCHANGE.VERIFY_ADDRESS : COINMARKET_BUY.VERIFY_ADDRESS,
-            addressVerified: address,
-        });
-    } else {
-        // special case: device no-backup permissions not granted
-        if (response.payload.code === 'Method_PermissionsNotGranted') return;
-
-        dispatch(
-            notificationActions.addToast({
-                type: 'verify-address-error',
-                error: response.payload.error,
-            }),
-        );
-    }
-};
+            dispatch(
+                notificationActions.addToast({
+                    type: 'verify-address-error',
+                    error: response.payload.error,
+                }),
+            );
+        }
+    };
 
 export const saveComposedTransactionInfo = (
     info: ComposedTransactionInfo,
@@ -120,21 +121,23 @@ export const saveComposedTransactionInfo = (
     info,
 });
 
-export const submitRequestForm = (form?: {
-    formMethod: 'GET' | 'POST' | 'IFRAME';
-    formAction: string;
-    fields: {
-        [key: string]: string;
+export const submitRequestForm =
+    (form?: {
+        formMethod: 'GET' | 'POST' | 'IFRAME';
+        formAction: string;
+        fields: {
+            [key: string]: string;
+        };
+    }) =>
+    (dispatch: Dispatch, getState: GetState) => {
+        const { device } = getState().suite;
+        if (device && !device.remember && !isDesktop()) {
+            dispatch(suiteActions.toggleRememberDevice(device, true));
+        }
+        if (form) {
+            envSubmitRequestForm(form.formMethod, form.formAction, form.fields);
+        }
     };
-}) => (dispatch: Dispatch, getState: GetState) => {
-    const { device } = getState().suite;
-    if (device && !device.remember && !isDesktop()) {
-        dispatch(suiteActions.toggleRememberDevice(device, true));
-    }
-    if (form) {
-        envSubmitRequestForm(form.formMethod, form.formAction, form.fields);
-    }
-};
 
 export const setLoading = (isLoading: boolean, lastLoadedTimestamp?: number) => ({
     type: COINMARKET_COMMON.SET_LOADING,

@@ -4,8 +4,7 @@ const { getReleasesT1, getReleasesT2, getDeviceFeatures } = global.JestMocks;
 
 const fixtures = [
     {
-        desc:
-            'actual bootloader version is lower then lowest bootloader version in releases and is lower than second lowest min_bootloader_version in releases',
+        desc: 'actual bootloader version is lower then lowest bootloader version in releases and is lower than second lowest min_bootloader_version in releases',
         features: getDeviceFeatures({
             bootloader_mode: true,
             major_version: 1,
@@ -72,8 +71,7 @@ const fixtures = [
         },
     },
     {
-        desc:
-            'actual bootloader version is lower then lowest bootloader version in releases and is higher than lowest min_bootloader_version in releases',
+        desc: 'actual bootloader version is lower then lowest bootloader version in releases and is higher than lowest min_bootloader_version in releases',
         features: getDeviceFeatures({
             bootloader_mode: true,
             major_version: 1,

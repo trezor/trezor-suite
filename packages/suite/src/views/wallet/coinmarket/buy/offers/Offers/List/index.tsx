@@ -74,21 +74,12 @@ const NoQuotes = styled.div`
 `;
 
 const List = ({ isAlternative, quotes }: Props) => {
-    const {
-        account,
-        quotesRequest,
-        timer,
-        REFETCH_INTERVAL_IN_SECONDS,
-    } = useCoinmarketBuyOffersContext();
+    const { account, quotesRequest, timer, REFETCH_INTERVAL_IN_SECONDS } =
+        useCoinmarketBuyOffersContext();
 
     if (!quotesRequest) return null;
-    const {
-        fiatStringAmount,
-        fiatCurrency,
-        cryptoStringAmount,
-        wantCrypto,
-        receiveCurrency,
-    } = quotesRequest;
+    const { fiatStringAmount, fiatCurrency, cryptoStringAmount, wantCrypto, receiveCurrency } =
+        quotesRequest;
 
     return (
         <Wrapper>

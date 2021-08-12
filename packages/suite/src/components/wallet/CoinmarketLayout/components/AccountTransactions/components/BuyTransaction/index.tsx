@@ -120,17 +120,13 @@ const Arrow = styled.div`
 const BuyTransaction = ({ trade, providers, account }: Props) => {
     const theme = useTheme();
     const { goto } = useActions({ goto: routerActions.goto });
-    const {
-        saveTransactionDetailId,
-        saveQuotes,
-        saveQuoteRequest,
-        saveCachedAccountInfo,
-    } = useActions({
-        saveTransactionDetailId: coinmarketBuyActions.saveTransactionDetailId,
-        saveQuotes: coinmarketBuyActions.saveQuotes,
-        saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
-        saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
-    });
+    const { saveTransactionDetailId, saveQuotes, saveQuoteRequest, saveCachedAccountInfo } =
+        useActions({
+            saveTransactionDetailId: coinmarketBuyActions.saveTransactionDetailId,
+            saveQuotes: coinmarketBuyActions.saveQuotes,
+            saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
+            saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
+        });
     const country = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.buyInfo?.country);
     const [isGettingOffers, setIsGettingOffers] = useState(false);
     useWatchBuyTrade(account, trade);

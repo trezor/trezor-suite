@@ -71,23 +71,25 @@ export const remove = (payload: NotificationEntry[] | NotificationEntry): Notifi
     payload,
 });
 
-export const removeTransactionEvents = (txs: { txid: string }[]) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    txs.forEach(tx => {
-        const entries = notificationUtils.findTransactionEvents(tx.txid, getState().notifications);
-        if (entries.length > 0) dispatch(remove(entries));
-    });
-};
+export const removeTransactionEvents =
+    (txs: { txid: string }[]) => (dispatch: Dispatch, getState: GetState) => {
+        txs.forEach(tx => {
+            const entries = notificationUtils.findTransactionEvents(
+                tx.txid,
+                getState().notifications,
+            );
+            if (entries.length > 0) dispatch(remove(entries));
+        });
+    };
 
-export const removeAccountEvents = (descriptor: string) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const entries = notificationUtils.findTransactionEvents(descriptor, getState().notifications);
-    if (entries.length > 0) dispatch(remove(entries));
-};
+export const removeAccountEvents =
+    (descriptor: string) => (dispatch: Dispatch, getState: GetState) => {
+        const entries = notificationUtils.findTransactionEvents(
+            descriptor,
+            getState().notifications,
+        );
+        if (entries.length > 0) dispatch(remove(entries));
+    };
 
 // TODO: didnt touch it right now. imho not used anywhere now. relates to route handling probably.
 // called from RouterService

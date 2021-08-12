@@ -7,7 +7,6 @@ import { TransactionsGraph, Translation, HiddenPlaceholder } from '@suite-compon
 import { calcTicks, calcTicksFromData } from '@suite-utils/date';
 import { aggregateBalanceHistory, getMinMaxValueFromData } from '@wallet-utils/graphUtils';
 import { useSelector, useActions } from '@suite-hooks';
-import { GraphData } from '@wallet-types/graph';
 import * as graphActions from '@wallet-actions/graphActions';
 import RangeSelector from '@suite-components/TransactionsGraph/components/RangeSelector';
 import TransactionSummaryDropdown from './components/TransactionSummaryDropdown';
@@ -84,7 +83,7 @@ const TransactionSummary = ({ account }: Props) => {
         updateGraphData([account], { newAccountsOnly: true });
     };
 
-    const intervalGraphData = (getGraphDataForInterval({ account }) as unknown) as GraphData[];
+    const intervalGraphData = getGraphDataForInterval({ account });
     const [isGraphHidden, setIsGraphHidden] = useState(false);
     const data = intervalGraphData[0]?.data
         ? aggregateBalanceHistory(intervalGraphData, selectedRange.groupBy, 'account')

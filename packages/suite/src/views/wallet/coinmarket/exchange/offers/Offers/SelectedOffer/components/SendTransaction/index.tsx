@@ -38,13 +38,8 @@ const Row = styled.div`
 const Address = styled.div``;
 
 const SendTransactionComponent = () => {
-    const {
-        account,
-        callInProgress,
-        selectedQuote,
-        exchangeInfo,
-        sendTransaction,
-    } = useCoinmarketExchangeOffersContext();
+    const { account, callInProgress, selectedQuote, exchangeInfo, sendTransaction } =
+        useCoinmarketExchangeOffersContext();
     if (!selectedQuote) return null;
     const { exchange, sendAddress } = selectedQuote;
     if (!exchange) return null;

@@ -63,16 +63,18 @@ const getUrl = (feedbackType: FeedbackType) => {
     return `${base}/develop.log`;
 };
 
-export const sendFeedback = ({ type, payload }: Feedback) => async (dispatch: Dispatch) => {
-    const url = getUrl(type);
-    const params = qs.stringify(payload);
-    try {
-        await fetch(`${url}?${params}`, {
-            method: 'GET',
-        });
-        dispatch(addToast({ type: 'user-feedback-send-success' }));
-    } catch (err) {
-        dispatch(addToast({ type: 'user-feedback-send-error' }));
-        console.error('failed to send user feedback', err);
-    }
-};
+export const sendFeedback =
+    ({ type, payload }: Feedback) =>
+    async (dispatch: Dispatch) => {
+        const url = getUrl(type);
+        const params = qs.stringify(payload);
+        try {
+            await fetch(`${url}?${params}`, {
+                method: 'GET',
+            });
+            dispatch(addToast({ type: 'user-feedback-send-success' }));
+        } catch (err) {
+            dispatch(addToast({ type: 'user-feedback-send-error' }));
+            console.error('failed to send user feedback', err);
+        }
+    };

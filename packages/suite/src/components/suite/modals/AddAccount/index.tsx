@@ -44,7 +44,11 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
         changeCoinVisibility: walletSettingsActions.changeCoinVisibility,
         goto: routerActions.goto,
     });
-    const { app, accounts, enabledNetworks: enabledNetworksSymbols } = useSelector(state => ({
+    const {
+        app,
+        accounts,
+        enabledNetworks: enabledNetworksSymbols,
+    } = useSelector(state => ({
         app: state.router.app,
         accounts: state.wallet.accounts,
         enabledNetworks: state.wallet.settings.enabledNetworks,

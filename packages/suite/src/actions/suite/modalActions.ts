@@ -144,32 +144,30 @@ export const onPinCancel = () => {
  * @param {boolean} passphraseOnDevice
  * @param {boolean} hasEmptyPassphraseWallet
  */
-export const onPassphraseSubmit = (value: string, passphraseOnDevice: boolean) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { device } = getState().suite;
-    if (!device) return;
+export const onPassphraseSubmit =
+    (value: string, passphraseOnDevice: boolean) => (dispatch: Dispatch, getState: GetState) => {
+        const { device } = getState().suite;
+        if (!device) return;
 
-    if (!device.state) {
-        // call SUITE.UPDATE_PASSPHRASE_MODE action to set or remove walletNumber
-        dispatch({
-            type: SUITE.UPDATE_PASSPHRASE_MODE,
-            payload: device,
-            hidden: passphraseOnDevice || value,
-            alwaysOnDevice: passphraseOnDevice,
+        if (!device.state) {
+            // call SUITE.UPDATE_PASSPHRASE_MODE action to set or remove walletNumber
+            dispatch({
+                type: SUITE.UPDATE_PASSPHRASE_MODE,
+                payload: device,
+                hidden: passphraseOnDevice || value,
+                alwaysOnDevice: passphraseOnDevice,
+            });
+        }
+
+        TrezorConnect.uiResponse({
+            type: UI.RECEIVE_PASSPHRASE,
+            payload: {
+                value,
+                save: true,
+                passphraseOnDevice,
+            },
         });
-    }
-
-    TrezorConnect.uiResponse({
-        type: UI.RECEIVE_PASSPHRASE,
-        payload: {
-            value,
-            save: true,
-            passphraseOnDevice,
-        },
-    });
-};
+    };
 
 export const onReceiveConfirmation = (confirmation: boolean) => (dispatch: Dispatch) => {
     TrezorConnect.uiResponse({
@@ -206,20 +204,20 @@ type DeferredRest<T extends DeferredModals['type']> = Omit<DeferredModal<T>, 'ty
 type DeferredPayload<T extends DeferredModals['type']> = { type: T } & DeferredRest<T>;
 
 // this overload doesn't work when wrapped by `bindActionCreators` (returns union, TODO: investigate...)
-export const openDeferredModal = <T extends DeferredModals['type']>(
-    payload: DeferredPayload<T>,
-) => (dispatch: Dispatch) => {
-    const dfd = createDeferred<DeferredResponse<DeferredModal<T>['decision']>>();
-    dispatch({
-        type: MODAL.OPEN_USER_CONTEXT,
-        payload: {
-            ...payload,
-            decision: dfd,
-        },
-    });
-    try {
-        return dfd.promise;
-    } catch (error) {
-        // do nothing, return void
-    }
-};
+export const openDeferredModal =
+    <T extends DeferredModals['type']>(payload: DeferredPayload<T>) =>
+    (dispatch: Dispatch) => {
+        const dfd = createDeferred<DeferredResponse<DeferredModal<T>['decision']>>();
+        dispatch({
+            type: MODAL.OPEN_USER_CONTEXT,
+            payload: {
+                ...payload,
+                decision: dfd,
+            },
+        });
+        try {
+            return dfd.promise;
+        } catch (error) {
+            // do nothing, return void
+        }
+    };

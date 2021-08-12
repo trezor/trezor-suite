@@ -38,42 +38,41 @@ export const resetReducer = (): BackupAction => ({
     type: BACKUP.RESET_REDUCER,
 });
 
-export const backupDevice = (params: CommonParams = {}) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { device } = getState().suite;
-    if (!device) {
-        return dispatch(
-            notificationActions.addToast({
-                type: 'error',
-                error: 'Device not connected',
-            }),
-        );
-    }
+export const backupDevice =
+    (params: CommonParams = {}) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        const { device } = getState().suite;
+        if (!device) {
+            return dispatch(
+                notificationActions.addToast({
+                    type: 'error',
+                    error: 'Device not connected',
+                }),
+            );
+        }
 
-    dispatch({
-        type: BACKUP.SET_STATUS,
-        payload: 'in-progress',
-    });
-
-    const result = await TrezorConnect.backupDevice({
-        ...params,
-        device: {
-            path: device.path,
-        },
-    });
-    if (!result.success) {
-        dispatch(notificationActions.addToast({ type: 'backup-failed' }));
         dispatch({
-            type: BACKUP.SET_ERROR,
-            payload: result.payload.error,
+            type: BACKUP.SET_STATUS,
+            payload: 'in-progress',
         });
-    } else {
-        dispatch(notificationActions.addToast({ type: 'backup-success' }));
-    }
-    dispatch({
-        type: BACKUP.SET_STATUS,
-        payload: 'finished',
-    });
-};
+
+        const result = await TrezorConnect.backupDevice({
+            ...params,
+            device: {
+                path: device.path,
+            },
+        });
+        if (!result.success) {
+            dispatch(notificationActions.addToast({ type: 'backup-failed' }));
+            dispatch({
+                type: BACKUP.SET_ERROR,
+                payload: result.payload.error,
+            });
+        } else {
+            dispatch(notificationActions.addToast({ type: 'backup-success' }));
+        }
+        dispatch({
+            type: BACKUP.SET_STATUS,
+            payload: 'finished',
+        });
+    };

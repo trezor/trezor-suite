@@ -161,17 +161,12 @@ export const useRbf = (props: Props) => {
     }, [state, reset]);
 
     // sub-hook
-    const {
-        isLoading,
-        composeRequest,
-        composedLevels,
-        onFeeLevelChange,
-        signTransaction,
-    } = useCompose({
-        ...useFormMethods,
-        state,
-        defaultField: 'selectedFee',
-    });
+    const { isLoading, composeRequest, composedLevels, onFeeLevelChange, signTransaction } =
+        useCompose({
+            ...useFormMethods,
+            state,
+            defaultField: 'selectedFee',
+        });
 
     // sub-hook
     const { changeFeeLevel } = useFees({

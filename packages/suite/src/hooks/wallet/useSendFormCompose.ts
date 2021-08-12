@@ -29,9 +29,8 @@ export const useSendFormCompose = ({
     updateContext,
     setAmount,
 }: Props) => {
-    const [composedLevels, setComposedLevels] = useState<SendContextValues['composedLevels']>(
-        undefined,
-    );
+    const [composedLevels, setComposedLevels] =
+        useState<SendContextValues['composedLevels']>(undefined);
     const composeRequestRef = useRef<string | undefined>(undefined); // input name, caller of compose request
     const composeRequestID = useRef(0); // compose ID, incremented with every compose request
     const [composeField, setComposeField] = useState<string | undefined>(undefined);

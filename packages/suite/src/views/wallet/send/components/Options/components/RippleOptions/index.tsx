@@ -23,12 +23,8 @@ const StyledButton = styled(Button)`
 `;
 
 const RippleOptions = () => {
-    const {
-        getDefaultValue,
-        toggleOption,
-        composeTransaction,
-        resetDefaultValue,
-    } = useSendFormContext();
+    const { getDefaultValue, toggleOption, composeTransaction, resetDefaultValue } =
+        useSendFormContext();
 
     const options = getDefaultValue('options', []);
     const destinationEnabled = options.includes('rippleDestinationTag');

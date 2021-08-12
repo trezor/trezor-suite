@@ -64,18 +64,16 @@ export const removeFormDraft = async (key: string) => {
     return db.removeItemByPK('formDrafts', key);
 };
 
-export const saveAccountFormDraft = (prefix: FormDraftKeyPrefix, accountKey: string) => async (
-    _: Dispatch,
-    getState: GetState,
-) => {
-    if (!(await isDBAccessible())) return;
+export const saveAccountFormDraft =
+    (prefix: FormDraftKeyPrefix, accountKey: string) => async (_: Dispatch, getState: GetState) => {
+        if (!(await isDBAccessible())) return;
 
-    const { formDrafts } = getState().wallet;
+        const { formDrafts } = getState().wallet;
 
-    const formDraftKey = getFormDraftKey(prefix, accountKey);
-    const formDraft = formDrafts[formDraftKey];
-    return formDraft ? db.addItem('formDrafts', formDraft, formDraftKey, true) : undefined;
-};
+        const formDraftKey = getFormDraftKey(prefix, accountKey);
+        const formDraft = formDrafts[formDraftKey];
+        return formDraft ? db.addItem('formDrafts', formDraft, formDraftKey, true) : undefined;
+    };
 
 export const removeAccountFormDraft = async (prefix: FormDraftKeyPrefix, accountKey: string) => {
     if (!(await isDBAccessible())) return;
@@ -174,23 +172,21 @@ export const saveGraph = async (graphData: GraphData[]) => {
     return db.addItems('graph', graphData, true);
 };
 
-export const saveAccountTransactions = (account: Account) => async (
-    _dispatch: Dispatch,
-    getState: GetState,
-) => {
-    if (!(await isDBAccessible())) return Promise.resolve();
-    const allTxs = getState().wallet.transactions.transactions;
-    const accTxs = allTxs[account.key] || [];
+export const saveAccountTransactions =
+    (account: Account) => async (_dispatch: Dispatch, getState: GetState) => {
+        if (!(await isDBAccessible())) return Promise.resolve();
+        const allTxs = getState().wallet.transactions.transactions;
+        const accTxs = allTxs[account.key] || [];
 
-    // wrap confirmed txs and add its order inside the array
-    const orderedTxs = accTxs
-        .filter(t => (t.blockHeight || 0) > 0)
-        .map((accTx, i) => ({
-            tx: accTx,
-            order: i,
-        }));
-    return db.addItems('txs', orderedTxs, true);
-};
+        // wrap confirmed txs and add its order inside the array
+        const orderedTxs = accTxs
+            .filter(t => (t.blockHeight || 0) > 0)
+            .map((accTx, i) => ({
+                tx: accTx,
+                order: i,
+            }));
+        return db.addItems('txs', orderedTxs, true);
+    };
 
 export const removeAccountGraph = async (account: Account) => {
     if (!(await isDBAccessible())) return;
@@ -201,47 +197,48 @@ export const removeAccountGraph = async (account: Account) => {
     ]);
 };
 
-export const rememberDevice = (
-    device: TrezorDevice,
-    remember: boolean,
-    forcedRemember?: true,
-) => async (dispatch: Dispatch, getState: GetState) => {
-    if (!(await isDBAccessible())) return;
-    if (!device || !device.features || !device.state) return;
-    if (!remember) {
-        return dispatch(forgetDevice(device));
-    }
+export const rememberDevice =
+    (device: TrezorDevice, remember: boolean, forcedRemember?: true) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        if (!(await isDBAccessible())) return;
+        if (!device || !device.features || !device.state) return;
+        if (!remember) {
+            return dispatch(forgetDevice(device));
+        }
 
-    const { wallet } = getState();
-    const accounts = wallet.accounts.filter(a => a.deviceState === device.state);
-    const graphData = wallet.graph.data.filter(d => deviceGraphDataFilterFn(d, device.state));
-    const discovery = wallet.discovery
-        .filter(d => d.deviceState === device.state)
-        .map(serializeDiscovery);
+        const { wallet } = getState();
+        const accounts = wallet.accounts.filter(a => a.deviceState === device.state);
+        const graphData = wallet.graph.data.filter(d => deviceGraphDataFilterFn(d, device.state));
+        const discovery = wallet.discovery
+            .filter(d => d.deviceState === device.state)
+            .map(serializeDiscovery);
 
-    const accountPromises = accounts.reduce(
-        (promises, account) =>
-            promises.concat(
-                [dispatch(saveAccountTransactions(account)), dispatch(saveAccountDraft(account))],
-                FormDraftPrefixKeyValues.map(prefix =>
-                    dispatch(saveAccountFormDraft(prefix, account.key)),
+        const accountPromises = accounts.reduce(
+            (promises, account) =>
+                promises.concat(
+                    [
+                        dispatch(saveAccountTransactions(account)),
+                        dispatch(saveAccountDraft(account)),
+                    ],
+                    FormDraftPrefixKeyValues.map(prefix =>
+                        dispatch(saveAccountFormDraft(prefix, account.key)),
+                    ),
                 ),
-            ),
-        [] as Promise<void | string | undefined | IDBValidKey>[],
-    );
+            [] as Promise<void | string | undefined | IDBValidKey>[],
+        );
 
-    try {
-        await Promise.all([
-            saveDevice(device, forcedRemember),
-            saveAccounts(accounts),
-            saveGraph(graphData),
-            saveDiscovery(discovery),
-            ...accountPromises,
-        ] as Promise<void | string | undefined>[]);
-    } catch (error) {
-        console.error('Remember device:', error);
-    }
-};
+        try {
+            await Promise.all([
+                saveDevice(device, forcedRemember),
+                saveAccounts(accounts),
+                saveGraph(graphData),
+                saveDiscovery(discovery),
+                ...accountPromises,
+            ] as Promise<void | string | undefined>[]);
+        } catch (error) {
+            console.error('Remember device:', error);
+        }
+    };
 
 export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
     if (!(await isDBAccessible())) return;
@@ -255,14 +252,12 @@ export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: Ge
     );
 };
 
-export const removeFiatRate = (symbol: string, tokenAddress?: string) => async (
-    _dispatch: Dispatch,
-    _getState: GetState,
-) => {
-    if (!(await isDBAccessible())) return;
-    const key = tokenAddress ? `${symbol}-${tokenAddress}` : symbol;
-    return db.removeItemByPK('fiatRates', key);
-};
+export const removeFiatRate =
+    (symbol: string, tokenAddress?: string) => async (_dispatch: Dispatch, _getState: GetState) => {
+        if (!(await isDBAccessible())) return;
+        const key = tokenAddress ? `${symbol}-${tokenAddress}` : symbol;
+        return db.removeItemByPK('fiatRates', key);
+    };
 
 export const saveFiatRates = () => async (_dispatch: Dispatch, getState: GetState) => {
     if (!(await isDBAccessible())) return;

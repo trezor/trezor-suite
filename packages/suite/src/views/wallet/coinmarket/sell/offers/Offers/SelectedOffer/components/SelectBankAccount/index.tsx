@@ -110,12 +110,8 @@ const StyledIcon = styled(Icon)`
 
 const SelectBankAccount = () => {
     const theme = useTheme();
-    const {
-        callInProgress,
-        confirmTrade,
-        addBankAccount,
-        selectedQuote,
-    } = useCoinmarketSellOffersContext();
+    const { callInProgress, confirmTrade, addBankAccount, selectedQuote } =
+        useCoinmarketSellOffersContext();
     const [bankAccount, setBankAccount] = useState<BankAccount | undefined>(
         selectedQuote?.bankAccounts ? selectedQuote?.bankAccounts[0] : undefined,
     );

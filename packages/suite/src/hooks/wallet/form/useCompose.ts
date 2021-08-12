@@ -37,9 +37,8 @@ export const useCompose = ({
     const [composeRequestID, setComposeRequestID] = useState(0);
     const composeRequestIDRef = useRef(composeRequestID);
     const defaultFieldRef = useRef(defaultField || 'outputs[0].amount');
-    const [composedLevels, setComposedLevels] = useState<SendContextValues['composedLevels']>(
-        undefined,
-    );
+    const [composedLevels, setComposedLevels] =
+        useState<SendContextValues['composedLevels']>(undefined);
     const [composeField, setComposeField] = useState<string | undefined>(undefined);
 
     // actions

@@ -59,14 +59,8 @@ const ArrowIcon = styled(Icon)`
 `;
 
 const DecreasedOutputs = () => {
-    const {
-        formValues,
-        account,
-        getValues,
-        setValue,
-        composedLevels,
-        composeRequest,
-    } = useRbfContext();
+    const { formValues, account, getValues, setValue, composedLevels, composeRequest } =
+        useRbfContext();
     const { selectedFee, setMaxOutputId } = getValues();
     if (typeof setMaxOutputId !== 'number') return null; // no set-max means that no output was decreased
 

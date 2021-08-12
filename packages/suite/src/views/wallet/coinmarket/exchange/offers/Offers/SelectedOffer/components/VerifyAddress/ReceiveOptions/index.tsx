@@ -71,12 +71,8 @@ type Props = Pick<UseFormMethods<FormState>, 'setValue'> & {
 
 const ReceiveOptions = (props: Props) => {
     const theme = useTheme();
-    const {
-        device,
-        suiteReceiveAccounts,
-        receiveSymbol,
-        setReceiveAccount,
-    } = useCoinmarketExchangeOffersContext();
+    const { device, suiteReceiveAccounts, receiveSymbol, setReceiveAccount } =
+        useCoinmarketExchangeOffersContext();
     const [menuIsOpen, setMenuIsOpen] = useState<boolean | undefined>(undefined);
     const dispatch = useDispatch<Dispatch>();
 

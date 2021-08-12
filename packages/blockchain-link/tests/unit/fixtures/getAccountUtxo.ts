@@ -22,8 +22,7 @@ export default {
         },
         {
             description: 'Testnet account with 1 utxo',
-            params:
-                'upub5Df5hVPH2yM4Khs85P8nkq3x9GRcvX3FgDitXDcqSJDXgMJjVmpWPRqwqHExjQcezkjDDyU1u3ij1wUPXHaYqRHehuGtBvSPzcocpKu3wUz',
+            params: 'upub5Df5hVPH2yM4Khs85P8nkq3x9GRcvX3FgDitXDcqSJDXgMJjVmpWPRqwqHExjQcezkjDDyU1u3ij1wUPXHaYqRHehuGtBvSPzcocpKu3wUz',
             serverFixtures: [
                 {
                     method: 'getAccountUtxo',
@@ -34,8 +33,7 @@ export default {
                                 confirmations: 116338,
                                 height: 1450749,
                                 path: "m/49'/1'/0'/1/0",
-                                txid:
-                                    'ee7720c3350ff500b8b6a3a477fb71ef35e37c18f1929a586324791e6c5a11dd',
+                                txid: 'ee7720c3350ff500b8b6a3a477fb71ef35e37c18f1929a586324791e6c5a11dd',
                                 value: '18833',
                                 vout: 1,
                             },
@@ -57,8 +55,7 @@ export default {
         },
         {
             description: 'Testnet account with undefined amount',
-            params:
-                'upub5Df5hVPH2yM4Khs85P8nkq3x9GRcvX3FgDitXDcqSJDXgMJjVmpWPRqwqHExjQcezkjDDyU1u3ij1wUPXHaYqRHehuGtBvSPzcocpKu3wUz',
+            params: 'upub5Df5hVPH2yM4Khs85P8nkq3x9GRcvX3FgDitXDcqSJDXgMJjVmpWPRqwqHExjQcezkjDDyU1u3ij1wUPXHaYqRHehuGtBvSPzcocpKu3wUz',
             serverFixtures: [
                 {
                     method: 'getAccountUtxo',
@@ -69,8 +66,7 @@ export default {
                                 confirmations: 116338,
                                 height: 1450749,
                                 path: "m/49'/1'/0'/1/0",
-                                txid:
-                                    'ee7720c3350ff500b8b6a3a477fb71ef35e37c18f1929a586324791e6c5a11dd',
+                                txid: 'ee7720c3350ff500b8b6a3a477fb71ef35e37c18f1929a586324791e6c5a11dd',
                                 value: undefined,
                                 vout: 1,
                             },

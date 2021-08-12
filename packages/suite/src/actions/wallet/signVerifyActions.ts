@@ -20,86 +20,84 @@ export type SignVerifyAction =
     | { type: typeof SIGN_VERIFY.TOUCH; inputName: inputNameType }
     | { type: typeof SIGN_VERIFY.ERROR; inputName: inputNameType; message?: string };
 
-export const sign = (path: [number], message: string, hex = false) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const selectedDevice = getState().suite.device;
-    if (!selectedDevice) return;
+export const sign =
+    (path: [number], message: string, hex = false) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        const selectedDevice = getState().suite.device;
+        if (!selectedDevice) return;
 
-    const response = await TrezorConnect.ethereumSignMessage({
-        device: {
-            path: selectedDevice.path,
-            instance: selectedDevice.instance,
-            state: selectedDevice.state,
-        },
-        path,
-        hex,
-        message,
-        useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
-    });
-
-    if (response && response.success) {
-        dispatch({
-            type: SIGN_VERIFY.SIGN_SUCCESS,
-            signSignature: response.payload.signature,
-        });
-    } else {
-        dispatch(
-            notificationActions.addToast({
-                type: 'sign-message-error',
-                error: response.payload.error,
-            }),
-        );
-    }
-};
-
-export const verify = (address: string, message: string, signature: string, hex = false) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const selectedDevice = getState().suite.device;
-    if (!selectedDevice) return;
-    const error = validateAddress(address);
-
-    if (error) {
-        dispatch({
-            type: SIGN_VERIFY.ERROR,
-            inputName: 'verifyAddress',
-            message: error,
-        });
-    }
-
-    if (!error) {
-        const response = await TrezorConnect.ethereumVerifyMessage({
+        const response = await TrezorConnect.ethereumSignMessage({
             device: {
                 path: selectedDevice.path,
                 instance: selectedDevice.instance,
                 state: selectedDevice.state,
             },
-            address,
-            message,
-            signature,
+            path,
             hex,
+            message,
             useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
         });
 
         if (response && response.success) {
-            dispatch(
-                notificationActions.addToast({
-                    type: 'verify-message-success',
-                }),
-            );
+            dispatch({
+                type: SIGN_VERIFY.SIGN_SUCCESS,
+                signSignature: response.payload.signature,
+            });
         } else {
             dispatch(
                 notificationActions.addToast({
-                    type: 'verify-message-error',
+                    type: 'sign-message-error',
                     error: response.payload.error,
                 }),
             );
         }
-    }
-};
+    };
+
+export const verify =
+    (address: string, message: string, signature: string, hex = false) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        const selectedDevice = getState().suite.device;
+        if (!selectedDevice) return;
+        const error = validateAddress(address);
+
+        if (error) {
+            dispatch({
+                type: SIGN_VERIFY.ERROR,
+                inputName: 'verifyAddress',
+                message: error,
+            });
+        }
+
+        if (!error) {
+            const response = await TrezorConnect.ethereumVerifyMessage({
+                device: {
+                    path: selectedDevice.path,
+                    instance: selectedDevice.instance,
+                    state: selectedDevice.state,
+                },
+                address,
+                message,
+                signature,
+                hex,
+                useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
+            });
+
+            if (response && response.success) {
+                dispatch(
+                    notificationActions.addToast({
+                        type: 'verify-message-success',
+                    }),
+                );
+            } else {
+                dispatch(
+                    notificationActions.addToast({
+                        type: 'verify-message-error',
+                        error: response.payload.error,
+                    }),
+                );
+            }
+        }
+    };
 
 export const inputChange = (inputName: inputNameType, value: string) => (dispatch: Dispatch) => {
     dispatch({
