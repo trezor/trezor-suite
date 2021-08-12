@@ -116,6 +116,7 @@ const Inputs = () => {
     );
 
     const setAllAmount = useCallback(() => {
+        setValue(CRYPTO_INPUT, '', { shouldDirty: true });
         setValue('setMaxOutputId', 0, { shouldDirty: true });
         clearErrors([FIAT_INPUT, CRYPTO_INPUT]);
         composeRequest();

@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useCoinmarketSellFormContext } from '@wallet-hooks/useCoinmarketSellForm';
 import styled from 'styled-components';
 import FiatInput from './FiatInput';
-import { CRYPTO_INPUT, FIAT_INPUT } from '@suite/types/wallet/coinmarketSellForm';
+import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from '@suite/types/wallet/coinmarketSellForm';
 import CryptoInput from './CryptoInput';
 import { useLayoutSize } from '@suite/hooks/suite';
 import FractionButtons from '@suite/components/wallet/CoinMarketFractionButtons';
@@ -102,6 +102,7 @@ const Inputs = () => {
     const setAllAmount = useCallback(() => {
         setValue('setMaxOutputId', 0, { shouldDirty: true });
         setValue(FIAT_INPUT, '', { shouldDirty: true });
+        setValue(OUTPUT_AMOUNT, '', { shouldDirty: true });
         clearErrors([FIAT_INPUT, CRYPTO_INPUT]);
         setActiveInput(CRYPTO_INPUT);
         composeRequest(CRYPTO_INPUT);
