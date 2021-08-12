@@ -205,11 +205,8 @@ export function getQuoteError(quote: SellFiatTrade, amountInCrypto: boolean) {
 
 const Quote = ({ className, quote, amountInCrypto }: Props) => {
     const theme = useTheme();
-    const {
-        selectQuote,
-        sellInfo,
-        needToRegisterOrVerifyBankAccount,
-    } = useCoinmarketSellOffersContext();
+    const { selectQuote, sellInfo, needToRegisterOrVerifyBankAccount } =
+        useCoinmarketSellOffersContext();
     // TODO - tags are not yet fully supported by the API server
     // in the future will be taken from quote.tags, will need some algorithm to evaluate them and show only one
     const hasTag = false;

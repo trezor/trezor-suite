@@ -175,10 +175,10 @@ class CommonDB<TDBStructure> {
         _store: TStoreName,
         _indexName?: TIndexName,
         _filters?: { key?: any; offset?: number; count?: number; reverse?: boolean }
-    ) => (Promise.resolve() as unknown) as Promise<StoreValue<TDBStructure, TStoreName>[]>;
+    ) => Promise.resolve() as unknown as Promise<StoreValue<TDBStructure, TStoreName>[]>;
 
     getItemsWithKeys = <TStoreName extends StoreNames<TDBStructure>>(_store: TStoreName) =>
-        (Promise.resolve() as unknown) as Promise<
+        Promise.resolve() as unknown as Promise<
             {
                 key: unknown extends IndexNames<TDBStructure, TStoreName>
                     ? IndexKey<TDBStructure, TStoreName, IndexNames<TDBStructure, TStoreName>>

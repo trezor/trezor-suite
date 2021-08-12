@@ -36,41 +36,38 @@ export const setDiscreetMode = (toggled: boolean) => (dispatch: Dispatch, getSta
     }
 };
 
-export const changeCoinVisibility = (symbol: Network['symbol'], shouldBeVisible: boolean) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    let { enabledNetworks } = getState().wallet.settings;
-    const isAlreadyHidden = enabledNetworks.find(coin => coin === symbol);
-    if (!shouldBeVisible) {
-        enabledNetworks = enabledNetworks.filter(coin => coin !== symbol);
-    } else if (!isAlreadyHidden) {
-        enabledNetworks = [...enabledNetworks, symbol];
-    }
+export const changeCoinVisibility =
+    (symbol: Network['symbol'], shouldBeVisible: boolean) =>
+    (dispatch: Dispatch, getState: GetState) => {
+        let { enabledNetworks } = getState().wallet.settings;
+        const isAlreadyHidden = enabledNetworks.find(coin => coin === symbol);
+        if (!shouldBeVisible) {
+            enabledNetworks = enabledNetworks.filter(coin => coin !== symbol);
+        } else if (!isAlreadyHidden) {
+            enabledNetworks = [...enabledNetworks, symbol];
+        }
 
-    dispatch({
-        type: WALLET_SETTINGS.CHANGE_NETWORKS,
-        payload: enabledNetworks,
-    });
-};
+        dispatch({
+            type: WALLET_SETTINGS.CHANGE_NETWORKS,
+            payload: enabledNetworks,
+        });
+    };
 
 export const changeNetworks = (payload: Network['symbol'][]): WalletSettingsAction => ({
     type: WALLET_SETTINGS.CHANGE_NETWORKS,
     payload,
 });
 
-export const setLastUsedFeeLevel = (feeLevel?: FeeLevel) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { selectedAccount } = getState().wallet;
-    if (selectedAccount.status !== 'loaded') return;
-    dispatch({
-        type: WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL,
-        symbol: selectedAccount.account.symbol,
-        feeLevel,
-    });
-};
+export const setLastUsedFeeLevel =
+    (feeLevel?: FeeLevel) => (dispatch: Dispatch, getState: GetState) => {
+        const { selectedAccount } = getState().wallet;
+        if (selectedAccount.status !== 'loaded') return;
+        dispatch({
+            type: WALLET_SETTINGS.SET_LAST_USED_FEE_LEVEL,
+            symbol: selectedAccount.account.symbol,
+            feeLevel,
+        });
+    };
 
 export const getLastUsedFeeLevel = () => (_: Dispatch, getState: GetState) => {
     const { selectedAccount, settings } = getState().wallet;

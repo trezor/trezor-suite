@@ -65,13 +65,8 @@ const Middle = styled.div`
 `;
 
 const SelectedOffer = () => {
-    const {
-        account,
-        selectedQuote,
-        exchangeInfo,
-        exchangeStep,
-        receiveAccount,
-    } = useCoinmarketExchangeOffersContext();
+    const { account, selectedQuote, exchangeInfo, exchangeStep, receiveAccount } =
+        useCoinmarketExchangeOffersContext();
     if (!selectedQuote) return null;
 
     return (

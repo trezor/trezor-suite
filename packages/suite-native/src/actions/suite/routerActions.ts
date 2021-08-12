@@ -78,85 +78,85 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
  * @param {RouteParams|undefined} params
  * @param {boolean} preserveParams
  */
-export const goto = (routeName: Route['name'], params?: RouteParams, _preserveParams = false) => (
-    dispatch: Dispatch,
-) => {
-    const navigator = getNavigator();
-    const state = getNavigatorState();
-    if (!navigator) {
-        console.warn('Navigator not found');
-        return;
-    }
-    if (!state) {
-        console.warn('Navigator state not found');
-        return;
-    }
-    const unlocked = dispatch(isRouterUnlocked());
-    if (!unlocked) return;
-
-    const requestedRoute = findRouteByName(routeName);
-    const isForegroundApp = requestedRoute && requestedRoute.isForegroundApp;
-
-    const pathname = getRoute(routeName);
-    const navigatorRoute = getActiveRoute(state);
-    const currentApp = getAppWithParams(navigatorRoute.routeName);
-    const nextApp = getAppWithParams(pathname);
-
-    if (isForegroundApp) {
-        // Application modals (Onboarding, FW Update, Backup, Select Device...)
-        // display as a second child on top of root stack
-        navigator.dispatch(
-            StackActions.push({
-                routeName: pathname,
-                params: {
-                    routeParams: params,
-                },
-            }),
-        );
-    } else if (currentApp.app !== nextApp.app) {
-        // Application change ("/wallet" > "/settings")
-        // check if requested url has topLevelRoute route and dispatch second action
-        const topLevelRoute = getTopLevelRoute(pathname);
-        const action = topLevelRoute
-            ? NavigationActions.navigate({
-                  routeName: pathname,
-                  params: {
-                      routeParams: params,
-                      // TODO: pass navigationOptions?
-                  },
-              })
-            : undefined;
-
-        // Navigation flow: reset root stack > navigate to requested route (topLevel) > additionally navigate to nested route
-        navigator.dispatch(
-            StackActions.reset({
-                index: 0,
-                key: null,
-                actions: [
-                    NavigationActions.navigate({
-                        routeName: topLevelRoute || pathname,
-                        action,
-                    }),
-                ],
-            }),
-        );
-    } else {
-        // TODO: Catch same url here "/" > "/"
-        // Nested route change (use case: Account #1 > Account #2)
-        if (isDrawerOpened(state)) {
-            navigator.dispatch(DrawerActions.closeDrawer());
+export const goto =
+    (routeName: Route['name'], params?: RouteParams, _preserveParams = false) =>
+    (dispatch: Dispatch) => {
+        const navigator = getNavigator();
+        const state = getNavigatorState();
+        if (!navigator) {
+            console.warn('Navigator not found');
+            return;
         }
-        navigator.dispatch(
-            NavigationActions.navigate({
-                routeName: pathname,
-                params: {
-                    routeParams: params,
-                    // TODO: pass navigationOptions?
-                },
-            }),
-        );
-    }
-};
+        if (!state) {
+            console.warn('Navigator state not found');
+            return;
+        }
+        const unlocked = dispatch(isRouterUnlocked());
+        if (!unlocked) return;
+
+        const requestedRoute = findRouteByName(routeName);
+        const isForegroundApp = requestedRoute && requestedRoute.isForegroundApp;
+
+        const pathname = getRoute(routeName);
+        const navigatorRoute = getActiveRoute(state);
+        const currentApp = getAppWithParams(navigatorRoute.routeName);
+        const nextApp = getAppWithParams(pathname);
+
+        if (isForegroundApp) {
+            // Application modals (Onboarding, FW Update, Backup, Select Device...)
+            // display as a second child on top of root stack
+            navigator.dispatch(
+                StackActions.push({
+                    routeName: pathname,
+                    params: {
+                        routeParams: params,
+                    },
+                }),
+            );
+        } else if (currentApp.app !== nextApp.app) {
+            // Application change ("/wallet" > "/settings")
+            // check if requested url has topLevelRoute route and dispatch second action
+            const topLevelRoute = getTopLevelRoute(pathname);
+            const action = topLevelRoute
+                ? NavigationActions.navigate({
+                      routeName: pathname,
+                      params: {
+                          routeParams: params,
+                          // TODO: pass navigationOptions?
+                      },
+                  })
+                : undefined;
+
+            // Navigation flow: reset root stack > navigate to requested route (topLevel) > additionally navigate to nested route
+            navigator.dispatch(
+                StackActions.reset({
+                    index: 0,
+                    key: null,
+                    actions: [
+                        NavigationActions.navigate({
+                            routeName: topLevelRoute || pathname,
+                            action,
+                        }),
+                    ],
+                }),
+            );
+        } else {
+            // TODO: Catch same url here "/" > "/"
+            // Nested route change (use case: Account #1 > Account #2)
+            if (isDrawerOpened(state)) {
+                navigator.dispatch(DrawerActions.closeDrawer());
+            }
+            navigator.dispatch(
+                NavigationActions.navigate({
+                    routeName: pathname,
+                    params: {
+                        routeParams: params,
+                        // TODO: pass navigationOptions?
+                    },
+                }),
+            );
+        }
+    };
 
 /**
  * External links
@@ -184,26 +184,28 @@ export const androidBack = () => () => {
  * Handle changes of Navigation state
  * Called from `@native/support/suite/Router`
  */
-export const onNavigationStateChange = (
-    _oldState: NavigationState,
-    newState: NavigationState,
-    action: NavigationAction & { routeName?: string },
-) => (dispatch: Dispatch): void => {
-    if (
-        action.routeName ||
-        action.type === NavigationActions.BACK ||
-        action.type === StackActions.RESET
-    ) {
-        const navigatorRoute = getActiveRoute(newState);
-        const { routeName } = navigatorRoute;
-        const suiteRoute = findRoute(routeName);
-        const params = navigatorRoute.params ? navigatorRoute.params.routeParams : undefined;
-        // params in browser version of @suite/routerReducer are parsed from window.location hash # (url: string)
-        // to keep it compatible convert params to string
-        // TODO: consider rewrite `onLocationChange` and `routerReducer` to accept params as object
-        dispatch(onLocationChange(suiteRoute ? getRoute(suiteRoute.name, params) : routeName));
-    }
-};
+export const onNavigationStateChange =
+    (
+        _oldState: NavigationState,
+        newState: NavigationState,
+        action: NavigationAction & { routeName?: string },
+    ) =>
+    (dispatch: Dispatch): void => {
+        if (
+            action.routeName ||
+            action.type === NavigationActions.BACK ||
+            action.type === StackActions.RESET
+        ) {
+            const navigatorRoute = getActiveRoute(newState);
+            const { routeName } = navigatorRoute;
+            const suiteRoute = findRoute(routeName);
+            const params = navigatorRoute.params ? navigatorRoute.params.routeParams : undefined;
+            // params in browser version of @suite/routerReducer are parsed from window.location hash # (url: string)
+            // to keep it compatible convert params to string
+            // TODO: consider rewrite `onLocationChange` and `routerReducer` to accept params as object
+            dispatch(onLocationChange(suiteRoute ? getRoute(suiteRoute.name, params) : routeName));
+        }
+    };
 
 /**
  * Request previous screen in stack

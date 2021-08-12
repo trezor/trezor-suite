@@ -108,14 +108,8 @@ const buildOptions = (
 };
 
 const ReceiveCryptoSelect = () => {
-    const {
-        control,
-        setAmountLimits,
-        exchangeInfo,
-        exchangeCoinInfo,
-        account,
-        getValues,
-    } = useCoinmarketExchangeFormContext();
+    const { control, setAmountLimits, exchangeInfo, exchangeCoinInfo, account, getValues } =
+        useCoinmarketExchangeFormContext();
 
     const customSearch = (
         option: { data: { label: string; value: string; name: string } },

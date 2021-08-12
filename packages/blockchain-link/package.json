@@ -45,7 +45,7 @@
         "babel-loader": "^8.2.1",
         "eslint-config-airbnb-base": "^14.2.1",
         "eslint-loader": "^4.0.2",
-        "eslint-plugin-jest": "^24.3.5",
+        "eslint-plugin-jest": "^24.4.0",
         "html-webpack-plugin": "^4.5.0",
         "ts-loader": "^8.0.14",
         "webpack": "^4.44.2",

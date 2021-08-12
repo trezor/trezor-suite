@@ -83,20 +83,19 @@ export const removeDraft = () => (dispatch: Dispatch, getState: GetState) => {
     }
 };
 
-export const composeTransaction = (formValues: FormState, formState: UseSendFormState) => (
-    dispatch: Dispatch,
-) => {
-    const { account } = formState;
-    if (account.networkType === 'bitcoin') {
-        return dispatch(sendFormBitcoinActions.composeTransaction(formValues, formState));
-    }
-    if (account.networkType === 'ethereum') {
-        return dispatch(sendFormEthereumActions.composeTransaction(formValues, formState));
-    }
-    if (account.networkType === 'ripple') {
-        return dispatch(sendFormRippleActions.composeTransaction(formValues, formState));
-    }
-};
+export const composeTransaction =
+    (formValues: FormState, formState: UseSendFormState) => (dispatch: Dispatch) => {
+        const { account } = formState;
+        if (account.networkType === 'bitcoin') {
+            return dispatch(sendFormBitcoinActions.composeTransaction(formValues, formState));
+        }
+        if (account.networkType === 'ethereum') {
+            return dispatch(sendFormEthereumActions.composeTransaction(formValues, formState));
+        }
+        if (account.networkType === 'ripple') {
+            return dispatch(sendFormRippleActions.composeTransaction(formValues, formState));
+        }
+    };
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
 // used in send/Address component
@@ -186,141 +185,143 @@ const pushTransaction = () => async (dispatch: Dispatch, getState: GetState) => 
     return sentTx;
 };
 
-export const signTransaction = (
-    formValues: FormState,
-    transactionInfo: PrecomposedTransactionFinal,
-) => async (dispatch: Dispatch, getState: GetState) => {
-    const { device } = getState().suite;
-    const { account } = getState().wallet.selectedAccount;
+export const signTransaction =
+    (formValues: FormState, transactionInfo: PrecomposedTransactionFinal) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        const { device } = getState().suite;
+        const { account } = getState().wallet.selectedAccount;
 
-    if (!device || !account) return;
+        if (!device || !account) return;
 
-    // native RBF is available since FW 1.9.4/2.3.5
-    const nativeRbfAvailable =
-        account.networkType === 'bitcoin' &&
-        formValues.rbfParams &&
-        !device.unavailableCapabilities?.replaceTransaction;
-    // decrease output is available since FW 1.10.0/2.4.0
-    const decreaseOutputAvailable =
-        account.networkType === 'bitcoin' &&
-        formValues.rbfParams &&
-        !device.unavailableCapabilities?.decreaseOutput;
-    const hasDecreasedOutput =
-        formValues.rbfParams && typeof formValues.setMaxOutputId === 'number';
-    // in case where native RBF is NOT available fallback to "legacy" way of signing (regular signing):
-    // - do not enhance inputs/outputs in signFormBitcoinActions
-    // - do not display "rbf mode" in ReviewTransaction modal
-    const useNativeRbf =
-        (!hasDecreasedOutput && nativeRbfAvailable) ||
-        (hasDecreasedOutput && decreaseOutputAvailable);
+        // native RBF is available since FW 1.9.4/2.3.5
+        const nativeRbfAvailable =
+            account.networkType === 'bitcoin' &&
+            formValues.rbfParams &&
+            !device.unavailableCapabilities?.replaceTransaction;
+        // decrease output is available since FW 1.10.0/2.4.0
+        const decreaseOutputAvailable =
+            account.networkType === 'bitcoin' &&
+            formValues.rbfParams &&
+            !device.unavailableCapabilities?.decreaseOutput;
+        const hasDecreasedOutput =
+            formValues.rbfParams && typeof formValues.setMaxOutputId === 'number';
+        // in case where native RBF is NOT available fallback to "legacy" way of signing (regular signing):
+        // - do not enhance inputs/outputs in signFormBitcoinActions
+        // - do not display "rbf mode" in ReviewTransaction modal
+        const useNativeRbf =
+            (!hasDecreasedOutput && nativeRbfAvailable) ||
+            (hasDecreasedOutput && decreaseOutputAvailable);
 
-    const enhancedTxInfo: PrecomposedTransactionFinal = {
-        ...transactionInfo,
-        rbf: formValues.options.includes('bitcoinRBF'),
+        const enhancedTxInfo: PrecomposedTransactionFinal = {
+            ...transactionInfo,
+            rbf: formValues.options.includes('bitcoinRBF'),
+        };
+
+        if (formValues.rbfParams) {
+            enhancedTxInfo.prevTxid = formValues.rbfParams.txid;
+            enhancedTxInfo.feeDifference = new BigNumber(transactionInfo.fee)
+                .minus(formValues.rbfParams.baseFee)
+                .toFixed();
+            enhancedTxInfo.useNativeRbf = useNativeRbf;
+            enhancedTxInfo.useDecreaseOutput = hasDecreasedOutput;
+        }
+
+        // store formValues and transactionInfo in send reducer to be used by ReviewTransaction modal
+        dispatch({
+            type: SEND.REQUEST_SIGN_TRANSACTION,
+            payload: {
+                formValues,
+                transactionInfo: enhancedTxInfo,
+            },
+        });
+
+        // ReviewTransaction modal has 2 steps: signing and pushing
+        // TrezorConnect emits UI.CLOSE_UI.WINDOW after the signing process
+        // this action is blocked by actionBlockerMiddleware
+        dispatch(suiteActions.setProcessMode(device, 'sign-tx'));
+
+        // signTransaction by Trezor
+        let serializedTx: string | undefined;
+        if (account.networkType === 'bitcoin') {
+            serializedTx = await dispatch(
+                sendFormBitcoinActions.signTransaction(formValues, enhancedTxInfo),
+            );
+        }
+        if (account.networkType === 'ethereum') {
+            serializedTx = await dispatch(
+                sendFormEthereumActions.signTransaction(formValues, enhancedTxInfo),
+            );
+        }
+        if (account.networkType === 'ripple') {
+            serializedTx = await dispatch(
+                sendFormRippleActions.signTransaction(formValues, enhancedTxInfo),
+            );
+        }
+
+        dispatch(suiteActions.setProcessMode(device, undefined));
+
+        if (!serializedTx) {
+            // close modal manually since UI.CLOSE_UI.WINDOW was blocked
+            dispatch(modalActions.onCancel());
+            return;
+        }
+
+        // store serializedTx in reducer (TrezorConnect.pushTransaction params) to be used in ReviewTransaction modal and pushTransaction method
+        dispatch({
+            type: SEND.REQUEST_PUSH_TRANSACTION,
+            payload: {
+                tx: serializedTx,
+                coin: account.symbol,
+            },
+        });
+
+        // Open a deferred modal and get the decision
+        const decision = await dispatch(
+            modalActions.openDeferredModal({ type: 'review-transaction' }),
+        );
+        if (decision) {
+            // push tx to the network
+            return dispatch(pushTransaction());
+        }
     };
-
-    if (formValues.rbfParams) {
-        enhancedTxInfo.prevTxid = formValues.rbfParams.txid;
-        enhancedTxInfo.feeDifference = new BigNumber(transactionInfo.fee)
-            .minus(formValues.rbfParams.baseFee)
-            .toFixed();
-        enhancedTxInfo.useNativeRbf = useNativeRbf;
-        enhancedTxInfo.useDecreaseOutput = hasDecreasedOutput;
-    }
-
-    // store formValues and transactionInfo in send reducer to be used by ReviewTransaction modal
-    dispatch({
-        type: SEND.REQUEST_SIGN_TRANSACTION,
-        payload: {
-            formValues,
-            transactionInfo: enhancedTxInfo,
-        },
-    });
-
-    // ReviewTransaction modal has 2 steps: signing and pushing
-    // TrezorConnect emits UI.CLOSE_UI.WINDOW after the signing process
-    // this action is blocked by actionBlockerMiddleware
-    dispatch(suiteActions.setProcessMode(device, 'sign-tx'));
-
-    // signTransaction by Trezor
-    let serializedTx: string | undefined;
-    if (account.networkType === 'bitcoin') {
-        serializedTx = await dispatch(
-            sendFormBitcoinActions.signTransaction(formValues, enhancedTxInfo),
-        );
-    }
-    if (account.networkType === 'ethereum') {
-        serializedTx = await dispatch(
-            sendFormEthereumActions.signTransaction(formValues, enhancedTxInfo),
-        );
-    }
-    if (account.networkType === 'ripple') {
-        serializedTx = await dispatch(
-            sendFormRippleActions.signTransaction(formValues, enhancedTxInfo),
-        );
-    }
-
-    dispatch(suiteActions.setProcessMode(device, undefined));
-
-    if (!serializedTx) {
-        // close modal manually since UI.CLOSE_UI.WINDOW was blocked
-        dispatch(modalActions.onCancel());
-        return;
-    }
-
-    // store serializedTx in reducer (TrezorConnect.pushTransaction params) to be used in ReviewTransaction modal and pushTransaction method
-    dispatch({
-        type: SEND.REQUEST_PUSH_TRANSACTION,
-        payload: {
-            tx: serializedTx,
-            coin: account.symbol,
-        },
-    });
-
-    // Open a deferred modal and get the decision
-    const decision = await dispatch(modalActions.openDeferredModal({ type: 'review-transaction' }));
-    if (decision) {
-        // push tx to the network
-        return dispatch(pushTransaction());
-    }
-};
 
 export const sendRaw = (payload?: boolean): SendFormAction => ({
     type: SEND.SEND_RAW,
     payload,
 });
 
-export const pushRawTransaction = (tx: string, coin: Account['symbol']) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const sentTx = await TrezorConnect.pushTransaction({
-        tx,
-        coin,
-    });
+export const pushRawTransaction =
+    (tx: string, coin: Account['symbol']) => async (dispatch: Dispatch, getState: GetState) => {
+        const sentTx = await TrezorConnect.pushTransaction({
+            tx,
+            coin,
+        });
 
-    if (sentTx.success) {
-        dispatch(
-            notificationActions.addToast({
-                type: 'raw-tx-sent',
-                txid: sentTx.payload.txid,
-            }),
-        );
-        // raw tx doesn't have to be related to currently selected account
-        // but try to update selectedAccount just to be sure
-        const { account } = getState().wallet.selectedAccount;
-        if (account) {
-            dispatch(accountActions.fetchAndUpdateAccount(account));
+        if (sentTx.success) {
+            dispatch(
+                notificationActions.addToast({
+                    type: 'raw-tx-sent',
+                    txid: sentTx.payload.txid,
+                }),
+            );
+            // raw tx doesn't have to be related to currently selected account
+            // but try to update selectedAccount just to be sure
+            const { account } = getState().wallet.selectedAccount;
+            if (account) {
+                dispatch(accountActions.fetchAndUpdateAccount(account));
+            }
+        } else {
+            dispatch(
+                notificationActions.addToast({
+                    type: 'sign-tx-error',
+                    error: sentTx.payload.error,
+                }),
+            );
         }
-    } else {
-        dispatch(
-            notificationActions.addToast({ type: 'sign-tx-error', error: sentTx.payload.error }),
-        );
-    }
 
-    // resolve sign process
-    return sentTx.success;
-};
+        // resolve sign process
+        return sentTx.success;
+    };
 
 export const dispose = (): SendFormAction => ({
     type: SEND.DISPOSE,

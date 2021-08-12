@@ -48,9 +48,8 @@ export const useOffers = (props: Props) => {
     const [callInProgress, setCallInProgress] = useState<boolean>(isLocked() || false);
     const [selectedQuote, setSelectedQuote] = useState<ExchangeTrade>();
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
-    const [suiteReceiveAccounts, setSuiteReceiveAccounts] = useState<
-        ContextValues['suiteReceiveAccounts']
-    >();
+    const [suiteReceiveAccounts, setSuiteReceiveAccounts] =
+        useState<ContextValues['suiteReceiveAccounts']>();
     const [innerFixedQuotes, setInnerFixedQuotes] = useState<ExchangeTrade[]>(fixedQuotes);
     const [innerFloatQuotes, setInnerFloatQuotes] = useState<ExchangeTrade[]>(floatQuotes);
     const [exchangeStep, setExchangeStep] = useState<ExchangeStep>('RECEIVING_ADDRESS');

@@ -26,15 +26,8 @@ interface Props {
 }
 
 const Data = ({ close }: Props) => {
-    const {
-        register,
-        outputs,
-        errors,
-        getDefaultValue,
-        setValue,
-        setAmount,
-        composeTransaction,
-    } = useSendFormContext();
+    const { register, outputs, errors, getDefaultValue, setValue, setAmount, composeTransaction } =
+        useSendFormContext();
 
     const inputAsciiName = 'ethereumDataAscii';
     const inputHexName = 'ethereumDataHex';

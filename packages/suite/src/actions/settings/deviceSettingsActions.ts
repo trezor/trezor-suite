@@ -9,49 +9,46 @@ import { Dispatch, GetState } from '@suite-types';
 import { DEVICE } from '@suite-constants';
 import { SUITE } from '@suite-actions/constants';
 
-export const applySettings = (params: ApplySettings) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { device } = getState().suite;
-    if (!device) return;
-    const result = await TrezorConnect.applySettings({
-        device: {
-            path: device.path,
-        },
-        ...params,
-    });
-    if (result.success) {
-        dispatch(addToast({ type: 'settings-applied' }));
-    } else {
-        dispatch(addToast({ type: 'error', error: result.payload.error }));
-    }
+export const applySettings =
+    (params: ApplySettings) => async (dispatch: Dispatch, getState: GetState) => {
+        const { device } = getState().suite;
+        if (!device) return;
+        const result = await TrezorConnect.applySettings({
+            device: {
+                path: device.path,
+            },
+            ...params,
+        });
+        if (result.success) {
+            dispatch(addToast({ type: 'settings-applied' }));
+        } else {
+            dispatch(addToast({ type: 'error', error: result.payload.error }));
+        }
 
-    return result;
-};
+        return result;
+    };
 
-export const changePin = (params: ChangePin = {}) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { device } = getState().suite;
+export const changePin =
+    (params: ChangePin = {}) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        const { device } = getState().suite;
 
-    if (!device) return;
+        if (!device) return;
 
-    const result = await TrezorConnect.changePin({
-        device: {
-            path: device.path,
-        },
-        ...params,
-    });
-    if (result.success) {
-        dispatch(addToast({ type: 'pin-changed' }));
-    } else if (result.payload.code === 'Failure_PinMismatch') {
-        dispatch(modalActions.openModal({ type: 'pin-mismatch' }));
-    } else {
-        dispatch(addToast({ type: 'error', error: result.payload.error }));
-    }
-};
+        const result = await TrezorConnect.changePin({
+            device: {
+                path: device.path,
+            },
+            ...params,
+        });
+        if (result.success) {
+            dispatch(addToast({ type: 'pin-changed' }));
+        } else if (result.payload.code === 'Failure_PinMismatch') {
+            dispatch(modalActions.openModal({ type: 'pin-mismatch' }));
+        } else {
+            dispatch(addToast({ type: 'error', error: result.payload.error }));
+        }
+    };
 
 export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     const { device, transport } = getState().suite;
@@ -90,48 +87,47 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
     }
 };
 
-export const resetDevice = (params: ResetDevice = {}) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { device } = getState().suite;
-    if (!device) return;
-    let defaults = {};
-    if (device.features?.major_version === 1) {
-        defaults = {
-            strength: DEVICE.DEFAULT_STRENGTH_T1,
-            label: DEVICE.DEFAULT_LABEL,
-            skip_backup: DEVICE.DEFAULT_SKIP_BACKUP,
-            passphrase_protection: DEVICE.DEFAULT_PASSPHRASE_PROTECTION,
-        };
-    } else {
-        defaults = {
-            strength: DEVICE.DEFAULT_STRENGTH_T2,
-            label: DEVICE.DEFAULT_LABEL,
-            skip_backup: DEVICE.DEFAULT_SKIP_BACKUP,
-            passphrase_protection: DEVICE.DEFAULT_PASSPHRASE_PROTECTION,
-        };
-    }
+export const resetDevice =
+    (params: ResetDevice = {}) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        const { device } = getState().suite;
+        if (!device) return;
+        let defaults = {};
+        if (device.features?.major_version === 1) {
+            defaults = {
+                strength: DEVICE.DEFAULT_STRENGTH_T1,
+                label: DEVICE.DEFAULT_LABEL,
+                skip_backup: DEVICE.DEFAULT_SKIP_BACKUP,
+                passphrase_protection: DEVICE.DEFAULT_PASSPHRASE_PROTECTION,
+            };
+        } else {
+            defaults = {
+                strength: DEVICE.DEFAULT_STRENGTH_T2,
+                label: DEVICE.DEFAULT_LABEL,
+                skip_backup: DEVICE.DEFAULT_SKIP_BACKUP,
+                passphrase_protection: DEVICE.DEFAULT_PASSPHRASE_PROTECTION,
+            };
+        }
 
-    const result = await TrezorConnect.resetDevice({
-        device: {
-            path: device.path,
-        },
-        ...defaults,
-        ...params,
-    });
+        const result = await TrezorConnect.resetDevice({
+            device: {
+                path: device.path,
+            },
+            ...defaults,
+            ...params,
+        });
 
-    if (result.success && DEVICE.DEFAULT_PASSPHRASE_PROTECTION) {
-        // We call resetDevice from onboarding (generating new seed)
-        // Uninitialized device has disabled passphrase protection thus useEmptyPassphrase is set to true.
-        // It means that when user finished the onboarding process a standard wallet is automatically
-        // discovered instead of asking for selecting between standard wallet and a passphrase.
-        // This action takes cares of setting useEmptyPassphrase to false (handled by deviceReducer).
-        dispatch({ type: SUITE.UPDATE_PASSPHRASE_MODE, payload: device, hidden: true });
-    }
+        if (result.success && DEVICE.DEFAULT_PASSPHRASE_PROTECTION) {
+            // We call resetDevice from onboarding (generating new seed)
+            // Uninitialized device has disabled passphrase protection thus useEmptyPassphrase is set to true.
+            // It means that when user finished the onboarding process a standard wallet is automatically
+            // discovered instead of asking for selecting between standard wallet and a passphrase.
+            // This action takes cares of setting useEmptyPassphrase to false (handled by deviceReducer).
+            dispatch({ type: SUITE.UPDATE_PASSPHRASE_MODE, payload: device, hidden: true });
+        }
 
-    if (!result.success) {
-        dispatch(addToast({ type: 'error', error: result.payload.error }));
-    }
-    return result;
-};
+        if (!result.success) {
+            dispatch(addToast({ type: 'error', error: result.payload.error }));
+        }
+        return result;
+    };

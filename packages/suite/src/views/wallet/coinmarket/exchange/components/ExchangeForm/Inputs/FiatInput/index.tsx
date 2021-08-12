@@ -17,15 +17,8 @@ const StyledInput = styled(Input)`
 `;
 
 const FiatInput = () => {
-    const {
-        register,
-        network,
-        clearErrors,
-        errors,
-        trigger,
-        updateSendCryptoValue,
-        setValue,
-    } = useCoinmarketExchangeFormContext();
+    const { register, network, clearErrors, errors, trigger, updateSendCryptoValue, setValue } =
+        useCoinmarketExchangeFormContext();
 
     const error = errors.outputs && errors.outputs[0] ? errors.outputs[0].fiat : undefined;
 

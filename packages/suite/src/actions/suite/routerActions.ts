@@ -65,32 +65,31 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
 };
 
 // links inside of application
-export const goto = (routeName: Route['name'], params?: RouteParams, preserveParams = false) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const hasRouterLock = getState().suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
-    if (hasRouterLock) {
-        dispatch(suiteActions.lockRouter(false));
-    }
-    const unlocked = dispatch(onBeforePopState());
-    if (!unlocked) return;
+export const goto =
+    (routeName: Route['name'], params?: RouteParams, preserveParams = false) =>
+    (dispatch: Dispatch, getState: GetState) => {
+        const hasRouterLock = getState().suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
+        if (hasRouterLock) {
+            dispatch(suiteActions.lockRouter(false));
+        }
+        const unlocked = dispatch(onBeforePopState());
+        if (!unlocked) return;
 
-    const urlBase = getRoute(routeName, params);
-    if (urlBase === getState().router.url) return;
+        const urlBase = getRoute(routeName, params);
+        if (urlBase === getState().router.url) return;
 
-    const url = `${urlBase}${preserveParams ? history.location.hash : ''}`;
+        const url = `${urlBase}${preserveParams ? history.location.hash : ''}`;
 
-    const route = findRouteByName(routeName);
-    if (route && route.isForegroundApp) {
+        const route = findRouteByName(routeName);
+        if (route && route.isForegroundApp) {
+            dispatch(onLocationChange(url));
+            dispatch(suiteActions.lockRouter(true));
+            return;
+        }
+
         dispatch(onLocationChange(url));
-        dispatch(suiteActions.lockRouter(true));
-        return;
-    }
-
-    dispatch(onLocationChange(url));
-    history.push(getPrefixedURL(url));
-};
+        history.push(getPrefixedURL(url));
+    };
 
 /**
  * Used only in application modal.
@@ -104,24 +103,26 @@ export const getBackgroundRoute = () => () =>
  * Application modal does not push route into router history, it changes it only in reducer (see goto action).
  * Reverse operation (again without touching history) needs to be done in back action.
  */
-export const closeModalApp = (preserveParams = true) => (dispatch: Dispatch) => {
-    dispatch(suiteActions.lockRouter(false));
+export const closeModalApp =
+    (preserveParams = true) =>
+    (dispatch: Dispatch) => {
+        dispatch(suiteActions.lockRouter(false));
 
-    const route = dispatch(getBackgroundRoute());
+        const route = dispatch(getBackgroundRoute());
 
-    // if user enters route of modal app manually, back would redirect him again to the same route and he would remain stuck
-    // so we need a fallback to suite-index
-    if (route && route.isForegroundApp) {
-        return dispatch(goto('suite-index'));
-    }
+        // if user enters route of modal app manually, back would redirect him again to the same route and he would remain stuck
+        // so we need a fallback to suite-index
+        if (route && route.isForegroundApp) {
+            return dispatch(goto('suite-index'));
+        }
 
-    if (!preserveParams && history.location.hash.length > 0) {
-        history.push(getPrefixedURL(history.location.pathname));
-    } else {
-        // + history.location.hash is here to preserve params (eg nth account)
-        dispatch(onLocationChange(history.location.pathname + history.location.hash));
-    }
-};
+        if (!preserveParams && history.location.hash.length > 0) {
+            history.push(getPrefixedURL(history.location.pathname));
+        } else {
+            // + history.location.hash is here to preserve params (eg nth account)
+            dispatch(onLocationChange(history.location.pathname + history.location.hash));
+        }
+    };
 
 /**
  * Called from `@suite-middlewares/suiteMiddleware`

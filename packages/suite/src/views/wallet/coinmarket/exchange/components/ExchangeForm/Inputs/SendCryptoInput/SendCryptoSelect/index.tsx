@@ -17,14 +17,8 @@ const Label = styled.div`
 `;
 
 const SendCryptoSelect = () => {
-    const {
-        control,
-        setAmountLimits,
-        account,
-        setValue,
-        exchangeInfo,
-        composeRequest,
-    } = useCoinmarketExchangeFormContext();
+    const { control, setAmountLimits, account, setValue, exchangeInfo, composeRequest } =
+        useCoinmarketExchangeFormContext();
 
     const { symbol, tokens } = account;
     const uppercaseSymbol = symbol.toUpperCase();

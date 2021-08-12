@@ -64,49 +64,10 @@ export const setSelectedView = (view: GraphScale): GraphAction => ({
  * @param {Account} account
  * @returns
  */
-export const fetchAccountGraphData = (account: Account) => async (
-    dispatch: Dispatch,
-    _getState: GetState,
-) => {
-    dispatch({
-        type: ACCOUNT_GRAPH_START,
-        payload: {
-            account: {
-                deviceState: account.deviceState,
-                descriptor: account.descriptor,
-                symbol: account.symbol,
-            },
-            data: [],
-            isLoading: true,
-            error: false,
-        },
-    });
-
-    const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
-        coin: account.symbol,
-        descriptor: account.descriptor,
-        groupBy: 3600 * 24, // day
-    });
-
-    if (response?.success) {
-        const enhancedResponse = enhanceBlockchainAccountHistory(response.payload, account.symbol);
-
+export const fetchAccountGraphData =
+    (account: Account) => async (dispatch: Dispatch, _getState: GetState) => {
         dispatch({
-            type: ACCOUNT_GRAPH_SUCCESS,
-            payload: {
-                account: {
-                    deviceState: account.deviceState,
-                    descriptor: account.descriptor,
-                    symbol: account.symbol,
-                },
-                data: enhancedResponse,
-                isLoading: false,
-                error: false,
-            },
-        });
-    } else {
-        dispatch({
-            type: ACCOUNT_GRAPH_FAIL,
+            type: ACCOUNT_GRAPH_START,
             payload: {
                 account: {
                     deviceState: account.deviceState,
@@ -114,78 +75,119 @@ export const fetchAccountGraphData = (account: Account) => async (
                     symbol: account.symbol,
                 },
                 data: [],
-                isLoading: false,
-                error: true,
+                isLoading: true,
+                error: false,
             },
         });
-    }
-};
 
-export const updateGraphData = (
-    accounts: Account[],
-    options?: {
-        newAccountsOnly?: boolean;
-    },
-) => async (dispatch: Dispatch, getState: GetState) => {
-    const { graph } = getState().wallet;
+        const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
+            coin: account.symbol,
+            descriptor: account.descriptor,
+            groupBy: 3600 * 24, // day
+        });
 
-    // TODO: default behaviour should be fetch only new data (since last timestamp)
-    let filteredAccounts: Account[] = accounts;
-    if (options?.newAccountsOnly) {
-        // add only accounts for which we don't have any data for given interval
-        filteredAccounts = accounts.filter(
-            account => !graph.data.find(d => accountGraphDataFilterFn(d, account)),
-        );
-        if (filteredAccounts.length === 0) {
-            return;
+        if (response?.success) {
+            const enhancedResponse = enhanceBlockchainAccountHistory(
+                response.payload,
+                account.symbol,
+            );
+
+            dispatch({
+                type: ACCOUNT_GRAPH_SUCCESS,
+                payload: {
+                    account: {
+                        deviceState: account.deviceState,
+                        descriptor: account.descriptor,
+                        symbol: account.symbol,
+                    },
+                    data: enhancedResponse,
+                    isLoading: false,
+                    error: false,
+                },
+            });
+        } else {
+            dispatch({
+                type: ACCOUNT_GRAPH_FAIL,
+                payload: {
+                    account: {
+                        deviceState: account.deviceState,
+                        descriptor: account.descriptor,
+                        symbol: account.symbol,
+                    },
+                    data: [],
+                    isLoading: false,
+                    error: true,
+                },
+            });
         }
-    }
+    };
 
-    dispatch({
-        type: AGGREGATED_GRAPH_START,
-    });
-    const promises = filteredAccounts.map(
-        a => dispatch(fetchAccountGraphData(a)), // fetch for all range
-    );
-    await Promise.all(promises);
+export const updateGraphData =
+    (
+        accounts: Account[],
+        options?: {
+            newAccountsOnly?: boolean;
+        },
+    ) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        const { graph } = getState().wallet;
 
-    dispatch({
-        type: AGGREGATED_GRAPH_SUCCESS,
-    });
-};
-
-export const getGraphDataForInterval = (options: { account?: Account; deviceState?: string }) => (
-    _dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const { graph } = getState().wallet;
-    const { selectedRange } = graph;
-
-    const data: GraphData[] = [];
-    graph.data.forEach(accountGraph => {
-        const accountFilter = options.account
-            ? accountGraphDataFilterFn(accountGraph, options.account)
-            : true;
-        const deviceFilter = options.deviceState
-            ? deviceGraphDataFilterFn(accountGraph, options.deviceState)
-            : true;
-
-        if (accountFilter && deviceFilter) {
-            if (selectedRange.startDate && selectedRange.endDate) {
-                data.push({
-                    ...accountGraph,
-                    data:
-                        accountGraph.data?.filter(d =>
-                            isWithinInterval(fromUnixTime(d.time), {
-                                start: selectedRange.startDate,
-                                end: selectedRange.endDate,
-                            }),
-                        ) ?? [],
-                });
-            } else {
-                data.push(accountGraph);
+        // TODO: default behaviour should be fetch only new data (since last timestamp)
+        let filteredAccounts: Account[] = accounts;
+        if (options?.newAccountsOnly) {
+            // add only accounts for which we don't have any data for given interval
+            filteredAccounts = accounts.filter(
+                account => !graph.data.find(d => accountGraphDataFilterFn(d, account)),
+            );
+            if (filteredAccounts.length === 0) {
+                return;
             }
         }
-    });
-    return data;
-};
+
+        dispatch({
+            type: AGGREGATED_GRAPH_START,
+        });
+        const promises = filteredAccounts.map(
+            a => dispatch(fetchAccountGraphData(a)), // fetch for all range
+        );
+        await Promise.all(promises);
+
+        dispatch({
+            type: AGGREGATED_GRAPH_SUCCESS,
+        });
+    };
+
+export const getGraphDataForInterval =
+    (options: { account?: Account; deviceState?: string }) =>
+    (_dispatch: Dispatch, getState: GetState) => {
+        const { graph } = getState().wallet;
+        const { selectedRange } = graph;
+
+        const data: GraphData[] = [];
+        graph.data.forEach(accountGraph => {
+            const accountFilter = options.account
+                ? accountGraphDataFilterFn(accountGraph, options.account)
+                : true;
+            const deviceFilter = options.deviceState
+                ? deviceGraphDataFilterFn(accountGraph, options.deviceState)
+                : true;
+
+            if (accountFilter && deviceFilter) {
+                if (selectedRange.startDate && selectedRange.endDate) {
+                    data.push({
+                        ...accountGraph,
+                        data:
+                            accountGraph.data?.filter(d =>
+                                isWithinInterval(fromUnixTime(d.time), {
+                                    start: selectedRange.startDate,
+                                    end: selectedRange.endDate,
+                                }),
+                            ) ?? [],
+                    });
+                } else {
+                    data.push(accountGraph);
+                }
+            }
+        });
+        return data;
+    };

@@ -42,8 +42,7 @@ export default {
                     },
                 },
             ],
-            error:
-                'json: cannot unmarshal number into Go struct field estimateFeeReq.blocks of type []int',
+            error: 'json: cannot unmarshal number into Go struct field estimateFeeReq.blocks of type []int',
         },
     ],
 

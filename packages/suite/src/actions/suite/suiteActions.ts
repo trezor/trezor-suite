@@ -208,32 +208,30 @@ export const lockRouter = (payload: boolean): SuiteAction => ({
  * - from user action in `@suite-components/DeviceMenu`
  * @param {(Device | TrezorDevice | undefined)} device
  */
-export const selectDevice = (device?: Device | TrezorDevice) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    let payload: TrezorDevice | typeof undefined;
-    if (device) {
-        // "ts" is one of the field which distinguish Device from TrezorDevice
-        const { ts } = device as TrezorDevice;
-        if (typeof ts === 'number') {
-            // requested device is a @suite TrezorDevice type. get exact instance from reducer
-            payload = deviceUtils.getSelectedDevice(device as TrezorDevice, getState().devices);
-        } else {
-            // requested device is a trezor-connect Device type
-            // find all instances and select recently used
-            const instances = getState().devices.filter(d => d.path === device.path);
-            // eslint-disable-next-line prefer-destructuring
-            payload = deviceUtils.sortByTimestamp(instances)[0];
+export const selectDevice =
+    (device?: Device | TrezorDevice) => (dispatch: Dispatch, getState: GetState) => {
+        let payload: TrezorDevice | typeof undefined;
+        if (device) {
+            // "ts" is one of the field which distinguish Device from TrezorDevice
+            const { ts } = device as TrezorDevice;
+            if (typeof ts === 'number') {
+                // requested device is a @suite TrezorDevice type. get exact instance from reducer
+                payload = deviceUtils.getSelectedDevice(device as TrezorDevice, getState().devices);
+            } else {
+                // requested device is a trezor-connect Device type
+                // find all instances and select recently used
+                const instances = getState().devices.filter(d => d.path === device.path);
+                // eslint-disable-next-line prefer-destructuring
+                payload = deviceUtils.sortByTimestamp(instances)[0];
+            }
         }
-    }
 
-    // 3. select requested device
-    dispatch({
-        type: SUITE.SELECT_DEVICE,
-        payload,
-    });
-};
+        // 3. select requested device
+        dispatch({
+            type: SUITE.SELECT_DEVICE,
+            payload,
+        });
+    };
 
 /**
  * Toggles remembering the given device. I.e. if given device is not remembered it will become remembered
@@ -260,35 +258,34 @@ export const forgetDevice = (payload: TrezorDevice): SuiteAction => ({
  * @param {Device} device
  * @param {boolean} [useEmptyPassphrase=false]
  */
-export const createDeviceInstance = (device: TrezorDevice, useEmptyPassphrase = false) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    if (!device.features) return;
-    if (!device.features.passphrase_protection) {
-        const response = await TrezorConnect.applySettings({
-            device,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            use_passphrase: true,
-        });
+export const createDeviceInstance =
+    (device: TrezorDevice, useEmptyPassphrase = false) =>
+    async (dispatch: Dispatch, getState: GetState) => {
+        if (!device.features) return;
+        if (!device.features.passphrase_protection) {
+            const response = await TrezorConnect.applySettings({
+                device,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                use_passphrase: true,
+            });
 
-        if (!response.success) {
-            dispatch(addToast({ type: 'error', error: response.payload.error }));
-            return;
+            if (!response.success) {
+                dispatch(addToast({ type: 'error', error: response.payload.error }));
+                return;
+            }
+
+            dispatch(addToast({ type: 'settings-applied' }));
         }
 
-        dispatch(addToast({ type: 'settings-applied' }));
-    }
-
-    dispatch({
-        type: SUITE.CREATE_DEVICE_INSTANCE,
-        payload: {
-            ...device,
-            useEmptyPassphrase,
-            instance: deviceUtils.getNewInstanceNumber(getState().devices, device),
-        },
-    });
-};
+        dispatch({
+            type: SUITE.CREATE_DEVICE_INSTANCE,
+            payload: {
+                ...device,
+                useEmptyPassphrase,
+                instance: deviceUtils.getNewInstanceNumber(getState().devices, device),
+            },
+        });
+    };
 
 /**
  * Triggered by `trezor-connect DEVICE_EVENT`
@@ -317,60 +314,59 @@ export const handleDeviceConnect = (device: Device) => (dispatch: Dispatch, getS
  * Triggered by `trezor-connect DEVICE_EVENT`
  * @param {Device} device
  */
-export const handleDeviceDisconnect = (device: Device) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const selectedDevice = getState().suite.device;
-    if (!selectedDevice) return;
-    if (selectedDevice.path !== device.path) return;
+export const handleDeviceDisconnect =
+    (device: Device) => (dispatch: Dispatch, getState: GetState) => {
+        const selectedDevice = getState().suite.device;
+        if (!selectedDevice) return;
+        if (selectedDevice.path !== device.path) return;
 
-    const { devices, firmware, router } = getState();
+        const { devices, firmware, router } = getState();
 
-    if (['wait-for-reboot', 'unplug'].includes(firmware.status) || router.app === 'onboarding') {
-        // Suite tried to switch selected device to a remembered (and disconnected) device or another connected device while being in Onboarding process.
-        // We never want to switch to some different remembered device when currently used device disconnects because of loose cable or in order to complete firmware installation
-        dispatch({ type: SUITE.SELECT_DEVICE, payload: undefined });
-        return;
-    }
-
-    // selected device is disconnected, decide what to do next
-    // device is still present in reducer (remembered or candidate to remember)
-    const devicePresent = deviceUtils.getSelectedDevice(selectedDevice, devices);
-    const deviceInstances = deviceUtils.getDeviceInstances(selectedDevice, devices);
-    if (deviceInstances.length > 0) {
-        // if selected device is gone from reducer, switch to first instance
-        if (!devicePresent) {
-            dispatch({ type: SUITE.SELECT_DEVICE, payload: deviceInstances[0] });
+        if (
+            ['wait-for-reboot', 'unplug'].includes(firmware.status) ||
+            router.app === 'onboarding'
+        ) {
+            // Suite tried to switch selected device to a remembered (and disconnected) device or another connected device while being in Onboarding process.
+            // We never want to switch to some different remembered device when currently used device disconnects because of loose cable or in order to complete firmware installation
+            dispatch({ type: SUITE.SELECT_DEVICE, payload: undefined });
+            return;
         }
-        return;
-    }
-    // const routerLocked = getState().suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
-    // if (devices.length < 1 || routerLocked) {
-    //     dispatch({ type: SUITE.SELECT_DEVICE });
-    //     return;
-    // }
 
-    const available = deviceUtils.getFirstDeviceInstance(devices);
-    dispatch({ type: SUITE.SELECT_DEVICE, payload: available[0] });
-};
+        // selected device is disconnected, decide what to do next
+        // device is still present in reducer (remembered or candidate to remember)
+        const devicePresent = deviceUtils.getSelectedDevice(selectedDevice, devices);
+        const deviceInstances = deviceUtils.getDeviceInstances(selectedDevice, devices);
+        if (deviceInstances.length > 0) {
+            // if selected device is gone from reducer, switch to first instance
+            if (!devicePresent) {
+                dispatch({ type: SUITE.SELECT_DEVICE, payload: deviceInstances[0] });
+            }
+            return;
+        }
+        // const routerLocked = getState().suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
+        // if (devices.length < 1 || routerLocked) {
+        //     dispatch({ type: SUITE.SELECT_DEVICE });
+        //     return;
+        // }
+
+        const available = deviceUtils.getFirstDeviceInstance(devices);
+        dispatch({ type: SUITE.SELECT_DEVICE, payload: available[0] });
+    };
 
 /**
  * Triggered by `trezor-connect DEVICE_EVENT` via suiteMiddleware
  * Remove all data related to all instances of disconnected device if they are not remembered
  * @param {Device} device
  */
-export const forgetDisconnectedDevices = (device: Device) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const deviceInstances = getState().devices.filter(d => d.id === device.id);
-    deviceInstances.forEach(d => {
-        if (d.features && !d.remember) {
-            dispatch(forgetDevice(d));
-        }
-    });
-};
+export const forgetDisconnectedDevices =
+    (device: Device) => (dispatch: Dispatch, getState: GetState) => {
+        const deviceInstances = getState().devices.filter(d => d.id === device.id);
+        deviceInstances.forEach(d => {
+            if (d.features && !d.remember) {
+                dispatch(forgetDevice(d));
+            }
+        });
+    };
 
 /**
  * list of actions which has influence on `device` field inside `suite` reducer
@@ -397,58 +393,54 @@ const actions = [
  * Keep `suite` reducer synchronized with `devices` reducer
  * @param {Action} action
  */
-export const observeSelectedDevice = (action: Action) => (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    // ignore not listed actions
-    if (actions.indexOf(action.type) < 0) return false;
+export const observeSelectedDevice =
+    (action: Action) => (dispatch: Dispatch, getState: GetState) => {
+        // ignore not listed actions
+        if (actions.indexOf(action.type) < 0) return false;
 
-    const selectedDevice = getState().suite.device;
-    if (!selectedDevice) return false;
+        const selectedDevice = getState().suite.device;
+        if (!selectedDevice) return false;
 
-    const deviceFromReducer = deviceUtils.getSelectedDevice(selectedDevice, getState().devices);
-    if (!deviceFromReducer) return true;
+        const deviceFromReducer = deviceUtils.getSelectedDevice(selectedDevice, getState().devices);
+        if (!deviceFromReducer) return true;
 
-    const changed = comparisonUtils.isChanged(selectedDevice, deviceFromReducer);
-    if (changed) {
-        dispatch({
-            type: SUITE.UPDATE_SELECTED_DEVICE,
-            payload: deviceFromReducer,
-        });
-    }
+        const changed = comparisonUtils.isChanged(selectedDevice, deviceFromReducer);
+        if (changed) {
+            dispatch({
+                type: SUITE.UPDATE_SELECTED_DEVICE,
+                payload: deviceFromReducer,
+            });
+        }
 
-    return changed;
-};
+        return changed;
+    };
 
 /**
  * Called from <AcquireDevice /> component
  * Fetch device features without asking for pin/passphrase
  * this is the only place where useEmptyPassphrase should be always set to "true"
  */
-export const acquireDevice = (requestedDevice?: TrezorDevice) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const selectedDevice = getState().suite.device;
-    if (!selectedDevice && !requestedDevice) return;
-    const device = requestedDevice || selectedDevice;
+export const acquireDevice =
+    (requestedDevice?: TrezorDevice) => async (dispatch: Dispatch, getState: GetState) => {
+        const selectedDevice = getState().suite.device;
+        if (!selectedDevice && !requestedDevice) return;
+        const device = requestedDevice || selectedDevice;
 
-    const response = await TrezorConnect.getFeatures({
-        device,
-        useEmptyPassphrase: true,
-    });
+        const response = await TrezorConnect.getFeatures({
+            device,
+            useEmptyPassphrase: true,
+        });
 
-    if (!response.success) {
-        dispatch(
-            addToast({
-                type: 'acquire-error',
-                device,
-                error: response.payload.error,
-            }),
-        );
-    }
-};
+        if (!response.success) {
+            dispatch(
+                addToast({
+                    type: 'acquire-error',
+                    device,
+                    error: response.payload.error,
+                }),
+            );
+        }
+    };
 
 /**
  * Inner action used in `authorizeDevice`
@@ -463,62 +455,63 @@ const updatePassphraseMode = (device: TrezorDevice, hidden: boolean): SuiteActio
  * Called from `discoveryMiddleware`
  * Fetch device state, update `devices` reducer as result of SUITE.AUTH_DEVICE
  */
-export const authorizeDevice = () => async (
-    dispatch: Dispatch,
-    getState: GetState,
-): Promise<boolean> => {
-    const { device } = getState().suite;
-    if (!device) return false;
-    const isDeviceReady =
-        device.connected &&
-        device.features &&
-        !device.state &&
-        device.mode === 'normal' &&
-        device.firmware !== 'required';
-    if (!isDeviceReady) return false;
+export const authorizeDevice =
+    () =>
+    async (dispatch: Dispatch, getState: GetState): Promise<boolean> => {
+        const { device } = getState().suite;
+        if (!device) return false;
+        const isDeviceReady =
+            device.connected &&
+            device.features &&
+            !device.state &&
+            device.mode === 'normal' &&
+            device.firmware !== 'required';
+        if (!isDeviceReady) return false;
 
-    const response = await TrezorConnect.getDeviceState({
-        device: {
-            path: device.path,
-            instance: device.instance,
-            state: undefined,
-        },
-        keepSession: true,
-        useEmptyPassphrase: device.useEmptyPassphrase,
-    });
+        const response = await TrezorConnect.getDeviceState({
+            device: {
+                path: device.path,
+                instance: device.instance,
+                state: undefined,
+            },
+            keepSession: true,
+            useEmptyPassphrase: device.useEmptyPassphrase,
+        });
 
-    if (response.success) {
-        const { state } = response.payload;
-        const s = state.split(':')[0];
-        const duplicate = getState().devices.find(
-            d => d.state && d.state.split(':')[0] === s && d.instance !== device.instance,
-        );
-        if (duplicate) {
-            // get fresh data from reducer, `useEmptyPassphrase` might be changed after TrezorConnect call
-            const freshDeviceData = deviceUtils.getSelectedDevice(device, getState().devices);
-            if (freshDeviceData!.useEmptyPassphrase) {
-                // if currently selected device uses empty passphrase
-                // make sure that founded duplicate will also use empty passphrase
-                dispatch(updatePassphraseMode(duplicate, false));
-                // reset useEmptyPassphrase field for selected device to allow future PassphraseRequests
-                dispatch(updatePassphraseMode(device, true));
+        if (response.success) {
+            const { state } = response.payload;
+            const s = state.split(':')[0];
+            const duplicate = getState().devices.find(
+                d => d.state && d.state.split(':')[0] === s && d.instance !== device.instance,
+            );
+            if (duplicate) {
+                // get fresh data from reducer, `useEmptyPassphrase` might be changed after TrezorConnect call
+                const freshDeviceData = deviceUtils.getSelectedDevice(device, getState().devices);
+                if (freshDeviceData!.useEmptyPassphrase) {
+                    // if currently selected device uses empty passphrase
+                    // make sure that founded duplicate will also use empty passphrase
+                    dispatch(updatePassphraseMode(duplicate, false));
+                    // reset useEmptyPassphrase field for selected device to allow future PassphraseRequests
+                    dispatch(updatePassphraseMode(device, true));
+                }
+                dispatch(
+                    modalActions.openModal({ type: 'passphrase-duplicate', device, duplicate }),
+                );
+                return false;
             }
-            dispatch(modalActions.openModal({ type: 'passphrase-duplicate', device, duplicate }));
-            return false;
+
+            dispatch({
+                type: SUITE.AUTH_DEVICE,
+                payload: device,
+                state,
+            });
+            return true;
         }
 
-        dispatch({
-            type: SUITE.AUTH_DEVICE,
-            payload: device,
-            state,
-        });
-        return true;
-    }
-
-    dispatch({ type: SUITE.AUTH_FAILED, payload: device });
-    dispatch(addToast({ type: 'auth-failed', error: response.payload.error }));
-    return false;
-};
+        dispatch({ type: SUITE.AUTH_FAILED, payload: device });
+        dispatch(addToast({ type: 'auth-failed', error: response.payload.error }));
+        return false;
+    };
 
 /**
  * Inner action used in `authConfirm`
@@ -571,24 +564,23 @@ export const authConfirm = () => async (dispatch: Dispatch, getState: GetState) 
 /**
  * Called from `suiteMiddleware`
  */
-export const switchDuplicatedDevice = (device: TrezorDevice, duplicate: TrezorDevice) => async (
-    dispatch: Dispatch,
-) => {
-    // close modal
-    dispatch(modalActions.onCancel());
-    // release session from authorizeDevice
-    await TrezorConnect.getFeatures({
-        device,
-        keepSession: false,
-    });
+export const switchDuplicatedDevice =
+    (device: TrezorDevice, duplicate: TrezorDevice) => async (dispatch: Dispatch) => {
+        // close modal
+        dispatch(modalActions.onCancel());
+        // release session from authorizeDevice
+        await TrezorConnect.getFeatures({
+            device,
+            keepSession: false,
+        });
 
-    // switch to existing wallet
-    // NOTE: await is important. otherwise `forgetDevice` action will be resolved first leading to race condition:
-    // forgetDevice > suiteMiddleware > handleDeviceDisconnect > selectDevice (first available)
-    await dispatch(selectDevice(duplicate));
-    // remove stateless instance
-    dispatch(forgetDevice(device));
-};
+        // switch to existing wallet
+        // NOTE: await is important. otherwise `forgetDevice` action will be resolved first leading to race condition:
+        // forgetDevice > suiteMiddleware > handleDeviceDisconnect > selectDevice (first available)
+        await dispatch(selectDevice(duplicate));
+        // remove stateless instance
+        dispatch(forgetDevice(device));
+    };
 
 export const setInitialTheme = () => async (dispatch: Dispatch, getState: GetState) => {
     try {

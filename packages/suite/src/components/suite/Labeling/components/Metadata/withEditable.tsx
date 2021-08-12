@@ -40,133 +40,131 @@ interface Props {
  * Takes component in parameter and wraps it with content-editable necessities. Renders contenteditable div as it's child
  * and control buttons (submit, cancel).
  */
-export const withEditable = (WrappedComponent: React.FC) => ({
-    onSubmit,
-    onBlur,
-    ...props
-}: Props) => {
-    const theme = useTheme();
-    const [touched, setTouched] = useState(false);
-    // value is used to mirror divRef.current.textContent so that its changes force react to render
-    const [value, setValue] = useState('');
-    const divRef = useRef<HTMLDivElement>(null);
+export const withEditable =
+    (WrappedComponent: React.FC) =>
+    ({ onSubmit, onBlur, ...props }: Props) => {
+        const theme = useTheme();
+        const [touched, setTouched] = useState(false);
+        // value is used to mirror divRef.current.textContent so that its changes force react to render
+        const [value, setValue] = useState('');
+        const divRef = useRef<HTMLDivElement>(null);
 
-    const submit = useCallback(
-        value => {
-            if (props.originalValue && value === props.originalValue) {
-                return onBlur();
-            }
-            onSubmit(value);
-            onBlur();
-        },
-        [props, onSubmit, onBlur],
-    );
-
-    useEffect(() => {
-        // Set value of content editable element; set caret to correct position;
-        if (!divRef?.current || touched) {
-            return;
-        }
-        if (props.originalValue) {
-            divRef.current.textContent = props.originalValue;
-            setValue(props.originalValue);
-        }
-        divRef.current.focus();
-    }, [props.originalValue, divRef, touched, setValue]);
-
-    useEffect(() => {
-        const keyboardHandler = (event: KeyboardEvent) => {
-            event.stopPropagation();
-            switch (event.keyCode) {
-                // backspace
-                case 8:
-                    if (!touched && divRef?.current) {
-                        divRef.current.textContent = '';
-                    }
-
-                    break;
-                // enter,
-                case 13:
-                    submit(divRef?.current?.textContent);
-                    break;
-                // escape
-                case 27:
-                    onBlur();
-                    break;
-                // right arrow:
-                // tab
-                case 39:
-                case 9: {
-                    event.preventDefault();
-                    if (divRef?.current) {
-                        moveCaretToEndOfContentEditable(divRef.current);
-                        setTouched(true);
-                    }
-
-                    break;
+        const submit = useCallback(
+            value => {
+                if (props.originalValue && value === props.originalValue) {
+                    return onBlur();
                 }
-                default:
-                    // any other button, just set input to "touched"
-                    if (!touched && divRef?.current) {
-                        divRef.current.textContent = '';
-                        setTouched(true);
-                    }
+                onSubmit(value);
+                onBlur();
+            },
+            [props, onSubmit, onBlur],
+        );
+
+        useEffect(() => {
+            // Set value of content editable element; set caret to correct position;
+            if (!divRef?.current || touched) {
+                return;
             }
-        };
+            if (props.originalValue) {
+                divRef.current.textContent = props.originalValue;
+                setValue(props.originalValue);
+            }
+            divRef.current.focus();
+        }, [props.originalValue, divRef, touched, setValue]);
 
-        window.addEventListener('keydown', keyboardHandler, false);
-
-        return () => {
-            window.removeEventListener('keydown', keyboardHandler, false);
-        };
-    }, [submit, onBlur, props.originalValue, divRef, touched]);
-
-    return (
-        <>
-            <WrappedComponent {...props}>
-                <Editable
-                    contentEditable
-                    onKeyPress={e => setValue(e.key)}
-                    onKeyUp={() => {
-                        if (!divRef.current?.textContent) {
-                            setValue('');
+        useEffect(() => {
+            const keyboardHandler = (event: KeyboardEvent) => {
+                event.stopPropagation();
+                switch (event.keyCode) {
+                    // backspace
+                    case 8:
+                        if (!touched && divRef?.current) {
+                            divRef.current.textContent = '';
                         }
-                    }}
-                    ref={divRef}
-                    data-test="@metadata/input"
-                    touched={touched}
-                />
-                {/* show default placeholder */}
-                {!value && <Placeholder>{props.defaultVisibleValue}</Placeholder>}
-            </WrappedComponent>
-            <IconsWrapper>
-                <IconWrapper bgColor={theme.BG_LIGHT_GREEN}>
-                    <Icon
-                        useCursorPointer
-                        size={14}
-                        data-test="@metadata/submit"
-                        icon="CHECK"
-                        onClick={e => {
-                            e.stopPropagation();
-                            submit(divRef?.current?.textContent);
+
+                        break;
+                    // enter,
+                    case 13:
+                        submit(divRef?.current?.textContent);
+                        break;
+                    // escape
+                    case 27:
+                        onBlur();
+                        break;
+                    // right arrow:
+                    // tab
+                    case 39:
+                    case 9: {
+                        event.preventDefault();
+                        if (divRef?.current) {
+                            moveCaretToEndOfContentEditable(divRef.current);
+                            setTouched(true);
+                        }
+
+                        break;
+                    }
+                    default:
+                        // any other button, just set input to "touched"
+                        if (!touched && divRef?.current) {
+                            divRef.current.textContent = '';
+                            setTouched(true);
+                        }
+                }
+            };
+
+            window.addEventListener('keydown', keyboardHandler, false);
+
+            return () => {
+                window.removeEventListener('keydown', keyboardHandler, false);
+            };
+        }, [submit, onBlur, props.originalValue, divRef, touched]);
+
+        return (
+            <>
+                <WrappedComponent {...props}>
+                    <Editable
+                        contentEditable
+                        onKeyPress={e => setValue(e.key)}
+                        onKeyUp={() => {
+                            if (!divRef.current?.textContent) {
+                                setValue('');
+                            }
                         }}
-                        color={theme.TYPE_GREEN}
+                        ref={divRef}
+                        data-test="@metadata/input"
+                        touched={touched}
                     />
-                </IconWrapper>
-                <IconWrapper bgColor={theme.BG_GREY}>
-                    <Icon
-                        useCursorPointer
-                        size={14}
-                        data-test="@metadata/cancel"
-                        icon="CROSS"
-                        onClick={e => {
-                            e.stopPropagation();
-                            onBlur();
-                        }}
-                        color={theme.TYPE_DARK_GREY}
-                    />
-                </IconWrapper>
-            </IconsWrapper>
-        </>
-    );
-};
+                    {/* show default placeholder */}
+                    {!value && <Placeholder>{props.defaultVisibleValue}</Placeholder>}
+                </WrappedComponent>
+                <IconsWrapper>
+                    <IconWrapper bgColor={theme.BG_LIGHT_GREEN}>
+                        <Icon
+                            useCursorPointer
+                            size={14}
+                            data-test="@metadata/submit"
+                            icon="CHECK"
+                            onClick={e => {
+                                e.stopPropagation();
+                                submit(divRef?.current?.textContent);
+                            }}
+                            color={theme.TYPE_GREEN}
+                        />
+                    </IconWrapper>
+                    <IconWrapper bgColor={theme.BG_GREY}>
+                        <Icon
+                            useCursorPointer
+                            size={14}
+                            data-test="@metadata/cancel"
+                            icon="CROSS"
+                            onClick={e => {
+                                e.stopPropagation();
+                                onBlur();
+                            }}
+                            color={theme.TYPE_DARK_GREY}
+                        />
+                    </IconWrapper>
+                </IconsWrapper>
+            </>
+        );
+    };

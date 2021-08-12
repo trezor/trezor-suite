@@ -78,7 +78,7 @@ const handleResponse = (
     } else if (originalParams.state && state !== originalParams.state) {
         onError(new Error('state does not match'));
     } else if (code || access_token) {
-        onSuccess(({ code, access_token } as unknown) as Credentials);
+        onSuccess({ code, access_token } as unknown as Credentials);
     } else {
         onError(new Error('Unexpected response form data provider'));
     }

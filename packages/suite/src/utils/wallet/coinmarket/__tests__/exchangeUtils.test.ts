@@ -6,12 +6,8 @@ import {
     splitToFixedFloatQuotes,
 } from '../exchangeUtils';
 
-const {
-    EXCHANGE_INFO,
-    MIN_MAX_QUOTES_OK,
-    MIN_MAX_QUOTES_LOW,
-    MIN_MAX_QUOTES_CANNOT_TRADE,
-} = fixtures;
+const { EXCHANGE_INFO, MIN_MAX_QUOTES_OK, MIN_MAX_QUOTES_LOW, MIN_MAX_QUOTES_CANNOT_TRADE } =
+    fixtures;
 
 describe('coinmarket/exchange utils', () => {
     it('getAmountLimits', () => {

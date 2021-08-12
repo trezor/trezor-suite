@@ -124,7 +124,7 @@ export type Props = React.ImgHTMLAttributes<Omit<HTMLImageElement, 'src'>> & {
 const buildSrcSet = <
     BasePath extends string,
     ImageObject extends typeof PNG_IMAGES | typeof SVG_IMAGES,
-    ImageKey extends keyof ImageObject
+    ImageKey extends keyof ImageObject,
 >(
     basePath: BasePath,
     imageObject: ImageObject,

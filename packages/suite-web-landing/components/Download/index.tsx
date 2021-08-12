@@ -129,8 +129,9 @@ interface GetURIProps {
     pathToApp: string;
 }
 const getInstallerURI = ({ platform, version, pathToApp }: GetURIProps) => {
-    const extension = dropdownItemsData.find(item => platform === item.platform)!
-        .installerExtension;
+    const extension = dropdownItemsData.find(
+        item => platform === item.platform,
+    )!.installerExtension;
     return encodeURI(
         `${pathToApp}/static/desktop/Trezor-Suite-${version}-${platform}.${extension}`,
     );

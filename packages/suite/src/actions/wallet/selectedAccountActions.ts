@@ -23,45 +23,43 @@ export const update = (payload: State): SelectedAccountAction => ({
 });
 
 // Add notification to loaded SelectedAccountState
-const getAccountStateWithMode = (selectedAccount?: State) => (
-    _dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const state = getState();
-    const { device, loaded } = state.suite;
-    if (!device || !loaded) return;
+const getAccountStateWithMode =
+    (selectedAccount?: State) => (_dispatch: Dispatch, getState: GetState) => {
+        const state = getState();
+        const { device, loaded } = state.suite;
+        if (!device || !loaded) return;
 
-    // From this point there could be multiple loaders
-    const mode: AccountWatchOnlyMode[] = [];
+        // From this point there could be multiple loaders
+        const mode: AccountWatchOnlyMode[] = [];
 
-    if (selectedAccount && selectedAccount.status === 'loaded') {
-        const { account, discovery, network } = selectedAccount;
-        // Account does exists and it's visible but shouldn't be active
-        if (account && discovery && discovery.status < DISCOVERY.STATUS.STOPPING) {
-            mode.push('account-loading-others');
+        if (selectedAccount && selectedAccount.status === 'loaded') {
+            const { account, discovery, network } = selectedAccount;
+            // Account does exists and it's visible but shouldn't be active
+            if (account && discovery && discovery.status < DISCOVERY.STATUS.STOPPING) {
+                mode.push('account-loading-others');
+            }
+
+            // Backend status
+            const blockchain = state.wallet.blockchain[network.symbol];
+            if (!blockchain.connected && state.suite.online) {
+                mode.push('backend-disconnected');
+            }
         }
 
-        // Backend status
-        const blockchain = state.wallet.blockchain[network.symbol];
-        if (!blockchain.connected && state.suite.online) {
-            mode.push('backend-disconnected');
+        // Account cannot be accessed
+        if (!device.connected) {
+            // device is disconnected
+            mode.push('device-disconnected');
+        } else if (device.authConfirm) {
+            // device needs auth confirmation (empty wallet)
+            mode.push('auth-confirm-failed');
+        } else if (!device.available) {
+            // device is unavailable (created with different passphrase settings)
+            mode.push('device-unavailable');
         }
-    }
 
-    // Account cannot be accessed
-    if (!device.connected) {
-        // device is disconnected
-        mode.push('device-disconnected');
-    } else if (device.authConfirm) {
-        // device needs auth confirmation (empty wallet)
-        mode.push('auth-confirm-failed');
-    } else if (!device.available) {
-        // device is unavailable (created with different passphrase settings)
-        mode.push('device-unavailable');
-    }
-
-    return mode.length > 0 ? mode : undefined;
-};
+        return mode.length > 0 ? mode : undefined;
+    };
 
 const getAccountState = () => (dispatch: Dispatch, getState: GetState) => {
     const state = getState();

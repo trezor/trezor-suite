@@ -443,42 +443,41 @@ const getUrl = () => {
     return `${base}/develop.log`;
 };
 
-export const report = (data: AnalyticsEvent, force = false) => (
-    _dispatch: Dispatch,
-    getState: GetState,
-) => {
-    const url = getUrl();
+export const report =
+    (data: AnalyticsEvent, force = false) =>
+    (_dispatch: Dispatch, getState: GetState) => {
+        const url = getUrl();
 
-    // no reporting on localhost
-    if (!url) {
-        return;
-    }
+        // no reporting on localhost
+        if (!url) {
+            return;
+        }
 
-    const { enabled, sessionId, instanceId } = getState().analytics;
-    const { initialRun } = getState().suite.flags;
+        const { enabled, sessionId, instanceId } = getState().analytics;
+        const { initialRun } = getState().suite.flags;
 
-    // don't report until user had chance to optout
-    if (initialRun) {
-        return;
-    }
+        // don't report until user had chance to optout
+        if (initialRun) {
+            return;
+        }
 
-    // The only case we want to override users 'do not log' choice is
-    // when we want to log that user did not give consent to logging.
-    if (!enabled && !force) {
-        return;
-    }
+        // The only case we want to override users 'do not log' choice is
+        // when we want to log that user did not give consent to logging.
+        if (!enabled && !force) {
+            return;
+        }
 
-    const qs = encodeDataToQueryString(data, { sessionId, instanceId, version });
+        const qs = encodeDataToQueryString(data, { sessionId, instanceId, version });
 
-    try {
-        fetch(`${url}?${qs}`, {
-            method: 'GET',
-        });
-    } catch (err) {
-        // do nothing, just log error to sentry
-        console.error('failed to log analytics', err);
-    }
-};
+        try {
+            fetch(`${url}?${qs}`, {
+                method: 'GET',
+            });
+        } catch (err) {
+            // do nothing, just log error to sentry
+            console.error('failed to log analytics', err);
+        }
+    };
 
 /**
  * Init analytics, should be always run on application start (see suiteMiddleware). It:
@@ -488,59 +487,57 @@ export const report = (data: AnalyticsEvent, force = false) => (
  * @param loadedState - analytics state loaded from storage
  * @param optout if true, analytics will be on by default (opt-out mode)
  */
-export const init = (loadedState: State, optout: boolean) => async (
-    dispatch: Dispatch,
-    getState: GetState,
-) => {
-    // 1. if instanceId does not exist yet (was not loaded from storage), create a new one
-    const instanceId = loadedState.instanceId || getAnalyticsRandomId();
-    // 2. always create new session id
-    const sessionId = getAnalyticsRandomId();
-    // 3. if enabled was already set to some value, keep it (user made choice), otherwise set it to default represented by optout param
-    const enabled = typeof loadedState.enabled !== 'undefined' ? loadedState.enabled : optout;
-    // 4. set application state
-    dispatch({
-        type: ANALYTICS.INIT,
-        payload: {
-            instanceId,
-            sessionId,
-            sessionStart: Date.now(),
-            enabled,
-        },
-    });
-    // 5. if analytics was initiated as enabled, continue with setting up side effects
-    if (!getState().analytics.enabled) return;
-    // 6. error logging to sentry
-    setSentryUser(instanceId);
-    // 7. register event listeners
-    setOnBeforeUnloadListener(() => {
-        dispatch(
-            report({
-                type: 'session-end',
-                payload: {
-                    start: getState().analytics.sessionStart!,
-                    end: Date.now(),
-                },
-            }),
-        );
-    });
+export const init =
+    (loadedState: State, optout: boolean) => async (dispatch: Dispatch, getState: GetState) => {
+        // 1. if instanceId does not exist yet (was not loaded from storage), create a new one
+        const instanceId = loadedState.instanceId || getAnalyticsRandomId();
+        // 2. always create new session id
+        const sessionId = getAnalyticsRandomId();
+        // 3. if enabled was already set to some value, keep it (user made choice), otherwise set it to default represented by optout param
+        const enabled = typeof loadedState.enabled !== 'undefined' ? loadedState.enabled : optout;
+        // 4. set application state
+        dispatch({
+            type: ANALYTICS.INIT,
+            payload: {
+                instanceId,
+                sessionId,
+                sessionStart: Date.now(),
+                enabled,
+            },
+        });
+        // 5. if analytics was initiated as enabled, continue with setting up side effects
+        if (!getState().analytics.enabled) return;
+        // 6. error logging to sentry
+        setSentryUser(instanceId);
+        // 7. register event listeners
+        setOnBeforeUnloadListener(() => {
+            dispatch(
+                report({
+                    type: 'session-end',
+                    payload: {
+                        start: getState().analytics.sessionStart!,
+                        end: Date.now(),
+                    },
+                }),
+            );
+        });
 
-    // send OS type if isDesktop
-    if (isDesktop()) {
-        let desktopOSVersion = '';
-        const resp = await getOsType();
-        if (resp?.success) {
-            desktopOSVersion = `${resp.payload.platform}_${resp.payload.release}`;
+        // send OS type if isDesktop
+        if (isDesktop()) {
+            let desktopOSVersion = '';
+            const resp = await getOsType();
+            if (resp?.success) {
+                desktopOSVersion = `${resp.payload.platform}_${resp.payload.release}`;
+            }
+
+            dispatch(
+                report({
+                    type: 'desktop-init',
+                    payload: { desktopOSVersion },
+                }),
+            );
         }
-
-        dispatch(
-            report({
-                type: 'desktop-init',
-                payload: { desktopOSVersion },
-            }),
-        );
-    }
-};
+    };
 
 export const enable = (): AnalyticsAction => ({
     type: ANALYTICS.ENABLE,

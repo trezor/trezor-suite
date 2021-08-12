@@ -15,20 +15,19 @@ export const PROCESS_MODE = {
     },
 };
 
-const actionBlocker = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (
-    action: Action,
-) => {
-    const prevState = api.getState();
+const actionBlocker =
+    (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (action: Action) => {
+        const prevState = api.getState();
 
-    // block actions restricted by device's process mode
-    const processMode = prevState.suite.device?.processMode;
-    if (processMode && PROCESS_MODE[processMode].blockedActions.includes(action.type)) {
+        // block actions restricted by device's process mode
+        const processMode = prevState.suite.device?.processMode;
+        if (processMode && PROCESS_MODE[processMode].blockedActions.includes(action.type)) {
+            return action;
+        }
+
+        // pass action to reducers
+        next(action);
         return action;
-    }
-
-    // pass action to reducers
-    next(action);
-    return action;
-};
+    };
 
 export default actionBlocker;

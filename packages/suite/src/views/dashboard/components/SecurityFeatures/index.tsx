@@ -24,21 +24,15 @@ const Content = styled.div`
 `;
 
 const SecurityFeatures = () => {
-    const {
-        setDiscreetMode,
-        createDeviceInstance,
-        changePin,
-        applySettings,
-        goto,
-        setFlag,
-    } = useActions({
-        setDiscreetMode: walletSettingsActions.setDiscreetMode,
-        createDeviceInstance: suiteActions.createDeviceInstance,
-        changePin: deviceSettingsActions.changePin,
-        applySettings: deviceSettingsActions.applySettings,
-        goto: routerActions.goto,
-        setFlag: suiteActions.setFlag,
-    });
+    const { setDiscreetMode, createDeviceInstance, changePin, applySettings, goto, setFlag } =
+        useActions({
+            setDiscreetMode: walletSettingsActions.setDiscreetMode,
+            createDeviceInstance: suiteActions.createDeviceInstance,
+            changePin: deviceSettingsActions.changePin,
+            applySettings: deviceSettingsActions.applySettings,
+            goto: routerActions.goto,
+            setFlag: suiteActions.setFlag,
+        });
     const { discreetMode, device, flags } = useSelector(state => ({
         discreetMode: state.wallet.settings.discreetMode,
         device: state.suite.device,

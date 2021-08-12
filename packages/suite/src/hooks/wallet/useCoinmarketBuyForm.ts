@@ -22,21 +22,15 @@ export const BuyFormContext = createContext<BuyFormContextValues | null>(null);
 BuyFormContext.displayName = 'CoinmarketBuyContext';
 
 export const useCoinmarketBuyForm = (props: Props): BuyFormContextValues => {
-    const {
-        saveQuoteRequest,
-        saveQuotes,
-        saveCachedAccountInfo,
-        saveTrade,
-        goto,
-        loadInvityData,
-    } = useActions({
-        saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
-        saveQuotes: coinmarketBuyActions.saveQuotes,
-        saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
-        saveTrade: coinmarketBuyActions.saveTrade,
-        goto: routerActions.goto,
-        loadInvityData: coinmarketCommonActions.loadInvityData,
-    });
+    const { saveQuoteRequest, saveQuotes, saveCachedAccountInfo, saveTrade, goto, loadInvityData } =
+        useActions({
+            saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
+            saveQuotes: coinmarketBuyActions.saveQuotes,
+            saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
+            saveTrade: coinmarketBuyActions.saveTrade,
+            goto: routerActions.goto,
+            loadInvityData: coinmarketCommonActions.loadInvityData,
+        });
 
     loadInvityData();
     const { selectedAccount } = props;

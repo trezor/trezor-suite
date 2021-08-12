@@ -98,15 +98,15 @@ const TransactionList = ({ transactions, isLoading, account, ...props }: Props) 
     const startIndex = (currentPage - 1) * perPage;
     const stopIndex = startIndex + perPage;
 
-    const slicedTransactions = useMemo(() => searchedTransactions.slice(startIndex, stopIndex), [
-        searchedTransactions,
-        startIndex,
-        stopIndex,
-    ]);
+    const slicedTransactions = useMemo(
+        () => searchedTransactions.slice(startIndex, stopIndex),
+        [searchedTransactions, startIndex, stopIndex],
+    );
 
-    const transactionsByDate = useMemo(() => groupTransactionsByDate(slicedTransactions), [
-        slicedTransactions,
-    ]);
+    const transactionsByDate = useMemo(
+        () => groupTransactionsByDate(slicedTransactions),
+        [slicedTransactions],
+    );
 
     // if totalPages is 1 do not render pagination
     // if totalPages is undefined check current page and number of txs (e.g. XRP)

@@ -69,15 +69,8 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
 
     loadInvityData();
 
-    const {
-        selectedAccount,
-        quotesRequest,
-        fees,
-        fiat,
-        localCurrency,
-        exchangeCoinInfo,
-        device,
-    } = props;
+    const { selectedAccount, quotesRequest, fees, fiat, localCurrency, exchangeCoinInfo, device } =
+        props;
     const { account, network } = selectedAccount;
     const { symbol, networkType } = account;
 
@@ -93,9 +86,8 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         exchangeInfo: state.wallet.coinmarket.exchange.exchangeInfo,
     }));
 
-    const { getDraft, saveDraft, removeDraft } = useFormDraft<ExchangeFormState>(
-        'coinmarket-exchange',
-    );
+    const { getDraft, saveDraft, removeDraft } =
+        useFormDraft<ExchangeFormState>('coinmarket-exchange');
     const draft = getDraft(account.key);
     const isDraft = !!draft;
 
@@ -170,12 +162,15 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         }
     }, [reset, isDraft, defaultValues]);
 
-    const { isLoading: isComposing, composeRequest, composedLevels, onFeeLevelChange } = useCompose(
-        {
-            ...methods,
-            state,
-        },
-    );
+    const {
+        isLoading: isComposing,
+        composeRequest,
+        composedLevels,
+        onFeeLevelChange,
+    } = useCompose({
+        ...methods,
+        state,
+    });
 
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
 

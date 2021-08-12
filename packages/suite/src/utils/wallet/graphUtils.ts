@@ -196,9 +196,9 @@ export const aggregateBalanceHistory = <TType extends TypeName>(
                         received: dataPoint.received,
                     };
 
-                    groupedByTimestamp[key] = (type === 'account'
-                        ? accountProps
-                        : baseProps) as ObjectType<TType>;
+                    groupedByTimestamp[key] = (
+                        type === 'account' ? accountProps : baseProps
+                    ) as ObjectType<TType>;
                 } else {
                     // add to existing bin
                     bin.txs += dataPoint.txs;

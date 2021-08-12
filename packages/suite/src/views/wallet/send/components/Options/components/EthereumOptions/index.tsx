@@ -23,12 +23,8 @@ const StyledButton = styled(Button)`
 `;
 
 const EthereumOptions = () => {
-    const {
-        getDefaultValue,
-        toggleOption,
-        composeTransaction,
-        resetDefaultValue,
-    } = useSendFormContext();
+    const { getDefaultValue, toggleOption, composeTransaction, resetDefaultValue } =
+        useSendFormContext();
 
     const options = getDefaultValue('options', []);
     const dataEnabled = options.includes('ethereumData');
