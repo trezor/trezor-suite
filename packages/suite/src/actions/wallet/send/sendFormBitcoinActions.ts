@@ -2,7 +2,7 @@ import TrezorConnect, { FeeLevel, SignTransaction } from 'trezor-connect';
 import BigNumber from 'bignumber.js';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { formatNetworkAmount } from '@wallet-utils/accountUtils';
-import { getBitcoinComposeOutputs } from '@wallet-utils/sendFormUtils';
+import { getBitcoinComposeOutputs, restoreOrigOutputsOrder } from '@wallet-utils/sendFormUtils';
 import {
     ZEC_SIGN_ENHANCEMENT,
     BTC_RBF_SEQUENCE,
@@ -200,8 +200,8 @@ export const signTransaction =
             // NOTE: RBF inputs/outputs required are to be in the same exact order as in original tx (covered by TrezorConnect.composeTransaction.skipPermutation param)
             // possible variations:
             // it's possible to add new utxo not related to the original tx at the end of the list
-            // it's possible to add change output if it not exists in original tx AND new utxo was added
-            // it's possible to remove original change output completely (give up all as a fee)
+            // it's possible to add change-output if it not exists in original tx AND new utxo was added/used
+            // it's possible to remove original change-output completely (give up all as a fee)
             // it's possible to decrease external output in favour of fee
             signEnhancement.inputs = transaction.inputs.map((input, i) => {
                 if (utxo[i]) {
@@ -209,12 +209,10 @@ export const signTransaction =
                 }
                 return input;
             });
-            signEnhancement.outputs = transaction.outputs.map((output, i) => {
-                if (outputs[i]) {
-                    return { ...output, orig_index: i, orig_hash: txid };
-                }
-                return output;
-            });
+            // NOTE: Rearranging of original outputs is not supported by the FW. Restoring original order.
+            // edge-case: original tx have change-output on index 0 while new tx doesn't have change-output at all
+            // or it's moved to the last position by trezor-connect composeTransaction process.
+            signEnhancement.outputs = restoreOrigOutputsOrder(transaction.outputs, outputs, txid);
         }
 
         const signPayload = {

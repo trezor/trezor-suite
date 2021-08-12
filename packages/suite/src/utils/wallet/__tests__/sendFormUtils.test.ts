@@ -1,6 +1,6 @@
 import { FakeTransaction } from 'ethereumjs-tx';
 import { sha3 } from 'web3-utils';
-import * as fixtures from '../__fixtures__/sendFormFixtures';
+import * as fixtures from '../__fixtures__/sendFormUtils';
 import {
     prepareEthereumTransaction,
     serializeEthereumTx,
@@ -12,6 +12,7 @@ import {
     getFiatRate,
     getBitcoinComposeOutputs,
     getExternalComposeOutput,
+    restoreOrigOutputsOrder,
 } from '../sendFormUtils';
 import { NETWORKS } from '@wallet-config';
 
@@ -39,6 +40,14 @@ describe('sendForm utils', () => {
         });
     });
 
+    fixtures.restoreOrigOutputsOrder.forEach(f => {
+        it(`restoreOrigOutputsOrder: ${f.description}`, () => {
+            // @ts-expect-error: params are only partial
+            const result = restoreOrigOutputsOrder(f.outputs, f.origOutputs, 'txid');
+            expect(result).toEqual(f.result);
+        });
+    });
+
     it('getInputState', () => {
         expect(getInputState(undefined, undefined)).toEqual(undefined);
         expect(getInputState(undefined, '')).toEqual(undefined);
@@ -47,17 +56,28 @@ describe('sendForm utils', () => {
     });
 
     it('calculateTotal', () => {
+        const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
         expect(calculateTotal('1', '2')).toEqual('3');
         expect(calculateTotal('a', '2')).toEqual('0');
-        // @ts-ignore not a string
+        expect(spy).toHaveBeenCalledTimes(1);
+        // @ts-expect-error: args are not a string
         expect(calculateTotal(null, null)).toEqual('0');
+        expect(spy).toHaveBeenCalledTimes(2);
+        spy.mockRestore();
     });
 
     it('calculateMax', () => {
+        const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
         expect(calculateMax('2', '1')).toEqual('1');
         expect(calculateMax('2', '3')).toEqual('0');
-        // @ts-ignore not a string
+        expect(calculateMax('a', '3')).toEqual('0');
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(calculateMax('2', 'a')).toEqual('0');
+        expect(spy).toHaveBeenCalledTimes(2);
+        // @ts-expect-error: args are not a string
         expect(calculateMax(null, null)).toEqual('0');
+        expect(spy).toHaveBeenCalledTimes(3);
+        spy.mockRestore();
     });
 
     it('findComposeErrors', () => {

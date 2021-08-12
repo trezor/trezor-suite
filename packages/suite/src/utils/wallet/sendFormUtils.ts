@@ -1,12 +1,12 @@
 import BigNumber from 'bignumber.js';
 import { FieldError, UseFormMethods } from 'react-hook-form';
-import { EthereumTransaction, TokenInfo, ComposeOutput } from 'trezor-connect';
+import { EthereumTransaction, TokenInfo, ComposeOutput, TxOutputType } from 'trezor-connect';
 import Common from 'ethereumjs-common';
 import { Transaction, TxData } from 'ethereumjs-tx';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
 import { ERC20_TRANSFER } from '@wallet-constants/sendForm';
 import { amountToSatoshi, networkAmountToSatoshi } from '@wallet-utils/accountUtils';
-import { Network, Account, CoinFiatRates } from '@wallet-types';
+import { Network, Account, CoinFiatRates, RbfTransactionParams } from '@wallet-types';
 import { FormState, FeeInfo, EthTransactionData, ExternalOutput } from '@wallet-types/sendForm';
 
 export const calculateTotal = (amount: string, fee: string): string => {
@@ -342,4 +342,36 @@ export const getExternalComposeOutput = (
         tokenInfo,
         decimals,
     };
+};
+
+export const restoreOrigOutputsOrder = (
+    outputs: TxOutputType[],
+    origOutputs: RbfTransactionParams['outputs'],
+    origTxid: string,
+) => {
+    const usedIndex: number[] = []; // collect used indexes to avoid duplicates
+    return outputs
+        .map(output => {
+            const index = origOutputs.findIndex((prevOutput, i) => {
+                if (usedIndex.includes(i)) return false;
+                if (prevOutput.type === 'opreturn' && output.script_type === 'PAYTOOPRETURN')
+                    return true;
+                if (prevOutput.type === 'change' && output.address_n) return true;
+                if (prevOutput.type === 'payment' && output.address === prevOutput.address)
+                    return true;
+                return false;
+            });
+            if (index >= 0) {
+                usedIndex.push(index);
+                return { ...output, orig_index: index, orig_hash: origTxid };
+            }
+            return output;
+        })
+        .sort((a, b) => {
+            if (typeof a.orig_index === 'undefined' && typeof b.orig_index === 'undefined')
+                return 0;
+            if (typeof b.orig_index === 'undefined') return -1;
+            if (typeof a.orig_index === 'undefined') return 1;
+            return a.orig_index - b.orig_index;
+        });
 };
