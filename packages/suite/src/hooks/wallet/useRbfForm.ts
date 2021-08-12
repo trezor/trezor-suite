@@ -195,21 +195,23 @@ export const useRbf = (props: Props) => {
     const ctxState = state ? { ...state } : { account: undefined };
 
     // If automatically composed transaction throws NOT-ENOUGH-FUNDS error
-    // try again with decreased output (use set-max calculation on the first possible output)
     useEffect(() => {
         if (ctxState.account?.networkType !== 'bitcoin' || !composedLevels) return;
         const { selectedFee, setMaxOutputId, outputs } = getValues();
         const tx = composedLevels[selectedFee || 'normal'];
-        if (
-            tx.type === 'error' &&
-            tx.error === 'NOT-ENOUGH-FUNDS' &&
-            typeof setMaxOutputId !== 'number'
-        ) {
-            setValue(
-                'setMaxOutputId',
-                outputs.findIndex(o => o.type === 'payment'),
-            );
-            composeRequest();
+        if (tx.type === 'error' && tx.error === 'NOT-ENOUGH-FUNDS') {
+            // try again with decreased output (use set-max calculation on the first possible output)
+            if (typeof setMaxOutputId !== 'number') {
+                setValue(
+                    'setMaxOutputId',
+                    outputs.findIndex(o => o.type === 'payment'),
+                );
+                composeRequest();
+            } else {
+                // set-max was already used and still no effect?
+                // do not use set-max anymore and do not try compose again.
+                setValue('setMaxOutputId', undefined);
+            }
         }
     }, [ctxState.account, composedLevels, composeRequest, getValues, setValue]);
 

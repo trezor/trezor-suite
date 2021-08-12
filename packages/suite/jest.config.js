@@ -43,6 +43,7 @@ module.exports = {
         '<rootDir>/src/hooks/suite/useDiscovery.ts',
         '<rootDir>/src/hooks/suite/useDebounce.ts',
         '<rootDir>/src/hooks/wallet/form/useFees.ts',
+        '<rootDir>/src/hooks/wallet/useRbfForm.ts',
         '<rootDir>/src/hooks/wallet/useSendForm.ts',
         '<rootDir>/src/hooks/wallet/useSendFormCompose.ts',
         '<rootDir>/src/hooks/wallet/useSendFormFields.ts',

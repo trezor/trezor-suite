@@ -97,7 +97,9 @@ const Red = styled.span`
     color: ${props => props.theme.TYPE_RED};
 `;
 
-const ChangeFee = (props: Props & { showChained: () => void }) => {
+/* children are only for test purposes, this prop is not available in regular build */
+
+const ChangeFee: React.FC<Props & { showChained: () => void }> = props => {
     const contextValues = useRbf(props);
     if (!contextValues.account) return null; // context without account, should never happen
     const { tx } = props;
@@ -153,6 +155,8 @@ const ChangeFee = (props: Props & { showChained: () => void }) => {
                     </FinalizeWarning>
                 )}
                 <ReplaceButton finalize={props.finalize} />
+
+                {props.children}
             </Wrapper>
         </RbfContext.Provider>
     );
