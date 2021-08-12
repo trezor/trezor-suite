@@ -8,8 +8,8 @@ import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExc
 import { Translation } from '@suite-components';
 import { Account } from '@wallet-types';
 import invityAPI from '@suite-services/invityAPI';
-import { CRYPTO_TOKEN } from '@wallet-types/coinmarketExchangeForm';
 import { symbolToInvityApiSymbol } from '@suite/utils/wallet/coinmarket/coinmarketUtils';
+import { getInputState } from '@suite/utils/wallet/sendFormUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -108,7 +108,7 @@ const buildOptions = (
 };
 
 const ReceiveCryptoSelect = () => {
-    const { control, setAmountLimits, exchangeInfo, exchangeCoinInfo, account, getValues } =
+    const { control, setAmountLimits, exchangeInfo, exchangeCoinInfo, account, getValues, errors } =
         useCoinmarketExchangeFormContext();
 
     const customSearch = (
@@ -124,9 +124,9 @@ const ReceiveCryptoSelect = () => {
         return false;
     };
 
-    const tokenAddress = getValues(CRYPTO_TOKEN);
-    const tokenData = account.tokens?.find(t => t.address === tokenAddress);
-
+    const { outputs, receiveCryptoSelect } = getValues();
+    const token = outputs?.[0]?.token;
+    const tokenData = account.tokens?.find(t => t.address === token);
     return (
         <Wrapper>
             <Controller
@@ -134,6 +134,10 @@ const ReceiveCryptoSelect = () => {
                 name="receiveCryptoSelect"
                 render={({ onChange, value }) => (
                     <Select
+                        state={getInputState(
+                            errors.receiveCryptoSelect,
+                            receiveCryptoSelect?.value,
+                        )}
                         onChange={(selected: any) => {
                             onChange(selected);
                             setAmountLimits(undefined);

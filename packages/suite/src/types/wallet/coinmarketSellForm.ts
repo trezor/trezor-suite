@@ -76,4 +76,6 @@ export type SellFormContextValues = Omit<UseFormMethods<SellFormState>, 'registe
     handleClearFormButtonClick: () => void;
     formState: ReactHookFormState<FormState>;
     isDraft: boolean;
+    activeInput: 'fiatInput' | 'cryptoInput';
+    setActiveInput: React.Dispatch<React.SetStateAction<SellFormContextValues['activeInput']>>;
 };

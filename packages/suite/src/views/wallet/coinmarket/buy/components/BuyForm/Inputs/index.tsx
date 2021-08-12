@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import { isDecimalsValid } from '@wallet-utils/validation';
 import { InputError } from '@wallet-components';
 import { MAX_LENGTH } from '@suite-constants/inputs';
+import { getInputState } from '@wallet-utils/sendFormUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -66,6 +67,7 @@ const Inputs = () => {
         setAmountLimits,
         defaultCurrency,
         cryptoInputValue,
+        getValues,
     } = useCoinmarketBuyFormContext();
     const { symbol } = account;
     const uppercaseSymbol = symbol.toUpperCase();
@@ -82,6 +84,8 @@ const Inputs = () => {
     useEffect(() => {
         trigger([activeInput]);
     }, [activeInput, amountLimits, trigger]);
+
+    const fiatInputValue = getValues('fiatInput');
 
     return (
         <Wrapper>
@@ -152,7 +156,7 @@ const Inputs = () => {
                         setValue(cryptoInput, '');
                         clearErrors(cryptoInput);
                     }}
-                    state={errors[fiatInput] ? 'error' : undefined}
+                    state={getInputState(errors.fiatInput, fiatInputValue)}
                     name={fiatInput}
                     maxLength={MAX_LENGTH.AMOUNT}
                     bottomText={<InputError error={errors[fiatInput]} />}
@@ -194,7 +198,7 @@ const Inputs = () => {
                         setValue(fiatInput, '');
                         clearErrors(fiatInput);
                     }}
-                    state={errors[cryptoInput] ? 'error' : undefined}
+                    state={getInputState(errors.cryptoInput, cryptoInputValue)}
                     name={cryptoInput}
                     noTopLabel
                     maxLength={MAX_LENGTH.AMOUNT}

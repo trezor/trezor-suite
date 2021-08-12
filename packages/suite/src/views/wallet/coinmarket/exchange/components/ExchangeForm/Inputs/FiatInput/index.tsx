@@ -9,6 +9,7 @@ import FiatSelect from './FiatSelect';
 import BigNumber from 'bignumber.js';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { CRYPTO_INPUT, FIAT_INPUT } from '@suite/types/wallet/coinmarketExchangeForm';
+import { getInputState } from '@suite/utils/wallet/sendFormUtils';
 
 const StyledInput = styled(Input)`
     border-left: 0;
@@ -17,11 +18,22 @@ const StyledInput = styled(Input)`
 `;
 
 const FiatInput = () => {
-    const { register, network, clearErrors, errors, trigger, updateSendCryptoValue, setValue } =
-        useCoinmarketExchangeFormContext();
+    const {
+        register,
+        network,
+        clearErrors,
+        errors,
+        trigger,
+        updateSendCryptoValue,
+        setValue,
+        getValues,
+    } = useCoinmarketExchangeFormContext();
 
-    const error = errors.outputs && errors.outputs[0] ? errors.outputs[0].fiat : undefined;
+    const amountError = errors.outputs?.[0]?.amount;
+    const fiatError = errors.outputs?.[0]?.fiat;
 
+    const { outputs } = getValues();
+    const fiat = outputs?.[0]?.fiat;
     return (
         <StyledInput
             onFocus={() => {
@@ -29,14 +41,14 @@ const FiatInput = () => {
             }}
             onChange={event => {
                 setValue('setMaxOutputId', undefined);
-                if (error) {
+                if (fiatError) {
                     setValue(CRYPTO_INPUT, '');
                 } else {
                     updateSendCryptoValue(event.target.value, network.decimals);
                     clearErrors(FIAT_INPUT);
                 }
             }}
-            state={error ? 'error' : undefined}
+            state={getInputState(fiatError || amountError, fiat)}
             name={FIAT_INPUT}
             noTopLabel
             maxLength={MAX_LENGTH.AMOUNT}
@@ -63,7 +75,7 @@ const FiatInput = () => {
                     }
                 },
             })}
-            bottomText={<InputError error={error} />}
+            bottomText={<InputError error={fiatError} />}
             innerAddon={<FiatSelect />}
         />
     );

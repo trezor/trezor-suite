@@ -1,12 +1,13 @@
-import { Icon, variables, useTheme } from '@trezor/components';
+import { Icon, variables, useTheme, SuiteThemeColors } from '@trezor/components';
 import React, { useCallback, useEffect } from 'react';
+import { DeepMap, FieldError } from 'react-hook-form';
 import styled from 'styled-components';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 import SendCryptoInput from './SendCryptoInput';
 import FiatInput from './FiatInput';
 import ReceiveCryptoSelect from './ReceiveCryptoSelect';
 import FractionButtons from '@wallet-components/CoinMarketFractionButtons';
-import { CRYPTO_INPUT, CRYPTO_TOKEN, FIAT_INPUT } from '@wallet-types/coinmarketExchangeForm';
+import { CRYPTO_INPUT, ExchangeFormState, FIAT_INPUT } from '@wallet-types/coinmarketExchangeForm';
 import { useLayoutSize } from '@suite/hooks/suite';
 import BigNumber from 'bignumber.js';
 
@@ -62,6 +63,25 @@ const EmptyDiv = styled.div`
     width: 100%;
 `;
 
+const getLineDividerColor = (
+    theme: SuiteThemeColors,
+    errors: DeepMap<ExchangeFormState, FieldError>,
+    amount: string,
+    fiat: string,
+) => {
+    if (
+        errors.outputs &&
+        errors.outputs[0] &&
+        (errors.outputs[0].amount || errors.outputs[0].fiat)
+    ) {
+        return theme.TYPE_RED;
+    }
+    if (amount?.length > 0 && fiat?.length > 0) {
+        return theme.TYPE_GREEN;
+    }
+    return theme.STROKE_GREY;
+};
+
 const Inputs = () => {
     const theme = useTheme();
     const {
@@ -77,7 +97,10 @@ const Inputs = () => {
         clearErrors,
     } = useCoinmarketExchangeFormContext();
 
-    const tokenAddress = getValues(CRYPTO_TOKEN);
+    const { outputs } = getValues();
+    const tokenAddress = outputs?.[0]?.token;
+    const fiat = outputs?.[0]?.fiat;
+    const amount = outputs?.[0]?.amount;
     const tokenData = account.tokens?.find(t => t.address === tokenAddress);
 
     useEffect(() => {
@@ -131,16 +154,12 @@ const Inputs = () => {
             <Top>
                 <LeftWrapper>
                     <SendCryptoInput />
-                    <Line
-                        color={
-                            errors.outputs &&
-                            errors.outputs[0] &&
-                            (errors.outputs[0].amount || errors.outputs[0].fiat)
-                                ? theme.TYPE_RED
-                                : theme.STROKE_GREY
-                        }
-                    />
-                    {!tokenData && <FiatInput />}
+                    {!tokenData && (
+                        <>
+                            <Line color={getLineDividerColor(theme, errors, amount, fiat)} />
+                            <FiatInput />
+                        </>
+                    )}
                 </LeftWrapper>
                 <MiddleWrapper>
                     {!isXLargeLayoutSize && (
