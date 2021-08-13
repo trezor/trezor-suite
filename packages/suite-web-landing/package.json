@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "@trezor/components": "1.0.0",
-        "next": "^10.0.5",
+        "next": "^11.1.0",
         "polished": "^4.0.5",
         "react": "17.0.1",
         "react-awesome-reveal": "^3.5.2",
