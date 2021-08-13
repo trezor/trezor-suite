@@ -4,6 +4,9 @@ import { Button, colors, variables } from '@trezor/components';
 import { Translation, TrezorLink } from '@suite-components';
 import { DropZone } from '@suite-components/DropZone';
 import { FIRMWARE_BINARIES_URL } from '@suite-constants/urls';
+import type { TrezorDevice } from '@suite-types';
+import { validateFirmware } from '@firmware-utils';
+import { useTranslation } from '@suite-hooks';
 
 const StepContainer = styled.div`
     display: flex;
@@ -66,15 +69,27 @@ const Step: React.FC<StepProps> = ({ order, title, children }) => (
     </StepContainer>
 );
 
-export const SelectCustomFirmware = ({ onSuccess }: { onSuccess: (fw: ArrayBuffer) => void }) => {
-    const [firmwareBinary, setFirmwareBinary] = useState<ArrayBuffer>();
+type Props = {
+    device?: TrezorDevice;
+    onSuccess: (fw: ArrayBuffer) => void;
+};
 
-    const onFirmwareUpload = (firmware: File, setError: (msg: string) => void) => {
+export const SelectCustomFirmware = ({ device, onSuccess }: Props) => {
+    const [firmwareBinary, setFirmwareBinary] = useState<ArrayBuffer>();
+    const { translationString } = useTranslation();
+
+    const onFirmwareUpload = async (firmware: File, setError: (msg: string) => void) => {
         if (!firmware?.name?.endsWith('.bin')) {
             setError('file-type');
             return;
         }
-        firmware.arrayBuffer().then(setFirmwareBinary);
+        const fw = await firmware.arrayBuffer();
+        const validationError = validateFirmware(fw, device);
+        if (validationError) {
+            setError(translationString(validationError));
+        } else {
+            setFirmwareBinary(fw);
+        }
     };
 
     return (
