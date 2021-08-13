@@ -113,7 +113,10 @@ const FirmwareCustom = () => {
                             return shouldDisplayConnectPrompt(liveDevice) ? (
                                 <ConnectDevicePromptManager device={liveDevice} />
                             ) : (
-                                <SelectCustomFirmware onSuccess={onFirmwareSelected} />
+                                <SelectCustomFirmware
+                                    device={liveDevice}
+                                    onSuccess={onFirmwareSelected}
+                                />
                             );
                         case 'check-seed':
                             return <CheckSeedStep onSuccess={onSeedChecked} />;

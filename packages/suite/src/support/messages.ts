@@ -1106,7 +1106,7 @@ const definedMessages = defineMessages({
         id: 'TR_DROPZONE',
     },
     TR_DROPZONE_ERROR: {
-        defaultMessage: 'Import failed {error}',
+        defaultMessage: 'Import failed: {error}',
         id: 'TR_DROPZONE_ERROR',
     },
     TR_EXPORT_TRANSACTIONS: {
@@ -1869,6 +1869,22 @@ const definedMessages = defineMessages({
     TR_FIRMWARE_VERSION: {
         defaultMessage: 'Firmware version',
         id: 'TR_FIRMWARE_VERSION',
+    },
+    TR_FIRMWARE_VALIDATION_UNRECOGNIZED_FORMAT: {
+        defaultMessage: 'Unrecognized firmware image type',
+        id: 'TR_FIRMWARE_VALIDATION_UNRECOGNIZED_FORMAT',
+    },
+    TR_FIRMWARE_VALIDATION_UNMATCHING_DEVICE: {
+        defaultMessage: 'Firmware does not match your device',
+        id: 'TR_FIRMWARE_VALIDATION_UNMATCHING_DEVICE',
+    },
+    TR_FIRMWARE_VALIDATION_TOO_OLD: {
+        defaultMessage: 'Firmware is too old for your device',
+        id: 'TR_FIRMWARE_VALIDATION_TOO_OLD',
+    },
+    TR_FIRMWARE_VALIDATION_ONE_V2: {
+        defaultMessage: 'You need to upgrade to bootloader 1.8.0 first',
+        id: 'TR_FIRMWARE_VALIDATION_ONE_V2',
     },
     TR_FIRST_SEEN: {
         defaultMessage: 'First Seen',
