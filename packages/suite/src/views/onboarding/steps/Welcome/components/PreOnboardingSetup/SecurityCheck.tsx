@@ -69,9 +69,10 @@ const OuterActions = styled.div`
 `;
 
 const SecurityCheck = () => {
-    const { goToNextStep, goto } = useOnboarding();
-    const { device } = useSelector(s => ({
+    const { goToNextStep, goto, rerun } = useOnboarding();
+    const { device, recovery } = useSelector(s => ({
         device: s.suite.device,
+        recovery: s.recovery,
     }));
 
     const deviceStatus = getConnectedDeviceStatus(device);
@@ -147,7 +148,11 @@ const SecurityCheck = () => {
                     ) : (
                         <Items>
                             <OnboardingButtonCta
-                                onClick={() => goToNextStep()}
+                                onClick={
+                                    recovery.status === 'in-progress'
+                                        ? () => rerun()
+                                        : () => goToNextStep()
+                                }
                                 data-test="@onboarding/continue-button"
                             >
                                 <Translation id="TR_ONBOARDING_START_CTA" />

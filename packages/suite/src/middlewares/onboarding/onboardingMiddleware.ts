@@ -27,6 +27,7 @@ const onboardingMiddleware =
                 api.dispatch(onboardingActions.resetOnboarding());
             }
         }
+
         return action;
     };
 

@@ -1,6 +1,7 @@
 import { UI } from 'trezor-connect';
 import * as onboardingActions from '@onboarding-actions/onboardingActions';
 import * as routerActions from '@suite-actions/routerActions';
+import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { useActions, useSelector } from '@suite-hooks';
 
 export const useOnboarding = () => {
@@ -17,6 +18,7 @@ export const useOnboarding = () => {
         resetOnboarding: onboardingActions.resetOnboarding,
         enableOnboardingReducer: onboardingActions.enableOnboardingReducer,
         goto: routerActions.goto,
+        rerun: recoveryActions.rerun,
     });
 
     return {
