@@ -16,6 +16,7 @@
   - [Metadata](features/metadata.md)
   - [Transactions/Export](features/transactions/export.md)
   - [Transactions/Search](features/transactions/search.md)
+  - [Protocols/Bitcoin](features/protocols/bitcoin.md)
 - [Tests](tests/index.md)
   - [Suite-web e2e](tests/e2e-web.md)
 - [Miscellaneous](misc/index.md)
