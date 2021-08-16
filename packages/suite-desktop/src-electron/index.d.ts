@@ -6,8 +6,15 @@ declare namespace NodeJS {
     export interface Global {
         logger: ILogger;
         resourcesPath: string;
+        customProtocolUrl: string;
     }
 }
+
+// Build time package info vars
+declare const PKG: {
+    NAME: string;
+    PROTOCOLS: string[];
+};
 
 declare interface ILogger {
     /**

@@ -60,6 +60,8 @@ build({
         'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
         'process.env.COMMITHASH': JSON.stringify(gitRevision),
         'process.env.APP_PUBKEY': JSON.stringify(appKey),
+        'process.env.PROTOCOLS': JSON.stringify(pkg.build.protocols.schemes),
+        'process.env.PKGNAME': JSON.stringify(pkg.name),
     },
     inject: [path.join(__dirname, 'build-inject.js')],
     plugins: useMocks ? [mockPlugin] : [],

@@ -39,7 +39,7 @@ const init = ({ mainWindow, store }: Dependencies) => {
                 mainWindow.once('leave-full-screen', () => mainWindow.hide());
                 mainWindow.setFullScreen(false);
             } else {
-                mainWindow.hide();
+                app.hide();
             }
         });
     } else {

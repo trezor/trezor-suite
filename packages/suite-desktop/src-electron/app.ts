@@ -37,6 +37,18 @@ global.resourcesPath = isDev
     ? path.join(__dirname, '..', 'build', 'static')
     : process.resourcesPath;
 
+// App is launched via custom protocol (macOS)
+// It is called always when custom protocol is invoked but it only works when app is launching
+// It has to be outside app.on('ready') because 'will-finish-launching' event is called before 'ready' event
+app.on('will-finish-launching', () => {
+    app.on('open-url', (event, url) => {
+        event.preventDefault();
+
+        global.logger.debug('custom-protocols', 'App is launched via custom protocol (macOS)');
+        global.customProtocolUrl = url;
+    });
+});
+
 logger.info('main', `Application starting in ${isDev ? 'development' : 'production'} mode`);
 
 const init = async () => {

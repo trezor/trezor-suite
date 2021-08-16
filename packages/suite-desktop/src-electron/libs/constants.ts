@@ -21,6 +21,7 @@ export const MODULES = [
     'bridge',
     'tor',
     'analytics',
+    'custom-protocols',
     'auto-updater',
     'store',
     'udev-install',

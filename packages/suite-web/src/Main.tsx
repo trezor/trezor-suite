@@ -13,6 +13,7 @@ import Preloader from '@suite-components/Preloader';
 import ToastContainer from '@suite-components/ToastContainer';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import Resize from '@suite-support/Resize';
+import Protocol from '@suite-support/Protocol';
 import Autodetect from '@suite-support/Autodetect';
 import Tor from '@suite-support/Tor';
 import OnlineStatus from '@suite-support/OnlineStatus';
@@ -50,6 +51,7 @@ const Main = () => {
                             <Autodetect />
                             <Resize />
                             <Tor />
+                            <Protocol />
                             <OnlineStatus />
                             <RouterHandler />
                             <IntlProvider>

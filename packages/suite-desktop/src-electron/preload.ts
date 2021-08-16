@@ -36,6 +36,9 @@ const validChannels = [
 
     // udev
     'udev/install',
+
+    // custom protocol
+    'protocol/open',
 ];
 
 contextBridge.exposeInMainWorld('desktopApi', {
