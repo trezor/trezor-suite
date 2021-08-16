@@ -14,6 +14,7 @@ import ToastContainer from '@suite-components/ToastContainer';
 import IntlProvider from '@suite-support/ConnectedIntlProvider';
 import Resize from '@suite-support/Resize';
 import Autodetect from '@suite-support/Autodetect';
+import Protocol from '@suite-support/Protocol';
 import Tor from '@suite-support/Tor';
 import OnlineStatus from '@suite-support/OnlineStatus';
 import ErrorBoundary from '@suite-support/ErrorBoundary';
@@ -48,6 +49,7 @@ const Index = () => {
                             <Autodetect />
                             <Resize />
                             <Tor />
+                            <Protocol />
                             <OnlineStatus />
                             <RouterHandler />
                             <IntlProvider>
