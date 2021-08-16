@@ -1,4 +1,8 @@
+import { app } from 'electron';
+
 import { isDev } from '@suite-utils/build';
+
+const logUI = app.commandLine.hasSwitch('log-ui');
 
 const init = ({ mainWindow }: Dependencies) => {
     const { logger } = global;
@@ -46,19 +50,21 @@ const init = ({ mainWindow }: Dependencies) => {
         // Don't log console log when in dev because dev tools are already open
         if (isDev) return;
 
+        if (!logUI) return;
+
         const msg = `${message} - ${sourceId}:${line}`;
         switch (level) {
             case 0:
-                logger.debug('console-log', msg);
+                logger.debug('ui-log', msg);
                 break;
             case 1:
-                logger.info('console-log', msg);
+                logger.info('ui-log', msg);
                 break;
             case 2:
-                logger.warn('console-log', msg);
+                logger.warn('ui-log', msg);
                 break;
             case 3:
-                logger.error('console-log', msg);
+                logger.error('ui-log', msg);
                 break;
             // no default
         }

@@ -25,7 +25,7 @@ Available flags:
 | `--bridge-dev` | Instruct Bridge to support emulator (starts Bridge with `-e 21324`). |
 | `--log-level=NAME` | Set the logging level. Available levels are [name (value)]: error (1), warn (2), info(3), debug (4). All logs with a value equal or lower to the selected log level will be displayed. |
 | `--log-write` | Write log to disk |
-| `--log-no-print` | Disable the log priting in the console. |
+| `--log-ui` | Enables printing of UI console messages in the console. |
 | `--log-file=FILENAME` | Name of the output file (defaults to `log-%ts.txt`) |
 | `--log-path=PATHNAME` | Path for the output file (defaults to home or current working directory) |
 | `--enable-updater` | Enables the auto updater (if disabled in feature flags) |
@@ -45,4 +45,4 @@ Some libraries are difficult to test in development environments, such as the au
 
 ### Mocked libraries
 #### Auto-Updater
-The auto-updater has been mocked to simulate similar behaviour to the actual library. Unless the commandline parameter `--mock-trigger-updater-after=DELAY` is passed, checking for updates will always return `not-available`. This commandline parameter requires a value, representing a delay in seconds before making the update available. Using `0` as a value will make the update available immediately. For example, if you wish to make an update available after 1 minute, you will use the parameter as follows: `--mock-trigger-updater-after=60`. Note that his parameter is **ONLY** available with mocks enabled.
+The auto-updater has been mocked to simulate similar behavior to the actual library. Unless the command line parameter `--mock-trigger-updater-after=DELAY` is passed, checking for updates will always return `not-available`. This command line parameter requires a value, representing a delay in seconds before making the update available. Using `0` as a value will make the update available immediately. For example, if you wish to make an update available after 1 minute, you will use the parameter as follows: `--mock-trigger-updater-after=60`. Note that his parameter is **ONLY** available with mocks enabled.
