@@ -4,7 +4,6 @@ import { useActions } from '@suite-hooks';
 import * as sendFormActions from '@wallet-actions/sendFormActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as routerActions from '@suite-actions/routerActions';
-import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@wallet-constants/sendForm';
 import {
     UseSendFormProps,
     UseSendFormState,
@@ -12,9 +11,8 @@ import {
     SendContextValues,
     Output,
 } from '@wallet-types/sendForm';
-import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
 
-import { getFeeLevels } from '@wallet-utils/sendFormUtils';
+import { getFeeLevels, getDefaultValues } from '@wallet-utils/sendFormUtils';
 import { useSendFormOutputs } from './useSendFormOutputs';
 import { useSendFormFields } from './useSendFormFields';
 import { useSendFormCompose } from './useSendFormCompose';
@@ -23,18 +21,6 @@ import { useFees } from './form/useFees';
 
 export const SendContext = createContext<SendContextValues | null>(null);
 SendContext.displayName = 'SendContext';
-
-const getDefaultValues = (
-    currency: Output['currency'],
-    network: UseSendFormState['network'],
-): FormState => ({
-    ...DEFAULT_VALUES,
-    options:
-        isFeatureEnabled('RBF') && network.features?.includes('rbf')
-            ? ['bitcoinRBF', 'broadcast']
-            : ['broadcast'],
-    outputs: [{ ...DEFAULT_PAYMENT, currency }],
-});
 
 // convert UseSendFormProps to UseSendFormState
 const getStateFromProps = (props: UseSendFormProps) => {
