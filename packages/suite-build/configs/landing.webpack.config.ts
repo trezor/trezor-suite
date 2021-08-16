@@ -4,11 +4,21 @@ import CopyPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 
-import routes from '../../suite/src/config/suite/routes';
 import { FLAGS } from '../../suite/src/config/suite/features';
 
 import { assetPrefix, isDev } from '../utils/env';
 import { getPathForProject } from '../utils/path';
+
+const routes = [
+    {
+        name: 'landing-start',
+        pattern: '/start',
+    },
+    {
+        name: 'landing-index',
+        pattern: '/',
+    },
+];
 
 // Configuration for HTML output (html-webpack-plugin)
 const htmlConfig = {
@@ -23,13 +33,13 @@ const htmlConfig = {
 
 const baseDir = getPathForProject('landing');
 const config: webpack.Configuration = {
-    entry: [path.join(baseDir, 'src', 'index.ts')],
+    entry: [path.join(baseDir, 'src', 'support', 'index.ts')],
     output: {
         path: path.join(baseDir, 'build'),
     },
     plugins: [
         new CopyPlugin({
-            patterns: ['browser-detection', 'fonts', 'images', 'translations'].map(dir => ({
+            patterns: ['fonts', 'images', 'translations'].map(dir => ({
                 from: path.join(__dirname, '..', '..', 'suite-data', 'files', dir),
                 to: path.join(baseDir, 'build', 'static', dir),
             })),
