@@ -1643,13 +1643,8 @@ const definedMessages = defineMessages({
     },
     TR_DEVICE_SETTINGS_PASSPHRASE_DESC: {
         defaultMessage:
-            'Passphrase encryption adds an extra custom word to your recovery seed. This allows you to access new wallets, each hidden behind a particular passphrase. Your old accounts will be accessible with an empty passphrase.',
+            'Passphrase encryption adds an extra custom word to your recovery seed. This allows you to access new wallets, each hidden behind a particular passphrase. Your old accounts will be accessible with an empty passphrase. If you forget your passphrase, your wallet is lost for good. There is no way to recover your funds.',
         id: 'TR_DEVICE_SETTINGS_PASSPHRASE_DESC',
-    },
-    TR_DEVICE_SETTINGS_PASSPHRASE_DESC_MORE: {
-        defaultMessage:
-            'If you forget your passphrase, your wallet is lost for good. There is no way to recover your funds.',
-        id: 'TR_DEVICE_SETTINGS_PASSPHRASE_DESC_MORE',
     },
     TR_DEVICE_SETTINGS_SAFETY_CHECKS_TITLE: {
         defaultMessage: 'Safety checks',

@@ -331,12 +331,7 @@ const Settings = () => {
                 <SectionItem>
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_TITLE" />}
-                        description={
-                            <>
-                                <Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_DESC" />
-                                <Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_DESC_MORE" />
-                            </>
-                        }
+                        description={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_DESC" />}
                         learnMore={PASSPHRASE_URL}
                     />
                     <ActionColumn>
