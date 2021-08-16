@@ -35,7 +35,6 @@ const ChangelogWrapper = styled.div`
     ul,
     ol {
         margin-bottom: 10px;
-        list-style-type: none;
         margin-left: 36px; /* hacky way to add enough indentation so it is rendered right of an emoji in a section heading */
     }
 
