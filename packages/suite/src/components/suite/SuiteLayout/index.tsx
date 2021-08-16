@@ -15,6 +15,7 @@ import NavigationBar from '../NavigationBar';
 import { useLayoutSize, useSelector, useActions, useAnalytics } from '@suite-hooks';
 import { isDesktop } from '@suite-utils/env';
 import * as guideActions from '@suite-actions/guideActions';
+import { MODAL } from '@suite-actions/constants';
 
 const PageWrapper = styled.div`
     display: flex;
@@ -190,17 +191,25 @@ const SuiteLayout = (props: SuiteLayoutProps) => {
 
     // TODO: if (props.layoutSize === 'UNAVAILABLE') return <SmallLayout />;
     const { isMobileLayout, layoutSize } = useLayoutSize();
-    const { guideOpen } = useSelector(state => ({
+    const { guideOpen, isModalOpen } = useSelector(state => ({
         guideOpen: state.guide.open,
+        // 2 types of modals exist. 1. redux 'modal' based, 2. redux 'router' based
+        isModalOpen:
+            state.modal.context !== MODAL.CONTEXT_NONE || state.router.route?.isForegroundApp,
     }));
     const { openGuide, closeGuide } = useActions({
         openGuide: guideActions.open,
         closeGuide: guideActions.close,
     });
+
     useHotkeys(
         'f1,esc',
         e => {
             e.preventDefault();
+            if (e.key === 'Escape' && isModalOpen) {
+                return;
+            }
+
             if (guideOpen) {
                 closeGuide();
             }
@@ -208,7 +217,7 @@ const SuiteLayout = (props: SuiteLayoutProps) => {
                 openGuide();
             }
         },
-        [guideOpen, closeGuide, openGuide],
+        [guideOpen, closeGuide, openGuide, isModalOpen],
     );
 
     const [title, setTitle] = useState<string | undefined>(undefined);
