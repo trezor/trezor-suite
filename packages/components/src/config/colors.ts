@@ -19,7 +19,7 @@ export const THEME = {
         BG_WHITE_ALT: '#ffffff', // used for dropdown menus
         BG_WHITE_ALT_HOVER: '#f4f4f4', // used for dropdown menus
         BG_RED: '#d04949',
-        BG_LIGHT_RED: '#F6E2E2',
+        BG_LIGHT_RED: '#FEF3F3',
         BG_TOOLTIP: '#212223',
         BG_TOOLTIP_BORDER: '#3a3b3c',
         BG_ICON: 'transparent',
@@ -76,7 +76,7 @@ export const THEME = {
         BG_WHITE_ALT: '#3a3b3c',
         BG_WHITE_ALT_HOVER: '#444546',
         BG_RED: '#ab2626', // used for big app notification
-        BG_LIGHT_RED: '#5a1616', // used for outer glow for disconnected device status dot
+        BG_LIGHT_RED: '#312828', // used for outer glow for disconnected device status dot
         BG_TOOLTIP: '#3a3b3c', // same as STROKE_GREY in dark theme
         BG_ICON: '#ffffff',
 
@@ -134,7 +134,7 @@ export const THEME = {
         BG_WHITE_ALT: '#3a3b3c', // TODO
         BG_WHITE_ALT_HOVER: '#444546', // TODO
         BG_RED: '#ab2626', // used for big app notification
-        BG_LIGHT_RED: '#5a1616', // used for outer glow for disconnected device status dot
+        BG_LIGHT_RED: '#312828', // used for outer glow for disconnected device status dot
         BG_TOOLTIP: '#151524', // todo
         BG_ICON: '#ffffff', // todo
 
