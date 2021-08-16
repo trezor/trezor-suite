@@ -5769,8 +5769,7 @@ const definedMessages = defineMessages({
     },
     TR_SUITE_WEB_LANDING_BOTTOM_HEADLINE: {
         id: 'TR_SUITE_WEB_LANDING_BOTTOM_HEADLINE',
-        defaultMessage:
-            'Dozens of <em>brand-new features</em> to discover.{lineBreak}Try Suite now.',
+        defaultMessage: 'Dozens of features to discover.{lineBreak}Try Suite now.',
     },
 
     TR_SUITE_WEB_LANDING_FEATURES_1_HEADLINE: {
@@ -5911,8 +5910,7 @@ const definedMessages = defineMessages({
     },
     TR_SUITE_WEB_LANDING_START_BOTTOM_HEADLINE: {
         id: 'TR_SUITE_WEB_LANDING_START_BOTTOM_HEADLINE',
-        defaultMessage:
-            'Dozens of <em>brand-new features</em> to discover.{lineBreak}Try Suite now.',
+        defaultMessage: 'Dozens of features to discover.{lineBreak}Try Suite now.',
     },
     TR_DARK_MODE: {
         id: 'TR_DARK_MODE',
