@@ -36,7 +36,7 @@ const recovery =
                 // and suite is not in recovery mode yet
                 recovery.status !== 'in-progress'
             ) {
-                api.dispatch(recoveryActions.rerun());
+                api.dispatch(recoveryActions.setStatus('in-progress'));
             }
         }
 
