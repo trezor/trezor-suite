@@ -108,7 +108,17 @@ const GuidePage = () => {
             <Content>
                 {markdown && (
                     <StyledMarkdown>
-                        <ReactMarkdown>{markdown}</ReactMarkdown>
+                        <ReactMarkdown
+                            renderers={{
+                                link: ({ children, href }) => (
+                                    <a href={href} target="_blank" rel="noopener noreferrer">
+                                        {children}
+                                    </a>
+                                ),
+                            }}
+                        >
+                            {markdown}
+                        </ReactMarkdown>
                     </StyledMarkdown>
                 )}
                 {hasError && <Translation id="TR_GENERIC_ERROR_TITLE" />}
