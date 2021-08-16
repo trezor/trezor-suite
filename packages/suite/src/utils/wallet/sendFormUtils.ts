@@ -4,10 +4,20 @@ import { EthereumTransaction, TokenInfo, ComposeOutput, TxOutputType } from 'tre
 import Common from 'ethereumjs-common';
 import { Transaction, TxData } from 'ethereumjs-tx';
 import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
-import { ERC20_TRANSFER } from '@wallet-constants/sendForm';
+
+import { DEFAULT_PAYMENT, DEFAULT_VALUES, ERC20_TRANSFER } from '@wallet-constants/sendForm';
 import { amountToSatoshi, networkAmountToSatoshi } from '@wallet-utils/accountUtils';
-import { Network, Account, CoinFiatRates, RbfTransactionParams } from '@wallet-types';
-import { FormState, FeeInfo, EthTransactionData, ExternalOutput } from '@wallet-types/sendForm';
+import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
+
+import type { Network, Account, CoinFiatRates, RbfTransactionParams } from '@wallet-types';
+import type {
+    FormState,
+    FeeInfo,
+    EthTransactionData,
+    ExternalOutput,
+    Output,
+    UseSendFormState,
+} from '@wallet-types/sendForm';
 
 export const calculateTotal = (amount: string, fee: string): string => {
     try {
@@ -375,3 +385,15 @@ export const restoreOrigOutputsOrder = (
             return a.orig_index - b.orig_index;
         });
 };
+
+export const getDefaultValues = (
+    currency: Output['currency'],
+    network: UseSendFormState['network'],
+): FormState => ({
+    ...DEFAULT_VALUES,
+    options:
+        isFeatureEnabled('RBF') && network.features?.includes('rbf')
+            ? ['bitcoinRBF', 'broadcast']
+            : ['broadcast'],
+    outputs: [{ ...DEFAULT_PAYMENT, currency }],
+});

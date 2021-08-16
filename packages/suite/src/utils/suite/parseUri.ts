@@ -14,7 +14,7 @@ const stripPrefix = (str: string): string => {
 };
 
 // Parse URL query string (like 'foo=bar&baz=1337) into an object
-const parseQuery = (str: string) =>
+export const parseQuery = (str: string) =>
     str
         .split('&')
         .map(val => val.split('='))
@@ -26,7 +26,7 @@ const parseQuery = (str: string) =>
         }, {});
 
 // Parse a string read from a bitcoin QR code into an object
-const parseUri = (uri: string): ParsedURI => {
+export const parseUri = (uri: string): ParsedURI => {
     const str = stripPrefix(uri);
     const query: string[] = str.split('?');
     const values: Record<string, any> = query.length > 1 ? parseQuery(query[1]) : {};
@@ -38,4 +38,4 @@ const parseUri = (uri: string): ParsedURI => {
     };
 };
 
-export { parseUri };
+
