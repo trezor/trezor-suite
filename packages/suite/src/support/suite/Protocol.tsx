@@ -1,9 +1,39 @@
 import { useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { isWeb, isDesktop } from '@suite-utils/env';
+import { getProtocolInfo } from '@suite-utils/parseUri';
+import { useActions } from '@suite-hooks';
+import * as notificationActions from '@suite-actions/notificationActions';
+import * as protocolActions from '@suite-actions/protocolActions';
+
+export enum PROTOCOL_SCHEME {
+    BITCOIN = 'bitcoin',
+}
+
+export const PROTOCOL_TO_SYMBOL: { [key: string]: CoinType } = {
+    [PROTOCOL_SCHEME.BITCOIN]: 'btc',
+};
 
 const Protocol = () => {
-    const handleProtocolRequest = useCallback(_ => {}, []);
+    const handleProtocolRequest = useCallback(uri => {
+        const protocolInfo = getProtocolInfo(uri);
+
+        if (protocolInfo.scheme === PROTOCOL_SCHEME.BTC) {
+            // TODO
+        }
+    }, []);
+
+    const { search } = useLocation();
+    useEffect(() => {
+        if (search) {
+            const query = new URLSearchParams(search);
+            const uri = query.get('uri');
+            if (uri) {
+                handleProtocolRequest(uri);
+            }
+        }
+    }, [search, handleProtocolRequest]);
 
     useEffect(() => {
         if (isWeb()) {

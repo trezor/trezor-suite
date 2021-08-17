@@ -1,4 +1,4 @@
-import { parseUri } from '@suite-utils/parseUri';
+import { parseUri, getProtocolInfo } from '@suite-utils/parseUri';
 
 describe('parseUri', () => {
     describe('parsedUri', () => {
@@ -64,3 +64,59 @@ describe('parseUri', () => {
             });
         });
     });
+
+    describe('getProtocolInfo', () => {
+        it('should parse Bitcoin URI when address and amount are both available', () => {
+            const protocolInfo = getProtocolInfo(
+                'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=0.1',
+            );
+            expect(protocolInfo).toEqual({
+                scheme: 'bitcoin',
+                amount: 0.1,
+                address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
+            });
+        });
+
+        it('should parse Bitcoin URI when it contains not only address and amount but also valid but unsupported label and message', () => {
+            const protocolInfo = getProtocolInfo(
+                'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=1&label=Bender&message=Bite%20my%20shiny%20metal%20Bitcoin',
+            );
+            expect(protocolInfo).toEqual({
+                scheme: 'bitcoin',
+                amount: 1,
+                address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
+            });
+        });
+
+        it('should parse Bitcoin URI when it contains not only address and amount but also not yet existing variable', () => {
+            const protocolInfo = getProtocolInfo(
+                'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=1&layer=lightning',
+            );
+            expect(protocolInfo).toEqual({
+                scheme: 'bitcoin',
+                amount: 1,
+                address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
+            });
+        });
+
+        it('should throw an error when amount is not a number in Bitcoin URI ', () => {
+            expect(() =>
+                getProtocolInfo('bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=thousand'),
+            ).toThrow(
+                `Unsupported 'bitcoin' protocol handler or its params '{"amount":"thousand"}'!`,
+            );
+        });
+
+        it('should throw an error when amount is missing in Bitcoin URI ', () => {
+            expect(() => getProtocolInfo('bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf')).toThrow(
+                `Unsupported 'bitcoin' protocol handler or its params '{}'!`,
+            );
+        });
+
+        it('should throw an error with non-existing scheme', () => {
+            expect(() =>
+                getProtocolInfo('litecoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=0.1'),
+            ).toThrow(`Unsupported 'litecoin' protocol handler or its params '{"amount":"0.1"}'!`);
+        });
+    });
+});
