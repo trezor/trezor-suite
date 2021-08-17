@@ -97,7 +97,7 @@ const firmwareInstall =
             // update to same variant as is currently installed or to the regular one if device does not have any fw (new/wiped device)
             const isBtcOnlyFirmware = !prevDevice ? false : isBitcoinOnly(prevDevice);
 
-            const intermediary = !toRelease.isLatest;
+            const intermediary = model === 1 && !toRelease.isLatest;
             if (intermediary) {
                 console.warn(
                     'Cannot install latest firmware. Will install intermediary fw instead.',
