@@ -142,8 +142,9 @@ export const getFwVersion = (device: KnownDevice) => {
 };
 
 export const getFwUpdateVersion = (device: AcquiredDevice) => {
-    // thanks to intermediary FW we are always able to upgrade to the latest version
-    const version = device.firmwareRelease?.latest?.version;
+    // Thanks to intermediary FW we are always able to upgrade to the latest version on Model one.
+    const supportIntermediary = device.features.major_version === 1;
+    const version = device.firmwareRelease?.[supportIntermediary ? 'latest' : 'release']?.version;
     return version?.join('.') || null;
 };
 

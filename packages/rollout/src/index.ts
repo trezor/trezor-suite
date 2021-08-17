@@ -214,20 +214,18 @@ export const getBinary = async ({
     intermediary = false,
 }: GetBinaryProps) => {
     const parsedFeatures = parseFeatures(features);
-    const infoByBootloader = getInfo({ features, releases });
 
-    let releaseByFirmware;
-
-    if (!intermediary) {
-        // we get info here again, but only as a sanity check.
-        releaseByFirmware = releases.find(r => versionUtils.isEqual(r.version, version!));
-
-        if (!infoByBootloader || !releaseByFirmware) {
-            throw new Error('no firmware found for this device');
-        }
-    } else {
+    if (intermediary && parsedFeatures.major_version !== 2) {
         const fw = await fetchFirmware(`${baseUrl}/firmware/1/trezor-inter-1.10.0.bin`);
         return { binary: modifyFirmware({ fw, features: parsedFeatures }) };
+    }
+
+    // we get info here again, but only as a sanity check.
+    const infoByBootloader = getInfo({ features, releases });
+    const releaseByFirmware = releases.find(r => versionUtils.isEqual(r.version, version!));
+
+    if (!infoByBootloader || !releaseByFirmware) {
+        throw new Error('no firmware found for this device');
     }
 
     if (btcOnly && !releaseByFirmware.url_bitcoinonly) {
