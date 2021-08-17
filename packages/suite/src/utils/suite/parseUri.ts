@@ -1,3 +1,5 @@
+import { PROTOCOL_SCHEME } from '@suite-support/Protocol';
+
 /* eslint-disable prefer-destructuring */
 export interface ParsedURI {
     address: string;
@@ -38,4 +40,35 @@ export const parseUri = (uri: string): ParsedURI => {
     };
 };
 
+interface BaseProtocol {
+    scheme: string;
+    address: string;
+}
 
+interface BitcoinProtocol extends BaseProtocol {
+    scheme: PROTOCOL_SCHEME;
+    amount: number;
+}
+
+export const getProtocolInfo = (uri: string): BitcoinProtocol => {
+    const { protocol, pathname, search } = new URL(uri.replace('://', ':'));
+    const scheme = protocol.slice(0, -1);
+
+    const params: { [key: string]: string } = {};
+
+    new URLSearchParams(search).forEach((v, k) => {
+        params[k] = v;
+    });
+
+    if (scheme === PROTOCOL_SCHEME.BITCOIN && !Number.isNaN(Number.parseFloat(params.amount))) {
+        return {
+            scheme,
+            address: pathname,
+            amount: Number.parseFloat(params.amount),
+        };
+    }
+
+    throw new Error(
+        `Unsupported '${scheme}' protocol handler or its params '${JSON.stringify(params)}'!`,
+    );
+};
