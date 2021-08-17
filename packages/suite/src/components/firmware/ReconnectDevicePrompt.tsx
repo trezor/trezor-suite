@@ -264,7 +264,7 @@ const ReconnectDevicePrompt = ({ expectedDevice, requestedMode, onSuccess }: Pro
                                     >
                                         <ReconnectLabel
                                             requestedMode={requestedMode}
-                                            device={device}
+                                            device={expectedDevice}
                                         />
                                     </ReconnectStep>
                                 </>
