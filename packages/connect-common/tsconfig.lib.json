@@ -1,0 +1,15 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "lib": ["dom", "es2015"],
+        "outDir": "./lib",
+        "strict": true,
+        "declaration": true,
+        "removeComments": true,
+        "types": ["jest", "node"]
+    },
+    "include": ["./src/index.ts"],
+    "exclude": ["node_modules"]
+}

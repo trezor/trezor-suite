@@ -1,0 +1,26 @@
+{
+    "name": "@trezor/connect-common",
+    "version": "9.0.0-beta.1",
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/packages/connect-common",
+    "keywords": [
+        "Trezor",
+        "trezor-connect"
+    ],
+    "license": "SEE LICENSE IN LICENSE.md",
+    "description": "Collection of assets and utils used by trezor-connect library.",
+    "main": "./lib/index.js",
+    "files": [
+        "lib/",
+        "files/"
+    ],
+    "types": "lib/index.d.ts",
+    "typings": "lib/index.d.ts",
+    "scripts": {
+        "lint": "eslint '**/*.ts'",
+        "build:lib": "rimraf lib && tsc --p ./tsconfig.lib.json",
+        "type-check": "tsc --project tsconfig.json"
+    },
+    "dependencies": {},
+    "devDependencies": {}
+}
