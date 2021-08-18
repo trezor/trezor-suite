@@ -80,6 +80,11 @@ const firmwareUpdate = (state: FirmwareUpdateState = initialState, action: Actio
                 break;
             case FIRMWARE.SET_INTERMEDIARY_INSTALLED:
                 draft.intermediaryInstalled = action.payload;
+                if (draft.targetRelease) {
+                    // intermediary is already installed so latest release has to be used as new target release
+                    draft.targetRelease.release = draft.targetRelease.latest;
+                    draft.targetRelease.isLatest = true;
+                }
                 break;
 
             case SUITE.ADD_BUTTON_REQUEST:
