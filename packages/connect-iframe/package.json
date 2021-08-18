@@ -12,9 +12,19 @@
     "description": "Bundle and build of trezor-connect iframe",
     "scripts": {
         "lint": "eslint '**/*.ts'",
-        "build:lib": "rimraf build",
+        "build:lib": "rimraf build && webpack --config ./webpack/prod.webpack.config.js",
         "type-check": "tsc --project tsconfig.json"
     },
     "dependencies": {},
-    "devDependencies": {}
+    "devDependencies": {
+        "@trezor/blockchain-link": "*",
+        "@trezor/rollout": "*",
+        "copy-webpack-plugin": "^6.0.2",
+        "html-webpack-plugin": "^4.5.0",
+        "sharedworker-loader": "^2.1.1",
+        "terser-webpack-plugin": "^4.2.3",
+        "webpack": "^4.44.2",
+        "webpack-cli": "3.3.12",
+        "worker-loader": "^3.0.7"
+    }
 }
