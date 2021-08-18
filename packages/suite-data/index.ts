@@ -5,7 +5,6 @@ import { resolve, join } from 'path';
 const config = {
     'suite-desktop': [
         'bin',
-        'connect',
         'fonts',
         'guide',
         'images',
@@ -13,16 +12,9 @@ const config = {
         'translations',
         'videos',
     ],
-    'suite-native': [
-        'fonts',
-        'guide',
-        'images',
-        'message-system',
-        'videos',
-    ],
+    'suite-native': ['fonts', 'guide', 'images', 'message-system', 'videos'],
     'suite-web': [
         'browser-detection',
-        'connect',
         'fonts',
         'guide',
         'images',
@@ -31,11 +23,7 @@ const config = {
         'translations',
         'videos',
     ],
-    'suite-web-landing': [
-        'fonts',
-        'images/icons/favicon',
-        'images/suite-web-landing',
-    ],
+    'suite-web-landing': ['fonts', 'images/icons/favicon', 'images/suite-web-landing'],
 };
 
 Object.entries(config).forEach(([project, paths]) => {
@@ -51,5 +39,5 @@ Object.entries(config).forEach(([project, paths]) => {
             }
             console.log('copied', from, to);
         });
-    })
+    });
 });

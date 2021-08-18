@@ -21,7 +21,6 @@
         "postinstall": "yarn run patch && yarn lerna run patch",
         "patch": "yarn patch-package",
         "build:libs": "lerna run build:lib",
-        "build:connect": "yarn workspace @trezor/suite-data build:connect",
         "deps": "rimraf 'node_modules' '*/**/node_modules' && yarn",
         "deps:update": "rimraf 'yarn.lock' 'node_modules' '*/**/node_modules' && yarn",
         "suite:dev": "yarn workspace @trezor/suite-web dev",
