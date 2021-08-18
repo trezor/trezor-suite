@@ -2365,7 +2365,7 @@ const definedMessages = defineMessages({
         id: 'TR_PASSPHRASE_WALLET',
     },
     TR_PENDING_TX_HEADING: {
-        defaultMessage: 'Pending {count, plural, one {transaction} other {transactions}}',
+        defaultMessage: '{count, plural, one {Pending transaction} other {Pending transactions}}',
         description: 'Heading for the list of pending transactions',
         id: 'TR_PENDING_TX_HEADING',
     },
