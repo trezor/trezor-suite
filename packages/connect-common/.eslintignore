@@ -1,0 +1,6 @@
+# general
+node_modules
+lib
+
+# debug files
+yarn-error.log
