@@ -1,0 +1,20 @@
+{
+    "name": "@trezor/connect-iframe",
+    "version": "1.0.0",
+    "private": true,
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/packages/connect-iframe",
+    "keywords": [
+        "Trezor",
+        "trezor-connect"
+    ],
+    "license": "SEE LICENSE IN LICENSE.md",
+    "description": "Bundle and build of trezor-connect iframe",
+    "scripts": {
+        "lint": "eslint '**/*.ts'",
+        "build:lib": "rimraf build",
+        "type-check": "tsc --project tsconfig.json"
+    },
+    "dependencies": {},
+    "devDependencies": {}
+}
