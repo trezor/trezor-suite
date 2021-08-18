@@ -31,7 +31,6 @@ const config: webpack.Configuration = {
         new CopyPlugin({
             patterns: [
                 'browser-detection',
-                'connect',
                 'fonts',
                 'guide',
                 'images',
@@ -39,10 +38,17 @@ const config: webpack.Configuration = {
                 'oauth',
                 'translations',
                 'videos',
-            ].map(dir => ({
-                from: path.join(__dirname, '..', '..', 'suite-data', 'files', dir),
-                to: path.join(baseDir, 'build', 'static', dir),
-            })),
+            ]
+                .map(dir => ({
+                    from: path.join(__dirname, '..', '..', 'suite-data', 'files', dir),
+                    to: path.join(baseDir, 'build', 'static', dir),
+                }))
+                .concat([
+                    {
+                        from: path.join(__dirname, '..', '..', 'connect-iframe', 'build'),
+                        to: path.join(baseDir, 'build', 'static', 'connect'),
+                    },
+                ]),
             options: {
                 concurrency: 100,
             },
