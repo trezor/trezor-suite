@@ -3,7 +3,7 @@ import webpack from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
-
+import HtmlWebpackPrerenderPlugin from 'html-webpack-prerender-plugin';
 import { FLAGS } from '../../suite/src/config/suite/features';
 
 import { assetPrefix, isDev } from '../utils/env';
@@ -12,7 +12,7 @@ import { getPathForProject } from '../utils/path';
 const routes = [
     {
         name: 'landing-start',
-        pattern: '/start',
+        pattern: '/start/',
     },
     {
         name: 'landing-index',
@@ -36,6 +36,7 @@ const config: webpack.Configuration = {
     entry: [path.join(baseDir, 'src', 'support', 'index.ts')],
     output: {
         path: path.join(baseDir, 'build'),
+        globalObject: 'this',
     },
     plugins: [
         new CopyPlugin({
@@ -56,6 +57,7 @@ const config: webpack.Configuration = {
                     filename: path.join(baseDir, 'build', route.pattern, 'index.html'),
                 }),
         ),
+        new HtmlWebpackPrerenderPlugin({ main: '#app' }),
         ...(isDev ? [new ReactRefreshWebpackPlugin()] : []),
     ],
 };
