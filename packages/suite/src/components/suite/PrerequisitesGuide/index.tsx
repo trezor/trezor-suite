@@ -82,7 +82,7 @@ const PrerequisitesGuide = ({ prerequisite, padded, allowSwitchDevice }: Props) 
                     case 'device-initialize':
                         return <DeviceInitialize />;
                     case 'device-bootloader':
-                        return <DeviceBootloader />;
+                        return <DeviceBootloader trezorModel={device?.features?.major_version} />;
                     case 'firmware-missing':
                         return <DeviceNoFirmware />;
                     case 'firmware-required':
