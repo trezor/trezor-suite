@@ -29,20 +29,24 @@ const NodeButton = styled.button`
 const PageNodeButton = styled(NodeButton)`
     text-align: left;
     margin-bottom: 10px;
+    align-items: flex-start;
 `;
 
 const PageNodeButtonIcon = styled(Icon)`
     margin: 0 18px 0 0;
 `;
 
-const Label = styled.div`
+const Label = styled.div<{ bold: boolean }>`
     width: 100%;
     font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    font-weight: ${props =>
+        props.bold ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
     color: ${props => props.theme.TYPE_DARK_GREY};
+    overflow: hidden;
+    line-height: 20px;
 `;
 
-const CategoryButtonNode = styled(NodeButton)`
+const CategoryNodeButton = styled(NodeButton)`
     width: 142px;
     height: 70px;
     text-align: center;
@@ -51,9 +55,10 @@ const CategoryButtonNode = styled(NodeButton)`
 
 type GuideNodeProps = {
     node: Node;
+    description?: React.ReactNode;
 };
 
-const GuideNode = ({ node }: GuideNodeProps) => {
+const GuideNode = ({ node, description }: GuideNodeProps) => {
     const theme = useTheme();
     const analytics = useAnalytics();
 
@@ -76,7 +81,12 @@ const GuideNode = ({ node }: GuideNodeProps) => {
         });
     };
 
-    const label = <Label>{getNodeTitle(node, language)}</Label>;
+    const label = (
+        <Label bold={!description}>
+            {getNodeTitle(node, language)}
+            {description}
+        </Label>
+    );
 
     if (node.type === 'page') {
         return (
@@ -92,12 +102,12 @@ const GuideNode = ({ node }: GuideNodeProps) => {
 
     if (node.type === 'category') {
         return (
-            <CategoryButtonNode
+            <CategoryNodeButton
                 data-test={`@guide/category${node.id}`}
                 onClick={() => navigateToNode(node)}
             >
                 {label}
-            </CategoryButtonNode>
+            </CategoryNodeButton>
         );
     }
 

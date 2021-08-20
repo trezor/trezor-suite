@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { darken } from 'polished';
 import styled from 'styled-components';
 
@@ -6,7 +6,7 @@ import { Translation } from '@suite-components';
 import * as guideActions from '@suite-actions/guideActions';
 import { useActions, useAnalytics, useSelector } from '@suite-hooks';
 import { Icon, variables, useTheme } from '@trezor/components';
-import { Header, Content, ViewWrapper, GuideCategories } from '@guide-components';
+import { Header, Content, ViewWrapper, GuideCategories, GuideSearch } from '@guide-components';
 
 const FeedbackLinkWrapper = styled.div`
     border-top: 1px solid ${props => props.theme.STROKE_GREY};
@@ -50,6 +50,7 @@ const FeedbackButtonRightIcon = styled(Icon)`
 const GuideDefault = (props: any) => {
     const analytics = useAnalytics();
     const theme = useTheme();
+    const [searchActive, setSearchActive] = useState(false);
 
     const { setView } = useActions({
         setView: guideActions.setView,
@@ -62,10 +63,13 @@ const GuideDefault = (props: any) => {
         <ViewWrapper {...props}>
             <Header label={<Translation id="TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER" />} />
             <Content>
-                <GuideCategories
-                    node={indexNode}
-                    label={<Translation id="TR_GUIDE_CATEGORIES" />}
-                />
+                <GuideSearch pageRoot={indexNode} setSearchActive={setSearchActive} />
+                {!searchActive && (
+                    <GuideCategories
+                        node={indexNode}
+                        label={<Translation id="TR_GUIDE_CATEGORIES" />}
+                    />
+                )}
             </Content>
             <FeedbackLinkWrapper
                 onClick={() => {
