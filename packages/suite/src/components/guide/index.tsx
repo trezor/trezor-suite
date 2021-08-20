@@ -6,6 +6,7 @@ import HeaderBreadcrumb from './HeaderBreadcrumb';
 import GuideNode from './GuideNode';
 import ViewWrapper, { ContentScrolledContext } from './ViewWrapper';
 import GuideCategories from './GuideCategories';
+import GuideSearch from './GuideSearch';
 
 export {
     Content,
@@ -16,5 +17,6 @@ export {
     GuideNode,
     ViewWrapper,
     GuideCategories,
+    GuideSearch,
     ContentScrolledContext,
 };
