@@ -7,7 +7,6 @@ import Feature from '@suite-web-landing-components/Feature';
 import { resolveStaticPath } from '@suite-utils/build';
 import Metadata from '@suite-components/Metadata';
 import { URLS } from '@suite-constants';
-import { Fade } from 'react-awesome-reveal';
 import enLocale from '@trezor/suite-data/files/translations/en.json';
 import {
     Wrapper,
@@ -65,26 +64,20 @@ const Index = () => {
                 <Layout pathToApp={pathToApp}>
                     <Wrapper>
                         <StyledHeroCta>
-                            <Fade direction="up" delay={500} triggerOnce>
-                                <StyledHeadline>
-                                    <Translation
-                                        id="TR_SUITE_WEB_LANDING_HEADLINE"
-                                        values={{
-                                            em: chunks => <em>{chunks}</em>,
-                                            lineBreak: <br />,
-                                        }}
-                                    />
-                                </StyledHeadline>
-                            </Fade>
-                            <Fade delay={1500} triggerOnce>
-                                <StyledSubheadline>
-                                    <Translation id="TR_SUITE_WEB_LANDING_SUB_HEADLINE" />
-                                </StyledSubheadline>
-                            </Fade>
+                            <StyledHeadline>
+                                <Translation
+                                    id="TR_SUITE_WEB_LANDING_HEADLINE"
+                                    values={{
+                                        em: chunks => <em>{chunks}</em>,
+                                        lineBreak: <br />,
+                                    }}
+                                />
+                            </StyledHeadline>
+                            <StyledSubheadline>
+                                <Translation id="TR_SUITE_WEB_LANDING_SUB_HEADLINE" />
+                            </StyledSubheadline>
                             <DownloadWrapper>
-                                <Fade delay={2000} triggerOnce>
-                                    <Download pathToApp={pathToApp} />
-                                </Fade>
+                                <Download pathToApp={pathToApp} />
                             </DownloadWrapper>
                         </StyledHeroCta>
                         <FeaturesWrapper>
