@@ -20181,7 +20181,7 @@ puppeteer-prerender-plugin@^2.4.7:
     jsdom "^16.6.0"
     puppeteer "^10.0.0"
 
-puppeteer@^10.0.0:
+puppeteer@^10.0.0, puppeteer@^10.2.0:
   version "10.2.0"
   resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-10.2.0.tgz#7d8d7fda91e19a7cfd56986e0275448e6351849e"
   integrity sha512-OR2CCHRashF+f30+LBOtAjK6sNtz2HEyTr5FqAvhf8lR/qB3uBRoIZOwQKgwoyZnMBsxX7ZdazlyBgGjpnkiMw==

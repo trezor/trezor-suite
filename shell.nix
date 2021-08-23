@@ -14,8 +14,8 @@ in
   stdenv.mkDerivation {
     name = "trezor-suite-dev";
     buildInputs = [
-      google-chrome
       bash
+      chromium
       git-lfs
       gnupg
       mdbook
@@ -43,5 +43,6 @@ in
       export ELECTRON_BUILDER_CACHE="$CURDIR/.cache/electron-builder"
     '' + lib.optionalString stdenv.isLinux ''
       export npm_config_build_from_source=true  # tell yarn to not download binaries, but build from source
-    '';
+      export PUPPETEER_EXECUTABLE_PATH=$(whereis chromium | awk '{ print $NF }')
+   '';
   }

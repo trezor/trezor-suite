@@ -62,7 +62,7 @@ const config: webpack.Configuration = {
             enabled: !isDev,
             renderAfterEvent: '__RENDERED__',
             entryDir: path.join(baseDir, 'build'),
-            outputDir: 'dist',
+            outputDir: path.join(baseDir, 'build'),
             postProcess: result => {
                 result.html = result.html
                     .replace(/<script (.*?)>/g, '<script $1 defer>')
@@ -72,7 +72,7 @@ const config: webpack.Configuration = {
             puppeteerOptions: {
                 // Needed to run inside Docker
                 headless: true,
-                args: ['--no-sandbox', '--disable-setuid-sandbox'],
+                args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-extensions'],
             },
         }),
 
