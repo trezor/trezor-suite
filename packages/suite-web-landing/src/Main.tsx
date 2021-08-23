@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import ReactDom from 'react-dom';
 import { IntlProvider } from 'react-intl';
 import { TranslationModeContext } from '../components/Translation';
 import { resolveStaticPath } from '@suite-utils/build';
