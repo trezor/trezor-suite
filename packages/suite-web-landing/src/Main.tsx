@@ -6,7 +6,6 @@ import Metadata from '@suite-components/Metadata';
 import { URLS } from '@suite-constants';
 import enLocale from '@trezor/suite-data/files/translations/en.json';
 import { TranslationModeTrigger } from '../components/LandingPage';
-import GlobalStyleProvider from '@suite-support/styles/GlobalStyleProvider';
 import AppRouter from './support/Router';
 import ThemeProvider from '@suite-support/ThemeProvider';
 import { Provider as ReduxProvider } from 'react-redux';
