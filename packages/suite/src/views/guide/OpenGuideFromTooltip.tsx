@@ -1,6 +1,5 @@
 import React from 'react';
 import { Icon } from '@trezor/components';
-import { Fade } from 'react-awesome-reveal';
 import { Translation } from '@suite-components';
 import { transparentize } from 'polished';
 import { useGuide } from '@suite-hooks';
@@ -13,9 +12,11 @@ const OpenGuideLink = styled.a`
 `;
 
 const StyledText = styled.span`
-    display: none;
     color: ${props => props.theme.TYPE_ORANGE};
     font-weight: 500;
+    overflow: hidden;
+    max-width: 0;
+    transition: max-width 0.3s;
 `;
 
 const StyledIconWrap = styled.span`
@@ -38,9 +39,7 @@ const OpenGuideFromTooltip = ({ id }: OpenGuideFromTooltipProps) => {
     return (
         <OpenGuideLink onClick={() => openNodeById(id)}>
             <StyledText>
-                <Fade direction="right" duration={300}>
-                    <Translation id="TR_LEARN" />
-                </Fade>
+                <Translation id="TR_LEARN" />
             </StyledText>
             <StyledIconWrap>
                 <Icon size={12} color="#c19009" icon="LIGHTBULB" />

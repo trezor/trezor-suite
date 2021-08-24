@@ -42,7 +42,7 @@ const BoxDefault = styled(animated.div)<{ $maxWidth: string | number }>`
         border-radius: 26px;
         background-color: ${props => transparentize(0.85, props.theme.TYPE_ORANGE)};
         & > a span:first-child {
-            display: flex;
+            max-width: 100px;
         }
         & > a span:last-child {
             background-color: transparent;
