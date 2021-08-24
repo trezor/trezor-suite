@@ -49,6 +49,8 @@ RUN apt-get update && apt-get install -y \
     scons \
     libsdl2-dev \
     libsdl2-image-dev \
+    #required by puppeteer
+    chromium \
     # why not
     zip \
     jq \
