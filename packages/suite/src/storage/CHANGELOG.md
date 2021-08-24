@@ -3,6 +3,9 @@
 ## 24
 -   added form drafts
 
+## 23
+-   added message system
+
 ## 22
 -   added LTC bech32 accounts
 
