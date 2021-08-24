@@ -51,6 +51,7 @@ RUN apt-get update && apt-get install -y \
     libsdl2-image-dev \
     #required by puppeteer
     chromium \
+    chromium-browser \
     # why not
     zip \
     jq \
