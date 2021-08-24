@@ -61,10 +61,10 @@ To ensure the authenticity of a configuration file, JSON Web Signatures are used
 #### Signing
 
 - Signing of the configuration file is performed in CI job in `prebuild` phase.
-- The result is saved into `suite-data/files/message-system` to be bundled with application and manually uploaded to `https://data.trezor.io/config/$environment/config.vX.json` (*TODO* Finish automatic upload of configs to S3). For example, on localhost, the config is available at `http://localhost:8000/static/message-system/config.vX.jws`.
+- The result is saved into `suite-data/files/message-system` to be bundled with application and automatically uploaded to `https://data.trezor.io/config/$environment/config.vX.json`. For example, on localhost, the config is available at `http://localhost:8000/static/message-system/config.vX.jws`.
 - It can be run manually by `yarn workspace @trezor/suite-data msg-system-sign-config` script in suite-data. The resulting JWS is stored in `packages/suite-data/files/message-system/` [folder](https://github.com/trezor/trezor-suite/tree/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-data/files) in `config.vX.jws` file. 
 - Development public and private keys are baked into project structure. For production environment, these keys are replaced by CI job by production keys. This production CI job is activated on `codesign` branches.
-- Development private key can be found in `suite-data/src/message-system/scripts/sign-config.ts` [file](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-data/src/message-system/scripts/sign-config.ts), the public key can be found in `suite-web` and `suite-desktop` in `next.config.js` files ([web](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-web/next.config.js), [desktop](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-desktop/next.config.js)). *Change when feat/tschuss-next PR is merged*
+- Development private key can be found in `suite-data/src/message-system/scripts/sign-config.ts` [file](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite-data/src/message-system/scripts/sign-config.ts), the public key can be found in `suite-build` in `codesign.ts` ([file](https://github.com/trezor/trezor-suite/blob/0042e719d7d9fa2dff2ed743b0866e64f4ae0216/packages/suite-build/utils/codesign.ts).
 
 ### Versioning of implementation
 
@@ -242,7 +242,7 @@ Structure of config, types and optionality of specific keys can be found in the 
 
 When updating message system config, sequence number must always be higher than the previous one. Once released config cannot be rolled back to the previous one with lower sequence number. A new one with higher sequence number has to be created. 
 
-Information about updated config has to be sent to @tsusanka, who will manually upload it to S3 bucket. *TODO* Updated config will be automatically uploaded by CI job to the correspondent S3 bucket based on the current branch.
+Updated config is automatically uploaded by CI job to the correspondent S3 bucket based on the current branch.
 
 #### Priorities of messages
 
