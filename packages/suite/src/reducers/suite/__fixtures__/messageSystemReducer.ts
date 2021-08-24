@@ -102,8 +102,7 @@ export default [
         actions: [
             {
                 type: MESSAGE_SYSTEM.SAVE_VALID_MESSAGES,
-                category: 'banner',
-                payload: messageIds,
+                payload: { banner: messageIds, context: [], modal: [] },
             },
         ],
         result: {

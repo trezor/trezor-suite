@@ -1,7 +1,7 @@
 import produce from 'immer';
 
 import { Action } from '@suite-types';
-import { MESSAGE_SYSTEM, STORAGE } from '@suite/actions/suite/constants';
+import { MESSAGE_SYSTEM, STORAGE } from '@suite-actions/constants';
 
 import type { MessageSystem } from '@suite-types/messageSystem';
 
@@ -65,7 +65,7 @@ const messageSystemReducer = (state: State = initialState, action: Action): Stat
                 draft.timestamp = 0;
                 break;
             case MESSAGE_SYSTEM.SAVE_VALID_MESSAGES:
-                draft.validMessages[action.category] = action.payload;
+                draft.validMessages = action.payload;
                 break;
             case MESSAGE_SYSTEM.DISMISS_MESSAGE:
                 messageState = getMessageStateById(draft, action.id);

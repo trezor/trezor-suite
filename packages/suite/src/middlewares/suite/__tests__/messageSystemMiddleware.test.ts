@@ -3,8 +3,8 @@ import thunk from 'redux-thunk';
 
 import { MESSAGE_SYSTEM } from '@suite-actions/constants';
 import suiteReducer from '@suite-reducers/suiteReducer';
-import messageSystemReducer from '@suite/reducers/suite/messageSystemReducer';
-import WalletReducers from '@suite/reducers/wallet';
+import messageSystemReducer from '@suite-reducers/messageSystemReducer';
+import WalletReducers from '@wallet-reducers';
 import * as messageSystem from '@suite-utils/messageSystem';
 import messageSystemMiddleware from '../messageSystemMiddleware';
 
@@ -85,18 +85,11 @@ describe('Message system middleware', () => {
             { type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE, payload: { sequence: 1 } },
             {
                 type: MESSAGE_SYSTEM.SAVE_VALID_MESSAGES,
-                payload: [message1.id, message2.id],
-                category: 'banner',
-            },
-            {
-                type: MESSAGE_SYSTEM.SAVE_VALID_MESSAGES,
-                payload: [message2.id, message3.id],
-                category: 'modal',
-            },
-            {
-                type: MESSAGE_SYSTEM.SAVE_VALID_MESSAGES,
-                payload: [message2.id],
-                category: 'context',
+                payload: {
+                    banner: [message1.id, message2.id],
+                    modal: [message2.id, message3.id],
+                    context: [message2.id],
+                },
             },
         ]);
     });
@@ -115,18 +108,7 @@ describe('Message system middleware', () => {
             { type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS_UPDATE, payload: { sequence: 1 } },
             {
                 type: MESSAGE_SYSTEM.SAVE_VALID_MESSAGES,
-                payload: [],
-                category: 'banner',
-            },
-            {
-                type: MESSAGE_SYSTEM.SAVE_VALID_MESSAGES,
-                payload: [],
-                category: 'modal',
-            },
-            {
-                type: MESSAGE_SYSTEM.SAVE_VALID_MESSAGES,
-                payload: [],
-                category: 'context',
+                payload: { banner: [], context: [], modal: [] },
             },
         ]);
     });

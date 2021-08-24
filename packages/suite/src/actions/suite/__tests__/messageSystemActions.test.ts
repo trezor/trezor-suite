@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 
 import messageSystemReducer, {
     State as MessageSystemState,
-} from '@suite/reducers/suite/messageSystemReducer';
+} from '@suite-reducers/messageSystemReducer';
 import * as messageSystemActions from '../messageSystemActions';
 import * as messageSystemConstants from '../constants/messageSystemConstants';
 import * as fixtures from '../__fixtures__/messageSystemActions';
@@ -177,9 +177,13 @@ describe('Message system actions', () => {
         const contextMessages = [fixtures.messageId2];
         const modalMessages = [fixtures.messageId1];
 
-        store.dispatch(messageSystemActions.saveValidMessages(bannerMessages, 'banner'));
-        store.dispatch(messageSystemActions.saveValidMessages(contextMessages, 'context'));
-        store.dispatch(messageSystemActions.saveValidMessages(modalMessages, 'modal'));
+        const payload = {
+            banner: [fixtures.messageId1, fixtures.messageId2, fixtures.messageId3],
+            context: [fixtures.messageId2],
+            modal: [fixtures.messageId1],
+        };
+
+        store.dispatch(messageSystemActions.saveValidMessages(payload));
 
         expect(store.getState().messageSystem.validMessages.banner.length).toEqual(
             bannerMessages.length,

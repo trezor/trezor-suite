@@ -3,8 +3,8 @@ import { DEVICE, TRANSPORT } from 'trezor-connect';
 
 import { MESSAGE_SYSTEM, STORAGE, SUITE } from '@suite-actions/constants';
 import { getValidMessages } from '@suite-utils/messageSystem';
-import { WALLET_SETTINGS } from '@suite/actions/settings/constants';
-import { saveValidMessages } from '@suite/actions/suite/messageSystemActions';
+import { WALLET_SETTINGS } from '@settings-actions/constants';
+import { saveValidMessages, ValidMessagesPayload } from '@suite-actions/messageSystemActions';
 
 import type { AppState, Action, Dispatch } from '@suite-types';
 
@@ -39,9 +39,11 @@ const messageSystemMiddleware =
                 },
             });
 
-            const banners: string[] = [];
-            const modals: string[] = [];
-            const contexts: string[] = [];
+            const payload: ValidMessagesPayload = {
+                banner: [],
+                modal: [],
+                context: [],
+            };
 
             messages.forEach(message => {
                 let { category: categories } = message;
@@ -52,18 +54,16 @@ const messageSystemMiddleware =
 
                 categories.forEach(category => {
                     if (category === 'banner') {
-                        banners.push(message.id);
+                        payload.banner.push(message.id);
                     } else if (category === 'modal') {
-                        modals.push(message.id);
+                        payload.modal.push(message.id);
                     } else if (category === 'context') {
-                        contexts.push(message.id);
+                        payload.context.push(message.id);
                     }
                 });
             });
 
-            api.dispatch(saveValidMessages(banners, 'banner'));
-            api.dispatch(saveValidMessages(modals, 'modal'));
-            api.dispatch(saveValidMessages(contexts, 'context'));
+            api.dispatch(saveValidMessages(payload));
         }
 
         return action;
