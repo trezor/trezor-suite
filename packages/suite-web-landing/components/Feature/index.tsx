@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { variables } from '@trezor/components';
-import { Fade } from 'react-awesome-reveal';
+import { variables, Fade } from '@trezor/components';
 import { rgba } from 'polished';
 
 const LIGHT_GREY = '#f5f5f5';
@@ -130,8 +129,8 @@ interface Props {
 const Index = ({ children, flip, image, backgroundPosition, backgroundSize }: Props) => (
     <Feature flip={flip}>
         <StyledText flip={flip}>
-            <Fade fraction={0.5} triggerOnce>
-                <div>{children}</div>
+            <Fade duration={0.5} direction="IN">
+                {children}
             </Fade>
         </StyledText>
         <FeatureImage
