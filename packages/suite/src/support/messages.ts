@@ -731,6 +731,14 @@ const definedMessages = defineMessages({
         defaultMessage: 'Back to Account',
         id: 'TR_SELL_DETAIL_SUCCESS_BUTTON',
     },
+    TR_SELL_DETAIL_SUCCESS_FIXED_RATE_HEADER: {
+        defaultMessage: '✓ This rate is locked in',
+        id: 'TR_SELL_DETAIL_SUCCESS_FIXED_RATE_HEADER',
+    },
+    TR_SELL_DETAIL_SUCCESS_FIXED_RATE_MESSAGE: {
+        defaultMessage: "Your payment is still processing, but what you see is what you'll get.",
+        id: 'TR_SELL_DETAIL_SUCCESS_FIXED_RATE_MESSAGE',
+    },
     TR_SELL_DETAIL_ERROR_TITLE: {
         defaultMessage: 'The transaction failed',
         id: 'TR_SELL_DETAIL_ERROR_TITLE',
