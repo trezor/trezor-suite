@@ -16,7 +16,7 @@ const ImportTransaction = ({ onCancel, decision }: Props) => {
     const [delimiter, setDelimiter] = useState<string | undefined>(undefined);
 
     const onCsvSelect = (file: File, setError: (msg: string) => void) => {
-        if (file?.type !== 'text/csv') {
+        if (!file?.name?.match(/\.(csv|txt)$/i)) {
             setError('file-type');
             return;
         }
