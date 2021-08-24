@@ -7,7 +7,7 @@ import {
     getOsName,
     getOsVersion,
 } from '@suite-utils/env';
-import { getFwVersion } from './device';
+import { getDeviceModel, getFwVersion } from './device';
 
 import type { TransportInfo } from 'trezor-connect';
 
@@ -127,7 +127,8 @@ export const validateDeviceCompatibility = (
     }
 
     const deviceFwVersion = getFwVersion(device);
-    const { model, vendor } = device.features;
+    const model = getDeviceModel(device);
+    const { vendor } = device.features;
 
     return deviceConditions.some(
         deviceCondition =>
