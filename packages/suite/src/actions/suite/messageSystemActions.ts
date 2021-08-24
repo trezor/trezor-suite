@@ -1,15 +1,8 @@
 import * as jws from 'jws';
 
 import { MESSAGE_SYSTEM } from '@suite-actions/constants';
-import { Dispatch, GetState } from '@suite-types';
-import {
-    FETCH_CHECK_INTERVAL,
-    FETCH_INTERVAL,
-    CONFIG_URL_REMOTE,
-    CONFIG_URL_LOCAL,
-    VERSION,
-} from '@suite-actions/constants/messageSystemConstants';
 
+import type { Dispatch, GetState } from '@suite-types';
 import type { Category, MessageSystem } from '@suite-types/messageSystem';
 
 export type MessageSystemAction =
@@ -22,14 +15,15 @@ export type MessageSystemAction =
     | { type: typeof MESSAGE_SYSTEM.FETCH_CONFIG_ERROR }
     | {
           type: typeof MESSAGE_SYSTEM.SAVE_VALID_MESSAGES;
-          category: Category;
-          payload: string[];
+          payload: ValidMessagesPayload;
       }
     | {
           type: typeof MESSAGE_SYSTEM.DISMISS_MESSAGE;
           category: Category;
           id: string;
       };
+
+export type ValidMessagesPayload = { banner: string[]; context: string[]; modal: string[] };
 
 const fetchSuccess = (): MessageSystemAction => ({
     type: MESSAGE_SYSTEM.FETCH_CONFIG_SUCCESS,
@@ -48,13 +42,13 @@ const fetchError = (): MessageSystemAction => ({
 const fetchConfig = () => async (dispatch: Dispatch, getState: GetState) => {
     const { timestamp, currentSequence } = getState().messageSystem;
 
-    if (Date.now() >= timestamp + FETCH_INTERVAL) {
+    if (Date.now() >= timestamp + MESSAGE_SYSTEM.FETCH_INTERVAL) {
         try {
             let jwsResponse;
             let isRemote = true;
 
             try {
-                const response = await fetch(CONFIG_URL_REMOTE);
+                const response = await fetch(MESSAGE_SYSTEM.CONFIG_URL_REMOTE);
 
                 if (!response.ok) {
                     throw Error(response.statusText);
@@ -64,7 +58,7 @@ const fetchConfig = () => async (dispatch: Dispatch, getState: GetState) => {
             } catch (error) {
                 console.error(`Fetching of remote JWS config failed: ${error}`);
 
-                const response = await fetch(CONFIG_URL_LOCAL);
+                const response = await fetch(MESSAGE_SYSTEM.CONFIG_URL_LOCAL);
 
                 if (!response.ok) {
                     throw Error(`Fetching of local JWS config failed: ${response.statusText}`);
@@ -93,7 +87,7 @@ const fetchConfig = () => async (dispatch: Dispatch, getState: GetState) => {
 
             const config: MessageSystem = JSON.parse(decodedJws.payload);
 
-            if (VERSION !== config.version) {
+            if (MESSAGE_SYSTEM.VERSION !== config.version) {
                 throw Error('Config version is not supported');
             }
 
@@ -116,13 +110,12 @@ export const init = () => async (dispatch: Dispatch, _getState: GetState) => {
 
     setInterval(async () => {
         await dispatch(fetchConfig());
-    }, FETCH_CHECK_INTERVAL);
+    }, MESSAGE_SYSTEM.FETCH_CHECK_INTERVAL);
 };
 
-export const saveValidMessages = (payload: string[], category: Category) => ({
+export const saveValidMessages = (payload: ValidMessagesPayload) => ({
     type: MESSAGE_SYSTEM.SAVE_VALID_MESSAGES,
     payload,
-    category,
 });
 
 export const dismissMessage = (id: string, category: Category) => ({
