@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 
 import * as routerActions from '@suite-actions/routerActions';
 import * as messageSystemActions from '@suite-actions/messageSystemActions';
-import { useActions } from '@suite-hooks';
+import { useActions, useSelector } from '@suite-hooks';
 import Wrapper from './components/Wrapper';
 
 import type { Message } from '@suite-types/messageSystem';
@@ -13,6 +13,10 @@ type Props = {
 
 const MessageSystemBanner = ({ message }: Props) => {
     const { cta, variant, id, content, dismissible } = message;
+
+    const { language } = useSelector(state => ({
+        language: state.suite.settings.language,
+    }));
 
     const { goto, dismissNotification } = useActions({
         goto: routerActions.goto,
@@ -33,11 +37,11 @@ const MessageSystemBanner = ({ message }: Props) => {
         }
 
         return {
-            label: label['en-GB'], // TODO: wait for multilingual suite and solve translations
+            label: label[language] || label.en,
             onClick: onClick!,
             'data-test': `@message-system/${id}/cta`,
         };
-    }, [id, cta, goto]);
+    }, [id, cta, goto, language]);
 
     const dismissalConfig = useMemo(() => {
         if (!dismissible) return undefined;
@@ -51,7 +55,7 @@ const MessageSystemBanner = ({ message }: Props) => {
     return (
         <Wrapper
             variant={variant}
-            body={content['en-GB']} // TODO: wait for multilingual suite and solve translations
+            body={content[language] || content.en}
             action={actionConfig}
             dismissal={dismissalConfig}
         />

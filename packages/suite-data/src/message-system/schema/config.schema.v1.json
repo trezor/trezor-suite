@@ -301,9 +301,15 @@
             "title": "Localization",
             "description": "A multilingual text localization.",
             "type": "object",
-            "required": ["en-GB"],
+            "required": ["en-GB", "en", "es"],
             "properties": {
                 "en-GB": {
+                    "type": "string"
+                },
+                "en": {
+                    "type": "string"
+                },
+                "es": {
                     "type": "string"
                 }
             },

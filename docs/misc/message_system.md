@@ -189,11 +189,13 @@ Structure of config, types and optionality of specific keys can be found in the 
                 "category": "banner",
                 /*
                 - Message shown to a user. 
-                - Current implementation uses only "en-GB".
+                - Suite language is chosen. Currently 'en' and 'es'.
+                - 'en-GB' is used for backward compatibility and should match value of 'en'.
                 */
                 "content": {
                     "en-GB": "New Trezor firmware is available!",
-                    "de-DE": "Neue Trezor Firmware ist verfügbar!"
+                    "en": "New Trezor firmware is available!",
+                    "de": "Neue Trezor Firmware ist verfügbar!"
                 },
                 // Call to action. Used only for banner and context.
                 "cta": {
@@ -207,18 +209,19 @@ Structure of config, types and optionality of specific keys can be found in the 
                     "link": "firmware-index",
                     /*
                     - Label of call to action button shown to a user. 
-                    - Current implementation uses only "en-GB".
                     */
                     "label": {
                         "en-GB": "Update now",
-                        "de-DE": "Jetzt aktualisieren"
+                        "en": "Update now",
+                        "de": "Jetzt aktualisieren"
                     }
                 },
                 // Used only for modals. (To be implemented)
                 "modal": {
                     "title": {
                         "en-GB": "Update now",
-                        "de-DE": "Jetzt aktualisieren"
+                        "en": "Update now",
+                        "de": "Jetzt aktualisieren"
                     },
                     "image": "https://example.com/example.png"
                 },
