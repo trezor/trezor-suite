@@ -440,12 +440,16 @@ const getMessageSystemConfig = (
                 category: 'banner',
                 content: {
                     'en-GB': 'New Trezor firmware is available!',
+                    en: 'New Trezor firmware is available!',
+                    es: 'El nuevo firmware de Trezor está disponible!',
                 },
                 cta: {
                     action: 'internal-link',
                     link: 'firmware-index',
                     label: {
                         'en-GB': 'Update now',
+                        en: 'Update now',
+                        es: 'Actualizar ahora',
                     },
                 },
             },
@@ -461,17 +465,23 @@ const getMessageSystemConfig = (
                 category: ['banner', 'context', 'modal'],
                 content: {
                     'en-GB': 'New Trezor app is available!',
+                    en: 'New Trezor app is available!',
+                    es: 'La nueva aplicación Trezor está disponible',
                 },
                 cta: {
                     action: 'external-link',
                     link: 'https://example.com/',
                     label: {
                         'en-GB': 'Download now',
+                        en: 'Download now',
+                        es: 'Descargar ahora',
                     },
                 },
                 modal: {
                     title: {
                         'en-GB': 'Update now',
+                        en: 'Update now',
+                        es: 'Actualizar ahora',
                     },
                     image: 'https://example.com/example.png',
                 },
