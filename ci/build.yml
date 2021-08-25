@@ -75,7 +75,7 @@ suite-web-landing build dev:
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
-    - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium ASSET_PREFIX=/suite-web-landing/${CI_BUILD_REF_NAME} yarn workspace @trezor/suite-web-landing build
+    - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium yarn workspace @trezor/suite-web-landing build
   artifacts:
     expire_in: 7 days
     paths:
