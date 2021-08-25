@@ -23,7 +23,6 @@ describe('Google api errors', () => {
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
         cy.getTestElement('@suite/menu/wallet-index').click();
-
     });
 
     it('Malformed token', () => {

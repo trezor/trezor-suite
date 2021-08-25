@@ -64,7 +64,6 @@ On disable, it throws away all metadata related records from memory.`, () => {
             cy.getTestElement('@settings/metadata-switch').click({ force: true });
             cy.passThroughInitMetadata(f.provider);
 
-
             cy.log(
                 'Now metadata is enabled, go to accounts and see what we got loaded from provider',
             );

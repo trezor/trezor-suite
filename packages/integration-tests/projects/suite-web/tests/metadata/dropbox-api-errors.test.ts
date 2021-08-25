@@ -18,8 +18,7 @@ describe('Dropbox api errors', () => {
         // prepare some initial files
         cy.task('metadataSetFileContent', {
             provider: 'dropbox',
-            file:
-                '/apps/trezor/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
+            file: '/apps/trezor/f7acc942eeb83921892a95085e409b3e6b5325db6400ae5d8de523a305291dca.mtdt',
             content: {
                 version: '1.0.0',
                 accountLabel: 'already existing label',
@@ -34,7 +33,6 @@ describe('Dropbox api errors', () => {
                 cy.stub(win, 'fetch', rerouteMetadataToMockProvider);
             },
         });
-
 
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
@@ -57,8 +55,7 @@ describe('Dropbox api errors', () => {
         cy.task('metadataSetNextResponse', {
             provider: 'dropbox',
             status: 400,
-            body:
-                'Error in call to API function "files/upload": The given OAuth 2 access token is malformed.',
+            body: 'Error in call to API function "files/upload": The given OAuth 2 access token is malformed.',
             headers: {
                 'Content-Type': 'text/plain; charset=utf-8',
             },

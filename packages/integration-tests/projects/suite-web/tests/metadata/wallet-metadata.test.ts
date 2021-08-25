@@ -39,14 +39,18 @@ describe('Metadata - wallet labeling', () => {
             cy.getTestElement('@suite/menu/wallet-index').click();
 
             cy.getTestElement('@menu/switch-device').click();
-            cy.getTestElement(`@metadata/walletLabel/${standardWalletState}/add-label-button`).click({
+            cy.getTestElement(
+                `@metadata/walletLabel/${standardWalletState}/add-label-button`,
+            ).click({
                 force: true,
             });
             cy.passThroughInitMetadata(provider);
             cy.getTestElement('@metadata/input').type('label for standard wallet{enter}');
 
             cy.wait(2001);
-            cy.getTestElement(`@metadata/walletLabel/${standardWalletState}/edit-label-button`).click({
+            cy.getTestElement(
+                `@metadata/walletLabel/${standardWalletState}/edit-label-button`,
+            ).click({
                 force: true,
             });
             cy.getTestElement('@metadata/input').clear().type('wallet for drugs{enter}');
@@ -82,7 +86,9 @@ describe('Metadata - wallet labeling', () => {
             );
 
             // focus lock? :(
-            cy.getTestElement(`@metadata/walletLabel/${firstHiddenWalletState}/add-label-button`).click({
+            cy.getTestElement(
+                `@metadata/walletLabel/${firstHiddenWalletState}/add-label-button`,
+            ).click({
                 force: true,
             });
             cy.getTestElement('@metadata/input').type('wallet not for drugs{enter}');

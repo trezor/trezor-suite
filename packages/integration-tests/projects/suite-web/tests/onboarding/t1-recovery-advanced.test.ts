@@ -15,7 +15,7 @@ describe('Onboarding - recover wallet T1', () => {
     it('Incomplete run of advanced recovery', () => {
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/continue-button').click();
-        cy.getTestElement("@firmware/continue-button").click();
+        cy.getTestElement('@firmware/continue-button').click();
         cy.getTestElement('@onboarding/path-recovery-button').click();
 
         // cy.getTestElement('@onboarding/button-continue').click();
