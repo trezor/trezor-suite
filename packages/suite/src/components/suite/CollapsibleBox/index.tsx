@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import { animated, useSpring } from 'react-spring';
 import useMeasure from 'react-use/lib/useMeasure';
@@ -118,6 +118,7 @@ interface Props extends React.HtmlHTMLAttributes<HTMLDivElement> {
     children?: React.ReactNode;
     noContentPadding?: boolean;
     headerJustifyContent?: 'space-between' | 'center';
+    opened?: boolean;
 }
 
 const CollapsibleBox = ({
@@ -127,11 +128,16 @@ const CollapsibleBox = ({
     noContentPadding,
     variant = 'small',
     headerJustifyContent = 'space-between',
+    opened = false,
     ...rest
 }: Props) => {
-    const [collapsed, setCollapsed] = useState(true);
+    const [collapsed, setCollapsed] = useState(!opened);
     const [animatedIcon, setAnimatedIcon] = useState(false);
     const [heightRef, { height }] = useMeasure<HTMLDivElement>();
+
+    useEffect(() => {
+        setCollapsed(!opened);
+    }, [opened]);
 
     const slideInStyles = useSpring({
         from: { opacity: 0, height: 0 },
@@ -163,11 +169,12 @@ const CollapsibleBox = ({
                 </IconWrapper>
             </Header>
             <animated.div style={{ ...slideInStyles, overflow: 'hidden' }}>
-                <animated.div ref={heightRef} style={{ overflow: 'hidden' }}>
+                {/* This div is here because of the ref, ref on styled-component (Content) will result with unnecessary re-render */}
+                <div ref={heightRef} style={{ overflow: 'hidden' }}>
                     <Content variant={variant} $noContentPadding={noContentPadding}>
                         {children}
                     </Content>
-                </animated.div>
+                </div>
             </animated.div>
         </Wrapper>
     );
