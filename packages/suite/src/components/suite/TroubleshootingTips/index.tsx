@@ -51,6 +51,7 @@ const Item = styled.div`
 const ItemContent = styled.div`
     display: flex;
     flex-direction: column;
+    width: 100%;
 `;
 
 const ContactSupport = styled.div`
@@ -72,6 +73,7 @@ interface Item {
     heading?: React.ReactNode;
     description?: React.ReactNode;
     hide?: boolean;
+    noBullet?: boolean;
 }
 
 interface Props {
@@ -79,29 +81,33 @@ interface Props {
     cta?: React.ReactNode;
     items: Item[];
     offerWebUsb?: boolean;
+    opened?: boolean;
 }
 
-const TroubleshootingTips = ({ label, items, cta, offerWebUsb }: Props) => (
+const TroubleshootingTips = ({ label, items, cta, offerWebUsb, opened }: Props) => (
     <WhiteCollapsibleBox
         variant="large"
         heading={cta}
         iconLabel={label}
         noContentPadding
+        opened={opened}
         data-test="@onboarding/expand-troubleshooting-tips"
     >
-        <Items>
-            {items
-                .filter(item => !item.hide)
-                .map(item => (
-                    <Item key={item.key}>
-                        <Bullet>&bull;</Bullet>
-                        <ItemContent>
-                            <ItemLabel>{item.heading}</ItemLabel>
-                            <ItemDescription>{item.description}</ItemDescription>
-                        </ItemContent>
-                    </Item>
-                ))}
-        </Items>
+        {items.length > 0 && (
+            <Items>
+                {items
+                    .filter(item => !item.hide)
+                    .map(item => (
+                        <Item key={item.key}>
+                            {!item.noBullet && <Bullet>&bull;</Bullet>}
+                            <ItemContent>
+                                <ItemLabel>{item.heading}</ItemLabel>
+                                <ItemDescription>{item.description}</ItemDescription>
+                            </ItemContent>
+                        </Item>
+                    ))}
+            </Items>
+        )}
 
         {offerWebUsb && (
             <Button
