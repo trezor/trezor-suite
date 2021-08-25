@@ -8,17 +8,16 @@ describe('Onboarding - create wallet', () => {
         cy.task('startBridge');
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
-
     });
 
     it('Success (Shamir capability)', () => {
         cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: true });
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/continue-button').click();
-        cy.getTestElement("@firmware/continue-button").click();
+        cy.getTestElement('@firmware/continue-button').click();
         cy.getTestElement('@onboarding/path-create-button').click();
 
-        cy.log('Performing standard backup',);
+        cy.log('Performing standard backup');
         cy.getTestElement('@onboarding/button-standard-backup').click();
         cy.getTestElement('@onboarding/confirm-on-device').should('be.visible');
         cy.task('pressYes');
@@ -38,10 +37,10 @@ describe('Onboarding - create wallet', () => {
         cy.task('startEmu', { version: '2.3.4', wipe: true });
         cy.getTestElement('@onboarding/continue-button').click();
         cy.getTestElement('@onboarding/continue-button').click();
-        cy.getTestElement("@firmware/skip-button").click();
+        cy.getTestElement('@firmware/skip-button').click();
         cy.getTestElement('@onboarding/path-create-button').click();
 
-        cy.log('Will be clicking on Shamir backup button',);
+        cy.log('Will be clicking on Shamir backup button');
         cy.getTestElement('@onboarding/shamir-backup-option-button').click();
         cy.getTestElement('@onboarding/confirm-on-device').should('be.visible');
         cy.task('pressYes');

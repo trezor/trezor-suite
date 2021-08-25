@@ -22,19 +22,17 @@ describe('Bridge page', () => {
         cy.getTestElement('@bridge/installers/input').should('contain', systems[0]);
 
         // there is a dropdown with installers
-        cy.getTestElement('@bridge/installers/input').click()
+        cy.getTestElement('@bridge/installers/input').click();
         systems.forEach(system => {
-            cy.getTestElement('@modal').should('contain', system)
-        })
+            cy.getTestElement('@modal').should('contain', system);
+        });
 
         // select listens to keyboard events
         cy.get('body').type('{downarrow}{downarrow}{downarrow}{downarrow}{downarrow}{enter}');
         cy.getTestElement('@bridge/installers/input').should('contain', 'Windows');
 
         cy.getTestElement('@bridge').matchImageSnapshot('bridge modal', {
-            blackout: [
-                '[data-test="@bridge/download-button"]',
-            ]
+            blackout: ['[data-test="@bridge/download-button"]'],
         });
 
         // user may exit bridge page and use webusb

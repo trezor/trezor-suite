@@ -27,14 +27,18 @@ describe('New accounts', () => {
         // Makes sure it is gone.
         cy.getTestElement('@accounts/empty-account/receive');
         cy.getTestElement('@accounts/empty-account/buy');
-        cy.getTestElement('@accounts/empty-account/default-native-account/close').should('not.exist');
+        cy.getTestElement('@accounts/empty-account/default-native-account/close').should(
+            'not.exist',
+        );
         cy.contains(expectedAccountMessage).should('not.exist');
         // Reload page.
         cy.reload();
         // Makes sure it is still gone.
         cy.getTestElement('@accounts/empty-account/receive');
         cy.getTestElement('@accounts/empty-account/buy');
-        cy.getTestElement('@accounts/empty-account/default-native-account/close').should('not.exist');
+        cy.getTestElement('@accounts/empty-account/default-native-account/close').should(
+            'not.exist',
+        );
         cy.contains(expectedAccountMessage).should('not.exist');
     });
 });
