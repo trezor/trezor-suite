@@ -5,6 +5,7 @@ import TrezorConnect, { Device } from 'trezor-connect';
 import { FIRMWARE } from '@firmware-actions/constants';
 import { report, AnalyticsEvent } from '@suite-actions/analyticsActions';
 import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
+import { resolveStaticPath } from '@suite-utils/build';
 
 import type { Dispatch, GetState, AppState, AcquiredDevice } from '@suite-types';
 import { addToast } from '@suite-actions/notificationActions';
@@ -117,6 +118,8 @@ const firmwareInstall =
                 device: {
                     path: device.path,
                 },
+                // FW binaries are stored in "*/static/connect/data/firmware/*/*.bin". see "connect-common" package
+                baseUrl: resolveStaticPath('connect/data'),
                 btcOnly: isBtcOnlyFirmware,
                 version: toRelease.release.version,
                 // if we detect latest firmware may not be used right away, we should use intermediary instead
