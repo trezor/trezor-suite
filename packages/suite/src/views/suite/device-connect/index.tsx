@@ -10,8 +10,7 @@ import { Translation, WebusbButton, ConnectDeviceImage, Modal } from '@suite-com
 import HelpBuyIcons from '@suite-components/ProgressBar/components/HelpBuyIcons';
 import { Dispatch, AppState } from '@suite-types';
 import { isWebUSB } from '@suite-utils/transport';
-import { getLinuxPackage } from '@suite-utils/bridge';
-import { isAndroid } from '@suite-utils/env';
+import { isAndroid, isLinux } from '@suite-utils/env';
 
 const Title = styled.div`
     margin-top: 60px;
@@ -51,7 +50,7 @@ type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchT
 
 const Index = (props: Props) => {
     const showWebUsb = isWebUSB(props.transport);
-    const showUdev = getLinuxPackage();
+    const showUdev = isLinux();
 
     return (
         <Modal data-test="@modal/connect-device" centerContent>

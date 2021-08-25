@@ -156,6 +156,7 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
             case TRANSPORT.ERROR:
                 draft.transport = {
                     bridge: action.payload.bridge,
+                    udev: action.payload.udev,
                 };
                 break;
 
