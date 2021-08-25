@@ -6451,6 +6451,10 @@ const definedMessages = defineMessages({
         id: 'TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN',
         defaultMessage: 'Unexpected state: {error}',
     },
+    TR_TROUBLESHOOTING_UDEV_INSTALL_TITLE: {
+        id: 'TR_TROUBLESHOOTING_UDEV_INSTALL_TITLE',
+        defaultMessage: 'Install rules automatically',
+    },
     TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_TITLE: {
         id: 'TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_TITLE',
         defaultMessage: 'Seedless setup is not supported by Trezor Suite',
