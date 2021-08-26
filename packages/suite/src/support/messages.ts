@@ -1109,6 +1109,14 @@ const definedMessages = defineMessages({
         defaultMessage: 'Import failed: {error}',
         id: 'TR_DROPZONE_ERROR',
     },
+    TR_DROPZONE_ERROR_EMPTY: {
+        defaultMessage: 'No file selected',
+        id: 'TR_DROPZONE_ERROR_EMPTY',
+    },
+    TR_DROPZONE_ERROR_FILETYPE: {
+        defaultMessage: 'Incorrect file type',
+        id: 'TR_DROPZONE_ERROR_FILETYPE',
+    },
     TR_EXPORT_TRANSACTIONS: {
         defaultMessage: 'Export transactions',
         id: 'TR_EXPORT_TRANSACTIONS',

@@ -2,6 +2,7 @@ import React, { useRef, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { P, Icon } from '@trezor/components';
 import { Translation } from '@suite-components';
+import type { ExtendedMessageDescriptor } from '@suite-types';
 import { IconType } from '@trezor/components/src/support/types';
 
 interface Props {
@@ -10,7 +11,7 @@ interface Props {
     // icon displayed inside Dropzone
     icon?: IconType;
     // function which is called after the file is selected
-    onSelect: (data: File, setError: (msg: string) => void) => void;
+    onSelect: (data: File, setError: (msg: ExtendedMessageDescriptor) => void) => void;
     className?: string;
 }
 
@@ -18,21 +19,37 @@ export const useDropZone = ({ accept, onSelect, className }: Props) => {
     const available = useRef(window.File && window.FileReader && window.FileList && window.Blob);
     const wrapperRef = useRef<HTMLDivElement | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
-    const [error, setError] = useState<string | undefined>(undefined);
+    const [error, setError] = useState<ExtendedMessageDescriptor>();
     const [filename, setFilename] = useState<string>();
+
+    const allowedExtensions = useMemo(
+        () =>
+            (accept || '')
+                .split(',')
+                .map(s => s.trim())
+                .filter(s => s.startsWith('.'))
+                .map(ext => ext.slice(1).toLowerCase()),
+        [accept],
+    );
 
     const readFileContent = useCallback(
         (file?: File) => {
+            setFilename(file?.name);
             if (!file) {
-                setFilename(undefined);
-                setError('empty');
+                setError({ id: 'TR_DROPZONE_ERROR_EMPTY' });
                 return;
             }
+            if (allowedExtensions.length) {
+                const extRegex = new RegExp(`\\.(${allowedExtensions.join('|')})$`, 'i');
+                if (!extRegex.test(file.name)) {
+                    setError({ id: 'TR_DROPZONE_ERROR_FILETYPE' });
+                    return;
+                }
+            }
             setError(undefined);
-            setFilename(file.name);
             onSelect(file, setError);
         },
-        [onSelect],
+        [onSelect, allowedExtensions],
     );
 
     const onClick = useCallback(() => {
@@ -63,7 +80,7 @@ export const useDropZone = ({ accept, onSelect, className }: Props) => {
             if (event.dataTransfer) {
                 readFileContent(event.dataTransfer.files[0]);
             } else {
-                setError('empty');
+                setError({ id: 'TR_DROPZONE_ERROR_EMPTY' });
             }
         },
         [readFileContent],
@@ -75,7 +92,7 @@ export const useDropZone = ({ accept, onSelect, className }: Props) => {
             if (event.target?.value && event.target.files) {
                 readFileContent(event.target.files[0]);
             } else {
-                setError('empty');
+                setError({ id: 'TR_DROPZONE_ERROR_EMPTY' });
             }
         },
         [readFileContent],
@@ -166,7 +183,7 @@ export const DropZone = (props: Props) => {
             </Label>
             {error && (
                 <P>
-                    <Translation id="TR_DROPZONE_ERROR" values={{ error }} />
+                    <Translation {...error} />
                 </P>
             )}
         </Wrapper>
