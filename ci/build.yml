@@ -218,7 +218,7 @@ suite-desktop build windows:
   <<: *config_sign_dev
   only:
     <<: *run_everything_rules
-  image: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/electronuserland/builder:wine
+  image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/electronuserland/builder:wine
   variables:
     artifact: ${DESKTOP_APP_NAME}*
     platform: win
@@ -229,7 +229,7 @@ suite-desktop build windows manual:
   when: manual
   except:
     <<: *run_everything_rules
-  image: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/electronuserland/builder:wine
+  image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/electronuserland/builder:wine
   variables:
     artifact: ${DESKTOP_APP_NAME}*
     platform: win
@@ -242,7 +242,7 @@ suite-desktop build windows codesign:
       - codesign
   tags:
     - darwin
-  image: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/electronuserland/builder:wine
+  image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/electronuserland/builder:wine
   variables:
     IS_CODESIGN_BUILD: "true"
     artifact: ${DESKTOP_APP_NAME}*
@@ -259,7 +259,7 @@ suite-desktop build windows codesign:
 
 ## Suite mobile Android app
 suite-native build android:
-  image: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/reactnativecommunity/react-native-android
+  image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/reactnativecommunity/react-native-android
   stage: build
   only:
     <<: *run_everything_rules
