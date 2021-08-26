@@ -49,7 +49,7 @@ const Content = styled.div`
     }
 `;
 interface Props {
-    onCancel?: () => any;
+    onCancel?: () => void;
 }
 
 const Notifications = (props: Props) => {
@@ -63,7 +63,9 @@ const Notifications = (props: Props) => {
     );
 
     const onCancel = () => {
-        if (props.onCancel) props.onCancel();
+        if (props.onCancel) {
+            props.onCancel();
+        }
     };
 
     return (

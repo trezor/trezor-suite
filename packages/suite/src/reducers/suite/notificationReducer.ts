@@ -7,6 +7,7 @@ import { Network } from '@wallet-types';
 interface Options {
     seen?: boolean;
     resolved?: boolean;
+    autoClose?: number | false;
 }
 
 export type ToastPayload = (

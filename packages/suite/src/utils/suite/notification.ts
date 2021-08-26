@@ -1,5 +1,6 @@
 import { NotificationEntry } from '@suite-reducers/notificationReducer';
 import { ToastNotificationVariant, AppState } from '@suite-types';
+import { colors } from '@trezor/components';
 
 export const findTransactionEvents = (descriptor: string, notifications: NotificationEntry[]) =>
     notifications.filter(
@@ -22,6 +23,21 @@ export const getNotificationIcon = (variant: ToastNotificationVariant) => {
     }
 };
 
+export const getVariantColor = (variant: ViewProps['variant']) => {
+    switch (variant) {
+        case 'info':
+            return colors.TYPE_BLUE;
+        case 'warning':
+            return colors.TYPE_ORANGE;
+        case 'error':
+            return colors.TYPE_RED;
+        case 'success':
+            return colors.TYPE_GREEN;
+        case 'transparent':
+        default:
+            return 'transparent';
+    }
+};
 export const getSeenAndUnseenNotifications = (notifications: AppState['notifications']) => {
     const seen: Array<NotificationEntry> = [];
     const unseen: Array<NotificationEntry> = [];

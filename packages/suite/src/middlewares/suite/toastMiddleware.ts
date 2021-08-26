@@ -25,7 +25,6 @@ const toastMiddleware =
         }
 
         if (action.type === NOTIFICATION.TOAST) {
-            // TODO: set custom timeout
             const payload = { ...action.payload };
             // assetType error is returned by trezor-connect
             // we don't want to show this generic message in toast however the whole message is useful for logging
@@ -36,6 +35,8 @@ const toastMiddleware =
             toast(hocNotification(payload, ToastNotification), {
                 toastId: payload.id,
                 onClose: () => api.dispatch(close(payload.id)),
+                // if 'autoclose' is not set, close notifications after 5s
+                autoClose: payload.autoClose ?? 5000,
             });
         }
 

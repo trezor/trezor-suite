@@ -1,26 +1,11 @@
 import React from 'react';
-import styled from 'styled-components';
-import { Button, Icon, variables, colors } from '@trezor/components';
+import styled, { css } from 'styled-components';
+import { Button, Icon, variables } from '@trezor/components';
 import { Translation } from '@suite-components';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { useActions } from '@suite-hooks';
-import { getNotificationIcon } from '@suite-utils//notification';
+import { getNotificationIcon, getVariantColor } from '@suite-utils//notification';
 import { ViewProps } from '@suite-components/hocNotification/definitions';
-
-const getVariantColor = (variant: ViewProps['variant']) => {
-    switch (variant) {
-        case 'info':
-            return colors.TYPE_BLUE;
-        case 'warning':
-            return colors.TYPE_ORANGE;
-        case 'error':
-            return colors.TYPE_RED;
-        case 'success':
-            return colors.TYPE_GREEN;
-        default:
-            return 'transparent';
-    }
-};
 
 const Wrapper = styled.div<Pick<ViewProps, 'variant'>>`
     display: flex;
@@ -30,73 +15,96 @@ const Wrapper = styled.div<Pick<ViewProps, 'variant'>>`
     padding: 6px 12px;
     border-left: 4px solid ${props => getVariantColor(props.variant)};
     word-break: break-word;
+    max-width: 450px;
 `;
 
-const Title = styled.span`
-    margin-left: 10px;
+const BodyWrapper = styled.div`
     flex: 1;
-    font-weight: 500;
+    margin-left: 10px;
+`;
+
+const Message = styled.div`
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
-const StyledButton = styled(Button)`
-    margin-left: 10px;
+const StyledButton = styled(Button)<{ $action: ViewProps['action'] }>`
+    ${props =>
+        (!props.$action?.position || props.$action.position === 'right') &&
+        css`
+            margin-left: 10px;
+        `};
+    ${props =>
+        props.$action?.position === 'bottom' &&
+        css`
+            margin-top: 8px;
+            font-weight: ${variables.FONT_SIZE.NORMAL};
+            height: 32px;
+        `};
 `;
 
-const CancelWrapper = styled.div`
+const StyledCancelIcon = styled(Icon)`
     margin-left: 10px;
-    margin-top: 6px;
-    align-self: flex-start;
 `;
 
 const ToastNotification = ({
     icon,
     message,
     action,
-    actionLabel,
+    variant,
     cancelable = true,
+    onCancel,
     ...props
 }: ViewProps) => {
-    const defaultIcon = icon ?? getNotificationIcon(props.variant);
+    const defaultIcon = icon ?? getNotificationIcon(variant);
+
     const { closeNotification } = useActions({
         closeNotification: notificationActions.close,
     });
 
     const dataTestBase = `@toast/${props.notification.type}`;
 
+    const actionButton = action && (
+        <StyledButton
+            variant={action.variant || 'tertiary'}
+            onClick={action.onClick}
+            fullWidth={action.position === 'bottom'}
+            $action={action}
+        >
+            <Translation id={action.label} />
+        </StyledButton>
+    );
+
     return (
-        <Wrapper data-test={dataTestBase} variant={props.variant}>
-            {defaultIcon && (
-                <Icon icon={defaultIcon} size={20} color={getVariantColor(props.variant)} />
+        <Wrapper data-test={dataTestBase} variant={variant}>
+            {defaultIcon && typeof defaultIcon === 'string' ? (
+                <Icon icon={defaultIcon} size={20} color={getVariantColor(variant)} />
+            ) : (
+                defaultIcon
             )}
-            <Title>
-                {typeof message === 'string' ? (
-                    <Translation id={message} />
-                ) : (
-                    <Translation {...message} />
-                )}
-            </Title>
-            {action && actionLabel && (
-                <StyledButton
-                    variant="tertiary"
-                    icon="ARROW_RIGHT"
-                    alignIcon="right"
-                    onClick={action}
-                >
-                    <Translation id={actionLabel} />
-                </StyledButton>
-            )}
+            <BodyWrapper>
+                <Message>
+                    {typeof message === 'string' ? (
+                        <Translation id={message} />
+                    ) : (
+                        <Translation {...message} />
+                    )}
+                </Message>
+                {action?.position === 'bottom' && actionButton}
+            </BodyWrapper>
+            {(action?.position === 'right' || !action?.position) && actionButton}
             {cancelable && (
-                <CancelWrapper>
-                    <Icon
-                        size={16}
-                        icon="CROSS"
-                        onClick={() => {
-                            closeNotification(props.notification.id);
-                        }}
-                        data-test={`${dataTestBase}/close`}
-                    />
-                </CancelWrapper>
+                <StyledCancelIcon
+                    size={16}
+                    icon="CROSS"
+                    onClick={() => {
+                        closeNotification(props.notification.id);
+                        if (onCancel) {
+                            onCancel();
+                        }
+                    }}
+                    data-test={`${dataTestBase}/close`}
+                />
             )}
         </Wrapper>
     );

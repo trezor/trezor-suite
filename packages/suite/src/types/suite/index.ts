@@ -128,6 +128,6 @@ export type InjectedModalApplicationProps = {
     prerequisite?: PrerequisiteType;
 };
 
-export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error';
+export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error' | 'transparent';
 export type SuiteThemeVariant = 'light' | 'dark' | 'custom';
 export type EnvironmentType = 'web' | 'desktop' | 'mobile' | '';
