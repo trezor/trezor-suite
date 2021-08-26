@@ -3263,6 +3263,19 @@ const messages = {
         id: 'TR_ACCOUNT_TYPE_P2PKH',
         defaultMessage: 'P2PKH',
     },
+    TOAST_COIN_SCHEME_PROTOCOL: {
+        id: 'TOAST_COIN_SCHEME_PROTOCOL',
+        describe: 'Required for current notifications. Do not change.',
+        defaultMessage: '{header}{body}',
+    },
+    TOAST_COIN_SCHEME_PROTOCOL_ACTION: {
+        id: 'TOAST_COIN_SCHEME_PROTOCOL_ACTION',
+        defaultMessage: 'Autofill send form',
+    },
+    TOAST_COIN_SCHEME_PROTOCOL_HEADER: {
+        id: 'TOAST_COIN_SCHEME_PROTOCOL_HEADER',
+        defaultMessage: 'Get to an account to send',
+    },
     TOAST_ACQUIRE_ERROR: {
         id: 'TOAST_ACQUIRE_ERROR',
         defaultMessage: 'Acquire error {error}',

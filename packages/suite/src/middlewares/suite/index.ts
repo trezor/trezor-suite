@@ -6,7 +6,8 @@ import buttonRequest from './buttonRequestMiddleware';
 import events from './eventsMiddleware';
 import metadata from './metadataMiddleware';
 import actionBlocker from './actionBlockerMiddleware';
-import messageSystem from '@suite-middlewares/messageSystemMiddleware';
+import messageSystem from './messageSystemMiddleware';
+import protocol from './protocolMiddleware';
 
 export default [
     log,
@@ -18,4 +19,5 @@ export default [
     metadata,
     actionBlocker,
     messageSystem,
+    protocol,
 ];

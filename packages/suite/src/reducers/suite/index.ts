@@ -10,6 +10,7 @@ import metadata from './metadataReducer';
 import desktopUpdate from './desktopUpdateReducer';
 import messageSystem from './messageSystemReducer';
 import guide from './guideReducer';
+import protocol from './protocolReducer';
 
 export default {
     suite,
@@ -24,4 +25,5 @@ export default {
     desktopUpdate,
     messageSystem,
     guide,
+    protocol,
 };

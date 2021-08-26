@@ -3,6 +3,7 @@ import { DEVICE } from 'trezor-connect';
 import { NOTIFICATION, SUITE } from '@suite-actions/constants';
 import { Action, TrezorDevice } from '@suite-types';
 import { Network } from '@wallet-types';
+import { PROTOCOL_SCHEME } from '@suite/support/suite/Protocol';
 
 interface Options {
     seen?: boolean;
@@ -81,6 +82,12 @@ export type ToastPayload = (
       }
     | {
           type: 'user-feedback-send-success' | 'user-feedback-send-error';
+      }
+    | {
+          type: 'coin-scheme-protocol';
+          scheme: PROTOCOL_SCHEME;
+          amount: number;
+          address: string;
       }
 ) &
     Options;

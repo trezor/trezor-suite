@@ -148,6 +148,7 @@ export const DEFAULT_STORE = {
         },
     },
     devices: [], // to remove?
+    protocol: { sendForm: {} },
 };
 
 const DEFAULT_DRAFT = {

@@ -22,6 +22,7 @@ import type { LogAction } from '@suite-actions/logActions';
 import type { NotificationAction } from '@suite-actions/notificationActions';
 import type { AnalyticsAction } from '@suite-actions/analyticsActions';
 import type { MetadataAction } from '@suite-actions/metadataActions';
+import type { ProtocolAction } from '@suite-actions/protocolActions';
 import type { DesktopUpdateAction } from '@suite-actions/desktopUpdateActions';
 import type { OnboardingAction } from '@onboarding-actions/onboardingActions';
 import type { WalletSettingsAction } from '@settings-actions/walletSettingsActions';
@@ -66,7 +67,8 @@ export type Action =
     | WalletSettingsAction
     | DesktopUpdateAction
     | MessageSystemAction
-    | GuideAction;
+    | GuideAction
+    | ProtocolAction;
 
 // export type Dispatch = ReduxDispatch<Action>;
 // export type Dispatch = ThunkDispatch<AppState, any, Action>;

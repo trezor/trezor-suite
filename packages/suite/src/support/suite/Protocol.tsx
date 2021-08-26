@@ -7,6 +7,8 @@ import { useActions } from '@suite-hooks';
 import * as notificationActions from '@suite-actions/notificationActions';
 import * as protocolActions from '@suite-actions/protocolActions';
 
+import type { CoinType } from '@trezor/components';
+
 export enum PROTOCOL_SCHEME {
     BITCOIN = 'bitcoin',
 }
@@ -16,13 +18,29 @@ export const PROTOCOL_TO_SYMBOL: { [key: string]: CoinType } = {
 };
 
 const Protocol = () => {
-    const handleProtocolRequest = useCallback(uri => {
-        const protocolInfo = getProtocolInfo(uri);
+    const { addToast, saveCoinProtocol } = useActions({
+        addToast: notificationActions.addToast,
+        saveCoinProtocol: protocolActions.saveCoinProtocol,
+    });
 
-        if (protocolInfo.scheme === PROTOCOL_SCHEME.BTC) {
-            // TODO
-        }
-    }, []);
+    const handleProtocolRequest = useCallback(
+        uri => {
+            const protocolInfo = getProtocolInfo(uri);
+
+            if (protocolInfo.scheme === PROTOCOL_SCHEME.BITCOIN) {
+                saveCoinProtocol(protocolInfo.scheme, protocolInfo.address, protocolInfo.amount);
+
+                addToast({
+                    type: 'coin-scheme-protocol',
+                    address: protocolInfo.address,
+                    amount: protocolInfo.amount,
+                    scheme: protocolInfo.scheme,
+                    autoClose: false,
+                });
+            }
+        },
+        [addToast, saveCoinProtocol],
+    );
 
     const { search } = useLocation();
     useEffect(() => {
