@@ -1,12 +1,14 @@
+import React from 'react';
+import styled from 'styled-components';
+
 import { Translation, FormattedDateWithBullet } from '@suite-components';
 import hocNotification from '@suite-components/hocNotification';
 import { ViewProps } from '@suite-components/hocNotification/definitions';
 import { AppState } from '@suite-types';
 import { getNotificationIcon } from '@suite-utils/notification';
 import { Button, Icon, P } from '@trezor/components';
-import React from 'react';
-import styled from 'styled-components';
 import { useLayoutSize } from '@suite-hooks';
+import { NotificationEntry } from '@suite-reducers/notificationReducer';
 
 const Wrapper = styled.div`
     display: flex;
@@ -42,6 +44,11 @@ const ActionButton = styled(Button)`
     align-self: center;
 `;
 
+const SeenWrapper = styled.span<Pick<NotificationEntry, 'seen'>>`
+    margin-bottom: '4px';
+    opacity: ${props => (props.seen ? 0.7 : 1)};
+`;
+
 const NotificationView = (props: ViewProps) => {
     const { isMobileLayout } = useLayoutSize();
     const defaultIcon = props.icon ?? getNotificationIcon(props.variant);
@@ -49,12 +56,12 @@ const NotificationView = (props: ViewProps) => {
 
     return (
         <Item>
-            {defaultIcon && (
-                <Icon
-                    size={20}
-                    icon={defaultIcon}
-                    style={{ marginBottom: '4px', opacity: seen ? 0.7 : 1 }}
-                />
+            {defaultIcon && typeof defaultIcon === 'string' ? (
+                <SeenWrapper seen={seen}>
+                    <Icon size={20} icon={defaultIcon} />
+                </SeenWrapper>
+            ) : (
+                defaultIcon && <SeenWrapper seen={seen}>{defaultIcon}</SeenWrapper>
             )}
             <Text>
                 <P
@@ -73,13 +80,12 @@ const NotificationView = (props: ViewProps) => {
                 </DateP>
             </Text>
 
-            {props.actionLabel &&
-                props.action &&
+            {props.action?.onClick &&
                 (isMobileLayout ? (
-                    <Icon icon="ARROW_RIGHT" onClick={props.action} size={18} />
+                    <Icon icon="ARROW_RIGHT" onClick={props.action.onClick} size={18} />
                 ) : (
-                    <ActionButton variant="tertiary" onClick={props.action}>
-                        <Translation id={props.actionLabel} />
+                    <ActionButton variant="tertiary" onClick={props.action.onClick}>
+                        <Translation id={props.action.label} />
                     </ActionButton>
                 ))}
         </Item>

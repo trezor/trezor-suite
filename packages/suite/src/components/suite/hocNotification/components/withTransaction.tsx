@@ -67,17 +67,20 @@ const withTransaction = (View: React.ComponentType<ViewProps>, props: StrictView
         return (
             <View
                 {...props}
-                action={async () => {
-                    // select device
-                    await dispatch(suiteActions.selectDevice(device || notification.device));
-                    // go to account
-                    dispatch(
-                        routerActions.goto('wallet-index', {
-                            accountIndex: account.index,
-                            accountType: account.accountType,
-                            symbol: account.symbol,
-                        }),
-                    );
+                action={{
+                    onClick: async () => {
+                        // select device
+                        await dispatch(suiteActions.selectDevice(device || notification.device));
+                        // go to account
+                        dispatch(
+                            routerActions.goto('wallet-index', {
+                                accountIndex: account.index,
+                                accountType: account.accountType,
+                                symbol: account.symbol,
+                            }),
+                        );
+                    },
+                    label: 'TOAST_TX_BUTTON',
                 }}
             />
         );

@@ -83,7 +83,6 @@ export const notifications = `
         max-height: 800px;
         overflow: hidden;
         font-family: sans-serif;
-        cursor: pointer;
         direction: ltr;
         word-break: break-all;
     }
