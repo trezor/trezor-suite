@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Translation, Modal } from '@suite-components';
+import type { ExtendedMessageDescriptor } from '@suite-types';
 import { DropZone } from '@suite-components/DropZone';
 import { UserContextPayload } from '@suite-actions/modalActions';
 import { DelimiterForm } from './components/DelimiterForm';
@@ -15,15 +16,11 @@ const ImportTransaction = ({ onCancel, decision }: Props) => {
     // const [mode, setMode] = useState<'upload' | 'form'>('upload'); // TODO: upload or textarea form? (fallback for upload)
     const [delimiter, setDelimiter] = useState<string | undefined>(undefined);
 
-    const onCsvSelect = (file: File, setError: (msg: string) => void) => {
-        if (!file?.name?.match(/\.(csv|txt)$/i)) {
-            setError('file-type');
-            return;
-        }
+    const onCsvSelect = (file: File, setError: (msg: ExtendedMessageDescriptor) => void) => {
         const reader = new FileReader();
         reader.onload = () => {
             if (typeof reader.result !== 'string') {
-                setError('empty');
+                setError({ id: 'TR_DROPZONE_ERROR_EMPTY' });
                 return;
             }
             const parsed = parseCSV(
@@ -35,7 +32,7 @@ const ImportTransaction = ({ onCancel, decision }: Props) => {
             onCancel();
         };
         reader.onerror = () => {
-            setError(reader.error!.message);
+            setError({ id: 'TR_DROPZONE_ERROR', values: { error: reader.error!.message } });
             reader.abort();
         };
         reader.readAsText(file);
@@ -48,7 +45,7 @@ const ImportTransaction = ({ onCancel, decision }: Props) => {
             heading={<Translation id="TR_IMPORT_CSV_MODAL_TITLE" />}
         >
             <ExampleCSV />
-            <DropZone accept=".csv,text/csv" icon="CSV" onSelect={onCsvSelect} />
+            <DropZone accept=".csv,.txt,text/csv" icon="CSV" onSelect={onCsvSelect} />
             <DelimiterForm value={delimiter} onChange={setDelimiter} />
         </Modal>
     );
