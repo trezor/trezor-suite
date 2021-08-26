@@ -1,7 +1,7 @@
 import colors, { THEME } from './config/colors';
 import * as variables from './config/variables';
 import { useTheme } from './utils';
-import { SuiteThemeColors } from './support/types';
+import type { SuiteThemeColors, CoinType } from './support/types';
 
 import { Button, ButtonProps } from './components/buttons/Button';
 import { Flag, FlagProps } from './components/Flag';
@@ -106,6 +106,7 @@ export {
     FlagProps,
     useTheme,
     SuiteThemeColors,
+    CoinType,
     ThemeProvider,
     ThemeContext,
     HoverAnimation,

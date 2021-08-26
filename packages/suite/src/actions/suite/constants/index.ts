@@ -10,6 +10,7 @@ import * as METADATA from './metadataConstants';
 import * as DESKTOP_UPDATE from './desktopUpdateConstants';
 import * as MESSAGE_SYSTEM from './messageSystemConstants';
 import * as GUIDE from './guideConstants';
+import * as PROTOCOL from './protocolConstants';
 
 export {
     STORAGE,
@@ -24,4 +25,5 @@ export {
     DESKTOP_UPDATE,
     MESSAGE_SYSTEM,
     GUIDE,
+    PROTOCOL,
 };
