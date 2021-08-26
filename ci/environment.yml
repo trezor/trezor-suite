@@ -7,12 +7,12 @@ build & push image:
   variables:
     DOCKER_TLS_CERTDIR: ''
     CONTAINER_NAME: "$CI_REGISTRY/satoshilabs/trezor/trezor-suite/base"
-  image: $CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/docker
+  image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/docker
   services:
     - docker:dind
   script:
     - docker pull $CONTAINER_NAME:latest || true
-    - docker build --build-arg CI_DOCKER_PROXY="$CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/" --no-cache --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest ./docker/ci-base
+    - docker build --build-arg CI_DOCKER_PROXY="$CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/" --no-cache --tag $CONTAINER_NAME:$CI_COMMIT_SHA --tag $CONTAINER_NAME:latest ./docker/ci-base
     - docker push $CONTAINER_NAME:$CI_COMMIT_SHA
     - docker push $CONTAINER_NAME:latest
 
