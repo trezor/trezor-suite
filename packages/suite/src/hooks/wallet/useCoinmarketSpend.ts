@@ -7,6 +7,7 @@ import { useActions, useSelector } from '@suite-hooks';
 import { useTranslation } from '@suite-hooks/useTranslation';
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 import * as coinmarketSpendActions from '@wallet-actions/coinmarketSpendActions';
+import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { FormState } from '@wallet-types/sendForm';
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
@@ -42,11 +43,17 @@ const useSpendState = ({ selectedAccount, fees }: Props, currentState: boolean) 
 export const useCoinmarketSpend = (props: Props): SpendContextValues => {
     const [voucherSiteUrl, setVoucherSiteUrl] = useState<string | undefined>('error');
 
-    const { addNotification, setShowLeaveModal, saveTrade } = useActions({
+    const { addNotification, setShowLeaveModal, saveTrade, loadInvityData } = useActions({
         addNotification: notificationActions.addToast,
         setShowLeaveModal: coinmarketSellActions.setShowLeaveModal,
         saveTrade: coinmarketSpendActions.saveTrade,
+        loadInvityData: coinmarketCommonActions.loadInvityData,
     });
+
+    useEffect(() => {
+        loadInvityData();
+    }, [loadInvityData]);
+
     const { translationString } = useTranslation();
 
     const { selectedAccount, language } = props;
