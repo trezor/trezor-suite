@@ -63,6 +63,8 @@ const init = () => {
                 logger.debug('udev', `pkexec exit with code ${code}`);
                 if (code === 0) {
                     resolve({ success: true });
+                } else if (code === 126) {
+                    resolve({ success: false, error: `pkexec authentication dialog dismissed` });
                 } else {
                     resolve({ success: false, error: `pkexec exit with code ${code}` });
                 }
