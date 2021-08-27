@@ -67,7 +67,9 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
         loadInvityData: coinmarketCommonActions.loadInvityData,
     });
 
-    loadInvityData();
+    useEffect(() => {
+        loadInvityData();
+    }, [loadInvityData]);
 
     const { selectedAccount, quotesRequest, fees, fiat, localCurrency, exchangeCoinInfo, device } =
         props;

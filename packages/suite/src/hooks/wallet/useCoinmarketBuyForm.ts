@@ -32,7 +32,10 @@ export const useCoinmarketBuyForm = (props: Props): BuyFormContextValues => {
             loadInvityData: coinmarketCommonActions.loadInvityData,
         });
 
-    loadInvityData();
+    useEffect(() => {
+        loadInvityData();
+    }, [loadInvityData]);
+
     const { selectedAccount } = props;
     const { account, network } = selectedAccount;
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);

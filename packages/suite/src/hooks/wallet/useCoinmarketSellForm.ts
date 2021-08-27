@@ -71,7 +71,9 @@ export const useCoinmarketSellForm = (props: Props): SellFormContextValues => {
         loadInvityData: coinmarketCommonActions.loadInvityData,
     });
 
-    loadInvityData();
+    useEffect(() => {
+        loadInvityData();
+    }, [loadInvityData]);
 
     const { selectedAccount, quotesRequest, fees, fiat, localCurrency, exchangeCoinInfo, device } =
         props;
