@@ -55,6 +55,7 @@ const IconWrapper = styled.div`
 const Changelog = styled.div`
     color: ${props => props.theme.TYPE_DARK_GREY};
     max-height: 360px;
+    min-width: 305px;
     overflow: auto;
 `;
 
@@ -129,7 +130,7 @@ const FirmwareOffer = ({ device, customFirmware }: Props) => {
                                                 <TrezorLink
                                                     size="small"
                                                     variant="nostyle"
-                                                    href={CHANGELOG_URL}
+                                                    href={log.notes ? log.notes : CHANGELOG_URL}
                                                 >
                                                     <Button
                                                         variant="tertiary"
