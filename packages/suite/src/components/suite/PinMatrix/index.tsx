@@ -39,7 +39,7 @@ const PinMatrix = ({ device, hideExplanation, invalid }: Props) => {
 
     useEffect(() => {
         if (
-            pinRequestType.code &&
+            pinRequestType?.code &&
             [
                 'PinMatrixRequestType_NewFirst',
                 'PinMatrixRequestType_NewSecond',
