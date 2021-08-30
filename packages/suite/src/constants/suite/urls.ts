@@ -37,7 +37,8 @@ export const LTC_ADDRESS_INFO_URL =
     'https://blog.trezor.io/litecoins-new-p2sh-segwit-addresses-843633e3e707';
 export const BRIDGE_CHANGELOG_URL = 'https://github.com/trezor/trezord-go/blob/master/CHANGELOG.md';
 export const WIKI_QR_CODE = 'https://wiki.trezor.io/QR_code';
-export const CHANGELOG_URL = 'https://wiki.trezor.io/Firmware_changelog';
+export const CHANGELOG_URL =
+    'https://github.com/trezor/trezor-firmware/blob/master/core/CHANGELOG.md';
 export const FAILED_BACKUP_URL = 'https://wiki.trezor.io/Recovery_seed_backup_fail';
 export const WIKI_XPUB_URL =
     'https://wiki.trezor.io/User_manual:Displaying_account_public_key_(XPUB)';
