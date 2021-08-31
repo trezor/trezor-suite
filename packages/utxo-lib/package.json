@@ -1,0 +1,34 @@
+{
+    "name": "@trezor/utxo-lib",
+    "version": "1.0.0",
+    "author": "Trezor <info@trezor.io>",
+    "homepage": "https://github.com/trezor/trezor-suite/packages/utxo-lib",
+    "description": "Client-side Bitcoin-like JavaScript library",
+    "license": "SEE LICENSE IN LICENSE.md",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
+    "keywords": [
+        "Trezor",
+        "bitcoin",
+        "altcoins",
+        "utxo",
+        "javascript"
+    ],
+    "main": "./lib/index.js",
+    "files": ["lib/"],
+    "types": "lib/index.d.ts",
+    "typings": "lib/index.d.ts",
+    "scripts": {
+        "lint": "eslint '**/*{.ts,.tsx}'",
+        "test:unit": "jest --verbose -c jest.config.js",
+        "type-check": "tsc --project tsconfig.json",
+        "build:lib": "rimraf lib && tsc --p ./tsconfig.lib.json"
+    },
+    "devDependencies": {},
+    "dependencies": {}
+}
