@@ -18,25 +18,23 @@ const recovery =
         // pass action
         next(action);
 
-        const { recovery } = api.getState();
+        const { recovery, analytics } = api.getState();
 
         if (action.type === UI.REQUEST_WORD && recovery.status === 'waiting-for-confirmation') {
             // Since the device asked for a first word, we can safely assume we've received confirmation from the user
             api.dispatch(recoveryActions.setStatus('in-progress'));
         }
 
-        if (action.type === SUITE.UPDATE_SELECTED_DEVICE) {
-            if (
-                // isLocked is not reliable in case we connect unacquired device. isLocked is turned to false AFTER
-                // UPDATE_SELECTED_DEVICE is emitted
-                // !isLocked &&
-                action.type === SUITE.UPDATE_SELECTED_DEVICE &&
-                // device is reported in recovery mode
-                action.payload?.features?.recovery_mode &&
-                // and suite is not in recovery mode yet
-                recovery.status !== 'in-progress'
-            ) {
+        if (
+            action.type === SUITE.UPDATE_SELECTED_DEVICE &&
+            action.payload?.features?.recovery_mode &&
+            recovery.status !== 'in-progress'
+        ) {
+            if (!analytics.confirmed) {
+                // If you connect TT in recovery mode to fresh Suite, you should see analytics optout option first.
                 api.dispatch(recoveryActions.setStatus('in-progress'));
+            } else {
+                api.dispatch(recoveryActions.rerun());
             }
         }
 
