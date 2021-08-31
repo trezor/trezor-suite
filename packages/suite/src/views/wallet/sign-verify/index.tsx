@@ -1,10 +1,9 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { Input, Button, Textarea, variables } from '@trezor/components';
-import Title from '@wallet-components/Title';
-import { WalletLayout } from '@wallet-components';
+import { Title, WalletLayout, WalletLayoutHeader } from '@wallet-components';
 import * as signVerifyActions from '@wallet-actions/signVerifyActions';
-import { Translation } from '@suite-components/Translation';
+import { Translation } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
 
 const Wrapper = styled.div`
@@ -90,6 +89,7 @@ const SignVerify = () => {
 
     return (
         <WalletLayout title="TR_NAV_SIGN_VERIFY" account={selectedAccount}>
+            <WalletLayoutHeader title="TR_NAV_SIGN_VERIFY" />
             <Wrapper>
                 <Sign>
                     <Title>
