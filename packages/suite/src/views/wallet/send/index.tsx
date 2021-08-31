@@ -27,25 +27,24 @@ const StyledCard = styled(Card)`
 const SendLoaded: React.FC<UseSendFormProps> = ({ children, ...props }) => {
     const sendContextValues = useSendForm(props);
 
-    return props.sendRaw ? (
+    return (
         <WalletLayout title="TR_NAV_SEND" account={props.selectedAccount}>
             <SendContext.Provider value={sendContextValues}>
                 <Header />
+                {!props.sendRaw && (
+                    <>
+                        <StyledCard>
+                            <Outputs disableAnim={!!children} />
+                            <Options />
+                        </StyledCard>
+                        <Fees />
+                        <TotalSent />
+                        <ReviewButton />
+                        {children}
+                    </>
+                )}
             </SendContext.Provider>
-            <Raw network={props.selectedAccount.network} />
-        </WalletLayout>
-    ) : (
-        <WalletLayout title="TR_NAV_SEND" account={props.selectedAccount}>
-            <SendContext.Provider value={sendContextValues}>
-                <StyledCard customHeader={<Header />}>
-                    <Outputs disableAnim={!!children} />
-                    <Options />
-                </StyledCard>
-                <Fees />
-                <TotalSent />
-                <ReviewButton />
-                {children}
-            </SendContext.Provider>
+            {props.sendRaw && <Raw network={props.selectedAccount.network} />}
         </WalletLayout>
     );
 };
