@@ -2571,6 +2571,10 @@ const definedMessages = defineMessages({
         description: 'Title for the Scan QR modal dialog',
         id: 'TR_SCAN_QR_CODE',
     },
+    TR_QR_CODE_MISSING: {
+        defaultMessage: 'Cannot detect QR code',
+        id: 'TR_QR_CODE_MISSING',
+    },
     TR_SECURITY_HEADING: {
         defaultMessage: 'Trezor successfully initialized!',
         description: 'Heading in security page',

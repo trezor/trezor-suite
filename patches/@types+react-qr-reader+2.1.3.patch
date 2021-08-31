@@ -1,0 +1,12 @@
+diff --git a/node_modules/@types/react-qr-reader/index.d.ts b/node_modules/@types/react-qr-reader/index.d.ts
+index aa92ede..432dee2 100644
+--- a/node_modules/@types/react-qr-reader/index.d.ts
++++ b/node_modules/@types/react-qr-reader/index.d.ts
+@@ -26,6 +26,7 @@ export as namespace QrReader;
+ 
+ declare class QrReader extends React.Component<QrReader.props> {
+     openImageDialog: () => void;
++    handleInputChange: (e: { target: { files: File[] }}) => void;
+ }
+ 
+ export = QrReader;
