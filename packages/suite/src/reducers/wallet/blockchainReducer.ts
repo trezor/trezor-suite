@@ -35,8 +35,10 @@ export type BlockchainState = {
   get url suffix from default network and generate url for selected network
   regex source: https://www.oreilly.com/library/view/regular-expressions-cookbook/9780596802837/ch07s12.html
 */
-export const getBlockExplorerUrl = (url: string) =>
+export const getBlockExplorerUrlSuffix = (url: string) =>
     url.match(/^([a-z][a-z0-9+\-.]*:(\/\/[^/?#]+)?)?([a-z0-9\-._~%!$&'()*+,;=:@/]*)/)!.pop();
+
+export const isHttpProtocol = (url: string) => /^https?:\/\//.test(url);
 
 const initialStatePredefined: Partial<BlockchainState> = {};
 
@@ -57,17 +59,28 @@ const connect = (draft: Draft<BlockchainState>, info: BlockchainInfo) => {
     const network = getNetwork(info.coin.shortcut.toLowerCase());
     if (!network) return;
 
+    const isHttp = isHttpProtocol(info.url); // can use dynamic backend url settings
+
     draft[network.symbol] = {
         url: info.url,
         explorer: {
-            tx: `${info.url}${getBlockExplorerUrl(network.explorer.tx)}`,
-            account: `${info.url}${getBlockExplorerUrl(network.explorer.account)}`,
+            tx: `${
+                isHttp
+                    ? info.url + getBlockExplorerUrlSuffix(network.explorer.tx)
+                    : network.explorer.tx
+            }`,
+            account: `${
+                isHttp
+                    ? info.url + getBlockExplorerUrlSuffix(network.explorer.account)
+                    : network.explorer.account
+            }`,
         },
         connected: true,
         blockHash: info.blockHash,
         blockHeight: info.blockHeight,
         version: info.version,
     };
+
     delete draft[network.symbol].error;
     delete draft[network.symbol].reconnection;
 };
