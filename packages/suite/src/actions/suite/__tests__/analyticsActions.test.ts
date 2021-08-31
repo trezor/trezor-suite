@@ -175,11 +175,11 @@ describe('Analytics Actions', () => {
         const store = initStore(state);
         store.dispatch(analyticsActions.enable());
         expect(store.getState()).toMatchObject({
-            analytics: { enabled: true },
+            analytics: { enabled: true, confirmed: true },
         });
         store.dispatch(analyticsActions.dispose());
         expect(store.getState()).toMatchObject({
-            analytics: { enabled: false },
+            analytics: { enabled: false, confirmed: true },
         });
     });
 });

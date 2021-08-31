@@ -8,6 +8,7 @@ export interface State {
     instanceId?: string;
     enabled?: boolean;
     sessionStart?: number;
+    confirmed?: boolean; // Has the user confirmed the choice for analytics?
 }
 
 export const initialState: State = {
@@ -15,6 +16,7 @@ export const initialState: State = {
     instanceId: undefined,
     enabled: undefined,
     sessionStart: undefined,
+    confirmed: false,
 };
 
 const analyticsReducer = (state: State = initialState, action: Action): State =>
@@ -28,9 +30,11 @@ const analyticsReducer = (state: State = initialState, action: Action): State =>
                 break;
             case ANALYTICS.ENABLE:
                 draft.enabled = true;
+                draft.confirmed = true;
                 break;
             case ANALYTICS.DISPOSE:
                 draft.enabled = false;
+                draft.confirmed = true;
                 break;
             // no default
         }
