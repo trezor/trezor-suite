@@ -300,6 +300,7 @@ export const saveAnalytics = () => async (_dispatch: Dispatch, getState: GetStat
         {
             enabled: analytics.enabled,
             instanceId: analytics.instanceId,
+            confirmed: analytics.confirmed,
         },
         'suite',
         true,

@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useSpring, config } from 'react-spring';
 import { H1, Switch, variables } from '@trezor/components';
-import { useAnalytics, useOnboarding } from '@suite-hooks';
+import { useAnalytics, useOnboarding, useSelector } from '@suite-hooks';
 import { CollapsibleBox } from '@suite-components';
 import { Translation } from '@suite-components/Translation';
 import TrezorLink from '@suite-components/TrezorLink'; // Separate import because of circular dep problem. Error: Cannot create styled-component for component: undefined
@@ -86,7 +86,31 @@ const collectedData = [
 
 const DataAnalytics = () => {
     const { enable, dispose, enabled } = useAnalytics();
-    const { goToSubStep } = useOnboarding();
+    const { goToSubStep, rerun } = useOnboarding();
+    const { recovery } = useSelector(state => ({
+        recovery: state.recovery,
+    }));
+    const [analyticsEnabled, setAnalytics] = useState<boolean>(!!enabled);
+
+    const confirmChoice = () => {
+        if (analyticsEnabled) {
+            enable();
+        } else {
+            dispose();
+        }
+    };
+
+    const handleConfirm = () => {
+        confirmChoice();
+
+        if (recovery.status === 'in-progress') {
+            // TT remember the recovery state and should continue with recovery
+            rerun();
+        } else {
+            goToSubStep('security-check');
+        }
+    };
+
     const fadeStyles = useSpring({
         config: { ...config.default },
         from: { opacity: 0 },
@@ -135,8 +159,8 @@ const DataAnalytics = () => {
                 <SwitchWrapper>
                     <Switch
                         data-test="@analytics/toggle-switch"
-                        checked={!!enabled}
-                        onChange={() => (enabled ? dispose() : enable())}
+                        checked={analyticsEnabled}
+                        onChange={() => setAnalytics(!analyticsEnabled)}
                     />
                     <Label>
                         <Translation id="TR_ONBOARDING_ALLOW_ANALYTICS" />
@@ -146,7 +170,7 @@ const DataAnalytics = () => {
                 <ButtonWrapper>
                     <OnboardingButtonCta
                         data-test="@onboarding/continue-button"
-                        onClick={() => goToSubStep('security-check')}
+                        onClick={handleConfirm}
                     >
                         <Translation id="TR_CONFIRM" />
                     </OnboardingButtonCta>

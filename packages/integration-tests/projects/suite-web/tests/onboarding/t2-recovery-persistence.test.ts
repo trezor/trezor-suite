@@ -77,6 +77,8 @@ describe('Onboarding - T2 in recovery mode', () => {
 
         // now suite has reloaded. database is wiped.
         cy.task('startEmu', { version: Cypress.env('emuVersionT2'), wipe: false });
+        // analytics opt-out again
+        cy.getTestElement('@onboarding/continue-button').click();
         // recovery device persisted reload
         cy.getTestElement('@onboarding/confirm-on-device');
         cy.wait(1000);
