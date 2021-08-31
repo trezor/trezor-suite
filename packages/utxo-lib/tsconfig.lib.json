@@ -12,7 +12,7 @@
         "noErrorTruncation": true,
         "types": ["jest", "node"]
     },
-    "include": ["./src/index.ts"],
+    "include": ["./src/index.ts", "./src/global.d.ts"],
     "exclude": [
         "node_modules",
         "**/__tests__/**",
