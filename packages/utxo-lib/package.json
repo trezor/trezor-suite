@@ -30,5 +30,7 @@
         "build:lib": "rimraf lib && tsc --p ./tsconfig.lib.json"
     },
     "devDependencies": {},
-    "dependencies": {}
+    "dependencies": {
+        "typeforce": "^1.18.0"
+    }
 }
