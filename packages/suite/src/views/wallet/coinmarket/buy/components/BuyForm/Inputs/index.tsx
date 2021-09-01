@@ -1,55 +1,17 @@
-import { FIAT } from '@suite-config';
-import { Translation } from '@suite-components';
-import { getCryptoOptions } from '@wallet-utils/coinmarket/buyUtils';
-import { Select, Icon, Input, variables } from '@trezor/components';
-import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
 import React, { useEffect, useState } from 'react';
 import Bignumber from 'bignumber.js';
 import { Controller } from 'react-hook-form';
+import { FIAT } from '@suite-config';
+import { Translation } from '@suite-components';
+import { getCryptoOptions } from '@wallet-utils/coinmarket/buyUtils';
+import { Select, Input } from '@trezor/components';
+import { buildOption } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
-import styled from 'styled-components';
 import { isDecimalsValid } from '@wallet-utils/validation';
 import { InputError } from '@wallet-components';
 import { MAX_LENGTH } from '@suite-constants/inputs';
 import { getInputState } from '@wallet-utils/sendFormUtils';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex: 1;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        flex-direction: column;
-    }
-`;
-
-const Left = styled.div`
-    display: flex;
-    flex: 1;
-`;
-
-const Right = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: flex-end;
-`;
-
-const Middle = styled.div`
-    display: flex;
-    min-width: 65px;
-    height: 48px;
-    align-items: center;
-    justify-content: center;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding-bottom: 27px;
-    }
-`;
-
-const StyledIcon = styled(Icon)`
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        transform: rotate(90deg);
-    }
-`;
+import { Wrapper, Left, Middle, Right, StyledIcon } from '@wallet-views/coinmarket';
 
 const Inputs = () => {
     const {
@@ -88,7 +50,7 @@ const Inputs = () => {
     const fiatInputValue = getValues('fiatInput');
 
     return (
-        <Wrapper>
+        <Wrapper responsiveSize="LG">
             <Left>
                 <Input
                     noTopLabel
@@ -186,8 +148,8 @@ const Inputs = () => {
                     }
                 />
             </Left>
-            <Middle>
-                <StyledIcon icon="TRANSFER" size={16} />
+            <Middle responsiveSize="LG">
+                <StyledIcon responsiveSize="LG" icon="TRANSFER" size={16} />
             </Middle>
             <Right>
                 <Input

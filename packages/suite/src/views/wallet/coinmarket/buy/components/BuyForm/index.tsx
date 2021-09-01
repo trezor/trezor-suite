@@ -1,44 +1,22 @@
 import React from 'react';
-import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
 import styled from 'styled-components';
 import { Translation } from '@suite-components';
-import { variables } from '@trezor/components';
+import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
+import { Wrapper, NoProviders } from '@wallet-views/coinmarket';
+import { CoinmarketSkeleton } from '@wallet-views/coinmarket/skeleton';
 
 import Inputs from './Inputs';
 import Footer from './Footer';
 
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding: 0;
-    }
-`;
-
-const Form = styled.form``;
-
-const Loading = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.BIG};
-`;
-
-const NoProviders = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.BIG};
+const Form = styled.form`
+    width: 100%;
 `;
 
 const BuyForm = () => {
     const { onSubmit, handleSubmit, isLoading, noProviders } = useCoinmarketBuyFormContext();
-
     return (
-        <Wrapper>
-            {isLoading && (
-                <Loading>
-                    <Translation id="TR_BUY_LOADING" />
-                </Loading>
-            )}
+        <Wrapper responsiveSize="LG">
+            {isLoading && <CoinmarketSkeleton />}
             {!isLoading && noProviders && (
                 <NoProviders>
                     <Translation id="TR_BUY_NO_PROVIDERS" />

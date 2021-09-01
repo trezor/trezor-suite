@@ -1,15 +1,10 @@
 import React from 'react';
+import styled from 'styled-components';
 import { Button } from '@trezor/components';
 import { Translation } from '@suite-components';
-import styled from 'styled-components';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
-import { CRYPTO_INPUT } from '@suite/types/wallet/coinmarketExchangeForm';
-
-const Wrapper = styled.div`
-    display: flex;
-    align-items: center;
-    padding-top: 40px;
-`;
+import { CRYPTO_INPUT } from '@wallet-types/coinmarketExchangeForm';
+import { FooterWrapper } from '@wallet-views/coinmarket';
 
 const Center = styled.div`
     display: flex;
@@ -28,7 +23,7 @@ const Footer = () => {
     const formIsValid = Object.keys(errors).length === 0;
 
     return (
-        <Wrapper>
+        <FooterWrapper>
             <Center>
                 <StyledButton
                     isDisabled={!(formIsValid && hasValues) || formState.isSubmitting}
@@ -38,7 +33,7 @@ const Footer = () => {
                     <Translation id="TR_EXCHANGE_SHOW_OFFERS" />
                 </StyledButton>
             </Center>
-        </Wrapper>
+        </FooterWrapper>
     );
 };
 
