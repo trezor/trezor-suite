@@ -1,31 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, variables, Button } from '@trezor/components';
+import { Icon, Button } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { isDesktop } from '@suite-utils/env';
 import { useCoinmarketSpendContext } from '@wallet-hooks/useCoinmarketSpend';
+import { NoProviders, Wrapper } from '@wallet-views/coinmarket';
+import { CoinmarketSkeleton } from '@wallet-views/coinmarket/skeleton';
 
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding: 0;
-    }
+const Vouchers = styled.div`
+    width: 100%;
 `;
-
-const Loading = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.BIG};
-`;
-
-const NoProviders = styled.div`
-    display: flex;
-    font-size: ${variables.FONT_SIZE.BIG};
-`;
-
-const Vouchers = styled.div``;
 
 const ProviderInfo = styled.div`
     display: flex;
@@ -78,12 +62,8 @@ const CoinmarketSpend = () => {
     const showIframe = !isDesktop();
 
     return (
-        <Wrapper>
-            {isLoading && (
-                <Loading>
-                    <Translation id="TR_SPEND_LOADING" />
-                </Loading>
-            )}
+        <Wrapper responsiveSize="LG">
+            {isLoading && <CoinmarketSkeleton />}
             {!isLoading && noProviders && (
                 <NoProviders>
                     <Translation id="TR_SPEND_NO_PROVIDERS" />

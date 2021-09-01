@@ -1,57 +1,13 @@
-import { Icon, variables } from '@trezor/components';
 import React, { useCallback, useEffect } from 'react';
-import { useCoinmarketSellFormContext } from '@wallet-hooks/useCoinmarketSellForm';
+import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
+import { useCoinmarketSellFormContext } from '@wallet-hooks/useCoinmarketSellForm';
 import FiatInput from './FiatInput';
 import { CRYPTO_INPUT, FIAT_INPUT, OUTPUT_AMOUNT } from '@suite/types/wallet/coinmarketSellForm';
 import CryptoInput from './CryptoInput';
 import { useLayoutSize } from '@suite/hooks/suite';
 import FractionButtons from '@suite/components/wallet/CoinMarketFractionButtons';
-import BigNumber from 'bignumber.js';
-
-const Wrapper = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-`;
-
-const Top = styled.div`
-    display: flex;
-    flex: 1;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        flex-direction: column;
-    }
-`;
-
-const Left = styled.div`
-    display: flex;
-    flex: 1;
-`;
-
-const Right = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: flex-end;
-`;
-
-const Middle = styled.div`
-    display: flex;
-    min-width: 65px;
-    height: 48px;
-    align-items: center;
-    justify-content: center;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        padding-bottom: 27px;
-    }
-`;
-
-const StyledIcon = styled(Icon)`
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
-        transform: rotate(90deg);
-    }
-`;
+import { Wrapper, Left, Middle, Right, StyledIcon } from '@wallet-views/coinmarket';
 
 const EmptyDiv = styled.div`
     width: 100%;
@@ -117,26 +73,24 @@ const Inputs = () => {
     const isBalanceZero = new BigNumber(account.formattedBalance).isZero();
 
     return (
-        <Wrapper>
-            <Top>
-                <Left>
-                    <CryptoInput activeInput={activeInput} setActiveInput={setActiveInput} />
-                </Left>
-                <Middle>
-                    {!isLargeLayoutSize && (
-                        <FractionButtons
-                            disabled={isBalanceZero}
-                            onFractionClick={setRatioAmount}
-                            onAllClick={setAllAmount}
-                        />
-                    )}
-                    <StyledIcon icon="TRANSFER" size={16} />
-                    {!isLargeLayoutSize && <EmptyDiv />}
-                </Middle>
-                <Right>
-                    <FiatInput activeInput={activeInput} setActiveInput={setActiveInput} />
-                </Right>
-            </Top>
+        <Wrapper responsiveSize="LG">
+            <Left>
+                <CryptoInput activeInput={activeInput} setActiveInput={setActiveInput} />
+            </Left>
+            <Middle responsiveSize="LG">
+                {!isLargeLayoutSize && (
+                    <FractionButtons
+                        disabled={isBalanceZero}
+                        onFractionClick={setRatioAmount}
+                        onAllClick={setAllAmount}
+                    />
+                )}
+                <StyledIcon responsiveSize="LG" icon="TRANSFER" size={16} />
+                {!isLargeLayoutSize && <EmptyDiv />}
+            </Middle>
+            <Right>
+                <FiatInput activeInput={activeInput} setActiveInput={setActiveInput} />
+            </Right>
             {isLargeLayoutSize && (
                 <FractionButtons
                     disabled={isBalanceZero}

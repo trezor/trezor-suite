@@ -1,7 +1,8 @@
-import { Icon, variables, useTheme, SuiteThemeColors } from '@trezor/components';
+import { useTheme, SuiteThemeColors } from '@trezor/components';
 import React, { useCallback, useEffect } from 'react';
 import { DeepMap, FieldError } from 'react-hook-form';
 import styled from 'styled-components';
+import BigNumber from 'bignumber.js';
 import { useCoinmarketExchangeFormContext } from '@wallet-hooks/useCoinmarketExchangeForm';
 import SendCryptoInput from './SendCryptoInput';
 import FiatInput from './FiatInput';
@@ -9,49 +10,14 @@ import ReceiveCryptoSelect from './ReceiveCryptoSelect';
 import FractionButtons from '@wallet-components/CoinMarketFractionButtons';
 import { CRYPTO_INPUT, ExchangeFormState, FIAT_INPUT } from '@wallet-types/coinmarketExchangeForm';
 import { useLayoutSize } from '@suite/hooks/suite';
-import BigNumber from 'bignumber.js';
+import { Wrapper, Left, Middle, Right, StyledIcon } from '@wallet-views/coinmarket';
 
-const Wrapper = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
+const StyledLeft = styled(Left)`
+    flex-basis: 50%;
 `;
 
-const Top = styled.div`
-    display: flex;
-    flex: 1;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
-        flex-direction: column;
-    }
-`;
-
-const LeftWrapper = styled.div`
-    display: flex;
-    flex: 1;
-`;
-
-const RightWrapper = styled.div`
-    display: flex;
-    justify-content: flex-end;
-`;
-
-const MiddleWrapper = styled.div`
-    display: flex;
+const StyledMiddle = styled(Middle)`
     min-width: 35px;
-    height: 48px;
-    align-items: center;
-    justify-content: center;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
-        padding-bottom: 27px;
-    }
-`;
-
-const StyledIcon = styled(Icon)`
-    @media screen and (max-width: ${variables.SCREEN_SIZE.XL}) {
-        transform: rotate(90deg);
-    }
 `;
 
 const Line = styled.div<{ color: string }>`
@@ -150,32 +116,30 @@ const Inputs = () => {
         : new BigNumber(account.formattedBalance).isZero();
 
     return (
-        <Wrapper>
-            <Top>
-                <LeftWrapper>
-                    <SendCryptoInput />
-                    {!tokenData && (
-                        <>
-                            <Line color={getLineDividerColor(theme, errors, amount, fiat)} />
-                            <FiatInput />
-                        </>
-                    )}
-                </LeftWrapper>
-                <MiddleWrapper>
-                    {!isXLargeLayoutSize && (
-                        <FractionButtons
-                            disabled={isBalanceZero}
-                            onFractionClick={setRatioAmount}
-                            onAllClick={setAllAmount}
-                        />
-                    )}
-                    <StyledIcon icon="TRANSFER" size={16} />
-                    {!isXLargeLayoutSize && <EmptyDiv />}
-                </MiddleWrapper>
-                <RightWrapper>
-                    <ReceiveCryptoSelect />
-                </RightWrapper>
-            </Top>
+        <Wrapper responsiveSize="XL">
+            <StyledLeft>
+                <SendCryptoInput />
+                {!tokenData && (
+                    <>
+                        <Line color={getLineDividerColor(theme, errors, amount, fiat)} />
+                        <FiatInput />
+                    </>
+                )}
+            </StyledLeft>
+            <StyledMiddle responsiveSize="XL">
+                {!isXLargeLayoutSize && (
+                    <FractionButtons
+                        disabled={isBalanceZero}
+                        onFractionClick={setRatioAmount}
+                        onAllClick={setAllAmount}
+                    />
+                )}
+                <StyledIcon responsiveSize="XL" icon="TRANSFER" size={16} />
+                {!isXLargeLayoutSize && <EmptyDiv />}
+            </StyledMiddle>
+            <Right>
+                <ReceiveCryptoSelect />
+            </Right>
             {isXLargeLayoutSize && (
                 <FractionButtons
                     disabled={isBalanceZero}

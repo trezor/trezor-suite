@@ -1,23 +1,13 @@
 import React from 'react';
+import { Controller } from 'react-hook-form';
+import styled from 'styled-components';
 import { Button, Select, variables, Flag } from '@trezor/components';
 import regional from '@wallet-constants/coinmarket/regional';
 import { useCoinmarketBuyFormContext } from '@wallet-hooks/useCoinmarketBuyForm';
 import { getCountryLabelParts } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { CountryOption } from '@wallet-types/coinmarketCommonTypes';
 import { Translation } from '@suite-components';
-import { Controller } from 'react-hook-form';
-import styled from 'styled-components';
-
-const Wrapper = styled.div`
-    display: flex;
-    align-items: center;
-    padding-top: 30px;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: column;
-    }
-`;
+import { FooterWrapper, Left, Right } from '@wallet-views/coinmarket';
 
 const OptionLabel = styled.div`
     display: flex;
@@ -34,16 +24,7 @@ const LabelText = styled.div`
     color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
-const Left = styled.div`
-    display: flex;
-    flex: 1;
-`;
-
-const Right = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: flex-end;
-
+const StyledRight = styled(Right)`
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         justify-content: flex-start;
     }
@@ -61,11 +42,9 @@ const Label = styled.div`
 const StyledButton = styled(Button)`
     display: flex;
     min-width: 200px;
-    margin-left: 20px;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
+    margin-top: 0;
+    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         margin-top: 20px;
-        margin-left: 0;
         width: 100%;
     }
 `;
@@ -84,7 +63,7 @@ const Footer = () => {
     const formIsValid = Object.keys(errors).length === 0;
 
     return (
-        <Wrapper>
+        <FooterWrapper>
             <Left>
                 <Label>
                     <Translation id="TR_BUY_OFFERS_FOR" />
@@ -127,7 +106,7 @@ const Footer = () => {
                     )}
                 />
             </Left>
-            <Right>
+            <StyledRight>
                 <StyledButton
                     isDisabled={!(formIsValid && hasValues) || formState.isSubmitting}
                     isLoading={formState.isSubmitting}
@@ -135,8 +114,8 @@ const Footer = () => {
                 >
                     <Translation id="TR_BUY_SHOW_OFFERS" />
                 </StyledButton>
-            </Right>
-        </Wrapper>
+            </StyledRight>
+        </FooterWrapper>
     );
 };
 

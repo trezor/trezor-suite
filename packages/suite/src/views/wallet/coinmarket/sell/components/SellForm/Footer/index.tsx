@@ -1,23 +1,14 @@
 import React from 'react';
+import { Controller } from 'react-hook-form';
+import styled from 'styled-components';
 import { Button, Select, variables, Flag } from '@trezor/components';
 import regional from '@wallet-constants/coinmarket/regional';
 import { useCoinmarketSellFormContext } from '@wallet-hooks/useCoinmarketSellForm';
 import { getCountryLabelParts } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { Translation } from '@suite-components';
-import { Controller } from 'react-hook-form';
-import styled from 'styled-components';
+
 import { CountryOption } from '@wallet-types/coinmarketCommonTypes';
-
-const Wrapper = styled.div`
-    display: flex;
-    align-items: center;
-    padding-top: 30px;
-    border-top: 1px solid ${props => props.theme.STROKE_GREY};
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: column;
-    }
-`;
+import { FooterWrapper, Left, Right } from '@wallet-views/coinmarket';
 
 const OptionLabel = styled.div`
     display: flex;
@@ -34,16 +25,7 @@ const LabelText = styled.div`
     color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
-const Left = styled.div`
-    display: flex;
-    flex: 1;
-`;
-
-const Right = styled.div`
-    display: flex;
-    flex: 1;
-    justify-content: flex-end;
-
+const StyledRight = styled(Right)`
     @media screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
         justify-content: flex-start;
     }
@@ -92,7 +74,7 @@ const Footer = () => {
     const formIsValid = Object.keys(errors).length === 0;
 
     return (
-        <Wrapper>
+        <FooterWrapper>
             <Left>
                 <Label>
                     <Translation id="TR_SELL_OFFERS_FOR" />
@@ -142,7 +124,7 @@ const Footer = () => {
                     )}
                 />
             </Left>
-            <Right>
+            <StyledRight>
                 <StyledButton
                     isDisabled={!(formIsValid && hasValues) || formState.isSubmitting}
                     isLoading={formState.isSubmitting || isComposing}
@@ -150,8 +132,8 @@ const Footer = () => {
                 >
                     <Translation id="TR_SELL_SHOW_OFFERS" />
                 </StyledButton>
-            </Right>
-        </Wrapper>
+            </StyledRight>
+        </FooterWrapper>
     );
 };
 
