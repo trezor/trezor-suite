@@ -150,30 +150,27 @@
         "afterSign": "scripts/notarize.js"
     },
     "dependencies": {
-        "chalk": "^4.1.0",
+        "chalk": "^4.1.2",
         "electron-is-dev": "^1.2.0",
         "electron-localshortcut": "^3.2.1",
         "electron-store": "^5.1.1",
         "electron-updater": "^4.3.5",
         "node-fetch": "^2.6.1",
-        "openpgp": "^5.0.0-2",
-        "systeminformation": "^5.4.0"
+        "openpgp": "^5.0.0-6",
+        "systeminformation": "^5.8.7"
     },
     "devDependencies": {
-        "@sentry/browser": "^6.10.0",
-        "@sentry/integrations": "^6.10.0",
+        "@sentry/browser": "^6.12.0",
+        "@sentry/integrations": "^6.12.0",
         "@types/electron-localshortcut": "^3.1.0",
-        "@types/next-redux-wrapper": "^3.0.0",
-        "@types/node-fetch": "^2.5.7",
+        "@types/node-fetch": "^2.5.12",
         "@types/react": "^17.0.0",
         "@types/react-dom": "^17.0.0",
-        "@types/react-redux": "^7.1.7",
         "cross-env": "^7.0.3",
         "electron": "^12.0.0",
         "electron-builder": "^22.10.5",
         "electron-notarize": "^1.0.0",
         "esbuild": "^0.8.57",
-        "raw-loader": "^4.0.2",
         "react": "17.0.1",
         "react-dom": "17.0.1",
         "styled-components": "5.1.1"

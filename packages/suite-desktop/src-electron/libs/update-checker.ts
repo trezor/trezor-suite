@@ -44,7 +44,7 @@ export const verifySignature = async (version: string, downloadedFile: string) =
     const verified = await openpgp.verify({
         message,
         signature,
-        publicKeys: pubkey,
+        verificationKeys: pubkey,
         format: 'binary',
     });
 
