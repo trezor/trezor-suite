@@ -8549,7 +8549,7 @@ bip66@^1.1.0, bip66@^1.1.5:
   dependencies:
     safe-buffer "^5.0.1"
 
-bitcoin-ops@^1.3.0:
+bitcoin-ops@^1.3.0, bitcoin-ops@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/bitcoin-ops/-/bitcoin-ops-1.4.1.tgz#e45de620398e22fd4ca6023de43974ff42240278"
   integrity sha512-pef6gxZFztEhaE9RY9HmWVmiIHqCb2OyS4HPKkpc6CIiiOa3Qmuoylxc5P2EkU3w+5eTSifI9SEZC88idAIGow==
@@ -18720,6 +18720,14 @@ mini-create-react-context@^0.4.0:
   dependencies:
     "@babel/runtime" "^7.12.1"
     tiny-warning "^1.0.3"
+
+minimaldata@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/minimaldata/-/minimaldata-1.0.2.tgz#01f3b2c01d8b2739843fd853d40636c5a2eb766b"
+  integrity sha1-AfOywB2LJzmEP9hT1AY2xaLrdms=
+  dependencies:
+    bitcoin-ops "^1.3.0"
+    pushdata-bitcoin "^1.0.1"
 
 minimalistic-assert@^1.0.0, minimalistic-assert@^1.0.1:
   version "1.0.1"
