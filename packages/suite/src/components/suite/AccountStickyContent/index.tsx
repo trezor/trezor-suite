@@ -85,6 +85,9 @@ const AccountStickyContent = ({ account, routeName }: AccountStickyContentProps)
         if (routeName.startsWith('wallet-coinmarket')) {
             return <Translation id="TR_NAV_TRADE" />;
         }
+        if (routeName === 'wallet-sign-verify') {
+            return <Translation id="TR_NAV_SIGN_VERIFY" />;
+        }
     };
 
     return (

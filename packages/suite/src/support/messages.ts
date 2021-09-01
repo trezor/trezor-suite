@@ -2717,7 +2717,7 @@ export default defineMessages({
         id: 'TR_SIGN',
     },
     TR_SIGN_MESSAGE: {
-        defaultMessage: 'Sign Message',
+        defaultMessage: 'Sign message',
         description: 'Header for the Sign and Verify form',
         id: 'TR_SIGN_MESSAGE',
     },
@@ -3025,7 +3025,7 @@ export default defineMessages({
         id: 'TR_VERIFY',
     },
     TR_VERIFY_MESSAGE: {
-        defaultMessage: 'Verify Message',
+        defaultMessage: 'Verify message',
         description: 'Header for the Sign and Verify form',
         id: 'TR_VERIFY_MESSAGE',
     },
@@ -4334,6 +4334,10 @@ export default defineMessages({
         id: 'TR_HELP',
         defaultMessage: 'Support',
     },
+    TR_HEX_FORMAT: {
+        id: 'TR_HEX_FORMAT',
+        defaultMessage: 'Hex format',
+    },
     TR_BUY_TREZOR: {
         id: 'TR_BUY_TREZOR',
         defaultMessage: 'Buy Trezor',
@@ -4836,7 +4840,7 @@ export default defineMessages({
     },
     TR_NAV_SIGN_VERIFY: {
         id: 'TR_NAV_SIGN_VERIFY',
-        defaultMessage: 'Sign & verify',
+        defaultMessage: 'Sign/Verify message',
     },
     TR_BALANCE: {
         id: 'TR_BALANCE',
