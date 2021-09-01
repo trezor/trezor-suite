@@ -5,6 +5,10 @@
 
 import * as typeforce from 'typeforce';
 
+export type StackElement = Buffer | number;
+export type Stack = StackElement[];
+export type StackFunction = () => Stack;
+
 const SATOSHI_MAX = 21 * 1e14;
 export function Satoshi(value: number) {
     return typeforce.UInt53(value) && value <= SATOSHI_MAX;

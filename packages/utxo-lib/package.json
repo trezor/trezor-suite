@@ -29,8 +29,14 @@
         "type-check": "tsc --project tsconfig.json",
         "build:lib": "rimraf lib && tsc --p ./tsconfig.lib.json"
     },
-    "devDependencies": {},
     "dependencies": {
+        "bip66": "^1.1.5",
+        "bitcoin-ops": "^1.4.1",
+        "pushdata-bitcoin": "^1.0.1",
+        "tiny-secp256k1": "^2.0.0",
         "typeforce": "^1.18.0"
+    },
+    "devDependencies": {
+        "minimaldata": "^1.0.2"
     }
 }

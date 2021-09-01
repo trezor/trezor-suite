@@ -3,5 +3,7 @@ module.exports = {
     parserOptions: {
         project: './tsconfig.json',
     },
-    rules: {},
+    rules: {
+        'no-bitwise': 'off', // airbnb-base: used in hardending
+    },
 };
