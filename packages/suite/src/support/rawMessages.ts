@@ -4311,6 +4311,10 @@ const messages = {
         id: 'TR_HELP',
         defaultMessage: 'Support',
     },
+    TR_HEX_FORMAT: {
+        id: 'TR_HEX_FORMAT',
+        defaultMessage: 'Hex format',
+    },
     TR_BUY_TREZOR: {
         id: 'TR_BUY_TREZOR',
         defaultMessage: 'Buy Trezor',
