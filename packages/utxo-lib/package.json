@@ -32,11 +32,14 @@
     "dependencies": {
         "bip66": "^1.1.5",
         "bitcoin-ops": "^1.4.1",
+        "blake-hash": "^2.0.0",
+        "create-hash": "^1.2.0",
         "pushdata-bitcoin": "^1.0.1",
         "tiny-secp256k1": "^2.0.0",
         "typeforce": "^1.18.0"
     },
     "devDependencies": {
+        "@types/create-hash": "^1.2.2",
         "minimaldata": "^1.0.2"
     }
 }

@@ -64,3 +64,5 @@ declare module 'pushdata-bitcoin' {
         offset: number,
     ): { opcode: number; number: number; size: number };
 }
+
+declare module 'blake-hash';
