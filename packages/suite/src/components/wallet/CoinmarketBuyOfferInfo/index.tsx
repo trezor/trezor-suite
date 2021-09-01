@@ -3,11 +3,7 @@ import styled from 'styled-components';
 import { BuyTrade, BuyProviderInfo } from 'invity-api';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { variables, CoinLogo } from '@trezor/components';
-import {
-    CoinmarketPaymentType,
-    CoinmarketProviderInfo,
-    CoinmarketTransactionId,
-} from '@wallet-components';
+import { PaymentType, CoinmarketProviderInfo, CoinmarketTransactionId } from '@wallet-components';
 import { Account } from '@wallet-types';
 import { Translation, AccountLabeling } from '@suite-components';
 
