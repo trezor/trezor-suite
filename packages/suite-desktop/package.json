@@ -153,7 +153,7 @@
         "chalk": "^4.1.2",
         "electron-is-dev": "^1.2.0",
         "electron-localshortcut": "^3.2.1",
-        "electron-store": "^5.1.1",
+        "electron-store": "^8.0.0",
         "electron-updater": "^4.3.5",
         "node-fetch": "^2.6.1",
         "openpgp": "^5.0.0-6",
