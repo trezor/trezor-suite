@@ -97,13 +97,14 @@ const ArrowUp = styled.div`
     z-index: 10001;
 `;
 
-const Label = styled.label`
+const Label = styled.div`
     display: flex;
     min-height: 32px;
     justify-content: space-between;
 `;
 
-const Left = styled.div`
+const Left = styled.label`
+    display: block;
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     padding: 0 0 12px 0;
