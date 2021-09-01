@@ -5,7 +5,7 @@
     "repository": "https://github.com/trezor/trezor-suite.git",
     "license": "SEE LICENSE IN LICENSE.md",
     "engines": {
-        "node": ">=12",
+        "node": ">=14",
         "yarn": ">=1.22.0"
     },
     "workspaces": {
