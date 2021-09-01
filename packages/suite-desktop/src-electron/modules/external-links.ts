@@ -2,23 +2,21 @@
  * Opens external links in the default browser (displays a warning when using Tor)
  */
 import { shell, dialog } from 'electron';
+import { HandlerDetails } from 'electron/main';
 
 import * as config from '../config';
 
 const init = ({ mainWindow, store }: Dependencies) => {
     const { logger } = global;
 
-    const handleExternalLink = (event: Event, url: string) => {
-        if (config.oauthUrls.some(u => url.startsWith(u))) {
-            event.preventDefault();
+    mainWindow.webContents.setWindowOpenHandler((details: HandlerDetails) => {
+        const { url } = details;
 
+        if (config.oauthUrls.some(u => url.startsWith(u))) {
             logger.info('external-links', `${url} was allowed (OAuth list)`);
-            return shell.openExternal(url);
         }
 
         if (url !== mainWindow.webContents.getURL()) {
-            event.preventDefault();
-
             const torSettings = store.getTorSettings();
             if (torSettings.running) {
                 // TODO: Replace with in-app modal
@@ -33,16 +31,20 @@ const init = ({ mainWindow, store }: Dependencies) => {
                     `${url} was ${cancel ? 'not ' : ''}allowed by user in TOR mode`,
                 );
 
-                // Cancel
-                if (cancel) return;
+                if (cancel) {
+                    // do nothing
+                    return { action: 'deny' };
+                }
             }
             logger.info('external-links', `${url} opened in default browser`);
-            shell.openExternal(url);
         }
-    };
 
-    mainWindow.webContents.on('new-window', handleExternalLink);
-    mainWindow.webContents.on('will-navigate', handleExternalLink);
+        // open URL in the user's default browser instead of headless browser window
+        shell.openExternal(url);
+
+        // do not open headless browser window
+        return { action: 'deny' };
+    });
 };
 
 export default init;
