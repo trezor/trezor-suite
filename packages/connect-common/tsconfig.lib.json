@@ -8,6 +8,7 @@
         "strict": true,
         "declaration": true,
         "removeComments": true,
+        "noImplicitReturns": true,
         "types": ["jest", "node"]
     },
     "include": ["./src/index.ts"],
