@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Icon, useTheme } from '@trezor/components';
 
 import { moveCaretToEndOfContentEditable } from '@suite-utils/dom';
+import { KEY_CODE } from '@suite/constants/suite/keyCode';
 
 const IconWrapper = styled.div<{ bgColor: string }>`
     display: flex;
@@ -75,26 +76,26 @@ export const withEditable =
         useEffect(() => {
             const keyboardHandler = (event: KeyboardEvent) => {
                 event.stopPropagation();
-                switch (event.keyCode) {
+                switch (event.code) {
                     // backspace
-                    case 8:
+                    case KEY_CODE.CODE_BACK_SPACE:
                         if (!touched && divRef?.current) {
                             divRef.current.textContent = '';
                         }
 
                         break;
                     // enter,
-                    case 13:
+                    case KEY_CODE.CODE_RETURN:
                         submit(divRef?.current?.textContent);
                         break;
                     // escape
-                    case 27:
+                    case KEY_CODE.CODE_ESCAPE:
                         onBlur();
                         break;
                     // right arrow:
                     // tab
-                    case 39:
-                    case 9: {
+                    case KEY_CODE.CODE_RIGHT:
+                    case KEY_CODE.CODE_TAB: {
                         event.preventDefault();
                         if (divRef?.current) {
                             moveCaretToEndOfContentEditable(divRef.current);

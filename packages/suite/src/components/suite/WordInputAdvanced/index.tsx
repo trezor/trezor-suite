@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Button, ButtonPin } from '@trezor/components';
 import { Translation, TrezorLink, DeviceMatrixExplanation } from '@suite-components';
 import { URLS } from '@suite-constants';
+import { KEY_CODE } from '@suite/constants/suite/keyCode';
 
 const Wrapper = styled.div`
     display: flex;
@@ -43,45 +44,45 @@ const WordInputAdvanced = (props: Props) => {
     useEffect(() => {
         const keyboardHandler = (event: KeyboardEvent) => {
             event.preventDefault();
-            if (event.keyCode === 8) {
+            if (event.code === KEY_CODE.CODE_BACK_SPACE) {
                 backspace();
             }
-            switch (event.keyCode) {
+            switch (event.code) {
                 // numeric and numpad
-                case 49:
-                case 97:
+                case KEY_CODE.CODE_1:
+                case KEY_CODE.CODE_NUMPAD1:
                     onSubmit('1');
                     break;
-                case 50:
-                case 98:
+                case KEY_CODE.CODE_2:
+                case KEY_CODE.CODE_NUMPAD2:
                     onSubmit('2');
                     break;
-                case 51:
-                case 99:
+                case KEY_CODE.CODE_3:
+                case KEY_CODE.CODE_NUMPAD3:
                     onSubmit('3');
                     break;
-                case 52:
-                case 100:
+                case KEY_CODE.CODE_4:
+                case KEY_CODE.CODE_NUMPAD4:
                     onSubmit('4');
                     break;
-                case 53:
-                case 101:
+                case KEY_CODE.CODE_5:
+                case KEY_CODE.CODE_NUMPAD5:
                     onSubmit('5');
                     break;
-                case 54:
-                case 102:
+                case KEY_CODE.CODE_6:
+                case KEY_CODE.CODE_NUMPAD6:
                     onSubmit('6');
                     break;
-                case 55:
-                case 103:
+                case KEY_CODE.CODE_7:
+                case KEY_CODE.CODE_NUMPAD7:
                     onSubmit('7');
                     break;
-                case 56:
-                case 104:
+                case KEY_CODE.CODE_8:
+                case KEY_CODE.CODE_NUMPAD8:
                     onSubmit('8');
                     break;
-                case 57:
-                case 105:
+                case KEY_CODE.CODE_9:
+                case KEY_CODE.CODE_NUMPAD9:
                     onSubmit('9');
                     break;
                 default:

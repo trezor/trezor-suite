@@ -296,7 +296,7 @@ const Select = ({
         // This function is executed when user presses keyboard
         if (useKeyPressScroll) {
             // Get char value of pressed key
-            const charValue = String.fromCharCode(e.keyCode);
+            const charValue = e.key;
 
             // Get current timestamp and check how long it is since the last keyPress event happened.
             const currentTimestamp = new Date().getTime();

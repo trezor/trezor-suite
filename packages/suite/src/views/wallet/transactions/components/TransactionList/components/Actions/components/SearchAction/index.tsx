@@ -10,6 +10,7 @@ import { Account } from '@wallet-types';
 import { Translation } from '@suite-components';
 import { isEnabled } from '@suite-utils/features';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { KEY_CODE } from '@suite/constants/suite';
 
 const Wrapper = styled.div<{ expanded: boolean }>`
     margin-right: 20px;
@@ -69,7 +70,7 @@ const SearchAction = ({ account, search, setSearch, setSelectedPage }: Props) =>
 
     const onKeyDown = useCallback(e => {
         // Handle esc (unfocus)
-        if (e.keyCode === 27 && inputRef.current) {
+        if (e.code === KEY_CODE.CODE_ESCAPE && inputRef.current) {
             inputRef.current.blur();
         }
     }, []);

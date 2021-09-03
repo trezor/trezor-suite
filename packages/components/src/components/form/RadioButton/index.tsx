@@ -1,4 +1,5 @@
 import React from 'react';
+import { KEY_CODE } from 'src/config/keyCode';
 import styled from 'styled-components';
 import { FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
 
@@ -58,7 +59,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const handleKeyboard = (event: React.KeyboardEvent<HTMLElement>, onClick: Props['onClick']) => {
-    if (event.keyCode === 32) {
+    if (event.code === KEY_CODE.CODE_SPACE) {
         onClick(event);
     }
 };

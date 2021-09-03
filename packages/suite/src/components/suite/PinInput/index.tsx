@@ -4,6 +4,7 @@ import { Button, ButtonPin } from '@trezor/components';
 import InputPin from './components/InputPin';
 import { Translation } from '@suite-components';
 import { MAX_LENGTH } from '@suite-constants/inputs';
+import { KEY_CODE } from '@suite/constants/suite';
 
 const Wrapper = styled.div`
     display: flex;
@@ -72,51 +73,51 @@ const PinInput = ({ isSubmitting, onPinSubmit }: Props) => {
     useEffect(() => {
         const keyboardHandler = (event: KeyboardEvent) => {
             event.preventDefault();
-            switch (event.keyCode) {
-                case 13:
+            switch (event.code) {
+                case KEY_CODE.CODE_RETURN:
                     // enter,
                     submit();
                     break;
                 // backspace
-                case 8:
+                case KEY_CODE.CODE_BACK_SPACE:
                     onPinBackspace();
                     break;
 
                 // numeric and numpad
-                case 49:
-                case 97:
+                case KEY_CODE.CODE_1:
+                case KEY_CODE.CODE_NUMPAD1:
                     onPinAdd('1');
                     break;
-                case 50:
-                case 98:
+                case KEY_CODE.CODE_2:
+                case KEY_CODE.CODE_NUMPAD2:
                     onPinAdd('2');
                     break;
-                case 51:
-                case 99:
+                case KEY_CODE.CODE_3:
+                case KEY_CODE.CODE_NUMPAD3:
                     onPinAdd('3');
                     break;
-                case 52:
-                case 100:
+                case KEY_CODE.CODE_4:
+                case KEY_CODE.CODE_NUMPAD4:
                     onPinAdd('4');
                     break;
-                case 53:
-                case 101:
+                case KEY_CODE.CODE_5:
+                case KEY_CODE.CODE_NUMPAD5:
                     onPinAdd('5');
                     break;
-                case 54:
-                case 102:
+                case KEY_CODE.CODE_6:
+                case KEY_CODE.CODE_NUMPAD6:
                     onPinAdd('6');
                     break;
-                case 55:
-                case 103:
+                case KEY_CODE.CODE_7:
+                case KEY_CODE.CODE_NUMPAD7:
                     onPinAdd('7');
                     break;
-                case 56:
-                case 104:
+                case KEY_CODE.CODE_8:
+                case KEY_CODE.CODE_NUMPAD8:
                     onPinAdd('8');
                     break;
-                case 57:
-                case 105:
+                case KEY_CODE.CODE_9:
+                case KEY_CODE.CODE_NUMPAD9:
                     onPinAdd('9');
                     break;
                 default:
