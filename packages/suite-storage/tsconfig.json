@@ -3,7 +3,7 @@
     "compilerOptions": {
         "baseUrl": "./",
         "target": "es5",
-        "module": "commonjs", // jest in suite has a problem with es2015, idk why 
+        "module": "commonjs", // jest in suite has a problem with es2015, idk why
         "lib": ["es2015", "dom"],
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
@@ -13,6 +13,7 @@
         "declaration": true,
         "declarationMap": true,
         "noImplicitThis": true,
+        "noImplicitReturns": true,
         "noImplicitAny": true,
         "strictNullChecks": true,
         "jsx": "react",
