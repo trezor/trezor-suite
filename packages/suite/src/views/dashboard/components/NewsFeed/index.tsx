@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled, { useTheme, css } from 'styled-components';
-import TextTruncate from 'react-text-truncate';
+import Truncate from 'react-truncate';
 import { Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
 import { Button, variables } from '@trezor/components';
@@ -117,20 +117,10 @@ const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
                         <Image src={isTor ? toTorUrl(item.thumbnail) : item.thumbnail} />
                         <Content>
                             <Title>
-                                <TextTruncate
-                                    line={2}
-                                    element="div"
-                                    truncateText="…"
-                                    text={item.title}
-                                />
+                                <Truncate lines={2}>{item.title}</Truncate>
                             </Title>
                             <Description>
-                                <TextTruncate
-                                    line={3}
-                                    element="div"
-                                    truncateText="…"
-                                    text={item.description}
-                                />
+                                <Truncate lines={3}>{item.description}</Truncate>
                             </Description>
                             <ReadMore>
                                 <Button
