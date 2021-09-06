@@ -141,10 +141,14 @@ export const getFwVersion = (device: KnownDevice) => {
     return `${features.major_version}.${features.minor_version}.${features.patch_version}`;
 };
 
+export const supportIntermediary = (features: TrezorDevice['features']) =>
+    features?.major_version === 1;
+
 export const getFwUpdateVersion = (device: AcquiredDevice) => {
     // Thanks to intermediary FW we are always able to upgrade to the latest version on Model one.
-    const supportIntermediary = device.features.major_version === 1;
-    const version = device.firmwareRelease?.[supportIntermediary ? 'latest' : 'release']?.version;
+    const version =
+        device.firmwareRelease?.[supportIntermediary(device.features) ? 'latest' : 'release']
+            ?.version;
     return version?.join('.') || null;
 };
 
@@ -355,31 +359,26 @@ export const getPhysicalDeviceCount = (devices: Device[]) => {
     return uniqueIds.size;
 };
 
-export const parseFirmwareChangelog = (firmwareRelease: TrezorDevice['firmwareRelease']) => {
+export const parseFirmwareChangelog = (
+    features: TrezorDevice['features'],
+    firmwareRelease: TrezorDevice['firmwareRelease'],
+) => {
     if (!firmwareRelease?.changelog || firmwareRelease?.changelog?.length === 0) return null;
-    const changelogs = firmwareRelease.changelog;
-
+    // Generate latest FW changelog if device has intermediary support
+    const release = firmwareRelease[supportIntermediary(features) ? 'latest' : 'release'];
     // Default changelog format is just a long string where individual changes are separated by "*" symbol.
-
-    return changelogs.map(log => {
-        // get array of individual changes for a given version
-        const parsedChangelogEntries = log.changelog
-            .trim()
-            .split(/\*/g)
-            .map(l => l.trim());
-
-        // The first element of logsArr is an empty array, so get rid of it (but still make sure it's really empty).
-        if (!parsedChangelogEntries[0]) {
-            parsedChangelogEntries.shift();
-        }
-
-        // Get firmware version, convert to string and use it as a key in custom object
-        const versionString = log.version.join('.'); // e.g. [1,9,8] => "1.9.8"
-        return {
-            url: log.url,
-            notes: log.notes,
-            changelog: parsedChangelogEntries,
-            versionString,
-        };
-    });
+    const changelog = release.changelog
+        .trim()
+        .split('*')
+        .map(l => l.trim())
+        .filter(l => l.length);
+    const { url, notes } = release;
+    // Get firmware version, convert to string and use it as a key in custom object
+    const versionString = release.version.join('.'); // e.g. [1,9,8] => "1.9.8"
+    return {
+        url,
+        notes,
+        changelog,
+        versionString,
+    };
 };
