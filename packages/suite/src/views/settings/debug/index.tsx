@@ -7,7 +7,7 @@ import * as suiteActions from '@suite-actions/suiteActions';
 import { useDevice, useSelector, useActions } from '@suite-hooks';
 import { openGithubIssue } from '@suite/services/github';
 import invityAPI from '@suite-services/invityAPI';
-import { isTranslationMode, setTranslationMode } from '@suite-utils/translation';
+import { isTranslationMode, setTranslationMode } from '@suite-utils/l10n';
 import { isWeb } from '@suite-utils/env';
 
 const StyledActionColumn = styled(ActionColumn)`

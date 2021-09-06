@@ -5,7 +5,7 @@ import { DISCOVERY } from '@wallet-actions/constants';
 import { Action, TrezorDevice, Lock, SuiteThemeVariant, SuiteThemeColors } from '@suite-types';
 import type { Locale } from '@suite-config/languages';
 import { isWeb } from '@suite-utils/env';
-import { ensureLocale } from '@suite-utils/translation';
+import { ensureLocale } from '@suite-utils/l10n';
 
 export interface DebugModeOptions {
     invityAPIUrl?: string;
