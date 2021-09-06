@@ -38,7 +38,8 @@ const ExportAction = ({ account }: Props) => {
                         account.index + 1
                     }`;
                 await exportTransactions(account, accountName, type);
-            } catch {
+            } catch (error) {
+                console.error('Export transaction failed: ', error);
                 addToast({
                     type: 'error',
                     error: translationString('TR_EXPORT_FAIL'),
