@@ -2668,6 +2668,10 @@ const messages = {
         defaultMessage: 'Settings',
         id: 'TR_SETTINGS',
     },
+    TR_SETTINGS_SAME_AS_SYSTEM: {
+        defaultMessage: 'System',
+        id: 'TR_SETTINGS_SAME_AS_SYSTEM',
+    },
     TR_SHOW_ADDRESS_ANYWAY: {
         defaultMessage: 'Show address anyway',
         id: 'TR_SHOW_ADDRESS_ANYWAY',
@@ -5929,14 +5933,22 @@ const messages = {
         id: 'TR_SUITE_WEB_LANDING_START_BOTTOM_HEADLINE',
         defaultMessage: 'Dozens of features to discover.{lineBreak}Try Suite now.',
     },
-    TR_DARK_MODE: {
-        id: 'TR_DARK_MODE',
-        defaultMessage: 'Dark mode',
+    TR_COLOR_SCHEME: {
+        id: 'TR_COLOR_SCHEME',
+        defaultMessage: 'Color scheme',
     },
-    TR_DARK_MODE_DESCRIPTION: {
-        id: 'TR_DARK_MODE_DESCRIPTION',
+    TR_COLOR_SCHEME_DESCRIPTION: {
+        id: 'TR_COLOR_SCHEME_DESCRIPTION',
         defaultMessage:
-            'This color scheme uses light-colored text, icons, and graphical user interface elements on a dark background.',
+            'You can choose whether the application uses dark-colored elements on a light background or light-colored elements on a dark background.',
+    },
+    TR_COLOR_SCHEME_DARK: {
+        id: 'TR_COLOR_SCHEME_DARK',
+        defaultMessage: 'Dark',
+    },
+    TR_COLOR_SCHEME_LIGHT: {
+        id: 'TR_COLOR_SCHEME_LIGHT',
+        defaultMessage: 'Light',
     },
     TR_DEVICE_IS_IN_UNEXPECTED_MODE: {
         id: 'TR_DEVICE_IS_IN_UNEXPECTED_MODE',

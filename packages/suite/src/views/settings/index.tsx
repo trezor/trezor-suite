@@ -9,12 +9,12 @@ import {
     ActionSelect,
     Analytics,
     Theme,
+    Language,
     Section,
     SectionItem,
     TextColumn,
 } from '@suite-components/Settings';
-import { FIAT, LANGUAGES } from '@suite-config';
-import type { Locale } from '@suite-config/languages';
+import { FIAT } from '@suite-config';
 import { useAnalytics, useDevice, useSelector, useActions } from '@suite-hooks';
 import { Button, Tooltip, Switch } from '@trezor/components';
 import { capitalizeFirstLetter } from '@suite-utils/string';
@@ -22,7 +22,6 @@ import { capitalizeFirstLetter } from '@suite-utils/string';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
 import * as storageActions from '@suite-actions/storageActions';
-import * as languageActions from '@settings-actions/languageActions';
 import * as routerActions from '@suite-actions/routerActions';
 import * as metadataActions from '@suite-actions/metadataActions';
 import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
@@ -59,20 +58,17 @@ const Settings = () => {
     const { isLocked, device } = useDevice();
     const isDeviceLocked = isLocked();
 
-    const { language, localCurrency, metadata, desktopUpdate, tor, torOnionLinks } = useSelector(
-        state => ({
-            language: state.suite.settings.language,
-            localCurrency: state.wallet.settings.localCurrency,
-            metadata: state.metadata,
-            desktopUpdate: state.desktopUpdate,
-            tor: state.suite.tor,
-            torOnionLinks: state.suite.settings.torOnionLinks,
-        }),
-    );
+    const { localCurrency, metadata, desktopUpdate, tor, torOnionLinks } = useSelector(state => ({
+        localCurrency: state.wallet.settings.localCurrency,
+        metadata: state.metadata,
+        desktopUpdate: state.desktopUpdate,
+        tor: state.suite.tor,
+        torOnionLinks: state.suite.settings.torOnionLinks,
+    }));
+
     const {
         setLocalCurrency,
         removeDatabase,
-        fetchLocale,
         goto,
         initMetadata,
         disableMetadata,
@@ -82,7 +78,6 @@ const Settings = () => {
     } = useActions({
         setLocalCurrency: walletSettingsActions.setLocalCurrency,
         removeDatabase: storageActions.removeDatabase,
-        fetchLocale: languageActions.fetchLocale,
         goto: routerActions.goto,
         initMetadata: metadataActions.init,
         disableMetadata: metadataActions.disableMetadata,
@@ -116,33 +111,7 @@ const Settings = () => {
     return (
         <SettingsLayout data-test="@settings/index">
             <Section title={<Translation id="TR_LOCALIZATION" />}>
-                <SectionItem data-test="@settings/language">
-                    <TextColumn title={<Translation id="TR_LANGUAGE" />} />
-                    <ActionColumn>
-                        <ActionSelect
-                            hideTextCursor
-                            useKeyPressScroll
-                            noTopLabel
-                            value={{
-                                value: language,
-                                label: LANGUAGES[language].name,
-                            }}
-                            options={Object.entries(LANGUAGES)
-                                .filter(([, l]) => l.complete)
-                                .map(([value, { name }]) => ({ value, label: name }))}
-                            onChange={(option: { value: Locale; label: string }) => {
-                                fetchLocale(option.value);
-                                analytics.report({
-                                    type: 'settings/general/change-language',
-                                    payload: {
-                                        language: option.value,
-                                    },
-                                });
-                            }}
-                            data-test="@settings/language-select"
-                        />
-                    </ActionColumn>
-                </SectionItem>
+                <Language />
 
                 <SectionItem data-test="@settings/fiat">
                     <TextColumn title={<Translation id="TR_PRIMARY_FIAT" />} />
