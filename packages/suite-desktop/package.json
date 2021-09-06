@@ -170,7 +170,7 @@
         "electron": "^14.0.0",
         "electron-builder": "^22.11.7",
         "electron-notarize": "^1.1.0",
-        "esbuild": "^0.9.7",
+        "esbuild": "^0.12.25",
         "react": "17.0.1",
         "react-dom": "17.0.1",
         "styled-components": "5.1.1"
