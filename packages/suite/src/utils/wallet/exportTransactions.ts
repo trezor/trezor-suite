@@ -47,8 +47,7 @@ const dateTimeFormat = {
 
 const loadPdfMake = async () => {
     const pdfMake = await import(/* webpackChunkName: "pdfMake" */ 'pdfmake/build/pdfmake');
-    const pdfFonts = await import(/* webpackChunkName: "pdfFonts" */ 'pdfmake/build/vfs_fonts');
-    pdfMake.vfs = pdfFonts.pdfMake.vfs;
+    await import(/* webpackChunkName: "pdfFonts" */ 'pdfmake/build/vfs_fonts');
 
     return pdfMake;
 };
