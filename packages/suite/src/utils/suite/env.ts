@@ -145,13 +145,19 @@ export const setOnBeforeUnloadListener = (callback: () => void) => {
     window.addEventListener('beforeunload', callback);
 };
 
-export const getOsTheme = (): SuiteThemeVariant => {
-    if (typeof window === 'undefined') return 'light'; // in SSR, where window object is not defined, just return light theme
-    // retrieving os color scheme is supported in Chrome 76+, Firefox 67+
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        return 'dark';
-    }
-    return 'light';
+const getDarkThemeQuery = (): MediaQueryList | undefined => {
+    const matchMedia = window?.matchMedia;
+    return matchMedia && matchMedia('(prefers-color-scheme: dark)');
+};
+
+export const getOsTheme = (): SuiteThemeVariant =>
+    getDarkThemeQuery()?.matches ? 'dark' : 'light';
+
+export const watchOsTheme = (callback: (theme: SuiteThemeVariant) => void) => {
+    const onThemeChange = (e: MediaQueryListEvent) => callback(e.matches ? 'dark' : 'light');
+    const query = getDarkThemeQuery();
+    query?.addEventListener('change', onThemeChange);
+    return () => query?.removeEventListener('change', onThemeChange);
 };
 
 /* Working only in desktop app */
