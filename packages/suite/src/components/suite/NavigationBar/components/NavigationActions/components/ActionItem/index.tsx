@@ -51,8 +51,8 @@ const Label = styled.span`
 
 const AlertDotWrapper = styled.div`
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 0;
+    right: 0;
     width: 9px;
     height: 9px;
     border-radius: 50%;
@@ -78,8 +78,8 @@ const Indicator = styled.div`
     width: 10px;
     border-radius: 50%;
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 0px;
+    right: -1px;
 `;
 
 interface CommonProps extends Pick<React.HTMLAttributes<HTMLDivElement>, 'onClick'> {
