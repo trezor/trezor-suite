@@ -1150,7 +1150,7 @@ const definedMessages = defineMessages({
     },
     TR_ALLOW_ANALYTICS_DESCRIPTION: {
         defaultMessage:
-            'Trezor Suite does NOT track any balance-related or personal data, all anonymously',
+            'Trezor Suite does NOT track any balance-related or personal data, all anonymously.',
         id: 'TR_ALLOW_ANALYTICS_DESCRIPTION',
     },
     TR_ASSETS: {
@@ -1963,12 +1963,12 @@ const definedMessages = defineMessages({
     },
     TR_ONBOARDING_DATA_COLLECTION_HEADING: {
         id: 'TR_ONBOARDING_DATA_COLLECTION_HEADING',
-        defaultMessage: 'Anonymous data collection',
+        defaultMessage: 'ExternalLinkection',
     },
     TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION: {
         id: 'TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION',
         defaultMessage:
-            'All data is anonymous and only for product development purposes. Read more in <a>Terms & Conditions</a>.',
+            'To help us improve Trezor Suite, you can let your application send us anonymous information about how you use it. We do NOT track any personal or balance-related data.',
     },
     TR_HIDE_ADVANCED_OPTIONS: {
         defaultMessage: 'Hide advanced options',
