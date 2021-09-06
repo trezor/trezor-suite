@@ -35,6 +35,8 @@ in
     ] ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
       Cocoa
       CoreServices
+      p7zip
+      electron
     ]);
     shellHook = ''
       export NODE_OPTIONS=--max_old_space_size=4096
@@ -43,5 +45,7 @@ in
       export ELECTRON_BUILDER_CACHE="$CURDIR/.cache/electron-builder"
     '' + lib.optionalString stdenv.isLinux ''
       export npm_config_build_from_source=true  # tell yarn to not download binaries, but build from source
+      export USE_SYSTEM_7ZA=true
+      export ELECTRON_OVERRIDE_DIST_PATH="${electron}/bin/"
     '';
   }
