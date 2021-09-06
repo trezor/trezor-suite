@@ -4,9 +4,13 @@ import electronLocalshortcut from 'electron-localshortcut';
 const init = ({ mainWindow, src }: Dependencies) => {
     const { logger } = global;
 
-    electronLocalshortcut.register(mainWindow, 'CommandOrControl+Alt+I', () => {
-        logger.info('shortcuts', 'CTRL+ALT+I pressed');
-        mainWindow.webContents.openDevTools();
+    // Register more shortcuts for opening dev tools
+    const openDevToolsShortcuts = ['CommandOrControl+Shift+I', 'CommandOrControl+Alt+I'];
+    openDevToolsShortcuts.forEach(shortcut => {
+        electronLocalshortcut.register(mainWindow, shortcut, () => {
+            logger.info('shortcuts', `${shortcut} pressed`);
+            mainWindow.webContents.openDevTools();
+        });
     });
 
     electronLocalshortcut.register(mainWindow, 'F5', () => {

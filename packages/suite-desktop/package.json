@@ -7,7 +7,7 @@
     "homepage": "https://trezor.io/",
     "main": "dist/app.js",
     "scripts": {
-        "dev": "LAUNCH_ELECTRON=true yarn run dev:local",
+        "dev": "ELECTRON_IS_DEV=1 LAUNCH_ELECTRON=true yarn run dev:local",
         "dev:run": "electron .",
         "dev:prepare": "yarn build:app",
         "dev:local": "rimraf ./build && yarn workspace @trezor/suite-build run dev:desktop",
