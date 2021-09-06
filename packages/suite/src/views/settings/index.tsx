@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { SettingsLayout } from '@settings-components';
-import { Translation } from '@suite-components';
+import { Translation, TrezorLink } from '@suite-components';
 import {
     ActionButton,
     ActionColumn,
@@ -50,8 +50,6 @@ const VersionTooltip = styled(Tooltip)`
     display: inline-flex;
     margin: 0 2px;
 `;
-
-const VersionLink = styled.a``;
 
 const Settings = () => {
     const analytics = useAnalytics();
@@ -366,7 +364,7 @@ const Settings = () => {
                                     values={{
                                         version: (
                                             <VersionTooltip content={process.env.COMMITHASH || ''}>
-                                                <VersionLink
+                                                <TrezorLink
                                                     target="_blank"
                                                     href={`https://github.com/trezor/trezor-suite/commit/${process.env.COMMITHASH}`}
                                                 >
@@ -377,7 +375,7 @@ const Settings = () => {
                                                     >
                                                         {process.env.VERSION}
                                                     </VersionButton>
-                                                </VersionLink>
+                                                </TrezorLink>
                                             </VersionTooltip>
                                         ),
                                     }}
@@ -390,7 +388,7 @@ const Settings = () => {
                                                 id="TR_YOUR_NEW_VERSION"
                                                 values={{
                                                     version: (
-                                                        <VersionLink
+                                                        <TrezorLink
                                                             target="_blank"
                                                             href={getReleaseUrl(
                                                                 desktopUpdate.latest.version,
@@ -403,7 +401,7 @@ const Settings = () => {
                                                             >
                                                                 {desktopUpdate.latest.version}
                                                             </VersionButton>
-                                                        </VersionLink>
+                                                        </TrezorLink>
                                                     ),
                                                 }}
                                             />

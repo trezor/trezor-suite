@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Dropdown } from '@trezor/components';
-import { Translation, ExternalLink, AppNavigationPanel, AppNavigation } from '@suite-components';
+import { Translation, TrezorLink, AppNavigationPanel, AppNavigation } from '@suite-components';
 import { useActions, useSelector } from '@suite-hooks';
 import * as modalActions from '@suite-actions/modalActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import * as routerActions from '@suite-actions/routerActions';
 import { SUPPORT_URL } from '@suite-constants/urls';
 
-const StyledLink = styled(ExternalLink)`
+const StyledLink = styled(TrezorLink)`
     padding: 10px 16px;
     width: 100%;
 `;

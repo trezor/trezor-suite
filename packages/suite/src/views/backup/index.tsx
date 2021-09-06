@@ -6,7 +6,7 @@ import { P, Button, ButtonProps } from '@trezor/components';
 import * as backupActions from '@backup-actions/backupActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
 import { Dispatch, AppState, InjectedModalApplicationProps } from '@suite-types';
-import { Loading, Image, Translation, ExternalLink, Modal } from '@suite-components';
+import { Loading, Image, Translation, TrezorLink, Modal } from '@suite-components';
 import { PreBackupCheckboxes, AfterBackupCheckboxes } from '@backup-components';
 import { canStart, canContinue } from '@backup-utils';
 import { FAILED_BACKUP_URL } from '@suite-constants/urls';
@@ -156,9 +156,13 @@ const Backup = (props: Props) => {
                     <>
                         <StyledP data-test="@backup/already-failed-message">
                             <Translation id="BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION" />
-                            <ExternalLink href={FAILED_BACKUP_URL}>
+                            <TrezorLink
+                                icon="EXTERNAL_LINK"
+                                target="_blank"
+                                href={FAILED_BACKUP_URL}
+                            >
                                 <Translation id="TR_LEARN_MORE" />
-                            </ExternalLink>
+                            </TrezorLink>
                         </StyledP>
                         <StyledImage image="UNI_ERROR" />
                     </>

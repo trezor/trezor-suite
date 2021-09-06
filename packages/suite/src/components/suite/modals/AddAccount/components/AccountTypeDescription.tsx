@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { P } from '@trezor/components';
 import { Network } from '@wallet-types';
-import { Translation, ExternalLink } from '@suite-components';
+import { Translation, TrezorLink } from '@suite-components';
 import { WIKI_BECH32_URL, WIKI_P2SH_URL, WIKI_P2PKH_URL } from '@suite-constants/urls';
 import { getBip43Shortcut } from '@wallet-utils/accountUtils';
 import { ExtendedMessageDescriptor } from '@suite-types';
@@ -50,9 +50,9 @@ export const AccountTypeDescription = ({ network, accountTypes }: Props) => {
     return (
         <Info size="small" textAlign="left">
             <Translation id={description} />{' '}
-            <ExternalLink href={url} size="small">
+            <TrezorLink href={url} size="small">
                 <Translation id="TR_LEARN_MORE" />
-            </ExternalLink>
+            </TrezorLink>
         </Info>
     );
 };

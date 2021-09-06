@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import { Button, ButtonProps, H2, P, variables } from '@trezor/components';
 
 import { SelectWordCount, SelectRecoveryType, Error } from '@recovery-components';
-import { Loading, Translation, CheckItem, ExternalLink, Image, Modal } from '@suite-components';
+import { Loading, Translation, CheckItem, TrezorLink, Image, Modal } from '@suite-components';
 import * as recoveryActions from '@recovery-actions/recoveryActions';
 import { InjectedModalApplicationProps, AppState, Dispatch } from '@suite-types';
 import { WordCount } from '@recovery-types';
@@ -229,9 +229,14 @@ const Recovery = ({
                             description={<Translation id="TR_DRY_RUN_CHECK_ITEM_DESCRIPTION" />}
                             isChecked={understood}
                             link={
-                                <ExternalLink size="tiny" href={URLS.DRY_RUN_URL}>
+                                <TrezorLink
+                                    icon="EXTERNAL_LINK"
+                                    target="_blank"
+                                    size="tiny"
+                                    href={URLS.DRY_RUN_URL}
+                                >
                                     <Translation id="TR_LEARN_MORE" />
-                                </ExternalLink>
+                                </TrezorLink>
                             }
                             onClick={() => setUnderstood(!understood)}
                         />

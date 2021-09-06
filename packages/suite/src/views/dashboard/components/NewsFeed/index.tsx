@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled, { useTheme, css } from 'styled-components';
 import TextTruncate from 'react-text-truncate';
-import { Translation } from '@suite-components';
+import { Translation, TrezorLink } from '@suite-components';
 import { Section } from '@dashboard-components';
 import { Button, variables } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
@@ -78,8 +78,6 @@ const ReadMore = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const MediumLink = styled.a``;
-
 interface Props {
     maxVisibleCount?: number;
 }
@@ -99,11 +97,11 @@ const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
         <Section
             heading={<Translation id="TR_WHATS_NEW" />}
             actions={
-                <MediumLink target="_blank" href={isTor ? toTorUrl(BLOG_URL) : BLOG_URL}>
+                <TrezorLink target="_blank" href={isTor ? toTorUrl(BLOG_URL) : BLOG_URL}>
                     <Button isWhite variant="tertiary" icon="MEDIUM">
                         <Translation id="TR_OPEN_IN_MEDIUM" />
                     </Button>
-                </MediumLink>
+                </TrezorLink>
             }
         >
             <Posts>
