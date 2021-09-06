@@ -1,0 +1,13 @@
+diff --git a/node_modules/app-builder-lib/out/targets/ArchiveTarget.js b/node_modules/app-builder-lib/out/targets/ArchiveTarget.js
+index 77bdfb0..ac6e1d1 100644
+--- a/node_modules/app-builder-lib/out/targets/ArchiveTarget.js
++++ b/node_modules/app-builder-lib/out/targets/ArchiveTarget.js
+@@ -60,7 +60,7 @@ class ArchiveTarget extends core_1.Target {
+             };
+             await archive_1.archive(format, artifactPath, dirToArchive, archiveOptions);
+             if (this.isWriteUpdateInfo && format === "zip") {
+-                updateInfo = await differentialUpdateInfoBuilder_1.appendBlockmap(artifactPath);
++                // updateInfo = await differentialUpdateInfoBuilder_1.appendBlockmap(artifactPath);
+             }
+         }
+         await packager.info.callArtifactBuildCompleted({
