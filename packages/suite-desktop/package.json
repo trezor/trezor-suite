@@ -99,7 +99,7 @@
             "artifactName": "Trezor-Suite-${version}-mac-${arch}.${ext}",
             "hardenedRuntime": true,
             "gatekeeperAssess": false,
-            "darkModeSupport": false,
+            "darkModeSupport": true,
             "entitlements": "entitlements.mac.inherit.plist",
             "entitlementsInherit": "entitlements.mac.inherit.plist",
             "target": [
