@@ -13,6 +13,11 @@ export interface DebugModeOptions {
     bridgeDevMode: boolean;
 }
 
+export interface AutodetectSettings {
+    language: boolean;
+    theme: boolean;
+}
+
 interface Flags {
     initialRun: boolean; // true on very first launch of Suite, will switch to false after completing onboarding process
     // is not saved to storage at the moment, so for simplicity of types set to be optional now
@@ -34,6 +39,7 @@ interface SuiteSettings {
     language: Locale;
     torOnionLinks: boolean;
     debug: DebugModeOptions;
+    autodetect: AutodetectSettings;
 }
 
 export interface SuiteState {
@@ -79,6 +85,10 @@ const initialState: SuiteState = {
             invityAPIUrl: undefined,
             showDebugMenu: false,
             bridgeDevMode: false,
+        },
+        autodetect: {
+            language: true,
+            theme: true,
         },
     },
 };
@@ -146,6 +156,13 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
             case SUITE.SET_THEME:
                 draft.settings.theme.variant = action.variant;
                 draft.settings.theme.colors = action.colors;
+                break;
+
+            case SUITE.SET_AUTODETECT:
+                draft.settings.autodetect = {
+                    ...draft.settings.autodetect,
+                    ...action.payload,
+                };
                 break;
 
             case TRANSPORT.START:

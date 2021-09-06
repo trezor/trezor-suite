@@ -17,7 +17,7 @@ import type {
     SuiteThemeVariant,
     SuiteThemeColors,
 } from '@suite-types';
-import type { DebugModeOptions } from '@suite-reducers/suiteReducer';
+import type { DebugModeOptions, AutodetectSettings } from '@suite-reducers/suiteReducer';
 
 export type SuiteAction =
     | { type: typeof SUITE.INIT }
@@ -77,6 +77,10 @@ export type SuiteAction =
           type: typeof SUITE.SET_THEME;
           variant: SuiteThemeVariant;
           colors: SuiteThemeColors;
+      }
+    | {
+          type: typeof SUITE.SET_AUTODETECT;
+          payload: Partial<AutodetectSettings>;
       };
 
 export const removeButtonRequests = (device: TrezorDevice | undefined) => ({
@@ -99,6 +103,11 @@ export const setTheme = (variant: SuiteThemeVariant, colors?: SuiteThemeColors) 
     type: SUITE.SET_THEME,
     variant,
     colors,
+});
+
+export const setAutodetect = (payload: Partial<AutodetectSettings>) => ({
+    type: SUITE.SET_AUTODETECT,
+    payload,
 });
 
 export const setProcessMode = (
