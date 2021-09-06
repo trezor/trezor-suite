@@ -9,6 +9,10 @@ import { getPathForProject } from '../utils/path';
 
 const distPath = path.join(getPathForProject(project), 'build');
 const config: webpack.Configuration = {
+    stats: {
+        children: true,
+        errorDetails: true,
+    },
     mode: 'development',
     watch: true,
     target: 'web',
@@ -21,12 +25,11 @@ const config: webpack.Configuration = {
     plugins: [
         new WebpackPluginServe({
             port: DEV_PORTS[project],
-            hmr: 'refresh-on-failure',
+            hmr: true,
             static: distPath,
-            progress: 'minimal',
-            // @ts-ignore - Property doesn't exist in types but works
-            ramdisk: false,
-            historyFallback: true,
+            progress: true,
+            // @ts-ignore - https://github.com/shellscape/webpack-plugin-serve#ramdisk
+            ramdisk: true,
             historyFallback: {
                 htmlAcceptHeaders: ['text/html', '*/*'],
                 rewrites: [],
