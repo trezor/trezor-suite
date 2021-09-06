@@ -130,6 +130,7 @@ const storageMiddleware =
             case SUITE.SET_DEBUG_MODE:
             case SUITE.ONION_LINKS:
             case SUITE.SET_THEME:
+            case SUITE.SET_AUTODETECT:
                 api.dispatch(storageActions.saveSuiteSettings());
                 break;
 
