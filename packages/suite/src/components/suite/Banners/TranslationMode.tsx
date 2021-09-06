@@ -1,6 +1,6 @@
 import React from 'react';
 import Wrapper from './components/Wrapper';
-import { setTranslationMode } from '@suite/utils/suite/translation';
+import { setTranslationMode } from '@suite-utils/l10n';
 
 const TranslationMode = () => (
     <Wrapper
