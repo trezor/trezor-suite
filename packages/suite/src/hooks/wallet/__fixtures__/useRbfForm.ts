@@ -585,6 +585,65 @@ export const composeAndSign = [
         },
     },
     {
+        description: 'new utxo txid is the same as rbf txid. decreasing output instead.',
+        store: {
+            selectedAccount: {
+                ...BTC_ACCOUNT,
+                account: {
+                    ...BTC_ACCOUNT.account,
+                    utxo: [
+                        {
+                            amount: '31000',
+                            txid: 'ABCD', // tx id is the same
+                            vout: 0,
+                            address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                            path: "m/44'/0'/0'/0/1",
+                            blockHeight: 0,
+                            confirmations: 0,
+                        },
+                    ],
+                },
+            },
+        },
+        tx: PREPARE_TX({
+            outputs: [
+                {
+                    type: 'payment',
+                    address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                    amount: '31000',
+                    formattedAmount: '0.00031',
+                },
+            ],
+            changeAddress: undefined,
+        }),
+        composedLevels: {
+            normal: {
+                type: 'final',
+                fee: '781',
+                transaction: {
+                    inputs: [{ prev_hash: 'dcba' }],
+                    outputs: [
+                        {
+                            address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                            amount: '30219',
+                        },
+                    ],
+                },
+            },
+        },
+        signedTx: {
+            inputs: [{ prev_hash: 'dcba' }],
+            outputs: [
+                {
+                    address: '1MCgrVZjXRJJJhi2Z6SR11GpRjCyvNjscY',
+                    amount: '30219',
+                    orig_index: 0,
+                    orig_hash: 'ABCD',
+                },
+            ],
+        },
+    },
+    {
         description: 'output decreased. there is not change or new utxo.',
         store: {
             selectedAccount: {
