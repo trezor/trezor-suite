@@ -2,12 +2,11 @@ import path from 'path';
 import webpack from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 
 import routes from '../../suite/src/config/suite/routes';
 import { FLAGS } from '../../suite/src/config/suite/features';
 
-import { assetPrefix, isDev } from '../utils/env';
+import { assetPrefix } from '../utils/env';
 import { getPathForProject } from '../utils/path';
 
 // Configuration for HTML output (html-webpack-plugin)
@@ -62,7 +61,6 @@ const config: webpack.Configuration = {
                     filename: path.join(baseDir, 'build', route.pattern, 'index.html'),
                 }),
         ),
-        ...(isDev ? [new ReactRefreshWebpackPlugin()] : []),
     ],
 };
 
