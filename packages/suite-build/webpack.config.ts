@@ -24,4 +24,10 @@ switch (project) {
     // no default
 }
 
+// Prevent "webpack: TypeError: Do not know how to serialize a BigInt"
+// @ts-ignore
+BigInt.prototype.toJSON = function toJSON() {
+    return this.toString();
+};
+
 module.exports = merge(configs);
