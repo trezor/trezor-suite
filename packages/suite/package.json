@@ -49,7 +49,6 @@
         "react-qr-svg": "^2.3.0",
         "react-redux": "^7.2.2",
         "react-spring": "^8.0.27",
-        "react-text-truncate": "0.16.0",
         "react-toastify": "^6.2.0",
         "react-use": "15.3.8",
         "react-window": "^1.8.6",
