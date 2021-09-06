@@ -27,6 +27,10 @@ const config: webpack.Configuration = {
             // @ts-ignore - Property doesn't exist in types but works
             ramdisk: false,
             historyFallback: true,
+            historyFallback: {
+                htmlAcceptHeaders: ['text/html', '*/*'],
+                rewrites: [],
+            },
             client: {
                 address: `localhost:${DEV_PORTS[project]}`,
                 protocol: 'ws',
