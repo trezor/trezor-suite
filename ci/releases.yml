@@ -32,6 +32,32 @@ suite codesign deploy staging-suite:
   tags:
     - deploy
 
+# Create rollback copy of suite
+suite rollback copy:
+  stage: deploy to production
+  when: manual
+  only:
+    refs:
+      - codesign
+  tags:
+    - deploy
+  script:
+    - aws s3 sync s3://suite.trezor.io s3://rollback-suite.trezor.io
+
+# Messaging system deploy to production
+msg-system codesign deploy:
+  stage: deploy to production
+  when: manual
+  needs:
+    - "msg-system config sign stable"
+  only:
+    refs:
+      - codesign
+  tags:
+    - deploy
+  script:
+    - aws s3 cp packages/suite-data/files/message-system/config.v1.jws s3://data.trezor.io/config/stable/config.v1.jws
+
 # Suite Desktop create a GitHub release and append signed binaries
 suite-desktop github release:
   stage: deploy to production
@@ -61,17 +87,3 @@ release commit messages:
       - /^release\//
   script:
     - ci/scripts/check_release_commit_messages.sh
-
-# Messaging system deploy to production
-msg-system codesign deploy:
-  stage: deploy to production
-  when: manual
-  needs:
-    - "msg-system config sign stable"
-  only:
-    refs:
-      - codesign
-  tags:
-    - deploy
-  script:
-    - aws s3 cp packages/suite-data/files/message-system/config.v1.jws s3://data.trezor.io/config/stable/config.v1.jws
