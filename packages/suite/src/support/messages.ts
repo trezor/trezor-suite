@@ -1963,12 +1963,12 @@ const definedMessages = defineMessages({
     },
     TR_ONBOARDING_DATA_COLLECTION_HEADING: {
         id: 'TR_ONBOARDING_DATA_COLLECTION_HEADING',
-        defaultMessage: 'ExternalLinkection',
+        defaultMessage: 'Anonymous data collection',
     },
     TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION: {
         id: 'TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION',
         defaultMessage:
-            'To help us improve Trezor Suite, you can let your application send us anonymous information about how you use it. We do NOT track any personal or balance-related data.',
+            'All data is anonymous and only for product development purposes. Read more in <a>Terms & Conditions</a>.',
     },
     TR_HIDE_ADVANCED_OPTIONS: {
         defaultMessage: 'Hide advanced options',
