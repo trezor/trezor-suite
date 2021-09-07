@@ -193,5 +193,13 @@ export const rebootToBootloader = () => async (dispatch: Dispatch, getState: Get
         dispatch(addToast({ type: 'error', error: response.payload.error }));
     }
 
+    if (getState().suite.device?.mode === 'normal') {
+        await TrezorConnect.getFeatures({
+            device: {
+                path: device.path,
+            },
+        });
+    }
+
     return response;
 };
