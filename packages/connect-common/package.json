@@ -19,7 +19,9 @@
     "main": "./lib/index.js",
     "files": [
         "lib/",
-        "files/"
+        "files/**/*.json",
+        "files/**/*.txt",
+        "CHANGELOG.md"
     ],
     "types": "lib/index.d.ts",
     "typings": "lib/index.d.ts",
