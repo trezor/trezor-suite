@@ -7,6 +7,13 @@
         "Trezor",
         "trezor-connect"
     ],
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/trezor/trezor-suite.git"
+    },
+    "bugs": {
+        "url": "https://github.com/trezor/trezor-suite/issues"
+    },
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "Collection of assets and utils used by trezor-connect library.",
     "main": "./lib/index.js",
