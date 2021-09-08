@@ -74,7 +74,7 @@ const FirmwareInitial = ({
         return <ConnectDevicePromptManager device={device} />;
     }
 
-    if (device.firmware === 'none') {
+    if (['none', 'unknown'].includes(device.firmware)) {
         // No firmware installed
         // Device without firmware is already in bootloader mode even if it doesn't report it
         content = {

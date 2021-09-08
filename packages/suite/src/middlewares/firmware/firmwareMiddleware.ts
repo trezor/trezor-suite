@@ -3,7 +3,6 @@ import TrezorConnect, { DEVICE } from 'trezor-connect';
 
 import { SUITE } from '@suite-actions/constants';
 import * as firmwareActions from '@firmware-actions/firmwareActions';
-import * as suiteActions from '@suite-actions/suiteActions';
 
 import { AppState, Action, Dispatch } from '@suite-types';
 import { FIRMWARE } from '@suite/actions/firmware/constants';
@@ -26,23 +25,6 @@ const firmware =
                 // device is not connected.
                 if (['waiting-for-bootloader', 'check-seed'].includes(action.payload) && device) {
                     api.dispatch(firmwareActions.setTargetRelease(device.firmwareRelease));
-
-                    // in case device is not remembered, force remember here. this is needed to handle device update correctly
-                    // when multiple devices are connected.
-                    // WARNING: This has never worked in case of fresh unpacked device without fw installed (or just used device with wiped fw).
-                    // Such device can't be remembered because it is always in bootloader mode and has no state
-                    // (rememberDevice functionality supports only devices in normal mode with defined state as it is used to remember wallets).
-                    // This may cause problems in combination with
-                    // a) remembered wallet - basically after fw installation, device is restarted and suite will select whatever available remembered device (wallet) as active device.
-                    // b) multiple physical devices connected
-                    // To mitigate this I would do following:
-                    // a) (done) make sure Suite won't select disconnected (remembered) device as active device (done in suiteActions.handleDeviceDisconnect)
-                    // b) (TODO) disallow going through onboarding/fw update with multiple physical devices connected at the same time (and if currently selected device has no fw installed)
-                    // This would save us from huge headache with hacky solutions like trying to remember a device before the update process
-                    // in exchange for just a slightly worse UX for users which have multiple connected devices (there will not be many of them)
-                    if (!device.remember) {
-                        api.dispatch(suiteActions.toggleRememberDevice(device, true));
-                    }
                 }
 
                 break;
@@ -114,18 +96,8 @@ const firmware =
             case SUITE.APP_CHANGED:
                 // leaving firmware update context
                 if (prevApp === 'firmware' || prevApp === 'onboarding') {
-                    const { device } = api.getState().suite;
-
                     api.dispatch(firmwareActions.resetReducer());
-
-                    // clean up force remembered device if applicable
-                    if (device?.features && device.forceRemember) {
-                        api.dispatch(suiteActions.forgetDevice(device));
-                    }
                 }
-
-                // entering firmware update context is not handled here. In onboarding device may not be connected
-                // in the beginning, so remember happens after firmware.status is changed to check-seed or waiting-for-bootloader, see^^
 
                 break;
             case DEVICE.DISCONNECT:
