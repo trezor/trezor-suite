@@ -30,6 +30,9 @@ export const getInitialState = (router?: RouterState, suite?: Partial<SuiteState
         type: ANALYTICS.INIT,
         payload: { instanceId: '1', sessionId: '2', enabled: false, sessionStart: 1 },
     }),
+    messageSystem: {
+        timestamp: Date.now() + 10000,
+    },
 });
 
 type State = ReturnType<typeof getInitialState>;
