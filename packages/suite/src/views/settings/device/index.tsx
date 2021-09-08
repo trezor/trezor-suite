@@ -2,7 +2,7 @@ import React, { createRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { SettingsLayout } from '@settings-components';
-import { Translation } from '@suite-components';
+import { Translation, TrezorLink } from '@suite-components';
 import {
     ActionButton,
     ActionColumn,
@@ -63,8 +63,6 @@ const VersionTooltip = styled(Tooltip)`
     display: inline-flex;
     margin: 0 2px;
 `;
-
-const VersionLink = styled.a``;
 
 const buildAutoLockOption = (seconds: number) => ({
     label: formatDurationStrict(seconds),
@@ -239,7 +237,8 @@ const Settings = () => {
                                     values={{
                                         version: (
                                             <VersionTooltip content={revision} disabled={!revision}>
-                                                <VersionLink
+                                                <TrezorLink
+                                                    variant="nostyle"
                                                     target="_blank"
                                                     href={FIRMWARE_COMMIT_URL + revision}
                                                 >
@@ -254,7 +253,7 @@ const Settings = () => {
                                                         {getFwVersion(device)}
                                                         {isBitcoinOnly(device) && ' (bitcoin-only)'}
                                                     </VersionButton>
-                                                </VersionLink>
+                                                </TrezorLink>
                                             </VersionTooltip>
                                         ),
                                     }}

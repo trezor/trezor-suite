@@ -9,6 +9,7 @@ import * as routerActions from '@suite-actions/routerActions';
 import { SUPPORT_URL } from '@suite-constants/urls';
 
 const StyledLink = styled(TrezorLink)`
+    text-decoration: none;
     padding: 10px 16px;
     width: 100%;
 `;

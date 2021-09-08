@@ -50,7 +50,7 @@ export const AccountTypeDescription = ({ network, accountTypes }: Props) => {
     return (
         <Info size="small" textAlign="left">
             <Translation id={description} />{' '}
-            <TrezorLink href={url} size="small">
+            <TrezorLink icon="EXTERNAL_LINK" href={url} size="small">
                 <Translation id="TR_LEARN_MORE" />
             </TrezorLink>
         </Info>
