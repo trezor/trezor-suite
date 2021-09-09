@@ -18,6 +18,14 @@ _Note: All paths below are relative to the root of trezor-suite repository._
     - It should open a browser window.
     - If the Suite web app is not loading even after two retries. Stop tests, open a new tab, navigate to http://localhost:8000/, refresh the page until the app is loaded. Close the tab and run tests again.
 
+#### Troubleshooting
+- `Error while fetching server API version: ('Connection aborted.', FileNotFoundError(2, 'No such file or directory'))`
+    - On NixOS: Make sure that docker is enabled in your configuration.nix:\
+    `virtualisation.docker.enable = true;`
+- `Error while fetching server API version: ('Connection aborted.', PermissionError(13, 'Permission denied'))`
+    - Check the docker.sock permissions:\
+    `sudo chmod 666 /var/run/docker.sock`
+
 ### On MacOS
 As of now M1 Macs aren't supported. See [this issue](https://github.com/trezor/trezor-suite/issues/3616) for detailed information.
 

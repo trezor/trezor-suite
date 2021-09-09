@@ -23,10 +23,13 @@ describe('General settings', () => {
     });
 
     it('Check general settings', () => {
+        cy.getTestElement('@settings/language-select/input').click();
+        cy.getTestElement('@settings/language-select/option/en').click();
         cy.getTestElement('@settings/language-select/input').should('contain', 'English');
-        cy.getTestElement('@theme/dark-mode-switch').should('not.be.checked');
-        cy.getTestElement('@theme/dark-mode-switch').click({ force: true });
-        cy.getTestElement('@theme/dark-mode-switch').should('be.checked');
+
+        cy.getTestElement('@theme/color-scheme-select/input').click();
+        cy.getTestElement('@theme/color-scheme-select/option/dark').click();
+        cy.getTestElement('@theme/color-scheme-select/input').should('contain', 'Dark');
 
         cy.getTestElement('@analytics/toggle-switch').should('be.checked');
         cy.getTestElement('@analytics/toggle-switch').click({ force: true });
