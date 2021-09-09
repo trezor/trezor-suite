@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Network } from '@wallet-types';
-import { TrezorDevice } from '@suite-types';
 import { Translation } from '@suite-components';
 import CoinsCount from './CoinsCount';
 import CoinsList from './CoinsList';
@@ -14,16 +13,9 @@ interface Props {
     networks: Network[];
     enabledNetworks: Network['symbol'][];
     testnet: boolean;
-    unavailableCapabilities: TrezorDevice['unavailableCapabilities'];
 }
 
-const CoinsGroup = ({
-    onToggleFn,
-    networks,
-    enabledNetworks,
-    testnet,
-    unavailableCapabilities,
-}: Props) => (
+const CoinsGroup = ({ onToggleFn, networks, enabledNetworks, testnet }: Props) => (
     <CoinsGroupWrapper>
         <CoinsCount
             networks={networks}
@@ -36,12 +28,7 @@ const CoinsGroup = ({
                 )
             }
         />
-        <CoinsList
-            onToggleFn={onToggleFn}
-            networks={networks}
-            selectedNetworks={enabledNetworks}
-            unavailableCapabilities={unavailableCapabilities}
-        />
+        <CoinsList onToggleFn={onToggleFn} networks={networks} selectedNetworks={enabledNetworks} />
     </CoinsGroupWrapper>
 );
 

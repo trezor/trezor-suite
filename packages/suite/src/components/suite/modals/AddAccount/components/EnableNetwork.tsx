@@ -5,7 +5,6 @@ import { Icon, P, useTheme } from '@trezor/components';
 
 import { CoinsList, Translation } from '@suite-components';
 import { Network } from '@wallet-types';
-import { TrezorDevice } from '@suite-types';
 import { ANIMATION } from '@suite-config';
 import { MoreCoins } from './MoreCoins';
 
@@ -52,7 +51,6 @@ type Props = {
     networks: Network[];
     testnetNetworks: Network[];
     selectedNetworks: Network['symbol'][];
-    unavailableCapabilities: TrezorDevice['unavailableCapabilities'];
     handleNetworkSelection: (symbol?: Network['symbol']) => void;
 };
 
@@ -61,7 +59,6 @@ export const EnableNetwork = ({
     testnetNetworks,
     selectedNetworks,
     handleNetworkSelection,
-    unavailableCapabilities,
 }: Props) => {
     const theme = useTheme();
     const [isTestnetVisible, setTestnetVisible] = useState(false);
@@ -73,7 +70,6 @@ export const EnableNetwork = ({
                 onToggleFn={handleNetworkSelection}
                 networks={networks}
                 selectedNetworks={selectedNetworks}
-                unavailableCapabilities={unavailableCapabilities}
             />
             {hasTestnetNetworks && (
                 <>
@@ -108,7 +104,6 @@ export const EnableNetwork = ({
                                     onToggleFn={handleNetworkSelection}
                                     networks={testnetNetworks}
                                     selectedNetworks={selectedNetworks}
-                                    unavailableCapabilities={unavailableCapabilities}
                                 />
                             </TestnetCoinsWrapper>
                         )}

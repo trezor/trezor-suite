@@ -8,12 +8,9 @@ import BasicSettingsStepBox from './BasicSettingsStepBox';
 import AdvancedSetup from './AdvancedSetup';
 
 const BasicSettings = () => {
-    const { device, enabledNetworks } = useSelector(state => ({
-        device: state.suite.device,
+    const { enabledNetworks } = useSelector(state => ({
         enabledNetworks: state.wallet.settings.enabledNetworks,
     }));
-
-    const unavailableCapabilities = device && device.features ? device.unavailableCapabilities : {};
 
     const enabledMainnetNetworks: Network['symbol'][] = [];
     const enabledTestnetNetworks: Network['symbol'][] = [];
@@ -43,7 +40,6 @@ const BasicSettings = () => {
             testnetNetworks={testnetNetworks}
             enabledMainnetNetworks={enabledMainnetNetworks}
             enabledTestnetNetworks={enabledTestnetNetworks}
-            unavailableCapabilities={unavailableCapabilities}
             heading={<Translation id="TR_ONBOARDING_COINS_STEP" />}
             description={<Translation id="TR_ONBOARDING_COINS_STEP_DESCRIPTION" />}
             outerActions={

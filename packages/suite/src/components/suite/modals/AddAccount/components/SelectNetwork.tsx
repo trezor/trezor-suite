@@ -5,7 +5,6 @@ import { FADE_IN } from '@trezor/components/lib/config/animations';
 
 import { CoinsList, Translation } from '@suite-components';
 import { Network } from '@wallet-types';
-import { TrezorDevice } from '@suite-types';
 
 const Header = styled.div<{ disabled: boolean }>`
     display: flex;
@@ -38,7 +37,6 @@ type Props = {
     networkCanChange: boolean;
     selectedNetworks: Network['symbol'][];
     handleNetworkSelection: (symbol?: Network['symbol']) => void;
-    unavailableCapabilities: TrezorDevice['unavailableCapabilities'];
 };
 
 export const SelectNetwork = ({
@@ -46,7 +44,6 @@ export const SelectNetwork = ({
     networkCanChange,
     selectedNetworks,
     handleNetworkSelection,
-    unavailableCapabilities,
 }: Props) => {
     const resetNetworkSelection = () => {
         if (networkCanChange) {
@@ -66,7 +63,6 @@ export const SelectNetwork = ({
                 onToggleFn={handleNetworkSelection}
                 networks={networks}
                 selectedNetworks={selectedNetworks}
-                unavailableCapabilities={unavailableCapabilities}
             />
         </>
     );
