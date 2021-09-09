@@ -7,7 +7,7 @@ import { UnavailableCapability } from 'trezor-connect';
 import { Network } from '@wallet-types';
 import { Section, ActionColumn, Row } from '@suite-components/Settings';
 import { useDevice, useActions } from '@suite-hooks';
-import { isBitcoinOnly } from '@suite-utils/device';
+import { getUnavailabilityMessage } from '@suite-utils/device';
 import * as modalActions from '@suite-actions/modalActions';
 import Coin from '../Coin';
 
@@ -103,30 +103,6 @@ interface Props {
     unavailableCapabilities: { [key: string]: UnavailableCapability };
 }
 
-interface UnavailableMessageProps {
-    type: UnavailableCapability;
-    deviceVersion: number;
-    isBtcOnly: boolean;
-}
-const UnavailableMessage = ({ type, deviceVersion, isBtcOnly }: UnavailableMessageProps) => {
-    switch (type) {
-        case 'no-capability':
-            return deviceVersion === 1 && !isBtcOnly ? (
-                // right know it serves only one purpose - in case of XRP on T1 inform user that the capability is available on TT
-                <Translation id="FW_CAPABILITY_SUPPORTED_IN_T2" />
-            ) : (
-                <Translation id="FW_CAPABILITY_NO_CAPABILITY" />
-            );
-        case 'no-support':
-            return <Translation id="FW_CAPABILITY_NO_SUPPORT" />;
-        case 'update-required':
-            return <Translation id="FW_CAPABILITY_UPDATE_REQUIRED" />;
-        // case 'trezor-connect-outdated':
-        default:
-            return <Translation id="FW_CAPABILITY_CONNECT_OUTDATED" />;
-    }
-};
-
 const CoinsGroup = ({
     label,
     description,
@@ -146,8 +122,6 @@ const CoinsGroup = ({
     if (!device) return null;
 
     const isDeviceLocked = isLocked();
-    const deviceVersion = device.features?.major_version === 1 ? 1 : 2;
-    const isBtcOnly = isBitcoinOnly(device);
     return (
         <Wrapper data-test="@settings/wallet/coins-group">
             <Section
@@ -222,10 +196,11 @@ const CoinsGroup = ({
                             )}
                             {unavailableCapabilities[network.symbol] && (
                                 <UnavailableLabel>
-                                    <UnavailableMessage
-                                        deviceVersion={deviceVersion}
-                                        isBtcOnly={isBtcOnly}
-                                        type={unavailableCapabilities[network.symbol]}
+                                    <Translation
+                                        id={getUnavailabilityMessage(
+                                            unavailableCapabilities[network.symbol],
+                                            device.features?.major_version,
+                                        )}
                                     />
                                 </UnavailableLabel>
                             )}
