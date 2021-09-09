@@ -290,8 +290,8 @@ const getFixedWidth = (size: SIZE) => {
 };
 
 // returns the value of padding-left/right for Heading, Description, Content and BottomBar
-const getContentPaddingSide = (size: SIZE, noPadding: boolean) => {
-    if (noPadding) {
+const getContentPaddingSide = (size: SIZE, noPadding: boolean, noSidePadding: boolean) => {
+    if (noPadding || noSidePadding) {
         return ZERO_PADDING;
     }
 
@@ -358,6 +358,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
     contentPaddingSide?: [string, string, string, string]; // [SM, MD, LG, XL]
     noPadding?: boolean;
     noHeadingPadding?: boolean;
+    noSidePadding?: boolean;
     noBackground?: boolean;
     onCancel?: () => void;
     showHeaderBorder?: boolean;
@@ -386,11 +387,12 @@ const Modal = ({
     fixedHeight = FIXED_HEIGHT,
     noPadding = false,
     noHeadingPadding = false,
+    noSidePadding = false,
     // TODO: get rid of all these padding props bellow. Usage should be simple: Either use default paddings provided by modal, or use noPadding and then do all necessary work in components which will be passed as heading, description, children/content. We cannot keep handling whole universe here for few stupid custom components
     modalPaddingTop = getModalPaddingTop(size, heading, noPadding),
     modalPaddingBottom = getModalPaddingBottom(size, noPadding),
     modalPaddingSide = ZERO_PADDING, // default value is zero padding on sides for Modal container
-    contentPaddingSide = getContentPaddingSide(size, noPadding),
+    contentPaddingSide = getContentPaddingSide(size, noPadding, noSidePadding),
     showHeaderBorder = true,
     hiddenProgressBar = false, // reserves the space for progress bar (4px under the heading), but not showing the green bar
     totalProgressBarSteps,
