@@ -57,9 +57,6 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
     // Collect all Networks without "accountType" (normal)
     const internalNetworks = NETWORKS.filter(n => !n.accountType && !n.isHidden);
 
-    // Collect device unavailable capabilities
-    const unavailableCapabilities = device.features ? device.unavailableCapabilities : {};
-
     // applied only when changing account in coinmarket exchange receive options context so far
     const networkPinned = !!symbol;
     const preselectedNetwork = symbol && internalNetworks.find(n => n.symbol === symbol);
@@ -155,7 +152,6 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
                 }
                 networkCanChange={!!selectedNetwork && selectedNetworkEnabled && !networkPinned}
                 selectedNetworks={selectedNetworks}
-                unavailableCapabilities={unavailableCapabilities}
                 handleNetworkSelection={handleNetworkSelection}
             />
             {!selectedNetworkEnabled && hasDisabledNetworks && (
@@ -163,7 +159,6 @@ const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: Props) => {
                     networks={disabledMainnetNetworks}
                     testnetNetworks={disabledTestnetNetworks}
                     selectedNetworks={selectedNetworks}
-                    unavailableCapabilities={unavailableCapabilities}
                     handleNetworkSelection={handleNetworkSelection}
                 />
             )}

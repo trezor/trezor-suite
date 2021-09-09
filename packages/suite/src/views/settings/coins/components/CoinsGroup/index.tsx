@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { P, Switch, Icon, variables, Button, useTheme } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { NETWORKS } from '@wallet-config';
-import { UnavailableCapability } from 'trezor-connect';
 import { Network } from '@wallet-types';
 import { Section, ActionColumn, Row } from '@suite-components/Settings';
 import { useDevice, useActions } from '@suite-hooks';
@@ -100,7 +99,6 @@ interface Props {
     filterFn: (n: Network) => boolean;
     enabledNetworks: Network['symbol'][];
     type: 'mainnet' | 'testnet'; // used in tests
-    unavailableCapabilities: { [key: string]: UnavailableCapability };
 }
 
 const CoinsGroup = ({
@@ -111,7 +109,6 @@ const CoinsGroup = ({
     onToggleOneFn,
     filterFn,
     enabledNetworks,
-    unavailableCapabilities,
     ...props
 }: Props) => {
     const { openModal } = useActions({
@@ -122,6 +119,7 @@ const CoinsGroup = ({
     if (!device) return null;
 
     const isDeviceLocked = isLocked();
+    const unavailableCapabilities = device?.unavailableCapabilities ?? {};
     return (
         <Wrapper data-test={`@settings/wallet/coins-group/${props.type}`}>
             <Section
@@ -163,7 +161,7 @@ const CoinsGroup = ({
                     <CoinRow key={network.symbol}>
                         <Coin symbol={network.symbol} name={network.name} />
                         <ActionColumn>
-                            {!unavailableCapabilities[network.symbol] && (
+                            {!unavailableCapabilities[network.symbol] ? (
                                 <>
                                     <AdvancedSettings
                                         onClick={() =>
@@ -193,8 +191,7 @@ const CoinsGroup = ({
                                         isDisabled={isDeviceLocked}
                                     />
                                 </>
-                            )}
-                            {unavailableCapabilities[network.symbol] && (
+                            ) : (
                                 <UnavailableLabel>
                                     <Translation
                                         id={getUnavailabilityMessage(

@@ -5,7 +5,6 @@ import { OnboardingStepBox, OnboardingStepBoxProps } from '@onboarding-component
 import { CoinsGroup } from '@suite-components';
 import styled from 'styled-components';
 import { Network } from '@wallet-types';
-import { UnavailableCapability } from 'trezor-connect';
 
 const Separator = styled.hr`
     height: 1px;
@@ -20,7 +19,6 @@ interface Props extends OnboardingStepBoxProps {
     mainnetNetworks: Network[];
     enabledTestnetNetworks: Network['symbol'][];
     enabledMainnetNetworks: Network['symbol'][];
-    unavailableCapabilities: { [key: string]: UnavailableCapability };
 }
 
 const BasicSettingsStepBox = ({
@@ -28,7 +26,6 @@ const BasicSettingsStepBox = ({
     mainnetNetworks,
     enabledTestnetNetworks,
     enabledMainnetNetworks,
-    unavailableCapabilities,
     ...props
 }: Props) => {
     const { changeCoinVisibility } = useActions({
@@ -49,14 +46,12 @@ const BasicSettingsStepBox = ({
                 networks={mainnetNetworks}
                 enabledNetworks={enabledMainnetNetworks}
                 testnet={false}
-                unavailableCapabilities={unavailableCapabilities}
             />
             <CoinsGroup
                 onToggleFn={changeCoinVisibility}
                 networks={testnetNetworks}
                 enabledNetworks={enabledTestnetNetworks}
                 testnet
-                unavailableCapabilities={unavailableCapabilities}
             />
         </OnboardingStepBox>
     );

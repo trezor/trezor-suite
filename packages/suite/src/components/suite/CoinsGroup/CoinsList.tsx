@@ -2,7 +2,6 @@ import React from 'react';
 import { TooltipConditional } from '@trezor/components';
 import styled from 'styled-components';
 import { Network } from '@wallet-types';
-import { TrezorDevice } from '@suite-types';
 import { Coin, Translation } from '@suite-components';
 import { getUnavailabilityMessage } from '@suite-utils/device';
 import { useDevice } from '@suite-hooks';
@@ -17,10 +16,9 @@ interface Props {
     onToggleFn: (symbol: Network['symbol'], visible: boolean) => void;
     networks: Network[];
     selectedNetworks: Network['symbol'][];
-    unavailableCapabilities: TrezorDevice['unavailableCapabilities'];
 }
 
-const CoinsList = ({ onToggleFn, networks, selectedNetworks, unavailableCapabilities }: Props) => {
+const CoinsList = ({ onToggleFn, networks, selectedNetworks }: Props) => {
     const { device, isLocked } = useDevice();
     if (!device) return null;
 
@@ -30,7 +28,7 @@ const CoinsList = ({ onToggleFn, networks, selectedNetworks, unavailableCapabili
         <Wrapper>
             {networks.map(({ symbol, accountType, label, tooltip, name }) => {
                 const isSelected = selectedNetworks.includes(symbol);
-                const unavailableCapability = unavailableCapabilities?.[symbol];
+                const unavailableCapability = device.unavailableCapabilities?.[symbol];
                 const isDisabled = !!unavailableCapability || isDeviceLocked;
                 const tooltipContent = unavailableCapability && (
                     <Translation

@@ -135,10 +135,7 @@ export const useOffers = (props: Props) => {
 
     useEffect(() => {
         if (selectedQuote && exchangeStep === 'RECEIVING_ADDRESS') {
-            const unavailableCapabilities =
-                device?.features && device?.unavailableCapabilities
-                    ? device.unavailableCapabilities
-                    : {};
+            const unavailableCapabilities = device?.unavailableCapabilities ?? {};
             // is the symbol supported by the suite and the device natively
             const receiveNetworks = networks.filter(
                 n => n.symbol === receiveSymbol && !unavailableCapabilities[n.symbol],

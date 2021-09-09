@@ -17,7 +17,7 @@ const Settings = () => {
         enabledNetworks: state.wallet.settings.enabledNetworks,
     }));
 
-    const unavailableCapabilities = device && device.features ? device.unavailableCapabilities : {};
+    const unavailableCapabilities = device?.unavailableCapabilities ?? {};
 
     const mainnetNetworksFilterFn = (n: Network) => !n.accountType && !n.testnet;
 
@@ -58,7 +58,6 @@ const Settings = () => {
                 }
                 onDeactivateAll={() => changeNetworks(enabledTestnetNetworks)}
                 type="mainnet"
-                unavailableCapabilities={unavailableCapabilities}
             />
 
             <CoinsGroup
@@ -77,7 +76,6 @@ const Settings = () => {
                 }
                 onDeactivateAll={() => changeNetworks(enabledMainnetNetworks)}
                 type="testnet"
-                unavailableCapabilities={unavailableCapabilities}
             />
         </SettingsLayout>
     );
