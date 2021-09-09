@@ -31,14 +31,14 @@ interface Props {
 const FractionButtons = ({ disabled, onFractionClick, onAllClick }: Props) => (
     <Wrapper>
         <Left>
-            <SmallButton isDisabled={disabled} onClick={() => onFractionClick(2)}>
-                1/2
+            <SmallButton isDisabled={disabled} onClick={() => onFractionClick(4)}>
+                1/4
             </SmallButton>
             <SmallButton isDisabled={disabled} onClick={() => onFractionClick(3)}>
                 1/3
             </SmallButton>
-            <SmallButton isDisabled={disabled} onClick={() => onFractionClick(4)}>
-                1/4
+            <SmallButton isDisabled={disabled} onClick={() => onFractionClick(2)}>
+                1/2
             </SmallButton>
             <SmallButton isDisabled={disabled} onClick={() => onAllClick()}>
                 <Translation id="TR_FRACTION_BUTTONS_ALL" />
