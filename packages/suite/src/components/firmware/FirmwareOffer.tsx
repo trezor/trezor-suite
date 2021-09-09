@@ -2,7 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button, Icon, Tooltip, variables } from '@trezor/components';
 import { Translation, TrezorLink } from '@suite-components';
-import { getFwUpdateVersion, getFwVersion, parseFirmwareChangelog } from '@suite-utils/device';
+import {
+    getFwUpdateVersion,
+    getFwVersion,
+    isBitcoinOnly,
+    parseFirmwareChangelog,
+} from '@suite-utils/device';
 import { AcquiredDevice } from '@suite-types';
 import { CHANGELOG_URL } from '@suite-constants/urls';
 
@@ -87,12 +92,15 @@ interface Props {
 
 const FirmwareOffer = ({ device, customFirmware }: Props) => {
     const currentVersion = device.firmware !== 'none' ? getFwVersion(device) : undefined;
+
     const newVersion = customFirmware ? (
         <Translation id="TR_CUSTOM_FIRMWARE_VERSION" />
     ) : (
         getFwUpdateVersion(device)
     );
     const parsedChangelog = !customFirmware && parseFirmwareChangelog(device.firmwareRelease);
+    const bitcoinOnlyVersion = isBitcoinOnly(device) && ' (bitcoin-only)';
+
     return (
         <FwVersionWrapper>
             {currentVersion && (
@@ -101,7 +109,12 @@ const FirmwareOffer = ({ device, customFirmware }: Props) => {
                         <Label>
                             <Translation id="TR_ONBOARDING_CURRENT_VERSION" />
                         </Label>
-                        <Version>{currentVersion}</Version>
+                        <VersionWrapper>
+                            <Version>
+                                {currentVersion}
+                                {bitcoinOnlyVersion}
+                            </Version>
+                        </VersionWrapper>
                     </FwVersion>
                     <IconWrapper>
                         <Icon icon="ARROW_RIGHT_LONG" size={16} />
@@ -154,10 +167,16 @@ const FirmwareOffer = ({ device, customFirmware }: Props) => {
                             }
                             placement="top"
                         >
-                            <Version new>{newVersion}</Version>
+                            <Version new>
+                                {newVersion}
+                                {bitcoinOnlyVersion}
+                            </Version>
                         </Tooltip>
                     ) : (
-                        <Version new>{newVersion}</Version>
+                        <Version new>
+                            {newVersion}
+                            {!customFirmware && bitcoinOnlyVersion}
+                        </Version>
                     )}
                 </VersionWrapper>
             </FwVersion>
