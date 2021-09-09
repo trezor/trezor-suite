@@ -86,7 +86,11 @@ const firmware =
                         keepSession: false,
                     });
 
-                    if (action.payload.firmware === 'valid') {
+                    // last version of firmware or custom firmware version was installed
+                    if (
+                        action.payload.firmware === 'valid' ||
+                        (action.payload.firmware === 'outdated' && prevApp === 'firmware-custom')
+                    ) {
                         api.dispatch(firmwareActions.setStatus('done'));
                     } else if (['outdated', 'required'].includes(action.payload.firmware)) {
                         api.dispatch(firmwareActions.setStatus('partially-done'));
