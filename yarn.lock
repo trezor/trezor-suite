@@ -5553,6 +5553,11 @@
   dependencies:
     tippy.js "^6.3.1"
 
+"@trezor/connect-common@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@trezor/connect-common/-/connect-common-0.0.2.tgz#d2bb1e90de6be2895b7f44215f09b52db361aaf4"
+  integrity sha512-b0R/HfA10mH2CR0BoPkKUs/2TC5Bf4MSGBFRF+1Q4tluQfSRzongQEZivg09vbBQEZBD1Ora3Oikn74zqsW4Aw==
+
 "@trezor/utxo-lib@0.1.2", "@trezor/utxo-lib@^0.1.2":
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/@trezor/utxo-lib/-/utxo-lib-0.1.2.tgz#19319a424b0d0c648b0df456f1849eb08697fb44"
@@ -9231,6 +9236,11 @@ cbor-js@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/cbor-js/-/cbor-js-0.1.0.tgz#c80ce6120f387e8faa74370dfda21d965b8fc7f9"
   integrity sha1-yAzmEg84fo+qdDcN/aIdlluPx/k=
+
+cbor-web@^7.0.6:
+  version "7.0.6"
+  resolved "https://registry.yarnpkg.com/cbor-web/-/cbor-web-7.0.6.tgz#6e23a0c58db4c38e485e395de511b9e2f628961c"
+  integrity sha512-A6ZH12jcDJG9PS7StugO78G+ok23SAjxMugGInPBy4IItiH6hYzybi6HQkGjWw9jBEGQpIBkleB2mizxYZIpLw==
 
 ccount@^1.0.0:
   version "1.1.0"
@@ -25164,18 +25174,20 @@ trezor-address-validator@^0.3.22:
     jssha "2.3.1"
     lodash "^4.17.15"
 
-trezor-connect@8.1.30-beta.2:
-  version "8.1.30-beta.2"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.30-beta.2.tgz#7612ffde876bbf173cafdedf6caddca5e2cc822b"
-  integrity sha512-QxV2yjosvT1E6fCdU3oL+akUluiSr1SmxRUj9XcEse/XVe0S7Z6kAhyjOGr0XO4z+orS2DlYyWdBh6MzaXC5zw==
+trezor-connect@8.1.30-beta.7:
+  version "8.1.30-beta.7"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.30-beta.7.tgz#aa0f7ed62417dd7120d217896b360fa87101f2f4"
+  integrity sha512-sUxzM9vnpGDDXBTdQTf6sG2JKcsieB++kxXQ4O6NTCYc3N6lI5ysoFfoYzPY1dkI/fANh5F+WdUg5PzX7sQOYA==
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@trezor/blockchain-link" "^1.0.17"
+    "@trezor/connect-common" "^0.0.2"
     "@trezor/rollout" "^1.2.0"
     "@trezor/utxo-lib" "^0.1.2"
     bchaddrjs "^0.5.2"
     bignumber.js "^9.0.1"
     bowser "^2.11.0"
+    cbor-web "^7.0.6"
     events "^3.2.0"
     hd-wallet "9.1.2"
     keccak "^3.0.1"
