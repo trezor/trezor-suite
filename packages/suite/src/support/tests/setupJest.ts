@@ -8,6 +8,7 @@ import { Account, WalletAccountTransaction } from '@wallet-types';
 // in-memory implementation of indexedDB
 import 'fake-indexeddb/auto';
 import { MessageSystem, Action } from '@suite/types/suite/messageSystem';
+import { Node, Page, Category } from '@suite/types/suite/guide';
 /**
  * Generate wallet account
  * @param {Partial<Account>} [account]
@@ -495,6 +496,80 @@ const getMessageSystemConfig = (
     ...root,
 });
 
+const getGuideNode = (type: string, id?: string): Node => {
+    let result: Node;
+    if (type === 'page' && id === '/') {
+        result = {
+            type: 'page',
+            id: '/',
+            locales: ['en'],
+            title: {
+                en: 'Locktime',
+            },
+        } as Page;
+    } else if (type === 'page' && id !== '/') {
+        result = {
+            type: 'page',
+            id: '/suite-basics/send/locktime.md',
+            locales: ['en'],
+            title: {
+                en: 'Locktime',
+            },
+        } as Page;
+    } else {
+        result = {
+            type: 'category',
+            id: '/',
+            locales: ['en'],
+            title: {
+                en: 'test title',
+            },
+            children: [
+                {
+                    type: 'category',
+                    id: '/privacy',
+                    locales: ['en'],
+                    title: {
+                        en: 'Privacy',
+                    },
+                    children: [],
+                },
+                {
+                    type: 'category',
+                    id: '/security',
+                    locales: ['en'],
+                    title: {
+                        en: 'Security',
+                    },
+                    children: [
+                        {
+                            type: 'category',
+                            id: '/security/suite-basics',
+                            locales: ['en'],
+                            title: {
+                                en: 'Suite basics',
+                            },
+                            children: [
+                                {
+                                    type: 'category',
+                                    id: '/security/suite-basics/send',
+                                    locales: ['en'],
+                                    title: {
+                                        en: 'Send',
+                                    },
+                                    children: [],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        } as Category;
+    }
+
+    return result;
+};
+
 class BroadcastChannel {
     name: string;
     constructor(name: string) {
@@ -526,6 +601,7 @@ declare global {
                 getWalletTransaction: typeof getWalletTransaction;
                 getTrezorConnect: typeof getTrezorConnect;
                 getMessageSystemConfig: typeof getMessageSystemConfig;
+                getGuideNode: typeof getGuideNode;
                 intlMock: typeof intlMock;
             };
             BroadcastChannel: typeof BroadcastChannel;
@@ -547,6 +623,7 @@ global.JestMocks = {
     getWalletTransaction,
     getTrezorConnect,
     getMessageSystemConfig,
+    getGuideNode,
     intlMock,
 };
 
