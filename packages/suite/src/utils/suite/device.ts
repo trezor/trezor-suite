@@ -1,4 +1,4 @@
-import { Device, KnownDevice } from 'trezor-connect';
+import { Device, KnownDevice, UnavailableCapability } from 'trezor-connect';
 import { TrezorDevice, AcquiredDevice } from '@suite-types';
 
 /**
@@ -146,6 +146,20 @@ export const getFwUpdateVersion = (device: AcquiredDevice) => {
     const supportIntermediary = device.features.major_version === 1;
     const version = device.firmwareRelease?.[supportIntermediary ? 'latest' : 'release']?.version;
     return version?.join('.') || null;
+};
+
+export const getUnavailabilityMessage = (reason: UnavailableCapability, model?: number) => {
+    switch (reason) {
+        case 'no-capability':
+            return 'FW_CAPABILITY_NO_CAPABILITY';
+        case 'no-support':
+            return model === 1 ? 'FW_CAPABILITY_SUPPORTED_IN_T2' : 'FW_CAPABILITY_NO_SUPPORT';
+        case 'update-required':
+            return 'FW_CAPABILITY_UPDATE_REQUIRED';
+        case 'trezor-connect-outdated':
+            return 'FW_CAPABILITY_CONNECT_OUTDATED';
+        // no default
+    }
 };
 
 /**
