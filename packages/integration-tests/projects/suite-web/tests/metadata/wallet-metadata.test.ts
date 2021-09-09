@@ -79,6 +79,7 @@ describe('Metadata - wallet labeling', () => {
             cy.getConfirmActionOnDeviceModal();
             cy.task('pressYes');
             cy.getTestElement('@menu/switch-device').click();
+            cy.getConfirmActionOnDeviceModal();
             cy.task('pressYes');
             cy.getTestElement(`@metadata/walletLabel/${standardWalletState}`).should(
                 'contain',

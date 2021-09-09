@@ -35,7 +35,7 @@ beforeEach(() => {
     const testName = (Cypress as any).mocha.getRunner().suite.ctx.currentTest.title;
     cy.task('logTestDetails', `New test case: ${suiteName} - ${testName}`);
 
-    cy.intercept('POST', 'http://127.0.0.1:21325/', req => {
+    cy.intercept('*', { hostname: '127.0.0.1' }, req => {
         req.url = req.url.replace('21325', '21326');
     });
     cy.log('stop and start bridge before every test to make sure that there is no pending session');

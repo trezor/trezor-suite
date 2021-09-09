@@ -32,7 +32,10 @@ describe('Onboarding - create wallet', () => {
         cy.getTestElement('@backup/check-item/wrote-seed-properly').click();
         cy.getTestElement('@backup/check-item/made-no-digital-copy').click();
         cy.getTestElement('@backup/check-item/will-hide-seed').click();
+        cy.getTestElement('@onboarding/confirm-on-device').should('not.be.visible');
+
         cy.getTestElement('@backup/start-button').click();
+        cy.getTestElement('@onboarding/confirm-on-device').should('be.visible');
 
         for (let i = 0; i < 48; i++) {
             cy.task('pressYes');
