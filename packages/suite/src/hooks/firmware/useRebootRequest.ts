@@ -28,7 +28,7 @@ export const useRebootRequest = (
         return requestedMode === 'bootloader' &&
             valid(deviceFwVersion) &&
             satisfies(deviceFwVersion, '>=1.10.0 <2.0.0')
-            ? 'manual' // TODO: replace with 'automatic' mode when #4233 solved
+            ? 'automatic'
             : 'manual';
     });
 
