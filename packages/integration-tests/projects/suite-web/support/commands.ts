@@ -10,7 +10,7 @@ import {
     discoveryShouldFinish,
 } from './utils/assertions';
 import { connectBootloaderDevice, connectDevice, changeDevice } from './utils/device';
-import { getTestElement, getConfirmActionOnDeviceModal } from './utils/selectors';
+import { getTestElement, getConfirmActionOnDeviceModal, hoverTestElement } from './utils/selectors';
 import { resetDb, dispatch } from './utils/test-env';
 import {
     toggleDeviceMenu,
@@ -27,17 +27,20 @@ const { skipOn, onlyOn } = require('@cypress/skip-test');
 
 const prefixedVisit = (route: string, options?: Partial<Cypress.VisitOptions>) => {
     const assetPrefix = Cypress.env('ASSET_PREFIX') || '';
-    return cy.visit(assetPrefix + route, options);
+    cy.visit(assetPrefix + route, options);
+    return cy.document().its('fonts.status').should('equal', 'loaded');
 };
 
 beforeEach(() => {
     const suiteName = (Cypress as any).mocha.getRunner().suite.ctx.currentTest.parent.title;
     const testName = (Cypress as any).mocha.getRunner().suite.ctx.currentTest.title;
     cy.task('logTestDetails', `New test case: ${suiteName} - ${testName}`);
+    cy.task('resetCRI');
 
     cy.intercept('*', { hostname: '127.0.0.1' }, req => {
         req.url = req.url.replace('21325', '21326');
     });
+    cy.visit('/');
     cy.log('stop and start bridge before every test to make sure that there is no pending session');
     cy.task('stopBridge');
     cy.task('stopEmu');
@@ -47,6 +50,7 @@ declare global {
     namespace Cypress {
         interface Chainable<Subject> {
             getTestElement: typeof getTestElement;
+            hoverTestElement: typeof hoverTestElement;
             prefixedVisit: typeof prefixedVisit;
             getConfirmActionOnDeviceModal: typeof getConfirmActionOnDeviceModal;
             resetDb: typeof resetDb;
@@ -108,6 +112,8 @@ Cypress.Commands.add('discoveryShouldFinish', discoveryShouldFinish);
 // selector helpers
 Cypress.Commands.add('getTestElement', getTestElement);
 Cypress.Commands.add('getConfirmActionOnDeviceModal', getConfirmActionOnDeviceModal);
+Cypress.Commands.add('hoverTestElement', hoverTestElement);
+
 // various shortcuts
 Cypress.Commands.add('toggleDeviceMenu', toggleDeviceMenu);
 Cypress.Commands.add('goToOnboarding', goToOnboarding);

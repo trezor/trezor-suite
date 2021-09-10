@@ -16,6 +16,7 @@
         "@cypress/skip-test": "^2.6.0",
         "@cypress/webpack-preprocessor": "^5.5.0",
         "cypress-image-snapshot": "^4.0.0",
+        "chrome-remote-interface": "^0.31.0",
         "shelljs": "^0.8.4",
         "wait-on": "^5.2.1",
         "ws": "^7.4.0"

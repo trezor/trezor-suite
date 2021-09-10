@@ -13,7 +13,7 @@ describe('Google api errors', () => {
             mnemonic: 'all all all all all all all all all all all all',
         });
         cy.task('startBridge');
-        cy.task('metadataStartProvider', 'dropbox');
+        cy.task('metadataStartProvider', provider);
         cy.prefixedVisit('/', {
             onBeforeLoad: (win: Window) => {
                 cy.stub(win, 'open', stubOpen(win));

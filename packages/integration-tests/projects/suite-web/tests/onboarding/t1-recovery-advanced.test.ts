@@ -22,6 +22,7 @@ describe('Onboarding - recover wallet T1', () => {
         // cy.getTestElement('@firmware/continue-button').click();
         cy.getTestElement('@recover/select-count/24').click();
         cy.getTestElement('@recover/select-type/advanced').click();
+        cy.getTestElement('@onboarding/confirm-on-device').should('be.visible');
         cy.task('pressYes');
 
         cy.log('typical user starts doing the T9 craziness');
@@ -40,6 +41,7 @@ describe('Onboarding - recover wallet T1', () => {
         cy.getTestElement('@recover/select-count/12').click();
         cy.getTestElement('@recover/select-type/basic').click();
 
+        cy.getTestElement('@onboarding/confirm-on-device').should('be.visible');
         cy.task('pressYes');
         cy.getTestElement('@word-input-select/input');
 

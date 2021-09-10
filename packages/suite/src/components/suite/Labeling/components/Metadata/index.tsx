@@ -285,10 +285,12 @@ const MetadataLabeling = (props: Props) => {
         return ButtonLikeLabel;
     }, [props.payload.value]);
 
+    const labelContainerDatatest = `@metadata/${props.payload.defaultValue}/label-container`;
+
     // metadata is still initiating, on hover, show only disabled button with spinner
     if (metadata.initiating)
         return (
-            <LabelContainer>
+            <LabelContainer data-test={labelContainerDatatest}>
                 {props.defaultVisibleValue}
                 <ActionButton variant="tertiary" isDisabled isLoading>
                     <Translation id="TR_LOADING" />
@@ -307,7 +309,7 @@ const MetadataLabeling = (props: Props) => {
         showActionButton && (!props.payload.value || (props.payload.value && pending));
 
     return (
-        <LabelContainer>
+        <LabelContainer data-test={labelContainerDatatest}>
             {props.payload.type === 'outputLabel' ? (
                 <>
                     <ButtonLikeLabelWithDropdown
