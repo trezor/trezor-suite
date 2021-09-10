@@ -61,13 +61,12 @@ describe('Metadata - wallet labeling', () => {
             cy.getTestElement('@passphrase/input').type('abc');
             cy.getTestElement('@passphrase/hidden/submit-button').click();
             cy.getTestElement('@passphrase/input').should('not.exist');
+            cy.getConfirmActionOnDeviceModal();
             cy.task('pressYes');
+            cy.getConfirmActionOnDeviceModal();
             cy.task('pressYes');
 
             cy.getTestElement('@passphrase/input', { timeout: 30000 }).type('abc');
-            cy.task('pressYes');
-            cy.task('pressYes');
-
             cy.getTestElement('@passphrase/confirm-checkbox').click();
             cy.getTestElement('@passphrase/hidden/submit-button').click();
 
@@ -76,6 +75,8 @@ describe('Metadata - wallet labeling', () => {
             cy.log(
                 'discovering new passphrase -> new deviceState -> we need new metadata master key',
             );
+            cy.getConfirmActionOnDeviceModal();
+            cy.task('pressYes');
             cy.getConfirmActionOnDeviceModal();
             cy.task('pressYes');
             cy.getTestElement('@menu/switch-device').click();

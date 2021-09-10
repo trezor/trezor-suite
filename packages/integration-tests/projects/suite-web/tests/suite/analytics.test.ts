@@ -51,9 +51,9 @@ describe('Analytics', () => {
 
         // important, suite needs time to save initialRun flag into storage
         cy.getTestElement('@suite/loading').should('not.exist');
+        cy.discoveryShouldFinish();
 
         // go to settings
-        cy.wait(5000);
         cy.prefixedVisit('/');
         cy.task('startEmu', { wipe: false });
         cy.discoveryShouldFinish();

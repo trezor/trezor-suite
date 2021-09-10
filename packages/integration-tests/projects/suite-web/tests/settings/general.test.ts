@@ -1,4 +1,5 @@
 // @group:settings
+// @retry=2
 
 describe('General settings', () => {
     beforeEach(() => {

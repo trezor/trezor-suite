@@ -4,6 +4,7 @@
 // it appears that plugins must be .js files, refer to this example by cypress dev
 // https://github.com/bahmutov/add-typescript-to-cypress/tree/master/e2e/cypress
 
+import CDP from 'chrome-remote-interface';
 import { addMatchImageSnapshotPlugin } from 'cypress-image-snapshot/plugin';
 import { Controller } from './websocket-client';
 import googleMock from './google';
@@ -12,7 +13,25 @@ import * as metadataUtils from '../../../../suite/src/utils/suite/metadata';
 
 const webpackPreprocessor = require('@cypress/webpack-preprocessor');
 
+const ensureRdpPort = args => {
+    const existing = args.find(arg => arg.slice(0, 23) === '--remote-debugging-port');
+
+    if (existing) {
+        return Number(existing.split('=')[1]);
+    }
+
+    const port = 40000 + Math.round(Math.random() * 25000);
+
+    args.push(`--remote-debugging-port=${port}`);
+
+    return port;
+};
+
+let port = 0;
+let client = null;
+
 const controller = new Controller({ url: 'ws://localhost:9001/' });
+
 module.exports = on => {
     // make ts possible start
     const options = {
@@ -29,11 +48,15 @@ module.exports = on => {
     // add snapshot plugin
     addMatchImageSnapshotPlugin(on);
 
-    on('before:browser:launch', async (browser = {}, launchOptions) => {
+    on('before:browser:launch', (browser = {}, launchOptions) => {
+        const args = Array.isArray(launchOptions) ? launchOptions : launchOptions.args;
+        port = ensureRdpPort(args);
+
         if (browser.name === 'chrome') {
             launchOptions.args.push('--disable-dev-shm-usage');
             return launchOptions;
         }
+
         return launchOptions;
     });
 
@@ -42,17 +65,25 @@ module.exports = on => {
             switch (provider) {
                 case 'dropbox':
                     await dropboxMock.start();
+                    break;
                 case 'google':
                     await googleMock.start();
+                    break;
+                default:
+                    throw new Error('not a valid case');
             }
             return null;
         },
-        metadataStopProvider: async provider => {
+        metadataStopProvider: provider => {
             switch (provider) {
                 case 'dropbox':
                     dropboxMock.stop();
+                    break;
                 case 'google':
                     googleMock.stop();
+                    break;
+                default:
+                    throw new Error('not a valid case');
             }
             return null;
         },
@@ -64,6 +95,9 @@ module.exports = on => {
                     break;
                 case 'google':
                     googleMock.setFile(file, encrypted);
+                    break;
+                default:
+                    throw new Error('not a valid case');
             }
             return null;
         },
@@ -75,6 +109,8 @@ module.exports = on => {
                 case 'google':
                     googleMock.nextResponse = { status, body };
                     break;
+                default:
+                    throw new Error('not a valid case');
             }
             return null;
         },
@@ -84,6 +120,8 @@ module.exports = on => {
                     return dropboxMock.requests;
                 case 'google':
                     return googleMock.requests;
+                default:
+                    throw new Error('not a valid case');
             }
         },
         startBridge: async version => {
@@ -101,7 +139,8 @@ module.exports = on => {
         setupEmu: async options => {
             const defaults = {
                 // some random empty seed. most of the test don't need any account history so it is better not to slow them down with all all seed
-                mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
+                mnemonic:
+                    'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
                 pin: '',
                 passphrase_protection: false,
                 label: 'My Trevor',
@@ -193,7 +232,10 @@ module.exports = on => {
         },
         readAndConfirmShamirMnemonicEmu: async options => {
             await controller.connect();
-            await controller.send({ type: 'emulator-read-and-confirm-shamir-mnemonic', ...options});
+            await controller.send({
+                type: 'emulator-read-and-confirm-shamir-mnemonic',
+                ...options,
+            });
             controller.disconnect();
             return null;
         },
@@ -217,6 +259,34 @@ module.exports = on => {
             await controller.send({ type: 'log', text });
             controller.disconnect();
             return null;
+        },
+        resetCRI: async () => {
+            if (client) {
+                await client.close();
+                client = null;
+            }
+
+            return Promise.resolve(true);
+        },
+        activateHoverPseudo: async ({ selector }) => {
+            client = client || (await CDP({ port }));
+            await client.DOM.enable();
+            await client.CSS.enable();
+            // as the Window consists of two IFrames, we must retrieve the right one
+            const allRootNodes = await client.DOM.getFlattenedDocument();
+            const isIframe = node => node.nodeName === 'IFRAME' && node.contentDocument;
+            const filtered = allRootNodes.nodes.filter(isIframe);
+            // The first IFrame is our App
+            const root = filtered[0].contentDocument;
+            const { nodeId } = await client.DOM.querySelector({
+                nodeId: root.nodeId,
+                selector,
+            });
+
+            return client.CSS.forcePseudoState({
+                nodeId,
+                forcedPseudoClasses: ['hover'],
+            });
         },
     });
 };

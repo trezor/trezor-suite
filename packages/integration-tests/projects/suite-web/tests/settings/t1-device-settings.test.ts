@@ -15,6 +15,7 @@ describe('T1 - Device settings', () => {
         cy.getTestElement('@settings/menu/device').click();
 
         cy.getTestElement('@settings/device/pin-switch').click({ force: true });
+        cy.getTestElement('@suite/modal/confirm-action-on-device');
         cy.task('pressYes');
         // todo: add support for pin to trezor-user-env. now I may safely test only wrong pin input
         // cy.getTestElement('@pin').matchImageSnapshot('first pin input');

@@ -23,7 +23,6 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
                 mnemonic: 'all all all all all all all all all all all all',
             });
             cy.task(`metadataStartProvider`, f.provider);
-            cy.task('startBridge');
 
             cy.prefixedVisit('/', {
                 onBeforeLoad: (win: Window) => {
@@ -31,6 +30,9 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
                     cy.stub(win, 'fetch', rerouteMetadataToMockProvider);
                 },
             });
+
+            cy.getTestElement('@onboarding/continue-button');
+            cy.task('startBridge');
 
             cy.passThroughInitialRun();
 
@@ -43,9 +45,11 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             );
             cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
 
-            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click({
-                force: true,
-            });
+            cy.hoverTestElement("@metadata/m/84'/0'/0'/label-container");
+            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button")
+                .should('be.visible')
+                .click();
+
             cy.passThroughInitMetadata(f.provider);
 
             cy.log('Edit and submit changes by pressing enter key');
@@ -59,9 +63,8 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
 
             cy.log('Now edit and submit by clicking on submit button');
             cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'").click();
-            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click({
-                force: true,
-            });
+            cy.wait(50);
+            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click();
             cy.getTestElement('@metadata/input').type(' even cooler');
             cy.getTestElement('@metadata/submit').click();
             cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'even cooler');
@@ -70,9 +73,7 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
 
             cy.log('Now edit and press escape, should not save');
             cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'").click();
-            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click({
-                force: true,
-            });
+            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click();
             cy.getTestElement('@metadata/input')
                 .clear()
                 .type('bcash is true bitcoin{esc}', { timeout: 20 });
@@ -86,9 +87,8 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             cy.getTestElement('@account-menu/search-input').click().clear();
 
             cy.log('We can also remove metadata by clearing input');
-            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click({
-                force: true,
-            });
+            cy.wait(50);
+            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click();
             cy.getTestElement('@metadata/input').clear().type('{enter}');
 
             cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
@@ -106,9 +106,7 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             // visible when switching between accounts
             cy.getTestElement('@account-menu/segwit').click();
             cy.getTestElement('@account-menu/btc/segwit/0').click();
-            cy.getTestElement("@metadata/accountLabel/m/49'/0'/0'/add-label-button").click({
-                force: true,
-            });
+            cy.getTestElement("@metadata/accountLabel/m/49'/0'/0'/add-label-button").click();
             cy.getTestElement('@metadata/input').type('typing into one input{enter}');
             cy.getTestElement("@metadata/accountLabel/m/49'/0'/0'/success").should('be.visible');
             cy.getTestElement('@account-menu/btc/segwit/1').click();
