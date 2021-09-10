@@ -9,6 +9,7 @@ services:
     volumes:
       - ..:/usr/src/service
       - ../node_modules:/usr/src/service/node_modules
+      - /mnt/wps:/mnt/wps
     environment:
       - NODE_ENV=development
       - LOCAL_USER_ID=$LOCAL_USER_ID
