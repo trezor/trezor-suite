@@ -320,6 +320,7 @@ const Settings = () => {
                                 }
                             }}
                             variant="secondary"
+                            data-test="@settings/reset-app-button"
                         >
                             <Translation id="TR_CLEAR_STORAGE" />
                         </ActionButton>
