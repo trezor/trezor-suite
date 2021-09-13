@@ -11,8 +11,13 @@ Package `@trezor/connect-common` is a public NPM package used as dependency of `
 1. Complete the firmware release process including firmware signing.
 2. Add firmwares to `packages/connect-common/files/firmware/*` and modify its `releases.json` file. See [90bb548](https://github.com/trezor/trezor-suite/commit/90bb548aec06c9b4816c9a87b2ffa5fcade99f29) for example.
    - To retrieve `fingerprint`, run `trezorctl firmware-update -f {path-to-the-bin}` for each binary separately (you don't have to confirm the update on device unless you want to).
-3. Remove older binaries so they are not bundled in desktop app any more, but always keep the intermediary FW [packages/connect-common/files/firmware/1/trezor-inter-1.10.0.bin](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/firmware/1/trezor-inter-1.10.0.bin).
-4. Test it locally by running `yarn workspace @trezor/connect-iframe build:lib` to rebuild connect files and `yarn workspace @trezor/suite-web dev` to use/copy them.
+3. Remove older binaries so they are not bundled in desktop app any more, but always keep:
+   - the intermediary FW for Trezor One [packages/connect-common/files/firmware/1/trezor-inter-1.10.0.bin](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/firmware/1/trezor-inter-1.10.0.bin)
+   - and 2.1.1 for model T [packages/connect-common/files/firmware/2/trezor-2.1.1.bin](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/firmware/2/trezor-2.1.1.bin)
+  
+	See [#4262](https://github.com/trezor/trezor-suite/issues/4262) for explanation.
+
+1. Test it locally by running `yarn workspace @trezor/connect-iframe build:lib` to rebuild connect files and `yarn workspace @trezor/suite-web dev` to use/copy them.
 
 ## Freeze & Release
 
