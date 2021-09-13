@@ -32,7 +32,6 @@ import { formatDurationStrict } from '@suite/utils/suite/date';
 
 const RotationButton = styled(ActionButton)`
     min-width: 81px;
-    margin: 4px;
     flex-basis: 45%;
 
     @media screen and (min-width: ${variables.SCREEN_SIZE.MD}) {
