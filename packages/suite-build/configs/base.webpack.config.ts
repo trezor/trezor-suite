@@ -155,10 +155,6 @@ const config: webpack.Configuration = {
             'process.env.CODESIGN_BUILD': isCodesignBuild,
             'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
         }),
-        new webpack.ProvidePlugin({
-            Buffer: ['buffer', 'Buffer'],
-            process: 'process',
-        }),
         // @ts-ignore - @types/webpack-bundle-analyzer depends on @types/webpack@4
         ...(isAnalyzing
             ? [
