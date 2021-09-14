@@ -118,6 +118,7 @@ async function runTests() {
             screenshotsFolder: `${__dirname}/screenshots`,
             integrationFolder: `${__dirname}/tests`,
             videosFolder: `${__dirname}/videos`,
+            downloadsFolder: `${__dirname}/downloads`,
             video: true,
             chromeWebSecurity: false,
             trashAssetsBeforeRuns: false,
