@@ -1,5 +1,5 @@
 import React from 'react';
-import { TooltipConditional } from '@trezor/components';
+import { Tooltip } from '@trezor/components';
 import styled from 'styled-components';
 import { Network } from '@wallet-types';
 import { Coin, Translation } from '@suite-components';
@@ -41,7 +41,7 @@ const CoinsList = ({ onToggleFn, networks, selectedNetworks }: Props) => {
                 const commonTooltip = tooltip && <Translation id={tooltip} />;
 
                 return (
-                    <TooltipConditional
+                    <Tooltip
                         key={`${symbol}_${accountType}`}
                         placement="top"
                         content={unavailabilityTooltip || commonTooltip}
@@ -60,7 +60,7 @@ const CoinsList = ({ onToggleFn, networks, selectedNetworks }: Props) => {
                                       }
                             }
                         />
-                    </TooltipConditional>
+                    </Tooltip>
                 );
             })}
         </Wrapper>

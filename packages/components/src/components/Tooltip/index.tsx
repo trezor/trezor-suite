@@ -153,7 +153,7 @@ const Tooltip = ({
         });
     };
 
-    return (
+    return content && children ? (
         <Wrapper className={className}>
             <Tippy
                 zIndex={10070}
@@ -196,6 +196,8 @@ const Tooltip = ({
                 </Content>
             </Tippy>
         </Wrapper>
+    ) : (
+        <>{children}</>
     );
 };
 

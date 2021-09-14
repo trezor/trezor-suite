@@ -68,7 +68,7 @@ const AddWalletButton = ({ device, instances, addDeviceInstance, selectDeviceIns
     return (
         <AddWallet>
             <StyledTooltip
-                content={<Translation id="TR_TO_ACCESS_OTHER_WALLETS" />}
+                content={isLocked && <Translation id="TR_TO_ACCESS_OTHER_WALLETS" />}
                 cursor="pointer"
             >
                 <StyledButton
