@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Button, TooltipConditional } from '@trezor/components';
+import { Button, Tooltip } from '@trezor/components';
 import { Account } from '@wallet-types';
 import { Translation } from '@suite-components';
 import { useAnalytics, useAccountSearch } from '@suite-hooks';
@@ -73,12 +73,12 @@ export const AddAccountButton = ({ emptyAccounts, onEnableAccount }: Props) => {
     const disabledMessage = verifyAvailibility({ emptyAccounts, account });
 
     return (
-        <TooltipConditional maxWidth={285} content={disabledMessage}>
+        <Tooltip maxWidth={285} content={disabledMessage}>
             <AddButton
                 account={account}
                 isDisabled={!!disabledMessage}
                 onEnableAccount={onEnableAccount}
             />
-        </TooltipConditional>
+        </Tooltip>
     );
 };

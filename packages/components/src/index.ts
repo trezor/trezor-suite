@@ -34,7 +34,6 @@ import { CoinLogo, CoinLogoProps } from './components/logos/CoinLogo';
 import { TrezorLogo, TrezorLogoProps } from './components/logos/TrezorLogo';
 import { Loader, LoaderProps } from './components/loaders/Loader';
 import { Tooltip, TooltipProps } from './components/Tooltip';
-import { TooltipConditional } from './components/Tooltip/TooltipConditional';
 import { Timerange, TimerangeProps } from './components/Timerange';
 import { Truncate } from './components/Truncate';
 import { SelectBar, SelectBarProps } from './components/form/SelectBar';
@@ -87,7 +86,6 @@ export {
     LoaderProps,
     Tooltip,
     TooltipProps,
-    TooltipConditional,
     Timerange,
     TimerangeProps,
     Truncate,
