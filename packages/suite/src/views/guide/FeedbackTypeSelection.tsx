@@ -6,7 +6,7 @@ import { Translation } from '@suite-components';
 import * as guideActions from '@suite-actions/guideActions';
 import { useActions, useAnalytics, useSelector } from '@suite-hooks';
 import { Icon, variables } from '@trezor/components';
-import { resolveStaticPath } from '@suite-utils/build';
+import { isDev, resolveStaticPath } from '@suite-utils/build';
 import { getFwVersion } from '@suite-utils/device';
 import { ViewWrapper, Header, Content } from '@guide-components';
 
@@ -147,13 +147,16 @@ const FeedbackTypeSelection = () => {
                     <DetailItem>
                         <Translation id="TR_APP" />
                         :&nbsp;
-                        {appUpToDate ? (
+                        {!isDev() && appUpToDate ? (
                             <>
                                 <StyledIcon icon="CHECK" size={10} />
                                 <Translation id="TR_UP_TO_DATE" />
                             </>
                         ) : (
-                            process.env.VERSION
+                            <>
+                                {process.env.VERSION}
+                                {isDev() && '-dev'}
+                            </>
                         )}
                     </DetailItem>
                     <DetailItem>
