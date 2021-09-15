@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { SettingsLayout } from '@settings-components';
 import { Translation } from '@suite-components';
 import {
@@ -28,6 +28,7 @@ import * as desktopUpdateActions from '@suite-actions/desktopUpdateActions';
 
 import { getReleaseUrl } from '@suite/services/github';
 import { isDesktop, isWeb } from '@suite-utils/env';
+import { isDev } from '@suite-utils/build';
 
 const buildCurrencyOption = (currency: string) => ({
     value: currency,
@@ -43,6 +44,16 @@ const Version = styled.div`
 
 const VersionButton = styled(Button)`
     padding-left: 1ch;
+    ${isDev() &&
+    css`
+        color: ${props => props.theme.TYPE_WHITE};
+        background: ${props => props.theme.BUTTON_RED};
+        &:hover,
+        &:active,
+        &:focus {
+            background: ${props => props.theme.BUTTON_RED_HOVER};
+        }
+    `};
 `;
 
 const VersionTooltip = styled(Tooltip)`
@@ -346,6 +357,7 @@ const Settings = () => {
                                                         alignIcon="right"
                                                     >
                                                         {process.env.VERSION}
+                                                        {isDev() && '-dev'}
                                                     </VersionButton>
                                                 </VersionLink>
                                             </VersionTooltip>
