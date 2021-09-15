@@ -9,6 +9,7 @@ import { MIN_HEIGHT, MIN_WIDTH } from '@desktop-electron/libs/screen';
 import Logger, { LogLevel, defaultOptions as loggerDefaults } from '@desktop-electron/libs/logger';
 import { buildInfo, computerInfo } from '@desktop-electron/libs/info';
 import modules from '@desktop-electron/libs/modules';
+import { isDev as isDevEnvironment } from '@suite-utils/build';
 
 let mainWindow: BrowserWindow;
 const APP_NAME = 'Trezor Suite';
@@ -37,14 +38,17 @@ global.resourcesPath = isDev
     ? path.join(__dirname, '..', 'build', 'static')
     : process.resourcesPath;
 
-logger.info('main', 'Application starting');
+logger.info(
+    'main',
+    `Application starting in ${isDevEnvironment() ? 'development' : 'production'} mode`,
+);
 
 const init = async () => {
     buildInfo();
     await computerInfo();
 
     const winBounds = store.getWinBounds();
-    logger.debug('init', `Create Browswer Window (${winBounds.width}x${winBounds.height})`);
+    logger.debug('init', `Create Browser Window (${winBounds.width}x${winBounds.height})`);
 
     mainWindow = new BrowserWindow({
         title: APP_NAME,
@@ -83,8 +87,6 @@ if (!singleInstance) {
     logger.warn('main', 'Second instance detected, quitting...');
     app.quit();
 } else {
-    logger.info('main', 'Application starting');
-
     app.on('second-instance', () => {
         // Someone tried to run a second instance, we should focus our window.
         if (mainWindow) {

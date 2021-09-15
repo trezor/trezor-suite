@@ -40,6 +40,9 @@ const appKey = fs.readFileSync(keyPath, 'utf-8');
 // Start build
 const hrstart = process.hrtime();
 console.log('[Electron Build] Starting...');
+console.log(`[Electron Build] Mode: ${isDev ? 'development' : 'production'}`);
+console.log(`[Electron Build] Using mocks: ${useMocks}`);
+
 build({
     entryPoints: ['app.ts', 'preload.ts', ...modules].map(f => path.join(electronSource, f)),
     platform: 'node',
