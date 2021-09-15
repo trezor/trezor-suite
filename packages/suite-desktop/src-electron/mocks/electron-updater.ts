@@ -58,7 +58,7 @@ const updateInfo = {
     ],
     path: 'Trezor-Suite-31.33.7-fake.AppImage',
     sha512: 'tfvdNXsjMe8YXJwTuujz4tKTdfsCuR/9VECF8EkcRP95YM7vuDV8dumru1jKtdiv0gaS1GT3SPEeAfmczY5jGg==',
-    releaseDate: '2029-14-12T13:39:03.416Z',
+    releaseDate: '2029-12-12T13:39:03.416Z',
     releaseName: 'v31.33.7',
     releaseNotes:
         '<h3><g-emoji class="g-emoji" alias="rocket" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f680.png">🚀</g-emoji>New features</h3>\n<ul>\n<li>Sell cryptocurrency</li>\n<li>Option to disable safety checks</li>\n</ul>\n<p>.. and many other improvements and fixes!</p>',
@@ -72,11 +72,15 @@ const autoUpdater = {
         callbacks[event] = cb;
     },
     checkForUpdates: () => {
+        const { logger } = global;
+
         callbacks['checking-for-update']();
         setTimeout(() => {
             if (updateAvailable) {
+                logger.warn('auto-updater', 'Mocked update is available');
                 callbacks['update-available'](updateInfo);
             } else {
+                logger.warn('auto-updater', 'No new mocked update is available');
                 callbacks['update-not-available']({
                     version: app.getVersion(),
                     releaseDate: new Date(),
@@ -97,7 +101,7 @@ const autoUpdater = {
                     clearInterval(downloadProgress);
                     callbacks['update-downloaded']({
                         version: '31.33.7',
-                        releaseDate: new Date(),
+                        releaseDate: new Date(updateInfo.releaseDate),
                         downloadedFile:
                             '/home/myuser/.cache/@trezorsuite-desktop-updater/pending/Trezor-Suite-31.33.7-fake.AppImage',
                     });
