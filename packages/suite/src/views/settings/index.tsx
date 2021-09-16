@@ -365,6 +365,12 @@ const Settings = () => {
                                         ),
                                     }}
                                 />
+                                {desktopUpdate.skip && (
+                                    <>
+                                        &nbsp;
+                                        <Translation id="TR_YOUR_NEW_VERSION_SKIPPED" />
+                                    </>
+                                )}
                                 {!['checking', 'not-available'].includes(desktopUpdate.state) &&
                                     desktopUpdate.latest && (
                                         <>

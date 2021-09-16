@@ -3125,6 +3125,10 @@ const messages = {
         defaultMessage: 'Version {version} is available.',
         id: 'TR_YOUR_NEW_VERSION',
     },
+    TR_YOUR_NEW_VERSION_SKIPPED: {
+        defaultMessage: 'Update to the latest version has been skipped.',
+        id: 'TR_YOUR_NEW_VERSION_SKIPPED',
+    },
     TR_YOUR_TREZOR_IS_NOT_BACKED_UP: {
         defaultMessage: 'Your Trezor wallet is not backed up.',
         id: 'TR_YOUR_TREZOR_IS_NOT_BACKED_UP',

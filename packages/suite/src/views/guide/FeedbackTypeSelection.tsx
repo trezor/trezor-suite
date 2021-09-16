@@ -9,6 +9,7 @@ import { Icon, variables } from '@trezor/components';
 import { isDev, resolveStaticPath } from '@suite-utils/build';
 import { getFwVersion } from '@suite-utils/device';
 import { ViewWrapper, Header, Content } from '@guide-components';
+import { isDesktop } from '@suite-utils/env';
 
 const FeedbackTypeButton = styled.button`
     border: 0;
@@ -79,7 +80,10 @@ const FeedbackTypeSelection = () => {
         device: state.suite.device,
     }));
 
-    const appUpToDate = !desktopUpdate?.enabled || desktopUpdate?.state === 'not-available';
+    const appUpToDate =
+        isDesktop() &&
+        ['checking', 'not-available'].includes(desktopUpdate.state) &&
+        !desktopUpdate.skip;
 
     const firmwareUpToDate = device?.firmware === 'valid';
     const firmwareVersion = device?.features ? (
