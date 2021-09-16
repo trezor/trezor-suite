@@ -96,7 +96,7 @@
         "@types/ua-parser-js": "^0.7.36",
         "@types/uuid": "^8.3.0",
         "@types/zxcvbn": "^4.4.0",
-        "canvas": "^2.6.1",
+        "canvas": "^2.8.0",
         "core-js-bundle": "3.8.2",
         "cross-env": "^7.0.3",
         "fake-indexeddb": "^3.1.2",
