@@ -7,6 +7,7 @@ import { useSendFormContext } from '@wallet-hooks';
 import { isEnabled as isFeatureEnabled } from '@suite-utils/features';
 import { OpenGuideFromTooltip } from '@guide-views';
 import Locktime from './components/Locktime';
+import UtxoSelection from './components/UtxoSelection';
 
 const Wrapper = styled.div`
     display: flex;
@@ -53,10 +54,20 @@ const BitcoinOptions = () => {
     const options = getDefaultValue('options', []);
     const locktimeEnabled = options.includes('bitcoinLockTime');
     const rbfEnabled = options.includes('bitcoinRBF');
+    const utxoSelectionEnabled = options.includes('utxoSelection');
     const broadcastEnabled = options.includes('broadcast');
 
     return (
         <Wrapper>
+            {utxoSelectionEnabled && (
+                <UtxoSelection
+                    close={() => {
+                        resetDefaultValue('utxoSelection');
+                        toggleOption('utxoSelection');
+                        composeTransaction();
+                    }}
+                />
+            )}
             {locktimeEnabled && (
                 <Locktime
                     close={() => {
@@ -118,6 +129,29 @@ const BitcoinOptions = () => {
                                 </StyledButton>
                             </Tooltip>
                         )}
+                    {!utxoSelectionEnabled && (
+                        <Tooltip
+                            openGuide={{
+                                node: (
+                                    <OpenGuideFromTooltip id="/suite-basics/send/utxo-selection.md" />
+                                ),
+                            }}
+                            content={<span>Coin selection tooltip...</span>}
+                            cursor="pointer"
+                        >
+                            <StyledButton
+                                variant="tertiary"
+                                icon="CREDIT_CARD"
+                                onClick={() => {
+                                    // open additional form
+                                    toggleOption('utxoSelection');
+                                    composeTransaction();
+                                }}
+                            >
+                                Coin selection
+                            </StyledButton>
+                        </Tooltip>
+                    )}
                     <Tooltip content={<Translation id="BROADCAST_TOOLTIP" />} cursor="pointer">
                         <StyledButton
                             variant="tertiary"
