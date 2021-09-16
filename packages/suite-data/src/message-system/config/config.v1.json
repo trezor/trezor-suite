@@ -1,6 +1,39 @@
 {
     "version": 1,
-    "timestamp": "2021-07-131T11:20:00+00:00",
-    "sequence": 3,
-    "actions": []
+    "timestamp": "2021-09-20T00:00:00+00:00",
+    "sequence": 4,
+    "actions": [
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "21.9.1",
+                        "mobile": "!",
+                        "web": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "40d88610-170f-11ec-9621-0242ac130002",
+                "priority": 91,
+                "dismissible": false,
+                "variant": "critical",
+                "category": "banner",
+                "content": {
+                    "en-GB": "There has been an error updating Trezor Suite. Please install the latest version manually from the Trezor Suite homepage.",
+                    "en": "There has been an error updating Trezor Suite. Please install the latest version manually from the Trezor Suite homepage.",
+                    "es": "Ha habido un error al actualizar Trezor Suite. Instale la última versión manualmente desde la página de inicio de Trezor Suite."
+                },
+                "cta": {
+                    "action": "external-link",
+                    "link": "https://suite.trezor.io/",
+                    "label": {
+                        "en-GB": "Go to suite.trezor.io",
+                        "en": "Go to suite.trezor.io",
+                        "es": "Ir a suite.trezor.io"
+                    }
+                }
+            }
+        }
+    ]
 }
