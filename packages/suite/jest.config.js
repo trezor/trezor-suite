@@ -66,14 +66,12 @@ module.exports = {
         '<rootDir>/src/utils/suite/dom',
         '<rootDir>/src/utils/wallet/promiseUtils',
     ],
-    transformIgnorePatterns: [
-        '/node_modules/',
-        '/node_modules/(?!intl-messageformat|intl-messageformat-parser).+\\.js$',
-    ],
+    transformIgnorePatterns: ['/node_modules/(?!d3-(.*)|internmap)/'],
     testMatch: ['**/*.test.(ts|tsx|js)'],
     transform: {
-        '^.+\\.(ts|tsx)$': 'ts-jest',
-        '^.+\\.svg$': '<rootDir>/src/support/tests/svgTransform.js', // https://stackoverflow.com/questions/46791263/jest-test-fail-syntaxerror-unexpected-token
+        '(d3-|internmap).*\\.js$': 'ts-jest',
+        '\\.(ts|tsx)$': 'ts-jest',
+        '\\.svg$': '<rootDir>/src/support/tests/svgTransform.js', // https://stackoverflow.com/questions/46791263/jest-test-fail-syntaxerror-unexpected-token
     },
     verbose: false,
     watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],

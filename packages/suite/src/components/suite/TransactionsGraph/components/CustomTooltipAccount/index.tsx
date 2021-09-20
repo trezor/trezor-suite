@@ -6,7 +6,7 @@ import { CommonAggregatedHistory } from '@wallet-types/graph';
 import { Props as GraphProps, CryptoGraphProps } from '../../definitions';
 import CustomTooltipBase from '../CustomTooltipBase';
 
-interface Props extends TooltipProps {
+interface Props extends TooltipProps<number, any> {
     selectedRange: GraphProps['selectedRange'];
     localCurrency: string;
     symbol: Account['symbol'];

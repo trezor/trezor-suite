@@ -142,7 +142,7 @@ const TransactionsGraph = React.memo((props: Props) => {
                             />
                             <Tooltip
                                 position={{ y: 0, x: 0 }}
-                                wrapperStyle={{ zIndex: '3' }}
+                                wrapperStyle={{ zIndex: 3 }}
                                 cursor={{ stroke: theme.BG_TOOLTIP, strokeWidth: 1 }}
                                 content={
                                     props.variant === 'one-asset' ? (

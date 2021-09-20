@@ -112,7 +112,7 @@ const Sign = styled.span<{ color: string }>`
     margin-right: 4px;
 `;
 
-interface Props extends TooltipProps {
+interface Props extends TooltipProps<number, any> {
     selectedRange: GraphProps['selectedRange'];
     receivedAmount: JSX.Element;
     sentAmount: JSX.Element;
@@ -147,7 +147,7 @@ const CustomTooltipBase = (props: Props) => {
                 : 'day';
 
         return (
-            <CustomTooltipWrapper positionX={props.coordinate!.x} boxWidth={props.viewBox!.width!}>
+            <CustomTooltipWrapper positionX={props.coordinate!.x!} boxWidth={props.viewBox!.width!}>
                 <Row>
                     <Title>{date && formatDate(date, dateFormat)}</Title>
                 </Row>

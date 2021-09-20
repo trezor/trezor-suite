@@ -11,6 +11,7 @@ jest.mock('react-svg', () => ({ ReactSVG: () => 'SVG' }));
 jest.mock('@suite-components/Translation', () => ({
     Translation: ({ id }: any) => <div data-test={id}>{id}</div>,
 }));
+
 // jest.mock('@firmware-components/ReconnectDevicePrompt', () => ({
 //     __esModule: true, // export as module
 //     default: ({ children }: any) => <div data-test="box">{children}</div>,
