@@ -73,5 +73,9 @@ msg-system codesign deploy:
       - codesign
   tags:
     - deploy
+  variables:
+    AWS_CLOUDFRONT_ID: E1ERY5K2OTKKI1
   script:
+    - source ${MSG_SYSTEM_DATA_DEPLOY_KEYFILE}
     - aws s3 cp packages/suite-data/files/message-system/config.v1.jws s3://data.trezor.io/config/stable/config.v1.jws
+    - aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/config/stable/*'
