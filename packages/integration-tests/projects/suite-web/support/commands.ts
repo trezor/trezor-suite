@@ -34,6 +34,7 @@ const prefixedVisit = (route: string, options?: Partial<Cypress.VisitOptions>) =
 beforeEach(() => {
     const suiteName = (Cypress as any).mocha.getRunner().suite.ctx.currentTest.parent.title;
     const testName = (Cypress as any).mocha.getRunner().suite.ctx.currentTest.title;
+    cy.task('trezorUserEnvConnect');
     cy.task('logTestDetails', `New test case: ${suiteName} - ${testName}`);
     cy.task('resetCRI');
 
@@ -44,6 +45,10 @@ beforeEach(() => {
     cy.log('stop and start bridge before every test to make sure that there is no pending session');
     cy.task('stopBridge');
     cy.task('stopEmu');
+});
+
+afterEach(() => {
+    cy.task('trezorUserEnvDisconnect');
 });
 
 declare global {
