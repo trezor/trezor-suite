@@ -268,6 +268,7 @@ module.exports = on => {
             }
 
             fs.rmdirSync(dir, { force, recursive });
+            return null;
         },
         trezorUserEnvConnect: async () => {
             await controller.connect();
