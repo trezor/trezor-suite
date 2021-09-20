@@ -128,15 +128,11 @@ module.exports = on => {
             }
         },
         startBridge: async version => {
-            await controller.connect();
             await controller.send({ type: 'bridge-start', version });
-            controller.disconnect();
             return null;
         },
         stopBridge: async () => {
-            await controller.connect();
             const response = await controller.send({ type: 'bridge-stop' });
-            controller.disconnect();
             return null;
         },
         setupEmu: async options => {
@@ -150,7 +146,6 @@ module.exports = on => {
                 needs_backup: false,
             };
 
-            await controller.connect();
             // before setup, stop bridge and start it again after it. it has no performance hit
             // and avoids 'wrong previous session' errors from bridge. actual setup is done
             // through udp transport if bridge transport is not available
@@ -161,7 +156,6 @@ module.exports = on => {
                 ...options,
             });
             await controller.send({ type: 'bridge-start' });
-            controller.disconnect();
             return null;
         },
         /**
@@ -171,96 +165,68 @@ module.exports = on => {
          * shall be emulator wiped before start? defaults to true
          */
         startEmu: async arg => {
-            await controller.connect();
             await controller.send({
                 type: 'emulator-start',
                 ...arg,
             });
-            controller.disconnect();
             return null;
         },
         stopEmu: async () => {
-            await controller.connect();
             await controller.send({ type: 'emulator-stop' });
-            controller.disconnect();
             return null;
         },
         wipeEmu: async () => {
-            await controller.connect();
             await controller.send({ type: 'emulator-wipe' });
-            controller.disconnect();
             return null;
         },
         pressYes: async () => {
-            await controller.connect();
             await controller.send({ type: 'emulator-press-yes' });
-            controller.disconnect();
             return null;
         },
         pressNo: async () => {
-            await controller.connect();
             await controller.send({ type: 'emulator-press-no' });
-            controller.disconnect();
             return null;
         },
         swipeEmu: async direction => {
-            await controller.connect();
             await controller.send({ type: 'emulator-swipe', direction });
-            controller.disconnect();
             return null;
         },
         inputEmu: async value => {
-            await controller.connect();
             await controller.send({ type: 'emulator-input', value });
-            controller.disconnect();
             return null;
         },
         clickEmu: async options => {
-            await controller.connect();
             await controller.send({ type: 'emulator-click', ...options });
-            controller.disconnect();
             return null;
         },
         resetDevice: async options => {
-            await controller.connect();
             await controller.send({ type: 'emulator-reset-device', ...options });
-            controller.disconnect();
             return null;
         },
         readAndConfirmMnemonicEmu: async () => {
-            await controller.connect();
             await controller.send({ type: 'emulator-read-and-confirm-mnemonic' });
-            controller.disconnect();
             return null;
         },
         readAndConfirmShamirMnemonicEmu: async options => {
-            await controller.connect();
             await controller.send({
                 type: 'emulator-read-and-confirm-shamir-mnemonic',
                 ...options,
             });
-            controller.disconnect();
             return null;
         },
         applySettings: async options => {
-            await controller.connect();
             await controller.send({
                 type: 'emulator-apply-settings',
                 ...options,
             });
-            controller.disconnect();
             return null;
         },
         selectNumOfWordsEmu: async num => {
-            await controller.connect();
             await controller.send({ type: 'select-num-of-words', num });
-            controller.disconnect();
             return null;
         },
         logTestDetails: async text => {
-            await controller.connect();
             await controller.send({ type: 'log', text });
-            controller.disconnect();
             return null;
         },
         resetCRI: async () => {
@@ -291,7 +257,6 @@ module.exports = on => {
                 forcedPseudoClasses: ['hover'],
             });
         },
-
         readDir: dir => fs.readdirSync(dir, { encoding: 'utf-8' }),
         rmDir: opts => {
             const { dir, force, recursive } = opts;
@@ -303,6 +268,13 @@ module.exports = on => {
             }
 
             fs.rmdirSync(dir, { force, recursive });
+        },
+        trezorUserEnvConnect: async () => {
+            await controller.connect();
+            return null;
+        },
+        trezorUserEnvDisconnect: async () => {
+            await controller.disconnect();
             return null;
         },
     });
