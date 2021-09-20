@@ -1,4 +1,7 @@
+/* eslint-disable no-continue */
+/* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/no-var-requires */
+
 /*
     Heavily inspired by Mattermost,
     https://github.com/mattermost/mattermost-webapp/blob/master/e2e/run_tests.js good job guys.
@@ -12,13 +15,12 @@ const fs = require('fs');
 
 const TEST_DIR = './packages/integration-tests/projects/suite-web';
 
-const getGrepCommand = (word = '', args = '-rlIw', path = TEST_DIR) => {
+const getGrepCommand = (word = '', args = '-rlIw', path = TEST_DIR) =>
     // -r, recursive search on subdirectories
     // -I, ignore binary
     // -l, only names of files to stdout/return
     // -w, expression is searched for as a word
-    return `grep ${args} '${word}' ${path}`;
-};
+    `grep ${args} '${word}' ${path}`;
 
 /**
  * get value of labels, for example there is
@@ -67,7 +69,9 @@ async function runTests() {
     const { stage } = argv;
 
     if (!TRACK_SUITE_URL || CYPRESS_updateSnapshots) {
-        console.log('[run_tests.js] TRACK_SUITE_URL env not specified or CYPRESS_updateSnapshots is set. No logs will be uploaded');
+        console.log(
+            '[run_tests.js] TRACK_SUITE_URL env not specified or CYPRESS_updateSnapshots is set. No logs will be uploaded',
+        );
     }
     const finalTestFiles = getTestFiles().sort((a, b) => a.localeCompare(b));
 
@@ -98,7 +102,7 @@ async function runTests() {
         const retries = Number(grepForValue('@retry', testFile));
         const allowedRuns = !Number.isNaN(retries) && Number(ALLOW_RETRY) ? retries + 1 : 1;
 
-        const spec = __dirname + testFile.substr(testFile.lastIndexOf('/tests'));
+        const spec = path.join(__dirname, testFile.substr(testFile.lastIndexOf('/tests')));
         const testFileName = testFile
             .substr(testFile.lastIndexOf('/tests/') + 7)
             .replace('.test.ts', '');
@@ -125,8 +129,8 @@ async function runTests() {
             defaultCommandTimeout: 15000,
             env: {
                 emuVersionT1: '1-master',
-                emuVersionT2: '2-master'
-            }
+                emuVersionT2: '2-master',
+            },
         };
 
         if (userAgent) {
@@ -149,7 +153,7 @@ async function runTests() {
 
                 const { totalFailed, totalPending, totalDuration } = runResult;
 
-                const tests = runResult.runs[0].tests;
+                const { tests } = runResult.runs[0];
 
                 console.log(`[run_tests.js] ${testFileName} duration: ${totalDuration}`);
                 log.duration += totalDuration;
@@ -184,7 +188,7 @@ async function runTests() {
                 // log either success or retried (success after retry)
                 log.records[testFileName] = testRunNumber === 1 ? 'success' : 'retried';
                 console.log(
-                    `[run_tests.js] test ${testFileName} finished as successful after ${allowedRuns} run(s)`,
+                    `[run_tests.js] test ${testFileName} finished as successful after ${testRunNumber} run(s) (of ${allowedRuns})`,
                 );
                 break;
             } catch (err) {
@@ -255,7 +259,9 @@ async function runTests() {
 
         fs.appendFileSync('download-snapshots.sh', script);
     } else {
-        console.log(`[run_tests.js] Logs recorded ${TRACK_SUITE_URL}/#/${CI_COMMIT_BRANCH}/${CI_COMMIT_SHA}.`);
+        console.log(
+            `[run_tests.js] Logs recorded ${TRACK_SUITE_URL}/#/${CI_COMMIT_BRANCH}/${CI_COMMIT_SHA}.`,
+        );
     }
 
     process.exit(failedTests);
