@@ -20,6 +20,36 @@ jest.mock('@suite-actions/routerActions', () => ({
 
 jest.mock('react-svg', () => ({ ReactSVG: () => 'SVG' }));
 
+// TrezorConnect.composeTransaction is trying to connect to blockchain, to get current block height.
+// Mock whole module to avoid internet connection.
+jest.mock('@trezor/blockchain-link', () => ({
+    __esModule: true,
+    default: class BlockchainLink {
+        name = 'jest-mocked-module';
+        constructor(args: any) {
+            this.name = args.name;
+        }
+
+        on() {}
+
+        connect() {}
+
+        dispose() {}
+
+        getInfo() {
+            return {
+                url: this,
+                name: this.name,
+                shortcut: this.name,
+                version: '0.0.0',
+                decimals: 0,
+                blockHeight: 10000000,
+                blockHash: 'abcd',
+            };
+        }
+    },
+}));
+
 export const getInitialState = ({ send, fees, selectedAccount }: any = {}) => ({
     ...fixtures.DEFAULT_STORE,
     wallet: {
