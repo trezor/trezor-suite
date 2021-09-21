@@ -175,6 +175,14 @@ const messages = {
         defaultMessage: 'Review on your Trezor',
         id: 'TR_ADDRESS_MODAL_CHECK_ON_TREZOR',
     },
+    TR_ADDRESSES_FRESH: {
+        id: 'TR_ADDRESSES_FRESH',
+        defaultMessage: 'Fresh addresses',
+    },
+    TR_ADDRESSES_USED: {
+        id: 'TR_ADDRESSES_USED',
+        defaultMessage: 'Used addresses',
+    },
     TR_TRADE_NOT_FOUND: {
         defaultMessage: 'Trade not found',
         id: 'TR_TRADE_NOT_FOUND',
