@@ -3335,6 +3335,10 @@ const messages = {
         id: 'TOAST_SIGN_MESSAGE_ERROR',
         defaultMessage: 'Sign message error: {error}',
     },
+    TOAST_VERIFY_MESSAGE_SUCCESS: {
+        id: 'TOAST_VERIFY_MESSAGE_SUCCESS',
+        defaultMessage: 'Message verification successful',
+    },
     TOAST_VERIFY_MESSAGE_ERROR: {
         id: 'TOAST_VERIFY_MESSAGE_ERROR',
         defaultMessage: 'Verify message error: {error}',

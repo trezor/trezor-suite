@@ -1,0 +1,20 @@
+diff --git a/node_modules/trezor-connect/lib/typescript/networks/bitcoin.d.ts b/node_modules/trezor-connect/lib/typescript/networks/bitcoin.d.ts
+index 0c4ad87..66b0ffb 100644
+--- a/node_modules/trezor-connect/lib/typescript/networks/bitcoin.d.ts
++++ b/node_modules/trezor-connect/lib/typescript/networks/bitcoin.d.ts
+@@ -125,6 +125,7 @@ export interface SignMessage {
+     path: string | number[];
+     coin: string;
+     message: string;
++    hex?: boolean;
+ }
+ 
+ export interface VerifyMessage {
+@@ -132,6 +133,7 @@ export interface VerifyMessage {
+     signature: string;
+     message: string;
+     coin: string;
++    hex?: boolean;
+ }
+ 
+ export { TxInputType, TxOutputType } from '../trezor/protobuf';
