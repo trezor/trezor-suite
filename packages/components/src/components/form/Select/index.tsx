@@ -174,6 +174,16 @@ const Wrapper = styled.div<Props>`
 
 const Label = styled.span`
     min-height: 32px;
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+`;
+
+const BottomText = styled.div<Props>`
+    display: flex;
+    font-size: ${variables.FONT_SIZE.TINY};
+    color: ${props => getStateColor(props.state, props.theme)};
+    padding: 10px 10px 0 10px;
+    min-height: 27px;
 `;
 
 interface Option {
@@ -193,6 +203,8 @@ interface CommonProps extends Omit<SelectProps, 'components' | 'isSearchable'> {
     wrapperProps?: Record<string, any>;
     variant?: InputVariant;
     noTopLabel?: boolean;
+    noError?: boolean;
+    bottomText?: React.ReactNode;
     hideTextCursor?: boolean; // this prop hides blinking text cursor
     minWidth?: string;
     borderWidth?: number;
@@ -218,6 +230,8 @@ const Select = ({
     width,
     variant = 'large',
     noTopLabel = false,
+    noError = true,
+    bottomText,
     useKeyPressScroll,
     isSearchable = false,
     minWidth = 'initial',
@@ -403,6 +417,7 @@ const Select = ({
                 {...props}
                 components={{ Control, Option, GroupHeading, ...props.components }}
             />
+            {!noError && <BottomText state={state}>{bottomText}</BottomText>}
         </Wrapper>
     );
 };
