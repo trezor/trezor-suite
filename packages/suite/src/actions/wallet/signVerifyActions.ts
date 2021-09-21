@@ -1,131 +1,185 @@
-import TrezorConnect from 'trezor-connect';
-import { validateAddress } from '@wallet-utils/ethUtils';
-import * as notificationActions from '@suite-actions/notificationActions';
+import TrezorConnect, { ButtonRequestMessage, UI, Unsuccessful, Success } from 'trezor-connect';
 import { SIGN_VERIFY } from './constants';
-import { Dispatch, GetState } from '@suite-types';
-
-export type inputNameType =
-    | 'signAddress'
-    | 'signMessage'
-    | 'signSignature'
-    | 'verifyAddress'
-    | 'verifyMessage'
-    | 'verifySignature';
+import { addToast } from '@suite-actions/notificationActions';
+import { openModal } from '@suite-actions/modalActions';
+import type { Dispatch, GetState, TrezorDevice } from '@suite-types';
+import type { Account } from '@wallet-types';
 
 export type SignVerifyAction =
     | { type: typeof SIGN_VERIFY.SIGN_SUCCESS; signSignature: string }
-    | { type: typeof SIGN_VERIFY.CLEAR_SIGN }
-    | { type: typeof SIGN_VERIFY.CLEAR_VERIFY }
-    | { type: typeof SIGN_VERIFY.INPUT_CHANGE; inputName: inputNameType; value: string }
-    | { type: typeof SIGN_VERIFY.TOUCH; inputName: inputNameType }
-    | { type: typeof SIGN_VERIFY.ERROR; inputName: inputNameType; message?: string };
+    | { type: typeof SIGN_VERIFY.VERIFY_SUCCESS };
 
-export const sign =
-    (path: [number], message: string, hex = false) =>
-    async (dispatch: Dispatch, getState: GetState) => {
-        const selectedDevice = getState().suite.device;
-        if (!selectedDevice) return;
+type StateParams = {
+    device: TrezorDevice;
+    account: Account;
+    coin: Account['symbol'];
+    useEmptyPassphrase: boolean;
+};
 
-        const response = await TrezorConnect.ethereumSignMessage({
-            device: {
-                path: selectedDevice.path,
-                instance: selectedDevice.instance,
-                state: selectedDevice.state,
-            },
-            path,
-            hex,
-            message,
-            useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
-        });
+const getStateParams = (getState: GetState): Promise<StateParams> => {
+    const {
+        suite: { device },
+        wallet: {
+            selectedAccount: { account },
+        },
+    } = getState();
 
-        if (response && response.success) {
-            dispatch({
-                type: SIGN_VERIFY.SIGN_SUCCESS,
-                signSignature: response.payload.signature,
-            });
-        } else {
+    return !device || !device.connected || !device.available || !account
+        ? Promise.reject(new Error('Device not found'))
+        : Promise.resolve({
+              device,
+              account,
+              useEmptyPassphrase: device.useEmptyPassphrase,
+              coin: account.symbol,
+          });
+};
+
+const showAddressByNetwork =
+    (dispatch: Dispatch, address: string, path: string) =>
+    ({ account, device, coin, useEmptyPassphrase }: StateParams) => {
+        const buttonRequestHandler = (event: ButtonRequestMessage['payload']) => {
+            if (!event || event.code !== 'ButtonRequest_Address') return;
             dispatch(
-                notificationActions.addToast({
-                    type: 'sign-message-error',
-                    error: response.payload.error,
+                openModal({
+                    type: 'address',
+                    device,
+                    address,
+                    addressPath: path,
+                    networkType: account.networkType,
+                    symbol: account.symbol,
                 }),
             );
+        };
+        const bindRequestButton = <T>(response: Promise<T>) => {
+            TrezorConnect.on(UI.REQUEST_BUTTON, buttonRequestHandler);
+            return response.finally(() =>
+                TrezorConnect.off(UI.REQUEST_BUTTON, buttonRequestHandler),
+            );
+        };
+        const params = {
+            device,
+            address,
+            path,
+            coin,
+            useEmptyPassphrase,
+        };
+        switch (account.networkType) {
+            case 'bitcoin':
+                return bindRequestButton(TrezorConnect.getAddress(params));
+            case 'ethereum':
+                return bindRequestButton(TrezorConnect.ethereumGetAddress(params));
+            default:
+                return Promise.reject(new Error('ShowAddress not supported'));
         }
     };
+
+const signByNetwork =
+    (path: string | number[], message: string, hex: boolean) =>
+    ({ account, device, coin, useEmptyPassphrase }: StateParams) => {
+        const params = {
+            device,
+            path,
+            coin,
+            message,
+            useEmptyPassphrase,
+            hex,
+        };
+        switch (account.networkType) {
+            case 'bitcoin':
+                return TrezorConnect.signMessage(params);
+            case 'ethereum':
+                return TrezorConnect.ethereumSignMessage(params);
+            default:
+                return Promise.reject(new Error('Signing not supported'));
+        }
+    };
+
+const verifyByNetwork =
+    (address: string, message: string, signature: string, hex: boolean) =>
+    ({ account, device, coin, useEmptyPassphrase }: StateParams) => {
+        const params = {
+            device,
+            address,
+            coin,
+            message,
+            signature,
+            useEmptyPassphrase,
+            hex,
+        };
+        switch (account.networkType) {
+            case 'bitcoin':
+                return TrezorConnect.verifyMessage(params);
+            case 'ethereum':
+                return TrezorConnect.ethereumVerifyMessage(params);
+            default:
+                return Promise.reject(new Error('Verifying not supported'));
+        }
+    };
+
+const onSignSuccess =
+    (dispatch: Dispatch) =>
+    ({ signature }: { signature: string }) => {
+        dispatch(
+            addToast({
+                type: 'sign-message-success',
+            }),
+        );
+        return dispatch({
+            type: SIGN_VERIFY.SIGN_SUCCESS,
+            signSignature: signature,
+        });
+    };
+
+const onVerifySuccess = (dispatch: Dispatch) => () => {
+    dispatch(
+        addToast({
+            type: 'verify-message-success',
+        }),
+    );
+    return dispatch({
+        type: SIGN_VERIFY.VERIFY_SUCCESS,
+    });
+};
+
+const throwWhenFailed = <T>(response: Unsuccessful | Success<T>) =>
+    response.success
+        ? Promise.resolve(response.payload)
+        : Promise.reject(new Error(response.payload.error));
+
+const onError =
+    (
+        dispatch: Dispatch,
+        type: 'sign-message-error' | 'verify-message-error' | 'verify-address-error',
+    ) =>
+    (error: Error) =>
+        dispatch(
+            addToast({
+                type,
+                error: error.message,
+            }),
+        );
+
+export const showAddress =
+    (address: string, path: string) => (dispatch: Dispatch, getState: GetState) =>
+        getStateParams(getState)
+            .then(showAddressByNetwork(dispatch, address, path))
+            .then(throwWhenFailed)
+            .catch(onError(dispatch, 'verify-address-error'));
+
+export const sign =
+    (path: string | number[], message: string, hex = false) =>
+    (dispatch: Dispatch, getState: GetState) =>
+        getStateParams(getState)
+            .then(signByNetwork(path, message, hex))
+            .then(throwWhenFailed)
+            .then(onSignSuccess(dispatch))
+            .catch(onError(dispatch, 'sign-message-error'));
 
 export const verify =
     (address: string, message: string, signature: string, hex = false) =>
-    async (dispatch: Dispatch, getState: GetState) => {
-        const selectedDevice = getState().suite.device;
-        if (!selectedDevice) return;
-        const error = validateAddress(address);
-
-        if (error) {
-            dispatch({
-                type: SIGN_VERIFY.ERROR,
-                inputName: 'verifyAddress',
-                message: error,
-            });
-        }
-
-        if (!error) {
-            const response = await TrezorConnect.ethereumVerifyMessage({
-                device: {
-                    path: selectedDevice.path,
-                    instance: selectedDevice.instance,
-                    state: selectedDevice.state,
-                },
-                address,
-                message,
-                signature,
-                hex,
-                useEmptyPassphrase: selectedDevice.useEmptyPassphrase,
-            });
-
-            if (response && response.success) {
-                dispatch(
-                    notificationActions.addToast({
-                        type: 'verify-message-success',
-                    }),
-                );
-            } else {
-                dispatch(
-                    notificationActions.addToast({
-                        type: 'verify-message-error',
-                        error: response.payload.error,
-                    }),
-                );
-            }
-        }
-    };
-
-export const inputChange = (inputName: inputNameType, value: string) => (dispatch: Dispatch) => {
-    dispatch({
-        type: SIGN_VERIFY.INPUT_CHANGE,
-        inputName,
-        value,
-    });
-    dispatch({
-        type: SIGN_VERIFY.TOUCH,
-        inputName,
-    });
-
-    if (inputName === 'verifyAddress') {
-        const error = validateAddress(value);
-        if (error) {
-            dispatch({
-                type: SIGN_VERIFY.ERROR,
-                inputName,
-                message: error,
-            });
-        }
-    }
-};
-
-export const clearSign = (): SignVerifyAction => ({
-    type: SIGN_VERIFY.CLEAR_SIGN,
-});
-
-export const clearVerify = (): SignVerifyAction => ({
-    type: SIGN_VERIFY.CLEAR_VERIFY,
-});
+    (dispatch: Dispatch, getState: GetState) =>
+        getStateParams(getState)
+            .then(verifyByNetwork(address, message, signature, hex))
+            .then(throwWhenFailed)
+            .then(onVerifySuccess(dispatch))
+            .catch(onError(dispatch, 'verify-message-error'));

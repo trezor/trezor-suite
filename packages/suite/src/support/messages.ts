@@ -3350,9 +3350,17 @@ export default defineMessages({
         id: 'TOAST_VERIFY_ADDRESS_ERROR',
         defaultMessage: 'Verify address error: {error}',
     },
+    TOAST_SIGN_MESSAGE_SUCCESS: {
+        id: 'TOAST_SIGN_MESSAGE_SUCCESS',
+        defaultMessage: 'Message signing successful',
+    },
     TOAST_SIGN_MESSAGE_ERROR: {
         id: 'TOAST_SIGN_MESSAGE_ERROR',
         defaultMessage: 'Sign message error: {error}',
+    },
+    TOAST_VERIFY_MESSAGE_SUCCESS: {
+        id: 'TOAST_VERIFY_MESSAGE_SUCCESS',
+        defaultMessage: 'Message verification successful',
     },
     TOAST_VERIFY_MESSAGE_ERROR: {
         id: 'TOAST_VERIFY_MESSAGE_ERROR',
