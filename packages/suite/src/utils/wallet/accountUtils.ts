@@ -561,3 +561,12 @@ export const getPendingAccount = (
         utxo,
     };
 };
+
+export const hasSignVerify = (account: Account) =>
+    !!NETWORKS.find(
+        ({ networkType, symbol, accountType, features }) =>
+            networkType === account.networkType &&
+            symbol === account.symbol &&
+            (accountType || 'normal') === account.accountType &&
+            (features || []).includes('sign-verify'),
+    );

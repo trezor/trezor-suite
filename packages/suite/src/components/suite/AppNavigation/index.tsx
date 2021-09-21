@@ -190,7 +190,7 @@ const StyledDropdown = styled(Dropdown)`
     width: 38px;
     height: 38px;
     border-radius: 4px;
-    & > * {
+    & > :first-child {
         width: 100%;
         height: 100%;
     }
