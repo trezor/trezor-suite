@@ -5,11 +5,14 @@
 // https://github.com/bahmutov/add-typescript-to-cypress/tree/master/e2e/cypress
 
 import CDP from 'chrome-remote-interface';
+import fs from 'fs';
+import path from 'path';
 import { addMatchImageSnapshotPlugin } from 'cypress-image-snapshot/plugin';
 import { Controller } from './websocket-client';
 import googleMock from './google';
 import dropboxMock from './dropbox';
 import * as metadataUtils from '../../../../suite/src/utils/suite/metadata';
+import config from '../cypress.json';
 
 const webpackPreprocessor = require('@cypress/webpack-preprocessor');
 
@@ -287,6 +290,20 @@ module.exports = on => {
                 nodeId,
                 forcedPseudoClasses: ['hover'],
             });
+        },
+
+        readDir: dir => fs.readdirSync(dir, { encoding: 'utf-8' }),
+        rmDir: opts => {
+            const { dir, force, recursive } = opts;
+            // just a security check so that we do accidentally wipe something we don't want
+            const restrictedPath = path.join(__dirname, '..', config.downloadsFolder);
+            if (!dir.startsWith(restrictedPath)) {
+                console.warn('trying to rmDir ', dir);
+                throw new Error(`'it is not allowed to rm outside ${restrictedPath}`);
+            }
+
+            fs.rmdirSync(dir, { force, recursive });
+            return null;
         },
     });
 };

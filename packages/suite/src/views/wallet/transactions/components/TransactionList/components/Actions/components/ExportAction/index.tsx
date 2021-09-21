@@ -62,6 +62,8 @@ const ExportAction = ({ account }: Props) => {
         return null;
     }
 
+    const dataTest = '@wallet/accounts/export-transactions';
+
     if (isExportRunning) {
         return <Loader size={18} />;
     }
@@ -77,20 +79,24 @@ const ExportAction = ({ account }: Props) => {
                             key: 'export-csv',
                             label: <Translation id="TR_EXPORT_AS" values={{ as: 'CSV' }} />,
                             callback: () => runExport('csv'),
+                            'data-test': `${dataTest}/csv`,
                         },
                         {
                             key: 'export-pdf',
                             label: <Translation id="TR_EXPORT_AS" values={{ as: 'PDF' }} />,
                             callback: () => runExport('pdf'),
+                            'data-test': `${dataTest}/pdf`,
                         },
                         {
                             key: 'export-json',
                             label: <Translation id="TR_EXPORT_AS" values={{ as: 'JSON' }} />,
                             callback: () => runExport('json'),
+                            'data-test': `${dataTest}/json`,
                         },
                     ],
                 },
             ]}
+            data-test={`${dataTest}/dropdown`}
         />
     );
 };

@@ -1,6 +1,7 @@
 {
     "integrationFolder": "./tests",
     "fixturesFolder": "./fixtures",
+    "downloadsFolder": "./downloads",
     "pluginsFile": "./plugins/index.js",
     "supportFile": "./support/index.ts",
     "defaultCommandTimeout": 10000,
