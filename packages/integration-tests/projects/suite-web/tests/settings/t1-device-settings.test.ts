@@ -1,4 +1,4 @@
-// @group:settings
+// @group:bounty
 // @retry=2
 
 describe('T1 - Device settings', () => {
