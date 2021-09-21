@@ -223,6 +223,20 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
                 },
             });
 
+        case 'sign-message-success':
+            return simple(View, {
+                notification,
+                variant: 'success',
+                message: 'TOAST_SIGN_MESSAGE_SUCCESS',
+            });
+
+        case 'verify-message-success':
+            return simple(View, {
+                notification,
+                variant: 'success',
+                message: 'TOAST_VERIFY_MESSAGE_SUCCESS',
+            });
+
         case 'error':
             return simple(View, {
                 notification,
@@ -365,11 +379,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
             return simple(View, {
                 notification,
                 variant: 'info',
-                message: {
-                    // TODO: proper msg definition
-                    id: notification.type as 'TR_404_DESCRIPTION',
-                    defaultMessage: notification.type,
-                },
+                message: 'TR_404_DESCRIPTION',
             });
     }
 };
