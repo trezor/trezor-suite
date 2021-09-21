@@ -137,6 +137,7 @@ export const getInitialState = (prevState?: Partial<PartialState>, action?: any)
             prevState && prevState.wallet ? prevState.wallet.graph : undefined,
             action || ({ type: 'foo' } as any),
         ),
+        formDrafts: {},
     },
 });
 
