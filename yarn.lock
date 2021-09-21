@@ -2801,18 +2801,18 @@
     tunnel-agent "^0.6.0"
     uuid "^3.3.2"
 
-"@cypress/skip-test@^2.6.0":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@cypress/skip-test/-/skip-test-2.6.0.tgz#73fc58477b436638cfdfaa212b5378ff81b9b3ee"
-  integrity sha512-H5dnS+o0HaSKPexR5wuwF2YGq5praxRZMVodba/Ar9/SuDEWVlW3qxbn9ar06MFjtQnMsHjo4QHQoZzrUPLrHA==
+"@cypress/skip-test@^2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@cypress/skip-test/-/skip-test-2.6.1.tgz#44a4bc4c2b2e369a7661177c9b38e50d417a36ea"
+  integrity sha512-X+ibefBiuOmC5gKG91wRIT0/OqXeETYvu7zXktjZ3yLeO186Y8ia0K7/gQUpAwuUi28DuqMd1+7tBQVtPkzbPA==
 
-"@cypress/webpack-preprocessor@^5.5.0":
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/@cypress/webpack-preprocessor/-/webpack-preprocessor-5.5.0.tgz#e7010b2ee7449691cc16a9d5d1956af17ea175fd"
-  integrity sha512-iqwPygSNZ1u6bM3r5QRVv6qYngkcgI2xCzi9Jmo4mrkcofwX08UaItJq7xlB2/dHbB2aryQYOsfe4xNKtQIm3A==
+"@cypress/webpack-preprocessor@^5.9.1":
+  version "5.9.1"
+  resolved "https://registry.yarnpkg.com/@cypress/webpack-preprocessor/-/webpack-preprocessor-5.9.1.tgz#2694aa832baf3984d90bcb899e1ecff377560904"
+  integrity sha512-cg1ikftIo7NdlRA8ocNSxWjHJlh1JlTkN9ZfXUuKWWcJgrEdYLjXk0UzY6gYbLLaFka4oIhN6SvL5Y/7iELvgg==
   dependencies:
     bluebird "^3.7.1"
-    debug "^4.1.1"
+    debug "4.3.2"
     lodash "^4.17.20"
 
 "@cypress/xvfb@^1.2.4":
@@ -10690,10 +10690,10 @@ cyclist@^1.0.1:
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
   integrity sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=
 
-cypress-image-snapshot@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/cypress-image-snapshot/-/cypress-image-snapshot-4.0.0.tgz#0c5d94fef30ff2bc56afc3ab3a26af05aaf4c948"
-  integrity sha512-3BAdSsPlbk93Gg4Jt9rtjW99pfr/OWWX/LCDGGkU9UiNvHGvJSGqaFb/3vQoCt98nLId9S3FfjRcX3+mOFZNOQ==
+cypress-image-snapshot@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/cypress-image-snapshot/-/cypress-image-snapshot-4.0.1.tgz#59084e713a8d03500c8e053ad7a76f3f18609648"
+  integrity sha512-PBpnhX/XItlx3/DAk5ozsXQHUi72exybBNH5Mpqj1DVmjq+S5Jd9WE5CRa4q5q0zuMZb2V2VpXHth6MjFpgj9Q==
   dependencies:
     chalk "^2.4.1"
     fs-extra "^7.0.1"
@@ -10937,19 +10937,19 @@ debug@4.1.1:
   dependencies:
     ms "^2.1.1"
 
+debug@4.3.2, debug@^4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.2.tgz#f0a49c18ac8779e31d4a0c6029dfb76873c7428b"
+  integrity sha512-mOp8wKcvj7XxC78zLgw/ZA+6TSgkoE2C/ienthhRD298T7UNwAg9diBpLRxC0mOezLl4B0xV7M0cCO6P/O0Xhw==
+  dependencies:
+    ms "2.1.2"
+
 debug@^3.0.0, debug@^3.1.0, debug@^3.1.1, debug@^3.2.5, debug@^3.2.7:
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.2.7.tgz#72580b7e9145fb39b6676f9c5e5fb100b934179a"
   integrity sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==
   dependencies:
     ms "^2.1.1"
-
-debug@^4.3.2:
-  version "4.3.2"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.2.tgz#f0a49c18ac8779e31d4a0c6029dfb76873c7428b"
-  integrity sha512-mOp8wKcvj7XxC78zLgw/ZA+6TSgkoE2C/ienthhRD298T7UNwAg9diBpLRxC0mOezLl4B0xV7M0cCO6P/O0Xhw==
-  dependencies:
-    ms "2.1.2"
 
 debuglog@^1.0.1:
   version "1.0.1"
@@ -25258,6 +25258,17 @@ ts-loader@^8.0.14:
     micromatch "^4.0.0"
     semver "^7.3.4"
 
+ts-loader@^8.1.0:
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-8.3.0.tgz#83360496d6f8004fab35825279132c93412edf33"
+  integrity sha512-MgGly4I6cStsJy27ViE32UoqxPTN9Xly4anxxVyaIWR+9BGxboV4EyJBGfR3RePV7Ksjj3rHmPZJeIt+7o4Vag==
+  dependencies:
+    chalk "^4.1.0"
+    enhanced-resolve "^4.0.0"
+    loader-utils "^2.0.0"
+    micromatch "^4.0.0"
+    semver "^7.3.4"
+
 ts-node-dev@1.0.0-pre.44:
   version "1.0.0-pre.44"
   resolved "https://registry.yarnpkg.com/ts-node-dev/-/ts-node-dev-1.0.0-pre.44.tgz#2f4d666088481fb9c4e4f5bc8f15995bd8b06ecb"
@@ -26245,7 +26256,7 @@ w3c-xmlserializer@^2.0.0:
   dependencies:
     xml-name-validator "^3.0.0"
 
-wait-on@5.2.1, wait-on@^5.2.1:
+wait-on@5.2.1:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/wait-on/-/wait-on-5.2.1.tgz#05b66fcb4d7f5da01537f03e7cf96e8836422996"
   integrity sha512-H2F986kNWMU9hKlI9l/ppO6tN8ZSJd35yBljMLa1/vjzWP++Qh6aXyt77/u7ySJFZQqBtQxnvm/xgG48AObXcw==
@@ -26253,6 +26264,17 @@ wait-on@5.2.1, wait-on@^5.2.1:
     axios "^0.21.1"
     joi "^17.3.0"
     lodash "^4.17.20"
+    minimist "^1.2.5"
+    rxjs "^6.6.3"
+
+wait-on@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/wait-on/-/wait-on-5.3.0.tgz#584e17d4b3fe7b46ac2b9f8e5e102c005c2776c7"
+  integrity sha512-DwrHrnTK+/0QFaB9a8Ol5Lna3k7WvUR4jzSKmz0YaPBpuN2sACyiPVKVfj6ejnjcajAcvn3wlbTyMIn9AZouOg==
+  dependencies:
+    axios "^0.21.1"
+    joi "^17.3.0"
+    lodash "^4.17.21"
     minimist "^1.2.5"
     rxjs "^6.6.3"
 
@@ -26958,6 +26980,11 @@ ws@^7.5.3:
   version "7.5.3"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.3.tgz#160835b63c7d97bfab418fc1b8a9fced2ac01a74"
   integrity sha512-kQ/dHIzuLrS6Je9+uv81ueZomEwH0qVYstcAQ4/Z93K8zeko9gtAbttJWzoC5ukqXY1PpoouV3+VSOqEAFt5wg==
+
+ws@^7.5.5:
+  version "7.5.5"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.5.tgz#8b4bc4af518cfabd0473ae4f99144287b33eb881"
+  integrity sha512-BAkMFcAzl8as1G/hArkxOxq3G7pjUqQ3gzYbLL0/5zNkph70e+lCoxBGnm6AW1+/aiNeV4fnKqZ8m4GZewmH2w==
 
 xcode@^2.0.0:
   version "2.1.0"
