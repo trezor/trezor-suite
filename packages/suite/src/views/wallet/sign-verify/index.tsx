@@ -10,6 +10,7 @@ import { isAddressValid } from '@wallet-utils/validation';
 import { sign as signAction, verify as verifyAction } from '@wallet-actions/signVerifyActions';
 import Navigation, { NavPages } from './components/Navigation';
 import SignAddressInput from './components/SignAddressInput';
+import { useCopySignedMessage } from '@wallet-hooks/sign-verify/useCopySignedMessage';
 
 const MAX_LENGTH_MESSAGE = 255;
 const MAX_LENGTH_SIGNATURE = 255;
@@ -23,12 +24,7 @@ const Row = styled.div`
 `;
 
 const StyledButton = styled(Button)`
-    width: 110px;
-    margin-left: 10px;
-
-    &:first-child {
-        margin-left: 0;
-    }
+    width: 230px;
 `;
 
 const SwitchWrapper = styled.label`
@@ -73,12 +69,13 @@ const SignVerify = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { isDirty, errors },
         reset,
         setValue,
         clearErrors,
         control,
         trigger,
+        watch,
     } = useForm<SignVerifyFields>({
         mode: 'onBlur',
         reValidateMode: 'onChange',
@@ -138,9 +135,28 @@ const SignVerify = () => {
         trigger('message');
     }, [trigger, hexField.value]);
 
+    const { address, message } = watch();
+
+    useEffect(() => {
+        if (page === 'sign') setValue('signature', '');
+    }, [setValue, page, address, message]);
+
+    const { canCopy, copy } = useCopySignedMessage(watch(), selectedAccount.network?.name);
+
     return (
         <WalletLayout title="TR_NAV_SIGN_VERIFY" account={selectedAccount}>
-            <WalletLayoutHeader title="TR_NAV_SIGN_VERIFY" />
+            <WalletLayoutHeader title="TR_NAV_SIGN_VERIFY">
+                {page === 'sign' && canCopy && (
+                    <Button type="button" variant="tertiary" icon="COPY" onClick={copy}>
+                        <Translation id="TR_COPY_TO_CLIPBOARD" />
+                    </Button>
+                )}
+                {isDirty && (
+                    <Button type="button" variant="tertiary" icon="CANCEL" onClick={() => reset()}>
+                        <Translation id="TR_CLEAR_ALL" />
+                    </Button>
+                )}
+            </WalletLayoutHeader>
             <Card noPadding>
                 <Navigation page={page} setPage={changePage} />
                 <Form onSubmit={handleSubmit(onSubmit)}>
@@ -220,9 +236,6 @@ const SignVerify = () => {
                         />
                     </Row>
                     <Row>
-                        <StyledButton type="button" onClick={() => reset()} variant="secondary">
-                            <Translation id="TR_CLEAR" />
-                        </StyledButton>
                         <StyledButton
                             type="submit"
                             isDisabled={isLocked()}
