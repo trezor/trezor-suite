@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useForm, useController } from 'react-hook-form';
 import { Input, Button, Textarea, Card, Switch, variables } from '@trezor/components';
 import { WalletLayout, WalletLayoutHeader } from '@wallet-components';
 import { Translation } from '@suite-components';
 import { useActions, useDevice, useSelector, useTranslation } from '@suite-hooks';
-import { isHex } from '@wallet-utils/ethUtils';
-import { isAddressValid } from '@wallet-utils/validation';
 import { sign as signAction, verify as verifyAction } from '@wallet-actions/signVerifyActions';
 import Navigation, { NavPages } from './components/Navigation';
 import SignAddressInput from './components/SignAddressInput';
 import { useCopySignedMessage } from '@wallet-hooks/sign-verify/useCopySignedMessage';
-
-const MAX_LENGTH_MESSAGE = 255;
-const MAX_LENGTH_SIGNATURE = 255;
+import {
+    useSignVerifyForm,
+    SignVerifyFields,
+    MAX_LENGTH_MESSAGE,
+    MAX_LENGTH_SIGNATURE,
+} from '@wallet-hooks/sign-verify/useSignVerifyForm';
 
 const Row = styled.div`
     display: flex;
@@ -41,14 +41,6 @@ const Form = styled.form`
     padding: 42px;
 `;
 
-type SignVerifyFields = {
-    message: string;
-    address: string;
-    path: string;
-    signature: string;
-    hex: boolean;
-};
-
 const SignVerify = () => {
     const [page, setPage] = useState<NavPages>('sign');
 
@@ -58,90 +50,47 @@ const SignVerify = () => {
     }));
 
     const { isLocked } = useDevice();
+    const { translationString } = useTranslation();
+
+    const {
+        formDirty,
+        formReset,
+        formSubmit,
+        formValues,
+        formErrors,
+        formSetSignature,
+        messageRef,
+        signatureRef,
+        hexField,
+        addressField,
+        pathField,
+    } = useSignVerifyForm(page, selectedAccount.account);
+
+    const changePage = (newPage: NavPages) => {
+        if (newPage !== page) {
+            formReset();
+            setPage(newPage);
+        }
+    };
 
     const { sign, verify } = useActions({
         sign: signAction,
         verify: verifyAction,
     });
 
-    const { translationString } = useTranslation();
-
-    const {
-        register,
-        handleSubmit,
-        formState: { isDirty, errors },
-        reset,
-        setValue,
-        clearErrors,
-        control,
-        trigger,
-        watch,
-    } = useForm<SignVerifyFields>({
-        mode: 'onBlur',
-        reValidateMode: 'onChange',
-        defaultValues: {
-            message: '',
-            address: '',
-            path: '',
-            signature: '',
-            hex: false,
-        },
-    });
-
     const onSubmit = async (data: SignVerifyFields) => {
         const { address, path, message, signature, hex } = data;
         if (page === 'sign') {
             const result = await sign(path, message, hex);
-            if (result?.signSignature) setValue('signature', result.signSignature);
+            if (result?.signSignature) formSetSignature(result.signSignature);
         } else {
             await verify(address, message, signature, hex);
         }
     };
 
-    const changePage = (newPage: NavPages) => {
-        if (newPage !== page) {
-            reset();
-            setPage(newPage);
-        }
-    };
+    const errorState = (err?: string) => (err ? 'error' : undefined);
 
-    const { field: addressField } = useController({
-        control,
-        name: 'address',
-        rules: {
-            required: translationString('TR_SELL_VALIDATION_ERROR_EMPTY'),
-            validate: (address: string) =>
-                selectedAccount.account?.symbol &&
-                !isAddressValid(address, selectedAccount.account.symbol)
-                    ? translationString('TR_ADD_TOKEN_ADDRESS_NOT_VALID')
-                    : undefined,
-        },
-    });
-
-    const { field: pathField } = useController({
-        control,
-        name: 'path',
-        rules: {
-            required: page === 'sign' && translationString('TR_SELL_VALIDATION_ERROR_EMPTY'),
-        },
-    });
-
-    const { field: hexField } = useController({
-        control,
-        name: 'hex',
-    });
-
-    useEffect(() => {
-        trigger('message');
-    }, [trigger, hexField.value]);
-
-    const { address, message } = watch();
-
-    useEffect(() => {
-        if (page === 'sign') setValue('signature', '');
-    }, [setValue, page, address, message]);
-
-    const { canCopy, copy } = useCopySignedMessage(watch(), selectedAccount.network?.name);
+    const { canCopy, copy } = useCopySignedMessage(formValues, selectedAccount.network?.name);
 
     return (
         <WalletLayout title="TR_NAV_SIGN_VERIFY" account={selectedAccount}>
@@ -151,15 +100,15 @@ const SignVerify = () => {
                         <Translation id="TR_COPY_TO_CLIPBOARD" />
                     </Button>
                 )}
-                {isDirty && (
-                    <Button type="button" variant="tertiary" icon="CANCEL" onClick={() => reset()}>
+                {formDirty && (
+                    <Button type="button" variant="tertiary" icon="CANCEL" onClick={formReset}>
                         <Translation id="TR_CLEAR_ALL" />
                     </Button>
                 )}
             </WalletLayoutHeader>
             <Card noPadding>
                 <Navigation page={page} setPage={changePage} />
-                <Form onSubmit={handleSubmit(onSubmit)}>
+                <Form onSubmit={formSubmit(onSubmit)}>
                     <Row>
                         <Textarea
                             name="message"
@@ -167,23 +116,13 @@ const SignVerify = () => {
                             labelRight={
                                 <SwitchWrapper>
                                     <Translation id="TR_HEX_FORMAT" />
-                                    <Switch
-                                        checked={hexField.value}
-                                        onChange={hexField.onChange}
-                                        isSmall
-                                    />
+                                    <Switch {...hexField} isSmall />
                                 </SwitchWrapper>
                             }
                             maxLength={MAX_LENGTH_MESSAGE}
-                            innerRef={register({
-                                maxLength: MAX_LENGTH_MESSAGE,
-                                validate: (message: string) =>
-                                    hexField.value && !isHex(message)
-                                        ? translationString('DATA_NOT_VALID_HEX')
-                                        : undefined,
-                            })}
-                            state={errors.message && 'error'}
-                            bottomText={errors.message?.message}
+                            innerRef={messageRef}
+                            state={errorState(formErrors.message)}
+                            bottomText={formErrors.message}
                             rows={4}
                             maxRows={4}
                         />
@@ -195,25 +134,17 @@ const SignVerify = () => {
                                 label={<Translation id="TR_ADDRESS" />}
                                 account={selectedAccount.account}
                                 revealedAddresses={revealedAddresses}
-                                value={pathField.value}
-                                onChange={addr => {
-                                    clearErrors(['path', 'address']);
-                                    pathField.onChange(addr?.path || '');
-                                    addressField.onChange(addr?.address || '');
-                                }}
-                                onBlur={pathField.onBlur}
-                                error={errors.path?.message || errors.address?.message}
+                                error={formErrors.path}
+                                {...pathField}
                             />
                         ) : (
                             <Input
                                 name="address"
                                 label={<Translation id="TR_ADDRESS" />}
                                 type="text"
-                                state={errors.address && 'error'}
-                                bottomText={errors.address?.message}
-                                value={addressField.value}
-                                onChange={addressField.onChange}
-                                onBlur={addressField.onBlur}
+                                state={errorState(formErrors.address)}
+                                bottomText={formErrors.address}
+                                {...addressField}
                             />
                         )}
                     </Row>
@@ -222,17 +153,17 @@ const SignVerify = () => {
                             name="signature"
                             label={<Translation id="TR_SIGNATURE" />}
                             maxLength={MAX_LENGTH_SIGNATURE}
-                            innerRef={register({
-                                required: {
-                                    value: page === 'verify',
-                                    message: translationString('TR_SELL_VALIDATION_ERROR_EMPTY'),
-                                },
-                            })}
+                            innerRef={signatureRef}
                             readOnly={page === 'sign'}
-                            state={errors.signature && 'error'}
-                            bottomText={errors.signature?.message}
+                            state={errorState(formErrors.signature)}
+                            bottomText={formErrors.signature}
                             rows={4}
                             maxRows={4}
+                            placeholder={
+                                page === 'sign'
+                                    ? translationString('TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER')
+                                    : undefined
+                            }
                         />
                     </Row>
                     <Row>
