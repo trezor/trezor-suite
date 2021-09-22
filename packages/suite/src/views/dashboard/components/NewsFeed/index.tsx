@@ -99,7 +99,11 @@ const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
         <Section
             heading={<Translation id="TR_WHATS_NEW" />}
             actions={
-                <MediumLink target="_blank" href={isTor ? toTorUrl(BLOG_URL) : BLOG_URL}>
+                <MediumLink
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={isTor ? toTorUrl(BLOG_URL) : BLOG_URL}
+                >
                     <Button isWhite variant="tertiary" icon="MEDIUM">
                         <Translation id="TR_OPEN_IN_MEDIUM" />
                     </Button>
@@ -111,6 +115,7 @@ const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
                     <Post
                         key={item.link}
                         target="_blank"
+                        rel="noopener noreferrer"
                         href={isTor ? toTorUrl(item.link) : item.link}
                         data-test={`@dashboard/news/post/${index}`}
                     >

@@ -240,6 +240,7 @@ const Settings = () => {
                                             <VersionTooltip content={revision} disabled={!revision}>
                                                 <VersionLink
                                                     target="_blank"
+                                                    rel="noopener noreferrer"
                                                     href={FIRMWARE_COMMIT_URL + revision}
                                                 >
                                                     <VersionButton

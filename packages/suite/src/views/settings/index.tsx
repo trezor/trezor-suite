@@ -338,6 +338,7 @@ const Settings = () => {
                                             <VersionTooltip content={process.env.COMMITHASH || ''}>
                                                 <VersionLink
                                                     target="_blank"
+                                                    rel="noopener noreferrer"
                                                     href={`https://github.com/trezor/trezor-suite/commit/${process.env.COMMITHASH}`}
                                                 >
                                                     <VersionButton
@@ -362,6 +363,7 @@ const Settings = () => {
                                                     version: (
                                                         <VersionLink
                                                             target="_blank"
+                                                            rel="noopener noreferrer"
                                                             href={getReleaseUrl(
                                                                 desktopUpdate.latest.version,
                                                             )}
