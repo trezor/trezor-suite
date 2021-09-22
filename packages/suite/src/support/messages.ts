@@ -2726,6 +2726,10 @@ export default defineMessages({
         description: 'Used as a label for signature input field in Sign and Verify form',
         id: 'TR_SIGNATURE',
     },
+    TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER: {
+        defaultMessage: 'Will be generated after signing',
+        id: 'TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER',
+    },
     TR_SKIP: {
         defaultMessage: 'Skip',
         description: 'Button. Skip one step',
