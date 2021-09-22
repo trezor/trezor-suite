@@ -30,7 +30,7 @@ const CoinsList = ({ onToggleFn, networks, selectedNetworks }: Props) => {
                 const isSelected = selectedNetworks.includes(symbol);
                 const unavailableCapability = device.unavailableCapabilities?.[symbol];
                 const isDisabled = !!unavailableCapability || isDeviceLocked;
-                const tooltipContent = unavailableCapability && (
+                const unavailabilityTooltip = unavailableCapability && (
                     <Translation
                         id={getUnavailabilityMessage(
                             unavailableCapability,
@@ -38,12 +38,13 @@ const CoinsList = ({ onToggleFn, networks, selectedNetworks }: Props) => {
                         )}
                     />
                 );
+                const commonTooltip = tooltip && <Translation id={tooltip} />;
 
                 return (
                     <TooltipConditional
                         key={`${symbol}_${accountType}`}
                         placement="top"
-                        content={tooltipContent || tooltip}
+                        content={unavailabilityTooltip || commonTooltip}
                     >
                         <Coin
                             symbol={symbol}
