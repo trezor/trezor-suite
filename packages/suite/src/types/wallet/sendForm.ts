@@ -63,7 +63,7 @@ export interface FeeInfo {
 
 export type EthTransactionData = {
     token?: TokenInfo;
-    chainId: Network['chainId'];
+    chainId: number;
     to: string;
     amount: string;
     data?: string;
