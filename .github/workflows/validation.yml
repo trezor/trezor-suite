@@ -1,0 +1,20 @@
+name: Validation
+
+on: [pull_request]
+
+jobs:
+  type-check and lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.0.0
+      - name: Type check
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.16.3
+      - run: npm install -g yarn
+      - name: yarn install, build and test
+        run: |
+          yarn
+          yarn build:libs
+          yarn workspace type-check
+          yarn workspace lint

@@ -118,7 +118,7 @@ suite-web-landing build stable:
     expire_in: 1 days
 
 .build_nix: &build_nix
-  script: # override build script to use nix-shell instead
+  script:  # override build script to use nix-shell instead
     - nix-shell --run "git lfs pull"
     - nix-shell --run "yarn install --frozen-lockfile --cache-folder .yarn-nix --prefer-offline"
     - nix-shell --run "yarn build:libs"
