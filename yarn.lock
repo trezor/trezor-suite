@@ -2601,6 +2601,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.15.4":
+  version "7.15.4"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.15.4.tgz#fd17d16bfdf878e6dd02d19753a39fa8a8d9c84a"
+  integrity sha512-99catp6bHCaxr4sJ/DbTGgHS4+Rs2RVd2g7iOap6SLGPDknRK9ztKNsE/Fg6QhSeh1FGE5f6gHGQmvvn3I3xhw==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/template@^7.0.0", "@babel/template@^7.10.4", "@babel/template@^7.12.7", "@babel/template@^7.3.3":
   version "7.12.7"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.12.7.tgz#c817233696018e39fbb6c491d2fb684e05ed43bc"
@@ -12820,6 +12827,11 @@ events@^3.0.0, events@^3.2.0:
   resolved "https://registry.yarnpkg.com/events/-/events-3.2.0.tgz#93b87c18f8efcd4202a461aec4dfc0556b639379"
   integrity sha512-/46HWwbfCX2xTawVfkKLGxMifJYQBWMwY1mjywRtb4c9x8l5NP3KoJtnIOiL1hfdRkIuYhETxQlo62IF8tcnlg==
 
+events@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/events/-/events-3.3.0.tgz#31a95ad0a924e2d2c419a813aeb2c4e878ea7400"
+  integrity sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==
+
 eventsource@^1.0.7:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/eventsource/-/eventsource-1.0.7.tgz#8fbc72c93fcd34088090bc0a4e64f4b5cee6d8d0"
@@ -17029,13 +17041,22 @@ jws@^4.0.0:
     jwa "^2.0.0"
     safe-buffer "^5.0.1"
 
-keccak@^3.0.0, keccak@^3.0.1:
+keccak@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/keccak/-/keccak-3.0.1.tgz#ae30a0e94dbe43414f741375cff6d64c8bea0bff"
   integrity sha512-epq90L9jlFWCW7+pQa6JOnKn2Xgl2mtI664seYR6MHskvI9agt7AnDqmAlp9TqU4/caMYbA08Hi5DMZAl5zdkA==
   dependencies:
     node-addon-api "^2.0.0"
     node-gyp-build "^4.2.0"
+
+keccak@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/keccak/-/keccak-3.0.2.tgz#4c2c6e8c54e04f2670ee49fa734eb9da152206e0"
+  integrity sha512-PyKKjkH53wDMLGrvmRGSNWgmSxZOUqbnXwKL9tmgbFYA1iAYqW21kfR7mZXV0MlESiefxQQE9X9fTa3X+2MPDQ==
+  dependencies:
+    node-addon-api "^2.0.0"
+    node-gyp-build "^4.2.0"
+    readable-stream "^3.6.0"
 
 keyboardevent-from-electron-accelerator@^2.0.0:
   version "2.0.0"
@@ -25229,12 +25250,12 @@ trezor-address-validator@^0.3.22:
     jssha "2.3.1"
     lodash "^4.17.15"
 
-trezor-connect@8.1.30-beta.7:
-  version "8.1.30-beta.7"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.1.30-beta.7.tgz#aa0f7ed62417dd7120d217896b360fa87101f2f4"
-  integrity sha512-sUxzM9vnpGDDXBTdQTf6sG2JKcsieB++kxXQ4O6NTCYc3N6lI5ysoFfoYzPY1dkI/fANh5F+WdUg5PzX7sQOYA==
+trezor-connect@8.2.2-beta.1:
+  version "8.2.2-beta.1"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.2-beta.1.tgz#64bc57e607934776bea31d000399fd61035a1d82"
+  integrity sha512-4oOZpXuHvvqM3+SKStaKBmiks/BLnbrPjsBtbro/Jb5EddXt/3YRoHO9pojCw8XKyi9x4bvHdMCGalW0kcEPSQ==
   dependencies:
-    "@babel/runtime" "^7.12.5"
+    "@babel/runtime" "^7.15.4"
     "@trezor/blockchain-link" "^1.0.17"
     "@trezor/connect-common" "^0.0.2"
     "@trezor/rollout" "^1.2.0"
@@ -25243,14 +25264,14 @@ trezor-connect@8.1.30-beta.7:
     bignumber.js "^9.0.1"
     bowser "^2.11.0"
     cbor-web "^7.0.6"
-    events "^3.2.0"
+    events "^3.3.0"
     hd-wallet "9.1.2"
-    keccak "^3.0.1"
+    keccak "^3.0.2"
     node-fetch "^2.6.1"
     parse-uri "^1.0.3"
     tiny-worker "^2.3.0"
     trezor-link "1.7.3"
-    whatwg-fetch "^3.5.0"
+    whatwg-fetch "^3.6.2"
 
 trezor-link@1.7.3:
   version "1.7.3"
@@ -26795,6 +26816,11 @@ whatwg-fetch@>=0.10.0, whatwg-fetch@^3.0.0, whatwg-fetch@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.5.0.tgz#605a2cd0a7146e5db141e29d1c62ab84c0c4c868"
   integrity sha512-jXkLtsR42xhXg7akoDKvKWE40eJeI+2KZqcp2h3NsOrRnDvtWX36KcKl30dy+hxECivdk2BVUHVNrPtoMBUx6A==
+
+whatwg-fetch@^3.6.2:
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.6.2.tgz#dced24f37f2624ed0281725d51d0e2e3fe677f8c"
+  integrity sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==
 
 whatwg-mimetype@^2.3.0:
   version "2.3.0"
