@@ -125,6 +125,7 @@ const SignVerify = () => {
                             bottomText={formErrors.message}
                             rows={4}
                             maxRows={4}
+                            data-test="@sign-verify/message"
                         />
                     </Row>
                     <Row>
@@ -135,6 +136,7 @@ const SignVerify = () => {
                                 account={selectedAccount.account}
                                 revealedAddresses={revealedAddresses}
                                 error={formErrors.path}
+                                data-test="@sign-verify/path"
                                 {...pathField}
                             />
                         ) : (
@@ -144,6 +146,7 @@ const SignVerify = () => {
                                 type="text"
                                 state={errorState(formErrors.address)}
                                 bottomText={formErrors.address}
+                                data-test="@sign-verify/select-address"
                                 {...addressField}
                             />
                         )}
@@ -164,6 +167,7 @@ const SignVerify = () => {
                                     ? translationString('TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER')
                                     : undefined
                             }
+                            data-test="@sign-verify/signature"
                         />
                     </Row>
                     <Row>
