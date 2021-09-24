@@ -29,7 +29,18 @@
         "suite:dev:desktop": "yarn workspace @trezor/suite-desktop dev",
         "suite:build:web": "yarn workspace @trezor/suite-web build",
         "type-check": "yarn lerna run type-check",
-        "lint": "yarn lerna run lint"
+        "lint": "yarn lerna run lint",
+        "lint-staged": "npx lint-staged"
+    },
+    "lint-staged": {
+        "packages/**/*.{ts,tsx}": [
+            "eslint --fix",
+            "git add"
+        ],
+        "packages/{components,suite}/**/*.{ts,tsx}": [
+            "stylelit --fix",
+            "git add"
+        ]
     },
     "resolutions": {
         "**/@types/react": "17.0.0"
