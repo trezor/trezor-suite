@@ -3,7 +3,7 @@ import { variables } from '@trezor/components';
 import { TrezorLink } from '@suite-components';
 import ReactMarkdown from 'react-markdown';
 import styled, { keyframes } from 'styled-components';
-import { useGuide } from '@suite-hooks';
+import { useGuideOpenNode } from '@guide-hooks';
 
 const DISPLAY_SLOWLY = keyframes`
     from { opacity: 0.0; }
@@ -68,7 +68,7 @@ interface Props {
 }
 
 const GuideMarkdown = ({ markdown }: Props) => {
-    const { openNodeById } = useGuide();
+    const { openNodeById } = useGuideOpenNode();
     const ref = React.createRef<HTMLDivElement>();
     useEffect(() => {
         if (ref.current) {
