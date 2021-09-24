@@ -14,11 +14,13 @@ const Navigation = ({ page, setPage }: Props) => (
             title="TR_SIGN_MESSAGE"
             active={page === 'sign'}
             onClick={() => setPage('sign')}
+            data-test="@sign-verify/navigation/sign"
         />
         <WalletLayoutNavLink
             title="TR_VERIFY_MESSAGE"
             active={page === 'verify'}
             onClick={() => setPage('verify')}
+            data-test="@sign-verify/navigation/verify"
         />
     </WalletLayoutNavigation>
 );

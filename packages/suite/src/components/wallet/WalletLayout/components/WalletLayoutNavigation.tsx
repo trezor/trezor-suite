@@ -30,12 +30,13 @@ type WalletLayoutNavLinkProps = {
     active: boolean;
     title: ExtendedMessageDescriptor['id'];
     onClick: () => void;
+    'data-test'?: string;
 };
 
 export const WalletLayoutNavLink = (props: WalletLayoutNavLinkProps) => {
     const { active, title, onClick } = props;
     return (
-        <NavLink active={active} onClick={onClick}>
+        <NavLink active={active} onClick={onClick} data-test={props['data-test']}>
             <NavLinkText>
                 <Translation id={title} />
             </NavLinkText>
