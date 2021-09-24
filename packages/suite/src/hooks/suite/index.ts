@@ -13,7 +13,6 @@ export { useTranslation } from './useTranslation';
 export { useThemeContext } from './useThemeContext';
 export { useOnboarding } from './useOnboarding';
 export { useRecovery } from './useRecovery';
-export { useGuide } from './useGuide';
 export { useExternalLink } from './useExternalLink';
 
 // replaced in suite-native

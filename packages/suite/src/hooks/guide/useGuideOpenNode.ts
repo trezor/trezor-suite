@@ -2,7 +2,7 @@ import { useActions, useSelector, useAnalytics } from '@suite-hooks';
 import * as guideActions from '@suite-actions/guideActions';
 import { getNodeById } from '@suite-utils/guide';
 
-export const useGuide = () => {
+export const useGuideOpenNode = () => {
     const analytics = useAnalytics();
 
     const { openGuide, openNode } = useActions({
