@@ -122,6 +122,7 @@ const SignVerify = () => {
                             bottomText={formErrors.message}
                             rows={4}
                             maxRows={4}
+                            data-test="@sign-verify/message"
                         />
                     </Row>
                     <Row>
@@ -132,6 +133,7 @@ const SignVerify = () => {
                                 account={selectedAccount.account}
                                 revealedAddresses={revealedAddresses}
                                 error={formErrors.path}
+                                data-test="@sign-verify/path"
                                 {...pathField}
                             />
                         ) : (
@@ -141,6 +143,7 @@ const SignVerify = () => {
                                 type="text"
                                 state={errorState(formErrors.address)}
                                 bottomText={formErrors.address}
+                                data-test="@sign-verify/select-address"
                                 {...addressField}
                             />
                         )}
@@ -156,10 +159,11 @@ const SignVerify = () => {
                             bottomText={formErrors.signature}
                             rows={4}
                             maxRows={4}
+                            data-test="@sign-verify/signature"
                         />
                     </Row>
                     <Row>
-                        <StyledButton type="submit">
+                        <StyledButton type="submit" data-test="@sign-verify/submit">
                             <Translation id={page === 'sign' ? 'TR_SIGN' : 'TR_VERIFY'} />
                         </StyledButton>
                     </Row>

@@ -85,6 +85,7 @@ const SignAddressInput = ({
                 Input,
                 SingleValue,
             }}
+            data-test="@sign-verify/sign-address"
         />
     );
 };
