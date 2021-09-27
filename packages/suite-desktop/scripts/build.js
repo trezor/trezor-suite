@@ -57,6 +57,7 @@ build({
     minify: !isDev,
     outdir: path.join(__dirname, '..', 'dist'),
     define: {
+        'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
         'process.env.COMMITHASH': JSON.stringify(gitRevision),
         'process.env.APP_PUBKEY': JSON.stringify(appKey),
     },
