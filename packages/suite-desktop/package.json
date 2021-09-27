@@ -7,7 +7,7 @@
     "homepage": "https://trezor.io/",
     "main": "dist/app.js",
     "scripts": {
-        "dev": "ELECTRON_IS_DEV=1 LAUNCH_ELECTRON=true yarn run dev:local",
+        "dev": "LAUNCH_ELECTRON=true yarn run dev:local",
         "dev:run": "electron .",
         "dev:prepare": "yarn build:app:dev",
         "dev:local": "rimraf ./build && yarn workspace @trezor/suite-build run dev:desktop",
@@ -154,7 +154,6 @@
         "@sentry/browser": "^6.12.0",
         "@sentry/integrations": "^6.12.0",
         "chalk": "^4.1.2",
-        "electron-is-dev": "^1.2.0",
         "electron-localshortcut": "^3.2.1",
         "electron-store": "^8.0.0",
         "electron-updater": "^4.3.9",

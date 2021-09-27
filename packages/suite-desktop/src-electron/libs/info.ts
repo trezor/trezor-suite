@@ -1,7 +1,7 @@
 import { app } from 'electron';
-import isDev from 'electron-is-dev';
 import si from 'systeminformation';
 
+import { isDev } from '@suite-utils/build';
 import { b2t } from '@desktop-electron/libs/utils';
 import { toHumanReadable } from '@suite-utils/file';
 
