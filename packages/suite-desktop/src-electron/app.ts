@@ -1,15 +1,14 @@
 import path from 'path';
 import url from 'url';
 import { app, BrowserWindow, ipcMain } from 'electron';
-import isDev from 'electron-is-dev';
 
+import { isDev } from '@suite-utils/build';
 import { PROTOCOL } from '@desktop-electron/libs/constants';
 import * as store from '@desktop-electron/libs/store';
 import { MIN_HEIGHT, MIN_WIDTH } from '@desktop-electron/libs/screen';
 import Logger, { LogLevel, defaultOptions as loggerDefaults } from '@desktop-electron/libs/logger';
 import { buildInfo, computerInfo } from '@desktop-electron/libs/info';
 import modules from '@desktop-electron/libs/modules';
-import { isDev as isDevEnvironment } from '@suite-utils/build';
 
 let mainWindow: BrowserWindow;
 const APP_NAME = 'Trezor Suite';
@@ -38,10 +37,7 @@ global.resourcesPath = isDev
     ? path.join(__dirname, '..', 'build', 'static')
     : process.resourcesPath;
 
-logger.info(
-    'main',
-    `Application starting in ${isDevEnvironment() ? 'development' : 'production'} mode`,
-);
+logger.info('main', `Application starting in ${isDev ? 'development' : 'production'} mode`);
 
 const init = async () => {
     buildInfo();

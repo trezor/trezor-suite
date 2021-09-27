@@ -1,5 +1,6 @@
 import { app, shell, Menu, MenuItemConstructorOptions } from 'electron';
-import isDev from 'electron-is-dev';
+
+import { isDev } from '@suite-utils/build';
 
 const isMac = process.platform === 'darwin';
 

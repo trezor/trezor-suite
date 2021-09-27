@@ -1,7 +1,7 @@
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
-import isDev from 'electron-is-dev';
 import { MODULES, MODULES_DEV, MODULES_PROD } from '@desktop-electron/libs/constants';
+import { isDev } from '@suite-utils/build';
 
 const modules = async (dependencies: Dependencies) => {
     const { logger } = global;

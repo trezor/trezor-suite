@@ -1,4 +1,4 @@
-import isDev from 'electron-is-dev';
+import { isDev } from '@suite-utils/build';
 
 const init = ({ mainWindow }: Dependencies) => {
     const { logger } = global;
