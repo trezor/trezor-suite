@@ -27,7 +27,7 @@ import GlobalStyleProvider from '@suite-support/styles/GlobalStyleProvider';
 
 const Main = () => {
     useEffect(() => {
-        if (!window.Cypress && !isDev()) {
+        if (!window.Cypress && !isDev) {
             Sentry.init(SENTRY_CONFIG);
             Sentry.configureScope(scope => {
                 scope.setTag('version', process.env.VERSION || 'undefined');

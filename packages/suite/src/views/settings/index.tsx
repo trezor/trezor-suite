@@ -44,7 +44,7 @@ const Version = styled.div`
 
 const VersionButton = styled(Button)`
     padding-left: 1ch;
-    ${isDev() &&
+    ${isDev &&
     css`
         color: ${props => props.theme.TYPE_WHITE};
         background: ${props => props.theme.BUTTON_RED};
@@ -357,7 +357,7 @@ const Settings = () => {
                                                         alignIcon="right"
                                                     >
                                                         {process.env.VERSION}
-                                                        {isDev() && '-dev'}
+                                                        {isDev && '-dev'}
                                                     </VersionButton>
                                                 </VersionLink>
                                             </VersionTooltip>

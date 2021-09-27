@@ -2,7 +2,7 @@ import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 
-import * as buildUtils from '@suite-utils/build';
+import { isDev } from '@suite-utils/build';
 import suiteMiddlewares from '@suite-middlewares';
 import walletMiddlewares from '@wallet-middlewares';
 import onboardingMiddlewares from '@onboarding-middlewares';
@@ -43,7 +43,7 @@ const middlewares = [
 ];
 
 const enhancers: any[] = [];
-if (buildUtils.isDev()) {
+if (isDev) {
     const excludeLogger = (_getState: any, action: any): boolean => {
         // '@@router/LOCATION_CHANGE'
         const excluded = ['@log/add', undefined];
