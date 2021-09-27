@@ -151,7 +151,7 @@ const FeedbackTypeSelection = () => {
                     <DetailItem>
                         <Translation id="TR_APP" />
                         :&nbsp;
-                        {!isDev() && appUpToDate ? (
+                        {!isDev && appUpToDate ? (
                             <>
                                 <StyledIcon icon="CHECK" size={10} />
                                 <Translation id="TR_UP_TO_DATE" />
@@ -159,7 +159,7 @@ const FeedbackTypeSelection = () => {
                         ) : (
                             <>
                                 {process.env.VERSION}
-                                {isDev() && '-dev'}
+                                {isDev && '-dev'}
                             </>
                         )}
                     </DetailItem>

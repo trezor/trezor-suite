@@ -29,7 +29,7 @@ const Index = () => {
     const [isUpdateVisible, setIsUpdateVisible] = useState(false);
 
     useEffect(() => {
-        if (!isDev()) {
+        if (!isDev) {
             Sentry.init(SENTRY_CONFIG);
             Sentry.configureScope(scope => {
                 scope.setTag('version', process.env.VERSION || 'undefined');
