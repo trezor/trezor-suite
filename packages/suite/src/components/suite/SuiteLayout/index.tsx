@@ -168,7 +168,7 @@ const BodyNormal = ({ url, menu, appMenu, children, guideOpen, isMenuInline }: N
                     <MaxWidthWrapper>{children}</MaxWidthWrapper>
                 </DefaultPaddings>
             </ScrollAppWrapper>
-            <StyledGuidePanel open={guideOpen} />
+            {guideOpen && <StyledGuidePanel data-test="@guide/panel" open={guideOpen} />}
         </Columns>
     </Body>
 );

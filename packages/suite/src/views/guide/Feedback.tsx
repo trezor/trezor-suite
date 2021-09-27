@@ -282,6 +282,7 @@ const Feedback = ({ type }: Props) => {
                                     key={item.id}
                                     selected={rating?.id === item.id}
                                     onClick={() => setRating(item)}
+                                    data-test={`@guide/feedback/suggestion/${item.id}`}
                                 >
                                     {item.value}
                                 </RatingItem>
@@ -313,6 +314,7 @@ const Feedback = ({ type }: Props) => {
                         setDescription(e.target.value)
                     }
                     noTopLabel
+                    data-test="@guide/feedback/suggestion-form"
                 >
                     <CharacterCount current={description.length} max={MESSAGE_CHARACTER_LIMIT} />
                 </Textarea>

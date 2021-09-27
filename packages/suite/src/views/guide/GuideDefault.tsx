@@ -76,7 +76,7 @@ const GuideDefault = (props: any) => {
                     });
                 }}
             >
-                <FeedbackButton>
+                <FeedbackButton data-test="@guide/button-feedback">
                     <Icon icon="FEEDBACK" size={16} color={theme.TYPE_LIGHT_GREY} />
                     <FeedbackButtonLabel>
                         <Translation id="TR_GUIDE_FEEDACK_OR_SUGGESTION" />

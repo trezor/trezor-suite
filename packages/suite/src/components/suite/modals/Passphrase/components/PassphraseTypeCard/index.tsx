@@ -271,13 +271,19 @@ const PassphraseTypeCard = (props: Props) => {
                             )}
                         </IconWrapper>
                         <Col>
-                            <WalletTitle withMargin={props.type === 'hidden'}>
+                            <WalletTitle
+                                withMargin={props.type === 'hidden'}
+                                data-test={props.type === 'hidden' && '@tooltip/passphrase-tooltip'}
+                            >
                                 {props.type === 'hidden' ? (
                                     <Tooltip
                                         title={<Translation id="TR_WHAT_IS_PASSPHRASE" />}
                                         openGuide={{
                                             node: (
-                                                <OpenGuideFromTooltip id="/security/passphrase.md" />
+                                                <OpenGuideFromTooltip
+                                                    dataTest="@tooltip/openGuide"
+                                                    id="/security/passphrase.md"
+                                                />
                                             ),
                                         }}
                                         content={<Translation id="TR_HIDDEN_WALLET_TOOLTIP" />}

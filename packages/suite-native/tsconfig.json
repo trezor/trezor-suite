@@ -18,7 +18,7 @@
             "@native/*": ["./src/*", "../../packages/suite-native/src/*"],
             "@native-components": ["./src/components/index", "../../packages/suite-native/src/components/index"],
             "@native-components/*": ["./src/components/*", "../../packages/suite-native/src/components/*"],
-            
+
             "@suite/*": [
                 "./src/*",
                 "../../packages/suite/src/*"
@@ -27,8 +27,8 @@
                 "./src/index",
                 "../../packages/suite/src/index"
             ],
-            
-            // suite 
+
+            // suite
             "@suite-components/*": ["./src/components/suite/*", "../../packages/suite/src/components/suite/*"],
             "@suite-components": ["./src/components/suite/index", "../../packages/suite/src/components/suite/index"],
             "@suite-views/*": ["./src/views/suite/*", "../../packages/suite/src/views/suite/*"],
@@ -53,7 +53,7 @@
             "@suite-hooks": ["./src/hooks/suite/index", "../../packages/suite/src/hooks/suite/index"],
             "@suite-services/*": ["./src/services/suite/*", "../../packages/suite/src/services/suite/*"],
             "@suite-services": ["./src/services/suite/index", "../../packages/suite/src/services/suite/index"],
-            
+
             // dashboard
             "@dashboard-components/*": ["./src/components/dashboard/*", "../../packages/suite/src/components/dashboard/*"],
             "@dashboard-components": ["./src/components/dashboard/index", "../../packages/suite/src/components/dashboard/index"],
@@ -268,7 +268,8 @@
         "module": "esnext",
         "noUnusedParameters": true,
         "sourceMap": true,
-        "strict": true
+        "strict": true,
+        "resolveJsonModule": true
     },
     "include": [
         "./src/App.tsx",

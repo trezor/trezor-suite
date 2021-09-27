@@ -196,7 +196,14 @@ const DeviceItem = ({ device, instances, closeModalApp, backgroundRoute }: Props
                         />
                     </DeviceImageWrapper>
                     <Col grow={1}>
-                        <DeviceStatus color={device.connected ? theme.TYPE_GREEN : theme.TYPE_RED}>
+                        <DeviceStatus
+                            color={device.connected ? theme.TYPE_GREEN : theme.TYPE_RED}
+                            data-test={
+                                device.connected
+                                    ? '@deviceStatus-connected'
+                                    : '@deviceStatus-disconnected'
+                            }
+                        >
                             {device.connected ? (
                                 <Translation id="TR_CONNECTED" />
                             ) : (
