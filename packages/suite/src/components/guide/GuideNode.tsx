@@ -80,7 +80,10 @@ const GuideNode = ({ node }: GuideNodeProps) => {
 
     if (node.type === 'page') {
         return (
-            <PageNodeButton onClick={() => navigateToNode(node)}>
+            <PageNodeButton
+                data-test={`@guide/node${node.id}`}
+                onClick={() => navigateToNode(node)}
+            >
                 <PageNodeButtonIcon icon="ARTICLE" size={20} color={theme.TYPE_LIGHT_GREY} />
                 {label}
             </PageNodeButton>
@@ -89,7 +92,12 @@ const GuideNode = ({ node }: GuideNodeProps) => {
 
     if (node.type === 'category') {
         return (
-            <CategoryButtonNode onClick={() => navigateToNode(node)}>{label}</CategoryButtonNode>
+            <CategoryButtonNode
+                data-test={`@guide/category${node.id}`}
+                onClick={() => navigateToNode(node)}
+            >
+                {label}
+            </CategoryButtonNode>
         );
     }
 

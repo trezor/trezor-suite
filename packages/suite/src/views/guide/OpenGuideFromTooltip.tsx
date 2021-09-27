@@ -32,12 +32,13 @@ const StyledIconWrap = styled.span`
 
 type OpenGuideFromTooltipProps = {
     id: string;
+    dataTest?: string;
 };
 
-const OpenGuideFromTooltip = ({ id }: OpenGuideFromTooltipProps) => {
+const OpenGuideFromTooltip = ({ id, dataTest }: OpenGuideFromTooltipProps) => {
     const { openNodeById } = useGuide();
     return (
-        <OpenGuideLink onClick={() => openNodeById(id)}>
+        <OpenGuideLink data-test={dataTest} onClick={() => openNodeById(id)}>
             <StyledText>
                 <Translation id="TR_LEARN" />
             </StyledText>

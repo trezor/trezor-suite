@@ -153,6 +153,12 @@ const Tooltip = ({
         });
     };
 
+    // set data-test attribute to Tippy https://github.com/atomiks/tippyjs-react/issues/89
+    const onCreate = (instance: any) => {
+        const content = instance.popper;
+        content.setAttribute('data-test', '@tooltip');
+    };
+
     return content && children ? (
         <Wrapper className={className}>
             <Tippy
@@ -166,6 +172,7 @@ const Tooltip = ({
                 offset={[0, offset]}
                 interactive={interactive}
                 appendTo={() => document.body}
+                onCreate={onCreate}
                 {...rest}
                 render={attrs =>
                     rich ? (

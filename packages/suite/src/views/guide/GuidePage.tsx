@@ -85,9 +85,9 @@ const GuidePage = () => {
                 try {
                     md = await loadPageMarkdownFile(currentNode.id, language);
                 } catch (e) {
-                    console.error(
-                        `Loading of ${currentNode.id} page in ${language} language failed: ${e}`,
-                    );
+                    // console.error(
+                    //     `Loading of ${currentNode.id} page in ${language} language failed: ${e}`,
+                    // );
                     try {
                         md = await loadPageMarkdownFile(currentNode.id);
                     } catch (e) {

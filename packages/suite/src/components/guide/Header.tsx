@@ -102,6 +102,7 @@ const Header = ({ back, label, useBreadcrumb }: Props) => {
                                 },
                             });
                         }}
+                        data-test="@guide/button-back"
                     >
                         <StyledIcon
                             icon="ARROW_LEFT_LONG"
@@ -126,6 +127,7 @@ const Header = ({ back, label, useBreadcrumb }: Props) => {
                         },
                     });
                 }}
+                data-test="@guide/button-close"
             >
                 <StyledIcon icon="CROSS" size={24} color={theme.TYPE_LIGHT_GREY} />
             </ActionButton>

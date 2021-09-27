@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
-import * as guideActions from '@suite-actions/guideActions';
-import { useSelector, useActions } from '@suite-hooks';
+import { useSelector } from '@suite-hooks';
 import {
     FeedbackTypeSelection,
     GuideDefault,
@@ -10,8 +9,6 @@ import {
     GuideCategory,
     Feedback,
 } from '@guide-views';
-
-import type { Category } from '@suite-types/guide';
 
 const Wrapper = styled.div`
     background: ${props => props.theme.BG_WHITE};
@@ -33,25 +30,6 @@ const GuidePanel = (props: GuidePanelProps) => {
     const { activeView } = useSelector(state => ({
         activeView: state.guide.view,
     }));
-
-    const { setIndexNode } = useActions({
-        setIndexNode: guideActions.setIndexNode,
-    });
-
-    useEffect(() => {
-        const loadGuideSetupFile = async () => {
-            try {
-                const indexNode = (await import(
-                    '@trezor/suite-data/files/guide/index.json'
-                )) as Category;
-
-                setIndexNode(indexNode);
-            } catch (e) {
-                console.error(`Loading of guide setup file failed: ${e}`);
-            }
-        };
-        loadGuideSetupFile();
-    }, [setIndexNode]);
 
     return (
         <Wrapper {...props}>

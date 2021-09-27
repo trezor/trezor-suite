@@ -1,9 +1,8 @@
 import produce from 'immer';
-
 import { Action } from '@suite-types';
 import { GUIDE } from '@suite-actions/constants';
-
 import type { ActiveView, Category, Node } from '@suite-types/guide';
+import * as indexNodeJSON from '@trezor/suite-data/files/guide/index.json';
 
 export interface State {
     open: boolean;
@@ -12,10 +11,12 @@ export interface State {
     currentNode: Node | null;
 }
 
+const indexNode = indexNodeJSON as Category;
+
 export const initialState: State = {
     open: false,
     view: 'GUIDE_DEFAULT',
-    indexNode: null,
+    indexNode,
     currentNode: null,
 };
 

@@ -107,6 +107,7 @@ const FeedbackTypeSelection = () => {
                             payload: { type: 'bug' },
                         });
                     }}
+                    data-test="@guide/feedback/bug"
                 >
                     <FeedbackButtonImage
                         src={resolveStaticPath('images/suite/3d/recovery.png')}
@@ -131,6 +132,7 @@ const FeedbackTypeSelection = () => {
                             payload: { type: 'suggestion' },
                         });
                     }}
+                    data-test="@guide/feedback/suggestion"
                 >
                     <FeedbackButtonImage
                         src={resolveStaticPath('images/suite/3d/understand.png')}
