@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 const path = require('path');
+const webpack = require('webpack');
 const { compilerOptions } = require('../../../../tsconfig.json');
 
 const { paths } = compilerOptions;
@@ -20,11 +23,16 @@ pathKeys.forEach(key => {
 });
 
 module.exports = {
+    target: 'web',
     mode: 'development',
     // webpack will transpile TS and JS files
     resolve: {
         extensions: ['.ts', '.js'],
         alias,
+        fallback: {
+            crypto: require.resolve('crypto-browserify'),
+            stream: require.resolve('stream-browserify'),
+        },
     },
     module: {
         rules: [
@@ -45,4 +53,11 @@ module.exports = {
             },
         ],
     },
+    plugins: [
+        // provide fallback plugins
+        new webpack.ProvidePlugin({
+            Buffer: ['buffer', 'Buffer'],
+            process: 'process/browser',
+        }),
+    ],
 };
