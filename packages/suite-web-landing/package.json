@@ -27,7 +27,6 @@
         "next-optimized-images": "^2.6.2",
         "next-transpile-modules": "^4.1.0",
         "next-videos": "^1.4.0",
-        "ts-loader": "^8.0.14",
-        "webpack": "^4.44.2"
+        "webpack": "^4.44.1"
     }
 }

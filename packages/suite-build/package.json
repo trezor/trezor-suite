@@ -23,34 +23,30 @@
         "type-check:watch": "yarn type-check -- --watch"
     },
     "dependencies": {
-        "@pmmmwh/react-refresh-webpack-plugin": "^0.5.0-rc.2",
-        "@sentry/webpack-plugin": "^1.16.0",
+        "@sentry/webpack-plugin": "^1.17.1",
         "babel-loader": "^8.2.2",
         "babel-plugin-styled-components": "1.12.0",
-        "buffer": "^6.0.3",
-        "clean-webpack-plugin": "^3.0.0",
         "copy-webpack-plugin": "^9.0.1",
         "crypto-browserify": "^3.12.0",
-        "css-loader": "^5.2.1",
-        "git-revision-webpack-plugin": "^3.0.6",
-        "html-webpack-plugin": "^5.1.0",
-        "is-website-vulnerable": "^1.14.6",
-        "react-refresh": "^0.9.0",
+        "css-loader": "^6.2.0",
+        "html-webpack-plugin": "^5.3.2",
+        "raw-loader": "^4.0.2",
         "stream-browserify": "^3.0.0",
-        "style-loader": "^2.0.0",
-        "ts-loader": "^8.0.14",
+        "style-loader": "^3.2.1",
+        "terser-webpack-plugin": "5.2.4",
+        "ts-loader": "^9.2.5",
         "webpack-bundle-analyzer": "^4.4.2",
-        "webpack": "^5.46.0",
+        "webpack": "^5.55.1",
         "webpack-merge": "^5.8.0",
         "webpack-nano": "^1.1.1",
         "webpack-plugin-serve": "^1.5.0",
         "worker-loader": "^3.0.8"
     },
     "devDependencies": {
+        "@pmmmwh/react-refresh-webpack-plugin": "^0.5.0",
         "@types/copy-webpack-plugin": "^8.0.1",
-        "@types/webpack": "^5.28.0",
         "@types/webpack-bundle-analyzer": "^4.4.1",
         "@types/webpack-plugin-serve": "^1.4.1",
-        "@types/terser-webpack-plugin": "^5.0.4"
+        "react-refresh": "^0.9.0"
     }
 }

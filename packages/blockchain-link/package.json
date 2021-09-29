@@ -46,9 +46,9 @@
         "eslint-config-airbnb-base": "^14.2.1",
         "eslint-loader": "^4.0.2",
         "eslint-plugin-jest": "^24.4.0",
-        "html-webpack-plugin": "^5.1.0",
+        "html-webpack-plugin": "^5.3.2",
         "ts-loader": "^9.2.5",
-        "webpack": "^5.46.0",
+        "webpack": "^5.55.1",
         "webpack-cli": "4.8.0",
         "webpack-dev-server": "^4.2.1",
         "worker-loader": "^3.0.8"
