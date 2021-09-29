@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "@trezor/components": "1.0.0",
-        "next": "^10.0.5",
+        "next": "^11.1.2",
         "polished": "^4.0.5",
         "react": "17.0.1",
         "react-dom": "17.0.1",
@@ -25,8 +25,7 @@
         "@types/react-redux": "^7.1.7",
         "babel-plugin-styled-components": "1.12.0",
         "next-optimized-images": "^2.6.2",
-        "next-transpile-modules": "^4.1.0",
-        "next-videos": "^1.4.0",
-        "webpack": "^4.44.1"
+        "next-transpile-modules": "^8.0.0",
+        "next-videos": "^1.4.0"
     }
 }

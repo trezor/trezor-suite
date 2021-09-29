@@ -1,9 +1,8 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 const path = require('path');
 const webpack = require('webpack');
-const withTranspileModules = require('next-transpile-modules')([
-    '@trezor',
-    '../packages/suite/src', // issue: https://github.com/zeit/next.js/issues/5666
-]);
+const withTranspileModules = require('next-transpile-modules')(['@trezor/suite']);
 const withOptimizedImages = require('next-optimized-images');
 const withVideos = require('next-videos');
 // Get Suite App version from the Suite package.json
@@ -12,6 +11,9 @@ const packageJson = require('../suite/package.json');
 module.exports = withTranspileModules(
     withVideos(
         withOptimizedImages({
+            images: {
+                disableStaticImages: true, // https://exerror.com/nextjs-typeerror-unsupported-file-type-undefined-after-update-to-v-11/
+            },
             optimizeImages: false, // TODO: install optimization plugin and enable https://github.com/cyrilwanner/next-optimized-images#optimization-packages
             typescript: {
                 ignoreDevErrors: true,
