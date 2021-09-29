@@ -9,8 +9,8 @@
     },
     "dependencies": {
         "cypress": "8.3.0",
-        "ts-loader": "^8.1.0",
-        "webpack": "^4.44.2"
+        "ts-loader": "^9.2.5",
+        "webpack": "^5.46.0"
     },
     "devDependencies": {
         "@cypress/skip-test": "^2.6.1",
