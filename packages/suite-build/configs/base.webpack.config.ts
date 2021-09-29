@@ -41,7 +41,6 @@ const config: webpack.Configuration = {
         alias,
         fallback: {
             // Polyfills API for NodeJS libraries in the browser
-            buffer: require.resolve('buffer'),
             crypto: require.resolve('crypto-browserify'), // Can maybe be removed after getting rid of Google OAuth Lib
             stream: require.resolve('stream-browserify'),
             // For Google OAuth library to work
@@ -51,7 +50,6 @@ const config: webpack.Configuration = {
             tls: false,
             // Not needed
             os: false,
-            process: false,
             path: false,
         },
     },

@@ -10,7 +10,7 @@
     "dependencies": {
         "cypress": "8.3.0",
         "ts-loader": "^9.2.5",
-        "webpack": "^5.46.0"
+        "webpack": "^5.55.1"
     },
     "devDependencies": {
         "@cypress/skip-test": "^2.6.1",
