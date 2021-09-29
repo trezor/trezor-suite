@@ -2,6 +2,7 @@
 const path = require('path');
 
 module.exports = {
+    target: 'web',
     mode: 'production',
     entry: path.resolve(__dirname, './src/browser-detection/index.ts'),
     output: {
@@ -12,7 +13,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.ts?$/,
+                test: /\.ts$/,
                 exclude: /node_modules/,
                 use: [
                     {
