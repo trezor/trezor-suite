@@ -135,6 +135,7 @@ abstract class BaseProcess {
         this.process = spawn(processPath, params, {
             cwd: processDir,
             env: processEnv,
+            stdio: ['ignore', 'ignore', 'ignore'],
         });
         this.process.on('error', err => this.onError(err));
         this.process.on('exit', code => this.onExit(code));
