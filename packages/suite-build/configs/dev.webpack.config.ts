@@ -28,8 +28,6 @@ const config: webpack.Configuration = {
             hmr: true,
             static: distPath,
             progress: true,
-            // @ts-ignore - https://github.com/shellscape/webpack-plugin-serve#ramdisk
-            ramdisk: true,
             historyFallback: {
                 htmlAcceptHeaders: ['text/html', '*/*'],
                 rewrites: [],
