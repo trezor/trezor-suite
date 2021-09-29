@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-// @group:onboarding
+// @group:bounty
 // @retry=2
 
 describe('Onboarding - recover wallet T1', () => {

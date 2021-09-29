@@ -65,6 +65,15 @@ e2e web metadata:
   variables:
     TEST_GROUP: '@group:metadata'
 
+# bounty group gathers flaky tests.
+e2e web bounty:
+  extends: .e2e web
+  allow_failure: true
+  variables:
+    TEST_GROUP: '@group:bounty'
+    ALLOW_RETRY: 0
+
+
 ## Update snapshots
 ## You may update snapshots either locally (see readme https://docs.trezor.io/trezor-suite/tests/e2e-web.html)
 ## But as this is quite time consuming you may prefer to do it in CI
