@@ -145,7 +145,8 @@ class CommonDB<TDBStructure> {
                         this.closeAfterTimeout();
                     },
                     terminated: () => {
-                        // browser killed idb, user cleared history
+                        // browser killed idb / user cleared history so let's open DB again on next operation
+                        this.db = null;
                         console.warn('Unexpected IDB close');
                     },
                 });
@@ -184,18 +185,22 @@ class CommonDB<TDBStructure> {
         const storeName = store as string;
 
         const p = new Promise<StoreKey<TDBStructure, TStoreName>>((resolve, reject) => {
-            const tx = db.transaction(storeName, 'readwrite');
-            const params: [TItem, TKey | undefined] = key ? [item, key] : [item, undefined];
-            const req: IDBRequest = upsert
-                ? tx.objectStore(storeName).put(...params)
-                : tx.objectStore(storeName).add(...params);
-            req.onerror = _event => {
-                reject(req.error);
-            };
-            req.onsuccess = _event => {
-                this.notify(store, [req.result]);
-                resolve(req.result);
-            };
+            try {
+                const tx = db.transaction(storeName, 'readwrite');
+                const params: [TItem, TKey | undefined] = key ? [item, key] : [item, undefined];
+                const req: IDBRequest = upsert
+                    ? tx.objectStore(storeName).put(...params)
+                    : tx.objectStore(storeName).add(...params);
+                req.onerror = _event => {
+                    reject(req.error);
+                };
+                req.onsuccess = _event => {
+                    this.notify(store, [req.result]);
+                    resolve(req.result);
+                };
+            } catch (error) {
+                console.error(error);
+            }
         });
         return p;
     };
