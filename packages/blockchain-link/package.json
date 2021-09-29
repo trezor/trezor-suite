@@ -26,12 +26,12 @@
         "ws": "./lib/utils/ws.js"
     },
     "scripts": {
-        "dev": "npx webpack-dev-server --config ./webpack/dev.babel.js --mode development",
+        "dev": "webpack serve --config ./webpack/dev.babel.js",
         "build:lib": "yarn build && yarn build:workers",
         "build:workers": "rimraf build && yarn build:workers-web && yarn build:workers-node && yarn build:workers-module",
-        "build:workers-web": "webpack --config ./webpack/workers.web.babel.js --mode production",
-        "build:workers-node": "webpack --config ./webpack/workers.node.babel.js --mode production",
-        "build:workers-module": "webpack --config ./webpack/workers.module.babel.js --mode production",
+        "build:workers-web": "webpack --config ./webpack/workers.web.babel.js",
+        "build:workers-node": "webpack --config ./webpack/workers.node.babel.js",
+        "build:workers-module": "webpack --config ./webpack/workers.module.babel.js",
         "lint": "eslint '**/*{.ts,.tsx}'",
         "test:unit": "jest --verbose -c jest.config.unit.js",
         "test:integration": "jest -c jest.config.integration.js",
@@ -46,12 +46,12 @@
         "eslint-config-airbnb-base": "^14.2.1",
         "eslint-loader": "^4.0.2",
         "eslint-plugin-jest": "^24.4.0",
-        "html-webpack-plugin": "^4.5.0",
-        "ts-loader": "^8.0.14",
-        "webpack": "^4.44.2",
-        "webpack-cli": "3.3.12",
-        "webpack-dev-server": "3.11.0",
-        "worker-loader": "^3.0.7"
+        "html-webpack-plugin": "^5.1.0",
+        "ts-loader": "^9.2.5",
+        "webpack": "^5.46.0",
+        "webpack-cli": "4.8.0",
+        "webpack-dev-server": "^4.2.1",
+        "worker-loader": "^3.0.8"
     },
     "dependencies": {
         "bignumber.js": "^9.0.1",

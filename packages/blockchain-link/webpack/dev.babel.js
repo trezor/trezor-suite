@@ -4,7 +4,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { SRC, BUILD, PORT } from './constants';
 
 module.exports = {
-    watch: true,
+    target: 'web',
     mode: 'development',
     devtool: 'inline-source-map',
     entry: {
@@ -16,47 +16,26 @@ module.exports = {
         path: BUILD,
     },
     devServer: {
-        contentBase: `${SRC}ui`,
+        static: {
+            directory: `${SRC}ui`,
+        },
         hot: false,
         https: false,
         port: PORT,
-        stats: 'normal',
-        inline: true,
     },
     module: {
         rules: [
             {
-                test: [/ripple\/index.ts$/, /blockbook\/index.ts$/],
-                use: ['worker-loader'],
+                test: [/workers.*\/index.ts$/],
+                loader: 'worker-loader',
+                options: {
+                    filename: './worker.[contenthash].js',
+                },
             },
             {
                 test: /\.ts$/,
                 exclude: /node_modules/,
-                use: [
-                    {
-                        loader: 'ts-loader',
-                        options: { configFile: 'tsconfig.lib.json' },
-                    },
-                    // {
-                    //     loader: 'eslint-loader',
-                    //     options: {
-                    //         emitWarning: true,
-                    //     },
-                    // },
-                ],
-            },
-            {
-                test: /\.js?$/,
-                exclude: /node_modules/,
-                use: [
-                    'babel-loader',
-                    // {
-                    //     loader: 'eslint-loader',
-                    //     options: {
-                    //         emitWarning: true,
-                    //     },
-                    // },
-                ],
+                use: ['babel-loader'],
             },
         ],
     },
@@ -66,11 +45,20 @@ module.exports = {
         alias: {
             'ws-browser': `${SRC}/utils/ws.js`,
         },
+        fallback: {
+            crypto: require.resolve('crypto-browserify'),
+            stream: require.resolve('stream-browserify'),
+        },
     },
     performance: {
         hints: false,
     },
     plugins: [
+        // provide fallback plugins
+        new webpack.ProvidePlugin({
+            Buffer: ['buffer', 'Buffer'],
+            process: 'process/browser',
+        }),
         new webpack.NormalModuleReplacementPlugin(/^ws$/, 'ws-browser'),
         new HtmlWebpackPlugin({
             chunks: ['indexUI'],
@@ -78,14 +66,9 @@ module.exports = {
             filename: 'index.html',
             inject: true,
         }),
-        new webpack.optimize.OccurrenceOrderPlugin(),
-        new webpack.NoEmitOnErrorsPlugin(),
-        // new webpack.HotModuleReplacementPlugin(),
-        new webpack.NamedModulesPlugin(),
     ],
-    node: {
-        net: 'empty',
-        tls: 'empty',
-        dns: 'empty',
+    optimization: {
+        emitOnErrors: true,
+        moduleIds: 'named',
     },
 };
