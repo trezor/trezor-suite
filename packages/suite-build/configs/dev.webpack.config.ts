@@ -15,7 +15,6 @@ const config: webpack.Configuration = {
     },
     mode: 'development',
     watch: true,
-    target: 'web',
     devtool: 'eval-source-map',
     entry: ['webpack-plugin-serve/client'],
     output: {
