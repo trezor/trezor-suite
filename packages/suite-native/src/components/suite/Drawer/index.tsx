@@ -19,9 +19,10 @@ const styles = (theme: SuiteThemeColors) =>
 
 const Drawer = (_props: DrawerContentComponentProps) => {
     const { device } = useDevice();
-    const { theme, themeVariant, setTheme } = useTheme();
-    const { goto, acquireDevice } = useActions({
+    const { theme, themeVariant } = useTheme();
+    const { goto, setTheme, acquireDevice } = useActions({
         acquireDevice: suiteActions.acquireDevice,
+        setTheme: suiteActions.setTheme,
         goto: routerActions.goto,
     });
 

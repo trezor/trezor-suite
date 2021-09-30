@@ -24,7 +24,6 @@ import history from '@suite/support/history';
 
 import AppRouter from './support/Router';
 import { CypressExportStore } from './support/CypressExportStore';
-import GlobalStyleProvider from '@suite-support/styles/GlobalStyleProvider';
 
 const Main = () => {
     useEffect(() => {
@@ -46,7 +45,6 @@ const Main = () => {
             <ReduxProvider store={store}>
                 <ThemeProvider>
                     <RouterProvider history={history}>
-                        <GlobalStyleProvider />
                         <ErrorBoundary>
                             <Autodetect />
                             <Resize />

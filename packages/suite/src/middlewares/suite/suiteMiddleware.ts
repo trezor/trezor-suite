@@ -36,7 +36,6 @@ const suite =
         switch (action.type) {
             case SUITE.INIT:
                 await api.dispatch(storageActions.init());
-                api.dispatch(suiteActions.setInitialTheme());
                 // load storage
                 api.dispatch(storageActions.loadStorage());
                 break;

@@ -1,11 +1,8 @@
-import * as React from 'react';
-
 import animations from './animations';
 import { notifications } from './notifications';
 import { variables, SuiteThemeColors } from '@trezor/components';
 import { createGlobalStyle } from 'styled-components';
 import { SuiteThemeVariant } from '@suite/types/suite';
-import { useTheme } from '@suite-hooks';
 
 const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors; themeVariant: SuiteThemeVariant }>`
     #app {
@@ -55,10 +52,4 @@ const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors; themeVariant: S
     ${notifications}
 `;
 
-const GlobalStyleProvider = () => {
-    const { theme, themeVariant } = useTheme();
-
-    return <GlobalStyle theme={theme} themeVariant={themeVariant} />;
-};
-
-export default GlobalStyleProvider;
+export default GlobalStyle;
