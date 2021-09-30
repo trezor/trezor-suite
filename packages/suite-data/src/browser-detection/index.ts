@@ -95,7 +95,7 @@ window.addEventListener('load', () => {
         subtitle: 'WebUSB is only supported on Chrome for Android.',
     });
 
-    // this should match browserslist config
+    // this should match browserslist config (packages/suite-build/browserslist)
     const supportedBrowsers = [
         {
             name: 'Chrome',
