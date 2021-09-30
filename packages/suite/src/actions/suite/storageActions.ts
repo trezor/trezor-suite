@@ -429,6 +429,7 @@ export const loadStorage = () => async (dispatch: Dispatch, getState: GetState) 
                             bridgeDevMode: false, // don't sync bridgeDevMode for now
                         },
                     },
+                    storageLoaded: true,
                 },
                 devices,
                 wallet: {
