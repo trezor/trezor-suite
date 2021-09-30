@@ -63,7 +63,7 @@ window.addEventListener('load', () => {
             },
             {
                 name: 'Firefox',
-                url: 'https://www.mozilla.org/firefox/',
+                url: 'https://www.mozilla.org/firefox/new/',
                 icon: iconFirefox,
             },
         ],
@@ -73,7 +73,7 @@ window.addEventListener('load', () => {
         title: 'Your browser is outdated',
         subtitle: 'Please update your browser to the latest version.',
         button: 'Update Chrome',
-        url: 'https://support.google.com/chrome/answer/95414?co=GENIE.Platform%3DDesktop&amp;hl=en',
+        url: 'https://support.google.com/chrome/answer/95414',
     });
 
     const updateFirefox = getMainHtml({
@@ -87,7 +87,7 @@ window.addEventListener('load', () => {
         title: 'Get Chrome for Android',
         subtitle: 'WebUSB is only supported on Chrome for Android.',
         button: 'Get Chrome for Android',
-        url: 'https://play.google.com/store/apps/details?id=com.android.chrome&hl=en',
+        url: 'https://play.google.com/store/apps/details?id=com.android.chrome',
     });
 
     const noWebUSB = getMainHtml({
