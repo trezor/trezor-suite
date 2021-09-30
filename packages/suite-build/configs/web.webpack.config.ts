@@ -11,6 +11,7 @@ import { getPathForProject } from '../utils/path';
 
 const baseDir = getPathForProject('web');
 const config: webpack.Configuration = {
+    target: 'browserslist',
     entry: [path.join(baseDir, 'src', 'index.ts')],
     output: {
         path: path.join(baseDir, 'build'),
