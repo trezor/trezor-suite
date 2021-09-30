@@ -35,6 +35,4 @@ module.exports = {
     performance: {
         hints: false,
     },
-    // ignore those modules, otherwise webpack throws warning about missing (ws dependency)
-    externals: ['utf-8-validate', 'bufferutil'],
 };
