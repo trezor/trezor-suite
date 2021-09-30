@@ -1,22 +1,32 @@
-import * as suiteActions from '@suite-actions/suiteActions';
-import { useActions, useSelector } from '@suite-hooks';
+import { useState, useEffect } from 'react';
+import { useSelector } from '@suite-hooks';
+import { getOsTheme } from '@suite-utils/env';
 import { getThemeColors } from '@suite-utils/theme';
-import { SuiteThemeColors } from '@suite-types';
+import { loadSuiteSettings } from '@suite-actions/storageActions';
+import type { SuiteState } from '@suite-reducers/suiteReducer';
 
 export const useTheme = () => {
-    const themeObj = useSelector(state => state.suite.settings.theme);
-    const { setTheme } = useActions({
-        setTheme: suiteActions.setTheme,
-    });
+    const [preloadedTheme, setPreloadedTheme] = useState<SuiteState['settings']['theme']>();
+    const { theme, storageLoaded } = useSelector(state => ({
+        theme: state.suite.settings.theme,
+        storageLoaded: state.suite.storageLoaded,
+    }));
 
-    const theme = getThemeColors(themeObj);
-    const themeVariant = themeObj.variant;
+    useEffect(() => {
+        if (storageLoaded || preloadedTheme) return;
+        loadSuiteSettings()
+            .then(suiteSettings => setPreloadedTheme(suiteSettings?.settings.theme))
+            .catch(err => console.log(err));
+    }, [storageLoaded, preloadedTheme]);
+
+    const resolvedTheme = storageLoaded
+        ? theme
+        : preloadedTheme || {
+              variant: getOsTheme(),
+          };
 
     return {
-        theme,
-        themeVariant,
-        setTheme,
+        theme: getThemeColors(resolvedTheme),
+        themeVariant: resolvedTheme.variant,
     };
 };
-
-export type { SuiteThemeColors };
