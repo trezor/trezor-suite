@@ -120,6 +120,9 @@ Add event to the analytics overview in the [company Notion](https://www.notion.s
 Added:
 - switch-device/add-hidden-wallet
 
+Changed:
+- wallet/created renamed to select-wallet-type
+
 ### 1.12
 Changed:
 - device-update-firmware

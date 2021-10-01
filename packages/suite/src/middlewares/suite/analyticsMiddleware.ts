@@ -192,7 +192,7 @@ const analytics =
             case SUITE.AUTH_DEVICE:
                 api.dispatch(
                     analyticsActions.report({
-                        type: 'wallet/created',
+                        type: 'select-wallet-type',
                         payload: { type: action.payload.walletNumber ? 'hidden' : 'standard' },
                     }),
                 );

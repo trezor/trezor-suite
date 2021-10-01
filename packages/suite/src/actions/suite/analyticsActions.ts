@@ -381,7 +381,7 @@ export type AnalyticsEvent =
           type: 'check-seed/success';
       }
     | {
-          type: 'wallet/created';
+          type: 'select-wallet-type';
           payload: {
               type: 'hidden' | 'standard';
           };
