@@ -35,4 +35,6 @@ module.exports = {
     performance: {
         hints: false,
     },
+    // ignore optional modules, dependencies of "ws" lib
+    externals: ['utf-8-validate', 'bufferutil'],
 };
