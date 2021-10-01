@@ -2,12 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { View, Text, Button } from 'react-native';
+import { useTheme } from '@trezor/components';
 
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import styles from '@native/support/suite/styles';
 import InitialRun from './components/InitialRun';
-import { useTheme } from '@suite-hooks';
 import { AppState, Dispatch } from '@suite-types';
 
 const mapStateToProps = (state: AppState) => ({
@@ -23,7 +23,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const Onboarding = (props: Props) => {
-    const { theme } = useTheme();
+    const theme = useTheme();
 
     // TODO: "initialRun" view should not depend on props.initialRun
     if (props.initialRun) {

@@ -2,9 +2,9 @@ import styled, { css } from 'styled-components';
 import React, { useRef } from 'react';
 import Lottie from 'lottie-react';
 import * as semver from 'semver';
+import { useTheme } from '@trezor/components';
 
 import { resolveStaticPath } from '@suite-utils/build';
-import { useTheme } from '@suite-hooks';
 import LottieT1Connect from './lottie/t1_connect.json';
 import LottieTTConnect from './lottie/tt_connect.json';
 import { getDeviceModel, getFwVersion } from '@suite-utils/device';
@@ -71,7 +71,7 @@ type Props = {
 };
 
 const DeviceAnimation = ({ size, type, loop = false, shape, device, ...props }: Props) => {
-    const { themeVariant } = useTheme();
+    const { THEME } = useTheme();
     const hologramRef = useRef<HTMLVideoElement>(null);
 
     // if device features are not available, use T model animations
@@ -103,7 +103,7 @@ const DeviceAnimation = ({ size, type, loop = false, shape, device, ...props }: 
                 <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
                     <source
                         src={resolveStaticPath(
-                            `videos/onboarding/t${deviceModel}_${animationFileName}_${themeVariant}.mp4`,
+                            `videos/onboarding/t${deviceModel}_${animationFileName}_${THEME}.mp4`,
                         )}
                         type="video/mp4"
                     />
@@ -113,7 +113,7 @@ const DeviceAnimation = ({ size, type, loop = false, shape, device, ...props }: 
                 <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
                     <source
                         src={resolveStaticPath(
-                            `videos/onboarding/t1_${animationFileName}_${themeVariant}.mp4`,
+                            `videos/onboarding/t1_${animationFileName}_${THEME}.mp4`,
                         )}
                         type="video/mp4"
                     />
@@ -143,7 +143,7 @@ const DeviceAnimation = ({ size, type, loop = false, shape, device, ...props }: 
                 <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
                     <source
                         src={resolveStaticPath(
-                            `videos/onboarding/t${deviceModel}_${animationFileName}_${themeVariant}.webm`,
+                            `videos/onboarding/t${deviceModel}_${animationFileName}_${THEME}.webm`,
                         )}
                         type="video/webm"
                     />

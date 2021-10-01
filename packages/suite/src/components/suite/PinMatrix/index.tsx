@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { variables } from '@trezor/components';
+import { variables, useTheme } from '@trezor/components';
 import { DeviceMatrixExplanation, PinInput, Translation, TrezorLink } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
 import { URLS } from '@suite-constants';
 import * as modalActions from '@suite-actions/modalActions';
-import { useActions, useTheme } from '@suite-hooks';
+import { useActions } from '@suite-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -32,7 +32,7 @@ interface Props {
 }
 
 const PinMatrix = ({ device, hideExplanation, invalid }: Props) => {
-    const { theme } = useTheme();
+    const theme = useTheme();
     const [submitted, setSubmitted] = useState(false);
     const { onPinSubmit } = useActions({ onPinSubmit: modalActions.onPinSubmit });
     const pinRequestType = device.buttonRequests[device.buttonRequests.length - 1];

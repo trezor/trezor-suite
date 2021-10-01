@@ -11,8 +11,8 @@ import {
 import { DeviceAcquire, DeviceUnknown, DeviceUnreadable } from '@suite-views';
 import { Translation, Modal } from '@suite-components';
 import { OnboardingStepBox } from '@onboarding-components';
-import { useActions, useFirmware, useSelector, useTheme } from '@suite-hooks';
-import { ConfirmOnDevice, Icon } from '@trezor/components';
+import { useActions, useFirmware, useSelector } from '@suite-hooks';
+import { ConfirmOnDevice, Icon, useTheme } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -35,7 +35,7 @@ const CancelIconWrapper = styled.div`
 `;
 
 const Firmware = () => {
-    const { theme } = useTheme();
+    const theme = useTheme();
     const { resetReducer, status, setStatus, error, firmwareUpdate } = useFirmware();
     const { device } = useSelector(state => ({
         device: state.suite.device,

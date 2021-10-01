@@ -5,7 +5,7 @@ import { getThemeColors } from '@suite-utils/theme';
 import { loadSuiteSettings } from '@suite-actions/storageActions';
 import type { SuiteState } from '@suite-reducers/suiteReducer';
 
-export const useTheme = () => {
+export const useThemeContext = () => {
     const [preloadedTheme, setPreloadedTheme] = useState<SuiteState['settings']['theme']>();
     const { theme, storageLoaded } = useSelector(state => ({
         theme: state.suite.settings.theme,
@@ -25,8 +25,5 @@ export const useTheme = () => {
               variant: getOsTheme(),
           };
 
-    return {
-        theme: getThemeColors(resolvedTheme),
-        themeVariant: resolvedTheme.variant,
-    };
+    return getThemeColors(resolvedTheme);
 };

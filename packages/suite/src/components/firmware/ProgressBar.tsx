@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Icon, variables } from '@trezor/components';
+import { Icon, variables, useTheme } from '@trezor/components';
 import styled from 'styled-components';
-import { useTheme } from '@suite-hooks';
 
 const Wrapper = styled.div`
     display: flex;
@@ -62,7 +61,7 @@ const ProgressBar = ({
     fakeProgressDuration,
     fakeProgressBarrier = 90,
 }: Props) => {
-    const { theme } = useTheme();
+    const theme = useTheme();
     const [storedProgress, setStoreProgress] = useState(0);
     const progress = (100 / total) * current;
     const fakeIncrement = fakeProgressDuration ? total / fakeProgressDuration : 0;

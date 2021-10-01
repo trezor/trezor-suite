@@ -1,7 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Icon, variables } from '@trezor/components';
-import { useTheme } from '@suite-hooks';
+import { Icon, variables, useTheme } from '@trezor/components';
 
 const ProgressBarWrapper = styled.div`
     display: flex;
@@ -92,7 +91,7 @@ interface Props {
 }
 
 const ProgressBar = ({ steps, activeStep, className }: Props) => {
-    const { theme } = useTheme();
+    const theme = useTheme();
     return (
         <ProgressBarWrapper className={className}>
             {steps.map((step, index) => {

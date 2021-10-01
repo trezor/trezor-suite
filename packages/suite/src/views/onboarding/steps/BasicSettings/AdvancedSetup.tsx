@@ -3,8 +3,8 @@ import { Translation } from '@suite-components';
 import { Box } from '@onboarding-components';
 import styled from 'styled-components';
 import { Network } from '@wallet-types';
-import { variables, Icon, Button } from '@trezor/components';
-import { useActions, useSelector, useTheme } from '@suite-hooks';
+import { variables, Icon, Button, useTheme } from '@trezor/components';
+import { useActions, useSelector } from '@suite-hooks';
 import TrezorConnect from 'trezor-connect';
 import { BlockbookUrl } from '@wallet-types/blockbook';
 import * as walletSettingsActions from '@settings-actions/walletSettingsActions';
@@ -75,7 +75,7 @@ const AdvancedSetup = ({ networks, children }: Props) => {
     const [customBackendOpen, setCustomBackendOpen] = useState(false);
     const [torOpen, setTorOpen] = useState(false);
     const [networksWithBlockbook, setNetworksWithBlockbook] = useState<Network[]>([]);
-    const { theme } = useTheme();
+    const theme = useTheme();
 
     const { addBlockbookUrl, removeBlockbookUrl } = useActions({
         addBlockbookUrl: walletSettingsActions.addBlockbookUrl,

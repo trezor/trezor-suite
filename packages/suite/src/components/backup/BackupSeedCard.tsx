@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, IconProps, variables } from '@trezor/components';
-import { useTheme } from '@suite/hooks/suite';
+import { Icon, IconProps, variables, useTheme } from '@trezor/components';
 
 const Card = styled.div<{ checked: boolean }>`
     display: flex;
@@ -61,7 +60,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const BackupSeedCard = ({ label, icon, isChecked, ...rest }: Props) => {
-    const { theme } = useTheme();
+    const theme = useTheme();
 
     return (
         <Card checked={isChecked} {...rest}>

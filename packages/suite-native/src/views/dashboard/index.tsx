@@ -2,10 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { View, Button } from 'react-native';
-import { P as Text } from '@trezor/components';
+import { P as Text, useTheme } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import styles from '@native/support/suite/styles';
-import { useTheme } from '@suite-hooks';
 import Layout from '@native-components/suite/Layout';
 import { Dispatch } from '@suite-types';
 
@@ -16,7 +15,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 type Props = ReturnType<typeof mapDispatchToProps>;
 
 const Dashboard = (props: Props) => {
-    const { theme } = useTheme();
+    const theme = useTheme();
 
     return (
         <Layout title="Dashboard">

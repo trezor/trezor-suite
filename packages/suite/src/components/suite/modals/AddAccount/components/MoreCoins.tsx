@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled, { css } from 'styled-components';
-import { Icon, P } from '@trezor/components';
+import { Icon, P, useTheme } from '@trezor/components';
 import { Translation } from '@suite-components';
-import { useTheme } from '@suite-hooks';
 
 const animationDuration = 0.24;
 
@@ -110,7 +109,7 @@ const Header = ({
     isExpanded: boolean;
     setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-    const { theme } = useTheme();
+    const theme = useTheme();
     return (
         <HeaderWrapper>
             <OpenIconWrapper

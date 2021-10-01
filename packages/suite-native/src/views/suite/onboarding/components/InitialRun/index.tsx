@@ -2,11 +2,11 @@ import React from 'react';
 import { View, Text, Button } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { useTheme } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
 import styles from '@native/support/suite/styles';
 import { Dispatch } from '@suite-types';
-import { useTheme } from '@suite-hooks';
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
     goto: bindActionCreators(routerActions.goto, dispatch),
@@ -16,7 +16,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 type Props = ReturnType<typeof mapDispatchToProps>;
 
 const InitialRun = (props: Props) => {
-    const { theme } = useTheme();
+    const theme = useTheme();
     return (
         <View style={styles(theme).container}>
             <Text style={styles(theme).h1}>Initial run</Text>

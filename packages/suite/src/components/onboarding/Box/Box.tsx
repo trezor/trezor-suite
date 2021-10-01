@@ -3,8 +3,7 @@ import styled, { css } from 'styled-components';
 import { animated, useSpring } from 'react-spring';
 import Text from '@onboarding-components/Text';
 import { Image, ImageProps, Translation } from '@suite-components';
-import { H1, variables, Button } from '@trezor/components';
-import { useTheme } from '@suite-hooks';
+import { H1, variables, Button, useTheme } from '@trezor/components';
 import useMeasure from 'react-use/lib/useMeasure';
 
 const BoxWrapper = styled(
@@ -165,7 +164,7 @@ const Box = ({
     onToggle = () => undefined,
     ...rest
 }: Props) => {
-    const { theme } = useTheme();
+    const theme = useTheme();
     const [heightRef, { height }] = useMeasure<HTMLDivElement>();
     const springExpandableBox = useSpring({
         from: { opacity: 0 },
