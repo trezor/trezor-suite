@@ -280,6 +280,7 @@ export type AnalyticsEvent =
           };
       }
     | { type: 'switch-device/add-wallet' }
+    | { type: 'switch-device/add-hidden-wallet' }
     // todo: check if forget remember works as expected
     | { type: 'switch-device/forget' }
     | { type: 'switch-device/remember' }
