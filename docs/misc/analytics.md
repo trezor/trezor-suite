@@ -115,6 +115,11 @@ Add event to the analytics overview in the [company Notion](https://www.notion.s
 4. **Option**: Edit NAT to resolve requests to `https://data.trezor.io/suite/log/web/stable.log` to your local server
 
 ## Changelog
+
+### 1.13
+Added:
+- switch-device/add-hidden-wallet
+
 ### 1.12
 Changed:
 - device-update-firmware
