@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Input, Button, Textarea, Card, Switch, variables } from '@trezor/components';
 import { WalletLayout, WalletLayoutHeader } from '@wallet-components';
-import { Translation } from '@suite-components';
+import { CharacterCount, Translation } from '@suite-components';
 import { useActions, useDevice, useSelector, useTranslation } from '@suite-hooks';
 import { sign as signAction, verify as verifyAction } from '@wallet-actions/signVerifyActions';
 import Navigation, { NavPages } from './components/Navigation';
@@ -126,7 +126,12 @@ const SignVerify = () => {
                             rows={4}
                             maxRows={4}
                             data-test="@sign-verify/message"
-                        />
+                        >
+                            <CharacterCount
+                                current={formValues.message?.length || 0}
+                                max={MAX_LENGTH_MESSAGE}
+                            />
+                        </Textarea>
                     </Row>
                     <Row>
                         {page === 'sign' ? (
@@ -168,7 +173,14 @@ const SignVerify = () => {
                                     : undefined
                             }
                             data-test="@sign-verify/signature"
-                        />
+                        >
+                            {page === 'verify' && (
+                                <CharacterCount
+                                    current={formValues.signature?.length || 0}
+                                    max={MAX_LENGTH_SIGNATURE}
+                                />
+                            )}
+                        </Textarea>
                     </Row>
                     <Row>
                         <StyledButton
