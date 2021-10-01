@@ -52,6 +52,7 @@ import ConnectDevicePrompt from './ConnectDevicePrompt';
 import Coin from './Coin';
 import CoinsGroup from './CoinsGroup';
 import CoinsList from './CoinsGroup/CoinsList';
+import CharacterCount from './CharacterCount';
 
 export {
     Backdrop,
@@ -112,5 +113,6 @@ export {
     Coin,
     CoinsGroup,
     CoinsList,
+    CharacterCount,
 };
 export type { ImageProps, ModalProps };

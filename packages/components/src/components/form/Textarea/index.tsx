@@ -140,7 +140,7 @@ interface Props extends StyledTextareaProps {
     borderRadius?: number;
 }
 
-const Textarea = ({
+const Textarea: React.FC<Props> = ({
     className,
     maxLength,
     labelAddon,
@@ -159,8 +159,9 @@ const Textarea = ({
     noError,
     borderWidth = 2,
     borderRadius = 4,
+    children,
     ...rest
-}: Props) => {
+}) => {
     const [isHovered, setIsHovered] = React.useState(false);
 
     return (
@@ -198,6 +199,7 @@ const Textarea = ({
                 <ArrowUp />
                 {tooltipAction}
             </TooltipAction>
+            {children}
             {!noError && <BottomText state={state}>{bottomText}</BottomText>}
         </Wrapper>
     );

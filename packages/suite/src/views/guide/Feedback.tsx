@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
-import { CollapsibleBox, Translation } from '@suite-components';
+import { CharacterCount, CollapsibleBox, Translation } from '@suite-components';
 import { Textarea, Select, variables, Button } from '@trezor/components';
 import { useActions, useAnalytics, useDevice, useSelector } from '@suite-hooks';
 import * as guideActions from '@suite-actions/guideActions';
@@ -32,18 +32,6 @@ const Submit = styled(Button)`
 
 const SelectWrapper = styled.div`
     padding: 0 0 20px 0;
-`;
-
-const TextareaWrapper = styled.div`
-    position: relative;
-`;
-
-const CharacterCount = styled.div`
-    position: absolute;
-    bottom: 35px;
-    right: 15px;
-    font-size: ${variables.FONT_SIZE.TINY};
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
 const RatingWrapper = styled.div`
@@ -315,21 +303,19 @@ const Feedback = ({ type }: Props) => {
                         </Headline>
                     </>
                 )}
-                <TextareaWrapper>
-                    <Textarea
-                        rows={8}
-                        borderWidth={1}
-                        borderRadius={8}
-                        value={description}
-                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                            setDescription(e.target.value)
-                        }
-                        noTopLabel
-                    />
-                    <CharacterCount>
-                        {description.length} / {MESSAGE_CHARACTER_LIMIT}
-                    </CharacterCount>
-                </TextareaWrapper>
+
+                <Textarea
+                    rows={8}
+                    borderWidth={1}
+                    borderRadius={8}
+                    value={description}
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                        setDescription(e.target.value)
+                    }
+                    noTopLabel
+                >
+                    <CharacterCount current={description.length} max={MESSAGE_CHARACTER_LIMIT} />
+                </Textarea>
 
                 <Submit
                     onClick={onSubmit}
