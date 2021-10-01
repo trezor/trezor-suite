@@ -20,7 +20,6 @@ export const MODULES = [
     'metadata',
     'bridge',
     'tor',
-    'analytics',
     'custom-protocols',
     'auto-updater',
     'store',

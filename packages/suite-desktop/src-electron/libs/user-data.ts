@@ -1,5 +1,4 @@
 import fs from 'fs';
-import os from 'os';
 import { app } from 'electron';
 
 export const save = async (directory: string, name: string, content: string) => {
@@ -36,22 +35,6 @@ export const read = async (directory: string, name: string) => {
         return { success: true, payload };
     } catch (error) {
         global.logger.error('user-data', `Read failed: ${error.message}`);
-        return { success: false, error };
-    }
-};
-
-export const getOsType = () => {
-    try {
-        const platform = os.platform();
-        const release = os.release();
-        return {
-            success: true,
-            payload: {
-                platform,
-                release,
-            },
-        };
-    } catch (error) {
         return { success: false, error };
     }
 };

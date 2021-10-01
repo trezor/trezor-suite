@@ -97,9 +97,6 @@ contextBridge.exposeInMainWorld('desktopApi', {
     getTorAddress: () => ipcRenderer.invoke('tor/get-address'),
     setTorAddress: (address: string) => ipcRenderer.send('tor/set-address', address),
 
-    // Analytics
-    getOsType: () => ipcRenderer.invoke('analytics/get-os-type'),
-
     // Store
     clearStore: () => ipcRenderer.send('store/clear'),
 

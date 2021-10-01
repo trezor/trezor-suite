@@ -159,6 +159,3 @@ export const watchOsTheme = (callback: (theme: SuiteThemeVariant) => void) => {
     query?.addEventListener('change', onThemeChange);
     return () => query?.removeEventListener('change', onThemeChange);
 };
-
-/* Working only in desktop app */
-export const getOsType = () => window.desktopApi?.getOsType();
