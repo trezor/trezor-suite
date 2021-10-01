@@ -1,8 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { variables, CoinLogo, Icon } from '@trezor/components';
+import { variables, CoinLogo, Icon, useTheme } from '@trezor/components';
 import { Translation } from '@suite-components';
-import { useTheme } from '@suite-hooks';
 import { ExtendedMessageDescriptor } from '@suite-types';
 import { Network } from '@wallet-types';
 
@@ -90,7 +89,7 @@ interface Props extends React.HTMLAttributes<HTMLButtonElement> {
 }
 
 const Coin = ({ symbol, name, label, selected = false, disabled = false, ...props }: Props) => {
-    const { theme } = useTheme();
+    const theme = useTheme();
     return (
         <CoinWrapper selected={selected} disabled={disabled} {...props}>
             <ImageWrapper>

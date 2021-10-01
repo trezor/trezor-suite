@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Button } from '@trezor/components';
+import { Button, useTheme } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import * as suiteActions from '@suite-actions/suiteActions';
-import { useDevice, useActions, useTheme } from '@suite-hooks';
+import { useDevice, useActions } from '@suite-hooks';
 import DeviceSelector from '@native-components/suite/DeviceSelector';
 import { DrawerContentComponentProps } from 'react-navigation-drawer';
 import Translation from '@native-components/suite/Translation';
@@ -19,7 +19,7 @@ const styles = (theme: SuiteThemeColors) =>
 
 const Drawer = (_props: DrawerContentComponentProps) => {
     const { device } = useDevice();
-    const { theme, themeVariant } = useTheme();
+    const theme = useTheme();
     const { goto, setTheme, acquireDevice } = useActions({
         acquireDevice: suiteActions.acquireDevice,
         setTheme: suiteActions.setTheme,
@@ -39,7 +39,7 @@ const Drawer = (_props: DrawerContentComponentProps) => {
                 </Button>
                 <Button
                     onClick={() => {
-                        setTheme(themeVariant === 'dark' ? 'light' : 'dark');
+                        setTheme(theme.THEME === 'dark' ? 'light' : 'dark');
                     }}
                 >
                     Change theme

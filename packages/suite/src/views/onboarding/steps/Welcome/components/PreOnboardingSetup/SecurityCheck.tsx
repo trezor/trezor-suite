@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, Tooltip, variables } from '@trezor/components';
-import { useOnboarding, useSelector, useTheme } from '@suite-hooks';
+import { Icon, Tooltip, variables, useTheme } from '@trezor/components';
+import { useOnboarding, useSelector } from '@suite-hooks';
 import { Translation, TrezorLink } from '@suite-components';
 import { Box, Hologram, OnboardingButtonCta, OnboardingButtonSkip } from '@onboarding-components';
 import { SUPPORT_URL } from '@suite-constants/urls';
@@ -78,7 +78,7 @@ const SecurityCheck = () => {
     const deviceStatus = getConnectedDeviceStatus(device);
     const initialized = deviceStatus === 'initialized';
     const firmwareNotInstalled = device?.firmware === 'none';
-    const { theme } = useTheme();
+    const theme = useTheme();
 
     const items = [
         {

@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Text, ScrollView, View } from 'react-native';
+import { useTheme } from '@trezor/components';
 import Head from '@native/support/suite/Head';
 import { AppState, SuiteThemeColors } from '@suite-types';
-import { useTheme } from '@suite-hooks';
 
 const styles = (theme: SuiteThemeColors) => ({
     wrapper: { backgroundColor: theme.BG_WHITE },
@@ -25,7 +25,7 @@ const Layout = (props: Props) => {
         suite,
         // router,
     } = props;
-    const { theme } = useTheme();
+    const theme = useTheme();
 
     // connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
     if (!suite.transport) {

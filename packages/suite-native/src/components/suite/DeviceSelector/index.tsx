@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useTheme } from '@trezor/components';
 // import * as suiteActions from '@suite-actions/suiteActions';
-import { useDevice, useTheme } from '@suite-hooks';
+import { useDevice } from '@suite-hooks';
 import { SuiteThemeColors, TrezorDevice } from '@suite-types';
 import * as deviceUtils from '@suite-utils/device';
 import DeviceImage from '@native-components/suite/DeviceImage';
@@ -83,7 +84,7 @@ const statusStyles = (theme: SuiteThemeColors, status: Status) =>
 
 const DeviceSelector = () => {
     const { device } = useDevice();
-    const { theme } = useTheme();
+    const theme = useTheme();
     const status = getStatusForDevice(device);
     // const { acquireDevice } = useActions({
     //     acquireDevice: suiteActions.acquireDevice,

@@ -2,9 +2,8 @@ import animations from './animations';
 import { notifications } from './notifications';
 import { variables, SuiteThemeColors } from '@trezor/components';
 import { createGlobalStyle } from 'styled-components';
-import { SuiteThemeVariant } from '@suite/types/suite';
 
-const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors; themeVariant: SuiteThemeVariant }>`
+const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors }>`
     #app {
         display: flex;
         flex-direction: column;
@@ -45,7 +44,7 @@ const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors; themeVariant: S
     }
 
     :root {
-        color-scheme: ${props => (props.themeVariant === 'light' ? 'light' : 'dark')};
+        color-scheme: ${props => (props.theme.THEME === 'light' ? 'light' : 'dark')};
     }
 
     ${animations}

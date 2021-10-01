@@ -10,10 +10,9 @@ import { connect } from 'react-redux';
 import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { SUITE } from '@suite-actions/constants';
-// import { H1, P } from '@trezor/components';
+import { useTheme } from '@trezor/components';
 import { AppState, Dispatch } from '@suite-types';
 import styles from '@native/support/suite/styles';
-import { useTheme } from '@suite-hooks';
 
 const mapStateToProps = (state: AppState) => ({
     loading: state.suite.loading,
@@ -28,7 +27,7 @@ type Props = ReturnType<typeof mapStateToProps> & {
 
 const Preloader = (props: Props) => {
     const { loading, loaded, error, dispatch } = props;
-    const { theme } = useTheme();
+    const theme = useTheme();
     useEffect(() => {
         if (!loading && !loaded && !error) {
             dispatch({ type: SUITE.INIT });

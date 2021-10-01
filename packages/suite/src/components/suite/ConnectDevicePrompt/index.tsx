@@ -2,10 +2,10 @@ import React from 'react';
 import { useSpring, config, animated } from 'react-spring';
 import styled from 'styled-components';
 
-import { variables, Icon, Button } from '@trezor/components';
+import { variables, Icon, Button, useTheme } from '@trezor/components';
 import { DeviceAnimation } from '@onboarding-components';
 import { Translation } from '@suite-components';
-import { useDevice, useTheme, useActions } from '@suite-hooks';
+import { useDevice, useActions } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
 
 const Wrapper = styled(animated.div)`
@@ -61,7 +61,7 @@ const getDefaultMessage = (connected: boolean, showWarning: boolean) => {
     return 'TR_CONNECT_YOUR_DEVICE';
 };
 const ConnectDevicePrompt = ({ children, connected, showWarning, allowSwitchDevice }: Props) => {
-    const { theme } = useTheme();
+    const theme = useTheme();
     const { device } = useDevice();
     const { goto } = useActions({
         goto: routerActions.goto,
