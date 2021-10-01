@@ -123,6 +123,9 @@ Added:
 Changed:
 - wallet/created renamed to select-wallet-type
 
+Removed:
+- desktop-init
+
 ### 1.12
 Changed:
 - device-update-firmware

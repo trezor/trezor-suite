@@ -70,5 +70,3 @@ export const getOsTheme = (): SuiteThemeVariant => {
     const colorScheme = Appearance.getColorScheme();
     return colorScheme === 'dark' ? 'dark' : 'light';
 };
-
-export const getOsType = (): any => undefined;

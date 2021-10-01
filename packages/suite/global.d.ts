@@ -36,11 +36,6 @@ export interface DesktopApi {
     toggleTor: (start: boolean) => void;
     getTorAddress: () => Promise<string>;
     setTorAddress: (address: string) => void;
-    // Analytics
-    getOsType: () => Promise<
-        | { success: true; payload: { platform: string; release: string } }
-        | { success: false; error: string }
-    >;
     // Store
     clearStore: () => void;
     // Udev rules
