@@ -97,6 +97,13 @@ const updateStore = (store: ReturnType<typeof mockStore>) => {
 };
 
 describe('Firmware Actions', () => {
+    beforeAll(() => {
+        jest.spyOn(console, 'warn').mockImplementation();
+    });
+    afterAll(() => {
+        jest.clearAllMocks();
+    });
+
     actions.forEach(f => {
         it(f.description, async () => {
             // set fixtures

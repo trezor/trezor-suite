@@ -59,8 +59,15 @@ describe('Debug', () => {
             worker: 'foo.js',
             server: [],
         });
+        const spyLog = jest.spyOn(console, 'log').mockImplementation();
+        const spyWarn = jest.spyOn(console, 'warn').mockImplementation();
+        const spyError = jest.spyOn(console, 'error').mockImplementation();
         common.debug('Debug log message');
         common.debug('warn', 'Debug warning message');
         common.debug('error', 'Debug error message');
+        expect(spyLog).toHaveBeenCalledTimes(1);
+        expect(spyWarn).toHaveBeenCalledTimes(1);
+        expect(spyError).toHaveBeenCalledTimes(1);
+        jest.clearAllMocks();
     });
 });

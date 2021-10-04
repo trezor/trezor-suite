@@ -131,6 +131,7 @@ describe('Account Actions', () => {
 
     it('Change account visibility (account not found)', () => {
         const store = initStore(getInitialState());
+        const spyWarn = jest.spyOn(console, 'warn').mockImplementation();
         store.dispatch(
             accountActions.changeAccountVisibility(
                 getAccount({
@@ -140,6 +141,9 @@ describe('Account Actions', () => {
                 }) as Account,
             ),
         );
+        expect(spyWarn).toHaveBeenCalledTimes(1);
+        spyWarn.mockRestore();
+
         expect(store.getState().wallet.accounts.length).toEqual(0);
     });
 });
