@@ -24,7 +24,7 @@
         "bignumber.js": "^9.0.1",
         "date-fns": "^2.16.1",
         "date-fns-tz": "^1.0.12",
-        "dropbox": "5.1.0",
+        "dropbox": "10.12.0",
         "ethereumjs-tx": "^2.1.2",
         "ethereumjs-util": "^6.0.0",
         "file-saver": "^2.0.5",

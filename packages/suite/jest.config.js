@@ -3,7 +3,10 @@ process.env.TZ = 'UTC';
 
 module.exports = {
     roots: ['./src'],
-    setupFiles: ['<rootDir>/src/support/tests/setupJest.ts'],
+    setupFiles: [
+        '<rootDir>/src/support/tests/setupJest.ts',
+        '<rootDir>/src/support/tests/npmMocks.ts',
+    ],
     moduleNameMapper: {
         '^@suite/(.+)': '<rootDir>/src/$1',
         '^@(.+)-views/(.+)': '<rootDir>/src/views/$1/$2',
