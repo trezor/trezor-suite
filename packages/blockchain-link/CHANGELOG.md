@@ -1,3 +1,9 @@
+# 1.0.18 (not released)
+
+#### changes
+- lower default XRP reserve
+- set XRP reserve after `getInfo` call (get server info)
+
 # 1.0.17
 
 #### changes

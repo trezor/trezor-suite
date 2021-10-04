@@ -34,6 +34,7 @@ module.exports = {
             'ws-browser': `${SRC}/utils/ws.js`,
         },
         fallback: {
+            https: false, // required by ripple-lib
             crypto: require.resolve('crypto-browserify'),
             stream: require.resolve('stream-browserify'),
         },

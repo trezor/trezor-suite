@@ -61,10 +61,9 @@ module.exports = {
         fallback: {
             fs: false, // ignore "fs" import in fastxpub (hd-wallet)
             path: false, // ignore "path" import in protobufjs-old-fixed-webpack (dependency of trezor-link)
-            net: false, // ignore "net" import in "ripple-lib"
-            tls: false, // ignore "tls" imports in "ripple-lib"
+            https: false, // ignore "https" import in "ripple-lib"
             vm: false, // ignore "vm" imports in "asn1.js@4.10.1" > crypto-browserify"
-            util: require.resolve('util'), // required by "ripple-lib"
+            // util: require.resolve('util'), // required by "ripple-lib"
             assert: require.resolve('assert'), // required by multiple dependencies
             crypto: require.resolve('crypto-browserify'), // required by multiple dependencies
             stream: require.resolve('stream-browserify'), // required by utxo-lib and keccak
