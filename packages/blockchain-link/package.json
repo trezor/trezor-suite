@@ -57,7 +57,7 @@
         "bignumber.js": "^9.0.1",
         "es6-promise": "^4.2.8",
         "events": "^3.2.0",
-        "ripple-lib": "1.8.2",
+        "ripple-lib": "1.10.0",
         "tiny-worker": "^2.3.0",
         "ws": "^7.4.0"
     }

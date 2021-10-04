@@ -17,7 +17,7 @@ export default [
                 unconfirmed: 0,
             },
             misc: {
-                reserve: '20000000',
+                reserve: '10000000',
                 sequence: 0,
             },
         },
@@ -40,14 +40,14 @@ export default [
         response: {
             descriptor: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj',
             balance: '20000000',
-            availableBalance: '0',
+            availableBalance: '10000000',
             empty: false,
             history: {
                 total: -1,
                 unconfirmed: 0,
             },
             misc: {
-                reserve: '20000000',
+                reserve: '10000000',
                 sequence: 2,
             },
         },
@@ -88,7 +88,7 @@ export default [
         response: {
             descriptor: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj',
             balance: '20000000',
-            availableBalance: '0',
+            availableBalance: '10000000',
             empty: false,
             history: {
                 total: -1,
@@ -112,7 +112,7 @@ export default [
                 ],
             },
             misc: {
-                reserve: '20000000',
+                reserve: '10000000',
                 sequence: 2,
             },
         },
@@ -135,14 +135,14 @@ export default [
         response: {
             descriptor: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj',
             balance: '20000000',
-            availableBalance: '0',
+            availableBalance: '10000000',
             empty: false,
             history: {
                 total: -1,
                 unconfirmed: 1,
             },
             misc: {
-                reserve: '20000000',
+                reserve: '10000000',
                 sequence: 2,
             },
         },
@@ -170,7 +170,7 @@ export default [
         response: {
             descriptor: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj',
             balance: '20000000',
-            availableBalance: '0',
+            availableBalance: '10000000',
             empty: false,
             history: {
                 total: -1,
@@ -233,7 +233,7 @@ export default [
                 ],
             },
             misc: {
-                reserve: '20000000',
+                reserve: '10000000',
                 sequence: 2,
             },
         },

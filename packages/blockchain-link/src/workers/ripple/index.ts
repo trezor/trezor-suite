@@ -20,8 +20,8 @@ const DEFAULT_PING_TIMEOUT = 3 * 60 * 1000;
 
 let endpoints: string[] = [];
 const RESERVE = {
-    BASE: '20000000',
-    OWNER: '5000000',
+    BASE: '10000000',
+    OWNER: '2000000',
 };
 
 const setPingTimeout = () => {
@@ -124,13 +124,16 @@ const getInfo = async (data: { id: number } & MessageTypes.GetInfo): Promise<voi
     try {
         const api = await connect();
         const info = await api.getServerInfo();
-        // @ts-ignore: accessing private var _url
-        const url = api.connection._url; // eslint-disable-line no-underscore-dangle
+
+        // store current ledger values
+        RESERVE.BASE = api.xrpToDrops(info.validatedLedger.reserveBaseXRP);
+        RESERVE.OWNER = api.xrpToDrops(info.validatedLedger.reserveIncrementXRP);
+
         common.response({
             id: data.id,
             type: RESPONSES.GET_INFO,
             payload: {
-                url,
+                url: api.connection.getUrl(),
                 ...utils.transformServerInfo(info),
             },
         });
