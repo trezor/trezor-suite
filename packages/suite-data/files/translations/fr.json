@@ -457,8 +457,6 @@
   "TR_CUSTOM_FIRMWARE_TITLE_INSTALL": "Installer le firmware",
   "TR_CUSTOM_FIRMWARE_TITLE_UPLOAD": "Téléchargez ce firmware",
   "TR_CUSTOM_FIRMWARE_VERSION": "personnalisation",
-  "TR_DARK_MODE": "Mode sombre",
-  "TR_DARK_MODE_DESCRIPTION": "Jeu de couleurs qui utilise du texte, des icônes et des éléments d'interface utilisateur graphique de couleur claire sur un fond sombre.",
   "TR_DASHBOARD": "Tableau de bord",
   "TR_DASHBOARD_ASSETS_ERROR": "Les actifs n'ont pas été chargées correctement",
   "TR_DASHBOARD_ASSET_FAILED": "Actifs pas chargés",
