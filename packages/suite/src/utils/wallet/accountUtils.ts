@@ -327,7 +327,8 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     const changedRipple =
         account.networkType === 'ripple' &&
         (freshInfo.misc!.sequence !== account.misc.sequence ||
-            freshInfo.balance !== account.balance);
+            freshInfo.balance !== account.balance ||
+            freshInfo.misc!.reserve !== account.misc.reserve);
 
     const changedEthereum =
         account.networkType === 'ethereum' && freshInfo.misc!.nonce !== account.misc.nonce;
