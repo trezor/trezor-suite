@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable global-require */
 import fs from 'fs';
@@ -40,35 +41,6 @@ jest.mock('trezor-connect', () => {
 // @ts-ignore declare fetch (used in Dropbox constructor)
 global.fetch = () => {};
 
-jest.mock('dropbox', () => {
-    class Dropbox {
-        filesUpload() {
-            return true;
-        }
-        getAuthenticationUrl() {
-            return 'https://foo/bar';
-        }
-        setAccessToken() {}
-        usersGetCurrentAccount() {
-            return {
-                // eslint-disable-next-line
-                name: { given_name: 'haf' },
-            };
-        }
-        getRefreshToken() {
-            return 'token-haf-mnau';
-        }
-        getAccessToken() {
-            return 'token-haf-mnau';
-        }
-        refreshAccessToken() {}
-    }
-    return {
-        __esModule: true, // this property makes it work
-        Dropbox,
-    };
-});
-
 type MetadataState = ReturnType<typeof metadataReducer>;
 interface InitialState {
     metadata?: MetadataState;
@@ -88,7 +60,7 @@ export const getInitialState = (state?: InitialState) => {
     const initAction: any = { type: STORAGE.LOADED, payload: { metadata } };
     return {
         metadata: metadataReducer(metadata, initAction),
-        devices: [device], // device is needed for notification/event
+        devices: device ? [device] : [], // device is needed for notification/event
         suite: {
             ...suite,
             device, // device is needed for notification/event

@@ -10,3 +10,7 @@ https://github.com/electron-userland/electron-builder/issues/4299#issuecomment-5
 Will be fixed in `22.11.9` version of `app-builder-lib` lib.
 
 ## redux-thunk
+
+## dropbox
+
+patched incorrect types only

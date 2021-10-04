@@ -1,0 +1,38 @@
+diff --git a/node_modules/dropbox/types/dropbox_types.d.ts b/node_modules/dropbox/types/dropbox_types.d.ts
+index 696b6f0..0f6b3e7 100644
+--- a/node_modules/dropbox/types/dropbox_types.d.ts
++++ b/node_modules/dropbox/types/dropbox_types.d.ts
+@@ -2363,6 +2363,8 @@
+        * If present, the metadata associated with the file's current lock.
+        */
+       file_lock_info?: FileLockMetadata;
++
++      fileBlob: Blob;
+     }
+ 
+     /**
+diff --git a/node_modules/dropbox/types/index.d.ts b/node_modules/dropbox/types/index.d.ts
+index a32f282..be7c81c 100644
+--- a/node_modules/dropbox/types/index.d.ts
++++ b/node_modules/dropbox/types/index.d.ts
+@@ -48,7 +48,10 @@ export class DropboxAuth {
+    * @param code An OAuth2 code.
+    * @returns {Object} An object containing the token and related info (if applicable)
+    */
+-  getAccessTokenFromCode(redirectUri: string, code: string): Promise<DropboxResponse<object>>;
++  getAccessTokenFromCode(redirectUri: string, code: string): Promise<DropboxResponse<{
++    access_token: string;
++    refresh_token: string;
++  }>>;
+ 
+   /**
+    * Get a URL that can be used to authenticate users for the Dropbox API.
+@@ -74,7 +77,7 @@ export class DropboxAuth {
+    * @returns {Promise<String>} - Url to send user to for Dropbox API authentication
+    * returned in a promise
+    */
+-  getAuthenticationUrl(redirectUri: string, state?: string, authType?: 'token' | 'code', tokenAccessType?: null | 'legacy' | 'offline' | 'online', scope?: Array<String>, includeGrantedScopes?: 'none' | 'user' | 'team', usePKCE?: boolean): Promise<String>;
++  getAuthenticationUrl(redirectUri: string, state?: string, authType?: 'token' | 'code', tokenAccessType?: null | 'legacy' | 'offline' | 'online', scope?: Array<String>, includeGrantedScopes?: 'none' | 'user' | 'team', usePKCE?: boolean): Promise<string>;
+ 
+   /**
+    * Get the client id

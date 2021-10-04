@@ -9050,7 +9050,7 @@ buffer@^4.3.0:
     ieee754 "^1.1.4"
     isarray "^1.0.0"
 
-buffer@^5.1.0, buffer@^5.6.0:
+buffer@^5.1.0:
   version "5.7.1"
   resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.7.1.tgz#ba62e7c13133053582197160851a8f648e99eed0"
   integrity sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==
@@ -11689,13 +11689,12 @@ drbg.js@^1.0.1:
     create-hash "^1.1.2"
     create-hmac "^1.1.4"
 
-dropbox@5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/dropbox/-/dropbox-5.1.0.tgz#c6109639a2b91225d1adbdc53a87a9dec586f7ee"
-  integrity sha512-2aVdBW+5LpbxVo6bkJTcUY2PcfDJKzAzFQlJKnYZ09b4O33gfEJQtaeTH8yAHUdC1Eb78VK9lzjhnuYpjrSNXQ==
+dropbox@10.12.0:
+  version "10.12.0"
+  resolved "https://registry.yarnpkg.com/dropbox/-/dropbox-10.12.0.tgz#c16a62622cf7577c891511071ce725cb1690b632"
+  integrity sha512-WW8G6DBAxfQhnDCbz0qZIEG2PDgPI/8PZB08qW03oahyLuxsacTDWLQsaZevwfSV1U+tzeEhjau54WS/Pn5nGQ==
   dependencies:
-    buffer "^5.6.0"
-    moment "^2.25.3"
+    node-fetch "^2.6.1"
 
 duplexer2@~0.1.4:
   version "0.1.4"
@@ -18929,11 +18928,6 @@ modify-values@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/modify-values/-/modify-values-1.0.1.tgz#b3939fa605546474e3e3e3c63d64bd43b4ee6022"
   integrity sha512-xV2bxeN6F7oYjZWTe/YPAy6MN2M+sL4u/Rlm2AHCIVGfo2p1yGmBHQ6vHehl4bRTZBdHu3TSkWdYgkwpYzAGSw==
-
-moment@^2.25.3:
-  version "2.29.1"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
-  integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
 
 move-concurrently@^1.0.1:
   version "1.0.1"
