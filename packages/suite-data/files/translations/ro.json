@@ -467,8 +467,6 @@
   "TR_CUSTOM_FIRMWARE_TITLE_INSTALL": "Instalați firmware",
   "TR_CUSTOM_FIRMWARE_TITLE_UPLOAD": "Încărcați acel firmware",
   "TR_CUSTOM_FIRMWARE_VERSION": "particularizat",
-  "TR_DARK_MODE": "Mod întunecat",
-  "TR_DARK_MODE_DESCRIPTION": "Schema de culori care utilizează text, pictograme și elemente de interfață grafică de culoare deschisă pe un fundal închis.",
   "TR_DASHBOARD": "Tabloul de bord",
   "TR_DASHBOARD_ASSETS_ERROR": "Bunurile nu au fost încărcate corespunzător",
   "TR_DASHBOARD_ASSET_FAILED": "Bunul nu a fost încărcat",

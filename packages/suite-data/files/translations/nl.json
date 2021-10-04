@@ -461,8 +461,6 @@
   "TR_CUSTOM_FIRMWARE_TITLE_INSTALL": "Installeer firmware",
   "TR_CUSTOM_FIRMWARE_TITLE_UPLOAD": "Firmware uploaden",
   "TR_CUSTOM_FIRMWARE_VERSION": "Aangepast",
-  "TR_DARK_MODE": "Donkere modus",
-  "TR_DARK_MODE_DESCRIPTION": "Kleurschema dat gebruik maakt van lichtgekleurde tekst, iconen en grafische gebruikersinterface elementen op een donkere achtergrond.",
   "TR_DASHBOARD_ASSETS_ERROR": "Assets zijn niet goed geladen",
   "TR_DASHBOARD_ASSET_FAILED": "Asset niet geladen",
   "TR_DASHBOARD_DISCOVERY_ERROR": "Ontdekkingsfout",

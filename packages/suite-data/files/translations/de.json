@@ -358,6 +358,8 @@
   "TR_BUY_RECEIVING_ADDRESS": "Empfängeradresse",
   "TR_BUY_SHOW_OFFERS": "Angebote anzeigen",
   "TR_BUY_SPEND": "Bezahlen",
+  "TR_CHECK_RECOVERY_SEED": "Recovery Seed überprüfen",
+  "TR_CHECK_SEED": "Seed überprüfen",
   "TR_CLOSE": "Schließen",
   "TR_COINS_SETTINGS_ALSO_DEFINES": "Coineinstellungen unterstützt die Erkennung der unten aufgeführten Coins. Die aktivierten Coins bestimmen, mit welchen Netzwerken sich Ihr Trezor verbindet.",
   "TR_COIN_NOT_FOUND": "Coin nicht gefunden",
