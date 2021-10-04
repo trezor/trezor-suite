@@ -1,5 +1,5 @@
 /**
- * This script takes latest en.json and creates new file rawMessages.ts
+ * This script takes latest en.json and creates new file messages.ts
  *
  * Problem ?
  * - messages.ts is created by developers using "developers English" which might be miles away from proper English
@@ -16,7 +16,7 @@ import path from 'path';
 
 import messages from '../../suite/src/support/messages';
 
-const targetPath = path.join(__dirname, '../../suite/src/support/rawMessages.ts');
+const targetPath = path.join(__dirname, '../../suite/src/support/messages.ts');
 const sourcePath = path.join(__dirname, '../../suite-data/files/translations/en.json');
 
 const source: { [key in keyof typeof messages]: string } = JSON.parse(
@@ -35,10 +35,12 @@ Object.entries(source).forEach(([key, value]) => {
 
 fs.writeFileSync(
     targetPath,
-    // eslint-disable-next-line prefer-template
-    `const messages = ` +
-        JSON.stringify(messages, null, 2).replace(/"([^"]+)":/g, '$1:') +
-        '\n\nexport default messages',
+    `
+import { defineMessages } from 'react-intl';
+
+export default defineMessages(${JSON.stringify(messages, null, 2).replace(/"([^"]+)":/g, '$1:')})
+    
+`,
 );
 
 export {};
