@@ -232,24 +232,38 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         protocol: state.protocol,
     }));
 
-    // fill form using data from scheme protocol handler e.g. 'bitcoin:address?amount=0.01'
+    // fill form using data from URI protocol handler e.g. 'bitcoin:address?amount=0.01'
     useEffect(() => {
         if (
             protocol.sendForm.shouldFillSendForm &&
             protocol.sendForm.scheme &&
             props.selectedAccount.network.symbol === PROTOCOL_TO_SYMBOL[protocol.sendForm.scheme]
         ) {
+            // for now we always fill only first output
+            const outputIndex = 0;
+
+            if (protocol.sendForm.amount) {
+                sendFormUtils.setAmount(outputIndex, protocol.sendForm.amount.toString());
+            }
             setValue(
-                'outputs[0]',
+                `outputs[${outputIndex}]`,
                 {
                     address: protocol.sendForm.address,
-                    amount: protocol.sendForm.amount,
                 },
                 { shouldValidate: true },
             );
             fillSendForm(false);
+            composeRequest();
         }
-    }, [setValue, props.selectedAccount.network, protocol, fillSendForm]);
+    }, [
+        setValue,
+        props.selectedAccount.network,
+        protocol,
+        fillSendForm,
+        updateContext,
+        sendFormUtils,
+        composeRequest,
+    ]);
 
     // load draft from reducer
     useEffect(() => {
