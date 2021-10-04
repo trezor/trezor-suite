@@ -52,7 +52,8 @@ const withCoinProtocolScheme = (View: React.ComponentType<ViewProps>, props: Str
                 body: (
                     <Body>
                         <Row>
-                            {notification.amount} {capitalizeFirstLetter(notification.scheme)}
+                            {notification.amount && `${notification.amount} `}
+                            {capitalizeFirstLetter(notification.scheme)}
                         </Row>
                         <Row>{notification.address}</Row>
                     </Body>

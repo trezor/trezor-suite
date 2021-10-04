@@ -1,5 +1,5 @@
 # Coin Protocol Handler
-Trezor Suite, both on web and desktop, can handle opening of coin URLs in `coin:address?amount=` format. Currently only `bitcoin:` scheme is supported, but for example `litecoin:` can be easily added.
+Trezor Suite, both on web and desktop, can handle opening of coin URLs in `coin:address` and  `coin:address?amount=` formats. Currently only `bitcoin:` scheme is supported, but for example `litecoin:` can be easily added.
 
 ## Behavior
 
@@ -20,7 +20,8 @@ If user has more desktop apps with same handler installed, the behavior is not d
 The implementation adheres to the [BIP29](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki) specification (with the exception of the `label` and `message` parameters).
 
 ## Example
-[bitcoin:bc1q00h58c5vzcyqavwpjvw8tl8r53t9d57e6smwqe?amount=0.001](bitcoin:bc1q00h58c5vzcyqavwpjvw8tl8r53t9d57e6smwqe?amount=0.001)
+[bitcoin:39FpPxnR1gji9LJpNDZsB1bBeZttgTtg4L?amount=0.001](bitcoin:39FpPxnR1gji9LJpNDZsB1bBeZttgTtg4L?amount=0.001)
+[bitcoin:39FpPxnR1gji9LJpNDZsB1bBeZttgTtg4L](bitcoin:39FpPxnR1gji9LJpNDZsB1bBeZttgTtg4L)
 
 ## UI
 

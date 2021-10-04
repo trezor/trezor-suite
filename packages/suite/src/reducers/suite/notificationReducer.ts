@@ -87,8 +87,8 @@ export type ToastPayload = (
     | {
           type: 'coin-scheme-protocol';
           scheme: PROTOCOL_SCHEME;
-          amount: number;
           address: string;
+          amount?: number;
       }
 ) &
     Options;

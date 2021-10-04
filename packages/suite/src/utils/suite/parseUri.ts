@@ -47,10 +47,10 @@ interface BaseProtocol {
 
 interface BitcoinProtocol extends BaseProtocol {
     scheme: PROTOCOL_SCHEME;
-    amount: number;
+    amount?: number;
 }
 
-export const getProtocolInfo = (uri: string): BitcoinProtocol => {
+export const getProtocolInfo = (uri: string): BitcoinProtocol | null => {
     const { protocol, pathname, search } = new URL(uri.replace('://', ':'));
     const scheme = protocol.slice(0, -1);
 
@@ -60,15 +60,22 @@ export const getProtocolInfo = (uri: string): BitcoinProtocol => {
         params[k] = v;
     });
 
-    if (scheme === PROTOCOL_SCHEME.BITCOIN && !Number.isNaN(Number.parseFloat(params.amount))) {
+    const floatAmount = Number.parseFloat(params.amount);
+    const amount = !Number.isNaN(floatAmount) && floatAmount > 0 ? floatAmount : undefined;
+
+    if (scheme === PROTOCOL_SCHEME.BITCOIN && pathname) {
         return {
             scheme,
             address: pathname,
-            amount: Number.parseFloat(params.amount),
+            amount,
         };
     }
 
-    throw new Error(
-        `Unsupported '${scheme}' protocol handler or its params '${JSON.stringify(params)}'!`,
+    console.error(
+        `Unsupported scheme '${scheme}', missing address '${pathname}' or there is a problem with params '${JSON.stringify(
+            params,
+        )}'!`,
     );
+
+    return null;
 };

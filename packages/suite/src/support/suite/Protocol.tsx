@@ -27,14 +27,14 @@ const Protocol = () => {
         uri => {
             const protocolInfo = getProtocolInfo(uri);
 
-            if (protocolInfo.scheme === PROTOCOL_SCHEME.BITCOIN) {
+            if (protocolInfo?.scheme === PROTOCOL_SCHEME.BITCOIN) {
                 saveCoinProtocol(protocolInfo.scheme, protocolInfo.address, protocolInfo.amount);
 
                 addToast({
                     type: 'coin-scheme-protocol',
                     address: protocolInfo.address,
-                    amount: protocolInfo.amount,
                     scheme: protocolInfo.scheme,
+                    amount: protocolInfo.amount,
                     autoClose: false,
                 });
             }

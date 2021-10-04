@@ -23,8 +23,8 @@ const protocolReducer = (state: State = initialState, action: Action): State =>
                 break;
             case PROTOCOL.SAVE_COIN_PROTOCOL:
                 draft.sendForm.address = action.payload.address;
-                draft.sendForm.amount = action.payload.amount;
                 draft.sendForm.scheme = action.payload.scheme;
+                draft.sendForm.amount = action.payload.amount;
                 draft.sendForm.shouldFillSendForm = false;
                 break;
             case PROTOCOL.RESET:

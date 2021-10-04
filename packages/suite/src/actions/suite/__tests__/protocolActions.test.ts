@@ -29,7 +29,7 @@ const initStore = (state: State) => {
 };
 
 describe('Protocol actions', () => {
-    it('gives a command to fill a send form', async () => {
+    it('gives a command to fill a send form with address and amount', async () => {
         const store = initStore({
             protocol: {
                 ...getInitialState().protocol,
@@ -52,7 +52,30 @@ describe('Protocol actions', () => {
         expect(store.getActions()[1].payload).toBe(false);
     });
 
-    it('saves coin protocol', async () => {
+    it('gives a command to fill a send form with address', async () => {
+        const store = initStore({
+            protocol: {
+                ...getInitialState().protocol,
+                sendForm: {
+                    scheme: PROTOCOL_SCHEME.BITCOIN,
+                    address: '12345abcde',
+                    amount: undefined,
+                    shouldFillSendForm: false,
+                },
+            },
+        });
+
+        await store.dispatch(protocolActions.fillSendForm(true));
+        await store.dispatch(protocolActions.fillSendForm(false));
+
+        expect(store.getActions().length).toBe(2);
+        expect(store.getActions()[0].type).toBe(protocolConstants.FILL_SEND_FORM);
+        expect(store.getActions()[0].payload).toBe(true);
+        expect(store.getActions()[1].type).toBe(protocolConstants.FILL_SEND_FORM);
+        expect(store.getActions()[1].payload).toBe(false);
+    });
+
+    it('saves address and amount from Bitcoin URI protocol', async () => {
         const store = initStore({
             protocol: {
                 ...getInitialState().protocol,
@@ -68,6 +91,24 @@ describe('Protocol actions', () => {
         expect(store.getActions()[0].payload.scheme).toBe(PROTOCOL_SCHEME.BITCOIN);
         expect(store.getActions()[0].payload.address).toBe('12345abcde');
         expect(store.getActions()[0].payload.amount).toBe(1.02);
+    });
+
+    it('saves address from Bitcoin URI protocol', async () => {
+        const store = initStore({
+            protocol: {
+                ...getInitialState().protocol,
+            },
+        });
+
+        await store.dispatch(
+            protocolActions.saveCoinProtocol(PROTOCOL_SCHEME.BITCOIN, '12345abcde', undefined),
+        );
+
+        expect(store.getActions().length).toBe(1);
+        expect(store.getActions()[0].type).toBe(protocolConstants.SAVE_COIN_PROTOCOL);
+        expect(store.getActions()[0].payload.scheme).toBe(PROTOCOL_SCHEME.BITCOIN);
+        expect(store.getActions()[0].payload.address).toBe('12345abcde');
+        expect(store.getActions()[0].payload.amount).toBe(undefined);
     });
 
     it('resets protocol state', async () => {

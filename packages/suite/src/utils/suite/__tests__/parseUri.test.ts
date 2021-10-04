@@ -66,57 +66,102 @@ describe('parseUri', () => {
     });
 
     describe('getProtocolInfo', () => {
+        let spy: any;
+
+        beforeEach(() => {
+            spy = jest.spyOn(global.console, 'error').mockImplementation();
+        });
+
+        afterEach(() => {
+            spy.mockRestore();
+        });
+
         it('should parse Bitcoin URI when address and amount are both available', () => {
             const protocolInfo = getProtocolInfo(
                 'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=0.1',
             );
             expect(protocolInfo).toEqual({
                 scheme: 'bitcoin',
-                amount: 0.1,
                 address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
+                amount: 0.1,
             });
         });
 
-        it('should parse Bitcoin URI when it contains not only address and amount but also valid but unsupported label and message', () => {
+        it('should parse Bitcoin URI when it consists not only of address and amount but also valid but unsupported label and message', () => {
             const protocolInfo = getProtocolInfo(
                 'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=1&label=Bender&message=Bite%20my%20shiny%20metal%20Bitcoin',
             );
             expect(protocolInfo).toEqual({
                 scheme: 'bitcoin',
-                amount: 1,
                 address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
+                amount: 1,
             });
         });
 
-        it('should parse Bitcoin URI when it contains not only address and amount but also not yet existing variable', () => {
+        it('should parse Bitcoin URI when it consists not only of address and amount but also not yet existing variable', () => {
             const protocolInfo = getProtocolInfo(
                 'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=1&layer=lightning',
             );
             expect(protocolInfo).toEqual({
                 scheme: 'bitcoin',
-                amount: 1,
                 address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
+                amount: 1,
             });
         });
 
-        it('should throw an error when amount is not a number in Bitcoin URI ', () => {
-            expect(() =>
-                getProtocolInfo('bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=thousand'),
-            ).toThrow(
-                `Unsupported 'bitcoin' protocol handler or its params '{"amount":"thousand"}'!`,
-            );
+        it('should parse Bitcoin URI when it consists only of address', () => {
+            const protocolInfo = getProtocolInfo('bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf');
+            expect(protocolInfo).toEqual({
+                scheme: 'bitcoin',
+                address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
+                amount: undefined,
+            });
         });
 
-        it('should throw an error when amount is missing in Bitcoin URI ', () => {
-            expect(() => getProtocolInfo('bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf')).toThrow(
-                `Unsupported 'bitcoin' protocol handler or its params '{}'!`,
+        it('should parse Bitcoin URI when it consists of address and zero amount', () => {
+            const protocolInfo = getProtocolInfo(
+                'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=0.0',
             );
+            expect(protocolInfo).toEqual({
+                scheme: 'bitcoin',
+                address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
+                amount: undefined,
+            });
         });
 
-        it('should throw an error with non-existing scheme', () => {
-            expect(() =>
-                getProtocolInfo('litecoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=0.1'),
-            ).toThrow(`Unsupported 'litecoin' protocol handler or its params '{"amount":"0.1"}'!`);
+        it('should parse Bitcoin URI and ignore amount when it consists of address, and amount is not a number', () => {
+            const protocolInfo = getProtocolInfo(
+                'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=thousand',
+            );
+
+            expect(protocolInfo).toEqual({
+                scheme: 'bitcoin',
+                address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
+                amount: undefined,
+            });
+        });
+
+        it('should log an error with non-existing scheme', () => {
+            const protocolInfo = getProtocolInfo(
+                'litecoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=0.1',
+            );
+
+            expect(protocolInfo).toEqual(null);
+            expect(console.error).toHaveBeenCalledTimes(1);
+            expect(spy.mock.calls[0]).toEqual([
+                `Unsupported scheme 'litecoin', missing address '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf' or there is a problem with params '{"amount":"0.1"}'!`,
+            ]);
+        });
+
+        it('should log an error when address is missing', () => {
+            const protocolInfo = getProtocolInfo('bitcoin:?amount=0.1');
+
+            expect(protocolInfo).toEqual(null);
+            expect(console.error).toHaveBeenCalledTimes(1);
+
+            expect(spy.mock.calls[0]).toEqual([
+                `Unsupported scheme 'bitcoin', missing address '' or there is a problem with params '{"amount":"0.1"}'!`,
+            ]);
         });
     });
 });
