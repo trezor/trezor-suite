@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Icon, useTheme } from '@trezor/components';
 
 import { moveCaretToEndOfContentEditable } from '@suite-utils/dom';
@@ -23,9 +23,26 @@ const Placeholder = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
-const Editable = styled.div<{ touched: boolean }>`
+const Editable = styled.div<{ value?: string; isButton?: boolean; touched: boolean }>`
     padding-left: 1px;
     margin-right: 1px;
+    text-align: left;
+    cursor: text;
+
+    ${props =>
+        props.value &&
+        css`
+            position: unset;
+        `}
+
+    ${props =>
+        !props.value &&
+        css`
+           left: ${props.isButton ? '22px;' : '0px;'}
+           right: 0;
+           position: absolute;
+         `}
+
     color: ${props => (!props.touched ? props.theme.TYPE_LIGHT_GREY : 'inherit')};
 `;
 
@@ -34,6 +51,7 @@ interface Props {
     defaultVisibleValue: React.ReactNode;
     onSubmit: (value: string | undefined | null) => void;
     onBlur: () => void;
+    isButton?: boolean;
 }
 
 /**
@@ -130,9 +148,12 @@ export const withEditable =
                                 setValue('');
                             }
                         }}
+                        onPaste={e => setValue(e.clipboardData.getData('text/plain'))}
                         ref={divRef}
                         data-test="@metadata/input"
                         touched={touched}
+                        value={value}
+                        isButton={props.isButton}
                     />
                     {/* show default placeholder */}
                     {!value && <Placeholder>{props.defaultVisibleValue}</Placeholder>}
