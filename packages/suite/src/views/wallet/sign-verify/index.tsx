@@ -66,13 +66,6 @@ const SignVerify = () => {
         pathField,
     } = useSignVerifyForm(page, selectedAccount.account);
 
-    const changePage = (newPage: NavPages) => {
-        if (newPage !== page) {
-            formReset();
-            setPage(newPage);
-        }
-    };
-
     const { sign, verify } = useActions({
         sign: signAction,
         verify: verifyAction,
@@ -96,18 +89,18 @@ const SignVerify = () => {
         <WalletLayout title="TR_NAV_SIGN_VERIFY" account={selectedAccount}>
             <WalletLayoutHeader title="TR_NAV_SIGN_VERIFY">
                 {page === 'sign' && canCopy && (
-                    <Button type="button" variant="tertiary" icon="COPY" onClick={copy}>
+                    <Button type="button" variant="tertiary" onClick={copy}>
                         <Translation id="TR_COPY_TO_CLIPBOARD" />
                     </Button>
                 )}
                 {formDirty && (
-                    <Button type="button" variant="tertiary" icon="CANCEL" onClick={formReset}>
+                    <Button type="button" variant="tertiary" onClick={formReset}>
                         <Translation id="TR_CLEAR_ALL" />
                     </Button>
                 )}
             </WalletLayoutHeader>
             <Card noPadding>
-                <Navigation page={page} setPage={changePage} />
+                <Navigation page={page} setPage={setPage} />
                 <Form onSubmit={formSubmit(onSubmit)}>
                     <Row>
                         <Textarea

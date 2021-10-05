@@ -1,4 +1,4 @@
-import React, { useEffect, FocusEventHandler } from 'react';
+import React, { FocusEventHandler } from 'react';
 import { components } from 'react-select';
 import styled from 'styled-components';
 import { Select } from '@trezor/components';
@@ -60,6 +60,7 @@ const SignAddressInput = ({
     value,
     onChange,
     onBlur,
+    isDisabled,
 }: {
     name: string;
     label?: string | React.ReactElement;
@@ -69,16 +70,9 @@ const SignAddressInput = ({
     value: string;
     onChange: (addr: { path: string; address: string } | null) => void;
     onBlur?: FocusEventHandler;
+    isDisabled?: boolean;
 }) => {
-    const { getValue, groupedOptions, onlyValue } = useSignAddressOptions(
-        account,
-        revealedAddresses,
-    );
-
-    useEffect(() => {
-        if (!onlyValue || value) return;
-        onChange(optionToAddress(onlyValue));
-    }, [onChange, onlyValue, value]);
+    const { getValue, groupedOptions } = useSignAddressOptions(account, revealedAddresses);
 
     return (
         <Select
@@ -92,7 +86,7 @@ const SignAddressInput = ({
             bottomText={error || null}
             state={error ? 'error' : undefined}
             isSearchable
-            isDisabled={!!onlyValue}
+            isDisabled={!!isDisabled}
             components={{
                 Option,
                 Input,
