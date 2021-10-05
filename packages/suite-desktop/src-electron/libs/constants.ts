@@ -16,6 +16,7 @@ export const MODULES = [
     'request-filter',
     'external-links',
     'window-controls',
+    'theme',
     'http-receiver',
     'metadata',
     'bridge',

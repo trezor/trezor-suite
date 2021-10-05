@@ -7,8 +7,6 @@ import { Translation, WebusbButton } from '@suite-components';
 import DeviceConfirmImage from '@suite-components/images/DeviceConfirmImage';
 import DeviceAnimation from '@onboarding-components/DeviceAnimation';
 import { useDevice, useFirmware } from '@suite-hooks';
-import { isDesktop, isMacOs } from '@suite-utils/env';
-import { DESKTOP_WRAPPER_BORDER_WIDTH } from '@suite-constants/layout';
 import { getDeviceModel, getFwVersion } from '@suite/utils/suite/device';
 
 import type { TrezorDevice } from '@suite/types/suite';
@@ -28,13 +26,13 @@ const Wrapper = styled.div`
     max-width: 560px;
 `;
 
-const Overlay = styled.div<{ desktopBorder?: string }>`
+const Overlay = styled.div`
     position: fixed;
     z-index: 10000;
-    width: ${props => (props.desktopBorder ? `calc(100% - (${props.desktopBorder} * 2))` : '100%')};
-    height: ${props => (props.desktopBorder ? `calc(100% - ${props.desktopBorder})` : '100%')};
+    width: 100%;
+    height: 100%;
     top: 0px;
-    left: ${props => props.desktopBorder || 0};
+    left: 0;
     background: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(5px);
     display: flex;
@@ -214,9 +212,7 @@ const ReconnectDevicePrompt = ({ expectedDevice, requestedMode, onSuccess }: Pro
     const { rebootPhase, rebootMethod } = useRebootRequest(device, requestedMode);
 
     return (
-        <Overlay
-            desktopBorder={isDesktop() && !isMacOs() ? DESKTOP_WRAPPER_BORDER_WIDTH : undefined}
-        >
+        <Overlay>
             {rebootMethod === 'automatic' && (
                 <ConfirmOnDeviceHeader>
                     <ConfirmOnDevice

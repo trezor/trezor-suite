@@ -1,5 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
+import { SuiteThemeVariant } from '@suite-types';
+
 // todo: would be great to have these channels strongly typed. for example this is nice reading: https://blog.logrocket.com/electron-ipc-response-request-architecture-with-typescript/
 const validChannels = [
     // app
@@ -30,6 +32,10 @@ const validChannels = [
     // window
     'window/is-maximized',
     'window/is-active',
+
+    // theme
+    'theme/change',
+    'theme/system',
 
     // tor
     'tor/status',
@@ -79,6 +85,10 @@ contextBridge.exposeInMainWorld('desktopApi', {
     windowMaximize: () => ipcRenderer.send('window/maximize'),
     windowUnmaximize: () => ipcRenderer.send('window/unmaximize'),
     windowExpand: () => ipcRenderer.send('window/expand'),
+
+    // Theme
+    themeChange: (theme: SuiteThemeVariant) => ipcRenderer.invoke('theme/change', theme),
+    themeSystem: () => ipcRenderer.invoke('theme/system'),
 
     // Client
     clientReady: () => ipcRenderer.send('client/ready'),

@@ -277,7 +277,7 @@ export const getTxIcon = (txType: WalletAccountTransaction['type']) => {
         case 'self':
             return 'SEND';
         case 'failed':
-            return 'WINDOW_CLOSE';
+            return 'CROSS';
         default:
             return 'QUESTION';
     }

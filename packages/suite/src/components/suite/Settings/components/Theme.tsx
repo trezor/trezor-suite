@@ -60,8 +60,11 @@ const Theme = () => {
         if ((value === 'auto') !== autodetectTheme) {
             setAutodetect({ theme: !autodetectTheme });
         }
-        if (value !== 'auto') {
+        if (value === 'auto') {
+            window.desktopApi?.themeSystem();
+        } else {
             setTheme(getVariant(value));
+            window.desktopApi?.themeChange(value);
         }
     };
 
