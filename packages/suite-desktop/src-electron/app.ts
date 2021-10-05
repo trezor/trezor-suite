@@ -62,7 +62,6 @@ const init = async () => {
         title: APP_NAME,
         width: winBounds.width,
         height: winBounds.height,
-        frame: false,
         minWidth: MIN_WIDTH,
         minHeight: MIN_HEIGHT,
         webPreferences: {
@@ -74,7 +73,6 @@ const init = async () => {
             enableRemoteModule: false,
             preload: path.join(__dirname, 'preload.js'),
         },
-        icon: path.join(global.resourcesPath, 'images', 'icons', '512x512.png'),
     });
 
     // Load page

@@ -132,4 +132,5 @@ export type InjectedModalApplicationProps = {
 
 export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error' | 'transparent';
 export type SuiteThemeVariant = 'light' | 'dark' | 'custom';
+export type SuiteThemeVariantOptions = 'light' | 'dark' | 'system';
 export type EnvironmentType = 'web' | 'desktop' | 'mobile' | '';

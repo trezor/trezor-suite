@@ -9,11 +9,10 @@ import { AppState } from '@suite-types';
 import { Metadata } from '@suite-components';
 import { GuidePanel, GuideButton } from '@guide-components';
 import MenuSecondary from '@suite-components/MenuSecondary';
-import { MAX_WIDTH, DESKTOP_TITLEBAR_HEIGHT } from '@suite-constants/layout';
+import { MAX_WIDTH } from '@suite-constants/layout';
 import { DiscoveryProgress } from '@wallet-components';
 import NavigationBar from '../NavigationBar';
 import { useLayoutSize, useSelector, useActions, useAnalytics } from '@suite-hooks';
-import { isDesktop } from '@suite-utils/env';
 import * as guideActions from '@suite-actions/guideActions';
 import { MODAL } from '@suite-actions/constants';
 
@@ -21,7 +20,7 @@ const PageWrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
-    height: ${isDesktop() ? `calc(100vh - ${DESKTOP_TITLEBAR_HEIGHT})` : '100vh'};
+    height: 100vh;
     overflow-x: hidden;
 `;
 

@@ -18,6 +18,9 @@ export interface DesktopApi {
     windowMaximize: () => void;
     windowUnmaximize: () => void;
     windowExpand: () => void;
+    // Theme
+    themeChange: (theme: SuiteThemeVariant) => void;
+    themeSystem: () => void;
     // Client controls
     clientReady: () => void;
     // Metadata

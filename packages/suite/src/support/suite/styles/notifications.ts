@@ -1,8 +1,5 @@
 import { colors } from '@trezor/components';
-import { isDesktop } from '@suite-utils/env';
-import { DESKTOP_TITLEBAR_HEIGHT } from '@suite-constants/layout';
 
-const OFFSET_TOP = isDesktop() ? `calc(${DESKTOP_TITLEBAR_HEIGHT} + 1em)` : '1em';
 export const notifications = `
     .Toastify__toast-container {
         z-index: 10002;
@@ -14,19 +11,19 @@ export const notifications = `
     }
 
     .Toastify__toast-container--top-left {
-        top: ${OFFSET_TOP};
-        left: 1em;
+        top: 11px;
+        left: 11px;
     }
 
     .Toastify__toast-container--top-center {
-        top: ${OFFSET_TOP};
+        top: 11px;
         left: 50%;
         margin-left: -160px;
     }
 
     .Toastify__toast-container--top-right {
-        top: ${OFFSET_TOP};
-        right: 1em;
+        top: 11px;
+        right: 11px;
     }
 
     .Toastify__toast-container--bottom-left {
