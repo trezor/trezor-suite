@@ -35,6 +35,7 @@ const Label = styled.div`
     display: flex;
     overflow: hidden;
     padding-left: 1px;
+    position: relative;
 `;
 
 const LabelButton = styled(Button)`
