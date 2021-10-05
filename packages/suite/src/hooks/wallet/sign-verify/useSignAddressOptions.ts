@@ -94,11 +94,8 @@ export const useSignAddressOptions = (
             : null;
     };
 
-    const onlyValue = account?.networkType === 'ethereum' ? getValue(account.path) : null;
-
     return {
         groupedOptions,
         getValue,
-        onlyValue,
     };
 };

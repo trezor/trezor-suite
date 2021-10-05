@@ -23,7 +23,7 @@ export const useCopySignedMessage = (
     network?: string,
 ) => {
     const { addNotification } = useActions({ addNotification: addToast });
-    const canCopy = message && address && signature;
+    const canCopy = address && signature;
     const copy = () => {
         const formatted = format(
             { message, address, signature },
