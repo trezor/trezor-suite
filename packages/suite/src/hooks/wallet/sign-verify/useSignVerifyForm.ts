@@ -16,6 +16,14 @@ export type SignVerifyFields = {
     hex: boolean;
 };
 
+const DEFAULT_VALUES: SignVerifyFields = {
+    message: '',
+    address: '',
+    path: '',
+    signature: '',
+    hex: false,
+};
+
 export const useSignVerifyForm = (page: 'sign' | 'verify', account?: Account) => {
     const { translationString } = useTranslation();
 
@@ -32,13 +40,7 @@ export const useSignVerifyForm = (page: 'sign' | 'verify', account?: Account) =>
     } = useForm<SignVerifyFields>({
         mode: 'onBlur',
         reValidateMode: 'onChange',
-        defaultValues: {
-            message: '',
-            address: '',
-            path: '',
-            signature: '',
-            hex: false,
-        },
+        defaultValues: DEFAULT_VALUES,
     });
 
     const formValues = watch();
@@ -89,6 +91,20 @@ export const useSignVerifyForm = (page: 'sign' | 'verify', account?: Account) =>
         if (page === 'sign') setValue('signature', '');
     }, [setValue, page, formValues.address, formValues.message]);
 
+    useEffect(() => {
+        const overrideValues =
+            page === 'sign' && account?.networkType === 'ethereum'
+                ? {
+                      path: account.path,
+                      address: account.descriptor,
+                  }
+                : {};
+        reset({
+            ...DEFAULT_VALUES,
+            ...overrideValues,
+        });
+    }, [reset, account, page]);
+
     return {
         formDirty: isDirty,
         formReset: () => reset(),
@@ -120,6 +136,7 @@ export const useSignVerifyForm = (page: 'sign' | 'verify', account?: Account) =>
                 pathField.onChange(addr?.path || '');
                 addressField.onChange(addr?.address || '');
             },
+            isDisabled: account?.networkType === 'ethereum',
         },
     };
 };
