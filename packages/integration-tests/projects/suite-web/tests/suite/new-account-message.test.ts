@@ -6,21 +6,50 @@ describe('New accounts', () => {
         // Launches Trezor emulator
         cy.task('startEmu', { wipe: true });
         // Initializes Trezor (random seed)
-        cy.task('setupEmu', { needs_backup: false });
+        cy.task('setupEmu', { needs_backup: false, passphrase_protection: true });
         cy.task('startBridge');
+
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        cy.task('applySettings', { passphrase_always_on_device: false });
+
         cy.viewport(1024, 768).resetDb();
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
-        cy.discoveryShouldFinish();
     });
+
+    const loadHiddenWallet = (passphrase: string) => {
+        cy.log('Load hidden wallet (hopefully with no transaction history)');
+
+        cy.getTestElement('@passphrase-type/hidden').click();
+        cy.getTestElement('@passphrase/input').type(passphrase);
+
+        cy.task('pressYes');
+        cy.task('pressYes');
+
+        cy.getTestElement('@modal');
+        cy.getTestElement('@passphrase/input', { timeout: 10000 }).type(passphrase);
+        cy.getTestElement('@passphrase/confirm-checkbox').click();
+        cy.getTestElement('@passphrase/hidden/submit-button').click();
+
+        cy.task('pressYes');
+        cy.task('pressYes');
+
+        cy.getTestElement('@dashboard/loading').should('not.exist');
+    };
 
     const expectedAccountMessage = 'New to Trezor Suite: BTC Bech32 accounts!';
     it(`Goes to accounts and verifies that the "${expectedAccountMessage}" is displayed:`, () => {
+        const passphraseToType = 'we need regtest{enter}';
+
+        loadHiddenWallet(passphraseToType);
+
+        cy.log('Go to Accounts page');
         cy.getTestElement('@suite/menu/wallet-index').click();
         cy.getTestElement('@accounts/empty-account/receive');
         cy.getTestElement('@accounts/empty-account/default-native-account/close');
         cy.contains(expectedAccountMessage);
-        // Clicks on Got it!
+
+        cy.log('Click on Got it!');
         cy.getTestElement('@accounts/empty-account/default-native-account/close').click({
             scrollBehavior: 'bottom',
         });
@@ -31,8 +60,11 @@ describe('New accounts', () => {
             'not.exist',
         );
         cy.contains(expectedAccountMessage).should('not.exist');
-        // Reload page.
+
+        cy.log('Reload page');
         cy.reload();
+        loadHiddenWallet(passphraseToType);
+
         // Makes sure it is still gone.
         cy.getTestElement('@accounts/empty-account/receive');
         cy.getTestElement('@accounts/empty-account/buy');
