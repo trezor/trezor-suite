@@ -23,9 +23,19 @@ const Placeholder = styled.div`
     color: ${props => props.theme.TYPE_LIGHT_GREY};
 `;
 
-const Editable = styled.div<{ touched: boolean }>`
+const Editable = styled.div<{ value?: string; touched: boolean }>`
     padding-left: 1px;
     margin-right: 1px;
+    ${props =>
+        !props.value
+            ? `
+          left: 0;
+          right: 0;
+          position: absolute;`
+            : `
+          position: unset;
+      `}
+
     color: ${props => (!props.touched ? props.theme.TYPE_LIGHT_GREY : 'inherit')};
 `;
 
@@ -130,9 +140,11 @@ export const withEditable =
                                 setValue('');
                             }
                         }}
+                        onPaste={e => setValue(e.clipboardData.getData('text/plain'))}
                         ref={divRef}
                         data-test="@metadata/input"
                         touched={touched}
+                        value={value}
                     />
                     {/* show default placeholder */}
                     {!value && <Placeholder>{props.defaultVisibleValue}</Placeholder>}
