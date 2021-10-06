@@ -57,7 +57,7 @@ const Protocol = () => {
         if (isWeb()) {
             navigator.registerProtocolHandler(
                 'bitcoin',
-                `${window.location.origin}${process.env.ASSET_PREFIX ?? ''}?uri=%s`,
+                `${window.location.origin}${process.env.ASSET_PREFIX ?? ''}/?uri=%s`,
                 // @ts-ignore - title is deprecated but it is recommended to be set because of backwards-compatibility
                 'Bitcoin / Trezor Suite',
             );
