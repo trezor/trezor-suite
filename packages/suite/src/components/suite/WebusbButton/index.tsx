@@ -13,7 +13,8 @@ const WebusbButton = (props: ButtonProps) => (
     <Button
         {...props}
         icon={props.icon || 'PLUS'}
-        onClick={async () => {
+        onClick={async e => {
+            e.stopPropagation();
             try {
                 // @ts-ignore navigator.usb not found
                 await navigator.usb.requestDevice({ filters });
