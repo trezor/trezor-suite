@@ -7,6 +7,8 @@ import { Button, variables } from '@trezor/components';
 import { useSelector } from '@suite-hooks';
 import { useFetchNews } from '@dashboard-hooks/useNews';
 import { toTorUrl } from '@suite-utils/tor';
+import { getUrl } from '@suite-utils/url';
+
 import { BLOG_URL } from '@suite-constants/urls';
 
 const Posts = styled.div`
@@ -102,7 +104,7 @@ const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
                 <MediumLink
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={isTor ? toTorUrl(BLOG_URL) : BLOG_URL}
+                    href={getUrl(BLOG_URL, isTor)}
                 >
                     <Button isWhite variant="tertiary" icon="MEDIUM">
                         <Translation id="TR_OPEN_IN_MEDIUM" />
@@ -116,10 +118,10 @@ const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
                         key={item.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        href={isTor ? toTorUrl(item.link) : item.link}
+                        href={getUrl(item.link, isTor)}
                         data-test={`@dashboard/news/post/${index}`}
                     >
-                        <Image src={isTor ? toTorUrl(item.thumbnail) : item.thumbnail} />
+                        <Image src={getUrl(item.thumbnail, isTor)} />
                         <Content>
                             <Title>
                                 <Truncate lines={2}>{item.title}</Truncate>
