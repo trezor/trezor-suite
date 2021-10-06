@@ -84,8 +84,8 @@ export const useSignVerifyForm = (page: 'sign' | 'verify', account?: Account) =>
     });
 
     useEffect(() => {
-        trigger('message');
-    }, [trigger, formValues.message, formValues.hex]);
+        if (control?.fieldsRef?.current?.message) trigger('message');
+    }, [trigger, formValues.message, formValues.hex, control?.fieldsRef]);
 
     useEffect(() => {
         if (page === 'sign') setValue('signature', '');
