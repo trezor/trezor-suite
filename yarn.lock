@@ -6275,14 +6275,13 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-datepicker@^3.1.2":
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/@types/react-datepicker/-/react-datepicker-3.1.2.tgz#72c80a16ec2c323e8f51063e08b3c24f41352ed3"
-  integrity sha512-luMH1fUF3GRJwaNFh4cogHV7FSFCJLU8Ai2dZ60Xw0n+MrExvuwOHxcbNkaIkIztPwyuT0H0K8Q4g0RN88LoFQ==
+"@types/react-date-range@^1.1.8":
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/@types/react-date-range/-/react-date-range-1.1.8.tgz#3df8f8f0ce2112c0e27613c4d45428761bf393a5"
+  integrity sha512-sXbPByk5xWxfa0KiCHXBSfq6Luc3WTfrzm3sfg7tMTAjnpQfKs8f6hOIwz2337iDsDxgbkN4V9pNQl8SIpYtoA==
   dependencies:
     "@types/react" "*"
-    date-fns "^2.0.1"
-    popper.js "^1.14.1"
+    date-fns "^2.16.1"
 
 "@types/react-dom@*", "@types/react-dom@^17.0.0":
   version "17.0.0"
@@ -20532,11 +20531,6 @@ popmotion@^9.1.0:
     hey-listen "^1.0.8"
     style-value-types "^4.0.1"
     tslib "^1.10.0"
-
-popper.js@^1.14.1:
-  version "1.16.1"
-  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.1.tgz#2a223cb3dc7b6213d740e40372be40de43e65b1b"
-  integrity sha512-Wb4p1J4zyFTbM+u6WuO4XstYx4Ky9Cewe4DWrel7B0w6VVICvPwdOpotjzcf6eD8TsckVnIMNONQyPIUFOUbCQ==
 
 portfinder@^1.0.28:
   version "1.0.28"

@@ -1,6 +1,8 @@
 import React, { createRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+import type { Locale } from 'date-fns';
+
 import { SettingsLayout } from '@settings-components';
 import { Translation } from '@suite-components';
 import {
@@ -23,12 +25,12 @@ import {
 import { MAX_LABEL_LENGTH } from '@suite-constants/device';
 import { getFwVersion, isBitcoinOnly } from '@suite-utils/device';
 import * as homescreen from '@suite-utils/homescreen';
-import { useDevice, useAnalytics, useActions, useSelector } from '@suite-hooks';
+import { useDevice, useAnalytics, useActions, useSelector, useLocales } from '@suite-hooks';
 import { variables, Switch, Button, Tooltip } from '@trezor/components';
 import * as routerActions from '@suite-actions/routerActions';
 import * as modalActions from '@suite-actions/modalActions';
 import * as deviceSettingsActions from '@settings-actions/deviceSettingsActions';
-import { formatDurationStrict } from '@suite/utils/suite/date';
+import { formatDurationStrict } from '@suite-utils/date';
 
 const RotationButton = styled(ActionButton)`
     min-width: 81px;
@@ -65,8 +67,8 @@ const VersionTooltip = styled(Tooltip)`
 
 const VersionLink = styled.a``;
 
-const buildAutoLockOption = (seconds: number) => ({
-    label: formatDurationStrict(seconds),
+const buildAutoLockOption = (seconds: number, locale?: Locale) => ({
+    label: formatDurationStrict(seconds, locale),
     value: seconds,
 });
 
@@ -79,11 +81,6 @@ const AUTO_LOCK_TIMES = {
     '6_DAYS': 60 * 60 * 24 * 6,
 } as const;
 
-const AUTO_LOCK_OPTIONS = {
-    label: <Translation id="TR_DEVICE_SETTINGS_AFTER_DELAY" />,
-    options: Object.values(AUTO_LOCK_TIMES).map(time => buildAutoLockOption(time)),
-} as const;
-
 const DISPLAY_ROTATIONS = [
     { label: <Translation id="TR_NORTH" />, value: 0 },
     { label: <Translation id="TR_EAST" />, value: 90 },
@@ -92,7 +89,10 @@ const DISPLAY_ROTATIONS = [
 ] as const;
 
 const Settings = () => {
-    const device = useSelector(state => state.suite.device);
+    const { device } = useSelector(state => ({
+        device: state.suite.device,
+    }));
+
     const { applySettings, changePin, goto, openModal } = useActions({
         applySettings: deviceSettingsActions.applySettings,
         changePin: deviceSettingsActions.changePin,
@@ -106,6 +106,7 @@ const Settings = () => {
     const { isLocked } = useDevice();
     const isDeviceLocked = isLocked();
     const analytics = useAnalytics();
+    const locale = useLocales();
 
     useEffect(() => {
         if (!device) {
@@ -147,6 +148,11 @@ const Settings = () => {
             await applySettings({ homescreen: hex });
             setCustomHomescreen('');
         }
+    };
+
+    const AUTO_LOCK_OPTIONS = {
+        label: <Translation id="TR_DEVICE_SETTINGS_AFTER_DELAY" />,
+        options: Object.values(AUTO_LOCK_TIMES).map(time => buildAutoLockOption(time, locale)),
     };
 
     return (

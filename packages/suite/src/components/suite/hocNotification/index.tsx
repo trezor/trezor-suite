@@ -367,12 +367,7 @@ const hocNotification = (notification: NotificationEntry, View: React.ComponentT
             return simple(View, {
                 notification,
                 variant: 'info',
-                message: {
-                    id: 'EVENT_WALLET_CREATED',
-                    values: {
-                        walletLabel: 'New wallet',
-                    },
-                },
+                message: 'EVENT_WALLET_CREATED',
             });
 
         default:

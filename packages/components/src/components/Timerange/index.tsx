@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { DateRange } from 'react-date-range';
 import styled from 'styled-components';
+
+import type { Locale } from 'date-fns';
+
 import { Button } from '../buttons/Button';
 import { style as datepickerStyle } from './index.style';
 
@@ -177,6 +180,7 @@ interface Props {
     onCancel: () => any;
     startDate?: Date;
     endDate?: Date;
+    locale?: Locale;
     ctaCancel: React.ReactNode | string;
     ctaSubmit: React.ReactNode | string;
 }
@@ -211,6 +215,7 @@ const Timerange = (props: Props) => {
                     ranges={[state]}
                     startDatePlaceholder=""
                     endDatePlaceholder=""
+                    locale={props.locale}
                 />
             </Calendar>
             <Buttons>

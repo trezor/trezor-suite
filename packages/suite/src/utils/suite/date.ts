@@ -11,13 +11,15 @@ import {
     eachMonthOfInterval,
     eachDayOfInterval,
     differenceInMinutes,
+    Locale,
 } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
 
 export const formatDuration = (seconds: number) =>
     formatDistance(0, seconds * 1000, { includeSeconds: true });
 
-export const formatDurationStrict = (seconds: number) => formatDistanceStrict(0, seconds * 1000);
+export const formatDurationStrict = (seconds: number, locale?: Locale) =>
+    formatDistanceStrict(0, seconds * 1000, { locale });
 
 export const getLocalTimeZone = () => Intl.DateTimeFormat().resolvedOptions().timeZone;
 

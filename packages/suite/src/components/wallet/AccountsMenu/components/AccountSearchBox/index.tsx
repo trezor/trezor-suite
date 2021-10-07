@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { useTheme, Icon, Input, CoinLogo } from '@trezor/components';
-import { useSelector, useAccountSearch } from '@suite-hooks';
+import { useSelector, useAccountSearch, useTranslation } from '@suite-hooks';
 
 const Wrapper = styled.div`
     background: ${props => props.theme.BG_WHITE};
@@ -67,6 +67,7 @@ interface Props {
 
 const AccountSearchBox = (props: Props) => {
     const theme = useTheme();
+    const { translationString } = useTranslation();
     const { coinFilter, setCoinFilter, searchString, setSearchString } = useAccountSearch();
     const { enabledNetworks, device } = useSelector(state => ({
         enabledNetworks: state.wallet.settings.enabledNetworks,
@@ -99,7 +100,7 @@ const AccountSearchBox = (props: Props) => {
                     addonAlign="left"
                     textIndent={[16, 12]}
                     variant="small"
-                    placeholder="Search"
+                    placeholder={translationString('TR_SEARCH')}
                     noTopLabel
                     noError
                     clearButton

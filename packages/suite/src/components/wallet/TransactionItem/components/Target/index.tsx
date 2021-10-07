@@ -108,7 +108,7 @@ export const Target = ({
                                 }
                                 return addNotification({ type: 'copy-to-clipboard' });
                             },
-                            label: 'Copy address',
+                            label: <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />,
                             key: 'copy-address',
                         },
                     ]}

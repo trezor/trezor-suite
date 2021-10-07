@@ -1404,6 +1404,11 @@ export default defineMessages({
         defaultMessage: 'Connect your Trezor to verify this address',
         id: 'TR_CONNECT_YOUR_TREZOR_TO_CHECK',
     },
+    TR_WARNING: {
+        defaultMessage: 'Warning',
+        description: 'Device status',
+        id: 'TR_WARNING',
+    },
     TR_CONNECTED: {
         defaultMessage: 'Connected',
         description: 'Device status',
@@ -2401,7 +2406,7 @@ export default defineMessages({
     },
     TR_PASSPHRASE_CASE_SENSITIVE: {
         defaultMessage: 'Note: Passphrase is case-sensitive.',
-        id: 'PASSPHRASE_CASE_SENSITIVE',
+        id: 'TR_PASSPHRASE_CASE_SENSITIVE',
     },
     TR_PASSPHRASE_HIDDEN_WALLET: {
         defaultMessage: 'Hidden wallet',
@@ -2968,6 +2973,30 @@ export default defineMessages({
         defaultMessage: 'Failed transaction',
         id: 'TR_FAILED_TRANSACTION',
     },
+    TR_SENDING_TRANSACTION: {
+        defaultMessage: 'Sending {symbol}',
+        id: 'TR_SENDING_TRANSACTION',
+    },
+    TR_SENT_TRANSACTION: {
+        defaultMessage: 'Sent {symbol}',
+        id: 'TR_SENT_TRANSACTION',
+    },
+    TR_SENDING_TO_MYSELF_TRANSACTION: {
+        defaultMessage: 'Sending {symbol} to myself',
+        id: 'TR_SENDING_TO_MYSELF_TRANSACTION',
+    },
+    TR_SENT_TO_MYSELF_TRANSACTION: {
+        defaultMessage: 'Sent {symbol} to myself',
+        id: 'TR_SENT_TO_MYSELF_TRANSACTION',
+    },
+    TR_RECEIVING_TRANSACTION: {
+        defaultMessage: 'Receiving {symbol}',
+        id: 'TR_RECEIVING_TRANSACTION',
+    },
+    TR_RECEIVED_TRANSACTION: {
+        defaultMessage: 'Received {symbol}',
+        id: 'TR_RECEIVED_TRANSACTION',
+    },
     TR_UNKNOWN_ERROR_SEE_CONSOLE: {
         defaultMessage: 'Unknown error. See console logs for details.',
         id: 'TR_UNKNOWN_ERROR_SEE_CONSOLE',
@@ -3532,7 +3561,7 @@ export default defineMessages({
     },
     EVENT_WALLET_CREATED: {
         id: 'EVENT_WALLET_CREATED',
-        defaultMessage: '{walletLabel} created',
+        defaultMessage: 'New wallet created',
     },
     TR_WIPE_DEVICE_HEADING: {
         id: 'TR_WIPE_DEVICE_HEADING',
@@ -5227,6 +5256,26 @@ export default defineMessages({
         description: 'Label in Send form',
         id: 'FEE',
     },
+    FEE_LEVEL_CUSTOM: {
+        defaultMessage: 'Custom',
+        id: 'FEE_LEVEL_CUSTOM',
+    },
+    FEE_LEVEL_HIGH: {
+        defaultMessage: 'High',
+        id: 'FEE_LEVEL_HIGH',
+    },
+    FEE_LEVEL_NORMAL: {
+        defaultMessage: 'Normal',
+        id: 'FEE_LEVEL_NORMAL',
+    },
+    FEE_LEVEL_ECONOMY: {
+        defaultMessage: 'Economy',
+        id: 'FEE_LEVEL_ECONOMY',
+    },
+    FEE_LEVEL_LOW: {
+        defaultMessage: 'Low',
+        id: 'FEE_LEVEL_LOW',
+    },
     FEE_NEEDS_UPDATE: {
         defaultMessage: 'Fee levels are outdated',
         id: 'FEE_NEEDS_UPDATE',
@@ -6006,6 +6055,10 @@ export default defineMessages({
         id: 'TR_EXPORT_FAIL',
         defaultMessage: 'Export failed.',
     },
+    TR_SEARCH: {
+        id: 'TR_SEARCH',
+        defaultMessage: 'Search',
+    },
     TR_SEARCH_FAIL: {
         id: 'TR_SEARCH_FAIL',
         defaultMessage: 'Search failed.',
@@ -6174,6 +6227,18 @@ export default defineMessages({
         id: 'TR_BYTES',
         defaultMessage: 'bytes',
     },
+    TR_GRAPH_LINEAR: {
+        id: 'TR_GRAPH_LINEAR',
+        defaultMessage: 'Linear',
+    },
+    TR_GRAPH_LOGARITHMIC: {
+        id: 'TR_GRAPH_LOGARITHMIC',
+        defaultMessage: 'Logarithmic',
+    },
+    TR_GRAPH_VIEW: {
+        id: 'TR_GRAPH_VIEW',
+        defaultMessage: 'Graph View',
+    },
     TR_SHOW_GRAPH: {
         id: 'TR_SHOW_GRAPH',
         defaultMessage: 'Show Graph',
@@ -6181,6 +6246,38 @@ export default defineMessages({
     TR_HIDE_GRAPH: {
         id: 'TR_HIDE_GRAPH',
         defaultMessage: 'Hide Graph',
+    },
+    TR_DATE_DAY_LONG: {
+        id: 'TR_DATE_DAY_LONG',
+        defaultMessage: '1 day',
+    },
+    TR_DATE_DAY_SHORT: {
+        id: 'TR_DATE_DAY_SHORT',
+        defaultMessage: '1D',
+    },
+    TR_DATE_WEEK_LONG: {
+        id: 'TR_DATE_WEEK_LONG',
+        defaultMessage: '1 week',
+    },
+    TR_DATE_WEEK_SHORT: {
+        id: 'TR_DATE_WEEK_SHORT',
+        defaultMessage: '1W',
+    },
+    TR_DATE_MONTH_LONG: {
+        id: 'TR_DATE_MONTH_LONG',
+        defaultMessage: '1 month',
+    },
+    TR_DATE_MONTH_SHORT: {
+        id: 'TR_DATE_MONTH_SHORT',
+        defaultMessage: '1M',
+    },
+    TR_DATE_YEAR_LONG: {
+        id: 'TR_DATE_YEAR_LONG',
+        defaultMessage: '1 year',
+    },
+    TR_DATE_YEAR_SHORT: {
+        id: 'TR_DATE_YEAR_SHORT',
+        defaultMessage: '1Y',
     },
     TR_SUITE_META_DESCRIPTION: {
         id: 'TR_SUITE_META_DESCRIPTION',
@@ -6438,11 +6535,11 @@ export default defineMessages({
     },
     TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_TITLE: {
         defaultMessage: 'Ensure the Trezor Bridge process is running',
-        id: 'TR_TROUBLESHOOTING_BRIDGE_STATUS_TITLE',
+        id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_TITLE',
     },
     TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_DESCRIPTION: {
         defaultMessage: 'Visit <a>Trezor Bridge status page</a>',
-        id: 'TR_TROUBLESHOOTING_BRIDGE_STATUS_DESCRIPTION',
+        id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_STATUS_DESCRIPTION',
     },
     TR_TROUBLESHOOTING_TIP_BRIDGE_INSTALL_TITLE: {
         id: 'TR_TOUBLESHOOTING_TIP_BRIDGE_INSTALL_TITLE',

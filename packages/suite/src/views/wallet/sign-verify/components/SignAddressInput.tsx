@@ -87,6 +87,7 @@ const SignAddressInput = ({
             state={error ? 'error' : undefined}
             isSearchable
             isDisabled={!!isDisabled}
+            placeholder=""
             components={{
                 Option,
                 Input,

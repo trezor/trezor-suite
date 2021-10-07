@@ -110,11 +110,23 @@ const TransactionHeading = ({
     if (isTxUnknown(transaction)) {
         heading = <Translation id="TR_UNKNOWN_TRANSACTION" />;
     } else if (transaction.type === 'sent') {
-        heading = isPending ? `Sending ${symbol}` : `Sent ${symbol}`;
+        heading = isPending ? (
+            <Translation id="TR_SENDING_TRANSACTION" values={{ symbol }} />
+        ) : (
+            <Translation id="TR_SENT_TRANSACTION" values={{ symbol }} />
+        );
     } else if (transaction.type === 'recv') {
-        heading = isPending ? `Receiving ${symbol}` : `Received ${symbol}`;
+        heading = isPending ? (
+            <Translation id="TR_RECEIVING_TRANSACTION" values={{ symbol }} />
+        ) : (
+            <Translation id="TR_RECEIVED_TRANSACTION" values={{ symbol }} />
+        );
     } else if (transaction.type === 'self') {
-        heading = isPending ? `Sending ${symbol} to myself` : `Sent ${symbol} to myself`;
+        heading = isPending ? (
+            <Translation id="TR_SENDING_TO_MYSELF_TRANSACTION" values={{ symbol }} />
+        ) : (
+            <Translation id="TR_SENT_TO_MYSELF_TRANSACTION" values={{ symbol }} />
+        );
     } else if (transaction.type === 'failed') {
         heading = <Translation id="TR_FAILED_TRANSACTION" />;
     } else {

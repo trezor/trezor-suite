@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
 import { DeviceAnimation } from '@onboarding-components';
-import { Translation, TrezorLink } from '@suite/components/suite';
+import { Translation, TrezorLink } from '@suite-components';
 import {
     TREZOR_PACKAGING_URL,
     TREZOR_RESELLERS_URL,

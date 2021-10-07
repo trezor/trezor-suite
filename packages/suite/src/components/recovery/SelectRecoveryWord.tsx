@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRecovery } from '@suite-hooks';
 import TrezorConnect, { UI } from 'trezor-connect';
-import { WordInput, WordInputAdvanced } from '@suite/components/suite';
+import { WordInput, WordInputAdvanced } from '@suite-components';
 
 const RecoveryWordSelect = () => {
     const { wordRequestInputType } = useRecovery();

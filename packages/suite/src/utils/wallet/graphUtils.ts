@@ -329,42 +329,6 @@ export const calcXDomain = (
     return [start - xPadding, end + xPadding];
 };
 
-export const getFormattedLabel = (rangeLabel: GraphRange['label']) => {
-    switch (rangeLabel) {
-        case 'range':
-            return 'range';
-        case 'all':
-            return 'all';
-        case 'year':
-            return '1Y';
-        case 'month':
-            return '1M';
-        case 'week':
-            return '1W';
-        case 'day':
-            return '1D';
-        // no default
-    }
-};
-
-export const getFormattedLabelLong = (rangeLabel: GraphRange['label']) => {
-    switch (rangeLabel) {
-        case 'range':
-            return 'range';
-        case 'all':
-            return 'all';
-        case 'year':
-            return '1 year';
-        case 'month':
-            return '1 month';
-        case 'week':
-            return '1 week';
-        case 'day':
-            return '1 day';
-        // no default
-    }
-};
-
 export const calcFakeGraphDataForTimestamps = (
     timestamps: number[],
     data: CommonAggregatedHistory[],

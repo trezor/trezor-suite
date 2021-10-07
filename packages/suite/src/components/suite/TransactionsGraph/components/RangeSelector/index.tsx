@@ -2,9 +2,8 @@ import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { colors, variables, Dropdown, DropdownRef, Timerange } from '@trezor/components';
 import { Translation } from '@suite-components';
-import { useGraph } from '@suite-hooks';
+import { useGraph, useLocales } from '@suite-hooks';
 import { GraphRange } from '@wallet-types/graph';
-import { getFormattedLabel } from '@wallet-utils/graphUtils';
 import {
     startOfDay,
     startOfToday,
@@ -78,6 +77,24 @@ const RANGES = [
     },
 ] as const;
 
+const getFormattedLabel = (rangeLabel: GraphRange['label']) => {
+    switch (rangeLabel) {
+        case 'range':
+            return <Translation id="TR_RANGE" />;
+        case 'all':
+            return <Translation id="TR_ALL" />;
+        case 'year':
+            return <Translation id="TR_DATE_YEAR_SHORT" />;
+        case 'month':
+            return <Translation id="TR_DATE_MONTH_SHORT" />;
+        case 'week':
+            return <Translation id="TR_DATE_WEEK_SHORT" />;
+        case 'day':
+            return <Translation id="TR_DATE_DAY_SHORT" />;
+        // no default
+    }
+};
+
 interface Props {
     onSelectedRange?: (range: GraphRange) => void;
     className?: string;
@@ -86,6 +103,7 @@ interface Props {
 
 const RangeSelector = (props: Props) => {
     const dropdownRef = useRef<DropdownRef>();
+    const locale = useLocales();
     const { onSelectedRange } = props;
     const { selectedRange, setSelectedRange } = useGraph();
     const [customTimerangeStart, setCustomTimerangeStart] = useState<Date>();
@@ -145,6 +163,7 @@ const RangeSelector = (props: Props) => {
                                         onCancel={() => dropdownRef.current!.close()}
                                         ctaSubmit={<Translation id="TR_CONFIRM" />}
                                         ctaCancel={<Translation id="TR_CANCEL" />}
+                                        locale={locale}
                                     />
                                 ),
                                 callback: () => false,
