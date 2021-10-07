@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dropdown } from '@trezor/components';
 import GraphScaleDropdownItem from '@suite-components/TransactionsGraph/components/GraphScaleDropdownItem';
+import { Translation } from '@suite-components';
 
 interface Props {
     isGraphHidden: boolean;
@@ -16,7 +17,7 @@ const TransactionSummaryDropdown = (_props: Props) => (
         items={[
             {
                 key: 'group1',
-                label: 'Graph View',
+                label: <Translation id="TR_GRAPH_VIEW" />,
                 options: [
                     {
                         key: 'graphView',

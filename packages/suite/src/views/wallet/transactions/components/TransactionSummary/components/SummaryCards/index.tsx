@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import BigNumber from 'bignumber.js';
 import { variables } from '@trezor/components';
 import { Translation, HiddenPlaceholder, FormattedNumber, FormattedDate } from '@suite-components';
-import { sumFiatValueMap, getFormattedLabelLong } from '@wallet-utils/graphUtils';
+import { sumFiatValueMap } from '@wallet-utils/graphUtils';
 import { Account } from '@wallet-types';
 import { GraphRange, AggregatedAccountHistory } from '@wallet-types/graph';
 import InfoCard from './components/InfoCard';
@@ -18,6 +18,24 @@ const InfoCardsWrapper = styled.div`
         grid-template-columns: 1fr;
     }
 `;
+
+const getFormattedLabelLong = (rangeLabel: GraphRange['label']) => {
+    switch (rangeLabel) {
+        case 'range':
+            return <Translation id="TR_RANGE" />;
+        case 'all':
+            return <Translation id="TR_ALL" />;
+        case 'year':
+            return <Translation id="TR_DATE_YEAR_LONG" />;
+        case 'month':
+            return <Translation id="TR_DATE_MONTH_LONG" />;
+        case 'week':
+            return <Translation id="TR_DATE_WEEK_LONG" />;
+        case 'day':
+            return <Translation id="TR_DATE_DAY_LONG" />;
+        // no default
+    }
+};
 
 interface Props {
     selectedRange: GraphRange;

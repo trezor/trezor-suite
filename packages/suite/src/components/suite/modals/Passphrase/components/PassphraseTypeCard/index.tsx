@@ -9,6 +9,7 @@ import { MAX_LENGTH } from '@suite-constants/inputs';
 import { countBytesInString } from '@suite-utils/string';
 import { OpenGuideFromTooltip } from '@guide-views';
 import PasswordStrengthIndicator from '@suite-components/PasswordStrengthIndicator';
+import { useTranslation } from '@suite-hooks';
 
 const Wrapper = styled.div<Pick<Props, 'type' | 'singleColModal'>>`
     display: flex;
@@ -164,6 +165,7 @@ const DOT = '●';
 
 const PassphraseTypeCard = (props: Props) => {
     const theme = useTheme();
+    const { translationString } = useTranslation();
     const [value, setValue] = useState('');
     const [enabled, setEnabled] = useState(!props.authConfirmation);
     const [showPassword, setShowPassword] = useState(false);
@@ -305,7 +307,7 @@ const PassphraseTypeCard = (props: Props) => {
                         <InputWrapper authConfirmation={props.authConfirmation}>
                             <PassphraseInput
                                 data-test="@passphrase/input"
-                                placeholder="Enter passphrase" // TODO: Localize
+                                placeholder={translationString('TR_ENTER_PASSPHRASE')}
                                 onChange={onChange}
                                 value={displayValue}
                                 innerRef={ref}

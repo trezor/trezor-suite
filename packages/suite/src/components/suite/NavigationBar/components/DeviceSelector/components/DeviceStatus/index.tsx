@@ -3,6 +3,7 @@ import { Icon, variables, useTheme, SuiteThemeColors } from '@trezor/components'
 import styled from 'styled-components';
 import * as deviceUtils from '@suite-utils/device';
 import { TrezorDevice } from '@suite-types';
+import { Translation } from '@suite-components';
 
 type Status = 'connected' | 'disconnected' | 'warning';
 
@@ -27,6 +28,18 @@ const getStatusForDevice = (device: TrezorDevice) => {
         return 'warning';
     }
     return 'connected';
+};
+
+const getTextForStatus = (status: 'connected' | 'disconnected' | 'warning') => {
+    switch (status) {
+        case 'connected':
+            return <Translation id="TR_CONNECTED" />;
+        case 'disconnected':
+            return <Translation id="TR_DISCONNECTED" />;
+        case 'warning':
+        default:
+            return <Translation id="TR_WARNING" />;
+    }
 };
 
 const StatusText = styled.div<{ show: boolean; status: Status }>`
@@ -115,7 +128,7 @@ const DeviceStatus = ({
     return (
         <>
             <StatusText status={status} show={showTextStatus}>
-                {status}
+                {getTextForStatus(status)}
             </StatusText>
             <OuterCircle status={status} show={showIconStatus}>
                 <InnerCircle status={status} />

@@ -44,7 +44,7 @@
         "@storybook/react": "^6.3.7",
         "@types/randomcolor": "0.5.5",
         "@types/react": "^17.0.0",
-        "@types/react-datepicker": "^3.1.2",
+        "@types/react-date-range": "^1.1.8",
         "@types/react-select": "^3.1.2",
         "@types/react-truncate": "^2.3.3",
         "@types/styled-components": "^5.1.7",

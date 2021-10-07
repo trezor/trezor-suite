@@ -84,9 +84,17 @@ const Label = styled.div<Pick<Props, 'rbfForm'>>`
     color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
+enum FEE_LEVELS_TRANSLATION {
+    custom = 'FEE_LEVEL_CUSTOM',
+    high = 'FEE_LEVEL_HIGH',
+    normal = 'FEE_LEVEL_NORMAL',
+    economy = 'FEE_LEVEL_ECONOMY',
+    low = 'FEE_LEVEL_LOW',
+}
+
 const buildFeeOptions = (levels: FeeLevel[]) =>
     levels.map(({ label }) => ({
-        label,
+        label: <Translation id={FEE_LEVELS_TRANSLATION[label]} />,
         value: label,
     }));
 
