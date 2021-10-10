@@ -48,9 +48,18 @@ const dateTimeFormat = {
 const loadPdfMake = async () => {
     const pdfMake = (await import(/* webpackChunkName: "pdfMake" */ 'pdfmake/build/pdfmake'))
         .default;
-    const fonts = (await import(/* webpackChunkName: "pdfFonts" */ 'pdfmake/build/vfs_fonts'))
+    const fonts = (await import(/* webpackChunkName: "pdfFonts" */ '@suite-support/vfs_fonts'))
         .default;
-    pdfMake.vfs = fonts?.pdfMake?.vfs;
+    pdfMake.vfs = fonts;
+
+    pdfMake.fonts = {
+        Roboto: {
+            normal: 'Roboto-Regular.ttf',
+            bold: 'Roboto-Bold.ttf',
+            italics: 'Roboto-Italic.ttf',
+            bolditalics: 'Roboto-BoldItalic.ttf',
+        },
+    };
     return pdfMake;
 };
 
