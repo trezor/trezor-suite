@@ -7,8 +7,6 @@ import { BundleLoader } from '@suite-components';
 const components: { [key: string]: React.LazyExoticComponent<any> } = {
     'suite-index': lazy(() => import('@dashboard-views')),
     'notifications-index': lazy(() => import('@suite-views/notifications')),
-    'passwords-index': lazy(() => import('@passwords-views')),
-    'portfolio-index': lazy(() => import('@portfolio-views')),
 
     'wallet-index': lazy(() => import('@wallet-views/transactions')),
     'wallet-receive': lazy(() => import('@wallet-views/receive')),

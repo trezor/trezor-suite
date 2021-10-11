@@ -5,8 +5,6 @@ import routes from '@suite-constants/routes';
 
 import Index from '@dashboard-views';
 import Notification from '@suite-views/notifications';
-import Passwords from '@passwords-views';
-import Portfolio from '@portfolio-views';
 
 import Wallet from '@wallet-views/transactions';
 import WalletReceive from '@wallet-views/receive';
@@ -35,8 +33,6 @@ import SettingsDevice from '@settings-views/device';
 const components: { [key: string]: React.ComponentType<any> } = {
     'suite-index': Index,
     'notifications-index': Notification,
-    'passwords-index': Passwords,
-    'portfolio-index': Portfolio,
 
     'wallet-index': Wallet,
     'wallet-receive': WalletReceive,
