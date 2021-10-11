@@ -1,12 +1,11 @@
 import styled, { css } from 'styled-components';
-import React, { useRef } from 'react';
-import Lottie from 'lottie-react';
+import React, { useEffect, useRef, useState } from 'react';
+import Lottie, { LottieOptions } from 'lottie-react';
 import * as semver from 'semver';
 import { useTheme } from '@trezor/components';
 
 import { resolveStaticPath } from '@suite-utils/build';
-import LottieT1Connect from './lottie/t1_connect.json';
-import LottieTTConnect from './lottie/tt_connect.json';
+
 import { getDeviceModel, getFwVersion } from '@suite-utils/device';
 
 import type { TrezorDevice } from '@suite/types/suite';
@@ -89,15 +88,25 @@ const DeviceAnimation = ({ size, type, loop = false, shape, device, ...props }: 
         animationType = 'BOOTLOADER_TWO_BUTTONS';
     }
 
+    const [connectAnimationData, setConnectAnimationData] =
+        useState<LottieOptions['animationData']>();
+
+    useEffect(() => {
+        const loadConnectAnimation = async () => {
+            const connectAnimation = await import(`./lottie/t${deviceModel}_connect.json`);
+            setConnectAnimationData(connectAnimation);
+        };
+        if (animationType === 'CONNECT') {
+            loadConnectAnimation();
+        }
+    }, [animationType, deviceModel]);
+
     const animationFileName = animationType.toLowerCase();
 
     return (
         <Wrapper size={size} shape={shape} {...props}>
-            {animationType === 'CONNECT' && (
-                <StyledLottie
-                    animationData={deviceModel === '1' ? LottieT1Connect : LottieTTConnect}
-                    loop={loop}
-                />
+            {connectAnimationData && animationType === 'CONNECT' && (
+                <StyledLottie animationData={connectAnimationData} loop={loop} />
             )}
             {animationType === 'BOOTLOADER' && (
                 <StyledVideo loop={loop} autoPlay muted width={size} height={size}>
