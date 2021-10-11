@@ -31,8 +31,10 @@ const Line = styled.div<LineProps>`
     transition: all 0.5s;
 `;
 
-const getColor = (score: 0 | 1 | 2 | 3 | 4, password: string) => {
-    if (password === '') return 'transparent';
+type OptionalZXCVBNScore = ZXCVBNScore | undefined;
+
+const getColor = (score: OptionalZXCVBNScore, password: string) => {
+    if (password === '' || Number.isNaN(score)) return 'transparent';
     switch (score) {
         case 0:
         case 1:
@@ -57,20 +59,31 @@ interface Props {
 }
 
 const PasswordStrengthIndicator = ({ password }: Props) => {
-    const [score, setScore] = useState<ZXCVBNScore>(0);
+    const [score, setScore] = useState<OptionalZXCVBNScore>();
     useEffect(() => {
         const runScoring = async () => {
-            const pwScore = await getPasswordScore(password);
-            setScore(pwScore);
+            try {
+                const pwScore = await getPasswordScore(password);
+                setScore(pwScore);
+            } catch (error) {
+                console.error(error);
+            }
         };
 
-        runScoring();
+        if (password) {
+            runScoring();
+        }
     }, [password]);
+
     return (
         <Wrapper>
             {[...Array(5)].map((_x, i) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <Line key={i} isFilled={i <= score} color={getColor(score, password)} />
+                <Line
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={i}
+                    isFilled={score !== undefined && i <= score}
+                    color={getColor(score, password)}
+                />
             ))}
         </Wrapper>
     );
