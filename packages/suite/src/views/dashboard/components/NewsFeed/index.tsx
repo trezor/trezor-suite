@@ -89,7 +89,13 @@ interface Props {
 // For that reason, limit maximum posts shown to 9.
 const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
     const [visibleCount, incrementVisibleCount] = useState(3);
-    const isTor = useSelector(state => state.suite.tor);
+
+    // todo: this should be refactored using something like TrezorLink component which already contains the same logic.
+    const { isTor, torOnionLinks } = useSelector(state => ({
+        isTor: state.suite.tor,
+        torOnionLinks: state.suite.settings.torOnionLinks,
+    }));
+
     const { posts, isError, fetchCount, incrementFetchCount } = useFetchNews();
     const theme = useTheme();
 
@@ -102,7 +108,7 @@ const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
                 <MediumLink
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={isTor ? toTorUrl(BLOG_URL) : BLOG_URL}
+                    href={isTor && torOnionLinks ? toTorUrl(BLOG_URL) : BLOG_URL}
                 >
                     <Button isWhite variant="tertiary" icon="MEDIUM">
                         <Translation id="TR_OPEN_IN_MEDIUM" />
@@ -116,7 +122,7 @@ const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
                         key={item.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        href={isTor ? toTorUrl(item.link) : item.link}
+                        href={isTor && torOnionLinks ? toTorUrl(item.link) : item.link}
                         data-test={`@dashboard/news/post/${index}`}
                     >
                         <Image src={isTor ? toTorUrl(item.thumbnail) : item.thumbnail} />
