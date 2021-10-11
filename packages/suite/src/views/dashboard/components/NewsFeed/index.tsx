@@ -4,10 +4,10 @@ import Truncate from 'react-truncate';
 import { Translation } from '@suite-components';
 import { Section } from '@dashboard-components';
 import { Button, variables } from '@trezor/components';
-import { useSelector } from '@suite-hooks';
+import { useExternalLink } from '@suite-hooks';
 import { useFetchNews } from '@dashboard-hooks/useNews';
-import { toTorUrl } from '@suite-utils/tor';
 import { BLOG_URL } from '@suite-constants/urls';
+import { ArrayElement } from '@suite/types/utils';
 
 const Posts = styled.div`
     display: grid;
@@ -80,6 +80,40 @@ const ReadMore = styled.div`
 
 const MediumLink = styled.a``;
 
+type PostComponentProps = ArrayElement<ReturnType<typeof useFetchNews>['posts']> & {
+    theme: ReturnType<typeof useTheme>;
+    'data-test': string;
+};
+
+const PostComponent = (props: PostComponentProps) => {
+    const url = useExternalLink(props.link);
+    const thumbnail = useExternalLink(props.thumbnail);
+
+    return (
+        <Post target="_blank" rel="noopener noreferrer" href={url} data-test={props['data-test']}>
+            <Image src={thumbnail} />
+            <Content>
+                <Title>
+                    <Truncate lines={2}>{props.title}</Truncate>
+                </Title>
+                <Description>
+                    <Truncate lines={3}>{props.description}</Truncate>
+                </Description>
+                <ReadMore>
+                    <Button
+                        variant="tertiary"
+                        alignIcon="right"
+                        color={props.theme.TYPE_DARK_GREY}
+                        icon="EXTERNAL_LINK"
+                    >
+                        <Translation id="TR_READ_MORE" />
+                    </Button>
+                </ReadMore>
+            </Content>
+        </Post>
+    );
+};
+
 interface Props {
     maxVisibleCount?: number;
 }
@@ -90,26 +124,16 @@ interface Props {
 const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
     const [visibleCount, incrementVisibleCount] = useState(3);
 
-    // todo: this should be refactored using something like TrezorLink component which already contains the same logic.
-    const { isTor, torOnionLinks } = useSelector(state => ({
-        isTor: state.suite.tor,
-        torOnionLinks: state.suite.settings.torOnionLinks,
-    }));
-
     const { posts, isError, fetchCount, incrementFetchCount } = useFetchNews();
     const theme = useTheme();
-
+    const mediumUrl = useExternalLink(BLOG_URL);
     if (isError) return null;
 
     return (
         <Section
             heading={<Translation id="TR_WHATS_NEW" />}
             actions={
-                <MediumLink
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={isTor && torOnionLinks ? toTorUrl(BLOG_URL) : BLOG_URL}
-                >
+                <MediumLink target="_blank" rel="noopener noreferrer" href={mediumUrl}>
                     <Button isWhite variant="tertiary" icon="MEDIUM">
                         <Translation id="TR_OPEN_IN_MEDIUM" />
                     </Button>
@@ -118,33 +142,12 @@ const NewsFeed = ({ maxVisibleCount = 9 }: Props) => {
         >
             <Posts>
                 {posts.slice(0, visibleCount).map((item, index) => (
-                    <Post
-                        key={item.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href={isTor && torOnionLinks ? toTorUrl(item.link) : item.link}
+                    <PostComponent
                         data-test={`@dashboard/news/post/${index}`}
-                    >
-                        <Image src={isTor ? toTorUrl(item.thumbnail) : item.thumbnail} />
-                        <Content>
-                            <Title>
-                                <Truncate lines={2}>{item.title}</Truncate>
-                            </Title>
-                            <Description>
-                                <Truncate lines={3}>{item.description}</Truncate>
-                            </Description>
-                            <ReadMore>
-                                <Button
-                                    variant="tertiary"
-                                    alignIcon="right"
-                                    color={theme.TYPE_DARK_GREY}
-                                    icon="EXTERNAL_LINK"
-                                >
-                                    <Translation id="TR_READ_MORE" />
-                                </Button>
-                            </ReadMore>
-                        </Content>
-                    </Post>
+                        key={item.link}
+                        theme={theme}
+                        {...item}
+                    />
                 ))}
             </Posts>
             {/* display "Show older news" button only if there are more posts to load and I won't exceed maxVisibleCount by fetching another articles */}
