@@ -110,7 +110,6 @@
   "OP_RETURN": "OP TERUG",
   "OP_RETURN_ADD": "OP retour toevoegen",
   "OP_RETURN_TOOLTIP": "Script opcode gebruikt om een transactieuitvoer als ongeldig te markeren. Aangezien alle outputs met OP_RETURN onuitwisbaar zijn, kan OP_RETURN uitgangen worden gebruikt om bitcoins te verbranden.",
-  "PASSPHRASE_CASE_SENSITIVE": "Opmerking: Passphrase is hoofdlettergevoelig.",
   "RAW_TX_NOT_SET": "Transactie niet ingesteld",
   "RBF_DESCRIPTION": "RBF maakt het mogelijk om later kosten te bumpen voor het geval u wilt dat de transactie sneller gemijnd wordt.",
   "RBF_OFF": "RBF = UIT",

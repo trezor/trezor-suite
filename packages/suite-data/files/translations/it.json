@@ -98,7 +98,6 @@
   "ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P1": "Questo non è lo stesso Trezor che hai usato. Sei pregato di riconnettere quello corretto.",
   "ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2": "Se invece desideri usare questo dispositivo, ricomincia.",
   "OP_RETURN_TOOLTIP": "L'opcode dello script usato per contrassegnare l'output di una transazione non è valido. Poiché ogni output con OP_RETURN è provatamente non spendibile, gli output di OP_RETURN sono utilizzabili per bruciare i bitcoin.",
-  "PASSPHRASE_CASE_SENSITIVE": "Nota: La frase segreta è sensibile alle maiuscole.",
   "RAW_TX_NOT_SET": "Transazione non impostata",
   "RBF_DESCRIPTION": "RBF consente di scaricare la commissione in seguito qualora tu voglia che la transazione sia minata più velocemente.",
   "RBF_TOOLTIP": "La politica del nodo che consente a una transazione non confermata in un mempool di esser sostituita con una differente che spende almeno uno degli stessi input e che paga una commissione di transazione maggiore.",
