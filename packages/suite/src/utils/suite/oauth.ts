@@ -12,12 +12,14 @@ export const getOauthReceiverUrl = () => {
     if (!window.desktopApi) {
         return `${window.location.origin}${getPrefixedURL('/static/oauth/oauth_receiver.html')}`;
     }
-    return window.desktopApi!.getHttpReceiverAddress('/oauth');
+    return window.desktopApi.getHttpReceiverAddress('/oauth');
 };
 
 type Credentials =
     | { access_token?: undefined; code: string }
     | { access_token: string; code?: undefined };
+
+type Message = { [key: string]: string };
 
 let interval: number;
 
@@ -49,7 +51,7 @@ const openWindowOnAnotherDomain = (
 };
 
 const handleResponse = (
-    message: { [key: string]: string },
+    message: Message,
     originalParams: { [key: string]: string },
     onSuccess: (result: Credentials) => void,
     onError: (error: any) => void,
@@ -85,8 +87,8 @@ const handleResponse = (
 };
 
 // keep handler function instance in top level scope
-let desktopHandlerInstance: (message: { [key: string]: string }) => void;
-let webHandlerInstance: (e: MessageEvent) => void;
+let desktopHandlerInstance: (message: Message) => void;
+let webHandlerInstance: (e: MessageEvent<Message>) => void;
 
 const getDesktopHandlerInstance = (
     dfd: Deferred<Credentials>,
@@ -116,7 +118,7 @@ const getWebHandlerInstance = (
     if (webHandlerInstance) {
         window.removeEventListener('message', webHandlerInstance);
     }
-    webHandlerInstance = (e: MessageEvent) => {
+    webHandlerInstance = (e: MessageEvent<Message>) => {
         if (window.location.origin !== e.origin) {
             return;
         }
