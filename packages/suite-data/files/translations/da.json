@@ -108,7 +108,6 @@
   "ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2": "Hvis du ønsker at bruge denne enhed i stedet, skal du starte igen.",
   "OP_RETURN_ADD": "Tilføj OP Retur",
   "OP_RETURN_TOOLTIP": "Script- kode, der bruges til at markere en transaktion output som ugyldig. Da alle udgange med OP_RETURN er beviseligt ubrugbare, kan OP_RETURN udgange bruges til at brænde Bitcoins.",
-  "PASSPHRASE_CASE_SENSITIVE": "Bemærk: Adgangskoden er store og små bogstaver.",
   "RAW_TX_NOT_SET": "Transaktionen er ikke indstillet",
   "RBF_DESCRIPTION": "RBF giver mulighed for at øge gebyr senere, hvis du ønsker, at transaktionen skal mines hurtigere.",
   "RBF_OFF": "RBF = FRA",

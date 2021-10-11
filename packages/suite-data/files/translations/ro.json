@@ -107,7 +107,6 @@
   "ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_P2": "Dacă doriți să utilizați în schimb acest dispozitiv, începeți din nou.",
   "OP_RETURN_ADD": "Adăugați OP Return",
   "OP_RETURN_TOOLTIP": "Cod operațional de script utilizat pentru a marca o ieșire de tranzacție ca fiind invalidă. Deoarece orice ieșire cu OP_RETURN este dovedită ca fiind imposibil de cheltuit, ieșirile OP_RETURN pot fi folosite pentru a arde bitcoini.",
-  "PASSPHRASE_CASE_SENSITIVE": "Notă: Parola este sensibilă la majuscule și minuscule.",
   "RAW_TX_NOT_SET": "Tranzacția nu este stabilită",
   "RBF_DESCRIPTION": "RBF permite majorarea ulterioară a taxei în cazul în care doriți ca tranzacția să fie minată mai repede.",
   "RBF_OFF": "RBF = OPRIT",
