@@ -2,8 +2,15 @@ import { useState, useEffect } from 'react';
 
 const NEWS_API_URL = 'https://news.trezor.io';
 
+interface Post {
+    link: string;
+    thumbnail: string;
+    title: string;
+    description: string;
+}
+
 export function useFetchNews() {
-    const [posts, setPosts] = useState<any[]>([]);
+    const [posts, setPosts] = useState<Post[]>([]);
     const [isError, setError] = useState(false);
     const [fetchCount, incrementFetchCount] = useState(4);
 
