@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2021-10-09T00:00:00+00:00",
-    "sequence": 5,
+    "timestamp": "2021-10-11T00:00:00+00:00",
+    "sequence": 6,
     "actions": [
         {
             "conditions": [
@@ -32,34 +32,6 @@
                         "en": "Go to suite.trezor.io",
                         "es": "Ir a suite.trezor.io"
                     }
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": "*",
-                        "web": "!",
-                        "mobile": "!"
-                    },
-                    "settings": [
-                        { 
-                            "tor": true
-                        }
-                    ]
-                }
-            ],
-            "message": {
-                "id": "1g4de123-e6f1-9999-1122-f90xxxa25999",
-                "priority": 90,
-                "dismissible": true,
-                "variant": "warning",
-                "category": "banner",
-                "content": {
-                    "en-GB": "There is an ongoing DoS attack on our Tor proxy. In case you run into network problems, please turn Tor off.",
-                    "en": "There is an ongoing DoS attack on our Tor proxy. In case you run into network problems, please turn Tor off.",
-                    "es": "There is an ongoing DoS attack on our Tor proxy. In case you run into network problems, please turn Tor off."
                 }
             }
         }
