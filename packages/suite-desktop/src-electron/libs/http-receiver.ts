@@ -42,6 +42,7 @@ export class HttpReceiver extends EventEmitter {
     private logger: ILogger;
 
     // Possible ports
+    // We need to be specific here (cant let OS automatically assign a port) because there are exact redirect uris registered within oauth providers
     // todo: add more to prevent case when port is blocked
     static PORTS = [21335];
 
@@ -89,8 +90,11 @@ export class HttpReceiver extends EventEmitter {
 
     getServerAddress() {
         const address = this.server.address();
-        // net.AddressInfo may also be string for a server listening on a pipe or Unix domain socket, the name is returned as a string.
-        if (!address || typeof address === 'string') return null;
+        if (!address || typeof address === 'string') {
+            // this is only for typescript
+            // net.AddressInfo may also be string for a server listening on a pipe or Unix domain socket, the name is returned as a string.
+            throw new Error(`Unexpected server address: ${address}`);
+        }
 
         return address;
     }
@@ -99,9 +103,7 @@ export class HttpReceiver extends EventEmitter {
         const address = this.getServerAddress();
         const route = this.routes.find(r => r.pathname === pathname);
         if (!route) return;
-        if (address) {
-            return `http://${address.address}:${address.port}${route.pathname}`;
-        }
+        return `http://${address.address}:${address.port}${route.pathname}`;
     }
 
     start() {
