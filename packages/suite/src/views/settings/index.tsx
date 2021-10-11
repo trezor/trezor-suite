@@ -282,27 +282,30 @@ const Settings = () => {
                             </SectionItem>
                         </>
                     )}
-                    <SectionItem>
-                        <TextColumn
-                            title={<Translation id="TR_ONION_LINKS_TITLE" />}
-                            description={<Translation id="TR_ONION_LINKS_DESCRIPTION" />}
-                        />
-                        <ActionColumn>
-                            <Switch
-                                data-test="@settings/general/onion-links-switch"
-                                checked={torOnionLinks}
-                                onChange={() => {
-                                    analytics.report({
-                                        type: 'menu/toggle-onion-links',
-                                        payload: {
-                                            value: !torOnionLinks,
-                                        },
-                                    });
-                                    setOnionLinks(!torOnionLinks);
-                                }}
+                    {/* keep torOnionLinks value as it is but hide this section when tor is off. when tor is off this value has no effect anyway (handled by ExternalLink hook) */}
+                    {tor && (
+                        <SectionItem>
+                            <TextColumn
+                                title={<Translation id="TR_ONION_LINKS_TITLE" />}
+                                description={<Translation id="TR_ONION_LINKS_DESCRIPTION" />}
                             />
-                        </ActionColumn>
-                    </SectionItem>
+                            <ActionColumn>
+                                <Switch
+                                    data-test="@settings/general/onion-links-switch"
+                                    checked={torOnionLinks}
+                                    onChange={() => {
+                                        analytics.report({
+                                            type: 'menu/toggle-onion-links',
+                                            payload: {
+                                                value: !torOnionLinks,
+                                            },
+                                        });
+                                        setOnionLinks(!torOnionLinks);
+                                    }}
+                                />
+                            </ActionColumn>
+                        </SectionItem>
+                    )}
                 </Section>
             )}
 
