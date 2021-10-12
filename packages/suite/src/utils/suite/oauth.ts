@@ -119,10 +119,9 @@ const getWebHandlerInstance = (
         window.removeEventListener('message', webHandlerInstance);
     }
     webHandlerInstance = (e: MessageEvent<Message>) => {
-        if (window.location.origin !== e.origin) {
-            return;
-        }
+        if (window.location.origin !== e.origin) return;
         if (!e.data.search && !e.data.hash) return;
+        if (e.data.key !== 'trezor-oauth') return;
 
         handleResponse(
             e.data,
