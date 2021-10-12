@@ -4,7 +4,12 @@
         <script>
             // google implicit flow - hash
             // dropbox authorization code flow - search
-            var message = { hash: window.location.hash, search: window.location.search };
+            const message = { 
+                // key used to exclude unexpected messages
+                key: "trezor-oauth", 
+                hash: window.location.hash, 
+                search: window.location.search, 
+            };
 
             if (window.opener) {
                 window.opener.postMessage(message, window.location.origin);
