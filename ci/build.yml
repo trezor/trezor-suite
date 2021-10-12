@@ -18,6 +18,11 @@
 suite-web build dev:
   stage: build
   <<: *config_sign_dev
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - node_modules/
+      - .yarn/
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
@@ -36,6 +41,11 @@ suite-web build stable:
       - releases
       - schedules
       - /^release\//
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - node_modules/
+      - .yarn
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
@@ -56,6 +66,11 @@ suite-web build stable codesign:
     - darwin
   variables:
     IS_CODESIGN_BUILD: "true"
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - node_modules/
+      - .yarn-nix/
   script:
     - nix-shell --run "git lfs pull"
     - nix-shell --run "yarn install --frozen-lockfile --cache-folder .yarn-nix --prefer-offline"
@@ -72,6 +87,11 @@ suite-web build stable codesign:
 ## Build jobs
 suite-web-landing build dev:
   stage: build
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - node_modules/
+      - .yarn/
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
@@ -90,6 +110,11 @@ suite-web-landing build stable:
       - schedules
       - /^release\//
       - codesign
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - node_modules/
+      - .yarn/
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
@@ -103,6 +128,11 @@ suite-web-landing build stable:
 # Suite desktop build
 .build: &build
   stage: build
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - node_modules/
+      - .yarn/
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
@@ -118,6 +148,11 @@ suite-web-landing build stable:
     expire_in: 1 days
 
 .build_nix: &build_nix
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - node_modules/
+      - .yarn-nix/
   script:  # override build script to use nix-shell instead
     - nix-shell --run "git lfs pull"
     - nix-shell --run "yarn install --frozen-lockfile --cache-folder .yarn-nix --prefer-offline"
@@ -263,6 +298,11 @@ suite-native build android:
   stage: build
   only:
     <<: *run_everything_rules
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - node_modules/
+      - .yarn/
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
@@ -281,6 +321,11 @@ suite-native build android manual:
   except:
     <<: *run_everything_rules
   image: $CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX/reactnativecommunity/react-native-android
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - node_modules/
+      - .yarn/
   script:
     - yarn install --frozen-lockfile --cache-folder .yarn --prefer-offline
     - yarn build:libs
