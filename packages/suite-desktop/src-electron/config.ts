@@ -1,6 +1,6 @@
-import { TOR_DOMAIN } from '@suite-constants/urls';
+import { TOR_URLS } from '@suite-constants/tor';
 
-export const onionDomain = TOR_DOMAIN;
+export const onionDomain = TOR_URLS['trezor.io'];
 
 export const oauthUrls = [
     'https://accounts.google.com',

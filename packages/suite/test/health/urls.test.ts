@@ -8,8 +8,6 @@ const excluded = [
     URLS.TREZOR_DATA_URL,
     // TODO: it works locally but CI times out, probably cant handle the redirect or something..
     URLS.TOS_URL,
-    // Trezor onion domain is unreachable without Tor
-    URLS.TOR_DOMAIN,
 ];
 
 const getUrls = () => {
