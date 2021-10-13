@@ -4,7 +4,7 @@ import { resolveStaticPath } from '@suite-utils/build';
 import { ServerStyleSheet } from 'styled-components';
 import globalStyles from '../support/styles';
 import { isEnabled } from '@suite-utils/features';
-import { TOR_DOMAIN } from '@suite-constants/urls';
+import { TOR_URLS } from '@suite-constants/tor';
 
 const isOnionLocation = isEnabled('ONION_LOCATION_META');
 
@@ -48,7 +48,10 @@ export default class MyDocument extends Document {
                     <meta httpEquiv="cache-control" content="no-cache" />
                     <meta httpEquiv="expires" content="-1" />
                     {isOnionLocation && (
-                        <meta httpEquiv="onion-location" content={`http://suite.${TOR_DOMAIN}`} />
+                        <meta
+                            httpEquiv="onion-location"
+                            content={`http://suite.${TOR_URLS['trezor.io']}`}
+                        />
                     )}
                     <link
                         media="all"

@@ -1,4 +1,4 @@
-import { TOR_DOMAIN } from '@suite-constants/urls';
+import { TOR_URLS } from '@suite-constants/tor';
 
 export const PROTOCOL = 'file';
 
@@ -39,6 +39,6 @@ export const HTTP_ORIGINS_DEFAULT = [
     'trezor.io',
     '*.trezor.io',
     '*.sldev.cz',
-    TOR_DOMAIN,
-    `*.${TOR_DOMAIN}`,
+    TOR_URLS['trezor.io'],
+    `*.${TOR_URLS['trezor.io']}`,
 ];
