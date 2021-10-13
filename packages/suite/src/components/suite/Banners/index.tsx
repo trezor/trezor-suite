@@ -14,8 +14,8 @@ import MessageSystemBanner from './MessageSystemBanner';
 import SafetyChecksBanner from './SafetyChecks';
 import TranslationMode from './TranslationMode';
 
-const Wrapper = styled.div<{ onTop?: boolean }>`
-    z-index: ${props => (props.onTop ? '10001' : '3')};
+const Wrapper = styled.div<{ isOnTop?: boolean }>`
+    z-index: ${props => (props.isOnTop ? '10001' : '3')};
     background: ${props => props.theme.BG_WHITE};
 `;
 
@@ -85,7 +85,7 @@ const Banners = () => {
     return (
         <>
             {useMessageSystemBanner && (
-                <Wrapper onTop>
+                <Wrapper isOnTop>
                     {/* @ts-ignore - fix ts which thinks that "messageSystemBanner" can be null */}
                     <MessageSystemBanner message={messageSystemBanner} />
                 </Wrapper>
