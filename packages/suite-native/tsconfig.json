@@ -269,7 +269,8 @@
         "noUnusedParameters": true,
         "sourceMap": true,
         "strict": true,
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "useUnknownInCatchVariables": false
     },
     "include": [
         "./src/App.tsx",

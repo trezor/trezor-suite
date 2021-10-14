@@ -303,7 +303,8 @@
         "sourceMap": true,
         "strict": true,
         "target": "ES2020",
-        "noErrorTruncation": true
+        "noErrorTruncation": true,
+        "useUnknownInCatchVariables": false
     },
     "exclude": [
         "node_modules",
