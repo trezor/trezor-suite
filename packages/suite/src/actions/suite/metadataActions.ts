@@ -363,8 +363,11 @@ export const fetchMetadata =
 
 export const setAccountMetadataKey =
     (account: Account) => (dispatch: Dispatch, getState: GetState) => {
-        const { device } = getState().suite;
-        if (!device || device.metadata.status !== 'enabled') return account;
+        const { devices } = getState();
+        const device = devices.find(d => d.state === account.deviceState);
+        if (!device || device.metadata.status !== 'enabled') {
+            return account;
+        }
 
         try {
             const metaKey = metadataUtils.deriveMetadataKey(
