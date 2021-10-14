@@ -1,5 +1,4 @@
 {
-    // "extends": "../../tsconfig.json",
     "compilerOptions": {
         "baseUrl": "./",
         "target": "es5",
@@ -16,7 +15,8 @@
         "noImplicitAny": true,
         "strictNullChecks": true,
         "jsx": "react",
-        "outDir": "./lib"
+        "outDir": "./lib",
+        "useUnknownInCatchVariables": false
     },
     "include": ["./src"],
     "exclude": ["node_modules", "**/__tests__/*"]
