@@ -54,7 +54,7 @@ const Protocol = () => {
     }, [search, handleProtocolRequest]);
 
     useEffect(() => {
-        if (isWeb()) {
+        if (isWeb() && navigator.registerProtocolHandler) {
             navigator.registerProtocolHandler(
                 'bitcoin',
                 `${window.location.origin}${process.env.ASSET_PREFIX ?? ''}/?uri=%s`,
