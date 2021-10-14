@@ -5,13 +5,12 @@ import type { SuiteThemeVariant, EnvironmentType } from '@suite-types';
 /* This way, we can override simple utils, which helps to polyfill methods which are not available in react-native. */
 export const getUserAgent = () => window.navigator.userAgent;
 
+// List of platforms https://docker.apachezone.com/blog/74
 export const getPlatform = () => window.navigator.platform;
 
 export const getPlatformLanguage = () => window.navigator.language;
 
 export const getPlatformLanguages = () => window.navigator.languages;
-
-export const getAppVersion = () => window.navigator.appVersion;
 
 export const getScreenWidth = () => window.screen.width;
 
@@ -25,7 +24,7 @@ export const getLocationOrigin = () => window.location.origin;
 
 export const getLocationHostname = () => window.location.hostname;
 
-/* For usage in Electron (SSR) */
+/* For usage in Electron */
 export const getProcessPlatform = () => process.platform;
 
 let userAgentParser: UAParser;
@@ -41,32 +40,38 @@ export const isMacOs = () => {
     if (getProcessPlatform() === 'darwin') return true;
     if (typeof window === 'undefined') return;
 
-    return ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'].includes(getPlatform());
+    return getPlatform().startsWith('Mac');
 };
 
 export const isWindows = () => {
     if (getProcessPlatform() === 'win32') return true;
     if (typeof window === 'undefined') return;
 
-    return ['Win32', 'Win64', 'Windows', 'WinCE'].includes(getPlatform());
+    return getPlatform().startsWith('Win');
 };
+
+export const isIOs = () => ['iPhone', 'iPad', 'iPod'].includes(getPlatform());
+
+export const isAndroid = () => /Android/.test(getUserAgent());
+
+export const isChromeOs = () => /CrOS/.test(getUserAgent());
 
 export const isLinux = () => {
     if (getProcessPlatform() === 'linux') return true;
     if (typeof window === 'undefined') return;
 
-    return /Linux/.test(getPlatform());
+    // exclude Android and Chrome OS as window.navigator.platform of those OS is Linux
+    if (isAndroid() || isChromeOs()) return false;
+
+    return getPlatform().startsWith('Linux');
 };
 
-export const isAndroid = () => getAppVersion().includes('Android');
-
-export const isIOs = () => ['iPhone', 'iPad', 'iPod'].includes(getPlatform());
-
 export const getOsName = () => {
-    if (isMacOs()) return 'macos';
-    if (isLinux()) return 'linux';
     if (isWindows()) return 'windows';
+    if (isMacOs()) return 'macos';
     if (isAndroid()) return 'android';
+    if (isChromeOs()) return 'chromeos';
+    if (isLinux()) return 'linux';
     if (isIOs()) return 'ios';
 
     return '';
