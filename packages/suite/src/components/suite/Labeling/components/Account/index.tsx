@@ -26,7 +26,9 @@ const Account = ({ account }: Props) => {
 
     if (accounts.length < 1) return null;
 
-    const accountLabel: JSX.Element = (
+    const accountLabel: string | JSX.Element = accounts[0]?.metadata?.accountLabel ? (
+        accounts[0].metadata.accountLabel
+    ) : (
         <Translation
             id="LABELING_ACCOUNT"
             values={{
