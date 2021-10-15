@@ -5,12 +5,12 @@ export const THEME = {
     light: {
         THEME: 'light',
 
-        BG_GREEN: '#39a814',
+        BG_GREEN: '#00854D',
         BG_LIGHT_GREEN: '#effaec',
         BG_SECONDARY: '#effaec', // used for secondary button, in light mode same as LIGHT_GREEN
-        BG_SECONDARY_HOVER: '#e8f3e5',
-        BG_GREEN_HOVER: '#339714',
-        BG_LIGHT_GREEN_HOVER: '#e8f3e5',
+        BG_SECONDARY_HOVER: '#e3ede0',
+        BG_GREEN_HOVER: '#007837',
+        BG_LIGHT_GREEN_HOVER: '#e3ede0',
         BG_GREY: '#f4f4f4',
         BG_GREY_OPEN: '#f4f4f4', // used for main menu open state and similar
         BG_GREY_ALT: '#f4f4f4',
@@ -24,14 +24,15 @@ export const THEME = {
         BG_TOOLTIP_BORDER: '#3a3b3c',
         BG_ICON: 'transparent',
 
-        TYPE_GREEN: '#279503',
+        TYPE_GREEN: '#00854D',
         TYPE_ORANGE: '#c19009',
         TYPE_BLUE: '#1d88c5',
         TYPE_RED: '#cd4949',
-        TYPE_DARK_GREY: '#404040',
+        TYPE_DARK_GREY: '#1F1F1F',
         TYPE_LIGHT_GREY: '#808080',
         TYPE_LIGHTER_GREY: '#bdbdbd',
         TYPE_WHITE: '#ffffff',
+        TYPE_SECONDARY_TEXT: '#00854D',
 
         STROKE_GREY: '#e8e8e8',
         STROKE_GREY_ALT: '#e8e8e8',
@@ -42,7 +43,7 @@ export const THEME = {
 
         GRADIENT_SKELETON_START: '#eaeaea',
 
-        GRADIENT_GREEN_START: '#39a814',
+        GRADIENT_GREEN_START: '#00854D',
         GRADIENT_GREEN_END: '#4cbc26',
         GRADIENT_RED_START: '#d15b5b',
         GRADIENT_RED_END: '#e75f5f',
@@ -62,11 +63,11 @@ export const THEME = {
     dark: {
         THEME: 'dark',
 
-        BG_GREEN: '#5ea447',
-        BG_GREEN_HOVER: '#4e883b', // improvisation
+        BG_GREEN: '#00854D',
+        BG_GREEN_HOVER: '#007837', // improvisation
         BG_LIGHT_GREEN: '#1a2516',
-        BG_SECONDARY: '#3a3b3c', // special color for secondary button bg, in dark mode it is same as tertiary
-        BG_SECONDARY_HOVER: '#373839', // special color for secondary button bg, in dark mode it is same as tertiary
+        BG_SECONDARY: '#3A3B3C', // special color for secondary button bg, in dark mode it is same as tertiary
+        BG_SECONDARY_HOVER: '#2E2F30', // special color for secondary button bg, in dark mode it is same as tertiary
         BG_LIGHT_GREEN_HOVER: '#131d10', // improvisation
         BG_GREY: '#18191a',
         BG_GREY_OPEN: '#141414', // used for main menu active state
@@ -80,7 +81,7 @@ export const THEME = {
         BG_TOOLTIP: '#3a3b3c', // same as STROKE_GREY in dark theme
         BG_ICON: '#ffffff',
 
-        TYPE_GREEN: '#66ab4e',
+        TYPE_GREEN: '#00854D',
         TYPE_ORANGE: '#9b813b',
         TYPE_BLUE: '#197eaa',
         TYPE_RED: '#c65353',
@@ -88,6 +89,7 @@ export const THEME = {
         TYPE_LIGHT_GREY: '#959596',
         TYPE_LIGHTER_GREY: '#bdbdbd',
         TYPE_WHITE: '#fafafa',
+        TYPE_SECONDARY_TEXT: '#ffffff',
 
         STROKE_GREY: '#3a3b3c',
         STROKE_GREY_ALT: '#5c5d5e', // used for light border on BG_WHITE_ALT in dark mode
@@ -120,12 +122,12 @@ export const THEME = {
     black: {
         THEME: 'black',
 
-        BG_GREEN: '#5ea447',
-        BG_GREEN_HOVER: '#4e883b', // improvisation
+        BG_GREEN: '#e3ede0',
+        BG_GREEN_HOVER: '#007837', // improvisation
         BG_LIGHT_GREEN: '#1a2516',
         BG_LIGHT_GREEN_HOVER: '#131d10', // improvisation
-        BG_SECONDARY: '#3a3b3c', // TODO
-        BG_SECONDARY_HOVER: '#373839', // TODO
+        BG_SECONDARY: '#3A3B3C', // TODO
+        BG_SECONDARY_HOVER: '#2E2F30', // TODO
         BG_GREY: '#000000',
         BG_GREY_OPEN: '#141414', // TODO
         BG_GREY_ALT: '#262626', // used for selected account item, account search input, tertiary buttons
