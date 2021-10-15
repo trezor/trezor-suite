@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Tooltip, ButtonProps } from '@trezor/components';
+import { Button, Tooltip, ButtonProps, useTheme } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { TrezorDevice } from '@suite-types';
 import { useActions, useDiscovery } from '@suite-hooks';
@@ -10,6 +10,7 @@ interface Props extends ButtonProps {
     device: TrezorDevice | undefined;
     noButtonLabel?: boolean;
     closeMenu?: () => void;
+    isDisabled?: boolean;
 }
 
 const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunning: boolean) => {
@@ -23,6 +24,7 @@ const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunn
 };
 
 const AddAccountButton = ({ device, isDisabled, noButtonLabel, closeMenu, ...rest }: Props) => {
+    const theme = useTheme();
     const { discovery } = useDiscovery();
     const { openModal } = useActions({
         openModal: modalActions.openModal,
@@ -54,6 +56,9 @@ const AddAccountButton = ({ device, isDisabled, noButtonLabel, closeMenu, ...res
             }
             icon="PLUS"
             variant="secondary"
+            color={
+                addAccountDisabled || isDisabled ? theme.TYPE_LIGHT_GREY : theme.TYPE_SECONDARY_TEXT
+            }
             isDisabled={addAccountDisabled || isDisabled}
             {...rest}
         >

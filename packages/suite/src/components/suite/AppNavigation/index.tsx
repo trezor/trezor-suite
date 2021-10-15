@@ -186,13 +186,16 @@ const StyledIcon = styled(Icon)`
 `;
 
 const StyledDropdown = styled(Dropdown)`
-    background: ${props => props.theme.BG_GREY};
+    background: ${props => props.theme.BG_SECONDARY};
     width: 38px;
     height: 38px;
     border-radius: 4px;
     & > :first-child {
         width: 100%;
         height: 100%;
+    }
+    &:hover {
+        background: ${props => props.theme.BG_SECONDARY_HOVER};
     }
 `;
 
