@@ -29,7 +29,7 @@ export type AnalyticsAction =
 
 // Don't forget to update docs with changelog!
 // <breaking-change>.<analytics-extended>
-export const version = '1.13';
+export const version = '1.14';
 
 export type AnalyticsEvent =
     | {
