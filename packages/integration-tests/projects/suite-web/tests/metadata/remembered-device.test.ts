@@ -90,9 +90,8 @@ On disable, it throws away all metadata related records from memory.`, () => {
             cy.log(
                 'At this moment, there are no labels. But we still can see "add label" button, which inits metadata flow but without obtaining keys from device (they are saved!)',
             );
-            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click({
-                force: true,
-            });
+            cy.hoverTestElement("@metadata/accountLabel/m/84'/0'/0'/hover-container");
+            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click();
             cy.getTestElement(`@modal/metadata-provider/${f.provider}-button`).click();
             cy.getTestElement('@modal/metadata-provider').should('not.exist');
             cy.getTestElement('@account-menu/btc/normal/0/label').should(
@@ -106,9 +105,8 @@ On disable, it throws away all metadata related records from memory.`, () => {
             cy.getTestElement('@settings/metadata-switch').click({ force: true });
             cy.getTestElement('@suite/menu/wallet-index').click();
             cy.getTestElement('@account-menu/btc/normal/0/label').should('not.contain', 'label');
-            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click({
-                force: true,
-            });
+            cy.hoverTestElement("@metadata/accountLabel/m/84'/0'/0'/hover-container");
+            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click();
             cy.log(
                 'disabling metadata removed also all keys, so metadata init flow takes all steps now expect for providers, these stay connected',
             );
@@ -124,9 +122,7 @@ On disable, it throws away all metadata related records from memory.`, () => {
             cy.task('stopEmu');
 
             cy.log('Device is saved, when disconnected, user still can edit labels');
-            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click({
-                force: true,
-            });
+            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/edit-label-button").click();
             cy.getTestElement('@metadata/input').type(' edited for remembered{enter}');
 
             cy.log('Now again, lets try disconnecting provider');
@@ -138,9 +134,8 @@ On disable, it throws away all metadata related records from memory.`, () => {
             cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
 
             cy.log('Still possible to reconnect provider, we have keys still saved');
-            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click({
-                force: true,
-            });
+            cy.hoverTestElement("@metadata/accountLabel/m/84'/0'/0'/hover-container");
+            cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button").click();
             cy.getTestElement(`@modal/metadata-provider/${f.provider}-button`).click();
             cy.getTestElement('@modal/metadata-provider').should('not.exist');
             cy.getTestElement('@metadata/input').type('mnau{enter}');

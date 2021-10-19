@@ -45,7 +45,7 @@ Hovering over fields that may be labeled shows "add label" button upon which is 
             );
             cy.getTestElement('@account-menu/btc/normal/0/label').should('contain', 'Bitcoin');
 
-            cy.hoverTestElement("@metadata/m/84'/0'/0'/label-container");
+            cy.hoverTestElement("@metadata/accountLabel/m/84'/0'/0'/hover-container");
             cy.getTestElement("@metadata/accountLabel/m/84'/0'/0'/add-label-button")
                 .should('be.visible')
                 .click();

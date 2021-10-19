@@ -285,7 +285,7 @@ const MetadataLabeling = (props: Props) => {
         return ButtonLikeLabel;
     }, [props.payload.value]);
 
-    const labelContainerDatatest = `@metadata/${props.payload.defaultValue}/label-container`;
+    const labelContainerDatatest = `${dataTestBase}/hover-container`;
 
     // metadata is still initiating, on hover, show only disabled button with spinner
     if (metadata.initiating)
