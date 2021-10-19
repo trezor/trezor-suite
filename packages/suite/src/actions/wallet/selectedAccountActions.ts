@@ -126,7 +126,12 @@ const getAccountState = () => (dispatch: Dispatch, getState: GetState) => {
         };
     }
 
-    const failed = discovery.failed.find(f => f.symbol === network.symbol);
+    const failed = discovery.failed.find(
+        f =>
+            f.symbol === network.symbol &&
+            f.index === params.accountIndex &&
+            f.accountType === params.accountType,
+    );
     // discovery for requested network failed
     if (failed) {
         return {
