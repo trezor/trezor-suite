@@ -2,24 +2,30 @@
 
 /docker @vdovhanych @mroz22
 
-/packages/blockchain-link @szymonlesisz
+/packages/blockchain-link @mroz22 @marekrjpolak
 
-/packages/components @slowbackspace @pingpwned
-/packages/components-storybook @slowbackspace @pingpwned
-/packages/components-storybook-native @matejkriz
+/packages/components @pingpwned @marekrjpolak @matejkriz
+
+/packages/connect-common @mroz22 @szymonlesisz
+
+/packages/connect-iframe @mroz22 @szymonlesisz
 
 /packages/integration-tests @vdovhanych @mroz22
 
-/packages/rollout @mroz22
+/packages/rollout @mroz22 @matejkriz
 
-/packages/suite @szymonlesisz @tomasklim @mroz22
+/packages/suite @tomasklim @mroz22
 
-/packages/suite-data @tomasklim
+/packages/suite-build @matejkriz @tomasklim
 
-/packages/suite-desktop @tomasklim @szymonlesisz
+/packages/suite-data @tomasklim @matejkriz
+
+/packages/suite-desktop @tomasklim @marekrjpolak
 
 /packages/suite-native @matejkriz
 
-/packages/suite-storage
+/packages/suite-storage @mroz22 @matejkriz
 
-/packages/suite-web @mroz22 @tomasklim
+/packages/suite-web @marekrjpolak @tomasklim
+
+/packages/suite-web-landing @matejkriz @pingpwned
