@@ -68,27 +68,28 @@ export const onLocationChange = (url: string) => (dispatch: Dispatch, getState: 
 export const goto =
     (routeName: Route['name'], params?: RouteParams, preserveParams = false) =>
     (dispatch: Dispatch, getState: GetState) => {
-        const hasRouterLock = getState().suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
+        const { suite, router } = getState();
+        const hasRouterLock = suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
         if (hasRouterLock) {
             dispatch(suiteActions.lockRouter(false));
         }
         const unlocked = dispatch(onBeforePopState());
         if (!unlocked) return;
 
-        const urlBase = getRoute(routeName, params);
-        if (urlBase === getState().router.url) return;
+        const urlBase = getPrefixedURL(getRoute(routeName, params));
+        if (urlBase === router.url) return;
 
-        const url = `${urlBase}${preserveParams ? history.location.hash : ''}`;
+        const newUrl = `${urlBase}${preserveParams ? history.location.hash : ''}`;
 
         const route = findRouteByName(routeName);
         if (route && route.isForegroundApp) {
-            dispatch(onLocationChange(url));
+            dispatch(onLocationChange(newUrl));
             dispatch(suiteActions.lockRouter(true));
             return;
         }
 
-        dispatch(onLocationChange(url));
-        history.push(getPrefixedURL(url));
+        dispatch(onLocationChange(newUrl));
+        history.push(newUrl);
     };
 
 /**
