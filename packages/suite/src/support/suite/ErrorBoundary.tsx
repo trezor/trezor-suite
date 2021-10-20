@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import * as Sentry from '@sentry/browser';
 import { connect } from 'react-redux';
 import { AppState } from '@suite/types/suite';
 import { H1, P, Button, variables } from '@trezor/components';
@@ -40,10 +39,6 @@ const Separator = styled.div`
     @media only screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
         width: 90%;
     }
-`;
-
-const SendReportButton = styled(Button)`
-    margin-top: 30px;
 `;
 
 const StyledButton = styled(Button)`
@@ -120,14 +115,9 @@ class ErrorBoundary extends React.Component<Props, StateProps> {
                 <Wrapper>
                     <H1>Error occurred</H1>
                     <GenericMessage textAlign="center">
-                        It appears something is broken. You might let us know by sending report
+                        It appears something is broken.
                     </GenericMessage>
                     <ErrorMessage>{this.state.error.message}</ErrorMessage>
-                    {/* <P>{this.state.error.stack}</P> */}
-
-                    <SendReportButton variant="primary" onClick={() => Sentry.showReportDialog()}>
-                        Send report
-                    </SendReportButton>
                     <Separator />
                     <Buttons>
                         <StyledButton
