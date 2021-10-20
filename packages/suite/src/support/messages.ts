@@ -5915,18 +5915,6 @@ export default defineMessages({
         id: 'TR_SUITE_WEB_LANDING_SUITE_ON_WEB',
         defaultMessage: 'Trezor Suite for web',
     },
-    TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_1: {
-        id: 'TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_1',
-        defaultMessage: 'Improve',
-    },
-    TR_SUITE_WEB_LANDING_FOOTER_FEEDBACK: {
-        id: 'TR_SUITE_WEB_LANDING_FOOTER_FEEDBACK',
-        defaultMessage: 'Give feedback',
-    },
-    TR_SUITE_WEB_LANDING_FOOTER_JOIN_CLOSED_BETA: {
-        id: 'TR_SUITE_WEB_LANDING_FOOTER_JOIN_CLOSED_BETA',
-        defaultMessage: 'Join closed Beta',
-    },
     TR_SUITE_WEB_LANDING_FOOTER_BLOG: {
         id: 'TR_SUITE_WEB_LANDING_FOOTER_BLOG',
         defaultMessage: 'Trezor Blog',
