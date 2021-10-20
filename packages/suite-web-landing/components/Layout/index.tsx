@@ -128,17 +128,6 @@ const Index = ({ children, pathToApp }: Props) => (
             <FooterLinks>
                 <FooterList>
                     <FooterHeadline>
-                        <Translation id="TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_1" />
-                    </FooterHeadline>
-                    <FooterLink href="https://satoshilabs.typeform.com/to/BNMEfPun">
-                        <Translation id="TR_SUITE_WEB_LANDING_FOOTER_FEEDBACK" />
-                    </FooterLink>
-                    <FooterLink href="https://blog.trezor.io/join-the-trezor-beta-testers-community-b19761f4960a">
-                        <Translation id="TR_SUITE_WEB_LANDING_FOOTER_JOIN_CLOSED_BETA" />
-                    </FooterLink>
-                </FooterList>
-                <FooterList>
-                    <FooterHeadline>
                         <Translation id="TR_SUITE_WEB_LANDING_FOOTER_HEADLINE_2" />
                     </FooterHeadline>
                     <FooterLink href="https://blog.trezor.io/">
