@@ -1,6 +1,11 @@
 # Summary
 
 -   [Introduction](index.md)
+-   [Analytics](analytics/index.md)
+    -   [AWS](analytics/aws.md)
+    -   [AWS (technical)](analytics/aws-technical.md)
+    -   [Changelog](analytics/changelog.md)
+    -   [Sentry](analytics/sentry.md)
 -   [Releases](releases/index.md)
     -   [Adding New Firmwares](releases/adding-new-firmwares.md)
     -   [Desktop Updates](releases/desktop_updates.md)
@@ -21,7 +26,6 @@
 -   [Tests](tests/index.md)
     -   [Suite-web e2e](tests/e2e-web.md)
 -   [Miscellaneous](misc/index.md)
-    -   [Analytics](misc/analytics.md)
     -   [Desktop Logger](misc/desktop_logger.md)
     -   [Fiat Rates](misc/fiat_rates.md)
     -   [Feature Flags](misc/feature_flags.md)
