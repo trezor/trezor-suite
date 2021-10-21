@@ -4,6 +4,7 @@
 
 import * as blakeHash from 'blake-hash';
 import * as createHash from 'create-hash';
+import * as createHmac from 'create-hmac';
 
 export function ripemd160(buffer: Buffer): Buffer {
     try {
@@ -35,4 +36,8 @@ export function hash160blake256(buffer: Buffer): Buffer {
 
 export function hash256(buffer: Buffer): Buffer {
     return sha256(sha256(buffer));
+}
+
+export function hmacSHA512(key: Buffer, data: Buffer): Buffer {
+    return createHmac('sha512', key).update(data).digest();
 }

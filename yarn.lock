@@ -5790,6 +5790,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/create-hmac@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@types/create-hmac/-/create-hmac-1.1.0.tgz#d5bc34b65aeaf8f7bbd4a064172ab48318763b63"
+  integrity sha512-BNYNdzdhOZZQWCOpwvIll3FSvgo3e55Y2M6s/jOY6TuOCwqt3cLmQsK4tSmJ5fayDot8EG4k3+hcZagfww9JlQ==
+  dependencies:
+    "@types/node" "*"
+
 "@types/d3-color@*":
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/@types/d3-color/-/d3-color-3.0.2.tgz#53f2d6325f66ee79afd707c05ac849e8ae0edbb0"
@@ -6651,6 +6658,13 @@
     "@types/uglify-js" "*"
     "@types/webpack-sources" "*"
     source-map "^0.6.0"
+
+"@types/wif@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@types/wif/-/wif-2.0.2.tgz#5bd845e29406bc7d49acca6d2a6c3230f3b53d3c"
+  integrity sha512-IiIuBeJzlh4LWJ7kVTrX0nwB60OG0vvGTaWC/SgSbVFw7uYUTF6gEuvDZ1goWkeirekJDD58Y8g7NljQh2fNkA==
+  dependencies:
+    "@types/node" "*"
 
 "@types/ws@^7.2.0":
   version "7.4.0"
@@ -26781,7 +26795,7 @@ widest-line@^3.1.0:
   dependencies:
     string-width "^4.0.0"
 
-wif@^2.0.1:
+wif@^2.0.1, wif@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/wif/-/wif-2.0.6.tgz#08d3f52056c66679299726fade0d432ae74b4704"
   integrity sha1-CNP1IFbGZnkplyb63g1DKudLRwQ=
