@@ -1,0 +1,79 @@
+// https://kyusuf.com/post/completely-css-custom-checkbox-radio-buttons-and-select-boxes
+
+// <label class="control control--checkbox">First checkbox
+// <input type="checkbox" checked="checked"/>
+// <div class="control__indicator"></div>
+// </label>
+
+.custom-checkbox {
+    input {
+        position: absolute;
+        left: -9999px;
+        z-index: -1;
+        opacity: 0;
+
+        &:checked + .indicator:after {
+            content: '✔';
+            color: @color_white;
+            background-color: @color_green;
+            border: 0;
+        }
+        &:disabled + .indicator:after {
+            background-color: #dddddd;
+        }
+    }
+
+    position: relative;
+    //padding-right: 0px !important;
+    //margin-left: 18px; // - 2px; .indicator border
+
+    .indicator {
+        position: relative;
+        display: inline-block;
+        height: 15px;
+        width: 15px;
+        margin-left: 5px;
+
+        &:after {
+            content: '';
+            font-size: 10px;
+            text-align: center;
+            padding-top: 2px;
+            position: absolute;
+            top: 2px;
+            left: 0;
+            height: 15px;
+            width: 15px;
+            background-color: @color_white;
+            border: 1px solid #ccc;
+        }
+    }
+
+    &.radio {
+        .indicator {
+            &:after {
+                border-radius: 50%;
+            }
+        }
+
+        input:checked + .indicator:after {
+            content: '';
+            background: white;
+            border: 4px solid @color_green;
+        }
+    }
+
+    &.align-left {
+        padding-left: 20px;
+        padding-right: 10px;
+        .indicator {
+            position: absolute;
+            left: 0;
+            top: 2px;
+            margin: 0;
+            &:after {
+                top: 0px;
+            }
+        }
+    }
+}

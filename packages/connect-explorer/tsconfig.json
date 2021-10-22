@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "lib": ["dom", "es2019", "esnext.asynciterable"],
+        "outDir": "./lib",
+        "strict": true,
+        "declaration": true,
+        "resolveJsonModule": true,
+        "noImplicitAny": false,
+        "removeComments": true,
+        "types": ["jest", "node"],
+        "esModuleInterop": true,
+        "useUnknownInCatchVariables": false,
+        "jsx": "preserve",
+    },
+    "include": ["./src/**/*.ts", "./src/**/*.tsx", "global.d.ts",],
+    "exclude": ["node_modules"]
+}
