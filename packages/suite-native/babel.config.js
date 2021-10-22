@@ -14,9 +14,11 @@ module.exports = api => {
                         // web and desktop use next.js router
                         '@suite-actions/routerActions':
                             './packages/suite-native/src/actions/suite/routerActions',
-                        // unlike on web, messages are bundled with application and might be simply required
+                        // unlike on web, messages and locales are bundled with application and might be simply required
                         '@suite-actions/languageActions':
                             './packages/suite-native/src/actions/suite/languageActions',
+                        '@suite-hooks/useLocales':
+                            './packages/suite-native/src/hooks/suite/useLocales',
 
                         // react-native env utils
                         '^@suite-utils/env': './packages/suite-native/src/utils/suite/env',
