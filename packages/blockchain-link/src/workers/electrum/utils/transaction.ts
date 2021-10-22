@@ -1,0 +1,134 @@
+import { arrayToDic, flatten, distinct, sum } from './misc';
+import { btcToSat } from './transform';
+import type { Transaction as BlockbookTransaction } from '../../../types/blockbook';
+import type {
+    ElectrumAPI,
+    TransactionVerbose,
+    TxIn,
+    TxCoinbase,
+    TxOut,
+    HistoryTx,
+} from '../../../types/electrum';
+
+const transformOpReturn = (hex: string) => {
+    const [, _len, data] = hex.match(/^6a(?:4c)?([0-9a-f]{2})([0-9a-f]*)$/i) ?? [];
+    return data ? `OP_RETURN (${Buffer.from(data, 'hex').toString('ascii')})` : undefined;
+};
+
+const parseAddresses = ({ address, addresses, type, hex }: TxOut['scriptPubKey']) => {
+    if (type === 'nulldata') {
+        const opReturn = transformOpReturn(hex);
+        return {
+            addresses: opReturn ? [opReturn] : [],
+            isAddress: false,
+        };
+    }
+    const addrs = !address ? addresses || [] : [address];
+    return {
+        addresses: addrs,
+        isAddress: addrs.length === 1,
+    };
+};
+
+type GetVout = (txid: string, vout: number) => TransactionVerbose['vout'][number];
+type GetSpent = (txid: string, n: number) => boolean;
+
+const isNotCoinbase = (item: TxIn | TxCoinbase): item is TxIn => (item as any).txid !== undefined;
+
+const formatTransaction =
+    (getVout: GetVout, getSpent: GetSpent, currentHeight: number) =>
+    (tx: TransactionVerbose): BlockbookTransaction => {
+        const { txid, version, vin, vout, hex, blockhash, confirmations, blocktime, locktime } = tx;
+        const vinRegular = vin.filter(isNotCoinbase);
+        const value = vout.map(({ value }) => value).reduce(sum, 0);
+        const valueIn = vinRegular
+            .map(({ txid, vout }) => getVout(txid, vout).value)
+            .reduce(sum, 0);
+        return {
+            txid,
+            hex,
+            version,
+            confirmations,
+            lockTime: locktime,
+            blockTime: blocktime,
+            blockHash: blockhash,
+            blockHeight: currentHeight ? currentHeight - confirmations + 1 : -1, // TODO check,
+            value: btcToSat(value),
+            valueIn: btcToSat(valueIn),
+            fees: btcToSat(valueIn - value),
+            vin: vinRegular.map(({ txid, vout, sequence, n }, index) => ({
+                txid,
+                vout,
+                sequence,
+                n: n || index,
+                value: btcToSat(getVout(txid, vout).value),
+                ...parseAddresses(getVout(txid, vout).scriptPubKey),
+            })),
+            vout: vout.map(({ value, n, scriptPubKey }) => ({
+                value: btcToSat(value),
+                n,
+                spent: getSpent(txid, n),
+                hex: scriptPubKey.hex,
+                ...parseAddresses(scriptPubKey),
+            })),
+        };
+    };
+
+export const getTransactions = async (
+    client: ElectrumAPI,
+    history: HistoryTx[]
+): Promise<BlockbookTransaction[]> => {
+    const txids = history.map(({ tx_hash }) => tx_hash).filter(distinct);
+
+    // TODO optimize blockchain.transaction.get to not use verbose mode but parse
+    // binary data locally instead. Then the transaction could be cached indefinitely.
+
+    const origTxs = await Promise.all(
+        txids.map(txid => client.request('blockchain.transaction.get', txid, true))
+    ).then(txs => arrayToDic(txs, ({ txid }) => txid));
+
+    const prevTxs = await Promise.all(
+        flatten(
+            Object.values(origTxs).map(({ vin }) =>
+                vin.filter(isNotCoinbase).map(({ txid }) => txid)
+            )
+        )
+            .filter(distinct)
+            .filter(txid => !origTxs[txid])
+            .map(txid => client.request('blockchain.transaction.get', txid, true))
+    ).then(txs => arrayToDic(txs, ({ txid }) => txid));
+
+    /* TODO
+     * listunspent is too long for some addresses, but it's probably not a problem
+     * to ignore it as vout[n].spent is not used anywhere anyway
+    const unspentOutputs = await Promise.all(
+        flatten(
+            Object.values(origTxs).map(({ vout }) => vout.map(({ scriptPubKey: { hex } }) => hex))
+        )
+            .filter(distinct)
+            .map(scriptToScripthash)
+            .map(scripthash => client.request('blockchain.scripthash.listunspent', scripthash))
+    )
+        .then(flatten)
+        .then(utxos =>
+            utxos
+                .filter(({ tx_hash }) => origTxs[tx_hash])
+                .reduce(
+                    (dic, { tx_hash, tx_pos }) => ({
+                        ...dic,
+                        [tx_hash]: [...(dic[tx_hash] || []), tx_pos],
+                    }),
+                    {} as { [txid: string]: number[] }
+                )
+        );
+
+    const getSpent = (txid: string, n: number) => !unspentOutputs[txid]?.includes(n);
+    */
+    const getSpent = () => false;
+    const getTx = (txid: string) => origTxs[txid] || prevTxs[txid];
+    const getVout = (txid: string, vout: number) => getTx(txid).vout[vout];
+
+    const currentHeight = client.getInfo()?.block?.height || 0;
+
+    return Object.values(origTxs).map(formatTransaction(getVout, getSpent, currentHeight));
+};
