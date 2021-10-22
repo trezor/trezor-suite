@@ -318,10 +318,19 @@ export const isTestnet = (symbol: Account['symbol']) => {
 };
 
 export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
-    // changed transaction count (total + unconfirmed)
-    const changedTxCount =
+    // changed transaction count when app is running during tx confirmation
+    const changedTxCountOnline =
         freshInfo.history.total + (freshInfo.history.unconfirmed || 0) >
         account.history.total + (account.history.unconfirmed || 0);
+
+    // changed transaction count when app was closed before tx confirmation
+    const changedTxCountOffline =
+        freshInfo.history.total > account.history.total &&
+        (freshInfo.history.unconfirmed || 0) < (account.history.unconfirmed || 0);
+
+    // changed transaction count when app was closed during tx confirmation and account was empty
+    const changedTxCountOfflineFresh =
+        freshInfo.history.total === 0 && freshInfo.history.unconfirmed;
 
     // different sequence or balance
     const changedRipple =
@@ -333,7 +342,13 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     const changedEthereum =
         account.networkType === 'ethereum' && freshInfo.misc!.nonce !== account.misc.nonce;
 
-    return changedTxCount || changedRipple || changedEthereum;
+    return (
+        changedTxCountOfflineFresh ||
+        changedTxCountOffline ||
+        changedTxCountOnline ||
+        changedRipple ||
+        changedEthereum
+    );
 };
 
 // Used in accountActions and failed accounts
