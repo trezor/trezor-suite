@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Tooltip } from '@trezor/components';
+import { Tooltip, H3 } from '@trezor/components';
 import { Translation } from '@suite-components';
 import { ExtendedMessageDescriptor } from '@suite-types';
 
@@ -9,8 +9,9 @@ const Wrapper = styled.div`
     align-items: center;
 `;
 
-const Label = styled.div`
+const Label = styled(H3)`
     margin-right: 4px;
+    color: ${props => props.theme.TYPE_DARK_GREY};
 `;
 
 interface Props {

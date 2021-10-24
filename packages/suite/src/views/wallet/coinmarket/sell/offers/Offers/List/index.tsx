@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { CoinLogo, variables, Icon } from '@trezor/components';
+import { CoinLogo, variables, Icon, H2 } from '@trezor/components';
 import { SellFiatTrade } from 'invity-api';
 import { useCoinmarketSellOffersContext } from '@wallet-hooks/useCoinmarketSellOffers';
 import Quote from './Quote';
@@ -36,8 +36,6 @@ const Right = styled.div`
 const SummaryRow = styled.div`
     display: flex;
     align-items: center;
-    font-size: ${variables.FONT_SIZE.H2};
-    text-transform: uppercase;
 `;
 
 const OrigAmount = styled.div`
@@ -49,10 +47,12 @@ const StyledIcon = styled(Icon)`
     padding: 0 10px;
 `;
 
-const Text = styled.div`
+const Text = styled(H2)`
     display: flex;
     padding-top: 3px;
     align-items: center;
+    text-transform: uppercase;
+    font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
 const Crypto = styled(Text)`

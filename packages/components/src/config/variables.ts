@@ -29,6 +29,7 @@ export const FONT_SIZE = {
     BUTTON: '14px',
     H1: '36px',
     H2: '24px',
+    H3: '20px',
 } as const;
 
 export const NEUE_FONT_SIZE = {

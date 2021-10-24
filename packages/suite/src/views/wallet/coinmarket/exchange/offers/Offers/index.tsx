@@ -7,7 +7,7 @@ import {
     CoinmarketFooter,
     CoinmarketRefreshTime,
 } from '@wallet-components';
-import { variables, Icon, CoinLogo } from '@trezor/components';
+import { variables, Icon, CoinLogo, H2 } from '@trezor/components';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
 
 import List from './List';
@@ -38,17 +38,18 @@ const SummaryRow = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: ${variables.FONT_SIZE.H2};
 `;
 
-const Text = styled.div`
+const Text = styled(H2)`
     display: flex;
     padding-top: 3px;
     align-items: center;
+    font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
 const StyledIcon = styled(Icon)`
-    margin: 0 17px;
+    padding: 0 10px;
+    margin: 0 20px;
 `;
 
 const Left = styled.div`

@@ -1,6 +1,5 @@
 import React, { ReactElement } from 'react';
 import styled from 'styled-components';
-import { variables } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -9,9 +8,7 @@ const Wrapper = styled.div`
 `;
 
 const Left = styled.div`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${props => props.theme.TYPE_DARK_GREY};
-    font-size: ${variables.NEUE_FONT_SIZE.H2};
 `;
 
 const Right = styled.div``;

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, variables, Icon, useTheme } from '@trezor/components';
+import { Button, variables, Icon, useTheme, H2 } from '@trezor/components';
 import { QuestionTooltip, Translation } from '@suite-components';
 import { ExchangeTrade } from 'invity-api';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
@@ -39,9 +39,9 @@ const Main = styled.div`
     border-bottom: 1px solid ${props => props.theme.STROKE_GREY};
 `;
 
-const Left = styled.div`
+const Left = styled(H2)`
     display: flex;
-    font-size: ${variables.FONT_SIZE.H2};
+    font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
 const Right = styled.div`

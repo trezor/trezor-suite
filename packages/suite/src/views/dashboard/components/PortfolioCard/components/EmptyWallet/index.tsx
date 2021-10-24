@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { variables } from '@trezor/components';
+import { variables, H3 } from '@trezor/components';
 import { Translation, Image } from '@suite-components';
 
 const Wrapper = styled.div`
@@ -18,9 +18,8 @@ const Content = styled.div`
     flex-direction: column;
 `;
 
-const Title = styled.div`
+const Title = styled(H3)`
     display: flex;
-    font-size: ${variables.FONT_SIZE.H2};
     color: ${props => props.theme.TYPE_DARK_GREY};
     margin-bottom: 30px;
     text-align: center;

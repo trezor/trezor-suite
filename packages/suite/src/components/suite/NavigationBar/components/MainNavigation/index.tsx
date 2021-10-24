@@ -6,6 +6,7 @@ import { Translation } from '@suite-components';
 import { MAIN_MENU_ITEMS } from '@suite-constants/menu';
 import { useAnalytics, useActions, useSelector, useAccountSearch } from '@suite-hooks';
 import * as routerActions from '@suite-actions/routerActions';
+import { transparentize } from 'polished';
 
 interface ComponentProps {
     isActive: boolean;
@@ -31,12 +32,6 @@ const MenuItem = styled.div<ComponentProps>`
     display: flex;
     cursor: ${props => (!props.isDisabled ? 'pointer' : 'auto')};
     font-size: 16px;
-
-    ${props =>
-        props.isActive &&
-        css`
-            transform: scale(1.25);
-        `}
 
     & + & {
         margin-left: 36px;
@@ -65,13 +60,16 @@ const ItemTitleWrapper = styled.span`
 `;
 
 const ItemTitle = styled.span<ComponentProps>`
-    color: ${props => props.theme.TYPE_LIGHT_GREY};
+    color: ${props => transparentize(0.3, props.theme.TYPE_DARK_GREY)};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    line-height: 24px;
 
     ${props =>
         props.isActive &&
         css`
             color: ${props => props.theme.TYPE_DARK_GREY};
+            font-size: ${variables.FONT_SIZE.H3};
         `}
 
     ${props =>

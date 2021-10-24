@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import styled from 'styled-components';
-import { variables } from '@trezor/components';
+import { H3 } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -12,12 +12,9 @@ const Header = styled.div`
     padding-bottom: 25px;
 `;
 
-const Title = styled.div`
+const Title = styled(H3)`
     display: flex;
     align-items: center;
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${props => props.theme.TYPE_DARK_GREY};
-    font-size: ${variables.NEUE_FONT_SIZE.H2};
 `;
 
 const Actions = styled.div``;

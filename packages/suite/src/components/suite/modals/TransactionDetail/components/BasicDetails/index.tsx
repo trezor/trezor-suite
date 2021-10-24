@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Icon, useTheme, variables, CoinLogo, Tooltip } from '@trezor/components';
+import { Icon, useTheme, variables, CoinLogo, Tooltip, H3 } from '@trezor/components';
 import {
     Translation,
     HiddenPlaceholder,
@@ -128,10 +128,8 @@ const ConfirmationStatusWrapper = styled.div`
     justify-content: flex-end;
 `;
 
-const TxSentStatus = styled.div`
+const TxSentStatus = styled(H3)`
     color: ${props => props.theme.TYPE_DARK_GREY};
-    font-size: ${variables.NEUE_FONT_SIZE.H2};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const ConfirmationStatus = styled.div<{ confirmed: boolean; tiny?: boolean }>`
