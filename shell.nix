@@ -25,27 +25,26 @@ in
       yarn
       SuitePython
       jre
+      p7zip
+      electron
     ] ++ lib.optionals stdenv.isLinux [
       pkg-config
       python2                                                     # older node-gyp still requires python2.x
-      p7zip                                                       # binaries used by node_module: 7zip-bin
       appimagekit nsis openjpeg osslsigncode p7zip squashfsTools  # binaries used by node_module: electron-builder
       cairo giflib libjpeg libpng librsvg pango           # build dependencies for node-canvas
       # winePackages.minimal
     ] ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
       Cocoa
       CoreServices
-      p7zip
-      electron
     ]);
     shellHook = ''
       export NODE_OPTIONS=--max_old_space_size=4096
       export CURDIR="$(pwd)"
       export PATH="$PATH:$CURDIR/node_modules/.bin"
       export ELECTRON_BUILDER_CACHE="$CURDIR/.cache/electron-builder"
-    '' + lib.optionalString stdenv.isLinux ''
-      export npm_config_build_from_source=true  # tell yarn to not download binaries, but build from source
       export USE_SYSTEM_7ZA=true
       export ELECTRON_OVERRIDE_DIST_PATH="${electron}/bin/"
-    '';
+  '' + lib.optionalString stdenv.isLinux ''
+      export npm_config_build_from_source=true  # tell yarn to not download binaries, but build from source
+      '';
   }
