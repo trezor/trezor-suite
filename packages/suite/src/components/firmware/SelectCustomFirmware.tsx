@@ -15,8 +15,6 @@ const StepContainer = styled.div`
 `;
 
 const StepTitle = styled.h2`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.NEUE_FONT_SIZE.H2};
     line-height: 40px;
     text-align: left;
     color: ${props => props.theme.TYPE_DARK_GREY};

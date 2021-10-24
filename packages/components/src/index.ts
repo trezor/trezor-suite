@@ -21,7 +21,7 @@ import { Checkbox, CheckboxProps } from './components/form/Checkbox';
 import { RadioButton, RadioButtonProps } from './components/form/RadioButton';
 import { Switch, SwitchProps } from './components/form/Switch';
 import { Icon, IconProps } from './components/Icon';
-import { H1, H2 } from './components/typography/Heading';
+import { H1, H2, H3 } from './components/typography/Heading';
 import { P, PProps } from './components/typography/Paragraph';
 import { Link, LinkProps } from './components/typography/Link';
 import { Warning } from './components/Warning';
@@ -71,6 +71,7 @@ export {
     IconProps,
     H1,
     H2,
+    H3,
     P,
     PProps,
     Link,

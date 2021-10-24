@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { NEUE_FONT_SIZE, FONT_WEIGHT } from '../../../config/variables';
+import { NEUE_FONT_SIZE, FONT_WEIGHT, FONT_SIZE } from '../../../config/variables';
 
 interface Props {
     textAlign?: 'left' | 'center' | 'right' | 'justify';
@@ -39,17 +39,24 @@ const baseStyles = css`
 const H1 = styled.h1<Props>`
     ${baseStyles};
     font-size: ${NEUE_FONT_SIZE.H1};
-    /* padding-bottom: 10px; */
-    line-height: 32px;
+    line-height: 34px;
     font-weight: normal;
 `;
 
 const H2 = styled.h2<Props>`
     ${baseStyles};
-    font-size: ${NEUE_FONT_SIZE.H2};
-    /* padding-bottom: 10px; */
-    line-height: 24px;
-    font-weight: normal;
+    font-size: ${FONT_SIZE.H2};
+    line-height: 32px;
+    font-weight: ${(props: Props) => props.fontWeight || 500};
+    margin: 0;
 `;
 
-export { H1, H2 };
+const H3 = styled.h3<Props>`
+    ${baseStyles};
+    font-size: ${FONT_SIZE.H3};
+    line-height: 28px;
+    font-weight: ${(props: Props) => props.fontWeight || 500};
+    margin: 0;
+`;
+
+export { H1, H2, H3 };

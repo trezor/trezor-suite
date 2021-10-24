@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { AccountAddress } from 'trezor-connect';
-import { Button, Card, variables } from '@trezor/components';
+import { Button, Card, variables, H2 } from '@trezor/components';
 import { Translation, QuestionTooltip, ReadMoreLink } from '@suite-components';
 import { AppState } from '@suite-types';
 
@@ -39,9 +39,9 @@ const FreshAddressWrapper = styled.div`
     margin-top: 8px;
 `;
 
-const StyledFreshAddress = styled.span`
+const StyledFreshAddress = styled(H2)`
     color: ${props => props.theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.H2};
+    font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 const AddressLabel = styled.span`
     font-weight: 600;

@@ -1,4 +1,4 @@
-import { Button, variables } from '@trezor/components';
+import { Button, H3 } from '@trezor/components';
 import React from 'react';
 import * as routerActions from '@suite-actions/routerActions';
 import { useActions } from '@suite-hooks';
@@ -6,14 +6,12 @@ import { Translation, Modal } from '@suite-components';
 import styled from 'styled-components';
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 
-const Text = styled.div`
+const Text = styled(H3)`
     display: flex;
     width: 100%;
     padding: 10px 0;
     align-items: center;
     color: ${props => props.theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.H2};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const LeftButton = styled(Button)`

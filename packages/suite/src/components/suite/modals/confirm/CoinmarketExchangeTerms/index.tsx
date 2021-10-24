@@ -1,4 +1,4 @@
-import { Button, Icon, variables, Checkbox } from '@trezor/components';
+import { Button, Icon, variables, Checkbox, H3 } from '@trezor/components';
 import React, { useState } from 'react';
 import { Translation, Modal } from '@suite-components';
 import styled, { css } from 'styled-components';
@@ -30,10 +30,8 @@ const Header = styled.div`
     display: flex;
     width: 100%;
     padding: 10px 0;
-    align-items: center;
+    align-items: baseline;
     color: ${props => props.theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.H2};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const StyledIcon = styled(Icon)`
@@ -58,12 +56,6 @@ const FooterContent = styled.div`
     padding: 0 35px;
 `;
 
-const Left = styled.div`
-    display: flex;
-    flex: 1;
-    align-items: center;
-`;
-
 export type Props = {
     decision: Deferred<boolean>;
     onCancel: () => void;
@@ -81,10 +73,10 @@ const CoinmarketExchangeTerms = ({ decision, onCancel, provider }: Props) => {
             noPadding
             heading={
                 <Header>
-                    <Left>
-                        <StyledIcon size={16} icon="LOCK" />
+                    <StyledIcon size={16} icon="LOCK" />
+                    <H3>
                         <Translation id="TR_EXCHANGE_FOR_YOUR_SAFETY" />
-                    </Left>
+                    </H3>
                 </Header>
             }
         >

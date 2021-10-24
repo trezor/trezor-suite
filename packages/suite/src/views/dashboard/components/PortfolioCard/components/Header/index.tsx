@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import styled, { css } from 'styled-components';
-import { variables, Button } from '@trezor/components';
+import { H2, Button } from '@trezor/components';
 import { Translation, FormattedNumber, HiddenPlaceholder } from '@suite-components';
 import RangeSelector from '@suite-components/TransactionsGraph/components/RangeSelector';
 import { updateGraphData } from '@wallet-actions/graphActions';
@@ -19,9 +19,7 @@ const Wrapper = styled.div<{ hideBorder: boolean }>`
         `}
 `;
 
-const ValueWrapper = styled.div`
-    font-size: ${variables.FONT_SIZE.H2};
-    /* font-weight: ${variables.FONT_WEIGHT.LIGHT}; */
+const ValueWrapper = styled(H2)`
     color: ${props => props.theme.TYPE_DARK_GREY};
     font-variant-numeric: tabular-nums;
 `;
