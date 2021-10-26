@@ -399,6 +399,7 @@ const getMessageSystemConfig = (
                         windows: '!',
                         android: '*',
                         ios: '13',
+                        chromeos: '*',
                     },
                     environment: {
                         desktop: '<21.5',
@@ -428,6 +429,7 @@ const getMessageSystemConfig = (
                         {
                             model: 'T',
                             firmware: '2.1.1',
+                            variant: 'regular',
                             vendor: 'trezor.io',
                         },
                     ],
@@ -443,6 +445,7 @@ const getMessageSystemConfig = (
                     'en-GB': 'New Trezor firmware is available!',
                     en: 'New Trezor firmware is available!',
                     es: 'El nuevo firmware de Trezor está disponible!',
+                    cs: 'Nová verze Trezor firmware je k dispozici',
                 },
                 cta: {
                     action: 'internal-link',
@@ -451,6 +454,7 @@ const getMessageSystemConfig = (
                         'en-GB': 'Update now',
                         en: 'Update now',
                         es: 'Actualizar ahora',
+                        cs: 'Aktualizovat',
                     },
                 },
             },
@@ -468,6 +472,7 @@ const getMessageSystemConfig = (
                     'en-GB': 'New Trezor app is available!',
                     en: 'New Trezor app is available!',
                     es: 'La nueva aplicación Trezor está disponible',
+                    cs: 'Nová Trezor aplikace je k dispozici',
                 },
                 cta: {
                     action: 'external-link',
@@ -476,6 +481,7 @@ const getMessageSystemConfig = (
                         'en-GB': 'Download now',
                         en: 'Download now',
                         es: 'Descargar ahora',
+                        cs: 'Stáhnout nyní',
                     },
                 },
                 modal: {
@@ -483,6 +489,7 @@ const getMessageSystemConfig = (
                         'en-GB': 'Update now',
                         en: 'Update now',
                         es: 'Actualizar ahora',
+                        cs: 'Aktualizovat',
                     },
                     image: 'https://example.com/example.png',
                 },

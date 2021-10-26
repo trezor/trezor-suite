@@ -120,7 +120,8 @@ Structure of config, types and optionality of specific keys can be found in the 
                         "linux": "*",
                         "windows": "!",
                         "android": "*",
-                        "ios": "13"
+                        "ios": "13",
+                        "chromeos": "*"
                     },
                     "environment": {
                         "desktop": "<21.5",
@@ -163,6 +164,8 @@ Structure of config, types and optionality of specific keys can be found in the 
                             // Possible values: "1" or "T"
                             "model": "1", 
                             "firmware": "1.9.4",
+                            // Possible values: "*", "bitcoin-only", and "regular"
+                            "variant": "bitcoin-only",
                             "vendor": "trezor.io"
                         }
                     ]
@@ -188,8 +191,8 @@ Structure of config, types and optionality of specific keys can be found in the 
                 // Options: banner, modal, context, super-context
                 "category": "banner",
                 /*
-                - Message shown to a user. 
-                - Suite language is chosen. Currently 'en' and 'es'.
+                - Message in language of Suite app is shown to a user. 
+                - Currently 'en', 'es' and 'cs' are supported.
                 - 'en-GB' is used for backward compatibility and should match value of 'en'.
                 */
                 "content": {
