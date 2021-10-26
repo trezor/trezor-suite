@@ -100,6 +100,17 @@ export type AnalyticsEvent =
           payload: { mode: 'bootloader' };
       }
     | {
+          /**
+           * accounts/status
+           * - logged when discovery is completed (app start, coin added, account added)
+           * - sends number of accounts having at least 1 transaction grouped by '[symbol]_[accountType]' (e.g. 'btc_segwit')
+           */
+          type: 'accounts/status';
+          payload: {
+              [key: string]: number;
+          };
+      }
+    | {
           type: 'device-disconnect';
       }
     | {
@@ -140,24 +151,6 @@ export type AnalyticsEvent =
               createSeed: boolean;
               /** how many users chose to do recovery */
               recoverSeed: boolean;
-          };
-      }
-    | {
-          /**
-         account-create
-         logged either automatically upon each suite start as default switched on accounts are loaded
-         or when user adds account manually
-         */
-          type: 'account-create';
-          payload: {
-              /** normal, segwit, legacy */
-              type: Account['accountType'];
-              /** index of account  */
-              path: Account['path'];
-              /** network (btc, eth, etc.) */
-              symbol: Account['symbol'];
-              /** if tokens added */
-              tokensCount: number;
           };
       }
     | {
