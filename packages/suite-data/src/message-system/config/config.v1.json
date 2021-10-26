@@ -22,7 +22,8 @@
                 "content": {
                     "en-GB": "There has been an error updating Trezor Suite. Please install the latest version manually from the Trezor Suite homepage.",
                     "en": "There has been an error updating Trezor Suite. Please install the latest version manually from the Trezor Suite homepage.",
-                    "es": "Ha habido un error al actualizar Trezor Suite. Instale la última versión manualmente desde la página de inicio de Trezor Suite."
+                    "es": "Ha habido un error al actualizar Trezor Suite. Instale la última versión manualmente desde la página de inicio de Trezor Suite.",
+                    "cs": "Při aktualizaci Trezor Suite došlo k chybě. Nainstalujte prosím nejnovější verzi ručně z domovské stránky Trezor Suite."
                 },
                 "cta": {
                     "action": "external-link",
@@ -30,7 +31,8 @@
                     "label": {
                         "en-GB": "Go to suite.trezor.io",
                         "en": "Go to suite.trezor.io",
-                        "es": "Ir a suite.trezor.io"
+                        "es": "Ir a suite.trezor.io",
+                        "cs": "Přejít na suite.trezor.io"
                     }
                 }
             }

@@ -52,7 +52,14 @@
                                 "os": {
                                     "title": "Operating System",
                                     "type": "object",
-                                    "required": ["macos", "linux", "windows", "android", "ios"],
+                                    "required": [
+                                        "macos",
+                                        "linux",
+                                        "windows",
+                                        "android",
+                                        "ios",
+                                        "chromeos"
+                                    ],
                                     "properties": {
                                         "macos": {
                                             "$ref": "#/definitions/version"
@@ -67,6 +74,9 @@
                                             "$ref": "#/definitions/version"
                                         },
                                         "ios": {
+                                            "$ref": "#/definitions/version"
+                                        },
+                                        "chromeos": {
                                             "$ref": "#/definitions/version"
                                         }
                                     },
@@ -148,7 +158,7 @@
                                     "items": {
                                         "title": "Device",
                                         "type": "object",
-                                        "required": ["model", "firmware", "vendor"],
+                                        "required": ["model", "firmware", "variant", "vendor"],
                                         "properties": {
                                             "model": {
                                                 "title": "Model",
@@ -157,6 +167,11 @@
                                             },
                                             "firmware": {
                                                 "$ref": "#/definitions/version"
+                                            },
+                                            "variant": {
+                                                "title": "Firmware Variant",
+                                                "type": "string",
+                                                "enum": ["*", "bitcoin-only", "regular"]
                                             },
                                             "vendor": {
                                                 "title": "Vendor",
@@ -301,7 +316,7 @@
             "title": "Localization",
             "description": "A multilingual text localization.",
             "type": "object",
-            "required": ["en-GB", "en", "es"],
+            "required": ["en-GB", "en", "es", "cs"],
             "properties": {
                 "en-GB": {
                     "type": "string"
@@ -310,6 +325,9 @@
                     "type": "string"
                 },
                 "es": {
+                    "type": "string"
+                },
+                "cs": {
                     "type": "string"
                 }
             },

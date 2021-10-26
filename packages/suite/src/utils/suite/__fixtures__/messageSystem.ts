@@ -175,6 +175,7 @@ export const validateVersionCompatibility = [
             macos: ['14', '15', '18'],
             android: '!',
             ios: '!',
+            chromeos: '*',
         },
         type: 'windows',
         version: '10.0.0',
@@ -188,6 +189,7 @@ export const validateVersionCompatibility = [
             macos: ['14', '15', '18'],
             android: '!',
             ios: '!',
+            chromeos: '*',
         },
         type: 'linux',
         version: '15.2.3',
@@ -201,6 +203,7 @@ export const validateVersionCompatibility = [
             macos: ['14', '15', '18'],
             android: '!',
             ios: '!',
+            chromeos: '*',
         },
         type: 'linux',
         version: '15.3.1',
@@ -214,6 +217,7 @@ export const validateVersionCompatibility = [
             macos: ['14', '15.3.1', '>18'],
             android: '!',
             ios: '!',
+            chromeos: '*',
         },
         type: 'macos',
         version: '15.3.0',
@@ -227,6 +231,7 @@ export const validateVersionCompatibility = [
             macos: ['14', '15.3.1', '>18'],
             android: '!',
             ios: '!',
+            chromeos: '*',
         },
         type: 'macos',
         version: '19.0.0',
@@ -240,6 +245,7 @@ export const validateVersionCompatibility = [
             macos: ['14', '15.3.1', '>18'],
             android: '!',
             ios: '!',
+            chromeos: '*',
         },
         type: 'android',
         version: '10.2.3',
@@ -253,9 +259,52 @@ export const validateVersionCompatibility = [
             macos: ['14', '15.3.1', '>18'],
             android: '!',
             ios: '!',
+            chromeos: '*',
         },
         type: 'blackberry',
         version: '11.3.2',
+        result: false,
+    },
+    {
+        description: 'os validateVersionCompatibility case 8',
+        condition: {
+            windows: '*',
+            linux: '<=15.2',
+            macos: ['14', '15.3.1', '>18'],
+            android: '!',
+            ios: '!',
+            chromeos: '14150',
+        },
+        type: 'chromeos',
+        version: '14150.64.0',
+        result: true,
+    },
+    {
+        description: 'os validateVersionCompatibility case 9',
+        condition: {
+            windows: '*',
+            linux: '<=15.2',
+            macos: ['14', '15.3.1', '>18'],
+            android: '!',
+            ios: '!',
+            chromeos: '14150',
+        },
+        type: 'chromeos',
+        version: '14149.64.0',
+        result: false,
+    },
+    {
+        description: 'os validateVersionCompatibility case 10',
+        condition: {
+            windows: '*',
+            linux: '<=15.2',
+            macos: ['14', '15.3.1', '>18'],
+            android: '!',
+            ios: '!',
+            chromeos: '!',
+        },
+        type: 'chromeos',
+        version: '14149.64.0',
         result: false,
     },
     {
@@ -483,6 +532,7 @@ export const validateDeviceCompatibility = [
             {
                 model: 'T',
                 firmware: '2.1.3',
+                variant: '*',
                 vendor: 'trezor.io',
             },
         ],
@@ -494,6 +544,7 @@ export const validateDeviceCompatibility = [
                     major_version: 2,
                     minor_version: 1,
                     patch_version: 3,
+                    capabilities: ['Capability_Bitcoin_like'],
                 }),
             },
         },
@@ -505,11 +556,13 @@ export const validateDeviceCompatibility = [
             {
                 model: '1',
                 firmware: ['1', '2'],
+                variant: 'bitcoin-only',
                 vendor: 'trezor.io',
             },
             {
                 model: 'T',
                 firmware: ['3.0'],
+                variant: 'regular',
                 vendor: 'trezor.io',
             },
         ],
@@ -521,6 +574,7 @@ export const validateDeviceCompatibility = [
                     major_version: 1,
                     minor_version: 2,
                     patch_version: 8,
+                    capabilities: ['Capability_Bitcoin'],
                 }),
             },
         },
@@ -532,6 +586,7 @@ export const validateDeviceCompatibility = [
             {
                 model: 'T',
                 firmware: '1',
+                variant: '*',
                 vendor: 'trezor.io',
             },
         ],
@@ -543,6 +598,7 @@ export const validateDeviceCompatibility = [
                     major_version: 1,
                     minor_version: 0,
                     patch_version: 2,
+                    capabilities: ['Capability_Bitcoin_like'],
                 }),
             },
         },
@@ -554,6 +610,7 @@ export const validateDeviceCompatibility = [
             {
                 model: 'T',
                 firmware: '1',
+                variant: 'regular',
                 vendor: 'trezor.io',
             },
         ],
@@ -565,6 +622,7 @@ export const validateDeviceCompatibility = [
                     major_version: 1,
                     minor_version: 0,
                     patch_version: 2,
+                    capabilities: ['Capability_Bitcoin_like'],
                 }),
             },
         },
@@ -576,6 +634,7 @@ export const validateDeviceCompatibility = [
             {
                 model: 'T',
                 firmware: '2',
+                variant: 'regular',
                 vendor: 'trezor.io',
             },
         ],
@@ -587,6 +646,7 @@ export const validateDeviceCompatibility = [
                     major_version: 1,
                     minor_version: 0,
                     patch_version: 2,
+                    capabilities: ['Capability_Bitcoin_like'],
                 }),
             },
         },
@@ -614,6 +674,7 @@ export const validateDeviceCompatibility = [
             {
                 model: 'T',
                 firmware: '2',
+                variant: 'regular',
                 vendor: 'trezor.io',
             },
         ],
@@ -625,6 +686,78 @@ export const validateDeviceCompatibility = [
         deviceConditions: [],
         device: undefined,
         result: true,
+    },
+    {
+        description: 'validateDeviceCompatibility case 9',
+        deviceConditions: [
+            {
+                model: '1',
+                firmware: '1',
+                variant: '*',
+                vendor: 'trezor.io',
+            },
+        ],
+        device: {
+            features: {
+                ...getDeviceFeatures({
+                    vendor: 'trezor.io',
+                    model: '1',
+                    major_version: 1,
+                    minor_version: 0,
+                    patch_version: 2,
+                    capabilities: ['Capability_Bitcoin'],
+                }),
+            },
+        },
+        result: true,
+    },
+    {
+        description: 'validateDeviceCompatibility case 10',
+        deviceConditions: [
+            {
+                model: '1',
+                firmware: '1',
+                variant: 'regular',
+                vendor: 'trezor.io',
+            },
+        ],
+        device: {
+            features: {
+                ...getDeviceFeatures({
+                    vendor: 'trezor.io',
+                    model: '1',
+                    major_version: 1,
+                    minor_version: 0,
+                    patch_version: 2,
+                    capabilities: ['Capability_Bitcoin'],
+                }),
+            },
+        },
+        result: false,
+    },
+    {
+        description: 'validateDeviceCompatibility case 11',
+        deviceConditions: [
+            {
+                model: '1',
+                firmware: '1',
+                variant: 'bitcoin-only',
+                vendor: 'trezor.io',
+            },
+        ],
+        device: {
+            features: {
+                ...getDeviceFeatures({
+                    vendor: 'trezor.io',
+                    model: '1',
+                    major_version: 1,
+                    minor_version: 0,
+                    patch_version: 2,
+                    capabilities: ['Capability_Bitcoin_like'],
+                }),
+            },
+        },
+        result: false,
     },
 ];
 
@@ -763,6 +896,7 @@ export const getValidMessages = [
                         windows: '!',
                         android: '*',
                         ios: '13',
+                        chromeos: '!',
                     },
                 },
             ],
@@ -787,6 +921,7 @@ export const getValidMessages = [
                         windows: '!',
                         android: '*',
                         ios: '13',
+                        chromeos: '!',
                     },
                 },
             ],
@@ -956,8 +1091,8 @@ export const getValidMessages = [
             conditions: [
                 {
                     devices: [
-                        { model: '1', firmware: '1.0.2', vendor: 'trezor.io' },
-                        { model: 'T', firmware: '2.1.1', vendor: 'trezor.io' },
+                        { model: '1', firmware: '1.0.2', variant: '*', vendor: 'trezor.io' },
+                        { model: 'T', firmware: '2.1.1', variant: '*', vendor: 'trezor.io' },
                     ],
                 },
             ],
@@ -979,7 +1114,14 @@ export const getValidMessages = [
         config: global.JestMocks.getMessageSystemConfig(undefined, undefined, {
             conditions: [
                 {
-                    devices: [{ model: 'T', firmware: '2.2.1', vendor: 'trezor.io' }],
+                    devices: [
+                        {
+                            model: 'T',
+                            firmware: '2.2.1',
+                            variant: '*',
+                            vendor: 'trezor.io',
+                        },
+                    ],
                 },
             ],
         }),
@@ -991,6 +1133,70 @@ export const getValidMessages = [
     },
     {
         description: 'getValidMessages case 19',
+        currentDate: '',
+        userAgent:
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osName: 'macos',
+        environment: '',
+        suiteVersion: '',
+        config: global.JestMocks.getMessageSystemConfig(undefined, undefined, {
+            conditions: [
+                {
+                    devices: [
+                        {
+                            model: 'T',
+                            firmware: '2.1.1',
+                            variant: 'bitcoin-only',
+                            vendor: 'trezor.io',
+                        },
+                    ],
+                },
+            ],
+        }),
+        options: {
+            settings: { tor: false, enabledNetworks: [] },
+            device: {
+                ...global.JestMocks.getConnectDevice(undefined, {
+                    capabilities: ['Capability_Bitcoin'],
+                }),
+            },
+        },
+        result: [global.JestMocks.getMessageSystemConfig().actions[1].message],
+    },
+    {
+        description: 'getValidMessages case 20',
+        currentDate: '',
+        userAgent:
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
+        osName: 'macos',
+        environment: '',
+        suiteVersion: '',
+        config: global.JestMocks.getMessageSystemConfig(undefined, undefined, {
+            conditions: [
+                {
+                    devices: [
+                        {
+                            model: 'T',
+                            firmware: '2.1.1',
+                            variant: 'regular',
+                            vendor: 'trezor.io',
+                        },
+                    ],
+                },
+            ],
+        }),
+        options: {
+            settings: { tor: false, enabledNetworks: [] },
+            device: {
+                ...global.JestMocks.getConnectDevice(undefined, {
+                    capabilities: ['Capability_Bitcoin_like'],
+                }),
+            },
+        },
+        result: [global.JestMocks.getMessageSystemConfig().actions[1].message],
+    },
+    {
+        description: 'getValidMessages case 21',
         currentDate: '2021-04-01T12:10:00.000Z',
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',

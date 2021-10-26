@@ -7,7 +7,7 @@ import {
     getOsName,
     getOsVersion,
 } from '@suite-utils/env';
-import { getDeviceModel, getFwVersion } from './device';
+import { getDeviceModel, getFwVersion, isBitcoinOnly } from './device';
 
 import type { TransportInfo } from 'trezor-connect';
 
@@ -127,6 +127,7 @@ export const validateDeviceCompatibility = (
     }
 
     const deviceFwVersion = getFwVersion(device);
+    const deviceFwVariant = isBitcoinOnly(device) ? 'bitcoin-only' : 'regular';
     const model = getDeviceModel(device);
     const { vendor } = device.features;
 
@@ -134,7 +135,9 @@ export const validateDeviceCompatibility = (
         deviceCondition =>
             deviceCondition.model.toLowerCase() === model.toLowerCase() &&
             deviceCondition.vendor.toLowerCase() === vendor.toLowerCase() &&
-            semver.satisfies(deviceFwVersion, createVersionRange(deviceCondition.firmware)!),
+            semver.satisfies(deviceFwVersion, createVersionRange(deviceCondition.firmware)!) &&
+            (deviceCondition.variant.toLowerCase() === deviceFwVariant ||
+                deviceCondition.variant === '*'),
     );
 };
 
