@@ -2,7 +2,21 @@ import * as PAYMENTS from '../src/payments';
 import type { PaymentCreator } from '../src/payments';
 import * as utils from './payments.utils';
 
-(['embed', 'p2ms', 'p2pk', 'p2pkh', 'p2sh', 'p2wpkh', 'p2wsh'] as const).forEach(p => {
+(
+    [
+        'embed',
+        'p2ms',
+        'p2pk',
+        'p2pkh',
+        'p2sh',
+        'p2wpkh',
+        'p2wsh',
+        'sstxchange',
+        'sstxcommitment',
+        'sstxpkh',
+        'sstxsh',
+    ] as const
+).forEach(p => {
     describe(p, () => {
         const fn: PaymentCreator = PAYMENTS[p];
         // eslint-disable-next-line import/no-dynamic-require, @typescript-eslint/no-var-requires, global-require
@@ -25,7 +39,7 @@ import * as utils from './payments.utils';
         });
 
         fixtures.invalid.forEach((f: any) => {
-            it(`throws ${f.exception}${f.description ? `for ${f.description}` : ''}`, () => {
+            it(`throws ${f.exception} ${f.description ? `for ${f.description}` : ''}`, () => {
                 const args = utils.preform(f.arguments);
 
                 expect(() => fn(args, f.options)).toThrow(f.exception);
@@ -74,10 +88,16 @@ import * as utils from './payments.utils';
                 dependencies.forEach((dependency: any) => {
                     if (!Array.isArray(dependency)) dependency = [dependency];
 
-                    const args = {};
+                    const args: any = {};
                     dependency.forEach((d: any) => {
                         utils.from(d, detail, args);
                     });
+                    if (detail.network) {
+                        args.network = detail.network;
+                    }
+                    if (detail.amount) {
+                        args.amount = detail.amount;
+                    }
                     const expected = utils.from(key, detail);
 
                     it(`${f.description}, ${key} derives from ${JSON.stringify(
