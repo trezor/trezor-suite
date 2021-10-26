@@ -117,10 +117,16 @@ Add event to the analytics overview in the [company Notion](https://www.notion.s
 ## Changelog
 
 ### 1.14
+Added:
+- accounts/status
+  - [symbol]_[accountType]: number
+
 Fixed:
 - suite-ready
   - osName: android is now correctly detected, added chromeos
 
+Removed:
+- account-create
 ### 1.13
 Added:
 - switch-device/add-hidden-wallet

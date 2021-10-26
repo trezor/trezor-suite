@@ -3,7 +3,7 @@
 import { MiddlewareAPI } from 'redux';
 import { TRANSPORT, DEVICE } from 'trezor-connect';
 import { SUITE, ROUTER, ANALYTICS } from '@suite-actions/constants';
-import { ACCOUNT } from '@wallet-actions/constants';
+import { DISCOVERY } from '@wallet-actions/constants';
 
 import { AppState, Action, Dispatch } from '@suite-types';
 import * as analyticsActions from '@suite-actions/analyticsActions';
@@ -117,6 +117,23 @@ const analytics =
                 }
                 break;
             }
+            case DISCOVERY.COMPLETE: {
+                const accountsStatus = state.wallet.accounts
+                    .filter(account => account.history.total + (account.history.unconfirmed || 0))
+                    .reduce((acc: { [key: string]: number }, obj) => {
+                        const id = `${obj.symbol}_${obj.accountType}`;
+                        acc[id] = (acc[id] || 0) + 1;
+                        return acc;
+                    }, {});
+
+                api.dispatch(
+                    analyticsActions.report({
+                        type: 'accounts/status',
+                        payload: { ...accountsStatus },
+                    }),
+                );
+                break;
+            }
             case DEVICE.DISCONNECT:
                 api.dispatch(analyticsActions.report({ type: 'device-disconnect' }));
                 break;
@@ -153,21 +170,6 @@ const analytics =
                 }
 
                 break;
-            case ACCOUNT.CREATE: {
-                const { tokens } = action.payload;
-                api.dispatch(
-                    analyticsActions.report({
-                        type: 'account-create',
-                        payload: {
-                            type: action.payload.accountType,
-                            symbol: action.payload.symbol,
-                            path: action.payload.path,
-                            tokensCount: tokens ? tokens.length : 0,
-                        },
-                    }),
-                );
-                break;
-            }
             case ROUTER.LOCATION_CHANGE:
                 api.dispatch(
                     analyticsActions.report({
