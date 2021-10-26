@@ -10,8 +10,9 @@ export const useGuide = () => {
         openNode: guideActions.openNode,
     });
 
-    const { indexNode } = useSelector(state => ({
+    const { indexNode, open } = useSelector(state => ({
         indexNode: state.guide.indexNode,
+        open: state.guide.open,
     }));
 
     const openNodeById = (id: string) => {
@@ -24,8 +25,12 @@ export const useGuide = () => {
             console.error(`Guide node with id: ${id} was not found.`);
             return;
         }
+
         openNode(node);
-        openGuide();
+
+        if (!open) {
+            openGuide();
+        }
 
         analytics.report({
             type: 'guide/tooltip-link/navigation',

@@ -4,6 +4,7 @@ import GuideDefault from './GuideDefault';
 import GuidePage from './GuidePage';
 import GuideCategory from './GuideCategory';
 import OpenGuideFromTooltip from './OpenGuideFromTooltip';
+import GuideMarkdown from './GuideMarkdown';
 
 export {
     Feedback,
@@ -12,4 +13,5 @@ export {
     GuidePage,
     GuideCategory,
     OpenGuideFromTooltip,
+    GuideMarkdown,
 };
