@@ -4,7 +4,6 @@ import ripple from './ripple/index';
 import stellar from './stellar/index';
 import nem from './nem/index';
 import cardano from './cardano/index';
-import lisk from './lisk';
 import tezos from './tezos';
 import eos from './eos';
 import binance from './binance';
@@ -20,7 +19,6 @@ export default [
     ...stellar,
     ...nem,
     ...cardano,
-    ...lisk,
     ...tezos,
     ...eos,
     ...binance,

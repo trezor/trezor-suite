@@ -340,53 +340,6 @@ export default [
         ],
     },
     {
-        name: 'Lisk',
-        children: [
-            {
-                name: 'Get public key',
-                children: [
-                    {
-                        name: 'export public key',
-                        url: '/method/liskGetPublicKey',
-                    },
-                    {
-                        name: 'export multiple public keys',
-                        url: '/method/liskGetPublicKey-multiple',
-                    },
-                ],
-            },
-            {
-                name: 'Get address',
-                children: [
-                    {
-                        name: 'export address',
-                        url: '/method/liskGetAddress',
-                    },
-                    {
-                        name: 'export multiple addresses',
-                        url: '/method/liskGetAddress-multiple',
-                    },
-                    {
-                        name: 'verify address with custom UI handler',
-                        url: '/method/liskGetAddress-validation',
-                    },
-                ],
-            },
-            {
-                name: 'Sign transaction',
-                url: '/method/liskSignTransaction',
-            },
-            {
-                name: 'Sign message',
-                url: '/method/liskSignMessage',
-            },
-            {
-                name: 'Verify message',
-                url: '/method/liskVerifyMessage',
-            },
-        ],
-    },
-    {
         name: 'Tezos',
         children: [
             {
