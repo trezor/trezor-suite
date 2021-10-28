@@ -99,10 +99,7 @@ interface VerifyButtonProps {
 
 const VerifyButton: React.FC<VerifyButtonProps> = props => {
     const signMethods = ['signMessage', 'ethereumSignMessage'];
-    const verifyUrls = [
-        '/method/verifyMessage',
-        '/method/ethereumVerifyMessage',
-    ];
+    const verifyUrls = ['/method/verifyMessage', '/method/ethereumVerifyMessage'];
     const index = signMethods.indexOf(props.name);
     if (index < 0) return null;
 

@@ -20,5 +20,6 @@ export const ON_CUSTOM_FEE_OPEN = 'action__on_custom_fee_open';
 export const ON_CUSTOM_FEE_CHANGE = 'action__on_custom_fee_change';
 
 export const ON_SELECT_DEVICE = 'action__on_select_device';
+export const ON_CHANGE_CONNECT_OPTIONS = 'action__on_change_connect_options';
 
 export const ON_LOCATION_CHANGE = 'action__on_location_change';

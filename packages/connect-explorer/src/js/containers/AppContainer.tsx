@@ -14,7 +14,7 @@ const AppContainer: React.FC = ({ children }) => {
     const location = useLocation();
 
     useEffect(() => {
-        actions.onLocationChange(location.pathname);
+        actions.onLocationChange({ pathname: location.pathname, search: location.search });
     }, [location, actions]);
 
     return (

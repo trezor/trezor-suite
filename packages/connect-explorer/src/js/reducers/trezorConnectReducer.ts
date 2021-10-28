@@ -1,15 +1,17 @@
-import { DEVICE } from 'trezor-connect';
+import TrezorConnect, { DEVICE } from 'trezor-connect';
 import * as ACTIONS from '../actions/index';
 import { TrezorConnectDevice, Action } from '../types';
 
 type ConnectState = {
     devices: TrezorConnectDevice[];
     selectedDevice?: string;
+    options?: Parameters<typeof TrezorConnect['init']>[0];
 };
 
 const initialState: ConnectState = {
     devices: [],
     selectedDevice: undefined,
+    options: undefined,
 };
 
 const findDeviceIndexByPath = (devices: TrezorConnectDevice[], path: string): number =>
@@ -52,22 +54,24 @@ export default function connect(state: ConnectState = initialState, action: Acti
                 ...state,
                 ...addDevice(state, action.device),
             };
-            break;
 
         case DEVICE.DISCONNECT:
             return {
                 ...state,
                 ...removeDevice(state, action.device),
             };
-            break;
 
         case ACTIONS.ON_SELECT_DEVICE:
             return {
                 ...state,
                 selectedDevice: action.path,
             };
-            break;
 
+        case ACTIONS.ON_CHANGE_CONNECT_OPTIONS:
+            return {
+                ...state,
+                options: action.payload,
+            };
         default:
             return state;
     }

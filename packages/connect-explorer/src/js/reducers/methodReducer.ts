@@ -242,7 +242,7 @@ const onRemoveBatch = (state: MethodState, _field: any, _batch: any) => {
 export default function method(state: MethodState = initialState, action: Action) {
     switch (action.type) {
         case ON_LOCATION_CHANGE:
-            return getMethodState(action.path);
+            return getMethodState(action.payload.pathname);
 
         case TAB_CHANGE:
             return {
