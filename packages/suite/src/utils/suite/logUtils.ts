@@ -39,6 +39,7 @@ export const redactDevice = (device: DeepPartial<Device> | undefined) => {
                   ...device.features,
                   // eslint-disable-next-line @typescript-eslint/naming-convention
                   device_id: REDACTED_REPLACEMENT,
+                  label: device.features.label ? REDACTED_REPLACEMENT : undefined,
               }
             : undefined,
     };
