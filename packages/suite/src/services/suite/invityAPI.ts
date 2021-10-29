@@ -184,7 +184,9 @@ class InvityAPI {
         return [];
     };
 
-    getExchangeQuotes = async (params: ExchangeTradeQuoteRequest): Promise<ExchangeTrade[]> => {
+    getExchangeQuotes = async (
+        params: ExchangeTradeQuoteRequest,
+    ): Promise<ExchangeTrade[] | undefined> => {
         try {
             const response: ExchangeTradeQuoteResponse = await this.request(
                 this.EXCHANGE_QUOTES,
@@ -195,7 +197,6 @@ class InvityAPI {
         } catch (error) {
             console.log('[getExchangeQuotes]', error);
         }
-        return [];
     };
 
     doExchangeTrade = async (tradeRequest: ConfirmExchangeTradeRequest): Promise<ExchangeTrade> => {
@@ -238,7 +239,7 @@ class InvityAPI {
         }
     };
 
-    getBuyQuotes = async (params: BuyTradeQuoteRequest): Promise<BuyTrade[]> => {
+    getBuyQuotes = async (params: BuyTradeQuoteRequest): Promise<BuyTrade[] | undefined> => {
         try {
             const response: BuyTradeQuoteResponse = await this.request(
                 this.BUY_QUOTES,
@@ -249,7 +250,6 @@ class InvityAPI {
         } catch (error) {
             console.log('[getBuyQuotes]', error);
         }
-        return [];
     };
 
     doBuyTrade = async (tradeRequest: BuyTradeRequest): Promise<BuyTradeResponse> => {
@@ -305,7 +305,7 @@ class InvityAPI {
 
     getVoucherQuotes = async (
         params: SellVoucherTradeQuoteRequest,
-    ): Promise<SellVoucherTradeQuoteResponse> => {
+    ): Promise<SellVoucherTradeQuoteResponse | undefined> => {
         try {
             const response: SellVoucherTradeQuoteResponse = await this.request(
                 this.VOUCHER_QUOTES,
@@ -316,7 +316,6 @@ class InvityAPI {
         } catch (error) {
             console.log('[getVoucherQuotes]', error);
         }
-        return [];
     };
 
     requestVoucherTrade = async (
@@ -349,7 +348,9 @@ class InvityAPI {
         }
     };
 
-    getSellQuotes = async (params: SellFiatTradeQuoteRequest): Promise<SellFiatTrade[]> => {
+    getSellQuotes = async (
+        params: SellFiatTradeQuoteRequest,
+    ): Promise<SellFiatTrade[] | undefined> => {
         try {
             const response: SellFiatTradeQuoteResponse = await this.request(
                 this.SELL_FIAT_QUOTES,
@@ -360,7 +361,6 @@ class InvityAPI {
         } catch (error) {
             console.log('[getSellQuotes]', error);
         }
-        return [];
     };
 
     doSellTrade = async (tradeRequest: SellFiatTradeRequest): Promise<SellFiatTradeResponse> => {

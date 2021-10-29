@@ -8,7 +8,6 @@ import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import { isChanged } from '@suite-utils/comparisonUtils';
 import * as coinmarketSellActions from '@wallet-actions/coinmarketSellActions';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import * as routerActions from '@suite-actions/routerActions';
 import {
     SellFormState,
     Props,
@@ -29,6 +28,7 @@ import { useCompose } from './form/useCompose';
 import useDebounce from 'react-use/lib/useDebounce';
 import { useFormDraft } from '@wallet-hooks/useFormDraft';
 import { useCoinmarketSellFormDefaultValues } from './useCoinmarketSellFormDefaultValues';
+import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 
 export const SellFormContext = createContext<SellFormContextValues | null>(null);
 SellFormContext.displayName = 'CoinmarketSellContext';
@@ -58,16 +58,16 @@ export const useCoinmarketSellForm = (props: Props): SellFormContextValues => {
     const {
         saveQuoteRequest,
         saveQuotes,
+        clearQuotes,
         saveTrade,
         saveComposedTransactionInfo,
-        goto,
         loadInvityData,
     } = useActions({
         saveQuoteRequest: coinmarketSellActions.saveQuoteRequest,
         saveQuotes: coinmarketSellActions.saveQuotes,
+        clearQuotes: coinmarketSellActions.clearQuotes,
         saveTrade: coinmarketSellActions.saveTrade,
         saveComposedTransactionInfo: coinmarketCommonActions.saveComposedTransactionInfo,
-        goto: routerActions.goto,
         loadInvityData: coinmarketCommonActions.loadInvityData,
     });
 
@@ -78,6 +78,7 @@ export const useCoinmarketSellForm = (props: Props): SellFormContextValues => {
     const { selectedAccount, quotesRequest, fees, fiat, localCurrency, exchangeCoinInfo, device } =
         props;
     const { account, network } = selectedAccount;
+    const { navigateToSellOffers } = useCoinmarketNavigation(account);
     const { symbol, networkType } = account;
 
     const coinFees = fees[symbol];
@@ -281,22 +282,21 @@ export const useCoinmarketSellForm = (props: Props): SellFormContextValues => {
             cryptoStringAmount,
             fiatStringAmount,
         };
-
         saveQuoteRequest(request);
         const allQuotes = await invityAPI.getSellQuotes(request);
-        const limits = getAmountLimits(request, allQuotes);
-
-        if (limits) {
-            setAmountLimits(limits);
-            trigger([CRYPTO_INPUT, FIAT_INPUT]);
+        if (Array.isArray(allQuotes)) {
+            const limits = getAmountLimits(request, allQuotes);
+            if (limits) {
+                setAmountLimits(limits);
+                trigger([CRYPTO_INPUT, FIAT_INPUT]);
+            } else {
+                const [quotes, alternativeQuotes] = processQuotes(allQuotes);
+                saveQuotes(quotes, alternativeQuotes);
+                navigateToSellOffers();
+            }
         } else {
-            const [quotes, alternativeQuotes] = processQuotes(allQuotes);
-            saveQuotes(quotes, alternativeQuotes);
-            goto('wallet-coinmarket-sell-offers', {
-                symbol: account.symbol,
-                accountIndex: account.index,
-                accountType: account.accountType,
-            });
+            clearQuotes();
+            navigateToSellOffers();
         }
     };
 

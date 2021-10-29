@@ -37,7 +37,7 @@ interface Buy {
     buyInfo?: BuyInfo;
     isFromRedirect: boolean;
     quotesRequest?: BuyTradeQuoteRequest;
-    quotes: BuyTrade[];
+    quotes: BuyTrade[] | undefined;
     transactionId?: string;
     cachedAccountInfo: {
         accountType?: Account['accountType'];
@@ -53,8 +53,8 @@ interface Exchange {
     exchangeInfo?: ExchangeInfo;
     exchangeCoinInfo?: ExchangeCoinInfo[];
     quotesRequest?: ExchangeTradeQuoteRequest;
-    fixedQuotes: ExchangeTrade[];
-    floatQuotes: ExchangeTrade[];
+    fixedQuotes: ExchangeTrade[] | undefined;
+    floatQuotes: ExchangeTrade[] | undefined;
     transactionId?: string;
     addressVerified?: string;
 }
@@ -63,7 +63,7 @@ interface Sell {
     sellInfo?: SellInfo;
     showLeaveModal: boolean;
     quotesRequest?: SellFiatTradeQuoteRequest;
-    quotes: SellFiatTrade[];
+    quotes: SellFiatTrade[] | undefined;
     alternativeQuotes?: SellFiatTrade[];
     transactionId?: string;
     isFromRedirect: boolean;
@@ -141,6 +141,10 @@ const coinmarketReducer = (
                 draft.buy.quotes = action.quotes;
                 draft.buy.alternativeQuotes = action.alternativeQuotes;
                 break;
+            case COINMARKET_BUY.CLEAR_QUOTES:
+                draft.buy.quotes = undefined;
+                draft.buy.alternativeQuotes = undefined;
+                break;
             case COINMARKET_BUY.VERIFY_ADDRESS:
                 draft.buy.addressVerified = action.addressVerified;
                 break;
@@ -176,6 +180,10 @@ const coinmarketReducer = (
                 draft.exchange.fixedQuotes = action.fixedQuotes;
                 draft.exchange.floatQuotes = action.floatQuotes;
                 break;
+            case COINMARKET_EXCHANGE.CLEAR_QUOTES:
+                draft.exchange.fixedQuotes = undefined;
+                draft.exchange.floatQuotes = undefined;
+                break;
             case COINMARKET_EXCHANGE.VERIFY_ADDRESS:
                 draft.exchange.addressVerified = action.addressVerified;
                 break;
@@ -196,6 +204,10 @@ const coinmarketReducer = (
             case COINMARKET_SELL.SAVE_QUOTES:
                 draft.sell.quotes = action.quotes;
                 draft.sell.alternativeQuotes = action.alternativeQuotes;
+                break;
+            case COINMARKET_SELL.CLEAR_QUOTES:
+                draft.sell.quotes = undefined;
+                draft.sell.alternativeQuotes = undefined;
                 break;
             case COINMARKET_SELL.SHOW_LEAVE_MODAL:
                 draft.sell.showLeaveModal = action.showLeaveModal;

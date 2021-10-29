@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import invityAPI from '@suite-services/invityAPI';
 import { useActions, useSelector, useDevice } from '@suite-hooks';
 import { useTimer } from '@suite-hooks/useTimeInterval';
@@ -13,6 +13,8 @@ import { splitToFixedFloatQuotes } from '@wallet-utils/coinmarket/exchangeUtils'
 import networks from '@wallet-config/networks';
 import { getUnusedAddressFromAccount } from '@wallet-utils/coinmarket/coinmarketUtils';
 import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign ';
+import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
+import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
 
 const getReceiveAccountSymbol = (
     symbol?: string,
@@ -32,7 +34,6 @@ const getReceiveAccountSymbol = (
 
 export const useOffers = (props: Props) => {
     const timer = useTimer();
-    const REFETCH_INTERVAL_IN_SECONDS = 30;
     const {
         selectedAccount,
         quotesRequest,
@@ -50,9 +51,14 @@ export const useOffers = (props: Props) => {
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
     const [suiteReceiveAccounts, setSuiteReceiveAccounts] =
         useState<ContextValues['suiteReceiveAccounts']>();
-    const [innerFixedQuotes, setInnerFixedQuotes] = useState<ExchangeTrade[]>(fixedQuotes);
-    const [innerFloatQuotes, setInnerFloatQuotes] = useState<ExchangeTrade[]>(floatQuotes);
+    const [innerFixedQuotes, setInnerFixedQuotes] = useState<ExchangeTrade[] | undefined>(
+        fixedQuotes,
+    );
+    const [innerFloatQuotes, setInnerFloatQuotes] = useState<ExchangeTrade[] | undefined>(
+        floatQuotes,
+    );
     const [exchangeStep, setExchangeStep] = useState<ExchangeStep>('RECEIVING_ADDRESS');
+    const { navigateToExchangeForm } = useCoinmarketNavigation(account);
     const {
         goto,
         saveTrade,
@@ -82,36 +88,39 @@ export const useOffers = (props: Props) => {
         invityAPI.setInvityAPIServer(invityAPIUrl);
     }
 
-    useEffect(() => {
-        if (!quotesRequest) {
-            goto('wallet-coinmarket-exchange', {
-                symbol: account.symbol,
-                accountIndex: account.index,
-                accountType: account.accountType,
-            });
-            return;
-        }
-
-        const getQuotes = async () => {
-            if (!selectedQuote) {
-                invityAPI.createInvityAPIKey(account.descriptor);
-                setCallInProgress(true);
-                const allQuotes = await invityAPI.getExchangeQuotes(quotesRequest);
-                setCallInProgress(false);
+    const getQuotes = useCallback(async () => {
+        if (!selectedQuote && quotesRequest) {
+            timer.loading();
+            invityAPI.createInvityAPIKey(account.descriptor);
+            const allQuotes = await invityAPI.getExchangeQuotes(quotesRequest);
+            if (Array.isArray(allQuotes)) {
+                if (allQuotes.length === 0) {
+                    timer.stop();
+                    return;
+                }
                 const [fixedQuotes, floatQuotes] = splitToFixedFloatQuotes(allQuotes, exchangeInfo);
                 setInnerFixedQuotes(fixedQuotes);
                 setInnerFloatQuotes(floatQuotes);
-                timer.reset();
+            } else {
+                setInnerFixedQuotes(undefined);
+                setInnerFloatQuotes(undefined);
             }
-        };
+            timer.reset();
+        }
+    }, [account.descriptor, exchangeInfo, quotesRequest, selectedQuote, timer]);
+
+    useEffect(() => {
+        if (!quotesRequest) {
+            navigateToExchangeForm();
+            return;
+        }
 
         if (!timer.isLoading && !timer.isStopped) {
             if (timer.resetCount >= 40) {
                 timer.stop();
             }
 
-            if (timer.timeSpend.seconds === REFETCH_INTERVAL_IN_SECONDS) {
-                timer.loading();
+            if (timer.timeSpend.seconds === InvityAPIReloadQuotesAfterSeconds) {
                 getQuotes();
             }
         }
@@ -235,10 +244,10 @@ export const useOffers = (props: Props) => {
         floatQuotes: innerFloatQuotes,
         selectQuote,
         account,
-        REFETCH_INTERVAL_IN_SECONDS,
         receiveSymbol,
         receiveAccount,
         setReceiveAccount,
+        getQuotes,
     };
 };
 

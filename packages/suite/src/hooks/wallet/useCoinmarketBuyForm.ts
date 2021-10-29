@@ -7,7 +7,6 @@ import { useActions, useSelector } from '@suite-hooks';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
 import { BuyTradeQuoteRequest } from 'invity-api';
 import invityAPI from '@suite-services/invityAPI';
-import * as routerActions from '@suite-actions/routerActions';
 import { getAmountLimits, processQuotes } from '@wallet-utils/coinmarket/buyUtils';
 import {
     FormState,
@@ -17,20 +16,27 @@ import {
 } from '@wallet-types/coinmarketBuyForm';
 import { useFormDraft } from '@wallet-hooks/useFormDraft';
 import { useCoinmarketBuyFormDefaultValues } from './useCoinmarketBuyFormDefaultValues';
+import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 
 export const BuyFormContext = createContext<BuyFormContextValues | null>(null);
 BuyFormContext.displayName = 'CoinmarketBuyContext';
 
 export const useCoinmarketBuyForm = (props: Props): BuyFormContextValues => {
-    const { saveQuoteRequest, saveQuotes, saveCachedAccountInfo, saveTrade, goto, loadInvityData } =
-        useActions({
-            saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
-            saveQuotes: coinmarketBuyActions.saveQuotes,
-            saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
-            saveTrade: coinmarketBuyActions.saveTrade,
-            goto: routerActions.goto,
-            loadInvityData: coinmarketCommonActions.loadInvityData,
-        });
+    const {
+        saveQuoteRequest,
+        saveQuotes,
+        clearQuotes,
+        saveCachedAccountInfo,
+        saveTrade,
+        loadInvityData,
+    } = useActions({
+        saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
+        saveQuotes: coinmarketBuyActions.saveQuotes,
+        clearQuotes: coinmarketBuyActions.clearQuotes,
+        saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
+        saveTrade: coinmarketBuyActions.saveTrade,
+        loadInvityData: coinmarketCommonActions.loadInvityData,
+    });
 
     useEffect(() => {
         loadInvityData();
@@ -38,6 +44,7 @@ export const useCoinmarketBuyForm = (props: Props): BuyFormContextValues => {
 
     const { selectedAccount } = props;
     const { account, network } = selectedAccount;
+    const { navigateToBuyOffers } = useCoinmarketNavigation(account);
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
     const { saveDraft, getDraft, removeDraft } = useFormDraft<FormState>('coinmarket-buy');
     const draft = getDraft(account.key);
@@ -96,21 +103,21 @@ export const useCoinmarketBuyForm = (props: Props): BuyFormContextValues => {
             fiatStringAmount,
             cryptoStringAmount,
         };
-        await saveQuoteRequest(request);
-        await saveCachedAccountInfo(account.symbol, account.index, account.accountType);
+        saveQuoteRequest(request);
+        saveCachedAccountInfo(account.symbol, account.index, account.accountType);
         const allQuotes = await invityAPI.getBuyQuotes(request);
-        const [quotes, alternativeQuotes] = processQuotes(allQuotes);
-        const limits = getAmountLimits(request, quotes);
-
-        if (limits) {
-            setAmountLimits(limits);
+        if (Array.isArray(allQuotes)) {
+            const [quotes, alternativeQuotes] = processQuotes(allQuotes);
+            const limits = getAmountLimits(request, quotes);
+            if (limits) {
+                setAmountLimits(limits);
+            } else {
+                saveQuotes(quotes, alternativeQuotes);
+                navigateToBuyOffers();
+            }
         } else {
-            await saveQuotes(quotes, alternativeQuotes);
-            goto('wallet-coinmarket-buy-offers', {
-                symbol: account.symbol,
-                accountIndex: account.index,
-                accountType: account.accountType,
-            });
+            clearQuotes();
+            navigateToBuyOffers();
         }
     };
 

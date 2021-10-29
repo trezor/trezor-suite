@@ -4,7 +4,8 @@ import { CoinmarketFooter, CoinmarketSellTopPanel } from '@wallet-components';
 import { variables } from '@trezor/components';
 import { LayoutContext, Translation } from '@suite-components';
 import { useCoinmarketSellOffersContext } from '@wallet-hooks/useCoinmarketSellOffers';
-
+import NoOffers from '@wallet-views/coinmarket/common/no-offers';
+import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 import List from './List';
 import SelectedOffer from './SelectedOffer';
 
@@ -52,35 +53,34 @@ const DividerMiddle = styled.div`
     text-align: center;
 `;
 
-const NoQuotes = styled.div`
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    min-height: 550px;
-    align-items: center;
-    flex: 1;
-`;
-
 const Offers = () => {
-    const { quotes, alternativeQuotes, selectedQuote } = useCoinmarketSellOffersContext();
+    const { account, quotes, alternativeQuotes, selectedQuote, timer, getQuotes } =
+        useCoinmarketSellOffersContext();
     const { setLayout } = useContext(LayoutContext);
+    const { navigateToSellForm } = useCoinmarketNavigation(account);
 
     useEffect(() => {
         if (setLayout) setLayout('Trezor Suite | Trade', undefined, <CoinmarketSellTopPanel />);
     }, [setLayout]);
 
+    const hasLoadingFailed = !(quotes && alternativeQuotes);
+    const noOffers = hasLoadingFailed || (quotes.length === 0 && alternativeQuotes.length === 0);
     return (
         <Wrapper>
             {!selectedQuote && (
                 <>
-                    {quotes?.length === 0 && alternativeQuotes?.length === 0 ? (
-                        <NoQuotes>
-                            <Translation id="TR_SELL_NO_OFFERS" />
-                        </NoQuotes>
+                    {noOffers ? (
+                        <NoOffers
+                            coinmarketRefreshTimeIsLoading={timer.isLoading}
+                            coinmarketRefreshTimeSeconds={timer.timeSpend.seconds}
+                            onBackButtonClick={navigateToSellForm}
+                            onReloadOffersButtonClick={getQuotes}
+                            hasLoadingFailed={hasLoadingFailed}
+                        />
                     ) : (
                         <>
                             <List quotes={quotes} />
-                            {alternativeQuotes && alternativeQuotes.length > 0 && (
+                            {alternativeQuotes.length > 0 && (
                                 <>
                                     <Divider>
                                         <DividerLeft />

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import invityAPI from '@suite-services/invityAPI';
 import { useActions, useSelector, useDevice } from '@suite-hooks';
 import { useTimer } from '@suite-hooks/useTimeInterval';
@@ -10,21 +10,23 @@ import * as routerActions from '@suite-actions/routerActions';
 import { Props, ContextValues, SellStep } from '@wallet-types/coinmarketSellOffers';
 import * as notificationActions from '@suite-actions/notificationActions';
 import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign ';
+import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
+import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
 
 export const useOffers = (props: Props) => {
     const timer = useTimer();
-    const REFETCH_INTERVAL_IN_SECONDS = 30;
     const { selectedAccount, quotesRequest, alternativeQuotes, quotes, device } = props;
 
     const { account } = selectedAccount;
     const { isLocked } = useDevice();
     const [callInProgress, setCallInProgress] = useState<boolean>(isLocked || false);
     const [selectedQuote, setSelectedQuote] = useState<SellFiatTrade>();
-    const [innerQuotes, setInnerQuotes] = useState<SellFiatTrade[]>(quotes);
+    const [innerQuotes, setInnerQuotes] = useState<SellFiatTrade[] | undefined>(quotes);
     const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<
         SellFiatTrade[] | undefined
     >(alternativeQuotes);
     const [sellStep, setSellStep] = useState<SellStep>('BANK_ACCOUNT');
+    const { navigateToSellForm } = useCoinmarketNavigation(account);
     const {
         saveTrade,
         setIsFromRedirect,
@@ -58,26 +60,32 @@ export const useOffers = (props: Props) => {
 
     const { selectedFee, composed, recomposeAndSign } = useCoinmarketRecomposeAndSign();
 
-    useEffect(() => {
-        if (!quotesRequest) {
-            goto('wallet-coinmarket-sell', {
-                symbol: account.symbol,
-                accountIndex: account.index,
-                accountType: account.accountType,
-            });
-            return;
-        }
-
-        const getQuotes = async () => {
-            if (!selectedQuote) {
-                invityAPI.createInvityAPIKey(account.descriptor);
-                const allQuotes = await invityAPI.getSellQuotes(quotesRequest);
+    const getQuotes = useCallback(async () => {
+        if (!selectedQuote && quotesRequest) {
+            timer.loading();
+            invityAPI.createInvityAPIKey(account.descriptor);
+            const allQuotes = await invityAPI.getSellQuotes(quotesRequest);
+            if (Array.isArray(allQuotes)) {
+                if (allQuotes.length === 0) {
+                    timer.stop();
+                    return;
+                }
                 const [quotes, alternativeQuotes] = processQuotes(allQuotes);
                 setInnerQuotes(quotes);
                 setInnerAlternativeQuotes(alternativeQuotes);
-                timer.reset();
+            } else {
+                setInnerQuotes(undefined);
+                setInnerAlternativeQuotes(undefined);
             }
-        };
+            timer.reset();
+        }
+    }, [account.descriptor, quotesRequest, selectedQuote, timer]);
+
+    useEffect(() => {
+        if (!quotesRequest) {
+            navigateToSellForm();
+            return;
+        }
 
         if (isFromRedirect && quotesRequest) {
             getQuotes();
@@ -89,8 +97,7 @@ export const useOffers = (props: Props) => {
                 timer.stop();
             }
 
-            if (timer.timeSpend.seconds === REFETCH_INTERVAL_IN_SECONDS) {
-                timer.loading();
+            if (timer.timeSpend.seconds === InvityAPIReloadQuotesAfterSeconds) {
                 getQuotes();
             }
         }
@@ -226,10 +233,10 @@ export const useOffers = (props: Props) => {
         setSellStep,
         selectQuote,
         account,
-        REFETCH_INTERVAL_IN_SECONDS,
         timer,
         sellInfo,
         needToRegisterOrVerifyBankAccount,
+        getQuotes,
     };
 };
 

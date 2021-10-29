@@ -24,7 +24,7 @@ export type ContextValues = {
     callInProgress: boolean;
     alternativeQuotes: AppState['wallet']['coinmarket']['buy']['alternativeQuotes'];
     quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
-    quotes: BuyTrade[];
+    quotes: AppState['wallet']['coinmarket']['buy']['quotes'];
     device: AppState['suite']['device'];
     selectedQuote?: BuyTrade;
     verifyAddress: (account: Account) => Promise<void>;
@@ -32,6 +32,6 @@ export type ContextValues = {
     providersInfo?: BuyInfo['providerInfos'];
     selectQuote: (quote: BuyTrade) => void;
     goToPayment: (address: string) => void;
-    REFETCH_INTERVAL_IN_SECONDS: number;
     timer: Timer;
+    getQuotes: () => Promise<void>;
 };

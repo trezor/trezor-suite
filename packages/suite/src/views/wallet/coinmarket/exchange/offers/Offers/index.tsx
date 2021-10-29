@@ -9,9 +9,11 @@ import {
 } from '@wallet-components';
 import { variables, Icon, CoinLogo, H2 } from '@trezor/components';
 import { useCoinmarketExchangeOffersContext } from '@wallet-hooks/useCoinmarketExchangeOffers';
-
+import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
+import { InvityAPIReloadQuotesAfterSeconds } from '@wallet-constants/coinmarket/metadata';
 import List from './List';
 import SelectedOffer from './SelectedOffer';
+import NoOffers from '@wallet-views/coinmarket/common/no-offers';
 
 const Wrapper = styled.div`
     padding: 0 32px 32px 32px;
@@ -19,15 +21,6 @@ const Wrapper = styled.div`
     @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
         padding: 16px;
     }
-`;
-
-const NoQuotes = styled.div`
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    min-height: 550px;
-    align-items: center;
-    flex: 1;
 `;
 
 const Header = styled.div`
@@ -78,33 +71,31 @@ const TextAmount = styled(Text)`
 `;
 
 const Offers = () => {
-    const {
-        fixedQuotes,
-        floatQuotes,
-        quotesRequest,
-        selectedQuote,
-        timer,
-        REFETCH_INTERVAL_IN_SECONDS,
-        account,
-    } = useCoinmarketExchangeOffersContext();
+    const { fixedQuotes, floatQuotes, quotesRequest, selectedQuote, timer, account, getQuotes } =
+        useCoinmarketExchangeOffersContext();
     const { setLayout } = useContext(LayoutContext);
+    const { navigateToExchangeForm } = useCoinmarketNavigation(account);
 
     useMemo(() => {
         if (setLayout) setLayout('Trezor Suite | Trade', undefined, <CoinmarketExchangeTopPanel />);
     }, [setLayout]);
 
     if (!quotesRequest) return null;
-    const quotesCount = fixedQuotes?.length + floatQuotes?.length;
+    const hasLoadingFailed = !(fixedQuotes && floatQuotes);
+    const noOffers = hasLoadingFailed || (fixedQuotes.length === 0 && floatQuotes.length === 0);
     return (
         <Wrapper>
             {!selectedQuote && (
                 <>
-                    {!quotesCount && (
-                        <NoQuotes>
-                            <Translation id="TR_EXCHANGE_NO_OFFERS" />
-                        </NoQuotes>
-                    )}
-                    {quotesCount > 0 && (
+                    {noOffers ? (
+                        <NoOffers
+                            coinmarketRefreshTimeIsLoading={timer.isLoading}
+                            coinmarketRefreshTimeSeconds={timer.timeSpend.seconds}
+                            onBackButtonClick={navigateToExchangeForm}
+                            onReloadOffersButtonClick={getQuotes}
+                            hasLoadingFailed={hasLoadingFailed}
+                        />
+                    ) : (
                         <>
                             <Header>
                                 <SummaryRow>
@@ -122,7 +113,7 @@ const Offers = () => {
                                         <Right>
                                             <CoinmarketRefreshTime
                                                 isLoading={timer.isLoading}
-                                                refetchInterval={REFETCH_INTERVAL_IN_SECONDS}
+                                                refetchInterval={InvityAPIReloadQuotesAfterSeconds}
                                                 seconds={timer.timeSpend.seconds}
                                                 label={
                                                     <Translation id="TR_EXCHANGE_OFFERS_REFRESH" />
@@ -132,8 +123,8 @@ const Offers = () => {
                                     )}
                                 </SummaryRow>
                             </Header>
-                            {fixedQuotes?.length > 0 && <List quotes={fixedQuotes} isFixed />}
-                            {floatQuotes?.length > 0 && <List quotes={floatQuotes} />}
+                            {fixedQuotes.length > 0 && <List quotes={fixedQuotes} isFixed />}
+                            {floatQuotes.length > 0 && <List quotes={floatQuotes} />}
                         </>
                     )}
                 </>
