@@ -14,8 +14,6 @@
         "build": "rimraf ./build && yarn workspace @trezor/suite-build run build:web"
     },
     "dependencies": {
-        "@sentry/browser": "^6.10.0",
-        "@sentry/integrations": "^6.10.0",
         "@trezor/suite": "1.0.0",
         "worker-loader": "^3.0.8",
         "react-helmet": "^6.1.0",

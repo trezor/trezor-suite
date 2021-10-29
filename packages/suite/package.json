@@ -18,6 +18,8 @@
         "test-health": "jest -c jest.config.health.js"
     },
     "dependencies": {
+        "@sentry/browser": "^6.13.3",
+        "@sentry/integrations": "^6.13.3",
         "@trezor/components": "1.0.0",
         "@trezor/suite-data": "1.0.0",
         "@trezor/suite-storage": "1.0.0",
