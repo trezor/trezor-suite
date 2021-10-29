@@ -435,11 +435,10 @@ export const report =
             return;
         }
 
-        const { enabled, sessionId, instanceId } = getState().analytics;
-        const { initialRun } = getState().suite.flags;
+        const { enabled, sessionId, instanceId, confirmed } = getState().analytics;
 
-        // don't report until user had chance to optout
-        if (initialRun) {
+        // don't report until user confirmed his choice
+        if (!confirmed) {
             return;
         }
 
