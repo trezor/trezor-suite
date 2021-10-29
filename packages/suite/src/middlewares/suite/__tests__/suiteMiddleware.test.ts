@@ -28,7 +28,13 @@ export const getInitialState = (router?: RouterState, suite?: Partial<SuiteState
     modal: modalReducer(undefined, { type: 'foo' } as any),
     analytics: analyticsReducer(undefined, {
         type: ANALYTICS.INIT,
-        payload: { instanceId: '1', sessionId: '2', enabled: false, sessionStart: 1 },
+        payload: {
+            instanceId: '1',
+            sessionId: '2',
+            enabled: false,
+            confirmed: false,
+            sessionStart: 1,
+        },
     }),
     messageSystem: {
         timestamp: Date.now() + 10000,

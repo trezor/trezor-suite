@@ -83,18 +83,16 @@ export const getLog =
         });
     };
 
-export const reportToSentry =
-    (error: any, attachLog = false) =>
-    (dispatch: Dispatch, getState: GetState) => {
-        const { analytics, wallet, suite } = getState();
-        Sentry.withScope(scope => {
-            scope.setUser({ id: analytics.instanceId });
-            scope.setExtra('device', suite.device ? redactDevice(suite.device) : undefined);
-            scope.setExtra('discovery', wallet.discovery);
-            scope.setExtra('enabled-coins', wallet.settings.enabledNetworks);
-            if (attachLog) {
-                scope.setExtra('suite-log', dispatch(getLog(true)));
-            }
-            Sentry.captureException(error);
+export const reportToSentry = (error: any) => (dispatch: Dispatch, getState: GetState) => {
+    const { analytics, wallet, suite } = getState();
+    Sentry.withScope(scope => {
+        scope.setUser({ id: analytics.instanceId });
+        scope.setContext('suiteState', {
+            device: suite.device ? redactDevice(suite.device) : undefined,
+            discovery: wallet.discovery,
+            enabledCoins: wallet.settings.enabledNetworks,
+            suiteLog: dispatch(getLog(true)),
         });
-    };
+        Sentry.captureException(error);
+    });
+};

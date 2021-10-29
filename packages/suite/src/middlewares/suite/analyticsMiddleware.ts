@@ -21,7 +21,7 @@ import {
     getPlatformLanguages,
 } from '@suite-utils/env';
 import { isBitcoinOnly, getPhysicalDeviceCount } from '@suite-utils/device';
-import { setSentryUser, unsetSentryUser } from '@suite/utils/suite/sentry';
+import { allowSentryReport } from '@suite/utils/suite/sentry';
 
 const reportSuiteReadyAction = (state: AppState) =>
     analyticsActions.report({
@@ -183,13 +183,11 @@ const analytics =
                 break;
             case ANALYTICS.ENABLE:
                 api.dispatch(analyticsActions.report({ type: 'analytics/enable' }));
-                if (state.analytics.instanceId) {
-                    setSentryUser(state.analytics.instanceId);
-                }
+                allowSentryReport(true);
                 break;
             case ANALYTICS.DISPOSE:
                 api.dispatch(analyticsActions.report({ type: 'analytics/dispose' }, true));
-                unsetSentryUser();
+                allowSentryReport(false);
                 break;
             case SUITE.AUTH_DEVICE:
                 api.dispatch(
