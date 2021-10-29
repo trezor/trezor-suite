@@ -82,13 +82,15 @@ export const useCoinmarketSpend = (props: Props): SpendContextValues => {
                         refundAddress: getUnusedAddressFromAccount(account).address,
                     })
                     .then(response => {
-                        if (response.length > 0) {
+                        if (response && response.length > 0) {
                             const quote = response[0];
                             if (quote.error === undefined) {
                                 setVoucherSiteUrl(quote.siteUrl);
                             } else {
                                 setVoucherSiteUrl('error');
                             }
+                        } else {
+                            setVoucherSiteUrl('error');
                         }
                     });
             } else {

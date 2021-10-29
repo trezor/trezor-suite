@@ -340,4 +340,37 @@ describe('settings reducer', () => {
             sell: { ...initialState.sell, quotesRequest: request },
         });
     });
+
+    it('COINMARKET_BUY.CLEAR_QUOTES', () => {
+        expect(
+            reducer(undefined, {
+                type: COINMARKET_BUY.CLEAR_QUOTES,
+            }),
+        ).toEqual({
+            ...initialState,
+            buy: { ...initialState.buy, quotes: undefined, alternativeQuotes: undefined },
+        });
+    });
+
+    it('COINMARKET_EXCHANGE.CLEAR_QUOTES', () => {
+        expect(
+            reducer(undefined, {
+                type: COINMARKET_EXCHANGE.CLEAR_QUOTES,
+            }),
+        ).toEqual({
+            ...initialState,
+            exchange: { ...initialState.exchange, fixedQuotes: undefined, floatQuotes: undefined },
+        });
+    });
+
+    it('COINMARKET_SELL.CLEAR_QUOTES', () => {
+        expect(
+            reducer(undefined, {
+                type: COINMARKET_SELL.CLEAR_QUOTES,
+            }),
+        ).toEqual({
+            ...initialState,
+            sell: { ...initialState.sell, quotes: undefined, alternativeQuotes: undefined },
+        });
+    });
 });

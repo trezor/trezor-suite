@@ -36,7 +36,7 @@ export type ContextValues = {
     addBankAccount: () => void;
     confirmTrade: (bankAccount: BankAccount) => void;
     sendTransaction: () => void;
-    REFETCH_INTERVAL_IN_SECONDS: number;
     timer: Timer;
     needToRegisterOrVerifyBankAccount: (quote: SellFiatTrade) => boolean;
+    getQuotes: () => Promise<void>;
 };

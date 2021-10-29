@@ -8,7 +8,6 @@ import { toFiatCurrency, fromFiatCurrency } from '@wallet-utils/fiatConverterUti
 import { getFeeLevels } from '@wallet-utils/sendFormUtils';
 import * as coinmarketExchangeActions from '@wallet-actions/coinmarketExchangeActions';
 import * as coinmarketCommonActions from '@wallet-actions/coinmarket/coinmarketCommonActions';
-import * as routerActions from '@suite-actions/routerActions';
 import {
     ExchangeFormState,
     Props,
@@ -25,6 +24,7 @@ import { useCompose } from './form/useCompose';
 import { useFormDraft } from '@wallet-hooks/useFormDraft';
 import useDebounce from 'react-use/lib/useDebounce';
 import { useCoinmarketExchangeFormDefaultValues } from './useCoinmarketExchangeFormDefaultValues';
+import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';
@@ -54,16 +54,16 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
     const {
         saveQuoteRequest,
         saveQuotes,
+        clearQuotes,
         saveTrade,
         saveComposedTransactionInfo,
-        goto,
         loadInvityData,
     } = useActions({
         saveQuoteRequest: coinmarketExchangeActions.saveQuoteRequest,
         saveQuotes: coinmarketExchangeActions.saveQuotes,
+        clearQuotes: coinmarketExchangeActions.clearQuotes,
         saveTrade: coinmarketExchangeActions.saveTrade,
         saveComposedTransactionInfo: coinmarketCommonActions.saveComposedTransactionInfo,
-        goto: routerActions.goto,
         loadInvityData: coinmarketCommonActions.loadInvityData,
     });
 
@@ -74,6 +74,7 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
     const { selectedAccount, quotesRequest, fees, fiat, localCurrency, exchangeCoinInfo, device } =
         props;
     const { account, network } = selectedAccount;
+    const { navigateToExchangeOffers } = useCoinmarketNavigation(account);
     const { symbol, networkType } = account;
 
     const coinFees = fees[symbol];
@@ -274,21 +275,23 @@ export const useCoinmarketExchangeForm = (props: Props): ExchangeFormContextValu
                 send,
                 sendStringAmount,
             };
-
             saveQuoteRequest(request);
             const allQuotes = await invityAPI.getExchangeQuotes(request);
-            const limits = getAmountLimits(allQuotes);
-
-            if (limits) {
-                setAmountLimits(limits);
+            if (Array.isArray(allQuotes)) {
+                const limits = getAmountLimits(allQuotes);
+                if (limits) {
+                    setAmountLimits(limits);
+                } else {
+                    const [fixedQuotes, floatQuotes] = splitToFixedFloatQuotes(
+                        allQuotes,
+                        exchangeInfo,
+                    );
+                    saveQuotes(fixedQuotes, floatQuotes);
+                    navigateToExchangeOffers();
+                }
             } else {
-                const [fixedQuotes, floatQuotes] = splitToFixedFloatQuotes(allQuotes, exchangeInfo);
-                saveQuotes(fixedQuotes, floatQuotes);
-                goto('wallet-coinmarket-exchange-offers', {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                });
+                clearQuotes();
+                navigateToExchangeOffers();
             }
         }
     };

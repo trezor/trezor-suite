@@ -32,6 +32,7 @@ export type CoinmarketExchangeAction =
           fixedQuotes: ExchangeTrade[];
           floatQuotes: ExchangeTrade[];
       }
+    | { type: typeof COINMARKET_EXCHANGE.CLEAR_QUOTES }
     | {
           type: typeof COINMARKET_COMMON.SAVE_TRADE;
           date: string;
@@ -150,4 +151,8 @@ export const saveQuotes = (
     type: COINMARKET_EXCHANGE.SAVE_QUOTES,
     fixedQuotes,
     floatQuotes,
+});
+
+export const clearQuotes = (): CoinmarketExchangeAction => ({
+    type: COINMARKET_EXCHANGE.CLEAR_QUOTES,
 });

@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { BuyProviderInfo, BuyTradeQuoteRequest } from 'invity-api';
 import invityAPI from '@suite-services/invityAPI';
 import { useWatchBuyTrade } from '@wallet-hooks/useCoinmarket';
-import * as routerActions from '@suite-actions/routerActions';
 import * as coinmarketBuyActions from '@wallet-actions/coinmarketBuyActions';
 import { useTheme, variables, Icon, Button } from '@trezor/components';
 import { CoinmarketPaymentType, CoinmarketProviderInfo } from '@wallet-components';
@@ -14,6 +13,7 @@ import { TradeBuy } from '@wallet-types/coinmarketCommonTypes';
 import Status from '../Status';
 import { useSelector, useActions } from '@suite-hooks';
 import { formatCryptoAmount } from '@wallet-utils/coinmarket/coinmarketUtils';
+import { useCoinmarketNavigation } from '@wallet-hooks/useCoinmarketNavigation';
 
 interface Props {
     trade: TradeBuy;
@@ -119,14 +119,20 @@ const Arrow = styled.div`
 
 const BuyTransaction = ({ trade, providers, account }: Props) => {
     const theme = useTheme();
-    const { goto } = useActions({ goto: routerActions.goto });
-    const { saveTransactionDetailId, saveQuotes, saveQuoteRequest, saveCachedAccountInfo } =
-        useActions({
-            saveTransactionDetailId: coinmarketBuyActions.saveTransactionDetailId,
-            saveQuotes: coinmarketBuyActions.saveQuotes,
-            saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
-            saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
-        });
+    const {
+        saveTransactionDetailId,
+        saveQuotes,
+        clearQuotes,
+        saveQuoteRequest,
+        saveCachedAccountInfo,
+    } = useActions({
+        saveTransactionDetailId: coinmarketBuyActions.saveTransactionDetailId,
+        saveQuotes: coinmarketBuyActions.saveQuotes,
+        clearQuotes: coinmarketBuyActions.clearQuotes,
+        saveQuoteRequest: coinmarketBuyActions.saveQuoteRequest,
+        saveCachedAccountInfo: coinmarketBuyActions.saveCachedAccountInfo,
+    });
+    const { navigateToBuyOffers, navigateToBuyDetail } = useCoinmarketNavigation(account);
     const country = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.buyInfo?.country);
     const [isGettingOffers, setIsGettingOffers] = useState(false);
     useWatchBuyTrade(account, trade);
@@ -153,25 +159,21 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
             wantCrypto: false,
             country,
         };
-        await saveQuoteRequest(request);
-        await saveCachedAccountInfo(account.symbol, account.index, account.accountType);
+        saveQuoteRequest(request);
+        saveCachedAccountInfo(account.symbol, account.index, account.accountType);
         const allQuotes = await invityAPI.getBuyQuotes(request);
-        const [quotes, alternativeQuotes] = processQuotes(allQuotes);
-        await saveQuotes(quotes, alternativeQuotes);
-        goto('wallet-coinmarket-buy-offers', {
-            symbol: account.symbol,
-            accountIndex: account.index,
-            accountType: account.accountType,
-        });
+        if (allQuotes) {
+            const [quotes, alternativeQuotes] = processQuotes(allQuotes);
+            saveQuotes(quotes, alternativeQuotes);
+        } else {
+            clearQuotes();
+        }
+        navigateToBuyOffers();
     };
 
-    const viewDetail = async () => {
-        await saveTransactionDetailId(trade.key || '');
-        goto('wallet-coinmarket-buy-detail', {
-            symbol: account.symbol,
-            accountIndex: account.index,
-            accountType: account.accountType,
-        });
+    const handleViewDetailsButtonClick = () => {
+        saveTransactionDetailId(trade.key || '');
+        navigateToBuyDetail();
     };
 
     return (
@@ -220,7 +222,7 @@ const BuyTransaction = ({ trade, providers, account }: Props) => {
                         <Translation id="TR_BUY_BUY_AGAIN" />
                     </Button>
                 ) : (
-                    <Button variant="tertiary" onClick={viewDetail}>
+                    <Button variant="tertiary" onClick={handleViewDetailsButtonClick}>
                         <Translation id="TR_BUY_VIEW_DETAILS" />
                     </Button>
                 )}
